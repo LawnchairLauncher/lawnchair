@@ -39,9 +39,10 @@ import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.util.ObjectWrapper;
-import com.android.quickstep.ActivityControlHelper.HomeAnimationFactory;
+import com.android.quickstep.BaseActivityInterface.HomeAnimationFactory;
 import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.BaseSwipeUpHandler;
+import com.android.quickstep.GestureState;
 import com.android.quickstep.InputConsumer;
 import com.android.quickstep.MultiStateCallback;
 import com.android.quickstep.OverviewComponentObserver;
@@ -114,12 +115,13 @@ public class FallbackNoButtonInputConsumer extends
     private final PointF mEndVelocityPxPerMs = new PointF(0, 0.5f);
     private RunningWindowAnim mFinishAnimation;
 
-    public FallbackNoButtonInputConsumer(Context context,
+    public FallbackNoButtonInputConsumer(Context context, GestureState gestureState,
             OverviewComponentObserver overviewComponentObserver,
             RunningTaskInfo runningTaskInfo, RecentsModel recentsModel,
             InputConsumerController inputConsumer,
             boolean isLikelyToStartNewTask, boolean continuingLastGesture) {
-        super(context, overviewComponentObserver, recentsModel, inputConsumer, runningTaskInfo.id);
+        super(context, gestureState, overviewComponentObserver, recentsModel, inputConsumer,
+                runningTaskInfo.id);
         mLauncherAlpha.value = 1;
 
         mRunningTaskInfo = runningTaskInfo;

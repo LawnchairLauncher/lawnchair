@@ -62,7 +62,7 @@ public final class OverviewComponentObserver {
     private final Intent mFallbackIntent;
     private final SparseIntArray mConfigChangesMap = new SparseIntArray();
     private String mUpdateRegisteredPackage;
-    private ActivityControlHelper mActivityControlHelper;
+    private BaseActivityInterface mActivityInterface;
     private Intent mOverviewIntent;
     private boolean mIsHomeAndOverviewSame;
     private boolean mIsDefaultHome;
@@ -106,7 +106,7 @@ public final class OverviewComponentObserver {
     }
 
     /**
-     * Update overview intent and {@link ActivityControlHelper} based off the current launcher home
+     * Update overview intent and {@link BaseActivityInterface} based off the current launcher home
      * component.
      */
     private void updateOverviewTargets() {
@@ -119,13 +119,13 @@ public final class OverviewComponentObserver {
         // Set assistant visibility to 0 from launcher's perspective, ensures any elements that
         // launcher made invisible become visible again before the new activity control helper
         // becomes active.
-        if (mActivityControlHelper != null) {
-            mActivityControlHelper.onAssistantVisibilityChanged(0.f);
+        if (mActivityInterface != null) {
+            mActivityInterface.onAssistantVisibilityChanged(0.f);
         }
 
         if (!mDeviceState.isHomeDisabled() && (defaultHome == null || mIsDefaultHome)) {
             // User default home is same as out home app. Use Overview integrated in Launcher.
-            mActivityControlHelper = new LauncherActivityControllerHelper();
+            mActivityInterface = new LauncherActivityInterface();
             mIsHomeAndOverviewSame = true;
             mOverviewIntent = mMyHomeIntent;
             mCurrentHomeIntent.setComponent(mMyHomeIntent.getComponent());
@@ -138,7 +138,7 @@ public final class OverviewComponentObserver {
         } else {
             // The default home app is a different launcher. Use the fallback Overview instead.
 
-            mActivityControlHelper = new FallbackActivityControllerHelper();
+            mActivityInterface = new FallbackActivityInterface();
             mIsHomeAndOverviewSame = false;
             mOverviewIntent = mFallbackIntent;
             mCurrentHomeIntent.setComponent(defaultHome);
@@ -230,7 +230,7 @@ public final class OverviewComponentObserver {
      *
      * @return the current activity control helper
      */
-    public ActivityControlHelper getActivityControlHelper() {
-        return mActivityControlHelper;
+    public BaseActivityInterface getActivityInterface() {
+        return mActivityInterface;
     }
 }

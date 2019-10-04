@@ -48,7 +48,8 @@ import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.logging.UserEventDispatcher;
-import com.android.quickstep.ActivityControlHelper;
+import com.android.quickstep.BaseActivityInterface;
+import com.android.quickstep.GestureState;
 import com.android.quickstep.InputConsumer;
 import com.android.quickstep.SystemUiProxy;
 import com.android.systemui.shared.system.InputMonitorCompat;
@@ -80,7 +81,7 @@ public class AssistantInputConsumer extends DelegateInputConsumer {
     private long mDragTime;
     private float mLastProgress;
     private int mDirection;
-    private ActivityControlHelper mActivityControlHelper;
+    private BaseActivityInterface mActivityInterface;
 
     private final float mDragDistThreshold;
     private final float mFlingDistThreshold;
@@ -90,7 +91,7 @@ public class AssistantInputConsumer extends DelegateInputConsumer {
     private final Context mContext;
     private final GestureDetector mGestureDetector;
 
-    public AssistantInputConsumer(Context context, ActivityControlHelper activityControlHelper,
+    public AssistantInputConsumer(Context context, GestureState gestureState,
             InputConsumer delegate, InputMonitorCompat inputMonitor) {
         super(delegate, inputMonitor);
         final Resources res = context.getResources();
@@ -103,7 +104,7 @@ public class AssistantInputConsumer extends DelegateInputConsumer {
         float slop = ViewConfiguration.get(context).getScaledTouchSlop();
 
         mSquaredSlop = slop * slop;
-        mActivityControlHelper = activityControlHelper;
+        mActivityInterface = gestureState.getActivityInterface();
 
         mGestureDetector = new GestureDetector(context, new AssistantGestureListener());
     }
@@ -233,8 +234,7 @@ public class AssistantInputConsumer extends DelegateInputConsumer {
         UserEventDispatcher.newInstance(mContext)
             .logActionOnContainer(gestureType, mDirection, NAVBAR);
 
-        BaseDraggingActivity launcherActivity = mActivityControlHelper
-            .getCreatedActivity();
+        BaseDraggingActivity launcherActivity = mActivityInterface.getCreatedActivity();
         if (launcherActivity != null) {
             launcherActivity.getRootView().performHapticFeedback(
                 13, // HapticFeedbackConstants.GESTURE_END

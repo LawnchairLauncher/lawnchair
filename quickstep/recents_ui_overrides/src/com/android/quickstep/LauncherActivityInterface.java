@@ -73,9 +73,9 @@ import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 
 /**
- * {@link ActivityControlHelper} for the in-launcher recents.
+ * {@link BaseActivityInterface} for the in-launcher recents.
  */
-public final class LauncherActivityControllerHelper implements ActivityControlHelper<Launcher> {
+public final class LauncherActivityInterface implements BaseActivityInterface<Launcher> {
 
     private Runnable mAdjustInterpolatorsRunnable;
 
@@ -214,8 +214,8 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
             private boolean mIsAttachedToWindow;
 
             @Override
-            public void createActivityController(long transitionLength) {
-                createActivityControllerInternal(activity, fromState, transitionLength, callback);
+            public void createActivityInterface(long transitionLength) {
+                createActivityInterfaceInternal(activity, fromState, transitionLength, callback);
                 // Creating the activity controller animation sometimes reapplies the launcher state
                 // (because we set the animation as the current state animation), so we reapply the
                 // attached state here as well to ensure recents is shown/hidden appropriately.
@@ -312,7 +312,7 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
         };
     }
 
-    private void createActivityControllerInternal(Launcher activity, LauncherState fromState,
+    private void createActivityInterfaceInternal(Launcher activity, LauncherState fromState,
             long transitionLength, Consumer<AnimatorPlaybackController> callback) {
         LauncherState endState = OVERVIEW;
         if (fromState == endState) {

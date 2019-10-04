@@ -50,9 +50,10 @@ import com.android.launcher3.R;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.RaceConditionTracker;
 import com.android.launcher3.util.TraceHelper;
-import com.android.quickstep.ActivityControlHelper;
+import com.android.quickstep.BaseActivityInterface;
 import com.android.quickstep.BaseSwipeUpHandler;
 import com.android.quickstep.BaseSwipeUpHandler.Factory;
+import com.android.quickstep.GestureState;
 import com.android.quickstep.InputConsumer;
 import com.android.quickstep.RecentsAnimationDeviceState;
 import com.android.quickstep.SwipeSharedState;
@@ -81,12 +82,13 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     public static final float QUICKSTEP_TOUCH_SLOP_RATIO = 3;
 
     private final RecentsAnimationDeviceState mDeviceState;
+    private final GestureState mGestureState;
     private final CachedEventDispatcher mRecentsViewDispatcher = new CachedEventDispatcher();
     private final RunningTaskInfo mRunningTask;
     private final SwipeSharedState mSwipeSharedState;
     private final InputMonitorCompat mInputMonitorCompat;
     private final SysUINavigationMode.Mode mMode;
-    private final ActivityControlHelper mActivityControlHelper;
+    private final BaseActivityInterface mActivityInterface;
 
     private final BaseSwipeUpHandler.Factory mHandlerFactory;
 
@@ -126,20 +128,19 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     private int mLogId;
 
     public OtherActivityInputConsumer(Context base, RecentsAnimationDeviceState deviceState,
-            RunningTaskInfo runningTaskInfo, boolean isDeferredDownTarget,
-            Consumer<OtherActivityInputConsumer> onCompleteCallback,
+            GestureState gestureState, RunningTaskInfo runningTaskInfo,
+            boolean isDeferredDownTarget, Consumer<OtherActivityInputConsumer> onCompleteCallback,
             SwipeSharedState swipeSharedState, InputMonitorCompat inputMonitorCompat,
-            boolean disableHorizontalSwipe, ActivityControlHelper activityControlHelper,
-            Factory handlerFactory, int logId) {
+            boolean disableHorizontalSwipe, Factory handlerFactory, int logId) {
         super(base);
         mLogId = logId;
-
         mDeviceState = deviceState;
+        mGestureState = gestureState;
         mMainThreadHandler = new Handler(Looper.getMainLooper());
         mRunningTask = runningTaskInfo;
         mMode = SysUINavigationMode.getMode(base);
         mHandlerFactory = handlerFactory;
-        mActivityControlHelper = activityControlHelper;
+        mActivityInterface = mGestureState.getActivityInterface();
 
         mMotionPauseDetector = new MotionPauseDetector(base);
         mMotionPauseMinDisplacement = base.getResources().getDimension(
@@ -318,7 +319,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         }
         mInputMonitorCompat.pilferPointers();
 
-        mActivityControlHelper.closeOverlay();
+        mActivityInterface.closeOverlay();
         ActivityManagerWrapper.getInstance().closeSystemWindows(
                 CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
 
@@ -331,8 +332,8 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         ActiveGestureLog.INSTANCE.addLog("startRecentsAnimation");
 
         RecentsAnimationCallbacks listenerSet = mSwipeSharedState.getActiveListener();
-        final BaseSwipeUpHandler handler = mHandlerFactory.newHandler(mRunningTask, touchTimeMs,
-                listenerSet != null, isLikelyToStartNewTask);
+        final BaseSwipeUpHandler handler = mHandlerFactory.newHandler(mGestureState, mRunningTask,
+                touchTimeMs, listenerSet != null, isLikelyToStartNewTask);
 
         mInteractionHandler = handler;
         handler.setGestureEndCallback(this::onInteractionGestureFinished);

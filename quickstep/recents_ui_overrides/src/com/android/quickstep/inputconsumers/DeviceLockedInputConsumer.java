@@ -39,6 +39,7 @@ import android.view.ViewConfiguration;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.DefaultDisplay;
+import com.android.quickstep.GestureState;
 import com.android.quickstep.InputConsumer;
 import com.android.quickstep.LockScreenRecentsActivity;
 import com.android.quickstep.MultiStateCallback;
@@ -75,6 +76,7 @@ public class DeviceLockedInputConsumer implements InputConsumer,
 
     private final Context mContext;
     private final RecentsAnimationDeviceState mDeviceState;
+    private final GestureState mGestureState;
     private final float mTouchSlopSquared;
     private final SwipeSharedState mSwipeSharedState;
     private final InputMonitorCompat mInputMonitorCompat;
@@ -96,10 +98,11 @@ public class DeviceLockedInputConsumer implements InputConsumer,
     private RecentsAnimationTargets mRecentsAnimationTargets;
 
     public DeviceLockedInputConsumer(Context context, RecentsAnimationDeviceState deviceState,
-            SwipeSharedState swipeSharedState, InputMonitorCompat inputMonitorCompat,
-            int runningTaskId, int logId) {
+            GestureState gestureState, SwipeSharedState swipeSharedState,
+            InputMonitorCompat inputMonitorCompat, int runningTaskId, int logId) {
         mContext = context;
         mDeviceState = deviceState;
+        mGestureState = gestureState;
         mTouchSlopSquared = squaredTouchSlop(context);
         mSwipeSharedState = swipeSharedState;
         mAppWindowAnimationHelper = new AppWindowAnimationHelper(context);

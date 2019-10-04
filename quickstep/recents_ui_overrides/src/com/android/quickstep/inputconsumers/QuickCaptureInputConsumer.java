@@ -35,7 +35,7 @@ import android.view.ViewConfiguration;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.R;
-import com.android.quickstep.ActivityControlHelper;
+import com.android.quickstep.GestureState;
 import com.android.quickstep.InputConsumer;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.InputMonitorCompat;
@@ -73,15 +73,16 @@ public class QuickCaptureInputConsumer<T extends BaseDraggingActivity>
 
     private RecentsView mRecentsView;
 
-    public QuickCaptureInputConsumer(Context context, InputConsumer delegate,
-            InputMonitorCompat inputMonitor, ActivityControlHelper<T> activityControlHelper) {
+    public QuickCaptureInputConsumer(Context context, GestureState gestureState,
+            InputConsumer delegate, InputMonitorCompat inputMonitor) {
         super(delegate, inputMonitor);
         mContext = context;
 
         float slop = ViewConfiguration.get(context).getScaledTouchSlop();
         mSquaredSlop = slop * slop;
 
-        activityControlHelper.createActivityInitListener(this::onActivityInit).register();
+        gestureState.getActivityInterface().createActivityInitListener(this::onActivityInit)
+                .register();
     }
 
     @Override
@@ -89,7 +90,7 @@ public class QuickCaptureInputConsumer<T extends BaseDraggingActivity>
         return TYPE_QUICK_CAPTURE | mDelegate.getType();
     }
 
-    private boolean onActivityInit(final T activity, Boolean alreadyOnHome) {
+    private boolean onActivityInit(final BaseDraggingActivity activity, Boolean alreadyOnHome) {
         mRecentsView = activity.getOverviewPanel();
 
         return true;

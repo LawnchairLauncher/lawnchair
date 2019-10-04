@@ -42,7 +42,7 @@ import java.util.function.Consumer;
  * Utility class which abstracts out the logical differences between Launcher and RecentsActivity.
  */
 @TargetApi(Build.VERSION_CODES.P)
-public interface ActivityControlHelper<T extends BaseDraggingActivity> {
+public interface BaseActivityInterface<T extends BaseDraggingActivity> {
 
     void onTransitionCancelled(T activity, boolean activityVisible);
 
@@ -112,7 +112,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
         default void onRemoteAnimationReceived(RemoteAnimationTargets targets) { }
 
-        void createActivityController(long transitionLength);
+        void createActivityInterface(long transitionLength);
 
         default void adjustActivityControllerInterpolators() { }
 

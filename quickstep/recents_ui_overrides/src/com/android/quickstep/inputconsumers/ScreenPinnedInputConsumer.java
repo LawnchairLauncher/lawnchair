@@ -21,7 +21,7 @@ import android.view.MotionEvent;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.R;
-import com.android.quickstep.ActivityControlHelper;
+import com.android.quickstep.GestureState;
 import com.android.quickstep.InputConsumer;
 import com.android.quickstep.util.MotionPauseDetector;
 import com.android.quickstep.SystemUiProxy;
@@ -38,14 +38,15 @@ public class ScreenPinnedInputConsumer implements InputConsumer {
 
     private float mTouchDownY;
 
-    public ScreenPinnedInputConsumer(Context context, ActivityControlHelper activityControl) {
+    public ScreenPinnedInputConsumer(Context context, GestureState gestureState) {
         mMotionPauseMinDisplacement = context.getResources().getDimension(
                 R.dimen.motion_pause_detector_min_displacement_from_app);
         mMotionPauseDetector = new MotionPauseDetector(context, true /* makePauseHarderToTrigger*/);
         mMotionPauseDetector.setOnMotionPauseListener(isPaused -> {
             if (isPaused) {
                 SystemUiProxy.INSTANCE.get(context).stopScreenPinning();
-                BaseDraggingActivity launcherActivity = activityControl.getCreatedActivity();
+                BaseDraggingActivity launcherActivity = gestureState.getActivityInterface()
+                        .getCreatedActivity();
                 if (launcherActivity != null) {
                     launcherActivity.getRootView().performHapticFeedback(
                             HapticFeedbackConstants.LONG_PRESS,

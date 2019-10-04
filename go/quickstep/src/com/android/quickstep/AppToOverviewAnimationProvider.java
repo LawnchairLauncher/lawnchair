@@ -46,12 +46,12 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
         RemoteAnimationProvider {
     private static final String TAG = "AppToOverviewAnimationProvider";
 
-    private final ActivityControlHelper<T> mHelper;
+    private final BaseActivityInterface<T> mHelper;
     private final int mTargetTaskId;
     private IconRecentsView mRecentsView;
     private AppToOverviewAnimationListener mAnimationReadyListener;
 
-    AppToOverviewAnimationProvider(ActivityControlHelper<T> helper, int targetTaskId) {
+    AppToOverviewAnimationProvider(BaseActivityInterface<T> helper, int targetTaskId) {
         mHelper = helper;
         mTargetTaskId = targetTaskId;
     }
@@ -75,7 +75,7 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
         if (mAnimationReadyListener != null) {
             mAnimationReadyListener.onActivityReady(activity);
         }
-        ActivityControlHelper.AnimationFactory factory =
+        BaseActivityInterface.AnimationFactory factory =
                 mHelper.prepareRecentsUI(activity, wasVisible,
                         false /* animate activity */, (controller) -> {
                             controller.dispatchOnStart();
@@ -85,7 +85,7 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
                             anim.start();
                         });
         factory.onRemoteAnimationReceived(null);
-        factory.createActivityController(getRecentsLaunchDuration());
+        factory.createActivityInterface(getRecentsLaunchDuration());
         mRecentsView = activity.getOverviewPanel();
         return false;
     }

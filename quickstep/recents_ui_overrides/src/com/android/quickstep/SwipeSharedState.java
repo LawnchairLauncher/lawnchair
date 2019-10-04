@@ -65,7 +65,7 @@ public class SwipeSharedState implements RecentsAnimationListener {
     @Override
     public final void onRecentsAnimationCanceled(ThumbnailData thumbnailData) {
         if (thumbnailData != null) {
-            mOverviewComponentObserver.getActivityControlHelper().switchToScreenshot(thumbnailData,
+            mOverviewComponentObserver.getActivityInterface().switchToScreenshot(thumbnailData,
                     () -> {
                         mLastRecentsAnimationController.cleanupScreenshot();
                         clearAnimationState();
@@ -129,7 +129,7 @@ public class SwipeSharedState implements RecentsAnimationListener {
 
         clearListenerState(false /* finishAnimation */);
         boolean shouldMinimiseSplitScreen = mOverviewComponentObserver == null ? false
-                : mOverviewComponentObserver.getActivityControlHelper().shouldMinimizeSplitScreen();
+                : mOverviewComponentObserver.getActivityInterface().shouldMinimizeSplitScreen();
         mRecentsAnimationListener = new RecentsAnimationCallbacks(shouldMinimiseSplitScreen);
         mRecentsAnimationListener.addListener(this);
         return mRecentsAnimationListener;

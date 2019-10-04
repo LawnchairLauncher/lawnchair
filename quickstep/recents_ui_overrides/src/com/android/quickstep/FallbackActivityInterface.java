@@ -44,14 +44,14 @@ import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 
 /**
- * {@link ActivityControlHelper} for recents when the default launcher is different than the
+ * {@link BaseActivityInterface} for recents when the default launcher is different than the
  * currently running one and apps should interact with the {@link RecentsActivity} as opposed
  * to the in-launcher one.
  */
-public final class FallbackActivityControllerHelper implements
-        ActivityControlHelper<RecentsActivity> {
+public final class FallbackActivityInterface implements
+        BaseActivityInterface<RecentsActivity> {
 
-    public FallbackActivityControllerHelper() { }
+    public FallbackActivityInterface() { }
 
     @Override
     public void onTransitionCancelled(RecentsActivity activity, boolean activityVisible) {
@@ -142,12 +142,12 @@ public final class FallbackActivityControllerHelper implements
                 if (!isAnimatingToRecents) {
                     rv.setContentAlpha(1);
                 }
-                createActivityController(getSwipeUpDestinationAndLength(
+                createActivityInterface(getSwipeUpDestinationAndLength(
                         activity.getDeviceProfile(), activity, new Rect()));
             }
 
             @Override
-            public void createActivityController(long transitionLength) {
+            public void createActivityInterface(long transitionLength) {
                 AnimatorSet animatorSet = new AnimatorSet();
                 if (isAnimatingToRecents) {
                     ObjectAnimator anim = ObjectAnimator.ofFloat(rv, CONTENT_ALPHA, 0, 1);

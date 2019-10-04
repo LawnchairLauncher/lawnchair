@@ -98,14 +98,14 @@ public class OverviewCommandHelper {
         @Override
         protected boolean handleCommand(long elapsedTime) {
             // TODO: Go to the next page if started from alt-tab.
-            return mHelper.getVisibleRecentsView() != null;
+            return mActivityInterface.getVisibleRecentsView() != null;
         }
 
         @Override
         protected void onTransitionComplete() {
             // TODO(b/138729100) This doesn't execute first time launcher is run
             if (mTriggeredFromAltTab) {
-                RecentsView rv = (RecentsView) mHelper.getVisibleRecentsView();
+                RecentsView rv = (RecentsView) mActivityInterface.getVisibleRecentsView();
                 if (rv == null) {
                     return;
                 }
@@ -130,7 +130,7 @@ public class OverviewCommandHelper {
 
         @Override
         protected boolean handleCommand(long elapsedTime) {
-            RecentsView recents = (RecentsView) mHelper.getVisibleRecentsView();
+            RecentsView recents = (RecentsView) mActivityInterface.getVisibleRecentsView();
             if (recents == null) {
                 return false;
             }
@@ -146,7 +146,7 @@ public class OverviewCommandHelper {
 
     private class RecentsActivityCommand<T extends BaseDraggingActivity> implements Runnable {
 
-        protected final ActivityControlHelper<T> mHelper;
+        protected final BaseActivityInterface<T> mActivityInterface;
         private final long mCreateTime;
         private final AppToOverviewAnimationProvider<T> mAnimationProvider;
 
@@ -155,10 +155,10 @@ public class OverviewCommandHelper {
         private ActivityInitListener mListener;
 
         public RecentsActivityCommand() {
-            mHelper = mOverviewComponentObserver.getActivityControlHelper();
+            mActivityInterface = mOverviewComponentObserver.getActivityInterface();
             mCreateTime = SystemClock.elapsedRealtime();
-            mAnimationProvider =
-                    new AppToOverviewAnimationProvider<>(mHelper, RecentsModel.getRunningTaskId());
+            mAnimationProvider = new AppToOverviewAnimationProvider<>(mActivityInterface,
+                    RecentsModel.getRunningTaskId());
 
             // Preload the plan
             mRecentsModel.getTasks(null);
@@ -174,13 +174,13 @@ public class OverviewCommandHelper {
                 return;
             }
 
-            if (mHelper.switchToRecentsIfVisible(this::onTransitionComplete)) {
+            if (mActivityInterface.switchToRecentsIfVisible(this::onTransitionComplete)) {
                 // If successfully switched, then return
                 return;
             }
 
             // Otherwise, start overview.
-            mListener = mHelper.createActivityInitListener(this::onActivityReady);
+            mListener = mActivityInterface.createActivityInitListener(this::onActivityReady);
             mListener.registerAndStartActivity(mOverviewComponentObserver.getOverviewIntent(),
                     this::createWindowAnimation, mContext, MAIN_EXECUTOR.getHandler(),
                     mAnimationProvider.getRecentsLaunchDuration());
@@ -190,7 +190,7 @@ public class OverviewCommandHelper {
             // TODO: We need to fix this case with PIP, when an activity first enters PIP, it shows
             //       the menu activity which takes window focus, preventing the right condition from
             //       being run below
-            RecentsView recents = mHelper.getVisibleRecentsView();
+            RecentsView recents = mActivityInterface.getVisibleRecentsView();
             if (recents != null) {
                 // Launch the next task
                 recents.showNextTask();
@@ -207,7 +207,7 @@ public class OverviewCommandHelper {
             if (!mUserEventLogged) {
                 activity.getUserEventDispatcher().logActionCommand(
                         LauncherLogProto.Action.Command.RECENTS_BUTTON,
-                        mHelper.getContainerType(),
+                        mActivityInterface.getContainerType(),
                         LauncherLogProto.ContainerType.TASKSWITCHER);
                 mUserEventLogged = true;
             }

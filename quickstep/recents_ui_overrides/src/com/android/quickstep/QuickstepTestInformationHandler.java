@@ -83,7 +83,7 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
         OverviewComponentObserver observer = new OverviewComponentObserver(mContext,
                 new RecentsAnimationDeviceState(mContext));
         try {
-            return observer.getActivityControlHelper().getCreatedActivity().getOverviewPanel();
+            return observer.getActivityInterface().getCreatedActivity().getOverviewPanel();
         } finally {
             observer.onDestroy();
         }

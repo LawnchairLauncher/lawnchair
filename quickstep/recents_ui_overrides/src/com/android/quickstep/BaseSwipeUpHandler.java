@@ -56,7 +56,7 @@ import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.views.FloatingIconView;
-import com.android.quickstep.ActivityControlHelper.HomeAnimationFactory;
+import com.android.quickstep.BaseActivityInterface.HomeAnimationFactory;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.ActivityInitListener;
@@ -97,7 +97,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
 
     protected final Context mContext;
     protected final OverviewComponentObserver mOverviewComponentObserver;
-    protected final ActivityControlHelper<T> mActivityControlHelper;
+    protected final BaseActivityInterface<T> mActivityInterface;
     protected final RecentsModel mRecentsModel;
     protected final int mRunningTaskId;
 
@@ -135,15 +135,15 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
     protected boolean mCanceled;
     protected int mFinishingRecentsAnimationForNewTaskId = -1;
 
-    protected BaseSwipeUpHandler(Context context,
+    protected BaseSwipeUpHandler(Context context, GestureState gestureState,
             OverviewComponentObserver overviewComponentObserver,
             RecentsModel recentsModel, InputConsumerController inputConsumer, int runningTaskId) {
         mContext = context;
         mOverviewComponentObserver = overviewComponentObserver;
-        mActivityControlHelper = overviewComponentObserver.getActivityControlHelper();
+        mActivityInterface = gestureState.getActivityInterface();
         mRecentsModel = recentsModel;
         mActivityInitListener =
-                mActivityControlHelper.createActivityInitListener(this::onActivityInit);
+                mActivityInterface.createActivityInitListener(this::onActivityInit);
         mRunningTaskId = runningTaskId;
         mInputConsumer = inputConsumer;
         mMode = SysUINavigationMode.getMode(context);
@@ -246,10 +246,10 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
                                 success -> {
                                     resultCallback.accept(success);
                                     if (!success) {
-                                        mActivityControlHelper.onLaunchTaskFailed(mActivity);
+                                        mActivityInterface.onLaunchTaskFailed(mActivity);
                                         nextTask.notifyTaskLaunchFailed(TAG);
                                     } else {
-                                        mActivityControlHelper.onLaunchTaskSuccess(mActivity);
+                                        mActivityInterface.onLaunchTaskSuccess(mActivity);
                                     }
                                 }, mMainThreadHandler);
                     }
@@ -291,7 +291,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
         RemoteAnimationTargetCompat runningTaskTarget = targets.findTask(mRunningTaskId);
 
         if (targets.minimizedHomeBounds != null && runningTaskTarget != null) {
-            overviewStackBounds = mActivityControlHelper
+            overviewStackBounds = mActivityInterface
                     .getOverviewWindowBounds(targets.minimizedHomeBounds, runningTaskTarget);
             dp = dp.getMultiWindowProfile(mContext, new Point(
                     overviewStackBounds.width(), overviewStackBounds.height()));
@@ -345,7 +345,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
     protected void initTransitionEndpoints(DeviceProfile dp) {
         mDp = dp;
 
-        mTransitionDragLength = mActivityControlHelper.getSwipeUpDestinationAndLength(
+        mTransitionDragLength = mActivityInterface.getSwipeUpDestinationAndLength(
                 dp, mContext, TEMP_RECT);
         if (!dp.isMultiWindowMode) {
             // When updating the target rect, also update the home bounds since the location on
@@ -517,7 +517,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
 
     public interface Factory {
 
-        BaseSwipeUpHandler newHandler(RunningTaskInfo runningTask,
+        BaseSwipeUpHandler newHandler(GestureState gestureState, RunningTaskInfo runningTask,
                 long touchTimeMs, boolean continuingLastGesture, boolean isLikelyToStartNewTask);
     }
 

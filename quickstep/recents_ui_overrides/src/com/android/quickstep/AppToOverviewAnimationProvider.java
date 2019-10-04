@@ -48,14 +48,14 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
     private static final long RECENTS_LAUNCH_DURATION = 250;
     private static final String TAG = "AppToOverviewAnimationProvider";
 
-    private final ActivityControlHelper<T> mHelper;
+    private final BaseActivityInterface<T> mHelper;
     // The id of the currently running task that is transitioning to overview.
     private final int mTargetTaskId;
 
     private T mActivity;
     private RecentsView mRecentsView;
 
-    AppToOverviewAnimationProvider(ActivityControlHelper<T> helper, int targetTaskId) {
+    AppToOverviewAnimationProvider(BaseActivityInterface<T> helper, int targetTaskId) {
         mHelper = helper;
         mTargetTaskId = targetTaskId;
     }
@@ -69,7 +69,7 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
     boolean onActivityReady(T activity, Boolean wasVisible) {
         activity.<RecentsView>getOverviewPanel().showCurrentTask(mTargetTaskId);
         AbstractFloatingView.closeAllOpenViews(activity, wasVisible);
-        ActivityControlHelper.AnimationFactory factory =
+        BaseActivityInterface.AnimationFactory factory =
                 mHelper.prepareRecentsUI(activity, wasVisible,
                 false /* animate activity */, (controller) -> {
                     controller.dispatchOnStart();
@@ -79,7 +79,7 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
                     anim.start();
                 });
         factory.onRemoteAnimationReceived(null);
-        factory.createActivityController(RECENTS_LAUNCH_DURATION);
+        factory.createActivityInterface(RECENTS_LAUNCH_DURATION);
         factory.setRecentsAttachedToAppWindow(true, false);
         mActivity = activity;
         mRecentsView = mActivity.getOverviewPanel();

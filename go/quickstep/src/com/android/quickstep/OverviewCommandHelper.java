@@ -101,7 +101,7 @@ public class OverviewCommandHelper {
 
     private class RecentsActivityCommand<T extends BaseDraggingActivity> implements Runnable {
 
-        protected final ActivityControlHelper<T> mHelper;
+        protected final BaseActivityInterface<T> mHelper;
         private final long mCreateTime;
 
         private final long mToggleClickedTime = SystemClock.uptimeMillis();
@@ -109,7 +109,7 @@ public class OverviewCommandHelper {
         private ActivityInitListener<T> mListener;
 
         public RecentsActivityCommand() {
-            mHelper = mOverviewComponentObserver.getActivityControlHelper();
+            mHelper = mOverviewComponentObserver.getActivityInterface();
             mCreateTime = SystemClock.elapsedRealtime();
 
             // Preload the plan
