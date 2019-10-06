@@ -22,14 +22,6 @@ After registering it in `ch.deletescape.lawnchair.globalsearch.SearchProviderCon
 Alright, I admit it, our build variants are a bit of a mess right now. Make sure to choose one of the variants prefixed `quickstepLawnchair*`
 from the "Build Variants" menu in IntelliJ. Our team is usually always on the latest stable version of IntelliJ IDEA.
 
--- Note to self --
-I spent a lot of time trying to figure out how to compile Lawnchair apk, and following are some points to keep in mind when trying to compile the source.
- * Try to stay away from Android Studio if possible.
- * Make sure java platform is set to java8. (Extra stress on this point)
- * Try cleaning the gradle directory before compiling if possible.
- * Command to compile apk is - `./gradlew assembleQuickstepLawnchairDevOptimized`
- * Build might take like 10-20 mins
-
 ## Translations
 
 Wanna help us by translating Lawnchair to your own language? Just take a look at [our Crowdin page](https://translate.lawnchair.app/).
