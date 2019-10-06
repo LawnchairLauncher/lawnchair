@@ -34,7 +34,7 @@
     <string name="pixel_ui_pref_summary">Набор иконок, размытие, цвета</string>
     <string name="app_drawer_pref_title">Меню приложений</string>
     <string name="app_drawer_pref_summary">Прозрачность, подсказки, скрытие приложений</string>
-    <string name="search_pref_summary">Цвет, настройки поиска, иконки</string>
+    <string name="search_pref_summary">Цвет, поисковая система, иконки</string>
     <string name="general_pref_title">Рабочий стол</string>
     <string name="general_pref_summary">Сетка, расположение иконок, строка состояния</string>
     <string name="about_pref_summary">Команда, ссылки, лицензии</string>
