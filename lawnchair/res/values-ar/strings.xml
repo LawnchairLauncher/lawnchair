@@ -549,9 +549,9 @@
     <string name="pref_weather_icon_pack">أيقونات الطقس</string>
     <string name="weather_icon_packs_not_supported">غير مدعوم من مصدر الطقس الحالي</string>
     <string name="lawnchair_settings">إعدادات Lawnchair</string>
-    <string name="customnavbar_install">انقر لتثبيت شريط التنقل المخصص</string>
+    <string name="customnavbar_install">انقر لتثبيت شريط تنقل مخصص</string>
     <string name="customnavbar_back_hiding">زر العودة يختفي</string>
-    <string name="customnavbar_back_hiding_desc">إخفاء زر العودة عندما لا تكون هناك حاجة</string>
+    <string name="customnavbar_back_hiding_desc">إخفاء زر العودة عند عدم الحاجة إليه</string>
     <string name="icon_shape_top_left">أعلى اليسار</string>
     <string name="icon_shape_top_right">أعلى اليمين</string>
     <string name="icon_shape_bottom_left">أسفل اليسار</string>
