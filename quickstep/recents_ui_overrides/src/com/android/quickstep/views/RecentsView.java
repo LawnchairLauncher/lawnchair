@@ -17,7 +17,6 @@
 package com.android.quickstep.views;
 
 import static androidx.dynamicanimation.animation.DynamicAnimation.MIN_VISIBLE_CHANGE_PIXELS;
-
 import static com.android.launcher3.BaseActivity.STATE_HANDLER_INVISIBILITY_FLAGS;
 import static com.android.launcher3.InvariantDeviceProfile.CHANGE_FLAG_ICON_PARAMS;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
@@ -573,11 +572,14 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             taskView.bind(task);
         }
 
-        TaskView runningTaskView = getRunningTaskView();
-        if (runningTaskView != null) {
-            setCurrentPage(indexOfChild(runningTaskView));
-        } else if (getTaskViewCount() > 0) {
-            setCurrentPage(indexOfChild(getTaskViewAt(0)));
+        if (mNextPage == INVALID_PAGE) {
+            // Set the current page to the running task, but not if settling on new task.
+            TaskView runningTaskView = getRunningTaskView();
+            if (runningTaskView != null) {
+                setCurrentPage(indexOfChild(runningTaskView));
+            } else if (getTaskViewCount() > 0) {
+                setCurrentPage(indexOfChild(getTaskViewAt(0)));
+            }
         }
 
         if (mIgnoreResetTaskId != -1 && getTaskView(mIgnoreResetTaskId) != ignoreResetTaskView) {
