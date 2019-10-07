@@ -44,7 +44,6 @@ import com.android.quickstep.LockScreenRecentsActivity;
 import com.android.quickstep.MultiStateCallback;
 import com.android.quickstep.RecentsAnimationController;
 import com.android.quickstep.RecentsAnimationDeviceState;
-import com.android.quickstep.SwipeSharedState;
 import com.android.quickstep.RecentsAnimationCallbacks;
 import com.android.quickstep.RecentsAnimationTargets;
 import com.android.quickstep.TaskAnimationManager;
@@ -79,12 +78,10 @@ public class DeviceLockedInputConsumer implements InputConsumer,
     private final TaskAnimationManager mTaskAnimationManager;
     private final GestureState mGestureState;
     private final float mTouchSlopSquared;
-    private final SwipeSharedState mSwipeSharedState;
     private final InputMonitorCompat mInputMonitorCompat;
 
     private final PointF mTouchDown = new PointF();
     private final AppWindowAnimationHelper mAppWindowAnimationHelper;
-    private int mLogId;
     private final AppWindowAnimationHelper.TransformParams mTransformParams;
     private final Point mDisplaySize;
     private final MultiStateCallback mStateCallback;
@@ -100,16 +97,13 @@ public class DeviceLockedInputConsumer implements InputConsumer,
 
     public DeviceLockedInputConsumer(Context context, RecentsAnimationDeviceState deviceState,
             TaskAnimationManager taskAnimationManager, GestureState gestureState,
-            SwipeSharedState swipeSharedState, InputMonitorCompat inputMonitorCompat,
-            int runningTaskId, int logId) {
+            InputMonitorCompat inputMonitorCompat, int runningTaskId) {
         mContext = context;
         mDeviceState = deviceState;
         mTaskAnimationManager = taskAnimationManager;
         mGestureState = gestureState;
         mTouchSlopSquared = squaredTouchSlop(context);
-        mSwipeSharedState = swipeSharedState;
         mAppWindowAnimationHelper = new AppWindowAnimationHelper(context);
-        mLogId = logId;
         mTransformParams = new AppWindowAnimationHelper.TransformParams();
         mInputMonitorCompat = inputMonitorCompat;
         mRunningTaskId = runningTaskId;
@@ -216,7 +210,7 @@ public class DeviceLockedInputConsumer implements InputConsumer,
                 .addCategory(Intent.CATEGORY_DEFAULT)
                 .setComponent(new ComponentName(mContext, LockScreenRecentsActivity.class))
                 .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                .putExtra(INTENT_EXTRA_LOG_TRACE_ID, mLogId);
+                .putExtra(INTENT_EXTRA_LOG_TRACE_ID, mGestureState.getGestureId());
         mTaskAnimationManager.startRecentsAnimation(mGestureState, intent, this);
     }
 

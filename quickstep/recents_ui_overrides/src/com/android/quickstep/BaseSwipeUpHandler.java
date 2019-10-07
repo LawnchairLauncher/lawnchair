@@ -96,6 +96,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
     protected float mDragLengthFactor = 1;
 
     protected final Context mContext;
+    protected final GestureState mGestureState;
     protected final OverviewComponentObserver mOverviewComponentObserver;
     protected final BaseActivityInterface<T> mActivityInterface;
     protected final RecentsModel mRecentsModel;
@@ -139,6 +140,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
             OverviewComponentObserver overviewComponentObserver,
             RecentsModel recentsModel, InputConsumerController inputConsumer, int runningTaskId) {
         mContext = context;
+        mGestureState = gestureState;
         mOverviewComponentObserver = overviewComponentObserver;
         mActivityInterface = gestureState.getActivityInterface();
         mRecentsModel = recentsModel;
@@ -394,7 +396,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
     @UiThread
     public abstract void onGestureEnded(float endVelocity, PointF velocity, PointF downPos);
 
-    public abstract void onConsumerAboutToBeSwitched(SwipeSharedState sharedState);
+    public abstract void onConsumerAboutToBeSwitched();
 
     public void setIsLikelyToStartNewTask(boolean isLikelyToStartNewTask) { }
 

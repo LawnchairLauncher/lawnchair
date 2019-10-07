@@ -17,6 +17,7 @@ package com.android.quickstep;
 
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
+import static com.android.quickstep.GestureState.STATE_RECENTS_ANIMATION_INITIALIZED;
 
 import android.content.Intent;
 import android.util.Log;
@@ -95,6 +96,7 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
         mCallbacks.addListener(listener);
         UI_HELPER_EXECUTOR.execute(() -> ActivityManagerWrapper.getInstance()
                 .startRecentsActivity(intent, null, mCallbacks, null, null));
+        gestureState.setState(STATE_RECENTS_ANIMATION_INITIALIZED);
         return mCallbacks;
     }
 

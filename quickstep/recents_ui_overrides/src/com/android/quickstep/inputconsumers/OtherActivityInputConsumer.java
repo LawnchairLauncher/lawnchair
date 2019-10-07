@@ -54,7 +54,6 @@ import com.android.quickstep.GestureState;
 import com.android.quickstep.InputConsumer;
 import com.android.quickstep.RecentsAnimationCallbacks;
 import com.android.quickstep.RecentsAnimationDeviceState;
-import com.android.quickstep.SwipeSharedState;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.TaskAnimationManager;
@@ -85,7 +84,6 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     private RecentsAnimationCallbacks mActiveCallbacks;
     private final CachedEventDispatcher mRecentsViewDispatcher = new CachedEventDispatcher();
     private final RunningTaskInfo mRunningTask;
-    private final SwipeSharedState mSwipeSharedState;
     private final InputMonitorCompat mInputMonitorCompat;
     private final SysUINavigationMode.Mode mMode;
     private final BaseActivityInterface mActivityInterface;
@@ -126,16 +124,14 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         ActivityManagerWrapper.getInstance().cancelRecentsAnimation(
                 true /* restoreHomeStackPosition */);
     };
-    private int mLogId;
 
     public OtherActivityInputConsumer(Context base, RecentsAnimationDeviceState deviceState,
             TaskAnimationManager taskAnimationManager, GestureState gestureState,
             RunningTaskInfo runningTaskInfo, boolean isDeferredDownTarget,
             Consumer<OtherActivityInputConsumer> onCompleteCallback,
-            SwipeSharedState swipeSharedState, InputMonitorCompat inputMonitorCompat,
-            boolean disableHorizontalSwipe, Factory handlerFactory, int logId) {
+            InputMonitorCompat inputMonitorCompat, boolean disableHorizontalSwipe,
+            Factory handlerFactory) {
         super(base);
-        mLogId = logId;
         mDeviceState = deviceState;
         mTaskAnimationManager = taskAnimationManager;
         mGestureState = gestureState;
@@ -154,7 +150,6 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
 
         boolean continuingPreviousGesture = mTaskAnimationManager.isRecentsAnimationRunning();
         mIsDeferredDownTarget = !continuingPreviousGesture && isDeferredDownTarget;
-        mSwipeSharedState = swipeSharedState;
 
         mNavBarPosition = new NavBarPosition(base);
         mTouchSlop = ViewConfiguration.get(this).getScaledTouchSlop();
@@ -347,7 +342,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
             notifyGestureStarted();
         } else {
             Intent intent = mInteractionHandler.getLaunchIntent();
-            intent.putExtra(INTENT_EXTRA_LOG_TRACE_ID, mLogId);
+            intent.putExtra(INTENT_EXTRA_LOG_TRACE_ID, mGestureState.getGestureId());
             mActiveCallbacks = mTaskAnimationManager.startRecentsAnimation(mGestureState, intent,
                     mInteractionHandler);
         }
@@ -404,7 +399,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
             // The consumer is being switched while we are active. Set up the shared state to be
             // used by the next animation
             removeListener();
-            mInteractionHandler.onConsumerAboutToBeSwitched(mSwipeSharedState);
+            mInteractionHandler.onConsumerAboutToBeSwitched();
         }
     }
 
@@ -430,11 +425,6 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         } else {
             return ev.getY() - mDownPos.y;
         }
-    }
-
-    @Override
-    public boolean useSharedSwipeState() {
-        return mInteractionHandler != null;
     }
 
     @Override

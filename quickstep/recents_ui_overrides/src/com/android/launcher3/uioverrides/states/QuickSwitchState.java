@@ -20,13 +20,14 @@ import android.os.Looper;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
+import com.android.quickstep.GestureState;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 
 /**
  * State to indicate we are about to launch a recent task. Note that this state is only used when
  * quick switching from launcher; quick switching from an app uses WindowTransformSwipeHelper.
- * @see com.android.quickstep.WindowTransformSwipeHandler.GestureEndTarget#NEW_TASK
+ * @see GestureState.GestureEndTarget#NEW_TASK
  */
 public class QuickSwitchState extends BackgroundAppState {
 

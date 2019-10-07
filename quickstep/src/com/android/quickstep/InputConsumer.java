@@ -52,10 +52,6 @@ public interface InputConsumer {
 
     int getType();
 
-    default boolean useSharedSwipeState() {
-        return false;
-    }
-
     /**
      * Returns true if the user has crossed the threshold for it to be an explicit action.
      */
@@ -65,6 +61,8 @@ public interface InputConsumer {
 
     /**
      * Called by the event queue when the consumer is about to be switched to a new consumer.
+     * Consumers should update the state accordingly here before the state is passed to the new
+     * consumer.
      */
     default void onConsumerAboutToBeSwitched() { }
 

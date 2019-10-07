@@ -42,7 +42,6 @@ public class ResetGestureInputConsumer implements InputConsumer {
         if (ev.getAction() == MotionEvent.ACTION_DOWN
                 && mTaskAnimationManager.isRecentsAnimationRunning()) {
             mTaskAnimationManager.finishRunningRecentsAnimation(false /* toHome */);
-            TouchInteractionService.getSwipeSharedState().clearAllState();
         }
     }
 }
