@@ -53,6 +53,7 @@ import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.EventLogArray;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.model.AppLaunchTracker;
@@ -69,6 +70,7 @@ import com.android.quickstep.inputconsumers.InputConsumer;
 import com.android.quickstep.inputconsumers.OtherActivityInputConsumer;
 import com.android.quickstep.inputconsumers.OverviewInputConsumer;
 import com.android.quickstep.inputconsumers.OverviewWithoutFocusInputConsumer;
+import com.android.quickstep.inputconsumers.QuickCaptureTouchConsumer;
 import com.android.quickstep.inputconsumers.ResetGestureInputConsumer;
 import com.android.quickstep.inputconsumers.ScreenPinnedInputConsumer;
 import com.android.systemui.shared.recents.IOverviewProxy;
@@ -453,6 +455,13 @@ public class TouchInteractionService extends Service implements
                 base = new AssistantInputConsumer(this, mISystemUiProxy, activityControl, base,
                         mInputMonitorCompat);
             }
+
+            if (FeatureFlags.ENABLE_QUICK_CAPTURE_GESTURE.get()) {
+                // Put the Compose gesture as higher priority than the Assistant or base gestures
+                base = new QuickCaptureTouchConsumer(this, base,
+                    mInputMonitorCompat, mOverviewComponentObserver.getActivityControlHelper());
+            }
+
 
             if (mDeviceState.isScreenPinningActive()) {
                 // Note: we only allow accessibility to wrap this, and it replaces the previous
