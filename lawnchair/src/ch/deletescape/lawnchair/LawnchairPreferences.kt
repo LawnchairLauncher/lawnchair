@@ -984,7 +984,8 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
                 "pref_hotseatIconSize",
                 "pref_allAppsIconSize",
                 "pref_allAppsIconTextScale",
-                "pref_dockSearchBar")
+                "pref_dockSearchBar",
+                "pref_dockScale")
 
         fun getInstance(context: Context): LawnchairPreferences {
             if (INSTANCE == null) {

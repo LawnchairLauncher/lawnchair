@@ -23,6 +23,7 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Surface;
 import android.view.WindowManager;
 
@@ -239,6 +240,9 @@ public class DeviceProfile {
         // Calculate all of the remaining variables.
         updateAvailableDimensions(dm, res);
 
+        int previousDockSize = hotseatBarSizePx;
+        int previousDockBottomPadding = hotseatBarBottomPaddingPx;
+
         // Now that we have all of the variables calculated, we can tune certain sizes.
         if (!isVerticalBarLayout() && isPhone && isTallDevice) {
             // We increase the hotseat size when there is extra space.
@@ -254,9 +258,25 @@ public class DeviceProfile {
             updateAvailableDimensions(dm, res);
         }
 
+        float targetDockScale = prefs.getDockScale();
+
         if (prefs.getDockHide()) {
             hotseatBarSizePx = 0;
             updateAvailableDimensions(dm, res);
+        } else if (targetDockScale > 0f && !isVerticalBarLayout()) {
+            int extraSpace = (int) (targetDockScale * previousDockSize - hotseatBarSizePx);
+            if (extraSpace != 0) {
+                hotseatBarSizePx += extraSpace;
+
+                int dockTopSpace = verticalDragHandleSizePx - verticalDragHandleOverlapWorkspace;
+                int dockBottomSpace = Math
+                        .max(hotseatBarBottomPaddingPx - previousDockBottomPadding, dockTopSpace);
+                int dockVerticalSpace = dockTopSpace + dockBottomSpace;
+
+                hotseatBarBottomPaddingPx += extraSpace * ((float) dockBottomSpace / dockVerticalSpace);
+
+                updateAvailableDimensions(dm, res);
+            }
         }
 
         updateWorkspacePadding();
