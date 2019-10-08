@@ -22,20 +22,47 @@ import android.view.MotionEvent
 import ch.deletescape.lawnchair.gestures.BlankGestureHandler
 import ch.deletescape.lawnchair.gestures.Gesture
 import ch.deletescape.lawnchair.gestures.GestureController
+import com.android.launcher3.Utilities
+import com.android.launcher3.Utilities.squaredHypot
 
 class DoubleTapGesture(controller: GestureController) : Gesture(controller) {
 
     private val handler by controller.createHandlerPref("pref_gesture_double_tap")
     override val isEnabled = true
 
-    private val detector = GestureDetector(controller.launcher, object : GestureDetector.SimpleOnGestureListener() {
-        override fun onDoubleTap(e: MotionEvent): Boolean {
-                handler.onGestureTrigger(controller)
-                return true
-        }
-    })
+    private val squaredTouchSlop = Utilities.squaredTouchSlop(controller.launcher)
 
-    override fun onTouchEvent(ev: MotionEvent): Boolean {
-        return detector.onTouchEvent(ev)
+    fun createDoubleTapListener(): DoubleTapGestureListener {
+        return DoubleTapGestureListener()
+    }
+
+    inner class DoubleTapGestureListener : GestureDetector.OnDoubleTapListener {
+
+        private var downX = 0f
+        private var downY = 0f
+
+        override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
+            return false
+        }
+
+        override fun onDoubleTap(e: MotionEvent): Boolean {
+            return false
+        }
+
+        override fun onDoubleTapEvent(e: MotionEvent): Boolean {
+            when (e.actionMasked) {
+                MotionEvent.ACTION_DOWN -> {
+                    downX = e.x
+                    downY = e.y
+                }
+                MotionEvent.ACTION_UP -> {
+                    if (squaredHypot(e.x - downX, e.y - downY) < squaredTouchSlop) {
+                        handler.onGestureTrigger(controller)
+                        return true
+                    }
+                }
+            }
+            return false
+        }
     }
 }

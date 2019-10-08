@@ -21,6 +21,7 @@ import android.content.Context
 import android.graphics.PointF
 import android.text.TextUtils
 import android.util.Log
+import android.view.GestureDetector
 import android.view.MotionEvent
 import ch.deletescape.lawnchair.LawnchairLauncher
 import ch.deletescape.lawnchair.gestures.gestures.*
@@ -56,8 +57,8 @@ class GestureController(val launcher: LawnchairLauncher) : TouchController {
         return false
     }
 
-    fun onBlankAreaTouch(ev: MotionEvent): Boolean {
-        return doubleTapGesture.isEnabled && doubleTapGesture.onTouchEvent(ev)
+    fun attachDoubleTapListener(gestureDetector: GestureDetector) {
+        gestureDetector.setOnDoubleTapListener(doubleTapGesture.createDoubleTapListener())
     }
 
     fun onLongPress() {

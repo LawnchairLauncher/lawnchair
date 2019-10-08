@@ -32,6 +32,7 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.ViewConfiguration;
 
+import ch.deletescape.lawnchair.LawnchairLauncher;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
@@ -76,6 +77,9 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
         // likely to cause movement.
         mTouchSlop = 2 * ViewConfiguration.get(launcher).getScaledTouchSlop();
         mGestureDetector = new GestureDetector(workspace.getContext(), this);
+        if (launcher instanceof LawnchairLauncher) {
+            ((LawnchairLauncher) launcher).getGestureController().attachDoubleTapListener(mGestureDetector);
+        }
     }
 
     @Override
