@@ -32,7 +32,7 @@ import android.util.Log;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.LauncherAnimationRunner;
 import com.android.quickstep.util.RemoteAnimationProvider;
-import com.android.quickstep.util.RemoteAnimationTargetSet;
+import com.android.quickstep.util.RemoteAnimationTargets;
 import com.android.quickstep.views.IconRecentsView;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.RemoteAnimationAdapterCompat;
@@ -113,8 +113,8 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
             return anim;
         }
 
-        RemoteAnimationTargetSet targetSet =
-                new RemoteAnimationTargetSet(appTargets, wallpaperTargets, MODE_CLOSING);
+        RemoteAnimationTargets targetSet =
+                new RemoteAnimationTargets(appTargets, wallpaperTargets, MODE_CLOSING);
         mRecentsView.setTransitionedFromApp(!targetSet.isAnimatingHome());
 
         RemoteAnimationTargetCompat recentsTarget = null;

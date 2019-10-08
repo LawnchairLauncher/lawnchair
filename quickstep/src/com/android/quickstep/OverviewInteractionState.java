@@ -86,6 +86,7 @@ public class OverviewInteractionState {
         mBgHandler.obtainMessage(MSG_SET_PROXY, proxy).sendToTarget();
     }
 
+    // TODO(141886704): See if we can remove this
     public void setSystemUiStateFlags(int stateFlags) {
         mSystemUiStateFlags = stateFlags;
     }

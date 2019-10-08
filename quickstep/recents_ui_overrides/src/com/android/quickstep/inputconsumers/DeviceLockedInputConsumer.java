@@ -32,7 +32,6 @@ import android.content.Intent;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
-import android.graphics.RectF;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
@@ -42,10 +41,12 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.util.DefaultDisplay;
 import com.android.quickstep.LockScreenRecentsActivity;
 import com.android.quickstep.MultiStateCallback;
+import com.android.quickstep.RecentsAnimationDeviceState;
 import com.android.quickstep.SwipeSharedState;
-import com.android.quickstep.util.ClipAnimationHelper;
-import com.android.quickstep.util.RecentsAnimationListenerSet;
-import com.android.quickstep.util.SwipeAnimationTargetSet;
+import com.android.quickstep.util.AppWindowAnimationHelper;
+import com.android.quickstep.util.RecentsAnimationCallbacks;
+import com.android.quickstep.util.RecentsAnimationTargets;
+
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.InputMonitorCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
@@ -54,7 +55,7 @@ import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
  * A dummy input consumer used when the device is still locked, e.g. from secure camera.
  */
 public class DeviceLockedInputConsumer implements InputConsumer,
-        SwipeAnimationTargetSet.SwipeAnimationListener {
+        RecentsAnimationCallbacks.RecentsAnimationListener {
 
     private static final float SCALE_DOWN = 0.75f;
 
@@ -72,17 +73,17 @@ public class DeviceLockedInputConsumer implements InputConsumer,
             getFlagForIndex(1, "STATE_HANDLER_INVALIDATED");
 
     private final Context mContext;
+    private final RecentsAnimationDeviceState mDeviceState;
     private final float mTouchSlopSquared;
     private final SwipeSharedState mSwipeSharedState;
     private final InputMonitorCompat mInputMonitorCompat;
 
     private final PointF mTouchDown = new PointF();
-    private final ClipAnimationHelper mClipAnimationHelper;
+    private final AppWindowAnimationHelper mAppWindowAnimationHelper;
     private int mLogId;
-    private final ClipAnimationHelper.TransformParams mTransformParams;
+    private final AppWindowAnimationHelper.TransformParams mTransformParams;
     private final Point mDisplaySize;
     private final MultiStateCallback mStateCallback;
-    private final RectF mSwipeTouchRegion;
     public final int mRunningTaskId;
 
     private VelocityTracker mVelocityTracker;
@@ -90,19 +91,19 @@ public class DeviceLockedInputConsumer implements InputConsumer,
 
     private boolean mThresholdCrossed = false;
 
-    private SwipeAnimationTargetSet mTargetSet;
+    private RecentsAnimationTargets mTargetSet;
 
-    public DeviceLockedInputConsumer(Context context, SwipeSharedState swipeSharedState,
-            InputMonitorCompat inputMonitorCompat, RectF swipeTouchRegion, int runningTaskId,
-            int logId) {
+    public DeviceLockedInputConsumer(Context context, RecentsAnimationDeviceState deviceState,
+            SwipeSharedState swipeSharedState, InputMonitorCompat inputMonitorCompat,
+            int runningTaskId, int logId) {
         mContext = context;
+        mDeviceState = deviceState;
         mTouchSlopSquared = squaredTouchSlop(context);
         mSwipeSharedState = swipeSharedState;
-        mClipAnimationHelper = new ClipAnimationHelper(context);
+        mAppWindowAnimationHelper = new AppWindowAnimationHelper(context);
         mLogId = logId;
-        mTransformParams = new ClipAnimationHelper.TransformParams();
+        mTransformParams = new AppWindowAnimationHelper.TransformParams();
         mInputMonitorCompat = inputMonitorCompat;
-        mSwipeTouchRegion = swipeTouchRegion;
         mRunningTaskId = runningTaskId;
 
         // Do not use DeviceProfile as the user data might be locked
@@ -138,7 +139,7 @@ public class DeviceLockedInputConsumer implements InputConsumer,
                 if (!mThresholdCrossed) {
                     // Cancel interaction in case of multi-touch interaction
                     int ptrIdx = ev.getActionIndex();
-                    if (!mSwipeTouchRegion.contains(ev.getX(ptrIdx), ev.getY(ptrIdx))) {
+                    if (!mDeviceState.isInSwipeUpTouchRegion(ev, ptrIdx)) {
                         int action = ev.getAction();
                         ev.setAction(ACTION_CANCEL);
                         finishTouchTracking(ev);
@@ -156,7 +157,7 @@ public class DeviceLockedInputConsumer implements InputConsumer,
                     float dy = Math.max(mTouchDown.y - y, 0);
                     mProgress = dy / mDisplaySize.y;
                     mTransformParams.setProgress(mProgress);
-                    mClipAnimationHelper.applyTransform(mTransformParams);
+                    mAppWindowAnimationHelper.applyTransform(mTransformParams);
                 }
                 break;
             }
@@ -201,7 +202,7 @@ public class DeviceLockedInputConsumer implements InputConsumer,
 
     private void startRecentsTransition() {
         mThresholdCrossed = true;
-        RecentsAnimationListenerSet newListenerSet =
+        RecentsAnimationCallbacks newListenerSet =
                 mSwipeSharedState.newRecentsAnimationListenerSet();
         newListenerSet.addListener(this);
         Intent intent = new Intent(Intent.ACTION_MAIN)
@@ -215,20 +216,21 @@ public class DeviceLockedInputConsumer implements InputConsumer,
     }
 
     @Override
-    public void onRecentsAnimationStart(SwipeAnimationTargetSet targetSet) {
+    public void onRecentsAnimationStart(RecentsAnimationTargets targetSet) {
         mTargetSet = targetSet;
 
         Rect displaySize = new Rect(0, 0, mDisplaySize.x, mDisplaySize.y);
         RemoteAnimationTargetCompat targetCompat = targetSet.findTask(mRunningTaskId);
         if (targetCompat != null) {
-            mClipAnimationHelper.updateSource(displaySize, targetCompat);
+            mAppWindowAnimationHelper.updateSource(displaySize, targetCompat);
         }
 
         Utilities.scaleRectAboutCenter(displaySize, SCALE_DOWN);
         displaySize.offsetTo(displaySize.left, 0);
-        mClipAnimationHelper.updateTargetRect(displaySize);
-        mTransformParams.setTargetSet(mTargetSet).setLauncherOnTop(true);
-        mClipAnimationHelper.applyTransform(mTransformParams);
+        mTransformParams.setTargetSet(mTargetSet)
+                .setLauncherOnTop(true);
+        mAppWindowAnimationHelper.updateTargetRect(displaySize);
+        mAppWindowAnimationHelper.applyTransform(mTransformParams);
 
         mStateCallback.setState(STATE_TARGET_RECEIVED);
     }

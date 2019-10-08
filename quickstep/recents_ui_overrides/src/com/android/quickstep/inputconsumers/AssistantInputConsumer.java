@@ -57,9 +57,9 @@ import com.android.systemui.shared.system.InputMonitorCompat;
 /**
  * Touch consumer for handling events to launch assistant from launcher
  */
-public class AssistantTouchConsumer extends DelegateInputConsumer {
+public class AssistantInputConsumer extends DelegateInputConsumer {
 
-    private static final String TAG = "AssistantTouchConsumer";
+    private static final String TAG = "AssistantInputConsumer";
     private static final long RETRACT_ANIMATION_DURATION_MS = 300;
 
     // From //java/com/google/android/apps/gsa/search/shared/util/OpaContract.java.
@@ -92,7 +92,7 @@ public class AssistantTouchConsumer extends DelegateInputConsumer {
     private final Context mContext;
     private final GestureDetector mGestureDetector;
 
-    public AssistantTouchConsumer(Context context, ISystemUiProxy systemUiProxy,
+    public AssistantInputConsumer(Context context, ISystemUiProxy systemUiProxy,
             ActivityControlHelper activityControlHelper, InputConsumer delegate,
             InputMonitorCompat inputMonitor) {
         super(delegate, inputMonitor);

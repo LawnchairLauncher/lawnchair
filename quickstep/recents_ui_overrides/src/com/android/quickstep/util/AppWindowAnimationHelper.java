@@ -50,13 +50,11 @@ import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.
 import com.android.systemui.shared.system.TransactionCompat;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
-import java.util.function.BiFunction;
-
 /**
  * Utility class to handle window clip animation
  */
 @TargetApi(Build.VERSION_CODES.P)
-public class ClipAnimationHelper {
+public class AppWindowAnimationHelper {
 
     // The bounds of the source app in device coordinates
     private final Rect mSourceStackBounds = new Rect();
@@ -102,7 +100,7 @@ public class ClipAnimationHelper {
     private TargetAlphaProvider mTaskAlphaCallback = (t, a) -> a;
     private TargetAlphaProvider mBaseAlphaCallback = (t, a) -> 1;
 
-    public ClipAnimationHelper(Context context) {
+    public AppWindowAnimationHelper(Context context) {
         mWindowCornerRadius = getWindowCornerRadius(context.getResources());
         mSupportsRoundedCornersOnWindows = supportsRoundedCornersOnWindows(context.getResources());
         mTaskCornerRadius = TaskCornerRadius.get(context);
@@ -319,7 +317,7 @@ public class ClipAnimationHelper {
     /**
      * Compute scale and translation y such that the specified task view fills the screen.
      */
-    public ClipAnimationHelper updateForFullscreenOverview(TaskView v) {
+    public AppWindowAnimationHelper updateForFullscreenOverview(TaskView v) {
         TaskThumbnailView thumbnailView = v.getThumbnail();
         RecentsView recentsView = v.getRecentsView();
         fromTaskThumbnailView(thumbnailView, recentsView);
@@ -395,7 +393,7 @@ public class ClipAnimationHelper {
         float cornerRadius;
         boolean launcherOnTop;
 
-        public RemoteAnimationTargetSet targetSet;
+        public RemoteAnimationTargets targetSet;
         public SyncRtSurfaceTransactionApplierCompat syncTransactionApplier;
 
         public TransformParams() {
@@ -446,7 +444,7 @@ public class ClipAnimationHelper {
             return this;
         }
 
-        public TransformParams setTargetSet(RemoteAnimationTargetSet targetSet) {
+        public TransformParams setTargetSet(RemoteAnimationTargets targetSet) {
             this.targetSet = targetSet;
             return this;
         }

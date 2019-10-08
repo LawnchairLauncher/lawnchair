@@ -34,6 +34,8 @@ import android.view.MotionEvent;
 
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.util.DefaultDisplay;
+import com.android.quickstep.RecentsAnimationDeviceState;
 import com.android.systemui.shared.recents.IOverviewProxy;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 
@@ -44,15 +46,6 @@ import com.android.systemui.shared.recents.ISystemUiProxy;
 public class TouchInteractionService extends Service {
 
     private static final String TAG = "GoTouchInteractionService";
-    private boolean mIsUserUnlocked;
-    private BroadcastReceiver mUserUnlockedReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (Intent.ACTION_USER_UNLOCKED.equals(intent.getAction())) {
-                initWhenUserUnlocked();
-            }
-        }
-    };
 
     private final IBinder mMyBinder = new IOverviewProxy.Stub() {
 
@@ -68,21 +61,21 @@ public class TouchInteractionService extends Service {
 
         @Override
         public void onOverviewToggle() {
-            if (mIsUserUnlocked) {
+            if (mDeviceState.isUserUnlocked()) {
                 mOverviewCommandHelper.onOverviewToggle();
             }
         }
 
         @Override
         public void onOverviewShown(boolean triggeredFromAltTab) {
-            if (mIsUserUnlocked) {
+            if (mDeviceState.isUserUnlocked()) {
                 mOverviewCommandHelper.onOverviewShown(triggeredFromAltTab);
             }
         }
 
         @Override
         public void onOverviewHidden(boolean triggeredFromAltTab, boolean triggeredFromHomeKey) {
-            if (mIsUserUnlocked && triggeredFromAltTab && !triggeredFromHomeKey) {
+            if (mDeviceState.isUserUnlocked() && triggeredFromAltTab && !triggeredFromHomeKey) {
                 // onOverviewShownFromAltTab hides the overview and ends at the target app
                 mOverviewCommandHelper.onOverviewHidden();
             }
@@ -90,7 +83,7 @@ public class TouchInteractionService extends Service {
 
         @Override
         public void onTip(int actionType, int viewType) {
-            if (mIsUserUnlocked) {
+            if (mDeviceState.isUserUnlocked()) {
                 mOverviewCommandHelper.onTip(actionType, viewType);
             }
         }
@@ -140,35 +133,30 @@ public class TouchInteractionService extends Service {
     private RecentsModel mRecentsModel;
     private OverviewComponentObserver mOverviewComponentObserver;
     private OverviewCommandHelper mOverviewCommandHelper;
+    private RecentsAnimationDeviceState mDeviceState;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        if (UserManagerCompat.getInstance(this).isUserUnlocked(Process.myUserHandle())) {
-            initWhenUserUnlocked();
-        } else {
-            mIsUserUnlocked = false;
-            registerReceiver(mUserUnlockedReceiver, new IntentFilter(Intent.ACTION_USER_UNLOCKED));
-        }
+        mDeviceState = new RecentsAnimationDeviceState(this);
+        mDeviceState.runOnUserUnlocked(this::onUserUnlocked);
 
         sConnected = true;
     }
 
-    private void initWhenUserUnlocked() {
+    public void onUserUnlocked() {
         mRecentsModel = RecentsModel.INSTANCE.get(this);
-        mOverviewComponentObserver = new OverviewComponentObserver(this);
+        mOverviewComponentObserver = new OverviewComponentObserver(this, mDeviceState);
         mOverviewCommandHelper = new OverviewCommandHelper(this,
                 mOverviewComponentObserver);
-        mIsUserUnlocked = true;
-        Utilities.unregisterReceiverSafely(this, mUserUnlockedReceiver);
     }
 
     @Override
     public void onDestroy() {
-        if (mIsUserUnlocked) {
+        if (mDeviceState.isUserUnlocked()) {
             mOverviewComponentObserver.onDestroy();
         }
-        Utilities.unregisterReceiverSafely(this, mUserUnlockedReceiver);
+        mDeviceState.destroy();
         sConnected = false;
         super.onDestroy();
     }

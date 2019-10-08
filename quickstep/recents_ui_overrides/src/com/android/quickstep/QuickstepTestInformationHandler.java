@@ -5,10 +5,12 @@ import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import android.content.Context;
 import android.os.Bundle;
 
+import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.testing.TestInformationHandler;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.uioverrides.states.OverviewState;
 import com.android.launcher3.uioverrides.touchcontrollers.PortraitStatesTouchController;
+import com.android.launcher3.util.DefaultDisplay;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.views.RecentsView;
 
@@ -78,7 +80,8 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
     }
 
     private RecentsView getRecentsView() {
-        OverviewComponentObserver observer = new OverviewComponentObserver(mContext);
+        OverviewComponentObserver observer = new OverviewComponentObserver(mContext,
+                new RecentsAnimationDeviceState(mContext));
         try {
             return observer.getActivityControlHelper().getCreatedActivity().getOverviewPanel();
         } finally {

@@ -71,7 +71,7 @@ import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.launcher3.views.FloatingIconView;
 import com.android.quickstep.util.MultiValueUpdateListener;
 import com.android.quickstep.util.RemoteAnimationProvider;
-import com.android.quickstep.util.RemoteAnimationTargetSet;
+import com.android.quickstep.util.RemoteAnimationTargets;
 import com.android.systemui.shared.system.ActivityCompat;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.QuickStepContract;
@@ -433,7 +433,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
         Rect crop = new Rect();
         Matrix matrix = new Matrix();
 
-        RemoteAnimationTargetSet openingTargets = new RemoteAnimationTargetSet(appTargets,
+        RemoteAnimationTargets openingTargets = new RemoteAnimationTargets(appTargets,
                 wallpaperTargets, MODE_OPENING);
         SyncRtSurfaceTransactionApplierCompat surfaceApplier =
                 new SyncRtSurfaceTransactionApplierCompat(floatingView);

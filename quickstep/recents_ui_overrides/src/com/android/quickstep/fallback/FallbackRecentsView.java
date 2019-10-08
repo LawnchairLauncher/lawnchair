@@ -142,7 +142,7 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity> {
             mZoomTranslationY = 0f;
         } else {
             TaskView dummyTask = getTaskViewAt(0);
-            ScaleAndTranslation sat = getTempClipAnimationHelper()
+            ScaleAndTranslation sat = getTempAppWindowAnimationHelper()
                     .updateForFullscreenOverview(dummyTask)
                     .getScaleAndTranslation();
             mZoomScale = sat.scale;

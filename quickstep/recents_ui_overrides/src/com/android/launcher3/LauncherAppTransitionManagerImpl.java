@@ -36,7 +36,7 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.SpringAnimationBuilder;
-import com.android.quickstep.util.ClipAnimationHelper;
+import com.android.quickstep.util.AppWindowAnimationHelper;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
@@ -71,7 +71,7 @@ public final class LauncherAppTransitionManagerImpl extends QuickstepAppTransiti
 
         TaskView taskView = findTaskViewToLaunch(mLauncher, v, appTargets);
 
-        ClipAnimationHelper helper = new ClipAnimationHelper(mLauncher);
+        AppWindowAnimationHelper helper = new AppWindowAnimationHelper(mLauncher);
         anim.play(getRecentsWindowAnimator(taskView, skipLauncherChanges, appTargets,
                 wallpaperTargets, helper).setDuration(RECENTS_LAUNCH_DURATION));
 

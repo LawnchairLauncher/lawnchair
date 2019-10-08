@@ -28,22 +28,22 @@ import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import java.util.function.Consumer;
 
 /**
- * Extension of {@link RemoteAnimationTargetSet} with additional information about swipe
+ * Extension of {@link RemoteAnimationTargets} with additional information about swipe
  * up animation
  */
-public class SwipeAnimationTargetSet extends RemoteAnimationTargetSet {
+public class RecentsAnimationTargets extends RemoteAnimationTargets {
 
     private final boolean mShouldMinimizeSplitScreen;
-    private final Consumer<SwipeAnimationTargetSet> mOnFinishListener;
+    private final Consumer<RecentsAnimationTargets> mOnFinishListener;
 
     public final RecentsAnimationControllerCompat controller;
     public final Rect homeContentInsets;
     public final Rect minimizedHomeBounds;
 
-    public SwipeAnimationTargetSet(RecentsAnimationControllerCompat controller,
+    public RecentsAnimationTargets(RecentsAnimationControllerCompat controller,
             RemoteAnimationTargetCompat[] apps, RemoteAnimationTargetCompat[] wallpapers,
             Rect homeContentInsets, Rect minimizedHomeBounds, boolean shouldMinimizeSplitScreen,
-            Consumer<SwipeAnimationTargetSet> onFinishListener) {
+            Consumer<RecentsAnimationTargets> onFinishListener) {
         super(apps, wallpapers, MODE_CLOSING);
         this.controller = controller;
         this.homeContentInsets = homeContentInsets;
@@ -60,8 +60,8 @@ public class SwipeAnimationTargetSet extends RemoteAnimationTargetSet {
      * Clones the target set without any actual targets. Used only when continuing a gesture after
      * the actual recents animation has finished.
      */
-    public SwipeAnimationTargetSet cloneWithoutTargets() {
-        return new SwipeAnimationTargetSet(controller, new RemoteAnimationTargetCompat[0],
+    public RecentsAnimationTargets cloneWithoutTargets() {
+        return new RecentsAnimationTargets(controller, new RemoteAnimationTargetCompat[0],
                 new RemoteAnimationTargetCompat[0], homeContentInsets, minimizedHomeBounds,
                 mShouldMinimizeSplitScreen, mOnFinishListener);
     }
@@ -108,16 +108,5 @@ public class SwipeAnimationTargetSet extends RemoteAnimationTargetSet {
 
     public void finishAnimation() {
         finishController(true /* toRecents */, null, false /* sendUserLeaveHint */);
-    }
-
-    public interface SwipeAnimationListener {
-
-        void onRecentsAnimationStart(SwipeAnimationTargetSet targetSet);
-
-        /**
-         * Callback from the system when the recents animation is canceled. {@param thumbnailData}
-         * is passed back for rendering screenshot to replace live tile.
-         */
-        void onRecentsAnimationCanceled(ThumbnailData thumbnailData);
     }
 }
