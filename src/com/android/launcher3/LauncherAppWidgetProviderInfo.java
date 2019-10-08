@@ -2,11 +2,15 @@ package com.android.launcher3;
 
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Parcel;
+import android.os.UserHandle;
+
+import com.android.launcher3.icons.ComponentWithLabel;
 
 /**
  * This class is a thin wrapper around the framework AppWidgetProviderInfo class. This class affords
@@ -14,7 +18,8 @@ import android.os.Parcel;
  * (who's implementation is owned by the launcher). This object represents a widget type / class,
  * as opposed to a widget instance, and so should not be confused with {@link LauncherAppWidgetInfo}
  */
-public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
+public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo
+        implements ComponentWithLabel {
 
     public static final String CLS_CUSTOM_WIDGET_PREFIX = "#custom-widget-";
 
@@ -53,19 +58,13 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
     public void initSpans(Context context) {
         InvariantDeviceProfile idp = LauncherAppState.getIDP(context);
 
-        Point paddingLand = idp.landscapeProfile.getTotalWorkspacePadding();
-        Point paddingPort = idp.portraitProfile.getTotalWorkspacePadding();
+        Point landCellSize = idp.landscapeProfile.getCellSize();
+        Point portCellSize = idp.portraitProfile.getCellSize();
 
         // Always assume we're working with the smallest span to make sure we
         // reserve enough space in both orientations.
-        float smallestCellWidth = DeviceProfile.calculateCellWidth(Math.min(
-                idp.landscapeProfile.widthPx - paddingLand.x,
-                idp.portraitProfile.widthPx - paddingPort.x),
-                idp.numColumns);
-        float smallestCellHeight = DeviceProfile.calculateCellWidth(Math.min(
-                idp.landscapeProfile.heightPx - paddingLand.y,
-                idp.portraitProfile.heightPx - paddingPort.y),
-                idp.numRows);
+        float smallestCellWidth = Math.min(landCellSize.x, portCellSize.x);
+        float smallestCellHeight = Math.min(landCellSize.y, portCellSize.y);
 
         // We want to account for the extra amount of padding that we are adding to the widget
         // to ensure that it gets the full amount of space that it has requested.
@@ -102,4 +101,14 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo {
             return 0;
         }
     }
- }
+
+    @Override
+    public final ComponentName getComponent() {
+        return provider;
+    }
+
+    @Override
+    public final UserHandle getUser() {
+        return getProfile();
+    }
+}

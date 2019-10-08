@@ -29,7 +29,6 @@ import android.provider.SearchIndexablesProvider;
 import android.util.Xml;
 
 import com.android.launcher3.R;
-import com.android.launcher3.graphics.IconShapeOverride;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -88,8 +87,6 @@ public class LauncherSearchIndexablesProvider extends SearchIndexablesProvider {
             } catch (IOException |XmlPullParserException e) {
                 throw new RuntimeException(e);
             }
-        } else if (!IconShapeOverride.isSupported(getContext())) {
-            cursor.addRow(new String[] {IconShapeOverride.KEY_PREFERENCE});
         }
         return cursor;
     }

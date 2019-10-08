@@ -19,6 +19,8 @@ package com.android.launcher3.folder;
 import static com.android.launcher3.BubbleTextView.TEXT_ALPHA_PROPERTY;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
+import static com.android.launcher3.graphics.IconShape.getShape;
+import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -27,23 +29,22 @@ import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.GradientDrawable;
-import android.support.v4.graphics.ColorUtils;
 import android.util.Property;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 
+import androidx.core.graphics.ColorUtils;
+
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.R;
+import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PropertyResetListener;
-import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.util.Themes;
 
@@ -153,9 +154,11 @@ public class FolderAnimationManager {
         final float yDistance = initialY - lp.y;
 
         // Set up the Folder background.
-        final int finalColor = Themes.getAttrColor(mContext, android.R.attr.colorPrimary);
-        final int initialColor =
-                ColorUtils.setAlphaComponent(finalColor, mPreviewBackground.getBackgroundAlpha());
+        final int finalColor = ColorUtils.setAlphaComponent(
+                Themes.getAttrColor(mContext, R.attr.folderFillColor), 255);
+        final int initialColor = setColorAlphaBound(
+                finalColor, mPreviewBackground.getBackgroundAlpha());
+        mFolderBackground.mutate();
         mFolderBackground.setColor(mIsOpening ? initialColor : finalColor);
 
         // Set up the reveal animation that clips the Folder.
@@ -166,11 +169,10 @@ public class FolderAnimationManager {
                 Math.round((totalOffsetX + initialSize) / initialScale),
                 Math.round((paddingOffsetY + initialSize) / initialScale));
         Rect endRect = new Rect(0, 0, lp.width, lp.height);
-        float initialRadius = initialSize / initialScale / 2f;
-        float finalRadius = Utilities.pxFromDp(2, mContext.getResources().getDisplayMetrics());
+        float finalRadius = ResourceUtils.pxFromDp(2, mContext.getResources().getDisplayMetrics());
 
         // Create the animators.
-        AnimatorSet a = LauncherAnimUtils.createAnimatorSet();
+        AnimatorSet a = new AnimatorSet();
 
         // Initialize the Folder items' text.
         PropertyResetListener colorResetListener =
@@ -189,14 +191,8 @@ public class FolderAnimationManager {
         play(a, getAnimator(mFolder, SCALE_PROPERTY, initialScale, finalScale));
         play(a, getAnimator(mFolderBackground, "color", initialColor, finalColor));
         play(a, mFolderIcon.mFolderName.createTextAlphaAnimator(!mIsOpening));
-        RoundedRectRevealOutlineProvider outlineProvider = new RoundedRectRevealOutlineProvider(
-                initialRadius, finalRadius, startRect, endRect) {
-            @Override
-            public boolean shouldRemoveElevationDuringAnimation() {
-                return true;
-            }
-        };
-        play(a, outlineProvider.createRevealAnimator(mFolder, !mIsOpening));
+        play(a, getShape().createRevealAnimator(
+                mFolder, startRect, endRect, finalRadius, !mIsOpening));
 
         // Animate the elevation midway so that the shadow is not noticeable in the background.
         int midDuration = mDuration / 2;

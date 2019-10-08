@@ -21,14 +21,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherActivityInfo;
+import android.content.pm.PackageInstaller;
+import android.content.pm.ShortcutInfo;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.UserHandle;
-import android.support.annotation.Nullable;
+
 import com.android.launcher3.Utilities;
-import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.util.PackageUserKey;
+
 import java.util.List;
+
+import androidx.annotation.Nullable;
 
 public abstract class LauncherAppsCompat {
 
@@ -40,7 +44,7 @@ public abstract class LauncherAppsCompat {
         void onPackagesUnavailable(String[] packageNames, UserHandle user, boolean replacing);
         void onPackagesSuspended(String[] packageNames, UserHandle user);
         void onPackagesUnsuspended(String[] packageNames, UserHandle user);
-        void onShortcutsChanged(String packageName, List<ShortcutInfoCompat> shortcuts,
+        void onShortcutsChanged(String packageName, List<ShortcutInfo> shortcuts,
                 UserHandle user);
     }
 
@@ -53,7 +57,9 @@ public abstract class LauncherAppsCompat {
     public static LauncherAppsCompat getInstance(Context context) {
         synchronized (sInstanceLock) {
             if (sInstance == null) {
-                if (Utilities.ATLEAST_OREO) {
+                if (Utilities.ATLEAST_Q) {
+                    sInstance = new LauncherAppsCompatVQ(context.getApplicationContext());
+                } else if (Utilities.ATLEAST_OREO) {
                     sInstance = new LauncherAppsCompatVO(context.getApplicationContext());
                 } else {
                     sInstance = new LauncherAppsCompatVL(context.getApplicationContext());
@@ -81,7 +87,5 @@ public abstract class LauncherAppsCompat {
     public abstract List<ShortcutConfigActivityInfo> getCustomShortcutActivityList(
             @Nullable PackageUserKey packageUser);
 
-    public void showAppDetailsForProfile(ComponentName component, UserHandle user) {
-        showAppDetailsForProfile(component, user, null, null);
-    }
+    public abstract List<PackageInstaller.SessionInfo> getAllPackageInstallerSessions();
 }

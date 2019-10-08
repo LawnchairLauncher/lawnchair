@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <com.android.launcher3.appprediction.PredictionRowView
+        android:id="@+id/prediction_row"
+        android:accessibilityPaneTitle="@string/title_app_suggestions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <com.android.launcher3.appprediction.AppsDividerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/apps_divider_view" />
+</merge>

@@ -16,7 +16,7 @@
 
 package com.android.launcher3.notification;
 
-import static com.android.launcher3.SettingsActivity.NOTIFICATION_BADGING;
+import static com.android.launcher3.util.SecureSettingsObserver.newNotificationSettingsObserver;
 
 import android.annotation.TargetApi;
 import android.app.Notification;
@@ -27,15 +27,14 @@ import android.os.Looper;
 import android.os.Message;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.ArraySet;
 import android.util.Log;
 import android.util.Pair;
 
 import com.android.launcher3.LauncherModel;
+import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.PackageUserKey;
-import com.android.launcher3.util.SettingsObserver;
+import com.android.launcher3.util.SecureSettingsObserver;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,7 +42,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+
+import androidx.annotation.Nullable;
 
 /**
  * A {@link NotificationListenerService} that sends updates to its
@@ -77,7 +77,7 @@ public class NotificationListener extends NotificationListenerService {
     /** The last notification key that was dismissed from launcher UI */
     private String mLastKeyDismissedByLauncher;
 
-    private SettingsObserver mNotificationBadgingObserver;
+    private SecureSettingsObserver mNotificationDotsObserver;
 
     private final Handler.Callback mWorkerCallback = new Handler.Callback() {
         @Override
@@ -169,7 +169,7 @@ public class NotificationListener extends NotificationListenerService {
         if (notificationListener != null) {
             notificationListener.onNotificationFullRefresh();
         } else if (!sIsCreated && sNotificationsChangedListener != null) {
-            // User turned off badging globally, so we unbound this service;
+            // User turned off dots globally, so we unbound this service;
             // tell the listener that there are no notifications to remove dots.
             sNotificationsChangedListener.onNotificationFullRefresh(
                     Collections.<StatusBarNotification>emptyList());
@@ -194,17 +194,18 @@ public class NotificationListener extends NotificationListenerService {
         super.onListenerConnected();
         sIsConnected = true;
 
-        mNotificationBadgingObserver = new SettingsObserver.Secure(getContentResolver()) {
-            @Override
-            public void onSettingChanged(boolean isNotificationBadgingEnabled) {
-                if (!isNotificationBadgingEnabled) {
-                    requestUnbind();
-                }
-            }
-        };
-        mNotificationBadgingObserver.register(NOTIFICATION_BADGING);
+        mNotificationDotsObserver =
+                newNotificationSettingsObserver(this, this::onNotificationSettingsChanged);
+        mNotificationDotsObserver.register();
+        mNotificationDotsObserver.dispatchOnChange();
 
         onNotificationFullRefresh();
+    }
+
+    private void onNotificationSettingsChanged(boolean areNotificationDotsEnabled) {
+        if (!areNotificationDotsEnabled && sIsConnected) {
+            requestUnbind();
+        }
     }
 
     private void onNotificationFullRefresh() {
@@ -215,7 +216,7 @@ public class NotificationListener extends NotificationListenerService {
     public void onListenerDisconnected() {
         super.onListenerDisconnected();
         sIsConnected = false;
-        mNotificationBadgingObserver.unregister();
+        mNotificationDotsObserver.unregister();
     }
 
     @Override
@@ -345,7 +346,7 @@ public class NotificationListener extends NotificationListenerService {
     private List<StatusBarNotification> filterNotifications(
             StatusBarNotification[] notifications) {
         if (notifications == null) return null;
-        Set<Integer> removedNotifications = new ArraySet<>();
+        IntSet removedNotifications = new IntSet();
         for (int i = 0; i < notifications.length; i++) {
             if (shouldBeFilteredOut(notifications[i])) {
                 removedNotifications.add(i);

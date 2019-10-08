@@ -18,21 +18,20 @@ package com.android.launcher3.model;
 import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_LOCKED_USER;
 
 import android.content.Context;
+import android.content.pm.ShortcutInfo;
 import android.os.UserHandle;
 
 import com.android.launcher3.AllAppsList;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.compat.UserManagerCompat;
-import com.android.launcher3.graphics.LauncherIcons;
+import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
-import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ItemInfoMatcher;
-import com.android.launcher3.util.Provider;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -57,12 +56,12 @@ public class UserLockStateChangedTask extends BaseModelUpdateTask {
         boolean isUserUnlocked = UserManagerCompat.getInstance(context).isUserUnlocked(mUser);
         DeepShortcutManager deepShortcutManager = DeepShortcutManager.getInstance(context);
 
-        HashMap<ShortcutKey, ShortcutInfoCompat> pinnedShortcuts = new HashMap<>();
+        HashMap<ShortcutKey, ShortcutInfo> pinnedShortcuts = new HashMap<>();
         if (isUserUnlocked) {
-            List<ShortcutInfoCompat> shortcuts =
+            List<ShortcutInfo> shortcuts =
                     deepShortcutManager.queryForPinnedShortcuts(null, mUser);
             if (deepShortcutManager.wasLastCallSuccess()) {
-                for (ShortcutInfoCompat shortcut : shortcuts) {
+                for (ShortcutInfo shortcut : shortcuts) {
                     pinnedShortcuts.put(ShortcutKey.fromInfo(shortcut), shortcut);
                 }
             } else {
@@ -74,16 +73,16 @@ public class UserLockStateChangedTask extends BaseModelUpdateTask {
         }
 
         // Update the workspace to reflect the changes to updated shortcuts residing on it.
-        ArrayList<ShortcutInfo> updatedShortcutInfos = new ArrayList<>();
+        ArrayList<WorkspaceItemInfo> updatedWorkspaceItemInfos = new ArrayList<>();
         HashSet<ShortcutKey> removedKeys = new HashSet<>();
 
         for (ItemInfo itemInfo : dataModel.itemsIdMap) {
             if (itemInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT
                     && mUser.equals(itemInfo.user)) {
-                ShortcutInfo si = (ShortcutInfo) itemInfo;
+                WorkspaceItemInfo si = (WorkspaceItemInfo) itemInfo;
                 if (isUserUnlocked) {
                     ShortcutKey key = ShortcutKey.fromItemInfo(si);
-                    ShortcutInfoCompat shortcut = pinnedShortcuts.get(key);
+                    ShortcutInfo shortcut = pinnedShortcuts.get(key);
                     // We couldn't verify the shortcut during loader. If its no longer available
                     // (probably due to clear data), delete the workspace item as well
                     if (shortcut == null) {
@@ -95,15 +94,15 @@ public class UserLockStateChangedTask extends BaseModelUpdateTask {
                     // If the shortcut is pinned but no longer has an icon in the system,
                     // keep the current icon instead of reverting to the default icon.
                     LauncherIcons li = LauncherIcons.obtain(context);
-                    li.createShortcutIcon(shortcut, true, Provider.of(si.iconBitmap)).applyTo(si);
+                    si.applyFrom(li.createShortcutIcon(shortcut, true, () -> si));
                     li.recycle();
                 } else {
                     si.runtimeStatusFlags |= FLAG_DISABLED_LOCKED_USER;
                 }
-                updatedShortcutInfos.add(si);
+                updatedWorkspaceItemInfos.add(si);
             }
         }
-        bindUpdatedShortcuts(updatedShortcutInfos, mUser);
+        bindUpdatedWorkspaceItems(updatedWorkspaceItemInfos);
         if (!removedKeys.isEmpty()) {
             deleteAndBindComponentsRemoved(ItemInfoMatcher.ofShortcutKeys(removedKeys));
         }
@@ -117,7 +116,7 @@ public class UserLockStateChangedTask extends BaseModelUpdateTask {
         }
 
         if (isUserUnlocked) {
-            dataModel.updateDeepShortcutMap(
+            dataModel.updateDeepShortcutCounts(
                     null, mUser, deepShortcutManager.queryForAllShortcuts(mUser));
         }
         bindDeepShortcuts(dataModel);

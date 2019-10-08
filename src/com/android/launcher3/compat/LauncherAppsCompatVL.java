@@ -22,6 +22,7 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
+import android.content.pm.PackageInstaller;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.pm.ShortcutInfo;
@@ -29,14 +30,16 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Process;
 import android.os.UserHandle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.ArrayMap;
+
 import com.android.launcher3.compat.ShortcutConfigActivityInfo.ShortcutConfigActivityInfoVL;
-import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.util.PackageUserKey;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public class LauncherAppsCompatVL extends LauncherAppsCompat {
 
@@ -176,12 +179,7 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
         public void onShortcutsChanged(@NonNull String packageName,
             @NonNull List<ShortcutInfo> shortcuts,
             @NonNull UserHandle user) {
-            List<ShortcutInfoCompat> shortcutInfoCompats = new ArrayList<>(shortcuts.size());
-            for (ShortcutInfo shortcutInfo : shortcuts) {
-                shortcutInfoCompats.add(new ShortcutInfoCompat(shortcutInfo));
-            }
-
-            mCallback.onShortcutsChanged(packageName, shortcutInfoCompats, user);
+            mCallback.onShortcutsChanged(packageName, shortcuts, user);
         }
     }
 
@@ -197,10 +195,15 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
                 pm.queryIntentActivities(new Intent(Intent.ACTION_CREATE_SHORTCUT), 0)) {
             if (packageUser == null || packageUser.mPackageName
                     .equals(info.activityInfo.packageName)) {
-                result.add(new ShortcutConfigActivityInfoVL(info.activityInfo, pm));
+                result.add(new ShortcutConfigActivityInfoVL(info.activityInfo));
             }
         }
         return result;
+    }
+
+    @Override
+    public List<PackageInstaller.SessionInfo> getAllPackageInstallerSessions() {
+        return mContext.getPackageManager().getPackageInstaller().getAllSessions();
     }
 }
 

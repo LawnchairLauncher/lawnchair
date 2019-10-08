@@ -38,6 +38,11 @@
             android:theme="@style/HomeScreenElementTheme"
             launcher:pageIndicator="@+id/page_indicator" />
 
+        <!-- DO NOT CHANGE THE ID -->
+        <include
+            android:id="@+id/hotseat"
+            layout="@layout/hotseat" />
+
         <include
             android:id="@+id/overview_panel"
             layout="@layout/overview_panel"
@@ -56,22 +61,16 @@
             android:id="@+id/drop_target_bar"
             layout="@layout/drop_target_bar" />
 
-        <include android:id="@+id/scrim_view"
+        <include
+            android:id="@+id/scrim_view"
             layout="@layout/scrim_view" />
 
         <include
             android:id="@+id/apps_view"
             layout="@layout/all_apps"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="invisible" />
-
-        <!-- DO NOT CHANGE THE ID -->
-        <include
-            android:id="@+id/hotseat"
-            layout="@layout/hotseat"
-            android:layout_width="match_parent"
             android:layout_height="match_parent" />
+
     </com.android.launcher3.dragndrop.DragLayer>
 
 </com.android.launcher3.LauncherRootView>

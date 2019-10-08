@@ -1,0 +1,24 @@
+# Model data used by PackageInstallStateChangeTaskTest
+
+classMap s com.android.launcher3.WorkspaceItemInfo
+classMap w com.android.launcher3.LauncherAppWidgetInfo
+
+# Items for the BgDataModel
+
+# App shortcuts
+bgItem s itemType=0 title=app1-class1 intent=component=app1/class1 id=1
+bgItem s itemType=0 title=app1-class2 intent=component=app1/class2 id=2
+bgItem s itemType=0 title=app2-class1 intent=component=app2/class1 id=3
+bgItem s itemType=0 title=app2-class2 intent=component=app2/class2 id=4
+
+# Promise icons for app3
+bgItem s itemType=0 status=2 title=app3-class1 intent=component=app3/class1 id=5
+bgItem s itemType=0 status=2 title=app3-class2 intent=component=app3/class2 id=6
+bgItem s itemType=1 status=1 title=app3-shrt intent=component=app3/class3 id=7
+
+# Promise icon for app4
+bgItem s itemType=1 status=1 title=app4-shrt intent=component=app4/class1 id=8
+
+# Widget
+bgItem w providerName=app4/provider1 id=9
+bgItem w providerName=app5/provider1 id=10

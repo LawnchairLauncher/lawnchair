@@ -50,7 +50,7 @@ public class FolderInfo extends ItemInfo {
     /**
      * The apps and shortcuts
      */
-    public ArrayList<ShortcutInfo> contents = new ArrayList<ShortcutInfo>();
+    public ArrayList<WorkspaceItemInfo> contents = new ArrayList<WorkspaceItemInfo>();
 
     ArrayList<FolderListener> listeners = new ArrayList<FolderListener>();
 
@@ -64,14 +64,14 @@ public class FolderInfo extends ItemInfo {
      *
      * @param item
      */
-    public void add(ShortcutInfo item, boolean animate) {
+    public void add(WorkspaceItemInfo item, boolean animate) {
         add(item, contents.size(), animate);
     }
 
     /**
      * Add an app or shortcut for a specified rank.
      */
-    public void add(ShortcutInfo item, int rank, boolean animate) {
+    public void add(WorkspaceItemInfo item, int rank, boolean animate) {
         rank = Utilities.boundToRange(rank, 0, contents.size());
         contents.add(rank, item);
         for (int i = 0; i < listeners.size(); i++) {
@@ -85,7 +85,7 @@ public class FolderInfo extends ItemInfo {
      *
      * @param item
      */
-    public void remove(ShortcutInfo item, boolean animate) {
+    public void remove(WorkspaceItemInfo item, boolean animate) {
         contents.remove(item);
         for (int i = 0; i < listeners.size(); i++) {
             listeners.get(i).onRemove(item);
@@ -129,8 +129,8 @@ public class FolderInfo extends ItemInfo {
     }
 
     public interface FolderListener {
-        public void onAdd(ShortcutInfo item, int rank);
-        public void onRemove(ShortcutInfo item);
+        public void onAdd(WorkspaceItemInfo item, int rank);
+        public void onRemove(WorkspaceItemInfo item);
         public void onTitleChanged(CharSequence title);
         public void onItemsChanged(boolean animate);
         public void prepareAutoUpdate();

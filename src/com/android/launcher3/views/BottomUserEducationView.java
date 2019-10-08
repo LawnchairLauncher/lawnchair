@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.views;
 
+import static com.android.launcher3.compat.AccessibilityManagerCompat.sendCustomAccessibilityEvent;
+
 import android.animation.PropertyValuesHolder;
 import android.content.Context;
 import android.graphics.Rect;
@@ -28,8 +30,7 @@ import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.Interpolators;
-
-import static com.android.launcher3.compat.AccessibilityManagerCompat.sendCustomAccessibilityEvent;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 
 public class BottomUserEducationView extends AbstractSlideInView implements Insettable {
 
@@ -68,6 +69,11 @@ public class BottomUserEducationView extends AbstractSlideInView implements Inse
     @Override
     public void logActionCommand(int command) {
         // Since this is on-boarding popup, it is not a user controlled action.
+    }
+
+    @Override
+    public int getLogContainerType() {
+        return ContainerType.TIP;
     }
 
     @Override

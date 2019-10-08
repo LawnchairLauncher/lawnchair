@@ -1,10 +1,13 @@
 package com.android.launcher3;
 
+import static com.android.launcher3.LauncherAnimUtils.LAYOUT_HEIGHT;
+import static com.android.launcher3.LauncherAnimUtils.LAYOUT_WIDTH;
+import static com.android.launcher3.views.BaseDragLayer.LAYOUT_X;
+import static com.android.launcher3.views.BaseDragLayer.LAYOUT_Y;
+
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
-import android.animation.ValueAnimator;
-import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
@@ -20,6 +23,9 @@ import com.android.launcher3.accessibility.DragViewStateAnnouncer;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.util.FocusLogic;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class AppWidgetResizeFrame extends AbstractFloatingView implements View.OnKeyListener {
     private static final int SNAP_DURATION = 150;
@@ -39,8 +45,10 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
 
     private final Launcher mLauncher;
     private final DragViewStateAnnouncer mStateAnnouncer;
+    private final FirstFrameAnimatorHelper mFirstFrameAnimatorHelper;
 
     private final View[] mDragHandles = new View[HANDLE_COUNT];
+    private final List<Rect> mSystemGestureExclusionRects = new ArrayList<>(HANDLE_COUNT);
 
     private LauncherAppWidgetHostView mWidgetView;
     private CellLayout mCellLayout;
@@ -101,6 +109,11 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         mBackgroundPadding = getResources()
                 .getDimensionPixelSize(R.dimen.resize_frame_background_padding);
         mTouchTargetWidth = 2 * mBackgroundPadding;
+        mFirstFrameAnimatorHelper = new FirstFrameAnimatorHelper(this);
+
+        for (int i = 0; i < HANDLE_COUNT; i++) {
+            mSystemGestureExclusionRects.add(new Rect());
+        }
     }
 
     @Override
@@ -110,6 +123,19 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         ViewGroup content = (ViewGroup) getChildAt(0);
         for (int i = 0; i < HANDLE_COUNT; i ++) {
             mDragHandles[i] = content.getChildAt(i);
+        }
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
+        if (Utilities.ATLEAST_Q) {
+            for (int i = 0; i < HANDLE_COUNT; i++) {
+                View dragHandle = mDragHandles[i];
+                mSystemGestureExclusionRects.get(i).set(dragHandle.getLeft(), dragHandle.getTop(),
+                        dragHandle.getRight(), dragHandle.getBottom());
+            }
+            setSystemGestureExclusionRects(mSystemGestureExclusionRects);
         }
     }
 
@@ -368,12 +394,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         mDeltaX = 0;
         mDeltaY = 0;
 
-        post(new Runnable() {
-            @Override
-            public void run() {
-                snapToWidget(true);
-            }
-        });
+        post(() -> snapToWidget(true));
     }
 
     /**
@@ -433,24 +454,19 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
             }
             requestLayout();
         } else {
-            PropertyValuesHolder width = PropertyValuesHolder.ofInt("width", lp.width, newWidth);
-            PropertyValuesHolder height = PropertyValuesHolder.ofInt("height", lp.height,
-                    newHeight);
-            PropertyValuesHolder x = PropertyValuesHolder.ofInt("x", lp.x, newX);
-            PropertyValuesHolder y = PropertyValuesHolder.ofInt("y", lp.y, newY);
-            ObjectAnimator oa =
-                    LauncherAnimUtils.ofPropertyValuesHolder(lp, this, width, height, x, y);
-            oa.addUpdateListener(new AnimatorUpdateListener() {
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    requestLayout();
-                }
-            });
-            AnimatorSet set = LauncherAnimUtils.createAnimatorSet();
+            ObjectAnimator oa = ObjectAnimator.ofPropertyValuesHolder(lp,
+                    PropertyValuesHolder.ofInt(LAYOUT_WIDTH, lp.width, newWidth),
+                    PropertyValuesHolder.ofInt(LAYOUT_HEIGHT, lp.height, newHeight),
+                    PropertyValuesHolder.ofInt(LAYOUT_X, lp.x, newX),
+                    PropertyValuesHolder.ofInt(LAYOUT_Y, lp.y, newY));
+            mFirstFrameAnimatorHelper.addTo(oa).addUpdateListener(a -> requestLayout());
+
+            AnimatorSet set = new AnimatorSet();
             set.play(oa);
             for (int i = 0; i < HANDLE_COUNT; i++) {
-                set.play(LauncherAnimUtils.ofFloat(mDragHandles[i], ALPHA, 1.0f));
+                set.play(mFirstFrameAnimatorHelper.addTo(
+                        ObjectAnimator.ofFloat(mDragHandles[i], ALPHA, 1f)));
             }
-
             set.setDuration(SNAP_DURATION);
             set.start();
         }

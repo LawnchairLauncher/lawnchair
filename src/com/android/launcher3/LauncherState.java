@@ -17,19 +17,35 @@ package com.android.launcher3;
 
 import static android.view.View.IMPORTANT_FOR_ACCESSIBILITY_AUTO;
 import static android.view.View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS;
+import static android.view.View.VISIBLE;
 import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
 
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_FADE;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_SCALE;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_TRANSLATE_X;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_FADE;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_SCALE;
+import static com.android.launcher3.anim.Interpolators.ACCEL;
+import static com.android.launcher3.anim.Interpolators.DEACCEL;
+import static com.android.launcher3.anim.Interpolators.DEACCEL_1_7;
+import static com.android.launcher3.anim.Interpolators.clampToProgress;
+import static com.android.launcher3.testing.TestProtocol.ALL_APPS_STATE_ORDINAL;
+import static com.android.launcher3.testing.TestProtocol.BACKGROUND_APP_STATE_ORDINAL;
+import static com.android.launcher3.testing.TestProtocol.NORMAL_STATE_ORDINAL;
+import static com.android.launcher3.testing.TestProtocol.OVERVIEW_PEEK_STATE_ORDINAL;
+import static com.android.launcher3.testing.TestProtocol.OVERVIEW_STATE_ORDINAL;
+import static com.android.launcher3.testing.TestProtocol.QUICK_SWITCH_STATE_ORDINAL;
+import static com.android.launcher3.testing.TestProtocol.SPRING_LOADED_STATE_ORDINAL;
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.states.RotationHelper.REQUEST_NONE;
 
-import android.graphics.Rect;
 import android.view.animation.Interpolator;
 
+import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.states.SpringLoadedState;
-import com.android.launcher3.uioverrides.AllAppsState;
-import com.android.launcher3.uioverrides.FastOverviewState;
-import com.android.launcher3.uioverrides.OverviewState;
 import com.android.launcher3.uioverrides.UiFactory;
+import com.android.launcher3.uioverrides.states.AllAppsState;
+import com.android.launcher3.uioverrides.states.OverviewState;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 
 import java.util.Arrays;
@@ -52,6 +68,7 @@ public class LauncherState {
     public static final int ALL_APPS_HEADER_EXTRA = 1 << 3; // e.g. app predictions
     public static final int ALL_APPS_CONTENT = 1 << 4;
     public static final int VERTICAL_SWIPE_INDICATOR = 1 << 5;
+    public static final int RECENTS_CLEAR_ALL_BUTTON = 1 << 6;
 
     protected static final int FLAG_MULTI_PAGE = 1 << 0;
     protected static final int FLAG_DISABLE_ACCESSIBILITY = 1 << 1;
@@ -72,24 +89,30 @@ public class LauncherState {
                 }
             };
 
-    private static final LauncherState[] sAllStates = new LauncherState[5];
+    private static final LauncherState[] sAllStates = new LauncherState[7];
 
     /**
      * TODO: Create a separate class for NORMAL state.
      */
-    public static final LauncherState NORMAL = new LauncherState(0, ContainerType.WORKSPACE, 0,
+    public static final LauncherState NORMAL = new LauncherState(NORMAL_STATE_ORDINAL,
+            ContainerType.WORKSPACE, 0,
             FLAG_DISABLE_RESTORE | FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED | FLAG_HIDE_BACK_BUTTON |
             FLAG_HAS_SYS_UI_SCRIM);
 
     /**
      * Various Launcher states arranged in the increasing order of UI layers
      */
-    public static final LauncherState SPRING_LOADED = new SpringLoadedState(1);
-    public static final LauncherState OVERVIEW = new OverviewState(2);
-    public static final LauncherState FAST_OVERVIEW = new FastOverviewState(3);
-    public static final LauncherState ALL_APPS = new AllAppsState(4);
+    public static final LauncherState SPRING_LOADED = new SpringLoadedState(
+            SPRING_LOADED_STATE_ORDINAL);
+    public static final LauncherState ALL_APPS = new AllAppsState(ALL_APPS_STATE_ORDINAL);
 
-    protected static final Rect sTempRect = new Rect();
+    public static final LauncherState OVERVIEW = new OverviewState(OVERVIEW_STATE_ORDINAL);
+    public static final LauncherState OVERVIEW_PEEK =
+            OverviewState.newPeekState(OVERVIEW_PEEK_STATE_ORDINAL);
+    public static final LauncherState QUICK_SWITCH =
+            OverviewState.newSwitchState(QUICK_SWITCH_STATE_ORDINAL);
+    public static final LauncherState BACKGROUND_APP =
+            OverviewState.newBackgroundState(BACKGROUND_APP_STATE_ORDINAL);
 
     public final int ordinal;
 
@@ -177,17 +200,21 @@ public class LauncherState {
         return Arrays.copyOf(sAllStates, sAllStates.length);
     }
 
-    public float[] getWorkspaceScaleAndTranslation(Launcher launcher) {
-        return new float[] {1, 0, 0};
+    public ScaleAndTranslation getWorkspaceScaleAndTranslation(Launcher launcher) {
+        return new ScaleAndTranslation(1, 0, 0);
     }
 
-    /**
-     * Returns 2 floats designating how to transition overview:
-     *   scale for the current and adjacent pages
-     *   translationY factor where 0 is top aligned and 0.5 is centered vertically
-     */
-    public float[] getOverviewScaleAndTranslationYFactor(Launcher launcher) {
-        return new float[] {1.1f, 0f};
+    public ScaleAndTranslation getHotseatScaleAndTranslation(Launcher launcher) {
+        // For most states, treat the hotseat as if it were part of the workspace.
+        return getWorkspaceScaleAndTranslation(launcher);
+    }
+
+    public ScaleAndTranslation getOverviewScaleAndTranslation(Launcher launcher) {
+        return UiFactory.getOverviewScaleAndTranslationForNormalState(launcher);
+    }
+
+    public float getOverviewFullscreenProgress() {
+        return 0;
     }
 
     public void onStateEnabled(Launcher launcher) {
@@ -242,12 +269,57 @@ public class LauncherState {
      * Called when the start transition ends and the user settles on this particular state.
      */
     public void onStateTransitionEnd(Launcher launcher) {
-        if (this == NORMAL || this == SPRING_LOADED) {
-            UiFactory.resetOverview(launcher);
-        }
         if (this == NORMAL) {
             // Clear any rotation locks when going to normal state
             launcher.getRotationHelper().setCurrentStateRequest(REQUEST_NONE);
+        }
+    }
+
+    public void onBackPressed(Launcher launcher) {
+        if (this != NORMAL) {
+            LauncherStateManager lsm = launcher.getStateManager();
+            LauncherState lastState = lsm.getLastState();
+            lsm.goToState(lastState);
+        }
+    }
+
+    /**
+     * Prepares for a non-user controlled animation from fromState to this state. Preparations
+     * include:
+     * - Setting interpolators for various animations included in the state transition.
+     * - Setting some start values (e.g. scale) for views that are hidden but about to be shown.
+     */
+    public void prepareForAtomicAnimation(Launcher launcher, LauncherState fromState,
+            AnimatorSetBuilder builder) {
+        if (this == NORMAL && fromState == OVERVIEW) {
+            builder.setInterpolator(ANIM_WORKSPACE_SCALE, DEACCEL);
+            builder.setInterpolator(ANIM_WORKSPACE_FADE, ACCEL);
+            builder.setInterpolator(ANIM_OVERVIEW_SCALE, clampToProgress(ACCEL, 0, 0.9f));
+            builder.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X, ACCEL);
+            builder.setInterpolator(ANIM_OVERVIEW_FADE, DEACCEL_1_7);
+            Workspace workspace = launcher.getWorkspace();
+
+            // Start from a higher workspace scale, but only if we're invisible so we don't jump.
+            boolean isWorkspaceVisible = workspace.getVisibility() == VISIBLE;
+            if (isWorkspaceVisible) {
+                CellLayout currentChild = (CellLayout) workspace.getChildAt(
+                        workspace.getCurrentPage());
+                isWorkspaceVisible = currentChild.getVisibility() == VISIBLE
+                        && currentChild.getShortcutsAndWidgets().getAlpha() > 0;
+            }
+            if (!isWorkspaceVisible) {
+                workspace.setScaleX(0.92f);
+                workspace.setScaleY(0.92f);
+            }
+            Hotseat hotseat = launcher.getHotseat();
+            boolean isHotseatVisible = hotseat.getVisibility() == VISIBLE && hotseat.getAlpha() > 0;
+            if (!isHotseatVisible) {
+                hotseat.setScaleX(0.92f);
+                hotseat.setScaleY(0.92f);
+            }
+        } else if (this == NORMAL && fromState == OVERVIEW_PEEK) {
+            // Keep fully visible until the very end (when overview is offscreen) to make invisible.
+            builder.setInterpolator(ANIM_OVERVIEW_FADE, t -> t < 1 ? 0 : 1);
         }
     }
 
@@ -264,5 +336,17 @@ public class LauncherState {
         }
 
         public abstract float getPageAlpha(int pageIndex);
+    }
+
+    public static class ScaleAndTranslation {
+        public float scale;
+        public float translationX;
+        public float translationY;
+
+        public ScaleAndTranslation(float scale, float translationX, float translationY) {
+            this.scale = scale;
+            this.translationX = translationX;
+            this.translationY = translationY;
+        }
     }
 }

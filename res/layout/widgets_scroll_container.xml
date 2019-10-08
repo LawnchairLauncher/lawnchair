@@ -23,6 +23,7 @@
     android:scrollbars="none">
     <LinearLayout
         android:id="@+id/widgets_cell_list"
+        style="@style/TextTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingStart="0dp"

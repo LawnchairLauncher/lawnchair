@@ -2,80 +2,6 @@
   *;
 }
 
--keep class com.android.launcher3.allapps.AllAppsBackgroundDrawable {
-  public void setAlpha(int);
-  public int getAlpha();
-}
-
--keep class com.android.launcher3.BaseRecyclerViewFastScrollBar {
-  public void setThumbWidth(int);
-  public int getThumbWidth();
-  public void setTrackWidth(int);
-  public int getTrackWidth();
-}
-
--keep class com.android.launcher3.BaseRecyclerViewFastScrollPopup {
-  public void setAlpha(float);
-  public float getAlpha();
-}
-
--keep class com.android.launcher3.ButtonDropTarget {
-  public int getTextColor();
-}
-
--keep class com.android.launcher3.CellLayout {
-  public float getBackgroundAlpha();
-  public void setBackgroundAlpha(float);
-}
-
--keep class com.android.launcher3.CellLayout$LayoutParams {
-  public void setWidth(int);
-  public int getWidth();
-  public void setHeight(int);
-  public int getHeight();
-  public void setX(int);
-  public int getX();
-  public void setY(int);
-  public int getY();
-}
-
--keep class com.android.launcher3.views.BaseDragLayer$LayoutParams {
-  public void setWidth(int);
-  public int getWidth();
-  public void setHeight(int);
-  public int getHeight();
-  public void setX(int);
-  public int getX();
-  public void setY(int);
-  public int getY();
-}
-
--keep class com.android.launcher3.FastBitmapDrawable {
-  public void setDesaturation(float);
-  public float getDesaturation();
-  public void setBrightness(float);
-  public float getBrightness();
-}
-
--keep class com.android.launcher3.MemoryDumpActivity {
-  *;
-}
-
--keep class com.android.launcher3.PreloadIconDrawable {
-  public float getAnimationProgress();
-  public void setAnimationProgress(float);
-}
-
--keep class com.android.launcher3.pageindicators.CaretDrawable {
-  public float getCaretProgress();
-  public void setCaretProgress(float);
-}
-
--keep class com.android.launcher3.Workspace {
-  public float getBackgroundAlpha();
-  public void setBackgroundAlpha(float);
-}
-
 # Proguard will strip new callbacks in LauncherApps.Callback from
 # WrappedCallback if compiled against an older SDK. Don't let this happen.
 -keep class com.android.launcher3.compat.** {
@@ -95,32 +21,21 @@
 # next row when focus is on the last item of last row when using a RecyclerView
 # Keep optimized and shrunk proguard to prevent issues like this when using
 # support jar.
--keep class android.support.v7.widget.RecyclerView { *; }
+-keep class androidx.recyclerview.widget.RecyclerView { *; }
 
-# LauncherAppTransitionManager
--keep class com.android.launcher3.LauncherAppTransitionManagerImpl {
+# Preference fragments
+-keep class ** extends android.app.Fragment {
     public <init>(...);
 }
 
-# InstantAppResolver
--keep class com.android.quickstep.InstantAppResolverImpl {
-    public <init>(...);
-}
-
-# MainProcessInitializer
--keep class com.android.quickstep.QuickstepProcessInitializer {
-    public <init>(...);
-}
-
-# UserEventDispatcherExtension
--keep class com.android.quickstep.logging.UserEventDispatcherExtension {
+## Prevent obfuscating various overridable objects
+-keep class ** implements com.android.launcher3.util.ResourceBasedOverride {
     public <init>(...);
 }
 
 -keep interface com.android.launcher3.userevent.nano.LauncherLogProto.** {
   *;
 }
-
 -keep interface com.android.launcher3.model.nano.LauncherDumpProto.** {
   *;
 }
@@ -135,3 +50,4 @@
 -dontwarn android.app.**
 -dontwarn android.view.**
 -dontwarn android.os.**
+-dontwarn android.graphics.**

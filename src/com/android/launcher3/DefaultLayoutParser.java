@@ -10,7 +10,6 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
-import android.content.res.XmlResourceParser;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.ArrayMap;
@@ -76,13 +75,13 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
     }
 
     @Override
-    protected void parseContainerAndScreen(XmlResourceParser parser, long[] out) {
+    protected void parseContainerAndScreen(XmlPullParser parser, int[] out) {
         out[0] = LauncherSettings.Favorites.CONTAINER_DESKTOP;
         String strContainer = getAttributeValue(parser, ATTR_CONTAINER);
         if (strContainer != null) {
-            out[0] = Long.valueOf(strContainer);
+            out[0] = Integer.parseInt(strContainer);
         }
-        out[1] = Long.parseLong(getAttributeValue(parser, ATTR_SCREEN));
+        out[1] = Integer.parseInt(getAttributeValue(parser, ATTR_SCREEN));
     }
 
     /**
@@ -91,7 +90,7 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
     public class AppShortcutWithUriParser extends AppShortcutParser {
 
         @Override
-        protected long invalidPackageOrClass(XmlResourceParser parser) {
+        protected int invalidPackageOrClass(XmlPullParser parser) {
             final String uri = getAttributeValue(parser, ATTR_URI);
             if (TextUtils.isEmpty(uri)) {
                 Log.e(TAG, "Skipping invalid <favorite> with no component or uri");
@@ -185,7 +184,7 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
         }
 
         @Override
-        protected Intent parseIntent(XmlResourceParser parser) {
+        protected Intent parseIntent(XmlPullParser parser) {
             String uri = null;
             try {
                 uri = getAttributeValue(parser, ATTR_URI);
@@ -205,11 +204,11 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
         private final AppShortcutWithUriParser mChildParser = new AppShortcutWithUriParser();
 
         @Override
-        public long parseAndAdd(XmlResourceParser parser) throws XmlPullParserException,
+        public int parseAndAdd(XmlPullParser parser) throws XmlPullParserException,
                 IOException {
             final int groupDepth = parser.getDepth();
             int type;
-            long addedId = -1;
+            int addedId = -1;
             while ((type = parser.next()) != XmlPullParser.END_TAG ||
                     parser.getDepth() > groupDepth) {
                 if (type != XmlPullParser.START_TAG || addedId > -1) {
@@ -233,7 +232,7 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
     @Thunk class PartnerFolderParser implements TagParser {
 
         @Override
-        public long parseAndAdd(XmlResourceParser parser) throws XmlPullParserException,
+        public int parseAndAdd(XmlPullParser parser) throws XmlPullParserException,
                 IOException {
             // Folder contents come from an external XML resource
             final Partner partner = Partner.get(mPackageManager);
@@ -242,7 +241,7 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
                 final int resId = partnerRes.getIdentifier(Partner.RES_FOLDER,
                         "xml", partner.getPackageName());
                 if (resId != 0) {
-                    final XmlResourceParser partnerParser = partnerRes.getXml(resId);
+                    final XmlPullParser partnerParser = partnerRes.getXml(resId);
                     beginDocument(partnerParser, TAG_FOLDER);
 
                     FolderParser folderParser = new FolderParser(getFolderElementsMap(partnerRes));
@@ -259,7 +258,7 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
     @Thunk class MyFolderParser extends FolderParser {
 
         @Override
-        public long parseAndAdd(XmlResourceParser parser) throws XmlPullParserException,
+        public int parseAndAdd(XmlPullParser parser) throws XmlPullParserException,
                 IOException {
             final int resId = getAttributeResourceValue(parser, ATTR_FOLDER_ITEMS, 0);
             if (resId != 0) {
@@ -277,7 +276,7 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
     protected class AppWidgetParser extends PendingWidgetParser {
 
         @Override
-        protected long verifyAndInsert(ComponentName cn, Bundle extras) {
+        protected int verifyAndInsert(ComponentName cn, Bundle extras) {
             try {
                 mPackageManager.getReceiverInfo(cn, 0);
             } catch (Exception e) {
@@ -293,7 +292,7 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
             }
 
             final AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(mContext);
-            long insertedId = -1;
+            int insertedId = -1;
             try {
                 int appWidgetId = mAppWidgetHost.allocateAppWidgetId();
 

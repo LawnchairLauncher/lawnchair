@@ -16,38 +16,43 @@
 
 package com.android.launcher3.tapl;
 
-import android.support.test.uiautomator.By;
-import android.support.test.uiautomator.BySelector;
-import android.support.test.uiautomator.UiObject2;
-import android.support.test.uiautomator.Until;
+import android.graphics.Point;
+import android.os.SystemClock;
+import android.view.MotionEvent;
 import android.widget.TextView;
+
+import androidx.test.uiautomator.By;
+import androidx.test.uiautomator.BySelector;
+import androidx.test.uiautomator.UiObject2;
 
 /**
  * App icon, whether in all apps or in workspace/
  */
-public final class AppIcon {
-    private final Launcher mLauncher;
-    private final UiObject2 mIcon;
-
-    AppIcon(Launcher launcher, UiObject2 icon) {
-        mLauncher = launcher;
-        mIcon = icon;
+public final class AppIcon extends Launchable {
+    AppIcon(LauncherInstrumentation launcher, UiObject2 icon) {
+        super(launcher, icon);
     }
 
-    static BySelector getAppIconSelector(String appName) {
-        return By.clazz(TextView.class).text(appName).pkg(Launcher.LAUNCHER_PKG);
+    static BySelector getAppIconSelector(String appName, LauncherInstrumentation launcher) {
+        return By.clazz(TextView.class).text(appName).pkg(launcher.getLauncherPackageName());
     }
 
     /**
-     * Clicks the icon to launch its app.
+     * Long-clicks the icon to open its menu.
      */
-    public void launch() {
-        mLauncher.assertTrue("Launching an app didn't open a new window: " + mIcon.getText(),
-                mIcon.clickAndWait(Until.newWindow(), Launcher.APP_LAUNCH_TIMEOUT_MS));
-        mLauncher.assertState(Launcher.State.BACKGROUND);
+    public AppIconMenu openMenu() {
+        final Point iconCenter = mObject.getVisibleCenter();
+        final long downTime = SystemClock.uptimeMillis();
+        mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, iconCenter);
+        final UiObject2 deepShortcutsContainer = mLauncher.waitForLauncherObject(
+                "deep_shortcuts_container");
+        mLauncher.sendPointer(
+                downTime, SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, iconCenter);
+        return new AppIconMenu(mLauncher, deepShortcutsContainer);
     }
 
-    UiObject2 getIcon() {
-        return mIcon;
+    @Override
+    protected String getLongPressIndicator() {
+        return "deep_shortcuts_container";
     }
 }

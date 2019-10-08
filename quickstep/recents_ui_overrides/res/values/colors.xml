@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="chip_hint_foreground_color">#fff</color>
+
+    <color name="all_apps_label_text">#61000000</color>
+    <color name="all_apps_label_text_dark">#61FFFFFF</color>
+    <color name="all_apps_prediction_row_separator">#3c000000</color>
+    <color name="all_apps_prediction_row_separator_dark">#3cffffff</color>
+</resources>

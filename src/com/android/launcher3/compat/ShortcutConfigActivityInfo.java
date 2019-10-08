@@ -32,15 +32,16 @@ import android.os.UserHandle;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.android.launcher3.IconCache;
+import com.android.launcher3.WorkspaceItemInfo;
+import com.android.launcher3.icons.ComponentWithLabel;
+import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
-import com.android.launcher3.ShortcutInfo;
 
 /**
  * Wrapper class for representing a shortcut configure activity.
  */
-public abstract class ShortcutConfigActivityInfo {
+public abstract class ShortcutConfigActivityInfo implements ComponentWithLabel {
 
     private static final String TAG = "SCActivityInfo";
 
@@ -52,10 +53,12 @@ public abstract class ShortcutConfigActivityInfo {
         mUser = user;
     }
 
+    @Override
     public ComponentName getComponent() {
         return mCn;
     }
 
+    @Override
     public UserHandle getUser() {
         return mUser;
     }
@@ -64,15 +67,13 @@ public abstract class ShortcutConfigActivityInfo {
         return LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
     }
 
-    public abstract CharSequence getLabel();
-
     public abstract Drawable getFullResIcon(IconCache cache);
 
     /**
-     * Return a shortcut info, if it can be created directly on drop, without requiring any
+     * Return a WorkspaceItemInfo, if it can be created directly on drop, without requiring any
      * {@link #startConfigActivity(Activity, int)}.
      */
-    public ShortcutInfo createShortcutInfo() {
+    public WorkspaceItemInfo createWorkspaceItemInfo() {
         return null;
     }
 
@@ -94,8 +95,8 @@ public abstract class ShortcutConfigActivityInfo {
     }
 
     /**
-     * Returns true if various properties ({@link #getLabel()}, {@link #getFullResIcon}) can
-     * be safely persisted.
+     * Returns true if various properties ({@link #getLabel(PackageManager)},
+     * {@link #getFullResIcon}) can be safely persisted.
      */
     public boolean isPersistable() {
         return true;
@@ -104,18 +105,15 @@ public abstract class ShortcutConfigActivityInfo {
     static class ShortcutConfigActivityInfoVL extends ShortcutConfigActivityInfo {
 
         private final ActivityInfo mInfo;
-        private final PackageManager mPm;
 
-
-        public ShortcutConfigActivityInfoVL(ActivityInfo info, PackageManager pm) {
+        public ShortcutConfigActivityInfoVL(ActivityInfo info) {
             super(new ComponentName(info.packageName, info.name), Process.myUserHandle());
             mInfo = info;
-            mPm = pm;
         }
 
         @Override
-        public CharSequence getLabel() {
-            return mInfo.loadLabel(mPm);
+        public CharSequence getLabel(PackageManager pm) {
+            return mInfo.loadLabel(pm);
         }
 
         @Override
@@ -135,7 +133,7 @@ public abstract class ShortcutConfigActivityInfo {
         }
 
         @Override
-        public CharSequence getLabel() {
+        public CharSequence getLabel(PackageManager pm) {
             return mInfo.getLabel();
         }
 
