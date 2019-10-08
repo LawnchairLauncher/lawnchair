@@ -30,6 +30,7 @@ import android.graphics.RectF;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
@@ -40,8 +41,8 @@ import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
-import java.util.function.BiPredicate;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 /**
  * {@link BaseActivityInterface} for recents when the default launcher is different than the
@@ -54,7 +55,7 @@ public final class FallbackActivityInterface implements
     public FallbackActivityInterface() { }
 
     @Override
-    public void onTransitionCancelled(RecentsActivity activity, boolean activityVisible) {
+    public void onTransitionCancelled(boolean activityVisible) {
         // TODO:
     }
 
@@ -72,7 +73,8 @@ public final class FallbackActivityInterface implements
     }
 
     @Override
-    public void onSwipeUpToRecentsComplete(RecentsActivity activity) {
+    public void onSwipeUpToRecentsComplete() {
+        RecentsActivity activity = getCreatedActivity();
         RecentsView recentsView = activity.getOverviewPanel();
         recentsView.getClearAllButton().setVisibilityAlpha(1);
         recentsView.setDisallowScrollToClearAll(false);
@@ -87,7 +89,8 @@ public final class FallbackActivityInterface implements
 
     @NonNull
     @Override
-    public HomeAnimationFactory prepareHomeUI(RecentsActivity activity) {
+    public HomeAnimationFactory prepareHomeUI() {
+        RecentsActivity activity = getCreatedActivity();
         RecentsView recentsView = activity.getOverviewPanel();
 
         return new HomeAnimationFactory() {
@@ -118,8 +121,9 @@ public final class FallbackActivityInterface implements
     }
 
     @Override
-    public AnimationFactory prepareRecentsUI(RecentsActivity activity, boolean activityVisible,
+    public AnimationFactory prepareRecentsUI(boolean activityVisible,
             boolean animateActivity, Consumer<AnimatorPlaybackController> callback) {
+        RecentsActivity activity = getCreatedActivity();
         if (activityVisible) {
             return (transitionLength) -> { };
         }
@@ -176,8 +180,9 @@ public final class FallbackActivityInterface implements
 
     @Override
     public ActivityInitListener createActivityInitListener(
-            BiPredicate<RecentsActivity, Boolean> onInitListener) {
-        return new ActivityInitListener(onInitListener, RecentsActivity.ACTIVITY_TRACKER);
+            Predicate<Boolean> onInitListener) {
+        return new ActivityInitListener<>((activity, alreadyOnHome) ->
+                onInitListener.test(alreadyOnHome), RecentsActivity.ACTIVITY_TRACKER);
     }
 
     @Nullable
@@ -228,13 +233,15 @@ public final class FallbackActivityInterface implements
     }
 
     @Override
-    public void onLaunchTaskFailed(RecentsActivity activity) {
+    public void onLaunchTaskFailed() {
         // TODO: probably go back to overview instead.
+        RecentsActivity activity = getCreatedActivity();
         activity.<RecentsView>getOverviewPanel().startHome();
     }
 
     @Override
-    public void onLaunchTaskSuccess(RecentsActivity activity) {
+    public void onLaunchTaskSuccess() {
+        RecentsActivity activity = getCreatedActivity();
         activity.onTaskLaunched();
     }
 }

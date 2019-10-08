@@ -69,7 +69,8 @@ public class QuickCaptureInputConsumer<T extends BaseDraggingActivity>
 
     private final float mSquaredSlop;
 
-    private Context mContext;
+    private final Context mContext;
+    private final GestureState mGestureState;
 
     private RecentsView mRecentsView;
 
@@ -77,6 +78,7 @@ public class QuickCaptureInputConsumer<T extends BaseDraggingActivity>
             InputConsumer delegate, InputMonitorCompat inputMonitor) {
         super(delegate, inputMonitor);
         mContext = context;
+        mGestureState = gestureState;
 
         float slop = ViewConfiguration.get(context).getScaledTouchSlop();
         mSquaredSlop = slop * slop;
@@ -90,8 +92,8 @@ public class QuickCaptureInputConsumer<T extends BaseDraggingActivity>
         return TYPE_QUICK_CAPTURE | mDelegate.getType();
     }
 
-    private boolean onActivityInit(final BaseDraggingActivity activity, Boolean alreadyOnHome) {
-        mRecentsView = activity.getOverviewPanel();
+    private boolean onActivityInit(Boolean alreadyOnHome) {
+        mRecentsView = mGestureState.getActivityInterface().getCreatedActivity().getOverviewPanel();
 
         return true;
     }

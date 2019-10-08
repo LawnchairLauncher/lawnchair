@@ -203,7 +203,8 @@ public class OverviewCommandHelper {
             return false;
         }
 
-        private boolean onActivityReady(T activity, Boolean wasVisible) {
+        private boolean onActivityReady(Boolean wasVisible) {
+            final T activity = mActivityInterface.getCreatedActivity();
             if (!mUserEventLogged) {
                 activity.getUserEventDispatcher().logActionCommand(
                         LauncherLogProto.Action.Command.RECENTS_BUTTON,

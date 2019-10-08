@@ -69,8 +69,8 @@ import com.android.systemui.plugins.shared.LauncherOverlayManager;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
-import java.util.function.BiPredicate;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 /**
  * {@link BaseActivityInterface} for the in-launcher recents.
@@ -92,23 +92,26 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
     }
 
     @Override
-    public void onTransitionCancelled(Launcher activity, boolean activityVisible) {
-        LauncherState startState = activity.getStateManager().getRestState();
-        activity.getStateManager().goToState(startState, activityVisible);
+    public void onTransitionCancelled(boolean activityVisible) {
+        Launcher launcher = getCreatedActivity();
+        LauncherState startState = launcher.getStateManager().getRestState();
+        launcher.getStateManager().goToState(startState, activityVisible);
     }
 
     @Override
-    public void onSwipeUpToRecentsComplete(Launcher activity) {
+    public void onSwipeUpToRecentsComplete() {
         // Re apply state in case we did something funky during the transition.
-        activity.getStateManager().reapplyState();
-        DiscoveryBounce.showForOverviewIfNeeded(activity);
+        Launcher launcher = getCreatedActivity();
+        launcher.getStateManager().reapplyState();
+        DiscoveryBounce.showForOverviewIfNeeded(launcher);
     }
 
     @Override
-    public void onSwipeUpToHomeComplete(Launcher activity) {
+    public void onSwipeUpToHomeComplete() {
         // Ensure recents is at the correct position for NORMAL state. For example, when we detach
         // recents, we assume the first task is invisible, making translation off by one task.
-        activity.getStateManager().reapplyState();
+        Launcher launcher = getCreatedActivity();
+        launcher.getStateManager().reapplyState();
         setLauncherHideBackArrow(false);
     }
 
@@ -129,13 +132,14 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
 
     @NonNull
     @Override
-    public HomeAnimationFactory prepareHomeUI(Launcher activity) {
-        final DeviceProfile dp = activity.getDeviceProfile();
-        final RecentsView recentsView = activity.getOverviewPanel();
+    public HomeAnimationFactory prepareHomeUI() {
+        Launcher launcher = getCreatedActivity();
+        final DeviceProfile dp = launcher.getDeviceProfile();
+        final RecentsView recentsView = launcher.getOverviewPanel();
         final TaskView runningTaskView = recentsView.getRunningTaskView();
         final View workspaceView;
         if (runningTaskView != null && runningTaskView.getTask().key.getComponent() != null) {
-            workspaceView = activity.getWorkspace().getFirstMatchForAppClose(
+            workspaceView = launcher.getWorkspace().getFirstMatchForAppClose(
                     runningTaskView.getTask().key.getComponent().getPackageName(),
                     UserHandle.of(runningTaskView.getTask().key.userId));
         } else {
@@ -144,7 +148,7 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
         final RectF iconLocation = new RectF();
         boolean canUseWorkspaceView = workspaceView != null && workspaceView.isAttachedToWindow();
         FloatingIconView floatingIconView = canUseWorkspaceView
-                ? FloatingIconView.getFloatingIconView(activity, workspaceView,
+                ? FloatingIconView.getFloatingIconView(launcher, workspaceView,
                         true /* hideOriginal */, iconLocation, false /* isOpening */)
                 : null;
         setLauncherHideBackArrow(true);
@@ -170,14 +174,14 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
             public AnimatorPlaybackController createActivityAnimationToHome() {
                 // Return an empty APC here since we have an non-user controlled animation to home.
                 long accuracy = 2 * Math.max(dp.widthPx, dp.heightPx);
-                return activity.getStateManager().createAnimationToNewWorkspace(NORMAL, accuracy,
+                return launcher.getStateManager().createAnimationToNewWorkspace(NORMAL, accuracy,
                         0 /* animComponents */);
             }
 
             @Override
             public void playAtomicAnimation(float velocity) {
                 // Setup workspace with 0 duration to prepare for our staggered animation.
-                LauncherStateManager stateManager = activity.getStateManager();
+                LauncherStateManager stateManager = launcher.getStateManager();
                 AnimatorSetBuilder builder = new AnimatorSetBuilder();
                 // setRecentsAttachedToAppWindow() will animate recents out.
                 builder.addFlag(AnimatorSetBuilder.FLAG_DONT_ANIMATE_OVERVIEW);
@@ -187,27 +191,28 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
                 // Stop scrolling so that it doesn't interfere with the translation offscreen.
                 recentsView.getScroller().forceFinished(true);
 
-                new StaggeredWorkspaceAnim(activity, workspaceView, velocity).start();
+                new StaggeredWorkspaceAnim(launcher, workspaceView, velocity).start();
             }
         };
     }
 
     @Override
-    public AnimationFactory prepareRecentsUI(Launcher activity, boolean activityVisible,
+    public AnimationFactory prepareRecentsUI(boolean activityVisible,
             boolean animateActivity, Consumer<AnimatorPlaybackController> callback) {
-        final LauncherState startState = activity.getStateManager().getState();
+        Launcher launcher = getCreatedActivity();
+        final LauncherState startState = launcher.getStateManager().getState();
 
         LauncherState resetState = startState;
         if (startState.disableRestore) {
-            resetState = activity.getStateManager().getRestState();
+            resetState = launcher.getStateManager().getRestState();
         }
-        activity.getStateManager().setRestState(resetState);
+        launcher.getStateManager().setRestState(resetState);
 
         final LauncherState fromState = animateActivity ? BACKGROUND_APP : OVERVIEW;
-        activity.getStateManager().goToState(fromState, false);
+        launcher.getStateManager().goToState(fromState, false);
         // Since all apps is not visible, we can safely reset the scroll position.
         // This ensures then the next swipe up to all-apps starts from scroll 0.
-        activity.getAppsView().reset(false /* animate */);
+        launcher.getAppsView().reset(false /* animate */);
 
         return new AnimationFactory() {
             private ShelfAnimState mShelfState;
@@ -215,11 +220,11 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
 
             @Override
             public void createActivityInterface(long transitionLength) {
-                createActivityInterfaceInternal(activity, fromState, transitionLength, callback);
+                createActivityInterfaceInternal(launcher, fromState, transitionLength, callback);
                 // Creating the activity controller animation sometimes reapplies the launcher state
                 // (because we set the animation as the current state animation), so we reapply the
                 // attached state here as well to ensure recents is shown/hidden appropriately.
-                if (SysUINavigationMode.getMode(activity) == Mode.NO_BUTTON) {
+                if (SysUINavigationMode.getMode(launcher) == Mode.NO_BUTTON) {
                     setRecentsAttachedToAppWindow(mIsAttachedToWindow, false);
                 }
             }
@@ -233,7 +238,7 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
 
             @Override
             public void onTransitionCancelled() {
-                activity.getStateManager().goToState(startState, false /* animate */);
+                launcher.getStateManager().goToState(startState, false /* animate */);
             }
 
             @Override
@@ -243,15 +248,15 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
                     return;
                 }
                 mShelfState = shelfState;
-                activity.getStateManager().cancelStateElementAnimation(INDEX_SHELF_ANIM);
+                launcher.getStateManager().cancelStateElementAnimation(INDEX_SHELF_ANIM);
                 if (mShelfState == ShelfAnimState.CANCEL) {
                     return;
                 }
-                float shelfHiddenProgress = BACKGROUND_APP.getVerticalProgress(activity);
-                float shelfOverviewProgress = OVERVIEW.getVerticalProgress(activity);
+                float shelfHiddenProgress = BACKGROUND_APP.getVerticalProgress(launcher);
+                float shelfOverviewProgress = OVERVIEW.getVerticalProgress(launcher);
                 // Peek based on default overview progress so we can see hotseat if we're showing
                 // that instead of predictions in overview.
-                float defaultOverviewProgress = OverviewState.getDefaultVerticalProgress(activity);
+                float defaultOverviewProgress = OverviewState.getDefaultVerticalProgress(launcher);
                 float shelfPeekingProgress = shelfHiddenProgress
                         - (shelfHiddenProgress - defaultOverviewProgress) * 0.25f;
                 float toProgress = mShelfState == ShelfAnimState.HIDE
@@ -259,7 +264,7 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
                         : mShelfState == ShelfAnimState.PEEK
                                 ? shelfPeekingProgress
                                 : shelfOverviewProgress;
-                Animator shelfAnim = activity.getStateManager()
+                Animator shelfAnim = launcher.getStateManager()
                         .createStateElementAnimation(INDEX_SHELF_ANIM, toProgress);
                 shelfAnim.setInterpolator(interpolator);
                 shelfAnim.setDuration(duration).start();
@@ -271,8 +276,8 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
                     return;
                 }
                 mIsAttachedToWindow = attached;
-                LauncherRecentsView recentsView = activity.getOverviewPanel();
-                Animator fadeAnim = activity.getStateManager()
+                LauncherRecentsView recentsView = launcher.getOverviewPanel();
+                Animator fadeAnim = launcher.getStateManager()
                         .createStateElementAnimation(
                         INDEX_RECENTS_FADE_ANIM, attached ? 1 : 0);
 
@@ -286,7 +291,7 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
 
                     float fromTranslationX = attached ? offscreenX - scrollOffsetX : 0;
                     float toTranslationX = attached ? 0 : offscreenX - scrollOffsetX;
-                    activity.getStateManager()
+                    launcher.getStateManager()
                             .cancelStateElementAnimation(INDEX_RECENTS_TRANSLATE_X_ANIM);
 
                     if (!recentsView.isShown() && animate) {
@@ -298,7 +303,7 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
                     if (!animate) {
                         recentsView.setTranslationX(toTranslationX);
                     } else {
-                        activity.getStateManager().createStateElementAnimation(
+                        launcher.getStateManager().createStateElementAnimation(
                                 INDEX_RECENTS_TRANSLATE_X_ANIM,
                                 fromTranslationX, toTranslationX).start();
                     }
@@ -396,9 +401,9 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
     }
 
     @Override
-    public ActivityInitListener createActivityInitListener(
-            BiPredicate<Launcher, Boolean> onInitListener) {
-        return new LauncherInitListenerEx(onInitListener);
+    public ActivityInitListener createActivityInitListener(Predicate<Boolean> onInitListener) {
+        return new LauncherInitListenerEx((activity, alreadyOnHome) ->
+                onInitListener.test(alreadyOnHome));
     }
 
     @Nullable
@@ -469,12 +474,14 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
     }
 
     @Override
-    public void onLaunchTaskFailed(Launcher launcher) {
+    public void onLaunchTaskFailed() {
+        Launcher launcher = getCreatedActivity();
         launcher.getStateManager().goToState(OVERVIEW);
     }
 
     @Override
-    public void onLaunchTaskSuccess(Launcher launcher) {
+    public void onLaunchTaskSuccess() {
+        Launcher launcher = getCreatedActivity();
         launcher.getStateManager().moveToRestState();
     }
 

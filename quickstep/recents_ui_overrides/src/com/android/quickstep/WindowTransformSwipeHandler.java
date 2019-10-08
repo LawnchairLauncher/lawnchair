@@ -268,7 +268,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     }
 
     @Override
-    protected boolean onActivityInit(final T activity, Boolean alreadyOnHome) {
+    protected boolean onActivityInit(Boolean alreadyOnHome) {
+        final T activity = mActivityInterface.getCreatedActivity();
         if (mActivity == activity) {
             return true;
         }
@@ -320,7 +321,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         // as that will set the state as BACKGROUND_APP, overriding the animation to NORMAL.
         if (mGestureState.getEndTarget() != HOME) {
             Runnable initAnimFactory = () -> {
-                mAnimationFactory = mActivityInterface.prepareRecentsUI(mActivity,
+                mAnimationFactory = mActivityInterface.prepareRecentsUI(
                         mWasLauncherAlreadyVisible, true,
                         this::onAnimatorPlaybackControllerCreated);
                 maybeUpdateRecentsAttachedState(false /* animate */);
@@ -888,7 +889,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         if (mGestureState.getEndTarget() == HOME) {
             HomeAnimationFactory homeAnimFactory;
             if (mActivity != null) {
-                homeAnimFactory = mActivityInterface.prepareHomeUI(mActivity);
+                homeAnimFactory = mActivityInterface.prepareHomeUI();
             } else {
                 homeAnimFactory = new HomeAnimationFactory() {
                     @NonNull
@@ -1000,7 +1001,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
                 }
                 // Make sure recents is in its final state
                 maybeUpdateRecentsAttachedState(false);
-                mActivityInterface.onSwipeUpToHomeComplete(mActivity);
+                mActivityInterface.onSwipeUpToHomeComplete();
             }
         });
         return anim;
@@ -1106,7 +1107,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
 
     private void resetStateForAnimationCancel() {
         boolean wasVisible = mWasLauncherAlreadyVisible || mGestureStarted;
-        mActivityInterface.onTransitionCancelled(mActivity, wasVisible);
+        mActivityInterface.onTransitionCancelled(wasVisible);
 
         // Leave the pending invisible flag, as it may be used by wallpaper open animation.
         mActivity.clearForceInvisibleFlag(INVISIBLE_BY_STATE_HANDLER);
@@ -1185,7 +1186,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
 
     private void setupLauncherUiAfterSwipeUpToRecentsAnimation() {
         endLauncherTransitionController();
-        mActivityInterface.onSwipeUpToRecentsComplete(mActivity);
+        mActivityInterface.onSwipeUpToRecentsComplete();
         if (mRecentsAnimationController != null) {
             mRecentsAnimationController.setDeferCancelUntilNextTransition(true /* defer */,
                     true /* screenshot */);

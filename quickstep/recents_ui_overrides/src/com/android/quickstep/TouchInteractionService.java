@@ -646,8 +646,8 @@ public class TouchInteractionService extends Service implements
                 mOverviewComponentObserver.getActivityInterface();
         if (activityInterface.getCreatedActivity() == null) {
             // Make sure that UI states will be initialized.
-            activityInterface.createActivityInitListener((activity, wasVisible) -> {
-                AppLaunchTracker.INSTANCE.get(activity);
+            activityInterface.createActivityInitListener((wasVisible) -> {
+                AppLaunchTracker.INSTANCE.get(TouchInteractionService.this);
                 return false;
             }).register();
         } else if (fromInit) {

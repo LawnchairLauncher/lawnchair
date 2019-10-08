@@ -239,10 +239,10 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
                                 success -> {
                                     resultCallback.accept(success);
                                     if (!success) {
-                                        mActivityInterface.onLaunchTaskFailed(mActivity);
+                                        mActivityInterface.onLaunchTaskFailed();
                                         nextTask.notifyTaskLaunchFailed(TAG);
                                     } else {
-                                        mActivityInterface.onLaunchTaskSuccess(mActivity);
+                                        mActivityInterface.onLaunchTaskSuccess();
                                     }
                                 }, MAIN_EXECUTOR.getHandler());
                     }
@@ -359,7 +359,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
      */
     protected abstract boolean moveWindowWithRecentsScroll();
 
-    protected abstract boolean onActivityInit(final T activity, Boolean alreadyOnHome);
+    protected abstract boolean onActivityInit(Boolean alreadyOnHome);
 
     /**
      * Called to create a input proxy for the running task

@@ -170,9 +170,9 @@ public class FallbackNoButtonInputConsumer extends
     }
 
     @Override
-    protected boolean onActivityInit(final RecentsActivity activity, Boolean alreadyOnHome) {
-        mActivity = activity;
-        mRecentsView = activity.getOverviewPanel();
+    protected boolean onActivityInit(Boolean alreadyOnHome) {
+        mActivity = mActivityInterface.getCreatedActivity();
+        mRecentsView = mActivity.getOverviewPanel();
         linkRecentsViewScroll();
         mRecentsView.setDisallowScrollToClearAll(true);
         mRecentsView.getClearAllButton().setVisibilityAlpha(0);
