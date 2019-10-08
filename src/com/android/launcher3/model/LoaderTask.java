@@ -30,6 +30,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.LauncherActivityInfo;
+import android.content.pm.LauncherApps;
 import android.content.pm.PackageInstaller;
 import android.content.pm.PackageInstaller.SessionInfo;
 import android.content.pm.ShortcutInfo;
@@ -52,7 +53,6 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
-import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.Folder;
@@ -105,7 +105,7 @@ public class LoaderTask implements Runnable {
 
     private final LoaderResults mResults;
 
-    private final LauncherAppsCompat mLauncherApps;
+    private final LauncherApps mLauncherApps;
     private final UserManagerCompat mUserManager;
     private final DeepShortcutManager mShortcutManager;
     private final PackageInstallerCompat mPackageInstaller;
@@ -121,7 +121,7 @@ public class LoaderTask implements Runnable {
         mBgDataModel = dataModel;
         mResults = results;
 
-        mLauncherApps = LauncherAppsCompat.getInstance(mApp.getContext());
+        mLauncherApps = mApp.getContext().getSystemService(LauncherApps.class);
         mUserManager = UserManagerCompat.getInstance(mApp.getContext());
         mShortcutManager = DeepShortcutManager.getInstance(mApp.getContext());
         mPackageInstaller = PackageInstallerCompat.getInstance(mApp.getContext());
@@ -390,7 +390,7 @@ public class LoaderTask implements Runnable {
                             // If there is no target package, its an implicit intent
                             // (legacy shortcut) which is always valid
                             boolean validTarget = TextUtils.isEmpty(targetPkg) ||
-                                    mLauncherApps.isPackageEnabledForProfile(targetPkg, c.user);
+                                    mLauncherApps.isPackageEnabled(targetPkg, c.user);
 
                             // If it's a deep shortcut, we'll use pinned shortcuts to restore it
                             if (cn != null && validTarget && c.itemType
@@ -399,7 +399,7 @@ public class LoaderTask implements Runnable {
                                 // component.
 
                                 // If the component is already present
-                                if (mLauncherApps.isActivityEnabledForProfile(cn, c.user)) {
+                                if (mLauncherApps.isActivityEnabled(cn, c.user)) {
                                     // no special handling necessary for this item
                                     c.markRestored();
                                 } else {

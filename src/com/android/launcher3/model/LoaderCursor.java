@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.Intent.ShortcutIconResource;
 import android.content.pm.LauncherActivityInfo;
+import android.content.pm.LauncherApps;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.CursorWrapper;
@@ -33,17 +34,16 @@ import android.util.Log;
 import android.util.LongSparseArray;
 
 import com.android.launcher3.AppInfo;
-import com.android.launcher3.WorkspaceItemInfo;
-import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
-import com.android.launcher3.compat.LauncherAppsCompat;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.BitmapInfo;
+import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.util.ContentWriter;
@@ -260,7 +260,7 @@ public class LoaderCursor extends CursorWrapper {
         Intent newIntent = new Intent(Intent.ACTION_MAIN, null);
         newIntent.addCategory(Intent.CATEGORY_LAUNCHER);
         newIntent.setComponent(componentName);
-        LauncherActivityInfo lai = LauncherAppsCompat.getInstance(mContext)
+        LauncherActivityInfo lai = mContext.getSystemService(LauncherApps.class)
                 .resolveActivity(newIntent, user);
         if ((lai == null) && !allowMissingTarget) {
             Log.d(TAG, "Missing activity found in getShortcutInfo: " + componentName);

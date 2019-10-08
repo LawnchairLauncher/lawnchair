@@ -23,6 +23,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherActivityInfo;
+import android.content.pm.LauncherApps;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageInstaller;
 import android.content.pm.PackageManager;
@@ -42,7 +43,6 @@ import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.LauncherFiles;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.WorkspaceItemInfo;
-import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.ComponentWithLabel.ComponentCachingLogic;
@@ -66,7 +66,7 @@ public class IconCache extends BaseIconCache {
     private final CachingLogic<ComponentWithLabel> mComponentWithLabelCachingLogic;
     private final CachingLogic<LauncherActivityInfo> mLauncherActivityInfoCachingLogic;
 
-    private final LauncherAppsCompat mLauncherApps;
+    private final LauncherApps mLauncherApps;
     private final UserManagerCompat mUserManager;
     private final InstantAppResolver mInstantAppResolver;
     private final IconProvider mIconProvider;
@@ -78,7 +78,7 @@ public class IconCache extends BaseIconCache {
                 inv.fillResIconDpi, inv.iconBitmapSize, true /* inMemoryCache */);
         mComponentWithLabelCachingLogic = new ComponentCachingLogic(context, false);
         mLauncherActivityInfoCachingLogic = LauncherActivityCachingLogic.newInstance(context);
-        mLauncherApps = LauncherAppsCompat.getInstance(mContext);
+        mLauncherApps = mContext.getSystemService(LauncherApps.class);
         mUserManager = UserManagerCompat.getInstance(mContext);
         mInstantAppResolver = InstantAppResolver.newInstance(mContext);
         mIconProvider = IconProvider.INSTANCE.get(context);

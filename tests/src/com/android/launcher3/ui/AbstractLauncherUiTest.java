@@ -34,6 +34,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.pm.LauncherActivityInfo;
+import android.content.pm.LauncherApps;
 import android.content.pm.PackageManager;
 import android.os.Process;
 import android.os.RemoteException;
@@ -52,7 +53,6 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.tapl.TestHelpers;
@@ -335,9 +335,8 @@ public abstract class AbstractLauncherUiTest {
     }
 
     protected LauncherActivityInfo getSettingsApp() {
-        return LauncherAppsCompat.getInstance(mTargetContext)
-                .getActivityList("com.android.settings",
-                        Process.myUserHandle()).get(0);
+        return mTargetContext.getSystemService(LauncherApps.class)
+                .getActivityList("com.android.settings", Process.myUserHandle()).get(0);
     }
 
     /**

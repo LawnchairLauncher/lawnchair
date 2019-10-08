@@ -31,11 +31,11 @@ import android.text.TextUtils;
 
 import com.android.launcher3.SessionCommitReceiver;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.LooperExecutor;
+import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.PackageUserKey;
 
 import java.util.ArrayList;
@@ -103,8 +103,8 @@ public class PackageInstallerCompat {
     public HashMap<PackageUserKey, SessionInfo> getActiveSessions() {
         HashMap<PackageUserKey, SessionInfo> activePackages = new HashMap<>();
         for (SessionInfo info : getAllVerifiedSessions()) {
-            activePackages.put(
-                    new PackageUserKey(info.getAppPackageName(), getUserHandle(info)), info);
+            activePackages.put(new PackageUserKey(info.getAppPackageName(), getUserHandle(info)),
+                    info);
         }
         return activePackages;
     }
@@ -141,9 +141,8 @@ public class PackageInstallerCompat {
         String pkg = sessionInfo.getInstallerPackageName();
         synchronized (mSessionVerifiedMap) {
             if (!mSessionVerifiedMap.containsKey(pkg)) {
-                LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(mAppContext);
-                boolean hasSystemFlag = launcherApps.getApplicationInfo(pkg,
-                        ApplicationInfo.FLAG_SYSTEM, getUserHandle(sessionInfo)) != null;
+                boolean hasSystemFlag = new PackageManagerHelper(mAppContext).getApplicationInfo(
+                        pkg, getUserHandle(sessionInfo), ApplicationInfo.FLAG_SYSTEM) != null;
                 mSessionVerifiedMap.put(pkg, DEBUG || hasSystemFlag);
             }
         }
@@ -190,8 +189,8 @@ public class PackageInstallerCompat {
                 && sessionInfo.getAppIcon() != null
                 && !TextUtils.isEmpty(sessionInfo.getAppLabel())
                 && !mPromiseIconIds.contains(sessionInfo.getSessionId())
-                && LauncherAppsCompat.getInstance(mAppContext).getApplicationInfo(
-                        sessionInfo.getAppPackageName(), 0, getUserHandle(sessionInfo)) == null) {
+                && new PackageManagerHelper(mAppContext).getApplicationInfo(
+                        sessionInfo.getAppPackageName(), getUserHandle(sessionInfo), 0) == null) {
             SessionCommitReceiver.queuePromiseAppIconAddition(mAppContext, sessionInfo);
             mPromiseIconIds.add(sessionInfo.getSessionId());
             updatePromiseIconPrefs();

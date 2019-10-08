@@ -90,7 +90,6 @@ import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
-import com.android.launcher3.compat.LauncherAppsCompatVO;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.dragndrop.DragController;
@@ -110,6 +109,7 @@ import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.notification.NotificationListener;
+import com.android.launcher3.pm.PinRequestHelper;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.qsb.QsbContainerView;
@@ -1230,8 +1230,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
         WorkspaceItemInfo info = null;
         if (Utilities.ATLEAST_OREO) {
-            info = LauncherAppsCompatVO.createWorkspaceItemFromPinItemRequest(
-                    this, LauncherAppsCompatVO.getPinItemRequest(data), 0);
+            info = PinRequestHelper.createWorkspaceItemFromPinItemRequest(
+                    this, PinRequestHelper.getPinItemRequest(data), 0);
         }
 
         if (info == null) {

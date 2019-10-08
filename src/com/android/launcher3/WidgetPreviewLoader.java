@@ -35,13 +35,13 @@ import android.util.Pair;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.compat.AppWidgetManagerCompat;
-import com.android.launcher3.compat.ShortcutConfigActivityInfo;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.icons.GraphicsUtils;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.icons.ShadowGenerator;
 import com.android.launcher3.model.WidgetItem;
+import com.android.launcher3.pm.ShortcutConfigActivityInfo;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.PackageUserKey;
