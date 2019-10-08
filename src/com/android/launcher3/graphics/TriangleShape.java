@@ -19,7 +19,8 @@ package com.android.launcher3.graphics;
 import android.graphics.Outline;
 import android.graphics.Path;
 import android.graphics.drawable.shapes.PathShape;
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
 
 /**
  * Wrapper around {@link android.graphics.drawable.shapes.PathShape}

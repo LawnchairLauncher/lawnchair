@@ -24,11 +24,55 @@
     android:clipChildren="true"
     android:clipToPadding="false"
     android:focusable="false"
-    android:saveEnabled="false" >
+    android:saveEnabled="false">
 
-    <include layout="@layout/all_apps_rv_layout" />
+    <include
+        layout="@layout/all_apps_rv_layout"
+        android:visibility="gone" />
 
-    <include layout="@layout/all_apps_floating_header" />
+    <com.android.launcher3.allapps.FloatingHeaderView
+        android:id="@+id/all_apps_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/search_container_all_apps"
+        android:clipToPadding="false"
+        android:paddingTop="@dimen/all_apps_header_top_padding"
+        android:orientation="vertical" >
+
+        <include layout="@layout/floating_header_content" />
+
+        <com.android.launcher3.allapps.PersonalWorkSlidingTabStrip
+            android:id="@+id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/all_apps_header_tab_height"
+            android:layout_marginLeft="@dimen/all_apps_tabs_side_padding"
+            android:layout_marginRight="@dimen/all_apps_tabs_side_padding"
+            android:orientation="horizontal"
+            style="@style/TextHeadline">
+
+            <Button
+                android:id="@+id/tab_personal"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="?android:attr/selectableItemBackground"
+                android:text="@string/all_apps_personal_tab"
+                android:textAllCaps="true"
+                android:textColor="@color/all_apps_tab_text"
+                android:textSize="14sp" />
+
+            <Button
+                android:id="@+id/tab_work"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="?android:attr/selectableItemBackground"
+                android:text="@string/all_apps_work_tab"
+                android:textAllCaps="true"
+                android:textColor="@color/all_apps_tab_text"
+                android:textSize="14sp" />
+        </com.android.launcher3.allapps.PersonalWorkSlidingTabStrip>
+    </com.android.launcher3.allapps.FloatingHeaderView>
 
     <include
         android:id="@id/search_container_all_apps"

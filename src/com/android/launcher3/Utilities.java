@@ -16,22 +16,33 @@
 
 package com.android.launcher3;
 
+import android.animation.ValueAnimator;
+import android.annotation.TargetApi;
+import android.app.ActivityManager;
 import android.app.WallpaperManager;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
+import android.content.pm.ShortcutInfo;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.InsetDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.DeadObjectException;
@@ -39,6 +50,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
 import android.os.TransactionTooLargeException;
+import android.provider.Settings;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -47,25 +59,40 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Pair;
 import android.util.TypedValue;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.animation.Interpolator;
 
+import com.android.launcher3.compat.LauncherAppsCompat;
+import com.android.launcher3.compat.ShortcutConfigActivityInfo;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.dragndrop.FolderAdaptiveIcon;
+import com.android.launcher3.graphics.RotationMode;
+import com.android.launcher3.graphics.TintedDrawableSpan;
+import com.android.launcher3.icons.LauncherIcons;
+import com.android.launcher3.shortcuts.DeepShortcutManager;
+import com.android.launcher3.shortcuts.ShortcutKey;
+import com.android.launcher3.util.IntArray;
+import com.android.launcher3.util.PackageManagerHelper;
+import com.android.launcher3.views.Transposable;
+import com.android.launcher3.widget.PendingAddShortcutInfo;
 
-import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Collection;
-import java.util.HashSet;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
+import java.util.StringTokenizer;
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static com.android.launcher3.ItemInfoWithIcon.FLAG_ICON_BADGED;
 
 /**
  * Various utilities shared amongst the Launcher's classes.
@@ -79,9 +106,10 @@ public final class Utilities {
 
     private static final int[] sLoc0 = new int[2];
     private static final int[] sLoc1 = new int[2];
-    private static final float[] sPoint = new float[2];
     private static final Matrix sMatrix = new Matrix();
     private static final Matrix sInverseMatrix = new Matrix();
+
+    public static final boolean ATLEAST_Q = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
 
     public static final boolean ATLEAST_P =
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.P;
@@ -92,19 +120,22 @@ public final class Utilities {
     public static final boolean ATLEAST_OREO =
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
 
-    public static final boolean ATLEAST_NOUGAT_MR1 =
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1;
-
-    public static final boolean ATLEAST_NOUGAT =
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.N;
-
-    public static final boolean ATLEAST_MARSHMALLOW =
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
-
-    public static final boolean ATLEAST_LOLLIPOP_MR1 =
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1;
-
     public static final int SINGLE_FRAME_MS = 16;
+
+    /**
+     * Set on a motion event dispatched from the nav bar. See {@link MotionEvent#setEdgeFlags(int)}.
+     */
+    public static final int EDGE_NAV_BAR = 1 << 8;
+
+    /**
+     * Set on a motion event do disallow any gestures and only handle touch.
+     * See {@link MotionEvent#setEdgeFlags(int)}.
+     */
+    public static final int FLAG_NO_GESTURES = 1 << 9;
+
+    public static boolean shouldDisableGestures(MotionEvent ev) {
+        return (ev.getEdgeFlags() & FLAG_NO_GESTURES) == FLAG_NO_GESTURES;
+    }
 
     /**
      * Indicates if the device has a debug build. Should only be used to store additional info or
@@ -114,11 +145,14 @@ public final class Utilities {
             Build.TYPE.toLowerCase(Locale.ROOT).contains("debug") ||
             Build.TYPE.toLowerCase(Locale.ROOT).equals("eng");
 
+    public static boolean isDevelopersOptionsEnabled(Context context) {
+        return Settings.Global.getInt(context.getApplicationContext().getContentResolver(),
+                        Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0) != 0;
+    }
+
     // An intent extra to indicate the horizontal scroll of the wallpaper.
     public static final String EXTRA_WALLPAPER_OFFSET = "com.android.launcher3.WALLPAPER_OFFSET";
-
-    public static final int COLOR_EXTRACTION_JOB_ID = 1;
-    public static final int WALLPAPER_COMPAT_JOB_ID = 2;
+    public static final String EXTRA_WALLPAPER_FLAVOR = "com.android.launcher3.WALLPAPER_FLAVOR";
 
     // These values are same as that in {@link AsyncTask}.
     private static final int CPU_COUNT = Runtime.getRuntime().availableProcessors();
@@ -130,10 +164,23 @@ public final class Utilities {
      */
     public static final Executor THREAD_POOL_EXECUTOR = new ThreadPoolExecutor(
             CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE,
-            TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+            TimeUnit.SECONDS, new LinkedBlockingQueue<>());
+
+    public static boolean IS_RUNNING_IN_TEST_HARNESS =
+                    ActivityManager.isRunningInTestHarness();
+
+    public static void enableRunningInTestHarnessForTests() {
+        IS_RUNNING_IN_TEST_HARNESS = true;
+    }
 
     public static boolean isPropertyEnabled(String propertyName) {
         return Log.isLoggable(propertyName, Log.VERBOSE);
+    }
+
+    public static boolean existsStyleWallpapers(Context context) {
+        ResolveInfo ri = context.getPackageManager().resolveActivity(
+                PackageManagerHelper.getStyleWallpapersIntent(context), 0);
+        return ri != null;
     }
 
     /**
@@ -150,37 +197,67 @@ public final class Utilities {
      *         assumption fails, we will need to return a pair of scale factors.
      */
     public static float getDescendantCoordRelativeToAncestor(
-            View descendant, View ancestor, int[] coord, boolean includeRootScroll) {
-        sPoint[0] = coord[0];
-        sPoint[1] = coord[1];
+            View descendant, View ancestor, float[] coord, boolean includeRootScroll) {
+        return getDescendantCoordRelativeToAncestor(descendant, ancestor, coord, includeRootScroll,
+                false, null);
+    }
 
+    /**
+     * Given a coordinate relative to the descendant, find the coordinate in a parent view's
+     * coordinates.
+     *
+     * @param descendant The descendant to which the passed coordinate is relative.
+     * @param ancestor The root view to make the coordinates relative to.
+     * @param coord The coordinate that we want mapped.
+     * @param includeRootScroll Whether or not to account for the scroll of the descendant:
+     *          sometimes this is relevant as in a child's coordinates within the descendant.
+     * @param ignoreTransform If true, view transform is ignored
+     * @param outRotation If not null, and {@param ignoreTransform} is true, this is set to the
+     *                   overall rotation of the view in degrees.
+     * @return The factor by which this descendant is scaled relative to this DragLayer. Caution
+     *         this scale factor is assumed to be equal in X and Y, and so if at any point this
+     *         assumption fails, we will need to return a pair of scale factors.
+     */
+    public static float getDescendantCoordRelativeToAncestor(View descendant, View ancestor,
+            float[] coord, boolean includeRootScroll, boolean ignoreTransform,
+            float[] outRotation) {
         float scale = 1.0f;
         View v = descendant;
         while(v != ancestor && v != null) {
             // For TextViews, scroll has a meaning which relates to the text position
             // which is very strange... ignore the scroll.
             if (v != descendant || includeRootScroll) {
-                sPoint[0] -= v.getScrollX();
-                sPoint[1] -= v.getScrollY();
+                offsetPoints(coord, -v.getScrollX(), -v.getScrollY());
             }
 
-            v.getMatrix().mapPoints(sPoint);
-            sPoint[0] += v.getLeft();
-            sPoint[1] += v.getTop();
+            if (ignoreTransform) {
+                if (v instanceof Transposable) {
+                    RotationMode m = ((Transposable) v).getRotationMode();
+                    if (m.isTransposed) {
+                        sMatrix.setRotate(m.surfaceRotation, v.getPivotX(), v.getPivotY());
+                        sMatrix.mapPoints(coord);
+
+                        if (outRotation != null) {
+                            outRotation[0] += m.surfaceRotation;
+                        }
+                    }
+                }
+            } else {
+                v.getMatrix().mapPoints(coord);
+            }
+            offsetPoints(coord, v.getLeft(), v.getTop());
             scale *= v.getScaleX();
 
             v = (View) v.getParent();
         }
-
-        coord[0] = Math.round(sPoint[0]);
-        coord[1] = Math.round(sPoint[1]);
         return scale;
     }
 
+
     /**
-     * Inverse of {@link #getDescendantCoordRelativeToAncestor(View, View, int[], boolean)}.
+     * Inverse of {@link #getDescendantCoordRelativeToAncestor(View, View, float[], boolean)}.
      */
-    public static void mapCoordInSelfToDescendant(View descendant, View root, int[] coord) {
+    public static void mapCoordInSelfToDescendant(View descendant, View root, float[] coord) {
         sMatrix.reset();
         View v = descendant;
         while(v != root) {
@@ -191,12 +268,23 @@ public final class Utilities {
         }
         sMatrix.postTranslate(-v.getScrollX(), -v.getScrollY());
         sMatrix.invert(sInverseMatrix);
+        sInverseMatrix.mapPoints(coord);
+    }
 
-        sPoint[0] = coord[0];
-        sPoint[1] = coord[1];
-        sInverseMatrix.mapPoints(sPoint);
-        coord[0] = Math.round(sPoint[0]);
-        coord[1] = Math.round(sPoint[1]);
+    /**
+     * Sets {@param out} to be same as {@param in} by rounding individual values
+     */
+    public static void roundArray(float[] in, int[] out) {
+       for (int i = 0; i < in.length; i++) {
+           out[i] = Math.round(in[i]);
+       }
+    }
+
+    public static void offsetPoints(float[] points, float offsetX, float offsetY) {
+        for (int i = 0; i < points.length; i += 2) {
+            points[i] += offsetX;
+            points[i + 1] += offsetY;
+        }
     }
 
     /**
@@ -289,8 +377,12 @@ public final class Utilities {
             Log.e(TAG, "mapToRange: range has 0 length");
             return toMin;
         }
-        float progress = Math.abs(t - fromMin) / Math.abs(fromMax - fromMin);
+        float progress = getProgress(t, fromMin, fromMax);
         return mapRange(interpolator.getInterpolation(progress), toMin, toMax);
+    }
+
+    public static float getProgress(float current, float min, float max) {
+        return Math.abs(current - min) / Math.abs(max - min);
     }
 
     public static float mapRange(float value, float min, float max) {
@@ -342,25 +434,6 @@ public final class Utilities {
             }
         }
         return null;
-    }
-
-    /**
-     * Compresses the bitmap to a byte array for serialization.
-     */
-    public static byte[] flattenBitmap(Bitmap bitmap) {
-        // Try go guesstimate how much space the icon will take when serialized
-        // to avoid unnecessary allocations/copies during the write.
-        int size = bitmap.getWidth() * bitmap.getHeight() * 4;
-        ByteArrayOutputStream out = new ByteArrayOutputStream(size);
-        try {
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
-            out.flush();
-            out.close();
-            return out.toByteArray();
-        } catch (IOException e) {
-            Log.w(TAG, "Could not write bitmap");
-            return null;
-        }
     }
 
     /**
@@ -436,17 +509,14 @@ public final class Utilities {
         float densityRatio = (float) metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT;
         return (size / densityRatio);
     }
-    public static int pxFromDp(float size, DisplayMetrics metrics) {
-        return (int) Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                size, metrics));
-    }
+
     public static int pxFromSp(float size, DisplayMetrics metrics) {
         return (int) Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
                 size, metrics));
     }
 
-    public static String createDbSelectionQuery(String columnName, Iterable<?> values) {
-        return String.format(Locale.ENGLISH, "%s IN (%s)", columnName, TextUtils.join(", ", values));
+    public static String createDbSelectionQuery(String columnName, IntArray values) {
+        return String.format(Locale.ENGLISH, "%s IN (%s)", columnName, values.toConcatString());
     }
 
     public static boolean isBootCompleted() {
@@ -504,10 +574,17 @@ public final class Utilities {
     }
 
     /**
-     * Replacement for Long.compare() which was added in API level 19.
+     * Prefixes a text with the provided icon
      */
-    public static int longCompare(long lhs, long rhs) {
-        return lhs < rhs ? -1 : (lhs == rhs ? 0 : 1);
+    public static CharSequence prefixTextWithIcon(Context context, int iconRes, CharSequence msg) {
+        // Update the hint to contain the icon.
+        // Prefix the original hint with two spaces. The first space gets replaced by the icon
+        // using span. The second space is used for a singe space character between the hint
+        // and the icon.
+        SpannableString spanned = new SpannableString("  " + msg);
+        spanned.setSpan(new TintedDrawableSpan(context, iconRes),
+                0, 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+        return spanned;
     }
 
     public static SharedPreferences getPrefs(Context context) {
@@ -520,24 +597,14 @@ public final class Utilities {
                 LauncherFiles.DEVICE_PREFERENCES_KEY, Context.MODE_PRIVATE);
     }
 
-    public static boolean isPowerSaverPreventingAnimation(Context context) {
-        if (ATLEAST_P) {
-            // Battery saver mode no longer prevents animations.
-            return false;
-        }
-        PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-        return powerManager.isPowerSaveMode();
+    public static boolean areAnimationsEnabled(Context context) {
+        return ATLEAST_OREO
+                ? ValueAnimator.areAnimatorsEnabled()
+                : !context.getSystemService(PowerManager.class).isPowerSaveMode();
     }
 
     public static boolean isWallpaperAllowed(Context context) {
-        if (ATLEAST_NOUGAT) {
-            try {
-                WallpaperManager wm = context.getSystemService(WallpaperManager.class);
-                return (Boolean) wm.getClass().getDeclaredMethod("isSetWallpaperAllowed")
-                        .invoke(wm);
-            } catch (Exception e) { }
-        }
-        return true;
+        return context.getSystemService(WallpaperManager.class).isSetWallpaperAllowed();
     }
 
     public static void closeSilently(Closeable c) {
@@ -552,63 +619,9 @@ public final class Utilities {
         }
     }
 
-    /**
-     * Returns true if {@param original} contains all entries defined in {@param updates} and
-     * have the same value.
-     * The comparison uses {@link Object#equals(Object)} to compare the values.
-     */
-    public static boolean containsAll(Bundle original, Bundle updates) {
-        for (String key : updates.keySet()) {
-            Object value1 = updates.get(key);
-            Object value2 = original.get(key);
-            if (value1 == null) {
-                if (value2 != null) {
-                    return false;
-                }
-            } else if (!value1.equals(value2)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /** Returns whether the collection is null or empty. */
-    public static boolean isEmpty(Collection c) {
-        return c == null || c.isEmpty();
-    }
-
     public static boolean isBinderSizeError(Exception e) {
         return e.getCause() instanceof TransactionTooLargeException
                 || e.getCause() instanceof DeadObjectException;
-    }
-
-    public static <T> T getOverrideObject(Class<T> clazz, Context context, int resId) {
-        String className = context.getString(resId);
-        if (!TextUtils.isEmpty(className)) {
-            try {
-                Class<?> cls = Class.forName(className);
-                return (T) cls.getDeclaredConstructor(Context.class).newInstance(context);
-            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-                    | ClassCastException | NoSuchMethodException | InvocationTargetException e) {
-                Log.e(TAG, "Bad overriden class", e);
-            }
-        }
-
-        try {
-            return clazz.newInstance();
-        } catch (InstantiationException|IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * Returns a HashSet with a single element. We use this instead of Collections.singleton()
-     * because HashSet ensures all operations, such as remove, are supported.
-     */
-    public static <T> HashSet<T> singletonHashSet(T elem) {
-        HashSet<T> hashSet = new HashSet<>(1);
-        hashSet.add(elem);
-        return hashSet;
     }
 
     /**
@@ -618,5 +631,153 @@ public final class Utilities {
         Message msg = Message.obtain(handler, callback);
         msg.setAsynchronous(true);
         handler.sendMessage(msg);
+    }
+
+    /**
+     * Parses a string encoded using {@link #getPointString(int, int)}
+     */
+    public static Point parsePoint(String point) {
+        String[] split = point.split(",");
+        return new Point(Integer.parseInt(split[0]), Integer.parseInt(split[1]));
+    }
+
+    /**
+     * Encodes a point to string to that it can be persisted atomically.
+     */
+    public static String getPointString(int x, int y) {
+        return String.format(Locale.ENGLISH, "%d,%d", x, y);
+    }
+
+    public static void unregisterReceiverSafely(Context context, BroadcastReceiver receiver) {
+        try {
+            context.unregisterReceiver(receiver);
+        } catch (IllegalArgumentException e) {}
+    }
+
+    /**
+     * Returns the full drawable for {@param info}.
+     * @param outObj this is set to the internal data associated with {@param info},
+     *               eg {@link LauncherActivityInfo} or {@link ShortcutInfo}.
+     */
+    public static Drawable getFullDrawable(Launcher launcher, ItemInfo info, int width, int height,
+            boolean flattenDrawable, Object[] outObj) {
+        LauncherAppState appState = LauncherAppState.getInstance(launcher);
+        if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
+            LauncherActivityInfo activityInfo = LauncherAppsCompat.getInstance(launcher)
+                    .resolveActivity(info.getIntent(), info.user);
+            outObj[0] = activityInfo;
+            return (activityInfo != null) ? appState.getIconCache()
+                    .getFullResIcon(activityInfo, flattenDrawable) : null;
+        } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
+            if (info instanceof PendingAddShortcutInfo) {
+                ShortcutConfigActivityInfo activityInfo =
+                        ((PendingAddShortcutInfo) info).activityInfo;
+                outObj[0] = activityInfo;
+                return activityInfo.getFullResIcon(appState.getIconCache());
+            }
+            ShortcutKey key = ShortcutKey.fromItemInfo(info);
+            DeepShortcutManager sm = DeepShortcutManager.getInstance(launcher);
+            List<ShortcutInfo> si = sm.queryForFullDetails(
+                    key.componentName.getPackageName(), Arrays.asList(key.getId()), key.user);
+            if (si.isEmpty()) {
+                return null;
+            } else {
+                outObj[0] = si.get(0);
+                return sm.getShortcutIconDrawable(si.get(0),
+                        appState.getInvariantDeviceProfile().fillResIconDpi);
+            }
+        } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
+            FolderAdaptiveIcon icon = FolderAdaptiveIcon.createFolderAdaptiveIcon(
+                    launcher, info.id, new Point(width, height));
+            if (icon == null) {
+                return null;
+            }
+            outObj[0] = icon;
+            return icon;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * For apps icons and shortcut icons that have badges, this method creates a drawable that can
+     * later on be rendered on top of the layers for the badges. For app icons, work profile badges
+     * can only be applied. For deep shortcuts, when dragged from the pop up container, there's no
+     * badge. When dragged from workspace or folder, it may contain app AND/OR work profile badge
+     **/
+    @TargetApi(Build.VERSION_CODES.O)
+    public static Drawable getBadge(Launcher launcher, ItemInfo info, Object obj) {
+        LauncherAppState appState = LauncherAppState.getInstance(launcher);
+        int iconSize = appState.getInvariantDeviceProfile().iconBitmapSize;
+        if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
+            boolean iconBadged = (info instanceof ItemInfoWithIcon)
+                    && (((ItemInfoWithIcon) info).runtimeStatusFlags & FLAG_ICON_BADGED) > 0;
+            if ((info.id == ItemInfo.NO_ID && !iconBadged)
+                    || !(obj instanceof ShortcutInfo)) {
+                // The item is not yet added on home screen.
+                return new FixedSizeEmptyDrawable(iconSize);
+            }
+            ShortcutInfo si = (ShortcutInfo) obj;
+            LauncherIcons li = LauncherIcons.obtain(appState.getContext());
+            Bitmap badge = li.getShortcutInfoBadge(si, appState.getIconCache()).iconBitmap;
+            li.recycle();
+            float badgeSize = launcher.getResources().getDimension(R.dimen.profile_badge_size);
+            float insetFraction = (iconSize - badgeSize) / iconSize;
+            return new InsetDrawable(new FastBitmapDrawable(badge),
+                    insetFraction, insetFraction, 0, 0);
+        } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
+            return ((FolderAdaptiveIcon) obj).getBadge();
+        } else {
+            return launcher.getPackageManager()
+                    .getUserBadgedIcon(new FixedSizeEmptyDrawable(iconSize), info.user);
+        }
+    }
+
+    public static int[] getIntArrayFromString(String tokenized) {
+        StringTokenizer tokenizer = new StringTokenizer(tokenized, ",");
+        int[] array = new int[tokenizer.countTokens()];
+        int count = 0;
+        while (tokenizer.hasMoreTokens()) {
+            array[count] = Integer.parseInt(tokenizer.nextToken());
+            count++;
+        }
+        return array;
+    }
+
+    public static String getStringFromIntArray(int[] array) {
+        StringBuilder str = new StringBuilder();
+        for (int value : array) {
+            str.append(value).append(",");
+        }
+        return str.toString();
+    }
+
+    public static float squaredHypot(float x, float y) {
+        return x * x + y * y;
+    }
+
+    public static float squaredTouchSlop(Context context) {
+        float slop = ViewConfiguration.get(context).getScaledTouchSlop();
+        return slop * slop;
+    }
+
+    private static class FixedSizeEmptyDrawable extends ColorDrawable {
+
+        private final int mSize;
+
+        public FixedSizeEmptyDrawable(int size) {
+            super(Color.TRANSPARENT);
+            mSize = size;
+        }
+
+        @Override
+        public int getIntrinsicHeight() {
+            return mSize;
+        }
+
+        @Override
+        public int getIntrinsicWidth() {
+            return mSize;
+        }
     }
 }

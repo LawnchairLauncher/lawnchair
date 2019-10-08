@@ -15,7 +15,6 @@
  */
 package com.android.launcher3.model;
 
-import android.os.UserHandle;
 import android.util.Log;
 
 import com.android.launcher3.AllAppsList;
@@ -24,13 +23,13 @@ import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherModel.ModelUpdateTask;
 import com.android.launcher3.LauncherModel.CallbackTask;
 import com.android.launcher3.LauncherModel.Callbacks;
-import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ItemInfoMatcher;
-import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.widget.WidgetListRowEntry;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.Executor;
 
 /**
@@ -94,26 +93,21 @@ public abstract class BaseModelUpdateTask implements ModelUpdateTask {
     }
 
 
-    public void bindUpdatedShortcuts(
-            final ArrayList<ShortcutInfo> updatedShortcuts, final UserHandle user) {
+    public void bindUpdatedWorkspaceItems(final ArrayList<WorkspaceItemInfo> updatedShortcuts) {
         if (!updatedShortcuts.isEmpty()) {
             scheduleCallbackTask(new CallbackTask() {
                 @Override
                 public void execute(Callbacks callbacks) {
-                    callbacks.bindShortcutsChanged(updatedShortcuts, user);
+                    callbacks.bindWorkspaceItemsChanged(updatedShortcuts);
                 }
             });
         }
     }
 
     public void bindDeepShortcuts(BgDataModel dataModel) {
-        final MultiHashMap<ComponentKey, String> shortcutMapCopy = dataModel.deepShortcutMap.clone();
-        scheduleCallbackTask(new CallbackTask() {
-            @Override
-            public void execute(Callbacks callbacks) {
-                callbacks.bindDeepShortcutMap(shortcutMapCopy);
-            }
-        });
+        final HashMap<ComponentKey, Integer> shortcutMapCopy =
+                new HashMap<>(dataModel.deepShortcutMap);
+        scheduleCallbackTask(callbacks -> callbacks.bindDeepShortcutMap(shortcutMapCopy));
     }
 
     public void bindUpdatedWidgets(BgDataModel dataModel) {

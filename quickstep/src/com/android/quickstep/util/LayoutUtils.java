@@ -20,11 +20,13 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Rect;
-import android.support.annotation.AnyThread;
-import android.support.annotation.IntDef;
+
+import androidx.annotation.AnyThread;
+import androidx.annotation.IntDef;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
+import com.android.launcher3.config.FeatureFlags;
 
 import java.lang.annotation.Retention;
 
@@ -108,6 +110,14 @@ public class LayoutUtils {
         float y = insets.top + Math.max(topIconMargin,
                 (launcherVisibleHeight - extraVerticalSpace - outHeight) / 2);
         outRect.set(Math.round(x), Math.round(y),
-                Math.round(x + outWidth), Math.round(y + outHeight));
+                Math.round(x) + Math.round(outWidth), Math.round(y) + Math.round(outHeight));
+    }
+
+    public static int getShelfTrackingDistance(Context context, DeviceProfile dp) {
+        // Track the bottom of the window.
+        int shelfHeight = dp.hotseatBarSizePx + dp.getInsets().bottom;
+        int spaceBetweenShelfAndRecents = (int) context.getResources().getDimension(
+                R.dimen.task_card_vert_space);
+        return shelfHeight + spaceBetweenShelfAndRecents;
     }
 }

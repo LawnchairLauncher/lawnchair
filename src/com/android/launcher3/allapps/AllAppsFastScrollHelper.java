@@ -15,12 +15,12 @@
  */
 package com.android.launcher3.allapps;
 
-import android.support.v7.widget.RecyclerView;
-
 import com.android.launcher3.util.Thunk;
 
 import java.util.HashSet;
 import java.util.List;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 public class AllAppsFastScrollHelper implements AllAppsGridAdapter.BindViewCallback {
 

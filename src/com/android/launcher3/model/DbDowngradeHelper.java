@@ -21,6 +21,7 @@ import android.database.sqlite.SQLiteException;
 import android.util.Log;
 import android.util.SparseArray;
 
+import com.android.launcher3.R;
 import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction;
 import com.android.launcher3.util.IOUtils;
 
@@ -87,8 +88,7 @@ public class DbDowngradeHelper {
         return helper;
     }
 
-    public static void updateSchemaFile(File schemaFile, int expectedVersion,
-            Context context, int schemaResId) {
+    public static void updateSchemaFile(File schemaFile, int expectedVersion, Context context) {
         try {
             if (DbDowngradeHelper.parse(schemaFile).version >= expectedVersion) {
                 return;
@@ -99,7 +99,7 @@ public class DbDowngradeHelper {
 
         // Write the updated schema
         try (FileOutputStream fos = new FileOutputStream(schemaFile);
-            InputStream in = context.getResources().openRawResource(schemaResId)) {
+            InputStream in = context.getResources().openRawResource(R.raw.downgrade_schema)) {
             IOUtils.copy(in, fos);
         } catch (IOException e) {
             Log.e(TAG, "Error writing schema file", e);

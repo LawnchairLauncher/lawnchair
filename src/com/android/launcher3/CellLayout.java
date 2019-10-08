@@ -16,8 +16,11 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.anim.Interpolators.DEACCEL_1_5;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
@@ -34,17 +37,19 @@ import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Parcelable;
-import android.support.annotation.IntDef;
-import android.support.v4.view.ViewCompat;
 import android.util.ArrayMap;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.Property;
 import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
+
+import androidx.annotation.IntDef;
+import androidx.core.view.ViewCompat;
 
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.accessibility.DragAndDropAccessibilityDelegate;
@@ -55,11 +60,14 @@ import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.PreviewBackground;
 import com.android.launcher3.graphics.DragPreviewProvider;
+import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.util.CellAndSpan;
 import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.ParcelableSparseArray;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
+import com.android.launcher3.views.ActivityContext;
+import com.android.launcher3.views.Transposable;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 
 import java.lang.annotation.Retention;
@@ -70,14 +78,14 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Stack;
 
-public class CellLayout extends ViewGroup {
+public class CellLayout extends ViewGroup implements Transposable {
     public static final int WORKSPACE_ACCESSIBILITY_DRAG = 2;
     public static final int FOLDER_ACCESSIBILITY_DRAG = 1;
 
     private static final String TAG = "CellLayout";
     private static final boolean LOGD = false;
 
-    private final Launcher mLauncher;
+    protected final ActivityContext mActivity;
     @ViewDebug.ExportedProperty(category = "launcher")
     @Thunk int mCellWidth;
     @ViewDebug.ExportedProperty(category = "launcher")
@@ -101,7 +109,6 @@ public class CellLayout extends ViewGroup {
     private GridOccupancy mTmpOccupied;
 
     private OnTouchListener mInterceptTouchListener;
-    private final StylusEventHelper mStylusEventHelper;
 
     private final ArrayList<PreviewBackground> mFolderBackgrounds = new ArrayList<>();
     final PreviewBackground mFolderLeaveBehind = new PreviewBackground();
@@ -177,6 +184,7 @@ public class CellLayout extends ViewGroup {
     // Related to accessible drag and drop
     private DragAndDropAccessibilityDelegate mTouchHelper;
     private boolean mUseTouchHelper = false;
+    private RotationMode mRotationMode = RotationMode.NORMAL;
 
     public CellLayout(Context context) {
         this(context, null);
@@ -196,9 +204,9 @@ public class CellLayout extends ViewGroup {
         // the user where a dragged item will land when dropped.
         setWillNotDraw(false);
         setClipToPadding(false);
-        mLauncher = Launcher.getLauncher(context);
+        mActivity = ActivityContext.lookupContext(context);
 
-        DeviceProfile grid = mLauncher.getDeviceProfile();
+        DeviceProfile grid = mActivity.getWallpaperDeviceProfile();
 
         mCellWidth = mCellHeight = -1;
         mFixedCellWidth = mFixedCellHeight = -1;
@@ -243,7 +251,7 @@ public class CellLayout extends ViewGroup {
 
         for (int i = 0; i < mDragOutlineAnims.length; i++) {
             final InterruptibleInOutAnimator anim =
-                new InterruptibleInOutAnimator(this, duration, fromAlphaValue, toAlphaValue);
+                new InterruptibleInOutAnimator(duration, fromAlphaValue, toAlphaValue);
             anim.getAnimator().setInterpolator(mEaseOutInterpolator);
             final int thisIndex = i;
             anim.getAnimator().addUpdateListener(new AnimatorUpdateListener() {
@@ -281,8 +289,6 @@ public class CellLayout extends ViewGroup {
 
         mShortcutsAndWidgets = new ShortcutAndWidgetContainer(context, mContainerType);
         mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mCountX, mCountY);
-
-        mStylusEventHelper = new StylusEventHelper(new SimpleOnStylusPressListener(this), this);
         addView(mShortcutsAndWidgets);
     }
 
@@ -314,6 +320,24 @@ public class CellLayout extends ViewGroup {
         }
     }
 
+    public void setRotationMode(RotationMode mode) {
+        if (mRotationMode != mode) {
+            mRotationMode = mode;
+            requestLayout();
+        }
+    }
+
+    @Override
+    public RotationMode getRotationMode() {
+        return mRotationMode;
+    }
+
+    @Override
+    public void setPadding(int left, int top, int right, int bottom) {
+        mRotationMode.mapRect(left, top, right, bottom, mTempRect);
+        super.setPadding(mTempRect.left, mTempRect.top, mTempRect.right, mTempRect.bottom);
+    }
+
     @Override
     public boolean dispatchHoverEvent(MotionEvent event) {
         // Always attempt to dispatch hover events to accessibility first.
@@ -332,22 +356,12 @@ public class CellLayout extends ViewGroup {
         return false;
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent ev) {
-        boolean handled = super.onTouchEvent(ev);
-        // Stylus button press on a home screen should not switch between overview mode and
-        // the home screen mode, however, once in overview mode stylus button press should be
-        // enabled to allow rearranging the different home screens. So check what mode
-        // the workspace is in, and only perform stylus button presses while in overview mode.
-        if (mLauncher.isInState(LauncherState.OVERVIEW)
-                && mStylusEventHelper.onMotionEvent(ev)) {
-            return true;
-        }
-        return handled;
-    }
-
     public void enableHardwareLayer(boolean hasLayer) {
         mShortcutsAndWidgets.setLayerType(hasLayer ? LAYER_TYPE_HARDWARE : LAYER_TYPE_NONE, sPaint);
+    }
+
+    public boolean isHardwareLayerEnabled() {
+        return mShortcutsAndWidgets.getLayerType() == LAYER_TYPE_HARDWARE;
     }
 
     public void setCellDimensions(int width, int height) {
@@ -499,7 +513,7 @@ public class CellLayout extends ViewGroup {
 
     public void setFolderLeaveBehindCell(int x, int y) {
         View child = getChildAt(x, y);
-        mFolderLeaveBehind.setup(mLauncher, null,
+        mFolderLeaveBehind.setup(getContext(), mActivity, null,
                 child.getMeasuredWidth(), child.getPaddingTop());
 
         mFolderLeaveBehind.delegateCellX = x;
@@ -756,6 +770,14 @@ public class CellLayout extends ViewGroup {
         int heightSize =  MeasureSpec.getSize(heightMeasureSpec);
         int childWidthSize = widthSize - (getPaddingLeft() + getPaddingRight());
         int childHeightSize = heightSize - (getPaddingTop() + getPaddingBottom());
+
+        mShortcutsAndWidgets.setRotation(mRotationMode.surfaceRotation);
+        if (mRotationMode.isTransposed) {
+            int tmp = childWidthSize;
+            childWidthSize = childHeightSize;
+            childHeightSize = tmp;
+        }
+
         if (mFixedCellWidth < 0 || mFixedCellHeight < 0) {
             int cw = DeviceProfile.calculateCellWidth(childWidthSize, mCountX);
             int ch = DeviceProfile.calculateCellHeight(childHeightSize, mCountY);
@@ -798,7 +820,6 @@ public class CellLayout extends ViewGroup {
         int top = getPaddingTop();
         int bottom = b - t - getPaddingBottom();
 
-        mShortcutsAndWidgets.layout(left, top, right, bottom);
         // Expand the background drawing bounds by the padding baked into the background drawable
         mBackground.getPadding(mTempRect);
         mBackground.setBounds(
@@ -806,6 +827,16 @@ public class CellLayout extends ViewGroup {
                 top - mTempRect.top - getPaddingTop(),
                 right + mTempRect.right + getPaddingRight(),
                 bottom + mTempRect.bottom + getPaddingBottom());
+
+        if (mRotationMode.isTransposed) {
+            int halfW = mShortcutsAndWidgets.getMeasuredWidth() / 2;
+            int halfH = mShortcutsAndWidgets.getMeasuredHeight() / 2;
+            int cX = (left + right) / 2;
+            int cY = (top + bottom) / 2;
+            mShortcutsAndWidgets.layout(cX - halfW, cY - halfH, cX + halfW, cY + halfH);
+        } else {
+            mShortcutsAndWidgets.layout(left, top, right, bottom);
+        }
     }
 
     /**
@@ -814,7 +845,8 @@ public class CellLayout extends ViewGroup {
      * width in {@link DeviceProfile#calculateCellWidth(int, int)}.
      */
     public int getUnusedHorizontalSpace() {
-        return getMeasuredWidth() - getPaddingLeft() - getPaddingRight() - (mCountX * mCellWidth);
+        return (mRotationMode.isTransposed ? getMeasuredHeight() : getMeasuredWidth())
+                - getPaddingLeft() - getPaddingRight() - (mCountX * mCellWidth);
     }
 
     public Drawable getScrimBackground() {
@@ -877,7 +909,7 @@ public class CellLayout extends ViewGroup {
                 return true;
             }
 
-            ValueAnimator va = LauncherAnimUtils.ofFloat(0f, 1f);
+            ValueAnimator va = ValueAnimator.ofFloat(0f, 1f);
             va.setDuration(duration);
             mReorderAnimators.put(lp, va);
 
@@ -940,7 +972,7 @@ public class CellLayout extends ViewGroup {
             if (resize) {
                 cellToRect(cellX, cellY, spanX, spanY, r);
                 if (v instanceof LauncherAppWidgetHostView) {
-                    DeviceProfile profile = mLauncher.getDeviceProfile();
+                    DeviceProfile profile = mActivity.getWallpaperDeviceProfile();
                     Utilities.shrinkRect(r, profile.appWidgetScale.x, profile.appWidgetScale.y);
                 }
             } else {
@@ -1884,6 +1916,19 @@ public class CellLayout extends ViewGroup {
         }
     }
 
+    private static final Property<ReorderPreviewAnimation, Float> ANIMATION_PROGRESS =
+            new Property<ReorderPreviewAnimation, Float>(float.class, "animationProgress") {
+                @Override
+                public Float get(ReorderPreviewAnimation anim) {
+                    return anim.animationProgress;
+                }
+
+                @Override
+                public void set(ReorderPreviewAnimation anim, Float progress) {
+                    anim.setAnimationProgress(progress);
+                }
+            };
+
     // Class which represents the reorder preview animations. These animations show that an item is
     // in a temporary state, and hint at where the item will return to.
     class ReorderPreviewAnimation {
@@ -1904,7 +1949,8 @@ public class CellLayout extends ViewGroup {
         public static final int MODE_HINT = 0;
         public static final int MODE_PREVIEW = 1;
 
-        Animator a;
+        float animationProgress = 0;
+        ValueAnimator a;
 
         public ReorderPreviewAnimation(View child, int mode, int cellX0, int cellY0, int cellX1,
                 int cellY1, int spanX, int spanY) {
@@ -1974,33 +2020,19 @@ public class CellLayout extends ViewGroup {
             if (noMovement) {
                 return;
             }
-            ValueAnimator va = LauncherAnimUtils.ofFloat(0f, 1f);
+            ValueAnimator va = ObjectAnimator.ofFloat(this, ANIMATION_PROGRESS, 0, 1);
             a = va;
 
             // Animations are disabled in power save mode, causing the repeated animation to jump
             // spastically between beginning and end states. Since this looks bad, we don't repeat
             // the animation in power save mode.
-            if (!Utilities.isPowerSaverPreventingAnimation(getContext())) {
+            if (Utilities.areAnimationsEnabled(getContext())) {
                 va.setRepeatMode(ValueAnimator.REVERSE);
                 va.setRepeatCount(ValueAnimator.INFINITE);
             }
 
             va.setDuration(mode == MODE_HINT ? HINT_DURATION : PREVIEW_DURATION);
             va.setStartDelay((int) (Math.random() * 60));
-            va.addUpdateListener(new AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    float r = (Float) animation.getAnimatedValue();
-                    float r1 = (mode == MODE_HINT && repeating) ? 1.0f : r;
-                    float x = r1 * finalDeltaX + (1 - r1) * initDeltaX;
-                    float y = r1 * finalDeltaY + (1 - r1) * initDeltaY;
-                    child.setTranslationX(x);
-                    child.setTranslationY(y);
-                    float s = r * finalScale + (1 - r) * initScale;
-                    child.setScaleX(s);
-                    child.setScaleY(s);
-                }
-            });
             va.addListener(new AnimatorListenerAdapter() {
                 public void onAnimationRepeat(Animator animation) {
                     // We make sure to end only after a full period
@@ -2010,6 +2042,18 @@ public class CellLayout extends ViewGroup {
             });
             mShakeAnimators.put(child, this);
             va.start();
+        }
+
+        private void setAnimationProgress(float progress) {
+            animationProgress = progress;
+            float r1 = (mode == MODE_HINT && repeating) ? 1.0f : animationProgress;
+            float x = r1 * finalDeltaX + (1 - r1) * initDeltaX;
+            float y = r1 * finalDeltaY + (1 - r1) * initDeltaY;
+            child.setTranslationX(x);
+            child.setTranslationY(y);
+            float s = animationProgress * finalScale + (1 - animationProgress) * initScale;
+            child.setScaleX(s);
+            child.setScaleY(s);
         }
 
         private void cancel() {
@@ -2024,14 +2068,14 @@ public class CellLayout extends ViewGroup {
             }
 
             setInitialAnimationValues(true);
-            a = LauncherAnimUtils.ofPropertyValuesHolder(child,
-                    new PropertyListBuilder()
-                            .scale(initScale)
-                            .translationX(initDeltaX)
-                            .translationY(initDeltaY)
-                            .build())
+            a = new PropertyListBuilder()
+                    .scale(initScale)
+                    .translationX(initDeltaX)
+                    .translationY(initDeltaY)
+                    .build(child)
                     .setDuration(REORDER_ANIMATION_DURATION);
-            a.setInterpolator(new android.view.animation.DecelerateInterpolator(1.5f));
+            Launcher.cast(mActivity).getDragController().addFirstFrameAnimationHelper(a);
+            a.setInterpolator(DEACCEL_1_5);
             a.start();
         }
     }
@@ -2046,7 +2090,7 @@ public class CellLayout extends ViewGroup {
     private void commitTempPlacement() {
         mTmpOccupied.copyTo(mOccupied);
 
-        long screenId = mLauncher.getWorkspace().getIdForScreen(this);
+        int screenId = Launcher.cast(mActivity).getWorkspace().getIdForScreen(this);
         int container = Favorites.CONTAINER_DESKTOP;
 
         if (mContainerType == HOTSEAT) {
@@ -2072,8 +2116,8 @@ public class CellLayout extends ViewGroup {
                 info.spanY = lp.cellVSpan;
 
                 if (requiresDbUpdate) {
-                    mLauncher.getModelWriter().modifyItemInDatabase(info, container, screenId,
-                            info.cellX, info.cellY, info.spanX, info.spanY);
+                    Launcher.cast(mActivity).getModelWriter().modifyItemInDatabase(info, container,
+                            screenId, info.cellX, info.cellY, info.spanX, info.spanY);
                 }
             }
         }
@@ -2661,38 +2705,6 @@ public class CellLayout extends ViewGroup {
         public String toString() {
             return "(" + this.cellX + ", " + this.cellY + ")";
         }
-
-        public void setWidth(int width) {
-            this.width = width;
-        }
-
-        public int getWidth() {
-            return width;
-        }
-
-        public void setHeight(int height) {
-            this.height = height;
-        }
-
-        public int getHeight() {
-            return height;
-        }
-
-        public void setX(int x) {
-            this.x = x;
-        }
-
-        public int getX() {
-            return x;
-        }
-
-        public void setY(int y) {
-            this.y = y;
-        }
-
-        public int getY() {
-            return y;
-        }
     }
 
     // This class stores info for two purposes:
@@ -2703,8 +2715,8 @@ public class CellLayout extends ViewGroup {
     //    the CellLayout that was long clicked
     public static final class CellInfo extends CellAndSpan {
         public final View cell;
-        final long screenId;
-        final long container;
+        final int screenId;
+        final int container;
 
         public CellInfo(View v, ItemInfo info) {
             cellX = info.cellX;

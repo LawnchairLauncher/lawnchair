@@ -19,6 +19,8 @@ package com.android.launcher3.util;
 import android.util.Property;
 import android.view.View;
 
+import java.util.Arrays;
+
 /**
  * Utility class to handle separating a single value as a factor of multiple values
  */
@@ -53,6 +55,11 @@ public class MultiValueAlpha {
             mValidMask |= myMask;
             mMyProperties[i] = new AlphaProperty(myMask);
         }
+    }
+
+    @Override
+    public String toString() {
+        return Arrays.toString(mMyProperties);
     }
 
     public AlphaProperty getProperty(int index) {
@@ -96,6 +103,11 @@ public class MultiValueAlpha {
 
         public float getValue() {
             return mValue;
+        }
+
+        @Override
+        public String toString() {
+            return Float.toString(mValue);
         }
     }
 }

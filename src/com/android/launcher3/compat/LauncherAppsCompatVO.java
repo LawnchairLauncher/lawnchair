@@ -24,23 +24,24 @@ import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
 import android.content.pm.LauncherApps.PinItemRequest;
 import android.content.pm.PackageManager;
+import android.content.pm.ShortcutInfo;
 import android.os.Build;
 import android.os.Parcelable;
 import android.os.Process;
 import android.os.UserHandle;
-import android.support.annotation.Nullable;
 
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
-import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.compat.ShortcutConfigActivityInfo.ShortcutConfigActivityInfoVO;
-import com.android.launcher3.graphics.LauncherIcons;
-import com.android.launcher3.shortcuts.ShortcutInfoCompat;
+import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.PackageUserKey;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.Nullable;
 
 @TargetApi(26)
 public class LauncherAppsCompatVO extends LauncherAppsCompatVL {
@@ -102,12 +103,12 @@ public class LauncherAppsCompatVO extends LauncherAppsCompatVL {
      * thread to UI thread.
      * If (d) happens before we add this shortcut to our model, we will end up unpinning
      * the shortcut in the system.
-     * Here its the caller's responsibility to add the newly created ShortcutInfo immediately
+     * Here its the caller's responsibility to add the newly created WorkspaceItemInfo immediately
      * to the model (which may involves a single post-to-worker-thread). That will guarantee
      * that (d) happens after model is updated.
      */
     @Nullable
-    public static ShortcutInfo createShortcutInfoFromPinItemRequest(
+    public static WorkspaceItemInfo createWorkspaceItemFromPinItemRequest(
             Context context, final PinItemRequest request, final long acceptDelay) {
         if (request != null &&
                 request.getRequestType() == PinItemRequest.REQUEST_TYPE_SHORTCUT &&
@@ -134,14 +135,14 @@ public class LauncherAppsCompatVO extends LauncherAppsCompatVL {
                 });
             }
 
-            ShortcutInfoCompat compat = new ShortcutInfoCompat(request.getShortcutInfo());
-            ShortcutInfo info = new ShortcutInfo(compat, context);
+            ShortcutInfo si = request.getShortcutInfo();
+            WorkspaceItemInfo info = new WorkspaceItemInfo(si, context);
             // Apply the unbadged icon and fetch the actual icon asynchronously.
             LauncherIcons li = LauncherIcons.obtain(context);
-            li.createShortcutIcon(compat, false /* badged */).applyTo(info);
+            info.applyFrom(li.createShortcutIcon(si, false /* badged */));
             li.recycle();
             LauncherAppState.getInstance(context).getModel()
-                    .updateAndBindShortcutInfo(info, compat);
+                    .updateAndBindWorkspaceItem(info, si);
             return info;
         } else {
             return null;

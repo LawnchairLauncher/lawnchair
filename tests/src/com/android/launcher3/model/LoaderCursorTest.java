@@ -6,27 +6,24 @@ import android.content.Intent;
 import android.database.MatrixCursor;
 import android.graphics.Bitmap;
 import android.os.Process;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.filters.SmallTest;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.InstrumentationRegistry;
+import androidx.test.filters.SmallTest;
+import androidx.test.runner.AndroidJUnit4;
 
-import com.android.launcher3.IconCache;
+import com.android.launcher3.WorkspaceItemInfo;
+import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.LauncherAppsCompat;
-import com.android.launcher3.graphics.BitmapInfo;
+import com.android.launcher3.icons.BitmapInfo;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
-import static com.android.launcher3.LauncherSettings.BaseLauncherColumns.INTENT;
+import static com.android.launcher3.LauncherSettings.Favorites.INTENT;
 import static com.android.launcher3.LauncherSettings.Favorites.CELLX;
 import static com.android.launcher3.LauncherSettings.Favorites.CELLY;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER;
@@ -115,7 +112,7 @@ public class LoaderCursorTest {
 
         ComponentName cn = mLauncherApps.getActivityList(null, mLoaderCursor.user)
                 .get(0).getComponentName();
-        ShortcutInfo info = mLoaderCursor.getAppShortcutInfo(
+        WorkspaceItemInfo info = mLoaderCursor.getAppShortcutInfo(
                 new Intent().setComponent(cn), false /* allowMissingTarget */, true);
         assertNotNull(info);
         assertTrue(Utilities.isLauncherAppTarget(info.intent));
@@ -127,7 +124,7 @@ public class LoaderCursorTest {
         assertTrue(mLoaderCursor.moveToNext());
 
         ComponentName cn = new ComponentName(mContext.getPackageName(), "dummy-do");
-        ShortcutInfo info = mLoaderCursor.getAppShortcutInfo(
+        WorkspaceItemInfo info = mLoaderCursor.getAppShortcutInfo(
                 new Intent().setComponent(cn), true  /* allowMissingTarget */, true);
         assertNotNull(info);
         assertTrue(Utilities.isLauncherAppTarget(info.intent));
@@ -141,91 +138,67 @@ public class LoaderCursorTest {
         Bitmap icon = Bitmap.createBitmap(1, 1, Bitmap.Config.ALPHA_8);
         when(mMockIconCache.getDefaultIcon(eq(mLoaderCursor.user)))
                 .thenReturn(BitmapInfo.fromBitmap(icon));
-        ShortcutInfo info = mLoaderCursor.loadSimpleShortcut();
+        WorkspaceItemInfo info = mLoaderCursor.loadSimpleWorkspaceItem();
         assertEquals(icon, info.iconBitmap);
         assertEquals("my-shortcut", info.title);
         assertEquals(ITEM_TYPE_SHORTCUT, info.itemType);
     }
 
     @Test
-    public void checkItemPlacement_wrongWorkspaceScreen() {
-        ArrayList<Long> workspaceScreens = new ArrayList<>(Arrays.asList(1L, 3L));
-        mIDP.numRows = 4;
-        mIDP.numColumns = 4;
-        mIDP.numHotseatIcons = 3;
-
-        // Item on unknown screen are not placed
-        assertFalse(mLoaderCursor.checkItemPlacement(
-                newItemInfo(0, 0, 1, 1, CONTAINER_DESKTOP, 4L), workspaceScreens));
-        assertFalse(mLoaderCursor.checkItemPlacement(
-                newItemInfo(0, 0, 1, 1, CONTAINER_DESKTOP, 5L), workspaceScreens));
-        assertFalse(mLoaderCursor.checkItemPlacement(
-                newItemInfo(0, 0, 1, 1, CONTAINER_DESKTOP, 2L), workspaceScreens));
-
-        assertTrue(mLoaderCursor.checkItemPlacement(
-                newItemInfo(0, 0, 1, 1, CONTAINER_DESKTOP, 1L), workspaceScreens));
-        assertTrue(mLoaderCursor.checkItemPlacement(
-                newItemInfo(0, 0, 1, 1, CONTAINER_DESKTOP, 3L), workspaceScreens));
-
-    }
-    @Test
     public void checkItemPlacement_outsideBounds() {
-        ArrayList<Long> workspaceScreens = new ArrayList<>(Arrays.asList(1L, 2L));
         mIDP.numRows = 4;
         mIDP.numColumns = 4;
         mIDP.numHotseatIcons = 3;
 
         // Item outside screen bounds are not placed
         assertFalse(mLoaderCursor.checkItemPlacement(
-                newItemInfo(4, 4, 1, 1, CONTAINER_DESKTOP, 1L), workspaceScreens));
+                newItemInfo(4, 4, 1, 1, CONTAINER_DESKTOP, 1)));
     }
 
     @Test
     public void checkItemPlacement_overlappingItems() {
-        ArrayList<Long> workspaceScreens = new ArrayList<>(Arrays.asList(1L, 2L));
         mIDP.numRows = 4;
         mIDP.numColumns = 4;
         mIDP.numHotseatIcons = 3;
 
         // Overlapping items are not placed
         assertTrue(mLoaderCursor.checkItemPlacement(
-                newItemInfo(0, 0, 1, 1, CONTAINER_DESKTOP, 1L), workspaceScreens));
+                newItemInfo(0, 0, 1, 1, CONTAINER_DESKTOP, 1)));
         assertFalse(mLoaderCursor.checkItemPlacement(
-                newItemInfo(0, 0, 1, 1, CONTAINER_DESKTOP, 1L), workspaceScreens));
+                newItemInfo(0, 0, 1, 1, CONTAINER_DESKTOP, 1)));
 
         assertTrue(mLoaderCursor.checkItemPlacement(
-                newItemInfo(0, 0, 1, 1, CONTAINER_DESKTOP, 2L), workspaceScreens));
+                newItemInfo(0, 0, 1, 1, CONTAINER_DESKTOP, 2)));
         assertFalse(mLoaderCursor.checkItemPlacement(
-                newItemInfo(0, 0, 1, 1, CONTAINER_DESKTOP, 2L), workspaceScreens));
+                newItemInfo(0, 0, 1, 1, CONTAINER_DESKTOP, 2)));
 
         assertTrue(mLoaderCursor.checkItemPlacement(
-                newItemInfo(1, 1, 1, 1, CONTAINER_DESKTOP, 1L), workspaceScreens));
+                newItemInfo(1, 1, 1, 1, CONTAINER_DESKTOP, 1)));
         assertTrue(mLoaderCursor.checkItemPlacement(
-                newItemInfo(2, 2, 2, 2, CONTAINER_DESKTOP, 1L), workspaceScreens));
+                newItemInfo(2, 2, 2, 2, CONTAINER_DESKTOP, 1)));
 
         assertFalse(mLoaderCursor.checkItemPlacement(
-                newItemInfo(3, 2, 1, 2, CONTAINER_DESKTOP, 1L), workspaceScreens));
+                newItemInfo(3, 2, 1, 2, CONTAINER_DESKTOP, 1)));
     }
 
     @Test
     public void checkItemPlacement_hotseat() {
-        ArrayList<Long> workspaceScreens = new ArrayList<>();
         mIDP.numRows = 4;
         mIDP.numColumns = 4;
         mIDP.numHotseatIcons = 3;
 
         // Hotseat items are only placed based on screenId
         assertTrue(mLoaderCursor.checkItemPlacement(
-                newItemInfo(3, 3, 1, 1, CONTAINER_HOTSEAT, 1L), workspaceScreens));
+                newItemInfo(3, 3, 1, 1, CONTAINER_HOTSEAT, 1)));
         assertTrue(mLoaderCursor.checkItemPlacement(
-                newItemInfo(3, 3, 1, 1, CONTAINER_HOTSEAT, 2L), workspaceScreens));
+                newItemInfo(3, 3, 1, 1, CONTAINER_HOTSEAT, 2)));
 
         assertFalse(mLoaderCursor.checkItemPlacement(
-                newItemInfo(3, 3, 1, 1, CONTAINER_HOTSEAT, 3L), workspaceScreens));
+                newItemInfo(3, 3, 1, 1, CONTAINER_HOTSEAT, 3)));
     }
 
     private ItemInfo newItemInfo(int cellX, int cellY, int spanX, int spanY,
-            long container, long screenId) {
+            int container, int screenId) {
         ItemInfo info = new ItemInfo();
         info.cellX = cellX;
         info.cellY = cellY;

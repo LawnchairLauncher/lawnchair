@@ -18,7 +18,9 @@ package com.android.launcher3;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.util.Property;
 import android.view.View;
 
 import com.android.launcher3.util.Thunk;
@@ -31,10 +33,26 @@ import com.android.launcher3.util.Thunk;
  * interpolator in the same direction.
  */
 public class InterruptibleInOutAnimator {
+
+    private static final Property<InterruptibleInOutAnimator, Float> VALUE =
+            new Property<InterruptibleInOutAnimator, Float>(Float.TYPE, "value") {
+                @Override
+                public Float get(InterruptibleInOutAnimator anim) {
+                    return anim.mValue;
+                }
+
+                @Override
+                public void set(InterruptibleInOutAnimator anim, Float value) {
+                    anim.mValue = value;
+                }
+            };
+
     private long mOriginalDuration;
     private float mOriginalFromValue;
     private float mOriginalToValue;
     private ValueAnimator mAnimator;
+
+    private float mValue;
 
     private boolean mFirstRun = true;
 
@@ -47,8 +65,8 @@ public class InterruptibleInOutAnimator {
     // TODO: This isn't really necessary, but is here to help diagnose a bug in the drag viz
     @Thunk int mDirection = STOPPED;
 
-    public InterruptibleInOutAnimator(View view, long duration, float fromValue, float toValue) {
-        mAnimator = LauncherAnimUtils.ofFloat(fromValue, toValue).setDuration(duration);
+    public InterruptibleInOutAnimator(long duration, float fromValue, float toValue) {
+        mAnimator = ObjectAnimator.ofFloat(this, VALUE, fromValue, toValue).setDuration(duration);
         mOriginalDuration = duration;
         mOriginalFromValue = fromValue;
         mOriginalToValue = toValue;
@@ -64,8 +82,7 @@ public class InterruptibleInOutAnimator {
     private void animate(int direction) {
         final long currentPlayTime = mAnimator.getCurrentPlayTime();
         final float toValue = (direction == IN) ? mOriginalToValue : mOriginalFromValue;
-        final float startValue = mFirstRun ? mOriginalFromValue :
-                ((Float) mAnimator.getAnimatedValue()).floatValue();
+        final float startValue = mFirstRun ? mOriginalFromValue : mValue;
 
         // Make sure it's stopped before we modify any values
         cancel();
