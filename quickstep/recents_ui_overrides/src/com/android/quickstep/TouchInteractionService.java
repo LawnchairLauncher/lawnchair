@@ -63,8 +63,6 @@ import com.android.launcher3.provider.RestoreDbTask;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.TraceHelper;
-import com.android.quickstep.SysUINavigationMode.Mode;
-import com.android.quickstep.SysUINavigationMode.NavigationModeChangeListener;
 import com.android.quickstep.inputconsumers.AccessibilityInputConsumer;
 import com.android.quickstep.inputconsumers.AssistantInputConsumer;
 import com.android.quickstep.inputconsumers.DeviceLockedInputConsumer;
@@ -114,8 +112,7 @@ class ArgList extends LinkedList<String> {
  * Service connected by system-UI for handling touch interaction.
  */
 @TargetApi(Build.VERSION_CODES.Q)
-public class TouchInteractionService extends Service implements
-        NavigationModeChangeListener, PluginListener<OverscrollPlugin> {
+public class TouchInteractionService extends Service implements PluginListener<OverscrollPlugin> {
 
     private static final String TAG = "TouchInteractionService";
 
@@ -269,20 +266,18 @@ public class TouchInteractionService extends Service implements
 
     private InputMonitorCompat mInputMonitorCompat;
     private InputEventReceiver mInputEventReceiver;
-    private Mode mMode = Mode.THREE_BUTTONS;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        mDeviceState = new RecentsAnimationDeviceState(this);
-        mDeviceState.runOnUserUnlocked(this::onUserUnlocked);
-
         // Initialize anything here that is needed in direct boot mode.
         // Everything else should be initialized in onUserUnlocked() below.
         mMainChoreographer = Choreographer.getInstance();
         mAM = ActivityManagerWrapper.getInstance();
+        mDeviceState = new RecentsAnimationDeviceState(this);
+        mDeviceState.addNavigationModeChangedCallback(this::onNavigationModeChanged);
+        mDeviceState.runOnUserUnlocked(this::onUserUnlocked);
 
-        onNavigationModeChanged(SysUINavigationMode.INSTANCE.get(this).addModeChangeListener(this));
         sConnected = true;
 
         PluginManagerWrapper.INSTANCE.get(getBaseContext()).addPluginListener(this,
@@ -308,7 +303,7 @@ public class TouchInteractionService extends Service implements
             Log.d(TestProtocol.NO_BACKGROUND_TO_OVERVIEW_TAG, "initInputMonitor 1");
         }
         disposeEventHandlers();
-        if (!mMode.hasGestures || !SystemUiProxy.INSTANCE.get(this).isActive()) {
+        if (mDeviceState.isButtonNavMode() || !SystemUiProxy.INSTANCE.get(this).isActive()) {
             return;
         }
         if (TestProtocol.sDebugTracing) {
@@ -327,12 +322,10 @@ public class TouchInteractionService extends Service implements
         mDeviceState.updateGestureTouchRegions();
     }
 
-    @Override
-    public void onNavigationModeChanged(Mode newMode) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_BACKGROUND_TO_OVERVIEW_TAG, "onNavigationModeChanged " + newMode);
-        }
-        mMode = newMode;
+    /**
+     * Called when the navigation mode changes, guaranteed to be after the device state has updated.
+     */
+    private void onNavigationModeChanged(SysUINavigationMode.Mode mode) {
         initInputMonitor();
         resetHomeBounceSeenOnQuickstepEnabledFirstTime();
     }
@@ -369,7 +362,7 @@ public class TouchInteractionService extends Service implements
     }
 
     private void resetHomeBounceSeenOnQuickstepEnabledFirstTime() {
-        if (!mDeviceState.isUserUnlocked() || !mMode.hasGestures) {
+        if (!mDeviceState.isUserUnlocked() || mDeviceState.isButtonNavMode()) {
             // Skip if not yet unlocked (can't read user shared prefs) or if the current navigation
             // mode doesn't have gestures
             return;
@@ -417,7 +410,6 @@ public class TouchInteractionService extends Service implements
         }
         disposeEventHandlers();
         mDeviceState.destroy();
-        SysUINavigationMode.INSTANCE.get(this).removeModeChangeListener(this);
         SystemUiProxy.INSTANCE.get(this).setProxy(null);
 
         sConnected = false;
@@ -453,7 +445,8 @@ public class TouchInteractionService extends Service implements
 
                 ActiveGestureLog.INSTANCE.addLog("setInputConsumer", mConsumer.getType());
                 mUncheckedConsumer = mConsumer;
-            } else if (mDeviceState.isUserUnlocked() && mMode == Mode.NO_BUTTON
+            } else if (mDeviceState.isUserUnlocked()
+                    && mDeviceState.isFullyGesturalNavMode()
                     && mDeviceState.canTriggerAssistantAction(event)) {
                 // Do not change mConsumer as if there is an ongoing QuickSwitch gesture, we should
                 // not interrupt it. QuickSwitch assumes that interruption can only happen if the
@@ -494,7 +487,7 @@ public class TouchInteractionService extends Service implements
                 || previousGestureState.isRecentsAnimationRunning()
                         ? newBaseConsumer(previousGestureState, newGestureState, event)
                         : mResetGestureInputConsumer;
-        if (mMode == Mode.NO_BUTTON) {
+        if (mDeviceState.isFullyGesturalNavMode()) {
             if (mDeviceState.canTriggerAssistantAction(event)) {
                 base = new AssistantInputConsumer(this, newGestureState, base, mInputMonitorCompat);
             }
@@ -584,7 +577,8 @@ public class TouchInteractionService extends Service implements
         final boolean shouldDefer;
         final BaseSwipeUpHandler.Factory factory;
 
-        if (mMode == Mode.NO_BUTTON && !mOverviewComponentObserver.isHomeAndOverviewSame()) {
+        if (mDeviceState.isFullyGesturalNavMode()
+                && !mOverviewComponentObserver.isHomeAndOverviewSame()) {
             shouldDefer = previousGestureState.getFinishingRecentsAnimationTaskId() < 0;
             factory = mFallbackNoButtonFactory;
         } else {
@@ -601,7 +595,7 @@ public class TouchInteractionService extends Service implements
 
     private InputConsumer createDeviceLockedInputConsumer(GestureState gestureState,
             RunningTaskInfo taskInfo) {
-        if (mMode == Mode.NO_BUTTON && taskInfo != null) {
+        if (mDeviceState.isFullyGesturalNavMode() && taskInfo != null) {
             return new DeviceLockedInputConsumer(this, mDeviceState, mTaskAnimationManager,
                     gestureState, mInputMonitorCompat, taskInfo.taskId);
         } else {
@@ -641,7 +635,7 @@ public class TouchInteractionService extends Service implements
         if (!mDeviceState.isUserUnlocked()) {
             return;
         }
-        if (!mMode.hasGestures && !mOverviewComponentObserver.isHomeAndOverviewSame()) {
+        if (mDeviceState.isButtonNavMode() && !mOverviewComponentObserver.isHomeAndOverviewSame()) {
             // Prevent the overview from being started before the real home on first boot.
             return;
         }
@@ -708,7 +702,6 @@ public class TouchInteractionService extends Service implements
             // Dump everything
             mDeviceState.dump(pw);
             pw.println("TouchState:");
-            pw.println("  navMode=" + mMode);
             boolean resumed = mOverviewComponentObserver != null
                     && mOverviewComponentObserver.getActivityInterface().isResumed();
             pw.println("  resumed=" + resumed);
@@ -748,9 +741,9 @@ public class TouchInteractionService extends Service implements
     private BaseSwipeUpHandler createFallbackNoButtonSwipeHandler(GestureState gestureState,
             RunningTaskInfo runningTask, long touchTimeMs, boolean continuingLastGesture,
             boolean isLikelyToStartNewTask) {
-        return new FallbackNoButtonInputConsumer(this, gestureState, mOverviewComponentObserver,
-                runningTask, mRecentsModel, mInputConsumer, isLikelyToStartNewTask,
-                continuingLastGesture);
+        return new FallbackNoButtonInputConsumer(this, mDeviceState, gestureState,
+                mOverviewComponentObserver, runningTask, mRecentsModel, mInputConsumer,
+                isLikelyToStartNewTask, continuingLastGesture);
     }
 
     protected boolean shouldNotifyBackGesture() {

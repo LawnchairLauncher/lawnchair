@@ -96,6 +96,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
     protected float mDragLengthFactor = 1;
 
     protected final Context mContext;
+    protected final RecentsAnimationDeviceState mDeviceState;
     protected final GestureState mGestureState;
     protected final OverviewComponentObserver mOverviewComponentObserver;
     protected final BaseActivityInterface<T> mActivityInterface;
@@ -106,7 +107,6 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
     protected final TransformParams mTransformParams = new TransformParams();
 
     private final Vibrator mVibrator;
-    protected final Mode mMode;
 
     // Shift in the range of [0, 1].
     // 0 => preview snapShot is completely visible, and hotseat is completely translated down
@@ -135,10 +135,11 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
     protected boolean mCanceled;
     protected int mFinishingRecentsAnimationForNewTaskId = -1;
 
-    protected BaseSwipeUpHandler(Context context, GestureState gestureState,
-            OverviewComponentObserver overviewComponentObserver,
+    protected BaseSwipeUpHandler(Context context, RecentsAnimationDeviceState deviceState,
+            GestureState gestureState, OverviewComponentObserver overviewComponentObserver,
             RecentsModel recentsModel, InputConsumerController inputConsumer, int runningTaskId) {
         mContext = context;
+        mDeviceState = deviceState;
         mGestureState = gestureState;
         mOverviewComponentObserver = overviewComponentObserver;
         mActivityInterface = gestureState.getActivityInterface();
@@ -147,7 +148,6 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
                 mActivityInterface.createActivityInitListener(this::onActivityInit);
         mRunningTaskId = runningTaskId;
         mInputConsumer = inputConsumer;
-        mMode = SysUINavigationMode.getMode(context);
 
         mAppWindowAnimationHelper = new AppWindowAnimationHelper(context);
         mPageSpacing = context.getResources().getDimensionPixelSize(R.dimen.recents_page_spacing);
@@ -348,7 +348,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
             mAppWindowAnimationHelper.updateHomeBounds(getStackBounds(dp));
         }
         mAppWindowAnimationHelper.updateTargetRect(TEMP_RECT);
-        if (mMode == Mode.NO_BUTTON) {
+        if (mDeviceState.isFullyGesturalNavMode()) {
             // We can drag all the way to the top of the screen.
             mDragLengthFactor = (float) dp.heightPx / mTransitionDragLength;
         }
