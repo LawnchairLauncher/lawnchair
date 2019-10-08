@@ -75,16 +75,19 @@ class DesktopIconsPreview(context: Context, attrs: AttributeSet?) :
 
     private fun populatePreview() {
         val dp = idp.getDeviceProfile(previewContext)
-        layoutParams.height = dp.cellHeightPx + dp.iconDrawablePaddingPx * 2
+        val leftPadding = dp.workspacePadding.left + dp.cellLayoutPaddingLeftRightPx
+        val rightPadding = dp.workspacePadding.right + dp.cellLayoutPaddingLeftRightPx
+        val verticalPadding = (leftPadding + rightPadding) / 2 + dp.iconDrawablePaddingPx
+        layoutParams.height = dp.cellHeightPx + verticalPadding * 2
 
         if (!iconsLoaded || !isAttachedToWindow) return
 
         workspace.removeAllViews()
         workspace.setGridSize(idp.numColumns, 1)
-        workspace.setPadding(dp.workspacePadding.left + dp.cellLayoutPaddingLeftRightPx,
-                             0,
-                             dp.workspacePadding.right + dp.cellLayoutPaddingLeftRightPx,
-                             0)
+        workspace.setPadding(leftPadding,
+                             verticalPadding,
+                             rightPadding,
+                             verticalPadding)
 
         previewApps.take(idp.numColumns).forEachIndexed { index, info ->
             info.container = LauncherSettings.Favorites.CONTAINER_DESKTOP
