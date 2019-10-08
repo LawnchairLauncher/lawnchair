@@ -28,7 +28,7 @@
         launcher:containerType="workspace"
         launcher:pageIndicator="@+id/page_indicator"/>
 
-    <com.android.launcher3.Hotseat
+    <ch.deletescape.lawnchair.CustomHotseat
         android:id="@+id/hotseat"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

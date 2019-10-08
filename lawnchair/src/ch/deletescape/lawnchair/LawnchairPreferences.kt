@@ -96,9 +96,8 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     private val updateWeatherData = { onChangeCallback?.updateWeatherData() ?: Unit }
     private val reloadIconPacks = { IconPackManager.getInstance(context).packList.reloadPacks() }
     private val reloadDockStyle = {
-        // TODO: implement this
-        // LauncherAppState.getIDP(context).onDockStyleChanged(this)
-        recreate()
+        // TODO: remove dock presets and reload changes in DP instead
+        restart()
     }
 
     private val lawnchairConfig = LawnchairConfig.getInstance(context)

@@ -26,7 +26,6 @@ import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import ch.deletescape.lawnchair.LawnchairPreferences;
 import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.logging.StatsLogUtils.LogContainerProvider;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
@@ -48,23 +47,6 @@ public class Hotseat extends CellLayout implements LogContainerProvider, Insetta
 
     public Hotseat(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-    }
-
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-
-        LawnchairPreferences prefs = Utilities.getLawnchairPrefs(getContext());
-        if (prefs.getDockHide()) {
-            setVisibility(GONE);
-        } else if (prefs.getDockSearchBar()) {
-            // inflate(getContext(), R.layout.search_container_hotseat, this);
-        } else {
-            View v = this.findViewById(R.id.search_container_hotseat);
-            if (v != null) {
-                removeView(v);
-            }
-        }
     }
 
     /* Get the orientation specific coordinates given an invariant order in the hotseat. */

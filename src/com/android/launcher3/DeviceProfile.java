@@ -253,6 +253,12 @@ public class DeviceProfile {
             // Recalculate the available dimensions using the new hotseat size.
             updateAvailableDimensions(dm, res);
         }
+
+        if (prefs.getDockHide()) {
+            hotseatBarSizePx = 0;
+            updateAvailableDimensions(dm, res);
+        }
+
         updateWorkspacePadding();
 
         // This is done last, after iconSizePx is calculated above.
