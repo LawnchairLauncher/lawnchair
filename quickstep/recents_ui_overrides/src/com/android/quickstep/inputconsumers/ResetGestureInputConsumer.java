@@ -19,7 +19,6 @@ import android.view.MotionEvent;
 
 import com.android.quickstep.InputConsumer;
 import com.android.quickstep.TaskAnimationManager;
-import com.android.quickstep.TouchInteractionService;
 
 /**
  * A NO_OP input consumer which also resets any pending gesture

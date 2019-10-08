@@ -130,7 +130,6 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
 
     protected Runnable mGestureEndCallback;
 
-    protected final Handler mMainThreadHandler = MAIN_EXECUTOR.getHandler();
     protected MultiStateCallback mStateCallback;
 
     protected boolean mCanceled;
@@ -155,14 +154,6 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
         mVibrator = context.getSystemService(Vibrator.class);
         initTransitionEndpoints(InvariantDeviceProfile.INSTANCE.get(mContext)
                 .getDeviceProfile(mContext));
-    }
-
-    protected void setStateOnUiThread(int stateFlag) {
-        if (Looper.myLooper() == mMainThreadHandler.getLooper()) {
-            mStateCallback.setState(stateFlag);
-        } else {
-            postAsyncCallback(mMainThreadHandler, () -> mStateCallback.setState(stateFlag));
-        }
     }
 
     protected void performHapticFeedback() {
@@ -253,9 +244,9 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
                                     } else {
                                         mActivityInterface.onLaunchTaskSuccess(mActivity);
                                     }
-                                }, mMainThreadHandler);
+                                }, MAIN_EXECUTOR.getHandler());
                     }
-                    setStateOnUiThread(successStateFlag);
+                    mStateCallback.setStateOnUiThread(successStateFlag);
                 }
                 mCanceled = false;
                 mFinishingRecentsAnimationForNewTaskId = -1;

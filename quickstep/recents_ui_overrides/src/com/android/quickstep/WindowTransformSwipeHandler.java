@@ -211,58 +211,57 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     private void initStateCallbacks() {
         mStateCallback = new MultiStateCallback(STATE_NAMES);
 
-        mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_GESTURE_STARTED,
+        mStateCallback.runOnceAtState(STATE_LAUNCHER_PRESENT | STATE_GESTURE_STARTED,
                 this::onLauncherPresentAndGestureStarted);
 
-        mStateCallback.addCallback(STATE_LAUNCHER_DRAWN | STATE_GESTURE_STARTED,
+        mStateCallback.runOnceAtState(STATE_LAUNCHER_DRAWN | STATE_GESTURE_STARTED,
                 this::initializeLauncherAnimationController);
 
-        mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_LAUNCHER_DRAWN,
+        mStateCallback.runOnceAtState(STATE_LAUNCHER_PRESENT | STATE_LAUNCHER_DRAWN,
                 this::launcherFrameDrawn);
 
-        mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_LAUNCHER_STARTED
+        mStateCallback.runOnceAtState(STATE_LAUNCHER_PRESENT | STATE_LAUNCHER_STARTED
                         | STATE_GESTURE_CANCELLED,
                 this::resetStateForAnimationCancel);
 
-        mStateCallback.addCallback(STATE_LAUNCHER_STARTED | STATE_APP_CONTROLLER_RECEIVED,
+        mStateCallback.runOnceAtState(STATE_LAUNCHER_STARTED | STATE_APP_CONTROLLER_RECEIVED,
                 this::sendRemoteAnimationsToAnimationFactory);
 
-        mStateCallback.addCallback(STATE_RESUME_LAST_TASK | STATE_APP_CONTROLLER_RECEIVED,
+        mStateCallback.runOnceAtState(STATE_RESUME_LAST_TASK | STATE_APP_CONTROLLER_RECEIVED,
                 this::resumeLastTask);
-        mStateCallback.addCallback(STATE_START_NEW_TASK | STATE_SCREENSHOT_CAPTURED,
+        mStateCallback.runOnceAtState(STATE_START_NEW_TASK | STATE_SCREENSHOT_CAPTURED,
                 this::startNewTask);
 
-        mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_APP_CONTROLLER_RECEIVED
+        mStateCallback.runOnceAtState(STATE_LAUNCHER_PRESENT | STATE_APP_CONTROLLER_RECEIVED
                         | STATE_LAUNCHER_DRAWN | STATE_CAPTURE_SCREENSHOT,
                 this::switchToScreenshot);
 
-        mStateCallback.addCallback(STATE_SCREENSHOT_CAPTURED | STATE_GESTURE_COMPLETED
+        mStateCallback.runOnceAtState(STATE_SCREENSHOT_CAPTURED | STATE_GESTURE_COMPLETED
                         | STATE_SCALED_CONTROLLER_RECENTS,
                 this::finishCurrentTransitionToRecents);
 
-        mStateCallback.addCallback(STATE_SCREENSHOT_CAPTURED | STATE_GESTURE_COMPLETED
+        mStateCallback.runOnceAtState(STATE_SCREENSHOT_CAPTURED | STATE_GESTURE_COMPLETED
                         | STATE_SCALED_CONTROLLER_HOME,
                 this::finishCurrentTransitionToHome);
-        mStateCallback.addCallback(STATE_SCALED_CONTROLLER_HOME | STATE_CURRENT_TASK_FINISHED,
+        mStateCallback.runOnceAtState(STATE_SCALED_CONTROLLER_HOME | STATE_CURRENT_TASK_FINISHED,
                 this::reset);
 
-        mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_APP_CONTROLLER_RECEIVED
+        mStateCallback.runOnceAtState(STATE_LAUNCHER_PRESENT | STATE_APP_CONTROLLER_RECEIVED
                         | STATE_LAUNCHER_DRAWN | STATE_SCALED_CONTROLLER_RECENTS
                         | STATE_CURRENT_TASK_FINISHED | STATE_GESTURE_COMPLETED
                         | STATE_GESTURE_STARTED,
                 this::setupLauncherUiAfterSwipeUpToRecentsAnimation);
 
-        mGestureState.addCallback(STATE_END_TARGET_ANIMATION_FINISHED,
-                this::onEndTargetSet);
+        mGestureState.runOnceAtState(STATE_END_TARGET_ANIMATION_FINISHED, this::onEndTargetSet);
 
-        mStateCallback.addCallback(STATE_HANDLER_INVALIDATED, this::invalidateHandler);
-        mStateCallback.addCallback(STATE_LAUNCHER_PRESENT | STATE_HANDLER_INVALIDATED,
+        mStateCallback.runOnceAtState(STATE_HANDLER_INVALIDATED, this::invalidateHandler);
+        mStateCallback.runOnceAtState(STATE_LAUNCHER_PRESENT | STATE_HANDLER_INVALIDATED,
                 this::invalidateHandlerWithLauncher);
-        mStateCallback.addCallback(STATE_HANDLER_INVALIDATED | STATE_RESUME_LAST_TASK,
+        mStateCallback.runOnceAtState(STATE_HANDLER_INVALIDATED | STATE_RESUME_LAST_TASK,
                 this::notifyTransitionCancelled);
 
         if (!ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-            mStateCallback.addChangeHandler(STATE_APP_CONTROLLER_RECEIVED | STATE_LAUNCHER_PRESENT
+            mStateCallback.addChangeListener(STATE_APP_CONTROLLER_RECEIVED | STATE_LAUNCHER_PRESENT
                             | STATE_SCREENSHOT_VIEW_SHOWN | STATE_CAPTURE_SCREENSHOT,
                     (b) -> mRecentsView.setRunningTaskHidden(!b));
         }
@@ -330,7 +329,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
                 // Launcher is visible, but might be about to stop. Thus, if we prepare recents
                 // now, it might get overridden by moveToRestState() in onStop(). To avoid this,
                 // wait until the next gesture (and possibly launcher) starts.
-                mStateCallback.addCallback(STATE_GESTURE_STARTED, initAnimFactory);
+                mStateCallback.runOnceAtState(STATE_GESTURE_STARTED, initAnimFactory);
             } else {
                 initAnimFactory.run();
             }
@@ -596,9 +595,9 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         super.onRecentsAnimationStart(controller, targets);
 
         // Only add the callback to enable the input consumer after we actually have the controller
-        mStateCallback.addCallback(STATE_APP_CONTROLLER_RECEIVED | STATE_GESTURE_STARTED,
+        mStateCallback.runOnceAtState(STATE_APP_CONTROLLER_RECEIVED | STATE_GESTURE_STARTED,
                 mRecentsAnimationController::enableInputConsumer);
-        setStateOnUiThread(STATE_APP_CONTROLLER_RECEIVED);
+        mStateCallback.setStateOnUiThread(STATE_APP_CONTROLLER_RECEIVED);
 
         mPassedOverviewThreshold = false;
     }
@@ -608,7 +607,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         super.onRecentsAnimationCanceled(thumbnailData);
         mRecentsView.setRecentsAnimationTargets(null, null);
         mActivityInitListener.unregister();
-        setStateOnUiThread(STATE_GESTURE_CANCELLED | STATE_HANDLER_INVALIDATED);
+        mStateCallback.setStateOnUiThread(STATE_GESTURE_CANCELLED | STATE_HANDLER_INVALIDATED);
         ActiveGestureLog.INSTANCE.addLog("cancelRecentsAnimation");
     }
 
@@ -616,7 +615,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     public void onGestureStarted() {
         notifyGestureStartedAsync();
         mShiftAtGestureStart = mCurrentShift.value;
-        setStateOnUiThread(STATE_GESTURE_STARTED);
+        mStateCallback.setStateOnUiThread(STATE_GESTURE_STARTED);
         mGestureStarted = true;
     }
 
@@ -639,7 +638,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     @Override
     public void onGestureCancelled() {
         updateDisplacement(0);
-        setStateOnUiThread(STATE_GESTURE_COMPLETED);
+        mStateCallback.setStateOnUiThread(STATE_GESTURE_COMPLETED);
         mLogAction = Touch.SWIPE_NOOP;
         handleNormalGestureEnd(0, false, new PointF(), true /* isCancel */);
     }
@@ -654,7 +653,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         float flingThreshold = mContext.getResources()
                 .getDimension(R.dimen.quickstep_fling_threshold_velocity);
         boolean isFling = mGestureStarted && Math.abs(endVelocity) > flingThreshold;
-        setStateOnUiThread(STATE_GESTURE_COMPLETED);
+        mStateCallback.setStateOnUiThread(STATE_GESTURE_COMPLETED);
 
         mLogAction = isFling ? Touch.FLING : Touch.SWIPE;
         boolean isVelocityVertical = Math.abs(velocity.y) > Math.abs(velocity.x);
@@ -906,7 +905,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
                         return AnimatorPlaybackController.wrap(new AnimatorSet(), duration);
                     }
                 };
-                mStateCallback.addChangeHandler(STATE_LAUNCHER_PRESENT | STATE_HANDLER_INVALIDATED,
+                mStateCallback.addChangeListener(STATE_LAUNCHER_PRESENT | STATE_HANDLER_INVALIDATED,
                         isPresent -> mRecentsView.startHome());
             }
             RectFSpringAnim windowAnim = createWindowAnimationToHome(start, homeAnimFactory);
@@ -1042,7 +1041,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     }
 
     private void reset() {
-        setStateOnUiThread(STATE_HANDLER_INVALIDATED);
+        mStateCallback.setStateOnUiThread(STATE_HANDLER_INVALIDATED);
     }
 
     /**
@@ -1122,10 +1121,10 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
                 }
                 mRecentsView.updateThumbnail(mRunningTaskId, mTaskSnapshot, false /* refreshNow */);
             }
-            setStateOnUiThread(STATE_SCREENSHOT_CAPTURED);
+            mStateCallback.setStateOnUiThread(STATE_SCREENSHOT_CAPTURED);
         } else if (!hasTargets()) {
             // If there are no targets, then we don't need to capture anything
-            setStateOnUiThread(STATE_SCREENSHOT_CAPTURED);
+            mStateCallback.setStateOnUiThread(STATE_SCREENSHOT_CAPTURED);
         } else {
             boolean finishTransitionPosted = false;
             if (mRecentsAnimationController != null) {
@@ -1145,14 +1144,15 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
                     // Defer finishing the animation until the next launcher frame with the
                     // new thumbnail
                     finishTransitionPosted = ViewUtils.postDraw(taskView,
-                            () -> setStateOnUiThread(STATE_SCREENSHOT_CAPTURED), this::isCanceled);
+                            () -> mStateCallback.setStateOnUiThread(STATE_SCREENSHOT_CAPTURED),
+                                    this::isCanceled);
                 }
             }
             if (!finishTransitionPosted) {
                 // If we haven't posted a draw callback, set the state immediately.
                 Object traceToken = TraceHelper.INSTANCE.beginSection(SCREENSHOT_CAPTURED_EVT,
                         TraceHelper.FLAG_CHECK_FOR_RACE_CONDITIONS);
-                setStateOnUiThread(STATE_SCREENSHOT_CAPTURED);
+                mStateCallback.setStateOnUiThread(STATE_SCREENSHOT_CAPTURED);
                 TraceHelper.INSTANCE.endSection(traceToken);
             }
         }
@@ -1160,14 +1160,14 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
 
     private void finishCurrentTransitionToRecents() {
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-            setStateOnUiThread(STATE_CURRENT_TASK_FINISHED);
+            mStateCallback.setStateOnUiThread(STATE_CURRENT_TASK_FINISHED);
         } else if (!hasTargets()) {
             // If there are no targets, then there is nothing to finish
-            setStateOnUiThread(STATE_CURRENT_TASK_FINISHED);
+            mStateCallback.setStateOnUiThread(STATE_CURRENT_TASK_FINISHED);
         } else {
             synchronized (mRecentsAnimationController) {
                 mRecentsAnimationController.finish(true /* toRecents */,
-                        () -> setStateOnUiThread(STATE_CURRENT_TASK_FINISHED));
+                        () -> mStateCallback.setStateOnUiThread(STATE_CURRENT_TASK_FINISHED));
             }
         }
         ActiveGestureLog.INSTANCE.addLog("finishRecentsAnimation", true);
@@ -1176,7 +1176,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     private void finishCurrentTransitionToHome() {
         synchronized (mRecentsAnimationController) {
             mRecentsAnimationController.finish(true /* toRecents */,
-                    () -> setStateOnUiThread(STATE_CURRENT_TASK_FINISHED),
+                    () -> mStateCallback.setStateOnUiThread(STATE_CURRENT_TASK_FINISHED),
                     true /* sendUserLeaveHint */);
         }
         ActiveGestureLog.INSTANCE.addLog("finishRecentsAnimation", true);

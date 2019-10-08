@@ -113,7 +113,7 @@ public class DeviceLockedInputConsumer implements InputConsumer,
 
         // Init states
         mStateCallback = new MultiStateCallback(STATE_NAMES);
-        mStateCallback.addCallback(STATE_TARGET_RECEIVED | STATE_HANDLER_INVALIDATED,
+        mStateCallback.runOnceAtState(STATE_TARGET_RECEIVED | STATE_HANDLER_INVALIDATED,
                 this::endRemoteAnimation);
 
         mVelocityTracker = VelocityTracker.obtain();

@@ -129,8 +129,8 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
     /**
      * Adds a callback for when the states matching the given {@param stateMask} is set.
      */
-    public void addCallback(int stateMask, Runnable callback) {
-        mStateCallback.addCallback(stateMask, callback);
+    public void runOnceAtState(int stateMask, Runnable callback) {
+        mStateCallback.runOnceAtState(stateMask, callback);
     }
 
     /**
@@ -196,7 +196,7 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
      */
     public void setFinishingRecentsAnimationTaskId(int taskId) {
         mFinishingRecentsAnimationTaskId = taskId;
-        mStateCallback.addCallback(STATE_RECENTS_ANIMATION_FINISHED, () -> {
+        mStateCallback.runOnceAtState(STATE_RECENTS_ANIMATION_FINISHED, () -> {
             mFinishingRecentsAnimationTaskId = -1;
         });
     }

@@ -145,20 +145,20 @@ public class FallbackNoButtonInputConsumer extends
     private void initStateCallbacks() {
         mStateCallback = new MultiStateCallback(STATE_NAMES);
 
-        mStateCallback.addCallback(STATE_HANDLER_INVALIDATED,
+        mStateCallback.runOnceAtState(STATE_HANDLER_INVALIDATED,
                 this::onHandlerInvalidated);
-        mStateCallback.addCallback(STATE_RECENTS_PRESENT | STATE_HANDLER_INVALIDATED,
+        mStateCallback.runOnceAtState(STATE_RECENTS_PRESENT | STATE_HANDLER_INVALIDATED,
                 this::onHandlerInvalidatedWithRecents);
 
-        mStateCallback.addCallback(STATE_GESTURE_CANCELLED | STATE_APP_CONTROLLER_RECEIVED,
+        mStateCallback.runOnceAtState(STATE_GESTURE_CANCELLED | STATE_APP_CONTROLLER_RECEIVED,
                 this::finishAnimationTargetSetAnimationComplete);
 
         if (mInQuickSwitchMode) {
-            mStateCallback.addCallback(STATE_GESTURE_COMPLETED | STATE_APP_CONTROLLER_RECEIVED
+            mStateCallback.runOnceAtState(STATE_GESTURE_COMPLETED | STATE_APP_CONTROLLER_RECEIVED
                             | STATE_RECENTS_PRESENT,
                     this::finishAnimationTargetSet);
         } else {
-            mStateCallback.addCallback(STATE_GESTURE_COMPLETED | STATE_APP_CONTROLLER_RECEIVED,
+            mStateCallback.runOnceAtState(STATE_GESTURE_COMPLETED | STATE_APP_CONTROLLER_RECEIVED,
                     this::finishAnimationTargetSet);
         }
     }
@@ -186,7 +186,7 @@ public class FallbackNoButtonInputConsumer extends
                 mRecentsView.onGestureAnimationStart(mRunningTaskId);
             }
         }
-        setStateOnUiThread(STATE_RECENTS_PRESENT);
+        mStateCallback.setStateOnUiThread(STATE_RECENTS_PRESENT);
         return true;
     }
 
@@ -251,7 +251,7 @@ public class FallbackNoButtonInputConsumer extends
     public void onGestureCancelled() {
         updateDisplacement(0);
         mGestureState.setEndTarget(LAST_TASK);
-        setStateOnUiThread(STATE_GESTURE_CANCELLED);
+        mStateCallback.setStateOnUiThread(STATE_GESTURE_CANCELLED);
     }
 
     @Override
@@ -275,7 +275,7 @@ public class FallbackNoButtonInputConsumer extends
                         : LAST_TASK);
             }
         }
-        setStateOnUiThread(STATE_GESTURE_COMPLETED);
+        mStateCallback.setStateOnUiThread(STATE_GESTURE_COMPLETED);
     }
 
     @Override
@@ -302,7 +302,7 @@ public class FallbackNoButtonInputConsumer extends
                 mRecentsView.setOnScrollChangeListener(null);
             }
         } else {
-            setStateOnUiThread(STATE_HANDLER_INVALIDATED);
+            mStateCallback.setStateOnUiThread(STATE_HANDLER_INVALIDATED);
         }
     }
 
@@ -366,7 +366,7 @@ public class FallbackNoButtonInputConsumer extends
             }
         }
 
-        setStateOnUiThread(STATE_HANDLER_INVALIDATED);
+        mStateCallback.setStateOnUiThread(STATE_HANDLER_INVALIDATED);
     }
 
     private void finishAnimationTargetSet() {
@@ -436,14 +436,14 @@ public class FallbackNoButtonInputConsumer extends
         }
         applyTransformUnchecked();
 
-        setStateOnUiThread(STATE_APP_CONTROLLER_RECEIVED);
+        mStateCallback.setStateOnUiThread(STATE_APP_CONTROLLER_RECEIVED);
     }
 
     @Override
     public void onRecentsAnimationCanceled(ThumbnailData thumbnailData) {
         super.onRecentsAnimationCanceled(thumbnailData);
         mRecentsView.setRecentsAnimationTargets(null, null);
-        setStateOnUiThread(STATE_HANDLER_INVALIDATED);
+        mStateCallback.setStateOnUiThread(STATE_HANDLER_INVALIDATED);
     }
 
     /**
