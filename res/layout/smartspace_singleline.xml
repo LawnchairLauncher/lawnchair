@@ -84,14 +84,6 @@
                 android:textColor="?workspaceTextColor"
                 android:textSize="@dimen/smartspace_title_size"/>
 
-            <ch.deletescape.lawnchair.smartspace.SmartspaceDividerView
-                android:id="@+id/title_sep"
-                android:layout_width="@dimen/smartspace_title_sep_width"
-                android:layout_height="20dp"
-                android:layout_gravity="center_vertical"
-                android:visibility="gone"
-                tools:visibility="visible"/>
-
             <LinearLayout
                 android:id="@+id/title_weather_content"
                 android:layout_width="wrap_content"

@@ -51,7 +51,6 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
         View.OnClickListener, View.OnLongClickListener, Runnable, LawnchairSmartspaceController.Listener {
     private TextView mSubtitleWeatherText;
     private final TextPaint dB;
-    private View mTitleSeparator;
     private TextView mTitleText;
     private ViewGroup mTitleWeatherContent;
     private ImageView mTitleWeatherIcon;
@@ -289,10 +288,8 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
             mClockView.setOnLongClickListener(co());
             if (forced)
                 mClockView.reloadDateFormat(true);
-            LawnchairUtilsKt.setVisible(mTitleSeparator, mWeatherAvailable);
         } else {
             mClockView.setVisibility(View.GONE);
-            mTitleSeparator.setVisibility(View.GONE);
         }
         bindClockAbove(forced);
     }
@@ -355,7 +352,6 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
         mSubtitleWeatherText = findViewById(R.id.subtitle_weather_text);
         mClockView = findViewById(R.id.clock);
         mClockAboveView = findViewById(R.id.time_above);
-        mTitleSeparator = findViewById(R.id.title_sep);
     }
 
     private String cn() {
