@@ -29,7 +29,6 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.AllAppsStore;
@@ -173,8 +172,8 @@ public class TestInformationHandler implements ResourceBasedOverride {
     }
 
     protected boolean isLauncherInitialized() {
-        final LauncherModel model = LauncherAppState.getInstance(mContext).getModel();
-        return model.getCallback() == null || model.isModelLoaded();
+        return Launcher.ACTIVITY_TRACKER.getCreatedActivity() == null
+                || LauncherAppState.getInstance(mContext).getModel().isModelLoaded();
     }
 
     private static void runGcAndFinalizersSync() {
