@@ -169,7 +169,7 @@ class ThemeManager(val context: Context) : WallpaperColorInfo.OnChangeListener, 
             colorEngineDarkText != null -> colorEngineDarkText == true
             theme.hasFlag(THEME_DARK_TEXT) -> true
             theme.hasFlag(THEME_FOLLOW_WALLPAPER) -> wallpaperColorInfo.supportsDarkText()
-            else -> false
+            else -> wallpaperColorInfo.supportsDarkText()
         }
 
         val darkMainColor = wallpaperColorInfo.isMainColorDark
