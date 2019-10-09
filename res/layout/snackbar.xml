@@ -15,6 +15,7 @@
 -->
 
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <TextView
@@ -29,7 +30,8 @@
         android:ellipsize="end"
         android:textSize="@dimen/snackbar_max_text_size"
         android:textColor="?android:attr/textColorPrimary"
-        android:theme="@style/TextTitle"/>
+        android:theme="@style/TextTitle"
+        app:customFontType="text"/>
     <TextView
         android:id="@+id/action"
         android:layout_height="@dimen/snackbar_content_height"
@@ -43,5 +45,6 @@
         android:textSize="@dimen/snackbar_max_text_size"
         android:textColor="?android:attr/colorAccent"
         android:theme="@style/TextTitle"
-        android:capitalize="sentences"/>
+        android:capitalize="sentences"
+        app:customFontType="button"/>
 </merge>
