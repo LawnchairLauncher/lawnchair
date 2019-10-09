@@ -28,7 +28,6 @@ import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.RadialGradient;
-import android.graphics.Rect;
 import android.graphics.Region;
 import android.graphics.Shader;
 import android.support.v4.graphics.ColorUtils;
@@ -164,14 +163,6 @@ public class PreviewBackground {
                 Shader.TileMode.CLAMP);
 
         invalidate();
-    }
-
-    void getBounds(Rect outBounds) {
-        int top = basePreviewOffsetY;
-        int left = basePreviewOffsetX;
-        int right = left + previewSize;
-        int bottom = top + previewSize;
-        outBounds.set(left, top, right, bottom);
     }
 
     int getRadius() {

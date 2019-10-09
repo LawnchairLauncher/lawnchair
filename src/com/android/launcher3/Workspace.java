@@ -19,9 +19,6 @@ package com.android.launcher3;
 import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_TRANSITION_MS;
-import static com.android.launcher3.LauncherSettings.BaseLauncherColumns.ITEM_TYPE_APPLICATION;
-import static com.android.launcher3.LauncherSettings.BaseLauncherColumns.ITEM_TYPE_SHORTCUT;
-import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.SPRING_LOADED;
@@ -44,7 +41,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Parcelable;
 import android.os.UserHandle;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.SparseArray;
@@ -1858,9 +1854,9 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
         boolean aboveShortcut = (dropOverView.getTag() instanceof ShortcutInfo);
         boolean willBecomeShortcut =
-                (info.itemType == ITEM_TYPE_APPLICATION ||
-                        info.itemType == ITEM_TYPE_SHORTCUT ||
-                        info.itemType == ITEM_TYPE_DEEP_SHORTCUT);
+                (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION ||
+                        info.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT ||
+                        info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT);
 
         return (aboveShortcut && willBecomeShortcut);
     }
@@ -2705,7 +2701,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             final PendingAddItemInfo pendingInfo = (PendingAddItemInfo) info;
 
             boolean findNearestVacantCell = true;
-            if (pendingInfo.itemType == ITEM_TYPE_SHORTCUT) {
+            if (pendingInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) {
                 mTargetCell = findNearestArea(touchXY[0], touchXY[1], spanX, spanY,
                         cellLayout, mTargetCell);
                 float distance = cellLayout.getDistanceFromCell(mDragViewVisualCenter[0],
@@ -2777,9 +2773,9 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             View view;
 
             switch (info.itemType) {
-            case ITEM_TYPE_APPLICATION:
-            case ITEM_TYPE_SHORTCUT:
-            case ITEM_TYPE_DEEP_SHORTCUT:
+            case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
+            case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
+            case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT:
                 if (info.container == NO_ID) {
                     // Came from all apps -- make a copy
                     if (info instanceof AppInfo) {
@@ -3173,42 +3169,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         return childrenLayouts;
     }
 
-    /**
-     * Similar to {@link #getFirstMatch} but optimized to finding a suitable view for the app close
-     * animation.
-     *
-     * @param packageName The package name of the app to match.
-     * @param user The user of the app to match.
-     */
-    public View getFirstMatchForAppClose(String packageName, UserHandle user) {
-        final int curPage = getCurrentPage();
-        final CellLayout currentPage = (CellLayout) getPageAt(curPage);
-        final Workspace.ItemOperator packageAndUser = (ItemInfo info, View view) -> info != null
-                && info.getTargetComponent() != null
-                && TextUtils.equals(info.getTargetComponent().getPackageName(), packageName)
-                && info.user.equals(user);
-        final Workspace.ItemOperator packageAndUserAndApp = (ItemInfo info, View view) ->
-                packageAndUser.evaluate(info, view) && info.itemType == ITEM_TYPE_APPLICATION;
-        final Workspace.ItemOperator packageAndUserAndShortcut = (ItemInfo info, View view) ->
-                packageAndUser.evaluate(info, view) && (info.itemType == ITEM_TYPE_SHORTCUT
-                        || info.itemType == ITEM_TYPE_DEEP_SHORTCUT);
-        final Workspace.ItemOperator packageAndUserInFolder = (info, view) -> {
-            if (info instanceof FolderInfo) {
-                FolderInfo folderInfo = (FolderInfo) info;
-                for (ShortcutInfo shortcutInfo : folderInfo.contents) {
-                    if (packageAndUser.evaluate(shortcutInfo, view)) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        };
-
-        // Order: App icons, shortcuts, app/shortcut in folder. Items in hotseat get returned first.
-        return getFirstMatch(new CellLayout[] { mLauncher.getHotseat().getLayout(), currentPage },
-                packageAndUserAndApp, packageAndUserAndShortcut /*, packageAndUserInFolder */);
-    }
-
     public View getHomescreenIconByItemId(final long id) {
         return getFirstMatch(new ItemOperator() {
 
@@ -3253,40 +3213,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             }
         });
         return value[0];
-    }
-
-    /**
-     * @param cellLayouts List of CellLayouts to scan, in order of preference.
-     * @param operators List of operators, in order starting from best matching operator.
-     * @return
-     */
-    private View getFirstMatch(CellLayout[] cellLayouts, final ItemOperator... operators) {
-        // This array is filled with the first match for each operator.
-        final View[] matches = new View[operators.length];
-        // For efficiency, the outer loop should be CellLayout.
-        for (CellLayout cellLayout : cellLayouts) {
-            mapOverCellLayout(MAP_NO_RECURSE, cellLayout, (info, v) -> {
-                for (int i = 0; i < operators.length; ++i) {
-                    if (matches[i] == null && operators[i].evaluate(info, v)) {
-                        matches[i] = v;
-                        if (i == 0) {
-                            // We can return since this is the best match possible.
-                            return true;
-                        }
-                    }
-                }
-                return false;
-            });
-            if (matches[0] != null) {
-                break;
-            }
-        }
-        for (View match : matches) {
-            if (match != null) {
-                return match;
-            }
-        }
-        return null;
     }
 
     void clearDropTargets() {
@@ -3395,38 +3321,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                 }
             }
         }
-    }
-
-    private boolean mapOverCellLayout(boolean recurse, CellLayout layout, ItemOperator op) {
-        // TODO(b/128460496) Potential race condition where layout is not yet loaded
-        if (layout == null) {
-            return false;
-        }
-        ShortcutAndWidgetContainer container = layout.getShortcutsAndWidgets();
-        // map over all the shortcuts on the workspace
-        final int itemCount = container.getChildCount();
-        for (int itemIdx = 0; itemIdx < itemCount; itemIdx++) {
-            View item = container.getChildAt(itemIdx);
-            ItemInfo info = (ItemInfo) item.getTag();
-            if (recurse && info instanceof FolderInfo && item instanceof FolderIcon) {
-                FolderIcon folder = (FolderIcon) item;
-                ArrayList<View> folderChildren = folder.getFolder().getItemsInReadingOrder();
-                // map over all the children in the folder
-                final int childCount = folderChildren.size();
-                for (int childIdx = 0; childIdx < childCount; childIdx++) {
-                    View child = folderChildren.get(childIdx);
-                    info = (ItemInfo) child.getTag();
-                    if (op.evaluate(info, child)) {
-                        return true;
-                    }
-                }
-            } else {
-                if (op.evaluate(info, item)) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     public ShortcutAndWidgetContainer getCurrentContainer() {

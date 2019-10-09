@@ -16,9 +16,6 @@
 
 package com.android.launcher3;
 
-import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP;
-import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT;
-
 import android.Manifest;
 import android.Manifest.permission;
 import android.app.Activity;
@@ -59,7 +56,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-//import android.support.v4.content.pm.ShortcutInfoCompat;
+import android.support.v4.content.pm.ShortcutInfoCompat;
 import android.support.v4.content.pm.ShortcutManagerCompat;
 import android.support.v4.graphics.drawable.IconCompat;
 import android.text.Spannable;
@@ -84,23 +81,12 @@ import ch.deletescape.lawnchair.HiddenApiCompat;
 import ch.deletescape.lawnchair.LawnchairApp;
 import ch.deletescape.lawnchair.LawnchairAppKt;
 import com.android.launcher3.compat.LauncherAppsCompat;
-import com.android.launcher3.compat.ShortcutConfigActivityInfo;
 import com.android.launcher3.config.FeatureFlags;
 
-import com.android.launcher3.dragndrop.DragLayer;
-import com.android.launcher3.dragndrop.FolderAdaptiveIcon;
-import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.BitmapInfo;
 import com.android.launcher3.graphics.LauncherIcons;
-import com.android.launcher3.graphics.RotationMode;
-import com.android.launcher3.shortcuts.DeepShortcutManager;
-import com.android.launcher3.shortcuts.DeepShortcutView;
-import com.android.launcher3.shortcuts.ShortcutInfoCompat;
-import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.uioverrides.OverviewState;
 import com.android.launcher3.util.PackageManagerHelper;
-import com.android.launcher3.views.Transposable;
-import com.android.launcher3.widget.PendingAddShortcutInfo;
 import com.android.systemui.shared.recents.model.Task;
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
@@ -108,7 +94,6 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -241,76 +226,6 @@ public final class Utilities {
     }
 
     /**
-     * Given a coordinate relative to the descendant, find the coordinate in a parent view's
-     * coordinates.
-     *
-     * @param descendant The descendant to which the passed coordinate is relative.
-     * @param ancestor The root view to make the coordinates relative to.
-     * @param coord The coordinate that we want mapped.
-     * @param includeRootScroll Whether or not to account for the scroll of the descendant:
-     *          sometimes this is relevant as in a child's coordinates within the descendant.
-     * @return The factor by which this descendant is scaled relative to this DragLayer. Caution
-     *         this scale factor is assumed to be equal in X and Y, and so if at any point this
-     *         assumption fails, we will need to return a pair of scale factors.
-     */
-    public static float getDescendantCoordRelativeToAncestor(
-            View descendant, View ancestor, float[] coord, boolean includeRootScroll) {
-        return getDescendantCoordRelativeToAncestor(descendant, ancestor, coord, includeRootScroll,
-                false, null);
-    }
-
-    /**
-     * Given a coordinate relative to the descendant, find the coordinate in a parent view's
-     * coordinates.
-     *
-     * @param descendant The descendant to which the passed coordinate is relative.
-     * @param ancestor The root view to make the coordinates relative to.
-     * @param coord The coordinate that we want mapped.
-     * @param includeRootScroll Whether or not to account for the scroll of the descendant:
-     *          sometimes this is relevant as in a child's coordinates within the descendant.
-     * @param ignoreTransform If true, view transform is ignored
-     * @param outRotation If not null, and {@param ignoreTransform} is true, this is set to the
-     *                   overall rotation of the view in degrees.
-     * @return The factor by which this descendant is scaled relative to this DragLayer. Caution
-     *         this scale factor is assumed to be equal in X and Y, and so if at any point this
-     *         assumption fails, we will need to return a pair of scale factors.
-     */
-    public static float getDescendantCoordRelativeToAncestor(View descendant, View ancestor,
-            float[] coord, boolean includeRootScroll, boolean ignoreTransform,
-            float[] outRotation) {
-        float scale = 1.0f;
-        View v = descendant;
-        while(v != ancestor && v != null) {
-            // For TextViews, scroll has a meaning which relates to the text position
-            // which is very strange... ignore the scroll.
-            if (v != descendant || includeRootScroll) {
-                offsetPoints(coord, -v.getScrollX(), -v.getScrollY());
-            }
-
-            if (ignoreTransform) {
-                if (v instanceof Transposable) {
-                    RotationMode m = ((Transposable) v).getRotationMode();
-                    if (m.isTransposed) {
-                        sMatrix.setRotate(m.surfaceRotation, v.getPivotX(), v.getPivotY());
-                        sMatrix.mapPoints(coord);
-
-                        if (outRotation != null) {
-                            outRotation[0] += m.surfaceRotation;
-                        }
-                    }
-                }
-            } else {
-                v.getMatrix().mapPoints(coord);
-            }
-            offsetPoints(coord, v.getLeft(), v.getTop());
-            scale *= v.getScaleX();
-
-            v = (View) v.getParent();
-        }
-        return scale;
-    }
-
-    /**
      * Inverse of {@link #getDescendantCoordRelativeToAncestor(View, View, int[], boolean)}.
      */
     public static void mapCoordInSelfToDescendant(View descendant, View root, int[] coord) {
@@ -330,13 +245,6 @@ public final class Utilities {
         sInverseMatrix.mapPoints(sPoint);
         coord[0] = Math.round(sPoint[0]);
         coord[1] = Math.round(sPoint[1]);
-    }
-
-    public static void offsetPoints(float[] points, float offsetX, float offsetY) {
-        for (int i = 0; i < points.length; i += 2) {
-            points[i] += offsetX;
-            points[i + 1] += offsetY;
-        }
     }
 
     /**
@@ -908,7 +816,7 @@ public final class Utilities {
 
     public static void pinSettingsShortcut(Context context) {
         if (!ShortcutManagerCompat.isRequestPinShortcutSupported(context)) return;
-        ShortcutManagerCompat.requestPinShortcut(context, new android.support.v4.content.pm.ShortcutInfoCompat.Builder(context, "settings")
+        ShortcutManagerCompat.requestPinShortcut(context, new ShortcutInfoCompat.Builder(context, "settings")
                 .setIntent(new Intent(context, SettingsActivity.class).setAction(Intent.ACTION_MAIN))
                 .setIcon(IconCompat.createWithResource(context, R.drawable.ic_setting))
                 .setShortLabel(context.getString(R.string.settings_button_text))
@@ -1126,97 +1034,5 @@ public final class Utilities {
     public static boolean hasWriteSecureSettingsPermission(Context context) {
         return ContextCompat.checkSelfPermission(context,
                 android.Manifest.permission.WRITE_SECURE_SETTINGS) == PackageManager.PERMISSION_GRANTED;
-    }
-
-    /**
-     * Returns the location bounds of a view.
-     * - For DeepShortcutView, we return the bounds of the icon view.
-     * - For BubbleTextView, we return the icon bounds.
-     */
-    public static void getLocationBoundsForView(Launcher launcher, View v, Rect outRect) {
-        final DragLayer dragLayer = launcher.getDragLayer();
-        final boolean isBubbleTextView = v instanceof BubbleTextView;
-        final boolean isFolderIcon = v instanceof FolderIcon;
-        final Rect rect = new Rect();
-
-        // Deep shortcut views have their icon drawn in a separate view.
-        final boolean fromDeepShortcutView = v.getParent() instanceof DeepShortcutView;
-        if (v instanceof DeepShortcutView) {
-            dragLayer.getDescendantRectRelativeToSelf(((DeepShortcutView) v).getIconView(), rect);
-        } else if (fromDeepShortcutView) {
-            DeepShortcutView view = (DeepShortcutView) v.getParent();
-            dragLayer.getDescendantRectRelativeToSelf(view.getIconView(), rect);
-        } else if ((isBubbleTextView || isFolderIcon) && v.getTag() instanceof ItemInfo
-                && (((ItemInfo) v.getTag()).container == CONTAINER_DESKTOP
-                || ((ItemInfo) v.getTag()).container == CONTAINER_HOTSEAT)) {
-            CellLayout pageViewIsOn = ((CellLayout) v.getParent().getParent());
-            int pageNum = launcher.getWorkspace().indexOfChild(pageViewIsOn);
-
-            DeviceProfile dp = launcher.getDeviceProfile();
-            ItemInfo info = ((ItemInfo) v.getTag());
-            dp.getItemLocation(info.cellX, info.cellY, info.spanX, info.spanY,
-                    info.container, pageNum - launcher.getCurrentWorkspaceScreen(), rect);
-        } else {
-            dragLayer.getDescendantRectRelativeToSelf(v, rect);
-        }
-        int viewLocationLeft = rect.left;
-        int viewLocationTop = rect.top;
-
-        if (isBubbleTextView && !fromDeepShortcutView) {
-            ((BubbleTextView) v).getIconBounds(rect);
-        } else if (isFolderIcon) {
-            ((FolderIcon) v).getPreviewBounds(rect);
-        } else {
-            rect.set(0, 0, rect.width(), rect.height());
-        }
-        viewLocationLeft += rect.left;
-        viewLocationTop += rect.top;
-        outRect.set(viewLocationLeft, viewLocationTop, viewLocationLeft + rect.width(),
-                viewLocationTop + rect.height());
-    }
-
-    /**
-     * Returns the full drawable for {@param info}.
-     * @param outObj this is set to the internal data associated with {@param info},
-     *               eg {@link LauncherActivityInfo} or {@link ShortcutInfoCompat}.
-     */
-    public static Drawable getFullDrawable(Launcher launcher, ItemInfo info, int width, int height,
-            boolean flattenDrawable, Object[] outObj) {
-        LauncherAppState appState = LauncherAppState.getInstance(launcher);
-        if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
-            LauncherActivityInfo activityInfo = LauncherAppsCompat.getInstance(launcher)
-                    .resolveActivity(info.getIntent(), info.user);
-            outObj[0] = activityInfo;
-            return (activityInfo != null) ? appState.getIconCache()
-                    .getFullResIcon(activityInfo, flattenDrawable) : null;
-        } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
-            if (info instanceof PendingAddShortcutInfo) {
-                ShortcutConfigActivityInfo activityInfo =
-                        ((PendingAddShortcutInfo) info).activityInfo;
-                outObj[0] = activityInfo;
-                return activityInfo.getFullResIcon(appState.getIconCache());
-            }
-            ShortcutKey key = ShortcutKey.fromItemInfo(info);
-            DeepShortcutManager sm = DeepShortcutManager.getInstance(launcher);
-            List<ShortcutInfoCompat> si = sm.queryForFullDetails(
-                    key.componentName.getPackageName(), Arrays.asList(key.getId()), key.user);
-            if (si.isEmpty()) {
-                return null;
-            } else {
-                outObj[0] = si.get(0);
-                return sm.getShortcutIconDrawable(si.get(0),
-                        appState.getInvariantDeviceProfile().fillResIconDpi);
-            }
-        } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
-            FolderAdaptiveIcon icon = FolderAdaptiveIcon.createFolderAdaptiveIcon(
-                    launcher, info.id, new Point(width, height));
-            if (icon == null) {
-                return null;
-            }
-            outObj[0] = icon;
-            return icon;
-        } else {
-            return null;
-        }
     }
 }

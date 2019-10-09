@@ -81,7 +81,6 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.launcher3.util.TraceHelper;
-import com.android.launcher3.views.FloatingIconView;
 import com.android.quickstep.ActivityControlHelper.ActivityInitListener;
 import com.android.quickstep.ActivityControlHelper.AnimationFactory;
 import com.android.quickstep.ActivityControlHelper.AnimationFactory.ShelfAnimState;
@@ -872,14 +871,12 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
                             MAX_SWIPE_DURATION);
                 } else {
                     float distanceToTravel = (endShift - currentShift) * mTransitionDragLength;
-                    Log.d("WTSH", "distance: " + distanceToTravel);
 
                     // we want the page's snap velocity to approximately match the velocity at
                     // which the user flings, so we scale the duration by a value near to the
                     // derivative of the scroll interpolator at zero, ie. 2.
                     long baseDuration = Math.round(Math.abs(distanceToTravel / velocityPxPerMs.y));
                     duration = Math.min(MAX_SWIPE_DURATION, 2 * baseDuration);
-                    duration = Math.max(200, duration);
 
                     if (endTarget == RECENTS) {
                         interpolator = OVERSHOOT_1_2;
@@ -1005,6 +1002,9 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
             mLauncherTransitionController.dispatchSetInterpolator(adjustedInterpolator);
             mLauncherTransitionController.getAnimationPlayer().setDuration(duration);
 
+//            if (QUICKSTEP_SPRINGS.get()) {
+//                mLauncherTransitionController.dispatchOnStartWithVelocity(end, velocityPxPerMs);
+//            }
             mLauncherTransitionController.getAnimationPlayer().start();
         }
     }
@@ -1027,11 +1027,11 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         final RectF currentRect = new RectF();
 
         final View floatingView = homeAnimationFactory.getFloatingView();
-        final boolean isFloatingIconView = floatingView instanceof FloatingIconView;
+        final boolean isFloatingIconView = false;//floatingView instanceof FloatingIconView;
 
         ValueAnimator anim = ValueAnimator.ofFloat(0, 1);
         if (isFloatingIconView) {
-            anim.addListener((FloatingIconView) floatingView);
+//            anim.addListener((FloatingIconView) floatingView);
         }
 
         // We want the window alpha to be 0 once this threshold is met, so that the
@@ -1055,8 +1055,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
             mClipAnimationHelper.applyTransform(targetSet, mTransformParams);
 
             if (isFloatingIconView) {
-                ((FloatingIconView) floatingView).update(currentRect, 1f, progress,
-                        windowAlphaThreshold, mClipAnimationHelper.getCurrentCornerRadius(), false);
+//                ((FloatingIconView) floatingView).update(currentRect, iconAlpha, progress,
+//                        windowAlphaThreshold);
             }
         });
         anim.addListener(new AnimationSuccessListener() {
