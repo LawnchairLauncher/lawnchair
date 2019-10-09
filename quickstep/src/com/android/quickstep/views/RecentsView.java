@@ -647,7 +647,7 @@ public abstract class RecentsView<T extends BaseDraggingActivity> extends PagedV
         startHome();
     }
 
-    public abstract void startHome();
+    protected abstract void startHome();
 
     public void reset() {
         mRunningTaskId = -1;

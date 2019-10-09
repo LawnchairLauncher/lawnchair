@@ -20,9 +20,7 @@ import static android.view.View.TRANSLATION_Y;
 import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherState.FAST_OVERVIEW;
-import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
-import static com.android.launcher3.LauncherStateManager.ANIM_ALL;
 import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
 import static com.android.launcher3.allapps.AllAppsTransitionController.SCRIM_PROGRESS;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
@@ -41,35 +39,27 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
-import android.graphics.RectF;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.UserHandle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
-import android.util.Log;
 import android.view.View;
 
-import android.view.animation.Interpolator;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherInitListener;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
-import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.uioverrides.FastOverviewState;
-import com.android.launcher3.uioverrides.OverviewState;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.quickstep.TouchConsumer.InteractionType;
@@ -240,8 +230,6 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
             }
 
             return new AnimationFactory() {
-                private ShelfAnimState mShelfState;
-
                 @Override
                 public void createActivityController(long transitionLength,
                         @InteractionType int interactionType) {
@@ -252,36 +240,6 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
                 @Override
                 public void onTransitionCancelled() {
                     activity.getStateManager().goToState(startState, false /* animate */);
-                }
-
-                @Override
-                public void setShelfState(ShelfAnimState shelfState, Interpolator interpolator,
-                        long duration) {
-                    if (mShelfState == shelfState) {
-                        return;
-                    }
-                    mShelfState = shelfState;
-                    Log.d("ACH", "Shelf state set to " + mShelfState);
-//                    activity.getStateManager().cancelStateElementAnimation(INDEX_SHELF_ANIM);
-//                    if (mShelfState == ShelfAnimState.CANCEL) {
-//                        return;
-//                    }
-//                    float shelfHiddenProgress = 1f;//BACKGROUND_APP.getVerticalProgress(activity);
-//                    float shelfOverviewProgress = OVERVIEW.getVerticalProgress(activity);
-//                    // Peek based on default overview progress so we can see hotseat if we're showing
-//                    // that instead of predictions in overview.
-//                    float defaultOverviewProgress = OverviewState.getDefaultVerticalProgress(activity);
-//                    float shelfPeekingProgress = shelfHiddenProgress
-//                            - (shelfHiddenProgress - defaultOverviewProgress) * 0.25f;
-//                    float toProgress = mShelfState == ShelfAnimState.HIDE
-//                            ? shelfHiddenProgress
-//                            : mShelfState == ShelfAnimState.PEEK
-//                                    ? shelfPeekingProgress
-//                                    : shelfOverviewProgress;
-//                    Animator shelfAnim = activity.getStateManager()
-//                            .createStateElementAnimation(INDEX_SHELF_ANIM, toProgress);
-//                    shelfAnim.setInterpolator(interpolator);
-//                    shelfAnim.setDuration(duration).start();
                 }
             };
         }
@@ -656,23 +614,10 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
     interface AnimationFactory {
 
-        enum ShelfAnimState {
-            HIDE(true), PEEK(true), OVERVIEW(false), CANCEL(false);
-
-            ShelfAnimState(boolean shouldPreformHaptic) {
-                this.shouldPreformHaptic = shouldPreformHaptic;
-            }
-
-            public final boolean shouldPreformHaptic;
-        }
-
         default void onRemoteAnimationReceived(RemoteAnimationTargetSet targets) { }
 
         void createActivityController(long transitionLength, @InteractionType int interactionType);
 
         default void onTransitionCancelled() { }
-
-        default void setShelfState(ShelfAnimState animState, Interpolator interpolator,
-                long duration) { }
     }
 }

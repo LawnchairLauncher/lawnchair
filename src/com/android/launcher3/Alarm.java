@@ -32,11 +32,7 @@ public class Alarm implements Runnable{
     private boolean mAlarmPending = false;
 
     public Alarm() {
-        this(new Handler());
-    }
-
-    public Alarm(Handler handler) {
-        mHandler = handler;
+        mHandler = new Handler();
     }
 
     public void setOnAlarmListener(OnAlarmListener alarmListener) {
