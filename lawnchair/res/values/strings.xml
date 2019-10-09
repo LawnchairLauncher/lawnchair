@@ -141,7 +141,8 @@
     <string name="hotseat_show_arrow">Arrow</string>
     <string name="hotseat_show_page_indicator">Page indicator</string>
     <string name="dock_style_pref_title">Dock style</string>
-    
+    <string name="dock_enable_pref_title">Enable dock</string>
+
     <string name="dock_style_p">Rounded</string>
     <string name="dock_style_n">Flat</string>
     

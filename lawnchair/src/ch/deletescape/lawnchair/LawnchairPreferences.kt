@@ -95,10 +95,6 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     private val updateSmartspace = { updateSmartspace() }
     private val updateWeatherData = { onChangeCallback?.updateWeatherData() ?: Unit }
     private val reloadIconPacks = { IconPackManager.getInstance(context).packList.reloadPacks() }
-    private val reloadDockStyle = {
-        // TODO: remove dock presets and reload changes in DP instead
-        restart()
-    }
 
     private val lawnchairConfig = LawnchairConfig.getInstance(context)
 
@@ -170,17 +166,18 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     var weatherIconPack by StringPref("pref_weatherIcons", "", updateWeatherData)
 
     // Dock
-    val dockStyles = DockStyle.StyleManager(this, reloadDockStyle, resetAllApps)
     val dockColoredGoogle by BooleanPref("pref_dockColoredGoogle", true, doNothing)
     var dockSearchBarPref by BooleanPref("pref_dockSearchBar", true)
     inline val dockSearchBar get() = !dockHide && dockSearchBarPref
-    val dockRadius get() = dockStyles.currentStyle.radius
-    val dockShadow get() = dockStyles.currentStyle.enableShadow
-    val dockShowArrow get() = dockStyles.currentStyle.enableArrow
-    val dockOpacity get() = dockStyles.currentStyle.opacity
+    var dockRadius by FloatPref("pref_dockRadius", 16f, recreate)
+    var dockShadow by BooleanPref("pref_dockShadow", false, recreate)
+    var dockShowArrow by BooleanPref("pref_hotseatShowArrow", false, recreate)
+    var dockOpacity by AlphaPref("pref_hotseatCustomOpacity", -1, recreate)
     val dockShowPageIndicator by BooleanPref("pref_hotseatShowPageIndicator", true, { onChangeCallback?.updatePageIndicator() })
-    val dockGradientStyle get() = dockStyles.currentStyle.enableGradient
-    val dockHide get() = dockStyles.currentStyle.hide
+    val dockBackground by BooleanPref("pref_dockBackground", false, recreate)
+    inline val dockGradientStyle get() = !dockBackground
+    val dockEnabled by BooleanPref("pref_enableDock", true, recreate)
+    inline val dockHide get() = !dockEnabled
     private val dockGridSizeDelegate = ResettableLazy { GridSize(this, "numHotseatIcons", LauncherAppState.getIDP(context), doNothing) }
     val dockGridSize by dockGridSizeDelegate
     val twoRowDock by BooleanPref("pref_twoRowDock", false, restart)
@@ -195,8 +192,6 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     // Drawer
     val hideAllAppsAppLabels by BooleanPref("pref_hideAllAppsAppLabels", false, recreate)
     val allAppsOpacity by AlphaPref("pref_allAppsOpacitySB", -1, recreate)
-    val allAppsStartAlpha get() = dockStyles.currentStyle.opacity
-    val allAppsEndAlpha get() = allAppsOpacity
     val allAppsSearch by BooleanPref("pref_allAppsSearch", true, recreate)
     var allAppsGlobalSearch by BooleanPref("pref_allAppsGoogleSearch", true, doNothing)
     val showAllAppsLabel by BooleanPref("pref_showAllAppsLabel", false) {
@@ -891,7 +886,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
         putBoolean("pref_dockShadow", false)
         putBoolean("pref_hotseatShowArrow", prefs.getBoolean("pref_hotseatShowArrow", true))
         putFloat("pref_dockRadius", 0f)
-        putBoolean("pref_dockGradient", prefs.getBoolean("pref_isHotseatTransparent", false))
+        putBoolean("pref_dockBackground", !prefs.getBoolean("pref_isHotseatTransparent", false))
         if (!prefs.getBoolean("pref_hotseatShouldUseCustomOpacity", false)) {
             putFloat("pref_hotseatCustomOpacity", -1f / 255)
         }
@@ -977,7 +972,17 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
                 "pref_generateAdaptiveForIconPack",
                 "pref_allAppsPaddingScale")
 
-        private val DEVICE_PROFILE_PREFS = ICON_CUSTOMIZATIONS_PREFS + CustomGridProvider.GRID_CUSTOMIZATIONS_PREFS +
+        private val DOCK_CUSTOMIZATIONS_PREFS = arrayOf(
+                "pref_enableDock",
+                "pref_dockRadius",
+                "pref_dockShadow",
+                "pref_hotseatShowArrow",
+                "pref_hotseatCustomOpacity",
+                "pref_dockBackground")
+
+        private val DEVICE_PROFILE_PREFS = ICON_CUSTOMIZATIONS_PREFS +
+                                           DOCK_CUSTOMIZATIONS_PREFS +
+                                           CustomGridProvider.GRID_CUSTOMIZATIONS_PREFS +
                                            arrayOf(
                 "pref_iconTextScaleSB",
                 "pref_iconSize",

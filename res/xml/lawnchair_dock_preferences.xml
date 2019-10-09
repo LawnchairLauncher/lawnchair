@@ -6,38 +6,36 @@
         android:key="prefCat_dockTheme"
         android:title="@string/pref_category_theme">
         
-        <ch.deletescape.lawnchair.preferences.DockPresetPreference
-            android:key="pref_dockPreset"
-            android:title="@string/dock_style_pref_title"
-            android:summary="%s"
-            android:entries="@array/dockStyles"
-            android:entryValues="@array/dockStyleValues"
-            android:defaultValue="1"
-            android:disableDependentsState="true"
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+            android:key="pref_enableDock"
+            android:title="@string/dock_enable_pref_title"
+            android:defaultValue="true"
             android:persistent="true" />
 
-        <ch.deletescape.lawnchair.preferences.DockSwitchPreference
-            android:key="enableGradient"
+        <!-- TODO: Fix dock background
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+            android:key="pref_dockBackground"
             android:title="@string/dock_fill"
-            android:dependency="pref_dockPreset"
+            android:dependency="pref_enableDock"
             android:persistent="true" />
 
         <ch.deletescape.lawnchair.colors.preferences.ColorPickerPreference
             android:key="pref_dockBackgroundColorResolver"
             android:title="@string/background_color"
-            android:dependency="enableGradient"
+            android:dependency="pref_dockBackground"
             app:colorMode="RGB"
             app:resolvers="@array/resolvers_shelf_background"/>
+        -->
  
-        <ch.deletescape.lawnchair.preferences.DockSwitchPreference
-            android:key="enableShadow"
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+            android:key="pref_dockShadow"
             android:title="@string/dock_shadow"
-            android:dependency="pref_dockPreset" />
+            android:dependency="pref_enableDock" />
 
-        <ch.deletescape.lawnchair.preferences.DockSeekbarPreference
-            android:key="radius"
+        <ch.deletescape.lawnchair.preferences.SeekbarPreference
+            android:key="pref_dockRadius"
             android:title="@string/radius"
-            android:dependency="pref_dockPreset"
+            android:dependency="pref_enableDock"
             app:minValue="0"
             app:maxValue="24"
             app:steps="24"
@@ -46,20 +44,22 @@
             app:defaultSeekbarValue="8"
             android:persistent="true" />
 
-        <ch.deletescape.lawnchair.preferences.DockAutoModeSeekbarPreference
-            android:key="opacityPref"
+        <!-- TODO: Fix dock background
+        <ch.deletescape.lawnchair.preferences.AutoModeSeekbarPreference
+            android:key="pref_hotseatCustomOpacity"
             android:title="@string/opacity"
-            android:dependency="enableGradient"
+            android:dependency="pref_dockBackground"
             app:minValue="0"
             app:maxValue="1"
             app:summaryFormat="%.0f%%"
             app:summaryMultiplier="100"
             android:persistent="true" />
+        -->
 
         <ch.deletescape.lawnchair.preferences.AutoModeScalePreference
             android:key="pref_dockScale"
             android:title="@string/dock_scale"
-            android:dependency="pref_dockPreset"
+            android:dependency="pref_enableDock"
             app:minValue="0.60"
             app:maxValue="1.75"
             app:defaultSeekbarValue="0"
@@ -67,8 +67,8 @@
             app:summaryMultiplier="100"
             android:persistent="true" />
  
-        <ch.deletescape.lawnchair.preferences.DockSwitchPreference
-            android:key="enableArrow"
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+            android:key="pref_hotseatShowArrow"
             android:title="@string/hotseat_show_arrow"
             android:persistent="true" />
 
@@ -143,7 +143,7 @@
     <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory
         android:key="prefCat_dockSearchbar"
         android:title="@string/pref_category_searchbar"
-        android:dependency="pref_dockPreset">
+        android:dependency="pref_enableDock">
         
         <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:key="pref_dockSearchBar"
