@@ -49,12 +49,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
+import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherInitListenerEx;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager;
+import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.AnimatorSetBuilder;
@@ -186,6 +188,11 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
                 // Stop scrolling so that it doesn't interfere with the translation offscreen.
                 recentsView.getScroller().forceFinished(true);
 
+                CellLayout currentPage = (CellLayout) activity.getWorkspace()
+                        .getChildAt(activity.getWorkspace().getCurrentPage());
+                if (currentPage == null) {
+                    return;
+                }
                 new StaggeredWorkspaceAnim(activity, workspaceView, velocity).start();
             }
         };
