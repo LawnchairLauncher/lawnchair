@@ -70,7 +70,7 @@ import androidx.annotation.WorkerThread;
 public class FloatingIconView extends View implements
         Animator.AnimatorListener, ClipPathView, OnGlobalLayoutListener {
 
-    public static final float SHAPE_PROGRESS_DURATION = 0.10f;
+    public static final float SHAPE_PROGRESS_DURATION = 0.15f;
     private static final int FADE_DURATION_MS = 200;
     private static final Rect sTmpRect = new Rect();
     private static final RectF sTmpRectF = new RectF();
@@ -161,7 +161,7 @@ public class FloatingIconView extends View implements
         mOutline.bottom = (int) (rect.height() / scale);
         mTaskCornerRadius = cornerRadius / scale;
         if (mIsAdaptiveIcon) {
-            if (!isOpening && progress >= shapeProgressStart) {
+            if (!isOpening && shapeRevealProgress >= 0) {
                 if (mRevealAnimator == null) {
                     mRevealAnimator = (ValueAnimator) IconShape.getShape().createRevealAnimator(
                             this, mStartRevealRect, mOutline, mTaskCornerRadius, !isOpening);
@@ -178,20 +178,7 @@ public class FloatingIconView extends View implements
                 mRevealAnimator.setCurrentFraction(shapeRevealProgress);
             }
 
-            float drawableScale = mOutline.height() / minSize;
-            setBackgroundDrawableBounds(drawableScale);
-            if (isOpening) {
-                // Center align foreground
-                int height = mFinalDrawableBounds.height();
-                int width = mFinalDrawableBounds.width();
-                int diffY = mIsVerticalBarLayout ? 0
-                        : (int) (((height * drawableScale) - height) / 2);
-                int diffX = mIsVerticalBarLayout ? (int) (((width * drawableScale) - width) / 2)
-                        : 0;
-                sTmpRect.set(mFinalDrawableBounds);
-                sTmpRect.offset(diffX, diffY);
-                mForeground.setBounds(sTmpRect);
-            }
+            setBackgroundDrawableBounds(mOutline.height() / minSize);
         }
         invalidate();
         invalidateOutline();
@@ -394,7 +381,6 @@ public class FloatingIconView extends View implements
                 setClipToOutline(true);
             } else {
                 setBackground(finalDrawable);
-                setClipToOutline(false);
             }
 
             if (!loadIconSignal.isCanceled()) {
@@ -534,11 +520,6 @@ public class FloatingIconView extends View implements
                 view.setVisibility(VISIBLE);
                 originalView.setVisibility(INVISIBLE);
             };
-            if (!isOpening) {
-                // Hide immediately since the floating view starts at a different location.
-                originalView.setVisibility(INVISIBLE);
-                view.mLoadIconSignal.setOnCancelListener(() -> originalView.setVisibility(VISIBLE));
-            }
             CancellationSignal loadIconSignal = view.mLoadIconSignal;
             new Handler(LauncherModel.getWorkerLooper()).postAtFrontOfQueue(() -> {
                 view.getIcon(originalView, (ItemInfo) originalView.getTag(), isOpening,
@@ -657,6 +638,5 @@ public class FloatingIconView extends View implements
         mOnTargetChangeRunnable = null;
         mTaskCornerRadius = 0;
         mOutline.setEmpty();
-        sTmpObjArray[0] = null;
     }
 }
