@@ -24,7 +24,6 @@ import static com.android.launcher3.anim.Interpolators.DEACCEL;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_2;
 import static com.android.quickstep.ActivityControlHelper.AnimationFactory.ShelfAnimState.HIDE;
-import static com.android.quickstep.ActivityControlHelper.AnimationFactory.ShelfAnimState.OVERVIEW;
 import static com.android.quickstep.ActivityControlHelper.AnimationFactory.ShelfAnimState.PEEK;
 import static com.android.quickstep.QuickScrubController.QUICK_SCRUB_FROM_APP_START_DURATION;
 import static com.android.quickstep.TouchConsumer.INTERACTION_NORMAL;
@@ -106,15 +105,13 @@ import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplier;
 import com.android.systemui.shared.system.WindowCallbacksCompat;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
+import com.google.android.apps.nexuslauncher.NexusLauncherActivity;
 import java.util.StringJoiner;
 import java.util.function.BiFunction;
 
 @TargetApi(Build.VERSION_CODES.O)
 public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     private static final String TAG = WindowTransformSwipeHandler.class.getSimpleName();
-
-    private static final Rect TEMP_RECT = new Rect();
-
     private static final boolean DEBUG_STATES = false;
 
     // Launcher UI related states
@@ -225,9 +222,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     private static final float SWIPE_DURATION_MULTIPLIER =
             Math.min(1 / MIN_PROGRESS_FOR_OVERVIEW, 1 / (1 - MIN_PROGRESS_FOR_OVERVIEW));
 
-    private static final long SHELF_ANIM_DURATION = 120;
-    public static final long RECENTS_ATTACH_DURATION = 300;
-
     private final ClipAnimationHelper mClipAnimationHelper;
     private final ClipAnimationHelper.TransformParams mTransformParams;
 
@@ -285,8 +279,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
 
     private InputConsumerController mInputConsumer =
             InputConsumerController.getRecentsAnimationInputConsumer();
-
-    private boolean mIsLikelyToStartNewTask;
 
     private final RecentsAnimationWrapper mRecentsAnimationWrapper = new RecentsAnimationWrapper();
 
@@ -490,7 +482,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
 
         mAnimationFactory = mActivityControlHelper.prepareRecentsUI(mActivity,
                 mWasLauncherAlreadyVisible, true, this::onAnimatorPlaybackControllerCreated);
-        maybeUpdateRecentsAttachedState(false /* animate */);
         AbstractFloatingView.closeAllOpenViews(activity, mWasLauncherAlreadyVisible);
 
         if (mWasLauncherAlreadyVisible) {
@@ -625,7 +616,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         if (displacement > mTransitionDragLength) {
             mCurrentShift.updateValue(1);
 
-            if (!mBgLongSwipeMode && !mSwipeHome) {
+            if (!mBgLongSwipeMode) {
                 mBgLongSwipeMode = true;
                 executeOnUiThread(this::onLongSwipeEnabledUi);
             }
@@ -644,65 +635,13 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
 
     public void onMotionPauseChanged(boolean isPaused) {
         if (!mSwipeHome) return;
-        setShelfState(isPaused ? PEEK : HIDE, OVERSHOOT_1_2, SHELF_ANIM_DURATION);
-    }
-
-    public void maybeUpdateRecentsAttachedState() {
-        maybeUpdateRecentsAttachedState(true /* animate */);
-    }
-
-    /**
-     * Determines whether to show or hide RecentsView. The window is always
-     * synchronized with its corresponding TaskView in RecentsView, so if
-     * RecentsView is shown, it will appear to be attached to the window.
-     *
-     * Note this method has no effect unless the navigation mode is NO_BUTTON.
-     */
-    private void maybeUpdateRecentsAttachedState(boolean animate) {
-        if (!mSwipeHome || mRecentsView == null) {
-            return;
-        }
-        RemoteAnimationTargetCompat runningTaskTarget = mRecentsAnimationWrapper.targetSet == null
-                ? null
-                : mRecentsAnimationWrapper.targetSet.findTask(mRunningTaskId);
-        final boolean recentsAttachedToAppWindow;
-        int runningTaskIndex = mRecentsView.getRunningTaskIndex();
-        if (runningTaskTarget != null && isNotInRecents(runningTaskTarget)) {
-            // The window is going away so make sure recents is always visible in this case.
-            recentsAttachedToAppWindow = true;
-            animate = false;
-        } else {
-            if (mGestureEndTarget != null) {
-                recentsAttachedToAppWindow = mGestureEndTarget.recentsAttachedToAppWindow;
-            } else {
-                recentsAttachedToAppWindow = mIsShelfPeeking || mIsLikelyToStartNewTask;
-            }
-            if (animate) {
-                // Only animate if an adjacent task view is visible on screen.
-                TaskView adjacentTask1 = mRecentsView.getTaskViewAt(runningTaskIndex + 1);
-                TaskView adjacentTask2 = mRecentsView.getTaskViewAt(runningTaskIndex - 1);
-                animate = (adjacentTask1 != null && adjacentTask1.getGlobalVisibleRect(TEMP_RECT))
-                        || (adjacentTask2 != null && adjacentTask2.getGlobalVisibleRect(TEMP_RECT));
-            }
-        }
-        mAnimationFactory.setRecentsAttachedToAppWindow(recentsAttachedToAppWindow, animate);
-    }
-
-    public void setIsLikelyToStartNewTask(boolean isLikelyToStartNewTask) {
-        if (mIsLikelyToStartNewTask != isLikelyToStartNewTask) {
-            mIsLikelyToStartNewTask = isLikelyToStartNewTask;
-            maybeUpdateRecentsAttachedState();
-        }
+        setShelfState(isPaused ? PEEK : HIDE, OVERSHOOT_1_2, 240);
     }
 
     @UiThread
     public void setShelfState(ShelfAnimState shelfState, Interpolator interpolator, long duration) {
         mAnimationFactory.setShelfState(shelfState, interpolator, duration);
-        boolean wasShelfPeeking = mIsShelfPeeking;
-        mIsShelfPeeking = shelfState == PEEK || shelfState == OVERVIEW;
-        if (mIsShelfPeeking != wasShelfPeeking) {
-            maybeUpdateRecentsAttachedState();
-        }
+        mIsShelfPeeking = shelfState == PEEK;
         if (mRecentsView != null && shelfState.shouldPreformHaptic && mSwipeHome) {
             mRecentsView.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY,
                     HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
@@ -1425,11 +1364,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
 
     private void preloadAssistData() {
         RecentsModel.getInstance(mContext).preloadAssistData(mRunningTaskId, mAssistData);
-    }
-
-    private static boolean isNotInRecents(RemoteAnimationTargetCompat app) {
-        return app.isNotInRecents
-                || app.activityType == RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME;
     }
 
     private interface RunningWindowAnim {
