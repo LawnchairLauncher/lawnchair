@@ -22,7 +22,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -39,7 +38,6 @@ import com.android.launcher3.util.LooperExecutor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.Executor;
 
 /**
@@ -57,9 +55,6 @@ public class ModelWriter {
     private final Executor mWorkerExecutor;
     private final boolean mHasVerticalHotseat;
     private final boolean mVerifyChanges;
-
-    private boolean mPreparingToUndo;
-    private List<Runnable> mDeleteRunnables = new ArrayList<>();
 
     public ModelWriter(Context context, LauncherModel model, BgDataModel dataModel,
             boolean hasVerticalHotseat, boolean verifyChanges) {
@@ -158,7 +153,7 @@ public class ModelWriter {
                 .put(Favorites.RANK, item.rank)
                 .put(Favorites.SCREEN, item.screenId);
 
-        enqueueDeleteRunnable(new UpdateItemRunnable(item, writer));
+        mWorkerExecutor.execute(new UpdateItemRunnable(item, writer));
     }
 
     /**
@@ -182,7 +177,7 @@ public class ModelWriter {
 
             contentValues.add(values);
         }
-        enqueueDeleteRunnable(new UpdateItemsRunnable(items, contentValues));
+        mWorkerExecutor.execute(new UpdateItemsRunnable(items, contentValues));
     }
 
     /**
@@ -284,85 +279,36 @@ public class ModelWriter {
      * Removes the specified items from the database
      */
     public void deleteItemsFromDatabase(final Iterable<? extends ItemInfo> items) {
-        enqueueDeleteRunnable(() -> {
-            ModelVerifier verifier = new ModelVerifier();
+        ModelVerifier verifier = new ModelVerifier();
 
-            mWorkerExecutor.execute(() -> {
-                for (ItemInfo item : items) {
-                    final Uri uri = Favorites.getContentUri(item.id);
-                    mContext.getContentResolver().delete(uri, null, null);
+        mWorkerExecutor.execute(() -> {
+            for (ItemInfo item : items) {
+                final Uri uri = Favorites.getContentUri(item.id);
+                mContext.getContentResolver().delete(uri, null, null);
 
-                    mBgDataModel.removeItem(mContext, item);
-                    verifier.verifyModel();
-                }
-            });
-        });
-    }
-
-    private void enqueueDeleteRunnable(Runnable runnable) {
-        if (mPreparingToUndo) {
-            mDeleteRunnables.add(runnable);
-        } else {
-            mWorkerExecutor.execute(runnable);
-        }
-    }
-
-    public void deleteWidgetInfo(LauncherAppWidgetInfo widgetInfo, LauncherAppWidgetHost appWidgetHost) {
-        enqueueDeleteRunnable(() -> {
-            if (appWidgetHost != null && !widgetInfo.isCustomWidget() && widgetInfo.isWidgetIdAllocated()) {
-                // Deleting an app widget ID is a void call but writes to disk before returning
-                // to the caller...
-                new AsyncTask<Void, Void, Void>() {
-                    public Void doInBackground(Void ... args) {
-                        appWidgetHost.deleteAppWidgetId(widgetInfo.appWidgetId);
-                        return null;
-                    }
-                }.executeOnExecutor(Utilities.THREAD_POOL_EXECUTOR);
+                mBgDataModel.removeItem(mContext, item);
+                verifier.verifyModel();
             }
-            deleteItemFromDatabase(widgetInfo);
         });
-    }
-
-    public void prepareToUndo() {
-        if (!mPreparingToUndo) {
-            mDeleteRunnables.clear();
-            mPreparingToUndo = true;
-        }
-    }
-
-    public void commitDelete() {
-        mPreparingToUndo = false;
-        for (Runnable execute : this.mDeleteRunnables) {
-            mWorkerExecutor.execute(execute);
-        }
-        mDeleteRunnables.clear();
-    }
-
-    public void undoDelete(int reloadPage) {
-        mPreparingToUndo = false;
-        mDeleteRunnables.clear();
-        mModel.forceReload(reloadPage);
     }
 
     /**
      * Remove the specified folder and all its contents from the database.
      */
     public void deleteFolderAndContentsFromDatabase(final FolderInfo info) {
-        enqueueDeleteRunnable(() -> {
-            ModelVerifier verifier = new ModelVerifier();
+        ModelVerifier verifier = new ModelVerifier();
 
-            mWorkerExecutor.execute(() -> {
-                info.clearCustomIcon(mContext);
-                ContentResolver cr = mContext.getContentResolver();
-                cr.delete(LauncherSettings.Favorites.CONTENT_URI,
-                        LauncherSettings.Favorites.CONTAINER + "=" + info.id, null);
-                mBgDataModel.removeItem(mContext, info.contents);
-                info.contents.clear();
+        mWorkerExecutor.execute(() -> {
+            info.clearCustomIcon(mContext);
+            ContentResolver cr = mContext.getContentResolver();
+            cr.delete(LauncherSettings.Favorites.CONTENT_URI,
+                    LauncherSettings.Favorites.CONTAINER + "=" + info.id, null);
+            mBgDataModel.removeItem(mContext, info.contents);
+            info.contents.clear();
 
-                cr.delete(LauncherSettings.Favorites.getContentUri(info.id), null, null);
-                mBgDataModel.removeItem(mContext, info);
-                verifier.verifyModel();
-            });
+            cr.delete(LauncherSettings.Favorites.getContentUri(info.id), null, null);
+            mBgDataModel.removeItem(mContext, info);
+            verifier.verifyModel();
         });
     }
 
