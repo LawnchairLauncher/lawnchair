@@ -19,7 +19,6 @@ import static com.android.launcher3.BaseActivity.INVISIBLE_BY_STATE_HANDLER;
 import static com.android.launcher3.BaseActivity.STATE_HANDLER_INVISIBILITY_FLAGS;
 import static com.android.launcher3.Utilities.SINGLE_FRAME_MS;
 import static com.android.launcher3.Utilities.postAsyncCallback;
-import static com.android.launcher3.anim.Interpolators.ACCEL_1_5;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_2;
@@ -1040,7 +1039,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         final float windowAlphaThreshold = isFloatingIconView ? 0.75f : 1f;
         anim.addUpdateListener(animation -> {
             float progress = animation.getAnimatedFraction();
-            float interpolatedProgress = ACCEL_1_5.getInterpolation(progress);
+            float interpolatedProgress = Interpolators.ACCEL_1_5.getInterpolation(progress);
             // Initially go towards original target (task view in recents),
             // but accelerate towards the final target.
             // TODO: This is technically not correct. Instead, motion should continue at
@@ -1049,10 +1048,9 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
                     originalTarget, finalTarget));
             currentRect.set(rectFEvaluator.evaluate(interpolatedProgress, startRect, targetRect));
 
-            float alphaProgress = ACCEL_1_5.getInterpolation(progress);
-            float windowAlpha = Utilities.boundToRange(Utilities.mapToRange(alphaProgress, 0,
-                    windowAlphaThreshold, 1.5f, 0f, Interpolators.LINEAR), 0, 1);
-            mTransformParams.setCurrentRectAndTargetAlpha(currentRect, windowAlpha)
+            float iconAlpha = Utilities.mapToRange(interpolatedProgress, 0,
+                    windowAlphaThreshold, 0f, 1f, Interpolators.LINEAR);
+            mTransformParams.setCurrentRectAndTargetAlpha(currentRect, 1f - iconAlpha)
                     .setSyncTransactionApplier(mSyncTransactionApplier);
             mClipAnimationHelper.applyTransform(targetSet, mTransformParams);
 
