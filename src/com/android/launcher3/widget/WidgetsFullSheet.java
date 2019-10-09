@@ -17,8 +17,6 @@ package com.android.launcher3.widget;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.content.Context;
 import android.graphics.Rect;
@@ -229,13 +227,5 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     @Override
     protected int getElementsRowCount() {
         return mAdapter.getItemCount();
-    }
-
-    @Override
-    public Animator createHintCloseAnim(float distanceToMove) {
-        AnimatorSet anim = new AnimatorSet();
-        anim.play(ObjectAnimator.ofFloat(mRecyclerView, TRANSLATION_Y, -distanceToMove));
-        anim.play(ObjectAnimator.ofFloat(mRecyclerView, ALPHA, 0.5f));
-        return anim;
     }
 }

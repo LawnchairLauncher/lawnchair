@@ -15,7 +15,6 @@
  */
 package com.android.launcher3.uioverrides;
 
-import static android.view.View.TRANSLATION_X;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherState.FAST_OVERVIEW;
 import static com.android.launcher3.LauncherState.OVERVIEW;
@@ -59,7 +58,6 @@ public class RecentsViewStateController implements StateHandler {
         float[] scaleTranslationYFactor = state.getOverviewScaleAndTranslationYFactor(mLauncher);
         SCALE_PROPERTY.set(mRecentsView, scaleTranslationYFactor[0]);
         mRecentsView.setTranslationYFactor(scaleTranslationYFactor[1]);
-        mRecentsView.setTranslationX(0);
         if (state.overviewUi) {
             mRecentsView.updateEmptyMessage();
             mRecentsView.resetTaskVisuals();
@@ -87,7 +85,6 @@ public class RecentsViewStateController implements StateHandler {
                 scaleAndTransYInterpolator);
         setter.setFloat(mRecentsView, CONTENT_ALPHA, toState.overviewUi ? 1 : 0,
                 builder.getInterpolator(ANIM_OVERVIEW_FADE, AGGRESSIVE_EASE_IN_OUT));
-        setter.setFloat(mRecentsView, TRANSLATION_X, 0, x -> x);
 
         if (!toState.overviewUi) {
             builder.addOnFinishRunnable(mRecentsView::resetTaskVisuals);
