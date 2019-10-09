@@ -1070,6 +1070,18 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             Interpolator interpolator, GestureEndTarget target, PointF velocityPxPerMs) {
         mGestureEndTarget = target;
 
+        if (!Utilities.ATLEAST_Q) {
+            if (mGestureEndTarget.canBeContinued) {
+                // Because we might continue this gesture, e.g. for consecutive quick switch, we need to
+                // stabilize the task list so that tasks don't rearrange in the middle of the gesture.
+                RecentsModel.INSTANCE.get(mContext).startStabilizationSession();
+            } else if (mGestureEndTarget.isLauncher) {
+                // Otherwise, if we're going to home or overview,
+                // we reset the tasks to a consistent start state.
+                RecentsModel.INSTANCE.get(mContext).endStabilizationSession();
+            }
+        }
+
         maybeUpdateRecentsAttachedState();
 
         if (mGestureEndTarget == HOME) {

@@ -85,6 +85,14 @@ public class RecentsModel extends TaskStackChangeListener {
         return mThumbnailCache;
     }
 
+    public void startStabilizationSession() {
+        mTaskList.startStabilizationSession();
+    }
+
+    public void endStabilizationSession() {
+        mTaskList.endStabilizationSession();
+    }
+
     /**
      * Fetches the list of recent tasks.
      *

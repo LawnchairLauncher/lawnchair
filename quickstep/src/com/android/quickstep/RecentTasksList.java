@@ -23,6 +23,7 @@ import android.os.Build;
 import android.os.Process;
 import android.util.SparseBooleanArray;
 import com.android.launcher3.MainThreadExecutor;
+import com.android.launcher3.Utilities;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.BackgroundExecutor;
@@ -44,6 +45,7 @@ public class RecentTasksList extends TaskStackChangeListener {
     private final KeyguardManagerCompat mKeyguardManager;
     private final MainThreadExecutor mMainThreadExecutor;
     private final BackgroundExecutor mBgThreadExecutor;
+    private TaskListStabilizer mStabilizer;
 
     // The list change id, increments as the task list changes in the system
     private int mChangeId;
@@ -73,6 +75,14 @@ public class RecentTasksList extends TaskStackChangeListener {
         });
     }
 
+    public void startStabilizationSession() {
+        mStabilizer.startStabilizationSession();
+    }
+
+    public void endStabilizationSession() {
+        mStabilizer.endStabilizationSession();
+    }
+
     /**
      * Asynchronously fetches the list of recent tasks, reusing cached list if available.
      *
@@ -84,7 +94,7 @@ public class RecentTasksList extends TaskStackChangeListener {
         final int requestLoadId = mChangeId;
         Runnable resultCallback = callback == null
                 ? () -> { }
-                : () -> callback.accept(copyOf(mTasks));
+                : () -> callback.accept(copyOf(stabilizeIfNecessary(mTasks)));
 
         if (mLastLoadedId == mChangeId && (!mLastLoadHadKeysOnly || loadKeysOnly)) {
             // The list is up to date, callback with the same list
@@ -192,5 +202,16 @@ public class RecentTasksList extends TaskStackChangeListener {
                     t.isLocked, t.taskDescription, t.topActivity));
         }
         return newTasks;
+    }
+
+    private ArrayList<Task> stabilizeIfNecessary(ArrayList<Task> tasks) {
+        if (!Utilities.ATLEAST_Q) {
+            if (mStabilizer == null) {
+                mStabilizer = new TaskListStabilizer();
+            }
+            return mStabilizer.reorder(tasks);
+        } else {
+            return tasks;
+        }
     }
 }
