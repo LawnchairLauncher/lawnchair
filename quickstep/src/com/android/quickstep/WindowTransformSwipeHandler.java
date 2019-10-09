@@ -218,8 +218,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     private static final float SWIPE_DURATION_MULTIPLIER =
             Math.min(1 / MIN_PROGRESS_FOR_OVERVIEW, 1 / (1 - MIN_PROGRESS_FOR_OVERVIEW));
 
-    private final ClipAnimationHelper mClipAnimationHelper;
-    private final ClipAnimationHelper.TransformParams mTransformParams;
+    private final ClipAnimationHelper mClipAnimationHelper = new ClipAnimationHelper();
 
     protected Runnable mGestureEndCallback;
     private GestureEndTarget mGestureEndTarget;
@@ -302,9 +301,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
                 .createActivityInitListener(this::onActivityInit);
 
         mSwipeHome = Utilities.getLawnchairPrefs(context).getSwipeHome();
-
-        mClipAnimationHelper = new ClipAnimationHelper(context);
-        mTransformParams = new ClipAnimationHelper.TransformParams();
 
         initStateCallbacks();
         // Register the input consumer on the UI thread, to ensure that it runs after any pending
@@ -664,13 +660,10 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         RecentsAnimationControllerCompat controller = mRecentsAnimationWrapper.getController();
         if (controller != null) {
 
-            SyncRtSurfaceTransactionApplier syncTransactionApplier
-                    = Looper.myLooper() == mMainThreadHandler.getLooper()
+            mClipAnimationHelper.applyTransform(mRecentsAnimationWrapper.targetSet, shift,
+                    Looper.myLooper() == mMainThreadHandler.getLooper()
                             ? mSyncTransactionApplier
-                            : null;
-            mTransformParams.setProgress(shift).setSyncTransactionApplier(syncTransactionApplier);
-            mClipAnimationHelper.applyTransform(mRecentsAnimationWrapper.targetSet,
-                    mTransformParams);
+                            : null);
 
             boolean passedThreshold = shift > 1 - UPDATE_SYSUI_FLAGS_THRESHOLD;
             mRecentsAnimationWrapper.setAnimationTargetsBehindSystemBars(!passedThreshold);

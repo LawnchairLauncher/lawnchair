@@ -179,14 +179,10 @@ public class TaskThumbnailView extends View implements
     }
 
     public Rect getInsets() {
-        return getInsets(new Rect());
-    }
-
-    public Rect getInsets(Rect fallback) {
         if (mThumbnailData != null) {
             return mThumbnailData.insets;
         }
-        return fallback;
+        return new Rect();
     }
 
     public int getSysUiStatusNavFlags() {

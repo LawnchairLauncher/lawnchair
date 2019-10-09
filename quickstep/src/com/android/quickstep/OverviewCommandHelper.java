@@ -334,7 +334,7 @@ public class OverviewCommandHelper {
                 return anim;
             }
 
-            final ClipAnimationHelper clipHelper = new ClipAnimationHelper(mActivity);
+            final ClipAnimationHelper clipHelper = new ClipAnimationHelper();
 
             // At this point, the activity is already started and laid-out. Get the home-bounds
             // relative to the screen using the rootView of the activity.
@@ -351,15 +351,14 @@ public class OverviewCommandHelper {
             clipHelper.updateTargetRect(targetRect);
             clipHelper.prepareAnimation(false /* isOpening */);
 
-            ClipAnimationHelper.TransformParams params = new ClipAnimationHelper.TransformParams()
-                    .setSyncTransactionApplier(new SyncRtSurfaceTransactionApplier(rootView));
+            SyncRtSurfaceTransactionApplier syncTransactionApplier =
+                    new SyncRtSurfaceTransactionApplier(rootView);
             ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, 1);
             valueAnimator.setDuration(RECENTS_LAUNCH_DURATION);
             valueAnimator.setInterpolator(TOUCH_RESPONSE_INTERPOLATOR);
-            valueAnimator.addUpdateListener((v) -> {
-                params.setProgress((float) v.getAnimatedValue());
-                clipHelper.applyTransform(targetSet, params);
-            });
+            valueAnimator.addUpdateListener((v) ->
+                    clipHelper.applyTransform(targetSet, (float) v.getAnimatedValue(),
+                            syncTransactionApplier));
 
             if (targetSet.isAnimatingHome()) {
                 // If we are animating home, fade in the opening targets

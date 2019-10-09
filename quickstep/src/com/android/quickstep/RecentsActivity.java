@@ -198,7 +198,7 @@ public class RecentsActivity extends BaseDraggingActivity {
             RemoteAnimationTargetCompat[] targets) {
         AnimatorSet target = new AnimatorSet();
         boolean activityClosing = taskIsATargetWithMode(targets, getTaskId(), MODE_CLOSING);
-        ClipAnimationHelper helper = new ClipAnimationHelper(taskView.getContext());
+        ClipAnimationHelper helper = new ClipAnimationHelper();
         target.play(getRecentsWindowAnimator(taskView, !activityClosing, targets, helper)
                 .setDuration(RECENTS_LAUNCH_DURATION));
 

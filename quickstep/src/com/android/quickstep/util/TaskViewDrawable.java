@@ -71,7 +71,7 @@ public class TaskViewDrawable extends Drawable {
         Utilities.getDescendantCoordRelativeToAncestor(mIconView, parent, mIconPos, true);
 
         mThumbnailView = tv.getThumbnail();
-        mClipAnimationHelper = new ClipAnimationHelper(tv.getContext());
+        mClipAnimationHelper = new ClipAnimationHelper();
         mClipAnimationHelper.fromTaskThumbnailView(mThumbnailView, parent);
     }
 

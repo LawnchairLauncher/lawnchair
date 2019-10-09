@@ -296,7 +296,7 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
                 ? RECENTS_QUICKSCRUB_LAUNCH_DURATION
                 : RECENTS_LAUNCH_DURATION;
 
-        ClipAnimationHelper helper = new ClipAnimationHelper(taskView.getContext());
+        ClipAnimationHelper helper = new ClipAnimationHelper();
         target.play(getRecentsWindowAnimator(taskView, skipLauncherChanges, targets, helper)
                 .setDuration(duration));
 
