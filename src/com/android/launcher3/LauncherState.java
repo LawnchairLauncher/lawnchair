@@ -29,7 +29,6 @@ import ch.deletescape.lawnchair.states.HomeState;
 import ch.deletescape.lawnchair.states.OptionsState;
 import com.android.launcher3.states.SpringLoadedState;
 import com.android.launcher3.uioverrides.AllAppsState;
-import com.android.launcher3.uioverrides.BackgroundAppState;
 import com.android.launcher3.uioverrides.FastOverviewState;
 import com.android.launcher3.uioverrides.OverviewState;
 import com.android.launcher3.uioverrides.UiFactory;
@@ -76,7 +75,7 @@ public class LauncherState {
                 }
             };
 
-    private static final LauncherState[] sAllStates = new LauncherState[7];
+    private static final LauncherState[] sAllStates = new LauncherState[6];
 
     /**
      * TODO: Create a separate class for NORMAL state.
@@ -93,7 +92,6 @@ public class LauncherState {
     public static final LauncherState FAST_OVERVIEW = new FastOverviewState(3);
     public static final LauncherState ALL_APPS = new AllAppsState(4);
     public static final LauncherState OPTIONS = new OptionsState(5);
-    public static final LauncherState BACKGROUND_APP = new BackgroundAppState(6);
 
     protected static final Rect sTempRect = new Rect();
 

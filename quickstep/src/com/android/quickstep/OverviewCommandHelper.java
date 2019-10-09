@@ -275,7 +275,7 @@ public class OverviewCommandHelper {
         private boolean onActivityReady(T activity, Boolean wasVisible) {
             activity.<RecentsView>getOverviewPanel().setCurrentTask(mRunningTaskId);
             AbstractFloatingView.closeAllOpenViews(activity, wasVisible);
-            AnimationFactory factory = mHelper.prepareRecentsUI(activity, wasVisible, false,
+            AnimationFactory factory = mHelper.prepareRecentsUI(activity, wasVisible,
                     (controller) -> {
                         controller.dispatchOnStart();
                         ValueAnimator anim = controller.getAnimationPlayer()
