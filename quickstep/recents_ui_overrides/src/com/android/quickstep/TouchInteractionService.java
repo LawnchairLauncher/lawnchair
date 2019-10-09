@@ -66,6 +66,7 @@ import android.view.WindowManager;
 import androidx.annotation.BinderThread;
 import androidx.annotation.UiThread;
 
+import ch.deletescape.lawnchair.LawnchairAppKt;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
@@ -515,6 +516,9 @@ public class TouchInteractionService extends Service implements
     @Override
     public IBinder onBind(Intent intent) {
         Log.d(TAG, "Touch service connected");
+        if (!LawnchairAppKt.getLawnchairApp(this).getRecentsEnabled()) {
+            return null;
+        }
         return mMyBinder;
     }
 

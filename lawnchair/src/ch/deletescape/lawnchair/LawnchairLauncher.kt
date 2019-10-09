@@ -98,24 +98,27 @@ open class LawnchairLauncher : NexusLauncherActivity(),
 
         ColorEngine.getInstance(this).addColorChangeListeners(this, *colorsToWatch)
 
-        performSignatureVerification()
+        if (!verifySignature()) {
+            alert("The \"${BuildConfig.FLAVOR_dist}\" build flavor is reserved for " +
+                  "official Lawnchair distributions only. Please do not use it.\n" +
+                  "\n" +
+                  "If you're a ROM developer and including Lawnchair in your ROM, please use " +
+                  "the official apks provided as a prebuilt or change the package name so that " +
+                  "users can still update to official versions if they wish to.")
+        }
+        if (lawnchairApp.mismatchedQuickstepTarget) {
+            alert("This version of Lawnchair is not fully compatible with this Android version.\n" +
+                  "The recents menu will not function until you install the correct version of Lawnchair.")
+        }
     }
 
-    private fun performSignatureVerification() {
-        if (!verifySignature()) {
-            val message = "The \"${BuildConfig.FLAVOR_dist}\" build flavor is reserved for " +
-                    "official Lawnchair distributions only. Please do not use it.\n" +
-                    "\n" +
-                    "If you're a ROM developer and including Lawnchair in your ROM, please use " +
-                    "the official apks provided as a prebuilt or change the package name so that " +
-                    "users can still update to official versions if they wish to."
-            AlertDialog.Builder(this)
-                    .setTitle(R.string.derived_app_name)
-                    .setMessage(message)
-                    .setPositiveButton(android.R.string.ok) { _, _ -> }
-                    .setCancelable(false)
-                    .show().applyAccent()
-        }
+    private fun alert(message: String) {
+        AlertDialog.Builder(this)
+                .setTitle(R.string.derived_app_name)
+                .setMessage(message)
+                .setPositiveButton(android.R.string.ok) { _, _ -> }
+                .setCancelable(false)
+                .show().applyAccent()
     }
 
     private fun verifySignature(): Boolean {

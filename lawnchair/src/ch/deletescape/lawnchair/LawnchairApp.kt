@@ -23,6 +23,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import androidx.annotation.Keep
@@ -49,6 +50,7 @@ class LawnchairApp : Application() {
     val activityHandler = ActivityHandler()
     val smartspace by lazy { LawnchairSmartspaceController(this) }
     val bugReporter = LawnchairBugReporter(this, Thread.getDefaultUncaughtExceptionHandler())
+    var mismatchedQuickstepTarget = false
     val recentsEnabled by lazy { checkRecentsComponent() }
     var accessibilityService: LawnchairAccessibilityService? = null
 
@@ -193,6 +195,11 @@ class LawnchairApp : Application() {
                 && recentsComponent.className == RecentsActivity::class.java.name
         if (!isRecentsComponent) {
             d("config_recentsComponentName ($recentsComponent) is not Lawnchair, disabling recents")
+            return false
+        }
+        if (Build.VERSION.SDK_INT != BuildConfig.QUICKSTEP_TARGET) {
+            d("Quickstep target doesn't match, disabling recents")
+            mismatchedQuickstepTarget = true
             return false
         }
         return true
