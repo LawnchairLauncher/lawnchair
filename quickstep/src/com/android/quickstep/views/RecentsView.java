@@ -695,10 +695,6 @@ public abstract class RecentsView<T extends BaseDraggingActivity> extends PagedV
         setCurrentTask(runningTaskId);
     }
 
-    public @Nullable TaskView getRunningTaskView() {
-        return getTaskView(mRunningTaskId);
-    }
-
     /**
      * Hides the tile associated with {@link #mRunningTaskId}
      */

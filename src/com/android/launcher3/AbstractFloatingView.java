@@ -94,7 +94,7 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
     public static final int TYPE_HIDE_BACK_BUTTON = TYPE_ON_BOARD_POPUP | TYPE_DISCOVERY_BOUNCE
             | TYPE_SNACKBAR;
 
-    public static final int TYPE_ACCESSIBLE = TYPE_ALL & ~TYPE_DISCOVERY_BOUNCE & ~TYPE_LISTENER;
+    public static final int TYPE_ACCESSIBLE = TYPE_ALL & ~TYPE_DISCOVERY_BOUNCE;
 
     protected boolean mIsOpen;
 

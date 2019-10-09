@@ -68,7 +68,7 @@ public class InsettableFrameLayout extends FrameLayout implements Insettable {
     }
 
     public static class LayoutParams extends FrameLayout.LayoutParams {
-        public boolean ignoreInsets = false;
+        boolean ignoreInsets = false;
 
         public LayoutParams(Context c, AttributeSet attrs) {
             super(c, attrs);

@@ -276,15 +276,6 @@ public class FolderIcon extends FrameLayout implements FolderListener, OnResumeC
         return super.onSaveInstanceState();
     }
 
-    public void animateBgShadowAndStroke() {
-        mBackground.fadeInBackgroundShadow();
-        mBackground.animateBackgroundStroke();
-    }
-
-    public void getPreviewBounds(Rect outBounds) {
-        mBackground.getBounds(outBounds);
-    }
-
     public Folder getFolder() {
         return mFolder;
     }

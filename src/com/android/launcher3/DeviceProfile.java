@@ -16,8 +16,6 @@
 
 package com.android.launcher3;
 
-import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT;
-
 import android.appwidget.AppWidgetHostView;
 import android.content.ComponentName;
 import android.content.Context;
@@ -55,9 +53,6 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
     public int heightPx;
     public int availableWidthPx;
     public int availableHeightPx;
-
-    public final float aspectRatio;
-
     /**
      * The maximum amount of left/right workspace padding as a percentage of the screen width.
      * To be clear, this means that up to 7% of the screen width can be used as left padding, and
@@ -195,7 +190,6 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
         isTablet = res.getBoolean(R.bool.is_tablet);
         isLargeTablet = res.getBoolean(R.bool.is_large_tablet);
         isPhone = !isTablet && !isLargeTablet;
-        aspectRatio = ((float) Math.max(widthPx, heightPx)) / Math.min(widthPx, heightPx);
 
         // Some more constants
         transposeLayoutWithOrientation =
@@ -302,6 +296,7 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
         cellLayoutPaddingLeftRightPx = (!isVerticalBarLayout() && fullWidthWidgets) ? 0
                 : res.getDimensionPixelSize(R.dimen.dynamic_grid_cell_layout_padding);
 
+        float aspectRatio = ((float) Math.max(widthPx, heightPx)) / Math.min(widthPx, heightPx);
         isTallDevice = Float.compare(aspectRatio, TALL_DEVICE_ASPECT_RATIO_THRESHOLD) >= 0;
 
         hotseatBarTopPaddingPx =
@@ -791,51 +786,6 @@ public class DeviceProfile implements LawnchairPreferences.OnPreferenceChangeLis
                 // ??
                 return 0;
         }
-    }
-
-    /**
-     * Gets an item's location on the home screen. This is useful if the home screen
-     * is animating, otherwise use {@link View#getLocationOnScreen(int[])}.
-     * @param pageDiff The page difference relative to the current page.
-     */
-    public void getItemLocation(int cellX, int cellY, int spanX, int spanY, long container,
-            int pageDiff, Rect outBounds) {
-        outBounds.setEmpty();
-        if (container == CONTAINER_HOTSEAT) {
-            final int actualHotseatCellHeight;
-            if (isVerticalBarLayout()) {
-                actualHotseatCellHeight = availableHeightPx / inv.numRows;
-                if (mIsSeascape) {
-                    outBounds.left = mHotseatPadding.left;
-                } else {
-                    outBounds.left = availableWidthPx - hotseatBarSizePx + mHotseatPadding.left;
-                }
-                outBounds.right = outBounds.left + iconSizePx;
-                outBounds.top = mHotseatPadding.top
-                        + actualHotseatCellHeight * (inv.numRows - cellX - 1);
-                outBounds.bottom = outBounds.top + actualHotseatCellHeight;
-            } else {
-                actualHotseatCellHeight = hotseatBarSizePx - hotseatBarBottomPaddingPx
-                        - hotseatBarTopPaddingPx;
-                outBounds.left = mInsets.left + workspacePadding.left + cellLayoutPaddingLeftRightPx
-                        + (cellX * getCellSize().x);
-                outBounds.right = outBounds.left + getCellSize().x;
-                outBounds.top = mInsets.top + availableHeightPx - hotseatBarSizePx;
-                outBounds.bottom = outBounds.top + actualHotseatCellHeight;
-            }
-        } else {
-            outBounds.left = mInsets.left + workspacePadding.left + cellLayoutPaddingLeftRightPx
-                    + (cellX * getCellSize().x) + (pageDiff * availableWidthPx);
-            outBounds.right = outBounds.left + (getCellSize().x * spanX);
-            outBounds.top = mInsets.top + workspacePadding.top + (cellY * getCellSize().y);
-            outBounds.bottom = outBounds.top + (getCellSize().y * spanY);
-        }
-    }
-
-    public float getAspectRatioWithInsets() {
-        int w = widthPx - mInsets.left - mInsets.right;
-        int h = heightPx - mInsets.top - mInsets.bottom;
-        return ((float) Math.max(w, h)) / Math.min(w, h);
     }
 
     private static Context getContext(Context c, int orientation) {
