@@ -98,6 +98,9 @@ class GridOptionsProvider : ContentProvider() {
         if (provider.numColumns != customGrid.numColumns) {
             provider.numColumns = customGrid.numColumns
         }
+        if (provider.numHotseatIcons != customGrid.numHotseatColumns) {
+            provider.numHotseatIcons = customGrid.numHotseatColumns
+        }
 
         return 1
     }
@@ -126,8 +129,8 @@ class GridOptionsProvider : ContentProvider() {
 
     private fun getGridOptions(): Collection<CustomGridOption> {
         val provider = CustomGridProvider.getInstance(context!!)
-        val currentGrid = CustomGridOption(provider.numRows, provider.numColumns)
-        val grids = (3..6).map { CustomGridOption(it, it) }.toSet() + currentGrid
+        val currentGrid = CustomGridOption(provider.numRows, provider.numColumns, provider.numHotseatIcons)
+        val grids = (3..6).map { CustomGridOption(it, it, it) }.toSet() + currentGrid
         return grids.sortedWith(CUSTOM_GRID_COMPARATOR)
     }
 
@@ -135,33 +138,37 @@ class GridOptionsProvider : ContentProvider() {
     private fun createOption(name: String): CustomGridOption {
         val numRows: Int
         val numColumns: Int
+        val numHotseatColumns: Int
         try {
             val gridSize = name.split(",")
             numRows = gridSize[0].toInt()
             numColumns = gridSize[1].toInt()
+            numHotseatColumns = gridSize[2].toInt()
         } catch (e: Exception) {
             throw FileNotFoundException("Invalid preview url")
         }
-        return CustomGridOption(numRows, numColumns)
+        return CustomGridOption(numRows, numColumns, numHotseatColumns)
     }
 
     private fun checkCallingPackage() {
         require(Utilities.isSystemApp(context!!.packageManager, callingPackage))
     }
 
-    private data class CustomGridOption(val numRows: Int, val numColumns: Int)
+    private data class CustomGridOption(val numRows: Int, val numColumns: Int, val numHotseatColumns: Int)
         : InvariantDeviceProfile.GridCustomizer {
 
-        val name = "$numRows,$numColumns"
+        val name = "$numRows,$numColumns,$numHotseatColumns"
 
         init {
             require(numRows in CUSTOM_SIZE_RANGE)
             require(numColumns in CUSTOM_SIZE_RANGE)
+            require(numHotseatColumns in CUSTOM_SIZE_RANGE)
         }
 
         override fun customizeGrid(grid: InvariantDeviceProfile.GridOverrides) {
             grid.numRows = numRows
             grid.numColumns = numColumns
+            grid.numHotseatIcons = numHotseatColumns
         }
     }
 
