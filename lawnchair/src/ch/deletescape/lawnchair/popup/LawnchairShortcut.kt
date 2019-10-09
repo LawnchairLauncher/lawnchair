@@ -100,10 +100,8 @@ class LawnchairShortcut(private val context: Context) {
                 View.OnClickListener {
                     AbstractFloatingView.closeAllOpenViews(launcher)
 
-                    val currentPage = launcher.workspace.currentPage
-
                     launcher.removeItem(null, itemInfo, true /* deleteFromDb */)
-                    launcher.model.forceReload(currentPage)
+                    launcher.model.forceReload()
                     launcher.workspace.stripEmptyScreens()
                 }
             } else null
