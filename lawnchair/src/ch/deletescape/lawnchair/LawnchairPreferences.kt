@@ -182,7 +182,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val dockGridSize by dockGridSizeDelegate
     val twoRowDock by BooleanPref("pref_twoRowDock", false, restart)
     val dockRowsCount get() = if (twoRowDock) 2 else 1
-    val dockIconScale by FloatPref("pref_hotseatIconSize", 1f)
+    val dockIconScale by FloatPref("pref_hotseatIconSize", 1f, recreate)
     var dockScale by FloatPref("pref_dockScale", -1f, recreate)
     val hideDockLabels by BooleanPref("pref_hideDockLabels", true, restart)
     val dockTextScale by FloatPref("pref_dockTextScale", -1f, restart)
