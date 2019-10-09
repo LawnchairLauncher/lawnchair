@@ -254,7 +254,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     }
     val forceFakePieAnims by BooleanPref("pref_forceFakePieAnims", false)
     val displayDebugOverlay by BooleanPref("pref_debugDisplayState", false)
-    val swipeHome by BooleanPref("pref_swipeHome", true)
+    val swipeHome by BooleanPref("pref_swipeHome", false)
 
     // Search
     var searchProvider by StringPref("pref_globalSearchProvider", lawnchairConfig.defaultSearchProvider) {

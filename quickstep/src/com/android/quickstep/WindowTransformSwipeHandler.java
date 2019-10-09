@@ -84,7 +84,6 @@ import com.android.launcher3.util.TraceHelper;
 import com.android.quickstep.ActivityControlHelper.ActivityInitListener;
 import com.android.quickstep.ActivityControlHelper.AnimationFactory;
 import com.android.quickstep.ActivityControlHelper.AnimationFactory.ShelfAnimState;
-import com.android.quickstep.ActivityControlHelper.HomeAnimationFactory;
 import com.android.quickstep.ActivityControlHelper.LayoutListener;
 import com.android.quickstep.TouchConsumer.InteractionType;
 import com.android.quickstep.util.ClipAnimationHelper;
@@ -93,7 +92,6 @@ import com.android.quickstep.util.TransformedRect;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
-import com.android.systemui.shared.recents.utilities.RectFEvaluator;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.LatencyTrackerCompat;
@@ -479,7 +477,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
         }
 
         mAnimationFactory = mActivityControlHelper.prepareRecentsUI(mActivity,
-                mWasLauncherAlreadyVisible, true, this::onAnimatorPlaybackControllerCreated);
+                mWasLauncherAlreadyVisible, this::onAnimatorPlaybackControllerCreated);
         AbstractFloatingView.closeAllOpenViews(activity, mWasLauncherAlreadyVisible);
 
         if (mWasLauncherAlreadyVisible) {
@@ -632,7 +630,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     }
 
     public void onMotionPauseChanged(boolean isPaused) {
-        if (!mSwipeHome) return;
         setShelfState(isPaused ? PEEK : HIDE, OVERSHOOT_1_2, 240);
     }
 
@@ -861,7 +858,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
             float minFlingVelocity = mContext.getResources()
                     .getDimension(R.dimen.quickstep_fling_min_velocity);
             if (Math.abs(endVelocity) > minFlingVelocity && mTransitionDragLength > 0) {
-                if (endTarget == RECENTS && mSwipeHome) {
+                if (endTarget == RECENTS && true /* NO BUTTON */) {
                     Interpolators.OvershootParams overshoot = new Interpolators.OvershootParams(
                             startShift, endShift, endShift, velocityPxPerMs.y,
                             mTransitionDragLength);
@@ -937,137 +934,39 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity> {
     private void animateToProgressInternal(float start, float end, long duration,
             Interpolator interpolator, GestureEndTarget target, PointF velocityPxPerMs) {
         mGestureEndTarget = target;
-
-        HomeAnimationFactory homeAnimFactory;
-        Animator windowAnim;
-        if (mGestureEndTarget == HOME) {
-            if (mActivity != null) {
-                homeAnimFactory = mActivityControlHelper.prepareHomeUI(mActivity);
-            } else {
-                homeAnimFactory = new HomeAnimationFactory() {
-                    @NonNull
-                    @Override
-                    public RectF getWindowTargetRect() {
-                        RectF fallbackTarget = new RectF(mClipAnimationHelper.getTargetRect());
-                        Utilities.scaleRectFAboutCenter(fallbackTarget, 0.25f);
-                        return fallbackTarget;
-                    }
-
-                    @NonNull
-                    @Override
-                    public Animator createActivityAnimationToHome() {
-                        return new AnimatorSet();
-                    }
-                };
-                mStateCallback.addChangeHandler(STATE_LAUNCHER_PRESENT | STATE_HANDLER_INVALIDATED,
-                        isPresent -> mRecentsView.startHome());
-            }
-            windowAnim = createWindowAnimationToHome(start, homeAnimFactory);
-            mLauncherTransitionController = null;
-        } else {
-            windowAnim = mCurrentShift.animateToValue(start, end);
-            homeAnimFactory = null;
-        }
-        windowAnim.setDuration(duration).setInterpolator(interpolator);
-        windowAnim.addListener(new AnimationSuccessListener() {
-            @Override
-            public void onAnimationSuccess(Animator animator) {
-                setStateOnUiThread(target.endState);
-            }
-        });
-        windowAnim.start();
-        // Always play the entire launcher animation when going home, since it is separate from
-        // the animation that has been controlled thus far.
-        if (mGestureEndTarget == HOME) {
-            start = 0;
-        }
-
-        // We want to use the same interpolator as the window, but need to adjust it to
-        // interpolate over the remaining progress (end - start).
-        TimeInterpolator adjustedInterpolator = Interpolators.mapToProgress(
-                interpolator, start, end);
-        if (homeAnimFactory != null) {
-            Animator homeAnim = homeAnimFactory.createActivityAnimationToHome();
-            homeAnim.setDuration(duration).setInterpolator(adjustedInterpolator);
-            homeAnim.start();
-            mLauncherTransitionController = null;
-        }
-        if (mLauncherTransitionController == null) {
-            return;
-        }
-        if (start == end || duration <= 0) {
-            mLauncherTransitionController.dispatchSetInterpolator(t -> end);
-            mLauncherTransitionController.getAnimationPlayer().end();
-        } else {
-            mLauncherTransitionController.dispatchSetInterpolator(adjustedInterpolator);
-            mLauncherTransitionController.getAnimationPlayer().setDuration(duration);
-
-//            if (QUICKSTEP_SPRINGS.get()) {
-//                mLauncherTransitionController.dispatchOnStartWithVelocity(end, velocityPxPerMs);
-//            }
-            mLauncherTransitionController.getAnimationPlayer().start();
-        }
-    }
-
-    /**
-     * Creates an Animator that transforms the current app window into the home app.
-     * @param startProgress The progress of {@link #mCurrentShift} to start the window from.
-     * @param homeAnimationFactory The home animation factory.
-     */
-    private Animator createWindowAnimationToHome(float startProgress,
-            HomeAnimationFactory homeAnimationFactory) {
-        final RemoteAnimationTargetSet targetSet = mRecentsAnimationWrapper.targetSet;
-        RectF startRect = new RectF(mClipAnimationHelper.applyTransform(targetSet,
-                mTransformParams.setProgress(startProgress)));
-        RectF originalTarget = new RectF(mClipAnimationHelper.getTargetRect());
-        final RectF finalTarget = homeAnimationFactory.getWindowTargetRect();
-
-        final RectFEvaluator rectFEvaluator = new RectFEvaluator();
-        final RectF targetRect = new RectF();
-        final RectF currentRect = new RectF();
-
-        final View floatingView = homeAnimationFactory.getFloatingView();
-        final boolean isFloatingIconView = false;//floatingView instanceof FloatingIconView;
-
-        ValueAnimator anim = ValueAnimator.ofFloat(0, 1);
-        if (isFloatingIconView) {
-//            anim.addListener((FloatingIconView) floatingView);
-        }
-
-        // We want the window alpha to be 0 once this threshold is met, so that the
-        // FolderIconView can be seen morphing into the icon shape.
-        final float windowAlphaThreshold = isFloatingIconView ? 0.75f : 1f;
-        anim.addUpdateListener(animation -> {
-            float progress = animation.getAnimatedFraction();
-            float interpolatedProgress = Interpolators.ACCEL_1_5.getInterpolation(progress);
-            // Initially go towards original target (task view in recents),
-            // but accelerate towards the final target.
-            // TODO: This is technically not correct. Instead, motion should continue at
-            // the released velocity but accelerate towards the target.
-            targetRect.set(rectFEvaluator.evaluate(interpolatedProgress,
-                    originalTarget, finalTarget));
-            currentRect.set(rectFEvaluator.evaluate(interpolatedProgress, startRect, targetRect));
-
-            float iconAlpha = Utilities.mapToRange(interpolatedProgress, 0,
-                    windowAlphaThreshold, 0f, 1f, Interpolators.LINEAR);
-            mTransformParams.setCurrentRectAndTargetAlpha(currentRect, 1f - iconAlpha)
-                    .setSyncTransactionApplier(mSyncTransactionApplier);
-            mClipAnimationHelper.applyTransform(targetSet, mTransformParams);
-
-            if (isFloatingIconView) {
-//                ((FloatingIconView) floatingView).update(currentRect, iconAlpha, progress,
-//                        windowAlphaThreshold);
-            }
-        });
+        ObjectAnimator anim = mCurrentShift.animateToValue(start, end).setDuration(duration);
+        anim.setInterpolator(interpolator);
         anim.addListener(new AnimationSuccessListener() {
             @Override
             public void onAnimationSuccess(Animator animator) {
-                if (mRecentsView != null) {
-                    mRecentsView.post(mRecentsView::resetTaskVisuals);
+                setStateOnUiThread(mGestureEndTarget != LAST_TASK
+                        ? (STATE_SCALED_CONTROLLER_RECENTS | STATE_CAPTURE_SCREENSHOT)
+                        : STATE_SCALED_CONTROLLER_APP);
+                if (mGestureEndTarget == HOME) {
+                    mRecentsView.startHome();
                 }
             }
         });
-        return anim;
+        anim.start();
+        long startMillis = SystemClock.uptimeMillis();
+        executeOnUiThread(() -> {
+            // Animate the launcher components at the same time as the window, always on UI thread.
+            if (mLauncherTransitionController != null && !mWasLauncherAlreadyVisible
+                    && start != end && duration > 0) {
+                // Adjust start progress and duration in case we are on a different thread.
+                long elapsedMillis = SystemClock.uptimeMillis() - startMillis;
+                elapsedMillis = Utilities.boundToRange(elapsedMillis, 0, duration);
+                float elapsedProgress = (float) elapsedMillis / duration;
+                float adjustedStart = Utilities.mapRange(elapsedProgress, start, end);
+                long adjustedDuration = duration - elapsedMillis;
+                // We want to use the same interpolator as the window, but need to adjust it to
+                // interpolate over the remaining progress (end - start).
+                mLauncherTransitionController.dispatchSetInterpolator(Interpolators.mapToProgress(
+                        interpolator, adjustedStart, end));
+                mLauncherTransitionController.getAnimationPlayer().setDuration(adjustedDuration);
+                mLauncherTransitionController.getAnimationPlayer().start();
+            }
+        });
     }
 
     /**
