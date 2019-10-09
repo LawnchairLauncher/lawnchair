@@ -216,6 +216,9 @@ public class NotificationListener extends NotificationListenerService {
 
     private void onNotificationFullRefresh() {
         mWorkerHandler.obtainMessage(MSG_NOTIFICATION_FULL_REFRESH).sendToTarget();
+        if (sStatusBarNotificationsChangedListener != null) {
+            sStatusBarNotificationsChangedListener.onNotificationFullRefresh();
+        }
     }
 
     @Override
@@ -405,5 +408,6 @@ public class NotificationListener extends NotificationListenerService {
     public interface StatusBarNotificationsChangedListener {
         void onNotificationPosted(StatusBarNotification sbn);
         void onNotificationRemoved(StatusBarNotification sbn);
+        void onNotificationFullRefresh();
     }
 }

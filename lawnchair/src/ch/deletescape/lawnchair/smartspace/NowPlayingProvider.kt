@@ -17,7 +17,6 @@
 
 package ch.deletescape.lawnchair.smartspace
 
-import android.os.Handler
 import android.text.TextUtils
 import android.view.View
 import androidx.annotation.Keep
@@ -25,14 +24,13 @@ import ch.deletescape.lawnchair.loadSmallIcon
 import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController.CardData
 import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController.Line
 import ch.deletescape.lawnchair.toBitmap
-import com.android.launcher3.LauncherModel
 import com.android.launcher3.R
 
 @Keep
 class NowPlayingProvider(controller: LawnchairSmartspaceController) :
         LawnchairSmartspaceController.NotificationBasedDataProvider(controller) {
 
-    private val media = MediaListener(context, this::reload, Handler(LauncherModel.getUiWorkerLooper()))
+    private val media = MediaListener(context, this::reload)
     private val defaultIcon = context.getDrawable(R.drawable.ic_music_note)!!.toBitmap()!!
 
     override fun startListening() {

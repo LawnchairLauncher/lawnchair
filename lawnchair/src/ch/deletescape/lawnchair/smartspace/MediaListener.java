@@ -20,6 +20,7 @@ import ch.deletescape.lawnchair.smartspace.NotificationsManager.OnChangeListener
 import com.android.launcher3.Utilities;
 import com.android.launcher3.notification.NotificationListener;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.jetbrains.annotations.Nullable;
@@ -28,39 +29,29 @@ import org.jetbrains.annotations.Nullable;
  * Paused mode is not supported on Marshmallow because the MediaSession is missing
  * notifications. Without this information, it is impossible to hide on stop.
  */
-public class MediaListener extends MediaController.Callback
-        implements OnActiveSessionsChangedListener, OnChangeListener {
+public class MediaListener extends MediaController.Callback implements OnChangeListener {
     private static final String TAG = "MediaListener";
 
-    private final ComponentName mComponent;
-    private final MediaSessionManager mManager;
+    private final Context mContext;
     private final Runnable mOnChange;
     private final NotificationsManager mNotificationsManager;
-    private List<MediaController> mControllers = Collections.emptyList();
+    private List<MediaNotificationController> mControllers = Collections.emptyList();
     private MediaNotificationController mTracking;
     private final Handler mHandler = new Handler();
-    private final Handler mWorkHandler;
 
-    MediaListener(Context context, Runnable onChange, Handler handler) {
-        mComponent = new ComponentName(context, NotificationListener.class);
-        mManager = (MediaSessionManager) context.getSystemService(Context.MEDIA_SESSION_SERVICE);
+    MediaListener(Context context, Runnable onChange) {
+        mContext = context;
         mOnChange = onChange;
-        mNotificationsManager = NotificationsManager.getInstance();
-        mWorkHandler = handler;
+        mNotificationsManager = NotificationsManager.INSTANCE;
     }
 
     void onResume() {
-        try {
-            mManager.addOnActiveSessionsChangedListener(this, mComponent);
-        } catch (SecurityException ignored) {
-        }
-        onActiveSessionsChanged(null); // Bind all current controllers.
+        updateTracking();
         mNotificationsManager.addListener(this);
     }
 
     void onPause() {
-        mManager.removeOnActiveSessionsChangedListener(this);
-        onActiveSessionsChanged(Collections.emptyList()); // Unbind all previous controllers.
+        updateTracking();
         mNotificationsManager.removeListener(this);
     }
 
@@ -72,46 +63,33 @@ public class MediaListener extends MediaController.Callback
         return mTracking.controller.getPackageName();
     }
 
-    private void updateControllers(List<MediaController> controllers) {
-        for (MediaController mc : mControllers) {
-            mc.unregisterCallback(this);
+    private void updateControllers(List<MediaNotificationController> controllers) {
+        for (MediaNotificationController mnc : mControllers) {
+            mnc.controller.unregisterCallback(this);
         }
-        for (MediaController mc : controllers) {
-            mc.registerCallback(this);
+        for (MediaNotificationController mnc : controllers) {
+            mnc.controller.registerCallback(this);
         }
         mControllers = controllers;
     }
 
-    @Override
-    public void onActiveSessionsChanged(List<MediaController> controllers) {
-        mWorkHandler.post(() -> updateTracking(controllers));
-    }
-
-    private void updateTracking(List<MediaController> controllers) {
-        if (controllers == null) {
-            try {
-                controllers = mManager.getActiveSessions(mComponent);
-            } catch (SecurityException ignored) {
-                controllers = Collections.emptyList();
-            }
-        }
-        updateControllers(controllers);
+    private void updateTracking() {
+        updateControllers(getControllers());
 
         if (mTracking != null) {
             mTracking.reloadInfo();
         }
 
-        // If the current controller is not paused or playing, stop tracking it.
+        // If the current controller is not playing, stop tracking it.
         if (mTracking != null
-                && (!controllers.contains(mTracking.controller) || !mTracking.isPausedOrPlaying())) {
+                && (!mControllers.contains(mTracking) || !mTracking.isPlaying())) {
             mTracking = null;
         }
 
-        for (MediaController mc : controllers) {
-            MediaNotificationController mnc = new MediaNotificationController(mc);
+        for (MediaNotificationController mnc : mControllers) {
             // Either we are not tracking a controller and this one is valid,
             // or this one is playing while the one we track is not.
-            if ((mTracking == null && mnc.isPausedOrPlaying())
+            if ((mTracking == null && mnc.isPlaying())
                     || (mTracking != null && mnc.isPlaying() && !mTracking.isPlaying())) {
                 mTracking = mnc;
             }
@@ -150,22 +128,17 @@ public class MediaListener extends MediaController.Callback
         }
     }
 
-    // If there is no notification, consider the state to be stopped.
-    private boolean hasNotification(@Nullable MediaController mc) {
-        return findNotification(mc) != null;
-    }
-
-    private StatusBarNotification findNotification(@Nullable MediaController mc) {
-        if (mc == null) return null;
-        MediaSession.Token controllerToken = mc.getSessionToken();
+    private List<MediaNotificationController> getControllers() {
+        List<MediaNotificationController> controllers = new ArrayList<>();
         for (StatusBarNotification notif : mNotificationsManager.getNotifications()) {
             Bundle extras = notif.getNotification().extras;
             MediaSession.Token notifToken = extras.getParcelable(Notification.EXTRA_MEDIA_SESSION);
-            if (controllerToken.equals(notifToken)) {
-                return notif;
+            if (notifToken != null) {
+                MediaController controller = new MediaController(mContext, notifToken);
+                controllers.add(new MediaNotificationController(controller, notif));
             }
         }
-        return null;
+        return controllers;
     }
 
     /**
@@ -173,17 +146,17 @@ public class MediaListener extends MediaController.Callback
      */
     public void onPlaybackStateChanged(PlaybackState state) {
         super.onPlaybackStateChanged(state);
-        onActiveSessionsChanged(null);
+        updateTracking();
     }
 
     public void onMetadataChanged(MediaMetadata metadata) {
         super.onMetadataChanged(metadata);
-        onActiveSessionsChanged(null);
+        updateTracking();
     }
 
     @Override
     public void onNotificationsChanged() {
-        onActiveSessionsChanged(null);
+        updateTracking();
     }
 
     public class MediaInfo {
@@ -211,14 +184,10 @@ public class MediaListener extends MediaController.Callback
         private StatusBarNotification sbn;
         private MediaInfo info;
 
-        private MediaNotificationController(MediaController controller) {
+        private MediaNotificationController(MediaController controller, StatusBarNotification sbn) {
             this.controller = controller;
-            this.sbn = findNotification(controller);
+            this.sbn = sbn;
             reloadInfo();
-        }
-
-        private boolean hasNotification() {
-            return sbn != null;
         }
 
         private boolean hasTitle() {
@@ -226,14 +195,13 @@ public class MediaListener extends MediaController.Callback
         }
 
         private boolean isPlaying() {
-            return hasNotification()
-                    && hasTitle()
+            return hasTitle()
                     && controller.getPlaybackState() != null
                     && controller.getPlaybackState().getState() == PlaybackState.STATE_PLAYING;
         }
 
         private boolean isPausedOrPlaying() {
-            if (!hasNotification() || !hasTitle() || controller.getPlaybackState() == null) {
+            if (!hasTitle() || controller.getPlaybackState() == null) {
                 return false;
             }
             int state = controller.getPlaybackState().getState();

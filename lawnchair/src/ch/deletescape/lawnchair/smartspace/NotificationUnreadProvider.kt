@@ -35,7 +35,7 @@ class NotificationUnreadProvider(controller: LawnchairSmartspaceController) :
         LawnchairSmartspaceController.NotificationBasedDataProvider(controller),
         NotificationsManager.OnChangeListener {
 
-    private val manager = NotificationsManager.instance
+    private val manager = NotificationsManager
     private var flowerpotLoaded = false
     private var flowerpotApps: FlowerpotApps? = null
     private val tmpKey = PackageUserKey(null, null)

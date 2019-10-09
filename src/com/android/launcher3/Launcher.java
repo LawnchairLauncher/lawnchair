@@ -350,7 +350,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
         setupViews();
         mPopupDataProvider = new PopupDataProvider(this);
-        LauncherNotifications.getInstance().addListener(mPopupDataProvider);
+        NotificationListener.setNotificationsChangedListener(mPopupDataProvider);
 
         mAppTransitionManager = LauncherAppTransitionManager.newInstance(this);
 
@@ -922,7 +922,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             mLauncherCallbacks.onStart();
         }
         mAppWidgetHost.setListenIfResumed(true);
-        NotificationListener.setNotificationsChangedListener(LauncherNotifications.getInstance());
+        NotificationListener.setNotificationsChangedListener(mPopupDataProvider);
         RaceConditionTracker.onEvent(ON_START_EVT, EXIT);
     }
 
