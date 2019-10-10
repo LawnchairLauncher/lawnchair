@@ -89,6 +89,14 @@ public class ViewInflationDuringSwipeUp extends AbstractQuickStepTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
+
+        // Workaround for b/142351228, when there are no activities, the system may not destroy the
+        // activity correctly for activities under instrumentation, which can leave two concurrent
+        // activities, which changes the order in which the activities are cleaned up (overlapping
+        // stop and start) leading to all sort of issues. To workaround this, ensure that the test
+        // is started only after starting another app.
+        startAppFast(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
+
         TaplTestsLauncher3.initialize(this);
 
         mResolver = mTargetContext.getContentResolver();

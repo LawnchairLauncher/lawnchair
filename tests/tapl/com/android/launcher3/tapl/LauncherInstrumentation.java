@@ -822,34 +822,26 @@ public final class LauncherInstrumentation {
         switch (direction) {
             case UP: {
                 startX = endX = rect.centerX();
-                final int vertCenter = rect.centerY();
-                final float halfGestureHeight = rect.height() / 2.0f;
-                startY = (int) (vertCenter - halfGestureHeight) + 1;
-                endY = (int) (vertCenter + halfGestureHeight);
+                startY = rect.top + 1;
+                endY = rect.bottom;
             }
             break;
             case DOWN: {
                 startX = endX = rect.centerX();
-                final int vertCenter = rect.centerY();
-                final float halfGestureHeight = rect.height() / 2.0f;
-                startY = (int) (vertCenter + halfGestureHeight) - 1;
-                endY = (int) (vertCenter - halfGestureHeight);
+                startY = rect.bottom - 1;
+                endY = rect.top;
             }
             break;
             case LEFT: {
                 startY = endY = rect.centerY();
-                final int horizCenter = rect.centerX();
-                final float halfGestureWidth = rect.width() / 2.0f;
-                startX = (int) (horizCenter - halfGestureWidth) + 1;
-                endX = (int) (horizCenter + halfGestureWidth);
+                startX = rect.left + 1;
+                endX = rect.right;
             }
             break;
             case RIGHT: {
                 startY = endY = rect.centerY();
-                final int horizCenter = rect.centerX();
-                final float halfGestureWidth = rect.width() / 2.0f;
-                startX = (int) (horizCenter + halfGestureWidth) - 1;
-                endX = (int) (horizCenter - halfGestureWidth);
+                startX = rect.right - 1;
+                endX = rect.left;
             }
             break;
             default:
