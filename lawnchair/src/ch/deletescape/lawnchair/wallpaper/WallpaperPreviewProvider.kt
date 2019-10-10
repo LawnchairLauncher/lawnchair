@@ -25,7 +25,10 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.drawable.Drawable
+import android.view.ContextThemeWrapper
+import ch.deletescape.lawnchair.theme.ThemeOverride
 import ch.deletescape.lawnchair.util.LawnchairSingletonHolder
+import com.android.launcher3.util.Themes
 import java.lang.ref.WeakReference
 
 class WallpaperPreviewProvider(private val context: Context) : BroadcastReceiver() {
@@ -64,7 +67,12 @@ class WallpaperPreviewProvider(private val context: Context) : BroadcastReceiver
             wallpaperManager.drawable
         }
         loadedWallpaper = WeakReference(drawable)
-        return drawable
+        return drawable ?: loadEmptyBackground()
+    }
+
+    private fun loadEmptyBackground(): Drawable {
+        val themedContext = ContextThemeWrapper(context, ThemeOverride.Launcher().getTheme(context))
+        return Themes.getAttrDrawable(themedContext, android.R.attr.windowBackground)
     }
 
     override fun onReceive(context: Context, intent: Intent?) {
