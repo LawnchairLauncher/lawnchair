@@ -466,8 +466,8 @@ fun pxToDp(size: Float): Float {
     return size / dpToPx(1f)
 }
 
-fun Drawable.toBitmap(forceCreate: Boolean = true): Bitmap? {
-    return Utilities.drawableToBitmap(this, forceCreate)
+fun Drawable.toBitmap(forceCreate: Boolean = true, fallbackSize: Int = 0): Bitmap? {
+    return Utilities.drawableToBitmap(this, forceCreate, fallbackSize)
 }
 
 fun AlertDialog.applyAccent() {
