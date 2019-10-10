@@ -79,7 +79,9 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
     protected int mHotseatBgColor;
     protected int mBubbleBgColor;
     public float micStrokeWidth;
-    private ImageView mLogoIconView;
+    protected ImageView mLogoIconView;
+    protected ImageView mHotseatLogoIconView;
+    protected FrameLayout mMicFrame;
     protected ImageView mMicIconView;
     protected String Dg;
     protected boolean Dh;
@@ -158,7 +160,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         dy().registerOnSharedPreferenceChangeListener(this);
-        this.Dn.setDelegateView(this.mMicIconView);
+        this.Dn.setDelegateView(mMicFrame);
         SearchProviderController.Companion.getInstance(getContext()).addOnProviderChangeListener(this);
     }
 
@@ -193,9 +195,11 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
 
     protected final void dz() {
         mLogoIconView = findViewById(R.id.g_icon);
+        mLogoIconView.setOnClickListener(this);
+        mHotseatLogoIconView = findViewById(R.id.g_icon_hotseat);
+        mMicFrame = findViewById(R.id.mic_frame);
         mMicIconView = findViewById(R.id.mic_icon);
         mMicIconView.setOnClickListener(this);
-        mLogoIconView.setOnClickListener(this);
     }
 
     protected void onLayout(boolean z, int i, int i2, int i3, int i4) {
@@ -331,7 +335,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
             clearPillBg(canvas, paddingLeft, paddingTop, paddingLeft2 + i);
             mShadowHelper.draw(bitmap2, canvas, (float) paddingLeft, (float) paddingTop, (float) (paddingLeft2 + i));
         }
-        if (micStrokeWidth > 0.0f && mMicIconView.getVisibility() == View.VISIBLE) {
+        if (micStrokeWidth > 0.0f && mMicFrame.getVisibility() == View.VISIBLE) {
             float i2;
             i = mIsRtl ? getPaddingLeft() : (getWidth() - getPaddingRight()) - dG();
             int paddingTop2 = getPaddingTop();
@@ -493,8 +497,8 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         setBackground(insetDrawable);
         RippleDrawable rippleDrawable2 = (RippleDrawable) rippleDrawable.getConstantState().newDrawable().mutate();
         rippleDrawable2.setLayerInset(0, 0, this.Dl, 0, this.Dl);
-        this.mMicIconView.setBackground(rippleDrawable2);
-        this.mMicIconView.getLayoutParams().width = dG();
+        mMicIconView.setBackground(rippleDrawable2);
+        mMicFrame.getLayoutParams().width = dG();
         if (this.mIsRtl) {
             i2 = 0;
         } else {
@@ -505,8 +509,8 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         } else {
             dG = 0;
         }
-        this.mMicIconView.setPadding(i2, 0, dG, 0);
-        this.mMicIconView.requestLayout();
+        mMicIconView.setPadding(i2, 0, dG, 0);
+        mMicIconView.requestLayout();
     }
 
     private InsetDrawable createRipple() {
@@ -549,7 +553,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         if (view == mMicIconView) {
             if (controller.isGoogle()) {
                 fallbackSearch(mShowAssistant ? Intent.ACTION_VOICE_COMMAND : "android.intent.action.VOICE_ASSIST");
-            } else if(mShowAssistant && provider.getSupportsAssistant()) {
+            } else if (mShowAssistant && provider.getSupportsAssistant()) {
                 provider.startAssistant(intent -> {
                     getContext().startActivity(intent);
                     return null;
@@ -604,9 +608,14 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
 
     protected void loadPreferences(SharedPreferences sharedPreferences) {
         post(() -> {
+            SearchProvider provider = SearchProviderController.Companion.getInstance(getContext()).getSearchProvider();
+            boolean providerSupported = provider.getSupportsAssistant() || provider.getSupportsVoiceSearch();
+            boolean showMic = sharedPreferences.getBoolean("opa_enabled", true) && providerSupported;
             mShowAssistant = sharedPreferences.getBoolean("opa_assistant", true);
             mLogoIconView.setImageDrawable(getIcon());
-            mMicIconView.setVisibility(sharedPreferences.getBoolean("opa_enabled", true) ? View.VISIBLE : View.GONE);
+            mHotseatLogoIconView.setImageDrawable(getHotseatIcon(true));
+            mMicFrame.setVisibility(showMic ? View.VISIBLE : View.GONE);
+            mMicIconView.setVisibility(View.VISIBLE);
             mMicIconView.setImageDrawable(getMicIcon());
             mUseTwoBubbles = useTwoBubbles();
             mRadius = Utilities.getLawnchairPrefs(getContext()).getSearchBarRadius();
@@ -623,13 +632,17 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         return provider.getIcon(colored);
     }
 
+    protected Drawable getHotseatIcon(boolean colored) {
+        return getIcon(colored);
+    }
+
     protected Drawable getMicIcon() {
         return getMicIcon(true);
     }
 
     protected Drawable getMicIcon(boolean colored){
         SearchProvider provider = SearchProviderController.Companion.getInstance(getContext()).getSearchProvider();
-        if (mShowAssistant && provider.getSupportsAssistant()){
+        if (provider.getSupportsAssistant()){
             return provider.getAssistantIcon(colored);
         } else if (provider.getSupportsVoiceSearch()) {
             return provider.getVoiceIcon(colored);
@@ -699,7 +712,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
     }
 
     public boolean useTwoBubbles() {
-        return mMicIconView.getVisibility() == View.VISIBLE && Utilities
+        return mMicFrame.getVisibility() == View.VISIBLE && Utilities
                 .getLawnchairPrefs(getContext()).getDualBubbleSearch();
     }
 

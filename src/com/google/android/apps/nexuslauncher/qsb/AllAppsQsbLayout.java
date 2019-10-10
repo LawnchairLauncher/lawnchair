@@ -161,19 +161,13 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     }
 
     @Override
-    protected boolean logoCanOpenFeed() {
-        return super.logoCanOpenFeed() && prefs.getAllAppsGlobalSearch();
+    protected Drawable getHotseatIcon(boolean colored) {
+        return super.getIcon(colored);
     }
 
     @Override
-    protected Drawable getMicIcon(boolean colored) {
-        if (prefs.getAllAppsGlobalSearch()) {
-            mMicIconView.setVisibility(View.VISIBLE);
-            return super.getMicIcon(colored);
-        } else {
-            mMicIconView.setVisibility(View.GONE);
-            return null;
-        }
+    protected boolean logoCanOpenFeed() {
+        return super.logoCanOpenFeed() && prefs.getAllAppsGlobalSearch();
     }
 
     protected void onDetachedFromWindow() {
@@ -475,7 +469,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         boolean hotseatQsbVisible = (visibleElements & HOTSEAT_SEARCH_BOX) != 0;
         boolean drawerQsbVisible = (visibleElements & ALL_APPS_HEADER) != 0;
         boolean qsbVisible = (hotseatQsbEnabled && hotseatQsbVisible) || (drawerQsbEnabled && drawerQsbVisible);
-        float hotseatProgress;
+        float hotseatProgress, micProgress;
         if (!hotseatQsbEnabled) {
             hotseatProgress = 0;
         } else if (!drawerQsbEnabled) {
@@ -483,7 +477,18 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         } else {
             hotseatProgress = (visibleElements & ALL_APPS_CONTENT) != 0 ? 0 : 1;
         }
+        if (prefs.getAllAppsGlobalSearch()) {
+            micProgress = 1f;
+        } else {
+            micProgress = hotseatProgress;
+        }
         setter.setFloat(this, HOTSEAT_PROGRESS, hotseatProgress, Interpolators.LINEAR);
         setter.setViewAlpha(this, qsbVisible ? 1 : 0, interpolator);
+        setter.setViewAlpha(mLogoIconView, 1 - hotseatProgress, interpolator);
+        setter.setViewAlpha(mHotseatLogoIconView, hotseatProgress, interpolator);
+        setter.setViewAlpha(mMicIconView, micProgress, interpolator);
+        if (mMicIconView != null) {
+            mMicIconView.setVisibility(micProgress > 0 ? View.VISIBLE : View.INVISIBLE);
+        }
     }
 }

@@ -1,7 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.apps.nexuslauncher.qsb.AllAppsQsbLayout android:layout_gravity="center|top" android:id="@+id/search_container_all_apps" android:background="@drawable/bg_qsb_click_feedback" android:layout_width="fill_parent" android:layout_height="@dimen/qsb_widget_height" android:layout_centerHorizontal="true" android:contentDescription="@string/search"
-    xmlns:android="http://schemas.android.com/apk/res/android">
-    <ImageView android:layout_gravity="start|center" android:id="@id/g_icon" android:layout_height="fill_parent" android:layout_width="@dimen/qsb_mic_width" android:src="@drawable/ic_super_g_color" android:layout_marginTop="-6.0dip" android:layout_marginBottom="-6.0dip" android:scaleType="center" />
-    <ImageView android:layout_gravity="end|center" android:id="@id/mic_icon" android:background="?android:selectableItemBackgroundBorderless" android:focusable="false" android:clickable="true" android:layout_width="@dimen/qsb_mic_width" android:layout_height="fill_parent" android:layout_marginTop="-6.0dip" android:layout_marginBottom="-6.0dip" android:src="@drawable/ic_mic_color" android:scaleType="center" android:contentDescription="@string/label_voice_search" />
+<com.google.android.apps.nexuslauncher.qsb.AllAppsQsbLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/search_container_all_apps"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/qsb_widget_height"
+    android:layout_gravity="center|top"
+    android:layout_centerHorizontal="true"
+    android:background="@drawable/bg_qsb_click_feedback"
+    android:contentDescription="@string/search">
+
+    <ImageView
+        android:id="@+id/g_icon"
+        android:layout_width="@dimen/qsb_mic_width"
+        android:layout_height="match_parent"
+        android:layout_gravity="start|center"
+        android:layout_marginTop="-6.0dip"
+        android:layout_marginBottom="-6.0dip"
+        android:src="@drawable/ic_super_g_color"
+        android:scaleType="center" />
+
+    <ImageView
+        android:id="@+id/g_icon_hotseat"
+        android:layout_width="@dimen/qsb_mic_width"
+        android:layout_height="match_parent"
+        android:layout_gravity="start|center"
+        android:layout_marginTop="-6.0dip"
+        android:layout_marginBottom="-6.0dip"
+        android:src="@drawable/ic_super_g_color"
+        android:scaleType="center" />
+
+    <FrameLayout
+        android:id="@+id/mic_frame"
+        android:layout_width="@dimen/qsb_mic_width"
+        android:layout_height="match_parent"
+        android:layout_gravity="end|center">
+
+        <ImageView
+            android:id="@+id/mic_icon"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="-6.0dip"
+            android:layout_marginBottom="-6.0dip"
+            android:focusable="false"
+            android:clickable="true"
+            android:background="?android:selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_mic_color"
+            android:scaleType="center"
+            android:contentDescription="@string/label_voice_search" />
+    </FrameLayout>
+
     <include layout="@layout/qsb_hint" />
 </com.google.android.apps.nexuslauncher.qsb.AllAppsQsbLayout>
