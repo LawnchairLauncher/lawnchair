@@ -39,7 +39,7 @@
         <service
             android:name="com.android.quickstep.TouchInteractionService"
             android:permission="android.permission.STATUS_BAR_SERVICE"
-            android:directBootAware="${quickstepDirectBootAware}" >
+            android:directBootAware="@bool/quickstep_direct_boot_aware" >
             <intent-filter>
                 <action android:name="android.intent.action.QUICKSTEP_SERVICE" />
             </intent-filter>
@@ -91,11 +91,11 @@
 
         <meta-data
             android:name="xyz.paphonb.quickstepswitcher.minSdk"
-            android:value="${quickstepTarget}" />
+            android:value="28" />
 
         <meta-data
             android:name="xyz.paphonb.quickstepswitcher.maxSdk"
-            android:value="${quickstepTarget}" />
+            android:value="29" />
 
     </application>
 

@@ -14,6 +14,8 @@
      limitations under the License.
 -->
 <resources>
+    <bool name="quickstep_direct_boot_aware">false</bool>
+
     <string name="task_overlay_factory_class" translatable="false"></string>
 
     <string name="overview_callbacks_class" translatable="false">ch.deletescape.lawnchair.LawnchairOverviewCallbacks</string>

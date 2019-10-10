@@ -1,12 +1,13 @@
 apply plugin: 'com.android.library'
-
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 android {
     compileSdkVersion 29
-    buildToolsVersion BUILD_TOOLS_VERSION
+    buildToolsVersion "29.0.2"
 
 
     defaultConfig {
-        minSdkVersion 26
+        minSdkVersion 28
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -22,12 +23,6 @@ android {
         }
     }
 
-    sourceSets {
-        main {
-            aidl.srcDirs = ['src/main/java']
-        }
-    }
-
     gradle.projectsEvaluated {
         tasks.withType(JavaCompile) {
             options.compilerArgs.add('-Xbootclasspath/p:prebuilts/libs/framework.jar')
@@ -37,13 +32,11 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-
-    implementation fileTree(dir: "../prebuilts/libs", include: 'plugin_core.jar')
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'androidx.appcompat:appcompat:1.0.2'
+    implementation 'androidx.core:core-ktx:1.1.0'
     implementation project(':QuickstepCompat')
-    implementation project(':QuickstepCompatVP')
-    implementation project(':QuickstepCompatVQ')
-
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 }

@@ -197,7 +197,7 @@ class LawnchairApp : Application() {
             d("config_recentsComponentName ($recentsComponent) is not Lawnchair, disabling recents")
             return false
         }
-        if (Build.VERSION.SDK_INT != BuildConfig.QUICKSTEP_TARGET) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
             d("Quickstep target doesn't match, disabling recents")
             mismatchedQuickstepTarget = true
             return false

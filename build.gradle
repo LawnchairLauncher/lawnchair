@@ -149,7 +149,7 @@ android {
 
     // The flavor dimensions for build variants (e.g. aospWithQuickstep, aospWithoutQuickstep)
     // See: https://developer.android.com/studio/build/build-variants#flavor-dimensions
-    flavorDimensions "app", "recents", "quickstepTarget", "custom", "dist"
+    flavorDimensions "app", "recents", "custom", "dist"
 
     productFlavors {
         aosp {
@@ -206,20 +206,6 @@ android {
             applicationIdSuffix ".plah"
 
             buildConfigField "boolean", "SIGNATURE_VERIFICATION", "true"
-        }
-
-        pie {
-            dimension "quickstepTarget"
-            manifestPlaceholders = [ quickstepTarget: 28, quickstepDirectBootAware: false ]
-
-            buildConfigField "int", "QUICKSTEP_TARGET", "28"
-        }
-
-        ten {
-            dimension "quickstepTarget"
-            manifestPlaceholders = [ quickstepTarget: 29, quickstepDirectBootAware: true ]
-
-            buildConfigField "int", "QUICKSTEP_TARGET", "29"
         }
     }
 

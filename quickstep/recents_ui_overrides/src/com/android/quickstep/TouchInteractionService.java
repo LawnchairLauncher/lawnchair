@@ -316,14 +316,16 @@ public class TouchInteractionService extends Service implements
         mGestureBlockingActivity = TextUtils.isEmpty(blockingActivity) ? null :
                 ComponentName.unflattenFromString(blockingActivity);
 
-        mExclusionListener = new SystemGestureExclusionListenerCompat(mDefaultDisplayId) {
-            @Override
-            @BinderThread
-            public void onExclusionChanged(Region region) {
-                // Assignments are atomic, it should be safe on binder thread
-                mExclusionRegion = region;
-            }
-        };
+        if (Utilities.ATLEAST_Q) {
+            mExclusionListener = new SystemGestureExclusionListenerCompat(mDefaultDisplayId) {
+                @Override
+                @BinderThread
+                public void onExclusionChanged(Region region) {
+                    // Assignments are atomic, it should be safe on binder thread
+                    mExclusionRegion = region;
+                }
+            };
+        }
 
         onNavigationModeChanged(SysUINavigationMode.INSTANCE.get(this).addModeChangeListener(this));
         sConnected = true;
@@ -421,10 +423,12 @@ public class TouchInteractionService extends Service implements
         disposeEventHandlers();
         initInputMonitor();
 
-        if (mMode == Mode.NO_BUTTON) {
-            mExclusionListener.register();
-        } else {
-            mExclusionListener.unregister();
+        if (Utilities.ATLEAST_Q) {
+            if (mMode == Mode.NO_BUTTON) {
+                mExclusionListener.register();
+            } else {
+                mExclusionListener.unregister();
+            }
         }
     }
 
@@ -508,7 +512,9 @@ public class TouchInteractionService extends Service implements
         sConnected = false;
         Utilities.unregisterReceiverSafely(this, mUserUnlockedReceiver);
         SysUINavigationMode.INSTANCE.get(this).removeModeChangeListener(this);
-        mExclusionListener.unregister();
+        if (Utilities.ATLEAST_Q) {
+            mExclusionListener.unregister();
+        }
 
         super.onDestroy();
     }

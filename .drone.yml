@@ -25,22 +25,10 @@ pipeline:
   deploy:
     image: lawnchairlauncher/drone-telegram:latest
     secrets: [ bot_token, channel_id, dev_channel_id ]
-    apk_path: out/apks/Lawnchair-pie.apk
+    apk_path: out/apks/Lawnchair.apk
     mapping_path: build/outputs/mapping/*/*/mapping.txt
     channel_id: "-1001083653933"
     public_branch: alpha
-    environment:
-      - MAJOR_MINOR=${DRONE_BRANCH}
-    when:
-      event: push
-      status: success
-  deploy-10:
-    image: lawnchairlauncher/drone-telegram:latest
-    secrets: [ bot_token, channel_id, dev_channel_id ]
-    apk_path: out/apks/Lawnchair-10.apk
-    mapping_path: build/outputs/mapping/*/*/mapping.txt
-    channel_id: "-1001194666831"
-    public_branch: q-merge
     environment:
       - MAJOR_MINOR=${DRONE_BRANCH}
     when:

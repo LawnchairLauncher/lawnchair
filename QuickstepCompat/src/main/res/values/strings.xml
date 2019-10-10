@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">QuickstepCompat</string>
+    <integer name="config_quickstepCompatFactory">800</integer>
+</resources>

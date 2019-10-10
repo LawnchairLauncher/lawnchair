@@ -15,5 +15,5 @@
  *     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-include ':IconLoader', ':SystemUISharedLib'
+include ':IconLoader', ':SystemUISharedLib', ':QuickstepCompat', ':QuickstepCompatVQ', ':QuickstepCompatVP'
 project(':IconLoader').projectDir = new File(rootDir, 'iconloaderlib')
