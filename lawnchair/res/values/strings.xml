@@ -130,6 +130,8 @@
     <string name="grid_size_width">Width</string>
     <string name="launcher_theme_override_label">Force dark theme</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
+    <string name="smartspace_in_time">in %1$s</string>
+    <string name="smartspace_now">now</string>
     
     <string name="blur_pref_title">Blur</string>
     <string name="blur_pref_summary">Blur effect for app drawer, dock, settings backgrounds</string>
@@ -744,4 +746,6 @@
 
     <string name="pref_force_shapeless_summary">Attempts to load non-adaptive icons for all apps</string>
     <string name="pref_force_shapeless">Force shapeless icons</string>
+
+    <string name="smartspace_provider_calendar">Calendar events</string>
 </resources>

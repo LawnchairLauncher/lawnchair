@@ -283,6 +283,7 @@ class SmartspaceEventProvidersAdapter(private val context: Context)
 
         fun getEventProviders(context: Context): List<String> {
             val list = ArrayList<String>()
+            list.add(CalendarEventProvider::class.java.name)
             list.add(SmartspaceDataWidget::class.java.name)
             if (FeedBridge.getInstance(context).resolveBridge()?.supportsSmartspace == true)
                 list.add(SmartspacePixelBridge::class.java.name)

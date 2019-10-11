@@ -21,6 +21,7 @@ import android.app.Notification
 import android.app.PendingIntent
 import android.content.*
 import android.content.pm.PackageManager
+import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Handler
@@ -44,6 +45,7 @@ import com.android.launcher3.Utilities
 import com.android.launcher3.notification.NotificationListener
 import com.android.launcher3.util.PackageManagerHelper
 import java.util.concurrent.TimeUnit
+import kotlin.collections.ArrayList
 
 class LawnchairSmartspaceController(val context: Context) {
 
@@ -257,10 +259,19 @@ class LawnchairSmartspaceController(val context: Context) {
         protected val context = controller.context
         protected val resources = context.resources
 
-        open fun requiresSetup() = false
+        protected open val requiredPermissions = emptyList<String>()
+
+        open fun requiresSetup() = !checkPermissionGranted()
 
         open fun startSetup(onFinish: (Boolean) -> Unit) {
-            onFinish(true)
+            if (checkPermissionGranted()) {
+                onFinish(true)
+                return
+            }
+
+            BlankActivity.requestPermissions(context, requiredPermissions.toTypedArray(), 1031) { _, _, results ->
+                onFinish(results.all { it == PERMISSION_GRANTED })
+            }
         }
 
         open fun startListening() {
@@ -306,6 +317,11 @@ class LawnchairSmartspaceController(val context: Context) {
                 }
             }
             return getApp(sbn.packageName)
+        }
+
+        private fun checkPermissionGranted(): Boolean {
+            val context = controller.context
+            return requiredPermissions.all { context.checkSelfPermission(it) == PERMISSION_GRANTED }
         }
 
         companion object {
@@ -370,7 +386,7 @@ class LawnchairSmartspaceController(val context: Context) {
 
         override fun startSetup(onFinish: (Boolean) -> Unit) {
             if (checkNotificationAccess()) {
-                onFinish(true)
+                super.startSetup(onFinish)
                 return
             }
 
@@ -535,6 +551,7 @@ class LawnchairSmartspaceController(val context: Context) {
                 Pair(BatteryStatusProvider::class.java.name, R.string.battery_status),
                 Pair(PersonalityProvider::class.java.name, R.string.personality_provider),
                 Pair(OnboardingProvider::class.java.name, R.string.onbording),
+                Pair(CalendarEventProvider::class.java.name, R.string.smartspace_provider_calendar),
                 Pair(FakeDataProvider::class.java.name, R.string.weather_provider_testing))
 
         fun getDisplayName(providerName: String): Int {

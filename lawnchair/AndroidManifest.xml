@@ -92,6 +92,7 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
 
     <uses-permission android:name="xyz.paphonb.systemuituner.permission.MODIFY_NAVBAR"/>
+    <uses-permission android:name="android.permission.READ_CALENDAR" />
 
     <application
         android:networkSecurityConfig="@xml/network_security_config"
