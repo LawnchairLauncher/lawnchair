@@ -20,12 +20,12 @@ import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.quickstep.InstantAppResolverImpl.COMPONENT_CLASS_MARKER;
 
-import android.app.prediction.AppPredictor;
-import android.app.prediction.AppTarget;
 import android.content.ComponentName;
 import android.content.Context;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 
+import ch.deletescape.lawnchair.predictions.AppPredictorCompat;
+import ch.deletescape.lawnchair.predictions.AppTargetCompat;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile.OnIDPChangeListener;
@@ -198,7 +198,7 @@ public class PredictionUiStateManager implements OnGlobalLayoutListener, ItemInf
         dispatchOnChange(true);
     }
 
-    public AppPredictor.Callback appPredictorCallback(Client client) {
+    public AppPredictorCompat.Callback appPredictorCallback(Client client) {
         return targets -> {
             mPredictionServicePredictions[client.ordinal()] = targets;
             updatePredictionStateAfterCallback();
@@ -225,9 +225,9 @@ public class PredictionUiStateManager implements OnGlobalLayoutListener, ItemInf
 
         state.apps = new ArrayList<>();
 
-        List<AppTarget> appTargets = mPredictionServicePredictions[mActiveClient.ordinal()];
+        List<AppTargetCompat> appTargets = mPredictionServicePredictions[mActiveClient.ordinal()];
         if (!appTargets.isEmpty()) {
-            for (AppTarget appTarget : appTargets) {
+            for (AppTargetCompat appTarget : appTargets) {
                 ComponentKey key;
                 if (appTarget.getShortcutInfo() != null) {
                     key = ShortcutKey.fromInfo(appTarget.getShortcutInfo());

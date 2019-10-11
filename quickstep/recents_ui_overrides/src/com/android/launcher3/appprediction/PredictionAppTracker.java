@@ -18,12 +18,6 @@ package com.android.launcher3.appprediction;
 import static com.android.launcher3.InvariantDeviceProfile.CHANGE_FLAG_GRID;
 
 import android.annotation.TargetApi;
-import android.app.prediction.AppPredictionContext;
-import android.app.prediction.AppPredictionManager;
-import android.app.prediction.AppPredictor;
-import android.app.prediction.AppTarget;
-import android.app.prediction.AppTargetEvent;
-import android.app.prediction.AppTargetId;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -35,6 +29,11 @@ import android.os.UserHandle;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
+import ch.deletescape.lawnchair.predictions.AppPredictorCompat;
+import ch.deletescape.lawnchair.predictions.AppTargetCompat;
+import ch.deletescape.lawnchair.predictions.AppTargetEventCompat;
+import ch.deletescape.lawnchair.predictions.AppTargetIdCompat;
+import ch.deletescape.lawnchair.predictions.LawnchairPredictionManager;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.appprediction.PredictionUiStateManager.Client;
@@ -62,8 +61,8 @@ public class PredictionAppTracker extends AppLaunchTracker {
     private final Handler mMessageHandler;
 
     // Accessed only on worker thread
-    private AppPredictor mHomeAppPredictor;
-    private AppPredictor mRecentsOverviewPredictor;
+    private AppPredictorCompat mHomeAppPredictor;
+    private AppPredictorCompat mRecentsOverviewPredictor;
 
     public PredictionAppTracker(Context context) {
         if (!Utilities.isRecentsEnabled() &&
@@ -99,19 +98,9 @@ public class PredictionAppTracker extends AppLaunchTracker {
     }
 
     @WorkerThread
-    private AppPredictor createPredictor(Client client, int count) {
-        AppPredictionManager apm = mContext.getSystemService(AppPredictionManager.class);
-
-        AppPredictor predictor = apm.createAppPredictionSession(
-                new AppPredictionContext.Builder(mContext)
-                        .setUiSurface(client.id)
-                        .setPredictedTargetCount(count)
-                        .setExtras(getAppPredictionContextExtras(client))
-                        .build());
-        predictor.registerPredictionUpdates(mContext.getMainExecutor(),
-                PredictionUiStateManager.INSTANCE.get(mContext).appPredictorCallback(client));
-        predictor.requestPredictionUpdate();
-        return predictor;
+    private AppPredictorCompat createPredictor(Client client, int count) {
+        return LawnchairPredictionManager.Companion.getInstance(mContext)
+                .createPredictor(client, count, getAppPredictionContextExtras(client));
     }
 
     /**
@@ -142,7 +131,7 @@ public class PredictionAppTracker extends AppLaunchTracker {
             }
             case MSG_LAUNCH: {
                 if (mHomeAppPredictor != null) {
-                    mHomeAppPredictor.notifyAppTargetEvent((AppTargetEvent) msg.obj);
+                    mHomeAppPredictor.notifyAppTargetEvent((AppTargetEventCompat) msg.obj);
                 }
                 return true;
             }
@@ -177,8 +166,8 @@ public class PredictionAppTracker extends AppLaunchTracker {
     public void onStartShortcut(String packageName, String shortcutId, UserHandle user,
             String container) {
         // TODO: Use the full shortcut info
-        AppTarget target = new AppTarget
-                .Builder(new AppTargetId("shortcut:" + shortcutId), packageName, user)
+        AppTargetCompat target = new AppTargetCompat
+                .Builder(new AppTargetIdCompat("shortcut:" + shortcutId), packageName, user)
                     .setClassName(shortcutId)
                     .build();
         sendLaunch(target, container);
@@ -188,8 +177,8 @@ public class PredictionAppTracker extends AppLaunchTracker {
     @UiThread
     public void onStartApp(ComponentName cn, UserHandle user, String container) {
         if (cn != null) {
-            AppTarget target = new AppTarget
-                    .Builder(new AppTargetId("app:" + cn), cn.getPackageName(), user)
+            AppTargetCompat target = new AppTargetCompat
+                    .Builder(new AppTargetIdCompat("app:" + cn), cn.getPackageName(), user)
                         .setClassName(cn.getClassName())
                         .build();
             sendLaunch(target, container);
@@ -197,8 +186,8 @@ public class PredictionAppTracker extends AppLaunchTracker {
     }
 
     @UiThread
-    private void sendLaunch(AppTarget target, String container) {
-        AppTargetEvent event = new AppTargetEvent.Builder(target, AppTargetEvent.ACTION_LAUNCH)
+    private void sendLaunch(AppTargetCompat target, String container) {
+        AppTargetEventCompat event = new AppTargetEventCompat.Builder(target, AppTargetEventCompat.ACTION_LAUNCH)
                 .setLaunchLocation(container == null ? CONTAINER_DEFAULT : container)
                 .build();
         Message.obtain(mMessageHandler, MSG_LAUNCH, event).sendToTarget();
