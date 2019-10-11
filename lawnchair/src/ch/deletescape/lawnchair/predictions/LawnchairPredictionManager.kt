@@ -21,6 +21,7 @@ package ch.deletescape.lawnchair.predictions
 
 import android.content.ComponentName
 import android.content.Context
+import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.os.Bundle
 import android.text.TextUtils
@@ -47,7 +48,8 @@ class LawnchairPredictionManager(private val context: Context) {
             return false
         }
         val predictorService = getPredictorService() ?: return false
-        return PackageManagerHelper.isAppEnabled(context.packageManager, predictorService.packageName, 0)
+        return PackageManagerHelper.isAppEnabled(
+                context.packageManager, predictorService.packageName, 0) && usageStatsGranted()
     }
 
     private fun getPredictorService(): ComponentName? {
@@ -57,6 +59,11 @@ class LawnchairPredictionManager(private val context: Context) {
         val string = res.getString(id)
         if (TextUtils.isEmpty(string)) return null
         return ComponentName.unflattenFromString(string)
+    }
+
+    private fun usageStatsGranted(): Boolean {
+        return Utilities.isRecentsEnabled() || context.checkSelfPermission(
+                android.Manifest.permission.PACKAGE_USAGE_STATS) == PackageManager.PERMISSION_GRANTED
     }
 
     companion object : LawnchairSingletonHolder<LawnchairPredictionManager>(::LawnchairPredictionManager)

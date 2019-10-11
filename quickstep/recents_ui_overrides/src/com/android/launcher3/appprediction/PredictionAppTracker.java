@@ -35,7 +35,6 @@ import ch.deletescape.lawnchair.predictions.AppTargetEventCompat;
 import ch.deletescape.lawnchair.predictions.AppTargetIdCompat;
 import ch.deletescape.lawnchair.predictions.LawnchairPredictionManager;
 import com.android.launcher3.InvariantDeviceProfile;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.appprediction.PredictionUiStateManager.Client;
 import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.util.UiThreadHelper;
@@ -65,11 +64,6 @@ public class PredictionAppTracker extends AppLaunchTracker {
     private AppPredictorCompat mRecentsOverviewPredictor;
 
     public PredictionAppTracker(Context context) {
-        if (!Utilities.isRecentsEnabled() &&
-                context.checkSelfPermission(android.Manifest.permission.PACKAGE_USAGE_STATS) != PackageManager.PERMISSION_GRANTED) {
-            throw new SecurityException("Not recents and PACKAGE_USAGE_STATS not granted, disabling predictions");
-        }
-        
         mContext = context;
         mMessageHandler = new Handler(UiThreadHelper.getBackgroundLooper(), this::handleMessage);
         InvariantDeviceProfile.INSTANCE.get(mContext).addOnChangeListener(this::onIdpChanged);
