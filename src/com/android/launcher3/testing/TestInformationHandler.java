@@ -115,9 +115,7 @@ public class TestInformationHandler implements ResourceBasedOverride {
                             mLauncher.getAppsView().getAppsStore().getDeferUpdatesFlags()).get();
                     response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD,
                             deferUpdatesFlags);
-                } catch (ExecutionException e) {
-                    throw new RuntimeException(e);
-                } catch (InterruptedException e) {
+                } catch (ExecutionException | InterruptedException e) {
                     throw new RuntimeException(e);
                 }
                 break;
@@ -130,9 +128,7 @@ public class TestInformationHandler implements ResourceBasedOverride {
                             .get();
                     response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD,
                             deferUpdatesFlags);
-                } catch (ExecutionException e) {
-                    throw new RuntimeException(e);
-                } catch (InterruptedException e) {
+                } catch (ExecutionException | InterruptedException e) {
                     throw new RuntimeException(e);
                 }
                 break;
