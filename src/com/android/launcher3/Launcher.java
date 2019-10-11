@@ -103,6 +103,7 @@ import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.folder.FolderGridOrganizer;
 import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.folder.FolderNameProvider;
 import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.keyboard.CustomActionsPopup;
@@ -614,6 +615,10 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     public LauncherStateManager getStateManager() {
         return mStateManager;
+    }
+
+    public FolderNameProvider getFolderNameProvider() {
+        return new FolderNameProvider();
     }
 
     @Override
