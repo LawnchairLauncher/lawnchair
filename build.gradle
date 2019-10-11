@@ -304,8 +304,6 @@ afterEvaluate {
     }
 }
 
-apply from: 'lawnchair/smali.gradle'
-
 allprojects {
     repositories {
         google()

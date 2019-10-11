@@ -99,7 +99,6 @@ import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.ContentWriter.CommitParams;
 import com.android.launcher3.util.SecureSettingsObserver;
-import com.google.android.apps.nexuslauncher.reflection.ReflectionClient;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.Set;
@@ -788,10 +787,6 @@ public class SettingsActivity extends SettingsBaseActivity implements
         public boolean onPreferenceChange(Preference preference, Object newValue) {
             switch (preference.getKey()) {
                 case SHOW_PREDICTIONS_PREF:
-                    if ((boolean) newValue) {
-                        ReflectionClient.getInstance(getContext()).setEnabled(true);
-                        return true;
-                    }
                     SuggestionConfirmationFragment confirmationFragment = new SuggestionConfirmationFragment();
                     confirmationFragment.setTargetFragment(this, 0);
                     confirmationFragment.show(getFragmentManager(), preference.getKey());
@@ -890,7 +885,6 @@ public class SettingsActivity extends SettingsBaseActivity implements
                     ((TwoStatePreference) preference).setChecked(false);
                 }
             }
-            ReflectionClient.getInstance(getContext()).setEnabled(false);
         }
 
         public Dialog onCreateDialog(final Bundle bundle) {

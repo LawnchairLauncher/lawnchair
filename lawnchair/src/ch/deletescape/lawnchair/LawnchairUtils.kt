@@ -66,7 +66,6 @@ import com.android.launcher3.util.LooperExecutor
 import com.android.launcher3.util.PackageUserKey
 import com.android.launcher3.util.Themes
 import com.android.launcher3.views.OptionsPopupView
-import com.google.android.apps.nexuslauncher.CustomAppPredictor
 import com.google.android.apps.nexuslauncher.CustomIconUtils
 import org.json.JSONArray
 import org.json.JSONObject
@@ -393,7 +392,6 @@ fun reloadIcons(context: Context, packages: Collection<PackageUserKey>) {
         val userManagerCompat = UserManagerCompat.getInstance(context)
         val las = LauncherAppState.getInstance(context)
         val model = las.model
-        val launcher = las.launcher
 
         for (user in userManagerCompat.userProfiles) {
             model.onPackagesReload(user)
@@ -402,11 +400,6 @@ fun reloadIcons(context: Context, packages: Collection<PackageUserKey>) {
         val shortcutManager = DeepShortcutManager.getInstance(context)
         packages.forEach {
             CustomIconUtils.reloadIcon(shortcutManager, model, it.mUser, it.mPackageName)
-        }
-        if (launcher != null) {
-            runOnMainThread {
-                (launcher.userEventDispatcher as CustomAppPredictor).uiManager.onPredictionsUpdated()
-            }
         }
     }
 }

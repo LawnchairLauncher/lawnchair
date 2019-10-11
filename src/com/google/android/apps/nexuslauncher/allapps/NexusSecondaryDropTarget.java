@@ -4,14 +4,11 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
-import ch.deletescape.lawnchair.predictions.LawnchairEventPredictor;
-import ch.deletescape.lawnchair.sesame.Sesame;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.SecondaryDropTarget;
 import com.android.launcher3.logging.LoggerUtils;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
-import com.android.launcher3.util.ComponentKey;
 
 public class NexusSecondaryDropTarget extends SecondaryDropTarget {
 

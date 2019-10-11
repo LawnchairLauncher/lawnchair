@@ -41,6 +41,7 @@ import ch.deletescape.lawnchair.gestures.BlankGestureHandler;
 import ch.deletescape.lawnchair.gestures.GestureHandler;
 import ch.deletescape.lawnchair.gestures.ui.LauncherGesturePreference;
 import ch.deletescape.lawnchair.override.CustomInfoProvider;
+import ch.deletescape.lawnchair.predictions.LawnchairAppPredictor;
 import ch.deletescape.lawnchair.preferences.MultiSelectTabPreference;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.FolderInfo;
@@ -248,7 +249,7 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
             }
 
             if (mPrefHidePredictions != null) {
-                mPrefHidePredictions.setChecked(CustomAppPredictor.isHiddenApp(context, mKey));
+                mPrefHidePredictions.setChecked(LawnchairAppPredictor.isHiddenApp(context, mKey));
                 mPrefHidePredictions.setOnPreferenceChangeListener(this);
             }
 
@@ -361,7 +362,7 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
                     CustomAppFilter.setComponentNameState(launcher, mKey, enabled);
                     break;
                 case PREF_HIDE_FROM_PREDICTIONS:
-                    CustomAppPredictor.setComponentNameState(launcher, mKey, enabled);
+                    LawnchairAppPredictor.setComponentNameState(launcher, mKey, enabled);
             }
             return true;
         }

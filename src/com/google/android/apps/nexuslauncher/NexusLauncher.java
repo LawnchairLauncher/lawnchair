@@ -9,12 +9,9 @@ import android.view.View;
 import androidx.core.graphics.ColorUtils;
 import ch.deletescape.lawnchair.settings.ui.SettingsActivity;
 import com.android.launcher3.*;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.uioverrides.WallpaperColorInfo;
 import com.android.launcher3.util.Themes;
-import com.google.android.apps.nexuslauncher.PredictionUiStateManager.Client;
 import com.google.android.apps.nexuslauncher.qsb.QsbAnimationController;
-import com.google.android.apps.nexuslauncher.reflection.ReflectionClient;
 import com.google.android.apps.nexuslauncher.search.ItemInfoUpdateReceiver;
 import com.google.android.apps.nexuslauncher.smartspace.SmartspaceController;
 import com.google.android.apps.nexuslauncher.smartspace.SmartspaceView;
@@ -67,12 +64,6 @@ public class NexusLauncher {
                 mItemInfoUpdateReceiver = new ItemInfoUpdateReceiver(mLauncher, mCallbacks);
             }
             return mItemInfoUpdateReceiver;
-        }
-
-        public void bindAllApplications(final ArrayList<AppInfo> list) {
-            getUpdateReceiver().di();
-            PredictionUiStateManager.getInstance(mLauncher).dispatchOnChange();
-            mLauncher.getUserEventDispatcher().updatePredictions();
         }
 
         public void dump(final String s, final FileDescriptor fileDescriptor, final PrintWriter printWriter, final String[] array) {

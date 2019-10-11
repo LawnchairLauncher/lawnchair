@@ -36,11 +36,11 @@ import com.android.launcher3.Utilities.makeComponentKey
 import com.android.launcher3.appprediction.PredictionUiStateManager
 import com.android.launcher3.model.AppLaunchTracker.CONTAINER_ALL_APPS
 import com.android.launcher3.util.ComponentKey
-import com.google.android.apps.nexuslauncher.CustomAppPredictor.isHiddenApp
 import java.util.concurrent.TimeUnit
 
 import com.android.launcher3.appprediction.PredictionUiStateManager.Client.HOME
 import com.android.launcher3.appprediction.PredictionUiStateManager.Client.OVERVIEW
+import java.util.HashSet
 
 open class LawnchairAppPredictor(
         private val context: Context, count: Int,
@@ -69,8 +69,7 @@ open class LawnchairAppPredictor(
                 updatePredictions()
                 if (value != 0L) {
                     // Ensure temporary predictions get removed again after
-                    handler.postDelayed(this::updatePredictions,
-                                        LawnchairEventPredictor.DURATION_RECENTLY)
+                    handler.postDelayed(this::updatePredictions, DURATION_RECENTLY)
                 }
             }
         }
@@ -78,7 +77,7 @@ open class LawnchairAppPredictor(
      * Whether headphones have just been plugged in / connected (in the last two minutes)
      * TODO: Is two minutes appropriate or do we want to increase this?
      */
-    private val phonesJustConnected get() = phonesConnectedAt > 0 && SystemClock.uptimeMillis() in phonesConnectedAt until phonesConnectedAt + LawnchairEventPredictor.DURATION_RECENTLY
+    private val phonesJustConnected get() = phonesConnectedAt > 0 && SystemClock.uptimeMillis() in phonesConnectedAt until phonesConnectedAt + DURATION_RECENTLY
     /**
      * Whether or not the current app launch is relevant for headphone suggestions or not
      */
@@ -292,5 +291,33 @@ open class LawnchairAppPredictor(
                         "com.microsoft.office.word", "com.google.android.apps.docs",
                         "com.google.android.keep", "com.google.android.apps.plus",
                         "com.google.android.talk")
+
+
+        @JvmStatic
+        fun isHiddenApp(context: Context, key: ComponentKey): Boolean {
+            return getHiddenApps(context).contains(key.toString())
+        }
+
+        private // This can't be null anyway
+        fun getHiddenApps(context: Context): MutableSet<String> {
+            return HashSet(Utilities.getLawnchairPrefs(context).hiddenPredictionAppSet)
+        }
+
+        private fun setHiddenApps(context: Context, hiddenApps: Set<String>) {
+            Utilities.getLawnchairPrefs(context).hiddenPredictionAppSet = hiddenApps
+        }
+
+        @JvmStatic
+        fun setComponentNameState(context: Context, key: ComponentKey, hidden: Boolean) {
+            val comp = key.toString()
+            val hiddenApps = getHiddenApps(context)
+            while (hiddenApps.contains(comp)) {
+                hiddenApps.remove(comp)
+            }
+            if (hidden) {
+                hiddenApps.add(comp)
+            }
+            setHiddenApps(context, hiddenApps)
+        }
     }
 }
