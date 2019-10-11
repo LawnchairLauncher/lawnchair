@@ -86,7 +86,7 @@
     <string name="allow_rotation_title" msgid="7728578836261442095">"Cho phép xoay Màn hình chính"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Khi xoay điện thoại"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"Dấu chấm thông báo"</string>
-    <string name="notification_dots_desc_on" msgid="1679848116452218908">"Bật"</string>
+    <string name="notification_dots_desc_on" msgid="1679848116452218908">"Đang bật"</string>
     <string name="notification_dots_desc_off" msgid="1760796511504341095">"Tắt"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"Cần quyền truy cập thông báo"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Để hiển thị Dấu chấm thông báo, hãy bật thông báo ứng dụng cho <xliff:g id="NAME">%1$s</xliff:g>"</string>
