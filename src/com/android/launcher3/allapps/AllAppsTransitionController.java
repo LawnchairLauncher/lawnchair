@@ -18,9 +18,11 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.util.FloatProperty;
 import android.util.Log;
+import android.view.View;
 import android.view.animation.Interpolator;
 import androidx.annotation.NonNull;
 import ch.deletescape.lawnchair.LawnchairUtilsKt;
+import ch.deletescape.lawnchair.allapps.BlurQsbLayout;
 import ch.deletescape.lawnchair.colors.ColorEngine;
 import ch.deletescape.lawnchair.colors.ColorEngine.ResolveInfo;
 import ch.deletescape.lawnchair.colors.ColorEngine.Resolvers;
@@ -244,6 +246,8 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
     public void setupViews(AllAppsContainerView appsView) {
         mAppsView = appsView;
         mScrimView = mLauncher.findViewById(R.id.scrim_view);
+
+        ((BlurQsbLayout) mAppsView.getSearchView()).setScrimView((BlurScrimView) mScrimView);
     }
 
     /**
@@ -296,6 +300,10 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
     public void setOverlayScroll(float scroll) {
         if (mScrimView instanceof BlurScrimView) {
             ((BlurScrimView) mScrimView).setOverlayScroll(scroll);
+        }
+        View searchView = mAppsView.getSearchView();
+        if (searchView instanceof BlurQsbLayout) {
+            ((BlurQsbLayout) searchView).setOverlayScroll(scroll);
         }
     }
 }

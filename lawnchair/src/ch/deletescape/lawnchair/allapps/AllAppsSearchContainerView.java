@@ -94,4 +94,10 @@ public class AllAppsSearchContainerView extends AllAppsContainerView
             invalidate();
         }
     }
+
+    @Override
+    public void setTranslationY(float translationY) {
+        super.setTranslationY(translationY);
+        ((BlurQsbLayout) getSearchView()).invalidateBlur();
+    }
 }

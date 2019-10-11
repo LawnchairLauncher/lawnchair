@@ -69,7 +69,7 @@ public class ShelfScrimView extends ScrimView implements NavigationModeChangeLis
     protected int mEndAlpha;
     protected float mRadius;
     protected int mMaxScrimAlpha;
-    private final Paint mPaint;
+    protected final Paint mPaint;
 
     // Mid point where the alpha changes
     protected int mMidAlpha;

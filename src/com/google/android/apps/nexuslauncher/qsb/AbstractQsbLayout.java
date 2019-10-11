@@ -39,6 +39,7 @@ import android.view.View.OnLongClickListener;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import ch.deletescape.lawnchair.colors.ColorEngine;
@@ -307,9 +308,14 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
     }
 
     public void draw(Canvas canvas) {
-        int i;
         ensureHotseatShadowBitmap();
         clearMainPillBg(canvas);
+        drawQsb(canvas);
+        super.draw(canvas);
+    }
+
+    protected void drawQsb(@NonNull Canvas canvas) {
+        int i;
         drawMainPill(canvas);
         if (this.mUseTwoBubbles) {
             int paddingLeft;
@@ -351,7 +357,6 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
             }
             canvas.drawRoundRect(i + i2, paddingTop2 + i2, paddingLeft3 - i2, (paddingBottom - i2) + 1, f, f, mMicStrokePaint);
         }
-        super.draw(canvas);
     }
 
     private void drawMainPill(Canvas canvas) {

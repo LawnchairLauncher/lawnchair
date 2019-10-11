@@ -389,7 +389,8 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         offsetTopAndBottom((int) Dy - containerTopMargin);
     }
 
-    public void draw(Canvas canvas) {
+    @Override
+    protected void drawQsb(@NonNull Canvas canvas) {
         if (this.mShadowAlpha > 0) {
             if (this.Dv == null) {
                 this.Dv = createShadowBitmap(
@@ -401,7 +402,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
             a(this.Dv, canvas);
             this.mShadowHelper.paint.setAlpha(255);
         }
-        super.draw(canvas);
+        super.drawQsb(canvas);
     }
 
     final void setShadowAlpha(int i) {

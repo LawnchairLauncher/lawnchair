@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.apps.nexuslauncher.qsb.AllAppsQsbLayout
+<ch.deletescape.lawnchair.allapps.BlurQsbLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/search_container_all_apps"
     android:layout_width="match_parent"
@@ -50,4 +50,4 @@
     </FrameLayout>
 
     <include layout="@layout/qsb_hint" />
-</com.google.android.apps.nexuslauncher.qsb.AllAppsQsbLayout>
+</ch.deletescape.lawnchair.allapps.BlurQsbLayout>
