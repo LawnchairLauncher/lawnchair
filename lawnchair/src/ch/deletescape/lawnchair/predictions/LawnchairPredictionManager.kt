@@ -19,15 +19,44 @@
 
 package ch.deletescape.lawnchair.predictions
 
+import android.content.ComponentName
 import android.content.Context
+import android.content.res.Resources
 import android.os.Bundle
+import android.text.TextUtils
 import ch.deletescape.lawnchair.util.LawnchairSingletonHolder
+import com.android.launcher3.Utilities
 import com.android.launcher3.appprediction.PredictionUiStateManager
+import com.android.launcher3.util.PackageManagerHelper
 
 class LawnchairPredictionManager(private val context: Context) {
 
+    private val lawnchairAppPredictor by lazy {
+        LawnchairAppPredictor(context, 12, null) }
+
     fun createPredictor(client: PredictionUiStateManager.Client, count: Int, extras: Bundle?): AppPredictorCompat {
-        return PlatformAppPredictor(context, client, count, extras)
+        return if (usePlatformPredictor()) {
+            PlatformAppPredictor(context, client, count, extras)
+        } else {
+            lawnchairAppPredictor
+        }
+    }
+
+    private fun usePlatformPredictor(): Boolean {
+        if (!Utilities.ATLEAST_Q) {
+            return false
+        }
+        val predictorService = getPredictorService() ?: return false
+        return PackageManagerHelper.isAppEnabled(context.packageManager, predictorService.packageName, 0)
+    }
+
+    private fun getPredictorService(): ComponentName? {
+        val res = Resources.getSystem()
+        val id = res.getIdentifier("config_defaultAppPredictionService", "string", "android")
+        if (id == 0) return null
+        val string = res.getString(id)
+        if (TextUtils.isEmpty(string)) return null
+        return ComponentName.unflattenFromString(string)
     }
 
     companion object : LawnchairSingletonHolder<LawnchairPredictionManager>(::LawnchairPredictionManager)

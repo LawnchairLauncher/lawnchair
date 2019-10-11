@@ -1168,6 +1168,10 @@ public final class Utilities {
             componentName = ComponentName.unflattenFromString(componentKeyStr);
             user = Process.myUserHandle();
         }
-        return new ComponentKey(componentName, user);
+        try {
+            return new ComponentKey(componentName, user);
+        } catch (NullPointerException e) {
+            throw new NullPointerException("Trying to create invalid component key: " + componentKeyStr);
+        }
     }
 }

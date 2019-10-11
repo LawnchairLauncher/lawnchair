@@ -258,7 +258,7 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
         setHiddenApps(context, hiddenApps);
     }
 
-    protected static boolean isHiddenApp(Context context, ComponentKey key) {
+    public static boolean isHiddenApp(Context context, ComponentKey key) {
         return getHiddenApps(context).contains(key.toString());
     }
 
