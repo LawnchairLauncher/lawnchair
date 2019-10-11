@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
 import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
@@ -17,8 +18,10 @@ import android.view.View;
 import ch.deletescape.lawnchair.FeedBridge;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
+import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.icons.GraphicsUtils;
+import com.android.launcher3.icons.ShadowGenerator;
 import com.google.android.apps.nexuslauncher.smartspace.nano.SmartspaceProto.b;
 import com.google.android.apps.nexuslauncher.smartspace.nano.SmartspaceProto.c;
 import com.google.android.apps.nexuslauncher.smartspace.nano.SmartspaceProto.e;
@@ -63,15 +66,11 @@ public class SmartspaceCard {
                         BitmapFactory.decodeByteArray(iVar.dd, 0, iVar.dd.length, null);
 
                 if (bitmap != null) {
-                    // TODO: implement this
-//                    bitmap = ShadowGenerator.getInstance(context).recreateIcon(
-//                            bitmap,
-//                            false,
-//                            new BlurMaskFilter(
-//                                    (float) Utilities.pxFromDp(3.0f, context.getResources().getDisplayMetrics()),
-//                                    BlurMaskFilter.Blur.NORMAL),
-//                            20,
-//                            55);
+                    ShadowGenerator shadowGenerator = new ShadowGenerator(
+                            ResourceUtils.pxFromDp(48, context.getResources().getDisplayMetrics()));
+                    Bitmap newBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Config.ARGB_8888);
+                    shadowGenerator.recreateIcon(bitmap, new Canvas(newBitmap));
+                    bitmap = newBitmap;
                 }
 
                 return new SmartspaceCard(context, iVar.de, parseUri, z, bitmap, iVar.dc, iVar.df, iVar.dh, iVar.dg);
