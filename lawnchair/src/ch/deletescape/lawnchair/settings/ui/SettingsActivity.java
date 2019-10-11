@@ -787,6 +787,9 @@ public class SettingsActivity extends SettingsBaseActivity implements
         public boolean onPreferenceChange(Preference preference, Object newValue) {
             switch (preference.getKey()) {
                 case SHOW_PREDICTIONS_PREF:
+                    if ((boolean) newValue) {
+                        return true;
+                    }
                     SuggestionConfirmationFragment confirmationFragment = new SuggestionConfirmationFragment();
                     confirmationFragment.setTargetFragment(this, 0);
                     confirmationFragment.show(getFragmentManager(), preference.getKey());
