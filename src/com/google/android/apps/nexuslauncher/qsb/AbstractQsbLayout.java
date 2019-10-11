@@ -601,9 +601,14 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
                 loadPreferences(sharedPreferences);
         }
         if (key.equals("pref_searchbarRadius")) {
-            mAllAppsShadowBitmap = null;
             loadPreferences(sharedPreferences);
         }
+    }
+
+    private void clearBitmaps() {
+        mAllAppsShadowBitmap = null;
+        mHotseatShadowBitmap = null;
+        mClearBitmap = null;
     }
 
     @Override
@@ -624,6 +629,8 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
             mMicIconView.setImageDrawable(getMicIcon());
             mUseTwoBubbles = useTwoBubbles();
             mRadius = Utilities.getLawnchairPrefs(getContext()).getSearchBarRadius();
+            clearBitmaps();
+            dH();
             invalidate();
         });
     }
