@@ -146,14 +146,14 @@
     <string name="about_role_dev_mod">开发者 / 管理员</string>
     <string name="about_role_designer">设计师</string>
     <string name="about_role_ui_ux_designer">UI/UX 设计</string>
-    <string name="about_role_special_snowflake">社交媒体/公关 &amp; OEM 关系</string>
+    <string name="about_role_special_snowflake">社交媒体 / 公关 &amp; OEM 关系</string>
     <string name="about_role_mod_support">其他管理和支持</string>
     <string name="about_role_family_member">团队成员</string>
     <string name="about_role_magisk_maintainer">Magisk 模块维护者</string>
     <string name="about_bio_deletescape">Android 开发者及爱好者，喜欢玩梗 (其实有点过火了)。Lawnchair 项目创始人。</string>
     <string name="about_bio_recoded">温和的程序员和图形设计师。</string>
     <string name="about_bio_josh">独立图像设计师。</string>
-    <string name="about_bio_chris">拥有创造性思维的影响者、内容创造者。社交媒体和公关总监。让我们在@lawnchairapp 畅游✨</string>
+    <string name="about_bio_chris">年轻有为，做一些设计和社交媒体运营的事情。让我们在 @lawnchairapp 畅游✨</string>
     <string name="about_bio_msfjarvis">HalogenOS 的核心开发者和 Substratum 的应用程序开发者。</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">模拟启动器崩溃</string>
@@ -176,7 +176,7 @@
     <string name="action_open_app_select_app">选择应用</string>
     <string name="action_none">无操作</string>
     <string name="action_despacito">播放 YouTube Rewind 2018 (高能预警)</string>
-    <string name="gesture_press_home">主页键</string>
+    <string name="gesture_press_home">Home 键</string>
     <string name="gesture_press_back">返回键</string>
     <string name="gesture_double_tap">双击</string>
     <string name="gesture_long_press">触摸并按住</string>
@@ -232,7 +232,7 @@
     <string name="pref_open_source_licenses_title">许可</string>
     <string name="pref_legacy_treatment_title">创建自适应图标</string>
     <string name="pref_legacy_treatment_summary">自动为所有应用创建自适应图标</string>
-    <string name="dt2s_admin_hint">要使用双击锁定，请先给予管理员权限</string>
+    <string name="dt2s_admin_hint">要使用双击锁定，请先授予设备管理员权限</string>
     <string name="dt2s_admin_warning">双击锁定将会被禁用</string>
     <string name="icon_pack_applied_toast">已应用 %s 项</string>
     <string name="color_system_accent">系统强调色</string>
@@ -251,9 +251,9 @@
     <string name="swipe_up_to_switch_apps_title">向上滑动以切换应用</string>
     <string name="swipe_left_to_go_back_title">向左滑动以返回</string>
     <string name="pref_category_nav_swipe_up_gestures">上滑操作</string>
-    <string name="gesture_nav_swipe_up_left">从左边</string>
+    <string name="gesture_nav_swipe_up_left">从左侧</string>
     <string name="gesture_nav_swipe_up_center">从中心</string>
-    <string name="gesture_nav_swipe_up_right">从右边</string>
+    <string name="gesture_nav_swipe_up_right">从右侧</string>
     <string name="action_switch_apps">切换应用</string>
     <string name="pref_global_search_provider">搜索引擎</string>
     <string name="searchbar_appearance_title">外观</string>
@@ -265,7 +265,7 @@
     <string name="search_provider_baidu">百度</string>
     <string name="search_provider_appsearch">应用搜索</string>
     <string name="search_provider_search_lite">搜索 Lite</string>
-    <string name="search_provider_cool_search">酷搜</string>
+    <string name="search_provider_cool_search">酷查</string>
     <string name="recent_task_option_force_stop">强行停止</string>
     <string name="pref_icon_packs">图标包</string>
     <string name="drag_to_enable_packs">拖动至上方以启用</string>
@@ -286,7 +286,7 @@
     <string name="pref_drawer_padding">行高</string>
     <string name="pref_drawer_columns">列数</string>
     <string name="pref_prediction_count">建议数量</string>
-    <string name="pref_mutliline_labels">多行应用名称</string>
+    <string name="pref_mutliline_labels">应用名称多行显示</string>
     <string name="lawnchair_actions">动作</string>
     <string name="theme_auto">跟随壁纸</string>
     <string name="theme_auto_night_mode">跟随系统主题</string>
@@ -319,7 +319,7 @@
     <string name="suggestion_pref_screen_title">建议</string>
     <string name="title_app_suggestions">应用程序</string>
     <string name="title_app_suggestions_in_search">应用建议</string>
-    <string name="summary_app_suggestions">最近使用的应用</string>
+    <string name="summary_app_suggestions">最近使用过的应用</string>
     <string name="summary_app_suggestions_lawnstep">在最近应用屏幕和应用抽屉内</string>
     <string name="app_actions_pref_title">动作</string>
     <string name="app_actions_pref_title_in_search">动作建议</string>
@@ -388,21 +388,21 @@
     <string name="search_provider_edge">Edge</string>
     <string name="weather_provider_oneplus_weather">一加天气</string>
     <string name="overlap_placement">重叠放置</string>
-    <string name="overlap_placement_summary">允许图标和小部件相互重叠。</string>
-    <string name="units_rakine">兰金温标</string>
-    <string name="units_newton">牛顿温标</string>
-    <string name="units_delisle">德利尔温标</string>
-    <string name="units_reaumur">列氏温标</string>
-    <string name="units_romer">罗氏温标</string>
-    <string name="owm_get_your_own_key">请访问 api.openweathermap.org 获取您自己的 API 密钥</string>
+    <string name="overlap_placement_summary">允许图标和微件相互重叠。</string>
+    <string name="units_rakine">兰金</string>
+    <string name="units_newton">牛顿</string>
+    <string name="units_delisle">德利尔</string>
+    <string name="units_reaumur">列氏度</string>
+    <string name="units_romer">兰氏温度</string>
+    <string name="owm_get_your_own_key">请访问 api.openweathermap.org 获取自己的 API 密钥</string>
     <string name="pref_smartspace_time_above">显示大号时钟</string>
-    <string name="pref_smartspace_time_above_summary">小部件上方显示时钟</string>
+    <string name="pref_smartspace_time_above_summary">微件上方显示时钟</string>
     <string name="pref_fonts_title">字体</string>
     <string name="pref_fonts_summary">更改各元素的字体</string>
     <string name="pref_fonts_global_font">全局字体</string>
     <string name="pref_fonts_change_global_font">更改</string>
     <string name="pref_fonts_home_icons">应用及文件夹名称</string>
-    <string name="pref_fonts_home_smartspace">速览小部件</string>
+    <string name="pref_fonts_home_smartspace">速览微件</string>
     <string name="pref_fonts_home_shortcuts">快捷方式气泡</string>
     <string name="pref_fonts_category_drawer">抽屉</string>
     <string name="pref_fonts_drawer_icons">应用程序名称</string>
@@ -425,7 +425,7 @@
     <string name="icon_text_scale_pref_title">文字大小</string>
     <string name="text_color">文字颜色</string>
     <string name="background_color">背景色</string>
-    <string name="pref_notification_count_title">显示通知数量</string>
+    <string name="pref_notification_count_title">显示通知数</string>
     <string name="pref_notification_count_summary">在通知圆点内显示通知数量</string>
     <string name="pref_center_wallpaper">始终居中壁纸</string>
     <string name="pref_center_wallpaper_summary">这将禁用壁纸滚动效果</string>
@@ -461,45 +461,45 @@
     <string name="open_image_picker">打开图片选择器</string>
     <string name="import_icon">导入图标</string>
     <string name="import_as_adaptive">作为自适应图标</string>
-    <string name="bugreport_channel_name">Bug 报告</string>
-    <string name="status_channel_name">Bug 反馈上传状态</string>
+    <string name="bugreport_channel_name">错误报告</string>
+    <string name="status_channel_name">错误报告上传状态</string>
     <string name="bugreport_group_summary">%d 份新报告</string>
-    <string name="bugreport_group_summary_multiple">多个新反馈</string>
-    <string name="dogbin_uploading">正在上传</string>
+    <string name="bugreport_group_summary_multiple">多个新的错误报告</string>
+    <string name="dogbin_uploading">上传中…</string>
     <string name="action_dogbin_upload">上传到 Dogbin</string>
     <string name="action_dogbin_upload_error">上传失败</string>
     <string name="action_dogbin_copy_link">复制链接</string>
-    <string name="lawnchair_bug_report">Lawnchair Bug 反馈</string>
+    <string name="lawnchair_bug_report">Lawnchair 错误报告</string>
     <string name="copied_toast">已复制</string>
     <string name="action_copy">复制</string>
     <string name="action_copy_link">复制链接</string>
     <string name="action_share">分享</string>
     <string name="animation_type_title">应用开启动画</string>
     <string name="animation_type_default">默认</string>
-    <string name="animation_type_pie">Pie</string>
+    <string name="animation_type_pie">Android Pie</string>
     <string name="animation_type_pie_like">类似 Android Pie</string>
     <string name="animation_type_reveal">揭开</string>
-    <string name="animation_type_slide_up">向上滑动</string>
+    <string name="animation_type_slide_up">上滑</string>
     <string name="animation_type_scale_up">放大</string>
     <string name="animation_type_blink">闪烁</string>
     <string name="animation_type_fade">淡入淡出</string>
-    <string name="permission_iplocate">允许访问基于网络的粗略位置？</string>
+    <string name="permission_iplocate">允许获取基于网络的粗略位置？</string>
     <string name="permission_iplocate_twilight_explanation">这样可以在不必知道确切位置的情况下对白昼进行更准确的日间计算。</string>
     <string name="pref_appcategorization_flowerpot_title">分类</string>
     <string name="pref_appcategorization_flowerpot_summary">根据元数据自动选择应用。</string>
     <string name="select_tab_type">标签页类型</string>
     <string name="tab_type_custom">自定义标签页</string>
-    <string name="tab_type_custom_desc">手动选择此标签页的应用。</string>
+    <string name="tab_type_custom_desc">手动为此标签页选择应用。</string>
     <string name="tab_type_smart">智能标签页</string>
     <string name="categorization">分类</string>
     <string name="folder_cover_mode">封面模式</string>
-    <string name="folder_cover_mode_desc">单击开启第一个应用，向上滑动开启文件夹</string>
+    <string name="folder_cover_mode_desc">单击开启第一个应用，向上滑动打开文件夹</string>
     <string name="pref_smartspace_event_providers">事件来源</string>
     <string name="event_provider_now_playing">正在播放</string>
     <string name="battery_status">电池状态</string>
-    <string name="battery_charging">充电中</string>
+    <string name="battery_charging">正在充电</string>
     <string name="battery_full">已充满</string>
-    <string name="battery_low">低电量</string>
+    <string name="battery_low">电量低</string>
     <string name="event_provider_unread_notifications">未读通知</string>
     <string name="event_provider_missing_notification_access">若要使用 <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>，请为 <xliff:g example="My App" id="name">%2$s</xliff:g> 开启应用通知</string>
     <string name="event_provider_missing_notification_dots">要使用 <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>，请开启通知圆点</string>
@@ -510,18 +510,18 @@
         <item>早上好！</item>
         <item>多么美好的一天！</item>
         <item>有没有看看外面的风光呢？</item>
-        <item>祝您生活愉快！</item>
+        <item>享受美好的一天！</item>
     </string-array>
     <string-array name="greetings_evening">
-        <item>晚上好！</item>
-        <item>晚安！</item>
+        <item>今天过得怎样？</item>
+        <item>今天都忙什么了？</item>
     </string-array>
     <string-array name="greetings_night">
         <item>晚上好！</item>
         <item>晚安！</item>
         <item>明天见！</item>
-        <item>祝您好梦！</item>
-        <item>不要睡得太晚了哦</item>
+        <item>祝你好梦！</item>
+        <item>不要睡得太晚了哦～</item>
     </string-array>
     <string name="onbording_settings_title">设置 %s</string>
     <string name="onbording_settings_summary">长按你的主屏幕</string>
@@ -539,7 +539,7 @@
     <string name="button_organize_screens">整理屏幕</string>
     <string name="weather_icons_default">默认</string>
     <string name="pref_weather_icon_pack">天气图标</string>
-    <string name="weather_icon_packs_not_supported">您当前的天气提供商不支持此功能</string>
+    <string name="weather_icon_packs_not_supported">当前的天气信息提供商不支持此功能</string>
     <string name="lawnchair_settings">桌面设置</string>
     <string name="customnavbar_install">点击安装自定义导航栏</string>
     <string name="customnavbar_back_hiding">返回键隐藏</string>
