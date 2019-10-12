@@ -2,6 +2,7 @@ package ch.deletescape.lawnchair.globalsearch
 
 import android.content.Context
 import androidx.appcompat.view.ContextThemeWrapper
+import ch.deletescape.lawnchair.LawnchairConfig
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.ensureOnMainThread
 import ch.deletescape.lawnchair.globalsearch.providers.*
@@ -52,21 +53,30 @@ class SearchProviderController(private val context: Context) : ColorEngine.OnCol
         get() {
             val curr = prefs.searchProvider
             if (cache == null || cached != curr) {
-                cache = null
-                try {
-                    val constructor = Class.forName(prefs.searchProvider).getConstructor(Context::class.java)
-                    val themedContext = ContextThemeWrapper(context, themeRes)
-                    val prov = constructor.newInstance(themedContext) as SearchProvider
-                    if (prov.isAvailable) {
-                        cache = prov
-                    }
-                } catch (ignored: Exception) { }
-                if (cache == null) cache = GoogleSearchProvider(context)
+                cache = createProvider(prefs.searchProvider) {
+                    val lcConfig = LawnchairConfig.getInstance(context)
+                    createProvider(lcConfig.defaultSearchProvider) { AppSearchSearchProvider(context) }
+                }
                 cached = cache!!::class.java.name
+                if (prefs.searchProvider != cached) {
+                    prefs.searchProvider = cached
+                }
                 notifyProviderChanged()
             }
             return cache!!
         }
+
+    private fun createProvider(providerName: String, fallback: () -> SearchProvider): SearchProvider {
+        try {
+            val constructor = Class.forName(providerName).getConstructor(Context::class.java)
+            val themedContext = ContextThemeWrapper(context, themeRes)
+            val prov = constructor.newInstance(themedContext) as SearchProvider
+            if (prov.isAvailable) {
+                return prov
+            }
+        } catch (ignored: Exception) { }
+        return fallback()
+    }
 
     override fun onColorChange(resolveInfo: ColorEngine.ResolveInfo) {
         if (resolveInfo.key == ColorEngine.Resolvers.ACCENT) {
