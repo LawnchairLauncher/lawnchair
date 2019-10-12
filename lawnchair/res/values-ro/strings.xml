@@ -322,6 +322,7 @@
     <string name="app_actions_pref_title">Acțiuni</string>
     <string name="app_actions_pref_title_in_search">Sugestii de acțiuni</string>
     <string name="app_actions_pref_desc">Scurtături pentru ecranele deschise frecvent</string>
+    <string name="app_actions_reset_pref_title">Resetează acțiunile ascunse</string>
     <string name="change_default_home">Setează ca ecranul de start</string>
     <string name="recent_task_option_popup_window">Fereastra de dialog</string>
     <string name="feed_theme_pref_title">Culoarea fundalului</string>
@@ -516,6 +517,13 @@
         <item>Noapte bună!</item>
         <item>Somn ușor!</item>
     </string-array>
+    <string-array name="greetings_night">
+        <item>Noapte bună!</item>
+        <item>Somn ușor!</item>
+        <item>See you tomorrow!</item>
+        <item>Sweet dreams!</item>
+        <item>Don\'t stay up too long</item>
+    </string-array>
     <string name="onbording_settings_title">Setare %s</string>
     <string name="onbording_settings_summary">Apasă lung pe ecranul principal</string>
     <string name="onboarding_swipe_up">Glisați în sus pentru a vedea toate aplicațiile</string>
@@ -534,4 +542,10 @@
     <string name="pref_weather_icon_pack">Pictograme meteo</string>
     <string name="weather_icon_packs_not_supported">Nesuportat de către sursa meteo curentă</string>
     <string name="lawnchair_settings">Setări Lawnchair</string>
+    <string name="customnavbar_install">Apasă pentru a instala Custom Navigation Bar</string>
+    <string name="customnavbar_back_hiding_desc">Ascunde butonul înapoi când este necesar</string>
+    <string name="icon_shape_top_left">Sus stânga</string>
+    <string name="icon_shape_top_right">Sus dreapta</string>
+    <string name="smartspace_add_to_home">Adaugă la ecranul de pornire</string>
+    <string name="pref_hide_statusbar_clock">Ascunde ceasul din starea bării</string>
 </resources>
