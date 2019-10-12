@@ -5,16 +5,18 @@ import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import android.content.Context;
 import android.os.Bundle;
 
-import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.testing.TestInformationHandler;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.uioverrides.states.OverviewState;
 import com.android.launcher3.uioverrides.touchcontrollers.PortraitStatesTouchController;
-import com.android.launcher3.util.DefaultDisplay;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.views.RecentsView;
+import com.android.systemui.shared.recents.model.Task;
 
+import java.util.ArrayList;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 public class QuickstepTestInformationHandler extends TestInformationHandler {
 
@@ -54,10 +56,8 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
                     final int leftMargin = MAIN_EXECUTOR.submit(() ->
                             getRecentsView().getLeftGestureMargin()).get();
                     response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD, leftMargin);
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                } catch (ExecutionException | InterruptedException e) {
+                    throw new RuntimeException(e);
                 }
                 return response;
             }
@@ -67,11 +67,29 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
                     final int rightMargin = MAIN_EXECUTOR.submit(() ->
                             getRecentsView().getRightGestureMargin()).get();
                     response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD, rightMargin);
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                } catch (ExecutionException | InterruptedException e) {
+                    throw new RuntimeException(e);
                 }
+                return response;
+            }
+
+            case TestProtocol.REQUEST_RECENT_TASKS_LIST: {
+                ArrayList<String> taskBaseIntentComponents = new ArrayList<>();
+                CountDownLatch latch = new CountDownLatch(1);
+                RecentsModel.INSTANCE.get(mContext).getTasks((tasks) -> {
+                    for (Task t : tasks) {
+                        taskBaseIntentComponents.add(
+                                t.key.baseIntent.getComponent().flattenToString());
+                    }
+                    latch.countDown();
+                });
+                try {
+                    latch.await(2, TimeUnit.SECONDS);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                response.putStringArrayList(TestProtocol.TEST_INFO_RESPONSE_FIELD,
+                        taskBaseIntentComponents);
                 return response;
             }
         }

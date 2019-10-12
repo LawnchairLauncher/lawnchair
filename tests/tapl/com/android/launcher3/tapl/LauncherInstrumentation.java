@@ -64,8 +64,7 @@ import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.systemui.shared.system.QuickStepContract;
 
-import org.junit.Assert;
-
+import java.util.ArrayList;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -77,6 +76,8 @@ import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 import java.util.function.Function;
+
+import org.junit.Assert;
 
 /**
  * The main tapl object. The only object that can be explicitly constructed by the using code. It
@@ -822,8 +823,8 @@ public final class LauncherInstrumentation {
         switch (direction) {
             case UP: {
                 startX = endX = rect.centerX();
-                startY = rect.top + 1;
-                endY = rect.bottom;
+                startY = rect.top;
+                endY = rect.bottom - 1;
             }
             break;
             case DOWN: {
@@ -834,8 +835,8 @@ public final class LauncherInstrumentation {
             break;
             case LEFT: {
                 startY = endY = rect.centerY();
-                startX = rect.left + 1;
-                endX = rect.right;
+                startX = rect.left;
+                endX = rect.right - 1;
             }
             break;
             case RIGHT: {
@@ -996,5 +997,15 @@ public final class LauncherInstrumentation {
 
     public void produceViewLeak() {
         getTestInfo(TestProtocol.REQUEST_VIEW_LEAK);
+    }
+
+    public ArrayList<ComponentName> getRecentTasks() {
+        ArrayList<ComponentName> tasks = new ArrayList<>();
+        ArrayList<String> components = getTestInfo(TestProtocol.REQUEST_RECENT_TASKS_LIST)
+                .getStringArrayList(TestProtocol.TEST_INFO_RESPONSE_FIELD);
+        for (String s : components) {
+            tasks.add(ComponentName.unflattenFromString(s));
+        }
+        return tasks;
     }
 }
