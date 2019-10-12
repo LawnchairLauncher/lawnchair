@@ -4,7 +4,10 @@ import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 
+import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.testing.TestInformationHandler;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.uioverrides.states.OverviewState;
@@ -109,6 +112,11 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
 
     @Override
     protected boolean isLauncherInitialized() {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.LAUNCHER_DIDNT_INITIALIZE,
+                    "isLauncherInitialized.TouchInteractionService.isInitialized=" +
+                            TouchInteractionService.isInitialized());
+        }
         return super.isLauncherInitialized() && TouchInteractionService.isInitialized();
     }
 }

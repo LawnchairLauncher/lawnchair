@@ -20,10 +20,12 @@ import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.BaseActivity;
+import com.android.launcher3.testing.TestProtocol;
 
 import java.lang.ref.WeakReference;
 
@@ -43,7 +45,13 @@ public final class ActivityTracker<T extends BaseActivity> implements Runnable {
     }
 
     public void onActivityDestroyed(T activity) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.LAUNCHER_DIDNT_INITIALIZE, "onActivityDestroyed");
+        }
         if (mCurrentActivity.get() == activity) {
+            if (TestProtocol.sDebugTracing) {
+                Log.d(TestProtocol.LAUNCHER_DIDNT_INITIALIZE, "onActivityDestroyed: clear");
+            }
             mCurrentActivity.clear();
         }
     }
@@ -89,6 +97,10 @@ public final class ActivityTracker<T extends BaseActivity> implements Runnable {
     }
 
     public boolean handleCreate(T activity) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.LAUNCHER_DIDNT_INITIALIZE,
+                    "ActivityTracker.handleCreate " + mCurrentActivity.get() + " => " + activity);
+        }
         mCurrentActivity = new WeakReference<>(activity);
         return handleIntent(activity, activity.getIntent(), false, false);
     }
