@@ -133,6 +133,8 @@ public class FolderIcon extends FrameLayout implements FolderListener, OnResumeC
 
     public boolean isCustomIcon = false;
     private boolean mIsTextVisible = true;
+    private int mVerticalOffset = 0;
+    private boolean mHideText = false;
 
     private static final Property<FolderIcon, Float> BADGE_SCALE_PROPERTY
             = new Property<FolderIcon, Float>(Float.TYPE, "badgeScale") {
@@ -193,6 +195,10 @@ public class FolderIcon extends FrameLayout implements FolderListener, OnResumeC
             lp.topMargin = grid.iconSizePx + grid.iconDrawablePaddingPx;
         }
 
+        if(Utilities.getLawnchairPrefs(launcher).getHideAppLabels()){
+            icon.mHideText = true;
+            icon.mVerticalOffset = (grid.cellHeightPx - grid.iconSizePx) / 2;
+        }
         icon.setTag(folderInfo);
         icon.setOnClickListener(ItemClickHandler.INSTANCE);
         icon.mInfo = folderInfo;
@@ -549,6 +555,9 @@ public class FolderIcon extends FrameLayout implements FolderListener, OnResumeC
     @Override
     protected void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);
+        if(mHideText) {
+            canvas.translate(0, mVerticalOffset);
+        }
 
         if (mBackgroundIsVisible) {
             mPreviewItemManager.recomputePreviewDrawingParams();
@@ -564,6 +573,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, OnResumeC
 
         if (mFolder == null) return;
         if (mFolder.getItemCount() == 0 && !mAnimating) return;
+
 
         final int saveCount = canvas.save();
         canvas.clipPath(mBackground.getClipPath());

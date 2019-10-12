@@ -487,7 +487,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     protected void drawBadgeIfNecessary(Canvas canvas) {
         if (!mForceHideBadge && (hasBadge() || mBadgeScale > 0)) {
             getIconBounds(mTempIconBounds);
-            mTempSpaceForBadgeOffset.set((getWidth() - mIconSize) / 2, getPaddingTop());
+            mTempSpaceForBadgeOffset.set((getWidth() - mIconSize) / 2, mHideText ? (getHeight() - mIconSize) / 2 : getPaddingTop());
             final int scrollX = getScrollX();
             final int scrollY = getScrollY();
             canvas.translate(scrollX, scrollY);
@@ -516,7 +516,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     }
 
     public void getIconBounds(Rect outBounds) {
-        int top = getPaddingTop();
+        int top = mHideText ? (getHeight() - mIconSize) / 2 : getPaddingTop();
         int left = (getWidth() - mIconSize) / 2;
         int right = left + mIconSize;
         int bottom = top + mIconSize;
@@ -525,10 +525,10 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        if (mCenterVertically) {
+        if (mCenterVertically || mHideText) {
             Paint.FontMetrics fm = getPaint().getFontMetrics();
-            int cellHeightPx = mIconSize + getCompoundDrawablePadding() +
-                    (int) Math.ceil(fm.bottom - fm.top);
+            int cellHeightPx = mIconSize +
+                    (mHideText ? 0 : getCompoundDrawablePadding() + (int) Math.ceil(fm.bottom - fm.top));
             int height = MeasureSpec.getSize(heightMeasureSpec);
             setPadding(getPaddingLeft(), (height - cellHeightPx) / 2, getPaddingRight(),
                     getPaddingBottom());
