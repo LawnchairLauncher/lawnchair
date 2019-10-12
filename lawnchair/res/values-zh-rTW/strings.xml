@@ -141,7 +141,7 @@
     <string name="about_our_contributors">主要貢獻者</string>
     <string name="about_our_family">我們的大家族</string>
     <string name="about_role_lead">領導開發者</string>
-    <string name="about_role_devops">開發人員選項</string>
+    <string name="about_role_devops">DevOps</string>
     <string name="about_role_dev">開發者</string>
     <string name="about_role_dev_mod">開發者/仲裁者</string>
     <string name="about_role_designer">設計師</string>
