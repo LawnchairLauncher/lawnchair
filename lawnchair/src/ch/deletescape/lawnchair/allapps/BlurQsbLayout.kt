@@ -21,19 +21,23 @@ package ch.deletescape.lawnchair.allapps
 
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Paint
 import android.graphics.RectF
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
+import android.util.FloatProperty
 import android.view.View
-import ch.deletescape.lawnchair.LawnchairPreferences
+import android.view.animation.Interpolator
+import androidx.core.graphics.ColorUtils
+import ch.deletescape.lawnchair.*
 import ch.deletescape.lawnchair.blur.BlurDrawable
 import ch.deletescape.lawnchair.blur.BlurWallpaperProvider
-import ch.deletescape.lawnchair.isVisible
-import ch.deletescape.lawnchair.lawnchairPrefs
-import ch.deletescape.lawnchair.runOnMainThread
 import ch.deletescape.lawnchair.views.BlurScrimView
+import com.android.launcher3.Launcher
+import com.android.launcher3.LauncherState.HOTSEAT_ICONS
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
+import com.android.launcher3.anim.PropertySetter
 import com.google.android.apps.nexuslauncher.qsb.AbstractQsbLayout
 import com.google.android.apps.nexuslauncher.qsb.AllAppsQsbLayout
 
@@ -75,6 +79,16 @@ class BlurQsbLayout @JvmOverloads constructor(
     private val bubbleGap = resources.getDimensionPixelSize(R.dimen.qsb_two_bubble_gap)
     private val micWidth = resources.getDimensionPixelSize(R.dimen.qsb_mic_width)
     private val tmpRectF = RectF()
+    private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+
+    private var hotseatBgProgress = 0f
+        set(value) {
+            if (field != value) {
+                field = value
+                invalidateBlur()
+            }
+        }
+    private val hotseat by lazy { Launcher.getLauncher(context).hotseat as BlurHotseat }
 
     private fun createBlurDrawable() {
         blurDrawable = if (isVisible && BlurWallpaperProvider.isEnabled) {
@@ -134,19 +148,27 @@ class BlurQsbLayout @JvmOverloads constructor(
                 canvas.save()
                 canvas.translate(-adjustmentX, -adjustmentY)
                 draw(canvas)
-                canvas.drawRoundRect(tmpRectF, blurRadius, blurRadius, scrimView!!.shelfPaint)
+                paint.color = getBgColor()
+                canvas.drawRoundRect(tmpRectF, blurRadius, blurRadius, paint)
                 if (isBubbleUi) {
                     tmpRectF.set((if (!isRtl) right - micWidth else left).toFloat(),
                                  top, (if (isRtl) left + micWidth else right).toFloat(),
                                  bottom)
                     setBlurBounds(tmpRectF)
                     draw(canvas)
-                    canvas.drawRoundRect(tmpRectF, blurRadius, blurRadius, scrimView!!.shelfPaint)
+                    canvas.drawRoundRect(tmpRectF, blurRadius, blurRadius, paint)
                 }
                 canvas.restore()
             }
         }
         super.drawQsb(canvas)
+    }
+
+    private fun getBgColor(): Int {
+        val hotseatBgColor = hotseat.bgColor
+        val hotseatBgAlpha = hotseat.bgAlpha * hotseatBgProgress
+        val hotseatBg = ColorUtils.setAlphaComponent(hotseatBgColor, (hotseatBgAlpha * 255).toInt())
+        return ColorUtils.compositeColors(scrimView!!.shelfColor, hotseatBg)
     }
 
     fun setOverlayScroll(scroll: Float) {
@@ -167,5 +189,26 @@ class BlurQsbLayout @JvmOverloads constructor(
     override fun onValueChanged(key: String, prefs: LawnchairPreferences, force: Boolean) {
         createBlurDrawable()
         invalidateBlur()
+    }
+
+    override fun setContentVisibility(visibleElements: Int, setter: PropertySetter,
+                                      interpolator: Interpolator) {
+        super.setContentVisibility(visibleElements, setter, interpolator)
+        val hotseatVisible = (visibleElements and HOTSEAT_ICONS) != 0
+        setter.setFloat(this, HOTSEAT_BG_PROGRESS, if (hotseatVisible) 1f else 0f, interpolator)
+    }
+
+    companion object {
+
+        val HOTSEAT_BG_PROGRESS = object :
+                FloatProperty<BlurQsbLayout>("hotseatProgress") {
+            override fun setValue(qsb: BlurQsbLayout, v: Float) {
+                qsb.hotseatBgProgress = v
+            }
+
+            override fun get(qsb: BlurQsbLayout): Float? {
+                return qsb.hotseatBgProgress
+            }
+        }
     }
 }

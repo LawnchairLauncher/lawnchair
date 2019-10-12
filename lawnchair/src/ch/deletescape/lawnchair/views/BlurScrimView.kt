@@ -116,7 +116,6 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
     private val defaultEndAlpha = Color.alpha(mEndScrim)
 
     val currentBlurAlpha get() = blurDrawable?.alpha
-    val shelfPaint get() = mPaint!!
 
     private fun createBlurDrawable(): BlurDrawable? {
         blurDrawable?.let { if (isAttachedToWindow) it.stopListening() }

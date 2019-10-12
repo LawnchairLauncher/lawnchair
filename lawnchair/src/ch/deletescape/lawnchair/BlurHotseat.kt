@@ -69,12 +69,13 @@ class BlurHotseat @JvmOverloads constructor(
             field = value
             setBgColor()
         }
-    private var bgAlpha = 0f
-        set(value) {
+    var bgAlpha = 0f
+        private set(value) {
             field = value
             setBgColor()
         }
-    private var bgColor = 0
+    var bgColor = 0
+        private set
 
     private val blurDrawableCallback by lazy {
         object : Drawable.Callback {
