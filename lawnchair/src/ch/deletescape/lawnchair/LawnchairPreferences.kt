@@ -910,15 +910,10 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
         putBoolean("opa_assistant", showAssistant)
 
         // Colors
-        ColorEngine.setColor(
-                this,
-                ColorEngine.Resolvers.WORKSPACE_ICON_LABEL,
-                prefs.getInt("pref_workspaceLabelColor", Color.WHITE));
-        if (prefs.getBoolean("pref_allAppsCustomLabelColor", false)) {
-            ColorEngine.setColor(this,
-                                 ColorEngine.Resolvers.ALLAPPS_ICON_LABEL,
-                                 prefs.getInt("pref_allAppsCustomLabelColor",
-                                              0x666666 or 0xff shl 24));
+        if (prefs.contains("pref_workspaceLabelColor")) {
+            val color = prefs.getInt("pref_workspaceLabelColor", Color.WHITE)
+            ColorEngine.setColor(this, ColorEngine.Resolvers.WORKSPACE_ICON_LABEL, color)
+            ColorEngine.setColor(this, ColorEngine.Resolvers.ALLAPPS_ICON_LABEL, color)
         }
 
         // Theme
