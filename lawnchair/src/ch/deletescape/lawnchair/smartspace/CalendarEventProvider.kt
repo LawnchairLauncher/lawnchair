@@ -26,6 +26,7 @@ import android.net.Uri
 import android.provider.CalendarContract
 import android.text.TextUtils
 import android.text.format.DateFormat
+import ch.deletescape.lawnchair.runOnMainThread
 import ch.deletescape.lawnchair.smartspace.LawnchairSmartspaceController.Line
 import ch.deletescape.lawnchair.toBitmap
 import com.android.launcher3.R
@@ -53,7 +54,10 @@ class CalendarEventProvider(controller: LawnchairSmartspaceController)
     override val timeout = oneMinute
 
     override fun updateData() {
-        updateData(null, createEventCard(getNextEvent()))
+        val card = createEventCard(getNextEvent())
+        runOnMainThread {
+            updateData(null, card)
+        }
     }
 
     private fun createEventCard(event: CalendarEvent?): LawnchairSmartspaceController.CardData? {
