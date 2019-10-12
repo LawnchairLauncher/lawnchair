@@ -51,7 +51,7 @@ import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
  * A {@link QuickstepAppTransitionManagerImpl} that also implements recents transitions from
  * {@link RecentsView}.
  */
-public final class LauncherAppTransitionManagerImpl extends QuickstepAppTransitionManagerImpl {
+public class LauncherAppTransitionManagerImpl extends QuickstepAppTransitionManagerImpl {
 
     public static final int INDEX_SHELF_ANIM = 0;
     public static final int INDEX_RECENTS_FADE_ANIM = 1;

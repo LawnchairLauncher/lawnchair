@@ -158,13 +158,8 @@ public class WorkspaceStateTransitionAnimation {
         propertySetter.setFloat(scrim, SYSUI_PROGRESS, state.hasSysUiScrim ? 1 : 0, LINEAR);
 
         LawnchairBackgroundView background = LawnchairLauncher.getLauncher(mLauncher).getBackground();
-        /* TODO: implement this
         propertySetter.setFloat(background.getBlurAlphas().getProperty(ALPHA_INDEX_STATE),
-                InvertedMultiValueAlpha.VALUE,
-                state.getWorkspaceBlurAlpha(mLauncher),
-                builder.getInterpolator(ANIM_BLUR_FADE, LINEAR));
-
-         */
+                InvertedMultiValueAlpha.VALUE, state.getWorkspaceBlurAlpha(mLauncher), LINEAR);
     }
 
     public void applyChildState(LauncherState state, CellLayout cl, int childIndex) {

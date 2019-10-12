@@ -125,7 +125,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
     private static final long RADIUS_DURATION = 375;
 
     public static final int RECENTS_LAUNCH_DURATION = 336;
-    private static final int LAUNCHER_RESUME_START_DELAY = 100;
+    protected static final int LAUNCHER_RESUME_START_DELAY = 100;
     private static final int CLOSING_TRANSITION_DURATION_MS = 250;
 
     protected static final int CONTENT_ALPHA_DURATION = 217;
@@ -336,7 +336,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
      *                     False when this is called when an app is closing.
      * @param trans Array that contains the start and end translation values for the content.
      */
-    private Pair<AnimatorSet, Runnable> getLauncherContentAnimator(boolean isAppOpening,
+    protected Pair<AnimatorSet, Runnable> getLauncherContentAnimator(boolean isAppOpening,
             float[] trans) {
         AnimatorSet launcherAnimator = new AnimatorSet();
         Runnable endListener;
@@ -694,7 +694,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
     /**
      * Creates an animator that modifies Launcher as a result from {@link #getWallpaperOpenRunner}.
      */
-    private void createLauncherResumeAnimation(AnimatorSet anim) {
+    protected void createLauncherResumeAnimation(AnimatorSet anim) {
         if (mLauncher.isInState(LauncherState.ALL_APPS)) {
             Pair<AnimatorSet, Runnable> contentAnimator =
                     getLauncherContentAnimator(false /* isAppOpening */,
@@ -738,7 +738,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
         }
     }
 
-    private void resetContentView() {
+    protected void resetContentView() {
         mLauncher.getWorkspace().getPageIndicator().skipAnimationsToEnd();
         mDragLayerAlpha.setValue(1f);
         mDragLayer.setLayerType(View.LAYER_TYPE_NONE, null);
