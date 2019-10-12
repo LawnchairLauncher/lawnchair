@@ -19,7 +19,6 @@ package com.android.launcher3;
 import static android.view.accessibility.AccessibilityEvent.TYPE_VIEW_FOCUSED;
 import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED;
 import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
-
 import static com.android.launcher3.compat.AccessibilityManagerCompat.isAccessibilityEnabled;
 import static com.android.launcher3.compat.AccessibilityManagerCompat.sendCustomAccessibilityEvent;
 
@@ -52,6 +51,8 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
             TYPE_WIDGETS_FULL_SHEET,
             TYPE_ON_BOARD_POPUP,
             TYPE_DISCOVERY_BOUNCE,
+            TYPE_LISTENER,
+            TYPE_SNACKBAR,
 
             TYPE_QUICKSTEP_PREVIEW,
             TYPE_TASK_MENU,
@@ -68,26 +69,29 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
     public static final int TYPE_WIDGETS_FULL_SHEET = 1 << 4;
     public static final int TYPE_ON_BOARD_POPUP = 1 << 5;
     public static final int TYPE_DISCOVERY_BOUNCE = 1 << 6;
+    public static final int TYPE_LISTENER = 1 << 7;
+    public static final int TYPE_SNACKBAR = 1 << 8;
 
     // Popups related to quickstep UI
-    public static final int TYPE_QUICKSTEP_PREVIEW = 1 << 7;
-    public static final int TYPE_TASK_MENU = 1 << 8;
-    public static final int TYPE_OPTIONS_POPUP = 1 << 9;
+    public static final int TYPE_QUICKSTEP_PREVIEW = 1 << 9;
+    public static final int TYPE_TASK_MENU = 1 << 10;
+    public static final int TYPE_OPTIONS_POPUP = 1 << 11;
 
     // Custom popups
-    public static final int TYPE_SETTINGS_SHEET = 1 << 10;
+    public static final int TYPE_SETTINGS_SHEET = 1 << 12;
 
     public static final int TYPE_ALL = TYPE_FOLDER | TYPE_ACTION_POPUP
             | TYPE_WIDGETS_BOTTOM_SHEET | TYPE_WIDGET_RESIZE_FRAME | TYPE_WIDGETS_FULL_SHEET
             | TYPE_QUICKSTEP_PREVIEW | TYPE_ON_BOARD_POPUP | TYPE_DISCOVERY_BOUNCE | TYPE_TASK_MENU
-            | TYPE_OPTIONS_POPUP | TYPE_SETTINGS_SHEET;
+            | TYPE_OPTIONS_POPUP | TYPE_SETTINGS_SHEET | TYPE_SNACKBAR;
 
     // Type of popups which should be kept open during launcher rebind
     public static final int TYPE_REBIND_SAFE = TYPE_WIDGETS_FULL_SHEET
             | TYPE_QUICKSTEP_PREVIEW | TYPE_ON_BOARD_POPUP | TYPE_DISCOVERY_BOUNCE;
 
     // Usually we show the back button when a floating view is open. Instead, hide for these types.
-    public static final int TYPE_HIDE_BACK_BUTTON = TYPE_ON_BOARD_POPUP | TYPE_DISCOVERY_BOUNCE;
+    public static final int TYPE_HIDE_BACK_BUTTON = TYPE_ON_BOARD_POPUP | TYPE_DISCOVERY_BOUNCE
+            | TYPE_SNACKBAR;
 
     public static final int TYPE_ACCESSIBLE = TYPE_ALL & ~TYPE_DISCOVERY_BOUNCE;
 

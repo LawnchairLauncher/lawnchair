@@ -258,8 +258,11 @@
     <!-- Accessibility confirmation for item added to workspace. -->
     <string name="item_added_to_workspace">Item added to home screen</string>
 
-    <!-- Accessibility confirmation for item removed. -->
+    <!-- Accessibility confirmation for item removed. [CHAR_LIMIT=50]-->
     <string name="item_removed">Item removed</string>
+
+    <!-- Action shown in snackbar to undo item removal. [CHAR_LIMIT=20] -->
+    <string name="undo">Undo</string>
 
     <!-- Accessibility action to move an item on the workspace. [CHAR_LIMIT=30] -->
     <string name="action_move">Move item</string>

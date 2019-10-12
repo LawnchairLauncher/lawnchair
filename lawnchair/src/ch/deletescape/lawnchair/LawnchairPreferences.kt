@@ -910,15 +910,10 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
         putBoolean("opa_assistant", showAssistant)
 
         // Colors
-        ColorEngine.setColor(
-                this,
-                ColorEngine.Resolvers.WORKSPACE_ICON_LABEL,
-                prefs.getInt("pref_workspaceLabelColor", Color.WHITE));
-        if (prefs.getBoolean("pref_allAppsCustomLabelColor", false)) {
-            ColorEngine.setColor(this,
-                                 ColorEngine.Resolvers.ALLAPPS_ICON_LABEL,
-                                 prefs.getInt("pref_allAppsCustomLabelColor",
-                                              0x666666 or 0xff shl 24));
+        if (prefs.contains("pref_workspaceLabelColor")) {
+            val color = prefs.getInt("pref_workspaceLabelColor", Color.WHITE)
+            ColorEngine.setColor(this, ColorEngine.Resolvers.WORKSPACE_ICON_LABEL, color)
+            ColorEngine.setColor(this, ColorEngine.Resolvers.ALLAPPS_ICON_LABEL, color)
         }
 
         // Theme
@@ -932,7 +927,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
 
         // Gestures
         putString("pref_gesture_swipe_down",
-                  when (prefs.getInt("pref_pulldownAction", 1)) {
+                  when (Integer.parseInt(prefs.getString("pref_pulldownAction", "1"))) {
                       1 -> NotificationsOpenGestureHandler(context, null)
                       2 -> StartGlobalSearchGestureHandler(context, null)
                       3 -> StartAppSearchGestureHandler(context, null)

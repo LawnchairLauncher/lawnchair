@@ -18,7 +18,7 @@ package com.android.launcher3;
 
 import static android.content.pm.ActivityInfo.CONFIG_ORIENTATION;
 import static android.content.pm.ActivityInfo.CONFIG_SCREEN_SIZE;
-
+import static com.android.launcher3.AbstractFloatingView.TYPE_SNACKBAR;
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
@@ -48,7 +48,6 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Point;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -1653,7 +1652,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             final LauncherAppWidgetInfo widgetInfo = (LauncherAppWidgetInfo) itemInfo;
             mWorkspace.removeWorkspaceItem(v);
             if (deleteFromDb) {
-                deleteWidgetInfo(widgetInfo);
+                getModelWriter().deleteWidgetInfo(widgetInfo, getAppWidgetHost());
             }
         } else {
             return false;
@@ -1661,12 +1660,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         return true;
     }
 
-    /**
-     * Deletes the widget info and the widget id.
-     */
-    private void deleteWidgetInfo(final LauncherAppWidgetInfo widgetInfo) {
-        getModelWriter().deleteWidgetInfo(widgetInfo, getAppWidgetHost());
-    }
+
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
@@ -1925,6 +1919,17 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     }
 
     @Override
+    public void preAddApps() {
+        // If there's an undo snackbar, force it to complete to ensure empty screens are removed
+        // before trying to add new items.
+        mModelWriter.commitDelete();
+        AbstractFloatingView snackbar = AbstractFloatingView.getOpenView(this, TYPE_SNACKBAR);
+        if (snackbar != null) {
+            snackbar.post(() -> snackbar.close(true));
+        }
+    }
+
+    @Override
     public void bindAppsAdded(ArrayList<Long> newScreens, ArrayList<ItemInfo> addNotAnimated,
             ArrayList<ItemInfo> addAnimated) {
         // Add the new screens
@@ -2161,7 +2166,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             // Verify that we own the widget
             if (appWidgetInfo == null) {
                 FileLog.e(TAG, "Removing invalid widget: id=" + item.appWidgetId);
-                deleteWidgetInfo(item);
+                getModelWriter().deleteWidgetInfo(item, getAppWidgetHost());
                 return null;
             }
 
@@ -2251,7 +2256,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
      *
      * Implementation of the method from LauncherModel.Callbacks.
      */
-    public void finishBindingItems() {
+    public void finishBindingItems(int pageBoundFirst) {
         TraceHelper.beginSection("finishBindingItems");
         mWorkspace.restoreInstanceStateForRemainingPages();
 
@@ -2265,6 +2270,9 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
         InstallShortcutReceiver.disableAndFlushInstallQueue(
                 InstallShortcutReceiver.FLAG_LOADER_RUNNING, this);
+
+        // When undoing the removal of the last item on a page, return to that page.
+        mWorkspace.setCurrentPage(pageBoundFirst);
 
         TraceHelper.endSection("finishBindingItems");
     }

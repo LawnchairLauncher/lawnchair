@@ -19,8 +19,11 @@ After registering it in `ch.deletescape.lawnchair.globalsearch.SearchProviderCon
 
 ### Building
 
-Alright, I admit it, our build variants are a bit of a mess right now. Make sure to choose one of the variants prefixed `quickstepLawnchair*`
-from the "Build Variants" menu in IntelliJ. Our team is usually always on the latest stable version of IntelliJ IDEA.
+Alright, I admit it, our build variants are a bit of a mess right now. Make sure to choose one of the variants prefixed `quickstepLawnchairDev*`
+from the "Build Variants" menu in Android Studio / IntelliJ. Our team is usually always on the latest stable version of Android Studio.
+
+If you're redistributing Lawnchair, please avoid using the package name `ch.deletescape.lawnchair.plah` and `ch.deletescape.lawnchair.ci`
+as that will prevents users from updating to the official builds.
 
 -- Note to self --
 I spent a lot of time trying to figure out how to compile Lawnchair apk, and following are some points to keep in mind when trying to compile the source.

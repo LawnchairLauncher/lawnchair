@@ -34,7 +34,7 @@ import android.support.v4.graphics.ColorUtils;
 import android.util.Property;
 import android.view.View;
 
-import ch.deletescape.lawnchair.folder.FolderShape;
+import com.android.launcher3.graphics.IconShape;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
@@ -221,7 +221,7 @@ public class PreviewBackground {
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setColor(getBgColor());
 
-        FolderShape.sInstance.drawShape(canvas, getOffsetX(), getOffsetY(), getScaledRadius(), mPaint);
+        IconShape.getShape().drawShape(canvas, getOffsetX(), getOffsetY(), getScaledRadius(), mPaint);
 
         drawShadow(canvas);
     }
@@ -257,7 +257,7 @@ public class PreviewBackground {
         mPaint.setShader(null);
         if (canvas.isHardwareAccelerated()) {
             mPaint.setXfermode(mShadowPorterDuffXfermode);
-            FolderShape.sInstance.drawShape(canvas, offsetX, offsetY, getScaledRadius(), mPaint);
+            IconShape.getShape().drawShape(canvas, offsetX, offsetY, getScaledRadius(), mPaint);
             mPaint.setXfermode(null);
         }
 
@@ -300,7 +300,7 @@ public class PreviewBackground {
         mPaint.setColor(ColorUtils.setAlphaComponent(mBgColor, mStrokeAlpha));
         mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setStrokeWidth(mStrokeWidth);
-        FolderShape.sInstance.drawShape(canvas, getOffsetX() + 1, getOffsetY() + 1, getScaledRadius() - 1, mPaint);
+        IconShape.getShape().drawShape(canvas, getOffsetX() + 1, getOffsetY() + 1, getScaledRadius() - 1, mPaint);
     }
 
     public void drawLeaveBehind(Canvas canvas) {
@@ -309,7 +309,7 @@ public class PreviewBackground {
 
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setColor(Color.argb(160, 245, 245, 245));
-        FolderShape.sInstance.drawShape(canvas, getOffsetX(), getOffsetY(), getScaledRadius(), mPaint);
+        IconShape.getShape().drawShape(canvas, getOffsetX(), getOffsetY(), getScaledRadius(), mPaint);
 
         mScale = originalScale;
     }
@@ -322,7 +322,7 @@ public class PreviewBackground {
 
     public Path getClipPath() {
         mPath.reset();
-        FolderShape.sInstance.addShape(mPath, getOffsetX(), getOffsetY(), getScaledRadius());
+        IconShape.getShape().addToPath(mPath, getOffsetX(), getOffsetY(), getScaledRadius());
         return mPath;
     }
 

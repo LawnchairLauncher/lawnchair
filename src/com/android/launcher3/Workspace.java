@@ -914,7 +914,9 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
         if (!removeScreens.isEmpty()) {
             // Update the model if we have changed any screens
-            LauncherModel.updateWorkspaceScreenOrder(mLauncher, mScreenOrder);
+            mLauncher.getModelWriter().enqueueDeleteRunnable(
+                    () -> LauncherModel.updateWorkspaceScreenOrder(mLauncher, mScreenOrder));
+
         }
 
         if (pageShift >= 0) {
@@ -3008,7 +3010,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
      */
     public void onDropCompleted(final View target, final DragObject d,
             final boolean success) {
-
         if (success) {
             if (target != this && mDragInfo != null) {
                 removeWorkspaceItem(mDragInfo.cell);

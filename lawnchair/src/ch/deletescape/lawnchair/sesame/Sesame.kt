@@ -18,18 +18,14 @@
 package ch.deletescape.lawnchair.sesame
 
 import android.content.Context
-import android.graphics.Color
 import android.os.Bundle
 import ch.deletescape.lawnchair.LawnchairPreferences
 import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.dpToPx
-import ch.deletescape.lawnchair.folder.FolderShape
 import ch.deletescape.lawnchair.globalsearch.providers.SesameSearchProvider
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.util.diff.diff
-import ch.deletescape.lawnchair.util.extensions.d
 import com.android.launcher3.BuildConfig
-import com.android.launcher3.R
 import com.android.launcher3.graphics.IconShapeOverride
 import com.google.android.apps.nexuslauncher.qsb.AbstractQsbLayout
 import ninja.sesame.lib.bridge.v1.SesameFrontend

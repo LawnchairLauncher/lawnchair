@@ -50,19 +50,16 @@
     <dimen name="dashboard_tile_foreground_image_size">@dimen/dashboard_tile_image_size</dimen>
     <dimen name="dashboard_tile_foreground_image_inset">6dp</dimen>
 
-    <dimen name="snackbar_content_height">32dp</dimen>
-    <dimen name="snackbar_max_text_size">14sp</dimen>
-    <dimen name="snackbar_elevation">3dp</dimen>
-    <dimen name="snackbar_padding">8dp</dimen>
-    <dimen name="snackbar_height">48dp</dimen>
-    <dimen name="snackbar_max_margin_left_right">72dp</dimen>
-    <dimen name="snackbar_min_margin_left_right">6dp</dimen>
-    <dimen name="snackbar_margin_bottom">30dp</dimen>
-    <dimen name="snackbar_min_text_size">12sp</dimen>
     <dimen name="button_corner_radius">4dp</dimen>
     <dimen name="dialog_horizontal_padding">24dp</dimen>
 
     <dimen name="qsb_radius_square">8dp</dimen>
     <dimen name="qsb_radius_squircle">16dp</dimen>
     <dimen name="hotseat_navbar_padding">24dp</dimen>
+
+    <!-- Smartspace dimens -->
+    <dimen name="smartspaceAmbientShadowBlur">1.5dp</dimen>
+    <dimen name="smartspaceKeyShadowBlur">2dp</dimen>
+    <dimen name="smartspaceKeyShadowOffset">0.5dp</dimen>
+    <dimen name="smartspaceLetterSpacing">0.02</dimen>
 </resources>

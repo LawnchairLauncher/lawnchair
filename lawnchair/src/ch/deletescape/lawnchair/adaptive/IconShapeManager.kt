@@ -26,7 +26,7 @@ import android.graphics.drawable.AdaptiveIconDrawable
 import android.os.Handler
 import android.support.v4.graphics.PathParser
 import android.text.TextUtils
-import ch.deletescape.lawnchair.folder.FolderShape
+import com.android.launcher3.graphics.IconShape as L3IconShape
 import ch.deletescape.lawnchair.iconpack.AdaptiveIconCompat
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.runOnMainThread
@@ -115,7 +115,7 @@ class IconShapeManager(private val context: Context) {
 
             runOnMainThread {
                 AdaptiveIconCompat.resetMask()
-                FolderShape.init(context)
+                L3IconShape.init(context)
                 context.lawnchairPrefs.recreate()
             }
         }
