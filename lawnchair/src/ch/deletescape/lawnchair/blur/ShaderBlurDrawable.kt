@@ -26,11 +26,14 @@ class ShaderBlurDrawable internal constructor(
 
     private var blurAlpha = 255
     private val blurPaint = Paint(Paint.FILTER_BITMAP_FLAG or Paint.ANTI_ALIAS_FLAG)
+    private val shaderMatrix = Matrix()
+    private var blurShader: Shader? = null
     private var blurBitmap: Bitmap? = null
         set(value) {
             if (field != value) {
                 field = value
-                blurPaint.shader = value?.let { BitmapShader(it, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP) }
+                blurShader = value?.let { BitmapShader(it, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP) }
+                blurPaint.shader = blurShader
             }
         }
     private var blurOffset = 0f
@@ -84,6 +87,15 @@ class ShaderBlurDrawable internal constructor(
         blurBitmap = blurProvider.wallpaper
         setupBlurPath()
 
+        canvas.save()
+        if (blurScaleX != 0f || blurScaleY != 0f) {
+            shaderMatrix.setScale(
+                    blurScaleX, blurScaleY,
+                    blurPivotX + blurBounds.left, blurPivotY + blurBounds.top)
+            blurShader?.setLocalMatrix(shaderMatrix)
+        } else {
+            blurShader?.setLocalMatrix(null)
+        }
         canvas.translate(-blurOffset, 0f)
         if (noRadius) {
             canvas.drawRect(blurBounds.left + blurOffset, blurBounds.top,
@@ -92,7 +104,7 @@ class ShaderBlurDrawable internal constructor(
         } else {
             canvas.drawPath(blurPath, blurPaint)
         }
-        canvas.translate(blurOffset, 0f)
+        canvas.restore()
     }
 
     private fun setupBlurPath() {

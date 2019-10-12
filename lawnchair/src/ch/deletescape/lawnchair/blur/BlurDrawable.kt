@@ -29,6 +29,11 @@ abstract class BlurDrawable : Drawable(), BlurWallpaperProvider.Listener {
     open val blurRadius: Float get() = blurRadii.average
     abstract var viewOffsetX: Float
 
+    open var blurScaleX = 0f
+    open var blurScaleY = 0f
+    open var blurPivotX = 0f
+    open var blurPivotY = 0f
+
     override fun draw(canvas: Canvas) {
         draw(canvas, false)
     }

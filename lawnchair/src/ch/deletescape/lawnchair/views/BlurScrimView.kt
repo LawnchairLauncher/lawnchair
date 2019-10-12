@@ -95,11 +95,6 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
     private val provider by lazy { BlurWallpaperProvider.getInstance(context) }
     private val useFlatColor get() = mLauncher.deviceProfile.isVerticalBarLayout
     private var blurDrawable: BlurDrawable? = null
-    private val shadowHelper by lazy { NinePatchDrawHelper() }
-    private val shadowBlur by lazy { resources.getDimension(R.dimen.all_apps_scrim_blur) }
-    private var shadowBitmap = generateShadowBitmap()
-
-    private val enableShadow get() = prefs.dockShadow && !useFlatColor
 
     private val insets = Rect()
 
@@ -136,22 +131,8 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         }
     }
 
-    private fun generateShadowBitmap(): Bitmap {
-        val tmp = mRadius + shadowBlur
-        val builder = ShadowGenerator.Builder(0)
-        builder.radius = mRadius
-        builder.shadowBlur = shadowBlur
-        val round = 2 * Math.round(tmp) + 20
-        val bitmap = Bitmap.createBitmap(round, round / 2, Bitmap.Config.ARGB_8888)
-        val f = 2.0f * tmp + 20.0f - shadowBlur
-        builder.bounds.set(shadowBlur, shadowBlur, f, f)
-        builder.drawShadow(Canvas(bitmap))
-        return bitmap
-    }
-
     override fun reInitUi() {
         blurDrawable = createBlurDrawable()
-        shadowBitmap = generateShadowBitmap()
         blurDrawable?.alpha = 0
         rebuildColors()
         super.reInitUi()
@@ -213,35 +194,21 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
     }
 
     private fun rebuildColors() {
-        val homeProgress = LauncherState.NORMAL.getScrimProgress(mLauncher)
         val recentsProgress = LauncherState.OVERVIEW.getScrimProgress(mLauncher)
 
-        val hasDockBackground = !prefs.dockGradientStyle
         val hasRecents = Utilities.isRecentsEnabled() && recentsProgress < 1f
 
         val fullShelfColor = ColorUtils.setAlphaComponent(allAppsBackground, mEndAlpha)
         val recentsShelfColor = ColorUtils.setAlphaComponent(allAppsBackground, super.getMidAlpha())
-        val homeShelfColor = ColorUtils.setAlphaComponent(dockBackground, midAlpha)
-        val nullShelfColor = ColorUtils.setAlphaComponent(
-                if (hasDockBackground) dockBackground else allAppsBackground, 0)
+        val nullShelfColor = ColorUtils.setAlphaComponent(allAppsBackground, 0)
 
         val colors = ArrayList<Pair<Float, Int>>()
         colors.add(Pair(Float.NEGATIVE_INFINITY, fullShelfColor))
         colors.add(Pair(0.5f, fullShelfColor))
         fullBlurProgress = 0.5f
-        if (hasRecents && hasDockBackground) {
-            if (homeProgress < recentsProgress) {
-                colors.add(Pair(homeProgress, homeShelfColor))
-                colors.add(Pair(recentsProgress, recentsShelfColor))
-                fullBlurProgress = recentsProgress
-            } else {
-                colors.add(Pair(recentsProgress, recentsShelfColor))
-                colors.add(Pair(homeProgress, homeShelfColor))
-                fullBlurProgress = homeProgress
-            }
-        } else if (hasDockBackground) {
-            colors.add(Pair(homeProgress, homeShelfColor))
-            fullBlurProgress = homeProgress
+        if (hasRecents) {
+            colors.add(Pair(recentsProgress, recentsShelfColor))
+            fullBlurProgress = recentsProgress
         } else if (hasRecents) {
             colors.add(Pair(recentsProgress, recentsShelfColor))
             fullBlurProgress = recentsProgress
@@ -296,17 +263,6 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
             setBlurBounds(left, top, right, bottom)
             draw(canvas)
         }
-        if (enableShadow) {
-            val scrimHeight = mShelfTop
-            val f = paddingLeft.toFloat() - shadowBlur
-            val f2 = scrimHeight - shadowBlur
-            val f3 = shadowBlur + width
-            if (paddingLeft <= 0 && paddingRight <= 0) {
-                shadowHelper.draw(shadowBitmap, canvas, f, f2, f3)
-            } else {
-                shadowHelper.drawVerticallyStretched(shadowBitmap, canvas, f, f2, f3, scrimHeight)
-            }
-        }
         super.onDrawRoundRect(canvas, left, top, right, bottom, rx, ry, paint)
     }
 
@@ -319,7 +275,6 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
             else -> 255
         }
         blurDrawable?.alpha = alpha
-        shadowHelper.paint.alpha = alpha
 
         mDragHandleOffset = Math.max(0f, mDragHandleBounds.top + mDragHandleSize - mShelfTop)
 

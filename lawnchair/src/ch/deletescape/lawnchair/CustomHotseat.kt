@@ -24,7 +24,7 @@ import android.util.AttributeSet
 import android.view.View
 import com.android.launcher3.Hotseat
 
-class CustomHotseat @JvmOverloads constructor(
+open class CustomHotseat @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : Hotseat(context, attrs, defStyleAttr) {
 
     private val hotseatDisabled = context.lawnchairPrefs.dockHide

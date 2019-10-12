@@ -12,7 +12,6 @@
             android:defaultValue="true"
             android:persistent="true" />
 
-        <!-- TODO: Fix dock background
         <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:key="pref_dockBackground"
             android:title="@string/dock_fill"
@@ -25,7 +24,6 @@
             android:dependency="pref_dockBackground"
             app:colorMode="RGB"
             app:resolvers="@array/resolvers_shelf_background"/>
-        -->
  
         <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:key="pref_dockShadow"
@@ -44,7 +42,6 @@
             app:defaultSeekbarValue="8"
             android:persistent="true" />
 
-        <!-- TODO: Fix dock background
         <ch.deletescape.lawnchair.preferences.AutoModeSeekbarPreference
             android:key="pref_hotseatCustomOpacity"
             android:title="@string/opacity"
@@ -54,7 +51,6 @@
             app:summaryFormat="%.0f%%"
             app:summaryMultiplier="100"
             android:persistent="true" />
-        -->
 
         <ch.deletescape.lawnchair.preferences.AutoModeScalePreference
             android:key="pref_dockScale"
