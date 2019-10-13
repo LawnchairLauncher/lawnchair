@@ -519,8 +519,8 @@
         <item>Miłego dnia!</item>
     </string-array>
     <string-array name="greetings_evening">
-        <item>Dobranoc!</item>
-        <item>Śpij dobrze!</item>
+        <item>Jak ci mija dzień?</item>
+        <item>Co dzisiaj zrobiłeś?</item>
     </string-array>
     <string-array name="greetings_night">
         <item>Dobranoc!</item>
