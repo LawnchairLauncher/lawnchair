@@ -42,7 +42,7 @@
         android:title="@string/pref_category_nav_swipe_up_gestures">
 
         <ch.deletescape.lawnchair.gestures.ui.GesturePreference
-            android:defaultValue="@string/action_switch_apps_class"
+            android:defaultValue="@string/action_do_nothing_class"
             android:key="pref_gesture_nav_swipe_up_left"
             android:persistent="true"
             android:title="@string/gesture_nav_swipe_up_left"
@@ -50,15 +50,7 @@
             app:gestureClass="ch.deletescape.lawnchair.gestures.NavSwipeUpGesture"/>
 
         <ch.deletescape.lawnchair.gestures.ui.GesturePreference
-            android:defaultValue="@string/action_switch_apps_class"
-            android:key="pref_gesture_nav_swipe_up_center"
-            android:persistent="true"
-            android:title="@string/gesture_nav_swipe_up_center"
-            android:dependency="pref_swipe_up_to_switch_apps_enabled"
-            app:gestureClass="ch.deletescape.lawnchair.gestures.NavSwipeUpGesture"/>
-
-        <ch.deletescape.lawnchair.gestures.ui.GesturePreference
-            android:defaultValue="@string/action_switch_apps_class"
+            android:defaultValue="@string/action_do_nothing_class"
             android:key="pref_gesture_nav_swipe_up_right"
             android:persistent="true"
             android:title="@string/gesture_nav_swipe_up_right"

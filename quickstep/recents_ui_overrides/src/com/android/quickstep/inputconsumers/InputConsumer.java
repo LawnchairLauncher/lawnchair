@@ -34,6 +34,7 @@ public interface InputConsumer {
     int TYPE_OVERVIEW_WITHOUT_FOCUS = 1 << 7;
     int TYPE_RESET_GESTURE = 1 << 8;
     int TYPE_FALLBACK_NO_BUTTON = 1 << 9;
+    int TYPE_CUSTOM_GESTURES = 1 << 10;
 
     String[] NAMES = new String[] {
            "TYPE_NO_OP",                    // 0
@@ -46,6 +47,7 @@ public interface InputConsumer {
             "TYPE_OVERVIEW_WITHOUT_FOCUS",  // 7
             "TYPE_RESET_GESTURE",           // 8
             "TYPE_FALLBACK_NO_BUTTON",      // 9
+            "TYPE_CUSTOM_GESTURES",         // 10
     };
 
     InputConsumer NO_OP = () -> TYPE_NO_OP;

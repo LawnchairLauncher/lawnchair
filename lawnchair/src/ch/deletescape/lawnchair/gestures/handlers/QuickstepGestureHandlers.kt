@@ -17,14 +17,19 @@
 
 package ch.deletescape.lawnchair.gestures.handlers
 
+import android.accessibilityservice.AccessibilityService
 import android.annotation.TargetApi
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.os.SystemClock
+import android.view.KeyEvent
 import androidx.annotation.Keep
 import android.view.View
 import ch.deletescape.lawnchair.gestures.GestureController
 import ch.deletescape.lawnchair.gestures.GestureHandler
+import ch.deletescape.lawnchair.lawnchairApp
+import ch.deletescape.lawnchair.root.RootHelperManager
 import com.android.launcher3.LauncherState
 import com.android.launcher3.R
 import com.android.quickstep.TouchInteractionService
@@ -52,25 +57,21 @@ open class OpenRecentsGestureHandler(context: Context, config: JSONObject?) : Ge
 
 @Keep
 @TargetApi(Build.VERSION_CODES.P)
-open class LaunchMostRecentTaskGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config) {
+open class PressBackGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config) {
 
-    override val displayName: String = context.getString(R.string.action_last_task)
-    override val isAvailable: Boolean
-        get() = TouchInteractionService.isConnected()
+    override val displayName: String = context.getString(R.string.action_press_back)
 
     override fun onGestureTrigger(controller: GestureController, view: View?) {
-        /* TODO: implement this
-        RecentsModel.getInstance(context).loadTasks(-1) {
-            val opts = ActivityOptions.makeBasic()
-            it.taskStack.mostRecentTask?.let { mostRecentTask -> {
-                ActivityManagerWrapper.getInstance().startActivityFromRecentsAsync(mostRecentTask.key, opts, { result ->
-                    if (!result) {
-                        Log.e(this::class.java.simpleName, "Failed to start task")
-                    }
-                }, mainHandler)
-            } }
+        if (RootHelperManager.isAvailable) {
+            val time = SystemClock.uptimeMillis()
+            RootHelperManager.getInstance(context).run {
+                it.sendKeyEvent(KeyEvent.KEYCODE_BACK, KeyEvent.ACTION_DOWN, 0, time, time)
+                it.sendKeyEvent(KeyEvent.KEYCODE_BACK, KeyEvent.ACTION_UP, 0, time, time)
+            }
+        } else {
+            context.lawnchairApp.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK)
         }
-
-         */
     }
+
+    override fun isAvailableForSwipeUp(isSwipeUp: Boolean) = isSwipeUp
 }

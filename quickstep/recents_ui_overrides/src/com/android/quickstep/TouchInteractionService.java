@@ -67,6 +67,7 @@ import androidx.annotation.BinderThread;
 import androidx.annotation.UiThread;
 
 import ch.deletescape.lawnchair.LawnchairAppKt;
+import ch.deletescape.lawnchair.gestures.GestureTouchConsumer;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
@@ -287,6 +288,8 @@ public class TouchInteractionService extends Service implements
     private final RectF mSwipeTouchRegion = new RectF();
     private final RectF mAssistantLeftRegion = new RectF();
     private final RectF mAssistantRightRegion = new RectF();
+    private final RectF mCustomLeftRegion = new RectF();
+    private final RectF mCustomRightRegion = new RectF();
 
     private ComponentName mGestureBlockingActivity;
 
@@ -372,6 +375,7 @@ public class TouchInteractionService extends Service implements
         Point realSize = new Point();
         defaultDisplay.getRealSize(realSize);
         mSwipeTouchRegion.set(0, 0, realSize.x, realSize.y);
+        float customGestureFraction = 0.25f;
         if (mMode == Mode.NO_BUTTON && Utilities.ATLEAST_Q) {
             int touchHeight = getNavbarSize(ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE);
             mSwipeTouchRegion.top = mSwipeTouchRegion.bottom - touchHeight;
@@ -389,6 +393,18 @@ public class TouchInteractionService extends Service implements
 
             mAssistantRightRegion.right = mSwipeTouchRegion.right;
             mAssistantRightRegion.left = mSwipeTouchRegion.right - assistantWidth;
+
+            // Custom gesture regions
+            float customGestureWidth = mSwipeTouchRegion.width() * customGestureFraction;
+            mCustomLeftRegion.bottom = mCustomRightRegion.bottom = mAssistantLeftRegion.bottom;
+            mCustomLeftRegion.top = mCustomRightRegion.top = mAssistantLeftRegion.top;
+
+            mCustomLeftRegion.left = 0;
+            mCustomLeftRegion.right = customGestureWidth;
+
+            mCustomRightRegion.right = mSwipeTouchRegion.right;
+            mCustomRightRegion.left = mSwipeTouchRegion.right - customGestureWidth;
+
         } else {
             mAssistantLeftRegion.setEmpty();
             mAssistantRightRegion.setEmpty();
@@ -404,6 +420,27 @@ public class TouchInteractionService extends Service implements
                 default:
                     mSwipeTouchRegion.top = mSwipeTouchRegion.bottom
                             - getNavbarSize(ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE);
+            }
+
+            // Custom gesture regions
+            mCustomLeftRegion.set(mSwipeTouchRegion);
+            mCustomRightRegion.set(mSwipeTouchRegion);
+            float customGestureWidth;
+            switch (defaultDisplay.getRotation()) {
+                case Surface.ROTATION_90:
+                    customGestureWidth = mSwipeTouchRegion.height() * customGestureFraction;
+                    mCustomLeftRegion.top = mSwipeTouchRegion.bottom - customGestureWidth;
+                    mCustomRightRegion.bottom = mSwipeTouchRegion.top + customGestureWidth;
+                    break;
+                case Surface.ROTATION_270:
+                    customGestureWidth = mSwipeTouchRegion.height() * customGestureFraction;
+                    mCustomLeftRegion.bottom = mSwipeTouchRegion.top + customGestureWidth;
+                    mCustomRightRegion.top = mSwipeTouchRegion.bottom - customGestureWidth;
+                    break;
+                default:
+                    customGestureWidth = mSwipeTouchRegion.width() * customGestureFraction;
+                    mCustomLeftRegion.right = mSwipeTouchRegion.left + customGestureWidth;
+                    mCustomRightRegion.left = mSwipeTouchRegion.right - customGestureWidth;
             }
         }
     }
@@ -581,6 +618,13 @@ public class TouchInteractionService extends Service implements
                 && !ActivityManagerWrapper.getInstance().isLockToAppActive();
     }
 
+    private boolean canTriggerCustomAction(MotionEvent ev) {
+        return !QuickStepContract.isAssistantGestureDisabled(mSystemUiStateFlags)
+                && (mCustomLeftRegion.contains(ev.getX(), ev.getY()) ||
+                    mCustomRightRegion.contains(ev.getX(), ev.getY()))
+                && !ActivityManagerWrapper.getInstance().isLockToAppActive();
+    }
+
     private InputConsumer newConsumer(boolean useSharedState, MotionEvent event) {
         boolean isInValidSystemUiState = validSystemUiFlags();
 
@@ -604,6 +648,11 @@ public class TouchInteractionService extends Service implements
             if (canTriggerAssistantAction(event)) {
                 base = new AssistantTouchConsumer(this, mISystemUiProxy, activityControl, base,
                         mInputMonitorCompat);
+            }
+
+            if (canTriggerCustomAction(event)) {
+                base = new GestureTouchConsumer(this, mCustomLeftRegion, mCustomRightRegion,
+                        activityControl, base, mInputMonitorCompat);
             }
 
             if ((mSystemUiStateFlags & SYSUI_STATE_SCREEN_PINNING) != 0) {

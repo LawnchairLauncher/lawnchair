@@ -748,4 +748,5 @@
     <string name="pref_force_shapeless">Force shapeless icons</string>
 
     <string name="smartspace_provider_calendar">Calendar events</string>
+    <string name="action_press_back">Back button</string>
 </resources>

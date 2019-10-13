@@ -27,7 +27,6 @@ import ch.deletescape.lawnchair.LawnchairLauncher
 import ch.deletescape.lawnchair.gestures.gestures.*
 import ch.deletescape.lawnchair.gestures.handlers.*
 import ch.deletescape.lawnchair.lawnchairPrefs
-import com.android.launcher3.Utilities
 import com.android.launcher3.util.TouchController
 import org.json.JSONException
 import org.json.JSONObject
@@ -35,7 +34,7 @@ import org.json.JSONObject
 class GestureController(val launcher: LawnchairLauncher) : TouchController {
 
     private val prefs = launcher.lawnchairPrefs
-    private val blankGestureHandler = BlankGestureHandler(launcher, null)
+    val blankGestureHandler = BlankGestureHandler(launcher, null)
     private val doubleTapGesture by lazy { DoubleTapGesture(this) }
     private val pressHomeGesture by lazy { PressHomeGesture(this) }
     private val pressBackGesture by lazy { PressBackGesture(this) }
@@ -44,6 +43,7 @@ class GestureController(val launcher: LawnchairLauncher) : TouchController {
     val hasBackGesture
         get() = pressBackGesture.handler !is BlankGestureHandler
     val verticalSwipeGesture by lazy { VerticalSwipeGesture(this) }
+    val navSwipeUpGesture by lazy { NavSwipeUpGesture(this) }
 
     var touchDownPoint = PointF()
 
@@ -143,6 +143,7 @@ class GestureController(val launcher: LawnchairLauncher) : TouchController {
 
         fun getGestureHandlers(context: Context, isSwipeUp: Boolean, hasBlank: Boolean) = mutableListOf(
                 // BlankGestureHandler(context, null), -> Added in apply block
+                PressBackGestureHandler(context, null),
                 SleepGestureHandler(context, null),
                 SleepGestureHandlerTimeout(context, null),
                 OpenDrawerGestureHandler(context, null),
@@ -157,11 +158,10 @@ class GestureController(val launcher: LawnchairLauncher) : TouchController {
                 StartVoiceSearchGestureHandler(context, null),
                 PlayDespacitoGestureHandler(context, null),
                 StartAppGestureHandler(context, null),
-                OpenRecentsGestureHandler(context, null),
-                LaunchMostRecentTaskGestureHandler(context, null)
+                OpenRecentsGestureHandler(context, null)
         ).apply {
             if (hasBlank) {
-                add(1, BlankGestureHandler(context, null))
+                add(0, BlankGestureHandler(context, null))
             }
         }.filter { it.isAvailableForSwipeUp(isSwipeUp) }
     }
