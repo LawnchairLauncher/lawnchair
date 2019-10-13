@@ -458,6 +458,20 @@
     <string name="tab_type_custom_desc">בחר אפליקציות לכרטיסייה זאת באופן ידני.</string>
     <string name="tab_type_smart">כרטיסייה חכמה</string>
     <string name="categorization">חלוקה לקטגוריות</string>
+    <string name="event_provider_now_playing">מנגן כעת</string>
+    <string name="battery_status">מצב סוללה</string>
+    <string name="battery_charging">סוללה בטעינה</string>
+    <string name="battery_full">סוללה מלאה</string>
+    <string name="battery_low">סוללה חלשה</string>
+    <string name="event_provider_unread_notifications">התראות שלא נקראו</string>
+    <string name="zen_mode_enabled">מצב \'נא לא להפריע\' מופעל</string>
+    <string name="crash_report_notif_title">%1$s קרס!</string>
+    <string-array name="greetings_morning">
+        <item>בוקר טוב!</item>
+        <item>What a beautiful day!</item>
+        <item>Have you looked outside yet?</item>
+        <item>שיהיה לך יום נפלא!</item>
+    </string-array>
     <string-array name="greetings_evening">
         <item>איך עבר עליך היום?</item>
         <item>מה עשית היום?</item>
