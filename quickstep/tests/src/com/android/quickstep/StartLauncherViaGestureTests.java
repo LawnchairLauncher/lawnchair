@@ -16,8 +16,8 @@
 
 package com.android.quickstep;
 
-import static com.android.launcher3.util.RaceConditionTracker.enterEvt;
-import static com.android.launcher3.util.RaceConditionTracker.exitEvt;
+import static com.android.launcher3.util.RaceConditionReproducer.enterEvt;
+import static com.android.launcher3.util.RaceConditionReproducer.exitEvt;
 
 import android.content.Intent;
 

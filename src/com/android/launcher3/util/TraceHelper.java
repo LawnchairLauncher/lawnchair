@@ -15,19 +15,14 @@
  */
 package com.android.launcher3.util;
 
-import static android.util.Log.VERBOSE;
-import static android.util.Log.isLoggable;
-
-import android.os.SystemClock;
 import android.os.Trace;
-import android.util.ArrayMap;
-import android.util.Log;
-import android.util.MutableLong;
 
-import com.android.launcher3.config.FeatureFlags;
+import androidx.annotation.MainThread;
+
+import java.util.function.Supplier;
 
 /**
- * A wrapper around {@link Trace} with some utility information.
+ * A wrapper around {@link Trace} to allow better testing.
  *
  * To enable any tracing log, execute the following command:
  * $ adb shell setprop log.tag.LAUNCHER_TRACE VERBOSE
@@ -35,65 +30,51 @@ import com.android.launcher3.config.FeatureFlags;
  */
 public class TraceHelper {
 
-    private static final boolean ENABLED = isLoggable("LAUNCHER_TRACE", VERBOSE);
+    // Track binder class for this trace
+    public static final int FLAG_ALLOW_BINDER_TRACKING = 1 << 0;
 
-    private static final boolean SYSTEM_TRACE = ENABLED;
-    private static final ArrayMap<String, MutableLong> sUpTimes = ENABLED ? new ArrayMap<>() : null;
+    // Temporarily ignore blocking binder calls for this trace.
+    public static final int FLAG_IGNORE_BINDERS = 1 << 1;
 
-    public static void beginSection(String sectionName) {
-        if (ENABLED) {
-            synchronized (sUpTimes) {
-                MutableLong time = sUpTimes.get(sectionName);
-                if (time == null) {
-                    time = new MutableLong(isLoggable(sectionName, VERBOSE) ? 0 : -1);
-                    sUpTimes.put(sectionName, time);
-                }
-                if (time.value >= 0) {
-                    if (SYSTEM_TRACE) {
-                        Trace.beginSection(sectionName);
-                    }
-                    time.value = SystemClock.uptimeMillis();
-                }
-            }
-        }
+    public static final int FLAG_CHECK_FOR_RACE_CONDITIONS = 1 << 2;
+
+    public static final int FLAG_UI_EVENT =
+            FLAG_ALLOW_BINDER_TRACKING | FLAG_CHECK_FOR_RACE_CONDITIONS;
+
+    /**
+     * Static instance of Trace helper, overridden in tests.
+     */
+    public static TraceHelper INSTANCE = new TraceHelper();
+
+    public void beginSection(String sectionName) {
+        beginSection(sectionName, 0);
     }
 
-    public static void partitionSection(String sectionName, String partition) {
-        if (ENABLED) {
-            synchronized (sUpTimes) {
-                MutableLong time = sUpTimes.get(sectionName);
-                if (time != null && time.value >= 0) {
-
-                    if (SYSTEM_TRACE) {
-                        Trace.endSection();
-                        Trace.beginSection(sectionName);
-                    }
-
-                    long now = SystemClock.uptimeMillis();
-                    Log.d(sectionName, partition + " : " + (now - time.value));
-                    time.value = now;
-                }
-            }
-        }
+    public void beginSection(String sectionName, int flags) {
+        Trace.beginSection(sectionName);
     }
 
-    public static void endSection(String sectionName) {
-        if (ENABLED) {
-            endSection(sectionName, "End");
-        }
+    public void endSection() {
+        Trace.endSection();
     }
 
-    public static void endSection(String sectionName, String msg) {
-        if (ENABLED) {
-            synchronized (sUpTimes) {
-                MutableLong time = sUpTimes.get(sectionName);
-                if (time != null && time.value >= 0) {
-                    if (SYSTEM_TRACE) {
-                        Trace.endSection();
-                    }
-                    Log.d(sectionName, msg + " : " + (SystemClock.uptimeMillis() - time.value));
-                }
-            }
+    /**
+     * Similar to {@link #beginSection} but doesn't add a trace section.
+     */
+    public void beginFlagsOverride(int flags) { }
+
+    public void endFlagsOverride() { }
+
+    /**
+     * Temporarily ignore blocking binder calls for the duration of this {@link Supplier}.
+     */
+    @MainThread
+    public static <T> T whitelistIpcs(String rpcName, Supplier<T> supplier) {
+        INSTANCE.beginSection(rpcName, FLAG_IGNORE_BINDERS);
+        try {
+            return supplier.get();
+        } finally {
+            INSTANCE.endSection();
         }
     }
 }

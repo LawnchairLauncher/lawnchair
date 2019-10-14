@@ -25,8 +25,7 @@ import static android.view.MotionEvent.INVALID_POINTER_ID;
 
 import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
 import static com.android.launcher3.Utilities.squaredHypot;
-import static com.android.launcher3.util.RaceConditionTracker.ENTER;
-import static com.android.launcher3.util.RaceConditionTracker.EXIT;
+import static com.android.launcher3.util.TraceHelper.FLAG_CHECK_FOR_RACE_CONDITIONS;
 import static com.android.quickstep.TouchInteractionService.startRecentsActivityAsync;
 import static com.android.quickstep.util.ActiveGestureLog.INTENT_EXTRA_LOG_TRACE_ID;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
@@ -48,13 +47,13 @@ import androidx.annotation.UiThread;
 
 import com.android.launcher3.R;
 import com.android.launcher3.util.Preconditions;
-import com.android.launcher3.util.RaceConditionTracker;
 import com.android.launcher3.util.TraceHelper;
 import com.android.quickstep.BaseActivityInterface;
 import com.android.quickstep.BaseSwipeUpHandler;
 import com.android.quickstep.BaseSwipeUpHandler.Factory;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.InputConsumer;
+import com.android.quickstep.RecentsAnimationCallbacks;
 import com.android.quickstep.RecentsAnimationDeviceState;
 import com.android.quickstep.SwipeSharedState;
 import com.android.quickstep.SysUINavigationMode;
@@ -63,7 +62,6 @@ import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.CachedEventDispatcher;
 import com.android.quickstep.util.MotionPauseDetector;
 import com.android.quickstep.util.NavBarPosition;
-import com.android.quickstep.RecentsAnimationCallbacks;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.InputMonitorCompat;
 
@@ -200,8 +198,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
 
         switch (ev.getActionMasked()) {
             case ACTION_DOWN: {
-                RaceConditionTracker.onEvent(DOWN_EVT, ENTER);
-                TraceHelper.beginSection("TouchInt");
+                TraceHelper.INSTANCE.beginSection(DOWN_EVT, FLAG_CHECK_FOR_RACE_CONDITIONS);
                 mActivePointerId = ev.getPointerId(0);
                 mDownPos.set(ev.getX(), ev.getY());
                 mLastPos.set(mDownPos);
@@ -212,7 +209,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                     startTouchTrackingForWindowAnimation(ev.getEventTime(), false);
                 }
 
-                RaceConditionTracker.onEvent(DOWN_EVT, EXIT);
+                TraceHelper.INSTANCE.endSection();
                 break;
             }
             case ACTION_POINTER_DOWN: {
@@ -358,8 +355,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
      * the animation can still be running.
      */
     private void finishTouchTracking(MotionEvent ev) {
-        RaceConditionTracker.onEvent(UP_EVT, ENTER);
-        TraceHelper.endSection("TouchInt");
+        TraceHelper.INSTANCE.beginSection(UP_EVT, FLAG_CHECK_FOR_RACE_CONDITIONS);
 
         if (mPassedWindowMoveSlop && mInteractionHandler != null) {
             if (ev.getActionMasked() == ACTION_CANCEL) {
@@ -393,7 +389,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         mVelocityTracker.recycle();
         mVelocityTracker = null;
         mMotionPauseDetector.clear();
-        RaceConditionTracker.onEvent(UP_EVT, EXIT);
+        TraceHelper.INSTANCE.endSection();
     }
 
     @Override

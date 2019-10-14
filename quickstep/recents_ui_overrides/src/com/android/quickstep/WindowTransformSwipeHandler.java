@@ -23,8 +23,6 @@ import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_2;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.config.FeatureFlags.QUICKSTEP_SPRINGS;
 import static com.android.launcher3.util.DefaultDisplay.getSingleFrameMs;
-import static com.android.launcher3.util.RaceConditionTracker.ENTER;
-import static com.android.launcher3.util.RaceConditionTracker.EXIT;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_OVERVIEW;
 import static com.android.quickstep.BaseActivityInterface.AnimationFactory.ShelfAnimState.HIDE;
 import static com.android.quickstep.BaseActivityInterface.AnimationFactory.ShelfAnimState.PEEK;
@@ -65,11 +63,9 @@ import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.logging.UserEventDispatcher;
-import com.android.launcher3.uioverrides.DejankBinderTracker;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
-import com.android.launcher3.util.RaceConditionTracker;
 import com.android.launcher3.util.TraceHelper;
 import com.android.quickstep.BaseActivityInterface.AnimationFactory;
 import com.android.quickstep.BaseActivityInterface.AnimationFactory.ShelfAnimState;
@@ -371,13 +367,13 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         if (mWasLauncherAlreadyVisible) {
             mStateCallback.setState(STATE_LAUNCHER_DRAWN);
         } else {
-            TraceHelper.beginSection("WTS-init");
+            TraceHelper.INSTANCE.beginSection("WTS-init");
             View dragLayer = activity.getDragLayer();
             dragLayer.getViewTreeObserver().addOnDrawListener(new OnDrawListener() {
 
                 @Override
                 public void onDraw() {
-                    TraceHelper.endSection("WTS-init", "Launcher frame is drawn");
+                    TraceHelper.INSTANCE.endSection();
                     dragLayer.post(() ->
                             dragLayer.getViewTreeObserver().removeOnDrawListener(this));
                     if (activity != mActivity) {
@@ -420,13 +416,13 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     private void initializeLauncherAnimationController() {
         buildAnimationController();
 
-        DejankBinderTracker.whitelistIpcs(() -> {
-            // Only used in debug builds
-            if (LatencyTrackerCompat.isEnabled(mContext)) {
-                LatencyTrackerCompat.logToggleRecents(
-                        (int) (mLauncherFrameDrawnTime - mTouchTimeMs));
-            }
-        });
+        TraceHelper.INSTANCE.beginSection("logToggleRecents", TraceHelper.FLAG_IGNORE_BINDERS);
+        // Only used in debug builds
+        if (LatencyTrackerCompat.isEnabled(mContext)) {
+            LatencyTrackerCompat.logToggleRecents(
+                    (int) (mLauncherFrameDrawnTime - mTouchTimeMs));
+        }
+        TraceHelper.INSTANCE.endSection();
 
         // This method is only called when STATE_GESTURE_STARTED is set, so we can enable the
         // high-res thumbnail loader here once we are sure that we will end up in an overview state
@@ -1148,9 +1144,10 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             }
             if (!finishTransitionPosted) {
                 // If we haven't posted a draw callback, set the state immediately.
-                RaceConditionTracker.onEvent(SCREENSHOT_CAPTURED_EVT, ENTER);
+                TraceHelper.INSTANCE.beginSection(SCREENSHOT_CAPTURED_EVT,
+                        TraceHelper.FLAG_CHECK_FOR_RACE_CONDITIONS);
                 setStateOnUiThread(STATE_SCREENSHOT_CAPTURED);
-                RaceConditionTracker.onEvent(SCREENSHOT_CAPTURED_EVT, EXIT);
+                TraceHelper.INSTANCE.endSection();
             }
         }
     }

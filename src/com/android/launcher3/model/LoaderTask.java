@@ -40,6 +40,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.LongSparseArray;
 import android.util.MutableInt;
+import android.util.TimingLogger;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.FolderInfo;
@@ -169,82 +170,84 @@ public class LoaderTask implements Runnable {
             }
         }
 
-        TraceHelper.beginSection(TAG);
+        TraceHelper.INSTANCE.beginSection(TAG);
+        TimingLogger logger = new TimingLogger(TAG, "run");
         try (LauncherModel.LoaderTransaction transaction = mApp.getModel().beginLoader(this)) {
-            TraceHelper.partitionSection(TAG, "step 1.1: loading workspace");
             loadWorkspace();
+            logger.addSplit("loadWorkspace");
 
             verifyNotStopped();
-            TraceHelper.partitionSection(TAG, "step 1.2: bind workspace workspace");
             mResults.bindWorkspace();
+            logger.addSplit("bindWorkspace");
 
             // Notify the installer packages of packages with active installs on the first screen.
-            TraceHelper.partitionSection(TAG, "step 1.3: send first screen broadcast");
             sendFirstScreenActiveInstallsBroadcast();
+            logger.addSplit("sendFirstScreenActiveInstallsBroadcast");
 
             // Take a break
-            TraceHelper.partitionSection(TAG, "step 1 completed, wait for idle");
             waitForIdle();
+            logger.addSplit("step 1 complete");
             verifyNotStopped();
 
             // second step
-            TraceHelper.partitionSection(TAG, "step 2.1: loading all apps");
             List<LauncherActivityInfo> allActivityList = loadAllApps();
+            logger.addSplit("loadAllApps");
 
-            TraceHelper.partitionSection(TAG, "step 2.2: Binding all apps");
             verifyNotStopped();
             mResults.bindAllApps();
+            logger.addSplit("bindAllApps");
 
             verifyNotStopped();
-            TraceHelper.partitionSection(TAG, "step 2.3: Update icon cache");
             IconCacheUpdateHandler updateHandler = mIconCache.getUpdateHandler();
             setIgnorePackages(updateHandler);
             updateHandler.updateIcons(allActivityList,
                     LauncherActivityCachingLogic.newInstance(mApp.getContext()),
                     mApp.getModel()::onPackageIconsUpdated);
+            logger.addSplit("update icon cache");
 
             // Take a break
-            TraceHelper.partitionSection(TAG, "step 2 completed, wait for idle");
             waitForIdle();
+            logger.addSplit("step 2 complete");
             verifyNotStopped();
 
             // third step
-            TraceHelper.partitionSection(TAG, "step 3.1: loading deep shortcuts");
             loadDeepShortcuts();
+            logger.addSplit("loadDeepShortcuts");
 
             verifyNotStopped();
-            TraceHelper.partitionSection(TAG, "step 3.2: bind deep shortcuts");
             mResults.bindDeepShortcuts();
+            logger.addSplit("bindDeepShortcuts");
 
             // Take a break
-            TraceHelper.partitionSection(TAG, "step 3 completed, wait for idle");
             waitForIdle();
+            logger.addSplit("step 3 complete");
             verifyNotStopped();
 
             // fourth step
-            TraceHelper.partitionSection(TAG, "step 4.1: loading widgets");
             List<ComponentWithLabel> allWidgetsList = mBgDataModel.widgetsModel.update(mApp, null);
+            logger.addSplit("load widgets");
 
             verifyNotStopped();
-            TraceHelper.partitionSection(TAG, "step 4.2: Binding widgets");
             mResults.bindWidgets();
-
+            logger.addSplit("bindWidgets");
             verifyNotStopped();
 
-            TraceHelper.partitionSection(TAG, "step 4.3: save widgets in icon cache");
             updateHandler.updateIcons(allWidgetsList, new ComponentCachingLogic(
                     mApp.getContext(), true), mApp.getModel()::onWidgetLabelsUpdated);
+            logger.addSplit("save widgets in icon cache");
 
             verifyNotStopped();
-            TraceHelper.partitionSection(TAG, "step 5: Finish icon cache update");
             updateHandler.finish();
+            logger.addSplit("finish icon update");
 
             transaction.commit();
         } catch (CancellationException e) {
             // Loader stopped, ignore
-            TraceHelper.partitionSection(TAG, "Cancelled");
+            logger.addSplit("Cancelled");
+        } finally {
+            logger.dumpToLog();
         }
-        TraceHelper.endSection(TAG);
+        TraceHelper.INSTANCE.endSection();
     }
 
     public synchronized void stopLocked() {
