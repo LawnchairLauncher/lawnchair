@@ -316,8 +316,9 @@ public class OPWeatherProvider {
                         new SimpleDateFormat("yyyyMMddkkmm", Locale.getDefault()).parse(string2)
                                 .getTime() / 1000;
                 weatherData.cityName = string;
-                weatherData.weatherCode = WEATHER_TYPE
-                        .getWeather(Integer.parseInt(string3)).weatherCode;
+                WEATHER_TYPE weatherType = WEATHER_TYPE.getWeather(Integer.parseInt(string3));
+                weatherData.weatherCode = weatherType.weatherCode;
+                weatherData.icon = weatherType.icon;
                 weatherData.weatherName = string4;
                 weatherData.temperature = Integer.parseInt(string5);
                 weatherData.temperatureHigh = Integer.parseInt(string6);
