@@ -37,6 +37,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.views.RecentsView;
@@ -49,8 +50,6 @@ import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams;
 import com.android.systemui.shared.system.TransactionCompat;
 import com.android.systemui.shared.system.WindowManagerWrapper;
-
-import java.util.function.BiFunction;
 
 /**
  * Utility class to handle window clip animation
@@ -212,6 +211,11 @@ public class ClipAnimationHelper {
                                     mTaskCornerRadius);
                         }
                         mCurrentCornerRadius = cornerRadius;
+                    }
+                    // Fade out Assistant overlay.
+                    if (app.activityType == RemoteAnimationTargetCompat.ACTIVITY_TYPE_ASSISTANT
+                            && app.isNotInRecents) {
+                        alpha = 1 - Interpolators.DEACCEL_2_5.getInterpolation(progress);
                     }
                 } else if (targetSet.hasRecents) {
                     // If home has a different target then recents, reverse anim the
