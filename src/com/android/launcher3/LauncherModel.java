@@ -53,6 +53,7 @@ import com.android.launcher3.model.UserLockStateChangedTask;
 import com.android.launcher3.pm.InstallSessionTracker;
 import com.android.launcher3.pm.PackageInstallInfo;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.IntSparseArrayMap;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.PackageUserKey;
@@ -92,6 +93,10 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
     private boolean mModelLoaded;
     public boolean isModelLoaded() {
         synchronized (mLock) {
+            if (TestProtocol.sDebugTracing) {
+                Log.d(TestProtocol.LAUNCHER_DIDNT_INITIALIZE,
+                        "isModelLoaded: " + mModelLoaded + ", " + mLoaderTask);
+            }
             return mModelLoaded && mLoaderTask == null;
         }
     }

@@ -53,6 +53,8 @@ import androidx.annotation.UiThread;
 import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.BaseDraggingActivity;
+import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.config.FeatureFlags;
@@ -131,6 +133,9 @@ public class TouchInteractionService extends Service implements
                     .setProxy(proxy));
             MAIN_EXECUTOR.execute(TouchInteractionService.this::initInputMonitor);
             MAIN_EXECUTOR.execute(() -> preloadOverview(true /* fromInit */));
+            if (TestProtocol.sDebugTracing) {
+                Log.d(TestProtocol.LAUNCHER_DIDNT_INITIALIZE, "TIS initialized");
+            }
             sIsInitialized = true;
         }
 
@@ -380,6 +385,9 @@ public class TouchInteractionService extends Service implements
 
     @Override
     public void onDestroy() {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.LAUNCHER_DIDNT_INITIALIZE, "TIS destroyed");
+        }
         sIsInitialized = false;
         if (mDeviceState.isUserUnlocked()) {
             mInputConsumer.unregisterInputConsumer();
