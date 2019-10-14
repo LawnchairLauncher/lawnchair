@@ -30,7 +30,6 @@ import static com.android.quickstep.util.ActiveGestureLog.INTENT_EXTRA_LOG_TRACE
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 
 import android.annotation.TargetApi;
-import android.app.ActivityManager.RunningTaskInfo;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
@@ -81,7 +80,6 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     private final GestureState mGestureState;
     private RecentsAnimationCallbacks mActiveCallbacks;
     private final CachedEventDispatcher mRecentsViewDispatcher = new CachedEventDispatcher();
-    private final RunningTaskInfo mRunningTask;
     private final InputMonitorCompat mInputMonitorCompat;
     private final BaseActivityInterface mActivityInterface;
 
@@ -124,8 +122,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
 
     public OtherActivityInputConsumer(Context base, RecentsAnimationDeviceState deviceState,
             TaskAnimationManager taskAnimationManager, GestureState gestureState,
-            RunningTaskInfo runningTaskInfo, boolean isDeferredDownTarget,
-            Consumer<OtherActivityInputConsumer> onCompleteCallback,
+            boolean isDeferredDownTarget, Consumer<OtherActivityInputConsumer> onCompleteCallback,
             InputMonitorCompat inputMonitorCompat, boolean disableHorizontalSwipe,
             Factory handlerFactory) {
         super(base);
@@ -133,7 +130,6 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         mTaskAnimationManager = taskAnimationManager;
         mGestureState = gestureState;
         mMainThreadHandler = new Handler(Looper.getMainLooper());
-        mRunningTask = runningTaskInfo;
         mHandlerFactory = handlerFactory;
         mActivityInterface = mGestureState.getActivityInterface();
 
@@ -325,7 +321,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
             long touchTimeMs, boolean isLikelyToStartNewTask) {
         ActiveGestureLog.INSTANCE.addLog("startRecentsAnimation");
 
-        mInteractionHandler = mHandlerFactory.newHandler(mGestureState, mRunningTask, touchTimeMs,
+        mInteractionHandler = mHandlerFactory.newHandler(mGestureState, touchTimeMs,
                 mTaskAnimationManager.isRecentsAnimationRunning(), isLikelyToStartNewTask);
         mInteractionHandler.setGestureEndCallback(this::onInteractionGestureFinished);
         mMotionPauseDetector.setOnMotionPauseListener(mInteractionHandler::onMotionPauseChanged);
