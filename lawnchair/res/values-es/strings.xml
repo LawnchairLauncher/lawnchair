@@ -29,7 +29,7 @@
     <string name="about_summary_title">Resumen</string>
     <string name="action_edit">Editar</string>
     <string name="hide_app_sum">Ocultar del cajón de aplicaciones</string>
-    <string name="hide_app">Ocultar aplicación</string>
+    <string name="hide_app">Ocultar app</string>
     <string name="icon_shape_rounded_square">Cuadrado redondeado</string>
     <string name="pixel_ui_pref_summary">Paquete de iconos, desenfoque, colores</string>
     <string name="app_drawer_pref_title">Cajón de aplicaciones</string>
@@ -50,7 +50,7 @@
     <string name="backup_location">Ubicación</string>
     <string name="choose_backup_path">Explorar</string>
     <string name="backup_contents">Contenido</string>
-    <string name="backup_settings">Configuración</string>
+    <string name="backup_settings">Ajustes</string>
     <string name="homescreen">Pantalla de inicio</string>
     <string name="backup_wallpaper">Fondo de Pantalla</string>
     <string name="backup_error_blank_name">Escriba un nombre para la copia de seguridad</string>
