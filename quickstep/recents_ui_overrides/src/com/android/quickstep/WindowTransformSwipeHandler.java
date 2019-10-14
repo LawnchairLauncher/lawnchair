@@ -229,7 +229,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             GestureState gestureState, RunningTaskInfo runningTaskInfo, long touchTimeMs,
             OverviewComponentObserver overviewComponentObserver, boolean continuingLastGesture,
             InputConsumerController inputConsumer, RecentsModel recentsModel) {
-        super(context, gestureState, overviewComponentObserver, recentsModel, inputConsumer, runningTaskInfo.id);
+        super(context, gestureState, overviewComponentObserver, recentsModel, inputConsumer,
+                runningTaskInfo.id);
         mDeviceState = deviceState;
         mGestureState = gestureState;
         mTouchTimeMs = touchTimeMs;

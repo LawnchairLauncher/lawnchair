@@ -129,10 +129,11 @@ public class TouchInteractionService extends Service implements
         public void onInitialize(Bundle bundle) {
             ISystemUiProxy proxy = ISystemUiProxy.Stub.asInterface(
                     bundle.getBinder(KEY_EXTRA_SYSUI_PROXY));
-            MAIN_EXECUTOR.execute(() -> SystemUiProxy.INSTANCE.get(TouchInteractionService.this)
-                    .setProxy(proxy));
-            MAIN_EXECUTOR.execute(TouchInteractionService.this::initInputMonitor);
-            MAIN_EXECUTOR.execute(() -> preloadOverview(true /* fromInit */));
+            MAIN_EXECUTOR.execute(() -> {
+                SystemUiProxy.INSTANCE.get(TouchInteractionService.this).setProxy(proxy);
+                TouchInteractionService.this.initInputMonitor();
+                preloadOverview(true /* fromInit */);
+            });
             if (TestProtocol.sDebugTracing) {
                 Log.d(TestProtocol.LAUNCHER_DIDNT_INITIALIZE, "TIS initialized");
             }
@@ -169,15 +170,19 @@ public class TouchInteractionService extends Service implements
         @BinderThread
         @Override
         public void onAssistantAvailable(boolean available) {
-            MAIN_EXECUTOR.execute(() -> mDeviceState.setAssistantAvailable(available));
-            MAIN_EXECUTOR.execute(TouchInteractionService.this::onAssistantVisibilityChanged);
+            MAIN_EXECUTOR.execute(() -> {
+                mDeviceState.setAssistantAvailable(available);
+                TouchInteractionService.this.onAssistantVisibilityChanged();
+            });
         }
 
         @BinderThread
         @Override
         public void onAssistantVisibilityChanged(float visibility) {
-            MAIN_EXECUTOR.execute(() -> mDeviceState.setAssistantVisibility(visibility));
-            MAIN_EXECUTOR.execute(TouchInteractionService.this::onAssistantVisibilityChanged);
+            MAIN_EXECUTOR.execute(() -> {
+                mDeviceState.setAssistantVisibility(visibility);
+                TouchInteractionService.this.onAssistantVisibilityChanged();
+            });
         }
 
         @BinderThread
@@ -199,8 +204,10 @@ public class TouchInteractionService extends Service implements
 
         @BinderThread
         public void onSystemUiStateChanged(int stateFlags) {
-            MAIN_EXECUTOR.execute(() -> mDeviceState.setSystemUiFlags(stateFlags));
-            MAIN_EXECUTOR.execute(TouchInteractionService.this::onSystemUiFlagsChanged);
+            MAIN_EXECUTOR.execute(() -> {
+                mDeviceState.setSystemUiFlags(stateFlags);
+                TouchInteractionService.this.onSystemUiFlagsChanged();
+            });
         }
 
         @BinderThread

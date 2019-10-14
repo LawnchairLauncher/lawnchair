@@ -71,7 +71,7 @@ public class RecentsAnimationController {
      * currently being animated.
      */
     public ThumbnailData screenshotTask(int taskId) {
-        return mController != null ? mController.screenshotTask(taskId) : null;
+        return mController.screenshotTask(taskId);
     }
 
     /**
