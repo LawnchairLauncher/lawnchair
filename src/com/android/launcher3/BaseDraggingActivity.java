@@ -36,11 +36,11 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
-import com.android.launcher3.uioverrides.DejankBinderTracker;
 import com.android.launcher3.uioverrides.DisplayRotationListener;
 import com.android.launcher3.uioverrides.WallpaperColorInfo;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Themes;
+import com.android.launcher3.util.TraceHelper;
 
 /**
  * Extension of BaseActivity allowing support for drag-n-drop
@@ -66,8 +66,10 @@ public abstract class BaseDraggingActivity extends BaseActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mIsSafeModeEnabled = DejankBinderTracker.whitelistIpcs(() ->
-                getPackageManager().isSafeMode());
+
+
+        mIsSafeModeEnabled = TraceHelper.whitelistIpcs("isSafeMode",
+                () -> getPackageManager().isSafeMode());
         mRotationListener = new DisplayRotationListener(this, this::onDeviceRotationChanged);
 
         // Update theme

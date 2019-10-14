@@ -46,8 +46,8 @@ import com.android.launcher3.R;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.appprediction.PredictionUiStateManager;
 import com.android.launcher3.appprediction.PredictionUiStateManager.Client;
-import com.android.launcher3.uioverrides.DejankBinderTracker;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
+import com.android.launcher3.util.TraceHelper;
 import com.android.launcher3.views.ScrimView;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.util.AppWindowAnimationHelper;
@@ -221,7 +221,7 @@ public class LauncherRecentsView extends RecentsView<Launcher> implements StateL
 
     @Override
     public boolean shouldUseMultiWindowTaskSizeStrategy() {
-        return DejankBinderTracker.whitelistIpcs(() -> mActivity.isInMultiWindowMode());
+        return TraceHelper.whitelistIpcs("isInMultiWindowMode", mActivity::isInMultiWindowMode);
     }
 
     @Override

@@ -60,7 +60,7 @@ import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.provider.RestoreDbTask;
 import com.android.launcher3.testing.TestProtocol;
-import com.android.launcher3.uioverrides.DejankBinderTracker;
+import com.android.launcher3.util.TraceHelper;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.SysUINavigationMode.NavigationModeChangeListener;
 import com.android.quickstep.inputconsumers.AccessibilityInputConsumer;
@@ -401,7 +401,6 @@ public class TouchInteractionService extends Service implements
     }
 
     private void onInputEvent(InputEvent ev) {
-        DejankBinderTracker.allowBinderTrackingInTests();
         if (TestProtocol.sDebugTracing) {
             Log.d(TestProtocol.NO_BACKGROUND_TO_OVERVIEW_TAG, "onInputEvent " + ev);
         }
@@ -410,6 +409,7 @@ public class TouchInteractionService extends Service implements
             return;
         }
 
+        TraceHelper.INSTANCE.beginFlagsOverride(TraceHelper.FLAG_ALLOW_BINDER_TRACKING);
         MotionEvent event = (MotionEvent) ev;
         if (event.getAction() == ACTION_DOWN) {
             GestureState newGestureState = new GestureState(
@@ -438,7 +438,7 @@ public class TouchInteractionService extends Service implements
 
         ActiveGestureLog.INSTANCE.addLog("onMotionEvent", event.getActionMasked());
         mUncheckedConsumer.onMotionEvent(event);
-        DejankBinderTracker.disallowBinderTrackingInTests();
+        TraceHelper.INSTANCE.endFlagsOverride();
     }
 
     private InputConsumer newConsumer(GestureState gestureState, boolean useSharedState,
@@ -490,7 +490,7 @@ public class TouchInteractionService extends Service implements
 
     private InputConsumer newBaseConsumer(GestureState gestureState, boolean useSharedState,
             MotionEvent event) {
-        RunningTaskInfo runningTaskInfo = DejankBinderTracker.whitelistIpcs(
+        RunningTaskInfo runningTaskInfo = TraceHelper.whitelistIpcs("getRunningTask.0",
                 () -> mAM.getRunningTask(0));
         if (!useSharedState) {
             sSwipeSharedState.clearAllState(false /* finishAnimation */);
@@ -504,7 +504,8 @@ public class TouchInteractionService extends Service implements
         if (isExcludedAssistant(runningTaskInfo)) {
             // In the case where we are in the excluded assistant state, ignore it and treat the
             // running activity as the task behind the assistant
-            runningTaskInfo = DejankBinderTracker.whitelistIpcs(
+
+            runningTaskInfo = TraceHelper.whitelistIpcs("getRunningTask.assistant",
                     () -> mAM.getRunningTask(ACTIVITY_TYPE_ASSISTANT));
             if (!ActivityManagerWrapper.isHomeTask(runningTaskInfo)) {
                 final ComponentName homeComponent =
