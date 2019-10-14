@@ -77,6 +77,11 @@
             android:title="@string/feed_theme_pref_title"
             android:dependency="pref_enable_minus_one"
             app:controllerClass=".GFeedBackgroundController"/>
+
+        <ch.deletescape.lawnchair.settings.ui.FeedProviderPreference
+            android:title="Feed Provider"
+            android:key="pref_feedProvider"
+            app:controllerClass=".FeedProviderController"/>
     </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
 
     <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory

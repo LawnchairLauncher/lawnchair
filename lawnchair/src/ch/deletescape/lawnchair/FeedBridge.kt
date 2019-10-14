@@ -24,23 +24,40 @@ import android.net.Uri
 import android.os.Build
 import android.os.Process
 import ch.deletescape.lawnchair.util.SingletonHolder
+import ch.deletescape.lawnchair.util.extensions.d
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.R
+import com.android.launcher3.Utilities
 import com.android.launcher3.config.FeatureFlags
+import okhttp3.internal.toHexString
 
 class FeedBridge(private val context: Context) {
+    private val prefs = context.lawnchairPrefs
 
     private val bridgePackages by lazy { listOf(
             PixelBridgeInfo("com.google.android.apps.nexuslauncher", R.integer.bridge_signature_hash),
             BridgeInfo("ch.deletescape.lawnchair.lawnfeed", R.integer.lawnfeed_signature_hash)) }
 
     fun resolveBridge(): BridgeInfo? {
-        if (!useBridge) return null
+        val customBridge = customBridgeOrNull()
+        if (customBridge != null) {
+            return customBridge
+        }
+        if (!SHOULD_USE_BRIDGE) return null
         return bridgePackages.firstOrNull { it.isAvailable() }
     }
 
+    private fun customBridgeOrNull() = if (prefs.feedProvider.isNotBlank()) {
+        val bridge = CustomBridgeInfo(prefs.feedProvider)
+        if (bridge.isAvailable()) {
+            bridge
+        } else null
+    } else null
+
+    private fun customBridgeAvailable() = customBridgeOrNull()?.isAvailable() == true
+
     fun isInstalled(): Boolean {
-        return !useBridge || bridgePackages.any { it.isAvailable() }
+        return customBridgeAvailable() || !SHOULD_USE_BRIDGE || bridgePackages.any { it.isAvailable() }
     }
 
     fun resolveSmartspace(): String {
@@ -49,7 +66,7 @@ class FeedBridge(private val context: Context) {
 
     open inner class BridgeInfo(val packageName: String, signatureHashRes: Int) {
 
-        private val signatureHash = context.resources.getInteger(signatureHashRes)
+        protected open val signatureHash = if (signatureHashRes > 0) context.resources.getInteger(signatureHashRes) else 0
 
         open val supportsSmartspace = false
 
@@ -63,16 +80,16 @@ class FeedBridge(private val context: Context) {
                             .append(Process.myUid())
                             .toString())
                             .buildUpon()
-                            .appendQueryParameter("v", Integer.toString(7))
-                            .appendQueryParameter("cv", Integer.toString(9))
+                            .appendQueryParameter("v", 7.toString())
+                            .appendQueryParameter("cv", 9.toString())
                             .build()), 0)
             return info != null && isSigned()
         }
 
-        private fun isSigned(): Boolean {
-            if (BuildConfig.FLAVOR_dist.equals("dev"))
+        open fun isSigned(): Boolean {
+            if (BuildConfig.FLAVOR_dist == "dev")
                 return true // Skip signature checks for dev builds
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            if (Utilities.ATLEAST_P) {
                 val info = context.packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNING_CERTIFICATES)
                 val signingInfo = info.signingInfo
                 if (signingInfo.hasMultipleSigners()) return false
@@ -87,6 +104,24 @@ class FeedBridge(private val context: Context) {
         }
     }
 
+    private inner class CustomBridgeInfo(packageName: String): BridgeInfo(packageName, 0) {
+        override val signatureHash = whitelist[packageName]?.toInt() ?: -1
+        private val disableWhitelist = prefs.ignoreFeedWhitelist
+        override fun isSigned(): Boolean {
+            if (signatureHash == -1 && Utilities.ATLEAST_P) {
+                val info = context.packageManager
+                        .getPackageInfo(packageName, PackageManager.GET_SIGNING_CERTIFICATES)
+                val signingInfo = info.signingInfo
+                if (signingInfo.hasMultipleSigners()) return false
+                signingInfo.signingCertificateHistory.forEach {
+                    val hash = it.hashCode().toHexString()
+                    d("Feed provider $packageName(0x$hash) isn't whitelisted")
+                }
+            }
+            return disableWhitelist || signatureHash != -1 && super.isSigned()
+        }
+    }
+
     private inner class PixelBridgeInfo(packageName: String, signatureHashRes: Int) : BridgeInfo(packageName, signatureHashRes) {
 
         override val supportsSmartspace get() = isAvailable()
@@ -98,7 +133,20 @@ class FeedBridge(private val context: Context) {
         private const val TAG = "FeedBridge"
         private const val overlayAction = "com.android.launcher3.WINDOW_OVERLAY"
 
+        private val whitelist = mapOf<String, Long>(
+                "ua.itaysonlab.homefeeder" to 0x887456ed, // HomeFeeder, t.me/homefeeder
+                "launcher.libre.dev" to 0x2e9dbab5 // Librechair, t.me/librechair
+                                     )
+
+        fun getAvailableProviders(context: Context)  = context.packageManager
+                .queryIntentServices(Intent(overlayAction).setData(Uri.parse("app://" + context.packageName)), PackageManager.GET_META_DATA)
+                .map { it.serviceInfo.applicationInfo }
+                .distinct()
+                .filter { getInstance(context).CustomBridgeInfo(it.packageName).isSigned() }
+
+        private val SHOULD_USE_BRIDGE = FeatureFlags.FORCE_FEED_BRIDGE || !BuildConfig.DEBUG
+
         @JvmStatic
-        val useBridge = FeatureFlags.FORCE_FEED_BRIDGE || !BuildConfig.DEBUG
+        fun useBridge(context: Context) = SHOULD_USE_BRIDGE || getInstance(context).customBridgeAvailable()
     }
 }

@@ -247,6 +247,8 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val forceFakePieAnims by BooleanPref("pref_forceFakePieAnims", false)
     val displayDebugOverlay by BooleanPref("pref_debugDisplayState", false)
     val watchHeapLimit by BooleanPref("pref_watchHeapLimit", false, restart)
+    var feedProvider by StringPref("pref_feedProvider", "", restart)
+    val ignoreFeedWhitelist by BooleanPref("pref_feedProviderAllowAll", false, restart)
 
     // Search
     var searchProvider by StringPref("pref_globalSearchProvider", lawnchairConfig.defaultSearchProvider) {

@@ -748,6 +748,8 @@ public class SettingsActivity extends SettingsBaseActivity implements
                 f = SmartspaceEventProvidersFragment.Companion.newInstance(preference.getKey());
             } else if (preference instanceof WeatherIconPackPreference) {
                 f = WeatherIconPackDialogFragment.Companion.newInstance();
+            } else if (preference instanceof FeedProviderPreference) {
+                f = FeedProviderDialogFragment.Companion.newInstance();
             } else {
                 super.onDisplayPreferenceDialog(preference);
                 return;

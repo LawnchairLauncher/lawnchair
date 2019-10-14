@@ -102,6 +102,12 @@
         android:defaultValue="false"
         android:persistent="true" />
 
+    <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+        android:key="pref_feedProviderAllowAll"
+        android:title="Disable feed provider whitelist"
+        android:summary="Allow selecting feed implementations which haven't been checked by the lawnchair team"
+        android:defaultValue="false"/>
+
     <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory
         android:key="prefCat_wipOptions"
         android:title="Other"
