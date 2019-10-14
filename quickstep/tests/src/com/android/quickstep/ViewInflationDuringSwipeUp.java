@@ -42,6 +42,7 @@ import android.view.ViewConfiguration;
 import android.widget.RemoteViews;
 
 import androidx.test.filters.LargeTest;
+import androidx.test.filters.Suppress;
 import androidx.test.runner.AndroidJUnit4;
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.UiDevice;
@@ -77,7 +78,10 @@ import java.util.function.IntConsumer;
  *        directly (ex: new LinearLayout)
  *    Using ExtendedMockito: Mocking static methods from platform classes (loaded in zygote) makes
  *        the main thread extremely slow and untestable
+ *
+ * Suppressed until b/141579810 is resolved
  */
+@Suppress
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class ViewInflationDuringSwipeUp extends AbstractQuickStepTest {
