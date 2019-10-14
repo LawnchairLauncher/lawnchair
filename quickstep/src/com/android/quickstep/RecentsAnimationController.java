@@ -18,6 +18,8 @@ package com.android.quickstep;
 import static android.view.MotionEvent.ACTION_CANCEL;
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
 import android.os.SystemClock;
 import android.util.Log;
@@ -28,70 +30,96 @@ import android.view.MotionEvent;
 import androidx.annotation.UiThread;
 
 import com.android.launcher3.util.Preconditions;
-import com.android.quickstep.inputconsumers.InputConsumer;
-import com.android.quickstep.util.SwipeAnimationTargetSet;
+import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.InputConsumerController;
+import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
 
-import java.util.ArrayList;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
  * Wrapper around RecentsAnimationController to help with some synchronization
  */
-public class RecentsAnimationWrapper {
+public class RecentsAnimationController {
 
-    private static final String TAG = "RecentsAnimationWrapper";
+    private static final String TAG = "RecentsAnimationController";
 
-    // A list of callbacks to run when we receive the recents animation target. There are different
-    // than the state callbacks as these run on the current worker thread.
-    private final ArrayList<Runnable> mCallbacks = new ArrayList<>();
-
-    public SwipeAnimationTargetSet targetSet;
+    private final RecentsAnimationControllerCompat mController;
+    private final Consumer<RecentsAnimationController> mOnFinishedListener;
+    private final boolean mShouldMinimizeSplitScreen;
 
     private boolean mWindowThresholdCrossed = false;
 
-    private final InputConsumerController mInputConsumerController;
-    private final Supplier<InputConsumer> mInputProxySupplier;
-
+    private InputConsumerController mInputConsumerController;
+    private Supplier<InputConsumer> mInputProxySupplier;
     private InputConsumer mInputConsumer;
     private boolean mTouchInProgress;
-
     private boolean mFinishPending;
 
-    public RecentsAnimationWrapper(InputConsumerController inputConsumerController,
-            Supplier<InputConsumer> inputProxySupplier) {
-        mInputConsumerController = inputConsumerController;
-        mInputProxySupplier = inputProxySupplier;
+    public RecentsAnimationController(RecentsAnimationControllerCompat controller,
+            boolean shouldMinimizeSplitScreen,
+            Consumer<RecentsAnimationController> onFinishedListener) {
+        mController = controller;
+        mOnFinishedListener = onFinishedListener;
+        mShouldMinimizeSplitScreen = shouldMinimizeSplitScreen;
+
+        setWindowThresholdCrossed(mWindowThresholdCrossed);
     }
 
-    public boolean hasTargets() {
-        return targetSet != null && targetSet.hasTargets();
+    /**
+     * Synchronously takes a screenshot of the task with the given {@param taskId} if the task is
+     * currently being animated.
+     */
+    public ThumbnailData screenshotTask(int taskId) {
+        return mController != null ? mController.screenshotTask(taskId) : null;
+    }
+
+    /**
+     * Indicates that the gesture has crossed the window boundary threshold and system UI can be
+     * update the represent the window behind
+     */
+    public void setWindowThresholdCrossed(boolean windowThresholdCrossed) {
+        if (mWindowThresholdCrossed != windowThresholdCrossed) {
+            mWindowThresholdCrossed = windowThresholdCrossed;
+            UI_HELPER_EXECUTOR.execute(() -> {
+                mController.setAnimationTargetsBehindSystemBars(!windowThresholdCrossed);
+                if (mShouldMinimizeSplitScreen && windowThresholdCrossed) {
+                    // NOTE: As a workaround for conflicting animations (Launcher animating the task
+                    // leash, and SystemUI resizing the docked stack, which resizes the task), we
+                    // currently only set the minimized mode, and not the inverse.
+                    // TODO: Synchronize the minimize animation with the launcher animation
+                    mController.setSplitScreenMinimized(windowThresholdCrossed);
+                }
+            });
+        }
+    }
+
+    /**
+     * Notifies the controller that we want to defer cancel until the next app transition starts.
+     * If {@param screenshot} is set, then we will receive a screenshot on the next
+     * {@link RecentsAnimationCallbacks#onAnimationCanceled(ThumbnailData)} and we must also call
+     * {@link #cleanupScreenshot()} when that screenshot is no longer used.
+     */
+    public void setDeferCancelUntilNextTransition(boolean defer, boolean screenshot) {
+        mController.setDeferCancelUntilNextTransition(defer, screenshot);
+    }
+
+    /**
+     * Cleans up the screenshot previously returned from
+     * {@link RecentsAnimationCallbacks#onAnimationCanceled(ThumbnailData)}.
+     */
+    public void cleanupScreenshot() {
+        UI_HELPER_EXECUTOR.execute(() -> mController.cleanupScreenshot());
     }
 
     @UiThread
-    public synchronized void setController(SwipeAnimationTargetSet targetSet) {
-        Preconditions.assertUIThread();
-        this.targetSet = targetSet;
-
-        if (targetSet == null) {
-            return;
-        }
-        targetSet.setWindowThresholdCrossed(mWindowThresholdCrossed);
-
-        if (!mCallbacks.isEmpty()) {
-            for (Runnable action : new ArrayList<>(mCallbacks)) {
-                action.run();
-            }
-            mCallbacks.clear();
-        }
+    public void finishAnimationToHome() {
+        finishAndClear(true /* toRecents */, null, false /* sendUserLeaveHint */);
     }
 
-    public synchronized void runOnInit(Runnable action) {
-        if (targetSet == null) {
-            mCallbacks.add(action);
-        } else {
-            action.run();
-        }
+    @UiThread
+    public void finishAnimationToApp() {
+        finishAndClear(false /* toRecents */, null, false /* sendUserLeaveHint */);
     }
 
     /** See {@link #finish(boolean, Runnable, boolean)} */
@@ -127,34 +155,36 @@ public class RecentsAnimationWrapper {
 
     private void finishAndClear(boolean toRecents, Runnable onFinishComplete,
             boolean sendUserLeaveHint) {
-        SwipeAnimationTargetSet controller = targetSet;
-        targetSet = null;
         disableInputProxy();
-        if (controller != null) {
-            controller.finishController(toRecents, onFinishComplete, sendUserLeaveHint);
-        }
+        finishController(toRecents, onFinishComplete, sendUserLeaveHint);
     }
 
-    public void enableInputConsumer() {
-        if (targetSet != null) {
-            targetSet.enableInputConsumer();
-        }
+    @UiThread
+    public void finishController(boolean toRecents, Runnable callback, boolean sendUserLeaveHint) {
+        mOnFinishedListener.accept(this);
+        UI_HELPER_EXECUTOR.execute(() -> {
+            mController.setInputConsumerEnabled(false);
+            mController.finish(toRecents, sendUserLeaveHint);
+            if (callback != null) {
+                MAIN_EXECUTOR.execute(callback);
+            }
+        });
     }
 
     /**
-     * Indicates that the gesture has crossed the window boundary threshold and system UI can be
-     * update the represent the window behind
+     * Enables the input consumer to start intercepting touches in the app window.
      */
-    public void setWindowThresholdCrossed(boolean windowThresholdCrossed) {
-        if (mWindowThresholdCrossed != windowThresholdCrossed) {
-            mWindowThresholdCrossed = windowThresholdCrossed;
-            if (targetSet != null) {
-                targetSet.setWindowThresholdCrossed(windowThresholdCrossed);
-            }
-        }
+    public void enableInputConsumer() {
+        UI_HELPER_EXECUTOR.submit(() -> {
+            mController.hideCurrentInputMethod();
+            mController.setInputConsumerEnabled(true);
+        });
     }
 
-    public void enableInputProxy() {
+    public void enableInputProxy(InputConsumerController inputConsumerController,
+            Supplier<InputConsumer> inputProxySupplier) {
+        mInputProxySupplier = inputProxySupplier;
+        mInputConsumerController = inputConsumerController;
         mInputConsumerController.setInputListener(this::onInputConsumerEvent);
     }
 
@@ -165,7 +195,9 @@ public class RecentsAnimationWrapper {
             mInputConsumer.onMotionEvent(dummyCancel);
             dummyCancel.recycle();
         }
-        mInputConsumerController.setInputListener(null);
+        if (mInputConsumerController != null) {
+            mInputConsumerController.setInputListener(null);
+        }
     }
 
     private boolean onInputConsumerEvent(InputEvent ev) {
@@ -213,15 +245,5 @@ public class RecentsAnimationWrapper {
         }
 
         return true;
-    }
-
-    public void setDeferCancelUntilNextTransition(boolean defer, boolean screenshot) {
-        if (targetSet != null) {
-            targetSet.controller.setDeferCancelUntilNextTransition(defer, screenshot);
-        }
-    }
-
-    public SwipeAnimationTargetSet getController() {
-        return targetSet;
     }
 }

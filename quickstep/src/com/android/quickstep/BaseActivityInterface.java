@@ -17,12 +17,9 @@ package com.android.quickstep;
 
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.Region;
 import android.os.Build;
-import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Interpolator;
@@ -34,8 +31,8 @@ import androidx.annotation.UiThread;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.anim.AnimatorPlaybackController;
-import com.android.quickstep.util.RemoteAnimationProvider;
-import com.android.quickstep.util.RemoteAnimationTargetSet;
+import com.android.quickstep.util.ActivityInitListener;
+import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.util.function.BiPredicate;
@@ -45,7 +42,7 @@ import java.util.function.Consumer;
  * Utility class which abstracts out the logical differences between Launcher and RecentsActivity.
  */
 @TargetApi(Build.VERSION_CODES.P)
-public interface ActivityControlHelper<T extends BaseDraggingActivity> {
+public interface BaseActivityInterface<T extends BaseDraggingActivity> {
 
     void onTransitionCancelled(T activity, boolean activityVisible);
 
@@ -82,7 +79,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
     boolean shouldMinimizeSplitScreen();
 
-    default boolean deferStartingActivity(Region activeNavBarRegion, MotionEvent ev) {
+    default boolean deferStartingActivity(RecentsAnimationDeviceState deviceState, MotionEvent ev) {
         return true;
     }
 
@@ -99,15 +96,7 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
     default void closeOverlay() { }
 
-    interface ActivityInitListener {
-
-        void register();
-
-        void unregister();
-
-        void registerAndStartActivity(Intent intent, RemoteAnimationProvider animProvider,
-                Context context, Handler handler, long duration);
-    }
+    default void switchToScreenshot(ThumbnailData thumbnailData, Runnable runnable) {}
 
     interface AnimationFactory {
 
@@ -121,9 +110,9 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
             public final boolean shouldPreformHaptic;
         }
 
-        default void onRemoteAnimationReceived(RemoteAnimationTargetSet targets) { }
+        default void onRemoteAnimationReceived(RemoteAnimationTargets targets) { }
 
-        void createActivityController(long transitionLength);
+        void createActivityInterface(long transitionLength);
 
         default void adjustActivityControllerInterpolators() { }
 

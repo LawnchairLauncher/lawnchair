@@ -13,24 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.android.quickstep.util;
 
-package com.android.launcher3.compat;
-
-import android.annotation.TargetApi;
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageInstaller;
 
-import java.util.List;
+import com.android.launcher3.logging.EventLogArray;
+import com.android.launcher3.util.MainThreadInitializedObject;
 
-@TargetApi(29)
-public class LauncherAppsCompatVQ extends LauncherAppsCompatVO {
+/**
+ * A log to keep track of the active gesture.
+ */
+public class ActiveGestureLog extends EventLogArray {
 
-    LauncherAppsCompatVQ(Context context) {
-        super(context);
-    }
+    public static final ActiveGestureLog INSTANCE = new ActiveGestureLog();
 
-    public List<PackageInstaller.SessionInfo> getAllPackageInstallerSessions() {
-        return mLauncherApps.getAllPackageInstallerSessions();
+    /**
+     * NOTE: This value should be kept same as
+     * ActivityTaskManagerService#INTENT_EXTRA_LOG_TRACE_ID in platform
+     */
+    public static final String INTENT_EXTRA_LOG_TRACE_ID = "INTENT_EXTRA_LOG_TRACE_ID";
+
+    public ActiveGestureLog() {
+        super("touch_interaction_log", 40);
     }
 }

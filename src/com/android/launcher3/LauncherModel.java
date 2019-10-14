@@ -21,11 +21,10 @@ import static com.android.launcher3.config.FeatureFlags.IS_DOGFOOD_BUILD;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
+import android.content.pm.LauncherApps;
+import android.content.pm.PackageInstaller;
 import android.content.pm.ShortcutInfo;
-import android.os.Process;
 import android.os.UserHandle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -33,9 +32,8 @@ import android.util.Pair;
 
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.compat.LauncherAppsCompat;
-import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.logging.FileLog;
@@ -52,7 +50,10 @@ import com.android.launcher3.model.PackageInstallStateChangedTask;
 import com.android.launcher3.model.PackageUpdatedTask;
 import com.android.launcher3.model.ShortcutsChangedTask;
 import com.android.launcher3.model.UserLockStateChangedTask;
+import com.android.launcher3.pm.InstallSessionTracker;
+import com.android.launcher3.pm.PackageInstallInfo;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.IntSparseArrayMap;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.PackageUserKey;
@@ -74,8 +75,7 @@ import java.util.function.Supplier;
  * LauncherModel object held in a static. Also provide APIs for updating the database state
  * for the Launcher.
  */
-public class LauncherModel extends BroadcastReceiver
-        implements LauncherAppsCompat.OnAppsChangedCallbackCompat {
+public class LauncherModel extends LauncherApps.Callback implements InstallSessionTracker.Callback {
     private static final boolean DEBUG_RECEIVER = false;
 
     static final String TAG = "Launcher.Model";
@@ -93,6 +93,10 @@ public class LauncherModel extends BroadcastReceiver
     private boolean mModelLoaded;
     public boolean isModelLoaded() {
         synchronized (mLock) {
+            if (TestProtocol.sDebugTracing) {
+                Log.d(TestProtocol.LAUNCHER_DIDNT_INITIALIZE,
+                        "isModelLoaded: " + mModelLoaded + ", " + mLoaderTask);
+            }
             return mModelLoaded && mLoaderTask == null;
         }
     }
@@ -127,20 +131,6 @@ public class LauncherModel extends BroadcastReceiver
         mBgAllAppsList = new AllAppsList(iconCache, appFilter);
     }
 
-    public void setPackageState(PackageInstallInfo installInfo) {
-        enqueueModelUpdateTask(new PackageInstallStateChangedTask(installInfo));
-    }
-
-    /**
-     * Updates the icons and label of all pending icons for the provided package name.
-     */
-    public void updateSessionDisplayInfo(final String packageName) {
-        HashSet<String> packages = new HashSet<>();
-        packages.add(packageName);
-        enqueueModelUpdateTask(new CacheDataUpdatedTask(
-                CacheDataUpdatedTask.OP_SESSION_UPDATE, Process.myUserHandle(), packages));
-    }
-
     /**
      * Adds the provided items to the workspace.
      */
@@ -171,30 +161,6 @@ public class LauncherModel extends BroadcastReceiver
     public void onPackageChanged(String packageName, UserHandle user) {
         int op = PackageUpdatedTask.OP_UPDATE;
         enqueueModelUpdateTask(new PackageUpdatedTask(op, user, packageName));
-    }
-
-    public void onSessionFailure(String packageName, UserHandle user) {
-        enqueueModelUpdateTask(new BaseModelUpdateTask() {
-            @Override
-            public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
-                final IntSparseArrayMap<Boolean> removedIds = new IntSparseArrayMap<>();
-                synchronized (dataModel) {
-                    for (ItemInfo info : dataModel.itemsIdMap) {
-                        if (info instanceof WorkspaceItemInfo
-                                && ((WorkspaceItemInfo) info).hasPromiseIconUi()
-                                && user.equals(info.user)
-                                && info.getIntent() != null
-                                && TextUtils.equals(packageName, info.getIntent().getPackage())) {
-                            removedIds.put(info.id, true /* remove */);
-                        }
-                    }
-                }
-
-                if (!removedIds.isEmpty()) {
-                    deleteAndBindComponentsRemoved(ItemInfoMatcher.ofItemIds(removedIds, false));
-                }
-            }
-        });
     }
 
     @Override
@@ -253,12 +219,7 @@ public class LauncherModel extends BroadcastReceiver
         enqueueModelUpdateTask(new ShortcutsChangedTask(packageName, shortcuts, user, false));
     }
 
-    /**
-     * Call from the handler for ACTION_PACKAGE_ADDED, ACTION_PACKAGE_REMOVED and
-     * ACTION_PACKAGE_CHANGED.
-     */
-    @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onBroadcastIntent(Intent intent) {
         if (DEBUG_RECEIVER) Log.d(TAG, "onReceive intent=" + intent);
         final String action = intent.getAction();
         if (Intent.ACTION_LOCALE_CHANGED.equals(action)) {
@@ -266,7 +227,7 @@ public class LauncherModel extends BroadcastReceiver
             forceReload();
         } else if (Intent.ACTION_MANAGED_PROFILE_ADDED.equals(action)
                 || Intent.ACTION_MANAGED_PROFILE_REMOVED.equals(action)) {
-            UserManagerCompat.getInstance(context).enableAndResetCache();
+            UserManagerCompat.getInstance(mApp.getContext()).enableAndResetCache();
             forceReload();
         } else if (Intent.ACTION_MANAGED_PROFILE_AVAILABLE.equals(action) ||
                 Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE.equals(action) ||
@@ -392,14 +353,63 @@ public class LauncherModel extends BroadcastReceiver
         }
     }
 
+    @Override
     public void onInstallSessionCreated(final PackageInstallInfo sessionInfo) {
+        if (FeatureFlags.PROMISE_APPS_IN_ALL_APPS.get()) {
+            enqueueModelUpdateTask(new BaseModelUpdateTask() {
+                @Override
+                public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
+                    apps.addPromiseApp(app.getContext(), sessionInfo);
+                    bindApplicationsIfNeeded();
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onSessionFailure(String packageName, UserHandle user) {
+        if (!FeatureFlags.PROMISE_APPS_NEW_INSTALLS.get()) {
+            return;
+        }
         enqueueModelUpdateTask(new BaseModelUpdateTask() {
             @Override
             public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
-                apps.addPromiseApp(app.getContext(), sessionInfo);
-                bindApplicationsIfNeeded();
+                final IntSparseArrayMap<Boolean> removedIds = new IntSparseArrayMap<>();
+                synchronized (dataModel) {
+                    for (ItemInfo info : dataModel.itemsIdMap) {
+                        if (info instanceof WorkspaceItemInfo
+                                && ((WorkspaceItemInfo) info).hasPromiseIconUi()
+                                && user.equals(info.user)
+                                && info.getIntent() != null
+                                && TextUtils.equals(packageName, info.getIntent().getPackage())) {
+                            removedIds.put(info.id, true /* remove */);
+                        }
+                    }
+                }
+
+                if (!removedIds.isEmpty()) {
+                    deleteAndBindComponentsRemoved(ItemInfoMatcher.ofItemIds(removedIds, false));
+                }
             }
         });
+    }
+
+    @Override
+    public void onPackageStateChanged(PackageInstallInfo installInfo) {
+        enqueueModelUpdateTask(new PackageInstallStateChangedTask(installInfo));
+    }
+
+    /**
+     * Updates the icons and label of all pending icons for the provided package name.
+     */
+    @Override
+    public void onUpdateSessionDisplay(PackageUserKey key, PackageInstaller.SessionInfo info) {
+        mApp.getIconCache().updateSessionCache(key, info);
+
+        HashSet<String> packages = new HashSet<>();
+        packages.add(key.mPackageName);
+        enqueueModelUpdateTask(new CacheDataUpdatedTask(
+                CacheDataUpdatedTask.OP_SESSION_UPDATE, key.mUser, packages));
     }
 
     public class LoaderTransaction implements AutoCloseable {

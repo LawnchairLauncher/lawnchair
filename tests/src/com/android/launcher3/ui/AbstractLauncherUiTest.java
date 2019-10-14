@@ -17,6 +17,7 @@ package com.android.launcher3.ui;
 
 import static androidx.test.InstrumentationRegistry.getInstrumentation;
 
+import static com.android.launcher3.WorkspaceLayoutManager.FIRST_SCREEN_ID;
 import static com.android.launcher3.tapl.LauncherInstrumentation.ContainerType;
 import static com.android.launcher3.ui.TaplTestsLauncher3.getAppPackageName;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
@@ -27,11 +28,13 @@ import static java.lang.System.exit;
 
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.pm.LauncherActivityInfo;
+import android.content.pm.LauncherApps;
 import android.content.pm.PackageManager;
 import android.os.Process;
 import android.os.RemoteException;
@@ -43,19 +46,19 @@ import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.Until;
 
+import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.tapl.TestHelpers;
 import com.android.launcher3.testcomponent.TestCommandReceiver;
 import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Wait;
@@ -94,8 +97,7 @@ public abstract class AbstractLauncherUiTest {
 
     protected LooperExecutor mMainThreadExecutor = MAIN_EXECUTOR;
     protected final UiDevice mDevice = UiDevice.getInstance(getInstrumentation());
-    protected final LauncherInstrumentation mLauncher =
-            new LauncherInstrumentation(getInstrumentation());
+    protected final LauncherInstrumentation mLauncher = new LauncherInstrumentation();
     protected Context mTargetContext;
     protected String mTargetPackage;
 
@@ -107,8 +109,9 @@ public abstract class AbstractLauncherUiTest {
         }
         if (TestHelpers.isInLauncherProcess()) {
             Utilities.enableRunningInTestHarnessForTests();
-            mLauncher.setSystemHealthSupplier(() -> TestCommandReceiver.callCommand(
-                    TestCommandReceiver.GET_SYSTEM_HEALTH_MESSAGE).getString("result"));
+            mLauncher.setSystemHealthSupplier(startTime -> TestCommandReceiver.callCommand(
+                    TestCommandReceiver.GET_SYSTEM_HEALTH_MESSAGE, startTime.toString()).
+                    getString("result"));
             mLauncher.setOnSettledStateAction(
                     containerType -> executeOnLauncher(
                             launcher ->
@@ -173,15 +176,13 @@ public abstract class AbstractLauncherUiTest {
 
         mTargetContext = InstrumentationRegistry.getTargetContext();
         mTargetPackage = mTargetContext.getPackageName();
-        // Unlock the phone
-        mDevice.executeShellCommand("input keyevent 82");
     }
 
     @After
     public void verifyLauncherState() {
         try {
             // Limits UI tests affecting tests running after them.
-            waitForModelLoaded();
+            mLauncher.waitForLauncherInitialized();
         } catch (Throwable t) {
             Log.e(TAG,
                     "Couldn't deinit after a test, exiting tests, see logs for failures that "
@@ -220,14 +221,36 @@ public abstract class AbstractLauncherUiTest {
         } catch (Throwable t) {
             throw new IllegalArgumentException(t);
         }
-        waitForModelLoaded();
+        mLauncher.waitForLauncherInitialized();
     }
 
-    protected void waitForModelLoaded() {
-        waitForLauncherCondition("Launcher model didn't load", launcher -> {
-            final LauncherModel model = LauncherAppState.getInstance(mTargetContext).getModel();
-            return model.getCallback() == null || model.isModelLoaded();
-        });
+    /**
+     * Adds {@param item} on the homescreen on the 0th screen
+     */
+    protected void addItemToScreen(ItemInfo item) {
+        ContentResolver resolver = mTargetContext.getContentResolver();
+        int screenId = FIRST_SCREEN_ID;
+        // Update the screen id counter for the provider.
+        LauncherSettings.Settings.call(resolver, LauncherSettings.Settings.METHOD_NEW_SCREEN_ID);
+
+        if (screenId > FIRST_SCREEN_ID) {
+            screenId = FIRST_SCREEN_ID;
+        }
+
+        // Insert the item
+        ContentWriter writer = new ContentWriter(mTargetContext);
+        item.id = LauncherSettings.Settings.call(
+                resolver, LauncherSettings.Settings.METHOD_NEW_ITEM_ID)
+                .getInt(LauncherSettings.Settings.EXTRA_VALUE);
+        item.screenId = screenId;
+        item.onAddToDatabase(writer);
+        writer.put(LauncherSettings.Favorites._ID, item.id);
+        resolver.insert(LauncherSettings.Favorites.CONTENT_URI, writer.getValues(mTargetContext));
+        resetLoaderState();
+
+        // Launch the home activity
+        mDevice.pressHome();
+        mLauncher.waitForLauncherInitialized();
     }
 
     /**
@@ -312,9 +335,8 @@ public abstract class AbstractLauncherUiTest {
     }
 
     protected LauncherActivityInfo getSettingsApp() {
-        return LauncherAppsCompat.getInstance(mTargetContext)
-                .getActivityList("com.android.settings",
-                        Process.myUserHandle()).get(0);
+        return mTargetContext.getSystemService(LauncherApps.class)
+                .getActivityList("com.android.settings", Process.myUserHandle()).get(0);
     }
 
     /**

@@ -45,13 +45,14 @@ import android.view.View.OnTouchListener;
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.InstallShortcutReceiver;
 import com.android.launcher3.InvariantDeviceProfile;
+import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetHost;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
-import com.android.launcher3.compat.LauncherAppsCompatVO;
 import com.android.launcher3.model.WidgetItem;
+import com.android.launcher3.pm.PinRequestHelper;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.util.InstantAppResolver;
@@ -92,7 +93,7 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mRequest = LauncherAppsCompatVO.getPinItemRequest(getIntent());
+        mRequest = PinRequestHelper.getPinItemRequest(getIntent());
         if (mRequest == null) {
             finish();
             return;
@@ -176,7 +177,7 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
                         .setPackage(getPackageName())
                         .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
 
-        listener.initWhenReady();
+        Launcher.ACTIVITY_TRACKER.schedule(listener);
         startActivity(homeIntent,
                 ActivityOptions.makeCustomAnimation(this, 0, android.R.anim.fade_out).toBundle());
         mFinishOnPause = true;

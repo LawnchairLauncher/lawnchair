@@ -17,7 +17,6 @@ package com.android.launcher3.icons.cache;
 
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.pm.PackageInfo;
 import android.os.LocaleList;
 import android.os.UserHandle;
 
@@ -44,9 +43,9 @@ public interface CachingLogic<T> {
     }
 
     /**
-     * Returns the timestamp the entry was last updated in cache.
+     * Returns true the object should be added to mem cache; otherwise returns false.
      */
-    default long getLastUpdatedTime(T object, PackageInfo info) {
-        return info.lastUpdateTime;
+    default boolean addToMemCache() {
+        return true;
     }
 }

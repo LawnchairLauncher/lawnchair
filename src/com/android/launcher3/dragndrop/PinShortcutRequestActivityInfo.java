@@ -29,14 +29,14 @@ import android.os.Build;
 import android.os.Process;
 
 import com.android.launcher3.FastBitmapDrawable;
-import com.android.launcher3.WorkspaceItemInfo;
-import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
-import com.android.launcher3.compat.LauncherAppsCompatVO;
-import com.android.launcher3.compat.ShortcutConfigActivityInfo;
+import com.android.launcher3.WorkspaceItemInfo;
+import com.android.launcher3.icons.IconCache;
+import com.android.launcher3.pm.PinRequestHelper;
+import com.android.launcher3.pm.ShortcutConfigActivityInfo;
 
 /**
  * Extension of ShortcutConfigActivityInfo to be used in the confirmation prompt for pin item
@@ -88,7 +88,7 @@ class PinShortcutRequestActivityInfo extends ShortcutConfigActivityInfo {
                 LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY +
                 LauncherAnimUtils.SPRING_LOADED_TRANSITION_MS;
         // Delay the actual accept() call until the drop animation is complete.
-        return LauncherAppsCompatVO.createWorkspaceItemFromPinItemRequest(
+        return PinRequestHelper.createWorkspaceItemFromPinItemRequest(
                 mContext, mRequest, duration);
     }
 

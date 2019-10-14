@@ -16,7 +16,7 @@
 package com.android.launcher3.widget;
 
 import com.android.launcher3.PendingAddItemInfo;
-import com.android.launcher3.compat.ShortcutConfigActivityInfo;
+import com.android.launcher3.pm.ShortcutConfigActivityInfo;
 
 /**
  * Meta data used for late binding of the short cuts.

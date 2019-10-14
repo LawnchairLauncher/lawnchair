@@ -57,7 +57,7 @@ public class SysUINavigationMode {
 
     private static final String TAG = "SysUINavigationMode";
 
-    private final String ACTION_OVERLAY_CHANGED = "android.intent.action.OVERLAY_CHANGED";
+    private static final String ACTION_OVERLAY_CHANGED = "android.intent.action.OVERLAY_CHANGED";
     private static final String NAV_BAR_INTERACTION_MODE_RES_NAME =
             "config_navBarInteractionMode";
 

@@ -24,6 +24,7 @@ import android.app.prediction.AppTarget;
 import android.app.prediction.AppTargetId;
 import android.content.ComponentName;
 import android.content.pm.LauncherActivityInfo;
+import android.content.pm.LauncherApps;
 import android.os.Process;
 import android.view.View;
 
@@ -35,7 +36,6 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.appprediction.PredictionRowView;
 import com.android.launcher3.appprediction.PredictionUiStateManager;
 import com.android.launcher3.appprediction.PredictionUiStateManager.Client;
-import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.model.AppLaunchTracker;
 
 import org.junit.After;
@@ -60,7 +60,7 @@ public class AppPredictionsUITests extends AbstractQuickStepTest {
     public void setUp() throws Exception {
         super.setUp();
 
-        List<LauncherActivityInfo> activities = LauncherAppsCompat.getInstance(mTargetContext)
+        List<LauncherActivityInfo> activities = mTargetContext.getSystemService(LauncherApps.class)
                 .getActivityList(null, Process.myUserHandle());
         mSampleApp1 = activities.get(0);
         mSampleApp2 = activities.get(1);

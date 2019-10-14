@@ -15,14 +15,17 @@
  */
 package com.android.launcher3.testing;
 
-import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static android.graphics.Bitmap.Config.ARGB_8888;
+
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Debug;
+import android.util.Log;
+import android.view.View;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
@@ -34,7 +37,9 @@ import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.util.ResourceBasedOverride;
 
 import java.util.LinkedList;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 public class TestInformationHandler implements ResourceBasedOverride {
 
@@ -54,8 +59,7 @@ public class TestInformationHandler implements ResourceBasedOverride {
         mDeviceProfile = InvariantDeviceProfile.INSTANCE.
                 get(context).getDeviceProfile(context);
         mLauncherAppState = LauncherAppState.getInstanceNoCreate();
-        mLauncher = mLauncherAppState != null ?
-                (Launcher) mLauncherAppState.getModel().getCallback() : null;
+        mLauncher = Launcher.ACTIVITY_TRACKER.getCreatedActivity();
     }
 
     public Bundle call(String method) {
@@ -82,7 +86,7 @@ public class TestInformationHandler implements ResourceBasedOverride {
             }
 
             case TestProtocol.REQUEST_IS_LAUNCHER_INITIALIZED: {
-                response.putBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD, true);
+                response.putBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD, isLauncherInitialized());
                 break;
             }
 
@@ -112,15 +116,27 @@ public class TestInformationHandler implements ResourceBasedOverride {
                             mLauncher.getAppsView().getAppsStore().getDeferUpdatesFlags()).get();
                     response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD,
                             deferUpdatesFlags);
-                } catch (ExecutionException e) {
+                } catch (ExecutionException | InterruptedException e) {
                     throw new RuntimeException(e);
-                } catch (InterruptedException e) {
+                }
+                break;
+            }
+
+            case TestProtocol.REQUEST_APPS_LIST_SCROLL_Y: {
+                try {
+                    final int deferUpdatesFlags = MAIN_EXECUTOR.submit(() ->
+                            mLauncher.getAppsView().getActiveRecyclerView().getCurrentScrollY())
+                            .get();
+                    response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD,
+                            deferUpdatesFlags);
+                } catch (ExecutionException | InterruptedException e) {
                     throw new RuntimeException(e);
                 }
                 break;
             }
 
             case TestProtocol.REQUEST_TOTAL_PSS_KB: {
+                runGcAndFinalizersSync();
                 Debug.MemoryInfo mem = new Debug.MemoryInfo();
                 Debug.getMemoryInfo(mem);
                 response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD, mem.getTotalPss());
@@ -149,7 +165,49 @@ public class TestInformationHandler implements ResourceBasedOverride {
                 mLeaks.add(bitmap);
                 break;
             }
+
+            case TestProtocol.REQUEST_VIEW_LEAK: {
+                if (mLeaks == null) mLeaks = new LinkedList();
+
+                mLeaks.add(new View(mContext));
+                break;
+            }
         }
         return response;
+    }
+
+    protected boolean isLauncherInitialized() {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.LAUNCHER_DIDNT_INITIALIZE,
+                    "isLauncherInitialized " + Launcher.ACTIVITY_TRACKER.getCreatedActivity() + ", "
+                            + LauncherAppState.getInstance(mContext).getModel().isModelLoaded());
+        }
+        return Launcher.ACTIVITY_TRACKER.getCreatedActivity() == null
+                || LauncherAppState.getInstance(mContext).getModel().isModelLoaded();
+    }
+
+    private static void runGcAndFinalizersSync() {
+        Runtime.getRuntime().gc();
+        Runtime.getRuntime().runFinalization();
+
+        final CountDownLatch fence = new CountDownLatch(1);
+        new Object() {
+            @Override
+            protected void finalize() throws Throwable {
+                try {
+                    fence.countDown();
+                } finally {
+                    super.finalize();
+                }
+            }
+        };
+        try {
+            do {
+                Runtime.getRuntime().gc();
+                Runtime.getRuntime().runFinalization();
+            } while (!fence.await(100, TimeUnit.MILLISECONDS));
+        } catch (InterruptedException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 }

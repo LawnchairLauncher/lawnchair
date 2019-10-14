@@ -30,7 +30,7 @@ import androidx.test.filters.MediumTest;
 import androidx.test.runner.AndroidJUnit4;
 
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
-import com.android.launcher3.testcomponent.TestCommandReceiver;
+import com.android.launcher3.testcomponent.TestCommandProvider;
 import com.android.launcher3.util.LauncherLayoutBuilder;
 import com.android.launcher3.util.rule.ShellCommandRule;
 
@@ -63,7 +63,7 @@ public class DefaultLayoutProviderTest extends AbstractLauncherUiTest {
 
         PackageManager pm = mTargetContext.getPackageManager();
         ProviderInfo pi = pm.getProviderInfo(new ComponentName(mContext,
-                TestCommandReceiver.class), 0);
+                TestCommandProvider.class), 0);
         mAuthority = pi.authority;
     }
 
@@ -73,7 +73,6 @@ public class DefaultLayoutProviderTest extends AbstractLauncherUiTest {
 
         // Launch the home activity
         mDevice.pressHome();
-        waitForModelLoaded();
 
         mLauncher.getWorkspace().getHotseatAppIcon(getSettingsApp().getLabel().toString());
     }
@@ -89,7 +88,6 @@ public class DefaultLayoutProviderTest extends AbstractLauncherUiTest {
 
         // Launch the home activity
         mDevice.pressHome();
-        waitForModelLoaded();
 
         // Verify widget present
         assertTrue("Widget is not present",
@@ -106,7 +104,6 @@ public class DefaultLayoutProviderTest extends AbstractLauncherUiTest {
 
         // Launch the home activity
         mDevice.pressHome();
-        waitForModelLoaded();
 
         mLauncher.getWorkspace().getHotseatFolder("Folder: Copy");
     }

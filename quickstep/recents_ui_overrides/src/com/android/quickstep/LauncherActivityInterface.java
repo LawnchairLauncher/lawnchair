@@ -38,7 +38,6 @@ import android.animation.TimeInterpolator;
 import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.Region;
 import android.os.UserHandle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -50,7 +49,6 @@ import androidx.annotation.UiThread;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherInitListenerEx;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager;
@@ -61,21 +59,23 @@ import com.android.launcher3.uioverrides.states.OverviewState;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.views.FloatingIconView;
 import com.android.quickstep.SysUINavigationMode.Mode;
+import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.util.StaggeredWorkspaceAnim;
 import com.android.quickstep.views.LauncherRecentsView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.plugins.shared.LauncherOverlayManager;
+import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 
 /**
- * {@link ActivityControlHelper} for the in-launcher recents.
+ * {@link BaseActivityInterface} for the in-launcher recents.
  */
-public final class LauncherActivityControllerHelper implements ActivityControlHelper<Launcher> {
+public final class LauncherActivityInterface implements BaseActivityInterface<Launcher> {
 
     private Runnable mAdjustInterpolatorsRunnable;
 
@@ -109,6 +109,14 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
         // Ensure recents is at the correct position for NORMAL state. For example, when we detach
         // recents, we assume the first task is invisible, making translation off by one task.
         activity.getStateManager().reapplyState();
+        setLauncherHideBackArrow(false);
+    }
+
+    private void setLauncherHideBackArrow(boolean hideBackArrow) {
+        Launcher launcher = getCreatedActivity();
+        if (launcher != null) {
+            launcher.getRootView().setForceHideBackArrow(hideBackArrow);
+        }
     }
 
     @Override
@@ -139,7 +147,7 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
                 ? FloatingIconView.getFloatingIconView(activity, workspaceView,
                         true /* hideOriginal */, iconLocation, false /* isOpening */)
                 : null;
-
+        setLauncherHideBackArrow(true);
         return new HomeAnimationFactory() {
             @Nullable
             @Override
@@ -206,8 +214,8 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
             private boolean mIsAttachedToWindow;
 
             @Override
-            public void createActivityController(long transitionLength) {
-                createActivityControllerInternal(activity, fromState, transitionLength, callback);
+            public void createActivityInterface(long transitionLength) {
+                createActivityInterfaceInternal(activity, fromState, transitionLength, callback);
                 // Creating the activity controller animation sometimes reapplies the launcher state
                 // (because we set the animation as the current state animation), so we reapply the
                 // attached state here as well to ensure recents is shown/hidden appropriately.
@@ -274,17 +282,7 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
                     // from the side. Calculate the start translation based on current scale/scroll.
                     float currScale = recentsView.getScaleX();
                     float scrollOffsetX = recentsView.getScrollOffset();
-
-                    float offscreenX = NORMAL.getOverviewScaleAndTranslation(activity).translationX;
-                    // The first task is hidden, so offset by its width.
-                    int firstTaskWidth = recentsView.getTaskViewAt(0).getWidth();
-                    offscreenX -= (firstTaskWidth + recentsView.getPageSpacing()) * currScale;
-                    // Offset since scale pushes tasks outwards.
-                    offscreenX += firstTaskWidth * (currScale - 1) / 2;
-                    offscreenX = Math.max(0, offscreenX);
-                    if (recentsView.isRtl()) {
-                        offscreenX = -offscreenX;
-                    }
+                    float offscreenX = recentsView.getOffscreenTranslationX(currScale);
 
                     float fromTranslationX = attached ? offscreenX - scrollOffsetX : 0;
                     float toTranslationX = attached ? 0 : offscreenX - scrollOffsetX;
@@ -314,7 +312,7 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
         };
     }
 
-    private void createActivityControllerInternal(Launcher activity, LauncherState fromState,
+    private void createActivityInterfaceInternal(Launcher activity, LauncherState fromState,
             long transitionLength, Consumer<AnimatorPlaybackController> callback) {
         LauncherState endState = OVERVIEW;
         if (fromState == endState) {
@@ -406,11 +404,7 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
     @Nullable
     @Override
     public Launcher getCreatedActivity() {
-        LauncherAppState app = LauncherAppState.getInstanceNoCreate();
-        if (app == null) {
-            return null;
-        }
-        return (Launcher) app.getModel().getCallback();
+        return Launcher.ACTIVITY_TRACKER.getCreatedActivity();
     }
 
     @Nullable
@@ -446,8 +440,8 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
     }
 
     @Override
-    public boolean deferStartingActivity(Region activeNavBarRegion, MotionEvent ev) {
-        return activeNavBarRegion.contains((int) ev.getX(), (int) ev.getY());
+    public boolean deferStartingActivity(RecentsAnimationDeviceState deviceState, MotionEvent ev) {
+        return deviceState.isInDeferredGestureRegion(ev);
     }
 
     @Override
@@ -495,6 +489,26 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
             om.hideOverlay(false /* animate */);
         } else {
             om.hideOverlay(150);
+        }
+    }
+
+    @Override
+    public void switchToScreenshot(ThumbnailData thumbnailData, Runnable runnable) {
+        Launcher launcher = getCreatedActivity();
+        RecentsView recentsView = launcher.getOverviewPanel();
+        if (recentsView == null) {
+            if (runnable != null) {
+                runnable.run();
+            }
+            return;
+        }
+        TaskView taskView = recentsView.getRunningTaskView();
+        if (taskView != null) {
+            taskView.setShowScreenshot(true);
+            taskView.getThumbnail().setThumbnail(taskView.getTask(), thumbnailData);
+            ViewUtils.postDraw(taskView, runnable);
+        } else if (runnable != null) {
+            runnable.run();
         }
     }
 }

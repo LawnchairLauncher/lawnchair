@@ -39,6 +39,8 @@ public class LauncherRootView extends InsettableFrameLayout {
     private WindowStateListener mWindowStateListener;
     @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mDisallowBackGesture;
+    @ViewDebug.ExportedProperty(category = "launcher")
+    private boolean mForceHideBackArrow;
 
     public LauncherRootView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -176,12 +178,18 @@ public class LauncherRootView extends InsettableFrameLayout {
     }
 
     @TargetApi(Build.VERSION_CODES.Q)
+    public void setForceHideBackArrow(boolean forceHideBackArrow) {
+        this.mForceHideBackArrow = forceHideBackArrow;
+        setDisallowBackGesture(mDisallowBackGesture);
+    }
+
+    @TargetApi(Build.VERSION_CODES.Q)
     public void setDisallowBackGesture(boolean disallowBackGesture) {
         if (!Utilities.ATLEAST_Q) {
             return;
         }
         mDisallowBackGesture = disallowBackGesture;
-        setSystemGestureExclusionRects(mDisallowBackGesture
+        setSystemGestureExclusionRects((mForceHideBackArrow || mDisallowBackGesture)
                 ? SYSTEM_GESTURE_EXCLUSION_RECT
                 : Collections.emptyList());
     }

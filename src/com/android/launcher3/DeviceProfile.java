@@ -111,6 +111,7 @@ public class DeviceProfile {
 
     // All apps
     public int allAppsCellHeightPx;
+    public int allAppsCellWidthPx;
     public int allAppsIconSizePx;
     public int allAppsIconDrawablePaddingPx;
     public float allAppsIconTextSizePx;
@@ -129,7 +130,8 @@ public class DeviceProfile {
     private boolean mIsSeascape;
 
     // Notification dots
-    public DotRenderer mDotRenderer;
+    public DotRenderer mDotRendererWorkSpace;
+    public DotRenderer mDotRendererAllApps;
 
     public DeviceProfile(Context context, InvariantDeviceProfile inv,
             Point minSize, Point maxSize,
@@ -230,8 +232,11 @@ public class DeviceProfile {
         updateWorkspacePadding();
 
         // This is done last, after iconSizePx is calculated above.
-        mDotRenderer = new DotRenderer(iconSizePx, IconShape.getShapePath(),
+        mDotRendererWorkSpace = new DotRenderer(iconSizePx, IconShape.getShapePath(),
                 IconShape.DEFAULT_PATH_SIZE);
+        mDotRendererAllApps = iconSizePx == allAppsIconSizePx ? mDotRendererWorkSpace :
+                new DotRenderer(allAppsIconSizePx, IconShape.getShapePath(),
+                        IconShape.DEFAULT_PATH_SIZE);
     }
 
     public DeviceProfile copy(Context context) {
@@ -345,6 +350,7 @@ public class DeviceProfile {
             allAppsIconDrawablePaddingPx = iconDrawablePaddingPx;
             allAppsCellHeightPx = getCellSize().y;
         }
+        allAppsCellWidthPx = allAppsIconSizePx + allAppsIconDrawablePaddingPx;
 
         if (isVerticalBarLayout()) {
             // Always hide the Workspace text with vertical bar layout.

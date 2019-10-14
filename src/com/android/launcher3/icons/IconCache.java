@@ -23,10 +23,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherActivityInfo;
+import android.content.pm.LauncherApps;
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageInstaller;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.pm.ShortcutInfo;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Process;
@@ -42,7 +43,6 @@ import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.LauncherFiles;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.WorkspaceItemInfo;
-import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.ComponentWithLabel.ComponentCachingLogic;
@@ -50,8 +50,8 @@ import com.android.launcher3.icons.cache.BaseIconCache;
 import com.android.launcher3.icons.cache.CachingLogic;
 import com.android.launcher3.icons.cache.HandlerRunnable;
 import com.android.launcher3.model.PackageItemInfo;
-import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.InstantAppResolver;
+import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.Preconditions;
 
 import java.util.function.Supplier;
@@ -65,9 +65,8 @@ public class IconCache extends BaseIconCache {
 
     private final CachingLogic<ComponentWithLabel> mComponentWithLabelCachingLogic;
     private final CachingLogic<LauncherActivityInfo> mLauncherActivityInfoCachingLogic;
-    private final CachingLogic<ShortcutInfo> mShortcutCachingLogic;
 
-    private final LauncherAppsCompat mLauncherApps;
+    private final LauncherApps mLauncherApps;
     private final UserManagerCompat mUserManager;
     private final InstantAppResolver mInstantAppResolver;
     private final IconProvider mIconProvider;
@@ -77,10 +76,9 @@ public class IconCache extends BaseIconCache {
     public IconCache(Context context, InvariantDeviceProfile inv) {
         super(context, LauncherFiles.APP_ICONS_DB, MODEL_EXECUTOR.getLooper(),
                 inv.fillResIconDpi, inv.iconBitmapSize, true /* inMemoryCache */);
-        mComponentWithLabelCachingLogic = new ComponentCachingLogic(context);
+        mComponentWithLabelCachingLogic = new ComponentCachingLogic(context, false);
         mLauncherActivityInfoCachingLogic = LauncherActivityCachingLogic.newInstance(context);
-        mShortcutCachingLogic = new ShortcutCachingLogic();
-        mLauncherApps = LauncherAppsCompat.getInstance(mContext);
+        mLauncherApps = mContext.getSystemService(LauncherApps.class);
         mUserManager = UserManagerCompat.getInstance(mContext);
         mInstantAppResolver = InstantAppResolver.newInstance(mContext);
         mIconProvider = IconProvider.INSTANCE.get(context);
@@ -178,14 +176,6 @@ public class IconCache extends BaseIconCache {
     }
 
     /**
-     * Fill in info with the icon and label for deep shortcut.
-     */
-    public synchronized CacheEntry getDeepShortcutTitleAndIcon(ShortcutInfo info) {
-        return cacheLocked(ShortcutKey.fromInfo(info).componentName, info.getUserHandle(),
-                () -> info, mShortcutCachingLogic, false, false);
-    }
-
-    /**
      * Fill in {@param info} with the icon and label. If the
      * corresponding activity is not found, it reverts to the package icon.
      */
@@ -206,7 +196,7 @@ public class IconCache extends BaseIconCache {
     public synchronized String getTitleNoCache(ComponentWithLabel info) {
         CacheEntry entry = cacheLocked(info.getComponent(), info.getUser(), () -> info,
                 mComponentWithLabelCachingLogic, false /* usePackageIcon */,
-                true /* useLowResIcon */, false /* addToMemCache */);
+                true /* useLowResIcon */);
         return Utilities.trim(entry.title);
     }
 
@@ -245,6 +235,10 @@ public class IconCache extends BaseIconCache {
 
     public Drawable getFullResIcon(LauncherActivityInfo info, boolean flattenDrawable) {
         return mIconProvider.getIcon(info, mIconDpi, flattenDrawable);
+    }
+
+    public void updateSessionCache(PackageUserKey key, PackageInstaller.SessionInfo info) {
+        cachePackageInstallInfo(key.mPackageName, key.mUser, info.getAppIcon(), info.getAppLabel());
     }
 
     @Override

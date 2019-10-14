@@ -21,7 +21,6 @@ import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_UP;
 
 import static com.android.launcher3.Utilities.squaredHypot;
-import static com.android.quickstep.TouchInteractionService.TOUCH_INTERACTION_LOG;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 
 import android.content.Context;
@@ -36,7 +35,10 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.logging.StatsLogUtils;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
-import com.android.quickstep.ActivityControlHelper;
+import com.android.quickstep.BaseActivityInterface;
+import com.android.quickstep.InputConsumer;
+import com.android.quickstep.GestureState;
+import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.NavBarPosition;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.InputMonitorCompat;
@@ -49,17 +51,17 @@ public class OverviewWithoutFocusInputConsumer implements InputConsumer {
     private final float mSquaredTouchSlop;
     private final Context mContext;
     private final NavBarPosition mNavBarPosition;
-    private final ActivityControlHelper mActivityControlHelper;
+    private final BaseActivityInterface mActivityInterface;
 
     private boolean mInterceptedTouch;
     private VelocityTracker mVelocityTracker;
 
-    public OverviewWithoutFocusInputConsumer(Context context, InputMonitorCompat inputMonitor,
-            ActivityControlHelper activityControlHelper, boolean disableHorizontalSwipe) {
+    public OverviewWithoutFocusInputConsumer(Context context, GestureState gestureState,
+            InputMonitorCompat inputMonitor, boolean disableHorizontalSwipe) {
         mInputMonitor = inputMonitor;
         mDisableHorizontalSwipe = disableHorizontalSwipe;
         mContext = context;
-        mActivityControlHelper = activityControlHelper;
+        mActivityInterface = gestureState.getActivityInterface();
         mSquaredTouchSlop = Utilities.squaredTouchSlop(context);
         mNavBarPosition = new NavBarPosition(context);
 
@@ -148,10 +150,10 @@ public class OverviewWithoutFocusInputConsumer implements InputConsumer {
         }
 
         if (triggerQuickstep) {
-            mActivityControlHelper.closeOverlay();
+            mActivityInterface.closeOverlay();
             ActivityManagerWrapper.getInstance()
                     .closeSystemWindows(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
-            TOUCH_INTERACTION_LOG.addLog("startQuickstep");
+            ActiveGestureLog.INSTANCE.addLog("startQuickstep");
             BaseActivity activity = BaseDraggingActivity.fromContext(mContext);
             int pageIndex = -1; // This number doesn't reflect workspace page index.
                                 // It only indicates that launcher client screen was shown.

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.quickstep.util;
+package com.android.quickstep;
 
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
@@ -25,17 +25,19 @@ import java.util.Queue;
 /**
  * Holds a collection of RemoteAnimationTargets, filtered by different properties.
  */
-public class RemoteAnimationTargetSet {
+public class RemoteAnimationTargets {
 
     private final Queue<SyncRtSurfaceTransactionApplierCompat> mDependentTransactionAppliers =
             new ArrayDeque<>(1);
 
     public final RemoteAnimationTargetCompat[] unfilteredApps;
     public final RemoteAnimationTargetCompat[] apps;
+    public final RemoteAnimationTargetCompat[] wallpapers;
     public final int targetMode;
     public final boolean hasRecents;
 
-    public RemoteAnimationTargetSet(RemoteAnimationTargetCompat[] apps, int targetMode) {
+    public RemoteAnimationTargets(RemoteAnimationTargetCompat[] apps,
+            RemoteAnimationTargetCompat[] wallpapers, int targetMode) {
         ArrayList<RemoteAnimationTargetCompat> filteredApps = new ArrayList<>();
         boolean hasRecents = false;
         if (apps != null) {
@@ -51,6 +53,7 @@ public class RemoteAnimationTargetSet {
 
         this.unfilteredApps = apps;
         this.apps = filteredApps.toArray(new RemoteAnimationTargetCompat[filteredApps.size()]);
+        this.wallpapers = wallpapers;
         this.targetMode = targetMode;
         this.hasRecents = hasRecents;
     }
@@ -81,6 +84,9 @@ public class RemoteAnimationTargetSet {
         SyncRtSurfaceTransactionApplierCompat applier = mDependentTransactionAppliers.poll();
         if (applier == null) {
             for (RemoteAnimationTargetCompat target : unfilteredApps) {
+                target.release();
+            }
+            for (RemoteAnimationTargetCompat target : wallpapers) {
                 target.release();
             }
         } else {

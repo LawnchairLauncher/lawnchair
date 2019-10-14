@@ -29,7 +29,7 @@ public class TestLauncherProvider extends LauncherProvider {
 
     private static class MyDatabaseHelper extends DatabaseHelper {
         public MyDatabaseHelper(Context context) {
-            super(context, null, null);
+            super(context, null);
             initIds();
         }
 

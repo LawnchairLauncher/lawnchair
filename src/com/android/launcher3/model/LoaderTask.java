@@ -30,6 +30,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.LauncherActivityInfo;
+import android.content.pm.LauncherApps;
 import android.content.pm.PackageInstaller;
 import android.content.pm.PackageInstaller.SessionInfo;
 import android.content.pm.ShortcutInfo;
@@ -52,8 +53,6 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
-import com.android.launcher3.compat.LauncherAppsCompat;
-import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.Folder;
@@ -63,9 +62,10 @@ import com.android.launcher3.icons.ComponentWithLabel.ComponentCachingLogic;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.icons.LauncherActivityCachingLogic;
 import com.android.launcher3.icons.LauncherIcons;
-import com.android.launcher3.icons.ShortcutCachingLogic;
 import com.android.launcher3.icons.cache.IconCacheUpdateHandler;
 import com.android.launcher3.logging.FileLog;
+import com.android.launcher3.pm.PackageInstallInfo;
+import com.android.launcher3.pm.PackageInstallerCompat;
 import com.android.launcher3.provider.ImportDataTask;
 import com.android.launcher3.qsb.QsbContainerView;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
@@ -105,7 +105,7 @@ public class LoaderTask implements Runnable {
 
     private final LoaderResults mResults;
 
-    private final LauncherAppsCompat mLauncherApps;
+    private final LauncherApps mLauncherApps;
     private final UserManagerCompat mUserManager;
     private final DeepShortcutManager mShortcutManager;
     private final PackageInstallerCompat mPackageInstaller;
@@ -121,7 +121,7 @@ public class LoaderTask implements Runnable {
         mBgDataModel = dataModel;
         mResults = results;
 
-        mLauncherApps = LauncherAppsCompat.getInstance(mApp.getContext());
+        mLauncherApps = mApp.getContext().getSystemService(LauncherApps.class);
         mUserManager = UserManagerCompat.getInstance(mApp.getContext());
         mShortcutManager = DeepShortcutManager.getInstance(mApp.getContext());
         mPackageInstaller = PackageInstallerCompat.getInstance(mApp.getContext());
@@ -172,8 +172,7 @@ public class LoaderTask implements Runnable {
         TraceHelper.beginSection(TAG);
         try (LauncherModel.LoaderTransaction transaction = mApp.getModel().beginLoader(this)) {
             TraceHelper.partitionSection(TAG, "step 1.1: loading workspace");
-            List<ShortcutInfo> allShortcuts = new ArrayList<>();
-            loadWorkspace(allShortcuts);
+            loadWorkspace();
 
             verifyNotStopped();
             TraceHelper.partitionSection(TAG, "step 1.2: bind workspace workspace");
@@ -192,21 +191,16 @@ public class LoaderTask implements Runnable {
             TraceHelper.partitionSection(TAG, "step 2.1: loading all apps");
             List<LauncherActivityInfo> allActivityList = loadAllApps();
 
-            TraceHelper.partitionSection(TAG, "step 2.2: binding all apps");
+            TraceHelper.partitionSection(TAG, "step 2.2: Binding all apps");
             verifyNotStopped();
             mResults.bindAllApps();
 
             verifyNotStopped();
-            TraceHelper.partitionSection(TAG, "step 2.3: save app icons in icon cache");
+            TraceHelper.partitionSection(TAG, "step 2.3: Update icon cache");
             IconCacheUpdateHandler updateHandler = mIconCache.getUpdateHandler();
             setIgnorePackages(updateHandler);
             updateHandler.updateIcons(allActivityList,
                     LauncherActivityCachingLogic.newInstance(mApp.getContext()),
-                    mApp.getModel()::onPackageIconsUpdated);
-
-            verifyNotStopped();
-            TraceHelper.partitionSection(TAG, "step 2.4: save shortcuts in icon cache");
-            updateHandler.updateIcons(allShortcuts, new ShortcutCachingLogic(),
                     mApp.getModel()::onPackageIconsUpdated);
 
             // Take a break
@@ -216,16 +210,11 @@ public class LoaderTask implements Runnable {
 
             // third step
             TraceHelper.partitionSection(TAG, "step 3.1: loading deep shortcuts");
-            List<ShortcutInfo> allDeepShortcuts = loadDeepShortcuts();
+            loadDeepShortcuts();
 
             verifyNotStopped();
             TraceHelper.partitionSection(TAG, "step 3.2: bind deep shortcuts");
             mResults.bindDeepShortcuts();
-
-            verifyNotStopped();
-            TraceHelper.partitionSection(TAG, "step 3.3: save deep shortcuts in icon cache");
-            updateHandler.updateIcons(allDeepShortcuts,
-                    new ShortcutCachingLogic(), (pkgs, user) -> { });
 
             // Take a break
             TraceHelper.partitionSection(TAG, "step 3 completed, wait for idle");
@@ -241,9 +230,10 @@ public class LoaderTask implements Runnable {
             mResults.bindWidgets();
 
             verifyNotStopped();
+
             TraceHelper.partitionSection(TAG, "step 4.3: save widgets in icon cache");
-            updateHandler.updateIcons(allWidgetsList, new ComponentCachingLogic(mApp.getContext()),
-                    mApp.getModel()::onWidgetLabelsUpdated);
+            updateHandler.updateIcons(allWidgetsList, new ComponentCachingLogic(
+                    mApp.getContext(), true), mApp.getModel()::onWidgetLabelsUpdated);
 
             verifyNotStopped();
             TraceHelper.partitionSection(TAG, "step 5: Finish icon cache update");
@@ -262,7 +252,7 @@ public class LoaderTask implements Runnable {
         this.notify();
     }
 
-    private void loadWorkspace(List<ShortcutInfo> allDeepShortcuts) {
+    private void loadWorkspace() {
         final Context context = mApp.getContext();
         final ContentResolver contentResolver = context.getContentResolver();
         final PackageManagerHelper pmHelper = new PackageManagerHelper(context);
@@ -297,7 +287,9 @@ public class LoaderTask implements Runnable {
             mBgDataModel.clear();
 
             final HashMap<PackageUserKey, SessionInfo> installingPkgs =
-                    mPackageInstaller.updateAndGetActiveSessionCache();
+                    mPackageInstaller.getActiveSessions();
+            installingPkgs.forEach(mApp.getIconCache()::updateSessionCache);
+
             final PackageUserKey tempPackageKey = new PackageUserKey(null, null);
             mFirstScreenBroadcast = new FirstScreenBroadcast(installingPkgs);
 
@@ -398,7 +390,7 @@ public class LoaderTask implements Runnable {
                             // If there is no target package, its an implicit intent
                             // (legacy shortcut) which is always valid
                             boolean validTarget = TextUtils.isEmpty(targetPkg) ||
-                                    mLauncherApps.isPackageEnabledForProfile(targetPkg, c.user);
+                                    mLauncherApps.isPackageEnabled(targetPkg, c.user);
 
                             // If it's a deep shortcut, we'll use pinned shortcuts to restore it
                             if (cn != null && validTarget && c.itemType
@@ -407,7 +399,7 @@ public class LoaderTask implements Runnable {
                                 // component.
 
                                 // If the component is already present
-                                if (mLauncherApps.isActivityEnabledForProfile(cn, c.user)) {
+                                if (mLauncherApps.isActivityEnabled(cn, c.user)) {
                                     // no special handling necessary for this item
                                     c.markRestored();
                                 } else {
@@ -515,7 +507,6 @@ public class LoaderTask implements Runnable {
                                         info.runtimeStatusFlags |= FLAG_DISABLED_SUSPENDED;
                                     }
                                     intent = info.intent;
-                                    allDeepShortcuts.add(pinnedShortcut);
                                 } else {
                                     // Create a shortcut info in disabled mode for now.
                                     info = c.loadSimpleWorkspaceItem();
@@ -856,7 +847,7 @@ public class LoaderTask implements Runnable {
             for (PackageInstaller.SessionInfo info :
                     mPackageInstaller.getAllVerifiedSessions()) {
                 mBgAllAppsList.addPromiseApp(mApp.getContext(),
-                        PackageInstallerCompat.PackageInstallInfo.fromInstallingState(info));
+                        PackageInstallInfo.fromInstallingState(info));
             }
         }
 
@@ -864,8 +855,7 @@ public class LoaderTask implements Runnable {
         return allActivityList;
     }
 
-    private List<ShortcutInfo> loadDeepShortcuts() {
-        List<ShortcutInfo> allShortcuts = new ArrayList<>();
+    private void loadDeepShortcuts() {
         mBgDataModel.deepShortcutMap.clear();
         mBgDataModel.hasShortcutHostPermission = mShortcutManager.hasHostPermission();
         if (mBgDataModel.hasShortcutHostPermission) {
@@ -873,12 +863,10 @@ public class LoaderTask implements Runnable {
                 if (mUserManager.isUserUnlocked(user)) {
                     List<ShortcutInfo> shortcuts =
                             mShortcutManager.queryForAllShortcuts(user);
-                    allShortcuts.addAll(shortcuts);
                     mBgDataModel.updateDeepShortcutCounts(null, user, shortcuts);
                 }
             }
         }
-        return allShortcuts;
     }
 
     public static boolean isValidProvider(AppWidgetProviderInfo provider) {
