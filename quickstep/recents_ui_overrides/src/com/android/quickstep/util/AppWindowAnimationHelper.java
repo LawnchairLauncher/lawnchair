@@ -35,10 +35,11 @@ import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
+import com.android.launcher3.anim.Interpolators;
+import com.android.launcher3.views.BaseDragLayer;
 import com.android.quickstep.RemoteAnimationTargets;
 import com.android.quickstep.SystemUiProxy;
-import com.android.launcher3.Utilities;
-import com.android.launcher3.views.BaseDragLayer;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskThumbnailView;
 import com.android.quickstep.views.TaskView;
@@ -199,6 +200,11 @@ public class AppWindowAnimationHelper {
                                     mTaskCornerRadius);
                         }
                         mCurrentCornerRadius = cornerRadius;
+                    }
+                    // Fade out Assistant overlay.
+                    if (app.activityType == RemoteAnimationTargetCompat.ACTIVITY_TYPE_ASSISTANT
+                            && app.isNotInRecents) {
+                        alpha = 1 - Interpolators.DEACCEL_2_5.getInterpolation(progress);
                     }
                 } else if (params.targetSet.hasRecents) {
                     // If home has a different target then recents, reverse anim the
