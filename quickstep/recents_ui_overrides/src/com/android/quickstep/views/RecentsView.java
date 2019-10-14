@@ -17,6 +17,7 @@
 package com.android.quickstep.views;
 
 import static androidx.dynamicanimation.animation.DynamicAnimation.MIN_VISIBLE_CHANGE_PIXELS;
+
 import static com.android.launcher3.BaseActivity.STATE_HANDLER_INVISIBILITY_FLAGS;
 import static com.android.launcher3.InvariantDeviceProfile.CHANGE_FLAG_ICON_PARAMS;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
@@ -186,7 +187,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     private final ViewPool<TaskView> mTaskViewPool;
 
     private boolean mDwbToastShown;
-    private boolean mDisallowScrollToClearAll;
+    protected boolean mDisallowScrollToClearAll;
     private boolean mOverlayEnabled;
     private boolean mFreezeViewVisibility;
 
@@ -288,7 +289,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     private LayoutTransition mLayoutTransition;
 
     @ViewDebug.ExportedProperty(category = "launcher")
-    private float mContentAlpha = 1;
+    protected float mContentAlpha = 1;
     @ViewDebug.ExportedProperty(category = "launcher")
     protected float mFullscreenProgress = 0;
 
@@ -1820,5 +1821,26 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     public int getRightGestureMargin() {
         final WindowInsets insets = getRootWindowInsets();
         return Math.max(insets.getSystemGestureInsets().right, insets.getSystemWindowInsetRight());
+    }
+
+    @Override
+    public void addView(View child, int index) {
+        super.addView(child, index);
+        if (isExtraCardView(child, index)) {
+            mTaskViewStartIndex++;
+        }
+    }
+
+    @Override
+    public void removeView(View view) {
+        if (isExtraCardView(view, indexOfChild(view))) {
+            mTaskViewStartIndex--;
+        }
+        super.removeView(view);
+    }
+
+    private boolean isExtraCardView(View view, int index) {
+        return !(view instanceof TaskView) && !(view instanceof ClearAllButton)
+                && index <= mTaskViewStartIndex;
     }
 }
