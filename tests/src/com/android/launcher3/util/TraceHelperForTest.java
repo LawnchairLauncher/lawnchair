@@ -33,6 +33,11 @@ public class TraceHelperForTest extends TraceHelper {
         INSTANCE_FOR_TEST.mRaceConditionReproducer = reproducer;
     }
 
+    public static void cleanup() {
+        INSTANCE_FOR_TEST.mRaceConditionReproducer = null;
+        INSTANCE_FOR_TEST.mFlagsChangeListener = null;
+    }
+
     public static void setFlagsChangeListener(IntConsumer listener) {
         TraceHelper.INSTANCE = INSTANCE_FOR_TEST;
         INSTANCE_FOR_TEST.mFlagsChangeListener = listener;
