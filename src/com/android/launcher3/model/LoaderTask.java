@@ -71,6 +71,7 @@ import com.android.launcher3.provider.ImportDataTask;
 import com.android.launcher3.qsb.QsbContainerView;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutKey;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IOUtils;
 import com.android.launcher3.util.LooperIdleLock;
@@ -163,11 +164,19 @@ public class LoaderTask implements Runnable {
     }
 
     public void run() {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.LAUNCHER_DIDNT_INITIALIZE,
+                    "LoaderTask1 " + this);
+        }
         synchronized (this) {
             // Skip fast if we are already stopped.
             if (mStopped) {
                 return;
             }
+        }
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.LAUNCHER_DIDNT_INITIALIZE,
+                    "LoaderTask2 " + this);
         }
 
         TraceHelper.INSTANCE.beginSection(TAG);
@@ -240,6 +249,10 @@ public class LoaderTask implements Runnable {
             updateHandler.finish();
             logger.addSplit("finish icon update");
 
+            if (TestProtocol.sDebugTracing) {
+                Log.d(TestProtocol.LAUNCHER_DIDNT_INITIALIZE,
+                        "LoaderTask3 " + this);
+            }
             transaction.commit();
         } catch (CancellationException e) {
             // Loader stopped, ignore
