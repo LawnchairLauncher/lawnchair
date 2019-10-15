@@ -21,9 +21,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
+import android.view.accessibility.AccessibilityNodeInfo;
 
-import com.android.launcher3.Utilities;
 import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.Utilities;
+
+import java.util.function.Consumer;
 
 public class AccessibilityManagerCompat {
 
@@ -98,6 +101,24 @@ public class AccessibilityManagerCompat {
         if (!accessibilityManager.isEnabled()) return null;
 
         return accessibilityManager;
+    }
+
+    public static boolean processTestRequest(Context context, String eventTag, int action,
+            Bundle request, Consumer<Bundle> responseFiller) {
+        final AccessibilityManager accessibilityManager = getAccessibilityManagerForTest(context);
+        if (accessibilityManager == null) return false;
+
+        // The test sends a request via a ACTION_SET_TEXT.
+        if (action == AccessibilityNodeInfo.ACTION_SET_TEXT &&
+                eventTag.equals(request.getCharSequence(
+                        AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE))) {
+            final Bundle response = new Bundle();
+            responseFiller.accept(response);
+            AccessibilityManagerCompat.sendEventToTest(
+                    accessibilityManager, eventTag + TestProtocol.RESPONSE_MESSAGE_POSTFIX, response);
+            return true;
+        }
+        return false;
     }
 
     public static int getRecommendedTimeoutMillis(Context context, int originalTimeout, int flags) {

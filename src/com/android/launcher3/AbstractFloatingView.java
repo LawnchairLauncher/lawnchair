@@ -16,6 +16,7 @@
 
 package com.android.launcher3;
 
+import static android.view.accessibility.AccessibilityEvent.TYPE_VIEW_FOCUSED;
 import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED;
 import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
 
@@ -29,7 +30,6 @@ import android.util.AttributeSet;
 import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.LinearLayout;
 
 import androidx.annotation.IntDef;
@@ -171,7 +171,7 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
                 targetInfo.first, TYPE_WINDOW_STATE_CHANGED, targetInfo.second);
 
         if (mIsOpen) {
-            performAccessibilityAction(AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS, null);
+            sendAccessibilityEvent(TYPE_VIEW_FOCUSED);
         }
         ActivityContext.lookupContext(getContext()).getDragLayer()
                 .sendAccessibilityEvent(TYPE_WINDOW_CONTENT_CHANGED);

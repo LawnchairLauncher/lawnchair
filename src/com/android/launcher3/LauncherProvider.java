@@ -45,6 +45,8 @@ import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.os.Process;
 import android.os.UserHandle;
 import android.provider.BaseColumns;
@@ -67,6 +69,7 @@ import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.NoLocaleSQLiteHelper;
 import com.android.launcher3.util.PackageManagerHelper;
+import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.Thunk;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -97,6 +100,9 @@ public class LauncherProvider extends ContentProvider {
 
     static final String EMPTY_DATABASE_CREATED = "EMPTY_DATABASE_CREATED";
 
+    private final ChangeListenerWrapper mListenerWrapper = new ChangeListenerWrapper();
+    private Handler mListenerHandler;
+
     protected DatabaseHelper mOpenHelper;
 
     /**
@@ -116,11 +122,20 @@ public class LauncherProvider extends ContentProvider {
         if (FeatureFlags.IS_DOGFOOD_BUILD) {
             Log.d(TAG, "Launcher process started");
         }
+        mListenerHandler = new Handler(mListenerWrapper);
 
         // The content provider exists for the entire duration of the launcher main process and
         // is the first component to get created.
         MainProcessInitializer.initialize(getContext().getApplicationContext());
         return true;
+    }
+
+    /**
+     * Sets a provider listener.
+     */
+    public void setLauncherProviderChangeListener(LauncherProviderChangeListener listener) {
+        Preconditions.assertUIThread();
+        mListenerWrapper.mListener = listener;
     }
 
     @Override
@@ -138,7 +153,7 @@ public class LauncherProvider extends ContentProvider {
      */
     protected synchronized void createDbIfNotExists() {
         if (mOpenHelper == null) {
-            mOpenHelper = new DatabaseHelper(getContext());
+            mOpenHelper = new DatabaseHelper(getContext(), mListenerHandler);
 
             if (RestoreDbTask.isPending(getContext())) {
                 if (!RestoreDbTask.performRestore(getContext(), mOpenHelper,
@@ -537,13 +552,15 @@ public class LauncherProvider extends ContentProvider {
      * The class is subclassed in tests to create an in-memory db.
      */
     public static class DatabaseHelper extends NoLocaleSQLiteHelper implements LayoutParserCallback {
+        private final BackupManager mBackupManager;
+        private final Handler mWidgetHostResetHandler;
         private final Context mContext;
         private int mMaxItemId = -1;
         private int mMaxScreenId = -1;
         private boolean mBackupTableExists;
 
-        DatabaseHelper(Context context) {
-            this(context, LauncherFiles.LAUNCHER_DB);
+        DatabaseHelper(Context context, Handler widgetHostResetHandler) {
+            this(context, widgetHostResetHandler, LauncherFiles.LAUNCHER_DB);
             // Table creation sometimes fails silently, which leads to a crash loop.
             // This way, we will try to create a table every time after crash, so the device
             // would eventually be able to recover.
@@ -560,9 +577,12 @@ public class LauncherProvider extends ContentProvider {
         /**
          * Constructor used in tests and for restore.
          */
-        public DatabaseHelper(Context context, String tableName) {
+        public DatabaseHelper(
+                Context context, Handler widgetHostResetHandler, String tableName) {
             super(context, tableName, SCHEMA_VERSION);
             mContext = context;
+            mWidgetHostResetHandler = widgetHostResetHandler;
+            mBackupManager = new BackupManager(mContext);
         }
 
         protected void initIds() {
@@ -601,6 +621,13 @@ public class LauncherProvider extends ContentProvider {
          * Overriden in tests.
          */
         protected void onEmptyDbCreated() {
+            // Database was just created, so wipe any previous widgets
+            if (mWidgetHostResetHandler != null) {
+                newLauncherWidgetHost().deleteHost();
+                mWidgetHostResetHandler.sendEmptyMessage(
+                        ChangeListenerWrapper.MSG_APP_WIDGET_HOST_RESET);
+            }
+
             // Set the flag for empty DB
             Utilities.getPrefs(mContext).edit().putBoolean(EMPTY_DATABASE_CREATED, true).commit();
         }
@@ -998,6 +1025,25 @@ public class LauncherProvider extends ContentProvider {
             } else {
                 throw new IllegalArgumentException("Invalid URI: " + url);
             }
+        }
+    }
+
+    private static class ChangeListenerWrapper implements Handler.Callback {
+
+        private static final int MSG_APP_WIDGET_HOST_RESET = 2;
+
+        private LauncherProviderChangeListener mListener;
+
+        @Override
+        public boolean handleMessage(Message msg) {
+            if (mListener != null) {
+                switch (msg.what) {
+                    case MSG_APP_WIDGET_HOST_RESET:
+                        mListener.onAppWidgetHostReset();
+                        break;
+                }
+            }
+            return true;
         }
     }
 }

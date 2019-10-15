@@ -14,40 +14,29 @@
  * limitations under the License.
  */
 
-package com.android.launcher3.pm;
+package com.android.launcher3.compat;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.ActivityInfo;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Process;
 import android.os.UserHandle;
 import android.util.Log;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
-
-import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.WorkspaceItemInfo;
-import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.icons.ComponentWithLabel;
 import com.android.launcher3.icons.IconCache;
-import com.android.launcher3.util.PackageUserKey;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.android.launcher3.LauncherSettings;
+import com.android.launcher3.R;
 
 /**
  * Wrapper class for representing a shortcut configure activity.
@@ -98,9 +87,9 @@ public abstract class ShortcutConfigActivityInfo implements ComponentWithLabel {
             Toast.makeText(activity, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
         } catch (SecurityException e) {
             Toast.makeText(activity, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
-            Log.e(TAG, "Launcher does not have the permission to launch " + intent
-                    + ". Make sure to create a MAIN intent-filter for the corresponding activity "
-                    + "or use the exported attribute for this activity.", e);
+            Log.e(TAG, "Launcher does not have the permission to launch " + intent +
+                    ". Make sure to create a MAIN intent-filter for the corresponding activity " +
+                    "or use the exported attribute for this activity.", e);
         }
         return false;
     }
@@ -117,7 +106,7 @@ public abstract class ShortcutConfigActivityInfo implements ComponentWithLabel {
 
         private final ActivityInfo mInfo;
 
-        ShortcutConfigActivityInfoVL(ActivityInfo info) {
+        public ShortcutConfigActivityInfoVL(ActivityInfo info) {
             super(new ComponentName(info.packageName, info.name), Process.myUserHandle());
             mInfo = info;
         }
@@ -168,47 +157,5 @@ public abstract class ShortcutConfigActivityInfo implements ComponentWithLabel {
                 return false;
             }
         }
-    }
-
-    public static List<ShortcutConfigActivityInfo> queryList(
-            Context context, @Nullable PackageUserKey packageUser) {
-        List<ShortcutConfigActivityInfo> result = new ArrayList<>();
-        UserHandle myUser = Process.myUserHandle();
-
-        if (Utilities.ATLEAST_OREO) {
-            final List<UserHandle> users;
-            final String packageName;
-            if (packageUser == null) {
-                users = UserManagerCompat.getInstance(context).getUserProfiles();
-                packageName = null;
-            } else {
-                users = new ArrayList<>(1);
-                users.add(packageUser.mUser);
-                packageName = packageUser.mPackageName;
-            }
-            LauncherApps launcherApps = context.getSystemService(LauncherApps.class);
-            for (UserHandle user : users) {
-                boolean ignoreTargetSdk = myUser.equals(user);
-                for (LauncherActivityInfo activityInfo :
-                        launcherApps.getShortcutConfigActivityList(packageName, user)) {
-                    if (ignoreTargetSdk || activityInfo.getApplicationInfo().targetSdkVersion
-                            >= Build.VERSION_CODES.O) {
-                        result.add(new ShortcutConfigActivityInfoVO(activityInfo));
-                    }
-                }
-            }
-        } else {
-            if (packageUser == null || packageUser.mUser.equals(myUser)) {
-                Intent intent = new Intent(Intent.ACTION_CREATE_SHORTCUT);
-                if (packageUser != null) {
-                    intent.setPackage(packageUser.mPackageName);
-                }
-                for (ResolveInfo info :
-                        context.getPackageManager().queryIntentActivities(intent, 0)) {
-                    result.add(new ShortcutConfigActivityInfoVL(info.activityInfo));
-                }
-            }
-        }
-        return result;
     }
 }

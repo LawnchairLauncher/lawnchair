@@ -25,10 +25,6 @@ import static org.mockito.Mockito.verify;
 import android.util.Log;
 import android.view.ViewConfiguration;
 
-import androidx.test.InstrumentationRegistry;
-import androidx.test.filters.SmallTest;
-import androidx.test.runner.AndroidJUnit4;
-
 import com.android.launcher3.testcomponent.TouchEventGenerator;
 
 import org.junit.Before;
@@ -36,6 +32,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import androidx.test.InstrumentationRegistry;
+import androidx.test.filters.SmallTest;
+import androidx.test.runner.AndroidJUnit4;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)

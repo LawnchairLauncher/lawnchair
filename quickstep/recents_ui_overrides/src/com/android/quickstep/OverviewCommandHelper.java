@@ -25,13 +25,14 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.ViewConfiguration;
 
-import androidx.annotation.BinderThread;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.logging.UserEventDispatcher;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
-import com.android.quickstep.util.ActivityInitListener;
+import com.android.quickstep.ActivityControlHelper.ActivityInitListener;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
@@ -45,43 +46,37 @@ import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 public class OverviewCommandHelper {
 
     private final Context mContext;
-    private final RecentsAnimationDeviceState mDeviceState;
+    private final ActivityManagerWrapper mAM;
     private final RecentsModel mRecentsModel;
     private final OverviewComponentObserver mOverviewComponentObserver;
 
     private long mLastToggleTime;
 
-    public OverviewCommandHelper(Context context, RecentsAnimationDeviceState deviceState,
-            OverviewComponentObserver observer) {
+    public OverviewCommandHelper(Context context, OverviewComponentObserver observer) {
         mContext = context;
-        mDeviceState = deviceState;
+        mAM = ActivityManagerWrapper.getInstance();
         mRecentsModel = RecentsModel.INSTANCE.get(mContext);
         mOverviewComponentObserver = observer;
     }
 
-    @BinderThread
     public void onOverviewToggle() {
         // If currently screen pinning, do not enter overview
-        if (mDeviceState.isScreenPinningActive()) {
+        if (mAM.isScreenPinningActive()) {
             return;
         }
 
-        ActivityManagerWrapper.getInstance()
-                .closeSystemWindows(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
+        mAM.closeSystemWindows(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
         MAIN_EXECUTOR.execute(new RecentsActivityCommand<>());
     }
 
-    @BinderThread
     public void onOverviewShown(boolean triggeredFromAltTab) {
         MAIN_EXECUTOR.execute(new ShowRecentsCommand(triggeredFromAltTab));
     }
 
-    @BinderThread
     public void onOverviewHidden() {
         MAIN_EXECUTOR.execute(new HideRecentsCommand());
     }
 
-    @BinderThread
     public void onTip(int actionType, int viewType) {
         MAIN_EXECUTOR.execute(() ->
                 UserEventDispatcher.newInstance(mContext).logActionTip(actionType, viewType));
@@ -98,14 +93,14 @@ public class OverviewCommandHelper {
         @Override
         protected boolean handleCommand(long elapsedTime) {
             // TODO: Go to the next page if started from alt-tab.
-            return mActivityInterface.getVisibleRecentsView() != null;
+            return mHelper.getVisibleRecentsView() != null;
         }
 
         @Override
         protected void onTransitionComplete() {
             // TODO(b/138729100) This doesn't execute first time launcher is run
             if (mTriggeredFromAltTab) {
-                RecentsView rv = (RecentsView) mActivityInterface.getVisibleRecentsView();
+                RecentsView rv = (RecentsView) mHelper.getVisibleRecentsView();
                 if (rv == null) {
                     return;
                 }
@@ -130,7 +125,7 @@ public class OverviewCommandHelper {
 
         @Override
         protected boolean handleCommand(long elapsedTime) {
-            RecentsView recents = (RecentsView) mActivityInterface.getVisibleRecentsView();
+            RecentsView recents = (RecentsView) mHelper.getVisibleRecentsView();
             if (recents == null) {
                 return false;
             }
@@ -146,7 +141,7 @@ public class OverviewCommandHelper {
 
     private class RecentsActivityCommand<T extends BaseDraggingActivity> implements Runnable {
 
-        protected final BaseActivityInterface<T> mActivityInterface;
+        protected final ActivityControlHelper<T> mHelper;
         private final long mCreateTime;
         private final AppToOverviewAnimationProvider<T> mAnimationProvider;
 
@@ -155,10 +150,10 @@ public class OverviewCommandHelper {
         private ActivityInitListener mListener;
 
         public RecentsActivityCommand() {
-            mActivityInterface = mOverviewComponentObserver.getActivityInterface();
+            mHelper = mOverviewComponentObserver.getActivityControlHelper();
             mCreateTime = SystemClock.elapsedRealtime();
-            mAnimationProvider = new AppToOverviewAnimationProvider<>(mActivityInterface,
-                    RecentsModel.getRunningTaskId());
+            mAnimationProvider =
+                    new AppToOverviewAnimationProvider<>(mHelper, RecentsModel.getRunningTaskId());
 
             // Preload the plan
             mRecentsModel.getTasks(null);
@@ -166,6 +161,9 @@ public class OverviewCommandHelper {
 
         @Override
         public void run() {
+            if (TestProtocol.sDebugTracing) {
+                Log.d(TestProtocol.ALL_APPS_UPON_RECENTS, "RecentsActivityCommand.run");
+            }
             long elapsedTime = mCreateTime - mLastToggleTime;
             mLastToggleTime = mCreateTime;
 
@@ -174,13 +172,13 @@ public class OverviewCommandHelper {
                 return;
             }
 
-            if (mActivityInterface.switchToRecentsIfVisible(this::onTransitionComplete)) {
+            if (mHelper.switchToRecentsIfVisible(this::onTransitionComplete)) {
                 // If successfully switched, then return
                 return;
             }
 
             // Otherwise, start overview.
-            mListener = mActivityInterface.createActivityInitListener(this::onActivityReady);
+            mListener = mHelper.createActivityInitListener(this::onActivityReady);
             mListener.registerAndStartActivity(mOverviewComponentObserver.getOverviewIntent(),
                     this::createWindowAnimation, mContext, MAIN_EXECUTOR.getHandler(),
                     mAnimationProvider.getRecentsLaunchDuration());
@@ -190,7 +188,7 @@ public class OverviewCommandHelper {
             // TODO: We need to fix this case with PIP, when an activity first enters PIP, it shows
             //       the menu activity which takes window focus, preventing the right condition from
             //       being run below
-            RecentsView recents = mActivityInterface.getVisibleRecentsView();
+            RecentsView recents = mHelper.getVisibleRecentsView();
             if (recents != null) {
                 // Launch the next task
                 recents.showNextTask();
@@ -207,15 +205,14 @@ public class OverviewCommandHelper {
             if (!mUserEventLogged) {
                 activity.getUserEventDispatcher().logActionCommand(
                         LauncherLogProto.Action.Command.RECENTS_BUTTON,
-                        mActivityInterface.getContainerType(),
+                        mHelper.getContainerType(),
                         LauncherLogProto.ContainerType.TASKSWITCHER);
                 mUserEventLogged = true;
             }
             return mAnimationProvider.onActivityReady(activity, wasVisible);
         }
 
-        private AnimatorSet createWindowAnimation(RemoteAnimationTargetCompat[] appTargets,
-                RemoteAnimationTargetCompat[] wallpaperTargets) {
+        private AnimatorSet createWindowAnimation(RemoteAnimationTargetCompat[] targetCompats) {
             if (LatencyTrackerCompat.isEnabled(mContext)) {
                 LatencyTrackerCompat.logToggleRecents(
                         (int) (SystemClock.uptimeMillis() - mToggleClickedTime));
@@ -223,8 +220,7 @@ public class OverviewCommandHelper {
 
             mListener.unregister();
 
-            AnimatorSet animatorSet = mAnimationProvider.createWindowAnimation(appTargets,
-                    wallpaperTargets);
+            AnimatorSet animatorSet = mAnimationProvider.createWindowAnimation(targetCompats);
             animatorSet.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {

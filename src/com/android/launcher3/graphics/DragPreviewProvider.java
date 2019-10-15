@@ -195,22 +195,15 @@ public class DragPreviewProvider {
 
         private final Bitmap mPreviewSnapshot;
         private final Context mContext;
-        private final boolean mIsIcon;
 
         OutlineGeneratorCallback(Bitmap preview) {
             mPreviewSnapshot = preview;
             mContext = mView.getContext();
-            mIsIcon = mView instanceof BubbleTextView;
         }
 
         @Override
         public void run() {
             Bitmap preview = convertPreviewToAlphaBitmap(mPreviewSnapshot);
-            if (mIsIcon) {
-                int size = Launcher.getLauncher(mContext).getDeviceProfile().iconSizePx;
-                preview = Bitmap.createScaledBitmap(preview, size, size, false);
-            }
-            //else case covers AppWidgetHost (doesn't drag/drop across different device profiles)
 
             // We start by removing most of the alpha channel so as to ignore shadows, and
             // other types of partial transparency when defining the shape of the object

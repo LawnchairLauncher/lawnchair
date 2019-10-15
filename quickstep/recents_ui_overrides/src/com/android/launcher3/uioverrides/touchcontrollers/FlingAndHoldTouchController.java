@@ -32,8 +32,8 @@ import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_FADE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_SCALE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_TRANSLATE;
 import static com.android.launcher3.anim.Interpolators.ACCEL;
-import static com.android.launcher3.anim.Interpolators.DEACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_3;
+import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_2;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_OVERVIEW_DISABLED;
 
@@ -50,7 +50,7 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
-import com.android.quickstep.SystemUiProxy;
+import com.android.quickstep.OverviewInteractionState;
 import com.android.quickstep.util.MotionPauseDetector;
 import com.android.quickstep.views.RecentsView;
 
@@ -120,7 +120,7 @@ public class FlingAndHoldTouchController extends PortraitStatesTouchController {
      * having it as part of the existing animation to the target state.
      */
     private boolean handlingOverviewAnim() {
-        int stateFlags = SystemUiProxy.INSTANCE.get(mLauncher).getLastSystemUiStateFlags();
+        int stateFlags = OverviewInteractionState.INSTANCE.get(mLauncher).getSystemUiStateFlags();
         return mStartState == NORMAL && (stateFlags & SYSUI_STATE_OVERVIEW_DISABLED) == 0;
     }
 
@@ -132,32 +132,15 @@ public class FlingAndHoldTouchController extends PortraitStatesTouchController {
             // Fade in prediction icons quickly, then rest of all apps after reaching overview.
             float progressToReachOverview = NORMAL.getVerticalProgress(mLauncher)
                     - OVERVIEW.getVerticalProgress(mLauncher);
-            builder.setInterpolator(ANIM_ALL_APPS_HEADER_FADE, Interpolators.clampToProgress(
-                    ACCEL,
-                    0,
-                    ALL_APPS_CONTENT_FADE_THRESHOLD));
-            builder.setInterpolator(ANIM_ALL_APPS_FADE, Interpolators.clampToProgress(
-                    ACCEL,
-                    progressToReachOverview,
-                    progressToReachOverview + ALL_APPS_CONTENT_FADE_THRESHOLD));
+            builder.setInterpolator(ANIM_ALL_APPS_HEADER_FADE, Interpolators.clampToProgress(ACCEL,
+                    0, ALL_APPS_CONTENT_FADE_THRESHOLD));
+            builder.setInterpolator(ANIM_ALL_APPS_FADE, Interpolators.clampToProgress(LINEAR,
+                    progressToReachOverview, 1));
 
             // Get workspace out of the way quickly, to prepare for potential pause.
             builder.setInterpolator(ANIM_WORKSPACE_SCALE, DEACCEL_3);
             builder.setInterpolator(ANIM_WORKSPACE_TRANSLATE, DEACCEL_3);
             builder.setInterpolator(ANIM_WORKSPACE_FADE, DEACCEL_3);
-            return builder;
-        } else if (fromState == ALL_APPS && toState == NORMAL) {
-            AnimatorSetBuilder builder = new AnimatorSetBuilder();
-            // Keep all apps/predictions opaque until the very end of the transition.
-            float progressToReachOverview = OVERVIEW.getVerticalProgress(mLauncher);
-            builder.setInterpolator(ANIM_ALL_APPS_FADE, Interpolators.clampToProgress(
-                    DEACCEL,
-                    progressToReachOverview - ALL_APPS_CONTENT_FADE_THRESHOLD,
-                    progressToReachOverview));
-            builder.setInterpolator(ANIM_ALL_APPS_HEADER_FADE, Interpolators.clampToProgress(
-                    DEACCEL,
-                    1 - ALL_APPS_CONTENT_FADE_THRESHOLD,
-                    1));
             return builder;
         }
         return super.getAnimatorSetBuilderForStates(fromState, toState);
@@ -181,7 +164,6 @@ public class FlingAndHoldTouchController extends PortraitStatesTouchController {
 
             AnimatorSetBuilder builder = new AnimatorSetBuilder();
             builder.setInterpolator(ANIM_VERTICAL_PROGRESS, OVERSHOOT_1_2);
-            builder.setInterpolator(ANIM_ALL_APPS_FADE, DEACCEL_3);
             if ((OVERVIEW.getVisibleElements(mLauncher) & HOTSEAT_ICONS) != 0) {
                 builder.setInterpolator(ANIM_HOTSEAT_SCALE, OVERSHOOT_1_2);
                 builder.setInterpolator(ANIM_HOTSEAT_TRANSLATE, OVERSHOOT_1_2);

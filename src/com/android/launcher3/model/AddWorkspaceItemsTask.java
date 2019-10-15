@@ -17,7 +17,6 @@ package com.android.launcher3.model;
 
 import android.content.Intent;
 import android.content.pm.LauncherActivityInfo;
-import android.content.pm.LauncherApps;
 import android.content.pm.PackageInstaller.SessionInfo;
 import android.os.UserHandle;
 import android.util.LongSparseArray;
@@ -30,10 +29,11 @@ import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherModel.CallbackTask;
+import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.WorkspaceItemInfo;
-import com.android.launcher3.model.BgDataModel.Callbacks;
-import com.android.launcher3.pm.PackageInstallerCompat;
+import com.android.launcher3.compat.LauncherAppsCompat;
+import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.PackageManagerHelper;
@@ -90,7 +90,7 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
 
             PackageInstallerCompat packageInstaller =
                     PackageInstallerCompat.getInstance(app.getContext());
-            LauncherApps launcherApps = app.getContext().getSystemService(LauncherApps.class);
+            LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(app.getContext());
 
             for (ItemInfo item : filteredItems) {
                 // Find appropriate space for the item.

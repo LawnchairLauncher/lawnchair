@@ -24,10 +24,11 @@ import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
 
+import com.android.launcher3.Utilities;
+import com.android.launcher3.testing.TestProtocol;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
-
-import com.android.launcher3.Utilities;
 
 /**
  * One dimensional scroll/drag/swipe gesture detector.
@@ -40,13 +41,46 @@ public class SwipeDetector {
 
     private static final boolean DBG = false;
     private static final String TAG = "SwipeDetector";
-    private static final float ANIMATION_DURATION = 1200;
-    /** The minimum release velocity in pixels per millisecond that triggers fling.*/
-    private static final float RELEASE_VELOCITY_PX_MS = 1.0f;
 
+    private int mScrollConditions;
     public static final int DIRECTION_POSITIVE = 1 << 0;
     public static final int DIRECTION_NEGATIVE = 1 << 1;
     public static final int DIRECTION_BOTH = DIRECTION_NEGATIVE | DIRECTION_POSITIVE;
+
+    private static final float ANIMATION_DURATION = 1200;
+
+    protected int mActivePointerId = INVALID_POINTER_ID;
+
+    /**
+     * The minimum release velocity in pixels per millisecond that triggers fling..
+     */
+    public static final float RELEASE_VELOCITY_PX_MS = 1.0f;
+
+    /* Scroll state, this is set to true during dragging and animation. */
+    private ScrollState mState = ScrollState.IDLE;
+
+    enum ScrollState {
+        IDLE,
+        DRAGGING,      // onDragStart, onDrag
+        SETTLING       // onDragEnd
+    }
+
+    public static abstract class Direction {
+
+        abstract float getDisplacement(MotionEvent ev, int pointerIndex, PointF refPoint,
+                boolean isRtl);
+
+        /**
+         * Distance in pixels a touch can wander before we think the user is scrolling.
+         */
+        abstract float getActiveTouchSlop(MotionEvent ev, int pointerIndex, PointF downPos);
+
+        abstract float getVelocity(VelocityTracker tracker, boolean isRtl);
+
+        abstract boolean isPositive(float displacement);
+
+        abstract boolean isNegative(float displacement);
+    }
 
     public static final Direction VERTICAL = new Direction() {
 
@@ -116,54 +150,35 @@ public class SwipeDetector {
         }
     };
 
-    private final PointF mDownPos = new PointF();
-    private final PointF mLastPos = new PointF();
-    private final Direction mDir;
-    private final boolean mIsRtl;
-    private final float mTouchSlop;
-    private final float mMaxVelocity;
-    /* Client of this gesture detector can register a callback. */
-    private final Listener mListener;
+    //------------------- ScrollState transition diagram -----------------------------------
+    //
+    // IDLE ->      (mDisplacement > mTouchSlop) -> DRAGGING
+    // DRAGGING -> (MotionEvent#ACTION_UP, MotionEvent#ACTION_CANCEL) -> SETTLING
+    // SETTLING -> (MotionEvent#ACTION_DOWN) -> DRAGGING
+    // SETTLING -> (View settled) -> IDLE
 
-    private int mActivePointerId = INVALID_POINTER_ID;
-    private VelocityTracker mVelocityTracker;
-    private float mLastDisplacement;
-    private float mDisplacement;
-    private float mSubtractDisplacement;
-    private boolean mIgnoreSlopWhenSettling;
-    private int mScrollDirections;
-    private ScrollState mState = ScrollState.IDLE;
-
-    private enum ScrollState {
-        IDLE,
-        DRAGGING,      // onDragStart, onDrag
-        SETTLING       // onDragEnd
-    }
-
-    public SwipeDetector(@NonNull Context context, @NonNull Listener l, @NonNull Direction dir) {
-        this(ViewConfiguration.get(context), l, dir, Utilities.isRtl(context.getResources()));
-    }
-
-    @VisibleForTesting
-    protected SwipeDetector(@NonNull ViewConfiguration config, @NonNull Listener l,
-            @NonNull Direction dir, boolean isRtl) {
-        mListener = l;
-        mDir = dir;
-        mIsRtl = isRtl;
-        mTouchSlop = config.getScaledTouchSlop();
-        mMaxVelocity = config.getScaledMaximumFlingVelocity();
-    }
-
-    public static long calculateDuration(float velocity, float progressNeeded) {
-        // TODO: make these values constants after tuning.
-        float velocityDivisor = Math.max(2f, Math.abs(0.5f * velocity));
-        float travelDistance = Math.max(0.2f, progressNeeded);
-        long duration = (long) Math.max(100, ANIMATION_DURATION / velocityDivisor * travelDistance);
+    private void setState(ScrollState newState) {
         if (DBG) {
-            Log.d(TAG, String.format(
-                    "calculateDuration=%d, v=%f, d=%f", duration, velocity, progressNeeded));
+            Log.d(TAG, "setState:" + mState + "->" + newState);
         }
-        return duration;
+        // onDragStart and onDragEnd is reported ONLY on state transition
+        if (newState == ScrollState.DRAGGING) {
+            initializeDragging();
+            if (mState == ScrollState.IDLE) {
+                reportDragStart(false /* recatch */);
+            } else if (mState == ScrollState.SETTLING) {
+                reportDragStart(true /* recatch */);
+            }
+        }
+        if (newState == ScrollState.SETTLING) {
+            reportDragEnd();
+        }
+
+        mState = newState;
+    }
+
+    public boolean isDraggingOrSettling() {
+        return mState == ScrollState.DRAGGING || mState == ScrollState.SETTLING;
     }
 
     public int getDownX() {
@@ -188,31 +203,73 @@ public class SwipeDetector {
         return mState == ScrollState.DRAGGING;
     }
 
-    public boolean isDraggingOrSettling() {
-        return mState == ScrollState.DRAGGING || mState == ScrollState.SETTLING;
+    private final PointF mDownPos = new PointF();
+    private final PointF mLastPos = new PointF();
+    private final Direction mDir;
+    private final boolean mIsRtl;
+
+    private final float mTouchSlop;
+    private final float mMaxVelocity;
+
+    /* Client of this gesture detector can register a callback. */
+    private final Listener mListener;
+
+    private VelocityTracker mVelocityTracker;
+
+    private float mLastDisplacement;
+    private float mDisplacement;
+
+    private float mSubtractDisplacement;
+    private boolean mIgnoreSlopWhenSettling;
+
+    public interface Listener {
+        void onDragStart(boolean start);
+
+        boolean onDrag(float displacement);
+
+        default boolean onDrag(float displacement, MotionEvent event) {
+            return onDrag(displacement);
+        }
+
+        void onDragEnd(float velocity, boolean fling);
+    }
+
+    public SwipeDetector(@NonNull Context context, @NonNull Listener l, @NonNull Direction dir) {
+        this(ViewConfiguration.get(context), l, dir, Utilities.isRtl(context.getResources()));
+    }
+
+    @VisibleForTesting
+    protected SwipeDetector(@NonNull ViewConfiguration config, @NonNull Listener l,
+            @NonNull Direction dir, boolean isRtl) {
+        mListener = l;
+        mDir = dir;
+        mIsRtl = isRtl;
+        mTouchSlop = config.getScaledTouchSlop();
+        mMaxVelocity = config.getScaledMaximumFlingVelocity();
     }
 
     public void setDetectableScrollConditions(int scrollDirectionFlags, boolean ignoreSlop) {
-        mScrollDirections = scrollDirectionFlags;
+        mScrollConditions = scrollDirectionFlags;
         mIgnoreSlopWhenSettling = ignoreSlop;
     }
 
     public int getScrollDirections() {
-        return mScrollDirections;
+        return mScrollConditions;
     }
 
-    public void finishedScrolling() {
-        setState(ScrollState.IDLE);
-    }
+    private boolean shouldScrollStart(MotionEvent ev, int pointerIndex) {
+        // reject cases where the angle or slop condition is not met.
+        if (Math.max(mDir.getActiveTouchSlop(ev, pointerIndex, mDownPos), mTouchSlop)
+                > Math.abs(mDisplacement)) {
+            return false;
+        }
 
-    /**
-     * Returns if the start drag was towards the positive direction or negative.
-     *
-     * @see #setDetectableScrollConditions(int, boolean)
-     * @see #DIRECTION_BOTH
-     */
-    public boolean wasInitialTouchPositive() {
-        return mDir.isPositive(mSubtractDisplacement);
+        // Check if the client is interested in scroll in current direction.
+        if (((mScrollConditions & DIRECTION_NEGATIVE) > 0 && mDir.isNegative(mDisplacement)) ||
+                ((mScrollConditions & DIRECTION_POSITIVE) > 0 && mDir.isPositive(mDisplacement))) {
+            return true;
+        }
+        return false;
     }
 
     public boolean onTouchEvent(MotionEvent ev) {
@@ -281,50 +338,16 @@ public class SwipeDetector {
         return true;
     }
 
-    //------------------- ScrollState transition diagram -----------------------------------
-    //
-    // IDLE -> (mDisplacement > mTouchSlop) -> DRAGGING
-    // DRAGGING -> (MotionEvent#ACTION_UP, MotionEvent#ACTION_CANCEL) -> SETTLING
-    // SETTLING -> (MotionEvent#ACTION_DOWN) -> DRAGGING
-    // SETTLING -> (View settled) -> IDLE
-
-    private void setState(ScrollState newState) {
-        if (DBG) {
-            Log.d(TAG, "setState:" + mState + "->" + newState);
-        }
-        // onDragStart and onDragEnd is reported ONLY on state transition
-        if (newState == ScrollState.DRAGGING) {
-            initializeDragging();
-            if (mState == ScrollState.IDLE) {
-                reportDragStart(false /* recatch */);
-            } else if (mState == ScrollState.SETTLING) {
-                reportDragStart(true /* recatch */);
-            }
-        }
-        if (newState == ScrollState.SETTLING) {
-            reportDragEnd();
-        }
-
-        mState = newState;
+    public void finishedScrolling() {
+        setState(ScrollState.IDLE);
     }
 
-    private boolean shouldScrollStart(MotionEvent ev, int pointerIndex) {
-        // reject cases where the angle or slop condition is not met.
-        if (Math.max(mDir.getActiveTouchSlop(ev, pointerIndex, mDownPos), mTouchSlop)
-                > Math.abs(mDisplacement)) {
-            return false;
-        }
-
-        // Check if the client is interested in scroll in current direction.
-        return ((mScrollDirections & DIRECTION_NEGATIVE) > 0 && mDir.isNegative(mDisplacement))
-                || ((mScrollDirections & DIRECTION_POSITIVE) > 0 && mDir.isPositive(mDisplacement));
-    }
-
-    private void reportDragStart(boolean recatch) {
+    private boolean reportDragStart(boolean recatch) {
         mListener.onDragStart(!recatch);
         if (DBG) {
             Log.d(TAG, "onDragStart recatch:" + recatch);
         }
+        return true;
     }
 
     private void initializeDragging() {
@@ -338,15 +361,26 @@ public class SwipeDetector {
         }
     }
 
-    private void reportDragging(MotionEvent event) {
+    /**
+     * Returns if the start drag was towards the positive direction or negative.
+     *
+     * @see #setDetectableScrollConditions(int, boolean)
+     * @see #DIRECTION_BOTH
+     */
+    public boolean wasInitialTouchPositive() {
+        return mDir.isPositive(mSubtractDisplacement);
+    }
+
+    private boolean reportDragging(MotionEvent event) {
         if (mDisplacement != mLastDisplacement) {
             if (DBG) {
                 Log.d(TAG, String.format("onDrag disp=%.1f", mDisplacement));
             }
 
             mLastDisplacement = mDisplacement;
-            mListener.onDrag(mDisplacement - mSubtractDisplacement, event);
+            return mListener.onDrag(mDisplacement - mSubtractDisplacement, event);
         }
+        return true;
     }
 
     private void reportDragEnd() {
@@ -360,33 +394,14 @@ public class SwipeDetector {
         mListener.onDragEnd(velocity, Math.abs(velocity) > RELEASE_VELOCITY_PX_MS);
     }
 
-    /** Listener to receive updates on the swipe. */
-    public interface Listener {
-        void onDragStart(boolean start);
-
-        boolean onDrag(float displacement);
-
-        default boolean onDrag(float displacement, MotionEvent event) {
-            return onDrag(displacement);
+    public static long calculateDuration(float velocity, float progressNeeded) {
+        // TODO: make these values constants after tuning.
+        float velocityDivisor = Math.max(2f, Math.abs(0.5f * velocity));
+        float travelDistance = Math.max(0.2f, progressNeeded);
+        long duration = (long) Math.max(100, ANIMATION_DURATION / velocityDivisor * travelDistance);
+        if (DBG) {
+            Log.d(TAG, String.format("calculateDuration=%d, v=%f, d=%f", duration, velocity, progressNeeded));
         }
-
-        void onDragEnd(float velocity, boolean fling);
-    }
-
-    public abstract static class Direction {
-
-        abstract float getDisplacement(MotionEvent ev, int pointerIndex, PointF refPoint,
-                boolean isRtl);
-
-        /**
-         * Distance in pixels a touch can wander before we think the user is scrolling.
-         */
-        abstract float getActiveTouchSlop(MotionEvent ev, int pointerIndex, PointF downPos);
-
-        abstract float getVelocity(VelocityTracker tracker, boolean isRtl);
-
-        abstract boolean isPositive(float displacement);
-
-        abstract boolean isNegative(float displacement);
+        return duration;
     }
 }

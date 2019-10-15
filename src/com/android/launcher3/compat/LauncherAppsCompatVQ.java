@@ -13,29 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.util;
 
-import android.os.Binder;
-import android.os.IBinder;
+package com.android.launcher3.compat;
 
-/**
- * Utility class to pass non-parcealable objects within same process using parcealable payload.
- *
- * It wraps the object in a binder as binders are singleton within a process
- */
-public class ObjectWrapper<T> extends Binder {
+import android.annotation.TargetApi;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageInstaller;
 
-    private final T mObject;
+import java.util.List;
 
-    public ObjectWrapper(T object) {
-        mObject = object;
+@TargetApi(29)
+public class LauncherAppsCompatVQ extends LauncherAppsCompatVO {
+
+    LauncherAppsCompatVQ(Context context) {
+        super(context);
     }
 
-    public T get() {
-        return mObject;
-    }
-
-    public static IBinder wrap(Object obj) {
-        return new ObjectWrapper<>(obj);
+    public List<PackageInstaller.SessionInfo> getAllPackageInstallerSessions() {
+        return mLauncherApps.getAllPackageInstallerSessions();
     }
 }

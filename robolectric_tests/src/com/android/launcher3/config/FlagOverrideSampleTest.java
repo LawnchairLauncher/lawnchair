@@ -21,19 +21,13 @@ public class FlagOverrideSampleTest {
     @Rule
     public final FlagOverrideRule flags = new FlagOverrideRule();
 
-    /**
-     * Test if flag can be overriden to true via annoation.
-     */
-    @FlagOverride(key = "FAKE_LANDSCAPE_UI", value = true)
+    @FlagOverride(key = "EXAMPLE_FLAG", value = true)
     @Test
     public void withFlagOn() {
         assertTrue(FeatureFlags.FAKE_LANDSCAPE_UI.get());
     }
 
-    /**
-     * Test if flag can be overriden to false via annoation.
-     */
-    @FlagOverride(key = "FAKE_LANDSCAPE_UI", value = false)
+    @FlagOverride(key = "EXAMPLE_FLAG", value = false)
     @Test
     public void withFlagOff() {
         assertFalse(FeatureFlags.FAKE_LANDSCAPE_UI.get());

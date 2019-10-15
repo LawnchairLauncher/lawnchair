@@ -105,7 +105,8 @@ public class Hotseat extends CellLayout implements LogContainerProvider, Insetta
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        return event.getY() > getCellHeight();
+        // Don't let if follow through to workspace
+        return true;
     }
 
     @Override

@@ -342,22 +342,6 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         }
     }
 
-    /**
-     * Test dragging a custom shortcut to the workspace and launch it.
-     *
-     * A custom shortcut is a 1x1 widget that launches a specific intent when user tap on it.
-     * Custom shortcuts are replaced by deep shortcuts after api 25.
-     */
-    @Test
-    @PortraitLandscape
-    public void testDragCustomShortcut() {
-        mLauncher.getWorkspace().openAllWidgets()
-                .getWidget("com.android.launcher3.testcomponent.CustomShortcutConfigActivity")
-                .dragToWorkspace();
-        mLauncher.getWorkspace().getWorkspaceAppIcon("Shortcut")
-                .launch(getAppPackageName());
-    }
-
     public static String getAppPackageName() {
         return getInstrumentation().getContext().getPackageName();
     }

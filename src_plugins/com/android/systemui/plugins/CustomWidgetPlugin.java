@@ -30,9 +30,26 @@ public interface CustomWidgetPlugin extends Plugin {
     int VERSION = 1;
 
     /**
+     * An unique identifier for this widget. Must be a non-negative integer.
+     */
+    int getProviderId();
+
+    /**
      * The label to display to the user in the AppWidget picker.
      */
     String getLabel();
+
+    /**
+     * A preview of what the AppWidget will look like after it's configured.
+     * If not supplied, the AppWidget's icon will be used.
+     */
+    int getPreviewImage();
+
+    /**
+     * The icon to display for this AppWidget in the AppWidget picker. If not supplied in the
+     * xml, the application icon will be used.
+     */
+    int getIcon();
 
     /**
      * The default width of the widget when added to a host, in dp. The widget will get

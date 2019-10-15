@@ -767,6 +767,11 @@ public class FloatingIconView extends View implements
         // Match the position of the original view.
         view.matchPositionOf(launcher, originalView, isOpening, positionOut);
 
+        // Must be called after matchPositionOf so that we know what size to load.
+        if (shouldLoadIcon) {
+            view.checkIconResult(originalView, isOpening);
+        }
+
         // We need to add it to the overlay, but keep it invisible until animation starts..
         view.setVisibility(INVISIBLE);
         parent.addView(view);
@@ -793,14 +798,6 @@ public class FloatingIconView extends View implements
                 view.finish(dragLayer);
             }
         };
-
-        // Must be called after matchPositionOf so that we know what size to load.
-        // Must be called after the fastFinish listener and end runnable is created so that
-        // the icon is not left in a hidden state.
-        if (shouldLoadIcon) {
-            view.checkIconResult(originalView, isOpening);
-        }
-
         return view;
     }
 

@@ -1,11 +1,8 @@
 package com.android.launcher3.provider;
 
-import static org.junit.Assert.assertEquals;
-
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-
 import androidx.test.InstrumentationRegistry;
 import androidx.test.filters.MediumTest;
 import androidx.test.runner.AndroidJUnit4;
@@ -15,6 +12,8 @@ import com.android.launcher3.LauncherSettings.Favorites;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests for {@link RestoreDbTask}
@@ -83,7 +82,7 @@ public class RestoreDbTaskTest {
         private final long mProfileId;
 
         MyDatabaseHelper(long profileId) {
-            super(InstrumentationRegistry.getContext(), null);
+            super(InstrumentationRegistry.getContext(), null, null);
             mProfileId = profileId;
         }
 

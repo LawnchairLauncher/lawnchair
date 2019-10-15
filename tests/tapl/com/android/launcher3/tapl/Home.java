@@ -17,7 +17,6 @@
 package com.android.launcher3.tapl;
 
 import static com.android.launcher3.testing.TestProtocol.OVERVIEW_STATE_ORDINAL;
-import static com.android.launcher3.testing.TestProtocol.QUICK_SWITCH_STATE_ORDINAL;
 
 import androidx.annotation.NonNull;
 
@@ -58,10 +57,5 @@ public abstract class Home extends Background {
                 return new Overview(mLauncher);
             }
         }
-    }
-
-    @Override
-    protected int getExpectedStateForQuickSwitch() {
-        return QUICK_SWITCH_STATE_ORDINAL;
     }
 }

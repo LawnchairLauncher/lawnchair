@@ -78,7 +78,7 @@ public class BackgroundAppState extends OverviewState {
         } else {
             dummyTask = recentsView.getTaskViewAt(0);
         }
-        return recentsView.getTempAppWindowAnimationHelper().updateForFullscreenOverview(dummyTask)
+        return recentsView.getTempClipAnimationHelper().updateForFullscreenOverview(dummyTask)
                 .getScaleAndTranslation();
     }
 

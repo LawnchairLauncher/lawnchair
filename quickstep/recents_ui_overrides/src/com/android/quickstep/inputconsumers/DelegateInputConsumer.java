@@ -2,7 +2,6 @@ package com.android.quickstep.inputconsumers;
 
 import android.view.MotionEvent;
 
-import com.android.quickstep.InputConsumer;
 import com.android.systemui.shared.system.InputMonitorCompat;
 
 public abstract class DelegateInputConsumer implements InputConsumer {

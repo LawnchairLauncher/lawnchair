@@ -288,7 +288,6 @@ public class ScrimView extends View implements Insettable, OnChangeListener,
             anim.addUpdateListener((v) -> invalidate(invalidateRegion));
             getOverlay().add(drawable);
             anim.start();
-            return true;
         }
         return value;
     }

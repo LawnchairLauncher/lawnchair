@@ -21,7 +21,6 @@ import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MOD
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 
-import com.android.quickstep.RemoteAnimationTargets;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.TransactionCompat;
 
@@ -30,12 +29,11 @@ import com.android.systemui.shared.system.TransactionCompat;
  */
 public class RemoteFadeOutAnimationListener implements AnimatorUpdateListener {
 
-    private final RemoteAnimationTargets mTarget;
+    private final RemoteAnimationTargetSet mTarget;
     private boolean mFirstFrame = true;
 
-    public RemoteFadeOutAnimationListener(RemoteAnimationTargetCompat[] appTargets,
-            RemoteAnimationTargetCompat[] wallpaperTargets) {
-        mTarget = new RemoteAnimationTargets(appTargets, wallpaperTargets, MODE_CLOSING);
+    public RemoteFadeOutAnimationListener(RemoteAnimationTargetCompat[] targets) {
+        mTarget = new RemoteAnimationTargetSet(targets, MODE_CLOSING);
     }
 
     @Override

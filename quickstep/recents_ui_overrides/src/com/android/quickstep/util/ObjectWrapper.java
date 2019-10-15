@@ -15,25 +15,27 @@
  */
 package com.android.quickstep.util;
 
-import android.content.Context;
-
-import com.android.launcher3.logging.EventLogArray;
-import com.android.launcher3.util.MainThreadInitializedObject;
+import android.os.Binder;
+import android.os.IBinder;
 
 /**
- * A log to keep track of the active gesture.
+ * Utility class to pass non-parcealable objects within same process using parcealable payload.
+ *
+ * It wraps the object in a binder as binders are singleton within a process
  */
-public class ActiveGestureLog extends EventLogArray {
+public class ObjectWrapper<T> extends Binder {
 
-    public static final ActiveGestureLog INSTANCE = new ActiveGestureLog();
+    private final T mObject;
 
-    /**
-     * NOTE: This value should be kept same as
-     * ActivityTaskManagerService#INTENT_EXTRA_LOG_TRACE_ID in platform
-     */
-    public static final String INTENT_EXTRA_LOG_TRACE_ID = "INTENT_EXTRA_LOG_TRACE_ID";
+    public ObjectWrapper(T object) {
+        mObject = object;
+    }
 
-    public ActiveGestureLog() {
-        super("touch_interaction_log", 40);
+    public T get() {
+        return mObject;
+    }
+
+    public static IBinder wrap(Object obj) {
+        return new ObjectWrapper<>(obj);
     }
 }

@@ -31,10 +31,12 @@ import android.view.MotionEvent;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.LauncherStateManager.StateListener;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.states.InternalStateHandler;
 
 /**
  * Abstract base class of floating view responsible for showing discovery bounce animation
@@ -179,7 +181,7 @@ public class DiscoveryBounce extends AbstractFloatingView {
         if (withDelay) {
             new Handler().postDelayed(() -> showForOverviewIfNeeded(launcher, false), DELAY_MS);
             return;
-        } else if (Launcher.ACTIVITY_TRACKER.hasPending()
+        } else if (InternalStateHandler.hasPending()
                 || AbstractFloatingView.getTopOpenView(launcher) != null) {
             // TODO: Move these checks to the top and call this method after invalidate handler.
             return;

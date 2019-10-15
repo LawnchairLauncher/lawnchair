@@ -96,8 +96,7 @@ public class UiFactory {
 
     public static void resetPendingActivityResults(Launcher launcher, int requestCode) { }
 
-    /** No-op. */
-    public static void clearSwipeSharedState(Launcher launcher, boolean finishAnimation) { }
+    public static void clearSwipeSharedState(boolean finishAnimation) {}
 
     public static Person[] getPersons(ShortcutInfo si) {
         return Utilities.EMPTY_PERSON_ARRAY;

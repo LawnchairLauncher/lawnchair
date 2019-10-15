@@ -28,6 +28,7 @@ import android.graphics.Matrix.ScaleToFit;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Build;
+import android.os.RemoteException;
 
 import androidx.annotation.Nullable;
 
@@ -35,13 +36,13 @@ import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
-import com.android.quickstep.RemoteAnimationTargets;
-import com.android.quickstep.SystemUiProxy;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.views.BaseDragLayer;
+import com.android.quickstep.RecentsModel;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskThumbnailView;
 import com.android.quickstep.views.TaskView;
+import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.recents.utilities.RectFEvaluator;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
@@ -49,11 +50,13 @@ import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.
 import com.android.systemui.shared.system.TransactionCompat;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
+import java.util.function.BiFunction;
+
 /**
  * Utility class to handle window clip animation
  */
 @TargetApi(Build.VERSION_CODES.P)
-public class AppWindowAnimationHelper {
+public class ClipAnimationHelper {
 
     // The bounds of the source app in device coordinates
     private final Rect mSourceStackBounds = new Rect();
@@ -99,7 +102,7 @@ public class AppWindowAnimationHelper {
     private TargetAlphaProvider mTaskAlphaCallback = (t, a) -> a;
     private TargetAlphaProvider mBaseAlphaCallback = (t, a) -> 1;
 
-    public AppWindowAnimationHelper(Context context) {
+    public ClipAnimationHelper(Context context) {
         mWindowCornerRadius = getWindowCornerRadius(context.getResources());
         mSupportsRoundedCornersOnWindows = supportsRoundedCornersOnWindows(context.getResources());
         mTaskCornerRadius = TaskCornerRadius.get(context);
@@ -154,75 +157,12 @@ public class AppWindowAnimationHelper {
         mUseRoundedCornersOnWindows = mSupportsRoundedCornersOnWindows && !dp.isMultiWindowMode;
     }
 
-    public RectF applyTransform(TransformParams params) {
-        SurfaceParams[] surfaceParams = getSurfaceParams(params);
-        if (surfaceParams == null) {
-            return null;
-        }
-        applySurfaceParams(params.syncTransactionApplier, surfaceParams);
-        return params.currentRect;
+    public RectF applyTransform(RemoteAnimationTargetSet targetSet, TransformParams params) {
+        return applyTransform(targetSet, params, true /* launcherOnTop */);
     }
 
-    public SurfaceParams[] getSurfaceParams(TransformParams params) {
-        if (params.targetSet == null) {
-            return null;
-        }
-
-        float progress = params.progress;
-        updateCurrentRect(params);
-
-        SurfaceParams[] surfaceParams = new SurfaceParams[params.targetSet.unfilteredApps.length];
-        for (int i = 0; i < params.targetSet.unfilteredApps.length; i++) {
-            RemoteAnimationTargetCompat app = params.targetSet.unfilteredApps[i];
-            mTmpMatrix.setTranslate(app.position.x, app.position.y);
-            Rect crop = mTmpRect;
-            crop.set(app.sourceContainerBounds);
-            crop.offsetTo(0, 0);
-            float alpha;
-            int layer = RemoteAnimationProvider.getLayer(app, mBoostModeTargetLayers);
-            float cornerRadius = 0f;
-            float scale = Math.max(params.currentRect.width(), mTargetRect.width()) / crop.width();
-            if (app.mode == params.targetSet.targetMode) {
-                alpha = mTaskAlphaCallback.getAlpha(app, params.targetAlpha);
-                if (app.activityType != RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME) {
-                    mTmpMatrix.setRectToRect(mSourceRect, params.currentRect, ScaleToFit.FILL);
-                    mTmpMatrix.postTranslate(app.position.x, app.position.y);
-                    mClipRectF.roundOut(crop);
-                    if (mSupportsRoundedCornersOnWindows) {
-                        if (params.cornerRadius > -1) {
-                            cornerRadius = params.cornerRadius;
-                            scale = params.currentRect.width() / crop.width();
-                        } else {
-                            float windowCornerRadius = mUseRoundedCornersOnWindows
-                                    ? mWindowCornerRadius : 0;
-                            cornerRadius = Utilities.mapRange(progress, windowCornerRadius,
-                                    mTaskCornerRadius);
-                        }
-                        mCurrentCornerRadius = cornerRadius;
-                    }
-                } else if (params.targetSet.hasRecents) {
-                    // If home has a different target then recents, reverse anim the
-                    // home target.
-                    alpha = 1 - (progress * params.targetAlpha);
-                }
-            } else {
-                alpha = mBaseAlphaCallback.getAlpha(app, progress);
-                if (ENABLE_QUICKSTEP_LIVE_TILE.get() && params.launcherOnTop) {
-                    crop = null;
-                    layer = Integer.MAX_VALUE;
-                }
-            }
-
-            // Since radius is in Surface space, but we draw the rounded corners in screen space, we
-            // have to undo the scale.
-            surfaceParams[i] = new SurfaceParams(app.leash, alpha, mTmpMatrix, crop, layer,
-                    cornerRadius / scale);
-        }
-        applySurfaceParams(params.syncTransactionApplier, surfaceParams);
-        return surfaceParams;
-    }
-
-    public RectF updateCurrentRect(TransformParams params) {
+    public RectF applyTransform(RemoteAnimationTargetSet targetSet, TransformParams params,
+            boolean launcherOnTop) {
         float progress = params.progress;
         if (params.currentRect == null) {
             RectF currentRect;
@@ -243,6 +183,55 @@ public class AppWindowAnimationHelper {
                     mSourceStackBounds.height() - (sourceWindowClipInsets.bottom * progress);
             params.setCurrentRectAndTargetAlpha(currentRect, 1);
         }
+
+        SurfaceParams[] surfaceParams = new SurfaceParams[targetSet.unfilteredApps.length];
+        for (int i = 0; i < targetSet.unfilteredApps.length; i++) {
+            RemoteAnimationTargetCompat app = targetSet.unfilteredApps[i];
+            mTmpMatrix.setTranslate(app.position.x, app.position.y);
+            Rect crop = mTmpRect;
+            crop.set(app.sourceContainerBounds);
+            crop.offsetTo(0, 0);
+            float alpha;
+            int layer = RemoteAnimationProvider.getLayer(app, mBoostModeTargetLayers);
+            float cornerRadius = 0f;
+            float scale = Math.max(params.currentRect.width(), mTargetRect.width()) / crop.width();
+            if (app.mode == targetSet.targetMode) {
+                alpha = mTaskAlphaCallback.getAlpha(app, params.targetAlpha);
+                if (app.activityType != RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME) {
+                    mTmpMatrix.setRectToRect(mSourceRect, params.currentRect, ScaleToFit.FILL);
+                    mTmpMatrix.postTranslate(app.position.x, app.position.y);
+                    mClipRectF.roundOut(crop);
+                    if (mSupportsRoundedCornersOnWindows) {
+                        if (params.cornerRadius > -1) {
+                            cornerRadius = params.cornerRadius;
+                            scale = params.currentRect.width() / crop.width();
+                        } else {
+                            float windowCornerRadius = mUseRoundedCornersOnWindows
+                                    ? mWindowCornerRadius : 0;
+                            cornerRadius = Utilities.mapRange(progress, windowCornerRadius,
+                                    mTaskCornerRadius);
+                        }
+                        mCurrentCornerRadius = cornerRadius;
+                    }
+                } else if (targetSet.hasRecents) {
+                    // If home has a different target then recents, reverse anim the
+                    // home target.
+                    alpha = 1 - (progress * params.targetAlpha);
+                }
+            } else {
+                alpha = mBaseAlphaCallback.getAlpha(app, progress);
+                if (ENABLE_QUICKSTEP_LIVE_TILE.get() && launcherOnTop) {
+                    crop = null;
+                    layer = Integer.MAX_VALUE;
+                }
+            }
+
+            // Since radius is in Surface space, but we draw the rounded corners in screen space, we
+            // have to undo the scale.
+            surfaceParams[i] = new SurfaceParams(app.leash, alpha, mTmpMatrix, crop, layer,
+                    cornerRadius / scale);
+        }
+        applySurfaceParams(params.syncTransactionApplier, surfaceParams);
         return params.currentRect;
     }
 
@@ -251,7 +240,7 @@ public class AppWindowAnimationHelper {
         return mCurrentRectWithInsets;
     }
 
-    public static void applySurfaceParams(@Nullable SyncRtSurfaceTransactionApplierCompat
+    private void applySurfaceParams(@Nullable SyncRtSurfaceTransactionApplierCompat
             syncTransactionApplier, SurfaceParams[] params) {
         if (syncTransactionApplier != null) {
             syncTransactionApplier.scheduleApply(params);
@@ -316,7 +305,7 @@ public class AppWindowAnimationHelper {
     /**
      * Compute scale and translation y such that the specified task view fills the screen.
      */
-    public AppWindowAnimationHelper updateForFullscreenOverview(TaskView v) {
+    public ClipAnimationHelper updateForFullscreenOverview(TaskView v) {
         TaskThumbnailView thumbnailView = v.getThumbnail();
         RecentsView recentsView = v.getRecentsView();
         fromTaskThumbnailView(thumbnailView, recentsView);
@@ -336,10 +325,14 @@ public class AppWindowAnimationHelper {
     }
 
     private void updateStackBoundsToMultiWindowTaskSize(BaseDraggingActivity activity) {
-        SystemUiProxy proxy = SystemUiProxy.INSTANCE.get(activity);
-        if (proxy.isActive()) {
-            mSourceStackBounds.set(proxy.getNonMinimizedSplitScreenSecondaryBounds());
-            return;
+        ISystemUiProxy sysUiProxy = RecentsModel.INSTANCE.get(activity).getSystemUiProxy();
+        if (sysUiProxy != null) {
+            try {
+                mSourceStackBounds.set(sysUiProxy.getNonMinimizedSplitScreenSecondaryBounds());
+                return;
+            } catch (RemoteException e) {
+                // Use half screen size
+            }
         }
 
         // Assume that the task size is half screen size (minus the insets and the divider size)
@@ -382,14 +375,12 @@ public class AppWindowAnimationHelper {
         float progress;
         public float offsetX;
         public float offsetScale;
-        public @Nullable RectF currentRect;
+        @Nullable RectF currentRect;
         float targetAlpha;
         boolean forLiveTile;
         float cornerRadius;
-        boolean launcherOnTop;
 
-        public RemoteAnimationTargets targetSet;
-        public SyncRtSurfaceTransactionApplierCompat syncTransactionApplier;
+        SyncRtSurfaceTransactionApplierCompat syncTransactionApplier;
 
         public TransformParams() {
             progress = 0;
@@ -399,7 +390,6 @@ public class AppWindowAnimationHelper {
             targetAlpha = 0;
             forLiveTile = false;
             cornerRadius = -1;
-            launcherOnTop = false;
         }
 
         public TransformParams setProgress(float progress) {
@@ -431,16 +421,6 @@ public class AppWindowAnimationHelper {
 
         public TransformParams setForLiveTile(boolean forLiveTile) {
             this.forLiveTile = forLiveTile;
-            return this;
-        }
-
-        public TransformParams setLauncherOnTop(boolean launcherOnTop) {
-            this.launcherOnTop = launcherOnTop;
-            return this;
-        }
-
-        public TransformParams setTargetSet(RemoteAnimationTargets targetSet) {
-            this.targetSet = targetSet;
             return this;
         }
 

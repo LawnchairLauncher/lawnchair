@@ -22,22 +22,21 @@ import android.util.Log;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.Preconditions;
-import com.android.quickstep.RecentsAnimationCallbacks.RecentsAnimationListener;
-
-import com.android.systemui.shared.recents.model.ThumbnailData;
+import com.android.quickstep.util.RecentsAnimationListenerSet;
+import com.android.quickstep.util.SwipeAnimationTargetSet;
+import com.android.quickstep.util.SwipeAnimationTargetSet.SwipeAnimationListener;
 
 import java.io.PrintWriter;
 
 /**
  * Utility class used to store state information shared across multiple transitions.
  */
-public class SwipeSharedState implements RecentsAnimationListener {
+public class SwipeSharedState implements SwipeAnimationListener {
 
     private OverviewComponentObserver mOverviewComponentObserver;
 
-    private RecentsAnimationCallbacks mRecentsAnimationListener;
-    private RecentsAnimationController mLastRecentsAnimationController;
-    private RecentsAnimationTargets mLastAnimationTarget;
+    private RecentsAnimationListenerSet mRecentsAnimationListener;
+    private SwipeAnimationTargetSet mLastAnimationTarget;
 
     private boolean mLastAnimationCancelled = false;
     private boolean mLastAnimationRunning = false;
@@ -53,33 +52,11 @@ public class SwipeSharedState implements RecentsAnimationListener {
     }
 
     @Override
-    public final void onRecentsAnimationStart(RecentsAnimationController controller,
-            RecentsAnimationTargets targets) {
-        mLastRecentsAnimationController = controller;
-        mLastAnimationTarget = targets;
+    public final void onRecentsAnimationStart(SwipeAnimationTargetSet targetSet) {
+        mLastAnimationTarget = targetSet;
 
         mLastAnimationCancelled = false;
         mLastAnimationRunning = true;
-    }
-
-    @Override
-    public final void onRecentsAnimationCanceled(ThumbnailData thumbnailData) {
-        if (thumbnailData != null) {
-            mOverviewComponentObserver.getActivityInterface().switchToScreenshot(thumbnailData,
-                    () -> {
-                        mLastRecentsAnimationController.cleanupScreenshot();
-                        clearAnimationState();
-                    });
-        } else {
-            clearAnimationState();
-        }
-    }
-
-    @Override
-    public final void onRecentsAnimationFinished(RecentsAnimationController controller) {
-        if (mLastRecentsAnimationController == controller) {
-            mLastAnimationRunning = false;
-        }
     }
 
     private void clearAnimationTarget() {
@@ -89,7 +66,8 @@ public class SwipeSharedState implements RecentsAnimationListener {
         }
     }
 
-    private void clearAnimationState() {
+    @Override
+    public final void onRecentsAnimationCanceled() {
         clearAnimationTarget();
 
         mLastAnimationCancelled = true;
@@ -99,13 +77,12 @@ public class SwipeSharedState implements RecentsAnimationListener {
     private void clearListenerState(boolean finishAnimation) {
         if (mRecentsAnimationListener != null) {
             mRecentsAnimationListener.removeListener(this);
-            mRecentsAnimationListener.notifyAnimationCanceled();
-            if (mLastAnimationRunning && mLastRecentsAnimationController != null) {
+            mRecentsAnimationListener.cancelListener();
+            if (mLastAnimationRunning && mLastAnimationTarget != null) {
                 Utilities.postAsyncCallback(MAIN_EXECUTOR.getHandler(),
                         finishAnimation
-                                ? mLastRecentsAnimationController::finishAnimationToHome
-                                : mLastRecentsAnimationController::finishAnimationToApp);
-                mLastRecentsAnimationController = null;
+                                ? mLastAnimationTarget::finishAnimation
+                                : mLastAnimationTarget::cancelAnimation);
                 mLastAnimationTarget = null;
             }
         }
@@ -115,7 +92,13 @@ public class SwipeSharedState implements RecentsAnimationListener {
         mLastAnimationRunning = false;
     }
 
-    public RecentsAnimationCallbacks newRecentsAnimationCallbacks() {
+    private void onSwipeAnimationFinished(SwipeAnimationTargetSet targetSet) {
+        if (mLastAnimationTarget == targetSet) {
+            mLastAnimationRunning = false;
+        }
+    }
+
+    public RecentsAnimationListenerSet newRecentsAnimationListenerSet() {
         Preconditions.assertUIThread();
 
         if (mLastAnimationRunning) {
@@ -129,22 +112,22 @@ public class SwipeSharedState implements RecentsAnimationListener {
 
         clearListenerState(false /* finishAnimation */);
         boolean shouldMinimiseSplitScreen = mOverviewComponentObserver == null ? false
-                : mOverviewComponentObserver.getActivityInterface().shouldMinimizeSplitScreen();
-        mRecentsAnimationListener = new RecentsAnimationCallbacks(shouldMinimiseSplitScreen);
+                : mOverviewComponentObserver.getActivityControlHelper().shouldMinimizeSplitScreen();
+        mRecentsAnimationListener = new RecentsAnimationListenerSet(
+                shouldMinimiseSplitScreen, this::onSwipeAnimationFinished);
         mRecentsAnimationListener.addListener(this);
         return mRecentsAnimationListener;
     }
 
-    public RecentsAnimationCallbacks getActiveListener() {
+    public RecentsAnimationListenerSet getActiveListener() {
         return mRecentsAnimationListener;
     }
 
-    public void applyActiveRecentsAnimationState(RecentsAnimationListener listener) {
-        if (mLastRecentsAnimationController != null) {
-            listener.onRecentsAnimationStart(mLastRecentsAnimationController,
-                    mLastAnimationTarget);
+    public void applyActiveRecentsAnimationState(SwipeAnimationListener listener) {
+        if (mLastAnimationTarget != null) {
+            listener.onRecentsAnimationStart(mLastAnimationTarget);
         } else if (mLastAnimationCancelled) {
-            listener.onRecentsAnimationCanceled(null);
+            listener.onRecentsAnimationCanceled();
         }
     }
 

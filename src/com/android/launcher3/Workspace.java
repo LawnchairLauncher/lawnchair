@@ -1038,13 +1038,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     }
 
     @Override
-    protected boolean onOverscroll(int amount) {
-        // Enforce overscroll on -1 direction
-        if ((amount > 0 && !mIsRtl) || (amount < 0 && mIsRtl)) return false;
-        return super.onOverscroll(amount);
-    }
-
-    @Override
     protected boolean shouldFlingForVelocity(int velocityX) {
         // When the overlay is moving, the fling or settle transition is controlled by the overlay.
         return Float.compare(Math.abs(mOverlayTranslation), 0) == 0 &&
@@ -1471,9 +1464,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     public DragView beginDragShared(View child, DragSource source, ItemInfo dragObject,
             DragPreviewProvider previewProvider, DragOptions dragOptions) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_CONTEXT_MENU, "beginDragShared");
-        }
         float iconScale = 1f;
         if (child instanceof BubbleTextView) {
             Drawable icon = ((BubbleTextView) child).getIcon();
@@ -1499,7 +1489,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         Rect dragRect = null;
         if (child instanceof BubbleTextView) {
             dragRect = new Rect();
-            BubbleTextView.getIconBounds(child, dragRect, grid.iconSizePx);
+            ((BubbleTextView) child).getIconBounds(dragRect);
             dragLayerY += dragRect.top;
             // Note: The dragRect is used to calculate drag layer offsets, but the
             // dragVisualizeOffset in addition to the dragRect (the size) to position the outline.

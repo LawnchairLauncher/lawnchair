@@ -37,7 +37,6 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
@@ -66,7 +65,6 @@ import com.android.launcher3.notification.NotificationKeyData;
 import com.android.launcher3.popup.PopupDataProvider.PopupDataChangeListener;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.shortcuts.ShortcutDragPreviewProvider;
-import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.util.PackageUserKey;
@@ -196,9 +194,6 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
      * @return the container if shown or null.
      */
     public static PopupContainerWithArrow showForIcon(BubbleTextView icon) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_CONTEXT_MENU, "showForIcon");
-        }
         Launcher launcher = Launcher.getLauncher(icon.getContext());
         if (getOpen(launcher) != null) {
             // There is already an items container open, so don't open this one.
@@ -240,9 +235,6 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
 
     protected void populateAndShow(
             BubbleTextView icon, ItemInfo item, SystemShortcutFactory factory) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_CONTEXT_MENU, "populateAndShow");
-        }
         PopupDataProvider popupDataProvider = mLauncher.getPopupDataProvider();
         populateAndShow(icon,
                 popupDataProvider.getShortcutCountForItem(item),

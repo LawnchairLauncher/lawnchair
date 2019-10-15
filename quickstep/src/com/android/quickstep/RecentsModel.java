@@ -25,13 +25,17 @@ import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.content.ComponentCallbacks2;
 import android.content.Context;
-import android.content.pm.LauncherApps;
 import android.os.Build;
 import android.os.Looper;
 import android.os.Process;
+import android.os.RemoteException;
 import android.os.UserHandle;
+import android.util.Log;
 
+import com.android.launcher3.compat.LauncherAppsCompat;
+import com.android.launcher3.compat.LauncherAppsCompat.OnAppsChangedCallbackCompat;
 import com.android.launcher3.util.MainThreadInitializedObject;
+import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
@@ -56,6 +60,8 @@ public class RecentsModel extends TaskStackChangeListener {
 
     private final List<TaskThumbnailChangeListener> mThumbnailChangeListeners = new ArrayList<>();
     private final Context mContext;
+
+    private ISystemUiProxy mSystemUiProxy;
 
     private final RecentTasksList mTaskList;
     private final TaskIconCache mIconCache;
@@ -172,6 +178,14 @@ public class RecentsModel extends TaskStackChangeListener {
         mIconCache.onTaskRemoved(dummyKey);
     }
 
+    public void setSystemUiProxy(ISystemUiProxy systemUiProxy) {
+        mSystemUiProxy = systemUiProxy;
+    }
+
+    public ISystemUiProxy getSystemUiProxy() {
+        return mSystemUiProxy;
+    }
+
     public void onTrimMemory(int level) {
         if (level == ComponentCallbacks2.TRIM_MEMORY_UI_HIDDEN) {
             mThumbnailCache.getHighResLoadingState().setVisible(false);
@@ -184,32 +198,31 @@ public class RecentsModel extends TaskStackChangeListener {
     }
 
     public void onOverviewShown(boolean fromHome, String tag) {
-        SystemUiProxy.INSTANCE.get(mContext).onOverviewShown(fromHome, tag);
+        if (mSystemUiProxy == null) {
+            return;
+        }
+        try {
+            mSystemUiProxy.onOverviewShown(fromHome);
+        } catch (RemoteException e) {
+            Log.w(tag,
+                    "Failed to notify SysUI of overview shown from " + (fromHome ? "home" : "app")
+                            + ": ", e);
+        }
     }
 
     private void setupPackageListener() {
-        mContext.getSystemService(LauncherApps.class).registerCallback(new LauncherApps.Callback() {
-            @Override
-            public void onPackageRemoved(String packageName, UserHandle user) {
-                mIconCache.invalidatePackage(packageName);
-            }
+        LauncherAppsCompat.getInstance(mContext)
+                .addOnAppsChangedCallback(new OnAppsChangedCallbackCompat() {
+                    @Override
+                    public void onPackageRemoved(String packageName, UserHandle user) {
+                        mIconCache.invalidatePackage(packageName);
+                    }
 
-            @Override
-            public void onPackageChanged(String packageName, UserHandle user) {
-                mIconCache.invalidatePackage(packageName);
-            }
-
-            @Override
-            public void onPackageAdded(String packageName, UserHandle user) { }
-
-            @Override
-            public void onPackagesAvailable(
-                    String[] packageNames, UserHandle user, boolean replacing) { }
-
-            @Override
-            public void onPackagesUnavailable(
-                    String[] packageNames, UserHandle user, boolean replacing) { }
-        });
+                    @Override
+                    public void onPackageChanged(String packageName, UserHandle user) {
+                        mIconCache.invalidatePackage(packageName);
+                    }
+                });
     }
 
     public void addThumbnailChangeListener(TaskThumbnailChangeListener listener) {

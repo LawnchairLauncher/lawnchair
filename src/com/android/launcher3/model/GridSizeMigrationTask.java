@@ -17,8 +17,6 @@ import android.graphics.Point;
 import android.util.Log;
 import android.util.SparseArray;
 
-import androidx.annotation.VisibleForTesting;
-
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
@@ -29,17 +27,21 @@ import com.android.launcher3.LauncherSettings.Settings;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
+import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.pm.PackageInstallerCompat;
 import com.android.launcher3.provider.LauncherDbUtils;
 import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction;
 import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSparseArrayMap;
+import com.android.launcher3.util.PackageUserKey;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.function.Consumer;
+
+import androidx.annotation.VisibleForTesting;
 
 /**
  * This class takes care of shrinking the workspace (by maximum of one row and one column), as a
@@ -971,7 +973,7 @@ public class GridSizeMigrationTask {
             validPackages.add(info.packageName);
         }
         PackageInstallerCompat.getInstance(context)
-                .getActiveSessions().keySet()
+                .updateAndGetActiveSessionCache().keySet()
                 .forEach(packageUserKey -> validPackages.add(packageUserKey.mPackageName));
         return validPackages;
     }

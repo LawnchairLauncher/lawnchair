@@ -26,21 +26,21 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
-import com.android.quickstep.util.ActivityInitListener;
+import com.android.quickstep.util.RemoteAnimationTargetSet;
 import com.android.quickstep.views.IconRecentsView;
 
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 
 /**
- * {@link BaseActivityInterface} for recents when the default launcher is different than the
+ * {@link ActivityControlHelper} for recents when the default launcher is different than the
  * currently running one and apps should interact with the {@link RecentsActivity} as opposed
  * to the in-launcher one.
  */
-public final class FallbackActivityInterface extends
-        GoActivityInterface<RecentsActivity> {
+public final class FallbackActivityControllerHelper extends
+        GoActivityControlHelper<RecentsActivity> {
 
-    public FallbackActivityInterface() { }
+    public FallbackActivityControllerHelper() { }
 
     @Override
     public AnimationFactory prepareRecentsUI(RecentsActivity activity, boolean activityVisible,
@@ -58,17 +58,17 @@ public final class FallbackActivityInterface extends
             boolean isAnimatingToRecents = false;
 
             @Override
-            public void onRemoteAnimationReceived(RemoteAnimationTargets targets) {
+            public void onRemoteAnimationReceived(RemoteAnimationTargetSet targets) {
                 isAnimatingToRecents = targets != null && targets.isAnimatingHome();
                 if (!isAnimatingToRecents) {
                     rv.setAlpha(1);
                 }
-                createActivityInterface(getSwipeUpDestinationAndLength(
+                createActivityController(getSwipeUpDestinationAndLength(
                         activity.getDeviceProfile(), activity, new Rect()));
             }
 
             @Override
-            public void createActivityInterface(long transitionLength) {
+            public void createActivityController(long transitionLength) {
                 if (!isAnimatingToRecents) {
                     return;
                 }
@@ -85,13 +85,13 @@ public final class FallbackActivityInterface extends
     @Override
     public ActivityInitListener createActivityInitListener(
             BiPredicate<RecentsActivity, Boolean> onInitListener) {
-        return new ActivityInitListener(onInitListener, RecentsActivity.ACTIVITY_TRACKER);
+        return new RecentsActivityTracker(onInitListener);
     }
 
     @Nullable
     @Override
     public RecentsActivity getCreatedActivity() {
-        return RecentsActivity.ACTIVITY_TRACKER.getCreatedActivity();
+        return RecentsActivityTracker.getCurrentActivity();
     }
 
     @Nullable

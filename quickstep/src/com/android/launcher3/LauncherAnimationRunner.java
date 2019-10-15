@@ -17,7 +17,8 @@ package com.android.launcher3;
 
 import static com.android.launcher3.Utilities.postAsyncCallback;
 import static com.android.launcher3.util.DefaultDisplay.getSingleFrameMs;
-import static com.android.systemui.shared.recents.utilities.Utilities.postAtFrontOfQueueAsynchronously;
+import static com.android.systemui.shared.recents.utilities.Utilities
+        .postAtFrontOfQueueAsynchronously;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -56,7 +57,7 @@ public abstract class LauncherAnimationRunner implements RemoteAnimationRunnerCo
         Runnable r = () -> {
             finishExistingAnimation();
             mAnimationResult = new AnimationResult(runnable);
-            onCreateAnimation(appTargets, wallpaperTargets, mAnimationResult);
+            onCreateAnimation(appTargets, mAnimationResult);
         };
         if (mStartAtFrontOfQueue) {
             postAtFrontOfQueueAsynchronously(mHandler, r);
@@ -78,8 +79,7 @@ public abstract class LauncherAnimationRunner implements RemoteAnimationRunnerCo
      */
     @UiThread
     public abstract void onCreateAnimation(
-            RemoteAnimationTargetCompat[] appTargets,
-            RemoteAnimationTargetCompat[] wallpaperTargets, AnimationResult result);
+            RemoteAnimationTargetCompat[] targetCompats, AnimationResult result);
 
     @UiThread
     private void finishExistingAnimation() {

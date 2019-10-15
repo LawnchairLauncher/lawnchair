@@ -21,14 +21,15 @@ import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 
 import android.animation.Animator;
+import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
@@ -39,9 +40,13 @@ import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.PropertySetter;
-import com.android.launcher3.anim.SpringAnimationBuilder;
+import com.android.launcher3.anim.SpringObjectAnimator;
+import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.OverviewScrim;
 import com.android.launcher3.views.IconLabelDotView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Creates an animation where all the workspace items are moved into their final location,
@@ -64,7 +69,7 @@ public class StaggeredWorkspaceAnim {
     // The original view of the {@link FloatingIconView}.
     private final View mOriginalView;
 
-    private final AnimatorSet mAnimators = new AnimatorSet();
+    private final List<Animator> mAnimators = new ArrayList<>();
 
     /**
      * @param floatingViewOriginalView The FloatingIconView's original view.
@@ -131,9 +136,16 @@ public class StaggeredWorkspaceAnim {
         addScrimAnimationForState(launcher, BACKGROUND_APP, 0);
         addScrimAnimationForState(launcher, NORMAL, ALPHA_DURATION_MS);
 
-        mAnimators.addListener(new AnimatorListenerAdapter() {
+        AnimatorListener resetClipListener = new AnimatorListenerAdapter() {
+            int numAnimations = mAnimators.size();
+
             @Override
             public void onAnimationEnd(Animator animation) {
+                numAnimations--;
+                if (numAnimations > 0) {
+                    return;
+                }
+
                 workspace.setClipChildren(workspaceClipChildren);
                 workspace.setClipToPadding(workspaceClipToPadding);
                 cellLayout.setClipChildren(cellLayoutClipChildren);
@@ -141,14 +153,24 @@ public class StaggeredWorkspaceAnim {
                 hotseat.setClipChildren(hotseatClipChildren);
                 hotseat.setClipToPadding(hotseatClipToPadding);
             }
-        });
+        };
+
+        for (Animator a : mAnimators) {
+            a.addListener(resetClipListener);
+        }
     }
 
     /**
      * Starts the animation.
      */
     public void start() {
-        mAnimators.start();
+        for (Animator a : mAnimators) {
+            if (a instanceof SpringObjectAnimator) {
+                ((SpringObjectAnimator) a).startSpring(1f, mVelocity, null);
+            } else {
+                a.start();
+            }
+        }
     }
 
     /**
@@ -165,16 +187,10 @@ public class StaggeredWorkspaceAnim {
         long startDelay = (long) ((invertedRow + 1) * APP_CLOSE_ROW_START_DELAY_MS);
 
         v.setTranslationY(mSpringTransY);
-
-        ObjectAnimator springTransY = new SpringAnimationBuilder<>(v, VIEW_TRANSLATE_Y)
-                .setStiffness(STIFFNESS)
-                .setDampingRatio(DAMPING_RATIO)
-                .setMinimumVisibleChange(1f)
-                .setEndValue(0)
-                .setStartVelocity(mVelocity)
-                .build(v.getContext());
+        SpringObjectAnimator springTransY = new SpringObjectAnimator<>(v, VIEW_TRANSLATE_Y,
+                1f, DAMPING_RATIO, STIFFNESS, mSpringTransY, 0);
         springTransY.setStartDelay(startDelay);
-        mAnimators.play(springTransY);
+        mAnimators.add(springTransY);
 
         ObjectAnimator alpha = getAlphaAnimator(v, startDelay);
         if (v == mOriginalView) {
@@ -195,7 +211,7 @@ public class StaggeredWorkspaceAnim {
         }
 
         v.setAlpha(0);
-        mAnimators.play(alpha);
+        mAnimators.add(alpha);
     }
 
     private ObjectAnimator getAlphaAnimator(View v, long startDelay) {
@@ -213,11 +229,11 @@ public class StaggeredWorkspaceAnim {
         scrimAnimConfig.duration = duration;
         PropertySetter scrimPropertySetter = scrimAnimConfig.getPropertySetter(scrimAnimBuilder);
         launcher.getWorkspace().getStateTransitionAnimation().setScrim(scrimPropertySetter, state);
-        mAnimators.play(scrimAnimBuilder.build());
+        mAnimators.add(scrimAnimBuilder.build());
         Animator fadeOverviewScrim = ObjectAnimator.ofFloat(
                 launcher.getDragLayer().getOverviewScrim(), OverviewScrim.SCRIM_PROGRESS,
                 state.getOverviewScrimAlpha(launcher));
         fadeOverviewScrim.setDuration(duration);
-        mAnimators.play(fadeOverviewScrim);
+        mAnimators.add(fadeOverviewScrim);
     }
 }

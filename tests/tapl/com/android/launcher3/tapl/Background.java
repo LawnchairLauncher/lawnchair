@@ -23,7 +23,6 @@ import android.os.SystemClock;
 import android.view.MotionEvent;
 
 import androidx.annotation.NonNull;
-import androidx.test.uiautomator.UiObject2;
 
 import com.android.launcher3.testing.TestProtocol;
 
@@ -105,57 +104,12 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
                     startY = endY = mLauncher.getDevice().getDisplayHeight() / 2;
                 }
 
-                if (mLauncher.isFallbackOverview()) {
-                    mLauncher.linearGesture(startX, startY, endX, endY, 10);
-                    new BaseOverview(mLauncher);
-                } else {
-                    mLauncher.swipeToState(startX, startY, endX, endY, 10, expectedState);
-                }
+                mLauncher.swipeToState(startX, startY, endX, endY, 10, expectedState);
                 break;
             }
 
             case THREE_BUTTON:
                 mLauncher.waitForSystemUiObject("recent_apps").click();
-                break;
-        }
-    }
-
-    /**
-     * Swipes right or double presses the square button to switch to the previous app.
-     */
-    public Background quickSwitchToPreviousApp() {
-        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
-                "want to quick switch to the previous app")) {
-            verifyActiveContainer();
-            quickSwitchToPreviousApp(getExpectedStateForQuickSwitch());
-            return new Background(mLauncher);
-        }
-    }
-
-    protected int getExpectedStateForQuickSwitch() {
-        return BACKGROUND_APP_STATE_ORDINAL;
-    }
-
-    protected void quickSwitchToPreviousApp(int expectedState) {
-        switch (mLauncher.getNavigationModel()) {
-            case ZERO_BUTTON:
-                // Fall through, zero button and two button modes behave the same.
-            case TWO_BUTTON: {
-                // Swipe from the bottom left to the bottom right of the screen.
-                final int startX = 0;
-                final int startY = getSwipeStartY();
-                final int endX = mLauncher.getDevice().getDisplayWidth();
-                final int endY = startY;
-                mLauncher.swipeToState(startX, startY, endX, endY, 20, expectedState);
-                break;
-            }
-
-            case THREE_BUTTON:
-                // Double press the recents button.
-                UiObject2 recentsButton = mLauncher.waitForSystemUiObject("recent_apps");
-                recentsButton.click();
-                mLauncher.getOverview();
-                recentsButton.click();
                 break;
         }
     }

@@ -24,7 +24,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherActivityInfo;
-import android.content.pm.LauncherApps;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -35,7 +34,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PatternMatcher;
-import android.os.Process;
 import android.os.UserHandle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -48,8 +46,8 @@ import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.PendingAddItemInfo;
 import com.android.launcher3.PromiseAppInfo;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.WorkspaceItemInfo;
+import com.android.launcher3.compat.LauncherAppsCompat;
 
 import java.net.URISyntaxException;
 import java.util.List;
@@ -63,12 +61,12 @@ public class PackageManagerHelper {
 
     private final Context mContext;
     private final PackageManager mPm;
-    private final LauncherApps mLauncherApps;
+    private final LauncherAppsCompat mLauncherApps;
 
     public PackageManagerHelper(Context context) {
         mContext = context;
         mPm = context.getPackageManager();
-        mLauncherApps = context.getSystemService(LauncherApps.class);
+        mLauncherApps = LauncherAppsCompat.getInstance(context);
     }
 
     /**
@@ -76,8 +74,8 @@ public class PackageManagerHelper {
      * guarantee that the app is on SD card.
      */
     public boolean isAppOnSdcard(String packageName, UserHandle user) {
-        ApplicationInfo info = getApplicationInfo(
-                packageName, user, PackageManager.MATCH_UNINSTALLED_PACKAGES);
+        ApplicationInfo info = mLauncherApps.getApplicationInfo(
+                packageName, PackageManager.MATCH_UNINSTALLED_PACKAGES, user);
         return info != null && (info.flags & ApplicationInfo.FLAG_EXTERNAL_STORAGE) != 0;
     }
 
@@ -86,45 +84,8 @@ public class PackageManagerHelper {
      * {@link android.app.admin.DevicePolicyManager#isPackageSuspended}.
      */
     public boolean isAppSuspended(String packageName, UserHandle user) {
-        ApplicationInfo info = getApplicationInfo(packageName, user, 0);
+        ApplicationInfo info = mLauncherApps.getApplicationInfo(packageName, 0, user);
         return info != null && isAppSuspended(info);
-    }
-
-    /**
-     * Returns the application info for the provided package or null
-     */
-    public ApplicationInfo getApplicationInfo(String packageName, UserHandle user, int flags) {
-        if (Utilities.ATLEAST_OREO) {
-            try {
-                ApplicationInfo info = mLauncherApps.getApplicationInfo(packageName, flags, user);
-                return (info.flags & ApplicationInfo.FLAG_INSTALLED) == 0 || !info.enabled
-                        ? null : info;
-            } catch (PackageManager.NameNotFoundException e) {
-                return null;
-            }
-        } else {
-            final boolean isPrimaryUser = Process.myUserHandle().equals(user);
-            if (!isPrimaryUser && (flags == 0)) {
-                // We are looking for an installed app on a secondary profile. Prior to O, the only
-                // entry point for work profiles is through the LauncherActivity.
-                List<LauncherActivityInfo> activityList =
-                        mLauncherApps.getActivityList(packageName, user);
-                return activityList.size() > 0 ? activityList.get(0).getApplicationInfo() : null;
-            }
-            try {
-                ApplicationInfo info = mPm.getApplicationInfo(packageName, flags);
-                // There is no way to check if the app is installed for managed profile. But for
-                // primary profile, we can still have this check.
-                if (isPrimaryUser && ((info.flags & ApplicationInfo.FLAG_INSTALLED) == 0)
-                        || !info.enabled) {
-                    return null;
-                }
-                return info;
-            } catch (PackageManager.NameNotFoundException e) {
-                // Package not found
-                return null;
-            }
-        }
     }
 
     public boolean isSafeMode() {
@@ -241,7 +202,8 @@ public class PackageManagerHelper {
         }
         if (componentName != null) {
             try {
-                mLauncherApps.startAppDetailsActivity(componentName, info.user, sourceBounds, opts);
+                mLauncherApps.showAppDetailsForProfile(
+                        componentName, info.user, sourceBounds, opts);
             } catch (SecurityException | ActivityNotFoundException e) {
                 Toast.makeText(mContext, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
                 Log.e(TAG, "Unable to launch settings", e);

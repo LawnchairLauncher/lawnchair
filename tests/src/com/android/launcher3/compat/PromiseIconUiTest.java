@@ -48,7 +48,6 @@ public class PromiseIconUiTest extends AbstractLauncherUiTest {
     public void setUp() throws Exception {
         super.setUp();
         mDevice.pressHome();
-        waitForLauncherCondition("Launcher didn't start", launcher -> launcher != null);
         waitForState("Launcher internal state didn't switch to Home", LauncherState.NORMAL);
         mSessionId = -1;
     }

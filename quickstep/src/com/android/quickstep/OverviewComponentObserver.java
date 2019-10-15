@@ -22,6 +22,7 @@ import static android.content.Intent.ACTION_PACKAGE_REMOVED;
 
 import static com.android.launcher3.util.PackageManagerHelper.getPackageFilter;
 import static com.android.systemui.shared.system.PackageManagerWrapper.ACTION_PREFERRED_ACTIVITY_CHANGED;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_HOME_DISABLED;
 
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -56,21 +57,19 @@ public final class OverviewComponentObserver {
         }
     };
     private final Context mContext;
-    private final RecentsAnimationDeviceState mDeviceState;
     private final Intent mCurrentHomeIntent;
     private final Intent mMyHomeIntent;
     private final Intent mFallbackIntent;
     private final SparseIntArray mConfigChangesMap = new SparseIntArray();
     private String mUpdateRegisteredPackage;
-    private BaseActivityInterface mActivityInterface;
+    private ActivityControlHelper mActivityControlHelper;
     private Intent mOverviewIntent;
+    private int mSystemUiStateFlags;
     private boolean mIsHomeAndOverviewSame;
     private boolean mIsDefaultHome;
-    private boolean mIsHomeDisabled;
 
-    public OverviewComponentObserver(Context context, RecentsAnimationDeviceState deviceState) {
+    public OverviewComponentObserver(Context context) {
         mContext = context;
-        mDeviceState = deviceState;
 
         mCurrentHomeIntent = new Intent(Intent.ACTION_MAIN)
                 .addCategory(Intent.CATEGORY_HOME)
@@ -99,33 +98,36 @@ public final class OverviewComponentObserver {
         updateOverviewTargets();
     }
 
-    public void onSystemUiStateChanged() {
-        if (mDeviceState.isHomeDisabled() != mIsHomeDisabled) {
+    public void onSystemUiStateChanged(int stateFlags) {
+        boolean homeDisabledChanged = (mSystemUiStateFlags & SYSUI_STATE_HOME_DISABLED)
+                != (stateFlags & SYSUI_STATE_HOME_DISABLED);
+        mSystemUiStateFlags = stateFlags;
+        if (homeDisabledChanged) {
             updateOverviewTargets();
         }
     }
 
     /**
-     * Update overview intent and {@link BaseActivityInterface} based off the current launcher home
+     * Update overview intent and {@link ActivityControlHelper} based off the current launcher home
      * component.
      */
     private void updateOverviewTargets() {
         ComponentName defaultHome = PackageManagerWrapper.getInstance()
                 .getHomeActivities(new ArrayList<>());
 
-        mIsHomeDisabled = mDeviceState.isHomeDisabled();
         mIsDefaultHome = Objects.equals(mMyHomeIntent.getComponent(), defaultHome);
 
         // Set assistant visibility to 0 from launcher's perspective, ensures any elements that
         // launcher made invisible become visible again before the new activity control helper
         // becomes active.
-        if (mActivityInterface != null) {
-            mActivityInterface.onAssistantVisibilityChanged(0.f);
+        if (mActivityControlHelper != null) {
+            mActivityControlHelper.onAssistantVisibilityChanged(0.f);
         }
 
-        if (!mDeviceState.isHomeDisabled() && (defaultHome == null || mIsDefaultHome)) {
+        if ((mSystemUiStateFlags & SYSUI_STATE_HOME_DISABLED) == 0
+                && (defaultHome == null || mIsDefaultHome)) {
             // User default home is same as out home app. Use Overview integrated in Launcher.
-            mActivityInterface = new LauncherActivityInterface();
+            mActivityControlHelper = new LauncherActivityControllerHelper();
             mIsHomeAndOverviewSame = true;
             mOverviewIntent = mMyHomeIntent;
             mCurrentHomeIntent.setComponent(mMyHomeIntent.getComponent());
@@ -138,7 +140,7 @@ public final class OverviewComponentObserver {
         } else {
             // The default home app is a different launcher. Use the fallback Overview instead.
 
-            mActivityInterface = new FallbackActivityInterface();
+            mActivityControlHelper = new FallbackActivityControllerHelper();
             mIsHomeAndOverviewSame = false;
             mOverviewIntent = mFallbackIntent;
             mCurrentHomeIntent.setComponent(defaultHome);
@@ -230,7 +232,7 @@ public final class OverviewComponentObserver {
      *
      * @return the current activity control helper
      */
-    public BaseActivityInterface getActivityInterface() {
-        return mActivityInterface;
+    public ActivityControlHelper getActivityControlHelper() {
+        return mActivityControlHelper;
     }
 }

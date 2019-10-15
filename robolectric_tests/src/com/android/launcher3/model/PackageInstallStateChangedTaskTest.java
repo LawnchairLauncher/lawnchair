@@ -5,7 +5,8 @@ import static org.junit.Assert.assertEquals;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.WorkspaceItemInfo;
-import com.android.launcher3.pm.PackageInstallInfo;
+import com.android.launcher3.compat.PackageInstallerCompat;
+import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -27,7 +28,7 @@ public class PackageInstallStateChangedTaskTest extends BaseModelUpdateTaskTestC
     }
 
     private PackageInstallStateChangedTask newTask(String pkg, int progress) {
-        int state = PackageInstallInfo.STATUS_INSTALLING;
+        int state = PackageInstallerCompat.STATUS_INSTALLING;
         PackageInstallInfo installInfo = new PackageInstallInfo(pkg, state, progress,
                 android.os.Process.myUserHandle());
         return new PackageInstallStateChangedTask(installInfo);

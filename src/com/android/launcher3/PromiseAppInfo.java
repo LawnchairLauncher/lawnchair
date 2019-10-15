@@ -19,16 +19,16 @@ package com.android.launcher3;
 import android.content.Context;
 import android.content.Intent;
 
-import androidx.annotation.NonNull;
-
-import com.android.launcher3.pm.PackageInstallInfo;
+import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.util.PackageManagerHelper;
+
+import androidx.annotation.NonNull;
 
 public class PromiseAppInfo extends AppInfo {
 
     public int level = 0;
 
-    public PromiseAppInfo(@NonNull PackageInstallInfo installInfo) {
+    public PromiseAppInfo(@NonNull PackageInstallerCompat.PackageInstallInfo installInfo) {
         componentName = installInfo.componentName;
         intent = new Intent(Intent.ACTION_MAIN)
                 .addCategory(Intent.CATEGORY_LAUNCHER)

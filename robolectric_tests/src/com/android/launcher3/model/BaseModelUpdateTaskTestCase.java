@@ -15,20 +15,17 @@ import android.graphics.Color;
 import android.os.Process;
 import android.os.UserHandle;
 
-import androidx.annotation.NonNull;
-
 import com.android.launcher3.AppFilter;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
+import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.LauncherModel.ModelUpdateTask;
 import com.android.launcher3.LauncherProvider;
-import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.icons.cache.CachingLogic;
-import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.TestLauncherProvider;
 
@@ -46,6 +43,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.function.Supplier;
+
+import androidx.annotation.NonNull;
 
 /**
  * Base class for writing tests for Model update tasks.
@@ -80,7 +79,6 @@ public class BaseModelUpdateTaskTestCase {
         model = mock(LauncherModel.class);
         modelWriter = mock(ModelWriter.class);
 
-        LauncherAppState.INSTANCE.initializeForTesting(appState);
         when(appState.getModel()).thenReturn(model);
         when(model.getWriter(anyBoolean(), anyBoolean())).thenReturn(modelWriter);
         when(model.getCallback()).thenReturn(callbacks);
@@ -217,11 +215,6 @@ public class BaseModelUpdateTaskTestCase {
 
         public Bitmap newIcon() {
             return Bitmap.createBitmap(1, 1, Config.ARGB_8888);
-        }
-
-        @Override
-        public synchronized BitmapInfo getDefaultIcon(UserHandle user) {
-            return BitmapInfo.fromBitmap(newIcon());
         }
     }
 }

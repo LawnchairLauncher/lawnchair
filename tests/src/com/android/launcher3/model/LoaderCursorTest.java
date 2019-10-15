@@ -1,5 +1,29 @@
 package com.android.launcher3.model;
 
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.database.MatrixCursor;
+import android.graphics.Bitmap;
+import android.os.Process;
+import androidx.test.InstrumentationRegistry;
+import androidx.test.filters.SmallTest;
+import androidx.test.runner.AndroidJUnit4;
+
+import com.android.launcher3.WorkspaceItemInfo;
+import com.android.launcher3.icons.IconCache;
+import com.android.launcher3.InvariantDeviceProfile;
+import com.android.launcher3.ItemInfo;
+import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.compat.LauncherAppsCompat;
+import com.android.launcher3.icons.BitmapInfo;
+import com.android.launcher3.util.PackageManagerHelper;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import static com.android.launcher3.LauncherSettings.Favorites.INTENT;
 import static com.android.launcher3.LauncherSettings.Favorites.CELLX;
 import static com.android.launcher3.LauncherSettings.Favorites.CELLY;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER;
@@ -8,7 +32,6 @@ import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT
 import static com.android.launcher3.LauncherSettings.Favorites.ICON;
 import static com.android.launcher3.LauncherSettings.Favorites.ICON_PACKAGE;
 import static com.android.launcher3.LauncherSettings.Favorites.ICON_RESOURCE;
-import static com.android.launcher3.LauncherSettings.Favorites.INTENT;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
@@ -17,40 +40,14 @@ import static com.android.launcher3.LauncherSettings.Favorites.RESTORED;
 import static com.android.launcher3.LauncherSettings.Favorites.SCREEN;
 import static com.android.launcher3.LauncherSettings.Favorites.TITLE;
 import static com.android.launcher3.LauncherSettings.Favorites._ID;
-
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
-
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.LauncherApps;
-import android.database.MatrixCursor;
-import android.graphics.Bitmap;
-import android.os.Process;
-
-import androidx.test.InstrumentationRegistry;
-import androidx.test.filters.SmallTest;
-import androidx.test.runner.AndroidJUnit4;
-
-import com.android.launcher3.InvariantDeviceProfile;
-import com.android.launcher3.ItemInfo;
-import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.WorkspaceItemInfo;
-import com.android.launcher3.icons.BitmapInfo;
-import com.android.launcher3.icons.IconCache;
-import com.android.launcher3.util.PackageManagerHelper;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 
 /**
  * Tests for {@link LoaderCursor}
@@ -65,7 +62,7 @@ public class LoaderCursorTest {
     private MatrixCursor mCursor;
     private InvariantDeviceProfile mIDP;
     private Context mContext;
-    private LauncherApps mLauncherApps;
+    private LauncherAppsCompat mLauncherApps;
 
     private LoaderCursor mLoaderCursor;
 
@@ -84,7 +81,7 @@ public class LoaderCursorTest {
         when(mMockApp.getIconCache()).thenReturn(mMockIconCache);
         when(mMockApp.getInvariantDeviceProfile()).thenReturn(mIDP);
         when(mMockApp.getContext()).thenReturn(mContext);
-        mLauncherApps = mContext.getSystemService(LauncherApps.class);
+        mLauncherApps = LauncherAppsCompat.getInstance(mContext);
 
         mLoaderCursor = new LoaderCursor(mCursor, mMockApp);
         mLoaderCursor.allUsers.put(0, Process.myUserHandle());

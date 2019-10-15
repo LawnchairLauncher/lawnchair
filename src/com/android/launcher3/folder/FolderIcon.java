@@ -176,7 +176,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
         icon.setOnClickListener(ItemClickHandler.INSTANCE);
         icon.mInfo = folderInfo;
         icon.mLauncher = launcher;
-        icon.mDotRenderer = grid.mDotRendererWorkSpace;
+        icon.mDotRenderer = grid.mDotRenderer;
         icon.setContentDescription(launcher.getString(R.string.folder_name_format, folderInfo.title));
         Folder folder = Folder.fromXml(launcher);
         folder.setDragController(launcher.getDragController());

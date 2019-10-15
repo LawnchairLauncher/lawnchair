@@ -36,7 +36,8 @@ import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
-import com.android.launcher3.util.ActivityTracker.SchedulerCallback;
+import com.android.launcher3.states.InternalStateHandler;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.widget.PendingItemDragHelper;
 
 import java.util.UUID;
@@ -44,8 +45,8 @@ import java.util.UUID;
 /**
  * {@link DragSource} for handling drop from a different window.
  */
-public abstract class BaseItemDragListener implements View.OnDragListener, DragSource,
-        DragOptions.PreDragCondition, SchedulerCallback<Launcher> {
+public abstract class BaseItemDragListener extends InternalStateHandler implements
+        View.OnDragListener, DragSource, DragOptions.PreDragCondition {
 
     private static final String TAG = "BaseItemDragListener";
 
@@ -164,7 +165,7 @@ public abstract class BaseItemDragListener implements View.OnDragListener, DragS
     }
 
     protected void postCleanup() {
-        Launcher.ACTIVITY_TRACKER.clearReference(this);
+        clearReference();
         if (mLauncher != null) {
             // Remove any drag params from the launcher intent since the drag operation is complete.
             Intent newIntent = new Intent(mLauncher.getIntent());

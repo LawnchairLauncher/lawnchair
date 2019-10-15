@@ -37,6 +37,7 @@ import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.os.SystemClock;
@@ -51,7 +52,6 @@ import android.view.accessibility.AccessibilityEvent;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.test.InstrumentationRegistry;
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.Configurator;
@@ -60,24 +60,20 @@ import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.Until;
 
-import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.systemui.shared.system.QuickStepContract;
 
-import java.util.ArrayList;
+import org.junit.Assert;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
-import java.util.function.Function;
-
-import org.junit.Assert;
+import java.util.function.Supplier;
 
 /**
  * The main tapl object. The only object that can be explicitly constructed by the using code. It
@@ -88,7 +84,6 @@ public final class LauncherInstrumentation {
     private static final String TAG = "Tapl";
     private static final int ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME = 20;
     private static final int GESTURE_STEP_MS = 16;
-    private static long START_TIME = System.currentTimeMillis();
 
     // Types for launcher containers that the user is interacting with. "Background" is a
     // pseudo-container corresponding to inactive launcher covered by another app.
@@ -139,22 +134,13 @@ public final class LauncherInstrumentation {
     private int mExpectedRotation = Surface.ROTATION_0;
     private final Uri mTestProviderUri;
     private final Deque<String> mDiagnosticContext = new LinkedList<>();
-    private Function<Long, String> mSystemHealthSupplier;
+    private Supplier<String> mSystemHealthSupplier;
 
     private Consumer<ContainerType> mOnSettledStateAction;
 
     /**
      * Constructs the root of TAPL hierarchy. You get all other objects from it.
      */
-    public LauncherInstrumentation() {
-        this(InstrumentationRegistry.getInstrumentation());
-    }
-
-    /**
-     * Constructs the root of TAPL hierarchy. You get all other objects from it.
-     * Deprecated: use the constructor without parameters instead.
-     */
-    @Deprecated
     public LauncherInstrumentation(Instrumentation instrumentation) {
         mInstrumentation = instrumentation;
         mDevice = UiDevice.getInstance(instrumentation);
@@ -252,6 +238,10 @@ public final class LauncherInstrumentation {
         return null;
     }
 
+    public static boolean isAvd() {
+        return Build.MODEL.contains("Cuttlefish");
+    }
+
     static void log(String message) {
         Log.d(TAG, message);
     }
@@ -306,7 +296,7 @@ public final class LauncherInstrumentation {
         return "Background";
     }
 
-    public void setSystemHealthSupplier(Function<Long, String> supplier) {
+    public void setSystemHealthSupplier(Supplier<String> supplier) {
         this.mSystemHealthSupplier = supplier;
     }
 
@@ -326,8 +316,8 @@ public final class LauncherInstrumentation {
         }
 
         return mSystemHealthSupplier != null
-                ? mSystemHealthSupplier.apply(START_TIME)
-                : TestHelpers.getSystemHealthMessage(getContext(), START_TIME);
+                ? mSystemHealthSupplier.get()
+                : TestHelpers.getSystemHealthMessage(getContext());
     }
 
     private void fail(String message) {
@@ -496,7 +486,7 @@ public final class LauncherInstrumentation {
         }
     }
 
-    public void waitForLauncherInitialized() {
+    private void waitForLauncherInitialized() {
         for (int i = 0; i < 100; ++i) {
             if (getTestInfo(
                     TestProtocol.REQUEST_IS_LAUNCHER_INITIALIZED).
@@ -522,6 +512,15 @@ public final class LauncherInstrumentation {
         }
     }
 
+    Bundle getAnswerFromLauncher(UiObject2 view, String requestTag) {
+        // Send a fake set-text request to Launcher to initiate a response with requested data.
+        final String responseTag = requestTag + TestProtocol.RESPONSE_MESSAGE_POSTFIX;
+        return (Bundle) executeAndWaitForEvent(
+                () -> view.setText(requestTag),
+                event -> responseTag.equals(event.getClassName()),
+                "Launcher didn't respond to request: " + requestTag);
+    }
+
     /**
      * Presses nav bar home button.
      *
@@ -535,9 +534,6 @@ public final class LauncherInstrumentation {
         // accessibility events prior to pressing Home.
         final String action;
         if (getNavigationModel() == NavigationModel.ZERO_BUTTON) {
-            final String anomaly = getAnomalyMessage();
-            if (anomaly != null) fail("Can't swipe up to Home: " + anomaly);
-
             final Point displaySize = getRealDisplaySize();
 
             if (hasLauncherObject("deep_shortcuts_container")) {
@@ -545,17 +541,13 @@ public final class LauncherInstrumentation {
                         displaySize.x / 2, displaySize.y - 1,
                         displaySize.x / 2, 0,
                         ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME);
-                try (LauncherInstrumentation.Closable c = addContextLayer(
-                        "Swiped up from context menu to home")) {
-                    waitUntilGone("deep_shortcuts_container");
-                }
+                assertTrue("Context menu is still visible afterswiping up to home",
+                        !hasLauncherObject("deep_shortcuts_container"));
             }
             if (hasLauncherObject(WORKSPACE_RES_ID)) {
                 log(action = "already at home");
             } else {
-                log("Hierarchy before swiping up to home");
-                dumpViewHierarchy();
-                log(action = "swiping up to home from " + getVisibleStateMessage());
+                log(action = "swiping up to home");
                 final int finalState = mDevice.hasObject(By.pkg(getLauncherPackageName()))
                         ? NORMAL_STATE_ORDINAL : BACKGROUND_APP_STATE_ORDINAL;
 
@@ -777,36 +769,7 @@ public final class LauncherInstrumentation {
                 TestProtocol.stateOrdinalToString(parcel.getInt(TestProtocol.STATE_FIELD)));
     }
 
-    int getBottomGestureSize() {
-        return ResourceUtils.getNavbarSize(
-                ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE, getResources()) + 1;
-    }
-
-    int getBottomGestureMargin(UiObject2 container) {
-        return container.getVisibleBounds().bottom - getRealDisplaySize().y
-                + getBottomGestureSize();
-    }
-
-    void scrollToLastVisibleRow(UiObject2 container, Collection<UiObject2> items, int topPadding) {
-        final UiObject2 lowestItem = Collections.max(items, (i1, i2) ->
-                Integer.compare(i1.getVisibleBounds().top, i2.getVisibleBounds().top));
-
-        final int gestureStart = lowestItem.getVisibleBounds().top + getTouchSlop();
-        final int distance = gestureStart - container.getVisibleBounds().top - topPadding;
-        final int bottomMargin = container.getVisibleBounds().height() - distance;
-
-        scroll(
-                container,
-                Direction.DOWN,
-                new Rect(
-                        0,
-                        0,
-                        0,
-                        Math.max(bottomMargin, getBottomGestureMargin(container))),
-                150);
-    }
-
-    void scroll(UiObject2 container, Direction direction, Rect margins, int steps) {
+    void scroll(UiObject2 container, Direction direction, float percent, Rect margins, int steps) {
         final Rect rect = container.getVisibleBounds();
         if (margins != null) {
             rect.left += margins.left;
@@ -823,26 +786,34 @@ public final class LauncherInstrumentation {
         switch (direction) {
             case UP: {
                 startX = endX = rect.centerX();
-                startY = rect.top;
-                endY = rect.bottom - 1;
+                final int vertCenter = rect.centerY();
+                final float halfGestureHeight = rect.height() * percent / 2.0f;
+                startY = (int) (vertCenter - halfGestureHeight) + 1;
+                endY = (int) (vertCenter + halfGestureHeight);
             }
             break;
             case DOWN: {
                 startX = endX = rect.centerX();
-                startY = rect.bottom - 1;
-                endY = rect.top;
+                final int vertCenter = rect.centerY();
+                final float halfGestureHeight = rect.height() * percent / 2.0f;
+                startY = (int) (vertCenter + halfGestureHeight) - 1;
+                endY = (int) (vertCenter - halfGestureHeight);
             }
             break;
             case LEFT: {
                 startY = endY = rect.centerY();
-                startX = rect.left;
-                endX = rect.right - 1;
+                final int horizCenter = rect.centerX();
+                final float halfGestureWidth = rect.width() * percent / 2.0f;
+                startX = (int) (horizCenter - halfGestureWidth) + 1;
+                endX = (int) (horizCenter + halfGestureWidth);
             }
             break;
             case RIGHT: {
                 startY = endY = rect.centerY();
-                startX = rect.right - 1;
-                endX = rect.left;
+                final int horizCenter = rect.centerX();
+                final float halfGestureWidth = rect.width() * percent / 2.0f;
+                startX = (int) (horizCenter + halfGestureWidth) - 1;
+                endX = (int) (horizCenter - halfGestureWidth);
             }
             break;
             default:
@@ -871,6 +842,10 @@ public final class LauncherInstrumentation {
 
     void waitForIdle() {
         mDevice.waitForIdle();
+    }
+
+    float getDisplayDensity() {
+        return mInstrumentation.getTargetContext().getResources().getDisplayMetrics().density;
     }
 
     int getTouchSlop() {
@@ -993,19 +968,5 @@ public final class LauncherInstrumentation {
 
     public void produceNativeLeak() {
         getTestInfo(TestProtocol.REQUEST_NATIVE_LEAK);
-    }
-
-    public void produceViewLeak() {
-        getTestInfo(TestProtocol.REQUEST_VIEW_LEAK);
-    }
-
-    public ArrayList<ComponentName> getRecentTasks() {
-        ArrayList<ComponentName> tasks = new ArrayList<>();
-        ArrayList<String> components = getTestInfo(TestProtocol.REQUEST_RECENT_TASKS_LIST)
-                .getStringArrayList(TestProtocol.TEST_INFO_RESPONSE_FIELD);
-        for (String s : components) {
-            tasks.add(ComponentName.unflattenFromString(s));
-        }
-        return tasks;
     }
 }

@@ -17,27 +17,26 @@
 package com.android.launcher3;
 
 import static com.android.launcher3.InvariantDeviceProfile.CHANGE_FLAG_ICON_PARAMS;
-import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 import static com.android.launcher3.util.SecureSettingsObserver.newNotificationSettingsObserver;
 
 import android.content.ComponentName;
+import android.content.ContentProviderClient;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.LauncherApps;
+import android.content.IntentFilter;
 import android.os.Handler;
 import android.util.Log;
 
+import com.android.launcher3.compat.LauncherAppsCompat;
+import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.notification.NotificationListener;
-import com.android.launcher3.pm.InstallSessionTracker;
-import com.android.launcher3.pm.PackageInstallerCompat;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.SecureSettingsObserver;
-import com.android.launcher3.util.SimpleBroadcastReceiver;
 import com.android.launcher3.widget.custom.CustomWidgetManager;
 
 public class LauncherAppState {
@@ -45,7 +44,7 @@ public class LauncherAppState {
     public static final String ACTION_FORCE_ROLOAD = "force-reload-launcher";
 
     // We do not need any synchronization for this variable as its only written on UI thread.
-    public static final MainThreadInitializedObject<LauncherAppState> INSTANCE =
+    private static final MainThreadInitializedObject<LauncherAppState> INSTANCE =
             new MainThreadInitializedObject<>(LauncherAppState::new);
 
     private final Context mContext;
@@ -54,9 +53,6 @@ public class LauncherAppState {
     private final WidgetPreviewLoader mWidgetCache;
     private final InvariantDeviceProfile mInvariantDeviceProfile;
     private final SecureSettingsObserver mNotificationDotsObserver;
-
-    private final InstallSessionTracker mInstallSessionTracker;
-    private final SimpleBroadcastReceiver mModelChangeReceiver;
 
     public static LauncherAppState getInstance(final Context context) {
         return INSTANCE.get(context);
@@ -71,6 +67,10 @@ public class LauncherAppState {
     }
 
     private LauncherAppState(Context context) {
+        if (getLocalProvider(context) == null) {
+            throw new RuntimeException(
+                    "Initializing LauncherAppState in the absence of LauncherProvider");
+        }
         Log.v(Launcher.TAG, "LauncherAppState initiated");
         Preconditions.assertUIThread();
         mContext = context;
@@ -80,29 +80,27 @@ public class LauncherAppState {
         mWidgetCache = new WidgetPreviewLoader(mContext, mIconCache);
         mModel = new LauncherModel(this, mIconCache, AppFilter.newInstance(mContext));
 
-        mModelChangeReceiver = new SimpleBroadcastReceiver(mModel::onBroadcastIntent);
+        LauncherAppsCompat.getInstance(mContext).addOnAppsChangedCallback(mModel);
 
-        mContext.getSystemService(LauncherApps.class).registerCallback(mModel);
-        mModelChangeReceiver.register(mContext, Intent.ACTION_LOCALE_CHANGED,
-                Intent.ACTION_MANAGED_PROFILE_ADDED,
-                Intent.ACTION_MANAGED_PROFILE_REMOVED,
-                Intent.ACTION_MANAGED_PROFILE_AVAILABLE,
-                Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE,
-                Intent.ACTION_MANAGED_PROFILE_UNLOCKED);
+        // Register intent receivers
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_LOCALE_CHANGED);
+        // For handling managed profiles
+        filter.addAction(Intent.ACTION_MANAGED_PROFILE_ADDED);
+        filter.addAction(Intent.ACTION_MANAGED_PROFILE_REMOVED);
+        filter.addAction(Intent.ACTION_MANAGED_PROFILE_AVAILABLE);
+        filter.addAction(Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE);
+        filter.addAction(Intent.ACTION_MANAGED_PROFILE_UNLOCKED);
+
         if (FeatureFlags.IS_DOGFOOD_BUILD) {
-            mModelChangeReceiver.register(mContext, ACTION_FORCE_ROLOAD);
+            filter.addAction(ACTION_FORCE_ROLOAD);
         }
-        // TODO: remove listener on terminate
         FeatureFlags.APP_SEARCH_IMPROVEMENTS.addChangeListener(context, mModel::forceReload);
-        CustomWidgetManager.INSTANCE.get(mContext)
-                .setWidgetRefreshCallback(mModel::refreshAndBindWidgetsAndShortcuts);
 
+        mContext.registerReceiver(mModel, filter);
         UserManagerCompat.getInstance(mContext).enableAndResetCache();
         mInvariantDeviceProfile.addOnChangeListener(this::onIdpChanged);
         new Handler().post( () -> mInvariantDeviceProfile.verifyConfigChangedInBackground(context));
-
-        mInstallSessionTracker = PackageInstallerCompat.getInstance(context)
-                .registerInstallTracker(mModel, MODEL_EXECUTOR);
 
         if (!mContext.getResources().getBoolean(R.bool.notification_dots_enabled)) {
             mNotificationDotsObserver = null;
@@ -140,18 +138,20 @@ public class LauncherAppState {
      * Call from Application.onTerminate(), which is not guaranteed to ever be called.
      */
     public void onTerminate() {
-        mContext.unregisterReceiver(mModelChangeReceiver);
-        mContext.getSystemService(LauncherApps.class).unregisterCallback(mModel);
-        mInstallSessionTracker.unregister();
-        CustomWidgetManager.INSTANCE.get(mContext).setWidgetRefreshCallback(null);
-
+        mContext.unregisterReceiver(mModel);
+        final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(mContext);
+        launcherApps.removeOnAppsChangedCallback(mModel);
+        PackageInstallerCompat.getInstance(mContext).onStop();
         if (mNotificationDotsObserver != null) {
             mNotificationDotsObserver.unregister();
         }
     }
 
     LauncherModel setLauncher(Launcher launcher) {
+        getLocalProvider(mContext).setLauncherProviderChangeListener(launcher);
         mModel.initialize(launcher);
+        CustomWidgetManager.INSTANCE.get(launcher)
+                .setWidgetRefreshCallback(mModel::refreshAndBindWidgetsAndShortcuts);
         return mModel;
     }
 
@@ -176,5 +176,12 @@ public class LauncherAppState {
      */
     public static InvariantDeviceProfile getIDP(Context context) {
         return InvariantDeviceProfile.INSTANCE.get(context);
+    }
+
+    private static LauncherProvider getLocalProvider(Context context) {
+        try (ContentProviderClient cl = context.getContentResolver()
+                .acquireContentProviderClient(LauncherProvider.AUTHORITY)) {
+            return (LauncherProvider) cl.getLocalContentProvider();
+        }
     }
 }

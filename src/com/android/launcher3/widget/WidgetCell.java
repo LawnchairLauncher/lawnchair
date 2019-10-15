@@ -37,7 +37,6 @@ import com.android.launcher3.SimpleOnStylusPressListener;
 import com.android.launcher3.StylusEventHelper;
 import com.android.launcher3.WidgetPreviewLoader;
 import com.android.launcher3.graphics.DrawableFactory;
-import com.android.launcher3.icons.BaseIconFactory;
 import com.android.launcher3.model.WidgetItem;
 
 /**
@@ -81,7 +80,6 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     private Bitmap mDeferredBitmap;
 
     protected final BaseActivity mActivity;
-    protected DeviceProfile mDeviceProfile;
 
     public WidgetCell(Context context) {
         this(context, null);
@@ -95,7 +93,6 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         super(context, attrs, defStyle);
 
         mActivity = BaseActivity.fromContext(context);
-        mDeviceProfile = mActivity.getDeviceProfile();
         mStylusEventHelper = new StylusEventHelper(new SimpleOnStylusPressListener(this), this);
 
         setContainerWidth();
@@ -105,7 +102,8 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     }
 
     private void setContainerWidth() {
-        mCellSize = (int) (mDeviceProfile.allAppsCellWidthPx * WIDTH_SCALE);
+        DeviceProfile profile = mActivity.getDeviceProfile();
+        mCellSize = (int) (profile.cellWidthPx * WIDTH_SCALE);
         mPresetPreviewSize = (int) (mCellSize * PREVIEW_SCALE);
     }
 
@@ -182,10 +180,8 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
             return;
         }
         if (bitmap != null) {
-            mWidgetImage.setBitmap(bitmap,
-                    DrawableFactory.INSTANCE.get(getContext()).getBadgeForUser(mItem.user,
-                            getContext(), BaseIconFactory.getBadgeSizeForIconSize(
-                                    mDeviceProfile.allAppsIconSizePx)));
+            mWidgetImage.setBitmap(bitmap, DrawableFactory.INSTANCE.get(getContext())
+                    .getBadgeForUser(mItem.user, getContext()));
             if (mAnimatePreview) {
                 mWidgetImage.setAlpha(0f);
                 ViewPropertyAnimator anim = mWidgetImage.animate();

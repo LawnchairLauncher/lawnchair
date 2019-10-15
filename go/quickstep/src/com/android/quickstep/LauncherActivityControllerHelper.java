@@ -30,10 +30,10 @@ import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 
 /**
- * {@link BaseActivityInterface} for the in-launcher recents.
+ * {@link ActivityControlHelper} for the in-launcher recents.
  * TODO: Implement the app to overview animation functionality
  */
-public final class LauncherActivityInterface extends GoActivityInterface<Launcher> {
+public final class LauncherActivityControllerHelper extends GoActivityControlHelper<Launcher> {
 
     @Override
     public AnimationFactory prepareRecentsUI(Launcher activity,
@@ -43,7 +43,8 @@ public final class LauncherActivityInterface extends GoActivityInterface<Launche
         activity.<IconRecentsView>getOverviewPanel().setUsingRemoteAnimation(true);
         //TODO: Implement this based off where the recents view needs to be for app => recents anim.
         return new AnimationFactory() {
-            public void createActivityInterface(long transitionLength) {
+            @Override
+            public void createActivityController(long transitionLength) {
                 callback.accept(activity.getStateManager().createAnimationToNewWorkspace(
                         fromState, OVERVIEW, transitionLength));
             }
@@ -54,7 +55,7 @@ public final class LauncherActivityInterface extends GoActivityInterface<Launche
     }
 
     @Override
-    public LauncherInitListener createActivityInitListener(
+    public ActivityInitListener createActivityInitListener(
             BiPredicate<Launcher, Boolean> onInitListener) {
         return new LauncherInitListener(onInitListener);
     }

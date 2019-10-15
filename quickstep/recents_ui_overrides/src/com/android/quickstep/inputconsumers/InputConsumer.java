@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.quickstep;
+package com.android.quickstep.inputconsumers;
 
 import android.annotation.TargetApi;
 import android.os.Build;
@@ -33,7 +33,6 @@ public interface InputConsumer {
     int TYPE_SCREEN_PINNED = 1 << 6;
     int TYPE_OVERVIEW_WITHOUT_FOCUS = 1 << 7;
     int TYPE_RESET_GESTURE = 1 << 8;
-    int TYPE_QUICK_CAPTURE = 1 << 9;
 
     String[] NAMES = new String[] {
            "TYPE_NO_OP",                    // 0
@@ -45,7 +44,6 @@ public interface InputConsumer {
             "TYPE_SCREEN_PINNED",           // 6
             "TYPE_OVERVIEW_WITHOUT_FOCUS",  // 7
             "TYPE_RESET_GESTURE",           // 8
-            "TYPE_QUICK_CAPTURE",           // 9
     };
 
     InputConsumer NO_OP = () -> TYPE_NO_OP;

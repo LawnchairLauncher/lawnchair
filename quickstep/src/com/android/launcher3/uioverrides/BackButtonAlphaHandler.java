@@ -24,18 +24,18 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.anim.AnimatorSetBuilder;
-import com.android.launcher3.util.UiThreadHelper;
-import com.android.quickstep.SysUINavigationMode;
-import com.android.quickstep.SystemUiProxy;
+import com.android.quickstep.OverviewInteractionState;
 
 public class BackButtonAlphaHandler implements LauncherStateManager.StateHandler {
 
     private static final String TAG = "BackButtonAlphaHandler";
 
     private final Launcher mLauncher;
+    private final OverviewInteractionState mOverviewInteractionState;
 
     public BackButtonAlphaHandler(Launcher launcher) {
         mLauncher = launcher;
+        mOverviewInteractionState = OverviewInteractionState.INSTANCE.get(mLauncher);
     }
 
     @Override
@@ -49,23 +49,14 @@ public class BackButtonAlphaHandler implements LauncherStateManager.StateHandler
         if (!config.playNonAtomicComponent()) {
             return;
         }
-
-        if (!SysUINavigationMode.getMode(mLauncher).hasGestures) {
-            // If the nav mode is not gestural, then force back button alpha to be 1
-            UiThreadHelper.setBackButtonAlphaAsync(mLauncher, UiFactory.SET_BACK_BUTTON_ALPHA, 1f,
-                    true /* animate */);
-            return;
-        }
-
-        float fromAlpha = SystemUiProxy.INSTANCE.get(mLauncher).getLastBackButtonAlpha();
+        float fromAlpha = mOverviewInteractionState.getBackButtonAlpha();
         float toAlpha = toState.hideBackButton ? 0 : 1;
         if (Float.compare(fromAlpha, toAlpha) != 0) {
             ValueAnimator anim = ValueAnimator.ofFloat(fromAlpha, toAlpha);
             anim.setDuration(config.duration);
             anim.addUpdateListener(valueAnimator -> {
                 final float alpha = (float) valueAnimator.getAnimatedValue();
-                UiThreadHelper.setBackButtonAlphaAsync(mLauncher, UiFactory.SET_BACK_BUTTON_ALPHA,
-                        alpha, false /* animate */);
+                mOverviewInteractionState.setBackButtonAlpha(alpha, false);
             });
             anim.addListener(new AnimatorListenerAdapter() {
                 @Override

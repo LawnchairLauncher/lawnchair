@@ -16,7 +16,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherActivityInfo;
-import android.content.pm.LauncherApps;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -29,12 +28,12 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.android.launcher3.Launcher.OnResumeCallback;
+import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.logging.LoggerUtils;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
-import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Themes;
 
 import java.net.URISyntaxException;
@@ -158,7 +157,7 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
             user = item.user;
         }
         if (intent != null) {
-            LauncherActivityInfo info = mLauncher.getSystemService(LauncherApps.class)
+            LauncherActivityInfo info = LauncherAppsCompat.getInstance(mLauncher)
                     .resolveActivity(intent, user);
             if (info != null
                     && (info.getApplicationInfo().flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
@@ -288,8 +287,9 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
         @Override
         public void onLauncherResume() {
             // We use MATCH_UNINSTALLED_PACKAGES as the app can be on SD card as well.
-            if (new PackageManagerHelper(mContext).getApplicationInfo(mPackageName,
-                    mDragObject.dragInfo.user, PackageManager.MATCH_UNINSTALLED_PACKAGES) == null) {
+            if (LauncherAppsCompat.getInstance(mContext)
+                    .getApplicationInfo(mPackageName, PackageManager.MATCH_UNINSTALLED_PACKAGES,
+                            mDragObject.dragInfo.user) == null) {
                 mDragObject.dragSource = mOriginal;
                 mOriginal.onDropCompleted(SecondaryDropTarget.this, mDragObject, true);
             } else {

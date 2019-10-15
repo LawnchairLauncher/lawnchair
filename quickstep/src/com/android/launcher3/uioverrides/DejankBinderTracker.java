@@ -96,8 +96,8 @@ public class DejankBinderTracker implements Binder.ProxyTransactListener {
 
     @MainThread
     public void startTracking() {
-        if (!Build.TYPE.toLowerCase(Locale.ROOT).contains("debug")
-                && !Build.TYPE.toLowerCase(Locale.ROOT).equals("eng")) {
+        if (Build.TYPE.toLowerCase(Locale.ROOT).contains("debug")
+                || Build.TYPE.toLowerCase(Locale.ROOT).equals("eng")) {
             Log.wtf(TAG, "Unexpected use of binder tracker in non-debug build", new Exception());
             return;
         }

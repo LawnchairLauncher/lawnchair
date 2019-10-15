@@ -19,25 +19,29 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.CancellationSignal;
 import android.os.Handler;
 
-import com.android.quickstep.util.ActivityInitListener;
+import com.android.launcher3.states.InternalStateHandler;
+import com.android.quickstep.ActivityControlHelper.ActivityInitListener;
 import com.android.quickstep.util.RemoteAnimationProvider;
 
 import java.util.function.BiPredicate;
 
 @TargetApi(Build.VERSION_CODES.P)
-public class LauncherInitListener extends ActivityInitListener<Launcher> {
+public class LauncherInitListener extends InternalStateHandler implements ActivityInitListener {
+
+    private final BiPredicate<Launcher, Boolean> mOnInitListener;
 
     private RemoteAnimationProvider mRemoteAnimationProvider;
 
     public LauncherInitListener(BiPredicate<Launcher, Boolean> onInitListener) {
-        super(onInitListener, Launcher.ACTIVITY_TRACKER);
+        mOnInitListener = onInitListener;
     }
 
     @Override
-    public boolean init(Launcher launcher, boolean alreadyOnHome) {
+    protected boolean init(Launcher launcher, boolean alreadyOnHome) {
         if (mRemoteAnimationProvider != null) {
             QuickstepAppTransitionManagerImpl appTransitionManager =
                     (QuickstepAppTransitionManagerImpl) launcher.getAppTransitionManager();
@@ -45,7 +49,7 @@ public class LauncherInitListener extends ActivityInitListener<Launcher> {
             // Set a one-time animation provider. After the first call, this will get cleared.
             // TODO: Probably also check the intended target id.
             CancellationSignal cancellationSignal = new CancellationSignal();
-            appTransitionManager.setRemoteAnimationProvider((appTargets, wallpaperTargets) -> {
+            appTransitionManager.setRemoteAnimationProvider((targets) -> {
 
                 // On the first call clear the reference.
                 cancellationSignal.cancel();
@@ -53,25 +57,34 @@ public class LauncherInitListener extends ActivityInitListener<Launcher> {
                 mRemoteAnimationProvider = null;
 
                 if (provider != null && launcher.getStateManager().getState().overviewUi) {
-                    return provider.createWindowAnimation(appTargets, wallpaperTargets);
+                    return provider.createWindowAnimation(targets);
                 }
                 return null;
             }, cancellationSignal);
         }
         launcher.deferOverlayCallbacksUntilNextResumeOrStop();
-        return super.init(launcher, alreadyOnHome);
+        return mOnInitListener.test(launcher, alreadyOnHome);
+    }
+
+    @Override
+    public void register() {
+        initWhenReady();
     }
 
     @Override
     public void unregister() {
         mRemoteAnimationProvider = null;
-        super.unregister();
+        clearReference();
     }
 
     @Override
     public void registerAndStartActivity(Intent intent, RemoteAnimationProvider animProvider,
             Context context, Handler handler, long duration) {
         mRemoteAnimationProvider = animProvider;
-        super.registerAndStartActivity(intent, animProvider, context, handler, duration);
+
+        register();
+
+        Bundle options = animProvider.toActivityOptions(handler, duration, context).toBundle();
+        context.startActivity(addToIntent(new Intent((intent))), options);
     }
 }

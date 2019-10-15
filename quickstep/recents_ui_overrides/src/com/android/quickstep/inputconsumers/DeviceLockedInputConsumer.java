@@ -22,9 +22,9 @@ import static android.view.MotionEvent.ACTION_UP;
 import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.Utilities.squaredTouchSlop;
 import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
+import static com.android.quickstep.TouchInteractionService.INTENT_EXTRA_LOG_TRACE_ID;
 import static com.android.quickstep.TouchInteractionService.startRecentsActivityAsync;
 import static com.android.quickstep.WindowTransformSwipeHandler.MIN_PROGRESS_FOR_OVERVIEW;
-import static com.android.quickstep.util.ActiveGestureLog.INTENT_EXTRA_LOG_TRACE_ID;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -32,6 +32,7 @@ import android.content.Intent;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
@@ -39,17 +40,12 @@ import android.view.ViewConfiguration;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.DefaultDisplay;
-import com.android.quickstep.GestureState;
-import com.android.quickstep.InputConsumer;
 import com.android.quickstep.LockScreenRecentsActivity;
 import com.android.quickstep.MultiStateCallback;
-import com.android.quickstep.RecentsAnimationController;
-import com.android.quickstep.RecentsAnimationDeviceState;
 import com.android.quickstep.SwipeSharedState;
-import com.android.quickstep.RecentsAnimationCallbacks;
-import com.android.quickstep.RecentsAnimationTargets;
-import com.android.quickstep.util.AppWindowAnimationHelper;
-import com.android.systemui.shared.recents.model.ThumbnailData;
+import com.android.quickstep.util.ClipAnimationHelper;
+import com.android.quickstep.util.RecentsAnimationListenerSet;
+import com.android.quickstep.util.SwipeAnimationTargetSet;
 import com.android.systemui.shared.system.InputMonitorCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
@@ -57,7 +53,7 @@ import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
  * A dummy input consumer used when the device is still locked, e.g. from secure camera.
  */
 public class DeviceLockedInputConsumer implements InputConsumer,
-        RecentsAnimationCallbacks.RecentsAnimationListener {
+        SwipeAnimationTargetSet.SwipeAnimationListener {
 
     private static final float SCALE_DOWN = 0.75f;
 
@@ -75,18 +71,17 @@ public class DeviceLockedInputConsumer implements InputConsumer,
             getFlagForIndex(1, "STATE_HANDLER_INVALIDATED");
 
     private final Context mContext;
-    private final RecentsAnimationDeviceState mDeviceState;
-    private final GestureState mGestureState;
     private final float mTouchSlopSquared;
     private final SwipeSharedState mSwipeSharedState;
     private final InputMonitorCompat mInputMonitorCompat;
 
     private final PointF mTouchDown = new PointF();
-    private final AppWindowAnimationHelper mAppWindowAnimationHelper;
+    private final ClipAnimationHelper mClipAnimationHelper;
     private int mLogId;
-    private final AppWindowAnimationHelper.TransformParams mTransformParams;
+    private final ClipAnimationHelper.TransformParams mTransformParams;
     private final Point mDisplaySize;
     private final MultiStateCallback mStateCallback;
+    private final RectF mSwipeTouchRegion;
     public final int mRunningTaskId;
 
     private VelocityTracker mVelocityTracker;
@@ -94,21 +89,19 @@ public class DeviceLockedInputConsumer implements InputConsumer,
 
     private boolean mThresholdCrossed = false;
 
-    private RecentsAnimationController mRecentsAnimationController;
-    private RecentsAnimationTargets mRecentsAnimationTargets;
+    private SwipeAnimationTargetSet mTargetSet;
 
-    public DeviceLockedInputConsumer(Context context, RecentsAnimationDeviceState deviceState,
-            GestureState gestureState, SwipeSharedState swipeSharedState,
-            InputMonitorCompat inputMonitorCompat, int runningTaskId, int logId) {
+    public DeviceLockedInputConsumer(Context context, SwipeSharedState swipeSharedState,
+            InputMonitorCompat inputMonitorCompat, RectF swipeTouchRegion, int runningTaskId,
+            int logId) {
         mContext = context;
-        mDeviceState = deviceState;
-        mGestureState = gestureState;
         mTouchSlopSquared = squaredTouchSlop(context);
         mSwipeSharedState = swipeSharedState;
-        mAppWindowAnimationHelper = new AppWindowAnimationHelper(context);
+        mClipAnimationHelper = new ClipAnimationHelper(context);
         mLogId = logId;
-        mTransformParams = new AppWindowAnimationHelper.TransformParams();
+        mTransformParams = new ClipAnimationHelper.TransformParams();
         mInputMonitorCompat = inputMonitorCompat;
+        mSwipeTouchRegion = swipeTouchRegion;
         mRunningTaskId = runningTaskId;
 
         // Do not use DeviceProfile as the user data might be locked
@@ -144,7 +137,7 @@ public class DeviceLockedInputConsumer implements InputConsumer,
                 if (!mThresholdCrossed) {
                     // Cancel interaction in case of multi-touch interaction
                     int ptrIdx = ev.getActionIndex();
-                    if (!mDeviceState.isInSwipeUpTouchRegion(ev, ptrIdx)) {
+                    if (!mSwipeTouchRegion.contains(ev.getX(ptrIdx), ev.getY(ptrIdx))) {
                         int action = ev.getAction();
                         ev.setAction(ACTION_CANCEL);
                         finishTouchTracking(ev);
@@ -162,7 +155,9 @@ public class DeviceLockedInputConsumer implements InputConsumer,
                     float dy = Math.max(mTouchDown.y - y, 0);
                     mProgress = dy / mDisplaySize.y;
                     mTransformParams.setProgress(mProgress);
-                    mAppWindowAnimationHelper.applyTransform(mTransformParams);
+                    if (mTargetSet != null) {
+                        mClipAnimationHelper.applyTransform(mTargetSet, mTransformParams);
+                    }
                 }
                 break;
             }
@@ -207,8 +202,9 @@ public class DeviceLockedInputConsumer implements InputConsumer,
 
     private void startRecentsTransition() {
         mThresholdCrossed = true;
-        RecentsAnimationCallbacks callbacks = mSwipeSharedState.newRecentsAnimationCallbacks();
-        callbacks.addListener(this);
+        RecentsAnimationListenerSet newListenerSet =
+                mSwipeSharedState.newRecentsAnimationListenerSet();
+        newListenerSet.addListener(this);
         Intent intent = new Intent(Intent.ACTION_MAIN)
                 .addCategory(Intent.CATEGORY_DEFAULT)
                 .setComponent(new ComponentName(mContext, LockScreenRecentsActivity.class))
@@ -216,40 +212,35 @@ public class DeviceLockedInputConsumer implements InputConsumer,
                 .putExtra(INTENT_EXTRA_LOG_TRACE_ID, mLogId);
 
         mInputMonitorCompat.pilferPointers();
-        startRecentsActivityAsync(intent, callbacks);
+        startRecentsActivityAsync(intent, newListenerSet);
     }
 
     @Override
-    public void onRecentsAnimationStart(RecentsAnimationController controller,
-            RecentsAnimationTargets targets) {
-        mRecentsAnimationController = controller;
-        mRecentsAnimationTargets = targets;
+    public void onRecentsAnimationStart(SwipeAnimationTargetSet targetSet) {
+        mTargetSet = targetSet;
 
         Rect displaySize = new Rect(0, 0, mDisplaySize.x, mDisplaySize.y);
-        RemoteAnimationTargetCompat targetCompat = targets.findTask(mRunningTaskId);
+        RemoteAnimationTargetCompat targetCompat = targetSet.findTask(mRunningTaskId);
         if (targetCompat != null) {
-            mAppWindowAnimationHelper.updateSource(displaySize, targetCompat);
+            mClipAnimationHelper.updateSource(displaySize, targetCompat);
         }
 
         Utilities.scaleRectAboutCenter(displaySize, SCALE_DOWN);
         displaySize.offsetTo(displaySize.left, 0);
-        mTransformParams.setTargetSet(mRecentsAnimationTargets)
-                .setLauncherOnTop(true);
-        mAppWindowAnimationHelper.updateTargetRect(displaySize);
-        mAppWindowAnimationHelper.applyTransform(mTransformParams);
+        mClipAnimationHelper.updateTargetRect(displaySize);
+        mClipAnimationHelper.applyTransform(mTargetSet, mTransformParams);
 
         mStateCallback.setState(STATE_TARGET_RECEIVED);
     }
 
     @Override
-    public void onRecentsAnimationCanceled(ThumbnailData thumbnailData) {
-        mRecentsAnimationController = null;
-        mRecentsAnimationTargets = null;
+    public void onRecentsAnimationCanceled() {
+        mTargetSet = null;
     }
 
     private void endRemoteAnimation() {
-        if (mRecentsAnimationController != null) {
-            mRecentsAnimationController.finishController(
+        if (mTargetSet != null) {
+            mTargetSet.finishController(
                     false /* toRecents */, null /* callback */, false /* sendUserLeaveHint */);
         }
     }

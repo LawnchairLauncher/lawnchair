@@ -13,8 +13,8 @@ import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
  *
  * @param <T> activity that contains the overview
  */
-public abstract class GoActivityInterface<T extends BaseDraggingActivity> implements
-        BaseActivityInterface<T> {
+public abstract class GoActivityControlHelper<T extends BaseDraggingActivity> implements
+        ActivityControlHelper<T> {
 
     @Override
     public void onTransitionCancelled(T activity, boolean activityVisible) {

@@ -19,14 +19,16 @@ import android.content.ComponentName;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 
+import com.android.launcher3.AppInfo;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherModel.CallbackTask;
+import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.PromiseAppInfo;
 import com.android.launcher3.WorkspaceItemInfo;
-import com.android.launcher3.model.BgDataModel.Callbacks;
-import com.android.launcher3.pm.PackageInstallInfo;
+import com.android.launcher3.compat.PackageInstallerCompat;
+import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
 import com.android.launcher3.util.InstantAppResolver;
 
 import java.util.HashSet;
@@ -44,7 +46,7 @@ public class PackageInstallStateChangedTask extends BaseModelUpdateTask {
 
     @Override
     public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
-        if (mInstallInfo.state == PackageInstallInfo.STATUS_INSTALLED) {
+        if (mInstallInfo.state == PackageInstallerCompat.STATUS_INSTALLED) {
             try {
                 // For instant apps we do not get package-add. Use setting events to update
                 // any pinned icons.
@@ -77,7 +79,7 @@ public class PackageInstallStateChangedTask extends BaseModelUpdateTask {
                     if (si.hasPromiseIconUi() && (cn != null)
                             && mInstallInfo.packageName.equals(cn.getPackageName())) {
                         si.setInstallProgress(mInstallInfo.progress);
-                        if (mInstallInfo.state == PackageInstallInfo.STATUS_FAILED) {
+                        if (mInstallInfo.state == PackageInstallerCompat.STATUS_FAILED) {
                             // Mark this info as broken.
                             si.status &= ~WorkspaceItemInfo.FLAG_INSTALL_SESSION_ACTIVE;
                         }

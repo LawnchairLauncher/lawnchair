@@ -34,11 +34,9 @@ public interface ComponentWithLabel {
     class ComponentCachingLogic implements CachingLogic<ComponentWithLabel> {
 
         private final PackageManager mPackageManager;
-        private final boolean mAddToMemCache;
 
-        public ComponentCachingLogic(Context context, boolean addToMemCache) {
+        public ComponentCachingLogic(Context context) {
             mPackageManager = context.getPackageManager();
-            mAddToMemCache = addToMemCache;
         }
 
         @Override
@@ -61,11 +59,6 @@ public interface ComponentWithLabel {
                 ComponentWithLabel object, BitmapInfo target) {
             // Do not load icon.
             target.icon = BitmapInfo.LOW_RES_ICON;
-        }
-
-        @Override
-        public boolean addToMemCache() {
-            return mAddToMemCache;
         }
     }
 }

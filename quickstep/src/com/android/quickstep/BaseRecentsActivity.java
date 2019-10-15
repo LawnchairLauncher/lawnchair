@@ -28,7 +28,6 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.uioverrides.UiFactory;
-import com.android.launcher3.util.ActivityTracker;
 import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.Themes;
 
@@ -44,7 +43,6 @@ import java.io.PrintWriter;
  */
 public abstract class BaseRecentsActivity extends BaseDraggingActivity {
 
-    public static ActivityTracker<BaseRecentsActivity> ACTIVITY_TRACKER = new ActivityTracker<>();
     private Configuration mOldConfig;
 
     @Override
@@ -57,7 +55,7 @@ public abstract class BaseRecentsActivity extends BaseDraggingActivity {
 
         getSystemUiController().updateUiState(SystemUiController.UI_STATE_BASE_WINDOW,
                 Themes.getAttrBoolean(this, R.attr.isWorkspaceDarkText));
-        ACTIVITY_TRACKER.handleCreate((RecentsActivity) this);
+        RecentsActivityTracker.onRecentsActivityCreate(this);
     }
 
     /**
@@ -134,13 +132,13 @@ public abstract class BaseRecentsActivity extends BaseDraggingActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        ACTIVITY_TRACKER.handleNewIntent(this, intent);
+        RecentsActivityTracker.onRecentsActivityNewIntent(this);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ACTIVITY_TRACKER.onActivityDestroyed(this);
+        RecentsActivityTracker.onRecentsActivityDestroy(this);
     }
 
     @Override

@@ -22,7 +22,6 @@ import static androidx.test.InstrumentationRegistry.getInstrumentation;
 import static com.android.launcher3.tapl.LauncherInstrumentation.WAIT_TIME_MS;
 import static com.android.launcher3.tapl.TestHelpers.getHomeIntentInPackage;
 import static com.android.launcher3.tapl.TestHelpers.getLauncherInMyProcess;
-import static com.android.launcher3.ui.AbstractLauncherUiTest.DEFAULT_ACTIVITY_TIMEOUT;
 import static com.android.launcher3.ui.AbstractLauncherUiTest.DEFAULT_UI_TIMEOUT;
 import static com.android.launcher3.ui.AbstractLauncherUiTest.resolveSystemApp;
 import static com.android.launcher3.ui.AbstractLauncherUiTest.startAppFast;
@@ -31,13 +30,13 @@ import static com.android.launcher3.ui.TaplTestsLauncher3.getAppPackageName;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.rule.ShellCommandRule.disableHeadsUpNotification;
 import static com.android.launcher3.util.rule.ShellCommandRule.getLauncherCommand;
+import static com.android.quickstep.NavigationModeSwitchRule.Mode.ZERO_BUTTON;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import android.app.Instrumentation;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -55,8 +54,8 @@ import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.tapl.OverviewTask;
 import com.android.launcher3.tapl.TestHelpers;
 import com.android.launcher3.testcomponent.TestCommandReceiver;
-import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.FailureWatcher;
+import com.android.launcher3.util.rule.SimpleActivityRule;
 import com.android.quickstep.NavigationModeSwitchRule.NavigationModeSwitch;
 import com.android.quickstep.views.RecentsView;
 
@@ -87,12 +86,17 @@ public class FallbackRecentsTest {
     @Rule
     public final TestRule mOrderSensitiveRules;
 
+    @Rule
+    public final SimpleActivityRule<RecentsActivity> mActivityMonitor =
+            new SimpleActivityRule(RecentsActivity.class);
+
+
     public FallbackRecentsTest() throws RemoteException {
         Instrumentation instrumentation = getInstrumentation();
         Context context = instrumentation.getContext();
         mDevice = UiDevice.getInstance(instrumentation);
         mDevice.setOrientationNatural();
-        mLauncher = new LauncherInstrumentation();
+        mLauncher = new LauncherInstrumentation(instrumentation);
 
         if (TestHelpers.isInLauncherProcess()) {
             Utilities.enableRunningInTestHarnessForTests();
@@ -120,11 +124,6 @@ public class FallbackRecentsTest {
                 }
             }
         };
-        if (TestHelpers.isInLauncherProcess()) {
-            mLauncher.setSystemHealthSupplier(startTime -> TestCommandReceiver.callCommand(
-                    TestCommandReceiver.GET_SYSTEM_HEALTH_MESSAGE, startTime.toString()).
-                    getString("result"));
-        }
     }
 
     @NavigationModeSwitch
@@ -140,30 +139,21 @@ public class FallbackRecentsTest {
     @NavigationModeSwitch
     @Test
     public void goToOverviewFromApp() {
-        startAppFastAndWaitForRecentTask(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
+        startAppFast(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
 
         mLauncher.getBackground().switchToOverview();
     }
 
-    protected void executeOnRecents(Consumer<RecentsActivity> f) {
+    protected void executeOnRecents(Consumer<RecentsActivity> f) throws Exception {
         getFromRecents(r -> {
             f.accept(r);
-            return true;
+            return null;
         });
     }
 
-    protected <T> T getFromRecents(Function<RecentsActivity, T> f) {
+    protected <T> T getFromRecents(Function<RecentsActivity, T> f) throws Exception {
         if (!TestHelpers.isInLauncherProcess()) return null;
-        Object[] result = new Object[1];
-        Wait.atMost("Failed to get from recents", () -> MAIN_EXECUTOR.submit(() -> {
-            RecentsActivity activity = RecentsActivity.ACTIVITY_TRACKER.getCreatedActivity();
-            if (activity == null) {
-                return false;
-            }
-            result[0] = f.apply(activity);
-            return true;
-        }).get(), DEFAULT_UI_TIMEOUT);
-        return (T) result[0];
+        return MAIN_EXECUTOR.submit(() -> f.apply(mActivityMonitor.getActivity())).get();
     }
 
     private BaseOverview pressHomeAndGoToOverview() {
@@ -171,18 +161,17 @@ public class FallbackRecentsTest {
         return mLauncher.getBackground().switchToOverview();
     }
 
-    @NavigationModeSwitch
+    // TODO: Enable all modes after b/141184247 is fixed
+    @NavigationModeSwitch(mode = ZERO_BUTTON)
     @Test
-    public void testOverview() {
-        startAppFastAndWaitForRecentTask(getAppPackageName());
-        startAppFastAndWaitForRecentTask(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
+    public void testOverview() throws Exception {
+        startAppFast(getAppPackageName());
+        startAppFast(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
         startTestActivity(2);
-        Wait.atMost("Expected three apps in the task list",
-                () -> mLauncher.getRecentTasks().size() >= 3, DEFAULT_ACTIVITY_TIMEOUT);
 
         BaseOverview overview = mLauncher.getBackground().switchToOverview();
-        executeOnRecents(recents ->
-                assertTrue("Don't have at least 3 tasks", getTaskCount(recents) >= 3));
+        executeOnRecents(
+                recents -> assertTrue("Don't have at least 3 tasks", getTaskCount(recents) >= 3));
 
         // Test flinging forward and backward.
         overview.flingForward();
@@ -227,25 +216,5 @@ public class FallbackRecentsTest {
 
     private int getTaskCount(RecentsActivity recents) {
         return recents.<RecentsView>getOverviewPanel().getTaskViewCount();
-    }
-
-    /**
-     * Workaround for b/141580748, there was an issue where the recent task is only updated when the
-     * activity starting the task is resumed.  In this case, we should wait until the task is in
-     * the recents task list before continuing.
-     */
-    private void startAppFastAndWaitForRecentTask(String packageName) {
-        startAppFast(packageName);
-        Wait.atMost("Expected app in task list",
-                () -> containsRecentTaskWithPackage(packageName), DEFAULT_ACTIVITY_TIMEOUT);
-    }
-
-    private boolean containsRecentTaskWithPackage(String packageName) {
-        for (ComponentName cn : mLauncher.getRecentTasks()) {
-            if (cn.getPackageName().equals(packageName)) {
-                return true;
-            }
-        }
-        return false;
     }
 }
