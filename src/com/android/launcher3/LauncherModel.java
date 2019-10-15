@@ -326,6 +326,9 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
     public void stopLoader() {
         synchronized (mLock) {
             LoaderTask oldTask = mLoaderTask;
+            if (TestProtocol.sDebugTracing) {
+                Log.d(TestProtocol.LAUNCHER_DIDNT_INITIALIZE, "LauncherModel.stopLoader");
+            }
             mLoaderTask = null;
             if (oldTask != null) {
                 oldTask.stopLocked();
@@ -337,6 +340,10 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
         synchronized (mLock) {
             stopLoader();
             mLoaderTask = new LoaderTask(mApp, mBgAllAppsList, sBgDataModel, results);
+            if (TestProtocol.sDebugTracing) {
+                Log.d(TestProtocol.LAUNCHER_DIDNT_INITIALIZE,
+                        "LauncherModel.startLoaderForResults " + mLoaderTask);
+            }
 
             // Always post the loader task, instead of running directly (even on same thread) so
             // that we exit any nested synchronized blocks
@@ -438,6 +445,10 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
         public void close() {
             synchronized (mLock) {
                 // If we are still the last one to be scheduled, remove ourselves.
+                if (TestProtocol.sDebugTracing) {
+                    Log.d(TestProtocol.LAUNCHER_DIDNT_INITIALIZE,
+                            "LauncherModel.close " + mLoaderTask + ", " + mTask);
+                }
                 if (mLoaderTask == mTask) {
                     mLoaderTask = null;
                 }
