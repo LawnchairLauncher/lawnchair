@@ -330,8 +330,7 @@ public class SwipeDetector {
     private void initializeDragging() {
         if (mState == ScrollState.SETTLING && mIgnoreSlopWhenSettling) {
             mSubtractDisplacement = 0;
-        }
-        if (mDisplacement > 0) {
+        } else if (mDisplacement > 0) {
             mSubtractDisplacement = mTouchSlop;
         } else {
             mSubtractDisplacement = -mTouchSlop;
