@@ -115,8 +115,6 @@
         <attr name="numFolderColumns" format="integer" />
         <!-- numHotseatIcons defaults to numColumns, if not specified -->
         <attr name="numHotseatIcons" format="integer" />
-        <!-- numAllAppsColumns defaults to numColumns, if not specified -->
-        <attr name="numAllAppsColumns" format="integer" />
         <attr name="defaultLayoutId" format="reference" />
         <attr name="demoModeLayoutId" format="reference" />
     </declare-styleable>
@@ -132,12 +130,6 @@
         <attr name="iconTextSize" format="float" />
         <!-- If true, this display option is used to determine the default grid -->
         <attr name="canBeDefault" format="boolean" />
-
-        <!-- The following values are only enabled if grid is supported. -->
-        <!-- allAppsIconSize defaults to iconSize, if not specified -->
-        <attr name="allAppsIconSize" format="float" />
-        <!-- allAppsIconTextSize defaults to iconTextSize, if not specified -->
-        <attr name="allAppsIconTextSize" format="float" />
     </declare-styleable>
 
     <declare-styleable name="CellLayout">
