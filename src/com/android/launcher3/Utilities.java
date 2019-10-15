@@ -711,7 +711,7 @@ public final class Utilities {
                     .resolveActivity(info.getIntent(), info.user);
             outObj[0] = activityInfo;
             return (activityInfo != null) ? appState.getIconCache()
-                    .getFullResIcon(activityInfo, flattenDrawable) : null;
+                    .getFullResIcon(activityInfo, info, flattenDrawable) : null;
         } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
             if (info instanceof PendingAddShortcutInfo) {
                 ShortcutConfigActivityInfo activityInfo =
