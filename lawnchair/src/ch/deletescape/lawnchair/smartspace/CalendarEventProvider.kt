@@ -44,6 +44,7 @@ class CalendarEventProvider(controller: LawnchairSmartspaceController)
             CalendarContract.Instances.TITLE,
             CalendarContract.Instances.DTSTART,
             CalendarContract.Instances.DTEND,
+            CalendarContract.Instances.EVENT_LOCATION,
             CalendarContract.Instances.CUSTOM_APP_PACKAGE)
 
     private val oneMinute = TimeUnit.MINUTES.toMillis(1)
@@ -65,7 +66,12 @@ class CalendarEventProvider(controller: LawnchairSmartspaceController)
         val icon = context.getDrawable(R.drawable.ic_calendar)!!.toBitmap()
         val lines = mutableListOf<Line>()
         lines.add(Line("${event.title} ${formatTimeRelative(event.start)}", TextUtils.TruncateAt.MIDDLE))
-        lines.add(Line("${formatTime(event.start)} – ${formatTime(event.end)}"))
+        val timeText = "${formatTime(event.start)} – ${formatTime(event.end)}"
+        if (event.location != null) {
+            lines.add(Line("${event.location} $timeText"))
+        } else {
+            lines.add(Line(timeText))
+        }
         return LawnchairSmartspaceController.CardData(icon, lines, getPendingIntent(event))
     }
 
@@ -84,6 +90,7 @@ class CalendarEventProvider(controller: LawnchairSmartspaceController)
                                 c.getString(c.getColumnIndex(CalendarContract.Events.TITLE)),
                                 c.getLong(c.getColumnIndex(CalendarContract.Events.DTSTART)),
                                 c.getLong(c.getColumnIndex(CalendarContract.Events.DTEND)),
+                                c.getString(c.getColumnIndex(CalendarContract.Events.EVENT_LOCATION)),
                                 c.getString(c.getColumnIndex(CalendarContract.Events.CUSTOM_APP_PACKAGE)))
                     }
                 }
@@ -124,5 +131,11 @@ class CalendarEventProvider(controller: LawnchairSmartspaceController)
         return PendingIntent.getActivity(context, 0, intent, 0)
     }
 
-    data class CalendarEvent(val id: Long, val title: String, val start: Long, val end: Long, val appPackage: String?)
+    data class CalendarEvent(
+            val id: Long,
+            val title: String,
+            val start: Long,
+            val end: Long,
+            val location: String?,
+            val appPackage: String?)
 }
