@@ -248,6 +248,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     @Test
     @NavigationModeSwitch
     @PortraitLandscape
+    @Ignore("Temporarily disabled b/140252765")
     public void testQuickSwitchFromApp() throws Exception {
         startAppFast(getAppPackageName());
         startTestActivity(2);
