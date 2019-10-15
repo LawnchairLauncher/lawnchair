@@ -181,7 +181,16 @@ public class LoaderTask implements Runnable {
         }
 
         TraceHelper.INSTANCE.beginSection(TAG);
-        TimingLogger logger = new TimingLogger(TAG, "run");
+        TimingLogger logger = TestProtocol.sDebugTracing ?
+                new TimingLogger(TAG, "run") {
+                    @Override
+                    public void addSplit(String splitLabel) {
+                        super.addSplit(splitLabel);
+                        Log.d(TestProtocol.LAUNCHER_DIDNT_INITIALIZE,
+                                "LoaderTask.addSplit " + splitLabel);
+                    }
+                }
+                : new TimingLogger(TAG, "run");
         try (LauncherModel.LoaderTransaction transaction = mApp.getModel().beginLoader(this)) {
             List<ShortcutInfo> allShortcuts = new ArrayList<>();
             loadWorkspace(allShortcuts);
