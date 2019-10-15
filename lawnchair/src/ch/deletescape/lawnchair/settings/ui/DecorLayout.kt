@@ -183,6 +183,8 @@ class DecorLayout(context: Context, private val window: Window) : InsettableFram
 
         private val dividerSize = ResourceUtils.pxFromDp(1f, resources.displayMetrics).toFloat()
 
+        private val navigationMode = getNavigationMode()
+
         override fun onAttachedToWindow() {
             super.onAttachedToWindow()
             decorLayout = parents.first { it is DecorLayout } as DecorLayout
@@ -213,8 +215,10 @@ class DecorLayout(context: Context, private val window: Window) : InsettableFram
         }
 
         private fun computeClip() {
-            if (Utilities.ATLEAST_OREO) {
-                contentRect.set(selfRect.left, selfRect.top + insetsRect.top, selfRect.right, selfRect.bottom)
+            if (Utilities.ATLEAST_Q && navigationMode == 2) {
+                contentRect.set(
+                        selfRect.left, selfRect.top + insetsRect.top,
+                        selfRect.right, selfRect.bottom)
             } else {
                 contentRect.set(
                         selfRect.left + insetsRect.left,
@@ -267,6 +271,12 @@ class DecorLayout(context: Context, private val window: Window) : InsettableFram
 
         private fun isNavBarToLeftEdge(): Boolean {
             return insetsRect.bottom == 0f && insetsRect.left > 0
+        }
+
+        private fun getNavigationMode(): Int {
+            val id = context.resources.getIdentifier(
+                    "config_navBarInteractionMode", "integer", "android")
+            return if (id != 0) context.resources.getInteger(id) else 0
         }
     }
 
