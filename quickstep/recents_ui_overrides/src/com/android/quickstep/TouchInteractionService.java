@@ -35,6 +35,7 @@ import android.app.ActivityManager.RunningTaskInfo;
 import android.app.Service;
 import android.app.TaskInfo;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -49,19 +50,18 @@ import android.view.InputEvent;
 import android.view.MotionEvent;
 
 import androidx.annotation.BinderThread;
+import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.BaseDraggingActivity;
-import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.DiscoveryBounce;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.provider.RestoreDbTask;
 import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.TraceHelper;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.SysUINavigationMode.NavigationModeChangeListener;
@@ -70,12 +70,14 @@ import com.android.quickstep.inputconsumers.AssistantInputConsumer;
 import com.android.quickstep.inputconsumers.DeviceLockedInputConsumer;
 import com.android.quickstep.inputconsumers.FallbackNoButtonInputConsumer;
 import com.android.quickstep.inputconsumers.OtherActivityInputConsumer;
+import com.android.quickstep.inputconsumers.OverscrollInputConsumer;
 import com.android.quickstep.inputconsumers.OverviewInputConsumer;
 import com.android.quickstep.inputconsumers.OverviewWithoutFocusInputConsumer;
-import com.android.quickstep.inputconsumers.QuickCaptureInputConsumer;
 import com.android.quickstep.inputconsumers.ResetGestureInputConsumer;
 import com.android.quickstep.inputconsumers.ScreenPinnedInputConsumer;
 import com.android.quickstep.util.ActiveGestureLog;
+import com.android.systemui.plugins.OverscrollPlugin;
+import com.android.systemui.plugins.PluginListener;
 import com.android.systemui.shared.recents.IOverviewProxy;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
@@ -113,7 +115,7 @@ class ArgList extends LinkedList<String> {
  */
 @TargetApi(Build.VERSION_CODES.Q)
 public class TouchInteractionService extends Service implements
-        NavigationModeChangeListener {
+        NavigationModeChangeListener, PluginListener<OverscrollPlugin> {
 
     private static final String TAG = "TouchInteractionService";
 
@@ -122,6 +124,8 @@ public class TouchInteractionService extends Service implements
     private static final String HAS_ENABLED_QUICKSTEP_ONCE = "launcher.has_enabled_quickstep_once";
     private static final int MAX_BACK_NOTIFICATION_COUNT = 3;
     private int mBackGestureNotificationCounter = -1;
+    @Nullable
+    private OverscrollPlugin mOverscrollPlugin;
 
     private final IBinder mMyBinder = new IOverviewProxy.Stub() {
 
@@ -280,6 +284,9 @@ public class TouchInteractionService extends Service implements
 
         onNavigationModeChanged(SysUINavigationMode.INSTANCE.get(this).addModeChangeListener(this));
         sConnected = true;
+
+        PluginManagerWrapper.INSTANCE.get(getBaseContext()).addPluginListener(this,
+                OverscrollPlugin.class, false /* allowMultiple */);
     }
 
     private void disposeEventHandlers() {
@@ -400,6 +407,9 @@ public class TouchInteractionService extends Service implements
         if (TestProtocol.sDebugTracing) {
             Log.d(TestProtocol.LAUNCHER_DIDNT_INITIALIZE, "TIS destroyed");
         }
+
+        PluginManagerWrapper.INSTANCE.get(getBaseContext()).removePluginListener(this);
+
         sIsInitialized = false;
         if (mDeviceState.isUserUnlocked()) {
             mInputConsumer.unregisterInputConsumer();
@@ -489,10 +499,10 @@ public class TouchInteractionService extends Service implements
                 base = new AssistantInputConsumer(this, newGestureState, base, mInputMonitorCompat);
             }
 
-            if (FeatureFlags.ENABLE_QUICK_CAPTURE_GESTURE.get()) {
-                // Put the Compose gesture as higher priority than the Assistant or base gestures
-                base = new QuickCaptureInputConsumer(this, newGestureState, base,
-                        mInputMonitorCompat);
+            if (mOverscrollPlugin != null) {
+                // Put the overscroll gesture as higher priority than the Assistant or base gestures
+                base = new OverscrollInputConsumer(this, newGestureState, base, mInputMonitorCompat,
+                        mOverscrollPlugin);
             }
 
             if (mDeviceState.isScreenPinningActive()) {
@@ -531,9 +541,9 @@ public class TouchInteractionService extends Service implements
                     () -> mAM.getRunningTask(ACTIVITY_TYPE_ASSISTANT));
             if (!ActivityManagerWrapper.isHomeTask(runningTaskInfo)) {
                 final ComponentName homeComponent =
-                    mOverviewComponentObserver.getHomeIntent().getComponent();
+                        mOverviewComponentObserver.getHomeIntent().getComponent();
                 forceOverviewInputConsumer =
-                    runningTaskInfo.baseIntent.getComponent(). equals(homeComponent);
+                        runningTaskInfo.baseIntent.getComponent().equals(homeComponent);
             }
         }
 
@@ -762,5 +772,15 @@ public class TouchInteractionService extends Service implements
     public static void startRecentsActivityAsync(Intent intent, RecentsAnimationListener listener) {
         UI_HELPER_EXECUTOR.execute(() -> ActivityManagerWrapper.getInstance()
                 .startRecentsActivity(intent, null, listener, null, null));
+    }
+
+    @Override
+    public void onPluginConnected(OverscrollPlugin overscrollPlugin, Context context) {
+        mOverscrollPlugin = overscrollPlugin;
+    }
+
+    @Override
+    public void onPluginDisconnected(OverscrollPlugin overscrollPlugin) {
+        mOverscrollPlugin = null;
     }
 }
