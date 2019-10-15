@@ -227,6 +227,8 @@ public class OverviewCommandHelper {
             return animatorSet;
         }
 
-        protected void onTransitionComplete() { }
+        protected void onTransitionComplete() {
+            mHelper.onSwipeUpToRecentsComplete(mHelper.getCreatedActivity());
+        }
     }
 }
