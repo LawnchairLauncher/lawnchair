@@ -32,6 +32,7 @@ import static com.android.launcher3.dragndrop.DragLayer.ALPHA_INDEX_LAUNCHER_LOA
 import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
 import static com.android.launcher3.logging.LoggerUtils.newTarget;
 import static com.android.launcher3.states.RotationHelper.REQUEST_NONE;
+import static com.android.launcher3.testing.TestProtocol.CRASH_ADD_CUSTOM_SHORTCUT;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -112,6 +113,7 @@ import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.qsb.QsbContainerView;
 import com.android.launcher3.states.RotationHelper;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
@@ -1207,8 +1209,13 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
      */
     private void completeAddShortcut(Intent data, int container, int screenId, int cellX,
             int cellY, PendingRequestArgs args) {
-        if (args.getRequestCode() != REQUEST_CREATE_SHORTCUT
+        if (data == null
+                || args.getRequestCode() != REQUEST_CREATE_SHORTCUT
                 || args.getPendingIntent().getComponent() == null) {
+            if (data == null && TestProtocol.sDebugTracing) {
+                Log.d(CRASH_ADD_CUSTOM_SHORTCUT,
+                        "Failed to add custom shortcut: Intent is null, args = " + args);
+            }
             return;
         }
 

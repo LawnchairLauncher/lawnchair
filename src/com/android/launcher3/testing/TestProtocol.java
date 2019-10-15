@@ -86,4 +86,5 @@ public final class TestProtocol {
     public static final String APP_NOT_DISABLED = "b/139891609";
     public static final String NO_CONTEXT_MENU = "b/141770616";
     public static final String LAUNCHER_DIDNT_INITIALIZE = "b/142514365";
+    public static final String CRASH_ADD_CUSTOM_SHORTCUT = "b/141568904";
 }
