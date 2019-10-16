@@ -198,7 +198,8 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
 
         switch (ev.getActionMasked()) {
             case ACTION_DOWN: {
-                TraceHelper.INSTANCE.beginSection(DOWN_EVT, FLAG_CHECK_FOR_RACE_CONDITIONS);
+                Object traceToken = TraceHelper.INSTANCE.beginSection(DOWN_EVT,
+                        FLAG_CHECK_FOR_RACE_CONDITIONS);
                 mActivePointerId = ev.getPointerId(0);
                 mDownPos.set(ev.getX(), ev.getY());
                 mLastPos.set(mDownPos);
@@ -209,7 +210,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                     startTouchTrackingForWindowAnimation(ev.getEventTime(), false);
                 }
 
-                TraceHelper.INSTANCE.endSection();
+                TraceHelper.INSTANCE.endSection(traceToken);
                 break;
             }
             case ACTION_POINTER_DOWN: {
@@ -355,7 +356,8 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
      * the animation can still be running.
      */
     private void finishTouchTracking(MotionEvent ev) {
-        TraceHelper.INSTANCE.beginSection(UP_EVT, FLAG_CHECK_FOR_RACE_CONDITIONS);
+        Object traceToken = TraceHelper.INSTANCE.beginSection(UP_EVT,
+                FLAG_CHECK_FOR_RACE_CONDITIONS);
 
         if (mPassedWindowMoveSlop && mInteractionHandler != null) {
             if (ev.getActionMasked() == ACTION_CANCEL) {
@@ -389,7 +391,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         mVelocityTracker.recycle();
         mVelocityTracker = null;
         mMotionPauseDetector.clear();
-        TraceHelper.INSTANCE.endSection();
+        TraceHelper.INSTANCE.endSection(traceToken);
     }
 
     @Override

@@ -41,9 +41,10 @@ public class TraceHelperForTest extends TraceHelper {
     private TraceHelperForTest() { }
 
     @Override
-    public void beginSection(String sectionName, int flags) {
+    public Object beginSection(String sectionName, int flags) {
         LinkedList<TraceInfo> stack = mStack.get();
-        stack.add(new TraceInfo(sectionName, flags));
+        TraceInfo info = new TraceInfo(sectionName, flags);
+        stack.add(info);
 
         if ((flags & TraceHelper.FLAG_CHECK_FOR_RACE_CONDITIONS) != 0
                  && mRaceConditionReproducer != null) {
@@ -52,39 +53,49 @@ public class TraceHelperForTest extends TraceHelper {
         updateBinderTracking(stack);
 
         super.beginSection(sectionName, flags);
+        return info;
     }
 
     @Override
-    public void endSection() {
+    public void endSection(Object token) {
         LinkedList<TraceInfo> stack = mStack.get();
-        TraceInfo info = stack.pollLast();
+        if (stack.size() == 0) {
+            new Throwable().printStackTrace();
+        }
+        TraceInfo info = (TraceInfo) token;
+        stack.remove(info);
         if ((info.flags & TraceHelper.FLAG_CHECK_FOR_RACE_CONDITIONS) != 0
                 && mRaceConditionReproducer != null) {
             mRaceConditionReproducer.onEvent(RaceConditionReproducer.exitEvt(info.sectionName));
         }
         updateBinderTracking(stack);
 
-        super.endSection();
+        super.endSection(token);
     }
 
     @Override
-    public void beginFlagsOverride(int flags) {
+    public Object beginFlagsOverride(int flags) {
         LinkedList<TraceInfo> stack = mStack.get();
-        stack.push(new TraceInfo(null, flags));
+        TraceInfo info = new TraceInfo(null, flags);
+        stack.add(info);
         updateBinderTracking(stack);
         super.beginFlagsOverride(flags);
+        return info;
     }
 
     @Override
-    public void endFlagsOverride() {
-        super.endFlagsOverride();
-        updateBinderTracking(mStack.get());
+    public void endFlagsOverride(Object token) {
+        super.endFlagsOverride(token);
+        LinkedList<TraceInfo> stack = mStack.get();
+        TraceInfo info = (TraceInfo) token;
+        stack.remove(info);
+        updateBinderTracking(stack);
     }
 
     private void updateBinderTracking(LinkedList<TraceInfo> stack) {
         if (mFlagsChangeListener != null) {
             mFlagsChangeListener.accept(stack.stream()
-                    .mapToInt(s -> s.flags).reduce(0, (a, b) -> a | b));
+                    .mapToInt(info -> info.flags).reduce(0, (a, b) -> a | b));
         }
     }
 

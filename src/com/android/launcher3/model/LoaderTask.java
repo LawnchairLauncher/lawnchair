@@ -180,7 +180,7 @@ public class LoaderTask implements Runnable {
                     "LoaderTask2 " + this);
         }
 
-        TraceHelper.INSTANCE.beginSection(TAG);
+        Object traceToken = TraceHelper.INSTANCE.beginSection(TAG);
         TimingLogger logger = TestProtocol.sDebugTracing ?
                 new TimingLogger(TAG, "run") {
                     @Override
@@ -281,7 +281,7 @@ public class LoaderTask implements Runnable {
         } finally {
             logger.dumpToLog();
         }
-        TraceHelper.INSTANCE.endSection();
+        TraceHelper.INSTANCE.endSection(traceToken);
     }
 
     public synchronized void stopLocked() {
