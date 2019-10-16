@@ -137,15 +137,29 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
     }
 
     protected void quickSwitchToPreviousApp(int expectedState) {
+        boolean transposeInLandscape = false;
         switch (mLauncher.getNavigationModel()) {
-            case ZERO_BUTTON:
+            case TWO_BUTTON:
+                transposeInLandscape = true;
                 // Fall through, zero button and two button modes behave the same.
-            case TWO_BUTTON: {
-                // Swipe from the bottom left to the bottom right of the screen.
-                final int startX = 0;
-                final int startY = getSwipeStartY();
-                final int endX = mLauncher.getDevice().getDisplayWidth();
-                final int endY = startY;
+            case ZERO_BUTTON: {
+                final int startX;
+                final int startY;
+                final int endX;
+                final int endY;
+                if (mLauncher.getDevice().isNaturalOrientation() || !transposeInLandscape) {
+                    // Swipe from the bottom left to the bottom right of the screen.
+                    startX = 0;
+                    startY = getSwipeStartY();
+                    endX = mLauncher.getDevice().getDisplayWidth();
+                    endY = startY;
+                } else {
+                    // Swipe from the bottom right to the top right of the screen.
+                    startX = getSwipeStartX();
+                    startY = mLauncher.getRealDisplaySize().y - 1;
+                    endX = startX;
+                    endY = 0;
+                }
                 mLauncher.swipeToState(startX, startY, endX, endY, 20, expectedState);
                 break;
             }
