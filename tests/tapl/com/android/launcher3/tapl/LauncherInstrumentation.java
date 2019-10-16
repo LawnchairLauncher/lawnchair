@@ -497,7 +497,7 @@ public final class LauncherInstrumentation {
     }
 
     public void waitForLauncherInitialized() {
-        for (int i = 0; i < 100; ++i) {
+        for (int i = 0; i < 600; ++i) {
             if (getTestInfo(
                     TestProtocol.REQUEST_IS_LAUNCHER_INITIALIZED).
                     getBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD)) {
