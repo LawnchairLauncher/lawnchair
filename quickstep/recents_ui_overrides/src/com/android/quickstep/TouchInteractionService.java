@@ -248,7 +248,6 @@ public class TouchInteractionService extends Service implements PluginListener<O
             this::createFallbackNoButtonSwipeHandler;
 
     private ActivityManagerWrapper mAM;
-    private RecentsModel mRecentsModel;
     private OverviewCommandHelper mOverviewCommandHelper;
     private OverviewComponentObserver mOverviewComponentObserver;
     private InputConsumerController mInputConsumer;
@@ -327,7 +326,6 @@ public class TouchInteractionService extends Service implements PluginListener<O
     @UiThread
     public void onUserUnlocked() {
         mTaskAnimationManager = new TaskAnimationManager();
-        mRecentsModel = RecentsModel.INSTANCE.get(this);
         mOverviewComponentObserver = new OverviewComponentObserver(this, mDeviceState);
         mOverviewCommandHelper = new OverviewCommandHelper(this, mDeviceState,
                 mOverviewComponentObserver);
@@ -431,8 +429,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
                 TraceHelper.FLAG_ALLOW_BINDER_TRACKING);
         MotionEvent event = (MotionEvent) ev;
         if (event.getAction() == ACTION_DOWN) {
-            GestureState newGestureState = new GestureState(
-                    mOverviewComponentObserver.getActivityInterface(),
+            GestureState newGestureState = new GestureState(mOverviewComponentObserver,
                     ActiveGestureLog.INSTANCE.generateAndSetLogId());
             newGestureState.updateRunningTask(TraceHelper.whitelistIpcs("getRunningTask.0",
                     () -> mAM.getRunningTask(0)));
@@ -607,7 +604,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
                     false /* startingInActivityBounds */);
         } else {
             final boolean disableHorizontalSwipe = mDeviceState.isInExclusionRegion(event);
-            return new OverviewWithoutFocusInputConsumer(activity, gestureState,
+            return new OverviewWithoutFocusInputConsumer(activity, mDeviceState, gestureState,
                     mInputMonitorCompat, disableHorizontalSwipe);
         }
     }
@@ -724,15 +721,13 @@ public class TouchInteractionService extends Service implements PluginListener<O
     private BaseSwipeUpHandler createWindowTransformSwipeHandler(GestureState gestureState,
             long touchTimeMs, boolean continuingLastGesture, boolean isLikelyToStartNewTask) {
         return  new WindowTransformSwipeHandler(this, mDeviceState, mTaskAnimationManager,
-                gestureState, touchTimeMs, mOverviewComponentObserver, continuingLastGesture,
-                mInputConsumer, mRecentsModel);
+                gestureState, touchTimeMs, continuingLastGesture, mInputConsumer);
     }
 
     private BaseSwipeUpHandler createFallbackNoButtonSwipeHandler(GestureState gestureState,
             long touchTimeMs, boolean continuingLastGesture, boolean isLikelyToStartNewTask) {
         return new FallbackNoButtonInputConsumer(this, mDeviceState, gestureState,
-                mOverviewComponentObserver, mRecentsModel, mInputConsumer, isLikelyToStartNewTask,
-                continuingLastGesture);
+                mInputConsumer, isLikelyToStartNewTask, continuingLastGesture);
     }
 
     protected boolean shouldNotifyBackGesture() {

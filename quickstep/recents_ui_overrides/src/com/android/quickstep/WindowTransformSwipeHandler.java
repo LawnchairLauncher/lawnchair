@@ -191,11 +191,9 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
 
     public WindowTransformSwipeHandler(Context context, RecentsAnimationDeviceState deviceState,
             TaskAnimationManager taskAnimationManager, GestureState gestureState,
-            long touchTimeMs, OverviewComponentObserver overviewComponentObserver,
-            boolean continuingLastGesture, InputConsumerController inputConsumer,
-            RecentsModel recentsModel) {
-        super(context, deviceState, gestureState, overviewComponentObserver, recentsModel,
-                inputConsumer);
+            long touchTimeMs, boolean continuingLastGesture,
+            InputConsumerController inputConsumer) {
+        super(context, deviceState, gestureState, inputConsumer);
         mTaskAnimationManager = taskAnimationManager;
         mTouchTimeMs = touchTimeMs;
         mContinuingLastGesture = continuingLastGesture;
@@ -379,7 +377,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
 
     private void onDeferredActivityLaunch() {
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-            mOverviewComponentObserver.getActivityInterface().switchRunningTaskViewToScreenshot(
+            mActivityInterface.switchRunningTaskViewToScreenshot(
                     null, () -> {
                         mTaskAnimationManager.finishRunningRecentsAnimation(true /* toHome */);
                     });
@@ -521,7 +519,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
 
     @Override
     public Intent getLaunchIntent() {
-        return mOverviewComponentObserver.getOverviewIntent();
+        return mGestureState.getOverviewIntent();
     }
 
     @Override

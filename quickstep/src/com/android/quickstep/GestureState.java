@@ -18,7 +18,9 @@ package com.android.quickstep;
 import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
 
 import android.app.ActivityManager;
+import android.content.Intent;
 import com.android.launcher3.BaseDraggingActivity;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import java.util.ArrayList;
@@ -56,6 +58,8 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
         /** Whether RecentsView should be attached to the window as we animate to this target */
         public final boolean recentsAttachedToAppWindow;
     }
+
+    private static final String TAG = "GestureState";
 
     private static final ArrayList<String> STATE_NAMES = new ArrayList<>();
     private static int FLAG_COUNT = 0;
@@ -99,6 +103,8 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
 
 
     // Needed to interact with the current activity
+    private final Intent mHomeIntent;
+    private final Intent mOverviewIntent;
     private final BaseActivityInterface mActivityInterface;
     private final MultiStateCallback mStateCallback;
     private final int mGestureId;
@@ -108,17 +114,28 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
     // TODO: This can be removed once we stop finishing the animation when starting a new task
     private int mFinishingRecentsAnimationTaskId = -1;
 
-    public GestureState(BaseActivityInterface activityInterface, int gestureId) {
-        mActivityInterface = activityInterface;
+    public GestureState(OverviewComponentObserver componentObserver, int gestureId) {
+        mHomeIntent = componentObserver.getHomeIntent();
+        mOverviewIntent = componentObserver.getOverviewIntent();
+        mActivityInterface = componentObserver.getActivityInterface();
         mStateCallback = new MultiStateCallback(STATE_NAMES.toArray(new String[0]));
         mGestureId = gestureId;
     }
 
     public GestureState() {
         // Do nothing, only used for initializing the gesture state prior to user unlock
+        mHomeIntent = new Intent();
+        mOverviewIntent = new Intent();
         mActivityInterface = null;
         mStateCallback = new MultiStateCallback(STATE_NAMES.toArray(new String[0]));
         mGestureId = -1;
+    }
+
+    /**
+     * @return whether the gesture state has the provided {@param stateMask} flags set.
+     */
+    public boolean hasState(int stateMask) {
+        return mStateCallback.hasStates(stateMask);
     }
 
     /**
@@ -133,6 +150,20 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
      */
     public void runOnceAtState(int stateMask, Runnable callback) {
         mStateCallback.runOnceAtState(stateMask, callback);
+    }
+
+    /**
+     * @return the intent for the Home component.
+     */
+    public Intent getHomeIntent() {
+        return mHomeIntent;
+    }
+
+    /**
+     * @return the intent for the Overview component.
+     */
+    public Intent getOverviewIntent() {
+        return mOverviewIntent;
     }
 
     /**

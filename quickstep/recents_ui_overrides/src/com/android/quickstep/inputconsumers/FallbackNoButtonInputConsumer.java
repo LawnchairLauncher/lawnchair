@@ -46,11 +46,9 @@ import com.android.quickstep.GestureState;
 import com.android.quickstep.GestureState.GestureEndTarget;
 import com.android.quickstep.InputConsumer;
 import com.android.quickstep.MultiStateCallback;
-import com.android.quickstep.OverviewComponentObserver;
 import com.android.quickstep.RecentsActivity;
 import com.android.quickstep.RecentsAnimationController;
 import com.android.quickstep.RecentsAnimationDeviceState;
-import com.android.quickstep.RecentsModel;
 import com.android.quickstep.fallback.FallbackRecentsView;
 import com.android.quickstep.util.RectFSpringAnim;
 import com.android.quickstep.RecentsAnimationTargets;
@@ -111,11 +109,9 @@ public class FallbackNoButtonInputConsumer extends
     private RunningWindowAnim mFinishAnimation;
 
     public FallbackNoButtonInputConsumer(Context context, RecentsAnimationDeviceState deviceState,
-            GestureState gestureState, OverviewComponentObserver overviewComponentObserver,
-            RecentsModel recentsModel, InputConsumerController inputConsumer,
+            GestureState gestureState, InputConsumerController inputConsumer,
             boolean isLikelyToStartNewTask, boolean continuingLastGesture) {
-        super(context, deviceState, gestureState, overviewComponentObserver, recentsModel,
-                inputConsumer);
+        super(context, deviceState, gestureState, inputConsumer);
         mLauncherAlpha.value = 1;
 
         mInQuickSwitchMode = isLikelyToStartNewTask || continuingLastGesture;
@@ -225,9 +221,9 @@ public class FallbackNoButtonInputConsumer extends
     @Override
     public Intent getLaunchIntent() {
         if (mInQuickSwitchMode || mSwipeUpOverHome) {
-            return mOverviewComponentObserver.getOverviewIntent();
+            return mGestureState.getOverviewIntent();
         } else {
-            return mOverviewComponentObserver.getHomeIntent();
+            return mGestureState.getHomeIntent();
         }
     }
 
@@ -324,7 +320,7 @@ public class FallbackNoButtonInputConsumer extends
                 if (mSwipeUpOverHome) {
                     mRecentsAnimationController.finish(false, null, false);
                     // Send a home intent to clear the task stack
-                    mContext.startActivity(mOverviewComponentObserver.getHomeIntent());
+                    mContext.startActivity(mGestureState.getHomeIntent());
                 } else {
                     mRecentsAnimationController.finish(true, null, true);
                 }
@@ -351,7 +347,7 @@ public class FallbackNoButtonInputConsumer extends
                 extras.putBinder(EXTRA_THUMBNAIL, new ObjectWrapper<>(thumbnail));
                 extras.putInt(EXTRA_TASK_ID, runningTaskId);
 
-                Intent intent = new Intent(mOverviewComponentObserver.getOverviewIntent())
+                Intent intent = new Intent(mGestureState.getOverviewIntent())
                         .putExtras(extras);
                 mContext.startActivity(intent, options.toBundle());
                 mRecentsAnimationController.cleanupScreenshot();
