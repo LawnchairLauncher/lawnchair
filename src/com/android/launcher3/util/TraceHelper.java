@@ -46,35 +46,44 @@ public class TraceHelper {
      */
     public static TraceHelper INSTANCE = new TraceHelper();
 
-    public void beginSection(String sectionName) {
-        beginSection(sectionName, 0);
+    /**
+     * @return a token to pass into {@link #endSection(Object)}.
+     */
+    public Object beginSection(String sectionName) {
+        return beginSection(sectionName, 0);
     }
 
-    public void beginSection(String sectionName, int flags) {
+    public Object beginSection(String sectionName, int flags) {
         Trace.beginSection(sectionName);
+        return null;
     }
 
-    public void endSection() {
+    /**
+     * @param token the token returned from {@link #beginSection(String, int)}
+     */
+    public void endSection(Object token) {
         Trace.endSection();
     }
 
     /**
      * Similar to {@link #beginSection} but doesn't add a trace section.
      */
-    public void beginFlagsOverride(int flags) { }
+    public Object beginFlagsOverride(int flags) {
+        return null;
+    }
 
-    public void endFlagsOverride() { }
+    public void endFlagsOverride(Object token) { }
 
     /**
      * Temporarily ignore blocking binder calls for the duration of this {@link Supplier}.
      */
     @MainThread
     public static <T> T whitelistIpcs(String rpcName, Supplier<T> supplier) {
-        INSTANCE.beginSection(rpcName, FLAG_IGNORE_BINDERS);
+        Object traceToken = INSTANCE.beginSection(rpcName, FLAG_IGNORE_BINDERS);
         try {
             return supplier.get();
         } finally {
-            INSTANCE.endSection();
+            INSTANCE.endSection(traceToken);
         }
     }
 }

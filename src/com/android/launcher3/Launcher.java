@@ -313,7 +313,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        TraceHelper.INSTANCE.beginSection(ON_CREATE_EVT, TraceHelper.FLAG_UI_EVENT);
+        Object traceToken = TraceHelper.INSTANCE.beginSection(ON_CREATE_EVT,
+                TraceHelper.FLAG_UI_EVENT);
         if (DEBUG_STRICT_MODE) {
             StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
                     .detectDiskReads()
@@ -431,7 +432,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             }
         });
 
-        TraceHelper.INSTANCE.endSection();
+        TraceHelper.INSTANCE.endSection(traceToken);
     }
 
     protected LauncherOverlayManager getDefaultOverlay() {
@@ -936,14 +937,15 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     @Override
     protected void onStart() {
-        TraceHelper.INSTANCE.beginSection(ON_START_EVT, TraceHelper.FLAG_UI_EVENT);
+        Object traceToken = TraceHelper.INSTANCE.beginSection(ON_START_EVT,
+                TraceHelper.FLAG_UI_EVENT);
         super.onStart();
         if (!mDeferOverlayCallbacks) {
             mOverlayManager.onActivityStarted(this);
         }
 
         mAppWidgetHost.setListenIfResumed(true);
-        TraceHelper.INSTANCE.endSection();
+        TraceHelper.INSTANCE.endSection(traceToken);
     }
 
     private void handleDeferredResume() {
@@ -1038,7 +1040,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     @Override
     protected void onResume() {
-        TraceHelper.INSTANCE.beginSection(ON_RESUME_EVT, TraceHelper.FLAG_UI_EVENT);
+        Object traceToken = TraceHelper.INSTANCE.beginSection(ON_RESUME_EVT,
+                TraceHelper.FLAG_UI_EVENT);
         super.onResume();
 
         mHandler.removeCallbacks(mHandleDeferredResume);
@@ -1059,7 +1062,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             mOverlayManager.onActivityResumed(this);
         }
 
-        TraceHelper.INSTANCE.endSection();
+        TraceHelper.INSTANCE.endSection(traceToken);
     }
 
     @Override
@@ -1423,7 +1426,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     @Override
     protected void onNewIntent(Intent intent) {
-        TraceHelper.INSTANCE.beginSection(ON_NEW_INTENT_EVT);
+        Object traceToken = TraceHelper.INSTANCE.beginSection(ON_NEW_INTENT_EVT);
         super.onNewIntent(intent);
 
         boolean alreadyOnHome = hasWindowFocus() && ((intent.getFlags() &
@@ -1475,7 +1478,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             mOverlayManager.hideOverlay(isStarted() && !isForceInvisible());
         }
 
-        TraceHelper.INSTANCE.endSection();
+        TraceHelper.INSTANCE.endSection(traceToken);
     }
 
     @Override
@@ -1978,7 +1981,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
      * Implementation of the method from LauncherModel.Callbacks.
      */
     public void startBinding() {
-        TraceHelper.INSTANCE.beginSection("startBinding");
+        Object traceToken = TraceHelper.INSTANCE.beginSection("startBinding");
         // Floating panels (except the full widget sheet) are associated with individual icons. If
         // we are starting a fresh bind, close all such panels as all the icons are about
         // to go away.
@@ -1996,7 +1999,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         if (mHotseat != null) {
             mHotseat.resetLayout(getWallpaperDeviceProfile().isVerticalBarLayout());
         }
-        TraceHelper.INSTANCE.endSection();
+        TraceHelper.INSTANCE.endSection(traceToken);
     }
 
     @Override
@@ -2196,7 +2199,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             return view;
         }
 
-        TraceHelper.INSTANCE.beginSection("BIND_WIDGET_id=" + item.appWidgetId);
+        Object traceToken = TraceHelper.INSTANCE.beginSection("BIND_WIDGET_id=" + item.appWidgetId);
 
         try {
             final LauncherAppWidgetProviderInfo appWidgetInfo;
@@ -2293,7 +2296,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             }
             prepareAppWidget(view, item);
         } finally {
-            TraceHelper.INSTANCE.endSection();
+            TraceHelper.INSTANCE.endSection(traceToken);
         }
 
         return view;
@@ -2373,7 +2376,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
      * Implementation of the method from LauncherModel.Callbacks.
      */
     public void finishBindingItems(int pageBoundFirst) {
-        TraceHelper.INSTANCE.beginSection("finishBindingItems");
+        Object traceToken = TraceHelper.INSTANCE.beginSection("finishBindingItems");
         mWorkspace.restoreInstanceStateForRemainingPages();
 
         setWorkspaceLoading(false);
@@ -2397,7 +2400,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                 mDeviceProfile.inv.numFolderColumns * mDeviceProfile.inv.numFolderRows);
         getViewCache().setCacheSize(R.layout.folder_page, 2);
 
-        TraceHelper.INSTANCE.endSection();
+        TraceHelper.INSTANCE.endSection(traceToken);
     }
 
     private boolean canRunNewAppsAnimation() {

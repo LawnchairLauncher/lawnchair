@@ -417,7 +417,8 @@ public class TouchInteractionService extends Service implements
             return;
         }
 
-        TraceHelper.INSTANCE.beginFlagsOverride(TraceHelper.FLAG_ALLOW_BINDER_TRACKING);
+        Object traceToken = TraceHelper.INSTANCE.beginFlagsOverride(
+                TraceHelper.FLAG_ALLOW_BINDER_TRACKING);
         MotionEvent event = (MotionEvent) ev;
         if (event.getAction() == ACTION_DOWN) {
             GestureState newGestureState = new GestureState(
@@ -446,7 +447,7 @@ public class TouchInteractionService extends Service implements
 
         ActiveGestureLog.INSTANCE.addLog("onMotionEvent", event.getActionMasked());
         mUncheckedConsumer.onMotionEvent(event);
-        TraceHelper.INSTANCE.endFlagsOverride();
+        TraceHelper.INSTANCE.endFlagsOverride(traceToken);
     }
 
     private InputConsumer newConsumer(GestureState gestureState, boolean useSharedState,
