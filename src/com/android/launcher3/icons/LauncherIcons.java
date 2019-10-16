@@ -24,7 +24,6 @@ import android.graphics.Bitmap;
 import android.os.Process;
 
 import androidx.annotation.Nullable;
-import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.FastBitmapDrawable;
@@ -33,6 +32,7 @@ import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.graphics.IconShape;
+import com.android.launcher3.icons.cache.BaseIconCache;
 import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.util.Themes;
 
@@ -114,37 +114,23 @@ public class LauncherIcons extends BaseIconFactory implements AutoCloseable {
     }
 
     // below methods should also migrate to BaseIconFactory
-    @WorkerThread
+
     public BitmapInfo createShortcutIcon(ShortcutInfo shortcutInfo) {
         return createShortcutIcon(shortcutInfo, true /* badged */);
     }
 
-    @WorkerThread
     public BitmapInfo createShortcutIcon(ShortcutInfo shortcutInfo, boolean badged) {
         return createShortcutIcon(shortcutInfo, badged, null);
     }
 
-    @WorkerThread
-    public BitmapInfo createShortcutIcon(ShortcutInfo shortcutInfo, boolean badged,
-            @Nullable Supplier<ItemInfoWithIcon> fallbackIconProvider) {
-        return createShortcutIcon(shortcutInfo, badged, true, fallbackIconProvider);
-    }
-
-    @WorkerThread
-    public BitmapInfo createShortcutIcon(ShortcutInfo shortcutInfo, boolean badged,
-            boolean useCache, @Nullable Supplier<ItemInfoWithIcon> fallbackIconProvider) {
+    public BitmapInfo createShortcutIcon(ShortcutInfo shortcutInfo,
+            boolean badged, @Nullable Supplier<ItemInfoWithIcon> fallbackIconProvider) {
         IconCache cache = LauncherAppState.getInstance(mContext).getIconCache();
-        final BitmapInfo bitmapInfo;
-        if (useCache) {
-            bitmapInfo = cache.getDeepShortcutTitleAndIcon(shortcutInfo);
-        } else {
-            bitmapInfo = new BitmapInfo();
-            new ShortcutCachingLogic().loadIcon(mContext, shortcutInfo, bitmapInfo);
-        }
+        BaseIconCache.CacheEntry entry = cache.getDeepShortcutTitleAndIcon(shortcutInfo);
 
         final Bitmap unbadgedBitmap;
-        if (bitmapInfo.icon != null) {
-            unbadgedBitmap = bitmapInfo.icon;
+        if (entry.icon != null) {
+            unbadgedBitmap = entry.icon;
         } else {
             if (fallbackIconProvider != null) {
                 // Fallback icons are already badged and with appropriate shadow
