@@ -24,8 +24,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import android.util.Log;
-
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
 
@@ -38,7 +36,6 @@ import com.android.launcher3.tapl.AppIconMenu;
 import com.android.launcher3.tapl.AppIconMenuItem;
 import com.android.launcher3.tapl.Widgets;
 import com.android.launcher3.tapl.Workspace;
-import com.android.launcher3.util.rule.TestStabilityRule.Stability;
 import com.android.launcher3.views.OptionsPopupView;
 import com.android.launcher3.widget.WidgetsFullSheet;
 import com.android.launcher3.widget.WidgetsRecyclerView;
@@ -361,11 +358,5 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
 
     public static String getAppPackageName() {
         return getInstrumentation().getContext().getPackageName();
-    }
-
-    @Test
-    @Stability
-    public void testTestStabilityAttribute() {
-        Log.d("TestStabilityRule", "Hello world!");
     }
 }
