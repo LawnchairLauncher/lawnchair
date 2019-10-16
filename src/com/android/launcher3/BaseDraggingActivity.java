@@ -19,6 +19,7 @@ package com.android.launcher3;
 import android.app.ActivityOptions;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.pm.LauncherApps;
 import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -33,14 +34,13 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.LauncherSettings.Favorites;
-import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
-import com.android.launcher3.uioverrides.DejankBinderTracker;
 import com.android.launcher3.uioverrides.DisplayRotationListener;
 import com.android.launcher3.uioverrides.WallpaperColorInfo;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Themes;
+import com.android.launcher3.util.TraceHelper;
 
 /**
  * Extension of BaseActivity allowing support for drag-n-drop
@@ -66,8 +66,10 @@ public abstract class BaseDraggingActivity extends BaseActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mIsSafeModeEnabled = DejankBinderTracker.whitelistIpcs(() ->
-                getPackageManager().isSafeMode());
+
+
+        mIsSafeModeEnabled = TraceHelper.whitelistIpcs("isSafeMode",
+                () -> getPackageManager().isSafeMode());
         mRotationListener = new DisplayRotationListener(this, this::onDeviceRotationChanged);
 
         // Update theme
@@ -168,7 +170,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
                 AppLaunchTracker.INSTANCE.get(this).onStartApp(intent.getComponent(),
                         Process.myUserHandle(), sourceContainer);
             } else {
-                LauncherAppsCompat.getInstance(this).startActivityForProfile(
+                getSystemService(LauncherApps.class).startMainActivity(
                         intent.getComponent(), user, intent.getSourceBounds(), optsBundle);
                 AppLaunchTracker.INSTANCE.get(this).onStartApp(intent.getComponent(), user,
                         sourceContainer);

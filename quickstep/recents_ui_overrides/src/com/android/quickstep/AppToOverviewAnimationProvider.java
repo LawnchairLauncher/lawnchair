@@ -30,9 +30,8 @@ import android.view.View;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.anim.AnimationSuccessListener;
-import com.android.quickstep.util.ClipAnimationHelper;
+import com.android.quickstep.util.AppWindowAnimationHelper;
 import com.android.quickstep.util.RemoteAnimationProvider;
-import com.android.quickstep.util.RemoteAnimationTargetSet;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
@@ -49,14 +48,14 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
     private static final long RECENTS_LAUNCH_DURATION = 250;
     private static final String TAG = "AppToOverviewAnimationProvider";
 
-    private final ActivityControlHelper<T> mHelper;
+    private final BaseActivityInterface<T> mHelper;
     // The id of the currently running task that is transitioning to overview.
     private final int mTargetTaskId;
 
     private T mActivity;
     private RecentsView mRecentsView;
 
-    AppToOverviewAnimationProvider(ActivityControlHelper<T> helper, int targetTaskId) {
+    AppToOverviewAnimationProvider(BaseActivityInterface<T> helper, int targetTaskId) {
         mHelper = helper;
         mTargetTaskId = targetTaskId;
     }
@@ -70,7 +69,7 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
     boolean onActivityReady(T activity, Boolean wasVisible) {
         activity.<RecentsView>getOverviewPanel().showCurrentTask(mTargetTaskId);
         AbstractFloatingView.closeAllOpenViews(activity, wasVisible);
-        ActivityControlHelper.AnimationFactory factory =
+        BaseActivityInterface.AnimationFactory factory =
                 mHelper.prepareRecentsUI(activity, wasVisible,
                 false /* animate activity */, (controller) -> {
                     controller.dispatchOnStart();
@@ -80,7 +79,7 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
                     anim.start();
                 });
         factory.onRemoteAnimationReceived(null);
-        factory.createActivityController(RECENTS_LAUNCH_DURATION);
+        factory.createActivityInterface(RECENTS_LAUNCH_DURATION);
         factory.setRecentsAttachedToAppWindow(true, false);
         mActivity = activity;
         mRecentsView = mActivity.getOverviewPanel();
@@ -90,11 +89,12 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
     /**
      * Create remote window animation from the currently running app to the overview panel.
      *
-     * @param targetCompats the target apps
+     * @param appTargets the target apps
      * @return animation from app to overview
      */
     @Override
-    public AnimatorSet createWindowAnimation(RemoteAnimationTargetCompat[] targetCompats) {
+    public AnimatorSet createWindowAnimation(RemoteAnimationTargetCompat[] appTargets,
+            RemoteAnimationTargetCompat[] wallpaperTargets) {
         if (mRecentsView != null) {
             mRecentsView.setRunningTaskIconScaledDown(true);
         }
@@ -114,18 +114,18 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
             return anim;
         }
 
-        RemoteAnimationTargetSet targetSet =
-                new RemoteAnimationTargetSet(targetCompats, MODE_CLOSING);
+        RemoteAnimationTargets targets = new RemoteAnimationTargets(appTargets,
+                wallpaperTargets, MODE_CLOSING);
 
         // Use the top closing app to determine the insets for the animation
-        RemoteAnimationTargetCompat runningTaskTarget = targetSet.findTask(mTargetTaskId);
+        RemoteAnimationTargetCompat runningTaskTarget = targets.findTask(mTargetTaskId);
         if (runningTaskTarget == null) {
             Log.e(TAG, "No closing app");
             anim.play(ValueAnimator.ofInt(0, 1).setDuration(RECENTS_LAUNCH_DURATION));
             return anim;
         }
 
-        final ClipAnimationHelper clipHelper = new ClipAnimationHelper(mActivity);
+        final AppWindowAnimationHelper clipHelper = new AppWindowAnimationHelper(mActivity);
 
         // At this point, the activity is already started and laid-out. Get the home-bounds
         // relative to the screen using the rootView of the activity.
@@ -141,20 +141,22 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
         clipHelper.updateTargetRect(targetRect);
         clipHelper.prepareAnimation(mActivity.getDeviceProfile(), false /* isOpening */);
 
-        ClipAnimationHelper.TransformParams params = new ClipAnimationHelper.TransformParams()
+        AppWindowAnimationHelper.TransformParams params = new AppWindowAnimationHelper.TransformParams()
                 .setSyncTransactionApplier(new SyncRtSurfaceTransactionApplierCompat(rootView));
         ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, 1);
         valueAnimator.setDuration(RECENTS_LAUNCH_DURATION);
         valueAnimator.setInterpolator(TOUCH_RESPONSE_INTERPOLATOR);
         valueAnimator.addUpdateListener((v) -> {
-            params.setProgress((float) v.getAnimatedValue());
-            clipHelper.applyTransform(targetSet, params);
+            params.setProgress((float) v.getAnimatedValue())
+                    .setTargetSet(targets)
+                    .setLauncherOnTop(true);
+            clipHelper.applyTransform(params);
         });
 
-        if (targetSet.isAnimatingHome()) {
+        if (targets.isAnimatingHome()) {
             // If we are animating home, fade in the opening targets
-            RemoteAnimationTargetSet openingSet =
-                    new RemoteAnimationTargetSet(targetCompats, MODE_OPENING);
+            RemoteAnimationTargets openingSet = new RemoteAnimationTargets(appTargets,
+                    wallpaperTargets, MODE_OPENING);
 
             TransactionCompat transaction = new TransactionCompat();
             valueAnimator.addUpdateListener((v) -> {

@@ -50,13 +50,18 @@ public class CustomWidgetManager implements PluginListener<CustomWidgetPlugin> {
     public static final MainThreadInitializedObject<CustomWidgetManager> INSTANCE =
             new MainThreadInitializedObject<>(CustomWidgetManager::new);
 
-    private final List<CustomWidgetPlugin> mPlugins;
+    /**
+     * auto provider Id is an ever-increasing number that serves as the providerId whenever a new
+     * custom widget has been connected.
+     */
+    private int mAutoProviderId = 0;
+    private final SparseArray<CustomWidgetPlugin> mPlugins;
     private final List<CustomAppWidgetProviderInfo> mCustomWidgets;
     private final SparseArray<ComponentName> mWidgetsIdMap;
     private Consumer<PackageUserKey> mWidgetRefreshCallback;
 
     private CustomWidgetManager(Context context) {
-        mPlugins = new ArrayList<>();
+        mPlugins = new SparseArray<>();
         mCustomWidgets = new ArrayList<>();
         mWidgetsIdMap = new SparseArray<>();
         PluginManagerWrapper.INSTANCE.get(context)
@@ -65,25 +70,28 @@ public class CustomWidgetManager implements PluginListener<CustomWidgetPlugin> {
 
     @Override
     public void onPluginConnected(CustomWidgetPlugin plugin, Context context) {
-        mPlugins.add(plugin);
+        mPlugins.put(mAutoProviderId, plugin);
         List<AppWidgetProviderInfo> providers = AppWidgetManager.getInstance(context)
                 .getInstalledProvidersForProfile(Process.myUserHandle());
         if (providers.isEmpty()) return;
         Parcel parcel = Parcel.obtain();
         providers.get(0).writeToParcel(parcel, 0);
         parcel.setDataPosition(0);
-        CustomAppWidgetProviderInfo info = newInfo(plugin, parcel, context);
+        CustomAppWidgetProviderInfo info = newInfo(mAutoProviderId, plugin, parcel, context);
         parcel.recycle();
         mCustomWidgets.add(info);
-        mWidgetsIdMap.put(plugin.getProviderId(), info.provider);
+        mWidgetsIdMap.put(mAutoProviderId, info.provider);
         mWidgetRefreshCallback.accept(null);
+        mAutoProviderId++;
     }
 
     @Override
     public void onPluginDisconnected(CustomWidgetPlugin plugin) {
-        mPlugins.remove(plugin);
-        mCustomWidgets.remove(getWidgetProvider(plugin.getProviderId()));
-        mWidgetsIdMap.remove(plugin.getProviderId());
+        int providerId = findProviderId(plugin);
+        if (providerId == -1) return;
+        mPlugins.remove(providerId);
+        mCustomWidgets.remove(getWidgetProvider(providerId));
+        mWidgetsIdMap.remove(providerId);
     }
 
     /**
@@ -98,7 +106,7 @@ public class CustomWidgetManager implements PluginListener<CustomWidgetPlugin> {
      */
     public void onViewCreated(LauncherAppWidgetHostView view) {
         CustomAppWidgetProviderInfo info = (CustomAppWidgetProviderInfo) view.getAppWidgetInfo();
-        CustomWidgetPlugin plugin = findPlugin(info.providerId);
+        CustomWidgetPlugin plugin = mPlugins.get(info.providerId);
         if (plugin == null) return;
         plugin.onViewCreated(view);
     }
@@ -135,17 +143,14 @@ public class CustomWidgetManager implements PluginListener<CustomWidgetPlugin> {
         return null;
     }
 
-    private static CustomAppWidgetProviderInfo newInfo(
-            CustomWidgetPlugin plugin, Parcel parcel, Context context) {
-        int providerId = plugin.getProviderId();
+    private static CustomAppWidgetProviderInfo newInfo(int providerId, CustomWidgetPlugin plugin,
+            Parcel parcel, Context context) {
         CustomAppWidgetProviderInfo info = new CustomAppWidgetProviderInfo(
                 parcel, false, providerId);
         info.provider = new ComponentName(
                 context.getPackageName(), CLS_CUSTOM_WIDGET_PREFIX + providerId);
 
         info.label = plugin.getLabel();
-        info.icon = plugin.getIcon();
-        info.previewImage = plugin.getPreviewImage();
         info.resizeMode = plugin.getResizeMode();
 
         info.spanX = plugin.getSpanX();
@@ -155,9 +160,13 @@ public class CustomWidgetManager implements PluginListener<CustomWidgetPlugin> {
         return info;
     }
 
-    @Nullable
-    private CustomWidgetPlugin findPlugin(int providerId) {
-        return mPlugins.stream().filter((p) -> p.getProviderId() == providerId).findFirst()
-                .orElse(null);
+    private int findProviderId(CustomWidgetPlugin plugin) {
+        for (int i = 0; i < mPlugins.size(); i++) {
+            int providerId = mPlugins.keyAt(i);
+            if (mPlugins.get(providerId) == plugin) {
+                return providerId;
+            }
+        }
+        return -1;
     }
 }

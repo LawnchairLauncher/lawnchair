@@ -35,6 +35,7 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.FrameLayout;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Hotseat;
@@ -45,12 +46,15 @@ import com.android.launcher3.R;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.appprediction.PredictionUiStateManager;
 import com.android.launcher3.appprediction.PredictionUiStateManager.Client;
-import com.android.launcher3.uioverrides.DejankBinderTracker;
+import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
+import com.android.launcher3.util.TraceHelper;
 import com.android.launcher3.views.ScrimView;
 import com.android.quickstep.SysUINavigationMode;
-import com.android.quickstep.util.ClipAnimationHelper;
-import com.android.quickstep.util.ClipAnimationHelper.TransformParams;
+import com.android.quickstep.util.AppWindowAnimationHelper;
+import com.android.quickstep.util.AppWindowAnimationHelper.TransformParams;
 import com.android.quickstep.util.LayoutUtils;
+import com.android.systemui.plugins.PluginListener;
+import com.android.systemui.plugins.RecentsExtraCard;
 
 /**
  * {@link RecentsView} used in Launcher activity
@@ -58,7 +62,28 @@ import com.android.quickstep.util.LayoutUtils;
 @TargetApi(Build.VERSION_CODES.O)
 public class LauncherRecentsView extends RecentsView<Launcher> implements StateListener {
 
+    private static final Rect sTempRect = new Rect();
+
     private final TransformParams mTransformParams = new TransformParams();
+
+    private RecentsExtraCard mRecentsExtraCardPlugin;
+    private RecentsExtraViewContainer mRecentsExtraViewContainer;
+    private PluginListener<RecentsExtraCard> mRecentsExtraCardPluginListener =
+            new PluginListener<RecentsExtraCard>() {
+        @Override
+        public void onPluginConnected(RecentsExtraCard recentsExtraCard, Context context) {
+            createRecentsExtraCard();
+            mRecentsExtraCardPlugin = recentsExtraCard;
+            mRecentsExtraCardPlugin.setupView(context, mRecentsExtraViewContainer, mActivity);
+        }
+
+        @Override
+        public void onPluginDisconnected(RecentsExtraCard plugin) {
+            removeView(mRecentsExtraViewContainer);
+            mRecentsExtraCardPlugin = null;
+            mRecentsExtraViewContainer = null;
+        }
+    };
 
     public LauncherRecentsView(Context context) {
         this(context, null);
@@ -76,7 +101,12 @@ public class LauncherRecentsView extends RecentsView<Launcher> implements StateL
 
     @Override
     public void startHome() {
-        mActivity.getStateManager().goToState(NORMAL);
+        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+            switchToScreenshot(() -> finishRecentsAnimation(true /* toRecents */,
+                    () -> mActivity.getStateManager().goToState(NORMAL)));
+        } else {
+            mActivity.getStateManager().goToState(NORMAL);
+        }
     }
 
     @Override
@@ -113,7 +143,7 @@ public class LauncherRecentsView extends RecentsView<Launcher> implements StateL
      */
     @Override
     public AnimatorSet createAdjacentPageAnimForTaskLaunch(TaskView tv,
-            ClipAnimationHelper helper) {
+            AppWindowAnimationHelper helper) {
         AnimatorSet anim = super.createAdjacentPageAnimForTaskLaunch(tv, helper);
 
         if (!SysUINavigationMode.getMode(mActivity).hasGestures) {
@@ -145,15 +175,33 @@ public class LauncherRecentsView extends RecentsView<Launcher> implements StateL
         LayoutUtils.calculateLauncherTaskSize(getContext(), dp, outRect);
     }
 
+    /**
+     * @return The translationX to apply to this view so that the first task is just offscreen.
+     */
+    public float getOffscreenTranslationX(float recentsScale) {
+        float offscreenX = NORMAL.getOverviewScaleAndTranslation(mActivity).translationX;
+        // Offset since scale pushes tasks outwards.
+        getTaskSize(sTempRect);
+        int taskWidth = sTempRect.width();
+        offscreenX += taskWidth * (recentsScale - 1) / 2;
+        if (mRunningTaskTileHidden) {
+            // The first task is hidden, so offset by its width.
+            offscreenX -= (taskWidth + getPageSpacing()) * recentsScale;
+        }
+        if (isRtl()) {
+            offscreenX = -offscreenX;
+        }
+        return offscreenX;
+    }
+
     @Override
     protected void onTaskLaunchAnimationUpdate(float progress, TaskView tv) {
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-            if (mRecentsAnimationWrapper.targetSet != null && tv.isRunningTask()) {
+            if (tv.isRunningTask()) {
                 mTransformParams.setProgress(1 - progress)
                         .setSyncTransactionApplier(mSyncTransactionApplier)
                         .setForLiveTile(true);
-                mClipAnimationHelper.applyTransform(mRecentsAnimationWrapper.targetSet,
-                        mTransformParams);
+                mAppWindowAnimationHelper.applyTransform(mTransformParams);
             } else {
                 redrawLiveTile(true);
             }
@@ -173,7 +221,7 @@ public class LauncherRecentsView extends RecentsView<Launcher> implements StateL
 
     @Override
     public boolean shouldUseMultiWindowTaskSizeStrategy() {
-        return DejankBinderTracker.whitelistIpcs(() -> mActivity.isInMultiWindowMode());
+        return TraceHelper.whitelistIpcs("isInMultiWindowMode", mActivity::isInMultiWindowMode);
     }
 
     @Override
@@ -186,9 +234,18 @@ public class LauncherRecentsView extends RecentsView<Launcher> implements StateL
 
     @Override
     public void redrawLiveTile(boolean mightNeedToRefill) {
-        if (!mEnableDrawingLiveTile || mRecentsAnimationWrapper == null
-                || mClipAnimationHelper == null) {
-            return;
+        AppWindowAnimationHelper.TransformParams transformParams = getLiveTileParams(mightNeedToRefill);
+        if (transformParams != null) {
+            mAppWindowAnimationHelper.applyTransform(transformParams);
+        }
+    }
+
+    @Override
+    public AppWindowAnimationHelper.TransformParams getLiveTileParams(
+            boolean mightNeedToRefill) {
+        if (!mEnableDrawingLiveTile || mRecentsAnimationController == null
+                || mRecentsAnimationTargets == null || mAppWindowAnimationHelper == null) {
+            return null;
         }
         TaskView taskView = getRunningTaskView();
         if (taskView != null) {
@@ -210,12 +267,11 @@ public class LauncherRecentsView extends RecentsView<Launcher> implements StateL
             mTempRectF.set(mTempRect);
             mTransformParams.setProgress(1f)
                     .setCurrentRectAndTargetAlpha(mTempRectF, taskView.getAlpha())
-                    .setSyncTransactionApplier(mSyncTransactionApplier);
-            if (mRecentsAnimationWrapper.targetSet != null) {
-                mClipAnimationHelper.applyTransform(mRecentsAnimationWrapper.targetSet,
-                        mTransformParams);
-            }
+                    .setSyncTransactionApplier(mSyncTransactionApplier)
+                    .setTargetSet(mRecentsAnimationTargets)
+                    .setLauncherOnTop(true);
         }
+        return mTransformParams;
     }
 
     @Override
@@ -264,5 +320,67 @@ public class LauncherRecentsView extends RecentsView<Launcher> implements StateL
             return !touchingHotseat;
         }
         return super.shouldStealTouchFromSiblingsBelow(ev);
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        PluginManagerWrapper.INSTANCE.get(getContext())
+                .addPluginListener(mRecentsExtraCardPluginListener, RecentsExtraCard.class);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        PluginManagerWrapper.INSTANCE.get(getContext()).removePluginListener(
+                mRecentsExtraCardPluginListener);
+    }
+
+    @Override
+    protected int computeMinScrollX() {
+        if (canComputeScrollX() && !mIsRtl) {
+            return computeScrollX();
+        }
+        return super.computeMinScrollX();
+    }
+
+    @Override
+    protected int computeMaxScrollX() {
+        if (canComputeScrollX() && mIsRtl) {
+            return computeScrollX();
+        }
+        return super.computeMaxScrollX();
+    }
+
+    private boolean canComputeScrollX() {
+        return mRecentsExtraCardPlugin != null && getTaskViewCount() > 0
+                && !mDisallowScrollToClearAll;
+    }
+
+    private int computeScrollX() {
+        int scrollIndex = getTaskViewStartIndex() - 1;
+        while (scrollIndex >= 0 && getChildAt(scrollIndex) instanceof RecentsExtraViewContainer
+                && ((RecentsExtraViewContainer) getChildAt(scrollIndex)).isScrollable()) {
+            scrollIndex--;
+        }
+        return getScrollForPage(scrollIndex + 1);
+    }
+
+    private void createRecentsExtraCard() {
+        mRecentsExtraViewContainer = new RecentsExtraViewContainer(getContext());
+        FrameLayout.LayoutParams helpCardParams =
+                new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
+                        FrameLayout.LayoutParams.MATCH_PARENT);
+        mRecentsExtraViewContainer.setLayoutParams(helpCardParams);
+        mRecentsExtraViewContainer.setScrollable(true);
+        addView(mRecentsExtraViewContainer, 0);
+    }
+
+    @Override
+    public void resetTaskVisuals() {
+        super.resetTaskVisuals();
+        if (mRecentsExtraViewContainer != null) {
+            mRecentsExtraViewContainer.setAlpha(mContentAlpha);
+        }
     }
 }

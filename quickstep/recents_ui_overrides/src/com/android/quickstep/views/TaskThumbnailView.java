@@ -39,23 +39,27 @@ import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.util.Property;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.Themes;
 import com.android.quickstep.TaskOverlayFactory;
 import com.android.quickstep.TaskOverlayFactory.TaskOverlay;
 import com.android.quickstep.util.TaskCornerRadius;
+import com.android.systemui.plugins.OverviewScreenshotActions;
+import com.android.systemui.plugins.PluginListener;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 
 /**
  * A task in the Recents view.
  */
-public class TaskThumbnailView extends View {
+public class TaskThumbnailView extends View implements PluginListener<OverviewScreenshotActions> {
 
     private final static ColorMatrix COLOR_MATRIX = new ColorMatrix();
     private final static ColorMatrix SATURATION_COLOR_MATRIX = new ColorMatrix();
@@ -99,6 +103,7 @@ public class TaskThumbnailView extends View {
 
     private boolean mOverlayEnabled;
     private boolean mRotated;
+    private OverviewScreenshotActions mOverviewScreenshotActionsPlugin;
 
     public TaskThumbnailView(Context context) {
         this(context, null);
@@ -129,22 +134,45 @@ public class TaskThumbnailView extends View {
     }
 
     /**
-     * Updates this thumbnail.
+     * Updates the thumbnail.
+     * @param refreshNow whether the {@code thumbnailData} will be used to redraw immediately.
+     *                   In most cases, we use the {@link #setThumbnail(Task, ThumbnailData)}
+     *                   version with {@code refreshNow} is true. The only exception is
+     *                   in the live tile case that we grab a screenshot when user enters Overview
+     *                   upon swipe up so that a usable screenshot is accessible immediately when
+     *                   recents animation needs to be finished / cancelled.
      */
-    public void setThumbnail(Task task, ThumbnailData thumbnailData) {
+    public void setThumbnail(Task task, ThumbnailData thumbnailData, boolean refreshNow) {
         mTask = task;
-        if (thumbnailData != null && thumbnailData.thumbnail != null) {
-            Bitmap bm = thumbnailData.thumbnail;
+        mThumbnailData =
+                (thumbnailData != null && thumbnailData.thumbnail != null) ? thumbnailData : null;
+        if (refreshNow) {
+            refresh();
+        }
+    }
+
+    /** See {@link #setThumbnail(Task, ThumbnailData, boolean)} */
+    public void setThumbnail(Task task, ThumbnailData thumbnailData) {
+        setThumbnail(task, thumbnailData, true /* refreshNow */);
+    }
+
+    /** Updates the shader, paint, matrix to redraw. */
+    public void refresh() {
+        if (mThumbnailData != null && mThumbnailData.thumbnail != null) {
+            Bitmap bm = mThumbnailData.thumbnail;
             bm.prepareToDraw();
             mBitmapShader = new BitmapShader(bm, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
             mPaint.setShader(mBitmapShader);
-            mThumbnailData = thumbnailData;
             updateThumbnailMatrix();
         } else {
             mBitmapShader = null;
             mThumbnailData = null;
             mPaint.setShader(null);
             mOverlay.reset();
+        }
+        if (mOverviewScreenshotActionsPlugin != null) {
+            mOverviewScreenshotActionsPlugin
+                .setupActions((ViewGroup) getTaskView(), getThumbnail(), mActivity);
         }
         updateThumbnailPaintFilter();
     }
@@ -208,6 +236,33 @@ public class TaskThumbnailView extends View {
                 getMeasuredHeight() + currentDrawnInsets.bottom,
                 mFullscreenParams.mCurrentDrawnCornerRadius);
         canvas.restore();
+    }
+
+    @Override
+    public void onPluginConnected(OverviewScreenshotActions overviewScreenshotActions,
+            Context context) {
+        mOverviewScreenshotActionsPlugin = overviewScreenshotActions;
+        mOverviewScreenshotActionsPlugin.setupActions(getTaskView(), getThumbnail(), mActivity);
+    }
+
+    @Override
+    public void onPluginDisconnected(OverviewScreenshotActions plugin) {
+        if (mOverviewScreenshotActionsPlugin != null) {
+            mOverviewScreenshotActionsPlugin = null;
+        }
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        PluginManagerWrapper.INSTANCE.get(getContext())
+            .addPluginListener(this, OverviewScreenshotActions.class);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        PluginManagerWrapper.INSTANCE.get(getContext()).removePluginListener(this);
     }
 
     public RectF getInsetsToDrawInFullscreen(boolean isMultiWindowMode) {

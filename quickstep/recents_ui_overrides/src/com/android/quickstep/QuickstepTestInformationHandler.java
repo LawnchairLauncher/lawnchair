@@ -4,15 +4,22 @@ import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 
+import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.testing.TestInformationHandler;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.uioverrides.states.OverviewState;
 import com.android.launcher3.uioverrides.touchcontrollers.PortraitStatesTouchController;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.views.RecentsView;
+import com.android.systemui.shared.recents.model.Task;
 
+import java.util.ArrayList;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 public class QuickstepTestInformationHandler extends TestInformationHandler {
 
@@ -39,12 +46,6 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
                 return response;
             }
 
-            case TestProtocol.REQUEST_IS_LAUNCHER_INITIALIZED: {
-                response.putBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD,
-                        TouchInteractionService.isInitialized());
-                return response;
-            }
-
             case TestProtocol.REQUEST_HOTSEAT_TOP: {
                 if (mLauncher == null) return null;
 
@@ -58,10 +59,8 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
                     final int leftMargin = MAIN_EXECUTOR.submit(() ->
                             getRecentsView().getLeftGestureMargin()).get();
                     response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD, leftMargin);
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                } catch (ExecutionException | InterruptedException e) {
+                    throw new RuntimeException(e);
                 }
                 return response;
             }
@@ -71,11 +70,29 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
                     final int rightMargin = MAIN_EXECUTOR.submit(() ->
                             getRecentsView().getRightGestureMargin()).get();
                     response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD, rightMargin);
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                } catch (ExecutionException | InterruptedException e) {
+                    throw new RuntimeException(e);
                 }
+                return response;
+            }
+
+            case TestProtocol.REQUEST_RECENT_TASKS_LIST: {
+                ArrayList<String> taskBaseIntentComponents = new ArrayList<>();
+                CountDownLatch latch = new CountDownLatch(1);
+                RecentsModel.INSTANCE.get(mContext).getTasks((tasks) -> {
+                    for (Task t : tasks) {
+                        taskBaseIntentComponents.add(
+                                t.key.baseIntent.getComponent().flattenToString());
+                    }
+                    latch.countDown();
+                });
+                try {
+                    latch.await(2, TimeUnit.SECONDS);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                response.putStringArrayList(TestProtocol.TEST_INFO_RESPONSE_FIELD,
+                        taskBaseIntentComponents);
                 return response;
             }
         }
@@ -84,11 +101,22 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
     }
 
     private RecentsView getRecentsView() {
-        OverviewComponentObserver observer = new OverviewComponentObserver(mContext);
+        OverviewComponentObserver observer = new OverviewComponentObserver(mContext,
+                new RecentsAnimationDeviceState(mContext));
         try {
-            return observer.getActivityControlHelper().getCreatedActivity().getOverviewPanel();
+            return observer.getActivityInterface().getCreatedActivity().getOverviewPanel();
         } finally {
             observer.onDestroy();
         }
+    }
+
+    @Override
+    protected boolean isLauncherInitialized() {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.LAUNCHER_DIDNT_INITIALIZE,
+                    "isLauncherInitialized.TouchInteractionService.isInitialized=" +
+                            TouchInteractionService.isInitialized());
+        }
+        return super.isLauncherInitialized() && TouchInteractionService.isInitialized();
     }
 }

@@ -16,6 +16,8 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.pm.PackageInstallerCompat.getUserHandle;
+
 import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -23,6 +25,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.LauncherActivityInfo;
+import android.content.pm.LauncherApps;
 import android.content.pm.PackageInstaller;
 import android.content.pm.PackageInstaller.SessionInfo;
 import android.content.pm.PackageManager;
@@ -37,13 +40,10 @@ import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.android.launcher3.compat.LauncherAppsCompat;
+import com.android.launcher3.pm.PackageInstallerCompat;
 import com.android.launcher3.util.Executors;
-import com.android.launcher3.compat.PackageInstallerCompat;
 
 import java.util.List;
-
-import static com.android.launcher3.compat.PackageInstallerCompat.getUserHandle;
 
 /**
  * BroadcastReceiver to handle session commit intent.
@@ -85,9 +85,8 @@ public class SessionCommitReceiver extends BroadcastReceiver {
 
     public static void queuePromiseAppIconAddition(Context context, SessionInfo sessionInfo) {
         String packageName = sessionInfo.getAppPackageName();
-        List<LauncherActivityInfo> activities = LauncherAppsCompat.getInstance(context)
-                .getActivityList(packageName, getUserHandle(sessionInfo));
-        if (activities == null || activities.isEmpty()) {
+        if (context.getSystemService(LauncherApps.class)
+                .getActivityList(packageName, getUserHandle(sessionInfo)).isEmpty()) {
             // Ensure application isn't already installed.
             queueAppIconAddition(context, packageName, sessionInfo.getAppLabel(),
                     sessionInfo.getAppIcon(), getUserHandle(sessionInfo));
@@ -95,9 +94,9 @@ public class SessionCommitReceiver extends BroadcastReceiver {
     }
 
     public static void queueAppIconAddition(Context context, String packageName, UserHandle user) {
-        List<LauncherActivityInfo> activities = LauncherAppsCompat.getInstance(context)
+        List<LauncherActivityInfo> activities = context.getSystemService(LauncherApps.class)
                 .getActivityList(packageName, user);
-        if (activities == null || activities.isEmpty()) {
+        if (activities.isEmpty()) {
             // no activity found
             return;
         }

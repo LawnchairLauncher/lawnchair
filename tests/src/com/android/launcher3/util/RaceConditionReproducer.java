@@ -17,8 +17,6 @@
 package com.android.launcher3.util;
 
 import static com.android.launcher3.util.Executors.createAndStartNewLooper;
-import static com.android.launcher3.util.RaceConditionTracker.ENTER_POSTFIX;
-import static com.android.launcher3.util.RaceConditionTracker.EXIT_POSTFIX;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -64,15 +62,30 @@ import java.util.concurrent.TimeUnit;
  *
  * When we register event XXX:enter, we hold all other events until we register XXX:exit.
  */
-public class RaceConditionReproducer implements RaceConditionTracker.EventProcessor {
+public class RaceConditionReproducer {
     private static final String TAG = "RaceConditionReproducer";
+
+    private static final boolean ENTER = true;
+    private static final boolean EXIT = false;
+    private static final String ENTER_POSTFIX = "enter";
+    private static final String EXIT_POSTFIX = "exit";
+
     private static final long SHORT_TIMEOUT_MS = 2000;
     private static final long LONG_TIMEOUT_MS = 60000;
     // Handler used to resume postponed events.
-    private static final Handler POSTPONED_EVENT_RESUME_HANDLER = createEventResumeHandler();
+    private static final Handler POSTPONED_EVENT_RESUME_HANDLER =
+            new Handler(createAndStartNewLooper("RaceConditionEventResumer"));
 
-    private static Handler createEventResumeHandler() {
-        return new Handler(createAndStartNewLooper("RaceConditionEventResumer"));
+    public static String enterExitEvt(String eventName, boolean isEnter) {
+        return eventName + ":" + (isEnter ? ENTER_POSTFIX : EXIT_POSTFIX);
+    }
+
+    public static String enterEvt(String eventName) {
+        return enterExitEvt(eventName, ENTER);
+    }
+
+    public static String exitEvt(String eventName) {
+        return enterExitEvt(eventName, EXIT);
     }
 
     /**
@@ -209,7 +222,8 @@ public class RaceConditionReproducer implements RaceConditionTracker.EventProces
                 parseReproString(mReproString) : generateSequenceToFollowLocked();
         Log.e(TAG, "---- Start of iteration; state:\n" + dumpStateLocked());
         checkIfCompletedSequenceToFollowLocked();
-        RaceConditionTracker.setEventProcessor(this);
+
+        TraceHelperForTest.setRaceConditionReproducer(this);
     }
 
     /**
@@ -218,7 +232,8 @@ public class RaceConditionReproducer implements RaceConditionTracker.EventProces
      * Returns whether we need more iterations.
      */
     public synchronized boolean finishIteration() {
-        RaceConditionTracker.setEventProcessor(null);
+        TraceHelperForTest.setRaceConditionReproducer(null);
+
         runResumeAllEventsCallbackLocked();
         assertTrue("Non-empty postponed events", mPostponedEvents.isEmpty());
         assertTrue("Last registered event is :enter", lastEventAsEnter() == null);
@@ -243,7 +258,6 @@ public class RaceConditionReproducer implements RaceConditionTracker.EventProces
     /**
      * Called when the app issues an event.
      */
-    @Override
     public void onEvent(String event) {
         final Semaphore waitObject = tryRegisterEvent(event);
         if (waitObject != null) {

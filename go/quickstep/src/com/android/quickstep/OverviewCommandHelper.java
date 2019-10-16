@@ -27,8 +27,8 @@ import android.view.ViewConfiguration;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
-import com.android.quickstep.ActivityControlHelper.ActivityInitListener;
 import com.android.quickstep.AppToOverviewAnimationProvider.AppToOverviewAnimationListener;
+import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.views.IconRecentsView;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.LatencyTrackerCompat;
@@ -40,26 +40,28 @@ import com.android.systemui.shared.system.LatencyTrackerCompat;
 public class OverviewCommandHelper {
 
     private final Context mContext;
-    private final ActivityManagerWrapper mAM;
+    private final RecentsAnimationDeviceState mDeviceState;
     private final RecentsModel mRecentsModel;
     private final OverviewComponentObserver mOverviewComponentObserver;
 
     private long mLastToggleTime;
 
-    public OverviewCommandHelper(Context context, OverviewComponentObserver observer) {
+    public OverviewCommandHelper(Context context, RecentsAnimationDeviceState deviceState,
+            OverviewComponentObserver observer) {
         mContext = context;
-        mAM = ActivityManagerWrapper.getInstance();
+        mDeviceState = deviceState;
         mRecentsModel = RecentsModel.INSTANCE.get(mContext);
         mOverviewComponentObserver = observer;
     }
 
     public void onOverviewToggle() {
         // If currently screen pinning, do not enter overview
-        if (mAM.isScreenPinningActive()) {
+        if (mDeviceState.isScreenPinningActive()) {
             return;
         }
 
-        mAM.closeSystemWindows(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
+        ActivityManagerWrapper.getInstance()
+                .closeSystemWindows(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
         MAIN_EXECUTOR.execute(new RecentsActivityCommand<>());
     }
 
@@ -99,15 +101,15 @@ public class OverviewCommandHelper {
 
     private class RecentsActivityCommand<T extends BaseDraggingActivity> implements Runnable {
 
-        protected final ActivityControlHelper<T> mHelper;
+        protected final BaseActivityInterface<T> mHelper;
         private final long mCreateTime;
 
         private final long mToggleClickedTime = SystemClock.uptimeMillis();
         private boolean mUserEventLogged;
-        private ActivityInitListener mListener;
+        private ActivityInitListener<T> mListener;
 
         public RecentsActivityCommand() {
-            mHelper = mOverviewComponentObserver.getActivityControlHelper();
+            mHelper = mOverviewComponentObserver.getActivityInterface();
             mCreateTime = SystemClock.elapsedRealtime();
 
             // Preload the plan

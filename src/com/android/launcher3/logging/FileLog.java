@@ -8,6 +8,8 @@ import android.os.Message;
 import android.util.Log;
 import android.util.Pair;
 
+import androidx.annotation.VisibleForTesting;
+
 import com.android.launcher3.util.IOUtils;
 
 import java.io.BufferedReader;
@@ -88,7 +90,8 @@ public final class FileLog {
         Message.obtain(getHandler(), LogWriterCallback.MSG_WRITE, out).sendToTarget();
     }
 
-    private static Handler getHandler() {
+    @VisibleForTesting
+    static Handler getHandler() {
         synchronized (DATE_FORMAT) {
             if (sHandler == null) {
                 sHandler = new Handler(createAndStartNewLooper("file-logger"),
@@ -102,15 +105,16 @@ public final class FileLog {
      * Blocks until all the pending logs are written to the disk
      * @param out if not null, all the persisted logs are copied to the writer.
      */
-    public static void flushAll(PrintWriter out) throws InterruptedException {
+    public static boolean flushAll(PrintWriter out) throws InterruptedException {
         if (!ENABLED) {
-            return;
+            return false;
         }
         CountDownLatch latch = new CountDownLatch(1);
         Message.obtain(getHandler(), LogWriterCallback.MSG_FLUSH,
                 Pair.create(out, latch)).sendToTarget();
 
         latch.await(2, TimeUnit.SECONDS);
+        return latch.getCount() == 0;
     }
 
     /**

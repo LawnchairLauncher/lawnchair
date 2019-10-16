@@ -31,16 +31,17 @@ public interface RemoteAnimationProvider {
 
     static final int Z_BOOST_BASE = 800570000;
 
-    AnimatorSet createWindowAnimation(RemoteAnimationTargetCompat[] targets);
+    AnimatorSet createWindowAnimation(RemoteAnimationTargetCompat[] appTargets,
+            RemoteAnimationTargetCompat[] wallpaperTargets);
 
     default ActivityOptions toActivityOptions(Handler handler, long duration, Context context) {
         LauncherAnimationRunner runner = new LauncherAnimationRunner(handler,
                 false /* startAtFrontOfQueue */) {
 
             @Override
-            public void onCreateAnimation(RemoteAnimationTargetCompat[] targetCompats,
-                    AnimationResult result) {
-                result.setAnimation(createWindowAnimation(targetCompats), context);
+            public void onCreateAnimation(RemoteAnimationTargetCompat[] appTargets,
+                    RemoteAnimationTargetCompat[] wallpaperTargets, AnimationResult result) {
+                result.setAnimation(createWindowAnimation(appTargets, wallpaperTargets), context);
             }
         };
         return ActivityOptionsCompat.makeRemoteAnimation(

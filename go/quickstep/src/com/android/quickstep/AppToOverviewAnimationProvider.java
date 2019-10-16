@@ -32,7 +32,6 @@ import android.util.Log;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.LauncherAnimationRunner;
 import com.android.quickstep.util.RemoteAnimationProvider;
-import com.android.quickstep.util.RemoteAnimationTargetSet;
 import com.android.quickstep.views.IconRecentsView;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.RemoteAnimationAdapterCompat;
@@ -47,12 +46,12 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
         RemoteAnimationProvider {
     private static final String TAG = "AppToOverviewAnimationProvider";
 
-    private final ActivityControlHelper<T> mHelper;
+    private final BaseActivityInterface<T> mHelper;
     private final int mTargetTaskId;
     private IconRecentsView mRecentsView;
     private AppToOverviewAnimationListener mAnimationReadyListener;
 
-    AppToOverviewAnimationProvider(ActivityControlHelper<T> helper, int targetTaskId) {
+    AppToOverviewAnimationProvider(BaseActivityInterface<T> helper, int targetTaskId) {
         mHelper = helper;
         mTargetTaskId = targetTaskId;
     }
@@ -76,7 +75,7 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
         if (mAnimationReadyListener != null) {
             mAnimationReadyListener.onActivityReady(activity);
         }
-        ActivityControlHelper.AnimationFactory factory =
+        BaseActivityInterface.AnimationFactory factory =
                 mHelper.prepareRecentsUI(activity, wasVisible,
                         false /* animate activity */, (controller) -> {
                             controller.dispatchOnStart();
@@ -86,7 +85,7 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
                             anim.start();
                         });
         factory.onRemoteAnimationReceived(null);
-        factory.createActivityController(getRecentsLaunchDuration());
+        factory.createActivityInterface(getRecentsLaunchDuration());
         mRecentsView = activity.getOverviewPanel();
         return false;
     }
@@ -95,11 +94,12 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
      * Create remote window animation from the currently running app to the overview panel. Should
      * be called after {@link #onActivityReady}.
      *
-     * @param targetCompats the target apps
+     * @param appTargets the target apps
      * @return animation from app to overview
      */
     @Override
-    public AnimatorSet createWindowAnimation(RemoteAnimationTargetCompat[] targetCompats) {
+    public AnimatorSet createWindowAnimation(RemoteAnimationTargetCompat[] appTargets,
+            RemoteAnimationTargetCompat[] wallpaperTargets) {
         if (mAnimationReadyListener != null) {
             mAnimationReadyListener.onWindowAnimationCreated();
         }
@@ -112,14 +112,14 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
             return anim;
         }
 
-        RemoteAnimationTargetSet targetSet =
-                new RemoteAnimationTargetSet(targetCompats, MODE_CLOSING);
-        mRecentsView.setTransitionedFromApp(!targetSet.isAnimatingHome());
+        RemoteAnimationTargets targets =
+                new RemoteAnimationTargets(appTargets, wallpaperTargets, MODE_CLOSING);
+        mRecentsView.setTransitionedFromApp(!targets.isAnimatingHome());
 
         RemoteAnimationTargetCompat recentsTarget = null;
         RemoteAnimationTargetCompat closingAppTarget = null;
 
-        for (RemoteAnimationTargetCompat target : targetCompats) {
+        for (RemoteAnimationTargetCompat target : appTargets) {
             if (target.mode == MODE_OPENING) {
                 recentsTarget = target;
             } else if (target.mode == MODE_CLOSING && target.taskId == mTargetTaskId) {
@@ -157,16 +157,17 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
                 false /* startAtFrontOfQueue */) {
 
             @Override
-            public void onCreateAnimation(RemoteAnimationTargetCompat[] targetCompats,
+            public void onCreateAnimation(RemoteAnimationTargetCompat[] appTargets,
+                    RemoteAnimationTargetCompat[] wallpaperTargets,
                     AnimationResult result) {
                 IconRecentsView recentsView = mRecentsView;
                 if (!recentsView.isReadyForRemoteAnim()) {
                     recentsView.setOnReadyForRemoteAnimCallback(() -> postAsyncCallback(handler,
-                            () -> onCreateAnimation(targetCompats, result))
+                            () -> onCreateAnimation(appTargets, wallpaperTargets, result))
                     );
                     return;
                 }
-                result.setAnimation(createWindowAnimation(targetCompats), context);
+                result.setAnimation(createWindowAnimation(appTargets, wallpaperTargets), context);
             }
         };
         return ActivityOptionsCompat.makeRemoteAnimation(

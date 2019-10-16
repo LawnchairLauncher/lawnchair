@@ -17,6 +17,7 @@ package com.android.launcher3.util.rule;
 
 import static androidx.test.InstrumentationRegistry.getInstrumentation;
 
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.util.Log;
 
@@ -37,11 +38,11 @@ public class TestStabilityRule implements TestRule {
     private static final String TAG = "TestStabilityRule";
     private static final Pattern LAUNCHER_BUILD =
             Pattern.compile("^("
-                    + "(?<androidStudio>BuildFromAndroidStudio)|"
-                    + "(?<commandLine>[0-9]+-eng\\.[a-z]+\\.[0-9]+\\.[0-9]+)|"
-                    + "(?<presubmit>[0-9]+-P[0-9]+)|"
-                    + "(?<postsubmit>[0-9]+-[0-9]+|"
-                    + "(?<platform>[0-9]+))"
+                    + "(?<local>(BuildFromAndroidStudio|"
+                    + "([0-9]+|[A-Z])-eng\\.[a-z]+\\.[0-9]+\\.[0-9]+))|"
+                    + "(?<presubmit>([0-9]+|[A-Z])-P[0-9]+)|"
+                    + "(?<postsubmit>([0-9]+|[A-Z])-[0-9]+)|"
+                    + "(?<platform>[0-9]+|[A-Z])"
                     + ")$");
     private static final Pattern PLATFORM_BUILD =
             Pattern.compile("^("
@@ -50,88 +51,97 @@ public class TestStabilityRule implements TestRule {
                     + "(?<postsubmit>[0-9]+)"
                     + ")$");
 
+    public static final int LOCAL = 0x1;
+    public static final int UNBUNDLED_PRESUBMIT = 0x2;
+    public static final int UNBUNDLED_POSTSUBMIT = 0x4;
+    public static final int PLATFORM_PRESUBMIT = 0x8;
+    public static final int PLATFORM_POSTSUBMIT = 0x10;
+
+    private static final int RUN_FLAFOR = getRunFlavor();
+
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
     public @interface Stability {
+        int flavors();
     }
 
     @Override
     public Statement apply(Statement base, Description description) {
-        if (description.getAnnotation(Stability.class) != null) {
+        final Stability stability = description.getAnnotation(Stability.class);
+        if (stability != null) {
             return new Statement() {
                 @Override
                 public void evaluate() throws Throwable {
-                    final String launcherVersion =
-                            getInstrumentation().
-                                    getContext().
-                                    getPackageManager().
-                                    getPackageInfo(
-                                            UiDevice.getInstance(getInstrumentation()).
-                                                    getLauncherPackageName(),
-                                            0).
-                                    versionName;
-
-                    final Matcher launcherBuildMatcher = LAUNCHER_BUILD.matcher(launcherVersion);
-
-                    boolean launcherLocalBuild = false;
-                    boolean launcherUnbundledPresubmit = false;
-                    boolean launcherUnbundledPostsubmit = false;
-                    boolean launcherPlatform = false;
-
-                    if (!launcherBuildMatcher.find()) {
-                        Log.e(TAG, "Match not found");
-                    } else if (launcherBuildMatcher.group("androidStudio") != null
-                            || launcherBuildMatcher.group("commandLine") != null) {
-                        launcherLocalBuild = true;
-                    } else if (launcherBuildMatcher.group("presubmit") != null) {
-                        launcherUnbundledPresubmit = true;
-                    } else if (launcherBuildMatcher.group("postsubmit") != null) {
-                        launcherUnbundledPostsubmit = true;
-                    } else if (launcherBuildMatcher.group("platform") != null) {
-                        launcherPlatform = true;
+                    if ((stability.flavors() & RUN_FLAFOR) != 0) {
+                        Log.d(TAG, "Running " + description.getDisplayName());
+                        base.evaluate();
                     } else {
-                        Log.e(TAG, "ERROR1");
+                        Log.d(TAG, "Skipping " + description.getDisplayName());
                     }
-
-                    boolean platformLocalBuild = false;
-                    boolean platformPresubmit = false;
-                    boolean platformPostsubmit = false;
-
-                    final String platformVersion = Build.VERSION.INCREMENTAL;
-                    final Matcher platformBuildMatcher = PLATFORM_BUILD.matcher(platformVersion);
-                    if (!platformBuildMatcher.find()) {
-                        Log.e(TAG, "Match not found");
-                    } else if (platformBuildMatcher.group("commandLine") != null) {
-                        platformLocalBuild = true;
-                    } else if (platformBuildMatcher.group("presubmit") != null) {
-                        platformPresubmit = true;
-                    } else if (platformBuildMatcher.group("postsubmit") != null) {
-                        platformPostsubmit = true;
-                    } else {
-                        Log.e(TAG, "ERROR2");
-                    }
-
-                    Log.d(TAG, "Launcher: " + launcherVersion + ", platform: " + platformVersion);
-
-                    if (launcherLocalBuild && (platformLocalBuild || platformPostsubmit)) {
-                        Log.d(TAG, "LOCAL RUN");
-                    } else if (launcherUnbundledPresubmit && platformPostsubmit) {
-                        Log.d(TAG, "UNBUNDLED PRESUBMIT");
-                    } else if (launcherUnbundledPostsubmit && platformPostsubmit) {
-                        Log.d(TAG, "UNBUNDLED POSTSUBMIT");
-                    } else if (launcherPlatform && platformPresubmit) {
-                        Log.d(TAG, "PLATFORM PRESUBMIT");
-                    } else if (launcherPlatform && platformPostsubmit) {
-                        Log.d(TAG, "PLATFORM POSTSUBMIT");
-                    } else {
-                        Log.e(TAG, "ERROR3");
-                    }
-
-                    base.evaluate();
                 }
             };
         } else {
             return base;
         }
+    }
+
+    private static int getRunFlavor() {
+        final String launcherVersion;
+        try {
+            launcherVersion = getInstrumentation().
+                    getContext().
+                    getPackageManager().
+                    getPackageInfo(
+                            UiDevice.getInstance(getInstrumentation()).
+                                    getLauncherPackageName(),
+                            0).
+                    versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        final Matcher launcherBuildMatcher = LAUNCHER_BUILD.matcher(launcherVersion);
+
+        if (!launcherBuildMatcher.find()) {
+            throw new AssertionError("Launcher build match not found");
+        }
+
+        final String platformVersion = Build.VERSION.INCREMENTAL;
+        final Matcher platformBuildMatcher = PLATFORM_BUILD.matcher(platformVersion);
+
+        if (!platformBuildMatcher.find()) {
+            throw new AssertionError("Platform build match not found");
+        }
+
+        Log.d(TAG, "Launcher: " + launcherVersion + ", platform: " + platformVersion);
+
+        final int runFlavor;
+
+        if (launcherBuildMatcher.group("local") != null && (
+                platformBuildMatcher.group("commandLine") != null ||
+                        platformBuildMatcher.group("postsubmit") != null)) {
+            Log.d(TAG, "LOCAL RUN");
+            runFlavor = LOCAL;
+        } else if (launcherBuildMatcher.group("presubmit") != null
+                && platformBuildMatcher.group("postsubmit") != null) {
+            Log.d(TAG, "UNBUNDLED PRESUBMIT");
+            runFlavor = UNBUNDLED_PRESUBMIT;
+        } else if (launcherBuildMatcher.group("postsubmit") != null
+                && platformBuildMatcher.group("postsubmit") != null) {
+            Log.d(TAG, "UNBUNDLED POSTSUBMIT");
+            runFlavor = UNBUNDLED_POSTSUBMIT;
+        } else if (launcherBuildMatcher.group("platform") != null
+                && platformBuildMatcher.group("presubmit") != null) {
+            Log.d(TAG, "PLATFORM PRESUBMIT");
+            runFlavor = PLATFORM_PRESUBMIT;
+        } else if (launcherBuildMatcher.group("platform") != null
+                && platformBuildMatcher.group("postsubmit") != null) {
+            Log.d(TAG, "PLATFORM POSTSUBMIT");
+            runFlavor = PLATFORM_POSTSUBMIT;
+        } else {
+            throw new AssertionError("Unrecognized run flavor");
+        }
+
+        return runFlavor;
     }
 }
