@@ -22,6 +22,7 @@ import static org.junit.Assert.assertTrue;
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -43,6 +44,11 @@ public class RaceConditionReproducerTest {
     @Before
     public void setup() {
         eventProcessor = new RaceConditionReproducer();
+    }
+
+    @After
+    public void tearDown() {
+        TraceHelperForTest.cleanup();
     }
 
     private void run3_3_TestAction() throws InterruptedException {
@@ -125,9 +131,7 @@ public class RaceConditionReproducerTest {
     @Test
     // 2 threads, 3 events each; reproducing a particular event sequence.
     public void test3_3_ReproMode() throws Exception {
-        final RaceConditionReproducer eventProcessor = new RaceConditionReproducer(
-                SOME_VALID_SEQUENCE_3_3);
-
+        eventProcessor = new RaceConditionReproducer(SOME_VALID_SEQUENCE_3_3);
         eventProcessor.startIteration();
         run3_3_TestAction();
         assertTrue(!eventProcessor.finishIteration());
