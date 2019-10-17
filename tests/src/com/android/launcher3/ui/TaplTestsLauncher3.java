@@ -34,6 +34,7 @@ import com.android.launcher3.tapl.AllApps;
 import com.android.launcher3.tapl.AppIcon;
 import com.android.launcher3.tapl.AppIconMenu;
 import com.android.launcher3.tapl.AppIconMenuItem;
+import com.android.launcher3.tapl.TestHelpers;
 import com.android.launcher3.tapl.Widgets;
 import com.android.launcher3.tapl.Workspace;
 import com.android.launcher3.views.OptionsPopupView;
@@ -172,6 +173,10 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
 
     @Test
     public void testWorkspace() throws Exception {
+        // b/142828227
+        if (android.os.Build.MODEL.contains("Cuttlefish") && TestHelpers.isInLauncherProcess()) {
+            return;
+        }
         final Workspace workspace = mLauncher.getWorkspace();
 
         // Test that ensureWorkspaceIsScrollable adds a page by dragging an icon there.

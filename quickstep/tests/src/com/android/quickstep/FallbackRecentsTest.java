@@ -130,6 +130,10 @@ public class FallbackRecentsTest {
     @NavigationModeSwitch
     @Test
     public void goToOverviewFromHome() {
+        // b/142828227
+        if (android.os.Build.MODEL.contains("Cuttlefish") && TestHelpers.isInLauncherProcess()) {
+            return;
+        }
         mDevice.pressHome();
         assertTrue("Fallback Launcher not visible", mDevice.wait(Until.hasObject(By.pkg(
                 mOtherLauncherActivity.packageName)), WAIT_TIME_MS));
@@ -140,6 +144,10 @@ public class FallbackRecentsTest {
     @NavigationModeSwitch
     @Test
     public void goToOverviewFromApp() {
+        // b/142828227
+        if (android.os.Build.MODEL.contains("Cuttlefish") && TestHelpers.isInLauncherProcess()) {
+            return;
+        }
         startAppFastAndWaitForRecentTask(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
 
         mLauncher.getBackground().switchToOverview();
@@ -174,6 +182,10 @@ public class FallbackRecentsTest {
     @NavigationModeSwitch
     @Test
     public void testOverview() {
+        // b/142828227
+        if (android.os.Build.MODEL.contains("Cuttlefish") && TestHelpers.isInLauncherProcess()) {
+            return;
+        }
         startAppFastAndWaitForRecentTask(getAppPackageName());
         startAppFastAndWaitForRecentTask(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
         startTestActivity(2);
