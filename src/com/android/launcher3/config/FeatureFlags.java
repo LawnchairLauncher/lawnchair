@@ -120,6 +120,10 @@ public final class FeatureFlags {
     public static final TogglableFlag ENABLE_QUICK_CAPTURE_GESTURE = new TogglableFlag(
             "ENABLE_QUICK_CAPTURE_GESTURE", false, "Swipe from right to left to quick capture");
 
+    public static final TogglableFlag ASSISTANT_GIVES_LAUNCHER_FOCUS = new TogglableFlag(
+            "ASSISTANT_GIVES_LAUNCHER_FOCUS", false,
+            "Allow Launcher to handle nav bar gestures while Assistant is running over it");
+
     public static void initialize(Context context) {
         // Avoid the disk read for user builds
         if (Utilities.IS_DEBUG_DEVICE) {

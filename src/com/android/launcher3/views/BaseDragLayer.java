@@ -170,10 +170,8 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
             // Only look for controllers if we are not dispatching from gesture area and proxy is
             // not active
             mActiveController = findControllerToHandleTouch(ev);
-
-            if (mActiveController != null) return true;
         }
-        return false;
+        return mActiveController != null;
     }
 
     @Override

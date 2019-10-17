@@ -23,6 +23,7 @@ import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_3;
 import static com.android.launcher3.touch.AbstractStateChangeTouchController.SUCCESS_TRANSITION_PROGRESS;
+import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
@@ -43,11 +44,14 @@ import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.touch.SingleAxisSwipeDetector;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.util.TouchController;
+import com.android.quickstep.util.AssistantUtilities;
 import com.android.quickstep.views.RecentsView;
+import com.android.systemui.shared.system.ActivityManagerWrapper;
 
 /**
  * Handles swiping up on the nav bar to go home from launcher, e.g. overview or all apps.
@@ -102,6 +106,10 @@ public class NavBarToHomeTouchController implements TouchController,
             return true;
         }
         if (AbstractFloatingView.getTopOpenView(mLauncher) != null) {
+            return true;
+        }
+        if (FeatureFlags.ASSISTANT_GIVES_LAUNCHER_FOCUS.get()
+                && AssistantUtilities.isExcludedAssistantRunning()) {
             return true;
         }
         return false;
@@ -194,6 +202,8 @@ public class NavBarToHomeTouchController implements TouchController,
                 AbstractFloatingView.closeAllOpenViews(mLauncher);
                 logStateChange(topOpenView.getLogContainerType(), logAction);
             }
+            ActivityManagerWrapper.getInstance()
+                    .closeSystemWindows(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
         } else {
             // Quickly return to the state we came from (we didn't move far).
             ValueAnimator anim = mCurrentAnimation.getAnimationPlayer();

@@ -33,7 +33,6 @@ import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.app.Service;
-import android.app.TaskInfo;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -57,6 +56,7 @@ import androidx.annotation.WorkerThread;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.DiscoveryBounce;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.provider.RestoreDbTask;
@@ -74,6 +74,7 @@ import com.android.quickstep.inputconsumers.OverviewWithoutFocusInputConsumer;
 import com.android.quickstep.inputconsumers.ResetGestureInputConsumer;
 import com.android.quickstep.inputconsumers.ScreenPinnedInputConsumer;
 import com.android.quickstep.util.ActiveGestureLog;
+import com.android.quickstep.util.AssistantUtilities;
 import com.android.systemui.plugins.OverscrollPlugin;
 import com.android.systemui.plugins.PluginListener;
 import com.android.systemui.shared.recents.IOverviewProxy;
@@ -83,7 +84,6 @@ import com.android.systemui.shared.system.InputChannelCompat.InputEventReceiver;
 import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.InputMonitorCompat;
 import com.android.systemui.shared.system.RecentsAnimationListener;
-import com.android.systemui.shared.system.TaskInfoCompat;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -518,17 +518,16 @@ public class TouchInteractionService extends Service implements PluginListener<O
         }
 
         boolean forceOverviewInputConsumer = false;
-        if (isExcludedAssistant(gestureState.getRunningTask())) {
+        if (AssistantUtilities.isExcludedAssistant(gestureState.getRunningTask())) {
             // In the case where we are in the excluded assistant state, ignore it and treat the
             // running activity as the task behind the assistant
             gestureState.updateRunningTask(TraceHelper.whitelistIpcs("getRunningTask.assistant",
-                    () -> mAM.getRunningTask(ACTIVITY_TYPE_ASSISTANT)));
-            if (!ActivityManagerWrapper.isHomeTask(gestureState.getRunningTask())) {
-                final ComponentName homeComponent =
-                        mOverviewComponentObserver.getHomeIntent().getComponent();
-                forceOverviewInputConsumer = gestureState.getRunningTask()
-                        .baseIntent.getComponent().equals(homeComponent);
-            }
+                    () -> mAM.getRunningTask(ACTIVITY_TYPE_ASSISTANT /* ignoreActivityType */)));
+            ComponentName homeComponent = mOverviewComponentObserver.getHomeIntent().getComponent();
+            ComponentName runningComponent =
+                    gestureState.getRunningTask().baseIntent.getComponent();
+            forceOverviewInputConsumer =
+                    runningComponent != null && runningComponent.equals(homeComponent);
         }
 
         if (previousGestureState.getFinishingRecentsAnimationTaskId() > 0) {
@@ -543,21 +542,17 @@ public class TouchInteractionService extends Service implements PluginListener<O
         } else if (previousGestureState.isRunningAnimationToLauncher()
                 || gestureState.getActivityInterface().isResumed()
                 || forceOverviewInputConsumer) {
-            return createOverviewInputConsumer(previousGestureState, gestureState, event);
+            return createOverviewInputConsumer(
+                    previousGestureState, gestureState, event, forceOverviewInputConsumer);
         } else if (ENABLE_QUICKSTEP_LIVE_TILE.get()
                 && gestureState.getActivityInterface().isInLiveTileMode()) {
-            return createOverviewInputConsumer(previousGestureState, gestureState, event);
+            return createOverviewInputConsumer(
+                    previousGestureState, gestureState, event, forceOverviewInputConsumer);
         } else if (mDeviceState.isGestureBlockedActivity(gestureState.getRunningTask())) {
             return mResetGestureInputConsumer;
         } else {
             return createOtherActivityInputConsumer(previousGestureState, gestureState, event);
         }
-    }
-
-    private boolean isExcludedAssistant(TaskInfo info) {
-        return info != null
-                && TaskInfoCompat.getActivityType(info) == ACTIVITY_TYPE_ASSISTANT
-                && (info.baseIntent.getFlags() & Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS) != 0;
     }
 
     private InputConsumer createOtherActivityInputConsumer(GestureState previousGestureState,
@@ -592,14 +587,17 @@ public class TouchInteractionService extends Service implements PluginListener<O
     }
 
     public InputConsumer createOverviewInputConsumer(GestureState previousGestureState,
-            GestureState gestureState, MotionEvent event) {
+            GestureState gestureState, MotionEvent event,
+            boolean forceOverviewInputConsumer) {
         BaseDraggingActivity activity = gestureState.getActivityInterface().getCreatedActivity();
         if (activity == null) {
             return mResetGestureInputConsumer;
         }
 
         if (activity.getRootView().hasWindowFocus()
-                || previousGestureState.isRunningAnimationToLauncher()) {
+                || previousGestureState.isRunningAnimationToLauncher()
+                || (FeatureFlags.ASSISTANT_GIVES_LAUNCHER_FOCUS.get()
+                    && forceOverviewInputConsumer)) {
             return new OverviewInputConsumer(gestureState, activity, mInputMonitorCompat,
                     false /* startingInActivityBounds */);
         } else {
