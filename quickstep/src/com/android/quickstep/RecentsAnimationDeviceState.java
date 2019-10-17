@@ -16,6 +16,7 @@
 package com.android.quickstep;
 
 import static android.content.Intent.ACTION_USER_UNLOCKED;
+
 import static com.android.launcher3.ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE;
 import static com.android.launcher3.ResourceUtils.NAVBAR_LANDSCAPE_LEFT_RIGHT_SIZE;
 import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
@@ -44,7 +45,9 @@ import android.os.Process;
 import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.Surface;
+
 import androidx.annotation.BinderThread;
+
 import com.android.launcher3.R;
 import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.Utilities;
@@ -54,6 +57,7 @@ import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.QuickStepContract;
 import com.android.systemui.shared.system.QuickStepContract.SystemUiStateFlags;
 import com.android.systemui.shared.system.SystemGestureExclusionListenerCompat;
+
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
@@ -201,7 +205,7 @@ public class RecentsAnimationDeviceState implements
      * @return whether the given running task info matches the gesture-blocked activity.
      */
     public boolean isGestureBlockedActivity(ActivityManager.RunningTaskInfo runningTaskInfo) {
-        return runningTaskInfo != null
+        return runningTaskInfo != null && mGestureBlockedActivity != null
                 && mGestureBlockedActivity.equals(runningTaskInfo.topActivity);
     }
 
