@@ -515,6 +515,9 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
 
     @Override
     public void setOnDeferredActivityLaunchCallback(Runnable r) {
-        getCreatedActivity().setOnDeferredActivityLaunchCallback(r);
+        Launcher launcher = getCreatedActivity();
+        if (launcher != null) {
+            launcher.setOnDeferredActivityLaunchCallback(r);
+        }
     }
 }
