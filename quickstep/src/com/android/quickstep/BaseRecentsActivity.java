@@ -27,7 +27,6 @@ import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.R;
-import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.util.ActivityTracker;
 import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.Themes;
@@ -122,13 +121,17 @@ public abstract class BaseRecentsActivity extends BaseDraggingActivity {
     @Override
     public void onEnterAnimationComplete() {
         super.onEnterAnimationComplete();
-        UiFactory.onEnterAnimationComplete(this);
+        // After the transition to home, enable the high-res thumbnail loader if it wasn't enabled
+        // as a part of quickstep, so that high-res thumbnails can load the next time we enter
+        // overview
+        RecentsModel.INSTANCE.get(this).getThumbnailCache()
+                .getHighResLoadingState().setVisible(true);
     }
 
     @Override
     public void onTrimMemory(int level) {
         super.onTrimMemory(level);
-        UiFactory.onTrimMemory(this, level);
+        RecentsModel.INSTANCE.get(this).onTrimMemory(level);
     }
 
     @Override

@@ -15,8 +15,8 @@
  */
 package com.android.quickstep.util;
 
-import static com.android.launcher3.uioverrides.RecentsUiFactory.ROTATION_LANDSCAPE;
-import static com.android.launcher3.uioverrides.RecentsUiFactory.ROTATION_SEASCAPE;
+import static com.android.launcher3.uioverrides.QuickstepLauncher.ROTATION_LANDSCAPE;
+import static com.android.launcher3.uioverrides.QuickstepLauncher.ROTATION_SEASCAPE;
 import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
 
 import android.content.Context;
