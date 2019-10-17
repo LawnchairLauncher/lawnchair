@@ -1009,7 +1009,10 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
 
     @Override
     public void onConsumerAboutToBeSwitched() {
-        if (!mGestureState.isRunningAnimationToLauncher()) {
+        if (mActivity != null) {
+            mActivity.setOnStartCallback(null);
+        }
+        if (mGestureState.getEndTarget() != null && !mGestureState.isRunningAnimationToLauncher()) {
             cancelCurrentAnimation();
         } else {
             reset();
