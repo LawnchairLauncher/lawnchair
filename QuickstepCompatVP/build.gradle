@@ -23,11 +23,7 @@ android {
         }
     }
 
-    gradle.projectsEvaluated {
-        tasks.withType(JavaCompile) {
-            options.compilerArgs.add('-Xbootclasspath/p:prebuilts/libs/framework_pie.jar')
-        }
-    }
+    addFrameworkJar('framework_pie.jar')
 }
 
 dependencies {

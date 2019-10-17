@@ -15,6 +15,27 @@ buildscript {
     }
 }
 
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        jcenter()
+        maven { url 'https://jitpack.io' }
+    }
+
+    ext.addFrameworkJar = { String path ->
+        def frameworkJar = new File(rootProject.projectDir, 'prebuilts/libs/' + path)
+        if (!frameworkJar.exists()) {
+            throw new IllegalArgumentException("Framework jar path doesn't exist")
+        }
+        gradle.projectsEvaluated {
+            tasks.withType(JavaCompile) {
+                options.bootstrapClasspath = files([frameworkJar] + (options.bootstrapClasspath.files as Iterable<File>))
+            }
+        }
+    }
+}
+
 tasks {
     wrapper {
         gradleVersion = "5.5.1"
@@ -291,25 +312,12 @@ android {
         }
     }
 
-    gradle.projectsEvaluated {
-        tasks.withType(JavaCompile) {
-            options.compilerArgs.add('-Xbootclasspath/p:prebuilts/libs/framework.jar')
-        }
-    }
+    addFrameworkJar('framework.jar')
 }
 
 afterEvaluate {
     android.applicationVariants.all { variant ->
         variant.resValue 'string', 'application_id', variant.applicationId
-    }
-}
-
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-        jcenter()
-        maven { url 'https://jitpack.io' }
     }
 }
 
