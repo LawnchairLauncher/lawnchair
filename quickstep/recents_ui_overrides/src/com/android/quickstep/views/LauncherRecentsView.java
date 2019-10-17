@@ -378,10 +378,10 @@ public class LauncherRecentsView extends RecentsView<Launcher> implements StateL
     }
 
     @Override
-    public void resetTaskVisuals() {
-        super.resetTaskVisuals();
+    public void setContentAlpha(float alpha) {
+        super.setContentAlpha(alpha);
         if (mRecentsExtraViewContainer != null) {
-            mRecentsExtraViewContainer.setAlpha(mContentAlpha);
+            mRecentsExtraViewContainer.setAlpha(alpha);
         }
     }
 }
