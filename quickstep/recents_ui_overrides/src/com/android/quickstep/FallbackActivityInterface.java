@@ -75,6 +75,9 @@ public final class FallbackActivityInterface implements
     @Override
     public void onSwipeUpToRecentsComplete() {
         RecentsActivity activity = getCreatedActivity();
+        if (activity == null) {
+            return;
+        }
         RecentsView recentsView = activity.getOverviewPanel();
         recentsView.getClearAllButton().setVisibilityAlpha(1);
         recentsView.setDisallowScrollToClearAll(false);
@@ -236,12 +239,18 @@ public final class FallbackActivityInterface implements
     public void onLaunchTaskFailed() {
         // TODO: probably go back to overview instead.
         RecentsActivity activity = getCreatedActivity();
+        if (activity == null) {
+            return;
+        }
         activity.<RecentsView>getOverviewPanel().startHome();
     }
 
     @Override
     public void onLaunchTaskSuccess() {
         RecentsActivity activity = getCreatedActivity();
+        if (activity == null) {
+            return;
+        }
         activity.onTaskLaunched();
     }
 }
