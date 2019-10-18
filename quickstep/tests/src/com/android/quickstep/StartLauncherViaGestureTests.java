@@ -18,6 +18,9 @@ package com.android.quickstep;
 
 import static com.android.launcher3.util.RaceConditionReproducer.enterEvt;
 import static com.android.launcher3.util.RaceConditionReproducer.exitEvt;
+import static com.android.launcher3.util.rule.TestStabilityRule.PLATFORM_PRESUBMIT;
+import static com.android.launcher3.util.rule.TestStabilityRule.RUN_FLAFOR;
+import static com.android.launcher3.util.rule.TestStabilityRule.UNBUNDLED_PRESUBMIT;
 
 import android.content.Intent;
 
@@ -93,7 +96,8 @@ public class StartLauncherViaGestureTests extends AbstractQuickStepTest {
     @NavigationModeSwitch
     public void testStressSwipeToOverview() {
         // b/142828227
-        if (android.os.Build.MODEL.contains("Cuttlefish") && TestHelpers.isInLauncherProcess()) {
+        if (android.os.Build.MODEL.contains("Cuttlefish") && TestHelpers.isInLauncherProcess() &&
+                (RUN_FLAFOR & (PLATFORM_PRESUBMIT | UNBUNDLED_PRESUBMIT)) != 0) {
             return;
         }
         for (int i = 0; i < STRESS_REPEAT_COUNT; ++i) {

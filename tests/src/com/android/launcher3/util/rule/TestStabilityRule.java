@@ -57,7 +57,7 @@ public class TestStabilityRule implements TestRule {
     public static final int PLATFORM_PRESUBMIT = 0x8;
     public static final int PLATFORM_POSTSUBMIT = 0x10;
 
-    private static final int RUN_FLAFOR = getRunFlavor();
+    public static final int RUN_FLAFOR = getRunFlavor();
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
