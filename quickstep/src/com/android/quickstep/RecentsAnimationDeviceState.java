@@ -45,15 +45,16 @@ import android.graphics.RectF;
 import android.graphics.Region;
 import android.os.Process;
 import android.os.UserManager;
+import android.graphics.Region;
+import android.os.Process;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.view.Surface;
 
 import androidx.annotation.BinderThread;
 
+import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
-import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.DefaultDisplay;
@@ -63,6 +64,7 @@ import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.QuickStepContract;
 import com.android.systemui.shared.system.QuickStepContract.SystemUiStateFlags;
 import com.android.systemui.shared.system.SystemGestureExclusionListenerCompat;
+import com.android.systemui.shared.system.TaskStackChangeListener;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -87,10 +89,7 @@ public class RecentsAnimationDeviceState implements
     private SysUINavigationMode.Mode mMode = THREE_BUTTONS;
     private NavBarPosition mNavBarPosition;
 
-    private final RectF mSwipeUpTouchRegion = new RectF();
     private final Region mDeferredGestureRegion = new Region();
-    private final RectF mAssistantLeftRegion = new RectF();
-    private final RectF mAssistantRightRegion = new RectF();
     private boolean mAssistantAvailable;
     private float mAssistantVisibility;
 
@@ -106,10 +105,13 @@ public class RecentsAnimationDeviceState implements
         }
     };
 
+    private OrientationTouchTransformer mOrientationTouchTransformer;
+
     private Region mExclusionRegion;
     private SystemGestureExclusionListenerCompat mExclusionListener;
 
     private final List<ComponentName> mGestureBlockedActivities;
+    private TaskStackChangeListener mFrozenTaskListener;
 
     public RecentsAnimationDeviceState(Context context) {
         final ContentResolver resolver = context.getContentResolver();
@@ -139,6 +141,8 @@ public class RecentsAnimationDeviceState implements
         };
         runOnDestroy(mExclusionListener::unregister);
 
+        setupOrientationSwipeHandler(context);
+
         // Register for navigation mode changes
         onNavigationModeChanged(mSysUiNavMode.addModeChangeListener(this));
         runOnDestroy(() -> mSysUiNavMode.removeModeChangeListener(this));
@@ -158,6 +162,26 @@ public class RecentsAnimationDeviceState implements
                         ComponentName.unflattenFromString(blockingActivity));
             }
         }
+    }
+
+    private void setupOrientationSwipeHandler(Context context) {
+        final Resources resources = context.getResources();
+        mOrientationTouchTransformer = new OrientationTouchTransformer(resources, mMode,
+                () -> QuickStepContract.getWindowCornerRadius(resources));
+
+        if (!PagedView.sFlagForcedRotation) {
+            return;
+        }
+
+        mFrozenTaskListener = new TaskStackChangeListener() {
+            @Override
+            public void onRecentTaskListFrozenChanged(boolean frozen) {
+                mOrientationTouchTransformer.enableMultipleRegions(frozen, mDefaultDisplay.getInfo());
+            }
+        };
+        ActivityManagerWrapper.getInstance().registerTaskStackListener(mFrozenTaskListener);
+        runOnDestroy(() -> ActivityManagerWrapper.getInstance()
+                .unregisterTaskStackListener(mFrozenTaskListener));
     }
 
     private void runOnDestroy(Runnable action) {
@@ -198,7 +222,10 @@ public class RecentsAnimationDeviceState implements
             mExclusionListener.unregister();
         }
         mMode = newMode;
+
         mNavBarPosition = new NavBarPosition(mMode, mDefaultDisplay.getInfo());
+
+        mOrientationTouchTransformer.setNavigationMode(mMode);
     }
 
     @Override
@@ -209,6 +236,7 @@ public class RecentsAnimationDeviceState implements
 
         mNavBarPosition = new NavBarPosition(mMode, info);
         updateGestureTouchRegions();
+        mOrientationTouchTransformer.createOrAddTouchRegion(info);
     }
 
     /**
@@ -380,50 +408,14 @@ public class RecentsAnimationDeviceState implements
             return;
         }
 
-        Resources res = mContext.getResources();
-        DefaultDisplay.Info displayInfo = mDefaultDisplay.getInfo();
-        Point realSize = new Point(displayInfo.realSize);
-        mSwipeUpTouchRegion.set(0, 0, realSize.x, realSize.y);
-        if (mMode == NO_BUTTON) {
-            int touchHeight = ResourceUtils.getNavbarSize(NAVBAR_BOTTOM_GESTURE_SIZE, res);
-            mSwipeUpTouchRegion.top = mSwipeUpTouchRegion.bottom - touchHeight;
-
-            final int assistantWidth = res.getDimensionPixelSize(R.dimen.gestures_assistant_width);
-            final float assistantHeight = Math.max(touchHeight,
-                    QuickStepContract.getWindowCornerRadius(res));
-            mAssistantLeftRegion.bottom = mAssistantRightRegion.bottom = mSwipeUpTouchRegion.bottom;
-            mAssistantLeftRegion.top = mAssistantRightRegion.top =
-                    mSwipeUpTouchRegion.bottom - assistantHeight;
-
-            mAssistantLeftRegion.left = 0;
-            mAssistantLeftRegion.right = assistantWidth;
-
-            mAssistantRightRegion.right = mSwipeUpTouchRegion.right;
-            mAssistantRightRegion.left = mSwipeUpTouchRegion.right - assistantWidth;
-        } else {
-            mAssistantLeftRegion.setEmpty();
-            mAssistantRightRegion.setEmpty();
-            switch (displayInfo.rotation) {
-                case Surface.ROTATION_90:
-                    mSwipeUpTouchRegion.left = mSwipeUpTouchRegion.right
-                            - ResourceUtils.getNavbarSize(NAVBAR_LANDSCAPE_LEFT_RIGHT_SIZE, res);
-                    break;
-                case Surface.ROTATION_270:
-                    mSwipeUpTouchRegion.right = mSwipeUpTouchRegion.left
-                            + ResourceUtils.getNavbarSize(NAVBAR_LANDSCAPE_LEFT_RIGHT_SIZE, res);
-                    break;
-                default:
-                    mSwipeUpTouchRegion.top = mSwipeUpTouchRegion.bottom
-                            - ResourceUtils.getNavbarSize(NAVBAR_BOTTOM_GESTURE_SIZE, res);
-            }
-        }
+        mOrientationTouchTransformer.createOrAddTouchRegion(mDefaultDisplay.getInfo());
     }
 
     /**
      * @return whether the coordinates of the {@param event} is in the swipe up gesture region.
      */
     public boolean isInSwipeUpTouchRegion(MotionEvent event) {
-        return mSwipeUpTouchRegion.contains(event.getX(), event.getY());
+        return mOrientationTouchTransformer.touchInValidSwipeRegions(event.getX(), event.getY());
     }
 
     /**
@@ -431,7 +423,8 @@ public class RecentsAnimationDeviceState implements
      *         is in the swipe up gesture region.
      */
     public boolean isInSwipeUpTouchRegion(MotionEvent event, int pointerIndex) {
-        return mSwipeUpTouchRegion.contains(event.getX(pointerIndex), event.getY(pointerIndex));
+        return mOrientationTouchTransformer.touchInValidSwipeRegions(event.getX(pointerIndex),
+                event.getY(pointerIndex));
     }
 
     /**
@@ -490,9 +483,20 @@ public class RecentsAnimationDeviceState implements
     public boolean canTriggerAssistantAction(MotionEvent ev) {
         return mAssistantAvailable
                 && !QuickStepContract.isAssistantGestureDisabled(mSystemUiStateFlags)
-                && (mAssistantLeftRegion.contains(ev.getX(), ev.getY())
-                        || mAssistantRightRegion.contains(ev.getX(), ev.getY()))
+                && mOrientationTouchTransformer.touchInAssistantRegion(ev)
                 && !isLockToAppActive();
+    }
+
+    /**
+     * *May* apply a transform on the motion event if it lies in the nav bar region for another
+     * orientation that is currently being tracked as a part of quickstep
+     */
+    public void setOrientationTransformIfNeeded(MotionEvent event) {
+        // negative coordinates bug b/143901881
+        if (event.getX() < 0 || event.getY() < 0) {
+            event.setLocation(Math.max(0, event.getX()), Math.max(0, event.getY()));
+        }
+        mOrientationTouchTransformer.transform(event);
     }
 
     public void dump(PrintWriter pw) {
@@ -504,5 +508,9 @@ public class RecentsAnimationDeviceState implements
         pw.println("  assistantAvailable=" + mAssistantAvailable);
         pw.println("  assistantDisabled="
                 + QuickStepContract.isAssistantGestureDisabled(mSystemUiStateFlags));
+    }
+
+    public void enableMultipleRegions(boolean enable) {
+        mOrientationTouchTransformer.enableMultipleRegions(enable, mDefaultDisplay.getInfo());
     }
 }

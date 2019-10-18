@@ -364,7 +364,6 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                         : mNavBarPosition.isLeftEdge()
                                 ? -velocityX
                                 : velocityY;
-
                 mInteractionHandler.updateDisplacement(getDisplacement(ev) - mStartDisplacement);
                 mInteractionHandler.onGestureEnded(velocity, new PointF(velocityX, velocityY),
                         mDownPos);

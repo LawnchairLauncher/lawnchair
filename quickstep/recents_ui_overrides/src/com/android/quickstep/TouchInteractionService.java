@@ -449,6 +449,8 @@ public class TouchInteractionService extends Service implements PluginListener<O
 
         Object traceToken = TraceHelper.INSTANCE.beginFlagsOverride(
                 TraceHelper.FLAG_ALLOW_BINDER_TRACKING);
+        mDeviceState.setOrientationTransformIfNeeded(event);
+
         if (event.getAction() == ACTION_DOWN) {
             GestureState newGestureState = new GestureState(mOverviewComponentObserver,
                     ActiveGestureLog.INSTANCE.generateAndSetLogId());
@@ -502,7 +504,9 @@ public class TouchInteractionService extends Service implements PluginListener<O
                 || previousGestureState.isRecentsAnimationRunning()
                         ? newBaseConsumer(previousGestureState, newGestureState, event)
                         : mResetGestureInputConsumer;
+        // TODO(b/149880412): 2 button landscape mode is wrecked. Fixit!
         if (mDeviceState.isFullyGesturalNavMode()) {
+            handleOrientationSetup(base);
             if (mDeviceState.canTriggerAssistantAction(event)) {
                 base = new AssistantInputConsumer(this, newGestureState, base, mInputMonitorCompat);
             }

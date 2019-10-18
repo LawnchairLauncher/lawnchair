@@ -770,6 +770,16 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
             }
         }
 
+        if (endTarget == NEW_TASK) {
+            SystemUiProxy.INSTANCE.get(mContext).onQuickSwitchToNewTask();
+        }
+
+        if (endTarget == RECENTS || endTarget == HOME) {
+            // Since we're now done quickStepping, we want to only listen for touch events
+            // for the main orientation's nav bar, instead of multiple
+            mDeviceState.enableMultipleRegions(false);
+        }
+
         if (mDeviceState.isOverviewDisabled() && (endTarget == RECENTS || endTarget == LAST_TASK)) {
             return LAST_TASK;
         }
