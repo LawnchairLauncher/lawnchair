@@ -55,7 +55,9 @@ public class ViewOnDrawExecutor implements Executor, OnDrawListener, Runnable,
             mLoadAnimationCompleted = true;
         }
 
-        attachObserver();
+        if (mAttachedView.isAttachedToWindow()) {
+            attachObserver();
+        }
     }
 
     private void attachObserver() {
