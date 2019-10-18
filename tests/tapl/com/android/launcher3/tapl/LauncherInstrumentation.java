@@ -497,9 +497,7 @@ public final class LauncherInstrumentation {
     }
 
     public void waitForLauncherInitialized() {
-        // b/136278866
-        final int attempts = android.os.Build.MODEL.contains("Cuttlefish") ? 600 : 100;
-        for (int i = 0; i < attempts; ++i) {
+        for (int i = 0; i < 100; ++i) {
             if (getTestInfo(
                     TestProtocol.REQUEST_IS_LAUNCHER_INITIALIZED).
                     getBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD)) {
