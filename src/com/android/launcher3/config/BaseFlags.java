@@ -115,6 +115,10 @@ public abstract class BaseFlags {
     public static final TogglableFlag ENABLE_PREDICTION_DISMISS = new TogglableFlag(
             "ENABLE_PREDICTION_DISMISS", false, "Allow option to dimiss apps from predicted list");
 
+    public static final TogglableFlag ASSISTANT_GIVES_LAUNCHER_FOCUS = new TogglableFlag(
+            "ASSISTANT_GIVES_LAUNCHER_FOCUS", false,
+            "Allow Launcher to handle nav bar gestures while Assistant is running over it");
+
 
     public static void initialize(Context context) {
         // Avoid the disk read for user builds

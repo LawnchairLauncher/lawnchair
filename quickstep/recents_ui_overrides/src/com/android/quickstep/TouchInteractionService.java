@@ -42,7 +42,6 @@ import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.app.Service;
-import android.app.TaskInfo;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -74,6 +73,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.config.BaseFlags;
 import com.android.launcher3.logging.EventLogArray;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.model.AppLaunchTracker;
@@ -92,6 +92,7 @@ import com.android.quickstep.inputconsumers.OverviewInputConsumer;
 import com.android.quickstep.inputconsumers.OverviewWithoutFocusInputConsumer;
 import com.android.quickstep.inputconsumers.ResetGestureInputConsumer;
 import com.android.quickstep.inputconsumers.ScreenPinnedInputConsumer;
+import com.android.quickstep.util.AssistantUtilities;
 import com.android.systemui.shared.recents.IOverviewProxy;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
@@ -102,7 +103,6 @@ import com.android.systemui.shared.system.QuickStepContract;
 import com.android.systemui.shared.system.QuickStepContract.SystemUiStateFlags;
 import com.android.systemui.shared.system.RecentsAnimationListener;
 import com.android.systemui.shared.system.SystemGestureExclusionListenerCompat;
-import com.android.systemui.shared.system.TaskInfoCompat;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -649,16 +649,14 @@ public class TouchInteractionService extends Service implements
                 mOverviewComponentObserver.getActivityControlHelper();
 
         boolean forceOverviewInputConsumer = false;
-        if (isExcludedAssistant(runningTaskInfo)) {
+        if (AssistantUtilities.isExcludedAssistant(runningTaskInfo)) {
             // In the case where we are in the excluded assistant state, ignore it and treat the
             // running activity as the task behind the assistant
-            runningTaskInfo = mAM.getRunningTask(ACTIVITY_TYPE_ASSISTANT);
-            if (!ActivityManagerWrapper.isHomeTask(runningTaskInfo)) {
-                final ComponentName homeComponent =
-                    mOverviewComponentObserver.getHomeIntent().getComponent();
-                forceOverviewInputConsumer =
-                    runningTaskInfo.baseIntent.getComponent(). equals(homeComponent);
-            }
+            runningTaskInfo = mAM.getRunningTask(ACTIVITY_TYPE_ASSISTANT /* ignoreActivityType */);
+            ComponentName homeComponent = mOverviewComponentObserver.getHomeIntent().getComponent();
+            ComponentName runningComponent = runningTaskInfo.baseIntent.getComponent();
+            forceOverviewInputConsumer =
+                runningComponent != null && runningComponent.equals(homeComponent);
         }
 
         if (runningTaskInfo == null && !sSwipeSharedState.goingToLauncher
@@ -672,21 +670,15 @@ public class TouchInteractionService extends Service implements
             return createOtherActivityInputConsumer(event, info);
         } else if (sSwipeSharedState.goingToLauncher || activityControl.isResumed()
                 || forceOverviewInputConsumer) {
-            return createOverviewInputConsumer(event);
+            return createOverviewInputConsumer(event, forceOverviewInputConsumer);
         } else if (ENABLE_QUICKSTEP_LIVE_TILE.get() && activityControl.isInLiveTileMode()) {
-            return createOverviewInputConsumer(event);
+            return createOverviewInputConsumer(event, forceOverviewInputConsumer);
         } else if (mGestureBlockingActivity != null && runningTaskInfo != null
                 && mGestureBlockingActivity.equals(runningTaskInfo.topActivity)) {
             return mResetGestureInputConsumer;
         } else {
             return createOtherActivityInputConsumer(event, runningTaskInfo);
         }
-    }
-
-    private boolean isExcludedAssistant(TaskInfo info) {
-        return info != null
-                && TaskInfoCompat.getActivityType(info) == ACTIVITY_TYPE_ASSISTANT
-                && (info.baseIntent.getFlags() & Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS) != 0;
     }
 
     private boolean disableHorizontalSwipe(MotionEvent event) {
@@ -726,7 +718,8 @@ public class TouchInteractionService extends Service implements
         }
     }
 
-    public InputConsumer createOverviewInputConsumer(MotionEvent event) {
+    public InputConsumer createOverviewInputConsumer(MotionEvent event,
+            boolean forceOverviewInputConsumer) {
         final ActivityControlHelper activityControl =
                 mOverviewComponentObserver.getActivityControlHelper();
         BaseDraggingActivity activity = activityControl.getCreatedActivity();
@@ -734,7 +727,10 @@ public class TouchInteractionService extends Service implements
             return mResetGestureInputConsumer;
         }
 
-        if (activity.getRootView().hasWindowFocus() || sSwipeSharedState.goingToLauncher) {
+        if (activity.getRootView().hasWindowFocus()
+                || sSwipeSharedState.goingToLauncher
+                || (BaseFlags.ASSISTANT_GIVES_LAUNCHER_FOCUS.get()
+                    && forceOverviewInputConsumer)) {
             return new OverviewInputConsumer(activity, mInputMonitorCompat,
                     false /* startingInActivityBounds */);
         } else {
