@@ -94,6 +94,9 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
     @Override
     public void onTransitionCancelled(boolean activityVisible) {
         Launcher launcher = getCreatedActivity();
+        if (launcher == null) {
+            return;
+        }
         LauncherState startState = launcher.getStateManager().getRestState();
         launcher.getStateManager().goToState(startState, activityVisible);
     }
@@ -102,32 +105,40 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
     public void onSwipeUpToRecentsComplete() {
         // Re apply state in case we did something funky during the transition.
         Launcher launcher = getCreatedActivity();
+        if (launcher == null) {
+            return;
+        }
         launcher.getStateManager().reapplyState();
         DiscoveryBounce.showForOverviewIfNeeded(launcher);
     }
 
     @Override
     public void onSwipeUpToHomeComplete() {
+        Launcher launcher = getCreatedActivity();
+        if (launcher == null) {
+            return;
+        }
         // Ensure recents is at the correct position for NORMAL state. For example, when we detach
         // recents, we assume the first task is invisible, making translation off by one task.
-        Launcher launcher = getCreatedActivity();
         launcher.getStateManager().reapplyState();
         setLauncherHideBackArrow(false);
     }
 
     private void setLauncherHideBackArrow(boolean hideBackArrow) {
         Launcher launcher = getCreatedActivity();
-        if (launcher != null) {
-            launcher.getRootView().setForceHideBackArrow(hideBackArrow);
+        if (launcher == null) {
+            return;
         }
+        launcher.getRootView().setForceHideBackArrow(hideBackArrow);
     }
 
     @Override
     public void onAssistantVisibilityChanged(float visibility) {
         Launcher launcher = getCreatedActivity();
-        if (launcher != null) {
-            launcher.onAssistantVisibilityChanged(visibility);
+        if (launcher == null) {
+            return;
         }
+        launcher.onAssistantVisibilityChanged(visibility);
     }
 
     @NonNull
@@ -476,12 +487,18 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
     @Override
     public void onLaunchTaskFailed() {
         Launcher launcher = getCreatedActivity();
+        if (launcher == null) {
+            return;
+        }
         launcher.getStateManager().goToState(OVERVIEW);
     }
 
     @Override
     public void onLaunchTaskSuccess() {
         Launcher launcher = getCreatedActivity();
+        if (launcher == null) {
+            return;
+        }
         launcher.getStateManager().moveToRestState();
     }
 
@@ -503,6 +520,9 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
     public void switchRunningTaskViewToScreenshot(ThumbnailData thumbnailData,
             Runnable onFinishRunnable) {
         Launcher launcher = getCreatedActivity();
+        if (launcher == null) {
+            return;
+        }
         RecentsView recentsView = launcher.getOverviewPanel();
         if (recentsView == null) {
             if (onFinishRunnable != null) {
@@ -516,8 +536,9 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
     @Override
     public void setOnDeferredActivityLaunchCallback(Runnable r) {
         Launcher launcher = getCreatedActivity();
-        if (launcher != null) {
-            launcher.setOnDeferredActivityLaunchCallback(r);
+        if (launcher == null) {
+            return;
         }
+        launcher.setOnDeferredActivityLaunchCallback(r);
     }
 }
