@@ -62,7 +62,7 @@
     <string name="backup_restoring">復元中</string>
     <string name="backup_restarting">再起動中</string>
     <string name="restore_contents">バックアップ項目を復元</string>
-    <string name="restore_success">バックアップから復元に失敗しました</string>
+    <string name="restore_success">バックアップから復元を完了しました</string>
     <string name="failed">何らかのエラーが発生しました</string>
     <string name="backup_share_text">Lawnchair のバックアップ</string>
     <string name="full_width_widgets_pref_summary">ウィジェットを画面の端まで広げる</string>
