@@ -515,11 +515,11 @@
     </string-array>
     <string-array name="greetings_evening">
         <item>Καληνύχτα!</item>
-        <item>Κοιμήσου καλά!</item>
+        <item>Τι έκανες σήμερα;</item>
     </string-array>
     <string-array name="greetings_night">
         <item>Καλό βράδυ!</item>
-        <item>Κοιμήσου καλά!</item>
+        <item>Όνειρα Γλυκά!</item>
         <item>Τα λέμε αύριο!</item>
         <item>Όνειρα γλυκά!</item>
         <item>Μην μένεις ξύπνιος μέχρι αργά</item>
