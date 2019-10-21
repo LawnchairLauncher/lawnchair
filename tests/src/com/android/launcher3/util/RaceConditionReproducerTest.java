@@ -22,6 +22,8 @@ import static org.junit.Assert.assertTrue;
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,17 +39,29 @@ public class RaceConditionReproducerTest {
         return res;
     }
 
-    private static void run3_3_TestAction() throws InterruptedException {
+    RaceConditionReproducer eventProcessor;
+
+    @Before
+    public void setup() {
+        eventProcessor = new RaceConditionReproducer();
+    }
+
+    @After
+    public void tearDown() {
+        TraceHelperForTest.cleanup();
+    }
+
+    private void run3_3_TestAction() throws InterruptedException {
         Thread tb = new Thread(() -> {
-            RaceConditionTracker.onEvent("B1");
-            RaceConditionTracker.onEvent("B2");
-            RaceConditionTracker.onEvent("B3");
+            eventProcessor.onEvent("B1");
+            eventProcessor.onEvent("B2");
+            eventProcessor.onEvent("B3");
         });
         tb.start();
 
-        RaceConditionTracker.onEvent("A1");
-        RaceConditionTracker.onEvent("A2");
-        RaceConditionTracker.onEvent("A3");
+        eventProcessor.onEvent("A1");
+        eventProcessor.onEvent("A2");
+        eventProcessor.onEvent("A3");
 
         tb.join();
     }
@@ -56,7 +70,6 @@ public class RaceConditionReproducerTest {
     @Ignore // The test is too long for continuous testing.
     // 2 threads, 3 events each.
     public void test3_3() throws Exception {
-        final RaceConditionReproducer eventProcessor = new RaceConditionReproducer();
         boolean sawTheValidSequence = false;
 
         for (; ; ) {
@@ -80,25 +93,24 @@ public class RaceConditionReproducerTest {
     @Ignore // The test is too long for continuous testing.
     // 2 threads, 3 events, including enter-exit pairs each.
     public void test3_3_enter_exit() throws Exception {
-        final RaceConditionReproducer eventProcessor = new RaceConditionReproducer();
         boolean sawTheValidSequence = false;
 
         for (; ; ) {
             eventProcessor.startIteration();
             Thread tb = new Thread(() -> {
-                RaceConditionTracker.onEvent("B1:enter");
-                RaceConditionTracker.onEvent("B1:exit");
-                RaceConditionTracker.onEvent("B2");
-                RaceConditionTracker.onEvent("B3:enter");
-                RaceConditionTracker.onEvent("B3:exit");
+                eventProcessor.onEvent("B1:enter");
+                eventProcessor.onEvent("B1:exit");
+                eventProcessor.onEvent("B2");
+                eventProcessor.onEvent("B3:enter");
+                eventProcessor.onEvent("B3:exit");
             });
             tb.start();
 
-            RaceConditionTracker.onEvent("A1");
-            RaceConditionTracker.onEvent("A2:enter");
-            RaceConditionTracker.onEvent("A2:exit");
-            RaceConditionTracker.onEvent("A3:enter");
-            RaceConditionTracker.onEvent("A3:exit");
+            eventProcessor.onEvent("A1");
+            eventProcessor.onEvent("A2:enter");
+            eventProcessor.onEvent("A2:exit");
+            eventProcessor.onEvent("A3:enter");
+            eventProcessor.onEvent("A3:exit");
 
             tb.join();
             final boolean needMoreIterations = eventProcessor.finishIteration();
@@ -119,9 +131,7 @@ public class RaceConditionReproducerTest {
     @Test
     // 2 threads, 3 events each; reproducing a particular event sequence.
     public void test3_3_ReproMode() throws Exception {
-        final RaceConditionReproducer eventProcessor = new RaceConditionReproducer(
-                SOME_VALID_SEQUENCE_3_3);
-
+        eventProcessor = new RaceConditionReproducer(SOME_VALID_SEQUENCE_3_3);
         eventProcessor.startIteration();
         run3_3_TestAction();
         assertTrue(!eventProcessor.finishIteration());
@@ -134,23 +144,21 @@ public class RaceConditionReproducerTest {
     @Ignore // The test is too long for continuous testing.
     // 2 threads with 2 events; 1 thread with 1 event.
     public void test2_1_2() throws Exception {
-        final RaceConditionReproducer eventProcessor = new RaceConditionReproducer();
-
         for (; ; ) {
             eventProcessor.startIteration();
             Thread tb = new Thread(() -> {
-                RaceConditionTracker.onEvent("B1");
-                RaceConditionTracker.onEvent("B2");
+                eventProcessor.onEvent("B1");
+                eventProcessor.onEvent("B2");
             });
             tb.start();
 
             Thread tc = new Thread(() -> {
-                RaceConditionTracker.onEvent("C1");
+                eventProcessor.onEvent("C1");
             });
             tc.start();
 
-            RaceConditionTracker.onEvent("A1");
-            RaceConditionTracker.onEvent("A2");
+            eventProcessor.onEvent("A1");
+            eventProcessor.onEvent("A2");
 
             tb.join();
             tc.join();
@@ -167,28 +175,26 @@ public class RaceConditionReproducerTest {
     @Ignore // The test is too long for continuous testing.
     // 2 threads with 2 events; 1 thread with 1 event. Includes enter-exit pairs.
     public void test2_1_2_enter_exit() throws Exception {
-        final RaceConditionReproducer eventProcessor = new RaceConditionReproducer();
-
         for (; ; ) {
             eventProcessor.startIteration();
             Thread tb = new Thread(() -> {
-                RaceConditionTracker.onEvent("B1:enter");
-                RaceConditionTracker.onEvent("B1:exit");
-                RaceConditionTracker.onEvent("B2:enter");
-                RaceConditionTracker.onEvent("B2:exit");
+                eventProcessor.onEvent("B1:enter");
+                eventProcessor.onEvent("B1:exit");
+                eventProcessor.onEvent("B2:enter");
+                eventProcessor.onEvent("B2:exit");
             });
             tb.start();
 
             Thread tc = new Thread(() -> {
-                RaceConditionTracker.onEvent("C1:enter");
-                RaceConditionTracker.onEvent("C1:exit");
+                eventProcessor.onEvent("C1:enter");
+                eventProcessor.onEvent("C1:exit");
             });
             tc.start();
 
-            RaceConditionTracker.onEvent("A1:enter");
-            RaceConditionTracker.onEvent("A1:exit");
-            RaceConditionTracker.onEvent("A2:enter");
-            RaceConditionTracker.onEvent("A2:exit");
+            eventProcessor.onEvent("A1:enter");
+            eventProcessor.onEvent("A1:exit");
+            eventProcessor.onEvent("A2:enter");
+            eventProcessor.onEvent("A2:exit");
 
             tb.join();
             tc.join();

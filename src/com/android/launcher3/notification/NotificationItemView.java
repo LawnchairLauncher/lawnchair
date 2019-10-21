@@ -16,6 +16,8 @@
 
 package com.android.launcher3.notification;
 
+import static com.android.launcher3.touch.SwipeDetector.HORIZONTAL;
+
 import android.app.Notification;
 import android.content.Context;
 import android.graphics.Color;
@@ -32,8 +34,6 @@ import com.android.launcher3.touch.SwipeDetector;
 import com.android.launcher3.util.Themes;
 
 import java.util.List;
-
-import static com.android.launcher3.touch.SwipeDetector.HORIZONTAL;
 
 /**
  * Utility class to manage notification UI

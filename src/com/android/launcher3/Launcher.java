@@ -32,8 +32,7 @@ import static com.android.launcher3.dragndrop.DragLayer.ALPHA_INDEX_LAUNCHER_LOA
 import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
 import static com.android.launcher3.logging.LoggerUtils.newTarget;
 import static com.android.launcher3.states.RotationHelper.REQUEST_NONE;
-import static com.android.launcher3.util.RaceConditionTracker.ENTER;
-import static com.android.launcher3.util.RaceConditionTracker.EXIT;
+import static com.android.launcher3.testing.TestProtocol.CRASH_ADD_CUSTOM_SHORTCUT;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -90,7 +89,6 @@ import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
-import com.android.launcher3.compat.LauncherAppsCompatVO;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.dragndrop.DragController;
@@ -110,13 +108,13 @@ import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.notification.NotificationListener;
+import com.android.launcher3.pm.PinRequestHelper;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.qsb.QsbContainerView;
-import com.android.launcher3.states.InternalStateHandler;
 import com.android.launcher3.states.RotationHelper;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.ItemClickHandler;
-import com.android.launcher3.uioverrides.DejankBinderTracker;
 import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
@@ -124,6 +122,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.ActivityResultInfo;
+import com.android.launcher3.util.ActivityTracker;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.ItemInfoMatcher;
@@ -132,7 +131,6 @@ import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.PendingRequestArgs;
-import com.android.launcher3.util.RaceConditionTracker;
 import com.android.launcher3.util.ShortcutUtil;
 import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.Themes;
@@ -173,9 +171,12 @@ import java.util.function.Supplier;
  * Default launcher application.
  */
 public class Launcher extends BaseDraggingActivity implements LauncherExterns,
-        Callbacks, LauncherProviderChangeListener, UserEventDelegate,
+        Callbacks, UserEventDelegate,
         InvariantDeviceProfile.OnIDPChangeListener, PluginListener<OverlayPlugin> {
     public static final String TAG = "Launcher";
+
+    public static final ActivityTracker<Launcher> ACTIVITY_TRACKER = new ActivityTracker<>();
+
     static final boolean LOGD = false;
 
     static final boolean DEBUG_STRICT_MODE = false;
@@ -211,9 +212,11 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     private static final String RUNTIME_STATE_PENDING_ACTIVITY_RESULT = "launcher.activity_result";
     // Type: SparseArray<Parcelable>
     private static final String RUNTIME_STATE_WIDGET_PANEL = "launcher.widget_panel";
+
     public static final String ON_CREATE_EVT = "Launcher.onCreate";
-    private static final String ON_START_EVT = "Launcher.onStart";
-    private static final String ON_RESUME_EVT = "Launcher.onResume";
+    public static final String ON_START_EVT = "Launcher.onStart";
+    public static final String ON_RESUME_EVT = "Launcher.onResume";
+    public static final String ON_NEW_INTENT_EVT = "Launcher.onNewIntent";
 
     private LauncherStateManager mStateManager;
 
@@ -310,8 +313,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        DejankBinderTracker.allowBinderTrackingInTests();
-        RaceConditionTracker.onEvent(ON_CREATE_EVT, ENTER);
+        Object traceToken = TraceHelper.INSTANCE.beginSection(ON_CREATE_EVT,
+                TraceHelper.FLAG_UI_EVENT);
         if (DEBUG_STRICT_MODE) {
             StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
                     .detectDiskReads()
@@ -326,10 +329,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                     .penaltyDeath()
                     .build());
         }
-        TraceHelper.beginSection("Launcher-onCreate");
 
         super.onCreate(savedInstanceState);
-        TraceHelper.partitionSection("Launcher-onCreate", "super call");
 
         LauncherAppState app = LauncherAppState.getInstance(this);
         mOldConfig = new Configuration(getResources().getConfiguration());
@@ -359,7 +360,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
         mAppTransitionManager = LauncherAppTransitionManager.newInstance(this);
 
-        boolean internalStateHandled = InternalStateHandler.handleCreate(this, getIntent());
+        boolean internalStateHandled = ACTIVITY_TRACKER.handleCreate(this);
         if (internalStateHandled) {
             if (savedInstanceState != null) {
                 // InternalStateHandler has already set the appropriate state.
@@ -411,8 +412,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
         mRotationHelper.initialize();
 
-        TraceHelper.endSection("Launcher-onCreate");
-        RaceConditionTracker.onEvent(ON_CREATE_EVT, EXIT);
         mStateManager.addStateListener(new LauncherStateManager.StateListener() {
             @Override
             public void onStateTransitionStart(LauncherState toState) {
@@ -432,7 +431,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                 }
             }
         });
-        DejankBinderTracker.disallowBinderTrackingInTests();
+
+        TraceHelper.INSTANCE.endSection(traceToken);
     }
 
     protected LauncherOverlayManager getDefaultOverlay() {
@@ -609,13 +609,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     @Override
     public <T extends View> T findViewById(int id) {
         return mLauncherView.findViewById(id);
-    }
-
-    @Override
-    public void onAppWidgetHostReset() {
-        if (mAppWidgetHost != null) {
-            mAppWidgetHost.startListening();
-        }
     }
 
     private LauncherCallbacks mLauncherCallbacks;
@@ -944,16 +937,15 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     @Override
     protected void onStart() {
-        DejankBinderTracker.allowBinderTrackingInTests();
-        RaceConditionTracker.onEvent(ON_START_EVT, ENTER);
+        Object traceToken = TraceHelper.INSTANCE.beginSection(ON_START_EVT,
+                TraceHelper.FLAG_UI_EVENT);
         super.onStart();
         if (!mDeferOverlayCallbacks) {
             mOverlayManager.onActivityStarted(this);
         }
 
         mAppWidgetHost.setListenIfResumed(true);
-        RaceConditionTracker.onEvent(ON_START_EVT, EXIT);
-        DejankBinderTracker.disallowBinderTrackingInTests();
+        TraceHelper.INSTANCE.endSection(traceToken);
     }
 
     private void handleDeferredResume() {
@@ -1048,11 +1040,9 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     @Override
     protected void onResume() {
-        DejankBinderTracker.allowBinderTrackingInTests();
-        RaceConditionTracker.onEvent(ON_RESUME_EVT, ENTER);
-        TraceHelper.beginSection("ON_RESUME");
+        Object traceToken = TraceHelper.INSTANCE.beginSection(ON_RESUME_EVT,
+                TraceHelper.FLAG_UI_EVENT);
         super.onResume();
-        TraceHelper.partitionSection("ON_RESUME", "superCall");
 
         mHandler.removeCallbacks(mHandleDeferredResume);
         Utilities.postAsyncCallback(mHandler, mHandleDeferredResume);
@@ -1072,9 +1062,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             mOverlayManager.onActivityResumed(this);
         }
 
-        TraceHelper.endSection("ON_RESUME");
-        RaceConditionTracker.onEvent(ON_RESUME_EVT, EXIT);
-        DejankBinderTracker.disallowBinderTrackingInTests();
+        TraceHelper.INSTANCE.endSection(traceToken);
     }
 
     @Override
@@ -1224,8 +1212,13 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
      */
     private void completeAddShortcut(Intent data, int container, int screenId, int cellX,
             int cellY, PendingRequestArgs args) {
-        if (args.getRequestCode() != REQUEST_CREATE_SHORTCUT
+        if (data == null
+                || args.getRequestCode() != REQUEST_CREATE_SHORTCUT
                 || args.getPendingIntent().getComponent() == null) {
+            if (data == null && TestProtocol.sDebugTracing) {
+                Log.d(CRASH_ADD_CUSTOM_SHORTCUT,
+                        "Failed to add custom shortcut: Intent is null, args = " + args);
+            }
             return;
         }
 
@@ -1234,8 +1227,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
         WorkspaceItemInfo info = null;
         if (Utilities.ATLEAST_OREO) {
-            info = LauncherAppsCompatVO.createWorkspaceItemFromPinItemRequest(
-                    this, LauncherAppsCompatVO.getPinItemRequest(data), 0);
+            info = PinRequestHelper.createWorkspaceItemFromPinItemRequest(
+                    this, PinRequestHelper.getPinItemRequest(data), 0);
         }
 
         if (info == null) {
@@ -1433,7 +1426,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     @Override
     protected void onNewIntent(Intent intent) {
-        TraceHelper.beginSection("NEW_INTENT");
+        Object traceToken = TraceHelper.INSTANCE.beginSection(ON_NEW_INTENT_EVT);
         super.onNewIntent(intent);
 
         boolean alreadyOnHome = hasWindowFocus() && ((intent.getFlags() &
@@ -1444,8 +1437,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         boolean shouldMoveToDefaultScreen = alreadyOnHome && isInState(NORMAL)
                 && AbstractFloatingView.getTopOpenView(this) == null;
         boolean isActionMain = Intent.ACTION_MAIN.equals(intent.getAction());
-        boolean internalStateHandled = InternalStateHandler
-                .handleNewIntent(this, intent, isStarted());
+        boolean internalStateHandled = ACTIVITY_TRACKER.handleNewIntent(this, intent);
 
         if (isActionMain) {
             if (!internalStateHandled) {
@@ -1486,7 +1478,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             mOverlayManager.hideOverlay(isStarted() && !isForceInvisible());
         }
 
-        TraceHelper.endSection("NEW_INTENT");
+        TraceHelper.INSTANCE.endSection(traceToken);
     }
 
     @Override
@@ -1535,6 +1527,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     @Override
     public void onDestroy() {
         super.onDestroy();
+        ACTIVITY_TRACKER.onActivityDestroyed(this);
 
         unregisterReceiver(mScreenOffReceiver);
         mWorkspace.removeFolderListeners();
@@ -1893,7 +1886,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             // recents animation into launcher. Defer launching the activity until Launcher is
             // next resumed.
             addOnResumeCallback(() -> startActivitySafely(v, intent, item, sourceContainer));
-            UiFactory.clearSwipeSharedState(true /* finishAnimation */);
+            UiFactory.clearSwipeSharedState(this, true /* finishAnimation */);
             return true;
         }
 
@@ -1988,7 +1981,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
      * Implementation of the method from LauncherModel.Callbacks.
      */
     public void startBinding() {
-        TraceHelper.beginSection("startBinding");
+        Object traceToken = TraceHelper.INSTANCE.beginSection("startBinding");
         // Floating panels (except the full widget sheet) are associated with individual icons. If
         // we are starting a fresh bind, close all such panels as all the icons are about
         // to go away.
@@ -2006,7 +1999,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         if (mHotseat != null) {
             mHotseat.resetLayout(getWallpaperDeviceProfile().isVerticalBarLayout());
         }
-        TraceHelper.endSection("startBinding");
+        TraceHelper.INSTANCE.endSection(traceToken);
     }
 
     @Override
@@ -2199,112 +2192,113 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                 return null;
             }
         }
-
+        final AppWidgetHostView view;
         if (mIsSafeModeEnabled) {
-            PendingAppWidgetHostView view =
-                    new PendingAppWidgetHostView(this, item, mIconCache, true);
+            view = new PendingAppWidgetHostView(this, item, mIconCache, true);
             prepareAppWidget(view, item);
             return view;
         }
 
-        TraceHelper.beginSection("BIND_WIDGET");
+        Object traceToken = TraceHelper.INSTANCE.beginSection("BIND_WIDGET_id=" + item.appWidgetId);
 
-        final LauncherAppWidgetProviderInfo appWidgetInfo;
+        try {
+            final LauncherAppWidgetProviderInfo appWidgetInfo;
 
-        if (item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY)) {
-            // If the provider is not ready, bind as a pending widget.
-            appWidgetInfo = null;
-        } else if (item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_ID_NOT_VALID)) {
-            // The widget id is not valid. Try to find the widget based on the provider info.
-            appWidgetInfo = mAppWidgetManager.findProvider(item.providerName, item.user);
-        } else {
-            appWidgetInfo = mAppWidgetManager.getLauncherAppWidgetInfo(item.appWidgetId);
-        }
-
-        // If the provider is ready, but the width is not yet restored, try to restore it.
-        if (!item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY) &&
-                (item.restoreStatus != LauncherAppWidgetInfo.RESTORE_COMPLETED)) {
-            if (appWidgetInfo == null) {
-                Log.d(TAG, "Removing restored widget: id=" + item.appWidgetId
-                        + " belongs to component " + item.providerName
-                        + ", as the provider is null");
-                getModelWriter().deleteItemFromDatabase(item);
-                return null;
+            if (item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY)) {
+                // If the provider is not ready, bind as a pending widget.
+                appWidgetInfo = null;
+            } else if (item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_ID_NOT_VALID)) {
+                // The widget id is not valid. Try to find the widget based on the provider info.
+                appWidgetInfo = mAppWidgetManager.findProvider(item.providerName, item.user);
+            } else {
+                appWidgetInfo = mAppWidgetManager.getLauncherAppWidgetInfo(item.appWidgetId);
             }
 
-            // If we do not have a valid id, try to bind an id.
-            if (item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_ID_NOT_VALID)) {
-                if (!item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_ID_ALLOCATED)) {
-                    // Id has not been allocated yet. Allocate a new id.
-                    item.appWidgetId = mAppWidgetHost.allocateAppWidgetId();
-                    item.restoreStatus |= LauncherAppWidgetInfo.FLAG_ID_ALLOCATED;
+            // If the provider is ready, but the width is not yet restored, try to restore it.
+            if (!item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY)
+                    && (item.restoreStatus != LauncherAppWidgetInfo.RESTORE_COMPLETED)) {
+                if (appWidgetInfo == null) {
+                    Log.d(TAG, "Removing restored widget: id=" + item.appWidgetId
+                            + " belongs to component " + item.providerName
+                            + ", as the provider is null");
+                    getModelWriter().deleteItemFromDatabase(item);
+                    return null;
+                }
 
-                    // Also try to bind the widget. If the bind fails, the user will be shown
-                    // a click to setup UI, which will ask for the bind permission.
-                    PendingAddWidgetInfo pendingInfo = new PendingAddWidgetInfo(appWidgetInfo);
-                    pendingInfo.spanX = item.spanX;
-                    pendingInfo.spanY = item.spanY;
-                    pendingInfo.minSpanX = item.minSpanX;
-                    pendingInfo.minSpanY = item.minSpanY;
-                    Bundle options = WidgetHostViewLoader.getDefaultOptionsForWidget(this,
-                            pendingInfo);
+                // If we do not have a valid id, try to bind an id.
+                if (item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_ID_NOT_VALID)) {
+                    if (!item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_ID_ALLOCATED)) {
+                        // Id has not been allocated yet. Allocate a new id.
+                        item.appWidgetId = mAppWidgetHost.allocateAppWidgetId();
+                        item.restoreStatus |= LauncherAppWidgetInfo.FLAG_ID_ALLOCATED;
 
-                    boolean isDirectConfig =
-                            item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_DIRECT_CONFIG);
-                    if (isDirectConfig && item.bindOptions != null) {
-                        Bundle newOptions = item.bindOptions.getExtras();
-                        if (options != null) {
-                            newOptions.putAll(options);
+                        // Also try to bind the widget. If the bind fails, the user will be shown
+                        // a click to setup UI, which will ask for the bind permission.
+                        PendingAddWidgetInfo pendingInfo = new PendingAddWidgetInfo(appWidgetInfo);
+                        pendingInfo.spanX = item.spanX;
+                        pendingInfo.spanY = item.spanY;
+                        pendingInfo.minSpanX = item.minSpanX;
+                        pendingInfo.minSpanY = item.minSpanY;
+                        Bundle options = WidgetHostViewLoader.getDefaultOptionsForWidget(this,
+                                pendingInfo);
+
+                        boolean isDirectConfig =
+                                item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_DIRECT_CONFIG);
+                        if (isDirectConfig && item.bindOptions != null) {
+                            Bundle newOptions = item.bindOptions.getExtras();
+                            if (options != null) {
+                                newOptions.putAll(options);
+                            }
+                            options = newOptions;
                         }
-                        options = newOptions;
+                        boolean success = mAppWidgetManager.bindAppWidgetIdIfAllowed(
+                                item.appWidgetId, appWidgetInfo, options);
+
+                        // We tried to bind once. If we were not able to bind, we would need to
+                        // go through the permission dialog, which means we cannot skip the config
+                        // activity.
+                        item.bindOptions = null;
+                        item.restoreStatus &= ~LauncherAppWidgetInfo.FLAG_DIRECT_CONFIG;
+
+                        // Bind succeeded
+                        if (success) {
+                            // If the widget has a configure activity, it is still needs to set it
+                            // up, otherwise the widget is ready to go.
+                            item.restoreStatus = (appWidgetInfo.configure == null) || isDirectConfig
+                                    ? LauncherAppWidgetInfo.RESTORE_COMPLETED
+                                    : LauncherAppWidgetInfo.FLAG_UI_NOT_READY;
+                        }
+
+                        getModelWriter().updateItemInDatabase(item);
                     }
-                    boolean success = mAppWidgetManager.bindAppWidgetIdIfAllowed(
-                            item.appWidgetId, appWidgetInfo, options);
-
-                    // We tried to bind once. If we were not able to bind, we would need to
-                    // go through the permission dialog, which means we cannot skip the config
-                    // activity.
-                    item.bindOptions = null;
-                    item.restoreStatus &= ~LauncherAppWidgetInfo.FLAG_DIRECT_CONFIG;
-
-                    // Bind succeeded
-                    if (success) {
-                        // If the widget has a configure activity, it is still needs to set it up,
-                        // otherwise the widget is ready to go.
-                        item.restoreStatus = (appWidgetInfo.configure == null) || isDirectConfig
-                                ? LauncherAppWidgetInfo.RESTORE_COMPLETED
-                                : LauncherAppWidgetInfo.FLAG_UI_NOT_READY;
-                    }
-
+                } else if (item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_UI_NOT_READY)
+                        && (appWidgetInfo.configure == null)) {
+                    // The widget was marked as UI not ready, but there is no configure activity to
+                    // update the UI.
+                    item.restoreStatus = LauncherAppWidgetInfo.RESTORE_COMPLETED;
                     getModelWriter().updateItemInDatabase(item);
                 }
-            } else if (item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_UI_NOT_READY)
-                    && (appWidgetInfo.configure == null)) {
-                // The widget was marked as UI not ready, but there is no configure activity to
-                // update the UI.
-                item.restoreStatus = LauncherAppWidgetInfo.RESTORE_COMPLETED;
-                getModelWriter().updateItemInDatabase(item);
-            }
-        }
-
-        final AppWidgetHostView view;
-        if (item.restoreStatus == LauncherAppWidgetInfo.RESTORE_COMPLETED) {
-            // Verify that we own the widget
-            if (appWidgetInfo == null) {
-                FileLog.e(TAG, "Removing invalid widget: id=" + item.appWidgetId);
-                getModelWriter().deleteWidgetInfo(item, getAppWidgetHost());
-                return null;
             }
 
-            item.minSpanX = appWidgetInfo.minSpanX;
-            item.minSpanY = appWidgetInfo.minSpanY;
-            view = mAppWidgetHost.createView(this, item.appWidgetId, appWidgetInfo);
-        } else {
-            view = new PendingAppWidgetHostView(this, item, mIconCache, false);
-        }
-        prepareAppWidget(view, item);
+            if (item.restoreStatus == LauncherAppWidgetInfo.RESTORE_COMPLETED) {
+                // Verify that we own the widget
+                if (appWidgetInfo == null) {
+                    FileLog.e(TAG, "Removing invalid widget: id=" + item.appWidgetId);
+                    getModelWriter().deleteWidgetInfo(item, getAppWidgetHost());
+                    return null;
+                }
 
-        TraceHelper.endSection("BIND_WIDGET", "id=" + item.appWidgetId);
+                item.minSpanX = appWidgetInfo.minSpanX;
+                item.minSpanY = appWidgetInfo.minSpanY;
+                view = mAppWidgetHost.createView(this, item.appWidgetId, appWidgetInfo);
+            } else {
+                view = new PendingAppWidgetHostView(this, item, mIconCache, false);
+            }
+            prepareAppWidget(view, item);
+        } finally {
+            TraceHelper.INSTANCE.endSection(traceToken);
+        }
+
         return view;
     }
 
@@ -2382,7 +2376,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
      * Implementation of the method from LauncherModel.Callbacks.
      */
     public void finishBindingItems(int pageBoundFirst) {
-        TraceHelper.beginSection("finishBindingItems");
+        Object traceToken = TraceHelper.INSTANCE.beginSection("finishBindingItems");
         mWorkspace.restoreInstanceStateForRemainingPages();
 
         setWorkspaceLoading(false);
@@ -2406,7 +2400,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                 mDeviceProfile.inv.numFolderColumns * mDeviceProfile.inv.numFolderRows);
         getViewCache().setCacheSize(R.layout.folder_page, 2);
 
-        TraceHelper.endSection("finishBindingItems");
+        TraceHelper.INSTANCE.endSection(traceToken);
     }
 
     private boolean canRunNewAppsAnimation() {

@@ -24,7 +24,6 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Resources;
 import android.view.WindowManager;
-import android.view.WindowManager.LayoutParams;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
@@ -59,7 +58,9 @@ public class RotationHelper implements OnSharedPreferenceChangeListener {
     private boolean mAutoRotateEnabled;
 
     /**
-     * Rotation request made by {@link InternalStateHandler}. This supersedes any other request.
+     * Rotation request made by
+     * {@link com.android.launcher3.util.ActivityTracker.SchedulerCallback}.
+     * This supersedes any other request.
      */
     private int mStateHandlerRequest = REQUEST_NONE;
     /**

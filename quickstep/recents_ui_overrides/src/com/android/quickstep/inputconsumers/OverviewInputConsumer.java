@@ -16,7 +16,6 @@
 package com.android.quickstep.inputconsumers;
 
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
-import static com.android.quickstep.TouchInteractionService.TOUCH_INTERACTION_LOG;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 
 import android.view.KeyEvent;
@@ -27,7 +26,10 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.views.BaseDragLayer;
-import com.android.quickstep.ActivityControlHelper;
+import com.android.quickstep.BaseActivityInterface;
+import com.android.quickstep.GestureState;
+import com.android.quickstep.InputConsumer;
+import com.android.quickstep.util.ActiveGestureLog;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.InputMonitorCompat;
 
@@ -40,7 +42,7 @@ public class OverviewInputConsumer<T extends BaseDraggingActivity>
         implements InputConsumer {
 
     private final T mActivity;
-    private final ActivityControlHelper<T> mActivityControlHelper;
+    private final BaseActivityInterface<T> mActivityInterface;
     private final BaseDragLayer mTarget;
     private final InputMonitorCompat mInputMonitor;
 
@@ -51,13 +53,12 @@ public class OverviewInputConsumer<T extends BaseDraggingActivity>
     private final boolean mStartingInActivityBounds;
     private boolean mTargetHandledTouch;
 
-    public OverviewInputConsumer(T activity, @Nullable InputMonitorCompat inputMonitor,
-            boolean startingInActivityBounds,
-            ActivityControlHelper<T> activityControlHelper) {
+    public OverviewInputConsumer(GestureState gestureState, T activity,
+            @Nullable InputMonitorCompat inputMonitor, boolean startingInActivityBounds) {
         mActivity = activity;
         mInputMonitor = inputMonitor;
         mStartingInActivityBounds = startingInActivityBounds;
-        mActivityControlHelper = activityControlHelper;
+        mActivityInterface = gestureState.getActivityInterface();
 
         mTarget = activity.getDragLayer();
         if (startingInActivityBounds) {
@@ -99,10 +100,10 @@ public class OverviewInputConsumer<T extends BaseDraggingActivity>
         if (!mTargetHandledTouch && handled) {
             mTargetHandledTouch = true;
             if (!mStartingInActivityBounds) {
-                mActivityControlHelper.closeOverlay();
+                mActivityInterface.closeOverlay();
                 ActivityManagerWrapper.getInstance()
                         .closeSystemWindows(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
-                TOUCH_INTERACTION_LOG.addLog("startQuickstep");
+                ActiveGestureLog.INSTANCE.addLog("startQuickstep");
             }
             if (mInputMonitor != null) {
                 mInputMonitor.pilferPointers();

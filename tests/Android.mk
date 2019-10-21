@@ -30,7 +30,6 @@ else
     LOCAL_STATIC_JAVA_LIBRARIES += SystemUISharedLib
 
     LOCAL_SRC_FILES := $(call all-java-files-under, tapl) \
-        ../quickstep/src/com/android/launcher3/uioverrides/DejankBinderTracker.java \
         ../src/com/android/launcher3/ResourceUtils.java \
         ../src/com/android/launcher3/util/SecureSettingsObserver.java \
         ../src/com/android/launcher3/testing/TestProtocol.java

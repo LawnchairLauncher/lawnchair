@@ -27,7 +27,7 @@ public class LauncherInitListenerEx extends LauncherInitListener {
     }
 
     @Override
-    protected boolean init(Launcher launcher, boolean alreadyOnHome) {
+    public boolean init(Launcher launcher, boolean alreadyOnHome) {
         PredictionUiStateManager.INSTANCE.get(launcher).switchClient(Client.OVERVIEW);
         return super.init(launcher, alreadyOnHome);
     }

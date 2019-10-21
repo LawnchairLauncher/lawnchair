@@ -16,10 +16,12 @@
 package com.android.launcher3.model;
 
 import static com.android.launcher3.WorkspaceItemInfo.FLAG_AUTOINSTALL_ICON;
+import static com.android.launcher3.WorkspaceItemInfo.FLAG_RESTORED_ICON;
 
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.LauncherApps;
 import android.content.pm.ShortcutInfo;
 import android.os.Process;
 import android.os.UserHandle;
@@ -33,7 +35,6 @@ import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.SessionCommitReceiver;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.WorkspaceItemInfo;
-import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.BitmapInfo;
@@ -218,10 +219,10 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                                         infoUpdated = true;
                                     }
                                 } else if (!cn.getClassName().equals(IconCache.EMPTY_CLASS_NAME)) {
-                                    isTargetValid = LauncherAppsCompat.getInstance(context)
-                                            .isActivityEnabledForProfile(cn, mUser);
+                                    isTargetValid = context.getSystemService(LauncherApps.class)
+                                            .isActivityEnabled(cn, mUser);
                                 }
-                                if (si.hasStatusFlag(FLAG_AUTOINSTALL_ICON)) {
+                                if (si.hasStatusFlag(FLAG_RESTORED_ICON | FLAG_AUTOINSTALL_ICON)) {
                                     if (updateWorkspaceItemIntent(context, si, packageName)) {
                                         infoUpdated = true;
                                     } else if (si.hasPromiseIconUi()) {
@@ -302,9 +303,9 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
             // removedPackages is a super-set of removedComponents
         } else if (mOp == OP_UPDATE) {
             // Mark disabled packages in the broadcast to be removed
-            final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(context);
+            final LauncherApps launcherApps = context.getSystemService(LauncherApps.class);
             for (int i=0; i<N; i++) {
-                if (!launcherApps.isPackageEnabledForProfile(packages[i], mUser)) {
+                if (!launcherApps.isPackageEnabled(packages[i], mUser)) {
                     removedPackages.add(packages[i]);
                 }
             }

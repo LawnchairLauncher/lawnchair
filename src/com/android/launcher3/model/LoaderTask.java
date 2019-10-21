@@ -30,6 +30,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.LauncherActivityInfo;
+import android.content.pm.LauncherApps;
 import android.content.pm.PackageInstaller;
 import android.content.pm.PackageInstaller.SessionInfo;
 import android.content.pm.ShortcutInfo;
@@ -39,6 +40,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.LongSparseArray;
 import android.util.MutableInt;
+import android.util.TimingLogger;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.FolderInfo;
@@ -52,8 +54,6 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
-import com.android.launcher3.compat.LauncherAppsCompat;
-import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.Folder;
@@ -66,10 +66,13 @@ import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.icons.ShortcutCachingLogic;
 import com.android.launcher3.icons.cache.IconCacheUpdateHandler;
 import com.android.launcher3.logging.FileLog;
+import com.android.launcher3.pm.PackageInstallInfo;
+import com.android.launcher3.pm.PackageInstallerCompat;
 import com.android.launcher3.provider.ImportDataTask;
 import com.android.launcher3.qsb.QsbContainerView;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutKey;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IOUtils;
 import com.android.launcher3.util.LooperIdleLock;
@@ -105,7 +108,7 @@ public class LoaderTask implements Runnable {
 
     private final LoaderResults mResults;
 
-    private final LauncherAppsCompat mLauncherApps;
+    private final LauncherApps mLauncherApps;
     private final UserManagerCompat mUserManager;
     private final DeepShortcutManager mShortcutManager;
     private final PackageInstallerCompat mPackageInstaller;
@@ -121,7 +124,7 @@ public class LoaderTask implements Runnable {
         mBgDataModel = dataModel;
         mResults = results;
 
-        mLauncherApps = LauncherAppsCompat.getInstance(mApp.getContext());
+        mLauncherApps = mApp.getContext().getSystemService(LauncherApps.class);
         mUserManager = UserManagerCompat.getInstance(mApp.getContext());
         mShortcutManager = DeepShortcutManager.getInstance(mApp.getContext());
         mPackageInstaller = PackageInstallerCompat.getInstance(mApp.getContext());
@@ -162,99 +165,123 @@ public class LoaderTask implements Runnable {
     }
 
     public void run() {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.LAUNCHER_DIDNT_INITIALIZE,
+                    "LoaderTask1 " + this);
+        }
         synchronized (this) {
             // Skip fast if we are already stopped.
             if (mStopped) {
                 return;
             }
         }
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.LAUNCHER_DIDNT_INITIALIZE,
+                    "LoaderTask2 " + this);
+        }
 
-        TraceHelper.beginSection(TAG);
+        Object traceToken = TraceHelper.INSTANCE.beginSection(TAG);
+        TimingLogger logger = TestProtocol.sDebugTracing ?
+                new TimingLogger(TAG, "run") {
+                    @Override
+                    public void addSplit(String splitLabel) {
+                        super.addSplit(splitLabel);
+                        Log.d(TestProtocol.LAUNCHER_DIDNT_INITIALIZE,
+                                "LoaderTask.addSplit " + splitLabel);
+                    }
+                }
+                : new TimingLogger(TAG, "run");
         try (LauncherModel.LoaderTransaction transaction = mApp.getModel().beginLoader(this)) {
-            TraceHelper.partitionSection(TAG, "step 1.1: loading workspace");
             List<ShortcutInfo> allShortcuts = new ArrayList<>();
             loadWorkspace(allShortcuts);
+            logger.addSplit("loadWorkspace");
 
             verifyNotStopped();
-            TraceHelper.partitionSection(TAG, "step 1.2: bind workspace workspace");
             mResults.bindWorkspace();
+            logger.addSplit("bindWorkspace");
 
             // Notify the installer packages of packages with active installs on the first screen.
-            TraceHelper.partitionSection(TAG, "step 1.3: send first screen broadcast");
             sendFirstScreenActiveInstallsBroadcast();
+            logger.addSplit("sendFirstScreenActiveInstallsBroadcast");
 
             // Take a break
-            TraceHelper.partitionSection(TAG, "step 1 completed, wait for idle");
             waitForIdle();
+            logger.addSplit("step 1 complete");
             verifyNotStopped();
 
             // second step
-            TraceHelper.partitionSection(TAG, "step 2.1: loading all apps");
             List<LauncherActivityInfo> allActivityList = loadAllApps();
+            logger.addSplit("loadAllApps");
 
-            TraceHelper.partitionSection(TAG, "step 2.2: binding all apps");
             verifyNotStopped();
             mResults.bindAllApps();
+            logger.addSplit("bindAllApps");
 
             verifyNotStopped();
-            TraceHelper.partitionSection(TAG, "step 2.3: save app icons in icon cache");
             IconCacheUpdateHandler updateHandler = mIconCache.getUpdateHandler();
             setIgnorePackages(updateHandler);
             updateHandler.updateIcons(allActivityList,
                     LauncherActivityCachingLogic.newInstance(mApp.getContext()),
                     mApp.getModel()::onPackageIconsUpdated);
+            logger.addSplit("update icon cache");
 
             verifyNotStopped();
-            TraceHelper.partitionSection(TAG, "step 2.4: save shortcuts in icon cache");
+            logger.addSplit("save shortcuts in icon cache");
             updateHandler.updateIcons(allShortcuts, new ShortcutCachingLogic(),
                     mApp.getModel()::onPackageIconsUpdated);
 
             // Take a break
-            TraceHelper.partitionSection(TAG, "step 2 completed, wait for idle");
             waitForIdle();
+            logger.addSplit("step 2 complete");
             verifyNotStopped();
 
             // third step
-            TraceHelper.partitionSection(TAG, "step 3.1: loading deep shortcuts");
             List<ShortcutInfo> allDeepShortcuts = loadDeepShortcuts();
+            logger.addSplit("loadDeepShortcuts");
 
             verifyNotStopped();
-            TraceHelper.partitionSection(TAG, "step 3.2: bind deep shortcuts");
             mResults.bindDeepShortcuts();
+            logger.addSplit("bindDeepShortcuts");
 
             verifyNotStopped();
-            TraceHelper.partitionSection(TAG, "step 3.3: save deep shortcuts in icon cache");
+            logger.addSplit("save deep shortcuts in icon cache");
             updateHandler.updateIcons(allDeepShortcuts,
                     new ShortcutCachingLogic(), (pkgs, user) -> { });
 
             // Take a break
-            TraceHelper.partitionSection(TAG, "step 3 completed, wait for idle");
             waitForIdle();
+            logger.addSplit("step 3 complete");
             verifyNotStopped();
 
             // fourth step
-            TraceHelper.partitionSection(TAG, "step 4.1: loading widgets");
             List<ComponentWithLabel> allWidgetsList = mBgDataModel.widgetsModel.update(mApp, null);
+            logger.addSplit("load widgets");
 
             verifyNotStopped();
-            TraceHelper.partitionSection(TAG, "step 4.2: Binding widgets");
             mResults.bindWidgets();
+            logger.addSplit("bindWidgets");
+            verifyNotStopped();
+
+            updateHandler.updateIcons(allWidgetsList, new ComponentCachingLogic(
+                    mApp.getContext(), true), mApp.getModel()::onWidgetLabelsUpdated);
+            logger.addSplit("save widgets in icon cache");
 
             verifyNotStopped();
-            TraceHelper.partitionSection(TAG, "step 4.3: save widgets in icon cache");
-            updateHandler.updateIcons(allWidgetsList, new ComponentCachingLogic(mApp.getContext()),
-                    mApp.getModel()::onWidgetLabelsUpdated);
-
-            verifyNotStopped();
-            TraceHelper.partitionSection(TAG, "step 5: Finish icon cache update");
             updateHandler.finish();
+            logger.addSplit("finish icon update");
 
+            if (TestProtocol.sDebugTracing) {
+                Log.d(TestProtocol.LAUNCHER_DIDNT_INITIALIZE,
+                        "LoaderTask3 " + this);
+            }
             transaction.commit();
         } catch (CancellationException e) {
             // Loader stopped, ignore
-            TraceHelper.partitionSection(TAG, "Cancelled");
+            logger.addSplit("Cancelled");
+        } finally {
+            logger.dumpToLog();
         }
-        TraceHelper.endSection(TAG);
+        TraceHelper.INSTANCE.endSection(traceToken);
     }
 
     public synchronized void stopLocked() {
@@ -297,7 +324,9 @@ public class LoaderTask implements Runnable {
             mBgDataModel.clear();
 
             final HashMap<PackageUserKey, SessionInfo> installingPkgs =
-                    mPackageInstaller.updateAndGetActiveSessionCache();
+                    mPackageInstaller.getActiveSessions();
+            installingPkgs.forEach(mApp.getIconCache()::updateSessionCache);
+
             final PackageUserKey tempPackageKey = new PackageUserKey(null, null);
             mFirstScreenBroadcast = new FirstScreenBroadcast(installingPkgs);
 
@@ -398,7 +427,7 @@ public class LoaderTask implements Runnable {
                             // If there is no target package, its an implicit intent
                             // (legacy shortcut) which is always valid
                             boolean validTarget = TextUtils.isEmpty(targetPkg) ||
-                                    mLauncherApps.isPackageEnabledForProfile(targetPkg, c.user);
+                                    mLauncherApps.isPackageEnabled(targetPkg, c.user);
 
                             // If it's a deep shortcut, we'll use pinned shortcuts to restore it
                             if (cn != null && validTarget && c.itemType
@@ -407,7 +436,7 @@ public class LoaderTask implements Runnable {
                                 // component.
 
                                 // If the component is already present
-                                if (mLauncherApps.isActivityEnabledForProfile(cn, c.user)) {
+                                if (mLauncherApps.isActivityEnabled(cn, c.user)) {
                                     // no special handling necessary for this item
                                     c.markRestored();
                                 } else {
@@ -856,7 +885,7 @@ public class LoaderTask implements Runnable {
             for (PackageInstaller.SessionInfo info :
                     mPackageInstaller.getAllVerifiedSessions()) {
                 mBgAllAppsList.addPromiseApp(mApp.getContext(),
-                        PackageInstallerCompat.PackageInstallInfo.fromInstallingState(info));
+                        PackageInstallInfo.fromInstallingState(info));
             }
         }
 
