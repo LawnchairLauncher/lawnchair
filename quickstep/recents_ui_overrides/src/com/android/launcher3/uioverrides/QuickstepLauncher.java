@@ -18,20 +18,21 @@ package com.android.launcher3.uioverrides;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
-import static com.android.quickstep.util.NavBarPosition.ROTATION_LANDSCAPE;
-import static com.android.quickstep.util.NavBarPosition.ROTATION_SEASCAPE;
 
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Rect;
+import android.os.Bundle;
 import android.view.Gravity;
 
 import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.HotseatPredictionController;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.graphics.RotationMode;
+import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.uioverrides.touchcontrollers.FlingAndHoldTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.LandscapeEdgeSwipeController;
 import com.android.launcher3.uioverrides.touchcontrollers.NavBarToHomeTouchController;
@@ -50,17 +51,16 @@ import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.views.RecentsView;
 
 import java.util.ArrayList;
+import java.util.stream.Stream;
 
 public class QuickstepLauncher extends BaseQuickstepLauncher {
 
     public static final boolean GO_LOW_RAM_RECENTS_ENABLED = false;
-
     /**
      * Reusable command for applying the shelf height on the background thread.
      */
     public static final AsyncCommand SET_SHELF_HEIGHT = (context, arg1, arg2) ->
             SystemUiProxy.INSTANCE.get(context).setShelfHeight(arg1 != 0, arg2);
-
     public static RotationMode ROTATION_LANDSCAPE = new RotationMode(-90) {
         @Override
         public void mapRect(int left, int top, int right, int bottom, Rect out) {
@@ -87,7 +87,6 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
             }
         }
     };
-
     public static RotationMode ROTATION_SEASCAPE = new RotationMode(90) {
         @Override
         public void mapRect(int left, int top, int right, int bottom, Rect out) {
@@ -133,6 +132,13 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
                     | horizontalGravity | verticalGravity;
         }
     };
+    private HotseatPredictionController mHotseatPredictionController;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mHotseatPredictionController = new HotseatPredictionController(this);
+    }
 
     @Override
     protected RotationMode getFakeRotationMode(DeviceProfile dp) {
@@ -157,6 +163,12 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
         }
     }
 
+    @Override
+    public Stream<SystemShortcut.Factory> getSupportedShortcuts() {
+        return Stream.concat(super.getSupportedShortcuts(),
+                Stream.of(mHotseatPredictionController));
+    }
+
     /**
      * Recents logic that triggers when launcher state changes or launcher activity stops/resumes.
      */
@@ -170,6 +182,12 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
         if (state == NORMAL) {
             ((RecentsView) getOverviewPanel()).setSwipeDownShouldLaunchApp(false);
         }
+    }
+
+    @Override
+    public void finishBindingItems(int pageBoundFirst) {
+        super.finishBindingItems(pageBoundFirst);
+        mHotseatPredictionController.fillGapsWithPrediction(false);
     }
 
     @Override
