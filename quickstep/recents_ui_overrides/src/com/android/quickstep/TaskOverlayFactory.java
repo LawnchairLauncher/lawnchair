@@ -19,11 +19,11 @@ package com.android.quickstep;
 import static com.android.launcher3.util.MainThreadInitializedObject.forOverride;
 
 import android.graphics.Matrix;
-import android.view.View;
 
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.R;
+import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.ResourceBasedOverride;
 import com.android.quickstep.views.TaskThumbnailView;
@@ -40,25 +40,24 @@ import java.util.List;
 public class TaskOverlayFactory implements ResourceBasedOverride {
 
     /** Note that these will be shown in order from top to bottom, if available for the task. */
-    private static final TaskSystemShortcut[] MENU_OPTIONS = new TaskSystemShortcut[]{
-            new TaskSystemShortcut.AppInfo(),
-            new TaskSystemShortcut.SplitScreen(),
-            new TaskSystemShortcut.Pin(),
-            new TaskSystemShortcut.Install(),
-            new TaskSystemShortcut.Freeform()
+    private static final TaskShortcutFactory[] MENU_OPTIONS = new TaskShortcutFactory[]{
+            TaskShortcutFactory.APP_INFO,
+            TaskShortcutFactory.SPLIT_SCREEN,
+            TaskShortcutFactory.PIN,
+            TaskShortcutFactory.INSTALL,
+            TaskShortcutFactory.FREE_FORM
     };
 
     public static final MainThreadInitializedObject<TaskOverlayFactory> INSTANCE =
             forOverride(TaskOverlayFactory.class, R.string.task_overlay_factory_class);
 
-    public List<TaskSystemShortcut> getEnabledShortcuts(TaskView taskView) {
-        final ArrayList<TaskSystemShortcut> shortcuts = new ArrayList<>();
+    public List<SystemShortcut> getEnabledShortcuts(TaskView taskView) {
+        final ArrayList<SystemShortcut> shortcuts = new ArrayList<>();
         final BaseDraggingActivity activity = BaseActivity.fromContext(taskView.getContext());
-        for (TaskSystemShortcut menuOption : MENU_OPTIONS) {
-            View.OnClickListener onClickListener =
-                    menuOption.getOnClickListener(activity, taskView);
-            if (onClickListener != null) {
-                shortcuts.add(menuOption);
+        for (TaskShortcutFactory menuOption : MENU_OPTIONS) {
+            SystemShortcut shortcut = menuOption.getShortcut(activity, taskView);
+            if (shortcut != null) {
+                shortcuts.add(shortcut);
             }
         }
         return shortcuts;

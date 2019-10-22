@@ -382,8 +382,7 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
     @Override
     public void onWidgetsBound() {
         ItemInfo itemInfo = (ItemInfo) mOriginalIcon.getTag();
-        SystemShortcut widgetInfo = new SystemShortcut.Widgets();
-        View.OnClickListener onClickListener = widgetInfo.getOnClickListener(mLauncher, itemInfo);
+        SystemShortcut widgetInfo = SystemShortcut.WIDGETS.getShortcut(mLauncher, itemInfo);
         View widgetsView = null;
         int count = mSystemShortcutContainer.getChildCount();
         for (int i = 0; i < count; i++) {
@@ -394,7 +393,7 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
             }
         }
 
-        if (onClickListener != null && widgetsView == null) {
+        if (widgetInfo != null && widgetsView == null) {
             // We didn't have any widgets cached but now there are some, so enable the shortcut.
             if (mSystemShortcutContainer != this) {
                 initializeSystemShortcut(
@@ -407,7 +406,7 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
                 close(false);
                 PopupContainerWithArrow.showForIcon(mOriginalIcon);
             }
-        } else if (onClickListener == null && widgetsView != null) {
+        } else if (widgetInfo == null && widgetsView != null) {
             // No widgets exist, but we previously added the shortcut so remove it.
             if (mSystemShortcutContainer != this) {
                 mSystemShortcutContainer.removeView(widgetsView);
@@ -430,8 +429,7 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
             info.setIconAndContentDescriptionFor((ImageView) view);
         }
         view.setTag(info);
-        view.setOnClickListener(info.getOnClickListener(mLauncher,
-                (ItemInfo) mOriginalIcon.getTag()));
+        view.setOnClickListener(info);
     }
 
     /**
