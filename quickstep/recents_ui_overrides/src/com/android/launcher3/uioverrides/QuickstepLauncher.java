@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (C) 2019 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.android.launcher3.uioverrides;
 
 import static com.android.launcher3.LauncherState.NORMAL;
@@ -21,13 +20,14 @@ import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.view.Gravity;
 
+import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.LauncherStateManager.StateHandler;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.uioverrides.touchcontrollers.FlingAndHoldTouchController;
@@ -49,21 +49,15 @@ import com.android.quickstep.views.RecentsView;
 
 import java.util.ArrayList;
 
-/**
- * Provides recents-related {@link UiFactory} logic and classes.
- */
-public abstract class RecentsUiFactory {
-
-    private static final String TAG = RecentsUiFactory.class.getSimpleName();
+public class QuickstepLauncher extends BaseQuickstepLauncher {
 
     public static final boolean GO_LOW_RAM_RECENTS_ENABLED = false;
 
     /**
      * Reusable command for applying the shelf height on the background thread.
      */
-    public static final AsyncCommand SET_SHELF_HEIGHT = (context, arg1, arg2) -> {
-        SystemUiProxy.INSTANCE.get(context).setShelfHeight(arg1 != 0, arg2);
-    };
+    public static final AsyncCommand SET_SHELF_HEIGHT = (context, arg1, arg2) ->
+            SystemUiProxy.INSTANCE.get(context).setShelfHeight(arg1 != 0, arg2);
 
     public static RotationMode ROTATION_LANDSCAPE = new RotationMode(-90) {
         @Override
@@ -138,69 +132,76 @@ public abstract class RecentsUiFactory {
         }
     };
 
-    public static RotationMode getRotationMode(DeviceProfile dp) {
+    @Override
+    protected RotationMode getFakeRotationMode(DeviceProfile dp) {
         return !dp.isVerticalBarLayout() ? RotationMode.NORMAL
                 : (dp.isSeascape() ? ROTATION_SEASCAPE : ROTATION_LANDSCAPE);
     }
 
-    public static TouchController[] createTouchControllers(Launcher launcher) {
-        Mode mode = SysUINavigationMode.getMode(launcher);
-
-        ArrayList<TouchController> list = new ArrayList<>();
-        list.add(launcher.getDragController());
-        if (mode == NO_BUTTON) {
-            list.add(new QuickSwitchTouchController(launcher));
-            list.add(new NavBarToHomeTouchController(launcher));
-            list.add(new FlingAndHoldTouchController(launcher));
-        } else {
-            if (launcher.getDeviceProfile().isVerticalBarLayout()) {
-                list.add(new OverviewToAllAppsTouchController(launcher));
-                list.add(new LandscapeEdgeSwipeController(launcher));
-                if (mode.hasGestures) {
-                    list.add(new TransposedQuickSwitchTouchController(launcher));
-                }
-            } else {
-                list.add(new PortraitStatesTouchController(launcher,
-                        mode.hasGestures /* allowDragToOverview */));
-                if (mode.hasGestures) {
-                    list.add(new QuickSwitchTouchController(launcher));
-                }
-            }
-        }
-
-        if (!launcher.getDeviceProfile().isMultiWindowMode) {
-            list.add(new StatusBarTouchController(launcher));
-        }
-
-        list.add(new LauncherTaskViewController(launcher));
-        return list.toArray(new TouchController[list.size()]);
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        onStateOrResumeChanged();
     }
 
-    /**
-     * Creates and returns the controller responsible for recents view state transitions.
-     *
-     * @param launcher the launcher activity
-     * @return state handler for recents
-     */
-    public static StateHandler createRecentsViewStateController(Launcher launcher) {
-        return new RecentsViewStateController(launcher);
+    @Override
+    protected void onActivityFlagsChanged(int changeBits) {
+        super.onActivityFlagsChanged(changeBits);
+
+        if ((changeBits & (ACTIVITY_STATE_DEFERRED_RESUMED | ACTIVITY_STATE_STARTED
+                | ACTIVITY_STATE_USER_ACTIVE | ACTIVITY_STATE_TRANSITION_ACTIVE)) != 0
+                && (getActivityFlags() & ACTIVITY_STATE_TRANSITION_ACTIVE) == 0) {
+            onStateOrResumeChanged();
+        }
     }
 
     /**
      * Recents logic that triggers when launcher state changes or launcher activity stops/resumes.
-     *
-     * @param launcher the launcher activity
      */
-    public static void onLauncherStateOrResumeChanged(Launcher launcher) {
-        LauncherState state = launcher.getStateManager().getState();
-        DeviceProfile profile = launcher.getDeviceProfile();
-        boolean visible = (state == NORMAL || state == OVERVIEW) && launcher.isUserActive()
+    private void onStateOrResumeChanged() {
+        LauncherState state = getStateManager().getState();
+        DeviceProfile profile = getDeviceProfile();
+        boolean visible = (state == NORMAL || state == OVERVIEW) && isUserActive()
                 && !profile.isVerticalBarLayout();
-        UiThreadHelper.runAsyncCommand(launcher, SET_SHELF_HEIGHT, visible ? 1 : 0,
+        UiThreadHelper.runAsyncCommand(this, SET_SHELF_HEIGHT, visible ? 1 : 0,
                 profile.hotseatBarSizePx);
         if (state == NORMAL) {
-            launcher.<RecentsView>getOverviewPanel().setSwipeDownShouldLaunchApp(false);
+            ((RecentsView) getOverviewPanel()).setSwipeDownShouldLaunchApp(false);
         }
+    }
+
+    @Override
+    public TouchController[] createTouchControllers() {
+        Mode mode = SysUINavigationMode.getMode(this);
+
+        ArrayList<TouchController> list = new ArrayList<>();
+        list.add(getDragController());
+        if (mode == NO_BUTTON) {
+            list.add(new QuickSwitchTouchController(this));
+            list.add(new NavBarToHomeTouchController(this));
+            list.add(new FlingAndHoldTouchController(this));
+        } else {
+            if (getDeviceProfile().isVerticalBarLayout()) {
+                list.add(new OverviewToAllAppsTouchController(this));
+                list.add(new LandscapeEdgeSwipeController(this));
+                if (mode.hasGestures) {
+                    list.add(new TransposedQuickSwitchTouchController(this));
+                }
+            } else {
+                list.add(new PortraitStatesTouchController(this,
+                        mode.hasGestures /* allowDragToOverview */));
+                if (mode.hasGestures) {
+                    list.add(new QuickSwitchTouchController(this));
+                }
+            }
+        }
+
+        if (!getDeviceProfile().isMultiWindowMode) {
+            list.add(new StatusBarTouchController(this));
+        }
+
+        list.add(new LauncherTaskViewController(this));
+        return list.toArray(new TouchController[list.size()]);
     }
 
     private static final class LauncherTaskViewController extends
