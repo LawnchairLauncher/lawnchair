@@ -424,11 +424,7 @@ public final class LauncherInstrumentation {
         // b/136278866
         for (int i = 0; i != 100; ++i) {
             if (getNavigationModeMismatchError() == null) break;
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            sleep(100);
         }
 
         final String error = getNavigationModeMismatchError();
@@ -803,7 +799,7 @@ public final class LauncherInstrumentation {
                         0,
                         0,
                         Math.max(bottomMargin, getBottomGestureMargin(container))),
-                150);
+                70);
     }
 
     void scroll(UiObject2 container, Direction direction, Rect margins, int steps) {

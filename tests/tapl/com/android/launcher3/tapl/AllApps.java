@@ -163,7 +163,7 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
                         "Exceeded max scroll attempts: " + MAX_SCROLL_ATTEMPTS,
                         ++attempts <= MAX_SCROLL_ATTEMPTS);
 
-                mLauncher.scroll(allAppsContainer, Direction.UP, margins, 50);
+                mLauncher.scroll(allAppsContainer, Direction.UP, margins, 12);
             }
 
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer("scrolled up")) {
