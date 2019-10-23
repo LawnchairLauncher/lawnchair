@@ -157,9 +157,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
      */
     private static final int LOG_NO_OP_PAGE_INDEX = -1;
 
-    private final RecentsAnimationDeviceState mDeviceState;
     private final TaskAnimationManager mTaskAnimationManager;
-    private final GestureState mGestureState;
 
     // Either RectFSpringAnim (if animating home) or ObjectAnimator (from mCurrentShift) otherwise
     private RunningWindowAnim mRunningWindowAnim;
@@ -198,11 +196,9 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             RunningTaskInfo runningTaskInfo, long touchTimeMs,
             OverviewComponentObserver overviewComponentObserver, boolean continuingLastGesture,
             InputConsumerController inputConsumer, RecentsModel recentsModel) {
-        super(context, gestureState, overviewComponentObserver, recentsModel, inputConsumer,
-                runningTaskInfo.id);
-        mDeviceState = deviceState;
+        super(context, deviceState, gestureState, overviewComponentObserver, recentsModel,
+                inputConsumer, runningTaskInfo.id);
         mTaskAnimationManager = taskAnimationManager;
-        mGestureState = gestureState;
         mTouchTimeMs = touchTimeMs;
         mContinuingLastGesture = continuingLastGesture;
         initStateCallbacks();
@@ -444,7 +440,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
      * Note this method has no effect unless the navigation mode is NO_BUTTON.
      */
     private void maybeUpdateRecentsAttachedState(boolean animate) {
-        if (mMode != Mode.NO_BUTTON || mRecentsView == null) {
+        if (!mDeviceState.isFullyGesturalNavMode() || mRecentsView == null) {
             return;
         }
         RemoteAnimationTargetCompat runningTaskTarget = mRecentsAnimationTargets == null
@@ -546,7 +542,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         final boolean passed = mCurrentShift.value >= MIN_PROGRESS_FOR_OVERVIEW;
         if (passed != mPassedOverviewThreshold) {
             mPassedOverviewThreshold = passed;
-            if (mMode != Mode.NO_BUTTON) {
+            if (!mDeviceState.isFullyGesturalNavMode()) {
                 performHapticFeedback();
             }
         }
@@ -730,7 +726,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         if (!isFling) {
             if (isCancel) {
                 endTarget = LAST_TASK;
-            } else if (mMode == Mode.NO_BUTTON) {
+            } else if (mDeviceState.isFullyGesturalNavMode()) {
                 if (mIsShelfPeeking) {
                     endTarget = RECENTS;
                 } else if (goingToNewTask) {
@@ -751,9 +747,9 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             boolean willGoToNewTaskOnSwipeUp =
                     goingToNewTask && Math.abs(velocity.x) > Math.abs(endVelocity);
 
-            if (mMode == Mode.NO_BUTTON && isSwipeUp && !willGoToNewTaskOnSwipeUp) {
+            if (mDeviceState.isFullyGesturalNavMode() && isSwipeUp && !willGoToNewTaskOnSwipeUp) {
                 endTarget = HOME;
-            } else if (mMode == Mode.NO_BUTTON && isSwipeUp && !mIsShelfPeeking) {
+            } else if (mDeviceState.isFullyGesturalNavMode() && isSwipeUp && !mIsShelfPeeking) {
                 // If swiping at a diagonal, base end target on the faster velocity.
                 endTarget = NEW_TASK;
             } else if (isSwipeUp) {
@@ -793,7 +789,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             float minFlingVelocity = mContext.getResources()
                     .getDimension(R.dimen.quickstep_fling_min_velocity);
             if (Math.abs(endVelocity) > minFlingVelocity && mTransitionDragLength > 0) {
-                if (endTarget == RECENTS && mMode != Mode.NO_BUTTON) {
+                if (endTarget == RECENTS && !mDeviceState.isFullyGesturalNavMode()) {
                     Interpolators.OvershootParams overshoot = new Interpolators.OvershootParams(
                             startShift, endShift, endShift, endVelocity / 1000,
                             mTransitionDragLength, mContext);
@@ -839,7 +835,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
                 }
                 duration = Math.max(duration, mRecentsView.getScroller().getDuration());
             }
-            if (mMode == Mode.NO_BUTTON) {
+            if (mDeviceState.isFullyGesturalNavMode()) {
                 setShelfState(ShelfAnimState.OVERVIEW, interpolator, duration);
             }
         } else if (endTarget == NEW_TASK || endTarget == LAST_TASK) {

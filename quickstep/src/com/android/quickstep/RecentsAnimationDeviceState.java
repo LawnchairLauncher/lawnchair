@@ -21,6 +21,7 @@ import static com.android.launcher3.ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE;
 import static com.android.launcher3.ResourceUtils.NAVBAR_LANDSCAPE_LEFT_RIGHT_SIZE;
 import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
 import static com.android.quickstep.SysUINavigationMode.Mode.THREE_BUTTONS;
+import static com.android.quickstep.SysUINavigationMode.Mode.TWO_BUTTONS;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_A11Y_BUTTON_CLICKABLE;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_A11Y_BUTTON_LONG_CLICKABLE;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_HOME_DISABLED;
@@ -43,6 +44,7 @@ import android.graphics.RectF;
 import android.graphics.Region;
 import android.os.Process;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.Surface;
 
@@ -52,7 +54,9 @@ import com.android.launcher3.R;
 import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.DefaultDisplay;
+import com.android.quickstep.SysUINavigationMode.NavigationModeChangeListener;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.QuickStepContract;
 import com.android.systemui.shared.system.QuickStepContract.SystemUiStateFlags;
@@ -65,7 +69,7 @@ import java.util.ArrayList;
  * Manages the state of the system during a swipe up gesture.
  */
 public class RecentsAnimationDeviceState implements
-        SysUINavigationMode.NavigationModeChangeListener,
+        NavigationModeChangeListener,
         DefaultDisplay.DisplayInfoChangeListener {
 
     private Context mContext;
@@ -73,6 +77,8 @@ public class RecentsAnimationDeviceState implements
     private SysUINavigationMode mSysUiNavMode;
     private DefaultDisplay mDefaultDisplay;
     private int mDisplayId;
+
+    private final ArrayList<Runnable> mOnDestroyActions = new ArrayList<>();
 
     private @SystemUiStateFlags int mSystemUiStateFlags;
     private SysUINavigationMode.Mode mMode = THREE_BUTTONS;
@@ -114,6 +120,7 @@ public class RecentsAnimationDeviceState implements
             mContext.registerReceiver(mUserUnlockedReceiver,
                     new IntentFilter(ACTION_USER_UNLOCKED));
         }
+        runOnDestroy(() -> Utilities.unregisterReceiverSafely(mContext, mUserUnlockedReceiver));
 
         // Register for exclusion updates
         mExclusionListener = new SystemGestureExclusionListenerCompat(mDisplayId) {
@@ -124,7 +131,11 @@ public class RecentsAnimationDeviceState implements
                 mExclusionRegion = region;
             }
         };
+        runOnDestroy(mExclusionListener::unregister);
+
+        // Register for navigation mode changes
         onNavigationModeChanged(mSysUiNavMode.addModeChangeListener(this));
+        runOnDestroy(() -> mSysUiNavMode.removeModeChangeListener(this));
 
         // Add any blocked activities
         String blockingActivity = context.getString(R.string.gesture_blocking_activity);
@@ -133,18 +144,34 @@ public class RecentsAnimationDeviceState implements
         }
     }
 
+    private void runOnDestroy(Runnable action) {
+        mOnDestroyActions.add(action);
+    }
+
     /**
      * Cleans up all the registered listeners and receivers.
      */
     public void destroy() {
-        Utilities.unregisterReceiverSafely(mContext, mUserUnlockedReceiver);
-        mSysUiNavMode.removeModeChangeListener(this);
+        for (Runnable r : mOnDestroyActions) {
+            r.run();
+        }
         mDefaultDisplay.removeChangeListener(this);
-        mExclusionListener.unregister();
+    }
+
+    /**
+     * Adds a listener for the nav mode change, guaranteed to be called after the device state's
+     * mode has changed.
+     */
+    public void addNavigationModeChangedCallback(NavigationModeChangeListener listener) {
+        listener.onNavigationModeChanged(mSysUiNavMode.addModeChangeListener(listener));
+        runOnDestroy(() -> mSysUiNavMode.removeModeChangeListener(listener));
     }
 
     @Override
     public void onNavigationModeChanged(SysUINavigationMode.Mode newMode) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.NO_BACKGROUND_TO_OVERVIEW_TAG, "onNavigationModeChanged " + newMode);
+        }
         mDefaultDisplay.removeChangeListener(this);
         if (newMode.hasGestures) {
             mDefaultDisplay.addChangeListener(this);
@@ -165,6 +192,34 @@ public class RecentsAnimationDeviceState implements
         }
 
         updateGestureTouchRegions();
+    }
+
+    /**
+     * @return the current navigation mode for the device.
+     */
+    public SysUINavigationMode.Mode getNavMode() {
+        return mMode;
+    }
+
+    /**
+     * @return whether the current nav mode is fully gestural.
+     */
+    public boolean isFullyGesturalNavMode() {
+        return mMode == NO_BUTTON;
+    }
+
+    /**
+     * @return whether the current nav mode has some gestures (either 2 or 0 button mode).
+     */
+    public boolean isGesturalNavMode() {
+        return mMode == TWO_BUTTONS || mMode == NO_BUTTON;
+    }
+
+    /**
+     * @return whether the current nav mode is button-based.
+     */
+    public boolean isButtonNavMode() {
+        return mMode == THREE_BUTTONS;
     }
 
     /**

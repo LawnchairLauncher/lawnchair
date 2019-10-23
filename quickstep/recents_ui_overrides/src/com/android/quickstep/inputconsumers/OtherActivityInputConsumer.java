@@ -54,8 +54,6 @@ import com.android.quickstep.GestureState;
 import com.android.quickstep.InputConsumer;
 import com.android.quickstep.RecentsAnimationCallbacks;
 import com.android.quickstep.RecentsAnimationDeviceState;
-import com.android.quickstep.SysUINavigationMode;
-import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.TaskAnimationManager;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.CachedEventDispatcher;
@@ -85,7 +83,6 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     private final CachedEventDispatcher mRecentsViewDispatcher = new CachedEventDispatcher();
     private final RunningTaskInfo mRunningTask;
     private final InputMonitorCompat mInputMonitorCompat;
-    private final SysUINavigationMode.Mode mMode;
     private final BaseActivityInterface mActivityInterface;
 
     private final BaseSwipeUpHandler.Factory mHandlerFactory;
@@ -137,7 +134,6 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         mGestureState = gestureState;
         mMainThreadHandler = new Handler(Looper.getMainLooper());
         mRunningTask = runningTaskInfo;
-        mMode = SysUINavigationMode.getMode(base);
         mHandlerFactory = handlerFactory;
         mActivityInterface = mGestureState.getActivityInterface();
 
@@ -293,7 +289,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                         mInteractionHandler.updateDisplacement(displacement - mStartDisplacement);
                     }
 
-                    if (mMode == Mode.NO_BUTTON) {
+                    if (mDeviceState.isFullyGesturalNavMode()) {
                         mMotionPauseDetector.setDisallowPause(upDist < mMotionPauseMinDisplacement
                                 || isLikelyToStartNewTask);
                         mMotionPauseDetector.addPosition(displacement, ev.getEventTime());
