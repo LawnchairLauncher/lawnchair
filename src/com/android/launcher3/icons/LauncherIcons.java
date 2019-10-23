@@ -25,12 +25,14 @@ import android.graphics.drawable.Drawable;
 import android.os.Process;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.IconShape;
 import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
@@ -112,7 +114,6 @@ public class LauncherIcons extends BaseIconFactory implements AutoCloseable {
     }
 
     // below methods should also migrate to BaseIconFactory
-
     public BitmapInfo createShortcutIcon(ShortcutInfo shortcutInfo) {
         return createShortcutIcon(shortcutInfo, true /* badged */);
     }
@@ -121,15 +122,61 @@ public class LauncherIcons extends BaseIconFactory implements AutoCloseable {
         return createShortcutIcon(shortcutInfo, badged, null);
     }
 
-    public BitmapInfo createShortcutIcon(ShortcutInfo shortcutInfo,
-            boolean badged, @Nullable Supplier<ItemInfoWithIcon> fallbackIconProvider) {
+    public BitmapInfo createShortcutIcon(ShortcutInfo shortcutInfo, boolean badged,
+            @Nullable Supplier<ItemInfoWithIcon> fallbackIconProvider) {
+        if (FeatureFlags.ENABLE_DEEP_SHORTCUT_ICON_CACHE.get()) {
+            return createShortcutIconCached(shortcutInfo, badged, true, fallbackIconProvider);
+        } else {
+            return createShortcutIconLegacy(shortcutInfo, badged, fallbackIconProvider);
+        }
+    }
+
+    public BitmapInfo createShortcutIconLegacy(ShortcutInfo shortcutInfo, boolean badged,
+            @Nullable Supplier<ItemInfoWithIcon> fallbackIconProvider) {
         Drawable unbadgedDrawable = DeepShortcutManager.getInstance(mContext)
                 .getShortcutIconDrawable(shortcutInfo, mFillResIconDpi);
         IconCache cache = LauncherAppState.getInstance(mContext).getIconCache();
-
         final Bitmap unbadgedBitmap;
         if (unbadgedDrawable != null) {
             unbadgedBitmap = createScaledBitmapWithoutShadow(unbadgedDrawable, 0);
+        } else {
+            if (fallbackIconProvider != null) {
+                // Fallback icons are already badged and with appropriate shadow
+                ItemInfoWithIcon fullIcon = fallbackIconProvider.get();
+                if (fullIcon != null && fullIcon.bitmap != null) {
+                    return fullIcon.bitmap;
+                }
+            }
+            unbadgedBitmap = cache.getDefaultIcon(Process.myUserHandle()).icon;
+        }
+
+        if (!badged) {
+            return BitmapInfo.of(unbadgedBitmap, Themes.getColorAccent(mContext));
+        }
+
+        final Bitmap unbadgedfinal = unbadgedBitmap;
+        final ItemInfoWithIcon badge = getShortcutInfoBadge(shortcutInfo, cache);
+
+        Bitmap icon = BitmapRenderer.createHardwareBitmap(mIconBitmapSize, mIconBitmapSize, (c) -> {
+            getShadowGenerator().recreateIcon(unbadgedfinal, c);
+            badgeWithDrawable(c, new FastBitmapDrawable(badge.bitmap));
+        });
+        return BitmapInfo.of(icon, badge.bitmap.color);
+    }
+
+    @WorkerThread
+    public BitmapInfo createShortcutIconCached(ShortcutInfo shortcutInfo, boolean badged,
+            boolean useCache, @Nullable Supplier<ItemInfoWithIcon> fallbackIconProvider) {
+        IconCache cache = LauncherAppState.getInstance(mContext).getIconCache();
+        final BitmapInfo bitmapInfo;
+        if (useCache) {
+            bitmapInfo = cache.getDeepShortcutTitleAndIcon(shortcutInfo).bitmap;
+        } else {
+            bitmapInfo = new ShortcutCachingLogic().loadIcon(mContext, shortcutInfo);
+        }
+        final Bitmap unbadgedBitmap;
+        if (bitmapInfo.icon != null) {
+            unbadgedBitmap = bitmapInfo.icon;
         } else {
             if (fallbackIconProvider != null) {
                 // Fallback icons are already badged and with appropriate shadow

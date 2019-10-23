@@ -63,6 +63,7 @@ import com.android.launcher3.icons.ComponentWithLabel.ComponentCachingLogic;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.icons.LauncherActivityCachingLogic;
 import com.android.launcher3.icons.LauncherIcons;
+import com.android.launcher3.icons.ShortcutCachingLogic;
 import com.android.launcher3.icons.cache.IconCacheUpdateHandler;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.pm.PackageInstallInfo;
@@ -71,7 +72,6 @@ import com.android.launcher3.provider.ImportDataTask;
 import com.android.launcher3.qsb.QsbContainerView;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutKey;
-import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IOUtils;
 import com.android.launcher3.util.LooperIdleLock;
@@ -174,7 +174,8 @@ public class LoaderTask implements Runnable {
         Object traceToken = TraceHelper.INSTANCE.beginSection(TAG);
         TimingLogger logger = new TimingLogger(TAG, "run");
         try (LauncherModel.LoaderTransaction transaction = mApp.getModel().beginLoader(this)) {
-            loadWorkspace();
+            List<ShortcutInfo> allShortcuts = new ArrayList<>();
+            loadWorkspace(allShortcuts);
             logger.addSplit("loadWorkspace");
 
             verifyNotStopped();
@@ -206,18 +207,32 @@ public class LoaderTask implements Runnable {
                     mApp.getModel()::onPackageIconsUpdated);
             logger.addSplit("update icon cache");
 
+            if (FeatureFlags.ENABLE_DEEP_SHORTCUT_ICON_CACHE.get()) {
+                verifyNotStopped();
+                logger.addSplit("save shortcuts in icon cache");
+                updateHandler.updateIcons(allShortcuts, new ShortcutCachingLogic(),
+                        mApp.getModel()::onPackageIconsUpdated);
+            }
+
             // Take a break
             waitForIdle();
             logger.addSplit("step 2 complete");
             verifyNotStopped();
 
             // third step
-            loadDeepShortcuts();
+            List<ShortcutInfo> allDeepShortcuts = loadDeepShortcuts();
             logger.addSplit("loadDeepShortcuts");
 
             verifyNotStopped();
             mResults.bindDeepShortcuts();
             logger.addSplit("bindDeepShortcuts");
+
+            if (FeatureFlags.ENABLE_DEEP_SHORTCUT_ICON_CACHE.get()) {
+                verifyNotStopped();
+                logger.addSplit("save deep shortcuts in icon cache");
+                updateHandler.updateIcons(allDeepShortcuts,
+                        new ShortcutCachingLogic(), (pkgs, user) -> { });
+            }
 
             // Take a break
             waitForIdle();
@@ -256,7 +271,7 @@ public class LoaderTask implements Runnable {
         this.notify();
     }
 
-    private void loadWorkspace() {
+    private void loadWorkspace(List<ShortcutInfo> allDeepShortcuts) {
         final Context context = mApp.getContext();
         final ContentResolver contentResolver = context.getContentResolver();
         final PackageManagerHelper pmHelper = new PackageManagerHelper(context);
@@ -512,6 +527,7 @@ public class LoaderTask implements Runnable {
                                         info.runtimeStatusFlags |= FLAG_DISABLED_SUSPENDED;
                                     }
                                     intent = info.intent;
+                                    allDeepShortcuts.add(pinnedShortcut);
                                 } else {
                                     // Create a shortcut info in disabled mode for now.
                                     info = c.loadSimpleWorkspaceItem();
@@ -860,7 +876,8 @@ public class LoaderTask implements Runnable {
         return allActivityList;
     }
 
-    private void loadDeepShortcuts() {
+    private List<ShortcutInfo> loadDeepShortcuts() {
+        List<ShortcutInfo> allShortcuts = new ArrayList<>();
         mBgDataModel.deepShortcutMap.clear();
         mBgDataModel.hasShortcutHostPermission = mShortcutManager.hasHostPermission();
         if (mBgDataModel.hasShortcutHostPermission) {
@@ -868,10 +885,12 @@ public class LoaderTask implements Runnable {
                 if (mUserManager.isUserUnlocked(user)) {
                     List<ShortcutInfo> shortcuts =
                             mShortcutManager.queryForAllShortcuts(user);
+                    allShortcuts.addAll(shortcuts);
                     mBgDataModel.updateDeepShortcutCounts(null, user, shortcuts);
                 }
             }
         }
+        return allShortcuts;
     }
 
     public static boolean isValidProvider(AppWidgetProviderInfo provider) {
