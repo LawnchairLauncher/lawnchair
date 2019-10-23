@@ -16,7 +16,6 @@
 
 package com.android.quickstep.views;
 
-import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.quickstep.views.TaskThumbnailView.DIM_ALPHA;
 
 import android.animation.Animator;
@@ -26,7 +25,6 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -41,15 +39,12 @@ import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
-import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.quickstep.TaskOverlayFactory;
-import com.android.quickstep.TaskSystemShortcut;
 import com.android.quickstep.TaskUtils;
 import com.android.quickstep.views.IconView.OnScaleUpdateListener;
-
-import java.util.List;
 
 /**
  * Contains options for a recent task when long-pressing its icon.
@@ -197,22 +192,16 @@ public class TaskMenuView extends AbstractFloatingView {
         params.topMargin = (int) -mThumbnailTopMargin;
         mTaskIcon.setLayoutParams(params);
 
-        final BaseDraggingActivity activity = BaseDraggingActivity.fromContext(getContext());
-        final List<TaskSystemShortcut> shortcuts =
-                TaskOverlayFactory.INSTANCE.get(getContext()).getEnabledShortcuts(taskView);
-        final int count = shortcuts.size();
-        for (int i = 0; i < count; ++i) {
-            final TaskSystemShortcut menuOption = shortcuts.get(i);
-            addMenuOption(menuOption, menuOption.getOnClickListener(activity, taskView));
-        }
+        TaskOverlayFactory.INSTANCE.get(getContext()).getEnabledShortcuts(taskView)
+                .forEach(this::addMenuOption);
     }
 
-    private void addMenuOption(TaskSystemShortcut menuOption, OnClickListener onClickListener) {
+    private void addMenuOption(SystemShortcut menuOption) {
         ViewGroup menuOptionView = (ViewGroup) mActivity.getLayoutInflater().inflate(
                 R.layout.task_view_menu_option, this, false);
         menuOption.setIconAndLabelFor(
                 menuOptionView.findViewById(R.id.icon), menuOptionView.findViewById(R.id.text));
-        menuOptionView.setOnClickListener(onClickListener);
+        menuOptionView.setOnClickListener(menuOption);
         mOptionLayout.addView(menuOptionView);
     }
 

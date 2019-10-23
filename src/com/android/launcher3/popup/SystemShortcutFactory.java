@@ -34,25 +34,24 @@ public class SystemShortcutFactory implements ResourceBasedOverride {
             forOverride(SystemShortcutFactory.class, R.string.system_shortcut_factory_class);
 
     /** Note that these are in order of priority. */
-    private final SystemShortcut[] mAllShortcuts;
+    private final SystemShortcut.Factory[] mAllFactories;
 
     @SuppressWarnings("unused")
     public SystemShortcutFactory() {
-        this(new SystemShortcut.AppInfo(),
-                new SystemShortcut.Widgets(),
-                new SystemShortcut.Install(),
-                new SystemShortcut.DismissPrediction());
+        this(SystemShortcut.APP_INFO, SystemShortcut.WIDGETS, SystemShortcut.INSTALL,
+                SystemShortcut.DISMISS_PREDICTION);
     }
 
-    protected SystemShortcutFactory(SystemShortcut... shortcuts) {
-        mAllShortcuts = shortcuts;
+    protected SystemShortcutFactory(SystemShortcut.Factory... factories) {
+        mAllFactories = factories;
     }
 
     public @NonNull List<SystemShortcut> getEnabledShortcuts(Launcher launcher, ItemInfo info) {
         List<SystemShortcut> systemShortcuts = new ArrayList<>();
-        for (SystemShortcut systemShortcut : mAllShortcuts) {
-            if (systemShortcut.getOnClickListener(launcher, info) != null) {
-                systemShortcuts.add(systemShortcut);
+        for (SystemShortcut.Factory factory : mAllFactories) {
+            SystemShortcut shortcut = factory.getShortcut(launcher, info);
+            if (shortcut != null) {
+                systemShortcuts.add(shortcut);
             }
         }
 
