@@ -18,6 +18,10 @@ package com.android.launcher3.ui;
 
 import static androidx.test.InstrumentationRegistry.getInstrumentation;
 
+import static com.android.launcher3.util.rule.TestStabilityRule.PLATFORM_PRESUBMIT;
+import static com.android.launcher3.util.rule.TestStabilityRule.RUN_FLAFOR;
+import static com.android.launcher3.util.rule.TestStabilityRule.UNBUNDLED_PRESUBMIT;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -174,7 +178,8 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     @Test
     public void testWorkspace() throws Exception {
         // b/142828227
-        if (android.os.Build.MODEL.contains("Cuttlefish") && TestHelpers.isInLauncherProcess()) {
+        if (android.os.Build.MODEL.contains("Cuttlefish") && TestHelpers.isInLauncherProcess() &&
+                (RUN_FLAFOR & (PLATFORM_PRESUBMIT | UNBUNDLED_PRESUBMIT)) != 0) {
             return;
         }
         final Workspace workspace = mLauncher.getWorkspace();
