@@ -29,7 +29,7 @@ import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
 import static com.android.launcher3.anim.Interpolators.INSTANT;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.quickstep.WindowTransformSwipeHandler.RECENTS_ATTACH_DURATION;
+import static com.android.quickstep.LauncherSwipeHandler.RECENTS_ATTACH_DURATION;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;

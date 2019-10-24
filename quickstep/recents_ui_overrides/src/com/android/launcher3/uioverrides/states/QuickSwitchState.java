@@ -26,7 +26,7 @@ import com.android.quickstep.views.TaskView;
 
 /**
  * State to indicate we are about to launch a recent task. Note that this state is only used when
- * quick switching from launcher; quick switching from an app uses WindowTransformSwipeHelper.
+ * quick switching from launcher; quick switching from an app uses LauncherSwipeHandler.
  * @see GestureState.GestureEndTarget#NEW_TASK
  */
 public class QuickSwitchState extends BackgroundAppState {

@@ -83,10 +83,13 @@ import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.LatencyTrackerCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
+/**
+ * Handles the navigation gestures when Launcher is the default home activity.
+ */
 @TargetApi(Build.VERSION_CODES.O)
-public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
+public class LauncherSwipeHandler<T extends BaseDraggingActivity>
         extends BaseSwipeUpHandler<T, RecentsView> implements OnApplyWindowInsetsListener {
-    private static final String TAG = WindowTransformSwipeHandler.class.getSimpleName();
+    private static final String TAG = LauncherSwipeHandler.class.getSimpleName();
 
     private static final String[] STATE_NAMES = DEBUG_STATES ? new String[16] : null;
 
@@ -189,7 +192,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
 
     private final Runnable mOnDeferredActivityLaunch = this::onDeferredActivityLaunch;
 
-    public WindowTransformSwipeHandler(Context context, RecentsAnimationDeviceState deviceState,
+    public LauncherSwipeHandler(Context context, RecentsAnimationDeviceState deviceState,
             TaskAnimationManager taskAnimationManager, GestureState gestureState,
             long touchTimeMs, boolean continuingLastGesture,
             InputConsumerController inputConsumer) {
@@ -666,7 +669,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         endLauncherTransitionController();
         if (!ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             // Hide the task view, if not already hidden
-            setTargetAlphaProvider(WindowTransformSwipeHandler::getHiddenTargetAlpha);
+            setTargetAlphaProvider(LauncherSwipeHandler::getHiddenTargetAlpha);
         }
 
         BaseDraggingActivity activity = mActivityInterface.getCreatedActivity();

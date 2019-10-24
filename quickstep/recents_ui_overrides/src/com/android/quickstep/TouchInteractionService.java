@@ -66,7 +66,6 @@ import com.android.launcher3.util.TraceHelper;
 import com.android.quickstep.inputconsumers.AccessibilityInputConsumer;
 import com.android.quickstep.inputconsumers.AssistantInputConsumer;
 import com.android.quickstep.inputconsumers.DeviceLockedInputConsumer;
-import com.android.quickstep.inputconsumers.FallbackNoButtonInputConsumer;
 import com.android.quickstep.inputconsumers.OtherActivityInputConsumer;
 import com.android.quickstep.inputconsumers.OverscrollInputConsumer;
 import com.android.quickstep.inputconsumers.OverviewInputConsumer;
@@ -242,10 +241,10 @@ public class TouchInteractionService extends Service implements PluginListener<O
         return sIsInitialized;
     }
 
-    private final BaseSwipeUpHandler.Factory mWindowTransformFactory =
-            this::createWindowTransformSwipeHandler;
-    private final BaseSwipeUpHandler.Factory mFallbackNoButtonFactory =
-            this::createFallbackNoButtonSwipeHandler;
+    private final BaseSwipeUpHandler.Factory mLauncherSwipeHandlerFactory =
+            this::createLauncherSwipeHandler;
+    private final BaseSwipeUpHandler.Factory mFallbackSwipeHandlerFactory =
+            this::createFallbackSwipeHandler;
 
     private ActivityManagerWrapper mAM;
     private OverviewCommandHelper mOverviewCommandHelper;
@@ -564,11 +563,11 @@ public class TouchInteractionService extends Service implements PluginListener<O
         if (mDeviceState.isFullyGesturalNavMode()
                 && !mOverviewComponentObserver.isHomeAndOverviewSame()) {
             shouldDefer = previousGestureState.getFinishingRecentsAnimationTaskId() < 0;
-            factory = mFallbackNoButtonFactory;
+            factory = mFallbackSwipeHandlerFactory;
         } else {
             shouldDefer = gestureState.getActivityInterface().deferStartingActivity(mDeviceState,
                     event);
-            factory = mWindowTransformFactory;
+            factory = mLauncherSwipeHandlerFactory;
         }
 
         final boolean disableHorizontalSwipe = mDeviceState.isInExclusionRegion(event);
@@ -716,15 +715,15 @@ public class TouchInteractionService extends Service implements PluginListener<O
         }
     }
 
-    private BaseSwipeUpHandler createWindowTransformSwipeHandler(GestureState gestureState,
+    private BaseSwipeUpHandler createLauncherSwipeHandler(GestureState gestureState,
             long touchTimeMs, boolean continuingLastGesture, boolean isLikelyToStartNewTask) {
-        return  new WindowTransformSwipeHandler(this, mDeviceState, mTaskAnimationManager,
+        return  new LauncherSwipeHandler(this, mDeviceState, mTaskAnimationManager,
                 gestureState, touchTimeMs, continuingLastGesture, mInputConsumer);
     }
 
-    private BaseSwipeUpHandler createFallbackNoButtonSwipeHandler(GestureState gestureState,
+    private BaseSwipeUpHandler createFallbackSwipeHandler(GestureState gestureState,
             long touchTimeMs, boolean continuingLastGesture, boolean isLikelyToStartNewTask) {
-        return new FallbackNoButtonInputConsumer(this, mDeviceState, gestureState,
+        return new FallbackSwipeHandler(this, mDeviceState, gestureState,
                 mInputConsumer, isLikelyToStartNewTask, continuingLastGesture);
     }
 
