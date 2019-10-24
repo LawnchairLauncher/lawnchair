@@ -35,6 +35,8 @@ import android.os.CancellationSignal;
 
 import com.android.launcher3.LauncherState.ScaleAndTranslation;
 import com.android.launcher3.LauncherStateManager.StateHandler;
+import com.android.launcher3.model.WellbeingModel;
+import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.proxy.ProxyActivityStarter;
 import com.android.launcher3.proxy.StartActivityParams;
 import com.android.launcher3.uioverrides.BackButtonAlphaHandler;
@@ -46,6 +48,8 @@ import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.SysUINavigationMode.NavigationModeChangeListener;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.util.RemoteFadeOutAnimationListener;
+
+import java.util.stream.Stream;
 
 /**
  * Extension of Launcher activity to provide quickstep specific functionality
@@ -250,5 +254,20 @@ public abstract class BaseQuickstepLauncher extends Launcher
         if (getDragLayer() != null) {
             getRootView().setDisallowBackGesture(shouldBackButtonBeHidden);
         }
+    }
+
+    @Override
+    public void finishBindingItems(int pageBoundFirst) {
+        super.finishBindingItems(pageBoundFirst);
+        // Instantiate and initialize WellbeingModel now that its loading won't interfere with
+        // populating workspace.
+        // TODO: Find a better place for this
+        WellbeingModel.get(this);
+    }
+
+    @Override
+    public Stream<SystemShortcut.Factory> getSupportedShortcuts() {
+        return Stream.concat(super.getSupportedShortcuts(),
+                Stream.of(WellbeingModel.SHORTCUT_FACTORY));
     }
 }

@@ -45,13 +45,11 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
             TaskShortcutFactory.SPLIT_SCREEN,
             TaskShortcutFactory.PIN,
             TaskShortcutFactory.INSTALL,
-            TaskShortcutFactory.FREE_FORM
+            TaskShortcutFactory.FREE_FORM,
+            TaskShortcutFactory.WELLBEING
     };
 
-    public static final MainThreadInitializedObject<TaskOverlayFactory> INSTANCE =
-            forOverride(TaskOverlayFactory.class, R.string.task_overlay_factory_class);
-
-    public List<SystemShortcut> getEnabledShortcuts(TaskView taskView) {
+    public static List<SystemShortcut> getEnabledShortcuts(TaskView taskView) {
         final ArrayList<SystemShortcut> shortcuts = new ArrayList<>();
         final BaseDraggingActivity activity = BaseActivity.fromContext(taskView.getContext());
         for (TaskShortcutFactory menuOption : MENU_OPTIONS) {
@@ -62,6 +60,9 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
         }
         return shortcuts;
     }
+
+    public static final MainThreadInitializedObject<TaskOverlayFactory> INSTANCE =
+            forOverride(TaskOverlayFactory.class, R.string.task_overlay_factory_class);
 
     public TaskOverlay createOverlay(TaskThumbnailView thumbnailView) {
         return new TaskOverlay();

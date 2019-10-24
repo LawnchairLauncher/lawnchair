@@ -36,6 +36,7 @@ import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.WorkspaceItemInfo;
+import com.android.launcher3.model.WellbeingModel;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.popup.SystemShortcut.AppInfo;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
@@ -309,4 +310,6 @@ public interface TaskShortcutFactory {
                  view.getTask().getTopComponent().getPackageName())
                     ? new SystemShortcut.Install(activity, dummyInfo(view)) : null;
 
+    TaskShortcutFactory WELLBEING = (activity, view) ->
+            WellbeingModel.SHORTCUT_FACTORY.getShortcut(activity, dummyInfo(view));
 }
