@@ -117,24 +117,29 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
                     }
                     SessionInfo sessionInfo = packageInstaller.getActiveSessionInfo(item.user,
                             packageName);
+                    List<LauncherActivityInfo> activities = launcherApps
+                            .getActivityList(packageName, item.user);
+                    boolean hasActivity = activities != null && !activities.isEmpty();
+
                     if (sessionInfo == null) {
-                        List<LauncherActivityInfo> activities = launcherApps
-                                .getActivityList(packageName, item.user);
-                        if (activities != null && !activities.isEmpty()) {
-                            // App was installed while launcher was in the background.
-                            itemInfo = new AppInfo(app.getContext(), activities.get(0), item.user)
-                                    .makeWorkspaceItem();
-                            WorkspaceItemInfo wii = (WorkspaceItemInfo) itemInfo;
-                            wii.title = "";
-                            wii.applyFrom(app.getIconCache().getDefaultIcon(item.user));
-                            app.getIconCache().getTitleAndIcon(wii,
-                                    ((WorkspaceItemInfo) itemInfo).usingLowResIcon());
-                        } else {
+                        if (!hasActivity) {
                             // Session was cancelled, do not add.
                             continue;
                         }
                     } else {
                         workspaceInfo.setInstallProgress((int) sessionInfo.getProgress());
+                    }
+
+                    if (hasActivity) {
+                        // App was installed while launcher was in the background,
+                        // or app was already installed for another user.
+                        itemInfo = new AppInfo(app.getContext(), activities.get(0), item.user)
+                                .makeWorkspaceItem();
+                        WorkspaceItemInfo wii = (WorkspaceItemInfo) itemInfo;
+                        wii.title = "";
+                        wii.applyFrom(app.getIconCache().getDefaultIcon(item.user));
+                        app.getIconCache().getTitleAndIcon(wii,
+                                ((WorkspaceItemInfo) itemInfo).usingLowResIcon());
                     }
                 }
 
