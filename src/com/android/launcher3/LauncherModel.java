@@ -134,11 +134,11 @@ public class LauncherModel extends BroadcastReceiver
     /**
      * Updates the icons and label of all pending icons for the provided package name.
      */
-    public void updateSessionDisplayInfo(final String packageName) {
+    public void updateSessionDisplayInfo(final String packageName, final UserHandle user) {
         HashSet<String> packages = new HashSet<>();
         packages.add(packageName);
         enqueueModelUpdateTask(new CacheDataUpdatedTask(
-                CacheDataUpdatedTask.OP_SESSION_UPDATE, Process.myUserHandle(), packages));
+                CacheDataUpdatedTask.OP_SESSION_UPDATE, user, packages));
     }
 
     /**

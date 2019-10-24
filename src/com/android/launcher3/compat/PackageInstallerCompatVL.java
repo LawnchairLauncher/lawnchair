@@ -28,7 +28,6 @@ import android.os.UserHandle;
 import android.text.TextUtils;
 import android.util.SparseArray;
 
-import com.android.launcher3.LauncherModel;
 import com.android.launcher3.SessionCommitReceiver;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.icons.IconCache;
@@ -63,8 +62,8 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
         mAppContext = context.getApplicationContext();
         mInstaller = context.getPackageManager().getPackageInstaller();
         mCache = LauncherAppState.getInstance(context).getIconCache();
-        mInstaller.registerSessionCallback(mCallback, MODEL_EXECUTOR.getHandler());
         mLauncherApps = LauncherAppsCompat.getInstance(context);
+        mLauncherApps.registerSessionCallback(MODEL_EXECUTOR, mCallback);
         mPromiseIconIds = IntSet.wrap(IntArray.fromConcatString(
                 getPrefs(context).getString(PROMISE_ICON_IDS, "")));
 
@@ -126,7 +125,7 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
 
     @Override
     public void onStop() {
-        mInstaller.unregisterSessionCallback(mCallback);
+        mLauncherApps.unregisterSessionCallback(mCallback);
     }
 
     @Thunk void sendUpdate(PackageInstallInfo info) {
@@ -222,12 +221,14 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
         private SessionInfo pushSessionDisplayToLauncher(int sessionId) {
             SessionInfo session = verify(mInstaller.getSessionInfo(sessionId));
             if (session != null && session.getAppPackageName() != null) {
+                UserHandle user = getUserHandle(session);
                 mActiveSessions.put(session.getSessionId(),
-                        new PackageUserKey(session.getAppPackageName(), getUserHandle(session)));
-                addSessionInfoToCache(session, getUserHandle(session));
+                        new PackageUserKey(session.getAppPackageName(), user));
+                addSessionInfoToCache(session, user);
                 LauncherAppState app = LauncherAppState.getInstanceNoCreate();
                 if (app != null) {
-                    app.getModel().updateSessionDisplayInfo(session.getAppPackageName());
+                    app.getModel().updateSessionDisplayInfo(session.getAppPackageName(),
+                            user);
                 }
                 return session;
             }

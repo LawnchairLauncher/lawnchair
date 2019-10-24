@@ -22,6 +22,7 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageInstaller;
+import android.content.pm.PackageInstaller.SessionCallback;
 import android.content.pm.ShortcutInfo;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -30,6 +31,7 @@ import android.os.UserHandle;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.Utilities;
+import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.PackageUserKey;
 
 import java.util.List;
@@ -90,4 +92,8 @@ public abstract class LauncherAppsCompat {
             @Nullable PackageUserKey packageUser);
 
     public abstract List<PackageInstaller.SessionInfo> getAllPackageInstallerSessions();
+
+    public abstract void registerSessionCallback(LooperExecutor executor,
+                                                 SessionCallback sessionCallback);
+    public abstract void unregisterSessionCallback(SessionCallback sessionCallback);
 }
