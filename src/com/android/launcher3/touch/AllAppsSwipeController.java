@@ -34,7 +34,7 @@ public class AllAppsSwipeController extends AbstractStateChangeTouchController {
     private MotionEvent mTouchDownEvent;
 
     public AllAppsSwipeController(Launcher l) {
-        super(l, SwipeDetector.VERTICAL);
+        super(l, SingleAxisSwipeDetector.VERTICAL);
     }
 
     @Override
