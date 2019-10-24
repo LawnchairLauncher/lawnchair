@@ -36,7 +36,6 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
     private RecentsAnimationTargets mTargets;
     // Temporary until we can hook into gesture state events
     private GestureState mLastGestureState;
-    private ThumbnailData mCanceledThumbnail;
 
     /**
      * Preloads the recents animation.
@@ -81,15 +80,15 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
                 if (thumbnailData != null) {
                     // If a screenshot is provided, switch to the screenshot before cleaning up
                     activityInterface.switchRunningTaskViewToScreenshot(thumbnailData,
-                            () -> cleanUpRecentsAnimation());
+                            () -> cleanUpRecentsAnimation(thumbnailData));
                 } else {
-                    cleanUpRecentsAnimation();
+                    cleanUpRecentsAnimation(null /* canceledThumbnail */);
                 }
             }
 
             @Override
             public void onRecentsAnimationFinished(RecentsAnimationController controller) {
-                cleanUpRecentsAnimation();
+                cleanUpRecentsAnimation(null /* canceledThumbnail */);
             }
         });
         mCallbacks.addListener(gestureState);
@@ -119,7 +118,7 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
             Utilities.postAsyncCallback(MAIN_EXECUTOR.getHandler(), toHome
                     ? mController::finishAnimationToHome
                     : mController::finishAnimationToApp);
-            cleanUpRecentsAnimation();
+            cleanUpRecentsAnimation(null /* canceledThumbnail */);
         }
     }
 
@@ -146,9 +145,9 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
     /**
      * Cleans up the recents animation entirely.
      */
-    private void cleanUpRecentsAnimation() {
+    private void cleanUpRecentsAnimation(ThumbnailData canceledThumbnail) {
         // Clean up the screenshot if necessary
-        if (mController != null && mCanceledThumbnail != null) {
+        if (mController != null && canceledThumbnail != null) {
             mController.cleanupScreenshot();
         }
 
@@ -165,7 +164,6 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
         mController = null;
         mCallbacks = null;
         mTargets = null;
-        mCanceledThumbnail = null;
         mLastGestureState = null;
     }
 
