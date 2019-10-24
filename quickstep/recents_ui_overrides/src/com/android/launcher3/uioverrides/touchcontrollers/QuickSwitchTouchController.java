@@ -42,7 +42,7 @@ import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.touch.AbstractStateChangeTouchController;
-import com.android.launcher3.touch.SwipeDetector;
+import com.android.launcher3.touch.SingleAxisSwipeDetector;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.quickstep.OverviewInteractionState;
@@ -59,10 +59,10 @@ public class QuickSwitchTouchController extends AbstractStateChangeTouchControll
     private @Nullable TaskView mTaskToLaunch;
 
     public QuickSwitchTouchController(Launcher launcher) {
-        this(launcher, SwipeDetector.HORIZONTAL);
+        this(launcher, SingleAxisSwipeDetector.HORIZONTAL);
     }
 
-    protected QuickSwitchTouchController(Launcher l, SwipeDetector.Direction dir) {
+    protected QuickSwitchTouchController(Launcher l, SingleAxisSwipeDetector.Direction dir) {
         super(l, dir);
     }
 
