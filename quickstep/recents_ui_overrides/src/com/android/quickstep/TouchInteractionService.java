@@ -279,9 +279,6 @@ public class TouchInteractionService extends Service implements PluginListener<O
         mDeviceState.runOnUserUnlocked(this::onUserUnlocked);
 
         sConnected = true;
-
-        PluginManagerWrapper.INSTANCE.get(getBaseContext()).addPluginListener(this,
-                OverscrollPlugin.class, false /* allowMultiple */);
     }
 
     private void disposeEventHandlers() {
@@ -348,6 +345,9 @@ public class TouchInteractionService extends Service implements PluginListener<O
         mBackGestureNotificationCounter = Math.max(0, Utilities.getDevicePrefs(this)
                 .getInt(KEY_BACK_NOTIFICATION_COUNT, MAX_BACK_NOTIFICATION_COUNT));
         resetHomeBounceSeenOnQuickstepEnabledFirstTime();
+
+        PluginManagerWrapper.INSTANCE.get(getBaseContext()).addPluginListener(this,
+                OverscrollPlugin.class, false /* allowMultiple */);
     }
 
     private void onDeferredActivityLaunch() {
