@@ -713,8 +713,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                         getContext().getText(R.string.accessibility_close_task)));
 
         final Context context = getContext();
-        for (SystemShortcut s : TaskOverlayFactory.INSTANCE.get(getContext())
-                .getEnabledShortcuts(this)) {
+        for (SystemShortcut s : TaskOverlayFactory.getEnabledShortcuts(this)) {
             info.addAction(s.createAccessibilityAction(context));
         }
 
@@ -746,8 +745,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             return true;
         }
 
-        for (SystemShortcut s : TaskOverlayFactory.INSTANCE.get(getContext())
-                .getEnabledShortcuts(this)) {
+        for (SystemShortcut s : TaskOverlayFactory.getEnabledShortcuts(this)) {
             if (s.hasHandlerForAction(action)) {
                 s.onClick(this);
                 return true;

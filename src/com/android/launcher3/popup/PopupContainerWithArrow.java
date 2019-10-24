@@ -77,6 +77,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * A container for shortcuts to deep links and notifications associated with an app.
@@ -213,7 +214,7 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
         final PopupContainerWithArrow container =
                 (PopupContainerWithArrow) launcher.getLayoutInflater().inflate(
                         R.layout.popup_container, launcher.getDragLayer(), false);
-        container.populateAndShow(icon, itemInfo, SystemShortcutFactory.INSTANCE.get(launcher));
+        container.populateAndShow(icon, itemInfo);
         return container;
     }
 
@@ -238,8 +239,7 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
         }
     }
 
-    protected void populateAndShow(
-            BubbleTextView icon, ItemInfo item, SystemShortcutFactory factory) {
+    protected void populateAndShow(BubbleTextView icon, ItemInfo item) {
         if (TestProtocol.sDebugTracing) {
             Log.d(TestProtocol.NO_CONTEXT_MENU, "populateAndShow");
         }
@@ -247,7 +247,10 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
         populateAndShow(icon,
                 popupDataProvider.getShortcutCountForItem(item),
                 popupDataProvider.getNotificationKeysForItem(item),
-                factory.getEnabledShortcuts(mLauncher, item));
+                mLauncher.getSupportedShortcuts()
+                        .map(s -> s.getShortcut(mLauncher, item))
+                        .filter(s -> s != null)
+                        .collect(Collectors.toList()));
     }
 
     public ViewGroup getSystemShortcutContainerForTesting() {

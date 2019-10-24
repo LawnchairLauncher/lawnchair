@@ -31,6 +31,10 @@ import static com.android.launcher3.Utilities.postAsyncCallback;
 import static com.android.launcher3.dragndrop.DragLayer.ALPHA_INDEX_LAUNCHER_LOAD;
 import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
 import static com.android.launcher3.logging.LoggerUtils.newTarget;
+import static com.android.launcher3.popup.SystemShortcut.APP_INFO;
+import static com.android.launcher3.popup.SystemShortcut.DISMISS_PREDICTION;
+import static com.android.launcher3.popup.SystemShortcut.INSTALL;
+import static com.android.launcher3.popup.SystemShortcut.WIDGETS;
 import static com.android.launcher3.states.RotationHelper.REQUEST_NONE;
 import static com.android.launcher3.testing.TestProtocol.CRASH_ADD_CUSTOM_SHORTCUT;
 
@@ -114,6 +118,7 @@ import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.pm.PinRequestHelper;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.popup.PopupDataProvider;
+import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.qsb.QsbContainerView;
 import com.android.launcher3.states.RotationHelper;
 import com.android.launcher3.testing.TestProtocol;
@@ -170,6 +175,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 /**
  * Default launcher application.
@@ -2653,6 +2659,10 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     public void returnToHomescreen() {
         super.returnToHomescreen();
         getStateManager().goToState(LauncherState.NORMAL);
+    }
+
+    public Stream<SystemShortcut.Factory> getSupportedShortcuts() {
+        return Stream.of(APP_INFO, WIDGETS, INSTALL, DISMISS_PREDICTION);
     }
 
     public static Launcher getLauncher(Context context) {

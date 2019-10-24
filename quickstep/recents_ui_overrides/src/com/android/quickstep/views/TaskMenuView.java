@@ -192,8 +192,7 @@ public class TaskMenuView extends AbstractFloatingView {
         params.topMargin = (int) -mThumbnailTopMargin;
         mTaskIcon.setLayoutParams(params);
 
-        TaskOverlayFactory.INSTANCE.get(getContext()).getEnabledShortcuts(taskView)
-                .forEach(this::addMenuOption);
+        TaskOverlayFactory.getEnabledShortcuts(taskView).forEach(this::addMenuOption);
     }
 
     private void addMenuOption(SystemShortcut menuOption) {
