@@ -89,6 +89,13 @@ public interface BaseActivityInterface<T extends BaseDraggingActivity> {
     }
 
     /**
+     * Updates the prediction state to the overview state.
+     */
+    default void updateOverviewPredictionState() {
+        // By default overview predictions are not supported
+    }
+
+    /**
      * Used for containerType in {@link com.android.launcher3.logging.UserEventDispatcher}
      */
     int getContainerType();
