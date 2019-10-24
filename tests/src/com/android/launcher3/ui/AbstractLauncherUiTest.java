@@ -15,8 +15,6 @@
  */
 package com.android.launcher3.ui;
 
-import static androidx.test.InstrumentationRegistry.getInstrumentation;
-
 import static com.android.launcher3.tapl.LauncherInstrumentation.ContainerType;
 import static com.android.launcher3.ui.TaplTestsLauncher3.getAppPackageName;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
@@ -24,6 +22,8 @@ import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static org.junit.Assert.assertTrue;
 
 import static java.lang.System.exit;
+
+import static androidx.test.InstrumentationRegistry.getInstrumentation;
 
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -348,7 +348,8 @@ public abstract class AbstractLauncherUiTest {
         startIntent(
                 getInstrumentation().getContext().getPackageManager().getLaunchIntentForPackage(
                         packageName),
-                By.pkg(packageName).depth(0));
+                By.pkg(packageName).depth(0),
+                true /* newTask */);
     }
 
     protected void startTestActivity(int activityNumber) {
@@ -357,12 +358,17 @@ public abstract class AbstractLauncherUiTest {
                 getLaunchIntentForPackage(packageName);
         intent.setComponent(new ComponentName(packageName,
                 "com.android.launcher3.tests.Activity" + activityNumber));
-        startIntent(intent, By.pkg(packageName).text("TestActivity" + activityNumber));
+        startIntent(intent, By.pkg(packageName).text("TestActivity" + activityNumber),
+                false /* newTask */);
     }
 
-    private void startIntent(Intent intent, BySelector selector) {
+    private void startIntent(Intent intent, BySelector selector, boolean newTask) {
         intent.addCategory(Intent.CATEGORY_LAUNCHER);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        if (newTask) {
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        } else {
+            intent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK | Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
+        }
         getInstrumentation().getTargetContext().startActivity(intent);
         assertTrue("App didn't start: " + selector,
                 mDevice.wait(Until.hasObject(selector), DEFAULT_UI_TIMEOUT));
