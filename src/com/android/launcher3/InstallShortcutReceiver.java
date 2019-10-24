@@ -454,6 +454,8 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                     .object()
                     .key(LAUNCH_INTENT_KEY).value(launchIntent.toUri(0))
                     .key(NAME_KEY).value(name)
+                    .key(USER_HANDLE_KEY).value(
+                            UserManagerCompat.getInstance(mContext).getSerialNumberForUser(user))
                     .key(APP_SHORTCUT_TYPE_KEY).value(isActivity);
                 if (icon != null) {
                     byte[] iconByteArray = GraphicsUtils.flattenBitmap(icon);
@@ -475,7 +477,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
 
         public Pair<ItemInfo, Object> getItemInfo() {
             if (isActivity) {
-                WorkspaceItemInfo si = createWorkspaceItemInfo(data,
+                WorkspaceItemInfo si = createWorkspaceItemInfo(data, user,
                         LauncherAppState.getInstance(mContext));
                 si.itemType = LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
                 si.status |= WorkspaceItemInfo.FLAG_AUTOINSTALL_ICON;
@@ -500,7 +502,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                 return Pair.create(widgetInfo, providerInfo);
             } else {
                 WorkspaceItemInfo itemInfo =
-                        createWorkspaceItemInfo(data, LauncherAppState.getInstance(mContext));
+                        createWorkspaceItemInfo(data, user, LauncherAppState.getInstance(mContext));
                 return Pair.create(itemInfo, null);
             }
         }
@@ -618,7 +620,8 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         return new PendingInstallShortcutInfo(info, original.mContext);
     }
 
-    private static WorkspaceItemInfo createWorkspaceItemInfo(Intent data, LauncherAppState app) {
+    private static WorkspaceItemInfo createWorkspaceItemInfo(Intent data, UserHandle user,
+            LauncherAppState app) {
         if (data == null) {
             Log.e(TAG, "Can't construct WorkspaceItemInfo with null data");
             return null;
@@ -635,10 +638,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         }
 
         final WorkspaceItemInfo info = new WorkspaceItemInfo();
-
-        // Only support intents for current user for now. Intents sent from other
-        // users wouldn't get here without intent forwarding anyway.
-        info.user = Process.myUserHandle();
+        info.user = user;
 
         BitmapInfo iconInfo = null;
         LauncherIcons li = LauncherIcons.obtain(app.getContext());
