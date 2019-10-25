@@ -154,7 +154,7 @@ public class PopupPopulator {
                 final WorkspaceItemInfo si = new WorkspaceItemInfo(shortcut, launcher);
                 // Use unbadged icon for the menu.
                 LauncherIcons li = LauncherIcons.obtain(launcher);
-                si.applyFrom(li.createShortcutIcon(shortcut, false /* badged */));
+                si.bitmap = li.createShortcutIcon(shortcut, false /* badged */);
                 li.recycle();
                 si.rank = i;
 

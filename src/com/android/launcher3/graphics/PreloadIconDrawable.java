@@ -105,7 +105,7 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
      * @param progressPath fixed path in the bounds [0, 0, 100, 100] representing a progress bar.
      */
     public PreloadIconDrawable(ItemInfoWithIcon info, Path progressPath, Context context) {
-        super(info);
+        super(info.bitmap);
         mItem = info;
         mProgressPath = progressPath;
         mScaledTrackPath = new Path();

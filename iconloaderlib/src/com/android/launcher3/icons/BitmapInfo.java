@@ -18,32 +18,45 @@ package com.android.launcher3.icons;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 public class BitmapInfo {
 
     public static final Bitmap LOW_RES_ICON = Bitmap.createBitmap(1, 1, Config.ALPHA_8);
+    public static final BitmapInfo LOW_RES_INFO = fromBitmap(LOW_RES_ICON, null);
 
-    public Bitmap icon;
-    public int color;
+    public final Bitmap icon;
+    public final int color;
 
-    public void applyTo(BitmapInfo info) {
-        info.icon = icon;
-        info.color = color;
+    public BitmapInfo(Bitmap icon, int color) {
+        this.icon = icon;
+        this.color = color;
+    }
+
+    /**
+     * Ideally icon should not be null, except in cases when generating hardware bitmap failed
+     */
+    public final boolean isNullOrLowRes() {
+        return icon == null || icon == LOW_RES_ICON;
     }
 
     public final boolean isLowRes() {
         return LOW_RES_ICON == icon;
     }
 
-    public static BitmapInfo fromBitmap(Bitmap bitmap) {
-        return fromBitmap(bitmap, null);
+    public static BitmapInfo fromBitmap(@NonNull Bitmap bitmap) {
+        return of(bitmap, 0);
     }
 
-    public static BitmapInfo fromBitmap(Bitmap bitmap, ColorExtractor dominantColorExtractor) {
-        BitmapInfo info = new BitmapInfo();
-        info.icon = bitmap;
-        info.color = dominantColorExtractor != null
+    public static BitmapInfo fromBitmap(@NonNull Bitmap bitmap,
+            @Nullable ColorExtractor dominantColorExtractor) {
+        return of(bitmap, dominantColorExtractor != null
                 ? dominantColorExtractor.findDominantColorByHue(bitmap)
-                : 0;
-        return info;
+                : 0);
+    }
+
+    public static BitmapInfo of(@NonNull Bitmap bitmap, int color) {
+        return new BitmapInfo(bitmap, color);
     }
 }

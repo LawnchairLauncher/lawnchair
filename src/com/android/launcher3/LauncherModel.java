@@ -510,7 +510,7 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
         updateAndBindWorkspaceItem(() -> {
             si.updateFromDeepShortcutInfo(info, mApp.getContext());
             LauncherIcons li = LauncherIcons.obtain(mApp.getContext());
-            si.applyFrom(li.createShortcutIcon(info));
+            si.bitmap = li.createShortcutIcon(info);
             li.recycle();
             return si;
         });
@@ -546,7 +546,8 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
         if (args.length > 0 && TextUtils.equals(args[0], "--all")) {
             writer.println(prefix + "All apps list: size=" + mBgAllAppsList.data.size());
             for (AppInfo info : mBgAllAppsList.data) {
-                writer.println(prefix + "   title=\"" + info.title + "\" iconBitmap=" + info.iconBitmap
+                writer.println(prefix + "   title=\"" + info.title
+                        + "\" bitmapIcon=" + info.bitmap.icon
                         + " componentName=" + info.componentName.getPackageName());
             }
         }

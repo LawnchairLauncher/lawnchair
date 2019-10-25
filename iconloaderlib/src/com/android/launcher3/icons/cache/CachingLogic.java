@@ -20,6 +20,7 @@ import android.content.Context;
 import android.os.LocaleList;
 import android.os.UserHandle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.icons.BitmapInfo;
@@ -32,7 +33,8 @@ public interface CachingLogic<T> {
 
     CharSequence getLabel(T object);
 
-    void loadIcon(Context context, T object, BitmapInfo target);
+    @NonNull
+    BitmapInfo loadIcon(Context context, T object);
 
     /**
      * Provides a option list of keywords to associate with this object

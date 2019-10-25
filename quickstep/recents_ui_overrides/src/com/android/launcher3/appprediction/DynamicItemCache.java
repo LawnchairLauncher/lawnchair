@@ -170,7 +170,7 @@ public class DynamicItemCache {
         if (!details.isEmpty()) {
             WorkspaceItemInfo si = new WorkspaceItemInfo(details.get(0), mContext);
             try (LauncherIcons li = LauncherIcons.obtain(mContext)) {
-                si.applyFrom(li.createShortcutIcon(details.get(0), true /* badged */, null));
+                si.bitmap = li.createShortcutIcon(details.get(0), true /* badged */, null);
             } catch (Exception e) {
                 if (DEBUG) {
                     Log.e(TAG, "Error loading shortcut icon for " + shortcutKey.toString());
@@ -209,7 +209,7 @@ public class DynamicItemCache {
         InstantAppItemInfo info = new InstantAppItemInfo(intent, pkgName);
         IconCache iconCache = LauncherAppState.getInstance(mContext).getIconCache();
         iconCache.getTitleAndIcon(info, false);
-        if (info.iconBitmap == null || iconCache.isDefaultIcon(info.iconBitmap, info.user)) {
+        if (info.bitmap.icon == null || iconCache.isDefaultIcon(info.bitmap, info.user)) {
             return null;
         }
         return info;

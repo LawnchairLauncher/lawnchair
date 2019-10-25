@@ -485,7 +485,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
             } else if (shortcutInfo != null) {
                 WorkspaceItemInfo itemInfo = new WorkspaceItemInfo(shortcutInfo, mContext);
                 LauncherIcons li = LauncherIcons.obtain(mContext);
-                itemInfo.applyFrom(li.createShortcutIcon(shortcutInfo));
+                itemInfo.bitmap = li.createShortcutIcon(shortcutInfo);
                 li.recycle();
                 return Pair.create(itemInfo, shortcutInfo);
             } else if (providerInfo != null) {
@@ -656,7 +656,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         if (iconInfo == null) {
             iconInfo = app.getIconCache().getDefaultIcon(info.user);
         }
-        info.applyFrom(iconInfo);
+        info.bitmap = iconInfo;
 
         info.title = Utilities.trim(name);
         info.contentDescription = app.getContext().getPackageManager()

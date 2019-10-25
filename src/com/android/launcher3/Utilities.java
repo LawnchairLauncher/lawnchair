@@ -582,7 +582,7 @@ public final class Utilities {
             }
             ShortcutInfo si = (ShortcutInfo) obj;
             LauncherIcons li = LauncherIcons.obtain(appState.getContext());
-            Bitmap badge = li.getShortcutInfoBadge(si, appState.getIconCache()).iconBitmap;
+            Bitmap badge = li.getShortcutInfoBadge(si, appState.getIconCache()).bitmap.icon;
             li.recycle();
             float badgeSize = iconSize * LauncherIcons.getBadgeSizeForIconSize(iconSize);
             float insetFraction = (iconSize - badgeSize) / iconSize;

@@ -82,7 +82,7 @@ public class PinRequestHelper {
             WorkspaceItemInfo info = new WorkspaceItemInfo(si, context);
             // Apply the unbadged icon and fetch the actual icon asynchronously.
             LauncherIcons li = LauncherIcons.obtain(context);
-            info.applyFrom(li.createShortcutIcon(si, false /* badged */));
+            info.bitmap = li.createShortcutIcon(si, false /* badged */);
             li.recycle();
             LauncherAppState.getInstance(context).getModel()
                     .updateAndBindWorkspaceItem(info, si);

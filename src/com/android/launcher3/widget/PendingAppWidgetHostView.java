@@ -33,12 +33,12 @@ import android.view.View.OnClickListener;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.FastBitmapDrawable;
-import com.android.launcher3.icons.IconCache;
-import com.android.launcher3.icons.IconCache.ItemInfoUpdateReceiver;
 import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.graphics.DrawableFactory;
+import com.android.launcher3.icons.IconCache;
+import com.android.launcher3.icons.IconCache.ItemInfoUpdateReceiver;
 import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.util.Themes;
@@ -128,7 +128,7 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
             mCenterDrawable.setCallback(null);
             mCenterDrawable = null;
         }
-        if (info.iconBitmap != null) {
+        if (info.bitmap.icon != null) {
             // The view displays three modes,
             //   1) App icon in the center
             //   2) Preload icon in the center
@@ -142,7 +142,7 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
             } else if (isReadyForClickSetup()) {
                 mCenterDrawable = drawableFactory.newIcon(getContext(), info);
                 mSettingIconDrawable = getResources().getDrawable(R.drawable.ic_setting).mutate();
-                updateSettingColor(info.iconColor);
+                updateSettingColor(info.bitmap.color);
             } else {
                 mCenterDrawable = DrawableFactory.INSTANCE.get(getContext())
                         .newPendingIcon(getContext(), info);

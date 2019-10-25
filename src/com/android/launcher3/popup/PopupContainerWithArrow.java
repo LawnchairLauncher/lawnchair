@@ -507,7 +507,7 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
         DotInfo dotInfo = mLauncher.getDotInfoForItem(itemInfo);
         if (mNotificationItemView != null && dotInfo != null) {
             mNotificationItemView.updateHeader(
-                    dotInfo.getNotificationCount(), itemInfo.iconColor);
+                    dotInfo.getNotificationCount(), itemInfo.bitmap.color);
         }
     }
 

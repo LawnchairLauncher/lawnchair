@@ -137,32 +137,25 @@ public class LauncherIcons extends BaseIconFactory implements AutoCloseable {
             if (fallbackIconProvider != null) {
                 // Fallback icons are already badged and with appropriate shadow
                 ItemInfoWithIcon fullIcon = fallbackIconProvider.get();
-                if (fullIcon != null && fullIcon.iconBitmap != null) {
-                    BitmapInfo result = new BitmapInfo();
-                    result.icon = fullIcon.iconBitmap;
-                    result.color = fullIcon.iconColor;
-                    return result;
+                if (fullIcon != null && fullIcon.bitmap != null) {
+                    return fullIcon.bitmap;
                 }
             }
             unbadgedBitmap = cache.getDefaultIcon(Process.myUserHandle()).icon;
         }
 
-        BitmapInfo result = new BitmapInfo();
         if (!badged) {
-            result.color = Themes.getColorAccent(mContext);
-            result.icon = unbadgedBitmap;
-            return result;
+            return BitmapInfo.of(unbadgedBitmap, Themes.getColorAccent(mContext));
         }
 
         final Bitmap unbadgedfinal = unbadgedBitmap;
         final ItemInfoWithIcon badge = getShortcutInfoBadge(shortcutInfo, cache);
 
-        result.color = badge.iconColor;
-        result.icon = BitmapRenderer.createHardwareBitmap(mIconBitmapSize, mIconBitmapSize, (c) -> {
+        Bitmap icon = BitmapRenderer.createHardwareBitmap(mIconBitmapSize, mIconBitmapSize, (c) -> {
             getShadowGenerator().recreateIcon(unbadgedfinal, c);
-            badgeWithDrawable(c, new FastBitmapDrawable(badge));
+            badgeWithDrawable(c, new FastBitmapDrawable(badge.bitmap));
         });
-        return result;
+        return BitmapInfo.of(icon, badge.bitmap.color);
     }
 
     public ItemInfoWithIcon getShortcutInfoBadge(ShortcutInfo shortcutInfo, IconCache cache) {

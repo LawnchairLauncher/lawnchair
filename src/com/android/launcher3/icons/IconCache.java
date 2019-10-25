@@ -161,7 +161,7 @@ public class IconCache extends BaseIconCache {
         CacheEntry entry = cacheLocked(application.componentName,
                 application.user, () -> null, mLauncherActivityInfoCachingLogic,
                 false, application.usingLowResIcon());
-        if (entry.icon != null && !isDefaultIcon(entry.icon, application.user)) {
+        if (entry.bitmap != null && !isDefaultIcon(entry.bitmap, application.user)) {
             applyCacheEntry(entry, application);
         }
     }
@@ -183,7 +183,7 @@ public class IconCache extends BaseIconCache {
         // null info means not installed, but if we have a component from the intent then
         // we should still look in the cache for restored app icons.
         if (info.getTargetComponent() == null) {
-            info.applyFrom(getDefaultIcon(info.user));
+            info.bitmap = getDefaultIcon(info.user);
             info.title = "";
             info.contentDescription = "";
         } else {
@@ -226,7 +226,7 @@ public class IconCache extends BaseIconCache {
     protected void applyCacheEntry(CacheEntry entry, ItemInfoWithIcon info) {
         info.title = Utilities.trim(entry.title);
         info.contentDescription = entry.contentDescription;
-        info.applyFrom((entry.icon == null) ? getDefaultIcon(info.user) : entry);
+        info.bitmap = (entry.bitmap == null) ? getDefaultIcon(info.user) : entry.bitmap;
     }
 
     public Drawable getFullResIcon(LauncherActivityInfo info) {

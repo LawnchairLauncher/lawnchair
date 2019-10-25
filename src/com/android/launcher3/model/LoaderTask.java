@@ -503,8 +503,9 @@ public class LoaderTask implements Runnable {
                                     // use the last saved icon instead of the default.
                                     Supplier<ItemInfoWithIcon> fallbackIconProvider = () ->
                                             c.loadIcon(finalInfo, li) ? finalInfo : null;
-                                    info.applyFrom(li.createShortcutIcon(pinnedShortcut,
-                                            true /* badged */, fallbackIconProvider));
+                                    info.bitmap = li.createShortcutIcon(
+                                            pinnedShortcut, true /* badged */,
+                                            fallbackIconProvider);
                                     li.recycle();
                                     if (pmHelper.isAppSuspended(
                                             pinnedShortcut.getPackage(), info.user)) {

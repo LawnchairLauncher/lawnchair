@@ -289,7 +289,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     private void applyIconAndLabel(ItemInfoWithIcon info) {
         FastBitmapDrawable iconDrawable = DrawableFactory.INSTANCE.get(getContext())
                 .newIcon(getContext(), info);
-        mDotParams.color = IconPalette.getMutedColor(info.iconColor, 0.54f);
+        mDotParams.color = IconPalette.getMutedColor(info.bitmap.color, 0.54f);
 
         setIcon(iconDrawable);
         setText(info.title);
@@ -665,7 +665,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             mDisableRelayout = true;
 
             // Optimization: Starting in N, pre-uploads the bitmap to RenderThread.
-            info.iconBitmap.prepareToDraw();
+            info.bitmap.icon.prepareToDraw();
 
             if (info instanceof AppInfo) {
                 applyFromApplicationInfo((AppInfo) info);

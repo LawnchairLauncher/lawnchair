@@ -24,7 +24,6 @@ import android.graphics.Path;
 import android.graphics.Rect;
 
 import com.android.launcher3.FastBitmapDrawable;
-import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.R;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.util.Themes;
@@ -39,10 +38,6 @@ public class PlaceHolderIconDrawable extends FastBitmapDrawable {
 
     public PlaceHolderIconDrawable(BitmapInfo info, Path progressPath, Context context) {
         this(info.icon, info.color, progressPath, context);
-    }
-
-    public PlaceHolderIconDrawable(ItemInfoWithIcon info, Path progressPath, Context context) {
-        this(info.iconBitmap, info.iconColor, progressPath, context);
     }
 
     protected PlaceHolderIconDrawable(Bitmap b, int iconColor, Path progressPath, Context context) {

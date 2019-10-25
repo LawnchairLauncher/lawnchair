@@ -55,13 +55,12 @@ public class LauncherActivityCachingLogic
     }
 
     @Override
-    public void loadIcon(Context context, LauncherActivityInfo object,
-            BitmapInfo target) {
-        LauncherIcons li = LauncherIcons.obtain(context);
-        li.createBadgedIconBitmap(
-                IconProvider.INSTANCE.get(context)
-                        .getIcon(object, li.mFillResIconDpi, true /* flattenDrawable */),
-                object.getUser(), object.getApplicationInfo().targetSdkVersion).applyTo(target);
-        li.recycle();
+    public BitmapInfo loadIcon(Context context, LauncherActivityInfo object) {
+        try (LauncherIcons li = LauncherIcons.obtain(context)) {
+            return li.createBadgedIconBitmap(
+                    IconProvider.INSTANCE.get(context)
+                            .getIcon(object, li.mFillResIconDpi, true /* flattenDrawable */),
+                    object.getUser(), object.getApplicationInfo().targetSdkVersion);
+        }
     }
 }
