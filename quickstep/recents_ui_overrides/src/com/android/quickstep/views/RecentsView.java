@@ -1855,8 +1855,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     private void updateEnabledOverlays() {
         int overlayEnabledPage = mOverlayEnabled ? getNextPage() : -1;
         int taskCount = getTaskViewCount();
-        for (int i = 0; i < taskCount; i++) {
-            getTaskViewAt(i).setOverlayEnabled(i == overlayEnabledPage);
+        for (int i = mTaskViewStartIndex; i < mTaskViewStartIndex + taskCount; i++) {
+            getTaskViewAtByAbsoluteIndex(i).setOverlayEnabled(i == overlayEnabledPage);
         }
     }
 

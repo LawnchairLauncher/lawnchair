@@ -69,7 +69,7 @@ public class BackgroundAppState extends OverviewState {
             return super.getOverviewScaleAndTranslation(launcher);
         }
         TaskView dummyTask;
-        if (recentsView.getCurrentPage() >= 0) {
+        if (recentsView.getCurrentPage() >= recentsView.getTaskViewStartIndex()) {
             if (recentsView.getCurrentPage() <= taskCount - 1) {
                 dummyTask = recentsView.getCurrentPageTaskView();
             } else {

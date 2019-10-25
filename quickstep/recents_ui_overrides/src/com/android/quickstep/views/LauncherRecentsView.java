@@ -326,8 +326,8 @@ public class LauncherRecentsView extends RecentsView<Launcher> implements StateL
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        PluginManagerWrapper.INSTANCE.get(getContext())
-                .addPluginListener(mRecentsExtraCardPluginListener, RecentsExtraCard.class);
+        PluginManagerWrapper.INSTANCE.get(getContext()).addPluginListener(
+                mRecentsExtraCardPluginListener, RecentsExtraCard.class);
     }
 
     @Override
