@@ -15,11 +15,6 @@
  */
 package com.android.launcher3.util.rule;
 
-import static com.android.launcher3.tapl.TestHelpers.getHomeIntentInPackage;
-
-import static androidx.test.InstrumentationRegistry.getInstrumentation;
-import static androidx.test.InstrumentationRegistry.getTargetContext;
-
 import android.app.Activity;
 import android.app.Application;
 import android.app.Application.ActivityLifecycleCallbacks;
@@ -52,24 +47,13 @@ public class LauncherActivityRule implements TestRule {
     }
 
     public Callable<Boolean> itemExists(final ItemOperator op) {
-        return new Callable<Boolean>() {
-
-            @Override
-            public Boolean call() throws Exception {
-                Launcher launcher = getActivity();
-                if (launcher == null) {
-                    return false;
-                }
-                return launcher.getWorkspace().getFirstMatch(op) != null;
+        return () -> {
+            Launcher launcher = getActivity();
+            if (launcher == null) {
+                return false;
             }
+            return launcher.getWorkspace().getFirstMatch(op) != null;
         };
-    }
-
-    /**
-     * Starts the launcher activity in the target package.
-     */
-    public void startLauncher() {
-        getInstrumentation().startActivitySync(getHomeIntentInPackage(getTargetContext()));
     }
 
     private class MyStatement extends Statement implements ActivityLifecycleCallbacks {

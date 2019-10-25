@@ -890,9 +890,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     @Override
     protected void onStart() {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_OVERVIEW_EVENT_TAG, "Launcher.onStart");
-        }
         RaceConditionTracker.onEvent(ON_START_EVT, ENTER);
         super.onStart();
         if (mLauncherCallbacks != null) {
@@ -1809,11 +1806,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     public boolean startActivitySafely(View v, Intent intent, ItemInfo item,
             @Nullable String sourceContainer) {
-        if (TestProtocol.sDebugTracing) {
-            android.util.Log.d(TestProtocol.NO_START_TAG,
-                    "startActivitySafely outer");
-        }
-
         if (!hasBeenResumed()) {
             // Workaround an issue where the WM launch animation is clobbered when finishing the
             // recents animation into launcher. Defer launching the activity until Launcher is
@@ -1904,6 +1896,10 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         if (mPendingExecutor != null) {
             mPendingExecutor.markCompleted();
             mPendingExecutor = null;
+
+            // We might have set this flag previously and forgot to clear it.
+            mAppsView.getAppsStore()
+                    .disableDeferUpdatesSilently(AllAppsStore.DEFER_UPDATES_NEXT_DRAW);
         }
     }
 
@@ -2257,9 +2253,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     @Override
     public void executeOnNextDraw(ViewOnDrawExecutor executor) {
-        if (mPendingExecutor != null) {
-            mPendingExecutor.markCompleted();
-        }
+        clearPendingBinds();
         mPendingExecutor = executor;
         if (!isInState(ALL_APPS)) {
             mAppsView.getAppsStore().enableDeferUpdates(AllAppsStore.DEFER_UPDATES_NEXT_DRAW);

@@ -135,10 +135,6 @@ public abstract class BaseDraggingActivity extends BaseActivity
 
     public boolean startActivitySafely(View v, Intent intent, @Nullable ItemInfo item,
             @Nullable String sourceContainer) {
-        if (TestProtocol.sDebugTracing) {
-            android.util.Log.d(TestProtocol.NO_START_TAG,
-                    "startActivitySafely 1");
-        }
         if (mIsSafeModeEnabled && !Utilities.isSystemApp(this, intent)) {
             Toast.makeText(this, R.string.safemode_shortcut_error, Toast.LENGTH_SHORT).show();
             return false;
@@ -162,10 +158,6 @@ public abstract class BaseDraggingActivity extends BaseActivity
                 startShortcutIntentSafely(intent, optsBundle, item, sourceContainer);
             } else if (user == null || user.equals(Process.myUserHandle())) {
                 // Could be launching some bookkeeping activity
-                if (TestProtocol.sDebugTracing) {
-                    android.util.Log.d(TestProtocol.NO_START_TAG,
-                            "startActivitySafely 2");
-                }
                 startActivity(intent, optsBundle);
                 AppLaunchTracker.INSTANCE.get(this).onStartApp(intent.getComponent(),
                         Process.myUserHandle(), sourceContainer);
@@ -178,7 +170,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
             getUserEventDispatcher().logAppLaunch(v, intent);
             getStatsLogManager().logAppLaunch(v, intent);
             return true;
-        } catch (ActivityNotFoundException|SecurityException e) {
+        } catch (NullPointerException|ActivityNotFoundException|SecurityException e) {
             Toast.makeText(this, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
             Log.e(TAG, "Unable to launch. tag=" + item + " intent=" + intent, e);
         }

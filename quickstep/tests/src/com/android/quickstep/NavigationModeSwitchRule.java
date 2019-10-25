@@ -27,6 +27,7 @@ import static com.android.systemui.shared.system.QuickStepContract.NAV_BAR_MODE_
 import static com.android.systemui.shared.system.QuickStepContract.NAV_BAR_MODE_GESTURAL_OVERLAY;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.util.Log;
 
 import androidx.test.uiautomator.UiDevice;
@@ -80,6 +81,7 @@ public class NavigationModeSwitchRule implements TestRule {
             return new Statement() {
                 @Override
                 public void evaluate() throws Throwable {
+                    mLauncher.enableDebugTracing();
                     final Context context = getInstrumentation().getContext();
                     final int currentInteractionMode =
                             LauncherInstrumentation.getCurrentInteractionMode(context);
@@ -101,35 +103,55 @@ public class NavigationModeSwitchRule implements TestRule {
                         if (mode == THREE_BUTTON || mode == ALL) {
                             evaluateWithThreeButtons();
                         }
+                    } catch (Exception e) {
+                        Log.e(TAG, "Exception", e);
+                        throw e;
                     } finally {
-                        setActiveOverlay(prevOverlayPkg, originalMode);
+                        Assert.assertTrue(setActiveOverlay(prevOverlayPkg, originalMode));
                     }
-                }
-
-                public void evaluateWithoutChangingSetting(Statement base) throws Throwable {
-                    base.evaluate();
+                    mLauncher.disableDebugTracing();
                 }
 
                 private void evaluateWithThreeButtons() throws Throwable {
-                    setActiveOverlay(NAV_BAR_MODE_3BUTTON_OVERLAY,
-                            LauncherInstrumentation.NavigationModel.THREE_BUTTON);
-                    evaluateWithoutChangingSetting(base);
+                    if (setActiveOverlay(NAV_BAR_MODE_3BUTTON_OVERLAY,
+                            LauncherInstrumentation.NavigationModel.THREE_BUTTON)) {
+                        base.evaluate();
+                    }
                 }
 
                 private void evaluateWithTwoButtons() throws Throwable {
-                    setActiveOverlay(NAV_BAR_MODE_2BUTTON_OVERLAY,
-                            LauncherInstrumentation.NavigationModel.TWO_BUTTON);
-                    base.evaluate();
+                    if (setActiveOverlay(NAV_BAR_MODE_2BUTTON_OVERLAY,
+                            LauncherInstrumentation.NavigationModel.TWO_BUTTON)) {
+                        base.evaluate();
+                    }
                 }
 
                 private void evaluateWithZeroButtons() throws Throwable {
-                    setActiveOverlay(NAV_BAR_MODE_GESTURAL_OVERLAY,
-                            LauncherInstrumentation.NavigationModel.ZERO_BUTTON);
-                    base.evaluate();
+                    if (setActiveOverlay(NAV_BAR_MODE_GESTURAL_OVERLAY,
+                            LauncherInstrumentation.NavigationModel.ZERO_BUTTON)) {
+                        base.evaluate();
+                    }
                 }
 
-                private void setActiveOverlay(String overlayPackage,
+                private boolean packageExists(String packageName) {
+                    try {
+                        PackageManager pm = getInstrumentation().getContext().getPackageManager();
+                        if (pm.getApplicationInfo(packageName, 0 /* flags */) == null) {
+                            return false;
+                        }
+                    } catch (PackageManager.NameNotFoundException e) {
+                        return false;
+                    }
+                    return true;
+                }
+
+                private boolean setActiveOverlay(String overlayPackage,
                         LauncherInstrumentation.NavigationModel expectedMode) throws Exception {
+                    if (!packageExists(overlayPackage)) {
+                        Log.d(TAG, "setActiveOverlay: " + overlayPackage + " pkg does not exist");
+                        return false;
+                    }
+
                     setOverlayPackageEnabled(NAV_BAR_MODE_3BUTTON_OVERLAY,
                             overlayPackage == NAV_BAR_MODE_3BUTTON_OVERLAY);
                     setOverlayPackageEnabled(NAV_BAR_MODE_2BUTTON_OVERLAY,
@@ -173,6 +195,7 @@ public class NavigationModeSwitchRule implements TestRule {
                     Assert.assertTrue("Switching nav mode: " + error, error == null);
 
                     Thread.sleep(5000);
+                    return true;
                 }
 
                 private void setOverlayPackageEnabled(String overlayPackage, boolean enable)

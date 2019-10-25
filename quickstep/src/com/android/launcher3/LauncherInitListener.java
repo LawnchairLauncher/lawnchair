@@ -85,7 +85,7 @@ public class LauncherInitListener extends InternalStateHandler implements Activi
 
         register();
 
-        Bundle options = animProvider.toActivityOptions(handler, duration).toBundle();
+        Bundle options = animProvider.toActivityOptions(handler, duration, context).toBundle();
         context.startActivity(addToIntent(new Intent((intent))), options);
     }
 }

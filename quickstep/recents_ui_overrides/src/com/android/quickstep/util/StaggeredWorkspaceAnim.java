@@ -15,7 +15,14 @@
  */
 package com.android.quickstep.util;
 
+import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
+import static com.android.launcher3.LauncherState.BACKGROUND_APP;
+import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.anim.Interpolators.LINEAR;
+
 import android.animation.Animator;
+import android.animation.Animator.AnimatorListener;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,17 +36,14 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager.AnimationConfig;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutAndWidgetContainer;
+import com.android.launcher3.Workspace;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.anim.SpringObjectAnimator;
+import com.android.launcher3.graphics.OverviewScrim;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
-import static com.android.launcher3.LauncherState.BACKGROUND_APP;
-import static com.android.launcher3.LauncherState.NORMAL;
-import static com.android.launcher3.anim.Interpolators.LINEAR;
 
 /**
  * Creates an animation where all the workspace items are moved into their final location,
@@ -79,9 +83,19 @@ public class StaggeredWorkspaceAnim {
                 .getDimensionPixelSize(R.dimen.swipe_up_max_workspace_trans_y);
 
         DeviceProfile grid = launcher.getDeviceProfile();
-        ShortcutAndWidgetContainer currentPage = ((CellLayout) launcher.getWorkspace()
-                .getChildAt(launcher.getWorkspace().getCurrentPage()))
-                .getShortcutsAndWidgets();
+        Workspace workspace = launcher.getWorkspace();
+        CellLayout cellLayout = (CellLayout) workspace.getChildAt(workspace.getCurrentPage());
+        ShortcutAndWidgetContainer currentPage = cellLayout.getShortcutsAndWidgets();
+
+        boolean workspaceClipChildren = workspace.getClipChildren();
+        boolean workspaceClipToPadding = workspace.getClipToPadding();
+        boolean cellLayoutClipChildren = cellLayout.getClipChildren();
+        boolean cellLayoutClipToPadding = cellLayout.getClipToPadding();
+
+        workspace.setClipChildren(false);
+        workspace.setClipToPadding(false);
+        cellLayout.setClipChildren(false);
+        cellLayout.setClipToPadding(false);
 
         // Hotseat and QSB takes up two additional rows.
         int totalRows = grid.inv.numRows + (grid.isVerticalBarLayout() ? 0 : 2);
@@ -109,8 +123,29 @@ public class StaggeredWorkspaceAnim {
             addStaggeredAnimationForView(qsb, grid.inv.numRows + 2, totalRows);
         }
 
-        addWorkspaceScrimAnimationForState(launcher, BACKGROUND_APP, 0);
-        addWorkspaceScrimAnimationForState(launcher, NORMAL, ALPHA_DURATION_MS);
+        addScrimAnimationForState(launcher, BACKGROUND_APP, 0);
+        addScrimAnimationForState(launcher, NORMAL, ALPHA_DURATION_MS);
+
+        AnimatorListener resetClipListener = new AnimatorListenerAdapter() {
+            int numAnimations = mAnimators.size();
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                numAnimations--;
+                if (numAnimations > 0) {
+                    return;
+                }
+
+                workspace.setClipChildren(workspaceClipChildren);
+                workspace.setClipToPadding(workspaceClipToPadding);
+                cellLayout.setClipChildren(cellLayoutClipChildren);
+                cellLayout.setClipToPadding(cellLayoutClipToPadding);
+            }
+        };
+
+        for (Animator a : mAnimators) {
+            a.addListener(resetClipListener);
+        }
     }
 
     /**
@@ -134,10 +169,6 @@ public class StaggeredWorkspaceAnim {
      * @param totalRows Total number of rows.
      */
     private void addStaggeredAnimationForView(View v, int row, int totalRows) {
-        if (v == mViewToIgnore) {
-            return;
-        }
-
         // Invert the rows, because we stagger starting from the bottom of the screen.
         int invertedRow = totalRows - row;
         // Add 1 to the inverted row so that the bottom most row has a start delay.
@@ -149,6 +180,10 @@ public class StaggeredWorkspaceAnim {
         springTransY.setStartDelay(startDelay);
         mAnimators.add(springTransY);
 
+        if (v == mViewToIgnore) {
+            return;
+        }
+
         v.setAlpha(0);
         ObjectAnimator alpha = ObjectAnimator.ofFloat(v, View.ALPHA, 0f, 1f);
         alpha.setInterpolator(LINEAR);
@@ -157,13 +192,17 @@ public class StaggeredWorkspaceAnim {
         mAnimators.add(alpha);
     }
 
-    private void addWorkspaceScrimAnimationForState(Launcher launcher, LauncherState state,
-            long duration) {
+    private void addScrimAnimationForState(Launcher launcher, LauncherState state, long duration) {
         AnimatorSetBuilder scrimAnimBuilder = new AnimatorSetBuilder();
         AnimationConfig scrimAnimConfig = new AnimationConfig();
         scrimAnimConfig.duration = duration;
         PropertySetter scrimPropertySetter = scrimAnimConfig.getPropertySetter(scrimAnimBuilder);
         launcher.getWorkspace().getStateTransitionAnimation().setScrim(scrimPropertySetter, state);
         mAnimators.add(scrimAnimBuilder.build());
+        Animator fadeOverviewScrim = ObjectAnimator.ofFloat(
+                launcher.getDragLayer().getOverviewScrim(), OverviewScrim.SCRIM_PROGRESS,
+                state.getOverviewScrimAlpha(launcher));
+        fadeOverviewScrim.setDuration(duration);
+        mAnimators.add(fadeOverviewScrim);
     }
 }
