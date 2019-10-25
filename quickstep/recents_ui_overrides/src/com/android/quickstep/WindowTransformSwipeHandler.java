@@ -72,7 +72,6 @@ import com.android.quickstep.BaseActivityInterface.AnimationFactory;
 import com.android.quickstep.BaseActivityInterface.AnimationFactory.ShelfAnimState;
 import com.android.quickstep.BaseActivityInterface.HomeAnimationFactory;
 import com.android.quickstep.GestureState.GestureEndTarget;
-import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.inputconsumers.OverviewInputConsumer;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.AppWindowAnimationHelper.TargetAlphaProvider;
@@ -1087,7 +1086,9 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         mRecentsView.onGestureAnimationEnd();
 
         // Reset the callback for deferred activity launches
-        mActivityInterface.setOnDeferredActivityLaunchCallback(null);
+        if (!ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+            mActivityInterface.setOnDeferredActivityLaunchCallback(null);
+        }
         mActivity.getRootView().setOnApplyWindowInsetsListener(null);
         removeLiveTileOverlay();
     }
