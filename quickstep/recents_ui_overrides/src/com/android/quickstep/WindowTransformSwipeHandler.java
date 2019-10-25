@@ -72,7 +72,6 @@ import com.android.quickstep.BaseActivityInterface.AnimationFactory;
 import com.android.quickstep.BaseActivityInterface.AnimationFactory.ShelfAnimState;
 import com.android.quickstep.BaseActivityInterface.HomeAnimationFactory;
 import com.android.quickstep.GestureState.GestureEndTarget;
-import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.inputconsumers.OverviewInputConsumer;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.AppWindowAnimationHelper.TargetAlphaProvider;
@@ -1192,8 +1191,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         }
         mRecentsView.onSwipeUpAnimationSuccess();
 
-        RecentsModel.INSTANCE.get(mContext).onOverviewShown(false, TAG);
-
+        SystemUiProxy.INSTANCE.get(mContext).onOverviewShown(false, TAG);
         doLogGesture(RECENTS);
         reset();
     }
