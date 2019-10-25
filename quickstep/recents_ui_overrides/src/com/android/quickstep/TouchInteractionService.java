@@ -423,6 +423,9 @@ public class TouchInteractionService extends Service implements PluginListener<O
             Log.e(TAG, "Unknown event " + ev);
             return;
         }
+        if (!mDeviceState.isUserUnlocked()) {
+            return;
+        }
 
         Object traceToken = TraceHelper.INSTANCE.beginFlagsOverride(
                 TraceHelper.FLAG_ALLOW_BINDER_TRACKING);
