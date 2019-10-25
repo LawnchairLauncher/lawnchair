@@ -791,6 +791,8 @@ public final class LauncherInstrumentation {
         final int distance = gestureStart - container.getVisibleBounds().top - topPadding;
         final int bottomMargin = container.getVisibleBounds().height() - distance;
 
+        // TODO: Make the gesture steps dependent on the distance so that it can run for various
+        //       screen sizes
         scroll(
                 container,
                 Direction.DOWN,
@@ -799,7 +801,7 @@ public final class LauncherInstrumentation {
                         0,
                         0,
                         Math.max(bottomMargin, getBottomGestureMargin(container))),
-                70);
+                80);
     }
 
     void scroll(UiObject2 container, Direction direction, Rect margins, int steps) {
