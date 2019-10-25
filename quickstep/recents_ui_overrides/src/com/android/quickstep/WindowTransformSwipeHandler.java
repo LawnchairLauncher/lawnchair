@@ -1086,7 +1086,9 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         mRecentsView.onGestureAnimationEnd();
 
         // Reset the callback for deferred activity launches
-        mActivityInterface.setOnDeferredActivityLaunchCallback(null);
+        if (!ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+            mActivityInterface.setOnDeferredActivityLaunchCallback(null);
+        }
         mActivity.getRootView().setOnApplyWindowInsetsListener(null);
         removeLiveTileOverlay();
     }
