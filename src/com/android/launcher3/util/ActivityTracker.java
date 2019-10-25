@@ -45,13 +45,7 @@ public final class ActivityTracker<T extends BaseActivity> implements Runnable {
     }
 
     public void onActivityDestroyed(T activity) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.LAUNCHER_DIDNT_INITIALIZE, "onActivityDestroyed");
-        }
         if (mCurrentActivity.get() == activity) {
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.LAUNCHER_DIDNT_INITIALIZE, "onActivityDestroyed: clear");
-            }
             mCurrentActivity.clear();
         }
     }
@@ -97,10 +91,6 @@ public final class ActivityTracker<T extends BaseActivity> implements Runnable {
     }
 
     public boolean handleCreate(T activity) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.LAUNCHER_DIDNT_INITIALIZE,
-                    "ActivityTracker.handleCreate " + mCurrentActivity.get() + " => " + activity);
-        }
         mCurrentActivity = new WeakReference<>(activity);
         return handleIntent(activity, activity.getIntent(), false, false);
     }

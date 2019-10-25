@@ -177,11 +177,6 @@ public class TestInformationHandler implements ResourceBasedOverride {
     }
 
     protected boolean isLauncherInitialized() {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.LAUNCHER_DIDNT_INITIALIZE,
-                    "isLauncherInitialized " + Launcher.ACTIVITY_TRACKER.getCreatedActivity() + ", "
-                            + LauncherAppState.getInstance(mContext).getModel().isModelLoaded());
-        }
         return Launcher.ACTIVITY_TRACKER.getCreatedActivity() == null
                 || LauncherAppState.getInstance(mContext).getModel().isModelLoaded();
     }

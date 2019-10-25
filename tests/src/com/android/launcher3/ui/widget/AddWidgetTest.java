@@ -48,7 +48,6 @@ public class AddWidgetTest extends AbstractLauncherUiTest {
 
     @Test
     @PortraitLandscape
-    @Stability(flavors = UNBUNDLED_POSTSUBMIT) // b/142514365
     public void testDragIcon() throws Throwable {
         clearHomescreen();
         mDevice.pressHome();
