@@ -24,8 +24,9 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Debug;
-import android.util.Log;
 import android.view.View;
+
+import androidx.annotation.Keep;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
@@ -186,6 +187,22 @@ public class TestInformationHandler implements ResourceBasedOverride {
         Runtime.getRuntime().runFinalization();
 
         final CountDownLatch fence = new CountDownLatch(1);
+        createFinalizationObserver(fence);
+        try {
+            do {
+                Runtime.getRuntime().gc();
+                Runtime.getRuntime().runFinalization();
+            } while (!fence.await(100, TimeUnit.MILLISECONDS));
+        } catch (InterruptedException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    // Create the observer in the scope of a method to minimize the chance that
+    // it remains live in a DEX/machine register at the point of the fence guard.
+    // This must be kept to avoid R8 inlining it.
+    @Keep
+    private static void createFinalizationObserver(CountDownLatch fence) {
         new Object() {
             @Override
             protected void finalize() throws Throwable {
@@ -196,13 +213,5 @@ public class TestInformationHandler implements ResourceBasedOverride {
                 }
             }
         };
-        try {
-            do {
-                Runtime.getRuntime().gc();
-                Runtime.getRuntime().runFinalization();
-            } while (!fence.await(100, TimeUnit.MILLISECONDS));
-        } catch (InterruptedException ex) {
-            throw new RuntimeException(ex);
-        }
     }
 }
