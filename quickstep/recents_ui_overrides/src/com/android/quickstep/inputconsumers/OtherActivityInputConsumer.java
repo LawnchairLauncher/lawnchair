@@ -57,7 +57,6 @@ import com.android.quickstep.TaskAnimationManager;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.CachedEventDispatcher;
 import com.android.quickstep.util.MotionPauseDetector;
-import com.android.quickstep.util.NavBarPosition;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.InputMonitorCompat;
 
@@ -84,8 +83,6 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     private final BaseActivityInterface mActivityInterface;
 
     private final BaseSwipeUpHandler.Factory mHandlerFactory;
-
-    private final NavBarPosition mNavBarPosition;
 
     private final Consumer<OtherActivityInputConsumer> mOnCompleteCallback;
     private final MotionPauseDetector mMotionPauseDetector;
@@ -142,8 +139,6 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
 
         boolean continuingPreviousGesture = mTaskAnimationManager.isRecentsAnimationRunning();
         mIsDeferredDownTarget = !continuingPreviousGesture && isDeferredDownTarget;
-
-        mNavBarPosition = new NavBarPosition(base);
         mTouchSlop = ViewConfiguration.get(this).getScaledTouchSlop();
 
         float slop = QUICKSTEP_TOUCH_SLOP_RATIO * mTouchSlop;
@@ -175,7 +170,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         if (mPassedWindowMoveSlop && mInteractionHandler != null
                 && !mRecentsViewDispatcher.hasConsumer()) {
             mRecentsViewDispatcher.setConsumer(mInteractionHandler.getRecentsViewDispatcher(
-                    mNavBarPosition.getRotationMode()));
+                    mDeviceState.getNavBarPosition().getRotationMode()));
         }
         int edgeFlags = ev.getEdgeFlags();
         ev.setEdgeFlags(edgeFlags | EDGE_NAV_BAR);
@@ -356,8 +351,10 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                         ViewConfiguration.get(this).getScaledMaximumFlingVelocity());
                 float velocityX = mVelocityTracker.getXVelocity(mActivePointerId);
                 float velocityY = mVelocityTracker.getYVelocity(mActivePointerId);
-                float velocity = mNavBarPosition.isRightEdge() ? velocityX
-                        : mNavBarPosition.isLeftEdge() ? -velocityX
+                float velocity = mDeviceState.getNavBarPosition().isRightEdge()
+                        ? velocityX
+                        : mDeviceState.getNavBarPosition().isLeftEdge()
+                                ? -velocityX
                                 : velocityY;
 
                 mInteractionHandler.updateDisplacement(getDisplacement(ev) - mStartDisplacement);
@@ -410,9 +407,9 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     }
 
     private float getDisplacement(MotionEvent ev) {
-        if (mNavBarPosition.isRightEdge()) {
+        if (mDeviceState.getNavBarPosition().isRightEdge()) {
             return ev.getX() - mDownPos.x;
-        } else if (mNavBarPosition.isLeftEdge()) {
+        } else if (mDeviceState.getNavBarPosition().isLeftEdge()) {
             return mDownPos.x - ev.getX();
         } else {
             return ev.getY() - mDownPos.y;

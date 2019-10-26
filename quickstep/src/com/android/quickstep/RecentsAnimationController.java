@@ -48,11 +48,10 @@ public class RecentsAnimationController {
     private final Consumer<RecentsAnimationController> mOnFinishedListener;
     private final boolean mShouldMinimizeSplitScreen;
 
-    private boolean mWindowThresholdCrossed = false;
-
     private InputConsumerController mInputConsumerController;
     private Supplier<InputConsumer> mInputProxySupplier;
     private InputConsumer mInputConsumer;
+    private boolean mWindowThresholdCrossed = false;
     private boolean mTouchInProgress;
     private boolean mFinishPending;
 
@@ -62,8 +61,6 @@ public class RecentsAnimationController {
         mController = controller;
         mOnFinishedListener = onFinishedListener;
         mShouldMinimizeSplitScreen = shouldMinimizeSplitScreen;
-
-        setWindowThresholdCrossed(mWindowThresholdCrossed);
     }
 
     /**

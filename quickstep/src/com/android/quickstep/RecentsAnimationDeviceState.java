@@ -17,8 +17,10 @@ package com.android.quickstep;
 
 import static android.content.Intent.ACTION_USER_UNLOCKED;
 
+import static android.provider.Settings.System.HAPTIC_FEEDBACK_ENABLED;
 import static com.android.launcher3.ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE;
 import static com.android.launcher3.ResourceUtils.NAVBAR_LANDSCAPE_LEFT_RIGHT_SIZE;
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
 import static com.android.quickstep.SysUINavigationMode.Mode.THREE_BUTTONS;
 import static com.android.quickstep.SysUINavigationMode.Mode.TWO_BUTTONS;
@@ -35,14 +37,17 @@ import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_S
 import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
+import android.database.ContentObserver;
 import android.graphics.Point;
 import android.graphics.RectF;
 import android.graphics.Region;
 import android.os.Process;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -57,6 +62,7 @@ import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.DefaultDisplay;
 import com.android.quickstep.SysUINavigationMode.NavigationModeChangeListener;
+import com.android.quickstep.util.NavBarPosition;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.QuickStepContract;
 import com.android.systemui.shared.system.QuickStepContract.SystemUiStateFlags;
@@ -72,16 +78,17 @@ public class RecentsAnimationDeviceState implements
         NavigationModeChangeListener,
         DefaultDisplay.DisplayInfoChangeListener {
 
-    private Context mContext;
-    private UserManagerCompat mUserManager;
-    private SysUINavigationMode mSysUiNavMode;
-    private DefaultDisplay mDefaultDisplay;
-    private int mDisplayId;
+    private final Context mContext;
+    private final UserManagerCompat mUserManager;
+    private final SysUINavigationMode mSysUiNavMode;
+    private final DefaultDisplay mDefaultDisplay;
+    private final int mDisplayId;
 
     private final ArrayList<Runnable> mOnDestroyActions = new ArrayList<>();
 
     private @SystemUiStateFlags int mSystemUiStateFlags;
     private SysUINavigationMode.Mode mMode = THREE_BUTTONS;
+    private NavBarPosition mNavBarPosition;
 
     private final RectF mSwipeUpTouchRegion = new RectF();
     private final Region mDeferredGestureRegion = new Region();
@@ -108,11 +115,13 @@ public class RecentsAnimationDeviceState implements
     private ComponentName mGestureBlockedActivity;
 
     public RecentsAnimationDeviceState(Context context) {
+        final ContentResolver resolver = context.getContentResolver();
         mContext = context;
         mUserManager = UserManagerCompat.getInstance(context);
         mSysUiNavMode = SysUINavigationMode.INSTANCE.get(context);
         mDefaultDisplay = DefaultDisplay.INSTANCE.get(context);
         mDisplayId = mDefaultDisplay.getInfo().id;
+        runOnDestroy(() -> mDefaultDisplay.removeChangeListener(this));
 
         // Register for user unlocked if necessary
         mIsUserUnlocked = mUserManager.isUserUnlocked(Process.myUserHandle());
@@ -155,7 +164,6 @@ public class RecentsAnimationDeviceState implements
         for (Runnable r : mOnDestroyActions) {
             r.run();
         }
-        mDefaultDisplay.removeChangeListener(this);
     }
 
     /**
@@ -183,6 +191,7 @@ public class RecentsAnimationDeviceState implements
             mExclusionListener.unregister();
         }
         mMode = newMode;
+        mNavBarPosition = new NavBarPosition(mMode, mDefaultDisplay.getInfo());
     }
 
     @Override
@@ -191,6 +200,7 @@ public class RecentsAnimationDeviceState implements
             return;
         }
 
+        mNavBarPosition = new NavBarPosition(mMode, info);
         updateGestureTouchRegions();
     }
 
@@ -199,6 +209,13 @@ public class RecentsAnimationDeviceState implements
      */
     public SysUINavigationMode.Mode getNavMode() {
         return mMode;
+    }
+
+    /**
+     * @return the nav bar position for the current nav bar mode and display rotation.
+     */
+    public NavBarPosition getNavBarPosition() {
+        return mNavBarPosition;
     }
 
     /**

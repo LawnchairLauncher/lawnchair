@@ -18,6 +18,8 @@ package com.android.launcher3.uioverrides;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
+import static com.android.quickstep.util.NavBarPosition.ROTATION_LANDSCAPE;
+import static com.android.quickstep.util.NavBarPosition.ROTATION_SEASCAPE;
 
 import android.content.Context;
 import android.content.res.Configuration;

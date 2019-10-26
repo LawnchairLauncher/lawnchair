@@ -15,7 +15,6 @@
  */
 package com.android.quickstep;
 
-import static com.android.launcher3.Utilities.postAsyncCallback;
 import static com.android.launcher3.anim.Interpolators.ACCEL_1_5;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
@@ -32,8 +31,6 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Build;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Interpolator;
@@ -51,7 +48,6 @@ import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.util.VibratorWrapper;
 import com.android.launcher3.views.FloatingIconView;
 import com.android.quickstep.BaseActivityInterface.HomeAnimationFactory;
-import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.AppWindowAnimationHelper;
@@ -92,9 +88,8 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
     protected final Context mContext;
     protected final RecentsAnimationDeviceState mDeviceState;
     protected final GestureState mGestureState;
-    protected final OverviewComponentObserver mOverviewComponentObserver;
     protected final BaseActivityInterface<T> mActivityInterface;
-    protected final RecentsModel mRecentsModel;
+    protected final InputConsumerController mInputConsumer;
 
     protected final AppWindowAnimationHelper mAppWindowAnimationHelper;
     protected final TransformParams mTransformParams = new TransformParams();
@@ -106,7 +101,6 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
     protected final AnimatedFloat mCurrentShift = new AnimatedFloat(this::updateFinalShift);
 
     protected final ActivityInitListener mActivityInitListener;
-    protected final InputConsumerController mInputConsumer;
 
     protected RecentsAnimationController mRecentsAnimationController;
     protected RecentsAnimationTargets mRecentsAnimationTargets;
@@ -127,20 +121,18 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
     protected int mFinishingRecentsAnimationForNewTaskId = -1;
 
     protected BaseSwipeUpHandler(Context context, RecentsAnimationDeviceState deviceState,
-            GestureState gestureState, OverviewComponentObserver overviewComponentObserver,
-            RecentsModel recentsModel, InputConsumerController inputConsumer) {
+            GestureState gestureState, InputConsumerController inputConsumer) {
         mContext = context;
         mDeviceState = deviceState;
         mGestureState = gestureState;
-        mOverviewComponentObserver = overviewComponentObserver;
         mActivityInterface = gestureState.getActivityInterface();
-        mRecentsModel = recentsModel;
         mActivityInitListener =
                 mActivityInterface.createActivityInitListener(this::onActivityInit);
         mInputConsumer = inputConsumer;
 
         mAppWindowAnimationHelper = new AppWindowAnimationHelper(context);
         mPageSpacing = context.getResources().getDimensionPixelSize(R.dimen.recents_page_spacing);
+
         initTransitionEndpoints(InvariantDeviceProfile.INSTANCE.get(mContext)
                 .getDeviceProfile(mContext));
     }
@@ -371,7 +363,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
 
     public void initWhenReady() {
         // Preload the plan
-        mRecentsModel.getTasks(null);
+        RecentsModel.INSTANCE.get(mContext).getTasks(null);
 
         mActivityInitListener.register();
     }
