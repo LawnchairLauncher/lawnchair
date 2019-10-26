@@ -85,7 +85,6 @@ public class DeviceLockedInputConsumer implements InputConsumer,
     private final AppWindowAnimationHelper.TransformParams mTransformParams;
     private final Point mDisplaySize;
     private final MultiStateCallback mStateCallback;
-    public final int mRunningTaskId;
 
     private VelocityTracker mVelocityTracker;
     private float mProgress;
@@ -97,7 +96,7 @@ public class DeviceLockedInputConsumer implements InputConsumer,
 
     public DeviceLockedInputConsumer(Context context, RecentsAnimationDeviceState deviceState,
             TaskAnimationManager taskAnimationManager, GestureState gestureState,
-            InputMonitorCompat inputMonitorCompat, int runningTaskId) {
+            InputMonitorCompat inputMonitorCompat) {
         mContext = context;
         mDeviceState = deviceState;
         mTaskAnimationManager = taskAnimationManager;
@@ -106,7 +105,6 @@ public class DeviceLockedInputConsumer implements InputConsumer,
         mAppWindowAnimationHelper = new AppWindowAnimationHelper(context);
         mTransformParams = new AppWindowAnimationHelper.TransformParams();
         mInputMonitorCompat = inputMonitorCompat;
-        mRunningTaskId = runningTaskId;
 
         // Do not use DeviceProfile as the user data might be locked
         mDisplaySize = DefaultDisplay.INSTANCE.get(context).getInfo().realSize;
@@ -221,7 +219,8 @@ public class DeviceLockedInputConsumer implements InputConsumer,
         mRecentsAnimationTargets = targets;
 
         Rect displaySize = new Rect(0, 0, mDisplaySize.x, mDisplaySize.y);
-        RemoteAnimationTargetCompat targetCompat = targets.findTask(mRunningTaskId);
+        RemoteAnimationTargetCompat targetCompat = targets.findTask(
+                mGestureState.getRunningTaskId());
         if (targetCompat != null) {
             mAppWindowAnimationHelper.updateSource(displaySize, targetCompat);
         }

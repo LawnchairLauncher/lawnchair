@@ -17,6 +17,7 @@ package com.android.quickstep;
 
 import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
 
+import android.app.ActivityManager;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.systemui.shared.recents.model.ThumbnailData;
@@ -102,21 +103,22 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
     private final MultiStateCallback mStateCallback;
     private final int mGestureId;
 
+    private ActivityManager.RunningTaskInfo mRunningTask;
     private GestureEndTarget mEndTarget;
     // TODO: This can be removed once we stop finishing the animation when starting a new task
     private int mFinishingRecentsAnimationTaskId = -1;
 
     public GestureState(BaseActivityInterface activityInterface, int gestureId) {
         mActivityInterface = activityInterface;
-        mGestureId = gestureId;
         mStateCallback = new MultiStateCallback(STATE_NAMES.toArray(new String[0]));
+        mGestureId = gestureId;
     }
 
     public GestureState() {
         // Do nothing, only used for initializing the gesture state prior to user unlock
         mActivityInterface = null;
-        mGestureId = -1;
         mStateCallback = new MultiStateCallback(STATE_NAMES.toArray(new String[0]));
+        mGestureId = -1;
     }
 
     /**
@@ -148,18 +150,31 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
     }
 
     /**
+     * @return the running task for this gesture.
+     */
+    public ActivityManager.RunningTaskInfo getRunningTask() {
+        return mRunningTask;
+    }
+
+    /**
+     * @return the running task id for this gesture.
+     */
+    public int getRunningTaskId() {
+        return mRunningTask != null ? mRunningTask.taskId : -1;
+    }
+
+    /**
+     * Updates the running task for the gesture to be the given {@param runningTask}.
+     */
+    public void updateRunningTask(ActivityManager.RunningTaskInfo runningTask) {
+        mRunningTask = runningTask;
+    }
+
+    /**
      * @return the end target for this gesture (if known).
      */
     public GestureEndTarget getEndTarget() {
         return mEndTarget;
-    }
-
-    /**
-     * @return whether the current gesture is still running a recents animation to a state in the
-     *         Launcher or Recents activity.
-     */
-    public boolean isRunningAnimationToLauncher() {
-        return isRecentsAnimationRunning() && mEndTarget != null && mEndTarget.isLauncher;
     }
 
     /**
@@ -199,6 +214,15 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
         mStateCallback.runOnceAtState(STATE_RECENTS_ANIMATION_FINISHED, () -> {
             mFinishingRecentsAnimationTaskId = -1;
         });
+    }
+
+    /**
+     * @return whether the current gesture is still running a recents animation to a state in the
+     *         Launcher or Recents activity.
+     * Updates the running task for the gesture to be the given {@param runningTask}.
+     */
+    public boolean isRunningAnimationToLauncher() {
+        return isRecentsAnimationRunning() && mEndTarget != null && mEndTarget.isLauncher;
     }
 
     /**

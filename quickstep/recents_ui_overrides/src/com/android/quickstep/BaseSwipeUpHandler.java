@@ -25,7 +25,6 @@ import static com.android.launcher3.views.FloatingIconView.SHAPE_PROGRESS_DURATI
 
 import android.animation.Animator;
 import android.annotation.TargetApi;
-import android.app.ActivityManager.RunningTaskInfo;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
@@ -96,7 +95,6 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
     protected final OverviewComponentObserver mOverviewComponentObserver;
     protected final BaseActivityInterface<T> mActivityInterface;
     protected final RecentsModel mRecentsModel;
-    protected final int mRunningTaskId;
 
     protected final AppWindowAnimationHelper mAppWindowAnimationHelper;
     protected final TransformParams mTransformParams = new TransformParams();
@@ -130,7 +128,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
 
     protected BaseSwipeUpHandler(Context context, RecentsAnimationDeviceState deviceState,
             GestureState gestureState, OverviewComponentObserver overviewComponentObserver,
-            RecentsModel recentsModel, InputConsumerController inputConsumer, int runningTaskId) {
+            RecentsModel recentsModel, InputConsumerController inputConsumer) {
         mContext = context;
         mDeviceState = deviceState;
         mGestureState = gestureState;
@@ -139,7 +137,6 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
         mRecentsModel = recentsModel;
         mActivityInitListener =
                 mActivityInterface.createActivityInitListener(this::onActivityInit);
-        mRunningTaskId = runningTaskId;
         mInputConsumer = inputConsumer;
 
         mAppWindowAnimationHelper = new AppWindowAnimationHelper(context);
@@ -261,7 +258,8 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
         mRecentsAnimationTargets = targets;
         DeviceProfile dp = InvariantDeviceProfile.INSTANCE.get(mContext).getDeviceProfile(mContext);
         final Rect overviewStackBounds;
-        RemoteAnimationTargetCompat runningTaskTarget = targets.findTask(mRunningTaskId);
+        RemoteAnimationTargetCompat runningTaskTarget = targets.findTask(
+                mGestureState.getRunningTaskId());
 
         if (targets.minimizedHomeBounds != null && runningTaskTarget != null) {
             overviewStackBounds = mActivityInterface
@@ -490,8 +488,8 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
 
     public interface Factory {
 
-        BaseSwipeUpHandler newHandler(GestureState gestureState, RunningTaskInfo runningTask,
-                long touchTimeMs, boolean continuingLastGesture, boolean isLikelyToStartNewTask);
+        BaseSwipeUpHandler newHandler(GestureState gestureState, long touchTimeMs,
+                boolean continuingLastGesture, boolean isLikelyToStartNewTask);
     }
 
     protected interface RunningWindowAnim {
