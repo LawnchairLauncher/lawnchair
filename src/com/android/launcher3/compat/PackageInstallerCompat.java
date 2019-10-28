@@ -19,6 +19,7 @@ package com.android.launcher3.compat;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageInstaller;
+import android.content.pm.PackageInstaller.SessionInfo;
 import android.os.Process;
 import android.os.UserHandle;
 
@@ -29,6 +30,7 @@ import java.util.List;
 import androidx.annotation.NonNull;
 
 import com.android.launcher3.Utilities;
+import com.android.launcher3.util.PackageUserKey;
 
 public abstract class PackageInstallerCompat {
 
@@ -52,19 +54,19 @@ public abstract class PackageInstallerCompat {
         }
     }
 
-    public static UserHandle getUserHandle(PackageInstaller.SessionInfo info) {
+    public static UserHandle getUserHandle(SessionInfo info) {
         return Utilities.ATLEAST_Q ? info.getUser() : Process.myUserHandle();
     }
 
     /**
      * @return a map of active installs to their progress
      */
-    public abstract HashMap<String, PackageInstaller.SessionInfo> updateAndGetActiveSessionCache();
+    public abstract HashMap<PackageUserKey, SessionInfo> updateAndGetActiveSessionCache();
 
     /**
      * @return an active SessionInfo for {@param pkg} or null if none exists.
      */
-    public abstract PackageInstaller.SessionInfo getActiveSessionInfo(UserHandle user, String pkg);
+    public abstract SessionInfo getActiveSessionInfo(UserHandle user, String pkg);
 
     public abstract void onStop();
 
@@ -75,7 +77,7 @@ public abstract class PackageInstallerCompat {
         public final int progress;
         public final UserHandle user;
 
-        private PackageInstallInfo(@NonNull PackageInstaller.SessionInfo info) {
+        private PackageInstallInfo(@NonNull SessionInfo info) {
             this.state = STATUS_INSTALLING;
             this.packageName = info.getAppPackageName();
             this.componentName = new ComponentName(packageName, "");
@@ -91,7 +93,7 @@ public abstract class PackageInstallerCompat {
             this.user = user;
         }
 
-        public static PackageInstallInfo fromInstallingState(PackageInstaller.SessionInfo info) {
+        public static PackageInstallInfo fromInstallingState(SessionInfo info) {
             return new PackageInstallInfo(info);
         }
 
@@ -101,7 +103,7 @@ public abstract class PackageInstallerCompat {
 
     }
 
-    public abstract List<PackageInstaller.SessionInfo> getAllVerifiedSessions();
+    public abstract List<SessionInfo> getAllVerifiedSessions();
 
     /**
      * Returns true if a promise icon was already added to the home screen for {@param sessionId}.

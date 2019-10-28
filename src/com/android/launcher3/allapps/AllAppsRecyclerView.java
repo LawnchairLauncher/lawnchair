@@ -26,13 +26,15 @@ import android.util.SparseIntArray;
 import android.view.MotionEvent;
 import android.view.View;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.android.launcher3.BaseRecyclerView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
+import com.android.launcher3.allapps.AllAppsGridAdapter.AppsGridLayoutManager;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.logging.StatsLogUtils.LogContainerProvider;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -40,8 +42,6 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.views.RecyclerViewFastScroller;
 
 import java.util.List;
-
-import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * A RecyclerView with custom fast scroll support for the all apps view.
@@ -113,6 +113,13 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
         // Ensure we reattach the scrollbar if it was previously detached while fast-scrolling
         if (mScrollbar != null) {
             mScrollbar.reattachThumbToScroll();
+        }
+        if (getLayoutManager() instanceof AppsGridLayoutManager) {
+            AppsGridLayoutManager layoutManager = (AppsGridLayoutManager) getLayoutManager();
+            if (layoutManager.findFirstCompletelyVisibleItemPosition() == 0) {
+                // We are at the top, so don't scrollToPosition (would cause unnecessary relayout).
+                return;
+            }
         }
         scrollToPosition(0);
     }
@@ -419,14 +426,5 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
     @Override
     public boolean hasOverlappingRendering() {
         return false;
-    }
-
-    @Override
-    public void onScrollStateChanged(int state) {
-        super.onScrollStateChanged(state);
-
-        if (state == SCROLL_STATE_IDLE) {
-            AccessibilityManagerCompat.sendScrollFinishedEventToTest(getContext());
-        }
     }
 }

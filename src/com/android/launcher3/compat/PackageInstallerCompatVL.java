@@ -90,12 +90,13 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
     }
 
     @Override
-    public HashMap<String, SessionInfo> updateAndGetActiveSessionCache() {
-        HashMap<String, SessionInfo> activePackages = new HashMap<>();
+    public HashMap<PackageUserKey, SessionInfo> updateAndGetActiveSessionCache() {
+        HashMap<PackageUserKey, SessionInfo> activePackages = new HashMap<>();
         for (SessionInfo info : getAllVerifiedSessions()) {
             addSessionInfoToCache(info, getUserHandle(info));
             if (info.getAppPackageName() != null) {
-                activePackages.put(info.getAppPackageName(), info);
+                activePackages.put(new PackageUserKey(info.getAppPackageName(),
+                        getUserHandle(info)), info);
                 mActiveSessions.put(info.getSessionId(),
                         new PackageUserKey(info.getAppPackageName(), getUserHandle(info)));
             }
@@ -136,6 +137,30 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
         }
     }
 
+    /**
+     * Add a promise app icon to the workspace iff:
+     * - The settings for it are enabled
+     * - The user installed the app
+     * - There is an app icon and label (For apps with no launching activity, no icon is provided).
+     * - The app is not already installed
+     * - A promise icon for the session has not already been created
+     */
+    private void tryQueuePromiseAppIcon(SessionInfo sessionInfo) {
+        if (Utilities.ATLEAST_OREO && FeatureFlags.PROMISE_APPS_NEW_INSTALLS.get()
+                && SessionCommitReceiver.isEnabled(mAppContext)
+                && verify(sessionInfo) != null
+                && sessionInfo.getInstallReason() == PackageManager.INSTALL_REASON_USER
+                && sessionInfo.getAppIcon() != null
+                && !TextUtils.isEmpty(sessionInfo.getAppLabel())
+                && !mPromiseIconIds.contains(sessionInfo.getSessionId())
+                && mLauncherApps.getApplicationInfo(sessionInfo.getAppPackageName(), 0,
+                        getUserHandle(sessionInfo)) == null) {
+            SessionCommitReceiver.queuePromiseAppIconAddition(mAppContext, sessionInfo);
+            mPromiseIconIds.add(sessionInfo.getSessionId());
+            updatePromiseIconPrefs();
+        }
+    }
+
     private final SessionCallback mCallback = new SessionCallback() {
 
         @Override
@@ -149,16 +174,7 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
                 }
             }
 
-            if (Utilities.ATLEAST_OREO && FeatureFlags.PROMISE_APPS_NEW_INSTALLS.get()
-                    && SessionCommitReceiver.isEnabled(mAppContext)
-                    && sessionInfo != null
-                    && sessionInfo.getInstallReason() == PackageManager.INSTALL_REASON_USER) {
-                SessionCommitReceiver.queuePromiseAppIconAddition(mAppContext, sessionInfo);
-                if (!mPromiseIconIds.contains(sessionInfo.getSessionId())) {
-                    mPromiseIconIds.add(sessionInfo.getSessionId());
-                    updatePromiseIconPrefs();
-                }
-            }
+            tryQueuePromiseAppIcon(sessionInfo);
         }
 
         @Override
@@ -173,12 +189,14 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
                 sendUpdate(PackageInstallInfo.fromState(success ? STATUS_INSTALLED : STATUS_FAILED,
                         packageName, key.mUser));
 
-                if (!success && FeatureFlags.PROMISE_APPS_NEW_INSTALLS.get()) {
+                if (!success && FeatureFlags.PROMISE_APPS_NEW_INSTALLS.get()
+                        && mPromiseIconIds.contains(sessionId)) {
                     LauncherAppState appState = LauncherAppState.getInstanceNoCreate();
                     if (appState != null) {
-                        LauncherModel model = appState.getModel();
-                        model.onPackageRemoved(packageName, key.mUser);
+                        appState.getModel().onSessionFailure(packageName, key.mUser);
                     }
+                    // If it is successful, the id is removed in the the package added flow.
+                    removePromiseIconId(sessionId);
                 }
             }
         }
@@ -196,7 +214,10 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
 
         @Override
         public void onBadgingChanged(int sessionId) {
-            pushSessionDisplayToLauncher(sessionId);
+            SessionInfo sessionInfo = pushSessionDisplayToLauncher(sessionId);
+            if (sessionInfo != null) {
+                tryQueuePromiseAppIcon(sessionInfo);
+            }
         }
 
         private SessionInfo pushSessionDisplayToLauncher(int sessionId) {

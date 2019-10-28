@@ -65,6 +65,7 @@ import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.icons.DotRenderer;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.util.Thunk;
+import com.android.launcher3.views.IconLabelDotView;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 
 import java.util.ArrayList;
@@ -73,7 +74,7 @@ import java.util.List;
 /**
  * An icon that can appear on in the workspace representing an {@link Folder}.
  */
-public class FolderIcon extends FrameLayout implements FolderListener {
+public class FolderIcon extends FrameLayout implements FolderListener, IconLabelDotView {
 
     @Thunk Launcher mLauncher;
     @Thunk Folder mFolder;
@@ -107,6 +108,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
     private Alarm mOpenAlarm = new Alarm();
 
+    private boolean mForceHideDot;
     @ViewDebug.ExportedProperty(category = "launcher", deepExport = true)
     private FolderDotInfo mDotInfo = new FolderDotInfo();
     private DotRenderer mDotRenderer;
@@ -409,6 +411,20 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         return mPreviewLayoutRule;
     }
 
+    @Override
+    public void setForceHideDot(boolean forceHideDot) {
+        if (mForceHideDot == forceHideDot) {
+            return;
+        }
+        mForceHideDot = forceHideDot;
+
+        if (forceHideDot) {
+            invalidate();
+        } else if (hasDot()) {
+            animateDotScale(0, 1);
+        }
+    }
+
     /**
      * Sets mDotScale to 1 or 0, animating if wasDotted or isDotted is false
      * (the dot is being added or removed).
@@ -468,7 +484,8 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         mBackground.setInvalidateDelegate(this);
     }
 
-    public void setBackgroundVisible(boolean visible) {
+    @Override
+    public void setIconVisible(boolean visible) {
         mBackgroundIsVisible = visible;
         invalidate();
     }
@@ -509,7 +526,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     }
 
     public void drawDot(Canvas canvas) {
-        if ((mDotInfo != null && mDotInfo.hasDot()) || mDotScale > 0) {
+        if (!mForceHideDot && ((mDotInfo != null && mDotInfo.hasDot()) || mDotScale > 0)) {
             Rect iconBounds = mDotParams.iconBounds;
             BubbleTextView.getIconBounds(this, iconBounds,
                     mLauncher.getWallpaperDeviceProfile().iconSizePx);

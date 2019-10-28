@@ -890,23 +890,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                 mTotalMotionX = 0;
                 mActivePointerId = ev.getPointerId(0);
 
-                /*
-                 * If being flinged and user touches the screen, initiate drag;
-                 * otherwise don't.  mScroller.isFinished should be false when
-                 * being flinged.
-                 */
-                final int xDist = Math.abs(mScroller.getFinalPos() - mScroller.getCurrPos());
-                final boolean finishedScrolling = (mScroller.isFinished() || xDist < mTouchSlop / 3);
-
-                if (finishedScrolling) {
-                    mIsBeingDragged = false;
-                    if (!mScroller.isFinished() && !mFreeScroll) {
-                        setCurrentPage(getNextPage());
-                        pageEndTransition();
-                    }
-                } else {
-                    mIsBeingDragged = true;
-                }
+                updateIsBeingDraggedOnTouchDown();
 
                 break;
             }
@@ -927,6 +911,25 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
          * drag mode.
          */
         return mIsBeingDragged;
+    }
+
+    /**
+     * If being flinged and user touches the screen, initiate drag; otherwise don't.
+     */
+    private void updateIsBeingDraggedOnTouchDown() {
+        // mScroller.isFinished should be false when being flinged.
+        final int xDist = Math.abs(mScroller.getFinalPos() - mScroller.getCurrPos());
+        final boolean finishedScrolling = (mScroller.isFinished() || xDist < mTouchSlop / 3);
+
+        if (finishedScrolling) {
+            mIsBeingDragged = false;
+            if (!mScroller.isFinished() && !mFreeScroll) {
+                setCurrentPage(getNextPage());
+                pageEndTransition();
+            }
+        } else {
+            mIsBeingDragged = true;
+        }
     }
 
     public boolean isHandlingTouch() {
@@ -1085,7 +1088,9 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         if (mFreeScroll) {
             setCurrentPage(getNextPage());
         } else if (wasFreeScroll) {
-            snapToPage(getNextPage());
+            if (getScrollForPage(getNextPage()) != getScrollX()) {
+                snapToPage(getNextPage());
+            }
         }
     }
 
@@ -1104,6 +1109,8 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
         switch (action & MotionEvent.ACTION_MASK) {
         case MotionEvent.ACTION_DOWN:
+            updateIsBeingDraggedOnTouchDown();
+
             /*
              * If being flinged and user touches, stop the fling. isFinished
              * will be false if being flinged.
