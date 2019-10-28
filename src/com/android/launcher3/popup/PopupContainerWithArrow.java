@@ -197,9 +197,6 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
      * @return the container if shown or null.
      */
     public static PopupContainerWithArrow showForIcon(BubbleTextView icon) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_CONTEXT_MENU, "showForIcon");
-        }
         Launcher launcher = Launcher.getLauncher(icon.getContext());
         if (getOpen(launcher) != null) {
             // There is already an items container open, so don't open this one.
@@ -240,9 +237,6 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
     }
 
     protected void populateAndShow(BubbleTextView icon, ItemInfo item) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_CONTEXT_MENU, "populateAndShow");
-        }
         PopupDataProvider popupDataProvider = mLauncher.getPopupDataProvider();
         populateAndShow(icon,
                 popupDataProvider.getShortcutCountForItem(item),
