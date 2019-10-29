@@ -21,6 +21,7 @@ import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -39,6 +40,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.util.Pair;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.compat.UserManagerCompat;
@@ -238,11 +240,6 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         return info == null ? null : (WorkspaceItemInfo) info.getItemInfo().first;
     }
 
-    public static WorkspaceItemInfo fromActivityInfo(LauncherActivityInfo info, Context context) {
-        return (WorkspaceItemInfo)
-                new PendingInstallShortcutInfo(info, context).getItemInfo().first;
-    }
-
     public static void queueShortcut(ShortcutInfo info, Context context) {
         queuePendingShortcutInfo(new PendingInstallShortcutInfo(info, context), context);
     }
@@ -318,10 +315,10 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
     private static class PendingInstallShortcutInfo {
 
         final boolean isActivity;
-        final ShortcutInfo shortcutInfo;
-        final AppWidgetProviderInfo providerInfo;
+        @Nullable final ShortcutInfo shortcutInfo;
+        @Nullable final AppWidgetProviderInfo providerInfo;
 
-        final Intent data;
+        @Nullable final Intent data;
         final Context mContext;
         final Intent launchIntent;
         final String label;
@@ -351,7 +348,12 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
             shortcutInfo = null;
             providerInfo = null;
 
-            data = null;
+            String packageName = info.getComponentName().getPackageName();
+            data = new Intent();
+            data.putExtra(Intent.EXTRA_SHORTCUT_INTENT, new Intent().setComponent(
+                    new ComponentName(packageName, "")).setPackage(packageName));
+            data.putExtra(Intent.EXTRA_SHORTCUT_NAME, info.getLabel());
+
             user = info.getUser();
             mContext = context;
 
@@ -445,9 +447,10 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                 // This name is only used for comparisons and notifications, so fall back to activity
                 // name if not supplied
                 String name = ensureValidName(mContext, launchIntent, label).toString();
-                Bitmap icon = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON);
-                Intent.ShortcutIconResource iconResource =
-                    data.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE);
+                Bitmap icon = data == null ? null
+                        : data.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON);
+                Intent.ShortcutIconResource iconResource = data == null ? null
+                    : data.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE);
 
                 // Only encode the parameters which are supported by the API.
                 JSONStringer json = new JSONStringer()
@@ -459,9 +462,11 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                     .key(APP_SHORTCUT_TYPE_KEY).value(isActivity);
                 if (icon != null) {
                     byte[] iconByteArray = GraphicsUtils.flattenBitmap(icon);
-                    json = json.key(ICON_KEY).value(
-                            Base64.encodeToString(
-                                    iconByteArray, 0, iconByteArray.length, Base64.DEFAULT));
+                    if (iconByteArray != null) {
+                        json = json.key(ICON_KEY).value(
+                                Base64.encodeToString(
+                                        iconByteArray, 0, iconByteArray.length, Base64.DEFAULT));
+                    }
                 }
                 if (iconResource != null) {
                     json = json.key(ICON_RESOURCE_NAME_KEY).value(iconResource.resourceName);
