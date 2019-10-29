@@ -1188,20 +1188,21 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
     private void finishCurrentTransitionToRecents() {
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             mStateCallback.setStateOnUiThread(STATE_CURRENT_TASK_FINISHED);
-        } else if (!hasTargets()) {
-            // If there are no targets, then there is nothing to finish
+        } else if (!hasTargets() || mRecentsAnimationController == null) {
+            // If there are no targets or the animation not started, then there is nothing to finish
             mStateCallback.setStateOnUiThread(STATE_CURRENT_TASK_FINISHED);
         } else {
-            synchronized (mRecentsAnimationController) {
-                mRecentsAnimationController.finish(true /* toRecents */,
-                        () -> mStateCallback.setStateOnUiThread(STATE_CURRENT_TASK_FINISHED));
-            }
+            mRecentsAnimationController.finish(true /* toRecents */,
+                    () -> mStateCallback.setStateOnUiThread(STATE_CURRENT_TASK_FINISHED));
         }
         ActiveGestureLog.INSTANCE.addLog("finishRecentsAnimation", true);
     }
 
     private void finishCurrentTransitionToHome() {
-        synchronized (mRecentsAnimationController) {
+        if (!hasTargets() || mRecentsAnimationController == null) {
+            // If there are no targets or the animation not started, then there is nothing to finish
+            mStateCallback.setStateOnUiThread(STATE_CURRENT_TASK_FINISHED);
+        } else {
             mRecentsAnimationController.finish(true /* toRecents */,
                     () -> mStateCallback.setStateOnUiThread(STATE_CURRENT_TASK_FINISHED),
                     true /* sendUserLeaveHint */);
