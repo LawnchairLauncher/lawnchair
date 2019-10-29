@@ -842,6 +842,9 @@ public class TouchInteractionService extends Service implements
     }
 
     private void preloadOverview(boolean fromInit) {
+        if (!Utilities.IS_NEW_Q) {
+            return;
+        }
         if (!mIsUserUnlocked) {
             return;
         }

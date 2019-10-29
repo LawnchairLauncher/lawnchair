@@ -25,7 +25,9 @@ import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.graphics.Bitmap;
+import android.graphics.Region;
 import android.os.Build;
+import android.view.ISystemGestureExclusionListener;
 import android.view.ThreadedRenderer;
 import androidx.annotation.RequiresApi;
 import java.lang.reflect.InvocationTargetException;
@@ -33,6 +35,18 @@ import java.lang.reflect.Method;
 
 @RequiresApi(Build.VERSION_CODES.P)
 public class HiddenApiCompat {
+
+    private static Method sForName;
+    private static Method sGetDeclaredMethod;
+
+    static {
+        try {
+            sForName = Class.class.getDeclaredMethod("forName", String.class);
+            sGetDeclaredMethod = Class.class.getDeclaredMethod("getDeclaredMethod", String.class, Class[].class);
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+    }
 
     public static boolean checkIfAllowed() {
         if (tryAccess()) {
@@ -44,18 +58,27 @@ public class HiddenApiCompat {
         return tryAccess();
     }
 
-    private static void tryWhitelist() {
+    public static boolean isNewQ() {
+        if (!checkIfAllowed()) return true;
         try {
-            Method forName = Class.class.getDeclaredMethod("forName", String.class);
-            Method getDeclaredMethod = Class.class.getDeclaredMethod("getDeclaredMethod", String.class, Class[].class);
+            sGetDeclaredMethod.invoke(ISystemGestureExclusionListener.class,
+                    "onSystemGestureExclusionChanged", new Class[] {int.class, Region.class, Region.class});
+            return true;
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            return false;
+        }
+    }
 
-            Class<?> vmRuntimeClass = (Class<?>) forName.invoke(null, "dalvik.system.VMRuntime");
-            Method getRuntime = (Method) getDeclaredMethod.invoke(vmRuntimeClass, "getRuntime", null);
-            Method setHiddenApiExemptions = (Method) getDeclaredMethod.invoke(vmRuntimeClass, "setHiddenApiExemptions", new Class[]{String[].class});
+    private static void tryWhitelist() {
+        if (sForName == null || sGetDeclaredMethod == null) return;
+        try {
+            Class<?> vmRuntimeClass = (Class<?>) sForName.invoke(null, "dalvik.system.VMRuntime");
+            Method getRuntime = (Method) sGetDeclaredMethod.invoke(vmRuntimeClass, "getRuntime", null);
+            Method setHiddenApiExemptions = (Method) sGetDeclaredMethod.invoke(vmRuntimeClass, "setHiddenApiExemptions", new Class[]{String[].class});
             Object vmRuntime = getRuntime.invoke(null);
 
             setHiddenApiExemptions.invoke(vmRuntime, new Object[] { new String[] { "L" } });
-        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+        } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
     }
