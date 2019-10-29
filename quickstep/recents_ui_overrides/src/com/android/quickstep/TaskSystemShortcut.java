@@ -216,8 +216,7 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
                         }
                     };
                     WindowManagerWrapper.getInstance().overridePendingAppTransitionMultiThumbFuture(
-                            future, animStartedListener, mHandler, true /* scaleUp */,
-                            v.getDisplay().getDisplayId());
+                            future, animStartedListener, mHandler, true /* scaleUp */, displayId);
                 }
             });
         }

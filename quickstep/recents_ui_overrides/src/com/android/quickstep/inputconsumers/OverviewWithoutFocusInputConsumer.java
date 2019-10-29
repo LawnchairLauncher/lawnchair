@@ -30,7 +30,13 @@ import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
 
+import com.android.launcher3.BaseActivity;
+import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.logging.StatsLogUtils;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.quickstep.OverviewCallbacks;
 import com.android.quickstep.util.NavBarPosition;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
@@ -131,12 +137,14 @@ public class OverviewWithoutFocusInputConsumer implements InputConsumer {
                 ? -velocityX : (mNavBarPosition.isLeftEdge() ? velocityX : -velocityY);
 
         final boolean triggerQuickstep;
+        int touch = Touch.FLING;
         if (Math.abs(velocity) >= ViewConfiguration.get(mContext).getScaledMinimumFlingVelocity()) {
             triggerQuickstep = velocity > 0;
         } else {
             float displacementX = mDisableHorizontalSwipe ? 0 : (ev.getX() - mDownPos.x);
             float displacementY = ev.getY() - mDownPos.y;
             triggerQuickstep = squaredHypot(displacementX, displacementY) >= mSquaredTouchSlop;
+            touch = Touch.SWIPE;
         }
 
         if (triggerQuickstep) {
@@ -144,6 +152,13 @@ public class OverviewWithoutFocusInputConsumer implements InputConsumer {
             ActivityManagerWrapper.getInstance()
                     .closeSystemWindows(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
             TOUCH_INTERACTION_LOG.addLog("startQuickstep");
+            BaseActivity activity = BaseDraggingActivity.fromContext(mContext);
+            int pageIndex = -1; // This number doesn't reflect workspace page index.
+                                // It only indicates that launcher client screen was shown.
+            int containerType = StatsLogUtils.getContainerTypeFromState(activity.getCurrentState());
+            activity.getUserEventDispatcher().logActionOnContainer(
+                    touch, Direction.UP, containerType, pageIndex);
+            activity.getUserEventDispatcher().setPreviousHomeGesture(true);
         } else {
             // ignore
         }

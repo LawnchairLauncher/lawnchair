@@ -39,18 +39,16 @@ public class InputMonitorCompat {
      * @see InputMonitor#pilferPointers()
      */
     public void pilferPointers() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            mInputMonitor.pilferPointers();
-        }
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return;
+        mInputMonitor.pilferPointers();
     }
 
     /**
      * @see InputMonitor#dispose()
      */
     public void dispose() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            mInputMonitor.dispose();
-        }
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return;
+        mInputMonitor.dispose();
     }
 
     /**
@@ -58,22 +56,16 @@ public class InputMonitorCompat {
      */
     public InputEventReceiver getInputReceiver(Looper looper, Choreographer choreographer,
             InputEventListener listener) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            return new InputEventReceiver(mInputMonitor.getInputChannel(), looper, choreographer,
-                    listener);
-        } else {
-            return null;
-        }
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return null;
+        return new InputEventReceiver(mInputMonitor.getInputChannel(), looper, choreographer,
+                listener);
     }
 
     /**
      * Gets the input monitor stored in a bundle
      */
     public static InputMonitorCompat fromBundle(Bundle bundle, String key) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            return new InputMonitorCompat((InputMonitor) bundle.getParcelable(key));
-        } else {
-            return new InputMonitorCompat(null);
-        }
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return new InputMonitorCompat(null);
+        return new InputMonitorCompat((InputMonitor) bundle.getParcelable(key));
     }
 }

@@ -65,6 +65,14 @@ public abstract class TaskStackChangeListener {
         onActivityLaunchOnSecondaryDisplayRerouted();
     }
 
+    /**
+     * Called when contents are drawn for the first time on a display which can only contain one
+     * task.
+     *
+     * @param displayId the id of the display on which contents are drawn.
+     */
+    public void onSingleTaskDisplayDrawn(int displayId) { }
+
     public void onTaskProfileLocked(int taskId, int userId) { }
     public void onTaskCreated(int taskId, ComponentName componentName) { }
     public void onTaskRemoved(int taskId) { }

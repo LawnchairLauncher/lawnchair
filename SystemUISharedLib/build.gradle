@@ -39,6 +39,8 @@ dependencies {
     implementation project(':QuickstepCompatVP')
     implementation project(':QuickstepCompatVQ')
 
+    implementation "androidx.annotation:annotation:${ANDROID_X_VERSION}"
+
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'

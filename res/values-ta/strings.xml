@@ -89,7 +89,7 @@
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"ஆன்"</string>
     <string name="notification_dots_desc_off" msgid="1760796511504341095">"ஆஃப்"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"அறிவிப்பிற்கான அணுகல் தேவை"</string>
-    <string name="msg_missing_notification_access" msgid="281113995110910548">"அறிவிப்புப் புள்ளிகளைக் காட்ட, <xliff:g id="NAME">%1$s</xliff:g> இன் பயன்பாட்டு அறிவிப்புகளை இயக்கவும்"</string>
+    <string name="msg_missing_notification_access" msgid="281113995110910548">"அறிவிப்புப் புள்ளிகளைக் காட்ட, <xliff:g id="NAME">%1$s</xliff:g> இன் ஆப்ஸ் அறிவிப்புகளை இயக்கவும்"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"அமைப்புகளை மாற்று"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"அறிவிப்புப் புள்ளிகளைக் காட்டு"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"முகப்புத் திரையில் ஐகானைச் சேர்"</string>

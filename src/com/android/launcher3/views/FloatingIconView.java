@@ -18,6 +18,7 @@ package com.android.launcher3.views;
 import static com.android.launcher3.LauncherAnimUtils.DRAWABLE_ALPHA;
 import static com.android.launcher3.Utilities.getBadge;
 import static com.android.launcher3.Utilities.getFullDrawable;
+import static com.android.launcher3.Utilities.isRtl;
 import static com.android.launcher3.Utilities.mapToRange;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.config.FeatureFlags.ADAPTIVE_ICON_WINDOW_ANIM;
@@ -129,6 +130,7 @@ public class FloatingIconView extends View implements
 
     private final Launcher mLauncher;
     private final int mBlurSizeOutline;
+    private final boolean mIsRtl;
 
     private boolean mIsVerticalBarLayout = false;
     private boolean mIsAdaptiveIcon = false;
@@ -174,6 +176,7 @@ public class FloatingIconView extends View implements
         mLauncher = Launcher.getLauncher(context);
         mBlurSizeOutline = getResources().getDimensionPixelSize(
                 R.dimen.blur_size_medium_outline);
+        mIsRtl = Utilities.isRtl(getResources());
         mListenerView = new ListenerView(context, attrs);
 
         mFgSpringX = new SpringAnimation(this, mFgTransXProperty)
@@ -213,7 +216,10 @@ public class FloatingIconView extends View implements
         setAlpha(alpha);
 
         LayoutParams lp = (LayoutParams) getLayoutParams();
-        float dX = rect.left - lp.leftMargin;
+        float dX = mIsRtl
+                ? rect.left
+                - (mLauncher.getDeviceProfile().widthPx - lp.getMarginStart() - lp.width)
+                : rect.left - lp.getMarginStart();
         float dY = rect.top - lp.topMargin;
         setTranslationX(dX);
         setTranslationY(dY);
@@ -323,14 +329,18 @@ public class FloatingIconView extends View implements
         mPositionOut.set(position);
         lp.ignoreInsets = true;
         // Position the floating view exactly on top of the original
-        lp.leftMargin = Math.round(position.left);
         lp.topMargin = Math.round(position.top);
-
+        if (mIsRtl) {
+            lp.setMarginStart(Math.round(mLauncher.getDeviceProfile().widthPx - position.right));
+        } else {
+            lp.setMarginStart(Math.round(position.left));
+        }
         // Set the properties here already to make sure they are available when running the first
         // animation frame.
-        layout(lp.leftMargin, lp.topMargin, lp.leftMargin + lp.width, lp.topMargin
-                + lp.height);
-
+        int left = mIsRtl
+                ? mLauncher.getDeviceProfile().widthPx - lp.getMarginStart() - lp.width
+                : lp.leftMargin;
+        layout(left, lp.topMargin, left + lp.width, lp.topMargin + lp.height);
     }
 
     /**
@@ -514,8 +524,11 @@ public class FloatingIconView extends View implements
             } else {
                 lp.height = (int) Math.max(lp.height, lp.width * aspectRatio);
             }
-            layout(lp.leftMargin, lp.topMargin, lp.leftMargin + lp.width, lp.topMargin
-                    + lp.height);
+
+            int left = mIsRtl
+                    ? mLauncher.getDeviceProfile().widthPx - lp.getMarginStart() - lp.width
+                    : lp.leftMargin;
+            layout(left, lp.topMargin, left + lp.width, lp.topMargin + lp.height);
 
             float scale = Math.max((float) lp.height / originalHeight,
                     (float) lp.width / originalWidth);
@@ -656,8 +669,7 @@ public class FloatingIconView extends View implements
         canvas.restoreToCount(count);
     }
 
-    public void onListenerViewClosed() {
-        // Fast finish here.
+    public void fastFinish() {
         if (mEndRunnable != null) {
             mEndRunnable.run();
             mEndRunnable = null;
@@ -757,7 +769,7 @@ public class FloatingIconView extends View implements
         view.setVisibility(INVISIBLE);
         parent.addView(view);
         dragLayer.addView(view.mListenerView);
-        view.mListenerView.setListener(view::onListenerViewClosed);
+        view.mListenerView.setListener(view::fastFinish);
 
         view.mEndRunnable = () -> {
             view.mEndRunnable = null;

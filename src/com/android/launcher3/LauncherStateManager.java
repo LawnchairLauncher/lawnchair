@@ -409,10 +409,6 @@ public class LauncherStateManager {
     }
 
     private void onStateTransitionStart(LauncherState state) {
-        if (TestProtocol.sDebugTracing) {
-            android.util.Log.d(TestProtocol.NO_DRAG_TAG,
-                    "onStateTransitionStart");
-        }
         if (mState != state) {
             mState.onStateDisabled(mLauncher);
         }
@@ -435,11 +431,6 @@ public class LauncherStateManager {
         // Only change the stable states after the transitions have finished
         if (state != mCurrentStableState) {
             mLastStableState = state.getHistoryForState(mCurrentStableState);
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.NO_ALLAPPS_EVENT_TAG,
-                        "mCurrentStableState = " + state.getClass().getSimpleName() + " @ " +
-                                android.util.Log.getStackTraceString(new Throwable()));
-            }
             mCurrentStableState = state;
         }
 
@@ -586,10 +577,6 @@ public class LauncherStateManager {
         private final AnimatorSet mAnim;
 
         public StartAnimRunnable(AnimatorSet anim) {
-            if (TestProtocol.sDebugTracing) {
-                android.util.Log.d(TestProtocol.NO_DRAG_TAG,
-                        "StartAnimRunnable");
-            }
             mAnim = anim;
         }
 

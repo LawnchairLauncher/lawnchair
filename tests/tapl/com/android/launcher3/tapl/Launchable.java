@@ -53,11 +53,9 @@ abstract class Launchable {
     private Background launch(BySelector selector) {
         LauncherInstrumentation.log("Launchable.launch before click " +
                 mObject.getVisibleCenter() + " in " + mObject.getVisibleBounds());
-        mLauncher.getTestInfo(TestProtocol.REQUEST_ENABLE_DEBUG_TRACING);
         mLauncher.assertTrue(
                 "Launching an app didn't open a new window: " + mObject.getText(),
                 mObject.clickAndWait(Until.newWindow(), WAIT_TIME_MS));
-        mLauncher.getTestInfo(TestProtocol.REQUEST_DISABLE_DEBUG_TRACING);
         mLauncher.assertTrue(
                 "App didn't start: " + selector,
                 mLauncher.getDevice().wait(Until.hasObject(selector),
@@ -68,7 +66,7 @@ abstract class Launchable {
     /**
      * Drags an object to the center of homescreen.
      */
-    public Workspace dragToWorkspace() {
+    public void dragToWorkspace() {
         final Point launchableCenter = getObject().getVisibleCenter();
         final Point displaySize = mLauncher.getRealDisplaySize();
         final int width = displaySize.x / 2;
@@ -80,10 +78,6 @@ abstract class Launchable {
                                 launchableCenter.x - width / 2 : launchableCenter.x + width / 2,
                         displaySize.y / 2),
                 getLongPressIndicator());
-        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
-                "dragged launchable to workspace")) {
-            return new Workspace(mLauncher);
-        }
     }
 
     protected abstract String getLongPressIndicator();

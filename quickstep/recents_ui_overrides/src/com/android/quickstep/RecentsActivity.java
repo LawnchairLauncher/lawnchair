@@ -28,8 +28,10 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.app.ActivityOptions;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Looper;
 import android.view.View;
 
@@ -42,7 +44,9 @@ import com.android.launcher3.views.BaseDragLayer;
 import com.android.quickstep.fallback.FallbackRecentsView;
 import com.android.quickstep.fallback.RecentsRootView;
 import com.android.quickstep.util.ClipAnimationHelper;
+import com.android.quickstep.util.ObjectWrapper;
 import com.android.quickstep.views.TaskView;
+import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.RemoteAnimationAdapterCompat;
 import com.android.systemui.shared.system.RemoteAnimationRunnerCompat;
@@ -53,6 +57,9 @@ import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
  * See {@link com.android.quickstep.views.RecentsView}.
  */
 public final class RecentsActivity extends BaseRecentsActivity {
+
+    public static final String EXTRA_THUMBNAIL = "thumbnailData";
+    public static final String EXTRA_TASK_ID = "taskID";
 
     private Handler mUiHandler = new Handler(Looper.getMainLooper());
     private RecentsRootView mRecentsRootView;
@@ -76,6 +83,22 @@ public final class RecentsActivity extends BaseRecentsActivity {
         if (isInMultiWindowMode()) {
             onHandleConfigChanged();
         }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        if (intent.getExtras() != null) {
+            int taskID = intent.getIntExtra(EXTRA_TASK_ID, 0);
+            IBinder thumbnail = intent.getExtras().getBinder(EXTRA_THUMBNAIL);
+            if (taskID != 0 && thumbnail instanceof ObjectWrapper) {
+                ThumbnailData thumbnailData = ((ObjectWrapper<ThumbnailData>) thumbnail).get();
+                mFallbackRecentsView.showCurrentTask(taskID);
+                mFallbackRecentsView.updateThumbnail(taskID, thumbnailData);
+            }
+        }
+        intent.removeExtra(EXTRA_TASK_ID);
+        intent.removeExtra(EXTRA_THUMBNAIL);
+        super.onNewIntent(intent);
     }
 
     @Override
@@ -132,7 +155,7 @@ public final class RecentsActivity extends BaseRecentsActivity {
                         mFallbackRecentsView.resetViewUI();
                     }
                 });
-                result.setAnimation(anim);
+                result.setAnimation(anim, RecentsActivity.this);
             }
         };
         return ActivityOptionsCompat.makeRemoteAnimation(new RemoteAnimationAdapterCompat(
@@ -176,6 +199,12 @@ public final class RecentsActivity extends BaseRecentsActivity {
         mFallbackRecentsView.setContentAlpha(1);
         super.onStart();
         mFallbackRecentsView.resetTaskVisuals();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mFallbackRecentsView.reset();
     }
 
     public void onTaskLaunched() {

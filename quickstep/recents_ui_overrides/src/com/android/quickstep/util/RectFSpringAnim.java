@@ -225,7 +225,18 @@ public class RectFSpringAnim {
         }
     }
 
+    public void cancel() {
+        if (mAnimsStarted) {
+            for (OnUpdateListener onUpdateListener : mOnUpdateListeners) {
+                onUpdateListener.onCancel();
+            }
+        }
+        end();
+    }
+
     public interface OnUpdateListener {
         void onUpdate(RectF currentRect, float progress);
+
+        default void onCancel() { }
     }
 }

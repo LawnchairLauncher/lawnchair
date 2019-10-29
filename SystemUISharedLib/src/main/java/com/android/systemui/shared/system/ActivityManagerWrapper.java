@@ -30,10 +30,12 @@ import static android.app.WindowConfiguration.WINDOWING_MODE_UNDEFINED;
 import android.annotation.NonNull;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RecentTaskInfo;
+import android.app.ActivityManager.RunningTaskInfo;
 import android.app.ActivityOptions;
 import android.app.ActivityTaskManager;
 import android.app.AppGlobals;
 import android.app.IAssistDataReceiver;
+import android.app.WindowConfiguration;
 import android.app.WindowConfiguration.ActivityType;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -316,28 +318,22 @@ public class ActivityManagerWrapper {
         }
         final ActivityOptions finalOptions = options;
 
-        // Execute this from another thread such that we can do other things (like caching the
-        // bitmap for the thumbnail) while AM is busy starting our activity.
-        mBackgroundExecutor.submit(new Runnable() {
-            @Override
-            public void run() {
-                boolean result = false;
-                try {
-                    result = startActivityFromRecents(taskKey.id, finalOptions);
-                } catch (Exception e) {
-                    // Fall through
+
+        boolean result = false;
+        try {
+            result = startActivityFromRecents(taskKey.id, finalOptions);
+        } catch (Exception e) {
+            // Fall through
+        }
+        final boolean finalResult = result;
+        if (resultCallback != null) {
+            resultCallbackHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    resultCallback.accept(finalResult);
                 }
-                final boolean finalResult = result;
-                if (resultCallback != null) {
-                    resultCallbackHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            resultCallback.accept(finalResult);
-                        }
-                    });
-                }
-            }
-        });
+            });
+        }
     }
 
     /**
@@ -514,5 +510,13 @@ public class ActivityManagerWrapper {
                 && (context.getPackageManager().hasSystemFeature(
                 PackageManager.FEATURE_FREEFORM_WINDOW_MANAGEMENT)
                 || freeformDevOption);
+    }
+
+    /**
+     * Returns true if the running task represents the home task
+     */
+    public static boolean isHomeTask(RunningTaskInfo info) {
+        return info.configuration.windowConfiguration.getActivityType()
+                == WindowConfiguration.ACTIVITY_TYPE_HOME;
     }
 }

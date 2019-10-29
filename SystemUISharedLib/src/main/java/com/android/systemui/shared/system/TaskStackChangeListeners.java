@@ -190,7 +190,8 @@ public abstract class TaskStackChangeListeners extends TaskStackListener {
         protected static final int ON_ACTIVITY_LAUNCH_ON_SECONDARY_DISPLAY_REROUTED = 16;
         protected static final int ON_SIZE_COMPAT_MODE_ACTIVITY_CHANGED = 17;
         protected static final int ON_BACK_PRESSED_ON_TASK_ROOT = 18;
-        protected static final int ON_TASK_DISPLAY_CHANGED = 19;
+        private static final int ON_SINGLE_TASK_DISPLAY_DRAWN = 19;
+        protected static final int ON_TASK_DISPLAY_CHANGED = 20;
 
 
         public H(Looper looper) {
@@ -337,6 +338,12 @@ public abstract class TaskStackChangeListeners extends TaskStackListener {
                         for (int i = mTaskStackListeners.size() - 1; i >= 0; i--) {
                             mTaskStackListeners.get(i).onBackPressedOnTaskRoot(
                                     (RunningTaskInfo) msg.obj);
+                        }
+                        break;
+                    }
+                    case ON_SINGLE_TASK_DISPLAY_DRAWN: {
+                        for (int i = mTaskStackListeners.size() - 1; i >= 0; i--) {
+                            mTaskStackListeners.get(i).onSingleTaskDisplayDrawn(msg.arg1);
                         }
                         break;
                     }

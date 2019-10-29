@@ -52,7 +52,11 @@ public class TaskKeyLruCache<V> extends TaskKeyCache<V> {
                 if (mEvictionCallback != null) {
                     mEvictionCallback.onEntryEvicted(mKeys.get(taskId));
                 }
-                mKeys.remove(taskId);
+
+                // Only remove from mKeys on cache remove, not a cache update.
+                if (newV == null) {
+                    mKeys.remove(taskId);
+                }
             }
         };
     }

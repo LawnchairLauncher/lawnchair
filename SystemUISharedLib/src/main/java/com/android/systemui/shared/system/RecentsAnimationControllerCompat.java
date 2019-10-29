@@ -95,12 +95,22 @@ public class RecentsAnimationControllerCompat {
         }
     }
 
+    @Deprecated
     public void setCancelWithDeferredScreenshot(boolean screenshot) {
         if (VERSION.SDK_INT < Build.VERSION_CODES.Q) return;
         try {
             mAnimationController.setCancelWithDeferredScreenshot(screenshot);
         } catch (RemoteException e) {
             Log.e(TAG, "Failed to set cancel with deferred screenshot", e);
+        }
+    }
+
+    public void setDeferCancelUntilNextTransition(boolean defer, boolean screenshot) {
+        if (VERSION.SDK_INT < Build.VERSION_CODES.Q) return;
+        try {
+            mAnimationController.setDeferCancelUntilNextTransition(defer, screenshot);
+        } catch (RemoteException e) {
+            Log.e(TAG, "Failed to set deferred cancel with screenshot", e);
         }
     }
 

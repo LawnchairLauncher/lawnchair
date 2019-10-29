@@ -20,6 +20,7 @@ import static android.view.Display.DEFAULT_DISPLAY;
 
 import android.app.ActivityManager;
 import android.app.ActivityManager.TaskDescription;
+import android.app.TaskInfo;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -89,6 +90,22 @@ public class Task {
             this.userId = t.userId;
             this.lastActiveTime = t.lastActiveTime;
             this.displayId = QuickstepCompat.getRecentsCompat().getDisplayId(t);
+            updateHashCode();
+        }
+
+        public TaskKey(ActivityManager.RunningTaskInfo t) {
+            ComponentName sourceComponent = t.origActivity != null
+                    // Activity alias if there is one
+                    ? t.origActivity
+                    // The real activity if there is no alias (or the target if there is one)
+                    : t.realActivity;
+            this.id = t.taskId;
+            this.windowingMode = t.configuration.windowConfiguration.getWindowingMode();
+            this.baseIntent = t.baseIntent;
+            this.sourceComponent = sourceComponent;
+            this.userId = t.userId;
+            this.lastActiveTime = t.lastActiveTime;
+            this.displayId = t.displayId;
             updateHashCode();
         }
 
@@ -225,6 +242,28 @@ public class Task {
 
     public Task() {
         // Do nothing
+    }
+
+    /**
+     * Creates a task object from the provided task info
+     */
+    public static Task from(TaskKey taskKey, ActivityManager.RecentTaskInfo taskInfo, boolean isLocked) {
+        ActivityManager.TaskDescription td = taskInfo.taskDescription;
+        return new Task(taskKey,
+                td != null ? td.getPrimaryColor() : 0,
+                td != null ? td.getBackgroundColor() : 0,
+                taskInfo.supportsSplitScreenMultiWindow, isLocked, td, taskInfo.topActivity);
+    }
+
+    /**
+     * Creates a task object from the provided task info
+     */
+    public static Task from(TaskKey taskKey, ActivityManager.RunningTaskInfo taskInfo, boolean isLocked) {
+        ActivityManager.TaskDescription td = taskInfo.taskDescription;
+        return new Task(taskKey,
+                td != null ? td.getPrimaryColor() : 0,
+                td != null ? td.getBackgroundColor() : 0,
+                taskInfo.supportsSplitScreenMultiWindow, isLocked, td, taskInfo.topActivity);
     }
 
     public Task(TaskKey key) {

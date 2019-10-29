@@ -72,6 +72,8 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * The main tapl object. The only object that can be explicitly constructed by the using code. It
@@ -85,8 +87,8 @@ public final class LauncherInstrumentation {
 
     // Types for launcher containers that the user is interacting with. "Background" is a
     // pseudo-container corresponding to inactive launcher covered by another app.
-    enum ContainerType {
-        WORKSPACE, ALL_APPS, OVERVIEW, WIDGETS, BACKGROUND, BASE_OVERVIEW
+    public enum ContainerType {
+        WORKSPACE, ALL_APPS, OVERVIEW, WIDGETS, BACKGROUND, FALLBACK_OVERVIEW
     }
 
     public enum NavigationModel {ZERO_BUTTON, TWO_BUTTON, THREE_BUTTON}
@@ -132,6 +134,9 @@ public final class LauncherInstrumentation {
     private int mExpectedRotation = Surface.ROTATION_0;
     private final Uri mTestProviderUri;
     private final Deque<String> mDiagnosticContext = new LinkedList<>();
+    private Supplier<String> mSystemHealthSupplier;
+
+    private Consumer<ContainerType> mOnSettledStateAction;
 
     /**
      * Constructs the root of TAPL hierarchy. You get all other objects from it.
@@ -206,7 +211,7 @@ public final class LauncherInstrumentation {
         try {
             // Workaround, use constructed context because both the instrumentation context and the
             // app context are not constructed with resources that take overlays into account
-            final Context ctx = baseContext.createPackageContext("android", 0);
+            final Context ctx = baseContext.createPackageContext(getLauncherPackageName(), 0);
             for (int i = 0; i < 100; ++i) {
                 final int currentInteractionMode = getCurrentInteractionMode(ctx);
                 final NavigationModel model = getNavigationModel(currentInteractionMode);
@@ -263,10 +268,79 @@ public final class LauncherInstrumentation {
         }
     }
 
+    private String getAnomalyMessage() {
+        UiObject2 object = mDevice.findObject(By.res("android", "alertTitle"));
+        if (object != null) {
+            return "System alert popup is visible: " + object.getText();
+        }
+
+        object = mDevice.findObject(By.res("android", "message"));
+        if (object != null) {
+            return "Message popup by " + object.getApplicationPackage() + " is visible: "
+                    + object.getText();
+        }
+
+        if (hasSystemUiObject("keyguard_status_view")) return "Phone is locked";
+
+        if (!mDevice.hasObject(By.textStartsWith(""))) return "Screen is empty";
+
+        return null;
+    }
+
+    private String getVisibleStateMessage() {
+        if (hasLauncherObject(WIDGETS_RES_ID)) return "Widgets";
+        if (hasLauncherObject(OVERVIEW_RES_ID)) return "Overview";
+        if (hasLauncherObject(WORKSPACE_RES_ID)) return "Workspace";
+        if (hasLauncherObject(APPS_RES_ID)) return "AllApps";
+        return "Background";
+    }
+
+    public void setSystemHealthSupplier(Supplier<String> supplier) {
+        this.mSystemHealthSupplier = supplier;
+    }
+
+    public void setOnSettledStateAction(Consumer<ContainerType> onSettledStateAction) {
+        mOnSettledStateAction = onSettledStateAction;
+    }
+
+    private String getSystemHealthMessage() {
+        final String testPackage = getContext().getPackageName();
+        try {
+            mDevice.executeShellCommand("pm grant " + testPackage +
+                    " android.permission.READ_LOGS");
+            mDevice.executeShellCommand("pm grant " + testPackage +
+                    " android.permission.PACKAGE_USAGE_STATS");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return mSystemHealthSupplier != null
+                ? mSystemHealthSupplier.get()
+                : TestHelpers.getSystemHealthMessage(getContext());
+    }
+
     private void fail(String message) {
-        log("Hierarchy dump for: " + getContextDescription() + message);
+        message = "http://go/tapl : " + getContextDescription() + message;
+
+        final String anomaly = getAnomalyMessage();
+        if (anomaly != null) {
+            message = anomaly + ", which causes:\n" + message;
+        } else {
+            message = message + " (visible state: " + getVisibleStateMessage() + ")";
+        }
+
+        final String systemHealth = getSystemHealthMessage();
+        if (systemHealth != null) {
+            message = message
+                    + ", which might be a consequence of system health "
+                    + "problems:\n<<<<<<<<<<<<<<<<<<\n"
+                    + systemHealth + "\n>>>>>>>>>>>>>>>>>>";
+        }
+
+        log("Hierarchy dump for: " + message);
         dumpViewHierarchy();
-        Assert.fail("http://go/tapl : " + getContextDescription() + message);
+
+        Assert.fail(message);
     }
 
     private String getContextDescription() {
@@ -331,12 +405,33 @@ public final class LauncherInstrumentation {
     }
 
     private UiObject2 verifyContainerType(ContainerType containerType) {
+        waitForLauncherInitialized();
+
         assertEquals("Unexpected display rotation",
                 mExpectedRotation, mDevice.getDisplayRotation());
+
+        // b/136278866
+        for (int i = 0; i != 100; ++i) {
+            if (getNavigationModeMismatchError() == null) break;
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
         final String error = getNavigationModeMismatchError();
         assertTrue(error, error == null);
         log("verifyContainerType: " + containerType);
 
+        final UiObject2 container = verifyVisibleObjects(containerType);
+
+        if (mOnSettledStateAction != null) mOnSettledStateAction.accept(containerType);
+
+        return container;
+    }
+
+    private UiObject2 verifyVisibleObjects(ContainerType containerType) {
         try (Closable c = addContextLayer(
                 "but the current state is not " + containerType.name())) {
             switch (containerType) {
@@ -373,7 +468,7 @@ public final class LauncherInstrumentation {
 
                     return waitForLauncherObject(OVERVIEW_RES_ID);
                 }
-                case BASE_OVERVIEW: {
+                case FALLBACK_OVERVIEW: {
                     return waitForFallbackLauncherObject(OVERVIEW_RES_ID);
                 }
                 case BACKGROUND: {
@@ -388,6 +483,18 @@ public final class LauncherInstrumentation {
                     return null;
             }
         }
+    }
+
+    private void waitForLauncherInitialized() {
+        for (int i = 0; i < 100; ++i) {
+            if (getTestInfo(
+                    TestProtocol.REQUEST_IS_LAUNCHER_INITIALIZED).
+                    getBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD)) {
+                return;
+            }
+            SystemClock.sleep(100);
+        }
+        fail("Launcher didn't initialize");
     }
 
     Parcelable executeAndWaitForEvent(Runnable command,
@@ -614,12 +721,12 @@ public final class LauncherInstrumentation {
 
     @NonNull
     UiObject2 waitForLauncherObject(BySelector selector) {
-        return waitForObjectBySelector(selector.pkg(getLauncherPackageName()));
+        return waitForObjectBySelector(By.copy(selector).pkg(getLauncherPackageName()));
     }
 
     @NonNull
     UiObject2 tryWaitForLauncherObject(BySelector selector, long timeout) {
-        return tryWaitForObjectBySelector(selector.pkg(getLauncherPackageName()), timeout);
+        return tryWaitForObjectBySelector(By.copy(selector).pkg(getLauncherPackageName()), timeout);
     }
 
     @NonNull
@@ -647,6 +754,10 @@ public final class LauncherInstrumentation {
 
     String getLauncherPackageName() {
         return mDevice.getLauncherPackageName();
+    }
+
+    boolean isFallbackOverview() {
+        return !getOverviewPackageName().equals(getLauncherPackageName());
     }
 
     @NonNull
@@ -684,7 +795,7 @@ public final class LauncherInstrumentation {
                 startX = endX = rect.centerX();
                 final int vertCenter = rect.centerY();
                 final float halfGestureHeight = rect.height() * percent / 2.0f;
-                startY = (int) (vertCenter - halfGestureHeight);
+                startY = (int) (vertCenter - halfGestureHeight) + 1;
                 endY = (int) (vertCenter + halfGestureHeight);
             }
             break;
@@ -692,8 +803,24 @@ public final class LauncherInstrumentation {
                 startX = endX = rect.centerX();
                 final int vertCenter = rect.centerY();
                 final float halfGestureHeight = rect.height() * percent / 2.0f;
-                startY = (int) (vertCenter + halfGestureHeight);
+                startY = (int) (vertCenter + halfGestureHeight) - 1;
                 endY = (int) (vertCenter - halfGestureHeight);
+            }
+            break;
+            case LEFT: {
+                startY = endY = rect.centerY();
+                final int horizCenter = rect.centerX();
+                final float halfGestureWidth = rect.width() * percent / 2.0f;
+                startX = (int) (horizCenter - halfGestureWidth) + 1;
+                endX = (int) (horizCenter + halfGestureWidth);
+            }
+            break;
+            case RIGHT: {
+                startY = endY = rect.centerY();
+                final int horizCenter = rect.centerX();
+                final float halfGestureWidth = rect.width() * percent / 2.0f;
+                startX = (int) (horizCenter + halfGestureWidth) - 1;
+                endX = (int) (horizCenter - halfGestureWidth);
             }
             break;
             default:
@@ -711,6 +838,7 @@ public final class LauncherInstrumentation {
     // Inject a swipe gesture. Inject exactly 'steps' motion points, incrementing event time by a
     // fixed interval each time.
     void linearGesture(int startX, int startY, int endX, int endY, int steps) {
+        log("linearGesture: " + startX + ", " + startY + " -> " + endX + ", " + endY);
         final long downTime = SystemClock.uptimeMillis();
         final Point start = new Point(startX, startY);
         final Point end = new Point(endX, endY);
@@ -812,7 +940,7 @@ public final class LauncherInstrumentation {
     int getEdgeSensitivityWidth() {
         try {
             final Context context = mInstrumentation.getTargetContext().createPackageContext(
-                    "android", 0);
+                    getLauncherPackageName(), 0);
             return context.getResources().getDimensionPixelSize(
                     getSystemDimensionResId(context, "config_backGestureInset")) + 1;
         } catch (PackageManager.NameNotFoundException e) {
@@ -825,5 +953,13 @@ public final class LauncherInstrumentation {
         final Point size = new Point();
         getContext().getSystemService(WindowManager.class).getDefaultDisplay().getRealSize(size);
         return size;
+    }
+
+    public void enableDebugTracing() {
+        getTestInfo(TestProtocol.REQUEST_ENABLE_DEBUG_TRACING);
+    }
+
+    public void disableDebugTracing() {
+        getTestInfo(TestProtocol.REQUEST_DISABLE_DEBUG_TRACING);
     }
 }

@@ -19,14 +19,14 @@ import static android.view.MotionEvent.ACTION_CANCEL;
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
 
-import static com.android.launcher3.Utilities.FLAG_NO_GESTURES;
-
 import android.view.InputEvent;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.Utilities;
+import androidx.annotation.UiThread;
+
 import com.android.launcher3.util.Preconditions;
 import com.android.quickstep.inputconsumers.InputConsumer;
 import com.android.quickstep.util.SwipeAnimationTargetSet;
@@ -34,8 +34,6 @@ import com.android.systemui.shared.system.InputConsumerController;
 
 import java.util.ArrayList;
 import java.util.function.Supplier;
-
-import androidx.annotation.UiThread;
 
 /**
  * Wrapper around RecentsAnimationController to help with some synchronization
@@ -216,18 +214,19 @@ public class RecentsAnimationWrapper {
             }
         }
         if (mInputConsumer != null) {
-            int flags = ev.getEdgeFlags();
-            ev.setEdgeFlags(flags | FLAG_NO_GESTURES);
             mInputConsumer.onMotionEvent(ev);
-            ev.setEdgeFlags(flags);
         }
 
         return true;
     }
 
-    public void setCancelWithDeferredScreenshot(boolean deferredWithScreenshot) {
+    public void setDeferCancelUntilNextTransition(boolean defer, boolean screenshot) {
         if (targetSet != null) {
-            targetSet.controller.setCancelWithDeferredScreenshot(deferredWithScreenshot);
+            try {
+                targetSet.controller.setDeferCancelUntilNextTransition(defer, screenshot);
+            } catch (NoSuchMethodError e) {
+                targetSet.controller.setCancelWithDeferredScreenshot(defer);
+            }
         }
     }
 

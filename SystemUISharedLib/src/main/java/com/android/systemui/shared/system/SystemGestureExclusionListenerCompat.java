@@ -16,11 +16,11 @@
 package com.android.systemui.shared.system;
 
 import android.graphics.Region;
-import android.os.Build;
 import android.os.RemoteException;
 import android.util.Log;
 import android.view.ISystemGestureExclusionListener;
 import android.view.WindowManagerGlobal;
+import androidx.annotation.Keep;
 
 /**
  * Utility class to listen for exclusion rect changes.
@@ -31,26 +31,52 @@ public abstract class SystemGestureExclusionListenerCompat {
 
     private final int mDisplayId;
 
-    private ISystemGestureExclusionListener mGestureExclusionListener;
+    private ISystemGestureExclusionListener mGestureExclusionListener =
+            new ISystemGestureExclusionListener.Stub() {
+                @Override
+                public void onSystemGestureExclusionChanged(int displayId,
+                        Region systemGestureExclusion, Region unrestrictedOrNull) {
+                    if (displayId == mDisplayId) {
+                        Region unrestricted = (unrestrictedOrNull == null)
+                                ? systemGestureExclusion : unrestrictedOrNull;
+                        onExclusionChanged(systemGestureExclusion, unrestricted);
+                    }
+                }
+
+                @Keep
+                public void onSystemGestureExclusionChanged(int displayId,
+                        Region systemGestureExclusion) {
+                    onSystemGestureExclusionChanged(displayId, systemGestureExclusion, null);
+                }
+            };
     private boolean mRegistered;
 
     public SystemGestureExclusionListenerCompat(int displayId) {
         mDisplayId = displayId;
-        mGestureExclusionListener = new ISystemGestureExclusionListener.Stub() {
-            @Override
-            public void onSystemGestureExclusionChanged(int displayId,
-                                                        Region systemGestureExclusion) {
-                if (displayId == mDisplayId) {
-                    onExclusionChanged(systemGestureExclusion);
-                }
-            }
-        };
     }
 
     /**
-     * Called when the exclusion region has changed
+     * Called when the exclusion region has changed.
+     *
+     * TODO: remove, once all subclasses have migrated to
+     *       {@link #onExclusionChanged(Region, Region)}.
      */
     public abstract void onExclusionChanged(Region systemGestureExclusion);
+
+    /**
+     * Called when the exclusion region has changed.
+     *
+     * @param systemGestureExclusion the system gesture exclusion to be applied
+     * @param systemGestureExclusionUnrestricted what would be the system gesture exclusion, if
+     *           there were no restrictions being applied. For logging purposes only.
+     *
+     */
+    public void onExclusionChanged(Region systemGestureExclusion,
+            Region systemGestureExclusionUnrestricted) {
+        // TODO: make abstract, once all subclasses have migrated away from
+        //       onExclusionChanged(Region)
+        onExclusionChanged(systemGestureExclusion);
+    }
 
     /**
      * Registers the listener for getting exclusion rect changes.

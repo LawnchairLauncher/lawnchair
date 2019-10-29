@@ -50,6 +50,15 @@ public class QuickStepContract {
     public static final String NAV_BAR_MODE_GESTURAL_OVERLAY =
             WindowManagerPolicyConstants.NAV_BAR_MODE_GESTURAL_OVERLAY;
 
+    // Action sent by a system app to switch to gesture nav
+    public static final String ACTION_ENABLE_GESTURE_NAV =
+            "com.android.systemui.ENABLE_GESTURE_NAV";
+    // Action for the intent to receive the result
+    public static final String ACTION_ENABLE_GESTURE_NAV_RESULT =
+            "com.android.systemui.action.ENABLE_GESTURE_NAV_RESULT";
+    // Extra containing the pending intent to receive the result
+    public static final String EXTRA_RESULT_INTENT = "com.android.systemui.EXTRA_RESULT_INTENT";
+
     // Overview is disabled, either because the device is in lock task mode, or because the device
     // policy has disabled the feature
     public static final int SYSUI_STATE_SCREEN_PINNING = 1 << 0;
@@ -72,18 +81,25 @@ public class QuickStepContract {
     public static final int SYSUI_STATE_HOME_DISABLED = 1 << 8;
     // The keyguard is showing, but occluded
     public static final int SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING_OCCLUDED = 1 << 9;
+    // The search feature is disabled (either by SUW/SysUI/device policy)
+    public static final int SYSUI_STATE_SEARCH_DISABLED = 1 << 10;
+    // The notification panel is expanded and interactive (either locked or unlocked), and the
+    // quick settings is not expanded
+    public static final int SYSUI_STATE_QUICK_SETTINGS_EXPANDED = 1 << 11;
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({SYSUI_STATE_SCREEN_PINNING,
             SYSUI_STATE_NAV_BAR_HIDDEN,
             SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED,
+            SYSUI_STATE_QUICK_SETTINGS_EXPANDED,
             SYSUI_STATE_BOUNCER_SHOWING,
             SYSUI_STATE_A11Y_BUTTON_CLICKABLE,
             SYSUI_STATE_A11Y_BUTTON_LONG_CLICKABLE,
             SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING,
             SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING_OCCLUDED,
             SYSUI_STATE_OVERVIEW_DISABLED,
-            SYSUI_STATE_HOME_DISABLED
+            SYSUI_STATE_HOME_DISABLED,
+            SYSUI_STATE_SEARCH_DISABLED
     })
     public @interface SystemUiStateFlags {}
 
@@ -92,8 +108,10 @@ public class QuickStepContract {
         str.add((flags & SYSUI_STATE_SCREEN_PINNING) != 0 ? "screen_pinned" : "");
         str.add((flags & SYSUI_STATE_OVERVIEW_DISABLED) != 0 ? "overview_disabled" : "");
         str.add((flags & SYSUI_STATE_HOME_DISABLED) != 0 ? "home_disabled" : "");
+        str.add((flags & SYSUI_STATE_SEARCH_DISABLED) != 0 ? "search_disabled" : "");
         str.add((flags & SYSUI_STATE_NAV_BAR_HIDDEN) != 0 ? "navbar_hidden" : "");
         str.add((flags & SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED) != 0 ? "notif_visible" : "");
+        str.add((flags & SYSUI_STATE_QUICK_SETTINGS_EXPANDED) != 0 ? "qs_visible" : "");
         str.add((flags & SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING) != 0 ? "keygrd_visible" : "");
         str.add((flags & SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING_OCCLUDED) != 0
                 ? "keygrd_occluded" : "");
@@ -142,10 +160,13 @@ public class QuickStepContract {
      * disabled.
      */
     public static boolean isAssistantGestureDisabled(int sysuiStateFlags) {
-        // Disable when in screen pinning, immersive, the bouncer is showing
+        // Disable when in quick settings, screen pinning, immersive, the bouncer is showing, 
+        // or search is disabled
         int disableFlags = SYSUI_STATE_SCREEN_PINNING
                 | SYSUI_STATE_NAV_BAR_HIDDEN
-                | SYSUI_STATE_BOUNCER_SHOWING;
+                | SYSUI_STATE_BOUNCER_SHOWING
+                | SYSUI_STATE_SEARCH_DISABLED
+                | SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
         if ((sysuiStateFlags & disableFlags) != 0) {
             return true;
         }
@@ -168,9 +189,8 @@ public class QuickStepContract {
         if ((sysuiStateFlags & SYSUI_STATE_BOUNCER_SHOWING) != 0) {
             return false;
         }
-        // Disable when in screen pinning, immersive, or the notifications are interactive
-        int disableFlags = SYSUI_STATE_SCREEN_PINNING
-                | SYSUI_STATE_NAV_BAR_HIDDEN
+        // Disable when in immersive, or the notifications are interactive
+        int disableFlags = SYSUI_STATE_NAV_BAR_HIDDEN
                 | SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED
                 | SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING;
         return (sysuiStateFlags & disableFlags) != 0;

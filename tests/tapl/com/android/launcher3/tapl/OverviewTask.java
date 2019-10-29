@@ -64,14 +64,12 @@ public final class OverviewTask {
      */
     public Background open() {
         verifyActiveContainer();
-        mLauncher.getTestInfo(TestProtocol.REQUEST_ENABLE_DEBUG_TRACING);
         try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                 "clicking an overview task")) {
             mLauncher.assertTrue("Launching task didn't open a new window: " +
                             mTask.getParent().getContentDescription(),
                     mTask.clickAndWait(Until.newWindow(), WAIT_TIME_MS));
         }
-        mLauncher.getTestInfo(TestProtocol.REQUEST_DISABLE_DEBUG_TRACING);
         return new Background(mLauncher);
     }
 }
