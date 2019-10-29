@@ -104,8 +104,6 @@ public class InvariantDeviceProfile {
     public int iconBitmapSize;
     public int fillResIconDpi;
     public float iconTextSize;
-    public float allAppsIconSize;
-    public float allAppsIconTextSize;
 
     private SparseArray<TypedValue> mExtraAttrs;
 
@@ -146,8 +144,6 @@ public class InvariantDeviceProfile {
         iconTextSize = p.iconTextSize;
         numHotseatIcons = p.numHotseatIcons;
         numAllAppsColumns = p.numAllAppsColumns;
-        allAppsIconSize = p.allAppsIconSize;
-        allAppsIconTextSize = p.allAppsIconTextSize;
         defaultLayoutId = p.defaultLayoutId;
         demoModeLayoutId = p.demoModeLayoutId;
         mExtraAttrs = p.mExtraAttrs;
