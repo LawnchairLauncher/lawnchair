@@ -19,12 +19,11 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 public class BitmapInfo {
 
     public static final Bitmap LOW_RES_ICON = Bitmap.createBitmap(1, 1, Config.ALPHA_8);
-    public static final BitmapInfo LOW_RES_INFO = fromBitmap(LOW_RES_ICON, null);
+    public static final BitmapInfo LOW_RES_INFO = fromBitmap(LOW_RES_ICON);
 
     public final Bitmap icon;
     public final int color;
@@ -49,14 +48,25 @@ public class BitmapInfo {
         return of(bitmap, 0);
     }
 
-    public static BitmapInfo fromBitmap(@NonNull Bitmap bitmap,
-            @Nullable ColorExtractor dominantColorExtractor) {
-        return of(bitmap, dominantColorExtractor != null
-                ? dominantColorExtractor.findDominantColorByHue(bitmap)
-                : 0);
-    }
-
     public static BitmapInfo of(@NonNull Bitmap bitmap, int color) {
         return new BitmapInfo(bitmap, color);
+    }
+
+    /**
+     * Interface to be implemented by drawables to provide a custom BitmapInfo
+     */
+    public interface Extender {
+
+        /**
+         * Called for creating a custom BitmapInfo
+         */
+        default BitmapInfo getExtendedInfo(Bitmap bitmap, int color, BaseIconFactory iconFactory) {
+            return BitmapInfo.of(bitmap, color);
+        }
+
+        /**
+         * Notifies the drawable that it will be drawn directly in the UI, without any preprocessing
+         */
+        default void prepareToDrawOnUi() { }
     }
 }

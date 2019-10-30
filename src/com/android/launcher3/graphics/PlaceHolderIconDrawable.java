@@ -17,8 +17,9 @@ package com.android.launcher3.graphics;
 
 import static androidx.core.graphics.ColorUtils.compositeColors;
 
+import static com.android.launcher3.graphics.IconShape.getShapePath;
+
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Path;
 import android.graphics.Rect;
@@ -36,16 +37,12 @@ public class PlaceHolderIconDrawable extends FastBitmapDrawable {
     // Path in [0, 100] bounds.
     private final Path mProgressPath;
 
-    public PlaceHolderIconDrawable(BitmapInfo info, Path progressPath, Context context) {
-        this(info.icon, info.color, progressPath, context);
-    }
+    public PlaceHolderIconDrawable(BitmapInfo info, Context context) {
+        super(info);
 
-    protected PlaceHolderIconDrawable(Bitmap b, int iconColor, Path progressPath, Context context) {
-        super(b, iconColor);
-
-        mProgressPath = progressPath;
+        mProgressPath = getShapePath();
         mPaint.setColor(compositeColors(
-                Themes.getAttrColor(context, R.attr.loadingIconColor), iconColor));
+                Themes.getAttrColor(context, R.attr.loadingIconColor), info.color));
     }
 
     @Override

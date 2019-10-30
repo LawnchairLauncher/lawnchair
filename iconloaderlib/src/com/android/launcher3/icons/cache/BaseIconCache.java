@@ -464,7 +464,7 @@ public abstract class BaseIconCache {
         return entry;
     }
 
-    private boolean getEntryFromDB(ComponentKey cacheKey, CacheEntry entry, boolean lowRes) {
+    protected boolean getEntryFromDB(ComponentKey cacheKey, CacheEntry entry, boolean lowRes) {
         Cursor c = null;
         try {
             c = mIconDb.query(

@@ -60,6 +60,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Handler;
+import android.os.UserHandle;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
@@ -105,7 +106,7 @@ import com.android.launcher3.util.ViewPool;
 import com.android.quickstep.RecentsAnimationController;
 import com.android.quickstep.RecentsAnimationTargets;
 import com.android.quickstep.RecentsModel;
-import com.android.quickstep.RecentsModel.TaskThumbnailChangeListener;
+import com.android.quickstep.RecentsModel.TaskVisualsChangeListener;
 import com.android.quickstep.TaskThumbnailCache;
 import com.android.quickstep.TaskUtils;
 import com.android.quickstep.ViewUtils;
@@ -127,7 +128,7 @@ import java.util.function.Consumer;
 @TargetApi(Build.VERSION_CODES.P)
 public abstract class RecentsView<T extends BaseActivity> extends PagedView implements Insettable,
         TaskThumbnailCache.HighResLoadingState.HighResLoadingStateChangedCallback,
-        InvariantDeviceProfile.OnIDPChangeListener, TaskThumbnailChangeListener {
+        InvariantDeviceProfile.OnIDPChangeListener, TaskVisualsChangeListener {
 
     private static final String TAG = RecentsView.class.getSimpleName();
 
@@ -381,6 +382,21 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             }
         }
         return null;
+    }
+
+    @Override
+    public void onTaskIconChanged(String pkg, UserHandle user) {
+        for (int i = 0; i < getTaskViewCount(); i++) {
+            TaskView tv = getTaskViewAt(i);
+            Task task = tv.getTask();
+            if (task != null && task.key != null && pkg.equals(task.key.getPackageName())
+                    && task.key.userId == user.getIdentifier()) {
+                task.icon = null;
+                if (tv.getIconView().getDrawable() != null) {
+                    tv.onTaskListVisibilityChanged(true /* visible */);
+                }
+            }
+        }
     }
 
     /**

@@ -15,6 +15,7 @@
  */
 package com.android.quickstep;
 
+import static com.android.launcher3.FastBitmapDrawable.newIcon;
 import static com.android.launcher3.uioverrides.QuickstepLauncher.GO_LOW_RAM_RECENTS_ENABLED;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
@@ -37,14 +38,14 @@ import androidx.annotation.WorkerThread;
 import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.icons.BitmapInfo;
+import com.android.launcher3.icons.IconProvider;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.icons.cache.HandlerRunnable;
 import com.android.launcher3.util.Preconditions;
+import com.android.quickstep.util.TaskKeyLruCache;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.Task.TaskKey;
-import com.android.systemui.shared.recents.model.TaskKeyLruCache;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.PackageManagerWrapper;
 
@@ -61,6 +62,7 @@ public class TaskIconCache {
     private final Context mContext;
     private final TaskKeyLruCache<TaskCacheEntry> mIconCache;
     private final SparseArray<BitmapInfo> mDefaultIcons = new SparseArray<>();
+    private final IconProvider mIconProvider;
 
     public TaskIconCache(Context context, Looper backgroundLooper) {
         mContext = context;
@@ -70,6 +72,7 @@ public class TaskIconCache {
         Resources res = context.getResources();
         int cacheSize = res.getInteger(R.integer.recentsIconCacheSize);
         mIconCache = new TaskKeyLruCache<>(cacheSize);
+        mIconProvider = new IconProvider(context);
     }
 
     /**
@@ -115,6 +118,12 @@ public class TaskIconCache {
         mIconCache.remove(taskKey);
     }
 
+    void invalidateCacheEntries(String pkg, UserHandle handle) {
+        Utilities.postAsyncCallback(mBackgroundHandler,
+                () -> mIconCache.removeAll(key ->
+                        pkg.equals(key.getPackageName()) && handle.getIdentifier() == key.userId));
+    }
+
     @WorkerThread
     private TaskCacheEntry getCacheEntry(Task task) {
         TaskCacheEntry entry = mIconCache.getAndInvalidateIfModified(task.key);
@@ -143,12 +152,11 @@ public class TaskIconCache {
                     key.getComponent(), key.userId);
             if (activityInfo != null) {
                 BitmapInfo bitmapInfo = getBitmapInfo(
-                        activityInfo.loadUnbadgedIcon(mContext.getPackageManager()),
+                        mIconProvider.getIcon(activityInfo, UserHandle.of(key.userId)),
                         key.userId,
                         desc.getPrimaryColor(),
                         activityInfo.applicationInfo.isInstantApp());
-                entry.icon = DrawableFactory.INSTANCE.get(mContext).newIcon(
-                        mContext, bitmapInfo, activityInfo);
+                entry.icon = newIcon(mContext, bitmapInfo);
             } else {
                 entry.icon = getDefaultIcon(key.userId);
             }

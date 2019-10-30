@@ -239,7 +239,7 @@ public class PredictionUiStateManager implements StateListener, ItemInfoUpdateRe
                     key = new ComponentKey(new ComponentName(appTarget.getPackageName(),
                             appTarget.getClassName()), appTarget.getUser());
                 }
-                state.apps.add(new ComponentKeyMapper(mContext, key, mDynamicItemCache));
+                state.apps.add(new ComponentKeyMapper(key, mDynamicItemCache));
             }
         }
         updateDependencies(state);

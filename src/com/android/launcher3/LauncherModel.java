@@ -21,6 +21,7 @@ import static com.android.launcher3.config.FeatureFlags.IS_DOGFOOD_BUILD;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.LauncherApps;
 import android.content.pm.PackageInstaller;
@@ -31,6 +32,7 @@ import android.util.Log;
 import android.util.Pair;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
@@ -53,7 +55,6 @@ import com.android.launcher3.model.UserLockStateChangedTask;
 import com.android.launcher3.pm.InstallSessionTracker;
 import com.android.launcher3.pm.PackageInstallInfo;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
-import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.IntSparseArrayMap;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.PackageUserKey;
@@ -210,9 +211,21 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
         enqueueModelUpdateTask(new ShortcutsChangedTask(packageName, shortcuts, user, true));
     }
 
-    public void updatePinnedShortcuts(String packageName, List<ShortcutInfo> shortcuts,
-            UserHandle user) {
-        enqueueModelUpdateTask(new ShortcutsChangedTask(packageName, shortcuts, user, false));
+    /**
+     * Called when the icon for an app changes, outside of package event
+     */
+    @WorkerThread
+    public void onAppIconChanged(String packageName, UserHandle user) {
+        // Update the icon for the calendar package
+        Context context = mApp.getContext();
+        onPackageChanged(packageName, user);
+
+        List<ShortcutInfo> pinnedShortcuts = DeepShortcutManager.getInstance(context)
+                .queryForPinnedShortcuts(packageName, user);
+        if (!pinnedShortcuts.isEmpty()) {
+            enqueueModelUpdateTask(new ShortcutsChangedTask(packageName, pinnedShortcuts, user,
+                    false));
+        }
     }
 
     public void onBroadcastIntent(Intent intent) {

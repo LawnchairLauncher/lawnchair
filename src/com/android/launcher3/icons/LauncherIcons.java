@@ -31,7 +31,6 @@ import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.R;
 import com.android.launcher3.graphics.IconShape;
 import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
@@ -44,8 +43,6 @@ import java.util.function.Supplier;
  * that are threadsafe.
  */
 public class LauncherIcons extends BaseIconFactory implements AutoCloseable {
-
-    private static final String EXTRA_BADGEPKG = "badge_package";
 
     private static final Object sPoolSync = new Object();
     private static LauncherIcons sPool;
@@ -160,7 +157,7 @@ public class LauncherIcons extends BaseIconFactory implements AutoCloseable {
 
     public ItemInfoWithIcon getShortcutInfoBadge(ShortcutInfo shortcutInfo, IconCache cache) {
         ComponentName cn = shortcutInfo.getActivity();
-        String badgePkg = getBadgePackage(shortcutInfo);
+        String badgePkg = shortcutInfo.getPackage();
         boolean hasBadgePkgSet = !badgePkg.equals(shortcutInfo.getPackage());
         if (cn != null && !hasBadgePkgSet) {
             // Get the app info for the source activity.
@@ -177,15 +174,5 @@ public class LauncherIcons extends BaseIconFactory implements AutoCloseable {
             cache.getTitleAndIconForApp(pkgInfo, false);
             return pkgInfo;
         }
-    }
-
-    private String getBadgePackage(ShortcutInfo si) {
-        String whitelistedPkg = mContext.getString(R.string.shortcutinfo_badgepkg_whitelist);
-        if (whitelistedPkg.equals(si.getPackage())
-                && si.getExtras() != null
-                && si.getExtras().containsKey(EXTRA_BADGEPKG)) {
-            return si.getExtras().getString(EXTRA_BADGEPKG);
-        }
-        return si.getPackage();
     }
 }
