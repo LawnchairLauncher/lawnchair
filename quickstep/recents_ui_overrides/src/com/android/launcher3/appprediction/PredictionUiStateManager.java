@@ -26,6 +26,7 @@ import android.content.ComponentName;
 import android.content.Context;
 
 import com.android.launcher3.AppInfo;
+import com.android.launcher3.HotseatPredictionController;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile.OnIDPChangeListener;
 import com.android.launcher3.ItemInfoWithIcon;
@@ -89,6 +90,8 @@ public class PredictionUiStateManager implements StateListener, ItemInfoUpdateRe
 
     private AllAppsContainerView mAppsView;
 
+    private HotseatPredictionController mHotseatPredictionController;
+
     private PredictionState mPendingState;
     private PredictionState mCurrentState;
 
@@ -150,6 +153,10 @@ public class PredictionUiStateManager implements StateListener, ItemInfoUpdateRe
         updateDependencies(mCurrentState);
     }
 
+    public void setHotseatPredictionController(HotseatPredictionController controller) {
+        mHotseatPredictionController = controller;
+    }
+
     @Override
     public void reapplyItemInfo(ItemInfoWithIcon info) { }
 
@@ -185,6 +192,9 @@ public class PredictionUiStateManager implements StateListener, ItemInfoUpdateRe
         if (mAppsView != null) {
             mAppsView.getFloatingHeaderView().findFixedRowByType(PredictionRowView.class)
                     .setPredictedApps(mCurrentState.apps);
+        }
+        if (mHotseatPredictionController != null) {
+            mHotseatPredictionController.setPredictedApps(mCurrentState.apps);
         }
     }
 
