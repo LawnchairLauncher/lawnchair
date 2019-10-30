@@ -771,7 +771,7 @@ public class TouchInteractionService extends Service implements
         }
     }
 
-    private boolean isExcludedAssistant(TaskInfo info) {
+    private boolean isExcludedAssistant(RunningTaskInfo info) {
         return info != null
                 && TaskInfoCompat.getActivityType(info) == ACTIVITY_TYPE_ASSISTANT
                 && (info.baseIntent.getFlags() & Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS) != 0;

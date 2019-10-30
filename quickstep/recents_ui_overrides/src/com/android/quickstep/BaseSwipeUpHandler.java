@@ -73,6 +73,7 @@ import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
 
+import com.android.systemui.shared.system.WindowManagerWrapper;
 import java.util.function.Consumer;
 
 import androidx.annotation.UiThread;
@@ -274,7 +275,13 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
             dp = dp.copy(mContext);
             overviewStackBounds = getStackBounds(dp);
         }
-        dp.updateInsets(targetSet.homeContentInsets);
+        if (Utilities.ATLEAST_Q) {
+            dp.updateInsets(targetSet.homeContentInsets);
+        } else {
+            Rect insets = new Rect();
+            WindowManagerWrapper.getInstance().getStableInsets(insets);
+            dp.updateInsets(insets);
+        }
         dp.updateIsSeascape(mContext.getSystemService(WindowManager.class));
         if (runningTaskTarget != null) {
             mClipAnimationHelper.updateSource(overviewStackBounds, runningTaskTarget);
