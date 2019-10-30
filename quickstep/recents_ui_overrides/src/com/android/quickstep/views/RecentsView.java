@@ -97,6 +97,7 @@ import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
+import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.OverScroller;
 import com.android.launcher3.util.PendingAnimation;
 import com.android.launcher3.util.Themes;
@@ -785,6 +786,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         unloadVisibleTaskData();
         setCurrentPage(0);
         mDwbToastShown = false;
+        mActivity.getSystemUiController().updateUiState(UI_STATE_OVERVIEW, 0);
     }
 
     public @Nullable TaskView getRunningTaskView() {
@@ -823,7 +825,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
      */
     public void onSwipeUpAnimationSuccess() {
         if (getRunningTaskView() != null) {
-            float startProgress = ENABLE_QUICKSTEP_LIVE_TILE.get()
+            float startProgress = ENABLE_QUICKSTEP_LIVE_TILE.get() && mLiveTileOverlay != null
                     ? mLiveTileOverlay.cancelIconAnimation()
                     : 0f;
             animateUpRunningTaskIconScale(startProgress);
@@ -939,6 +941,10 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         }
     }
 
+    public boolean isTaskIconScaledDown(TaskView taskView) {
+        return mRunningTaskIconScaledDown && getRunningTaskView() == taskView;
+    }
+
     private void applyRunningTaskIconScale() {
         TaskView firstTask = getRunningTaskView();
         if (firstTask != null) {
@@ -1050,9 +1056,10 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         if (task != null) {
             ActivityManagerWrapper.getInstance().removeTask(task.key.id);
             if (shouldLog) {
+                ComponentKey componentKey = TaskUtils.getLaunchComponentKeyForTask(task.key);
                 mActivity.getUserEventDispatcher().logTaskLaunchOrDismiss(
-                        onEndListener.logAction, Direction.UP, index,
-                        TaskUtils.getLaunchComponentKeyForTask(task.key));
+                        onEndListener.logAction, Direction.UP, index, componentKey);
+                mActivity.getStatsLogManager().logTaskDismiss(this, componentKey);
             }
         }
     }

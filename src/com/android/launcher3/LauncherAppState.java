@@ -19,14 +19,12 @@ package com.android.launcher3;
 import static com.android.launcher3.InvariantDeviceProfile.CHANGE_FLAG_ICON_PARAMS;
 import static com.android.launcher3.util.SecureSettingsObserver.newNotificationSettingsObserver;
 
-import android.app.KeyguardManager;
 import android.content.ComponentName;
 import android.content.ContentProviderClient;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Handler;
-import android.os.Process;
 import android.util.Log;
 
 import com.android.launcher3.compat.LauncherAppsCompat;
@@ -46,7 +44,7 @@ public class LauncherAppState {
 
     // We do not need any synchronization for this variable as its only written on UI thread.
     private static final MainThreadInitializedObject<LauncherAppState> INSTANCE =
-            new MainThreadInitializedObject<>((c) -> new LauncherAppState(c));
+            new MainThreadInitializedObject<>(LauncherAppState::new);
 
     private final Context mContext;
     private final LauncherModel mModel;
@@ -96,6 +94,7 @@ public class LauncherAppState {
         if (FeatureFlags.IS_DOGFOOD_BUILD) {
             filter.addAction(ACTION_FORCE_ROLOAD);
         }
+        FeatureFlags.APP_SEARCH_IMPROVEMENTS.addChangeListener(context, mModel::forceReload);
 
         mContext.registerReceiver(mModel, filter);
         UserManagerCompat.getInstance(mContext).enableAndResetCache();

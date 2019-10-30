@@ -40,5 +40,7 @@ public class StatsLogManager implements ResourceBasedOverride {
 
     public void logAppLaunch(View v, Intent intent) { }
     public void logTaskLaunch(View v, ComponentKey key) { }
+    public void logTaskDismiss(View v, ComponentKey key) { }
+    public void logSwipeOnContainer(boolean isSwipingToLeft, int pageId) { }
     public void verify() {}     // TODO: should move into robo tests
 }

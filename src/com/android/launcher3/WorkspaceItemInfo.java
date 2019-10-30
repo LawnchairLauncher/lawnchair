@@ -16,16 +16,22 @@
 
 package com.android.launcher3;
 
+import android.app.Person;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ShortcutInfo;
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
+
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.shortcuts.ShortcutKey;
+import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.util.ContentWriter;
+
+import java.util.Arrays;
 
 /**
  * Represents a launchable icon on the workspaces and in folders.
@@ -44,24 +50,26 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
      * The icon was added as an auto-install app, and is not ready to be used. This flag can't
      * be present along with {@link #FLAG_RESTORED_ICON}, and is set during default layout
      * parsing.
+     *
+     * OR this icon was added due to it being an active install session created by the user.
      */
-    public static final int FLAG_AUTOINSTALL_ICON = 2; //0B10;
+    public static final int FLAG_AUTOINSTALL_ICON = 1 << 1;
 
     /**
      * The icon is being installed. If {@link #FLAG_RESTORED_ICON} or {@link #FLAG_AUTOINSTALL_ICON}
      * is set, then the icon is either being installed or is in a broken state.
      */
-    public static final int FLAG_INSTALL_SESSION_ACTIVE = 4; // 0B100;
+    public static final int FLAG_INSTALL_SESSION_ACTIVE = 1 << 2;
 
     /**
      * Indicates that the widget restore has started.
      */
-    public static final int FLAG_RESTORE_STARTED = 8; //0B1000;
+    public static final int FLAG_RESTORE_STARTED = 1 << 3;
 
     /**
      * Web UI supported.
      */
-    public static final int FLAG_SUPPORTS_WEB_UI = 16; //0B10000;
+    public static final int FLAG_SUPPORTS_WEB_UI = 1 << 4;
 
     /**
      * The intent used to start the application.
@@ -83,9 +91,16 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
     public int status;
 
     /**
+     * A set of person's Id associated with the WorkspaceItemInfo, this is only used if the item
+     * represents a deep shortcut.
+     */
+    @NonNull private String[] personKeys = Utilities.EMPTY_STRING_ARRAY;
+
+    /**
      * The installation progress [0-100] of the package that this shortcut represents.
      */
     private int mInstallProgress;
+
 
     public WorkspaceItemInfo() {
         itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
@@ -98,6 +113,7 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
         iconResource = info.iconResource;
         status = info.status;
         mInstallProgress = info.mInstallProgress;
+        personKeys = info.personKeys.clone();
     }
 
     /** TODO: Remove this.  It's only called by ApplicationInfo.makeWorkspaceItem. */
@@ -175,6 +191,10 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
             runtimeStatusFlags |= FLAG_DISABLED_BY_PUBLISHER;
         }
         disabledMessage = shortcutInfo.getDisabledMessage();
+
+        Person[] persons = UiFactory.getPersons(shortcutInfo);
+        personKeys = persons.length == 0 ? Utilities.EMPTY_STRING_ARRAY
+            : Arrays.stream(persons).map(Person::getKey).sorted().toArray(String[]::new);
     }
 
     /** Returns the WorkspaceItemInfo id associated with the deep shortcut. */
@@ -183,11 +203,16 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
                 getIntent().getStringExtra(ShortcutKey.EXTRA_SHORTCUT_ID) : null;
     }
 
+    @NonNull
+    public String[] getPersonKeys() {
+        return personKeys;
+    }
+
     @Override
     public ComponentName getTargetComponent() {
         ComponentName cn = super.getTargetComponent();
         if (cn == null && (itemType == Favorites.ITEM_TYPE_SHORTCUT
-                || hasStatusFlag(FLAG_SUPPORTS_WEB_UI))) {
+                || hasStatusFlag(FLAG_SUPPORTS_WEB_UI | FLAG_AUTOINSTALL_ICON))) {
             // Legacy shortcuts and promise icons with web UI may not have a componentName but just
             // a packageName. In that case create a dummy componentName instead of adding additional
             // check everywhere.

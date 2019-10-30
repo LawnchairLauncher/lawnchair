@@ -16,18 +16,19 @@
 
 package com.android.quickstep.logging;
 
-import android.content.Context;
-import android.content.Intent;
-import android.stats.launcher.nano.LauncherExtension;
-import android.stats.launcher.nano.LauncherTarget;
-
 import static android.stats.launcher.nano.Launcher.ALLAPPS;
 import static android.stats.launcher.nano.Launcher.HOME;
 import static android.stats.launcher.nano.Launcher.LAUNCH_APP;
 import static android.stats.launcher.nano.Launcher.LAUNCH_TASK;
+import static android.stats.launcher.nano.Launcher.DISMISS_TASK;
 import static android.stats.launcher.nano.Launcher.BACKGROUND;
 import static android.stats.launcher.nano.Launcher.OVERVIEW;
 
+import android.content.Context;
+import android.content.Intent;
+import android.stats.launcher.nano.Launcher;
+import android.stats.launcher.nano.LauncherExtension;
+import android.stats.launcher.nano.LauncherTarget;
 import android.view.View;
 
 import com.android.launcher3.ItemInfo;
@@ -37,8 +38,6 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.ComponentKey;
 import com.android.systemui.shared.system.StatsLogCompat;
 import com.google.protobuf.nano.MessageNano;
-
-import androidx.annotation.Nullable;
 
 /**
  * This method calls the StatsLog hidden method until they are made available public.
@@ -74,6 +73,27 @@ public class StatsLogCompatManager extends StatsLogManager {
                 MessageNano.toByteArray(ext), true);
     }
 
+    @Override
+    public void logTaskDismiss(View v, ComponentKey componentKey) {
+        LauncherExtension ext = new LauncherExtension();
+        ext.srcTarget = new LauncherTarget[SUPPORTED_TARGET_DEPTH];
+        int srcState = OVERVIEW;
+        fillInLauncherExtension(v, ext);
+        StatsLogCompat.write(DISMISS_TASK, srcState, BACKGROUND /* dstState */,
+                MessageNano.toByteArray(ext), true);
+    }
+
+    @Override
+    public void logSwipeOnContainer(boolean isSwipingToLeft, int pageId) {
+        LauncherExtension ext = new LauncherExtension();
+        ext.srcTarget = new LauncherTarget[1];
+        int srcState = mStateProvider.getCurrentState();
+        fillInLauncherExtensionWithPageId(ext, pageId);
+        int launcherAction = isSwipingToLeft ? Launcher.SWIPE_LEFT : Launcher.SWIPE_RIGHT;
+        StatsLogCompat.write(launcherAction, srcState, srcState,
+                MessageNano.toByteArray(ext), true);
+    }
+
     public static boolean fillInLauncherExtension(View v, LauncherExtension extension) {
         StatsLogUtils.LogContainerProvider provider = StatsLogUtils.getLaunchProviderRecursive(v);
         if (v == null || !(v.getTag() instanceof ItemInfo) || provider == null) {
@@ -85,6 +105,13 @@ public class StatsLogCompatManager extends StatsLogManager {
         provider.fillInLogContainerData(v, itemInfo, child, parent);
         copy(child, extension.srcTarget[0]);
         copy(parent, extension.srcTarget[1]);
+        return true;
+    }
+
+    public static boolean fillInLauncherExtensionWithPageId(LauncherExtension ext, int pageId) {
+        Target target = new Target();
+        target.pageIndex = pageId;
+        copy(target, ext.srcTarget[0]);
         return true;
     }
 

@@ -16,6 +16,8 @@
 
 package com.android.launcher3.tapl;
 
+import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
+
 import android.graphics.Point;
 
 import androidx.test.uiautomator.By;
@@ -23,13 +25,10 @@ import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.Until;
 
-import com.android.launcher3.testing.TestProtocol;
-
 /**
  * Ancestor for AppIcon and AppMenuItem.
  */
 abstract class Launchable {
-    private static final int WAIT_TIME_MS = 60000;
     protected final LauncherInstrumentation mLauncher;
 
     protected final UiObject2 mObject;
@@ -53,9 +52,12 @@ abstract class Launchable {
     private Background launch(BySelector selector) {
         LauncherInstrumentation.log("Launchable.launch before click " +
                 mObject.getVisibleCenter() + " in " + mObject.getVisibleBounds());
-        mLauncher.assertTrue(
-                "Launching an app didn't open a new window: " + mObject.getText(),
-                mObject.clickAndWait(Until.newWindow(), WAIT_TIME_MS));
+
+        mLauncher.executeAndWaitForEvent(
+                () -> mObject.click(),
+                event -> event.getEventType() == TYPE_WINDOW_STATE_CHANGED,
+                "Launching an app didn't open a new window: " + mObject.getText());
+
         mLauncher.assertTrue(
                 "App didn't start: " + selector,
                 mLauncher.getDevice().wait(Until.hasObject(selector),

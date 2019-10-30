@@ -64,7 +64,7 @@ public final class LandscapeStatesTouchController extends PortraitStatesTouchCon
     }
 
     @Override
-    protected int getLogContainerTypeForNormalState() {
+    protected int getLogContainerTypeForNormalState(MotionEvent ev) {
         return LauncherLogProto.ContainerType.WORKSPACE;
     }
 }

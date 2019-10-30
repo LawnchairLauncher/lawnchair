@@ -20,14 +20,23 @@ import android.content.Context;
 import android.content.pm.LauncherActivityInfo;
 import android.os.UserHandle;
 
+import com.android.launcher3.IconProvider;
+import com.android.launcher3.R;
 import com.android.launcher3.icons.cache.CachingLogic;
+import com.android.launcher3.util.ResourceBasedOverride;
 
-public class LauncherActivtiyCachingLogic implements CachingLogic<LauncherActivityInfo> {
+/**
+ * Caching logic for LauncherActivityInfo.
+ */
+public class LauncherActivityCachingLogic
+        implements CachingLogic<LauncherActivityInfo>, ResourceBasedOverride {
 
-    private final IconCache mCache;
-
-    public LauncherActivtiyCachingLogic(IconCache cache) {
-        mCache = cache;
+    /**
+     * Creates and returns a new instance
+     */
+    public static LauncherActivityCachingLogic newInstance(Context context) {
+        return Overrides.getObject(LauncherActivityCachingLogic.class, context,
+                R.string.launcher_activity_logic_class);
     }
 
     @Override
@@ -49,7 +58,9 @@ public class LauncherActivtiyCachingLogic implements CachingLogic<LauncherActivi
     public void loadIcon(Context context, LauncherActivityInfo object,
             BitmapInfo target) {
         LauncherIcons li = LauncherIcons.obtain(context);
-        li.createBadgedIconBitmap(mCache.getFullResIcon(object),
+        li.createBadgedIconBitmap(
+                IconProvider.INSTANCE.get(context)
+                        .getIcon(object, li.mFillResIconDpi, true /* flattenDrawable */),
                 object.getUser(), object.getApplicationInfo().targetSdkVersion).applyTo(target);
         li.recycle();
     }

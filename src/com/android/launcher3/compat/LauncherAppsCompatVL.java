@@ -31,11 +31,14 @@ import android.os.Bundle;
 import android.os.Process;
 import android.os.UserHandle;
 import android.util.ArrayMap;
+import android.util.Log;
 
 import com.android.launcher3.compat.ShortcutConfigActivityInfo.ShortcutConfigActivityInfoVL;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.PackageUserKey;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -167,6 +170,10 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
 
         @Override
         public void onPackagesSuspended(String[] packageNames, UserHandle user) {
+            if (TestProtocol.sDebugTracing) {
+                Log.d(TestProtocol.APP_NOT_DISABLED, "onPackagesSuspended: " +
+                        Arrays.toString(packageNames));
+            }
             mCallback.onPackagesSuspended(packageNames, user);
         }
 

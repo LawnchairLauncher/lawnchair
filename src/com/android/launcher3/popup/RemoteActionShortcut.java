@@ -29,11 +29,12 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 
 public class RemoteActionShortcut extends SystemShortcut<BaseDraggingActivity> {
     private static final String TAG = "RemoteActionShortcut";
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = Utilities.IS_DEBUG_DEVICE;
 
     private final RemoteAction mAction;
 
