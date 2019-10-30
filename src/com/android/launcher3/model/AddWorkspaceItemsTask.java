@@ -76,6 +76,11 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
                     if (shortcutExists(dataModel, item.getIntent(), item.user)) {
                         continue;
                     }
+
+                    // b/139663018 Short-circuit this logic if the icon is a system app
+                    if (PackageManagerHelper.isSystemApp(app.getContext(), item.getIntent())) {
+                        continue;
+                    }
                 }
 
                 if (item.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
