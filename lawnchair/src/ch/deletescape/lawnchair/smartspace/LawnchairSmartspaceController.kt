@@ -441,7 +441,7 @@ class LawnchairSmartspaceController(val context: Context) {
                            val pendingIntent: PendingIntent? = null) {
 
         fun getTitle(unit: Temperature.Unit): String {
-            return "${temperature.inUnit(unit)} ${unit.suffix}"
+            return "${temperature.inUnit(unit)}${unit.suffix}"
         }
     }
 
