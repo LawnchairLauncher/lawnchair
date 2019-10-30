@@ -73,6 +73,7 @@ class IconShapePreference(context: Context, attrs: AttributeSet?) :
             addEntry(R.string.icon_shape_square, "square")
             addEntry(R.string.icon_shape_rounded_square, "roundedSquare")
             addEntry(R.string.icon_shape_squircle, "squircle")
+            addEntry(R.string.icon_shape_sammy, "sammy")
             addEntry(R.string.icon_shape_teardrop, "teardrop")
             addEntry(R.string.icon_shape_cylinder, "cylinder")
         }

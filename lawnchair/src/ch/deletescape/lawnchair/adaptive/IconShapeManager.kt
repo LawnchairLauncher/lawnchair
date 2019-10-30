@@ -104,6 +104,7 @@ class IconShapeManager(private val context: Context) {
                 IconShape.Square,
                 IconShape.RoundedSquare,
                 IconShape.Squircle,
+                IconShape.Sammy,
                 IconShape.Teardrop,
                 IconShape.Cylinder).minBy {
             shapePath.reset()

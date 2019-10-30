@@ -29,8 +29,10 @@ abstract class IconCornerShape {
 
     abstract class BaseBezierPath : IconCornerShape() {
 
-        protected abstract val controlDistance: Float
         protected val roundControlDistance = .447771526f
+        protected open val controlDistance = roundControlDistance
+        protected open val controlDistanceX get() = controlDistance
+        protected open val controlDistanceY get() = controlDistance
 
         private fun getControl1X(position: Position, controlDistance: Float): Float {
             return Utilities.mapRange(controlDistance, position.controlX, position.startX)
@@ -50,12 +52,13 @@ abstract class IconCornerShape {
 
         override fun addCorner(path: Path, position: Position, size: PointF, progress: Float,
                                offsetX: Float, offsetY: Float) {
-            val controlDistance = Utilities.mapRange(progress, controlDistance, roundControlDistance)
+            val controlDistanceX = Utilities.mapRange(progress, controlDistanceX, roundControlDistance)
+            val controlDistanceY = Utilities.mapRange(progress, controlDistanceY, roundControlDistance)
             path.cubicTo(
-                    getControl1X(position, controlDistance) * size.x + offsetX,
-                    getControl1Y(position, controlDistance) * size.y + offsetY,
-                    getControl2X(position, controlDistance) * size.x + offsetX,
-                    getControl2Y(position, controlDistance) * size.y + offsetY,
+                    getControl1X(position, controlDistanceX) * size.x + offsetX,
+                    getControl1Y(position, controlDistanceY) * size.y + offsetY,
+                    getControl2X(position, controlDistanceX) * size.x + offsetX,
+                    getControl2Y(position, controlDistanceY) * size.y + offsetY,
                     position.endX * size.x + offsetX,
                     position.endY * size.y + offsetY)
         }
@@ -116,6 +119,12 @@ abstract class IconCornerShape {
         override fun toString(): String {
             return "ultrasquircle"
         }
+    }
+
+    class Sammy : BaseBezierPath() {
+
+        override val controlDistanceX = 0.4431717172f
+        override val controlDistanceY = 0.1401010101f
     }
 
     class Arc : BaseBezierPath() {
@@ -186,6 +195,7 @@ abstract class IconCornerShape {
         val squircle = Squircle()
         val strongsquircle = StrongSquircle()
         val ultrasquircle = UltraSquircle()
+        val sammy = Sammy()
         val arc = Arc()
 
         fun fromString(value: String): IconCornerShape {
@@ -195,6 +205,7 @@ abstract class IconCornerShape {
                 "cubic", "squircle" -> squircle
                 "strongsquircle" -> strongsquircle
                 "ultrasquircle" -> ultrasquircle
+                "sammy" -> sammy
                 "arc" -> arc
                 else -> error("invalid corner shape $value")
             }

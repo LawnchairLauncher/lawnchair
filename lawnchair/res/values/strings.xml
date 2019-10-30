@@ -749,4 +749,5 @@
 
     <string name="smartspace_provider_calendar">Calendar events</string>
     <string name="action_press_back">Back button</string>
+    <string name="icon_shape_sammy">Sammy</string>
 </resources>
