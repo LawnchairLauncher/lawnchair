@@ -98,7 +98,7 @@ public class BackgroundAppState extends OverviewState {
         if ((getVisibleElements(launcher) & HOTSEAT_ICONS) != 0) {
             // Translate hotseat offscreen if we show it in overview.
             ScaleAndTranslation scaleAndTranslation = super.getHotseatScaleAndTranslation(launcher);
-            scaleAndTranslation.translationY = LayoutUtils.getShelfTrackingDistance(launcher,
+            scaleAndTranslation.translationY += LayoutUtils.getShelfTrackingDistance(launcher,
                     launcher.getDeviceProfile());
             return scaleAndTranslation;
         }
