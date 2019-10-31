@@ -431,7 +431,7 @@
     <string name="pref_center_wallpaper_summary">这将禁用壁纸滚动效果</string>
     <string name="pref_icon_popup_menu">弹出菜单项</string>
     <string name="pref_appcategorization_enable_title">对应用程序进行分类</string>
-    <string name="pref_appcategorization_enable_summary">整理我那凌乱不堪的应用抽屉。</string>
+    <string name="pref_appcategorization_enable_summary">整理下我那凌乱不堪的应用抽屉。</string>
     <string name="pref_appcategorization_style_text">样式</string>
     <string name="pref_app_groups_edit_tip">点击进行编辑，拖动以重新排序。</string>
     <string name="pref_app_groups_create">创建</string>
