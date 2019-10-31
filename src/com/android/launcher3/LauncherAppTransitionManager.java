@@ -67,4 +67,18 @@ public class LauncherAppTransitionManager implements ResourceBasedOverride {
     public Animator createStateElementAnimation(int index, float... values) {
         throw new RuntimeException("Unknown gesture animation " + index);
     }
+
+    /**
+     * Registers remote animations for certain system transitions.
+     */
+    public void registerRemoteAnimations() {
+        // Do nothing
+    }
+
+    /**
+     * Unregisters all remote animations.
+     */
+    public void unregisterRemoteAnimations() {
+        // Do nothing
+    }
 }

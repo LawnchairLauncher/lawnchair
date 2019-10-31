@@ -373,6 +373,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         mPopupDataProvider = new PopupDataProvider(this);
 
         mAppTransitionManager = LauncherAppTransitionManager.newInstance(this);
+        mAppTransitionManager.registerRemoteAnimations();
 
         boolean internalStateHandled = ACTIVITY_TRACKER.handleCreate(this);
         if (internalStateHandled) {
@@ -1545,6 +1546,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         LauncherAppState.getIDP(this).removeOnChangeListener(this);
 
         mOverlayManager.onActivityDestroyed(this);
+        mAppTransitionManager.unregisterRemoteAnimations();
     }
 
     public LauncherAccessibilityDelegate getAccessibilityDelegate() {
