@@ -356,9 +356,9 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
      * Custom shortcuts are replaced by deep shortcuts after api 25.
      */
     @Test
-    @Ignore("Temporarily disabled to unblock merging to master")
     @PortraitLandscape
     public void testDragCustomShortcut() {
+        if (!TestHelpers.isInLauncherProcess()) return;     // b/143725213
         mLauncher.getWorkspace().openAllWidgets()
                 .getWidget("com.android.launcher3.testcomponent.CustomShortcutConfigActivity")
                 .dragToWorkspace();

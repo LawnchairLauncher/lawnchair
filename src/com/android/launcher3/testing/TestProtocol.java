@@ -84,5 +84,4 @@ public final class TestProtocol {
     public static final String NO_BACKGROUND_TO_OVERVIEW_TAG = "b/138251824";
     public static final String NO_DRAG_TO_WORKSPACE = "b/138729456";
     public static final String APP_NOT_DISABLED = "b/139891609";
-    public static final String CRASH_ADD_CUSTOM_SHORTCUT = "b/141568904";
 }
