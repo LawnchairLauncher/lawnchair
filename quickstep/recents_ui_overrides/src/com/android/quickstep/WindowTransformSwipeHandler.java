@@ -1028,6 +1028,15 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
 
     @UiThread
     private void startNewTask() {
+        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+            mRecentsAnimationController.finish(true /* toRecents */, this::startNewTaskInternal);
+        } else {
+            startNewTaskInternal();
+        }
+    }
+
+    @UiThread
+    private void startNewTaskInternal() {
         startNewTask(STATE_HANDLER_INVALIDATED, success -> {
             if (!success) {
                 // We couldn't launch the task, so take user to overview so they can
