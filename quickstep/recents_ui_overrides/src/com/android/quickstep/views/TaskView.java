@@ -287,11 +287,19 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     public void launchTask(boolean animate, boolean freezeTaskList, Consumer<Boolean> resultCallback,
             Handler resultCallbackHandler) {
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+            RecentsView recentsView = getRecentsView();
             if (isRunningTask()) {
-                getRecentsView().finishRecentsAnimation(false /* toRecents */,
+                recentsView.finishRecentsAnimation(false /* toRecents */,
                         () -> resultCallbackHandler.post(() -> resultCallback.accept(true)));
             } else {
-                launchTaskInternal(animate, freezeTaskList, resultCallback, resultCallbackHandler);
+                // This is a workaround against the WM issue that app open is not correctly animated
+                // when recents animation is being cleaned up (b/143774568). When that's possible,
+                // we should rely on the framework side to cancel the recents animation, and we will
+                // clean up the screenshot on the launcher side while we launch the next task.
+                recentsView.switchToScreenshot(null,
+                        () -> recentsView.finishRecentsAnimation(true /* toRecents */,
+                                () -> launchTaskInternal(animate, freezeTaskList, resultCallback,
+                                        resultCallbackHandler)));
             }
         } else {
             launchTaskInternal(animate, freezeTaskList, resultCallback, resultCallbackHandler);
