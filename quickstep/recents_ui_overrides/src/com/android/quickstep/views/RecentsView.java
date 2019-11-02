@@ -1742,7 +1742,17 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             return;
         }
 
-        mRecentsAnimationController.finish(toRecents, onFinishComplete);
+        mRecentsAnimationController.finish(toRecents, () -> {
+            if (onFinishComplete != null) {
+                onFinishComplete.run();
+                // After we finish the recents animation, the current task id should be correctly
+                // reset so that when the task is launched from Overview later, it goes through the
+                // flow of starting a new task instead of finishing recents animation to app. A
+                // typical example of this is (1) user swipes up from app to Overview (2) user
+                // taps on QSB (3) user goes back to Overview and launch the most recent task.
+                setCurrentTask(-1);
+            }
+        });
     }
 
     public void setDisallowScrollToClearAll(boolean disallowScrollToClearAll) {
