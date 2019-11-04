@@ -56,7 +56,7 @@ ifneq (,$(wildcard frameworks/base))
     LOCAL_PRIVATE_PLATFORM_APIS := true
     LOCAL_STATIC_JAVA_LIBRARIES += launcher-aosp-tapl
 else
-    LOCAL_SDK_VERSION := 28
+    LOCAL_SDK_VERSION := system_28
     LOCAL_MIN_SDK_VERSION := 21
     LOCAL_STATIC_JAVA_LIBRARIES += ub-launcher-aosp-tapl
 endif
