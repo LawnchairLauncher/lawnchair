@@ -80,7 +80,8 @@ public class NavigationModeSwitchRule implements TestRule {
             Mode mode = description.getAnnotation(NavigationModeSwitch.class).mode();
             return new Statement() {
                 private void assertTrue(String message, boolean condition) {
-                    if(!condition) {
+                    mLauncher.checkForAnomaly();
+                    if (!condition) {
                         final AssertionError assertionError = new AssertionError(message);
                         FailureWatcher.onError(mLauncher.getDevice(), description, assertionError);
                         throw assertionError;

@@ -175,7 +175,7 @@ public class FallbackRecentsTest {
             }
             result[0] = f.apply(activity);
             return true;
-        }).get(), DEFAULT_UI_TIMEOUT);
+        }).get(), DEFAULT_UI_TIMEOUT, mLauncher);
         return (T) result[0];
     }
 
@@ -196,7 +196,7 @@ public class FallbackRecentsTest {
         startAppFastAndWaitForRecentTask(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
         startTestActivity(2);
         Wait.atMost("Expected three apps in the task list",
-                () -> mLauncher.getRecentTasks().size() >= 3, DEFAULT_ACTIVITY_TIMEOUT);
+                () -> mLauncher.getRecentTasks().size() >= 3, DEFAULT_ACTIVITY_TIMEOUT, mLauncher);
 
         BaseOverview overview = mLauncher.getBackground().switchToOverview();
         executeOnRecents(recents ->
@@ -255,7 +255,8 @@ public class FallbackRecentsTest {
     private void startAppFastAndWaitForRecentTask(String packageName) {
         startAppFast(packageName);
         Wait.atMost("Expected app in task list",
-                () -> containsRecentTaskWithPackage(packageName), DEFAULT_ACTIVITY_TIMEOUT);
+                () -> containsRecentTaskWithPackage(packageName), DEFAULT_ACTIVITY_TIMEOUT,
+                mLauncher);
     }
 
     private boolean containsRecentTaskWithPackage(String packageName) {

@@ -26,8 +26,6 @@ import static org.junit.Assert.assertTrue;
 
 import static java.lang.System.exit;
 
-import static androidx.test.InstrumentationRegistry.getInstrumentation;
-
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentResolver;
@@ -306,7 +304,7 @@ public abstract class AbstractLauncherUiTest {
     protected void waitForLauncherCondition(
             String message, Function<Launcher, Boolean> condition, long timeout) {
         if (!TestHelpers.isInLauncherProcess()) return;
-        Wait.atMost(message, () -> getFromLauncher(condition), timeout);
+        Wait.atMost(message, () -> getFromLauncher(condition), timeout, mLauncher);
     }
 
     // Cannot be used in TaplTests after injecting any gesture using Tapl because this can hide
@@ -319,7 +317,7 @@ public abstract class AbstractLauncherUiTest {
             final Object fromLauncher = getFromLauncher(f);
             output[0] = fromLauncher;
             return fromLauncher != null;
-        }, timeout);
+        }, timeout, mLauncher);
         return (T) output[0];
     }
 
@@ -333,7 +331,7 @@ public abstract class AbstractLauncherUiTest {
         Wait.atMost(message, () -> {
             testThreadAction.run();
             return getFromLauncher(condition);
-        }, timeout);
+        }, timeout, mLauncher);
     }
 
     protected LauncherActivityInfo getSettingsApp() {
