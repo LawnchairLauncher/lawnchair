@@ -22,6 +22,7 @@ import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_3;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.touch.AbstractStateChangeTouchController.SUCCESS_TRANSITION_PROGRESS;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 
@@ -138,8 +139,13 @@ public class NavBarToHomeTouchController implements TouchController,
             if (!recentsView.isRtl()) {
                 pullbackDist = -pullbackDist;
             }
-            Animator pullback = ObjectAnimator.ofFloat(recentsView, TRANSLATION_X, pullbackDist);
+            ObjectAnimator pullback = ObjectAnimator.ofFloat(recentsView, TRANSLATION_X,
+                    pullbackDist);
             pullback.setInterpolator(PULLBACK_INTERPOLATOR);
+            if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+                pullback.addUpdateListener(
+                        valueAnimator -> recentsView.redrawLiveTile(false /* mightNeedToRefill */));
+            }
             anim.play(pullback);
         } else if (mStartState == ALL_APPS) {
             AnimatorSetBuilder builder = new AnimatorSetBuilder();
@@ -192,6 +198,11 @@ public class NavBarToHomeTouchController implements TouchController,
         boolean success = interpolatedProgress >= SUCCESS_TRANSITION_PROGRESS
                 || (velocity < 0 && fling);
         if (success) {
+            if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+                RecentsView recentsView = mLauncher.getOverviewPanel();
+                recentsView.switchToScreenshot(null,
+                        () -> recentsView.finishRecentsAnimation(true /* toRecents */, null));
+            }
             mLauncher.getStateManager().goToState(mEndState, true,
                     () -> onSwipeInteractionCompleted(mEndState));
             if (mStartState != mEndState) {
