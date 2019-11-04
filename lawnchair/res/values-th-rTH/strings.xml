@@ -9,7 +9,7 @@
     <string name="in_smartspace">ในข้อมูลโดยย่อ</string>
     <string name="smartspace_time">แสดงเวลา</string>
     <string name="smartspace_date">แสดงวันที่</string>
-    <string name="customize">ปรับแต่ง</string>
+    <string name="customize">ค่ากำหนด</string>
     <string name="smartspace_preferences_in_settings">ข้อมูลโดยย่อ</string>
     <string name="smartspace_preferences_in_settings_desc">วันที่, เวลา, สภาพอากาศ</string>
     <string name="search">ค้นหา</string>
@@ -34,7 +34,7 @@
     <string name="app_drawer_pref_title">รายการแอป</string>
     <string name="app_drawer_pref_summary">คำแนะนำ, การซ่อนแอป</string>
     <string name="search_pref_summary">สี, เครื่องมือค้นหา, ไอคอน</string>
-    <string name="general_pref_title">หน้าหลัก</string>
+    <string name="general_pref_title">เดสก์ท็อป</string>
     <string name="general_pref_summary">กริด, แบบไอคอน, แถบสถานะ</string>
     <string name="about_pref_summary">ทีมงาน, ลิงก์ต่างๆ</string>
     <string name="hide_app_selected">&#160; ถูกซ่อน</string>
