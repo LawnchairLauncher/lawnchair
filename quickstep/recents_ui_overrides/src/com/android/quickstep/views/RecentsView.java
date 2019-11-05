@@ -308,7 +308,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     private final int mEmptyMessagePadding;
     private boolean mShowEmptyMessage;
     private Layout mEmptyTextLayout;
-    private LiveTileOverlay mLiveTileOverlay;
+    private boolean mLiveTileOverlayAttached;
 
     // Keeps track of the index where the first TaskView should be
     private int mTaskViewStartIndex = 0;
@@ -876,8 +876,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
      */
     public void onSwipeUpAnimationSuccess() {
         if (getRunningTaskView() != null) {
-            float startProgress = ENABLE_QUICKSTEP_LIVE_TILE.get() && mLiveTileOverlay != null
-                    ? mLiveTileOverlay.cancelIconAnimation()
+            float startProgress = ENABLE_QUICKSTEP_LIVE_TILE.get() && mLiveTileOverlayAttached
+                    ? LiveTileOverlay.getInstance().cancelIconAnimation()
                     : 0f;
             animateUpRunningTaskIconScale(startProgress);
         }
@@ -1724,13 +1724,13 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         mAppWindowAnimationHelper = appWindowAnimationHelper;
     }
 
-    public void setLiveTileOverlay(LiveTileOverlay liveTileOverlay) {
-        mLiveTileOverlay = liveTileOverlay;
+    public void setLiveTileOverlayAttached(boolean liveTileOverlayAttached) {
+        mLiveTileOverlayAttached = liveTileOverlayAttached;
     }
 
     public void updateLiveTileIcon(Drawable icon) {
-        if (mLiveTileOverlay != null) {
-            mLiveTileOverlay.setIcon(icon);
+        if (mLiveTileOverlayAttached) {
+            LiveTileOverlay.getInstance().setIcon(icon);
         }
     }
 
