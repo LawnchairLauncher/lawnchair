@@ -363,7 +363,7 @@
     <string name="allow">Luba</string>
     <string name="deny">Keela</string>
     <string name="sesame_enable_integration_title">Luba põimimine</string>
-    <string name="sesame_enable_integration_description"><![CDATA[Võimaldab Lawnchairi ja Sesame'i vahel andmete jagamist. Seda saab muuta Lawnchairi või Sesame seadetes.]]></string>
+    <string name="sesame_enable_integration_description"><![CDATA[Võimaldab Lawnchairi ja Sesame\'i vahel andmete jagamist. Seda saab muuta Lawnchairi või Sesame seadetes.]]></string>
     <string name="sesame_version">Integratsiooni versioon</string>
     <string name="sesame_shortcut_disabled">Samasami otseteed pole saadaval</string>
     <string name="font_variant_italic">Kaldkiri</string>

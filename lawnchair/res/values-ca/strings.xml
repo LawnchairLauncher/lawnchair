@@ -363,7 +363,7 @@
     <string name="allow">Permet</string>
     <string name="deny">Denega</string>
     <string name="sesame_enable_integration_title">Activa la integració</string>
-    <string name="sesame_enable_integration_description"><![CDATA[Permet l'intercanvi de dades entre el Lawnchair i el Sesame. Podeu canviar-ho a la configuració del Lawnchair o del Sesame.]]></string>
+    <string name="sesame_enable_integration_description"><![CDATA[Permet l\'intercanvi de dades entre el Lawnchair i el Sesame. Podeu canviar-ho a la configuració del Lawnchair o del Sesame.]]></string>
     <string name="sesame_version">Versió de la integració</string>
     <string name="sesame_shortcut_disabled">Les dreceres del Sesame no estan disponibles</string>
     <string name="font_variant_italic">Cursiva</string>

@@ -369,7 +369,7 @@
     <string name="allow">Concedi</string>
     <string name="deny">Nega</string>
     <string name="sesame_enable_integration_title">Attiva l\'integrazione</string>
-    <string name="sesame_enable_integration_description"><![CDATA[Abilita la condivisione di dati tra Lawnchair e Sesame. Puoi modificare quest'opzione nelle impostazioni di Lawnchair o di Sesame.]]></string>
+    <string name="sesame_enable_integration_description"><![CDATA[Abilita la condivisione di dati tra Lawnchair e Sesame. Puoi modificare quest\'opzione nelle impostazioni di Lawnchair o di Sesame.]]></string>
     <string name="sesame_version">Versione dell\'integrazione</string>
     <string name="sesame_shortcut_disabled">Scorciatoie di Sesame non disponibili</string>
     <string name="font_variant_italic">Corsivo</string>
