@@ -1180,6 +1180,11 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         mDropTargetBar.setup(mDragController);
 
         mAllAppsController.setupViews(mAppsView);
+
+        if (FeatureFlags.ENABLE_OVERVIEW_ACTIONS.get()) {
+            // Overview is above all other launcher elements, including qsb, so move it to the top.
+            mOverviewPanel.bringToFront();
+        }
     }
 
     /**

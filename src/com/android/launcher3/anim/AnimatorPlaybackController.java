@@ -26,6 +26,7 @@ import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
 import androidx.dynamicanimation.animation.DynamicAnimation;
 import androidx.dynamicanimation.animation.SpringAnimation;
 
@@ -250,14 +251,24 @@ public abstract class AnimatorPlaybackController implements ValueAnimator.Animat
         }
     }
 
+    /** @see #dispatchOnCancelWithoutCancelRunnable(Runnable) */
+    public void dispatchOnCancelWithoutCancelRunnable() {
+        dispatchOnCancelWithoutCancelRunnable(null);
+    }
+
     /**
      * Sets mOnCancelRunnable = null before dispatching the cancel and restoring the runnable. This
      * is intended to be used only if you need to cancel but want to defer cleaning up yourself.
+     * @param callback An optional callback to run after dispatching the cancel but before resetting
+     *                 the onCancelRunnable.
      */
-    public void dispatchOnCancelWithoutCancelRunnable() {
+    public void dispatchOnCancelWithoutCancelRunnable(@Nullable Runnable callback) {
         Runnable onCancel = mOnCancelRunnable;
         setOnCancelRunnable(null);
         dispatchOnCancel();
+        if (callback != null) {
+            callback.run();
+        }
         setOnCancelRunnable(onCancel);
     }
 

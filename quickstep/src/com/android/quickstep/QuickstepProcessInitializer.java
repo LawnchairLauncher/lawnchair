@@ -15,6 +15,11 @@
  */
 package com.android.quickstep;
 
+import static android.content.Context.MODE_PRIVATE;
+
+import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_ACTIONS;
+import static com.android.launcher3.config.FeatureFlags.FLAGS_PREF_NAME;
+
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.UserManager;
@@ -22,6 +27,7 @@ import android.util.Log;
 
 import com.android.launcher3.BuildConfig;
 import com.android.launcher3.MainProcessInitializer;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.systemui.shared.system.ThreadedRendererCompat;
 
 @SuppressWarnings("unused")
@@ -50,5 +56,21 @@ public class QuickstepProcessInitializer extends MainProcessInitializer {
 
         // Elevate GPU priority for Quickstep and Remote animations.
         ThreadedRendererCompat.setContextPriority(ThreadedRendererCompat.EGL_CONTEXT_PRIORITY_HIGH_IMG);
+
+        // Force disable some feature flags based on the system ui navigation mode.
+        SysUINavigationMode.Mode currMode = SysUINavigationMode.INSTANCE.get(context)
+                .addModeChangeListener(mode -> disableFeatureFlagsForSysuiNavMode(context, mode));
+        disableFeatureFlagsForSysuiNavMode(context, currMode);
+    }
+
+    private void disableFeatureFlagsForSysuiNavMode(Context ctx, SysUINavigationMode.Mode mode) {
+        if (mode == SysUINavigationMode.Mode.TWO_BUTTONS) {
+            ctx.getSharedPreferences(FLAGS_PREF_NAME, MODE_PRIVATE)
+                    .edit()
+                    .putBoolean(ENABLE_OVERVIEW_ACTIONS.key, false)
+                    .apply();
+
+            FeatureFlags.initialize(ctx);
+        }
     }
 }

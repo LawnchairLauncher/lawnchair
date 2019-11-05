@@ -30,11 +30,13 @@ import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
 import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_2;
 import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_7;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_ACTIONS;
 import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
 import static com.android.launcher3.states.RotationHelper.REQUEST_ROTATE;
 
 import android.graphics.Rect;
 import android.view.View;
+import android.view.animation.Interpolator;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
@@ -44,7 +46,6 @@ import com.android.launcher3.R;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.AnimatorSetBuilder;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.quickstep.SysUINavigationMode;
@@ -116,6 +117,15 @@ public class OverviewState extends LauncherState {
     }
 
     @Override
+    public ScaleAndTranslation getQsbScaleAndTranslation(Launcher launcher) {
+        if (this == OVERVIEW && ENABLE_OVERVIEW_ACTIONS.get()) {
+            // Treat the QSB as part of the hotseat so they move together.
+            return getHotseatScaleAndTranslation(launcher);
+        }
+        return super.getQsbScaleAndTranslation(launcher);
+    }
+
+    @Override
     public void onStateEnabled(Launcher launcher) {
         AbstractFloatingView.closeAllOpenViews(launcher);
     }
@@ -141,7 +151,7 @@ public class OverviewState extends LauncherState {
         if (launcher.getDeviceProfile().isVerticalBarLayout()) {
             return VERTICAL_SWIPE_INDICATOR | RECENTS_CLEAR_ALL_BUTTON;
         } else {
-            if (FeatureFlags.ENABLE_OVERVIEW_ACTIONS.get()) {
+            if (ENABLE_OVERVIEW_ACTIONS.get()) {
                 return VERTICAL_SWIPE_INDICATOR | RECENTS_CLEAR_ALL_BUTTON;
             }
 
@@ -195,9 +205,10 @@ public class OverviewState extends LauncherState {
     @Override
     public void prepareForAtomicAnimation(Launcher launcher, LauncherState fromState,
             AnimatorSetBuilder builder) {
-        if (fromState == NORMAL && this == OVERVIEW) {
+        if ((fromState == NORMAL || fromState == HINT_STATE) && this == OVERVIEW) {
             if (SysUINavigationMode.getMode(launcher) == SysUINavigationMode.Mode.NO_BUTTON) {
-                builder.setInterpolator(ANIM_WORKSPACE_SCALE, ACCEL);
+                builder.setInterpolator(ANIM_WORKSPACE_SCALE,
+                        fromState == NORMAL ? ACCEL : OVERSHOOT_1_2);
                 builder.setInterpolator(ANIM_WORKSPACE_TRANSLATE, ACCEL);
             } else {
                 builder.setInterpolator(ANIM_WORKSPACE_SCALE, OVERSHOOT_1_2);
@@ -210,8 +221,11 @@ public class OverviewState extends LauncherState {
             }
             builder.setInterpolator(ANIM_WORKSPACE_FADE, OVERSHOOT_1_2);
             builder.setInterpolator(ANIM_OVERVIEW_SCALE, OVERSHOOT_1_2);
-            builder.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X, OVERSHOOT_1_7);
-            builder.setInterpolator(ANIM_OVERVIEW_TRANSLATE_Y, OVERSHOOT_1_7);
+            Interpolator translationInterpolator = ENABLE_OVERVIEW_ACTIONS.get()
+                    ? OVERSHOOT_1_2
+                    : OVERSHOOT_1_7;
+            builder.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X, translationInterpolator);
+            builder.setInterpolator(ANIM_OVERVIEW_TRANSLATE_Y, translationInterpolator);
             builder.setInterpolator(ANIM_OVERVIEW_FADE, OVERSHOOT_1_2);
         }
     }
