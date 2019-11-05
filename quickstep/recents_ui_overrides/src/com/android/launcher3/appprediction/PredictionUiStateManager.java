@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2019 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,15 +18,12 @@ package com.android.launcher3.appprediction;
 
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.OVERVIEW;
-import static com.android.quickstep.InstantAppResolverImpl.COMPONENT_CLASS_MARKER;
 
 import android.app.prediction.AppPredictor;
 import android.app.prediction.AppTarget;
 import android.content.ComponentName;
 import android.content.Context;
 
-import com.android.launcher3.AppInfo;
-import com.android.launcher3.HotseatPredictionController;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile.OnIDPChangeListener;
 import com.android.launcher3.ItemInfoWithIcon;
@@ -37,7 +34,6 @@ import com.android.launcher3.LauncherStateManager.StateListener;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsStore.OnUpdateListener;
-import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.icons.IconCache.ItemInfoUpdateReceiver;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.ComponentKey;
@@ -89,8 +85,6 @@ public class PredictionUiStateManager implements StateListener, ItemInfoUpdateRe
     private Client mActiveClient;
 
     private AllAppsContainerView mAppsView;
-
-    private HotseatPredictionController mHotseatPredictionController;
 
     private PredictionState mPendingState;
     private PredictionState mCurrentState;
@@ -153,10 +147,6 @@ public class PredictionUiStateManager implements StateListener, ItemInfoUpdateRe
         updateDependencies(mCurrentState);
     }
 
-    public void setHotseatPredictionController(HotseatPredictionController controller) {
-        mHotseatPredictionController = controller;
-    }
-
     @Override
     public void reapplyItemInfo(ItemInfoWithIcon info) { }
 
@@ -192,9 +182,6 @@ public class PredictionUiStateManager implements StateListener, ItemInfoUpdateRe
         if (mAppsView != null) {
             mAppsView.getFloatingHeaderView().findFixedRowByType(PredictionRowView.class)
                     .setPredictedApps(mCurrentState.apps);
-        }
-        if (mHotseatPredictionController != null) {
-            mHotseatPredictionController.setPredictedApps(mCurrentState.apps);
         }
     }
 
@@ -260,33 +247,8 @@ public class PredictionUiStateManager implements StateListener, ItemInfoUpdateRe
         if (!state.isEnabled || mAppsView == null) {
             return;
         }
-
-        IconCache iconCache = LauncherAppState.getInstance(mContext).getIconCache();
-        List<String> instantAppsToLoad = new ArrayList<>();
-        List<ShortcutKey> shortcutsToLoad = new ArrayList<>();
-        int total = state.apps.size();
-        for (int i = 0, count = 0; i < total && count < mMaxIconsPerRow; i++) {
-            ComponentKeyMapper mapper = state.apps.get(i);
-            // Update instant apps
-            if (COMPONENT_CLASS_MARKER.equals(mapper.getComponentClass())) {
-                instantAppsToLoad.add(mapper.getPackage());
-                count++;
-            } else if (mapper.getComponentKey() instanceof ShortcutKey) {
-                shortcutsToLoad.add((ShortcutKey) mapper.getComponentKey());
-                count++;
-            } else {
-                // Reload high res icon
-                AppInfo info = (AppInfo) mapper.getApp(mAppsView.getAppsStore());
-                if (info != null) {
-                    if (info.usingLowResIcon()) {
-                        // TODO: Update icon cache to support null callbacks.
-                        iconCache.updateIconInBackground(this, info);
-                    }
-                    count++;
-                }
-            }
-        }
-        mDynamicItemCache.cacheItems(shortcutsToLoad, instantAppsToLoad);
+        mDynamicItemCache.updateDependencies(state.apps, mAppsView.getAppsStore(), this,
+                mMaxIconsPerRow);
     }
 
     @Override

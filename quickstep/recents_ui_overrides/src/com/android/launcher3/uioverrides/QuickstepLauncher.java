@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2019 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,6 +31,7 @@ import com.android.launcher3.HotseatPredictionController;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.anim.AnimatorPlaybackController;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.uioverrides.touchcontrollers.FlingAndHoldTouchController;
@@ -137,7 +138,9 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mHotseatPredictionController = new HotseatPredictionController(this);
+        if (FeatureFlags.ENABLE_HYBRID_HOTSEAT.get()) {
+            mHotseatPredictionController = new HotseatPredictionController(this);
+        }
     }
 
     @Override
@@ -165,8 +168,12 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
 
     @Override
     public Stream<SystemShortcut.Factory> getSupportedShortcuts() {
-        return Stream.concat(super.getSupportedShortcuts(),
-                Stream.of(mHotseatPredictionController));
+        if (mHotseatPredictionController != null) {
+            return Stream.concat(super.getSupportedShortcuts(),
+                    Stream.of(mHotseatPredictionController));
+        } else {
+            return super.getSupportedShortcuts();
+        }
     }
 
     /**
@@ -187,7 +194,17 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
     @Override
     public void finishBindingItems(int pageBoundFirst) {
         super.finishBindingItems(pageBoundFirst);
-        mHotseatPredictionController.fillGapsWithPrediction(false);
+        if (mHotseatPredictionController != null) {
+            mHotseatPredictionController.fillGapsWithPrediction(false);
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mHotseatPredictionController != null) {
+            mHotseatPredictionController.destroy();
+        }
     }
 
     @Override
