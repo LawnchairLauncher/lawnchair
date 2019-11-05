@@ -30,6 +30,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
+import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.UiDevice;
 
 import com.android.launcher3.tapl.LauncherInstrumentation;
@@ -80,7 +81,12 @@ public class NavigationModeSwitchRule implements TestRule {
             Mode mode = description.getAnnotation(NavigationModeSwitch.class).mode();
             return new Statement() {
                 private void assertTrue(String message, boolean condition) {
-                    mLauncher.checkForAnomaly();
+                    if (mLauncher.getDevice().hasObject(By.textStartsWith(""))) {
+                        // The condition above is "screen is not empty". We are not treating
+                        // "Screen is empty" as an anomaly here. It's an acceptable state when
+                        // Launcher just starts under instrumentation.
+                        mLauncher.checkForAnomaly();
+                    }
                     if (!condition) {
                         final AssertionError assertionError = new AssertionError(message);
                         FailureWatcher.onError(mLauncher.getDevice(), description, assertionError);
