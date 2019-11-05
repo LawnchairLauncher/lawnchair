@@ -140,6 +140,15 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
                         // or app was already installed for another user.
                         itemInfo = new AppInfo(app.getContext(), activities.get(0), item.user)
                                 .makeWorkspaceItem();
+
+                        if (shortcutExists(dataModel, itemInfo.getIntent(), itemInfo.user)) {
+                            // We need this additional check here since we treat all auto added
+                            // workspace items as promise icons. At this point we now have the
+                            // correct intent to compare against existing workspace icons.
+                            // Icon already exists on the workspace and should not be auto-added.
+                            continue;
+                        }
+
                         WorkspaceItemInfo wii = (WorkspaceItemInfo) itemInfo;
                         wii.title = "";
                         wii.bitmap = app.getIconCache().getDefaultIcon(item.user);
