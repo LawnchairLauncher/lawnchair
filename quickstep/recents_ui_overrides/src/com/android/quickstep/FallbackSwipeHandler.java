@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.quickstep.inputconsumers;
+package com.android.quickstep;
 
 import static com.android.quickstep.GestureState.GestureEndTarget.HOME;
 import static com.android.quickstep.GestureState.GestureEndTarget.LAST_TASK;
@@ -22,7 +22,7 @@ import static com.android.quickstep.GestureState.GestureEndTarget.RECENTS;
 import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
 import static com.android.quickstep.RecentsActivity.EXTRA_TASK_ID;
 import static com.android.quickstep.RecentsActivity.EXTRA_THUMBNAIL;
-import static com.android.quickstep.WindowTransformSwipeHandler.MIN_PROGRESS_FOR_OVERVIEW;
+import static com.android.quickstep.LauncherSwipeHandler.MIN_PROGRESS_FOR_OVERVIEW;
 import static com.android.quickstep.views.RecentsView.UPDATE_SYSUI_FLAGS_THRESHOLD;
 
 import android.animation.Animator;
@@ -40,26 +40,19 @@ import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.util.ObjectWrapper;
 import com.android.quickstep.BaseActivityInterface.HomeAnimationFactory;
-import com.android.quickstep.AnimatedFloat;
-import com.android.quickstep.BaseSwipeUpHandler;
-import com.android.quickstep.GestureState;
 import com.android.quickstep.GestureState.GestureEndTarget;
-import com.android.quickstep.InputConsumer;
-import com.android.quickstep.MultiStateCallback;
-import com.android.quickstep.RecentsActivity;
-import com.android.quickstep.RecentsAnimationController;
-import com.android.quickstep.RecentsAnimationDeviceState;
 import com.android.quickstep.fallback.FallbackRecentsView;
 import com.android.quickstep.util.RectFSpringAnim;
-import com.android.quickstep.RecentsAnimationTargets;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.InputConsumerController;
 
-public class FallbackNoButtonInputConsumer extends
-        BaseSwipeUpHandler<RecentsActivity, FallbackRecentsView> {
+/**
+ * Handles the navigation gestures when a 3rd party launcher is the default home activity.
+ */
+public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, FallbackRecentsView> {
 
     private static final String[] STATE_NAMES = DEBUG_STATES ? new String[5] : null;
 
@@ -108,7 +101,7 @@ public class FallbackNoButtonInputConsumer extends
     private final PointF mEndVelocityPxPerMs = new PointF(0, 0.5f);
     private RunningWindowAnim mFinishAnimation;
 
-    public FallbackNoButtonInputConsumer(Context context, RecentsAnimationDeviceState deviceState,
+    public FallbackSwipeHandler(Context context, RecentsAnimationDeviceState deviceState,
             GestureState gestureState, InputConsumerController inputConsumer,
             boolean isLikelyToStartNewTask, boolean continuingLastGesture) {
         super(context, deviceState, gestureState, inputConsumer);

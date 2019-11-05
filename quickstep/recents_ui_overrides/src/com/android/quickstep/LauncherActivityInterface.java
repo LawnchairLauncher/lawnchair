@@ -29,7 +29,7 @@ import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
 import static com.android.launcher3.anim.Interpolators.INSTANT;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.quickstep.WindowTransformSwipeHandler.RECENTS_ATTACH_DURATION;
+import static com.android.quickstep.LauncherSwipeHandler.RECENTS_ATTACH_DURATION;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
@@ -49,12 +49,13 @@ import androidx.annotation.UiThread;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherInitListenerEx;
+import com.android.launcher3.LauncherInitListener;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.AnimatorSetBuilder;
+import com.android.launcher3.appprediction.PredictionUiStateManager;
 import com.android.launcher3.uioverrides.states.OverviewState;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.views.FloatingIconView;
@@ -413,7 +414,7 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
 
     @Override
     public ActivityInitListener createActivityInitListener(Predicate<Boolean> onInitListener) {
-        return new LauncherInitListenerEx((activity, alreadyOnHome) ->
+        return new LauncherInitListener((activity, alreadyOnHome) ->
                 onInitListener.test(alreadyOnHome));
     }
 
@@ -540,5 +541,15 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
             return;
         }
         launcher.setOnDeferredActivityLaunchCallback(r);
+    }
+
+    @Override
+    public void updateOverviewPredictionState() {
+        Launcher launcher = getCreatedActivity();
+        if (launcher == null) {
+            return;
+        }
+        PredictionUiStateManager.INSTANCE.get(launcher).switchClient(
+                PredictionUiStateManager.Client.OVERVIEW);
     }
 }

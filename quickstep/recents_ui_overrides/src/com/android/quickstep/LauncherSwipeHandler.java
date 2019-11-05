@@ -32,6 +32,7 @@ import static com.android.quickstep.GestureState.GestureEndTarget.NEW_TASK;
 import static com.android.quickstep.GestureState.GestureEndTarget.RECENTS;
 import static com.android.quickstep.GestureState.STATE_END_TARGET_ANIMATION_FINISHED;
 import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
+import static com.android.quickstep.SysUINavigationMode.Mode.TWO_BUTTONS;
 import static com.android.quickstep.views.RecentsView.UPDATE_SYSUI_FLAGS_THRESHOLD;
 
 import android.animation.Animator;
@@ -83,10 +84,13 @@ import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.LatencyTrackerCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
+/**
+ * Handles the navigation gestures when Launcher is the default home activity.
+ */
 @TargetApi(Build.VERSION_CODES.O)
-public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
+public class LauncherSwipeHandler<T extends BaseDraggingActivity>
         extends BaseSwipeUpHandler<T, RecentsView> implements OnApplyWindowInsetsListener {
-    private static final String TAG = WindowTransformSwipeHandler.class.getSimpleName();
+    private static final String TAG = LauncherSwipeHandler.class.getSimpleName();
 
     private static final String[] STATE_NAMES = DEBUG_STATES ? new String[16] : null;
 
@@ -189,7 +193,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
 
     private final Runnable mOnDeferredActivityLaunch = this::onDeferredActivityLaunch;
 
-    public WindowTransformSwipeHandler(Context context, RecentsAnimationDeviceState deviceState,
+    public LauncherSwipeHandler(Context context, RecentsAnimationDeviceState deviceState,
             TaskAnimationManager taskAnimationManager, GestureState gestureState,
             long touchTimeMs, boolean continuingLastGesture,
             InputConsumerController inputConsumer) {
@@ -293,6 +297,12 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         }
 
         setupRecentsViewUi();
+
+        if (mDeviceState.getNavMode() == TWO_BUTTONS) {
+            // If the device is in two button mode, swiping up will show overview with predictions
+            // so we need to kick off switching to the overview predictions as soon as possible
+            mActivityInterface.updateOverviewPredictionState();
+        }
         return true;
     }
 
@@ -423,6 +433,12 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     @Override
     public void onMotionPauseChanged(boolean isPaused) {
         setShelfState(isPaused ? PEEK : HIDE, OVERSHOOT_1_2, SHELF_ANIM_DURATION);
+
+        if (mDeviceState.isFullyGesturalNavMode() && isPaused) {
+            // In fully gestural nav mode, switch to overview predictions once the user has paused
+            // (this is a no-op if the predictions are already in that state)
+            mActivityInterface.updateOverviewPredictionState();
+        }
     }
 
     public void maybeUpdateRecentsAttachedState() {
@@ -666,7 +682,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         endLauncherTransitionController();
         if (!ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             // Hide the task view, if not already hidden
-            setTargetAlphaProvider(WindowTransformSwipeHandler::getHiddenTargetAlpha);
+            setTargetAlphaProvider(LauncherSwipeHandler::getHiddenTargetAlpha);
         }
 
         BaseDraggingActivity activity = mActivityInterface.getCreatedActivity();
@@ -1172,20 +1188,21 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     private void finishCurrentTransitionToRecents() {
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             mStateCallback.setStateOnUiThread(STATE_CURRENT_TASK_FINISHED);
-        } else if (!hasTargets()) {
-            // If there are no targets, then there is nothing to finish
+        } else if (!hasTargets() || mRecentsAnimationController == null) {
+            // If there are no targets or the animation not started, then there is nothing to finish
             mStateCallback.setStateOnUiThread(STATE_CURRENT_TASK_FINISHED);
         } else {
-            synchronized (mRecentsAnimationController) {
-                mRecentsAnimationController.finish(true /* toRecents */,
-                        () -> mStateCallback.setStateOnUiThread(STATE_CURRENT_TASK_FINISHED));
-            }
+            mRecentsAnimationController.finish(true /* toRecents */,
+                    () -> mStateCallback.setStateOnUiThread(STATE_CURRENT_TASK_FINISHED));
         }
         ActiveGestureLog.INSTANCE.addLog("finishRecentsAnimation", true);
     }
 
     private void finishCurrentTransitionToHome() {
-        synchronized (mRecentsAnimationController) {
+        if (!hasTargets() || mRecentsAnimationController == null) {
+            // If there are no targets or the animation not started, then there is nothing to finish
+            mStateCallback.setStateOnUiThread(STATE_CURRENT_TASK_FINISHED);
+        } else {
             mRecentsAnimationController.finish(true /* toRecents */,
                     () -> mStateCallback.setStateOnUiThread(STATE_CURRENT_TASK_FINISHED),
                     true /* sendUserLeaveHint */);
