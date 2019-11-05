@@ -28,6 +28,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageInstaller;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.ShortcutInfo;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Process;
@@ -49,6 +50,7 @@ import com.android.launcher3.icons.cache.BaseIconCache;
 import com.android.launcher3.icons.cache.CachingLogic;
 import com.android.launcher3.icons.cache.HandlerRunnable;
 import com.android.launcher3.model.PackageItemInfo;
+import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.InstantAppResolver;
 import com.android.launcher3.util.PackageUserKey;
@@ -65,6 +67,7 @@ public class IconCache extends BaseIconCache {
 
     private final CachingLogic<ComponentWithLabel> mComponentWithLabelCachingLogic;
     private final CachingLogic<LauncherActivityInfo> mLauncherActivityInfoCachingLogic;
+    private final CachingLogic<ShortcutInfo> mShortcutCachingLogic;
 
     private final LauncherApps mLauncherApps;
     private final UserManagerCompat mUserManager;
@@ -78,6 +81,7 @@ public class IconCache extends BaseIconCache {
                 inv.fillResIconDpi, inv.iconBitmapSize, true /* inMemoryCache */);
         mComponentWithLabelCachingLogic = new ComponentCachingLogic(context, false);
         mLauncherActivityInfoCachingLogic = LauncherActivityCachingLogic.newInstance(context);
+        mShortcutCachingLogic = new ShortcutCachingLogic();
         mLauncherApps = mContext.getSystemService(LauncherApps.class);
         mUserManager = UserManagerCompat.getInstance(mContext);
         mInstantAppResolver = InstantAppResolver.newInstance(mContext);
@@ -173,6 +177,14 @@ public class IconCache extends BaseIconCache {
             LauncherActivityInfo activityInfo, boolean useLowResIcon) {
         // If we already have activity info, no need to use package icon
         getTitleAndIcon(info, () -> activityInfo, false, useLowResIcon);
+    }
+
+    /**
+     * Fill in info with the icon and label for deep shortcut.
+     */
+    public synchronized CacheEntry getDeepShortcutTitleAndIcon(ShortcutInfo info) {
+        return cacheLocked(ShortcutKey.fromInfo(info).componentName, info.getUserHandle(),
+                () -> info, mShortcutCachingLogic, false, false);
     }
 
     /**

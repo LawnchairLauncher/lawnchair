@@ -17,6 +17,7 @@
 package com.android.launcher3;
 
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
+import static com.android.launcher3.util.ShortcutUtil.fetchAndUpdateShortcutIconAsync;
 
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
@@ -44,6 +45,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.GraphicsUtils;
 import com.android.launcher3.icons.LauncherIcons;
@@ -489,9 +491,13 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                 return Pair.create(si, null);
             } else if (shortcutInfo != null) {
                 WorkspaceItemInfo itemInfo = new WorkspaceItemInfo(shortcutInfo, mContext);
-                LauncherIcons li = LauncherIcons.obtain(mContext);
-                itemInfo.bitmap = li.createShortcutIcon(shortcutInfo);
-                li.recycle();
+                if (FeatureFlags.ENABLE_DEEP_SHORTCUT_ICON_CACHE.get()) {
+                    fetchAndUpdateShortcutIconAsync(mContext, itemInfo, shortcutInfo, true);
+                } else {
+                    LauncherIcons li = LauncherIcons.obtain(mContext);
+                    itemInfo.bitmap = li.createShortcutIcon(shortcutInfo);
+                    li.recycle();
+                }
                 return Pair.create(itemInfo, shortcutInfo);
             } else if (providerInfo != null) {
                 LauncherAppWidgetProviderInfo info = LauncherAppWidgetProviderInfo
