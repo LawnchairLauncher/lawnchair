@@ -21,11 +21,13 @@ import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherStateManager.ATOMIC_OVERVIEW_PEEK_COMPONENT;
 import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
+import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
 import static com.android.launcher3.util.VibratorWrapper.OVERVIEW_HAPTIC;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
+import android.graphics.PointF;
 import android.view.MotionEvent;
 
 import com.android.launcher3.Launcher;
@@ -37,6 +39,7 @@ import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.util.VibratorWrapper;
 import com.android.quickstep.util.StaggeredWorkspaceAnim;
+import com.android.quickstep.views.RecentsView;
 
 /**
  * Touch controller which handles swipe and hold from the nav bar to go to Overview. Swiping above
@@ -45,11 +48,22 @@ import com.android.quickstep.util.StaggeredWorkspaceAnim;
  */
 public class NoButtonNavbarToOverviewTouchController extends FlingAndHoldTouchController {
 
+
+    // How much of the movement to use for translating overview after swipe and hold.
+    private static final float OVERVIEW_MOVEMENT_FACTOR = 0.25f;
+    private static final long TRANSLATION_ANIM_MIN_DURATION_MS = 80;
+    private static final float TRANSLATION_ANIM_VELOCITY_DP_PER_MS = 0.8f;
+
+    private final RecentsView mRecentsView;
+
     private boolean mDidTouchStartInNavBar;
     private boolean mReachedOverview;
+    // The last recorded displacement before we reached overview.
+    private PointF mStartDisplacement = new PointF();
 
     public NoButtonNavbarToOverviewTouchController(Launcher l) {
         super(l);
+        mRecentsView = l.getOverviewPanel();
     }
 
     @Override
@@ -125,12 +139,20 @@ public class NoButtonNavbarToOverviewTouchController extends FlingAndHoldTouchCo
     }
 
     @Override
-    public boolean onDrag(float displacement, MotionEvent event) {
+    public boolean onDrag(float yDisplacement, float xDisplacement, MotionEvent event) {
         if (mMotionPauseDetector.isPaused()) {
+            if (!mReachedOverview) {
+                mStartDisplacement.set(xDisplacement, yDisplacement);
+            } else {
+                mRecentsView.setTranslationX((xDisplacement - mStartDisplacement.x)
+                        * OVERVIEW_MOVEMENT_FACTOR);
+                mRecentsView.setTranslationY((yDisplacement - mStartDisplacement.y)
+                        * OVERVIEW_MOVEMENT_FACTOR);
+            }
             // Stay in Overview.
             return true;
         }
-        return super.onDrag(displacement, event);
+        return super.onDrag(yDisplacement, xDisplacement, event);
     }
 
     @Override
@@ -164,7 +186,19 @@ public class NoButtonNavbarToOverviewTouchController extends FlingAndHoldTouchCo
                 anim.start();
             }
         } else {
-            maybeSwipeInteractionToOverviewComplete();
+            if (mReachedOverview) {
+                float distanceDp = dpiFromPx(Math.max(
+                        Math.abs(mRecentsView.getTranslationX()),
+                        Math.abs(mRecentsView.getTranslationY())));
+                long duration = (long) Math.max(TRANSLATION_ANIM_MIN_DURATION_MS,
+                        distanceDp / TRANSLATION_ANIM_VELOCITY_DP_PER_MS);
+                mRecentsView.animate()
+                        .translationX(0)
+                        .translationY(0)
+                        .setInterpolator(ACCEL_DEACCEL)
+                        .setDuration(duration)
+                        .withEndAction(this::maybeSwipeInteractionToOverviewComplete);
+            }
         }
     }
 

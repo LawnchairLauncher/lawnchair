@@ -22,15 +22,16 @@ import static com.android.launcher3.touch.SingleAxisSwipeDetector.HORIZONTAL;
 import static com.android.launcher3.touch.SingleAxisSwipeDetector.VERTICAL;
 
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyFloat;
-import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
 import androidx.test.InstrumentationRegistry;
@@ -158,7 +159,7 @@ public class SingleAxisSwipeDetectorTest {
         mGenerator.put(0, 100, 100);
         mGenerator.move(0, 100, 100 + mTouchSlop);
         // TODO: actually calculate the following parameters and do exact value checks.
-        verify(mMockListener).onDrag(anyFloat(), anyObject());
+        verify(mMockListener).onDrag(anyFloat(), anyFloat(), any(MotionEvent.class));
     }
 
     @Test
