@@ -33,6 +33,7 @@ import androidx.annotation.NonNull;
  * swipe action happens.
  *
  * @see SingleAxisSwipeDetector
+ * @see BothAxesSwipeDetector
  */
 public abstract class BaseSwipeDetector {
 

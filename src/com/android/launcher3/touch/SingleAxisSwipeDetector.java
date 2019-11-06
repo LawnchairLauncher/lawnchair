@@ -161,6 +161,7 @@ public class SingleAxisSwipeDetector extends BaseSwipeDetector {
 
     /** Listener to receive updates on the swipe. */
     public interface Listener {
+        /** @param start whether this was the original drag start, as opposed to a recatch. */
         void onDragStart(boolean start);
 
         // TODO remove
