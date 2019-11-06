@@ -316,6 +316,8 @@
     <string name="app_actions_pref_title">Åtgärder</string>
     <string name="app_actions_pref_title_in_search">Åtgärdsförslag</string>
     <string name="app_actions_pref_desc">Genvägar till ofta öppnade skärmar</string>
+    <string name="app_actions_reset_pref_title">Återställ gömda händelser</string>
+    <string name="app_actions_reset_pref_summary">Återställer händelser som tidigare varit gömda genom att dras till \"Visa inte\" knappen</string>
     <string name="change_default_home">Ange som hemskärm</string>
     <string name="recent_task_option_popup_window">Dialogfönster</string>
     <string name="feed_theme_pref_title">Bakgrundsfärg</string>
@@ -507,6 +509,13 @@
     <string-array name="greetings_evening">
         <item>Godnatt!</item>
         <item>Sov gott!</item>
+    </string-array>
+    <string-array name="greetings_night">
+        <item>God natt!</item>
+        <item>Sleep well!</item>
+        <item>See you tomorrow!</item>
+        <item>Sweet dreams!</item>
+        <item>Don\'t stay up too long</item>
     </string-array>
     <string name="onbording_settings_title">Ställ in %s</string>
     <string name="onbording_settings_summary">Långtryck på hemskärmen</string>
