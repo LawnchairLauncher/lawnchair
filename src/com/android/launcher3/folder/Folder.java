@@ -74,7 +74,10 @@ import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.logging.LoggerUtils;
 import com.android.launcher3.pageindicators.PageIndicatorDots;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ItemType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.views.ClipPathView;
@@ -546,7 +549,11 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
                 mState = STATE_OPEN;
                 announceAccessibilityChanges();
 
-                mLauncher.getUserEventDispatcher().resetElapsedContainerMillis("folder opened");
+                mLauncher.getUserEventDispatcher().logActionOnItem(
+                        Touch.TAP,
+                        Direction.NONE,
+                        ItemType.FOLDER_ICON, mInfo.cellX, mInfo.cellY);
+
                 mContent.setFocusOnFirstChild();
             }
         });

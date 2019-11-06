@@ -26,6 +26,8 @@ import static com.android.launcher3.logging.LoggerUtils.newLauncherEvent;
 import static com.android.launcher3.logging.LoggerUtils.newTarget;
 import static com.android.launcher3.logging.LoggerUtils.newTouchAction;
 
+import static java.util.Optional.ofNullable;
+
 import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
@@ -58,7 +60,7 @@ import java.util.UUID;
 /**
  * Manages the creation of {@link LauncherEvent}.
  * To debug this class, execute following command before side loading a new apk.
- *
+ * <p>
  * $ adb shell setprop log.tag.UserEvent VERBOSE
  */
 public class UserEventDispatcher implements ResourceBasedOverride {
@@ -94,6 +96,7 @@ public class UserEventDispatcher implements ResourceBasedOverride {
 
     /**
      * Fills in the container data on the given event if the given view is not null.
+     *
      * @return whether container data was added.
      */
     public static boolean fillInLogContainerData(LauncherLogProto.LauncherEvent event, @Nullable View v) {
@@ -139,7 +142,11 @@ public class UserEventDispatcher implements ResourceBasedOverride {
         mAppOrTaskLaunch = true;
     }
 
-    public void logActionTip(int actionType, int viewType) { }
+    /**
+     * Dummy method.
+     */
+    public void logActionTip(int actionType, int viewType) {
+    }
 
     @Deprecated
     public void logTaskLaunchOrDismiss(int action, int direction, int taskIndex,
@@ -184,15 +191,15 @@ public class UserEventDispatcher implements ResourceBasedOverride {
 
     public void logActionCommand(int command, int srcContainerType, int dstContainerType) {
         logActionCommand(command, newContainerTarget(srcContainerType),
-                dstContainerType >=0 ? newContainerTarget(dstContainerType) : null);
+                dstContainerType >= 0 ? newContainerTarget(dstContainerType) : null);
     }
 
     public void logActionCommand(int command, int srcContainerType, int dstContainerType,
-                                 int pageIndex) {
+            int pageIndex) {
         Target srcTarget = newContainerTarget(srcContainerType);
         srcTarget.pageIndex = pageIndex;
         logActionCommand(command, srcTarget,
-                dstContainerType >=0 ? newContainerTarget(dstContainerType) : null);
+                dstContainerType >= 0 ? newContainerTarget(dstContainerType) : null);
     }
 
     public void logActionCommand(int command, Target srcTarget, Target dstTarget) {
@@ -241,7 +248,7 @@ public class UserEventDispatcher implements ResourceBasedOverride {
     }
 
     public void logActionOnControl(int action, int controlType, int parentContainer,
-                                   int grandParentContainer){
+            int grandParentContainer) {
         LauncherEvent event = newLauncherEvent(newTouchAction(action),
                 newControlTarget(controlType),
                 newContainerTarget(parentContainer),
@@ -250,11 +257,11 @@ public class UserEventDispatcher implements ResourceBasedOverride {
     }
 
     public void logActionOnControl(int action, int controlType, @Nullable View controlInContainer,
-                                   int parentContainerType) {
+            int parentContainerType) {
         final LauncherEvent event = (controlInContainer == null && parentContainerType < 0)
                 ? newLauncherEvent(newTouchAction(action), newTarget(Target.Type.CONTROL))
                 : newLauncherEvent(newTouchAction(action), newTarget(Target.Type.CONTROL),
-                        newTarget(Target.Type.CONTAINER));
+                newTarget(Target.Type.CONTAINER));
         event.srcTarget[0].controlType = controlType;
         if (controlInContainer != null) {
             fillInLogContainerData(event, controlInContainer);
@@ -301,9 +308,9 @@ public class UserEventDispatcher implements ResourceBasedOverride {
      * (1) WORKSPACE: if the launcher is the foreground activity
      * (2) APP: if another app was the foreground activity
      */
-    public void logStateChangeAction(int action, int dir, int downX, int downY, int srcChildTargetType,
-                                     int srcParentContainerType, int dstContainerType,
-                                     int pageIndex) {
+    public void logStateChangeAction(int action, int dir, int downX, int downY,
+            int srcChildTargetType, int srcParentContainerType, int dstContainerType,
+            int pageIndex) {
         LauncherEvent event;
         if (srcChildTargetType == LauncherLogProto.ItemType.TASK) {
             event = newLauncherEvent(newTouchAction(action),
@@ -326,9 +333,25 @@ public class UserEventDispatcher implements ResourceBasedOverride {
     }
 
     public void logActionOnItem(int action, int dir, int itemType) {
+        logActionOnItem(action, dir, itemType, null, null);
+    }
+
+    /**
+     * Creates new {@link LauncherEvent} of ITEM target type with input arguments and dispatches it.
+     *
+     * @param touchAction ENUM value of {@link LauncherLogProto.Action.Touch} Action
+     * @param dir         ENUM value of {@link LauncherLogProto.Action.Direction} Action
+     * @param itemType    ENUM value of {@link LauncherLogProto.ItemType}
+     * @param gridX       Nullable X coordinate of item's position on the workspace grid
+     * @param gridY       Nullable Y coordinate of item's position on the workspace grid
+     */
+    public void logActionOnItem(int touchAction, int dir, int itemType,
+            @Nullable Integer gridX, @Nullable Integer gridY) {
         Target itemTarget = newTarget(Target.Type.ITEM);
         itemTarget.itemType = itemType;
-        LauncherEvent event = newLauncherEvent(newTouchAction(action), itemTarget);
+        ofNullable(gridX).ifPresent(value -> itemTarget.gridX = value);
+        ofNullable(gridY).ifPresent(value -> itemTarget.gridY = value);
+        LauncherEvent event = newLauncherEvent(newTouchAction(touchAction), itemTarget);
         event.action.dir = dir;
         dispatchUserEvent(event, null);
     }
@@ -351,7 +374,7 @@ public class UserEventDispatcher implements ResourceBasedOverride {
         LauncherEvent event = newLauncherEvent(newTouchAction(Action.Touch.DRAGDROP),
                 newItemTarget(dragObj.originalDragInfo, mInstantAppResolver),
                 newTarget(Target.Type.CONTAINER));
-        event.destTarget = new Target[] {
+        event.destTarget = new Target[]{
                 newItemTarget(dragObj.originalDragInfo, mInstantAppResolver),
                 newDropTarget(dropTargetAsView)
         };
@@ -373,14 +396,10 @@ public class UserEventDispatcher implements ResourceBasedOverride {
         int actionTouch = isButton ? Action.Touch.TAP : Action.Touch.SWIPE;
         Action action = newCommandAction(actionTouch);
         action.command = Action.Command.BACK;
-        action.dir = isButton
-                ? Action.Direction.NONE
-                : gestureSwipeLeft
-                        ? Action.Direction.LEFT
-                        : Action.Direction.RIGHT;
-        Target target = newControlTarget(isButton
-                ? LauncherLogProto.ControlType.BACK_BUTTON
-                : LauncherLogProto.ControlType.BACK_GESTURE);
+        action.dir = isButton ? Action.Direction.NONE :
+                gestureSwipeLeft ? Action.Direction.LEFT : Action.Direction.RIGHT;
+        Target target = newControlTarget(isButton ? LauncherLogProto.ControlType.BACK_BUTTON :
+                LauncherLogProto.ControlType.BACK_GESTURE);
         target.spanX = downX;
         target.spanY = downY;
         target.cardinality = completed ? 1 : 0;
@@ -391,6 +410,7 @@ public class UserEventDispatcher implements ResourceBasedOverride {
 
     /**
      * Currently logs following containers: workspace, allapps, widget tray.
+     *
      * @param reason
      */
     public final void resetElapsedContainerMillis(String reason) {
