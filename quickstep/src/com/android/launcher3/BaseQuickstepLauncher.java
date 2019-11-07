@@ -48,6 +48,7 @@ import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.SysUINavigationMode.NavigationModeChangeListener;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.util.RemoteFadeOutAnimationListener;
+import com.android.quickstep.util.ShelfPeekAnim;
 
 import java.util.stream.Stream;
 
@@ -63,6 +64,8 @@ public abstract class BaseQuickstepLauncher extends Launcher
     public static final UiThreadHelper.AsyncCommand SET_BACK_BUTTON_ALPHA =
             (context, arg1, arg2) -> SystemUiProxy.INSTANCE.get(context).setBackButtonAlpha(
                     Float.intBitsToFloat(arg1), arg2 != 0);
+
+    private final ShelfPeekAnim mShelfPeekAnim = new ShelfPeekAnim(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -269,5 +272,9 @@ public abstract class BaseQuickstepLauncher extends Launcher
     public Stream<SystemShortcut.Factory> getSupportedShortcuts() {
         return Stream.concat(super.getSupportedShortcuts(),
                 Stream.of(WellbeingModel.SHORTCUT_FACTORY));
+    }
+
+    public ShelfPeekAnim getShelfPeekAnim() {
+        return mShelfPeekAnim;
     }
 }
