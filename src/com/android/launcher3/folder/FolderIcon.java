@@ -371,20 +371,29 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
             if (!itemAdded) mPreviewItemManager.hidePreviewItem(index, true);
             final int finalIndex = index;
 
-            String[] suggestedNameOut = new String[1];
+            String[] suggestedNameOut = new String[FolderNameProvider.SUGGEST_MAX];
             if (FeatureFlags.FOLDER_NAME_SUGGEST.get()) {
-                Executors.UI_HELPER_EXECUTOR.post(() -> mLauncher.getFolderNameProvider()
-                        .getSuggestedFolderName(getContext(), mInfo.contents, suggestedNameOut));
+                Executors.UI_HELPER_EXECUTOR.post(() -> {
+                    mLauncher.getFolderNameProvider().getSuggestedFolderName(
+                            getContext(), mInfo.contents, suggestedNameOut);
+                    showFinalView(finalIndex, item, suggestedNameOut);
+                });
+            } else {
+                showFinalView(finalIndex, item, suggestedNameOut);
             }
-            postDelayed(() -> {
-                mPreviewItemManager.hidePreviewItem(finalIndex, false);
-                mFolder.showItem(item);
-                invalidate();
-                mFolder.showSuggestedTitle(suggestedNameOut[0]);
-            }, DROP_IN_ANIMATION_DURATION);
         } else {
             addItem(item);
         }
+    }
+
+    private void showFinalView(int finalIndex, final WorkspaceItemInfo item,
+            String[] suggestedNameOut) {
+        postDelayed(() -> {
+            mPreviewItemManager.hidePreviewItem(finalIndex, false);
+            mFolder.showItem(item);
+            invalidate();
+            mFolder.showSuggestedTitle(suggestedNameOut);
+        }, DROP_IN_ANIMATION_DURATION);
     }
 
     public void onDrop(DragObject d, boolean itemReturnedOnFailedDrop) {
