@@ -512,10 +512,10 @@
     </string-array>
     <string-array name="greetings_night">
         <item>God natt!</item>
-        <item>Sleep well!</item>
-        <item>See you tomorrow!</item>
-        <item>Sweet dreams!</item>
-        <item>Don\'t stay up too long</item>
+        <item>Sov gott!</item>
+        <item>Vi ses imorgon!</item>
+        <item>Dröm sött!</item>
+        <item>Stanna inte uppe för länge</item>
     </string-array>
     <string name="onbording_settings_title">Ställ in %s</string>
     <string name="onbording_settings_summary">Långtryck på hemskärmen</string>
@@ -535,4 +535,18 @@
     <string name="pref_weather_icon_pack">Väderikoner</string>
     <string name="weather_icon_packs_not_supported">Stöds inte av din nuvarande väderleverantör</string>
     <string name="lawnchair_settings">Lawnchair-inställningar</string>
+    <string name="customnavbar_install">Peka för att installera modifierat navigationsfält</string>
+    <string name="customnavbar_back_hiding">Gömma bakåt knapp</string>
+    <string name="customnavbar_back_hiding_desc">Göm bakåtknappen när den inte behövs</string>
+    <string name="icon_shape_top_left">Övre vänster</string>
+    <string name="icon_shape_top_right">Övre höger</string>
+    <string name="icon_shape_bottom_left">Nedre vänster</string>
+    <string name="icon_shape_bottom_right">Nedre höger</string>
+    <string name="icon_shape_corner_round">Rund</string>
+    <string name="icon_shape_corner_squircle">Kvirkel</string>
+    <string name="icon_shape_corner_cut">Klipp</string>
+    <string name="smartspace_add_to_home">Lägg till på startskärmen</string>
+    <string name="pref_hide_statusbar_clock">Göm klockan i statusfältet</string>
+    <string name="root_access_required">Root-åtkomst krävs</string>
+    <string name="smartspace_setup_text">Peka för att konfigurera</string>
 </resources>
