@@ -38,12 +38,12 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.Interpolators;
-import com.android.launcher3.uioverrides.states.OverviewState;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ScrimView;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.SysUINavigationMode.NavigationModeChangeListener;
+import com.android.quickstep.util.LayoutUtils;
 
 /**
  * Scrim used for all-apps and shelf in Overview
@@ -163,7 +163,7 @@ public class ShelfScrimView extends ScrimView implements NavigationModeChangeLis
                 int hotseatSize = dp.hotseatBarSizePx + dp.getInsets().bottom
                         + hotseatPadding.bottom + hotseatPadding.top;
                 float dragHandleTop =
-                        Math.min(hotseatSize, OverviewState.getDefaultSwipeHeight(context, dp));
+                        Math.min(hotseatSize, LayoutUtils.getDefaultSwipeHeight(context, dp));
                 mDragHandleProgress =  1 - (dragHandleTop / mShiftRange);
             }
             mTopOffset = dp.getInsets().top - mShelfOffset;
