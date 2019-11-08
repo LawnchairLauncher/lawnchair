@@ -177,11 +177,6 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
 
     @Test
     public void testWorkspace() throws Exception {
-        // b/142828227
-        if (android.os.Build.MODEL.contains("Cuttlefish") && TestHelpers.isInLauncherProcess() &&
-                (RUN_FLAFOR & (PLATFORM_PRESUBMIT | UNBUNDLED_PRESUBMIT)) != 0) {
-            return;
-        }
         final Workspace workspace = mLauncher.getWorkspace();
 
         // Test that ensureWorkspaceIsScrollable adds a page by dragging an icon there.

@@ -95,11 +95,6 @@ public class StartLauncherViaGestureTests extends AbstractQuickStepTest {
     @Test
     @NavigationModeSwitch
     public void testStressSwipeToOverview() {
-        // b/142828227
-        if (android.os.Build.MODEL.contains("Cuttlefish") && TestHelpers.isInLauncherProcess() &&
-                (RUN_FLAFOR & (PLATFORM_PRESUBMIT | UNBUNDLED_PRESUBMIT)) != 0) {
-            return;
-        }
         for (int i = 0; i < STRESS_REPEAT_COUNT; ++i) {
             // Destroy Launcher activity.
             closeLauncherActivity();
