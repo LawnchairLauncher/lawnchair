@@ -48,8 +48,9 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
             mLauncher.scroll(
                     widgetsContainer,
                     Direction.DOWN,
-                    new Rect(0, 0, 0, mLauncher.getBottomGestureMargin(widgetsContainer) + 1),
-                    FLING_STEPS);
+                    new Rect(0, 0, 0,
+                            mLauncher.getBottomGestureMarginInContainer(widgetsContainer) + 1),
+                    FLING_STEPS, false);
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer("flung forward")) {
                 verifyActiveContainer();
             }
@@ -69,7 +70,7 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
                     widgetsContainer,
                     Direction.UP,
                     new Rect(0, 0, widgetsContainer.getVisibleBounds().width(), 0),
-                    FLING_STEPS);
+                    FLING_STEPS, false);
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer("flung back")) {
                 verifyActiveContainer();
             }

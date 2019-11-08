@@ -544,7 +544,8 @@ public final class LauncherInstrumentation {
                 linearGesture(
                         displaySize.x / 2, displaySize.y - 1,
                         displaySize.x / 2, 0,
-                        ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME);
+                        ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME,
+                        false);
                 try (LauncherInstrumentation.Closable c = addContextLayer(
                         "Swiped up from context menu to home")) {
                     waitUntilGone("deep_shortcuts_container");
@@ -769,7 +770,7 @@ public final class LauncherInstrumentation {
 
     void swipeToState(int startX, int startY, int endX, int endY, int steps, int expectedState) {
         final Bundle parcel = (Bundle) executeAndWaitForEvent(
-                () -> linearGesture(startX, startY, endX, endY, steps),
+                () -> linearGesture(startX, startY, endX, endY, steps, false),
                 event -> TestProtocol.SWITCHED_TO_STATE_MESSAGE.equals(event.getClassName()),
                 "Swipe failed to receive an event for the swipe end");
         assertEquals("Swipe switched launcher to a wrong state;",
@@ -782,33 +783,38 @@ public final class LauncherInstrumentation {
                 ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE, getResources()) + 1;
     }
 
-    int getBottomGestureMargin(UiObject2 container) {
-        return container.getVisibleBounds().bottom - getRealDisplaySize().y
-                + getBottomGestureSize();
+    int getBottomGestureMarginInContainer(UiObject2 container) {
+        final int bottomGestureStartOnScreen = getRealDisplaySize().y - getBottomGestureSize();
+        return container.getVisibleBounds().bottom - bottomGestureStartOnScreen;
     }
 
-    void scrollToLastVisibleRow(UiObject2 container, Collection<UiObject2> items, int topPadding) {
+    void scrollToLastVisibleRow(
+            UiObject2 container,
+            Collection<UiObject2> items,
+            int topPaddingInContainer) {
         final UiObject2 lowestItem = Collections.max(items, (i1, i2) ->
                 Integer.compare(i1.getVisibleBounds().top, i2.getVisibleBounds().top));
 
-        final int gestureStart = lowestItem.getVisibleBounds().top + getTouchSlop();
-        final int distance = gestureStart - container.getVisibleBounds().top - topPadding;
-        final int bottomMargin = container.getVisibleBounds().height() - distance;
+        final int itemRowCurrentTopOnScreen = lowestItem.getVisibleBounds().top;
+        final Rect containerRect = container.getVisibleBounds();
+        final int itemRowNewTopOnScreen = containerRect.top + topPaddingInContainer;
+        final int distance = itemRowCurrentTopOnScreen - itemRowNewTopOnScreen + getTouchSlop();
 
-        // TODO: Make the gesture steps dependent on the distance so that it can run for various
-        //       screen sizes
+        final int bottomGestureMarginInContainer = getBottomGestureMarginInContainer(container);
         scroll(
                 container,
                 Direction.DOWN,
                 new Rect(
                         0,
+                        containerRect.height() - distance - bottomGestureMarginInContainer,
                         0,
-                        0,
-                        Math.max(bottomMargin, getBottomGestureMargin(container))),
-                80);
+                        bottomGestureMarginInContainer),
+                10,
+                true);
     }
 
-    void scroll(UiObject2 container, Direction direction, Rect margins, int steps) {
+    void scroll(
+            UiObject2 container, Direction direction, Rect margins, int steps, boolean slowDown) {
         final Rect rect = container.getVisibleBounds();
         if (margins != null) {
             rect.left += margins.left;
@@ -853,7 +859,7 @@ public final class LauncherInstrumentation {
         }
 
         executeAndWaitForEvent(
-                () -> linearGesture(startX, startY, endX, endY, steps),
+                () -> linearGesture(startX, startY, endX, endY, steps, slowDown),
                 event -> TestProtocol.SCROLL_FINISHED_MESSAGE.equals(event.getClassName()),
                 "Didn't receive a scroll end message: " + startX + ", " + startY
                         + ", " + endX + ", " + endY);
@@ -861,13 +867,17 @@ public final class LauncherInstrumentation {
 
     // Inject a swipe gesture. Inject exactly 'steps' motion points, incrementing event time by a
     // fixed interval each time.
-    void linearGesture(int startX, int startY, int endX, int endY, int steps) {
+    void linearGesture(int startX, int startY, int endX, int endY, int steps, boolean slowDown) {
         log("linearGesture: " + startX + ", " + startY + " -> " + endX + ", " + endY);
         final long downTime = SystemClock.uptimeMillis();
         final Point start = new Point(startX, startY);
         final Point end = new Point(endX, endY);
         sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, start);
-        final long endTime = movePointer(downTime, downTime, steps * GESTURE_STEP_MS, start, end);
+        long endTime = movePointer(downTime, downTime, steps * GESTURE_STEP_MS, start, end);
+        if (slowDown) {
+            endTime = movePointer(downTime, endTime + GESTURE_STEP_MS, 5 * GESTURE_STEP_MS, end,
+                    end);
+        }
         sendPointer(downTime, endTime, MotionEvent.ACTION_UP, end);
     }
 
