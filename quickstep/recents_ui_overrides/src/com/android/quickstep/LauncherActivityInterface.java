@@ -47,6 +47,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
+import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherInitListener;
@@ -56,12 +57,13 @@ import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.appprediction.PredictionUiStateManager;
-import com.android.launcher3.uioverrides.states.OverviewState;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.views.FloatingIconView;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.LayoutUtils;
+import com.android.quickstep.util.ShelfPeekAnim;
+import com.android.quickstep.util.ShelfPeekAnim.ShelfAnimState;
 import com.android.quickstep.util.StaggeredWorkspaceAnim;
 import com.android.quickstep.views.LauncherRecentsView;
 import com.android.quickstep.views.RecentsView;
@@ -227,7 +229,8 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
         launcher.getAppsView().reset(false /* animate */);
 
         return new AnimationFactory() {
-            private ShelfAnimState mShelfState;
+            private final ShelfPeekAnim mShelfAnim =
+                    ((BaseQuickstepLauncher) launcher).getShelfPeekAnim();
             private boolean mIsAttachedToWindow;
 
             @Override
@@ -256,30 +259,7 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
             @Override
             public void setShelfState(ShelfAnimState shelfState, Interpolator interpolator,
                     long duration) {
-                if (mShelfState == shelfState) {
-                    return;
-                }
-                mShelfState = shelfState;
-                launcher.getStateManager().cancelStateElementAnimation(INDEX_SHELF_ANIM);
-                if (mShelfState == ShelfAnimState.CANCEL) {
-                    return;
-                }
-                float shelfHiddenProgress = BACKGROUND_APP.getVerticalProgress(launcher);
-                float shelfOverviewProgress = OVERVIEW.getVerticalProgress(launcher);
-                // Peek based on default overview progress so we can see hotseat if we're showing
-                // that instead of predictions in overview.
-                float defaultOverviewProgress = OverviewState.getDefaultVerticalProgress(launcher);
-                float shelfPeekingProgress = shelfHiddenProgress
-                        - (shelfHiddenProgress - defaultOverviewProgress) * 0.25f;
-                float toProgress = mShelfState == ShelfAnimState.HIDE
-                        ? shelfHiddenProgress
-                        : mShelfState == ShelfAnimState.PEEK
-                                ? shelfPeekingProgress
-                                : shelfOverviewProgress;
-                Animator shelfAnim = launcher.getStateManager()
-                        .createStateElementAnimation(INDEX_SHELF_ANIM, toProgress);
-                shelfAnim.setInterpolator(interpolator);
-                shelfAnim.setDuration(duration).start();
+                mShelfAnim.setShelfState(shelfState, interpolator, duration);
             }
 
             @Override
