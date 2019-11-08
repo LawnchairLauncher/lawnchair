@@ -71,8 +71,13 @@ public class SessionCommitReceiver extends BroadcastReceiver {
 
         SessionInfo info = intent.getParcelableExtra(PackageInstaller.EXTRA_SESSION);
         UserHandle user = intent.getParcelableExtra(Intent.EXTRA_USER);
-        PackageInstallerCompat packageInstallerCompat = PackageInstallerCompat.getInstance(context);
+        if (!PackageInstaller.ACTION_SESSION_COMMITTED.equals(intent.getAction())
+                || info == null || user == null) {
+            // Invalid intent.
+            return;
+        }
 
+        PackageInstallerCompat packageInstallerCompat = PackageInstallerCompat.getInstance(context);
         if (TextUtils.isEmpty(info.getAppPackageName())
                 || info.getInstallReason() != PackageManager.INSTALL_REASON_USER
                 || packageInstallerCompat.promiseIconAddedForId(info.getSessionId())) {
