@@ -216,6 +216,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         cancelDotScaleAnim();
         mDotParams.scale = 0f;
         mForceHideDot = false;
+        setBackground(null);
     }
 
     private void cancelDotScaleAnim() {

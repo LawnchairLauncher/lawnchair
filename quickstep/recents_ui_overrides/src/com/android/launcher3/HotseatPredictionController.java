@@ -139,6 +139,7 @@ public class HotseatPredictionController implements DragController.DragListener,
                 PopupContainerWithArrow.showForIcon((BubbleTextView) v);
                 return true;
             });
+            icon.setBackgroundResource(R.drawable.predicted_icon_background);
         }
     }
 
@@ -205,6 +206,7 @@ public class HotseatPredictionController implements DragController.DragListener,
                 LauncherSettings.Favorites.CONTAINER_HOTSEAT, workspaceItemInfo.screenId,
                 workspaceItemInfo.cellX, workspaceItemInfo.cellY);
         ObjectAnimator.ofFloat(icon, SCALE_PROPERTY, 1, 0.8f, 1).start();
+        icon.reset();
         icon.applyFromWorkspaceItem(workspaceItemInfo);
         icon.setOnLongClickListener(ItemLongClickListener.INSTANCE_WORKSPACE);
     }
