@@ -213,7 +213,7 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
     @Override
     public AnimationFactory prepareRecentsUI(boolean activityVisible,
             boolean animateActivity, Consumer<AnimatorPlaybackController> callback) {
-        Launcher launcher = getCreatedActivity();
+        BaseQuickstepLauncher launcher = getCreatedActivity();
         final LauncherState startState = launcher.getStateManager().getState();
 
         LauncherState resetState = startState;
@@ -229,8 +229,7 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
         launcher.getAppsView().reset(false /* animate */);
 
         return new AnimationFactory() {
-            private final ShelfPeekAnim mShelfAnim =
-                    ((BaseQuickstepLauncher) launcher).getShelfPeekAnim();
+            private final ShelfPeekAnim mShelfAnim = launcher.getShelfPeekAnim();
             private boolean mIsAttachedToWindow;
 
             @Override
@@ -400,8 +399,8 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
 
     @Nullable
     @Override
-    public Launcher getCreatedActivity() {
-        return Launcher.ACTIVITY_TRACKER.getCreatedActivity();
+    public BaseQuickstepLauncher getCreatedActivity() {
+        return BaseQuickstepLauncher.ACTIVITY_TRACKER.getCreatedActivity();
     }
 
     @Nullable
