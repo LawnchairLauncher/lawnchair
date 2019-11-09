@@ -401,13 +401,28 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
             mFolderName.setText("");
             mFolderName.setHint(R.string.folder_hint_text);
         }
-
         // In case any children didn't come across during loading, clean up the folder accordingly
         mFolderIcon.post(() -> {
             if (getItemCount() <= 1) {
                 replaceFolderWithFinalItem();
             }
         });
+    }
+
+
+    /**
+     * Show suggested folder title.
+     */
+    public void showSuggestedTitle(CharSequence suggestName) {
+        if (FeatureFlags.FOLDER_NAME_SUGGEST.get() && mInfo.contents.size() == 2) {
+            if (!TextUtils.isEmpty(suggestName)) {
+                mFolderName.setHint(suggestName);
+                mFolderName.setText(suggestName);
+                mFolderName.showKeyboard();
+                mInfo.title = suggestName;
+            }
+            animateOpen();
+        }
     }
 
     /**
@@ -532,8 +547,6 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         // dropping. One resulting issue is that replaceFolderWithFinalItem() can be called twice.
         mDeleteFolderOnDropCompleted = false;
 
-        centerAboutIcon();
-
         AnimatorSet anim = new FolderAnimationManager(this, true /* isOpening */).getAnimator();
         anim.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -592,7 +605,6 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         if (mDragController.isDragging()) {
             mDragController.forceTouchMove();
         }
-
         mContent.verifyVisibleHighResIcons(mContent.getNextPage());
     }
 
@@ -877,7 +889,6 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         // Reordering may have occured, and we need to save the new item locations. We do this once
         // at the end to prevent unnecessary database operations.
         updateItemLocationsInDatabaseBatch();
-
         // Use the item count to check for multi-page as the folder UI may not have
         // been refreshed yet.
         if (getItemCount() <= mContent.itemsPerPage()) {
