@@ -38,6 +38,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import ch.deletescape.lawnchair.settings.ui.SettingsActivity;
 import com.android.launcher3.R;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.config.FlagTogglerPrefUi;
@@ -49,7 +50,6 @@ import java.util.Set;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceDataStore;
-import androidx.preference.PreferenceFragment;
 import androidx.preference.PreferenceScreen;
 import androidx.preference.PreferenceViewHolder;
 import androidx.preference.SwitchPreference;
@@ -59,7 +59,7 @@ import androidx.preference.SwitchPreference;
  * See {@link FeatureFlags}.
  */
 @TargetApi(Build.VERSION_CODES.O)
-public class DeveloperOptionsFragment extends PreferenceFragment {
+public class DeveloperOptionsFragment extends SettingsActivity.BaseFragment {
 
     private static final String ACTION_PLUGIN_SETTINGS = "com.android.systemui.action.PLUGIN_SETTINGS";
     private static final String PLUGIN_PERMISSION = "com.android.systemui.permission.PLUGIN";
@@ -91,6 +91,11 @@ public class DeveloperOptionsFragment extends PreferenceFragment {
 
         initFlags();
         loadPluginPrefs();
+    }
+
+    @Override
+    protected int getRecyclerViewLayoutRes() {
+        return R.layout.preference_insettable_recyclerview;
     }
 
     @Override

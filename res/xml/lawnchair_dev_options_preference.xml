@@ -108,6 +108,12 @@
         android:summary="Allow selecting feed implementations which haven't been checked by the lawnchair team"
         android:defaultValue="false"/>
 
+    <Preference
+        android:key="pref_developer_options"
+        android:persistent="false"
+        android:title="Feature flags"
+        android:fragment="com.android.launcher3.settings.DeveloperOptionsFragment"/>
+
     <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory
         android:key="prefCat_wipOptions"
         android:title="Other"
