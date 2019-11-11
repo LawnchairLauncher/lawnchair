@@ -115,8 +115,8 @@ public class NotificationListener extends NotificationListenerService {
         switch (message.what) {
             case MSG_NOTIFICATION_POSTED: {
                 StatusBarNotification sbn = (StatusBarNotification) message.obj;
-                mUiHandler.obtainMessage(shouldBeFilteredOut(sbn)
-                                ? MSG_NOTIFICATION_REMOVED : MSG_NOTIFICATION_POSTED,
+                mUiHandler.obtainMessage(notificationIsValidForUI(sbn)
+                                ? MSG_NOTIFICATION_POSTED : MSG_NOTIFICATION_REMOVED,
                         toKeyPair(sbn)).sendToTarget();
                 return true;
             }
@@ -148,7 +148,7 @@ public class NotificationListener extends NotificationListenerService {
                 if (sIsConnected) {
                     try {
                         activeNotifications = Arrays.stream(getActiveNotifications())
-                                .filter(this::shouldBeFilteredOut)
+                                .filter(this::notificationIsValidForUI)
                                 .collect(Collectors.toList());
                     } catch (SecurityException ex) {
                         Log.e(TAG, "SecurityException: failed to fetch notifications");
@@ -305,22 +305,22 @@ public class NotificationListener extends NotificationListenerService {
     }
 
     /**
-     * Returns true for notifications that don't have an intent
-     * or are headers for grouped notifications and should be filtered out.
+     * Returns true for notifications that have an intent and are not headers for grouped
+     * notifications and should be shown in the notification popup.
      */
     @WorkerThread
-    private boolean shouldBeFilteredOut(StatusBarNotification sbn) {
+    private boolean notificationIsValidForUI(StatusBarNotification sbn) {
         Notification notification = sbn.getNotification();
         updateGroupKeyIfNecessary(sbn);
 
         getCurrentRanking().getRanking(sbn.getKey(), mTempRanking);
         if (!mTempRanking.canShowBadge()) {
-            return true;
+            return false;
         }
         if (mTempRanking.getChannel().getId().equals(NotificationChannel.DEFAULT_CHANNEL_ID)) {
             // Special filtering for the default, legacy "Miscellaneous" channel.
             if ((notification.flags & Notification.FLAG_ONGOING_EVENT) != 0) {
-                return true;
+                return false;
             }
         }
 
@@ -328,7 +328,7 @@ public class NotificationListener extends NotificationListenerService {
         CharSequence text = notification.extras.getCharSequence(Notification.EXTRA_TEXT);
         boolean missingTitleAndText = TextUtils.isEmpty(title) && TextUtils.isEmpty(text);
         boolean isGroupHeader = (notification.flags & Notification.FLAG_GROUP_SUMMARY) != 0;
-        return (isGroupHeader || missingTitleAndText);
+        return !isGroupHeader && !missingTitleAndText;
     }
 
     private static Pair<PackageUserKey, NotificationKeyData> toKeyPair(StatusBarNotification sbn) {
