@@ -35,6 +35,7 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.DropTarget;
@@ -96,16 +97,22 @@ public class UserEventDispatcher implements ResourceBasedOverride {
      * Fills in the container data on the given event if the given view is not null.
      * @return whether container data was added.
      */
-    public static boolean fillInLogContainerData(LauncherLogProto.LauncherEvent event, @Nullable View v) {
+    public boolean fillInLogContainerData(LauncherLogProto.LauncherEvent event, @Nullable View v) {
         // Fill in grid(x,y), pageIndex of the child and container type of the parent
         LogContainerProvider provider = StatsLogUtils.getLaunchProviderRecursive(v);
         if (v == null || !(v.getTag() instanceof ItemInfo) || provider == null) {
             return false;
         }
-        ItemInfo itemInfo = (ItemInfo) v.getTag();
-        provider.fillInLogContainerData(v, itemInfo, event.srcTarget[0], event.srcTarget[1]);
+        final ItemInfo itemInfo = (ItemInfo) v.getTag();
+        final Target target = event.srcTarget[0];
+        final Target targetParent = event.srcTarget[1];
+        onFillInLogContainerData(itemInfo, target, targetParent);
+        provider.fillInLogContainerData(v, itemInfo, target, targetParent);
         return true;
     }
+
+    protected void onFillInLogContainerData(
+            @NonNull ItemInfo itemInfo, @NonNull Target target, @NonNull Target targetParent) { }
 
     private boolean mSessionStarted;
     private long mElapsedContainerMillis;
