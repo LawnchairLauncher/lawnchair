@@ -44,6 +44,7 @@ import java.lang.reflect.Modifier;
 public class LoggerUtils {
     private static final ArrayMap<Class, SparseArray<String>> sNameCache = new ArrayMap<>();
     private static final String UNKNOWN = "UNKNOWN";
+    private static final int DEFAULT_PREDICTED_RANK = -100;
 
     public static String getFieldName(int value, Class c) {
         SparseArray<String> cache;
@@ -168,17 +169,17 @@ public class LoggerUtils {
 
     public static Target newItemTarget(ItemInfo info, InstantAppResolver instantAppResolver) {
         Target t = newTarget(Target.Type.ITEM);
-
         switch (info.itemType) {
             case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
                 t.itemType = (instantAppResolver != null && info instanceof AppInfo
                         && instantAppResolver.isInstantApp(((AppInfo) info)) )
                         ? ItemType.WEB_APP
                         : ItemType.APP_ICON;
-                t.predictedRank = -100; // Never assigned
+                t.predictedRank = DEFAULT_PREDICTED_RANK;
                 break;
             case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
                 t.itemType = ItemType.SHORTCUT;
+                t.predictedRank = DEFAULT_PREDICTED_RANK;
                 break;
             case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
                 t.itemType = ItemType.FOLDER_ICON;
@@ -188,6 +189,7 @@ public class LoggerUtils {
                 break;
             case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT:
                 t.itemType = ItemType.DEEPSHORTCUT;
+                t.predictedRank = DEFAULT_PREDICTED_RANK;
                 break;
         }
         return t;
