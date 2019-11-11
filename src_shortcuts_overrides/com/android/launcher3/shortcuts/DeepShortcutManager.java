@@ -26,6 +26,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.UserHandle;
 import android.util.Log;
+import ch.deletescape.lawnchair.iconpack.AdaptiveIconCompat;
 import ch.deletescape.lawnchair.override.CustomInfoProvider;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherSettings;
@@ -166,7 +167,7 @@ public class DeepShortcutManager {
         try {
             Drawable icon = mLauncherApps.getShortcutIconDrawable(shortcutInfo, density);
             mWasLastCallSuccess = true;
-            return icon;
+            return AdaptiveIconCompat.wrapNullable(icon);
         } catch (SecurityException|IllegalStateException e) {
             Log.e(TAG, "Failed to get shortcut icon", e);
             mWasLastCallSuccess = false;
