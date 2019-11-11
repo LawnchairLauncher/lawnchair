@@ -146,9 +146,13 @@ public class LauncherIcons implements AutoCloseable {
             Resources resources = mPm.getResourcesForApplication(iconRes.packageName);
             if (resources != null) {
                 final int id = resources.getIdentifier(iconRes.resourceName, null, null);
+                Drawable drawable = resources.getDrawableForDensity(id, mFillResIconDpi);
+                if (drawable != null) {
+                    drawable = AdaptiveIconCompat.wrap(drawable);
+                }
                 // do not stamp old legacy shortcuts as the app may have already forgotten about it
                 return createBadgedIconBitmap(
-                        resources.getDrawableForDensity(id, mFillResIconDpi),
+                        drawable,
                         Process.myUserHandle() /* only available on primary user */,
                         0 /* do not apply legacy treatment */);
             }
