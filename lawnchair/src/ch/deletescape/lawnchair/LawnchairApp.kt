@@ -75,7 +75,7 @@ class LawnchairApp : Application() {
         ThemeManager.getInstance(this).registerColorListener()
         BlurWallpaperProvider.getInstance(this)
         Flowerpot.Manager.getInstance(this)
-        if (lawnchairPrefs.showCrashNotifications) {
+        if (BuildConfig.FEATURE_BUG_REPORTER && lawnchairPrefs.showCrashNotifications) {
             BugReportClient.getInstance(this)
             BugReportService.registerNotificationChannel(this)
         }
