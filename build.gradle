@@ -95,6 +95,7 @@ android {
         buildConfigField "boolean", "FEATURE_SETTINGS_SEARCH", "true"
         buildConfigField "boolean", "DEBUG_STRICT_MODE", isPublicBuild ? "false" : "true"
         buildConfigField "boolean", "HAS_LEAKCANARY", "false"
+        buildConfigField "boolean", "FEATURE_BUG_REPORTER", "true"
 
         def githubToken = localProps.getProperty('githubToken') ?: '"' + System.getenv("GITHUB_TOKEN") + '"'
         buildConfigField "String", "GITHUB_TOKEN", githubToken
@@ -225,6 +226,9 @@ android {
             applicationIdSuffix ".plah"
 
             buildConfigField "boolean", "SIGNATURE_VERIFICATION", "true"
+            buildConfigField "boolean", "FEATURE_BUG_REPORTER", "false"
+            buildConfigField "boolean", "HAS_LEAKCANARY", "false"
+            buildConfigField "boolean", "DEBUG_STRICT_MODE", "false"
         }
     }
 
