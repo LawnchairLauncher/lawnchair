@@ -211,17 +211,17 @@
     <string name="about_role_designer">Designer</string>
 
     <string name="about_role_ui_ux_designer">UI/UX designer</string>
-    <string name="about_role_special_snowflake">Social Media/PR &amp; OEM relations</string>
+    <string name="about_role_pr">Public Relations &amp; Social Media Manager</string>
+    <string name="about_role_ops">Operations &amp; Infrastructure</string>
     <string name="about_role_mod_support">Moderator/support</string>
     <string name="about_role_family_member">Family member</string>
 
     <string name="about_role_magisk_maintainer">Magisk Module Maintainer</string>
-    <string name="about_bio_deletescape">Android developer &amp; enthusiast, loves memes (a bit too much actually). Founder of the Lawnchair project.</string>
+    <string name="about_bio_deletescape">Kotlin/Java developer. Interested in everything Android. Founder of the Lawnchair and dogbin projects.</string>
     <string name="about_bio_recoded">Mild coder and graphics designer.</string>
-
     <string name="about_bio_josh">Freelance graphic designer.</string>
-    <string name="about_bio_chris">Millennial af, idk and idc. Something with design and social media. Let\'s hang out together over at @lawnchairapp ✨</string>
-    <string name="about_bio_msfjarvis">Core developer at halogenOS and application developer at substratum.</string>
+    <string name="about_bio_harsh">Android application and library developer. Core developer at AOSiP.</string>
+    <string name="about_bio_david">19 years old, turns caffeine and pizza into code, provides hosting and 24/7 support for Lawnchair if something goes wrong. Contributes to open-source projects and fixes bugs during his free time. Also previously known as Codebucket.</string>
 
     <!--Marker E-->
 

@@ -25,7 +25,7 @@
         <!-- Lead developer: deletescape -->
         <me.jfenn.attribouter.wedges.ContributorWedge
             name="^Till Kottmann"
-            avatar="https://avatars.githubusercontent.com/u/13785669"
+            avatar="https://i.imgur.com/xgMNifF.jpg"
             bio="^@string/about_bio_deletescape"
             blog="https://deletescape.ch"
             login="deletescape"
@@ -37,21 +37,6 @@
                 url="https://twitter.com/deletescape" />
         </me.jfenn.attribouter.wedges.ContributorWedge>
 
-        <!-- Special snowflake: chriskardas -->
-        <me.jfenn.attribouter.wedges.ContributorWedge
-            name="^Christopher Kardas"
-            avatar="https://avatars.githubusercontent.com/u/15703840"
-            bio="^@string/about_bio_chris"
-            blog="https://christopherkardas.me/"
-            login="chriskardas"
-            position="2"
-            task="^@string/about_role_special_snowflake">
-            <me.jfenn.attribouter.wedges.link.LinkWedge
-                name="@string/about_twitter"
-                icon="@drawable/ic_twitter"
-                url="https://twitter.com/chris_kardas" />
-        </me.jfenn.attribouter.wedges.ContributorWedge>
-
         <!-- Developer: paphonb -->
         <me.jfenn.attribouter.wedges.ContributorWedge
             name="^paphonb"
@@ -59,12 +44,60 @@
             bio="^@string/about_bio_paphonb"
             blog="https://paphonb.xyz"
             login="paphonb"
-            position="3"
+            position="2"
             task="^@string/about_role_dev">
             <me.jfenn.attribouter.wedges.link.LinkWedge
                 name="@string/about_twitter"
                 icon="@drawable/ic_twitter"
                 url="https://twitter.com/paphonb" />
+        </me.jfenn.attribouter.wedges.ContributorWedge>
+        
+        <!-- UI/UX Designer: lumiqcreative -->
+        <me.jfenn.attribouter.wedges.ContributorWedge
+            name="^Lumiq Creative"
+            avatar="https://avatars.githubusercontent.com/u/30959743"
+            login="lumiqcreative"
+            position="3"
+            blog="https://lumiqcreative.com"
+            task="^@string/about_role_ui_ux_designer">
+            <me.jfenn.attribouter.wedges.link.LinkWedge
+                name="@string/about_twitter"
+                icon="@drawable/ic_twitter"
+                url="https://twitter.com/lumiqcreative" />
+        </me.jfenn.attribouter.wedges.ContributorWedge>
+
+
+        <!-- Developer: amirzaidi -->
+        <me.jfenn.attribouter.wedges.ContributorWedge
+            name="^Amir Zaidi"
+            avatar="https://avatars.githubusercontent.com/u/2102185"
+            login="amirzaidi"
+            task="^@string/about_role_dev" />
+
+        <!-- Supporter: bohrabhijeet -->
+        <me.jfenn.attribouter.wedges.ContributorWedge
+            name="^Abhijeet Bohra"
+            avatar="https://avatars.githubusercontent.com/u/34155181"
+            login="bohrabhijeet"
+            task="^@string/about_role_pr">
+            <me.jfenn.attribouter.wedges.link.LinkWedge
+                name="@string/about_twitter"
+                icon="@drawable/ic_twitter"
+                url="https://twitter.com/bohrabhijeet" />
+        </me.jfenn.attribouter.wedges.ContributorWedge>
+
+        <!-- Operations & Infrastructur: divadsn -->
+        <me.jfenn.attribouter.wedges.ContributorWedge
+            name="^David Sn"
+            avatar="https://i.imgur.com/b65akTl.png"
+            login="divadsn"
+            blog="https://www.codebucket.de"
+            bio="^@string/about_bio_david"
+            task="^@string/about_role_ops">
+            <me.jfenn.attribouter.wedges.link.LinkWedge
+                name="@string/about_twitter"
+                icon="@drawable/ic_twitter"
+                url="https://twitter.com/divadsn" />
         </me.jfenn.attribouter.wedges.ContributorWedge>
 
         <!-- Developer: fonix232 -->
@@ -72,13 +105,6 @@
             name="^Jozsef Kiraly"
             avatar="https://avatars.githubusercontent.com/u/371847"
             login="fonix232"
-            task="^@string/about_role_dev" />
-
-        <!-- Developer: amirzaidi -->
-        <me.jfenn.attribouter.wedges.ContributorWedge
-            name="^Amir Zaidi"
-            avatar="https://avatars.githubusercontent.com/u/2102185"
-            login="amirzaidi"
             task="^@string/about_role_dev" />
 
         <!-- Developer: reCoded -->
@@ -108,18 +134,6 @@
                 url="https://twitter.com/JoshBaldassarre" />
         </me.jfenn.attribouter.wedges.ContributorWedge>
 
-        <!-- UI/UX Designer: lumiqcreative -->
-        <me.jfenn.attribouter.wedges.ContributorWedge
-            name="^Lumiq Creative"
-            avatar="https://avatars.githubusercontent.com/u/30959743"
-            login="lumiqcreative"
-            task="^@string/about_role_ui_ux_designer">
-            <me.jfenn.attribouter.wedges.link.LinkWedge
-                name="@string/about_twitter"
-                icon="@drawable/ic_twitter"
-                url="https://twitter.com/lumiqcreative" />
-        </me.jfenn.attribouter.wedges.ContributorWedge>
-
         <!-- Supporter: rickkode -->
         <me.jfenn.attribouter.wedges.ContributorWedge
             name="^Rik Koedoot"
@@ -130,18 +144,6 @@
                 name="@string/about_twitter"
                 icon="@drawable/ic_twitter"
                 url="https://twitter.com/RickKode" />
-        </me.jfenn.attribouter.wedges.ContributorWedge>
-
-        <!-- Supporter: bohrabhijeet -->
-        <me.jfenn.attribouter.wedges.ContributorWedge
-            name="^Abhijeet Bohra"
-            avatar="https://avatars.githubusercontent.com/u/34155181"
-            login="bohrabhijeet"
-            task="^@string/about_role_mod_support">
-            <me.jfenn.attribouter.wedges.link.LinkWedge
-                name="@string/about_twitter"
-                icon="@drawable/ic_twitter"
-                url="https://twitter.com/bohrabhijeet" />
         </me.jfenn.attribouter.wedges.ContributorWedge>
 
         <!-- Magisk boi: Skittles9823 -->
@@ -183,7 +185,7 @@
         <me.jfenn.attribouter.wedges.ContributorWedge
             name="^Harsh Shandilya"
             avatar="https://avatars.githubusercontent.com/u/13348378"
-            bio="^@string/about_bio_msfjarvis"
+            bio="^@string/about_bio_harsh"
             blog="https://msfjarvis.website/"
             login="MSF-Jarvis"
             task="^@string/about_role_family_member" />
