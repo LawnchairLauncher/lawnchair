@@ -31,6 +31,7 @@ import android.text.TextUtils;
 import android.text.TextUtils.TruncateAt;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
@@ -724,8 +725,8 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
     }
 
     public boolean useTwoBubbles() {
-        return mMicFrame.getVisibility() == View.VISIBLE && Utilities
-                .getLawnchairPrefs(getContext()).getDualBubbleSearch();
+        return mMicFrame != null && mMicFrame.getVisibility() == View.VISIBLE &&
+                Utilities.getLawnchairPrefs(getContext()).getDualBubbleSearch();
     }
 
     protected NexusLauncherActivity getLauncher() {
