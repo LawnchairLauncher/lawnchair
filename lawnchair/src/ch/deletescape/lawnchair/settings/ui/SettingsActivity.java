@@ -1053,6 +1053,13 @@ public class SettingsActivity extends SettingsBaseActivity implements
                     .setTitle(R.string.bridge_missing_title)
                     .setMessage(R.string.bridge_missing_message)
                     .setNegativeButton(android.R.string.cancel, null)
+                    .setNeutralButton(R.string.get_lawnfeed, new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Utilities.openURLinBrowser(getContext(), BuildConfig.BRIDGE_DOWNLOAD_URL);
+                        }
+                    })
                     .create();
         }
 
