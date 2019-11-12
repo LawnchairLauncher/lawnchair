@@ -318,6 +318,8 @@
     <string name="app_actions_pref_title">Tegevused</string>
     <string name="app_actions_pref_title_in_search">Tegevusettepanekud</string>
     <string name="app_actions_pref_desc">Otseteed sageli avatud ekraanidele</string>
+    <string name="app_actions_reset_pref_title">Lähtestage peidetud toimingud</string>
+    <string name="app_actions_reset_pref_summary">Lähtestab varem peidetud toimingud, lohistades need nupule \"Ära näita\"</string>
     <string name="change_default_home">Määra koduekraaniks</string>
     <string name="recent_task_option_popup_window">Dialoogiaken</string>
     <string name="feed_theme_pref_title">Taustavärv</string>
@@ -510,6 +512,13 @@
         <item>Head ööd!</item>
         <item>Head und!</item>
     </string-array>
+    <string-array name="greetings_night">
+        <item>Head ööd!</item>
+        <item>Head und!</item>
+        <item>Näeme homme!</item>
+        <item>Ilusaid unenägusid!</item>
+        <item>Ära ole üleval liiga kaua</item>
+    </string-array>
     <string name="onbording_settings_title">Seadista %s</string>
     <string name="onbording_settings_summary">Pikk vajutus koduekraanil</string>
     <string name="onboarding_swipe_up">Libista üles, et näha kõiki oma rakendusi</string>
@@ -528,4 +537,18 @@
     <string name="pref_weather_icon_pack">Ilmateate ikoonid</string>
     <string name="weather_icon_packs_not_supported">Teie praegune ilmateate allikas ei toeta seda</string>
     <string name="lawnchair_settings">Lawnchairi seaded</string>
+    <string name="customnavbar_install">Klõpsake kohandatud navigeerimisriba installimiseks</string>
+    <string name="customnavbar_back_hiding">Peida tagasi nupp</string>
+    <string name="customnavbar_back_hiding_desc">Peida tagasi nupp, kui seda pole vaja</string>
+    <string name="icon_shape_top_left">Üles vasakule</string>
+    <string name="icon_shape_top_right">Üles paremale</string>
+    <string name="icon_shape_bottom_left">Alla vasakule</string>
+    <string name="icon_shape_bottom_right">Alla paremale</string>
+    <string name="icon_shape_corner_round">Ring</string>
+    <string name="icon_shape_corner_squircle">Ümarruut</string>
+    <string name="icon_shape_corner_cut">Lõika</string>
+    <string name="smartspace_add_to_home">Lisa avaekraanile</string>
+    <string name="pref_hide_statusbar_clock">Peida kella olekuriba</string>
+    <string name="root_access_required">Root juurdepääs on vajalik</string>
+    <string name="smartspace_setup_text">Puudutage seadistamiseks</string>
 </resources>

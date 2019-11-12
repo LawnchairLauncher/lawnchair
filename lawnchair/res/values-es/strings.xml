@@ -29,7 +29,7 @@
     <string name="about_summary_title">Resumen</string>
     <string name="action_edit">Editar</string>
     <string name="hide_app_sum">Ocultar del cajón de aplicaciones</string>
-    <string name="hide_app">Ocultar aplicación</string>
+    <string name="hide_app">Ocultar app</string>
     <string name="icon_shape_rounded_square">Cuadrado redondeado</string>
     <string name="pixel_ui_pref_summary">Paquete de iconos, desenfoque, colores</string>
     <string name="app_drawer_pref_title">Cajón de aplicaciones</string>
@@ -50,7 +50,7 @@
     <string name="backup_location">Ubicación</string>
     <string name="choose_backup_path">Explorar</string>
     <string name="backup_contents">Contenido</string>
-    <string name="backup_settings">Configuración</string>
+    <string name="backup_settings">Ajustes</string>
     <string name="homescreen">Pantalla de inicio</string>
     <string name="backup_wallpaper">Fondo de Pantalla</string>
     <string name="backup_error_blank_name">Escriba un nombre para la copia de seguridad</string>
@@ -323,6 +323,8 @@
     <string name="app_actions_pref_title">Acciones</string>
     <string name="app_actions_pref_title_in_search">Sugerencias de acciones</string>
     <string name="app_actions_pref_desc">Accesos directos a pantallas frecuentemente abiertas</string>
+    <string name="app_actions_reset_pref_title">Restaurar las acciones ocultas</string>
+    <string name="app_actions_reset_pref_summary">Restaurar las acciones que han sido ocultadas utilizando la opción de \"No mostrar\"</string>
     <string name="change_default_home">Establecer como pantalla principal</string>
     <string name="recent_task_option_popup_window">Ventana de diálogo</string>
     <string name="feed_theme_pref_title">Color de fondo</string>
@@ -515,6 +517,13 @@
         <item>¡Buenas Noches!</item>
         <item>¡Que duermas bien!</item>
     </string-array>
+    <string-array name="greetings_night">
+        <item>¡Buenas noches!</item>
+        <item>¡Que duermas bien!</item>
+        <item>¡Hasta mañana!</item>
+        <item>¡Felices sueños!</item>
+        <item>No te acuestes muy tarde</item>
+    </string-array>
     <string name="onbording_settings_title">Ajuste %s</string>
     <string name="onbording_settings_summary">Pulsación larga en pantalla de inicio</string>
     <string name="onboarding_swipe_up">Desliza arriba para ver todas tus aplicaciones</string>
@@ -533,4 +542,18 @@
     <string name="pref_weather_icon_pack">Iconos del Clima</string>
     <string name="weather_icon_packs_not_supported">No soportado por tu proveedor del clima actual</string>
     <string name="lawnchair_settings">Configuración de Lawnchair</string>
+    <string name="customnavbar_install">Toca para instalar una Barra de Navegación Personalizada</string>
+    <string name="customnavbar_back_hiding">Ocultar botón retroceder</string>
+    <string name="customnavbar_back_hiding_desc">Ocultar botón retroceder cuando no se necesite</string>
+    <string name="icon_shape_top_left">Arriba a la izquierda</string>
+    <string name="icon_shape_top_right">Arriba a la derecha</string>
+    <string name="icon_shape_bottom_left">Abajo a la izquierda</string>
+    <string name="icon_shape_bottom_right">Abajo a la derecha</string>
+    <string name="icon_shape_corner_round">Redondo</string>
+    <string name="icon_shape_corner_squircle">Esquinas redondeadas</string>
+    <string name="icon_shape_corner_cut">Cortar</string>
+    <string name="smartspace_add_to_home">Añadir a la pantalla de inicio</string>
+    <string name="pref_hide_statusbar_clock">Ocultar reloj de la barra de estado</string>
+    <string name="root_access_required">Necesario acceso root</string>
+    <string name="smartspace_setup_text">Toca para configurar</string>
 </resources>

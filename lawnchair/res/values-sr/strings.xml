@@ -321,6 +321,8 @@
     <string name="app_actions_pref_title">Радње</string>
     <string name="app_actions_pref_title_in_search">Предлози радњи</string>
     <string name="app_actions_pref_desc">Пречице до често отвараних екрана</string>
+    <string name="app_actions_reset_pref_title">Ресетуј скривене радње</string>
+    <string name="app_actions_reset_pref_summary">Ресетује радње које су раније скривене превлачењем на дугме „Не приказуј”</string>
     <string name="change_default_home">Постави као почетни екран</string>
     <string name="recent_task_option_popup_window">Прозор за потврду</string>
     <string name="feed_theme_pref_title">Боја позадине</string>
@@ -515,6 +517,13 @@
         <item>Лаку ноћ!</item>
         <item>Лепо спавај!</item>
     </string-array>
+    <string-array name="greetings_night">
+        <item>Лаку ноћ!</item>
+        <item>Лепо спавајте!</item>
+        <item>Видимо се сутра!</item>
+        <item>Слатки снови!</item>
+        <item>Лезите на време</item>
+    </string-array>
     <string name="onbording_settings_title">Подеси %s</string>
     <string name="onbording_settings_summary">Притисните и задржите почетни екран</string>
     <string name="onboarding_swipe_up">Превуците нагоре да бисте видели све апликације</string>
@@ -533,4 +542,18 @@
     <string name="pref_weather_icon_pack">Иконе временских прилика</string>
     <string name="weather_icon_packs_not_supported">Тренутни извор временске прогнозе не подржава</string>
     <string name="lawnchair_settings">Подешавања Lawnchair-а</string>
+    <string name="customnavbar_install">Додирните да бисте инсталирали прилагођену траку за навигацију</string>
+    <string name="customnavbar_back_hiding">Скривање дугмета „Назад”</string>
+    <string name="customnavbar_back_hiding_desc">Скрива дугме „Назад” када није потребно</string>
+    <string name="icon_shape_top_left">Горе лево</string>
+    <string name="icon_shape_top_right">Горе десно</string>
+    <string name="icon_shape_bottom_left">Доле лево</string>
+    <string name="icon_shape_bottom_right">Доле десно</string>
+    <string name="icon_shape_corner_round">Заобљено</string>
+    <string name="icon_shape_corner_squircle">Заобљени квадрат</string>
+    <string name="icon_shape_corner_cut">Опсечено</string>
+    <string name="smartspace_add_to_home">Додај на почетни екран</string>
+    <string name="pref_hide_statusbar_clock">Сакриј сат из статусне траке</string>
+    <string name="root_access_required">Потребан је приступ руту</string>
+    <string name="smartspace_setup_text">Додирните да бисте подесили</string>
 </resources>

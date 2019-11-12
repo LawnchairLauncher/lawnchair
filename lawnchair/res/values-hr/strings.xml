@@ -315,6 +315,8 @@
     <string name="app_actions_pref_title">Radnje</string>
     <string name="app_actions_pref_title_in_search">Prijedlozi radnja</string>
     <string name="app_actions_pref_desc">Prečac na često otvorene zaslone</string>
+    <string name="app_actions_reset_pref_title">Poništi skrivene akcije</string>
+    <string name="app_actions_reset_pref_summary">Ponovno pokaži akcije koje su su bile skrivene odvlačenjem na dugme \'Ne prikazuj\'</string>
     <string name="change_default_home">Postavi kao početni zaslon</string>
     <string name="recent_task_option_popup_window">Prozor dijaloga</string>
     <string name="feed_theme_pref_title">Boja pozadine</string>
@@ -509,6 +511,13 @@
         <item>Laku noć!</item>
         <item>Ugodno spavaj!</item>
     </string-array>
+    <string-array name="greetings_night">
+        <item>Laku noć!</item>
+        <item>Lijepo spavaj!</item>
+        <item>Vidimo se sutra!</item>
+        <item>Slatke snove želim!</item>
+        <item>Ne idi kasno na spavanje</item>
+    </string-array>
     <string name="onbording_settings_title">Postavi %s</string>
     <string name="onbording_settings_summary">Dugi pritisak na tvoj početni zaslon</string>
     <string name="onboarding_swipe_up">Klizni prema gore za vidjeti sve aplikacije</string>
@@ -527,4 +536,18 @@
     <string name="pref_weather_icon_pack">Ikone vremena</string>
     <string name="weather_icon_packs_not_supported">Nije podržano od vašeg trenutnog pružatelja prognoze vremena</string>
     <string name="lawnchair_settings">Postavke Lawnchaira</string>
+    <string name="customnavbar_install">Dodirni za postavljanje Prilagođene upravljačke trake</string>
+    <string name="customnavbar_back_hiding">Skrivanje dugmeta \'Natrag\'</string>
+    <string name="customnavbar_back_hiding_desc">Sakrij dugme \'Natrag\' kada nije potrebno</string>
+    <string name="icon_shape_top_left">Gore lijevo</string>
+    <string name="icon_shape_top_right">Gore desno</string>
+    <string name="icon_shape_bottom_left">Dolje lijevo</string>
+    <string name="icon_shape_bottom_right">Dolje desno</string>
+    <string name="icon_shape_corner_round">Zaobljeno</string>
+    <string name="icon_shape_corner_squircle">Zaobljeni kvadrat</string>
+    <string name="icon_shape_corner_cut">Izreži</string>
+    <string name="smartspace_add_to_home">Dodaj na početni zaslon</string>
+    <string name="pref_hide_statusbar_clock">Sakrij sat iz statusne trake</string>
+    <string name="root_access_required">Potreban je korijenski pristup</string>
+    <string name="smartspace_setup_text">Dodirnite za postavljanje</string>
 </resources>

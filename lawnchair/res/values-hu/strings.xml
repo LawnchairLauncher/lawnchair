@@ -323,6 +323,8 @@
     <string name="app_actions_pref_title">Műveletek</string>
     <string name="app_actions_pref_title_in_search">Műveletjavaslatok</string>
     <string name="app_actions_pref_desc">Gyakran megnyitott képernyők parancsikonjai</string>
+    <string name="app_actions_reset_pref_title">Az elrejtett műveletek visszaállítása</string>
+    <string name="app_actions_reset_pref_summary">Visszaállítja azokat a korábban elrejtett műveleteket, amelyeket a \'Ne jelenítse meg\' gombbal elrejtett</string>
     <string name="change_default_home">Beállítás kezdőképernyőként</string>
     <string name="recent_task_option_popup_window">Párbeszédablak</string>
     <string name="feed_theme_pref_title">Háttérszín</string>
@@ -515,6 +517,13 @@ A művelet nem visszavonható.</string>
         <item>Jó éjszakát!</item>
         <item>Aludj jól!</item>
     </string-array>
+    <string-array name="greetings_night">
+        <item>Jó éjszakát!</item>
+        <item>Aludjon jól!</item>
+        <item>Holnap találkozunk!</item>
+        <item>Szép álmokat!</item>
+        <item>Ne maradjon ébren túl későig</item>
+    </string-array>
     <string name="onbording_settings_title">%s beállítása</string>
     <string name="onbording_settings_summary">A Kezdőképernyő hosszan nyomásával</string>
     <string name="onboarding_swipe_up">Csúsztasson felefelé az összes alkalmazás megtekintéséhez</string>
@@ -533,4 +542,18 @@ A művelet nem visszavonható.</string>
     <string name="pref_weather_icon_pack">Időjárás ikonok</string>
     <string name="weather_icon_packs_not_supported">Az Ön jelenlegi időjárás-forrása nem támogatja</string>
     <string name="lawnchair_settings">Lawnchair-beállítások</string>
+    <string name="customnavbar_install">Érintse meg egy egyéni Navigációs sáv telepítéséhez</string>
+    <string name="customnavbar_back_hiding">A Vissza-gomb elrejtése</string>
+    <string name="customnavbar_back_hiding_desc">Amikor nincs szükség rá, rejtse el a Vissza-gombot</string>
+    <string name="icon_shape_top_left">Felül balra</string>
+    <string name="icon_shape_top_right">Felül jobbra</string>
+    <string name="icon_shape_bottom_left">Alul balra</string>
+    <string name="icon_shape_bottom_right">Alul jobbra</string>
+    <string name="icon_shape_corner_round">Kerek</string>
+    <string name="icon_shape_corner_squircle">Négyzetes kör</string>
+    <string name="icon_shape_corner_cut">Kivágás</string>
+    <string name="smartspace_add_to_home">Hozzáadás a kezdőképernyőhöz</string>
+    <string name="pref_hide_statusbar_clock">Az állapotsori óra elrejtése</string>
+    <string name="root_access_required">Rendszergazda-hozzáférés szükséges</string>
+    <string name="smartspace_setup_text">Érintse meg a beállításhoz</string>
 </resources>

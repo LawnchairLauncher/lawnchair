@@ -314,6 +314,8 @@
     <string name="app_actions_pref_title">Actions</string>
     <string name="app_actions_pref_title_in_search">Action suggestions</string>
     <string name="app_actions_pref_desc">Shortcuts to frequently opened screens</string>
+    <string name="app_actions_reset_pref_title">Reset hidden actions</string>
+    <string name="app_actions_reset_pref_summary">Resets actions which were previously hidden by dragging them to the \"don ’t show\" button</string>
     <string name="change_default_home">Set as home screen</string>
     <string name="recent_task_option_popup_window">Dialog window</string>
     <string name="feed_theme_pref_title">Background colour</string>
@@ -404,7 +406,7 @@
     <string name="pref_fonts_missing_font">Missing font</string>
     <string name="about_translate">Translations</string>
     <string name="pref_show_dev_options">Show in settings</string>
-    <string name="about_app_description">A customizable Pixel Launcher alternative.</string>
+    <string name="about_app_description">A customisable Pixel Launcher alternative.</string>
     <string name="about_bio_paphonb">A 18-year-old student, Android Developer and one of the top developers at Lawnchair Launcher.</string>
     <string name="dock_scale">Dock scale</string>
     <string name="adaptify_pack_title">Create adaptive icons for icon pack</string>
@@ -413,8 +415,8 @@
     <string name="pref_sesame_sync_look_and_feel_summary">Sync Lawnchair search settings with Sesame</string>
     <string name="pref_search_bar_radius">Search bar corner rounding</string>
     <string name="icon_text_scale_pref_title">Text size</string>
-    <string name="text_color">Text color</string>
-    <string name="background_color">Background color</string>
+    <string name="text_color">Text colour</string>
+    <string name="background_color">Background colour</string>
     <string name="pref_notification_count_title">Display notification count</string>
     <string name="pref_notification_count_summary">Display notification count inside the dots</string>
     <string name="pref_center_wallpaper">Always center wallpaper</string>
@@ -441,7 +443,7 @@
     <string name="category_lifestyle">Shopping and Lifestyle</string>
     <string name="category_music">Music</string>
     <string name="category_news">News</string>
-    <string name="category_personalization">Personalization</string>
+    <string name="category_personalization">Personalisation</string>
     <string name="category_photography">Personalization</string>
     <string name="category_tools">Utility</string>
     <string name="category_travel_and_navigation">Travel and Navigation</string>
@@ -481,7 +483,7 @@
     <string name="tab_type_custom">Custom tab</string>
     <string name="tab_type_custom_desc">Manually pick apps for this tab.</string>
     <string name="tab_type_smart">Smart tab</string>
-    <string name="categorization">Categorization</string>
+    <string name="categorization">Categorisation</string>
     <string name="folder_cover_mode">Cover mode</string>
     <string name="folder_cover_mode_desc">Tap to open first app, swipe up to open folder</string>
     <string name="pref_smartspace_event_providers">Events sources</string>
@@ -503,8 +505,15 @@
         <item>Have a great day!</item>
     </string-array>
     <string-array name="greetings_evening">
+        <item>Good night?</item>
+        <item>Sleep well!</item>
+    </string-array>
+    <string-array name="greetings_night">
         <item>Good night!</item>
         <item>Sleep well!</item>
+        <item>See you tomorrow!</item>
+        <item>Sweet dreams!</item>
+        <item>Don\'t stay up too long</item>
     </string-array>
     <string name="onbording_settings_title">Set-up %s</string>
     <string name="onbording_settings_summary">Long press your home screen</string>
@@ -524,4 +533,18 @@
     <string name="pref_weather_icon_pack">Weather Icons</string>
     <string name="weather_icon_packs_not_supported">Not supported by your current weather source</string>
     <string name="lawnchair_settings">Lawnchair Settings</string>
+    <string name="customnavbar_install">Tap to install Custom Navigation Bar</string>
+    <string name="customnavbar_back_hiding">Back button hiding</string>
+    <string name="customnavbar_back_hiding_desc">Hide the back button when not needed</string>
+    <string name="icon_shape_top_left">Top left</string>
+    <string name="icon_shape_top_right">Top right</string>
+    <string name="icon_shape_bottom_left">Bottom left</string>
+    <string name="icon_shape_bottom_right">Bottom right</string>
+    <string name="icon_shape_corner_round">Round</string>
+    <string name="icon_shape_corner_squircle">Squircle</string>
+    <string name="icon_shape_corner_cut">Cut</string>
+    <string name="smartspace_add_to_home">Add to homescreen</string>
+    <string name="pref_hide_statusbar_clock">Hide statusbar clock</string>
+    <string name="root_access_required">Root access required</string>
+    <string name="smartspace_setup_text">Tap to set-up</string>
 </resources>

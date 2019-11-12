@@ -54,13 +54,13 @@
     <string name="backup_wallpaper">Hintergrundbild</string>
     <string name="backup_error_blank_name">Sicherungsnamen eingeben</string>
     <string name="backup_error_blank_location">Wähle Sicherungsverzeichnis</string>
-    <string name="backup_error_blank_contents">Zu Backup hinzufügen</string>
+    <string name="backup_error_blank_contents">Sicherung kann nicht leer sein</string>
     <string name="backup_creating">Sicherung wird erstellt</string>
     <string name="no_recent_backups">Nichts zum Anzeigen</string>
     <string name="backup_loading">Lade...</string>
-    <string name="backup_invalid">Falsche Sicherungsdatei</string>
+    <string name="backup_invalid">Ungültige Sicherungsdatei</string>
     <string name="backup_share">Teilen</string>
-    <string name="backup_pref_summary">Startbildschirm sichern, Sicherungen wiederherstellen</string>
+    <string name="backup_pref_summary">Startbildschirm sichern, wiederherstellen</string>
     <string name="backup_timestamp">Erstellungsdatum</string>
     <string name="backup_restoring">Wird wiederhergestellt</string>
     <string name="backup_restarting">Starte neu</string>
@@ -68,7 +68,7 @@
     <string name="restore_success">Wiederherstellen abgeschlossen</string>
     <string name="failed">Etwas ist schief gelaufen</string>
     <string name="backup_share_text">Lawnchair Sicherung</string>
-    <string name="full_width_widgets_pref_summary">Erlaube Widgets bis zum Bildschirmrand</string>
+    <string name="full_width_widgets_pref_summary">Strecke Widgets bis zum Bildschirmrand</string>
     <string name="full_width_width_widgets_pref_title">Breite Widgets</string>
     <string name="hide_apps">Apps verstecken</string>
     <string name="hide_apps_sum">Apps aus App-Liste entfernen</string>
@@ -93,7 +93,7 @@
     <!--Marker B-->
     <string name="dock_colored_google">Farbige Icons</string>
     <string name="hotseat_show_arrow">Pfeil</string>
-    <string name="hotseat_show_page_indicator">Seitenindikator</string>
+    <string name="hotseat_show_page_indicator">Seitenanzeige</string>
     <string name="dock_style_pref_title">Dockstil</string>
     <string name="dock_style_p">Abgerundet</string>
     <string name="dock_style_n">Flach</string>
@@ -102,17 +102,17 @@
     <string name="opacity">Deckkraft</string>
     <string name="title_all_apps_google_search">Globale Suche</string>
     <string name="summary_all_apps_google_search">Web- und App-Suche</string>
-    <string name="num_hotseat_icons_pref_title">Anzahl der Icons</string>
+    <string name="num_hotseat_icons_pref_title">Iconanzahl</string>
     <string name="icon_scale_pref_title">Icongröße</string>
-    <string name="add_settings_shortcut_title">Füge Einstellungs-Icon zum Startbildschirm hinzu</string>
+    <string name="add_settings_shortcut_title">Einstellungs-Icon zum Startbildschirm hinzufügen</string>
     <string name="icon_pack_default">Systemicons</string>
     <string name="loading">Lade…</string>
     <string name="low_performance_mode_pref_title">Geringe Leistung-Modus</string>
-    <string name="title_storage_permission_required">Speicherberechtigung benötigt</string>
-    <string name="content_storage_permission_required">Speicherberechtigung benötigt, um das Hintergrundbild zu ändern</string>
+    <string name="title_storage_permission_required">Speicherzugriff benötigt</string>
+    <string name="content_storage_permission_required">Speicherzugriff benötigt, um das Hintergrundbild zu ändern</string>
     <string name="reset_to_default">Auf Standard zurücksetzen</string>
     <string name="dock_shadow">Schatten</string>
-    <string name="dock_fill">Hintergrund</string>
+    <string name="dock_fill">Gefüllter Hintergrund</string>
     <string name="radius">Eckenrundung</string>
     <string name="gradient">Farbverlauf</string>
     <!--Marker C-->
@@ -139,7 +139,7 @@
     <string name="about_our_team">Unser Team</string>
     <string name="about_our_contributors">Unsere wichtigsten Mitwirkenden</string>
     <string name="about_our_family">Unsere weiteren Familienmitglieder</string>
-    <string name="about_role_lead">Führender Entwickler</string>
+    <string name="about_role_lead">Hauptentwickler</string>
     <string name="about_role_devops">DevOps</string>
     <string name="about_role_dev">Entwickler</string>
     <string name="about_role_dev_mod">Entwickler/Moderator</string>
@@ -155,7 +155,7 @@
     <string name="about_bio_chris">Extremer Millennial, keine Ahnung und juckt mich nicht. Irgendwas mit Design und Social Media. Lass uns zusammen bei @lawnchairapp abhängen ✨</string>
     <string name="about_bio_msfjarvis">Hauptentwickler von halogenOS und App-Entwickler bei substratum.</string>
     <!--Marker E-->
-    <string name="debug_crash_launcher">Launcher abstürzen lassen</string>
+    <string name="debug_crash_launcher">Crash erzwingen</string>
     <string name="gestures_pref_title">Gesten</string>
     <string name="gestures_pref_summary">Doppel-Tipp, Home-Button, Runter wischen</string>
     <string name="action_open_drawer">App-Liste öffnen</string>
@@ -169,12 +169,12 @@
     <string name="action_assistant">Google Assistant öffnen</string>
     <string name="action_open_notifications">Benachrichtigungen anzeigen</string>
     <string name="action_close_notifications">Benachrichtigungen schließen</string>
-    <string name="action_sleep_timeout">Schlafen (mit Timer-Nutzung)</string>
+    <string name="action_sleep_timeout">Sperren (mit Timer-Nutzung)</string>
     <string name="action_open_app">App öffnen</string>
     <string name="action_open_app_with_target">Öffne %s</string>
     <string name="action_open_app_select_app">App auswählen</string>
     <string name="action_none">Nichts tun</string>
-    <string name="action_despacito">Spiele YouTube Rewind 2018 (Ohrenvergewaltigung)</string>
+    <string name="action_despacito">Spiele YouTube Rewind 2018 (verzerrt)</string>
     <string name="gesture_press_home">Home-Button</string>
     <string name="gesture_press_back">Zurück-Button</string>
     <string name="gesture_double_tap">Doppel-Tipp</string>
@@ -182,7 +182,7 @@
     <string name="gesture_swipe_down">Runter wischen</string>
     <string name="gesture_swipe_up">Hoch wischen</string>
     <string name="gesture_dock_swipe_up">Auf dem Dock hoch wischen</string>
-    <string name="pref_show_assistant_title">Button für die Sprachsuche</string>
+    <string name="pref_show_assistant_title">Sprachsuche anzeigen</string>
     <string name="pref_show_assistant_summary">Button für die Sprachsuche anzeigen, falls dieses Feature unterstützt wird</string>
     <string name="pref_show_as_assistant_summary">Assistenten-Button statt dem Button für die Sprachsuche anzeigen</string>
     <string name="smartspace_time_24_h">24-Stunden-Format</string>
@@ -191,7 +191,7 @@
     <string name="weather_provider_pe">PixelExperience</string>
     <string name="pref_smartspace_widget_provider">Wetterdienst</string>
     <string name="pref_smartspace_event_provider">Verwendeter Kalender</string>
-    <string name="title_all_apps_search">Suchleiste in der App-Liste</string>
+    <string name="title_all_apps_search">Suchleiste</string>
     <string name="smartspace_widget_provider_not_found">Installiere oder aktualisiere die Google App.</string>
     <string name="apps_label">Apps</string>
     <string name="all_apps_label">Alle Apps</string>
@@ -221,9 +221,9 @@
     <string name="show_top_shadow_pref_title">Schatten oben</string>
     <string name="show_top_shadow_pref_summary">Schatten unter der Statusleiste</string>
     <string name="two_row_dock">Zwei Reihen</string>
-    <string name="keep_scroll_state_pref_title">Scrollposition speichern</string>
+    <string name="keep_scroll_state_pref_title">Scrollposition beibehalten</string>
     <string name="reset">Zurücksetzen</string>
-    <string name="theme_title">Thema</string>
+    <string name="theme_title">Design</string>
     <string name="theme_automatic">Automatisch</string>
     <!-- I wanted to rename this to "default" as it is what we use everywhere now but unfortunately thats not an allowed name -->
     <string name="theme_default">Standard</string>
@@ -245,7 +245,7 @@
     <string name="automatic_short">Auto</string>
     <string name="bridge_missing_title">Lawnfeed</string>
     <string name="bridge_missing_message">Lawnfeed installieren oder aktualisieren</string>
-    <string name="quickstep_pref_title">App-Verlauf</string>
+    <string name="quickstep_pref_title">Anwendungsverlauf</string>
     <string name="quickstep_pref_summary">Gesten, Ecken, Unschärfe</string>
     <string name="swipe_up_to_switch_apps_title">Nach oben wischen um Apps zu wechseln</string>
     <string name="swipe_left_to_go_back_title">Nach links wischen um zurück zu gehen</string>
@@ -255,7 +255,7 @@
     <string name="gesture_nav_swipe_up_right">Von rechts</string>
     <string name="action_switch_apps">Apps wechseln</string>
     <string name="pref_global_search_provider">Suchmaschine</string>
-    <string name="searchbar_appearance_title">Darstellung</string>
+    <string name="searchbar_appearance_title">Aussehen</string>
     <string name="google">Google</string>
     <string name="search_provider_google_go">Google Go</string>
     <string name="search_provider_yandex">Yandex</string>
@@ -323,6 +323,8 @@
     <string name="app_actions_pref_title">Aktionen</string>
     <string name="app_actions_pref_title_in_search">Vorgeschlagene Aktionen</string>
     <string name="app_actions_pref_desc">Verknüpfungen zu häufig verwendeten Aktivitäten</string>
+    <string name="app_actions_reset_pref_title">Versteckte Aktionen zurücksetzen</string>
+    <string name="app_actions_reset_pref_summary">Aktionen, die vorher versteckt wurden, werden zurückgesetzt</string>
     <string name="change_default_home">Als Startbildschirm festlegen</string>
     <string name="recent_task_option_popup_window">Dialogfenster</string>
     <string name="feed_theme_pref_title">Hintergrundfarbe</string>
@@ -512,14 +514,14 @@
         <item>Hab einen schönen Tag!</item>
     </string-array>
     <string-array name="greetings_evening">
-        <item>Gute Nacht!</item>
-        <item>Schlaf gut!</item>
+        <item>Wie war dein Tag?</item>
+        <item>Was hast du heute gemacht?</item>
     </string-array>
     <string-array name="greetings_night">
         <item>Gute Nacht!</item>
         <item>Schlaf gut!</item>
         <item>Bis morgen!</item>
-        <item>Träum süß!</item>
+        <item>Süße Träume!</item>
         <item>Bleib nicht zulange auf</item>
     </string-array>
     <string name="onbording">Onboarding</string>
@@ -541,13 +543,18 @@
     <string name="pref_weather_icon_pack">Wetter-Icons</string>
     <string name="weather_icon_packs_not_supported">Deine aktuelle Wetter-Quelle unterstützt das leider nicht.</string>
     <string name="lawnchair_settings">Lawnchair-Einstellungen</string>
+    <string name="customnavbar_install">Tippen zur Installation einer angepassten Navigationsleiste</string>
+    <string name="customnavbar_back_hiding">Verstecke Zurück-Button</string>
+    <string name="customnavbar_back_hiding_desc">Zurück-Button wird ausgeblendet, wenn er nicht gebraucht wird</string>
     <string name="icon_shape_top_left">Oben links</string>
     <string name="icon_shape_top_right">Oben rechts</string>
     <string name="icon_shape_bottom_left">Unten links</string>
     <string name="icon_shape_bottom_right">Unten rechts</string>
     <string name="icon_shape_corner_round">Rund</string>
     <string name="icon_shape_corner_squircle">Squircle</string>
+    <string name="icon_shape_corner_cut">Ausschneiden</string>
     <string name="smartspace_add_to_home">Zum Startbildschirm hinzufügen</string>
+    <string name="pref_hide_statusbar_clock">Verstecke Statusleisten-Uhr</string>
     <string name="root_access_required">Root-Zugriff erforderlich</string>
     <string name="smartspace_setup_text">Zum Einrichten tippen</string>
 </resources>

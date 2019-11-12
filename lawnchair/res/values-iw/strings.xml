@@ -458,9 +458,30 @@
     <string name="tab_type_custom_desc">בחר אפליקציות לכרטיסייה זאת באופן ידני.</string>
     <string name="tab_type_smart">כרטיסייה חכמה</string>
     <string name="categorization">חלוקה לקטגוריות</string>
+    <string name="event_provider_now_playing">מנגן כעת</string>
+    <string name="battery_status">מצב סוללה</string>
+    <string name="battery_charging">סוללה בטעינה</string>
+    <string name="battery_full">סוללה מלאה</string>
+    <string name="battery_low">סוללה חלשה</string>
+    <string name="event_provider_unread_notifications">התראות שלא נקראו</string>
+    <string name="zen_mode_enabled">מצב \'נא לא להפריע\' מופעל</string>
+    <string name="crash_report_notif_title">%1$s קרס!</string>
+    <string-array name="greetings_morning">
+        <item>בוקר טוב!</item>
+        <item>What a beautiful day!</item>
+        <item>Have you looked outside yet?</item>
+        <item>שיהיה לך יום נפלא!</item>
+    </string-array>
     <string-array name="greetings_evening">
-        <item>Good night!</item>
-        <item>Sleep well!</item>
+        <item>איך עבר עליך היום?</item>
+        <item>מה עשית היום?</item>
+    </string-array>
+    <string-array name="greetings_night">
+        <item>לילה טוב!</item>
+        <item>שן טוב!</item>
+        <item>נתראה מחר!</item>
+        <item>חלומות מתוקים!</item>
+        <item>אל תשאר ער עד מאוחר</item>
     </string-array>
     <string name="onbording_settings_summary">לחיצה ארוכה על מסך הבית</string>
     <string name="onboarding_swipe_up">החלק מעלה לצפייה בכל האפליקציות</string>
@@ -475,4 +496,17 @@
     <string name="web_search_baidu">Baidu (דפדפן)</string>
     <string name="icon_shape_override_miui_explaination">עקב הגבלות ב-MIUI, צורת הסמל שלך עלולה לא להשתנות ולהישאר ריבוע.\nבבקשה אל תדווח על זה כבאג.</string>
     <string name="button_organize_screens">ארגן מסכים</string>
+    <string name="customnavbar_back_hiding">הסתרת לחצן חזור</string>
+    <string name="customnavbar_back_hiding_desc">הסתר את לחצן חזור כאשר אינו נצרך</string>
+    <string name="icon_shape_top_left">שמאל למעלה</string>
+    <string name="icon_shape_top_right">ימין למעלה</string>
+    <string name="icon_shape_bottom_left">שמאל למטה</string>
+    <string name="icon_shape_bottom_right">ימין למטה</string>
+    <string name="icon_shape_corner_round">מעגל</string>
+    <string name="icon_shape_corner_squircle">ריבוע מעוגל</string>
+    <string name="icon_shape_corner_cut">חתוך</string>
+    <string name="smartspace_add_to_home">הוסף למסך הבית</string>
+    <string name="pref_hide_statusbar_clock">הסתר את השעון בשורת המצב</string>
+    <string name="root_access_required">נדרשת גישת רוט</string>
+    <string name="smartspace_setup_text">הקש כדי להגדיר</string>
 </resources>

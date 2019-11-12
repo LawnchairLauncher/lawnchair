@@ -17,7 +17,7 @@
     <string name="icon_pack">Pacote de ícones</string>
     <string name="home_widget">Widget da tela principal</string>
     <string name="title_show_google_app">%1$s à esquerda</string>
-    <string name="msg_minus_one_on_left">Feed para a esquerda da área de trabalho</string>
+    <string name="msg_minus_one_on_left">Feed à esquerda da área de trabalho</string>
     <string name="about">Sobre</string>
     <string name="google_app">App do Google</string>
     <string name="about_app_version">Versão</string>
@@ -30,7 +30,7 @@
     <string name="action_edit">Editar</string>
     <string name="hide_app_sum">Ocultar da gaveta de aplicativos</string>
     <string name="hide_app">Ocultar aplicativo</string>
-    <string name="icon_shape_rounded_square">Cantos arredondados</string>
+    <string name="icon_shape_rounded_square">Quadrado arredondado</string>
     <string name="pixel_ui_pref_summary">Pacote de ícones, desfoque e cores</string>
     <string name="app_drawer_pref_title">Gaveta de aplicativos</string>
     <string name="app_drawer_pref_summary">Opacidade, sugestões, ocultar aplicativos</string>
@@ -55,13 +55,13 @@
     <string name="backup_wallpaper">Plano de fundo</string>
     <string name="backup_error_blank_name">Insira o nome do backup</string>
     <string name="backup_error_blank_location">Selecione o local de backup</string>
-    <string name="backup_error_blank_contents">Adicionar conteúdo da cópia de segurança</string>
+    <string name="backup_error_blank_contents">Adicionar conteúdo de backup</string>
     <string name="backup_creating">Criando backup</string>
     <string name="no_recent_backups">Nada para ser exibido</string>
     <string name="backup_loading">Carregando...</string>
     <string name="backup_invalid">Arquivo de backup incorreto</string>
     <string name="backup_share">Compartilhar</string>
-    <string name="backup_pref_summary">Salvar tela inicial e restaurar cópia de segurança</string>
+    <string name="backup_pref_summary">Salvar tela inicial, restaurar backups</string>
     <string name="backup_timestamp">Data de criação</string>
     <string name="backup_restoring">Restaurando</string>
     <string name="backup_restarting">Reiniciando</string>
@@ -98,7 +98,7 @@
     <string name="dock_style_pref_title">Estilo da dock</string>
     <string name="dock_style_p">Arredondado</string>
     <string name="dock_style_n">Plano</string>
-    <string name="dock_style_hidden">Ocultado</string>
+    <string name="dock_style_hidden">Oculto</string>
     <string name="dock_search_bar">Barra de pesquisa da dock</string>
     <string name="opacity">Opacidade</string>
     <string name="title_all_apps_google_search">Pesquisa global</string>
@@ -149,11 +149,11 @@
     <string name="about_role_special_snowflake">Redes sociais/Relações públicas e relações com OEMs</string>
     <string name="about_role_mod_support">Moderador/Suporte</string>
     <string name="about_role_family_member">Membro da família</string>
-    <string name="about_role_magisk_maintainer">Mantenedor no módulo do Magisk</string>
+    <string name="about_role_magisk_maintainer">Mantedor do Módulo Magisk</string>
     <string name="about_bio_deletescape">Desenvolvedor Android &amp; entusiasta, adora memes (um pouco demais na verdade). Fundador do projeto Lawnchair.</string>
     <string name="about_bio_recoded">Programador e designer gráfico.</string>
     <string name="about_bio_josh">Designer gráfico independente.</string>
-    <string name="about_bio_chris">Millennial pra caramba, não sei e não me importo, Algo com design e mídias sociais. Vamos se encontrar no @lawnchairapp</string>
+    <string name="about_bio_chris">Millennial pra caramba, não sei e não me importo. Algo com design e redes sociais. Vamos se encontrar no @lawnchairapp ✨</string>
     <string name="about_bio_msfjarvis">Desenvolvedor principal em halogenOS e desenvolvedor no aplicativo do Substratum.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Travar launcher</string>
@@ -182,7 +182,7 @@
     <string name="gesture_long_press">Toque &amp; segure</string>
     <string name="gesture_swipe_down">Deslizar para baixo</string>
     <string name="gesture_swipe_up">Deslizar para cima</string>
-    <string name="gesture_dock_swipe_up">Deslize para cima na dock</string>
+    <string name="gesture_dock_swipe_up">Deslizar pra cima na dock</string>
     <string name="pref_show_assistant_title">Botão de pesquisa por voz</string>
     <string name="pref_show_assistant_summary">Exibir o botão de pesquisa por voz, se suportado</string>
     <string name="pref_show_as_assistant_summary">Exibir o botão do assistente em vez da pesquisa por voz</string>
@@ -198,8 +198,8 @@
     <string name="all_apps_label">Todos os apps</string>
     <string name="all_apps_label_pref_title">Mostrar rótulo \"Todos os Apps\"</string>
     <string name="separate_work_apps_pref_title">Segunda aba para aplicativos de trabalho</string>
-    <string name="title_search_hidden_apps">Mostrar aplicativos ocultados</string>
-    <string name="summary_search_hidden_apps">Mostrar aplicativos ocultados nos resultados</string>
+    <string name="title_search_hidden_apps">Mostrar aplicativos ocultos</string>
+    <string name="summary_search_hidden_apps">Mostrar aplicativos ocultos nos resultados</string>
     <!--Marker F-->
     <string name="default_city">São Paulo, BR</string>
     <string name="pref_weather_api_key_title">Chave da API</string>
@@ -209,7 +209,7 @@
     <string name="units_metric">Celsius</string>
     <string name="units_imperial">Fahrenheit</string>
     <string name="units_kelvin">Kelvin</string>
-    <string name="all_icons">Todos os Ícones</string>
+    <string name="all_icons">Todos os ícones</string>
     <string name="error_no_browser">Nenhum navegador encontrado para abrir URLs</string>
     <string name="no_icon_found">Nenhum ícone encontrado</string>
     <string name="icon_pack_external_picker">Abrir seletor externo</string>
@@ -231,7 +231,7 @@
     <string name="transparent">Transparente</string>
     <string name="pref_open_source_licenses_title">Licenças</string>
     <string name="pref_legacy_treatment_title">Criar ícones adaptativos</string>
-    <string name="pref_legacy_treatment_summary">Ícones adaptativos automáticos para todos os aplicativos</string>
+    <string name="pref_legacy_treatment_summary">Ícones adaptáveis automáticos para todos os aplicativos</string>
     <string name="dt2s_admin_hint">Para usar o toque duplo para bloquear, conceda permissão de administrador</string>
     <string name="dt2s_admin_warning">Toque duplo para bloquear será desativado</string>
     <string name="icon_pack_applied_toast">%s aplicado</string>
@@ -255,7 +255,7 @@
     <string name="gesture_nav_swipe_up_center">Do centro</string>
     <string name="gesture_nav_swipe_up_right">Da direita</string>
     <string name="action_switch_apps">Alternar aplicativos</string>
-    <string name="pref_global_search_provider">Motor de pesquisa</string>
+    <string name="pref_global_search_provider">Mecanismo de pesquisa</string>
     <string name="searchbar_appearance_title">Aparência</string>
     <string name="google">Google</string>
     <string name="search_provider_google_go">Google Go</string>
@@ -268,12 +268,12 @@
     <string name="search_provider_cool_search">Cool Search</string>
     <string name="recent_task_option_force_stop">Forçar parada</string>
     <string name="pref_icon_packs">Pacote de ícones</string>
-    <string name="drag_to_enable_packs">Arraste para ativar</string>
+    <string name="drag_to_enable_packs">Arraste para acima para ativar</string>
     <string name="drag_to_disable_packs">Arraste para baixo para desativar</string>
     <string name="get_more_icon_packs">Obter mais</string>
     <string name="enabled_icon_packs">Ativado</string>
     <string name="pref_icon_pack_masking">Mascarar ícones</string>
-    <string name="pref_icon_pack_masking_summary">Faz os ícones sem tema combinarem com o pacote de ícones aplicado</string>
+    <string name="pref_icon_pack_masking_summary">Fazer ícones sem tema combinarem com o pacote de ícones aplicado</string>
     <string name="pref_legacy_colored_backgrounds">Fundos coloridos</string>
     <string name="pref_legacy_colored_backgrounds_summary">Fundos coloridos para ícones adaptáveis gerados</string>
     <string name="pref_white_only_treatment">Substituir fundos brancos</string>
@@ -281,7 +281,7 @@
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <!--Marker H-->
     <string name="dismiss_drop_target_label">"Não mostrar"</string>
-    <string name="suggested_action_content_description">%1$s é aberto em %2$s</string>
+    <string name="suggested_action_content_description">%1$s abre em %2$s</string>
     <string name="action_sleep">Desligar</string>
     <string name="pref_drawer_padding">Altura da linha</string>
     <string name="pref_drawer_columns">Número de colunas</string>
@@ -291,7 +291,7 @@
     <string name="theme_auto">Conforme plano de fundo</string>
     <string name="theme_auto_night_mode">Do tema do sistema</string>
     <string name="theme_light">Claro</string>
-    <string name="theme_dark_text">Branco com texto escuro</string>
+    <string name="theme_dark_text">Claro com texto escuro</string>
     <string name="theme_with_dark_text">texto escuro</string>
     <string name="theme_dark">Escuro</string>
     <string name="theme_dark_dark_text">Escuro com texto escuro</string>
@@ -307,7 +307,7 @@
     <string name="theme_use_dark_text">Use texto escuro</string>
     <string name="pref_qsb_color">Cor</string>
     <string name="hide_from_predictions">Ocultar das sugestões</string>
-    <string name="hide_from_predictions_summary">Nunca mostrar sugestões na gaveta</string>
+    <string name="hide_from_predictions_summary">Nunca mostrar nas sugestões da gaveta</string>
     <string name="bubble_searchbar">Barra de pesquisa em bolha dupla</string>
     <string name="search_clear_history">Limpar histórico</string>
     <string name="search_no_results">Nada foi encontrado</string>
@@ -324,6 +324,8 @@
     <string name="app_actions_pref_title">Ações</string>
     <string name="app_actions_pref_title_in_search">Sugestões de ação</string>
     <string name="app_actions_pref_desc">Atalhos para telas frequentemente abertas</string>
+    <string name="app_actions_reset_pref_title">Redefinir ações ocultas</string>
+    <string name="app_actions_reset_pref_summary">Redefine as ações que foram ocultadas anteriormente, arrastando-as para o botão \"não mostrar\"</string>
     <string name="change_default_home">Definir como tela inicial</string>
     <string name="recent_task_option_popup_window">Janela de diálogo</string>
     <string name="feed_theme_pref_title">Cor de fundo</string>
@@ -516,6 +518,13 @@
         <item>Boa noite!</item>
         <item>Durma bem!</item>
     </string-array>
+    <string-array name="greetings_night">
+        <item>Boa noite!</item>
+        <item>Durma bem!</item>
+        <item>Te vejo amanhã!</item>
+        <item>Bons sonhos!</item>
+        <item>Não fique acordado até tarde</item>
+    </string-array>
     <string name="onbording_settings_title">Configurar %s</string>
     <string name="onbording_settings_summary">Pressione na sua tela inicial</string>
     <string name="onboarding_swipe_up">Deslize pra cima pra ver todos os seus aplicativos</string>
@@ -534,4 +543,18 @@
     <string name="pref_weather_icon_pack">Ícones de clima</string>
     <string name="weather_icon_packs_not_supported">Não suportado pelo serviço atual de meteorologia</string>
     <string name="lawnchair_settings">Config. do Lawnchair</string>
+    <string name="customnavbar_install">Toque para instalar a barra de navegação personalizada</string>
+    <string name="customnavbar_back_hiding">Ocultar botão de voltar</string>
+    <string name="customnavbar_back_hiding_desc">Ocultar o botão voltar quando desnecessário</string>
+    <string name="icon_shape_top_left">Canto superior esquerdo</string>
+    <string name="icon_shape_top_right">Canto superior direito</string>
+    <string name="icon_shape_bottom_left">Canto inferior esquerdo</string>
+    <string name="icon_shape_bottom_right">Canto inferior direito</string>
+    <string name="icon_shape_corner_round">Redondo</string>
+    <string name="icon_shape_corner_squircle">Quadrado redondo</string>
+    <string name="icon_shape_corner_cut">Recortar</string>
+    <string name="smartspace_add_to_home">Adicionar à tela inicial</string>
+    <string name="pref_hide_statusbar_clock">Ocultar relógio da barra de status</string>
+    <string name="root_access_required">Acesso root necessário</string>
+    <string name="smartspace_setup_text">Tocar para configurar</string>
 </resources>

@@ -324,6 +324,8 @@
     <string name="app_actions_pref_title">Akcje</string>
     <string name="app_actions_pref_title_in_search">Sugestie akcji</string>
     <string name="app_actions_pref_desc">Skróty do najczęściej otwieranych ekranów</string>
+    <string name="app_actions_reset_pref_title">Resetuj ukryte akcje</string>
+    <string name="app_actions_reset_pref_summary">Resetuje akcje które były wcześniej ukryte przez przeniesienie ich na przycisk \"nie pokazuj\"</string>
     <string name="change_default_home">Ustaw jako ekran główny</string>
     <string name="recent_task_option_popup_window">Okno dialogowe</string>
     <string name="feed_theme_pref_title">Kolor tła</string>
@@ -517,8 +519,15 @@
         <item>Miłego dnia!</item>
     </string-array>
     <string-array name="greetings_evening">
+        <item>Jak ci mija dzień?</item>
+        <item>Co dzisiaj zrobiłeś?</item>
+    </string-array>
+    <string-array name="greetings_night">
         <item>Dobranoc!</item>
         <item>Śpij dobrze!</item>
+        <item>Do zobaczenia jutro!</item>
+        <item>Słodkich snów!</item>
+        <item>Nie przemęczaj się</item>
     </string-array>
     <string name="onbording">Wprowadzenie</string>
     <string name="onbording_settings_title">Konfiguracja %s</string>
@@ -539,4 +548,18 @@
     <string name="pref_weather_icon_pack">Ikony pogody</string>
     <string name="weather_icon_packs_not_supported">Nie wspierane przez wybrane źródło pogody</string>
     <string name="lawnchair_settings">Ustawienia Lawnchaira</string>
+    <string name="customnavbar_install">Dotknij aby zainstalować Custom Navigation Bar</string>
+    <string name="customnavbar_back_hiding">Ukrywanie przycisku wstecz</string>
+    <string name="customnavbar_back_hiding_desc">Ukryj przycisk wstecz gdy nie jest potrzebny</string>
+    <string name="icon_shape_top_left">Lewy górny róg</string>
+    <string name="icon_shape_top_right">Prawy górny róg</string>
+    <string name="icon_shape_bottom_left">Lewy dolny róg</string>
+    <string name="icon_shape_bottom_right">Prawy dolny róg</string>
+    <string name="icon_shape_corner_round">Zaokrąglij</string>
+    <string name="icon_shape_corner_squircle">Obły kwadrat</string>
+    <string name="icon_shape_corner_cut">Wycięcie</string>
+    <string name="smartspace_add_to_home">Dodaj do pulpitu</string>
+    <string name="pref_hide_statusbar_clock">Ukryj zegar na pasku statusu</string>
+    <string name="root_access_required">Wymagany dostęp do roota</string>
+    <string name="smartspace_setup_text">Dotknij aby skonfigurować</string>
 </resources>

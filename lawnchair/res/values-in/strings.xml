@@ -10,7 +10,7 @@
     <string name="smartspace_time">Waktu</string>
     <string name="smartspace_date">Tanggal</string>
     <string name="customize">Ubahsuai</string>
-    <string name="smartspace_preferences_in_settings">At a Glance</string>
+    <string name="smartspace_preferences_in_settings">Sekilas</string>
     <string name="smartspace_preferences_in_settings_desc">Tanggal, waktu, sumber cuaca</string>
     <string name="search">Pencarian</string>
     <string name="label_voice_search">Pencarian suara</string>
@@ -322,6 +322,8 @@
     <string name="app_actions_pref_title">Tindakan</string>
     <string name="app_actions_pref_title_in_search">Saran tindakan</string>
     <string name="app_actions_pref_desc">Jalan pintas menuju layar yang sering dibuka</string>
+    <string name="app_actions_reset_pref_title">Setel ulang aksi tersembunyi</string>
+    <string name="app_actions_reset_pref_summary">Setel ulang aksi yang sebelumnya disembunyikan dengan tarik aksi tersebut ke tombol \"jangan tampilkan\"</string>
     <string name="change_default_home">Tentukan sebagai layae beranda</string>
     <string name="recent_task_option_popup_window">Jendela dialog</string>
     <string name="feed_theme_pref_title">Warna Latar Belakang</string>
@@ -513,6 +515,13 @@ Tindakan ini tidak bisa dibatalkan.</string>
         <item>Selamat malam!</item>
         <item>Tidurlah dengan nyenyak!</item>
     </string-array>
+    <string-array name="greetings_night">
+        <item>Selamat malam!</item>
+        <item>Tidurlah dengan nyenyak!</item>
+        <item>Besok jumpa lagi!</item>
+        <item>Mimpi indah!</item>
+        <item>Jangan begadang terlalu lama</item>
+    </string-array>
     <string name="onbording_settings_title">Siapkan %s</string>
     <string name="onbording_settings_summary">Tekan lama layar beranda anda</string>
     <string name="onboarding_swipe_up">Geser keatas untuk melihat seluruh aplikasi mu</string>
@@ -532,4 +541,18 @@ Tindakan ini tidak bisa dibatalkan.</string>
     <string name="pref_weather_icon_pack">Ikon cuaca</string>
     <string name="weather_icon_packs_not_supported">Tidak didukung oleh sumber cuaca Anda saat ini</string>
     <string name="lawnchair_settings">Pengaturan Lawnchair</string>
+    <string name="customnavbar_install">Sentuh untuk pasang Custom Navigation Bar</string>
+    <string name="customnavbar_back_hiding">Sembunyikan tombol kembali</string>
+    <string name="customnavbar_back_hiding_desc">Sembunyikan tombol kembali jika tidak dibutuhkan</string>
+    <string name="icon_shape_top_left">Kiri atas</string>
+    <string name="icon_shape_top_right">Kanan atas</string>
+    <string name="icon_shape_bottom_left">Kiri bawah</string>
+    <string name="icon_shape_bottom_right">Kanan bawah</string>
+    <string name="icon_shape_corner_round">Bulat</string>
+    <string name="icon_shape_corner_squircle">Persegi membulat</string>
+    <string name="icon_shape_corner_cut">Potong</string>
+    <string name="smartspace_add_to_home">Tambahkan ke beranda</string>
+    <string name="pref_hide_statusbar_clock">Sembunyikan jam status bar</string>
+    <string name="root_access_required">Butuhkan akses root</string>
+    <string name="smartspace_setup_text">Sentuh untuk menyiapkan</string>
 </resources>

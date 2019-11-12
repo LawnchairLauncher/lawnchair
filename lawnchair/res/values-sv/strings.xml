@@ -316,6 +316,8 @@
     <string name="app_actions_pref_title">Åtgärder</string>
     <string name="app_actions_pref_title_in_search">Åtgärdsförslag</string>
     <string name="app_actions_pref_desc">Genvägar till ofta öppnade skärmar</string>
+    <string name="app_actions_reset_pref_title">Återställ gömda händelser</string>
+    <string name="app_actions_reset_pref_summary">Återställer händelser som tidigare varit gömda genom att dras till \"Visa inte\" knappen</string>
     <string name="change_default_home">Ange som hemskärm</string>
     <string name="recent_task_option_popup_window">Dialogfönster</string>
     <string name="feed_theme_pref_title">Bakgrundsfärg</string>
@@ -508,6 +510,13 @@
         <item>Godnatt!</item>
         <item>Sov gott!</item>
     </string-array>
+    <string-array name="greetings_night">
+        <item>God natt!</item>
+        <item>Sov gott!</item>
+        <item>Vi ses imorgon!</item>
+        <item>Dröm sött!</item>
+        <item>Stanna inte uppe för länge</item>
+    </string-array>
     <string name="onbording_settings_title">Ställ in %s</string>
     <string name="onbording_settings_summary">Långtryck på hemskärmen</string>
     <string name="onboarding_swipe_up">Svep uppåt för att se alla appar</string>
@@ -526,4 +535,18 @@
     <string name="pref_weather_icon_pack">Väderikoner</string>
     <string name="weather_icon_packs_not_supported">Stöds inte av din nuvarande väderleverantör</string>
     <string name="lawnchair_settings">Lawnchair-inställningar</string>
+    <string name="customnavbar_install">Peka för att installera modifierat navigationsfält</string>
+    <string name="customnavbar_back_hiding">Gömma bakåt knapp</string>
+    <string name="customnavbar_back_hiding_desc">Göm bakåtknappen när den inte behövs</string>
+    <string name="icon_shape_top_left">Övre vänster</string>
+    <string name="icon_shape_top_right">Övre höger</string>
+    <string name="icon_shape_bottom_left">Nedre vänster</string>
+    <string name="icon_shape_bottom_right">Nedre höger</string>
+    <string name="icon_shape_corner_round">Rund</string>
+    <string name="icon_shape_corner_squircle">Kvirkel</string>
+    <string name="icon_shape_corner_cut">Klipp</string>
+    <string name="smartspace_add_to_home">Lägg till på startskärmen</string>
+    <string name="pref_hide_statusbar_clock">Göm klockan i statusfältet</string>
+    <string name="root_access_required">Root-åtkomst krävs</string>
+    <string name="smartspace_setup_text">Peka för att konfigurera</string>
 </resources>

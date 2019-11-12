@@ -324,6 +324,8 @@
     <string name="app_actions_pref_title">Eylemler</string>
     <string name="app_actions_pref_title_in_search">Eylem önerileri</string>
     <string name="app_actions_pref_desc">Sık açılan ekranlar için kısayollar</string>
+    <string name="app_actions_reset_pref_title">Gizli eylemleri sıfırla</string>
+    <string name="app_actions_reset_pref_summary">Önceden gizlenmiş olan eylemleri, \"gösterme\" tuşuna sürükleyerek sıfırlar</string>
     <string name="change_default_home">Ana ekran olarak ayarla</string>
     <string name="recent_task_option_popup_window">İletişim penceresi</string>
     <string name="feed_theme_pref_title">Arka plan rengi</string>
@@ -512,8 +514,15 @@
         <item>İyi günler!</item>
     </string-array>
     <string-array name="greetings_evening">
+        <item>Günün nasıldı?</item>
+        <item>Bugün ne yaptın?</item>
+    </string-array>
+    <string-array name="greetings_night">
         <item>İyi geceler!</item>
         <item>İyi uykular!</item>
+        <item>Yarın görüşürüz!</item>
+        <item>Tatlı rüyalar!</item>
+        <item>Çok uzun süre kalma</item>
     </string-array>
     <string name="onbording_settings_title">%s ayarla</string>
     <string name="onbording_settings_summary">Ana ekranınıza uzun basın</string>
@@ -533,4 +542,19 @@
     <string name="pref_weather_icon_pack">Hava durumu simgeleri</string>
     <string name="weather_icon_packs_not_supported">Mevcut hava durumu kaynağınız tarafından desteklenmiyor</string>
     <string name="lawnchair_settings">Lawnchair Ayarları</string>
+    <string name="customnavbar">Özel gezinme çubuğu</string>
+    <string name="customnavbar_install">Özel gezinme çubuğu yüklemek için dokunun</string>
+    <string name="customnavbar_back_hiding">Geri tuşunu gizle</string>
+    <string name="customnavbar_back_hiding_desc">Gerekmediğinde geri tuşunu gizle</string>
+    <string name="icon_shape_top_left">Sol üst</string>
+    <string name="icon_shape_top_right">Sağ üst</string>
+    <string name="icon_shape_bottom_left">Sol alt</string>
+    <string name="icon_shape_bottom_right">Sağ alt</string>
+    <string name="icon_shape_corner_round">Yuvarlak</string>
+    <string name="icon_shape_corner_squircle">Köşeli daire</string>
+    <string name="icon_shape_corner_cut">Kes</string>
+    <string name="smartspace_add_to_home">Ana ekrana ekle</string>
+    <string name="pref_hide_statusbar_clock">Durum çubuğu saatini gizle</string>
+    <string name="root_access_required">Kök erişimi gerekli</string>
+    <string name="smartspace_setup_text">Ayarlamak için dokunun</string>
 </resources>

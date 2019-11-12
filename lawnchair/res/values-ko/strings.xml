@@ -15,10 +15,10 @@
     <string name="home_widget">홈 위젯</string>
     <string name="title_show_google_app">%1$s 의 왼쪽</string>
     <string name="msg_minus_one_on_left">홈화면 왼쪽에서 뉴스보기</string>
-    <string name="about">Lawnchair 정보</string>
+    <string name="about">정보</string>
     <string name="google_app">구글 앱</string>
     <string name="about_app_version">버전</string>
-    <string name="title_disable_suggestions_prompt">앱 제안 사용 안 함</string>
+    <string name="title_disable_suggestions_prompt">앱 제안 비활성화</string>
     <string name="msg_disable_suggestions_prompt">"사용 정보가 삭제됩니다"</string>
     <string name="label_turn_off_suggestions">비활성화</string>
     <string name="pixel_style_pref_title">Pixel 스타일</string>
@@ -61,9 +61,9 @@
     <string name="backup_timestamp">생성일</string>
     <string name="backup_restoring">복원 중</string>
     <string name="backup_restarting">다시 시작하는 중</string>
-    <string name="restore_contents">컨텐츠 복구</string>
-    <string name="restore_success">복구 완료</string>
-    <string name="failed">문제가 발생함</string>
+    <string name="restore_contents">컨텐츠 복원</string>
+    <string name="restore_success">복원 완료</string>
+    <string name="failed">문제가 발생하였습니다</string>
     <string name="backup_share_text">Lawnchair 백업</string>
     <string name="full_width_widgets_pref_summary">위젯이 화면 가장자리까지 확장될 수 있도록 허용</string>
     <string name="full_width_width_widgets_pref_title">위젯 숨기기</string>
@@ -77,16 +77,16 @@
     <string name="show_debug_info_pref_title">컴포넌트 이름 보이기</string>
     <string name="debug_component_name">컴포넌트 이름</string>
     <string name="debug_component_name_copied">복사됨</string>
-    <string name="read_external_storage_required">백업본을 저장하려면 저장소 권한을 부여해주십시오</string>
-    <string name="local_backups">저장소의 백업</string>
+    <string name="read_external_storage_required">백업본을 저장하려면 저장소 권한을 부여해주세요</string>
+    <string name="local_backups">저장소에 백업</string>
     <string name="backup_location_device_storage">Lawnchair 폴더</string>
     <string name="grid_size_height">세로</string>
     <string name="grid_size_width">가로</string>
     <string name="launcher_theme_override_label">강제로 어두운 테마 사용</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="blur_pref_title">흐림 효과 적용</string>
-    <string name="blur_pref_summary">앱서랍, 독, 설정 화면 배경의 블러 효과</string>
-    <string name="blur_radius_pref_title">블러 강도</string>
+    <string name="blur_pref_summary">앱서랍, 독, 설정 화면 배경의 흐림 효과</string>
+    <string name="blur_radius_pref_title">흐림 강도</string>
     <!--Marker B-->
     <string name="dock_colored_google">컬러 아이콘</string>
     <string name="hotseat_show_arrow">화살표</string>
@@ -114,7 +114,7 @@
     <string name="gradient">그레디언트</string>
     <!--Marker C-->
     <string name="pref_category_icons">아이콘</string>
-    <string name="pref_category_aag">At a glance</string>
+    <string name="pref_category_aag">한 눈에 보기</string>
     <string name="pref_category_pixel_searchbar">Pixel 검색 바</string>
     <string name="pref_category_weather">날씨</string>
     <string name="pref_category_misc">기타</string>
@@ -183,13 +183,13 @@
     <string name="pref_show_assistant_summary">지원되는 경우 음성 검색 버튼 표시</string>
     <string name="pref_show_as_assistant_summary">음성 검색 대신 어시스턴트 버튼 표시</string>
     <string name="smartspace_time_24_h">24시간 형식</string>
-    <string name="weather_provider_disabled">사용 안함</string>
+    <string name="weather_provider_disabled">비활성화</string>
     <string name="weather_provider_owm">OpenWeatherMap</string>
     <string name="weather_provider_pe">PixelExperience</string>
     <string name="pref_smartspace_widget_provider">날씨 제공자</string>
     <string name="pref_smartspace_event_provider">캘린더 소스</string>
     <string name="title_all_apps_search">앱 서랍 검색바</string>
-    <string name="smartspace_widget_provider_not_found">문제가 발생하였습니다. Google 앱을 설치하거나 업데이트하십시오.</string>
+    <string name="smartspace_widget_provider_not_found">Google 앱을 설치하거나 업데이트를 해주세요</string>
     <string name="apps_label">앱</string>
     <string name="all_apps_label">모든 앱</string>
     <string name="all_apps_label_pref_title">\"모든 앱\" 라벨 보이기</string>
@@ -197,7 +197,7 @@
     <string name="title_search_hidden_apps">숨긴 앱 보이기</string>
     <string name="summary_search_hidden_apps">결과에 숨긴 앱 표시</string>
     <!--Marker F-->
-    <string name="default_city">Lucerne, CH</string>
+    <string name="default_city">Seoul, KR</string>
     <string name="pref_weather_api_key_title">API 키</string>
     <string name="pref_weather_city_summary">국가 코드를 포함하면 최상의 결과를 도출합니다 (예: Seoul, Ko)</string>
     <string name="pref_weather_city_title">시/도</string>
@@ -206,7 +206,7 @@
     <string name="units_imperial">화씨</string>
     <string name="units_kelvin">켈빈</string>
     <string name="all_icons">모든 아이콘</string>
-    <string name="error_no_browser">URL을 처리하기위한 작업을 찾을수가 없음</string>
+    <string name="error_no_browser">URL을 처리하기 위한 작업을 찾을 수 없습니다</string>
     <string name="no_icon_found">아이콘을 찾을 수 없음</string>
     <string name="icon_pack_external_picker">외부 선택기 열기</string>
     <string name="week_day_format">%1$s, %2$s</string>
@@ -317,6 +317,8 @@
     <string name="app_actions_pref_title">액션</string>
     <string name="app_actions_pref_title_in_search">액션 추천</string>
     <string name="app_actions_pref_desc">자주 사용하는 액션 바로가기</string>
+    <string name="app_actions_reset_pref_title">[숨겨진 동작] 재설정</string>
+    <string name="app_actions_reset_pref_summary">이전에 숨겨져 있던 작업을 \'표시하지 않음\'버튼으로 옮겨서 재설정</string>
     <string name="change_default_home">홈 화면으로 설정</string>
     <string name="recent_task_option_popup_window">대화창</string>
     <string name="feed_theme_pref_title">배경색</string>
@@ -504,8 +506,15 @@
         <item>좋은 하루 보내세요!</item>
     </string-array>
     <string-array name="greetings_evening">
+        <item>오늘 하루는 어떠셨나요?</item>
+        <item>오늘 계획이 어떻게 되세요?</item>
+    </string-array>
+    <string-array name="greetings_night">
         <item>굿나잇</item>
         <item>잘 자요</item>
+        <item>내일 봐요!</item>
+        <item>좋은 꿈 꿔요!</item>
+        <item>너무 늦게까지 깨어있지 마세요.</item>
     </string-array>
     <string name="onbording_settings_title">%s 설정</string>
     <string name="onbording_settings_summary">홈 화면을 길게 터치하세요.</string>
@@ -525,4 +534,18 @@
     <string name="pref_weather_icon_pack">날씨 아이콘</string>
     <string name="weather_icon_packs_not_supported">현재 날씨 제공자에서 지원되지 않습니다</string>
     <string name="lawnchair_settings">Lawnchair 설정</string>
+    <string name="customnavbar_install">사용자 지정 내비게이션 바를 설치하려면 클릭하세요</string>
+    <string name="customnavbar_back_hiding">\'뒤로 가기\'버튼 숨김</string>
+    <string name="customnavbar_back_hiding_desc">\'뒤로 가기\' 버튼이 필요 없을때 숨겨집니다.</string>
+    <string name="icon_shape_top_left">좌측 상단</string>
+    <string name="icon_shape_top_right">우측 상단</string>
+    <string name="icon_shape_bottom_left">좌측 하단</string>
+    <string name="icon_shape_bottom_right">우측 하단</string>
+    <string name="icon_shape_corner_round">원형</string>
+    <string name="icon_shape_corner_squircle">모서리가 둥근 사각형</string>
+    <string name="icon_shape_corner_cut">자르기</string>
+    <string name="smartspace_add_to_home">홈화면에 추가하기</string>
+    <string name="pref_hide_statusbar_clock">상태 표시줄 시계 숨기기</string>
+    <string name="root_access_required">루트 권한이 필요함</string>
+    <string name="smartspace_setup_text">눌러서 설정</string>
 </resources>

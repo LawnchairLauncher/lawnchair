@@ -318,6 +318,8 @@
     <string name="app_actions_pref_title">Accions</string>
     <string name="app_actions_pref_title_in_search">Suggeriments d\'accions</string>
     <string name="app_actions_pref_desc">Dreceres a les pantalles freqüentment obertes</string>
+    <string name="app_actions_reset_pref_title">Restableix les accions ocultes</string>
+    <string name="app_actions_reset_pref_summary">Restableix les accions que abans estaven ocultes arrossegant-les al botó «no mostrar»</string>
     <string name="change_default_home">Estableix com a pantalla d\'inici</string>
     <string name="recent_task_option_popup_window">Finestra de diàleg</string>
     <string name="feed_theme_pref_title">Color de fons</string>
@@ -510,6 +512,13 @@
         <item>Bona nit!</item>
         <item>Que dormiu bé!</item>
     </string-array>
+    <string-array name="greetings_night">
+        <item>Bona nit!</item>
+        <item>Que dormiu bé!</item>
+        <item>Fins demà!</item>
+        <item>Dolços somnis!</item>
+        <item>No us aneu a dormir molt tard</item>
+    </string-array>
     <string name="onbording_settings_title">Configura %s</string>
     <string name="onbording_settings_summary">Mantingueu premuda la pantalla d\'inici</string>
     <string name="onboarding_swipe_up">Llisqueu cap amunt per veure totes les aplicacions</string>
@@ -528,4 +537,18 @@
     <string name="pref_weather_icon_pack">Icones del temps</string>
     <string name="weather_icon_packs_not_supported">No és compatible amb la vostra font meteorològica actual</string>
     <string name="lawnchair_settings">Configuració del Lawnchair</string>
+    <string name="customnavbar_install">Toqueu per instal·lar la barra de navegació personalitzada</string>
+    <string name="customnavbar_back_hiding">Botó enrere ocult</string>
+    <string name="customnavbar_back_hiding_desc">Amaga el botó enrere quan no calgui</string>
+    <string name="icon_shape_top_left">Superior esquerra</string>
+    <string name="icon_shape_top_right">Superior dreta</string>
+    <string name="icon_shape_bottom_left">Inferior esquerra</string>
+    <string name="icon_shape_bottom_right">Inferior dreta</string>
+    <string name="icon_shape_corner_round">Arrodonit</string>
+    <string name="icon_shape_corner_squircle">Quadrat arrodonit</string>
+    <string name="icon_shape_corner_cut">Retalla</string>
+    <string name="smartspace_add_to_home">Afegeix a la pantalla d\'inici</string>
+    <string name="pref_hide_statusbar_clock">Amaga el rellotge de la barra d\'estat</string>
+    <string name="root_access_required">Cal accés de root</string>
+    <string name="smartspace_setup_text">Toqueu per configurar-lo</string>
 </resources>
