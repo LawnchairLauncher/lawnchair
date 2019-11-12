@@ -374,7 +374,10 @@ public class PredictionRowView extends PredictionsDividerLayout implements LogCo
         i = ColorUtils.setAlphaComponent(mStrokeColor, Math.round(((float) (Color.alpha(mStrokeColor) * i)) / 255f));
         if (i != mPaint.getColor()) {
             mPaint.setColor(i);
-            mAllAppsLabelTextCurrentAlpha = Math.round((mAllAppsLabelTextFullAlpha * mIconCurrentTextAlpha) / Math.min(mIconFullTextAlpha, 1));
+            mAllAppsLabelTextCurrentAlpha = Math.round((mAllAppsLabelTextFullAlpha * mIconCurrentTextAlpha) / Math.max(mIconFullTextAlpha, 1));
+            if (mAllAppsLabelTextCurrentAlpha < 0 || mAllAppsLabelTextCurrentAlpha > 255) {
+                throw new RuntimeException("aaa " + mAllAppsLabelTextCurrentAlpha);
+            }
             mAllAppsLabelTextPaint.setColor(ColorUtils.setAlphaComponent(mAllAppsLabelTextColor, mAllAppsLabelTextCurrentAlpha));
             if (mDividerType != DividerType.NONE) {
                 invalidate();
