@@ -757,7 +757,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, OnResumeC
             return;
         }
         ((CellLayout.LayoutParams) getLayoutParams()).canReorder = true;
-        if (mInfo.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
+        if (mInfo != null && mInfo.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
             CellLayout cl = (CellLayout) getParent().getParent();
             cl.clearFolderLeaveBehind();
         }
@@ -770,7 +770,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, OnResumeC
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) getLayoutParams();
         // While the folder is open, the position of the icon cannot change.
         lp.canReorder = false;
-        if (mInfo.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
+        if (mInfo != null && mInfo.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
             CellLayout cl = (CellLayout) getParent().getParent();
             cl.setFolderLeaveBehindCell(lp.cellX, lp.cellY);
         }
