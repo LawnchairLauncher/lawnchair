@@ -29,24 +29,28 @@ import android.os.UserHandle;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
+import ch.deletescape.lawnchair.LawnchairPreferences;
+import ch.deletescape.lawnchair.LawnchairPreferences.OnPreferenceChangeListener;
 import ch.deletescape.lawnchair.predictions.AppPredictorCompat;
 import ch.deletescape.lawnchair.predictions.AppTargetCompat;
 import ch.deletescape.lawnchair.predictions.AppTargetEventCompat;
 import ch.deletescape.lawnchair.predictions.AppTargetIdCompat;
 import ch.deletescape.lawnchair.predictions.LawnchairPredictionManager;
 import com.android.launcher3.InvariantDeviceProfile;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.appprediction.PredictionUiStateManager.Client;
 import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.util.UiThreadHelper;
 
 import androidx.annotation.UiThread;
 import androidx.annotation.WorkerThread;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Subclass of app tracker which publishes the data to the prediction engine and gets back results.
  */
 @TargetApi(Build.VERSION_CODES.Q)
-public class PredictionAppTracker extends AppLaunchTracker {
+public class PredictionAppTracker extends AppLaunchTracker implements OnPreferenceChangeListener {
 
     private static final String TAG = "PredictionAppTracker";
     private static final boolean DBG = false;
@@ -67,7 +71,15 @@ public class PredictionAppTracker extends AppLaunchTracker {
         mContext = context;
         mMessageHandler = new Handler(UiThreadHelper.getBackgroundLooper(), this::handleMessage);
         InvariantDeviceProfile.INSTANCE.get(mContext).addOnChangeListener(this::onIdpChanged);
+        Utilities.getLawnchairPrefs(mContext).addOnPreferenceChangeListener("pref_show_predictions", this);
 
+        mMessageHandler.sendEmptyMessage(MSG_INIT);
+    }
+
+    @Override
+    public void onValueChanged(@NotNull String key, @NotNull LawnchairPreferences prefs,
+            boolean force) {
+        if (force) return;
         mMessageHandler.sendEmptyMessage(MSG_INIT);
     }
 

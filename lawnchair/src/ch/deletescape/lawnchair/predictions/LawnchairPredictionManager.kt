@@ -25,21 +25,28 @@ import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.os.Bundle
 import android.text.TextUtils
+import ch.deletescape.lawnchair.lawnchairPrefs
+import ch.deletescape.lawnchair.runOnMainThread
 import ch.deletescape.lawnchair.util.LawnchairSingletonHolder
 import com.android.launcher3.Utilities
 import com.android.launcher3.appprediction.PredictionUiStateManager
 import com.android.launcher3.util.PackageManagerHelper
 
+import com.android.launcher3.appprediction.PredictionUiStateManager.Client.HOME
+import com.android.launcher3.appprediction.PredictionUiStateManager.Client.OVERVIEW
+
 class LawnchairPredictionManager(private val context: Context) {
 
+    private val noOpAppPredictor = NoOpAppPredictor(context)
     private val lawnchairAppPredictor by lazy {
         LawnchairAppPredictor(context, 12, null) }
+    private val predictionsEnabled get() = context.lawnchairPrefs.showPredictions
 
     fun createPredictor(client: PredictionUiStateManager.Client, count: Int, extras: Bundle?): AppPredictorCompat {
-        return if (usePlatformPredictor()) {
-            PlatformAppPredictor(context, client, count, extras)
-        } else {
-            lawnchairAppPredictor
+        return when {
+            !predictionsEnabled -> noOpAppPredictor
+            usePlatformPredictor() -> PlatformAppPredictor(context, client, count, extras)
+            else -> lawnchairAppPredictor
         }
     }
 
@@ -64,6 +71,27 @@ class LawnchairPredictionManager(private val context: Context) {
     private fun usageStatsGranted(): Boolean {
         return Utilities.isRecentsEnabled() || context.checkSelfPermission(
                 android.Manifest.permission.PACKAGE_USAGE_STATS) == PackageManager.PERMISSION_GRANTED
+    }
+
+    class NoOpAppPredictor(context: Context) : AppPredictorCompat(context, HOME, 0, null) {
+
+        private val homeCallback = PredictionUiStateManager.INSTANCE.get(context).appPredictorCallback(HOME)
+        private val overviewCallback = PredictionUiStateManager.INSTANCE.get(context).appPredictorCallback(OVERVIEW)
+
+        override fun notifyAppTargetEvent(event: AppTargetEventCompat) {
+
+        }
+
+        override fun requestPredictionUpdate() {
+            runOnMainThread {
+                homeCallback.onTargetsAvailable(emptyList())
+                overviewCallback.onTargetsAvailable(emptyList())
+            }
+        }
+
+        override fun destroy() {
+
+        }
     }
 
     companion object : LawnchairSingletonHolder<LawnchairPredictionManager>(::LawnchairPredictionManager)
