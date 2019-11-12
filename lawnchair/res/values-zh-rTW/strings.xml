@@ -141,7 +141,7 @@
     <string name="about_our_contributors">主要貢獻者</string>
     <string name="about_our_family">我們的大家族</string>
     <string name="about_role_lead">領導開發者</string>
-    <string name="about_role_devops">開發人員選項</string>
+    <string name="about_role_devops">DevOps</string>
     <string name="about_role_dev">開發者</string>
     <string name="about_role_dev_mod">開發者/仲裁者</string>
     <string name="about_role_designer">設計師</string>
@@ -324,6 +324,8 @@
     <string name="app_actions_pref_title">動作</string>
     <string name="app_actions_pref_title_in_search">動作建議</string>
     <string name="app_actions_pref_desc">為經常使用的功能產生建議</string>
+    <string name="app_actions_reset_pref_title">重設隱藏的操作</string>
+    <string name="app_actions_reset_pref_summary">透過將以前隱藏的操作拖曳到「不顯示」按鈕來重設這些操作</string>
     <string name="change_default_home">設定為主畫面</string>
     <string name="recent_task_option_popup_window">對話方塊</string>
     <string name="feed_theme_pref_title">背景色彩</string>
@@ -514,6 +516,13 @@
         <item>晚安！</item>
         <item>祝您睡得香甜！</item>
     </string-array>
+    <string-array name="greetings_night">
+        <item>晚安！</item>
+        <item>祝您睡得香甜！</item>
+        <item>明天見！</item>
+        <item>祝您有個好夢</item>
+        <item>不要熬夜太久</item>
+    </string-array>
     <string name="onbording_settings_title">設定 %s</string>
     <string name="onbording_settings_summary">常按主畫面</string>
     <string name="onboarding_swipe_up">向上滑動以檢視所有應用程式</string>
@@ -532,4 +541,18 @@
     <string name="pref_weather_icon_pack">天氣圖示</string>
     <string name="weather_icon_packs_not_supported">您當前的天氣來源不支援</string>
     <string name="lawnchair_settings">Lawnchair 設定</string>
+    <string name="customnavbar_install">點選安裝自定義導覽列</string>
+    <string name="customnavbar_back_hiding">返回鍵隱藏</string>
+    <string name="customnavbar_back_hiding_desc">不需要時隱藏返回鍵</string>
+    <string name="icon_shape_top_left">左上方</string>
+    <string name="icon_shape_top_right">右上方</string>
+    <string name="icon_shape_bottom_left">螢幕左下方</string>
+    <string name="icon_shape_bottom_right">螢幕右下方</string>
+    <string name="icon_shape_corner_round">圓形</string>
+    <string name="icon_shape_corner_squircle">圓方形</string>
+    <string name="icon_shape_corner_cut">剪下</string>
+    <string name="smartspace_add_to_home">添加到主畫面</string>
+    <string name="pref_hide_statusbar_clock">隱藏狀態列時鐘</string>
+    <string name="root_access_required">Root 存取被拒絕</string>
+    <string name="smartspace_setup_text">輕觸以設定</string>
 </resources>

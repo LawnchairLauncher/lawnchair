@@ -322,6 +322,8 @@
     <string name="app_actions_pref_title">Ações</string>
     <string name="app_actions_pref_title_in_search">Sugestões de ações</string>
     <string name="app_actions_pref_desc">Atalhos para ecrãs abertos frequentes</string>
+    <string name="app_actions_reset_pref_title">Repor ações ocultas</string>
+    <string name="app_actions_reset_pref_summary">Restaura as ações que foram previamente ocultadas</string>
     <string name="change_default_home">Definir como ecrã principal</string>
     <string name="recent_task_option_popup_window">Janela de diálogo</string>
     <string name="feed_theme_pref_title">Cor de fundo</string>
@@ -511,8 +513,15 @@
         <item>Tenha um bom dia!</item>
     </string-array>
     <string-array name="greetings_evening">
+        <item>Como foi o seu dia?</item>
+        <item>O que fez hoje?</item>
+    </string-array>
+    <string-array name="greetings_night">
         <item>Boa noite!</item>
         <item>Durma bem!</item>
+        <item>Vemo-nos amanhã!</item>
+        <item>Bons sonhos!</item>
+        <item>Não fique acordado até tarde</item>
     </string-array>
     <string name="onbording_settings_title">Configurar %s</string>
     <string name="onbording_settings_summary">Toque longo no ecrã</string>
@@ -532,4 +541,18 @@
     <string name="pref_weather_icon_pack">Ícones de meteorologia</string>
     <string name="weather_icon_packs_not_supported">Não suportado pelo serviço atual de meteorologia</string>
     <string name="lawnchair_settings">Lawnchair - Definições</string>
+    <string name="customnavbar_install">Toque para instalar a barra de navegação personalizada</string>
+    <string name="customnavbar_back_hiding">Ocultar botão Back</string>
+    <string name="customnavbar_back_hiding_desc">Oculta o botão Back se não estiver a ser preciso</string>
+    <string name="icon_shape_top_left">Superior esquerdo</string>
+    <string name="icon_shape_top_right">Superior direito</string>
+    <string name="icon_shape_bottom_left">Inferior esquerdo</string>
+    <string name="icon_shape_bottom_right">Inferior direito</string>
+    <string name="icon_shape_corner_round">Redondo</string>
+    <string name="icon_shape_corner_squircle">Quadriculo</string>
+    <string name="icon_shape_corner_cut">Cortar</string>
+    <string name="smartspace_add_to_home">Adicionar ao ecrã</string>
+    <string name="pref_hide_statusbar_clock">Ocultar relógio da barra de estado</string>
+    <string name="root_access_required">Requer acesso root</string>
+    <string name="smartspace_setup_text">Toque para configurar</string>
 </resources>

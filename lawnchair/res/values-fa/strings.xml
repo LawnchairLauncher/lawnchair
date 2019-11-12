@@ -315,6 +315,8 @@
     <string name="app_actions_pref_title">عملیات</string>
     <string name="app_actions_pref_title_in_search">پیشنهادات عملیات</string>
     <string name="app_actions_pref_desc">میانبر به صفحات اخیراً باز شده</string>
+    <string name="app_actions_reset_pref_title">بازنشانی فعالت های پنهان</string>
+    <string name="app_actions_reset_pref_summary">عملیاتی را که قبلاً با کشیدن آنها روی دکمه \"don\’t show پنهان شده بودند بازنشانی می کند</string>
     <string name="change_default_home">تنظیم به عنوان صفحه خنه</string>
     <string name="recent_task_option_popup_window">پنجره دیالوگ</string>
     <string name="feed_theme_pref_title">رنگ پس‌زمینه</string>
@@ -421,7 +423,9 @@
     <string name="pref_center_wallpaper_summary">حالت چرخش پس زمینه را غیر فعال خواهد کرد</string>
     <string name="pref_icon_popup_menu">آیتم‌ها در منوی پاپ آپ</string>
     <string name="pref_appcategorization_enable_title">طبقه بندی برنامه‌ها</string>
+    <string name="pref_appcategorization_enable_summary">کشوی بی نظم من را درست کن.</string>
     <string name="pref_appcategorization_style_text">سبک</string>
+    <string name="pref_app_groups_edit_tip">ضربه برای ویرایش, کشیدن برای ترتیب دوباره.</string>
     <string name="pref_app_groups_create">ايجاد كردن</string>
     <string name="pref_appcategorization_folders_title">پوشه ها</string>
     <string name="pref_appcategorization_folders_summary">ضربه زدن برای بازکردن پاپ-آپ</string>
@@ -429,6 +433,7 @@
     <string name="pref_appcategorization_tabs_summary">گردش میان مجموعه‌ها.</string>
     <string name="default_folder_name">پوشه جدید</string>
     <string name="drawer_folders">پوشه ها</string>
+    <string name="category_business_and_productivity">تجارت و بازدهی</string>
     <string name="category_communication">ارتباط</string>
     <string name="category_entertainment">سرگرمی</string>
     <string name="category_food_and_drink">غذا و نوشیدنی</string>
@@ -441,6 +446,7 @@
     <string name="category_personalization">شخصی سازی</string>
     <string name="category_photography">عکاسی</string>
     <string name="category_tools">کاربردی</string>
+    <string name="category_travel_and_navigation">ناوبری و سفر</string>
     <string name="lock_desktop">دسکتاپ را قفل کن</string>
     <string name="reset_custom_icons">آیکون‌های دلخواه را به حالت اصلی برگردان</string>
     <string name="reset_custom_icons_confirmation">از این‌که تمامی آیکون‌ها را به حالت اصلی برگردانید مطمئن هستید؟ این تغییر غیر قابل بازگشت است.</string>
@@ -469,6 +475,7 @@
     <string name="animation_type_scale_up">به بالا</string>
     <string name="animation_type_blink">چشمک زدن</string>
     <string name="animation_type_fade">محو شدن</string>
+    <string name="permission_iplocate">دسترسی به موقعیت مکانی تقریبی, مبتنی بر شبکه مجاز است؟</string>
     <string name="pref_appcategorization_flowerpot_title">دسته بندی</string>
     <string name="pref_appcategorization_flowerpot_summary">برنامه‌ها به صورت اتوماتیک انتخاب کردند بر اساس اطلاعات قبلی گرفته از شما</string>
     <string name="select_tab_type">نوع سربرگ</string>
@@ -489,6 +496,7 @@
     <string name="event_provider_missing_notification_dots">با استفاده از <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, نقطات اعلان را روشن کنید</string>
     <string name="zen_mode_enabled">حالت مزاحم نشوید روشن شد</string>
     <string name="crash_report_notif_title">%1$s خراب شد!</string>
+    <string name="personality_provider">پیام های متنی</string>
     <string-array name="greetings_morning">
         <item>صبح بخیر!</item>
         <item>چه روز زیبایی!</item>
@@ -499,6 +507,14 @@
         <item>روزت چجوری گذشت؟</item>
         <item>امروز چه کارهای انجام دادی؟</item>
     </string-array>
+    <string-array name="greetings_night">
+        <item>شب بخیر!</item>
+        <item>خوب بخوابی!</item>
+        <item>فردا می‌بینمت!</item>
+        <item>رویاهای شیرین ببینی!</item>
+        <item>تا دیر وقت بیدار نباش</item>
+    </string-array>
+    <string name="onbording_settings_title">%s تنظیم</string>
     <string name="onbording_settings_summary">لمس طولانی در صفحه‌‌ی اصلی</string>
     <string name="onboarding_swipe_up">به بالا بکش و تمام برنامه‌ها را ببین</string>
     <string name="web_search_google">(وبسایت) google</string>
@@ -516,4 +532,18 @@
     <string name="pref_weather_icon_pack">آیکون‌ها آب و هوا</string>
     <string name="weather_icon_packs_not_supported">با منبع هواشناسی شما پشتیبانی نمی‌شود</string>
     <string name="lawnchair_settings">تنظیمات Lawnchair</string>
+    <string name="customnavbar_install">برای نصب نوار ناوبری سفارشی ضربه بزنید</string>
+    <string name="customnavbar_back_hiding">مخفی کردن دکمه برگشت</string>
+    <string name="customnavbar_back_hiding_desc">دکمه برگشت را در زمانی که نیاز ندارید مخفی کن</string>
+    <string name="icon_shape_top_left">بالا سمت چپ</string>
+    <string name="icon_shape_top_right">بالا سمت راست</string>
+    <string name="icon_shape_bottom_left">پایین سمت چپ</string>
+    <string name="icon_shape_bottom_right">پایین سمت راست</string>
+    <string name="icon_shape_corner_round">گرد</string>
+    <string name="icon_shape_corner_squircle">مربع دایره ای</string>
+    <string name="icon_shape_corner_cut">برش</string>
+    <string name="smartspace_add_to_home">افزودن به صفحه اصلی</string>
+    <string name="pref_hide_statusbar_clock">مخفی کردن ساعت نوار وضعیت</string>
+    <string name="root_access_required">دسترسی Root لازم است</string>
+    <string name="smartspace_setup_text">برای تنظیم ضربه بزنید</string>
 </resources>
