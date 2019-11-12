@@ -65,7 +65,7 @@ public abstract class RecentsUiFactory {
         if (DISALLOW_SET_SHELF_HEIGHT) return;
         try {
             WindowManagerWrapper.getInstance().setShelfHeight(visible != 0, height);
-        } catch (SecurityException e) {
+        } catch (NoSuchMethodError|SecurityException e) {
             DISALLOW_SET_SHELF_HEIGHT = true;
         }
     }

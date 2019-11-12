@@ -187,8 +187,6 @@ android {
 
         withQuickstep {
             dimension "recents"
-
-            minSdkVersion 28
         }
 
         withQuickstepIconRecents {

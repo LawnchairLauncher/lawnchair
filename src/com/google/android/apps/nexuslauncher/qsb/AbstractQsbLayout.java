@@ -420,7 +420,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         } else {
             pill = builder.createPill(i2, dC, mRadius);
         }
-        if (Utilities.ATLEAST_OREO) {
+        if (Utilities.ATLEAST_P) {
             return pill.copy(Config.HARDWARE, false);
         }
         return pill;
