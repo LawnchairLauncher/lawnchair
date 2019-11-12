@@ -177,8 +177,6 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
     private boolean mHasLauncherTransitionControllerStarted;
 
     private AnimationFactory mAnimationFactory = (t) -> { };
-    private LiveTileOverlay mLiveTileOverlay = new LiveTileOverlay();
-    private boolean mLiveTileOverlayAttached = false;
 
     private boolean mWasLauncherAlreadyVisible;
 
@@ -548,7 +546,8 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
 
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             if (mRecentsAnimationTargets != null) {
-                mLiveTileOverlay.update(mAppWindowAnimationHelper.getCurrentRectWithInsets(),
+                LiveTileOverlay.getInstance().update(
+                        mAppWindowAnimationHelper.getCurrentRectWithInsets(),
                         mAppWindowAnimationHelper.getCurrentCornerRadius());
             }
         }
@@ -838,7 +837,7 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
             setShelfState(ShelfAnimState.CANCEL, LINEAR, 0);
             duration = Math.max(MIN_OVERSHOOT_DURATION, duration);
         } else if (endTarget == RECENTS) {
-            mLiveTileOverlay.startIconAnimation();
+            LiveTileOverlay.getInstance().startIconAnimation();
             if (mRecentsView != null) {
                 int nearestPage = mRecentsView.getPageNearestToCenterOfScreen();
                 if (mRecentsView.getNextPage() != nearestPage) {
@@ -1025,6 +1024,7 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
             // In the off chance that the gesture ends before Launcher is started, we should clear
             // the callback here so that it doesn't update with the wrong state
             mActivity.clearRunOnceOnStartCallback();
+            resetLauncherListenersAndOverlays();
         }
         if (mGestureState.getEndTarget() != null && !mGestureState.isRunningAnimationToLauncher()) {
             cancelCurrentAnimation();
@@ -1112,13 +1112,7 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
         endLauncherTransitionController();
 
         mRecentsView.onGestureAnimationEnd();
-
-        // Reset the callback for deferred activity launches
-        if (!ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-            mActivityInterface.setOnDeferredActivityLaunchCallback(null);
-        }
-        mActivity.getRootView().setOnApplyWindowInsetsListener(null);
-        removeLiveTileOverlay();
+        resetLauncherListenersAndOverlays();
     }
 
     private void endLauncherTransitionController() {
@@ -1127,6 +1121,15 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
             mLauncherTransitionController.getAnimationPlayer().end();
             mLauncherTransitionController = null;
         }
+    }
+
+    private void resetLauncherListenersAndOverlays() {
+        // Reset the callback for deferred activity launches
+        if (!ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+            mActivityInterface.setOnDeferredActivityLaunchCallback(null);
+        }
+        mActivity.getRootView().setOnApplyWindowInsetsListener(null);
+        removeLiveTileOverlay();
     }
 
     private void notifyTransitionCancelled() {
@@ -1235,20 +1238,15 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
         updateFinalShift();
     }
 
-    private synchronized void addLiveTileOverlay() {
-        if (!mLiveTileOverlayAttached) {
-            mActivity.getRootView().getOverlay().add(mLiveTileOverlay);
-            mRecentsView.setLiveTileOverlay(mLiveTileOverlay);
-            mLiveTileOverlayAttached = true;
+    private void addLiveTileOverlay() {
+        if (LiveTileOverlay.getInstance().attach(mActivity.getRootView().getOverlay())) {
+            mRecentsView.setLiveTileOverlayAttached(true);
         }
     }
 
-    private synchronized void removeLiveTileOverlay() {
-        if (mLiveTileOverlayAttached) {
-            mActivity.getRootView().getOverlay().remove(mLiveTileOverlay);
-            mRecentsView.setLiveTileOverlay(null);
-            mLiveTileOverlayAttached = false;
-        }
+    private void removeLiveTileOverlay() {
+        LiveTileOverlay.getInstance().detach(mActivity.getRootView().getOverlay());
+        mRecentsView.setLiveTileOverlayAttached(false);
     }
 
     public static float getHiddenTargetAlpha(RemoteAnimationTargetCompat app, float expectedAlpha) {
