@@ -350,10 +350,7 @@ dependencies {
     implementation 'com.github.KwabenBerko:OpenWeatherMap-Android-Library:2.0.1'
     implementation 'com.github.LawnchairLauncher:chroma:1.2.6'
     implementation 'com.github.LawnchairLauncher:hoko-lite:4e0d797'
-    implementation('com.github.LawnchairLauncher:attribouter-y:0.1.6') {
-        // The "MaterialButton" styleable defines an attr named iconSize which breaks compatibility with our source base
-        exclude group: 'com.android.support', module: 'design'
-    }
+    implementation 'me.jfenn:Attribouter:0.1.5'
     implementation 'com.github.bumptech.glide:glide:4.8.0'
 
     implementation 'com.github.topjohnwu.libsu:core:2.5.0'
