@@ -42,6 +42,7 @@ import android.os.Looper;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.provider.Settings;
+import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -171,11 +172,16 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
             return;
         }
 
-        VibrationEffect effect = createPredefined(EFFECT_CLICK);
-        if (effect == null) {
-            return;
+        if (Utilities.ATLEAST_Q) {
+            VibrationEffect effect = createPredefined(EFFECT_CLICK);
+            if (effect == null) {
+                return;
+            }
+            BACKGROUND_EXECUTOR.execute(() -> mVibrator.vibrate(effect));
+        } else if (mRecentsView != null) {
+            mRecentsView.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY,
+                    HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
         }
-        BACKGROUND_EXECUTOR.execute(() -> mVibrator.vibrate(effect));
     }
 
     public Consumer<MotionEvent> getRecentsViewDispatcher(RotationMode rotationMode) {
