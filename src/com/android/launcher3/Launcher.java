@@ -177,7 +177,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     public static final String TAG = "Launcher";
     static final boolean LOGD = false;
 
-    static final boolean DEBUG_STRICT_MODE = BuildConfig.DEBUG_STRICT_MODE;
+    static final boolean DEBUG_STRICT_MODE = false;
 
     private static final int REQUEST_CREATE_SHORTCUT = 1;
     private static final int REQUEST_CREATE_APPWIDGET = 5;

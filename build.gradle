@@ -93,8 +93,6 @@ android {
 
         buildConfigField "boolean", "FEATURE_QUINOA", "true"
         buildConfigField "boolean", "FEATURE_SETTINGS_SEARCH", "true"
-        buildConfigField "boolean", "DEBUG_STRICT_MODE", isPublicBuild ? "false" : "true"
-        buildConfigField "boolean", "HAS_LEAKCANARY", "false"
         buildConfigField "boolean", "FEATURE_BUG_REPORTER", "true"
 
         def githubToken = localProps.getProperty('githubToken') ?: '"' + System.getenv("GITHUB_TOKEN") + '"'
@@ -126,8 +124,6 @@ android {
             dexOptions {
                 matchingFallbacks = ['debug']
             }
-
-            buildConfigField "boolean", "HAS_LEAKCANARY", isPublicBuild ? "false" : "true"
         }
 
         optimized {
@@ -229,8 +225,6 @@ android {
 
             buildConfigField "boolean", "SIGNATURE_VERIFICATION", "true"
             buildConfigField "boolean", "FEATURE_BUG_REPORTER", "false"
-            buildConfigField "boolean", "HAS_LEAKCANARY", "false"
-            buildConfigField "boolean", "DEBUG_STRICT_MODE", "false"
         }
     }
 
@@ -365,9 +359,6 @@ dependencies {
     implementation 'me.xdrop:fuzzywuzzy:1.2.0'
 
     lawnchairImplementation files('lawnchair/libs/sesame-lib.aar')
-
-    // TODO: add LeakCanary back
-    implementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.3'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation "org.mockito:mockito-core:1.9.5"

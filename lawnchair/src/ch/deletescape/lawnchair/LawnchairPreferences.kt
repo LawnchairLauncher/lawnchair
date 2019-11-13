@@ -237,7 +237,6 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val folderBgColored by BooleanPref("pref_folderBgColorGen", false)
     val brightnessTheme by BooleanPref("pref_brightnessTheme", false, restart)
     val debugOkHttp by BooleanPref("pref_debugOkhttp", onChange = restart)
-    val initLeakCanary by BooleanPref("pref_initLeakCanary", true, restart)
     val showCrashNotifications by BooleanPref("pref_showCrashNotifications", true, restart)
     val autoUploadBugReport by BooleanPref("pref_autoUploadBugReport", false) {
         if (showCrashNotifications) {
@@ -246,7 +245,6 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     }
     val forceFakePieAnims by BooleanPref("pref_forceFakePieAnims", false)
     val displayDebugOverlay by BooleanPref("pref_debugDisplayState", false)
-    val watchHeapLimit by BooleanPref("pref_watchHeapLimit", false, restart)
     var feedProvider by StringPref("pref_feedProvider", "", restart)
     val ignoreFeedWhitelist by BooleanPref("pref_feedProviderAllowAll", false, restart)
 
