@@ -51,7 +51,7 @@ if (localPropsFile.exists()) {
 
 def publicBranches = ["alpha", "beta", "q-pre-alpha"]
 def ciBuild = localProps.getProperty("ciBuild") == "true" || System.getenv("CI_BUILD") == "true"
-def signed = ciBuild || !localProps.getProperty("storePass").empty
+def signed = ciBuild || localProps.getProperty("storePass") != null
 def isPublicBuild = localProps.getProperty("public") == "true" || (ciBuild && publicBranches.contains(System.getenv("DRONE_BRANCH")))
 
 final String FRAMEWORK_PREBUILTS_DIR = "prebuilts/"
