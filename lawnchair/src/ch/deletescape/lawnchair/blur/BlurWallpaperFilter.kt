@@ -35,7 +35,7 @@ class BlurWallpaperFilter(private val context: Context) : WallpaperFilter {
     override fun apply(wallpaper: Bitmap): WallpaperFilter.ApplyTask {
         return WallpaperFilter.ApplyTask.create { emitter ->
             HokoBlur.with(context)
-                    .scheme(HokoBlur.SCHEME_OPENGL)
+                    .scheme(HokoBlur.SCHEME_NATIVE)
                     .mode(HokoBlur.MODE_STACK)
                     .radius(blurRadius)
                     .sampleFactor(BlurWallpaperProvider.DOWNSAMPLE_FACTOR.toFloat())

@@ -283,7 +283,7 @@ class LegacyBlurDrawable internal constructor(
 
     private fun blur() {
         HokoBlur.with(mProvider.context)
-                .scheme(HokoBlur.SCHEME_OPENGL)
+                .scheme(HokoBlur.SCHEME_NATIVE)
                 .mode(HokoBlur.MODE_STACK)
                 .radius(mProvider.blurRadius)
                 .sampleFactor(DOWNSAMPLE_FACTOR.toFloat())
