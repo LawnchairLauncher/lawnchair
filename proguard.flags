@@ -150,3 +150,10 @@
 -keep class ch.deletescape.lawnchair.smartspace.accu.** { *; }
 
 -dontwarn android.graphics.**
+
+-keep class xyz.paphonb.quickstep.compat.** {
+  *;
+}
+-keep class ch.deletescape.lawnchair.predictions.** {
+  *;
+}
