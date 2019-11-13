@@ -77,15 +77,15 @@ android {
         minSdkVersion 25
         targetSdkVersion 28
 
+        def majorMinor = "2.1"
         if (ciBuild) {
             def ciBuildNumber = localProps.getProperty("buildNumber") ?: System.getenv("CI_BUILD_NUMBER")
             versionCode = Integer.valueOf(ciBuildNumber)
-            def majorMinor = localProps.getProperty("majorMinor") ?: System.getenv("MAJOR_MINOR")
             def drone = localProps.getProperty("public") == "true" || System.getenv("DRONE")
             versionName = majorMinor + (drone ? "-" : ".") + ciBuildNumber
         } else {
-            versionCode 1
-            versionName "2.0"
+            versionCode 2
+            versionName majorMinor
         }
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

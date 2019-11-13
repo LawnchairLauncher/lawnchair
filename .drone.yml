@@ -14,7 +14,6 @@ pipeline:
     image: runmymind/docker-android-sdk:alpine-standalone
     secrets: [ store_password, key_password, github_token, debug_menu_code, accu_key ]
     environment:
-      - MAJOR_MINOR=2.0
       - CI_BUILD=true
       - CI_BUILD_NUMBER=${DRONE_BUILD_NUMBER}
       - CI_EVENT_TYPE=${DRONE_BUILD_EVENT}
