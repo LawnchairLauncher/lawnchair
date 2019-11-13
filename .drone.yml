@@ -11,7 +11,7 @@ pipeline:
 
   # Step 2: The actual point of all of this
   build:
-    image: runmymind/docker-android-sdk:ubuntu-standalone
+    image: runmymind/docker-android-sdk:alpine-standalone
     secrets: [ store_password, key_password, github_token, debug_menu_code, accu_key ]
     environment:
       - MAJOR_MINOR=2.0
