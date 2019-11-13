@@ -18,6 +18,7 @@ package com.android.launcher3.appprediction;
 import static android.content.pm.PackageManager.MATCH_INSTANT;
 
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
+import static com.android.quickstep.InstantAppResolverImpl.COMPONENT_CLASS_MARKER;
 
 import android.content.Context;
 import android.content.Intent;
@@ -37,8 +38,10 @@ import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 import androidx.annotation.WorkerThread;
 
+import com.android.launcher3.AppInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.WorkspaceItemInfo;
+import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
@@ -72,6 +75,7 @@ public class DynamicItemCache {
     private final Handler mUiHandler;
     private final InstantAppResolver mInstantAppResolver;
     private final Runnable mOnUpdateCallback;
+    private final IconCache mIconCache;
 
     private final Map<ShortcutKey, WorkspaceItemInfo> mShortcuts;
     private final Map<String, InstantAppItemInfo> mInstantApps;
@@ -82,6 +86,7 @@ public class DynamicItemCache {
         mUiHandler = new Handler(Looper.getMainLooper(), this::handleUiMessage);
         mInstantAppResolver = InstantAppResolver.newInstance(context);
         mOnUpdateCallback = onUpdateCallback;
+        mIconCache = LauncherAppState.getInstance(mContext).getIconCache();
 
         mShortcuts = new HashMap<>();
         mInstantApps = new HashMap<>();
@@ -170,7 +175,7 @@ public class DynamicItemCache {
         if (!details.isEmpty()) {
             WorkspaceItemInfo si = new WorkspaceItemInfo(details.get(0), mContext);
             try (LauncherIcons li = LauncherIcons.obtain(mContext)) {
-                si.applyFrom(li.createShortcutIcon(details.get(0), true /* badged */, null));
+                si.bitmap = li.createShortcutIcon(details.get(0), true /* badged */, null);
             } catch (Exception e) {
                 if (DEBUG) {
                     Log.e(TAG, "Error loading shortcut icon for " + shortcutKey.toString());
@@ -209,7 +214,7 @@ public class DynamicItemCache {
         InstantAppItemInfo info = new InstantAppItemInfo(intent, pkgName);
         IconCache iconCache = LauncherAppState.getInstance(mContext).getIconCache();
         iconCache.getTitleAndIcon(info, false);
-        if (info.iconBitmap == null || iconCache.isDefaultIcon(info.iconBitmap, info.user)) {
+        if (info.bitmap.icon == null || iconCache.isDefaultIcon(info.bitmap, info.user)) {
             return null;
         }
         return info;
@@ -239,5 +244,36 @@ public class DynamicItemCache {
     @MainThread
     public WorkspaceItemInfo getShortcutInfo(ShortcutKey key) {
         return mShortcuts.get(key);
+    }
+
+    /**
+     * requests and caches icons for app targets
+     */
+    public void updateDependencies(List<ComponentKeyMapper> componentKeyMappers,
+            AllAppsStore appsStore, IconCache.ItemInfoUpdateReceiver callback, int itemCount) {
+        List<String> instantAppsToLoad = new ArrayList<>();
+        List<ShortcutKey> shortcutsToLoad = new ArrayList<>();
+        int total = componentKeyMappers.size();
+        for (int i = 0, count = 0; i < total && count < itemCount; i++) {
+            ComponentKeyMapper mapper = componentKeyMappers.get(i);
+            // Update instant apps
+            if (COMPONENT_CLASS_MARKER.equals(mapper.getComponentClass())) {
+                instantAppsToLoad.add(mapper.getPackage());
+                count++;
+            } else if (mapper.getComponentKey() instanceof ShortcutKey) {
+                shortcutsToLoad.add((ShortcutKey) mapper.getComponentKey());
+                count++;
+            } else {
+                // Reload high res icon
+                AppInfo info = (AppInfo) mapper.getApp(appsStore);
+                if (info != null) {
+                    if (info.usingLowResIcon()) {
+                        mIconCache.updateIconInBackground(callback, info);
+                    }
+                    count++;
+                }
+            }
+        }
+        cacheItems(shortcutsToLoad, instantAppsToLoad);
     }
 }

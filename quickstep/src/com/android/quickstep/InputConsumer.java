@@ -33,7 +33,7 @@ public interface InputConsumer {
     int TYPE_SCREEN_PINNED = 1 << 6;
     int TYPE_OVERVIEW_WITHOUT_FOCUS = 1 << 7;
     int TYPE_RESET_GESTURE = 1 << 8;
-    int TYPE_QUICK_CAPTURE = 1 << 9;
+    int TYPE_OVERSCROLL = 1 << 9;
 
     String[] NAMES = new String[] {
            "TYPE_NO_OP",                    // 0
@@ -45,16 +45,12 @@ public interface InputConsumer {
             "TYPE_SCREEN_PINNED",           // 6
             "TYPE_OVERVIEW_WITHOUT_FOCUS",  // 7
             "TYPE_RESET_GESTURE",           // 8
-            "TYPE_QUICK_CAPTURE",           // 9
+            "TYPE_OVERSCROLL",              // 9
     };
 
     InputConsumer NO_OP = () -> TYPE_NO_OP;
 
     int getType();
-
-    default boolean useSharedSwipeState() {
-        return false;
-    }
 
     /**
      * Returns true if the user has crossed the threshold for it to be an explicit action.
@@ -65,6 +61,8 @@ public interface InputConsumer {
 
     /**
      * Called by the event queue when the consumer is about to be switched to a new consumer.
+     * Consumers should update the state accordingly here before the state is passed to the new
+     * consumer.
      */
     default void onConsumerAboutToBeSwitched() { }
 

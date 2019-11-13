@@ -79,19 +79,10 @@ public class ItemLongClickListener {
     }
 
     private static boolean onAllAppsItemLongClick(View v) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_CONTEXT_MENU, "onAllAppsItemLongClick1");
-        }
         Launcher launcher = Launcher.getLauncher(v.getContext());
         if (!canStartDrag(launcher)) return false;
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_CONTEXT_MENU, "onAllAppsItemLongClick2");
-        }
         // When we have exited all apps or are in transition, disregard long clicks
         if (!launcher.isInState(ALL_APPS) && !launcher.isInState(OVERVIEW)) return false;
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_CONTEXT_MENU, "onAllAppsItemLongClick3");
-        }
         if (launcher.getWorkspace().isSwitchingState()) return false;
 
         // Start the drag

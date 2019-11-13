@@ -15,20 +15,15 @@
  */
 package com.android.quickstep;
 
-import static android.os.VibrationEffect.EFFECT_CLICK;
-import static android.os.VibrationEffect.createPredefined;
-
-import static com.android.launcher3.Utilities.postAsyncCallback;
 import static com.android.launcher3.anim.Interpolators.ACCEL_1_5;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
-import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
+import static com.android.launcher3.util.VibratorWrapper.OVERVIEW_HAPTIC;
 import static com.android.launcher3.views.FloatingIconView.SHAPE_PROGRESS_DURATION;
 
 import android.animation.Animator;
 import android.annotation.TargetApi;
-import android.app.ActivityManager.RunningTaskInfo;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
@@ -36,11 +31,6 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Build;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.VibrationEffect;
-import android.os.Vibrator;
-import android.provider.Settings;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Interpolator;
@@ -55,9 +45,9 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.graphics.RotationMode;
+import com.android.launcher3.util.VibratorWrapper;
 import com.android.launcher3.views.FloatingIconView;
 import com.android.quickstep.BaseActivityInterface.HomeAnimationFactory;
-import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.AppWindowAnimationHelper;
@@ -96,16 +86,13 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
     protected float mDragLengthFactor = 1;
 
     protected final Context mContext;
-    protected final OverviewComponentObserver mOverviewComponentObserver;
+    protected final RecentsAnimationDeviceState mDeviceState;
+    protected final GestureState mGestureState;
     protected final BaseActivityInterface<T> mActivityInterface;
-    protected final RecentsModel mRecentsModel;
-    protected final int mRunningTaskId;
+    protected final InputConsumerController mInputConsumer;
 
     protected final AppWindowAnimationHelper mAppWindowAnimationHelper;
     protected final TransformParams mTransformParams = new TransformParams();
-
-    private final Vibrator mVibrator;
-    protected final Mode mMode;
 
     // Shift in the range of [0, 1].
     // 0 => preview snapShot is completely visible, and hotseat is completely translated down
@@ -114,7 +101,6 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
     protected final AnimatedFloat mCurrentShift = new AnimatedFloat(this::updateFinalShift);
 
     protected final ActivityInitListener mActivityInitListener;
-    protected final InputConsumerController mInputConsumer;
 
     protected RecentsAnimationController mRecentsAnimationController;
     protected RecentsAnimationTargets mRecentsAnimationTargets;
@@ -129,54 +115,30 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
 
     protected Runnable mGestureEndCallback;
 
-    protected final Handler mMainThreadHandler = MAIN_EXECUTOR.getHandler();
     protected MultiStateCallback mStateCallback;
 
     protected boolean mCanceled;
     protected int mFinishingRecentsAnimationForNewTaskId = -1;
 
-    protected BaseSwipeUpHandler(Context context, GestureState gestureState,
-            OverviewComponentObserver overviewComponentObserver,
-            RecentsModel recentsModel, InputConsumerController inputConsumer, int runningTaskId) {
+    protected BaseSwipeUpHandler(Context context, RecentsAnimationDeviceState deviceState,
+            GestureState gestureState, InputConsumerController inputConsumer) {
         mContext = context;
-        mOverviewComponentObserver = overviewComponentObserver;
+        mDeviceState = deviceState;
+        mGestureState = gestureState;
         mActivityInterface = gestureState.getActivityInterface();
-        mRecentsModel = recentsModel;
         mActivityInitListener =
                 mActivityInterface.createActivityInitListener(this::onActivityInit);
-        mRunningTaskId = runningTaskId;
         mInputConsumer = inputConsumer;
-        mMode = SysUINavigationMode.getMode(context);
 
         mAppWindowAnimationHelper = new AppWindowAnimationHelper(context);
         mPageSpacing = context.getResources().getDimensionPixelSize(R.dimen.recents_page_spacing);
-        mVibrator = context.getSystemService(Vibrator.class);
+
         initTransitionEndpoints(InvariantDeviceProfile.INSTANCE.get(mContext)
                 .getDeviceProfile(mContext));
     }
 
-    protected void setStateOnUiThread(int stateFlag) {
-        if (Looper.myLooper() == mMainThreadHandler.getLooper()) {
-            mStateCallback.setState(stateFlag);
-        } else {
-            postAsyncCallback(mMainThreadHandler, () -> mStateCallback.setState(stateFlag));
-        }
-    }
-
     protected void performHapticFeedback() {
-        if (!mVibrator.hasVibrator()) {
-            return;
-        }
-        if (Settings.System.getInt(
-                mContext.getContentResolver(), Settings.System.HAPTIC_FEEDBACK_ENABLED, 0) == 0) {
-            return;
-        }
-
-        VibrationEffect effect = createPredefined(EFFECT_CLICK);
-        if (effect == null) {
-            return;
-        }
-        UI_HELPER_EXECUTOR.execute(() -> mVibrator.vibrate(effect));
+        VibratorWrapper.INSTANCE.get(mContext).vibrate(OVERVIEW_HAPTIC);
     }
 
     public Consumer<MotionEvent> getRecentsViewDispatcher(RotationMode rotationMode) {
@@ -246,14 +208,14 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
                                 success -> {
                                     resultCallback.accept(success);
                                     if (!success) {
-                                        mActivityInterface.onLaunchTaskFailed(mActivity);
+                                        mActivityInterface.onLaunchTaskFailed();
                                         nextTask.notifyTaskLaunchFailed(TAG);
                                     } else {
-                                        mActivityInterface.onLaunchTaskSuccess(mActivity);
+                                        mActivityInterface.onLaunchTaskSuccess();
                                     }
-                                }, mMainThreadHandler);
+                                }, MAIN_EXECUTOR.getHandler());
                     }
-                    setStateOnUiThread(successStateFlag);
+                    mStateCallback.setStateOnUiThread(successStateFlag);
                 }
                 mCanceled = false;
                 mFinishingRecentsAnimationForNewTaskId = -1;
@@ -288,7 +250,8 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
         mRecentsAnimationTargets = targets;
         DeviceProfile dp = InvariantDeviceProfile.INSTANCE.get(mContext).getDeviceProfile(mContext);
         final Rect overviewStackBounds;
-        RemoteAnimationTargetCompat runningTaskTarget = targets.findTask(mRunningTaskId);
+        RemoteAnimationTargetCompat runningTaskTarget = targets.findTask(
+                mGestureState.getRunningTaskId());
 
         if (targets.minimizedHomeBounds != null && runningTaskTarget != null) {
             overviewStackBounds = mActivityInterface
@@ -355,7 +318,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
             mAppWindowAnimationHelper.updateHomeBounds(getStackBounds(dp));
         }
         mAppWindowAnimationHelper.updateTargetRect(TEMP_RECT);
-        if (mMode == Mode.NO_BUTTON) {
+        if (mDeviceState.isFullyGesturalNavMode()) {
             // We can drag all the way to the top of the screen.
             mDragLengthFactor = (float) dp.heightPx / mTransitionDragLength;
         }
@@ -366,7 +329,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
      */
     protected abstract boolean moveWindowWithRecentsScroll();
 
-    protected abstract boolean onActivityInit(final T activity, Boolean alreadyOnHome);
+    protected abstract boolean onActivityInit(Boolean alreadyOnHome);
 
     /**
      * Called to create a input proxy for the running task
@@ -394,13 +357,13 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
     @UiThread
     public abstract void onGestureEnded(float endVelocity, PointF velocity, PointF downPos);
 
-    public abstract void onConsumerAboutToBeSwitched(SwipeSharedState sharedState);
+    public abstract void onConsumerAboutToBeSwitched();
 
     public void setIsLikelyToStartNewTask(boolean isLikelyToStartNewTask) { }
 
     public void initWhenReady() {
         // Preload the plan
-        mRecentsModel.getTasks(null);
+        RecentsModel.INSTANCE.get(mContext).getTasks(null);
 
         mActivityInitListener.register();
     }
@@ -517,8 +480,8 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
 
     public interface Factory {
 
-        BaseSwipeUpHandler newHandler(GestureState gestureState, RunningTaskInfo runningTask,
-                long touchTimeMs, boolean continuingLastGesture, boolean isLikelyToStartNewTask);
+        BaseSwipeUpHandler newHandler(GestureState gestureState, long touchTimeMs,
+                boolean continuingLastGesture, boolean isLikelyToStartNewTask);
     }
 
     protected interface RunningWindowAnim {

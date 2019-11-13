@@ -21,6 +21,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.util.Log;
 
+import androidx.test.InstrumentationRegistry;
 import androidx.test.uiautomator.UiDevice;
 
 import org.junit.rules.TestRule;
@@ -57,7 +58,7 @@ public class TestStabilityRule implements TestRule {
     public static final int PLATFORM_PRESUBMIT = 0x8;
     public static final int PLATFORM_POSTSUBMIT = 0x10;
 
-    private static final int RUN_FLAFOR = getRunFlavor();
+    public static final int RUN_FLAFOR = getRunFlavor();
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
@@ -86,6 +87,19 @@ public class TestStabilityRule implements TestRule {
     }
 
     private static int getRunFlavor() {
+        final String flavorOverride = InstrumentationRegistry.getArguments().getString("flavor");
+
+        if (flavorOverride != null) {
+            Log.d(TAG, "Flavor override: " + flavorOverride);
+            try {
+                return (int) TestStabilityRule.class.getField(flavorOverride).get(null);
+            } catch (NoSuchFieldException e) {
+                throw new AssertionError("Unrecognized run flavor override: " + flavorOverride);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
         final String launcherVersion;
         try {
             launcherVersion = getInstrumentation().

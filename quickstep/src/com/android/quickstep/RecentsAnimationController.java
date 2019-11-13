@@ -18,6 +18,7 @@ package com.android.quickstep;
 import static android.view.MotionEvent.ACTION_CANCEL;
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
+
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
@@ -48,11 +49,10 @@ public class RecentsAnimationController {
     private final Consumer<RecentsAnimationController> mOnFinishedListener;
     private final boolean mShouldMinimizeSplitScreen;
 
-    private boolean mWindowThresholdCrossed = false;
-
     private InputConsumerController mInputConsumerController;
     private Supplier<InputConsumer> mInputProxySupplier;
     private InputConsumer mInputConsumer;
+    private boolean mWindowThresholdCrossed = false;
     private boolean mTouchInProgress;
     private boolean mFinishPending;
 
@@ -62,8 +62,6 @@ public class RecentsAnimationController {
         mController = controller;
         mOnFinishedListener = onFinishedListener;
         mShouldMinimizeSplitScreen = shouldMinimizeSplitScreen;
-
-        setWindowThresholdCrossed(mWindowThresholdCrossed);
     }
 
     /**
@@ -71,7 +69,7 @@ public class RecentsAnimationController {
      * currently being animated.
      */
     public ThumbnailData screenshotTask(int taskId) {
-        return mController != null ? mController.screenshotTask(taskId) : null;
+        return mController.screenshotTask(taskId);
     }
 
     /**
@@ -186,6 +184,11 @@ public class RecentsAnimationController {
         mInputProxySupplier = inputProxySupplier;
         mInputConsumerController = inputConsumerController;
         mInputConsumerController.setInputListener(this::onInputConsumerEvent);
+    }
+
+    /** @return wrapper controller. */
+    public RecentsAnimationControllerCompat getController() {
+        return mController;
     }
 
     private void disableInputProxy() {

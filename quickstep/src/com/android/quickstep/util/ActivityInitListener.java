@@ -31,6 +31,11 @@ public class ActivityInitListener<T extends BaseActivity> implements SchedulerCa
     private final BiPredicate<T, Boolean> mOnInitListener;
     private final ActivityTracker<T> mActivityTracker;
 
+    /**
+     * @param onInitListener a callback made when the activity is initialized. The callback should
+     *                       return true to continue receiving callbacks (ie. for if the activity is
+     *                       recreated).
+     */
     public ActivityInitListener(BiPredicate<T, Boolean> onInitListener,
             ActivityTracker<T> tracker) {
         mOnInitListener = onInitListener;
@@ -42,6 +47,10 @@ public class ActivityInitListener<T extends BaseActivity> implements SchedulerCa
         return mOnInitListener.test(activity, alreadyOnHome);
     }
 
+    /**
+     * Registers the activity-created listener. If the activity is already created, then the
+     * callback provided in the constructor will be called synchronously.
+     */
     public void register() {
         mActivityTracker.schedule(this);
     }

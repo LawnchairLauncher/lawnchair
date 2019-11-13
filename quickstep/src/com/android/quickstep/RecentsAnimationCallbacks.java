@@ -127,7 +127,7 @@ public class RecentsAnimationCallbacks implements
      */
     public interface RecentsAnimationListener {
         default void onRecentsAnimationStart(RecentsAnimationController controller,
-                RecentsAnimationTargets targetSet) {}
+                RecentsAnimationTargets targets) {}
 
         /**
          * Callback from the system when the recents animation is canceled. {@param thumbnailData}
@@ -135,6 +135,9 @@ public class RecentsAnimationCallbacks implements
          */
         default void onRecentsAnimationCanceled(ThumbnailData thumbnailData) {}
 
+        /**
+         * Callback made whenever the recents animation is finished.
+         */
         default void onRecentsAnimationFinished(RecentsAnimationController controller) {}
     }
 }

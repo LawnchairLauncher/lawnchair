@@ -36,7 +36,6 @@ import com.android.launcher3.R;
 import com.android.launcher3.SimpleOnStylusPressListener;
 import com.android.launcher3.StylusEventHelper;
 import com.android.launcher3.WidgetPreviewLoader;
-import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.icons.BaseIconFactory;
 import com.android.launcher3.model.WidgetItem;
 
@@ -182,10 +181,8 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
             return;
         }
         if (bitmap != null) {
-            mWidgetImage.setBitmap(bitmap,
-                    DrawableFactory.INSTANCE.get(getContext()).getBadgeForUser(mItem.user,
-                            getContext(), BaseIconFactory.getBadgeSizeForIconSize(
-                                    mDeviceProfile.allAppsIconSizePx)));
+            mWidgetImage.setBitmap(bitmap, mWidgetPreviewLoader.getBadgeForUser(mItem.user,
+                    BaseIconFactory.getBadgeSizeForIconSize(mDeviceProfile.allAppsIconSizePx)));
             if (mAnimatePreview) {
                 mWidgetImage.setAlpha(0f);
                 ViewPropertyAnimator anim = mWidgetImage.animate();

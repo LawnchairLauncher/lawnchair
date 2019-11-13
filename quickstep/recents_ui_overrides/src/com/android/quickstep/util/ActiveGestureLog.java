@@ -33,7 +33,7 @@ public class ActiveGestureLog extends EventLogArray {
      */
     public static final String INTENT_EXTRA_LOG_TRACE_ID = "INTENT_EXTRA_LOG_TRACE_ID";
 
-    public ActiveGestureLog() {
+    private ActiveGestureLog() {
         super("touch_interaction_log", 40);
     }
 }

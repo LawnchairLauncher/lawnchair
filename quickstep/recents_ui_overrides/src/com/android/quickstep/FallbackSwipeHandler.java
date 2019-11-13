@@ -13,21 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.quickstep.inputconsumers;
+package com.android.quickstep;
 
+import static com.android.quickstep.GestureState.GestureEndTarget.HOME;
+import static com.android.quickstep.GestureState.GestureEndTarget.LAST_TASK;
+import static com.android.quickstep.GestureState.GestureEndTarget.NEW_TASK;
+import static com.android.quickstep.GestureState.GestureEndTarget.RECENTS;
 import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
 import static com.android.quickstep.RecentsActivity.EXTRA_TASK_ID;
 import static com.android.quickstep.RecentsActivity.EXTRA_THUMBNAIL;
-import static com.android.quickstep.WindowTransformSwipeHandler.MIN_PROGRESS_FOR_OVERVIEW;
-import static com.android.quickstep.inputconsumers.FallbackNoButtonInputConsumer.GestureEndTarget.HOME;
-import static com.android.quickstep.inputconsumers.FallbackNoButtonInputConsumer.GestureEndTarget.LAST_TASK;
-import static com.android.quickstep.inputconsumers.FallbackNoButtonInputConsumer.GestureEndTarget.NEW_TASK;
-import static com.android.quickstep.inputconsumers.FallbackNoButtonInputConsumer.GestureEndTarget.RECENTS;
+import static com.android.quickstep.LauncherSwipeHandler.MIN_PROGRESS_FOR_OVERVIEW;
 import static com.android.quickstep.views.RecentsView.UPDATE_SYSUI_FLAGS_THRESHOLD;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
-import android.app.ActivityManager.RunningTaskInfo;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
@@ -35,32 +34,25 @@ import android.graphics.PointF;
 import android.graphics.RectF;
 import android.os.Bundle;
 
+import android.util.ArrayMap;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.util.ObjectWrapper;
 import com.android.quickstep.BaseActivityInterface.HomeAnimationFactory;
-import com.android.quickstep.AnimatedFloat;
-import com.android.quickstep.BaseSwipeUpHandler;
-import com.android.quickstep.GestureState;
-import com.android.quickstep.InputConsumer;
-import com.android.quickstep.MultiStateCallback;
-import com.android.quickstep.OverviewComponentObserver;
-import com.android.quickstep.RecentsActivity;
-import com.android.quickstep.RecentsAnimationController;
-import com.android.quickstep.RecentsModel;
-import com.android.quickstep.SwipeSharedState;
+import com.android.quickstep.GestureState.GestureEndTarget;
 import com.android.quickstep.fallback.FallbackRecentsView;
 import com.android.quickstep.util.RectFSpringAnim;
-import com.android.quickstep.RecentsAnimationTargets;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.InputConsumerController;
 
-public class FallbackNoButtonInputConsumer extends
-        BaseSwipeUpHandler<RecentsActivity, FallbackRecentsView> {
+/**
+ * Handles the navigation gestures when a 3rd party launcher is the default home activity.
+ */
+public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, FallbackRecentsView> {
 
     private static final String[] STATE_NAMES = DEBUG_STATES ? new String[5] : null;
 
@@ -83,51 +75,41 @@ public class FallbackNoButtonInputConsumer extends
     private static final int STATE_APP_CONTROLLER_RECEIVED =
             getFlagForIndex(4, "STATE_APP_CONTROLLER_RECEIVED");
 
-    public enum GestureEndTarget {
-        HOME(3, 100, 1),
-        RECENTS(1, 300, 0),
-        LAST_TASK(0, 150, 1),
-        NEW_TASK(0, 150, 1);
-
+    public static class EndTargetAnimationParams {
         private final float mEndProgress;
         private final long mDurationMultiplier;
         private final float mLauncherAlpha;
 
-        GestureEndTarget(float endProgress, long durationMultiplier, float launcherAlpha) {
+        EndTargetAnimationParams(float endProgress, long durationMultiplier, float launcherAlpha) {
             mEndProgress = endProgress;
             mDurationMultiplier = durationMultiplier;
             mLauncherAlpha = launcherAlpha;
         }
     }
+    private static ArrayMap<GestureEndTarget, EndTargetAnimationParams>
+            mEndTargetAnimationParams = new ArrayMap();
 
     private final AnimatedFloat mLauncherAlpha = new AnimatedFloat(this::onLauncherAlphaChanged);
 
     private boolean mIsMotionPaused = false;
-    private GestureEndTarget mEndTarget;
 
     private final boolean mInQuickSwitchMode;
     private final boolean mContinuingLastGesture;
     private final boolean mRunningOverHome;
     private final boolean mSwipeUpOverHome;
 
-    private final RunningTaskInfo mRunningTaskInfo;
-
     private final PointF mEndVelocityPxPerMs = new PointF(0, 0.5f);
     private RunningWindowAnim mFinishAnimation;
 
-    public FallbackNoButtonInputConsumer(Context context, GestureState gestureState,
-            OverviewComponentObserver overviewComponentObserver,
-            RunningTaskInfo runningTaskInfo, RecentsModel recentsModel,
-            InputConsumerController inputConsumer,
+    public FallbackSwipeHandler(Context context, RecentsAnimationDeviceState deviceState,
+            GestureState gestureState, InputConsumerController inputConsumer,
             boolean isLikelyToStartNewTask, boolean continuingLastGesture) {
-        super(context, gestureState, overviewComponentObserver, recentsModel, inputConsumer,
-                runningTaskInfo.id);
+        super(context, deviceState, gestureState, inputConsumer);
         mLauncherAlpha.value = 1;
 
-        mRunningTaskInfo = runningTaskInfo;
         mInQuickSwitchMode = isLikelyToStartNewTask || continuingLastGesture;
         mContinuingLastGesture = continuingLastGesture;
-        mRunningOverHome = ActivityManagerWrapper.isHomeTask(runningTaskInfo);
+        mRunningOverHome = ActivityManagerWrapper.isHomeTask(mGestureState.getRunningTask());
         mSwipeUpOverHome = mRunningOverHome && !mInQuickSwitchMode;
 
         if (mSwipeUpOverHome) {
@@ -136,40 +118,46 @@ public class FallbackNoButtonInputConsumer extends
             mAppWindowAnimationHelper.setBaseAlphaCallback((t, a) -> mLauncherAlpha.value);
         }
 
+        // Going home has an extra long progress to ensure that it animates into the screen
+        mEndTargetAnimationParams.put(HOME, new EndTargetAnimationParams(3, 100, 1));
+        mEndTargetAnimationParams.put(RECENTS, new EndTargetAnimationParams(1, 300, 0));
+        mEndTargetAnimationParams.put(LAST_TASK, new EndTargetAnimationParams(0, 150, 1));
+        mEndTargetAnimationParams.put(NEW_TASK, new EndTargetAnimationParams(0, 150, 1));
+
         initStateCallbacks();
     }
 
     private void initStateCallbacks() {
         mStateCallback = new MultiStateCallback(STATE_NAMES);
 
-        mStateCallback.addCallback(STATE_HANDLER_INVALIDATED,
+        mStateCallback.runOnceAtState(STATE_HANDLER_INVALIDATED,
                 this::onHandlerInvalidated);
-        mStateCallback.addCallback(STATE_RECENTS_PRESENT | STATE_HANDLER_INVALIDATED,
+        mStateCallback.runOnceAtState(STATE_RECENTS_PRESENT | STATE_HANDLER_INVALIDATED,
                 this::onHandlerInvalidatedWithRecents);
 
-        mStateCallback.addCallback(STATE_GESTURE_CANCELLED | STATE_APP_CONTROLLER_RECEIVED,
+        mStateCallback.runOnceAtState(STATE_GESTURE_CANCELLED | STATE_APP_CONTROLLER_RECEIVED,
                 this::finishAnimationTargetSetAnimationComplete);
 
         if (mInQuickSwitchMode) {
-            mStateCallback.addCallback(STATE_GESTURE_COMPLETED | STATE_APP_CONTROLLER_RECEIVED
+            mStateCallback.runOnceAtState(STATE_GESTURE_COMPLETED | STATE_APP_CONTROLLER_RECEIVED
                             | STATE_RECENTS_PRESENT,
                     this::finishAnimationTargetSet);
         } else {
-            mStateCallback.addCallback(STATE_GESTURE_COMPLETED | STATE_APP_CONTROLLER_RECEIVED,
+            mStateCallback.runOnceAtState(STATE_GESTURE_COMPLETED | STATE_APP_CONTROLLER_RECEIVED,
                     this::finishAnimationTargetSet);
         }
     }
 
     private void onLauncherAlphaChanged() {
-        if (mRecentsAnimationTargets != null && mEndTarget == null) {
+        if (mRecentsAnimationTargets != null && mGestureState.getEndTarget() == null) {
             applyTransformUnchecked();
         }
     }
 
     @Override
-    protected boolean onActivityInit(final RecentsActivity activity, Boolean alreadyOnHome) {
-        mActivity = activity;
-        mRecentsView = activity.getOverviewPanel();
+    protected boolean onActivityInit(Boolean alreadyOnHome) {
+        mActivity = mActivityInterface.getCreatedActivity();
+        mRecentsView = mActivity.getOverviewPanel();
         linkRecentsViewScroll();
         mRecentsView.setDisallowScrollToClearAll(true);
         mRecentsView.getClearAllButton().setVisibilityAlpha(0);
@@ -178,12 +166,12 @@ public class FallbackNoButtonInputConsumer extends
 
         if (!mContinuingLastGesture) {
             if (mRunningOverHome) {
-                mRecentsView.onGestureAnimationStart(mRunningTaskInfo);
+                mRecentsView.onGestureAnimationStart(mGestureState.getRunningTask());
             } else {
-                mRecentsView.onGestureAnimationStart(mRunningTaskId);
+                mRecentsView.onGestureAnimationStart(mGestureState.getRunningTaskId());
             }
         }
-        setStateOnUiThread(STATE_RECENTS_PRESENT);
+        mStateCallback.setStateOnUiThread(STATE_RECENTS_PRESENT);
         return true;
     }
 
@@ -226,9 +214,9 @@ public class FallbackNoButtonInputConsumer extends
     @Override
     public Intent getLaunchIntent() {
         if (mInQuickSwitchMode || mSwipeUpOverHome) {
-            return mOverviewComponentObserver.getOverviewIntent();
+            return mGestureState.getOverviewIntent();
         } else {
-            return mOverviewComponentObserver.getHomeIntent();
+            return mGestureState.getHomeIntent();
         }
     }
 
@@ -247,8 +235,8 @@ public class FallbackNoButtonInputConsumer extends
     @Override
     public void onGestureCancelled() {
         updateDisplacement(0);
-        mEndTarget = LAST_TASK;
-        setStateOnUiThread(STATE_GESTURE_CANCELLED);
+        mGestureState.setEndTarget(LAST_TASK);
+        mStateCallback.setStateOnUiThread(STATE_GESTURE_CANCELLED);
     }
 
     @Override
@@ -256,28 +244,29 @@ public class FallbackNoButtonInputConsumer extends
         mEndVelocityPxPerMs.set(0, velocity.y / 1000);
         if (mInQuickSwitchMode) {
             // For now set it to non-null, it will be reset before starting the animation
-            mEndTarget = LAST_TASK;
+            mGestureState.setEndTarget(LAST_TASK);
         } else {
             float flingThreshold = mContext.getResources()
                     .getDimension(R.dimen.quickstep_fling_threshold_velocity);
             boolean isFling = Math.abs(endVelocity) > flingThreshold;
 
             if (isFling) {
-                mEndTarget = endVelocity < 0 ? HOME : LAST_TASK;
+                mGestureState.setEndTarget(endVelocity < 0 ? HOME : LAST_TASK);
             } else if (mIsMotionPaused) {
-                mEndTarget = RECENTS;
+                mGestureState.setEndTarget(RECENTS);
             } else {
-                mEndTarget = mCurrentShift.value >= MIN_PROGRESS_FOR_OVERVIEW ? HOME : LAST_TASK;
+                mGestureState.setEndTarget(mCurrentShift.value >= MIN_PROGRESS_FOR_OVERVIEW
+                        ? HOME
+                        : LAST_TASK);
             }
         }
-        setStateOnUiThread(STATE_GESTURE_COMPLETED);
+        mStateCallback.setStateOnUiThread(STATE_GESTURE_COMPLETED);
     }
 
     @Override
-    public void onConsumerAboutToBeSwitched(SwipeSharedState sharedState) {
-        if (mInQuickSwitchMode && mEndTarget != null) {
-            sharedState.canGestureBeContinued = true;
-            sharedState.goingToLauncher = false;
+    public void onConsumerAboutToBeSwitched() {
+        if (mInQuickSwitchMode && mGestureState.getEndTarget() != null) {
+            mGestureState.setEndTarget(HOME);
 
             mCanceled = true;
             mCurrentShift.cancelAnimation();
@@ -293,12 +282,12 @@ public class FallbackNoButtonInputConsumer extends
                             ? newRunningTaskView.getTask().key.id
                             : -1;
                     mRecentsView.setCurrentTask(newRunningTaskId);
-                    sharedState.setRecentsAnimationFinishInterrupted(newRunningTaskId);
+                    mGestureState.setFinishingRecentsAnimationTaskId(newRunningTaskId);
                 }
                 mRecentsView.setOnScrollChangeListener(null);
             }
         } else {
-            setStateOnUiThread(STATE_HANDLER_INVALIDATED);
+            mStateCallback.setStateOnUiThread(STATE_HANDLER_INVALIDATED);
         }
     }
 
@@ -319,12 +308,12 @@ public class FallbackNoButtonInputConsumer extends
     }
 
     private void finishAnimationTargetSetAnimationComplete() {
-        switch (mEndTarget) {
+        switch (mGestureState.getEndTarget()) {
             case HOME: {
                 if (mSwipeUpOverHome) {
                     mRecentsAnimationController.finish(false, null, false);
                     // Send a home intent to clear the task stack
-                    mContext.startActivity(mOverviewComponentObserver.getHomeIntent());
+                    mContext.startActivity(mGestureState.getHomeIntent());
                 } else {
                     mRecentsAnimationController.finish(true, null, true);
                 }
@@ -339,7 +328,8 @@ public class FallbackNoButtonInputConsumer extends
                     break;
                 }
 
-                ThumbnailData thumbnail = mRecentsAnimationController.screenshotTask(mRunningTaskId);
+                final int runningTaskId = mGestureState.getRunningTaskId();
+                ThumbnailData thumbnail = mRecentsAnimationController.screenshotTask(runningTaskId);
                 mRecentsAnimationController.setDeferCancelUntilNextTransition(true /* defer */,
                         false /* screenshot */);
 
@@ -348,9 +338,9 @@ public class FallbackNoButtonInputConsumer extends
 
                 Bundle extras = new Bundle();
                 extras.putBinder(EXTRA_THUMBNAIL, new ObjectWrapper<>(thumbnail));
-                extras.putInt(EXTRA_TASK_ID, mRunningTaskId);
+                extras.putInt(EXTRA_TASK_ID, runningTaskId);
 
-                Intent intent = new Intent(mOverviewComponentObserver.getOverviewIntent())
+                Intent intent = new Intent(mGestureState.getOverviewIntent())
                         .putExtras(extras);
                 mContext.startActivity(intent, options.toBundle());
                 mRecentsAnimationController.cleanupScreenshot();
@@ -362,7 +352,7 @@ public class FallbackNoButtonInputConsumer extends
             }
         }
 
-        setStateOnUiThread(STATE_HANDLER_INVALIDATED);
+        mStateCallback.setStateOnUiThread(STATE_HANDLER_INVALIDATED);
     }
 
     private void finishAnimationTargetSet() {
@@ -370,17 +360,20 @@ public class FallbackNoButtonInputConsumer extends
             // Recalculate the end target, some views might have been initialized after
             // gesture has ended.
             if (mRecentsView == null || !hasTargets()) {
-                mEndTarget = LAST_TASK;
+                mGestureState.setEndTarget(LAST_TASK);
             } else {
                 final int runningTaskIndex = mRecentsView.getRunningTaskIndex();
                 final int taskToLaunch = mRecentsView.getNextPage();
-                mEndTarget = (runningTaskIndex >= 0 && taskToLaunch != runningTaskIndex)
-                        ? NEW_TASK : LAST_TASK;
+                mGestureState.setEndTarget(
+                        (runningTaskIndex >= 0 && taskToLaunch != runningTaskIndex)
+                                ? NEW_TASK
+                                : LAST_TASK);
             }
         }
 
-        float endProgress = mEndTarget.mEndProgress;
-        long duration = (long) (mEndTarget.mDurationMultiplier *
+        EndTargetAnimationParams params = mEndTargetAnimationParams.get(mGestureState.getEndTarget());
+        float endProgress = params.mEndProgress;
+        long duration = (long) (params.mDurationMultiplier *
                 Math.abs(endProgress - mCurrentShift.value));
         if (mRecentsView != null) {
             duration = Math.max(duration, mRecentsView.getScroller().getDuration());
@@ -395,7 +388,7 @@ public class FallbackNoButtonInputConsumer extends
                 }
             };
 
-            if (mEndTarget == HOME && !mRunningOverHome) {
+            if (mGestureState.getEndTarget() == HOME && !mRunningOverHome) {
                 RectFSpringAnim anim = createWindowAnimationToHome(mCurrentShift.value, duration);
                 anim.addAnimatorListener(endListener);
                 anim.start(mEndVelocityPxPerMs);
@@ -404,7 +397,7 @@ public class FallbackNoButtonInputConsumer extends
 
                 AnimatorSet anim = new AnimatorSet();
                 anim.play(mLauncherAlpha.animateToValue(
-                        mLauncherAlpha.value, mEndTarget.mLauncherAlpha));
+                        mLauncherAlpha.value, params.mLauncherAlpha));
                 anim.play(mCurrentShift.animateToValue(mCurrentShift.value, endProgress));
 
                 anim.setDuration(duration);
@@ -429,13 +422,14 @@ public class FallbackNoButtonInputConsumer extends
         }
         applyTransformUnchecked();
 
-        setStateOnUiThread(STATE_APP_CONTROLLER_RECEIVED);
+        mStateCallback.setStateOnUiThread(STATE_APP_CONTROLLER_RECEIVED);
     }
 
     @Override
     public void onRecentsAnimationCanceled(ThumbnailData thumbnailData) {
+        super.onRecentsAnimationCanceled(thumbnailData);
         mRecentsView.setRecentsAnimationTargets(null, null);
-        setStateOnUiThread(STATE_HANDLER_INVALIDATED);
+        mStateCallback.setStateOnUiThread(STATE_HANDLER_INVALIDATED);
     }
 
     /**

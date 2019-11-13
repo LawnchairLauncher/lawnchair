@@ -31,6 +31,8 @@ import android.os.Parcelable;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.WorkspaceItemInfo;
+import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.icons.LauncherIcons;
 
 public class PinRequestHelper {
 
@@ -80,7 +82,15 @@ public class PinRequestHelper {
             ShortcutInfo si = request.getShortcutInfo();
             WorkspaceItemInfo info = new WorkspaceItemInfo(si, context);
             // Apply the unbadged icon and fetch the actual icon asynchronously.
-            fetchAndUpdateShortcutIconAsync(context, info, si, false);
+            if (FeatureFlags.ENABLE_DEEP_SHORTCUT_ICON_CACHE.get()) {
+                fetchAndUpdateShortcutIconAsync(context, info, si, false);
+            } else {
+                LauncherIcons li = LauncherIcons.obtain(context);
+                info.bitmap = li.createShortcutIcon(si, false /* badged */);
+                li.recycle();
+                LauncherAppState.getInstance(context).getModel()
+                        .updateAndBindWorkspaceItem(info, si);
+            }
             return info;
         } else {
             return null;

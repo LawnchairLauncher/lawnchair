@@ -1,5 +1,5 @@
 <resources>
-<!-- Miscellaneous -->
+    <!-- Miscellaneous -->
     <bool name="config_largeHeap">false</bool>
     <bool name="is_tablet">false</bool>
     <bool name="is_large_tablet">false</bool>
@@ -21,10 +21,10 @@
     <!-- String representing the fragment class for settings activity.-->
     <string name="settings_fragment_name" translatable="false">com.android.launcher3.settings.SettingsActivity$LauncherSettingsFragment</string>
 
-<!-- DragController -->
+    <!-- DragController -->
     <item type="id" name="drag_event_parity" />
 
-<!-- AllApps & Launcher transitions -->
+    <!-- AllApps & Launcher transitions -->
     <!-- Out of 100, the percent to shrink the workspace during spring loaded mode. -->
     <integer name="config_workspaceSpringLoadShrinkPercentage">90</integer>
 
@@ -34,7 +34,7 @@
     <!-- View tag key used to store SpringAnimation data. -->
     <item type="id" name="spring_animation_tag" />
 
-<!-- Workspace -->
+    <!-- Workspace -->
     <!-- The duration (in ms) of the fade animation on the object outlines, used when
          we are dragging objects around on the home screen. -->
     <integer name="config_dragOutlineFadeTime">900</integer>
@@ -57,28 +57,19 @@
     <!-- The duration of the caret animation -->
     <integer name="config_caretAnimationDuration">200</integer>
 
-<!-- Hotseat -->
+    <!-- Hotseat -->
     <bool name="hotseat_transpose_layout_with_orientation">true</bool>
 
     <!-- Various classes overriden by projects/build flavors. -->
     <string name="app_filter_class" translatable="false"></string>
-    <string name="icon_provider_class" translatable="false"></string>
-    <string name="drawable_factory_class" translatable="false"></string>
     <string name="user_event_dispatcher_class" translatable="false"></string>
     <string name="stats_log_manager_class" translatable="false"></string>
     <string name="app_transition_manager_class" translatable="false"></string>
     <string name="instant_app_resolver_class" translatable="false"></string>
     <string name="main_process_initializer_class" translatable="false"></string>
-    <string name="system_shortcut_factory_class" translatable="false"></string>
     <string name="app_launch_tracker_class" translatable="false"></string>
     <string name="test_information_handler_class" translatable="false"></string>
     <string name="launcher_activity_logic_class" translatable="false"></string>
-
-    <!-- Package name of the default wallpaper picker. -->
-    <string name="wallpaper_picker_package" translatable="false"></string>
-
-    <!-- Whitelisted package to retrieve packagename for badge. Can be empty. -->
-    <string name="shortcutinfo_badgepkg_whitelist" translatable="false"></string>
 
     <!-- View ID to use for QSB widget -->
     <item type="id" name="qsb_widget" />
@@ -97,7 +88,12 @@
     <integer name="config_popupArrowOpenCloseDuration">40</integer>
     <integer name="config_removeNotificationViewDuration">300</integer>
 
-<!-- Accessibility actions -->
+    <!-- Default packages -->
+    <string name="wallpaper_picker_package" translatable="false"></string>
+    <string name="calendar_component_name" translatable="false"></string>
+    <string name="clock_component_name" translatable="false"></string>
+
+    <!-- Accessibility actions -->
     <item type="id" name="action_remove" />
     <item type="id" name="action_uninstall" />
     <item type="id" name="action_reconfigure" />
@@ -112,10 +108,10 @@
     <item type="id" name="action_dismiss_notification" />
     <item type="id" name="action_remote_action_shortcut" />
 
-<!-- QSB IDs. DO not change -->
+    <!-- QSB IDs. DO not change -->
     <item type="id" name="search_container_workspace" />
     <item type="id" name="search_container_all_apps" />
 
-<!-- Recents -->
+    <!-- Recents -->
     <item type="id" name="overview_panel"/>
 </resources>
