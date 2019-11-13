@@ -88,9 +88,11 @@ class BlurQsbLayout @JvmOverloads constructor(
                 invalidateBlur()
             }
         }
+    private val launcher = context.getLauncherOrNull()
     private val hotseat by lazy { Launcher.getLauncher(context).hotseat as BlurHotseat }
 
     private fun createBlurDrawable() {
+        if (launcher == null) return
         blurDrawable = if (isVisible && BlurWallpaperProvider.isEnabled) {
             val height = height - paddingTop - paddingBottom
             val radius = AbstractQsbLayout.getCornerRadius(context, height / 2f)
