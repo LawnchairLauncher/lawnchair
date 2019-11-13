@@ -38,6 +38,7 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
     private static final int MAX_SCROLL_ATTEMPTS = 40;
 
     private final int mHeight;
+    private final int mIconHeight;
 
     AllApps(LauncherInstrumentation launcher) {
         super(launcher);
@@ -48,6 +49,9 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
         // Wait for the recycler to populate.
         mLauncher.waitForObjectInContainer(appListRecycler, By.clazz(TextView.class));
         verifyNotFrozen("All apps freeze flags upon opening all apps");
+        mIconHeight = mLauncher.getTestInfo(
+                TestProtocol.REQUEST_ICON_HEIGHT).
+                getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
     @Override
@@ -64,6 +68,10 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
         }
         final Rect iconBounds = icon.getVisibleBounds();
         LauncherInstrumentation.log("hasClickableIcon: icon bounds: " + iconBounds);
+        if (iconBounds.height() < mIconHeight / 2) {
+            LauncherInstrumentation.log("hasClickableIcon: icon has insufficient height");
+            return false;
+        }
         if (iconCenterInSearchBox(allAppsContainer, icon)) {
             LauncherInstrumentation.log("hasClickableIcon: icon center is under search box");
             return false;
