@@ -151,6 +151,12 @@ public class TestInformationHandler implements ResourceBasedOverride {
                 mLeaks.add(bitmap);
                 break;
             }
+
+            case TestProtocol.REQUEST_ICON_HEIGHT: {
+                response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD,
+                        mDeviceProfile.allAppsCellHeightPx);
+                break;
+            }
         }
         return response;
     }
