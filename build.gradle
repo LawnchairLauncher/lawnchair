@@ -5,11 +5,9 @@ buildscript {
     repositories {
         google()
         jcenter()
-        maven { url = "https://storage.googleapis.com/r8-releases/raw" }
     }
     dependencies {
         classpath GRADLE_CLASS_PATH
-        classpath 'com.android.tools:r8:1.5.62'
         classpath PROTOBUF_CLASS_PATH
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
