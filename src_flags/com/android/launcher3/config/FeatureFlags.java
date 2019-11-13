@@ -26,8 +26,6 @@ public final class FeatureFlags extends BaseFlags {
 
     public static boolean REFLECTION_FORCE_OVERVIEW_MODE = true;
 
-    public static boolean FORCE_FEED_BRIDGE = false;
-
     private FeatureFlags() {
         // Prevent instantiation
     }
