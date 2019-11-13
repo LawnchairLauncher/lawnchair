@@ -159,9 +159,9 @@ public class LauncherPreviewRenderer implements Callable<Bitmap> {
             mHotseat.resetLayout(false);
 
             mWorkspace = mRootView.findViewById(R.id.workspace);
-            mWorkspace.setPadding(mDp.workspacePadding.left + mDp.cellLayoutPaddingLeftRightPx,
+            mWorkspace.setPadding(mDp.workspacePadding.left + mDp.cellLayoutPaddingLeftPx,
                     mDp.workspacePadding.top,
-                    mDp.workspacePadding.right + mDp.cellLayoutPaddingLeftRightPx,
+                    mDp.workspacePadding.right + mDp.cellLayoutPaddingRightPx,
                     mDp.workspacePadding.bottom);
         }
 

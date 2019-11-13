@@ -44,6 +44,12 @@ class CustomGridProvider(private val context: Context) : InvariantDeviceProfile.
     var numColsDrawer by prefs.IntPref(KEY_NUM_COLS_DRAWER, -1)
     var numPredictions by prefs.IntPref(KEY_NUM_HOTSEAT_ICONS, -1)
 
+    // Workspace padding
+    var workspacePaddingLeftScale by prefs.FloatPref(KEY_WORKSPACE_PADDING_LEFT, 1f)
+    var workspacePaddingRightScale by prefs.FloatPref(KEY_WORKSPACE_PADDING_RIGHT, 1f)
+    var workspacePaddingTopScale by prefs.FloatPref(KEY_WORKSPACE_PADDING_TOP, 1f)
+    var workspacePaddingBottomScale by prefs.FloatPref(KEY_WORKSPACE_PADDING_BOTTOM, 1f)
+
     override fun customizeGrid(grid: InvariantDeviceProfile.GridOverrides) {
         // Desktop
         if (numRows > 0) {
@@ -65,6 +71,12 @@ class CustomGridProvider(private val context: Context) : InvariantDeviceProfile.
         if (numPredictions > 0) {
             grid.numPredictions = numPredictions
         }
+
+        // Workspace padding
+        grid.workspacePaddingLeftScale = workspacePaddingLeftScale
+        grid.workspacePaddingRightScale = workspacePaddingRightScale
+        grid.workspacePaddingTopScale = workspacePaddingTopScale
+        grid.workspacePaddingBottomScale = workspacePaddingBottomScale
     }
 
     fun renderPreview(customizer: InvariantDeviceProfile.GridCustomizer? = null): Future<Bitmap> {
@@ -86,11 +98,20 @@ class CustomGridProvider(private val context: Context) : InvariantDeviceProfile.
         private const val KEY_NUM_COLS_DRAWER = "pref_numColsDrawer"
         private const val KEY_NUM_PREDICTIONS = "pref_numPredictions"
 
+        private const val KEY_WORKSPACE_PADDING_LEFT = "prefs_workspacePaddingLeft"
+        private const val KEY_WORKSPACE_PADDING_RIGHT = "prefs_workspacePaddingRight"
+        private const val KEY_WORKSPACE_PADDING_TOP = "prefs_workspacePaddingTop"
+        private const val KEY_WORKSPACE_PADDING_BOTTOM = "prefs_workspacePaddingBottom"
+
         val GRID_CUSTOMIZATIONS_PREFS = arrayOf(
                 KEY_NUM_ROWS,
                 KEY_NUM_COLUMNS,
                 KEY_NUM_HOTSEAT_ICONS,
                 KEY_NUM_COLS_DRAWER,
-                KEY_NUM_PREDICTIONS)
+                KEY_NUM_PREDICTIONS,
+                KEY_WORKSPACE_PADDING_LEFT,
+                KEY_WORKSPACE_PADDING_RIGHT,
+                KEY_WORKSPACE_PADDING_TOP,
+                KEY_WORKSPACE_PADDING_BOTTOM)
     }
 }

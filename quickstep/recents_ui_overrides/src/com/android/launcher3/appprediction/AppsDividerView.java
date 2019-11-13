@@ -282,9 +282,9 @@ public class AppsDividerView extends View implements LauncherStateManager.StateL
 
     @Override
     public void setInsets(Rect insets, DeviceProfile grid) {
-        int leftRightPadding = grid.desiredWorkspaceLeftRightMarginPx
-                + grid.cellLayoutPaddingLeftRightPx;
-        setPadding(leftRightPadding, getPaddingTop(), leftRightPadding, getPaddingBottom());
+        int leftPadding = grid.desiredWorkspaceLeftRightMarginPx + grid.cellLayoutPaddingLeftPx;
+        int rightPadding = grid.desiredWorkspaceLeftRightMarginPx + grid.cellLayoutPaddingRightPx;
+        setPadding(leftPadding, getPaddingTop(), rightPadding, getPaddingBottom());
     }
 
     @Override

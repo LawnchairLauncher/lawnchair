@@ -16,6 +16,8 @@
 
 package com.android.launcher3;
 
+import static java.lang.Math.round;
+
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -70,6 +72,8 @@ public class DeviceProfile {
     // Workspace
     public final int desiredWorkspaceLeftRightMarginPx;
     public final int cellLayoutPaddingLeftRightPx;
+    public final int cellLayoutPaddingLeftPx;
+    public final int cellLayoutPaddingRightPx;
     public final int cellLayoutBottomPaddingPx;
     public final int edgeMarginPx;
     public float workspaceSpringLoadShrinkFactor;
@@ -185,9 +189,13 @@ public class DeviceProfile {
         int cellLayoutPadding = res.getDimensionPixelSize(R.dimen.dynamic_grid_cell_layout_padding);
         if (isLandscape) {
             cellLayoutPaddingLeftRightPx = 0;
+            cellLayoutPaddingLeftPx = cellLayoutPaddingRightPx = 0;
             cellLayoutBottomPaddingPx = cellLayoutPadding;
         } else {
+            // Usage of this is still permitted in the app drawer which should not follow our desktop padding shenanigans
             cellLayoutPaddingLeftRightPx = cellLayoutPaddingLeftRightMultiplier * cellLayoutPadding;
+            cellLayoutPaddingLeftPx = round(cellLayoutPaddingLeftRightPx * inv.workspacePaddingLeftScale);
+            cellLayoutPaddingRightPx = round(cellLayoutPaddingLeftRightPx * inv.workspacePaddingRightScale);
             cellLayoutBottomPaddingPx = 0;
         }
 
@@ -481,7 +489,7 @@ public class DeviceProfile {
         // not matter.
         Point padding = getTotalWorkspacePadding();
         result.x = calculateCellWidth(availableWidthPx - padding.x
-                - cellLayoutPaddingLeftRightPx * 2, inv.numColumns);
+                - cellLayoutPaddingLeftPx -cellLayoutPaddingRightPx, inv.numColumns);
         result.y = calculateCellHeight(availableHeightPx - padding.y
                 - cellLayoutBottomPaddingPx, inv.numRows);
         return result;
@@ -494,7 +502,7 @@ public class DeviceProfile {
         // not matter.
         Point padding = getTotalWorkspacePadding();
         result.x = calculateCellWidth(availableWidthPx - padding.x
-                - cellLayoutPaddingLeftRightPx * 2, inv.numColumnsOriginal);
+                - cellLayoutPaddingLeftRightPx - cellLayoutPaddingRightPx, inv.numColumnsOriginal);
         result.y = calculateCellHeight(availableHeightPx - padding.y
                 - cellLayoutBottomPaddingPx, inv.numRowsOriginal);
         return result;
@@ -545,6 +553,12 @@ public class DeviceProfile {
                         desiredWorkspaceLeftRightMarginPx,
                         paddingBottom);
             }
+            padding.set(
+                    round(padding.left * inv.workspacePaddingLeftScale),
+                    round(padding.top * inv.workspacePaddingTopScale),
+                    round(padding.right * inv.workspacePaddingRightScale),
+                    round(padding.bottom * inv.workspacePaddingBottomScale)
+            );
         }
     }
 
@@ -565,11 +579,11 @@ public class DeviceProfile {
             // workspace cell vs a hotseat cell.
             float workspaceCellWidth = (float) widthPx / inv.numColumns;
             float hotseatCellWidth = (float) widthPx / inv.numHotseatIcons;
-            int hotseatAdjustment = Math.round((workspaceCellWidth - hotseatCellWidth) / 2);
+            int hotseatAdjustment = round((workspaceCellWidth - hotseatCellWidth) / 2);
             mHotseatPadding.set(
-                    hotseatAdjustment + workspacePadding.left + cellLayoutPaddingLeftRightPx,
+                    hotseatAdjustment + workspacePadding.left + cellLayoutPaddingLeftPx,
                     hotseatBarTopPaddingPx,
-                    hotseatAdjustment + workspacePadding.right + cellLayoutPaddingLeftRightPx,
+                    hotseatAdjustment + workspacePadding.right + cellLayoutPaddingRightPx,
                     hotseatBarBottomPaddingPx + mInsets.bottom + cellLayoutBottomPaddingPx);
         }
         return mHotseatPadding;

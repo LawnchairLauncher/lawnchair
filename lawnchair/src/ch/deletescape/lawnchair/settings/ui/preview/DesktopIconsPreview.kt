@@ -75,8 +75,8 @@ class DesktopIconsPreview(context: Context, attrs: AttributeSet?) :
 
     private fun populatePreview() {
         val dp = idp.getDeviceProfile(previewContext)
-        val leftPadding = dp.workspacePadding.left + dp.cellLayoutPaddingLeftRightPx
-        val rightPadding = dp.workspacePadding.right + dp.cellLayoutPaddingLeftRightPx
+        val leftPadding = dp.workspacePadding.left + dp.cellLayoutPaddingLeftPx
+        val rightPadding = dp.workspacePadding.right + dp.cellLayoutPaddingRightPx
         val verticalPadding = (leftPadding + rightPadding) / 2 + dp.iconDrawablePaddingPx
         layoutParams.height = dp.cellHeightPx + verticalPadding * 2
 

@@ -154,7 +154,7 @@
 
     <string name="title_all_apps_google_search">Global search</string>
     <string name="summary_all_apps_google_search">Find web results and apps</string>
-    <string name="num_hotseat_icons_pref_title">Number of icons</string>
+    <string name="num_hotseat_icons_pref_title">Dock items</string>
     <string name="icon_scale_pref_title">Icon size</string>
 
     <string name="add_settings_shortcut_title">Add settings icon to home screen</string>

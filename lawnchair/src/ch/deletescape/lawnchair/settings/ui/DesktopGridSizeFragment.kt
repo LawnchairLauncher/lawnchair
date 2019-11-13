@@ -19,6 +19,7 @@
 
 package ch.deletescape.lawnchair.settings.ui
 
+import android.graphics.RectF
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
@@ -45,9 +46,14 @@ class DesktopGridSizeFragment : Fragment(), SettingsActivity.PreviewFragment {
                 grid.numRows = currentValues.height
                 grid.numColumns = currentValues.width
                 grid.numHotseatIcons = currentValues.numHotseat
+                grid.workspacePaddingLeftScale = currentValues.workspacePaddingScale.left
+                grid.workspacePaddingRightScale = currentValues.workspacePaddingScale.right
+                grid.workspacePaddingTopScale = currentValues.workspacePaddingScale.top
+                grid.workspacePaddingBottomScale = currentValues.workspacePaddingScale.bottom
             }
+            val paddings = RectF(idp.workspacePaddingLeftScale, idp.workspacePaddingTopScale, idp.workspacePaddingRightScale, idp.workspacePaddingBottomScale)
             setInitialValues(
-                    CustomGridView.Values(idp.numRows, idp.numColumns, idp.numHotseatIcons))
+                    CustomGridView.Values(idp.numRows, idp.numColumns, idp.numHotseatIcons, paddings))
         }
     }
 
@@ -59,13 +65,18 @@ class DesktopGridSizeFragment : Fragment(), SettingsActivity.PreviewFragment {
     override fun onPause() {
         super.onPause()
         val idp = LauncherAppState.getIDP(context)
-        val oldValues = CustomGridView.Values(idp.numRows, idp.numColumns, idp.numHotseatIcons)
+        val paddings = RectF(idp.workspacePaddingLeftScale, idp.workspacePaddingTopScale, idp.workspacePaddingRightScale, idp.workspacePaddingBottomScale)
+        val oldValues = CustomGridView.Values(idp.numRows, idp.numColumns, idp.numHotseatIcons, paddings)
         val newValues = customGridView.currentValues
         if (oldValues != newValues) {
             val provider = CustomGridProvider.getInstance(context!!)
             provider.numRows = newValues.height
             provider.numColumns = newValues.width
             provider.numHotseatIcons = newValues.numHotseat
+            provider.workspacePaddingLeftScale = newValues.workspacePaddingScale.left
+            provider.workspacePaddingRightScale = newValues.workspacePaddingScale.right
+            provider.workspacePaddingTopScale = newValues.workspacePaddingScale.top
+            provider.workspacePaddingBottomScale = newValues.workspacePaddingScale.bottom
         }
     }
 
@@ -77,7 +88,7 @@ class DesktopGridSizeFragment : Fragment(), SettingsActivity.PreviewFragment {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.action_reset_grid_size) {
             val idp = LauncherAppState.getIDP(context)
-            customGridView.setValues(CustomGridView.Values(idp.numRowsOriginal, idp.numColumnsOriginal, idp.numHotseatIconsOriginal))
+            customGridView.setValues(CustomGridView.Values(idp.numRowsOriginal, idp.numColumnsOriginal, idp.numHotseatIconsOriginal, RectF(1f, 1f, 1f, 1f)))
         }
         return super.onOptionsItemSelected(item)
     }

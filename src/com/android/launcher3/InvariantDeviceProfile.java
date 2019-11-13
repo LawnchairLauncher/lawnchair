@@ -123,6 +123,14 @@ public class InvariantDeviceProfile {
     public float iconTextSize;
     public float allAppsIconTextSize;
 
+    /**
+     * Padding scales for the workspace
+     */
+    public float workspacePaddingLeftScale;
+    public float workspacePaddingRightScale;
+    public float workspacePaddingTopScale;
+    public float workspacePaddingBottomScale;
+
     private SparseArray<TypedValue> mExtraAttrs;
 
     /**
@@ -251,6 +259,10 @@ public class InvariantDeviceProfile {
         numFolderRows = closestProfile.numFolderRows;
         numFolderColumns = closestProfile.numFolderColumns;
         mExtraAttrs = closestProfile.extraAttrs;
+        workspacePaddingLeftScale = closestProfile.workspacePaddingLeftScale;
+        workspacePaddingRightScale = closestProfile.workspacePaddingRightScale;
+        workspacePaddingTopScale = closestProfile.workspacePaddingTopScale;
+        workspacePaddingBottomScale = closestProfile.workspacePaddingBottomScale;
 
         if (!closestProfile.name.equals(gridName)) {
             Utilities.getPrefs(context).edit()
@@ -556,6 +568,11 @@ public class InvariantDeviceProfile {
         public final int numColsDrawer;
         public final int numPredictions;
 
+        public float workspacePaddingLeftScale;
+        public float workspacePaddingRightScale;
+        public float workspacePaddingTopScale;
+        public float workspacePaddingBottomScale;
+
         private final int numFolderRows;
         private final int numFolderColumns;
 
@@ -574,6 +591,8 @@ public class InvariantDeviceProfile {
             numColumns = a.getInt(R.styleable.GridDisplayOption_numColumns, 0);
             numColsDrawer = numColumns;
             numPredictions = numColsDrawer;
+            workspacePaddingLeftScale = workspacePaddingRightScale = 1f;
+            workspacePaddingTopScale = workspacePaddingBottomScale = 1f;
 
             defaultLayoutId = a.getResourceId(
                     R.styleable.GridDisplayOption_defaultLayoutId, 0);
@@ -601,6 +620,11 @@ public class InvariantDeviceProfile {
             numColsDrawer = override.numColsDrawer;
             numPredictions = override.numPredictions;
 
+            workspacePaddingLeftScale = override.workspacePaddingLeftScale;
+            workspacePaddingRightScale = override.workspacePaddingRightScale;
+            workspacePaddingTopScale = override.workspacePaddingTopScale;
+            workspacePaddingBottomScale = override.workspacePaddingBottomScale;
+
             defaultLayoutId = option.defaultLayoutId;
             demoModeLayoutId = option.demoModeLayoutId;
             numFolderRows = option.numFolderRows;
@@ -618,6 +642,11 @@ public class InvariantDeviceProfile {
         public int numColsDrawer;
         public int numPredictions;
 
+        public float workspacePaddingLeftScale;
+        public float workspacePaddingRightScale;
+        public float workspacePaddingTopScale;
+        public float workspacePaddingBottomScale;
+
         private GridOption originalGrid;
 
         private GridOverrides(GridOption option) {
@@ -626,6 +655,11 @@ public class InvariantDeviceProfile {
             numHotseatIcons = option.numHotseatIcons;
             numColsDrawer = option.numColsDrawer;
             numPredictions = option.numPredictions;
+
+            workspacePaddingLeftScale = option.workspacePaddingLeftScale;
+            workspacePaddingRightScale = option.workspacePaddingRightScale;
+            workspacePaddingTopScale = option.workspacePaddingTopScale;
+            workspacePaddingBottomScale = option.workspacePaddingBottomScale;
 
             originalGrid = option;
         }

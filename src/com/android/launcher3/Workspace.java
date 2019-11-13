@@ -319,12 +319,11 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         }
 
 
-        int paddingLeftRight = stableGrid.cellLayoutPaddingLeftRightPx;
         int paddingBottom = stableGrid.cellLayoutBottomPaddingPx;
         for (int i = mWorkspaceScreens.size() - 1; i >= 0; i--) {
             CellLayout page = mWorkspaceScreens.valueAt(i);
             page.setRotationMode(rotationMode);
-            page.setPadding(paddingLeftRight, 0, paddingLeftRight, paddingBottom);
+            page.setPadding(stableGrid.cellLayoutPaddingLeftPx, 0, stableGrid.cellLayoutPaddingRightPx, paddingBottom);
         }
     }
 
@@ -565,10 +564,9 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         CellLayout newScreen = (CellLayout) LayoutInflater.from(getContext()).inflate(
                         R.layout.workspace_screen, this, false /* attachToRoot */);
         DeviceProfile grid = mLauncher.getWallpaperDeviceProfile();
-        int paddingLeftRight = grid.cellLayoutPaddingLeftRightPx;
         int paddingBottom = grid.cellLayoutBottomPaddingPx;
         newScreen.setRotationMode(mLauncher.getRotationMode());
-        newScreen.setPadding(paddingLeftRight, 0, paddingLeftRight, paddingBottom);
+        newScreen.setPadding(grid.cellLayoutPaddingLeftPx, 0, grid.cellLayoutPaddingRightPx, paddingBottom);
 
         mWorkspaceScreens.put(screenId, newScreen);
         mScreenOrder.add(insertIndex, screenId);
