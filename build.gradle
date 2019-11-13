@@ -53,6 +53,7 @@ if (localPropsFile.exists()) {
 
 def publicBranches = ["alpha", "beta", "q-pre-alpha"]
 def ciBuild = localProps.getProperty("ciBuild") == "true" || System.getenv("CI_BUILD") == "true"
+def signed = ciBuild || !localProps.getProperty("storePass").empty
 def isPublicBuild = localProps.getProperty("public") == "true" || (ciBuild && publicBranches.contains(System.getenv("DRONE_BRANCH")))
 
 final String FRAMEWORK_PREBUILTS_DIR = "prebuilts/"
@@ -115,7 +116,7 @@ android {
     buildTypes {
         debug {
             minifyEnabled false
-            if (ciBuild) {
+            if (signed) {
                 if (System.getenv("CI_EVENT_TYPE") != "pull_request") {
                     signingConfig signingConfigs.ci
                 }
@@ -131,7 +132,7 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),
                     'proguard.flags'
-            if (ciBuild) {
+            if (signed) {
                 if (System.getenv("CI_EVENT_TYPE") != "pull_request") {
                     signingConfig signingConfigs.ci
                 }
@@ -142,7 +143,7 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),
                     'proguard.flags'
-            if (ciBuild) {
+            if (signed) {
                 if (System.getenv("CI_EVENT_TYPE") != "pull_request") {
                     signingConfig signingConfigs.ci
                 }
@@ -228,9 +229,9 @@ android {
         }
     }
 
-    // Disable release builds for now
     android.variantFilter { variant ->
-        if (variant.buildType.name.endsWith('release')) {
+        // Hide all non "aospWithQuickstep" tasks to make this a little more bearable
+        if (!name.startsWith("aospWithQuickstep")) {
             variant.setIgnore(true)
         }
 

@@ -24,3 +24,4 @@ captures/
 /.idea/caches
 /.idea/markdown-navigator
 /.idea/*.xml
+out/
