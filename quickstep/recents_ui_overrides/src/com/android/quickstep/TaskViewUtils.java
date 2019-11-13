@@ -172,8 +172,11 @@ public final class TaskViewUtils {
                         AppWindowAnimationHelper.TransformParams liveTileParams =
                                 v.getRecentsView().getLiveTileParams(true /* mightNeedToRefill */);
                         if (liveTileParams != null) {
-                            Collections.addAll(surfaceParamsList,
-                                    liveTileAnimationHelper.getSurfaceParams(liveTileParams));
+                            SurfaceParams[] liveTileSurfaceParams =
+                                    liveTileAnimationHelper.getSurfaceParams(liveTileParams);
+                            if (liveTileSurfaceParams != null) {
+                                Collections.addAll(surfaceParamsList, liveTileSurfaceParams);
+                            }
                         }
                     }
                     // Apply surface transform using the surface params list.
