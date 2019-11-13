@@ -29,6 +29,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager.StateHandler;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.RotationMode;
@@ -60,7 +61,7 @@ public abstract class RecentsUiFactory {
     public static final boolean GO_LOW_RAM_RECENTS_ENABLED = false;
     private static final AsyncCommand SET_SHELF_HEIGHT_CMD = RecentsUiFactory::setShelfHeight;
 
-    private static boolean DISALLOW_SET_SHELF_HEIGHT;
+    private static boolean DISALLOW_SET_SHELF_HEIGHT = !Utilities.ATLEAST_P;
     private static void setShelfHeight(int visible, int height) {
         if (DISALLOW_SET_SHELF_HEIGHT) return;
         try {
