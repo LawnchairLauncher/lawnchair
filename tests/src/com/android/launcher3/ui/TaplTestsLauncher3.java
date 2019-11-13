@@ -351,6 +351,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
      * Custom shortcuts are replaced by deep shortcuts after api 25.
      */
     @Test
+    @Ignore   // b/143725213
     @PortraitLandscape
     public void testDragCustomShortcut() {
         if (!TestHelpers.isInLauncherProcess()) return;     // b/143725213
