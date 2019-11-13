@@ -133,7 +133,7 @@ public class FallbackRecentsTest {
     @NavigationModeSwitch
     @Test
     public void goToOverviewFromHome() {
-        // b/142828227
+        // b/143488140
         if (android.os.Build.MODEL.contains("Cuttlefish") && TestHelpers.isInLauncherProcess() &&
                 (RUN_FLAFOR & (PLATFORM_PRESUBMIT | UNBUNDLED_PRESUBMIT)) != 0) {
             return;
@@ -148,7 +148,7 @@ public class FallbackRecentsTest {
     @NavigationModeSwitch
     @Test
     public void goToOverviewFromApp() {
-        // b/142828227
+        // b/143488140
         if (android.os.Build.MODEL.contains("Cuttlefish") && TestHelpers.isInLauncherProcess() &&
                 (RUN_FLAFOR & (PLATFORM_PRESUBMIT | UNBUNDLED_PRESUBMIT)) != 0) {
             return;
@@ -187,7 +187,7 @@ public class FallbackRecentsTest {
     @NavigationModeSwitch
     @Test
     public void testOverview() {
-        // b/142828227
+        // b/143488140
         if (android.os.Build.MODEL.contains("Cuttlefish") && TestHelpers.isInLauncherProcess() &&
                 (RUN_FLAFOR & (PLATFORM_PRESUBMIT | UNBUNDLED_PRESUBMIT)) != 0) {
             return;
