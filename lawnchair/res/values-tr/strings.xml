@@ -146,15 +146,16 @@
     <string name="about_role_dev_mod">Geliştirici / Moderatör</string>
     <string name="about_role_designer">Tasarımcı</string>
     <string name="about_role_ui_ux_designer">UI/UX tasarımcısı</string>
-    <string name="about_role_special_snowflake">Halkla ilişkiler yöneticisi/moderatör</string>
+    <string name="about_role_pr">Halkla İlişkiler ve Sosyal Medya Yöneticisi</string>
+    <string name="about_role_ops">Operasyonlar ve Altyapı</string>
     <string name="about_role_mod_support">Moderatör/destek</string>
     <string name="about_role_family_member">Aile üyesi</string>
     <string name="about_role_magisk_maintainer">Magisk modülü sorumlusu</string>
-    <string name="about_bio_deletescape">Android geliştiricisi &amp; meraklısı. Lawnchair projesinin kurucusu.</string>
+    <string name="about_bio_deletescape">Kotlin/Java geliştiricisi. Android ile ilgili herşey ile ilgileniyor. Lawnchair ve dogbin projelerinin kurucusu.</string>
     <string name="about_bio_recoded">Hafif kodlayıcı ve grafik tasarımcısı.</string>
     <string name="about_bio_josh">Serbest grafik tasarımcısı.</string>
-    <string name="about_bio_chris">Yaratıcı zihin, etkileyici ve içerik oluşturucu. Sosyal medya ve halkla ilişkiler yöneticisi. @lawnchairapp\'ta birlikte takılalım ✨</string>
-    <string name="about_bio_msfjarvis">HalogenOS\'ta çekirdek geliştirici ve substratum da ki uygulama geliştiricisi.</string>
+    <string name="about_bio_harsh">Android uygulaması ve kütüphane geliştiricisi. AOSiP\'de çekirdek geliştirici.</string>
+    <string name="about_bio_david">19 yaşında, kafeini ve pizzayı koda dönüştürüyor, bir şeyler yanlış giderse barındırma ve 7 gün 24 saat destek sağlıyor. Boş zamanlarında açık kaynaklı projelere katkıda bulunur ve hataları giderir. Ayrıca daha önce Codebucket olarak da bilinirdi.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Başlatıcı çöktü</string>
     <string name="gestures_pref_title">Hareketler</string>
@@ -502,7 +503,8 @@
     <string name="battery_full">Pil dolu</string>
     <string name="battery_low">Düşük pil</string>
     <string name="event_provider_unread_notifications">Okunmamış bildiriler</string>
-    <string name="event_provider_missing_notification_access"><xliff:g example="My Provider" id="providerName">%1$s</xliff:g> kullanmak için, <xliff:g example="My App" id="name">%2$s</xliff:g> için uygulama bildirimlerini aç</string>
+    <string name="event_provider_missing_notification_access"><xliff:g example="My Provider" id="providerName">%1$s</xliff:g> kullanmak için, <xliff:g example="My App" id="name">%2$s</xliff:g> için uygulama bildirimlerini aç
+    </string>
     <string name="event_provider_missing_notification_dots"><xliff:g example="My Provider" id="providerName">%1$s</xliff:g> kullanmak için, bildirim noktalarını aç</string>
     <string name="zen_mode_enabled">Rahatsız etmeyin etkin</string>
     <string name="crash_report_notif_title">%1$s çöktü!</string>
@@ -557,4 +559,5 @@
     <string name="pref_hide_statusbar_clock">Durum çubuğu saatini gizle</string>
     <string name="root_access_required">Kök erişimi gerekli</string>
     <string name="smartspace_setup_text">Ayarlamak için dokunun</string>
+    <string name="get_lawnfeed">Şimdi al</string>
 </resources>
