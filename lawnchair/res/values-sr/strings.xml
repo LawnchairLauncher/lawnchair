@@ -146,15 +146,11 @@
     <string name="about_role_dev_mod">програмер/модератор</string>
     <string name="about_role_designer">дизајнер</string>
     <string name="about_role_ui_ux_designer">UI/UX дизајнер</string>
-    <string name="about_role_special_snowflake">друштвене мреже / односи са јавношћу и произвођачима</string>
     <string name="about_role_mod_support">модератор/подршка</string>
     <string name="about_role_family_member">члан породице</string>
     <string name="about_role_magisk_maintainer">програмер Magisk модула</string>
-    <string name="about_bio_deletescape">Android програмер и ентузијаста, воли мимове (и превише). Оснивач пројекта Lawnchair.</string>
     <string name="about_bio_recoded">Благи програмер и графички дизајнер.</string>
     <string name="about_bio_josh">Независни графички дизајнер.</string>
-    <string name="about_bio_chris">Миленијалац до сржи. Занима ме све везано за дизајн и друштвене мреже. Дођите да блејимо на @lawnchairapp. ✨</string>
-    <string name="about_bio_msfjarvis">Програмер halogenOS-а и Substratum-а.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Грешка покретача</string>
     <string name="gestures_pref_title">Покрети</string>
@@ -502,7 +498,6 @@
     <string name="battery_full">Батерија је пуна</string>
     <string name="battery_low">Батерија је скоро празна</string>
     <string name="event_provider_unread_notifications">Непрочитана обавештења</string>
-    <string name="event_provider_missing_notification_access">Да бисте користили <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, укључите обавештења апликације <xliff:g example="My App" id="name">%2$s</xliff:g></string>
     <string name="event_provider_missing_notification_dots">Да бисте користили <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, укључите тачке за обавештења</string>
     <string name="zen_mode_enabled">Укључен је режим „Не узнемиравај”</string>
     <string name="crash_report_notif_title">%1$s је отказао!</string>
