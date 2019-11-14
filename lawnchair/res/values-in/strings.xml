@@ -146,15 +146,11 @@
     <string name="about_role_dev_mod">Pemaju/Moderator</string>
     <string name="about_role_designer">Desainer</string>
     <string name="about_role_ui_ux_designer">Desainer Antarmuka Pengguna</string>
-    <string name="about_role_special_snowflake">Media sosial/rel. pblk &amp; relasi OEM</string>
     <string name="about_role_mod_support">Moderator / Pendukung</string>
     <string name="about_role_family_member">Anggota keluarga</string>
     <string name="about_role_magisk_maintainer">Pemelihara Modul Magisk</string>
-    <string name="about_bio_deletescape">Pengembang Android &amp; penggemar android, pecinta meme (terlalu banyak sebenarnya). Pendiri proyek Lawnchair.</string>
     <string name="about_bio_recoded">Desainer grafis dan coder ringan.</string>
     <string name="about_bio_josh">Pereka grafik freelance.</string>
-    <string name="about_bio_chris">Para millennial yang tidak saya tahu. Yang punya desain dan sosial media. Mari bergaul bersama di @lawnchairapp✨</string>
-    <string name="about_bio_msfjarvis">Pengembang inti di halogenOS dan pengembang aplikasi di substratum.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Crash launcher</string>
     <string name="gestures_pref_title">Gestur</string>
@@ -500,7 +496,6 @@ Tindakan ini tidak bisa dibatalkan.</string>
     <string name="battery_full">Baterai penuh</string>
     <string name="battery_low">Baterai lemah</string>
     <string name="event_provider_unread_notifications">Notifikasi yang belum dibaca</string>
-    <string name="event_provider_missing_notification_access">Untuk menggunakan <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, hidupkan pengaturan notifikasi di aplikasi <xliff:g example="My App" id="name">%2$s</xliff:g> tersebut</string>
     <string name="event_provider_missing_notification_dots">Untuk menggunakan <xliff:g example="Penyediaku" id="providerName">%1$s</xliff:g>, hidupkan titik notifikasi</string>
     <string name="zen_mode_enabled">Jangan ganggu diaktifkan</string>
     <string name="crash_report_notif_title">%1$s telah berhenti!</string>
