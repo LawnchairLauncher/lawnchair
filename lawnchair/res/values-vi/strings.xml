@@ -146,15 +146,16 @@
     <string name="about_role_dev_mod">Nhà phát triển / Người kiểm duyệt</string>
     <string name="about_role_designer">Nhà thiết kế</string>
     <string name="about_role_ui_ux_designer">Nhà thiết kế Giao diện</string>
-    <string name="about_role_special_snowflake">Truyền thông xã hội / PR &amp; Quan hệ OEM</string>
+    <string name="about_role_pr">Quan hệ Công chúng &amp; Quản lý Phương tiện Truyền thông Xã hội</string>
+    <string name="about_role_ops">Hoạt động &amp; Cơ sở hạ tầng</string>
     <string name="about_role_mod_support">Người kiểm duyệt / Hỗ trợ</string>
     <string name="about_role_family_member">Thành viên trong gia đình</string>
     <string name="about_role_magisk_maintainer">Người duy trì Magisk Module</string>
-    <string name="about_bio_deletescape">Nhà phát triển Android &amp; người đam mê, yêu thích meme (hơi nhiều một chút). Người sáng lập dự án Lawnchair.</string>
+    <string name="about_bio_deletescape">Lập trình viên Kotlin/Java. Có niềm yêu thích với mọi thứ liên quan đến Android. Nhà sáng lập của dự ân Lawnchair và dogbin.</string>
     <string name="about_bio_recoded">Coder và nhà thiết kế đồ họa.</string>
     <string name="about_bio_josh">Nhà thiết kế đồ hoạ tự do.</string>
-    <string name="about_bio_chris">Millennial af, idk and idc. Một cái gì đó với thiết kế và phương tiện truyền thông xã hội. Hãy đi chơi cùng nhau tại @lawnchairapp ✨</string>
-    <string name="about_bio_msfjarvis">Nhà phát triển cốt lõi của halogenOS và nhà phát triển ứng dụng của substratum.</string>
+    <string name="about_bio_harsh">Lập trình viên ứng dụng và thư viện Android. Lập trình viên cốt lõi của AOSiP.</string>
+    <string name="about_bio_david">19 tuổi, biến cafe và pizza thành các dòng mã, cung cấp dịch vụ lưu trữ và hỗ trợ Lawnchair 24/7 nếu có gì đó hoạt động không đúng. Đóng góp vào các dự án mã nguồn mở trong thời gian rảnh. Anh còn được biết đến với cái tên Codebucket.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Buộc dừng launcher</string>
     <string name="gestures_pref_title">Cử chỉ</string>
@@ -498,7 +499,8 @@
     <string name="battery_full">Pin đầy</string>
     <string name="battery_low">Pin yếu</string>
     <string name="event_provider_unread_notifications">Thông báo chưa đọc</string>
-    <string name="event_provider_missing_notification_access">Để sử dụng <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, bật thông báo cho ứng dụng <xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="event_provider_missing_notification_access">Để sử dụng <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, bật thông báo cho ứng dụng <xliff:g example="My App" id="name">%2$s</xliff:g>
+    </string>
     <string name="event_provider_missing_notification_dots">Để sử dụng <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, bật dấu chấm thông báo</string>
     <string name="zen_mode_enabled">Không làm phiền đang bật</string>
     <string name="crash_report_notif_title">%1$s đã bị dừng!</string>
@@ -552,4 +554,5 @@
     <string name="pref_hide_statusbar_clock">Ẩn đồng hồ thanh trạng thái</string>
     <string name="root_access_required">Yêu cầu quyền root</string>
     <string name="smartspace_setup_text">Nhấn để thiết lập</string>
+    <string name="get_lawnfeed">Tải ngay</string>
 </resources>
