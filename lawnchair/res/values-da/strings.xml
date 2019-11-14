@@ -145,15 +145,16 @@
     <string name="about_role_dev_mod">Udvikler/Moderator</string>
     <string name="about_role_designer">Designer</string>
     <string name="about_role_ui_ux_designer">UI-/UX-designer</string>
-    <string name="about_role_special_snowflake">Sociale Medier/PR og OEM-relationer</string>
+    <string name="about_role_pr">Offentlige Relationer og Socialmediemanager</string>
+    <string name="about_role_ops">Drift og Infrastruktur</string>
     <string name="about_role_mod_support">Moderator/Support</string>
     <string name="about_role_family_member">Familiemedlem</string>
     <string name="about_role_magisk_maintainer">Magisk-modulvedligehold</string>
-    <string name="about_bio_deletescape">Android-udvikler og -entusiaster, elsker memes (lidt for meget, faktisk). Grundlægger af Lawnchair-projektet.</string>
+    <string name="about_bio_deletescape">Kotlin-/Java-udvikler. interesseret i alt med Android. Grundlægger af Lawnchair og dogbin-projekter.</string>
     <string name="about_bio_recoded">Mild Koder og grafisk designer.</string>
     <string name="about_bio_josh">Freelance grafisk designer.</string>
-    <string name="about_bio_chris">Millennial af, idk og idc. Noget med design og sociale medier. Lad os hæng ud sammen ovre på @lawnchairapp ✨</string>
-    <string name="about_bio_msfjarvis">Kerneudvikler hos halogenOS og applikationsudvikler hos Stratum.</string>
+    <string name="about_bio_harsh">Android app- og biblioteksudvikler. Kerneudvikler hos AOSiP.</string>
+    <string name="about_bio_david">19 år gammel, omdanner koffein og pizza til kode, leverer hosting og 24/7 support af Lawnchair, hvis noget går galt. Bidrager til open source projekter og fikser fejl i sin fritid. Også tidligere kendt som Codebucket.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Generér launcher-fejl</string>
     <string name="gestures_pref_title">Fagter</string>
@@ -500,7 +501,7 @@
     <string name="battery_full">Batteri fuldt</string>
     <string name="battery_low">Lavt batteriniveau</string>
     <string name="event_provider_unread_notifications">Ulæste notifikationer</string>
-    <string name="event_provider_missing_notification_access">For at benytte <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, slå app-notifikationer til for <xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="event_provider_missing_notification_access">For at benytte <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, slå app-notifikationer til for <xliff:g example="My App" id="name">%2$s</xliff:g>    </string>
     <string name="event_provider_missing_notification_dots">For at bruge <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, slå notifikationsprikker til</string>
     <string name="zen_mode_enabled">Forstyr ikke er aktiveret</string>
     <string name="crash_report_notif_title">%1$s gået ned!</string>
@@ -554,4 +555,5 @@
     <string name="pref_hide_statusbar_clock">Skjul statusbjælke</string>
     <string name="root_access_required">Root-adgang kræves</string>
     <string name="smartspace_setup_text">Tryk for at opsættee</string>
+    <string name="get_lawnfeed">Hent den nu</string>
 </resources>
