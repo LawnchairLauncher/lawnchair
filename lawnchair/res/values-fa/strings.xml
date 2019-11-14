@@ -141,15 +141,12 @@
     <string name="about_role_dev_mod">توسعه دهنده/سر دیبر</string>
     <string name="about_role_designer">طراح</string>
     <string name="about_role_ui_ux_designer">طراح UI/UX</string>
-    <string name="about_role_special_snowflake">شبکه های اجتماعی</string>
+    <string name="about_role_ops">عملیات &amp; زیرساخت</string>
     <string name="about_role_mod_support">سرپرست/پشتیبانی</string>
     <string name="about_role_family_member">اعضای خانواده</string>
     <string name="about_role_magisk_maintainer">سازنده ماژول Magisk</string>
-    <string name="about_bio_deletescape">توسعه دهنده اندروید&amp; علاقه مند، دوستدار شکلک ها ( یکم زیاد دقیقا) پایه گذار پروژه لاونچر.</string>
     <string name="about_bio_recoded">یکم کد نویس و طراح گرافیک.</string>
     <string name="about_bio_josh">طراح گرافیک آزاد.</string>
-    <string name="about_bio_chris">Millennial af, idk and idcچیزی با طراحی و شبکه های اجتماعی. بیایید با هم در @lawnchairapp گپ بزنیم</string>
-    <string name="about_bio_msfjarvis">توسعه دهنده اصلی در پروژه halogenOS و توسعه دهنده برنامه در substratum.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">توقف صفحه اصلی</string>
     <string name="gestures_pref_title">ژست‌ها</string>
@@ -492,7 +489,6 @@
     <string name="battery_full">باتری شارژ شد</string>
     <string name="battery_low">باتری ضعیف است</string>
     <string name="event_provider_unread_notifications">اعلان‌های خوانده نشده</string>
-    <string name="event_provider_missing_notification_access">با استفاده از <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>، اعلان برنامه را روشن کنید برای <xliff:g example="My App" id="name">%2$s</xliff:g></string>
     <string name="event_provider_missing_notification_dots">با استفاده از <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, نقطات اعلان را روشن کنید</string>
     <string name="zen_mode_enabled">حالت مزاحم نشوید روشن شد</string>
     <string name="crash_report_notif_title">%1$s خراب شد!</string>
@@ -546,4 +542,5 @@
     <string name="pref_hide_statusbar_clock">مخفی کردن ساعت نوار وضعیت</string>
     <string name="root_access_required">دسترسی Root لازم است</string>
     <string name="smartspace_setup_text">برای تنظیم ضربه بزنید</string>
+    <string name="get_lawnfeed">همین حالا بگیر</string>
 </resources>
