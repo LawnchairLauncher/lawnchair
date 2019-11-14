@@ -146,15 +146,11 @@
     <string name="about_role_dev_mod">Dezvoltator/Moderator</string>
     <string name="about_role_designer">Designer</string>
     <string name="about_role_ui_ux_designer">Designer UI/UX</string>
-    <string name="about_role_special_snowflake">Rețele de socializare/Relații publice &amp; relații OEM</string>
     <string name="about_role_mod_support">Moderator/Suport</string>
     <string name="about_role_family_member">Membru al familiei</string>
     <string name="about_role_magisk_maintainer">Responsabil modul Magisk</string>
-    <string name="about_bio_deletescape">Dezvoltator și entuziast Android, iubeşte memele (un pic prea mult de fapt). Fondator al proiectului Lawnchair.</string>
     <string name="about_bio_recoded">Coder mediu și designer grafic.</string>
     <string name="about_bio_josh">Freelance graphic designer.</string>
-    <string name="about_bio_chris">Minte creativă, angajat în ceva legat de design și social media. Să mergem împreună la @lawnchairapp ✨</string>
-    <string name="about_bio_msfjarvis">Dezvoltator principal al halogenOS și dezvoltator al substratum.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Închidere forțată a lansatorului</string>
     <string name="gestures_pref_title">Gesturi</string>
@@ -502,7 +498,6 @@
     <string name="battery_full">Baterie încărcată</string>
     <string name="battery_low">Baterie descărcată</string>
     <string name="event_provider_unread_notifications">Notificări necitite</string>
-    <string name="event_provider_missing_notification_access">Pentru a utiliza <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, activați notificările aplicației <xliff:g example="My App" id="name">%2$s</xliff:g></string>
     <string name="event_provider_missing_notification_dots">Pentru a folosi <xliff:g example="My Provider" id="providerName">%1$s</xliff:g> activați punctele de notificare</string>
     <string name="zen_mode_enabled">Nu deranjați este activată</string>
     <string name="crash_report_notif_title">%1$s distrus!</string>
