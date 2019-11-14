@@ -141,15 +141,12 @@
     <string name="about_role_dev_mod">programer/moderator</string>
     <string name="about_role_designer">dizajner</string>
     <string name="about_role_ui_ux_designer">UI/UX dizajner</string>
-    <string name="about_role_special_snowflake">društvene mreže / odnosi sa javnošću i proizvođačima</string>
     <string name="about_role_mod_support">moderator/podrška</string>
     <string name="about_role_family_member">član porodice</string>
     <string name="about_role_magisk_maintainer">programer Magisk modula</string>
-    <string name="about_bio_deletescape">Android programer i entuzijasta, voli mimove (i previše). Osnivač projekta Lawnchair.</string>
+    <string name="about_bio_deletescape">Kotlin/Java developer. Zainteresovan za sve vezano za Android. Pokretač Lawnchair i drugih dogbin projekata.</string>
     <string name="about_bio_recoded">Blagi programer i grafički dizajner.</string>
     <string name="about_bio_josh">Nezavisni grafički dizajner.</string>
-    <string name="about_bio_chris">Milenijalac do srži. Zanima me sve vezano za dizajn i društvene mreže. Dođite da blejimo na @lawnchairapp. ✨</string>
-    <string name="about_bio_msfjarvis">Programer halogenOS-a i Substratum-a.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Greška pokretača</string>
     <string name="gestures_pref_title">Pokreti</string>
@@ -491,7 +488,6 @@
     <string name="battery_full">Baterija je puna</string>
     <string name="battery_low">Baterija je skoro prazna</string>
     <string name="event_provider_unread_notifications">Nepročitana obaveštenja</string>
-    <string name="event_provider_missing_notification_access">Da biste koristili <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, uključite obaveštenja aplikacije <xliff:g example="My App" id="name">%2$s</xliff:g></string>
     <string name="event_provider_missing_notification_dots">Da biste koristili <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, uključite tačke za obaveštenja</string>
     <string name="zen_mode_enabled">Uključen je režim „Ne uznemiravaj”</string>
     <string name="crash_report_notif_title">%1$s je otkazao!</string>
@@ -505,6 +501,13 @@
     <string-array name="greetings_evening">
         <item>Laku noć!</item>
         <item>Lepo spavaj!</item>
+    </string-array>
+    <string-array name="greetings_night">
+        <item>Good night!</item>
+        <item>Sleep well!</item>
+        <item>See you tomorrow!</item>
+        <item>Laku noć!</item>
+        <item>Don\'t stay up too long</item>
     </string-array>
     <string name="onbording_settings_title">Podesi %s</string>
     <string name="onbording_settings_summary">Pritisnite i zadržite početni ekran</string>
@@ -524,4 +527,10 @@
     <string name="pref_weather_icon_pack">Ikone vremenskih prilika</string>
     <string name="weather_icon_packs_not_supported">Trenutni izvor vremenske prognoze ne podržava</string>
     <string name="lawnchair_settings">Podešavanja Lawnchaira</string>
+    <string name="icon_shape_top_left">Gore levo</string>
+    <string name="icon_shape_top_right">Gore desno</string>
+    <string name="icon_shape_bottom_left">Dole levo</string>
+    <string name="icon_shape_bottom_right">Dole desno</string>
+    <string name="smartspace_add_to_home">Dodaj na početnu</string>
+    <string name="root_access_required">Potrebna root dozvola</string>
 </resources>
