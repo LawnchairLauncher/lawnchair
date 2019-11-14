@@ -696,8 +696,8 @@ public final class LauncherInstrumentation {
         final UiObject2 object = container.wait(
                 Until.findObject(getLauncherObjectSelector(resName)),
                 WAIT_TIME_MS);
-        assertNotNull("Can't find a launcher object id: " + resName + " in container: " +
-                container.getResourceName(), object);
+        assertNotNull("Can't find a view in Launcher, id: " + resName + " in container: "
+                + container.getResourceName(), object);
         return object;
     }
 
@@ -706,8 +706,8 @@ public final class LauncherInstrumentation {
         final UiObject2 object = container.wait(
                 Until.findObject(selector),
                 WAIT_TIME_MS);
-        assertNotNull("Can't find a launcher object id: " + selector + " in container: " +
-                container.getResourceName(), object);
+        assertNotNull("Can't find a view in Launcher, id: " + selector + " in container: "
+                + container.getResourceName(), object);
         return object;
     }
 
@@ -738,7 +738,7 @@ public final class LauncherInstrumentation {
 
     private UiObject2 waitForObjectBySelector(BySelector selector) {
         final UiObject2 object = mDevice.wait(Until.findObject(selector), WAIT_TIME_MS);
-        assertNotNull("Can't find a launcher object; selector: " + selector, object);
+        assertNotNull("Can't find a view in Launcher, selector: " + selector, object);
         return object;
     }
 
