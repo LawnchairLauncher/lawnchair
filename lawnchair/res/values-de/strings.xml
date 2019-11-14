@@ -145,15 +145,11 @@
     <string name="about_role_dev_mod">Entwickler/Moderator</string>
     <string name="about_role_designer">Designer</string>
     <string name="about_role_ui_ux_designer">UI/UX-Designer</string>
-    <string name="about_role_special_snowflake">Soziale Medien/PR &amp; OEM-Beziehungen</string>
     <string name="about_role_mod_support">Moderator/Support</string>
     <string name="about_role_family_member">Familienmitglied</string>
     <string name="about_role_magisk_maintainer">Magisk-Modul-Entwickler</string>
-    <string name="about_bio_deletescape">Android-Entwickler &amp; -Enthusiast. Mag Memes (fast ein bisschen zu sehr, um ehrlich zu sein). Gründer des Lawnchair-Projekts.</string>
     <string name="about_bio_recoded">Einfacher Coder und Grafikdesigner.</string>
     <string name="about_bio_josh">Freiberuflicher Grafikdesigner.</string>
-    <string name="about_bio_chris">Extremer Millennial, keine Ahnung und juckt mich nicht. Irgendwas mit Design und Social Media. Lass uns zusammen bei @lawnchairapp abhängen ✨</string>
-    <string name="about_bio_msfjarvis">Hauptentwickler von halogenOS und App-Entwickler bei substratum.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Crash erzwingen</string>
     <string name="gestures_pref_title">Gesten</string>
@@ -184,7 +180,7 @@
     <string name="gesture_dock_swipe_up">Auf dem Dock hoch wischen</string>
     <string name="pref_show_assistant_title">Sprachsuche anzeigen</string>
     <string name="pref_show_assistant_summary">Button für die Sprachsuche anzeigen, falls dieses Feature unterstützt wird</string>
-    <string name="pref_show_as_assistant_summary">Assistenten-Button statt dem Button für die Sprachsuche anzeigen</string>
+    <string name="pref_show_as_assistant_summary">Assistenten-Knopf statt dem Knopf für die Sprachsuche anzeigen</string>
     <string name="smartspace_time_24_h">24-Stunden-Format</string>
     <string name="weather_provider_disabled">Deaktiviert</string>
     <string name="weather_provider_owm">OpenWeatherMap</string>
@@ -502,7 +498,6 @@
     <string name="battery_full">Akku voll</string>
     <string name="battery_low">Batterie fast leer</string>
     <string name="event_provider_unread_notifications">Ungelesene Benachrichtigungen</string>
-    <string name="event_provider_missing_notification_access">Zur Benutzung von <xliff:g example="My Provider" id="providerName">%1$s</xliff:g> bitte App-Benachrichtigungen für <xliff:g example="My App" id="name">%2$s</xliff:g> einschalten.</string>
     <string name="event_provider_missing_notification_dots">Wenn du <xliff:g example="My Provider" id="providerName">%1$s</xliff:g> benutzen willst, musst du die Benachrichtigungspunkte einschalten</string>
     <string name="zen_mode_enabled">\"Nicht stören\" ist aktiviert</string>
     <string name="crash_report_notif_title">%1$s ist abgestürzt!</string>
