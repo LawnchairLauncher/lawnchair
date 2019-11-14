@@ -141,9 +141,11 @@
     <string name="about_role_dev_mod">מפתח / מנחה</string>
     <string name="about_role_designer">מעצב</string>
     <string name="about_role_ui_ux_designer">מעצב UI/UX</string>
+    <string name="about_role_pr">מנהל יחסי ציבור ומדיה חברתית</string>
+    <string name="about_role_ops">פעולות ותשתיות</string>
     <string name="about_role_mod_support">מנחה / תמיכה</string>
     <string name="about_role_family_member">בן משפחה</string>
-    <string name="about_bio_deletescape">מפתח ואוהד נלהב של אנדרואיד, אוהב ממים (למעשה קצת יותר מדי). מייסד פרוייקט Lawnchair.</string>
+    <string name="about_bio_deletescape">מפתח ב-Kotlin/Java. מתעניין בכל דבר שקשור לאנדרואיד. מייסד הפרוייקטים Lawnchair ו-dogbin.</string>
     <string name="about_bio_recoded">מקודד עדין ומעצב גרפי.</string>
     <string name="about_bio_josh">מעצב גרפי עצמאי.</string>
     <!--Marker E-->
