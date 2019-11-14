@@ -49,8 +49,8 @@
     <string name="homescreen">Pantalla d\'inici</string>
     <string name="backup_wallpaper">Fons de pantalla</string>
     <string name="backup_error_blank_name">Introduïu el nom de la còpia de seguretat</string>
-    <string name="backup_error_blank_location">Trieu la ubicació de còpia de la seguretat</string>
-    <string name="backup_error_blank_contents">Afegeix contingut per a la còpia de seguretat</string>
+    <string name="backup_error_blank_location">Trieu la ruta de la còpia de la seguretat</string>
+    <string name="backup_error_blank_contents">Afegiu contingut a la còpia de seguretat</string>
     <string name="backup_creating">Creació la de còpia de seguretat</string>
     <string name="no_recent_backups">Res a mostrar</string>
     <string name="backup_loading">S\'està carregant...</string>
@@ -141,15 +141,16 @@
     <string name="about_role_dev_mod">Desenvolupador/Moderador</string>
     <string name="about_role_designer">Dissenyador</string>
     <string name="about_role_ui_ux_designer">Dissenyador d\'IU/XU</string>
-    <string name="about_role_special_snowflake">Gerent/Moderador de relacions publiques</string>
+    <string name="about_role_pr">Gestor de relacions públiques i xarxes socials</string>
+    <string name="about_role_ops">Operacions i infraestructura</string>
     <string name="about_role_mod_support">Moderador/Suport</string>
     <string name="about_role_family_member">Membre de la família</string>
     <string name="about_role_magisk_maintainer">Encarregat del mòdul de Magisk</string>
-    <string name="about_bio_deletescape">Desenvolupador i entusiasta d\'Android, enamorat dels memes (en realitat una mica massa). Fundador del projecte Lawnchair.</string>
+    <string name="about_bio_deletescape">Desenvolupador de Kotlin i Java. M\'interessa tot el relacionat amb l\'Android. Fundador dels projectes Lawnchair i dogbin.</string>
     <string name="about_bio_recoded">Programador i dissenyador.</string>
     <string name="about_bio_josh">Dissenyador autònom.</string>
-    <string name="about_bio_chris">Mil·lènial, no ho sé i no m\'interessa. Alguna cosa sobre disseny i xarxes socials. Anem a passar l\'estona junts a @lawnchairapp ✨</string>
-    <string name="about_bio_msfjarvis">Desenvolupador principal en halogenOS i desenvolupador d\'aplicacions en substratum.</string>
+    <string name="about_bio_harsh">Desenvolupador d\'aplicacions i biblioteques d\'Android. Desenvolupador principal en AOSiP.</string>
+    <string name="about_bio_david">Tinc 19 anys, converteixo la cafeïna i la pizza en codi, proporciono allotjament i suport 24/7 per al Lawnchair si alguna cosa surt malament. Contribueixo al projectes de codi obert i corregeixo errors durant el meu temps lliure. Anteriorment conegut com Codebucket.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">El llançador ha fallat</string>
     <string name="gestures_pref_title">Gestos</string>
@@ -497,7 +498,8 @@
     <string name="battery_full">Bateria carregada</string>
     <string name="battery_low">Bateria baixa</string>
     <string name="event_provider_unread_notifications">Notificacions no llegides</string>
-    <string name="event_provider_missing_notification_access">Per utilitzar <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, activeu les notificacions d\'aplicacions per <xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="event_provider_missing_notification_access">Per utilitzar <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, activeu les notificacions de l\'aplicació per a <xliff:g example="My App" id="name">%2$s</xliff:g>
+    </string>
     <string name="event_provider_missing_notification_dots">Per utilitzar <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, activeu els punts de notificació</string>
     <string name="zen_mode_enabled">El mode no molestar està activat</string>
     <string name="crash_report_notif_title">%1$s ha fallat!</string>
@@ -551,4 +553,5 @@
     <string name="pref_hide_statusbar_clock">Amaga el rellotge de la barra d\'estat</string>
     <string name="root_access_required">Cal accés de root</string>
     <string name="smartspace_setup_text">Toqueu per configurar-lo</string>
+    <string name="get_lawnfeed">Obteniu-ho ara</string>
 </resources>
