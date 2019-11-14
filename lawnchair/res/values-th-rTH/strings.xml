@@ -145,15 +145,16 @@
     <string name="about_role_dev_mod">นักพัฒนา/ผู้ดูแล</string>
     <string name="about_role_designer">นักออกแบบ</string>
     <string name="about_role_ui_ux_designer">นักออกแบบ UI/UX</string>
-    <string name="about_role_special_snowflake">ประชาสัมพันธ์</string>
+    <string name="about_role_pr">&amp;</string>
+    <string name="about_role_ops">การดำเนินงานและโครงสร้างพื้นฐาน</string>
     <string name="about_role_mod_support">ผู้ดูแล/การสนับสนุน</string>
     <string name="about_role_family_member">สมาชิก</string>
     <string name="about_role_magisk_maintainer">ผู้ดูแลโมดูล Magisk</string>
-    <string name="about_bio_deletescape">นักพัฒนาและผู้ที่ชื่นชอบ Android, ชอบมีม (มากเกินไปหน่อยจริงๆ), ผู้ก่อตั้งโปรเจค Lawnchair</string>
+    <string name="about_bio_deletescape">นักพัฒนา Kotlin/Java สนใจทุกอย่างที่เกี่ยวกับ Android ผู้ก่อตั้งโครงการ Lawnchair และ dogbin</string>
     <string name="about_bio_recoded">โค้ดเดอร์, นักออกแบบ</string>
     <string name="about_bio_josh">นักออกแบบฟรีแลนซ์</string>
-    <string name="about_bio_chris">ออกแบบ, ประชาสัมพันธ์ มาคุยกันได้ที่ @lawnchairapp ✨</string>
-    <string name="about_bio_msfjarvis">นักพัฒนาหลัก halogenOS, นักพัฒนาแอป substratum</string>
+    <string name="about_bio_harsh">นักพัฒนาแอปและไลบรารี Android นักพัฒนาหลักใน AOSiP</string>
+    <string name="about_bio_david">อายุ 19 ปี, แปลงกาแฟและพิซซ่าเป็นโค้ด ให้บริการโฮสติ้งและสนับสนุน Lawnchair ตลอด 24 ชั่วโมงหากมีบางอย่างผิดพลาด ช่วยโครงการโอเพนซอร์สและแก้ไขบั๊กในเวลาว่าง มีอีกชื่อคือ Codebucket</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">แครช Lawnchair</string>
     <string name="gestures_pref_title">ท่าทางสัมผัส</string>
@@ -499,7 +500,8 @@
     <string name="battery_full">แบตเตอรี่เต็ม</string>
     <string name="battery_low">แบตเตอรี่ต่ำ</string>
     <string name="event_provider_unread_notifications">การแจ้งเตือนที่ยังไม่ได้อ่าน</string>
-    <string name="event_provider_missing_notification_access">เพื่อใช้ <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, เปิดใช้งานการแจ้งเตือนแอปสำหรับ <xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="event_provider_missing_notification_access">เพื่อใช้งาน <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, เปิดใช้การแจ้งเตือนแอปสำหรับ <xliff:g example="My App" id="name">%2$s</xliff:g>
+    </string>
     <string name="event_provider_missing_notification_dots">เพื่อใช้ <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, กรุณาเปิดใช้งานจุดแจ้งเตือน</string>
     <string name="zen_mode_enabled">เปิดใช้งานโหมดห้ามรบกวนอยู่</string>
     <string name="crash_report_notif_title">%1$s ทำงานผิดพลาด!</string>
@@ -553,4 +555,5 @@
     <string name="pref_hide_statusbar_clock">ซ่อนนาฬิกาในแถบสถานะ</string>
     <string name="root_access_required">ต้องการสิทธิ์รูต</string>
     <string name="smartspace_setup_text">แตะเพื่อตั้งค่า</string>
+    <string name="get_lawnfeed">ดาวน์โหลด</string>
 </resources>
