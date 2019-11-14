@@ -142,15 +142,11 @@
     <string name="about_role_dev_mod">개발자/관리자</string>
     <string name="about_role_designer">디자이너</string>
     <string name="about_role_ui_ux_designer">UI/UX 디자인</string>
-    <string name="about_role_special_snowflake">소셜 미디어/PR &amp; OEM 관련</string>
     <string name="about_role_mod_support">관리자/지원</string>
     <string name="about_role_family_member">팀원</string>
     <string name="about_role_magisk_maintainer">Magisk 모듈 개발자</string>
-    <string name="about_bio_deletescape">안드로이드 개발자 &amp; 매니아. 밈을 사랑합니다(사실 조금 과하게). Lawnchair 프로젝트 설립자.</string>
     <string name="about_bio_recoded">부드러운 코더이자 그래픽 디자이너.</string>
     <string name="about_bio_josh">프리랜서 그래픽 디자이너.</string>
-    <string name="about_bio_chris">디자인과 소셜 미디어에 관한 것. </string>
-    <string name="about_bio_msfjarvis">halogenOS의 핵심 개발자이자 substratum의 애플리케이션 개발자.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">런처 충돌 일으키기</string>
     <string name="gestures_pref_title">제스처</string>
@@ -494,7 +490,6 @@
     <string name="battery_full">배터리 충전이 완료되었습니다.</string>
     <string name="battery_low">배터리 부족</string>
     <string name="event_provider_unread_notifications">읽지 않는 알림</string>
-    <string name="event_provider_missing_notification_access"><xliff:g example="My Provider" id="providerName">%1$s</xliff:g>을(를) 사용하기 위해, <xliff:g example="My App" id="name">%2$s</xliff:g>의 앱 알림을 켜세요.</string>
     <string name="event_provider_missing_notification_dots"><xliff:g example="My Provider" id="providerName">%1$s</xliff:g>을(를) 사용하기 위해, 알림 점을 켜세요.</string>
     <string name="zen_mode_enabled">방해 금지 모드 (알림 일시 중지) 켜짐</string>
     <string name="crash_report_notif_title">%1$s가 손상됨!</string>
