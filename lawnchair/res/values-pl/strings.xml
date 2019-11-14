@@ -146,15 +146,16 @@
     <string name="about_role_dev_mod">Deweloper/Moderator</string>
     <string name="about_role_designer">Projektant</string>
     <string name="about_role_ui_ux_designer">Projektant UI/UX</string>
-    <string name="about_role_special_snowflake">Manager/moderator PR</string>
+    <string name="about_role_pr">PR i Manager Social Media</string>
+    <string name="about_role_ops">Operacje i infrastruktura</string>
     <string name="about_role_mod_support">Moderator / Wsparcie</string>
     <string name="about_role_family_member">Członek rodziny</string>
     <string name="about_role_magisk_maintainer">Opiekun Modułu Magisk</string>
-    <string name="about_bio_deletescape">Programista Androida &amp; entuzjasta, uwielbia memy (troche za bardzo). Założyciel projektu Lawnchair.</string>
+    <string name="about_bio_deletescape">Programista Kotlina/Javy. Interesuje się wszystkim związanym z Androidem. Założyciel Lawnchaira i projektu dogbin.</string>
     <string name="about_bio_recoded">Spokojny programista oraz grafik.</string>
     <string name="about_bio_josh">Niezależny grafik.</string>
-    <string name="about_bio_chris">Twórczy umysł, influencer oraz twórca contentu. Zarządca mediów społecznościowych oraz PR</string>
-    <string name="about_bio_msfjarvis">Główny programista w halogenOS oraz twórca aplikacji w substratum.</string>
+    <string name="about_bio_harsh">Deweloper aplikacji i bibliotek dla Androida. Główny deweloper AOSiP.</string>
+    <string name="about_bio_david">Dziewiętnastolatek, zamienia kofeinę i pizzę w kod, zapewnia hosting i wsparcie 24/7 dla Lawnchaira jeśli coś pójdzie nie tak. W wolnym czasie przyczynia się do projektów open-source. Wcześniej znany również jako Codebucket.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Crash launchera</string>
     <string name="gestures_pref_title">Gesty</string>
@@ -507,7 +508,7 @@
     <string name="battery_full">Bateria naładowana</string>
     <string name="battery_low">Niski poziom baterii</string>
     <string name="event_provider_unread_notifications">Nieprzeczytane powiadomienia</string>
-    <string name="event_provider_missing_notification_access">Aby używać <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, włącz powiadomienia aplikacji dla <xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="event_provider_missing_notification_access">Aby używać <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, włącz powiadomienia aplikacji dla <xliff:g example="My App" id="name">%2$s</xliff:g>    </string>
     <string name="event_provider_missing_notification_dots">Aby używać<xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, włącz kropki powiadomień</string>
     <string name="zen_mode_enabled">Tryb nie przeszkadzać jest włączony</string>
     <string name="crash_report_notif_title">%1$s uległ awarii!</string>
@@ -562,4 +563,5 @@
     <string name="pref_hide_statusbar_clock">Ukryj zegar na pasku statusu</string>
     <string name="root_access_required">Wymagany dostęp do roota</string>
     <string name="smartspace_setup_text">Dotknij aby skonfigurować</string>
+    <string name="get_lawnfeed">Pobierz teraz</string>
 </resources>
