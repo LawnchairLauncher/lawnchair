@@ -141,14 +141,11 @@
     <string name="about_role_dev_mod">Sovelluskehittäjä/Ylläpitäjä</string>
     <string name="about_role_designer">Suunnittelija</string>
     <string name="about_role_ui_ux_designer">UI/UX suunnittelija</string>
-    <string name="about_role_special_snowflake">Sosiaalinen media/PR &amp; OEM-suhteet</string>
     <string name="about_role_mod_support">Ylläpitäjä/Tukihenkilö</string>
     <string name="about_role_family_member">Perheenjäsen</string>
     <string name="about_role_magisk_maintainer">Magisk Module ylläpitäjä</string>
-    <string name="about_bio_deletescape">Android sovelluskehittäjä &amp; intoilija, rakastaa meemejä (hieman liikaa itseasiassa). Lawnchair-projektin perustaja.</string>
     <string name="about_bio_recoded">Keskiverto koodaaja sekä graafinen suunnittelija.</string>
     <string name="about_bio_josh">Freelance graafinen suunnittelija.</string>
-    <string name="about_bio_msfjarvis">HalogenOS:än ja Substratumin ohjelmistokehittäjä.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Kaada käynnistysohjelma</string>
     <string name="gestures_pref_title">Eleet</string>
