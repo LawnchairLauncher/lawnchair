@@ -146,15 +146,16 @@
     <string name="about_role_dev_mod">開發者/仲裁者</string>
     <string name="about_role_designer">設計師</string>
     <string name="about_role_ui_ux_designer">UI/UX 設計師</string>
-    <string name="about_role_special_snowflake">社群媒體 / 公關及 OEM 相關</string>
+    <string name="about_role_pr">公共關係和社交媒體經理</string>
+    <string name="about_role_ops">操作和基礎設施</string>
     <string name="about_role_mod_support">仲裁者 / 支援</string>
     <string name="about_role_family_member">家族成員</string>
     <string name="about_role_magisk_maintainer">Magisk 模組維護者</string>
-    <string name="about_bio_deletescape">Android 開發者 &amp; 愛好者，喜愛迷因（但有點過度）。Lawnchair 專案創始人。</string>
+    <string name="about_bio_deletescape">Kotlin 及 Java 開發人員。對 Android 感興趣。Lawnchair 和 dogbin 專案的創始人。</string>
     <string name="about_bio_recoded">偶爾寫寫程式的平面設計師。</string>
     <string name="about_bio_josh">自由業平面設計師。</string>
-    <string name="about_bio_chris">00 後屁孩，爽啦。愛好設計及社群媒體。快來 @lawnchairapp 看看吧 ✨</string>
-    <string name="about_bio_msfjarvis">halogenOS 核心開發者及 substratum 應用程式開發者。</string>
+    <string name="about_bio_harsh">Android 應用程式和函式庫開發。在 AOSiP 的核心開發人員。</string>
+    <string name="about_bio_david">19 歲，把咖啡因和披薩轉換成程式碼，如果出了問題，提供主機託管和 24*7 的支援。在業餘時間為開源專案和修復 bug 做出貢獻。也稱為 Codebucket。</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">強制停止啟動器</string>
     <string name="gestures_pref_title">手勢</string>
@@ -324,8 +325,8 @@
     <string name="app_actions_pref_title">動作</string>
     <string name="app_actions_pref_title_in_search">動作建議</string>
     <string name="app_actions_pref_desc">為經常使用的功能產生建議</string>
-    <string name="app_actions_reset_pref_title">重設隱藏的操作</string>
-    <string name="app_actions_reset_pref_summary">透過將以前隱藏的操作拖曳到「不顯示」按鈕來重設這些操作</string>
+    <string name="app_actions_reset_pref_title">重設隱藏的動作</string>
+    <string name="app_actions_reset_pref_summary">將已經隱藏的應用程式動作還原</string>
     <string name="change_default_home">設定為主畫面</string>
     <string name="recent_task_option_popup_window">對話方塊</string>
     <string name="feed_theme_pref_title">背景色彩</string>
@@ -464,7 +465,7 @@
     <string name="bugreport_channel_name">錯誤回報</string>
     <string name="status_channel_name">錯誤回報上傳狀態</string>
     <string name="bugreport_group_summary">%d 個新報告</string>
-    <string name="bugreport_group_summary_multiple">多個新錯誤報告</string>
+    <string name="bugreport_group_summary_multiple">多個新報告</string>
     <string name="dogbin_uploading">上傳中</string>
     <string name="action_dogbin_upload">上傳至 dogbin</string>
     <string name="action_dogbin_upload_error">上傳失敗</string>
@@ -492,7 +493,7 @@
     <string name="tab_type_custom_desc">手動挑選應用程式</string>
     <string name="tab_type_smart">智慧分頁</string>
     <string name="categorization">分類</string>
-    <string name="folder_cover_mode">封面圖片模式</string>
+    <string name="folder_cover_mode">封面模式</string>
     <string name="folder_cover_mode_desc">輕觸以開啓首個應用程式，向上滑動開啟資料夾</string>
     <string name="pref_smartspace_event_providers">事件來源</string>
     <string name="event_provider_now_playing">現正播放</string>
@@ -501,7 +502,7 @@
     <string name="battery_full">電池電量已滿</string>
     <string name="battery_low">低電量</string>
     <string name="event_provider_unread_notifications">未讀通知</string>
-    <string name="event_provider_missing_notification_access">欲使用 <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>，請為 <xliff:g example="My App" id="name">%2$s</xliff:g> 啟用應用程式通知</string>
+    <string name="event_provider_missing_notification_access">要使用 <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>，請打開 <xliff:g example="My App" id="name">%2$s</xliff:g> 的應用程式通知    </string>
     <string name="event_provider_missing_notification_dots">欲使用 <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>，請啟用通知圓點</string>
     <string name="zen_mode_enabled">已開啟勿擾模式</string>
     <string name="crash_report_notif_title">%1$s 無回應</string>
@@ -513,14 +514,14 @@
         <item>祝你今天過得開心！</item>
     </string-array>
     <string-array name="greetings_evening">
-        <item>晚安！</item>
-        <item>祝您睡得香甜！</item>
+        <item>今天過得好嗎？</item>
+        <item>今天過得如何？</item>
     </string-array>
     <string-array name="greetings_night">
         <item>晚安！</item>
         <item>祝您睡得香甜！</item>
         <item>明天見！</item>
-        <item>祝您有個好夢</item>
+        <item>祝您好夢！</item>
         <item>不要熬夜太久</item>
     </string-array>
     <string name="onbording_settings_title">設定 %s</string>
@@ -541,7 +542,7 @@
     <string name="pref_weather_icon_pack">天氣圖示</string>
     <string name="weather_icon_packs_not_supported">您當前的天氣來源不支援</string>
     <string name="lawnchair_settings">Lawnchair 設定</string>
-    <string name="customnavbar_install">點選安裝自定義導覽列</string>
+    <string name="customnavbar_install">輕觸以安裝 Custom Navigation Bar</string>
     <string name="customnavbar_back_hiding">返回鍵隱藏</string>
     <string name="customnavbar_back_hiding_desc">不需要時隱藏返回鍵</string>
     <string name="icon_shape_top_left">左上方</string>
@@ -549,10 +550,11 @@
     <string name="icon_shape_bottom_left">螢幕左下方</string>
     <string name="icon_shape_bottom_right">螢幕右下方</string>
     <string name="icon_shape_corner_round">圓形</string>
-    <string name="icon_shape_corner_squircle">圓方形</string>
+    <string name="icon_shape_corner_squircle">方圓形</string>
     <string name="icon_shape_corner_cut">剪下</string>
-    <string name="smartspace_add_to_home">添加到主畫面</string>
+    <string name="smartspace_add_to_home">新增至主畫面</string>
     <string name="pref_hide_statusbar_clock">隱藏狀態列時鐘</string>
-    <string name="root_access_required">Root 存取被拒絕</string>
+    <string name="root_access_required">需 Root 權限</string>
     <string name="smartspace_setup_text">輕觸以設定</string>
+    <string name="get_lawnfeed">立即獲取</string>
 </resources>
