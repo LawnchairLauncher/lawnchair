@@ -141,15 +141,16 @@
     <string name="about_role_dev_mod">Utvecklare/moderator</string>
     <string name="about_role_designer">Designer</string>
     <string name="about_role_ui_ux_designer">Gränssnittsdesigner</string>
-    <string name="about_role_special_snowflake">Sociala medier-/PR-ansvarig</string>
+    <string name="about_role_pr">Kundrelationer &amp; Ansvarig för sociala medier</string>
+    <string name="about_role_ops">Drift &amp; Infrastruktur</string>
     <string name="about_role_mod_support">Moderator/support</string>
     <string name="about_role_family_member">Familjemedlem</string>
     <string name="about_role_magisk_maintainer">Ansvarig för underhåll av Magisk-modul</string>
-    <string name="about_bio_deletescape">Androidentusiast &amp; -utvecklare, älskar memes (lite för mycket faktiskt). Grundaren av Lawnchair.</string>
+    <string name="about_bio_deletescape">Kotlin/Javautvecklare. Intresserad av allt kring Android. Grundare av Lawnchair och Dogbinprojektet.</string>
     <string name="about_bio_recoded">Mild programmerare och grafisk designer.</string>
     <string name="about_bio_josh">Frilansande grafisk designer.</string>
-    <string name="about_bio_chris">Millennial af, vet inte och bryr mig inte. Nåt med design och sociala medier. Vi kan hänga på @lawnchairapp ✨</string>
-    <string name="about_bio_msfjarvis">Kärnutvecklare för halogenOS och applikationsutvecklare för Substratum.</string>
+    <string name="about_bio_harsh">Android applikation och biblioteksutvecklare. Kärnutvecklare vid AOSIP.</string>
+    <string name="about_bio_david">19 år gammal, gör koffein och pizza till kod, ger värd och 24/7 utvecklingsstöd om något går fel. Bidrar till open source-projekt under fritiden. Också tidigare känd som Codebucket.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Krascha launchern</string>
     <string name="gestures_pref_title">Gester</string>
@@ -495,7 +496,7 @@
     <string name="battery_full">Batteriet är fulladdat</string>
     <string name="battery_low">Låg batterinivå</string>
     <string name="event_provider_unread_notifications">Olästa aviseringar</string>
-    <string name="event_provider_missing_notification_access">För att använda <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, aktivera aviseringsåtkomst för <xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="event_provider_missing_notification_access">För att använda <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, aktivera aviseringsåtkomst för <xliff:g example="My App" id="name">%2$s</xliff:g>    </string>
     <string name="event_provider_missing_notification_dots">För att använda <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, aktivera aviseringsprickar</string>
     <string name="zen_mode_enabled">Stör ej är aktiverat</string>
     <string name="crash_report_notif_title">%1$s kraschade!</string>
@@ -549,4 +550,5 @@
     <string name="pref_hide_statusbar_clock">Göm klockan i statusfältet</string>
     <string name="root_access_required">Root-åtkomst krävs</string>
     <string name="smartspace_setup_text">Peka för att konfigurera</string>
+    <string name="get_lawnfeed">Hämta det nu</string>
 </resources>
