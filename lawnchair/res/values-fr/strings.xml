@@ -102,7 +102,7 @@
     <string name="dock_search_bar">Barre de recherche du Dock</string>
     <string name="opacity">Opacité</string>
     <string name="title_all_apps_google_search">Recherche globale</string>
-    <string name="summary_all_apps_google_search">Trouver des résultats Web et des applications</string>
+    <string name="summary_all_apps_google_search">Rechercher sur le web et les applications</string>
     <string name="num_hotseat_icons_pref_title">Nombre d\'icônes</string>
     <string name="icon_scale_pref_title">Taille des icônes</string>
     <string name="add_settings_shortcut_title">Ajouter l\'icône des paramètres sur l\'écran d\'accueil</string>
@@ -146,22 +146,24 @@
     <string name="about_role_dev_mod">Développeur/Modérateur</string>
     <string name="about_role_designer">Designer</string>
     <string name="about_role_ui_ux_designer">Interface utilisateur/concepteur d\'expérience utilisateur</string>
-    <string name="about_role_special_snowflake">Médias sociaux / PR &amp; Relations OEM</string>
+    <string name="about_role_pr">Relations publiques &amp; directeur des médias sociaux</string>
+    <string name="about_role_ops">Opérations &amp; Infrastructure</string>
     <string name="about_role_mod_support">Modérateur/Support</string>
     <string name="about_role_family_member">Membre de la famille</string>
     <string name="about_role_magisk_maintainer">Responsable du module Magisk</string>
-    <string name="about_bio_deletescape">Développeur Android &amp; passionné, adore les memes (un peu trop en fait). Fondateur du projet Lawnchair.</string>
+    <string name="about_bio_deletescape">Développeur Kotlin / Java. Intéressé par tout ce qui est Android. Créateur des projets Lawnchair et dogbin.</string>
     <string name="about_bio_recoded">Programmeur et designer graphique.</string>
     <string name="about_bio_josh">Designer graphique indépendant.</string>
-    <string name="about_bio_chris">Millénaire à l\'os, je sais pas et je m\'en fiche. Quelque chose avec le design et les médias sociaux. Allons traîner ensemble sur @lawnchairapp ✨</string>
-    <string name="about_bio_msfjarvis">Développeur principal chez halogenOS et développeur d\'application pour Substratum.</string>
+    <string name="about_bio_harsh">Développeur d\'applications et de librairies Android. Développeur principal pour AOSiP.</string>
+    <string name="about_bio_david">19 ans, transforme la caféine et la pizza en code, fournit un hébergement et un soutien 24/7 pour Lawnchair en cas de problème. Contribue à des projets open-source et 
+corriges des bugs pendant son temps libre. Également connu précédemment sous le nom de Codebucket.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Arrêt soudain du launcher</string>
     <string name="gestures_pref_title">Gestes</string>
     <string name="gestures_pref_summary">Appui double, bouton d\'accueil, glisser vers le bas</string>
     <string name="action_open_drawer">Ouvrir le tiroir d\'applications</string>
     <string name="action_last_task">Ouvrir la dernière application</string>
-    <string name="action_open_widgets">Ouvrir le menu des widgets</string>
+    <string name="action_open_widgets">Ouvrir le tiroir de widgets</string>
     <string name="action_open_settings">Ouvrir les paramètres du lanceur</string>
     <string name="action_open_overview">Ouvrir la fenêtre d\'accueil</string>
     <string name="action_global_search">Ouvrir la recherche globale</string>
@@ -502,7 +504,7 @@
     <string name="battery_full">Batterie chargée</string>
     <string name="battery_low">Batterie faible</string>
     <string name="event_provider_unread_notifications">Notifications non lues</string>
-    <string name="event_provider_missing_notification_access">Pour utiliser <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, activez les notifications d\'application pour <xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="event_provider_missing_notification_access">Pour utiliser <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, activez les notifications d\'application pour <xliff:g example="My App" id="name">%2$s</xliff:g>    </string>
     <string name="event_provider_missing_notification_dots">Pour utiliser <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, activer les points de notification</string>
     <string name="zen_mode_enabled">Ne pas déranger est activé</string>
     <string name="crash_report_notif_title">%1$s a planté !</string>
@@ -556,4 +558,5 @@
     <string name="pref_hide_statusbar_clock">Masquer l\'horloge de la barre d\'état</string>
     <string name="root_access_required">Droits Root requis</string>
     <string name="smartspace_setup_text">Appuyez pour configurer</string>
+    <string name="get_lawnfeed">Obtenir maintenant</string>
 </resources>
