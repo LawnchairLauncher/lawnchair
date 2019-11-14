@@ -142,15 +142,12 @@
     <string name="about_role_dev_mod">Програмист/Модератор</string>
     <string name="about_role_designer">Дизайнер</string>
     <string name="about_role_ui_ux_designer">UI/UX дизайнер</string>
-    <string name="about_role_special_snowflake">Социални Мрежи/PR &amp; OEM отношения</string>
     <string name="about_role_mod_support">Модератор/Поддръжка</string>
     <string name="about_role_family_member">Член на семейството</string>
     <string name="about_role_magisk_maintainer">Разработчик на Magisk модул</string>
-    <string name="about_bio_deletescape">Android програмист &amp; ентусиаст, обича мемета (всъщност твърде много). Основател на проекта Lawnchair.</string>
+    <string name="about_bio_deletescape">Kotlin/Java програмист. Интересува се от всичко, свързано с Android. Основател на проектите Lawnchair и dogbin.</string>
     <string name="about_bio_recoded">Лек програмист и графичен дизайнер.</string>
     <string name="about_bio_josh">Графичен дизайнер на свободна практика.</string>
-    <string name="about_bio_chris">Millenial af, idk и idc. Нещо с дизайн и социални мрежи. Хайде да се мотаем заедно на @lawnchairapp ✨</string>
-    <string name="about_bio_msfjarvis">Основен програмист в halogenOS и разработчик на приложения за Substratum.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Сриване на лаунчъра</string>
     <string name="gestures_pref_title">Жестове</string>
@@ -496,7 +493,6 @@
     <string name="battery_full">Батерията е пълна</string>
     <string name="battery_low">Батерията е изтощена</string>
     <string name="event_provider_unread_notifications">Непрочетени известия</string>
-    <string name="event_provider_missing_notification_access">За да използвате <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, включете известията за приложението <xliff:g example="My App" id="name">%2$s</xliff:g></string>
     <string name="event_provider_missing_notification_dots">За да използвате <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, включете точките за известия</string>
     <string name="zen_mode_enabled">Режимът \"Не безпокойте\" е включен</string>
     <string name="crash_report_notif_title">%1$s се срина!</string>
