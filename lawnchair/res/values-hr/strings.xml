@@ -141,15 +141,16 @@
     <string name="about_role_dev_mod">Razvojni programer/Moderator</string>
     <string name="about_role_designer">Dizajner</string>
     <string name="about_role_ui_ux_designer">UI/UX dizajner</string>
-    <string name="about_role_special_snowflake">Društveni mediji/PR i OEM odnosi</string>
+    <string name="about_role_pr">Odnosi s javnošću &amp; Društveni mediji</string>
+    <string name="about_role_ops">Operacije &amp; Infrastruktura</string>
     <string name="about_role_mod_support">Moderator/podrška</string>
     <string name="about_role_family_member">Član obitelji</string>
     <string name="about_role_magisk_maintainer">Održavatelj Magisk modula</string>
-    <string name="about_bio_deletescape">Android programer, entuzijast, obožava memeove (malo previše, zapravo). Osnivatelj Lawnchair projekta.</string>
+    <string name="about_bio_deletescape">Kotlin/Java developer. Zainteresiran za sve vezano uz Android. Osnivač Lawnchair-a i dogbin projekata.</string>
     <string name="about_bio_recoded">Srednji programer i grafički dizajner.</string>
     <string name="about_bio_josh">Honorarni grafički dizajner.</string>
-    <string name="about_bio_chris">Millennial af, idk and idc. Nešto sa dizajnom i društvenim medijima. Družimo se zajedno na @lawnchairapp ✨</string>
-    <string name="about_bio_msfjarvis">Ključni programer halogenOS-a i programer aplikacija u substratum.</string>
+    <string name="about_bio_harsh">Developer android aplikacija i biblioteka. Core developer za AOSiP.</string>
+    <string name="about_bio_david">Ima 19 godina, pretvara kofein i pizzu u kod, osigurava hosting i 24-satnu podršku za Lawnchair ako što pođe po krivu. U slobodno vrijeme doprinosi open-source projektima i ispravlja bugove. Prethodno poznatiji kao Codebucket.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Sruši pokretač</string>
     <string name="gestures_pref_title">Geste</string>
@@ -496,7 +497,8 @@
     <string name="battery_full">Baterija puna</string>
     <string name="battery_low">Baterija slaba</string>
     <string name="event_provider_unread_notifications">Nepročitane obavijesti</string>
-    <string name="event_provider_missing_notification_access">Za uporabu <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, uključite obavijesti za <xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="event_provider_missing_notification_access">Za uporabu <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, uključite obavijesti za <xliff:g example="My App" id="name">%2$s</xliff:g>
+    </string>
     <string name="event_provider_missing_notification_dots">Za upotrebu <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, treba uključiti točke obavijesti</string>
     <string name="zen_mode_enabled">Uključena opcija \'Ne ometaj\'</string>
     <string name="crash_report_notif_title">%1$s se srušio!</string>
@@ -550,4 +552,5 @@
     <string name="pref_hide_statusbar_clock">Sakrij sat iz statusne trake</string>
     <string name="root_access_required">Potreban je korijenski pristup</string>
     <string name="smartspace_setup_text">Dodirnite za postavljanje</string>
+    <string name="get_lawnfeed">Nabavi odmah</string>
 </resources>
