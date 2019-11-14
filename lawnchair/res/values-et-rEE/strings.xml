@@ -142,15 +142,11 @@
     <string name="about_role_dev_mod">Arendaja/moderaator</string>
     <string name="about_role_designer">Kujundaja</string>
     <string name="about_role_ui_ux_designer">UI/UX disainer</string>
-    <string name="about_role_special_snowflake">Sotsiaalmeedia/Avalikud suhted ja OEM</string>
     <string name="about_role_mod_support">Moderaator / tugi</string>
     <string name="about_role_family_member">Pereliige</string>
     <string name="about_role_magisk_maintainer">Magisk Module arendaja</string>
-    <string name="about_bio_deletescape">Androidi arendaja &amp; entusiast, armastab meeme (isegi natuke liiga palju). Lawnchair projekti asutaja.</string>
     <string name="about_bio_recoded">Programmeerija ja graafiline disainer.</string>
     <string name="about_bio_josh">Vabakutseline graafiline disainer.</string>
-    <string name="about_bio_chris">Milleeniumi laps. Loov mõistus ja sotsiaalmeedia. Kirjuta midagi @lawnchairapp ✨</string>
-    <string name="about_bio_msfjarvis">HalogenOS ja Substratumi programmeerija.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Jooksuta käivitaja kokku</string>
     <string name="gestures_pref_title">Viiped</string>
@@ -497,7 +493,6 @@
     <string name="battery_full">Aku on täis</string>
     <string name="battery_low">Akutase on madal</string>
     <string name="event_provider_unread_notifications">Lugemata teavitused</string>
-    <string name="event_provider_missing_notification_access">Et kasutada <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, lülita rakenduse <xliff:g example="My App" id="name">%2$s</xliff:g> teatised sisse</string>
     <string name="event_provider_missing_notification_dots"><xliff:g example="My Provider" id="providerName">%1$s</xliff:g> kasutamiseks lülita sisse teavituste täpid</string>
     <string name="zen_mode_enabled">Mitte segada on lubatud</string>
     <string name="crash_report_notif_title">%1$s jooksis kokku!</string>
