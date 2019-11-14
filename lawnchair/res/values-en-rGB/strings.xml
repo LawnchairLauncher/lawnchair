@@ -141,15 +141,11 @@
     <string name="about_role_dev_mod">Developer/Moderator</string>
     <string name="about_role_designer">Designer</string>
     <string name="about_role_ui_ux_designer">UI/UX designer</string>
-    <string name="about_role_special_snowflake">Social Media/PR &amp; OEM relations</string>
     <string name="about_role_mod_support">Moderator/support</string>
     <string name="about_role_family_member">Family member</string>
     <string name="about_role_magisk_maintainer">Magisk Module Maintainer</string>
-    <string name="about_bio_deletescape">Android developer &amp; enthusiast, loves memes (a bit too much actually). Founder of the Lawnchair project.</string>
     <string name="about_bio_recoded">Mild coder and graphics designer.</string>
     <string name="about_bio_josh">Freelance graphic designer.</string>
-    <string name="about_bio_chris">Millennial af, idk and idc. Something with design and social media. Let\'s hang out together over at @lawnchairapp ✨</string>
-    <string name="about_bio_msfjarvis">Core developer at halogenOS and application developer at substratum.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Crash launcher</string>
     <string name="gestures_pref_title">Gestures</string>
@@ -493,7 +489,6 @@
     <string name="battery_full">Battery full</string>
     <string name="battery_low">Battery low</string>
     <string name="event_provider_unread_notifications">Unread notifications</string>
-    <string name="event_provider_missing_notification_access">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, turn on app notifications for <xliff:g example="My App" id="name">%2$s</xliff:g></string>
     <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, turn on notification dots</string>
     <string name="zen_mode_enabled">Do not disturb is enabled</string>
     <string name="crash_report_notif_title">%1$s crashed!</string>
