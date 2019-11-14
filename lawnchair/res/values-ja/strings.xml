@@ -142,16 +142,11 @@
     <string name="about_role_dev_mod">開発者 / モデレーター</string>
     <string name="about_role_designer">デザイナー</string>
     <string name="about_role_ui_ux_designer">UI/UX デザイナー</string>
-    <string name="about_role_special_snowflake">ソーシャルメディア/ PR &amp; OEM関係</string>
     <string name="about_role_mod_support">仲介者 / サポート</string>
     <string name="about_role_family_member">仲間たち</string>
     <string name="about_role_magisk_maintainer">Magiskモジュールメンテナ</string>
-    <string name="about_bio_deletescape">Android 開発者でファンですが、実はちょっとバイオ系の方が好きです。
-Lawnchair プロジェクトの創始者です。</string>
     <string name="about_bio_recoded">温和なコーダーで、グラフィックデザイナー</string>
     <string name="about_bio_josh">フリーランスのグラフィックデザイナー</string>
-    <string name="about_bio_chris">Millennial af, idk and idc. デザインとソーシャルメディアの何か。@lawnchairapp で一緒に過ごしましょう✨</string>
-    <string name="about_bio_msfjarvis">中心部の開発は HalogenOS が、アプリの開発は Substratum が行いました。</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">ランチャーをクラッシュさせる</string>
     <string name="gestures_pref_title">ジェスチャー</string>
@@ -495,7 +490,6 @@ Lawnchair プロジェクトの創始者です。</string>
     <string name="battery_full">満充電</string>
     <string name="battery_low">残量低下</string>
     <string name="event_provider_unread_notifications">未読の通知</string>
-    <string name="event_provider_missing_notification_access"><xliff:g example="My Provider" id="providerName">%1$s</xliff:g>を使用するには、<xliff:g example="My App" id="name">%2$s</xliff:g>のアプリの通知を有効にして下さい。</string>
     <string name="event_provider_missing_notification_dots"><xliff:g example="My Provider" id="providerName">%1$s</xliff:g>を使うには通知ドットを有効化して下さい</string>
     <string name="zen_mode_enabled">マナーモードは有効です</string>
     <string name="crash_report_notif_title">%1$sがクラッシュしました</string>
