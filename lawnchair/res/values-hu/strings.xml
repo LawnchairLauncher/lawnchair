@@ -146,15 +146,16 @@
     <string name="about_role_dev_mod">Fejlesztő/Moderátor</string>
     <string name="about_role_designer">Designer</string>
     <string name="about_role_ui_ux_designer">UI/UX designer</string>
-    <string name="about_role_special_snowflake">Közösségi Média/PR és OEM-kapcsolatok</string>
+    <string name="about_role_pr">Közösségi kapcsolatok és médiamenedzser</string>
+    <string name="about_role_ops">Műveletek és infrastruktúra</string>
     <string name="about_role_mod_support">Moderátor/Segítő</string>
     <string name="about_role_family_member">Családtag</string>
     <string name="about_role_magisk_maintainer">Magisk-modul felelős</string>
-    <string name="about_bio_deletescape">Android fejlesztő és rajongó, (egy kicsit túlságosan is) szereti a mémeket. A Lawnchair projekt alapítója.</string>
+    <string name="about_bio_deletescape">Kotlin/Java-fejlesztő. Minden érdekli, ami Android. A Lawnchair és a dogbin projektek alapítója.</string>
     <string name="about_bio_recoded">Könnyűprogramozó és grafikai dizájner.</string>
     <string name="about_bio_josh">Független grafikai tervező.</string>
-    <string name="about_bio_chris">Nagyon új évezredbeli, laza arc vagyok. A design és a közösségi média az asztalom. Lógjunk együtt itt: @lawnchairapp ✨</string>
-    <string name="about_bio_msfjarvis">A HalogenOS fő fejlesztője és a Substratum alkalmazásfejlesztője.</string>
+    <string name="about_bio_harsh">Androidos alkalmazás és könyvtárfejlesztő. Az AOSiP egyik fő fejlesztője.</string>
+    <string name="about_bio_david">19 éves, a koffeint és a pizzát is kódolja, a hét minden napján 24 órában ügyel a Lawnchair ügyeire, ha valami hiba történne. Szabadidejében nyílt forráskódú projekteket támogat és hibákat javít. Korábban Codebucket néven volt ismert.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Launcher-összeomlás</string>
     <string name="gestures_pref_title">Mozdulatvezérlés</string>
@@ -502,7 +503,8 @@ A művelet nem visszavonható.</string>
     <string name="battery_full">Az akkumulátor feltöltve</string>
     <string name="battery_low">Alacsony akkuszint</string>
     <string name="event_provider_unread_notifications">Olvasatlan értesítések</string>
-    <string name="event_provider_missing_notification_access"><xliff:g example="My Provider" id="providerName">%1$s</xliff:g> használatához kapcsolja be az értesítéseket a következőhöz: <xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="event_provider_missing_notification_access"><xliff:g example="My Provider" id="providerName">%1$s</xliff:g> haszálatához kapcsolja be a következő értesítéseit: <xliff:g example="My App" id="name">%2$s</xliff:g>
+    </string>
     <string name="event_provider_missing_notification_dots"><xliff:g example="My Provider" id="providerName">%1$s</xliff:g> használatához kapcsolja be az \"értesítési pöttyöket\"</string>
     <string name="zen_mode_enabled">A Ne zavarjanak (DND) engedélyezett</string>
     <string name="crash_report_notif_title">%1$s összeomlott!</string>
@@ -556,4 +558,5 @@ A művelet nem visszavonható.</string>
     <string name="pref_hide_statusbar_clock">Az állapotsori óra elrejtése</string>
     <string name="root_access_required">Rendszergazda-hozzáférés szükséges</string>
     <string name="smartspace_setup_text">Érintse meg a beállításhoz</string>
+    <string name="get_lawnfeed">Szerezze meg most!</string>
 </resources>
