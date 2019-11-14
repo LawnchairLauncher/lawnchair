@@ -146,15 +146,11 @@
     <string name="about_role_dev_mod">Ontwikkelaar/Moderator</string>
     <string name="about_role_designer">Vormgever</string>
     <string name="about_role_ui_ux_designer">UI/UX vormgever</string>
-    <string name="about_role_special_snowflake">Sociale media/PR &amp; OEM-relaties</string>
     <string name="about_role_mod_support">Moderator/ondersteuning</string>
     <string name="about_role_family_member">Familielid</string>
     <string name="about_role_magisk_maintainer">Magisk module-onderhouder</string>
-    <string name="about_bio_deletescape">Android ontwikkelaar &amp; enthousiast, houdt van memes (iets te veel eigenlijk). Oprichter van het Lawnchair project.</string>
     <string name="about_bio_recoded">Milde codeur en grafisch ontwerper.</string>
     <string name="about_bio_josh">Freelance grafisch ontwerper.</string>
-    <string name="about_bio_chris">Zo millennial als maar kan, weet ik niet en boeit me niet. Iets met design en sociale media. Laten we samenkomen bij @lawnchairapp ✨</string>
-    <string name="about_bio_msfjarvis">Kernontwikkelaar bij halogenOS en applicatieontwikkelaar bij substratum.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Crash launcher</string>
     <string name="gestures_pref_title">Gebaren</string>
@@ -501,7 +497,6 @@
     <string name="battery_full">Accu vol</string>
     <string name="battery_low">Accu bijna leeg</string>
     <string name="event_provider_unread_notifications">Ongelezen meldingen</string>
-    <string name="event_provider_missing_notification_access">Om <xliff:g example="My Provider" id="providerName">%1$s</xliff:g> te gebruiken, schakel app-meldingen in voor <xliff:g example="My App" id="name">%2$s</xliff:g></string>
     <string name="event_provider_missing_notification_dots">Om <xliff:g example="My Provider" id="providerName">%1$s</xliff:g> te gebruiken, schakel meldingsstipjes in</string>
     <string name="zen_mode_enabled">Niet storen is ingeschakeld</string>
     <string name="crash_report_notif_title">%1$s is vastgelopen!</string>
