@@ -146,15 +146,16 @@
     <string name="about_role_dev_mod">المطور/المشرف</string>
     <string name="about_role_designer">المصمم</string>
     <string name="about_role_ui_ux_designer">المصمم لواجهة المستخدم و تجربة المستخدم</string>
-    <string name="about_role_special_snowflake">مدير العلاقات العامة/مشرف</string>
+    <string name="about_role_pr">مدير العلاقات العامة &amp; مؤسس التواصل الإجتماعي</string>
+    <string name="about_role_ops">العمليات &amp; البنية التحتية</string>
     <string name="about_role_mod_support">المشرف/الدعم</string>
     <string name="about_role_family_member">فرد من الاسرة</string>
     <string name="about_role_magisk_maintainer">مشرف وحده صيانة Magick</string>
-    <string name="about_bio_deletescape">مطور اندرويد &amp; متحمس، يحب الميمات (قليلا كثيراً في الواقع). مؤسس مشروع Lawnchair.</string>
+    <string name="about_bio_deletescape">Kotlin/مطور جافا. مهتم في كل شيء أندرويد. مؤسس مشاريع Lawnchair وdogbin.</string>
     <string name="about_bio_recoded">مبرمج خفيف ومصمم الرسومات.</string>
     <string name="about_bio_josh">مصمم جرافيك مستقل.</string>
-    <string name="about_bio_chris">الالفيه كاللعنة، أنا لا أعرف وأنا لا اهتم. شيء ما مع التصميم ووسائل التواصل الاجتماعي. دعنا نجلس سوياً مع @lawnchairapp ✨</string>
-    <string name="about_bio_msfjarvis">مطور أساسي في halogenOS ومطور التطبيق في substratum.</string>
+    <string name="about_bio_harsh">مطور تطبيق ومكتبة أندرويد. مطور أساسي في AOSiP.</string>
+    <string name="about_bio_david">19 عامًا، يحول الكافيين والبيتزا إلى أكواد، ويوفر الاستضافة والدعم على مدار الساعة طوال أيام الأسبوع في Lawnchair إذا حدث خطأ ما. يساهم في المشاريع المفتوحة المصدر ويصلح الأخطاء أثناء وقت فراغه. المعروف أيضا باسم Codebucket.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">توقف المشغل</string>
     <string name="gestures_pref_title">الإيماءات</string>
@@ -509,7 +510,7 @@
     <string name="battery_full">البطارية ممتلئة</string>
     <string name="battery_low">البطارية منخفضة</string>
     <string name="event_provider_unread_notifications">إشعارات غير مقروءة</string>
-    <string name="event_provider_missing_notification_access">لإستخدام <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>، قم بتشغيل إشعارات التطبيق لـ<xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="event_provider_missing_notification_access">لإستخدام <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>، قم بتشغيل إشعارات التطبيق لـ<xliff:g example="My App" id="name">%2$s</xliff:g>    </string>
     <string name="event_provider_missing_notification_dots">لاستخدام <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, قم بتشغيل نقاط الإشعارات</string>
     <string name="zen_mode_enabled">عدم الإزعاج قيد التشغيل</string>
     <string name="crash_report_notif_title">%1$s تعطل!</string>
@@ -563,4 +564,5 @@
     <string name="pref_hide_statusbar_clock">إخفاء شريط الحالة</string>
     <string name="root_access_required">يتطلب صلاحية الروت</string>
     <string name="smartspace_setup_text">أنقر للإعداد</string>
+    <string name="get_lawnfeed">إحصل عليه الآن</string>
 </resources>
