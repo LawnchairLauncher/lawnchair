@@ -146,15 +146,11 @@
     <string name="about_role_dev_mod">डेवलपर / मॉडरेटर</string>
     <string name="about_role_designer">डिजाइनर</string>
     <string name="about_role_ui_ux_designer">UI/UX डिजाइनर</string>
-    <string name="about_role_special_snowflake">सोशल मीडिया/पी आर एवं ओ ई एम रिलेशन</string>
     <string name="about_role_mod_support">नियंत्रक / समर्थन</string>
     <string name="about_role_family_member">परिवार का सदस्य</string>
     <string name="about_role_magisk_maintainer">मैजिस्क ‎मॉड्यूल अनुरक्षक</string>
-    <string name="about_bio_deletescape">एंड्रॉयड डेवलपर और ‎उत्साही, मीम्स प्रेमी (वास्तविकता में कुछ ज़्यादा ही) लॉन्चेयर परियोजना के संस्थापक।</string>
     <string name="about_bio_recoded">हल्के कोडर और ग्राफिक्स डिजाइनर।</string>
     <string name="about_bio_josh">फ्रीलांस ग्राफिक डिजाइनर।</string>
-    <string name="about_bio_chris">जितना संभव हो उतना सहस्त्राब्दी पूर्व, मुझे नहीं पता और मुझे कोई परवाह भी नहीं। डिजाइन और सोशल मीडिया के बारे जानता हूं। चलो @lawnchairapp अड्डे पर एक साथ बात चीत करने।</string>
-    <string name="about_bio_msfjarvis">halogenOS के मूल विकाशक एवं substratum के विकाशक</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">क्रैश लॉन्चर</string>
     <string name="gestures_pref_title">जेशचर्स</string>
