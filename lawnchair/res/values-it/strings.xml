@@ -146,15 +146,16 @@
     <string name="about_role_dev_mod">Sviluppatore/Moderatore</string>
     <string name="about_role_designer">Designer</string>
     <string name="about_role_ui_ux_designer">UI/UX Designer</string>
-    <string name="about_role_special_snowflake">Social Media/PR &amp; relazioni con gli OEM</string>
+    <string name="about_role_pr">Pubbliche Relazioni &amp; Manager dei Canali Social</string>
+    <string name="about_role_ops">Operazioni &amp; Infrastruttura</string>
     <string name="about_role_mod_support">Moderatore/Supporto</string>
     <string name="about_role_family_member">Membro della famiglia</string>
     <string name="about_role_magisk_maintainer">Maintainer Modulo Magisk</string>
-    <string name="about_bio_deletescape">Sviluppatore Android &amp; appassionato, adora i meme (effettivamente un po\' troppo). Fondatore del progetto Lawnchair.</string>
+    <string name="about_bio_deletescape">Sviluppatore in Kotlin/Java. Interessato a tutto ciò che riguarda Android. Fondatore dei progetti Lawnchair e dogbin.</string>
     <string name="about_bio_recoded">Mite programmatore e designer grafico.</string>
     <string name="about_bio_josh">Designer grafico indipendente.</string>
-    <string name="about_bio_chris">Millennial af, idk e idc. Pratico con il design e con i social. Passiamo un po’ di tempo insieme @lawnchairapp✨</string>
-    <string name="about_bio_msfjarvis">Sviluppatore principale di halogenOS e sviluppatore di applicazioni di substratum.</string>
+    <string name="about_bio_harsh">Sviluppatore di applicazioni per Android e librerie. Sviluppatore principale di AOSiP.</string>
+    <string name="about_bio_david">19 anni, trasforma caffeina e pizza in codice, fornisce hosting e supporto 24/7 per Lawnchair se qualcosa va storto. Contribuisce a progetti open-source e corregge gli errori durante il suo tempo libero. Era anche conosciuto come Codebucket.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Crash launcher</string>
     <string name="gestures_pref_title">Gesti</string>
@@ -503,7 +504,7 @@
     <string name="battery_full">Batteria carica</string>
     <string name="battery_low">Batteria scarica</string>
     <string name="event_provider_unread_notifications">Notifiche non lette</string>
-    <string name="event_provider_missing_notification_access">Per usare <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, attiva le notifiche per la app <xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="event_provider_missing_notification_access">Per usare <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, attiva le notifiche per <xliff:g example="My App" id="name">%2$s</xliff:g>    </string>
     <string name="event_provider_missing_notification_dots">Per usare <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, attiva i badge di notifica</string>
     <string name="zen_mode_enabled">Non disturbare è attivo</string>
     <string name="crash_report_notif_title">%1$s è crashato!</string>
@@ -557,4 +558,5 @@
     <string name="pref_hide_statusbar_clock">Nascondi l\'orologio della statusbar</string>
     <string name="root_access_required">Accesso root necessario</string>
     <string name="smartspace_setup_text">Premi per configurare</string>
+    <string name="get_lawnfeed">Scaricalo ora</string>
 </resources>
