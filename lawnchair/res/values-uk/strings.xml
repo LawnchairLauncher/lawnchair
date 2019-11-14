@@ -145,15 +145,11 @@
     <string name="about_role_dev_mod">Розробник/Модератор</string>
     <string name="about_role_designer">Дизайнер</string>
     <string name="about_role_ui_ux_designer">UI/UX дизайнер</string>
-    <string name="about_role_special_snowflake">PR менеджер/модератор</string>
     <string name="about_role_mod_support">Модератор/підтримка</string>
     <string name="about_role_family_member">Член сім\'ї</string>
     <string name="about_role_magisk_maintainer">Підтримка Magisk Module</string>
-    <string name="about_bio_deletescape">Android-розробник та ентузіаст, любить меми (можливо аж занадто). Засновник проекту Lawnchair.</string>
     <string name="about_bio_recoded">Кодер та графічний дизайнер.</string>
     <string name="about_bio_josh">Позаштатний графічний дизайнер.</string>
-    <string name="about_bio_chris">Достобіса міленіал, котрий займається дизайном і соціальними мережами. Гайда веселитися разом: @lawnchairapp</string>
-    <string name="about_bio_msfjarvis">Розробник коду в halogenOS і розробник додатків в substratum.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Виліт лаунчера</string>
     <string name="gestures_pref_title">Жести</string>
@@ -505,7 +501,6 @@
     <string name="battery_full">Акумулятор заряджений</string>
     <string name="battery_low">Низький заряд батареї</string>
     <string name="event_provider_unread_notifications">Непрочитані сповіщення</string>
-    <string name="event_provider_missing_notification_access">Щоб користуватись <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, включіть сповіщення додатку для <xliff:g example="My App" id="name">%2$s</xliff:g></string>
     <string name="event_provider_missing_notification_dots">Щоб застосувати <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, ввімкніть крапки сповіщення</string>
     <string name="zen_mode_enabled">Режим \"Не турбувати\" ввімкнений</string>
     <string name="crash_report_notif_title">%1$s завершив роботу в аварійному режимі!</string>
