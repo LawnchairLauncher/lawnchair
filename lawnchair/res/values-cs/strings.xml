@@ -145,15 +145,16 @@
     <string name="about_role_dev_mod">Vývojář/moderátor</string>
     <string name="about_role_designer">Designer</string>
     <string name="about_role_ui_ux_designer">UI/UX návrhář</string>
-    <string name="about_role_special_snowflake">Sociální média/PR a\u00a0OEM vztahy</string>
+    <string name="about_role_pr">Správce vztahů s\u00a0veřejností (PR) a\u00a0sociálních médií</string>
+    <string name="about_role_ops">Provoz a\u00a0infrastruktura</string>
     <string name="about_role_mod_support">Moderátor/podpora</string>
     <string name="about_role_family_member">Člen rodiny</string>
     <string name="about_role_magisk_maintainer">Správce modulu Magisk</string>
-    <string name="about_bio_deletescape">Vývojář Androidu a\u00a0nadšenec, milující memy (vlastně přespříliš). Zakladatel projektu Lawnchair.</string>
+    <string name="about_bio_deletescape">Vývojář tvořící v\u00a0Kotlinu/Javě. Baví ho vše okolo Androidu. Zakladatel projektů Lawnchair a\u00a0dogbin.</string>
     <string name="about_bio_recoded">Kodér a návrhář grafiky.</string>
     <string name="about_bio_josh">Návrhář grafiky na volné noze.</string>
-    <string name="about_bio_chris">Mileniál jak p*ča, nevim a\u00a0nestarám se. Cosi s\u00a0designem a\u00a0sociálními médii. Pojďme se společně rozvalit v\u00a0@lawnchairapp ✨</string>
-    <string name="about_bio_msfjarvis">Hlavní vývojář HalogenOS a\u00a0vývojář aplikace Substratum.</string>
+    <string name="about_bio_harsh">Vývojář aplikací a\u00a0knihoven pro Android. Hlavní vývojář v\u00a0AOSiP.</string>
+    <string name="about_bio_david">Je mu 19\u00a0let, mění kofein a\u00a0pizzu v\u00a0kód, poskytuje hosting a\u00a0nepřetržitou podporu pro Lawnchair v\u00a0případech, když je potřeba opravit něco co se pokazilo. Ve volném čase přispívá do open source projektů a\u00a0opravuje chyby. Dříve také známý jako Codebucket.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Shoď launcher</string>
     <string name="gestures_pref_title">Gesta</string>
@@ -485,7 +486,7 @@
     <string name="animation_type_scale_up">Zvětšení</string>
     <string name="animation_type_blink">Bliknutí</string>
     <string name="animation_type_fade">Vyblednutí</string>
-    <string name="permission_iplocate">Povolit přístup k\u00a0přibližnému umístění, založeném na datech ze sítě?</string>
+    <string name="permission_iplocate">Povolit přístup k\u00a0přibližné poloze, zjištěné z\u00a0dat ze sítě?</string>
     <string name="permission_iplocate_twilight_explanation">Toto umožňuje přesnější výpočty denní doby, aniž by musela být známa vaše přesná poloha.</string>
     <string name="pref_appcategorization_flowerpot_title">Kategorie</string>
     <string name="pref_appcategorization_flowerpot_summary">Aplikace jsou vybrány automaticky na základě jejich metadat.</string>
@@ -503,7 +504,8 @@
     <string name="battery_full">Baterie je plně nabita</string>
     <string name="battery_low">Nízký stav baterie</string>
     <string name="event_provider_unread_notifications">Nepřečtená oznámení</string>
-    <string name="event_provider_missing_notification_access">Pro použití <xliff:g example="My Provider" id="providerName">%1$s</xliff:g> zapněte oznámení aplikace pro <xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="event_provider_missing_notification_access">Abyste mohli použít <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, zapněte oznámení pro aplikaci <xliff:g example="My App" id="name">%2$s</xliff:g>
+    </string>
     <string name="event_provider_missing_notification_dots">Pro použití <xliff:g example="My Provider" id="providerName">%1$s</xliff:g> zapněte puntíky s\u00a0oznámením</string>
     <string name="zen_mode_enabled">Režim Nerušit je zapnutý</string>
     <string name="crash_report_notif_title">%1$s havaroval!</string>
@@ -556,5 +558,6 @@
     <string name="smartspace_add_to_home">Přidat na plochu</string>
     <string name="pref_hide_statusbar_clock">Skrýt hodiny na stavovém řádku</string>
     <string name="root_access_required">Je vyžadováno oprávnění root</string>
-    <string name="smartspace_setup_text">Klepnutím nastavit</string>
+    <string name="smartspace_setup_text">Klepněte zde pro nastavení</string>
+    <string name="get_lawnfeed">Získejte jej nyní</string>
 </resources>
