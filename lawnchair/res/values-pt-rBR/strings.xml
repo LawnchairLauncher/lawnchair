@@ -146,15 +146,16 @@
     <string name="about_role_dev_mod">Desenvolvedor/Moderador</string>
     <string name="about_role_designer">Designer</string>
     <string name="about_role_ui_ux_designer">Designer de UI/UX</string>
-    <string name="about_role_special_snowflake">Redes sociais/Relações públicas e relações com OEMs</string>
+    <string name="about_role_pr">Relações públicas &amp; Gerente de mídia social</string>
+    <string name="about_role_ops">Operações &amp; Infraestrutura</string>
     <string name="about_role_mod_support">Moderador/Suporte</string>
     <string name="about_role_family_member">Membro da família</string>
     <string name="about_role_magisk_maintainer">Mantedor do Módulo Magisk</string>
-    <string name="about_bio_deletescape">Desenvolvedor Android &amp; entusiasta, adora memes (um pouco demais na verdade). Fundador do projeto Lawnchair.</string>
+    <string name="about_bio_deletescape">Desenvolvedor em Kotlin e Java. Interessado em tudo sobre Android. Fundador dos projetos do Lawnchair e do dogbin.</string>
     <string name="about_bio_recoded">Programador e designer gráfico.</string>
     <string name="about_bio_josh">Designer gráfico independente.</string>
-    <string name="about_bio_chris">Millennial pra caramba, não sei e não me importo. Algo com design e redes sociais. Vamos se encontrar no @lawnchairapp ✨</string>
-    <string name="about_bio_msfjarvis">Desenvolvedor principal em halogenOS e desenvolvedor no aplicativo do Substratum.</string>
+    <string name="about_bio_harsh">Desenvolvedor de aplicativos e bibliotecas para Android. Desenvolvedor principal no AOSiP.</string>
+    <string name="about_bio_david">Com 19 anos de idade, transforma cafeína e pizza em códigos, disponibiliza hospedagem e suporte 24 horas por dia e 7 dias por semana para o Lawnchair se algo der errado. Contribui com projetos de código aberto e correções de bugs no seu tempo livre. Também conhecido anteriormente como Codebucket.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Travar launcher</string>
     <string name="gestures_pref_title">Gestos</string>
@@ -503,7 +504,7 @@
     <string name="battery_full">Bateria carregada</string>
     <string name="battery_low">Bateria fraca</string>
     <string name="event_provider_unread_notifications">Notificações não lidas</string>
-    <string name="event_provider_missing_notification_access">Para usar <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, ative as notificações do aplicativo para <xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="event_provider_missing_notification_access">Para usar<xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, ative as notificações do aplicativo para<xliff:g example="My App" id="name">%2$s</xliff:g>    </string>
     <string name="event_provider_missing_notification_dots">Para usar <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, ative os pontos de notificação.</string>
     <string name="zen_mode_enabled">Não perturbe está ativado</string>
     <string name="crash_report_notif_title">%1$s parou!</string>
@@ -557,4 +558,5 @@
     <string name="pref_hide_statusbar_clock">Ocultar relógio da barra de status</string>
     <string name="root_access_required">Acesso root necessário</string>
     <string name="smartspace_setup_text">Tocar para configurar</string>
+    <string name="get_lawnfeed">Obtenha agora</string>
 </resources>
