@@ -147,15 +147,11 @@
     <string name="about_role_dev_mod">Προγραμματιστής/Συντονιστής</string>
     <string name="about_role_designer">Σχεδιαστής</string>
     <string name="about_role_ui_ux_designer">Σχεδιαστής Διεπαφής/Εμπειρίας χρήστη (UI/UX)</string>
-    <string name="about_role_special_snowflake">Κοινωνικά Δίκτυα/Δημόσιες Σχέχεις &amp; Σχέσεις με KAE</string>
     <string name="about_role_mod_support">Συντονιστής/Υποστήριξη</string>
     <string name="about_role_family_member">Μέλος Οικογενείας</string>
     <string name="about_role_magisk_maintainer">Διαχειριστής προσθέτων Magisk</string>
-    <string name="about_bio_deletescape">Προγραμματιστής Android &amp; ενθουσιώδης, αγαπά τα μιμίδια (λίγο παραπάνω απ\' όσο πρέπει). Ιδρυτής του Lawnchair.</string>
     <string name="about_bio_recoded">Σχεδιαστής γραφικών και μερικές φορές προγραμματιστής.</string>
     <string name="about_bio_josh">Ανεξάρτητος σχεδιαστής γραφικών.</string>
-    <string name="about_bio_chris">Σκέτος μιλλένιαλ, δεν ξέρω και δεν με νοιάζει. Να πω την αλήθεια, νομίζω ότι κάνω κάτι με design και σόσιαλ. Αν γουστάρεις, ας αράξουμε στο @lawnchairapp ✨</string>
-    <string name="about_bio_msfjarvis">Κύριος προγραμματιστής για το halogenOS και προγραμματιστής για την εφαρμογή substratum.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Κρασάρισμα εκκινητή</string>
     <string name="gestures_pref_title">Χειρονομίες αφής</string>
@@ -502,7 +498,6 @@
     <string name="battery_full">Πλήρης μπαταρία</string>
     <string name="battery_low">Χαμηλή μπαταρία</string>
     <string name="event_provider_unread_notifications">Μη αναγνωσμένες ειδοποιήσεις</string>
-    <string name="event_provider_missing_notification_access">Για χρήση του <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, ενεργοποιήστε την πρόσβαση της εφαρμογής <xliff:g example="My App" id="name">%2$s</xliff:g> στις ειδοποιήσεις</string>
     <string name="event_provider_missing_notification_dots">Για χρήση του <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, ενεργοποιήστε τις κουκίδες ειδοποίησης</string>
     <string name="zen_mode_enabled">Η λειτουργία \"Μην ενοχλείτε\" είναι ενεργοποιημένη</string>
     <string name="crash_report_notif_title">%1$s κράσαρε!</string>
