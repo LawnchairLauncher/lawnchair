@@ -146,15 +146,16 @@
     <string name="about_role_dev_mod">Разработчик/Модератор</string>
     <string name="about_role_designer">Дизайнер</string>
     <string name="about_role_ui_ux_designer">Дизайнер UI/UX</string>
-    <string name="about_role_special_snowflake">PR-менеджер/Модератор</string>
+    <string name="about_role_pr">Связи с общественностью &amp; и средствами массовой информации</string>
+    <string name="about_role_ops">Операции &amp; Инфраструктура</string>
     <string name="about_role_mod_support">Модератор/Поддержка</string>
     <string name="about_role_family_member">Член семьи</string>
     <string name="about_role_magisk_maintainer">Разработчик Magisk-модуля</string>
-    <string name="about_bio_deletescape">Android-разработчик и энтузиаст, любит мемы (даже слишком, пожалуй). Основатель проекта Lawnchair.</string>
+    <string name="about_bio_deletescape">Kotlin/Java разработчик. Следит за всем что происходит в Android. Основатель Lawnchair и Dogbin проектов.</string>
     <string name="about_bio_recoded">Немного кодер и графический дизайнер.</string>
     <string name="about_bio_josh">Фрилансер, графический дизайнер.</string>
-    <string name="about_bio_chris">Миллениал до мозга костей. Занимается чем-то связанным с дизайном и СМИ. Приходи потусоваться к нам @lawnchairapp</string>
-    <string name="about_bio_msfjarvis">Главный разработчик halogenOS и приложения для Substratum.</string>
+    <string name="about_bio_harsh">Разработчик приложений и библиотек. Главный в разработке AOSiP.</string>
+    <string name="about_bio_david">19 лет, превращает кофеин и пиццу в код, даёт нам хостинг и 24/7 помогает разработке, если что-то сломалось. Помогает проектам с открытым исходным кодом в свободное время. Ранее был известен как Codebucket.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Ошибка лаунчера</string>
     <string name="gestures_pref_title">Жесты</string>
@@ -507,7 +508,8 @@
     <string name="battery_full">Батарея заряжена</string>
     <string name="battery_low">Низкий заряд батареи</string>
     <string name="event_provider_unread_notifications">Непрочитанные уведомления</string>
-    <string name="event_provider_missing_notification_access">Чтобы использовать <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, включите уведомления приложения для<xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="event_provider_missing_notification_access">Чтобы использовать <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, включите уведомления приложения для<xliff:g example="My App" id="name">%2$s</xliff:g>
+    </string>
     <string name="event_provider_missing_notification_dots">Чтобы использовать <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, включите точки уведомлений</string>
     <string name="zen_mode_enabled">Включен режим \"Не беспокоить\"</string>
     <string name="crash_report_notif_title">%1$s был аварийно завершён!</string>
@@ -561,4 +563,5 @@
     <string name="pref_hide_statusbar_clock">Скрыть часы в строке состояния</string>
     <string name="root_access_required">Необходим Root доступ</string>
     <string name="smartspace_setup_text">Нажмите, чтобы настроить</string>
+    <string name="get_lawnfeed">Воспользоваться предложением</string>
 </resources>
