@@ -48,12 +48,12 @@ import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.util.VibratorWrapper;
 import com.android.launcher3.views.FloatingIconView;
 import com.android.quickstep.BaseActivityInterface.HomeAnimationFactory;
+import com.android.quickstep.RecentsAnimationCallbacks.RecentsAnimationListener;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.AppWindowAnimationHelper;
 import com.android.quickstep.util.AppWindowAnimationHelper.TransformParams;
 import com.android.quickstep.util.RectFSpringAnim;
-import com.android.quickstep.RecentsAnimationCallbacks.RecentsAnimationListener;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
@@ -285,12 +285,18 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
     public void onRecentsAnimationCanceled(ThumbnailData thumbnailData) {
         mRecentsAnimationController = null;
         mRecentsAnimationTargets = null;
+        if (mRecentsView != null) {
+            mRecentsView.setRecentsAnimationTargets(null, null);
+        }
     }
 
     @Override
     public void onRecentsAnimationFinished(RecentsAnimationController controller) {
         mRecentsAnimationController = null;
         mRecentsAnimationTargets = null;
+        if (mRecentsView != null) {
+            mRecentsView.setRecentsAnimationTargets(null, null);
+        }
     }
 
     private Rect getStackBounds(DeviceProfile dp) {

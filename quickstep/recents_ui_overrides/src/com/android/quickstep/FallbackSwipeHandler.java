@@ -19,10 +19,10 @@ import static com.android.quickstep.GestureState.GestureEndTarget.HOME;
 import static com.android.quickstep.GestureState.GestureEndTarget.LAST_TASK;
 import static com.android.quickstep.GestureState.GestureEndTarget.NEW_TASK;
 import static com.android.quickstep.GestureState.GestureEndTarget.RECENTS;
+import static com.android.quickstep.LauncherSwipeHandler.MIN_PROGRESS_FOR_OVERVIEW;
 import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
 import static com.android.quickstep.RecentsActivity.EXTRA_TASK_ID;
 import static com.android.quickstep.RecentsActivity.EXTRA_THUMBNAIL;
-import static com.android.quickstep.LauncherSwipeHandler.MIN_PROGRESS_FOR_OVERVIEW;
 import static com.android.quickstep.views.RecentsView.UPDATE_SYSUI_FLAGS_THRESHOLD;
 
 import android.animation.Animator;
@@ -33,8 +33,8 @@ import android.content.Intent;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.os.Bundle;
-
 import android.util.ArrayMap;
+
 import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
@@ -428,7 +428,6 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
     @Override
     public void onRecentsAnimationCanceled(ThumbnailData thumbnailData) {
         super.onRecentsAnimationCanceled(thumbnailData);
-        mRecentsView.setRecentsAnimationTargets(null, null);
         mStateCallback.setStateOnUiThread(STATE_HANDLER_INVALIDATED);
     }
 
