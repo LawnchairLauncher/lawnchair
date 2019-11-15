@@ -797,15 +797,14 @@ public final class LauncherInstrumentation {
 
         // TODO: Make the gesture steps dependent on the distance so that it can run for various
         //       screen sizes
-        final int totalMargin = Math.max(bottomMargin, getBottomGestureMargin(container));
         scroll(
                 container,
                 Direction.DOWN,
                 new Rect(
                         0,
-                        totalMargin / 2,
                         0,
-                        totalMargin / 2),
+                        0,
+                        Math.max(bottomMargin, getBottomGestureMargin(container))),
                 80);
     }
 
