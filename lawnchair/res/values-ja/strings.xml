@@ -142,6 +142,7 @@
     <string name="about_role_dev_mod">開発者 / モデレーター</string>
     <string name="about_role_designer">デザイナー</string>
     <string name="about_role_ui_ux_designer">UI/UX デザイナー</string>
+    <string name="about_role_pr">広報 ＆ ソーシャルメディアマネージャー</string>
     <string name="about_role_mod_support">仲介者 / サポート</string>
     <string name="about_role_family_member">仲間たち</string>
     <string name="about_role_magisk_maintainer">Magiskモジュールメンテナ</string>
@@ -543,4 +544,5 @@
     <string name="pref_hide_statusbar_clock">ステータスバーの時計を隠す</string>
     <string name="root_access_required">ルートアクセスが必要です</string>
     <string name="smartspace_setup_text">タップしてセットアップ</string>
+    <string name="get_lawnfeed">今すぐ取得</string>
 </resources>
