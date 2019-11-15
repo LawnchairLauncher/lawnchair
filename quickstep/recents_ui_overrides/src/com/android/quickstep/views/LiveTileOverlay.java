@@ -16,6 +16,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.util.FloatProperty;
+import android.view.ViewOverlay;
 
 import com.android.launcher3.anim.Interpolators;
 
@@ -36,6 +37,15 @@ public class LiveTileOverlay extends Drawable {
                 }
             };
 
+    private static LiveTileOverlay sInstance;
+
+    public static LiveTileOverlay getInstance() {
+        if (sInstance == null) {
+            sInstance = new LiveTileOverlay();
+        }
+        return sInstance;
+    }
+
     private final Paint mPaint = new Paint();
 
     private Rect mBoundsRect = new Rect();
@@ -46,8 +56,9 @@ public class LiveTileOverlay extends Drawable {
 
     private boolean mDrawEnabled = true;
     private float mIconAnimationProgress = 0f;
+    private boolean mIsAttached;
 
-    public LiveTileOverlay() {
+    private LiveTileOverlay() {
         mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
     }
 
@@ -122,6 +133,23 @@ public class LiveTileOverlay extends Drawable {
     @Override
     public int getOpacity() {
         return PixelFormat.TRANSLUCENT;
+    }
+
+    public boolean attach(ViewOverlay overlay) {
+        if (overlay != null && !mIsAttached) {
+            overlay.add(this);
+            mIsAttached = true;
+            return true;
+        }
+
+        return false;
+    }
+
+    public void detach(ViewOverlay overlay) {
+        if (overlay != null) {
+            overlay.remove(this);
+            mIsAttached = false;
+        }
     }
 
     private void setIconAnimationProgress(float progress) {

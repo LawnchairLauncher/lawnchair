@@ -76,6 +76,11 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
                     if (shortcutExists(dataModel, item.getIntent(), item.user)) {
                         continue;
                     }
+
+                    // b/139663018 Short-circuit this logic if the icon is a system app
+                    if (PackageManagerHelper.isSystemApp(app.getContext(), item.getIntent())) {
+                        continue;
+                    }
                 }
 
                 if (item.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
@@ -117,24 +122,38 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
                     }
                     SessionInfo sessionInfo = packageInstaller.getActiveSessionInfo(item.user,
                             packageName);
+                    List<LauncherActivityInfo> activities = launcherApps
+                            .getActivityList(packageName, item.user);
+                    boolean hasActivity = activities != null && !activities.isEmpty();
+
                     if (sessionInfo == null) {
-                        List<LauncherActivityInfo> activities = launcherApps
-                                .getActivityList(packageName, item.user);
-                        if (activities != null && !activities.isEmpty()) {
-                            // App was installed while launcher was in the background.
-                            itemInfo = new AppInfo(app.getContext(), activities.get(0), item.user)
-                                    .makeWorkspaceItem();
-                            WorkspaceItemInfo wii = (WorkspaceItemInfo) itemInfo;
-                            wii.title = "";
-                            wii.applyFrom(app.getIconCache().getDefaultIcon(item.user));
-                            app.getIconCache().getTitleAndIcon(wii,
-                                    ((WorkspaceItemInfo) itemInfo).usingLowResIcon());
-                        } else {
+                        if (!hasActivity) {
                             // Session was cancelled, do not add.
                             continue;
                         }
                     } else {
                         workspaceInfo.setInstallProgress((int) sessionInfo.getProgress());
+                    }
+
+                    if (hasActivity) {
+                        // App was installed while launcher was in the background,
+                        // or app was already installed for another user.
+                        itemInfo = new AppInfo(app.getContext(), activities.get(0), item.user)
+                                .makeWorkspaceItem();
+
+                        if (shortcutExists(dataModel, itemInfo.getIntent(), itemInfo.user)) {
+                            // We need this additional check here since we treat all auto added
+                            // workspace items as promise icons. At this point we now have the
+                            // correct intent to compare against existing workspace icons.
+                            // Icon already exists on the workspace and should not be auto-added.
+                            continue;
+                        }
+
+                        WorkspaceItemInfo wii = (WorkspaceItemInfo) itemInfo;
+                        wii.title = "";
+                        wii.bitmap = app.getIconCache().getDefaultIcon(item.user);
+                        app.getIconCache().getTitleAndIcon(wii,
+                                ((WorkspaceItemInfo) itemInfo).usingLowResIcon());
                     }
                 }
 

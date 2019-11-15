@@ -53,6 +53,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.logging.UserEventDispatcher;
+import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
@@ -61,7 +62,6 @@ import com.android.launcher3.util.ViewPool.Reusable;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.TaskIconCache;
 import com.android.quickstep.TaskOverlayFactory;
-import com.android.quickstep.TaskSystemShortcut;
 import com.android.quickstep.TaskThumbnailCache;
 import com.android.quickstep.TaskUtils;
 import com.android.quickstep.util.TaskCornerRadius;
@@ -287,11 +287,19 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     public void launchTask(boolean animate, boolean freezeTaskList, Consumer<Boolean> resultCallback,
             Handler resultCallbackHandler) {
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+            RecentsView recentsView = getRecentsView();
             if (isRunningTask()) {
-                getRecentsView().finishRecentsAnimation(false /* toRecents */,
+                recentsView.finishRecentsAnimation(false /* toRecents */,
                         () -> resultCallbackHandler.post(() -> resultCallback.accept(true)));
             } else {
-                launchTaskInternal(animate, freezeTaskList, resultCallback, resultCallbackHandler);
+                // This is a workaround against the WM issue that app open is not correctly animated
+                // when recents animation is being cleaned up (b/143774568). When that's possible,
+                // we should rely on the framework side to cancel the recents animation, and we will
+                // clean up the screenshot on the launcher side while we launch the next task.
+                recentsView.switchToScreenshot(null,
+                        () -> recentsView.finishRecentsAnimation(true /* toRecents */,
+                                () -> launchTaskInternal(animate, freezeTaskList, resultCallback,
+                                        resultCallbackHandler)));
             }
         } else {
             launchTaskInternal(animate, freezeTaskList, resultCallback, resultCallbackHandler);
@@ -713,15 +721,8 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                         getContext().getText(R.string.accessibility_close_task)));
 
         final Context context = getContext();
-        final List<TaskSystemShortcut> shortcuts =
-                TaskOverlayFactory.INSTANCE.get(getContext()).getEnabledShortcuts(this);
-        final int count = shortcuts.size();
-        for (int i = 0; i < count; ++i) {
-            final TaskSystemShortcut menuOption = shortcuts.get(i);
-            OnClickListener onClickListener = menuOption.getOnClickListener(mActivity, this);
-            if (onClickListener != null) {
-                info.addAction(menuOption.createAccessibilityAction(context));
-            }
+        for (SystemShortcut s : TaskOverlayFactory.getEnabledShortcuts(this)) {
+            info.addAction(s.createAccessibilityAction(context));
         }
 
         if (mDigitalWellBeingToast.hasLimit()) {
@@ -734,8 +735,8 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         final RecentsView recentsView = getRecentsView();
         final AccessibilityNodeInfo.CollectionItemInfo itemInfo =
                 AccessibilityNodeInfo.CollectionItemInfo.obtain(
-                        0, 1, recentsView.getChildCount() - recentsView.indexOfChild(this) - 1, 1,
-                        false);
+                        0, 1, recentsView.getTaskViewCount() - recentsView.indexOfChild(this) - 1,
+                        1, false);
         info.setCollectionItemInfo(itemInfo);
     }
 
@@ -752,16 +753,9 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             return true;
         }
 
-        final List<TaskSystemShortcut> shortcuts =
-                TaskOverlayFactory.INSTANCE.get(getContext()).getEnabledShortcuts(this);
-        final int count = shortcuts.size();
-        for (int i = 0; i < count; ++i) {
-            final TaskSystemShortcut menuOption = shortcuts.get(i);
-            if (menuOption.hasHandlerForAction(action)) {
-                OnClickListener onClickListener = menuOption.getOnClickListener(mActivity, this);
-                if (onClickListener != null) {
-                    onClickListener.onClick(this);
-                }
+        for (SystemShortcut s : TaskOverlayFactory.getEnabledShortcuts(this)) {
+            if (s.hasHandlerForAction(action)) {
+                s.onClick(this);
                 return true;
             }
         }

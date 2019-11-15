@@ -27,9 +27,9 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.icons.cache.HandlerRunnable;
 import com.android.launcher3.util.Preconditions;
+import com.android.quickstep.util.TaskKeyLruCache;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.Task.TaskKey;
-import com.android.systemui.shared.recents.model.TaskKeyLruCache;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 
@@ -41,7 +41,7 @@ public class TaskThumbnailCache {
     private final Handler mBackgroundHandler;
 
     private final int mCacheSize;
-    private final ThumbnailCache mCache;
+    private final TaskKeyLruCache<ThumbnailData> mCache;
     private final HighResLoadingState mHighResLoadingState;
 
     public static class HighResLoadingState {
@@ -100,7 +100,7 @@ public class TaskThumbnailCache {
 
         Resources res = context.getResources();
         mCacheSize = res.getInteger(R.integer.recentsThumbnailCacheSize);
-        mCache = new ThumbnailCache(mCacheSize);
+        mCache = new TaskKeyLruCache<>(mCacheSize);
     }
 
     /**
@@ -221,23 +221,6 @@ public class TaskThumbnailCache {
         ThumbnailLoadRequest(Handler handler, boolean reducedResolution) {
             super(handler, null);
             this.reducedResolution = reducedResolution;
-        }
-    }
-
-    private static class ThumbnailCache extends TaskKeyLruCache<ThumbnailData> {
-
-        public ThumbnailCache(int cacheSize) {
-            super(cacheSize);
-        }
-
-        /**
-         * Updates the cache entry if it is already present in the cache
-         */
-        public void updateIfAlreadyInCache(int taskId, ThumbnailData thumbnailData) {
-            ThumbnailData oldData = getCacheEntry(taskId);
-            if (oldData != null) {
-                putCacheEntry(taskId, thumbnailData);
-            }
         }
     }
 }

@@ -20,13 +20,15 @@ import android.content.ComponentName;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.notification.NotificationKeyData;
 import com.android.launcher3.notification.NotificationListener;
-import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.ShortcutUtil;
@@ -39,12 +41,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 /**
  * Provides data for the popup menu that appears after long-clicking on apps.
@@ -76,28 +74,14 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
 
     @Override
     public void onNotificationPosted(PackageUserKey postedPackageUserKey,
-            NotificationKeyData notificationKey, boolean shouldBeFilteredOut) {
+            NotificationKeyData notificationKey) {
         DotInfo dotInfo = mPackageUserToDotInfos.get(postedPackageUserKey);
-        boolean dotShouldBeRefreshed;
         if (dotInfo == null) {
-            if (!shouldBeFilteredOut) {
-                DotInfo newDotInfo = new DotInfo();
-                newDotInfo.addOrUpdateNotificationKey(notificationKey);
-                mPackageUserToDotInfos.put(postedPackageUserKey, newDotInfo);
-                dotShouldBeRefreshed = true;
-            } else {
-                dotShouldBeRefreshed = false;
-            }
-        } else {
-            dotShouldBeRefreshed = shouldBeFilteredOut
-                    ? dotInfo.removeNotificationKey(notificationKey)
-                    : dotInfo.addOrUpdateNotificationKey(notificationKey);
-            if (dotInfo.getNotificationKeys().size() == 0) {
-                mPackageUserToDotInfos.remove(postedPackageUserKey);
-            }
+            dotInfo = new DotInfo();
+            mPackageUserToDotInfos.put(postedPackageUserKey, dotInfo);
         }
-        if (dotShouldBeRefreshed) {
-            updateNotificationDots(t -> postedPackageUserKey.equals(t));
+        if (dotInfo.addOrUpdateNotificationKey(notificationKey)) {
+            updateNotificationDots(postedPackageUserKey::equals);
         }
     }
 
@@ -109,7 +93,7 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
             if (oldDotInfo.getNotificationKeys().size() == 0) {
                 mPackageUserToDotInfos.remove(removedPackageUserKey);
             }
-            updateNotificationDots(t -> removedPackageUserKey.equals(t));
+            updateNotificationDots(removedPackageUserKey::equals);
             trimNotifications(mPackageUserToDotInfos);
         }
     }
@@ -193,14 +177,6 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
         DotInfo dotInfo = getDotInfoForItem(info);
         return dotInfo == null ? Collections.EMPTY_LIST
                 : getNotificationsForItem(info, dotInfo.getNotificationKeys());
-    }
-
-    /** This makes a potentially expensive binder call and should be run on a background thread. */
-    public @NonNull List<StatusBarNotification> getStatusBarNotificationsForKeys(
-            List<NotificationKeyData> notificationKeys) {
-        NotificationListener notificationListener = NotificationListener.getInstanceIfConnected();
-        return notificationListener == null ? Collections.EMPTY_LIST
-                : notificationListener.getNotificationsForKeys(notificationKeys);
     }
 
     public void cancelNotification(String notificationKey) {

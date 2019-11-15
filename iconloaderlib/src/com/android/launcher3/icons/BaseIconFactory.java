@@ -116,7 +116,7 @@ public class BaseIconFactory implements AutoCloseable {
             icon = createIconBitmap(new BitmapDrawable(mContext.getResources(), icon), 1f);
         }
 
-        return BitmapInfo.fromBitmap(icon, mDisableColorExtractor ? null : mColorExtractor);
+        return BitmapInfo.of(icon, extractColor(icon));
     }
 
     public BitmapInfo createBadgedIconBitmap(Drawable icon, UserHandle user,
@@ -183,7 +183,10 @@ public class BaseIconFactory implements AutoCloseable {
                 bitmap = createIconBitmap(badged, 1f);
             }
         }
-        return BitmapInfo.fromBitmap(bitmap, mDisableColorExtractor ? null : mColorExtractor);
+        int color = extractColor(result);
+        return icon instanceof BitmapInfo.Extender
+                ? ((BitmapInfo.Extender) icon).getExtendedInfo(result, color, this)
+                : BitmapInfo.of(result, color);
     }
 
     public Bitmap createScaledBitmapWithoutShadow(Drawable icon, boolean shrinkNonAdaptiveIcons) {
@@ -332,6 +335,10 @@ public class BaseIconFactory implements AutoCloseable {
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
                         ? android.R.drawable.sym_def_app_icon : android.R.mipmap.sym_def_app_icon,
                 iconDpi);
+    }
+
+    private int extractColor(Bitmap bitmap) {
+        return mDisableColorExtractor ? 0 : mColorExtractor.findDominantColorByHue(bitmap);
     }
 
     /**

@@ -171,7 +171,8 @@ public class IconCacheUpdateHandler {
                 long updateTime = c.getLong(indexLastUpdate);
                 int version = c.getInt(indexVersion);
                 T app = componentMap.remove(component);
-                if (version == info.versionCode && updateTime == info.lastUpdateTime
+                if (version == info.versionCode
+                        && updateTime == cachingLogic.getLastUpdatedTime(app, info)
                         && TextUtils.equals(c.getString(systemStateIndex),
                                 mIconCache.getIconSystemState(info.packageName))) {
 

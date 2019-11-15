@@ -45,33 +45,46 @@ public final class ActivityTracker<T extends BaseActivity> implements Runnable {
     }
 
     public void onActivityDestroyed(T activity) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.LAUNCHER_DIDNT_INITIALIZE, "onActivityDestroyed");
-        }
         if (mCurrentActivity.get() == activity) {
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.LAUNCHER_DIDNT_INITIALIZE, "onActivityDestroyed: clear");
-            }
             mCurrentActivity.clear();
         }
     }
 
-    public void schedule(SchedulerCallback<? extends T> callback) {
+    /**
+     * Schedules the callback to be notified when the activity is created.
+     * @return true if the activity is already created, false otherwise
+     */
+    public boolean schedule(SchedulerCallback<? extends T> callback) {
         synchronized (this) {
             mPendingCallback = new WeakReference<>((SchedulerCallback<T>) callback);
         }
-        MAIN_EXECUTOR.execute(this);
+        if (!notifyInitIfPending()) {
+            // If the activity doesn't already exist, then post and wait for the activity to start
+            MAIN_EXECUTOR.execute(this);
+            return false;
+        }
+        return true;
     }
 
     @Override
     public void run() {
-        T activity = mCurrentActivity.get();
-        if (activity != null) {
-            initIfPending(activity, activity.isStarted());
-        }
+        notifyInitIfPending();
     }
 
-    public boolean initIfPending(T activity, boolean alreadyOnHome) {
+    /**
+     * Notifies the pending callback if the activity is now created.
+     * @return true if the activity is now created.
+     */
+    private boolean notifyInitIfPending() {
+        T activity = mCurrentActivity.get();
+        if (activity != null) {
+            notifyInitIfPending(activity, activity.isStarted());
+            return true;
+        }
+        return false;
+    }
+
+    public boolean notifyInitIfPending(T activity, boolean alreadyOnHome) {
         SchedulerCallback<T> pendingCallback = mPendingCallback.get();
         if (pendingCallback != null) {
             if (!pendingCallback.init(activity, alreadyOnHome)) {
@@ -97,10 +110,6 @@ public final class ActivityTracker<T extends BaseActivity> implements Runnable {
     }
 
     public boolean handleCreate(T activity) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.LAUNCHER_DIDNT_INITIALIZE,
-                    "ActivityTracker.handleCreate " + mCurrentActivity.get() + " => " + activity);
-        }
         mCurrentActivity = new WeakReference<>(activity);
         return handleIntent(activity, activity.getIntent(), false, false);
     }
@@ -124,7 +133,7 @@ public final class ActivityTracker<T extends BaseActivity> implements Runnable {
             }
         }
         if (!result && !explicitIntent) {
-            result = initIfPending(activity, alreadyOnHome);
+            result = notifyInitIfPending(activity, alreadyOnHome);
         }
         return result;
     }

@@ -22,8 +22,7 @@ import static android.view.MotionEvent.ACTION_UP;
 import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.Utilities.squaredTouchSlop;
 import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
-import static com.android.quickstep.TouchInteractionService.startRecentsActivityAsync;
-import static com.android.quickstep.WindowTransformSwipeHandler.MIN_PROGRESS_FOR_OVERVIEW;
+import static com.android.quickstep.LauncherSwipeHandler.MIN_PROGRESS_FOR_OVERVIEW;
 import static com.android.quickstep.util.ActiveGestureLog.INTENT_EXTRA_LOG_TRACE_ID;
 
 import android.content.ComponentName;
@@ -45,9 +44,9 @@ import com.android.quickstep.LockScreenRecentsActivity;
 import com.android.quickstep.MultiStateCallback;
 import com.android.quickstep.RecentsAnimationController;
 import com.android.quickstep.RecentsAnimationDeviceState;
-import com.android.quickstep.SwipeSharedState;
 import com.android.quickstep.RecentsAnimationCallbacks;
 import com.android.quickstep.RecentsAnimationTargets;
+import com.android.quickstep.TaskAnimationManager;
 import com.android.quickstep.util.AppWindowAnimationHelper;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.InputMonitorCompat;
@@ -76,18 +75,16 @@ public class DeviceLockedInputConsumer implements InputConsumer,
 
     private final Context mContext;
     private final RecentsAnimationDeviceState mDeviceState;
+    private final TaskAnimationManager mTaskAnimationManager;
     private final GestureState mGestureState;
     private final float mTouchSlopSquared;
-    private final SwipeSharedState mSwipeSharedState;
     private final InputMonitorCompat mInputMonitorCompat;
 
     private final PointF mTouchDown = new PointF();
     private final AppWindowAnimationHelper mAppWindowAnimationHelper;
-    private int mLogId;
     private final AppWindowAnimationHelper.TransformParams mTransformParams;
     private final Point mDisplaySize;
     private final MultiStateCallback mStateCallback;
-    public final int mRunningTaskId;
 
     private VelocityTracker mVelocityTracker;
     private float mProgress;
@@ -98,25 +95,23 @@ public class DeviceLockedInputConsumer implements InputConsumer,
     private RecentsAnimationTargets mRecentsAnimationTargets;
 
     public DeviceLockedInputConsumer(Context context, RecentsAnimationDeviceState deviceState,
-            GestureState gestureState, SwipeSharedState swipeSharedState,
-            InputMonitorCompat inputMonitorCompat, int runningTaskId, int logId) {
+            TaskAnimationManager taskAnimationManager, GestureState gestureState,
+            InputMonitorCompat inputMonitorCompat) {
         mContext = context;
         mDeviceState = deviceState;
+        mTaskAnimationManager = taskAnimationManager;
         mGestureState = gestureState;
         mTouchSlopSquared = squaredTouchSlop(context);
-        mSwipeSharedState = swipeSharedState;
         mAppWindowAnimationHelper = new AppWindowAnimationHelper(context);
-        mLogId = logId;
         mTransformParams = new AppWindowAnimationHelper.TransformParams();
         mInputMonitorCompat = inputMonitorCompat;
-        mRunningTaskId = runningTaskId;
 
         // Do not use DeviceProfile as the user data might be locked
         mDisplaySize = DefaultDisplay.INSTANCE.get(context).getInfo().realSize;
 
         // Init states
         mStateCallback = new MultiStateCallback(STATE_NAMES);
-        mStateCallback.addCallback(STATE_TARGET_RECEIVED | STATE_HANDLER_INVALIDATED,
+        mStateCallback.runOnceAtState(STATE_TARGET_RECEIVED | STATE_HANDLER_INVALIDATED,
                 this::endRemoteAnimation);
 
         mVelocityTracker = VelocityTracker.obtain();
@@ -207,16 +202,14 @@ public class DeviceLockedInputConsumer implements InputConsumer,
 
     private void startRecentsTransition() {
         mThresholdCrossed = true;
-        RecentsAnimationCallbacks callbacks = mSwipeSharedState.newRecentsAnimationCallbacks();
-        callbacks.addListener(this);
+        mInputMonitorCompat.pilferPointers();
+
         Intent intent = new Intent(Intent.ACTION_MAIN)
                 .addCategory(Intent.CATEGORY_DEFAULT)
                 .setComponent(new ComponentName(mContext, LockScreenRecentsActivity.class))
                 .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                .putExtra(INTENT_EXTRA_LOG_TRACE_ID, mLogId);
-
-        mInputMonitorCompat.pilferPointers();
-        startRecentsActivityAsync(intent, callbacks);
+                .putExtra(INTENT_EXTRA_LOG_TRACE_ID, mGestureState.getGestureId());
+        mTaskAnimationManager.startRecentsAnimation(mGestureState, intent, this);
     }
 
     @Override
@@ -226,7 +219,8 @@ public class DeviceLockedInputConsumer implements InputConsumer,
         mRecentsAnimationTargets = targets;
 
         Rect displaySize = new Rect(0, 0, mDisplaySize.x, mDisplaySize.y);
-        RemoteAnimationTargetCompat targetCompat = targets.findTask(mRunningTaskId);
+        RemoteAnimationTargetCompat targetCompat = targets.findTask(
+                mGestureState.getRunningTaskId());
         if (targetCompat != null) {
             mAppWindowAnimationHelper.updateSource(displaySize, targetCompat);
         }

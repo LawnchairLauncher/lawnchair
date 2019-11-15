@@ -16,10 +16,6 @@
 
 package com.android.launcher3;
 
-import static com.android.launcher3.icons.BitmapInfo.LOW_RES_ICON;
-
-import android.graphics.Bitmap;
-
 import com.android.launcher3.icons.BitmapInfo;
 
 /**
@@ -30,14 +26,9 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
     public static final String TAG = "ItemInfoDebug";
 
     /**
-     * A bitmap version of the application icon.
+     * The bitmap for the application icon
      */
-    public Bitmap iconBitmap;
-
-    /**
-     * Dominant color in the {@link #iconBitmap}.
-     */
-    public int iconColor;
+    public BitmapInfo bitmap = BitmapInfo.LOW_RES_INFO;
 
     /**
      * Indicates that the icon is disabled due to safe mode restrictions.
@@ -106,8 +97,7 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
 
     protected ItemInfoWithIcon(ItemInfoWithIcon info) {
         super(info);
-        iconBitmap = info.iconBitmap;
-        iconColor = info.iconColor;
+        bitmap = info.bitmap;
         runtimeStatusFlags = info.runtimeStatusFlags;
     }
 
@@ -120,12 +110,7 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
      * Indicates whether we're using a low res icon
      */
     public boolean usingLowResIcon() {
-        return iconBitmap == LOW_RES_ICON;
-    }
-
-    public void applyFrom(BitmapInfo info) {
-        iconBitmap = info.icon;
-        iconColor = info.color;
+        return bitmap.isLowRes();
     }
 
     /**

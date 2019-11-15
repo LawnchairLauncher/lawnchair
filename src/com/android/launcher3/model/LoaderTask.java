@@ -181,16 +181,7 @@ public class LoaderTask implements Runnable {
         }
 
         Object traceToken = TraceHelper.INSTANCE.beginSection(TAG);
-        TimingLogger logger = TestProtocol.sDebugTracing ?
-                new TimingLogger(TAG, "run") {
-                    @Override
-                    public void addSplit(String splitLabel) {
-                        super.addSplit(splitLabel);
-                        Log.d(TestProtocol.LAUNCHER_DIDNT_INITIALIZE,
-                                "LoaderTask.addSplit " + splitLabel);
-                    }
-                }
-                : new TimingLogger(TAG, "run");
+        TimingLogger logger = new TimingLogger(TAG, "run");
         try (LauncherModel.LoaderTransaction transaction = mApp.getModel().beginLoader(this)) {
             List<ShortcutInfo> allShortcuts = new ArrayList<>();
             loadWorkspace(allShortcuts);
@@ -225,10 +216,12 @@ public class LoaderTask implements Runnable {
                     mApp.getModel()::onPackageIconsUpdated);
             logger.addSplit("update icon cache");
 
-            verifyNotStopped();
-            logger.addSplit("save shortcuts in icon cache");
-            updateHandler.updateIcons(allShortcuts, new ShortcutCachingLogic(),
-                    mApp.getModel()::onPackageIconsUpdated);
+            if (FeatureFlags.ENABLE_DEEP_SHORTCUT_ICON_CACHE.get()) {
+                verifyNotStopped();
+                logger.addSplit("save shortcuts in icon cache");
+                updateHandler.updateIcons(allShortcuts, new ShortcutCachingLogic(),
+                        mApp.getModel()::onPackageIconsUpdated);
+            }
 
             // Take a break
             waitForIdle();
@@ -243,10 +236,12 @@ public class LoaderTask implements Runnable {
             mResults.bindDeepShortcuts();
             logger.addSplit("bindDeepShortcuts");
 
-            verifyNotStopped();
-            logger.addSplit("save deep shortcuts in icon cache");
-            updateHandler.updateIcons(allDeepShortcuts,
-                    new ShortcutCachingLogic(), (pkgs, user) -> { });
+            if (FeatureFlags.ENABLE_DEEP_SHORTCUT_ICON_CACHE.get()) {
+                verifyNotStopped();
+                logger.addSplit("save deep shortcuts in icon cache");
+                updateHandler.updateIcons(allDeepShortcuts,
+                        new ShortcutCachingLogic(), (pkgs, user) -> { });
+            }
 
             // Take a break
             waitForIdle();
@@ -536,8 +531,9 @@ public class LoaderTask implements Runnable {
                                     // use the last saved icon instead of the default.
                                     Supplier<ItemInfoWithIcon> fallbackIconProvider = () ->
                                             c.loadIcon(finalInfo, li) ? finalInfo : null;
-                                    info.applyFrom(li.createShortcutIcon(pinnedShortcut,
-                                            true /* badged */, fallbackIconProvider));
+                                    info.bitmap = li.createShortcutIcon(
+                                            pinnedShortcut, true /* badged */,
+                                            fallbackIconProvider);
                                     li.recycle();
                                     if (pmHelper.isAppSuspended(
                                             pinnedShortcut.getPackage(), info.user)) {

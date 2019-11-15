@@ -43,11 +43,10 @@ import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.touch.AbstractStateChangeTouchController;
-import com.android.launcher3.touch.SwipeDetector;
+import com.android.launcher3.touch.SingleAxisSwipeDetector;
 import com.android.launcher3.uioverrides.states.OverviewState;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
-import com.android.quickstep.RecentsModel;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TouchInteractionService;
 import com.android.quickstep.util.LayoutUtils;
@@ -79,7 +78,7 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
     private boolean mFinishFastOnSecondTouch;
 
     public PortraitStatesTouchController(Launcher l, boolean allowDragToOverview) {
-        super(l, SwipeDetector.VERTICAL);
+        super(l, SingleAxisSwipeDetector.VERTICAL);
         mOverviewPortraitStateTouchHelper = new PortraitOverviewStateTouchHelper(l);
         mAllowDragToOverview = allowDragToOverview;
     }
@@ -300,7 +299,7 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
     protected void onSwipeInteractionCompleted(LauncherState targetState, int logAction) {
         super.onSwipeInteractionCompleted(targetState, logAction);
         if (mStartState == NORMAL && targetState == OVERVIEW) {
-            RecentsModel.INSTANCE.get(mLauncher).onOverviewShown(true, TAG);
+            SystemUiProxy.INSTANCE.get(mLauncher).onOverviewShown(true, TAG);
         }
     }
 

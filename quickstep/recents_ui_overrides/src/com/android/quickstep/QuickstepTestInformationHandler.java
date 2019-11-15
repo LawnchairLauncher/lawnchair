@@ -10,7 +10,6 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.testing.TestInformationHandler;
 import com.android.launcher3.testing.TestProtocol;
-import com.android.launcher3.uioverrides.states.OverviewState;
 import com.android.launcher3.uioverrides.touchcontrollers.PortraitStatesTouchController;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.views.RecentsView;
@@ -34,7 +33,7 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
         switch (method) {
             case TestProtocol.REQUEST_HOME_TO_OVERVIEW_SWIPE_HEIGHT: {
                 final float swipeHeight =
-                        OverviewState.getDefaultSwipeHeight(mContext, mDeviceProfile);
+                        LayoutUtils.getDefaultSwipeHeight(mContext, mDeviceProfile);
                 response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD, (int) swipeHeight);
                 return response;
             }
@@ -112,11 +111,6 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
 
     @Override
     protected boolean isLauncherInitialized() {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.LAUNCHER_DIDNT_INITIALIZE,
-                    "isLauncherInitialized.TouchInteractionService.isInitialized=" +
-                            TouchInteractionService.isInitialized());
-        }
         return super.isLauncherInitialized() && TouchInteractionService.isInitialized();
     }
 }

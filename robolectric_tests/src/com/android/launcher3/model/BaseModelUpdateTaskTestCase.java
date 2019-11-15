@@ -202,15 +202,14 @@ public class BaseModelUpdateTaskTestCase {
             CacheEntry entry = mCache.get(new ComponentKey(componentName, user));
             if (entry == null) {
                 entry = new CacheEntry();
-                getDefaultIcon(user).applyTo(entry);
+                entry.bitmap = getDefaultIcon(user);
             }
             return entry;
         }
 
         public void addCache(ComponentName key, String title) {
             CacheEntry entry = new CacheEntry();
-            entry.icon = newIcon();
-            entry.color = Color.RED;
+            entry.bitmap = BitmapInfo.of(newIcon(), Color.RED);
             entry.title = title;
             mCache.put(new ComponentKey(key, Process.myUserHandle()), entry);
         }

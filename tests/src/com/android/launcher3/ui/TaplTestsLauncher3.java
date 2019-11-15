@@ -18,6 +18,10 @@ package com.android.launcher3.ui;
 
 import static androidx.test.InstrumentationRegistry.getInstrumentation;
 
+import static com.android.launcher3.util.rule.TestStabilityRule.PLATFORM_PRESUBMIT;
+import static com.android.launcher3.util.rule.TestStabilityRule.RUN_FLAFOR;
+import static com.android.launcher3.util.rule.TestStabilityRule.UNBUNDLED_PRESUBMIT;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -34,6 +38,7 @@ import com.android.launcher3.tapl.AllApps;
 import com.android.launcher3.tapl.AppIcon;
 import com.android.launcher3.tapl.AppIconMenu;
 import com.android.launcher3.tapl.AppIconMenuItem;
+import com.android.launcher3.tapl.TestHelpers;
 import com.android.launcher3.tapl.Widgets;
 import com.android.launcher3.tapl.Workspace;
 import com.android.launcher3.views.OptionsPopupView;
@@ -349,6 +354,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     @Ignore("Temporarily disabled to unblock merging to master")
     @PortraitLandscape
     public void testDragCustomShortcut() {
+        if (!TestHelpers.isInLauncherProcess()) return;     // b/143725213
         mLauncher.getWorkspace().openAllWidgets()
                 .getWidget("com.android.launcher3.testcomponent.CustomShortcutConfigActivity")
                 .dragToWorkspace();

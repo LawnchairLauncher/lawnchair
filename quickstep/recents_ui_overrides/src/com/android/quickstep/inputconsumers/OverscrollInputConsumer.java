@@ -24,39 +24,28 @@ import static android.view.MotionEvent.ACTION_UP;
 
 import static com.android.launcher3.Utilities.squaredHypot;
 
-import android.app.ActivityOptions;
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.PointF;
-import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.BaseDraggingActivity;
-import com.android.launcher3.R;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.InputConsumer;
 import com.android.quickstep.views.RecentsView;
+import com.android.systemui.plugins.OverscrollPlugin;
 import com.android.systemui.shared.system.InputMonitorCompat;
 
 /**
- * Input consumer for handling events to launch quick capture from launcher
+ * Input consumer for handling events to pass to an {@code OverscrollPlugin}.
+ *
  * @param <T> Draggable activity subclass used by RecentsView
  */
-public class QuickCaptureInputConsumer<T extends BaseDraggingActivity>
-        extends DelegateInputConsumer {
+public class OverscrollInputConsumer<T extends BaseDraggingActivity> extends DelegateInputConsumer {
 
-    private static final String TAG = "QuickCaptureInputConsumer";
-
-    private static final String QUICK_CAPTURE_PACKAGE = "com.google.auxe.compose";
-    private static final String QUICK_CAPTURE_PACKAGE_DEV = "com.google.auxe.compose.debug";
-
-    private static final String EXTRA_DEVICE_STATE = "deviceState";
-    private static final String DEVICE_STATE_LOCKED = "Locked";
-    private static final String DEVICE_STATE_LAUNCHER = "Launcher";
-    private static final String DEVICE_STATE_APP = "App";
-    private static final String DEVICE_STATE_UNKNOWN = "Unknown";
+    private static final String TAG = "OverscrollInputConsumer";
 
     private static final int ANGLE_THRESHOLD = 35; // Degrees
 
@@ -69,14 +58,18 @@ public class QuickCaptureInputConsumer<T extends BaseDraggingActivity>
 
     private final float mSquaredSlop;
 
-    private Context mContext;
+    private final Context mContext;
+    private final GestureState mGestureState;
+    @Nullable private final OverscrollPlugin mPlugin;
 
     private RecentsView mRecentsView;
 
-    public QuickCaptureInputConsumer(Context context, GestureState gestureState,
-            InputConsumer delegate, InputMonitorCompat inputMonitor) {
+    public OverscrollInputConsumer(Context context, GestureState gestureState,
+            InputConsumer delegate, InputMonitorCompat inputMonitor, OverscrollPlugin plugin) {
         super(delegate, inputMonitor);
         mContext = context;
+        mGestureState = gestureState;
+        mPlugin = plugin;
 
         float slop = ViewConfiguration.get(context).getScaledTouchSlop();
         mSquaredSlop = slop * slop;
@@ -87,11 +80,11 @@ public class QuickCaptureInputConsumer<T extends BaseDraggingActivity>
 
     @Override
     public int getType() {
-        return TYPE_QUICK_CAPTURE | mDelegate.getType();
+        return TYPE_OVERSCROLL | mDelegate.getType();
     }
 
-    private boolean onActivityInit(final BaseDraggingActivity activity, Boolean alreadyOnHome) {
-        mRecentsView = activity.getOverviewPanel();
+    private boolean onActivityInit(Boolean alreadyOnHome) {
+        mRecentsView = mGestureState.getActivityInterface().getCreatedActivity().getOverviewPanel();
 
         return true;
     }
@@ -147,7 +140,7 @@ public class QuickCaptureInputConsumer<T extends BaseDraggingActivity>
                         mPassedSlop = true;
                         mStartDragPos.set(mLastPos.x, mLastPos.y);
 
-                        if (isValidQuickCaptureGesture()) {
+                        if (isOverscrolled()) {
                             setActive(ev);
                         } else {
                             mState = STATE_DELEGATE_ACTIVE;
@@ -159,8 +152,8 @@ public class QuickCaptureInputConsumer<T extends BaseDraggingActivity>
             }
             case ACTION_CANCEL:
             case ACTION_UP:
-                if (mState != STATE_DELEGATE_ACTIVE && mPassedSlop) {
-                    startQuickCapture();
+                if (mState != STATE_DELEGATE_ACTIVE && mPassedSlop && mPlugin != null) {
+                    mPlugin.onOverscroll(getDeviceState());
                 }
 
                 mPassedSlop = false;
@@ -173,7 +166,7 @@ public class QuickCaptureInputConsumer<T extends BaseDraggingActivity>
         }
     }
 
-    private boolean isValidQuickCaptureGesture() {
+    private boolean isOverscrolled() {
         // Make sure there isn't an app to quick switch to on our right
         boolean atRightMostApp = (mRecentsView == null || mRecentsView.getRunningTaskIndex() <= 0);
 
@@ -185,37 +178,19 @@ public class QuickCaptureInputConsumer<T extends BaseDraggingActivity>
         return atRightMostApp && angleInBounds;
     }
 
-    private void startQuickCapture() {
-        // Inspect our delegate's type to figure out where the user invoked Compose
-        String deviceState = DEVICE_STATE_UNKNOWN;
+    private String getDeviceState() {
+        String deviceState = OverscrollPlugin.DEVICE_STATE_UNKNOWN;
         int consumerType = mDelegate.getType();
         if (((consumerType & InputConsumer.TYPE_OVERVIEW) > 0)
                 || ((consumerType & InputConsumer.TYPE_OVERVIEW_WITHOUT_FOCUS)) > 0) {
-            deviceState = DEVICE_STATE_LAUNCHER;
+            deviceState = OverscrollPlugin.DEVICE_STATE_LAUNCHER;
         } else if ((consumerType & InputConsumer.TYPE_OTHER_ACTIVITY) > 0) {
-            deviceState = DEVICE_STATE_APP;
+            deviceState = OverscrollPlugin.DEVICE_STATE_APP;
         } else if (((consumerType & InputConsumer.TYPE_RESET_GESTURE) > 0)
                 || ((consumerType & InputConsumer.TYPE_DEVICE_LOCKED) > 0)) {
-            deviceState = DEVICE_STATE_LOCKED;
+            deviceState = OverscrollPlugin.DEVICE_STATE_LOCKED;
         }
 
-        // Then launch the app
-        PackageManager pm = mContext.getPackageManager();
-
-        Intent qcIntent = pm.getLaunchIntentForPackage(QUICK_CAPTURE_PACKAGE);
-
-        if (qcIntent == null) {
-            // If we couldn't find the regular app, try the dev version
-            qcIntent = pm.getLaunchIntentForPackage(QUICK_CAPTURE_PACKAGE_DEV);
-        }
-
-        if (qcIntent != null) {
-            qcIntent.putExtra(EXTRA_DEVICE_STATE, deviceState);
-
-            Bundle options = ActivityOptions.makeCustomAnimation(mContext, R.anim.slide_in_right,
-                    0).toBundle();
-
-            mContext.startActivity(qcIntent, options);
-        }
+        return deviceState;
     }
 }

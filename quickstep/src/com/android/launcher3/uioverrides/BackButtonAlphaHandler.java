@@ -16,11 +16,9 @@
 
 package com.android.launcher3.uioverrides;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 
-import com.android.launcher3.Launcher;
+import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.anim.AnimatorSetBuilder;
@@ -30,18 +28,14 @@ import com.android.quickstep.SystemUiProxy;
 
 public class BackButtonAlphaHandler implements LauncherStateManager.StateHandler {
 
-    private static final String TAG = "BackButtonAlphaHandler";
+    private final BaseQuickstepLauncher mLauncher;
 
-    private final Launcher mLauncher;
-
-    public BackButtonAlphaHandler(Launcher launcher) {
+    public BackButtonAlphaHandler(BaseQuickstepLauncher launcher) {
         mLauncher = launcher;
     }
 
     @Override
-    public void setState(LauncherState state) {
-        UiFactory.onLauncherStateOrFocusChanged(mLauncher);
-    }
+    public void setState(LauncherState state) { }
 
     @Override
     public void setStateWithAnimation(LauncherState toState,
@@ -52,8 +46,8 @@ public class BackButtonAlphaHandler implements LauncherStateManager.StateHandler
 
         if (!SysUINavigationMode.getMode(mLauncher).hasGestures) {
             // If the nav mode is not gestural, then force back button alpha to be 1
-            UiThreadHelper.setBackButtonAlphaAsync(mLauncher, UiFactory.SET_BACK_BUTTON_ALPHA, 1f,
-                    true /* animate */);
+            UiThreadHelper.setBackButtonAlphaAsync(mLauncher,
+                    BaseQuickstepLauncher.SET_BACK_BUTTON_ALPHA, 1f, true /* animate */);
             return;
         }
 
@@ -64,15 +58,8 @@ public class BackButtonAlphaHandler implements LauncherStateManager.StateHandler
             anim.setDuration(config.duration);
             anim.addUpdateListener(valueAnimator -> {
                 final float alpha = (float) valueAnimator.getAnimatedValue();
-                UiThreadHelper.setBackButtonAlphaAsync(mLauncher, UiFactory.SET_BACK_BUTTON_ALPHA,
-                        alpha, false /* animate */);
-            });
-            anim.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    // Reapply the final alpha in case some state (e.g. window focus) changed.
-                    UiFactory.onLauncherStateOrFocusChanged(mLauncher);
-                }
+                UiThreadHelper.setBackButtonAlphaAsync(mLauncher,
+                        BaseQuickstepLauncher.SET_BACK_BUTTON_ALPHA, alpha, false /* animate */);
             });
             builder.play(anim);
         }

@@ -13,22 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3;
+package com.android.quickstep.util;
 
-import com.android.launcher3.appprediction.PredictionUiStateManager;
-import com.android.launcher3.appprediction.PredictionUiStateManager.Client;
+import com.android.launcher3.Launcher;
 
-import java.util.function.BiPredicate;
-
-public class LauncherInitListenerEx extends LauncherInitListener {
-
-    public LauncherInitListenerEx(BiPredicate<Launcher, Boolean> onInitListener) {
-        super(onInitListener);
+/** Empty class, only exists so that lowRamWithQuickstepIconRecentsDebug compiles. */
+public class ShelfPeekAnim {
+    public ShelfPeekAnim(Launcher launcher) {
     }
 
-    @Override
-    public boolean init(Launcher launcher, boolean alreadyOnHome) {
-        PredictionUiStateManager.INSTANCE.get(launcher).switchClient(Client.OVERVIEW);
-        return super.init(launcher, alreadyOnHome);
+    public enum ShelfAnimState {
     }
 }

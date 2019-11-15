@@ -77,6 +77,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * A container for shortcuts to deep links and notifications associated with an app.
@@ -196,9 +197,6 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
      * @return the container if shown or null.
      */
     public static PopupContainerWithArrow showForIcon(BubbleTextView icon) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_CONTEXT_MENU, "showForIcon");
-        }
         Launcher launcher = Launcher.getLauncher(icon.getContext());
         if (getOpen(launcher) != null) {
             // There is already an items container open, so don't open this one.
@@ -213,7 +211,7 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
         final PopupContainerWithArrow container =
                 (PopupContainerWithArrow) launcher.getLayoutInflater().inflate(
                         R.layout.popup_container, launcher.getDragLayer(), false);
-        container.populateAndShow(icon, itemInfo, SystemShortcutFactory.INSTANCE.get(launcher));
+        container.populateAndShow(icon, itemInfo);
         return container;
     }
 
@@ -238,16 +236,15 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
         }
     }
 
-    protected void populateAndShow(
-            BubbleTextView icon, ItemInfo item, SystemShortcutFactory factory) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_CONTEXT_MENU, "populateAndShow");
-        }
+    protected void populateAndShow(BubbleTextView icon, ItemInfo item) {
         PopupDataProvider popupDataProvider = mLauncher.getPopupDataProvider();
         populateAndShow(icon,
                 popupDataProvider.getShortcutCountForItem(item),
                 popupDataProvider.getNotificationKeysForItem(item),
-                factory.getEnabledShortcuts(mLauncher, item));
+                mLauncher.getSupportedShortcuts()
+                        .map(s -> s.getShortcut(mLauncher, item))
+                        .filter(s -> s != null)
+                        .collect(Collectors.toList()));
     }
 
     public ViewGroup getSystemShortcutContainerForTesting() {
@@ -382,8 +379,7 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
     @Override
     public void onWidgetsBound() {
         ItemInfo itemInfo = (ItemInfo) mOriginalIcon.getTag();
-        SystemShortcut widgetInfo = new SystemShortcut.Widgets();
-        View.OnClickListener onClickListener = widgetInfo.getOnClickListener(mLauncher, itemInfo);
+        SystemShortcut widgetInfo = SystemShortcut.WIDGETS.getShortcut(mLauncher, itemInfo);
         View widgetsView = null;
         int count = mSystemShortcutContainer.getChildCount();
         for (int i = 0; i < count; i++) {
@@ -394,7 +390,7 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
             }
         }
 
-        if (onClickListener != null && widgetsView == null) {
+        if (widgetInfo != null && widgetsView == null) {
             // We didn't have any widgets cached but now there are some, so enable the shortcut.
             if (mSystemShortcutContainer != this) {
                 initializeSystemShortcut(
@@ -407,7 +403,7 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
                 close(false);
                 PopupContainerWithArrow.showForIcon(mOriginalIcon);
             }
-        } else if (onClickListener == null && widgetsView != null) {
+        } else if (widgetInfo == null && widgetsView != null) {
             // No widgets exist, but we previously added the shortcut so remove it.
             if (mSystemShortcutContainer != this) {
                 mSystemShortcutContainer.removeView(widgetsView);
@@ -430,8 +426,7 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
             info.setIconAndContentDescriptionFor((ImageView) view);
         }
         view.setTag(info);
-        view.setOnClickListener(info.getOnClickListener(mLauncher,
-                (ItemInfo) mOriginalIcon.getTag()));
+        view.setOnClickListener(info);
     }
 
     /**
@@ -506,7 +501,7 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
         DotInfo dotInfo = mLauncher.getDotInfoForItem(itemInfo);
         if (mNotificationItemView != null && dotInfo != null) {
             mNotificationItemView.updateHeader(
-                    dotInfo.getNotificationCount(), itemInfo.iconColor);
+                    dotInfo.getNotificationCount(), itemInfo.bitmap.color);
         }
     }
 
@@ -575,8 +570,11 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
 
     @Override
     protected void closeComplete() {
-        mOriginalIcon.setTextVisibility(mOriginalIcon.shouldTextBeVisible());
-        mOriginalIcon.setForceHideDot(false);
+        PopupContainerWithArrow openPopup = getOpen(mLauncher);
+        if (openPopup == null || openPopup.mOriginalIcon != mOriginalIcon) {
+            mOriginalIcon.setTextVisibility(mOriginalIcon.shouldTextBeVisible());
+            mOriginalIcon.setForceHideDot(false);
+        }
         super.closeComplete();
     }
 
