@@ -25,7 +25,7 @@ import android.os.IBinder;
  */
 public class ObjectWrapper<T> extends Binder {
 
-    private final T mObject;
+    private T mObject;
 
     public ObjectWrapper(T object) {
         mObject = object;
@@ -33,6 +33,10 @@ public class ObjectWrapper<T> extends Binder {
 
     public T get() {
         return mObject;
+    }
+
+    public void clear() {
+        mObject = null;
     }
 
     public static IBinder wrap(Object obj) {
