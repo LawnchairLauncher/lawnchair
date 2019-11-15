@@ -142,6 +142,7 @@
     <string name="about_role_dev_mod">Програмист/Модератор</string>
     <string name="about_role_designer">Дизайнер</string>
     <string name="about_role_ui_ux_designer">UI/UX дизайнер</string>
+    <string name="about_role_ops">Операции &amp; Инфраструктура</string>
     <string name="about_role_mod_support">Модератор/Поддръжка</string>
     <string name="about_role_family_member">Член на семейството</string>
     <string name="about_role_magisk_maintainer">Разработчик на Magisk модул</string>
