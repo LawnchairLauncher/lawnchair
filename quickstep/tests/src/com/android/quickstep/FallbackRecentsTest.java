@@ -31,9 +31,6 @@ import static com.android.launcher3.ui.TaplTestsLauncher3.getAppPackageName;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.rule.ShellCommandRule.disableHeadsUpNotification;
 import static com.android.launcher3.util.rule.ShellCommandRule.getLauncherCommand;
-import static com.android.launcher3.util.rule.TestStabilityRule.PLATFORM_PRESUBMIT;
-import static com.android.launcher3.util.rule.TestStabilityRule.RUN_FLAFOR;
-import static com.android.launcher3.util.rule.TestStabilityRule.UNBUNDLED_PRESUBMIT;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -63,6 +60,7 @@ import com.android.launcher3.util.rule.FailureWatcher;
 import com.android.quickstep.NavigationModeSwitchRule.NavigationModeSwitch;
 import com.android.quickstep.views.RecentsView;
 
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
@@ -132,12 +130,8 @@ public class FallbackRecentsTest {
 
     @NavigationModeSwitch
     @Test
+    @Ignore // b/143488140
     public void goToOverviewFromHome() {
-        // b/143488140
-        if (android.os.Build.MODEL.contains("Cuttlefish") && TestHelpers.isInLauncherProcess() &&
-                (RUN_FLAFOR & (PLATFORM_PRESUBMIT | UNBUNDLED_PRESUBMIT)) != 0) {
-            return;
-        }
         mDevice.pressHome();
         assertTrue("Fallback Launcher not visible", mDevice.wait(Until.hasObject(By.pkg(
                 mOtherLauncherActivity.packageName)), WAIT_TIME_MS));
@@ -147,12 +141,8 @@ public class FallbackRecentsTest {
 
     @NavigationModeSwitch
     @Test
+    @Ignore // b/143488140
     public void goToOverviewFromApp() {
-        // b/143488140
-        if (android.os.Build.MODEL.contains("Cuttlefish") && TestHelpers.isInLauncherProcess() &&
-                (RUN_FLAFOR & (PLATFORM_PRESUBMIT | UNBUNDLED_PRESUBMIT)) != 0) {
-            return;
-        }
         startAppFastAndWaitForRecentTask(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
 
         mLauncher.getBackground().switchToOverview();
@@ -186,12 +176,8 @@ public class FallbackRecentsTest {
 
     @NavigationModeSwitch
     @Test
+    @Ignore // b/143488140
     public void testOverview() {
-        // b/143488140
-        if (android.os.Build.MODEL.contains("Cuttlefish") && TestHelpers.isInLauncherProcess() &&
-                (RUN_FLAFOR & (PLATFORM_PRESUBMIT | UNBUNDLED_PRESUBMIT)) != 0) {
-            return;
-        }
         startAppFastAndWaitForRecentTask(getAppPackageName());
         startAppFastAndWaitForRecentTask(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
         startTestActivity(2);
