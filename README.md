@@ -18,3 +18,7 @@ Visit our [*Crowdin* page](https://translate.lawnchair.app) to help translate La
 
 ## License
 Lawnchair is distributed under the [*GPLv3* license](https://www.gnu.org/licenses/gpl-3.0.en.html). Consequently, you’re required to credit us in derivative products.
+
+## Links
+![Join r/lawnchairlauncher](https://img.shields.io/reddit/subreddit-subscribers/lawnchairlauncher?label=Join%20r%2Flawnchairlauncher&style=social)  
+![Follow @lawnchairapp on Twitter](https://img.shields.io/twitter/follow/lawnchairapp?style=social)
