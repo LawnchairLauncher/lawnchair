@@ -142,11 +142,16 @@
     <string name="about_role_dev_mod">Arendaja/moderaator</string>
     <string name="about_role_designer">Kujundaja</string>
     <string name="about_role_ui_ux_designer">UI/UX disainer</string>
+    <string name="about_role_pr">Avalike suhete &amp; sotsiaalmeedia juht</string>
+    <string name="about_role_ops">Toimingud &amp; infrastruktuur</string>
     <string name="about_role_mod_support">Moderaator / tugi</string>
     <string name="about_role_family_member">Pereliige</string>
     <string name="about_role_magisk_maintainer">Magisk Module arendaja</string>
+    <string name="about_bio_deletescape">Kotlin/Java arendaja. Jälgib kõike, mis Androidis toimub. Lawnchair ja Dogbini projektide asutaja.</string>
     <string name="about_bio_recoded">Programmeerija ja graafiline disainer.</string>
     <string name="about_bio_josh">Vabakutseline graafiline disainer.</string>
+    <string name="about_bio_harsh">Androidi rakenduste ja raamatukogu arendaja. AOSIP tuum-arendaja.</string>
+    <string name="about_bio_david">19-aastane, muudab kofeiini ja pitsa koodiks, pakub Lawnchairile majutust ja ööpäevaringset tuge, kui midagi läheb valesti. Panustab avatud lähtekoodiga projektidesse ja parandab vead oma vabal ajal. Varem tuntud ka kui Codebucket.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Jooksuta käivitaja kokku</string>
     <string name="gestures_pref_title">Viiped</string>
@@ -493,6 +498,7 @@
     <string name="battery_full">Aku on täis</string>
     <string name="battery_low">Akutase on madal</string>
     <string name="event_provider_unread_notifications">Lugemata teavitused</string>
+    <string name="event_provider_missing_notification_access">Et kasutada <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, lülitage rakenduse <xliff:g example="My App" id="name">%2$s</xliff:g> teatised sisse</string>
     <string name="event_provider_missing_notification_dots"><xliff:g example="My Provider" id="providerName">%1$s</xliff:g> kasutamiseks lülita sisse teavituste täpid</string>
     <string name="zen_mode_enabled">Mitte segada on lubatud</string>
     <string name="crash_report_notif_title">%1$s jooksis kokku!</string>
@@ -546,4 +552,5 @@
     <string name="pref_hide_statusbar_clock">Peida kella olekuriba</string>
     <string name="root_access_required">Root juurdepääs on vajalik</string>
     <string name="smartspace_setup_text">Puudutage seadistamiseks</string>
+    <string name="get_lawnfeed">Hankige see kohe</string>
 </resources>
