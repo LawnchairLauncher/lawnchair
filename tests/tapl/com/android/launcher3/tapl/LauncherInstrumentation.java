@@ -64,12 +64,10 @@ import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.systemui.shared.system.QuickStepContract;
 
-import org.junit.Assert;
-
+import java.util.ArrayList;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Deque;
@@ -78,6 +76,8 @@ import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 import java.util.function.Function;
+
+import org.junit.Assert;
 
 /**
  * The main tapl object. The only object that can be explicitly constructed by the using code. It
@@ -298,14 +298,6 @@ public final class LauncherInstrumentation {
         return null;
     }
 
-    public void checkForAnomaly() {
-        final String anomalyMessage = getAnomalyMessage();
-        if (anomalyMessage != null) {
-            failWithSystemHealth(
-                    "Tests are broken by a non-Launcher system error: " + anomalyMessage);
-        }
-    }
-
     private String getVisibleStateMessage() {
         if (hasLauncherObject(WIDGETS_RES_ID)) return "Widgets";
         if (hasLauncherObject(OVERVIEW_RES_ID)) return "Overview";
@@ -339,17 +331,20 @@ public final class LauncherInstrumentation {
     }
 
     private void fail(String message) {
-        checkForAnomaly();
+        message = "http://go/tapl : " + getContextDescription() + message;
 
-        failWithSystemHealth("http://go/tapl : " + getContextDescription() + message +
-                " (visible state: " + getVisibleStateMessage() + ")");
-    }
+        final String anomaly = getAnomalyMessage();
+        if (anomaly != null) {
+            message = anomaly + ", which causes:\n" + message;
+        } else {
+            message = message + " (visible state: " + getVisibleStateMessage() + ")";
+        }
 
-    private void failWithSystemHealth(String message) {
         final String systemHealth = getSystemHealthMessage();
         if (systemHealth != null) {
             message = message
-                    + ", perhaps because of system health problems:\n<<<<<<<<<<<<<<<<<<\n"
+                    + ", which might be a consequence of system health "
+                    + "problems:\n<<<<<<<<<<<<<<<<<<\n"
                     + systemHealth + "\n>>>>>>>>>>>>>>>>>>";
         }
 
@@ -429,7 +424,11 @@ public final class LauncherInstrumentation {
         // b/136278866
         for (int i = 0; i != 100; ++i) {
             if (getNavigationModeMismatchError() == null) break;
-            sleep(100);
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
         final String error = getNavigationModeMismatchError();
@@ -536,7 +535,8 @@ public final class LauncherInstrumentation {
         // accessibility events prior to pressing Home.
         final String action;
         if (getNavigationModel() == NavigationModel.ZERO_BUTTON) {
-            checkForAnomaly();
+            final String anomaly = getAnomalyMessage();
+            if (anomaly != null) fail("Can't swipe up to Home: " + anomaly);
 
             final Point displaySize = getRealDisplaySize();
 
@@ -795,18 +795,15 @@ public final class LauncherInstrumentation {
         final int distance = gestureStart - container.getVisibleBounds().top - topPadding;
         final int bottomMargin = container.getVisibleBounds().height() - distance;
 
-        // TODO: Make the gesture steps dependent on the distance so that it can run for various
-        //       screen sizes
-        final int totalMargin = Math.max(bottomMargin, getBottomGestureMargin(container));
         scroll(
                 container,
                 Direction.DOWN,
                 new Rect(
                         0,
-                        totalMargin / 2,
                         0,
-                        totalMargin / 2),
-                80);
+                        0,
+                        Math.max(bottomMargin, getBottomGestureMargin(container))),
+                150);
     }
 
     void scroll(UiObject2 container, Direction direction, Rect margins, int steps) {

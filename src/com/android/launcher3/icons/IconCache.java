@@ -38,6 +38,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.android.launcher3.AppInfo;
+import com.android.launcher3.IconProvider;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.LauncherFiles;
@@ -51,7 +52,6 @@ import com.android.launcher3.icons.cache.CachingLogic;
 import com.android.launcher3.icons.cache.HandlerRunnable;
 import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.shortcuts.ShortcutKey;
-import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.InstantAppResolver;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.Preconditions;
@@ -85,7 +85,7 @@ public class IconCache extends BaseIconCache {
         mLauncherApps = mContext.getSystemService(LauncherApps.class);
         mUserManager = UserManagerCompat.getInstance(mContext);
         mInstantAppResolver = InstantAppResolver.newInstance(mContext);
-        mIconProvider = new IconProvider(context);
+        mIconProvider = IconProvider.INSTANCE.get(context);
     }
 
     @Override
@@ -165,7 +165,7 @@ public class IconCache extends BaseIconCache {
         CacheEntry entry = cacheLocked(application.componentName,
                 application.user, () -> null, mLauncherActivityInfoCachingLogic,
                 false, application.usingLowResIcon());
-        if (entry.bitmap != null && !isDefaultIcon(entry.bitmap, application.user)) {
+        if (entry.icon != null && !isDefaultIcon(entry.icon, application.user)) {
             applyCacheEntry(entry, application);
         }
     }
@@ -195,7 +195,7 @@ public class IconCache extends BaseIconCache {
         // null info means not installed, but if we have a component from the intent then
         // we should still look in the cache for restored app icons.
         if (info.getTargetComponent() == null) {
-            info.bitmap = getDefaultIcon(info.user);
+            info.applyFrom(getDefaultIcon(info.user));
             info.title = "";
             info.contentDescription = "";
         } else {
@@ -238,11 +238,15 @@ public class IconCache extends BaseIconCache {
     protected void applyCacheEntry(CacheEntry entry, ItemInfoWithIcon info) {
         info.title = Utilities.trim(entry.title);
         info.contentDescription = entry.contentDescription;
-        info.bitmap = (entry.bitmap == null) ? getDefaultIcon(info.user) : entry.bitmap;
+        info.applyFrom((entry.icon == null) ? getDefaultIcon(info.user) : entry);
     }
 
     public Drawable getFullResIcon(LauncherActivityInfo info) {
-        return mIconProvider.getIcon(info, mIconDpi);
+        return getFullResIcon(info, true);
+    }
+
+    public Drawable getFullResIcon(LauncherActivityInfo info, boolean flattenDrawable) {
+        return mIconProvider.getIcon(info, mIconDpi, flattenDrawable);
     }
 
     public void updateSessionCache(PackageUserKey key, PackageInstaller.SessionInfo info) {
@@ -253,15 +257,6 @@ public class IconCache extends BaseIconCache {
     protected String getIconSystemState(String packageName) {
         return mIconProvider.getSystemStateForPackage(mSystemState, packageName)
                 + ",flags_asi:" + FeatureFlags.APP_SEARCH_IMPROVEMENTS.get();
-    }
-
-    @Override
-    protected boolean getEntryFromDB(ComponentKey cacheKey, CacheEntry entry, boolean lowRes) {
-        if (mIconProvider.isClockIcon(cacheKey)) {
-            // For clock icon, we always load the dynamic icon
-            return false;
-        }
-        return super.getEntryFromDB(cacheKey, entry, lowRes);
     }
 
     public static abstract class IconLoadRequest extends HandlerRunnable {

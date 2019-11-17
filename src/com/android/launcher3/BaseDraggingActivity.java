@@ -57,7 +57,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
     private ActionMode mCurrentActionMode;
     protected boolean mIsSafeModeEnabled;
 
-    private Runnable mOnStartCallback;
+    private OnStartCallback mOnStartCallback;
 
     private int mThemeRes = R.style.AppTheme;
 
@@ -226,7 +226,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
         super.onStart();
 
         if (mOnStartCallback != null) {
-            mOnStartCallback.run();
+            mOnStartCallback.onActivityStart(this);
             mOnStartCallback = null;
         }
     }
@@ -238,12 +238,8 @@ public abstract class BaseDraggingActivity extends BaseActivity
         mRotationListener.disable();
     }
 
-    public void runOnceOnStart(Runnable action) {
-        mOnStartCallback = action;
-    }
-
-    public void clearRunOnceOnStartCallback() {
-        mOnStartCallback = null;
+    public <T extends BaseDraggingActivity> void setOnStartCallback(OnStartCallback<T> callback) {
+        mOnStartCallback = callback;
     }
 
     protected void onDeviceProfileInitiated() {
@@ -262,4 +258,12 @@ public abstract class BaseDraggingActivity extends BaseActivity
     }
 
     protected abstract void reapplyUi();
+
+    /**
+     * Callback for listening for onStart
+     */
+    public interface OnStartCallback<T extends BaseDraggingActivity> {
+
+        void onActivityStart(T activity);
+    }
 }

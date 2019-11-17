@@ -360,14 +360,10 @@ public abstract class ArrowPopup extends AbstractFloatingView {
         final TimeInterpolator revealInterpolator = ACCEL_DEACCEL;
 
         // Rectangular reveal.
-        mEndRect.set(0, 0, getMeasuredWidth(), getMeasuredHeight());
         final ValueAnimator revealAnim = createOpenCloseOutlineProvider()
                 .createRevealAnimator(this, false);
         revealAnim.setDuration(revealDuration);
         revealAnim.setInterpolator(revealInterpolator);
-        // Clip the popup to the initial outline while the notification dot and arrow animate.
-        revealAnim.start();
-        revealAnim.pause();
 
         ValueAnimator fadeIn = ValueAnimator.ofFloat(0, 1);
         fadeIn.setDuration(revealDuration + arrowDuration);
@@ -403,6 +399,7 @@ public abstract class ArrowPopup extends AbstractFloatingView {
         if (!mIsOpen) {
             return;
         }
+        mEndRect.setEmpty();
         if (getOutlineProvider() instanceof RevealOutlineAnimation) {
             ((RevealOutlineAnimation) getOutlineProvider()).getOutline(mEndRect);
         }
@@ -474,6 +471,9 @@ public abstract class ArrowPopup extends AbstractFloatingView {
 
         mStartRect.set(arrowCenterX - halfArrowWidth, arrowCenterY, arrowCenterX + halfArrowWidth,
                 arrowCenterY);
+        if (mEndRect.isEmpty()) {
+            mEndRect.set(0, 0, getMeasuredWidth(), getMeasuredHeight());
+        }
 
         return new RoundedRectRevealOutlineProvider
                 (arrowCornerRadius, mOutlineRadius, mStartRect, mEndRect);

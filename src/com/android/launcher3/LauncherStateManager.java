@@ -24,8 +24,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.os.Handler;
 import android.os.Looper;
-
-import androidx.annotation.IntDef;
+import android.util.Log;
 
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
@@ -33,11 +32,15 @@ import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.anim.PropertySetter.AnimatedPropertySetter;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
+import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.uioverrides.UiFactory;
 
 import java.io.PrintWriter;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
+
+import androidx.annotation.IntDef;
 
 /**
  * TODO: figure out what kind of tests we can write for this
@@ -143,7 +146,7 @@ public class LauncherStateManager {
 
     public StateHandler[] getStateHandlers() {
         if (mStateHandlers == null) {
-            mStateHandlers = mLauncher.createStateHandlers();
+            mStateHandlers = UiFactory.getStateHandler(mLauncher);
         }
         return mStateHandlers;
     }
@@ -411,6 +414,7 @@ public class LauncherStateManager {
             // Only disable clipping if needed, otherwise leave it as previous value.
             mLauncher.getWorkspace().setClipChildren(false);
         }
+        UiFactory.onLauncherStateOrResumeChanged(mLauncher);
 
         for (int i = mListeners.size() - 1; i >= 0; i--) {
             mListeners.get(i).onStateTransitionStart(state);
@@ -431,11 +435,17 @@ public class LauncherStateManager {
             setRestState(null);
         }
 
+        UiFactory.onLauncherStateOrResumeChanged(mLauncher);
+
         for (int i = mListeners.size() - 1; i >= 0; i--) {
             mListeners.get(i).onStateTransitionComplete(state);
         }
 
         AccessibilityManagerCompat.sendStateEventToTest(mLauncher, state.ordinal);
+    }
+
+    public void onWindowFocusChanged() {
+        UiFactory.onLauncherStateOrFocusChanged(mLauncher);
     }
 
     public LauncherState getLastState() {

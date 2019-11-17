@@ -70,7 +70,7 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
         activity.<RecentsView>getOverviewPanel().showCurrentTask(mTargetTaskId);
         AbstractFloatingView.closeAllOpenViews(activity, wasVisible);
         BaseActivityInterface.AnimationFactory factory =
-                mHelper.prepareRecentsUI(wasVisible,
+                mHelper.prepareRecentsUI(activity, wasVisible,
                 false /* animate activity */, (controller) -> {
                     controller.dispatchOnStart();
                     ValueAnimator anim = controller.getAnimationPlayer()
@@ -102,7 +102,7 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
         anim.addListener(new AnimationSuccessListener() {
             @Override
             public void onAnimationSuccess(Animator animator) {
-                mHelper.onSwipeUpToRecentsComplete();
+                mHelper.onSwipeUpToRecentsComplete(mActivity);
                 if (mRecentsView != null) {
                     mRecentsView.animateUpRunningTaskIconScale();
                 }

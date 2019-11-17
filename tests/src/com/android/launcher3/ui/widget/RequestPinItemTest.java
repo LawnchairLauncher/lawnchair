@@ -59,8 +59,7 @@ import java.util.UUID;
 @RunWith(AndroidJUnit4.class)
 public class RequestPinItemTest extends AbstractLauncherUiTest {
 
-    @Rule
-    public ShellCommandRule mGrantWidgetRule = ShellCommandRule.grantWidgetBind();
+    @Rule public ShellCommandRule mGrantWidgetRule = ShellCommandRule.grantWidgetBind();
 
     private String mCallbackAction;
     private String mShortcutId;
@@ -85,10 +84,10 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
                         .equals(AppWidgetNoConfig.class.getName()));
     }
 
-    @Test
+        @Test
     public void testPinWidgetNoConfig_customPreview() throws Throwable {
         // Command to set custom preview
-        Intent command = RequestPinItemActivity.getCommandIntent(
+        Intent command =  RequestPinItemActivity.getCommandIntent(
                 RequestPinItemActivity.class, "setRemoteViewColor").putExtra(
                 RequestPinItemActivity.EXTRA_PARAM + "0", Color.RED);
 
@@ -170,8 +169,7 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
 
         // Go back to home
         mLauncher.pressHome();
-        Wait.atMost(null, new ItemSearchCondition(itemMatcher), DEFAULT_ACTIVITY_TIMEOUT,
-                mLauncher);
+        Wait.atMost(null, new ItemSearchCondition(itemMatcher), DEFAULT_ACTIVITY_TIMEOUT);
     }
 
     /**

@@ -304,7 +304,7 @@ public abstract class AbstractLauncherUiTest {
     protected void waitForLauncherCondition(
             String message, Function<Launcher, Boolean> condition, long timeout) {
         if (!TestHelpers.isInLauncherProcess()) return;
-        Wait.atMost(message, () -> getFromLauncher(condition), timeout, mLauncher);
+        Wait.atMost(message, () -> getFromLauncher(condition), timeout);
     }
 
     // Cannot be used in TaplTests after injecting any gesture using Tapl because this can hide
@@ -317,7 +317,7 @@ public abstract class AbstractLauncherUiTest {
             final Object fromLauncher = getFromLauncher(f);
             output[0] = fromLauncher;
             return fromLauncher != null;
-        }, timeout, mLauncher);
+        }, timeout);
         return (T) output[0];
     }
 
@@ -331,7 +331,7 @@ public abstract class AbstractLauncherUiTest {
         Wait.atMost(message, () -> {
             testThreadAction.run();
             return getFromLauncher(condition);
-        }, timeout, mLauncher);
+        }, timeout);
     }
 
     protected LauncherActivityInfo getSettingsApp() {
@@ -373,8 +373,7 @@ public abstract class AbstractLauncherUiTest {
         startIntent(
                 getInstrumentation().getContext().getPackageManager().getLaunchIntentForPackage(
                         packageName),
-                By.pkg(packageName).depth(0),
-                true /* newTask */);
+                By.pkg(packageName).depth(0));
     }
 
     public static void startTestActivity(int activityNumber) {
@@ -383,17 +382,12 @@ public abstract class AbstractLauncherUiTest {
                 getLaunchIntentForPackage(packageName);
         intent.setComponent(new ComponentName(packageName,
                 "com.android.launcher3.tests.Activity" + activityNumber));
-        startIntent(intent, By.pkg(packageName).text("TestActivity" + activityNumber),
-                false /* newTask */);
+        startIntent(intent, By.pkg(packageName).text("TestActivity" + activityNumber));
     }
 
-    private static void startIntent(Intent intent, BySelector selector, boolean newTask) {
+    private static void startIntent(Intent intent, BySelector selector) {
         intent.addCategory(Intent.CATEGORY_LAUNCHER);
-        if (newTask) {
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        } else {
-            intent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK | Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
-        }
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         getInstrumentation().getTargetContext().startActivity(intent);
         assertTrue("App didn't start: " + selector,
                 UiDevice.getInstance(getInstrumentation())

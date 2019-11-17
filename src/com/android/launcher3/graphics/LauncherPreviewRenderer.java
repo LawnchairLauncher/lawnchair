@@ -50,8 +50,8 @@ import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.WorkspaceItemInfo;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.WorkspaceLayoutManager;
 import com.android.launcher3.allapps.SearchUiManager;
 import com.android.launcher3.config.FeatureFlags;
@@ -105,7 +105,7 @@ public class LauncherPreviewRenderer implements Callable<Bitmap> {
                 Build.VERSION.SDK_INT);
 
         mWorkspaceItemInfo = new WorkspaceItemInfo();
-        mWorkspaceItemInfo.bitmap = iconInfo;
+        mWorkspaceItemInfo.applyFrom(iconInfo);
         mWorkspaceItemInfo.intent = new Intent();
         mWorkspaceItemInfo.contentDescription = mWorkspaceItemInfo.title =
                 context.getString(R.string.label_application);

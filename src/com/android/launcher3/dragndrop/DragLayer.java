@@ -57,6 +57,7 @@ import com.android.launcher3.graphics.OverviewScrim;
 import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.graphics.WorkspaceAndHotseatScrim;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
+import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.launcher3.views.Transposable;
@@ -120,7 +121,7 @@ public class DragLayer extends BaseDragLayer<Launcher> {
     }
 
     public void recreateControllers() {
-        mControllers = mActivity.createTouchControllers();
+        mControllers = UiFactory.createTouchControllers(mActivity);
     }
 
     public ViewGroupFocusHelper getFocusIndicatorHelper() {
@@ -476,14 +477,14 @@ public class DragLayer extends BaseDragLayer<Launcher> {
     public void onViewAdded(View child) {
         super.onViewAdded(child);
         updateChildIndices();
-        mActivity.onDragLayerHierarchyChanged();
+        UiFactory.onLauncherStateOrFocusChanged(mActivity);
     }
 
     @Override
     public void onViewRemoved(View child) {
         super.onViewRemoved(child);
         updateChildIndices();
-        mActivity.onDragLayerHierarchyChanged();
+        UiFactory.onLauncherStateOrFocusChanged(mActivity);
     }
 
     @Override

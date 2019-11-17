@@ -274,9 +274,6 @@ public class PackageManagerHelper {
         } else {
             packageName = cn.getPackageName();
         }
-        if (packageName == null) {
-            packageName = intent.getPackage();
-        }
         if (packageName != null) {
             try {
                 PackageInfo info = pm.getPackageInfo(packageName, 0);

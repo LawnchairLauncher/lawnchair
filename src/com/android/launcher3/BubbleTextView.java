@@ -16,8 +16,6 @@
 
 package com.android.launcher3;
 
-import static com.android.launcher3.FastBitmapDrawable.newIcon;
-import static com.android.launcher3.graphics.PreloadIconDrawable.newPendingIcon;
 import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
 
 import android.animation.Animator;
@@ -47,6 +45,7 @@ import com.android.launcher3.Launcher.OnResumeCallback;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.graphics.IconShape;
 import com.android.launcher3.graphics.PreloadIconDrawable;
@@ -216,7 +215,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         cancelDotScaleAnim();
         mDotParams.scale = 0f;
         mForceHideDot = false;
-        setBackground(null);
     }
 
     private void cancelDotScaleAnim() {
@@ -289,8 +287,9 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     }
 
     private void applyIconAndLabel(ItemInfoWithIcon info) {
-        FastBitmapDrawable iconDrawable = newIcon(getContext(), info);
-        mDotParams.color = IconPalette.getMutedColor(info.bitmap.color, 0.54f);
+        FastBitmapDrawable iconDrawable = DrawableFactory.INSTANCE.get(getContext())
+                .newIcon(getContext(), info);
+        mDotParams.color = IconPalette.getMutedColor(info.iconColor, 0.54f);
 
         setIcon(iconDrawable);
         setText(info.title);
@@ -497,8 +496,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         // Text should be visible everywhere but the hotseat.
         Object tag = getParent() instanceof FolderIcon ? ((View) getParent()).getTag() : getTag();
         ItemInfo info = tag instanceof ItemInfo ? (ItemInfo) tag : null;
-        return info == null || (info.container != LauncherSettings.Favorites.CONTAINER_HOTSEAT
-                && info.container != LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION);
+        return info == null || info.container != LauncherSettings.Favorites.CONTAINER_HOTSEAT;
     }
 
     public void setTextVisibility(boolean visible) {
@@ -569,7 +567,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
                     preloadDrawable = (PreloadIconDrawable) mIcon;
                     preloadDrawable.setLevel(progressLevel);
                 } else {
-                    preloadDrawable = newPendingIcon(getContext(), info);
+                    preloadDrawable = DrawableFactory.INSTANCE.get(getContext())
+                            .newPendingIcon(getContext(), info);
                     preloadDrawable.setLevel(progressLevel);
                     setIcon(preloadDrawable);
                 }
@@ -666,7 +665,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             mDisableRelayout = true;
 
             // Optimization: Starting in N, pre-uploads the bitmap to RenderThread.
-            info.bitmap.icon.prepareToDraw();
+            info.iconBitmap.prepareToDraw();
 
             if (info instanceof AppInfo) {
                 applyFromApplicationInfo((AppInfo) info);

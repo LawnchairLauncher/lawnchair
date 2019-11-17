@@ -110,10 +110,6 @@ public final class FeatureFlags {
             "FAKE_LANDSCAPE_UI", false,
             "Rotate launcher UI instead of using transposed layout");
 
-    public static final TogglableFlag FOLDER_NAME_SUGGEST = new TogglableFlag(
-            "FOLDER_NAME_SUGGEST", true,
-            "Suggests folder names instead of blank text.");
-
     public static final TogglableFlag APP_SEARCH_IMPROVEMENTS = new TogglableFlag(
             "APP_SEARCH_IMPROVEMENTS", false,
             "Adds localized title and keyword search and ranking");
@@ -123,16 +119,6 @@ public final class FeatureFlags {
 
     public static final TogglableFlag ENABLE_QUICK_CAPTURE_GESTURE = new TogglableFlag(
             "ENABLE_QUICK_CAPTURE_GESTURE", false, "Swipe from right to left to quick capture");
-
-    public static final TogglableFlag ASSISTANT_GIVES_LAUNCHER_FOCUS = new TogglableFlag(
-            "ASSISTANT_GIVES_LAUNCHER_FOCUS", false,
-            "Allow Launcher to handle nav bar gestures while Assistant is running over it");
-
-    public static final TogglableFlag ENABLE_HYBRID_HOTSEAT = new TogglableFlag(
-            "ENABLE_HYBRID_HOTSEAT", false, "Fill gaps in hotseat with predicted apps");
-
-    public static final TogglableFlag ENABLE_DEEP_SHORTCUT_ICON_CACHE = new TogglableFlag(
-            "ENABLE_DEEP_SHORTCUT_ICON_CACHE", true, "R/W deep shortcut in IconCache");
 
     public static void initialize(Context context) {
         // Avoid the disk read for user builds

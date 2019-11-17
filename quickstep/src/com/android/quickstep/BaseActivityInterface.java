@@ -32,12 +32,11 @@ import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.quickstep.util.ActivityInitListener;
-import com.android.quickstep.util.ShelfPeekAnim;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
+import java.util.function.BiPredicate;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 /**
  * Utility class which abstracts out the logical differences between Launcher and RecentsActivity.
@@ -45,26 +44,21 @@ import java.util.function.Predicate;
 @TargetApi(Build.VERSION_CODES.P)
 public interface BaseActivityInterface<T extends BaseDraggingActivity> {
 
-    void onTransitionCancelled(boolean activityVisible);
+    void onTransitionCancelled(T activity, boolean activityVisible);
 
     int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context, Rect outRect);
 
-    void onSwipeUpToRecentsComplete();
+    void onSwipeUpToRecentsComplete(T activity);
 
-    default void onSwipeUpToHomeComplete() { }
+    default void onSwipeUpToHomeComplete(T activity) { }
     void onAssistantVisibilityChanged(float visibility);
 
-    @NonNull HomeAnimationFactory prepareHomeUI();
+    @NonNull HomeAnimationFactory prepareHomeUI(T activity);
 
-    AnimationFactory prepareRecentsUI(boolean activityVisible, boolean animateActivity,
-            Consumer<AnimatorPlaybackController> callback);
+    AnimationFactory prepareRecentsUI(T activity, boolean activityVisible,
+            boolean animateActivity, Consumer<AnimatorPlaybackController> callback);
 
-    ActivityInitListener createActivityInitListener(Predicate<Boolean> onInitListener);
-
-    /**
-     * Sets a callback to be run when an activity launch happens while launcher is not yet resumed.
-     */
-    default void setOnDeferredActivityLaunchCallback(Runnable r) {}
+    ActivityInitListener createActivityInitListener(BiPredicate<T, Boolean> onInitListener);
 
     @Nullable
     T getCreatedActivity();
@@ -90,29 +84,31 @@ public interface BaseActivityInterface<T extends BaseDraggingActivity> {
     }
 
     /**
-     * Updates the prediction state to the overview state.
-     */
-    default void updateOverviewPredictionState() {
-        // By default overview predictions are not supported
-    }
-
-    /**
      * Used for containerType in {@link com.android.launcher3.logging.UserEventDispatcher}
      */
     int getContainerType();
 
     boolean isInLiveTileMode();
 
-    void onLaunchTaskFailed();
+    void onLaunchTaskFailed(T activity);
 
-    void onLaunchTaskSuccess();
+    void onLaunchTaskSuccess(T activity);
 
     default void closeOverlay() { }
 
-    default void switchRunningTaskViewToScreenshot(ThumbnailData thumbnailData,
-            Runnable runnable) {}
+    default void switchToScreenshot(ThumbnailData thumbnailData, Runnable runnable) {}
 
     interface AnimationFactory {
+
+        enum ShelfAnimState {
+            HIDE(true), PEEK(true), OVERVIEW(false), CANCEL(false);
+
+            ShelfAnimState(boolean shouldPreformHaptic) {
+                this.shouldPreformHaptic = shouldPreformHaptic;
+            }
+
+            public final boolean shouldPreformHaptic;
+        }
 
         default void onRemoteAnimationReceived(RemoteAnimationTargets targets) { }
 
@@ -122,8 +118,8 @@ public interface BaseActivityInterface<T extends BaseDraggingActivity> {
 
         default void onTransitionCancelled() { }
 
-        default void setShelfState(ShelfPeekAnim.ShelfAnimState animState,
-                Interpolator interpolator, long duration) { }
+        default void setShelfState(ShelfAnimState animState, Interpolator interpolator,
+                long duration) { }
 
         /**
          * @param attached Whether to show RecentsView alongside the app window. If false, recents

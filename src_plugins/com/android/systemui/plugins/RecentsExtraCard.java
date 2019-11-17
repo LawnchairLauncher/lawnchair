@@ -34,9 +34,9 @@ public interface RecentsExtraCard extends Plugin {
     /**
      * Sets up the recents overview extra card and fills in data.
      *
-     * @param context     Plugin context
+     * @param context Plugin context
      * @param frameLayout PlaceholderView
-     * @param activity    Recents activity to hold extra view
+     * @param activity Recents activity to hold extra view
      */
     void setupView(Context context, FrameLayout frameLayout, Activity activity);
 }

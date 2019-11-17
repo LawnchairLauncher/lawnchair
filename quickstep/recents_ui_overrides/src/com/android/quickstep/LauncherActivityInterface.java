@@ -29,7 +29,7 @@ import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
 import static com.android.launcher3.anim.Interpolators.INSTANT;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.quickstep.LauncherSwipeHandler.RECENTS_ATTACH_DURATION;
+import static com.android.quickstep.WindowTransformSwipeHandler.RECENTS_ATTACH_DURATION;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
@@ -47,23 +47,20 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
-import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherInitListener;
+import com.android.launcher3.LauncherInitListenerEx;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.AnimatorSetBuilder;
-import com.android.launcher3.appprediction.PredictionUiStateManager;
+import com.android.launcher3.uioverrides.states.OverviewState;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.views.FloatingIconView;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.LayoutUtils;
-import com.android.quickstep.util.ShelfPeekAnim;
-import com.android.quickstep.util.ShelfPeekAnim.ShelfAnimState;
 import com.android.quickstep.util.StaggeredWorkspaceAnim;
 import com.android.quickstep.views.LauncherRecentsView;
 import com.android.quickstep.views.RecentsView;
@@ -72,8 +69,8 @@ import com.android.systemui.plugins.shared.LauncherOverlayManager;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
+import java.util.function.BiPredicate;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 /**
  * {@link BaseActivityInterface} for the in-launcher recents.
@@ -95,65 +92,50 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
     }
 
     @Override
-    public void onTransitionCancelled(boolean activityVisible) {
-        Launcher launcher = getCreatedActivity();
-        if (launcher == null) {
-            return;
-        }
-        LauncherState startState = launcher.getStateManager().getRestState();
-        launcher.getStateManager().goToState(startState, activityVisible);
+    public void onTransitionCancelled(Launcher activity, boolean activityVisible) {
+        LauncherState startState = activity.getStateManager().getRestState();
+        activity.getStateManager().goToState(startState, activityVisible);
     }
 
     @Override
-    public void onSwipeUpToRecentsComplete() {
+    public void onSwipeUpToRecentsComplete(Launcher activity) {
         // Re apply state in case we did something funky during the transition.
-        Launcher launcher = getCreatedActivity();
-        if (launcher == null) {
-            return;
-        }
-        launcher.getStateManager().reapplyState();
-        DiscoveryBounce.showForOverviewIfNeeded(launcher);
+        activity.getStateManager().reapplyState();
+        DiscoveryBounce.showForOverviewIfNeeded(activity);
     }
 
     @Override
-    public void onSwipeUpToHomeComplete() {
-        Launcher launcher = getCreatedActivity();
-        if (launcher == null) {
-            return;
-        }
+    public void onSwipeUpToHomeComplete(Launcher activity) {
         // Ensure recents is at the correct position for NORMAL state. For example, when we detach
         // recents, we assume the first task is invisible, making translation off by one task.
-        launcher.getStateManager().reapplyState();
+        activity.getStateManager().reapplyState();
         setLauncherHideBackArrow(false);
     }
 
     private void setLauncherHideBackArrow(boolean hideBackArrow) {
         Launcher launcher = getCreatedActivity();
-        if (launcher == null) {
-            return;
+        if (launcher != null) {
+            launcher.getRootView().setForceHideBackArrow(hideBackArrow);
         }
-        launcher.getRootView().setForceHideBackArrow(hideBackArrow);
     }
 
     @Override
     public void onAssistantVisibilityChanged(float visibility) {
         Launcher launcher = getCreatedActivity();
-        if (launcher == null) {
-            return;
+        if (launcher != null) {
+            launcher.onAssistantVisibilityChanged(visibility);
         }
-        launcher.onAssistantVisibilityChanged(visibility);
     }
 
     @NonNull
     @Override
-    public HomeAnimationFactory prepareHomeUI() {
-        Launcher launcher = getCreatedActivity();
-        final DeviceProfile dp = launcher.getDeviceProfile();
-        final RecentsView recentsView = launcher.getOverviewPanel();
+    public HomeAnimationFactory prepareHomeUI(Launcher activity) {
+        final DeviceProfile dp = activity.getDeviceProfile();
+        final RecentsView recentsView = activity.getOverviewPanel();
         final TaskView runningTaskView = recentsView.getRunningTaskView();
         final View workspaceView;
         if (runningTaskView != null && runningTaskView.getTask().key.getComponent() != null) {
-            workspaceView = launcher.getWorkspace().getFirstMatchForAppClose(
+            workspaceView = activity.getWorkspace().getFirstMatchForAppClose(
                     runningTaskView.getTask().key.getComponent().getPackageName(),
                     UserHandle.of(runningTaskView.getTask().key.userId));
         } else {
@@ -162,7 +144,7 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
         final RectF iconLocation = new RectF();
         boolean canUseWorkspaceView = workspaceView != null && workspaceView.isAttachedToWindow();
         FloatingIconView floatingIconView = canUseWorkspaceView
-                ? FloatingIconView.getFloatingIconView(launcher, workspaceView,
+                ? FloatingIconView.getFloatingIconView(activity, workspaceView,
                         true /* hideOriginal */, iconLocation, false /* isOpening */)
                 : null;
         setLauncherHideBackArrow(true);
@@ -188,14 +170,14 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
             public AnimatorPlaybackController createActivityAnimationToHome() {
                 // Return an empty APC here since we have an non-user controlled animation to home.
                 long accuracy = 2 * Math.max(dp.widthPx, dp.heightPx);
-                return launcher.getStateManager().createAnimationToNewWorkspace(NORMAL, accuracy,
+                return activity.getStateManager().createAnimationToNewWorkspace(NORMAL, accuracy,
                         0 /* animComponents */);
             }
 
             @Override
             public void playAtomicAnimation(float velocity) {
                 // Setup workspace with 0 duration to prepare for our staggered animation.
-                LauncherStateManager stateManager = launcher.getStateManager();
+                LauncherStateManager stateManager = activity.getStateManager();
                 AnimatorSetBuilder builder = new AnimatorSetBuilder();
                 // setRecentsAttachedToAppWindow() will animate recents out.
                 builder.addFlag(AnimatorSetBuilder.FLAG_DONT_ANIMATE_OVERVIEW);
@@ -205,40 +187,39 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
                 // Stop scrolling so that it doesn't interfere with the translation offscreen.
                 recentsView.getScroller().forceFinished(true);
 
-                new StaggeredWorkspaceAnim(launcher, workspaceView, velocity).start();
+                new StaggeredWorkspaceAnim(activity, workspaceView, velocity).start();
             }
         };
     }
 
     @Override
-    public AnimationFactory prepareRecentsUI(boolean activityVisible,
+    public AnimationFactory prepareRecentsUI(Launcher activity, boolean activityVisible,
             boolean animateActivity, Consumer<AnimatorPlaybackController> callback) {
-        BaseQuickstepLauncher launcher = getCreatedActivity();
-        final LauncherState startState = launcher.getStateManager().getState();
+        final LauncherState startState = activity.getStateManager().getState();
 
         LauncherState resetState = startState;
         if (startState.disableRestore) {
-            resetState = launcher.getStateManager().getRestState();
+            resetState = activity.getStateManager().getRestState();
         }
-        launcher.getStateManager().setRestState(resetState);
+        activity.getStateManager().setRestState(resetState);
 
         final LauncherState fromState = animateActivity ? BACKGROUND_APP : OVERVIEW;
-        launcher.getStateManager().goToState(fromState, false);
+        activity.getStateManager().goToState(fromState, false);
         // Since all apps is not visible, we can safely reset the scroll position.
         // This ensures then the next swipe up to all-apps starts from scroll 0.
-        launcher.getAppsView().reset(false /* animate */);
+        activity.getAppsView().reset(false /* animate */);
 
         return new AnimationFactory() {
-            private final ShelfPeekAnim mShelfAnim = launcher.getShelfPeekAnim();
+            private ShelfAnimState mShelfState;
             private boolean mIsAttachedToWindow;
 
             @Override
             public void createActivityInterface(long transitionLength) {
-                createActivityInterfaceInternal(launcher, fromState, transitionLength, callback);
+                createActivityInterfaceInternal(activity, fromState, transitionLength, callback);
                 // Creating the activity controller animation sometimes reapplies the launcher state
                 // (because we set the animation as the current state animation), so we reapply the
                 // attached state here as well to ensure recents is shown/hidden appropriately.
-                if (SysUINavigationMode.getMode(launcher) == Mode.NO_BUTTON) {
+                if (SysUINavigationMode.getMode(activity) == Mode.NO_BUTTON) {
                     setRecentsAttachedToAppWindow(mIsAttachedToWindow, false);
                 }
             }
@@ -252,13 +233,36 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
 
             @Override
             public void onTransitionCancelled() {
-                launcher.getStateManager().goToState(startState, false /* animate */);
+                activity.getStateManager().goToState(startState, false /* animate */);
             }
 
             @Override
             public void setShelfState(ShelfAnimState shelfState, Interpolator interpolator,
                     long duration) {
-                mShelfAnim.setShelfState(shelfState, interpolator, duration);
+                if (mShelfState == shelfState) {
+                    return;
+                }
+                mShelfState = shelfState;
+                activity.getStateManager().cancelStateElementAnimation(INDEX_SHELF_ANIM);
+                if (mShelfState == ShelfAnimState.CANCEL) {
+                    return;
+                }
+                float shelfHiddenProgress = BACKGROUND_APP.getVerticalProgress(activity);
+                float shelfOverviewProgress = OVERVIEW.getVerticalProgress(activity);
+                // Peek based on default overview progress so we can see hotseat if we're showing
+                // that instead of predictions in overview.
+                float defaultOverviewProgress = OverviewState.getDefaultVerticalProgress(activity);
+                float shelfPeekingProgress = shelfHiddenProgress
+                        - (shelfHiddenProgress - defaultOverviewProgress) * 0.25f;
+                float toProgress = mShelfState == ShelfAnimState.HIDE
+                        ? shelfHiddenProgress
+                        : mShelfState == ShelfAnimState.PEEK
+                                ? shelfPeekingProgress
+                                : shelfOverviewProgress;
+                Animator shelfAnim = activity.getStateManager()
+                        .createStateElementAnimation(INDEX_SHELF_ANIM, toProgress);
+                shelfAnim.setInterpolator(interpolator);
+                shelfAnim.setDuration(duration).start();
             }
 
             @Override
@@ -267,8 +271,8 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
                     return;
                 }
                 mIsAttachedToWindow = attached;
-                LauncherRecentsView recentsView = launcher.getOverviewPanel();
-                Animator fadeAnim = launcher.getStateManager()
+                LauncherRecentsView recentsView = activity.getOverviewPanel();
+                Animator fadeAnim = activity.getStateManager()
                         .createStateElementAnimation(
                         INDEX_RECENTS_FADE_ANIM, attached ? 1 : 0);
 
@@ -282,7 +286,7 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
 
                     float fromTranslationX = attached ? offscreenX - scrollOffsetX : 0;
                     float toTranslationX = attached ? 0 : offscreenX - scrollOffsetX;
-                    launcher.getStateManager()
+                    activity.getStateManager()
                             .cancelStateElementAnimation(INDEX_RECENTS_TRANSLATE_X_ANIM);
 
                     if (!recentsView.isShown() && animate) {
@@ -294,7 +298,7 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
                     if (!animate) {
                         recentsView.setTranslationX(toTranslationX);
                     } else {
-                        launcher.getStateManager().createStateElementAnimation(
+                        activity.getStateManager().createStateElementAnimation(
                                 INDEX_RECENTS_TRANSLATE_X_ANIM,
                                 fromTranslationX, toTranslationX).start();
                     }
@@ -392,15 +396,15 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
     }
 
     @Override
-    public ActivityInitListener createActivityInitListener(Predicate<Boolean> onInitListener) {
-        return new LauncherInitListener((activity, alreadyOnHome) ->
-                onInitListener.test(alreadyOnHome));
+    public ActivityInitListener createActivityInitListener(
+            BiPredicate<Launcher, Boolean> onInitListener) {
+        return new LauncherInitListenerEx(onInitListener);
     }
 
     @Nullable
     @Override
-    public BaseQuickstepLauncher getCreatedActivity() {
-        return BaseQuickstepLauncher.ACTIVITY_TRACKER.getCreatedActivity();
+    public Launcher getCreatedActivity() {
+        return Launcher.ACTIVITY_TRACKER.getCreatedActivity();
     }
 
     @Nullable
@@ -465,20 +469,12 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
     }
 
     @Override
-    public void onLaunchTaskFailed() {
-        Launcher launcher = getCreatedActivity();
-        if (launcher == null) {
-            return;
-        }
+    public void onLaunchTaskFailed(Launcher launcher) {
         launcher.getStateManager().goToState(OVERVIEW);
     }
 
     @Override
-    public void onLaunchTaskSuccess() {
-        Launcher launcher = getCreatedActivity();
-        if (launcher == null) {
-            return;
-        }
+    public void onLaunchTaskSuccess(Launcher launcher) {
         launcher.getStateManager().moveToRestState();
     }
 
@@ -497,38 +493,22 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
     }
 
     @Override
-    public void switchRunningTaskViewToScreenshot(ThumbnailData thumbnailData,
-            Runnable onFinishRunnable) {
+    public void switchToScreenshot(ThumbnailData thumbnailData, Runnable runnable) {
         Launcher launcher = getCreatedActivity();
-        if (launcher == null) {
-            return;
-        }
         RecentsView recentsView = launcher.getOverviewPanel();
         if (recentsView == null) {
-            if (onFinishRunnable != null) {
-                onFinishRunnable.run();
+            if (runnable != null) {
+                runnable.run();
             }
             return;
         }
-        recentsView.switchToScreenshot(thumbnailData, onFinishRunnable);
-    }
-
-    @Override
-    public void setOnDeferredActivityLaunchCallback(Runnable r) {
-        Launcher launcher = getCreatedActivity();
-        if (launcher == null) {
-            return;
+        TaskView taskView = recentsView.getRunningTaskView();
+        if (taskView != null) {
+            taskView.setShowScreenshot(true);
+            taskView.getThumbnail().setThumbnail(taskView.getTask(), thumbnailData);
+            ViewUtils.postDraw(taskView, runnable);
+        } else if (runnable != null) {
+            runnable.run();
         }
-        launcher.setOnDeferredActivityLaunchCallback(r);
-    }
-
-    @Override
-    public void updateOverviewPredictionState() {
-        Launcher launcher = getCreatedActivity();
-        if (launcher == null) {
-            return;
-        }
-        PredictionUiStateManager.INSTANCE.get(launcher).switchClient(
-                PredictionUiStateManager.Client.OVERVIEW);
     }
 }

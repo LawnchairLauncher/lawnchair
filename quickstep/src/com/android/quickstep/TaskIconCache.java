@@ -15,64 +15,67 @@
  */
 package com.android.quickstep;
 
-import static com.android.launcher3.FastBitmapDrawable.newIcon;
-import static com.android.launcher3.uioverrides.QuickstepLauncher.GO_LOW_RAM_RECENTS_ENABLED;
+import static com.android.launcher3.uioverrides.RecentsUiFactory.GO_LOW_RAM_RECENTS_ENABLED;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
-import android.app.ActivityManager.TaskDescription;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.UserHandle;
-import android.util.SparseArray;
+import android.util.LruCache;
 import android.view.accessibility.AccessibilityManager;
 
-import androidx.annotation.WorkerThread;
-
-import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.icons.BitmapInfo;
-import com.android.launcher3.icons.IconProvider;
-import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.icons.cache.HandlerRunnable;
 import com.android.launcher3.util.Preconditions;
-import com.android.quickstep.util.TaskKeyLruCache;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.Task.TaskKey;
+import com.android.systemui.shared.recents.model.TaskKeyLruCache;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
-import com.android.systemui.shared.system.PackageManagerWrapper;
 
+import java.util.Map;
 import java.util.function.Consumer;
 
 /**
  * Manages the caching of task icons and related data.
+ * TODO(b/138944598): This class should later be merged into IconCache.
  */
 public class TaskIconCache {
 
     private final Handler mBackgroundHandler;
     private final AccessibilityManager mAccessibilityManager;
 
-    private final Context mContext;
-    private final TaskKeyLruCache<TaskCacheEntry> mIconCache;
-    private final SparseArray<BitmapInfo> mDefaultIcons = new SparseArray<>();
-    private final IconProvider mIconProvider;
+    private final NormalizedIconLoader mIconLoader;
+
+    private final TaskKeyLruCache<Drawable> mIconCache;
+    private final TaskKeyLruCache<String> mContentDescriptionCache;
+    private final LruCache<ComponentName, ActivityInfo> mActivityInfoCache;
+
+    private TaskKeyLruCache.EvictionCallback mClearActivityInfoOnEviction =
+            new TaskKeyLruCache.EvictionCallback() {
+        @Override
+        public void onEntryEvicted(Task.TaskKey key) {
+            if (key != null) {
+                mActivityInfoCache.remove(key.getComponent());
+            }
+        }
+    };
 
     public TaskIconCache(Context context, Looper backgroundLooper) {
-        mContext = context;
         mBackgroundHandler = new Handler(backgroundLooper);
         mAccessibilityManager = context.getSystemService(AccessibilityManager.class);
 
         Resources res = context.getResources();
         int cacheSize = res.getInteger(R.integer.recentsIconCacheSize);
-        mIconCache = new TaskKeyLruCache<>(cacheSize);
-        mIconProvider = new IconProvider(context);
+        mIconCache = new TaskKeyLruCache<>(cacheSize, mClearActivityInfoOnEviction);
+        mContentDescriptionCache = new TaskKeyLruCache<>(cacheSize, mClearActivityInfoOnEviction);
+        mActivityInfoCache = new LruCache<>(cacheSize);
+        mIconLoader = new NormalizedIconLoader(context, mIconCache, mActivityInfoCache,
+                true /* disableColorExtraction */);
     }
 
     /**
@@ -93,14 +96,15 @@ public class TaskIconCache {
         IconLoadRequest request = new IconLoadRequest(mBackgroundHandler) {
             @Override
             public void run() {
-                TaskCacheEntry entry = getCacheEntry(task);
+                Drawable icon = mIconLoader.getIcon(task);
+                String contentDescription = loadContentDescriptionInBackground(task);
                 if (isCanceled()) {
                     // We don't call back to the provided callback in this case
                     return;
                 }
                 MAIN_EXECUTOR.execute(() -> {
-                    task.icon = entry.icon;
-                    task.titleDescription = entry.contentDescription;
+                    task.icon = icon;
+                    task.titleDescription = contentDescription;
                     callback.accept(task);
                     onEnd();
                 });
@@ -112,98 +116,50 @@ public class TaskIconCache {
 
     public void clear() {
         mIconCache.evictAll();
+        mContentDescriptionCache.evictAll();
     }
+
+    /**
+     * Loads the content description for the given {@param task}.
+     */
+    private String loadContentDescriptionInBackground(Task task) {
+        // Return the cached content description if it exists
+        String label = mContentDescriptionCache.getAndInvalidateIfModified(task.key);
+        if (label != null) {
+            return label;
+        }
+
+        // Skip loading content descriptions if accessibility is disabled unless low RAM recents
+        // is enabled.
+        if (!GO_LOW_RAM_RECENTS_ENABLED && !mAccessibilityManager.isEnabled()) {
+            return "";
+        }
+
+        // Skip loading the content description if the activity no longer exists
+        ActivityInfo activityInfo = mIconLoader.getAndUpdateActivityInfo(task.key);
+        if (activityInfo == null) {
+            return "";
+        }
+
+        // Load the label otherwise
+        label = ActivityManagerWrapper.getInstance().getBadgedContentDescription(activityInfo,
+                task.key.userId, task.taskDescription);
+        mContentDescriptionCache.put(task.key, label);
+        return label;
+    }
+
 
     void onTaskRemoved(TaskKey taskKey) {
         mIconCache.remove(taskKey);
     }
 
-    void invalidateCacheEntries(String pkg, UserHandle handle) {
-        Utilities.postAsyncCallback(mBackgroundHandler,
-                () -> mIconCache.removeAll(key ->
-                        pkg.equals(key.getPackageName()) && handle.getIdentifier() == key.userId));
-    }
-
-    @WorkerThread
-    private TaskCacheEntry getCacheEntry(Task task) {
-        TaskCacheEntry entry = mIconCache.getAndInvalidateIfModified(task.key);
-        if (entry != null) {
-            return entry;
-        }
-
-        TaskDescription desc = task.taskDescription;
-        TaskKey key = task.key;
-        ActivityInfo activityInfo = null;
-
-        // Create new cache entry
-        entry = new TaskCacheEntry();
-
-        // Load icon
-        // TODO: Load icon resource (b/143363444)
-        Bitmap icon = desc.getIcon();
-        if (icon != null) {
-            entry.icon = new FastBitmapDrawable(getBitmapInfo(
-                    new BitmapDrawable(mContext.getResources(), icon),
-                    key.userId,
-                    desc.getPrimaryColor(),
-                    false /* isInstantApp */));
-        } else {
-            activityInfo = PackageManagerWrapper.getInstance().getActivityInfo(
-                    key.getComponent(), key.userId);
-            if (activityInfo != null) {
-                BitmapInfo bitmapInfo = getBitmapInfo(
-                        mIconProvider.getIcon(activityInfo, UserHandle.of(key.userId)),
-                        key.userId,
-                        desc.getPrimaryColor(),
-                        activityInfo.applicationInfo.isInstantApp());
-                entry.icon = newIcon(mContext, bitmapInfo);
-            } else {
-                entry.icon = getDefaultIcon(key.userId);
+    void invalidatePackage(String packageName) {
+        // TODO(b/138944598): Merge this class into IconCache so we can do this at the base level
+        Map<ComponentName, ActivityInfo> activityInfoCache = mActivityInfoCache.snapshot();
+        for (ComponentName cn : activityInfoCache.keySet()) {
+            if (cn.getPackageName().equals(packageName)) {
+                mActivityInfoCache.remove(cn);
             }
-        }
-
-        // Loading content descriptions if accessibility or low RAM recents is enabled.
-        if (GO_LOW_RAM_RECENTS_ENABLED || mAccessibilityManager.isEnabled()) {
-            // Skip loading the content description if the activity no longer exists
-            if (activityInfo == null) {
-                activityInfo = PackageManagerWrapper.getInstance().getActivityInfo(
-                        key.getComponent(), key.userId);
-            }
-            if (activityInfo != null) {
-                entry.contentDescription = ActivityManagerWrapper.getInstance()
-                        .getBadgedContentDescription(activityInfo, task.key.userId,
-                                task.taskDescription);
-            }
-        }
-
-        mIconCache.put(task.key, entry);
-        return entry;
-    }
-
-    @WorkerThread
-    private Drawable getDefaultIcon(int userId) {
-        synchronized (mDefaultIcons) {
-            BitmapInfo info = mDefaultIcons.get(userId);
-            if (info == null) {
-                try (LauncherIcons la = LauncherIcons.obtain(mContext)) {
-                    info = la.makeDefaultIcon(UserHandle.of(userId));
-                }
-                mDefaultIcons.put(userId, info);
-            }
-            return new FastBitmapDrawable(info);
-        }
-    }
-
-    @WorkerThread
-    private BitmapInfo getBitmapInfo(Drawable drawable, int userId,
-            int primaryColor, boolean isInstantApp) {
-        try (LauncherIcons la = LauncherIcons.obtain(mContext)) {
-            la.disableColorExtraction();
-            la.setWrapperBackgroundColor(primaryColor);
-
-            // User version code O, so that the icon is always wrapped in an adaptive icon container
-            return la.createBadgedIconBitmap(drawable, UserHandle.of(userId),
-                    Build.VERSION_CODES.O, isInstantApp);
         }
     }
 
@@ -211,10 +167,5 @@ public class TaskIconCache {
         IconLoadRequest(Handler handler) {
             super(handler, null);
         }
-    }
-
-    private static class TaskCacheEntry {
-        public Drawable icon;
-        public String contentDescription = "";
     }
 }

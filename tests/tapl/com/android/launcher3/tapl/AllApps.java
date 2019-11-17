@@ -29,8 +29,6 @@ import androidx.test.uiautomator.UiObject2;
 import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.testing.TestProtocol;
 
-import java.util.stream.Collectors;
-
 /**
  * Operations on AllApps opened from Home. Also a parent for All Apps opened from Overview.
  */
@@ -69,7 +67,7 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
             return false;
         }
         if (iconBounds.bottom > displayBottom) {
-            LauncherInstrumentation.log("hasClickableIcon: icon bottom below bottom offset");
+            LauncherInstrumentation.log("hasClickableIcon: icon center bellow bottom offset");
             return false;
         }
         LauncherInstrumentation.log("hasClickableIcon: icon is clickable");
@@ -118,12 +116,7 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
                             displayBottom)) {
                         mLauncher.scrollToLastVisibleRow(
                                 allAppsContainer,
-                                mLauncher.getObjectsInContainer(allAppsContainer, "icon")
-                                        .stream()
-                                        .filter(object ->
-                                                object.getVisibleBounds().bottom
-                                                        <= displayBottom)
-                                        .collect(Collectors.toList()),
+                                mLauncher.getObjectsInContainer(allAppsContainer, "icon"),
                                 searchBox.getVisibleBounds().bottom
                                         - allAppsContainer.getVisibleBounds().top);
                         final int newScroll = getAllAppsScroll();
@@ -170,7 +163,7 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
                         "Exceeded max scroll attempts: " + MAX_SCROLL_ATTEMPTS,
                         ++attempts <= MAX_SCROLL_ATTEMPTS);
 
-                mLauncher.scroll(allAppsContainer, Direction.UP, margins, 12);
+                mLauncher.scroll(allAppsContainer, Direction.UP, margins, 50);
             }
 
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer("scrolled up")) {

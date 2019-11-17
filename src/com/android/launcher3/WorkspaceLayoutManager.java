@@ -39,8 +39,7 @@ public interface WorkspaceLayoutManager {
     default void addInScreenFromBind(View child, ItemInfo info) {
         int x = info.cellX;
         int y = info.cellY;
-        if (info.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT
-                || info.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION) {
+        if (info.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
             int screenId = info.screenId;
             x = getHotseat().getCellXFromOrder(screenId);
             y = getHotseat().getCellYFromOrder(screenId);
@@ -84,8 +83,7 @@ public interface WorkspaceLayoutManager {
         }
 
         final CellLayout layout;
-        if (container == LauncherSettings.Favorites.CONTAINER_HOTSEAT
-                || container == LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION) {
+        if (container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
             layout = getHotseat();
 
             // Hide folder title in the hotseat

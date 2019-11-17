@@ -216,7 +216,8 @@ public class DragView extends View implements LauncherStateManager.StateListener
                 Object[] outObj = new Object[1];
                 int w = mBitmap.getWidth();
                 int h = mBitmap.getHeight();
-                Drawable dr = Utilities.getFullDrawable(mLauncher, info, w, h, outObj);
+                Drawable dr = Utilities.getFullDrawable(mLauncher, info, w, h,
+                        false /* flattenDrawable */, outObj);
 
                 if (dr instanceof AdaptiveIconDrawable) {
                     int blurMargin = (int) mLauncher.getResources()

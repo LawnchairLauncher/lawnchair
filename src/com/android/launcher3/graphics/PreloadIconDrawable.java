@@ -18,7 +18,6 @@
 package com.android.launcher3.graphics;
 
 import static com.android.launcher3.graphics.IconShape.DEFAULT_PATH_SIZE;
-import static com.android.launcher3.graphics.IconShape.getShapePath;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -102,10 +101,13 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
 
     private ObjectAnimator mCurrentAnim;
 
-    public PreloadIconDrawable(ItemInfoWithIcon info, Context context) {
-        super(info.bitmap);
+    /**
+     * @param progressPath fixed path in the bounds [0, 0, 100, 100] representing a progress bar.
+     */
+    public PreloadIconDrawable(ItemInfoWithIcon info, Path progressPath, Context context) {
+        super(info);
         mItem = info;
-        mProgressPath = getShapePath();
+        mProgressPath = progressPath;
         mScaledTrackPath = new Path();
         mScaledProgressPath = new Path();
 
@@ -286,12 +288,5 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
             }
         }
         invalidateSelf();
-    }
-
-    /**
-     * Returns a FastBitmapDrawable with the icon.
-     */
-    public static PreloadIconDrawable newPendingIcon(Context context, ItemInfoWithIcon info) {
-        return new PreloadIconDrawable(info, context);
     }
 }

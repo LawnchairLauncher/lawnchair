@@ -23,6 +23,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.view.inputmethod.InputMethodManager;
+import com.android.launcher3.uioverrides.UiFactory;
 
 /**
  * Utility class for offloading some class from UI thread

@@ -32,14 +32,13 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.Interpolators;
-import com.android.launcher3.touch.BaseSwipeDetector;
-import com.android.launcher3.touch.SingleAxisSwipeDetector;
+import com.android.launcher3.touch.SwipeDetector;
 
 /**
  * Extension of AbstractFloatingView with common methods for sliding in from bottom
  */
 public abstract class AbstractSlideInView extends AbstractFloatingView
-        implements SingleAxisSwipeDetector.Listener {
+        implements SwipeDetector.Listener {
 
     protected static Property<AbstractSlideInView, Float> TRANSLATION_SHIFT =
             new Property<AbstractSlideInView, Float>(Float.class, "translationShift") {
@@ -58,7 +57,7 @@ public abstract class AbstractSlideInView extends AbstractFloatingView
     protected static final float TRANSLATION_SHIFT_OPENED = 0f;
 
     protected final Launcher mLauncher;
-    protected final SingleAxisSwipeDetector mSwipeDetector;
+    protected final SwipeDetector mSwipeDetector;
     protected final ObjectAnimator mOpenCloseAnimator;
 
     protected View mContent;
@@ -74,8 +73,7 @@ public abstract class AbstractSlideInView extends AbstractFloatingView
         mLauncher = Launcher.getLauncher(context);
 
         mScrollInterpolator = Interpolators.SCROLL_CUBIC;
-        mSwipeDetector = new SingleAxisSwipeDetector(context, this,
-                SingleAxisSwipeDetector.VERTICAL);
+        mSwipeDetector = new SwipeDetector(context, this, SwipeDetector.VERTICAL);
 
         mOpenCloseAnimator = ObjectAnimator.ofPropertyValuesHolder(this);
         mOpenCloseAnimator.addListener(new AnimatorListenerAdapter() {
@@ -99,7 +97,7 @@ public abstract class AbstractSlideInView extends AbstractFloatingView
         }
 
         int directionsToDetectScroll = mSwipeDetector.isIdleState() ?
-                SingleAxisSwipeDetector.DIRECTION_NEGATIVE : 0;
+                SwipeDetector.DIRECTION_NEGATIVE : 0;
         mSwipeDetector.setDetectableScrollConditions(
                 directionsToDetectScroll, false);
         mSwipeDetector.onTouchEvent(ev);
@@ -124,7 +122,7 @@ public abstract class AbstractSlideInView extends AbstractFloatingView
         return mIsOpen && mOpenCloseAnimator.isRunning();
     }
 
-    /* SingleAxisSwipeDetector.Listener */
+    /* SwipeDetector.Listener */
 
     @Override
     public void onDragStart(boolean start) { }
@@ -138,17 +136,17 @@ public abstract class AbstractSlideInView extends AbstractFloatingView
     }
 
     @Override
-    public void onDragEnd(float velocity) {
-        if ((mSwipeDetector.isFling(velocity) && velocity > 0) || mTranslationShift > 0.5f) {
+    public void onDragEnd(float velocity, boolean fling) {
+        if ((fling && velocity > 0) || mTranslationShift > 0.5f) {
             mScrollInterpolator = scrollInterpolatorForVelocity(velocity);
-            mOpenCloseAnimator.setDuration(BaseSwipeDetector.calculateDuration(
+            mOpenCloseAnimator.setDuration(SwipeDetector.calculateDuration(
                     velocity, TRANSLATION_SHIFT_CLOSED - mTranslationShift));
             close(true);
         } else {
             mOpenCloseAnimator.setValues(PropertyValuesHolder.ofFloat(
                     TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED));
             mOpenCloseAnimator.setDuration(
-                    BaseSwipeDetector.calculateDuration(velocity, mTranslationShift))
+                    SwipeDetector.calculateDuration(velocity, mTranslationShift))
                     .setInterpolator(Interpolators.DEACCEL);
             mOpenCloseAnimator.start();
         }

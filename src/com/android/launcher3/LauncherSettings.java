@@ -127,7 +127,6 @@ public class LauncherSettings {
         public static final int CONTAINER_DESKTOP = -100;
         public static final int CONTAINER_HOTSEAT = -101;
         public static final int CONTAINER_PREDICTION = -102;
-        public static final int CONTAINER_HOTSEAT_PREDICTION = -103;
 
         static final String containerToString(int container) {
             switch (container) {

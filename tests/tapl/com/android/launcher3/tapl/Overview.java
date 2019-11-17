@@ -58,7 +58,7 @@ public final class Overview extends BaseOverview {
                             getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD),
                     mLauncher.getDevice().getDisplayWidth() / 2,
                     0,
-                    12,
+                    50,
                     ALL_APPS_STATE_ORDINAL);
 
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(

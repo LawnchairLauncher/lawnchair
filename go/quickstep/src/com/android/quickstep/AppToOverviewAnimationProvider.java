@@ -46,13 +46,13 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
         RemoteAnimationProvider {
     private static final String TAG = "AppToOverviewAnimationProvider";
 
-    private final BaseActivityInterface<T> mActivityInterface;
+    private final BaseActivityInterface<T> mHelper;
     private final int mTargetTaskId;
     private IconRecentsView mRecentsView;
     private AppToOverviewAnimationListener mAnimationReadyListener;
 
-    AppToOverviewAnimationProvider(BaseActivityInterface<T> activityInterface, int targetTaskId) {
-        mActivityInterface = activityInterface;
+    AppToOverviewAnimationProvider(BaseActivityInterface<T> helper, int targetTaskId) {
+        mHelper = helper;
         mTargetTaskId = targetTaskId;
     }
 
@@ -68,15 +68,15 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
     /**
      * Callback for when the activity is ready/initialized.
      *
+     * @param activity the activity that is ready
      * @param wasVisible true if it was visible before
      */
-    boolean onActivityReady(Boolean wasVisible) {
-        T activity = mActivityInterface.getCreatedActivity();
+    boolean onActivityReady(T activity, Boolean wasVisible) {
         if (mAnimationReadyListener != null) {
             mAnimationReadyListener.onActivityReady(activity);
         }
         BaseActivityInterface.AnimationFactory factory =
-                mActivityInterface.prepareRecentsUI(wasVisible,
+                mHelper.prepareRecentsUI(activity, wasVisible,
                         false /* animate activity */, (controller) -> {
                             controller.dispatchOnStart();
                             ValueAnimator anim = controller.getAnimationPlayer()

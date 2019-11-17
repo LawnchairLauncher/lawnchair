@@ -23,19 +23,16 @@ import static org.mockito.Mockito.verify;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.view.LayoutInflater;
-
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.test.InstrumentationRegistry;
 import androidx.test.filters.SmallTest;
 import androidx.test.runner.AndroidJUnit4;
+import android.view.LayoutInflater;
 
+import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.WidgetPreviewLoader;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
-import com.android.launcher3.icons.BitmapInfo;
-import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.util.MultiHashMap;
@@ -48,6 +45,8 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
 import java.util.Map;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)
@@ -137,7 +136,7 @@ public class WidgetsListAdapterTest {
             PackageItemInfo pInfo = new PackageItemInfo(wi.componentName.getPackageName());
             pInfo.title = pInfo.packageName;
             pInfo.user = wi.user;
-            pInfo.bitmap = BitmapInfo.of(Bitmap.createBitmap(10, 10, Bitmap.Config.ALPHA_8), 0);
+            pInfo.iconBitmap = Bitmap.createBitmap(10, 10, Bitmap.Config.ALPHA_8);
             newMap.addToList(pInfo, wi);
             if (newMap.size() == num) {
                 break;

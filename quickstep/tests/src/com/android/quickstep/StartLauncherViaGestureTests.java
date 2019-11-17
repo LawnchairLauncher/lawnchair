@@ -18,9 +18,6 @@ package com.android.quickstep;
 
 import static com.android.launcher3.util.RaceConditionReproducer.enterEvt;
 import static com.android.launcher3.util.RaceConditionReproducer.exitEvt;
-import static com.android.launcher3.util.rule.TestStabilityRule.PLATFORM_PRESUBMIT;
-import static com.android.launcher3.util.rule.TestStabilityRule.RUN_FLAFOR;
-import static com.android.launcher3.util.rule.TestStabilityRule.UNBUNDLED_PRESUBMIT;
 
 import android.content.Intent;
 
@@ -28,7 +25,6 @@ import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
 
 import com.android.launcher3.Launcher;
-import com.android.launcher3.tapl.TestHelpers;
 import com.android.launcher3.util.RaceConditionReproducer;
 import com.android.quickstep.NavigationModeSwitchRule.Mode;
 import com.android.quickstep.NavigationModeSwitchRule.NavigationModeSwitch;

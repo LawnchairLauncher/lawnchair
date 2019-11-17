@@ -22,18 +22,21 @@ import android.os.MessageQueue;
 /**
  * Utility class to block execution until the UI looper is idle.
  */
-public class LooperIdleLock implements MessageQueue.IdleHandler {
+public class LooperIdleLock implements MessageQueue.IdleHandler, Runnable {
 
     private final Object mLock;
 
     private boolean mIsLocked;
-    private Looper mLooper;
 
     public LooperIdleLock(Object lock, Looper looper) {
         mLock = lock;
-        mLooper = looper;
         mIsLocked = true;
         looper.getQueue().addIdleHandler(this);
+    }
+
+    @Override
+    public void run() {
+        Looper.myQueue().addIdleHandler(this);
     }
 
     @Override
@@ -42,10 +45,6 @@ public class LooperIdleLock implements MessageQueue.IdleHandler {
             mIsLocked = false;
             mLock.notify();
         }
-        // Manually remove from the list in case we're calling this outside of the idle callbacks
-        // (this is Ok in the normal flow as well because MessageQueue makes a copy of all handlers
-        // before calling back)
-        mLooper.getQueue().removeIdleHandler(this);
         return false;
     }
 

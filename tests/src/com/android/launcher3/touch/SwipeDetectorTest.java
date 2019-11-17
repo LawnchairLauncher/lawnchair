@@ -15,12 +15,6 @@
  */
 package com.android.launcher3.touch;
 
-import static com.android.launcher3.touch.SingleAxisSwipeDetector.DIRECTION_BOTH;
-import static com.android.launcher3.touch.SingleAxisSwipeDetector.DIRECTION_NEGATIVE;
-import static com.android.launcher3.touch.SingleAxisSwipeDetector.DIRECTION_POSITIVE;
-import static com.android.launcher3.touch.SingleAxisSwipeDetector.HORIZONTAL;
-import static com.android.launcher3.touch.SingleAxisSwipeDetector.VERTICAL;
-
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyFloat;
 import static org.mockito.Matchers.anyObject;
@@ -45,19 +39,19 @@ import org.mockito.MockitoAnnotations;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)
-public class SingleAxisSwipeDetectorTest {
+public class SwipeDetectorTest {
 
-    private static final String TAG = SingleAxisSwipeDetectorTest.class.getSimpleName();
+    private static final String TAG = SwipeDetectorTest.class.getSimpleName();
     public static void L(String s, Object... parts) {
         Log.d(TAG, (parts.length == 0) ? s : String.format(s, parts));
     }
 
     private TouchEventGenerator mGenerator;
-    private SingleAxisSwipeDetector mDetector;
+    private SwipeDetector mDetector;
     private int mTouchSlop;
 
     @Mock
-    private SingleAxisSwipeDetector.Listener mMockListener;
+    private SwipeDetector.Listener mMockListener;
 
     @Mock
     private ViewConfiguration mMockConfig;
@@ -71,8 +65,8 @@ public class SingleAxisSwipeDetectorTest {
         doReturn(orgConfig.getScaledMaximumFlingVelocity()).when(mMockConfig)
                 .getScaledMaximumFlingVelocity();
 
-        mDetector = new SingleAxisSwipeDetector(mMockConfig, mMockListener, VERTICAL, false);
-        mDetector.setDetectableScrollConditions(DIRECTION_BOTH, false);
+        mDetector = new SwipeDetector(mMockConfig, mMockListener, SwipeDetector.VERTICAL, false);
+        mDetector.setDetectableScrollConditions(SwipeDetector.DIRECTION_BOTH, false);
         mTouchSlop = orgConfig.getScaledTouchSlop();
         doReturn(mTouchSlop).when(mMockConfig).getScaledTouchSlop();
 
@@ -81,8 +75,8 @@ public class SingleAxisSwipeDetectorTest {
 
     @Test
     public void testDragStart_verticalPositive() {
-        mDetector = new SingleAxisSwipeDetector(mMockConfig, mMockListener, VERTICAL, false);
-        mDetector.setDetectableScrollConditions(DIRECTION_POSITIVE, false);
+        mDetector = new SwipeDetector(mMockConfig, mMockListener, SwipeDetector.VERTICAL, false);
+        mDetector.setDetectableScrollConditions(SwipeDetector.DIRECTION_POSITIVE, false);
         mGenerator.put(0, 100, 100);
         mGenerator.move(0, 100, 100 - mTouchSlop);
         // TODO: actually calculate the following parameters and do exact value checks.
@@ -91,8 +85,8 @@ public class SingleAxisSwipeDetectorTest {
 
     @Test
     public void testDragStart_verticalNegative() {
-        mDetector = new SingleAxisSwipeDetector(mMockConfig, mMockListener, VERTICAL, false);
-        mDetector.setDetectableScrollConditions(DIRECTION_NEGATIVE, false);
+        mDetector = new SwipeDetector(mMockConfig, mMockListener, SwipeDetector.VERTICAL, false);
+        mDetector.setDetectableScrollConditions(SwipeDetector.DIRECTION_NEGATIVE, false);
         mGenerator.put(0, 100, 100);
         mGenerator.move(0, 100, 100 + mTouchSlop);
         // TODO: actually calculate the following parameters and do exact value checks.
@@ -109,8 +103,8 @@ public class SingleAxisSwipeDetectorTest {
 
     @Test
     public void testDragStart_horizontalPositive() {
-        mDetector = new SingleAxisSwipeDetector(mMockConfig, mMockListener, HORIZONTAL, false);
-        mDetector.setDetectableScrollConditions(DIRECTION_POSITIVE, false);
+        mDetector = new SwipeDetector(mMockConfig, mMockListener, SwipeDetector.HORIZONTAL, false);
+        mDetector.setDetectableScrollConditions(SwipeDetector.DIRECTION_POSITIVE, false);
 
         mGenerator.put(0, 100, 100);
         mGenerator.move(0, 100 + mTouchSlop, 100);
@@ -120,8 +114,8 @@ public class SingleAxisSwipeDetectorTest {
 
     @Test
     public void testDragStart_horizontalNegative() {
-        mDetector = new SingleAxisSwipeDetector(mMockConfig, mMockListener, HORIZONTAL, false);
-        mDetector.setDetectableScrollConditions(DIRECTION_NEGATIVE, false);
+        mDetector = new SwipeDetector(mMockConfig, mMockListener, SwipeDetector.HORIZONTAL, false);
+        mDetector.setDetectableScrollConditions(SwipeDetector.DIRECTION_NEGATIVE, false);
 
         mGenerator.put(0, 100, 100);
         mGenerator.move(0, 100 - mTouchSlop, 100);
@@ -131,8 +125,8 @@ public class SingleAxisSwipeDetectorTest {
 
     @Test
     public void testDragStart_horizontalRtlPositive() {
-        mDetector = new SingleAxisSwipeDetector(mMockConfig, mMockListener, HORIZONTAL, true);
-        mDetector.setDetectableScrollConditions(DIRECTION_POSITIVE, false);
+        mDetector = new SwipeDetector(mMockConfig, mMockListener, SwipeDetector.HORIZONTAL, true);
+        mDetector.setDetectableScrollConditions(SwipeDetector.DIRECTION_POSITIVE, false);
 
         mGenerator.put(0, 100, 100);
         mGenerator.move(0, 100 - mTouchSlop, 100);
@@ -142,8 +136,8 @@ public class SingleAxisSwipeDetectorTest {
 
     @Test
     public void testDragStart_horizontalRtlNegative() {
-        mDetector = new SingleAxisSwipeDetector(mMockConfig, mMockListener, HORIZONTAL, true);
-        mDetector.setDetectableScrollConditions(DIRECTION_NEGATIVE, false);
+        mDetector = new SwipeDetector(mMockConfig, mMockListener, SwipeDetector.HORIZONTAL, true);
+        mDetector.setDetectableScrollConditions(SwipeDetector.DIRECTION_NEGATIVE, false);
 
         mGenerator.put(0, 100, 100);
         mGenerator.move(0, 100 + mTouchSlop, 100);
@@ -166,6 +160,6 @@ public class SingleAxisSwipeDetectorTest {
         mGenerator.move(0, 100, 100 + mTouchSlop * 2);
         mGenerator.lift(0);
         // TODO: actually calculate the following parameters and do exact value checks.
-        verify(mMockListener).onDragEnd(anyFloat());
+        verify(mMockListener).onDragEnd(anyFloat(), anyBoolean());
     }
 }

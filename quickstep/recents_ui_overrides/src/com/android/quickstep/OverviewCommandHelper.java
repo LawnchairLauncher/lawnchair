@@ -29,7 +29,6 @@ import android.view.ViewConfiguration;
 
 import androidx.annotation.BinderThread;
 import com.android.launcher3.BaseDraggingActivity;
-import com.android.launcher3.appprediction.PredictionUiStateManager;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.quickstep.util.ActivityInitListener;
@@ -204,8 +203,7 @@ public class OverviewCommandHelper {
             return false;
         }
 
-        private boolean onActivityReady(Boolean wasVisible) {
-            final T activity = mActivityInterface.getCreatedActivity();
+        private boolean onActivityReady(T activity, Boolean wasVisible) {
             if (!mUserEventLogged) {
                 activity.getUserEventDispatcher().logActionCommand(
                         LauncherLogProto.Action.Command.RECENTS_BUTTON,
@@ -213,10 +211,6 @@ public class OverviewCommandHelper {
                         LauncherLogProto.ContainerType.TASKSWITCHER);
                 mUserEventLogged = true;
             }
-
-            // Switch prediction client to overview
-            PredictionUiStateManager.INSTANCE.get(activity).switchClient(
-                    PredictionUiStateManager.Client.OVERVIEW);
             return mAnimationProvider.onActivityReady(activity, wasVisible);
         }
 

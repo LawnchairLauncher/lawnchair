@@ -22,7 +22,6 @@ import android.os.Build;
 import android.os.CancellationSignal;
 import android.os.Handler;
 
-import com.android.launcher3.util.ActivityTracker;
 import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.RemoteAnimationProvider;
 
@@ -33,11 +32,6 @@ public class LauncherInitListener extends ActivityInitListener<Launcher> {
 
     private RemoteAnimationProvider mRemoteAnimationProvider;
 
-    /**
-     * @param onInitListener a callback made when the activity is initialized. The callback should
-     *                       return true to continue receiving callbacks (ie. for if the activity is
-     *                       recreated).
-     */
     public LauncherInitListener(BiPredicate<Launcher, Boolean> onInitListener) {
         super(onInitListener, Launcher.ACTIVITY_TRACKER);
     }

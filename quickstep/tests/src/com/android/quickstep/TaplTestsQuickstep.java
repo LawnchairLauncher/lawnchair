@@ -248,33 +248,33 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     @Test
     @NavigationModeSwitch
     @PortraitLandscape
-    @Ignore // b/143285809
+    @Ignore("Temporarily disabled b/140252765")
     public void testQuickSwitchFromApp() throws Exception {
+        startAppFast(getAppPackageName());
         startTestActivity(2);
-        startTestActivity(3);
-        startTestActivity(4);
+        String calculatorPackage = resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR);
+        startAppFast(calculatorPackage);
 
         Background background = getAndAssertBackground();
         background.quickSwitchToPreviousApp();
         assertTrue("The first app we should have quick switched to is not running",
-                isTestActivityRunning(3));
+                isTestActivityRunning("TestActivity2"));
 
         background = getAndAssertBackground();
         background.quickSwitchToPreviousApp();
         if (mLauncher.getNavigationModel() == NavigationModel.THREE_BUTTON) {
             // 3-button mode toggles between 2 apps, rather than going back further.
             assertTrue("Second quick switch should have returned to the first app.",
-                    isTestActivityRunning(4));
+                    mDevice.wait(Until.hasObject(By.pkg(calculatorPackage)), DEFAULT_UI_TIMEOUT));
         } else {
             assertTrue("The second app we should have quick switched to is not running",
-                    isTestActivityRunning(2));
+                    isTestActivityRunning("Test Pin Item"));
         }
         getAndAssertBackground();
     }
 
-    private boolean isTestActivityRunning(int activityNumber) {
-        return mDevice.wait(Until.hasObject(By.pkg(getAppPackageName())
-                        .text("TestActivity" + activityNumber)),
+    private boolean isTestActivityRunning(String activityLabel) {
+        return mDevice.wait(Until.hasObject(By.pkg(getAppPackageName()).text(activityLabel)),
                 DEFAULT_UI_TIMEOUT);
     }
 
@@ -285,7 +285,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         startTestActivity(2);
         mLauncher.pressHome().quickSwitchToPreviousApp();
         assertTrue("The most recent task is not running after quick switching from home",
-                isTestActivityRunning(2));
+                isTestActivityRunning("TestActivity2"));
         getAndAssertBackground();
     }
 }

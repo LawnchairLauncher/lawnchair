@@ -35,7 +35,7 @@ import com.android.launcher3.logging.StatsLogUtils;
 import com.android.launcher3.logging.StatsLogUtils.LogStateProvider;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.logging.UserEventDispatcher.UserEventDelegate;
-import com.android.launcher3.uioverrides.ApiWrapper;
+import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.ViewCache;
@@ -81,39 +81,19 @@ public abstract class BaseActivity extends Activity
     protected StatsLogManager mStatsLogManager;
     protected SystemUiController mSystemUiController;
 
-
-    public static final int ACTIVITY_STATE_STARTED = 1 << 0;
-    public static final int ACTIVITY_STATE_RESUMED = 1 << 1;
-
+    private static final int ACTIVITY_STATE_STARTED = 1 << 0;
+    private static final int ACTIVITY_STATE_RESUMED = 1 << 1;
     /**
-     * State flags indicating that the activity has received one frame after resume, and was
-     * not immediately paused.
-     */
-    public static final int ACTIVITY_STATE_DEFERRED_RESUMED = 1 << 2;
-
-    public static final int ACTIVITY_STATE_WINDOW_FOCUSED = 1 << 3;
-
-    /**
-     * State flag indicating if the user is active or the activity when to background as a result
+     * State flag indicating if the user is active or the actitvity when to background as a result
      * of user action.
      * @see #isUserActive()
      */
-    public static final int ACTIVITY_STATE_USER_ACTIVE = 1 << 4;
-
-    /**
-     * State flag indicating that a state transition is in progress
-     */
-    public static final int ACTIVITY_STATE_TRANSITION_ACTIVE = 1 << 5;
+    private static final int ACTIVITY_STATE_USER_ACTIVE = 1 << 2;
 
     @Retention(SOURCE)
     @IntDef(
             flag = true,
-            value = {ACTIVITY_STATE_STARTED,
-                    ACTIVITY_STATE_RESUMED,
-                    ACTIVITY_STATE_DEFERRED_RESUMED,
-                    ACTIVITY_STATE_WINDOW_FOCUSED,
-                    ACTIVITY_STATE_USER_ACTIVE,
-                    ACTIVITY_STATE_TRANSITION_ACTIVE})
+            value = {ACTIVITY_STATE_STARTED, ACTIVITY_STATE_RESUMED, ACTIVITY_STATE_USER_ACTIVE})
     public @interface ActivityFlags{}
 
     @ActivityFlags
@@ -166,19 +146,19 @@ public abstract class BaseActivity extends Activity
 
     @Override
     protected void onStart() {
-        addActivityFlags(ACTIVITY_STATE_STARTED);
+        mActivityFlags |= ACTIVITY_STATE_STARTED;
         super.onStart();
     }
 
     @Override
     protected void onResume() {
-        addActivityFlags(ACTIVITY_STATE_RESUMED | ACTIVITY_STATE_USER_ACTIVE);
+        mActivityFlags |= ACTIVITY_STATE_RESUMED | ACTIVITY_STATE_USER_ACTIVE;
         super.onResume();
     }
 
     @Override
     protected void onUserLeaveHint() {
-        removeActivityFlags(ACTIVITY_STATE_USER_ACTIVE);
+        mActivityFlags &= ~ACTIVITY_STATE_USER_ACTIVE;
         super.onUserLeaveHint();
     }
 
@@ -192,7 +172,7 @@ public abstract class BaseActivity extends Activity
 
     @Override
     protected void onStop() {
-        removeActivityFlags(ACTIVITY_STATE_STARTED | ACTIVITY_STATE_USER_ACTIVE);
+        mActivityFlags &= ~ACTIVITY_STATE_STARTED & ~ACTIVITY_STATE_USER_ACTIVE;
         mForceInvisible = 0;
         super.onStop();
 
@@ -203,7 +183,7 @@ public abstract class BaseActivity extends Activity
 
     @Override
     protected void onPause() {
-        removeActivityFlags(ACTIVITY_STATE_RESUMED | ACTIVITY_STATE_DEFERRED_RESUMED);
+        mActivityFlags &= ~ACTIVITY_STATE_RESUMED;
         super.onPause();
 
         // Reset the overridden sysui flags used for the task-swipe launch animation, we do this
@@ -211,17 +191,6 @@ public abstract class BaseActivity extends Activity
         // not happen immediately, which would cause us to reset to launcher's sysui flags and then
         // back to the new app (causing a flash)
         getSystemUiController().updateUiState(UI_STATE_OVERVIEW, 0);
-    }
-
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        if (hasFocus) {
-            addActivityFlags(ACTIVITY_STATE_WINDOW_FOCUSED);
-        } else {
-            removeActivityFlags(ACTIVITY_STATE_WINDOW_FOCUSED);
-        }
-
     }
 
     public boolean isStarted() {
@@ -238,22 +207,6 @@ public abstract class BaseActivity extends Activity
     public boolean isUserActive() {
         return (mActivityFlags & ACTIVITY_STATE_USER_ACTIVE) != 0;
     }
-
-    public int getActivityFlags() {
-        return mActivityFlags;
-    }
-
-    protected void addActivityFlags(int flags) {
-        mActivityFlags |= flags;
-        onActivityFlagsChanged(flags);
-    }
-
-    protected void removeActivityFlags(int flags) {
-        mActivityFlags &= ~flags;
-        onActivityFlagsChanged(flags);
-    }
-
-    protected void onActivityFlagsChanged(int changeBits) { }
 
     public void addOnDeviceProfileChangeListener(OnDeviceProfileChangeListener listener) {
         mDPChangeListeners.add(listener);
@@ -280,7 +233,7 @@ public abstract class BaseActivity extends Activity
     /**
      * Used to set the override visibility state, used only to handle the transition home with the
      * recents animation.
-     * @see QuickstepAppTransitionManagerImpl#getWallpaperOpenRunner
+     * @see QuickstepAppTransitionManagerImpl#getWallpaperOpenRunner()
      */
     public void addForceInvisibleFlag(@InvisibilityFlags int flag) {
         mForceInvisible |= flag;
@@ -307,7 +260,7 @@ public abstract class BaseActivity extends Activity
 
     @Override
     public void dump(String prefix, FileDescriptor fd, PrintWriter writer, String[] args) {
-        if (!ApiWrapper.dumpActivity(this, writer)) {
+        if (!UiFactory.dumpActivity(this, writer)) {
             super.dump(prefix, fd, writer, args);
         }
     }

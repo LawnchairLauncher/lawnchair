@@ -22,9 +22,7 @@ import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_3;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.touch.AbstractStateChangeTouchController.SUCCESS_TRANSITION_PROGRESS;
-import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
@@ -45,25 +43,21 @@ import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
-import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.touch.SingleAxisSwipeDetector;
+import com.android.launcher3.touch.SwipeDetector;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.util.TouchController;
-import com.android.quickstep.util.AssistantUtilities;
 import com.android.quickstep.views.RecentsView;
-import com.android.systemui.shared.system.ActivityManagerWrapper;
 
 /**
  * Handles swiping up on the nav bar to go home from launcher, e.g. overview or all apps.
  */
-public class NavBarToHomeTouchController implements TouchController,
-        SingleAxisSwipeDetector.Listener {
+public class NavBarToHomeTouchController implements TouchController, SwipeDetector.Listener {
 
     private static final Interpolator PULLBACK_INTERPOLATOR = DEACCEL_3;
 
     private final Launcher mLauncher;
-    private final SingleAxisSwipeDetector mSwipeDetector;
+    private final SwipeDetector mSwipeDetector;
     private final float mPullbackDistance;
 
     private boolean mNoIntercept;
@@ -73,8 +67,7 @@ public class NavBarToHomeTouchController implements TouchController,
 
     public NavBarToHomeTouchController(Launcher launcher) {
         mLauncher = launcher;
-        mSwipeDetector = new SingleAxisSwipeDetector(mLauncher, this,
-                SingleAxisSwipeDetector.VERTICAL);
+        mSwipeDetector = new SwipeDetector(mLauncher, this, SwipeDetector.VERTICAL);
         mPullbackDistance = mLauncher.getResources().getDimension(R.dimen.home_pullback_distance);
     }
 
@@ -86,8 +79,7 @@ public class NavBarToHomeTouchController implements TouchController,
             if (mNoIntercept) {
                 return false;
             }
-            mSwipeDetector.setDetectableScrollConditions(SingleAxisSwipeDetector.DIRECTION_POSITIVE,
-                    false /* ignoreSlop */);
+            mSwipeDetector.setDetectableScrollConditions(SwipeDetector.DIRECTION_POSITIVE, false);
         }
 
         if (mNoIntercept) {
@@ -107,10 +99,6 @@ public class NavBarToHomeTouchController implements TouchController,
             return true;
         }
         if (AbstractFloatingView.getTopOpenView(mLauncher) != null) {
-            return true;
-        }
-        if (FeatureFlags.ASSISTANT_GIVES_LAUNCHER_FOCUS.get()
-                && AssistantUtilities.isExcludedAssistantRunning()) {
             return true;
         }
         return false;
@@ -139,13 +127,8 @@ public class NavBarToHomeTouchController implements TouchController,
             if (!recentsView.isRtl()) {
                 pullbackDist = -pullbackDist;
             }
-            ObjectAnimator pullback = ObjectAnimator.ofFloat(recentsView, TRANSLATION_X,
-                    pullbackDist);
+            Animator pullback = ObjectAnimator.ofFloat(recentsView, TRANSLATION_X, pullbackDist);
             pullback.setInterpolator(PULLBACK_INTERPOLATOR);
-            if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-                pullback.addUpdateListener(
-                        valueAnimator -> recentsView.redrawLiveTile(false /* mightNeedToRefill */));
-            }
             anim.play(pullback);
         } else if (mStartState == ALL_APPS) {
             AnimatorSetBuilder builder = new AnimatorSetBuilder();
@@ -190,19 +173,13 @@ public class NavBarToHomeTouchController implements TouchController,
     }
 
     @Override
-    public void onDragEnd(float velocity) {
-        boolean fling = mSwipeDetector.isFling(velocity);
+    public void onDragEnd(float velocity, boolean fling) {
         final int logAction = fling ? Touch.FLING : Touch.SWIPE;
         float progress = mCurrentAnimation.getProgressFraction();
         float interpolatedProgress = PULLBACK_INTERPOLATOR.getInterpolation(progress);
         boolean success = interpolatedProgress >= SUCCESS_TRANSITION_PROGRESS
                 || (velocity < 0 && fling);
         if (success) {
-            if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-                RecentsView recentsView = mLauncher.getOverviewPanel();
-                recentsView.switchToScreenshot(null,
-                        () -> recentsView.finishRecentsAnimation(true /* toRecents */, null));
-            }
             mLauncher.getStateManager().goToState(mEndState, true,
                     () -> onSwipeInteractionCompleted(mEndState));
             if (mStartState != mEndState) {
@@ -213,8 +190,6 @@ public class NavBarToHomeTouchController implements TouchController,
                 AbstractFloatingView.closeAllOpenViews(mLauncher);
                 logStateChange(topOpenView.getLogContainerType(), logAction);
             }
-            ActivityManagerWrapper.getInstance()
-                    .closeSystemWindows(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
         } else {
             // Quickly return to the state we came from (we didn't move far).
             ValueAnimator anim = mCurrentAnimation.getAnimationPlayer();

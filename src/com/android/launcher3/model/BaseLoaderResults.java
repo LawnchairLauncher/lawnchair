@@ -300,8 +300,8 @@ public abstract class BaseLoaderResults {
 
     public LooperIdleLock newIdleLock(Object lock) {
         LooperIdleLock idleLock = new LooperIdleLock(lock, Looper.getMainLooper());
-        // If we are not binding or if the main looper is already idle, there is no reason to wait
-        if (mCallbacks.get() == null || Looper.getMainLooper().getQueue().isIdle()) {
+        // If we are not binding, there is no reason to wait for idle.
+        if (mCallbacks.get() == null) {
             idleLock.queueIdle();
         }
         return idleLock;

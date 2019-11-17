@@ -40,7 +40,6 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
-import android.os.UserHandle;
 import android.util.ArraySet;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
@@ -67,7 +66,6 @@ import com.android.launcher3.R;
 import com.android.launcher3.util.Themes;
 import com.android.quickstep.ContentFillItemAnimator;
 import com.android.quickstep.RecentsModel;
-import com.android.quickstep.RecentsModel.TaskVisualsChangeListener;
 import com.android.quickstep.RecentsToActivityHelper;
 import com.android.quickstep.TaskActionController;
 import com.android.quickstep.TaskAdapter;
@@ -76,7 +74,6 @@ import com.android.quickstep.TaskListLoader;
 import com.android.quickstep.TaskSwipeCallback;
 import com.android.quickstep.util.MultiValueUpdateListener;
 import com.android.systemui.shared.recents.model.Task;
-import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams;
@@ -90,8 +87,7 @@ import java.util.Optional;
  * Root view for the icon recents view. Acts as the main interface to the rest of the Launcher code
  * base.
  */
-public final class IconRecentsView extends FrameLayout
-        implements Insettable, TaskVisualsChangeListener {
+public final class IconRecentsView extends FrameLayout implements Insettable {
 
     public static final FloatProperty<IconRecentsView> CONTENT_ALPHA =
             new FloatProperty<IconRecentsView>("contentAlpha") {
@@ -163,24 +159,7 @@ public final class IconRecentsView extends FrameLayout
     private AnimatorSet mLayoutAnimation;
     private final ArraySet<View> mLayingOutViews = new ArraySet<>();
     private Rect mInsets;
-
-    public IconRecentsView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        mActivity = BaseActivity.fromContext(context);
-        mContext = context;
-        mStatusBarForegroundScrim  =
-                Themes.getAttrDrawable(mContext, R.attr.workspaceStatusBarScrim);
-        mTaskLoader = new TaskListLoader(mContext);
-        mTaskAdapter = new TaskAdapter(mTaskLoader);
-        mTaskAdapter.setOnClearAllClickListener(view -> animateClearAllTasks());
-        mTaskActionController = new TaskActionController(mTaskLoader, mTaskAdapter,
-                mActivity.getStatsLogManager());
-        mTaskAdapter.setActionController(mTaskActionController);
-        mTaskLayoutManager = new LinearLayoutManager(mContext, VERTICAL, true /* reverseLayout */);
-    }
-
-    @Override
-    public Task onTaskThumbnailChanged(int taskId, ThumbnailData thumbnailData) {
+    private final RecentsModel.TaskThumbnailChangeListener listener = (taskId, thumbnailData) -> {
         ArrayList<TaskItemView> itemViews = getTaskViews();
         for (int i = 0, size = itemViews.size(); i < size; i++) {
             TaskItemView taskView = itemViews.get(i);
@@ -195,10 +174,23 @@ public final class IconRecentsView extends FrameLayout
             }
         }
         return null;
-    }
+    };
 
-    @Override
-    public void onTaskIconChanged(String pkg, UserHandle user) { }
+    public IconRecentsView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        mActivity = BaseActivity.fromContext(context);
+        mContext = context;
+        mStatusBarForegroundScrim  =
+                Themes.getAttrDrawable(mContext, R.attr.workspaceStatusBarScrim);
+        mTaskLoader = new TaskListLoader(mContext);
+        mTaskAdapter = new TaskAdapter(mTaskLoader);
+        mTaskAdapter.setOnClearAllClickListener(view -> animateClearAllTasks());
+        mTaskActionController = new TaskActionController(mTaskLoader, mTaskAdapter,
+                mActivity.getStatsLogManager());
+        mTaskAdapter.setActionController(mTaskActionController);
+        mTaskLayoutManager = new LinearLayoutManager(mContext, VERTICAL, true /* reverseLayout */);
+        RecentsModel.INSTANCE.get(context).addThumbnailChangeListener(listener);
+    }
 
     @Override
     protected void onFinishInflate() {
@@ -280,18 +272,6 @@ public final class IconRecentsView extends FrameLayout
                 }
             });
         }
-    }
-
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        RecentsModel.INSTANCE.get(getContext()).addThumbnailChangeListener(this);
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        RecentsModel.INSTANCE.get(getContext()).removeThumbnailChangeListener(this);
     }
 
     @Override

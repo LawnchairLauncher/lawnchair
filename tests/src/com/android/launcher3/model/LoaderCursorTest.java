@@ -142,7 +142,7 @@ public class LoaderCursorTest {
         when(mMockIconCache.getDefaultIcon(eq(mLoaderCursor.user)))
                 .thenReturn(BitmapInfo.fromBitmap(icon));
         WorkspaceItemInfo info = mLoaderCursor.loadSimpleWorkspaceItem();
-        assertEquals(icon, info.bitmap.icon);
+        assertEquals(icon, info.iconBitmap);
         assertEquals("my-shortcut", info.title);
         assertEquals(ITEM_TYPE_SHORTCUT, info.itemType);
     }

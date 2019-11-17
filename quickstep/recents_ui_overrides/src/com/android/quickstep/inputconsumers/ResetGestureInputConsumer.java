@@ -18,17 +18,17 @@ package com.android.quickstep.inputconsumers;
 import android.view.MotionEvent;
 
 import com.android.quickstep.InputConsumer;
-import com.android.quickstep.TaskAnimationManager;
+import com.android.quickstep.SwipeSharedState;
 
 /**
  * A NO_OP input consumer which also resets any pending gesture
  */
 public class ResetGestureInputConsumer implements InputConsumer {
 
-    private final TaskAnimationManager mTaskAnimationManager;
+    private final SwipeSharedState mSwipeSharedState;
 
-    public ResetGestureInputConsumer(TaskAnimationManager taskAnimationManager) {
-        mTaskAnimationManager = taskAnimationManager;
+    public ResetGestureInputConsumer(SwipeSharedState swipeSharedState) {
+        mSwipeSharedState = swipeSharedState;
     }
 
     @Override
@@ -39,8 +39,8 @@ public class ResetGestureInputConsumer implements InputConsumer {
     @Override
     public void onMotionEvent(MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_DOWN
-                && mTaskAnimationManager.isRecentsAnimationRunning()) {
-            mTaskAnimationManager.finishRunningRecentsAnimation(false /* toHome */);
+                && mSwipeSharedState.getActiveListener() != null) {
+            mSwipeSharedState.clearAllState(false /* finishAnimation */);
         }
     }
 }

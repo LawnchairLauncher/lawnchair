@@ -32,6 +32,7 @@ import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.PendingAddItemInfo;
+import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
@@ -67,7 +68,7 @@ public class PinItemDragListener extends BaseItemDragListener {
     public boolean init(Launcher launcher, boolean alreadyOnHome) {
         super.init(launcher, alreadyOnHome);
         if (!alreadyOnHome) {
-            launcher.useFadeOutAnimationForLauncherStart(mCancelSignal);
+            UiFactory.useFadeOutAnimationForLauncherStart(launcher, mCancelSignal);
         }
         return false;
     }

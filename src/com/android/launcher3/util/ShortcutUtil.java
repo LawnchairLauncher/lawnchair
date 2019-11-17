@@ -27,6 +27,7 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.WorkspaceItemInfo;
+import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.shortcuts.ShortcutKey;
@@ -76,12 +77,17 @@ public class ShortcutUtil {
     public static void fetchAndUpdateShortcutIconAsync(
             @NonNull Context context, @NonNull WorkspaceItemInfo info, @NonNull ShortcutInfo si,
             boolean badged) {
+        if (info.iconBitmap == null) {
+            // use low res icon as placeholder while the actual icon is being fetched.
+            info.iconBitmap = BitmapInfo.LOW_RES_ICON;
+            info.iconColor = Themes.getColorAccent(context);
+        }
         MODEL_EXECUTOR.execute(() -> {
-            try (LauncherIcons li = LauncherIcons.obtain(context)) {
-                info.bitmap = li.createShortcutIcon(si, badged, null);
-                LauncherAppState.getInstance(context).getModel()
-                        .updateAndBindWorkspaceItem(info, si);
-            }
+            LauncherIcons li = LauncherIcons.obtain(context);
+            BitmapInfo bitmapInfo = li.createShortcutIcon(si, badged, true, null);
+            info.applyFrom(bitmapInfo);
+            li.recycle();
+            LauncherAppState.getInstance(context).getModel().updateAndBindWorkspaceItem(info, si);
         });
     }
 

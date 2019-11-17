@@ -59,7 +59,6 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Handler;
-import android.os.UserHandle;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
@@ -105,7 +104,7 @@ import com.android.launcher3.util.ViewPool;
 import com.android.quickstep.RecentsAnimationController;
 import com.android.quickstep.RecentsAnimationTargets;
 import com.android.quickstep.RecentsModel;
-import com.android.quickstep.RecentsModel.TaskVisualsChangeListener;
+import com.android.quickstep.RecentsModel.TaskThumbnailChangeListener;
 import com.android.quickstep.TaskThumbnailCache;
 import com.android.quickstep.TaskUtils;
 import com.android.quickstep.ViewUtils;
@@ -127,7 +126,7 @@ import java.util.function.Consumer;
 @TargetApi(Build.VERSION_CODES.P)
 public abstract class RecentsView<T extends BaseActivity> extends PagedView implements Insettable,
         TaskThumbnailCache.HighResLoadingState.HighResLoadingStateChangedCallback,
-        InvariantDeviceProfile.OnIDPChangeListener, TaskVisualsChangeListener {
+        InvariantDeviceProfile.OnIDPChangeListener, TaskThumbnailChangeListener {
 
     private static final String TAG = RecentsView.class.getSimpleName();
 
@@ -307,7 +306,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     private final int mEmptyMessagePadding;
     private boolean mShowEmptyMessage;
     private Layout mEmptyTextLayout;
-    private boolean mLiveTileOverlayAttached;
+    private LiveTileOverlay mLiveTileOverlay;
 
     // Keeps track of the index where the first TaskView should be
     private int mTaskViewStartIndex = 0;
@@ -381,21 +380,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             }
         }
         return null;
-    }
-
-    @Override
-    public void onTaskIconChanged(String pkg, UserHandle user) {
-        for (int i = 0; i < getTaskViewCount(); i++) {
-            TaskView tv = getTaskViewAt(i);
-            Task task = tv.getTask();
-            if (task != null && task.key != null && pkg.equals(task.key.getPackageName())
-                    && task.key.userId == user.getIdentifier()) {
-                task.icon = null;
-                if (tv.getIconView().getDrawable() != null) {
-                    tv.onTaskListVisibilityChanged(true /* visible */);
-                }
-            }
-        }
     }
 
     /**
@@ -875,8 +859,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
      */
     public void onSwipeUpAnimationSuccess() {
         if (getRunningTaskView() != null) {
-            float startProgress = ENABLE_QUICKSTEP_LIVE_TILE.get() && mLiveTileOverlayAttached
-                    ? LiveTileOverlay.getInstance().cancelIconAnimation()
+            float startProgress = ENABLE_QUICKSTEP_LIVE_TILE.get() && mLiveTileOverlay != null
+                    ? mLiveTileOverlay.cancelIconAnimation()
                     : 0f;
             animateUpRunningTaskIconScale(startProgress);
         }
@@ -1688,8 +1672,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
         if (event.getEventType() == AccessibilityEvent.TYPE_VIEW_SCROLLED) {
             final int[] visibleTasks = getVisibleChildrenRange();
-            event.setFromIndex(taskViewCount - visibleTasks[1]);
-            event.setToIndex(taskViewCount - visibleTasks[0]);
+            event.setFromIndex(taskViewCount - visibleTasks[1] - 1);
+            event.setToIndex(taskViewCount - visibleTasks[0] - 1);
             event.setItemCount(taskViewCount);
         }
     }
@@ -1723,13 +1707,13 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         mAppWindowAnimationHelper = appWindowAnimationHelper;
     }
 
-    public void setLiveTileOverlayAttached(boolean liveTileOverlayAttached) {
-        mLiveTileOverlayAttached = liveTileOverlayAttached;
+    public void setLiveTileOverlay(LiveTileOverlay liveTileOverlay) {
+        mLiveTileOverlay = liveTileOverlay;
     }
 
     public void updateLiveTileIcon(Drawable icon) {
-        if (mLiveTileOverlayAttached) {
-            LiveTileOverlay.getInstance().setIcon(icon);
+        if (mLiveTileOverlay != null) {
+            mLiveTileOverlay.setIcon(icon);
         }
     }
 
@@ -1741,17 +1725,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             return;
         }
 
-        mRecentsAnimationController.finish(toRecents, () -> {
-            if (onFinishComplete != null) {
-                onFinishComplete.run();
-                // After we finish the recents animation, the current task id should be correctly
-                // reset so that when the task is launched from Overview later, it goes through the
-                // flow of starting a new task instead of finishing recents animation to app. A
-                // typical example of this is (1) user swipes up from app to Overview (2) user
-                // taps on QSB (3) user goes back to Overview and launch the most recent task.
-                setCurrentTask(-1);
-            }
-        });
+        mRecentsAnimationController.finish(toRecents, onFinishComplete);
     }
 
     public void setDisallowScrollToClearAll(boolean disallowScrollToClearAll) {
@@ -1854,8 +1828,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     private void updateEnabledOverlays() {
         int overlayEnabledPage = mOverlayEnabled ? getNextPage() : -1;
         int taskCount = getTaskViewCount();
-        for (int i = mTaskViewStartIndex; i < mTaskViewStartIndex + taskCount; i++) {
-            getTaskViewAtByAbsoluteIndex(i).setOverlayEnabled(i == overlayEnabledPage);
+        for (int i = 0; i < taskCount; i++) {
+            getTaskViewAt(i).setOverlayEnabled(i == overlayEnabledPage);
         }
     }
 
@@ -1876,20 +1850,20 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         return Math.max(insets.getSystemGestureInsets().right, insets.getSystemWindowInsetRight());
     }
 
+
     /** If it's in the live tile mode, switch the running task into screenshot mode. */
-    public void switchToScreenshot(ThumbnailData thumbnailData, Runnable onFinishRunnable) {
+    public void switchToScreenshot(Runnable onFinishRunnable) {
         TaskView taskView = getRunningTaskView();
-        if (taskView != null) {
-            taskView.setShowScreenshot(true);
-            if (thumbnailData != null) {
-                taskView.getThumbnail().setThumbnail(taskView.getTask(), thumbnailData);
-            } else {
-                taskView.getThumbnail().refresh();
+        if (taskView == null) {
+            if (onFinishRunnable != null) {
+                onFinishRunnable.run();
             }
-            ViewUtils.postDraw(taskView, onFinishRunnable);
-        } else {
-            onFinishRunnable.run();
+            return;
         }
+
+        taskView.setShowScreenshot(true);
+        taskView.getThumbnail().refresh();
+        ViewUtils.postDraw(taskView, onFinishRunnable);
     }
 
     @Override

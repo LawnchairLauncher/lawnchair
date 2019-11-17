@@ -38,9 +38,8 @@ import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimationSuccessListener;
-import com.android.launcher3.touch.BaseSwipeDetector;
 import com.android.launcher3.touch.OverScroll;
-import com.android.launcher3.touch.SingleAxisSwipeDetector;
+import com.android.launcher3.touch.SwipeDetector;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.Themes;
 
@@ -49,7 +48,7 @@ import com.android.launcher3.util.Themes;
  * e.g. icon + title + text.
  */
 @TargetApi(Build.VERSION_CODES.N)
-public class NotificationMainView extends FrameLayout implements SingleAxisSwipeDetector.Listener {
+public class NotificationMainView extends FrameLayout implements SwipeDetector.Listener {
 
     private static FloatProperty<NotificationMainView> CONTENT_TRANSLATION =
             new FloatProperty<NotificationMainView>("contentTranslation") {
@@ -76,7 +75,7 @@ public class NotificationMainView extends FrameLayout implements SingleAxisSwipe
     private TextView mTextView;
     private View mIconView;
 
-    private SingleAxisSwipeDetector mSwipeDetector;
+    private SwipeDetector mSwipeDetector;
 
     public NotificationMainView(Context context) {
         this(context, null, 0);
@@ -108,7 +107,7 @@ public class NotificationMainView extends FrameLayout implements SingleAxisSwipe
         mIconView = findViewById(R.id.popup_item_icon);
     }
 
-    public void setSwipeDetector(SingleAxisSwipeDetector swipeDetector) {
+    public void setSwipeDetector(SwipeDetector swipeDetector) {
         mSwipeDetector = swipeDetector;
     }
 
@@ -174,7 +173,7 @@ public class NotificationMainView extends FrameLayout implements SingleAxisSwipe
                 LauncherLogProto.ItemType.NOTIFICATION);
     }
 
-    // SingleAxisSwipeDetector.Listener's
+    // SwipeDetector.Listener's
     @Override
     public void onDragStart(boolean start) { }
 
@@ -188,7 +187,7 @@ public class NotificationMainView extends FrameLayout implements SingleAxisSwipe
     }
 
     @Override
-    public void onDragEnd(float velocity) {
+    public void onDragEnd(float velocity, boolean fling) {
         final boolean willExit;
         final float endTranslation;
         final float startTranslation = mTextAndBackground.getTranslationX();
@@ -196,7 +195,7 @@ public class NotificationMainView extends FrameLayout implements SingleAxisSwipe
         if (!canChildBeDismissed()) {
             willExit = false;
             endTranslation = 0;
-        } else if (mSwipeDetector.isFling(velocity)) {
+        } else if (fling) {
             willExit = true;
             endTranslation = velocity < 0 ? - getWidth() : getWidth();
         } else if (Math.abs(startTranslation) > getWidth() / 2) {
@@ -207,7 +206,7 @@ public class NotificationMainView extends FrameLayout implements SingleAxisSwipe
             endTranslation = 0;
         }
 
-        long duration = BaseSwipeDetector.calculateDuration(velocity,
+        long duration = SwipeDetector.calculateDuration(velocity,
                 (endTranslation - startTranslation) / getWidth());
 
         mContentTranslateAnimator.removeAllListeners();

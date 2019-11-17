@@ -169,7 +169,7 @@ public class AppWindowAnimationHelper {
             return null;
         }
 
-        float progress = Utilities.boundToRange(params.progress, 0, 1);
+        float progress = params.progress;
         updateCurrentRect(params);
 
         SurfaceParams[] surfaceParams = new SurfaceParams[params.targetSet.unfilteredApps.length];

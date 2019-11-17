@@ -28,7 +28,7 @@ import androidx.annotation.NonNull;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.shortcuts.ShortcutKey;
-import com.android.launcher3.uioverrides.ApiWrapper;
+import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.util.ContentWriter;
 
 import java.util.Arrays;
@@ -140,7 +140,7 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
                 .put(Favorites.RESTORED, status);
 
         if (!usingLowResIcon()) {
-            writer.putIcon(bitmap, user);
+            writer.putIcon(iconBitmap, user);
         }
         if (iconResource != null) {
             writer.put(Favorites.ICON_PACKAGE, iconResource.packageName)
@@ -192,7 +192,7 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
         }
         disabledMessage = shortcutInfo.getDisabledMessage();
 
-        Person[] persons = ApiWrapper.getPersons(shortcutInfo);
+        Person[] persons = UiFactory.getPersons(shortcutInfo);
         personKeys = persons.length == 0 ? Utilities.EMPTY_STRING_ARRAY
             : Arrays.stream(persons).map(Person::getKey).sorted().toArray(String[]::new);
     }

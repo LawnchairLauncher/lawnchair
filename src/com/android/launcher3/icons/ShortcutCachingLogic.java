@@ -23,14 +23,10 @@ import android.content.pm.ShortcutInfo;
 import android.graphics.drawable.Drawable;
 import android.os.UserHandle;
 
-import androidx.annotation.NonNull;
-
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.cache.CachingLogic;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutKey;
-import com.android.launcher3.util.Themes;
 
 /**
  * Caching logic for shortcuts.
@@ -52,23 +48,20 @@ public class ShortcutCachingLogic implements CachingLogic<ShortcutInfo> {
         return info.getShortLabel();
     }
 
-    @NonNull
     @Override
-    public BitmapInfo loadIcon(Context context, ShortcutInfo info) {
-        try (LauncherIcons li = LauncherIcons.obtain(context)) {
-            Drawable unbadgedDrawable = DeepShortcutManager.getInstance(context)
-                    .getShortcutIconDrawable(info, LauncherAppState.getIDP(context).fillResIconDpi);
-            if (unbadgedDrawable == null) return BitmapInfo.LOW_RES_INFO;
-            return new BitmapInfo(li.createScaledBitmapWithoutShadow(
-                    unbadgedDrawable, 0), Themes.getColorAccent(context));
+    public void loadIcon(Context context, ShortcutInfo info, BitmapInfo target) {
+        LauncherIcons li = LauncherIcons.obtain(context);
+        Drawable unbadgedDrawable = DeepShortcutManager.getInstance(context)
+                .getShortcutIconDrawable(info, LauncherAppState.getIDP(context).fillResIconDpi);
+        if (unbadgedDrawable != null) {
+            target.icon = li.createScaledBitmapWithoutShadow(unbadgedDrawable, 0);
         }
+        li.recycle();
     }
 
     @Override
     public long getLastUpdatedTime(ShortcutInfo shortcutInfo, PackageInfo info) {
-        if (shortcutInfo == null || !FeatureFlags.ENABLE_DEEP_SHORTCUT_ICON_CACHE.get()) {
-            return info.lastUpdateTime;
-        }
+        if (shortcutInfo == null) return info.lastUpdateTime;
         return Math.max(shortcutInfo.getLastChangedTimestamp(), info.lastUpdateTime);
     }
 

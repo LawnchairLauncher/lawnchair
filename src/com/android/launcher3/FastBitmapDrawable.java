@@ -20,7 +20,6 @@ import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
 
 import android.animation.ObjectAnimator;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -36,7 +35,6 @@ import android.graphics.drawable.Drawable;
 import android.util.Property;
 import android.util.SparseArray;
 
-import com.android.launcher3.graphics.PlaceHolderIconDrawable;
 import com.android.launcher3.icons.BitmapInfo;
 
 public class FastBitmapDrawable extends Drawable {
@@ -98,6 +96,10 @@ public class FastBitmapDrawable extends Drawable {
 
     public FastBitmapDrawable(BitmapInfo info) {
         this(info.icon, info.color);
+    }
+
+    public FastBitmapDrawable(ItemInfoWithIcon info) {
+        this(info.iconBitmap, info.iconColor);
     }
 
     protected FastBitmapDrawable(Bitmap b, int iconColor) {
@@ -363,46 +365,13 @@ public class FastBitmapDrawable extends Drawable {
         }
 
         @Override
-        public FastBitmapDrawable newDrawable() {
+        public Drawable newDrawable() {
             return new FastBitmapDrawable(mBitmap, mIconColor, mIsDisabled);
         }
 
         @Override
         public int getChangingConfigurations() {
             return 0;
-        }
-    }
-
-    /**
-     * Interface to be implemented by custom {@link BitmapInfo} to handle drawable construction
-     */
-    public interface Factory {
-
-        /**
-         * Called to create a new drawable
-         */
-        FastBitmapDrawable newDrawable();
-    }
-
-    /**
-     * Returns a FastBitmapDrawable with the icon.
-     */
-    public static FastBitmapDrawable newIcon(Context context, ItemInfoWithIcon info) {
-        FastBitmapDrawable drawable = newIcon(context, info.bitmap);
-        drawable.setIsDisabled(info.isDisabled());
-        return drawable;
-    }
-
-    /**
-     * Creates a drawable for the provided BitmapInfo
-     */
-    public static FastBitmapDrawable newIcon(Context context, BitmapInfo info) {
-        if (info instanceof Factory) {
-            return ((Factory) info).newDrawable();
-        } else if (info.isLowRes()) {
-            return new PlaceHolderIconDrawable(info, context);
-        } else {
-            return new FastBitmapDrawable(info);
         }
     }
 }

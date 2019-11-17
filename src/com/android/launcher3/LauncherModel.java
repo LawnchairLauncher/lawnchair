@@ -21,7 +21,6 @@ import static com.android.launcher3.config.FeatureFlags.IS_DOGFOOD_BUILD;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.LauncherApps;
 import android.content.pm.PackageInstaller;
@@ -32,7 +31,6 @@ import android.util.Log;
 import android.util.Pair;
 
 import androidx.annotation.Nullable;
-import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
@@ -55,6 +53,7 @@ import com.android.launcher3.model.UserLockStateChangedTask;
 import com.android.launcher3.pm.InstallSessionTracker;
 import com.android.launcher3.pm.PackageInstallInfo;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.IntSparseArrayMap;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.PackageUserKey;
@@ -94,6 +93,10 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
     private boolean mModelLoaded;
     public boolean isModelLoaded() {
         synchronized (mLock) {
+            if (TestProtocol.sDebugTracing) {
+                Log.d(TestProtocol.LAUNCHER_DIDNT_INITIALIZE,
+                        "isModelLoaded: " + mModelLoaded + ", " + mLoaderTask);
+            }
             return mModelLoaded && mLoaderTask == null;
         }
     }
@@ -211,21 +214,9 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
         enqueueModelUpdateTask(new ShortcutsChangedTask(packageName, shortcuts, user, true));
     }
 
-    /**
-     * Called when the icon for an app changes, outside of package event
-     */
-    @WorkerThread
-    public void onAppIconChanged(String packageName, UserHandle user) {
-        // Update the icon for the calendar package
-        Context context = mApp.getContext();
-        onPackageChanged(packageName, user);
-
-        List<ShortcutInfo> pinnedShortcuts = DeepShortcutManager.getInstance(context)
-                .queryForPinnedShortcuts(packageName, user);
-        if (!pinnedShortcuts.isEmpty()) {
-            enqueueModelUpdateTask(new ShortcutsChangedTask(packageName, pinnedShortcuts, user,
-                    false));
-        }
+    public void updatePinnedShortcuts(String packageName, List<ShortcutInfo> shortcuts,
+            UserHandle user) {
+        enqueueModelUpdateTask(new ShortcutsChangedTask(packageName, shortcuts, user, false));
     }
 
     public void onBroadcastIntent(Intent intent) {
@@ -534,7 +525,7 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
         updateAndBindWorkspaceItem(() -> {
             si.updateFromDeepShortcutInfo(info, mApp.getContext());
             LauncherIcons li = LauncherIcons.obtain(mApp.getContext());
-            si.bitmap = li.createShortcutIcon(info);
+            si.applyFrom(li.createShortcutIcon(info));
             li.recycle();
             return si;
         });
@@ -570,8 +561,7 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
         if (args.length > 0 && TextUtils.equals(args[0], "--all")) {
             writer.println(prefix + "All apps list: size=" + mBgAllAppsList.data.size());
             for (AppInfo info : mBgAllAppsList.data) {
-                writer.println(prefix + "   title=\"" + info.title
-                        + "\" bitmapIcon=" + info.bitmap.icon
+                writer.println(prefix + "   title=\"" + info.title + "\" iconBitmap=" + info.iconBitmap
                         + " componentName=" + info.componentName.getPackageName());
             }
         }

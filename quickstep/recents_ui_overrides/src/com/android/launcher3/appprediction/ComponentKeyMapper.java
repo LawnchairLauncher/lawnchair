@@ -18,6 +18,8 @@ package com.android.launcher3.appprediction;
 
 import static com.android.quickstep.InstantAppResolverImpl.COMPONENT_CLASS_MARKER;
 
+import android.content.Context;
+
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.allapps.AllAppsStore;
@@ -27,9 +29,11 @@ import com.android.launcher3.util.ComponentKey;
 public class ComponentKeyMapper {
 
     protected final ComponentKey componentKey;
+    private final Context mContext;
     private final DynamicItemCache mCache;
 
-    public ComponentKeyMapper(ComponentKey key, DynamicItemCache cache) {
+    public ComponentKeyMapper(Context context, ComponentKey key, DynamicItemCache cache) {
+        mContext = context;
         componentKey = key;
         mCache = cache;
     }

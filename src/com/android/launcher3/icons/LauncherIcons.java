@@ -32,7 +32,7 @@ import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.R;
 import com.android.launcher3.graphics.IconShape;
 import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
@@ -45,6 +45,8 @@ import java.util.function.Supplier;
  * that are threadsafe.
  */
 public class LauncherIcons extends BaseIconFactory implements AutoCloseable {
+
+    private static final String EXTRA_BADGEPKG = "badge_package";
 
     private static final Object sPoolSync = new Object();
     private static LauncherIcons sPool;
@@ -114,6 +116,7 @@ public class LauncherIcons extends BaseIconFactory implements AutoCloseable {
     }
 
     // below methods should also migrate to BaseIconFactory
+    @WorkerThread
     public BitmapInfo createShortcutIcon(ShortcutInfo shortcutInfo) {
         return createShortcutIcon(shortcutInfo, true /* badged */);
     }
@@ -123,58 +126,24 @@ public class LauncherIcons extends BaseIconFactory implements AutoCloseable {
         return createShortcutIcon(shortcutInfo, badged, null);
     }
 
+    @WorkerThread
     public BitmapInfo createShortcutIcon(ShortcutInfo shortcutInfo, boolean badged,
             @Nullable Supplier<ItemInfoWithIcon> fallbackIconProvider) {
-        if (FeatureFlags.ENABLE_DEEP_SHORTCUT_ICON_CACHE.get()) {
-            return createShortcutIconCached(shortcutInfo, badged, true, fallbackIconProvider);
-        } else {
-            return createShortcutIconLegacy(shortcutInfo, badged, fallbackIconProvider);
-        }
-    }
-
-    public BitmapInfo createShortcutIconLegacy(ShortcutInfo shortcutInfo, boolean badged,
-            @Nullable Supplier<ItemInfoWithIcon> fallbackIconProvider) {
-        Drawable unbadgedDrawable = DeepShortcutManager.getInstance(mContext)
-                .getShortcutIconDrawable(shortcutInfo, mFillResIconDpi);
-        IconCache cache = LauncherAppState.getInstance(mContext).getIconCache();
-        final Bitmap unbadgedBitmap;
-        if (bitmapInfo.icon != null) {
-            unbadgedBitmap = bitmapInfo.icon;
-        } else {
-            if (fallbackIconProvider != null) {
-                // Fallback icons are already badged and with appropriate shadow
-                ItemInfoWithIcon fullIcon = fallbackIconProvider.get();
-                if (fullIcon != null && fullIcon.bitmap != null) {
-                    return fullIcon.bitmap;
-                }
-            }
-            unbadgedBitmap = cache.getDefaultIcon(Process.myUserHandle()).icon;
-        }
-
-        if (!badged) {
-            return BitmapInfo.of(unbadgedBitmap, Themes.getColorAccent(mContext));
-        }
-
-        final Bitmap unbadgedfinal = unbadgedBitmap;
-        final ItemInfoWithIcon badge = getShortcutInfoBadge(shortcutInfo, cache);
-
-        Bitmap icon = BitmapRenderer.createHardwareBitmap(mIconBitmapSize, mIconBitmapSize, (c) -> {
-            getShadowGenerator().recreateIcon(unbadgedfinal, c);
-            badgeWithDrawable(c, new FastBitmapDrawable(badge.bitmap));
-        });
-        return BitmapInfo.of(icon, badge.bitmap.color);
+        return createShortcutIcon(shortcutInfo, badged, true, fallbackIconProvider);
     }
 
     @WorkerThread
-    public BitmapInfo createShortcutIconCached(ShortcutInfo shortcutInfo, boolean badged,
+    public BitmapInfo createShortcutIcon(ShortcutInfo shortcutInfo, boolean badged,
             boolean useCache, @Nullable Supplier<ItemInfoWithIcon> fallbackIconProvider) {
         IconCache cache = LauncherAppState.getInstance(mContext).getIconCache();
         final BitmapInfo bitmapInfo;
         if (useCache) {
-            bitmapInfo = cache.getDeepShortcutTitleAndIcon(shortcutInfo).bitmap;
+            bitmapInfo = cache.getDeepShortcutTitleAndIcon(shortcutInfo);
         } else {
-            bitmapInfo = new ShortcutCachingLogic().loadIcon(mContext, shortcutInfo);
+            bitmapInfo = new BitmapInfo();
+            new ShortcutCachingLogic().loadIcon(mContext, shortcutInfo, bitmapInfo);
         }
+
         final Bitmap unbadgedBitmap;
         if (bitmapInfo.icon != null) {
             unbadgedBitmap = bitmapInfo.icon;
@@ -182,30 +151,37 @@ public class LauncherIcons extends BaseIconFactory implements AutoCloseable {
             if (fallbackIconProvider != null) {
                 // Fallback icons are already badged and with appropriate shadow
                 ItemInfoWithIcon fullIcon = fallbackIconProvider.get();
-                if (fullIcon != null && fullIcon.bitmap != null) {
-                    return fullIcon.bitmap;
+                if (fullIcon != null && fullIcon.iconBitmap != null) {
+                    BitmapInfo result = new BitmapInfo();
+                    result.icon = fullIcon.iconBitmap;
+                    result.color = fullIcon.iconColor;
+                    return result;
                 }
             }
             unbadgedBitmap = cache.getDefaultIcon(Process.myUserHandle()).icon;
         }
 
+        BitmapInfo result = new BitmapInfo();
         if (!badged) {
-            return BitmapInfo.of(unbadgedBitmap, Themes.getColorAccent(mContext));
+            result.color = Themes.getColorAccent(mContext);
+            result.icon = unbadgedBitmap;
+            return result;
         }
 
         final Bitmap unbadgedfinal = unbadgedBitmap;
         final ItemInfoWithIcon badge = getShortcutInfoBadge(shortcutInfo, cache);
 
-        Bitmap icon = BitmapRenderer.createHardwareBitmap(mIconBitmapSize, mIconBitmapSize, (c) -> {
+        result.color = badge.iconColor;
+        result.icon = BitmapRenderer.createHardwareBitmap(mIconBitmapSize, mIconBitmapSize, (c) -> {
             getShadowGenerator().recreateIcon(unbadgedfinal, c);
-            badgeWithDrawable(c, new FastBitmapDrawable(badge.bitmap));
+            badgeWithDrawable(c, new FastBitmapDrawable(badge));
         });
-        return BitmapInfo.of(icon, badge.bitmap.color);
+        return result;
     }
 
     public ItemInfoWithIcon getShortcutInfoBadge(ShortcutInfo shortcutInfo, IconCache cache) {
         ComponentName cn = shortcutInfo.getActivity();
-        String badgePkg = shortcutInfo.getPackage();
+        String badgePkg = getBadgePackage(shortcutInfo);
         boolean hasBadgePkgSet = !badgePkg.equals(shortcutInfo.getPackage());
         if (cn != null && !hasBadgePkgSet) {
             // Get the app info for the source activity.
@@ -222,5 +198,15 @@ public class LauncherIcons extends BaseIconFactory implements AutoCloseable {
             cache.getTitleAndIconForApp(pkgInfo, false);
             return pkgInfo;
         }
+    }
+
+    private String getBadgePackage(ShortcutInfo si) {
+        String whitelistedPkg = mContext.getString(R.string.shortcutinfo_badgepkg_whitelist);
+        if (whitelistedPkg.equals(si.getPackage())
+                && si.getExtras() != null
+                && si.getExtras().containsKey(EXTRA_BADGEPKG)) {
+            return si.getExtras().getString(EXTRA_BADGEPKG);
+        }
+        return si.getPackage();
     }
 }

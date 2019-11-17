@@ -2,13 +2,13 @@ package com.android.launcher3.model;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNull;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.WorkspaceItemInfo;
-import com.android.launcher3.icons.BitmapInfo;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -43,7 +43,7 @@ public class CacheDataUpdatedTaskTest extends BaseModelUpdateTaskTestCase {
     public void testCacheUpdate_update_apps() throws Exception {
         // Clear all icons from apps list so that its easy to check what was updated
         for (AppInfo info : allAppsList.data) {
-            info.bitmap = BitmapInfo.LOW_RES_INFO;
+            info.iconBitmap = null;
         }
 
         executeTaskForTest(newTask(CacheDataUpdatedTask.OP_CACHE_UPDATE, "app1"));
@@ -56,9 +56,9 @@ public class CacheDataUpdatedTaskTest extends BaseModelUpdateTaskTestCase {
         assertFalse(allAppsList.data.isEmpty());
         for (AppInfo info : allAppsList.data) {
             if (info.componentName.getPackageName().equals("app1")) {
-                assertFalse(info.bitmap.isNullOrLowRes());
+                assertNotNull(info.iconBitmap);
             } else {
-                assertTrue(info.bitmap.isNullOrLowRes());
+                assertNull(info.iconBitmap);
             }
         }
     }
@@ -85,10 +85,10 @@ public class CacheDataUpdatedTaskTest extends BaseModelUpdateTaskTestCase {
         for (ItemInfo info : bgDataModel.itemsIdMap) {
             if (updates.contains(info.id)) {
                 assertEquals(NEW_LABEL_PREFIX + info.id, info.title);
-                assertFalse(((WorkspaceItemInfo) info).bitmap.isNullOrLowRes());
+                assertNotNull(((WorkspaceItemInfo) info).iconBitmap);
             } else {
                 assertNotSame(NEW_LABEL_PREFIX + info.id, info.title);
-                assertTrue(((WorkspaceItemInfo) info).bitmap.isNullOrLowRes());
+                assertNull(((WorkspaceItemInfo) info).iconBitmap);
             }
         }
     }

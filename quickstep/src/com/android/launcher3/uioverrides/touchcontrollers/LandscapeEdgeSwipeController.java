@@ -11,10 +11,10 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager.AnimationComponents;
 import com.android.launcher3.touch.AbstractStateChangeTouchController;
-import com.android.launcher3.touch.SingleAxisSwipeDetector;
+import com.android.launcher3.touch.SwipeDetector;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
-import com.android.quickstep.SystemUiProxy;
+import com.android.quickstep.RecentsModel;
 
 /**
  * Touch controller for handling edge swipes in landscape/seascape UI
@@ -24,7 +24,7 @@ public class LandscapeEdgeSwipeController extends AbstractStateChangeTouchContro
     private static final String TAG = "LandscapeEdgeSwipeCtrl";
 
     public LandscapeEdgeSwipeController(Launcher l) {
-        super(l, SingleAxisSwipeDetector.HORIZONTAL);
+        super(l, SwipeDetector.HORIZONTAL);
     }
 
     @Override
@@ -73,7 +73,7 @@ public class LandscapeEdgeSwipeController extends AbstractStateChangeTouchContro
     protected void onSwipeInteractionCompleted(LauncherState targetState, int logAction) {
         super.onSwipeInteractionCompleted(targetState, logAction);
         if (mStartState == NORMAL && targetState == OVERVIEW) {
-            SystemUiProxy.INSTANCE.get(mLauncher).onOverviewShown(true, TAG);
+            RecentsModel.INSTANCE.get(mLauncher).onOverviewShown(true, TAG);
         }
     }
 }

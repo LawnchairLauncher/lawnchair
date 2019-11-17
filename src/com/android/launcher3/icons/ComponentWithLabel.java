@@ -57,8 +57,10 @@ public interface ComponentWithLabel {
         }
 
         @Override
-        public BitmapInfo loadIcon(Context context, ComponentWithLabel object) {
-            return BitmapInfo.LOW_RES_INFO;
+        public void loadIcon(Context context,
+                ComponentWithLabel object, BitmapInfo target) {
+            // Do not load icon.
+            target.icon = BitmapInfo.LOW_RES_ICON;
         }
 
         @Override

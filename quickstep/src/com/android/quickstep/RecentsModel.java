@@ -25,12 +25,12 @@ import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.content.ComponentCallbacks2;
 import android.content.Context;
+import android.content.pm.LauncherApps;
 import android.os.Build;
 import android.os.Looper;
 import android.os.Process;
 import android.os.UserHandle;
 
-import com.android.launcher3.icons.IconProvider;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
@@ -48,11 +48,13 @@ import java.util.function.Consumer;
 @TargetApi(Build.VERSION_CODES.O)
 public class RecentsModel extends TaskStackChangeListener {
 
+    private static final String TAG = "RecentsModel";
+
     // We do not need any synchronization for this variable as its only written on UI thread.
     public static final MainThreadInitializedObject<RecentsModel> INSTANCE =
             new MainThreadInitializedObject<>(RecentsModel::new);
 
-    private final List<TaskVisualsChangeListener> mThumbnailChangeListeners = new ArrayList<>();
+    private final List<TaskThumbnailChangeListener> mThumbnailChangeListeners = new ArrayList<>();
     private final Context mContext;
 
     private final RecentTasksList mTaskList;
@@ -67,10 +69,8 @@ public class RecentsModel extends TaskStackChangeListener {
                 new KeyguardManagerCompat(context), ActivityManagerWrapper.getInstance());
         mIconCache = new TaskIconCache(context, looper);
         mThumbnailCache = new TaskThumbnailCache(context, looper);
-
         ActivityManagerWrapper.getInstance().registerTaskStackListener(this);
-        IconProvider.registerIconChangeListener(context,
-                this::onPackageIconChanged, MAIN_EXECUTOR.getHandler());
+        setupPackageListener();
     }
 
     public TaskIconCache getIconCache() {
@@ -183,40 +183,45 @@ public class RecentsModel extends TaskStackChangeListener {
         }
     }
 
-    private void onPackageIconChanged(String pkg, UserHandle user) {
-        mIconCache.invalidateCacheEntries(pkg, user);
-        for (int i = mThumbnailChangeListeners.size() - 1; i >= 0; i--) {
-            mThumbnailChangeListeners.get(i).onTaskIconChanged(pkg, user);
-        }
+    public void onOverviewShown(boolean fromHome, String tag) {
+        SystemUiProxy.INSTANCE.get(mContext).onOverviewShown(fromHome, tag);
     }
 
-    /**
-     * Adds a listener for visuals changes
-     */
-    public void addThumbnailChangeListener(TaskVisualsChangeListener listener) {
+    private void setupPackageListener() {
+        mContext.getSystemService(LauncherApps.class).registerCallback(new LauncherApps.Callback() {
+            @Override
+            public void onPackageRemoved(String packageName, UserHandle user) {
+                mIconCache.invalidatePackage(packageName);
+            }
+
+            @Override
+            public void onPackageChanged(String packageName, UserHandle user) {
+                mIconCache.invalidatePackage(packageName);
+            }
+
+            @Override
+            public void onPackageAdded(String packageName, UserHandle user) { }
+
+            @Override
+            public void onPackagesAvailable(
+                    String[] packageNames, UserHandle user, boolean replacing) { }
+
+            @Override
+            public void onPackagesUnavailable(
+                    String[] packageNames, UserHandle user, boolean replacing) { }
+        });
+    }
+
+    public void addThumbnailChangeListener(TaskThumbnailChangeListener listener) {
         mThumbnailChangeListeners.add(listener);
     }
 
-    /**
-     * Removes a previously added listener
-     */
-    public void removeThumbnailChangeListener(TaskVisualsChangeListener listener) {
+    public void removeThumbnailChangeListener(TaskThumbnailChangeListener listener) {
         mThumbnailChangeListeners.remove(listener);
     }
 
-    /**
-     * Listener for receiving various task properties changes
-     */
-    public interface TaskVisualsChangeListener {
+    public interface TaskThumbnailChangeListener {
 
-        /**
-         * Called whn the task thumbnail changes
-         */
         Task onTaskThumbnailChanged(int taskId, ThumbnailData thumbnailData);
-
-        /**
-         * Called when the icon for a task changes
-         */
-        void onTaskIconChanged(String pkg, UserHandle user);
     }
 }

@@ -3,8 +3,6 @@ package com.android.launcher3.util;
 import android.os.SystemClock;
 import android.util.Log;
 
-import com.android.launcher3.tapl.LauncherInstrumentation;
-
 import org.junit.Assert;
 
 /**
@@ -14,13 +12,11 @@ public class Wait {
 
     private static final long DEFAULT_SLEEP_MS = 200;
 
-    public static void atMost(String message, Condition condition, long timeout,
-            LauncherInstrumentation launcher) {
-        atMost(message, condition, timeout, DEFAULT_SLEEP_MS, launcher);
+    public static void atMost(String message, Condition condition, long timeout) {
+        atMost(message, condition, timeout, DEFAULT_SLEEP_MS);
     }
 
-    public static void atMost(String message, Condition condition, long timeout, long sleepMillis,
-            LauncherInstrumentation launcher) {
+    public static void atMost(String message, Condition condition, long timeout, long sleepMillis) {
         final long startTime = SystemClock.uptimeMillis();
         long endTime = startTime + timeout;
         Log.d("Wait", "atMost: " + startTime + " - " + endTime);
@@ -44,7 +40,6 @@ public class Wait {
             throw new RuntimeException(t);
         }
         Log.d("Wait", "atMost: timed out: " + SystemClock.uptimeMillis());
-        launcher.checkForAnomaly();
         Assert.fail(message);
     }
 }

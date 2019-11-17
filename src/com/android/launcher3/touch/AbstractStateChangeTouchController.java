@@ -53,7 +53,7 @@ import com.android.launcher3.util.TouchController;
  * TouchController for handling state changes
  */
 public abstract class AbstractStateChangeTouchController
-        implements TouchController, SingleAxisSwipeDetector.Listener {
+        implements TouchController, SwipeDetector.Listener {
 
     // Progress after which the transition is assumed to be a success in case user does not fling
     public static final float SUCCESS_TRANSITION_PROGRESS = 0.5f;
@@ -65,8 +65,8 @@ public abstract class AbstractStateChangeTouchController
     protected final long ATOMIC_DURATION = getAtomicDuration();
 
     protected final Launcher mLauncher;
-    protected final SingleAxisSwipeDetector mDetector;
-    protected final SingleAxisSwipeDetector.Direction mSwipeDirection;
+    protected final SwipeDetector mDetector;
+    protected final SwipeDetector.Direction mSwipeDirection;
 
     private boolean mNoIntercept;
     private boolean mIsLogContainerSet;
@@ -101,9 +101,9 @@ public abstract class AbstractStateChangeTouchController
 
     private float mAtomicComponentsStartProgress;
 
-    public AbstractStateChangeTouchController(Launcher l, SingleAxisSwipeDetector.Direction dir) {
+    public AbstractStateChangeTouchController(Launcher l, SwipeDetector.Direction dir) {
         mLauncher = l;
-        mDetector = new SingleAxisSwipeDetector(l, this, dir);
+        mDetector = new SwipeDetector(l, this, dir);
         mSwipeDirection = dir;
     }
 
@@ -127,7 +127,7 @@ public abstract class AbstractStateChangeTouchController
             boolean ignoreSlopWhenSettling = false;
 
             if (mCurrentAnimation != null) {
-                directionsToDetectScroll = SingleAxisSwipeDetector.DIRECTION_BOTH;
+                directionsToDetectScroll = SwipeDetector.DIRECTION_BOTH;
                 ignoreSlopWhenSettling = true;
             } else {
                 directionsToDetectScroll = getSwipeDirection();
@@ -152,10 +152,10 @@ public abstract class AbstractStateChangeTouchController
         LauncherState fromState = mLauncher.getStateManager().getState();
         int swipeDirection = 0;
         if (getTargetState(fromState, true /* isDragTowardPositive */) != fromState) {
-            swipeDirection |= SingleAxisSwipeDetector.DIRECTION_POSITIVE;
+            swipeDirection |= SwipeDetector.DIRECTION_POSITIVE;
         }
         if (getTargetState(fromState, false /* isDragTowardPositive */) != fromState) {
-            swipeDirection |= SingleAxisSwipeDetector.DIRECTION_NEGATIVE;
+            swipeDirection |= SwipeDetector.DIRECTION_NEGATIVE;
         }
         return swipeDirection;
     }
@@ -369,8 +369,7 @@ public abstract class AbstractStateChangeTouchController
     }
 
     @Override
-    public void onDragEnd(float velocity) {
-        boolean fling = mDetector.isFling(velocity);
+    public void onDragEnd(float velocity, boolean fling) {
         final int logAction = fling ? Touch.FLING : Touch.SWIPE;
 
         boolean blockedFling = fling && mFlingBlockCheck.isBlocked();
@@ -407,7 +406,7 @@ public abstract class AbstractStateChangeTouchController
             } else {
                 startProgress = Utilities.boundToRange(progress
                         + velocity * getSingleFrameMs(mLauncher) * mProgressMultiplier, 0f, 1f);
-                duration = BaseSwipeDetector.calculateDuration(velocity,
+                duration = SwipeDetector.calculateDuration(velocity,
                         endProgress - Math.max(progress, 0)) * durationMultiplier;
             }
         } else {
@@ -425,7 +424,7 @@ public abstract class AbstractStateChangeTouchController
             } else {
                 startProgress = Utilities.boundToRange(progress
                         + velocity * getSingleFrameMs(mLauncher) * mProgressMultiplier, 0f, 1f);
-                duration = BaseSwipeDetector.calculateDuration(velocity,
+                duration = SwipeDetector.calculateDuration(velocity,
                         Math.min(progress, 1) - endProgress) * durationMultiplier;
             }
         }
