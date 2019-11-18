@@ -485,6 +485,11 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     public void setOverviewStateEnabled(boolean enabled) {
         mOverviewStateEnabled = enabled;
         updateTaskStackListenerState();
+        if (!enabled) {
+            // Reset the running task when leaving overview since it can still have a reference to
+            // its thumbnail
+            mTmpRunningTask = null;
+        }
     }
 
     public void onDigitalWellbeingToastShown() {
