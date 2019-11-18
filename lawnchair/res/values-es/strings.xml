@@ -146,11 +146,16 @@
     <string name="about_role_dev_mod">Desarrollador/Moderador</string>
     <string name="about_role_designer">Diseñador</string>
     <string name="about_role_ui_ux_designer">Diseñador de IU/XU</string>
+    <string name="about_role_ops">Operaciones &amp; Infraestructura</string>
     <string name="about_role_mod_support">Moderador/Soporte</string>
     <string name="about_role_family_member">Miembro de la familia</string>
     <string name="about_role_magisk_maintainer">Encargado del módulo de Magisk</string>
+    <string name="about_bio_deletescape">Kotlin/ Desarrollador en Java. Interesado en todo Android.
+Fundador de los proyectos Lawnchair y dogbin.</string>
     <string name="about_bio_recoded">Programador y diseñador.</string>
     <string name="about_bio_josh">Diseñador gráfico independiente.</string>
+    <string name="about_bio_harsh">Desarrollador en aplicaciones y librerías Android. Desarrollador principal en AOSiP.</string>
+    <string name="about_bio_david">19 años de edad, convierte la cafeína y la pizza en código, provee hosting y da soporte a Lawnchair 24/7 por si algo sale mal. Contribuye a proyectos de código abierto y arregla errores durante su tiempo libre. Conocido anteriormente como Codebucket.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Fallo del launcher</string>
     <string name="gestures_pref_title">Gestos</string>
@@ -498,6 +503,7 @@
     <string name="battery_full">Batería llena</string>
     <string name="battery_low">Batería baja</string>
     <string name="event_provider_unread_notifications">Notificaciones no leídas</string>
+    <string name="event_provider_missing_notification_access">Para usar <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, active las notificaciones de la aplicación para <xliff:g example="My App" id="name">%2$s</xliff:g>    </string>
     <string name="event_provider_missing_notification_dots">Para usar <xliff:g example="My Provider" id="providerName">%1$s</xliff:g> activar puntos de notificación</string>
     <string name="zen_mode_enabled">Modo no molestar activado</string>
     <string name="crash_report_notif_title">%1$s falló!</string>
@@ -551,4 +557,5 @@
     <string name="pref_hide_statusbar_clock">Ocultar reloj de la barra de estado</string>
     <string name="root_access_required">Necesario acceso root</string>
     <string name="smartspace_setup_text">Toca para configurar</string>
+    <string name="get_lawnfeed">Consíguelo ahora</string>
 </resources>
