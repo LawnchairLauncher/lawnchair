@@ -403,14 +403,15 @@ public class DeviceProfile {
         Point totalWorkspacePadding = getTotalWorkspacePadding();
 
         // Check if the icons fit within the available height.
-        float usedHeight = folderCellHeightPx * inv.numFolderRows + folderBottomPanelSize;
-        int maxHeight = availableHeightPx - totalWorkspacePadding.y - folderMargin;
-        float scaleY = maxHeight / usedHeight;
+        float contentUsedHeight = folderCellHeightPx * inv.numFolderRows;
+        int contentMaxHeight = availableHeightPx - totalWorkspacePadding.y - folderBottomPanelSize
+                - folderMargin;
+        float scaleY = contentMaxHeight / contentUsedHeight;
 
         // Check if the icons fit within the available width.
-        float usedWidth = folderCellWidthPx * inv.numFolderColumns;
-        int maxWidth = availableWidthPx - totalWorkspacePadding.x - folderMargin;
-        float scaleX = maxWidth / usedWidth;
+        float contentUsedWidth = folderCellWidthPx * inv.numFolderColumns;
+        int contentMaxWidth = availableWidthPx - totalWorkspacePadding.x - folderMargin;
+        float scaleX = contentMaxWidth / contentUsedWidth;
 
         float scale = Math.min(scaleX, scaleY);
         if (scale < 1f) {

@@ -993,8 +993,8 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
 
     private int getContentAreaHeight() {
         DeviceProfile grid = mLauncher.getDeviceProfile();
-        int maxContentAreaHeight = grid.availableHeightPx
-                - grid.getTotalWorkspacePadding().y - mFooterHeight;
+        int maxContentAreaHeight = grid.availableHeightPx - grid.getTotalWorkspacePadding().y
+                - mFooterHeight;
         int height = Math.min(maxContentAreaHeight,
                 mContent.getDesiredHeight());
         return Math.max(height, MIN_CONTENT_DIMEN);
