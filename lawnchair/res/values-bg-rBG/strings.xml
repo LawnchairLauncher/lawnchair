@@ -142,6 +142,7 @@
     <string name="about_role_dev_mod">Програмист/Модератор</string>
     <string name="about_role_designer">Дизайнер</string>
     <string name="about_role_ui_ux_designer">UI/UX дизайнер</string>
+    <string name="about_role_pr">Връзки с обществеността &amp; Социални мрежи</string>
     <string name="about_role_ops">Операции &amp; Инфраструктура</string>
     <string name="about_role_mod_support">Модератор/Поддръжка</string>
     <string name="about_role_family_member">Член на семейството</string>
@@ -149,6 +150,8 @@
     <string name="about_bio_deletescape">Kotlin/Java програмист. Интересува се от всичко, свързано с Android. Основател на проектите Lawnchair и dogbin.</string>
     <string name="about_bio_recoded">Лек програмист и графичен дизайнер.</string>
     <string name="about_bio_josh">Графичен дизайнер на свободна практика.</string>
+    <string name="about_bio_harsh">Разработчик на Android приложения и библиотеки. Главен разработчик в AOSiP.</string>
+    <string name="about_bio_david">На 19 години, превръща кофеин и пица в код, предоставя хостинг и 24/7 поддръжка за Lawnchair ако нещо се обърка. Допринася към проекти с отворен код и поправя бъгове в свободното си време. Също така по-рано известен като Codebucket.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Сриване на лаунчъра</string>
     <string name="gestures_pref_title">Жестове</string>
@@ -494,6 +497,7 @@
     <string name="battery_full">Батерията е пълна</string>
     <string name="battery_low">Батерията е изтощена</string>
     <string name="event_provider_unread_notifications">Непрочетени известия</string>
+    <string name="event_provider_missing_notification_access">За да използвате <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, включете известията за приложението <xliff:g example="My App" id="name">%2$s</xliff:g>    </string>
     <string name="event_provider_missing_notification_dots">За да използвате <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, включете точките за известия</string>
     <string name="zen_mode_enabled">Режимът \"Не безпокойте\" е включен</string>
     <string name="crash_report_notif_title">%1$s се срина!</string>
@@ -547,4 +551,5 @@
     <string name="pref_hide_statusbar_clock">Скриване на часовника в лентата на състоянието</string>
     <string name="root_access_required">Необходим е Root достъп</string>
     <string name="smartspace_setup_text">Докоснете, за да настроите</string>
+    <string name="get_lawnfeed">Изтеглете го сега</string>
 </resources>
