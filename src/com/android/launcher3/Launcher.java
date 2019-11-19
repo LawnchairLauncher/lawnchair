@@ -83,6 +83,7 @@ import android.view.animation.OvershootInterpolator;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
 import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.DropTarget.DragObject;
@@ -692,6 +693,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         switch (requestCode) {
             case REQUEST_CREATE_SHORTCUT:
                 completeAddShortcut(intent, info.container, screenId, info.cellX, info.cellY, info);
+                announceForAccessibility(R.string.item_added_to_workspace);
                 break;
             case REQUEST_CREATE_APPWIDGET:
                 completeAddAppWidget(appWidgetId, info, null, null);
@@ -716,7 +718,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                 break;
             }
         }
-
         return screenId;
     }
 
@@ -1322,6 +1323,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         hostView.setVisibility(View.VISIBLE);
         prepareAppWidget(hostView, launcherInfo);
         mWorkspace.addInScreen(hostView, launcherInfo);
+        announceForAccessibility(R.string.item_added_to_workspace);
     }
 
     private void prepareAppWidget(AppWidgetHostView hostView, LauncherAppWidgetInfo item) {
@@ -2409,6 +2411,10 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         bounceAnim.setStartDelay(i * InstallShortcutReceiver.NEW_SHORTCUT_STAGGER_DELAY);
         bounceAnim.setInterpolator(new OvershootInterpolator(BOUNCE_ANIMATION_TENSION));
         return bounceAnim;
+    }
+
+    private void announceForAccessibility(@StringRes int stringResId) {
+        getDragLayer().announceForAccessibility(getString(stringResId));
     }
 
     /**

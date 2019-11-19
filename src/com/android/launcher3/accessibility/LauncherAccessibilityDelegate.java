@@ -191,6 +191,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
                         ArrayList<ItemInfo> itemList = new ArrayList<>();
                         itemList.add(info);
                         mLauncher.bindItems(itemList, true);
+                        announceConfirmation(R.string.item_added_to_workspace);
                     } else if (item instanceof PendingAddItemInfo) {
                         PendingAddItemInfo info = (PendingAddItemInfo) item;
                         Workspace workspace = mLauncher.getWorkspace();
@@ -198,7 +199,6 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
                         mLauncher.addPendingItem(info, Favorites.CONTAINER_DESKTOP,
                                 screenId, coordinates, info.spanX, info.spanY);
                     }
-                    announceConfirmation(R.string.item_added_to_workspace);
                 }
             });
             return true;
