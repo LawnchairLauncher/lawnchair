@@ -52,7 +52,7 @@ public final class OverviewTask {
             final Rect taskBounds = mTask.getVisibleBounds();
             final int centerX = taskBounds.centerX();
             final int centerY = taskBounds.centerY();
-            mLauncher.linearGesture(centerX, centerY, centerX, 0, 10);
+            mLauncher.linearGesture(centerX, centerY, centerX, 0, 10, false);
             mLauncher.waitForIdle();
         }
     }
