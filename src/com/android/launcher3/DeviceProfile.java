@@ -25,6 +25,8 @@ import android.graphics.Rect;
 import android.util.DisplayMetrics;
 import android.view.Surface;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.CellLayout.ContainerType;
 import com.android.launcher3.graphics.IconShape;
 import com.android.launcher3.icons.DotRenderer;
@@ -34,6 +36,8 @@ import com.android.launcher3.util.DefaultDisplay;
 public class DeviceProfile {
 
     public final InvariantDeviceProfile inv;
+    // IDP with no grid override values.
+    @Nullable private final InvariantDeviceProfile originalIdp;
 
     // Device properties
     public final boolean isTablet;
@@ -134,10 +138,11 @@ public class DeviceProfile {
     public DotRenderer mDotRendererAllApps;
 
     public DeviceProfile(Context context, InvariantDeviceProfile inv,
-            Point minSize, Point maxSize,
+            InvariantDeviceProfile originalIDP, Point minSize, Point maxSize,
             int width, int height, boolean isLandscape, boolean isMultiWindowMode) {
 
         this.inv = inv;
+        this.originalIdp = inv;
         this.isLandscape = isLandscape;
         this.isMultiWindowMode = isMultiWindowMode;
 
@@ -229,6 +234,19 @@ public class DeviceProfile {
             // Recalculate the available dimensions using the new hotseat size.
             updateAvailableDimensions(dm, res);
         }
+
+        if (originalIDP != null) {
+            // Grid size change should not affect All Apps UI, so we use the original profile
+            // measurements here.
+            DeviceProfile originalProfile = isLandscape
+                    ? originalIDP.landscapeProfile
+                    : originalIDP.portraitProfile;
+            allAppsIconSizePx = originalProfile.iconSizePx;
+            allAppsIconTextSizePx = originalProfile.iconTextSizePx;
+            allAppsCellHeightPx = originalProfile.allAppsCellHeightPx;
+            allAppsIconDrawablePaddingPx = originalProfile.iconDrawablePaddingOriginalPx;
+            allAppsCellWidthPx = allAppsIconSizePx + allAppsIconDrawablePaddingPx;
+        }
         updateWorkspacePadding();
 
         // This is done last, after iconSizePx is calculated above.
@@ -241,8 +259,8 @@ public class DeviceProfile {
 
     public DeviceProfile copy(Context context) {
         Point size = new Point(availableWidthPx, availableHeightPx);
-        return new DeviceProfile(context, inv, size, size, widthPx, heightPx, isLandscape,
-                isMultiWindowMode);
+        return new DeviceProfile(context, inv, originalIdp, size, size, widthPx, heightPx,
+                isLandscape, isMultiWindowMode);
     }
 
     public DeviceProfile getMultiWindowProfile(Context context, Point mwSize) {
@@ -253,8 +271,8 @@ public class DeviceProfile {
         // In multi-window mode, we can have widthPx = availableWidthPx
         // and heightPx = availableHeightPx because Launcher uses the InvariantDeviceProfiles'
         // widthPx and heightPx values where it's needed.
-        DeviceProfile profile = new DeviceProfile(context, inv, mwSize, mwSize, mwSize.x, mwSize.y,
-                isLandscape, true);
+        DeviceProfile profile = new DeviceProfile(context, inv, originalIdp, mwSize, mwSize,
+                mwSize.x, mwSize.y, isLandscape, true);
 
         // If there isn't enough vertical cell padding with the labels displayed, hide the labels.
         float workspaceCellPaddingY = profile.getCellSize().y - profile.iconSizePx
@@ -338,18 +356,10 @@ public class DeviceProfile {
         }
         cellWidthPx = iconSizePx + iconDrawablePaddingPx;
 
-        // All apps
-        if (allAppsHasDifferentNumColumns()) {
-            allAppsIconSizePx = ResourceUtils.pxFromDp(inv.allAppsIconSize, dm);
-            allAppsIconTextSizePx = Utilities.pxFromSp(inv.allAppsIconTextSize, dm);
-            allAppsCellHeightPx = getCellSize(inv.numAllAppsColumns, inv.numAllAppsColumns).y;
-            allAppsIconDrawablePaddingPx = iconDrawablePaddingOriginalPx;
-        } else {
-            allAppsIconSizePx = iconSizePx;
-            allAppsIconTextSizePx = iconTextSizePx;
-            allAppsIconDrawablePaddingPx = iconDrawablePaddingPx;
-            allAppsCellHeightPx = getCellSize().y;
-        }
+        allAppsIconSizePx = iconSizePx;
+        allAppsIconTextSizePx = iconTextSizePx;
+        allAppsIconDrawablePaddingPx = iconDrawablePaddingPx;
+        allAppsCellHeightPx = getCellSize().y;
         allAppsCellWidthPx = allAppsIconSizePx + allAppsIconDrawablePaddingPx;
 
         if (isVerticalBarLayout()) {
@@ -393,14 +403,15 @@ public class DeviceProfile {
         Point totalWorkspacePadding = getTotalWorkspacePadding();
 
         // Check if the icons fit within the available height.
-        float usedHeight = folderCellHeightPx * inv.numFolderRows + folderBottomPanelSize;
-        int maxHeight = availableHeightPx - totalWorkspacePadding.y - folderMargin;
-        float scaleY = maxHeight / usedHeight;
+        float contentUsedHeight = folderCellHeightPx * inv.numFolderRows;
+        int contentMaxHeight = availableHeightPx - totalWorkspacePadding.y - folderBottomPanelSize
+                - folderMargin;
+        float scaleY = contentMaxHeight / contentUsedHeight;
 
         // Check if the icons fit within the available width.
-        float usedWidth = folderCellWidthPx * inv.numFolderColumns;
-        int maxWidth = availableWidthPx - totalWorkspacePadding.x - folderMargin;
-        float scaleX = maxWidth / usedWidth;
+        float contentUsedWidth = folderCellWidthPx * inv.numFolderColumns;
+        int contentMaxWidth = availableWidthPx - totalWorkspacePadding.x - folderMargin;
+        float scaleX = contentMaxWidth / contentUsedWidth;
 
         float scale = Math.min(scaleX, scaleY);
         if (scale < 1f) {

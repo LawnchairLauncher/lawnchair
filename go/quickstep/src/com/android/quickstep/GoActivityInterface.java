@@ -17,7 +17,7 @@ public abstract class GoActivityInterface<T extends BaseDraggingActivity> implem
         BaseActivityInterface<T> {
 
     @Override
-    public void onTransitionCancelled(T activity, boolean activityVisible) {
+    public void onTransitionCancelled(boolean activityVisible) {
         // Go transitions to overview are all atomic.
     }
 
@@ -29,7 +29,7 @@ public abstract class GoActivityInterface<T extends BaseDraggingActivity> implem
     }
 
     @Override
-    public void onSwipeUpToRecentsComplete(T activity) {
+    public void onSwipeUpToRecentsComplete() {
         // Go does not support swipe up gesture.
     }
 
@@ -39,7 +39,7 @@ public abstract class GoActivityInterface<T extends BaseDraggingActivity> implem
     }
 
     @Override
-    public HomeAnimationFactory prepareHomeUI(T activity) {
+    public HomeAnimationFactory prepareHomeUI() {
         // Go does not support gestures from app to home.
         return null;
     }
@@ -63,7 +63,7 @@ public abstract class GoActivityInterface<T extends BaseDraggingActivity> implem
     }
 
     @Override
-    public void onLaunchTaskFailed(T activity) {
+    public void onLaunchTaskFailed() {
         // Go does not support gestures from one task to another.
     }
 }

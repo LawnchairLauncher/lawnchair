@@ -89,9 +89,13 @@ public final class RecentsActivity extends BaseRecentsActivity {
             int taskID = intent.getIntExtra(EXTRA_TASK_ID, 0);
             IBinder thumbnail = intent.getExtras().getBinder(EXTRA_THUMBNAIL);
             if (taskID != 0 && thumbnail instanceof ObjectWrapper) {
-                ThumbnailData thumbnailData = ((ObjectWrapper<ThumbnailData>) thumbnail).get();
+                ObjectWrapper<ThumbnailData> obj = (ObjectWrapper<ThumbnailData>) thumbnail;
+                ThumbnailData thumbnailData = obj.get();
                 mFallbackRecentsView.showCurrentTask(taskID);
                 mFallbackRecentsView.updateThumbnail(taskID, thumbnailData);
+                // Clear the ref since any reference to the extras on the system side will still
+                // hold a reference to the wrapper
+                obj.clear();
             }
         }
         intent.removeExtra(EXTRA_TASK_ID);

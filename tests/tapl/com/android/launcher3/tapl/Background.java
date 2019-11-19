@@ -106,7 +106,7 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
                 }
 
                 if (mLauncher.isFallbackOverview()) {
-                    mLauncher.linearGesture(startX, startY, endX, endY, 10);
+                    mLauncher.linearGesture(startX, startY, endX, endY, 10, false);
                     new BaseOverview(mLauncher);
                 } else {
                     mLauncher.swipeToState(startX, startY, endX, endY, 10, expectedState);

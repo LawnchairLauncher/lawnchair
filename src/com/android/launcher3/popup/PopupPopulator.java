@@ -20,7 +20,9 @@ import android.content.ComponentName;
 import android.content.pm.ShortcutInfo;
 import android.os.Handler;
 import android.os.UserHandle;
-import android.service.notification.StatusBarNotification;
+
+import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
@@ -28,6 +30,7 @@ import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.notification.NotificationInfo;
 import com.android.launcher3.notification.NotificationKeyData;
+import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.util.PackageUserKey;
@@ -37,9 +40,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-
-import androidx.annotation.Nullable;
-import androidx.annotation.VisibleForTesting;
+import java.util.stream.Collectors;
 
 /**
  * Contains logic relevant to populating a {@link PopupContainerWithArrow}. In particular,
@@ -130,12 +131,15 @@ public class PopupPopulator {
         final UserHandle user = originalInfo.user;
         return () -> {
             if (!notificationKeys.isEmpty()) {
-                List<StatusBarNotification> notifications = launcher.getPopupDataProvider()
-                        .getStatusBarNotificationsForKeys(notificationKeys);
-                List<NotificationInfo> infos = new ArrayList<>(notifications.size());
-                for (int i = 0; i < notifications.size(); i++) {
-                    StatusBarNotification notification = notifications.get(i);
-                    infos.add(new NotificationInfo(launcher, notification));
+                NotificationListener notificationListener =
+                        NotificationListener.getInstanceIfConnected();
+                final List<NotificationInfo> infos;
+                if (notificationListener == null) {
+                    infos = Collections.emptyList();
+                } else {
+                    infos = notificationListener.getNotificationsForKeys(notificationKeys).stream()
+                            .map(sbn -> new NotificationInfo(launcher, sbn))
+                            .collect(Collectors.toList());
                 }
                 uiHandler.post(() -> container.applyNotificationInfos(infos));
             }
@@ -150,7 +154,7 @@ public class PopupPopulator {
                 final WorkspaceItemInfo si = new WorkspaceItemInfo(shortcut, launcher);
                 // Use unbadged icon for the menu.
                 LauncherIcons li = LauncherIcons.obtain(launcher);
-                si.applyFrom(li.createShortcutIcon(shortcut, false /* badged */));
+                si.bitmap = li.createShortcutIcon(shortcut, false /* badged */);
                 li.recycle();
                 si.rank = i;
 

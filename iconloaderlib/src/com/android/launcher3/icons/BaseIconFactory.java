@@ -44,6 +44,7 @@ public class BaseIconFactory implements AutoCloseable {
     private final PackageManager mPm;
     private final ColorExtractor mColorExtractor;
     private boolean mDisableColorExtractor;
+    private boolean mBadgeOnLeft = false;
 
     protected final int mFillResIconDpi;
     protected final int mIconBitmapSize;
@@ -77,6 +78,7 @@ public class BaseIconFactory implements AutoCloseable {
     protected void clear() {
         mWrapperBackgroundColor = DEFAULT_WRAPPER_BACKGROUND;
         mDisableColorExtractor = false;
+        mBadgeOnLeft = false;
     }
 
     public ShadowGenerator getShadowGenerator() {
@@ -116,7 +118,7 @@ public class BaseIconFactory implements AutoCloseable {
             icon = createIconBitmap(new BitmapDrawable(mContext.getResources(), icon), 1f);
         }
 
-        return BitmapInfo.fromBitmap(icon, mDisableColorExtractor ? null : mColorExtractor);
+        return BitmapInfo.of(icon, extractColor(icon));
     }
 
     public BitmapInfo createBadgedIconBitmap(Drawable icon, UserHandle user,
@@ -183,7 +185,10 @@ public class BaseIconFactory implements AutoCloseable {
                 bitmap = createIconBitmap(badged, 1f);
             }
         }
-        return BitmapInfo.fromBitmap(bitmap, mDisableColorExtractor ? null : mColorExtractor);
+        int color = extractColor(bitmap);
+        return icon instanceof BitmapInfo.Extender
+                ? ((BitmapInfo.Extender) icon).getExtendedInfo(bitmap, color, this)
+                : BitmapInfo.of(bitmap, color);
     }
 
     public Bitmap createScaledBitmapWithoutShadow(Drawable icon, boolean shrinkNonAdaptiveIcons) {
@@ -192,6 +197,13 @@ public class BaseIconFactory implements AutoCloseable {
         icon = normalizeAndWrapToAdaptiveIcon(icon, shrinkNonAdaptiveIcons, iconBounds, scale);
         return createIconBitmap(icon,
                 Math.min(scale[0], ShadowGenerator.getScaleForBounds(iconBounds)));
+    }
+
+    /**
+     * Switches badging to left/right
+     */
+    public void setBadgeOnLeft(boolean badgeOnLeft) {
+        mBadgeOnLeft = badgeOnLeft;
     }
 
     /**
@@ -255,8 +267,12 @@ public class BaseIconFactory implements AutoCloseable {
      */
     public void badgeWithDrawable(Canvas target, Drawable badge) {
         int badgeSize = getBadgeSizeForIconSize(mIconBitmapSize);
-        badge.setBounds(mIconBitmapSize - badgeSize, mIconBitmapSize - badgeSize,
-                mIconBitmapSize, mIconBitmapSize);
+        if (mBadgeOnLeft) {
+            badge.setBounds(0, mIconBitmapSize - badgeSize, badgeSize, mIconBitmapSize);
+        } else {
+            badge.setBounds(mIconBitmapSize - badgeSize, mIconBitmapSize - badgeSize,
+                    mIconBitmapSize, mIconBitmapSize);
+        }
         badge.draw(target);
     }
 
@@ -332,6 +348,10 @@ public class BaseIconFactory implements AutoCloseable {
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
                         ? android.R.drawable.sym_def_app_icon : android.R.mipmap.sym_def_app_icon,
                 iconDpi);
+    }
+
+    private int extractColor(Bitmap bitmap) {
+        return mDisableColorExtractor ? 0 : mColorExtractor.findDominantColorByHue(bitmap);
     }
 
     /**

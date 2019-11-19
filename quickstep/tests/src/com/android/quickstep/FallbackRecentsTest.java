@@ -60,6 +60,7 @@ import com.android.launcher3.util.rule.FailureWatcher;
 import com.android.quickstep.NavigationModeSwitchRule.NavigationModeSwitch;
 import com.android.quickstep.views.RecentsView;
 
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
@@ -99,7 +100,7 @@ public class FallbackRecentsTest {
         }
 
         mOrderSensitiveRules = RuleChain.outerRule(new NavigationModeSwitchRule(mLauncher))
-                        .around(new FailureWatcher(mDevice));
+                .around(new FailureWatcher(mDevice));
 
         mOtherLauncherActivity = context.getPackageManager().queryIntentActivities(
                 getHomeIntentInPackage(context),
@@ -129,6 +130,7 @@ public class FallbackRecentsTest {
 
     @NavigationModeSwitch
     @Test
+    @Ignore // b/143488140
     public void goToOverviewFromHome() {
         mDevice.pressHome();
         assertTrue("Fallback Launcher not visible", mDevice.wait(Until.hasObject(By.pkg(
@@ -139,6 +141,7 @@ public class FallbackRecentsTest {
 
     @NavigationModeSwitch
     @Test
+    @Ignore // b/143488140
     public void goToOverviewFromApp() {
         startAppFastAndWaitForRecentTask(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
 
@@ -162,7 +165,7 @@ public class FallbackRecentsTest {
             }
             result[0] = f.apply(activity);
             return true;
-        }).get(), DEFAULT_UI_TIMEOUT);
+        }).get(), DEFAULT_UI_TIMEOUT, mLauncher);
         return (T) result[0];
     }
 
@@ -173,12 +176,13 @@ public class FallbackRecentsTest {
 
     @NavigationModeSwitch
     @Test
+    @Ignore // b/143488140
     public void testOverview() {
         startAppFastAndWaitForRecentTask(getAppPackageName());
         startAppFastAndWaitForRecentTask(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
         startTestActivity(2);
         Wait.atMost("Expected three apps in the task list",
-                () -> mLauncher.getRecentTasks().size() >= 3, DEFAULT_ACTIVITY_TIMEOUT);
+                () -> mLauncher.getRecentTasks().size() >= 3, DEFAULT_ACTIVITY_TIMEOUT, mLauncher);
 
         BaseOverview overview = mLauncher.getBackground().switchToOverview();
         executeOnRecents(recents ->
@@ -237,7 +241,8 @@ public class FallbackRecentsTest {
     private void startAppFastAndWaitForRecentTask(String packageName) {
         startAppFast(packageName);
         Wait.atMost("Expected app in task list",
-                () -> containsRecentTaskWithPackage(packageName), DEFAULT_ACTIVITY_TIMEOUT);
+                () -> containsRecentTaskWithPackage(packageName), DEFAULT_ACTIVITY_TIMEOUT,
+                mLauncher);
     }
 
     private boolean containsRecentTaskWithPackage(String packageName) {
