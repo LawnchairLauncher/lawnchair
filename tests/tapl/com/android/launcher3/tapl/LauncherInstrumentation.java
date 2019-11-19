@@ -873,12 +873,17 @@ public final class LauncherInstrumentation {
         final Point start = new Point(startX, startY);
         final Point end = new Point(endX, endY);
         sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, start);
+        final long endTime = movePointer(start, end, steps, downTime, slowDown);
+        sendPointer(downTime, endTime, MotionEvent.ACTION_UP, end);
+    }
+
+    long movePointer(Point start, Point end, int steps, long downTime, boolean slowDown) {
         long endTime = movePointer(downTime, downTime, steps * GESTURE_STEP_MS, start, end);
         if (slowDown) {
             endTime = movePointer(downTime, endTime + GESTURE_STEP_MS, 5 * GESTURE_STEP_MS, end,
                     end);
         }
-        sendPointer(downTime, endTime, MotionEvent.ACTION_UP, end);
+        return endTime;
     }
 
     void waitForIdle() {
