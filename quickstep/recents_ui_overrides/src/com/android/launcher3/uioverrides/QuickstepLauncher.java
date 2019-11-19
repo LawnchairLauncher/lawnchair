@@ -195,7 +195,7 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
     public void finishBindingItems(int pageBoundFirst) {
         super.finishBindingItems(pageBoundFirst);
         if (mHotseatPredictionController != null) {
-            mHotseatPredictionController.fillGapsWithPrediction(false);
+            mHotseatPredictionController.createPredictor();
         }
     }
 
