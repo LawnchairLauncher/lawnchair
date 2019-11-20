@@ -268,22 +268,12 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
                         INDEX_RECENTS_FADE_ANIM, attached ? 1 : 0);
 
                 int runningTaskIndex = recentsView.getRunningTaskIndex();
-                if (runningTaskIndex == 0) {
+                if (runningTaskIndex == recentsView.getTaskViewStartIndex()) {
                     // If we are on the first task (we haven't quick switched), translate recents in
                     // from the side. Calculate the start translation based on current scale/scroll.
                     float currScale = recentsView.getScaleX();
                     float scrollOffsetX = recentsView.getScrollOffset();
-
-                    float offscreenX = NORMAL.getOverviewScaleAndTranslation(activity).translationX;
-                    // The first task is hidden, so offset by its width.
-                    int firstTaskWidth = recentsView.getTaskViewAt(0).getWidth();
-                    offscreenX -= (firstTaskWidth + recentsView.getPageSpacing()) * currScale;
-                    // Offset since scale pushes tasks outwards.
-                    offscreenX += firstTaskWidth * (currScale - 1) / 2;
-                    offscreenX = Math.max(0, offscreenX);
-                    if (recentsView.isRtl()) {
-                        offscreenX = -offscreenX;
-                    }
+                    float offscreenX = recentsView.getOffscreenTranslationX(currScale);
 
                     float fromTranslationX = attached ? offscreenX - scrollOffsetX : 0;
                     float toTranslationX = attached ? 0 : offscreenX - scrollOffsetX;
@@ -351,8 +341,7 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
     private void playScaleDownAnim(AnimatorSet anim, Launcher launcher, LauncherState fromState,
             LauncherState endState) {
         RecentsView recentsView = launcher.getOverviewPanel();
-        TaskView v = recentsView.getTaskViewAt(recentsView.getCurrentPage());
-        if (v == null) {
+        if (recentsView.getCurrentPageTaskView() == null) {
             return;
         }
 
@@ -380,7 +369,7 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
             // recents as a whole needs to translate further to keep up with the app window.
             TaskView runningTaskView = recentsView.getRunningTaskView();
             if (runningTaskView == null) {
-                runningTaskView = recentsView.getTaskViewAt(recentsView.getCurrentPage());
+                runningTaskView = recentsView.getCurrentPageTaskView();
                 if (runningTaskView == null) {
                     // There are no task views in LockTask mode when Overview is enabled.
                     return;

@@ -22,6 +22,7 @@ import static com.android.launcher3.Utilities.mapToRange;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.config.FeatureFlags.ADAPTIVE_ICON_WINDOW_ANIM;
 import static com.android.launcher3.states.RotationHelper.REQUEST_LOCK;
+import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -41,7 +42,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.CancellationSignal;
-import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -50,11 +50,17 @@ import android.view.ViewOutlineProvider;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.ImageView;
 
+import androidx.annotation.Nullable;
+import androidx.annotation.UiThread;
+import androidx.annotation.WorkerThread;
+import androidx.dynamicanimation.animation.FloatPropertyCompat;
+import androidx.dynamicanimation.animation.SpringAnimation;
+import androidx.dynamicanimation.animation.SpringForce;
+
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.InsettableFrameLayout.LayoutParams;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherModel;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.dragndrop.DragLayer;
@@ -65,13 +71,6 @@ import com.android.launcher3.graphics.ShiftedBitmapDrawable;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.shortcuts.DeepShortcutView;
-
-import androidx.annotation.Nullable;
-import androidx.annotation.UiThread;
-import androidx.annotation.WorkerThread;
-import androidx.dynamicanimation.animation.FloatPropertyCompat;
-import androidx.dynamicanimation.animation.SpringAnimation;
-import androidx.dynamicanimation.animation.SpringForce;
 
 /**
  * A view that is created to look like another view with the purpose of creating fluid animations.
@@ -722,7 +721,7 @@ public class FloatingIconView extends View implements
     @UiThread
     public static IconLoadResult fetchIcon(Launcher l, View v, ItemInfo info, boolean isOpening) {
         IconLoadResult result = new IconLoadResult(info);
-        new Handler(LauncherModel.getWorkerLooper()).postAtFrontOfQueue(() -> {
+        MODEL_EXECUTOR.getHandler().postAtFrontOfQueue(() -> {
             RectF position = new RectF();
             getLocationBoundsForView(l, v, isOpening, position);
             getIconResult(l, v, info, position, result);
@@ -768,11 +767,6 @@ public class FloatingIconView extends View implements
         // Match the position of the original view.
         view.matchPositionOf(launcher, originalView, isOpening, positionOut);
 
-        // Must be called after matchPositionOf so that we know what size to load.
-        if (shouldLoadIcon) {
-            view.checkIconResult(originalView, isOpening);
-        }
-
         // We need to add it to the overlay, but keep it invisible until animation starts..
         view.setVisibility(INVISIBLE);
         parent.addView(view);
@@ -799,6 +793,14 @@ public class FloatingIconView extends View implements
                 view.finish(dragLayer);
             }
         };
+
+        // Must be called after matchPositionOf so that we know what size to load.
+        // Must be called after the fastFinish listener and end runnable is created so that
+        // the icon is not left in a hidden state.
+        if (shouldLoadIcon) {
+            view.checkIconResult(originalView, isOpening);
+        }
+
         return view;
     }
 

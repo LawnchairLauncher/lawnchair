@@ -157,6 +157,6 @@ public abstract class BaseRecentsActivity extends BaseDraggingActivity {
     public void dump(String prefix, FileDescriptor fd, PrintWriter writer, String[] args) {
         super.dump(prefix, fd, writer, args);
         writer.println(prefix + "Misc:");
-        dumpMisc(writer);
+        dumpMisc(prefix + "\t", writer);
     }
 }

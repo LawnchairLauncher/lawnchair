@@ -15,6 +15,9 @@
  */
 package com.android.launcher3.allapps;
 
+import static com.android.launcher3.AppInfo.COMPONENT_KEY_COMPARATOR;
+import static com.android.launcher3.AppInfo.EMPTY_ARRAY;
+
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -26,8 +29,7 @@ import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageUserKey;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -43,27 +45,33 @@ public class AllAppsStore {
     public static final int DEFER_UPDATES_TEST = 1 << 1;
 
     private PackageUserKey mTempKey = new PackageUserKey(null, null);
-    private final HashMap<ComponentKey, AppInfo> mComponentToAppMap = new HashMap<>();
+    private AppInfo mTempInfo = new AppInfo();
+
+    private AppInfo[] mApps = EMPTY_ARRAY;
+
     private final List<OnUpdateListener> mUpdateListeners = new ArrayList<>();
     private final ArrayList<ViewGroup> mIconContainers = new ArrayList<>();
 
     private int mDeferUpdatesFlags = 0;
     private boolean mUpdatePending = false;
 
-    public Collection<AppInfo> getApps() {
-        return mComponentToAppMap.values();
+    public AppInfo[] getApps() {
+        return mApps;
     }
 
     /**
      * Sets the current set of apps.
      */
-    public void setApps(List<AppInfo> apps) {
-        mComponentToAppMap.clear();
-        addOrUpdateApps(apps);
+    public void setApps(AppInfo[] apps) {
+        mApps = apps;
+        notifyUpdate();
     }
 
     public AppInfo getApp(ComponentKey key) {
-        return mComponentToAppMap.get(key);
+        mTempInfo.componentName = key.componentName;
+        mTempInfo.user = key.user;
+        int index = Arrays.binarySearch(mApps, mTempInfo, COMPONENT_KEY_COMPARATOR);
+        return index < 0 ? null : mApps[index];
     }
 
     public void enableDeferUpdates(int flag) {
@@ -85,27 +93,6 @@ public class AllAppsStore {
     public int getDeferUpdatesFlags() {
         return mDeferUpdatesFlags;
     }
-
-    /**
-     * Adds or updates existing apps in the list
-     */
-    public void addOrUpdateApps(List<AppInfo> apps) {
-        for (AppInfo app : apps) {
-            mComponentToAppMap.put(app.toComponentKey(), app);
-        }
-        notifyUpdate();
-    }
-
-    /**
-     * Removes some apps from the list.
-     */
-    public void removeApps(List<AppInfo> apps) {
-        for (AppInfo app : apps) {
-            mComponentToAppMap.remove(app.toComponentKey());
-        }
-        notifyUpdate();
-    }
-
 
     private void notifyUpdate() {
         if (mDeferUpdatesFlags != 0) {
