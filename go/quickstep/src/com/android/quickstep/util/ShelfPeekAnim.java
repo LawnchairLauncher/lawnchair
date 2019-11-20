@@ -24,4 +24,8 @@ public class ShelfPeekAnim {
 
     public enum ShelfAnimState {
     }
+
+    public boolean isPeeking() {
+        return false;
+    }
 }

@@ -24,7 +24,6 @@ import static com.android.launcher3.LauncherAppTransitionManagerImpl.INDEX_SHELF
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
-import static com.android.launcher3.LauncherStateManager.ANIM_ALL;
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
 import static com.android.launcher3.anim.Interpolators.INSTANT;
@@ -53,11 +52,9 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherInitListenerEx;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.QuickstepAppTransitionManagerImpl;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.AnimatorPlaybackController;
-import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.views.FloatingIconView;
 import com.android.quickstep.SysUINavigationMode.Mode;
@@ -169,18 +166,8 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
 
             @Override
             public void playAtomicAnimation(float velocity) {
-                // Setup workspace with 0 duration to prepare for our staggered animation.
-                LauncherStateManager stateManager = activity.getStateManager();
-                AnimatorSetBuilder builder = new AnimatorSetBuilder();
-                // setRecentsAttachedToAppWindow() will animate recents out.
-                builder.addFlag(AnimatorSetBuilder.FLAG_DONT_ANIMATE_OVERVIEW);
-                stateManager.createAtomicAnimation(BACKGROUND_APP, NORMAL, builder, ANIM_ALL, 0);
-                builder.build().start();
-
-                // Stop scrolling so that it doesn't interfere with the translation offscreen.
-                recentsView.getScroller().forceFinished(true);
-
-                new StaggeredWorkspaceAnim(activity, workspaceView, velocity).start();
+                new StaggeredWorkspaceAnim(activity, workspaceView, velocity,
+                        true /* animateOverviewScrim */).start();
             }
         };
     }

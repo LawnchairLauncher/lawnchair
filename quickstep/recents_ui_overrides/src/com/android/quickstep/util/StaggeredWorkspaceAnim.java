@@ -18,6 +18,7 @@ package com.android.quickstep.util;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.LauncherStateManager.ANIM_ALL;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 
 import android.animation.Animator;
@@ -29,11 +30,11 @@ import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.LauncherStateManager.AnimationConfig;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutAndWidgetContainer;
@@ -41,9 +42,9 @@ import com.android.launcher3.Workspace;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.anim.SpringObjectAnimator;
-import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.OverviewScrim;
 import com.android.launcher3.views.IconLabelDotView;
+import com.android.quickstep.views.RecentsView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,7 +76,9 @@ public class StaggeredWorkspaceAnim {
      * @param floatingViewOriginalView The FloatingIconView's original view.
      */
     public StaggeredWorkspaceAnim(Launcher launcher, @Nullable View floatingViewOriginalView,
-            float velocity) {
+            float velocity, boolean animateOverviewScrim) {
+        prepareToAnimate(launcher);
+
         mVelocity = velocity;
         mOriginalView = floatingViewOriginalView;
 
@@ -133,8 +136,10 @@ public class StaggeredWorkspaceAnim {
             addStaggeredAnimationForView(qsb, grid.inv.numRows + 2, totalRows);
         }
 
-        addScrimAnimationForState(launcher, BACKGROUND_APP, 0);
-        addScrimAnimationForState(launcher, NORMAL, ALPHA_DURATION_MS);
+        if (animateOverviewScrim) {
+            addScrimAnimationForState(launcher, BACKGROUND_APP, 0);
+            addScrimAnimationForState(launcher, NORMAL, ALPHA_DURATION_MS);
+        }
 
         AnimatorListener resetClipListener = new AnimatorListenerAdapter() {
             int numAnimations = mAnimators.size();
@@ -158,6 +163,21 @@ public class StaggeredWorkspaceAnim {
         for (Animator a : mAnimators) {
             a.addListener(resetClipListener);
         }
+    }
+
+    /**
+     * Setup workspace with 0 duration to prepare for our staggered animation.
+     */
+    private void prepareToAnimate(Launcher launcher) {
+        LauncherStateManager stateManager = launcher.getStateManager();
+        AnimatorSetBuilder builder = new AnimatorSetBuilder();
+        // setRecentsAttachedToAppWindow() will animate recents out.
+        builder.addFlag(AnimatorSetBuilder.FLAG_DONT_ANIMATE_OVERVIEW);
+        stateManager.createAtomicAnimation(BACKGROUND_APP, NORMAL, builder, ANIM_ALL, 0);
+        builder.build().start();
+
+        // Stop scrolling so that it doesn't interfere with the translation offscreen.
+        launcher.<RecentsView>getOverviewPanel().getScroller().forceFinished(true);
     }
 
     /**
