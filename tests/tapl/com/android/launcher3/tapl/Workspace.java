@@ -38,8 +38,6 @@ import com.android.launcher3.testing.TestProtocol;
  * Operations on the workspace screen.
  */
 public final class Workspace extends Home {
-    private static final float FLING_SPEED =
-            LauncherInstrumentation.isAvd() ? 1500.0F : 3500.0F;
     private static final int DRAG_DURACTION = 2000;
     private static final int FLING_STEPS = 10;
     private final UiObject2 mHotseat;
@@ -142,7 +140,7 @@ public final class Workspace extends Home {
     }
 
     private boolean isWorkspaceScrollable(UiObject2 workspace) {
-        return workspace.isScrollable();
+        return workspace.getChildCount() > 1;
     }
 
     @NonNull
@@ -182,7 +180,7 @@ public final class Workspace extends Home {
      */
     public void flingForward() {
         final UiObject2 workspace = verifyActiveContainer();
-        mLauncher.scroll(workspace, Direction.RIGHT, 1f,
+        mLauncher.scroll(workspace, Direction.RIGHT,
                 new Rect(0, 0, mLauncher.getEdgeSensitivityWidth(), 0),
                 FLING_STEPS);
         verifyActiveContainer();
@@ -194,7 +192,7 @@ public final class Workspace extends Home {
      */
     public void flingBackward() {
         final UiObject2 workspace = verifyActiveContainer();
-        mLauncher.scroll(workspace, Direction.LEFT, 1f,
+        mLauncher.scroll(workspace, Direction.LEFT,
                 new Rect(mLauncher.getEdgeSensitivityWidth(), 0, 0, 0),
                 FLING_STEPS);
         verifyActiveContainer();

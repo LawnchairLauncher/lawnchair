@@ -16,6 +16,8 @@
 
 package com.android.launcher3.compat;
 
+import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
+
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
@@ -30,18 +32,16 @@ import android.os.Parcelable;
 import android.os.Process;
 import android.os.UserHandle;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherModel;
 import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.compat.ShortcutConfigActivityInfo.ShortcutConfigActivityInfoVO;
 import com.android.launcher3.icons.LauncherIcons;
-import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.PackageUserKey;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.annotation.Nullable;
 
 @TargetApi(26)
 public class LauncherAppsCompatVO extends LauncherAppsCompatVL {
@@ -120,7 +120,7 @@ public class LauncherAppsCompatVO extends LauncherAppsCompatVL {
                 }
             } else {
                 // Block the worker thread until the accept() is called.
-                new LooperExecutor(LauncherModel.getWorkerLooper()).execute(new Runnable() {
+                MODEL_EXECUTOR.execute(new Runnable() {
                     @Override
                     public void run() {
                         try {

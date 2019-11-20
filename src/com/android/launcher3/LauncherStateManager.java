@@ -136,7 +136,7 @@ public class LauncherStateManager {
     }
 
     public void dump(String prefix, PrintWriter writer) {
-        writer.println(prefix + "LauncherState");
+        writer.println(prefix + "LauncherState:");
         writer.println(prefix + "\tmLastStableState:" + mLastStableState);
         writer.println(prefix + "\tmCurrentStableState:" + mCurrentStableState);
         writer.println(prefix + "\tmState:" + mState);
@@ -227,11 +227,6 @@ public class LauncherStateManager {
 
     private void goToState(LauncherState state, boolean animated, long delay,
             final Runnable onCompleteRunnable) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.ALL_APPS_UPON_RECENTS, "goToState: " +
-                    state.getClass().getSimpleName() +
-                    " @ " + Log.getStackTraceString(new Throwable()));
-        }
         animated &= Utilities.areAnimationsEnabled(mLauncher);
         if (mLauncher.isInState(state)) {
             if (mConfig.mCurrentAnimation == null) {
@@ -412,13 +407,8 @@ public class LauncherStateManager {
             mState.onStateDisabled(mLauncher);
         }
         mState = state;
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.STABLE_STATE_MISMATCH, "onStateTransitionStart: " +
-                    state.getClass().getSimpleName() +
-                    " @ " + Log.getStackTraceString(new Throwable()));
-        }
         mState.onStateEnabled(mLauncher);
-        mLauncher.onStateSet(mState);
+        mLauncher.onStateSetStart(mState);
 
         if (state.disablePageClipping) {
             // Only disable clipping if needed, otherwise leave it as previous value.
@@ -436,16 +426,10 @@ public class LauncherStateManager {
         if (state != mCurrentStableState) {
             mLastStableState = state.getHistoryForState(mCurrentStableState);
             mCurrentStableState = state;
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.ALL_APPS_UPON_RECENTS, "onStateTransitionEnd: " +
-                        state.getClass().getSimpleName() +
-                        " @ " + Log.getStackTraceString(new Throwable()));
-            }
         }
 
         state.onStateTransitionEnd(mLauncher);
-        mLauncher.getWorkspace().setClipChildren(!state.disablePageClipping);
-        mLauncher.finishAutoCancelActionMode();
+        mLauncher.onStateSetEnd(state);
 
         if (state == NORMAL) {
             setRestState(null);

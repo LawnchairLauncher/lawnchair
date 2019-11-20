@@ -23,11 +23,11 @@ import android.content.SharedPreferences;
 
 import androidx.annotation.GuardedBy;
 import androidx.annotation.Keep;
-
 import androidx.annotation.VisibleForTesting;
-import com.android.launcher3.Utilities;
 
+import com.android.launcher3.Utilities;
 import com.android.launcher3.uioverrides.TogglableFlag;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedMap;
@@ -74,9 +74,6 @@ public abstract class BaseFlags {
     //Feature flag to enable pulling down navigation shade from workspace.
     public static final boolean PULL_DOWN_STATUS_BAR = true;
 
-    // When true, custom widgets are loaded using CustomWidgetParser.
-    public static final boolean ENABLE_CUSTOM_WIDGETS = false;
-
     // Features to control Launcher3Go behavior
     public static final boolean GO_DISABLE_WIDGETS = false;
 
@@ -111,9 +108,20 @@ public abstract class BaseFlags {
             "FAKE_LANDSCAPE_UI", false,
             "Rotate launcher UI instead of using transposed layout");
 
+    public static final TogglableFlag FOLDER_NAME_SUGGEST = new TogglableFlag(
+            "FOLDER_NAME_SUGGEST", true,
+            "Suggests folder names instead of blank text.");
+
     public static final TogglableFlag APP_SEARCH_IMPROVEMENTS = new TogglableFlag(
             "APP_SEARCH_IMPROVEMENTS", false,
             "Adds localized title and keyword search and ranking");
+
+    public static final TogglableFlag ENABLE_PREDICTION_DISMISS = new TogglableFlag(
+            "ENABLE_PREDICTION_DISMISS", false, "Allow option to dimiss apps from predicted list");
+
+    public static final TogglableFlag ASSISTANT_GIVES_LAUNCHER_FOCUS = new TogglableFlag(
+            "ASSISTANT_GIVES_LAUNCHER_FOCUS", false,
+            "Allow Launcher to handle nav bar gestures while Assistant is running over it");
 
     public static void initialize(Context context) {
         // Avoid the disk read for user builds

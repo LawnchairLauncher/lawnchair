@@ -36,8 +36,6 @@ import android.view.View;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.ItemInfo;
-import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.popup.SystemShortcut;
@@ -267,12 +265,16 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
 
         @Override
         protected ActivityOptions makeLaunchOptions(Activity activity) {
-            return ActivityOptionsCompat.makeFreeformOptions();
+            ActivityOptions activityOptions = ActivityOptionsCompat.makeFreeformOptions();
+            // Arbitrary bounds only because freeform is in dev mode right now
+            Rect r = new Rect(50, 50, 200, 200);
+            activityOptions.setLaunchBounds(r);
+            return activityOptions;
         }
 
         @Override
         protected boolean onActivityStarted(BaseDraggingActivity activity) {
-            Launcher.getLauncher(activity).getStateManager().goToState(LauncherState.NORMAL);
+            activity.returnToHomescreen();
             return true;
         }
     }

@@ -30,7 +30,6 @@ import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.ui.TestViewHelpers;
 import com.android.launcher3.util.rule.ShellCommandRule;
 
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,11 +41,11 @@ import org.junit.runner.RunWith;
 @RunWith(AndroidJUnit4.class)
 public class AddWidgetTest extends AbstractLauncherUiTest {
 
-    @Rule public ShellCommandRule mGrantWidgetRule = ShellCommandRule.grantWidgetBind();
+    @Rule
+    public ShellCommandRule mGrantWidgetRule = ShellCommandRule.grantWidgetBind();
 
     @Test
     @PortraitLandscape
-    @org.junit.Ignore
     public void testDragIcon() throws Throwable {
         clearHomescreen();
         mDevice.pressHome();
@@ -69,5 +68,23 @@ public class AddWidgetTest extends AbstractLauncherUiTest {
                 DEFAULT_UI_TIMEOUT);
         assertNotNull("Widget not found on the workspace", widget);
         widget.launch(getAppPackageName());
+    }
+
+    /**
+     * Test dragging a custom shortcut to the workspace and launch it.
+     *
+     * A custom shortcut is a 1x1 widget that launches a specific intent when user tap on it.
+     * Custom shortcuts are replaced by deep shortcuts after api 25.
+     */
+    @Test
+    @PortraitLandscape
+    public void testDragCustomShortcut() throws Throwable {
+        clearHomescreen();
+        mDevice.pressHome();
+        mLauncher.getWorkspace().openAllWidgets()
+                .getWidget("com.android.launcher3.testcomponent.CustomShortcutConfigActivity")
+                .dragToWorkspace();
+        mLauncher.getWorkspace().getWorkspaceAppIcon("Shortcut")
+                .launch(getAppPackageName());
     }
 }

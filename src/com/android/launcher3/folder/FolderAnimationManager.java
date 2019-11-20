@@ -79,7 +79,7 @@ public class FolderAnimationManager {
     private final TimeInterpolator mLargeFolderPreviewItemCloseInterpolator;
 
     private final PreviewItemDrawingParams mTmpParams = new PreviewItemDrawingParams(0, 0, 0, 0);
-
+    private final FolderGridOrganizer mPreviewVerifier;
 
     public FolderAnimationManager(Folder folder, boolean isOpening) {
         mFolder = folder;
@@ -91,6 +91,7 @@ public class FolderAnimationManager {
 
         mContext = folder.getContext();
         mLauncher = folder.mLauncher;
+        mPreviewVerifier = new FolderGridOrganizer(mLauncher.getDeviceProfile().inv);
 
         mIsOpening = isOpening;
 
@@ -113,7 +114,7 @@ public class FolderAnimationManager {
     public AnimatorSet getAnimator() {
         final DragLayer.LayoutParams lp = (DragLayer.LayoutParams) mFolder.getLayoutParams();
         ClippedFolderIconLayoutRule rule = mFolderIcon.getLayoutRule();
-        final List<BubbleTextView> itemsInPreview = mFolderIcon.getPreviewItems();
+        final List<BubbleTextView> itemsInPreview = getPreviewIconsOnPage(0);
 
         // Match position of the FolderIcon
         final Rect folderIconPos = new Rect();
@@ -226,15 +227,22 @@ public class FolderAnimationManager {
     }
 
     /**
+     * Returns the list of "preview items" on {@param page}.
+     */
+    private List<BubbleTextView> getPreviewIconsOnPage(int page) {
+        return mPreviewVerifier.setFolderInfo(mFolder.mInfo)
+                .previewItemsForPage(page, mFolder.getIconsInReadingOrder());
+    }
+
+    /**
      * Animate the items on the current page.
      */
     private void addPreviewItemAnimators(AnimatorSet animatorSet, final float folderScale,
             int previewItemOffsetX, int previewItemOffsetY) {
         ClippedFolderIconLayoutRule rule = mFolderIcon.getLayoutRule();
         boolean isOnFirstPage = mFolder.mContent.getCurrentPage() == 0;
-        final List<BubbleTextView> itemsInPreview = isOnFirstPage
-                ? mFolderIcon.getPreviewItems()
-                : mFolderIcon.getPreviewItemsOnPage(mFolder.mContent.getCurrentPage());
+        final List<BubbleTextView> itemsInPreview = getPreviewIconsOnPage(
+                isOnFirstPage ? 0 : mFolder.mContent.getCurrentPage());
         final int numItemsInPreview = itemsInPreview.size();
         final int numItemsInFirstPagePreview = isOnFirstPage
                 ? numItemsInPreview : MAX_NUM_ITEMS_IN_PREVIEW;

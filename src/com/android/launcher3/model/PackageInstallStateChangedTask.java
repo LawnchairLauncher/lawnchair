@@ -19,20 +19,18 @@ import android.content.ComponentName;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 
-import com.android.launcher3.AllAppsList;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherModel.CallbackTask;
-import com.android.launcher3.LauncherModel.Callbacks;
+import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.PromiseAppInfo;
 import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
 import com.android.launcher3.util.InstantAppResolver;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 
 /**
@@ -65,41 +63,11 @@ public class PackageInstallStateChangedTask extends BaseModelUpdateTask {
         }
 
         synchronized (apps) {
-            PromiseAppInfo updated = null;
-            final ArrayList<AppInfo> removed = new ArrayList<>();
-            for (int i=0; i < apps.size(); i++) {
-                final AppInfo appInfo = apps.get(i);
-                final ComponentName tgtComp = appInfo.getTargetComponent();
-                if (tgtComp != null && tgtComp.getPackageName().equals(mInstallInfo.packageName)) {
-                    if (appInfo instanceof PromiseAppInfo) {
-                        final PromiseAppInfo promiseAppInfo = (PromiseAppInfo) appInfo;
-                        if (mInstallInfo.state == PackageInstallerCompat.STATUS_INSTALLING) {
-                            promiseAppInfo.level = mInstallInfo.progress;
-                            updated = promiseAppInfo;
-                        } else if (mInstallInfo.state == PackageInstallerCompat.STATUS_FAILED) {
-                            apps.removePromiseApp(appInfo);
-                            removed.add(appInfo);
-                        }
-                    }
-                }
-            }
+            PromiseAppInfo updated = apps.updatePromiseInstallInfo(mInstallInfo);
             if (updated != null) {
-                final PromiseAppInfo updatedPromiseApp = updated;
-                scheduleCallbackTask(new CallbackTask() {
-                    @Override
-                    public void execute(Callbacks callbacks) {
-                        callbacks.bindPromiseAppProgressUpdated(updatedPromiseApp);
-                    }
-                });
+                scheduleCallbackTask(c -> c.bindPromiseAppProgressUpdated(updated));
             }
-            if (!removed.isEmpty()) {
-                scheduleCallbackTask(new CallbackTask() {
-                    @Override
-                    public void execute(Callbacks callbacks) {
-                        callbacks.bindAppInfosRemoved(removed);
-                    }
-                });
-            }
+            bindApplicationsIfNeeded();
         }
 
         synchronized (dataModel) {
