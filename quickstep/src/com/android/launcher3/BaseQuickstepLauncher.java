@@ -54,6 +54,7 @@ import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.util.RemoteFadeOutAnimationListener;
 import com.android.quickstep.util.ShelfPeekAnim;
 import com.android.quickstep.views.RecentsView;
+import com.android.systemui.shared.system.ActivityManagerWrapper;
 
 import java.util.stream.Stream;
 
@@ -155,6 +156,12 @@ public abstract class BaseQuickstepLauncher extends Launcher
     public void onTrimMemory(int level) {
         super.onTrimMemory(level);
         RecentsModel.INSTANCE.get(this).onTrimMemory(level);
+    }
+
+    @Override
+    protected void onUiChangedWhileSleeping() {
+        // Remove the snapshot because the content view may have obvious changes.
+        ActivityManagerWrapper.getInstance().invalidateHomeTaskSnapshot(this);
     }
 
     @Override

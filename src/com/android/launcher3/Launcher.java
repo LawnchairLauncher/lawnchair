@@ -924,6 +924,9 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     @Override
     protected void onStop() {
+        final boolean wasActive = isUserActive();
+        final LauncherState origState = getStateManager().getState();
+        final int origDragLayerChildCount = mDragLayer.getChildCount();
         super.onStop();
 
         if (mDeferOverlayCallbacks) {
@@ -941,6 +944,20 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
         // Workaround for b/78520668, explicitly trim memory once UI is hidden
         onTrimMemory(TRIM_MEMORY_UI_HIDDEN);
+
+        if (wasActive) {
+            // The expected condition is that this activity is stopped because the device goes to
+            // sleep and the UI may have noticeable changes.
+            mDragLayer.post(() -> {
+                if ((!getStateManager().isInStableState(origState)
+                        // The drag layer may be animating (e.g. dismissing QSB).
+                        || mDragLayer.getAlpha() < 1
+                        // Maybe an ArrowPopup is closed.
+                        || mDragLayer.getChildCount() != origDragLayerChildCount)) {
+                    onUiChangedWhileSleeping();
+                }
+            });
+        }
     }
 
     @Override
@@ -1336,10 +1353,15 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             // Reset AllApps to its initial state only if we are not in the middle of
             // processing a multi-step drop
             if (mPendingRequestArgs == null) {
+                if (!isInState(NORMAL)) {
+                    onUiChangedWhileSleeping();
+                }
                 mStateManager.goToState(NORMAL);
             }
         }
     };
+
+    protected void onUiChangedWhileSleeping() { }
 
     private void updateNotificationDots(Predicate<PackageUserKey> updatedDots) {
         mWorkspace.updateNotificationDots(updatedDots);

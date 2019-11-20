@@ -164,6 +164,15 @@ public class LauncherStateManager {
     }
 
     /**
+     * @return {@code true} if the state matches the current state and there is no active
+     *         transition to different state.
+     */
+    public boolean isInStableState(LauncherState state) {
+        return mState == state && mCurrentStableState == state
+                && (mConfig.mTargetState == null || mConfig.mTargetState == state);
+    }
+
+    /**
      * @see #goToState(LauncherState, boolean, Runnable)
      */
     public void goToState(LauncherState state) {
