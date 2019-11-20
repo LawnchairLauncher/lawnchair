@@ -166,8 +166,8 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
 
             @Override
             public void playAtomicAnimation(float velocity) {
-                new StaggeredWorkspaceAnim(activity, workspaceView, velocity,
-                        true /* animateOverviewScrim */).start();
+                new StaggeredWorkspaceAnim(activity, velocity, true /* animateOverviewScrim */)
+                        .start();
             }
         };
     }

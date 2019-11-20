@@ -398,8 +398,8 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
             updateNonOverviewAnim(targetState, new AnimatorSetBuilder(), 0 /* animComponents */);
             nonOverviewAnim = mNonOverviewAnim.getAnimationPlayer();
 
-            new StaggeredWorkspaceAnim(mLauncher, null, velocity.y,
-                    false /* animateOverviewScrim */).start();
+            new StaggeredWorkspaceAnim(mLauncher, velocity.y, false /* animateOverviewScrim */)
+                    .start();
         } else {
             boolean canceled = targetState == NORMAL;
             if (canceled) {
