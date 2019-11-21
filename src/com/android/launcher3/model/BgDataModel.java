@@ -22,11 +22,13 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.MutableInt;
 
+import com.android.launcher3.AppInfo;
 import com.android.launcher3.FolderInfo;
 import com.android.launcher3.InstallShortcutReceiver;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherSettings;
+import com.android.launcher3.PromiseAppInfo;
 import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.config.FeatureFlags;
@@ -40,6 +42,10 @@ import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.IntSparseArrayMap;
+import com.android.launcher3.util.ItemInfoMatcher;
+import com.android.launcher3.util.ViewOnDrawExecutor;
+import com.android.launcher3.widget.WidgetListRowEntry;
+
 import com.google.protobuf.nano.MessageNano;
 
 import java.io.FileDescriptor;
@@ -49,6 +55,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -390,5 +397,31 @@ public class BgDataModel {
                 deepShortcutMap.put(targetComponent, previousCount == null ? 1 : previousCount + 1);
             }
         }
+    }
+
+    public interface Callbacks {
+        void rebindModel();
+
+        int getCurrentWorkspaceScreen();
+        void clearPendingBinds();
+        void startBinding();
+        void bindItems(List<ItemInfo> shortcuts, boolean forceAnimateIcons);
+        void bindScreens(IntArray orderedScreenIds);
+        void finishFirstPageBind(ViewOnDrawExecutor executor);
+        void finishBindingItems(int pageBoundFirst);
+        void preAddApps();
+        void bindAppsAdded(IntArray newScreens,
+                ArrayList<ItemInfo> addNotAnimated, ArrayList<ItemInfo> addAnimated);
+        void bindPromiseAppProgressUpdated(PromiseAppInfo app);
+        void bindWorkspaceItemsChanged(ArrayList<WorkspaceItemInfo> updated);
+        void bindWidgetsRestored(ArrayList<LauncherAppWidgetInfo> widgets);
+        void bindRestoreItemsChange(HashSet<ItemInfo> updates);
+        void bindWorkspaceComponentsRemoved(ItemInfoMatcher matcher);
+        void bindAllWidgets(ArrayList<WidgetListRowEntry> widgets);
+        void onPageBoundSynchronously(int page);
+        void executeOnNextDraw(ViewOnDrawExecutor executor);
+        void bindDeepShortcutMap(HashMap<ComponentKey, Integer> deepShortcutMap);
+
+        void bindAllApplications(AppInfo[] apps);
     }
 }

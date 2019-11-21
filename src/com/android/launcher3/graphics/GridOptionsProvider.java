@@ -1,5 +1,7 @@
 package com.android.launcher3.graphics;
 
+import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
+
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.res.XmlResourceParser;
@@ -17,8 +19,6 @@ import android.util.Xml;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile.GridOption;
 import com.android.launcher3.R;
-import com.android.launcher3.util.LooperExecutor;
-import com.android.launcher3.util.UiThreadHelper;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -180,10 +180,10 @@ public class GridOptionsProvider extends ContentProvider {
             throw new FileNotFoundException(e.getMessage());
         }
 
-        LooperExecutor executor = new LooperExecutor(UiThreadHelper.getBackgroundLooper());
         try {
             return openPipeHelper(uri, MIME_TYPE_PNG, null,
-                    executor.submit(new LauncherPreviewRenderer(getContext(), idp)), BITMAP_WRITER);
+                    UI_HELPER_EXECUTOR.submit(new LauncherPreviewRenderer(getContext(), idp)),
+                    BITMAP_WRITER);
         } catch (Exception e) {
             throw new FileNotFoundException(e.getMessage());
         }

@@ -16,7 +16,6 @@
 
 package com.android.launcher3;
 
-import static android.view.accessibility.AccessibilityEvent.TYPE_VIEW_FOCUSED;
 import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED;
 import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
 
@@ -30,6 +29,7 @@ import android.util.AttributeSet;
 import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.LinearLayout;
 
 import androidx.annotation.IntDef;
@@ -86,7 +86,7 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
 
     // Type of popups which should be kept open during launcher rebind
     public static final int TYPE_REBIND_SAFE = TYPE_WIDGETS_FULL_SHEET
-            | TYPE_ON_BOARD_POPUP | TYPE_DISCOVERY_BOUNCE;
+            | TYPE_WIDGETS_BOTTOM_SHEET | TYPE_ON_BOARD_POPUP | TYPE_DISCOVERY_BOUNCE;
 
     // Usually we show the back button when a floating view is open. Instead, hide for these types.
     public static final int TYPE_HIDE_BACK_BUTTON = TYPE_ON_BOARD_POPUP | TYPE_DISCOVERY_BOUNCE
@@ -171,7 +171,7 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
                 targetInfo.first, TYPE_WINDOW_STATE_CHANGED, targetInfo.second);
 
         if (mIsOpen) {
-            sendAccessibilityEvent(TYPE_VIEW_FOCUSED);
+            performAccessibilityAction(AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS, null);
         }
         ActivityContext.lookupContext(getContext()).getDragLayer()
                 .sendAccessibilityEvent(TYPE_WINDOW_CONTENT_CHANGED);

@@ -118,6 +118,7 @@ enum ControlType {
   APP_USAGE_SETTINGS = 18;
   BACK_GESTURE = 19;
   UNDO = 20;
+  DISMISS_PREDICTION = 21;
 }
 
 enum TipType {

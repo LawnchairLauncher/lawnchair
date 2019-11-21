@@ -284,7 +284,8 @@ public class DragLayer extends BaseDragLayer<Launcher> {
             // The child may be scaled (always about the center of the view) so to account for it,
             // we have to offset the position by the scaled size.  Once we do that, we can center
             // the drag view about the scaled child view.
-            toY += Math.round(toScale * tv.getPaddingTop());
+            // padding will remain constant (does not scale with size)
+            toY += tv.getPaddingTop();
             toY -= dragView.getMeasuredHeight() * (1 - toScale) / 2;
             if (dragView.getDragVisualizeOffset() != null) {
                 toY -=  Math.round(toScale * dragView.getDragVisualizeOffset().y);

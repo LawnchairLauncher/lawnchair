@@ -136,6 +136,12 @@ public final class RecentsActivity extends BaseRecentsActivity {
     }
 
     @Override
+    public void returnToHomescreen() {
+        super.returnToHomescreen();
+        // TODO(b/137318995) This should go home, but doing so removes freeform windows
+    }
+
+    @Override
     public ActivityOptions getActivityLaunchOptions(final View v) {
         if (!(v instanceof TaskView)) {
             return null;
