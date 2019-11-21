@@ -191,8 +191,8 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
 
             @Override
             public void playAtomicAnimation(float velocity) {
-                new StaggeredWorkspaceAnim(launcher, workspaceView, velocity,
-                        true /* animateOverviewScrim */).start();
+                new StaggeredWorkspaceAnim(launcher, velocity, true /* animateOverviewScrim */)
+                        .start();
             }
         };
     }
