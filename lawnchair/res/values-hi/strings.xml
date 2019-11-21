@@ -416,5 +416,8 @@
     <string name="pref_sesame_sync_look_and_feel">दिखावा और लगना शेयर करें</string>
     <string name="icon_text_scale_pref_title">अक्षरों का साइज</string>
     <string name="text_color">अक्षरों का रंग</string>
+    <string name="pref_notification_count_title">अधिसूचना गणना दिखाएँ</string>
     <string name="lock_desktop">डेस्कटॉप बंद करे</string>
+    <string name="action_dogbin_upload_error">अपलोड विफल</string>
+    <string name="copied_toast">प्रतिलिपि बन गई है।</string>
 </resources>
