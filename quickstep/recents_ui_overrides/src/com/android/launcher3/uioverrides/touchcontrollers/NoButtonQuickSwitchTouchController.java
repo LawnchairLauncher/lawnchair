@@ -98,6 +98,7 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
     private final float mYRange;
     private final MotionPauseDetector mMotionPauseDetector;
     private final float mMotionPauseMinDisplacement;
+    private final LauncherRecentsView mRecentsView;
 
     private boolean mNoIntercept;
     private LauncherState mStartState;
@@ -119,6 +120,7 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         mMotionPauseDetector = new MotionPauseDetector(mLauncher);
         mMotionPauseMinDisplacement = mLauncher.getResources().getDimension(
                 R.dimen.motion_pause_detector_min_displacement_from_app);
+        mRecentsView = mLauncher.getOverviewPanel();
     }
 
     @Override
@@ -208,6 +210,15 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         updateNonOverviewAnim(QUICK_SWITCH, nonOverviewBuilder, ANIM_ALL);
         mNonOverviewAnim.dispatchOnStart();
 
+        if (mRecentsView.getTaskViewCount() == 0) {
+            mRecentsView.setOnEmptyMessageUpdatedListener(isEmpty -> {
+                if (!isEmpty && mSwipeDetector.isDraggingState()) {
+                    // We have loaded tasks, update the animators to start at the correct scale etc.
+                    setupOverviewAnimators();
+                }
+            });
+        }
+
         setupOverviewAnimators();
     }
 
@@ -228,25 +239,25 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         LauncherState.ScaleAndTranslation toScaleAndTranslation = toState
                 .getOverviewScaleAndTranslation(mLauncher);
         // Update RecentView's translationX to have it start offscreen.
-        LauncherRecentsView recentsView = mLauncher.getOverviewPanel();
         float startScale = Utilities.mapRange(
                 SCALE_DOWN_INTERPOLATOR.getInterpolation(Y_ANIM_MIN_PROGRESS),
                 fromScaleAndTranslation.scale,
                 toScaleAndTranslation.scale);
-        fromScaleAndTranslation.translationX = recentsView.getOffscreenTranslationX(startScale);
+        fromScaleAndTranslation.translationX = mRecentsView.getOffscreenTranslationX(startScale);
 
         // Set RecentView's initial properties.
-        recentsView.setScaleX(fromScaleAndTranslation.scale);
-        recentsView.setScaleY(fromScaleAndTranslation.scale);
-        recentsView.setTranslationX(fromScaleAndTranslation.translationX);
-        recentsView.setTranslationY(fromScaleAndTranslation.translationY);
-        recentsView.setContentAlpha(1);
+        mRecentsView.setScaleX(fromScaleAndTranslation.scale);
+        mRecentsView.setScaleY(fromScaleAndTranslation.scale);
+        mRecentsView.setTranslationX(fromScaleAndTranslation.translationX);
+        mRecentsView.setTranslationY(fromScaleAndTranslation.translationY);
+        mRecentsView.setContentAlpha(1);
+        mRecentsView.setFullscreenProgress(fromState.getOverviewFullscreenProgress());
 
         // As we drag right, animate the following properties:
         //   - RecentsView translationX
         //   - OverviewScrim
         AnimatorSet xOverviewAnim = new AnimatorSet();
-        xOverviewAnim.play(ObjectAnimator.ofFloat(recentsView, View.TRANSLATION_X,
+        xOverviewAnim.play(ObjectAnimator.ofFloat(mRecentsView, View.TRANSLATION_X,
                 toScaleAndTranslation.translationX));
         xOverviewAnim.play(ObjectAnimator.ofFloat(
                 mLauncher.getDragLayer().getOverviewScrim(), OverviewScrim.SCRIM_PROGRESS,
@@ -261,11 +272,11 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         //   - RecentsView scale
         //   - RecentsView fullscreenProgress
         AnimatorSet yAnimation = new AnimatorSet();
-        Animator translateYAnim = ObjectAnimator.ofFloat(recentsView, View.TRANSLATION_Y,
+        Animator translateYAnim = ObjectAnimator.ofFloat(mRecentsView, View.TRANSLATION_Y,
                 toScaleAndTranslation.translationY);
-        Animator scaleAnim = ObjectAnimator.ofFloat(recentsView, SCALE_PROPERTY,
+        Animator scaleAnim = ObjectAnimator.ofFloat(mRecentsView, SCALE_PROPERTY,
                 toScaleAndTranslation.scale);
-        Animator fullscreenProgressAnim = ObjectAnimator.ofFloat(recentsView, FULLSCREEN_PROGRESS,
+        Animator fullscreenProgressAnim = ObjectAnimator.ofFloat(mRecentsView, FULLSCREEN_PROGRESS,
                 fromState.getOverviewFullscreenProgress(), toState.getOverviewFullscreenProgress());
         scaleAnim.setInterpolator(SCALE_DOWN_INTERPOLATOR);
         fullscreenProgressAnim.setInterpolator(SCALE_DOWN_INTERPOLATOR);
@@ -466,5 +477,6 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         mYOverviewAnim = null;
         mIsHomeScreenVisible = true;
         mSwipeDetector.finishedScrolling();
+        mRecentsView.setOnEmptyMessageUpdatedListener(null);
     }
 }
