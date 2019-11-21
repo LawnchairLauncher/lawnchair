@@ -51,5 +51,8 @@ public class AppLaunchTracker implements ResourceBasedOverride {
     public void onStartApp(ComponentName componentName, UserHandle user,
             @Nullable String container) { }
 
+    public void onDismissApp(ComponentName componentName, UserHandle user,
+             @Nullable String container){}
+
     public void onReturnedToHome() { }
 }

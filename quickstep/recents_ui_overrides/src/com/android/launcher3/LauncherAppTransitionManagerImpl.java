@@ -17,7 +17,10 @@
 package com.android.launcher3;
 
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
+import static com.android.launcher3.LauncherState.BACKGROUND_APP;
+import static com.android.launcher3.LauncherState.HOTSEAT_ICONS;
 import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.anim.Interpolators.AGGRESSIVE_EASE;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.quickstep.TaskViewUtils.findTaskViewToLaunch;
@@ -27,9 +30,15 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.android.launcher3.LauncherState.ScaleAndTranslation;
+import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.SpringAnimationBuilder;
@@ -37,9 +46,6 @@ import com.android.quickstep.util.ClipAnimationHelper;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 /**
  * A {@link QuickstepAppTransitionManagerImpl} that also implements recents transitions from
@@ -144,8 +150,37 @@ public final class LauncherAppTransitionManagerImpl extends QuickstepAppTransiti
     @Override
     public Animator createStateElementAnimation(int index, float... values) {
         switch (index) {
-            case INDEX_SHELF_ANIM:
-                return mLauncher.getAllAppsController().createSpringAnimation(values);
+            case INDEX_SHELF_ANIM: {
+                AllAppsTransitionController aatc = mLauncher.getAllAppsController();
+                Animator springAnim = aatc.createSpringAnimation(values);
+
+                if ((OVERVIEW.getVisibleElements(mLauncher) & HOTSEAT_ICONS) != 0) {
+                    // Translate hotseat with the shelf until reaching overview.
+                    float overviewProgress = OVERVIEW.getVerticalProgress(mLauncher);
+                    ScaleAndTranslation sat = OVERVIEW.getHotseatScaleAndTranslation(mLauncher);
+                    float shiftRange = aatc.getShiftRange();
+                    if (values.length == 1) {
+                        values = new float[] {aatc.getProgress(), values[0]};
+                    }
+                    ValueAnimator hotseatAnim = ValueAnimator.ofFloat(values);
+                    hotseatAnim.addUpdateListener(anim -> {
+                        float progress = (Float) anim.getAnimatedValue();
+                        if (progress >= overviewProgress || mLauncher.isInState(BACKGROUND_APP)) {
+                            float hotseatShift = (progress - overviewProgress) * shiftRange;
+                            mLauncher.getHotseat().setTranslationY(hotseatShift + sat.translationY);
+                        }
+                    });
+                    hotseatAnim.setInterpolator(LINEAR);
+                    hotseatAnim.setDuration(springAnim.getDuration());
+
+                    AnimatorSet anim = new AnimatorSet();
+                    anim.play(hotseatAnim);
+                    anim.play(springAnim);
+                    return anim;
+                }
+
+                return springAnim;
+            }
             case INDEX_RECENTS_FADE_ANIM:
                 return ObjectAnimator.ofFloat(mLauncher.getOverviewPanel(),
                         RecentsView.CONTENT_ALPHA, values);

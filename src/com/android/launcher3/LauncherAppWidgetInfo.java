@@ -29,6 +29,9 @@ import com.android.launcher3.util.ContentWriter;
  */
 public class LauncherAppWidgetInfo extends ItemInfo {
 
+    public static final int OPTION_SEARCH_WIDGET = 1;
+
+
     public static final int RESTORE_COMPLETED = 0;
 
     /**
@@ -97,6 +100,11 @@ public class LauncherAppWidgetInfo extends ItemInfo {
     public Intent bindOptions;
 
     /**
+     * Widget options
+     */
+    public int options;
+
+    /**
      * Nonnull for pending widgets. We use this to get the icon and title for the widget.
      */
     public PackageItemInfo pendingItemInfo;
@@ -137,6 +145,7 @@ public class LauncherAppWidgetInfo extends ItemInfo {
         writer.put(LauncherSettings.Favorites.APPWIDGET_ID, appWidgetId)
                 .put(LauncherSettings.Favorites.APPWIDGET_PROVIDER, providerName.flattenToString())
                 .put(LauncherSettings.Favorites.RESTORED, restoreStatus)
+                .put(LauncherSettings.Favorites.OPTIONS, options)
                 .put(LauncherSettings.Favorites.INTENT, bindOptions);
     }
 
@@ -163,5 +172,14 @@ public class LauncherAppWidgetInfo extends ItemInfo {
 
     public final boolean hasRestoreFlag(int flag) {
         return (restoreStatus & flag) == flag;
+    }
+
+    /**
+     * returns if widget options include an option or not
+     * @param option
+     * @return
+     */
+    public final boolean hasOptionFlag(int option) {
+        return (options & option) != 0;
     }
 }

@@ -20,7 +20,6 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name" msgid="649227358658669779">"Launcher3"</string>
-    <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="work_folder_name" msgid="3753320833950115786">"Աշխատանքային"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"Ծրագիրը տեղադրված չէ:"</string>
     <string name="activity_not_available" msgid="7456344436509528827">"Հավելվածը հասանելի չէ"</string>
@@ -87,7 +86,7 @@
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Հեռախոսը պտտելու դեպքում"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"Ծանուցումների կետիկներ"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"Միացված է"</string>
-    <string name="notification_dots_desc_off" msgid="1760796511504341095">"Անջատած է"</string>
+    <string name="notification_dots_desc_off" msgid="1760796511504341095">"Անջատված է"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"Անհրաժեշտ է ծանուցման թույլտվություն"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Ծանուցումների կետիկները ցուցադրելու համար միացրեք ծանուցումները <xliff:g id="NAME">%1$s</xliff:g>-ի համար"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Փոխել կարգավորումները"</string>
