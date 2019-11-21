@@ -1278,6 +1278,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         return !mLauncher.isInState(NORMAL);
     }
 
+    private boolean workspaceInScrollableState() {
+        return mLauncher.isInState(SPRING_LOADED) || !workspaceInModalState();
+    }
+
     /** Returns whether a drag should be allowed to be started from the current workspace state. */
     public boolean workspaceIconsCanBeDragged() {
         return mLauncher.getStateManager().getState().workspaceIconsCanBeDragged;
@@ -1471,9 +1475,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     public DragView beginDragShared(View child, DragSource source, ItemInfo dragObject,
             DragPreviewProvider previewProvider, DragOptions dragOptions) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_CONTEXT_MENU, "beginDragShared");
-        }
         float iconScale = 1f;
         if (child instanceof BubbleTextView) {
             Drawable icon = ((BubbleTextView) child).getIcon();
@@ -2882,7 +2883,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     @Override
     public boolean scrollLeft() {
         boolean result = false;
-        if (!workspaceInModalState() && !mIsSwitchingState) {
+        if (!mIsSwitchingState && workspaceInScrollableState()) {
             result = super.scrollLeft();
         }
         Folder openFolder = Folder.getOpen(mLauncher);
@@ -2895,7 +2896,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     @Override
     public boolean scrollRight() {
         boolean result = false;
-        if (!workspaceInModalState() && !mIsSwitchingState) {
+        if (!mIsSwitchingState && workspaceInScrollableState()) {
             result = super.scrollRight();
         }
         Folder openFolder = Folder.getOpen(mLauncher);

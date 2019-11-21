@@ -23,11 +23,6 @@ public abstract class DelegateInputConsumer implements InputConsumer {
     }
 
     @Override
-    public boolean useSharedSwipeState() {
-        return mDelegate.useSharedSwipeState();
-    }
-
-    @Override
     public boolean allowInterceptByParent() {
         return mDelegate.allowInterceptByParent() && mState != STATE_ACTIVE;
     }

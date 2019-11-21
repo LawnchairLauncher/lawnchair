@@ -26,8 +26,8 @@ import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.quickstep.views.IconRecentsView;
 
-import java.util.function.BiPredicate;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 /**
  * {@link BaseActivityInterface} for the in-launcher recents.
@@ -36,15 +36,15 @@ import java.util.function.Consumer;
 public final class LauncherActivityInterface extends GoActivityInterface<Launcher> {
 
     @Override
-    public AnimationFactory prepareRecentsUI(Launcher activity,
-            boolean activityVisible, boolean animateActivity,
+    public AnimationFactory prepareRecentsUI(boolean activityVisible, boolean animateActivity,
             Consumer<AnimatorPlaybackController> callback) {
-        LauncherState fromState = activity.getStateManager().getState();
-        activity.<IconRecentsView>getOverviewPanel().setUsingRemoteAnimation(true);
+        Launcher launcher = getCreatedActivity();
+        LauncherState fromState = launcher.getStateManager().getState();
+        launcher.<IconRecentsView>getOverviewPanel().setUsingRemoteAnimation(true);
         //TODO: Implement this based off where the recents view needs to be for app => recents anim.
         return new AnimationFactory() {
             public void createActivityInterface(long transitionLength) {
-                callback.accept(activity.getStateManager().createAnimationToNewWorkspace(
+                callback.accept(launcher.getStateManager().createAnimationToNewWorkspace(
                         fromState, OVERVIEW, transitionLength));
             }
 
@@ -54,9 +54,9 @@ public final class LauncherActivityInterface extends GoActivityInterface<Launche
     }
 
     @Override
-    public LauncherInitListener createActivityInitListener(
-            BiPredicate<Launcher, Boolean> onInitListener) {
-        return new LauncherInitListener(onInitListener);
+    public LauncherInitListener createActivityInitListener(Predicate<Boolean> onInitListener) {
+        return new LauncherInitListener((activity, alreadyOnHome) ->
+                onInitListener.test(alreadyOnHome));
     }
 
     @Override
@@ -105,7 +105,8 @@ public final class LauncherActivityInterface extends GoActivityInterface<Launche
     }
 
     @Override
-    public void onLaunchTaskSuccess(Launcher launcher) {
+    public void onLaunchTaskSuccess() {
+        Launcher launcher = getCreatedActivity();
         launcher.getStateManager().moveToRestState();
     }
 }

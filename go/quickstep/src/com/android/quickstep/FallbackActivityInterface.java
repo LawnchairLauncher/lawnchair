@@ -29,8 +29,8 @@ import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.views.IconRecentsView;
 
-import java.util.function.BiPredicate;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 /**
  * {@link BaseActivityInterface} for recents when the default launcher is different than the
@@ -43,12 +43,13 @@ public final class FallbackActivityInterface extends
     public FallbackActivityInterface() { }
 
     @Override
-    public AnimationFactory prepareRecentsUI(RecentsActivity activity, boolean activityVisible,
+    public AnimationFactory prepareRecentsUI(boolean activityVisible,
             boolean animateActivity, Consumer<AnimatorPlaybackController> callback) {
         if (activityVisible) {
             return (transitionLength) -> { };
         }
 
+        RecentsActivity activity = getCreatedActivity();
         IconRecentsView rv = activity.getOverviewPanel();
         rv.setUsingRemoteAnimation(true);
         rv.setAlpha(0);
@@ -84,8 +85,9 @@ public final class FallbackActivityInterface extends
 
     @Override
     public ActivityInitListener createActivityInitListener(
-            BiPredicate<RecentsActivity, Boolean> onInitListener) {
-        return new ActivityInitListener(onInitListener, RecentsActivity.ACTIVITY_TRACKER);
+            Predicate<Boolean> onInitListener) {
+        return new ActivityInitListener<>((activity, alreadyOnHome) ->
+                onInitListener.test(alreadyOnHome), RecentsActivity.ACTIVITY_TRACKER);
     }
 
     @Nullable
@@ -115,5 +117,5 @@ public final class FallbackActivityInterface extends
     }
 
     @Override
-    public void onLaunchTaskSuccess(RecentsActivity activity) { }
+    public void onLaunchTaskSuccess() { }
 }

@@ -277,6 +277,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
             page.removeAllViews();
             pages.add(page);
         }
+        mOrganizer.setFolderInfo(mFolder.getInfo());
         setupContentDimensions(itemCount);
 
         Iterator<CellLayout> pageItr = pages.iterator();
@@ -285,7 +286,6 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
         int position = 0;
         int rank = 0;
 
-        mOrganizer.setFolderInfo(mFolder.getInfo());
         for (int i = 0; i < itemCount; i++) {
             View v = list.size() > i ? list.get(i) : null;
             if (currentPage == null || position >= mOrganizer.getMaxItemsPerPage()) {

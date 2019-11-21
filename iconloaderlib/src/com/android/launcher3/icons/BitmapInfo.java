@@ -18,32 +18,55 @@ package com.android.launcher3.icons;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 
+import androidx.annotation.NonNull;
+
 public class BitmapInfo {
 
     public static final Bitmap LOW_RES_ICON = Bitmap.createBitmap(1, 1, Config.ALPHA_8);
+    public static final BitmapInfo LOW_RES_INFO = fromBitmap(LOW_RES_ICON);
 
-    public Bitmap icon;
-    public int color;
+    public final Bitmap icon;
+    public final int color;
 
-    public void applyTo(BitmapInfo info) {
-        info.icon = icon;
-        info.color = color;
+    public BitmapInfo(Bitmap icon, int color) {
+        this.icon = icon;
+        this.color = color;
+    }
+
+    /**
+     * Ideally icon should not be null, except in cases when generating hardware bitmap failed
+     */
+    public final boolean isNullOrLowRes() {
+        return icon == null || icon == LOW_RES_ICON;
     }
 
     public final boolean isLowRes() {
         return LOW_RES_ICON == icon;
     }
 
-    public static BitmapInfo fromBitmap(Bitmap bitmap) {
-        return fromBitmap(bitmap, null);
+    public static BitmapInfo fromBitmap(@NonNull Bitmap bitmap) {
+        return of(bitmap, 0);
     }
 
-    public static BitmapInfo fromBitmap(Bitmap bitmap, ColorExtractor dominantColorExtractor) {
-        BitmapInfo info = new BitmapInfo();
-        info.icon = bitmap;
-        info.color = dominantColorExtractor != null
-                ? dominantColorExtractor.findDominantColorByHue(bitmap)
-                : 0;
-        return info;
+    public static BitmapInfo of(@NonNull Bitmap bitmap, int color) {
+        return new BitmapInfo(bitmap, color);
+    }
+
+    /**
+     * Interface to be implemented by drawables to provide a custom BitmapInfo
+     */
+    public interface Extender {
+
+        /**
+         * Called for creating a custom BitmapInfo
+         */
+        default BitmapInfo getExtendedInfo(Bitmap bitmap, int color, BaseIconFactory iconFactory) {
+            return BitmapInfo.of(bitmap, color);
+        }
+
+        /**
+         * Notifies the drawable that it will be drawn directly in the UI, without any preprocessing
+         */
+        default void prepareToDrawOnUi() { }
     }
 }

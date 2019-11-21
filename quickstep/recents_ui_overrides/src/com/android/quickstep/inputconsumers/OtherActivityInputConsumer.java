@@ -26,12 +26,10 @@ import static android.view.MotionEvent.INVALID_POINTER_ID;
 import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
 import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.util.TraceHelper.FLAG_CHECK_FOR_RACE_CONDITIONS;
-import static com.android.quickstep.TouchInteractionService.startRecentsActivityAsync;
 import static com.android.quickstep.util.ActiveGestureLog.INTENT_EXTRA_LOG_TRACE_ID;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 
 import android.annotation.TargetApi;
-import android.app.ActivityManager.RunningTaskInfo;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
@@ -55,13 +53,10 @@ import com.android.quickstep.GestureState;
 import com.android.quickstep.InputConsumer;
 import com.android.quickstep.RecentsAnimationCallbacks;
 import com.android.quickstep.RecentsAnimationDeviceState;
-import com.android.quickstep.SwipeSharedState;
-import com.android.quickstep.SysUINavigationMode;
-import com.android.quickstep.SysUINavigationMode.Mode;
+import com.android.quickstep.TaskAnimationManager;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.CachedEventDispatcher;
 import com.android.quickstep.util.MotionPauseDetector;
-import com.android.quickstep.util.NavBarPosition;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.InputMonitorCompat;
 
@@ -80,21 +75,19 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     public static final float QUICKSTEP_TOUCH_SLOP_RATIO = 3;
 
     private final RecentsAnimationDeviceState mDeviceState;
+    private final TaskAnimationManager mTaskAnimationManager;
     private final GestureState mGestureState;
+    private RecentsAnimationCallbacks mActiveCallbacks;
     private final CachedEventDispatcher mRecentsViewDispatcher = new CachedEventDispatcher();
-    private final RunningTaskInfo mRunningTask;
-    private final SwipeSharedState mSwipeSharedState;
     private final InputMonitorCompat mInputMonitorCompat;
-    private final SysUINavigationMode.Mode mMode;
     private final BaseActivityInterface mActivityInterface;
 
     private final BaseSwipeUpHandler.Factory mHandlerFactory;
 
-    private final NavBarPosition mNavBarPosition;
-
     private final Consumer<OtherActivityInputConsumer> mOnCompleteCallback;
     private final MotionPauseDetector mMotionPauseDetector;
     private final float mMotionPauseMinDisplacement;
+
     private VelocityTracker mVelocityTracker;
 
     private BaseSwipeUpHandler mInteractionHandler;
@@ -123,20 +116,17 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         ActivityManagerWrapper.getInstance().cancelRecentsAnimation(
                 true /* restoreHomeStackPosition */);
     };
-    private int mLogId;
 
     public OtherActivityInputConsumer(Context base, RecentsAnimationDeviceState deviceState,
-            GestureState gestureState, RunningTaskInfo runningTaskInfo,
+            TaskAnimationManager taskAnimationManager, GestureState gestureState,
             boolean isDeferredDownTarget, Consumer<OtherActivityInputConsumer> onCompleteCallback,
-            SwipeSharedState swipeSharedState, InputMonitorCompat inputMonitorCompat,
-            boolean disableHorizontalSwipe, Factory handlerFactory, int logId) {
+            InputMonitorCompat inputMonitorCompat, boolean disableHorizontalSwipe,
+            Factory handlerFactory) {
         super(base);
-        mLogId = logId;
         mDeviceState = deviceState;
+        mTaskAnimationManager = taskAnimationManager;
         mGestureState = gestureState;
         mMainThreadHandler = new Handler(Looper.getMainLooper());
-        mRunningTask = runningTaskInfo;
-        mMode = SysUINavigationMode.getMode(base);
         mHandlerFactory = handlerFactory;
         mActivityInterface = mGestureState.getActivityInterface();
 
@@ -147,11 +137,8 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         mVelocityTracker = VelocityTracker.obtain();
         mInputMonitorCompat = inputMonitorCompat;
 
-        boolean continuingPreviousGesture = swipeSharedState.getActiveListener() != null;
+        boolean continuingPreviousGesture = mTaskAnimationManager.isRecentsAnimationRunning();
         mIsDeferredDownTarget = !continuingPreviousGesture && isDeferredDownTarget;
-        mSwipeSharedState = swipeSharedState;
-
-        mNavBarPosition = new NavBarPosition(base);
         mTouchSlop = ViewConfiguration.get(this).getScaledTouchSlop();
 
         float slop = QUICKSTEP_TOUCH_SLOP_RATIO * mTouchSlop;
@@ -183,7 +170,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         if (mPassedWindowMoveSlop && mInteractionHandler != null
                 && !mRecentsViewDispatcher.hasConsumer()) {
             mRecentsViewDispatcher.setConsumer(mInteractionHandler.getRecentsViewDispatcher(
-                    mNavBarPosition.getRotationMode()));
+                    mDeviceState.getNavBarPosition().getRotationMode()));
         }
         int edgeFlags = ev.getEdgeFlags();
         ev.setEdgeFlags(edgeFlags | EDGE_NAV_BAR);
@@ -293,7 +280,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                         mInteractionHandler.updateDisplacement(displacement - mStartDisplacement);
                     }
 
-                    if (mMode == Mode.NO_BUTTON) {
+                    if (mDeviceState.isFullyGesturalNavMode()) {
                         mMotionPauseDetector.setDisallowPause(upDist < mMotionPauseMinDisplacement
                                 || isLikelyToStartNewTask);
                         mMotionPauseDetector.addPosition(displacement, ev.getEventTime());
@@ -329,25 +316,22 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
             long touchTimeMs, boolean isLikelyToStartNewTask) {
         ActiveGestureLog.INSTANCE.addLog("startRecentsAnimation");
 
-        RecentsAnimationCallbacks listenerSet = mSwipeSharedState.getActiveListener();
-        final BaseSwipeUpHandler handler = mHandlerFactory.newHandler(mGestureState, mRunningTask,
-                touchTimeMs, listenerSet != null, isLikelyToStartNewTask);
+        mInteractionHandler = mHandlerFactory.newHandler(mGestureState, touchTimeMs,
+                mTaskAnimationManager.isRecentsAnimationRunning(), isLikelyToStartNewTask);
+        mInteractionHandler.setGestureEndCallback(this::onInteractionGestureFinished);
+        mMotionPauseDetector.setOnMotionPauseListener(mInteractionHandler::onMotionPauseChanged);
+        mInteractionHandler.initWhenReady();
 
-        mInteractionHandler = handler;
-        handler.setGestureEndCallback(this::onInteractionGestureFinished);
-        mMotionPauseDetector.setOnMotionPauseListener(handler::onMotionPauseChanged);
-        handler.initWhenReady();
-
-        if (listenerSet != null) {
-            listenerSet.addListener(handler);
-            mSwipeSharedState.applyActiveRecentsAnimationState(handler);
+        if (mTaskAnimationManager.isRecentsAnimationRunning()) {
+            mActiveCallbacks = mTaskAnimationManager.continueRecentsAnimation(mGestureState);
+            mActiveCallbacks.addListener(mInteractionHandler);
+            mTaskAnimationManager.notifyRecentsAnimationState(mInteractionHandler);
             notifyGestureStarted();
         } else {
-            RecentsAnimationCallbacks callbacks = mSwipeSharedState.newRecentsAnimationCallbacks();
-            callbacks.addListener(handler);
-            Intent intent = handler.getLaunchIntent();
-            intent.putExtra(INTENT_EXTRA_LOG_TRACE_ID, mLogId);
-            startRecentsActivityAsync(intent, callbacks);
+            Intent intent = mInteractionHandler.getLaunchIntent();
+            intent.putExtra(INTENT_EXTRA_LOG_TRACE_ID, mGestureState.getGestureId());
+            mActiveCallbacks = mTaskAnimationManager.startRecentsAnimation(mGestureState, intent,
+                    mInteractionHandler);
         }
     }
 
@@ -367,8 +351,10 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                         ViewConfiguration.get(this).getScaledMaximumFlingVelocity());
                 float velocityX = mVelocityTracker.getXVelocity(mActivePointerId);
                 float velocityY = mVelocityTracker.getYVelocity(mActivePointerId);
-                float velocity = mNavBarPosition.isRightEdge() ? velocityX
-                        : mNavBarPosition.isLeftEdge() ? -velocityX
+                float velocity = mDeviceState.getNavBarPosition().isRightEdge()
+                        ? velocityX
+                        : mDeviceState.getNavBarPosition().isLeftEdge()
+                                ? -velocityX
                                 : velocityY;
 
                 mInteractionHandler.updateDisplacement(getDisplacement(ev) - mStartDisplacement);
@@ -402,7 +388,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
             // The consumer is being switched while we are active. Set up the shared state to be
             // used by the next animation
             removeListener();
-            mInteractionHandler.onConsumerAboutToBeSwitched(mSwipeSharedState);
+            mInteractionHandler.onConsumerAboutToBeSwitched();
         }
     }
 
@@ -415,25 +401,19 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     }
 
     private void removeListener() {
-        RecentsAnimationCallbacks listenerSet = mSwipeSharedState.getActiveListener();
-        if (listenerSet != null) {
-            listenerSet.removeListener(mInteractionHandler);
+        if (mActiveCallbacks != null) {
+            mActiveCallbacks.removeListener(mInteractionHandler);
         }
     }
 
     private float getDisplacement(MotionEvent ev) {
-        if (mNavBarPosition.isRightEdge()) {
+        if (mDeviceState.getNavBarPosition().isRightEdge()) {
             return ev.getX() - mDownPos.x;
-        } else if (mNavBarPosition.isLeftEdge()) {
+        } else if (mDeviceState.getNavBarPosition().isLeftEdge()) {
             return mDownPos.x - ev.getX();
         } else {
             return ev.getY() - mDownPos.y;
         }
-    }
-
-    @Override
-    public boolean useSharedSwipeState() {
-        return mInteractionHandler != null;
     }
 
     @Override

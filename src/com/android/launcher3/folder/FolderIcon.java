@@ -58,12 +58,14 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.anim.Interpolators;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dot.FolderDotInfo;
 import com.android.launcher3.dragndrop.BaseItemDragListener;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.icons.DotRenderer;
 import com.android.launcher3.touch.ItemClickHandler;
+import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.views.IconLabelDotView;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
@@ -368,12 +370,17 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
 
             if (!itemAdded) mPreviewItemManager.hidePreviewItem(index, true);
             final int finalIndex = index;
-            postDelayed(new Runnable() {
-                public void run() {
-                    mPreviewItemManager.hidePreviewItem(finalIndex, false);
-                    mFolder.showItem(item);
-                    invalidate();
-                }
+
+            String[] suggestedNameOut = new String[1];
+            if (FeatureFlags.FOLDER_NAME_SUGGEST.get()) {
+                Executors.UI_HELPER_EXECUTOR.post(() -> mLauncher.getFolderNameProvider()
+                        .getSuggestedFolderName(getContext(), mInfo.contents, suggestedNameOut));
+            }
+            postDelayed(() -> {
+                mPreviewItemManager.hidePreviewItem(finalIndex, false);
+                mFolder.showItem(item);
+                invalidate();
+                mFolder.showSuggestedTitle(suggestedNameOut[0]);
             }, DROP_IN_ANIMATION_DURATION);
         } else {
             addItem(item);

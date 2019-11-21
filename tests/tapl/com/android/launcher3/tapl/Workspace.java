@@ -32,13 +32,14 @@ import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.UiObject2;
 
+import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.testing.TestProtocol;
 
 /**
  * Operations on the workspace screen.
  */
 public final class Workspace extends Home {
-    private static final int DRAG_DURACTION = 2000;
+    private static final int DRAG_DURATION = 500;
     private static final int FLING_STEPS = 10;
     private final UiObject2 mHotseat;
 
@@ -59,7 +60,11 @@ public final class Workspace extends Home {
             verifyActiveContainer();
             final UiObject2 hotseat = mHotseat;
             final Point start = hotseat.getVisibleCenter();
-            start.y = hotseat.getVisibleBounds().bottom - 1;
+            int deviceHeight = mLauncher.getDevice().getDisplayHeight();
+            int bottomGestureMargin = ResourceUtils.getNavbarSize(
+                    ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE, mLauncher.getResources());
+            int displayBottom = deviceHeight - bottomGestureMargin;
+            start.y = displayBottom - 1;
             final int swipeHeight = mLauncher.getTestInfo(
                     TestProtocol.REQUEST_HOME_TO_ALL_APPS_SWIPE_HEIGHT).
                     getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
@@ -72,7 +77,7 @@ public final class Workspace extends Home {
                     start.y,
                     start.x,
                     start.y - swipeHeight - mLauncher.getTouchSlop(),
-                    60,
+                    12,
                     ALL_APPS_STATE_ORDINAL);
 
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
@@ -166,7 +171,7 @@ public final class Workspace extends Home {
         launcher.waitForLauncherObject(longPressIndicator);
         LauncherInstrumentation.log("dragIconToWorkspace: indicator");
         launcher.movePointer(
-                downTime, SystemClock.uptimeMillis(), DRAG_DURACTION, launchableCenter, dest);
+                downTime, SystemClock.uptimeMillis(), DRAG_DURATION, launchableCenter, dest);
         LauncherInstrumentation.log("dragIconToWorkspace: moved pointer");
         launcher.sendPointer(
                 downTime, SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, dest);
@@ -182,7 +187,7 @@ public final class Workspace extends Home {
         final UiObject2 workspace = verifyActiveContainer();
         mLauncher.scroll(workspace, Direction.RIGHT,
                 new Rect(0, 0, mLauncher.getEdgeSensitivityWidth() + 1, 0),
-                FLING_STEPS);
+                FLING_STEPS, false);
         verifyActiveContainer();
     }
 
@@ -194,7 +199,7 @@ public final class Workspace extends Home {
         final UiObject2 workspace = verifyActiveContainer();
         mLauncher.scroll(workspace, Direction.LEFT,
                 new Rect(mLauncher.getEdgeSensitivityWidth() + 1, 0, 0, 0),
-                FLING_STEPS);
+                FLING_STEPS, false);
         verifyActiveContainer();
     }
 

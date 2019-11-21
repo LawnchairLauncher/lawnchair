@@ -29,6 +29,8 @@ import androidx.test.uiautomator.UiObject2;
 import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.testing.TestProtocol;
 
+import java.util.stream.Collectors;
+
 /**
  * Operations on AllApps opened from Home. Also a parent for All Apps opened from Overview.
  */
@@ -36,6 +38,7 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
     private static final int MAX_SCROLL_ATTEMPTS = 40;
 
     private final int mHeight;
+    private final int mIconHeight;
 
     AllApps(LauncherInstrumentation launcher) {
         super(launcher);
@@ -46,6 +49,9 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
         // Wait for the recycler to populate.
         mLauncher.waitForObjectInContainer(appListRecycler, By.clazz(TextView.class));
         verifyNotFrozen("All apps freeze flags upon opening all apps");
+        mIconHeight = mLauncher.getTestInfo(
+                TestProtocol.REQUEST_ICON_HEIGHT).
+                getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
     @Override
@@ -62,12 +68,16 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
         }
         final Rect iconBounds = icon.getVisibleBounds();
         LauncherInstrumentation.log("hasClickableIcon: icon bounds: " + iconBounds);
+        if (iconBounds.height() < mIconHeight / 2) {
+            LauncherInstrumentation.log("hasClickableIcon: icon has insufficient height");
+            return false;
+        }
         if (iconCenterInSearchBox(allAppsContainer, icon)) {
             LauncherInstrumentation.log("hasClickableIcon: icon center is under search box");
             return false;
         }
         if (iconBounds.bottom > displayBottom) {
-            LauncherInstrumentation.log("hasClickableIcon: icon center bellow bottom offset");
+            LauncherInstrumentation.log("hasClickableIcon: icon bottom below bottom offset");
             return false;
         }
         LauncherInstrumentation.log("hasClickableIcon: icon is clickable");
@@ -100,11 +110,6 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
                     ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE, mLauncher.getResources()) + 1;
             int deviceHeight = mLauncher.getDevice().getDisplayHeight();
             int displayBottom = deviceHeight - bottomGestureMargin;
-            allAppsContainer.setGestureMargins(
-                    0,
-                    getSearchBox(allAppsContainer).getVisibleBounds().bottom + 1,
-                    0,
-                    bottomGestureMargin);
             final BySelector appIconSelector = AppIcon.getAppIconSelector(appName, mLauncher);
             if (!hasClickableIcon(allAppsContainer, appListRecycler, appIconSelector,
                     displayBottom)) {
@@ -116,7 +121,12 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
                             displayBottom)) {
                         mLauncher.scrollToLastVisibleRow(
                                 allAppsContainer,
-                                mLauncher.getObjectsInContainer(allAppsContainer, "icon"),
+                                mLauncher.getObjectsInContainer(allAppsContainer, "icon")
+                                        .stream()
+                                        .filter(icon ->
+                                                icon.getVisibleBounds().bottom
+                                                        <= displayBottom)
+                                        .collect(Collectors.toList()),
                                 searchBox.getVisibleBounds().bottom
                                         - allAppsContainer.getVisibleBounds().top);
                         final int newScroll = getAllAppsScroll();
@@ -163,7 +173,8 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
                         "Exceeded max scroll attempts: " + MAX_SCROLL_ATTEMPTS,
                         ++attempts <= MAX_SCROLL_ATTEMPTS);
 
-                mLauncher.scroll(allAppsContainer, Direction.UP, margins, 50);
+                mLauncher.scroll(
+                        allAppsContainer, Direction.UP, margins, 12, false);
             }
 
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer("scrolled up")) {
@@ -191,7 +202,7 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
             final UiObject2 allAppsContainer = verifyActiveContainer();
             // Start the gesture in the center to avoid starting at elements near the top.
             mLauncher.scroll(
-                    allAppsContainer, Direction.DOWN, new Rect(0, 0, 0, mHeight / 2), 10);
+                    allAppsContainer, Direction.DOWN, new Rect(0, 0, 0, mHeight / 2), 10, false);
             verifyActiveContainer();
         }
     }
@@ -205,7 +216,7 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
             final UiObject2 allAppsContainer = verifyActiveContainer();
             // Start the gesture in the center, for symmetry with forward.
             mLauncher.scroll(
-                    allAppsContainer, Direction.UP, new Rect(0, mHeight / 2, 0, 0), 10);
+                    allAppsContainer, Direction.UP, new Rect(0, mHeight / 2, 0, 0), 10, false);
             verifyActiveContainer();
         }
     }

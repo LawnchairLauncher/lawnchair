@@ -72,7 +72,6 @@ import com.android.launcher3.provider.ImportDataTask;
 import com.android.launcher3.qsb.QsbContainerView;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutKey;
-import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IOUtils;
 import com.android.launcher3.util.LooperIdleLock;
@@ -165,32 +164,15 @@ public class LoaderTask implements Runnable {
     }
 
     public void run() {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.LAUNCHER_DIDNT_INITIALIZE,
-                    "LoaderTask1 " + this);
-        }
         synchronized (this) {
             // Skip fast if we are already stopped.
             if (mStopped) {
                 return;
             }
         }
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.LAUNCHER_DIDNT_INITIALIZE,
-                    "LoaderTask2 " + this);
-        }
 
         Object traceToken = TraceHelper.INSTANCE.beginSection(TAG);
-        TimingLogger logger = TestProtocol.sDebugTracing ?
-                new TimingLogger(TAG, "run") {
-                    @Override
-                    public void addSplit(String splitLabel) {
-                        super.addSplit(splitLabel);
-                        Log.d(TestProtocol.LAUNCHER_DIDNT_INITIALIZE,
-                                "LoaderTask.addSplit " + splitLabel);
-                    }
-                }
-                : new TimingLogger(TAG, "run");
+        TimingLogger logger = new TimingLogger(TAG, "run");
         try (LauncherModel.LoaderTransaction transaction = mApp.getModel().beginLoader(this)) {
             List<ShortcutInfo> allShortcuts = new ArrayList<>();
             loadWorkspace(allShortcuts);
@@ -225,10 +207,12 @@ public class LoaderTask implements Runnable {
                     mApp.getModel()::onPackageIconsUpdated);
             logger.addSplit("update icon cache");
 
-            verifyNotStopped();
-            logger.addSplit("save shortcuts in icon cache");
-            updateHandler.updateIcons(allShortcuts, new ShortcutCachingLogic(),
-                    mApp.getModel()::onPackageIconsUpdated);
+            if (FeatureFlags.ENABLE_DEEP_SHORTCUT_ICON_CACHE.get()) {
+                verifyNotStopped();
+                logger.addSplit("save shortcuts in icon cache");
+                updateHandler.updateIcons(allShortcuts, new ShortcutCachingLogic(),
+                        mApp.getModel()::onPackageIconsUpdated);
+            }
 
             // Take a break
             waitForIdle();
@@ -243,10 +227,12 @@ public class LoaderTask implements Runnable {
             mResults.bindDeepShortcuts();
             logger.addSplit("bindDeepShortcuts");
 
-            verifyNotStopped();
-            logger.addSplit("save deep shortcuts in icon cache");
-            updateHandler.updateIcons(allDeepShortcuts,
-                    new ShortcutCachingLogic(), (pkgs, user) -> { });
+            if (FeatureFlags.ENABLE_DEEP_SHORTCUT_ICON_CACHE.get()) {
+                verifyNotStopped();
+                logger.addSplit("save deep shortcuts in icon cache");
+                updateHandler.updateIcons(allDeepShortcuts,
+                        new ShortcutCachingLogic(), (pkgs, user) -> { });
+            }
 
             // Take a break
             waitForIdle();
@@ -270,10 +256,6 @@ public class LoaderTask implements Runnable {
             updateHandler.finish();
             logger.addSplit("finish icon update");
 
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.LAUNCHER_DIDNT_INITIALIZE,
-                        "LoaderTask3 " + this);
-            }
             transaction.commit();
         } catch (CancellationException e) {
             // Loader stopped, ignore
@@ -536,8 +518,9 @@ public class LoaderTask implements Runnable {
                                     // use the last saved icon instead of the default.
                                     Supplier<ItemInfoWithIcon> fallbackIconProvider = () ->
                                             c.loadIcon(finalInfo, li) ? finalInfo : null;
-                                    info.applyFrom(li.createShortcutIcon(pinnedShortcut,
-                                            true /* badged */, fallbackIconProvider));
+                                    info.bitmap = li.createShortcutIcon(
+                                            pinnedShortcut, true /* badged */,
+                                            fallbackIconProvider);
                                     li.recycle();
                                     if (pmHelper.isAppSuspended(
                                             pinnedShortcut.getPackage(), info.user)) {

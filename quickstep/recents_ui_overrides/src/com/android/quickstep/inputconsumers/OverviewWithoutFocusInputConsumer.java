@@ -21,9 +21,9 @@ import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_UP;
 
 import static com.android.launcher3.Utilities.squaredHypot;
-import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.PointF;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -35,36 +35,34 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.logging.StatsLogUtils;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
-import com.android.quickstep.BaseActivityInterface;
-import com.android.quickstep.InputConsumer;
 import com.android.quickstep.GestureState;
+import com.android.quickstep.InputConsumer;
+import com.android.quickstep.RecentsAnimationDeviceState;
 import com.android.quickstep.util.ActiveGestureLog;
-import com.android.quickstep.util.NavBarPosition;
-import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.InputMonitorCompat;
 
 public class OverviewWithoutFocusInputConsumer implements InputConsumer {
 
+    private final Context mContext;
+    private final RecentsAnimationDeviceState mDeviceState;
+    private final GestureState mGestureState;
     private final InputMonitorCompat mInputMonitor;
     private final boolean mDisableHorizontalSwipe;
     private final PointF mDownPos = new PointF();
     private final float mSquaredTouchSlop;
-    private final Context mContext;
-    private final NavBarPosition mNavBarPosition;
-    private final BaseActivityInterface mActivityInterface;
 
     private boolean mInterceptedTouch;
     private VelocityTracker mVelocityTracker;
 
-    public OverviewWithoutFocusInputConsumer(Context context, GestureState gestureState,
+    public OverviewWithoutFocusInputConsumer(Context context,
+            RecentsAnimationDeviceState deviceState, GestureState gestureState,
             InputMonitorCompat inputMonitor, boolean disableHorizontalSwipe) {
+        mContext = context;
+        mDeviceState = deviceState;
+        mGestureState = gestureState;
         mInputMonitor = inputMonitor;
         mDisableHorizontalSwipe = disableHorizontalSwipe;
-        mContext = context;
-        mActivityInterface = gestureState.getActivityInterface();
         mSquaredTouchSlop = Utilities.squaredTouchSlop(context);
-        mNavBarPosition = new NavBarPosition(context);
-
         mVelocityTracker = VelocityTracker.obtain();
     }
 
@@ -135,8 +133,11 @@ public class OverviewWithoutFocusInputConsumer implements InputConsumer {
         mVelocityTracker.computeCurrentVelocity(100);
         float velocityX = mVelocityTracker.getXVelocity();
         float velocityY = mVelocityTracker.getYVelocity();
-        float velocity = mNavBarPosition.isRightEdge()
-                ? -velocityX : (mNavBarPosition.isLeftEdge() ? velocityX : -velocityY);
+        float velocity = mDeviceState.getNavBarPosition().isRightEdge()
+                ? -velocityX
+                : mDeviceState.getNavBarPosition().isLeftEdge()
+                        ? velocityX
+                        : -velocityY;
 
         final boolean triggerQuickstep;
         int touch = Touch.FLING;
@@ -150,9 +151,9 @@ public class OverviewWithoutFocusInputConsumer implements InputConsumer {
         }
 
         if (triggerQuickstep) {
-            mActivityInterface.closeOverlay();
-            ActivityManagerWrapper.getInstance()
-                    .closeSystemWindows(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
+            mContext.startActivity(new Intent(Intent.ACTION_MAIN)
+                    .addCategory(Intent.CATEGORY_HOME)
+                    .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
             ActiveGestureLog.INSTANCE.addLog("startQuickstep");
             BaseActivity activity = BaseDraggingActivity.fromContext(mContext);
             int pageIndex = -1; // This number doesn't reflect workspace page index.

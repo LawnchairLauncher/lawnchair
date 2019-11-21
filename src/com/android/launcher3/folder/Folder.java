@@ -74,7 +74,10 @@ import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.logging.LoggerUtils;
 import com.android.launcher3.pageindicators.PageIndicatorDots;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ItemType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.views.ClipPathView;
@@ -401,13 +404,28 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
             mFolderName.setText("");
             mFolderName.setHint(R.string.folder_hint_text);
         }
-
         // In case any children didn't come across during loading, clean up the folder accordingly
         mFolderIcon.post(() -> {
             if (getItemCount() <= 1) {
                 replaceFolderWithFinalItem();
             }
         });
+    }
+
+
+    /**
+     * Show suggested folder title.
+     */
+    public void showSuggestedTitle(CharSequence suggestName) {
+        if (FeatureFlags.FOLDER_NAME_SUGGEST.get() && mInfo.contents.size() == 2) {
+            if (!TextUtils.isEmpty(suggestName)) {
+                mFolderName.setHint(suggestName);
+                mFolderName.setText(suggestName);
+                mFolderName.showKeyboard();
+                mInfo.title = suggestName;
+            }
+            animateOpen();
+        }
     }
 
     /**
@@ -532,8 +550,6 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         // dropping. One resulting issue is that replaceFolderWithFinalItem() can be called twice.
         mDeleteFolderOnDropCompleted = false;
 
-        centerAboutIcon();
-
         AnimatorSet anim = new FolderAnimationManager(this, true /* isOpening */).getAnimator();
         anim.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -546,7 +562,11 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
                 mState = STATE_OPEN;
                 announceAccessibilityChanges();
 
-                mLauncher.getUserEventDispatcher().resetElapsedContainerMillis("folder opened");
+                mLauncher.getUserEventDispatcher().logActionOnItem(
+                        Touch.TAP,
+                        Direction.NONE,
+                        ItemType.FOLDER_ICON, mInfo.cellX, mInfo.cellY);
+
                 mContent.setFocusOnFirstChild();
             }
         });
@@ -592,7 +612,6 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         if (mDragController.isDragging()) {
             mDragController.forceTouchMove();
         }
-
         mContent.verifyVisibleHighResIcons(mContent.getNextPage());
     }
 
@@ -877,7 +896,6 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         // Reordering may have occured, and we need to save the new item locations. We do this once
         // at the end to prevent unnecessary database operations.
         updateItemLocationsInDatabaseBatch();
-
         // Use the item count to check for multi-page as the folder UI may not have
         // been refreshed yet.
         if (getItemCount() <= mContent.itemsPerPage()) {
@@ -975,8 +993,8 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
 
     private int getContentAreaHeight() {
         DeviceProfile grid = mLauncher.getDeviceProfile();
-        int maxContentAreaHeight = grid.availableHeightPx
-                - grid.getTotalWorkspacePadding().y - mFooterHeight;
+        int maxContentAreaHeight = grid.availableHeightPx - grid.getTotalWorkspacePadding().y
+                - mFooterHeight;
         int height = Math.min(maxContentAreaHeight,
                 mContent.getDesiredHeight());
         return Math.max(height, MIN_CONTENT_DIMEN);

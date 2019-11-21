@@ -24,8 +24,9 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Debug;
-import android.util.Log;
 import android.view.View;
+
+import androidx.annotation.Keep;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
@@ -172,16 +173,17 @@ public class TestInformationHandler implements ResourceBasedOverride {
                 mLeaks.add(new View(mContext));
                 break;
             }
+
+            case TestProtocol.REQUEST_ICON_HEIGHT: {
+                response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD,
+                        mDeviceProfile.allAppsCellHeightPx);
+                break;
+            }
         }
         return response;
     }
 
     protected boolean isLauncherInitialized() {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.LAUNCHER_DIDNT_INITIALIZE,
-                    "isLauncherInitialized " + Launcher.ACTIVITY_TRACKER.getCreatedActivity() + ", "
-                            + LauncherAppState.getInstance(mContext).getModel().isModelLoaded());
-        }
         return Launcher.ACTIVITY_TRACKER.getCreatedActivity() == null
                 || LauncherAppState.getInstance(mContext).getModel().isModelLoaded();
     }
@@ -191,6 +193,22 @@ public class TestInformationHandler implements ResourceBasedOverride {
         Runtime.getRuntime().runFinalization();
 
         final CountDownLatch fence = new CountDownLatch(1);
+        createFinalizationObserver(fence);
+        try {
+            do {
+                Runtime.getRuntime().gc();
+                Runtime.getRuntime().runFinalization();
+            } while (!fence.await(100, TimeUnit.MILLISECONDS));
+        } catch (InterruptedException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    // Create the observer in the scope of a method to minimize the chance that
+    // it remains live in a DEX/machine register at the point of the fence guard.
+    // This must be kept to avoid R8 inlining it.
+    @Keep
+    private static void createFinalizationObserver(CountDownLatch fence) {
         new Object() {
             @Override
             protected void finalize() throws Throwable {
@@ -201,13 +219,5 @@ public class TestInformationHandler implements ResourceBasedOverride {
                 }
             }
         };
-        try {
-            do {
-                Runtime.getRuntime().gc();
-                Runtime.getRuntime().runFinalization();
-            } while (!fence.await(100, TimeUnit.MILLISECONDS));
-        } catch (InterruptedException ex) {
-            throw new RuntimeException(ex);
-        }
     }
 }

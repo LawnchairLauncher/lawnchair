@@ -55,7 +55,8 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
             final int leftMargin = mLauncher.getTestInfo(
                     TestProtocol.REQUEST_OVERVIEW_LEFT_GESTURE_MARGIN).
                     getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
-            mLauncher.scroll(overview, Direction.LEFT, new Rect(leftMargin + 1, 0, 0, 0), 20);
+            mLauncher.scroll(
+                    overview, Direction.LEFT, new Rect(leftMargin + 1, 0, 0, 0), 20, false);
             verifyActiveContainer();
         }
     }
@@ -89,7 +90,8 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
             final int rightMargin = mLauncher.getTestInfo(
                     TestProtocol.REQUEST_OVERVIEW_RIGHT_GESTURE_MARGIN).
                     getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
-            mLauncher.scroll(overview, Direction.RIGHT, new Rect(0, 0, rightMargin + 1, 0), 20);
+            mLauncher.scroll(
+                    overview, Direction.RIGHT, new Rect(0, 0, rightMargin + 1, 0), 20, false);
             verifyActiveContainer();
         }
     }
