@@ -18,6 +18,8 @@
 
     <dimen name="task_thumbnail_top_margin">24dp</dimen>
     <dimen name="task_thumbnail_half_top_margin">12dp</dimen>
+    <!-- Can be overridden in overlays. -->
+    <dimen name="task_thumbnail_bottom_margin">0dp</dimen>
     <dimen name="task_thumbnail_icon_size">48dp</dimen>
     <!-- For screens without rounded corners -->
     <dimen name="task_corner_radius_small">2dp</dimen>
