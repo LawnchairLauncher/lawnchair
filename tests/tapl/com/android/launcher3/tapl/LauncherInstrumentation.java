@@ -560,10 +560,12 @@ public final class LauncherInstrumentation {
                 final int finalState = mDevice.hasObject(By.pkg(getLauncherPackageName()))
                         ? NORMAL_STATE_ORDINAL : BACKGROUND_APP_STATE_ORDINAL;
 
-                swipeToState(
-                        displaySize.x / 2, displaySize.y - 1,
-                        displaySize.x / 2, 0,
-                        ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME, finalState);
+                try (LauncherInstrumentation.Closable c = addContextLayer(action)) {
+                    swipeToState(
+                            displaySize.x / 2, displaySize.y - 1,
+                            displaySize.x / 2, 0,
+                            ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME, finalState);
+                }
             }
         } else {
             log(action = "clicking home button");
