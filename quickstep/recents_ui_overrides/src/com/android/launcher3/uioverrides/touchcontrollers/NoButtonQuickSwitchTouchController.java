@@ -339,9 +339,20 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
 
         final LauncherState targetState;
         if (horizontalFling && verticalFling) {
-            // Flinging left and up, left and down, or right and up all go back home.
-            // Only flinging right and down goes to quick switch.
-            targetState = velocity.x < 0 || velocity.y < 0 ? NORMAL : QUICK_SWITCH;
+            if (velocity.x < 0) {
+                // Flinging left and up or down both go back home.
+                targetState = NORMAL;
+            } else {
+                if (velocity.y > 0) {
+                    // Flinging right and down goes to quick switch.
+                    targetState = QUICK_SWITCH;
+                } else {
+                    // Flinging up and right could go either home or to quick switch.
+                    // Determine the target based on the higher velocity.
+                    targetState = Math.abs(velocity.x) > Math.abs(velocity.y)
+                        ? QUICK_SWITCH : NORMAL;
+                }
+            }
         } else if (horizontalFling) {
             targetState = velocity.x > 0 ? QUICK_SWITCH : NORMAL;
         } else if (verticalFling) {
