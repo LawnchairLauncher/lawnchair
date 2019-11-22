@@ -142,11 +142,16 @@
     <string name="about_role_dev_mod">개발자/관리자</string>
     <string name="about_role_designer">디자이너</string>
     <string name="about_role_ui_ux_designer">UI/UX 디자인</string>
+    <string name="about_role_pr">Public Relations &amp; Social Media Manager</string>
+    <string name="about_role_ops">운영 &amp; 인프라</string>
     <string name="about_role_mod_support">관리자/지원</string>
     <string name="about_role_family_member">팀원</string>
     <string name="about_role_magisk_maintainer">Magisk 모듈 개발자</string>
+    <string name="about_bio_deletescape">Kotlin/Java developer. Interested in everything Android. Founder of the Lawnchair and dogbin projects.</string>
     <string name="about_bio_recoded">부드러운 코더이자 그래픽 디자이너.</string>
     <string name="about_bio_josh">프리랜서 그래픽 디자이너.</string>
+    <string name="about_bio_harsh">안드로이드 애플리케이션 및 라이브러리 개발자.  AOSiP의 핵심 개발자.</string>
+    <string name="about_bio_david">19 years old, turns caffeine and pizza into code, provides hosting and 24/7 support for Lawnchair if something goes wrong. Contributes to open-source projects and fixes bugs during his free time. Also previously known as Codebucket.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">런처 충돌 일으키기</string>
     <string name="gestures_pref_title">제스처</string>
@@ -543,4 +548,5 @@
     <string name="pref_hide_statusbar_clock">상태 표시줄 시계 숨기기</string>
     <string name="root_access_required">루트 권한이 필요함</string>
     <string name="smartspace_setup_text">눌러서 설정</string>
+    <string name="get_lawnfeed">지금 바로 구입하세요</string>
 </resources>
