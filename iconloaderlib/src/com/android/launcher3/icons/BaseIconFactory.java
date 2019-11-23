@@ -173,25 +173,22 @@ public class BaseIconFactory implements AutoCloseable {
             mCanvas.setBitmap(null);
         }
 
-        final Bitmap result;
-        if (user != null && !Process.myUserHandle().equals(user)) {
+        if (isInstantApp) {
+            badgeWithDrawable(bitmap, mContext.getDrawable(R.drawable.ic_instant_app_badge));
+        }
+        if (user != null) {
             BitmapDrawable drawable = new FixedSizeBitmapDrawable(bitmap);
             Drawable badged = mPm.getUserBadgedIcon(drawable, user);
             if (badged instanceof BitmapDrawable) {
-                result = ((BitmapDrawable) badged).getBitmap();
+                bitmap = ((BitmapDrawable) badged).getBitmap();
             } else {
-                result = createIconBitmap(badged, 1f);
+                bitmap = createIconBitmap(badged, 1f);
             }
-        } else if (isInstantApp) {
-            badgeWithDrawable(bitmap, mContext.getDrawable(R.drawable.ic_instant_app_badge));
-            result = bitmap;
-        } else {
-            result = bitmap;
         }
-        int color = extractColor(result);
+        int color = extractColor(bitmap);
         return icon instanceof BitmapInfo.Extender
-                ? ((BitmapInfo.Extender) icon).getExtendedInfo(result, color, this)
-                : BitmapInfo.of(result, color);
+                ? ((BitmapInfo.Extender) icon).getExtendedInfo(bitmap, color, this)
+                : BitmapInfo.of(bitmap, color);
     }
 
     public Bitmap createScaledBitmapWithoutShadow(Drawable icon, boolean shrinkNonAdaptiveIcons) {
