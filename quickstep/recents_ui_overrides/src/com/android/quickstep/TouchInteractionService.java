@@ -391,12 +391,11 @@ public class TouchInteractionService extends Service implements PluginListener<O
 
     @Override
     public void onDestroy() {
-        PluginManagerWrapper.INSTANCE.get(getBaseContext()).removePluginListener(this);
-
         sIsInitialized = false;
         if (mDeviceState.isUserUnlocked()) {
             mInputConsumer.unregisterInputConsumer();
             mOverviewComponentObserver.onDestroy();
+            PluginManagerWrapper.INSTANCE.get(getBaseContext()).removePluginListener(this);
         }
         disposeEventHandlers();
         mDeviceState.destroy();
