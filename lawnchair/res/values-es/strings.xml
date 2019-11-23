@@ -146,6 +146,7 @@
     <string name="about_role_dev_mod">Desarrollador/Moderador</string>
     <string name="about_role_designer">Diseñador</string>
     <string name="about_role_ui_ux_designer">Diseñador de IU/XU</string>
+    <string name="about_role_pr">Relaciones Públicas y Medios Sociales</string>
     <string name="about_role_ops">Operaciones &amp; Infraestructura</string>
     <string name="about_role_mod_support">Moderador/Soporte</string>
     <string name="about_role_family_member">Miembro de la familia</string>
