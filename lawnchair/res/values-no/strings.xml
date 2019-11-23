@@ -14,7 +14,7 @@
     <string name="smartspace_date">Dato</string>
     <string name="customize">Tilpass</string>
     <string name="smartspace_preferences_in_settings">Kort fortalt</string>
-    <string name="smartspace_preferences_in_settings_desc">Dato, tid, værleverandør</string>
+    <string name="smartspace_preferences_in_settings_desc">Dato, tid, værtjeneste</string>
     <string name="search">Søk</string>
     <string name="label_voice_search">Talesøk</string>
     <string name="icon_pack">Ikonpakke</string>
@@ -31,7 +31,7 @@
     <string name="about_summary_title">Sammendrag</string>
     <string name="action_edit">Rediger</string>
     <string name="hide_app_sum">Skjul i Alle apper</string>
-    <string name="hide_app">Skjule app</string>
+    <string name="hide_app">Skjul app</string>
     <string name="icon_shape_rounded_square">Avrundet kvadrat</string>
     <string name="pixel_ui_pref_summary">Ikonpakker, uskarphet, farger</string>
     <string name="app_drawer_pref_title">Alle apper</string>
@@ -148,11 +148,16 @@
     <string name="about_role_dev_mod">Developer/Moderator</string>
     <string name="about_role_designer">Designer</string>
     <string name="about_role_ui_ux_designer">UI/UX designer</string>
+    <string name="about_role_pr">Public Relations &amp; Social Media Manager</string>
+    <string name="about_role_ops">Operations &amp; Infrastructure</string>
     <string name="about_role_mod_support">Moderator/support</string>
     <string name="about_role_family_member">Family member</string>
     <string name="about_role_magisk_maintainer">Magisk Module Maintainer</string>
+    <string name="about_bio_deletescape">Kotlin/Java developer. Interested in everything Android. Founder of the Lawnchair and dogbin projects.</string>
     <string name="about_bio_recoded">Mild coder and graphics designer.</string>
     <string name="about_bio_josh">Freelance graphic designer.</string>
+    <string name="about_bio_harsh">Android application and library developer. Core developer at AOSiP.</string>
+    <string name="about_bio_david">19 years old, turns caffeine and pizza into code, provides hosting and 24/7 support for Lawnchair if something goes wrong. Contributes to open-source projects and fixes bugs during his free time. Also previously known as Codebucket.</string>
     <!--Marker E-->
     <string name="debug_crash_launcher">Krasj startskjermen</string>
     <string name="gestures_pref_title">Bevegelser</string>
@@ -298,6 +303,8 @@
     <string name="theme_dark_theme_mode_on">På</string>
     <string name="theme_dark_theme_mode_off">Av</string>
     <string name="theme_dark_theme_mode_follow_daylight">følg dagslyset</string>
+    <string name="theme_use_black">Bruk ren svart</string>
+    <string name="theme_use_dark_text">Bruk mørk tekst</string>
     <string name="pref_qsb_color">Farge</string>
     <string name="hide_from_predictions">Skjul fra forslag</string>
     <string name="hide_from_predictions_summary">Vis aldri i Appforslag</string>
@@ -317,6 +324,8 @@
     <string name="app_actions_pref_title">Handlinger</string>
     <string name="app_actions_pref_title_in_search">Handlingsforslag</string>
     <string name="app_actions_pref_desc">Snarveier til ofte åpnede skjermer</string>
+    <string name="app_actions_reset_pref_title">Nullstill skjulte handlinger</string>
+    <string name="app_actions_reset_pref_summary">Nullstiller handlinger som tidligere var skjult med \"ikke vis\" knappen</string>
     <string name="change_default_home">Angi som startskjerm</string>
     <string name="recent_task_option_popup_window">Dialogvindu</string>
     <string name="feed_theme_pref_title">Bakgrunnsfarge</string>
@@ -340,6 +349,7 @@
     <string name="selected_count">%1$d valgt</string>
     <string name="tab_manage_apps">Behandle apper</string>
     <string name="tab_bottom_sheet_save">Lagre</string>
+    <string name="tab_hide_from_main">Skjul fra hovedfanen</string>
     <string name="tab_color">Fanefarge</string>
     <string name="delete">Slett</string>
     <string name="none">Ingen</string>
@@ -359,6 +369,7 @@
     <string name="pref_sesame_show_shortcuts">App-snarveier</string>
     <string name="pref_sesame_show_shortcuts_summary">Vis Sesame-snarveier i ikonboblene</string>
     <string name="allow">Tillat</string>
+    <string name="deny">Avslå</string>
     <string name="sesame_enable_integration_title">Slå på integrering</string>
     <string name="sesame_enable_integration_description"><![CDATA[Slå på datadeling mellom Lawnchair og Sesame. Du kan endre valget i Lawnchair og Sesame innstillingene.]]></string>
     <string name="sesame_version">Integreringsversjon</string>
@@ -408,5 +419,143 @@
     <string name="about_app_description">Et Pixel Launcher alternativ som kan tilpasses.</string>
     <string name="about_bio_paphonb">A 18-year-old student, Android Developer and one of the top developers at Lawnchair Launcher.</string>
     <string name="dock_scale">Dokkskalering</string>
+    <string name="adaptify_pack_title">Opprett adaptive ikoner for ikonpakke</string>
+    <string name="adaptify_pack_summary">Opprett adaptive ikoner for ikoner fra ikonpakker</string>
+    <string name="pref_sesame_sync_look_and_feel">Del utseende</string>
+    <string name="pref_sesame_sync_look_and_feel_summary">Synkroniser Lawnchair søkeinnstillinger med Sesame</string>
+    <string name="pref_search_bar_radius">Hjørneavrunding i søkelinje</string>
+    <string name="icon_text_scale_pref_title">Tekststørrelse</string>
+    <string name="text_color">Tekstfarge</string>
+    <string name="background_color">Bakgrunnsfarge</string>
+    <string name="pref_notification_count_title">Vis antall varsler</string>
+    <string name="pref_notification_count_summary">Vis antall varsler i appikonmerkene</string>
+    <string name="pref_center_wallpaper">Midtstill alltid bakgrunnen</string>
+    <string name="pref_center_wallpaper_summary">Dette vil slå av bakgrunnrulleeffekten</string>
+    <string name="pref_icon_popup_menu">Elementer i sprettoppmenyen</string>
+    <string name="pref_appcategorization_enable_title">Kategoriser apper</string>
+    <string name="pref_appcategorization_enable_summary">Rydd opp i Alle apper.</string>
+    <string name="pref_appcategorization_style_text">Stil</string>
+    <string name="pref_app_groups_edit_tip">Trykk for å redigere, dra for å omorganisere.</string>
+    <string name="pref_app_groups_create">Opprett</string>
+    <string name="pref_appcategorization_folders_title">Mapper</string>
+    <string name="pref_appcategorization_folders_summary">Trykk for å åpne sprettopp.</string>
+    <string name="pref_appcategorization_tabs_title">Faner</string>
+    <string name="pref_appcategorization_tabs_summary">Sveip mellom grupper.</string>
+    <string name="default_folder_name">Ny mappe</string>
+    <string name="drawer_folders">Mapper</string>
+    <string name="category_business_and_productivity">Jobb og produktivitet</string>
+    <string name="category_communication">Kommunikasjon</string>
+    <string name="category_entertainment">Underholdning</string>
+    <string name="category_food_and_drink">Mat og drikke</string>
+    <string name="category_game">Spill</string>
+    <string name="category_health_and_fitness">Sunnhet og trening</string>
+    <string name="category_knowledge_and_reference">Kunnskap og referanse</string>
+    <string name="category_lifestyle">Shopping og livsstil</string>
+    <string name="category_music">Musikk</string>
+    <string name="category_news">Nyheter</string>
+    <string name="category_personalization">Tilpassing</string>
+    <string name="category_photography">Fotografering</string>
+    <string name="category_tools">Verktøy</string>
+    <string name="category_travel_and_navigation">Reise og navigering</string>
     <string name="lock_desktop">Lås startskjermen</string>
+    <string name="reset_custom_icons">Nullstill tilpassede ikoner</string>
+    <string name="reset_custom_icons_confirmation">Nullstille alle tilpassede ikoner? Handlingen kan ikke angres.</string>
+    <string name="open_image_picker">Åpne bildevelger</string>
+    <string name="import_icon">Importer ikon</string>
+    <string name="import_as_adaptive">Som adaptivt ikon</string>
+    <string name="bugreport_channel_name">Feilrapporter</string>
+    <string name="status_channel_name">Opplastingsstatus for feilrapport</string>
+    <string name="bugreport_group_summary">%d nye rapporter</string>
+    <string name="bugreport_group_summary_multiple">Flere nye rapporter</string>
+    <string name="dogbin_uploading">Opplasting pågår</string>
+    <string name="action_dogbin_upload">Last opp til dogbin</string>
+    <string name="action_dogbin_upload_error">Opplasting mislyktes</string>
+    <string name="action_dogbin_copy_link">Kopier lenke</string>
+    <string name="lawnchair_bug_report">Lawnchair feilrapport</string>
+    <string name="copied_toast">Kopiert</string>
+    <string name="action_copy">Kopier</string>
+    <string name="action_copy_link">Kopier lenke</string>
+    <string name="action_share">Del</string>
+    <string name="animation_type_title">Animasjon for åpning av app</string>
+    <string name="animation_type_default">Standard</string>
+    <string name="animation_type_pie">Pie</string>
+    <string name="animation_type_pie_like">Pie-liknende</string>
+    <string name="animation_type_reveal">Vis</string>
+    <string name="animation_type_slide_up">Skyv opp</string>
+    <string name="animation_type_scale_up">Skaler opp</string>
+    <string name="animation_type_blink">Blink</string>
+    <string name="animation_type_fade">Toning</string>
+    <string name="permission_iplocate">Tillate tilgang til grov, nettverksbasert posisjon?</string>
+    <string name="permission_iplocate_twilight_explanation">Dette muliggjør mer presise beregninger av dagslys uten å kreve nøyaktig posisjon.</string>
+    <string name="pref_appcategorization_flowerpot_title">Kategori</string>
+    <string name="pref_appcategorization_flowerpot_summary">Apper velges automatisk basert på deres metadata.</string>
+    <string name="select_tab_type">Fanetype</string>
+    <string name="tab_type_custom">Tilpasset fane</string>
+    <string name="tab_type_custom_desc">Velg apper manuelt for denne fanen.</string>
+    <string name="tab_type_smart">Smart fane</string>
+    <string name="categorization">Kategorisering</string>
+    <string name="folder_cover_mode">Mappeappmodus</string>
+    <string name="folder_cover_mode_desc">Trykk for å åpne første appen, sveip for å åpne mappa</string>
+    <string name="pref_smartspace_event_providers">Hendelsestjenester</string>
+    <string name="event_provider_now_playing">Spiller nå</string>
+    <string name="battery_status">Batteristatus</string>
+    <string name="battery_charging">Batteriet lader</string>
+    <string name="battery_full">Batteriet er fulladet</string>
+    <string name="battery_low">Lavt batteri</string>
+    <string name="event_provider_unread_notifications">Uleste varsler</string>
+    <string name="event_provider_missing_notification_access">For å bruke <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, slå på appvarsler for <xliff:g example="My App" id="name">%2$s</xliff:g>    </string>
+    <string name="event_provider_missing_notification_dots">For å bruke <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, slå på appikonmerker</string>
+    <string name="zen_mode_enabled">Ikke forstyrr er slått på</string>
+    <string name="crash_report_notif_title">%1$s krasjet!</string>
+    <string name="personality_provider">Kontekstuelle meldinger</string>
+    <string-array name="greetings_morning">
+        <item>God morgen!</item>
+        <item>For en vakker dag!</item>
+        <item>Har du sett ut av vinduet?</item>
+        <item>Ha en fin dag!</item>
+    </string-array>
+    <string-array name="greetings_evening">
+        <item>Hvordan har dagen din vært?</item>
+        <item>Hva gjorde du i dag?</item>
+    </string-array>
+    <string-array name="greetings_night">
+        <item>God natt!</item>
+        <item>Sov godt!</item>
+        <item>Sees i morgen!</item>
+        <item>Drøm søtt!</item>
+        <item>Ikke sitt oppe for lenge</item>
+    </string-array>
+    <string name="onbording_settings_title">Sett opp %s</string>
+    <string name="onbording_settings_summary">Trykk og hold på startskjermen</string>
+    <string name="onboarding_swipe_up">Sveip opp for å se alle apper</string>
+    <string name="web_search_google">Google (nett)</string>
+    <string name="web_search_ddg">DuckDuckGo (nett)</string>
+    <string name="web_search_startpage">Startpage.com (nett)</string>
+    <string name="web_search_bing">Bing (nett)</string>
+    <string name="web_search_qwant">Qwant (nett)</string>
+    <string name="web_search_ecosia">Ecosia (nett)</string>
+    <string name="web_search_yandex">Yandex (nett)</string>
+    <string name="web_search_naver">Naver (nett)</string>
+    <string name="web_search_baidu">Baidu (nett)</string>
+    <string name="icon_shape_override_miui_explaination">På grunn av begrensning i MIUI kan ikonformen forbli firekantet.\nIkke rapportert dette som en feil.</string>
+    <string name="button_organize_screens">Organiser skjermer</string>
+    <string name="weather_icons_default">Standard</string>
+    <string name="pref_weather_icon_pack">Værikoner</string>
+    <string name="weather_icon_packs_not_supported">Støttes ikke av nåværende værtjeneste</string>
+    <string name="lawnchair_settings">Lawnchair-innstillinger</string>
+    <string name="customnavbar_install">Trykk for å installere tilpasset navigasjonslinje</string>
+    <string name="customnavbar_back_hiding">Skjul tilbakeknappen</string>
+    <string name="customnavbar_back_hiding_desc">Skjul tilbakeknappen når den ikke behøves</string>
+    <string name="icon_shape_top_left">Øverst til venstre</string>
+    <string name="icon_shape_top_right">Øverst til høyre</string>
+    <string name="icon_shape_bottom_left">Nederst til Venstre</string>
+    <string name="icon_shape_bottom_right">Nederst til høyre</string>
+    <string name="icon_shape_corner_round">Avrundet</string>
+    <string name="icon_shape_corner_squircle">Superellipse</string>
+    <string name="icon_shape_corner_cut">Klipp</string>
+    <string name="smartspace_add_to_home">Legg til på startskjerm</string>
+    <string name="pref_hide_statusbar_clock">Skjul klokken på statuslinjen</string>
+    <string name="root_access_required">Krever rottilgang</string>
+    <string name="smartspace_setup_text">Trykk for å sette opp</string>
+    <string name="get_lawnfeed">Få det nå</string>
 </resources>
