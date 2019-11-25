@@ -16,45 +16,12 @@
 
 package com.android.launcher3.uioverrides;
 
-import android.app.Activity;
 import android.app.Person;
 import android.content.pm.ShortcutInfo;
-import android.util.Base64;
 
 import com.android.launcher3.Utilities;
-import com.android.systemui.shared.system.ActivityCompat;
-
-import java.io.ByteArrayOutputStream;
-import java.io.PrintWriter;
-import java.util.zip.Deflater;
 
 public class ApiWrapper {
-
-    public static boolean dumpActivity(Activity activity, PrintWriter writer) {
-        if (!Utilities.IS_DEBUG_DEVICE) {
-            return false;
-        }
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        if (!(new ActivityCompat(activity).encodeViewHierarchy(out))) {
-            return false;
-        }
-
-        Deflater deflater = new Deflater();
-        deflater.setInput(out.toByteArray());
-        deflater.finish();
-
-        out.reset();
-        byte[] buffer = new byte[1024];
-        while (!deflater.finished()) {
-            int count = deflater.deflate(buffer); // returns the generated code... index
-            out.write(buffer, 0, count);
-        }
-
-        writer.println("--encoded-view-dump-v0--");
-        writer.println(Base64.encodeToString(
-                out.toByteArray(), Base64.NO_WRAP | Base64.NO_PADDING));
-        return true;
-    }
 
     public static Person[] getPersons(ShortcutInfo si) {
         Person[] persons = si.getPersons();
