@@ -29,6 +29,7 @@ import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_G
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_HOME_DISABLED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NAV_BAR_HIDDEN;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_ONE_HANDED_ACTIVE;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_OVERVIEW_DISABLED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_SCREEN_PINNING;
@@ -43,10 +44,13 @@ import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.graphics.Region;
 import android.os.Process;
+import android.os.SystemProperties;
 import android.os.UserManager;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.view.MotionEvent;
+import android.view.Surface;
 
 import androidx.annotation.BinderThread;
 
@@ -73,6 +77,8 @@ public class RecentsAnimationDeviceState implements
         NavigationModeChangeListener,
         DefaultDisplay.DisplayInfoChangeListener {
 
+    private static boolean sIsOneHandedEnabled;
+
     private final Context mContext;
     private final SysUINavigationMode mSysUiNavMode;
     private final DefaultDisplay mDefaultDisplay;
@@ -84,6 +90,7 @@ public class RecentsAnimationDeviceState implements
     private @SystemUiStateFlags int mSystemUiStateFlags;
     private SysUINavigationMode.Mode mMode = THREE_BUTTONS;
     private NavBarPosition mNavBarPosition;
+    private SecureSettingsObserver mOneHandedEnabledObserver;
 
     private final Region mDeferredGestureRegion = new Region();
     private boolean mAssistantAvailable;
@@ -155,6 +162,13 @@ public class RecentsAnimationDeviceState implements
                 mGestureBlockedActivities.add(
                         ComponentName.unflattenFromString(blockingActivity));
             }
+        }
+
+        if (SystemProperties.getBoolean("ro.support_one_handed_mode", false)) {
+            mOneHandedEnabledObserver = SecureSettingsObserver.newOneHandedSettingsObserver(
+                    mContext, this::onOneHandedEnabledSettingsChanged);
+            mOneHandedEnabledObserver.register();
+            mOneHandedEnabledObserver.dispatchOnChange();
         }
 
         SecureSettingsObserver userSetupObserver = new SecureSettingsObserver(
@@ -406,6 +420,13 @@ public class RecentsAnimationDeviceState implements
     }
 
     /**
+     * @return whether screen pinning is enabled and active
+     */
+    public boolean isOneHandedModeActive() {
+        return (mSystemUiStateFlags & SYSUI_STATE_ONE_HANDED_ACTIVE) != 0;
+    }
+
+    /**
      * Sets the region in screen space where the gestures should be deferred (ie. due to specific
      * nav bar ui).
      */
@@ -465,6 +486,28 @@ public class RecentsAnimationDeviceState implements
                 && mRotationTouchHelper.touchInAssistantRegion(ev)
                 && !isLockToAppActive()
                 && !isGestureBlockedActivity(task);
+    }
+
+    /**
+     * One handed gestural in quickstep only active on NO_BUTTON, TWO_BUTTONS, and portrait mode
+     *
+     * @param ev The touch screen motion event.
+     * @return whether the given motion event can trigger the one handed mode.
+     */
+    public boolean canTriggerOneHandedAction(MotionEvent ev) {
+        if (!sIsOneHandedEnabled) {
+            return false;
+        }
+
+        final DefaultDisplay.Info displayInfo = mDefaultDisplay.getInfo();
+        return (mRotationTouchHelper.touchInOneHandedModeRegion(ev)
+            && displayInfo.rotation != Surface.ROTATION_90
+            && displayInfo.rotation != Surface.ROTATION_270
+            && displayInfo.metrics.densityDpi < DisplayMetrics.DENSITY_600);
+    }
+
+    private void onOneHandedEnabledSettingsChanged(boolean isOneHandedEnabled) {
+        sIsOneHandedEnabled = isOneHandedEnabled;
     }
 
     public RotationTouchHelper getRotationTouchHelper() {

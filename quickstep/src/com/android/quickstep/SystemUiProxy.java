@@ -352,9 +352,31 @@ public class SystemUiProxy implements ISystemUiProxy {
         if (mSystemUiProxy != null) {
             try {
                 mSystemUiProxy.handleImageBundleAsScreenshot(screenImageBundle, locationInScreen,
-                        visibleInsets, task);
+                    visibleInsets, task);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call handleImageBundleAsScreenshot");
+            }
+        }
+    }
+
+    @Override
+    public void startOneHandedMode() {
+        if (mSystemUiProxy != null) {
+            try {
+                mSystemUiProxy.startOneHandedMode();
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call startOneHandedMode", e);
+            }
+        }
+    }
+
+    @Override
+    public void stopOneHandedMode() {
+        if (mSystemUiProxy != null) {
+            try {
+                mSystemUiProxy.stopOneHandedMode();
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call stopOneHandedMode", e);
             }
         }
     }

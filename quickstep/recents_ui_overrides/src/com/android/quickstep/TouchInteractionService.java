@@ -74,6 +74,7 @@ import com.android.launcher3.util.WindowBounds;
 import com.android.quickstep.inputconsumers.AccessibilityInputConsumer;
 import com.android.quickstep.inputconsumers.AssistantInputConsumer;
 import com.android.quickstep.inputconsumers.DeviceLockedInputConsumer;
+import com.android.quickstep.inputconsumers.OneHandedModeInputConsumer;
 import com.android.quickstep.inputconsumers.OtherActivityInputConsumer;
 import com.android.quickstep.inputconsumers.OverscrollInputConsumer;
 import com.android.quickstep.inputconsumers.OverviewInputConsumer;
@@ -500,6 +501,11 @@ public class TouchInteractionService extends Service implements PluginListener<O
                             mGestureState,
                             InputConsumer.NO_OP, mInputMonitorCompat,
                             mOverviewComponentObserver.assistantGestureIsConstrained());
+                } else if (mDeviceState.canTriggerOneHandedAction(event)
+                    && !mDeviceState.isOneHandedModeActive()) {
+                    // Consume gesture event for triggering one handed feature.
+                    mUncheckedConsumer = new OneHandedModeInputConsumer(this, mDeviceState,
+                        InputConsumer.NO_OP, mInputMonitorCompat);
                 } else {
                     mUncheckedConsumer = InputConsumer.NO_OP;
                 }
@@ -627,6 +633,11 @@ public class TouchInteractionService extends Service implements PluginListener<O
                 base = new ScreenPinnedInputConsumer(this, newGestureState);
             }
 
+            if (mDeviceState.canTriggerOneHandedAction(event)) {
+                base = new OneHandedModeInputConsumer(this, mDeviceState, base,
+                        mInputMonitorCompat);
+            }
+
             if (mDeviceState.isAccessibilityMenuAvailable()) {
                 base = new AccessibilityInputConsumer(this, mDeviceState, base,
                         mInputMonitorCompat);
@@ -634,6 +645,11 @@ public class TouchInteractionService extends Service implements PluginListener<O
         } else {
             if (mDeviceState.isScreenPinningActive()) {
                 base = mResetGestureInputConsumer;
+            }
+
+            if (mDeviceState.canTriggerOneHandedAction(event)) {
+                base = new OneHandedModeInputConsumer(this, mDeviceState, base,
+                        mInputMonitorCompat);
             }
         }
         return base;

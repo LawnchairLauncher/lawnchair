@@ -188,6 +188,10 @@ public class RotationTouchHelper implements
         return mOrientationTouchTransformer.touchInAssistantRegion(ev);
     }
 
+    public boolean touchInOneHandedModeRegion(MotionEvent ev) {
+        return mOrientationTouchTransformer.touchInOneHandedModeRegion(ev);
+    }
+
     /**
      * Updates the regions for detecting the swipe up/quickswitch and assistant gestures.
      */
