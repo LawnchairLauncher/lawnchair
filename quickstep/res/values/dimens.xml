@@ -76,6 +76,10 @@
     <dimen name="gestures_assistant_drag_threshold">55dp</dimen>
     <dimen name="gestures_assistant_fling_threshold">55dp</dimen>
 
+    <!-- One-Handed Mode -->
+    <!-- Threshold for draging distance to enable one-handed mode -->
+    <dimen name="gestures_onehanded_drag_threshold">20dp</dimen>
+
     <!-- Distance to move elements when swiping up to go home from launcher -->
     <dimen name="home_pullback_distance">28dp</dimen>
 
