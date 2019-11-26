@@ -48,6 +48,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Interpolator;
 
+import ch.deletescape.lawnchair.adaptive.IconShapeManager;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
@@ -416,10 +417,11 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
 
         AnimatorPlaybackController homeAnim = homeAnimationFactory.createActivityAnimationToHome();
 
+        float iconRadius = isFloatingIconView ? IconShapeManager.getWindowTransitionRadius(mContext) : 1f;
         // End on a "round-enough" radius so that the shape reveal doesn't have to do too much
         // rounding at the end of the animation.
         float startRadius = mClipAnimationHelper.getCurrentCornerRadius();
-        float endRadius = startRect.width() / 6f;
+        float endRadius = iconRadius == 1f ? startRect.width() / 6f : targetRect.width() * iconRadius / 2f;
         // We want the window alpha to be 0 once this threshold is met, so that the
         // FolderIconView can be seen morphing into the icon shape.
         final float windowAlphaThreshold = isFloatingIconView ? 1f - SHAPE_PROGRESS_DURATION : 1f;

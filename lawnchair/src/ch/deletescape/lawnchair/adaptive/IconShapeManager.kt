@@ -120,6 +120,11 @@ class IconShapeManager(private val context: Context) {
 
         private const val KEY_LEGACY_PREFERENCE = "pref_override_icon_shape"
 
+        @JvmStatic
+        fun getWindowTransitionRadius(context: Context): Float {
+            return getInstance(context).iconShape.windowTransitionRadius
+        }
+
         @Keep
         @JvmStatic
         @Suppress("unused") /** Used in AdaptiveIconCompat to get the mask path **/

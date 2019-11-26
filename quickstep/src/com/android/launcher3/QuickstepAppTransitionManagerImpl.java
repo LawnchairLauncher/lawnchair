@@ -57,6 +57,7 @@ import android.os.Looper;
 import android.util.Pair;
 import android.view.View;
 
+import ch.deletescape.lawnchair.adaptive.IconShapeManager;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.anim.Interpolators;
@@ -497,7 +498,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
         }
 
         final float initialWindowRadius = supportsRoundedCornersOnWindows(mLauncher.getResources())
-                ? startCrop / 2f : 0f;
+                ? startCrop * IconShapeManager.getWindowTransitionRadius(mLauncher) / 2f : 0f;
         final float windowRadius = mDeviceProfile.isMultiWindowMode
                 ? 0 : getWindowCornerRadius(mLauncher.getResources());
         appAnimator.addUpdateListener(new MultiValueUpdateListener() {
