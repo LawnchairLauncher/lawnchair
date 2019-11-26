@@ -67,7 +67,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@android:id/title"
             android:layout_alignStart="@android:id/title"
-            android:text="@string/pref_appcategorization_enable_summary"
             android:textAppearance="?android:attr/textAppearanceListItemSecondary"
             android:textAlignment="viewStart"
             android:textColor="?android:attr/textColorSecondary"

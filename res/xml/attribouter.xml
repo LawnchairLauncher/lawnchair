@@ -59,6 +59,7 @@
             login="lumiqcreative"
             position="3"
             blog="https://lumiqcreative.com"
+            bio="^@string/about_bio_lumiq"
             task="^@string/about_role_ui_ux_designer">
             <me.jfenn.attribouter.wedges.link.LinkWedge
                 name="@string/about_twitter"

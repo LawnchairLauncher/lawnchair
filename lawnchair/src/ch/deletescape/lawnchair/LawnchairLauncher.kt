@@ -130,7 +130,7 @@ open class LawnchairLauncher : NexusLauncherActivity(),
             AlertDialog.Builder(this)
                     .setTitle(R.string.derived_app_name)
                     .setMessage(message)
-                    .setPositiveButton(android.R.string.ok) { _, _ -> }
+                    .setPositiveButton(R.string.action_apply) { _, _ -> }
                     .setCancelable(false)
                     .show().applyAccent()
         }

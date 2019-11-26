@@ -54,7 +54,7 @@ class MultiSelectTabPreference(context: Context, attrs: AttributeSet?) : Launche
     override fun onPrepareDialogBuilder(builder: AlertDialog.Builder) {
         super.onPrepareDialogBuilder(builder)
 
-        builder.setPositiveButton(android.R.string.ok) { _, _ ->
+        builder.setPositiveButton(R.string.action_apply) { _, _ ->
             tabs.forEach {
                 if (it.contents.value().addOrRemove(componentKey, selections[it] == true)) {
                     edited = true
