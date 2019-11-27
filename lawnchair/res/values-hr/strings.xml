@@ -114,6 +114,7 @@
     <string name="battery_status">Status baterije</string>
     <string name="event_provider_now_playing">Trenutno svira</string>
     <string name="event_provider_unread_notifications">Obavijesti</string>
+    <string name="personality_provider">Pozdrav</string>
     <string name="pref_smartspace_event_provider">Raspoloživi okidači</string>
     <string-array name="greetings_morning">
         <item>Dobro jutro!</item>
