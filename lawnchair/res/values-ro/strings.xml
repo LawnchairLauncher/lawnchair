@@ -34,24 +34,40 @@
     <string name="reset_custom_icons">Elimină Iconițele Customizate</string>
     <string name="appearance">Aspect</string>
     <!-- Note: new. Replaces title of 5th field (from bottom) in “Theme” page. -->
+    <string name="theme_auto_night_mode">Setat de sistem</string>
     <string name="theme_light">Luminoasă</string>
+    <string name="color_wallpaper_main">Fundal - primar</string>
+    <string name="color_wallpaper_secondary">Fundal - secundar</string>
+    <string name="color_wallpaper_tertiary">Fundal - terțiar</string>
     <string name="pref_fonts_title">Fonturi</string>
     <string name="blur_pref_title">Estompare</string>
     <!-- Section 3 -->
     <string name="general_pref_title">Ecran principal</string>
+    <string name="grid_size">Grilă pictograme</string>
     <string name="grid_size_width">Lățime</string>
     <string name="grid_size_height">Înălțime</string>
     <string name="pref_category_icons">Comenzi rapide</string>
+    <string name="icon_text_scale_pref_title">Dimensiunea textului</string>
+    <string name="text_color">Culoare Text</string>
+    <string name="icon_scale_pref_title">Mărimea pictogramelor</string>
     <string name="pref_category_misc">Altele</string>
     <string name="animation_type_default">Implicit</string>
+    <string name="animation_type_pie">Android Pie</string>
     <string name="animation_type_reveal">Dezvaluire</string>
     <string name="animation_type_slide_up">Glisare în sus</string>
     <string name="animation_type_scale_up">Mărire</string>
     <string name="animation_type_blink">Clipire</string>
     <string name="animation_type_fade">Estompare</string>
+    <string name="icon_badging_title">Puncte de notificare</string>
+    <string name="pref_notification_count_title">Afişare număr de notificări</string>
+    <string name="pref_center_wallpaper">Centrează fundalul când este o singură pagină</string>
+    <string name="pref_hide_statusbar">Ascundeţi bara de stare</string>
     <!-- Section 4 -->
     <string name="smartspace_preferences_in_settings">Pe scurt</string>
     <!-- Note: replaces hard-coded copy (“Home widget”). -->
+    <string name="smartspace_time">Arată ceasul</string>
+    <string name="smartspace_date">Arată data</string>
+    <string name="smartspace_time_24_h">Format 24-ore</string>
     <string name="pref_category_weather">Altele</string>
     <string name="weather_provider_disabled">Dezactivat</string>
     <string name="weather_provider_owm">OpenWeatherMap</string>
