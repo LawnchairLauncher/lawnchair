@@ -66,6 +66,9 @@ public class HotseatPredictionController implements DragController.DragListener,
     //TODO: replace this with AppTargetEvent.ACTION_UNPIN (b/144119543)
     private static final int APPTARGET_ACTION_UNPIN = 4;
 
+    private static final String APP_LOCATION_HOTSEAT = "hotseat";
+    private static final String APP_LOCATION_WORKSPACE = "workspace";
+
     private static final String PREDICTION_CLIENT = "hotseat";
 
     private DropTarget.DragObject mDragObject;
@@ -204,17 +207,24 @@ public class HotseatPredictionController implements DragController.DragListener,
 
     private Bundle getAppPredictionContextExtra() {
         Bundle bundle = new Bundle();
-        ViewGroup vg = mHotseat.getShortcutsAndWidgets();
+        bundle.putParcelableArrayList(APP_LOCATION_HOTSEAT,
+                getPinnedAppTargetsInViewGroup((mHotseat.getShortcutsAndWidgets())));
+        bundle.putParcelableArrayList(APP_LOCATION_WORKSPACE, getPinnedAppTargetsInViewGroup(
+                mLauncher.getWorkspace().getScreenWithId(
+                        Workspace.FIRST_SCREEN_ID).getShortcutsAndWidgets()));
+        return bundle;
+    }
+
+    private ArrayList<AppTarget> getPinnedAppTargetsInViewGroup(ViewGroup viewGroup) {
         ArrayList<AppTarget> pinnedApps = new ArrayList<>();
-        for (int i = 0; i < vg.getChildCount(); i++) {
-            View child = vg.getChildAt(i);
+        for (int i = 0; i < viewGroup.getChildCount(); i++) {
+            View child = viewGroup.getChildAt(i);
             if (isPinnedIcon(child)) {
                 WorkspaceItemInfo itemInfo = (WorkspaceItemInfo) child.getTag();
                 pinnedApps.add(getAppTargetFromItemInfo(itemInfo));
             }
         }
-        bundle.putParcelableArrayList("pinned_apps", pinnedApps);
-        return bundle;
+        return pinnedApps;
     }
 
     private void setPredictedApps(List<AppTarget> appTargets) {
@@ -252,7 +262,7 @@ public class HotseatPredictionController implements DragController.DragListener,
         ObjectAnimator.ofFloat(icon, SCALE_PROPERTY, 1, 0.8f, 1).start();
         icon.pin(workspaceItemInfo);
         AppTarget appTarget = getAppTargetFromItemInfo(workspaceItemInfo);
-        notifyItemAction(appTarget, AppTargetEvent.ACTION_PIN);
+        notifyItemAction(appTarget, APP_LOCATION_HOTSEAT, AppTargetEvent.ACTION_PIN);
     }
 
     private List<WorkspaceItemInfo> mapToWorkspaceItemInfo(
@@ -312,9 +322,10 @@ public class HotseatPredictionController implements DragController.DragListener,
     }
 
 
-    private void notifyItemAction(AppTarget target, int action) {
+    private void notifyItemAction(AppTarget target, String location, int action) {
         if (mAppPredictor != null) {
-            mAppPredictor.notifyAppTargetEvent(new AppTargetEvent.Builder(target, action).build());
+            mAppPredictor.notifyAppTargetEvent(new AppTargetEvent.Builder(target,
+                    action).setLaunchLocation(location).build());
         }
     }
 
@@ -336,10 +347,18 @@ public class HotseatPredictionController implements DragController.DragListener,
         }
         ItemInfo dragInfo = mDragObject.dragInfo;
         if (dragInfo instanceof WorkspaceItemInfo && dragInfo.getTargetComponent() != null) {
+            AppTarget appTarget = getAppTargetFromItemInfo(dragInfo);
+            if (!isInHotseat(dragInfo) && isInHotseat(mDragObject.originalDragInfo)) {
+                notifyItemAction(appTarget, APP_LOCATION_HOTSEAT, APPTARGET_ACTION_UNPIN);
+            }
+            if (!isInFirstPage(dragInfo) && isInFirstPage(mDragObject.originalDragInfo)) {
+                notifyItemAction(appTarget, APP_LOCATION_WORKSPACE, APPTARGET_ACTION_UNPIN);
+            }
             if (isInHotseat(dragInfo) && !isInHotseat(mDragObject.originalDragInfo)) {
-                notifyItemAction(getAppTargetFromItemInfo(dragInfo), AppTargetEvent.ACTION_PIN);
-            } else if (!isInHotseat(dragInfo) && isInHotseat(mDragObject.originalDragInfo)) {
-                notifyItemAction(getAppTargetFromItemInfo(dragInfo), APPTARGET_ACTION_UNPIN);
+                notifyItemAction(appTarget, APP_LOCATION_HOTSEAT, AppTargetEvent.ACTION_PIN);
+            }
+            if (isInFirstPage(dragInfo) && !isInFirstPage(mDragObject.originalDragInfo)) {
+                notifyItemAction(appTarget, APP_LOCATION_WORKSPACE, AppTargetEvent.ACTION_PIN);
             }
         }
         mDragObject = null;
@@ -412,13 +431,18 @@ public class HotseatPredictionController implements DragController.DragListener,
             return false;
         }
         ItemInfo info = (ItemInfo) view.getTag();
-        return info.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT && (
+        return info.container != LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION && (
                 info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION
                         || info.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT);
     }
 
     private static boolean isInHotseat(ItemInfo itemInfo) {
         return itemInfo.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT;
+    }
+
+    private static boolean isInFirstPage(ItemInfo itemInfo) {
+        return itemInfo.container == LauncherSettings.Favorites.CONTAINER_DESKTOP
+                && itemInfo.screenId == Workspace.FIRST_SCREEN_ID;
     }
 
     private static AppTarget getAppTargetFromItemInfo(ItemInfo info) {
