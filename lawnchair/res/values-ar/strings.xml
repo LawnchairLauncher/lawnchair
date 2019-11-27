@@ -319,6 +319,14 @@
     <string name="pref_app_groups_create">إنشاء</string>
     <string name="pref_appcategorization_style_text">النمط</string>
     <string name="customize">تخصيص</string>
+    <plurals name="tab_apps_count">
+        <item quantity="zero">تطبيقات %1$d</item>
+        <item quantity="one">تطبيق %1$d</item>
+        <item quantity="two">تطبيقات %1$d</item>
+        <item quantity="few">تطبيقات %1$d</item>
+        <item quantity="many">تطبيقات %1$d</item>
+        <item quantity="other">تطبيقات %1$d</item>
+    </plurals>
     <string name="advanced_settings">إعدادات أكثر</string>
     <string name="adaptive_icon">الأيقونة المكيفة</string>
     <string name="action_edit">تعديل</string>
