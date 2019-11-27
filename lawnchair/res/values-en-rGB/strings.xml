@@ -41,6 +41,10 @@
     <string name="theme_use_dark_text">Use Dark Text</string>
     <string name="lawnchair_accent">Accent Colour</string>
     <string name="color_pixel_accent">Google Blue</string>
+    <string name="color_system_accent">Set by system</string>
+    <string name="color_wallpaper_main">Wallpaper - Primary</string>
+    <string name="color_wallpaper_secondary">Wallpaper - Secondary</string>
+    <string name="color_wallpaper_tertiary">Wallpaper - Tertiary</string>
     <string name="pref_fonts_title">Fonts</string>
     <string name="blur_pref_title">Blur</string>
     <!-- Section 3 -->
