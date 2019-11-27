@@ -430,20 +430,6 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
         final float windowAlphaThreshold = isFloatingIconView ? 1f - SHAPE_PROGRESS_DURATION : 1f;
         anim.addOnUpdateListener(new RectFSpringAnim.OnUpdateListener() {
 
-            // Alpha interpolates between [1, 0] between progress values [start, end]
-            final float start = 0f;
-            final float end = 0.85f;
-
-            private float getWindowAlpha(float progress) {
-                if (progress <= start) {
-                    return 1f;
-                }
-                if (progress >= end) {
-                    return 0f;
-                }
-                return Utilities.mapToRange(progress, start, end, 1, 0, ACCEL_1_5);
-            }
-
             @Override
             public void onUpdate(RectF currentRect, float progress) {
                 homeAnim.setPlayFraction(progress);
@@ -482,6 +468,24 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
             }
         });
         return anim;
+    }
+
+    /**
+     * @param progress The progress of the animation to the home screen.
+     * @return The current alpha to set on the animating app window.
+     */
+    protected float getWindowAlpha(float progress) {
+        // Alpha interpolates between [1, 0] between progress values [start, end]
+        final float start = 0f;
+        final float end = 0.85f;
+
+        if (progress <= start) {
+            return 1f;
+        }
+        if (progress >= end) {
+            return 0f;
+        }
+        return Utilities.mapToRange(progress, start, end, 1, 0, ACCEL_1_5);
     }
 
     public interface Factory {

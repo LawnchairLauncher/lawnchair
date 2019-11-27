@@ -558,6 +558,7 @@ public final class LauncherInstrumentation {
                 dumpViewHierarchy();
                 log(action = "swiping up to home from " + getVisibleStateMessage());
                 final int finalState = mDevice.hasObject(By.pkg(getLauncherPackageName()))
+                        || isFallbackOverview()
                         ? NORMAL_STATE_ORDINAL : BACKGROUND_APP_STATE_ORDINAL;
 
                 try (LauncherInstrumentation.Closable c = addContextLayer(action)) {
