@@ -17,10 +17,11 @@
     <string name="theme_dark_theme_mode_off">Desativado</string>
     <!-- Section 2 -->
     <string name="theme_title">Tema</string>
-    <string name="pixel_ui_pref_summary">Ícones, cores, desfoque</string>
+    <string name="pixel_ui_pref_summary">Ícones, cores e desfoque</string>
     <string name="pref_icon_packs">Pacotes de ícones</string>
     <string name="icon_pack_default">Ícones do sistema</string>
     <string name="pref_icon_pack_masking">Máscara do ícone</string>
+    <string name="pref_icon_pack_masking_summary">Aplicar máscara aos ícones inexistentes no pacote.</string>
     <string name="pref_legacy_treatment_title">Criar ícones adaptativos</string>
     <string name="pref_legacy_treatment_summary">Criar ícones adaptativos para todos os atalhos.</string>
     <string name="pref_legacy_colored_backgrounds">Fundo colorido</string>
@@ -44,7 +45,7 @@
     <string name="theme_use_dark_text">Utilizar texto escuro</string>
     <string name="lawnchair_accent">Cor secundária</string>
     <string name="color_pixel_accent">Azul Google</string>
-    <string name="color_system_accent">Definido pelo sistema</string>
+    <string name="color_system_accent">Definida pelo sistema</string>
     <string name="color_wallpaper_main">Papel de parede - Primário</string>
     <string name="color_wallpaper_secondary">Papel de parede - Secundário</string>
     <string name="color_wallpaper_tertiary">Papel de parede - Terciário</string>
@@ -54,7 +55,7 @@
     <string name="blur_radius_pref_title">Intensidade</string>
     <!-- Section 3 -->
     <string name="general_pref_title">Ecrã principal</string>
-    <string name="general_pref_summary">Disposição, bloquear ecrã, transições</string>
+    <string name="general_pref_summary">Disposição, bloquear ecrã e animações</string>
     <string name="grid_size">Grelha de ícones</string>
     <string name="grid_size_width">Largura</string>
     <string name="grid_size_height">Altura</string>
@@ -70,7 +71,7 @@
     <string name="auto_add_shortcuts_label">Adicionar novos atalhos ao ecrã</string>
     <string name="pref_icon_popup_menu">Bolhas para atalhos</string>
     <string name="pref_category_misc">Outra</string>
-    <string name="animation_type_title">Transição de início de aplicação</string>
+    <string name="animation_type_title">Animação ao iniciar a aplicação</string>
     <string name="animation_type_default">Padrão</string>
     <string name="animation_type_pie">Android Pie</string>
     <string name="animation_type_pie_like">Android Pie (emulação)</string>
@@ -83,7 +84,7 @@
     <string name="pref_notification_count_title">Mostrar número de notificações</string>
     <string name="allow_rotation_title">Ativar rotação</string>
     <string name="pref_center_wallpaper">Centrar papel de parede</string>
-    <string name="pref_center_wallpaper_summary">Desatvar deslocação do papel de parede.</string>
+    <string name="pref_center_wallpaper_summary">Desativar deslocação do papel de parede.</string>
     <string name="pref_hide_statusbar">Ocultar barra de estado</string>
     <string name="full_width_width_widgets_pref_title">Widgets largos</string>
     <string name="full_width_widgets_pref_summary">Permitir expansão dos widgets até à margem do ecrã.</string>
@@ -91,7 +92,7 @@
     <!-- Section 4 -->
     <string name="smartspace_preferences_in_settings">At a Glance</string>
     <!-- Note: replaces hard-coded copy (“Home widget”). -->
-    <string name="smartspace_preferences_in_settings_desc">Data e hora, fontes de dados</string>
+    <string name="smartspace_preferences_in_settings_desc">Data, hora e fontes de dados</string>
     <string name="smartspace_time">Mostrar hora</string>
     <string name="smartspace_date">Mostrar data</string>
     <string name="pref_smartspace_time_above">Mostrar relógio largo</string>
@@ -128,11 +129,11 @@
     <string-array name="greetings_evening">
         <item>Que se passa?</item>
         <item>Boa noite!</item>
+        <item>Como correu o dia?</item>
         <item>Como foi o teu dia?</item>
-        <item>Boa noite!</item>
     </string-array>
     <string-array name="greetings_night">
-        <item>Durma bem!</item>
+        <item>Dorme bem!</item>
         <item>Vemo-nos amanhã!</item>
         <item>Boa noite!</item>
         <item>Não fiques até tarde!</item>
@@ -142,7 +143,7 @@
     <string name="battery_low">Bateria fraca</string>
     <!-- Section 5 -->
     <string name="dock_pref_title">Doca</string>
-    <string name="dock_pref_summary">Disposição, estilo, indicadores</string>
+    <string name="dock_pref_summary">Disposição, estilo e indicadores</string>
     <string name="dock_fill">Mostrar fundo</string>
     <string name="background_color">Cor de fundo</string>
     <string name="theme_based">Definida pelo tema</string>
@@ -155,8 +156,8 @@
     <string name="dock_search_bar">Mostrar barra de pesquisa</string>
     <string name="dock_colored_google">Ícones coloridos</string>
     <!-- Section 6 -->
-    <string name="app_drawer_pref_title">Gaveta</string>
-    <string name="app_drawer_pref_summary">Disposição, categorias, sugestões</string>
+    <string name="app_drawer_pref_title">Menu</string>
+    <string name="app_drawer_pref_summary">Disposição, categorias e sugestões</string>
     <string name="pref_category_theme">Estilo</string>
     <string name="pref_drawer_columns">Número de colunas</string>
     <string name="pref_prediction_count">Número de sugestões</string>
@@ -202,12 +203,13 @@
     <string name="app_actions_pref_title">Ações</string>
     <string name="app_actions_pref_desc">Atalhos para os ecrãs utilizados frequentemente.</string>
     <string name="app_actions_reset_pref_title">Repor preferências de ações</string>
+    <string name="app_actions_reset_pref_summary">Mostrar ações enviadas para \"Não mostrar\".</string>
     <string name="all_apps_label_pref_title">Mostrar \"Todas as aplicações\"</string>
     <string name="separate_work_apps_pref_title">Separador para aplicações de trabalho</string>
     <string name="keep_scroll_state_pref_title">Memorizar posição</string>
     <!-- Section 7 -->
     <string name="search">Pesquisa</string>
-    <string name="search_pref_summary">Disposição, estilo, motor de pesquisa</string>
+    <string name="search_pref_summary">Disposição, estilo e motor de pesquisa</string>
     <string name="pref_global_search_provider">Motor de pesquisa</string>
     <string name="google">Aplicação Google</string>
     <string name="search_provider_google_go">Google Go</string>
@@ -225,7 +227,7 @@
     <string name="search_provider_bing">Bing</string>
     <string name="search_provider_baidu">Baidu</string>
     <string name="search_provider_s_finder">S Finder</string>
-    <string name="search_provider_appsearch">Pesquisar aplicações</string>
+    <string name="search_provider_appsearch">App Search</string>
     <string name="search_provider_search_lite">Search Lite</string>
     <string name="search_provider_cool_search">Cool Search</string>
     <string name="search_provider_firefox">Firefox</string>
@@ -240,7 +242,7 @@
     <string name="pref_search_bar_radius">Raio dos cantos</string>
     <!-- Section 8 -->
     <string name="pref_integrations">Plugins</string>
-    <string name="pref_integrations_summary">Atalhos Sesame, Google Feed</string>
+    <string name="pref_integrations_summary">Atalhos Sesame e Google Feed</string>
     <string name="sesame">Sesame</string>
     <string name="sesame_data_integration">Partilha de dados</string>
     <string name="sesame_upsell">Toque para instalar Sesame.</string>
@@ -253,13 +255,13 @@
     <string name="feed_theme_pref_title">Cor de fundo</string>
     <!-- Section 9 -->
     <string name="gestures_pref_title">Gestos</string>
-    <string name="gestures_pref_summary">Dois toques, deslize acima na doca</string>
+    <string name="gestures_pref_summary">Dois toques, deslize para cima na doca</string>
     <string name="gesture_double_tap">Dois toques</string>
     <string name="gesture_long_press">Toque longo</string>
     <string name="gesture_press_home">Toque no botão Home</string>
     <string name="gesture_press_back">Toque no botão Back</string>
-    <string name="gesture_swipe_down">Deslize abaixo</string>
-    <string name="gesture_swipe_up">Deslize acima</string>
+    <string name="gesture_swipe_down">Deslize para baixo</string>
+    <string name="gesture_swipe_up">Deslize para cima</string>
     <string name="gesture_dock_swipe_up">Deslize desde a doca</string>
     <string name="action_none">Nada fazer</string>
     <string name="action_sleep">Suspender</string>
@@ -270,10 +272,10 @@
     <string name="action_open_app">Abrir aplicação</string>
     <!-- Section 10 -->
     <string name="backups">Backup e restauro</string>
-    <string name="backup_pref_summary">Guardar ecrã principal, restaurar backups</string>
+    <string name="backup_pref_summary">Guardar ecrã principal, criar e restaurar backups</string>
     <string name="new_backup">Criar</string>
     <string name="restore_backup">Restaurar</string>
-    <string name="local_backups">No armazenamento</string>
+    <string name="local_backups">Armazenamento local</string>
     <string name="no_recent_backups">Os backups aparecem aqui.</string>
     <string name="backup_contents">Dados a guardar</string>
     <string name="restore_contents">Dados a restaurar</string>
@@ -286,8 +288,8 @@
     <string name="custom">Personalizado</string>
     <!-- Section 11 -->
     <string name="about">Sobre</string>
-    <string name="about_pref_summary">Equipa, ligações, licenças</string>
-    <string name="about_translate">Tarduções</string>
+    <string name="about_pref_summary">Equipa, ligações e licenças</string>
+    <string name="about_translate">Traduções</string>
     <string name="title_attribouter_rate">Avaliar</string>
     <string name="title_attribouter_website">Site</string>
     <string name="about_role_lead">Principal Desenvolvedor</string>
@@ -359,21 +361,21 @@
     <string name="debug_component_name_copied">Copiado para a área de transferência.</string>
     <string name="read_external_storage_required">Para criar o backup, tem que conceder o acesso ao armazenamento.</string>
     <string name="launcher_theme_override_label">Impor modo escuro</string>
-    <string name="smartspace_hours_mins">%1$s %2$s</string>
+    <string name="smartspace_hours_mins">%1$s:%2$s</string>
     <string name="dock_style_pref_title">Estilo da doca</string>
     <string name="dock_style_p">Android Pie</string>
     <string name="dock_style_n">Android Nougat</string>
-    <string name="dock_style_hidden">Ocultado</string>
+    <string name="dock_style_hidden">Oculta</string>
     <string name="opacity">Opacidade</string>
     <string name="add_settings_shortcut_title">Adicionar atalho ao ecrã</string>
-    <string name="low_performance_mode_pref_title">Modo de baixa performance</string>
+    <string name="low_performance_mode_pref_title">Modo de baixo desempenho</string>
     <string name="title_storage_permission_required">Requer acesso ao armazenamento</string>
-    <string name="content_storage_permission_required">Para defini o papel de parede, tem que conceder o acesso ao armazenamento.</string>
+    <string name="content_storage_permission_required">Para definir o papel de parede, tem que conceder o acesso ao armazenamento.</string>
     <string name="reset_to_default">Repor predefinições</string>
     <string name="gradient">Gradiente</string>
     <string name="pref_category_aag">At a Glance</string>
     <string name="pref_category_pixel_searchbar">Barra de pesquisa Google Pixel</string>
-    <string name="pref_category_layout">Esquema</string>
+    <string name="pref_category_layout">Disposição</string>
     <string name="title_attribouter_email">Email</string>
     <string name="title_attribouter_version">Versão %1$s</string>
     <string name="title_attribouter_license">Licença</string>
@@ -389,10 +391,11 @@
     <string name="about_bio_josh">Designer como trabalhador independente.</string>
     <string name="about_bio_harsh">Programador de bibliotecas e aplicações para Android. Programador no projeto AOSP.</string>
     <string name="about_bio_david">19 anos, transforma cafeína e pizza em código. Disponibiliza o alojamento e suporte à aplicação durante 24 horas. Participa em projetos de código aberto e corrige erros durante os seus tempos livres. Anteriormente conhecido como Codebucket.</string>
-    <string name="about_bio_paphonb">Um estudante de 18 anos, Desenvolvedor Android e um dos principais desenvolvedores desta aplicação.</string>
+    <string name="about_bio_lumiq">Torna-se cada vez mais difícil fazer um mau projeto.</string>
+    <string name="about_bio_paphonb">Um estudante de 18 anos, programador para Android e um dos principais programadores desta aplicação.</string>
     <string name="debug_crash_launcher">Forçar paragem</string>
     <string name="action_open_drawer">Abrir menu</string>
-    <string name="action_last_task">Iniciar última aplicação utilizada</string>
+    <string name="action_last_task">Abrir última aplicação utilizada</string>
     <string name="action_open_widgets">Abrir menu de Widgets</string>
     <string name="action_open_overview">Mostrar bolhas no ecrã</string>
     <string name="action_global_search">Iniciar pesquisa global</string>
@@ -421,11 +424,13 @@
     <string name="transparent">Transparente</string>
     <string name="pref_open_source_licenses_title">Licenças</string>
     <string name="icon_pack_applied_toast">\"%s\" aplicado.</string>
+    <string name="dt2s_admin_hint">De modo a usar o toque duplo para suspender, tem que conceder a permissão \"Admin\".</string>
+    <string name="dt2s_admin_warning">O toque duplo para suspender será desativado.</string>
     <string name="color_presets">Predefinições</string>
     <string name="automatic_short">Automático</string>
     <string name="recent_task_option_force_stop">Forçar paragem</string>
-    <string name="drag_to_enable_packs">Arraste para cima para ativar</string>
-    <string name="drag_to_disable_packs">Arraste para baixo para desativar</string>
+    <string name="drag_to_enable_packs">Arraste acima para ativar</string>
+    <string name="drag_to_disable_packs">Arraste abaixo para desativar</string>
     <string name="get_more_icon_packs">Obter mais</string>
     <string name="enabled_icon_packs">Aplicado</string>
     <string name="lawnchair_actions">Ações</string>
@@ -459,7 +464,8 @@
     <string name="none">Nenhuma</string>
     <string name="undo">Desfazer</string>
     <string name="shortcut_sesame">Atalhos</string>
-    <string name="pref_sesame_disabled">Nenhuns dados partilhados.</string>
+    <string name="pref_sesame_enabled">Está a partilhar dados com Sesame.</string>
+    <string name="pref_sesame_disabled">Dados não partilhados com Sesame.</string>
     <string name="allow">Permitir</string>
     <string name="deny">Recusar</string>
     <string name="sesame_enable_integration_title">Partilha de dados</string>
@@ -510,13 +516,14 @@
     <string name="status_channel_name">Estado do envio</string>
     <string name="bugreport_group_summary">%d novos relatórios.</string>
     <string name="bugreport_group_summary_multiple">Vários novos relatórios.</string>
+    <string name="folder_cover_mode">Utilizar modo de capa</string>
     <string name="folder_cover_mode_desc">Toque para abrir a primeira aplicação, deslize acima para ver todas.</string>
-    <string name="icon_shape_override_miui_explaination">Um erro no sistema MIUI pode causar que os ícones fiquem quadrados.</string>
+    <string name="icon_shape_override_miui_explaination">Um erro no sistema MIUI pode fazer com que os ícones fiquem quadrados.</string>
     <string name="permission_iplocate">Localização aproximada</string>
     <string name="permission_iplocate_twilight_explanation">Concede o acesso à localização aproximada? Isto permite um cálculo mais aproximado da hora.</string>
     <string name="event_provider_missing_notification_access">Para utilizar <xliff:g example="My Provider" id="providerName">“%1$s”</xliff:g>, ative as notificações de <xliff:g example="My App" id="name">“%2$s”.</xliff:g></string>
     <string name="event_provider_missing_notification_dots">Para utilizar <xliff:g example="My Provider" id="providerName">“%1$s”</xliff:g>, ative os pontos de notificação.</string>
-    <string name="zen_mode_enabled">Modo Não incomodar ativado.</string>
+    <string name="zen_mode_enabled">Modo \"Não incomodar\" ativado.</string>
     <string name="crash_report_notif_title">%1$s terminou</string>
     <string name="onbording_settings_title">Configurar %s</string>
     <string name="onbording_settings_summary">Toque longo no ecrã.</string>
@@ -527,10 +534,10 @@
     <string name="customnavbar_install">Toque para instalar a barra de navegação personalizada.</string>
     <string name="customnavbar_back_hiding">Ocultar botão Recuar</string>
     <string name="customnavbar_back_hiding_desc">Ocultar botão Recuar se não estiver a ser necessário.</string>
-    <string name="icon_shape_top_left">Topo esquerdo</string>
-    <string name="icon_shape_top_right">Topo direito</string>
-    <string name="icon_shape_bottom_left">Inferior esquerdo</string>
-    <string name="icon_shape_bottom_right">Inferior direito</string>
+    <string name="icon_shape_top_left">Cima/Esquerda</string>
+    <string name="icon_shape_top_right">Cima/Direita</string>
+    <string name="icon_shape_bottom_left">Baixo/Esquerda</string>
+    <string name="icon_shape_bottom_right">Baixo/Direita</string>
     <string name="icon_shape_corner_round">Redondo</string>
     <string name="icon_shape_corner_squircle">Suave</string>
     <string name="icon_shape_corner_cut">Cortar</string>
@@ -538,7 +545,7 @@
     <string name="get_lawnfeed">Obter Lawnfeed</string>
     <!-- Section 13 -->
     <string name="quickstep_pref_title">Recentes</string>
-    <string name="quickstep_pref_summary">Gestos, estilo, navegação</string>
+    <string name="quickstep_pref_summary">Gestos, estilo e navegação</string>
     <string name="swipe_up_to_switch_apps_title">Deslize acima para trocar de aplicação</string>
     <string name="swipe_left_to_go_back_title">Deslize à esquerda para recuar</string>
     <string name="pref_category_nav_swipe_up_gestures">Deslize para cima</string>
