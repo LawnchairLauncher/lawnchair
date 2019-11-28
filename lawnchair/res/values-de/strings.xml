@@ -170,6 +170,10 @@
     <string name="pref_appcategorization_tabs_title">Tabs</string>
     <string name="pref_appcategorization_tabs_summary">Zwischen Kategorien wischen.</string>
     <string name="pref_app_groups_edit_tip">Tippen zum Bearbeiten, ziehen zum Verschieben.</string>
+    <plurals name="hidden_apps_count">
+        <item quantity="one">%1$d versteckt</item>
+        <item quantity="other">%1$d versteckt</item>
+    </plurals>
     <string name="category_business_and_productivity">Geschäft &amp; Produktivität</string>
     <string name="category_communication">Kommunikation</string>
     <string name="category_entertainment">Unterhaltung</string>
@@ -299,6 +303,7 @@
     <string name="about_role_devops">DevOps-Entwickler</string>
     <string name="about_role_pr">PR-Manager</string>
     <string name="about_role_ops">Operationen &amp; Infrastruktur-Entwickler</string>
+    <string name="about_role_mod_support">Support-Vertreter &amp; Moderator</string>
     <string name="about_role_family_member">Familienmitglied</string>
     <string name="about_role_magisk_maintainer">QuickSwitch-Modul-Unterstützer</string>
     <string name="about_our_team">Das Team</string>
@@ -498,7 +503,7 @@
     <string name="default_folder_name">Neuer Ordner</string>
     <string name="drawer_folders">Ordner</string>
     <string name="open_image_picker">Fotos öffnen</string>
-    <string name="import_icon">Icon importieren</string>
+    <string name="import_icon">Symbol importieren</string>
     <string name="import_as_adaptive">Anpassungsfähiges Icon importieren</string>
     <string name="about_app_description">Eine anpassbarer Startbildschirm für Android.</string>
     <string name="lawnchair_bug_report">Lawnchair Fehlerbericht</string>
