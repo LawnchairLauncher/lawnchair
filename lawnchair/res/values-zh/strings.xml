@@ -63,9 +63,12 @@
     <string name="lock_desktop">锁定桌面</string>
     <string name="pref_category_icons">快捷方式</string>
     <string name="hide_icon_labels_pref_title">隐藏标签</string>
+    <string name="pref_mutliline_labels">多行标签</string>
     <string name="icon_text_scale_pref_title">文字大小</string>
     <string name="text_color">文字颜色</string>
     <string name="icon_scale_pref_title">图标大小</string>
+    <string name="auto_add_shortcuts_label">在桌面添加新的快捷方式</string>
+    <string name="pref_icon_popup_menu">快捷方式气泡</string>
     <string name="pref_category_misc">其它</string>
     <string name="animation_type_default">默认</string>
     <string name="animation_type_pie">Android Pie</string>
@@ -78,13 +81,19 @@
     <string name="icon_badging_title">通知圆点</string>
     <string name="pref_notification_count_title">显示通知数量</string>
     <string name="allow_rotation_title">启用屏幕旋转</string>
+    <string name="pref_center_wallpaper">居中壁纸</string>
     <string name="pref_center_wallpaper_summary">禁用壁纸滚动</string>
+    <string name="pref_hide_statusbar">隐藏状态栏</string>
+    <string name="full_width_width_widgets_pref_title">拓宽微件</string>
+    <string name="full_width_widgets_pref_summary">使微件拉伸到屏幕边缘</string>
     <string name="show_top_shadow_pref_title">显示顶部阴影</string>
     <!-- Section 4 -->
     <string name="smartspace_preferences_in_settings">速览</string>
     <!-- Note: replaces hard-coded copy (“Home widget”). -->
     <string name="smartspace_time">显示时间</string>
     <string name="smartspace_date">显示日期</string>
+    <string name="pref_smartspace_time_above">展示大号时钟</string>
+    <string name="pref_hide_statusbar_clock">隐藏状态栏时钟</string>
     <string name="pref_category_weather">其它</string>
     <string name="pref_smartspace_widget_provider">天气数据来源</string>
     <string name="google_app">Google 应用</string>
