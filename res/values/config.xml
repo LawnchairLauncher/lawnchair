@@ -114,4 +114,7 @@
 
     <!-- Recents -->
     <item type="id" name="overview_panel"/>
+
+    <!-- Configuration resources -->
+    <array name="dynamic_resources"> </array>
 </resources>
