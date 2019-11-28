@@ -32,27 +32,49 @@
     <!-- Note: redundant. -->
     <string name="icon_shape_override_label">Forma Iconiței</string>
     <string name="reset_custom_icons">Elimină Iconițele Customizate</string>
+    <string name="reset_custom_icons_confirmation">Reveniți la iconițele implicite din acest Pachet de Iconițe? Aceasta acțiune nu poate fi anulată.</string>
     <string name="appearance">Aspect</string>
     <!-- Note: new. Replaces title of 5th field (from bottom) in “Theme” page. -->
+    <string name="theme_auto">Automată (În funcție de imaginea de fundal)</string>
     <string name="theme_auto_night_mode">Setat de sistem</string>
+    <string name="theme_dark_theme_mode_follow_daylight">Programată (Întunecată în timpul Nopții)</string>
     <string name="theme_light">Luminoasă</string>
+    <string name="theme_dark_text">Luminoasă cu Text Întunecat</string>
+    <string name="theme_with_dark_text">Text Întunecat</string>
+    <string name="theme_use_black">Folosește Negru Pur</string>
+    <string name="theme_use_dark_text">Folosește Text Întunecat</string>
+    <string name="lawnchair_accent">Culoare Accent</string>
+    <string name="color_pixel_accent">Albastru Google</string>
+    <string name="color_system_accent">Setat de Sistem</string>
     <string name="color_wallpaper_main">Fundal - primar</string>
     <string name="color_wallpaper_secondary">Fundal - secundar</string>
     <string name="color_wallpaper_tertiary">Fundal - terțiar</string>
     <string name="pref_fonts_title">Fonturi</string>
     <string name="blur_pref_title">Estompare</string>
+    <string name="blur_pref_summary">Umbrește fundalurile paginilor.</string>
+    <string name="blur_radius_pref_title">Intensitatea Umbrei</string>
     <!-- Section 3 -->
     <string name="general_pref_title">Ecran principal</string>
+    <string name="general_pref_summary">Plan, Blocare Ecran de baza, Tranziții</string>
     <string name="grid_size">Grilă pictograme</string>
     <string name="grid_size_width">Lățime</string>
     <string name="grid_size_height">Înălțime</string>
+    <string name="num_hotseat_icons_pref_title">Numărul de Iconițe</string>
+    <string name="overlap_placement">Permite Suprapunerea</string>
+    <string name="lock_desktop">Blocheaza Ecranul principal</string>
     <string name="pref_category_icons">Comenzi rapide</string>
+    <string name="hide_icon_labels_pref_title">Ascunde Etichetele</string>
+    <string name="pref_mutliline_labels">Multiliniază Etichetele</string>
     <string name="icon_text_scale_pref_title">Dimensiunea textului</string>
     <string name="text_color">Culoare Text</string>
     <string name="icon_scale_pref_title">Mărimea pictogramelor</string>
+    <string name="auto_add_shortcuts_label">Adaugă Scurtături Noi pe Ecranul principal</string>
+    <string name="pref_icon_popup_menu">Bulele Scurtăturilor</string>
     <string name="pref_category_misc">Altele</string>
+    <string name="animation_type_title">Tranziția Lansării Aplicației</string>
     <string name="animation_type_default">Implicit</string>
     <string name="animation_type_pie">Android Pie</string>
+    <string name="animation_type_pie_like">Android Pie (Emulat)</string>
     <string name="animation_type_reveal">Dezvaluire</string>
     <string name="animation_type_slide_up">Glisare în sus</string>
     <string name="animation_type_scale_up">Mărire</string>
@@ -60,17 +82,31 @@
     <string name="animation_type_fade">Estompare</string>
     <string name="icon_badging_title">Puncte de notificare</string>
     <string name="pref_notification_count_title">Afişare număr de notificări</string>
+    <string name="allow_rotation_title">Permite Rotația</string>
     <string name="pref_center_wallpaper">Centrează fundalul când este o singură pagină</string>
+    <string name="pref_center_wallpaper_summary">Dezactivează rotirea fundalului.</string>
     <string name="pref_hide_statusbar">Ascundeţi bara de stare</string>
+    <string name="full_width_width_widgets_pref_title">Widgeturi Late</string>
+    <string name="full_width_widgets_pref_summary">Permite widgeturilor să se întindă până la marginile ecranului.</string>
+    <string name="show_top_shadow_pref_title">Arată Umbra Superioară</string>
     <!-- Section 4 -->
     <string name="smartspace_preferences_in_settings">Pe scurt</string>
     <!-- Note: replaces hard-coded copy (“Home widget”). -->
+    <string name="smartspace_preferences_in_settings_desc">Data &amp; Timpul, Sursele de Informații</string>
     <string name="smartspace_time">Arată ceasul</string>
     <string name="smartspace_date">Arată data</string>
+    <string name="pref_smartspace_time_above">Arată Ceasul Mare</string>
+    <string name="pref_hide_statusbar_clock">Ascunde Ceasul din Bara de Stare</string>
+    <string name="root_access_required">Accesul la root este necesar.</string>
     <string name="smartspace_time_24_h">Format 24-ore</string>
+    <string name="title_use_pill_qsb">Arată Scurtătura de Căutare în Pastila</string>
     <string name="pref_category_weather">Altele</string>
+    <string name="pref_smartspace_widget_provider">Sursa Vremii</string>
+    <string name="google_app">Aplicația Google</string>
     <string name="weather_provider_disabled">Dezactivat</string>
     <string name="weather_provider_owm">OpenWeatherMap</string>
+    <string name="weather_provider_pe">Experiența Pixel</string>
+    <string name="pref_weather_units">Unitatea de măsură a Temperaturii</string>
     <string name="units_metric">Celsius</string>
     <string name="units_imperial">Fahrenheit</string>
     <string name="units_kelvin">Kelvin</string>
@@ -79,26 +115,35 @@
     <string name="units_delisle">Delisle</string>
     <string name="units_reaumur">Réaumur</string>
     <string name="units_romer">Rømer</string>
+    <string name="pref_smartspace_event_providers">Sursele de Informații</string>
+    <string name="battery_status">Starea Bateriei</string>
+    <string name="event_provider_now_playing">Rulează Acum</string>
     <string name="event_provider_unread_notifications">Notificări</string>
+    <string name="personality_provider">Salutări</string>
+    <string name="pref_smartspace_event_provider">Sursa Evenimentelor</string>
     <string-array name="greetings_morning">
         <item>Bună dimineața!</item>
         <item>O zi bună!</item>
-        <item>It’s a beautiful day outside!</item>
+        <item>E o zi minunată afară!</item>
     </string-array>
     <string-array name="greetings_evening">
-        <item>What’s up?</item>
-        <item>Good evening!</item>
-        <item>How did your day go?</item>
+        <item>Ce mai faci?</item>
+        <item>Buna seara!</item>
+        <item>Cum a fost ziua?</item>
         <item>Noapte bună!</item>
     </string-array>
     <string-array name="greetings_night">
         <item>Somn ușor!</item>
         <item>Pe mâine!</item>
         <item>Noapte bună!</item>
-        <item>Don’t stay up too late!</item>
+        <item>Nu sta treaz prea târziu!</item>
     </string-array>
+    <string name="battery_charging">Se încarcă</string>
+    <string name="battery_full">Încarcat</string>
+    <string name="battery_low">Baterie Descărcată</string>
     <!-- Section 5 -->
     <string name="dock_pref_title">Zonă de andocare</string>
+    <string name="dock_pref_summary">Plan, Stil, Indicatori</string>
     <!-- Section 6 -->
     <string name="app_drawer_pref_title">Listă aplicaţii</string>
     <string name="pref_category_theme">Stil</string>
@@ -122,6 +167,9 @@
     <string name="search">Căutare</string>
     <string name="search_provider_google_go">Google Go</string>
     <string name="web_search_google">Google</string>
+    <string name="web_search_yandex">Yandex (în Browser)</string>
+    <string name="web_search_naver">Naver (în Browser)</string>
+    <string name="web_search_baidu">Baidu (în Browser)</string>
     <string name="search_provider_yandex">Yandex</string>
     <string name="search_provider_ddg">DuckDuckGo</string>
     <string name="search_provider_bing">Bing</string>
@@ -135,6 +183,8 @@
     <string name="search_provider_edge">Edge</string>
     <string name="weather_provider_oneplus_weather">Meteo OnePlus</string>
     <string name="searchbar_appearance_title">Stil</string>
+    <string name="pref_show_assistant_title">Arată Butonul de Căutare Vocală</string>
+    <string name="action_assistant">Deschide Asistentul</string>
     <!-- Section 8 -->
     <string name="sesame">Sesame</string>
     <!-- Section 9 -->
