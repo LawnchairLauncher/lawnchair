@@ -130,6 +130,7 @@
     <string name="about_role_designer">デザイナー</string>
     <string name="about_role_family_member">仲間たち</string>
     <!-- Section 12 -->
+    <string name="button_organize_screens">ページを並べ替え</string>
     <string name="wallpaper_button_text">壁紙</string>
     <string name="pref_app_groups_create">作成</string>
     <string name="pref_appcategorization_style_text">スタイル</string>
