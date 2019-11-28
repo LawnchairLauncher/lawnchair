@@ -24,6 +24,8 @@
     <string name="pref_icon_pack_masking_summary">Match ikke-tematiserede ikoner til Ikonpakke.</string>
     <string name="pref_legacy_treatment_title">Opret Adaptive ikoner</string>
     <string name="pref_legacy_treatment_summary">Opret Adaptive ikoner til alle genveje.</string>
+    <string name="pref_legacy_colored_backgrounds">Baggrundsfarver</string>
+    <string name="pref_legacy_colored_backgrounds_summary">Genererede farvebaggrunde til Afaptive ikoner.</string>
     <string name="pref_white_only_treatment">Erstat hvide baggrunde</string>
     <string name="pref_white_only_treatment_summary">Benyt farve på alle Adaptive ikoner-baggrunde.</string>
     <string name="adaptify_pack_title">Opret Adaptive ikoner til Ikonpakke</string>
@@ -53,6 +55,7 @@
     <string name="blur_radius_pref_title">Sløringsintensitet</string>
     <!-- Section 3 -->
     <string name="general_pref_title">Startskærm</string>
+    <string name="general_pref_summary">Layout, Lås Startskærm, overgange</string>
     <string name="grid_size">Ikongitter</string>
     <string name="grid_size_width">Bredde</string>
     <string name="grid_size_height">Højde</string>
@@ -549,4 +552,7 @@
     <string name="swipe_left_to_go_back_title">Stryg til venstre for at gå Tilbage</string>
     <string name="pref_category_nav_swipe_up_gestures">Stryg opad</string>
     <string name="gesture_nav_swipe_up_left">Fra venstre</string>
+    <string name="gesture_nav_swipe_up_center">Fra midten</string>
+    <string name="gesture_nav_swipe_up_right">Fra højre</string>
+    <string name="action_switch_apps">Skift apps</string>
 </resources>
