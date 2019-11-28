@@ -23,14 +23,13 @@ import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.Property;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -38,7 +37,6 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-
 import ch.deletescape.lawnchair.LawnchairLauncher;
 import ch.deletescape.lawnchair.LawnchairUtilsKt;
 import ch.deletescape.lawnchair.gestures.BlankGestureHandler;
@@ -56,7 +54,6 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.FolderInfo;
 import com.android.launcher3.FolderInfo.FolderListener;
-import com.android.launcher3.IconCache.ItemInfoUpdateReceiver;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.Launcher;
@@ -81,7 +78,6 @@ import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -655,6 +651,24 @@ public class FolderIcon extends FrameLayout implements FolderListener, OnResumeC
     @Override
     protected boolean verifyDrawable(@NonNull Drawable who) {
         return mPreviewItemManager.verifyDrawable(who) || super.verifyDrawable(who);
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        if (!mInfo.useIconMode(mLauncher)) {
+            DeviceProfile grid = mLauncher.getDeviceProfile();
+            int drawablePadding = isInAppDrawer() ?
+                    grid.allAppsIconDrawablePaddingPx :
+                    grid.iconDrawablePaddingPx;
+
+            Paint.FontMetrics fm = mFolderName.getPaint().getFontMetrics();
+            int cellHeightPx = mFolderName.getIconSize() + drawablePadding +
+                    (int) Math.ceil(fm.bottom - fm.top);
+            int height = MeasureSpec.getSize(heightMeasureSpec);
+            setPadding(getPaddingLeft(), (height - cellHeightPx) / 2, getPaddingRight(),
+                    getPaddingBottom());
+        }
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
     @Override
