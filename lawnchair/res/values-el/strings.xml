@@ -7,33 +7,52 @@
     <string name="icu_abbrev_date"> dd MMMM</string>
     <!-- Section 1 -->
     <string name="search_menu">Αναζήτηση</string>
+    <string name="search_no_results">Κανένα αποτέλεσμα</string>
     <string name="restart_lawnchair_pref_title">Επανεκκίνηση</string>
+    <string name="developer_options_title">Επιλογές για προγραμματιστές</string>
+    <string name="action_apply">Τέλος</string>
     <!-- Note: new. Replaces “OK” in dialogs. -->
     <string name="theme_dark_theme_mode_on">Ενεργοποιημένο</string>
     <string name="theme_dark_theme_mode_off">Απενεργοποιημένο</string>
     <!-- Section 2 -->
     <string name="theme_title">Θέμα</string>
+    <string name="pixel_ui_pref_summary">Εικονίδια, Χρώματα, Θόλωμα</string>
     <string name="pref_icon_packs">Πακέτα εικονιδίων</string>
     <string name="icon_pack_default">Εικονίδια συστήματος</string>
     <string name="pref_icon_pack_masking">Κάλυψη εικονιδίων</string>
+    <string name="pref_legacy_colored_backgrounds">Φόντα Χρωμάτων</string>
     <!-- Note: redundant. -->
+    <string name="icon_shape_override_label">Σχήμα Εικονιδίων</string>
     <string name="appearance">Εμφάνιση</string>
     <!-- Note: new. Replaces title of 5th field (from bottom) in “Theme” page. -->
     <string name="theme_light">Φωτεινό</string>
+    <string name="color_wallpaper_main">Ταπετσαρία — Κύρια</string>
+    <string name="color_wallpaper_secondary">Ταπετσαρία — Δευτερεύουσα</string>
+    <string name="color_wallpaper_tertiary">Ταπετσαρία — Τριτεύουσα</string>
     <string name="pref_fonts_title">Γραμματοσειρές</string>
     <string name="blur_pref_title">Θολότητα</string>
     <!-- Section 3 -->
     <string name="general_pref_title">Αρχική οθόνη</string>
     <string name="grid_size_width">Πλάτος</string>
     <string name="grid_size_height">Ύψος</string>
+    <string name="lock_desktop">Κλείδωμα Αρχικής Οθόνης</string>
     <string name="pref_category_icons">Συντομεύσεις</string>
+    <string name="icon_text_scale_pref_title">Μέγεθος Κειμένου</string>
+    <string name="text_color">Χρώμα Κειμένου</string>
+    <string name="icon_scale_pref_title">Μέγεθος Εικονιδίου</string>
     <string name="pref_category_misc">Άλλo</string>
     <string name="animation_type_default">Προεπιλογή</string>
+    <string name="animation_type_pie">Android Pie</string>
     <string name="animation_type_reveal">Αποκάλυψη</string>
     <string name="animation_type_slide_up">Άνω Ολίσθηση</string>
     <string name="animation_type_scale_up">Κλιμάκωση</string>
     <string name="animation_type_blink">Αναβόσβημα</string>
     <string name="animation_type_fade">Ξεθώριασμα</string>
+    <string name="icon_badging_title">Κουκίδες Ειδοποίησης</string>
+    <string name="allow_rotation_title">Ενεργοποίηση Περιστροφής</string>
+    <string name="pref_center_wallpaper">Κεντράρισμα Ταπετσαρίας</string>
+    <string name="pref_hide_statusbar">Απόκρυψη Γραμμής Κατάστασης</string>
+    <string name="full_width_width_widgets_pref_title">Ευρεία Γραφικά Στοιχεία</string>
     <!-- Section 4 -->
     <string name="smartspace_preferences_in_settings">Με μια Ματιά</string>
     <!-- Note: replaces hard-coded copy (“Home widget”). -->
@@ -49,13 +68,14 @@
     <string name="units_reaumur">Ρίουμου (°Ré)</string>
     <string name="units_romer">Ρόιμα (°Rø)</string>
     <string name="event_provider_unread_notifications">Ειδοποιήσεις</string>
+    <string name="personality_provider">Χαίρετε</string>
     <string-array name="greetings_morning">
         <item>Καλημέρα!</item>
         <item>Να έχεις μια καταπληκτική ημέρα!</item>
         <item>It’s a beautiful day outside!</item>
     </string-array>
     <string-array name="greetings_evening">
-        <item>What’s up?</item>
+        <item>Πώς πάει;</item>
         <item>Good evening!</item>
         <item>How did your day go?</item>
         <item>Καληνύχτα!</item>
@@ -64,13 +84,19 @@
         <item>Όνειρα Γλυκά!</item>
         <item>Τα λέμε αύριο!</item>
         <item>Καλό βράδυ!</item>
-        <item>Don’t stay up too late!</item>
+        <item>Μην κοιμηθείς αργά!</item>
     </string-array>
+    <string name="battery_low">Χαμηλή μπαταρία</string>
     <!-- Section 5 -->
     <string name="dock_pref_title">Μπάρα εφαρμογών</string>
+    <string name="background_color">Χρώμα Φόντου</string>
+    <string name="pref_category_searchbar">Γραμμή Αναζήτησης</string>
+    <string name="dock_search_bar">Εμφάνιση Γραμμής Αναζήτησης</string>
     <!-- Section 6 -->
     <string name="app_drawer_pref_title">Συρτάρι εφαρμογών</string>
     <string name="pref_category_theme">Στυλ</string>
+    <string name="pref_drawer_padding">Ύψος Γραμμής</string>
+    <string name="categorization">Kατηγορίες</string>
     <string name="pref_appcategorization_enable_title">Κατηγοριοποίηση εφαρμογών</string>
     <string name="pref_appcategorization_folders_title">Φάκελοι</string>
     <string name="pref_appcategorization_tabs_title">Καρτέλες</string>
@@ -104,11 +130,21 @@
     <string name="search_provider_edge">Edge</string>
     <string name="weather_provider_oneplus_weather">Καιρός OnePlus</string>
     <string name="searchbar_appearance_title">Στυλ</string>
+    <string name="action_assistant">Άνοιγμα Βοηθού Google</string>
     <!-- Section 8 -->
+    <string name="pref_integrations">Πρόσθετα</string>
+    <string name="pref_integrations_summary">Συντομεύσεις Sesame, Google Feed</string>
     <string name="sesame">Sesame</string>
+    <string name="sesame_upsell">Πατήστε για εγκατάσταση της εφαρμογής Sesame.</string>
+    <string name="sesame_search_engine">Χρήση ως Μηχανή Αναζήτησης</string>
+    <string name="sesame_version">Έκδοση Βιβλιοθήκης</string>
+    <string name="feed_theme_pref_title">Χρώμα Φόντου</string>
     <!-- Section 9 -->
     <string name="gestures_pref_title">Χειρονομίες αφής</string>
+    <string name="action_none">Καμία Ενέργεια</string>
     <string name="action_sleep">Αναστολή</string>
+    <string name="action_open_settings">Άνοιγμα Ρυθμίσεων Lawnchair</string>
+    <string name="action_overlay">Άνοιγμα Google Feed</string>
     <!-- Section 10 -->
     <string name="new_backup">Δημιουργία</string>
     <string name="restore_backup">Επαναφορά</string>
@@ -123,6 +159,7 @@
     <string name="title_attribouter_website">Ιστοσελίδα</string>
     <string name="about_role_lead">Διευθύνων Προγραμματιστής</string>
     <string name="about_role_dev">Προγραμματιστής</string>
+    <string name="about_role_writer">Συγγραφέας</string>
     <string name="about_role_designer">Σχεδιαστής</string>
     <string name="about_role_family_member">Μέλος Οικογενείας</string>
     <!-- Section 12 -->
