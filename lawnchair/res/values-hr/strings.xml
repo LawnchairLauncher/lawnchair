@@ -125,7 +125,7 @@
         <item>Što ima?</item>
         <item>Dobra večer!</item>
         <item>Kako ti je prošao dan?</item>
-        <item>Laku noć!</item>
+        <item>Kakav ti je bio dan?</item>
     </string-array>
     <string-array name="greetings_night">
         <item>Lijepo spavaj!</item>
@@ -165,6 +165,11 @@
     <string name="pref_appcategorization_tabs_title">Kartice</string>
     <string name="pref_appcategorization_tabs_summary">Potez prstom za prijelaz između kategorija.</string>
     <string name="pref_app_groups_edit_tip">Dodirnite za uređivanje, povucite za promjenu poretka.</string>
+    <plurals name="hidden_apps_count">
+        <item quantity="one">%1$d skriveno</item>
+        <item quantity="few">%1$d skrivena</item>
+        <item quantity="other">%1$d skrivenih</item>
+    </plurals>
     <string name="category_business_and_productivity">Posao i produktivnost</string>
     <string name="category_communication">Komunikacija</string>
     <string name="category_entertainment">Zabava</string>
