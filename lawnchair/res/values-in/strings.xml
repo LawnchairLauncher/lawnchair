@@ -29,7 +29,6 @@
     <string name="pref_white_only_treatment">Ganti Latar Belakang Putih</string>
     <string name="pref_white_only_treatment_summary">Warnai semua latar belakang Ikon Adaptif.</string>
     <string name="adaptify_pack_title">Buat Ikon Adaptif untuk Paket Ikon</string>
-    <!-- Note: redundant. -->
     <string name="icon_shape_override_label">Bentuk Ikon</string>
     <string name="reset_custom_icons">Hapus ikon kustom</string>
     <string name="reset_custom_icons_confirmation">Kembalikan ke ikon bawaan dari Paket Ikon ini? Ini tidak bisa diurungkan.</string>
@@ -439,7 +438,6 @@
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <string name="title_app_suggestions">Aplikasi</string>
     <string name="theme_dark">Gelap</string>
-    <string name="theme_dark_theme_mode">Tema gelap</string>
     <string name="theme_dark_dark_text">Gelap dengan Tulisan Gelap</string>
     <string name="theme_black">Hitam</string>
     <string name="theme_black_dark_text">Hitam dengan Tulisan Gelap</string>
@@ -469,7 +467,7 @@
     <string name="allow">Izinkan</string>
     <string name="deny">Tolak</string>
     <string name="sesame_enable_integration_title">Berbagi Data</string>
-    <string name="sesame_enable_integration_description"><![CDATA[Aktifkan berbagi penggunaan data dengan Sesame? Kamu dapat mengubahnya nanti.]]></string>
+    <string name="sesame_enable_integration_description"><![CDATA[Aktifkan berbagi penggunaan data dengan Sesame? Kamu dapat mengubahnya Nanti.]]></string>
     <string name="sesame_shortcut_disabled">Sesame dimatikan.</string>
     <string name="font_variant_italic">Italic</string>
     <string name="font_weight_thin">Tipis</string>
@@ -553,4 +551,6 @@
     <string name="gesture_nav_swipe_up_center">Dari Tengah</string>
     <string name="gesture_nav_swipe_up_right">Dari Kanan</string>
     <string name="action_switch_apps">Beralih Aplikasi</string>
+    <string name="icon_shape_system_default">Diatur oleh Sistem</string>
+    <string name="title_missing_notification_access">Diperlukan akses pemberitahuan.</string>
 </resources>
