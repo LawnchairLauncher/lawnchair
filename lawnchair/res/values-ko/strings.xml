@@ -16,7 +16,6 @@
     <string name="pref_icon_packs">아이콘 팩</string>
     <string name="icon_pack_default">시스템 아이콘</string>
     <string name="pref_icon_pack_masking">아이콘 마스킹</string>
-    <!-- Note: redundant. -->
     <string name="appearance">스타일</string>
     <!-- Note: new. Replaces title of 5th field (from bottom) in “Theme” page. -->
     <string name="theme_light">밝은 테마</string>
@@ -180,7 +179,6 @@
     <string name="smartspace_provider_bridge">루트리스 픽셀 브릿지</string>
     <string name="title_app_suggestions">앱</string>
     <string name="theme_dark">어두운 테마</string>
-    <string name="theme_dark_theme_mode">어두운 테마</string>
     <string name="theme_black">검은색</string>
     <string name="pref_qsb_color">색상</string>
     <string name="app_actions_pref_title_in_search">액션</string>
