@@ -23,7 +23,6 @@
     <string name="pref_icon_pack_masking">Ikonmaskering</string>
     <string name="pref_icon_pack_masking_summary">Match utematiserte ikoner til Ikonpakke.</string>
     <string name="pref_legacy_treatment_title">Opprett Adaptive ikoner</string>
-    <!-- Note: redundant. -->
     <string name="appearance">Utseende</string>
     <!-- Note: new. Replaces title of 5th field (from bottom) in “Theme” page. -->
     <string name="theme_light">Lys</string>
@@ -187,7 +186,6 @@
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <string name="title_app_suggestions">Apper</string>
     <string name="theme_dark">Mørk</string>
-    <string name="theme_dark_theme_mode">mørkt tema</string>
     <string name="theme_black">Svart</string>
     <string name="pref_qsb_color">Farge</string>
     <string name="app_actions_pref_title_in_search">Handlinger</string>
