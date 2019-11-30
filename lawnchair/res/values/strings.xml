@@ -366,7 +366,7 @@
     <string name="gestures_pref_summary">Double Tap, Swipe up from Dock</string>
 
     <string name="gesture_double_tap">Double Tap</string>
-    <string name="gesture_long_press">Tap &amp; Hold</string>
+    <string name="gesture_long_press">Touch &amp; Hold</string>
     <string name="gesture_press_home">Home Button Tap</string>
     <string name="gesture_press_back">Back Button Tap</string>
     <string name="gesture_swipe_down">Swipe Down</string>
@@ -754,7 +754,7 @@
 
     <string name="onbording">Onboarding</string>
     <string name="onbording_settings_title">Set Up %s</string>
-    <string name="onbording_settings_summary">Tap &amp; hold on the Desktop.</string>
+    <string name="onbording_settings_summary">Touch &amp; hold on the Desktop.</string>
     <string name="onboarding_swipe_up">Swipe up to open the Drawer.</string>
 
     <string name="weather_icons_default">Default</string>
@@ -792,5 +792,8 @@
     <string name="gesture_nav_swipe_up_center">From Center</string>
     <string name="gesture_nav_swipe_up_right">From Right</string>
     <string name="action_switch_apps">Switch Apps</string>
+
+    <string name="icon_shape_system_default">Set by System</string>
+    <string name="title_missing_notification_access">Notification access needed.</string>
 
 </resources>
