@@ -29,7 +29,6 @@
     <string name="pref_white_only_treatment">Vervang witte achtergronden</string>
     <string name="pref_white_only_treatment_summary">Alle achtergronden van gegenereerde pictogrammen kleur geven.</string>
     <string name="adaptify_pack_title">Adaptieve pictogrammen maken voor pictrogrampakket</string>
-    <!-- Note: redundant. -->
     <string name="icon_shape_override_label">Pictogram vorm</string>
     <string name="reset_custom_icons">Aangepaste pictogrammen verwijderen</string>
     <string name="reset_custom_icons_confirmation">Teruggaan naar de standaard pictogrammen van dit pictogrampakket? Dit kan niet teruggedraaid worden.</string>
@@ -440,7 +439,7 @@
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <string name="title_app_suggestions">Apps</string>
     <string name="theme_dark">Donker</string>
-    <string name="theme_dark_theme_mode">Donker thema</string>
+    <string name="theme_dark_theme_mode">Donker uiterlijk</string>
     <string name="theme_dark_dark_text">Donker met donkere text</string>
     <string name="theme_black">Zwart</string>
     <string name="theme_black_dark_text">Zwart met donkere text</string>
@@ -470,7 +469,7 @@
     <string name="allow">Toestaan</string>
     <string name="deny">Afwijzen</string>
     <string name="sesame_enable_integration_title">Data delen</string>
-    <string name="sesame_enable_integration_description"><![CDATA[Gebruiksgegevens deleten met Sesame? Dit kan later veranderd worden.]]></string>
+    <string name="sesame_enable_integration_description"><![CDATA[Gebruiksgegevens delen met Sesame? Je kan dit later aanpassen.]]></string>
     <string name="sesame_shortcut_disabled">Sesame is uitgeschakeld.</string>
     <string name="font_variant_italic">Cursief</string>
     <string name="font_weight_thin">Dun</string>
@@ -494,6 +493,7 @@
     <string name="pref_fonts_drawer_tabs">Tabblad namen</string>
     <string name="pref_fonts_find_fonts">Zoeken</string>
     <string name="pref_fonts_add_fonts">Lettertypen toevoegen</string>
+    <string name="pref_fonts_add_fonts_summary">Ondersteunt OTF &amp; TTF.</string>
     <string name="pref_fonts_missing_font">Lettertype niet gevonden.</string>
     <string name="pref_show_dev_options">Weergeven in instellingen</string>
     <string name="dock_scale">Dock grootte</string>
@@ -516,16 +516,23 @@
     <string name="status_channel_name">Uploadstatus</string>
     <string name="bugreport_group_summary">%d nieuwe foutrapporten.</string>
     <string name="bugreport_group_summary_multiple">Meerdere nieuwe foutrapporten.</string>
+    <string name="folder_cover_mode_desc">Tik om eerste app te openen, veeg omhoog om map te openen.</string>
     <string name="icon_shape_override_miui_explaination">Een fout in MIUI kan ervoor zorgen dat iconen vierkant blijven.</string>
     <string name="permission_iplocate">Geschatte lokatie</string>
     <string name="permission_iplocate_twilight_explanation">Toegang geven tot uw locatie? Dit zorgt voor een betere daglicht berekening.</string>
+    <string name="event_provider_missing_notification_access">Om <xliff:g example="My Provider" id="providerName">%1$s</xliff:g> te gebruiken, schakel app-meldingen in voor <xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="event_provider_missing_notification_dots">Om <xliff:g example="My Provider" id="providerName">%1$s</xliff:g> te gebruiken, schakel meldingsstipjes in.</string>
     <string name="zen_mode_enabled">Niet storen is ingeschakeld.</string>
     <string name="crash_report_notif_title">%1$s is vastgelopen</string>
     <string name="onbording">Onboarding</string>
     <string name="onbording_settings_title">Instellen %s</string>
+    <string name="onbording_settings_summary">Houd ingedrukt op de startpagina.</string>
+    <string name="onboarding_swipe_up">Veeg omhoog om de lade te openen.</string>
     <string name="weather_icons_default">Standaard</string>
     <string name="pref_weather_icon_pack">Weer iconen pakket</string>
+    <string name="customnavbar_install">Tik om aangepaste navigatiebalk te installeren.</string>
     <string name="customnavbar_back_hiding">Verberg terugknop</string>
+    <string name="customnavbar_back_hiding_desc">Terugknop verbergen als deze niet nodig is.</string>
     <string name="icon_shape_top_left">Linksboven</string>
     <string name="icon_shape_top_right">Rechtsboven</string>
     <string name="icon_shape_bottom_left">Linksonder</string>
@@ -545,4 +552,6 @@
     <string name="gesture_nav_swipe_up_center">Vanaf het midden</string>
     <string name="gesture_nav_swipe_up_right">Vanaf rechts</string>
     <string name="action_switch_apps">Van app wisselen</string>
+    <string name="icon_shape_system_default">Door systeem ingesteld</string>
+    <string name="title_missing_notification_access">Toegang tot meldingen vereist.</string>
 </resources>
