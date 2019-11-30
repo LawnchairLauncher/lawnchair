@@ -21,7 +21,6 @@
     <string name="pref_icon_packs">Balíčky ikon</string>
     <string name="icon_pack_default">Systémové ikony</string>
     <string name="pref_icon_pack_masking">Maskovanie ikon</string>
-    <!-- Note: redundant. -->
     <string name="appearance">Vzhľad</string>
     <!-- Note: new. Replaces title of 5th field (from bottom) in “Theme” page. -->
     <string name="theme_light">Svetlá</string>
