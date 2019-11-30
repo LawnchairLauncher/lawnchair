@@ -19,7 +19,6 @@
     <string name="pref_icon_pack_masking">アイコンを覆う</string>
     <string name="pref_legacy_treatment_title">アダプティブアイコンを生成</string>
     <string name="pref_legacy_colored_backgrounds">背景の色</string>
-    <!-- Note: redundant. -->
     <string name="icon_shape_override_label">アイコンの形状</string>
     <string name="appearance">外観</string>
     <!-- Note: new. Replaces title of 5th field (from bottom) in “Theme” page. -->
@@ -182,7 +181,6 @@
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <string name="title_app_suggestions">アプリ</string>
     <string name="theme_dark">ダーク</string>
-    <string name="theme_dark_theme_mode">ダークテーマ</string>
     <string name="theme_black">黒</string>
     <string name="pref_qsb_color">色</string>
     <string name="app_actions_pref_title_in_search">アクション</string>
