@@ -13,7 +13,6 @@
     <string name="pref_icon_packs">Пакети с икони</string>
     <string name="icon_pack_default">Системни икони</string>
     <string name="pref_icon_pack_masking">Маскиране на икони</string>
-    <!-- Note: redundant. -->
     <string name="appearance">Външен вид</string>
     <!-- Note: new. Replaces title of 5th field (from bottom) in “Theme” page. -->
     <string name="theme_light">Светла</string>
@@ -172,7 +171,6 @@
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <string name="title_app_suggestions">Приложения</string>
     <string name="theme_dark">Тъмна</string>
-    <string name="theme_dark_theme_mode">Тъмна тема</string>
     <string name="theme_black">Черна</string>
     <string name="pref_qsb_color">Цвят</string>
     <string name="app_actions_pref_title_in_search">Действия</string>
