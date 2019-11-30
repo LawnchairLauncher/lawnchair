@@ -29,7 +29,6 @@
     <string name="pref_white_only_treatment">替代白色背景</string>
     <string name="pref_white_only_treatment_summary">自适应所有图标背景颜色</string>
     <string name="adaptify_pack_title">为图标包创造自适应图标</string>
-    <!-- Note: redundant. -->
     <string name="icon_shape_override_label">图标形状</string>
     <string name="reset_custom_icons">移除自定义图标</string>
     <string name="reset_custom_icons_confirmation">从这个图标包回复到默认图标？</string>
@@ -325,7 +324,6 @@
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <string name="title_app_suggestions">应用程序</string>
     <string name="theme_dark">暗色主题</string>
-    <string name="theme_dark_theme_mode">暗色主题</string>
     <string name="theme_dark_dark_text">暗色背景 + 暗色文字</string>
     <string name="theme_black">黑色主题</string>
     <string name="theme_black_dark_text">黑色背景 + 暗色文字</string>
@@ -351,7 +349,6 @@
     <string name="allow">允许</string>
     <string name="deny">拒绝</string>
     <string name="sesame_enable_integration_title">数据共享</string>
-    <string name="sesame_enable_integration_description"><![CDATA[启用同 Sesame 共享数据？你可以稍后更改这个设置。]]></string>
     <string name="sesame_shortcut_disabled">Sesame 已禁用</string>
     <string name="font_variant_italic">斜体</string>
     <string name="font_weight_thin">细体</string>
