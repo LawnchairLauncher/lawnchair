@@ -29,7 +29,6 @@
     <string name="pref_white_only_treatment">Substituir fundos brancos</string>
     <string name="pref_white_only_treatment_summary">Colorir fundo de todos os ícones adaptativos.</string>
     <string name="adaptify_pack_title">Criar ícones adaptativos para o pacote de ícones</string>
-    <!-- Note: redundant. -->
     <string name="icon_shape_override_label">Forma dos ícones</string>
     <string name="reset_custom_icons">Remover ícones personalizados</string>
     <string name="reset_custom_icons_confirmation">Reverter para os ícones padrão deste pacote? Esta ação não pode ser revertida!</string>
@@ -439,7 +438,6 @@
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <string name="title_app_suggestions">Aplicações</string>
     <string name="theme_dark">Escuro</string>
-    <string name="theme_dark_theme_mode">Tema escuro</string>
     <string name="theme_dark_dark_text">Escuro com texto escuro</string>
     <string name="theme_black">Preto</string>
     <string name="theme_black_dark_text">Preto com texto escuro</string>
@@ -469,7 +467,6 @@
     <string name="allow">Permitir</string>
     <string name="deny">Recusar</string>
     <string name="sesame_enable_integration_title">Partilha de dados</string>
-    <string name="sesame_enable_integration_description"><![CDATA[Ativar partilha de dados com Sesame? Pode alterar esta opção nas definições.]]></string>
     <string name="sesame_shortcut_disabled">Sesame desativado.</string>
     <string name="font_variant_italic">Itálico</string>
     <string name="font_weight_thin">Fino</string>
