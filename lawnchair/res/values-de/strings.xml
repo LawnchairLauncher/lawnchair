@@ -29,7 +29,6 @@
     <string name="pref_white_only_treatment">Weiße Hintergründe ersetzen</string>
     <string name="pref_white_only_treatment_summary">Hintergründe aller adaptiver Symbole einfärben.</string>
     <string name="adaptify_pack_title">Erstelle adaptive Symbole für Icon-Pakete</string>
-    <!-- Note: redundant. -->
     <string name="icon_shape_override_label">Symbolform</string>
     <string name="reset_custom_icons">Benutzerdefinierte Icons zurücksetzen</string>
     <string name="reset_custom_icons_confirmation">Zu den standardmäßigen Symbolen dieses Symbol-Paketes zurückkehren? Dies kann nicht rückgängig gemacht werden.</string>
@@ -440,7 +439,7 @@
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <string name="title_app_suggestions">Apps</string>
     <string name="theme_dark">Dunkel</string>
-    <string name="theme_dark_theme_mode">Dunkles Thema</string>
+    <string name="theme_dark_theme_mode">Dunkles Design</string>
     <string name="theme_dark_dark_text">Dunkel mit dunklem Text</string>
     <string name="theme_black">Schwarz</string>
     <string name="theme_black_dark_text">Schwarz mit dunklem Text</string>
@@ -557,4 +556,6 @@
     <string name="gesture_nav_swipe_up_center">Von der Mitte</string>
     <string name="gesture_nav_swipe_up_right">Von rechts</string>
     <string name="action_switch_apps">Apps wechseln</string>
+    <string name="icon_shape_system_default">Durch System festgelegt</string>
+    <string name="title_missing_notification_access">Benachrichtigungszugriff erforderlich.</string>
 </resources>
