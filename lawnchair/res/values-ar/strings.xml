@@ -29,7 +29,6 @@
     <string name="pref_white_only_treatment">استبدال الخلفيات البيضاء</string>
     <string name="pref_white_only_treatment_summary">تلوين خلفية كل الايقونات المُتكيفة.</string>
     <string name="adaptify_pack_title">إنشاء أيقونات مكيفة لحزمة الأيقونات</string>
-    <!-- Note: redundant. -->
     <string name="icon_shape_override_label">شكل الايقونة</string>
     <string name="reset_custom_icons">إزالة الأيقونات المخصصة</string>
     <string name="reset_custom_icons_confirmation">العودة إلي الأيقونات الأساسية من حزمة الايقونات هذه؟ لا يمكن التراجع عن هذا.</string>
@@ -449,7 +448,7 @@
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <string name="title_app_suggestions">تطبيقات</string>
     <string name="theme_dark">مظلم</string>
-    <string name="theme_dark_theme_mode">سمة مظلم</string>
+    <string name="theme_dark_theme_mode">المظهر الداكن</string>
     <string name="theme_dark_dark_text">مظلم مع نص مظلم</string>
     <string name="theme_black">أسود</string>
     <string name="theme_black_dark_text">أسود مع نص مظلم</string>
@@ -479,7 +478,7 @@
     <string name="allow">السماح</string>
     <string name="deny">رفض</string>
     <string name="sesame_enable_integration_title">مشاركة البيانات</string>
-    <string name="sesame_enable_integration_description"><![CDATA[تمكين مشاركة بيانات الاستخدام مع sesame؟  يمكنك تغيير هذا لاحقا.]]></string>
+    <string name="sesame_enable_integration_description"><![CDATA[تمكين مشاركة بيانات الاستخدام مع sesame؟ يمكنك تغيير هذا لاحقا.]]></string>
     <string name="sesame_shortcut_disabled">Sesame معطل.</string>
     <string name="font_variant_italic">خط مائل</string>
     <string name="font_weight_thin">نحيف</string>
@@ -563,4 +562,6 @@
     <string name="gesture_nav_swipe_up_center">من المركز</string>
     <string name="gesture_nav_swipe_up_right">من اليمين</string>
     <string name="action_switch_apps">تبديل بين التطبيقات</string>
+    <string name="icon_shape_system_default">متوافق مع النظام</string>
+    <string name="title_missing_notification_access">يلزم تمكين الوصول إلى الإشعارات.</string>
 </resources>
