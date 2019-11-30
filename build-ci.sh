@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ $DRONE_BRANCH = "beta" ]; then
+if [ $DRONE_BRANCH = "beta" ] || [ $DRONE_BRANCH = "stable" ]; then
     BUILD_COMMAND="assembleQuickstepLawnchairPlahRelease"
 else
     BUILD_COMMAND="assembleQuickstepLawnchairCiOptimized"
