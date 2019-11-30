@@ -29,8 +29,7 @@
     <string name="pref_white_only_treatment">Nahradit bílá pozadí</string>
     <string name="pref_white_only_treatment_summary">Vybarvit všechna pozadí adaptivních ikon.</string>
     <string name="adaptify_pack_title">Vytvořit adaptivní ikony pro balíček ikon</string>
-    <!-- Note: redundant. -->
-    <string name="icon_shape_override_label">Tvar ikony</string>
+    <string name="icon_shape_override_label">Tvar ikon</string>
     <string name="reset_custom_icons">Odstranit vlastní ikony</string>
     <string name="reset_custom_icons_confirmation">Navrátit se k\u00a0výchozím ikonám z\u00a0tohoto balíčku ikon? Tuto akci nelze vrátit zpět.</string>
     <string name="appearance">Vzhled</string>
@@ -444,7 +443,7 @@
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <string name="title_app_suggestions">Aplikace</string>
     <string name="theme_dark">Tmavá</string>
-    <string name="theme_dark_theme_mode">Tmavý motiv</string>
+    <string name="theme_dark_theme_mode">Vynutit tmavý vzhled</string>
     <string name="theme_dark_dark_text">Tmavý s\u00a0tmavým textem</string>
     <string name="theme_black">Černý</string>
     <string name="theme_black_dark_text">Černý s\u00a0tmavým textem</string>
@@ -558,4 +557,6 @@
     <string name="gesture_nav_swipe_up_center">Ze středu</string>
     <string name="gesture_nav_swipe_up_right">Zprava</string>
     <string name="action_switch_apps">Přepnout aplikace</string>
+    <string name="icon_shape_system_default">Nastavený systémem</string>
+    <string name="title_missing_notification_access">Je potřeba udělit přístup k\u00a0oznámením.</string>
 </resources>
