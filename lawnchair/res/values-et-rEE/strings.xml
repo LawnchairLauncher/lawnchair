@@ -25,7 +25,6 @@
     <string name="pref_white_only_treatment">Asenda valge taust</string>
     <string name="pref_white_only_treatment_summary">Värvige kõigi adaptiivsete ikoonide taust.</string>
     <string name="adaptify_pack_title">Loo ikoonipaki jaoks kohanduvad ikoonid</string>
-    <!-- Note: redundant. -->
     <string name="icon_shape_override_label">Ikoonide kuju</string>
     <string name="reset_custom_icons">Eemalda kohandatud ikoonid</string>
     <string name="reset_custom_icons_confirmation">Kas taastada selle ikoonipaketi vaikeikoonid? Seda ei saa tagasi võtta.</string>
@@ -436,7 +435,6 @@
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <string name="title_app_suggestions">Rakendused</string>
     <string name="theme_dark">Tume</string>
-    <string name="theme_dark_theme_mode">Tume teema</string>
     <string name="theme_dark_dark_text">Tume tumeda tekstiga</string>
     <string name="theme_black">Must</string>
     <string name="theme_black_dark_text">Tume musta tekstiga</string>
@@ -468,7 +466,6 @@
     <string name="allow">Luba</string>
     <string name="deny">Keela</string>
     <string name="sesame_enable_integration_title">Andmete jagamine</string>
-    <string name="sesame_enable_integration_description"><![CDATA[Kas jagada andmeid Sesamega? Hiljem saate selle keelata.]]></string>
     <string name="sesame_shortcut_disabled">Sesame on keelatud.</string>
     <string name="font_variant_italic">Kaldkiri</string>
     <string name="font_weight_thin">Õhuline</string>
