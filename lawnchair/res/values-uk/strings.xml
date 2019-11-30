@@ -29,7 +29,6 @@
     <string name="pref_white_only_treatment">Змінити білий фон</string>
     <string name="pref_white_only_treatment_summary">Забарвити фони усіх адаптивних іконок.</string>
     <string name="adaptify_pack_title">Створити адаптивні іконки для набору іконок</string>
-    <!-- Note: redundant. -->
     <string name="icon_shape_override_label">Форма іконок</string>
     <string name="reset_custom_icons">Видалити кастомні іконки</string>
     <string name="reset_custom_icons_confirmation">Повернутся до дефолтних іконок? Ви не зможете відмінити цю дію.</string>
@@ -474,7 +473,7 @@
     <string name="allow">Дозволити</string>
     <string name="deny">Відхилити</string>
     <string name="sesame_enable_integration_title">Ділитись даними</string>
-    <string name="sesame_enable_integration_description"><![CDATA[Чи ділитись інформацією про використання з Sesame? Ви можете змінити це пізніше.]]></string>
+    <string name="sesame_enable_integration_description"><![CDATA[Увімкнути обмін даними про використання за допомогою Sesame? Ви можете змінити це пізніше.]]></string>
     <string name="sesame_shortcut_disabled">Sesame вимкнуто.</string>
     <string name="font_variant_italic">Курсив</string>
     <string name="font_weight_thin">Тонкий</string>
@@ -558,4 +557,6 @@
     <string name="gesture_nav_swipe_up_center">З центру</string>
     <string name="gesture_nav_swipe_up_right">Справа</string>
     <string name="action_switch_apps">Переключити додатки</string>
+    <string name="icon_shape_system_default">Встановлено системою</string>
+    <string name="title_missing_notification_access">Потрібен доступ до сповіщень.</string>
 </resources>
