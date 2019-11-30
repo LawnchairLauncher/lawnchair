@@ -12,7 +12,6 @@
     <string name="pref_icon_packs">Paketi ikona</string>
     <string name="icon_pack_default">Sistemske ikone</string>
     <string name="pref_icon_pack_masking">Maskiranje ikona</string>
-    <!-- Note: redundant. -->
     <string name="appearance">Izgled</string>
     <!-- Note: new. Replaces title of 5th field (from bottom) in “Theme” page. -->
     <string name="theme_light">Svetla</string>
@@ -165,7 +164,6 @@
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <string name="title_app_suggestions">Aplikacije</string>
     <string name="theme_dark">Tamna</string>
-    <string name="theme_dark_theme_mode">Tamna tema</string>
     <string name="theme_black">Crna</string>
     <string name="pref_qsb_color">Boja</string>
     <string name="app_actions_pref_title_in_search">Radnje</string>
