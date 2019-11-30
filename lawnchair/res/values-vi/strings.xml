@@ -27,13 +27,31 @@
     <string name="pref_legacy_colored_backgrounds">Màu nền</string>
     <string name="pref_legacy_colored_backgrounds_summary">Tạo màu nền cho biểu tượng tương thích.</string>
     <string name="pref_white_only_treatment">Thay thế nền trắng</string>
-    <!-- Note: redundant. -->
+    <string name="pref_white_only_treatment_summary">Tạo màu nền cho Biểu tượng tương thích.</string>
+    <string name="adaptify_pack_title">Tạo Biểu tượng tương thích cho Gói Biểu tượng</string>
+    <string name="icon_shape_override_label">Hình dạng Biểu tượng</string>
+    <string name="reset_custom_icons">Đặt lại Biểu tượng Tùy chỉnh</string>
+    <string name="reset_custom_icons_confirmation">Hoàn nguyên lại biểu tượng ứng dụng mặc định? Hành động này không thể hoàn tác.</string>
     <string name="appearance">Giao diện</string>
     <!-- Note: new. Replaces title of 5th field (from bottom) in “Theme” page. -->
+    <string name="theme_auto">Tự động (Theo hình nền)</string>
+    <string name="theme_auto_night_mode">Theo hệ thống</string>
+    <string name="theme_dark_theme_mode_follow_daylight">Theo lịch (Chế độ Tối vào Ban đêm)</string>
     <string name="theme_light">Sáng</string>
+    <string name="theme_dark_text">Sáng với Chữ màu đen</string>
+    <string name="theme_with_dark_text">Chữ màu đen</string>
+    <string name="theme_use_black">Giao diện Đen</string>
     <string name="theme_use_dark_text">Sử dụng màu chữ tối</string>
+    <string name="lawnchair_accent">Màu chủ đề</string>
+    <string name="color_pixel_accent">Xanh Google</string>
+    <string name="color_system_accent">Theo hệ thống</string>
+    <string name="color_wallpaper_main">Hình nền - Màu chính</string>
+    <string name="color_wallpaper_secondary">Hình nền - Màu thứ hai</string>
+    <string name="color_wallpaper_tertiary">Hình nền - Màu thứ ba</string>
     <string name="pref_fonts_title">Phông chữ</string>
     <string name="blur_pref_title">Hiệu ứng mờ nền</string>
+    <string name="blur_pref_summary">Làm mờ nền của trang.</string>
+    <string name="blur_radius_pref_title">Mức độ làm mờ</string>
     <!-- Section 3 -->
     <string name="general_pref_title">Màn hình chính</string>
     <string name="grid_size_width">Số cột</string>
@@ -195,7 +213,6 @@
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <string name="title_app_suggestions">Ứng dụng</string>
     <string name="theme_dark">Tối</string>
-    <string name="theme_dark_theme_mode">Chủ đề tối</string>
     <string name="theme_black">Đen</string>
     <string name="pref_qsb_color">Màu sắc</string>
     <string name="app_actions_pref_title_in_search">Hành động</string>
