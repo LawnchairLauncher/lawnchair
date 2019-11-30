@@ -21,7 +21,6 @@
     <string name="icon_pack_default">Εικονίδια συστήματος</string>
     <string name="pref_icon_pack_masking">Κάλυψη εικονιδίων</string>
     <string name="pref_legacy_colored_backgrounds">Φόντα Χρωμάτων</string>
-    <!-- Note: redundant. -->
     <string name="icon_shape_override_label">Σχήμα Εικονιδίων</string>
     <string name="appearance">Εμφάνιση</string>
     <!-- Note: new. Replaces title of 5th field (from bottom) in “Theme” page. -->
@@ -141,6 +140,7 @@
     <string name="feed_theme_pref_title">Χρώμα Φόντου</string>
     <!-- Section 9 -->
     <string name="gestures_pref_title">Χειρονομίες αφής</string>
+    <string name="gesture_double_tap">Διπλό Πάτημα</string>
     <string name="action_none">Καμία Ενέργεια</string>
     <string name="action_sleep">Αναστολή</string>
     <string name="action_open_settings">Άνοιγμα Ρυθμίσεων Lawnchair</string>
@@ -155,11 +155,13 @@
     <string name="custom">Προσαρμοσμένο</string>
     <!-- Section 11 -->
     <string name="about">Σχετικά</string>
+    <string name="about_translate">Μετάφραση</string>
     <string name="title_attribouter_rate">Αξιολόγηση</string>
     <string name="title_attribouter_website">Ιστοσελίδα</string>
     <string name="about_role_lead">Διευθύνων Προγραμματιστής</string>
     <string name="about_role_dev">Προγραμματιστής</string>
     <string name="about_role_writer">Συγγραφέας</string>
+    <string name="about_role_dev_mod">Προγραμματιστής &amp; Διαχειριστής</string>
     <string name="about_role_designer">Σχεδιαστής</string>
     <string name="about_role_family_member">Μέλος Οικογενείας</string>
     <!-- Section 12 -->
@@ -220,7 +222,6 @@
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <string name="title_app_suggestions">Εφαρμογές</string>
     <string name="theme_dark">Σκοτεινό</string>
-    <string name="theme_dark_theme_mode">Σκοτεινό θέμα</string>
     <string name="theme_black">Μαύρο</string>
     <string name="theme_dark_theme_mode_follow_wallpaper">@string/theme_auto</string>
     <string name="theme_dark_theme_mode_follow_system">@string/theme_auto_night_mode</string>
