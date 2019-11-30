@@ -6,7 +6,7 @@
     <string name="icu_abbrev_time_12h">hh:mm aa</string>
     <string name="icu_abbrev_date"> dd MMMM</string>
     <!-- Section 1 -->
-    <string name="search_menu">Ara</string>
+    <string name="search_menu">Arama</string>
     <string name="search_no_results">Sonuç Yok</string>
     <string name="restart_lawnchair_pref_title">Yeniden başlat</string>
     <string name="developer_options_title">Geliştirici Seçenekleri</string>
@@ -29,7 +29,6 @@
     <string name="pref_white_only_treatment">Beyaz Arka Planları Değiştir</string>
     <string name="pref_white_only_treatment_summary">Tüm Uyarlanabilir Simgelerin arkaplanlanını renklendir.</string>
     <string name="adaptify_pack_title">Simge Paketi için Uyarlanabilir Simgeler oluştur</string>
-    <!-- Note: redundant. -->
     <string name="icon_shape_override_label">Simge Şekli</string>
     <string name="reset_custom_icons">Özelleştirilmiş Simgeleri Kaldır</string>
     <string name="reset_custom_icons_confirmation">Bu simge paketindeki varsayılan simgelere dönülsün mü? Bu işlem geri alınamaz.</string>
@@ -442,7 +441,7 @@
     <string name="smartspace_provider_bridge">Rootless pixel bridge</string>
     <string name="title_app_suggestions">Uygulamalar</string>
     <string name="theme_dark">Karanlık</string>
-    <string name="theme_dark_theme_mode">Karanlık tema</string>
+    <string name="theme_dark_theme_mode">Karanlık Görünüm</string>
     <string name="theme_dark_dark_text">Karanlık w/ Koyu Metin</string>
     <string name="theme_black">Siyah</string>
     <string name="theme_black_dark_text">Siyah w/ Koyu Metin</string>
@@ -474,7 +473,7 @@
     <string name="allow">İzin ver</string>
     <string name="deny">Reddet</string>
     <string name="sesame_enable_integration_title">Veri Paylaşımı</string>
-    <string name="sesame_enable_integration_description"><![CDATA[Sesame ile kullanım verisi paylaşımını sağlar? Bunu daha sonra değiştirebilirsiniz.]]></string>
+    <string name="sesame_enable_integration_description"><![CDATA[Sesame ile kullanım verisi paylaşımı etkinleştirilsin mi? Bunu daha sonra değiştirebilirsiniz.]]></string>
     <string name="sesame_shortcut_disabled">Sesame devre dışı.</string>
     <string name="font_variant_italic">İtalik</string>
     <string name="font_weight_thin">İnce</string>
@@ -559,4 +558,6 @@
     <string name="gesture_nav_swipe_up_center">Ortadan</string>
     <string name="gesture_nav_swipe_up_right">Sağ Taraftan</string>
     <string name="action_switch_apps">Uygulamaları Değiştir</string>
+    <string name="icon_shape_system_default">Sisteme göre ayarla</string>
+    <string name="title_missing_notification_access">Bildirim erişimi gerekli.</string>
 </resources>
