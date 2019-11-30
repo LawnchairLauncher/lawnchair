@@ -25,7 +25,6 @@
     <string name="pref_white_only_treatment">Zamijeni bijele pozadine</string>
     <string name="pref_white_only_treatment_summary">Oboji sve pozadine izrađenih prilagodljivih ikona.</string>
     <string name="adaptify_pack_title">Stvori prilagodljive ikone za paket ikona</string>
-    <!-- Note: redundant. -->
     <string name="icon_shape_override_label">Oblik ikona</string>
     <string name="reset_custom_icons">Makni prilagođene ikone</string>
     <string name="reset_custom_icons_confirmation">Vratiti natrag zadane ikone iz ovog paketa ikona? Ova akcija ne može biti poništena.</string>
@@ -435,7 +434,7 @@
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <string name="title_app_suggestions">Aplikacije</string>
     <string name="theme_dark">Tamna</string>
-    <string name="theme_dark_theme_mode">Tamna tema</string>
+    <string name="theme_dark_theme_mode">Tamni prikaz</string>
     <string name="theme_dark_dark_text">Tamna s tamnim tekstom</string>
     <string name="theme_black">Crna</string>
     <string name="theme_black_dark_text">Crna s tamnim tekstom</string>
@@ -551,4 +550,6 @@
     <string name="gesture_nav_swipe_up_center">Iz sredine</string>
     <string name="gesture_nav_swipe_up_right">S desna</string>
     <string name="action_switch_apps">Zamijeniti aplikacije</string>
+    <string name="icon_shape_system_default">Postavljeno od sustava</string>
+    <string name="title_missing_notification_access">Potrebno dopuštenje pristupa obavijestima.</string>
 </resources>
