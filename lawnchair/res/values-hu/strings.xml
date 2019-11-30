@@ -29,7 +29,6 @@
     <string name="pref_white_only_treatment">Fehér hátterek lecserélése</string>
     <string name="pref_white_only_treatment_summary">Minden adaptív ikon háttér színezése.</string>
     <string name="adaptify_pack_title">Adaptív ikonok készítése az ikoncsomaghoz</string>
-    <!-- Note: redundant. -->
     <string name="icon_shape_override_label">Ikonok formája</string>
     <string name="reset_custom_icons">Egyedi ikonok törlése</string>
     <string name="reset_custom_icons_confirmation">Visszaállítás az alapértelmezett ikonokra ebből az Ikon Csomagból? Ezt nem lehet visszavonni.</string>
@@ -281,7 +280,6 @@
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <string name="title_app_suggestions">Alkalmazások</string>
     <string name="theme_dark">Sötét</string>
-    <string name="theme_dark_theme_mode">Sötét téma</string>
     <string name="theme_black">Fekete</string>
     <string name="theme_dark_theme_mode_follow_wallpaper">@string/theme_auto</string>
     <string name="theme_dark_theme_mode_follow_system">@string/theme_auto_night_mode</string>
@@ -318,4 +316,6 @@
     <string name="icon_shape_corner_cut">Kivágás</string>
     <!-- Section 13 -->
     <string name="quickstep_pref_title">Legutóbbiak</string>
+    <string name="icon_shape_system_default">Rendszerbeállítás</string>
+    <string name="title_missing_notification_access">Értesítési hozzáférésre van szükség.</string>
 </resources>
