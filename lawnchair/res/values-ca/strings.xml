@@ -17,7 +17,6 @@
     <string name="icon_pack_default">Icones del sistema</string>
     <string name="pref_icon_pack_masking">Màscara d\'icones</string>
     <string name="pref_legacy_treatment_title">Crea icones adaptatives</string>
-    <!-- Note: redundant. -->
     <string name="icon_shape_override_label">Forma de les icones</string>
     <string name="appearance">Aparença</string>
     <!-- Note: new. Replaces title of 5th field (from bottom) in “Theme” page. -->
@@ -196,7 +195,6 @@
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <string name="title_app_suggestions">Aplicacions</string>
     <string name="theme_dark">Fosc</string>
-    <string name="theme_dark_theme_mode">Tema fosc</string>
     <string name="theme_black">Negre</string>
     <string name="theme_dark_theme_mode_follow_wallpaper">@string/theme_auto</string>
     <string name="theme_dark_theme_mode_follow_system">@string/theme_auto_night_mode</string>
