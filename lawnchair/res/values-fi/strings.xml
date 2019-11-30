@@ -3,36 +3,61 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Section 1 -->
     <string name="search_menu">Haku</string>
+    <string name="search_no_results">Ei tuloksia</string>
     <string name="restart_lawnchair_pref_title">Käynnistä uudelleen</string>
+    <string name="developer_options_title">Kehittäjäasetukset</string>
+    <string name="change_default_home">Aseta aloitusruutusovellukseksi</string>
+    <string name="action_apply">Valmis</string>
     <!-- Note: new. Replaces “OK” in dialogs. -->
     <string name="theme_dark_theme_mode_on">Käytössä</string>
     <string name="theme_dark_theme_mode_off">Pois käytöstä</string>
     <!-- Section 2 -->
     <string name="theme_title">Teema</string>
+    <string name="pixel_ui_pref_summary">Kuvakkeet, värit, sumennus</string>
     <string name="pref_icon_packs">Kuvakepaketit</string>
     <string name="icon_pack_default">Järjestelmän kuvakkeet</string>
     <string name="pref_icon_pack_masking">Kuvakkeen rajaus</string>
-    <!-- Note: redundant. -->
+    <string name="pref_legacy_treatment_title">Luo adaptiiviset kuvakkeet</string>
+    <string name="pref_legacy_treatment_summary">Luo adaptiiviset kuvakkeet kaikille pikakuvakkeille.</string>
+    <string name="icon_shape_override_label">Kuvakkeen muoto</string>
     <string name="appearance">Ulkoasu</string>
     <!-- Note: new. Replaces title of 5th field (from bottom) in “Theme” page. -->
+    <string name="theme_dark_theme_mode_follow_daylight">Ajastettu (Tumma yöllä)</string>
     <string name="theme_light">Vaalea</string>
+    <string name="theme_with_dark_text">Tumma teksti</string>
     <string name="pref_fonts_title">Fontit</string>
     <string name="blur_pref_title">Käytä sumennusta</string>
     <!-- Section 3 -->
     <string name="general_pref_title">Aloitusnäyttö</string>
     <string name="grid_size_width">Leveys</string>
     <string name="grid_size_height">Pituus</string>
+    <string name="lock_desktop">Lukitse työpöytä</string>
     <string name="pref_category_icons">Pikakuvakkeet</string>
+    <string name="icon_text_scale_pref_title">Tekstin koko</string>
+    <string name="text_color">Tekstin väri</string>
+    <string name="icon_scale_pref_title">Kuvakkeen koko</string>
     <string name="pref_category_misc">Muut</string>
     <string name="animation_type_default">Oletus</string>
+    <string name="animation_type_pie">Android Pie</string>
+    <string name="animation_type_pie_like">Android Pie (Emuloitu)</string>
     <string name="animation_type_reveal">Paljasta</string>
     <string name="animation_type_slide_up">Liu\'uta ylös</string>
     <string name="animation_type_scale_up">Laajenna</string>
     <string name="animation_type_fade">Häivytys</string>
+    <string name="pref_hide_statusbar">Piilota tilapalkki</string>
+    <string name="full_width_width_widgets_pref_title">Leveät widgetit</string>
+    <string name="full_width_widgets_pref_summary">Anna widgetien venyä näytön reunoille.</string>
     <!-- Section 4 -->
     <string name="smartspace_preferences_in_settings">Pikanäkymä</string>
     <!-- Note: replaces hard-coded copy (“Home widget”). -->
+    <string name="smartspace_time">Näytä aika</string>
+    <string name="smartspace_date">Näytä päivämäärä</string>
+    <string name="pref_smartspace_time_above">Näytä iso kello</string>
+    <string name="pref_hide_statusbar_clock">Piilota tilapalkin kello</string>
+    <string name="smartspace_time_24_h">Käytä 24-tuntista aikamuotoa</string>
     <string name="pref_category_weather">Muut</string>
+    <string name="pref_smartspace_widget_provider">Säätietojen lähde</string>
+    <string name="google_app">Google-sovellus</string>
     <string name="weather_provider_disabled">Pois käytöstä</string>
     <string name="weather_provider_owm">OpenWeatherMap</string>
     <string name="units_metric">Celsius</string>
@@ -59,10 +84,18 @@
         <item>Nuku hyvin!</item>
         <item>Nähdään huomenna!</item>
         <item>Hyvää yötä!</item>
-        <item>Don’t stay up too late!</item>
+        <item>Älä valvo liian myöhään!</item>
     </string-array>
+    <string name="battery_charging">Ladataan</string>
+    <string name="battery_full">Ladattu</string>
+    <string name="battery_low">Akku vähissä</string>
     <!-- Section 5 -->
     <string name="dock_pref_title">Telakka</string>
+    <string name="dock_fill">Näytä tausta</string>
+    <string name="background_color">Taustaväri</string>
+    <string name="dock_shadow">Näytä varjo</string>
+    <string name="radius">Kulmien pyöristys</string>
+    <string name="hotseat_show_arrow">Näytä nuoli</string>
     <!-- Section 6 -->
     <string name="app_drawer_pref_title">Sovellusvalikko</string>
     <string name="pref_category_theme">Tyyli</string>
@@ -170,7 +203,6 @@
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <string name="title_app_suggestions">Sovellukset</string>
     <string name="theme_dark">Tumma</string>
-    <string name="theme_dark_theme_mode">Tumma teema</string>
     <string name="theme_black">Musta</string>
     <string name="pref_qsb_color">Väri</string>
     <string name="app_actions_pref_title_in_search">Toiminnot</string>
