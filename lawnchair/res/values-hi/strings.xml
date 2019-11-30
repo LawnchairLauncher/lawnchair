@@ -23,35 +23,34 @@
     <string name="pref_icon_pack_masking">आइकन मास्किंग</string>
     <string name="pref_icon_pack_masking_summary">आइकन पैक से अनछुए आइकन का मिलान करें।</string>
     <string name="pref_legacy_treatment_title">अनुकूलक चिह्न बनाएँ</string>
-    <string name="pref_legacy_treatment_summary">सभी छोटे मार्ग के लिए अनुकूलक चिह्न बनाएँ</string>
+    <string name="pref_legacy_treatment_summary">सभी शॉर्टकट के लिए अनुकूलक आईकन बनाएँ</string>
     <string name="pref_legacy_colored_backgrounds">रंग पृष्ठभूमि</string>
     <string name="pref_legacy_colored_backgrounds_summary">रंग ने अनुकूली आइकन की पृष्ठभूमि तैयार की।</string>
     <string name="pref_white_only_treatment">सफेद पृष्ठभूमि को बदलें</string>
     <string name="pref_white_only_treatment_summary">सभी अनुकूली चिह्न की पृष्ठभूमि को रंग दें</string>
-    <string name="adaptify_pack_title">चिह्न पैक के लिए अनुकूली चिह्न बनाएं</string>
-    <!-- Note: redundant. -->
-    <string name="icon_shape_override_label">चिह्न आकार</string>
+    <string name="adaptify_pack_title">आईकन पैक के लिए अनुकूली आईकन बनाएं</string>
+    <string name="icon_shape_override_label">आईकन का आकार</string>
     <string name="reset_custom_icons">कस्टम आइकन निकालें</string>
     <string name="reset_custom_icons_confirmation">इस आइकन पैक से डिफ़ॉल्ट आइकन पर वापस जाएं? यह पूर्ववत नहीं किया जा सकता है।</string>
     <string name="appearance">रूप</string>
     <!-- Note: new. Replaces title of 5th field (from bottom) in “Theme” page. -->
     <string name="theme_auto">स्वचालित (मिलान वॉलपेपर)</string>
-    <string name="theme_auto_night_mode">सिस्टम द्वारा सेट किया गया</string>
+    <string name="theme_auto_night_mode">सिस्टम द्वारा सेट करें</string>
     <string name="theme_dark_theme_mode_follow_daylight">अनुसूचित (रात में अंधेरा)</string>
     <string name="theme_light">हल्का</string>
-    <string name="theme_dark_text">लाइट डब्ल्यू / डार्क टेक्स्ट</string>
+    <string name="theme_dark_text">लाइट / डार्क अक्षर</string>
     <string name="theme_with_dark_text">काले अक्षर</string>
     <string name="theme_use_black">गहरा काला इस्तेमाल करें</string>
     <string name="theme_use_dark_text">काले अक्षर इस्तेमाल करें</string>
     <string name="lawnchair_accent">एक्सेंट रंग</string>
     <string name="color_pixel_accent">गूगल नीला</string>
-    <string name="color_system_accent">सिस्टम द्वारा सेट किया गया</string>
+    <string name="color_system_accent">सिस्टम द्वारा सेट करें</string>
     <string name="color_wallpaper_main">वॉलपेपर — प्राइमरी</string>
     <string name="color_wallpaper_secondary">वॉलपेपर — सेकंडरी</string>
     <string name="color_wallpaper_tertiary">वॉलपेपर — टर्शियरी</string>
     <string name="pref_fonts_title">फ़ॉन्ट्स</string>
     <string name="blur_pref_title">ब्लर सक्षम करें</string>
-    <string name="blur_pref_summary">धुंधला पृष्ठ पृष्ठभूमि</string>
+    <string name="blur_pref_summary">पृष्ठभूमि धुंधली करें</string>
     <string name="blur_radius_pref_title">धुंधलापन</string>
     <!-- Section 3 -->
     <string name="general_pref_title">डेस्कटॉप</string>
@@ -59,35 +58,47 @@
     <string name="grid_size">आयिकोंन ग्रिड</string>
     <string name="grid_size_width">चौड़ाई</string>
     <string name="grid_size_height">ऊँचाई</string>
-    <string name="num_hotseat_icons_pref_title">आयिकोन गिनती</string>
+    <string name="num_hotseat_icons_pref_title">आईकन की संख्या</string>
     <string name="overlap_placement">ओवरलैप की अनुमति दें</string>
     <string name="lock_desktop">डेस्कटॉप को लॉक करें</string>
     <string name="pref_category_icons">शॉर्टकट</string>
     <string name="hide_icon_labels_pref_title">लेबल छिपाएं</string>
-    <string name="pref_mutliline_labels">मल्टीलाइन लेबल</string>
+    <string name="pref_mutliline_labels">लेबल कोई एक से अधिक लाइन में दिखाएं</string>
     <string name="icon_text_scale_pref_title">शब्दों का आकर</string>
-    <string name="text_color">पाठ का रंग</string>
+    <string name="text_color">शब्दों का रंग</string>
     <string name="icon_scale_pref_title">आइकन का आकार</string>
     <string name="auto_add_shortcuts_label">डेस्कटॉप पर नए शॉर्टकट जोड़ें</string>
     <string name="pref_icon_popup_menu">शार्टकट बबल</string>
     <string name="pref_category_misc">अन्य</string>
     <string name="animation_type_title">ऐप लॉन्च संक्रमण</string>
     <string name="animation_type_default">पूर्व निर्धारित</string>
-    <string name="animation_type_pie">Android पाई</string>
-    <string name="animation_type_pie_like">एंड्रॉयड पाई (अनुकरणित)</string>
+    <string name="animation_type_pie">एंड्राइड पाई</string>
+    <string name="animation_type_pie_like">एंड्रॉइड पाई (अनुकरणित)</string>
     <string name="animation_type_reveal">प्रकट करें</string>
-    <string name="animation_type_slide_up">ऊपर करें</string>
+    <string name="animation_type_slide_up">ऊपर सरकाएं</string>
     <string name="animation_type_scale_up">बड़ा करे</string>
     <string name="animation_type_blink">टिमटिमाना</string>
     <string name="animation_type_fade">फीका करें</string>
     <string name="icon_badging_title">सूचना बिंदु</string>
     <string name="pref_notification_count_title">सूचना संख्या दिखाएं</string>
     <string name="allow_rotation_title">घुर्णन चालु करें</string>
+    <string name="pref_center_wallpaper">वॉलपेपर केंद्रित करे</string>
+    <string name="pref_hide_statusbar">स्टेटस बार को छुपाएँ</string>
+    <string name="full_width_widgets_pref_summary">विजेट स्क्रीन के कोनों तक खींचने दें</string>
     <!-- Section 4 -->
     <string name="smartspace_preferences_in_settings">एट अ ग्लांस</string>
     <!-- Note: replaces hard-coded copy (“Home widget”). -->
+    <string name="smartspace_time">समय दिखाएं</string>
+    <string name="smartspace_date">तारीख/दिनांक दिखाएं</string>
+    <string name="pref_smartspace_time_above">घड़ी/समय को बड़ा दिखाएं</string>
+    <string name="pref_hide_statusbar_clock">स्टेटस बार में घड़ी को छुपाएं</string>
+    <string name="smartspace_time_24_h">24-घंटे वाली घड़ी का इस्तेमाल करें</string>
     <string name="pref_category_weather">अन्य</string>
+    <string name="pref_smartspace_widget_provider">‎मौसम ‎स्रोत</string>
+    <string name="google_app">गूगल ऐप</string>
     <string name="weather_provider_disabled">डिसेबल्ड</string>
+    <string name="weather_provider_pe">पिक्सल एक्सपीरियंस</string>
+    <string name="pref_weather_units">तापमान की इकाई</string>
     <string name="units_metric">सेल्सीयस</string>
     <string name="units_imperial">फ़ारेनहाइट</string>
     <string name="units_kelvin">केल्विन</string>
@@ -96,14 +107,38 @@
     <string name="units_delisle">देलिसल</string>
     <string name="units_reaumur">रीमर</string>
     <string name="units_romer">रोमर</string>
-    <string name="event_provider_unread_notifications">सूचनाएँ</string>
+    <string name="pref_smartspace_event_providers">डाटा के स्रोत</string>
+    <string name="battery_status">बैटरी अवस्था</string>
+    <string name="event_provider_now_playing">जो गाना आप सुन रहे हैं</string>
+    <string name="event_provider_unread_notifications">सूचनाएँ/नोटिफिकेशन</string>
+    <string name="personality_provider">ग्रीटिंग</string>
+    <string-array name="greetings_morning">
+        <item>सुप्रभात!</item>
+        <item>आपका दिन मंगलमय हो!</item>
+        <item>It’s a beautiful day outside!</item>
+    </string-array>
+    <string-array name="greetings_evening">
+        <item>क्या हो रहा है?</item>
+        <item>शुभ संध्या!</item>
+        <item>आपका दिन कैसा गया?</item>
+        <item>आपका दिन कैसा था?</item>
+    </string-array>
+    <string-array name="greetings_night">
+        <item>अच्छी नींद लें</item>
+        <item>कल मिलते हैं!</item>
+        <item>शुभ रात्रि!</item>
+        <item>देर रात तक जगे ना रहे!</item>
+    </string-array>
+    <string name="battery_charging">बैटरी चार्ज हो रही है</string>
+    <string name="battery_full">बैटरी चार्ज हो चुकी है</string>
+    <string name="battery_low">बैटरी कम है</string>
     <!-- Section 5 -->
     <string name="dock_pref_title">डॉक</string>
     <!-- Section 6 -->
     <string name="app_drawer_pref_title">ड्रोवर</string>
     <string name="pref_category_theme">शैली</string>
     <string name="pref_appcategorization_tabs_title">टैब्स</string>
-    <string name="tab_type_smart">स्वचालित</string>
+    <string name="tab_type_smart">स्वचालित/ऑटोमेटिक</string>
     <string name="tab_type_custom">निजीकृत</string>
     <string name="suggestion_pref_screen_title">सुझाव</string>
     <string name="app_actions_pref_title">ऐक्शन</string>
@@ -116,13 +151,13 @@
     <string name="search_provider_bing">बिंग</string>
     <string name="search_provider_baidu">बईदू</string>
     <string name="search_provider_s_finder">एस फाइंडर</string>
-    <string name="search_provider_appsearch">ऐप सर्च</string>
+    <string name="search_provider_appsearch">ऐप खोजें</string>
     <string name="search_provider_search_lite">सर्च लाइट</string>
     <string name="search_provider_cool_search">कूल सर्च</string>
     <string name="search_provider_firefox">फायरफॉक्स</string>
     <string name="search_provider_qwant">क्वांट</string>
     <string name="weather_provider_oneplus_weather">वन प्लस मौसम</string>
-    <string name="searchbar_appearance_title">शैली</string>
+    <string name="searchbar_appearance_title">शैली/स्टाइल</string>
     <!-- Section 8 -->
     <string name="sesame">सेसमे</string>
     <!-- Section 9 -->
@@ -147,7 +182,7 @@
     <!-- Section 12 -->
     <string name="wallpaper_button_text">वॉलपेपर</string>
     <string name="pref_app_groups_create">बनाएँ</string>
-    <string name="pref_appcategorization_style_text">शैली</string>
+    <string name="pref_appcategorization_style_text">शैली/स्टाइल</string>
     <string name="customize">अनुकूल</string>
     <string name="action_edit">संपादित करें</string>
     <string name="icon_pack">आइकन पैक</string>
@@ -196,7 +231,6 @@
     <string name="smartspace_provider_bridge">रुटलेस पिक्सेल ब्रिज</string>
     <string name="title_app_suggestions">ऐप्स</string>
     <string name="theme_dark">डार्क</string>
-    <string name="theme_dark_theme_mode">काला थीम</string>
     <string name="theme_black">काला</string>
     <string name="pref_qsb_color">रंग</string>
     <string name="app_actions_pref_title_in_search">ऐक्शन</string>
