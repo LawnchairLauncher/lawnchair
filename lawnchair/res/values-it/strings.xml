@@ -21,15 +21,14 @@
     <string name="pref_icon_packs">Pacchetti icone</string>
     <string name="icon_pack_default">Icone di sistema</string>
     <string name="pref_icon_pack_masking">Maschera icone</string>
-    <string name="pref_icon_pack_masking_summary">Abbina icone non temate al pacchetto icone.</string>
+    <string name="pref_icon_pack_masking_summary">Abbina icone senza tema al pacchetto icone.</string>
     <string name="pref_legacy_treatment_title">Genera icone adattive</string>
     <string name="pref_legacy_treatment_summary">Genera icone adattive per tutte le scorciatoie.</string>
-    <string name="pref_legacy_colored_backgrounds">Colora sfondi icone</string>
-    <string name="pref_legacy_colored_backgrounds_summary">Colora lo sfondo delle icone adattive generate.</string>
+    <string name="pref_legacy_colored_backgrounds">Colore Sfondi</string>
+    <string name="pref_legacy_colored_backgrounds_summary">Colora gli sfondi delle icone adattive generate.</string>
     <string name="pref_white_only_treatment">Rimpiazza sfondi bianchi</string>
     <string name="pref_white_only_treatment_summary">Colora lo sfondo di tutte le icone adattive.</string>
-    <string name="adaptify_pack_title">Genera icone adattive per il pacchetto icone</string>
-    <!-- Note: redundant. -->
+    <string name="adaptify_pack_title">Crea icone adattive per il pacchetto icone</string>
     <string name="icon_shape_override_label">Forma icone</string>
     <string name="reset_custom_icons">Ripristina icone personalizzate</string>
     <string name="reset_custom_icons_confirmation">Vuoi ripristinare le icone predefinite di questo pacchetto icone? Quest\'azione non può essere annullata.</string>
@@ -441,7 +440,7 @@
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <string name="title_app_suggestions">Applicazioni</string>
     <string name="theme_dark">Scuro</string>
-    <string name="theme_dark_theme_mode">Tema scuro</string>
+    <string name="theme_dark_theme_mode">Aspetto scuro</string>
     <string name="theme_dark_dark_text">Scuro con testo scuro</string>
     <string name="theme_black">Nero</string>
     <string name="theme_black_dark_text">Nero con testo scuro</string>
@@ -473,7 +472,7 @@
     <string name="allow">Concedi</string>
     <string name="deny">Nega</string>
     <string name="sesame_enable_integration_title">Condivisione dati</string>
-    <string name="sesame_enable_integration_description"><![CDATA[Vuoi abilitare la condivisione dei dati di utilizzo con Sesame? Puoi modificare questa opzione in seguito.]]></string>
+    <string name="sesame_enable_integration_description"><![CDATA[Abilitare la condivisione dei dati di utilizzo con Sesame? Puoi modificare questa opzione in seguito.]]></string>
     <string name="sesame_shortcut_disabled">Sesame non è attivo.</string>
     <string name="font_variant_italic">Corsivo</string>
     <string name="font_weight_thin">Sottile</string>
@@ -557,4 +556,6 @@
     <string name="gesture_nav_swipe_up_center">Dal centro</string>
     <string name="gesture_nav_swipe_up_right">Da destra</string>
     <string name="action_switch_apps">Cambia app</string>
+    <string name="icon_shape_system_default">Impostato dal sistema</string>
+    <string name="title_missing_notification_access">Accesso alle notifiche necessario.</string>
 </resources>
