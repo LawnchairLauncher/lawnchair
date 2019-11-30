@@ -13,30 +13,29 @@
     <string name="change_default_home">Сделать лаунчер основным</string>
     <string name="action_apply">Готово</string>
     <!-- Note: new. Replaces “OK” in dialogs. -->
-    <string name="theme_dark_theme_mode_on">Включено</string>
-    <string name="theme_dark_theme_mode_off">Выключен</string>
+    <string name="theme_dark_theme_mode_on">Включена</string>
+    <string name="theme_dark_theme_mode_off">Выключена</string>
     <!-- Section 2 -->
     <string name="theme_title">Тема</string>
     <string name="pixel_ui_pref_summary">Иконки, цвета, размытие</string>
-    <string name="pref_icon_packs">Набор значков</string>
+    <string name="pref_icon_packs">Наборы иконок</string>
     <string name="icon_pack_default">Системные иконки</string>
-    <string name="pref_icon_pack_masking">Форма значков</string>
-    <string name="pref_icon_pack_masking_summary">Сопоставить стандартные иконки с набором значков.</string>
-    <string name="pref_legacy_treatment_title">Создать адаптивные иконки</string>
-    <string name="pref_legacy_treatment_summary">Создать адаптивные иконки для всех ярлыков.</string>
+    <string name="pref_icon_pack_masking">Форма иконок</string>
+    <string name="pref_icon_pack_masking_summary">Подогнать стандартные иконки под набор иконок.</string>
+    <string name="pref_legacy_treatment_title">Создавать адаптивные иконки</string>
+    <string name="pref_legacy_treatment_summary">Создавать адаптивные иконки для всех ярлыков.</string>
     <string name="pref_legacy_colored_backgrounds">Цветные фоны</string>
     <string name="pref_legacy_colored_backgrounds_summary">Цвет, подобранный по фону адаптивных иконок.</string>
     <string name="pref_white_only_treatment">Заменять белый фон</string>
-    <string name="pref_white_only_treatment_summary">Раскрасить фон у всех адаптивных иконок.</string>
-    <string name="adaptify_pack_title">Создать адаптивные иконки для набора иконок</string>
-    <!-- Note: redundant. -->
+    <string name="pref_white_only_treatment_summary">Раскрашивать фон всех адаптивных иконок.</string>
+    <string name="adaptify_pack_title">Создавать адаптивные иконки для набора иконок</string>
     <string name="icon_shape_override_label">Форма иконок</string>
     <string name="reset_custom_icons">Удалить пользовательские иконки</string>
     <string name="reset_custom_icons_confirmation">Вернуть исходные иконки из этого набора иконок? Вы не сможете это отменить.</string>
     <string name="appearance">Внешний вид</string>
     <!-- Note: new. Replaces title of 5th field (from bottom) in “Theme” page. -->
     <string name="theme_auto">Автоматически (на основе обоев)</string>
-    <string name="theme_auto_night_mode">Задано системой</string>
+    <string name="theme_auto_night_mode">Как в системе</string>
     <string name="theme_dark_theme_mode_follow_daylight">Автоматически (тёмная - ночью)</string>
     <string name="theme_light">Светлая</string>
     <string name="theme_dark_text">Светлая с тёмным текстом</string>
@@ -63,12 +62,12 @@
     <string name="overlap_placement">Разрешить перекрытие</string>
     <string name="lock_desktop">Заблокировать домашний экран</string>
     <string name="pref_category_icons">Ярлыки</string>
-    <string name="hide_icon_labels_pref_title">Скрыть подписи</string>
+    <string name="hide_icon_labels_pref_title">Скрывать названия</string>
     <string name="pref_mutliline_labels">Переносить названия</string>
     <string name="icon_text_scale_pref_title">Размер текста</string>
     <string name="text_color">Цвет текста</string>
     <string name="icon_scale_pref_title">Размер иконок</string>
-    <string name="auto_add_shortcuts_label">Добавить новые ярлыки на домашний экран</string>
+    <string name="auto_add_shortcuts_label">Добавлять новые ярлыки на домашний экран</string>
     <string name="pref_icon_popup_menu">Пузыри ярлыков</string>
     <string name="pref_category_misc">Другое</string>
     <string name="animation_type_title">Переход при открытии приложения</string>
@@ -79,7 +78,7 @@
     <string name="animation_type_slide_up">Скольжение вверх</string>
     <string name="animation_type_scale_up">Масштабирование</string>
     <string name="animation_type_blink">Мигание</string>
-    <string name="animation_type_fade">Прозрачность</string>
+    <string name="animation_type_fade">Затухание</string>
     <string name="icon_badging_title">Значки уведомлений</string>
     <string name="pref_notification_count_title">Показывать число уведомлений</string>
     <string name="allow_rotation_title">Разрешить поворот</string>
@@ -87,7 +86,7 @@
     <string name="pref_center_wallpaper_summary">Выключить прокрутку обоев.</string>
     <string name="pref_hide_statusbar">Скрыть статус-бар</string>
     <string name="full_width_width_widgets_pref_title">Широкие виджеты</string>
-    <string name="full_width_widgets_pref_summary">Разрешить растягивание виджетов до краёв экрана.</string>
+    <string name="full_width_widgets_pref_summary">Разрешить использование места до краёв экрана.</string>
     <string name="show_top_shadow_pref_title">Показывать тень сверху</string>
     <!-- Section 4 -->
     <string name="smartspace_preferences_in_settings">At a Glance</string>
@@ -99,7 +98,7 @@
     <string name="pref_hide_statusbar_clock">Скрыть часы в строке состояния</string>
     <string name="root_access_required">Требуется Root-доступ.</string>
     <string name="smartspace_time_24_h">Использовать 24-часовой формат</string>
-    <string name="title_use_pill_qsb">Показывать панель поиска в виде \"таблетки\"</string>
+    <string name="title_use_pill_qsb">Показывать панель поиска в виде таблетки</string>
     <string name="pref_category_weather">Другое</string>
     <string name="pref_smartspace_widget_provider">Источник погоды</string>
     <string name="google_app">Приложение Google</string>
@@ -124,7 +123,7 @@
     <string-array name="greetings_morning">
         <item>Доброе утро!</item>
         <item>Отличного дня!</item>
-        <item>Сегодня на улице прекрасно!</item>
+        <item>Сегодня прекрасный день!</item>
     </string-array>
     <string-array name="greetings_evening">
         <item>Как дела?</item>
@@ -133,22 +132,22 @@
         <item>Как прошёл ваш день?</item>
     </string-array>
     <string-array name="greetings_night">
-        <item>Хорошо выспись!</item>
+        <item>Хорошего сна!</item>
         <item>Увидимся завтра!</item>
         <item>Спокойной ночи!</item>
         <item>Не засиживайтесь допоздна!</item>
     </string-array>
     <string name="battery_charging">Зарядка батареи</string>
-    <string name="battery_full">Заряжено</string>
+    <string name="battery_full">Батарея заряжена</string>
     <string name="battery_low">Низкий заряд батареи</string>
     <!-- Section 5 -->
     <string name="dock_pref_title">Док-бар</string>
-    <string name="dock_pref_summary">Макет, стиль, индикаторы</string>
-    <string name="dock_fill">Показать фон</string>
+    <string name="dock_pref_summary">Макет, внешний вид, индикаторы</string>
+    <string name="dock_fill">Показывать фон</string>
     <string name="background_color">Цвет фона</string>
-    <string name="theme_based">Задано темой</string>
-    <string name="dock_shadow">Показать тень</string>
-    <string name="radius">Радиус закругления</string>
+    <string name="theme_based">Задан темой</string>
+    <string name="dock_shadow">Показывать тень</string>
+    <string name="radius">Радиус скругления</string>
     <string name="hotseat_show_arrow">Показывать стрелку</string>
     <string name="hotseat_show_page_indicator">Показывать индикатор страницы</string>
     <string name="two_row_dock">Показывать второй ряд</string>
@@ -157,16 +156,16 @@
     <string name="dock_colored_google">Цветные иконки</string>
     <!-- Section 6 -->
     <string name="app_drawer_pref_title">Меню приложений</string>
-    <string name="app_drawer_pref_summary">Макет, категории, предложения</string>
-    <string name="pref_category_theme">Стиль</string>
+    <string name="app_drawer_pref_summary">Макет, категории, рекомендации</string>
+    <string name="pref_category_theme">Внешний вид</string>
     <string name="pref_drawer_columns">Количество столбцов</string>
-    <string name="pref_prediction_count">Количество подсказок</string>
+    <string name="pref_prediction_count">Количество рекомендаций</string>
     <string name="pref_drawer_padding">Высота строки</string>
     <string name="hide_apps">Скрытые ярлыки приложений</string>
     <string name="categorization">Категории</string>
     <string name="pref_appcategorization_enable_title">Выбрать категорию приложений</string>
     <string name="pref_appcategorization_folders_title">Папки</string>
-    <string name="pref_appcategorization_folders_summary">Нажмите, чтобы открыть Папки.</string>
+    <string name="pref_appcategorization_folders_summary">Нажмите, чтобы открыть папки.</string>
     <string name="pref_appcategorization_tabs_title">Вкладки</string>
     <string name="pref_appcategorization_tabs_summary">Свайпните, чтобы перемещаться между категориями.</string>
     <string name="pref_app_groups_edit_tip">Нажмите, чтобы редактировать и потяните, чтобы переупорядочить.</string>
@@ -188,8 +187,8 @@
     <string name="category_news">Новости</string>
     <string name="category_personalization">Персонализация</string>
     <string name="category_photography">Фотография</string>
-    <string name="category_tools">Утилиты</string>
-    <string name="category_travel_and_navigation">Путешествия &amp; навигация</string>
+    <string name="category_tools">Инструменты</string>
+    <string name="category_travel_and_navigation">Навигация &amp; путешествия</string>
     <string name="select_tab_type">Создать вкладку</string>
     <string name="tab_type_smart">Автоматически</string>
     <string name="pref_appcategorization_flowerpot_summary">Выбрать ярлыки автоматически.</string>
@@ -198,22 +197,22 @@
     <string name="pref_appcategorization_flowerpot_title">Категории приложений</string>
     <string name="title_all_apps_search">Показывать панель поиска</string>
     <string name="title_all_apps_google_search">Использовать глобальный поиск</string>
-    <string name="summary_all_apps_google_search">Находить веб-сайты, контакты и приложения.</string>
-    <string name="title_search_hidden_apps">Находить скрытые ярлыки и приложения</string>
+    <string name="summary_all_apps_google_search">Находите веб-сайты, контакты и приложения.</string>
+    <string name="title_search_hidden_apps">Находить скрытые приложения</string>
     <string name="summary_search_hidden_apps">Показывать скрытые приложения в результатах поиска.</string>
     <string name="suggestion_pref_screen_title">Подсказки</string>
-    <string name="title_app_suggestions_in_search">Рекомендуемые приложения</string>
+    <string name="title_app_suggestions_in_search">Рекомендованные приложения</string>
     <string name="app_actions_pref_title">Действия</string>
     <string name="app_actions_pref_desc">Ярлыки к часто используемым экранам.</string>
     <string name="app_actions_reset_pref_title">Сброс предпочтений действий</string>
     <string name="app_actions_reset_pref_summary">Показать Действия, перемещённые в \"Не показывать\".</string>
-    <string name="all_apps_label_pref_title">Показать надпись \"Все приложения\"</string>
+    <string name="all_apps_label_pref_title">Показывать надпись \"Все приложения\"</string>
     <string name="separate_work_apps_pref_title">Вторая вкладка для рабочих приложений</string>
-    <string name="keep_scroll_state_pref_title">Запомнить позицию</string>
+    <string name="keep_scroll_state_pref_title">Запоминать позицию прокрутки</string>
     <!-- Section 7 -->
     <string name="search">Поиск</string>
-    <string name="search_pref_summary">Макет, стиль, поисковый движок</string>
-    <string name="pref_global_search_provider">Поисковый движок</string>
+    <string name="search_pref_summary">Макет, внешний вид, поисковая система</string>
+    <string name="pref_global_search_provider">Поисковая система</string>
     <string name="google">Приложение Google</string>
     <string name="search_provider_google_go">Google Go</string>
     <string name="web_search_google">Google</string>
@@ -237,12 +236,12 @@
     <string name="search_provider_qwant">Qwant</string>
     <string name="search_provider_edge">Edge</string>
     <string name="weather_provider_oneplus_weather">Погода OnePlus</string>
-    <string name="searchbar_appearance_title">Стиль</string>
+    <string name="searchbar_appearance_title">Внешний вид</string>
     <string name="pref_show_assistant_title">Показывать кнопку голосового поиска</string>
-    <string name="action_assistant">Запустить Ассистента</string>
+    <string name="action_assistant">Запускать Ассистента</string>
     <string name="pref_show_as_assistant_summary">Запускать Ассистента вместо голосового поиска.</string>
     <string name="bubble_searchbar">Показывать два пузыря</string>
-    <string name="pref_search_bar_radius">Радиус закругления</string>
+    <string name="pref_search_bar_radius">Радиус скругления</string>
     <!-- Section 8 -->
     <string name="pref_integrations">Плагины</string>
     <string name="pref_integrations_summary">Ярлыки Sesame, Лента Google</string>
@@ -250,17 +249,17 @@
     <string name="sesame_data_integration">Обмен данными</string>
     <string name="sesame_upsell">Нажмите, чтобы установить Sesame.</string>
     <string name="pref_sesame_show_shortcuts">Показывать в пузырях ярлыков</string>
-    <string name="sesame_search_engine">Использовать как поисковый движок</string>
-    <string name="pref_sesame_sync_look_and_feel">Поделиться настройками отображения</string>
+    <string name="sesame_search_engine">Использовать как поисковую систему</string>
+    <string name="pref_sesame_sync_look_and_feel">Делиться настройками внешнего вида</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Применить настройки поля поиска к полю Sesame.</string>
     <string name="sesame_version">Версия библиотеки</string>
-    <string name="title_show_google_app">Показывать Ленту %1$s</string>
+    <string name="title_show_google_app">Показывать ленту %1$s</string>
     <string name="feed_theme_pref_title">Цвет фона</string>
     <!-- Section 9 -->
     <string name="gestures_pref_title">Жесты</string>
     <string name="gestures_pref_summary">Двойное нажатие, свайп вверх от док-бара</string>
     <string name="gesture_double_tap">Двойное нажатие</string>
-    <string name="gesture_long_press">Нажмите &amp; удерживайте</string>
+    <string name="gesture_long_press">Нажатие &amp; удержание</string>
     <string name="gesture_press_home">Нажатие кнопки \"Домой\"</string>
     <string name="gesture_press_back">Нажатие кнопки \"Назад\"</string>
     <string name="gesture_swipe_down">Свайп вниз</string>
@@ -275,8 +274,8 @@
     <string name="action_despacito">Воспроизвести \"YouTube Rewind 2018\" (Искажённый)</string>
     <string name="action_open_app">Открыть приложение</string>
     <!-- Section 10 -->
-    <string name="backups">Резервные копии и восстановление</string>
-    <string name="backup_pref_summary">Сохранить настройки рабочего стола, восстановить из резервных копий</string>
+    <string name="backups">Резервное копирование &amp; восстановление</string>
+    <string name="backup_pref_summary">Сохранение настроек домашнего экрана и восстановление из резервных копий</string>
     <string name="new_backup">Создать</string>
     <string name="restore_backup">Восстановить</string>
     <string name="local_backups">В локальном хранилище</string>
@@ -289,7 +288,7 @@
     <string name="name">Название</string>
     <string name="backup_location">Расположение</string>
     <string name="backup_location_device_storage">Папка \"Lawnchair\"</string>
-    <string name="custom">Пользовательский</string>
+    <string name="custom">Пользовательское</string>
     <!-- Section 11 -->
     <string name="about">О программе</string>
     <string name="about_pref_summary">Команда, ссылки, лицензии</string>
@@ -311,11 +310,11 @@
     <string name="about_our_team">Команда</string>
     <string name="title_attribouter_licenses">Об использовании сторонних библиотек</string>
     <!-- Section 12 -->
-    <string name="settings_button_text">Настройки домашней страницы</string>
+    <string name="settings_button_text">Настройки домашнего экрана</string>
     <string name="button_organize_screens">Упорядочить страницы</string>
     <string name="wallpaper_button_text">Обои</string>
     <string name="pref_app_groups_create">Создать</string>
-    <string name="pref_appcategorization_style_text">Стиль</string>
+    <string name="pref_appcategorization_style_text">Внешний вид</string>
     <string name="customize">Настройка</string>
     <plurals name="tab_apps_count">
         <item quantity="one">%1$d приложение</item>
@@ -324,18 +323,18 @@
         <item quantity="other">%1$d приложений</item>
     </plurals>
     <string name="advanced_settings">Больше настроек</string>
-    <string name="adaptive_icon">Адаптивные иконки</string>
+    <string name="adaptive_icon">Адаптивная иконка</string>
     <string name="action_edit">Редактировать</string>
     <string name="dismiss_drop_target_label">"Не показывать"</string>
     <string name="suggested_action_content_description">\"%1$s\" открывается в \"%2$s\".</string>
     <string name="smartspace_setup_text">Нажмите, чтобы настроить</string>
     <string name="lawnchair_settings">Настройки Lawnchair</string>
     <string name="label_voice_search">Голосовой поиск</string>
-    <string name="icon_pack">Набор значков</string>
+    <string name="icon_pack">Набор иконок</string>
     <string name="home_widget">Виджет \"At a Glance\"</string>
     <string name="about_app_version">Версия</string>
     <string name="app_name_pixel_launcher">Pixel Launcher</string>
-    <string name="title_disable_suggestions_prompt">Отключить подсказки приложений</string>
+    <string name="title_disable_suggestions_prompt">Отключить рекомендации приложений</string>
     <string name="msg_disable_suggestions_prompt">"Данные об использовании будут удалены."</string>
     <string name="pixel_style_pref_title">Google Pixel</string>
     <string name="label_turn_off_suggestions">Не показывать</string>
@@ -346,7 +345,7 @@
     <string name="hide_app_apply">Готово</string>
     <string name="hide_dock_gradient">Отключить градиент</string>
     <string name="choose_backup_path">Открыть</string>
-    <string name="backup_error_blank_name">Имя резервной копии.</string>
+    <string name="backup_error_blank_name">Введите название резервной копии.</string>
     <string name="backup_error_blank_location">Выберите расположение резервной копии.</string>
     <string name="backup_error_blank_contents">Добавьте содержимое резервной копии.</string>
     <string name="backup_creating">Создание резервной копии...</string>
@@ -368,7 +367,7 @@
     <string name="read_external_storage_required">Для сохранения резервной копии, предоставьте доступ к хранилищу.</string>
     <string name="launcher_theme_override_label">Принудительно включить тёмный режим</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
-    <string name="dock_style_pref_title">Стиль док-бара</string>
+    <string name="dock_style_pref_title">Внешний вид док-бара</string>
     <string name="dock_style_p">Android Pie</string>
     <string name="dock_style_n">Android Nougat</string>
     <string name="dock_style_hidden">Скрыт</string>
@@ -382,7 +381,7 @@
     <string name="pref_category_aag">Виджет \"At a Glance\"</string>
     <string name="pref_category_pixel_searchbar">Строка поиска Google Pixel</string>
     <string name="pref_category_layout">Макет</string>
-    <string name="title_attribouter_email">Адрес электронной почты</string>
+    <string name="title_attribouter_email">Электронная почта</string>
     <string name="title_attribouter_version">Версия %1$s</string>
     <string name="title_attribouter_license">Лицензия</string>
     <string name="title_attribouter_license_permissions">Разрешения</string>
@@ -409,14 +408,14 @@
     <string name="action_close_notifications">Закрыть панель уведомлений</string>
     <string name="action_open_app_with_target">Открыть \"%s\"</string>
     <string name="action_open_app_select_app">Выберите приложение</string>
-    <string name="smartspace_widget_provider_not_found">Скачать мобильное приложение Google.</string>
+    <string name="smartspace_widget_provider_not_found">Скачать приложение Google.</string>
     <string name="apps_label">Приложения</string>
     <string name="all_apps_label">Все приложения</string>
     <string name="pref_weather_city_title">Город</string>
     <string name="default_city">Люцерн, Швейцария</string>
     <string name="pref_weather_api_key_title">Ключ API</string>
     <string name="pref_weather_city_summary">Для наилучших результатов укажите код страны.</string>
-    <string name="all_icons">Все значки</string>
+    <string name="all_icons">Все иконки</string>
     <string name="error_no_browser">Браузер не найден.</string>
     <string name="no_icon_found">Иконка не найдена.</string>
     <string name="icon_pack_external_picker">Открыть внешнее приложение</string>
@@ -431,7 +430,7 @@
     <string name="pref_open_source_licenses_title">Лицензии</string>
     <string name="icon_pack_applied_toast">\"%s\" применён.</string>
     <string name="dt2s_admin_hint">Чтобы использовать двойное нажатие для блокировки экрана, предоставьте права администратора.</string>
-    <string name="dt2s_admin_warning">Двойное нажатие для блокировки будет отключено.</string>
+    <string name="dt2s_admin_warning">Двойное нажатие для блокировки экрана будет отключено.</string>
     <string name="color_presets">Предустановки</string>
     <string name="automatic_short">Авто</string>
     <string name="recent_task_option_force_stop">Принудительно остановить</string>
@@ -441,17 +440,16 @@
     <string name="enabled_icon_packs">Применён</string>
     <string name="lawnchair_actions">Действия</string>
     <string name="bridge_missing_title">Загрузить Lawnfeed</string>
-    <string name="bridge_missing_message">Чтобы использовать Ленту Google, установите Lawnfeed.</string>
+    <string name="bridge_missing_message">Чтобы использовать ленту Google, установите Lawnfeed.</string>
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <string name="title_app_suggestions">Приложения</string>
     <string name="theme_dark">Тёмная</string>
-    <string name="theme_dark_theme_mode">Тёмная тема</string>
-    <string name="theme_dark_dark_text">Тёмный с тёмным текстом</string>
+    <string name="theme_dark_dark_text">Тёмная с тёмным текстом</string>
     <string name="theme_black">Чёрная</string>
-    <string name="theme_black_dark_text">Чёрный с тёмным текстом</string>
+    <string name="theme_black_dark_text">Чёрная с тёмным текстом</string>
     <string name="theme_dark_theme_mode_follow_wallpaper">Тёмная тема: следовать цвету обоев</string>
     <string name="pref_qsb_color">Цвет</string>
-    <string name="hide_from_predictions">Скрыть из подсказок</string>
+    <string name="hide_from_predictions">Скрыть из рекомендуемых</string>
     <string name="recents_not_connected">QuickSwitch не используется.</string>
     <string name="app_actions_pref_title_in_search">Действия</string>
     <string name="search_clear_history">Очистить историю</string>
@@ -464,20 +462,19 @@
     <string name="tabs_manage">Управление</string>
     <string name="tab_manage_apps">Управление приложениями</string>
     <string name="tab_bottom_sheet_save">Готово</string>
-    <string name="selected_count">Выбрано %1$d</string>
+    <string name="selected_count">%1$d выбрано</string>
     <string name="tab_hide_from_main">Скрыть из основной вкладки</string>
     <string name="tab_color">Цвет</string>
     <string name="delete">Удалить</string>
     <string name="none">Ничего</string>
-    <string name="undo">Отмена</string>
+    <string name="undo">Отменить</string>
     <string name="shortcut_sesame">Ярлыки</string>
     <string name="pref_sesame_enabled">Делиться данными использования с Sesame.</string>
     <string name="pref_sesame_disabled">Данные об использовании не были переданы.</string>
     <string name="allow">Разрешить</string>
     <string name="deny">Отказать</string>
     <string name="sesame_enable_integration_title">Обмен данными</string>
-    <string name="sesame_enable_integration_description"><![CDATA[Делиться данными использования с Sesame? Вы сможете отключить это позже.]]></string>
-    <string name="sesame_shortcut_disabled">Sesame отключен.</string>
+    <string name="sesame_shortcut_disabled">Sesame не используется.</string>
     <string name="font_variant_italic">Курсив</string>
     <string name="font_weight_thin">Тонкий</string>
     <string name="font_weight_extra_light">Очень тонкий</string>
@@ -496,9 +493,9 @@
     <string name="pref_fonts_home_shortcuts">Пузыри ярлыков</string>
     <string name="pref_fonts_category_drawer">Меню приложений</string>
     <string name="pref_fonts_drawer_icons">Названия приложений</string>
-    <string name="pref_fonts_drawer_app_actions_icons">Действия</string>
+    <string name="pref_fonts_drawer_app_actions_icons">Названия действий</string>
     <string name="pref_fonts_drawer_tabs">Названия вкладок</string>
-    <string name="pref_fonts_find_fonts">Поиск</string>
+    <string name="pref_fonts_find_fonts">В поиске</string>
     <string name="pref_fonts_add_fonts">Добавить шрифты</string>
     <string name="pref_fonts_add_fonts_summary">Поддерживаются форматы OTF &amp; TTF.</string>
     <string name="pref_fonts_missing_font">Шрифт не найден.</string>
@@ -529,24 +526,24 @@
     <string name="permission_iplocate">Приблизительное местоположение</string>
     <string name="permission_iplocate_twilight_explanation">Разрешить доступ к местоположению? Это позволит более точно считать время дневного света.</string>
     <string name="event_provider_missing_notification_access">Чтобы использовать <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, включите уведомления от <xliff:g example="My App" id="name">%2$s</xliff:g></string>
-    <string name="event_provider_missing_notification_dots">Чтобы использовать <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, включите точки уведомлений.</string>
+    <string name="event_provider_missing_notification_dots">Чтобы использовать <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, включите значки уведомлений.</string>
     <string name="zen_mode_enabled">Включен режим \"Не беспокоить\".</string>
     <string name="crash_report_notif_title">%1$s был аварийно завершён</string>
-    <string name="onbording_settings_title">Настройка %s</string>
+    <string name="onbording_settings_title">Настроить %s</string>
     <string name="onbording_settings_summary">Нажмите &amp; удержите на домашнем экране.</string>
     <string name="onboarding_swipe_up">Свайпните вверх, чтобы открыть Меню приложений.</string>
     <string name="weather_icons_default">По умолчанию</string>
-    <string name="pref_weather_icon_pack">Набор значков погоды</string>
+    <string name="pref_weather_icon_pack">Набор иконок погоды</string>
     <string name="weather_icon_packs_not_supported">Не поддерживается вашим поставщиком погоды.</string>
     <string name="customnavbar_install">Нажмите, чтобы установить Custom Navigation Bar.</string>
     <string name="customnavbar_back_hiding">Скрыть кнопку «Назад»</string>
-    <string name="customnavbar_back_hiding_desc">Скрыть кнопку «Назад», когда она не нужна.</string>
-    <string name="icon_shape_top_left">Вверху слева</string>
-    <string name="icon_shape_top_right">Вверху справа</string>
-    <string name="icon_shape_bottom_left">Внизу слева</string>
-    <string name="icon_shape_bottom_right">Внизу справа</string>
+    <string name="customnavbar_back_hiding_desc">Скрывать кнопку «Назад», когда она не нужна.</string>
+    <string name="icon_shape_top_left">Сверху слева</string>
+    <string name="icon_shape_top_right">Сверху справа</string>
+    <string name="icon_shape_bottom_left">Снизу слева</string>
+    <string name="icon_shape_bottom_right">Снизу справа</string>
     <string name="icon_shape_corner_round">Скруглённый</string>
-    <string name="icon_shape_corner_squircle">Плавно</string>
+    <string name="icon_shape_corner_squircle">Квадрат со скругленными краями</string>
     <string name="icon_shape_corner_cut">Вырезать</string>
     <string name="smartspace_add_to_home">Добавить на домашний экран</string>
     <string name="get_lawnfeed">Загрузить Lawnfeed</string>
@@ -555,7 +552,7 @@
     <string name="quickstep_pref_summary">Жесты, внешний вид, навигация</string>
     <string name="swipe_up_to_switch_apps_title">Свайпните вверх для переключения между приложениями</string>
     <string name="swipe_left_to_go_back_title">Свайпните влево, чтобы вернуться</string>
-    <string name="pref_category_nav_swipe_up_gestures">Свайпните вверх</string>
+    <string name="pref_category_nav_swipe_up_gestures">Свайп вверх</string>
     <string name="gesture_nav_swipe_up_left">Слева</string>
     <string name="gesture_nav_swipe_up_center">От центра</string>
     <string name="gesture_nav_swipe_up_right">Справа</string>
