@@ -147,6 +147,12 @@
                 url="https://twitter.com/RickKode" />
         </me.jfenn.attribouter.wedges.ContributorWedge>
 
+        <!-- Moderator: dan -->
+        <me.jfenn.attribouter.wedges.ContributorWedge
+            name="^Daniel Felipe"
+            avatar="https://https://i.imgur.com/2SLWkNU.jpg"
+            task="^@string/about_role_mod_support"/>
+
         <!-- Magisk boi: Skittles9823 -->
         <me.jfenn.attribouter.wedges.ContributorWedge
             name="^Rhyse Simpson"
