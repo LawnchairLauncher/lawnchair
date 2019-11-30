@@ -7,14 +7,14 @@
     <string name="icu_abbrev_date"> dd MMMM</string>
     <!-- Section 1 -->
     <string name="search_menu">Buscar</string>
-    <string name="search_no_results">Búsqueda_sin_resultados</string>
+    <string name="search_no_results">Sin Resultados</string>
     <string name="restart_lawnchair_pref_title">Reiniciar</string>
-    <string name="developer_options_title">Opciones de desarrollador_titulo</string>
-    <string name="change_default_home">Establecer cómo pantalla de inicio</string>
+    <string name="developer_options_title">Opciones de Desarrollador</string>
+    <string name="change_default_home">Establecer como Pantalla de Inicio</string>
     <string name="action_apply">Hecho</string>
     <!-- Note: new. Replaces “OK” in dialogs. -->
     <string name="theme_dark_theme_mode_on">Habilitado</string>
-    <string name="theme_dark_theme_mode_off">Desactivado</string>
+    <string name="theme_dark_theme_mode_off">Deshabilitado</string>
     <!-- Section 2 -->
     <string name="theme_title">Tema</string>
     <string name="pixel_ui_pref_summary">Íconos, Colores, Difuminacion</string>
@@ -29,7 +29,6 @@
     <string name="pref_white_only_treatment">Remplazar fondos blancos</string>
     <string name="pref_white_only_treatment_summary">Colorear fondo de todos los iconos adaptativos.</string>
     <string name="adaptify_pack_title">Crear iconos adaptativos para el paquete de iconos</string>
-    <!-- Note: redundant. -->
     <string name="icon_shape_override_label">Forma de los iconos</string>
     <string name="reset_custom_icons">Restablecer Iconos personalizados</string>
     <string name="reset_custom_icons_confirmation">¿Quieres revertir al estado original este pack de iconos? Esta acción no puede deshacerse.</string>
@@ -50,12 +49,12 @@
     <string name="color_wallpaper_secondary">Fondo de Pantalla - Secundario</string>
     <string name="color_wallpaper_tertiary">Fondo de Pantalla - Terciario</string>
     <string name="pref_fonts_title">Fuentes</string>
-    <string name="blur_pref_title">Desenfoque</string>
-    <string name="blur_pref_summary">Desenfocar el fondo de la página.</string>
-    <string name="blur_radius_pref_title">Intensidad de desenfoque</string>
+    <string name="blur_pref_title">Difuminado</string>
+    <string name="blur_pref_summary">Difuminar el fondo de la página.</string>
+    <string name="blur_radius_pref_title">Intensidad de difuminado</string>
     <!-- Section 3 -->
     <string name="general_pref_title">Escritorio</string>
-    <string name="general_pref_summary">Capas, Bloquear escritorio, Transiciones</string>
+    <string name="general_pref_summary">Disposición, Bloquear escritorio, Transiciones</string>
     <string name="grid_size">Grilla de Iconos</string>
     <string name="grid_size_width">Anchura</string>
     <string name="grid_size_height">Altura</string>
@@ -71,23 +70,23 @@
     <string name="auto_add_shortcuts_label">Añadir nuevos accesos directos al Escritorio</string>
     <string name="pref_icon_popup_menu">Burbujas de atajo</string>
     <string name="pref_category_misc">Otros</string>
-    <string name="animation_type_title">Transición al abrir la aplicación</string>
+    <string name="animation_type_title">Transición al abrir aplicaciones</string>
     <string name="animation_type_default">Por defecto</string>
-    <string name="animation_type_pie">Android Pie 9.0</string>
+    <string name="animation_type_pie">Android Pie</string>
     <string name="animation_type_pie_like">Android Pie (Simulado)</string>
-    <string name="animation_type_reveal">Revelación</string>
+    <string name="animation_type_reveal">Revelar</string>
     <string name="animation_type_slide_up">Deslizar hacia arriba</string>
     <string name="animation_type_scale_up">Ampliar</string>
     <string name="animation_type_blink">Parpadeo</string>
     <string name="animation_type_fade">Desvanecer</string>
     <string name="icon_badging_title">Puntos de notificación</string>
-    <string name="pref_notification_count_title">Mostrar Contador de Notificación</string>
+    <string name="pref_notification_count_title">Mostrar Contador de Notificaciones</string>
     <string name="allow_rotation_title">Activar Rotación</string>
     <string name="pref_center_wallpaper">Centrar Fondo de Pantalla</string>
     <string name="pref_center_wallpaper_summary">Desactivar el scroll del Fondo de Pantalla.</string>
     <string name="pref_hide_statusbar">Esconder la Barra de Estado</string>
-    <string name="full_width_width_widgets_pref_title">Esconder Widgets</string>
-    <string name="full_width_widgets_pref_summary">Los widgets se deben estirar hasta los bordes de la pantalla.</string>
+    <string name="full_width_width_widgets_pref_title">Widgets Anchos</string>
+    <string name="full_width_widgets_pref_summary">Permitir estirar los Widgets hasta los bordes de la pantalla.</string>
     <string name="show_top_shadow_pref_title">Mostrar Sombra Superior</string>
     <!-- Section 4 -->
     <string name="smartspace_preferences_in_settings">De un vistazo</string>
@@ -110,7 +109,7 @@
     <string name="units_metric">Celsius</string>
     <string name="units_imperial">Fahrenheit</string>
     <string name="units_kelvin">Kelvin</string>
-    <string name="units_rakine">Valoración</string>
+    <string name="units_rakine">Rankine</string>
     <string name="units_newton">Newton</string>
     <string name="units_delisle">Delisle</string>
     <string name="units_reaumur">Réaumur</string>
@@ -130,7 +129,7 @@
         <item>¿Qué hay de nuevo?</item>
         <item>¡Buenas noches!</item>
         <item>¿Cómo fue tu día?</item>
-        <item>¡Buenas Noches!</item>
+        <item>¿Cómo estuvo tu día?</item>
     </string-array>
     <string-array name="greetings_night">
         <item>¡Que duermas bien!</item>
@@ -143,7 +142,7 @@
     <string name="battery_low">Batería baja</string>
     <!-- Section 5 -->
     <string name="dock_pref_title">Dock</string>
-    <string name="dock_pref_summary">Diseño, Estilo, Indicadores</string>
+    <string name="dock_pref_summary">Disposición, Estilo, Indicadores</string>
     <string name="dock_fill">Mostrar Fondo</string>
     <string name="background_color">Color de Fondo</string>
     <string name="theme_based">Ajustar por tema</string>
@@ -157,21 +156,21 @@
     <string name="dock_colored_google">Iconos Coloreados</string>
     <!-- Section 6 -->
     <string name="app_drawer_pref_title">Cajón de Aplicaciones</string>
-    <string name="app_drawer_pref_summary">Diseño, categorias, sugerencias</string>
+    <string name="app_drawer_pref_summary">Disposición, categorias, sugerencias</string>
     <string name="pref_category_theme">Estilo</string>
     <string name="pref_drawer_columns">Contador de Columnas</string>
     <string name="pref_prediction_count">Contador de sugerencias</string>
     <string name="pref_drawer_padding">Altura de la fila</string>
     <string name="hide_apps">Atajos de aplicación ocultos</string>
     <string name="categorization">Categorías</string>
-    <string name="pref_appcategorization_enable_title">Organizar Aplicaciones</string>
+    <string name="pref_appcategorization_enable_title">Categorizar Aplicaciones</string>
     <string name="pref_appcategorization_folders_title">Carpetas</string>
     <string name="pref_appcategorization_folders_summary">Toca para abrir carpetas.</string>
     <string name="pref_appcategorization_tabs_title">Pestañas</string>
     <string name="pref_appcategorization_tabs_summary">Desliza entre Categorías.</string>
     <string name="pref_app_groups_edit_tip">Toque para editar, arrastre para reordenar.</string>
     <plurals name="hidden_apps_count">
-        <item quantity="one">Oculto</item>
+        <item quantity="one">%1$d Oculto</item>
         <item quantity="other">%1$d Escondido</item>
     </plurals>
     <string name="category_business_and_productivity">Empresa &amp; Productividad</string>
@@ -221,7 +220,7 @@
     <string name="web_search_qwant">Qwant (en el Navegador)</string>
     <string name="web_search_ecosia">Ecosia (en el Navegador)</string>
     <string name="web_search_yandex">Yandex (en el Navegador)</string>
-    <string name="web_search_naver">Nacer (en el Navegador)</string>
+    <string name="web_search_naver">Naver (en el Navegador)</string>
     <string name="web_search_baidu">Baidu (en el Navegador)</string>
     <string name="search_provider_yandex">Yandex</string>
     <string name="search_provider_ddg">DuckDuckGo</string>
@@ -267,14 +266,14 @@
     <string name="action_none">No hacer nada</string>
     <string name="action_sleep">Apagar la pantalla</string>
     <string name="action_sleep_timeout">Apagar pantalla usando tiempo de pantalla</string>
-    <string name="action_open_settings">Abrir Opciones de Lawnchair</string>
+    <string name="action_open_settings">Abrir Config. de Lawnchair</string>
     <string name="action_open_notifications">Abrir panel de notificaciones</string>
     <string name="action_overlay">Abrir feed de Google</string>
-    <string name="action_despacito">Poner \"YouTube Rewind 2018\" (Distorsionado)</string>
+    <string name="action_despacito">Reproducir \"YouTube Rewind 2018\" (Distorsionado)</string>
     <string name="action_open_app">Abrir app</string>
     <!-- Section 10 -->
-    <string name="backups">Respaldar / Restaurar</string>
-    <string name="backup_pref_summary">Guardar aspecto de inicio, Restaurar copias de seguridad</string>
+    <string name="backups">Respaldar &amp; Restaurar</string>
+    <string name="backup_pref_summary">Guardar config. de Pantalla, Restaurar copias de seguridad</string>
     <string name="new_backup">Crear</string>
     <string name="restore_backup">Restaurar</string>
     <string name="local_backups">En almacenamiento</string>
@@ -282,7 +281,7 @@
     <string name="backup_contents">Data para añadir a copia de seguridad</string>
     <string name="restore_contents">Data para restaurar</string>
     <string name="backup_settings">Ajustes</string>
-    <string name="homescreen">Estilo de escritorio</string>
+    <string name="homescreen">Disposición de escritorio</string>
     <string name="backup_wallpaper">Fondo de Pantalla</string>
     <string name="name">Nombre</string>
     <string name="backup_location">Ubicación</string>
@@ -291,22 +290,22 @@
     <!-- Section 11 -->
     <string name="about">Acerca de</string>
     <string name="about_pref_summary">Equipo, enlaces, licencias</string>
-    <string name="about_translate">Traducción</string>
+    <string name="about_translate">Traducir</string>
     <string name="title_attribouter_rate">Puntuar</string>
     <string name="title_attribouter_website">Sitio Web</string>
     <string name="about_role_lead">Desarrollador líder</string>
     <string name="about_role_dev">Desarrollador</string>
     <string name="about_role_ui_ux_designer">Diseñador de IU</string>
     <string name="about_role_writer">Escritor</string>
-    <string name="about_role_dev_mod">Desarrollador &amp; / Moderador</string>
+    <string name="about_role_dev_mod">Desarrollador &amp; Moderador</string>
     <string name="about_role_designer">Diseñador</string>
     <string name="about_role_devops">Ingeniero DevOps</string>
     <string name="about_role_pr">Director de PR</string>
-    <string name="about_role_ops">Operaciones &amp; / Ingeniero de infraestructura</string>
-    <string name="about_role_mod_support">Representativo de soporte &amp; / Moderador</string>
-    <string name="about_role_family_member">Familiar</string>
+    <string name="about_role_ops">Operaciones &amp; Ingeniero de infraestructura</string>
+    <string name="about_role_mod_support">Representativo de soporte &amp; Moderador</string>
+    <string name="about_role_family_member">Miembro de la Familia</string>
     <string name="about_role_magisk_maintainer">Mantenedor del modulo QuickSwitch</string>
-    <string name="about_our_team">Desarrolladores</string>
+    <string name="about_our_team">El Equipo</string>
     <string name="title_attribouter_licenses">Atribuciones</string>
     <!-- Section 12 -->
     <string name="settings_button_text">Configuración de página de inicio</string>
@@ -320,7 +319,7 @@
         <item quantity="other">%1$d Aplicaciones</item>
     </plurals>
     <string name="advanced_settings">Configuración avanzada</string>
-    <string name="adaptive_icon">Icono adaptivo</string>
+    <string name="adaptive_icon">Icono adaptativo</string>
     <string name="action_edit">Editar</string>
     <string name="dismiss_drop_target_label">"No mostrar"</string>
     <string name="suggested_action_content_description">“%1$s” se abre en “%2$s”.</string>
@@ -340,7 +339,7 @@
     <string name="icon_shape_rounded_square">Cuadrado redondeado</string>
     <string name="hide_app_selected">“&#160;” ha sido escondida.</string>
     <string name="hide_app_apply">Hecho</string>
-    <string name="hide_dock_gradient">Deshabilitar degradado</string>
+    <string name="hide_dock_gradient">Deshabilitar gradiente</string>
     <string name="choose_backup_path">Explorar</string>
     <string name="backup_error_blank_name">Nombra tu copia de seguridad.</string>
     <string name="backup_error_blank_location">Seleccione la ubicación para la copia de seguridad.</string>
@@ -350,7 +349,7 @@
     <string name="loading">Cargando…</string>
     <string name="backup_timestamp">Creado</string>
     <string name="backup_share">Compartir</string>
-    <string name="backup_invalid">Copia de seguridad invalida.</string>
+    <string name="backup_invalid">Archivo de Copia de seguridad inválido.</string>
     <string name="backup_restoring">Restaurando...</string>
     <string name="backup_restarting">Reiniciando...</string>
     <string name="restore_success">Copia de seguridad restaurada.</string>
@@ -388,9 +387,9 @@
     <string name="title_attribouter_translators">Traductores</string>
     <string name="about_our_contributors">Colaboradores</string>
     <string name="about_our_family">Miembros de la familia</string>
-    <string name="about_bio_deletescape">Kotlin/ Desarrollador en Java. Interesado en todo Android.
+    <string name="about_bio_deletescape">Desarrollador en Java/Kotlin. Interesado en todo Android.
 Fundador de los proyectos Lawnchair y dogbin.</string>
-    <string name="about_bio_recoded">Programador y diseñador.</string>
+    <string name="about_bio_recoded">Programador y diseñador gráfico.</string>
     <string name="about_bio_josh">Diseñador gráfico independiente.</string>
     <string name="about_bio_harsh">Desarrollador en aplicaciones y librerías Android. Desarrollador principal en AOSiP.</string>
     <string name="about_bio_david">19 años de edad, convierte la cafeína y la pizza en código, provee hosting y da soporte a Lawnchair 24/7 por si algo sale mal. Contribuye a proyectos de código abierto y arregla errores durante su tiempo libre. Conocido anteriormente como Codebucket.</string>
@@ -461,7 +460,7 @@ Fundador de los proyectos Lawnchair y dogbin.</string>
     <string name="show_in_tabs">Pestañas</string>
     <string name="tabs_manage">Organizar</string>
     <string name="tab_manage_apps">Administrar Aplicaciones</string>
-    <string name="tab_bottom_sheet_save">Listo</string>
+    <string name="tab_bottom_sheet_save">Hecho</string>
     <string name="selected_count">%1$d Seleccionado</string>
     <string name="tab_hide_from_main">Ocultar de la Pestaña Principal</string>
     <string name="tab_color">Color</string>
@@ -529,14 +528,14 @@ Fundador de los proyectos Lawnchair y dogbin.</string>
     <string name="event_provider_missing_notification_access">Para usar <xliff:g example="My Provider" id="providerName">\"%1$s\"</xliff:g>, activa las notificaciones de <xliff:g example="My App" id="name">\"%2$s\".</xliff:g></string>
     <string name="event_provider_missing_notification_dots">Para usar <xliff:g example="My Provider" id="providerName">\"%1$s\"</xliff:g>, activa los Puntos de Notificación.</string>
     <string name="zen_mode_enabled">No Interrumpir está activado.</string>
-    <string name="crash_report_notif_title">%1$s ha Crasheado</string>
+    <string name="crash_report_notif_title">%1$s se detuvo</string>
     <string name="onbording_settings_title">Configurar %s</string>
-    <string name="onbording_settings_summary">Toca&amp; manteniendo en el Escritorio.</string>
+    <string name="onbording_settings_summary">Toca &amp; manteniendo en el Escritorio.</string>
     <string name="onboarding_swipe_up">Desliza para abrir el cajón de aplicaciones.</string>
     <string name="weather_icons_default">Por defecto</string>
     <string name="pref_weather_icon_pack">Pack de Iconos para el Tiempo</string>
     <string name="weather_icon_packs_not_supported">No soportado por tu proveedor de tiempo.</string>
-    <string name="customnavbar_install">Toca para instalar una Barra de Navegación Personalizada.</string>
+    <string name="customnavbar_install">Toca para instalar Custom Navigation Bar.</string>
     <string name="customnavbar_back_hiding">Ocultar Botón de Retroceder</string>
     <string name="customnavbar_back_hiding_desc">Ocultar el Botón de Retroceder cuando no es requerido.</string>
     <string name="icon_shape_top_left">Parte superior izquierda</string>
@@ -558,4 +557,6 @@ Fundador de los proyectos Lawnchair y dogbin.</string>
     <string name="gesture_nav_swipe_up_center">Desde el Centro</string>
     <string name="gesture_nav_swipe_up_right">Desde la Derecha</string>
     <string name="action_switch_apps">Alternar aplicaciones</string>
+    <string name="icon_shape_system_default">Definido por el Sistema</string>
+    <string name="title_missing_notification_access">Se necesita acceso a Notificationes.</string>
 </resources>
