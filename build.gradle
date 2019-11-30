@@ -30,7 +30,7 @@ if (localPropsFile.exists()) {
     localProps.load(localPropsFile.newDataInputStream())
 }
 
-def publicBranches = ["alpha", "beta"]
+def publicBranches = ["alpha", "beta", "stable"]
 def ciBuild = localProps.getProperty("ciBuild") == "true" || System.getenv("CI_BUILD") == "true"
 def isPublicBuild = localProps.getProperty("public") == "true" || (ciBuild && publicBranches.contains(System.getenv("DRONE_BRANCH")))
 
