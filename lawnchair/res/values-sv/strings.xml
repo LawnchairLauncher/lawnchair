@@ -25,7 +25,6 @@
     <string name="pref_white_only_treatment">Ersätt vita bakgrunder</string>
     <string name="pref_white_only_treatment_summary">Färga alla adaptiva ikonbakgrunder.</string>
     <string name="adaptify_pack_title">Skapa adaptiva ikoner för ikonpaket</string>
-    <!-- Note: redundant. -->
     <string name="icon_shape_override_label">Form på Ikon</string>
     <string name="reset_custom_icons">Ta bort anpassade Ikoner</string>
     <string name="reset_custom_icons_confirmation">Återgå till standardikoner från detta Ikonpaket? Detta kan inte bli ogjort.</string>
@@ -245,7 +244,6 @@
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <string name="title_app_suggestions">Appar</string>
     <string name="theme_dark">Mörkt</string>
-    <string name="theme_dark_theme_mode">Mörkt tema</string>
     <string name="theme_black">Svart</string>
     <string name="pref_qsb_color">Färg</string>
     <string name="app_actions_pref_title_in_search">Åtgärder</string>
