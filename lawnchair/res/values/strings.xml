@@ -671,7 +671,7 @@
     <string name="deny">Deny</string>
 
     <string name="sesame_enable_integration_title">Data Sharing</string>
-    <string name="sesame_enable_integration_description"><![CDATA[Enables usage data sharing with Sesame? You can change this later.]]></string>
+    <string name="sesame_enable_integration_description"><![CDATA[Enable usage data sharing with Sesame? You can change this later.]]></string>
     <string name="sesame_shortcut_disabled">Sesame is disabled.</string>
 
     <string name="font_variant_italic">Italic</string>
