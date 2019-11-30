@@ -29,7 +29,6 @@
     <string name="pref_white_only_treatment">Înlocuiți fundalurile albe</string>
     <string name="pref_white_only_treatment_summary">Colorați toate fundalurile pentru Iconițe Adaptive.</string>
     <string name="adaptify_pack_title">Creați Iconițe Adaptive pentru Pachetul de Iconite</string>
-    <!-- Note: redundant. -->
     <string name="icon_shape_override_label">Forma Iconiței</string>
     <string name="reset_custom_icons">Elimină Iconițele Customizate</string>
     <string name="reset_custom_icons_confirmation">Reveniți la iconițele implicite din acest Pachet de Iconițe? Aceasta acțiune nu poate fi anulată.</string>
@@ -259,7 +258,6 @@
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <string name="title_app_suggestions">Aplicații</string>
     <string name="theme_dark">Întunecată</string>
-    <string name="theme_dark_theme_mode">Temă întunecată</string>
     <string name="theme_black">Neagră</string>
     <string name="pref_qsb_color">Culoare</string>
     <string name="app_actions_pref_title_in_search">Acțiuni</string>
