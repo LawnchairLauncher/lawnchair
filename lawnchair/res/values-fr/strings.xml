@@ -29,7 +29,6 @@
     <string name="pref_white_only_treatment">Remplacer les Fonds Blancs</string>
     <string name="pref_white_only_treatment_summary">Colorier tous les fonds d’Icônes Adaptatives.</string>
     <string name="adaptify_pack_title">Créer des Icônes Adaptatives pour le Pack d\'Icônes</string>
-    <!-- Note: redundant. -->
     <string name="icon_shape_override_label">Forme d\'Icône</string>
     <string name="reset_custom_icons">Supprimer les Icônes Personnalisées</string>
     <string name="reset_custom_icons_confirmation">Revenir aux icônes par défaut de ce Pack d\'Icônes ? Cela ne peut être annulé.</string>
@@ -442,7 +441,7 @@ corriges des bugs pendant son temps libre. Également connu précédemment sous 
     <string name="smartspace_provider_bridge">Pixel Bridge sans Root</string>
     <string name="title_app_suggestions">Applications</string>
     <string name="theme_dark">Sombre</string>
-    <string name="theme_dark_theme_mode">Thème sombre</string>
+    <string name="theme_dark_theme_mode">Thème Sombre</string>
     <string name="theme_dark_dark_text">Foncé avec texte foncé</string>
     <string name="theme_black">Noir</string>
     <string name="theme_black_dark_text">Foncé avec texte foncé</string>
@@ -474,7 +473,7 @@ corriges des bugs pendant son temps libre. Également connu précédemment sous 
     <string name="allow">Autoriser</string>
     <string name="deny">Annuler</string>
     <string name="sesame_enable_integration_title">Partage des données</string>
-    <string name="sesame_enable_integration_description"><![CDATA[Autoriser le partage des données avec Sesame? Vous pouvez le modifier après.]]></string>
+    <string name="sesame_enable_integration_description"><![CDATA[Activer le partage de données d'utilisation avec Sesame ? Vous pourrez changer cela plus tard.]]></string>
     <string name="sesame_shortcut_disabled">Sesame est désactivé.</string>
     <string name="font_variant_italic">Italique</string>
     <string name="font_weight_thin">Fin</string>
@@ -558,4 +557,6 @@ corriges des bugs pendant son temps libre. Également connu précédemment sous 
     <string name="gesture_nav_swipe_up_center">Depuis le centre</string>
     <string name="gesture_nav_swipe_up_right">Depuis la droite</string>
     <string name="action_switch_apps">Changer d\'applications</string>
+    <string name="icon_shape_system_default">Défini par le système</string>
+    <string name="title_missing_notification_access">Accès aux notifications requis.</string>
 </resources>
