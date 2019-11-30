@@ -29,7 +29,6 @@
     <string name="pref_white_only_treatment">Substituir os planos de fundos brancos</string>
     <string name="pref_white_only_treatment_summary">Colorir todos os planos de fundos dos ícones adaptáveis.</string>
     <string name="adaptify_pack_title">Criar ícones adaptáveis ​​para o pacote de ícones</string>
-    <!-- Note: redundant. -->
     <string name="icon_shape_override_label">Formato dos ícones</string>
     <string name="reset_custom_icons">Remover ícones personalizados</string>
     <string name="reset_custom_icons_confirmation">Reverter para os ícones padrão deste pacote? Isso não poderá ser desfeito.</string>
@@ -441,7 +440,6 @@
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <string name="title_app_suggestions">Aplicativos</string>
     <string name="theme_dark">Escuro</string>
-    <string name="theme_dark_theme_mode">Tema escuro</string>
     <string name="theme_dark_dark_text">Escuro com texto escuro</string>
     <string name="theme_black">Preto</string>
     <string name="theme_black_dark_text">Preto com Texto Escuro</string>
@@ -557,4 +555,6 @@
     <string name="gesture_nav_swipe_up_center">Do centro</string>
     <string name="gesture_nav_swipe_up_right">Da direita</string>
     <string name="action_switch_apps">Mudar de aplicação</string>
+    <string name="icon_shape_system_default">Definido pelo Sistema</string>
+    <string name="title_missing_notification_access">Acesso a notificações necessário.</string>
 </resources>
