@@ -18,7 +18,6 @@
     <string name="pref_legacy_treatment_title">ساختن آیکون‌های متحرک</string>
     <string name="pref_legacy_colored_backgrounds">پس‌زمینه‌های رنگی</string>
     <string name="pref_white_only_treatment">پس‌زمینه‌های سفید جایگزین شوند</string>
-    <!-- Note: redundant. -->
     <string name="appearance">ظاهر</string>
     <!-- Note: new. Replaces title of 5th field (from bottom) in “Theme” page. -->
     <string name="theme_light">روشن</string>
@@ -175,7 +174,6 @@
     <string name="smartspace_provider_bridge">پل پیکسل بدون روت</string>
     <string name="title_app_suggestions">برنامه‌ها</string>
     <string name="theme_dark">تیره</string>
-    <string name="theme_dark_theme_mode">تم تاریک</string>
     <string name="theme_black">مشکی</string>
     <string name="pref_qsb_color">رنگ</string>
     <string name="app_actions_pref_title_in_search">عملیات</string>
