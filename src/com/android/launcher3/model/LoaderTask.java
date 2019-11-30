@@ -19,7 +19,7 @@ package com.android.launcher3.model;
 import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_LOCKED_USER;
 import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_SAFEMODE;
 import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_SUSPENDED;
-import static com.android.launcher3.model.LoaderResults.filterCurrentWorkspaceItems;
+import static com.android.launcher3.model.ModelUtils.filterCurrentWorkspaceItems;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 import static com.android.launcher3.util.PackageManagerHelper.isSystemApp;
 
