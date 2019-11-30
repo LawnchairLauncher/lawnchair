@@ -29,7 +29,6 @@
     <string name="pref_white_only_treatment">替換白色背景</string>
     <string name="pref_white_only_treatment_summary">將所有自動調整圖示背景上色</string>
     <string name="adaptify_pack_title">在圖示套件上套用自動調整圖示</string>
-    <!-- Note: redundant. -->
     <string name="icon_shape_override_label">變更圖示形狀</string>
     <string name="reset_custom_icons">重設自訂圖示</string>
     <string name="reset_custom_icons_confirmation">是否還原預設圖示？此動作無法復原。</string>
@@ -439,7 +438,7 @@
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <string name="title_app_suggestions">應用程式</string>
     <string name="theme_dark">暗色</string>
-    <string name="theme_dark_theme_mode">深色主題</string>
+    <string name="theme_dark_theme_mode">強制使用暗色主題</string>
     <string name="theme_dark_dark_text">暗底黑字</string>
     <string name="theme_black">黑色</string>
     <string name="theme_black_dark_text">黑底暗字</string>
@@ -471,7 +470,6 @@
     <string name="allow">允許</string>
     <string name="deny">拒絕</string>
     <string name="sesame_enable_integration_title">資料共享</string>
-    <string name="sesame_enable_integration_description"><![CDATA[是否要啟用Sesame資料共享? 你可以在稍後改變這項設定]]></string>
     <string name="sesame_shortcut_disabled">Sesame 已停用</string>
     <string name="font_variant_italic">斜體</string>
     <string name="font_weight_thin">極細</string>
