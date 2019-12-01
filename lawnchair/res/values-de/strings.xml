@@ -439,7 +439,7 @@
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <string name="title_app_suggestions">Apps</string>
     <string name="theme_dark">Dunkel</string>
-    <string name="theme_dark_theme_mode">Dunkles Design</string>
+    <string name="theme_dark_theme_mode">Dunkles Thema</string>
     <string name="theme_dark_dark_text">Dunkel mit dunklem Text</string>
     <string name="theme_black">Schwarz</string>
     <string name="theme_black_dark_text">Schwarz mit dunklem Text</string>
@@ -489,7 +489,7 @@
     <string name="pref_fonts_home_icons">Bezeichnungen</string>
     <string name="pref_fonts_home_smartspace">Auf einen Blick</string>
     <string name="pref_fonts_home_shortcuts">App-Verknüpfungen</string>
-    <string name="pref_fonts_category_drawer">App-Liste</string>
+    <string name="pref_fonts_category_drawer">App-Übersicht</string>
     <string name="pref_fonts_drawer_icons">Bezeichnungen</string>
     <string name="pref_fonts_drawer_app_actions_icons">Aktionen</string>
     <string name="pref_fonts_drawer_tabs">Tab-Namen</string>
@@ -503,7 +503,7 @@
     <string name="drawer_folders">Ordner</string>
     <string name="open_image_picker">Fotos öffnen</string>
     <string name="import_icon">Symbol importieren</string>
-    <string name="import_as_adaptive">Anpassungsfähiges Icon importieren</string>
+    <string name="import_as_adaptive">Anpassungsfähige Symbole importieren</string>
     <string name="about_app_description">Eine anpassbarer Startbildschirm für Android.</string>
     <string name="lawnchair_bug_report">Lawnchair Fehlerbericht</string>
     <string name="action_dogbin_upload">Auf Dogbin hochladen</string>
