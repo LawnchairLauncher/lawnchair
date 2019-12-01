@@ -381,8 +381,11 @@
     <string name="title_attribouter_translators">Translators</string>
     <string name="about_our_contributors">Contributors</string>
     <string name="about_our_family">Family Members</string>
+    <string name="about_bio_deletescape">Kotlin/Java developer. Interested in everything Android. Founder of the Lawnchair and dogbin projects.</string>
     <string name="about_bio_recoded">Mild coder and graphics designer.</string>
     <string name="about_bio_josh">Freelance graphic designer.</string>
+    <string name="about_bio_harsh">Android application and library developer. Core developer at AOSiP.</string>
+    <string name="about_bio_david">19 years old, turns caffeine and pizza into code, provides hosting and 24/7 support for Lawnchair if something goes wrong. Contributes to open source projects and fixes bugs during his free time. Also previously known as Codebucket.</string>
     <string name="about_bio_lumiq">It’s just got harder to build a bad product.</string>
     <string name="about_bio_paphonb">A 18-year-old student, Android Developer and one of the top developers at Lawnchair Launcher.</string>
     <string name="debug_crash_launcher">Force Stop</string>
@@ -430,7 +433,7 @@
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <string name="title_app_suggestions">Apps</string>
     <string name="theme_dark">Dark</string>
-    <string name="theme_dark_theme_mode">Dark Appearance</string>
+    <string name="theme_dark_theme_mode">Dark theme</string>
     <string name="theme_dark_dark_text">Dark w/ Dark Text</string>
     <string name="theme_black">Black</string>
     <string name="theme_black_dark_text">Black w/ Dark Text</string>
