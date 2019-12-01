@@ -98,7 +98,7 @@
     <string name="pref_hide_statusbar_clock">Durum Çubuğu Saatini Gizle</string>
     <string name="root_access_required">Kök erişimi gerekli.</string>
     <string name="smartspace_time_24_h">24 Saat Formatını Kullan</string>
-    <string name="title_use_pill_qsb">Hap Arama Kısayolunu Göster</string>
+    <string name="title_use_pill_qsb">Arama kısayol kutucuğunu göster</string>
     <string name="pref_category_weather">Diğer</string>
     <string name="pref_smartspace_widget_provider">Hava Durumu Kaynağı</string>
     <string name="google_app">Google Uygulaması</string>
@@ -441,7 +441,7 @@
     <string name="smartspace_provider_bridge">Rootless pixel bridge</string>
     <string name="title_app_suggestions">Uygulamalar</string>
     <string name="theme_dark">Karanlık</string>
-    <string name="theme_dark_theme_mode">Karanlık Görünüm</string>
+    <string name="theme_dark_theme_mode">Karanlık tema</string>
     <string name="theme_dark_dark_text">Karanlık w/ Koyu Metin</string>
     <string name="theme_black">Siyah</string>
     <string name="theme_black_dark_text">Siyah w/ Koyu Metin</string>
