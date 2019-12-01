@@ -435,6 +435,7 @@
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <string name="title_app_suggestions">Rakendused</string>
     <string name="theme_dark">Tume</string>
+    <string name="theme_dark_theme_mode">Tume teema</string>
     <string name="theme_dark_dark_text">Tume tumeda tekstiga</string>
     <string name="theme_black">Must</string>
     <string name="theme_black_dark_text">Tume musta tekstiga</string>
