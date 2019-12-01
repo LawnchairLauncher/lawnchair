@@ -21,4 +21,6 @@ Lawnchair is distributed under the [*GPLv3* license](https://www.gnu.org/license
 
 ## Links
 [![Join r/lawnchairlauncher](https://img.shields.io/reddit/subreddit-subscribers/lawnchairlauncher?label=Join%20r%2Flawnchairlauncher&style=social)](https://www.reddit.com/r/lawnchairlauncher)
+
+
 [![Follow @lawnchairapp on Twitter](https://img.shields.io/twitter/follow/lawnchairapp?style=social)](https://twitter.com/intent/follow?screen_name=lawnchairapp)
