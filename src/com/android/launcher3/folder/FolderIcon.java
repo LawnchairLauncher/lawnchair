@@ -655,11 +655,9 @@ public class FolderIcon extends FrameLayout implements FolderListener, OnResumeC
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        if (!mInfo.useIconMode(mLauncher)) {
+        if (!mInfo.useIconMode(mLauncher) && isInAppDrawer()) {
             DeviceProfile grid = mLauncher.getDeviceProfile();
-            int drawablePadding = isInAppDrawer() ?
-                    grid.allAppsIconDrawablePaddingPx :
-                    grid.iconDrawablePaddingPx;
+            int drawablePadding = grid.allAppsIconDrawablePaddingPx;
 
             Paint.FontMetrics fm = mFolderName.getPaint().getFontMetrics();
             int cellHeightPx = mFolderName.getIconSize() + drawablePadding +
