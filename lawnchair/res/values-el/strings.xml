@@ -10,6 +10,7 @@
     <string name="search_no_results">Κανένα αποτέλεσμα</string>
     <string name="restart_lawnchair_pref_title">Επανεκκίνηση</string>
     <string name="developer_options_title">Επιλογές για προγραμματιστές</string>
+    <string name="change_default_home">Εφαρμογή αρχικής σελίδας</string>
     <string name="action_apply">Τέλος</string>
     <!-- Note: new. Replaces “OK” in dialogs. -->
     <string name="theme_dark_theme_mode_on">Ενεργοποιημένο</string>
@@ -20,7 +21,11 @@
     <string name="pref_icon_packs">Πακέτα εικονιδίων</string>
     <string name="icon_pack_default">Εικονίδια συστήματος</string>
     <string name="pref_icon_pack_masking">Κάλυψη εικονιδίων</string>
+    <string name="pref_icon_pack_masking_summary">Αλλαγή υπαρκτών εικονιδίων με την εμφάνηση του πακέτου εικονιδίων.</string>
+    <string name="pref_legacy_treatment_summary">Δημιουργία προσδιορισμένων εικονιδίων για όλες τις συντομεύσεις.</string>
     <string name="pref_legacy_colored_backgrounds">Φόντα Χρωμάτων</string>
+    <string name="pref_legacy_colored_backgrounds_summary">Χρωματιστή φόντου των αυτόματα δημιουργουμένων Προσαρμοσμένων Εικονιδίων.</string>
+    <string name="pref_white_only_treatment">Υποκατάσταση Άσπρων Φόντων</string>
     <string name="icon_shape_override_label">Σχήμα Εικονιδίων</string>
     <string name="appearance">Εμφάνιση</string>
     <!-- Note: new. Replaces title of 5th field (from bottom) in “Theme” page. -->
@@ -222,6 +227,7 @@
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <string name="title_app_suggestions">Εφαρμογές</string>
     <string name="theme_dark">Σκοτεινό</string>
+    <string name="theme_dark_theme_mode">Σκοτεινό θέμα</string>
     <string name="theme_black">Μαύρο</string>
     <string name="theme_dark_theme_mode_follow_wallpaper">@string/theme_auto</string>
     <string name="theme_dark_theme_mode_follow_system">@string/theme_auto_night_mode</string>
