@@ -265,6 +265,7 @@
     <string name="gesture_dock_swipe_up">Omhoog vegen vanuit dock</string>
     <string name="action_none">Niets doen</string>
     <string name="action_sleep">Slaapstand</string>
+    <string name="action_sleep_timeout">Slaapstand door scherm time-out</string>
     <string name="action_open_settings">Open Lawnchair instellingen</string>
     <string name="action_open_notifications">Open notificatiepaneel</string>
     <string name="action_overlay">Open Google Feed</string>
@@ -439,7 +440,7 @@
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <string name="title_app_suggestions">Apps</string>
     <string name="theme_dark">Donker</string>
-    <string name="theme_dark_theme_mode">Donker uiterlijk</string>
+    <string name="theme_dark_theme_mode">Donker thema</string>
     <string name="theme_dark_dark_text">Donker met donkere text</string>
     <string name="theme_black">Zwart</string>
     <string name="theme_black_dark_text">Zwart met donkere text</string>
@@ -516,6 +517,7 @@
     <string name="status_channel_name">Uploadstatus</string>
     <string name="bugreport_group_summary">%d nieuwe foutrapporten.</string>
     <string name="bugreport_group_summary_multiple">Meerdere nieuwe foutrapporten.</string>
+    <string name="folder_cover_mode">Omslagmodus gebruiken</string>
     <string name="folder_cover_mode_desc">Tik om eerste app te openen, veeg omhoog om map te openen.</string>
     <string name="icon_shape_override_miui_explaination">Een fout in MIUI kan ervoor zorgen dat iconen vierkant blijven.</string>
     <string name="permission_iplocate">Geschatte lokatie</string>
@@ -530,6 +532,7 @@
     <string name="onboarding_swipe_up">Veeg omhoog om de lade te openen.</string>
     <string name="weather_icons_default">Standaard</string>
     <string name="pref_weather_icon_pack">Weer iconen pakket</string>
+    <string name="weather_icon_packs_not_supported">Niet ondersteund door je weerbron.</string>
     <string name="customnavbar_install">Tik om aangepaste navigatiebalk te installeren.</string>
     <string name="customnavbar_back_hiding">Verberg terugknop</string>
     <string name="customnavbar_back_hiding_desc">Terugknop verbergen als deze niet nodig is.</string>
@@ -540,7 +543,7 @@
     <string name="icon_shape_corner_round">Rond</string>
     <string name="icon_shape_corner_squircle">Vloeiend</string>
     <string name="icon_shape_corner_cut">Afgesneden</string>
-    <string name="smartspace_add_to_home">Toevoegen aan bureaublad</string>
+    <string name="smartspace_add_to_home">Toevoegen aan startscherm</string>
     <string name="get_lawnfeed">Download Lawnfeed</string>
     <!-- Section 13 -->
     <string name="quickstep_pref_title">Recente apps</string>
@@ -549,9 +552,9 @@
     <string name="swipe_left_to_go_back_title">Veeg naar links om terug te gaan</string>
     <string name="pref_category_nav_swipe_up_gestures">Omhoog vegen</string>
     <string name="gesture_nav_swipe_up_left">Vanaf links</string>
-    <string name="gesture_nav_swipe_up_center">Vanaf het midden</string>
+    <string name="gesture_nav_swipe_up_center">Vanaf midden</string>
     <string name="gesture_nav_swipe_up_right">Vanaf rechts</string>
-    <string name="action_switch_apps">Van app wisselen</string>
+    <string name="action_switch_apps">Apps wisselen</string>
     <string name="icon_shape_system_default">Door systeem ingesteld</string>
     <string name="title_missing_notification_access">Toegang tot meldingen vereist.</string>
 </resources>
