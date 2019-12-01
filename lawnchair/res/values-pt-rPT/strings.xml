@@ -438,6 +438,7 @@
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <string name="title_app_suggestions">Aplicações</string>
     <string name="theme_dark">Escuro</string>
+    <string name="theme_dark_theme_mode">Tema escuro</string>
     <string name="theme_dark_dark_text">Escuro com texto escuro</string>
     <string name="theme_black">Preto</string>
     <string name="theme_black_dark_text">Preto com texto escuro</string>
