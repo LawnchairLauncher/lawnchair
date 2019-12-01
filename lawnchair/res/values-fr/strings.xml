@@ -441,7 +441,7 @@ corriges des bugs pendant son temps libre. Également connu précédemment sous 
     <string name="smartspace_provider_bridge">Pixel Bridge sans Root</string>
     <string name="title_app_suggestions">Applications</string>
     <string name="theme_dark">Sombre</string>
-    <string name="theme_dark_theme_mode">Thème Sombre</string>
+    <string name="theme_dark_theme_mode">Thème sombre</string>
     <string name="theme_dark_dark_text">Foncé avec texte foncé</string>
     <string name="theme_black">Noir</string>
     <string name="theme_black_dark_text">Foncé avec texte foncé</string>
