@@ -6,7 +6,7 @@
     <string name="icu_abbrev_time_12h">hh:mm aa</string>
     <string name="icu_abbrev_date"> dd MMMM</string>
     <!-- Section 1 -->
-    <string name="search_menu">Hledat</string>
+    <string name="search_menu">Vyhledávání</string>
     <string name="search_no_results">Žádné výsledky</string>
     <string name="restart_lawnchair_pref_title">Restartovat</string>
     <string name="developer_options_title">Možnosti pro vývojáře</string>
@@ -23,7 +23,7 @@
     <string name="pref_icon_pack_masking">Maskování ikon</string>
     <string name="pref_icon_pack_masking_summary">Sjednotit vzhled ikon bez motivu se vzhledem balíčku ikon.</string>
     <string name="pref_legacy_treatment_title">Vytvořit adaptivní ikony</string>
-    <string name="pref_legacy_treatment_summary">Vytvořit adaptivní ikony pro všechny zkratky.</string>
+    <string name="pref_legacy_treatment_summary">Vytvořit adaptivní ikony pro všechny zástupce.</string>
     <string name="pref_legacy_colored_backgrounds">Podbarvená pozadí</string>
     <string name="pref_legacy_colored_backgrounds_summary">Generovaná podbarvení pozadí pro adaptivní ikony.</string>
     <string name="pref_white_only_treatment">Nahradit bílá pozadí</string>
@@ -54,8 +54,8 @@
     <string name="blur_radius_pref_title">Intenzita rozostření</string>
     <!-- Section 3 -->
     <string name="general_pref_title">Plocha</string>
-    <string name="general_pref_summary">Rozložení, uzamčení plochy, přechody</string>
-    <string name="grid_size">Mřížka ikon</string>
+    <string name="general_pref_summary">Rozložení, uzamčení plochy, animace</string>
+    <string name="grid_size">Rozměr mřížky ikon</string>
     <string name="grid_size_width">Šířka</string>
     <string name="grid_size_height">Výška</string>
     <string name="num_hotseat_icons_pref_title">Počet ikon</string>
@@ -67,21 +67,21 @@
     <string name="icon_text_scale_pref_title">Velikost textu</string>
     <string name="text_color">Barva textu</string>
     <string name="icon_scale_pref_title">Velikost ikon</string>
-    <string name="auto_add_shortcuts_label">Přidat zástupce nových aplikací na plochu</string>
-    <string name="pref_icon_popup_menu">Bublina zástupce</string>
+    <string name="auto_add_shortcuts_label">Přidávat zástupce nových aplikací na plochu</string>
+    <string name="pref_icon_popup_menu">Možnosti v\u00a0bublině zástupce</string>
     <string name="pref_category_misc">Ostatní</string>
-    <string name="animation_type_title">Přechod spuštění aplikace</string>
+    <string name="animation_type_title">Animace spuštění aplikace</string>
     <string name="animation_type_default">Výchozí</string>
     <string name="animation_type_pie">Android Pie</string>
-    <string name="animation_type_pie_like">Android Pie (napodobený)</string>
+    <string name="animation_type_pie_like">Android Pie (napodobená)</string>
     <string name="animation_type_reveal">Odhalení</string>
     <string name="animation_type_slide_up">Posunutí nahoru</string>
     <string name="animation_type_scale_up">Zvětšení</string>
     <string name="animation_type_blink">Bliknutí</string>
     <string name="animation_type_fade">Vyblednutí</string>
     <string name="icon_badging_title">Puntíky s oznámením</string>
-    <string name="pref_notification_count_title">Zobrazit počet oznámení</string>
-    <string name="allow_rotation_title">Povolit otáčení</string>
+    <string name="pref_notification_count_title">Zobrazit v\u00a0puntících počet oznámení</string>
+    <string name="allow_rotation_title">Povolit otáčení plochy</string>
     <string name="pref_center_wallpaper">Vycentrovat tapetu</string>
     <string name="pref_center_wallpaper_summary">Zakázat posouvání tapety.</string>
     <string name="pref_hide_statusbar">Skrýt stavový řádek</string>
@@ -98,7 +98,7 @@
     <string name="pref_hide_statusbar_clock">Skrýt hodiny ze stavového řádku</string>
     <string name="root_access_required">Je vyžadováno oprávnění root.</string>
     <string name="smartspace_time_24_h">Používat 24hodinový formát</string>
-    <string name="title_use_pill_qsb">Zobrazit pilulkovou zkratku vyhledávání</string>
+    <string name="title_use_pill_qsb">Zobrazit pilulkového zástupce pro vyhledávání</string>
     <string name="pref_category_weather">Ostatní</string>
     <string name="pref_smartspace_widget_provider">Poskytovatel informací o\u00a0počasí</string>
     <string name="google_app">Aplikace Google</string>
@@ -118,7 +118,7 @@
     <string name="battery_status">Stav baterie</string>
     <string name="event_provider_now_playing">Nyní se přehrává</string>
     <string name="event_provider_unread_notifications">Oznámení</string>
-    <string name="personality_provider">Zdravíme</string>
+    <string name="personality_provider">Hlášky</string>
     <string name="pref_smartspace_event_provider">Zdroj událostí</string>
     <string-array name="greetings_morning">
         <item>Dobré ráno!</item>
@@ -142,7 +142,7 @@
     <string name="battery_low">Nízký stav baterie</string>
     <!-- Section 5 -->
     <string name="dock_pref_title">Dok</string>
-    <string name="dock_pref_summary">Rozložení, styl, ukazatele</string>
+    <string name="dock_pref_summary">Rozložení, styl, ukazatelé</string>
     <string name="dock_fill">Zobrazit pozadí</string>
     <string name="background_color">Barva pozadí</string>
     <string name="theme_based">Dle motivu</string>
@@ -153,7 +153,7 @@
     <string name="two_row_dock">Zobrazit druhý řádek</string>
     <string name="pref_category_searchbar">Vyhledávací lišta</string>
     <string name="dock_search_bar">Zobrazit vyhledávací lištu</string>
-    <string name="dock_colored_google">Barevná ikona\u00a0G</string>
+    <string name="dock_colored_google">Barevná ikona vyhledávače</string>
     <!-- Section 6 -->
     <string name="app_drawer_pref_title">Seznam aplikací</string>
     <string name="app_drawer_pref_summary">Rozložení, kategorie, návrhy</string>
@@ -161,7 +161,7 @@
     <string name="pref_drawer_columns">Počet sloupců</string>
     <string name="pref_prediction_count">Počet návrhů</string>
     <string name="pref_drawer_padding">Výška řádku</string>
-    <string name="hide_apps">Skrytí zástupci aplikací</string>
+    <string name="hide_apps">Skrýt zástupce aplikací</string>
     <string name="categorization">Kategorie</string>
     <string name="pref_appcategorization_enable_title">Kategorizovat aplikace</string>
     <string name="pref_appcategorization_folders_title">Složky</string>
@@ -208,7 +208,7 @@
     <string name="app_actions_reset_pref_summary">Znovu zobrazit akce skryté přesunutím na políčko „Nezobrazovat“.</string>
     <string name="all_apps_label_pref_title">Zobrazit popisek „Všechny aplikace“</string>
     <string name="separate_work_apps_pref_title">Druhá záložka pro aplikace na práci</string>
-    <string name="keep_scroll_state_pref_title">Zachovat umístění</string>
+    <string name="keep_scroll_state_pref_title">Zachovat umístění rolování</string>
     <!-- Section 7 -->
     <string name="search">Hledat</string>
     <string name="search_pref_summary">Rozložení, styl, vyhledávač</string>
@@ -259,9 +259,9 @@
     <string name="gestures_pref_title">Gesta</string>
     <string name="gestures_pref_summary">Dvojí poklepání, přejetí nahoru z\u00a0doku</string>
     <string name="gesture_double_tap">Dvojí poklepání</string>
-    <string name="gesture_long_press">Dotyk s\u00a0podržením</string>
-    <string name="gesture_press_home">Klepnutí na tl.\u00a0<i>Domů</i></string>
-    <string name="gesture_press_back">Klepnutí na tl.\u00a0<i>Zpět</i></string>
+    <string name="gesture_long_press">Dotyk a\u00a0podržení</string>
+    <string name="gesture_press_home">Klepnutí na tlačítko Domů</string>
+    <string name="gesture_press_back">Klepnutí na tlačítko Zpět</string>
     <string name="gesture_swipe_down">Přejetí dolů</string>
     <string name="gesture_swipe_up">Přejetí nahoru</string>
     <string name="gesture_dock_swipe_up">Přejetí nahoru z\u00a0doku</string>
@@ -271,10 +271,10 @@
     <string name="action_open_settings">Otevřít Nastavení Lawnchair</string>
     <string name="action_open_notifications">Otevřít panel oznámení</string>
     <string name="action_overlay">Otevřít Google Feed</string>
-    <string name="action_despacito">Přehrát „YouTube“ Rewind 2018“ (Zkreslený)</string>
+    <string name="action_despacito">Přehrát „YouTube Rewind 2018“ (zkreslený)</string>
     <string name="action_open_app">Otevřít aplikaci</string>
     <!-- Section 10 -->
-    <string name="backups">Záloha a\u00a0Obnovení</string>
+    <string name="backups">Záloha a\u00a0obnovení</string>
     <string name="backup_pref_summary">Uložit nastavení prostředí, Obnovit zálohy</string>
     <string name="new_backup">Vytvořit</string>
     <string name="restore_backup">Obnovit</string>
@@ -340,7 +340,7 @@
     <string name="about_summary_title">Shrnutí</string>
     <string name="hide_app">Skrýt zástupce</string>
     <string name="icon_shape_rounded_square">Zaoblený čtverec</string>
-    <string name="hide_app_selected">„&#160;“ skryta.</string>
+    <string name="hide_app_selected">Počet skrytých aplikací: „&#160;“.</string>
     <string name="hide_app_apply">Hotovo</string>
     <string name="hide_dock_gradient">Zakázat gradient</string>
     <string name="choose_backup_path">Procházet</string>
@@ -435,7 +435,7 @@
     <string name="recent_task_option_force_stop">Vynutit ukončení</string>
     <string name="drag_to_enable_packs">Přetáhnutím nahoru povolíte</string>
     <string name="drag_to_disable_packs">Přetáhnutím dolů zakážete</string>
-    <string name="get_more_icon_packs">Získat více</string>
+    <string name="get_more_icon_packs">Získat další</string>
     <string name="enabled_icon_packs">Použito</string>
     <string name="lawnchair_actions">Akce</string>
     <string name="bridge_missing_title">Získejte Lawnfeed</string>
@@ -443,7 +443,7 @@
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <string name="title_app_suggestions">Aplikace</string>
     <string name="theme_dark">Tmavá</string>
-    <string name="theme_dark_theme_mode">Vynutit tmavý vzhled</string>
+    <string name="theme_dark_theme_mode">Tmavý motiv</string>
     <string name="theme_dark_dark_text">Tmavý s\u00a0tmavým textem</string>
     <string name="theme_black">Černý</string>
     <string name="theme_black_dark_text">Černý s\u00a0tmavým textem</string>
