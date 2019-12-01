@@ -437,6 +437,7 @@
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <string name="title_app_suggestions">แอป</string>
     <string name="theme_dark">มืด</string>
+    <string name="theme_dark_theme_mode">ธีมสีมืด</string>
     <string name="theme_dark_dark_text">สีมืดและอักษรสีมืด</string>
     <string name="theme_black">ดำ</string>
     <string name="theme_black_dark_text">สีดำและอักษรสีมืด</string>
@@ -468,6 +469,7 @@
     <string name="allow">อนุญาต</string>
     <string name="deny">ปฏิเสธ</string>
     <string name="sesame_enable_integration_title">การแบ่งปันข้อมูล</string>
+    <string name="sesame_enable_integration_description"><![CDATA[เปิดใช้งานการแบ่งปันข้อมูลการใช้งานกับ Sesame? คุณสามารถเปลี่ยนได้ภายหลัง]]></string>
     <string name="sesame_shortcut_disabled">Sesame ปิดใช้งานอยู่</string>
     <string name="font_variant_italic">Italic</string>
     <string name="font_weight_thin">Thin</string>
@@ -551,4 +553,6 @@
     <string name="gesture_nav_swipe_up_center">จากตรงกลาง</string>
     <string name="gesture_nav_swipe_up_right">จากด้านขวา</string>
     <string name="action_switch_apps">สลัปแอป</string>
+    <string name="icon_shape_system_default">ใช้การตั้งค่าระบบ</string>
+    <string name="title_missing_notification_access">ต้องการสิทธิ์เพื่อเข้าถึงการแจ้งเตือน</string>
 </resources>
