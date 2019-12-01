@@ -176,6 +176,7 @@
     <string name="category_food_and_drink">מזון ומשקאות</string>
     <string name="category_game">משחקים</string>
     <string name="category_health_and_fitness">בריאות וכושר</string>
+    <string name="category_knowledge_and_reference">ידע והתייחסות</string>
     <string name="category_lifestyle">קניות וסגנון חיים</string>
     <string name="category_music">מוסיקה</string>
     <string name="category_news">חדשות</string>
@@ -198,6 +199,8 @@
     <string name="title_app_suggestions_in_search">המלצות אפליקציה</string>
     <string name="app_actions_pref_title">פעולות</string>
     <string name="app_actions_pref_desc">קיצורים למסכים בשימוש לעיתים קרובות.</string>
+    <string name="app_actions_reset_pref_title">אפס העדפות פעולות</string>
+    <string name="app_actions_reset_pref_summary">בטל הסתרה של פעולות שנגררו ל\"אל תציג\".</string>
     <string name="all_apps_label_pref_title">הצג תווית \"כל האפליקציות\"</string>
     <string name="separate_work_apps_pref_title">כרטיסייה שנייה לאפליקציות עבודה</string>
     <string name="keep_scroll_state_pref_title">זכור מיקום</string>
@@ -295,8 +298,12 @@
     <string name="about_role_designer">מעצב</string>
     <string name="about_role_devops">מהנדס DevOps</string>
     <string name="about_role_pr">מנהל יחסי ציבור</string>
+    <string name="about_role_ops">מהנדס פעולות ותשתיות</string>
+    <string name="about_role_mod_support">נציג תמיכה ומנחה</string>
     <string name="about_role_family_member">בן משפחה</string>
+    <string name="about_role_magisk_maintainer">מתחזק מודול QuickSwitch</string>
     <string name="about_our_team">הצוות</string>
+    <string name="title_attribouter_licenses">ייחוס</string>
     <!-- Section 12 -->
     <string name="settings_button_text">הגדרות דף הבית</string>
     <string name="button_organize_screens">סדר עמודים</string>
@@ -330,6 +337,7 @@
     <string name="icon_shape_rounded_square">ריבוע מעוגל</string>
     <string name="hide_app_selected">\"&#160;\" מוסתר.</string>
     <string name="hide_app_apply">בוצע</string>
+    <string name="hide_dock_gradient">בטל שיפוע צבע</string>
     <string name="choose_backup_path">עיין</string>
     <string name="backup_error_blank_name">הענקת שם לגיבוי.</string>
     <string name="backup_error_blank_location">בחירת מיקום גיבוי.</string>
@@ -380,6 +388,8 @@
     <string name="about_bio_deletescape">מפתח ב-Kotlin/Java. מתעניין בכל דבר שקשור לאנדרואיד. מייסד הפרוייקטים Lawnchair ו-dogbin.</string>
     <string name="about_bio_recoded">מקודד עדין ומעצב גרפי.</string>
     <string name="about_bio_josh">מעצב גרפי עצמאי.</string>
+    <string name="about_bio_harsh">מפתח אפליקציות וספריות ל-Android. מפתח ליבה ב-AOSiP.</string>
+    <string name="about_bio_david">בן 19, הופך קפאין ופיצה לקוד, מספק אירוח ותמיכה 24/7 ל-Lawnchair אם משהו משתבש. תורם לפרויקטים בקוד פתוח ומתקן באגים בזמנו הפנוי. ידוע בעבר בתור Codebucket.</string>
     <string name="about_bio_paphonb">סטודנט בן 18, מפתח לאנדרואיד ואחד מן המפתחים המובילים של מפעיל האפליקציות Lawnchair.</string>
     <string name="debug_crash_launcher">אלץ עצירה</string>
     <string name="action_open_drawer">פתח מגירה</string>
@@ -426,7 +436,7 @@
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <string name="title_app_suggestions">אפליקציות</string>
     <string name="theme_dark">כהה</string>
-    <string name="theme_dark_theme_mode">מראה כהה</string>
+    <string name="theme_dark_theme_mode">ערכת נושא כהה</string>
     <string name="theme_dark_dark_text">כהה עם טקסט כהה</string>
     <string name="theme_black">שחור</string>
     <string name="theme_black_dark_text">שחור עם טקסט כהה</string>
@@ -503,12 +513,42 @@
     <string name="status_channel_name">סטטוס העלאה</string>
     <string name="bugreport_group_summary">%d דיווחים חדשים.</string>
     <string name="bugreport_group_summary_multiple">מספר דיווחים חדשים.</string>
+    <string name="folder_cover_mode">השתמש במצב כיסוי</string>
     <string name="folder_cover_mode_desc">הקש כדי לפתוח את האפליקציה הראשונה, החלק למעלה כדי לראות את כולן.</string>
     <string name="icon_shape_override_miui_explaination">באג ב-MIUI עלול לגרום לסמלים להישאר מרובעים.</string>
     <string name="permission_iplocate">מיקום משוער</string>
+    <string name="permission_iplocate_twilight_explanation">האם לאפשר הרשאה למיקום המשוער שלך? הדבר יאפשר חישוב מדויק יותר של אור יום.</string>
+    <string name="event_provider_missing_notification_access">כדי להשתמש ב-<xliff:g example="My Provider" id="providerName">“%1$s”</xliff:g>, אפשר התראות מ- <xliff:g example="My App" id="name">“%2$s”.</xliff:g></string>
+    <string name="event_provider_missing_notification_dots">כדי להשתמש ב-<xliff:g example="My Provider" id="providerName">“%1$s”</xliff:g>, הפעל נקודות התראה.</string>
+    <string name="zen_mode_enabled">מצב \'נא לא להפריע\' מופעל.</string>
+    <string name="crash_report_notif_title">%1$s קרס</string>
+    <string name="onbording_settings_title">הגדר את %s</string>
+    <string name="onbording_settings_summary">הקש והחזק על מסך הבית.</string>
+    <string name="onboarding_swipe_up">החלק למעלה כדי לפתוח את המגירה.</string>
     <string name="weather_icons_default">ברירת מחדל</string>
+    <string name="pref_weather_icon_pack">ערכת סמלים למזג האוויר</string>
+    <string name="weather_icon_packs_not_supported">לא נתמך על ידי ספק מזג האוויר שלך.</string>
+    <string name="customnavbar_back_hiding">הסתר את כפתור החזרה</string>
+    <string name="customnavbar_back_hiding_desc">הסתר את לחצן החזרה כאשר אינו נצרך.</string>
+    <string name="icon_shape_top_left">שמאל למעלה</string>
+    <string name="icon_shape_top_right">ימין למעלה</string>
+    <string name="icon_shape_bottom_left">שמאל למטה</string>
+    <string name="icon_shape_bottom_right">ימין למטה</string>
     <string name="icon_shape_corner_round">מעגל</string>
+    <string name="icon_shape_corner_squircle">מעוגל</string>
     <string name="icon_shape_corner_cut">חתוך</string>
+    <string name="smartspace_add_to_home">הוסף למסך הבית</string>
+    <string name="get_lawnfeed">קבל את Lawnfeed</string>
     <!-- Section 13 -->
     <string name="quickstep_pref_title">אחרונים</string>
+    <string name="quickstep_pref_summary">מחוות, סגנון, ניווט</string>
+    <string name="swipe_up_to_switch_apps_title">החלק למעלה כדי להחליף אפליקציות</string>
+    <string name="swipe_left_to_go_back_title">החלק שמאלה לחזרה</string>
+    <string name="pref_category_nav_swipe_up_gestures">החלקה למעלה</string>
+    <string name="gesture_nav_swipe_up_left">מצד שמאל</string>
+    <string name="gesture_nav_swipe_up_center">מהמרכז</string>
+    <string name="gesture_nav_swipe_up_right">מצד ימין</string>
+    <string name="action_switch_apps">החלף אפליקציות</string>
+    <string name="icon_shape_system_default">החל לפי המערכת</string>
+    <string name="title_missing_notification_access">נדרשת גישה להודעות.</string>
 </resources>
