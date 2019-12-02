@@ -30,13 +30,13 @@
     <string name="pref_white_only_treatment_summary">Раскрашивать фон всех иконок.</string>
     <string name="adaptify_pack_title">Созд. адапт. иконки для набора иконок</string>
     <string name="icon_shape_override_label">Форма иконок</string>
-    <string name="reset_custom_icons">Удалить пользовательские иконки</string>
+    <string name="reset_custom_icons">Сбросить пользовательские иконки</string>
     <string name="reset_custom_icons_confirmation">Вернуть исходные иконки из этого набора иконок? Вы не сможете это отменить.</string>
     <string name="appearance">Внешний вид</string>
     <!-- Note: new. Replaces title of 5th field (from bottom) in “Theme” page. -->
     <string name="theme_auto">Автоматически (на основе обоев)</string>
     <string name="theme_auto_night_mode">Задано системой</string>
-    <string name="theme_dark_theme_mode_follow_daylight">Автоматически (тёмная - ночью)</string>
+    <string name="theme_dark_theme_mode_follow_daylight">Автоматически (время суток)</string>
     <string name="theme_light">Светлая</string>
     <string name="theme_dark_text">Светлая с тёмным текстом</string>
     <string name="theme_with_dark_text">Тёмный текст</string>
@@ -75,10 +75,10 @@
     <string name="animation_type_pie">Android Pie</string>
     <string name="animation_type_pie_like">Android Pie (имитация)</string>
     <string name="animation_type_reveal">Раскрытие</string>
-    <string name="animation_type_slide_up">Скольжение вверх</string>
+    <string name="animation_type_slide_up">Слайд вверх</string>
     <string name="animation_type_scale_up">Масштабирование</string>
     <string name="animation_type_blink">Мигание</string>
-    <string name="animation_type_fade">Затухание</string>
+    <string name="animation_type_fade">Прозрачность</string>
     <string name="icon_badging_title">Значки уведомлений</string>
     <string name="pref_notification_count_title">Показывать число уведомлений</string>
     <string name="allow_rotation_title">Разрешить поворот</string>
