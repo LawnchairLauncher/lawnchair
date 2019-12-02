@@ -87,6 +87,7 @@
     <!-- Section 4 -->
     <string name="smartspace_preferences_in_settings">速览</string>
     <!-- Note: replaces hard-coded copy (“Home widget”). -->
+    <string name="smartspace_preferences_in_settings_desc">日期 &amp; 时间，日期源</string>
     <string name="smartspace_time">显示时间</string>
     <string name="smartspace_date">显示日期</string>
     <string name="pref_smartspace_time_above">显示大号时钟</string>
@@ -199,6 +200,7 @@
     <string name="app_actions_reset_pref_title">重置应用偏好设置</string>
     <string name="app_actions_reset_pref_summary">重新显示“隐藏项目”中的动作</string>
     <string name="all_apps_label_pref_title">显示“所有App”标签</string>
+    <string name="separate_work_apps_pref_title">工作应用分离至第二标签页</string>
     <string name="keep_scroll_state_pref_title">记住位置</string>
     <!-- Section 7 -->
     <string name="search">搜索</string>
@@ -230,6 +232,9 @@
     <string name="searchbar_appearance_title">样式</string>
     <string name="pref_show_assistant_title">显示语音搜索按钮</string>
     <string name="action_assistant">打开 Google Assistant</string>
+    <string name="pref_show_as_assistant_summary">使用助手来替换语音搜索</string>
+    <string name="bubble_searchbar">显示两个泡泡</string>
+    <string name="pref_search_bar_radius">圆角半径</string>
     <!-- Section 8 -->
     <string name="pref_integrations">插件</string>
     <string name="pref_integrations_summary">Sesame 快捷方式、Google Feed</string>
@@ -237,6 +242,7 @@
     <string name="sesame_data_integration">数据共享</string>
     <string name="sesame_upsell">点击安装 Sesame</string>
     <string name="sesame_search_engine">使用其作为搜索引擎</string>
+    <string name="pref_sesame_sync_look_and_feel">分享我的风格设置</string>
     <string name="feed_theme_pref_title">背景颜色</string>
     <!-- Section 9 -->
     <string name="gestures_pref_title">手势</string>
