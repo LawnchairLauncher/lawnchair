@@ -390,6 +390,7 @@
     <string name="about_bio_josh">自由業平面設計師。</string>
     <string name="about_bio_harsh">Android 應用程式和函式庫開發。在 AOSiP 的核心開發人員。</string>
     <string name="about_bio_david">19 歲，把咖啡因和披薩轉換成程式碼，如果出了問題，提供主機託管和 24*7 的支援。在業餘時間為開源專案和修復 bug 做出貢獻。也稱為 Codebucket。</string>
+    <string name="about_bio_lumiq">It’s just got harder to build a bad product.</string>
     <string name="about_bio_paphonb">18 歲的學生及 Android 開發者，Lawnchair 啟動器的領導開發人員之一。</string>
     <string name="debug_crash_launcher">強制停止</string>
     <string name="action_open_drawer">應用程式清單</string>
@@ -469,6 +470,7 @@
     <string name="allow">允許</string>
     <string name="deny">拒絕</string>
     <string name="sesame_enable_integration_title">資料共享</string>
+    <string name="sesame_enable_integration_description"><![CDATA[是否要啟用Sesame資料共享? 你可以在稍後改變這項設定]]></string>
     <string name="sesame_shortcut_disabled">Sesame 已停用</string>
     <string name="font_variant_italic">斜體</string>
     <string name="font_weight_thin">極細</string>
@@ -552,4 +554,6 @@
     <string name="gesture_nav_swipe_up_center">從中間</string>
     <string name="gesture_nav_swipe_up_right">從右方</string>
     <string name="action_switch_apps">切換應用程式</string>
+    <string name="icon_shape_system_default">由系統決定</string>
+    <string name="title_missing_notification_access">需要取得通知存取權</string>
 </resources>
