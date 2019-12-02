@@ -236,7 +236,7 @@
     <string name="action_assistant">פתח את העוזר הקולי</string>
     <string name="pref_show_as_assistant_summary">פתח את העוזר הקולי במקום חיפוש קולי.</string>
     <string name="bubble_searchbar">הצג שתי בועות</string>
-    <string name="pref_search_bar_radius">ראדיוס הפינות</string>
+    <string name="pref_search_bar_radius">רדיוס פינות</string>
     <!-- Section 8 -->
     <string name="pref_integrations">תוספים</string>
     <string name="pref_integrations_summary">קיצורי ססמי, חדשות גוגל</string>
@@ -528,6 +528,7 @@
     <string name="weather_icons_default">ברירת מחדל</string>
     <string name="pref_weather_icon_pack">ערכת סמלים למזג האוויר</string>
     <string name="weather_icon_packs_not_supported">לא נתמך על ידי ספק מזג האוויר שלך.</string>
+    <string name="customnavbar_install">הקש כדי להתקין את Custom Navigation Bar.</string>
     <string name="customnavbar_back_hiding">הסתר את כפתור החזרה</string>
     <string name="customnavbar_back_hiding_desc">הסתר את לחצן החזרה כאשר אינו נצרך.</string>
     <string name="icon_shape_top_left">שמאל למעלה</string>
