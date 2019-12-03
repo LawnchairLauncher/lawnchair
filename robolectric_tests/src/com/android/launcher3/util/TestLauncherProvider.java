@@ -10,6 +10,8 @@ import com.android.launcher3.LauncherProvider;
  */
 public class TestLauncherProvider extends LauncherProvider {
 
+    private boolean mAllowLoadDefaultFavorites;
+
     @Override
     public boolean onCreate() {
         return true;
@@ -18,8 +20,12 @@ public class TestLauncherProvider extends LauncherProvider {
     @Override
     protected synchronized void createDbIfNotExists() {
         if (mOpenHelper == null) {
-            mOpenHelper = new MyDatabaseHelper(getContext());
+            mOpenHelper = new MyDatabaseHelper(getContext(), mAllowLoadDefaultFavorites);
         }
+    }
+
+    public void setAllowLoadDefaultFavorites(boolean allowLoadDefaultFavorites) {
+        mAllowLoadDefaultFavorites = allowLoadDefaultFavorites;
     }
 
     public SQLiteDatabase getDb() {
@@ -28,8 +34,12 @@ public class TestLauncherProvider extends LauncherProvider {
     }
 
     private static class MyDatabaseHelper extends DatabaseHelper {
-        public MyDatabaseHelper(Context context) {
+
+        private final boolean mAllowLoadDefaultFavorites;
+
+        MyDatabaseHelper(Context context, boolean allowLoadDefaultFavorites) {
             super(context, null);
+            mAllowLoadDefaultFavorites = allowLoadDefaultFavorites;
             initIds();
         }
 
@@ -39,7 +49,11 @@ public class TestLauncherProvider extends LauncherProvider {
         }
 
         @Override
-        protected void onEmptyDbCreated() { }
+        protected void onEmptyDbCreated() {
+            if (mAllowLoadDefaultFavorites) {
+                super.onEmptyDbCreated();
+            }
+        }
 
         @Override
         protected void handleOneTimeDataUpgrade(SQLiteDatabase db) { }
