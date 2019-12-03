@@ -44,8 +44,11 @@ class PortraitLandscapeRunner implements TestRule {
                 } finally {
                     mTest.mDevice.setOrientationNatural();
                     mTest.executeOnLauncher(launcher ->
-                            launcher.getRotationHelper().forceAllowRotationForTesting(
-                                    false));
+                    {
+                        if (launcher != null) {
+                            launcher.getRotationHelper().forceAllowRotationForTesting(false);
+                        }
+                    });
                     mTest.mLauncher.setExpectedRotation(Surface.ROTATION_0);
                 }
             }

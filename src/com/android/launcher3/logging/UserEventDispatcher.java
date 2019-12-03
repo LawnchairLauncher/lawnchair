@@ -187,6 +187,14 @@ public class UserEventDispatcher implements ResourceBasedOverride {
                 dstContainerType >=0 ? newContainerTarget(dstContainerType) : null);
     }
 
+    public void logActionCommand(int command, int srcContainerType, int dstContainerType,
+                                 int pageIndex) {
+        Target srcTarget = newContainerTarget(srcContainerType);
+        srcTarget.pageIndex = pageIndex;
+        logActionCommand(command, srcTarget,
+                dstContainerType >=0 ? newContainerTarget(dstContainerType) : null);
+    }
+
     public void logActionCommand(int command, Target srcTarget, Target dstTarget) {
         LauncherEvent event = newLauncherEvent(newCommandAction(command), srcTarget);
         if (command == Action.Command.STOP) {

@@ -34,9 +34,9 @@ import androidx.test.uiautomator.UiDevice;
 
 import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.tapl.TestHelpers;
+import com.android.launcher3.util.rule.FailureWatcher;
 import com.android.systemui.shared.system.QuickStepContract;
 
-import org.junit.Assert;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
@@ -79,6 +79,14 @@ public class NavigationModeSwitchRule implements TestRule {
                 description.getAnnotation(NavigationModeSwitch.class) != null) {
             Mode mode = description.getAnnotation(NavigationModeSwitch.class).mode();
             return new Statement() {
+                private void assertTrue(String message, boolean condition) {
+                    if(!condition) {
+                        final AssertionError assertionError = new AssertionError(message);
+                        FailureWatcher.onError(mLauncher.getDevice(), description, assertionError);
+                        throw assertionError;
+                    }
+                }
+
                 @Override
                 public void evaluate() throws Throwable {
                     mLauncher.enableDebugTracing();
@@ -107,9 +115,9 @@ public class NavigationModeSwitchRule implements TestRule {
                         Log.e(TAG, "Exception", e);
                         throw e;
                     } finally {
-                        Assert.assertTrue(setActiveOverlay(prevOverlayPkg, originalMode));
+                        assertTrue("Couldn't set overlay",
+                                setActiveOverlay(prevOverlayPkg, originalMode));
                     }
-                    mLauncher.disableDebugTracing();
                 }
 
                 private void evaluateWithThreeButtons() throws Throwable {
@@ -176,7 +184,7 @@ public class NavigationModeSwitchRule implements TestRule {
                         latch.await(10, TimeUnit.SECONDS);
                         targetContext.getMainExecutor().execute(() ->
                                 sysUINavigationMode.removeModeChangeListener(listener));
-                        Assert.assertTrue("Navigation mode didn't change to " + expectedMode,
+                        assertTrue("Navigation mode didn't change to " + expectedMode,
                                 currentSysUiNavigationMode() == expectedMode);
                     }
 
@@ -184,7 +192,7 @@ public class NavigationModeSwitchRule implements TestRule {
                         if (mLauncher.getNavigationModel() == expectedMode) break;
                         Thread.sleep(100);
                     }
-                    Assert.assertTrue("Couldn't switch to " + overlayPackage,
+                    assertTrue("Couldn't switch to " + overlayPackage,
                             mLauncher.getNavigationModel() == expectedMode);
 
                     for (int i = 0; i != 100; ++i) {
@@ -192,7 +200,7 @@ public class NavigationModeSwitchRule implements TestRule {
                         Thread.sleep(100);
                     }
                     final String error = mLauncher.getNavigationModeMismatchError();
-                    Assert.assertTrue("Switching nav mode: " + error, error == null);
+                    assertTrue("Switching nav mode: " + error, error == null);
 
                     Thread.sleep(5000);
                     return true;

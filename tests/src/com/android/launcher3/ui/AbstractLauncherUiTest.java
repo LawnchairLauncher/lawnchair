@@ -24,7 +24,6 @@ import static org.junit.Assert.assertTrue;
 
 import static java.lang.System.exit;
 
-import android.app.Instrumentation;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -38,6 +37,7 @@ import android.util.Log;
 
 import androidx.test.InstrumentationRegistry;
 import androidx.test.uiautomator.By;
+import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.Until;
 
@@ -111,6 +111,7 @@ public abstract class AbstractLauncherUiTest {
                             launcher ->
                                     checkLauncherIntegrity(launcher, containerType)));
         }
+        mLauncher.enableDebugTracing();
     }
 
     protected final LauncherActivityRule mActivityMonitor = new LauncherActivityRule();
@@ -186,14 +187,6 @@ public abstract class AbstractLauncherUiTest {
         }
     }
 
-    protected void lockRotation(boolean naturalOrientation) throws RemoteException {
-        if (naturalOrientation) {
-            mDevice.setOrientationNatural();
-        } else {
-            mDevice.setOrientationRight();
-        }
-    }
-
     protected void clearLauncherData() throws IOException, InterruptedException {
         if (TestHelpers.isInLauncherProcess()) {
             LauncherSettings.Settings.call(mTargetContext.getContentResolver(),
@@ -201,6 +194,7 @@ public abstract class AbstractLauncherUiTest {
             resetLoaderState();
         } else {
             clearPackageData(mDevice.getLauncherPackageName());
+            mLauncher.enableDebugTracing();
         }
     }
 
@@ -274,10 +268,30 @@ public abstract class AbstractLauncherUiTest {
 
     // Cannot be used in TaplTests after injecting any gesture using Tapl because this can hide
     // flakiness.
+    protected <T> T getOnceNotNull(String message, Function<Launcher, T> f) {
+        return getOnceNotNull(message, f, DEFAULT_ACTIVITY_TIMEOUT);
+    }
+
+    // Cannot be used in TaplTests after injecting any gesture using Tapl because this can hide
+    // flakiness.
     protected void waitForLauncherCondition(
             String message, Function<Launcher, Boolean> condition, long timeout) {
         if (!TestHelpers.isInLauncherProcess()) return;
         Wait.atMost(message, () -> getFromLauncher(condition), timeout);
+    }
+
+    // Cannot be used in TaplTests after injecting any gesture using Tapl because this can hide
+    // flakiness.
+    protected <T> T getOnceNotNull(String message, Function<Launcher, T> f, long timeout) {
+        if (!TestHelpers.isInLauncherProcess()) return null;
+
+        final Object[] output = new Object[1];
+        Wait.atMost(message, () -> {
+            final Object fromLauncher = getFromLauncher(f);
+            output[0] = fromLauncher;
+            return fromLauncher != null;
+        }, timeout);
+        return (T) output[0];
     }
 
     // Cannot be used in TaplTests after injecting any gesture using Tapl because this can hide
@@ -330,30 +344,27 @@ public abstract class AbstractLauncherUiTest {
     }
 
     protected void startAppFast(String packageName) {
-        final Instrumentation instrumentation = getInstrumentation();
-        final Intent intent = instrumentation.getContext().getPackageManager().
-                getLaunchIntentForPackage(packageName);
-        intent.addCategory(Intent.CATEGORY_LAUNCHER);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        instrumentation.getTargetContext().startActivity(intent);
-        assertTrue(packageName + " didn't start",
-                mDevice.wait(Until.hasObject(By.pkg(packageName).depth(0)), DEFAULT_UI_TIMEOUT));
+        startIntent(
+                getInstrumentation().getContext().getPackageManager().getLaunchIntentForPackage(
+                        packageName),
+                By.pkg(packageName).depth(0));
     }
 
     protected void startTestActivity(int activityNumber) {
         final String packageName = getAppPackageName();
-        final Instrumentation instrumentation = getInstrumentation();
-        final Intent intent = instrumentation.getContext().getPackageManager().
+        final Intent intent = getInstrumentation().getContext().getPackageManager().
                 getLaunchIntentForPackage(packageName);
-        intent.addCategory(Intent.CATEGORY_LAUNCHER);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setComponent(new ComponentName(packageName,
                 "com.android.launcher3.tests.Activity" + activityNumber));
-        instrumentation.getTargetContext().startActivity(intent);
-        assertTrue(packageName + " didn't start",
-                mDevice.wait(
-                        Until.hasObject(By.pkg(packageName).text("TestActivity" + activityNumber)),
-                        DEFAULT_UI_TIMEOUT));
+        startIntent(intent, By.pkg(packageName).text("TestActivity" + activityNumber));
+    }
+
+    private void startIntent(Intent intent, BySelector selector) {
+        intent.addCategory(Intent.CATEGORY_LAUNCHER);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        getInstrumentation().getTargetContext().startActivity(intent);
+        assertTrue("App didn't start: " + selector,
+                mDevice.wait(Until.hasObject(selector), DEFAULT_UI_TIMEOUT));
     }
 
     public static String resolveSystemApp(String category) {

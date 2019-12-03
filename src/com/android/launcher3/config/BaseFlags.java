@@ -18,20 +18,16 @@ package com.android.launcher3.config;
 
 import static androidx.core.util.Preconditions.checkNotNull;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.database.ContentObserver;
-import android.os.Handler;
-import android.os.Looper;
-import android.provider.Settings;
 
 import androidx.annotation.GuardedBy;
 import androidx.annotation.Keep;
-import androidx.annotation.VisibleForTesting;
 
+import androidx.annotation.VisibleForTesting;
 import com.android.launcher3.Utilities;
 
+import com.android.launcher3.uioverrides.TogglableFlag;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedMap;
@@ -41,11 +37,9 @@ import java.util.TreeMap;
  * Defines a set of flags used to control various launcher behaviors.
  *
  * <p>All the flags should be defined here with appropriate default values.
- *
- * <p>This class is kept package-private to prevent direct access.
  */
 @Keep
-abstract class BaseFlags {
+public abstract class BaseFlags {
 
     private static final Object sLock = new Object();
     @GuardedBy("sLock")
@@ -65,6 +59,11 @@ abstract class BaseFlags {
 
     // When enabled the promise icon is visible in all apps while installation an app.
     public static final boolean LAUNCHER3_PROMISE_APPS_IN_ALL_APPS = false;
+
+    // When enabled a promise icon is added to the home screen when install session is active.
+    public static final TogglableFlag PROMISE_APPS_NEW_INSTALLS =
+            new TogglableFlag("PROMISE_APPS_NEW_INSTALLS", true,
+                    "Adds a promise icon to the home screen for new install sessions.");
 
     // Enable moving the QSB on the 0th screen of the workspace
     public static final boolean QSB_ON_FIRST_SCREEN = true;
@@ -105,18 +104,22 @@ abstract class BaseFlags {
             "ENABLE_QUICKSTEP_LIVE_TILE", false, "Enable live tile in Quickstep overview");
 
     public static final TogglableFlag ENABLE_HINTS_IN_OVERVIEW = new TogglableFlag(
-            "ENABLE_HINTS_IN_OVERVIEW", false,
+            "ENABLE_HINTS_IN_OVERVIEW", true,
             "Show chip hints and gleams on the overview screen");
 
     public static final TogglableFlag FAKE_LANDSCAPE_UI = new TogglableFlag(
             "FAKE_LANDSCAPE_UI", false,
             "Rotate launcher UI instead of using transposed layout");
 
+    public static final TogglableFlag APP_SEARCH_IMPROVEMENTS = new TogglableFlag(
+            "APP_SEARCH_IMPROVEMENTS", false,
+            "Adds localized title and keyword search and ranking");
+
     public static void initialize(Context context) {
         // Avoid the disk read for user builds
         if (Utilities.IS_DEBUG_DEVICE) {
             synchronized (sLock) {
-                for (TogglableFlag flag : sFlags) {
+                for (BaseTogglableFlag flag : sFlags) {
                     flag.initialize(context);
                 }
             }
@@ -132,27 +135,30 @@ abstract class BaseFlags {
         SortedMap<String, TogglableFlag> flagsByKey = new TreeMap<>();
         synchronized (sLock) {
             for (TogglableFlag flag : sFlags) {
-                flagsByKey.put(flag.key, flag);
+                flagsByKey.put(((BaseTogglableFlag) flag).getKey(), flag);
             }
         }
         return new ArrayList<>(flagsByKey.values());
     }
 
-    public static class TogglableFlag {
+    public static abstract class BaseTogglableFlag {
         private final String key;
+        // should be value that is hardcoded in client side.
+        // Comparatively, getDefaultValue() can be overridden.
         private final boolean defaultValue;
         private final String description;
         private boolean currentValue;
 
-        TogglableFlag(
+        public BaseTogglableFlag(
                 String key,
                 boolean defaultValue,
                 String description) {
             this.key = checkNotNull(key);
             this.currentValue = this.defaultValue = defaultValue;
             this.description = checkNotNull(description);
+
             synchronized (sLock) {
-                sFlags.add(this);
+                sFlags.add((TogglableFlag)this);
             }
         }
 
@@ -162,18 +168,22 @@ abstract class BaseFlags {
             currentValue = value;
         }
 
-        @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
         public String getKey() {
             return key;
         }
-        void initialize(Context context) {
-            currentValue = getFromStorage(context, defaultValue);
+
+        protected void initialize(Context context) {
+            currentValue = getFromStorage(context, getDefaultValue());
         }
+
+        protected abstract boolean getOverridenDefaultValue(boolean value);
+
+        protected abstract void addChangeListener(Context context, Runnable r);
 
         public void updateStorage(Context context, boolean value) {
             SharedPreferences.Editor editor = context.getSharedPreferences(FLAGS_PREF_NAME,
                     Context.MODE_PRIVATE).edit();
-            if (value == defaultValue) {
+            if (value == getDefaultValue()) {
                 editor.remove(key).apply();
             } else {
                 editor.putBoolean(key, value).apply();
@@ -182,11 +192,11 @@ abstract class BaseFlags {
 
         boolean getFromStorage(Context context, boolean defaultValue) {
             return context.getSharedPreferences(FLAGS_PREF_NAME, Context.MODE_PRIVATE)
-                    .getBoolean(key, defaultValue);
+                    .getBoolean(key, getDefaultValue());
         }
 
         boolean getDefaultValue() {
-            return defaultValue;
+            return getOverridenDefaultValue(defaultValue);
         }
 
         /** Returns the value of the flag at process start, including any overrides present. */
@@ -203,6 +213,8 @@ abstract class BaseFlags {
             return "TogglableFlag{"
                     + "key=" + key + ", "
                     + "defaultValue=" + defaultValue + ", "
+                    + "overriddenDefaultValue=" + getOverridenDefaultValue(defaultValue) + ", "
+                    + "currentValue=" + currentValue + ", "
                     + "description=" + description
                     + "}";
         }
@@ -213,9 +225,9 @@ abstract class BaseFlags {
                 return true;
             }
             if (o instanceof TogglableFlag) {
-                TogglableFlag that = (TogglableFlag) o;
+                BaseTogglableFlag that = (BaseTogglableFlag) o;
                 return (this.key.equals(that.getKey()))
-                        && (this.defaultValue == that.getDefaultValue())
+                        && (this.getDefaultValue() == that.getDefaultValue())
                         && (this.description.equals(that.getDescription()));
             }
             return false;
@@ -227,54 +239,10 @@ abstract class BaseFlags {
             h$ *= 1000003;
             h$ ^= key.hashCode();
             h$ *= 1000003;
-            h$ ^= defaultValue ? 1231 : 1237;
+            h$ ^= getDefaultValue() ? 1231 : 1237;
             h$ *= 1000003;
             h$ ^= description.hashCode();
             return h$;
-        }
-    }
-
-    /**
-     * Stores the FeatureFlag's value in Settings.Global instead of our SharedPrefs.
-     * This is useful if we want to be able to control this flag from another process.
-     */
-    public static final class ToggleableGlobalSettingsFlag extends TogglableFlag {
-        private ContentResolver contentResolver;
-
-        ToggleableGlobalSettingsFlag(String key, boolean defaultValue, String description) {
-            super(key, defaultValue, description);
-        }
-
-        @Override
-        public void initialize(Context context) {
-            contentResolver = context.getContentResolver();
-            contentResolver.registerContentObserver(Settings.Global.getUriFor(getKey()), true,
-                    new ContentObserver(new Handler(Looper.getMainLooper())) {
-                        @Override
-                        public void onChange(boolean selfChange) {
-                            superInitialize(context);
-                    }});
-            superInitialize(context);
-        }
-
-        private void superInitialize(Context context) {
-            super.initialize(context);
-        }
-
-        @Override
-        public void updateStorage(Context context, boolean value) {
-            if (contentResolver == null) {
-                return;
-            }
-            Settings.Global.putInt(contentResolver, getKey(), value ? 1 : 0);
-        }
-
-        @Override
-        boolean getFromStorage(Context context, boolean defaultValue) {
-            if (contentResolver == null) {
-                return defaultValue;
-            }
-            return Settings.Global.getInt(contentResolver, getKey(), defaultValue ? 1 : 0) == 1;
         }
     }
 }

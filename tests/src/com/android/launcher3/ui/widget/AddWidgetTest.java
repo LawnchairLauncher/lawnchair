@@ -15,6 +15,9 @@
  */
 package com.android.launcher3.ui.widget;
 
+import static com.android.launcher3.ui.TaplTestsLauncher3.getAppPackageName;
+
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import androidx.test.filters.LargeTest;
@@ -22,6 +25,7 @@ import androidx.test.runner.AndroidJUnit4;
 
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
+import com.android.launcher3.tapl.Widget;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.ui.TestViewHelpers;
 import com.android.launcher3.util.rule.ShellCommandRule;
@@ -41,19 +45,9 @@ public class AddWidgetTest extends AbstractLauncherUiTest {
     @Rule public ShellCommandRule mGrantWidgetRule = ShellCommandRule.grantWidgetBind();
 
     @Test
-    public void testDragIcon_portrait() throws Throwable {
-        lockRotation(true);
-        performTest();
-    }
-
-    @Test
-    @Ignore // b/121280703
-    public void testDragIcon_landscape() throws Throwable {
-        lockRotation(false);
-        performTest();
-    }
-
-    private void performTest() throws Throwable {
+    @PortraitLandscape
+    @org.junit.Ignore
+    public void testDragIcon() throws Throwable {
         clearHomescreen();
         mDevice.pressHome();
 
@@ -70,5 +64,10 @@ public class AddWidgetTest extends AbstractLauncherUiTest {
                 (info, view) -> info instanceof LauncherAppWidgetInfo &&
                         ((LauncherAppWidgetInfo) info).providerName.getClassName().equals(
                                 widgetInfo.provider.getClassName())).call());
+
+        final Widget widget = mLauncher.getWorkspace().tryGetWidget(widgetInfo.label,
+                DEFAULT_UI_TIMEOUT);
+        assertNotNull("Widget not found on the workspace", widget);
+        widget.launch(getAppPackageName());
     }
 }

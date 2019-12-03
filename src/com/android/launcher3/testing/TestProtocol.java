@@ -73,10 +73,17 @@ public final class TestProtocol {
     public static final String REQUEST_APP_LIST_FREEZE_FLAGS = "app-list-freeze-flags";
     public static final String REQUEST_OVERVIEW_LEFT_GESTURE_MARGIN = "overview-left-margin";
     public static final String REQUEST_OVERVIEW_RIGHT_GESTURE_MARGIN = "overview-right-margin";
+    public static final String REQUEST_TOTAL_PSS_KB = "total_pss";
+    public static final String REQUEST_JAVA_LEAK = "java-leak";
+    public static final String REQUEST_NATIVE_LEAK = "native-leak";
 
     public static boolean sDebugTracing = false;
     public static final String REQUEST_ENABLE_DEBUG_TRACING = "enable-debug-tracing";
     public static final String REQUEST_DISABLE_DEBUG_TRACING = "disable-debug-tracing";
 
     public static final String NO_BACKGROUND_TO_OVERVIEW_TAG = "b/138251824";
+    public static final String NO_DRAG_TO_WORKSPACE = "b/138729456";
+    public static final String APP_NOT_DISABLED = "b/139891609";
+    public static final String ALL_APPS_UPON_RECENTS = "b/139941530";
+    public static final String STABLE_STATE_MISMATCH = "b/140311911";
 }

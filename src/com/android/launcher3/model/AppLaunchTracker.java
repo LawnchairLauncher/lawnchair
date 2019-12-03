@@ -15,17 +15,17 @@
  */
 package com.android.launcher3.model;
 
-import static com.android.launcher3.util.ResourceBasedOverride.Overrides.getObject;
+import static com.android.launcher3.util.MainThreadInitializedObject.forOverride;
 
 import android.content.ComponentName;
 import android.os.UserHandle;
+
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.R;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.ResourceBasedOverride;
-
-import androidx.annotation.Nullable;
 
 /**
  * Callback for receiving various app launch events
@@ -43,8 +43,7 @@ public class AppLaunchTracker implements ResourceBasedOverride {
 
 
     public static final MainThreadInitializedObject<AppLaunchTracker> INSTANCE =
-            new MainThreadInitializedObject<>(c ->
-                    getObject(AppLaunchTracker.class, c, R.string.app_launch_tracker_class));
+            forOverride(AppLaunchTracker.class, R.string.app_launch_tracker_class);
 
     public void onStartShortcut(String packageName, String shortcutId, UserHandle user,
             @Nullable String container) { }
