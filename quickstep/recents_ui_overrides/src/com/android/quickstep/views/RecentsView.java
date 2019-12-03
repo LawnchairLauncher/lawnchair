@@ -177,6 +177,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     private final float mFastFlingVelocity;
     private final RecentsModel mModel;
     private final int mTaskTopMargin;
+    private final int mTaskBottomMargin;
     private final ClearAllButton mClearAllButton;
     private final Rect mClearAllButtonDeadZoneRect = new Rect();
     private final Rect mTaskViewDeadZoneRect = new Rect();
@@ -343,6 +344,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         setLayoutDirection(mIsRtl ? View.LAYOUT_DIRECTION_RTL : View.LAYOUT_DIRECTION_LTR);
         mTaskTopMargin = getResources()
                 .getDimensionPixelSize(R.dimen.task_thumbnail_top_margin);
+        mTaskBottomMargin = getResources().getDimensionPixelSize(
+                R.dimen.task_thumbnail_bottom_margin);
         mSquaredTouchSlop = squaredTouchSlop(context);
 
         mEmptyIcon = context.getDrawable(R.drawable.ic_empty_recents);
@@ -696,6 +699,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         mTaskHeight = mTempRect.height();
 
         mTempRect.top -= mTaskTopMargin;
+        mTempRect.bottom += mTaskBottomMargin;
         setPadding(mTempRect.left - mInsets.left, mTempRect.top - mInsets.top,
                 dp.widthPx - mInsets.right - mTempRect.right,
                 dp.heightPx - mInsets.bottom - mTempRect.bottom);
@@ -1467,7 +1471,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
         // Set the pivot points to match the task preview center
         setPivotY(((mInsets.top + getPaddingTop() + mTaskTopMargin)
-                + (getHeight() - mInsets.bottom - getPaddingBottom())) / 2);
+                + (getHeight() - mInsets.bottom - getPaddingBottom() - mTaskBottomMargin)) / 2);
         setPivotX(((mInsets.left + getPaddingLeft())
                 + (getWidth() - mInsets.right - getPaddingRight())) / 2);
     }
