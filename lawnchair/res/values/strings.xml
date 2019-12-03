@@ -795,5 +795,10 @@
 
     <string name="icon_shape_system_default">Set by System</string>
     <string name="title_missing_notification_access">Notification access needed.</string>
+    
+    <string name="activity_not_found">App not installed.</string>
+    
+    <string name="out_of_space">No more room on the Desktop.</string>
+    <string name="hotseat_out_of_space">No more room in the Dock.</string>
 
 </resources>
