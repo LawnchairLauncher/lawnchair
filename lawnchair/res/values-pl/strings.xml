@@ -341,7 +341,7 @@
     <string name="about_summary_title">Podsumowanie</string>
     <string name="hide_app">Ukryj Skrót</string>
     <string name="icon_shape_rounded_square">Zaokrąglony Kwadrat</string>
-    <string name="hide_app_selected">\"&#160;\" ukryty.</string>
+    <string name="hide_app_selected">&#160; ukrytych</string>
     <string name="hide_app_apply">Gotowe</string>
     <string name="hide_dock_gradient">Wyłącz Gradient</string>
     <string name="choose_backup_path">Przeglądaj</string>
