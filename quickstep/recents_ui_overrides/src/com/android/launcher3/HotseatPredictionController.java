@@ -135,7 +135,7 @@ public class HotseatPredictionController implements DragController.DragListener,
             }
 
             WorkspaceItemInfo predictedItem = predictedApps.get(predictionIndex++);
-            if (isPredictedIcon(child)) {
+            if (isPredictedIcon(child) && child.isEnabled()) {
                 PredictedAppIcon icon = (PredictedAppIcon) child;
                 icon.applyFromWorkspaceItem(predictedItem);
                 icon.finishBinding();
@@ -310,6 +310,7 @@ public class HotseatPredictionController implements DragController.DragListener,
             int rank = ((WorkspaceItemInfo) icon.getTag()).rank;
             outlines.add(new PredictedAppIcon.PredictedIconOutlineDrawing(
                     mHotseat.getCellXFromOrder(rank), mHotseat.getCellYFromOrder(rank), icon));
+            icon.setEnabled(false);
             icon.animate().scaleY(0).scaleX(0).setListener(new AnimationSuccessListener() {
                 @Override
                 public void onAnimationSuccess(Animator animator) {
