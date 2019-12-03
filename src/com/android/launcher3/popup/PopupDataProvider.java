@@ -164,7 +164,11 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
         }
 
         Integer count = mDeepShortcutMap.get(new ComponentKey(component, info.user));
-        return count == null ? 0 : count;
+        if (count != null) {
+            return count;
+        }
+        // TODO: is there really NO more efficient way to do this
+        return DeepShortcutManager.getInstance(mLauncher).queryForShortcutsContainer(info.getTargetComponent(), info.user).size();
     }
 
     public DotInfo getDotInfoForItem(ItemInfo info) {

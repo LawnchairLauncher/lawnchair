@@ -23,9 +23,7 @@ import android.content.pm.ShortcutInfo;
 import android.graphics.Bitmap;
 import android.text.TextUtils;
 
-import android.util.DisplayMetrics;
 import ch.deletescape.lawnchair.iconpack.IconPackManager;
-import ch.deletescape.lawnchair.sesame.SesameShortcutInfo;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.model.ModelWriter;

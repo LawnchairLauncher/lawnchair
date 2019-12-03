@@ -1123,6 +1123,10 @@ public class AdaptiveIconCompat extends Drawable implements Drawable.Callback {
         }
     }
 
+    public boolean isMaskValid() {
+        return sMask != null && mMaskId == sMask.hashCode();
+    }
+
     public static void onShapeChanged() {
         sMask = null;
     }

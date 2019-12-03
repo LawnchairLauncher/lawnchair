@@ -28,6 +28,7 @@ import android.os.UserHandle;
 import android.util.Log;
 import ch.deletescape.lawnchair.iconpack.AdaptiveIconCompat;
 import ch.deletescape.lawnchair.override.CustomInfoProvider;
+import ch.deletescape.lawnchair.shortcuts.LawnchairShortcutManager;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.WorkspaceItemInfo;
@@ -50,7 +51,7 @@ public class DeepShortcutManager {
     public static DeepShortcutManager getInstance(Context context) {
         synchronized (sInstanceLock) {
             if (sInstance == null) {
-                sInstance = new DeepShortcutManager(context.getApplicationContext());
+                sInstance = new LawnchairShortcutManager(context.getApplicationContext());
             }
             return sInstance;
         }
@@ -60,7 +61,7 @@ public class DeepShortcutManager {
     private final LauncherApps mLauncherApps;
     private boolean mWasLastCallSuccess;
 
-    private DeepShortcutManager(Context context) {
+    protected DeepShortcutManager(Context context) {
         mContext = context;
         mLauncherApps = (LauncherApps) context.getSystemService(Context.LAUNCHER_APPS_SERVICE);
         mWasLastCallSuccess = true;
@@ -207,7 +208,7 @@ public class DeepShortcutManager {
      *
      * TODO: Use the cache to optimize this so we don't make an RPC every time.
      */
-    private List<ShortcutInfo> query(int flags, String packageName,
+    protected List<ShortcutInfo> query(int flags, String packageName,
             ComponentName activity, List<String> shortcutIds, UserHandle user) {
         // TODO: add sesame support back
         ShortcutQuery q = new ShortcutQuery();
