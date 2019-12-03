@@ -243,7 +243,7 @@ public class LauncherIcons implements AutoCloseable {
         float scale = 1f;
         if (Utilities.ATLEAST_OREO) {
             boolean[] outShape = new boolean[1];
-            if (mWrapperIcon == null) {
+            if (mWrapperIcon == null || !mWrapperIcon.isMaskValid()) {
                 mWrapperIcon = LawnchairIconProvider.getAdaptiveIconDrawableWrapper(mContext);
             }
             AdaptiveIconCompat dr = (AdaptiveIconCompat) mWrapperIcon;
