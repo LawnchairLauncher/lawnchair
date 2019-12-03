@@ -80,17 +80,28 @@ public class NotificationFooterLayout extends FrameLayout {
         int iconSize = res.getDimensionPixelSize(R.dimen.notification_footer_icon_size);
         mIconLayoutParams = new LayoutParams(iconSize, iconSize);
         mIconLayoutParams.gravity = Gravity.CENTER_VERTICAL;
-        // Compute margin start for each icon such that the icons between the first one
-        // and the ellipsis are evenly spaced out.
+        setWidth((int) res.getDimension(R.dimen.bg_popup_item_width));
+        mBackgroundColor = Themes.getAttrColor(context, R.attr.popupColorPrimary);
+    }
+
+
+    /**
+     * Compute margin start for each icon such that the icons between the first one and the ellipsis
+     * are evenly spaced out.
+     */
+    public void setWidth(int width) {
+        if (getLayoutParams() != null) {
+            getLayoutParams().width = width;
+        }
+        Resources res = getResources();
+        int iconSize = res.getDimensionPixelSize(R.dimen.notification_footer_icon_size);
+
         int paddingEnd = res.getDimensionPixelSize(R.dimen.notification_footer_icon_row_padding);
         int ellipsisSpace = res.getDimensionPixelSize(R.dimen.horizontal_ellipsis_offset)
                 + res.getDimensionPixelSize(R.dimen.horizontal_ellipsis_size);
-        int footerWidth = res.getDimensionPixelSize(R.dimen.bg_popup_item_width);
-        int availableIconRowSpace = footerWidth - paddingEnd - ellipsisSpace
+        int availableIconRowSpace = width - paddingEnd - ellipsisSpace
                 - iconSize * MAX_FOOTER_NOTIFICATIONS;
         mIconLayoutParams.setMarginStart(availableIconRowSpace / MAX_FOOTER_NOTIFICATIONS);
-
-        mBackgroundColor = Themes.getAttrColor(context, R.attr.popupColorPrimary);
     }
 
     @Override

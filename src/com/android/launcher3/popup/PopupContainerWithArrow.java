@@ -37,7 +37,6 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
@@ -66,7 +65,6 @@ import com.android.launcher3.notification.NotificationKeyData;
 import com.android.launcher3.popup.PopupDataProvider.PopupDataChangeListener;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.shortcuts.ShortcutDragPreviewProvider;
-import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.util.PackageUserKey;
@@ -257,6 +255,16 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
         mNumNotifications = notificationKeys.size();
         mOriginalIcon = originalIcon;
 
+        boolean hasDeepShortcuts = shortcutCount > 0;
+        int containerWidth = (int) getResources().getDimension(R.dimen.bg_popup_item_width);
+
+        // if there are deep shortcuts, we might want to increase the width of shortcuts to fit
+        // horizontally laid out system shortcuts.
+        if (hasDeepShortcuts) {
+            containerWidth = (int) Math.max(containerWidth,
+                    systemShortcuts.size() * getResources().getDimension(
+                            R.dimen.system_shortcut_header_icon_touch_size));
+        }
         // Add views
         if (mNumNotifications > 0) {
             // Add notification entries
@@ -265,18 +273,22 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
             if (mNumNotifications == 1) {
                 mNotificationItemView.removeFooter();
             }
+            else {
+                mNotificationItemView.setFooterWidth(containerWidth);
+            }
             updateNotificationHeader();
         }
         int viewsToFlip = getChildCount();
         mSystemShortcutContainer = this;
-
-        if (shortcutCount > 0) {
+        if (hasDeepShortcuts) {
             if (mNotificationItemView != null) {
                 mNotificationItemView.addGutter();
             }
 
             for (int i = shortcutCount; i > 0; i--) {
-                mShortcuts.add(inflateAndAdd(R.layout.deep_shortcut, this));
+                DeepShortcutView v = inflateAndAdd(R.layout.deep_shortcut, this);
+                v.getLayoutParams().width = containerWidth;
+                mShortcuts.add(v);
             }
             updateHiddenShortcuts();
 
