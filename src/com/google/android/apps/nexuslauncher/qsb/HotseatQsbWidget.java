@@ -20,6 +20,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.graphics.ColorUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.View;
 import ch.deletescape.lawnchair.LawnchairPreferences;
@@ -45,6 +46,7 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
     public static final String KEY_DOCK_HIDE = "pref_hideHotseat";
     private boolean mIsGoogleColored;
     private final k Ds;
+    private boolean widgetMode;
 
     static /* synthetic */ void a(HotseatQsbWidget hotseatQsbWidget) {
         if (hotseatQsbWidget.mIsGoogleColored != hotseatQsbWidget.isGoogleColored()) {
@@ -65,6 +67,10 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
         super(context, attributeSet, i);
         this.Ds = k.getInstance(context);
         setOnClickListener(this);
+    }
+
+    public void setWidgetMode(boolean widgetMode) {
+        this.widgetMode = widgetMode;
     }
 
     protected void onAttachedToWindow() {
@@ -103,7 +109,7 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
         if (key.equals(KEY_DOCK_COLORED_GOOGLE)) {
             mIsGoogleColored = isGoogleColored();
             dM();
-        } else if (key.equals(KEY_DOCK_SEARCHBAR) || key.equals(KEY_DOCK_HIDE)) {
+        } else if (!widgetMode && (key.equals(KEY_DOCK_SEARCHBAR) || key.equals(KEY_DOCK_HIDE))) {
             boolean visible = prefs.getDockSearchBar() && !prefs.getDockHide();
             setVisibility(visible ? View.VISIBLE : View.GONE);
         }
@@ -177,6 +183,9 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
     }
 
     protected final int aA(int i) {
+        if (widgetMode) {
+            return i;
+        }
         View view = this.mActivity.getHotseat().getLayout();
         return (i - view.getPaddingLeft()) - view.getPaddingRight();
     }
@@ -267,13 +276,15 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
 
     protected void onLayout(boolean z, int i, int i2, int i3, int i4) {
         super.onLayout(z, i, i2, i3, i4);
-        setTranslationY((float) (-getBottomMargin(this.mActivity)));
+        setTranslationY((float) (-getBottomMargin(this.mActivity, widgetMode)));
     }
 
     public void setInsets(Rect rect) {
         super.setInsets(rect);
-        setVisibility(
-                mActivity.getDeviceProfile().isVerticalBarLayout() ? View.GONE : View.VISIBLE);
+        if (!widgetMode) {
+            setVisibility(
+                    mActivity.getDeviceProfile().isVerticalBarLayout() ? View.GONE : View.VISIBLE);
+        }
     }
 
     public void onClick(View view) {
@@ -321,13 +332,13 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
         doOnClick();
     }
 
-    public static int getBottomMargin(Launcher launcher) {
+    public static int getBottomMargin(Launcher launcher, boolean widgetMode) {
         Resources resources = launcher.getResources();
         int minBottom = launcher.getDeviceProfile().getInsets().bottom + launcher.getResources()
                 .getDimensionPixelSize(R.dimen.hotseat_qsb_bottom_margin);
 
         DeviceProfile profile = launcher.getDeviceProfile();
-        Rect rect = profile.getInsets();
+        Rect rect = widgetMode ? new Rect(0,0,0,0) : profile.getInsets();
         Rect hotseatLayoutPadding = profile.getHotseatLayoutPadding();
 
         int hotseatTop = profile.hotseatBarSizePx + rect.bottom;

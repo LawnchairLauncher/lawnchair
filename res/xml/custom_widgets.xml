@@ -32,4 +32,19 @@
         launcher:customizeTitle="@string/home_widget"
         launcher:customizeScreen="@xml/lawnchair_smartspace_preferences"
         launcher:customizeHasPreview="true" />
+
+    <widget
+        android:label="@string/pref_category_searchbar"
+        android:initialLayout="@layout/search_widget"
+        android:icon="@mipmap/ic_launcher"
+        android:resizeMode="horizontal|vertical"
+        launcher:numRows="1"
+        launcher:numColumns="5"
+        launcher:numMinRows="1"
+        launcher:numMinColumns="3"
+        launcher:providerId="2"
+        launcher:noPadding="true"
+        launcher:customizeTitle="@string/pref_category_searchbar"
+        launcher:customizeScreen="@xml/lawnchair_search_preferences"
+        launcher:customizeHasPreview="false" />
 </widgets>
