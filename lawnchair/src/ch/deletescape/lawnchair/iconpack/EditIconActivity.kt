@@ -337,9 +337,9 @@ class EditIconActivity : SettingsBaseActivity() {
 
     inner class IconItem(val entry: IconPack.Entry, val isDefault: Boolean, val title: String) : AdapterItem() {
 
-        private val normalizedIconBitmap = LauncherIcons.obtain(this@EditIconActivity).createBadgedIconBitmap(
-                entry.drawableForDensity(getIconDensity()), component?.user ?: Process.myUserHandle(), Build.VERSION.SDK_INT)
-        val iconDrawable = BitmapDrawable(resources, normalizedIconBitmap.icon)
+        private val normalizedIconBitmap by lazy { LauncherIcons.obtain(this@EditIconActivity).createBadgedIconBitmap(
+                entry.drawableForDensity(getIconDensity()), component?.user ?: Process.myUserHandle(), Build.VERSION.SDK_INT) }
+        val iconDrawable by lazy { BitmapDrawable(resources, normalizedIconBitmap.icon) }
 
         override fun compareTo(other: AdapterItem): Int {
             if (other is IconItem) {
