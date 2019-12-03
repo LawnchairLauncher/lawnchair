@@ -9,8 +9,8 @@
     <string name="search_menu">Rechercher</string>
     <string name="search_no_results">Aucun résultat</string>
     <string name="restart_lawnchair_pref_title">Redémarrer</string>
-    <string name="developer_options_title">Options pour les développeurs</string>
-    <string name="change_default_home">Définir comme Application d\'Accueil</string>
+    <string name="developer_options_title">Options développeurs</string>
+    <string name="change_default_home">Définir comme application d\'accueil</string>
     <string name="action_apply">Fait</string>
     <!-- Note: new. Replaces “OK” in dialogs. -->
     <string name="theme_dark_theme_mode_on">Activé</string>
@@ -291,7 +291,7 @@
     <string name="about">À propos</string>
     <string name="about_pref_summary">Équipe, liens, licences</string>
     <string name="about_translate">Traduire</string>
-    <string name="title_attribouter_rate">Évaluer</string>
+    <string name="title_attribouter_rate">Noter</string>
     <string name="title_attribouter_website">Site internet</string>
     <string name="about_role_lead">Développeur en chef</string>
     <string name="about_role_dev">Développeur</string>
