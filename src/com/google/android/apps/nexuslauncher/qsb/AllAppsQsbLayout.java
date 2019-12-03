@@ -63,6 +63,8 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     private LawnchairPreferences prefs;
     private int mForegroundColor;
 
+    private boolean widgetMode;
+
     private final boolean mLowPerformanceMode;
 
     private final int mTopAdjusting;
@@ -102,6 +104,10 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         int i = (wallpaperDeviceProfile.hotseatBarSizePx - wallpaperDeviceProfile.hotseatCellHeightPx) - getLayoutParams().height;
         int i2 = insets.bottom;
         return (float) (((getLayoutParams().height + Math.max(-mVerticalOffset, insets.top - mTopAdjusting)) + mVerticalOffset) + (i2 + ((int) (((float) (i - i2)) * 0.45f))));
+    }
+
+    public void setWidgetMode(boolean enable) {
+        widgetMode = enable;
     }
 
     public void setInsets(Rect rect) {
@@ -179,6 +185,9 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     }
 
     protected final int aA(int i) {
+        if (widgetMode) {
+            return i;
+        }
         if (mActivity.getDeviceProfile().isVerticalBarLayout()) {
             return (i - this.mAppsView.getActiveRecyclerView().getPaddingLeft()) - this.mAppsView
                     .getActiveRecyclerView().getPaddingRight();
@@ -378,9 +387,12 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         View view = (View) getParent();
-        setTranslationX((float) ((view.getPaddingLeft() + (
-                (((view.getWidth() - view.getPaddingLeft()) - view.getPaddingRight()) - (right - left))
-                        / 2)) - left));
+        if (!widgetMode) {
+            setTranslationX((float) ((view.getPaddingLeft() + (
+                    (((view.getWidth() - view.getPaddingLeft()) - view.getPaddingRight()) - (right
+                            - left))
+                            / 2)) - left));
+        }
         int containerTopMargin = 0;
         if (!prefs.getAllAppsSearch()) {
             MarginLayoutParams mlp = (MarginLayoutParams) getLayoutParams();
@@ -465,7 +477,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     public void setContentVisibility(int visibleElements, PropertySetter setter,
             Interpolator interpolator) {
         LawnchairPreferences prefs = Utilities.getLawnchairPrefs(getContext());
-        boolean hotseatQsbEnabled = prefs.getDockSearchBar();
+        boolean hotseatQsbEnabled = prefs.getDockSearchBar() || widgetMode;
         boolean drawerQsbEnabled = prefs.getAllAppsSearch();
         boolean hotseatQsbVisible = (visibleElements & HOTSEAT_SEARCH_BOX) != 0;
         boolean drawerQsbVisible = (visibleElements & ALL_APPS_HEADER) != 0;

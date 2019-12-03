@@ -16,10 +16,12 @@
 package com.android.launcher3.graphics;
 
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import com.android.launcher3.Utilities;
 
 /**
  * Utility class which draws a bitmap by dissecting it into 3 segments and stretching
@@ -42,6 +44,9 @@ public class NinePatchDrawHelper {
      * as {@link #EXTENSION_PX} in the center of the bitmap.
      */
     public void draw(Bitmap bitmap, Canvas canvas, float left, float top, float right) {
+        if(Utilities.ATLEAST_OREO && !canvas.isHardwareAccelerated() && bitmap.getConfig() == Config.HARDWARE) {
+            bitmap = bitmap.copy(Config.ARGB_8888, bitmap.isMutable());
+        }
         int height = bitmap.getHeight();
 
         mSrc.top = 0;
