@@ -69,8 +69,10 @@ public class DeferredAppWidgetHostView extends LauncherAppWidgetHostView {
                 && mSetupTextLayout.getWidth() == availableWidth) {
             return;
         }
-        mSetupTextLayout = new StaticLayout(info.label, mPaint, availableWidth,
-                Layout.Alignment.ALIGN_CENTER, 1, 0, true);
+        if (availableWidth > 0) {
+            mSetupTextLayout = new StaticLayout(info.label, mPaint, availableWidth,
+                    Layout.Alignment.ALIGN_CENTER, 1, 0, true);
+        }
     }
 
     @Override
