@@ -46,7 +46,7 @@ public class LandscapeEdgeSwipeController extends AbstractStateChangeTouchContro
     }
 
     @Override
-    protected int getLogContainerTypeForNormalState() {
+    protected int getLogContainerTypeForNormalState(MotionEvent ev) {
         return LauncherLogProto.ContainerType.NAVBAR;
     }
 

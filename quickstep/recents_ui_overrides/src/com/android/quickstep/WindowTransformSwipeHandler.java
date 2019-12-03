@@ -217,6 +217,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
 
     private AnimationFactory mAnimationFactory = (t) -> { };
     private LiveTileOverlay mLiveTileOverlay = new LiveTileOverlay();
+    private boolean mLiveTileOverlayAttached = false;
 
     private boolean mWasLauncherAlreadyVisible;
 
@@ -323,8 +324,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
 
         mRecentsView = activity.getOverviewPanel();
         linkRecentsViewScroll();
-        mRecentsView.setLiveTileOverlay(mLiveTileOverlay);
-        mActivity.getRootView().getOverlay().add(mLiveTileOverlay);
+        addLiveTileOverlay();
 
         mStateCallback.setState(STATE_LAUNCHER_PRESENT);
         if (alreadyOnHome) {
@@ -923,7 +923,15 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             windowAnim.addListener(new AnimationSuccessListener() {
                 @Override
                 public void onAnimationSuccess(Animator animator) {
-                    setStateOnUiThread(target.endState);
+                    if (target == NEW_TASK && mRecentsView != null
+                            && mRecentsView.getNextPage() == mRecentsView.getRunningTaskIndex()) {
+                        // We are about to launch the current running task, so use LAST_TASK state
+                        // instead of NEW_TASK. This could happen, for example, if our scroll is
+                        // aborted after we determined the target to be NEW_TASK.
+                        setStateOnUiThread(LAST_TASK.endState);
+                    } else {
+                        setStateOnUiThread(target.endState);
+                    }
                 }
             });
             windowAnim.start();
@@ -972,7 +980,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             @Override
             public void onAnimationStart(Animator animation) {
                 if (mActivity != null) {
-                    mActivity.getRootView().getOverlay().remove(mLiveTileOverlay);
+                    removeLiveTileOverlay();
                 }
             }
 
@@ -1071,7 +1079,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         mRecentsView.onGestureAnimationEnd();
 
         mActivity.getRootView().setOnApplyWindowInsetsListener(null);
-        mActivity.getRootView().getOverlay().remove(mLiveTileOverlay);
+        removeLiveTileOverlay();
     }
 
     private void endLauncherTransitionController() {
@@ -1199,6 +1207,22 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     private void setTargetAlphaProvider(TargetAlphaProvider provider) {
         mClipAnimationHelper.setTaskAlphaCallback(provider);
         updateFinalShift();
+    }
+
+    private synchronized void addLiveTileOverlay() {
+        if (!mLiveTileOverlayAttached) {
+            mActivity.getRootView().getOverlay().add(mLiveTileOverlay);
+            mRecentsView.setLiveTileOverlay(mLiveTileOverlay);
+            mLiveTileOverlayAttached = true;
+        }
+    }
+
+    private synchronized void removeLiveTileOverlay() {
+        if (mLiveTileOverlayAttached) {
+            mActivity.getRootView().getOverlay().remove(mLiveTileOverlay);
+            mRecentsView.setLiveTileOverlay(null);
+            mLiveTileOverlayAttached = false;
+        }
     }
 
     public static float getHiddenTargetAlpha(RemoteAnimationTargetCompat app, float expectedAlpha) {

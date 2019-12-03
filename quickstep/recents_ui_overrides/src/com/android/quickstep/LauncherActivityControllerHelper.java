@@ -40,7 +40,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Region;
 import android.os.UserHandle;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Interpolator;
@@ -58,7 +57,6 @@ import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.AnimatorSetBuilder;
-import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.uioverrides.states.OverviewState;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.views.FloatingIconView;
@@ -201,9 +199,6 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
         // Since all apps is not visible, we can safely reset the scroll position.
         // This ensures then the next swipe up to all-apps starts from scroll 0.
         activity.getAppsView().reset(false /* animate */);
-
-        // Optimization, hide the all apps view to prevent layout while initializing
-        activity.getAppsView().getContentView().setVisibility(View.GONE);
 
         return new AnimationFactory() {
             private ShelfAnimState mShelfState;
@@ -386,6 +381,10 @@ public final class LauncherActivityControllerHelper implements ActivityControlHe
             TaskView runningTaskView = recentsView.getRunningTaskView();
             if (runningTaskView == null) {
                 runningTaskView = recentsView.getTaskViewAt(recentsView.getCurrentPage());
+                if (runningTaskView == null) {
+                    // There are no task views in LockTask mode when Overview is enabled.
+                    return;
+                }
             }
             TimeInterpolator oldInterpolator = translateY.getInterpolator();
             Rect fallbackInsets = launcher.getDeviceProfile().getInsets();
