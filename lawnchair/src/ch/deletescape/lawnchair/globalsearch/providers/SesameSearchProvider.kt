@@ -34,7 +34,9 @@ class SesameSearchProvider(context: Context) : SearchProvider(context), Lawnchai
 
     override fun startVoiceSearch(callback: (intent: Intent) -> Unit) = startAssistant(callback)
 
-    override fun startAssistant(callback: (intent: Intent) -> Unit) = callback(Intent(Intent.ACTION_VOICE_COMMAND).setPackage(GoogleSearchProvider.PACKAGE))
+    override fun startAssistant(callback: (intent: Intent) -> Unit) = if (PackageManagerHelper.isAppEnabled(context.packageManager, GoogleSearchProvider.PACKAGE, 0)) {
+        callback(Intent(Intent.ACTION_VOICE_COMMAND).setPackage(GoogleSearchProvider.PACKAGE))
+    } else callback(Intent(Intent.ACTION_ASSIST))
 
     private var iconCache: Drawable? = null
 
