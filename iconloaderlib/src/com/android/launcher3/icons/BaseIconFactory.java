@@ -215,7 +215,7 @@ public class BaseIconFactory implements AutoCloseable {
         float scale = 1f;
 
         if (shrinkNonAdaptiveIcons && ATLEAST_OREO) {
-            if (mWrapperIcon == null) {
+            if (mWrapperIcon == null || !((AdaptiveIconCompat) mWrapperIcon).isMaskValid()) {
                 mWrapperIcon = AdaptiveIconCompat.wrap(
                         mContext.getDrawable(R.drawable.adaptive_icon_drawable_wrapper).mutate());
             }
