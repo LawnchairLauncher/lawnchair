@@ -19,6 +19,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.os.UserHandle;
+import android.util.Log;
 
 @TargetApi(Build.VERSION_CODES.P)
 public class UserManagerCompatVP extends UserManagerCompatVNMr1 {
@@ -29,6 +30,11 @@ public class UserManagerCompatVP extends UserManagerCompatVNMr1 {
 
     @Override
     public boolean requestQuietModeEnabled(boolean enableQuietMode, UserHandle user) {
-        return mUserManager.requestQuietModeEnabled(enableQuietMode, user);
+        try {
+            return mUserManager.requestQuietModeEnabled(enableQuietMode, user);
+        } catch (Exception e) {
+            Log.e("UserManagerCompatVP", "Error trying to request quiet mode", e);
+            return false;
+        }
     }
 }
