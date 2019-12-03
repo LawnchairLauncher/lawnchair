@@ -85,7 +85,7 @@ android {
         def accuWeatherKey = localProps.getProperty('accu_key') ?: '"' + System.getenv("ACCU_KEY") + '"'
         buildConfigField "String", "ACCUWEATHER_KEY", accuWeatherKey
 
-        buildConfigField "String", "BRIDGE_DOWNLOAD_URL", "\"https://lawnchair.app/getlawnfeed.html?ref=lawnchair\""
+        buildConfigField "String", "BRIDGE_DOWNLOAD_URL", "\"https://lawnchair.app/lawnfeed/?ref=lawnchair\""
 
         ndk {
             abiFilters "armeabi-v7a", "x86", "x86_64", "arm64-v8a"
