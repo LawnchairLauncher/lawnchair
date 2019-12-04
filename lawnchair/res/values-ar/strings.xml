@@ -69,7 +69,7 @@
     <string name="icon_scale_pref_title">حجم الأيقونة</string>
     <string name="auto_add_shortcuts_label">إضافة إختصارات جديدة على سطح المكتب</string>
     <string name="pref_icon_popup_menu">اختصار فقاعي</string>
-    <string name="pref_category_misc">آخرى</string>
+    <string name="pref_category_misc">أخرى</string>
     <string name="animation_type_title">حركة فتح تطبيق</string>
     <string name="animation_type_default">الإفتراضي</string>
     <string name="animation_type_pie">أندرويد باي</string>
@@ -564,4 +564,7 @@
     <string name="action_switch_apps">تبديل بين التطبيقات</string>
     <string name="icon_shape_system_default">متوافق مع النظام</string>
     <string name="title_missing_notification_access">يلزم تمكين الوصول إلى الإشعارات.</string>
+    <string name="activity_not_found">التطبيق ليس مثبتًا.</string>
+    <string name="out_of_space">لا مزيد من المساحة على سطح المكتب.</string>
+    <string name="hotseat_out_of_space">لا مزيد من المساحة في شريط البرامج السفلي.</string>
 </resources>
