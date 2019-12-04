@@ -40,11 +40,12 @@ import com.android.launcher3.icons.IconNormalizer;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.touch.ItemLongClickListener;
+import com.android.launcher3.views.DoubleShadowBubbleTextView;
 
 /**
  * A BubbleTextView with a ring around it's drawable
  */
-public class PredictedAppIcon extends BubbleTextView {
+public class PredictedAppIcon extends DoubleShadowBubbleTextView {
 
     private static final float RING_EFFECT_RATIO = 0.12f;
 
