@@ -17,12 +17,17 @@
     <string name="pref_icon_packs">Paquets d\'icones</string>
     <string name="icon_pack_default">Icones del sistema</string>
     <string name="pref_icon_pack_masking">Màscara d\'icones</string>
+    <string name="pref_icon_pack_masking_summary">Vincula les icones sense tema al paquet d\'icones.</string>
     <string name="pref_legacy_treatment_title">Crea icones adaptatives</string>
+    <string name="pref_legacy_treatment_summary">Crea icones adaptatives per a totes les dreceres.</string>
     <string name="pref_legacy_colored_backgrounds">Color del fons</string>
+    <string name="pref_legacy_colored_backgrounds_summary">Color de fons de les icones adaptatives.</string>
     <string name="pref_white_only_treatment">Substitueix fons blancs</string>
+    <string name="pref_white_only_treatment_summary">Pinta el color de fons de les icones adaptatives.</string>
     <string name="adaptify_pack_title">Crea icones adaptatives per al paquet d\'icones</string>
     <string name="icon_shape_override_label">Forma de les icones</string>
     <string name="reset_custom_icons">Suprimeix les icones personalitzades</string>
+    <string name="reset_custom_icons_confirmation">Voleu restaurar a les opcions per defecte les icones d\'aquest paquet? No es pot desfer.</string>
     <string name="appearance">Aparença</string>
     <!-- Note: new. Replaces title of 5th field (from bottom) in “Theme” page. -->
     <string name="theme_auto">Automàtic (segons el fons de pantalla)</string>
@@ -41,6 +46,8 @@
     <string name="color_wallpaper_tertiary">Fons de pantalla — terciari</string>
     <string name="pref_fonts_title">Fonts</string>
     <string name="blur_pref_title">Desenfocament</string>
+    <string name="blur_pref_summary">Desenfoca el fons de la pàgina.</string>
+    <string name="blur_radius_pref_title">Intensitat del desenfocament</string>
     <!-- Section 3 -->
     <string name="general_pref_title">Escriptori</string>
     <string name="general_pref_summary">Disposició, blocatge d\'escriptori, transicions</string>
@@ -59,6 +66,7 @@
     <string name="auto_add_shortcuts_label">Afegeix dreceres noves a l\'escriptori</string>
     <string name="pref_icon_popup_menu">Bombolles de dreceres</string>
     <string name="pref_category_misc">Altres</string>
+    <string name="animation_type_title">Transició de llançador d\'aplicacions</string>
     <string name="animation_type_default">Per defecte</string>
     <string name="animation_type_pie">Android Pie</string>
     <string name="animation_type_pie_like">Android Pie (Emulat)</string>
@@ -71,6 +79,7 @@
     <string name="pref_notification_count_title">Mostra el comptador de notificacions</string>
     <string name="allow_rotation_title">Habilita la rotació</string>
     <string name="pref_center_wallpaper">Centra el fons de pantalla</string>
+    <string name="pref_center_wallpaper_summary">Desactiva el desplaçament del fons de pantalla.</string>
     <string name="pref_hide_statusbar">Amaga la barra d\'estat</string>
     <string name="full_width_width_widgets_pref_title">Ginys amples</string>
     <string name="full_width_widgets_pref_summary">Permet que els ginys ocupin les vores de la pantalla.</string>
@@ -78,12 +87,14 @@
     <!-- Section 4 -->
     <string name="smartspace_preferences_in_settings">D\'una ullada</string>
     <!-- Note: replaces hard-coded copy (“Home widget”). -->
+    <string name="smartspace_preferences_in_settings_desc">Data i hora, fonts de dades</string>
     <string name="smartspace_time">Mostra l\'hora</string>
     <string name="smartspace_date">Mostra la data</string>
     <string name="pref_smartspace_time_above">Mostra el rellotge gran</string>
     <string name="pref_hide_statusbar_clock">Amaga el rellotge de la barra d\'estat</string>
     <string name="root_access_required">Cal accés de root.</string>
     <string name="smartspace_time_24_h">Utilitza el format de 24 hores</string>
+    <string name="title_use_pill_qsb">Mostra el camp de cerca</string>
     <string name="pref_category_weather">Altres</string>
     <string name="pref_smartspace_widget_provider">Origen meteorològic</string>
     <string name="google_app">Aplicació Google</string>
@@ -154,6 +165,10 @@
     <string name="pref_appcategorization_tabs_title">Pestanyes</string>
     <string name="pref_appcategorization_tabs_summary">Moure entre categories.</string>
     <string name="pref_app_groups_edit_tip">Toqueu per editar, arrossegueu per reordenar.</string>
+    <plurals name="hidden_apps_count">
+        <item quantity="one">%1$d ocultes</item>
+        <item quantity="other">%1$d Ocultes</item>
+    </plurals>
     <string name="category_business_and_productivity">Negocis i productivitat</string>
     <string name="category_communication">Comuniació</string>
     <string name="category_entertainment">Entreteniment</string>
@@ -227,12 +242,16 @@
     <string name="sesame">Sesame</string>
     <string name="sesame_data_integration">Compartició de dades</string>
     <string name="sesame_upsell">Toqueu per instal·lar el Sesame.</string>
+    <string name="pref_sesame_show_shortcuts">Mostra la drecera en bombolla</string>
     <string name="sesame_search_engine">Utilitza com a motor de cerca</string>
+    <string name="pref_sesame_sync_look_and_feel">Comparteix la configuració d\'estil</string>
+    <string name="pref_sesame_sync_look_and_feel_summary">Aplica les opcions de la barra de cerca a la barra del Sesame.</string>
     <string name="sesame_version">Versió de la llibreria</string>
     <string name="title_show_google_app">Mostra %1$s notícies</string>
     <string name="feed_theme_pref_title">Color de fons</string>
     <!-- Section 9 -->
     <string name="gestures_pref_title">Gestos</string>
+    <string name="gestures_pref_summary">Toc doble, llisca amunt des de l\'acoblador</string>
     <string name="gesture_double_tap">Toc doble</string>
     <string name="gesture_long_press">Toqueu i mantingueu premut</string>
     <string name="gesture_press_home">Toc per al botó Inici</string>
@@ -242,6 +261,7 @@
     <string name="gesture_dock_swipe_up">Llisca amunt des de l\'acoblador</string>
     <string name="action_none">No facis res</string>
     <string name="action_sleep">Repòs</string>
+    <string name="action_sleep_timeout">Suspensió usant el temps d\'espera de la pantalla</string>
     <string name="action_open_settings">Obre la configuració del Lawnchair</string>
     <string name="action_open_notifications">Obre el panell de notificacions</string>
     <string name="action_overlay">Obre el mur del Google</string>
@@ -253,6 +273,8 @@
     <string name="new_backup">Crea</string>
     <string name="restore_backup">Restaura</string>
     <string name="local_backups">A l\'emmagatzematge</string>
+    <string name="no_recent_backups">Les còpies de seguretat es mostren aquí.</string>
+    <string name="backup_contents">Dades a incloure a la còpia</string>
     <string name="restore_contents">Dades per restaurar</string>
     <string name="backup_settings">Configuració</string>
     <string name="homescreen">Disposició de l\'escriptori</string>
@@ -278,10 +300,12 @@
     <string name="about_role_ops">Enginyer d\'operacions i infraestructura</string>
     <string name="about_role_mod_support">Moderador i suport representatiu</string>
     <string name="about_role_family_member">Membre de la família</string>
+    <string name="about_role_magisk_maintainer">Mòdul de manteniment del QuickSwitch</string>
     <string name="about_our_team">L\'equip</string>
     <string name="title_attribouter_licenses">Reconeixement</string>
     <!-- Section 12 -->
     <string name="settings_button_text">Configuració de la pantalla d\'inici</string>
+    <string name="button_organize_screens">Ordena les pàgines</string>
     <string name="wallpaper_button_text">Fons de pantalla</string>
     <string name="pref_app_groups_create">Crea</string>
     <string name="pref_appcategorization_style_text">Estil</string>
@@ -327,6 +351,7 @@
     <string name="failed">Quelcom ha anat malament.</string>
     <string name="backup_share_text">Còpia de seguretat del Lawnchair</string>
     <string name="developer_options_enabled">Opcions del desenvolupador activades.</string>
+    <string name="restart_lawnchair_pref_summary">Torna a aplicar la configuració.</string>
     <string name="show_debug_info_pref_title">Mostra els noms dels components</string>
     <string name="debug_component_name">Nom del component</string>
     <string name="debug_component_name_copied">Copiat al porta-retalls.</string>
@@ -362,9 +387,11 @@
     <string name="about_bio_josh">Dissenyador autònom.</string>
     <string name="about_bio_harsh">Desenvolupador d\'aplicacions i biblioteques d\'Android. Desenvolupador principal en AOSiP.</string>
     <string name="about_bio_david">Tinc 19 anys, converteixo la cafeïna i la pizza en codi, proporciono allotjament i suport 24/7 per al Lawnchair si alguna cosa surt malament. Contribueixo al projectes de codi obert i corregeixo errors durant el meu temps lliure. Anteriorment conegut com Codebucket.</string>
+    <string name="about_bio_lumiq">És encara més difícil crear un producte dolent.</string>
     <string name="about_bio_paphonb">Estudiant de 18 anys, desenvolupador d\'Android i un dels principals desenvolupadors de Lawnchair Launcher.</string>
     <string name="debug_crash_launcher">Força l\'aturada</string>
     <string name="action_open_drawer">Obre el calaix</string>
+    <string name="action_last_task">Inicia la darrera aplicació</string>
     <string name="action_open_widgets">Obre el calaix de ginys</string>
     <string name="action_open_overview">Mostra les notificacions de bombolla</string>
     <string name="action_global_search">Inicia la cerca global</string>
@@ -416,6 +443,7 @@
     <string name="theme_dark_theme_mode_follow_system">@string/theme_auto_night_mode</string>
     <string name="pref_qsb_color">Color</string>
     <string name="hide_from_predictions">Amaga dels suggeriments</string>
+    <string name="recents_not_connected">El QuickSwitch està desactivat.</string>
     <string name="app_actions_pref_title_in_search">Accions</string>
     <string name="search_clear_history">Neteja l\'historial</string>
     <string name="recent_task_option_popup_window">Diàleg</string>
@@ -483,8 +511,10 @@
     <string name="action_dogbin_upload_error">Ha fallat en penjar.</string>
     <string name="dogbin_uploading">S\'està penjant...</string>
     <string name="bugreport_channel_name">Informes d\'errors</string>
+    <string name="status_channel_name">Estat de la transferència</string>
     <string name="bugreport_group_summary">%d informes nous.</string>
     <string name="bugreport_group_summary_multiple">Diversos informes nous.</string>
+    <string name="folder_cover_mode">Utilitza el Mode de caràtula</string>
     <string name="folder_cover_mode_desc">Toqueu per obrir la primera aplicació, llisqueu cap amunt per veure-les totes.</string>
     <string name="icon_shape_override_miui_explaination">A error en MIUI pot causar que les icones continuïn essent quadrades.</string>
     <string name="permission_iplocate">Ubicació aproximada</string>
@@ -494,6 +524,7 @@
     <string name="zen_mode_enabled">El mode no molestar està activat.</string>
     <string name="crash_report_notif_title">%1$s ha fallat</string>
     <string name="onbording_settings_title">Configura %s</string>
+    <string name="onbording_settings_summary">Toqueu i mantingueu premut a l\'escriptori.</string>
     <string name="onboarding_swipe_up">Llisqueu amunt per l\'acoblador.</string>
     <string name="weather_icons_default">Per defecte</string>
     <string name="pref_weather_icon_pack">Icones del temps</string>
