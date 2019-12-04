@@ -27,6 +27,7 @@ import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.UserHandle
+import ch.deletescape.lawnchair.foregroundActivity
 import ch.deletescape.lawnchair.sesame.Sesame
 import ch.deletescape.lawnchair.sesame.getActivity
 import ch.deletescape.lawnchair.sesame.getIcon
@@ -59,10 +60,15 @@ class LawnchairShortcutManager(private val context: Context) : DeepShortcutManag
         lastCallExternal = isExternal(id)
         if (lastCallExternal) {
             if (isQuinoa(id)) {
-                val shortcuts = queryForFullDetails(packageName, listOf(id), user)
-                val shortcut = shortcuts.getOrNull(0)?.sesameShortcut
+                val shortcut = findSesameShortcut(packageName, id)
                 if (shortcut != null) {
-                    SesameFrontend.runAction(context, shortcut.actions[0])
+                    val intent = SesameFrontend.addPackageAuth(context, shortcut.actions[0].intent)
+                    intent.sourceBounds = sourceBounds
+                    val activity = context.foregroundActivity
+                    if (activity == null) {
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    }
+                    (activity ?: context).startActivity(intent, startActivityOptions)
                 }
             }
         } else {
@@ -90,7 +96,7 @@ class LawnchairShortcutManager(private val context: Context) : DeepShortcutManag
                     .filter {
                         shortcutIds == null || shortcutIds.contains(it.getId())
                     }.map {
-                            SesameFrontend.getShortcutInfo(context, it) ?: ShortcutInfo.Builder(context, it.getId())
+                        ShortcutInfo.Builder(context, it.getId())
                                     .setIntent(Intent("dummy").apply {
                                         putExtra(EXTRA_EXTERNAL_ID, it.id)
                                         putExtra(EXTRA_EXTERNAL_PACKAGE, it.packageName)
@@ -100,13 +106,18 @@ class LawnchairShortcutManager(private val context: Context) : DeepShortcutManag
                                     .setActivity(activity ?: it.getActivity())
                                     .setRank(0)
                                     .build().apply {
-                                        val clearFlags = this::class.java
-                                                .getDeclaredMethod("clearFlags", Int::class.java)
-                                                .apply {
-                                                    isAccessible = true
-                                                }
-                                        clearFlags.invoke(this, (1 shl 0)) // FLAG_DYNAMIC
-
+                                    val packageName = this::class.java
+                                            .getDeclaredField("mPackageName")
+                                            .apply {
+                                                isAccessible = true
+                                            }
+                                    packageName.set(this, it.packageName)
+                                    val clearFlags = this::class.java
+                                            .getDeclaredMethod("clearFlags", Int::class.java)
+                                            .apply {
+                                                isAccessible = true
+                                            }
+                                    clearFlags.invoke(this, (1 shl 0)) // FLAG_DYNAMIC
                                     }
                     }.toMutableList()
         }
@@ -119,10 +130,15 @@ class LawnchairShortcutManager(private val context: Context) : DeepShortcutManag
 
     private val ShortcutInfo.sesameShortcut: SesameShortcut?
         get() {
-            val sesameId = intent?.extras?.getString(EXTRA_EXTERNAL_ID) ?: return null
-            val packageName = intent?.extras?.getString(EXTRA_EXTERNAL_PACKAGE)
-            return SesameFrontend.getRecentAppShortcuts(packageName, false, 50).firstOrNull { it.id == sesameId }
+            val packageName = intent?.extras?.getString(EXTRA_EXTERNAL_PACKAGE) ?: return null
+            return findSesameShortcut(packageName, id)
         }
+
+    private fun findSesameShortcut(packageName: String, shortcutId: String): SesameShortcut? {
+        return SesameFrontend
+                .getRecentAppShortcuts(packageName, false, PopupPopulator.MAX_SHORTCUTS * 2)
+                .firstOrNull { it.getId() == shortcutId }
+    }
 
     companion object {
         private const val EXTRA_EXTERNAL_ID = "external_id"

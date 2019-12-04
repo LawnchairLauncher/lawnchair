@@ -194,3 +194,4 @@ class LawnchairApp : Application() {
 }
 
 val Context.lawnchairApp get() = applicationContext as LawnchairApp
+val Context.foregroundActivity get() = lawnchairApp.activityHandler.foregroundActivity
