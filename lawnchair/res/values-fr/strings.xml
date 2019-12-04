@@ -559,4 +559,7 @@ corriges des bugs pendant son temps libre. Également connu précédemment sous 
     <string name="action_switch_apps">Changer d\'applications</string>
     <string name="icon_shape_system_default">Défini par le système</string>
     <string name="title_missing_notification_access">Accès aux notifications requis.</string>
+    <string name="activity_not_found">Application non installée.</string>
+    <string name="out_of_space">Plus de place disponible sur le bureau.</string>
+    <string name="hotseat_out_of_space">Plus de place disponible dans le Dock.</string>
 </resources>
