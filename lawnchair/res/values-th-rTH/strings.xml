@@ -555,4 +555,7 @@
     <string name="action_switch_apps">สลัปแอป</string>
     <string name="icon_shape_system_default">ใช้การตั้งค่าระบบ</string>
     <string name="title_missing_notification_access">ต้องการสิทธิ์เพื่อเข้าถึงการแจ้งเตือน</string>
+    <string name="activity_not_found">แอปไม่ได้ติดตั้ง</string>
+    <string name="out_of_space">ไม่มีที่ว่างบนหน้าจอหลัก</string>
+    <string name="hotseat_out_of_space">ไม่มีที่ว่างในแถบรายการโปรด</string>
 </resources>
