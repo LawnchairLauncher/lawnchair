@@ -75,11 +75,11 @@ public class RecentTasksList extends TaskStackChangeListener {
     }
 
     public void startStabilizationSession() {
-        mStabilizer.startStabilizationSession();
+        getStabilizer().startStabilizationSession();
     }
 
     public void endStabilizationSession() {
-        mStabilizer.endStabilizationSession();
+        getStabilizer().endStabilizationSession();
     }
 
     /**
@@ -197,12 +197,16 @@ public class RecentTasksList extends TaskStackChangeListener {
 
     private ArrayList<Task> stabilizeIfNecessary(ArrayList<Task> tasks) {
         if (!Utilities.ATLEAST_Q) {
-            if (mStabilizer == null) {
-                mStabilizer = new TaskListStabilizer();
-            }
-            return mStabilizer.reorder(tasks);
+            return getStabilizer().reorder(tasks);
         } else {
             return tasks;
         }
+    }
+
+    private TaskListStabilizer getStabilizer() {
+        if (mStabilizer == null) {
+            mStabilizer = new TaskListStabilizer();
+        }
+        return mStabilizer;
     }
 }
