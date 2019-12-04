@@ -560,4 +560,7 @@
     <string name="action_switch_apps">Uygulamaları Değiştir</string>
     <string name="icon_shape_system_default">Sisteme Göre Ayarla</string>
     <string name="title_missing_notification_access">Bildirim erişimi gerekli.</string>
+    <string name="activity_not_found">Uygulama yüklü değil.</string>
+    <string name="out_of_space">Masaüstünde yer yok.</string>
+    <string name="hotseat_out_of_space">Alt panelde yer yok.</string>
 </resources>
