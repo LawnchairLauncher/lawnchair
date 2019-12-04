@@ -69,16 +69,8 @@ public final class FeatureFlags {
      *
      * To add a new flag that can be toggled through the flags UI:
      *
-     * 1. Declare a new ToggleableFlag below. Give it a unique key (e.g. "QSB_ON_FIRST_SCREEN"),
+     * Declare a new ToggleableFlag below. Give it a unique key (e.g. "QSB_ON_FIRST_SCREEN"),
      *    and set a default value for the flag. This will be the default value on Debug builds.
-     *
-     * 2. Add your flag to mTogglableFlags.
-     *
-     * 3. Create a getter method (an 'is' method) for the flag by copying an existing one.
-     *
-     * 4. Create a getter method with the same name in the release flags copy of FeatureFlags.java.
-     *    This should returns a constant (true/false). This will be the value of the flag used on
-     *    release builds.
      */
     // When enabled the promise icon is visible in all apps while installation an app.
     public static final TogglableFlag PROMISE_APPS_IN_ALL_APPS = new TogglableFlag(

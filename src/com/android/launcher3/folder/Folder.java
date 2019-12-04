@@ -84,6 +84,7 @@ import com.android.launcher3.views.ClipPathView;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -148,7 +149,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     public ExtendedEditText mFolderName;
     private PageIndicatorDots mPageIndicator;
 
-    private View mFooter;
+    protected View mFooter;
     private int mFooterHeight;
 
     // Cell ranks used for drag and drop
@@ -217,7 +218,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
                 & ~InputType.TYPE_TEXT_FLAG_AUTO_CORRECT
                 & ~InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
                 | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
-        mFolderName.forceDisableSuggestions(true);
+        mFolderName.forceDisableSuggestions(!FeatureFlags.FOLDER_NAME_SUGGEST.get());
 
         mFooter = findViewById(R.id.folder_footer);
 
@@ -412,19 +413,20 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         });
     }
 
-
     /**
      * Show suggested folder title.
      */
-    public void showSuggestedTitle(CharSequence suggestName) {
+    public void showSuggestedTitle(String[] suggestName) {
         if (FeatureFlags.FOLDER_NAME_SUGGEST.get() && mInfo.contents.size() == 2) {
-            if (!TextUtils.isEmpty(suggestName)) {
-                mFolderName.setHint(suggestName);
-                mFolderName.setText(suggestName);
+            if (suggestName.length > 0 && !TextUtils.isEmpty(suggestName[0])) {
+                mFolderName.setHint(suggestName[0]);
+                mFolderName.setText(suggestName[0]);
+                mInfo.title = suggestName[0];
+                animateOpen();
                 mFolderName.showKeyboard();
-                mInfo.title = suggestName;
+                mFolderName.displayCompletions(
+                        Arrays.asList(suggestName).subList(1, suggestName.length));
             }
-            animateOpen();
         }
     }
 
@@ -991,7 +993,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         lp.y = top;
     }
 
-    private int getContentAreaHeight() {
+    protected int getContentAreaHeight() {
         DeviceProfile grid = mLauncher.getDeviceProfile();
         int maxContentAreaHeight = grid.availableHeightPx - grid.getTotalWorkspacePadding().y
                 - mFooterHeight;

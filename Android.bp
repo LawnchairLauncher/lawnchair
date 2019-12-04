@@ -30,3 +30,19 @@ android_library {
     manifest: "tests/tapl/AndroidManifest.xml",
     platform_apis: true,
 }
+
+java_library_static {
+    name: "launcher-log-protos-lite",
+    srcs: [
+        "protos/*.proto",
+        "proto_overrides/*.proto",
+    ],
+    sdk_version: "current",
+    proto: {
+        type: "lite",
+        local_include_dirs:[
+            "protos",
+            "proto_overrides",
+        ],
+    },
+}

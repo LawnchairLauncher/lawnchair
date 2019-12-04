@@ -508,12 +508,16 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     @Override
     public void reapplyUi() {
+        reapplyUi(true /* cancelCurrentAnimation */);
+    }
+
+    public void reapplyUi(boolean cancelCurrentAnimation) {
         if (supportsFakeLandscapeUI()) {
             mRotationMode = mStableDeviceProfile == null
                     ? RotationMode.NORMAL : getFakeRotationMode(mDeviceProfile);
         }
         getRootView().dispatchInsets();
-        getStateManager().reapplyState(true /* cancelCurrentAnimation */);
+        getStateManager().reapplyState(cancelCurrentAnimation);
     }
 
     @Override

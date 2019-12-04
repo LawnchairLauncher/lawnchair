@@ -105,6 +105,7 @@ public class LayoutUtils {
         }
 
         float topIconMargin = res.getDimension(R.dimen.task_thumbnail_top_margin);
+        float bottomMargin = res.getDimension(R.dimen.task_thumbnail_bottom_margin);
         float paddingVert = res.getDimension(R.dimen.task_card_vert_space);
 
         // Note this should be same as dp.availableWidthPx and dp.availableHeightPx unless
@@ -113,7 +114,7 @@ public class LayoutUtils {
         int launcherVisibleHeight = dp.heightPx - insets.top - insets.bottom;
 
         float availableHeight = launcherVisibleHeight
-                - topIconMargin - extraVerticalSpace - paddingVert;
+                - topIconMargin - extraVerticalSpace - paddingVert - bottomMargin;
         float availableWidth = launcherVisibleWidth - paddingHorz;
 
         float scale = Math.min(availableWidth / taskWidth, availableHeight / taskHeight);

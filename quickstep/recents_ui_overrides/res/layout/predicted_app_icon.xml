@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2009 The Android Open Source Project
+<!-- Copyright (C) 2019 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -14,16 +14,4 @@
      limitations under the License.
 -->
 
-<resources>
-    <!-- Fast scroll -->
-    <dimen name="fastscroll_popup_width">58dp</dimen>
-    <dimen name="fastscroll_popup_height">48dp</dimen>
-    <dimen name="fastscroll_popup_padding">10dp</dimen>
-    <dimen name="fastscroll_popup_text_size">24dp</dimen>
-
-    <!-- Dynamic grid -->
-    <dimen name="dynamic_grid_icon_drawable_padding">4dp</dimen>
-
-    <!-- Hotseat -->
-    <dimen name="dynamic_grid_hotseat_side_padding">16dp</dimen>
-</resources>
+<com.android.launcher3.uioverrides.PredictedAppIcon style="@style/BaseIcon.Workspace" />
