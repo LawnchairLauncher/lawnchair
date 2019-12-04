@@ -29,6 +29,7 @@ import android.text.TextUtils
 import ch.deletescape.lawnchair.comparing
 import ch.deletescape.lawnchair.then
 import com.android.launcher3.InvariantDeviceProfile
+import com.android.launcher3.LauncherAppState
 import com.android.launcher3.Utilities
 import com.android.launcher3.graphics.GridOptionsProvider.BITMAP_WRITER
 import java.io.FileNotFoundException
@@ -128,8 +129,8 @@ class GridOptionsProvider : ContentProvider() {
     }
 
     private fun getGridOptions(): Collection<CustomGridOption> {
-        val provider = CustomGridProvider.getInstance(context!!)
-        val currentGrid = CustomGridOption(provider.numRows, provider.numColumns, provider.numHotseatIcons)
+        val idp = LauncherAppState.getIDP(context)
+        val currentGrid = CustomGridOption(idp.numRows, idp.numColumns, idp.numHotseatIcons)
         val grids = (3..6).map { CustomGridOption(it, it, it) }.toSet() + currentGrid
         return grids.sortedWith(CUSTOM_GRID_COMPARATOR)
     }
