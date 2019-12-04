@@ -104,7 +104,7 @@
     <string name="google_app">Google-App</string>
     <string name="weather_provider_disabled">Deaktiviert</string>
     <string name="weather_provider_owm">OpenWeatherMap</string>
-    <string name="weather_provider_pe">Pixel-Erfahrung</string>
+    <string name="weather_provider_pe">Pixel-Experience</string>
     <string name="pref_weather_units">Temperatureinheit</string>
     <string name="units_metric">Celsius</string>
     <string name="units_imperial">Fahrenheit</string>
