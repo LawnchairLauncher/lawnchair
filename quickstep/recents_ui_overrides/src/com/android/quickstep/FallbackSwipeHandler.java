@@ -266,7 +266,7 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
     @Override
     public void onConsumerAboutToBeSwitched() {
         if (mInQuickSwitchMode && mGestureState.getEndTarget() != null) {
-            mGestureState.setEndTarget(HOME);
+            mGestureState.setEndTarget(NEW_TASK);
 
             mCanceled = true;
             mCurrentShift.cancelAnimation();
