@@ -79,7 +79,7 @@ android {
         def majorMinor = "2.1"
         if (ciBuild) {
             def ciBuildNumber = localProps.getProperty("buildNumber") ?: System.getenv("CI_BUILD_NUMBER")
-            versionCode = Integer.valueOf(ciBuildNumber)
+            versionCode = 210000 + Integer.valueOf(ciBuildNumber)
             def drone = localProps.getProperty("public") == "true" || System.getenv("DRONE")
             versionName = majorMinor + (drone ? "-" : ".") + ciBuildNumber
         } else {
