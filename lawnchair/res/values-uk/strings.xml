@@ -17,26 +17,26 @@
     <string name="theme_dark_theme_mode_off">Вимкнено</string>
     <!-- Section 2 -->
     <string name="theme_title">Тема</string>
-    <string name="pixel_ui_pref_summary">Іконки, кольори, розмиття</string>
-    <string name="pref_icon_packs">Пакети іконок</string>
-    <string name="icon_pack_default">Системні значки</string>
-    <string name="pref_icon_pack_masking">Форма іконок</string>
-    <string name="pref_icon_pack_masking_summary">Оформити іконки без теми відповідно до пакету іконок.</string>
-    <string name="pref_legacy_treatment_title">Створити адаптивні іконки</string>
+    <string name="pixel_ui_pref_summary">Піктограми, кольори, розмиття</string>
+    <string name="pref_icon_packs">Збірки піктограм</string>
+    <string name="icon_pack_default">Системні піктограми</string>
+    <string name="pref_icon_pack_masking">Форма піктограм</string>
+    <string name="pref_icon_pack_masking_summary">Оформити піктограми без теми, відповідно до їхніх збірок.</string>
+    <string name="pref_legacy_treatment_title">Створити адаптивні піктограми</string>
     <string name="pref_legacy_treatment_summary">Створити адаптивні іконки для усіх ярликів.</string>
-    <string name="pref_legacy_colored_backgrounds">Кольорові фони</string>
-    <string name="pref_legacy_colored_backgrounds_summary">Кольорові фони згенерованих адаптивних іконок.</string>
-    <string name="pref_white_only_treatment">Змінити білий фон</string>
-    <string name="pref_white_only_treatment_summary">Забарвити фони усіх адаптивних іконок.</string>
-    <string name="adaptify_pack_title">Створити адаптивні іконки для набору іконок</string>
-    <string name="icon_shape_override_label">Форма іконок</string>
-    <string name="reset_custom_icons">Видалити кастомні іконки</string>
-    <string name="reset_custom_icons_confirmation">Повернутся до дефолтних іконок? Ви не зможете відмінити цю дію.</string>
+    <string name="pref_legacy_colored_backgrounds">Колір тла</string>
+    <string name="pref_legacy_colored_backgrounds_summary">Забарвити тло всіх адаптивних піктограм.</string>
+    <string name="pref_white_only_treatment">Замінити біле тло</string>
+    <string name="pref_white_only_treatment_summary">Забарвити тло всіх адаптивних піктограм.</string>
+    <string name="adaptify_pack_title">Створити адаптивні піктограми для збірки піктограм</string>
+    <string name="icon_shape_override_label">Форма піктограм</string>
+    <string name="reset_custom_icons">Видалити користувацькі піктограми</string>
+    <string name="reset_custom_icons_confirmation">Повернути піктограми за замовчуванням? Дію відмінити неможливо.</string>
     <string name="appearance">Оформлення</string>
     <!-- Note: new. Replaces title of 5th field (from bottom) in “Theme” page. -->
-    <string name="theme_auto">Автоматом (На основі фонового малюнка)</string>
+    <string name="theme_auto">Автоматично (згідно тлу)</string>
     <string name="theme_auto_night_mode">Встановлено системою</string>
-    <string name="theme_dark_theme_mode_follow_daylight">За розкладом (темна вночі)</string>
+    <string name="theme_dark_theme_mode_follow_daylight">Згідно розкладу (темна вночі)</string>
     <string name="theme_light">Світла</string>
     <string name="theme_dark_text">Світла з темним текстом</string>
     <string name="theme_with_dark_text">Темний текст</string>
@@ -45,20 +45,20 @@
     <string name="lawnchair_accent">Контрастний колір</string>
     <string name="color_pixel_accent">Синій від Google</string>
     <string name="color_system_accent">Встановлено системою</string>
-    <string name="color_wallpaper_main">Шпалери - головні</string>
-    <string name="color_wallpaper_secondary">Шпалери - другорядні</string>
-    <string name="color_wallpaper_tertiary">Шпалери - третій варіант</string>
+    <string name="color_wallpaper_main">Тло - головне</string>
+    <string name="color_wallpaper_secondary">Тло - другорядне</string>
+    <string name="color_wallpaper_tertiary">Тло - третинне</string>
     <string name="pref_fonts_title">Шрифти</string>
-    <string name="blur_pref_title">Увімкнути розмиття</string>
-    <string name="blur_pref_summary">Розмити фон сторінки.</string>
+    <string name="blur_pref_title">Розмиття</string>
+    <string name="blur_pref_summary">Розмити тло сторінки.</string>
     <string name="blur_radius_pref_title">Інтенсивність ефекту розмиття</string>
     <!-- Section 3 -->
     <string name="general_pref_title">Стільниця</string>
-    <string name="general_pref_summary">Компонування, блокування Стільниці, эфекти переходу</string>
-    <string name="grid_size">Сітка іконок</string>
+    <string name="general_pref_summary">Компонування, блокування Стільниці, ефекти переходу</string>
+    <string name="grid_size">Сітка піктограм</string>
     <string name="grid_size_width">Ширина</string>
     <string name="grid_size_height">Висота</string>
-    <string name="num_hotseat_icons_pref_title">Кількість іконок</string>
+    <string name="num_hotseat_icons_pref_title">Кількість піктограм</string>
     <string name="overlap_placement">Дозволити перекривання</string>
     <string name="lock_desktop">Заблокувати Стільницю</string>
     <string name="pref_category_icons">Ярлики</string>
@@ -66,7 +66,7 @@
     <string name="pref_mutliline_labels">Багатострокові підписи</string>
     <string name="icon_text_scale_pref_title">Розмір тексту</string>
     <string name="text_color">Колір тексту</string>
-    <string name="icon_scale_pref_title">Розмір іконки</string>
+    <string name="icon_scale_pref_title">Розмір піктограми</string>
     <string name="auto_add_shortcuts_label">Додавати нові ярлики на Стільницю</string>
     <string name="pref_icon_popup_menu">Бульбашка ярлика</string>
     <string name="pref_category_misc">Інше</string>
@@ -75,7 +75,7 @@
     <string name="animation_type_pie">Android Pie</string>
     <string name="animation_type_pie_like">Android Pie (Наслідуваний)</string>
     <string name="animation_type_reveal">Розкриття</string>
-    <string name="animation_type_slide_up">Слайд</string>
+    <string name="animation_type_slide_up">Проведіть вгору</string>
     <string name="animation_type_scale_up">Масштабування</string>
     <string name="animation_type_blink">Миготіння</string>
     <string name="animation_type_fade">Затухання</string>
@@ -84,7 +84,7 @@
     <string name="allow_rotation_title">Увімкнути обертання</string>
     <string name="pref_center_wallpaper">Центрувати шпалери</string>
     <string name="pref_center_wallpaper_summary">Вимкнути прокрутку шпалер.</string>
-    <string name="pref_hide_statusbar">Приховати панель статусу</string>
+    <string name="pref_hide_statusbar">Приховати рядок стану</string>
     <string name="full_width_width_widgets_pref_title">Широкі віджети</string>
     <string name="full_width_widgets_pref_summary">Дозволити віджетам використовувати увесь периметр екрану.</string>
     <string name="show_top_shadow_pref_title">Показувати тінь зверху</string>
@@ -95,7 +95,7 @@
     <string name="smartspace_time">Показувати час</string>
     <string name="smartspace_date">Показувати дату</string>
     <string name="pref_smartspace_time_above">Показувати великий годинник</string>
-    <string name="pref_hide_statusbar_clock">Приховати годинник на панелі статусу</string>
+    <string name="pref_hide_statusbar_clock">Приховати годинник у рядку стану</string>
     <string name="root_access_required">Потрібен root доступ.</string>
     <string name="smartspace_time_24_h">Використовувати 24-годинний формат</string>
     <string name="title_use_pill_qsb">Показувати ярлик пошуку-пігулки</string>
@@ -108,7 +108,7 @@
     <string name="pref_weather_units">Одиниця температури</string>
     <string name="units_metric">Градус Цельсія</string>
     <string name="units_imperial">Градус Фаренгейта</string>
-    <string name="units_kelvin">Кельвін</string>
+    <string name="units_kelvin">Градус Кельвіна</string>
     <string name="units_rakine">Градус Ранкіна</string>
     <string name="units_newton">Градус Ньютона</string>
     <string name="units_delisle">Градус Деліля</string>
@@ -128,8 +128,8 @@
     <string-array name="greetings_evening">
         <item>Як воно?</item>
         <item>Доброго вечора!</item>
-        <item>Як пройшов твій день?</item>
-        <item>Що найкраще трапилося сьогодні?</item>
+        <item>Як минув твій день?</item>
+        <item>Що цікавого сьогодні трапилося?</item>
     </string-array>
     <string-array name="greetings_night">
         <item>Приємних снів!</item>
@@ -143,8 +143,8 @@
     <!-- Section 5 -->
     <string name="dock_pref_title">Док-панель</string>
     <string name="dock_pref_summary">Компонування, стиль, індикатори</string>
-    <string name="dock_fill">Показувати фон</string>
-    <string name="background_color">Колір фону</string>
+    <string name="dock_fill">Показувати тло</string>
+    <string name="background_color">Колір тла</string>
     <string name="theme_based">Задано темою</string>
     <string name="dock_shadow">Відобразити тінь</string>
     <string name="radius">Радіус закруглення</string>
@@ -168,7 +168,7 @@
     <string name="pref_appcategorization_folders_summary">Тицьніть, щоб відкрити Теки.</string>
     <string name="pref_appcategorization_tabs_title">Вкладки</string>
     <string name="pref_appcategorization_tabs_summary">Гортання між категоріями.</string>
-    <string name="pref_app_groups_edit_tip">Тицьніть для редагування, потягнути, щоб змінити порядок.</string>
+    <string name="pref_app_groups_edit_tip">Тицьніть для редагування, потягніть, щоб змінити порядок.</string>
     <plurals name="hidden_apps_count">
         <item quantity="one">%1$d приховано</item>
         <item quantity="few">%1$d приховано</item>
@@ -179,23 +179,23 @@
     <string name="category_communication">Спілкування</string>
     <string name="category_entertainment">Розваги</string>
     <string name="category_food_and_drink">Їжа та напої</string>
-    <string name="category_game">Ігри</string>
+    <string name="category_game">Забавки</string>
     <string name="category_health_and_fitness">Здоров\'я та фітнес</string>
     <string name="category_knowledge_and_reference">Знання та відомості</string>
     <string name="category_lifestyle">Покупки та спосіб життя</string>
     <string name="category_music">Музика</string>
     <string name="category_news">Новини</string>
     <string name="category_personalization">Персоналізація</string>
-    <string name="category_photography">Фотографія</string>
+    <string name="category_photography">Світлина</string>
     <string name="category_tools">Службові програми</string>
     <string name="category_travel_and_navigation">Подорожі та навігація</string>
     <string name="select_tab_type">Нова вкладка</string>
     <string name="tab_type_smart">Автоматично</string>
     <string name="pref_appcategorization_flowerpot_summary">Обрати ярлики автоматично.</string>
-    <string name="tab_type_custom">Користувальницькі</string>
+    <string name="tab_type_custom">Користувацька</string>
     <string name="tab_type_custom_desc">Обрати ярлики вручну.</string>
     <string name="pref_appcategorization_flowerpot_title">Категорія додатків</string>
-    <string name="title_all_apps_search">Показувати строку пошуку</string>
+    <string name="title_all_apps_search">Показувати рядок пошуку</string>
     <string name="title_all_apps_google_search">Використовувати глобальний пошук</string>
     <string name="summary_all_apps_google_search">Знаходити веб-сайти, контакти та ярлики.</string>
     <string name="title_search_hidden_apps">Знаходити приховані ярлики</string>
@@ -238,23 +238,23 @@
     <string name="weather_provider_oneplus_weather">OnePlus Weather</string>
     <string name="searchbar_appearance_title">Стиль</string>
     <string name="pref_show_assistant_title">Показувати кнопку голосового пошуку</string>
-    <string name="action_assistant">Відкривати Асистента</string>
+    <string name="action_assistant">Відкрити Асистента</string>
     <string name="pref_show_as_assistant_summary">Відкривати Асистента замість голосового пошуку.</string>
     <string name="bubble_searchbar">Показувати дві бульбашки</string>
     <string name="pref_search_bar_radius">Радіус закруглення</string>
     <!-- Section 8 -->
     <string name="pref_integrations">Плагіни</string>
-    <string name="pref_integrations_summary">Sesame Shortcuts, Google Feed</string>
+    <string name="pref_integrations_summary">Ярлики Sesame, стрічка Google</string>
     <string name="sesame">Sesame</string>
     <string name="sesame_data_integration">Ділитись даними</string>
-    <string name="sesame_upsell">Тицьніть щоб встановити Sesame.</string>
+    <string name="sesame_upsell">Тицьніть, щоб встановити Sesame.</string>
     <string name="pref_sesame_show_shortcuts">Показувати в бульбашках ярликів</string>
     <string name="sesame_search_engine">Використовувати як пошукову систему</string>
-    <string name="pref_sesame_sync_look_and_feel">Поділитись налаштуваннями стилю</string>
+    <string name="pref_sesame_sync_look_and_feel">Ділитись налаштуваннями стилю</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Застосувати налаштування панелі пошуку до панелі Sesame.</string>
     <string name="sesame_version">Версія бібліотеки</string>
     <string name="title_show_google_app">Показувати стрічку %1$s</string>
-    <string name="feed_theme_pref_title">Колір фону</string>
+    <string name="feed_theme_pref_title">Колір тла</string>
     <!-- Section 9 -->
     <string name="gestures_pref_title">Жести</string>
     <string name="gestures_pref_summary">Подвійний тиць, гортання вгору від Док-панелі</string>
@@ -267,15 +267,15 @@
     <string name="gesture_dock_swipe_up">Гортання вгору з Док-панелі</string>
     <string name="action_none">Нічого не робити</string>
     <string name="action_sleep">Сон</string>
-    <string name="action_sleep_timeout">Приспати, використовуючи таймаут екрану</string>
+    <string name="action_sleep_timeout">Приспати, використовуючи загасання екрану</string>
     <string name="action_open_settings">Відкрити налаштування Lawnchair</string>
     <string name="action_open_notifications">Відкрити панель сповіщень</string>
     <string name="action_overlay">Відкрити стрічку Google</string>
-    <string name="action_despacito">Відтворити YouTube Rewind 2018 (distorted)</string>
+    <string name="action_despacito">Відтворити YouTube Rewind 2018 (викривлений)</string>
     <string name="action_open_app">Відкрити додаток</string>
     <!-- Section 10 -->
     <string name="backups">Резервні копії та відновлення</string>
-    <string name="backup_pref_summary">Зберегти налаштування Домашнього екрану, відновити резервну копію</string>
+    <string name="backup_pref_summary">Зберегти налаштування Стільниці, відновити резервну копію</string>
     <string name="new_backup">Створити</string>
     <string name="restore_backup">Відновити</string>
     <string name="local_backups">У сховищі</string>
@@ -284,11 +284,11 @@
     <string name="restore_contents">Дані, що будуть відновлені</string>
     <string name="backup_settings">Налаштування</string>
     <string name="homescreen">Компонування Стільниці</string>
-    <string name="backup_wallpaper">Фоновий малюнок</string>
+    <string name="backup_wallpaper">Тло</string>
     <string name="name">Назва</string>
     <string name="backup_location">Місцезнаходження</string>
     <string name="backup_location_device_storage">Тека “Lawnchair”</string>
-    <string name="custom">Користувальницькі</string>
+    <string name="custom">Користувацькі</string>
     <!-- Section 11 -->
     <string name="about">Про додаток</string>
     <string name="about_pref_summary">Команда, посилання, ліцензії</string>
@@ -297,12 +297,12 @@
     <string name="title_attribouter_website">Веб-сайт</string>
     <string name="about_role_lead">Головний розробник</string>
     <string name="about_role_dev">Розробник</string>
-    <string name="about_role_ui_ux_designer">UI дизайнер</string>
+    <string name="about_role_ui_ux_designer">Розробник інтерфейсу</string>
     <string name="about_role_writer">Письменник</string>
     <string name="about_role_dev_mod">Розробник та модератор</string>
     <string name="about_role_designer">Дизайнер</string>
-    <string name="about_role_devops">DevOps інженер</string>
-    <string name="about_role_pr">PR менеджер</string>
+    <string name="about_role_devops">DevOps-інженер</string>
+    <string name="about_role_pr">Менеджер зі зв\'язків з громадськістю</string>
     <string name="about_role_ops">Інженер з інфраструктури та операцій</string>
     <string name="about_role_mod_support">Представник підтримки та модератор</string>
     <string name="about_role_family_member">Член сім\'ї</string>
@@ -310,9 +310,9 @@
     <string name="about_our_team">Команда</string>
     <string name="title_attribouter_licenses">Атрибуція</string>
     <!-- Section 12 -->
-    <string name="settings_button_text">Налаштування Домашнього екрану</string>
+    <string name="settings_button_text">Налаштування Стільниці</string>
     <string name="button_organize_screens">Впорядкувати сторінки</string>
-    <string name="wallpaper_button_text">Шпалери</string>
+    <string name="wallpaper_button_text">Тло</string>
     <string name="pref_app_groups_create">Створити</string>
     <string name="pref_appcategorization_style_text">Стиль</string>
     <string name="customize">Персоналізувати</string>
@@ -323,18 +323,18 @@
         <item quantity="other">%1$d додатків</item>
     </plurals>
     <string name="advanced_settings">Додаткові налаштування</string>
-    <string name="adaptive_icon">Адаптивні іконки</string>
+    <string name="adaptive_icon">Адаптивні піктограми</string>
     <string name="action_edit">Редагувати</string>
     <string name="dismiss_drop_target_label">"Не показувати"</string>
     <string name="suggested_action_content_description">“%1$s” відкриється у “%2$s”.</string>
-    <string name="smartspace_setup_text">Тицніть щоб налаштувати</string>
+    <string name="smartspace_setup_text">Тицьніть, щоб налаштувати</string>
     <string name="lawnchair_settings">Налаштування Lawnchair</string>
     <string name="label_voice_search">Голосовий пошук</string>
-    <string name="icon_pack">Набір значків</string>
+    <string name="icon_pack">Збірка піктограм</string>
     <string name="home_widget">Віджет At a Glance</string>
     <string name="about_app_version">Версія</string>
     <string name="title_disable_suggestions_prompt">Вимкнути пропозиції додатків</string>
-    <string name="msg_disable_suggestions_prompt">"Інформація про використання буде видалена."</string>
+    <string name="msg_disable_suggestions_prompt">"Інформацію про використання буде видалено."</string>
     <string name="pixel_style_pref_title">Google Pixel</string>
     <string name="label_turn_off_suggestions">Вимкнути</string>
     <string name="about_summary_title">Підсумок</string>
@@ -374,7 +374,7 @@
     <string name="add_settings_shortcut_title">Додати ярлик на Стільницю</string>
     <string name="low_performance_mode_pref_title">Режим низької продуктивності</string>
     <string name="title_storage_permission_required">Потрібен доступ до сховища</string>
-    <string name="content_storage_permission_required">Щоб встановити шпалери, надайте доступ до сховища.</string>
+    <string name="content_storage_permission_required">Щоб встановити тло, надайте доступ до сховища.</string>
     <string name="reset_to_default">Відновити налаштування за замовчанням</string>
     <string name="gradient">Градієнт</string>
     <string name="pref_category_aag">Віджет At a Glance</string>
@@ -390,7 +390,7 @@
     <string name="title_attribouter_translators">Перекладачі</string>
     <string name="about_our_contributors">Учасники</string>
     <string name="about_our_family">Члени сімей</string>
-    <string name="about_bio_deletescape">Розробник на Kotlin/Java. Цікавий до всього у Android. Засновник проектів Lawnchair та dogbin.</string>
+    <string name="about_bio_deletescape">Розробник на Kotlin/Java. Цікавиться усім в Android. Засновник проектів Lawnchair та dogbin.</string>
     <string name="about_bio_recoded">Кодер та графічний дизайнер.</string>
     <string name="about_bio_josh">Позаштатний графічний дизайнер.</string>
     <string name="about_bio_harsh">Розробник додатків та бібліотек для Android. Один з основних розробників у AOSiP.</string>
@@ -414,9 +414,9 @@
     <string name="default_city">Lucerne, CH</string>
     <string name="pref_weather_api_key_title">Ключ API</string>
     <string name="pref_weather_city_summary">Для найкращих результатів введіть код країни.</string>
-    <string name="all_icons">Усі іконки</string>
+    <string name="all_icons">Усі піктограми</string>
     <string name="error_no_browser">Браузер не знайдено.</string>
-    <string name="no_icon_found">Іконку не знайдено.</string>
+    <string name="no_icon_found">Піктограму не знайдено.</string>
     <string name="icon_pack_external_picker">Відкрити зовнішній вибирач</string>
     <string name="week_day_format">%1$s %2$s</string>
     <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
@@ -433,13 +433,13 @@
     <string name="color_presets">Шаблони</string>
     <string name="automatic_short">Автоматично</string>
     <string name="recent_task_option_force_stop">Зупинити примусово</string>
-    <string name="drag_to_enable_packs">Потягніть вгору щоб активувати</string>
-    <string name="drag_to_disable_packs">Потягніть вниз щоб деактивувати</string>
+    <string name="drag_to_enable_packs">Потягніть вгору для активації</string>
+    <string name="drag_to_disable_packs">Потягніть вниз для деактивації</string>
     <string name="get_more_icon_packs">Отримати більше</string>
     <string name="enabled_icon_packs">Застосовано</string>
     <string name="lawnchair_actions">Дії</string>
     <string name="bridge_missing_title">Встановити Lawnfeed</string>
-    <string name="bridge_missing_message">Щоб використовувати Google Feed, встановіть Lawnfeed.</string>
+    <string name="bridge_missing_message">Щоб використовувати стрічку Google, встановіть Lawnfeed.</string>
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <string name="title_app_suggestions">Додатки</string>
     <string name="theme_dark">Темна</string>
@@ -503,10 +503,10 @@
     <string name="dock_scale">Розмір Док-панелі</string>
     <string name="default_folder_name">Нова тека</string>
     <string name="drawer_folders">Теки</string>
-    <string name="open_image_picker">Відкрити фото</string>
-    <string name="import_icon">Імпортувати іконку</string>
-    <string name="import_as_adaptive">Імпортувати адаптивну іконку</string>
-    <string name="about_app_description">Настоюваний додаток домашнього екрану для Android.</string>
+    <string name="open_image_picker">Відкрити світлину</string>
+    <string name="import_icon">Імпортувати піктограму</string>
+    <string name="import_as_adaptive">Імпортувати адаптивну піктограму</string>
+    <string name="about_app_description">Користувацький додаток Стільниці для Android.</string>
     <string name="lawnchair_bug_report">Звіт про помилку Lawnchair</string>
     <string name="action_dogbin_upload">Завантажити в Dogbin</string>
     <string name="action_dogbin_copy_link">Скопіювати посилання</string>
@@ -521,23 +521,23 @@
     <string name="bugreport_group_summary">%d нових звітів.</string>
     <string name="bugreport_group_summary_multiple">Численні нові звіти.</string>
     <string name="folder_cover_mode">Використовувати режим обкладинки</string>
-    <string name="folder_cover_mode_desc">Тицніть, щоб відкрити перший додаток, гортайте вгору, щоб побачити всі.</string>
+    <string name="folder_cover_mode_desc">Тицьніть, щоб відкрити перший додаток, гортайте вгору, щоб побачити всі.</string>
     <string name="icon_shape_override_miui_explaination">Баг у MIUI може призводити до того, що іконки залишаться квадратними.</string>
     <string name="permission_iplocate">Приблизне місцезнаходження</string>
-    <string name="permission_iplocate_twilight_explanation">Надати доступ до вашого приблизного місцезнаходження? Це дозволить точніше розраховувати тривалість світлового дня.</string>
-    <string name="event_provider_missing_notification_access">Щоб користуватись <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, включіть сповіщення для <xliff:g example="My App" id="name">%2$s</xliff:g></string>
-    <string name="event_provider_missing_notification_dots">Щоб застосувати <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, ввімкніть Крапки сповіщення.</string>
+    <string name="permission_iplocate_twilight_explanation">Надати доступ до вашого приблизного місцезнаходження? Це дозволить точніше розраховувати тривалість світлого часу дня.</string>
+    <string name="event_provider_missing_notification_access">Щоб користуватись <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, увімкніть сповіщення для <xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="event_provider_missing_notification_dots">Щоб застосувати <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, увімкніть Крапки сповіщення.</string>
     <string name="zen_mode_enabled">Режим \"Не турбувати\" ввімкнено.</string>
     <string name="crash_report_notif_title">%1$s аварійно завершився</string>
     <string name="onbording_settings_title">Налаштувати %s</string>
     <string name="onbording_settings_summary">Тиць з утриманням на Стільниці.</string>
-    <string name="onboarding_swipe_up">Гортайте вгору щоб відкрити Шухляду.</string>
+    <string name="onboarding_swipe_up">Гортайте вгору, щоб відкрити Шухляду.</string>
     <string name="weather_icons_default">За замовчуванням</string>
-    <string name="pref_weather_icon_pack">Набор значків погоди</string>
+    <string name="pref_weather_icon_pack">Збірка піктограм погоди</string>
     <string name="weather_icon_packs_not_supported">Не підтримується вашим провайдером погоди.</string>
-    <string name="customnavbar_install">Нажміть, щоб встановити спеціальну панель навігації.</string>
+    <string name="customnavbar_install">Тицьніть, щоб встановити Custom Navigation Bar.</string>
     <string name="customnavbar_back_hiding">Приховати кнопку Назад</string>
-    <string name="customnavbar_back_hiding_desc">Приховати кнопку Назад коли вона не потрібна.</string>
+    <string name="customnavbar_back_hiding_desc">Приховати кнопку Назад, коли вона зайва.</string>
     <string name="icon_shape_top_left">Верхній лівий кут</string>
     <string name="icon_shape_top_right">Верхній правий кут</string>
     <string name="icon_shape_bottom_left">Нижній лівий кут</string>
@@ -548,15 +548,18 @@
     <string name="smartspace_add_to_home">Додати на Стільницю</string>
     <string name="get_lawnfeed">Встановити Lawnfeed</string>
     <!-- Section 13 -->
-    <string name="quickstep_pref_title">Недавні</string>
+    <string name="quickstep_pref_title">Нещодавні</string>
     <string name="quickstep_pref_summary">Жести, стиль, навігація</string>
-    <string name="swipe_up_to_switch_apps_title">Гортайте вгору щоб переключатись між додатками</string>
-    <string name="swipe_left_to_go_back_title">Гортайте ліворуч щоб повернутись назад</string>
+    <string name="swipe_up_to_switch_apps_title">Гортайте вгору, щоб переключатись між додатками</string>
+    <string name="swipe_left_to_go_back_title">Гортайте ліворуч, щоб повернутися назад</string>
     <string name="pref_category_nav_swipe_up_gestures">Гортайте вгору</string>
     <string name="gesture_nav_swipe_up_left">Зліва</string>
     <string name="gesture_nav_swipe_up_center">З центру</string>
-    <string name="gesture_nav_swipe_up_right">Справа</string>
-    <string name="action_switch_apps">Переключити додатки</string>
+    <string name="gesture_nav_swipe_up_right">З права</string>
+    <string name="action_switch_apps">Перемкнути додатки</string>
     <string name="icon_shape_system_default">Встановлено системою</string>
-    <string name="title_missing_notification_access">Потрібен доступ до сповіщень.</string>
+    <string name="title_missing_notification_access">Необхідно доступ до сповіщень.</string>
+    <string name="activity_not_found">Додаток не встановлено.</string>
+    <string name="out_of_space">На Стільниці бракує місця.</string>
+    <string name="hotseat_out_of_space">В Док-панелі бракує місця.</string>
 </resources>
