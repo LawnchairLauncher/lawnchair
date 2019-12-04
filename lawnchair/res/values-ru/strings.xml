@@ -561,4 +561,7 @@
     <string name="action_switch_apps">Переключиться между приложениями</string>
     <string name="icon_shape_system_default">Системная</string>
     <string name="title_missing_notification_access">Требуется доступ к уведомлениям.</string>
+    <string name="activity_not_found">Приложение не установлено.</string>
+    <string name="out_of_space">Нет места на рабочем столе.</string>
+    <string name="hotseat_out_of_space">Нет места в док-баре.</string>
 </resources>
