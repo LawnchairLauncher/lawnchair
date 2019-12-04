@@ -24,8 +24,4 @@ import com.android.launcher3.R
 import com.android.quickstep.TouchInteractionService
 
 @Keep
-class AppSuggestionsController(context: Context) : PreferenceController(context) {
-
-    override val summary = context.getString(if (TouchInteractionService.isConnected())
-        R.string.summary_app_suggestions_lawnstep else R.string.summary_app_suggestions) as String
-}
+class AppSuggestionsController(context: Context) : PreferenceController(context)

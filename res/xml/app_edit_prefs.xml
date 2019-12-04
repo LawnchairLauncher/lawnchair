@@ -19,7 +19,6 @@
     <ch.deletescape.lawnchair.preferences.StyledSwitchPreference
         android:key="pref_app_hide"
         android:title="@string/hide_app"
-        android:summary="@string/hide_app_sum"
         android:defaultValue="false"
         android:persistent="false"/>
 

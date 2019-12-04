@@ -35,15 +35,12 @@
             android:dependency="sesame_integration"
             android:defaultValue="true"
             android:key="pref_sesame_show_shortcuts"
-            android:summary="@string/pref_sesame_show_shortcuts_summary"
             android:title="@string/pref_sesame_show_shortcuts" />
 
         <ch.deletescape.lawnchair.sesame.preferences.SesameSearchUpsellPreference
             android:dependency="sesame_integration"
             android:key="sesame_search_upsell"
-            android:title="@string/search"
-            android:summaryOn="@string/sesame_search_upsell_on"
-            android:summaryOff="@string/sesame_search_upsell_off"/>
+            android:title="@string/search"/>
 
         <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:dependency="sesame_integration"
@@ -63,7 +60,6 @@
         <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:defaultValue="true"
             android:key="pref_enable_minus_one"
-            android:summary="@string/pref_show_google_now_summary"
             android:title="@string/title_show_google_app"
             app:controllerClass=".MinusOneController"/>
 
@@ -79,7 +75,7 @@
             app:controllerClass=".GFeedBackgroundController"/>
 
         <ch.deletescape.lawnchair.settings.ui.FeedProviderPreference
-            android:title="Feed Provider"
+            android:title="@string/feed_provider"
             android:key="pref_feedProvider"
             app:controllerClass=".FeedProviderController"/>
     </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>

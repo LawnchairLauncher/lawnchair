@@ -55,7 +55,6 @@
         <Preference
             android:key="pref_hiddenApps"
             android:title="@string/hide_apps"
-            android:summary="@string/hide_apps_sum"
             android:fragment="ch.deletescape.lawnchair.preferences.HiddenAppsFragment" />
 
         <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
@@ -133,7 +132,6 @@
         <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:key="pref_show_predictions"
             android:title="@string/title_app_suggestions"
-            android:summary="@string/summary_app_suggestions"
             android:defaultValue="true"
             app:controllerClass=".AppSuggestionsController"
             app:searchTitle="@string/title_app_suggestions_in_search" />

@@ -19,8 +19,7 @@
         <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:defaultValue="false"
             android:key="pref_allowOverlap"
-            android:title="@string/overlap_placement"
-            android:summary="@string/overlap_placement_summary" />
+            android:title="@string/overlap_placement" />
 
         <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:defaultValue="false"
@@ -154,7 +153,6 @@
             android:defaultValue="true"
             android:key="pref_showTopShadow"
             android:persistent="true"
-            android:summary="@string/show_top_shadow_pref_summary"
             android:title="@string/show_top_shadow_pref_title" />
     </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
 </androidx.preference.PreferenceScreen>

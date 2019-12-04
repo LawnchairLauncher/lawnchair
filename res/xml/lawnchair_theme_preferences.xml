@@ -70,7 +70,6 @@
                 android:defaultValue="false"
                 android:key="pref_generateAdaptiveForIconPack"
                 android:dependency="pref_enableLegacyTreatment"
-                android:summary="@string/adaptify_pack_summary"
                 android:title="@string/adaptify_pack_title"
                 app:controllerClass=".IconShapeOverrideController"/>
         </ch.deletescape.lawnchair.preferences.AdvancedPreferencesGroup>
@@ -93,7 +92,6 @@
         <ch.deletescape.lawnchair.settings.ui.SubPreference
             android:key="fonts"
             android:title="@string/pref_fonts_title"
-            android:summary="@string/pref_fonts_summary"
             app:content="@xml/lawnchair_fonts_preference_v2"/>
 
         <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat

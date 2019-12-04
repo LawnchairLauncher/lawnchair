@@ -1,748 +1,811 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-
-    <string name="default_live_wallpaper">com.breel.wallpapers/com.breel.wallpapers.dioramas.lagos.LagosWallpaperService</string>
-    <string name="app_releases_url">https://play.google.com/store/apps/details?id=amirz.rootless.nexuslauncher</string>
-    <string name="app_donate_url">https://play.google.com/store/apps/details?id=amirz.donation</string>
-    <string name="special_greeting" translatable="false">Hi Jane! Lots of love from the team.</string>
-
+    <string name="default_live_wallpaper" translatable="false">com.breel.wallpapers/com.breel.wallpapers.dioramas.lagos.LagosWallpaperService</string>
+    <string name="app_releases_url" translatable="false">https://play.google.com/store/apps/details?id=amirz.rootless.nexuslauncher</string>
+    <string name="app_donate_url" translatable="false">https://play.google.com/store/apps/details?id=amirz.donation</string>
+    <string name="special_greeting" translatable="false">Hello Jane! Lots of love from the Lawnchair team.</string>
     <string name="action_open_notifications_class" translatable="false">ch.deletescape.lawnchair.gestures.handlers.NotificationsOpenGestureHandler</string>
     <string name="action_open_drawer_class" translatable="false">ch.deletescape.lawnchair.gestures.handlers.OpenDrawerGestureHandler</string>
     <string name="action_open_overview_class" translatable="false">ch.deletescape.lawnchair.gestures.handlers.OpenOverviewGestureHandler</string>
     <string name="action_do_nothing_class" translatable="false">ch.deletescape.lawnchair.gestures.BlankGestureHandler</string>
-
     <string name="default_owm_key" translatable="false">17a6438b1d63d5b05f7039e7cb52cde7</string>
     <string name="action_switch_apps_class" translatable="false">ch.deletescape.lawnchair.gestures.SwitchAppsGestureHandler</string>
-
-    <!--Marker A-->
-
     <string name="icu_abbrev_wday_month_day_no_year">EEEEMMMd</string>
     <string name="icu_abbrev_time">HH:mm</string>
     <string name="icu_abbrev_time_12h">hh:mm aa</string>
     <string name="icu_abbrev_date"> dd MMMM</string>
 
-    <string name="in_smartspace">In \‘At a glance\’ widget</string>
-    <string name="smartspace_time">Time</string>
-    <string name="smartspace_date">Date</string>
+    <!-- Section 1 -->
 
-    <string name="customize">Customize</string>
+    <string name="search_menu">Search</string>
+    <string name="search_no_results">No Results</string>
 
-    <string name="smartspace_preferences_in_settings">At a Glance</string>
-    <string name="smartspace_preferences_in_settings_desc">Date, time, weather source</string>
-    <string name="search">Search</string>
-
-    <string name="label_voice_search">Voice search</string>
-    <string name="icon_pack">Icon pack</string>
-    <string name="home_widget">Home widget</string>
-    <string name="title_show_google_app">%1$s on left</string>
-
-    <string name="pref_show_google_now_summary">@string/msg_minus_one_on_left</string>
-    <string name="msg_minus_one_on_left">Feed to the left of desktop</string>
-    <string name="about">About</string>
-    <string name="google_app">Google app</string>
-
-    <string name="about_app_version">Version</string>
-    <string name="app_name_pixel_launcher">Pixel Launcher</string>
-    <string name="title_disable_suggestions_prompt">Disable app suggestions</string>
-    <string name="msg_disable_suggestions_prompt">"Usage data will be removed"</string>
-
-    <string name="label_turn_off_suggestions">Disable</string>
-    <string name="app_name_lawnchair">Lawnchair</string>
-    <string name="pixel_style_pref_title">Pixel style</string>
-
-    <string name="about_summary_title">Summary</string>
-    <string name="action_edit">Edit</string>
-    <string name="hide_app_sum">Hide from the app drawer</string>
-
-    <string name="hide_app">Hide app</string>
-    <string name="icon_shape_rounded_square">Rounded square</string>
-    <string name="pixel_ui_pref_summary">Icon pack, blur, colors</string>
-    <string name="app_drawer_pref_title">App drawer</string>
-
-    <string name="app_drawer_pref_summary">Opacity, suggestions, hide apps</string>
-    <string name="search_pref_summary">Color, search engine, icons</string>
-    <string name="general_pref_title">Desktop</string>
-
-    <string name="general_pref_summary">Grid, icon layout, status bar</string>
-    <string name="about_pref_summary">Team, links, licences</string>
-    <string name="hide_app_selected">&#160; hidden</string>
-
-    <string name="hide_app_apply">Apply</string>
-    <string name="hide_dock_gradient">Disable gradient</string>
-    <string name="dock_pref_summary">Style, opacity, page indicator</string>
-
-    <string name="dock_pref_title">Dock</string>
-    <string name="hide_icon_labels_pref_title">Hide app names</string>
-    <string name="backups">Backups</string>
-
-    <string name="new_backup">Create</string>
-    <string name="restore_backup">Restore</string>
-    <string name="backup_location">Location</string>
-
-    <string name="choose_backup_path">Browse</string>
-    <string name="backup_contents">Content</string>
-    <string name="backup_settings">Settings</string>
-
-    <string name="homescreen">Home screen</string>
-
-    <string name="backup_wallpaper">Wallpaper</string>
-    <string name="backup_error_blank_name">Enter backup name</string>
-    <string name="backup_error_blank_location">Pick backup location</string>
-    <string name="backup_error_blank_contents">Add backup content</string>
-
-    <string name="backup_creating">Creating backup</string>
-    <string name="no_recent_backups">Nothing to show</string>
-    <string name="backup_loading">Loading...</string>
-    <string name="backup_invalid">Incorrect backup file</string>
-
-    <string name="backup_share">Share</string>
-    <string name="backup_pref_summary">Save home screen, restore backups</string>
-
-    <string name="backup_timestamp">Date created</string>
-    <string name="backup_restoring">Restoring</string>
-    <string name="backup_restarting">Restarting</string>
-    <string name="restore_contents">Restore content</string>
-
-    <string name="restore_success">Restore finished</string>
-    <string name="failed">Something went wrong</string>
-    <string name="backup_share_text">Lawnchair backup</string>
-    <string name="full_width_widgets_pref_summary">Let widgets stretch to screen edges</string>
-    <string name="full_width_width_widgets_pref_title">Wide widgets</string>
-
-    <string name="hide_apps">Hide apps</string>
-    <string name="hide_apps_sum">Remove apps from drawer</string>
-    <string name="grid_size">Grid size</string>
-
-    <string name="developer_options_title">Developer options</string>
-    <string name="developer_options_enabled">Developer options enabled</string>
     <string name="restart_lawnchair_pref_title">Restart</string>
-    <string name="restart_lawnchair_pref_summary">Apply settings again</string>
+    <string name="developer_options_title">Developer Options</string>
+    <string name="change_default_home">Set as Home App</string>
 
-    <string name="show_debug_info_pref_title">Show component names</string>
-    <string name="debug_component_name">Component name</string>
-    <string name="debug_component_name_copied">Copied</string>
+    <string name="action_apply">Done</string> <!-- Note: new. Replaces “OK” in dialogs. -->
+    <string name="theme_dark_theme_mode_on">Enabled</string>
+    <string name="theme_dark_theme_mode_off">Disabled</string>
 
-    <string name="read_external_storage_required">To save backup, grant storage permission</string>
-    <string name="local_backups">Backups in storage</string>
-    <string name="backup_location_device_storage">Lawnchair folder</string>
+    <!-- Section 2 -->
 
-    <string name="grid_size_height">Height</string>
-    <string name="grid_size_width">Width</string>
-    <string name="launcher_theme_override_label">Force dark theme</string>
-    <string name="smartspace_hours_mins">%1$s %2$s</string>
-    <string name="smartspace_in_time">in %1$s</string>
-    <string name="smartspace_now">now</string>
-    <string name="blur_pref_title">Blur</string>
-    <string name="blur_pref_summary">Blur effect for app drawer, dock, settings backgrounds</string>
-    <string name="blur_radius_pref_title">Blur strength</string>
-
-    <!--Marker B-->
-
-    <string name="dock_colored_google">Colored icons</string>
-    <string name="hotseat_show_arrow">Arrow</string>
-    <string name="hotseat_show_page_indicator">Page indicator</string>
-    <string name="dock_style_pref_title">Dock style</string>
-    <string name="dock_enable_pref_title">Enable dock</string>
-
-    <string name="dock_style_p">Rounded</string>
-    <string name="dock_style_n">Flat</string>
-
-    <string name="dock_style_hidden">Hidden</string>
-    <string name="dock_search_bar">Dock search bar</string>
-
-    <string name="opacity">Opacity</string>
-
-    <string name="title_all_apps_google_search">Global search</string>
-    <string name="summary_all_apps_google_search">Find web results and apps</string>
-    <string name="num_hotseat_icons_pref_title">Dock items</string>
-    <string name="icon_scale_pref_title">Icon size</string>
-
-    <string name="add_settings_shortcut_title">Add settings icon to home screen</string>
-    <string name="icon_pack_default">System icons</string>
-    <string name="loading">Loading…</string>
-    <string name="low_performance_mode_pref_title">Low-performance mode</string>
-
-    <string name="action_preferences">@string/customize</string>
-    <string name="title_storage_permission_required">Storage permission needed</string>
-    <string name="content_storage_permission_required">Grant storage permission to set wallpaper</string>
-    <string name="reset_to_default">Reset to default</string>
-
-    <string name="dock_shadow">Shadow</string>
-    <string name="dock_fill">Background</string>
-
-    <string name="radius">Corner rounding</string>
-    <string name="gradient">Gradient</string>
-
-    <!--Marker C-->
-
-    <string name="pref_category_icons">Icons</string>
-    <string name="pref_category_aag">At a glance</string>
-    <string name="pref_category_pixel_searchbar">Pixel search bar</string>
-    <string name="pref_category_weather">Weather</string>
-
-    <string name="pref_category_misc">Other</string>
-    <string name="pref_category_layout">Layout</string>
-    <string name="pref_category_theme">Style</string>
-    <string name="pref_category_searchbar">Search bar</string>
-
-    <!--Marker D-->
-
-    <string name="about_twitter" translatable="false">Twitter</string>
-    <string name="title_attribouter_licenses">Open Source Licenses</string>
-    <string name="title_attribouter_email">Email</string>
-    <string name="title_attribouter_website">Website</string>
-
-    <string name="title_attribouter_rate">Rate</string>
-    <string name="title_attribouter_version">Version %1$s</string>
-    <string name="title_attribouter_license">License</string>
-    <string name="title_attribouter_license_permissions">Permissions</string>
-
-    <string name="title_attribouter_license_conditions">Conditions</string>
-    <string name="title_attribouter_license_limitations">Limitations</string>
-    <string name="title_attribouter_more_info">More Info</string>
-    <string name="title_attribouter_translators">Translators</string>
-
-    <string name="about_our_team">Our team</string>
-    <string name="about_our_contributors">Our main contributors</string>
-    <string name="about_our_family">Our other family members</string>
-    <string name="about_role_lead">Lead Developer</string>
-
-    <string name="about_role_devops">DevOps</string>
-    <string name="about_role_dev">Developer</string>
-    <string name="about_role_dev_mod">Developer/Moderator</string>
-    <string name="about_role_designer">Designer</string>
-
-    <string name="about_role_ui_ux_designer">UI/UX designer</string>
-    <string name="about_role_pr">Public Relations &amp; Social Media Manager</string>
-    <string name="about_role_ops">Operations &amp; Infrastructure</string>
-    <string name="about_role_mod_support">Moderator/support</string>
-    <string name="about_role_family_member">Family member</string>
-
-    <string name="about_role_magisk_maintainer">Magisk Module Maintainer</string>
-    <string name="about_bio_deletescape">Kotlin/Java developer. Interested in everything Android. Founder of the Lawnchair and dogbin projects.</string>
-    <string name="about_bio_recoded">Mild coder and graphics designer.</string>
-    <string name="about_bio_josh">Freelance graphic designer.</string>
-    <string name="about_bio_harsh">Android application and library developer. Core developer at AOSiP.</string>
-    <string name="about_bio_david">19 years old, turns caffeine and pizza into code, provides hosting and 24/7 support for Lawnchair if something goes wrong. Contributes to open-source projects and fixes bugs during his free time. Also previously known as Codebucket.</string>
-
-    <!--Marker E-->
-
-    <string name="debug_crash_launcher">Crash launcher</string>
-    <string name="gestures_pref_title">Gestures</string>
-    <string name="gestures_pref_summary">Double tap, home button, swipe down</string>
-    <string name="action_open_drawer">Open app drawer</string>
-
-    <string name="action_last_task">Open last app</string>
-    <string name="action_open_widgets">Open widget drawer</string>
-    <string name="action_open_settings">Open launcher settings</string>
-    <string name="action_open_overview">Open home screen pop-up</string>
-
-    <string name="action_global_search">Open global search</string>
-    <string name="action_app_search">Open app search</string>
-    <string name="action_overlay">Open Google feed</string>
-    <string name="action_assistant">Open assistant</string>
-
-    <string name="action_open_notifications">Open notifications</string>
-    <string name="action_close_notifications">Close notifications</string>
-    <string name="action_sleep_timeout">Sleep (using timeout)</string>
-    <string name="action_open_app">Open app</string>
-
-    <string name="action_open_app_with_target">Open %s</string>
-    <string name="action_open_app_select_app">Pick app</string>
-    <string name="action_none">Do nothing</string>
-    <string name="action_despacito">Play YouTube Rewind 2018 (distorted)</string>
-
-    <string name="gesture_press_home">Home button</string>
-    <string name="gesture_press_back">Back button</string>
-    <string name="gesture_double_tap">Double tap</string>
-    <string name="gesture_long_press">Tap &amp; hold</string>
-
-    <string name="gesture_swipe_down">Swipe down</string>
-    <string name="gesture_swipe_up">Swipe up</string>
-    <string name="gesture_dock_swipe_up">Swipe up on dock</string>
-    <string name="pref_show_assistant_title">Voice search button</string>
-
-    <string name="pref_show_assistant_summary">Display voice search button if supported</string>
-    <string name="pref_show_as_assistant_summary">Display assistant button instead of voice search</string>
-
-    <string name="smartspace_time_24_h">24-hour format</string>
-    <string name="weather_provider_disabled">Disabled</string>
-    <string name="weather_provider_owm">OpenWeatherMap</string>
-
-    <string name="weather_provider_pe">PixelExperience</string>
-    <string name="pref_smartspace_widget_provider">Weather source</string>
-    <string name="pref_smartspace_event_provider">Calendar source</string>
-    <string name="title_all_apps_search">Drawer search bar</string>
-
-    <string name="smartspace_widget_provider_not_found">Install or update the Google app.</string>
-    <string name="apps_label">Apps</string>
-    <string name="all_apps_label">All Apps</string>
-    <string name="all_apps_label_pref_title">Show "All Apps" label</string>
-    <string name="separate_work_apps_pref_title">Second tab for work apps</string>
-
-    <string name="title_search_hidden_apps">Find hidden apps</string>
-    <string name="summary_search_hidden_apps">Show hidden apps in results</string>
-
-    <!--Marker F-->
-
-    <string name="default_city">Lucerne, CH</string>
-    <string name="pref_weather_api_key_title">API key</string>
-    <string name="pref_weather_city_summary">For best results include country code</string>
-    <string name="pref_weather_city_title">City</string>
-
-    <string name="pref_weather_units">Temperature unit</string>
-    <string name="units_metric">Celsius</string>
-    <string name="units_imperial">Fahrenheit</string>
-    <string name="units_kelvin">Kelvin</string>
-
-    <string name="all_icons">All icons</string>
-    <string name="error_no_browser">No activity found to handle URLs</string>
-    <string name="no_icon_found">No icon found</string>
-    <string name="icon_pack_external_picker">Open external picker</string>
-
-    <string name="week_day_format">%1$s, %2$s</string>
-    <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
-    <string name="title_use_pill_qsb">Use pill style search bar</string>
-    <string name="weather_provider_testing">Debug</string>
-
-    <!--Marker G-->
-
-    <string name="backup_generate_report">Create bug report</string>
-    <string name="show_top_shadow_pref_title">Top shadow</string>
-    <string name="show_top_shadow_pref_summary">Shadow under status bar</string>
-    <string name="two_row_dock">Two rows</string>
-
-    <string name="keep_scroll_state_pref_title">Remember scroll position</string>
-    <string name="reset">Reset</string>
     <string name="theme_title">Theme</string>
+    <string name="pixel_ui_pref_summary">Icons, Colors, Blur</string>
 
-    <string name="theme_automatic">Automatic</string>
-    <!-- I wanted to rename this to "default" as it is what we use everywhere now but unfortunately thats not an allowed name -->
-    <string name="theme_default">Default</string>
-    <string name="transparent">Transparent</string>
-    <string name="pref_open_source_licenses_title">Licenses</string>
+    <string name="pref_icon_packs">Icon Packs</string>
+    <string name="icon_pack_default">System Icons</string>
 
-    <string name="pref_legacy_treatment_title">Create adaptive icons</string>
-    <string name="pref_legacy_treatment_summary">Automatic adaptive icons for all apps</string>
+    <string name="pref_icon_pack_masking">Icon Masking</string>
+    <string name="pref_icon_pack_masking_summary">Match unthemed icons to Icon Pack.</string>
 
-    <string name="dt2s_admin_hint">To use double tap to lock, grant admin permission</string>
-    <string name="dt2s_admin_warning">Double tap to lock will be disabled</string>
-    <string name="icon_pack_applied_toast">%s applied</string>
+    <string name="pref_legacy_treatment_title">Create Adaptive Icons</string>
+    <string name="pref_legacy_treatment_summary">Create Adaptive Icons for all shortcuts.</string>
 
-    <string name="color_system_accent">System accent</string>
-    <string name="color_pixel_accent">Pixel blue</string>
-    <string name="color_presets">Presets</string>
+    <string name="pref_legacy_colored_backgrounds">Color Backgrounds</string>
+    <string name="pref_legacy_colored_backgrounds_summary">Color generated Adaptive Icons’ backgrounds.</string>
 
-    <string name="custom">Custom</string>
+    <string name="pref_white_only_treatment">Replace White Backgrounds</string>
+    <string name="pref_white_only_treatment_summary">Color all Adaptive Icons’ backgrounds.</string>
 
-    <string name="color_wallpaper_main">Wallpaper — primary</string>
-    <string name="color_wallpaper_secondary">Wallpaper — secondary</string>
-    <string name="color_wallpaper_tertiary">Wallpaper — tertiary</string>
+    <string name="adaptify_pack_title">Create Adaptive Icons for Icon Pack</string>
 
-    <string name="pref_hide_statusbar">Hide status bar</string>
-    <string name="automatic_short">Auto</string>
+    <string name="icon_shape_override_label">Icon Shape</string>
 
-    <string name="bridge_missing_title">Lawnfeed</string>
-    <string name="bridge_missing_message">Install or update Lawnfeed</string>
-    <string name="quickstep_pref_title">Recents</string>
-    <string name="quickstep_pref_summary">Gestures, corners, blur</string>
+    <string name="reset_custom_icons">Remove Custom Icons</string>
+    <string name="reset_custom_icons_confirmation">Revert to default icons from this Icon Pack? This can’t be undone.</string>
 
-    <string name="swipe_up_to_switch_apps_title">Swipe up to switch apps</string>
-    <string name="swipe_left_to_go_back_title">Swipe left to go back</string>
-    <string name="pref_category_nav_swipe_up_gestures">Swipe up actions</string>
-    <string name="gesture_nav_swipe_up_left">From left</string>
-
-    <string name="gesture_nav_swipe_up_center">From center</string>
-    <string name="gesture_nav_swipe_up_right">From right</string>
-    <string name="action_switch_apps">Switch apps</string>
-
-    <string name="pref_global_search_provider">Search engine</string>
-    <string name="searchbar_appearance_title">Appearance</string>
-    <string name="google">Google</string>
-    <string name="search_provider_google_go">Google Go</string>
-
-    <string name="search_provider_yandex">Yandex</string>
-    <string name="search_provider_ddg">DuckDuckGo</string>
-    <string name="search_provider_bing">Bing</string>
-    <string name="search_provider_baidu">Baidu</string>
-
-    <string name="search_provider_appsearch">App search</string>
-    <string name="search_provider_search_lite">Search Lite</string>
-    <string name="search_provider_cool_search">Cool Search</string>
-    <string name="recent_task_option_force_stop">Force stop</string>
-
-    <string name="pref_icon_packs">Icon packs</string>
-    <string name="drag_to_enable_packs">Drag up to enable</string>
-    <string name="drag_to_disable_packs">Drag down to disable</string>
-    <string name="get_more_icon_packs">Get more</string>
-
-    <string name="enabled_icon_packs">Enabled</string>
-    <string name="pref_icon_pack_masking">Icon masking</string>
-    <string name="pref_icon_pack_masking_summary">Make unthemed icons match applied icon pack</string>
-    <string name="pref_legacy_colored_backgrounds">Colored backgrounds</string>
-
-    <string name="pref_legacy_colored_backgrounds_summary">Colored backgrounds for generated adaptive icons</string>
-    <string name="pref_white_only_treatment">Replace white backgrounds</string>
-    <string name="pref_white_only_treatment_summary">Colored backgrounds for all adaptive icons</string>
-    <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
-
-    <!--Marker H-->
-
-    <string name="dismiss_drop_target_label">"Don\’t show"</string>
-    <string name="suggested_action_content_description">%1$s opens in %2$s</string>
-    <string name="action_sleep">Sleep</string>
-
-    <string name="pref_drawer_padding">Row height</string>
-    <string name="pref_drawer_columns">Number of columns</string>
-    <string name="pref_prediction_count">Number of suggestions</string>
-    <string name="pref_mutliline_labels">Multiline app names</string>
-
-    <string name="lawnchair_actions">Actions</string>
-
-    <string name="theme_auto">Follow wallpaper</string>
-    <string name="theme_auto_night_mode">Follow system theme</string>
+    <string name="appearance">Appearance</string> <!-- Note: new. Replaces title of 5th field (from bottom) in “Theme” page. -->
+    <string name="theme_auto">Automatic (Matches Wallpaper)</string>
+    <string name="theme_auto_night_mode">Set by System</string>
+    <string name="theme_dark_theme_mode_follow_daylight">Scheduled (Dark at Night)</string>
     <string name="theme_light">Light</string>
-    <string name="theme_dark_text">Light with dark text</string>
-    <string name="theme_with_dark_text">dark text</string>
+    <string name="theme_dark_text">Light w/ Dark Text</string>
+    <string name="theme_with_dark_text">Dark Text</string>
+    <string name="theme_use_black">Use Pure Black</string>
+    <string name="theme_use_dark_text">Use Dark Text</string>
 
-    <string name="theme_dark">Dark</string>
-    <string name="theme_dark_dark_text">Dark with dark text</string>
-    <string name="theme_black">Black</string>
-    <string name="theme_black_dark_text">Black with dark text</string>
-
-    <string name="theme_dark_theme_mode">Dark theme</string>
-    <string name="theme_dark_theme_mode_on">On</string>
-    <string name="theme_dark_theme_mode_off">Off</string>
-    <string name="theme_dark_theme_mode_follow_wallpaper">@string/theme_auto</string>
-    <string name="theme_dark_theme_mode_follow_system">@string/theme_auto_night_mode</string>
-    <string name="theme_dark_theme_mode_follow_daylight">Follow daylight</string>
-    <string name="theme_use_black">Use pure black</string>
-    <string name="theme_use_dark_text">Use dark text</string>
-
-    <string name="pref_qsb_color">Color</string>
-    <string name="hide_from_predictions">Hide from suggestions</string>
-    <string name="hide_from_predictions_summary">Never show in drawer suggestions</string>
-    <string name="bubble_searchbar">Dual bubble search bar</string>
-
-    <string name="search_clear_history">Clear history</string>
-    <string name="summary_placeholder" translatable="false">&#160;</string>
-    <string name="search_breadcrumb_connector" translatable="false">
-        <xliff:g name="first_item">%1$s</xliff:g> >
-        <xliff:g name="second_item">%2$s</xliff:g>
-    </string>
-
-    <string name="search_no_results">Nothing found</string>
-    <string name="search_menu">Find settings</string>
-    <string name="search_provider_s_finder">S Finder</string>
-    <string name="lawnchair_accent">Accent</string>
-    <string name="theme_based">Follow theme</string>
-
-    <!--Marker I-->
-
-    <string name="suggestion_pref_screen_title">Suggestions</string>
-    <string name="title_app_suggestions">Apps</string>
-    <string name="title_app_suggestions_in_search">App suggestions</string>
-    <string name="summary_app_suggestions">Recently used apps</string>
-
-    <string name="summary_app_suggestions_lawnstep">In recent apps screen and app drawer</string>
-    <string name="app_actions_pref_title">Actions</string>
-    <string name="app_actions_pref_title_in_search">Action suggestions</string>
-    <string name="app_actions_pref_desc">Shortcuts to frequently opened screens</string>
-    <string name="app_actions_reset_pref_title">Reset hidden actions</string>
-    <string name="app_actions_reset_pref_summary">Resets actions which were previously hidden by dragging them to the \"don\’t show\" button</string>
-
-    <string name="change_default_home">Set as home screen</string>
-    <string name="recent_task_option_popup_window">Dialog window</string>
-    <string name="feed_theme_pref_title">Background color</string>
-
-    <string name="recents_not_connected">Service not connected</string>
-    <string name="advanced_settings">More %s settings</string>
-    <string name="adaptive_icon">adaptive icon</string>
-
-    <string name="drawer_tabs">Tabs</string>
-    <string name="add_new_tab">Add</string>
-    <string name="rename_tab">Rename</string>
-
-    <string name="default_tab_name">New tab</string>
-    <string name="show_in_tabs">Tabs</string>
-    <string name="tabs_manage">Manage</string>
-
-    <plurals name="tab_apps_count">
-        <item quantity="one">%1$d app</item>
-        <item quantity="other">%1$d apps</item>
-    </plurals>
-
-    <plurals name="hidden_apps_count">
-        <item quantity="other">%1$d hidden</item>
-    </plurals>
-
-    <string name="selected_count">%1$d selected</string>
-    <string name="tab_manage_apps">Manage apps</string>
-
-    <string name="tab_bottom_sheet_save">Save</string>
-    <string name="tab_hide_from_main">Hide from main tab</string>
-    <string name="tab_color">Tab color</string>
-
-    <string name="delete">Delete</string>
-    <string name="none">None</string>
-    <string name="undo">Undo</string>
-    <string name="name">Name</string>
-
-    <!--Marker J-->
-
-    <string name="shortcut_sesame">Shortcuts</string>
-    <string name="pref_integrations">Integrations</string>
-    <string name="pref_integrations_summary">Search, Sesame, Google</string>
-    <string name="sesame">Sesame</string>
-
-    <string name="sesame_data_integration">Data integration</string>
-    <string name="sesame_upsell">Tap to install Sesame</string>
-    <string name="sesame_search_upsell_on">Sesame set as search provider</string>
-    <string name="sesame_search_upsell_off">Sesame isn\’t set as search provider</string>
-    <string name="pref_sesame_enabled">Sesame shortcut data shared</string>
-    <string name="pref_sesame_disabled">No data shared</string>
-    <string name="pref_sesame_show_shortcuts">App shortcuts</string>
-    <string name="pref_sesame_show_shortcuts_summary">Show Sesame shortcuts in icon bubbles</string>
-    <string name="allow">Allow</string>
-    <string name="deny">Deny</string>
-    <string name="sesame_enable_integration_title">Enable integration</string>
-
-    <string name="sesame_enable_integration_description"><![CDATA[Enables data sharing between Lawnchair and Sesame. You can change this in Lawnchair or Sesame settings.]]></string>
-
-    <string name="sesame_version">Integration version</string>
-    <string name="sesame_shortcut_disabled">Sesame shortcuts unavailable</string>
-
-    <string name="font_variant_italic">Italic</string>
-    <string name="font_weight_thin">Thin</string>
-    <string name="font_weight_extra_light">ExtraLight</string>
-
-    <string name="font_weight_light">Light</string>
-    <string name="font_weight_regular">Regular</string>
-    <string name="font_weight_medium">Medium</string>
-    <string name="font_weight_semi_bold">SemiBold</string>
-
-    <string name="font_weight_bold">Bold</string>
-    <string name="font_weight_extra_bold">ExtraBold</string>
-    <string name="font_weight_extra_black">Black</string>
-
-    <!--Marker K-->
-
-    <string name="search_provider_firefox">Firefox</string>
-    <string name="search_provider_qwant">Qwant</string>
-    <string name="search_provider_edge">Edge</string>
-    <string name="weather_provider_oneplus_weather">OnePlus Weather</string>
-    <string name="overlap_placement">Overlapped placement</string>
-    <string name="overlap_placement_summary">Allow icons and widgets to overlap each other.</string>
-
-    <string name="units_rakine">Rankine</string>
-    <string name="units_newton">Newton</string>
-    <string name="units_delisle">Delisle</string>
-    <string name="units_reaumur">Réaumur</string>
-    <string name="units_romer">Rømer</string>
-
-    <string name="owm_get_your_own_key">Please get your own API key from api.openweathermap.org</string>
-
-    <string name="pref_smartspace_time_above">Show large clock</string>
-    <string name="pref_smartspace_time_above_summary">Show the clock above the widget</string>
+    <string name="lawnchair_accent">Accent Color</string>
+    <string name="color_pixel_accent">Google Blue</string>
+    <string name="color_system_accent">Set by System</string>
+    <string name="color_wallpaper_main">Wallpaper — Primary</string>
+    <string name="color_wallpaper_secondary">Wallpaper — Secondary</string>
+    <string name="color_wallpaper_tertiary">Wallpaper — Tertiary</string>
 
     <string name="pref_fonts_title">Fonts</string>
-    <string name="pref_fonts_summary">Change the font of different elements</string>
 
-    <string name="pref_fonts_global_font">Global font</string>
-    <string name="pref_fonts_change_global_font">Change</string>
+    <string name="blur_pref_title">Blur</string>
+    <string name="blur_pref_summary">Blur page backgrounds.</string>
+    <string name="blur_radius_pref_title">Blur Intensity</string>
 
-    <string name="pref_fonts_home_icons">App &amp; folder names</string>
-    <string name="pref_fonts_home_smartspace">\'At a Glance\' widget</string>
-    <string name="pref_fonts_home_shortcuts">Shortcuts bubbles</string>
+    <!-- Section 3 -->
 
-    <string name="pref_fonts_category_drawer">Drawer</string>
-    <string name="pref_fonts_drawer_icons">App names</string>
-    <string name="pref_fonts_drawer_app_actions_icons">App action names</string>
-    <string name="pref_fonts_drawer_tabs">Tab names</string>
+    <string name="general_pref_title">Desktop</string>
+    <string name="general_pref_summary">Layout, Lock Desktop, Transitions</string>
 
-    <string name="pref_fonts_find_fonts">Find fonts</string>
-    <string name="pref_fonts_add_fonts">Add fonts</string>
-    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF supported</string>
-    <string name="pref_fonts_missing_font">Missing font</string>
+    <string name="grid_size">Icon Grid</string>
+    <string name="grid_size_width">Width</string>
+    <string name="grid_size_height">Height</string>
+    <string name="num_hotseat_icons_pref_title">Icon Count</string>
 
-    <string name="about_translate">Translations</string>
+    <string name="overlap_placement">Allow Overlaps</string>
 
-    <string name="pref_show_dev_options">Show in settings</string>
+    <string name="lock_desktop">Lock Desktop</string>
 
-    <string name="about_app_description">A customizable Pixel Launcher alternative.</string>
-    <string name="about_bio_paphonb">A 18-year-old student, Android Developer and one of the top developers at Lawnchair Launcher.</string>
+    <string name="pref_category_icons">Shortcuts</string>
+    <string name="hide_icon_labels_pref_title">Hide Labels</string>
+    <string name="pref_mutliline_labels">Multiline Labels</string>
+    <string name="icon_text_scale_pref_title">Text Size</string>
+    <string name="text_color">Text Color</string>
 
-    <string name="dock_scale">Dock scale</string>
+    <string name="icon_scale_pref_title">Icon Size</string>
 
-    <string name="adaptify_pack_title">Create adaptive icons for icon pack</string>
-    <string name="adaptify_pack_summary">Create adaptive icons for icons from icon packs</string>
+    <string name="auto_add_shortcuts_label">Add New Shortcuts to Desktop</string>
 
-    <string name="pref_sesame_sync_look_and_feel">Share look and feel</string>
-    <string name="pref_sesame_sync_look_and_feel_summary">Sync Lawnchair search settings with Sesame</string>
+    <string name="pref_icon_popup_menu">Shortcut Bubble</string>
 
-    <string name="pref_search_bar_radius">Search bar corner rounding</string>
+    <string name="pref_category_misc">Other</string>
 
-    <string name="icon_text_scale_pref_title">Text size</string>
-    <string name="text_color">Text color</string>
-    <string name="background_color">Background color</string>
-
-    <string name="pref_notification_count_title">Display notification count</string>
-    <string name="pref_notification_count_summary">Display notification count inside the dots</string>
-
-    <string name="pref_center_wallpaper">Always center wallpaper</string>
-    <string name="pref_center_wallpaper_summary">This will disable the wallpaper scrolling effect</string>
-
-    <string name="pref_icon_popup_menu">Popup menu items</string>
-
-    <string name="pref_appcategorization_enable_title">Categorize Apps</string>
-    <string name="pref_appcategorization_enable_summary">Fix my messy drawer.</string>
-    <string name="pref_appcategorization_style_text">Style</string>
-    <string name="pref_app_groups_edit_tip">Tap to edit, drag to reorder.</string>
-    <string name="pref_app_groups_create">Create</string>
-    <string name="pref_appcategorization_folders_title">Folders</string>
-    <string name="pref_appcategorization_folders_summary">Tap to open pop-up.</string>
-    <string name="pref_appcategorization_tabs_title">Tabs</string>
-    <string name="pref_appcategorization_tabs_summary">Swipe between groups.</string>
-    <string name="default_folder_name">New folder</string>
-    <string name="drawer_folders">Folders</string>
-
-    <string name="category_business_and_productivity">Business and Productivity</string>
-    <string name="category_communication">Communication</string>
-    <string name="category_entertainment">Entertainment</string>
-    <string name="category_food_and_drink">Food and Drink</string>
-    <string name="category_game">Games</string>
-    <string name="category_health_and_fitness">Health and Fitness</string>
-    <string name="category_knowledge_and_reference">Knowledge and Reference</string>
-    <string name="category_lifestyle">Shopping and Lifestyle</string>
-    <string name="category_music">Music</string>
-    <string name="category_news">News</string>
-    <string name="category_personalization">Personalization</string>
-    <string name="category_photography">Photography</string>
-    <string name="category_tools">Utility</string>
-    <string name="category_travel_and_navigation">Travel and Navigation</string>
-
-    <string name="lock_desktop">Lock desktop</string>
-    <string name="reset_custom_icons">Reset custom icons</string>
-    <string name="reset_custom_icons_confirmation">Are you sure you want to reset all custom icons? This action is non-reversible.</string>
-    <string name="open_image_picker">Open image picker</string>
-    <string name="import_icon">Import icon</string>
-    <string name="import_as_adaptive">As adaptive icon</string>
-
-    <string name="weather_provider_accu" translatable="false">AccuWeather</string>
-    <string name="bugreport_channel_name">Bug reports</string>
-    <string name="status_channel_name">Bug report upload status</string>
-    <string name="bugreport_group_summary">%d new reports</string>
-    <string name="bugreport_group_summary_multiple">Multiple new reports</string>
-    <string name="dogbin_uploading">Upload in progress</string>
-    <string name="action_dogbin_upload">Upload to dogbin</string>
-    <string name="action_dogbin_upload_error">Upload failed</string>
-    <string name="action_dogbin_copy_link">Copy link</string>
-    <string name="lawnchair_bug_report">Lawnchair bug report</string>
-    <string name="copied_toast">Copied</string>
-    <string name="action_copy">Copy</string>
-    <string name="action_copy_link">Copy link</string>
-    <string name="action_share">Share</string>
-
-    <string name="animation_type_title">App opening animation</string>
+    <string name="animation_type_title">App Launch Transition</string>
     <string name="animation_type_default">Default</string>
-    <string name="animation_type_pie">Pie</string>
-    <string name="animation_type_pie_like">Pie-like</string>
+    <string name="animation_type_pie">Android Pie</string>
+    <string name="animation_type_pie_like">Android Pie (Emulated)</string>
     <string name="animation_type_reveal">Reveal</string>
     <string name="animation_type_slide_up">Slide Up</string>
     <string name="animation_type_scale_up">Scale Up</string>
     <string name="animation_type_blink">Blink</string>
     <string name="animation_type_fade">Fade</string>
 
-    <string name="permission_iplocate">Allow access to coarse, network based location?</string>
-    <string name="permission_iplocate_twilight_explanation">This allows more accurate daytime calculations without having to know your exact location.</string>
-    <string name="pref_appcategorization_flowerpot_title">Category</string>
-    <string name="pref_appcategorization_flowerpot_summary">Apps are automatically picked based on their metadata.</string>
-    <string name="select_tab_type">Tab type</string>
-    <string name="tab_type_custom">Custom tab</string>
-    <string name="tab_type_custom_desc">Manually pick apps for this tab.</string>
-    <string name="tab_type_smart">Smart tab</string>
-    <string name="categorization">Categorization</string>
+    <string name="icon_badging_title">Notification Dots</string>
 
-    <string name="folder_cover_mode">Cover mode</string>
-    <string name="folder_cover_mode_desc">Tap to open first app, swipe up to open folder</string>
+    <string name="pref_notification_count_title">Show Notification Count</string>
 
-    <string name="pref_smartspace_event_providers">Events sources</string>
-    <string name="event_provider_now_playing">Now playing</string>
-    <string name="battery_status">Battery status</string>
-    <string name="battery_charging">Battery charging</string>
-    <string name="battery_full">Battery full</string>
-    <string name="battery_low">Battery low</string>
-    <string name="event_provider_unread_notifications">Unread notifications</string>
-    <string name="event_provider_missing_notification_access">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, turn on app notifications for <xliff:g example="My App" id="name">%2$s</xliff:g>
-    </string>
-    <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, turn on notification dots</string>
-    <string name="zen_mode_enabled">Do not disturb is enabled</string>
-    <string name="crash_report_notif_title">%1$s crashed!</string>
+    <string name="allow_rotation_title">Enable Rotation</string>
 
-    <string name="personality_provider">Contextual messages</string>
+    <string name="pref_center_wallpaper">Center Wallpaper</string>
+    <string name="pref_center_wallpaper_summary">Disable wallpaper scrolling.</string>
+
+    <string name="pref_hide_statusbar">Hide Status Bar</string>
+
+    <string name="full_width_width_widgets_pref_title">Wide Widgets</string>
+    <string name="full_width_widgets_pref_summary">Let widgets stretch to the screen’s edges.</string>
+
+    <string name="show_top_shadow_pref_title">Show Top Shadow</string>
+
+    <!-- Section 4 -->
+
+    <string name="smartspace_preferences_in_settings">At a Glance</string> <!-- Note: replaces hard-coded copy (“Home widget”). -->
+    <string name="smartspace_preferences_in_settings_desc">Date &amp; Time, Data Sources</string>
+
+    <string name="smartspace_time">Show Time</string>
+    <string name="smartspace_date">Show Date</string>
+
+    <string name="pref_smartspace_time_above">Show Large Clock</string>
+
+    <string name="pref_hide_statusbar_clock">Hide Status Bar Clock</string>
+    <string name="root_access_required">Root access required.</string>
+
+    <string name="smartspace_time_24_h">Use 24-Hour Format</string>
+    <string name="title_use_pill_qsb">Show Pill Search Shortcut</string>
+
+    <string name="pref_category_weather">Other</string>
+
+    <string name="pref_smartspace_widget_provider">Weather Source</string>
+    <string name="google_app">Google App</string>
+    <string name="weather_provider_disabled">Disabled</string>
+    <string name="weather_provider_owm">OpenWeatherMap</string>
+    <string name="weather_provider_pe">Pixel Experience</string>
+
+    <string name="pref_weather_units">Temperature Unit</string>
+    <string name="units_metric">Celsius</string>
+    <string name="units_imperial">Fahrenheit</string>
+    <string name="units_kelvin">Kelvin</string>
+    <string name="units_rakine">Rankine</string>
+    <string name="units_newton">Newton</string>
+    <string name="units_delisle">Delisle</string>
+    <string name="units_reaumur">Réaumur</string>
+    <string name="units_romer">Rømer</string>
+
+    <string name="pref_smartspace_event_providers">Data Sources</string>
+    <string name="battery_status">Battery Status</string>
+    <string name="event_provider_now_playing">Now Playing</string>
+    <string name="event_provider_unread_notifications">Notifications</string>
+    <string name="personality_provider">Greetings</string>
+
+    <string name="pref_smartspace_event_provider">Event Source</string>
+
     <string-array name="greetings_morning">
         <item>Good morning!</item>
-        <item>What a beautiful day!</item>
-        <item>Have you looked outside yet?</item>
         <item>Have a great day!</item>
+        <item>It’s a beautiful day outside!</item>
     </string-array>
+
     <string-array name="greetings_evening">
+        <item>What’s up?</item>
+        <item>Good evening!</item>
+        <item>How did your day go?</item>
         <item>How was your day?</item>
-        <item>What did you do today?</item>
     </string-array>
+
     <string-array name="greetings_night">
-        <item>Good night!</item>
         <item>Sleep well!</item>
         <item>See you tomorrow!</item>
-        <item>Sweet dreams!</item>
-        <item>Don\'t stay up too long</item>
+        <item>Good night!</item>
+        <item>Don’t stay up too late!</item>
     </string-array>
 
-    <string name="onbording">Onboarding</string>
-    <string name="onbording_settings_title">Set-up %s</string>
-    <string name="onbording_settings_summary">Long press your home screen</string>
-    <string name="onboarding_swipe_up">Swipe up to see all your apps</string>
+    <string name="battery_charging">Charging</string>
+    <string name="battery_full">Charged</string>
+    <string name="battery_low">Battery Low</string>
 
-    <string name="web_search_google">Google (web)</string>
-    <string name="web_search_ddg">DuckDuckGo (web)</string>
-    <string name="web_search_startpage">Startpage.com (web)</string>
-    <string name="web_search_bing">Bing (web)</string>
-    <string name="web_search_qwant">Qwant (web)</string>
-    <string name="web_search_ecosia">Ecosia (web)</string>
-    <string name="web_search_yandex">Yandex (web)</string>
-    <string name="web_search_naver">Naver (web)</string>
-    <string name="web_search_baidu">Baidu (web)</string>
-    <string name="web_search_yahoo">Yahoo (web)</string>
+    <!-- Section 5 -->
 
-    <string name="icon_shape_override_miui_explaination">Due to a restriction in MIUI, your icon shape might not change and remain square.\nPlease don\'t report this as a bug.</string>
+    <string name="dock_pref_title">Dock</string>
+    <string name="dock_pref_summary">Layout, Style, Indicators</string>
 
-    <string name="button_organize_screens">Organize screens</string>
+    <string name="dock_fill">Show Background</string>
 
-    <string name="weather_icons_default">Default</string>
-    <string name="pref_weather_icon_pack">Weather Icons</string>
-    <string name="weather_icon_packs_not_supported">Not supported by your current weather source</string>
+    <string name="background_color">Background Color</string>
+    <string name="theme_based">Set by Theme</string>
 
+    <string name="dock_shadow">Show Shadow</string>
+    <string name="radius">Corner Radius</string>
+
+    <string name="hotseat_show_arrow">Show Arrow</string>
+    <string name="hotseat_show_page_indicator">Show Page Indicator</string>
+
+    <string name="two_row_dock">Show Second Row</string>
+
+    <string name="pref_category_searchbar">Search Bar</string>
+    <string name="dock_search_bar">Show Search Bar</string>
+    <string name="dock_colored_google">Color Icons</string>
+
+    <!-- Section 6 -->
+
+    <string name="app_drawer_pref_title">Drawer</string>
+    <string name="app_drawer_pref_summary">Layout, Categories, Suggestions</string>
+
+    <string name="pref_category_theme">Style</string>
+
+    <string name="pref_drawer_columns">Column Count</string>
+    <string name="pref_prediction_count">Suggestion Count</string>
+    <string name="pref_drawer_padding">Row Height</string>
+
+    <string name="hide_apps">Hidden App Shortcuts</string>
+
+    <string name="categorization">Categories</string>
+
+    <string name="pref_appcategorization_enable_title">Categorize Apps</string>
+
+    <string name="pref_appcategorization_folders_title">Folders</string>
+    <string name="pref_appcategorization_folders_summary">Tap to open Folders.</string>
+
+    <string name="pref_appcategorization_tabs_title">Tabs</string>
+    <string name="pref_appcategorization_tabs_summary">Swipe between Categories.</string>
+
+    <string name="pref_app_groups_edit_tip">Tap to edit, drag to reorder.</string>
+
+    <plurals name="hidden_apps_count">
+        <item quantity="other">%1$d Hidden</item>
+    </plurals>
+
+    <string name="category_business_and_productivity">Business &amp; Productivity</string>
+    <string name="category_communication">Communication</string>
+    <string name="category_entertainment">Entertainment</string>
+    <string name="category_food_and_drink">Food &amp; Drink</string>
+    <string name="category_game">Games</string>
+    <string name="category_health_and_fitness">Health &amp; Fitness</string>
+    <string name="category_knowledge_and_reference">Knowledge &amp; Reference</string>
+    <string name="category_lifestyle">Shopping &amp; Lifestyle</string>
+    <string name="category_music">Music</string>
+    <string name="category_news">News</string>
+    <string name="category_personalization">Personalization</string>
+    <string name="category_photography">Photography</string>
+    <string name="category_tools">Utility</string>
+    <string name="category_travel_and_navigation">Travel &amp; Navigation</string>
+
+    <string name="select_tab_type">New Tab</string>
+
+    <string name="tab_type_smart">Automatic</string>
+    <string name="pref_appcategorization_flowerpot_summary">Pick shortcuts automatically.</string>
+
+    <string name="tab_type_custom">Custom</string>
+    <string name="tab_type_custom_desc">Pick shortcuts manually.</string>
+
+    <string name="pref_appcategorization_flowerpot_title">App Category</string>
+
+    <string name="title_all_apps_search">Show Search Bar</string>
+
+    <string name="title_all_apps_google_search">Use Global Search</string>
+    <string name="summary_all_apps_google_search">Find websites, contacts, and shortcuts.</string>
+
+    <string name="title_search_hidden_apps">Find Hidden Shortcuts</string>
+    <string name="summary_search_hidden_apps">Show hidden shortcuts in results.</string>
+
+    <string name="suggestion_pref_screen_title">Suggestions</string>
+
+    <string name="title_app_suggestions_in_search">App Suggestions</string>
+
+    <string name="app_actions_pref_title">Actions</string>
+    <string name="app_actions_pref_desc">Shortcuts to frequently used screens.</string>
+
+    <string name="app_actions_reset_pref_title">Reset Action Preferences</string>
+    <string name="app_actions_reset_pref_summary">Unhide Actions dragged onto “Don’t Show”.</string>
+
+    <string name="all_apps_label_pref_title">Show “All Apps” Label</string>
+    <string name="separate_work_apps_pref_title">Second Tab for Work Apps</string>
+    <string name="keep_scroll_state_pref_title">Remember Position</string>
+
+    <!-- Section 7 -->
+
+    <string name="search">Search</string>
+    <string name="search_pref_summary">Layout, Style, Search Engine</string>
+
+    <string name="pref_global_search_provider">Search Engine</string>
+    <string name="google">Google App</string>
+    <string name="search_provider_google_go">Google Go</string>
+    <string name="web_search_google">Google</string>
+    <string name="web_search_ddg">DuckDuckGo (in Browser)</string>
+    <string name="web_search_startpage">Startpage.com (in Browser)</string>
+    <string name="web_search_bing">Bing (in Browser)</string>
+    <string name="web_search_qwant">Qwant (in Browser)</string>
+    <string name="web_search_ecosia">Ecosia (in Browser)</string>
+    <string name="web_search_yandex">Yandex (in Browser)</string>
+    <string name="web_search_naver">Naver (in Browser)</string>
+    <string name="web_search_baidu">Baidu (in Browser)</string>
+    <string name="web_search_yahoo">Yahoo (in Browser)</string>
+    <string name="search_provider_yandex">Yandex</string>
+    <string name="search_provider_ddg">DuckDuckGo</string>
+    <string name="search_provider_bing">Bing</string>
+    <string name="search_provider_baidu">Baidu</string>
+    <string name="search_provider_s_finder">S Finder</string>
+    <string name="search_provider_appsearch">App Search</string>
+    <string name="search_provider_search_lite">Search Lite</string>
+    <string name="search_provider_cool_search">Cool Search</string>
+    <string name="search_provider_firefox">Firefox</string>
+    <string name="search_provider_qwant">Qwant</string>
+    <string name="search_provider_edge">Edge</string>
+    <string name="weather_provider_oneplus_weather">OnePlus Weather</string>
+
+    <string name="searchbar_appearance_title">Style</string>
+
+    <string name="pref_show_assistant_title">Show Voice Search Button</string>
+
+    <string name="action_assistant">Open Assistant</string>
+    <string name="pref_show_as_assistant_summary">Open Assistant instead of Voice Search.</string>
+    <string name="bubble_searchbar">Show Two Bubbles</string>
+
+    <string name="pref_search_bar_radius">Corner Radius</string>
+
+    <!-- Section 8 -->
+
+    <string name="pref_integrations">Plugins</string>
+    <string name="pref_integrations_summary">Sesame Shortcuts, Google Feed</string>
+
+    <string name="sesame">Sesame</string>
+
+    <string name="sesame_data_integration">Data Sharing</string>
+    <string name="sesame_upsell">Tap to install Sesame.</string>
+
+    <string name="pref_sesame_show_shortcuts">Show in Shortcut Bubbles</string>
+
+    <string name="sesame_search_engine">Use as Search Engine</string>
+
+    <string name="pref_sesame_sync_look_and_feel">Share Style Settings</string>
+    <string name="pref_sesame_sync_look_and_feel_summary">Apply Search Bar settings to Sesame Bar.</string>
+
+    <string name="sesame_version">Library Version</string>
+
+    <string name="title_show_google_app">Show %1$s Feed</string>
+
+    <string name="feed_theme_pref_title">Background Color</string>
+
+    <!-- Section 9 -->
+
+    <string name="gestures_pref_title">Gestures</string>
+    <string name="gestures_pref_summary">Double Tap, Swipe up from Dock</string>
+
+    <string name="gesture_double_tap">Double Tap</string>
+    <string name="gesture_long_press">Touch &amp; Hold</string>
+    <string name="gesture_press_home">Home Button Tap</string>
+    <string name="gesture_press_back">Back Button Tap</string>
+    <string name="gesture_swipe_down">Swipe Down</string>
+    <string name="gesture_swipe_up">Swipe Up</string>
+    <string name="gesture_dock_swipe_up">Swipe Up From Dock</string>
+
+    <string name="action_none">Do Nothing</string>
+    <string name="action_sleep">Sleep</string>
+    <string name="action_sleep_timeout">Sleep Using Screen Timeout</string>
+    <string name="action_open_settings">Open Lawnchair Settings</string>
+    <string name="action_open_notifications">Open Notification Panel</string>
+    <string name="action_overlay">Open Google Feed</string>
+    <string name="action_despacito">Play “YouTube Rewind 2018” (Distorted)</string>
+    <string name="action_open_app">Open App</string>
+
+    <!-- Section 10 -->
+
+    <string name="backups">Back Up &amp; Restore</string>
+    <string name="backup_pref_summary">Save Home Setup, Restore Backups</string>
+
+    <string name="new_backup">Create</string>
+    <string name="restore_backup">Restore</string>
+
+    <string name="local_backups">In Storage</string>
+    <string name="no_recent_backups">Backups will appear here.</string>
+
+    <string name="backup_contents">Data to Back Up</string>
+    <string name="restore_contents">Data to Restore</string>
+
+    <string name="backup_settings">Settings</string>
+    <string name="homescreen">Desktop Layout</string>
+    <string name="backup_wallpaper">Wallpaper</string>
+
+    <string name="name">Name</string>
+
+    <string name="backup_location">Location</string>
+    <string name="backup_location_device_storage">“Lawnchair” Folder</string>
+    <string name="custom">Custom</string>
+
+    <!-- Section 11 -->
+
+    <string name="about">About</string>
+    <string name="about_pref_summary">Team, Links, Licences</string>
+
+    <string name="about_translate">Translate</string>
+    <string name="title_attribouter_rate">Rate</string>
+    <string name="title_attribouter_website">Website</string>
+
+    <string name="about_role_lead">Lead Developer</string>
+    <string name="about_role_dev">Developer</string>
+    <string name="about_role_ui_ux_designer">UI Designer</string>
+    <string name="about_role_writer">Writer</string>
+    <string name="about_role_dev_mod">Developer &amp; Moderator</string>
+    <string name="about_role_designer">Designer</string>
+    <string name="about_role_devops">DevOps Engineer</string>
+    <string name="about_role_pr">PR Manager</string>
+    <string name="about_role_ops">Operations &amp; Infrastructure Engineer</string>
+    <string name="about_role_mod_support">Support Representative &amp; Moderator</string>
+    <string name="about_role_family_member">Family Member</string>
+    <string name="about_role_magisk_maintainer">QuickSwitch Module Maintainer</string>
+
+    <string name="about_our_team">The Team</string>
+    <string name="title_attribouter_licenses">Attribution</string>
+
+    <!-- Section 12 -->
+
+    <string name="summary_placeholder" translatable="false">&#160;</string>
+
+    <string name="settings_button_text">Home Settings</string>
+    <string name="button_organize_screens">Arrange Pages</string>
+    <string name="wallpaper_button_text">Wallpaper</string>
+
+    <string name="pref_app_groups_create">Create</string>
+    <string name="pref_appcategorization_style_text">Style</string>
+    <string name="customize">Customize</string>
+
+    <plurals name="tab_apps_count">
+        <item quantity="one">%1$d App</item>
+        <item quantity="other">%1$d Apps</item>
+    </plurals>
+
+    <string name="search_breadcrumb_connector" translatable="false">
+        <xliff:g name="first_item">%1$s</xliff:g> >
+        <xliff:g name="second_item">%2$s</xliff:g>
+    </string>
+
+    <string name="advanced_settings">More Settings</string>
+    <string name="adaptive_icon">Adaptive Icon</string>
+
+    <string name="action_edit">Edit</string>
+    <string name="dismiss_drop_target_label">"Don’t Show"</string>
+
+    <string name="suggested_action_content_description">“%1$s” opens in “%2$s”.</string>
+
+    <string name="smartspace_setup_text">Tap to Set Up</string>
     <string name="lawnchair_settings">Lawnchair Settings</string>
 
+    <string name="label_voice_search">Voice Search</string>
+    <string name="icon_pack">Icon Pack</string>
+    <string name="home_widget">At a Glance</string>
+
+    <string name="about_app_version">Version</string>
+    <string name="app_name_pixel_launcher">Pixel Launcher</string>
+    <string name="title_disable_suggestions_prompt">Disable App Suggestions</string>
+    <string name="msg_disable_suggestions_prompt">"Usage data will be deleted."</string>
+
+    <string name="app_name_lawnchair">Lawnchair</string>
+    <string name="pixel_style_pref_title">Google Pixel</string>
+
+    <string name="label_turn_off_suggestions">Disable</string>
+    <string name="about_summary_title">Summary</string>
+
+    <string name="hide_app">Hide Shortcut</string>
+    <string name="icon_shape_rounded_square">Rounded Square</string>
+
+    <string name="hide_app_selected">“&#160;” hidden.</string>
+    <string name="hide_app_apply">Done</string>
+
+    <string name="hide_dock_gradient">Disable Gradient</string>
+    <string name="choose_backup_path">Browse</string>
+
+    <string name="backup_error_blank_name">Name your backup.</string>
+    <string name="backup_error_blank_location">Pick backup location.</string>
+    <string name="backup_error_blank_contents">Add backup content.</string>
+
+    <string name="backup_creating">Creating backup...</string>
+    <string name="backup_loading">Loading...</string>
+    <string name="loading">Loading…</string>
+
+    <string name="backup_timestamp">Created</string>
+    <string name="backup_share">Share</string>
+
+    <string name="backup_invalid">Invalid backup file.</string>
+
+    <string name="backup_restoring">Restoring...</string>
+    <string name="backup_restarting">Restarting...</string>
+
+    <string name="restore_success">Backup restored.</string>
+    <string name="failed">Something went wrong.</string>
+
+    <string name="backup_share_text">Lawnchair Backup</string>
+
+    <string name="developer_options_enabled">Developer Options enabled.</string>
+    <string name="restart_lawnchair_pref_summary">Reapply settings.</string>
+
+    <string name="show_debug_info_pref_title">Show Component Names</string>
+    <string name="debug_component_name">Component Name</string>
+    <string name="debug_component_name_copied">Copied to clipboard.</string>
+
+    <string name="read_external_storage_required">To create a Backup, grant the Storage permission.</string>
+    <string name="launcher_theme_override_label">Force Dark Appearance</string>
+    <string name="smartspace_hours_mins">%1$s %2$s</string>
+
+    <string name="dock_style_pref_title">Dock Style</string>
+    <string name="dock_style_p">Android Pie</string>
+    <string name="dock_style_n">Android Nougat</string>
+
+    <string name="dock_style_hidden">Hidden</string>
+    <string name="opacity">Opacity</string>
+
+    <string name="add_settings_shortcut_title">Add Shortcut to Desktop</string>
+
+    <string name="low_performance_mode_pref_title">Low Performance Mode</string>
+    <string name="action_preferences">@string/customize</string>
+
+    <string name="title_storage_permission_required">Storage Access Needed</string>
+    <string name="content_storage_permission_required">To set a wallpaper, grant the Storage permission.</string>
+
+    <string name="reset_to_default">Reset to Default</string>
+    <string name="gradient">Gradient</string>
+
+    <string name="pref_category_aag">At a Glance</string>
+    <string name="pref_category_pixel_searchbar">Google Pixel Search Bar</string>
+    <string name="pref_category_layout">Layout</string>
+
+    <string name="about_twitter" translatable="false">Twitter</string>
+    <string name="title_attribouter_email">Email</string>
+
+    <string name="title_attribouter_version">Version %1$s</string>
+    <string name="title_attribouter_license">License</string>
+    <string name="title_attribouter_license_permissions">Permissions</string>
+    <string name="title_attribouter_license_conditions">Conditions</string>
+    <string name="title_attribouter_license_limitations">Limitations</string>
+    <string name="title_attribouter_more_info">Details</string>
+    <string name="title_attribouter_translators">Translators</string>
+
+    <string name="about_our_contributors">Contributors</string>
+    <string name="about_our_family">Family Members</string>
+
+    <string name="about_bio_deletescape">Kotlin/Java developer. Interested in everything Android. Founder of the Lawnchair and dogbin projects.</string>
+    <string name="about_bio_recoded">Mild coder and graphics designer.</string>
+    <string name="about_bio_josh">Freelance graphic designer.</string>
+    <string name="about_bio_harsh">Android application and library developer. Core developer at AOSiP.</string>
+    <string name="about_bio_david">19 years old, turns caffeine and pizza into code, provides hosting and 24/7 support for Lawnchair if something goes wrong. Contributes to open-source projects and fixes bugs during his free time. Also previously known as Codebucket.</string>
+    <string name="about_bio_lumiq">It’s just got harder to build a bad product.</string>
+    <string name="about_bio_paphonb">A 18-year-old student, Android Developer and one of the top developers at Lawnchair Launcher.</string>
+
+    <string name="debug_crash_launcher">Force Stop</string>
+
+    <string name="action_open_drawer">Open Drawer</string>
+    <string name="action_last_task">Launch Last Used App</string>
+    <string name="action_open_widgets">Open Widget Drawer</string>
+    <string name="action_open_overview">Show Desktop Bubble</string>
+    <string name="action_global_search">Launch Global Search</string>
+    <string name="action_app_search">Launch App Search</string>
+    <string name="action_close_notifications">Close Notification Panel</string>
+    <string name="action_open_app_with_target">Open “%s”</string>
+    <string name="action_open_app_select_app">Pick App</string>
+
+    <string name="smartspace_widget_provider_not_found">Get the Google App.</string>
+
+    <string name="apps_label">Apps</string>
+    <string name="all_apps_label">All Apps</string>
+
+    <string name="pref_weather_city_title">City</string>
+    <string name="default_city">Lucerne, CH</string>
+    <string name="pref_weather_api_key_title">API Key</string>
+
+    <string name="pref_weather_city_summary">For best results, include country code.</string>
+
+    <string name="all_icons">All Icons</string>
+    <string name="error_no_browser">No browser found.</string>
+    <string name="no_icon_found">No icon found.</string>
+    <string name="icon_pack_external_picker">Open External Picker</string>
+
+    <string name="week_day_format">%1$s, %2$s</string>
+    <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
+    <string name="weather_provider_testing">Debug</string>
+
+    <string name="backup_generate_report">Create Bug Report</string>
+    <string name="reset">Reset</string>
+
+    <string name="theme_automatic">Automatic</string>
+    <string name="theme_default">Default</string>
+    <string name="transparent">Transparent</string>
+
+    <string name="pref_open_source_licenses_title">Licenses</string>
+
+    <string name="icon_pack_applied_toast">“%s” applied.</string>
+    <string name="dt2s_admin_hint">To use Double Tap to Sleep, grant the Admin permission.</string>
+    <string name="dt2s_admin_warning">Double Tap to Sleep will be disabled.</string>
+
+    <string name="color_presets">Presets</string>
+    <string name="automatic_short">Auto</string>
+
+    <string name="recent_task_option_force_stop">Force Stop</string>
+
+    <string name="drag_to_enable_packs">Drag Up to Enable</string>
+    <string name="drag_to_disable_packs">Drag Down to Disable</string>
+    <string name="get_more_icon_packs">Get More</string>
+    <string name="enabled_icon_packs">Applied</string>
+
+    <string name="lawnchair_actions">Actions</string>
+
+    <string name="bridge_missing_title">Get Lawnfeed</string>
+    <string name="bridge_missing_message">To use Google Feed, get Lawnfeed.</string>
+    <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
+    <string name="title_app_suggestions">Apps</string>
+
+    <string name="theme_dark">Dark</string>
+    <string name="theme_dark_theme_mode">Dark theme</string>
+    <string name="theme_dark_dark_text">Dark w/ Dark Text</string>
+    <string name="theme_black">Black</string>
+    <string name="theme_black_dark_text">Black w/ Dark Text</string>
+    <string name="theme_dark_theme_mode_follow_wallpaper">@string/theme_auto</string>
+    <string name="theme_dark_theme_mode_follow_system">@string/theme_auto_night_mode</string>
+
+    <string name="pref_qsb_color">Color</string>
+
+    <string name="hide_from_predictions">Hide from Suggestions</string>
+
+    <string name="recents_not_connected">QuickSwitch is disabled.</string>
+
+    <string name="app_actions_pref_title_in_search">Actions</string>
+    <string name="search_clear_history">Clear History</string>
+    <string name="recent_task_option_popup_window">Dialog</string>
+
+    <string name="drawer_tabs">Tabs</string>
+    <string name="add_new_tab">Add</string>
+    <string name="rename_tab">Rename</string>
+
+    <string name="default_tab_name">New Tab</string>
+    <string name="show_in_tabs">Tabs</string>
+    <string name="tabs_manage">Manage</string>
+    <string name="tab_manage_apps">Manage Apps</string>
+    <string name="tab_bottom_sheet_save">Done</string>
+
+    <string name="selected_count">%1$d Selected</string>
+    <string name="tab_hide_from_main">Hide from Primary Tab</string>
+    <string name="tab_color">Color</string>
+
+    <string name="delete">Delete</string>
+    <string name="none">None</string>
+    <string name="undo">Undo</string>
+
+    <string name="shortcut_sesame">Shortcuts</string>
+
+    <string name="pref_sesame_enabled">Sharing usage data with Sesame.</string>
+    <string name="pref_sesame_disabled">No usage data shared.</string>
+
+    <string name="allow">Allow</string>
+    <string name="deny">Deny</string>
+
+    <string name="sesame_enable_integration_title">Data Sharing</string>
+    <string name="sesame_enable_integration_description"><![CDATA[Enable usage data sharing with Sesame? You can change this later.]]></string>
+    <string name="sesame_shortcut_disabled">Sesame is disabled.</string>
+
+    <string name="font_variant_italic">Italic</string>
+    <string name="font_weight_thin">Thin</string>
+    <string name="font_weight_extra_light">Extralight</string>
+
+    <string name="font_weight_light">Light</string>
+    <string name="font_weight_regular">Regular</string>
+    <string name="font_weight_medium">Medium</string>
+    <string name="font_weight_semi_bold">Semibold</string>
+
+    <string name="font_weight_bold">Bold</string>
+    <string name="font_weight_extra_bold">Extrabold</string>
+    <string name="font_weight_extra_black">Black</string>
+
+    <string name="owm_get_your_own_key">Get an API key at api.openweathermap.org.</string>
+
+    <string name="pref_fonts_global_font">Global Font</string>
+    <string name="pref_fonts_change_global_font">Change</string>
+
+    <string name="pref_fonts_home_icons">Labels</string>
+    <string name="pref_fonts_home_smartspace">At a Glance</string>
+    <string name="pref_fonts_home_shortcuts">Shortcut Bubbles</string>
+
+    <string name="pref_fonts_category_drawer">Drawer</string>
+    <string name="pref_fonts_drawer_icons">Labels</string>
+    <string name="pref_fonts_drawer_app_actions_icons">Actions</string>
+    <string name="pref_fonts_drawer_tabs">Tab Names</string>
+
+    <string name="pref_fonts_find_fonts">Search</string>
+    <string name="pref_fonts_add_fonts">Add Fonts</string>
+    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF supported.</string>
+    <string name="pref_fonts_missing_font">Font not found.</string>
+
+    <string name="pref_show_dev_options">Show in Settings</string>
+
+    <string name="dock_scale">Dock Size</string>
+    <string name="default_folder_name">New Folder</string>
+    <string name="drawer_folders">Folders</string>
+
+    <string name="open_image_picker">Open Photos</string>
+    <string name="import_icon">Import Icon</string>
+    <string name="import_as_adaptive">Import Adaptive Icon</string>
+
+    <string name="about_app_description">A customizable home app for Android.</string>
+
+    <string name="weather_provider_accu" translatable="false">AccuWeather</string>
+
+    <string name="lawnchair_bug_report">Lawnchair Bug Report</string>
+    <string name="action_dogbin_upload">Upload to Dogbin</string>
+
+    <string name="action_dogbin_copy_link">Copy Link</string>
+    <string name="action_copy">Copy</string>
+    <string name="action_copy_link">Copy Link</string>
+    <string name="copied_toast">Copied to clipboard.</string>
+    <string name="action_share">Share</string>
+
+    <string name="action_dogbin_upload_error">Upload failed.</string>
+    <string name="dogbin_uploading">Uploading...</string>
+
+    <string name="bugreport_channel_name">Bug Reports</string>
+    <string name="status_channel_name">Upload Status</string>
+
+    <string name="bugreport_group_summary">%d new reports.</string>
+    <string name="bugreport_group_summary_multiple">Multiple new reports.</string>
+
+    <string name="folder_cover_mode">Use Cover Mode</string>
+    <string name="folder_cover_mode_desc">Tap to open first app, swipe up to view all.</string>
+
+    <string name="icon_shape_override_miui_explaination">A bug in MIUI may cause icons to remain square.</string>
+
+    <string name="permission_iplocate">Approximate Location</string>
+    <string name="permission_iplocate_twilight_explanation">Allow access to your approximate location? This enables more accurate daylight calculation.</string>
+
+    <string name="event_provider_missing_notification_access">To use <xliff:g example="My Provider" id="providerName">“%1$s”</xliff:g>, enable notifications from <xliff:g example="My App" id="name">“%2$s”.</xliff:g></string>
+    <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">“%1$s”</xliff:g>, enable Notification Dots.</string>
+
+    <string name="zen_mode_enabled">Do Not Disturb is enabled.</string>
+    <string name="crash_report_notif_title">%1$s Crashed</string>
+
+    <string name="onbording">Onboarding</string>
+    <string name="onbording_settings_title">Set Up %s</string>
+    <string name="onbording_settings_summary">Touch &amp; hold on the Desktop.</string>
+    <string name="onboarding_swipe_up">Swipe up to open the Drawer.</string>
+
+    <string name="weather_icons_default">Default</string>
+    <string name="pref_weather_icon_pack">Weather Icon Pack</string>
+    <string name="weather_icon_packs_not_supported">Not supported by your weather provider.</string>
+
     <string name="customnavbar">Custom Navigation Bar</string>
-    <string name="customnavbar_install">Tap to install Custom Navigation Bar</string>
-    <string name="customnavbar_back_hiding">Back button hiding</string>
-    <string name="customnavbar_back_hiding_desc">Hide the back button when not needed</string>
-    <string name="icon_shape_top_left">Top left</string>
-    <string name="icon_shape_top_right">Top right</string>
-    <string name="icon_shape_bottom_left">Bottom left</string>
-    <string name="icon_shape_bottom_right">Bottom right</string>
+    <string name="customnavbar_install">Tap to install Custom Navigation Bar.</string>
+
+    <string name="customnavbar_back_hiding">Hide Back Button</string>
+    <string name="customnavbar_back_hiding_desc">Hide the Back button when not needed.</string>
+
+    <string name="icon_shape_top_left">Top Left</string>
+    <string name="icon_shape_top_right">Top Right</string>
+    <string name="icon_shape_bottom_left">Bottom Left</string>
+    <string name="icon_shape_bottom_right">Bottom Right</string>
+
     <string name="icon_shape_corner_round">Round</string>
-    <string name="icon_shape_corner_lightsquircle">Light Squircle</string>
-    <string name="icon_shape_corner_squircle">Squircle</string>
-    <string name="icon_shape_corner_strongsquircle">Strong Squircle</string>
-    <string name="icon_shape_corner_ultrasquircle">Ultra Squircle</string>
+    <string name="icon_shape_corner_squircle">Smooth</string>
     <string name="icon_shape_corner_cut">Cut</string>
 
-    <string name="smartspace_add_to_home">Add to homescreen</string>
-    <string name="pref_hide_statusbar_clock">Hide statusbar clock</string>
-    <string name="root_access_required">Root access required</string>
-    <string name="smartspace_setup_text">Tap to set-up</string>
+    <string name="smartspace_add_to_home">Add to Desktop</string>
+    <string name="get_lawnfeed">Get Lawnfeed</string>
+
+    <!-- Section 13 -->
+
+    <string name="quickstep_pref_title">Recents</string>
+    <string name="quickstep_pref_summary">Gestures, Style, Navigation</string>
+
+    <string name="swipe_up_to_switch_apps_title">Swipe up to Switch Apps</string>
+    <string name="swipe_left_to_go_back_title">Swipe Left to Go Back</string>
+
+    <string name="pref_category_nav_swipe_up_gestures">Swipe Up</string>
+    <string name="gesture_nav_swipe_up_left">From Left</string>
+    <string name="gesture_nav_swipe_up_center">From Center</string>
+    <string name="gesture_nav_swipe_up_right">From Right</string>
+    <string name="action_switch_apps">Switch Apps</string>
+
+    <string name="icon_shape_system_default">Set by System</string>
+    <string name="title_missing_notification_access">Notification access needed.</string>
+
+    <string name="activity_not_found">App not installed.</string>
+
+    <string name="out_of_space">No more room on the Desktop.</string>
+    <string name="hotseat_out_of_space">No more room in the Dock.</string>
+
+    <string name="feed_provider">Feed Provider</string>
+    <string name="icon_shape_corner_lightsquircle">Light Squircle</string>
+    <string name="icon_shape_corner_strongsquircle">Strong Squircle</string>
+    <string name="icon_shape_corner_ultrasquircle">Ultra Squircle</string>
+
     <string name="full_gesture_mode_title">Full gesture mode</string>
     <string name="action_open_drawer_or_recents">Open recents/app drawer</string>
     <string name="action_open_recents">Open recents</string>
@@ -753,5 +816,8 @@
     <string name="smartspace_provider_calendar">Calendar events</string>
     <string name="action_press_back">Back button</string>
     <string name="icon_shape_sammy">Sammy</string>
-    <string name="get_lawnfeed">Get it now</string>
+    <string name="dock_enable_pref_title">Enable dock</string>
+
+    <string name="smartspace_now">now</string>
+    <string name="smartspace_in_time">in %1$s</string>
 </resources>

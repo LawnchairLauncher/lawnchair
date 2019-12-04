@@ -19,14 +19,12 @@
             android:key="pref_smartspace_date"
             android:dependency="pref_use_pill_qsb"
             android:title="@string/smartspace_date"
-            android:summary="@string/in_smartspace"
             android:defaultValue="true"
             />
 
         <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:key="pref_smartspace_time"
             android:title="@string/smartspace_time"
-            android:summary="@string/in_smartspace"
             android:defaultValue="false"
             android:dependency="pref_use_pill_qsb"
             />
@@ -34,7 +32,6 @@
         <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:key="pref_smartspace_time_above"
             android:title="@string/pref_smartspace_time_above"
-            android:summary="@string/pref_smartspace_time_above_summary"
             android:defaultValue="false"
             android:dependency="pref_smartspace_time"
             />
