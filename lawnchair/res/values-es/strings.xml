@@ -559,4 +559,7 @@ Fundador de los proyectos Lawnchair y dogbin.</string>
     <string name="action_switch_apps">Alternar aplicaciones</string>
     <string name="icon_shape_system_default">Definido por el Sistema</string>
     <string name="title_missing_notification_access">Se necesita acceso a Notificationes.</string>
+    <string name="activity_not_found">Aplicación no instalada.</string>
+    <string name="out_of_space">No hay más espacio en el Escritorio.</string>
+    <string name="hotseat_out_of_space">No hay más espacio en el Dock.</string>
 </resources>
