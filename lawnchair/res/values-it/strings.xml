@@ -135,7 +135,7 @@
         <item>Dormi bene!</item>
         <item>Ci vediamo domani!</item>
         <item>Buona notte!</item>
-        <item>Non restare sveglio troppo a lungo!</item>
+        <item>Non rimanere sveglio troppo a lungo!</item>
     </string-array>
     <string name="battery_charging">In carica</string>
     <string name="battery_full">Carica</string>
@@ -558,4 +558,7 @@
     <string name="action_switch_apps">Cambia app</string>
     <string name="icon_shape_system_default">Impostato dal sistema</string>
     <string name="title_missing_notification_access">Accesso alle notifiche necessario.</string>
+    <string name="activity_not_found">App non installata.</string>
+    <string name="out_of_space">Non c\'è più spazio sul desktop.</string>
+    <string name="hotseat_out_of_space">Non c\'è più spazio nella dock.</string>
 </resources>
