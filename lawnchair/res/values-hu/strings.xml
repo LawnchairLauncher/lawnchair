@@ -320,4 +320,7 @@
     <string name="quickstep_pref_title">Legutóbbiak</string>
     <string name="icon_shape_system_default">A Rendszer által beállítva</string>
     <string name="title_missing_notification_access">Értesítési hozzáférésre van szükség.</string>
+    <string name="activity_not_found">Nincs alkalmazás telepítve.</string>
+    <string name="out_of_space">Nincs több hely az Asztalon.</string>
+    <string name="hotseat_out_of_space">Nincs több hely a Dokkon.</string>
 </resources>
