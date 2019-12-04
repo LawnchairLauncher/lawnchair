@@ -60,14 +60,14 @@
     <string name="grid_size_height">Altura</string>
     <string name="num_hotseat_icons_pref_title">Contagem de Ícones</string>
     <string name="overlap_placement">Permitir sobreposição</string>
-    <string name="lock_desktop">Bloquear tela inicial</string>
+    <string name="lock_desktop">Bloquear Tela Inicial</string>
     <string name="pref_category_icons">Atalhos</string>
     <string name="hide_icon_labels_pref_title">Esconder nome dos aplicativos</string>
     <string name="pref_mutliline_labels">Nome em múltiplas linhas</string>
     <string name="icon_text_scale_pref_title">Tamanho do Texto</string>
     <string name="text_color">Cor do Texto</string>
     <string name="icon_scale_pref_title">Tamanho do Ícone</string>
-    <string name="auto_add_shortcuts_label">Adicionar novos aplicativos à tela inicial</string>
+    <string name="auto_add_shortcuts_label">Adicionar novos aplicativos à Tela Inicial</string>
     <string name="pref_icon_popup_menu">Atalhos em Bolha</string>
     <string name="pref_category_misc">Outro</string>
     <string name="animation_type_title">Animação da Abertura de Aplicativo</string>
@@ -368,7 +368,7 @@
     <string name="dock_style_n">Android Nougat</string>
     <string name="dock_style_hidden">Oculto</string>
     <string name="opacity">Opacidade</string>
-    <string name="add_settings_shortcut_title">Adicionar novos aplicativos à tela inicial</string>
+    <string name="add_settings_shortcut_title">Adicionar novos aplicativos à Tela Inicial</string>
     <string name="low_performance_mode_pref_title">Modo de baixo desempenho</string>
     <string name="title_storage_permission_required">Acesso ao armazenamento necessário</string>
     <string name="content_storage_permission_required">Para definir um Plano de Fundo, Permita o acesso ao Armazenamento.</string>
@@ -398,7 +398,7 @@
     <string name="action_open_drawer">Abrir Gaveta de Aplicativos</string>
     <string name="action_last_task">Abrir ultimo aplicativo usado</string>
     <string name="action_open_widgets">Abrir gaveta de widgets</string>
-    <string name="action_open_overview">Mostrar Bolha na Área de Trabalho</string>
+    <string name="action_open_overview">Mostrar Bolha na Tela Inicial</string>
     <string name="action_global_search">Iniciar Busca no Google</string>
     <string name="action_app_search">Iniciar Busca de App</string>
     <string name="action_close_notifications">Fechar Painel de Notificação</string>
@@ -529,7 +529,7 @@
     <string name="zen_mode_enabled">Não perturbe está ativado.</string>
     <string name="crash_report_notif_title">%1$s parou</string>
     <string name="onbording_settings_title">Configurar %s</string>
-    <string name="onbording_settings_summary">Toque e Segure na Área de Trabalho.</string>
+    <string name="onbording_settings_summary">Toque &amp; Segure na Tela Inicial.</string>
     <string name="onboarding_swipe_up">Arraste para Cima para Abrir a Gaveta de Apps.</string>
     <string name="weather_icons_default">Padrão</string>
     <string name="pref_weather_icon_pack">Ícones de clima</string>
@@ -544,7 +544,7 @@
     <string name="icon_shape_corner_round">Redondo</string>
     <string name="icon_shape_corner_squircle">Suave</string>
     <string name="icon_shape_corner_cut">Recortar</string>
-    <string name="smartspace_add_to_home">Adicionar à Área de Trabalho</string>
+    <string name="smartspace_add_to_home">Adicionar à Tela Inicial</string>
     <string name="get_lawnfeed">Baixe o Lawnfeed</string>
     <!-- Section 13 -->
     <string name="quickstep_pref_title">Recentes</string>
@@ -558,4 +558,7 @@
     <string name="action_switch_apps">Mudar de aplicação</string>
     <string name="icon_shape_system_default">Definido pelo Sistema</string>
     <string name="title_missing_notification_access">Acesso a notificações necessário.</string>
+    <string name="activity_not_found">Aplicativo não instalado.</string>
+    <string name="out_of_space">Não há mais espaço na Tela Inicial.</string>
+    <string name="hotseat_out_of_space">Não há mais espaço na Dock.</string>
 </resources>
