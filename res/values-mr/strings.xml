@@ -46,7 +46,7 @@
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"आवडीच्या ट्रे मध्ये आणखी जागा नाही"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"अ‍ॅप्स सूची"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"वैयक्तिक अ‍ॅप्स सूची"</string>
-    <string name="all_apps_button_work_label" msgid="7270707118948892488">"कामाच्या ठिकाणी वापरली जाणाऱ्या अॅप्सची सूची"</string>
+    <string name="all_apps_button_work_label" msgid="7270707118948892488">"कामाच्या ठिकाणी वापरली जाणाऱ्या ॲप्सची सूची"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"होम"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"काढा"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"अनइंस्टॉल करा"</string>
@@ -92,7 +92,7 @@
     <string name="title_change_settings" msgid="1376365968844349552">"सेटिंग्ज बदला"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"सूचना बिंदू दाखवा"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"होम स्क्रीनवर आयकन जोडा"</string>
-    <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"नवीन अॅप्ससाठी"</string>
+    <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"नवीन ॲप्ससाठी"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"अज्ञात"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"काढा"</string>
     <string name="abandoned_search" msgid="891119232568284442">"शोधा"</string>
