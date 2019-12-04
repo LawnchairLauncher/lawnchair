@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<inset xmlns:android="http://schemas.android.com/apk/res/android"
-    android:inset="@dimen/predicted_icon_background_inset">
-    <shape>
-        <solid android:color="?attr/folderFillColor" />
-        <corners android:radius="@dimen/predicted_icon_background_corner_radius" />
-    </shape>
-</inset>

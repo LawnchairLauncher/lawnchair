@@ -178,6 +178,13 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
     }
 
     /**
+     * Returns Prediction controller for hybrid hotseat
+     */
+    public HotseatPredictionController getHotseatPredictionController() {
+        return mHotseatPredictionController;
+    }
+
+    /**
      * Recents logic that triggers when launcher state changes or launcher activity stops/resumes.
      */
     private void onStateOrResumeChanged() {
