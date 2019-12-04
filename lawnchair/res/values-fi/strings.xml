@@ -20,17 +20,20 @@
     <string name="pref_legacy_treatment_title">Luo adaptiiviset kuvakkeet</string>
     <string name="pref_legacy_treatment_summary">Luo adaptiiviset kuvakkeet kaikille pikakuvakkeille.</string>
     <string name="icon_shape_override_label">Kuvakkeen muoto</string>
+    <string name="reset_custom_icons">Poista mukautetut kuvakkeet</string>
     <string name="appearance">Ulkoasu</string>
     <!-- Note: new. Replaces title of 5th field (from bottom) in “Theme” page. -->
     <string name="theme_dark_theme_mode_follow_daylight">Ajastettu (Tumma yöllä)</string>
     <string name="theme_light">Vaalea</string>
     <string name="theme_with_dark_text">Tumma teksti</string>
+    <string name="color_system_accent">Järjestelmän asentama</string>
     <string name="pref_fonts_title">Fontit</string>
     <string name="blur_pref_title">Käytä sumennusta</string>
     <!-- Section 3 -->
     <string name="general_pref_title">Aloitusnäyttö</string>
     <string name="grid_size_width">Leveys</string>
     <string name="grid_size_height">Pituus</string>
+    <string name="num_hotseat_icons_pref_title">Kuvakkeiden määrä</string>
     <string name="lock_desktop">Lukitse työpöytä</string>
     <string name="pref_category_icons">Pikakuvakkeet</string>
     <string name="icon_text_scale_pref_title">Tekstin koko</string>
@@ -44,6 +47,8 @@
     <string name="animation_type_slide_up">Liu\'uta ylös</string>
     <string name="animation_type_scale_up">Laajenna</string>
     <string name="animation_type_fade">Häivytys</string>
+    <string name="pref_notification_count_title">Näytä Ilmoitusten Määrä</string>
+    <string name="allow_rotation_title">Ota kierto käyttöön</string>
     <string name="pref_hide_statusbar">Piilota tilapalkki</string>
     <string name="full_width_width_widgets_pref_title">Leveät widgetit</string>
     <string name="full_width_widgets_pref_summary">Anna widgetien venyä näytön reunoille.</string>
@@ -75,8 +80,8 @@
         <item>It’s a beautiful day outside!</item>
     </string-array>
     <string-array name="greetings_evening">
-        <item>What’s up?</item>
-        <item>Good evening!</item>
+        <item>Mitä kuuluu?</item>
+        <item>Hyvää iltaa!</item>
         <item>How did your day go?</item>
         <item>Hyvää yötä!</item>
     </string-array>
@@ -101,7 +106,9 @@
     <string name="pref_category_theme">Tyyli</string>
     <string name="pref_appcategorization_enable_title">Sovellusten luokittelu</string>
     <string name="pref_appcategorization_folders_title">Kansiot</string>
+    <string name="pref_appcategorization_folders_summary">Paina tästä avataksesi Kansiot.</string>
     <string name="pref_appcategorization_tabs_title">Välilehdet</string>
+    <string name="pref_appcategorization_tabs_summary">Pyyhkäise Kategorien välillä.</string>
     <string name="pref_app_groups_edit_tip">Napauta muokataksesi, raahaa järjestelläksesi.</string>
     <string name="category_communication">Viestintä</string>
     <string name="category_entertainment">Viihde</string>
@@ -112,10 +119,15 @@
     <string name="category_photography">Valokuvaus</string>
     <string name="tab_type_smart">Automaattinen</string>
     <string name="tab_type_custom">Mukautettu</string>
+    <string name="summary_all_apps_google_search">Etsi sivustoja, yhteystietoja ja pikakuvakkeita.</string>
+    <string name="title_search_hidden_apps">Etsi Piilotetut Pikakuvakkeet</string>
+    <string name="summary_search_hidden_apps">Näytä piilotetut kuvakkeet tuloksissa.</string>
     <string name="suggestion_pref_screen_title">Ehdotukset</string>
+    <string name="title_app_suggestions_in_search">Sovellus Ehdotukset</string>
     <string name="app_actions_pref_title">Toiminnot</string>
     <!-- Section 7 -->
     <string name="search">Haku</string>
+    <string name="pref_global_search_provider">Hakukone</string>
     <string name="search_provider_google_go">Google Go</string>
     <string name="web_search_google">Google</string>
     <string name="search_provider_yandex">Yandex</string>
@@ -203,6 +215,7 @@
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <string name="title_app_suggestions">Sovellukset</string>
     <string name="theme_dark">Tumma</string>
+    <string name="theme_dark_theme_mode">Tumma teema</string>
     <string name="theme_black">Musta</string>
     <string name="pref_qsb_color">Väri</string>
     <string name="app_actions_pref_title_in_search">Toiminnot</string>

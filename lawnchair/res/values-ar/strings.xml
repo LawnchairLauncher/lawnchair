@@ -448,7 +448,7 @@
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <string name="title_app_suggestions">تطبيقات</string>
     <string name="theme_dark">مظلم</string>
-    <string name="theme_dark_theme_mode">المظهر الداكن</string>
+    <string name="theme_dark_theme_mode">سمة مظلم</string>
     <string name="theme_dark_dark_text">مظلم مع نص مظلم</string>
     <string name="theme_black">أسود</string>
     <string name="theme_black_dark_text">أسود مع نص مظلم</string>

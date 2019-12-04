@@ -439,6 +439,7 @@
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <string name="title_app_suggestions">Apps</string>
     <string name="theme_dark">Mørkt</string>
+    <string name="theme_dark_theme_mode">Mørkt tema</string>
     <string name="theme_dark_dark_text">Mørkt med mørk tekst</string>
     <string name="theme_black">Sort</string>
     <string name="theme_black_dark_text">Sort med mørk tekst</string>
@@ -469,6 +470,7 @@
     <string name="allow">Tillad</string>
     <string name="deny">Afvis</string>
     <string name="sesame_enable_integration_title">Datadeling</string>
+    <string name="sesame_enable_integration_description"><![CDATA[Aktivér brugsdatadeling med Sesame? Du kan ændre dette senere.]]></string>
     <string name="sesame_shortcut_disabled">Sesame er deaktiveret.</string>
     <string name="font_variant_italic">Kursiv</string>
     <string name="font_weight_thin">Tynd</string>
@@ -552,4 +554,6 @@
     <string name="gesture_nav_swipe_up_center">Fra midten</string>
     <string name="gesture_nav_swipe_up_right">Fra højre</string>
     <string name="action_switch_apps">Skift apps</string>
+    <string name="icon_shape_system_default">Indstillet af System</string>
+    <string name="title_missing_notification_access">Notifikationsadgang kræves.</string>
 </resources>

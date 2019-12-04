@@ -4,11 +4,13 @@
     <!-- Section 1 -->
     <string name="search_menu">Pretraga</string>
     <string name="restart_lawnchair_pref_title">Ponovo pokreni</string>
+    <string name="change_default_home">Postavi kao podrazumevanu pokretačku aplikaciju</string>
     <!-- Note: new. Replaces “OK” in dialogs. -->
     <string name="theme_dark_theme_mode_on">Uključeno</string>
     <string name="theme_dark_theme_mode_off">Onemogućeno</string>
     <!-- Section 2 -->
     <string name="theme_title">Tema</string>
+    <string name="pixel_ui_pref_summary">Ikonice, Boje, Zamućenje</string>
     <string name="pref_icon_packs">Paketi ikona</string>
     <string name="icon_pack_default">Sistemske ikone</string>
     <string name="pref_icon_pack_masking">Maskiranje ikona</string>
@@ -164,6 +166,7 @@
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <string name="title_app_suggestions">Aplikacije</string>
     <string name="theme_dark">Tamna</string>
+    <string name="theme_dark_theme_mode">Tamna tema</string>
     <string name="theme_black">Crna</string>
     <string name="pref_qsb_color">Boja</string>
     <string name="app_actions_pref_title_in_search">Radnje</string>

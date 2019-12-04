@@ -10,7 +10,8 @@
     <string name="search_no_results">Κανένα αποτέλεσμα</string>
     <string name="restart_lawnchair_pref_title">Επανεκκίνηση</string>
     <string name="developer_options_title">Επιλογές για προγραμματιστές</string>
-    <string name="action_apply">Τέλος</string>
+    <string name="change_default_home">Εφαρμογή αρχικής σελίδας</string>
+    <string name="action_apply">Ολοκληρώθηκε</string>
     <!-- Note: new. Replaces “OK” in dialogs. -->
     <string name="theme_dark_theme_mode_on">Ενεργοποιημένο</string>
     <string name="theme_dark_theme_mode_off">Απενεργοποιημένο</string>
@@ -20,11 +21,17 @@
     <string name="pref_icon_packs">Πακέτα εικονιδίων</string>
     <string name="icon_pack_default">Εικονίδια συστήματος</string>
     <string name="pref_icon_pack_masking">Κάλυψη εικονιδίων</string>
+    <string name="pref_icon_pack_masking_summary">Αλλαγή υπαρκτών εικονιδίων με την εμφάνηση του πακέτου εικονιδίων.</string>
+    <string name="pref_legacy_treatment_summary">Δημιουργία προσδιορισμένων εικονιδίων για όλες τις συντομεύσεις.</string>
     <string name="pref_legacy_colored_backgrounds">Φόντα Χρωμάτων</string>
+    <string name="pref_legacy_colored_backgrounds_summary">Χρωματιστή φόντου των αυτόματα δημιουργουμένων Προσαρμοσμένων Εικονιδίων.</string>
+    <string name="pref_white_only_treatment">Υποκατάσταση Άσπρων Φόντων</string>
     <string name="icon_shape_override_label">Σχήμα Εικονιδίων</string>
     <string name="appearance">Εμφάνιση</string>
     <!-- Note: new. Replaces title of 5th field (from bottom) in “Theme” page. -->
     <string name="theme_light">Φωτεινό</string>
+    <string name="lawnchair_accent">Απόχρωση</string>
+    <string name="color_pixel_accent">Μπλε της Google</string>
     <string name="color_wallpaper_main">Ταπετσαρία — Κύρια</string>
     <string name="color_wallpaper_secondary">Ταπετσαρία — Δευτερεύουσα</string>
     <string name="color_wallpaper_tertiary">Ταπετσαρία — Τριτεύουσα</string>
@@ -34,14 +41,15 @@
     <string name="general_pref_title">Αρχική οθόνη</string>
     <string name="grid_size_width">Πλάτος</string>
     <string name="grid_size_height">Ύψος</string>
-    <string name="lock_desktop">Κλείδωμα Αρχικής Οθόνης</string>
+    <string name="lock_desktop">Κλείδωμα αρχικής οθόνης</string>
     <string name="pref_category_icons">Συντομεύσεις</string>
-    <string name="icon_text_scale_pref_title">Μέγεθος Κειμένου</string>
-    <string name="text_color">Χρώμα Κειμένου</string>
-    <string name="icon_scale_pref_title">Μέγεθος Εικονιδίου</string>
+    <string name="icon_text_scale_pref_title">Μέγεθος κειμένου</string>
+    <string name="text_color">Χρώμα κειμένου</string>
+    <string name="icon_scale_pref_title">Μέγεθος εικονιδίου</string>
     <string name="pref_category_misc">Άλλo</string>
     <string name="animation_type_default">Προεπιλογή</string>
     <string name="animation_type_pie">Android Pie</string>
+    <string name="animation_type_pie_like">Android Pie (προσομοίωση)</string>
     <string name="animation_type_reveal">Αποκάλυψη</string>
     <string name="animation_type_slide_up">Άνω Ολίσθηση</string>
     <string name="animation_type_scale_up">Κλιμάκωση</string>
@@ -51,13 +59,20 @@
     <string name="allow_rotation_title">Ενεργοποίηση Περιστροφής</string>
     <string name="pref_center_wallpaper">Κεντράρισμα Ταπετσαρίας</string>
     <string name="pref_hide_statusbar">Απόκρυψη Γραμμής Κατάστασης</string>
-    <string name="full_width_width_widgets_pref_title">Ευρεία Γραφικά Στοιχεία</string>
+    <string name="full_width_width_widgets_pref_title">Ευρέα γραφικά στοιχεία</string>
     <!-- Section 4 -->
     <string name="smartspace_preferences_in_settings">Με μια Ματιά</string>
     <!-- Note: replaces hard-coded copy (“Home widget”). -->
-    <string name="pref_category_weather">Άλλo</string>
+    <string name="smartspace_time">Εμφάνιση ώρας</string>
+    <string name="smartspace_date">Εμφάνιση ημερομηνίας</string>
+    <string name="pref_smartspace_time_above">Εμφάνιση μεγάλου ρολογιού</string>
+    <string name="root_access_required">Απαιτείται πρόσβαση root.</string>
+    <string name="pref_category_weather">Άλλoς</string>
+    <string name="pref_smartspace_widget_provider">Πάροχος καιρού</string>
+    <string name="google_app">Εφαρμογή Google</string>
     <string name="weather_provider_disabled">Απενεργοποιημένο</string>
-    <string name="weather_provider_owm">Πηγή OpenWeatherMap</string>
+    <string name="weather_provider_owm">OpenWeatherMap</string>
+    <string name="weather_provider_pe">Pixel Experience</string>
     <string name="units_metric">Κελσίου (°C)</string>
     <string name="units_imperial">Φαρενάιτ (°F)</string>
     <string name="units_kelvin">Κέλβιν (K)</string>
@@ -66,6 +81,9 @@
     <string name="units_delisle">Ντιλέι (°D)</string>
     <string name="units_reaumur">Ρίουμου (°Ré)</string>
     <string name="units_romer">Ρόιμα (°Rø)</string>
+    <string name="pref_smartspace_event_providers">Πηγές Δεδομένων</string>
+    <string name="battery_status">Κατάσταση Μπαταρίας</string>
+    <string name="event_provider_now_playing">Παίζει Τώρα</string>
     <string name="event_provider_unread_notifications">Ειδοποιήσεις</string>
     <string name="personality_provider">Χαίρετε</string>
     <string-array name="greetings_morning">
@@ -76,11 +94,11 @@
     <string-array name="greetings_evening">
         <item>Πώς πάει;</item>
         <item>Good evening!</item>
-        <item>How did your day go?</item>
+        <item>Πώς πήγε η μέρα σου;</item>
         <item>Καληνύχτα!</item>
     </string-array>
     <string-array name="greetings_night">
-        <item>Όνειρα Γλυκά!</item>
+        <item>Όνειρα γλυκά!</item>
         <item>Τα λέμε αύριο!</item>
         <item>Καλό βράδυ!</item>
         <item>Μην κοιμηθείς αργά!</item>
@@ -89,8 +107,12 @@
     <!-- Section 5 -->
     <string name="dock_pref_title">Μπάρα εφαρμογών</string>
     <string name="background_color">Χρώμα Φόντου</string>
-    <string name="pref_category_searchbar">Γραμμή Αναζήτησης</string>
-    <string name="dock_search_bar">Εμφάνιση Γραμμής Αναζήτησης</string>
+    <string name="radius">Ακτίνα γωνίας</string>
+    <string name="hotseat_show_arrow">Εμφάνιση βέλους</string>
+    <string name="hotseat_show_page_indicator">Εμφάνιση ένδειξης σελίδας</string>
+    <string name="two_row_dock">Εμφάνιση δεύτερης σειράς</string>
+    <string name="pref_category_searchbar">Γραμμή αναζήτησης</string>
+    <string name="dock_search_bar">Εμφάνιση γραμμής αναζήτησης</string>
     <!-- Section 6 -->
     <string name="app_drawer_pref_title">Συρτάρι εφαρμογών</string>
     <string name="pref_category_theme">Στυλ</string>
@@ -102,20 +124,37 @@
     <string name="pref_app_groups_edit_tip">Πατήστε για επεξεργασία, σύρετε για αναδιάταξη.</string>
     <string name="category_communication">Επικοινωνία</string>
     <string name="category_entertainment">Ψυχαγωγία</string>
+    <string name="category_food_and_drink">Φαγητό &amp; Ποτό</string>
     <string name="category_game">Παιχνίδια</string>
+    <string name="category_health_and_fitness">Υγεία &amp; Ευεξία</string>
+    <string name="category_lifestyle">Ψώνια &amp; Lifestyle</string>
     <string name="category_music">Μουσική</string>
     <string name="category_news">Ειδήσεις</string>
     <string name="category_personalization">Εξατομίκευση</string>
     <string name="category_photography">Φωτογραφία</string>
     <string name="category_tools">Εργαλεία</string>
+    <string name="category_travel_and_navigation">Ταξίδια &amp; Πλοήγηση</string>
+    <string name="select_tab_type">Νέα καρτέλα</string>
     <string name="tab_type_smart">Αυτόματο</string>
     <string name="tab_type_custom">Προσαρμοσμένη</string>
+    <string name="pref_appcategorization_flowerpot_title">Κατηγορία εφαρμογών</string>
+    <string name="title_all_apps_search">Εμφάνιση γραμμής αναζήτησης</string>
     <string name="suggestion_pref_screen_title">Προτάσεις</string>
+    <string name="title_app_suggestions_in_search">Προτάσεις εφαρμογών</string>
     <string name="app_actions_pref_title">Ενέργειες</string>
     <!-- Section 7 -->
     <string name="search">Αναζήτηση</string>
+    <string name="google">Εφαρμογή Google</string>
     <string name="search_provider_google_go">Google Go</string>
     <string name="web_search_google">Google</string>
+    <string name="web_search_ddg">DuckDuckGo (σε περιηγητή)</string>
+    <string name="web_search_startpage">Startpage.com (σε περιηγητή)</string>
+    <string name="web_search_bing">Bing (σε περιηγητή)</string>
+    <string name="web_search_qwant">Qwant (σε περιηγητή)</string>
+    <string name="web_search_ecosia">Ecosia (σε περιηγητή)</string>
+    <string name="web_search_yandex">Yandex (σε περιηγητή)</string>
+    <string name="web_search_naver">Naver (σε περιηγητή)</string>
+    <string name="web_search_baidu">Baidu (σε περιηγητή)</string>
     <string name="search_provider_yandex">Yandex</string>
     <string name="search_provider_ddg">DuckDuckGo</string>
     <string name="search_provider_bing">Bing</string>
@@ -129,7 +168,9 @@
     <string name="search_provider_edge">Edge</string>
     <string name="weather_provider_oneplus_weather">Καιρός OnePlus</string>
     <string name="searchbar_appearance_title">Στυλ</string>
-    <string name="action_assistant">Άνοιγμα Βοηθού Google</string>
+    <string name="pref_show_assistant_title">Εμφάνιση κουμπιού φωνητικής αναζήτησης</string>
+    <string name="action_assistant">Άνοιγμα βοηθού Google</string>
+    <string name="pref_search_bar_radius">Ακτίνα Γωνίας</string>
     <!-- Section 8 -->
     <string name="pref_integrations">Πρόσθετα</string>
     <string name="pref_integrations_summary">Συντομεύσεις Sesame, Google Feed</string>
@@ -145,49 +186,78 @@
     <string name="action_sleep">Αναστολή</string>
     <string name="action_open_settings">Άνοιγμα Ρυθμίσεων Lawnchair</string>
     <string name="action_overlay">Άνοιγμα Google Feed</string>
+    <string name="action_open_app">Άνοιγμα εφαρμογής</string>
     <!-- Section 10 -->
     <string name="new_backup">Δημιουργία</string>
     <string name="restore_backup">Επαναφορά</string>
+    <string name="no_recent_backups">Τα αντίγραφα ασφαλείας θα εμφανιστούν εδώ.</string>
+    <string name="backup_contents">Δεδομένα προς αντιγραφή</string>
+    <string name="restore_contents">Δεδομένα προς επαναφορά</string>
     <string name="backup_settings">Ρυθμίσεις</string>
     <string name="backup_wallpaper">Ταπετσαρία</string>
     <string name="name">Όνομα</string>
     <string name="backup_location">Τοποθεσία</string>
+    <string name="backup_location_device_storage">Φάκελος \"Lawnchair\"</string>
     <string name="custom">Προσαρμοσμένο</string>
     <!-- Section 11 -->
     <string name="about">Σχετικά</string>
+    <string name="about_pref_summary">Ομάδα, Σύνδεσμοι, Άδειες Χρήσης</string>
     <string name="about_translate">Μετάφραση</string>
     <string name="title_attribouter_rate">Αξιολόγηση</string>
     <string name="title_attribouter_website">Ιστοσελίδα</string>
     <string name="about_role_lead">Διευθύνων Προγραμματιστής</string>
     <string name="about_role_dev">Προγραμματιστής</string>
+    <string name="about_role_ui_ux_designer">Σχεδιαστής UI</string>
     <string name="about_role_writer">Συγγραφέας</string>
     <string name="about_role_dev_mod">Προγραμματιστής &amp; Διαχειριστής</string>
     <string name="about_role_designer">Σχεδιαστής</string>
+    <string name="about_role_devops">Μηχανικός DevOps</string>
+    <string name="about_role_pr">Υπεύθυνος Δημόσεων Σχέσεων</string>
     <string name="about_role_family_member">Μέλος Οικογενείας</string>
+    <string name="about_our_team">H Ομάδα</string>
     <!-- Section 12 -->
     <string name="wallpaper_button_text">Ταπετσαρία</string>
     <string name="pref_app_groups_create">Δημιουργία</string>
     <string name="pref_appcategorization_style_text">Στυλ</string>
     <string name="customize">Προσαρμογή</string>
+    <plurals name="tab_apps_count">
+        <item quantity="one">%1$d εφαρμογή</item>
+        <item quantity="other">%1$d εφαρμογές</item>
+    </plurals>
+    <string name="advanced_settings">Περισσότερες ρυθμίσεις</string>
     <string name="action_edit">Επεξεργασία</string>
     <string name="lawnchair_settings">Ρυθμίσεις Lawnchair</string>
     <string name="icon_pack">Πακέτο εικονιδίων</string>
-    <string name="home_widget">Με μια Ματιά</string>
+    <string name="home_widget">Με μια ματιά</string>
     <string name="about_app_version">Έκδοση</string>
     <string name="app_name_pixel_launcher">Εκκινητής Pixel</string>
     <string name="app_name_lawnchair">Lawnchair</string>
+    <string name="pixel_style_pref_title">Google Pixel</string>
     <string name="label_turn_off_suggestions">Απενεργοποίηση</string>
     <string name="about_summary_title">Σύνοψη</string>
+    <string name="icon_shape_rounded_square">Στρογγυλεμένο τετράγωνο</string>
+    <string name="hide_app_apply">Ολοκληρώθηκε</string>
     <string name="choose_backup_path">Περιήγηση</string>
+    <string name="backup_error_blank_name">Ονόμαστε το αντίγραφο ασφαλείας.</string>
+    <string name="backup_error_blank_location">Επιλέξτε την τοποθεσία του αντιγράφου ασφαλείας.</string>
+    <string name="backup_creating">Δημιουργία αντιγράφου ασφαλείας...</string>
     <string name="backup_loading">Φόρτωση...</string>
     <string name="loading">Φόρτωση…</string>
     <string name="backup_share">Κοινοποίηση</string>
+    <string name="backup_invalid">Το αρχείο αντιγράφου ασφαλείας δεν είναι έγκυρο.</string>
+    <string name="backup_restoring">Γίνεται επαναφορά...</string>
+    <string name="backup_restarting">Γίνεται επανεκκίνηση...</string>
+    <string name="restore_success">Το αντίγραφο ασφαλείας ανακτήθηκε.</string>
+    <string name="failed">Κάτι πήγε στραβά.</string>
+    <string name="backup_share_text">Αντίγραφο ασφαλείας Lawnchair</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
+    <string name="dock_style_p">Android Pie</string>
+    <string name="dock_style_n">Android Nougat</string>
     <string name="dock_style_hidden">Κρυφή</string>
     <string name="opacity">Ορατότητα</string>
     <string name="action_preferences">@string/customize</string>
     <string name="gradient">Διαβάθμιση</string>
-    <string name="pref_category_aag">Με μια Ματιά</string>
+    <string name="pref_category_aag">Με μια ματιά</string>
     <string name="pref_category_layout">Διάταξη</string>
     <string name="title_attribouter_email">Ηλεκτρονικό ταχυδρομείο</string>
     <string name="title_attribouter_version">Έκδοση %1$s</string>
@@ -195,6 +265,7 @@
     <string name="title_attribouter_license_permissions">Δικαιώματα</string>
     <string name="title_attribouter_license_conditions">Προϋποθέσεις</string>
     <string name="title_attribouter_license_limitations">Περιορισμοί</string>
+    <string name="title_attribouter_more_info">Λεπτομέρειες</string>
     <string name="title_attribouter_translators">Μεταφραστές</string>
     <string name="about_our_contributors">Συντελεστές</string>
     <string name="about_bio_deletescape">Προγραμματιστής Kotlin/Java. Ενδιαφέρομαι για ό,τι έχει να κάνει με Android. Ιδρυτής του Lawnchair και του dogbin.</string>
@@ -203,14 +274,21 @@
     <string name="about_bio_harsh">Προγραμματιστής εφαρμογών Android και βιβλιοθηκών. Βασικός προγραμματιστής του AOSiP.</string>
     <string name="about_bio_david">19 χρονών, μετατρέπει την καφεΐνη και την πίτσα σε κώδικα, hosting και 24/7 υποστήριξη εάν κάτι πάει στραβά. Συμβάλλει σε έργα ανοιχτού κώδικα στον ελεύθερό του χρόνο. Επίσης παρελθοντικά γνωστός ως Codebucket.</string>
     <string name="about_bio_paphonb">18χρονος φοιτητής, προγραμματιστής Android και ένας από τους κορυφαίους προγραμματιστές του εκκινητή Lawnchair.</string>
+    <string name="action_open_drawer">Άνοιγμα συρταριού</string>
+    <string name="action_open_app_select_app">Επιλογή εφαρμογής</string>
+    <string name="smartspace_widget_provider_not_found">Αποκτήστε την εφαρμογή Google.</string>
     <string name="apps_label">Εφαρμογές</string>
     <string name="all_apps_label">Όλες οι εφαρμογές</string>
     <string name="pref_weather_city_title">Πόλη</string>
     <string name="default_city">Athens, GR</string>
+    <string name="pref_weather_api_key_title">Κλειδί API</string>
     <string name="all_icons">Όλα τα εικονίδια</string>
+    <string name="error_no_browser">Δεν βρέθηκε περιηγητής διαδικτύου.</string>
+    <string name="no_icon_found">Δεν βρέθηκε εικονίδιο.</string>
     <string name="week_day_format">%1$s, %2$s</string>
     <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
     <string name="weather_provider_testing">Αποσφαλμάτωση</string>
+    <string name="backup_generate_report">Δημιουργία αναφοράς σφάλματος</string>
     <string name="reset">Επαναφορά</string>
     <string name="theme_automatic">Αυτόματο</string>
     <string name="theme_default">Προεπιλεγμένο</string>
@@ -218,10 +296,14 @@
     <string name="pref_open_source_licenses_title">Άδειες Xρήσης</string>
     <string name="color_presets">Προκαθορισμένα</string>
     <string name="automatic_short">Αυτόματα</string>
+    <string name="get_more_icon_packs">Αποκτήστε περισσότερα</string>
     <string name="lawnchair_actions">Ενέργειες</string>
+    <string name="bridge_missing_title">Αποκτήστε το Lawnfeed</string>
+    <string name="bridge_missing_message">Για να χρησιμοποιήσετε το Google Feed, αποκτήστε το Lawnfeed.</string>
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <string name="title_app_suggestions">Εφαρμογές</string>
     <string name="theme_dark">Σκοτεινό</string>
+    <string name="theme_dark_theme_mode">Σκοτεινό θέμα</string>
     <string name="theme_black">Μαύρο</string>
     <string name="theme_dark_theme_mode_follow_wallpaper">@string/theme_auto</string>
     <string name="theme_dark_theme_mode_follow_system">@string/theme_auto_night_mode</string>
@@ -230,6 +312,7 @@
     <string name="drawer_tabs">Καρτέλες</string>
     <string name="add_new_tab">Προσθήκη</string>
     <string name="rename_tab">Μετονομασία</string>
+    <string name="default_tab_name">Νέα καρτέλα</string>
     <string name="show_in_tabs">Καρτέλες</string>
     <string name="tabs_manage">Διαχείριση</string>
     <string name="tab_color">Χρώμα</string>
@@ -251,12 +334,17 @@
     <string name="pref_fonts_category_drawer">Συρτάρι εφαρμογών</string>
     <string name="pref_fonts_drawer_app_actions_icons">Ενέργειες</string>
     <string name="pref_fonts_find_fonts">Αναζήτηση</string>
+    <string name="pref_fonts_add_fonts">Προσθήκη φόντων</string>
     <string name="drawer_folders">Φάκελοι</string>
+    <string name="action_dogbin_copy_link">Αντιγραφή υπερσυνδέσμου</string>
     <string name="action_copy">Αντιγραφή</string>
+    <string name="action_copy_link">Αντιγραφή υπερσυνδέσμου</string>
     <string name="action_share">Κοινοποίηση</string>
+    <string name="bugreport_channel_name">Αναφορές σφαλμάτων</string>
     <string name="onbording">Καλωσορίσατε</string>
+    <string name="onbording_settings_title">Ρύθμιση %s</string>
     <string name="weather_icons_default">Προεπιλογή</string>
-    <string name="customnavbar">Προσαρμοζμένη μπάρα πλοήγησης</string>
+    <string name="customnavbar">Προσαρμοσμένη μπάρα πλοήγησης</string>
     <string name="icon_shape_corner_round">Κυκλικό</string>
     <string name="icon_shape_corner_cut">Αποκοπή</string>
     <!-- Section 13 -->

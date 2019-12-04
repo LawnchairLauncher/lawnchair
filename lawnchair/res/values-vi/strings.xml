@@ -213,6 +213,7 @@
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <string name="title_app_suggestions">Ứng dụng</string>
     <string name="theme_dark">Tối</string>
+    <string name="theme_dark_theme_mode">Chủ đề tối</string>
     <string name="theme_black">Đen</string>
     <string name="pref_qsb_color">Màu sắc</string>
     <string name="app_actions_pref_title_in_search">Hành động</string>

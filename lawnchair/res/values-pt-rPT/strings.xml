@@ -438,6 +438,7 @@
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <string name="title_app_suggestions">Aplicações</string>
     <string name="theme_dark">Escuro</string>
+    <string name="theme_dark_theme_mode">Tema escuro</string>
     <string name="theme_dark_dark_text">Escuro com texto escuro</string>
     <string name="theme_black">Preto</string>
     <string name="theme_black_dark_text">Preto com texto escuro</string>
@@ -467,6 +468,7 @@
     <string name="allow">Permitir</string>
     <string name="deny">Recusar</string>
     <string name="sesame_enable_integration_title">Partilha de dados</string>
+    <string name="sesame_enable_integration_description"><![CDATA[Ativar partilha de dados com Sesame?. Pode alterar esta partilha nas definições.]]></string>
     <string name="sesame_shortcut_disabled">Sesame desativado.</string>
     <string name="font_variant_italic">Itálico</string>
     <string name="font_weight_thin">Fino</string>
@@ -550,4 +552,6 @@
     <string name="gesture_nav_swipe_up_center">Do centro</string>
     <string name="gesture_nav_swipe_up_right">Da direita</string>
     <string name="action_switch_apps">Trocar de aplicações</string>
+    <string name="icon_shape_system_default">Definida pelo sistema</string>
+    <string name="title_missing_notification_access">Requer o acesso às notificações.</string>
 </resources>

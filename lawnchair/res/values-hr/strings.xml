@@ -234,7 +234,7 @@
     <string name="pref_show_assistant_title">Prikaži tipku za glasovno pretraživanje</string>
     <string name="action_assistant">Otvori asistenta</string>
     <string name="pref_show_as_assistant_summary">Otvori asistenta umjesto glasovne pretrage.</string>
-    <string name="bubble_searchbar">Prikaži dva oblačića</string>
+    <string name="bubble_searchbar">Prikaži dva mjehurića</string>
     <string name="pref_search_bar_radius">Zakrivljenost kuta</string>
     <!-- Section 8 -->
     <string name="pref_integrations">Dodaci</string>
@@ -242,7 +242,7 @@
     <string name="sesame">Sesame</string>
     <string name="sesame_data_integration">Dijeljenje podataka</string>
     <string name="sesame_upsell">Dodirnite za instalaciju Sesame.</string>
-    <string name="pref_sesame_show_shortcuts">Prikaži u oblačiću prečaca</string>
+    <string name="pref_sesame_show_shortcuts">Prikaži u mjehuriću prečaca</string>
     <string name="sesame_search_engine">Upotrijebi kao tražilicu</string>
     <string name="pref_sesame_sync_look_and_feel">Podijeli postavke stilova</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Primjeni postavke trake za pretragu na Sesame traku.</string>
@@ -251,14 +251,14 @@
     <string name="feed_theme_pref_title">Boja pozadine</string>
     <!-- Section 9 -->
     <string name="gestures_pref_title">Geste</string>
-    <string name="gestures_pref_summary">Dupli dodir, povuci gore sa doka</string>
+    <string name="gestures_pref_summary">Dupli dodir, povuci gore sa docka</string>
     <string name="gesture_double_tap">Dupli dodir</string>
     <string name="gesture_long_press">Dodirni i zadrži</string>
     <string name="gesture_press_home">Dodir tipke Home</string>
     <string name="gesture_press_back">Dodir tipke Natrag</string>
     <string name="gesture_swipe_down">Povuci dolje</string>
     <string name="gesture_swipe_up">Povuci gore</string>
-    <string name="gesture_dock_swipe_up">Povuci gore sa doka</string>
+    <string name="gesture_dock_swipe_up">Povuci gore sa docka</string>
     <string name="action_none">Ne čini ništa</string>
     <string name="action_sleep">Spavaj</string>
     <string name="action_sleep_timeout">Spavaj koristeći vrijeme neaktivnosti</string>
@@ -359,7 +359,7 @@
     <string name="read_external_storage_required">Kako bi spremili pričuvnu kopiju, dopustite dozvolu za pohranu.</string>
     <string name="launcher_theme_override_label">Prisilni tamni prikaz</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
-    <string name="dock_style_pref_title">Stil doka</string>
+    <string name="dock_style_pref_title">Stil docka</string>
     <string name="dock_style_p">Android Pie</string>
     <string name="dock_style_n">Android Nougat</string>
     <string name="dock_style_hidden">Skriven</string>
@@ -394,7 +394,7 @@
     <string name="action_open_drawer">Otvori ladicu s aplikacijama</string>
     <string name="action_last_task">Pokreni zadnje korištenu aplikaciju</string>
     <string name="action_open_widgets">Otvori izbornik widgeta</string>
-    <string name="action_open_overview">Prikaži oblačić radne površine</string>
+    <string name="action_open_overview">Prikaži mjehurić radne površine</string>
     <string name="action_global_search">Pokreni globalnu pretragu</string>
     <string name="action_app_search">Pokreni pretragu aplikacija</string>
     <string name="action_close_notifications">Zatvori obavijesti</string>
@@ -415,7 +415,7 @@
     <string name="backup_generate_report">Stvori izvješće o pogrešci</string>
     <string name="reset">Resetiraj</string>
     <string name="theme_automatic">Automatska</string>
-    <string name="theme_default">Zadana</string>
+    <string name="theme_default">Zadano</string>
     <string name="transparent">Prozirna</string>
     <string name="pref_open_source_licenses_title">Licence</string>
     <string name="icon_pack_applied_toast">“%s” primjenjeno.</string>
@@ -425,7 +425,7 @@
     <string name="automatic_short">Auto</string>
     <string name="recent_task_option_force_stop">Prisilno zaustavi</string>
     <string name="drag_to_enable_packs">Povuci prema gore za omogućavanje</string>
-    <string name="drag_to_disable_packs">Povuci prema dolje za onemogućavanje</string>
+    <string name="drag_to_disable_packs">Premjesti ispod za onemogućavanje</string>
     <string name="get_more_icon_packs">Nabavi više</string>
     <string name="enabled_icon_packs">Primjenjeno</string>
     <string name="lawnchair_actions">Radnje</string>
@@ -433,8 +433,8 @@
     <string name="bridge_missing_message">Za korištenje Google Feed-a, dobavi Lawnfeed.</string>
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <string name="title_app_suggestions">Aplikacije</string>
-    <string name="theme_dark">Tamna</string>
-    <string name="theme_dark_theme_mode">Tamni prikaz</string>
+    <string name="theme_dark">Tamni</string>
+    <string name="theme_dark_theme_mode">Tamna tema</string>
     <string name="theme_dark_dark_text">Tamna s tamnim tekstom</string>
     <string name="theme_black">Crna</string>
     <string name="theme_black_dark_text">Crna s tamnim tekstom</string>
@@ -493,7 +493,7 @@
     <string name="pref_fonts_add_fonts_summary">OTF i TTF su podržani.</string>
     <string name="pref_fonts_missing_font">Font nije pronađen.</string>
     <string name="pref_show_dev_options">Prikaži u postavkama</string>
-    <string name="dock_scale">Veličina doka</string>
+    <string name="dock_scale">Veličina docka</string>
     <string name="default_folder_name">Nova mapa</string>
     <string name="drawer_folders">Mape</string>
     <string name="open_image_picker">Otvori slike</string>

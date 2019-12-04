@@ -438,6 +438,7 @@
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <string name="title_app_suggestions">Aplikasi</string>
     <string name="theme_dark">Gelap</string>
+    <string name="theme_dark_theme_mode">Tema gelap</string>
     <string name="theme_dark_dark_text">Gelap dengan Tulisan Gelap</string>
     <string name="theme_black">Hitam</string>
     <string name="theme_black_dark_text">Hitam dengan Tulisan Gelap</string>

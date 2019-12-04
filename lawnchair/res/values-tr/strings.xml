@@ -18,9 +18,9 @@
     <!-- Section 2 -->
     <string name="theme_title">Tema</string>
     <string name="pixel_ui_pref_summary">Simgeler, Renkler, Bulanıklık</string>
-    <string name="pref_icon_packs">Simge paketleri</string>
+    <string name="pref_icon_packs">Simge Paketleri</string>
     <string name="icon_pack_default">Sistem simgeleri</string>
-    <string name="pref_icon_pack_masking">Simge maskesi</string>
+    <string name="pref_icon_pack_masking">Simge Maskesi</string>
     <string name="pref_icon_pack_masking_summary">Eşleşmemiş simgeleri Simge Paketi ile eşleştir.</string>
     <string name="pref_legacy_treatment_title">Uyarlanabilir Simgeler Oluştur</string>
     <string name="pref_legacy_treatment_summary">Tüm kısayollar için Uyarlanabilir Simgeler oluştur.</string>
@@ -35,7 +35,7 @@
     <string name="appearance">Görünüm</string>
     <!-- Note: new. Replaces title of 5th field (from bottom) in “Theme” page. -->
     <string name="theme_auto">Otomatik (Duvar Kağıdına Göre)</string>
-    <string name="theme_auto_night_mode">Sisteme göre ayarla</string>
+    <string name="theme_auto_night_mode">Sisteme Göre Ayarla</string>
     <string name="theme_dark_theme_mode_follow_daylight">Zamanlanmış (Geceleri Karanlık)</string>
     <string name="theme_light">Aydınlık</string>
     <string name="theme_dark_text">Açık w/ Koyu Metin</string>
@@ -44,10 +44,10 @@
     <string name="theme_use_dark_text">Koyu Metin Kullan</string>
     <string name="lawnchair_accent">Vurgu Rengi</string>
     <string name="color_pixel_accent">Google Mavisi</string>
-    <string name="color_system_accent">Sisteme göre ayarla</string>
-    <string name="color_wallpaper_main">Duvar kağıdı - Birincil</string>
-    <string name="color_wallpaper_secondary">Duvar kağıdı - İkincil</string>
-    <string name="color_wallpaper_tertiary">Duvar kağıdı - Üçüncül</string>
+    <string name="color_system_accent">Sisteme Göre Ayarla</string>
+    <string name="color_wallpaper_main">Duvar Kağıdı - Birincil</string>
+    <string name="color_wallpaper_secondary">Duvar Kağıdı - İkincil</string>
+    <string name="color_wallpaper_tertiary">Duvar Kağıdı - Üçüncül</string>
     <string name="pref_fonts_title">Yazı tipi</string>
     <string name="blur_pref_title">Bulanıklık</string>
     <string name="blur_pref_summary">Sayfa arka planını bulanıklaştır.</string>
@@ -63,7 +63,7 @@
     <string name="lock_desktop">Masaüstünü Kilitle</string>
     <string name="pref_category_icons">Kısayollar</string>
     <string name="hide_icon_labels_pref_title">Etiketleri Gizle</string>
-    <string name="pref_mutliline_labels">Çoklu Satır Etiketler</string>
+    <string name="pref_mutliline_labels">Çok Satırlı Etiketler</string>
     <string name="icon_text_scale_pref_title">Metin Boyutu</string>
     <string name="text_color">Metin Rengi</string>
     <string name="icon_scale_pref_title">Simge Boyutu</string>
@@ -98,7 +98,7 @@
     <string name="pref_hide_statusbar_clock">Durum Çubuğu Saatini Gizle</string>
     <string name="root_access_required">Kök erişimi gerekli.</string>
     <string name="smartspace_time_24_h">24 Saat Formatını Kullan</string>
-    <string name="title_use_pill_qsb">Hap Arama Kısayolunu Göster</string>
+    <string name="title_use_pill_qsb">Arama Kısayol Kutucuğunu Göster</string>
     <string name="pref_category_weather">Diğer</string>
     <string name="pref_smartspace_widget_provider">Hava Durumu Kaynağı</string>
     <string name="google_app">Google Uygulaması</string>
@@ -118,7 +118,7 @@
     <string name="battery_status">Pil Durumu</string>
     <string name="event_provider_now_playing">Şuan Çalıyor</string>
     <string name="event_provider_unread_notifications">Bildirimler</string>
-    <string name="personality_provider">Merhabalar</string>
+    <string name="personality_provider">Merhaba</string>
     <string name="pref_smartspace_event_provider">Etkinlik Kaynağı</string>
     <string-array name="greetings_morning">
         <item>Günaydın!</item>
@@ -153,7 +153,7 @@
     <string name="two_row_dock">İkinci Sırayı Göster</string>
     <string name="pref_category_searchbar">Arama Çubuğu</string>
     <string name="dock_search_bar">Arama Çubuğunu Göster</string>
-    <string name="dock_colored_google">Simgeleri Renklidir</string>
+    <string name="dock_colored_google">Simgeleri Renklendir</string>
     <!-- Section 6 -->
     <string name="app_drawer_pref_title">Çekmece</string>
     <string name="app_drawer_pref_summary">Düzen, Kategoriler, Öneriler</string>
@@ -168,7 +168,7 @@
     <string name="pref_appcategorization_folders_summary">Klasörleri açmak için dokunun.</string>
     <string name="pref_appcategorization_tabs_title">Sekmeler</string>
     <string name="pref_appcategorization_tabs_summary">Kategoriler arasında kaydırın.</string>
-    <string name="pref_app_groups_edit_tip">Düzenlemek için dokunun, yeniden düzenlemek için sürükleyin.</string>
+    <string name="pref_app_groups_edit_tip">Düzenlemek için dokunun, yerini değiştirmek için sürükleyin.</string>
     <plurals name="hidden_apps_count">
         <item quantity="one">%1$d Gizli</item>
         <item quantity="other">%1$d Gizli</item>
@@ -246,7 +246,7 @@
     <string name="sesame">Sesame</string>
     <string name="sesame_data_integration">Veri Paylaşımı</string>
     <string name="sesame_upsell">Sesame\'ı yüklemek için dokunun.</string>
-    <string name="pref_sesame_show_shortcuts">Kısayol baloncuklarında Göster</string>
+    <string name="pref_sesame_show_shortcuts">Kısayol Baloncuklarında Göster</string>
     <string name="sesame_search_engine">Arama Motoru Olarak Kullan</string>
     <string name="pref_sesame_sync_look_and_feel">Stil Ayarlarını Paylaş</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Arama Çubuğu ayarlarını Sesame Çubuğuna Uygula.</string>
@@ -263,7 +263,7 @@
     <string name="gesture_swipe_down">Aşağı Kaydır</string>
     <string name="gesture_swipe_up">Yukarı Kaydır</string>
     <string name="gesture_dock_swipe_up">Alt Panelden yukarı kaydır</string>
-    <string name="action_none">Hiçbir şey Yapma</string>
+    <string name="action_none">Hiçbir Şey Yapma</string>
     <string name="action_sleep">Uyku</string>
     <string name="action_sleep_timeout">Ekran Zaman Aşımını Kullanarak Uyku</string>
     <string name="action_open_settings">Lawnchair Ayarlarını Aç</string>
@@ -432,16 +432,16 @@
     <string name="automatic_short">Oto</string>
     <string name="recent_task_option_force_stop">Kapatmaya Zorla</string>
     <string name="drag_to_enable_packs">Etkinleştirmek için Yukarı Kaydır</string>
-    <string name="drag_to_disable_packs">Devre Dışı Bırakmak için Aşağı Kaydır</string>
+    <string name="drag_to_disable_packs">Devre Dışı Bırakmak için Aşağı Kaydırın</string>
     <string name="get_more_icon_packs">Daha Fazla Al</string>
-    <string name="enabled_icon_packs">Uygulandı</string>
+    <string name="enabled_icon_packs">Uygulanan</string>
     <string name="lawnchair_actions">Eylemler</string>
     <string name="bridge_missing_title">Lawnfeed Yükle</string>
     <string name="bridge_missing_message">Google Haber Akışını kullanmak için, Lawnfeed edinin.</string>
     <string name="smartspace_provider_bridge">Rootless pixel bridge</string>
     <string name="title_app_suggestions">Uygulamalar</string>
     <string name="theme_dark">Karanlık</string>
-    <string name="theme_dark_theme_mode">Karanlık Görünüm</string>
+    <string name="theme_dark_theme_mode">Karanlık tema</string>
     <string name="theme_dark_dark_text">Karanlık w/ Koyu Metin</string>
     <string name="theme_black">Siyah</string>
     <string name="theme_black_dark_text">Siyah w/ Koyu Metin</string>
@@ -558,6 +558,6 @@
     <string name="gesture_nav_swipe_up_center">Ortadan</string>
     <string name="gesture_nav_swipe_up_right">Sağ Taraftan</string>
     <string name="action_switch_apps">Uygulamaları Değiştir</string>
-    <string name="icon_shape_system_default">Sisteme göre ayarla</string>
+    <string name="icon_shape_system_default">Sisteme Göre Ayarla</string>
     <string name="title_missing_notification_access">Bildirim erişimi gerekli.</string>
 </resources>

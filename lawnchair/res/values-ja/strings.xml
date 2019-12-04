@@ -14,35 +14,79 @@
     <string name="theme_dark_theme_mode_off">無効になっています</string>
     <!-- Section 2 -->
     <string name="theme_title">テーマ</string>
+    <string name="pixel_ui_pref_summary">アイコン、色彩または暈し</string>
     <string name="pref_icon_packs">アイコンパック</string>
     <string name="icon_pack_default">システムアイコン</string>
     <string name="pref_icon_pack_masking">アイコンを覆う</string>
     <string name="pref_legacy_treatment_title">アダプティブアイコンを生成</string>
+    <string name="pref_legacy_treatment_summary">すべてのショートカットのためにアダプティブアイコンを造る。</string>
     <string name="pref_legacy_colored_backgrounds">背景の色</string>
+    <string name="pref_white_only_treatment">白の背景を置き換える</string>
+    <string name="pref_white_only_treatment_summary">全てのアダプティブアイコンの背景に色を付ける</string>
     <string name="icon_shape_override_label">アイコンの形状</string>
+    <string name="reset_custom_icons">カスタムしたアイコンを取り除く</string>
     <string name="appearance">外観</string>
     <!-- Note: new. Replaces title of 5th field (from bottom) in “Theme” page. -->
+    <string name="theme_auto_night_mode">システムに設定された</string>
+    <string name="theme_dark_theme_mode_follow_daylight">自動設定(夜間はダークモードに変える)</string>
     <string name="theme_light">ライト</string>
+    <string name="theme_with_dark_text">暗い文字</string>
+    <string name="theme_use_black">漆黒を使用</string>
+    <string name="theme_use_dark_text">暗い文字を使用</string>
+    <string name="lawnchair_accent">アクセントカラー</string>
+    <string name="color_pixel_accent">Google Blue</string>
+    <string name="color_system_accent">システム設定を使用</string>
+    <string name="color_wallpaper_main">壁紙 - 1番</string>
+    <string name="color_wallpaper_secondary">壁紙 - 2番</string>
+    <string name="color_wallpaper_tertiary">壁紙 - 3番</string>
     <string name="pref_fonts_title">フォント</string>
     <string name="blur_pref_title">ぼかしを有効にする</string>
+    <string name="blur_pref_summary">ページ背景のぼかし</string>
+    <string name="blur_radius_pref_title">ぼかしの強さ</string>
     <!-- Section 3 -->
     <string name="general_pref_title">デスクトップ</string>
+    <string name="general_pref_summary">レイアウト、デスクトップのロック、遷移アニメーション</string>
+    <string name="grid_size">アイコングリッド</string>
     <string name="grid_size_width">横幅</string>
     <string name="grid_size_height">高さ</string>
+    <string name="overlap_placement">重複を許す</string>
+    <string name="lock_desktop">デスクトップをロック</string>
     <string name="pref_category_icons">ショートカット</string>
+    <string name="hide_icon_labels_pref_title">ラベルを隠す</string>
+    <string name="icon_scale_pref_title">アイコンサイズ</string>
     <string name="pref_category_misc">その他</string>
     <string name="animation_type_default">既定</string>
+    <string name="animation_type_pie">Android Pie</string>
+    <string name="animation_type_pie_like">Android Pie (エミュレーション)</string>
     <string name="animation_type_reveal">リベール</string>
     <string name="animation_type_slide_up">上スライド</string>
     <string name="animation_type_scale_up">拡大</string>
     <string name="animation_type_blink">点滅</string>
     <string name="animation_type_fade">フェード</string>
+    <string name="icon_badging_title">通知ドット</string>
+    <string name="pref_notification_count_title">通知の数を表示</string>
+    <string name="allow_rotation_title">回転を有効</string>
+    <string name="pref_center_wallpaper_summary">壁紙のスクロールを無効にします。</string>
+    <string name="pref_hide_statusbar">ステータスバーを隠す</string>
+    <string name="full_width_width_widgets_pref_title">全画面ウィジェット</string>
+    <string name="full_width_widgets_pref_summary">ウィジェットを画面の端まで広げます。</string>
+    <string name="show_top_shadow_pref_title">上部にシャドウを表示する</string>
     <!-- Section 4 -->
     <string name="smartspace_preferences_in_settings">At A Glance</string>
     <!-- Note: replaces hard-coded copy (“Home widget”). -->
+    <string name="smartspace_time">時間を表示</string>
+    <string name="smartspace_date">日付を表示</string>
+    <string name="pref_smartspace_time_above">大きな時計を表示</string>
+    <string name="pref_hide_statusbar_clock">ステータスバーの時計を非表示</string>
+    <string name="root_access_required">ルートアクセスが必要です。</string>
+    <string name="smartspace_time_24_h">24時間形式を使用</string>
     <string name="pref_category_weather">その他</string>
+    <string name="pref_smartspace_widget_provider">天気の提供元</string>
+    <string name="google_app">Googleアプリ</string>
     <string name="weather_provider_disabled">無効</string>
     <string name="weather_provider_owm">OpenWeatherMap</string>
+    <string name="weather_provider_pe">Pixel Experience</string>
+    <string name="pref_weather_units">温度単位</string>
     <string name="units_metric">摂氏</string>
     <string name="units_imperial">華氏</string>
     <string name="units_kelvin">ケルビン</string>
@@ -51,6 +95,7 @@
     <string name="units_delisle">ドリール度</string>
     <string name="units_reaumur">レオミュール度</string>
     <string name="units_romer">レーマー度</string>
+    <string name="pref_smartspace_event_providers">データソース</string>
     <string name="event_provider_unread_notifications">通知</string>
     <string-array name="greetings_morning">
         <item>おはようございます</item>
@@ -181,6 +226,7 @@
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <string name="title_app_suggestions">アプリ</string>
     <string name="theme_dark">ダーク</string>
+    <string name="theme_dark_theme_mode">ダークテーマ</string>
     <string name="theme_black">黒</string>
     <string name="pref_qsb_color">色</string>
     <string name="app_actions_pref_title_in_search">アクション</string>

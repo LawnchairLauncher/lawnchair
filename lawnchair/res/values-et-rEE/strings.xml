@@ -435,6 +435,7 @@
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <string name="title_app_suggestions">Rakendused</string>
     <string name="theme_dark">Tume</string>
+    <string name="theme_dark_theme_mode">Tume teema</string>
     <string name="theme_dark_dark_text">Tume tumeda tekstiga</string>
     <string name="theme_black">Must</string>
     <string name="theme_black_dark_text">Tume musta tekstiga</string>
@@ -466,6 +467,7 @@
     <string name="allow">Luba</string>
     <string name="deny">Keela</string>
     <string name="sesame_enable_integration_title">Andmete jagamine</string>
+    <string name="sesame_enable_integration_description"><![CDATA[Kas lubada kasutusandmete jagamine Sesame'ga? Saate seda hiljem muuta.]]></string>
     <string name="sesame_shortcut_disabled">Sesame on keelatud.</string>
     <string name="font_variant_italic">Kaldkiri</string>
     <string name="font_weight_thin">Õhuline</string>
@@ -549,4 +551,6 @@
     <string name="gesture_nav_swipe_up_center">Libista keskelt</string>
     <string name="gesture_nav_swipe_up_right">Libista paremalt</string>
     <string name="action_switch_apps">Lülitu teisele rakendusele</string>
+    <string name="icon_shape_system_default">Määratud süsteemi poolt</string>
+    <string name="title_missing_notification_access">Vaja on juurdepääsu teatisele.</string>
 </resources>

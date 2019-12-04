@@ -280,6 +280,7 @@
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <string name="title_app_suggestions">Alkalmazások</string>
     <string name="theme_dark">Sötét</string>
+    <string name="theme_dark_theme_mode">Sötét téma</string>
     <string name="theme_black">Fekete</string>
     <string name="theme_dark_theme_mode_follow_wallpaper">@string/theme_auto</string>
     <string name="theme_dark_theme_mode_follow_system">@string/theme_auto_night_mode</string>
@@ -296,6 +297,7 @@
     <string name="shortcut_sesame">Parancsikonok</string>
     <string name="allow">Engedélyezés</string>
     <string name="deny">Elutasítás</string>
+    <string name="sesame_enable_integration_description"><![CDATA[Engedélyezi az adatmegosztás használatát a Sesame-mal? Később módosítani tudja.]]></string>
     <string name="font_variant_italic">Dőlt</string>
     <string name="font_weight_thin">Keskeny</string>
     <string name="font_weight_light">Vékony</string>
@@ -316,6 +318,6 @@
     <string name="icon_shape_corner_cut">Kivágás</string>
     <!-- Section 13 -->
     <string name="quickstep_pref_title">Legutóbbiak</string>
-    <string name="icon_shape_system_default">Rendszerbeállítás</string>
+    <string name="icon_shape_system_default">A Rendszer által beállítva</string>
     <string name="title_missing_notification_access">Értesítési hozzáférésre van szükség.</string>
 </resources>
