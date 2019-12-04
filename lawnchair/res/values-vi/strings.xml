@@ -54,24 +54,58 @@
     <string name="blur_radius_pref_title">Mức độ làm mờ</string>
     <!-- Section 3 -->
     <string name="general_pref_title">Màn hình chính</string>
+    <string name="general_pref_summary">Giao diện, Khóa m.hình chính, Hiệu ứng</string>
+    <string name="grid_size">Biểu tượng lưới</string>
     <string name="grid_size_width">Số cột</string>
     <string name="grid_size_height">Số hàng</string>
+    <string name="num_hotseat_icons_pref_title">Số biểu tượng</string>
+    <string name="overlap_placement">Cho phép chồng lên nhau</string>
+    <string name="lock_desktop">Khóa màn hình chính</string>
     <string name="pref_category_icons">Lối tắt</string>
+    <string name="hide_icon_labels_pref_title">Ẩn tên</string>
+    <string name="pref_mutliline_labels">Tên ứng dụng nhiều dòng</string>
+    <string name="icon_text_scale_pref_title">Cỡ chữ</string>
+    <string name="text_color">Màu chữ</string>
+    <string name="icon_scale_pref_title">Kích cỡ biểu tượng</string>
+    <string name="auto_add_shortcuts_label">Thêm phím tắt mới vào màn hình</string>
+    <string name="pref_icon_popup_menu">Phím tắt bong bóng</string>
     <string name="pref_category_misc">Khác</string>
+    <string name="animation_type_title">Chuyển đổi ứng dụng</string>
     <string name="animation_type_default">Mặc định</string>
+    <string name="animation_type_pie">Android Pie</string>
+    <string name="animation_type_pie_like">Android Pie (Emulated)</string>
     <string name="animation_type_reveal">Tiết lộ</string>
     <string name="animation_type_slide_up">Trượt lên</string>
     <string name="animation_type_scale_up">Phóng to</string>
     <string name="animation_type_blink">Nhấp nháy</string>
     <string name="animation_type_fade">Mờ dần</string>
     <string name="icon_badging_title">Dấu chấm thông báo</string>
+    <string name="pref_notification_count_title">Hiện số lượng thông báo</string>
     <string name="allow_rotation_title">Cho phép xoay</string>
+    <string name="pref_center_wallpaper">Luôn để hình nền ở trung tâm</string>
+    <string name="pref_center_wallpaper_summary">Vô hiệu hóa cuộn màn hình.</string>
+    <string name="pref_hide_statusbar">Ẩn Thanh Trạng Thái</string>
+    <string name="full_width_width_widgets_pref_title">Widget rộng</string>
+    <string name="full_width_widgets_pref_summary">Cho phép widget mở rộng đến viền màn hình.</string>
+    <string name="show_top_shadow_pref_title">Đổ bóng phía trên</string>
     <!-- Section 4 -->
     <string name="smartspace_preferences_in_settings">Nhìn thoáng qua</string>
     <!-- Note: replaces hard-coded copy (“Home widget”). -->
+    <string name="smartspace_preferences_in_settings_desc">Date &amp; Time, Data Sources</string>
+    <string name="smartspace_time">Hiển thị đồng hồ</string>
+    <string name="smartspace_date">Hiển thị ngày</string>
+    <string name="pref_smartspace_time_above">Hiển thị đồng hồ lớn</string>
+    <string name="pref_hide_statusbar_clock">Ẩn đồng hồ thanh trạng thái</string>
+    <string name="root_access_required">Yêu cầu quyền root.</string>
+    <string name="smartspace_time_24_h">Sử dụng định dạng 24 giờ</string>
+    <string name="title_use_pill_qsb">Sử dụng thành tìm kiếm hình con nhộng</string>
     <string name="pref_category_weather">Khác</string>
+    <string name="pref_smartspace_widget_provider">Nguồn dữ liệu thời tiết</string>
+    <string name="google_app">Ứng dụng Google</string>
     <string name="weather_provider_disabled">Vô hiệu hóa</string>
     <string name="weather_provider_owm">OpenWeatherMap</string>
+    <string name="weather_provider_pe">Pixel Experience</string>
+    <string name="pref_weather_units">Đơn vị Nhiệt độ</string>
     <string name="units_metric">Độ C</string>
     <string name="units_imperial">Độ F</string>
     <string name="units_kelvin">Độ K</string>
@@ -80,26 +114,37 @@
     <string name="units_delisle">Delisle</string>
     <string name="units_reaumur">Réaumur</string>
     <string name="units_romer">Rømer</string>
+    <string name="pref_smartspace_event_providers">Dữ liệu nguồn</string>
+    <string name="battery_status">Tình trạng pin</string>
+    <string name="event_provider_now_playing">Hiện đang phát</string>
     <string name="event_provider_unread_notifications">Thông báo</string>
+    <string name="personality_provider">Xin chúc mừng</string>
+    <string name="pref_smartspace_event_provider">Nguồn cấp Sự kiện</string>
     <string-array name="greetings_morning">
         <item>Chào buổi sáng!</item>
         <item>Chúc bạn một ngày tốt lành!</item>
-        <item>It’s a beautiful day outside!</item>
+        <item>Chúc bạn một ngày tốt lành!</item>
     </string-array>
     <string-array name="greetings_evening">
-        <item>What’s up?</item>
-        <item>Good evening!</item>
-        <item>How did your day go?</item>
+        <item>Chuyện gì thế?</item>
+        <item>Chào buổi tối!</item>
+        <item>Ngày hôm nay của bạn thế nào?</item>
         <item>Chúc ngủ ngon!</item>
     </string-array>
     <string-array name="greetings_night">
         <item>Ngủ ngon nhé!</item>
         <item>Hẹn gặp bạn vào ngày mai!</item>
         <item>Chúc bạn ngủ ngon!</item>
-        <item>Don’t stay up too late!</item>
+        <item>Đừng thức quá khuya nhé!</item>
     </string-array>
+    <string name="battery_charging">Đang sạc</string>
+    <string name="battery_full">Đã sạc đầy</string>
+    <string name="battery_low">Pin yếu</string>
     <!-- Section 5 -->
     <string name="dock_pref_title">Thanh dock</string>
+    <string name="dock_pref_summary">Bố cục, kiểu dáng, chỉ số</string>
+    <string name="dock_fill">Nền</string>
+    <string name="background_color">Màu nền</string>
     <!-- Section 6 -->
     <string name="app_drawer_pref_title">Ngăn chứa ứng dụng</string>
     <string name="pref_category_theme">Giao diện</string>
@@ -123,6 +168,7 @@
     <string name="search">Tìm kiếm</string>
     <string name="search_provider_google_go">Google Go</string>
     <string name="web_search_google">Google</string>
+    <string name="web_search_baidu">Baidu (trong trình duyệt)</string>
     <string name="search_provider_yandex">Yandex</string>
     <string name="search_provider_ddg">DuckDuckGo</string>
     <string name="search_provider_bing">Bing</string>
@@ -136,14 +182,49 @@
     <string name="search_provider_edge">Cạnh</string>
     <string name="weather_provider_oneplus_weather">Thời tiết OnePlus</string>
     <string name="searchbar_appearance_title">Giao diện</string>
+    <string name="pref_show_assistant_title">Hiển thị nút tìm kiếm bằng giọng nói</string>
+    <string name="action_assistant">Mở trợ lý</string>
+    <string name="pref_show_as_assistant_summary">Trợ lý mở thay vì Tìm kiếm bằng giọng nói.</string>
+    <string name="bubble_searchbar">Thanh tìm kiếm bong bóng kép</string>
+    <string name="pref_search_bar_radius">Bo góc thanh tìm kiếm</string>
     <!-- Section 8 -->
+    <string name="pref_integrations">Tích hợp</string>
+    <string name="pref_integrations_summary">Phím tắt Sesame, Google Feed</string>
     <string name="sesame">Sesame</string>
+    <string name="sesame_data_integration">Chia sẻ dữ liệu</string>
+    <string name="sesame_upsell">Nhấn để cài đặt Sesame.</string>
+    <string name="pref_sesame_show_shortcuts">Hiển thị phím tắt trong bong bóng biểu tượng</string>
+    <string name="sesame_search_engine">Sử dụng làm Công cụ tìm kiếm</string>
+    <string name="pref_sesame_sync_look_and_feel">Chia sẻ cài đặt</string>
+    <string name="pref_sesame_sync_look_and_feel_summary">Áp dụng cài đặt Thanh tìm kiếm cho Sesame Bar.</string>
+    <string name="sesame_version">Phiên bản tích hợp</string>
+    <string name="title_show_google_app">Hiển thị %1$s Feed</string>
+    <string name="feed_theme_pref_title">Màu nền</string>
     <!-- Section 9 -->
     <string name="gestures_pref_title">Cử chỉ</string>
+    <string name="gestures_pref_summary">Nhấn đúp, vuốt lên trên thanh Dock</string>
+    <string name="gesture_double_tap">Nhấn đúp</string>
+    <string name="gesture_long_press">Chạm &amp; giữ</string>
+    <string name="gesture_press_home">Nút Home</string>
+    <string name="gesture_press_back">Phím Back</string>
+    <string name="gesture_swipe_down">Vuốt xuống</string>
+    <string name="gesture_swipe_up">Vuốt lên</string>
+    <string name="gesture_dock_swipe_up">Vuốt lên trên thanh dock</string>
+    <string name="action_none">Không làm gì</string>
     <string name="action_sleep">Ngủ</string>
+    <string name="action_sleep_timeout">Ngủ bằng thời gian chờ màn hình</string>
+    <string name="action_open_settings">Cài đặt Lawnchair</string>
+    <string name="action_open_notifications">Mở bảng thông báo</string>
+    <string name="action_overlay">Mở nguồn cấp dữ liệu Google</string>
+    <string name="action_despacito">Phát YouTube Rewind 2018 (bị bóp méo)</string>
+    <string name="action_open_app">Mở ứng dụng</string>
     <!-- Section 10 -->
+    <string name="backups">Sao lưu &amp; Khôi phục</string>
+    <string name="backup_pref_summary">Lưu giao diện, phục hồi bản sao lưu</string>
     <string name="new_backup">Tạo mới</string>
     <string name="restore_backup">Khôi phục</string>
+    <string name="local_backups">Bộ nhớ</string>
+    <string name="restore_contents">Khôi phục dữ liệu</string>
     <string name="backup_settings">Cài đặt</string>
     <string name="backup_wallpaper">Hình nền</string>
     <string name="name">Tên</string>
