@@ -101,7 +101,7 @@
     <string name="title_use_pill_qsb">Zobrazit pilulkového zástupce pro vyhledávání</string>
     <string name="pref_category_weather">Ostatní</string>
     <string name="pref_smartspace_widget_provider">Poskytovatel informací o\u00a0počasí</string>
-    <string name="google_app">Aplikace Google</string>
+    <string name="google_app">Google</string>
     <string name="weather_provider_disabled">Vypnuto</string>
     <string name="weather_provider_owm">OpenWeatherMap</string>
     <string name="weather_provider_pe">Pixel Experience</string>
@@ -559,4 +559,7 @@
     <string name="action_switch_apps">Přepnout aplikace</string>
     <string name="icon_shape_system_default">Nastavený systémem</string>
     <string name="title_missing_notification_access">Je potřeba udělit přístup k\u00a0oznámením.</string>
+    <string name="activity_not_found">Aplikace není nainstalována.</string>
+    <string name="out_of_space">Na ploše už nezbývá místo.</string>
+    <string name="hotseat_out_of_space">V doku už nezbývá místo.</string>
 </resources>
