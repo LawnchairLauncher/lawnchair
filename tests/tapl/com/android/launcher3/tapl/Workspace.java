@@ -39,7 +39,6 @@ import com.android.launcher3.testing.TestProtocol;
  * Operations on the workspace screen.
  */
 public final class Workspace extends Home {
-    private static final int DRAG_DURATION = 500;
     private static final int FLING_STEPS = 10;
     private final UiObject2 mHotseat;
 
@@ -170,8 +169,7 @@ public final class Workspace extends Home {
         LauncherInstrumentation.log("dragIconToWorkspace: sent down");
         launcher.waitForLauncherObject(longPressIndicator);
         LauncherInstrumentation.log("dragIconToWorkspace: indicator");
-        launcher.movePointer(
-                downTime, SystemClock.uptimeMillis(), DRAG_DURATION, launchableCenter, dest);
+        launcher.movePointer(launchableCenter, dest, 10, downTime, true);
         LauncherInstrumentation.log("dragIconToWorkspace: moved pointer");
         launcher.sendPointer(
                 downTime, SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, dest);

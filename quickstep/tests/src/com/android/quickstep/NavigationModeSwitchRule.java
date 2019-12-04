@@ -209,7 +209,6 @@ public class NavigationModeSwitchRule implements TestRule {
                     final String error = mLauncher.getNavigationModeMismatchError();
                     assertTrue("Switching nav mode: " + error, error == null);
 
-                    Thread.sleep(5000);
                     return true;
                 }
 

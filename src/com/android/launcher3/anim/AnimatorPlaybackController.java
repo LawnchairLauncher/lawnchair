@@ -26,14 +26,14 @@ import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.util.Log;
 
+import androidx.dynamicanimation.animation.DynamicAnimation;
+import androidx.dynamicanimation.animation.SpringAnimation;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import androidx.dynamicanimation.animation.DynamicAnimation;
-import androidx.dynamicanimation.animation.SpringAnimation;
 
 /**
  * Helper class to control the playback of an {@link AnimatorSet}, with custom interpolators
@@ -250,6 +250,17 @@ public abstract class AnimatorPlaybackController implements ValueAnimator.Animat
         }
     }
 
+    /**
+     * Sets mOnCancelRunnable = null before dispatching the cancel and restoring the runnable. This
+     * is intended to be used only if you need to cancel but want to defer cleaning up yourself.
+     */
+    public void dispatchOnCancelWithoutCancelRunnable() {
+        Runnable onCancel = mOnCancelRunnable;
+        setOnCancelRunnable(null);
+        dispatchOnCancel();
+        setOnCancelRunnable(onCancel);
+    }
+
     public void dispatchOnCancel() {
         dispatchOnCancelRecursively(mAnim);
     }
@@ -281,10 +292,6 @@ public abstract class AnimatorPlaybackController implements ValueAnimator.Animat
 
     public void setOnCancelRunnable(Runnable runnable) {
         mOnCancelRunnable = runnable;
-    }
-
-    public Runnable getOnCancelRunnable() {
-        return mOnCancelRunnable;
     }
 
     public void skipToEnd() {

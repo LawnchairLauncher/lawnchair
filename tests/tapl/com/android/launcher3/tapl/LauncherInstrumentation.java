@@ -560,10 +560,12 @@ public final class LauncherInstrumentation {
                 final int finalState = mDevice.hasObject(By.pkg(getLauncherPackageName()))
                         ? NORMAL_STATE_ORDINAL : BACKGROUND_APP_STATE_ORDINAL;
 
-                swipeToState(
-                        displaySize.x / 2, displaySize.y - 1,
-                        displaySize.x / 2, 0,
-                        ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME, finalState);
+                try (LauncherInstrumentation.Closable c = addContextLayer(action)) {
+                    swipeToState(
+                            displaySize.x / 2, displaySize.y - 1,
+                            displaySize.x / 2, 0,
+                            ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME, finalState);
+                }
             }
         } else {
             log(action = "clicking home button");
@@ -873,12 +875,17 @@ public final class LauncherInstrumentation {
         final Point start = new Point(startX, startY);
         final Point end = new Point(endX, endY);
         sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, start);
+        final long endTime = movePointer(start, end, steps, downTime, slowDown);
+        sendPointer(downTime, endTime, MotionEvent.ACTION_UP, end);
+    }
+
+    long movePointer(Point start, Point end, int steps, long downTime, boolean slowDown) {
         long endTime = movePointer(downTime, downTime, steps * GESTURE_STEP_MS, start, end);
         if (slowDown) {
             endTime = movePointer(downTime, endTime + GESTURE_STEP_MS, 5 * GESTURE_STEP_MS, end,
                     end);
         }
-        sendPointer(downTime, endTime, MotionEvent.ACTION_UP, end);
+        return endTime;
     }
 
     void waitForIdle() {

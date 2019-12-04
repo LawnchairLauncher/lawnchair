@@ -540,8 +540,11 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             }
 
             addView(view, indexToAdd);
-            ((LayoutParams) view.getLayoutParams()).gravity =
+            LayoutParams layoutParams = (LayoutParams) view.getLayoutParams();
+            layoutParams.gravity =
                     Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
+            layoutParams.bottomMargin =
+                    ((MarginLayoutParams) mSnapshotView.getLayoutParams()).bottomMargin;
             view.setAlpha(mFooterAlpha);
             mFooters[index] = new FooterWrapper(view);
             if (shouldAnimateEntry) {
@@ -618,10 +621,12 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     private static final class TaskOutlineProvider extends ViewOutlineProvider {
 
         private final int mMarginTop;
+        private final int mMarginBottom;
         private FullscreenDrawParams mFullscreenParams;
 
         TaskOutlineProvider(Resources res, FullscreenDrawParams fullscreenParams) {
             mMarginTop = res.getDimensionPixelSize(R.dimen.task_thumbnail_top_margin);
+            mMarginBottom = res.getDimensionPixelSize(R.dimen.task_thumbnail_bottom_margin);
             mFullscreenParams = fullscreenParams;
         }
 
@@ -636,7 +641,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             outline.setRoundRect(0,
                     (int) (mMarginTop * scale),
                     (int) ((insets.left + view.getWidth() + insets.right) * scale),
-                    (int) ((insets.top + view.getHeight() + insets.bottom) * scale),
+                    (int) ((insets.top + view.getHeight() + insets.bottom - mMarginBottom) * scale),
                     mFullscreenParams.mCurrentDrawnCornerRadius);
         }
     }

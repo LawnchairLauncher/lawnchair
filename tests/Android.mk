@@ -50,7 +50,8 @@ LOCAL_STATIC_JAVA_LIBRARIES := \
     androidx.test.runner \
     androidx.test.rules \
     androidx.test.uiautomator_uiautomator \
-    mockito-target-minus-junit4
+    mockito-target-minus-junit4 \
+    launcher-log-protos-lite
 
 ifneq (,$(wildcard frameworks/base))
     LOCAL_PRIVATE_PLATFORM_APIS := true

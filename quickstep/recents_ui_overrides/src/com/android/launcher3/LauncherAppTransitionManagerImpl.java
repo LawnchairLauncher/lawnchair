@@ -21,8 +21,15 @@ import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.HOTSEAT_ICONS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
+import static com.android.launcher3.LauncherStateManager.ANIM_ALL;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_ALL_APPS_FADE;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_HOTSEAT_SCALE;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_HOTSEAT_TRANSLATE;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_VERTICAL_PROGRESS;
 import static com.android.launcher3.anim.Interpolators.AGGRESSIVE_EASE;
+import static com.android.launcher3.anim.Interpolators.DEACCEL_3;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_2;
 import static com.android.quickstep.TaskViewUtils.findTaskViewToLaunch;
 import static com.android.quickstep.TaskViewUtils.getRecentsWindowAnimator;
 
@@ -40,6 +47,7 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.LauncherState.ScaleAndTranslation;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.anim.AnimatorPlaybackController;
+import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.SpringAnimationBuilder;
 import com.android.quickstep.util.AppWindowAnimationHelper;
@@ -56,6 +64,9 @@ public final class LauncherAppTransitionManagerImpl extends QuickstepAppTransiti
     public static final int INDEX_SHELF_ANIM = 0;
     public static final int INDEX_RECENTS_FADE_ANIM = 1;
     public static final int INDEX_RECENTS_TRANSLATE_X_ANIM = 2;
+    public static final int INDEX_PAUSE_TO_OVERVIEW_ANIM = 3;
+
+    public static final long ATOMIC_DURATION_FROM_PAUSED_TO_OVERVIEW = 300;
 
     public LauncherAppTransitionManagerImpl(Context context) {
         super(context);
@@ -145,7 +156,7 @@ public final class LauncherAppTransitionManagerImpl extends QuickstepAppTransiti
 
     @Override
     public int getStateElementAnimationsCount() {
-        return 3;
+        return 4;
     }
 
     @Override
@@ -191,6 +202,20 @@ public final class LauncherAppTransitionManagerImpl extends QuickstepAppTransiti
                         .setStiffness(250)
                         .setValues(values)
                         .build(mLauncher);
+            case INDEX_PAUSE_TO_OVERVIEW_ANIM: {
+                AnimatorSetBuilder builder = new AnimatorSetBuilder();
+                builder.setInterpolator(ANIM_VERTICAL_PROGRESS, OVERSHOOT_1_2);
+                builder.setInterpolator(ANIM_ALL_APPS_FADE, DEACCEL_3);
+                if ((OVERVIEW.getVisibleElements(mLauncher) & HOTSEAT_ICONS) != 0) {
+                    builder.setInterpolator(ANIM_HOTSEAT_SCALE, OVERSHOOT_1_2);
+                    builder.setInterpolator(ANIM_HOTSEAT_TRANSLATE, OVERSHOOT_1_2);
+                }
+                LauncherStateManager stateManager = mLauncher.getStateManager();
+                return stateManager.createAtomicAnimation(
+                        stateManager.getCurrentStableState(), OVERVIEW, builder,
+                        ANIM_ALL, ATOMIC_DURATION_FROM_PAUSED_TO_OVERVIEW);
+            }
+
             default:
                 return super.createStateElementAnimation(index, values);
         }

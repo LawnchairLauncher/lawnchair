@@ -123,10 +123,6 @@ public abstract class AbstractLauncherUiTest {
     protected final LauncherActivityRule mActivityMonitor = new LauncherActivityRule();
 
     @Rule
-    public ShellCommandRule mDefaultLauncherRule =
-            TestHelpers.isInLauncherProcess() ? ShellCommandRule.setDefaultLauncher() : null;
-
-    @Rule
     public ShellCommandRule mDisableHeadsUpNotification =
             ShellCommandRule.disableHeadsUpNotification();
 
@@ -154,9 +150,13 @@ public abstract class AbstractLauncherUiTest {
     }
 
     protected TestRule getRulesInsideActivityMonitor() {
-        return RuleChain.
-                outerRule(new PortraitLandscapeRunner(this)).
-                around(new FailureWatcher(mDevice));
+        final RuleChain inner = RuleChain.outerRule(new PortraitLandscapeRunner(this))
+                .around(new FailureWatcher(mDevice));
+
+        return TestHelpers.isInLauncherProcess()
+                ? RuleChain.outerRule(ShellCommandRule.setDefaultLauncher())
+                        .around(inner) :
+                inner;
     }
 
     @Rule

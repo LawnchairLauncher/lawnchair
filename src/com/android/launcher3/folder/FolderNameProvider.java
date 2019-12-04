@@ -29,6 +29,12 @@ import java.util.ArrayList;
 public class FolderNameProvider {
 
     /**
+     * IME usually has up to 3 suggest slots. Adding one as in Launcher, there are folder
+     * name edit box that we can also provide suggestion.
+     */
+    public static final int SUGGEST_MAX = 4;
+
+    /**
      * Returns suggested folder name.
      */
     public CharSequence getSuggestedFolderName(Context context,
