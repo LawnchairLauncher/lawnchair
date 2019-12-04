@@ -554,4 +554,7 @@
     <string name="action_switch_apps">Trocar de aplicações</string>
     <string name="icon_shape_system_default">Definida pelo sistema</string>
     <string name="title_missing_notification_access">Requer o acesso às notificações.</string>
+    <string name="activity_not_found">Aplicação não instalada.</string>
+    <string name="out_of_space">Já não há espaço no ecrã inicial.</string>
+    <string name="hotseat_out_of_space">Já não há espaço na doca.</string>
 </resources>
