@@ -210,7 +210,6 @@ public class DeepShortcutManager {
      */
     protected List<ShortcutInfo> query(int flags, String packageName,
             ComponentName activity, List<String> shortcutIds, UserHandle user) {
-        // TODO: add sesame support back
         ShortcutQuery q = new ShortcutQuery();
         q.setQueryFlags(flags);
         if (packageName != null) {

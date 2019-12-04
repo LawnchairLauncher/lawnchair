@@ -270,12 +270,8 @@ class StartAppGestureHandler(context: Context, config: JSONObject?) : GestureHan
                 }
             }
             "shortcut" -> {
-                if (id?.startsWith("sesame_") == true) {
-                    context.startActivity(SesameFrontend.addPackageAuth(context, intent!!), opts)
-                } else {
-                    DeepShortcutManager.getInstance(context)
-                            .startShortcut(packageName, id, null, opts, user)
-                }
+                DeepShortcutManager.getInstance(context)
+                        .startShortcut(packageName, id, null, opts, user)
             }
         }
     }

@@ -100,6 +100,7 @@ class LawnchairShortcutManager(private val context: Context) : DeepShortcutManag
                                     .setIntent(Intent("dummy").apply {
                                         putExtra(EXTRA_EXTERNAL_ID, it.id)
                                         putExtra(EXTRA_EXTERNAL_PACKAGE, it.packageName)
+                                        putExtra(Sesame.EXTRA_TAG, true)
                                     })
                                     .setShortLabel(it.plainLabel)
                                     .setLongLabel(it.plainLabel)

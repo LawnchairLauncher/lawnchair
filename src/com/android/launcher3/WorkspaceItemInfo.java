@@ -189,13 +189,6 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
             runtimeStatusFlags |= FLAG_DISABLED_BY_PUBLISHER;
         }
         disabledMessage = shortcutInfo.getDisabledMessage();
-
-        // Treat sesame shortcuts like normal shortcuts and not like deep shortcuts
-        /* TODO: fix sesame integration
-        if (shortcutInfo instanceof SesameShortcutInfo) {
-            itemType = Favorites.ITEM_TYPE_SHORTCUT;
-        }
-         */
     }
 
     /** Returns the WorkspaceItemInfo id associated with the deep shortcut. */
