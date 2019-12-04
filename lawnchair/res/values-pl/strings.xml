@@ -161,7 +161,7 @@
     <string name="pref_drawer_columns">Liczba Kolumn</string>
     <string name="pref_prediction_count">Liczba Sugestii</string>
     <string name="pref_drawer_padding">Wysokość Wiersza</string>
-    <string name="hide_apps">Skróty Ukrytych Aplikacji</string>
+    <string name="hide_apps">Ukryte Skróty Aplikacji</string>
     <string name="categorization">Kategorie</string>
     <string name="pref_appcategorization_enable_title">Kategoryzuj aplikacje</string>
     <string name="pref_appcategorization_folders_title">Foldery</string>
@@ -563,4 +563,7 @@
     <string name="action_switch_apps">Przełącz Aplikacje</string>
     <string name="icon_shape_system_default">Razem z systemem</string>
     <string name="title_missing_notification_access">Wymagany jest dostęp do powiadomień.</string>
+    <string name="activity_not_found">Aplikacja nie jest zainstalowana.</string>
+    <string name="out_of_space">Brak miejsca na pulpicie.</string>
+    <string name="hotseat_out_of_space">Brak miejsca w doku.</string>
 </resources>
