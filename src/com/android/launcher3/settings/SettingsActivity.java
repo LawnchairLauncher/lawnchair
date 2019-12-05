@@ -16,6 +16,8 @@
 
 package com.android.launcher3.settings;
 
+import static androidx.core.view.accessibility.AccessibilityNodeInfoCompat.ACTION_ACCESSIBILITY_FOCUS;
+
 import static com.android.launcher3.SessionCommitReceiver.ADD_ICON_PREFERENCE_KEY;
 import static com.android.launcher3.states.RotationHelper.ALLOW_ROTATION_PREFERENCE_KEY;
 import static com.android.launcher3.states.RotationHelper.getAllowRotationDefaultValue;
@@ -29,6 +31,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -248,6 +251,8 @@ public class SettingsActivity extends FragmentActivity
                 if (highlighter != null) {
                     getView().postDelayed(highlighter, DELAY_HIGHLIGHT_DURATION_MILLIS);
                     mPreferenceHighlighted = true;
+                } else {
+                    requestAccessibilityFocus(getListView());
                 }
             }
         }
@@ -266,6 +271,15 @@ public class SettingsActivity extends FragmentActivity
             PreferencePositionCallback callback = (PreferencePositionCallback) list.getAdapter();
             int position = callback.getPreferenceAdapterPosition(mHighLightKey);
             return position >= 0 ? new PreferenceHighlighter(list, position) : null;
+        }
+
+        private void requestAccessibilityFocus(@NonNull final RecyclerView rv) {
+            rv.post(() -> {
+                if (!rv.hasFocus() && rv.getChildCount() > 0) {
+                    rv.getChildAt(0)
+                            .performAccessibilityAction(ACTION_ACCESSIBILITY_FOCUS, null);
+                }
+            });
         }
 
         @Override
