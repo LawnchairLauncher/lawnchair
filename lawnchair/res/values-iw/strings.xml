@@ -3,10 +3,10 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Section 1 -->
     <string name="search_menu">חיפוש</string>
-    <string name="search_no_results">לא נמצאו תוצאות</string>
+    <string name="search_no_results">אין תוצאות</string>
     <string name="restart_lawnchair_pref_title">הפעל מחדש</string>
     <string name="developer_options_title">אפשריות מפתחים</string>
-    <string name="change_default_home">בחר ישומון בית</string>
+    <string name="change_default_home">הגדר כיישומון בית</string>
     <string name="action_apply">בוצע</string>
     <!-- Note: new. Replaces “OK” in dialogs. -->
     <string name="theme_dark_theme_mode_on">פעיל</string>
@@ -26,12 +26,12 @@
     <string name="pref_white_only_treatment_summary">צבע את הרקעים של כל הסמלים המסתגלים.</string>
     <string name="adaptify_pack_title">צור סמלים מסתגלים בשביל ערכת הסמלים הקיימת</string>
     <string name="icon_shape_override_label">צורת הסמל</string>
-    <string name="reset_custom_icons">אפס סמלים אישיים</string>
+    <string name="reset_custom_icons">הסר סמלים מותאמים אישית</string>
     <string name="reset_custom_icons_confirmation">אפס לסמלי ברירת המחדל של ערכת הסמלים הזאת? אי אפשר לשחזר את הפעולה הזאת.</string>
     <string name="appearance">מראה</string>
     <!-- Note: new. Replaces title of 5th field (from bottom) in “Theme” page. -->
     <string name="theme_auto">אוטומטי (בהתאם לרקע)</string>
-    <string name="theme_auto_night_mode">מוחל אוטומטית על ידי המערכת</string>
+    <string name="theme_auto_night_mode">החל לפי המערכת</string>
     <string name="theme_dark_theme_mode_follow_daylight">מתוזמן (כהה בלילה)</string>
     <string name="theme_light">בהיר</string>
     <string name="theme_dark_text">בהיר עם טקסט כהה</string>
@@ -45,12 +45,12 @@
     <string name="color_wallpaper_secondary">רקע - משני</string>
     <string name="color_wallpaper_tertiary">רקע - שלישי</string>
     <string name="pref_fonts_title">גופנים</string>
-    <string name="blur_pref_title">אפשר טשטוש</string>
-    <string name="blur_pref_summary">טשטש את רקע הדפים.</string>
-    <string name="blur_radius_pref_title">רמת הטישטוש</string>
+    <string name="blur_pref_title">טשטוש</string>
+    <string name="blur_pref_summary">טשטש את רקע העמודים.</string>
+    <string name="blur_radius_pref_title">רמת הטשטוש</string>
     <!-- Section 3 -->
     <string name="general_pref_title">מסך הבית</string>
-    <string name="general_pref_summary">פריסה, נעל את דף הבית, מעברים</string>
+    <string name="general_pref_summary">פריסה, נעילת דף הבית, מעברים</string>
     <string name="grid_size">טבלת סמלים</string>
     <string name="grid_size_width">רוחב</string>
     <string name="grid_size_height">גובה</string>
@@ -66,7 +66,7 @@
     <string name="auto_add_shortcuts_label">הוסף קיצורים חדשים למסך הבית</string>
     <string name="pref_icon_popup_menu">בועת קיצורים</string>
     <string name="pref_category_misc">אחר</string>
-    <string name="animation_type_title">אנימציית פתיחת ישומון</string>
+    <string name="animation_type_title">אנימציית פתיחת אפליקציה</string>
     <string name="animation_type_default">ברירת מחדל</string>
     <string name="animation_type_pie">אנדרויד תשע</string>
     <string name="animation_type_pie_like">אנדרויד תשע (אמולציה)</string>
@@ -75,21 +75,21 @@
     <string name="animation_type_scale_up">הגדל</string>
     <string name="animation_type_blink">הבהוב</string>
     <string name="animation_type_fade">עמעום</string>
-    <string name="icon_badging_title">סימני התראות</string>
+    <string name="icon_badging_title">נקודות התראות</string>
     <string name="pref_notification_count_title">הצג את מספר ההתראות</string>
     <string name="allow_rotation_title">אפשר סיבוב</string>
     <string name="pref_center_wallpaper">מרכז את רקע המסך</string>
     <string name="pref_center_wallpaper_summary">נעל את הרקע ללא גלילה.</string>
-    <string name="pref_hide_statusbar">השתר את שורת המצב</string>
+    <string name="pref_hide_statusbar">הסתר את שורת המצב</string>
     <string name="full_width_width_widgets_pref_title">ווידג\'טים רחבים</string>
     <string name="full_width_widgets_pref_summary">אפשר לווידג\'טים להתפרס לקצוות המסך.</string>
     <string name="show_top_shadow_pref_title">הצג צל עליון</string>
     <!-- Section 4 -->
     <string name="smartspace_preferences_in_settings">בקצרה</string>
     <!-- Note: replaces hard-coded copy (“Home widget”). -->
-    <string name="smartspace_preferences_in_settings_desc">תאריך &amp; זמן, מקורות מידע</string>
-    <string name="smartspace_time">הצג את הזמן הנוכחי</string>
-    <string name="smartspace_date">הצג את התאריך הנוכחי</string>
+    <string name="smartspace_preferences_in_settings_desc">תאריך וזמן, מקורות מידע</string>
+    <string name="smartspace_time">הצג זמן</string>
+    <string name="smartspace_date">הצג תאריך</string>
     <string name="pref_smartspace_time_above">הצג שעון גדול</string>
     <string name="pref_hide_statusbar_clock">הסתר את השעון בשורת המצב</string>
     <string name="root_access_required">נדרשת גישת רוט.</string>
@@ -97,14 +97,14 @@
     <string name="title_use_pill_qsb">הצג קיצור חיפוש גלולה</string>
     <string name="pref_category_weather">אחר</string>
     <string name="pref_smartspace_widget_provider">מקור מזג האוויר</string>
-    <string name="google_app">יישום גוגל</string>
+    <string name="google_app">אפליקציית Google</string>
     <string name="weather_provider_disabled">מבוטל</string>
     <string name="weather_provider_pe">חווית פיקסל</string>
     <string name="pref_weather_units">יחידת טמפרטורה</string>
     <string name="units_metric">צלזיוס</string>
     <string name="units_imperial">פרנהייט</string>
     <string name="units_kelvin">קלווין</string>
-    <string name="units_rakine">דירוג</string>
+    <string name="units_rakine">רנקין</string>
     <string name="units_newton">ניוטון</string>
     <string name="units_delisle">דוליל</string>
     <string name="units_reaumur">רימיור</string>
@@ -114,7 +114,7 @@
     <string name="event_provider_now_playing">כעת מנגן</string>
     <string name="event_provider_unread_notifications">התראות</string>
     <string name="personality_provider">ברכות</string>
-    <string name="pref_smartspace_event_provider">מקור איוונט</string>
+    <string name="pref_smartspace_event_provider">מקור אירוע</string>
     <string-array name="greetings_morning">
         <item>בוקר טוב!</item>
         <item>שיהיה לך יום נפלא!</item>
@@ -124,10 +124,10 @@
         <item>מה קורה?</item>
         <item>ערב טוב!</item>
         <item>איך הלך היום שלך?</item>
-        <item>Good night!</item>
+        <item>איך היה היום שלך?</item>
     </string-array>
     <string-array name="greetings_night">
-        <item>שן טוב!</item>
+        <item>שינה טובה!</item>
         <item>נתראה מחר!</item>
         <item>לילה טוב!</item>
         <item>אל תישאר ער יותר מדי מאוחר!</item>
@@ -138,16 +138,16 @@
     <!-- Section 5 -->
     <string name="dock_pref_title">Dock</string>
     <string name="dock_pref_summary">פריסה, סגנון, מחוונים</string>
-    <string name="dock_fill">הצגת רקע</string>
+    <string name="dock_fill">הצג רקע</string>
     <string name="background_color">צבע רקע</string>
-    <string name="theme_based">קביעת ערכת נושא</string>
+    <string name="theme_based">נקבע מערכת נושא</string>
     <string name="dock_shadow">הצגת צלליות</string>
     <string name="radius">רדיוס פינות</string>
-    <string name="hotseat_show_arrow">הצגת חץ</string>
-    <string name="hotseat_show_page_indicator">הצגת מכוון עמוד</string>
-    <string name="two_row_dock">הצגת שורה שנייה</string>
+    <string name="hotseat_show_arrow">הצג חץ</string>
+    <string name="hotseat_show_page_indicator">הצג מחוון עמוד</string>
+    <string name="two_row_dock">הצג שורה שנייה</string>
     <string name="pref_category_searchbar">סרגל חיפוש</string>
-    <string name="dock_search_bar">הצגת סרגל חיפוש</string>
+    <string name="dock_search_bar">הצג סרגל חיפוש</string>
     <string name="dock_colored_google">אייקונים צבעוניים</string>
     <!-- Section 6 -->
     <string name="app_drawer_pref_title">מגירת היישומים</string>
@@ -184,19 +184,19 @@
     <string name="category_photography">צילום</string>
     <string name="category_tools">עזרים</string>
     <string name="category_travel_and_navigation">נסיעות וניווט</string>
-    <string name="select_tab_type">לשונית חדשה</string>
+    <string name="select_tab_type">כרטיסייה חדשה</string>
     <string name="tab_type_smart">אוטומטי</string>
     <string name="pref_appcategorization_flowerpot_summary">בחר קיצורי דרך באופן אוטומטי.</string>
     <string name="tab_type_custom">מותאם אישית</string>
     <string name="tab_type_custom_desc">בחר קיצורי דרך באופן ידני.</string>
     <string name="pref_appcategorization_flowerpot_title">קטגוריית אפליקציות</string>
-    <string name="title_all_apps_search">הצגת סרגל חיפוש</string>
+    <string name="title_all_apps_search">הצג סרגל חיפוש</string>
     <string name="title_all_apps_google_search">השתמש בחיפוש כללי</string>
-    <string name="summary_all_apps_google_search">מציאת אתרים, אנשי קשר וקיצורי דרך.</string>
-    <string name="title_search_hidden_apps">מציאת קיצורי דרך נסתרים</string>
+    <string name="summary_all_apps_google_search">מצא אתרים, אנשי קשר וקיצורי דרך.</string>
+    <string name="title_search_hidden_apps">מצא קיצורי דרך נסתרים</string>
     <string name="summary_search_hidden_apps">הצג קיצורי דרך מוסתרים בתוצאות.</string>
     <string name="suggestion_pref_screen_title">הצעות</string>
-    <string name="title_app_suggestions_in_search">המלצות אפליקציה</string>
+    <string name="title_app_suggestions_in_search">הצעות לאפליקציות</string>
     <string name="app_actions_pref_title">פעולות</string>
     <string name="app_actions_pref_desc">קיצורים למסכים בשימוש לעיתים קרובות.</string>
     <string name="app_actions_reset_pref_title">אפס העדפות פעולות</string>
@@ -213,18 +213,18 @@
     <string name="web_search_google">Google</string>
     <string name="web_search_ddg">DuckDuckGo (בדפדפן)</string>
     <string name="web_search_startpage">Startpage.com (בדפדפן)</string>
-    <string name="web_search_bing">בינג (בדפדפן)</string>
-    <string name="web_search_qwant">קוואנט (בדפדפן)</string>
-    <string name="web_search_ecosia">אקוסיה (בדפדפן)</string>
-    <string name="web_search_yandex">יאנדקס (בדפדפן)</string>
-    <string name="web_search_naver">נאבר (בדפדפן)</string>
-    <string name="web_search_baidu">באידו (בדפדפן)</string>
+    <string name="web_search_bing">Bing (בדפדפן)</string>
+    <string name="web_search_qwant">Qwant (בדפדפן)</string>
+    <string name="web_search_ecosia">Ecosia (בדפדפן)</string>
+    <string name="web_search_yandex">Yandex (בדפדפן)</string>
+    <string name="web_search_naver">Naver (בדפדפן)</string>
+    <string name="web_search_baidu">Baidu (בדפדפן)</string>
     <string name="search_provider_yandex">Yandex</string>
     <string name="search_provider_ddg">DuckDuckGo</string>
     <string name="search_provider_bing">Bing</string>
     <string name="search_provider_baidu">Baidu</string>
     <string name="search_provider_s_finder">S Finder</string>
-    <string name="search_provider_appsearch">חיפוש יישומים</string>
+    <string name="search_provider_appsearch">חיפוש אפליקציות</string>
     <string name="search_provider_search_lite">Search Lite</string>
     <string name="search_provider_cool_search">Cool Search</string>
     <string name="search_provider_firefox">Firefox</string>
@@ -239,37 +239,37 @@
     <string name="pref_search_bar_radius">רדיוס פינות</string>
     <!-- Section 8 -->
     <string name="pref_integrations">תוספים</string>
-    <string name="pref_integrations_summary">קיצורי ססמי, חדשות גוגל</string>
+    <string name="pref_integrations_summary">קיצורי Sesame, Google Feed</string>
     <string name="sesame">Sesame</string>
     <string name="sesame_data_integration">שיתוף נתונים</string>
-    <string name="sesame_upsell">הקש כדי להתקין את ססמי.</string>
+    <string name="sesame_upsell">הקש כדי להתקין את Sesame.</string>
     <string name="pref_sesame_show_shortcuts">הצג בבועות הקיצורים</string>
     <string name="sesame_search_engine">השתמש כמנוע חיפוש</string>
     <string name="pref_sesame_sync_look_and_feel">שתף את הגדרות התצוגה</string>
-    <string name="pref_sesame_sync_look_and_feel_summary">החל את הגדרות תיבת החיפוש על ססמי.</string>
-    <string name="sesame_version">גרסת ססמי</string>
+    <string name="pref_sesame_sync_look_and_feel_summary">החל את הגדרות סרגל החיפוש על הסרגל של Sesame.</string>
+    <string name="sesame_version">גרסת ספרייה</string>
     <string name="title_show_google_app">הצג את חדשות %1$s</string>
     <string name="feed_theme_pref_title">צבע הרקע</string>
     <!-- Section 9 -->
     <string name="gestures_pref_title">מחוות</string>
-    <string name="gestures_pref_summary">לחיצה כפולה, החלקה למעלה מהדוק</string>
+    <string name="gestures_pref_summary">לחיצה כפולה, החלקה למעלה מה-Dock</string>
     <string name="gesture_double_tap">לחיצה כפולה</string>
-    <string name="gesture_long_press">גע &amp; והחזק</string>
+    <string name="gesture_long_press">גע והחזק</string>
     <string name="gesture_press_home">נגיעה בלחצן הבית</string>
     <string name="gesture_press_back">נגיעה בלחצן החזור</string>
     <string name="gesture_swipe_down">החלקה למטה</string>
     <string name="gesture_swipe_up">החלקה למעלה</string>
-    <string name="gesture_dock_swipe_up">החלקה למעלה מהדוק</string>
+    <string name="gesture_dock_swipe_up">החלקה למעלה מה-Dock</string>
     <string name="action_none">אל תעשה כלום</string>
     <string name="action_sleep">שינה</string>
-    <string name="action_sleep_timeout">היכנס למצב שינה בעזרת טיימאאוט</string>
-    <string name="action_open_settings">פתח את הגדרות מסך הבית</string>
+    <string name="action_sleep_timeout">היכנס למצב שינה באמצעות זמן קצוב</string>
+    <string name="action_open_settings">פתח את הגדרות Lawnchair</string>
     <string name="action_open_notifications">פתח את לוח ההתראות</string>
-    <string name="action_overlay">פתח את חדשות גוגל</string>
+    <string name="action_overlay">פתח את Google Feed</string>
     <string name="action_despacito">נגן את YouTube Rewind 2018 (מעוות)</string>
-    <string name="action_open_app">פתח יישומון</string>
+    <string name="action_open_app">פתח אפליקציה</string>
     <!-- Section 10 -->
-    <string name="backups">גיבוי &amp; ושחזור</string>
+    <string name="backups">גיבוי ושחזור</string>
     <string name="backup_pref_summary">שמור את מסך הבית, שחזר גיבוי קיים</string>
     <string name="new_backup">צור</string>
     <string name="restore_backup">שחזר</string>
@@ -280,7 +280,7 @@
     <string name="backup_settings">הגדרות</string>
     <string name="homescreen">פריסת מסך הבית</string>
     <string name="backup_wallpaper">רקע</string>
-    <string name="name">שֵׁם</string>
+    <string name="name">שם</string>
     <string name="backup_location">מיקום</string>
     <string name="backup_location_device_storage">תיקיית “Lawnchair”</string>
     <string name="custom">מותאם אישית</string>
@@ -318,7 +318,7 @@
         <item quantity="other">%1$d אפליקציות</item>
     </plurals>
     <string name="advanced_settings">הגדרות נוספות</string>
-    <string name="adaptive_icon">סמל מותאם</string>
+    <string name="adaptive_icon">סמל מסתגל</string>
     <string name="action_edit">ערוך</string>
     <string name="dismiss_drop_target_label">"אל תציג"</string>
     <string name="suggested_action_content_description">\"%1$s\" נפתח ב\"%2$s\".</string>
@@ -333,23 +333,23 @@
     <string name="pixel_style_pref_title">Google Pixel</string>
     <string name="label_turn_off_suggestions">השבת</string>
     <string name="about_summary_title">סיכום</string>
-    <string name="hide_app">הסתרת קיצור דרך</string>
+    <string name="hide_app">הסתר קיצור דרך</string>
     <string name="icon_shape_rounded_square">ריבוע מעוגל</string>
     <string name="hide_app_selected">\"&#160;\" מוסתר.</string>
     <string name="hide_app_apply">בוצע</string>
     <string name="hide_dock_gradient">בטל שיפוע צבע</string>
     <string name="choose_backup_path">עיין</string>
-    <string name="backup_error_blank_name">הענקת שם לגיבוי.</string>
-    <string name="backup_error_blank_location">בחירת מיקום גיבוי.</string>
+    <string name="backup_error_blank_name">הענק שם לגיבוי.</string>
+    <string name="backup_error_blank_location">בחר מיקום גיבוי.</string>
     <string name="backup_error_blank_contents">הוסף את תוכן הגיבוי.</string>
-    <string name="backup_creating">יצירת גיבוי...</string>
+    <string name="backup_creating">יוצר גיבוי...</string>
     <string name="backup_loading">טוען...</string>
     <string name="loading">טוען…</string>
     <string name="backup_timestamp">נוצר</string>
     <string name="backup_share">שתף</string>
     <string name="backup_invalid">קובץ גיבוי לא חוקי.</string>
-    <string name="backup_restoring">שיחזור...</string>
-    <string name="backup_restarting">איתחול...</string>
+    <string name="backup_restoring">משחזר...</string>
+    <string name="backup_restarting">מפעיל מחדש...</string>
     <string name="restore_success">גיבוי שוחזר.</string>
     <string name="failed">משהו השתבש.</string>
     <string name="backup_share_text">גיבוי של Lawnchair</string>
@@ -390,11 +390,13 @@
     <string name="about_bio_josh">מעצב גרפי עצמאי.</string>
     <string name="about_bio_harsh">מפתח אפליקציות וספריות ל-Android. מפתח ליבה ב-AOSiP.</string>
     <string name="about_bio_david">בן 19, הופך קפאין ופיצה לקוד, מספק אירוח ותמיכה 24/7 ל-Lawnchair אם משהו משתבש. תורם לפרויקטים בקוד פתוח ומתקן באגים בזמנו הפנוי. ידוע בעבר בתור Codebucket.</string>
+    <string name="about_bio_lumiq">זה רק נעשה קשה יותר לבנות מוצר רע.</string>
     <string name="about_bio_paphonb">סטודנט בן 18, מפתח לאנדרואיד ואחד מן המפתחים המובילים של מפעיל האפליקציות Lawnchair.</string>
     <string name="debug_crash_launcher">אלץ עצירה</string>
     <string name="action_open_drawer">פתח מגירה</string>
     <string name="action_last_task">הפעל את האפליקציה האחרונה שהייתה בשימוש</string>
     <string name="action_open_widgets">פתח מגירת ווידג\'טים</string>
+    <string name="action_open_overview">הצג תפריט בועה של מסך הבית</string>
     <string name="action_global_search">הפעל חיפוש כללי</string>
     <string name="action_app_search">הפעל חיפוש אפליקציות</string>
     <string name="action_close_notifications">סגור את לוח ההתראות</string>
@@ -471,7 +473,7 @@
     <string name="font_variant_italic">נטוי</string>
     <string name="font_weight_thin">צר</string>
     <string name="font_weight_extra_light">קל מאוד</string>
-    <string name="font_weight_light">בהיר</string>
+    <string name="font_weight_light">קל</string>
     <string name="font_weight_regular">רגיל</string>
     <string name="font_weight_medium">בינוני</string>
     <string name="font_weight_semi_bold">מודגש למחצה</string>
@@ -498,7 +500,7 @@
     <string name="drawer_folders">תיקיות</string>
     <string name="open_image_picker">פתח תמונות</string>
     <string name="import_icon">ייבא סמל</string>
-    <string name="import_as_adaptive">ייבא סמל מותאם</string>
+    <string name="import_as_adaptive">ייבא סמל מסתגל</string>
     <string name="about_app_description">יישום מסך בית ל-Android הניתן להתאמה אישית.</string>
     <string name="lawnchair_bug_report">דיווח על באג ב-Lawnchair</string>
     <string name="action_dogbin_upload">העלה ל-Dogbin</string>
@@ -535,8 +537,8 @@
     <string name="icon_shape_top_right">ימין למעלה</string>
     <string name="icon_shape_bottom_left">שמאל למטה</string>
     <string name="icon_shape_bottom_right">ימין למטה</string>
-    <string name="icon_shape_corner_round">מעגל</string>
-    <string name="icon_shape_corner_squircle">מעוגל</string>
+    <string name="icon_shape_corner_round">מעוגל</string>
+    <string name="icon_shape_corner_squircle">חלק</string>
     <string name="icon_shape_corner_cut">חתוך</string>
     <string name="smartspace_add_to_home">הוסף למסך הבית</string>
     <string name="get_lawnfeed">קבל את Lawnfeed</string>
@@ -552,4 +554,7 @@
     <string name="action_switch_apps">החלף אפליקציות</string>
     <string name="icon_shape_system_default">החל לפי המערכת</string>
     <string name="title_missing_notification_access">נדרשת גישה להודעות.</string>
+    <string name="activity_not_found">האפליקציה לא הותקנה.</string>
+    <string name="out_of_space">אין עוד מקום במסך הבית.</string>
+    <string name="hotseat_out_of_space">אין עוד מקום ב-Dock.</string>
 </resources>
