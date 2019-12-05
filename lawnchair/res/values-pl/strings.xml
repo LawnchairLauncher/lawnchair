@@ -98,7 +98,7 @@
     <string name="pref_hide_statusbar_clock">Ukryj zegar na pasku statusu</string>
     <string name="root_access_required">Wymagany dostęp do roota.</string>
     <string name="smartspace_time_24_h">Użyj formatu 24-godzinnego</string>
-    <string name="title_use_pill_qsb">Pasek wyszukiwania w stylu “pill”</string>
+    <string name="title_use_pill_qsb">Pasek wyszukiwania w stylu pastylki</string>
     <string name="pref_category_weather">Inne</string>
     <string name="pref_smartspace_widget_provider">Źródło informacji o pogodzie</string>
     <string name="google_app">Aplikacja Google</string>
