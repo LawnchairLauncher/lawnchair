@@ -556,4 +556,7 @@
     <string name="action_switch_apps">切換應用程式</string>
     <string name="icon_shape_system_default">由系統決定</string>
     <string name="title_missing_notification_access">需要取得通知存取權</string>
+    <string name="activity_not_found">未安裝應用程式。</string>
+    <string name="out_of_space">桌面上沒有更多空間了。</string>
+    <string name="hotseat_out_of_space">底欄上沒有更多空間了。</string>
 </resources>
