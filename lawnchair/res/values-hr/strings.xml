@@ -333,7 +333,7 @@
     <string name="about_summary_title">Sažetak</string>
     <string name="hide_app">Sakrij prečac</string>
     <string name="icon_shape_rounded_square">Zaobljeni kvadrat</string>
-    <string name="hide_app_selected">“&#160;” skriveno.</string>
+    <string name="hide_app_selected">&#160; skriveno.</string>
     <string name="hide_app_apply">Izvršeno</string>
     <string name="hide_dock_gradient">Onemogući gradijent</string>
     <string name="choose_backup_path">Pregledaj</string>
