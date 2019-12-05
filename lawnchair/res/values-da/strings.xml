@@ -556,4 +556,7 @@
     <string name="action_switch_apps">Skift apps</string>
     <string name="icon_shape_system_default">Indstillet af System</string>
     <string name="title_missing_notification_access">Notifikationsadgang kræves.</string>
+    <string name="activity_not_found">App ikke installeret.</string>
+    <string name="out_of_space">Ikke mere plads på Startskærmen.</string>
+    <string name="hotseat_out_of_space">Ikke mere plads på Dokken.</string>
 </resources>
