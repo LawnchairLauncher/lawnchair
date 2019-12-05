@@ -77,7 +77,7 @@ import java.util.List;
 /**
  * Simple scrim which draws a flat color
  */
-public class ScrimView extends View implements Insettable, OnChangeListener,
+public class ScrimView<T extends Launcher> extends View implements Insettable, OnChangeListener,
         AccessibilityStateChangeListener, StateListener {
 
     public static final Property<ScrimView, Integer> DRAG_HANDLE_ALPHA =
@@ -101,7 +101,7 @@ public class ScrimView extends View implements Insettable, OnChangeListener,
     private final Rect mTempRect = new Rect();
     private final int[] mTempPos = new int[2];
 
-    protected final Launcher mLauncher;
+    protected final T mLauncher;
     private final WallpaperColorInfo mWallpaperColorInfo;
     private final AccessibilityManager mAM;
     protected final int mEndScrim;
@@ -130,7 +130,7 @@ public class ScrimView extends View implements Insettable, OnChangeListener,
 
     public ScrimView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mLauncher = Launcher.getLauncher(context);
+        mLauncher = Launcher.cast(Launcher.getLauncher(context));
         mWallpaperColorInfo = WallpaperColorInfo.getInstance(context);
         mEndScrim = Themes.getAttrColor(context, R.attr.allAppsScrimColor);
 

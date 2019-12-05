@@ -560,7 +560,7 @@ public class FloatingIconView extends View implements
      * Checks if the icon result is loaded. If true, we set the icon immediately. Else, we add a
      * callback to set the icon once the icon result is loaded.
      */
-    private void checkIconResult(View originalView, boolean isOpening) {
+    private void checkIconResult(View originalView) {
         CancellationSignal cancellationSignal = new CancellationSignal();
 
         if (mIconLoadResult == null) {
@@ -572,9 +572,7 @@ public class FloatingIconView extends View implements
             if (mIconLoadResult.isIconLoaded) {
                 setIcon(originalView, mIconLoadResult.drawable, mIconLoadResult.badge,
                         mIconLoadResult.iconOffset);
-                if (isOpening) {
-                    hideOriginalView(originalView);
-                }
+                hideOriginalView(originalView);
             } else {
                 mIconLoadResult.onIconLoaded = () -> {
                     if (cancellationSignal.isCanceled()) {
@@ -585,10 +583,7 @@ public class FloatingIconView extends View implements
                             mIconLoadResult.iconOffset);
 
                     setVisibility(VISIBLE);
-                    if (isOpening) {
-                        // Delay swapping views until the icon is loaded to prevent a flash.
-                        hideOriginalView(originalView);
-                    }
+                    hideOriginalView(originalView);
                 };
                 mLoadIconSignal = cancellationSignal;
             }
@@ -596,9 +591,9 @@ public class FloatingIconView extends View implements
     }
 
     private void hideOriginalView(View originalView) {
-        if (originalView instanceof BubbleTextView) {
-            ((BubbleTextView) originalView).setIconVisible(false);
-            ((BubbleTextView) originalView).setForceHideDot(true);
+        if (originalView instanceof IconLabelDotView) {
+            ((IconLabelDotView) originalView).setIconVisible(false);
+            ((IconLabelDotView) originalView).setForceHideDot(true);
         } else {
             originalView.setVisibility(INVISIBLE);
         }
@@ -674,6 +669,9 @@ public class FloatingIconView extends View implements
     }
 
     public void fastFinish() {
+        if (mLoadIconSignal != null) {
+            mLoadIconSignal.cancel();
+        }
         if (mEndRunnable != null) {
             mEndRunnable.run();
             mEndRunnable = null;
@@ -688,6 +686,10 @@ public class FloatingIconView extends View implements
     public void onAnimationStart(Animator animator) {
         if (mIconLoadResult != null && mIconLoadResult.isIconLoaded) {
             setVisibility(View.VISIBLE);
+        }
+        if (!mIsOpening) {
+            // When closing an app, we want the item on the workspace to be invisible immediately
+            hideOriginalView(mOriginalIcon);
         }
     }
 
@@ -798,7 +800,7 @@ public class FloatingIconView extends View implements
         // Must be called after the fastFinish listener and end runnable is created so that
         // the icon is not left in a hidden state.
         if (shouldLoadIcon) {
-            view.checkIconResult(originalView, isOpening);
+            view.checkIconResult(originalView);
         }
 
         return view;
@@ -842,6 +844,7 @@ public class FloatingIconView extends View implements
                 @Override
                 public void onAnimationStart(Animator animation) {
                     btv.setIconVisible(true);
+                    btv.setForceHideDot(true);
                 }
             });
             fade.play(ObjectAnimator.ofInt(btv.getIcon(), DRAWABLE_ALPHA, 0, 255));

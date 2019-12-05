@@ -167,8 +167,6 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
     private boolean mIsShelfPeeking;
 
     private boolean mContinuingLastGesture;
-    // To avoid UI jump when gesture is started, we offset the animation by the threshold.
-    private float mShiftAtGestureStart = 0;
 
     private ThumbnailData mTaskSnapshot;
 
@@ -574,9 +572,7 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
         // Normalize the progress to 0 to 1, as the animation controller will clamp it to that
         // anyway. The controller mimics the drag length factor by applying it to its interpolators.
         float progress = mCurrentShift.value / mDragLengthFactor;
-        mLauncherTransitionController.setPlayFraction(
-                progress <= mShiftAtGestureStart || mShiftAtGestureStart >= 1
-                        ? 0 : (progress - mShiftAtGestureStart) / (1 - mShiftAtGestureStart));
+        mLauncherTransitionController.setPlayFraction(progress);
     }
 
     /**
@@ -623,7 +619,6 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
     @Override
     public void onGestureStarted() {
         notifyGestureStartedAsync();
-        mShiftAtGestureStart = mCurrentShift.value;
         mStateCallback.setStateOnUiThread(STATE_GESTURE_STARTED);
         mGestureStarted = true;
     }

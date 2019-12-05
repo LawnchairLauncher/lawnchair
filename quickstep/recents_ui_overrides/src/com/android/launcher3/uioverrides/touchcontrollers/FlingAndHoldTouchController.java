@@ -16,25 +16,20 @@
 
 package com.android.launcher3.uioverrides.touchcontrollers;
 
+import static com.android.launcher3.LauncherAppTransitionManagerImpl.INDEX_PAUSE_TO_OVERVIEW_ANIM;
 import static com.android.launcher3.LauncherState.ALL_APPS;
-import static com.android.launcher3.LauncherState.HOTSEAT_ICONS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.OVERVIEW_PEEK;
-import static com.android.launcher3.LauncherStateManager.ANIM_ALL;
 import static com.android.launcher3.LauncherStateManager.ATOMIC_OVERVIEW_PEEK_COMPONENT;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_ALL_APPS_FADE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_ALL_APPS_HEADER_FADE;
-import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_HOTSEAT_SCALE;
-import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_HOTSEAT_TRANSLATE;
-import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_VERTICAL_PROGRESS;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_FADE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_SCALE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_TRANSLATE;
 import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_3;
-import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_2;
 import static com.android.launcher3.util.VibratorWrapper.OVERVIEW_HAPTIC;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_OVERVIEW_DISABLED;
 
@@ -46,12 +41,13 @@ import android.view.View;
 import android.view.ViewConfiguration;
 
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAppTransitionManagerImpl;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
-import com.android.quickstep.SystemUiProxy;
 import com.android.launcher3.util.VibratorWrapper;
+import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.util.MotionPauseDetector;
 import com.android.quickstep.views.RecentsView;
 
@@ -79,7 +75,7 @@ public class FlingAndHoldTouchController extends PortraitStatesTouchController {
 
     @Override
     protected long getAtomicDuration() {
-        return 300;
+        return LauncherAppTransitionManagerImpl.ATOMIC_DURATION_FROM_PAUSED_TO_OVERVIEW;
     }
 
     @Override
@@ -179,15 +175,8 @@ public class FlingAndHoldTouchController extends PortraitStatesTouchController {
                 mPeekAnim.cancel();
             }
 
-            AnimatorSetBuilder builder = new AnimatorSetBuilder();
-            builder.setInterpolator(ANIM_VERTICAL_PROGRESS, OVERSHOOT_1_2);
-            builder.setInterpolator(ANIM_ALL_APPS_FADE, DEACCEL_3);
-            if ((OVERVIEW.getVisibleElements(mLauncher) & HOTSEAT_ICONS) != 0) {
-                builder.setInterpolator(ANIM_HOTSEAT_SCALE, OVERSHOOT_1_2);
-                builder.setInterpolator(ANIM_HOTSEAT_TRANSLATE, OVERSHOOT_1_2);
-            }
-            AnimatorSet overviewAnim = mLauncher.getStateManager().createAtomicAnimation(
-                    NORMAL, OVERVIEW, builder, ANIM_ALL, ATOMIC_DURATION);
+            Animator overviewAnim = mLauncher.getAppTransitionManager().createStateElementAnimation(
+                    INDEX_PAUSE_TO_OVERVIEW_ANIM);
             overviewAnim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {

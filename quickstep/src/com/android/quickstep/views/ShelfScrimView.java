@@ -18,6 +18,7 @@ package com.android.quickstep.views;
 import static com.android.launcher3.LauncherState.ALL_APPS_HEADER_EXTRA;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.OVERVIEW;
+import static com.android.launcher3.LauncherState.QUICK_SWITCH;
 import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
@@ -34,7 +35,9 @@ import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.animation.Interpolator;
 
+import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.Interpolators;
@@ -52,7 +55,8 @@ import com.android.quickstep.util.LayoutUtils;
  *    From normal state to overview state, the shelf just fades in and does not move
  *    From overview state to all-apps state the shelf moves up and fades in to cover the screen
  */
-public class ShelfScrimView extends ScrimView implements NavigationModeChangeListener {
+public class ShelfScrimView extends ScrimView<BaseQuickstepLauncher>
+        implements NavigationModeChangeListener {
 
     // If the progress is more than this, shelf follows the finger, otherwise it moves faster to
     // cover the whole screen
@@ -193,8 +197,10 @@ public class ShelfScrimView extends ScrimView implements NavigationModeChangeLis
         if (mProgress >= 1) {
             mRemainingScreenColor = 0;
             mShelfColor = 0;
+            LauncherState state = mLauncher.getStateManager().getState();
             if (mSysUINavigationMode == Mode.NO_BUTTON
-                    && mLauncher.getStateManager().getState() == BACKGROUND_APP) {
+                    && (state == BACKGROUND_APP || state == QUICK_SWITCH)
+                    && mLauncher.getShelfPeekAnim().isPeeking()) {
                 // Show the shelf background when peeking during swipe up.
                 mShelfColor = setColorAlphaBound(mEndScrim, mMidAlpha);
             }

@@ -110,7 +110,7 @@ public class CellLayout extends ViewGroup implements Transposable {
 
     private OnTouchListener mInterceptTouchListener;
 
-    private final ArrayList<PreviewBackground> mFolderBackgrounds = new ArrayList<>();
+    private final ArrayList<DelegatedCellDrawing> mDelegatedCellDrawings = new ArrayList<>();
     final PreviewBackground mFolderLeaveBehind = new PreviewBackground();
 
     private static final int[] BACKGROUND_STATE_ACTIVE = new int[] { android.R.attr.state_active };
@@ -219,8 +219,8 @@ public class CellLayout extends ViewGroup implements Transposable {
         mPreviousReorderDirection[0] = INVALID_DIRECTION;
         mPreviousReorderDirection[1] = INVALID_DIRECTION;
 
-        mFolderLeaveBehind.delegateCellX = -1;
-        mFolderLeaveBehind.delegateCellY = -1;
+        mFolderLeaveBehind.mDelegateCellX = -1;
+        mFolderLeaveBehind.mDelegateCellY = -1;
 
         setAlwaysDrawnWithCacheEnabled(false);
         final Resources res = getResources();
@@ -466,21 +466,18 @@ public class CellLayout extends ViewGroup implements Transposable {
             }
         }
 
-        for (int i = 0; i < mFolderBackgrounds.size(); i++) {
-            PreviewBackground bg = mFolderBackgrounds.get(i);
-            cellToPoint(bg.delegateCellX, bg.delegateCellY, mTempLocation);
+        for (int i = 0; i < mDelegatedCellDrawings.size(); i++) {
+            DelegatedCellDrawing cellDrawing = mDelegatedCellDrawings.get(i);
+            cellToPoint(cellDrawing.mDelegateCellX, cellDrawing.mDelegateCellY, mTempLocation);
             canvas.save();
             canvas.translate(mTempLocation[0], mTempLocation[1]);
-            bg.drawBackground(canvas);
-            if (!bg.isClipping) {
-                bg.drawBackgroundStroke(canvas);
-            }
+            cellDrawing.drawUnderItem(canvas);
             canvas.restore();
         }
 
-        if (mFolderLeaveBehind.delegateCellX >= 0 && mFolderLeaveBehind.delegateCellY >= 0) {
-            cellToPoint(mFolderLeaveBehind.delegateCellX,
-                    mFolderLeaveBehind.delegateCellY, mTempLocation);
+        if (mFolderLeaveBehind.mDelegateCellX >= 0 && mFolderLeaveBehind.mDelegateCellY >= 0) {
+            cellToPoint(mFolderLeaveBehind.mDelegateCellX,
+                    mFolderLeaveBehind.mDelegateCellY, mTempLocation);
             canvas.save();
             canvas.translate(mTempLocation[0], mTempLocation[1]);
             mFolderLeaveBehind.drawLeaveBehind(canvas);
@@ -492,23 +489,28 @@ public class CellLayout extends ViewGroup implements Transposable {
     protected void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);
 
-        for (int i = 0; i < mFolderBackgrounds.size(); i++) {
-            PreviewBackground bg = mFolderBackgrounds.get(i);
-            if (bg.isClipping) {
-                cellToPoint(bg.delegateCellX, bg.delegateCellY, mTempLocation);
-                canvas.save();
-                canvas.translate(mTempLocation[0], mTempLocation[1]);
-                bg.drawBackgroundStroke(canvas);
-                canvas.restore();
-            }
+        for (int i = 0; i < mDelegatedCellDrawings.size(); i++) {
+            DelegatedCellDrawing bg = mDelegatedCellDrawings.get(i);
+            cellToPoint(bg.mDelegateCellX, bg.mDelegateCellY, mTempLocation);
+            canvas.save();
+            canvas.translate(mTempLocation[0], mTempLocation[1]);
+            bg.drawOverItem(canvas);
+            canvas.restore();
         }
     }
 
-    public void addFolderBackground(PreviewBackground bg) {
-        mFolderBackgrounds.add(bg);
+    /**
+     * Add Delegated cell drawing
+     */
+    public void addDelegatedCellDrawing(DelegatedCellDrawing bg) {
+        mDelegatedCellDrawings.add(bg);
     }
-    public void removeFolderBackground(PreviewBackground bg) {
-        mFolderBackgrounds.remove(bg);
+
+    /**
+     * Remove item from DelegatedCellDrawings
+     */
+    public void removeDelegatedCellDrawing(DelegatedCellDrawing bg) {
+        mDelegatedCellDrawings.remove(bg);
     }
 
     public void setFolderLeaveBehindCell(int x, int y) {
@@ -516,14 +518,14 @@ public class CellLayout extends ViewGroup implements Transposable {
         mFolderLeaveBehind.setup(getContext(), mActivity, null,
                 child.getMeasuredWidth(), child.getPaddingTop());
 
-        mFolderLeaveBehind.delegateCellX = x;
-        mFolderLeaveBehind.delegateCellY = y;
+        mFolderLeaveBehind.mDelegateCellX = x;
+        mFolderLeaveBehind.mDelegateCellY = y;
         invalidate();
     }
 
     public void clearFolderLeaveBehind() {
-        mFolderLeaveBehind.delegateCellX = -1;
-        mFolderLeaveBehind.delegateCellY = -1;
+        mFolderLeaveBehind.mDelegateCellX = -1;
+        mFolderLeaveBehind.mDelegateCellY = -1;
         invalidate();
     }
 
@@ -2741,6 +2743,24 @@ public class CellLayout extends ViewGroup implements Transposable {
             return "Cell[view=" + (cell == null ? "null" : cell.getClass())
                     + ", x=" + cellX + ", y=" + cellY + "]";
         }
+    }
+
+    /**
+     * A Delegated cell Drawing for drawing on CellLayout
+     */
+    public abstract static class DelegatedCellDrawing {
+        public int mDelegateCellX;
+        public int mDelegateCellY;
+
+        /**
+         * Draw under CellLayout
+         */
+        public abstract void drawUnderItem(Canvas canvas);
+
+        /**
+         * Draw over CellLayout
+         */
+        public abstract void drawOverItem(Canvas canvas);
     }
 
     /**

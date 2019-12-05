@@ -21,14 +21,19 @@ import android.util.AttributeSet;
 import android.view.DragEvent;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.CompletionInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
+import com.android.launcher3.folder.FolderNameProvider;
 import com.android.launcher3.util.UiThreadHelper;
+
+import java.util.List;
 
 
 /**
  * The edit text that reports back when the back key has been pressed.
+ * Note: AppCompatEditText doesn't fully support #displayCompletions and #onCommitCompletion
  */
 public class ExtendedEditText extends EditText {
 
@@ -85,12 +90,9 @@ public class ExtendedEditText extends EditText {
         super.onLayout(changed, left, top, right, bottom);
         if (mShowImeAfterFirstLayout) {
             // soft input only shows one frame after the layout of the EditText happens,
-            post(new Runnable() {
-                @Override
-                public void run() {
-                    showSoftInput();
-                    mShowImeAfterFirstLayout = false;
-                }
+            post(() -> {
+                showSoftInput();
+                mShowImeAfterFirstLayout = false;
             });
         }
     }
@@ -103,9 +105,27 @@ public class ExtendedEditText extends EditText {
         UiThreadHelper.hideKeyboardAsync(getContext(), getWindowToken());
     }
 
+    @Override
+    public void onCommitCompletion(CompletionInfo text) {
+        setText(text.getText());
+    }
+
+    /**
+     * Currently only used for folder name suggestion.
+     */
+    public void displayCompletions(List<String> suggestList) {
+        int cnt = Math.min(suggestList.size(), FolderNameProvider.SUGGEST_MAX);
+        CompletionInfo[] cInfo = new CompletionInfo[cnt];
+        for (int i = 0; i < cnt; i++) {
+            cInfo[i] = new CompletionInfo(i, i, suggestList.get(i));
+        }
+        post(() -> getContext().getSystemService(InputMethodManager.class)
+                .displayCompletions(this, cInfo));
+    }
+
     private boolean showSoftInput() {
         return requestFocus() &&
-                ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE))
+                getContext().getSystemService(InputMethodManager.class)
                     .showSoftInput(this, InputMethodManager.SHOW_IMPLICIT);
     }
 

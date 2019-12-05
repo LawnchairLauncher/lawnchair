@@ -37,6 +37,7 @@ import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.uioverrides.touchcontrollers.FlingAndHoldTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.LandscapeEdgeSwipeController;
 import com.android.launcher3.uioverrides.touchcontrollers.NavBarToHomeTouchController;
+import com.android.launcher3.uioverrides.touchcontrollers.NoButtonQuickSwitchTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.OverviewToAllAppsTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.PortraitStatesTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.QuickSwitchTouchController;
@@ -215,7 +216,7 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
         ArrayList<TouchController> list = new ArrayList<>();
         list.add(getDragController());
         if (mode == NO_BUTTON) {
-            list.add(new QuickSwitchTouchController(this));
+            list.add(new NoButtonQuickSwitchTouchController(this));
             list.add(new NavBarToHomeTouchController(this));
             list.add(new FlingAndHoldTouchController(this));
         } else {
