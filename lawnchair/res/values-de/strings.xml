@@ -558,4 +558,7 @@
     <string name="action_switch_apps">Apps wechseln</string>
     <string name="icon_shape_system_default">Durch System festgelegt</string>
     <string name="title_missing_notification_access">Benachrichtigungszugriff erforderlich.</string>
+    <string name="activity_not_found">Die App ist nicht installiert.</string>
+    <string name="out_of_space">Kein Platz mehr auf dem Desktop.</string>
+    <string name="hotseat_out_of_space">Kein Platz mehr auf dem Dock.</string>
 </resources>
