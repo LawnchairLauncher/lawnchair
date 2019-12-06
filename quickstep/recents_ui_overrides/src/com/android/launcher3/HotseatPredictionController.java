@@ -32,6 +32,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.allapps.AllAppsStore;
@@ -45,11 +46,13 @@ import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.uioverrides.PredictedAppIcon;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
+import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.ComponentKey;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.IntStream;
 
 /**
  * Provides prediction ability for the hotseat. Fills gaps in hotseat with predicted items, allows
@@ -73,6 +76,7 @@ public class HotseatPredictionController implements DragController.DragListener,
 
     private DropTarget.DragObject mDragObject;
     private int mHotSeatItemsCount;
+    private int mPredictedSpotsCount = 0;
 
     private Launcher mLauncher;
     private Hotseat mHotseat;
@@ -86,6 +90,8 @@ public class HotseatPredictionController implements DragController.DragListener,
 
     private List<PredictedAppIcon.PredictedIconOutlineDrawing> mOutlineDrawings = new ArrayList<>();
 
+    private static HotseatPredictionController sInstance;
+
     public HotseatPredictionController(Launcher launcher) {
         mLauncher = launcher;
         mHotseat = launcher.getHotseat();
@@ -95,6 +101,7 @@ public class HotseatPredictionController implements DragController.DragListener,
         mHotSeatItemsCount = mLauncher.getDeviceProfile().inv.numHotseatIcons;
         launcher.getDeviceProfile().inv.addOnChangeListener(this);
         mHotseat.addOnAttachStateChangeListener(this);
+        sInstance = this;
     }
 
     @Override
@@ -144,6 +151,7 @@ public class HotseatPredictionController implements DragController.DragListener,
             }
             preparePredictionInfo(predictedItem, rank);
         }
+        mPredictedSpotsCount = predictionIndex;
         bindItems(newItems, animate, callback);
     }
 
@@ -419,6 +427,26 @@ public class HotseatPredictionController implements DragController.DragListener,
             dismissTaskMenuView(mTarget);
             pinPrediction(mItemInfo);
         }
+    }
+
+    /**
+     * Fill in predicted_rank field based on app prediction.
+     * Only applicable when {@link ItemInfo#itemType} is PREDICTED_HOTSEAT
+     */
+    public static void fillInHybridHotseatRank(
+            @NonNull ItemInfo itemInfo, @NonNull LauncherLogProto.Target target) {
+        if (sInstance == null || itemInfo.getTargetComponent() == null
+                || itemInfo.container != LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION) {
+            return;
+        }
+        final ComponentKey k = new ComponentKey(itemInfo.getTargetComponent(), itemInfo.user);
+
+        final List<ComponentKeyMapper> predictedApps = sInstance.mComponentKeyMappers;
+        IntStream.range(0, predictedApps.size())
+                .filter((i) -> k.equals(predictedApps.get(i).getComponentKey()))
+                .findFirst()
+                .ifPresent((rank) -> target.predictedRank =
+                        Integer.parseInt(sInstance.mPredictedSpotsCount + "0" + rank));
     }
 
     private static boolean isPredictedIcon(View view) {
