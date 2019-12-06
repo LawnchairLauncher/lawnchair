@@ -13,8 +13,8 @@
     <string name="change_default_home">Ustaw jako aplikację ekranu głównego</string>
     <string name="action_apply">Gotowe</string>
     <!-- Note: new. Replaces “OK” in dialogs. -->
-    <string name="theme_dark_theme_mode_on">Włączone</string>
-    <string name="theme_dark_theme_mode_off">Wyłączono</string>
+    <string name="theme_dark_theme_mode_on">Włączony</string>
+    <string name="theme_dark_theme_mode_off">Wyłączony</string>
     <!-- Section 2 -->
     <string name="theme_title">Motyw</string>
     <string name="pixel_ui_pref_summary">Ikony, kolory, rozmycie</string>
