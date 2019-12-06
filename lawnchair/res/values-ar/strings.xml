@@ -18,7 +18,7 @@
     <!-- Section 2 -->
     <string name="theme_title">السمة</string>
     <string name="pixel_ui_pref_summary">أيقونات ، ألوان ، طمس</string>
-    <string name="pref_icon_packs">حزم الإيقونات</string>
+    <string name="pref_icon_packs">حزم الأيقونات</string>
     <string name="icon_pack_default">أيقونات النظام</string>
     <string name="pref_icon_pack_masking">غطاء الأيقونات</string>
     <string name="pref_icon_pack_masking_summary">تطابق الأيقونات إلى أيقونة الحزمة.</string>
@@ -29,7 +29,7 @@
     <string name="pref_white_only_treatment">استبدال الخلفيات البيضاء</string>
     <string name="pref_white_only_treatment_summary">تلوين خلفية كل الايقونات المُتكيفة.</string>
     <string name="adaptify_pack_title">إنشاء أيقونات مكيفة لحزمة الأيقونات</string>
-    <string name="icon_shape_override_label">شكل الايقونة</string>
+    <string name="icon_shape_override_label">شكل الأيقونة</string>
     <string name="reset_custom_icons">إزالة الأيقونات المخصصة</string>
     <string name="reset_custom_icons_confirmation">العودة إلي الأيقونات الأساسية من حزمة الايقونات هذه؟ لا يمكن التراجع عن هذا.</string>
     <string name="appearance">المظهر</string>
@@ -55,15 +55,15 @@
     <!-- Section 3 -->
     <string name="general_pref_title">الشاشة الرئيسية</string>
     <string name="general_pref_summary">النسق، قفل الشاشة الرئيسية، التنقل</string>
-    <string name="grid_size">شبكة الايقونات</string>
+    <string name="grid_size">شبكة الأيقونات</string>
     <string name="grid_size_width">العرض</string>
     <string name="grid_size_height">الارتفاع</string>
-    <string name="num_hotseat_icons_pref_title">عدد الايقونات</string>
-    <string name="overlap_placement">السماع بالتعدي (التطبيقات فوق البعض)</string>
+    <string name="num_hotseat_icons_pref_title">عدد الأيقونات</string>
+    <string name="overlap_placement">السماح بالتداخل (التطبيقات فوق بعض)</string>
     <string name="lock_desktop">قفل الشاشة الرئيسية</string>
     <string name="pref_category_icons">الاختصارات</string>
     <string name="hide_icon_labels_pref_title">إخفاء اسماء التطبيقات</string>
-    <string name="pref_mutliline_labels">تسميات متعددة الخطوط</string>
+    <string name="pref_mutliline_labels">تسميات متعددة الأسطر</string>
     <string name="icon_text_scale_pref_title">حجم الخط</string>
     <string name="text_color">لون الخط</string>
     <string name="icon_scale_pref_title">حجم الأيقونة</string>
@@ -204,9 +204,9 @@
     <string name="summary_search_hidden_apps">عرض الاختصارات المخفية في النتائج.</string>
     <string name="suggestion_pref_screen_title">الاقتراحات</string>
     <string name="title_app_suggestions_in_search">اقتراحات التطبيقات</string>
-    <string name="app_actions_pref_title">الاجراءت</string>
-    <string name="app_actions_pref_desc">اختصارات إلى الشاشات المستخدمة بشكل متكرر.</string>
-    <string name="app_actions_reset_pref_title">إعادة ضبط اعدادات الاجراء</string>
+    <string name="app_actions_pref_title">الإجراءات</string>
+    <string name="app_actions_pref_desc">إختصارات إلى الشاشات المستخدمة بشكل متكرر.</string>
+    <string name="app_actions_reset_pref_title">إعادة ضبط إعدادات الإجراء</string>
     <string name="app_actions_reset_pref_summary">إظهار الإجراءات التي تم سحبها إلى \"لا تعرض\".</string>
     <string name="all_apps_label_pref_title">عرض \"جميع التطبيقات\" تسمية</string>
     <string name="separate_work_apps_pref_title">علامة التبويب الثانية للتطبيقات المستعملة</string>
@@ -442,7 +442,7 @@
     <string name="drag_to_disable_packs">إسحب للأسفل للتعطيل</string>
     <string name="get_more_icon_packs">الحصول على المزيد</string>
     <string name="enabled_icon_packs">تم التطبيق</string>
-    <string name="lawnchair_actions">الاجراءت</string>
+    <string name="lawnchair_actions">الإجراءات</string>
     <string name="bridge_missing_title">أحصل على Lawnfeed</string>
     <string name="bridge_missing_message">للحصول على أخبار Google, قم بتحميل Lawnfeed.</string>
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
@@ -455,7 +455,7 @@
     <string name="pref_qsb_color">اللون</string>
     <string name="hide_from_predictions">إخفاء من الإقتراحات</string>
     <string name="recents_not_connected">QuickSwitch معطل.</string>
-    <string name="app_actions_pref_title_in_search">الاجراءت</string>
+    <string name="app_actions_pref_title_in_search">الإجراءات</string>
     <string name="search_clear_history">مسح السجل</string>
     <string name="recent_task_option_popup_window">حوار</string>
     <string name="drawer_tabs">تبويبات</string>
@@ -498,7 +498,7 @@
     <string name="pref_fonts_home_shortcuts">فقرات الاختصار</string>
     <string name="pref_fonts_category_drawer">قائمة التطبيقات</string>
     <string name="pref_fonts_drawer_icons">تسميات</string>
-    <string name="pref_fonts_drawer_app_actions_icons">الاجراءت</string>
+    <string name="pref_fonts_drawer_app_actions_icons">الإجراءات</string>
     <string name="pref_fonts_drawer_tabs">أسماء علامات التبويب</string>
     <string name="pref_fonts_find_fonts">بحث</string>
     <string name="pref_fonts_add_fonts">إضافة خطوط</string>
