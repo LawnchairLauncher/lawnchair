@@ -27,7 +27,8 @@
         <item name="popupColorSecondary">#000000</item>
         <item name="popupColorTertiary">#212121</item>
         <item name="widgetsTheme">@style/WidgetContainerTheme.Black</item>
-        <item name="isMainColorDark">true</item>
+        <item name="folderFillColor">#DD000000</item>
+        <item name="folderIconBorderColor">#FF000000</item>
     </style>
 
     <style name="LauncherTheme.Black.DarkText" parent="@style/LauncherTheme.Black">
