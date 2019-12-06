@@ -644,18 +644,6 @@ public class SettingsActivity extends SettingsBaseActivity implements
                     return true;
                 });
             } else if (getContent() == R.xml.lawnchair_app_drawer_preferences) {
-                SwitchPreference showActionsPref = (SwitchPreference) findPreference(SHOW_ACTIONS_PREF);
-                Preference resetHiddenActionsPref = findPreference(RESET_HIDDEN_ACTIONS_PREF);
-                resetHiddenActionsPref.setEnabled(showActionsPref.isChecked());
-                showActionsPref.setOnPreferenceClickListener(preference -> {
-                    resetHiddenActionsPref.setEnabled(((SwitchPreference) preference).isChecked());
-                    return false;
-                });
-                resetHiddenActionsPref.setOnPreferenceClickListener(preference -> {
-                    Utilities.getLawnchairPrefs(mContext).getSharedPrefs().edit()
-                            .remove(HIDDEN_ACTIONS_PREF).apply();
-                    return true;
-                });
                 findPreference(SHOW_PREDICTIONS_PREF).setOnPreferenceChangeListener(this);
             } else if (getContent() == R.xml.lawnchair_dev_options_preference) {
                 findPreference("kill").setOnPreferenceClickListener(this);

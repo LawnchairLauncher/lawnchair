@@ -135,18 +135,6 @@
             android:defaultValue="true"
             app:controllerClass=".AppSuggestionsController"
             app:searchTitle="@string/title_app_suggestions_in_search" />
-
-        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
-            android:key="pref_show_suggested_actions"
-            android:title="@string/app_actions_pref_title"
-            android:summary="@string/app_actions_pref_desc"
-            android:defaultValue="true"
-            app:searchTitle="@string/app_actions_pref_title_in_search" />
-
-        <ch.deletescape.lawnchair.preferences.Preference
-            android:key="pref_reset_hidden_suggested_actions"
-            android:title="@string/app_actions_reset_pref_title"
-            android:summary="@string/app_actions_reset_pref_summary" />
     </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
 
     <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory
