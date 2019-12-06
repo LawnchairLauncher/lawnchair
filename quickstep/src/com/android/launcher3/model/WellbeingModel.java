@@ -229,6 +229,31 @@ public final class WellbeingModel {
             params.putInt(EXTRA_MAX_NUM_ACTIONS_SHOWN, 1);
             // Perform wellbeing call .
             remoteActionBundle = client.call(METHOD_GET_ACTIONS, null, params);
+
+            synchronized (mModelLock) {
+                // Remove the entries for requested packages, and then update the fist with what we
+                // got from service
+                Arrays.stream(packageNames).forEach(mPackageToActionId::remove);
+
+                // The result consists of sub-bundles, each one is per a remote action. Each
+                // sub-bundle has a RemoteAction and a list of packages to which the action applies.
+                for (String actionId :
+                        remoteActionBundle.getStringArray(EXTRA_ACTIONS)) {
+                    final Bundle actionBundle = remoteActionBundle.getBundle(actionId);
+                    mActionIdMap.put(actionId,
+                            actionBundle.getParcelable(EXTRA_ACTION));
+
+                    final String[] packagesForAction =
+                            actionBundle.getStringArray(EXTRA_PACKAGES);
+                    if (DEBUG || mIsInTest) {
+                        Log.d(TAG, "....actionId: " + actionId + ", packages: " + String.join(", ",
+                                packagesForAction));
+                    }
+                    for (String packageName : packagesForAction) {
+                        mPackageToActionId.put(packageName, actionId);
+                    }
+                }
+            }
         } catch (DeadObjectException e) {
             Log.i(TAG, "retrieveActions(): DeadObjectException");
             return false;
@@ -236,31 +261,6 @@ public final class WellbeingModel {
             Log.e(TAG, "Failed to retrieve data from " + contentUri + ": " + e);
             if (mIsInTest) throw new RuntimeException(e);
             return true;
-        }
-
-        synchronized (mModelLock) {
-            // Remove the entries for requested packages, and then update the fist with what we
-            // got from service
-            Arrays.stream(packageNames).forEach(mPackageToActionId::remove);
-
-            // The result consists of sub-bundles, each one is per a remote action. Each sub-bundle
-            // has a RemoteAction and a list of packages to which the action applies.
-            for (String actionId :
-                    remoteActionBundle.getStringArray(EXTRA_ACTIONS)) {
-                final Bundle actionBundle = remoteActionBundle.getBundle(actionId);
-                mActionIdMap.put(actionId,
-                        actionBundle.getParcelable(EXTRA_ACTION));
-
-                final String[] packagesForAction =
-                        actionBundle.getStringArray(EXTRA_PACKAGES);
-                if (DEBUG || mIsInTest) {
-                    Log.d(TAG, "....actionId: " + actionId + ", packages: " + String.join(", ",
-                            packagesForAction));
-                }
-                for (String packageName : packagesForAction) {
-                    mPackageToActionId.put(packageName, actionId);
-                }
-            }
         }
         if (DEBUG || mIsInTest) Log.i(TAG, "retrieveActions(): finished");
         return true;
