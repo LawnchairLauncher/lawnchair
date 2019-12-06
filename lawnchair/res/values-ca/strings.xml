@@ -553,4 +553,7 @@
     <string name="action_switch_apps">Canvia l\'aplicació</string>
     <string name="icon_shape_system_default">Definit pel sistema</string>
     <string name="title_missing_notification_access">Cal permís d\'accés a les notificacions.</string>
+    <string name="activity_not_found">Aplicació no instal·lada.</string>
+    <string name="out_of_space">No hi ha espai a l\'escriptori.</string>
+    <string name="hotseat_out_of_space">No hi ha espai a l\'acoblador.</string>
 </resources>
