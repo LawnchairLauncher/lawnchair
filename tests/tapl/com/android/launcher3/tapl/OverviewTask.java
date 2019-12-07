@@ -67,8 +67,8 @@ public final class OverviewTask {
             mLauncher.executeAndWaitForEvent(
                     () -> mTask.click(),
                     event -> event.getEventType() == TYPE_WINDOW_STATE_CHANGED,
-                    "Launching task didn't open a new window: " +
-                            mTask.getParent().getContentDescription());
+                    () -> "Launching task didn't open a new window: "
+                            + mTask.getParent().getContentDescription());
         }
         return new Background(mLauncher);
     }

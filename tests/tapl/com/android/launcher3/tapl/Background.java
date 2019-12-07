@@ -17,6 +17,7 @@
 package com.android.launcher3.tapl;
 
 import static com.android.launcher3.testing.TestProtocol.BACKGROUND_APP_STATE_ORDINAL;
+import static com.android.launcher3.testing.TestProtocol.OVERVIEW_STATE_ORDINAL;
 
 import android.graphics.Point;
 import android.os.SystemClock;
@@ -54,13 +55,13 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
         try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                 "want to switch from background to overview")) {
             verifyActiveContainer();
-            goToOverviewUnchecked(BACKGROUND_APP_STATE_ORDINAL);
+            goToOverviewUnchecked();
             return mLauncher.isFallbackOverview() ?
                     new BaseOverview(mLauncher) : new Overview(mLauncher);
         }
     }
 
-    protected void goToOverviewUnchecked(int expectedState) {
+    protected void goToOverviewUnchecked() {
         switch (mLauncher.getNavigationModel()) {
             case ZERO_BUTTON: {
                 final int centerX = mLauncher.getDevice().getDisplayWidth() / 2;
@@ -81,9 +82,11 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
                                 start,
                                 end),
                         event -> TestProtocol.PAUSE_DETECTED_MESSAGE.equals(event.getClassName()),
-                        "Pause wasn't detected");
-                mLauncher.sendPointer(
-                        downTime, SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, end);
+                        () -> "Pause wasn't detected");
+                mLauncher.runToState(
+                        () -> mLauncher.sendPointer(
+                                downTime, SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, end),
+                        OVERVIEW_STATE_ORDINAL);
                 break;
             }
 
@@ -105,17 +108,14 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
                     startY = endY = mLauncher.getDevice().getDisplayHeight() / 2;
                 }
 
-                if (mLauncher.isFallbackOverview()) {
-                    mLauncher.linearGesture(startX, startY, endX, endY, 10, false);
-                    new BaseOverview(mLauncher);
-                } else {
-                    mLauncher.swipeToState(startX, startY, endX, endY, 10, expectedState);
-                }
+                mLauncher.swipeToState(startX, startY, endX, endY, 10, OVERVIEW_STATE_ORDINAL);
                 break;
             }
 
             case THREE_BUTTON:
-                mLauncher.waitForSystemUiObject("recent_apps").click();
+                mLauncher.runToState(
+                        () -> mLauncher.waitForSystemUiObject("recent_apps").click(),
+                        OVERVIEW_STATE_ORDINAL);
                 break;
         }
     }
@@ -167,7 +167,7 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
             case THREE_BUTTON:
                 // Double press the recents button.
                 UiObject2 recentsButton = mLauncher.waitForSystemUiObject("recent_apps");
-                recentsButton.click();
+                mLauncher.runToState(() -> recentsButton.click(), OVERVIEW_STATE_ORDINAL);
                 mLauncher.getOverview();
                 recentsButton.click();
                 break;

@@ -17,6 +17,8 @@
 package com.android.launcher3.tapl;
 
 import static com.android.launcher3.testing.TestProtocol.ALL_APPS_STATE_ORDINAL;
+import static com.android.launcher3.testing.TestProtocol.NORMAL_STATE_ORDINAL;
+import static com.android.launcher3.testing.TestProtocol.SPRING_LOADED_STATE_ORDINAL;
 
 import static junit.framework.TestCase.assertTrue;
 
@@ -165,14 +167,21 @@ public final class Workspace extends Home {
         LauncherInstrumentation.log("dragIconToWorkspace: begin");
         final Point launchableCenter = launchable.getObject().getVisibleCenter();
         final long downTime = SystemClock.uptimeMillis();
-        launcher.sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, launchableCenter);
-        LauncherInstrumentation.log("dragIconToWorkspace: sent down");
-        launcher.waitForLauncherObject(longPressIndicator);
-        LauncherInstrumentation.log("dragIconToWorkspace: indicator");
-        launcher.movePointer(launchableCenter, dest, 10, downTime, true);
+        launcher.runToState(
+                () -> {
+                    launcher.sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN,
+                            launchableCenter);
+                    LauncherInstrumentation.log("dragIconToWorkspace: sent down");
+                    launcher.waitForLauncherObject(longPressIndicator);
+                    LauncherInstrumentation.log("dragIconToWorkspace: indicator");
+                    launcher.movePointer(launchableCenter, dest, 10, downTime, true);
+                },
+                SPRING_LOADED_STATE_ORDINAL);
         LauncherInstrumentation.log("dragIconToWorkspace: moved pointer");
-        launcher.sendPointer(
-                downTime, SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, dest);
+        launcher.runToState(
+                () -> launcher.sendPointer(
+                        downTime, SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, dest),
+                NORMAL_STATE_ORDINAL);
         LauncherInstrumentation.log("dragIconToWorkspace: end");
         launcher.waitUntilGone("drop_target_bar");
     }
