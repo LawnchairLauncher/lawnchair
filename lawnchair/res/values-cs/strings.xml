@@ -101,7 +101,7 @@
     <string name="title_use_pill_qsb">Zobrazit pilulkového zástupce pro vyhledávání</string>
     <string name="pref_category_weather">Ostatní</string>
     <string name="pref_smartspace_widget_provider">Poskytovatel informací o\u00a0počasí</string>
-    <string name="google_app">Google</string>
+    <string name="google_app">Aplikace Google</string>
     <string name="weather_provider_disabled">Vypnuto</string>
     <string name="weather_provider_owm">OpenWeatherMap</string>
     <string name="weather_provider_pe">Pixel Experience</string>
@@ -213,7 +213,7 @@
     <string name="search">Hledat</string>
     <string name="search_pref_summary">Rozložení, styl, vyhledávač</string>
     <string name="pref_global_search_provider">Vyhledávač</string>
-    <string name="google">Aplikace Google</string>
+    <string name="google">Google</string>
     <string name="search_provider_google_go">Google Go</string>
     <string name="web_search_google">Google</string>
     <string name="web_search_ddg">DuckDuckGo (v\u00a0prohlížeči)</string>
@@ -544,7 +544,7 @@
     <string name="icon_shape_bottom_right">Vpravo dole</string>
     <string name="icon_shape_corner_round">Kruh</string>
     <string name="icon_shape_corner_squircle">Superelipsa</string>
-    <string name="icon_shape_corner_cut">Výřez</string>
+    <string name="icon_shape_corner_cut">Zkosení</string>
     <string name="smartspace_add_to_home">Přidat na plochu</string>
     <string name="get_lawnfeed">Získejte Lawnfeed</string>
     <!-- Section 13 -->
