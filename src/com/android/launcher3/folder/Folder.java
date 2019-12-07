@@ -148,7 +148,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     public ExtendedEditText mFolderName;
     private PageIndicatorDots mPageIndicator;
 
-    private View mFooter;
+    protected View mFooter;
     private int mFooterHeight;
 
     // Cell ranks used for drag and drop
@@ -991,7 +991,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         lp.y = top;
     }
 
-    private int getContentAreaHeight() {
+    protected int getContentAreaHeight() {
         DeviceProfile grid = mLauncher.getDeviceProfile();
         int maxContentAreaHeight = grid.availableHeightPx - grid.getTotalWorkspacePadding().y
                 - mFooterHeight;
