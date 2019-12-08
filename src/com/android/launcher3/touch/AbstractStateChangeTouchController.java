@@ -413,10 +413,7 @@ public abstract class AbstractStateChangeTouchController
         } else {
             // Let the state manager know that the animation didn't go to the target state,
             // but don't cancel ourselves (we already clean up when the animation completes).
-            Runnable onCancel = mCurrentAnimation.getOnCancelRunnable();
-            mCurrentAnimation.setOnCancelRunnable(null);
-            mCurrentAnimation.dispatchOnCancel();
-            mCurrentAnimation.setOnCancelRunnable(onCancel);
+            mCurrentAnimation.dispatchOnCancelWithoutCancelRunnable();
 
             endProgress = 0;
             if (progress <= 0) {
