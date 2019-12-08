@@ -553,4 +553,7 @@
     <string name="action_switch_apps">Lülitu teisele rakendusele</string>
     <string name="icon_shape_system_default">Määratud süsteemi poolt</string>
     <string name="title_missing_notification_access">Vaja on juurdepääsu teatisele.</string>
+    <string name="activity_not_found">Rakendus pole installitud.</string>
+    <string name="out_of_space">Töölaual pole enam ruumi.</string>
+    <string name="hotseat_out_of_space">Dockis pole enam ruumi.</string>
 </resources>
