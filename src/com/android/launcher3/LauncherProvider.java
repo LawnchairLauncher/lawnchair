@@ -484,8 +484,6 @@ public class LauncherProvider extends ContentProvider {
      */
     private AutoInstallsLayout createWorkspaceLoaderFromAppRestriction(AppWidgetHost widgetHost) {
         Context ctx = getContext();
-        InvariantDeviceProfile grid = LauncherAppState.getIDP(ctx);
-
         String authority = Settings.Secure.getString(ctx.getContentResolver(),
                 "launcher3.layout.provider");
         if (TextUtils.isEmpty(authority)) {
@@ -497,13 +495,7 @@ public class LauncherProvider extends ContentProvider {
             Log.e(TAG, "No provider found for authority " + authority);
             return null;
         }
-        Uri uri = new Uri.Builder().scheme("content").authority(authority).path("launcher_layout")
-                .appendQueryParameter("version", "1")
-                .appendQueryParameter("gridWidth", Integer.toString(grid.numColumns))
-                .appendQueryParameter("gridHeight", Integer.toString(grid.numRows))
-                .appendQueryParameter("hotseatSize", Integer.toString(grid.numHotseatIcons))
-                .build();
-
+        Uri uri = getLayoutUri(authority, ctx);
         try (InputStream in = ctx.getContentResolver().openInputStream(uri)) {
             // Read the full xml so that we fail early in case of any IO error.
             String layout = new String(IOUtils.toByteArray(in));
@@ -518,6 +510,16 @@ public class LauncherProvider extends ContentProvider {
             Log.e(TAG, "Error getting layout stream from: " + authority , e);
             return null;
         }
+    }
+
+    public static Uri getLayoutUri(String authority, Context ctx) {
+        InvariantDeviceProfile grid = LauncherAppState.getIDP(ctx);
+        return new Uri.Builder().scheme("content").authority(authority).path("launcher_layout")
+                .appendQueryParameter("version", "1")
+                .appendQueryParameter("gridWidth", Integer.toString(grid.numColumns))
+                .appendQueryParameter("gridHeight", Integer.toString(grid.numRows))
+                .appendQueryParameter("hotseatSize", Integer.toString(grid.numHotseatIcons))
+                .build();
     }
 
     private DefaultLayoutParser getDefaultLayoutParser(AppWidgetHost widgetHost) {
