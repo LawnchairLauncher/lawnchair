@@ -34,6 +34,7 @@ import android.view.View.OnTouchListener;
 import android.view.ViewConfiguration;
 
 import ch.deletescape.lawnchair.LawnchairLauncher;
+import ch.deletescape.lawnchair.blur.BlurWallpaperProvider;
 import ch.deletescape.lawnchair.gestures.GestureController;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.CellLayout;
@@ -196,14 +197,18 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
         if (mLauncher.isInState(NORMAL)) {
             mGestureController.onLongPress();
         } else if (mLauncher.isInState(OPTIONS)) {
+            final int currentScreen = mLauncher.getCurrentWorkspaceScreen();
             ArrayList<OptionItem> options = new ArrayList<>();
             options.add(new OptionItem(
                     R.string.remove_drop_target_label,
                     R.drawable.ic_remove_no_shadow,
                     -1, v -> {
-                        mLauncher.getWorkspace().removeScreen(mLauncher.getCurrentWorkspaceScreen(), true);
+                mLauncher.getWorkspace().removeScreen(currentScreen, true);
                         return true;
             }));
+            if (BlurWallpaperProvider.Companion.isEnabled()) {
+                options.add(mWorkspace.getWorkspaceBlur().getOptionItem(currentScreen));
+            }
             OptionsPopupView.show(mLauncher, mTouchDownPoint.x, mTouchDownPoint.y, options);
         }
     }

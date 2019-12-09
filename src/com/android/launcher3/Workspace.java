@@ -63,6 +63,7 @@ import android.widget.Toast;
 
 import ch.deletescape.lawnchair.ClockVisibilityManager;
 import ch.deletescape.lawnchair.LawnchairLauncher;
+import ch.deletescape.lawnchair.settings.WorkspaceBlur;
 import ch.deletescape.lawnchair.views.LawnchairBackgroundView;
 import com.android.launcher3.Launcher.LauncherOverlay;
 import com.android.launcher3.LauncherAppWidgetHost.ProviderChangedListener;
@@ -256,6 +257,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     // Handles workspace state transitions
     private final WorkspaceStateTransitionAnimation mStateTransitionAnimation;
 
+    private final WorkspaceBlur mWorkspaceBlur;
+
     /**
      * Used to inflate the Workspace from XML.
      *
@@ -281,6 +284,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         mWallpaperManager = WallpaperManager.getInstance(context);
 
         mWallpaperOffset = new WallpaperOffsetInterpolator(this);
+        mWorkspaceBlur = new WorkspaceBlur(this, mWorkspaceScreens);
 
         setHapticFeedbackEnabled(false);
         initWorkspace();
@@ -1046,6 +1050,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
         updatePageAlphaValues();
         enableHwLayersOnVisiblePages();
+        updateBlurAlpha();
     }
 
     public void showPageIndicatorAtCurrentScroll() {
@@ -1287,6 +1292,26 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         }
     }
 
+    public void updateBlurAlpha() {
+        int screenCenter = getScrollX() + getMeasuredWidth() / 2;
+        float totalBlurAlpha = 0;
+        for (int i = 0; i < getChildCount(); i++) {
+            CellLayout child = (CellLayout) getChildAt(i);
+            if (child != null) {
+                float scrollProgress = getScrollProgress(screenCenter, child, i);
+                float blurAlpha = 1 - Math.abs(scrollProgress);
+                int id = getScreenIdForPageIndex(i);
+                if (mWorkspaceBlur.get(id)) {
+                    totalBlurAlpha += blurAlpha;
+                }
+            }
+        }
+        if (mLauncher instanceof LawnchairLauncher) {
+            ((LawnchairLauncher) mLauncher).getBackground().getBlurAlphas().getProperty(
+                    LawnchairBackgroundView.ALPHA_INDEX_SCREEN).setValue(Math.min(1, totalBlurAlpha));
+        }
+    }
+
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         IBinder windowToken = getWindowToken();
@@ -1312,6 +1337,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         }
         super.onLayout(changed, left, top, right, bottom);
         updatePageAlphaValues();
+        updateBlurAlpha();
     }
 
     @Override
@@ -3414,6 +3440,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         super.setCurrentPage(currentPage);
         ClockVisibilityManager.Companion.getInstance(getContext())
                 .onWorkspacePageChanged(this, mCurrentPage);
+    }
+
+    public WorkspaceBlur getWorkspaceBlur() {
+        return mWorkspaceBlur;
     }
 
     /**

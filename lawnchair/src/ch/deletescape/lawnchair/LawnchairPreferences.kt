@@ -139,6 +139,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val centerWallpaper by BooleanPref("pref_centerWallpaper")
     val lockDesktop by BooleanPref("pref_lockDesktop", false, reloadAll)
     val usePopupMenuView by BooleanPref("pref_desktopUsePopupMenuView", true, doNothing)
+    var workspaceBlurScreens by IntSetPref("pref_workspaceBlurScreens", emptySet())
 
     // Smartspace
     val enableSmartspace by BooleanPref("pref_smartspace", lawnchairConfig.enableSmartspace)
@@ -539,6 +540,21 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
         fun clear() {
             valueMap.clear()
             saveChanges()
+        }
+    }
+
+    open inner class IntSetPref(key: String, defaultValue: Set<Int>, onChange: () -> Unit = doNothing) :
+            PrefDelegate<Set<Int>>(key, defaultValue, onChange) {
+
+        private val defaultStringSet = super.defaultValue.mapTo(mutableSetOf()) { "$it" }
+
+        override fun onGetValue(): Set<Int> = sharedPrefs.getStringSet(getKey(), defaultStringSet)!!
+                .mapTo(mutableSetOf()) { Integer.parseInt(it) }
+
+        override fun onSetValue(value: Set<Int>) {
+            edit {
+                putStringSet(getKey(), value.mapTo(mutableSetOf()) { "$it" })
+            }
         }
     }
 

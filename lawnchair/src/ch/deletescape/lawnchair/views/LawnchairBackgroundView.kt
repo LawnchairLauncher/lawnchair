@@ -37,7 +37,7 @@ class LawnchairBackgroundView(context: Context, attrs: AttributeSet) : View(cont
     val blurAlphas = InvertedMultiValueAlpha({ alpha ->
         blurAlpha = Math.round(255 * alpha)
         invalidate()
-    }, 3)
+    }, 4)
     private var blurAlpha = 0
 
     private val blurDrawableCallback by lazy {
@@ -113,5 +113,6 @@ class LawnchairBackgroundView(context: Context, attrs: AttributeSet) : View(cont
         const val ALPHA_INDEX_OVERLAY = 0
         const val ALPHA_INDEX_STATE = 1
         const val ALPHA_INDEX_TRANSITIONS = 2
+        const val ALPHA_INDEX_SCREEN = 3
     }
 }
