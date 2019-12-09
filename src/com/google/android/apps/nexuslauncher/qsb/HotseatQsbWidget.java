@@ -333,12 +333,19 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
     }
 
     public static int getBottomMargin(Launcher launcher, boolean widgetMode) {
-        Resources resources = launcher.getResources();
-        int minBottom = launcher.getDeviceProfile().getInsets().bottom + launcher.getResources()
-                .getDimensionPixelSize(R.dimen.hotseat_qsb_bottom_margin);
-
         DeviceProfile profile = launcher.getDeviceProfile();
-        Rect rect = widgetMode ? new Rect(0,0,0,0) : profile.getInsets();
+        Resources resources = launcher.getResources();
+        int resBottomMargin = resources.getDimensionPixelSize(R.dimen.hotseat_qsb_bottom_margin);
+
+        if (widgetMode) {
+            int cellHeight = profile.getCellSize().y;
+            int widgetHeight = resources.getDimensionPixelSize(R.dimen.qsb_widget_height);
+            int bottomMargin = Math.round((cellHeight - widgetHeight) / 2.0f);
+            return Math.max(bottomMargin, resBottomMargin);
+        }
+
+        Rect rect = profile.getInsets();
+        int minBottom = rect.bottom + resBottomMargin;
         Rect hotseatLayoutPadding = profile.getHotseatLayoutPadding();
 
         int hotseatTop = profile.hotseatBarSizePx + rect.bottom;
