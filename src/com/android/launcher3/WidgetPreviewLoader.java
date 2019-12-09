@@ -44,6 +44,7 @@ import com.android.launcher3.util.SQLiteCacheHelper;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.widget.WidgetCell;
 
+import com.android.launcher3.widget.custom.CustomAppWidgetProviderInfo;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -322,7 +323,11 @@ public class WidgetPreviewLoader {
         Drawable drawable = null;
         if (info.previewImage != 0) {
             try {
-                drawable = info.loadPreviewImage(mContext, 0);
+                if (info instanceof CustomAppWidgetProviderInfo) {
+                    drawable = launcher.getDrawable(info.previewImage);
+                } else {
+                    drawable = info.loadPreviewImage(mContext, 0);
+                }
             } catch (OutOfMemoryError e) {
                 Log.w(TAG, "Error loading widget preview for: " + info.provider, e);
                 // During OutOfMemoryError, the previous heap stack is not affected. Catching
