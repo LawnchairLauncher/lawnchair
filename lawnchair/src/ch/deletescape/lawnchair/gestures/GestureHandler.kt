@@ -48,7 +48,7 @@ abstract class GestureHandler(val context: Context, val config: JSONObject?) {
 
     }
 
-    open fun isAvailableForSwipeUp(isSwipeUp: Boolean) = isAvailable && !requiresForeground
+    open fun isAvailableForSwipeUp(isSwipeUp: Boolean) = isAvailable && (!isSwipeUp || !requiresForeground)
 
     override fun toString(): String {
         return JSONObject().apply {
