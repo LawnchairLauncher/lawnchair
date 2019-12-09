@@ -48,6 +48,7 @@ import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.Task.TaskKey;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.PackageManagerWrapper;
+import com.android.systemui.shared.system.TaskDescriptionCompat;
 
 import java.util.function.Consumer;
 
@@ -140,7 +141,7 @@ public class TaskIconCache {
 
         // Load icon
         // TODO: Load icon resource (b/143363444)
-        Bitmap icon = desc.getIcon();
+        Bitmap icon = TaskDescriptionCompat.getIcon(desc, key.userId);
         if (icon != null) {
             entry.icon = new FastBitmapDrawable(getBitmapInfo(
                     new BitmapDrawable(mContext.getResources(), icon),
