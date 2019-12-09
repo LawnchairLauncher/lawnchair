@@ -527,6 +527,7 @@ public class TouchInteractionService extends Service implements
     }
 
     private void initWhenUserUnlocked() {
+        SysUINavigationMode.INSTANCE.get(this).onUserUnlocked();
         mRecentsModel = RecentsModel.INSTANCE.get(this);
         mOverviewComponentObserver = new OverviewComponentObserver(this);
 

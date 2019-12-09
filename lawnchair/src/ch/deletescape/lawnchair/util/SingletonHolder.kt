@@ -46,7 +46,7 @@ open class SingletonHolder<out T, in A>(creator: (A) -> T) {
         }
     }
 
-    protected fun dangerousGetInstance() = instance
+    fun dangerousGetInstance() = instance
 }
 
 open class LawnchairSingletonHolder<out T>(creator: (Context) -> T)

@@ -68,6 +68,8 @@ public class SysUINavigationMode {
 
     private final List<NavigationModeChangeListener> mChangeListeners = new ArrayList<>();
 
+    private boolean mUserUnlocked = false;
+
     public SysUINavigationMode(Context context) {
         mContext = context;
         initializeMode();
@@ -78,7 +80,12 @@ public class SysUINavigationMode {
                 reinitializeMode();
             }
         }, getPackageFilter("android", ACTION_OVERLAY_CHANGED));
-        NavigationModeCompat.Companion.getInstance(context).setListener(this::reinitializeMode);
+    }
+
+    void onUserUnlocked() {
+        mUserUnlocked = true;
+        NavigationModeCompat.Companion.getInstance(mContext).setListener(this::reinitializeMode);
+        reinitializeMode();
     }
 
     private void reinitializeMode() {
@@ -99,7 +106,7 @@ public class SysUINavigationMode {
                     mMode = m;
                 }
             }
-        } else {
+        } else if (mUserUnlocked) {
             mMode = NavigationModeCompat.Companion.getInstance(mContext).getCurrentMode();
         }
     }

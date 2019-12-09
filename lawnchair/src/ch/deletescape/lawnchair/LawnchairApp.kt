@@ -114,7 +114,7 @@ class LawnchairApp : Application() {
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        ThemeManager.getInstance(this).updateNightMode(newConfig)
+        ThemeManager.dangerousGetInstance()?.updateNightMode(newConfig)
     }
 
     class ActivityHandler : ActivityLifecycleCallbacks {
