@@ -307,7 +307,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     // Request id for any pending activity result
     protected int mPendingActivityRequestCode = -1;
 
-    public ViewGroupFocusHelper mFocusHandler;
+    private ViewGroupFocusHelper mFocusHandler;
 
     private RotationHelper mRotationHelper;
 
@@ -615,6 +615,10 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     public RotationHelper getRotationHelper() {
         return mRotationHelper;
+    }
+
+    public ViewGroupFocusHelper getFocusHandler() {
+        return mFocusHandler;
     }
 
     public LauncherStateManager getStateManager() {
@@ -1740,7 +1744,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         getModelWriter().addItemToDatabase(folderInfo, container, screenId, cellX, cellY);
 
         // Create the view
-        FolderIcon newFolder = FolderIcon.fromXml(R.layout.folder_icon, this, layout, folderInfo);
+        FolderIcon newFolder = FolderIcon.inflateFolderAndIcon(R.layout.folder_icon, this, layout, folderInfo);
         mWorkspace.addInScreen(newFolder, folderInfo);
         // Force measure the new folder icon
         CellLayout parent = mWorkspace.getParentCellLayoutForView(newFolder);
@@ -2101,7 +2105,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                     break;
                 }
                 case LauncherSettings.Favorites.ITEM_TYPE_FOLDER: {
-                    view = FolderIcon.fromXml(R.layout.folder_icon, this,
+                    view = FolderIcon.inflateFolderAndIcon(R.layout.folder_icon, this,
                             (ViewGroup) workspace.getChildAt(workspace.getCurrentPage()),
                             (FolderInfo) item);
                     break;

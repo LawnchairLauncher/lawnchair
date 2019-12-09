@@ -83,7 +83,6 @@ import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.pageindicators.WorkspacePageIndicator;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.shortcuts.ShortcutDragPreviewProvider;
-import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.WorkspaceTouchListener;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -2547,7 +2546,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                     view = mLauncher.createShortcut(cellLayout, (WorkspaceItemInfo) info);
                     break;
                 case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
-                    view = FolderIcon.fromXml(R.layout.folder_icon, mLauncher, cellLayout,
+                    view = FolderIcon.inflateFolderAndIcon(R.layout.folder_icon, mLauncher, cellLayout,
                             (FolderInfo) info);
                     break;
                 default:

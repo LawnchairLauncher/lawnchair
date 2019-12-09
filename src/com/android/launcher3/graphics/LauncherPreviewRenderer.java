@@ -49,6 +49,7 @@ import android.widget.TextClock;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.FolderInfo;
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.InvariantDeviceProfile;
@@ -63,6 +64,7 @@ import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.WorkspaceLayoutManager;
 import com.android.launcher3.allapps.SearchUiManager;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.icons.BaseIconFactory;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.BitmapRenderer;
@@ -239,6 +241,12 @@ public class LauncherPreviewRenderer implements Callable<Bitmap> {
             addInScreenFromBind(icon, info);
         }
 
+        private void inflateAndAddFolder(FolderInfo info) {
+            FolderIcon folderIcon = FolderIcon.inflateIcon(R.layout.folder_icon, this, mWorkspace,
+                    info);
+            addInScreenFromBind(folderIcon, info);
+        }
+
         private void dispatchVisibilityAggregated(View view, boolean isVisible) {
             // Similar to View.dispatchVisibilityAggregated implementation.
             final boolean thisVisible = view.getVisibility() == VISIBLE;
@@ -288,7 +296,7 @@ public class LauncherPreviewRenderer implements Callable<Bitmap> {
                             inflateAndAddIcon((WorkspaceItemInfo) itemInfo);
                             break;
                         case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
-                            // TODO: for folder implementation here.
+                            inflateAndAddFolder((FolderInfo) itemInfo);
                             break;
                         default:
                             break;
