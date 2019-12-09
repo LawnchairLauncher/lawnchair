@@ -4,6 +4,8 @@ import static com.android.launcher3.InvariantDeviceProfile.CHANGE_FLAG_ICON_PARA
 import static com.android.launcher3.LauncherState.ALL_APPS_CONTENT;
 import static com.android.launcher3.LauncherState.ALL_APPS_HEADER;
 import static com.android.launcher3.LauncherState.HOTSEAT_SEARCH_BOX;
+import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -108,6 +110,8 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
 
     public void setWidgetMode(boolean enable) {
         widgetMode = enable;
+        dz();
+        setContentVisibility(HOTSEAT_SEARCH_BOX, NO_ANIM_PROPERTY_SETTER, LINEAR);
     }
 
     public void setInsets(Rect rect) {
@@ -495,7 +499,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         } else {
             micProgress = hotseatProgress;
         }
-        setter.setFloat(this, HOTSEAT_PROGRESS, hotseatProgress, Interpolators.LINEAR);
+        setter.setFloat(this, HOTSEAT_PROGRESS, hotseatProgress, LINEAR);
         setter.setViewAlpha(this, qsbVisible ? 1 : 0, interpolator);
         setter.setViewAlpha(mLogoIconView, 1 - hotseatProgress, interpolator);
         setter.setViewAlpha(mHotseatLogoIconView, hotseatProgress, interpolator);
