@@ -59,7 +59,7 @@ abstract class BaseFlags {
     }
 
     public static boolean showFlagTogglerUi(Context context) {
-        return Utilities.IS_DEBUG_DEVICE && Utilities.isDevelopersOptionsEnabled(context);
+        return true;
     }
 
     public static final boolean IS_DOGFOOD_BUILD = false;
@@ -114,12 +114,9 @@ abstract class BaseFlags {
             "Rotate launcher UI instead of using transposed layout");
 
     public static void initialize(Context context) {
-        // Avoid the disk read for user builds
-        if (Utilities.IS_DEBUG_DEVICE) {
-            synchronized (sLock) {
-                for (TogglableFlag flag : sFlags) {
-                    flag.initialize(context);
-                }
+        synchronized (sLock) {
+            for (TogglableFlag flag : sFlags) {
+                flag.initialize(context);
             }
         }
     }
