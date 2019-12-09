@@ -25,6 +25,7 @@ import android.graphics.Rect;
 import android.view.Gravity;
 
 import ch.deletescape.lawnchair.gestures.VerticalSwipeGestureController;
+import ch.deletescape.lawnchair.touch.PinchStateChangeTouchController;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
@@ -154,6 +155,7 @@ public abstract class RecentsUiFactory {
 
         ArrayList<TouchController> list = new ArrayList<>();
         list.add(launcher.getDragController());
+        list.add(new PinchStateChangeTouchController(launcher));
         if (mode == NO_BUTTON) {
             list.add(new QuickSwitchTouchController(launcher));
             list.add(new NavBarToHomeTouchController(launcher));

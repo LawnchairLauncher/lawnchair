@@ -22,6 +22,7 @@ import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
 
 import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.LauncherState.OPTIONS;
 
 import android.graphics.PointF;
 import android.graphics.Rect;
@@ -33,15 +34,19 @@ import android.view.View.OnTouchListener;
 import android.view.ViewConfiguration;
 
 import ch.deletescape.lawnchair.LawnchairLauncher;
+import ch.deletescape.lawnchair.gestures.GestureController;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.R;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.views.OptionsPopupView;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
+import com.android.launcher3.views.OptionsPopupView.OptionItem;
+import java.util.ArrayList;
 
 /**
  * Helper class to handle touch on empty space in workspace and show options popup on long press
@@ -69,6 +74,7 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
     private int mLongPressState = STATE_CANCELLED;
 
     private final GestureDetector mGestureDetector;
+    private final GestureController mGestureController;
 
     public WorkspaceTouchListener(Launcher launcher, Workspace workspace) {
         mLauncher = launcher;
@@ -77,9 +83,8 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
         // likely to cause movement.
         mTouchSlop = 2 * ViewConfiguration.get(launcher).getScaledTouchSlop();
         mGestureDetector = new GestureDetector(workspace.getContext(), this);
-        if (launcher instanceof LawnchairLauncher) {
-            ((LawnchairLauncher) launcher).getGestureController().attachDoubleTapListener(mGestureDetector);
-        }
+        mGestureController = ((LawnchairLauncher) launcher).getGestureController();
+        mGestureController.attachDoubleTapListener(mGestureDetector);
     }
 
     @Override
@@ -106,6 +111,7 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
             if (handleLongPress) {
                 mLongPressState = STATE_REQUESTED;
                 mTouchDownPoint.set(ev.getX(), ev.getY());
+                mGestureController.setTouchDownPoint(mTouchDownPoint);
             }
 
             mWorkspace.onTouchEvent(ev);
@@ -160,7 +166,7 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
 
     private boolean canHandleLongPress() {
         return AbstractFloatingView.getTopOpenView(mLauncher) == null
-                && mLauncher.isInState(NORMAL);
+                && mLauncher.isInState(NORMAL) || mLauncher.isInState(OPTIONS);
     }
 
     private void cancelLongPress() {
@@ -179,10 +185,26 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
                 mLauncher.getUserEventDispatcher().logActionOnContainer(Action.Touch.LONGPRESS,
                         Action.Direction.NONE, ContainerType.WORKSPACE,
                         mWorkspace.getCurrentPage());
-                OptionsPopupView.showDefaultOptions(mLauncher, mTouchDownPoint.x, mTouchDownPoint.y);
+                doLongPressAction();
             } else {
                 cancelLongPress();
             }
+        }
+    }
+
+    private void doLongPressAction() {
+        if (mLauncher.isInState(NORMAL)) {
+            mGestureController.onLongPress();
+        } else if (mLauncher.isInState(OPTIONS)) {
+            ArrayList<OptionItem> options = new ArrayList<>();
+            options.add(new OptionItem(
+                    R.string.remove_drop_target_label,
+                    R.drawable.ic_remove_no_shadow,
+                    -1, v -> {
+                        mLauncher.getWorkspace().removeScreen(mLauncher.getCurrentWorkspaceScreen(), true);
+                        return true;
+            }));
+            OptionsPopupView.show(mLauncher, mTouchDownPoint.x, mTouchDownPoint.y, options);
         }
     }
 }

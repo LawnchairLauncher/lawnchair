@@ -643,17 +643,15 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             return;
         }
 
-        throw new RuntimeException("not implemented");
-        /*
         int currentPage = getNextPage();
         snapToPage(index, SNAP_OFF_EMPTY_SCREEN_DURATION);
-        long id = getScreenIdForPageIndex(index);
+        int id = getScreenIdForPageIndex(index);
         fadeAndRemoveScreen(id, SNAP_OFF_EMPTY_SCREEN_DURATION,
                 FADE_EMPTY_SCREEN_DURATION, null, false);
 
         CellLayout cl = mWorkspaceScreens.get(id);
         mWorkspaceScreens.remove(id);
-        mScreenOrder.remove(id);
+        mScreenOrder.removeValue(id);
 
         boolean isInAccessibleDrag = mLauncher.getAccessibilityDelegate().isInAccessibleDrag();
 
@@ -665,8 +663,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
         removeView(cl);
 
-        LauncherModel.updateWorkspaceScreenOrder(mLauncher, mScreenOrder);
-
         if (getChildCount() == 0) {
             addExtraEmptyScreen();
         }
@@ -674,8 +670,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         if (pageShift) {
             setCurrentPage(currentPage - 1);
         }
-
-         */
     }
 
     public void removeExtraEmptyScreen(final boolean animate, boolean stripEmptyScreens) {

@@ -36,8 +36,8 @@ class OptionsState(id: Int) : LauncherState(id, LauncherLogProto.ContainerType.O
         val grid = launcher.deviceProfile
         val ws = launcher.workspace
 
+        val scale = grid.workspaceOptionsShrinkFactor
         if (grid.isVerticalBarLayout) {
-            val scale = .3f //grid.workspaceOptionsShrinkFactor
             val optionsView = LawnchairLauncher.getLauncher(launcher).optionsView
 
             val wsHeightWithoutInsets = ws.height - grid.insets.top - grid.insets.bottom
@@ -50,7 +50,6 @@ class OptionsState(id: Int) : LauncherState(id, LauncherLogProto.ContainerType.O
             return ScaleAndTranslation(scale, 0f, max(desiredCenter - actualCenter, desiredBottom - actualBottom))
         }
 
-        val scale = .3f //grid.workspaceOptionsShrinkFactor
         val insets = launcher.dragLayer.insets
 
         val scaledHeight = scale * ws.normalChildHeight
