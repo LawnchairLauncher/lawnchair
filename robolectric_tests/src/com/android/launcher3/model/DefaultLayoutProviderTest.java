@@ -34,6 +34,7 @@ import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherProvider;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.icons.BitmapInfo;
+import com.android.launcher3.pm.InstallSessionHelper;
 import com.android.launcher3.shadows.LShadowLauncherApps;
 import com.android.launcher3.shadows.LShadowUserManager;
 import com.android.launcher3.shadows.ShadowLooperExecutor;
@@ -95,6 +96,7 @@ public class DefaultLayoutProviderTest extends BaseModelUpdateTaskTestCase {
     public void cleanup() {
         InvariantDeviceProfile.INSTANCE.initializeForTesting(null);
         CustomWidgetManager.INSTANCE.initializeForTesting(null);
+        InstallSessionHelper.INSTANCE.initializeForTesting(null);
     }
 
     @Test

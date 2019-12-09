@@ -73,8 +73,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
         mRotationListener = new DisplayRotationListener(this, this::onDeviceRotationChanged);
 
         // Update theme
-        WallpaperColorInfo wallpaperColorInfo = WallpaperColorInfo.getInstance(this);
-        wallpaperColorInfo.addOnChangeListener(this);
+        WallpaperColorInfo.INSTANCE.get(this).addOnChangeListener(this);
         int themeRes = Themes.getActivityThemeRes(this);
         if (themeRes != mThemeRes) {
             mThemeRes = themeRes;
@@ -234,7 +233,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        WallpaperColorInfo.getInstance(this).removeOnChangeListener(this);
+        WallpaperColorInfo.INSTANCE.get(this).removeOnChangeListener(this);
         mRotationListener.disable();
     }
 

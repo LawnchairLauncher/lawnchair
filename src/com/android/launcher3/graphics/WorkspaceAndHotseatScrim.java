@@ -54,7 +54,7 @@ import com.android.launcher3.util.Themes;
  */
 public class WorkspaceAndHotseatScrim extends Scrim {
 
-    public static Property<WorkspaceAndHotseatScrim, Float> SYSUI_PROGRESS =
+    public static final Property<WorkspaceAndHotseatScrim, Float> SYSUI_PROGRESS =
             new Property<WorkspaceAndHotseatScrim, Float>(Float.TYPE, "sysUiProgress") {
                 @Override
                 public Float get(WorkspaceAndHotseatScrim scrim) {
@@ -67,7 +67,7 @@ public class WorkspaceAndHotseatScrim extends Scrim {
                 }
             };
 
-    private static Property<WorkspaceAndHotseatScrim, Float> SYSUI_ANIM_MULTIPLIER =
+    private static final Property<WorkspaceAndHotseatScrim, Float> SYSUI_ANIM_MULTIPLIER =
             new Property<WorkspaceAndHotseatScrim, Float>(Float.TYPE, "sysUiAnimMultiplier") {
                 @Override
                 public Float get(WorkspaceAndHotseatScrim scrim) {

@@ -67,8 +67,8 @@ import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.icons.ShortcutCachingLogic;
 import com.android.launcher3.icons.cache.IconCacheUpdateHandler;
 import com.android.launcher3.logging.FileLog;
+import com.android.launcher3.pm.InstallSessionHelper;
 import com.android.launcher3.pm.PackageInstallInfo;
-import com.android.launcher3.pm.PackageInstallerCompat;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.provider.ImportDataTask;
 import com.android.launcher3.qsb.QsbContainerView;
@@ -115,7 +115,7 @@ public class LoaderTask implements Runnable {
     private final UserCache mUserCache;
 
     private final DeepShortcutManager mShortcutManager;
-    private final PackageInstallerCompat mPackageInstaller;
+    private final InstallSessionHelper mSessionHelper;
     private final IconCache mIconCache;
 
     private boolean mStopped;
@@ -131,7 +131,7 @@ public class LoaderTask implements Runnable {
         mUserManager = mApp.getContext().getSystemService(UserManager.class);
         mUserCache = UserCache.INSTANCE.get(mApp.getContext());
         mShortcutManager = DeepShortcutManager.getInstance(mApp.getContext());
-        mPackageInstaller = PackageInstallerCompat.getInstance(mApp.getContext());
+        mSessionHelper = InstallSessionHelper.INSTANCE.get(mApp.getContext());
         mIconCache = mApp.getIconCache();
     }
 
@@ -311,7 +311,7 @@ public class LoaderTask implements Runnable {
             mBgDataModel.clear();
 
             final HashMap<PackageUserKey, SessionInfo> installingPkgs =
-                    mPackageInstaller.getActiveSessions();
+                    mSessionHelper.getActiveSessions();
             installingPkgs.forEach(mApp.getIconCache()::updateSessionCache);
 
             final PackageUserKey tempPackageKey = new PackageUserKey(null, null);
@@ -871,7 +871,7 @@ public class LoaderTask implements Runnable {
         if (FeatureFlags.PROMISE_APPS_IN_ALL_APPS.get()) {
             // get all active sessions and add them to the all apps list
             for (PackageInstaller.SessionInfo info :
-                    mPackageInstaller.getAllVerifiedSessions()) {
+                    mSessionHelper.getAllVerifiedSessions()) {
                 mBgAllAppsList.addPromiseApp(mApp.getContext(),
                         PackageInstallInfo.fromInstallingState(info));
             }

@@ -32,8 +32,8 @@ import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.icons.IconProvider;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.notification.NotificationListener;
+import com.android.launcher3.pm.InstallSessionHelper;
 import com.android.launcher3.pm.InstallSessionTracker;
-import com.android.launcher3.pm.PackageInstallerCompat;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.Preconditions;
@@ -109,7 +109,7 @@ public class LauncherAppState {
         mInvariantDeviceProfile.addOnChangeListener(this::onIdpChanged);
         new Handler().post( () -> mInvariantDeviceProfile.verifyConfigChangedInBackground(context));
 
-        mInstallSessionTracker = PackageInstallerCompat.getInstance(context)
+        mInstallSessionTracker = InstallSessionHelper.INSTANCE.get(context)
                 .registerInstallTracker(mModel, MODEL_EXECUTOR);
 
         if (!mContext.getResources().getBoolean(R.bool.notification_dots_enabled)) {

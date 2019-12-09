@@ -20,7 +20,7 @@ import android.graphics.Rect;
 
 public abstract class RotationMode {
 
-    public static RotationMode NORMAL = new RotationMode(0) { };
+    public static final RotationMode NORMAL = new RotationMode(0) { };
 
     public final float surfaceRotation;
     public final boolean isTransposed;

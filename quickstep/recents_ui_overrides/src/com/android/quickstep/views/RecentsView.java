@@ -886,7 +886,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     public void onSwipeUpAnimationSuccess() {
         if (getRunningTaskView() != null) {
             float startProgress = ENABLE_QUICKSTEP_LIVE_TILE.get() && mLiveTileOverlayAttached
-                    ? LiveTileOverlay.getInstance().cancelIconAnimation()
+                    ? LiveTileOverlay.INSTANCE.cancelIconAnimation()
                     : 0f;
             animateUpRunningTaskIconScale(startProgress);
         }
@@ -1739,7 +1739,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
     public void updateLiveTileIcon(Drawable icon) {
         if (mLiveTileOverlayAttached) {
-            LiveTileOverlay.getInstance().setIcon(icon);
+            LiveTileOverlay.INSTANCE.setIcon(icon);
         }
     }
 

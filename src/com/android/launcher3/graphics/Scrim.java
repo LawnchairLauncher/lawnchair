@@ -31,7 +31,7 @@ import com.android.launcher3.uioverrides.WallpaperColorInfo;
 public class Scrim implements View.OnAttachStateChangeListener,
         WallpaperColorInfo.OnChangeListener {
 
-    public static Property<Scrim, Float> SCRIM_PROGRESS =
+    public static final Property<Scrim, Float> SCRIM_PROGRESS =
             new Property<Scrim, Float>(Float.TYPE, "scrimProgress") {
                 @Override
                 public Float get(Scrim scrim) {
@@ -55,7 +55,7 @@ public class Scrim implements View.OnAttachStateChangeListener,
     public Scrim(View view) {
         mRoot = view;
         mLauncher = Launcher.getLauncher(view.getContext());
-        mWallpaperColorInfo = WallpaperColorInfo.getInstance(mLauncher);
+        mWallpaperColorInfo = WallpaperColorInfo.INSTANCE.get(mLauncher);
 
         view.addOnAttachStateChangeListener(this);
     }
