@@ -31,8 +31,6 @@ import static com.android.launcher3.ui.TaplTestsLauncher3.getAppPackageName;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.rule.ShellCommandRule.disableHeadsUpNotification;
 import static com.android.launcher3.util.rule.ShellCommandRule.getLauncherCommand;
-import static com.android.launcher3.util.rule.TestStabilityRule.LOCAL;
-import static com.android.launcher3.util.rule.TestStabilityRule.UNBUNDLED_POSTSUBMIT;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -59,10 +57,10 @@ import com.android.launcher3.tapl.TestHelpers;
 import com.android.launcher3.testcomponent.TestCommandReceiver;
 import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.FailureWatcher;
-import com.android.launcher3.util.rule.TestStabilityRule;
 import com.android.quickstep.NavigationModeSwitchRule.NavigationModeSwitch;
 import com.android.quickstep.views.RecentsView;
 
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
@@ -132,7 +130,7 @@ public class FallbackRecentsTest {
 
     @NavigationModeSwitch
     @Test
-    @TestStabilityRule.Stability(flavors = LOCAL | UNBUNDLED_POSTSUBMIT) // b/143488140
+    @Ignore // b/143488140
     public void goToOverviewFromHome() {
         mDevice.pressHome();
         assertTrue("Fallback Launcher not visible", mDevice.wait(Until.hasObject(By.pkg(
@@ -143,7 +141,7 @@ public class FallbackRecentsTest {
 
     @NavigationModeSwitch
     @Test
-    @TestStabilityRule.Stability(flavors = LOCAL | UNBUNDLED_POSTSUBMIT) // b/143488140
+    @Ignore // b/143488140
     public void goToOverviewFromApp() {
         startAppFastAndWaitForRecentTask(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
 
@@ -178,7 +176,7 @@ public class FallbackRecentsTest {
 
     @NavigationModeSwitch
     @Test
-    @TestStabilityRule.Stability(flavors = LOCAL | UNBUNDLED_POSTSUBMIT) // b/143488140
+    @Ignore // b/143488140
     public void testOverview() {
         startAppFastAndWaitForRecentTask(getAppPackageName());
         startAppFastAndWaitForRecentTask(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
