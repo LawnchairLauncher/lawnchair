@@ -41,6 +41,7 @@ import com.android.systemui.plugins.PluginListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 /**
  * CustomWidgetManager handles custom widgets implemented as a plugin.
@@ -112,11 +113,11 @@ public class CustomWidgetManager implements PluginListener<CustomWidgetPlugin> {
     }
 
     /**
-     * Returns the list of custom widgets.
+     * Returns the stream of custom widgets.
      */
     @NonNull
-    public List<CustomAppWidgetProviderInfo> getCustomWidgets() {
-        return mCustomWidgets;
+    public Stream<CustomAppWidgetProviderInfo> stream() {
+        return mCustomWidgets.stream();
     }
 
     /**

@@ -23,7 +23,7 @@ import android.content.pm.PackageManager;
 import android.os.UserHandle;
 import android.util.Log;
 
-import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.systemui.shared.recents.model.Task;
@@ -78,7 +78,7 @@ public final class TaskUtils {
         if (currentUserId == UserHandle.myUserId()) {
             return true;
         }
-        List<UserHandle> allUsers = UserManagerCompat.getInstance(context).getUserProfiles();
+        List<UserHandle> allUsers = UserCache.INSTANCE.get(context).getUserProfiles();
         for (int i = allUsers.size() - 1; i >= 0; i--) {
             if (currentUserId == allUsers.get(i).getIdentifier()) {
                 return true;

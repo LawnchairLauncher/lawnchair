@@ -54,7 +54,7 @@ import com.android.launcher3.graphics.FragmentWithPreview;
  * A frame layout which contains a QSB. This internally uses fragment to bind the view, which
  * allows it to contain the logic for {@link Fragment#startActivityForResult(Intent, int)}.
  *
- * Note: AppWidgetManagerCompat can be disabled using FeatureFlags. In QSB, we should use
+ * Note: WidgetManagerHelper can be disabled using FeatureFlags. In QSB, we should use
  * AppWidgetManager directly, so that it keeps working in that case.
  */
 public class QsbContainerView extends FrameLayout {

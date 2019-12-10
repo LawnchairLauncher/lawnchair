@@ -24,8 +24,8 @@ import android.content.pm.LauncherActivityInfo;
 import android.os.Build;
 import android.os.Process;
 import android.os.UserHandle;
+import android.os.UserManager;
 
-import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageManagerHelper;
 
@@ -65,7 +65,7 @@ public class AppInfo extends ItemInfoWithIcon {
      * Must not hold the Context.
      */
     public AppInfo(Context context, LauncherActivityInfo info, UserHandle user) {
-        this(info, user, UserManagerCompat.getInstance(context).isQuietModeEnabled(user));
+        this(info, user, context.getSystemService(UserManager.class).isQuietModeEnabled(user));
     }
 
     public AppInfo(LauncherActivityInfo info, UserHandle user, boolean quietModeEnabled) {

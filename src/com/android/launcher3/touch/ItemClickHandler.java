@@ -49,7 +49,6 @@ import com.android.launcher3.PromiseAppInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.WorkspaceItemInfo;
-import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.pm.PackageInstallerCompat;
@@ -57,6 +56,7 @@ import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.views.FloatingIconView;
 import com.android.launcher3.widget.PendingAppWidgetHostView;
 import com.android.launcher3.widget.WidgetAddFlowHandler;
+import com.android.launcher3.widget.WidgetManagerHelper;
 
 /**
  * Class for handling clicks on workspace and all-apps items
@@ -123,8 +123,8 @@ public class ItemClickHandler {
 
         final LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) v.getTag();
         if (v.isReadyForClickSetup()) {
-            LauncherAppWidgetProviderInfo appWidgetInfo = AppWidgetManagerCompat
-                    .getInstance(launcher).findProvider(info.providerName, info.user);
+            LauncherAppWidgetProviderInfo appWidgetInfo = new WidgetManagerHelper(launcher)
+                    .findProvider(info.providerName, info.user);
             if (appWidgetInfo == null) {
                 return;
             }

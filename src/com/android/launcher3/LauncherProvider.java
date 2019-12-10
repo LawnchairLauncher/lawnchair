@@ -47,6 +47,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Process;
 import android.os.UserHandle;
+import android.os.UserManager;
 import android.provider.BaseColumns;
 import android.provider.Settings;
 import android.text.TextUtils;
@@ -55,10 +56,10 @@ import android.util.Xml;
 
 import com.android.launcher3.AutoInstallsLayout.LayoutParserCallback;
 import com.android.launcher3.LauncherSettings.Favorites;
-import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.DbDowngradeHelper;
+import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.provider.LauncherDbUtils;
 import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction;
 import com.android.launcher3.provider.RestoreDbTask;
@@ -526,8 +527,8 @@ public class LauncherProvider extends ContentProvider {
         InvariantDeviceProfile idp = LauncherAppState.getIDP(getContext());
         int defaultLayout = idp.defaultLayoutId;
 
-        UserManagerCompat um = UserManagerCompat.getInstance(getContext());
-        if (um.isDemoUser() && idp.demoModeLayoutId != 0) {
+        if (getContext().getSystemService(UserManager.class).isDemoUser()
+                && idp.demoModeLayoutId != 0) {
             defaultLayout = idp.demoModeLayoutId;
         }
 
@@ -608,7 +609,7 @@ public class LauncherProvider extends ContentProvider {
         }
 
         public long getSerialNumberForUser(UserHandle user) {
-            return UserManagerCompat.getInstance(mContext).getSerialNumberForUser(user);
+            return UserCache.INSTANCE.get(mContext).getSerialNumberForUser(user);
         }
 
         public long getDefaultUserSerial() {
@@ -639,7 +640,7 @@ public class LauncherProvider extends ContentProvider {
          */
         protected void handleOneTimeDataUpgrade(SQLiteDatabase db) {
             // Remove "profile extra"
-            UserManagerCompat um = UserManagerCompat.getInstance(mContext);
+            UserCache um = UserCache.INSTANCE.get(mContext);
             for (UserHandle user : um.getUserProfiles()) {
                 long serial = um.getSerialNumberForUser(user);
                 String sql = "update favorites set intent = replace(intent, "

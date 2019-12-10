@@ -50,7 +50,6 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetHost;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.R;
-import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.pm.PinRequestHelper;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
@@ -61,6 +60,7 @@ import com.android.launcher3.widget.PendingAddShortcutInfo;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.WidgetHostViewLoader;
 import com.android.launcher3.widget.WidgetImageView;
+import com.android.launcher3.widget.WidgetManagerHelper;
 
 import java.util.function.Supplier;
 
@@ -82,7 +82,7 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
 
     // Widget request specific options.
     private LauncherAppWidgetHost mAppWidgetHost;
-    private AppWidgetManagerCompat mAppWidgetManager;
+    private WidgetManagerHelper mAppWidgetManager;
     private int mPendingBindWidgetId;
     private Bundle mWidgetOptions;
 
@@ -209,7 +209,7 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
         }
         mWidgetCell.setPreview(PinItemDragListener.getPreview(mRequest));
 
-        mAppWidgetManager = AppWidgetManagerCompat.getInstance(this);
+        mAppWidgetManager = new WidgetManagerHelper(this);
         mAppWidgetHost = new LauncherAppWidgetHost(this);
 
         PendingAddWidgetInfo pendingInfo = new PendingAddWidgetInfo(widgetInfo);

@@ -19,24 +19,15 @@ import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SYS
 
 import android.annotation.TargetApi;
 import android.app.Service;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Region;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.Process;
 import android.os.RemoteException;
 import android.util.Log;
 import android.view.MotionEvent;
 
-import com.android.launcher3.Utilities;
-import com.android.launcher3.compat.UserManagerCompat;
-import com.android.launcher3.util.DefaultDisplay;
-import com.android.quickstep.RecentsAnimationDeviceState;
-import com.android.quickstep.SystemUiProxy;
 import com.android.systemui.shared.recents.IOverviewProxy;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 

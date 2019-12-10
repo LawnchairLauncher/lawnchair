@@ -36,6 +36,7 @@ import android.content.pm.PackageInstaller.SessionInfo;
 import android.content.pm.ShortcutInfo;
 import android.os.Process;
 import android.os.UserHandle;
+import android.os.UserManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.LongSparseArray;
@@ -55,8 +56,6 @@ import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.WorkspaceItemInfo;
-import com.android.launcher3.compat.AppWidgetManagerCompat;
-import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderGridOrganizer;
@@ -70,6 +69,7 @@ import com.android.launcher3.icons.cache.IconCacheUpdateHandler;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.pm.PackageInstallInfo;
 import com.android.launcher3.pm.PackageInstallerCompat;
+import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.provider.ImportDataTask;
 import com.android.launcher3.qsb.QsbContainerView;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
@@ -81,6 +81,7 @@ import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.TraceHelper;
+import com.android.launcher3.widget.WidgetManagerHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -110,10 +111,11 @@ public class LoaderTask implements Runnable {
     private final LoaderResults mResults;
 
     private final LauncherApps mLauncherApps;
-    private final UserManagerCompat mUserManager;
+    private final UserManager mUserManager;
+    private final UserCache mUserCache;
+
     private final DeepShortcutManager mShortcutManager;
     private final PackageInstallerCompat mPackageInstaller;
-    private final AppWidgetManagerCompat mAppWidgetManager;
     private final IconCache mIconCache;
 
     private boolean mStopped;
@@ -126,10 +128,10 @@ public class LoaderTask implements Runnable {
         mResults = results;
 
         mLauncherApps = mApp.getContext().getSystemService(LauncherApps.class);
-        mUserManager = UserManagerCompat.getInstance(mApp.getContext());
+        mUserManager = mApp.getContext().getSystemService(UserManager.class);
+        mUserCache = UserCache.INSTANCE.get(mApp.getContext());
         mShortcutManager = DeepShortcutManager.getInstance(mApp.getContext());
         mPackageInstaller = PackageInstallerCompat.getInstance(mApp.getContext());
-        mAppWidgetManager = AppWidgetManagerCompat.getInstance(mApp.getContext());
         mIconCache = mApp.getIconCache();
     }
 
@@ -319,7 +321,7 @@ public class LoaderTask implements Runnable {
             final LoaderCursor c = new LoaderCursor(contentResolver.query(
                     LauncherSettings.Favorites.CONTENT_URI, null, null, null, null), mApp);
 
-            HashMap<ComponentKey, AppWidgetProviderInfo> widgetProvidersMap = null;
+            Map<ComponentKey, AppWidgetProviderInfo> widgetProvidersMap = null;
 
             try {
                 final int appWidgetIdIndex = c.getColumnIndexOrThrow(
@@ -338,8 +340,8 @@ public class LoaderTask implements Runnable {
                 final LongSparseArray<UserHandle> allUsers = c.allUsers;
                 final LongSparseArray<Boolean> quietMode = new LongSparseArray<>();
                 final LongSparseArray<Boolean> unlockedUsers = new LongSparseArray<>();
-                for (UserHandle user : mUserManager.getUserProfiles()) {
-                    long serialNo = mUserManager.getSerialNumberForUser(user);
+                for (UserHandle user : mUserCache.getUserProfiles()) {
+                    long serialNo = mUserCache.getSerialNumberForUser(user);
                     allUsers.put(serialNo, user);
                     quietMode.put(serialNo, mUserManager.isQuietModeEnabled(user));
 
@@ -634,7 +636,7 @@ public class LoaderTask implements Runnable {
                                     LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY);
 
                             if (widgetProvidersMap == null) {
-                                widgetProvidersMap = mAppWidgetManager.getAllProvidersMap();
+                                widgetProvidersMap = WidgetManagerHelper.getAllProvidersMap(context);
                             }
                             final AppWidgetProviderInfo provider = widgetProvidersMap.get(
                                     new ComponentKey(component, c.user));
@@ -844,7 +846,7 @@ public class LoaderTask implements Runnable {
     }
 
     private List<LauncherActivityInfo> loadAllApps() {
-        final List<UserHandle> profiles = mUserManager.getUserProfiles();
+        final List<UserHandle> profiles = mUserCache.getUserProfiles();
         List<LauncherActivityInfo> allActivityList = new ArrayList<>();
         // Clear the list of apps
         mBgAllAppsList.clear();
@@ -884,7 +886,7 @@ public class LoaderTask implements Runnable {
         mBgDataModel.deepShortcutMap.clear();
         mBgDataModel.hasShortcutHostPermission = mShortcutManager.hasHostPermission();
         if (mBgDataModel.hasShortcutHostPermission) {
-            for (UserHandle user : mUserManager.getUserProfiles()) {
+            for (UserHandle user : mUserCache.getUserProfiles()) {
                 if (mUserManager.isUserUnlocked(user)) {
                     List<ShortcutInfo> shortcuts =
                             mShortcutManager.queryForAllShortcuts(user);
