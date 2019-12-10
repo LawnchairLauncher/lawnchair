@@ -114,20 +114,19 @@ public class TestStabilityRule implements TestRule {
             throw new RuntimeException(e);
         }
 
-        final Matcher launcherBuildMatcher = LAUNCHER_BUILD.matcher(launcherVersion);
+        final String platformVersion = Build.VERSION.INCREMENTAL;
 
+        Log.d(TAG, "Launcher: " + launcherVersion + ", platform: " + platformVersion);
+
+        final Matcher launcherBuildMatcher = LAUNCHER_BUILD.matcher(launcherVersion);
         if (!launcherBuildMatcher.find()) {
             throw new AssertionError("Launcher build match not found");
         }
 
-        final String platformVersion = Build.VERSION.INCREMENTAL;
         final Matcher platformBuildMatcher = PLATFORM_BUILD.matcher(platformVersion);
-
         if (!platformBuildMatcher.find()) {
             throw new AssertionError("Platform build match not found");
         }
-
-        Log.d(TAG, "Launcher: " + launcherVersion + ", platform: " + platformVersion);
 
         final int runFlavor;
 
