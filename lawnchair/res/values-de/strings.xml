@@ -9,29 +9,29 @@
     <string name="search_menu">Suchen</string>
     <string name="search_no_results">Keine Ergebnisse</string>
     <string name="restart_lawnchair_pref_title">Neustart</string>
-    <string name="developer_options_title">Entwickleroptionen</string>
-    <string name="change_default_home">Als Start-App festlegen</string>
+    <string name="developer_options_title">Entwicklereinstellungen</string>
+    <string name="change_default_home">Als Startbildschirm festlegen</string>
     <string name="action_apply">Fertig</string>
     <!-- Note: new. Replaces “OK” in dialogs. -->
     <string name="theme_dark_theme_mode_on">Aktiviert</string>
     <string name="theme_dark_theme_mode_off">Deaktiviert</string>
     <!-- Section 2 -->
     <string name="theme_title">Design</string>
-    <string name="pixel_ui_pref_summary">Symbole, Farben, Unschärfe</string>
+    <string name="pixel_ui_pref_summary">Icons, Farben, Unschärfe</string>
     <string name="pref_icon_packs">Icon-Pakete</string>
     <string name="icon_pack_default">Systemicons</string>
     <string name="pref_icon_pack_masking">Icon-Maskierung</string>
-    <string name="pref_icon_pack_masking_summary">Unangepasste Symbole dem Icon-Paket zuordnen.</string>
-    <string name="pref_legacy_treatment_title">Adaptive Symbole erstellen</string>
-    <string name="pref_legacy_treatment_summary">Adaptive Symbole für alle Verknüpfungen erstellen.</string>
+    <string name="pref_icon_pack_masking_summary">Unangepasste Icons an das Icon-Paket anpassen.</string>
+    <string name="pref_legacy_treatment_title">Adaptive Icons erstellen</string>
+    <string name="pref_legacy_treatment_summary">Adaptive Icons für alle Verknüpfungen erstellen.</string>
     <string name="pref_legacy_colored_backgrounds">Farbige Hintergründe</string>
-    <string name="pref_legacy_colored_backgrounds_summary">Hintergründe aller adaptiver Symbole einfärben.</string>
+    <string name="pref_legacy_colored_backgrounds_summary">Hintergründe aller adaptiver Icons einfärben.</string>
     <string name="pref_white_only_treatment">Weiße Hintergründe ersetzen</string>
-    <string name="pref_white_only_treatment_summary">Hintergründe aller adaptiver Symbole einfärben.</string>
-    <string name="adaptify_pack_title">Erstelle adaptive Symbole für Icon-Pakete</string>
-    <string name="icon_shape_override_label">Symbolform</string>
+    <string name="pref_white_only_treatment_summary">Hintergründe aller adaptiver Icons einfärben.</string>
+    <string name="adaptify_pack_title">Erstelle adaptive Icons für Icon-Pakete</string>
+    <string name="icon_shape_override_label">Icon-Form</string>
     <string name="reset_custom_icons">Benutzerdefinierte Icons zurücksetzen</string>
-    <string name="reset_custom_icons_confirmation">Zu den standardmäßigen Symbolen dieses Symbol-Paketes zurückkehren? Dies kann nicht rückgängig gemacht werden.</string>
+    <string name="reset_custom_icons_confirmation">Zu den standardmäßigen Icons dieses Icon-Paketes zurückkehren? Dies kann nicht rückgängig gemacht werden.</string>
     <string name="appearance">Aussehen</string>
     <!-- Note: new. Replaces title of 5th field (from bottom) in “Theme” page. -->
     <string name="theme_auto">Automatisch (passend zum Hintergrund)</string>
@@ -50,15 +50,15 @@
     <string name="color_wallpaper_tertiary">Hintergrundbild — Tertiär</string>
     <string name="pref_fonts_title">Schriftarten</string>
     <string name="blur_pref_title">Unschärfeeffekt</string>
-    <string name="blur_pref_summary">Seitenhintergründe unscharf machen.</string>
+    <string name="blur_pref_summary">Seitenhintergründe weichzeichnen.</string>
     <string name="blur_radius_pref_title">Stärke der Unschärfe</string>
     <!-- Section 3 -->
     <string name="general_pref_title">Startbildschirm</string>
     <string name="general_pref_summary">Anordnung, Desktop sperren, Übergänge</string>
-    <string name="grid_size">Symbolgitter</string>
+    <string name="grid_size">Icon-Gitter</string>
     <string name="grid_size_width">Breite</string>
     <string name="grid_size_height">Höhe</string>
-    <string name="num_hotseat_icons_pref_title">Symbolanzahl</string>
+    <string name="num_hotseat_icons_pref_title">Anzahl von Icons</string>
     <string name="overlap_placement">Überlappung erlauben</string>
     <string name="lock_desktop">Startbildschirm sperren</string>
     <string name="pref_category_icons">Verknüpfungen</string>
@@ -66,24 +66,24 @@
     <string name="pref_mutliline_labels">Mehrzeilige Beschriftungen</string>
     <string name="icon_text_scale_pref_title">Schriftgröße</string>
     <string name="text_color">Schriftfarbe</string>
-    <string name="icon_scale_pref_title">Symbolgröße</string>
+    <string name="icon_scale_pref_title">Icon-Größe</string>
     <string name="auto_add_shortcuts_label">Neue Verknüpfungen zum Startbildschirm hinzufügen</string>
-    <string name="pref_icon_popup_menu">App-Verknüpfung</string>
+    <string name="pref_icon_popup_menu">Verknüpfungs-Blase</string>
     <string name="pref_category_misc">Andere</string>
     <string name="animation_type_title">App-Startanimation</string>
     <string name="animation_type_default">Standard</string>
     <string name="animation_type_pie">Android Pie</string>
     <string name="animation_type_pie_like">Android Pie (Emuliert)</string>
-    <string name="animation_type_reveal">Enthüllen</string>
+    <string name="animation_type_reveal">Aufdecken</string>
     <string name="animation_type_slide_up">Hoch gleiten</string>
     <string name="animation_type_scale_up">Vergrößern</string>
     <string name="animation_type_blink">Blinken</string>
-    <string name="animation_type_fade">Verblassen</string>
+    <string name="animation_type_fade">Überblenden</string>
     <string name="icon_badging_title">Benachrichtigungspunkte</string>
     <string name="pref_notification_count_title">Anzahl der Benachrichtigungen anzeigen</string>
     <string name="allow_rotation_title">Drehung aktivieren</string>
     <string name="pref_center_wallpaper">Hintergrund zentrieren</string>
-    <string name="pref_center_wallpaper_summary">Scrollen des Hintergrundbildes deaktivieren.</string>
+    <string name="pref_center_wallpaper_summary">Scrollen des Hintergrunds deaktivieren.</string>
     <string name="pref_hide_statusbar">Statusleiste verstecken</string>
     <string name="full_width_width_widgets_pref_title">Breite Widgets</string>
     <string name="full_width_widgets_pref_summary">Widgets bis zum Bildschirmrand strecken lassen.</string>
@@ -98,7 +98,7 @@
     <string name="pref_hide_statusbar_clock">Statusleisten-Uhr verstecken</string>
     <string name="root_access_required">Root-Zugriff erforderlich.</string>
     <string name="smartspace_time_24_h">24-Stunden-Format verwenden</string>
-    <string name="title_use_pill_qsb">Zeige eine Tablettenförmige Google Suche</string>
+    <string name="title_use_pill_qsb">Zeige eine tablettenförmige Suche</string>
     <string name="pref_category_weather">Andere</string>
     <string name="pref_smartspace_widget_provider">Wetterdienst</string>
     <string name="google_app">Google-App</string>
@@ -129,7 +129,7 @@
         <item>Wie geht\'s?</item>
         <item>Guten Abend!</item>
         <item>Wie war dein Tag?</item>
-        <item>Gute Nacht!</item>
+        <item>Wie war dein Tag?</item>
     </string-array>
     <string-array name="greetings_night">
         <item>Schlaf gut!</item>
@@ -137,7 +137,7 @@
         <item>Gute Nacht!</item>
         <item>Bleib nicht zu lange wach!</item>
     </string-array>
-    <string name="battery_charging">Wird aufgeladen</string>
+    <string name="battery_charging">Lädt</string>
     <string name="battery_full">Aufgeladen</string>
     <string name="battery_low">Batterie schwach</string>
     <!-- Section 5 -->
@@ -147,13 +147,13 @@
     <string name="background_color">Hintergrundfarbe</string>
     <string name="theme_based">Durch Thema auswählen</string>
     <string name="dock_shadow">Schatten anzeigen</string>
-    <string name="radius">Eckenradius</string>
+    <string name="radius">Eckenrundung</string>
     <string name="hotseat_show_arrow">Pfeil anzeigen</string>
     <string name="hotseat_show_page_indicator">Seitenindikator anzeigen</string>
-    <string name="two_row_dock">Zeige zweite Reihe</string>
+    <string name="two_row_dock">Zweite Reihe anzeigen</string>
     <string name="pref_category_searchbar">Suchleiste</string>
     <string name="dock_search_bar">Suchleiste anzeigen</string>
-    <string name="dock_colored_google">Farbige Symbole</string>
+    <string name="dock_colored_google">Farbige Icons</string>
     <!-- Section 6 -->
     <string name="app_drawer_pref_title">App-Übersicht</string>
     <string name="app_drawer_pref_summary">Anordnung, Kategorien, Vorschläge</string>
@@ -192,7 +192,7 @@
     <string name="pref_appcategorization_flowerpot_summary">Verknüpfungen automatisch auswählen.</string>
     <string name="tab_type_custom">Benutzerdefiniert</string>
     <string name="tab_type_custom_desc">Verknüpfungen manuell auswählen.</string>
-    <string name="pref_appcategorization_flowerpot_title">Kategorie hinzufügen</string>
+    <string name="pref_appcategorization_flowerpot_title">App-Kategorie</string>
     <string name="title_all_apps_search">Suchleiste anzeigen</string>
     <string name="title_all_apps_google_search">Globale Suche verwenden</string>
     <string name="summary_all_apps_google_search">Webseiten, Kontakte und Verknüpfungen finden.</string>
@@ -203,7 +203,7 @@
     <string name="app_actions_pref_title">Aktionen</string>
     <string name="app_actions_pref_desc">Verknüpfungen zu häufig verwendeten Bildschirmen.</string>
     <string name="app_actions_reset_pref_title">App-Aktionen zurücksetzen</string>
-    <string name="app_actions_reset_pref_summary">Zeige Aktionen welche nach \"Nicht zeigen\" geschoben wurden.</string>
+    <string name="app_actions_reset_pref_summary">Zeige Aktionen welche auf \"Nicht zeigen\" gezogen wurden.</string>
     <string name="all_apps_label_pref_title">Zeige \"Alle Apps\"-Label</string>
     <string name="separate_work_apps_pref_title">Zweiter Tab für Arbeits-Apps</string>
     <string name="keep_scroll_state_pref_title">Position merken</string>
@@ -239,7 +239,7 @@
     <string name="action_assistant">Assistent öffnen</string>
     <string name="pref_show_as_assistant_summary">Assistent anstatt der Sprachsuche öffnen.</string>
     <string name="bubble_searchbar">Zeige zwei Blasen</string>
-    <string name="pref_search_bar_radius">Eckenrundung</string>
+    <string name="pref_search_bar_radius">Eckenradius</string>
     <!-- Section 8 -->
     <string name="pref_integrations">Plugins</string>
     <string name="pref_integrations_summary">Sesame Shortcuts, Google Feed</string>
@@ -265,11 +265,11 @@
     <string name="gesture_dock_swipe_up">Vom Dock nach oben wischen</string>
     <string name="action_none">Nichts tun</string>
     <string name="action_sleep">Standby</string>
-    <string name="action_sleep_timeout">Ruhemodus durch Bildschirm-Timeout</string>
+    <string name="action_sleep_timeout">Bildschirm sperren durch Timeout</string>
     <string name="action_open_settings">Lawnchair-Einstellungen öffnen</string>
     <string name="action_open_notifications">Benachrichtigungsleiste öffnen</string>
     <string name="action_overlay">Google-Feed öffnen</string>
-    <string name="action_despacito">Spiele YouTube Rewind 2018 (Verzerrt)</string>
+    <string name="action_despacito">Spiele \"YouTube Rewind 2018 (Distorted)\"</string>
     <string name="action_open_app">App öffnen</string>
     <!-- Section 10 -->
     <string name="backups">Sichern &amp; Wiederherstellen</string>
@@ -296,7 +296,7 @@
     <string name="about_role_lead">Hauptentwickler</string>
     <string name="about_role_dev">Entwickler</string>
     <string name="about_role_ui_ux_designer">UI-Designer</string>
-    <string name="about_role_writer">Schreiber</string>
+    <string name="about_role_writer">Texter</string>
     <string name="about_role_dev_mod">Entwickler &amp; Moderator</string>
     <string name="about_role_designer">Designer</string>
     <string name="about_role_devops">DevOps-Entwickler</string>
@@ -306,7 +306,7 @@
     <string name="about_role_family_member">Familienmitglied</string>
     <string name="about_role_magisk_maintainer">QuickSwitch-Modul-Unterstützer</string>
     <string name="about_our_team">Das Team</string>
-    <string name="title_attribouter_licenses">Eigenschaften</string>
+    <string name="title_attribouter_licenses">Namensnennung</string>
     <!-- Section 12 -->
     <string name="settings_button_text">Einstellungen für den Startbildschirm</string>
     <string name="button_organize_screens">Seiten anordnen</string>
@@ -319,14 +319,14 @@
         <item quantity="other">%1$d Apps</item>
     </plurals>
     <string name="advanced_settings">Weitere Einstellungen</string>
-    <string name="adaptive_icon">Adaptives Symbol</string>
+    <string name="adaptive_icon">Adaptives Icon</string>
     <string name="action_edit">Bearbeiten</string>
     <string name="dismiss_drop_target_label">"Nicht anzeigen"</string>
     <string name="suggested_action_content_description">\"%1$s\" öffnet in \"%2$s\".</string>
     <string name="smartspace_setup_text">Zum Einrichten tippen</string>
     <string name="lawnchair_settings">Lawnchair-Einstellungen</string>
     <string name="label_voice_search">Sprachsuche</string>
-    <string name="icon_pack">Iconpack</string>
+    <string name="icon_pack">Icon-Paket</string>
     <string name="home_widget">Auf einen Blick</string>
     <string name="about_app_version">Version</string>
     <string name="title_disable_suggestions_prompt">App-Vorschläge deaktivieren</string>
@@ -354,7 +354,7 @@
     <string name="restore_success">Sicherung wiederhergestellt.</string>
     <string name="failed">Etwas lief schief.</string>
     <string name="backup_share_text">Lawnchair-Sicherung</string>
-    <string name="developer_options_enabled">Entwickleroptionen aktiviert.</string>
+    <string name="developer_options_enabled">Entwicklereinstellungen aktiviert.</string>
     <string name="restart_lawnchair_pref_summary">Wende Einstellungen erneut an.</string>
     <string name="show_debug_info_pref_title">Zeige den Komponenten Namen</string>
     <string name="debug_component_name">Komponenten Name</string>
@@ -392,7 +392,7 @@
     <string name="about_bio_harsh">Entwickler von Android-Anwengen und Bibliotheken. Hauptentwickler bei AOSiP.</string>
     <string name="about_bio_david">19 Jahre alt, verwandelt Pizza und Koffein in Code, hilft bei Problemen mit Lawnchair 24/7. Unterstützt quelloffene Projekte und findet Bugs in seiner Freizeit. Früher auch als Codebucket bekannt.</string>
     <string name="about_bio_lumiq">Es wurde schwer ein schlechtes Produkt abzuliefern.</string>
-    <string name="about_bio_paphonb">Ein 18 Jahre alter Schüler, Android-Entwickler und einer der top Entwickler von Lawnchair.</string>
+    <string name="about_bio_paphonb">Ein 18 Jahre alter Schüler, Android-Entwickler und einer der Top-Entwickler von Lawnchair.</string>
     <string name="debug_crash_launcher">Beenden erzwingen</string>
     <string name="action_open_drawer">App-Liste öffnen</string>
     <string name="action_last_task">Starte zuletzt genutzte App</string>
@@ -403,7 +403,7 @@
     <string name="action_close_notifications">Benachrichtigungsleiste schließen</string>
     <string name="action_open_app_with_target">Öffne \"%s\"</string>
     <string name="action_open_app_select_app">App auswählen</string>
-    <string name="smartspace_widget_provider_not_found">Lade die Google-App.</string>
+    <string name="smartspace_widget_provider_not_found">Hole dir die Google-App.</string>
     <string name="apps_label">Apps</string>
     <string name="all_apps_label">Alle Apps</string>
     <string name="pref_weather_city_title">Stadt</string>
@@ -412,7 +412,7 @@
     <string name="pref_weather_city_summary">Für die besten Ergebnisse, gib den Ländercode mit ein.</string>
     <string name="all_icons">Alle Icons</string>
     <string name="error_no_browser">Kein Browser gefunden.</string>
-    <string name="no_icon_found">Kein Symbol gefunden.</string>
+    <string name="no_icon_found">Kein Icon gefunden.</string>
     <string name="icon_pack_external_picker">Externe Icon-Auswahl öffnen</string>
     <string name="week_day_format">%1$s, %2$s</string>
     <string name="full_wday_month_day_no_year">EEEE, d. MMMM</string>
@@ -434,8 +434,8 @@
     <string name="get_more_icon_packs">Mehr Icon-Pakete suchen</string>
     <string name="enabled_icon_packs">Angewendet</string>
     <string name="lawnchair_actions">Aktionen</string>
-    <string name="bridge_missing_title">Lade Lawnfeed</string>
-    <string name="bridge_missing_message">Um Google-Feed zu benutzen, lade Lawnfeed.</string>
+    <string name="bridge_missing_title">Hole dir Lawnfeed</string>
+    <string name="bridge_missing_message">Um Google-Feed zu benutzen, hole dir Lawnfeed.</string>
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <string name="title_app_suggestions">Apps</string>
     <string name="theme_dark">Dunkel</string>
