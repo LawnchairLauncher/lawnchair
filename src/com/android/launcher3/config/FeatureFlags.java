@@ -136,6 +136,10 @@ public final class FeatureFlags {
     public static final TogglableFlag ENABLE_OVERVIEW_ACTIONS = new TogglableFlag(
             "ENABLE_OVERVIEW_ACTIONS", false, "Show app actions in Overview");
 
+    public static final TogglableFlag ENABLE_DATABASE_RESTORE = new TogglableFlag(
+            "ENABLE_DATABASE_RESTORE", true,
+            "Enable database restore when new restore session is created");
+
     public static void initialize(Context context) {
         // Avoid the disk read for user builds
         if (Utilities.IS_DEBUG_DEVICE) {
