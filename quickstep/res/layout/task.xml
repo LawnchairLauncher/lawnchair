@@ -25,8 +25,7 @@
         android:id="@+id/snapshot"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/task_thumbnail_top_margin"
-        android:layout_marginBottom="@dimen/task_thumbnail_bottom_margin"/>
+        android:layout_marginTop="@dimen/task_thumbnail_top_margin"/>
 
     <com.android.quickstep.views.IconView
         android:id="@+id/icon"

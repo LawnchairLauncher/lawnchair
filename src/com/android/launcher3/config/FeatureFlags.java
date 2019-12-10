@@ -130,6 +130,9 @@ public final class FeatureFlags {
             "ENABLE_LAUNCHER_PREVIEW_IN_GRID_PICKER", false,
             "Show launcher preview in grid picker");
 
+    public static final TogglableFlag ENABLE_OVERVIEW_ACTIONS = new TogglableFlag(
+            "ENABLE_OVERVIEW_ACTIONS", false, "Show app actions in Overview");
+
     public static void initialize(Context context) {
         // Avoid the disk read for user builds
         if (Utilities.IS_DEBUG_DEVICE) {
