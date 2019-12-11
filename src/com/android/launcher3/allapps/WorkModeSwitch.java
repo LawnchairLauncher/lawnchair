@@ -19,14 +19,15 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Process;
 import android.os.UserHandle;
+import android.os.UserManager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.Switch;
 
-import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.Utilities;
+import com.android.launcher3.pm.UserCache;
 
 import java.lang.ref.WeakReference;
-import java.util.List;
 
 public class WorkModeSwitch extends Switch {
 
@@ -57,7 +58,7 @@ public class WorkModeSwitch extends Switch {
     }
 
     public void refresh() {
-        UserManagerCompat userManager = UserManagerCompat.getInstance(getContext());
+        UserCache userManager = UserCache.INSTANCE.get(getContext());
         setCheckedInternal(!userManager.isAnyProfileQuietModeEnabled());
         setEnabled(true);
     }
@@ -95,14 +96,14 @@ public class WorkModeSwitch extends Switch {
         @Override
         protected Boolean doInBackground(Void... voids) {
             WorkModeSwitch workModeSwitch = switchWeakReference.get();
-            if (workModeSwitch == null) {
+            if (workModeSwitch == null || !Utilities.ATLEAST_P) {
                 return false;
             }
-            UserManagerCompat userManager =
-                    UserManagerCompat.getInstance(workModeSwitch.getContext());
-            List<UserHandle> userProfiles = userManager.getUserProfiles();
+
+            Context context = workModeSwitch.getContext();
+            UserManager userManager = context.getSystemService(UserManager.class);
             boolean showConfirm = false;
-            for (UserHandle userProfile : userProfiles) {
+            for (UserHandle userProfile : UserCache.INSTANCE.get(context).getUserProfiles()) {
                 if (Process.myUserHandle().equals(userProfile)) {
                     continue;
                 }

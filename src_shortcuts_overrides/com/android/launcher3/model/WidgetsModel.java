@@ -20,7 +20,6 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.AlphabeticIndexCompat;
-import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.ComponentWithLabel;
 import com.android.launcher3.icons.IconCache;
@@ -30,6 +29,7 @@ import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.widget.WidgetItemComparator;
 import com.android.launcher3.widget.WidgetListRowEntry;
+import com.android.launcher3.widget.WidgetManagerHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -96,7 +96,7 @@ public class WidgetsModel {
             PackageManager pm = app.getContext().getPackageManager();
 
             // Widgets
-            AppWidgetManagerCompat widgetManager = AppWidgetManagerCompat.getInstance(context);
+            WidgetManagerHelper widgetManager = new WidgetManagerHelper(context);
             for (AppWidgetProviderInfo widgetInfo : widgetManager.getAllProviders(packageUser)) {
                 LauncherAppWidgetProviderInfo launcherWidgetInfo =
                         LauncherAppWidgetProviderInfo.fromProviderInfo(context, widgetInfo);

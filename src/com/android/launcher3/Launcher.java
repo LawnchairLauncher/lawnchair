@@ -95,7 +95,6 @@ import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.PropertyListBuilder;
-import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.dragndrop.DragController;
@@ -157,6 +156,7 @@ import com.android.launcher3.widget.PendingAppWidgetHostView;
 import com.android.launcher3.widget.WidgetAddFlowHandler;
 import com.android.launcher3.widget.WidgetHostViewLoader;
 import com.android.launcher3.widget.WidgetListRowEntry;
+import com.android.launcher3.widget.WidgetManagerHelper;
 import com.android.launcher3.widget.WidgetsFullSheet;
 import com.android.launcher3.widget.custom.CustomWidgetManager;
 import com.android.systemui.plugins.OverlayPlugin;
@@ -250,7 +250,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     DragLayer mDragLayer;
     private DragController mDragController;
 
-    private AppWidgetManagerCompat mAppWidgetManager;
+    private WidgetManagerHelper mAppWidgetManager;
     private LauncherAppWidgetHost mAppWidgetHost;
 
     private final int[] mTmpAddItemCellCoordinates = new int[2];
@@ -360,7 +360,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         mAllAppsController = new AllAppsTransitionController(this);
         mStateManager = new LauncherStateManager(this);
 
-        mAppWidgetManager = AppWidgetManagerCompat.getInstance(this);
+        mAppWidgetManager = new WidgetManagerHelper(this);
         mAppWidgetHost = new LauncherAppWidgetHost(this,
                 appWidgetId -> getWorkspace().removeWidget(appWidgetId));
         mAppWidgetHost.startListening();

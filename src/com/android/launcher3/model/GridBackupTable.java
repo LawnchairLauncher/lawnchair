@@ -29,7 +29,7 @@ import android.util.Log;
 
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.LauncherSettings.Settings;
-import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.pm.UserCache;
 
 /**
  * Helper class to backup and restore Favorites table into a separate table
@@ -94,7 +94,7 @@ public class GridBackupTable {
     }
 
     private void copyTable(String from, String to) {
-        long userSerial = UserManagerCompat.getInstance(mContext).getSerialNumberForUser(
+        long userSerial = UserCache.INSTANCE.get(mContext).getSerialNumberForUser(
                 Process.myUserHandle());
         dropTable(mDb, to);
         Favorites.addTableToDb(mDb, userSerial, false, to);

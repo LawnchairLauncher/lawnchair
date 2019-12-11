@@ -34,7 +34,6 @@ import android.util.Pair;
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
-import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.icons.LauncherIcons;
@@ -54,6 +53,7 @@ import com.android.launcher3.model.ShortcutsChangedTask;
 import com.android.launcher3.model.UserLockStateChangedTask;
 import com.android.launcher3.pm.InstallSessionTracker;
 import com.android.launcher3.pm.PackageInstallInfo;
+import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.util.IntSparseArrayMap;
 import com.android.launcher3.util.ItemInfoMatcher;
@@ -233,10 +233,6 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
         final String action = intent.getAction();
         if (Intent.ACTION_LOCALE_CHANGED.equals(action)) {
             // If we have changed locale we need to clear out the labels in all apps/workspace.
-            forceReload();
-        } else if (Intent.ACTION_MANAGED_PROFILE_ADDED.equals(action)
-                || Intent.ACTION_MANAGED_PROFILE_REMOVED.equals(action)) {
-            UserManagerCompat.getInstance(mApp.getContext()).enableAndResetCache();
             forceReload();
         } else if (Intent.ACTION_MANAGED_PROFILE_AVAILABLE.equals(action) ||
                 Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE.equals(action) ||
@@ -462,7 +458,7 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
     /**
      * Refreshes the cached shortcuts if the shortcut permission has changed.
      * Current implementation simply reloads the workspace, but it can be optimized to
-     * use partial updates similar to {@link UserManagerCompat}
+     * use partial updates similar to {@link UserCache}
      */
     public void refreshShortcutsIfRequired() {
         MODEL_EXECUTOR.getHandler().removeCallbacks(mShortcutPermissionCheckRunnable);

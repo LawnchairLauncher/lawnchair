@@ -20,12 +20,12 @@ import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_LOCKED_USER;
 import android.content.Context;
 import android.content.pm.ShortcutInfo;
 import android.os.UserHandle;
+import android.os.UserManager;
 
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.WorkspaceItemInfo;
-import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutKey;
@@ -51,7 +51,7 @@ public class UserLockStateChangedTask extends BaseModelUpdateTask {
     @Override
     public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
         Context context = app.getContext();
-        boolean isUserUnlocked = UserManagerCompat.getInstance(context).isUserUnlocked(mUser);
+        boolean isUserUnlocked = context.getSystemService(UserManager.class).isUserUnlocked(mUser);
         DeepShortcutManager deepShortcutManager = DeepShortcutManager.getInstance(context);
 
         HashMap<ShortcutKey, ShortcutInfo> pinnedShortcuts = new HashMap<>();
