@@ -37,18 +37,11 @@ public class LiveTileOverlay extends Drawable {
                 }
             };
 
-    private static LiveTileOverlay sInstance;
-
-    public static LiveTileOverlay getInstance() {
-        if (sInstance == null) {
-            sInstance = new LiveTileOverlay();
-        }
-        return sInstance;
-    }
+    public static final LiveTileOverlay INSTANCE = new LiveTileOverlay();
 
     private final Paint mPaint = new Paint();
+    private final Rect mBoundsRect = new Rect();
 
-    private Rect mBoundsRect = new Rect();
     private RectF mCurrentRect;
     private float mCornerRadius;
     private Drawable mIcon;

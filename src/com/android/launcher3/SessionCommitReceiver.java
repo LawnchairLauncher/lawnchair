@@ -16,7 +16,7 @@
 
 package com.android.launcher3;
 
-import static com.android.launcher3.pm.PackageInstallerCompat.getUserHandle;
+import static com.android.launcher3.pm.InstallSessionHelper.getUserHandle;
 
 import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
@@ -40,7 +40,7 @@ import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.android.launcher3.pm.PackageInstallerCompat;
+import com.android.launcher3.pm.InstallSessionHelper;
 import com.android.launcher3.util.Executors;
 
 import java.util.List;
@@ -77,7 +77,7 @@ public class SessionCommitReceiver extends BroadcastReceiver {
             return;
         }
 
-        PackageInstallerCompat packageInstallerCompat = PackageInstallerCompat.getInstance(context);
+        InstallSessionHelper packageInstallerCompat = InstallSessionHelper.INSTANCE.get(context);
         if (TextUtils.isEmpty(info.getAppPackageName())
                 || info.getInstallReason() != PackageManager.INSTALL_REASON_USER
                 || packageInstallerCompat.promiseIconAddedForId(info.getSessionId())) {

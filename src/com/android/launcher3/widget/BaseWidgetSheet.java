@@ -182,7 +182,7 @@ abstract class BaseWidgetSheet extends AbstractSlideInView
         View view = new View(context);
         view.forceHasOverlappingRendering(false);
 
-        WallpaperColorInfo colors = WallpaperColorInfo.getInstance(context);
+        WallpaperColorInfo colors = WallpaperColorInfo.INSTANCE.get(context);
         int alpha = context.getResources().getInteger(R.integer.extracted_color_gradient_alpha);
         view.setBackgroundColor(setColorAlphaBound(colors.getSecondaryColor(), alpha));
 

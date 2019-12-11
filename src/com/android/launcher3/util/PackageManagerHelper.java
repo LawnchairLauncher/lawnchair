@@ -16,6 +16,8 @@
 
 package com.android.launcher3.util;
 
+import static android.content.pm.PackageManager.MATCH_SYSTEM_ONLY;
+
 import android.app.AppOpsManager;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
@@ -297,16 +299,13 @@ public class PackageManagerHelper {
      */
     public static Pair<String, Resources> findSystemApk(String action, PackageManager pm) {
         final Intent intent = new Intent(action);
-        for (ResolveInfo info : pm.queryBroadcastReceivers(intent, 0)) {
-            if (info.activityInfo != null &&
-                    (info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
-                final String packageName = info.activityInfo.packageName;
-                try {
-                    final Resources res = pm.getResourcesForApplication(packageName);
-                    return Pair.create(packageName, res);
-                } catch (NameNotFoundException e) {
-                    Log.w(TAG, "Failed to find resources for " + packageName);
-                }
+        for (ResolveInfo info : pm.queryBroadcastReceivers(intent, MATCH_SYSTEM_ONLY)) {
+            final String packageName = info.activityInfo.packageName;
+            try {
+                final Resources res = pm.getResourcesForApplication(packageName);
+                return Pair.create(packageName, res);
+            } catch (NameNotFoundException e) {
+                Log.w(TAG, "Failed to find resources for " + packageName);
             }
         }
         return null;

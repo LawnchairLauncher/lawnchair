@@ -7,7 +7,6 @@ import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.robolectric.util.ReflectionHelpers.setField;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -32,7 +31,7 @@ import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.icons.cache.CachingLogic;
 import com.android.launcher3.model.BgDataModel.Callbacks;
-import com.android.launcher3.pm.PackageInstallerCompat;
+import com.android.launcher3.pm.InstallSessionHelper;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.TestLauncherProvider;
 
@@ -76,7 +75,7 @@ public class BaseModelUpdateTaskTestCase {
     public void setUp() throws Exception {
         ShadowLog.stream = System.out;
         reinitializeStaticExecutors();
-        setField(PackageInstallerCompat.class, null, "sInstance", null);
+        InstallSessionHelper.INSTANCE.initializeForTesting(null);
 
         provider = Robolectric.setupContentProvider(TestLauncherProvider.class);
         ShadowContentResolver.registerProviderInternal(LauncherProvider.AUTHORITY, provider);

@@ -33,7 +33,7 @@ import com.android.launcher3.LauncherModel.CallbackTask;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.model.BgDataModel.Callbacks;
-import com.android.launcher3.pm.PackageInstallerCompat;
+import com.android.launcher3.pm.InstallSessionHelper;
 import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.PackageManagerHelper;
@@ -93,8 +93,8 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
                 }
             }
 
-            PackageInstallerCompat packageInstaller =
-                    PackageInstallerCompat.getInstance(app.getContext());
+            InstallSessionHelper packageInstaller =
+                    InstallSessionHelper.INSTANCE.get(app.getContext());
             LauncherApps launcherApps = app.getContext().getSystemService(LauncherApps.class);
 
             for (ItemInfo item : filteredItems) {

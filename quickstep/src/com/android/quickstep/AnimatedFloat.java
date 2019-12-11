@@ -25,17 +25,18 @@ import android.util.FloatProperty;
  */
 public class AnimatedFloat {
 
-    public static FloatProperty<AnimatedFloat> VALUE = new FloatProperty<AnimatedFloat>("value") {
-        @Override
-        public void setValue(AnimatedFloat obj, float v) {
-            obj.updateValue(v);
-        }
+    public static final FloatProperty<AnimatedFloat> VALUE =
+            new FloatProperty<AnimatedFloat>("value") {
+                @Override
+                public void setValue(AnimatedFloat obj, float v) {
+                    obj.updateValue(v);
+                }
 
-        @Override
-        public Float get(AnimatedFloat obj) {
-            return obj.value;
-        }
-    };
+                @Override
+                public Float get(AnimatedFloat obj) {
+                    return obj.value;
+                }
+            };
 
     private final Runnable mUpdateCallback;
     private ObjectAnimator mValueAnimator;

@@ -29,7 +29,7 @@ import com.android.launcher3.LauncherSettings.Settings;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.pm.PackageInstallerCompat;
+import com.android.launcher3.pm.InstallSessionHelper;
 import com.android.launcher3.provider.LauncherDbUtils;
 import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction;
 import com.android.launcher3.util.GridOccupancy;
@@ -971,7 +971,7 @@ public class GridSizeMigrationTask {
                 .getInstalledPackages(PackageManager.GET_UNINSTALLED_PACKAGES)) {
             validPackages.add(info.packageName);
         }
-        PackageInstallerCompat.getInstance(context)
+        InstallSessionHelper.INSTANCE.get(context)
                 .getActiveSessions().keySet()
                 .forEach(packageUserKey -> validPackages.add(packageUserKey.mPackageName));
         return validPackages;

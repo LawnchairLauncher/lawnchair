@@ -51,7 +51,7 @@ import com.android.launcher3.util.Themes;
 @TargetApi(Build.VERSION_CODES.N)
 public class NotificationMainView extends FrameLayout implements SingleAxisSwipeDetector.Listener {
 
-    private static FloatProperty<NotificationMainView> CONTENT_TRANSLATION =
+    private static final FloatProperty<NotificationMainView> CONTENT_TRANSLATION =
             new FloatProperty<NotificationMainView>("contentTranslation") {
         @Override
         public void setValue(NotificationMainView view, float v) {

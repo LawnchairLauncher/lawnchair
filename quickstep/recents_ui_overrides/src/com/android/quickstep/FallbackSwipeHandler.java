@@ -89,7 +89,7 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
             mLauncherAlpha = launcherAlpha;
         }
     }
-    private static ArrayMap<GestureEndTarget, EndTargetAnimationParams>
+    private final ArrayMap<GestureEndTarget, EndTargetAnimationParams>
             mEndTargetAnimationParams = new ArrayMap();
 
     private final AnimatedFloat mLauncherAlpha = new AnimatedFloat(this::onLauncherAlphaChanged);

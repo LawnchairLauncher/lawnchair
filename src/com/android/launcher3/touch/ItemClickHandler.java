@@ -51,7 +51,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
-import com.android.launcher3.pm.PackageInstallerCompat;
+import com.android.launcher3.pm.InstallSessionHelper;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.views.FloatingIconView;
 import com.android.launcher3.widget.PendingAppWidgetHostView;
@@ -169,8 +169,8 @@ public class ItemClickHandler {
     private static void startMarketIntentForPackage(View v, Launcher launcher, String packageName) {
         ItemInfo item = (ItemInfo) v.getTag();
         if (Utilities.ATLEAST_Q) {
-            PackageInstallerCompat pkgInstaller = PackageInstallerCompat.getInstance(launcher);
-            SessionInfo sessionInfo = pkgInstaller.getActiveSessionInfo(item.user, packageName);
+            SessionInfo sessionInfo = InstallSessionHelper.INSTANCE.get(launcher)
+                    .getActiveSessionInfo(item.user, packageName);
             if (sessionInfo != null) {
                 LauncherApps launcherApps = launcher.getSystemService(LauncherApps.class);
                 try {

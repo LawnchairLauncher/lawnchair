@@ -29,26 +29,20 @@ import android.view.inputmethod.InputMethodManager;
  */
 public class UiThreadHelper {
 
-    private static Handler sHandler;
+    private static final MainThreadInitializedObject<Handler> HANDLER =
+            new MainThreadInitializedObject<>(
+                    c -> new Handler(UI_HELPER_EXECUTOR.getLooper(), new UiCallbacks(c)));
 
     private static final int MSG_HIDE_KEYBOARD = 1;
     private static final int MSG_SET_ORIENTATION = 2;
     private static final int MSG_RUN_COMMAND = 3;
 
-    private static Handler getHandler(Context context) {
-        if (sHandler == null) {
-            sHandler = new Handler(UI_HELPER_EXECUTOR.getLooper(),
-                    new UiCallbacks(context.getApplicationContext()));
-        }
-        return sHandler;
-    }
-
     public static void hideKeyboardAsync(Context context, IBinder token) {
-        Message.obtain(getHandler(context), MSG_HIDE_KEYBOARD, token).sendToTarget();
+        Message.obtain(HANDLER.get(context), MSG_HIDE_KEYBOARD, token).sendToTarget();
     }
 
     public static void setOrientationAsync(Activity activity, int orientation) {
-        Message.obtain(getHandler(activity), MSG_SET_ORIENTATION, orientation, 0, activity)
+        Message.obtain(HANDLER.get(activity), MSG_SET_ORIENTATION, orientation, 0, activity)
                 .sendToTarget();
     }
 
@@ -58,7 +52,7 @@ public class UiThreadHelper {
     }
 
     public static void runAsyncCommand(Context context, AsyncCommand command, int arg1, int arg2) {
-        Message.obtain(getHandler(context), MSG_RUN_COMMAND, arg1, arg2, command).sendToTarget();
+        Message.obtain(HANDLER.get(context), MSG_RUN_COMMAND, arg1, arg2, command).sendToTarget();
     }
 
     private static class UiCallbacks implements Handler.Callback {

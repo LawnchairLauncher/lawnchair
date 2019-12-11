@@ -36,8 +36,8 @@ import java.util.Comparator;
  */
 public class AppInfo extends ItemInfoWithIcon {
 
-    public static AppInfo[] EMPTY_ARRAY = new AppInfo[0];
-    public static Comparator<AppInfo> COMPONENT_KEY_COMPARATOR = (a, b) -> {
+    public static final AppInfo[] EMPTY_ARRAY = new AppInfo[0];
+    public static final Comparator<AppInfo> COMPONENT_KEY_COMPARATOR = (a, b) -> {
         int uc = a.user.hashCode() - b.user.hashCode();
         return uc != 0 ? uc : a.componentName.compareTo(b.componentName);
     };

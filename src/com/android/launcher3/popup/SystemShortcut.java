@@ -144,7 +144,7 @@ public abstract class SystemShortcut<T extends BaseDraggingActivity> extends Ite
         }
     }
 
-    public static Factory<BaseDraggingActivity> INSTALL = (activity, itemInfo) -> {
+    public static final Factory<BaseDraggingActivity> INSTALL = (activity, itemInfo) -> {
         boolean supportsWebUI = (itemInfo instanceof WorkspaceItemInfo)
                 && ((WorkspaceItemInfo) itemInfo).hasStatusFlag(
                         WorkspaceItemInfo.FLAG_SUPPORTS_WEB_UI);
@@ -176,7 +176,7 @@ public abstract class SystemShortcut<T extends BaseDraggingActivity> extends Ite
         }
     }
 
-    public static Factory<Launcher> DISMISS_PREDICTION = (launcher, itemInfo) -> {
+    public static final Factory<Launcher> DISMISS_PREDICTION = (launcher, itemInfo) -> {
         if (!FeatureFlags.ENABLE_PREDICTION_DISMISS.get()) return null;
         if (itemInfo.container != LauncherSettings.Favorites.CONTAINER_PREDICTION) return null;
         return new DismissPrediction(launcher, itemInfo);

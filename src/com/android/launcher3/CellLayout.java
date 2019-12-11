@@ -179,7 +179,7 @@ public class CellLayout extends ViewGroup implements Transposable {
 
     private final Rect mTempRect = new Rect();
 
-    private final static Paint sPaint = new Paint();
+    private static final Paint sPaint = new Paint();
 
     // Related to accessible drag and drop
     private DragAndDropAccessibilityDelegate mTouchHelper;

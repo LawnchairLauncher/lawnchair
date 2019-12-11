@@ -131,7 +131,7 @@ public class ScrimView<T extends Launcher> extends View implements Insettable, O
     public ScrimView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mLauncher = Launcher.cast(Launcher.getLauncher(context));
-        mWallpaperColorInfo = WallpaperColorInfo.getInstance(context);
+        mWallpaperColorInfo = WallpaperColorInfo.INSTANCE.get(context);
         mEndScrim = Themes.getAttrColor(context, R.attr.allAppsScrimColor);
 
         mMaxScrimAlpha = 0.7f;
