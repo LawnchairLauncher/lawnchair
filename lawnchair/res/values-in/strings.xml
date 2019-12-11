@@ -554,4 +554,7 @@
     <string name="action_switch_apps">Beralih Aplikasi</string>
     <string name="icon_shape_system_default">Diatur oleh Sistem</string>
     <string name="title_missing_notification_access">Diperlukan akses pemberitahuan.</string>
+    <string name="activity_not_found">Aplikasi tidak terpasang.</string>
+    <string name="out_of_space">Tidak ada ruang lagi di Desktop.</string>
+    <string name="hotseat_out_of_space">Tidak ada ruang lagi di Dock.</string>
 </resources>
