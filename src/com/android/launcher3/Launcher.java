@@ -121,6 +121,7 @@ import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.qsb.QsbContainerView;
 import com.android.launcher3.states.RotationHelper;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.AllAppsSwipeController;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
@@ -2636,6 +2637,9 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
                 // Setting the touch point to (-1, -1) will show the options popup in the center of
                 // the screen.
+                if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+                    Log.d(TestProtocol.PERMANENT_DIAG_TAG, "Opening options popup on key up");
+                }
                 OptionsPopupView.showDefaultOptions(this, -1, -1);
             }
             return true;
