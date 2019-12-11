@@ -80,12 +80,25 @@
     <string name="allow_rotation_title">Aktivera Rotation</string>
     <string name="pref_center_wallpaper">Centrera bakgrund</string>
     <string name="pref_hide_statusbar">Göm statusfält</string>
+    <string name="full_width_width_widgets_pref_title">Breda widgets</string>
+    <string name="full_width_widgets_pref_summary">Tillåt widgetar att täcka hela skärmbredden.</string>
+    <string name="show_top_shadow_pref_title">Visa övre skugga</string>
     <!-- Section 4 -->
     <string name="smartspace_preferences_in_settings">At a Glance</string>
     <!-- Note: replaces hard-coded copy (“Home widget”). -->
+    <string name="smartspace_time">Visa tid</string>
+    <string name="smartspace_date">Visa datum</string>
+    <string name="pref_smartspace_time_above">Visa stor klocka</string>
+    <string name="pref_hide_statusbar_clock">Göm klockan i statusfältet</string>
+    <string name="root_access_required">Root-åtkomst krävs.</string>
+    <string name="smartspace_time_24_h">Använd 24-timmarsformat</string>
     <string name="pref_category_weather">Övrigt</string>
+    <string name="pref_smartspace_widget_provider">Väderleverantör</string>
+    <string name="google_app">Google-appen</string>
     <string name="weather_provider_disabled">Avaktiverad</string>
     <string name="weather_provider_owm">OpenWeatherMap</string>
+    <string name="weather_provider_pe">Pixel Experience</string>
+    <string name="pref_weather_units">Temperaturenhet</string>
     <string name="units_metric">Celsius</string>
     <string name="units_imperial">Fahrenheit</string>
     <string name="units_kelvin">Kelvin</string>
@@ -94,15 +107,20 @@
     <string name="units_delisle">Delisle</string>
     <string name="units_reaumur">Réaumur</string>
     <string name="units_romer">Rømer</string>
+    <string name="pref_smartspace_event_providers">Datakällor</string>
+    <string name="battery_status">Batteristatus</string>
+    <string name="event_provider_now_playing">Spelas nu</string>
     <string name="event_provider_unread_notifications">Aviseringar</string>
+    <string name="personality_provider">Hälsningsfraser</string>
+    <string name="pref_smartspace_event_provider">Händelse-leverantör</string>
     <string-array name="greetings_morning">
         <item>God morgon!</item>
         <item>Ha en bra dag!</item>
         <item>It’s a beautiful day outside!</item>
     </string-array>
     <string-array name="greetings_evening">
-        <item>What’s up?</item>
-        <item>Good evening!</item>
+        <item>Hur är läget?</item>
+        <item>God kväll!</item>
         <item>How did your day go?</item>
         <item>Godnatt!</item>
     </string-array>
@@ -110,17 +128,37 @@
         <item>Sov gott!</item>
         <item>Vi ses imorgon!</item>
         <item>God natt!</item>
-        <item>Don’t stay up too late!</item>
+        <item>Var inte uppe för sent!</item>
     </string-array>
+    <string name="battery_charging">Laddas</string>
+    <string name="battery_full">Laddat</string>
+    <string name="battery_low">Låg batterinivå</string>
     <!-- Section 5 -->
     <string name="dock_pref_title">Dock</string>
+    <string name="dock_fill">Visa bakgrund</string>
+    <string name="background_color">Bakgrundsfärg</string>
+    <string name="theme_based">Inställt av tema</string>
+    <string name="dock_shadow">Visa skugga</string>
+    <string name="hotseat_show_arrow">Visa pil</string>
+    <string name="hotseat_show_page_indicator">Visa sidindikator</string>
+    <string name="pref_category_searchbar">Sökfält</string>
+    <string name="dock_search_bar">Visa sökfält</string>
+    <string name="dock_colored_google">Färgade ikoner</string>
     <!-- Section 6 -->
     <string name="app_drawer_pref_title">Applista</string>
     <string name="pref_category_theme">Stil</string>
+    <string name="pref_drawer_columns">Antal kolumner</string>
+    <string name="pref_drawer_padding">Radhöjd</string>
+    <string name="categorization">Kategorier</string>
     <string name="pref_appcategorization_enable_title">Kategorisera appar</string>
     <string name="pref_appcategorization_folders_title">Mappar</string>
+    <string name="pref_appcategorization_folders_summary">Tryck för att öppna mappar.</string>
     <string name="pref_appcategorization_tabs_title">Flikar</string>
     <string name="pref_app_groups_edit_tip">Tryck för att redigera, dra för att ordna om.</string>
+    <plurals name="hidden_apps_count">
+        <item quantity="one">%1$d dold</item>
+        <item quantity="other">%1$d dold</item>
+    </plurals>
     <string name="category_business_and_productivity">Arbete &amp; Produktivitet</string>
     <string name="category_communication">Kommunikation</string>
     <string name="category_entertainment">Underhållning</string>
@@ -170,10 +208,23 @@
     <string name="searchbar_appearance_title">Stil</string>
     <!-- Section 8 -->
     <string name="sesame">Sesame</string>
+    <string name="feed_theme_pref_title">Bakgrundsfärg</string>
     <!-- Section 9 -->
     <string name="gestures_pref_title">Gester</string>
+    <string name="gesture_double_tap">Dubbeltryck</string>
+    <string name="gesture_swipe_down">Svep nedåt</string>
+    <string name="gesture_swipe_up">Svep uppåt</string>
+    <string name="gesture_dock_swipe_up">Svep uppåt från docken</string>
+    <string name="action_none">Gör ingenting</string>
     <string name="action_sleep">Viloläge</string>
+    <string name="action_open_settings">Öppna Lawnchair-inställningar</string>
+    <string name="action_open_notifications">Öppna aviseringspanel</string>
+    <string name="action_overlay">Öppna Google-flödet</string>
+    <string name="action_despacito">Spela \"YouTube Rewind 2018\" (förvrängd)</string>
+    <string name="action_open_app">Öppna app</string>
     <!-- Section 10 -->
+    <string name="backups">Säkerhetskopiering &amp; återställning</string>
+    <string name="backup_pref_summary">Spara hemskärm, återställ säkerhetskopior</string>
     <string name="new_backup">Skapa</string>
     <string name="restore_backup">Återställ</string>
     <string name="backup_settings">Inställningar</string>
@@ -183,24 +234,43 @@
     <string name="custom">Anpassad</string>
     <!-- Section 11 -->
     <string name="about">Om</string>
+    <string name="about_pref_summary">Team, länkar, licenser</string>
+    <string name="about_translate">Översätt</string>
     <string name="title_attribouter_rate">Betygsätt</string>
     <string name="title_attribouter_website">Hemsida</string>
     <string name="about_role_lead">Ledande utvecklare</string>
     <string name="about_role_dev">Utvecklare</string>
+    <string name="about_role_ui_ux_designer">Gränssnittsdesigner</string>
+    <string name="about_role_dev_mod">Utvecklare &amp; moderator</string>
     <string name="about_role_designer">Designer</string>
     <string name="about_role_family_member">Familjemedlem</string>
+    <string name="about_our_team">Teamet</string>
     <!-- Section 12 -->
+    <string name="settings_button_text">Hemskärmsinställningar</string>
     <string name="wallpaper_button_text">Bakgrundsbild</string>
     <string name="pref_app_groups_create">Skapa</string>
     <string name="pref_appcategorization_style_text">Stil</string>
     <string name="customize">Anpassa</string>
+    <plurals name="tab_apps_count">
+        <item quantity="one">%1$d app</item>
+        <item quantity="other">%1$d appar</item>
+    </plurals>
+    <string name="advanced_settings">Fler inställningar</string>
+    <string name="adaptive_icon">Adaptiv ikon</string>
     <string name="action_edit">Ändra</string>
+    <string name="dismiss_drop_target_label">"Visa inte"</string>
+    <string name="smartspace_setup_text">Tryck för att konfigurera</string>
     <string name="lawnchair_settings">Lawnchair-inställningar</string>
+    <string name="label_voice_search">Röstsökning</string>
     <string name="icon_pack">Ikonpaket</string>
     <string name="home_widget">At a Glance</string>
     <string name="about_app_version">Version</string>
+    <string name="title_disable_suggestions_prompt">Inaktivera appförslag</string>
+    <string name="msg_disable_suggestions_prompt">"Användningsdata kommer att raderas."</string>
+    <string name="pixel_style_pref_title">Google Pixel</string>
     <string name="label_turn_off_suggestions">Inaktivera</string>
     <string name="about_summary_title">Sammanfattning</string>
+    <string name="icon_shape_rounded_square">Avrundad kvadrat</string>
     <string name="choose_backup_path">Bläddra</string>
     <string name="backup_loading">Laddar...</string>
     <string name="loading">Laddar…</string>
@@ -217,42 +287,69 @@
     <string name="title_attribouter_license_permissions">Behörigheter</string>
     <string name="title_attribouter_license_conditions">Villkor</string>
     <string name="title_attribouter_license_limitations">Begränsningar</string>
+    <string name="title_attribouter_more_info">Information</string>
     <string name="title_attribouter_translators">Översättare</string>
     <string name="about_our_contributors">Medverkande</string>
+    <string name="about_our_family">Familjemedlemmar</string>
     <string name="about_bio_deletescape">Kotlin/Javautvecklare. Intresserad av allt kring Android. Grundare av Lawnchair och Dogbinprojektet.</string>
     <string name="about_bio_recoded">Mild programmerare och grafisk designer.</string>
     <string name="about_bio_josh">Frilansande grafisk designer.</string>
     <string name="about_bio_harsh">Android applikation och biblioteksutvecklare. Kärnutvecklare vid AOSIP.</string>
     <string name="about_bio_david">19 år gammal, gör koffein och pizza till kod, ger värd och 24/7 utvecklingsstöd om något går fel. Bidrar till open source-projekt under fritiden. Också tidigare känd som Codebucket.</string>
     <string name="about_bio_paphonb">En 18-årig student, Android-utvecklare och en av de huvudsakliga utvecklarna för Lawnchair Launcher.</string>
+    <string name="action_open_widgets">Öppna widgetlistan</string>
+    <string name="action_close_notifications">Stäng aviseringspanel</string>
+    <string name="action_open_app_select_app">Välj app</string>
     <string name="apps_label">Appar</string>
     <string name="all_apps_label">Alla appar</string>
     <string name="pref_weather_city_title">Stad</string>
     <string name="default_city">Lucerne, CH</string>
+    <string name="pref_weather_api_key_title">API-nyckel</string>
+    <string name="pref_weather_city_summary">Inkludera landskoden för bästa resultat.</string>
     <string name="all_icons">Alla ikoner</string>
+    <string name="error_no_browser">Hittade ingen webbläsare.</string>
+    <string name="no_icon_found">Ingen ikon hittades.</string>
+    <string name="icon_pack_external_picker">Öppna extern väljare</string>
     <string name="week_day_format">%1$s, %2$s</string>
     <string name="full_wday_month_day_no_year">EEEE d MMMM</string>
     <string name="weather_provider_testing">Felsök</string>
+    <string name="backup_generate_report">Skapa felrapport</string>
     <string name="reset">Återställ</string>
     <string name="theme_automatic">Automatiskt</string>
     <string name="theme_default">Standard</string>
     <string name="transparent">Genomskinlig</string>
     <string name="pref_open_source_licenses_title">Licenser</string>
+    <string name="dt2s_admin_hint">Administratörsbehörighet krävs för att låsa skärmen med dubbeltryck.</string>
+    <string name="dt2s_admin_warning">Låsning med dubbeltryck kommer att inaktiveras.</string>
     <string name="color_presets">Förinställningar</string>
     <string name="automatic_short">Auto</string>
+    <string name="drag_to_enable_packs">Dra uppåt för att aktivera</string>
+    <string name="drag_to_disable_packs">Dra nedåt för att inaktivera</string>
+    <string name="get_more_icon_packs">Skaffa fler</string>
+    <string name="enabled_icon_packs">Tillämpad</string>
     <string name="lawnchair_actions">Åtgärder</string>
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <string name="title_app_suggestions">Appar</string>
     <string name="theme_dark">Mörkt</string>
     <string name="theme_dark_theme_mode">Mörkt tema</string>
+    <string name="theme_dark_dark_text">Mörkt med mörk text</string>
     <string name="theme_black">Svart</string>
+    <string name="theme_black_dark_text">Svart med mörk text</string>
     <string name="pref_qsb_color">Färg</string>
+    <string name="hide_from_predictions">Dölj från förslag</string>
     <string name="app_actions_pref_title_in_search">Åtgärder</string>
+    <string name="search_clear_history">Rensa historik</string>
+    <string name="recent_task_option_popup_window">Dialog</string>
     <string name="drawer_tabs">Flikar</string>
     <string name="add_new_tab">Lägg till</string>
     <string name="rename_tab">Byt namn</string>
+    <string name="default_tab_name">Ny flik</string>
     <string name="show_in_tabs">Flikar</string>
     <string name="tabs_manage">Hantera</string>
+    <string name="tab_manage_apps">Hantera appar</string>
+    <string name="tab_bottom_sheet_save">Klar</string>
+    <string name="selected_count">%1$d markerad(e)</string>
+    <string name="tab_hide_from_main">Dölj från huvudflik</string>
     <string name="tab_color">Färg</string>
     <string name="delete">Ta bort</string>
     <string name="none">Ingen</string>
@@ -260,6 +357,7 @@
     <string name="shortcut_sesame">Genvägar</string>
     <string name="allow">Tillåt</string>
     <string name="deny">Neka</string>
+    <string name="sesame_enable_integration_title">Delning av data</string>
     <string name="font_variant_italic">Kursiv</string>
     <string name="font_weight_thin">Thin</string>
     <string name="font_weight_light">Light</string>
@@ -275,9 +373,27 @@
     <string name="drawer_folders">Mappar</string>
     <string name="action_copy">Kopiera</string>
     <string name="action_share">Dela</string>
+    <string name="zen_mode_enabled">Stör ej är aktiverat.</string>
+    <string name="crash_report_notif_title">%1$s kraschade</string>
+    <string name="onbording_settings_title">Ställ in %s</string>
     <string name="weather_icons_default">Standard</string>
+    <string name="icon_shape_top_left">Överst till vänster</string>
+    <string name="icon_shape_top_right">Överst till höger</string>
+    <string name="icon_shape_bottom_left">Nederst till vänster</string>
+    <string name="icon_shape_bottom_right">Nederst till höger</string>
     <string name="icon_shape_corner_round">Rund</string>
+    <string name="icon_shape_corner_squircle">Mjuk</string>
     <string name="icon_shape_corner_cut">Klipp</string>
     <!-- Section 13 -->
     <string name="quickstep_pref_title">Senaste appar</string>
+    <string name="swipe_up_to_switch_apps_title">Svep uppåt för att växla app</string>
+    <string name="swipe_left_to_go_back_title">Svep åt vänster för att gå tillbaka</string>
+    <string name="pref_category_nav_swipe_up_gestures">Svep uppåt</string>
+    <string name="gesture_nav_swipe_up_left">Från vänster</string>
+    <string name="gesture_nav_swipe_up_center">Från mitten</string>
+    <string name="gesture_nav_swipe_up_right">Från höger</string>
+    <string name="action_switch_apps">Växla app</string>
+    <string name="icon_shape_system_default">Inställd av systemet</string>
+    <string name="title_missing_notification_access">Åtkomst till aviseringar krävs.</string>
+    <string name="activity_not_found">Appen är inte installerad.</string>
 </resources>
