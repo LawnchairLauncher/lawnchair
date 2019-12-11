@@ -35,7 +35,6 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.model.AppLaunchTracker;
-import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.uioverrides.DisplayRotationListener;
 import com.android.launcher3.uioverrides.WallpaperColorInfo;
 import com.android.launcher3.util.PackageManagerHelper;
@@ -198,8 +197,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
                 if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
                     String id = ((WorkspaceItemInfo) info).getDeepShortcutId();
                     String packageName = intent.getPackage();
-                    DeepShortcutManager.getInstance(this).startShortcut(
-                            packageName, id, intent.getSourceBounds(), optsBundle, info.user);
+                    startShortcut(packageName, id, intent.getSourceBounds(), optsBundle, info.user);
                     AppLaunchTracker.INSTANCE.get(this).onStartShortcut(packageName, id, info.user,
                             sourceContainer);
                 } else {

@@ -41,7 +41,7 @@ import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.logging.FileLog;
-import com.android.launcher3.shortcuts.DeepShortcutManager;
+import com.android.launcher3.shortcuts.ShortcutRequest;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.FlagOp;
 import com.android.launcher3.util.IntSparseArrayMap;
@@ -208,10 +208,11 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                             if (si.isPromise() && isNewApkAvailable) {
                                 boolean isTargetValid = true;
                                 if (si.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
-                                    List<ShortcutInfo> shortcut = DeepShortcutManager
-                                            .getInstance(context).queryForPinnedShortcuts(
-                                                    cn.getPackageName(),
-                                                    Arrays.asList(si.getDeepShortcutId()), mUser);
+                                    List<ShortcutInfo> shortcut =
+                                            new ShortcutRequest(context, mUser)
+                                                    .forPackage(cn.getPackageName(),
+                                                            si.getDeepShortcutId())
+                                                    .query(ShortcutRequest.PINNED);
                                     if (shortcut.isEmpty()) {
                                         isTargetValid = false;
                                     } else {
