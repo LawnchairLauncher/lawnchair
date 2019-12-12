@@ -15,23 +15,12 @@
  */
 package com.android.quickstep.inputconsumers;
 
-import static android.view.MotionEvent.ACTION_CANCEL;
-import static android.view.MotionEvent.ACTION_DOWN;
-import static android.view.MotionEvent.ACTION_MOVE;
-import static android.view.MotionEvent.ACTION_UP;
-
-import static com.android.launcher3.Utilities.squaredHypot;
-
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.PointF;
 import android.view.MotionEvent;
-import android.view.VelocityTracker;
-import android.view.ViewConfiguration;
 
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BaseDraggingActivity;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.logging.StatsLogUtils;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
@@ -39,31 +28,22 @@ import com.android.quickstep.GestureState;
 import com.android.quickstep.InputConsumer;
 import com.android.quickstep.RecentsAnimationDeviceState;
 import com.android.quickstep.util.ActiveGestureLog;
+import com.android.quickstep.util.TriggerSwipeUpTouchTracker;
 import com.android.systemui.shared.system.InputMonitorCompat;
 
 public class OverviewWithoutFocusInputConsumer implements InputConsumer {
 
     private final Context mContext;
-    private final RecentsAnimationDeviceState mDeviceState;
-    private final GestureState mGestureState;
     private final InputMonitorCompat mInputMonitor;
-    private final boolean mDisableHorizontalSwipe;
-    private final PointF mDownPos = new PointF();
-    private final float mSquaredTouchSlop;
-
-    private boolean mInterceptedTouch;
-    private VelocityTracker mVelocityTracker;
+    private final TriggerSwipeUpTouchTracker mTriggerSwipeUpTracker;
 
     public OverviewWithoutFocusInputConsumer(Context context,
             RecentsAnimationDeviceState deviceState, GestureState gestureState,
             InputMonitorCompat inputMonitor, boolean disableHorizontalSwipe) {
         mContext = context;
-        mDeviceState = deviceState;
-        mGestureState = gestureState;
         mInputMonitor = inputMonitor;
-        mDisableHorizontalSwipe = disableHorizontalSwipe;
-        mSquaredTouchSlop = Utilities.squaredTouchSlop(context);
-        mVelocityTracker = VelocityTracker.obtain();
+        mTriggerSwipeUpTracker = new TriggerSwipeUpTouchTracker(context, disableHorizontalSwipe,
+                deviceState.getNavBarPosition(), this::onInterceptTouch, this::onSwipeUp);
     }
 
     @Override
@@ -73,97 +53,31 @@ public class OverviewWithoutFocusInputConsumer implements InputConsumer {
 
     @Override
     public boolean allowInterceptByParent() {
-        return !mInterceptedTouch;
-    }
-
-    private void endTouchTracking() {
-        if (mVelocityTracker != null) {
-            mVelocityTracker.recycle();
-            mVelocityTracker = null;
-        }
+        return !mTriggerSwipeUpTracker.interceptedTouch();
     }
 
     @Override
     public void onMotionEvent(MotionEvent ev) {
-        if (mVelocityTracker == null) {
-            return;
-        }
+        mTriggerSwipeUpTracker.onMotionEvent(ev);
+    }
 
-        mVelocityTracker.addMovement(ev);
-        switch (ev.getActionMasked()) {
-            case ACTION_DOWN: {
-                mDownPos.set(ev.getX(), ev.getY());
-                break;
-            }
-            case ACTION_MOVE: {
-                if (!mInterceptedTouch) {
-                    float displacementX = ev.getX() - mDownPos.x;
-                    float displacementY = ev.getY() - mDownPos.y;
-                    if (squaredHypot(displacementX, displacementY) >= mSquaredTouchSlop) {
-                        if (mDisableHorizontalSwipe
-                                && Math.abs(displacementX) > Math.abs(displacementY)) {
-                            // Horizontal gesture is not allowed in this region
-                            endTouchTracking();
-                            break;
-                        }
-
-                        mInterceptedTouch = true;
-
-                        if (mInputMonitor != null) {
-                            mInputMonitor.pilferPointers();
-                        }
-                    }
-                }
-                break;
-            }
-
-            case ACTION_CANCEL:
-                endTouchTracking();
-                break;
-
-            case ACTION_UP: {
-                finishTouchTracking(ev);
-                endTouchTracking();
-                break;
-            }
+    private void onInterceptTouch() {
+        if (mInputMonitor != null) {
+            mInputMonitor.pilferPointers();
         }
     }
 
-    private void finishTouchTracking(MotionEvent ev) {
-        mVelocityTracker.computeCurrentVelocity(100);
-        float velocityX = mVelocityTracker.getXVelocity();
-        float velocityY = mVelocityTracker.getYVelocity();
-        float velocity = mDeviceState.getNavBarPosition().isRightEdge()
-                ? -velocityX
-                : mDeviceState.getNavBarPosition().isLeftEdge()
-                        ? velocityX
-                        : -velocityY;
-
-        final boolean triggerQuickstep;
-        int touch = Touch.FLING;
-        if (Math.abs(velocity) >= ViewConfiguration.get(mContext).getScaledMinimumFlingVelocity()) {
-            triggerQuickstep = velocity > 0;
-        } else {
-            float displacementX = mDisableHorizontalSwipe ? 0 : (ev.getX() - mDownPos.x);
-            float displacementY = ev.getY() - mDownPos.y;
-            triggerQuickstep = squaredHypot(displacementX, displacementY) >= mSquaredTouchSlop;
-            touch = Touch.SWIPE;
-        }
-
-        if (triggerQuickstep) {
-            mContext.startActivity(new Intent(Intent.ACTION_MAIN)
-                    .addCategory(Intent.CATEGORY_HOME)
-                    .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-            ActiveGestureLog.INSTANCE.addLog("startQuickstep");
-            BaseActivity activity = BaseDraggingActivity.fromContext(mContext);
-            int pageIndex = -1; // This number doesn't reflect workspace page index.
-                                // It only indicates that launcher client screen was shown.
-            int containerType = StatsLogUtils.getContainerTypeFromState(activity.getCurrentState());
-            activity.getUserEventDispatcher().logActionOnContainer(
-                    touch, Direction.UP, containerType, pageIndex);
-            activity.getUserEventDispatcher().setPreviousHomeGesture(true);
-        } else {
-            // ignore
-        }
+    private void onSwipeUp(boolean wasFling) {
+        mContext.startActivity(new Intent(Intent.ACTION_MAIN)
+                .addCategory(Intent.CATEGORY_HOME)
+                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+        ActiveGestureLog.INSTANCE.addLog("startQuickstep");
+        BaseActivity activity = BaseDraggingActivity.fromContext(mContext);
+        int pageIndex = -1; // This number doesn't reflect workspace page index.
+                            // It only indicates that launcher client screen was shown.
+        int containerType = StatsLogUtils.getContainerTypeFromState(activity.getCurrentState());
+        activity.getUserEventDispatcher().logActionOnContainer(
+                wasFling ? Touch.FLING : Touch.SWIPE, Direction.UP, containerType, pageIndex);
+        activity.getUserEventDispatcher().setPreviousHomeGesture(true);
     }
 }
