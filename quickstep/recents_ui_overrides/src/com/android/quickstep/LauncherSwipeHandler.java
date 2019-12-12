@@ -610,10 +610,12 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
 
     @Override
     public void onRecentsAnimationCanceled(ThumbnailData thumbnailData) {
-        super.onRecentsAnimationCanceled(thumbnailData);
+        ActiveGestureLog.INSTANCE.addLog("cancelRecentsAnimation");
         mActivityInitListener.unregister();
         mStateCallback.setStateOnUiThread(STATE_GESTURE_CANCELLED | STATE_HANDLER_INVALIDATED);
-        ActiveGestureLog.INSTANCE.addLog("cancelRecentsAnimation");
+
+        // Defer clearing the controller and the targets until after we've updated the state
+        super.onRecentsAnimationCanceled(thumbnailData);
     }
 
     @Override

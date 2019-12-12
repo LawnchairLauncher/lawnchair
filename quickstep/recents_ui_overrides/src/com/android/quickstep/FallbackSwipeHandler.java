@@ -453,8 +453,10 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
 
     @Override
     public void onRecentsAnimationCanceled(ThumbnailData thumbnailData) {
-        super.onRecentsAnimationCanceled(thumbnailData);
         mStateCallback.setStateOnUiThread(STATE_HANDLER_INVALIDATED);
+
+        // Defer clearing the controller and the targets until after we've updated the state
+        super.onRecentsAnimationCanceled(thumbnailData);
     }
 
     /**
