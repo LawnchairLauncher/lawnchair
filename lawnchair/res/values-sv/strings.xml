@@ -135,10 +135,12 @@
     <string name="battery_low">Låg batterinivå</string>
     <!-- Section 5 -->
     <string name="dock_pref_title">Dock</string>
+    <string name="dock_pref_summary">Layout, stil, indikatorer</string>
     <string name="dock_fill">Visa bakgrund</string>
     <string name="background_color">Bakgrundsfärg</string>
     <string name="theme_based">Inställt av tema</string>
     <string name="dock_shadow">Visa skugga</string>
+    <string name="radius">Hörnradie</string>
     <string name="hotseat_show_arrow">Visa pil</string>
     <string name="hotseat_show_page_indicator">Visa sidindikator</string>
     <string name="pref_category_searchbar">Sökfält</string>
@@ -148,6 +150,7 @@
     <string name="app_drawer_pref_title">Applista</string>
     <string name="pref_category_theme">Stil</string>
     <string name="pref_drawer_columns">Antal kolumner</string>
+    <string name="pref_prediction_count">Antal förslag</string>
     <string name="pref_drawer_padding">Radhöjd</string>
     <string name="categorization">Kategorier</string>
     <string name="pref_appcategorization_enable_title">Kategorisera appar</string>
@@ -189,8 +192,12 @@
     <string name="app_actions_pref_title">Åtgärder</string>
     <string name="app_actions_pref_desc">Genvägar till ofta öppnade skärmar.</string>
     <string name="app_actions_reset_pref_title">Återställ Handlings Preferenser</string>
+    <string name="separate_work_apps_pref_title">Annan flik för arbetsappar</string>
+    <string name="keep_scroll_state_pref_title">Kom ihåg position</string>
     <!-- Section 7 -->
     <string name="search">Sök</string>
+    <string name="pref_global_search_provider">Sökmotor</string>
+    <string name="google">Google-appen</string>
     <string name="search_provider_google_go">Google Go</string>
     <string name="web_search_google">Google</string>
     <string name="search_provider_yandex">Yandex</string>
@@ -206,12 +213,20 @@
     <string name="search_provider_edge">Edge</string>
     <string name="weather_provider_oneplus_weather">OnePlus Väder</string>
     <string name="searchbar_appearance_title">Stil</string>
+    <string name="pref_show_assistant_title">Visa röstsökningsknapp</string>
+    <string name="action_assistant">Öppna assistent</string>
+    <string name="pref_search_bar_radius">Hörnradie</string>
     <!-- Section 8 -->
+    <string name="pref_integrations">Tillägg</string>
     <string name="sesame">Sesame</string>
+    <string name="sesame_data_integration">Delning av data</string>
+    <string name="sesame_upsell">Tryck för att installera Sesame.</string>
+    <string name="sesame_version">Biblioteksversion</string>
     <string name="feed_theme_pref_title">Bakgrundsfärg</string>
     <!-- Section 9 -->
     <string name="gestures_pref_title">Gester</string>
     <string name="gesture_double_tap">Dubbeltryck</string>
+    <string name="gesture_long_press">Tryck länge</string>
     <string name="gesture_swipe_down">Svep nedåt</string>
     <string name="gesture_swipe_up">Svep uppåt</string>
     <string name="gesture_dock_swipe_up">Svep uppåt från docken</string>
@@ -227,6 +242,7 @@
     <string name="backup_pref_summary">Spara hemskärm, återställ säkerhetskopior</string>
     <string name="new_backup">Skapa</string>
     <string name="restore_backup">Återställ</string>
+    <string name="local_backups">I lokal lagring</string>
     <string name="backup_settings">Inställningar</string>
     <string name="backup_wallpaper">Bakgrund</string>
     <string name="name">Namn</string>
@@ -272,6 +288,8 @@
     <string name="about_summary_title">Sammanfattning</string>
     <string name="icon_shape_rounded_square">Avrundad kvadrat</string>
     <string name="choose_backup_path">Bläddra</string>
+    <string name="backup_error_blank_location">Välj plats för säkerhetskopian.</string>
+    <string name="backup_error_blank_contents">Lägg till innehåll i säkerhetskopian.</string>
     <string name="backup_loading">Laddar...</string>
     <string name="loading">Laddar…</string>
     <string name="backup_share">Dela</string>
