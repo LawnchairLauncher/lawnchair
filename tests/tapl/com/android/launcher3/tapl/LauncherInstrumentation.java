@@ -130,6 +130,7 @@ public final class LauncherInstrumentation {
     private static final String APPS_RES_ID = "apps_view";
     private static final String OVERVIEW_RES_ID = "overview_panel";
     private static final String WIDGETS_RES_ID = "widgets_list_view";
+    private static final String CONTEXT_MENU_RES_ID = "deep_shortcuts_container";
     public static final int WAIT_TIME_MS = 10000;
     private static final String SYSTEMUI_PACKAGE = "com.android.systemui";
 
@@ -308,6 +309,7 @@ public final class LauncherInstrumentation {
     }
 
     private String getVisibleStateMessage() {
+        if (hasLauncherObject(CONTEXT_MENU_RES_ID)) return "Context Menu";
         if (hasLauncherObject(WIDGETS_RES_ID)) return "Widgets";
         if (hasLauncherObject(OVERVIEW_RES_ID)) return "Overview";
         if (hasLauncherObject(WORKSPACE_RES_ID)) return "Workspace";
@@ -541,7 +543,7 @@ public final class LauncherInstrumentation {
 
             final Point displaySize = getRealDisplaySize();
 
-            if (hasLauncherObject("deep_shortcuts_container")) {
+            if (hasLauncherObject(CONTEXT_MENU_RES_ID)) {
                 linearGesture(
                         displaySize.x / 2, displaySize.y - 1,
                         displaySize.x / 2, 0,
@@ -549,7 +551,7 @@ public final class LauncherInstrumentation {
                         false);
                 try (LauncherInstrumentation.Closable c = addContextLayer(
                         "Swiped up from context menu to home")) {
-                    waitUntilGone("deep_shortcuts_container");
+                    waitUntilGone(CONTEXT_MENU_RES_ID);
                 }
             }
             if (hasLauncherObject(WORKSPACE_RES_ID)) {
