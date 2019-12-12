@@ -55,7 +55,7 @@
     <!-- Section 3 -->
     <string name="general_pref_title">Plocha</string>
     <string name="general_pref_summary">Rozloženie, uzamknutie pracovnej plochy, prechody</string>
-    <string name="grid_size">Ikona mriežky</string>
+    <string name="grid_size">Mriežka ikon</string>
     <string name="grid_size_width">Šírka</string>
     <string name="grid_size_height">Výška</string>
     <string name="num_hotseat_icons_pref_title">Počet ikon</string>
@@ -63,22 +63,22 @@
     <string name="lock_desktop">Uzamknutie pracovnej plochy</string>
     <string name="pref_category_icons">Odkazy</string>
     <string name="hide_icon_labels_pref_title">Skryť štítky</string>
-    <string name="pref_mutliline_labels">Multiline Labels</string>
+    <string name="pref_mutliline_labels">Viacriadkové štítky</string>
     <string name="icon_text_scale_pref_title">Veľkosť písma</string>
     <string name="text_color">Farba textu</string>
     <string name="icon_scale_pref_title">Veľkosť ikony</string>
-    <string name="auto_add_shortcuts_label">Pridať skratku na Plochu</string>
+    <string name="auto_add_shortcuts_label">Pridať nové odkazy na plochu</string>
     <string name="pref_icon_popup_menu">Bublinky odkazov</string>
     <string name="pref_category_misc">Ostatné</string>
-    <string name="animation_type_title">Prechod na spustenie aplikácie</string>
-    <string name="animation_type_default">Predvolená</string>
+    <string name="animation_type_title">Prechod spustenia aplikácie</string>
+    <string name="animation_type_default">Predvolený</string>
     <string name="animation_type_pie">Android Pie</string>
     <string name="animation_type_pie_like">Android Pie (Emulated)</string>
-    <string name="animation_type_reveal">Odkryť</string>
+    <string name="animation_type_reveal">Odkrytie</string>
     <string name="animation_type_slide_up">Potiahnutie nahor</string>
-    <string name="animation_type_scale_up">Zvýšiť</string>
-    <string name="animation_type_blink">Blikať</string>
-    <string name="animation_type_fade">Miznúť</string>
+    <string name="animation_type_scale_up">Zväčšenie</string>
+    <string name="animation_type_blink">Bliknutie</string>
+    <string name="animation_type_fade">Miznutie</string>
     <string name="icon_badging_title">Bodky upozornení</string>
     <string name="pref_notification_count_title">Zobraziť počítadlo upozornení</string>
     <string name="allow_rotation_title">Povoliť rotácie</string>
@@ -98,7 +98,7 @@
     <string name="pref_hide_statusbar_clock">Skryť hodiny stavového riadku</string>
     <string name="root_access_required">Vyžaduje sa prístup root.</string>
     <string name="smartspace_time_24_h">Použiť 24 hodinový formát</string>
-    <string name="title_use_pill_qsb">Zobraziť odkaz na vyhľadávanie</string>
+    <string name="title_use_pill_qsb">Zobraziť kapsulu na vyhľadávanie</string>
     <string name="pref_category_weather">Ostatné</string>
     <string name="pref_smartspace_widget_provider">Zdroj počasia</string>
     <string name="google_app">Google aplikácia</string>
@@ -126,16 +126,16 @@
         <item>Vonku je krásny deň!</item>
     </string-array>
     <string-array name="greetings_evening">
-        <item>Čo sa deje?</item>
+        <item>Ako sa máte?</item>
         <item>Dobrý večer!</item>
-        <item>Ako šiel Váš deň?</item>
-        <item>Aký bol Váš deň?</item>
+        <item>Ako ste sa dnes mali?</item>
+        <item>Ako bol váš deň?</item>
     </string-array>
     <string-array name="greetings_night">
         <item>Dobre sa vyspite!</item>
         <item>Uvidíme sa zajtra!</item>
         <item>Dobrú noc!</item>
-        <item>Nebudte hore príliš dlho!</item>
+        <item>Nezostaňte hore príliš dlho!</item>
     </string-array>
     <string name="battery_charging">Nabíjanie</string>
     <string name="battery_full">Nabité</string>
@@ -147,7 +147,7 @@
     <string name="background_color">Farba pozadia</string>
     <string name="theme_based">Nastavenia vzhľadu</string>
     <string name="dock_shadow">Zobraziť tieň</string>
-    <string name="radius">Polomer rohu</string>
+    <string name="radius">Zaoblenie rohov</string>
     <string name="hotseat_show_arrow">Zobraziť šípku</string>
     <string name="hotseat_show_page_indicator">Zobraziť indikátor stránky</string>
     <string name="two_row_dock">Zobraziť druhý riadok</string>
@@ -169,6 +169,12 @@
     <string name="pref_appcategorization_tabs_title">Karty</string>
     <string name="pref_appcategorization_tabs_summary">Prejdite prstom medzi kategóriami.</string>
     <string name="pref_app_groups_edit_tip">Klepnutím upravíte, presunutím zmeníte poradie.</string>
+    <plurals name="hidden_apps_count">
+        <item quantity="one">%1$d skrytá</item>
+        <item quantity="few">%1$d skryté</item>
+        <item quantity="many">%1$d skrytých</item>
+        <item quantity="other">%1$d skrytých</item>
+    </plurals>
     <string name="category_business_and_productivity">Podnikanie a produktivita</string>
     <string name="category_communication">Komunikácia</string>
     <string name="category_entertainment">Zábava</string>
@@ -310,6 +316,12 @@
     <string name="pref_app_groups_create">Vytvoriť</string>
     <string name="pref_appcategorization_style_text">Štýl</string>
     <string name="customize">Prispôsobiť</string>
+    <plurals name="tab_apps_count">
+        <item quantity="one">%1$d aplikácia</item>
+        <item quantity="few">%1$d aplikácie</item>
+        <item quantity="many">%1$d aplikácií</item>
+        <item quantity="other">%1$d aplikácií</item>
+    </plurals>
     <string name="advanced_settings">Viac Nastavení</string>
     <string name="adaptive_icon">Adaptívna ikona</string>
     <string name="action_edit">Upraviť</string>
