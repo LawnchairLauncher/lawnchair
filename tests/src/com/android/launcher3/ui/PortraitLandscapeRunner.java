@@ -38,8 +38,8 @@ class PortraitLandscapeRunner implements TestRule {
 
                     evaluateInPortrait();
                     evaluateInLandscape();
-                } catch (Exception e) {
-                    Log.e(TAG, "Exception", e);
+                } catch (Throwable e) {
+                    Log.e(TAG, "Error", e);
                     throw e;
                 } finally {
                     mTest.mDevice.setOrientationNatural();
