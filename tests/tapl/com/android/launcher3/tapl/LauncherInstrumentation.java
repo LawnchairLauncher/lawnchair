@@ -519,7 +519,9 @@ public final class LauncherInstrumentation {
                     mInstrumentation.getUiAutomation().executeAndWaitForEvent(
                             command, eventFilter, WAIT_TIME_MS);
             assertNotNull("executeAndWaitForEvent returned null (this can't happen)", event);
-            return event.getParcelableData();
+            final Parcelable parcelableData = event.getParcelableData();
+            event.recycle();
+            return parcelableData;
         } catch (TimeoutException e) {
             fail(message.get());
             return null;
