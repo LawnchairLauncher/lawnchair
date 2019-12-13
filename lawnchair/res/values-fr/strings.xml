@@ -29,7 +29,7 @@
     <string name="pref_white_only_treatment">Remplacer les Fonds Blancs</string>
     <string name="pref_white_only_treatment_summary">Colorier tous les fonds d’Icônes Adaptatives.</string>
     <string name="adaptify_pack_title">Créer des Icônes Adaptatives pour le Pack d\'Icônes</string>
-    <string name="icon_shape_override_label">Forme d\'Icône</string>
+    <string name="icon_shape_override_label">Forme des icônes</string>
     <string name="reset_custom_icons">Supprimer les Icônes Personnalisées</string>
     <string name="reset_custom_icons_confirmation">Revenir aux icônes par défaut de ce Pack d\'Icônes ? Cela ne peut être annulé.</string>
     <string name="appearance">Apparence</string>
@@ -39,7 +39,7 @@
     <string name="theme_dark_theme_mode_follow_daylight">Programmé (Sombre la Nuit)</string>
     <string name="theme_light">Clair</string>
     <string name="theme_dark_text">Clair avec Texte Foncé</string>
-    <string name="theme_with_dark_text">Texte Foncé</string>
+    <string name="theme_with_dark_text">Texte foncé</string>
     <string name="theme_use_black">Utiliser du Noir Pur</string>
     <string name="theme_use_dark_text">Utiliser du Texte Foncé</string>
     <string name="lawnchair_accent">Couleur d\'accentuation </string>
@@ -48,14 +48,14 @@
     <string name="color_wallpaper_main">Fond d\'écran — primaire</string>
     <string name="color_wallpaper_secondary">Fond d\'écran — secondaire</string>
     <string name="color_wallpaper_tertiary">Fond d\'écran — tertiaire</string>
-    <string name="pref_fonts_title">Polices de caractère</string>
+    <string name="pref_fonts_title">Polices</string>
     <string name="blur_pref_title">Activer le flou</string>
     <string name="blur_pref_summary">Flouter les fonds de page.</string>
     <string name="blur_radius_pref_title">Intensité de Flou</string>
     <!-- Section 3 -->
     <string name="general_pref_title">Écran d\'accueil</string>
     <string name="general_pref_summary">Disposition, Verrouiller l\'Écran d\'accueil, Transitions</string>
-    <string name="grid_size">Grille d’icônes</string>
+    <string name="grid_size">Grille d\'icônes</string>
     <string name="grid_size_width">Largeur</string>
     <string name="grid_size_height">Hauteur</string>
     <string name="num_hotseat_icons_pref_title">Nombre d\'icônes</string>
@@ -66,7 +66,7 @@
     <string name="pref_mutliline_labels">Étiquettes multilignes</string>
     <string name="icon_text_scale_pref_title">Taille du texte</string>
     <string name="text_color">Couleur du texte</string>
-    <string name="icon_scale_pref_title">Taille des icônes</string>
+    <string name="icon_scale_pref_title">Taille de l\'icône</string>
     <string name="auto_add_shortcuts_label">Ajouter les Nouveaux Raccourcis sur l\'Écran d\'accueil</string>
     <string name="pref_icon_popup_menu">Bulle de raccourci</string>
     <string name="pref_category_misc">Autres</string>
@@ -93,7 +93,7 @@
     <!-- Note: replaces hard-coded copy (“Home widget”). -->
     <string name="smartspace_preferences_in_settings_desc">Date &amp; Heure, Sources de Données</string>
     <string name="smartspace_time">Afficher l\'heure</string>
-    <string name="smartspace_date">Afficher la Date</string>
+    <string name="smartspace_date">Afficher la date</string>
     <string name="pref_smartspace_time_above">Afficher une grande horloge</string>
     <string name="pref_hide_statusbar_clock">Masquer l\'horloge de la barre d\'état</string>
     <string name="root_access_required">Accès root requis.</string>
@@ -153,7 +153,7 @@
     <string name="two_row_dock">Afficher la Deuxième Ligne</string>
     <string name="pref_category_searchbar">Barre de recherche</string>
     <string name="dock_search_bar">Afficher la barre de recherche</string>
-    <string name="dock_colored_google">Icônes Colorées</string>
+    <string name="dock_colored_google">Icônes colorées</string>
     <!-- Section 6 -->
     <string name="app_drawer_pref_title">Tiroir des applications</string>
     <string name="app_drawer_pref_summary">Disposition, Catégories, Suggestions</string>
@@ -170,8 +170,8 @@
     <string name="pref_appcategorization_tabs_summary">Balayer entre les Catégories.</string>
     <string name="pref_app_groups_edit_tip">Appuyer pour éditer, glisser pour réorganiser.</string>
     <plurals name="hidden_apps_count">
-        <item quantity="one">%1$d cachés</item>
-        <item quantity="other">%1$d cachés</item>
+        <item quantity="one">%1$d masqué</item>
+        <item quantity="other">%1$d masqués</item>
     </plurals>
     <string name="category_business_and_productivity">Travail &amp; Productivité</string>
     <string name="category_communication">Communication</string>
@@ -187,7 +187,7 @@
     <string name="category_photography">Photographie</string>
     <string name="category_tools">Outils</string>
     <string name="category_travel_and_navigation">Voyages &amp; Navigation</string>
-    <string name="select_tab_type">Nouvel Onglet</string>
+    <string name="select_tab_type">Nouvel onglet</string>
     <string name="tab_type_smart">Automatique</string>
     <string name="pref_appcategorization_flowerpot_summary">Choisir les raccourcis automatiquement</string>
     <string name="tab_type_custom">Personnalisé</string>
@@ -211,7 +211,7 @@
     <string name="search">Rechercher</string>
     <string name="search_pref_summary">Mise en page, style, moteur de recherche</string>
     <string name="pref_global_search_provider">Moteur de recherche</string>
-    <string name="google">Appli Google</string>
+    <string name="google">Application Google</string>
     <string name="search_provider_google_go">Google Go</string>
     <string name="web_search_google">Google</string>
     <string name="web_search_ddg">DuckDuckGo (dans le navigateur)</string>
@@ -227,9 +227,9 @@
     <string name="search_provider_bing">Bing</string>
     <string name="search_provider_baidu">Baidu</string>
     <string name="search_provider_s_finder">S Finder</string>
-    <string name="search_provider_appsearch">Recherche d\'appli</string>
-    <string name="search_provider_search_lite">Recherche Légère</string>
-    <string name="search_provider_cool_search">Recherche Cool</string>
+    <string name="search_provider_appsearch">Recherche d\'applications</string>
+    <string name="search_provider_search_lite">Search Lite</string>
+    <string name="search_provider_cool_search">Cool Search</string>
     <string name="search_provider_firefox">Firefox</string>
     <string name="search_provider_qwant">Qwant</string>
     <string name="search_provider_edge">Edge</string>
@@ -241,7 +241,7 @@
     <string name="bubble_searchbar">Afficher Deux Bulles</string>
     <string name="pref_search_bar_radius">Rayon de Coin</string>
     <!-- Section 8 -->
-    <string name="pref_integrations">Greffons</string>
+    <string name="pref_integrations">Extensions</string>
     <string name="pref_integrations_summary">Raccourcis Sesame, Google Feed</string>
     <string name="sesame">Sesame</string>
     <string name="sesame_data_integration">Partage de Données</string>
@@ -260,17 +260,17 @@
     <string name="gesture_long_press">Appuyer &amp; Maintenir</string>
     <string name="gesture_press_home">Appui sur le Bouton d\'Accueil</string>
     <string name="gesture_press_back">Appui sur le Bouton de Retour</string>
-    <string name="gesture_swipe_down">Glisser vers le Bas</string>
-    <string name="gesture_swipe_up">Glisser vers le Haut</string>
+    <string name="gesture_swipe_down">Glisser vers le bas</string>
+    <string name="gesture_swipe_up">Glisser vers le haut</string>
     <string name="gesture_dock_swipe_up">Glisser vers le Haut à partir du Dock</string>
-    <string name="action_none">Ne Rien Faire</string>
+    <string name="action_none">Ne rien faire</string>
     <string name="action_sleep">Veille</string>
     <string name="action_sleep_timeout">Mise en veille Suivant le délai d\'Attente de l\'Écran</string>
     <string name="action_open_settings">Ouvrir les Réglages de Lawnchair</string>
     <string name="action_open_notifications">Ouvrir le Panneau de Notifications</string>
     <string name="action_overlay">Ouvrir Google Feed</string>
     <string name="action_despacito">Lire \"YouTube Rewind 2018\" (Déformé)</string>
-    <string name="action_open_app">Ouvrir l\'Application</string>
+    <string name="action_open_app">Ouvrir l\'application</string>
     <!-- Section 10 -->
     <string name="backups">Sauvegarde &amp; Restauration</string>
     <string name="backup_pref_summary">Enregistrer la Configuration de l\'Accueil, Restaurer les Sauvegardes</string>
@@ -295,7 +295,7 @@
     <string name="title_attribouter_website">Site internet</string>
     <string name="about_role_lead">Développeur en chef</string>
     <string name="about_role_dev">Développeur</string>
-    <string name="about_role_ui_ux_designer">UI Designer</string>
+    <string name="about_role_ui_ux_designer">Designer de l\'interface</string>
     <string name="about_role_writer">Rédacteur</string>
     <string name="about_role_dev_mod">Développeur &amp; Modérateur</string>
     <string name="about_role_designer">Designer</string>
@@ -305,7 +305,7 @@
     <string name="about_role_mod_support">Représentant Support &amp; Modérateur</string>
     <string name="about_role_family_member">Membre de la famille</string>
     <string name="about_role_magisk_maintainer">Mainteneur du Module QuickSwitch</string>
-    <string name="about_our_team">L\'Équipe</string>
+    <string name="about_our_team">L\'équipe</string>
     <string name="title_attribouter_licenses">Attribution</string>
     <!-- Section 12 -->
     <string name="settings_button_text">Paramètres de l\'écran d\'accueil</string>
@@ -315,7 +315,7 @@
     <string name="pref_appcategorization_style_text">Style</string>
     <string name="customize">Personnaliser</string>
     <plurals name="tab_apps_count">
-        <item quantity="one">%1$d Application</item>
+        <item quantity="one">%1$d application</item>
         <item quantity="other">%1$d Applications</item>
     </plurals>
     <string name="advanced_settings">Plus de paramètres</string>
@@ -395,7 +395,7 @@
 corriges des bugs pendant son temps libre. Également connu précédemment sous le nom de Codebucket.</string>
     <string name="about_bio_lumiq">Il est juste devenu plus difficile de construire un mauvais produit.</string>
     <string name="about_bio_paphonb">Un étudiant de 18ans, Développeur Android et l\'un des meilleurs développeurs de Lawnchair launcher.</string>
-    <string name="debug_crash_launcher">Forcer l\'Arrêt</string>
+    <string name="debug_crash_launcher">Forcer l\'arrêt</string>
     <string name="action_open_drawer">Ouvrir le Tiroir</string>
     <string name="action_last_task">Lancer la Dernière Application Utilisée</string>
     <string name="action_open_widgets">Ouvrir le Tiroir à Widgets</string>
@@ -404,10 +404,10 @@ corriges des bugs pendant son temps libre. Également connu précédemment sous 
     <string name="action_app_search">Lancer la Recherche d\'Application</string>
     <string name="action_close_notifications">Fermer le Panneau de Notifications</string>
     <string name="action_open_app_with_target">Ouvrir \"%s\"</string>
-    <string name="action_open_app_select_app">Choisir une Application</string>
+    <string name="action_open_app_select_app">Choisir une application</string>
     <string name="smartspace_widget_provider_not_found">Obtenir l\'Application Google.</string>
-    <string name="apps_label">Applis</string>
-    <string name="all_apps_label">Toutes les applis</string>
+    <string name="apps_label">Applications</string>
+    <string name="all_apps_label">Toutes les applications</string>
     <string name="pref_weather_city_title">Ville</string>
     <string name="default_city">Paris, FR</string>
     <string name="pref_weather_api_key_title">Clé API</string>
@@ -433,7 +433,7 @@ corriges des bugs pendant son temps libre. Également connu précédemment sous 
     <string name="recent_task_option_force_stop">Forcer l\'arrêt</string>
     <string name="drag_to_enable_packs">Déplacer vers le haut pour activer</string>
     <string name="drag_to_disable_packs">Déplacer vers le bas pour désactiver</string>
-    <string name="get_more_icon_packs">En obtenir Plus</string>
+    <string name="get_more_icon_packs">En obtenir plus</string>
     <string name="enabled_icon_packs">Appliqué</string>
     <string name="lawnchair_actions">Actions</string>
     <string name="bridge_missing_title">Obtenir Lawnfeed</string>
@@ -456,7 +456,7 @@ corriges des bugs pendant son temps libre. Également connu précédemment sous 
     <string name="drawer_tabs">Onglets</string>
     <string name="add_new_tab">Ajouter</string>
     <string name="rename_tab">Renommer</string>
-    <string name="default_tab_name">Nouvel Onglet</string>
+    <string name="default_tab_name">Nouvel onglet</string>
     <string name="show_in_tabs">Onglets</string>
     <string name="tabs_manage">Gérer</string>
     <string name="tab_manage_apps">Gérer les applications</string>
@@ -471,14 +471,14 @@ corriges des bugs pendant son temps libre. Également connu précédemment sous 
     <string name="pref_sesame_enabled">Partage des données d\'utilisation avec Sesame.</string>
     <string name="pref_sesame_disabled">Aucune donnée d\'utilisation partagée.</string>
     <string name="allow">Autoriser</string>
-    <string name="deny">Annuler</string>
+    <string name="deny">Refuser</string>
     <string name="sesame_enable_integration_title">Partage des données</string>
     <string name="sesame_enable_integration_description"><![CDATA[Activer le partage de données d'utilisation avec Sesame ? Vous pourrez changer cela plus tard.]]></string>
     <string name="sesame_shortcut_disabled">Sesame est désactivé.</string>
     <string name="font_variant_italic">Italique</string>
     <string name="font_weight_thin">Fin</string>
-    <string name="font_weight_extra_light">Extra-Léger</string>
-    <string name="font_weight_light">Léger</string>
+    <string name="font_weight_extra_light">Extra-léger</string>
+    <string name="font_weight_light">Clair</string>
     <string name="font_weight_regular">Standard</string>
     <string name="font_weight_medium">Moyen</string>
     <string name="font_weight_semi_bold">Semi-gras</string>
@@ -486,7 +486,7 @@ corriges des bugs pendant son temps libre. Également connu précédemment sous 
     <string name="font_weight_extra_bold">Extra-gras</string>
     <string name="font_weight_extra_black">Noir</string>
     <string name="owm_get_your_own_key">Obtenir une clé API sur api.openweathermap.org.</string>
-    <string name="pref_fonts_global_font">Police Globale</string>
+    <string name="pref_fonts_global_font">Police globale</string>
     <string name="pref_fonts_change_global_font">Modifier</string>
     <string name="pref_fonts_home_icons">Étiquettes</string>
     <string name="pref_fonts_home_smartspace">En bref</string>
@@ -509,14 +509,14 @@ corriges des bugs pendant son temps libre. Également connu précédemment sous 
     <string name="about_app_description">Une application d\'accueil personnalisable pour Android.</string>
     <string name="lawnchair_bug_report">Rapport de Bugs de Lawnchair</string>
     <string name="action_dogbin_upload">Charger sur Dogbin</string>
-    <string name="action_dogbin_copy_link">Copier lien</string>
+    <string name="action_dogbin_copy_link">Copier le lien</string>
     <string name="action_copy">Copier</string>
-    <string name="action_copy_link">Copier lien</string>
+    <string name="action_copy_link">Copier le lien</string>
     <string name="copied_toast">Copié vers le presse-papiers.</string>
     <string name="action_share">Partager</string>
     <string name="action_dogbin_upload_error">Téléchargement échoué.</string>
     <string name="dogbin_uploading">Upload en cours...</string>
-    <string name="bugreport_channel_name">Rapports de Bugs</string>
+    <string name="bugreport_channel_name">Rapports de bugs</string>
     <string name="status_channel_name">Statut d\'Upload</string>
     <string name="bugreport_group_summary">%d nouveaux rapports.</string>
     <string name="bugreport_group_summary_multiple">Plusieurs nouveaux rapports.</string>
