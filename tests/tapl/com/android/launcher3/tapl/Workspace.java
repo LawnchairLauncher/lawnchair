@@ -22,6 +22,7 @@ import static com.android.launcher3.testing.TestProtocol.SPRING_LOADED_STATE_ORD
 
 import static junit.framework.TestCase.assertTrue;
 
+import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.SystemClock;
@@ -49,6 +50,34 @@ public final class Workspace extends Home {
         mHotseat = launcher.waitForLauncherObject("hotseat");
     }
 
+    private static boolean supportsRoundedCornersOnWindows(Resources resources) {
+        return ResourceUtils.getBoolByName(
+                "config_supportsRoundedCornersOnWindows", resources, false);
+    }
+
+    private static float getWindowCornerRadius(Resources resources) {
+        if (!supportsRoundedCornersOnWindows(resources)) {
+            return 0f;
+        }
+
+        // Radius that should be used in case top or bottom aren't defined.
+        float defaultRadius = ResourceUtils.getDimenByName("rounded_corner_radius", resources, 0);
+
+        float topRadius = ResourceUtils.getDimenByName("rounded_corner_radius_top", resources, 0);
+        if (topRadius == 0f) {
+            topRadius = defaultRadius;
+        }
+        float bottomRadius = ResourceUtils.getDimenByName(
+                "rounded_corner_radius_bottom", resources, 0);
+        if (bottomRadius == 0f) {
+            bottomRadius = defaultRadius;
+        }
+
+        // Always use the smallest radius to make sure the rounded corners will
+        // completely cover the display.
+        return Math.min(topRadius, bottomRadius);
+    }
+
     /**
      * Swipes up to All Apps.
      *
@@ -59,13 +88,12 @@ public final class Workspace extends Home {
         try (LauncherInstrumentation.Closable c =
                      mLauncher.addContextLayer("want to switch from workspace to all apps")) {
             verifyActiveContainer();
-            final UiObject2 hotseat = mHotseat;
-            final Point start = hotseat.getVisibleCenter();
-            int deviceHeight = mLauncher.getDevice().getDisplayHeight();
-            int bottomGestureMargin = ResourceUtils.getNavbarSize(
+            final int deviceHeight = mLauncher.getDevice().getDisplayHeight();
+            final int bottomGestureMargin = ResourceUtils.getNavbarSize(
                     ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE, mLauncher.getResources());
-            int displayBottom = deviceHeight - bottomGestureMargin;
-            start.y = displayBottom - 1;
+            final int windowCornerRadius = (int) Math.ceil(getWindowCornerRadius(
+                    mLauncher.getResources()));
+            final int startY = deviceHeight - Math.max(bottomGestureMargin, windowCornerRadius) - 1;
             final int swipeHeight = mLauncher.getTestInfo(
                     TestProtocol.REQUEST_HOME_TO_ALL_APPS_SWIPE_HEIGHT).
                     getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
@@ -74,10 +102,10 @@ public final class Workspace extends Home {
                             + mLauncher.getTouchSlop());
 
             mLauncher.swipeToState(
-                    start.x,
-                    start.y,
-                    start.x,
-                    start.y - swipeHeight - mLauncher.getTouchSlop(),
+                    0,
+                    startY,
+                    0,
+                    startY - swipeHeight - mLauncher.getTouchSlop(),
                     12,
                     ALL_APPS_STATE_ORDINAL);
 
