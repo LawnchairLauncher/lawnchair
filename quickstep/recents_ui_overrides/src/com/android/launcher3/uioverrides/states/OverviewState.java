@@ -173,7 +173,7 @@ public class OverviewState extends LauncherState {
 
     @Override
     public String getDescription(Launcher launcher) {
-        return launcher.getString(R.string.accessibility_desc_recent_apps);
+        return launcher.getString(R.string.accessibility_recent_apps);
     }
 
     public static float getDefaultSwipeHeight(Launcher launcher) {
