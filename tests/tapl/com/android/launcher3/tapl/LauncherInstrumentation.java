@@ -559,7 +559,7 @@ public final class LauncherInstrumentation {
             if (hasLauncherObject(WORKSPACE_RES_ID)) {
                 log(action = "already at home");
             } else {
-                log("Hierarchy before swiping up to home");
+                log("Hierarchy before swiping up to home:");
                 dumpViewHierarchy();
                 log(action = "swiping up to home from " + getVisibleStateMessage());
 
@@ -571,15 +571,19 @@ public final class LauncherInstrumentation {
                 }
             }
         } else {
-            log(action = "clicking home button");
-            executeAndWaitForEvent(
-                    () -> {
-                        log("LauncherInstrumentation.pressHome before clicking");
-                        waitForSystemUiObject("home").click();
-                    },
-                    event -> true,
-                    () -> "Pressing Home didn't produce any events");
-            mDevice.waitForIdle();
+            log("Hierarchy before clicking home:");
+            dumpViewHierarchy();
+            log(action = "clicking home button from " + getVisibleStateMessage());
+            try (LauncherInstrumentation.Closable c = addContextLayer(action)) {
+                mDevice.waitForIdle();
+                runToState(
+                        () -> waitForSystemUiObject("home").click(),
+                        NORMAL_STATE_ORDINAL,
+                        !hasLauncherObject(WORKSPACE_RES_ID)
+                                && (hasLauncherObject(APPS_RES_ID)
+                                || hasLauncherObject(OVERVIEW_RES_ID)));
+                mDevice.waitForIdle();
+            }
         }
         try (LauncherInstrumentation.Closable c = addContextLayer(
                 "performed action to switch to Home - " + action)) {
@@ -783,12 +787,20 @@ public final class LauncherInstrumentation {
                 + "]";
     }
 
+    void runToState(Runnable command, int expectedState, boolean requireEvent) {
+        if (requireEvent) {
+            runToState(command, expectedState);
+        } else {
+            command.run();
+        }
+    }
+
     void runToState(Runnable command, int expectedState) {
         final List<Integer> actualEvents = new ArrayList<>();
         executeAndWaitForEvent(
                 command,
                 event -> isSwitchToStateEvent(event, expectedState, actualEvents),
-                () -> "Failed to receive an event for the swipe end: expected "
+                () -> "Failed to receive an event for the stage change: expected "
                         + TestProtocol.stateOrdinalToString(expectedState)
                         + ", actual: " + eventListToString(actualEvents));
     }
