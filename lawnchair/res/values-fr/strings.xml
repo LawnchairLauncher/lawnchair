@@ -35,7 +35,7 @@
     <string name="appearance">Apparence</string>
     <!-- Note: new. Replaces title of 5th field (from bottom) in “Theme” page. -->
     <string name="theme_auto">Automatique (Assorti au Fond d\'écran)</string>
-    <string name="theme_auto_night_mode">Défini par le Système</string>
+    <string name="theme_auto_night_mode">Défini par le système</string>
     <string name="theme_dark_theme_mode_follow_daylight">Programmé (Sombre la Nuit)</string>
     <string name="theme_light">Clair</string>
     <string name="theme_dark_text">Clair avec Texte Foncé</string>
@@ -71,7 +71,7 @@
     <string name="pref_icon_popup_menu">Bulle de raccourci</string>
     <string name="pref_category_misc">Autres</string>
     <string name="animation_type_title">Transition de Lancement d\'Application</string>
-    <string name="animation_type_default">Défaut</string>
+    <string name="animation_type_default">Par défaut</string>
     <string name="animation_type_pie">Android Pie</string>
     <string name="animation_type_pie_like">Android Pie (Émulé)</string>
     <string name="animation_type_reveal">Révéler</string>
@@ -84,7 +84,7 @@
     <string name="allow_rotation_title">Activer la rotation</string>
     <string name="pref_center_wallpaper">Centrer le fond d\'écran</string>
     <string name="pref_center_wallpaper_summary">Désactiver le défilement du fond d\'écran.</string>
-    <string name="pref_hide_statusbar">Masquer la barre d’état</string>
+    <string name="pref_hide_statusbar">Masquer la barre d\'état</string>
     <string name="full_width_width_widgets_pref_title">Widgets larges</string>
     <string name="full_width_widgets_pref_summary">Laisser les widgets s\'étirer jusqu\'aux bords de l\'écran.</string>
     <string name="show_top_shadow_pref_title">Afficher l\'ombre du haut</string>
@@ -143,7 +143,7 @@
     <!-- Section 5 -->
     <string name="dock_pref_title">Dock</string>
     <string name="dock_pref_summary">Disposition, Style, Indicateurs</string>
-    <string name="dock_fill">Montrer le fond d\'écran</string>
+    <string name="dock_fill">Afficher le fond d\'écran</string>
     <string name="background_color">Couleur du fond d\'écran</string>
     <string name="theme_based">Appliquer par thème</string>
     <string name="dock_shadow">Afficher l\'Ombre</string>
@@ -163,7 +163,7 @@
     <string name="pref_drawer_padding">Hauteur de ligne</string>
     <string name="hide_apps">Raccourcis des applications cachées</string>
     <string name="categorization">Catégories</string>
-    <string name="pref_appcategorization_enable_title">Classer les Applications</string>
+    <string name="pref_appcategorization_enable_title">Catégoriser les applications</string>
     <string name="pref_appcategorization_folders_title">Dossiers</string>
     <string name="pref_appcategorization_folders_summary">Appuyer pour ouvrir les dossiers</string>
     <string name="pref_appcategorization_tabs_title">Onglets</string>
@@ -244,13 +244,13 @@
     <string name="pref_integrations">Extensions</string>
     <string name="pref_integrations_summary">Raccourcis Sesame, Google Feed</string>
     <string name="sesame">Sesame</string>
-    <string name="sesame_data_integration">Partage de Données</string>
+    <string name="sesame_data_integration">Partage des données</string>
     <string name="sesame_upsell">Appuyer pour installer Sesame.</string>
     <string name="pref_sesame_show_shortcuts">Afficher dans des Bulles de Raccourcis</string>
     <string name="sesame_search_engine">Utiliser comme Moteur de Recherche</string>
     <string name="pref_sesame_sync_look_and_feel">Partager les Paramètres de Style</string>
     <string name="pref_sesame_sync_look_and_feel_summary">Appliquer les paramètres de la Barre de Recherche à la Barre Sesame.</string>
-    <string name="sesame_version">Version de la Bibliothèque</string>
+    <string name="sesame_version">Version de la bibliothèque</string>
     <string name="title_show_google_app">Afficher %1$s Flux</string>
     <string name="feed_theme_pref_title">Couleur de Fond</string>
     <!-- Section 9 -->
@@ -278,7 +278,7 @@
     <string name="restore_backup">Restaurer</string>
     <string name="local_backups">Sauvegarde locale</string>
     <string name="no_recent_backups">Les sauvegardes apparaîtront ici.</string>
-    <string name="backup_contents">Données à Sauvegarder</string>
+    <string name="backup_contents">Données à sauvegarder</string>
     <string name="restore_contents">Données à restaurer</string>
     <string name="backup_settings">Paramètres</string>
     <string name="homescreen">Mise en page bureau</string>
@@ -290,7 +290,7 @@
     <!-- Section 11 -->
     <string name="about">À propos</string>
     <string name="about_pref_summary">Équipe, liens, licences</string>
-    <string name="about_translate">Traduire</string>
+    <string name="about_translate">Traduction</string>
     <string name="title_attribouter_rate">Noter</string>
     <string name="title_attribouter_website">Site internet</string>
     <string name="about_role_lead">Développeur en chef</string>
@@ -309,14 +309,14 @@
     <string name="title_attribouter_licenses">Attribution</string>
     <!-- Section 12 -->
     <string name="settings_button_text">Paramètres de l\'écran d\'accueil</string>
-    <string name="button_organize_screens">Organiser les Pages</string>
+    <string name="button_organize_screens">Organiser les pages</string>
     <string name="wallpaper_button_text">Fond d\'écran</string>
     <string name="pref_app_groups_create">Créer</string>
     <string name="pref_appcategorization_style_text">Style</string>
     <string name="customize">Personnaliser</string>
     <plurals name="tab_apps_count">
         <item quantity="one">%1$d application</item>
-        <item quantity="other">%1$d Applications</item>
+        <item quantity="other">%1$d applications</item>
     </plurals>
     <string name="advanced_settings">Plus de paramètres</string>
     <string name="adaptive_icon">Icône adaptative</string>
@@ -335,7 +335,7 @@
     <string name="pixel_style_pref_title">Google Pixel</string>
     <string name="label_turn_off_suggestions">Désactiver</string>
     <string name="about_summary_title">Résumé</string>
-    <string name="hide_app">Masquer raccourci</string>
+    <string name="hide_app">Masquer le raccourci</string>
     <string name="icon_shape_rounded_square">Carré arrondi</string>
     <string name="hide_app_selected">\"&#160;\" masqué.</string>
     <string name="hide_app_apply">Fait</string>
@@ -358,7 +358,7 @@
     <string name="developer_options_enabled">Options de développeur activées.</string>
     <string name="restart_lawnchair_pref_summary">Réappliquer les paramètres.</string>
     <string name="show_debug_info_pref_title">Afficher le Nom des Composants</string>
-    <string name="debug_component_name">Nom du Composant</string>
+    <string name="debug_component_name">Nom du composant</string>
     <string name="debug_component_name_copied">Copié dans le presse-papier.</string>
     <string name="read_external_storage_required">Pour créer une Sauvegarde, accordez l’autorisation de Stockage.</string>
     <string name="launcher_theme_override_label">Forcer l\'Apparence Sombre</string>
@@ -386,7 +386,7 @@
     <string name="title_attribouter_more_info">Détails</string>
     <string name="title_attribouter_translators">Traducteurs</string>
     <string name="about_our_contributors">Contributeurs</string>
-    <string name="about_our_family">Membres de la Famille</string>
+    <string name="about_our_family">Membres de la famille</string>
     <string name="about_bio_deletescape">Développeur Kotlin / Java. Intéressé par tout ce qui est Android. Créateur des projets Lawnchair et dogbin.</string>
     <string name="about_bio_recoded">Programmeur et designer graphique.</string>
     <string name="about_bio_josh">Designer graphique indépendant.</string>
@@ -451,7 +451,7 @@ corriges des bugs pendant son temps libre. Également connu précédemment sous 
     <string name="hide_from_predictions">Masquer des suggestions</string>
     <string name="recents_not_connected">QuickSwitch est désactivé.</string>
     <string name="app_actions_pref_title_in_search">Actions</string>
-    <string name="search_clear_history">Effacer l’historique</string>
+    <string name="search_clear_history">Effacer l\'historique</string>
     <string name="recent_task_option_popup_window">Dialogue</string>
     <string name="drawer_tabs">Onglets</string>
     <string name="add_new_tab">Ajouter</string>
@@ -461,7 +461,7 @@ corriges des bugs pendant son temps libre. Également connu précédemment sous 
     <string name="tabs_manage">Gérer</string>
     <string name="tab_manage_apps">Gérer les applications</string>
     <string name="tab_bottom_sheet_save">Fait</string>
-    <string name="selected_count">%1$d Sélectionnés</string>
+    <string name="selected_count">%1$d sélectionnés</string>
     <string name="tab_hide_from_main">Masquer de l\'Onglet Principal</string>
     <string name="tab_color">Couleur</string>
     <string name="delete">Supprimer</string>
@@ -496,9 +496,9 @@ corriges des bugs pendant son temps libre. Également connu précédemment sous 
     <string name="pref_fonts_drawer_app_actions_icons">Actions</string>
     <string name="pref_fonts_drawer_tabs">Noms d\'onglets</string>
     <string name="pref_fonts_find_fonts">Rechercher</string>
-    <string name="pref_fonts_add_fonts">Ajouter polices</string>
+    <string name="pref_fonts_add_fonts">Ajouter des polices</string>
     <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF supportés.</string>
-    <string name="pref_fonts_missing_font">Police non trouvée.</string>
+    <string name="pref_fonts_missing_font">Police introuvable.</string>
     <string name="pref_show_dev_options">Afficher dans les paramètres</string>
     <string name="dock_scale">Taille du Dock</string>
     <string name="default_folder_name">Nouveau dossier</string>
@@ -514,10 +514,10 @@ corriges des bugs pendant son temps libre. Également connu précédemment sous 
     <string name="action_copy_link">Copier le lien</string>
     <string name="copied_toast">Copié vers le presse-papiers.</string>
     <string name="action_share">Partager</string>
-    <string name="action_dogbin_upload_error">Téléchargement échoué.</string>
-    <string name="dogbin_uploading">Upload en cours...</string>
+    <string name="action_dogbin_upload_error">L\'envoi a echoué.</string>
+    <string name="dogbin_uploading">Envoi...</string>
     <string name="bugreport_channel_name">Rapports de bugs</string>
-    <string name="status_channel_name">Statut d\'Upload</string>
+    <string name="status_channel_name">État de l\'envoi</string>
     <string name="bugreport_group_summary">%d nouveaux rapports.</string>
     <string name="bugreport_group_summary_multiple">Plusieurs nouveaux rapports.</string>
     <string name="folder_cover_mode">Utiliser le Mode Étui</string>
@@ -528,7 +528,7 @@ corriges des bugs pendant son temps libre. Également connu précédemment sous 
     <string name="event_provider_missing_notification_access">Pour utiliser <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, activez les notifications de <xliff:g example="My App" id="name">%2$s.</xliff:g></string>
     <string name="event_provider_missing_notification_dots">Pour utiliser <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, activez les Pastilles de Notification.</string>
     <string name="zen_mode_enabled">Ne Pas Déranger est activé.</string>
-    <string name="crash_report_notif_title">%1$s a Planté</string>
+    <string name="crash_report_notif_title">%1$s a planté</string>
     <string name="onbording_settings_title">Configurer %s</string>
     <string name="onbording_settings_summary">Appuyer longuement sur l\'Écran d\'accueil.</string>
     <string name="onboarding_swipe_up">Glisser vers le haut pour ouvrir le Tiroir.</string>
@@ -545,7 +545,7 @@ corriges des bugs pendant son temps libre. Également connu précédemment sous 
     <string name="icon_shape_corner_round">Circulaire</string>
     <string name="icon_shape_corner_squircle">Arrondi</string>
     <string name="icon_shape_corner_cut">Couper</string>
-    <string name="smartspace_add_to_home">Ajouter à l\'Écran d\'accueil</string>
+    <string name="smartspace_add_to_home">Ajouter à l\'écran d\'accueil</string>
     <string name="get_lawnfeed">Obtenir Lawnfeed</string>
     <!-- Section 13 -->
     <string name="quickstep_pref_title">Récents</string>
