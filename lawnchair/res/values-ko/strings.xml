@@ -254,7 +254,17 @@
     <string name="gestures_pref_summary">두번 누르기, 독에서 쓸어 올리기</string>
     <string name="gesture_double_tap">두번 누르기</string>
     <string name="gesture_long_press">길게 누르기</string>
+    <string name="gesture_press_home">Home Button Tap</string>
+    <string name="gesture_press_back">이전 버튼</string>
+    <string name="gesture_swipe_down">Swipe Down</string>
+    <string name="gesture_swipe_up">Swipe Up</string>
+    <string name="gesture_dock_swipe_up">Swipe Up From Dock</string>
+    <string name="action_none">Do Nothing</string>
     <string name="action_sleep">화면 끄기</string>
+    <string name="action_sleep_timeout">Sleep Using Screen Timeout</string>
+    <string name="action_open_settings">Open Lawnchair Settings</string>
+    <string name="action_open_notifications">Open Notification Panel</string>
+    <string name="action_overlay">Open Google Feed</string>
     <!-- Section 10 -->
     <string name="new_backup">만들기</string>
     <string name="restore_backup">복원</string>
