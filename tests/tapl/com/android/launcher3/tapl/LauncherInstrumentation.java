@@ -308,13 +308,22 @@ public final class LauncherInstrumentation {
         }
     }
 
+    private String getVisiblePackages() {
+        return mDevice.findObjects(By.textStartsWith(""))
+                .stream()
+                .map(object -> object.getApplicationPackage())
+                .distinct()
+                .filter(pkg -> !"com.android.systemui".equals(pkg))
+                .collect(Collectors.joining(", "));
+    }
+
     private String getVisibleStateMessage() {
         if (hasLauncherObject(CONTEXT_MENU_RES_ID)) return "Context Menu";
         if (hasLauncherObject(WIDGETS_RES_ID)) return "Widgets";
         if (hasLauncherObject(OVERVIEW_RES_ID)) return "Overview";
         if (hasLauncherObject(WORKSPACE_RES_ID)) return "Workspace";
         if (hasLauncherObject(APPS_RES_ID)) return "AllApps";
-        return "Background";
+        return "Background (" + getVisiblePackages() + ")";
     }
 
     public void setSystemHealthSupplier(Function<Long, String> supplier) {
