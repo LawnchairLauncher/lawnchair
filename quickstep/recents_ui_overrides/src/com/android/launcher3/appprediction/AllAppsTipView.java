@@ -24,6 +24,7 @@ import android.graphics.CornerPathEffect;
 import android.graphics.Paint;
 import android.graphics.drawable.ShapeDrawable;
 import android.os.Handler;
+import android.os.UserManager;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -33,6 +34,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.core.content.ContextCompat;
+
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
@@ -41,12 +44,9 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.FloatingHeaderView;
 import com.android.launcher3.anim.Interpolators;
-import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.graphics.TriangleShape;
 import com.android.systemui.shared.system.LauncherEventUtil;
-
-import androidx.core.content.ContextCompat;
 
 /**
  * All apps tip view aligned just above prediction apps, shown to users that enter all apps for the
@@ -151,7 +151,7 @@ public class AllAppsTipView extends AbstractFloatingView {
                 TYPE_ON_BOARD_POPUP | TYPE_DISCOVERY_BOUNCE) != null
                 || !launcher.isInState(ALL_APPS)
                 || hasSeenAllAppsTip(launcher)
-                || UserManagerCompat.getInstance(launcher).isDemoUser()
+                || launcher.getSystemService(UserManager.class).isDemoUser()
                 || Utilities.IS_RUNNING_IN_TEST_HARNESS) {
             return false;
         }

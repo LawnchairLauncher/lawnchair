@@ -49,14 +49,14 @@ import com.android.launcher3.PromiseAppInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.WorkspaceItemInfo;
-import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
-import com.android.launcher3.pm.PackageInstallerCompat;
+import com.android.launcher3.pm.InstallSessionHelper;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.views.FloatingIconView;
 import com.android.launcher3.widget.PendingAppWidgetHostView;
 import com.android.launcher3.widget.WidgetAddFlowHandler;
+import com.android.launcher3.widget.WidgetManagerHelper;
 
 /**
  * Class for handling clicks on workspace and all-apps items
@@ -123,8 +123,8 @@ public class ItemClickHandler {
 
         final LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) v.getTag();
         if (v.isReadyForClickSetup()) {
-            LauncherAppWidgetProviderInfo appWidgetInfo = AppWidgetManagerCompat
-                    .getInstance(launcher).findProvider(info.providerName, info.user);
+            LauncherAppWidgetProviderInfo appWidgetInfo = new WidgetManagerHelper(launcher)
+                    .findProvider(info.providerName, info.user);
             if (appWidgetInfo == null) {
                 return;
             }
@@ -169,8 +169,8 @@ public class ItemClickHandler {
     private static void startMarketIntentForPackage(View v, Launcher launcher, String packageName) {
         ItemInfo item = (ItemInfo) v.getTag();
         if (Utilities.ATLEAST_Q) {
-            PackageInstallerCompat pkgInstaller = PackageInstallerCompat.getInstance(launcher);
-            SessionInfo sessionInfo = pkgInstaller.getActiveSessionInfo(item.user, packageName);
+            SessionInfo sessionInfo = InstallSessionHelper.INSTANCE.get(launcher)
+                    .getActiveSessionInfo(item.user, packageName);
             if (sessionInfo != null) {
                 LauncherApps launcherApps = launcher.getSystemService(LauncherApps.class);
                 try {

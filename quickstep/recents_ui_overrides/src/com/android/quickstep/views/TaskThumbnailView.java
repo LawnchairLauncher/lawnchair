@@ -61,9 +61,9 @@ import com.android.systemui.shared.recents.model.ThumbnailData;
  */
 public class TaskThumbnailView extends View implements PluginListener<OverviewScreenshotActions> {
 
-    private final static ColorMatrix COLOR_MATRIX = new ColorMatrix();
-    private final static ColorMatrix SATURATION_COLOR_MATRIX = new ColorMatrix();
-    private final static RectF EMPTY_RECT_F = new RectF();
+    private static final ColorMatrix COLOR_MATRIX = new ColorMatrix();
+    private static final ColorMatrix SATURATION_COLOR_MATRIX = new ColorMatrix();
+    private static final RectF EMPTY_RECT_F = new RectF();
 
     public static final Property<TaskThumbnailView, Float> DIM_ALPHA =
             new FloatProperty<TaskThumbnailView>("dimAlpha") {

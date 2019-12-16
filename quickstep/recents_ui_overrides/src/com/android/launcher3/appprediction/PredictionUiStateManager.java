@@ -26,6 +26,7 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
+import com.android.launcher3.HotseatPredictionController;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile.OnIDPChangeListener;
 import com.android.launcher3.ItemInfo;
@@ -316,6 +317,11 @@ public class PredictionUiStateManager implements StateListener, ItemInfoUpdateRe
                 && itemInfo.itemType != LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT)) {
             return;
         }
+        if (itemInfo.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION) {
+            HotseatPredictionController.fillInHybridHotseatRank(itemInfo, target);
+            return;
+        }
+
         final ComponentKey k = new ComponentKey(itemInfo.getTargetComponent(), itemInfo.user);
         final List<ComponentKeyMapper> predictedApps = manager.getCurrentState().apps;
         IntStream.range(0, predictedApps.size())

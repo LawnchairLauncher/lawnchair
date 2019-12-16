@@ -52,7 +52,7 @@ public class SysUINavigationMode {
         return INSTANCE.get(context).getMode();
     }
 
-    public static MainThreadInitializedObject<SysUINavigationMode> INSTANCE =
+    public static final MainThreadInitializedObject<SysUINavigationMode> INSTANCE =
             new MainThreadInitializedObject<>(SysUINavigationMode::new);
 
     private static final String TAG = "SysUINavigationMode";

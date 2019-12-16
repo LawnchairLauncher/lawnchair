@@ -27,14 +27,14 @@ import android.content.pm.LauncherApps;
 import android.os.Handler;
 import android.util.Log;
 
-import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.icons.IconProvider;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.notification.NotificationListener;
+import com.android.launcher3.pm.InstallSessionHelper;
 import com.android.launcher3.pm.InstallSessionTracker;
-import com.android.launcher3.pm.PackageInstallerCompat;
+import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.SafeCloseable;
@@ -60,6 +60,7 @@ public class LauncherAppState {
     private final InstallSessionTracker mInstallSessionTracker;
     private final SimpleBroadcastReceiver mModelChangeReceiver;
     private final SafeCloseable mCalendarChangeTracker;
+    private final SafeCloseable mUserChangeListener;
 
     public static LauncherAppState getInstance(final Context context) {
         return INSTANCE.get(context);
@@ -87,8 +88,6 @@ public class LauncherAppState {
 
         mContext.getSystemService(LauncherApps.class).registerCallback(mModel);
         mModelChangeReceiver.register(mContext, Intent.ACTION_LOCALE_CHANGED,
-                Intent.ACTION_MANAGED_PROFILE_ADDED,
-                Intent.ACTION_MANAGED_PROFILE_REMOVED,
                 Intent.ACTION_MANAGED_PROFILE_AVAILABLE,
                 Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE,
                 Intent.ACTION_MANAGED_PROFILE_UNLOCKED);
@@ -104,11 +103,13 @@ public class LauncherAppState {
         CustomWidgetManager.INSTANCE.get(mContext)
                 .setWidgetRefreshCallback(mModel::refreshAndBindWidgetsAndShortcuts);
 
-        UserManagerCompat.getInstance(mContext).enableAndResetCache();
+        mUserChangeListener = UserCache.INSTANCE.get(mContext)
+                .addUserChangeListener(mModel::forceReload);
+
         mInvariantDeviceProfile.addOnChangeListener(this::onIdpChanged);
         new Handler().post( () -> mInvariantDeviceProfile.verifyConfigChangedInBackground(context));
 
-        mInstallSessionTracker = PackageInstallerCompat.getInstance(context)
+        mInstallSessionTracker = InstallSessionHelper.INSTANCE.get(context)
                 .registerInstallTracker(mModel, MODEL_EXECUTOR);
 
         if (!mContext.getResources().getBoolean(R.bool.notification_dots_enabled)) {
@@ -151,6 +152,7 @@ public class LauncherAppState {
         mContext.getSystemService(LauncherApps.class).unregisterCallback(mModel);
         mInstallSessionTracker.unregister();
         mCalendarChangeTracker.close();
+        mUserChangeListener.close();
         CustomWidgetManager.INSTANCE.get(mContext).setWidgetRefreshCallback(null);
 
         if (mNotificationDotsObserver != null) {

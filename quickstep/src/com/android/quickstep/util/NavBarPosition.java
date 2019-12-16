@@ -31,7 +31,7 @@ import com.android.quickstep.SysUINavigationMode;
  */
 public class NavBarPosition {
 
-    public static RotationMode ROTATION_LANDSCAPE = new RotationMode(-90) {
+    public static final RotationMode ROTATION_LANDSCAPE = new RotationMode(-90) {
         @Override
         public void mapRect(int left, int top, int right, int bottom, Rect out) {
             out.left = top;
@@ -58,7 +58,7 @@ public class NavBarPosition {
         }
     };
 
-    public static RotationMode ROTATION_SEASCAPE = new RotationMode(90) {
+    public static final RotationMode ROTATION_SEASCAPE = new RotationMode(90) {
         @Override
         public void mapRect(int left, int top, int right, int bottom, Rect out) {
             out.left = bottom;

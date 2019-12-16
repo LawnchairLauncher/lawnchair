@@ -29,7 +29,7 @@ public class ResourceUtils {
         return getDimenByName(resName, res, 48);
     }
 
-    private static int getDimenByName(String resName, Resources res, int defaultValue) {
+    public static int getDimenByName(String resName, Resources res, int defaultValue) {
         final int frameSize;
         final int frameSizeResID = res.getIdentifier(resName, "dimen", "android");
         if (frameSizeResID != 0) {
@@ -38,6 +38,17 @@ public class ResourceUtils {
             frameSize = pxFromDp(defaultValue, res.getDisplayMetrics());
         }
         return frameSize;
+    }
+
+    public static boolean getBoolByName(String resName, Resources res, boolean defaultValue) {
+        final boolean val;
+        final int resId = res.getIdentifier(resName, "bool", "android");
+        if (resId != 0) {
+            val = res.getBoolean(resId);
+        } else {
+            val = defaultValue;
+        }
+        return val;
     }
 
     public static int pxFromDp(float size, DisplayMetrics metrics) {

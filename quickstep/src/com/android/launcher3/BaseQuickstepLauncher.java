@@ -265,7 +265,7 @@ public abstract class BaseQuickstepLauncher extends Launcher
         // Instantiate and initialize WellbeingModel now that its loading won't interfere with
         // populating workspace.
         // TODO: Find a better place for this
-        WellbeingModel.get(this);
+        WellbeingModel.INSTANCE.get(this);
     }
 
     @Override

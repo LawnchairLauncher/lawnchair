@@ -47,6 +47,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Process;
 import android.os.UserHandle;
+import android.os.UserManager;
 import android.provider.BaseColumns;
 import android.provider.Settings;
 import android.text.TextUtils;
@@ -55,10 +56,10 @@ import android.util.Xml;
 
 import com.android.launcher3.AutoInstallsLayout.LayoutParserCallback;
 import com.android.launcher3.LauncherSettings.Favorites;
-import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.DbDowngradeHelper;
+import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.provider.LauncherDbUtils;
 import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction;
 import com.android.launcher3.provider.RestoreDbTask;
@@ -484,8 +485,6 @@ public class LauncherProvider extends ContentProvider {
      */
     private AutoInstallsLayout createWorkspaceLoaderFromAppRestriction(AppWidgetHost widgetHost) {
         Context ctx = getContext();
-        InvariantDeviceProfile grid = LauncherAppState.getIDP(ctx);
-
         String authority = Settings.Secure.getString(ctx.getContentResolver(),
                 "launcher3.layout.provider");
         if (TextUtils.isEmpty(authority)) {
@@ -497,13 +496,7 @@ public class LauncherProvider extends ContentProvider {
             Log.e(TAG, "No provider found for authority " + authority);
             return null;
         }
-        Uri uri = new Uri.Builder().scheme("content").authority(authority).path("launcher_layout")
-                .appendQueryParameter("version", "1")
-                .appendQueryParameter("gridWidth", Integer.toString(grid.numColumns))
-                .appendQueryParameter("gridHeight", Integer.toString(grid.numRows))
-                .appendQueryParameter("hotseatSize", Integer.toString(grid.numHotseatIcons))
-                .build();
-
+        Uri uri = getLayoutUri(authority, ctx);
         try (InputStream in = ctx.getContentResolver().openInputStream(uri)) {
             // Read the full xml so that we fail early in case of any IO error.
             String layout = new String(IOUtils.toByteArray(in));
@@ -520,12 +513,22 @@ public class LauncherProvider extends ContentProvider {
         }
     }
 
+    public static Uri getLayoutUri(String authority, Context ctx) {
+        InvariantDeviceProfile grid = LauncherAppState.getIDP(ctx);
+        return new Uri.Builder().scheme("content").authority(authority).path("launcher_layout")
+                .appendQueryParameter("version", "1")
+                .appendQueryParameter("gridWidth", Integer.toString(grid.numColumns))
+                .appendQueryParameter("gridHeight", Integer.toString(grid.numRows))
+                .appendQueryParameter("hotseatSize", Integer.toString(grid.numHotseatIcons))
+                .build();
+    }
+
     private DefaultLayoutParser getDefaultLayoutParser(AppWidgetHost widgetHost) {
         InvariantDeviceProfile idp = LauncherAppState.getIDP(getContext());
         int defaultLayout = idp.defaultLayoutId;
 
-        UserManagerCompat um = UserManagerCompat.getInstance(getContext());
-        if (um.isDemoUser() && idp.demoModeLayoutId != 0) {
+        if (getContext().getSystemService(UserManager.class).isDemoUser()
+                && idp.demoModeLayoutId != 0) {
             defaultLayout = idp.demoModeLayoutId;
         }
 
@@ -606,7 +609,7 @@ public class LauncherProvider extends ContentProvider {
         }
 
         public long getSerialNumberForUser(UserHandle user) {
-            return UserManagerCompat.getInstance(mContext).getSerialNumberForUser(user);
+            return UserCache.INSTANCE.get(mContext).getSerialNumberForUser(user);
         }
 
         public long getDefaultUserSerial() {
@@ -637,7 +640,7 @@ public class LauncherProvider extends ContentProvider {
          */
         protected void handleOneTimeDataUpgrade(SQLiteDatabase db) {
             // Remove "profile extra"
-            UserManagerCompat um = UserManagerCompat.getInstance(mContext);
+            UserCache um = UserCache.INSTANCE.get(mContext);
             for (UserHandle user : um.getUserProfiles()) {
                 long serial = um.getSerialNumberForUser(user);
                 String sql = "update favorites set intent = replace(intent, "

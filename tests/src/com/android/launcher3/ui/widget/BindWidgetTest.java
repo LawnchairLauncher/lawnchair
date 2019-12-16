@@ -41,13 +41,13 @@ import com.android.launcher3.LauncherAppWidgetHost;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.compat.AppWidgetManagerCompat;
-import com.android.launcher3.pm.PackageInstallerCompat;
+import com.android.launcher3.pm.InstallSessionHelper;
 import com.android.launcher3.tapl.Workspace;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.ui.TestViewHelpers;
 import com.android.launcher3.util.rule.ShellCommandRule;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
+import com.android.launcher3.widget.WidgetManagerHelper;
 
 import org.junit.After;
 import org.junit.Before;
@@ -282,7 +282,7 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
 
             AppWidgetHost host = new LauncherAppWidgetHost(targetContext);
             int widgetId = host.allocateAppWidgetId();
-            if (!AppWidgetManagerCompat.getInstance(targetContext)
+            if (!new WidgetManagerHelper(targetContext)
                     .bindAppWidgetIdIfAllowed(widgetId, info, options)) {
                 host.deleteAppWidgetId(widgetId);
                 throw new IllegalArgumentException("Unable to bind widget id");
@@ -302,7 +302,7 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
 
         Set<String> activePackage = getOnUiThread(() -> {
             Set<String> packages = new HashSet<>();
-            PackageInstallerCompat.getInstance(mTargetContext).getActiveSessions()
+            InstallSessionHelper.INSTANCE.get(mTargetContext).getActiveSessions()
                     .keySet().forEach(packageUserKey -> packages.add(packageUserKey.mPackageName));
             return packages;
         });

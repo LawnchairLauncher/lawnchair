@@ -28,14 +28,14 @@ import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.LauncherSettings.Settings;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
-import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.pm.PackageInstallerCompat;
+import com.android.launcher3.pm.InstallSessionHelper;
 import com.android.launcher3.provider.LauncherDbUtils;
 import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction;
 import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSparseArrayMap;
+import com.android.launcher3.widget.WidgetManagerHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -692,6 +692,7 @@ public class GridSizeMigrationTask {
         final int indexAppWidgetId = c.getColumnIndexOrThrow(Favorites.APPWIDGET_ID);
 
         ArrayList<DbEntry> entries = new ArrayList<>();
+        WidgetManagerHelper widgetManagerHelper = new WidgetManagerHelper(mContext);
         while (c.moveToNext()) {
             DbEntry entry = new DbEntry();
             entry.id = c.getInt(indexId);
@@ -721,8 +722,8 @@ public class GridSizeMigrationTask {
                                 * entry.spanX * entry.spanY);
 
                         int widgetId = c.getInt(indexAppWidgetId);
-                        LauncherAppWidgetProviderInfo pInfo = AppWidgetManagerCompat.getInstance(
-                                mContext).getLauncherAppWidgetInfo(widgetId);
+                        LauncherAppWidgetProviderInfo pInfo =
+                                widgetManagerHelper.getLauncherAppWidgetInfo(widgetId);
                         Point spans = null;
                         if (pInfo != null) {
                             spans = pInfo.getMinSpans();
@@ -970,7 +971,7 @@ public class GridSizeMigrationTask {
                 .getInstalledPackages(PackageManager.GET_UNINSTALLED_PACKAGES)) {
             validPackages.add(info.packageName);
         }
-        PackageInstallerCompat.getInstance(context)
+        InstallSessionHelper.INSTANCE.get(context)
                 .getActiveSessions().keySet()
                 .forEach(packageUserKey -> validPackages.add(packageUserKey.mPackageName));
         return validPackages;

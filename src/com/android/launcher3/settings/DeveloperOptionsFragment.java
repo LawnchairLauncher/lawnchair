@@ -44,7 +44,7 @@ import android.view.View;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceDataStore;
-import androidx.preference.PreferenceFragment;
+import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceScreen;
 import androidx.preference.PreferenceViewHolder;
 import androidx.preference.SwitchPreference;
@@ -64,7 +64,7 @@ import java.util.stream.Collectors;
  * See {@link FeatureFlags}.
  */
 @TargetApi(Build.VERSION_CODES.O)
-public class DeveloperOptionsFragment extends PreferenceFragment {
+public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
 
     private static final String ACTION_PLUGIN_SETTINGS = "com.android.systemui.action.PLUGIN_SETTINGS";
     private static final String PLUGIN_PERMISSION = "com.android.systemui.permission.PLUGIN";
