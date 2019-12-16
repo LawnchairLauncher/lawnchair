@@ -24,8 +24,8 @@ import android.content.pm.LauncherActivityInfo;
 import android.os.Build;
 import android.os.Process;
 import android.os.UserHandle;
+import android.os.UserManager;
 
-import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageManagerHelper;
 
@@ -36,8 +36,8 @@ import java.util.Comparator;
  */
 public class AppInfo extends ItemInfoWithIcon {
 
-    public static AppInfo[] EMPTY_ARRAY = new AppInfo[0];
-    public static Comparator<AppInfo> COMPONENT_KEY_COMPARATOR = (a, b) -> {
+    public static final AppInfo[] EMPTY_ARRAY = new AppInfo[0];
+    public static final Comparator<AppInfo> COMPONENT_KEY_COMPARATOR = (a, b) -> {
         int uc = a.user.hashCode() - b.user.hashCode();
         return uc != 0 ? uc : a.componentName.compareTo(b.componentName);
     };
@@ -65,7 +65,7 @@ public class AppInfo extends ItemInfoWithIcon {
      * Must not hold the Context.
      */
     public AppInfo(Context context, LauncherActivityInfo info, UserHandle user) {
-        this(info, user, UserManagerCompat.getInstance(context).isQuietModeEnabled(user));
+        this(info, user, context.getSystemService(UserManager.class).isQuietModeEnabled(user));
     }
 
     public AppInfo(LauncherActivityInfo info, UserHandle user, boolean quietModeEnabled) {

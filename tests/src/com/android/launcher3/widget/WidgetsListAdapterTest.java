@@ -33,7 +33,6 @@ import androidx.test.runner.AndroidJUnit4;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.WidgetPreviewLoader;
-import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.model.PackageItemInfo;
@@ -129,7 +128,7 @@ public class WidgetsListAdapterTest {
         if (num <= 0) return result;
 
         MultiHashMap<PackageItemInfo, WidgetItem> newMap = new MultiHashMap();
-        AppWidgetManagerCompat widgetManager = AppWidgetManagerCompat.getInstance(mContext);
+        WidgetManagerHelper widgetManager = new WidgetManagerHelper(mContext);
         for (AppWidgetProviderInfo widgetInfo : widgetManager.getAllProviders(null)) {
             WidgetItem wi = new WidgetItem(LauncherAppWidgetProviderInfo
                     .fromProviderInfo(mContext, widgetInfo), mTestProfile, mIconCache);

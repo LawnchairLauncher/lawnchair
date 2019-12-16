@@ -16,6 +16,8 @@
 
 package com.android.launcher3.model;
 
+import static com.android.launcher3.model.ModelUtils.filterCurrentWorkspaceItems;
+import static com.android.launcher3.model.ModelUtils.sortWorkspaceItemsSpatially;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
 import android.os.Looper;
@@ -27,20 +29,15 @@ import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherModel.CallbackTask;
-import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.PagedView;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.util.IntArray;
-import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.LooperIdleLock;
 import com.android.launcher3.util.ViewOnDrawExecutor;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
 import java.util.concurrent.Executor;
 
 /**
@@ -123,8 +120,9 @@ public abstract class BaseLoaderResults {
                 otherWorkspaceItems);
         filterCurrentWorkspaceItems(currentScreenId, appWidgets, currentAppWidgets,
                 otherAppWidgets);
-        sortWorkspaceItemsSpatially(currentWorkspaceItems);
-        sortWorkspaceItemsSpatially(otherWorkspaceItems);
+        final InvariantDeviceProfile idp = mApp.getInvariantDeviceProfile();
+        sortWorkspaceItemsSpatially(idp, currentWorkspaceItems);
+        sortWorkspaceItemsSpatially(idp, otherWorkspaceItems);
 
         // Tell the workspace that we're about to start binding items
         executeCallbacksTask(c -> {
@@ -167,89 +165,6 @@ public abstract class BaseLoaderResults {
 
             }, mUiExecutor);
         }
-    }
-
-
-    /** Filters the set of items who are directly or indirectly (via another container) on the
-     * specified screen. */
-    public static <T extends ItemInfo> void filterCurrentWorkspaceItems(int currentScreenId,
-            ArrayList<T> allWorkspaceItems,
-            ArrayList<T> currentScreenItems,
-            ArrayList<T> otherScreenItems) {
-        // Purge any null ItemInfos
-        Iterator<T> iter = allWorkspaceItems.iterator();
-        while (iter.hasNext()) {
-            ItemInfo i = iter.next();
-            if (i == null) {
-                iter.remove();
-            }
-        }
-
-        // Order the set of items by their containers first, this allows use to walk through the
-        // list sequentially, build up a list of containers that are in the specified screen,
-        // as well as all items in those containers.
-        IntSet itemsOnScreen = new IntSet();
-        Collections.sort(allWorkspaceItems,
-                (lhs, rhs) -> Integer.compare(lhs.container, rhs.container));
-
-        for (T info : allWorkspaceItems) {
-            if (info.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-                if (info.screenId == currentScreenId) {
-                    currentScreenItems.add(info);
-                    itemsOnScreen.add(info.id);
-                } else {
-                    otherScreenItems.add(info);
-                }
-            } else if (info.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-                currentScreenItems.add(info);
-                itemsOnScreen.add(info.id);
-            } else {
-                if (itemsOnScreen.contains(info.container)) {
-                    currentScreenItems.add(info);
-                    itemsOnScreen.add(info.id);
-                } else {
-                    otherScreenItems.add(info);
-                }
-            }
-        }
-    }
-
-    /** Sorts the set of items by hotseat, workspace (spatially from top to bottom, left to
-     * right) */
-    protected void sortWorkspaceItemsSpatially(ArrayList<ItemInfo> workspaceItems) {
-        final InvariantDeviceProfile profile = mApp.getInvariantDeviceProfile();
-        final int screenCols = profile.numColumns;
-        final int screenCellCount = profile.numColumns * profile.numRows;
-        Collections.sort(workspaceItems, new Comparator<ItemInfo>() {
-            @Override
-            public int compare(ItemInfo lhs, ItemInfo rhs) {
-                if (lhs.container == rhs.container) {
-                    // Within containers, order by their spatial position in that container
-                    switch (lhs.container) {
-                        case LauncherSettings.Favorites.CONTAINER_DESKTOP: {
-                            int lr = (lhs.screenId * screenCellCount +
-                                    lhs.cellY * screenCols + lhs.cellX);
-                            int rr = (rhs.screenId * screenCellCount +
-                                    rhs.cellY * screenCols + rhs.cellX);
-                            return Integer.compare(lr, rr);
-                        }
-                        case LauncherSettings.Favorites.CONTAINER_HOTSEAT: {
-                            // We currently use the screen id as the rank
-                            return Integer.compare(lhs.screenId, rhs.screenId);
-                        }
-                        default:
-                            if (FeatureFlags.IS_DOGFOOD_BUILD) {
-                                throw new RuntimeException("Unexpected container type when " +
-                                        "sorting workspace items.");
-                            }
-                            return 0;
-                    }
-                } else {
-                    // Between containers, order by hotseat, desktop
-                    return Integer.compare(lhs.container, rhs.container);
-                }
-            }
-        });
     }
 
     protected void bindWorkspaceItems(final ArrayList<ItemInfo> workspaceItems,

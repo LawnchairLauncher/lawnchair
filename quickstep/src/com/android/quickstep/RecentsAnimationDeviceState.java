@@ -17,10 +17,8 @@ package com.android.quickstep;
 
 import static android.content.Intent.ACTION_USER_UNLOCKED;
 
-import static android.provider.Settings.System.HAPTIC_FEEDBACK_ENABLED;
 import static com.android.launcher3.ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE;
 import static com.android.launcher3.ResourceUtils.NAVBAR_LANDSCAPE_LEFT_RIGHT_SIZE;
-import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
 import static com.android.quickstep.SysUINavigationMode.Mode.THREE_BUTTONS;
 import static com.android.quickstep.SysUINavigationMode.Mode.TWO_BUTTONS;
@@ -42,12 +40,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
-import android.database.ContentObserver;
 import android.graphics.Point;
 import android.graphics.RectF;
 import android.graphics.Region;
 import android.os.Process;
-import android.provider.Settings;
+import android.os.UserManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -58,7 +55,6 @@ import androidx.annotation.BinderThread;
 import com.android.launcher3.R;
 import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.DefaultDisplay;
 import com.android.quickstep.SysUINavigationMode.NavigationModeChangeListener;
@@ -79,7 +75,6 @@ public class RecentsAnimationDeviceState implements
         DefaultDisplay.DisplayInfoChangeListener {
 
     private final Context mContext;
-    private final UserManagerCompat mUserManager;
     private final SysUINavigationMode mSysUiNavMode;
     private final DefaultDisplay mDefaultDisplay;
     private final int mDisplayId;
@@ -117,14 +112,14 @@ public class RecentsAnimationDeviceState implements
     public RecentsAnimationDeviceState(Context context) {
         final ContentResolver resolver = context.getContentResolver();
         mContext = context;
-        mUserManager = UserManagerCompat.getInstance(context);
         mSysUiNavMode = SysUINavigationMode.INSTANCE.get(context);
         mDefaultDisplay = DefaultDisplay.INSTANCE.get(context);
         mDisplayId = mDefaultDisplay.getInfo().id;
         runOnDestroy(() -> mDefaultDisplay.removeChangeListener(this));
 
         // Register for user unlocked if necessary
-        mIsUserUnlocked = mUserManager.isUserUnlocked(Process.myUserHandle());
+        mIsUserUnlocked = context.getSystemService(UserManager.class)
+                .isUserUnlocked(Process.myUserHandle());
         if (!mIsUserUnlocked) {
             mContext.registerReceiver(mUserUnlockedReceiver,
                     new IntentFilter(ACTION_USER_UNLOCKED));

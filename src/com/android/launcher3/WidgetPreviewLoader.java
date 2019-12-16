@@ -37,14 +37,13 @@ import android.util.Pair;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
-import com.android.launcher3.compat.AppWidgetManagerCompat;
-import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.icons.GraphicsUtils;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.icons.ShadowGenerator;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.pm.ShortcutConfigActivityInfo;
+import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.PackageUserKey;
@@ -52,6 +51,7 @@ import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.SQLiteCacheHelper;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.widget.WidgetCell;
+import com.android.launcher3.widget.WidgetManagerHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -78,7 +78,7 @@ public class WidgetPreviewLoader {
 
     private final Context mContext;
     private final IconCache mIconCache;
-    private final UserManagerCompat mUserManager;
+    private final UserCache mUserCache;
     private final CacheDb mDb;
 
     private final UserHandle mMyUser = Process.myUserHandle();
@@ -87,7 +87,7 @@ public class WidgetPreviewLoader {
     public WidgetPreviewLoader(Context context, IconCache iconCache) {
         mContext = context;
         mIconCache = iconCache;
-        mUserManager = UserManagerCompat.getInstance(context);
+        mUserCache = UserCache.INSTANCE.get(context);
         mDb = new CacheDb(context);
     }
 
@@ -197,7 +197,7 @@ public class WidgetPreviewLoader {
     @Thunk void writeToDb(WidgetCacheKey key, long[] versions, Bitmap preview) {
         ContentValues values = new ContentValues();
         values.put(CacheDb.COLUMN_COMPONENT, key.componentName.flattenToShortString());
-        values.put(CacheDb.COLUMN_USER, mUserManager.getSerialNumberForUser(key.user));
+        values.put(CacheDb.COLUMN_USER, mUserCache.getSerialNumberForUser(key.user));
         values.put(CacheDb.COLUMN_SIZE, key.size);
         values.put(CacheDb.COLUMN_PACKAGE, key.componentName.getPackageName());
         values.put(CacheDb.COLUMN_VERSION, versions[0]);
@@ -207,7 +207,7 @@ public class WidgetPreviewLoader {
     }
 
     public void removePackage(String packageName, UserHandle user) {
-        removePackage(packageName, user, mUserManager.getSerialNumberForUser(user));
+        removePackage(packageName, user, mUserCache.getSerialNumberForUser(user));
     }
 
     private void removePackage(String packageName, UserHandle user, long userSerial) {
@@ -236,7 +236,7 @@ public class WidgetPreviewLoader {
         LongSparseArray<HashSet<String>> validPackages = new LongSparseArray<>();
 
         for (ComponentKey key : list) {
-            final long userId = mUserManager.getSerialNumberForUser(key.user);
+            final long userId = mUserCache.getSerialNumberForUser(key.user);
             HashSet<String> packages = validPackages.get(userId);
             if (packages == null) {
                 packages = new HashSet<>();
@@ -247,7 +247,7 @@ public class WidgetPreviewLoader {
 
         LongSparseArray<HashSet<String>> packagesToDelete = new LongSparseArray<>();
         long passedUserId = packageUser == null ? 0
-                : mUserManager.getSerialNumberForUser(packageUser.mUser);
+                : mUserCache.getSerialNumberForUser(packageUser.mUser);
         Cursor c = null;
         try {
             c = mDb.query(
@@ -286,7 +286,7 @@ public class WidgetPreviewLoader {
 
             for (int i = 0; i < packagesToDelete.size(); i++) {
                 long userId = packagesToDelete.keyAt(i);
-                UserHandle user = mUserManager.getUserForSerialNumber(userId);
+                UserHandle user = mUserCache.getUserForSerialNumber(userId);
                 for (String pkg : packagesToDelete.valueAt(i)) {
                     removePackage(pkg, user, userId);
                 }
@@ -312,7 +312,7 @@ public class WidgetPreviewLoader {
                             + CacheDb.COLUMN_SIZE + " = ?",
                     new String[]{
                             key.componentName.flattenToShortString(),
-                            Long.toString(mUserManager.getSerialNumberForUser(key.user)),
+                            Long.toString(mUserCache.getSerialNumberForUser(key.user)),
                             key.size
                     });
             // If cancelled, skip getting the blob and decoding it into a bitmap
@@ -364,7 +364,7 @@ public class WidgetPreviewLoader {
     }
 
     /**
-     * Generates the widget preview from either the {@link AppWidgetManagerCompat} or cache
+     * Generates the widget preview from either the {@link WidgetManagerHelper} or cache
      * and add badge at the bottom right corner.
      *
      * @param launcher

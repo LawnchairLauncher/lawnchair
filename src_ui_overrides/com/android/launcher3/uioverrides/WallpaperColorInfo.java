@@ -16,17 +16,18 @@
 
 package com.android.launcher3.uioverrides;
 
+import static android.app.WallpaperManager.FLAG_SYSTEM;
+
 import android.content.Context;
 import android.graphics.Color;
 import android.util.Pair;
 
+import com.android.launcher3.uioverrides.dynamicui.ColorExtractionAlgorithm;
 import com.android.launcher3.uioverrides.dynamicui.WallpaperColorsCompat;
 import com.android.launcher3.uioverrides.dynamicui.WallpaperManagerCompat;
-import com.android.launcher3.uioverrides.dynamicui.ColorExtractionAlgorithm;
+import com.android.launcher3.util.MainThreadInitializedObject;
 
 import java.util.ArrayList;
-
-import static android.app.WallpaperManager.FLAG_SYSTEM;
 
 public class WallpaperColorInfo implements WallpaperManagerCompat.OnColorsChangedListenerCompat {
 
@@ -35,17 +36,9 @@ public class WallpaperColorInfo implements WallpaperManagerCompat.OnColorsChange
     private static final int MAIN_COLOR_REGULAR = 0xff000000;
 
     private static final int FALLBACK_COLOR = Color.WHITE;
-    private static final Object sInstanceLock = new Object();
-    private static WallpaperColorInfo sInstance;
 
-    public static WallpaperColorInfo getInstance(Context context) {
-        synchronized (sInstanceLock) {
-            if (sInstance == null) {
-                sInstance = new WallpaperColorInfo(context.getApplicationContext());
-            }
-            return sInstance;
-        }
-    }
+    public static final MainThreadInitializedObject<WallpaperColorInfo> INSTANCE =
+            new MainThreadInitializedObject<>(WallpaperColorInfo::new);
 
     private final ArrayList<OnChangeListener> mListeners = new ArrayList<>();
     private final WallpaperManagerCompat mWallpaperManager;

@@ -41,7 +41,7 @@ import com.android.launcher3.touch.SingleAxisSwipeDetector;
 public abstract class AbstractSlideInView extends AbstractFloatingView
         implements SingleAxisSwipeDetector.Listener {
 
-    protected static Property<AbstractSlideInView, Float> TRANSLATION_SHIFT =
+    protected static final Property<AbstractSlideInView, Float> TRANSLATION_SHIFT =
             new Property<AbstractSlideInView, Float>(Float.class, "translationShift") {
 
                 @Override

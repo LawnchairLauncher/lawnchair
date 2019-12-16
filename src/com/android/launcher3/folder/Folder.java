@@ -417,7 +417,8 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
      * Show suggested folder title.
      */
     public void showSuggestedTitle(String[] suggestName) {
-        if (FeatureFlags.FOLDER_NAME_SUGGEST.get() && mInfo.contents.size() == 2) {
+        if (FeatureFlags.FOLDER_NAME_SUGGEST.get()
+                && TextUtils.isEmpty(mFolderName.getText().toString())) {
             if (suggestName.length > 0 && !TextUtils.isEmpty(suggestName[0])) {
                 mFolderName.setHint(suggestName[0]);
                 mFolderName.setText(suggestName[0]);

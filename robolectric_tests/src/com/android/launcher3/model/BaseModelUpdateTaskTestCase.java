@@ -1,5 +1,7 @@
 package com.android.launcher3.model;
 
+import static com.android.launcher3.shadows.ShadowLooperExecutor.reinitializeStaticExecutors;
+
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.mock;
@@ -29,6 +31,7 @@ import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.icons.cache.CachingLogic;
 import com.android.launcher3.model.BgDataModel.Callbacks;
+import com.android.launcher3.pm.InstallSessionHelper;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.TestLauncherProvider;
 
@@ -53,7 +56,7 @@ import java.util.function.Supplier;
 public class BaseModelUpdateTaskTestCase {
 
     public final HashMap<Class, HashMap<String, Field>> fieldCache = new HashMap<>();
-    private TestLauncherProvider mProvider;
+    public TestLauncherProvider provider;
 
     public Context targetContext;
     public UserHandle myUser;
@@ -71,9 +74,11 @@ public class BaseModelUpdateTaskTestCase {
     @Before
     public void setUp() throws Exception {
         ShadowLog.stream = System.out;
+        reinitializeStaticExecutors();
+        InstallSessionHelper.INSTANCE.initializeForTesting(null);
 
-        mProvider = Robolectric.setupContentProvider(TestLauncherProvider.class);
-        ShadowContentResolver.registerProviderInternal(LauncherProvider.AUTHORITY, mProvider);
+        provider = Robolectric.setupContentProvider(TestLauncherProvider.class);
+        ShadowContentResolver.registerProviderInternal(LauncherProvider.AUTHORITY, provider);
 
         callbacks = mock(Callbacks.class);
         appState = mock(LauncherAppState.class);

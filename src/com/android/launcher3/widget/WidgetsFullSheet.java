@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.widget;
 
+import static com.android.launcher3.testing.TestProtocol.NORMAL_STATE_ORDINAL;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
@@ -37,6 +39,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetHost.ProviderChangedListener;
 import com.android.launcher3.R;
+import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.views.RecyclerViewFastScroller;
 import com.android.launcher3.views.TopRoundedCornerView;
 
@@ -246,5 +249,11 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         anim.play(ObjectAnimator.ofFloat(mRecyclerView, TRANSLATION_Y, -distanceToMove));
         anim.play(ObjectAnimator.ofFloat(mRecyclerView, ALPHA, 0.5f));
         return anim;
+    }
+
+    @Override
+    protected void onCloseComplete() {
+        super.onCloseComplete();
+        AccessibilityManagerCompat.sendStateEventToTest(getContext(), NORMAL_STATE_ORDINAL);
     }
 }

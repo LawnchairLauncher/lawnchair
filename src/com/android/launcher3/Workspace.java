@@ -66,7 +66,6 @@ import com.android.launcher3.accessibility.AccessibleDragListenerAdapter;
 import com.android.launcher3.accessibility.WorkspaceAccessibilityHelper;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.Interpolators;
-import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dot.FolderDotInfo;
 import com.android.launcher3.dragndrop.DragController;
@@ -100,6 +99,7 @@ import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.PendingAppWidgetHostView;
+import com.android.launcher3.widget.WidgetManagerHelper;
 import com.android.systemui.plugins.shared.LauncherOverlayManager.LauncherOverlay;
 
 import java.util.ArrayList;
@@ -1641,7 +1641,9 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             return false;
         }
 
-        boolean aboveShortcut = (dropOverView.getTag() instanceof WorkspaceItemInfo);
+        boolean aboveShortcut = (dropOverView.getTag() instanceof WorkspaceItemInfo
+                && ((WorkspaceItemInfo) dropOverView.getTag()).container
+                != LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION);
         boolean willBecomeShortcut =
                 (info.itemType == ITEM_TYPE_APPLICATION ||
                         info.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT ||
@@ -3231,12 +3233,11 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
             LauncherAppWidgetInfo item = changedInfo.get(0);
             final AppWidgetProviderInfo widgetInfo;
+            WidgetManagerHelper widgetHelper = new WidgetManagerHelper(getContext());
             if (item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_ID_NOT_VALID)) {
-                widgetInfo = AppWidgetManagerCompat
-                        .getInstance(mLauncher).findProvider(item.providerName, item.user);
+                widgetInfo = widgetHelper.findProvider(item.providerName, item.user);
             } else {
-                widgetInfo = AppWidgetManagerCompat.getInstance(mLauncher)
-                        .getLauncherAppWidgetInfo(item.appWidgetId);
+                widgetInfo = widgetHelper.getLauncherAppWidgetInfo(item.appWidgetId);
             }
 
             if (widgetInfo != null) {

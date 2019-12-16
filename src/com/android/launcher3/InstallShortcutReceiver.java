@@ -44,11 +44,11 @@ import android.util.Pair;
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
-import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.GraphicsUtils;
 import com.android.launcher3.icons.LauncherIcons;
+import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.PackageManagerHelper;
@@ -422,7 +422,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                             .object()
                             .key(LAUNCH_INTENT_KEY).value(launchIntent.toUri(0))
                             .key(DEEPSHORTCUT_TYPE_KEY).value(true)
-                            .key(USER_HANDLE_KEY).value(UserManagerCompat.getInstance(mContext)
+                            .key(USER_HANDLE_KEY).value(UserCache.INSTANCE.get(mContext)
                                     .getSerialNumberForUser(user))
                             .endObject().toString();
                 } else if (providerInfo != null) {
@@ -432,7 +432,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                             .object()
                             .key(LAUNCH_INTENT_KEY).value(launchIntent.toUri(0))
                             .key(APP_WIDGET_TYPE_KEY).value(true)
-                            .key(USER_HANDLE_KEY).value(UserManagerCompat.getInstance(mContext)
+                            .key(USER_HANDLE_KEY).value(UserCache.INSTANCE.get(mContext)
                                     .getSerialNumberForUser(user))
                             .endObject().toString();
                 }
@@ -460,7 +460,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                     .key(LAUNCH_INTENT_KEY).value(launchIntent.toUri(0))
                     .key(NAME_KEY).value(name)
                     .key(USER_HANDLE_KEY).value(
-                            UserManagerCompat.getInstance(mContext).getSerialNumberForUser(user))
+                            UserCache.INSTANCE.get(mContext).getSerialNumberForUser(user))
                     .key(APP_SHORTCUT_TYPE_KEY).value(isActivity);
                 if (icon != null) {
                     byte[] iconByteArray = GraphicsUtils.flattenBitmap(icon);
@@ -598,7 +598,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         private Decoder(String encoded, Context context) throws JSONException, URISyntaxException {
             super(encoded);
             launcherIntent = Intent.parseUri(getString(LAUNCH_INTENT_KEY), 0);
-            user = has(USER_HANDLE_KEY) ? UserManagerCompat.getInstance(context)
+            user = has(USER_HANDLE_KEY) ? UserCache.INSTANCE.get(context)
                     .getUserForSerialNumber(getLong(USER_HANDLE_KEY))
                     : Process.myUserHandle();
             if (user == null) {

@@ -43,7 +43,8 @@ import java.io.PrintWriter;
  */
 public abstract class BaseRecentsActivity extends BaseDraggingActivity {
 
-    public static ActivityTracker<BaseRecentsActivity> ACTIVITY_TRACKER = new ActivityTracker<>();
+    public static final ActivityTracker<BaseRecentsActivity> ACTIVITY_TRACKER =
+            new ActivityTracker<>();
     private Configuration mOldConfig;
 
     @Override
@@ -56,7 +57,7 @@ public abstract class BaseRecentsActivity extends BaseDraggingActivity {
 
         getSystemUiController().updateUiState(SystemUiController.UI_STATE_BASE_WINDOW,
                 Themes.getAttrBoolean(this, R.attr.isWorkspaceDarkText));
-        ACTIVITY_TRACKER.handleCreate((RecentsActivity) this);
+        ACTIVITY_TRACKER.handleCreate(this);
     }
 
     /**

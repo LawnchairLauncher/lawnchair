@@ -16,7 +16,6 @@
 
 package com.android.launcher3.tapl;
 
-import static com.android.launcher3.testing.TestProtocol.OVERVIEW_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.QUICK_SWITCH_STATE_ORDINAL;
 
 import androidx.annotation.NonNull;
@@ -52,7 +51,7 @@ public abstract class Home extends Background {
         try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                 "want to switch from home to overview")) {
             verifyActiveContainer();
-            goToOverviewUnchecked(OVERVIEW_STATE_ORDINAL);
+            goToOverviewUnchecked();
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
                     "performed the switch action")) {
                 return new Overview(mLauncher);

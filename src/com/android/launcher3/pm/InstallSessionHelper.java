@@ -35,6 +35,7 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.LooperExecutor;
+import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.PackageUserKey;
 
@@ -43,15 +44,20 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-public class PackageInstallerCompat {
+/**
+ * Utility class to tracking install sessions
+ */
+public class InstallSessionHelper {
 
     // Set<String> of session ids of promise icons that have been added to the home screen
     // as FLAG_PROMISE_NEW_INSTALLS.
     protected static final String PROMISE_ICON_IDS = "promise_icon_ids";
 
-    private static final Object sInstanceLock = new Object();
     private static final boolean DEBUG = false;
-    private static PackageInstallerCompat sInstance;
+
+    public static final MainThreadInitializedObject<InstallSessionHelper> INSTANCE =
+            new MainThreadInitializedObject<>(InstallSessionHelper::new);
+
     private final LauncherApps mLauncherApps;
     private final Context mAppContext;
     private final IntSet mPromiseIconIds;
@@ -59,7 +65,7 @@ public class PackageInstallerCompat {
     private final PackageInstaller mInstaller;
     private final HashMap<String, Boolean> mSessionVerifiedMap = new HashMap<>();
 
-    public PackageInstallerCompat(Context context) {
+    public InstallSessionHelper(Context context) {
         mInstaller = context.getPackageManager().getPackageInstaller();
         mAppContext = context.getApplicationContext();
         mLauncherApps = context.getSystemService(LauncherApps.class);
@@ -68,15 +74,6 @@ public class PackageInstallerCompat {
                 getPrefs(context).getString(PROMISE_ICON_IDS, "")));
 
         cleanUpPromiseIconIds();
-    }
-
-    public static PackageInstallerCompat getInstance(Context context) {
-        synchronized (sInstanceLock) {
-            if (sInstance == null) {
-                sInstance = new PackageInstallerCompat(context);
-            }
-            return sInstance;
-        }
     }
 
     public static UserHandle getUserHandle(SessionInfo info) {

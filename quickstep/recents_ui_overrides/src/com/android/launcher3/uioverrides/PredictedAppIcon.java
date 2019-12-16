@@ -98,6 +98,7 @@ public class PredictedAppIcon extends DoubleShadowBubbleTextView {
         applyFromWorkspaceItem(info);
         setOnLongClickListener(ItemLongClickListener.INSTANCE_WORKSPACE);
         mIsPinned = true;
+        ((CellLayout.LayoutParams) getLayoutParams()).canReorder = true;
         invalidate();
     }
 
@@ -112,6 +113,7 @@ public class PredictedAppIcon extends DoubleShadowBubbleTextView {
             }
             return true;
         });
+        ((CellLayout.LayoutParams) getLayoutParams()).canReorder = false;
         setTextVisibility(false);
         verifyHighRes();
     }
