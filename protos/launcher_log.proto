@@ -57,6 +57,7 @@ message Target {
   optional TargetExtension extension = 16;
   optional TipType tip_type = 17;
   optional int32 search_query_length = 18;
+  optional bool is_work_app = 19;
 }
 
 // Used to define what type of item a Target would represent.
