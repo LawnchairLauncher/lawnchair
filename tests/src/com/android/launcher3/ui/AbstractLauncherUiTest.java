@@ -259,7 +259,7 @@ public abstract class AbstractLauncherUiTest {
     protected <T> T getOnUiThread(final Callable<T> callback) {
         try {
             return mMainThreadExecutor.submit(callback).get();
-        } catch (Exception e) {
+        } catch (Throwable e) {
             throw new RuntimeException(e);
         }
     }

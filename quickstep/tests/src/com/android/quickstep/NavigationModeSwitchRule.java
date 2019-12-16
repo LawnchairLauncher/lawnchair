@@ -35,6 +35,7 @@ import androidx.test.uiautomator.UiDevice;
 
 import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.tapl.TestHelpers;
+import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.FailureWatcher;
 import com.android.systemui.shared.system.QuickStepContract;
 
@@ -56,6 +57,8 @@ import java.util.concurrent.TimeUnit;
 public class NavigationModeSwitchRule implements TestRule {
 
     static final String TAG = "QuickStepOnOffRule";
+
+    public static final int WAIT_TIME_MS = 10000;
 
     public enum Mode {
         THREE_BUTTON, TWO_BUTTON, ZERO_BUTTON, ALL
@@ -118,8 +121,8 @@ public class NavigationModeSwitchRule implements TestRule {
                         if (mode == THREE_BUTTON || mode == ALL) {
                             evaluateWithThreeButtons();
                         }
-                    } catch (Exception e) {
-                        Log.e(TAG, "Exception", e);
+                    } catch (Throwable e) {
+                        Log.e(TAG, "Error", e);
                         throw e;
                     } finally {
                         assertTrue("Couldn't set overlay",
@@ -195,19 +198,14 @@ public class NavigationModeSwitchRule implements TestRule {
                                 currentSysUiNavigationMode() == expectedMode);
                     }
 
-                    for (int i = 0; i != 100; ++i) {
-                        if (mLauncher.getNavigationModel() == expectedMode) break;
-                        Thread.sleep(100);
-                    }
-                    assertTrue("Couldn't switch to " + overlayPackage,
-                            mLauncher.getNavigationModel() == expectedMode);
+                    Wait.atMost("Couldn't switch to " + overlayPackage,
+                            () -> mLauncher.getNavigationModel() == expectedMode, WAIT_TIME_MS,
+                            mLauncher);
 
-                    for (int i = 0; i != 100; ++i) {
-                        if (mLauncher.getNavigationModeMismatchError() == null) break;
-                        Thread.sleep(100);
-                    }
-                    final String error = mLauncher.getNavigationModeMismatchError();
-                    assertTrue("Switching nav mode: " + error, error == null);
+                    Wait.atMost(() -> "Switching nav mode: "
+                                    + mLauncher.getNavigationModeMismatchError(),
+                            () -> mLauncher.getNavigationModeMismatchError() == null, WAIT_TIME_MS,
+                            mLauncher);
 
                     return true;
                 }
