@@ -18,6 +18,7 @@ package com.android.launcher3.compat;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
@@ -57,6 +58,7 @@ public class AccessibilityManagerCompat {
         parcel.putInt(TestProtocol.STATE_FIELD, stateOrdinal);
 
         sendEventToTest(accessibilityManager, TestProtocol.SWITCHED_TO_STATE_MESSAGE, parcel);
+        Log.d(TestProtocol.PERMANENT_DIAG_TAG, "sendStateEventToTest: " + stateOrdinal);
     }
 
     public static void sendScrollFinishedEventToTest(Context context) {
