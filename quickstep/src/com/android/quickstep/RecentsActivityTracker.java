@@ -15,6 +15,8 @@
  */
 package com.android.quickstep;
 
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
@@ -22,7 +24,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 
-import com.android.launcher3.MainThreadExecutor;
 import com.android.quickstep.ActivityControlHelper.ActivityInitListener;
 import com.android.quickstep.util.RemoteAnimationProvider;
 
@@ -92,14 +93,10 @@ public class RecentsActivityTracker<T extends BaseRecentsActivity> implements Ac
     private static class Scheduler implements Runnable {
 
         private WeakReference<RecentsActivityTracker> mPendingTracker = new WeakReference<>(null);
-        private MainThreadExecutor mMainThreadExecutor;
 
         public synchronized void schedule(RecentsActivityTracker tracker) {
             mPendingTracker = new WeakReference<>(tracker);
-            if (mMainThreadExecutor == null) {
-                mMainThreadExecutor = new MainThreadExecutor();
-            }
-            mMainThreadExecutor.execute(this);
+            MAIN_EXECUTOR.execute(this);
         }
 
         @Override

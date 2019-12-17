@@ -27,7 +27,7 @@ LOCAL_STATIC_JAVA_LIBRARIES := \
 
 ifneq (,$(wildcard frameworks/base))
 else
-    LOCAL_STATIC_JAVA_LIBRARIES += libSharedSystemUI
+    LOCAL_STATIC_JAVA_LIBRARIES += SystemUISharedLib
 
     LOCAL_SRC_FILES := $(call all-java-files-under, tapl) \
         ../src/com/android/launcher3/ResourceUtils.java \

@@ -18,7 +18,6 @@ package com.android.launcher3.model;
 import android.content.Context;
 import android.util.Log;
 
-import com.android.launcher3.AllAppsList;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherModel.ModelUpdateTask;

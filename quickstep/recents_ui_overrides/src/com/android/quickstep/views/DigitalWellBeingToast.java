@@ -19,6 +19,7 @@ package com.android.quickstep.views;
 import static android.provider.Settings.ACTION_APP_USAGE_SETTINGS;
 
 import static com.android.launcher3.Utilities.prefixTextWithIcon;
+import static com.android.launcher3.util.Executors.THREAD_POOL_EXECUTOR;
 
 import android.annotation.TargetApi;
 import android.app.ActivityOptions;
@@ -41,7 +42,6 @@ import androidx.annotation.StringRes;
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.systemui.shared.recents.model.Task;
 
@@ -117,7 +117,7 @@ public final class DigitalWellBeingToast {
             return;
         }
 
-        Utilities.THREAD_POOL_EXECUTOR.execute(() -> {
+        THREAD_POOL_EXECUTOR.execute(() -> {
             final AppUsageLimit usageLimit = mLauncherApps.getAppUsageLimit(
                     task.getTopComponent().getPackageName(),
                     UserHandle.of(task.key.userId));
