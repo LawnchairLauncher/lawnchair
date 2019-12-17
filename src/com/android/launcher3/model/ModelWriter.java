@@ -103,7 +103,7 @@ public class ModelWriter {
      */
     public void addOrMoveItemInDatabase(ItemInfo item,
             int container, int screenId, int cellX, int cellY) {
-        if (item.container == ItemInfo.NO_ID) {
+        if (item.id == ItemInfo.NO_ID) {
             // From all apps
             addItemToDatabase(item, container, screenId, cellX, cellY);
         } else {
