@@ -559,10 +559,13 @@ public class TouchInteractionService extends Service implements PluginListener<O
         final boolean shouldDefer;
         final BaseSwipeUpHandler.Factory factory;
 
-        if (mDeviceState.isFullyGesturalNavMode()
-                && !mOverviewComponentObserver.isHomeAndOverviewSame()) {
+        if (!mOverviewComponentObserver.isHomeAndOverviewSame()) {
             shouldDefer = previousGestureState.getFinishingRecentsAnimationTaskId() < 0;
-            factory = mFallbackSwipeHandlerFactory;
+            if (mDeviceState.isFullyGesturalNavMode()) {
+                factory = mFallbackSwipeHandlerFactory;
+            } else {
+                factory = this::determineFallbackTwoButtonSwipeHandler;
+            }
         } else {
             shouldDefer = gestureState.getActivityInterface().deferStartingActivity(mDeviceState,
                     event);
@@ -573,6 +576,23 @@ public class TouchInteractionService extends Service implements PluginListener<O
         return new OtherActivityInputConsumer(this, mDeviceState, mTaskAnimationManager,
                 gestureState, shouldDefer, this::onConsumerInactive,
                 mInputMonitorCompat, disableHorizontalSwipe, factory);
+    }
+
+    /**
+     * Determines whether to use the LauncherSwipeHandler or FallbackSwipeHandler at runtime.
+     * We need to use the FallbackSwipeHandler to handle quick switch from home, otherwise the
+     * normal LauncherSwipeHandler works.
+     */
+    private BaseSwipeUpHandler determineFallbackTwoButtonSwipeHandler(GestureState gestureState,
+            long touchTimeMs, boolean continuingLastGesture, boolean isLikelyToStartNewTask) {
+        boolean runningOverHome = gestureState.getRunningTask() == null
+                || ActivityManagerWrapper.isHomeTask(gestureState.getRunningTask());
+        boolean isQuickSwitchMode = isLikelyToStartNewTask || continuingLastGesture;
+        BaseSwipeUpHandler.Factory factory = runningOverHome && isQuickSwitchMode
+                ? mFallbackSwipeHandlerFactory
+                : mLauncherSwipeHandlerFactory;
+        return factory.newHandler(gestureState, touchTimeMs, continuingLastGesture,
+                isLikelyToStartNewTask);
     }
 
     private InputConsumer createDeviceLockedInputConsumer(GestureState gestureState) {

@@ -38,7 +38,7 @@ public final class PackageInstallInfo {
         this.packageName = info.getAppPackageName();
         this.componentName = new ComponentName(packageName, "");
         this.progress = (int) (info.getProgress() * 100f);
-        this.user = PackageInstallerCompat.getUserHandle(info);
+        this.user = InstallSessionHelper.getUserHandle(info);
     }
 
     public PackageInstallInfo(String packageName, int state, int progress, UserHandle user) {

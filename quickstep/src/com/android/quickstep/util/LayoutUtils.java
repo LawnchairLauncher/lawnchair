@@ -26,6 +26,7 @@ import androidx.annotation.IntDef;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.quickstep.SysUINavigationMode;
 
 import java.lang.annotation.Retention;
@@ -57,9 +58,16 @@ public class LayoutUtils {
         } else {
             Resources res = context.getResources();
 
-            extraSpace = getDefaultSwipeHeight(context, dp) + dp.verticalDragHandleSizePx
-                    + res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_extra_vertical_size)
-                    + res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_bottom_padding);
+            if (FeatureFlags.ENABLE_OVERVIEW_ACTIONS.get()) {
+                //TODO: this needs to account for the swipe gesture height and accessibility
+                // UI when shown.
+                extraSpace = 0;
+            } else {
+                extraSpace = getDefaultSwipeHeight(context, dp) + dp.verticalDragHandleSizePx
+                        + res.getDimensionPixelSize(
+                                R.dimen.dynamic_grid_hotseat_extra_vertical_size)
+                        + res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_bottom_padding);
+            }
         }
         calculateTaskSize(context, dp, extraSpace, MULTI_WINDOW_STRATEGY_HALF_SCREEN, outRect);
     }
@@ -99,13 +107,20 @@ public class LayoutUtils {
         } else {
             taskWidth = dp.availableWidthPx;
             taskHeight = dp.availableHeightPx;
-            paddingHorz = res.getDimension(dp.isVerticalBarLayout()
-                    ? R.dimen.landscape_task_card_horz_space
-                    : R.dimen.portrait_task_card_horz_space);
+
+            final int paddingResId;
+            if (dp.isVerticalBarLayout()) {
+                paddingResId = R.dimen.landscape_task_card_horz_space;
+            } else if (FeatureFlags.ENABLE_OVERVIEW_ACTIONS.get()) {
+                paddingResId = R.dimen.portrait_task_card_horz_space_big_overview;
+            } else {
+                paddingResId = R.dimen.portrait_task_card_horz_space;
+            }
+            paddingHorz = res.getDimension(paddingResId);
         }
 
-        float topIconMargin = res.getDimension(R.dimen.task_thumbnail_top_margin);
-        float bottomMargin = res.getDimension(R.dimen.task_thumbnail_bottom_margin);
+        float topIconMargin =   res.getDimension(R.dimen.task_thumbnail_top_margin);
+        float bottomMargin = thumbnailBottomMargin(res);
         float paddingVert = res.getDimension(R.dimen.task_card_vert_space);
 
         // Note this should be same as dp.availableWidthPx and dp.availableHeightPx unless
@@ -135,5 +150,17 @@ public class LayoutUtils {
         int spaceBetweenShelfAndRecents = (int) context.getResources().getDimension(
                 R.dimen.task_card_vert_space);
         return shelfHeight + spaceBetweenShelfAndRecents;
+    }
+
+    /**
+     * Get the margin that the task thumbnail view should use.
+     * @return the margin in pixels.
+     */
+    public static int thumbnailBottomMargin(Resources resources) {
+        if (FeatureFlags.ENABLE_OVERVIEW_ACTIONS.get()) {
+            return resources.getDimensionPixelSize(R.dimen.overview_actions_height);
+        } else {
+            return 0;
+        }
     }
 }

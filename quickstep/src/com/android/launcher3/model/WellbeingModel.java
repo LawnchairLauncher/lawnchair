@@ -43,13 +43,13 @@ import android.util.ArrayMap;
 import android.util.Log;
 
 import androidx.annotation.MainThread;
-import androidx.annotation.NonNull;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.popup.RemoteActionShortcut;
 import com.android.launcher3.popup.SystemShortcut;
+import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.SimpleBroadcastReceiver;
@@ -78,7 +78,8 @@ public final class WellbeingModel {
     private static final String EXTRA_MAX_NUM_ACTIONS_SHOWN = "max_num_actions_shown";
     private static final String EXTRA_PACKAGES = "packages";
 
-    private static WellbeingModel sInstance;
+    public static final MainThreadInitializedObject<WellbeingModel> INSTANCE =
+            new MainThreadInitializedObject<>(WellbeingModel::new);
 
     private final Context mContext;
     private final String mWellbeingProviderPkg;
@@ -153,15 +154,6 @@ public final class WellbeingModel {
             if (mIsInTest) throw new RuntimeException(e);
         }
         updateWellbeingData();
-    }
-
-    @MainThread
-    public static WellbeingModel get(@NonNull Context context) {
-        Preconditions.assertUIThread();
-        if (sInstance == null) {
-            sInstance = new WellbeingModel(context.getApplicationContext());
-        }
-        return sInstance;
     }
 
     @MainThread
@@ -334,8 +326,8 @@ public final class WellbeingModel {
     /**
      * Shortcut factory for generating wellbeing action
      */
-    public static final SystemShortcut.Factory SHORTCUT_FACTORY = (activity, info) ->
-            (info.getTargetComponent() == null) ? null : WellbeingModel.get(activity)
+    public static final SystemShortcut.Factory SHORTCUT_FACTORY =
+            (activity, info) -> (info.getTargetComponent() == null) ? null : INSTANCE.get(activity)
                     .getShortcutForApp(
                             info.getTargetComponent().getPackageName(), info.user.getIdentifier(),
                             activity, info);

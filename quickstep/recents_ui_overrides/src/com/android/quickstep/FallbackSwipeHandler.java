@@ -15,6 +15,8 @@
  */
 package com.android.quickstep;
 
+import static com.android.launcher3.anim.Interpolators.ACCEL_1_5;
+import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.quickstep.GestureState.GestureEndTarget.HOME;
 import static com.android.quickstep.GestureState.GestureEndTarget.LAST_TASK;
 import static com.android.quickstep.GestureState.GestureEndTarget.NEW_TASK;
@@ -34,6 +36,7 @@ import android.graphics.PointF;
 import android.graphics.RectF;
 import android.os.Bundle;
 import android.util.ArrayMap;
+import android.view.MotionEvent;
 
 import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimationSuccessListener;
@@ -86,7 +89,7 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
             mLauncherAlpha = launcherAlpha;
         }
     }
-    private static ArrayMap<GestureEndTarget, EndTargetAnimationParams>
+    private final ArrayMap<GestureEndTarget, EndTargetAnimationParams>
             mEndTargetAnimationParams = new ArrayMap();
 
     private final AnimatedFloat mLauncherAlpha = new AnimatedFloat(this::onLauncherAlphaChanged);
@@ -97,6 +100,7 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
     private final boolean mContinuingLastGesture;
     private final boolean mRunningOverHome;
     private final boolean mSwipeUpOverHome;
+    private boolean mTouchedHomeDuringTransition;
 
     private final PointF mEndVelocityPxPerMs = new PointF(0, 0.5f);
     private RunningWindowAnim mFinishAnimation;
@@ -105,13 +109,14 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
             GestureState gestureState, InputConsumerController inputConsumer,
             boolean isLikelyToStartNewTask, boolean continuingLastGesture) {
         super(context, deviceState, gestureState, inputConsumer);
-        mLauncherAlpha.value = 1;
 
         mInQuickSwitchMode = isLikelyToStartNewTask || continuingLastGesture;
         mContinuingLastGesture = continuingLastGesture;
         mRunningOverHome = ActivityManagerWrapper.isHomeTask(mGestureState.getRunningTask());
         mSwipeUpOverHome = mRunningOverHome && !mInQuickSwitchMode;
 
+        // Keep the home launcher invisible until we decide to land there.
+        mLauncherAlpha.value = mRunningOverHome ? 1 : 0;
         if (mSwipeUpOverHome) {
             mAppWindowAnimationHelper.setBaseAlphaCallback((t, a) -> 1 - mLauncherAlpha.value);
         } else {
@@ -198,15 +203,27 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
     @Override
     protected InputConsumer createNewInputProxyHandler() {
         // Just consume all input on the active task
-        return InputConsumer.NO_OP;
+        return new InputConsumer() {
+            @Override
+            public int getType() {
+                return InputConsumer.TYPE_NO_OP;
+            }
+
+            @Override
+            public void onMotionEvent(MotionEvent ev) {
+                mTouchedHomeDuringTransition = true;
+            }
+        };
     }
 
     @Override
     public void onMotionPauseChanged(boolean isPaused) {
         if (!mInQuickSwitchMode) {
             mIsMotionPaused = isPaused;
-            mLauncherAlpha.animateToValue(mLauncherAlpha.value, isPaused ? 0 : 1)
-                    .setDuration(150).start();
+            if (mSwipeUpOverHome) {
+                mLauncherAlpha.animateToValue(mLauncherAlpha.value, isPaused ? 0 : 1)
+                        .setDuration(150).start();
+            }
             performHapticFeedback();
         }
     }
@@ -266,7 +283,7 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
     @Override
     public void onConsumerAboutToBeSwitched() {
         if (mInQuickSwitchMode && mGestureState.getEndTarget() != null) {
-            mGestureState.setEndTarget(HOME);
+            mGestureState.setEndTarget(NEW_TASK);
 
             mCanceled = true;
             mCurrentShift.cancelAnimation();
@@ -315,7 +332,14 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
                     // Send a home intent to clear the task stack
                     mContext.startActivity(mGestureState.getHomeIntent());
                 } else {
-                    mRecentsAnimationController.finish(true, null, true);
+                    mRecentsAnimationController.finish(true, () -> {
+                        if (!mTouchedHomeDuringTransition) {
+                            // If the user hasn't interacted with the screen during the transition,
+                            // send a home intent so launcher can go to the default home screen.
+                            // (If they are trying to touch something, we don't want to interfere.)
+                            mContext.startActivity(mGestureState.getHomeIntent());
+                        }
+                    }, true);
                 }
                 break;
             }
@@ -389,6 +413,8 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
             };
 
             if (mGestureState.getEndTarget() == HOME && !mRunningOverHome) {
+                mRecentsAnimationController.enableInputProxy(mInputConsumer,
+                        this::createNewInputProxyHandler);
                 RectFSpringAnim anim = createWindowAnimationToHome(mCurrentShift.value, duration);
                 anim.addAnimatorListener(endListener);
                 anim.start(mEndVelocityPxPerMs);
@@ -445,11 +471,18 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
             @Override
             public AnimatorPlaybackController createActivityAnimationToHome() {
                 AnimatorSet anim = new AnimatorSet();
-                anim.play(mLauncherAlpha.animateToValue(mLauncherAlpha.value, 1));
+                Animator fadeInLauncher = mLauncherAlpha.animateToValue(mLauncherAlpha.value, 1);
+                fadeInLauncher.setInterpolator(ACCEL_2);
+                anim.play(fadeInLauncher);
                 anim.setDuration(duration);
                 return AnimatorPlaybackController.wrap(anim, duration);
             }
         };
         return createWindowAnimationToHome(startProgress, factory);
+    }
+
+    @Override
+    protected float getWindowAlpha(float progress) {
+        return 1 - ACCEL_1_5.getInterpolation(progress);
     }
 }

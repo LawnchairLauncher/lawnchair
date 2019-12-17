@@ -35,13 +35,11 @@ import com.android.launcher3.logging.StatsLogUtils;
 import com.android.launcher3.logging.StatsLogUtils.LogStateProvider;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.logging.UserEventDispatcher.UserEventDelegate;
-import com.android.launcher3.uioverrides.ApiWrapper;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.ViewCache;
 import com.android.launcher3.views.ActivityContext;
 
-import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.lang.annotation.Retention;
 import java.util.ArrayList;
@@ -303,13 +301,6 @@ public abstract class BaseActivity extends Activity
 
     public interface MultiWindowModeChangedListener {
         void onMultiWindowModeChanged(boolean isInMultiWindowMode);
-    }
-
-    @Override
-    public void dump(String prefix, FileDescriptor fd, PrintWriter writer, String[] args) {
-        if (!ApiWrapper.dumpActivity(this, writer)) {
-            super.dump(prefix, fd, writer, args);
-        }
     }
 
     protected void dumpMisc(String prefix, PrintWriter writer) {

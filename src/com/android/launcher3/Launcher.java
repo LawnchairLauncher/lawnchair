@@ -95,7 +95,6 @@ import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.PropertyListBuilder;
-import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.dragndrop.DragController;
@@ -122,6 +121,7 @@ import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.qsb.QsbContainerView;
 import com.android.launcher3.states.RotationHelper;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.AllAppsSwipeController;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
@@ -157,6 +157,7 @@ import com.android.launcher3.widget.PendingAppWidgetHostView;
 import com.android.launcher3.widget.WidgetAddFlowHandler;
 import com.android.launcher3.widget.WidgetHostViewLoader;
 import com.android.launcher3.widget.WidgetListRowEntry;
+import com.android.launcher3.widget.WidgetManagerHelper;
 import com.android.launcher3.widget.WidgetsFullSheet;
 import com.android.launcher3.widget.custom.CustomWidgetManager;
 import com.android.systemui.plugins.OverlayPlugin;
@@ -250,7 +251,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     DragLayer mDragLayer;
     private DragController mDragController;
 
-    private AppWidgetManagerCompat mAppWidgetManager;
+    private WidgetManagerHelper mAppWidgetManager;
     private LauncherAppWidgetHost mAppWidgetHost;
 
     private final int[] mTmpAddItemCellCoordinates = new int[2];
@@ -360,7 +361,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         mAllAppsController = new AllAppsTransitionController(this);
         mStateManager = new LauncherStateManager(this);
 
-        mAppWidgetManager = AppWidgetManagerCompat.getInstance(this);
+        mAppWidgetManager = new WidgetManagerHelper(this);
         mAppWidgetHost = new LauncherAppWidgetHost(this,
                 appWidgetId -> getWorkspace().removeWidget(appWidgetId));
         mAppWidgetHost.startListening();
@@ -932,6 +933,9 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     @Override
     protected void onStop() {
+        final boolean wasActive = isUserActive();
+        final LauncherState origState = getStateManager().getState();
+        final int origDragLayerChildCount = mDragLayer.getChildCount();
         super.onStop();
 
         if (mDeferOverlayCallbacks) {
@@ -949,6 +953,20 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
         // Workaround for b/78520668, explicitly trim memory once UI is hidden
         onTrimMemory(TRIM_MEMORY_UI_HIDDEN);
+
+        if (wasActive) {
+            // The expected condition is that this activity is stopped because the device goes to
+            // sleep and the UI may have noticeable changes.
+            mDragLayer.post(() -> {
+                if ((!getStateManager().isInStableState(origState)
+                        // The drag layer may be animating (e.g. dismissing QSB).
+                        || mDragLayer.getAlpha() < 1
+                        // Maybe an ArrowPopup is closed.
+                        || mDragLayer.getChildCount() != origDragLayerChildCount)) {
+                    onUiChangedWhileSleeping();
+                }
+            });
+        }
     }
 
     @Override
@@ -1343,10 +1361,15 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             // Reset AllApps to its initial state only if we are not in the middle of
             // processing a multi-step drop
             if (mPendingRequestArgs == null) {
+                if (!isInState(NORMAL)) {
+                    onUiChangedWhileSleeping();
+                }
                 mStateManager.goToState(NORMAL);
             }
         }
     };
+
+    protected void onUiChangedWhileSleeping() { }
 
     public void updateNotificationDots(Predicate<PackageUserKey> updatedDots) {
         mWorkspace.updateNotificationDots(updatedDots);
@@ -2636,6 +2659,9 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
                 // Setting the touch point to (-1, -1) will show the options popup in the center of
                 // the screen.
+                if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+                    Log.d(TestProtocol.PERMANENT_DIAG_TAG, "Opening options popup on key up");
+                }
                 OptionsPopupView.showDefaultOptions(this, -1, -1);
             }
             return true;

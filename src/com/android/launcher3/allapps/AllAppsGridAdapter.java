@@ -26,24 +26,24 @@ import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.TextView;
 
-import com.android.launcher3.AppInfo;
-import com.android.launcher3.BubbleTextView;
-import com.android.launcher3.Launcher;
-import com.android.launcher3.R;
-import com.android.launcher3.allapps.AlphabeticalAppsList.AdapterItem;
-import com.android.launcher3.compat.UserManagerCompat;
-import com.android.launcher3.model.AppLaunchTracker;
-import com.android.launcher3.touch.ItemClickHandler;
-import com.android.launcher3.touch.ItemLongClickListener;
-import com.android.launcher3.util.PackageManagerHelper;
-
-import java.util.List;
-
 import androidx.core.view.accessibility.AccessibilityEventCompat;
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
 import androidx.core.view.accessibility.AccessibilityRecordCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.android.launcher3.AppInfo;
+import com.android.launcher3.BubbleTextView;
+import com.android.launcher3.Launcher;
+import com.android.launcher3.R;
+import com.android.launcher3.allapps.AlphabeticalAppsList.AdapterItem;
+import com.android.launcher3.model.AppLaunchTracker;
+import com.android.launcher3.pm.UserCache;
+import com.android.launcher3.touch.ItemClickHandler;
+import com.android.launcher3.touch.ItemLongClickListener;
+import com.android.launcher3.util.PackageManagerHelper;
+
+import java.util.List;
 
 /**
  * The grid view adapter of all the apps.
@@ -312,7 +312,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 WorkModeSwitch workModeToggle = holder.itemView.findViewById(R.id.work_mode_toggle);
                 workModeToggle.refresh();
                 TextView managedByLabel = holder.itemView.findViewById(R.id.managed_by_label);
-                boolean anyProfileQuietModeEnabled = UserManagerCompat.getInstance(
+                boolean anyProfileQuietModeEnabled = UserCache.INSTANCE.get(
                         managedByLabel.getContext()).isAnyProfileQuietModeEnabled();
                 managedByLabel.setText(anyProfileQuietModeEnabled
                         ? R.string.work_mode_off_label : R.string.work_mode_on_label);

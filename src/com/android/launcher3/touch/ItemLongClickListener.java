@@ -22,7 +22,6 @@ import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnLongClickListener;
 
@@ -34,19 +33,16 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.folder.Folder;
-import com.android.launcher3.testing.TestProtocol;
-
-import java.util.Arrays;
 
 /**
  * Class to handle long-clicks on workspace items and start drag as a result.
  */
 public class ItemLongClickListener {
 
-    public static OnLongClickListener INSTANCE_WORKSPACE =
+    public static final OnLongClickListener INSTANCE_WORKSPACE =
             ItemLongClickListener::onWorkspaceItemLongClick;
 
-    public static OnLongClickListener INSTANCE_ALL_APPS =
+    public static final OnLongClickListener INSTANCE_ALL_APPS =
             ItemLongClickListener::onAllAppsItemLongClick;
 
     private static boolean onWorkspaceItemLongClick(View v) {

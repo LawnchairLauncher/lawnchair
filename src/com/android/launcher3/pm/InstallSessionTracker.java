@@ -15,9 +15,9 @@
  */
 package com.android.launcher3.pm;
 
+import static com.android.launcher3.pm.InstallSessionHelper.getUserHandle;
 import static com.android.launcher3.pm.PackageInstallInfo.STATUS_FAILED;
 import static com.android.launcher3.pm.PackageInstallInfo.STATUS_INSTALLED;
-import static com.android.launcher3.pm.PackageInstallerCompat.getUserHandle;
 
 import android.content.pm.PackageInstaller;
 import android.content.pm.PackageInstaller.SessionInfo;
@@ -31,10 +31,10 @@ public class InstallSessionTracker extends PackageInstaller.SessionCallback {
     // Lazily initialized
     private SparseArray<PackageUserKey> mActiveSessions = null;
 
-    private final PackageInstallerCompat mInstallerCompat;
+    private final InstallSessionHelper mInstallerCompat;
     private final Callback mCallback;
 
-    InstallSessionTracker(PackageInstallerCompat installerCompat, Callback callback) {
+    InstallSessionTracker(InstallSessionHelper installerCompat, Callback callback) {
         mInstallerCompat = installerCompat;
         mCallback = callback;
     }

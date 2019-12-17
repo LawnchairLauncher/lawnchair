@@ -19,6 +19,10 @@ import static android.view.View.MeasureSpec.EXACTLY;
 import static android.view.View.MeasureSpec.makeMeasureSpec;
 import static android.view.View.VISIBLE;
 
+import static com.android.launcher3.config.FeatureFlags.ENABLE_LAUNCHER_PREVIEW_IN_GRID_PICKER;
+import static com.android.launcher3.model.ModelUtils.filterCurrentWorkspaceItems;
+import static com.android.launcher3.model.ModelUtils.sortWorkspaceItemsSpatially;
+
 import android.annotation.TargetApi;
 import android.app.Fragment;
 import android.content.Context;
@@ -48,6 +52,10 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.InvariantDeviceProfile;
+import com.android.launcher3.ItemInfo;
+import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherModel;
+import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -58,11 +66,20 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.BaseIconFactory;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.BitmapRenderer;
+import com.android.launcher3.model.AllAppsList;
+import com.android.launcher3.model.BgDataModel;
+import com.android.launcher3.model.LoaderResults;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.BaseDragLayer;
 
+import java.util.ArrayList;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Utility class for generating the preview of Launcher for a given InvariantDeviceProfile.
@@ -241,22 +258,59 @@ public class LauncherPreviewRenderer implements Callable<Bitmap> {
         }
 
         private void renderScreenShot(Canvas canvas) {
-            // Add hotseat icons
-            for (int i = 0; i < mIdp.numHotseatIcons; i++) {
-                WorkspaceItemInfo info = new WorkspaceItemInfo(mWorkspaceItemInfo);
-                info.container = Favorites.CONTAINER_HOTSEAT;
-                info.screenId = i;
-                inflateAndAddIcon(info);
-            }
+            if (ENABLE_LAUNCHER_PREVIEW_IN_GRID_PICKER.get()) {
+                final LauncherModel launcherModel = LauncherAppState.getInstance(
+                        mContext).getModel();
+                final WorkspaceItemsInfoFetcher fetcher = new WorkspaceItemsInfoFetcher();
+                launcherModel.enqueueModelUpdateTask(fetcher);
+                ArrayList<ItemInfo> workspaceItems;
+                try {
+                    workspaceItems = fetcher.mTask.get(5, TimeUnit.SECONDS);
+                } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                    Log.d(TAG, "Error fetching workspace items info", e);
+                    return;
+                }
 
-            // Add workspace icons
-            for (int i = 0; i < mIdp.numColumns; i++) {
-                WorkspaceItemInfo info = new WorkspaceItemInfo(mWorkspaceItemInfo);
-                info.container = Favorites.CONTAINER_DESKTOP;
-                info.screenId = 0;
-                info.cellX = i;
-                info.cellY = mIdp.numRows - 1;
-                inflateAndAddIcon(info);
+                // Separate the items that are on the current screen, and all the other remaining
+                // items
+                ArrayList<ItemInfo> currentWorkspaceItems = new ArrayList<>();
+                ArrayList<ItemInfo> otherWorkspaceItems = new ArrayList<>();
+
+                filterCurrentWorkspaceItems(0 /* currentScreenId */, workspaceItems,
+                        currentWorkspaceItems, otherWorkspaceItems);
+                sortWorkspaceItemsSpatially(mIdp, currentWorkspaceItems);
+
+                for (ItemInfo itemInfo : currentWorkspaceItems) {
+                    switch (itemInfo.itemType) {
+                        case Favorites.ITEM_TYPE_APPLICATION:
+                        case Favorites.ITEM_TYPE_SHORTCUT:
+                        case Favorites.ITEM_TYPE_DEEP_SHORTCUT:
+                            inflateAndAddIcon((WorkspaceItemInfo) itemInfo);
+                            break;
+                        case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
+                            // TODO: for folder implementation here.
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            } else {
+                // Add hotseat icons
+                for (int i = 0; i < mIdp.numHotseatIcons; i++) {
+                    WorkspaceItemInfo info = new WorkspaceItemInfo(mWorkspaceItemInfo);
+                    info.container = Favorites.CONTAINER_HOTSEAT;
+                    info.screenId = i;
+                    inflateAndAddIcon(info);
+                }
+                // Add workspace icons
+                for (int i = 0; i < mIdp.numColumns; i++) {
+                    WorkspaceItemInfo info = new WorkspaceItemInfo(mWorkspaceItemInfo);
+                    info.container = Favorites.CONTAINER_DESKTOP;
+                    info.screenId = 0;
+                    info.cellX = i;
+                    info.cellY = mIdp.numRows - 1;
+                    inflateAndAddIcon(info);
+                }
             }
 
             // Add first page QSB
@@ -283,6 +337,42 @@ public class LauncherPreviewRenderer implements Callable<Bitmap> {
 
             mRootView.draw(canvas);
             dispatchVisibilityAggregated(mRootView, false);
+        }
+    }
+
+    private static class WorkspaceItemsInfoFetcher implements Callable<ArrayList<ItemInfo>>,
+            LauncherModel.ModelUpdateTask {
+
+        private final FutureTask<ArrayList<ItemInfo>> mTask = new FutureTask<>(this);
+
+        private LauncherAppState mApp;
+        private LauncherModel mModel;
+        private BgDataModel mBgDataModel;
+        private AllAppsList mAllAppsList;
+
+        @Override
+        public void init(LauncherAppState app, LauncherModel model, BgDataModel dataModel,
+                AllAppsList allAppsList, Executor uiExecutor) {
+            mApp = app;
+            mModel = model;
+            mBgDataModel = dataModel;
+            mAllAppsList = allAppsList;
+        }
+
+        @Override
+        public void run() {
+            mTask.run();
+        }
+
+        @Override
+        public ArrayList<ItemInfo> call() throws Exception {
+            if (!mModel.isModelLoaded()) {
+                Log.d(TAG, "Workspace not loaded, loading now");
+                mModel.startLoaderForResults(
+                        new LoaderResults(mApp, mBgDataModel, mAllAppsList, 0, null));
+                return new ArrayList<>();
+            }
+            return mBgDataModel.workspaceItems;
         }
     }
 

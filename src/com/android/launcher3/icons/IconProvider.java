@@ -34,8 +34,8 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.launcher3.R;
-import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.icons.BitmapInfo.Extender;
+import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.SafeCloseable;
 
@@ -235,7 +235,7 @@ public class IconProvider {
             ComponentName calendar =
                     parseComponentOrNull(context, R.string.calendar_component_name);
             if (calendar != null) {
-                for (UserHandle user : UserManagerCompat.getInstance(context).getUserProfiles()) {
+                for (UserHandle user : UserCache.INSTANCE.get(context).getUserProfiles()) {
                     mCallback.accept(calendar.getPackageName(), user);
                 }
             }

@@ -43,10 +43,10 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.LauncherSettings.Settings;
 import com.android.launcher3.Workspace;
-import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.GridSizeMigrationTask;
+import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSparseArrayMap;
 import com.android.launcher3.util.PackageManagerHelper;
@@ -100,7 +100,7 @@ public class ImportDataTask {
      * 3) In the end fills any holes in hotseat with items from default hotseat layout.
      */
     private void importWorkspaceItems() throws Exception {
-        String profileId = Long.toString(UserManagerCompat.getInstance(mContext)
+        String profileId = Long.toString(UserCache.INSTANCE.get(mContext)
                 .getSerialNumberForUser(Process.myUserHandle()));
 
         boolean createEmptyRowOnFirstScreen;

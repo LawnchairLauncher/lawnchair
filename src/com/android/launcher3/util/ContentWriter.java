@@ -19,15 +19,14 @@ package com.android.launcher3.util;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.UserHandle;
 
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.GraphicsUtils;
+import com.android.launcher3.pm.UserCache;
 
 /**
  * A wrapper around {@link ContentValues} with some utility methods.
@@ -87,7 +86,7 @@ public class ContentWriter {
     }
 
     public ContentWriter put(String key, UserHandle user) {
-        return put(key, UserManagerCompat.getInstance(mContext).getSerialNumberForUser(user));
+        return put(key, UserCache.INSTANCE.get(mContext).getSerialNumberForUser(user));
     }
 
     /**

@@ -43,13 +43,13 @@ import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.LauncherFiles;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.WorkspaceItemInfo;
-import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.ComponentWithLabel.ComponentCachingLogic;
 import com.android.launcher3.icons.cache.BaseIconCache;
 import com.android.launcher3.icons.cache.CachingLogic;
 import com.android.launcher3.icons.cache.HandlerRunnable;
 import com.android.launcher3.model.PackageItemInfo;
+import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.InstantAppResolver;
@@ -70,7 +70,7 @@ public class IconCache extends BaseIconCache {
     private final CachingLogic<ShortcutInfo> mShortcutCachingLogic;
 
     private final LauncherApps mLauncherApps;
-    private final UserManagerCompat mUserManager;
+    private final UserCache mUserManager;
     private final InstantAppResolver mInstantAppResolver;
     private final IconProvider mIconProvider;
 
@@ -83,7 +83,7 @@ public class IconCache extends BaseIconCache {
         mLauncherActivityInfoCachingLogic = LauncherActivityCachingLogic.newInstance(context);
         mShortcutCachingLogic = new ShortcutCachingLogic();
         mLauncherApps = mContext.getSystemService(LauncherApps.class);
-        mUserManager = UserManagerCompat.getInstance(mContext);
+        mUserManager = UserCache.INSTANCE.get(mContext);
         mInstantAppResolver = InstantAppResolver.newInstance(mContext);
         mIconProvider = new IconProvider(context);
     }

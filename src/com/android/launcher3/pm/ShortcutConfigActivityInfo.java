@@ -41,7 +41,6 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.WorkspaceItemInfo;
-import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.icons.ComponentWithLabel;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.util.PackageUserKey;
@@ -179,7 +178,7 @@ public abstract class ShortcutConfigActivityInfo implements ComponentWithLabel {
             final List<UserHandle> users;
             final String packageName;
             if (packageUser == null) {
-                users = UserManagerCompat.getInstance(context).getUserProfiles();
+                users = UserCache.INSTANCE.get(context).getUserProfiles();
                 packageName = null;
             } else {
                 users = new ArrayList<>(1);

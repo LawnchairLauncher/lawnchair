@@ -56,7 +56,7 @@ abstract class Launchable {
         mLauncher.executeAndWaitForEvent(
                 () -> mObject.click(),
                 event -> event.getEventType() == TYPE_WINDOW_STATE_CHANGED,
-                "Launching an app didn't open a new window: " + mObject.getText());
+                () -> "Launching an app didn't open a new window: " + mObject.getText());
 
         mLauncher.assertTrue(
                 "App didn't start: " + selector,
