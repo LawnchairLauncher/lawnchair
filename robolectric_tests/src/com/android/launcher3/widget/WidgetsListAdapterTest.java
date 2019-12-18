@@ -19,16 +19,15 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.robolectric.Shadows.shadowOf;
 
 import android.appwidget.AppWidgetProviderInfo;
+import android.content.ComponentName;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.test.InstrumentationRegistry;
-import androidx.test.filters.SmallTest;
-import androidx.test.runner.AndroidJUnit4;
 
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
@@ -37,19 +36,21 @@ import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.model.WidgetItem;
-import com.android.launcher3.util.MultiHashMap;
+import com.android.launcher3.util.LauncherRoboTestRunner;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.robolectric.RuntimeEnvironment;
+import org.robolectric.shadows.ShadowPackageManager;
+import org.robolectric.util.ReflectionHelpers;
 
 import java.util.ArrayList;
-import java.util.Map;
+import java.util.Collections;
 
-@SmallTest
-@RunWith(AndroidJUnit4.class)
+@RunWith(LauncherRoboTestRunner.class)
 public class WidgetsListAdapterTest {
 
     @Mock private LayoutInflater mMockLayoutInflater;
@@ -64,7 +65,7 @@ public class WidgetsListAdapterTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        mContext = InstrumentationRegistry.getTargetContext();
+        mContext = RuntimeEnvironment.application;
         mTestProfile = new InvariantDeviceProfile();
         mTestProfile.numRows = 5;
         mTestProfile.numColumns = 5;
@@ -121,15 +122,19 @@ public class WidgetsListAdapterTest {
     /**
      * Helper method to generate the sample widget model map that can be used for the tests
      * @param num the number of WidgetItem the map should contain
-     * @return
      */
     private ArrayList<WidgetListRowEntry> generateSampleMap(int num) {
         ArrayList<WidgetListRowEntry> result = new ArrayList<>();
         if (num <= 0) return result;
+        ShadowPackageManager spm = shadowOf(mContext.getPackageManager());
 
-        MultiHashMap<PackageItemInfo, WidgetItem> newMap = new MultiHashMap();
-        WidgetManagerHelper widgetManager = new WidgetManagerHelper(mContext);
-        for (AppWidgetProviderInfo widgetInfo : widgetManager.getAllProviders(null)) {
+        for (int i = 0; i < num; i++) {
+            ComponentName cn = new ComponentName("com.dummy.apk" + i, "DummyWidet");
+
+            AppWidgetProviderInfo widgetInfo = new AppWidgetProviderInfo();
+            widgetInfo.provider = cn;
+            ReflectionHelpers.setField(widgetInfo, "providerInfo", spm.addReceiverIfNotPresent(cn));
+
             WidgetItem wi = new WidgetItem(LauncherAppWidgetProviderInfo
                     .fromProviderInfo(mContext, widgetInfo), mTestProfile, mIconCache);
 
@@ -137,13 +142,8 @@ public class WidgetsListAdapterTest {
             pInfo.title = pInfo.packageName;
             pInfo.user = wi.user;
             pInfo.bitmap = BitmapInfo.of(Bitmap.createBitmap(10, 10, Bitmap.Config.ALPHA_8), 0);
-            newMap.addToList(pInfo, wi);
-            if (newMap.size() == num) {
-                break;
-            }
-        }
-        for (Map.Entry<PackageItemInfo, ArrayList<WidgetItem>> entry : newMap.entrySet()) {
-            result.add(new WidgetListRowEntry(entry.getKey(), entry.getValue()));
+
+            result.add(new WidgetListRowEntry(pInfo, new ArrayList<>(Collections.singleton(wi))));
         }
 
         return result;

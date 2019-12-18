@@ -108,14 +108,14 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
      * All the static data should be accessed on the background thread, A lock should be acquired
      * on this object when accessing any data from this model.
      */
-    static final BgDataModel sBgDataModel = new BgDataModel();
+    private final BgDataModel mBgDataModel = new BgDataModel();
 
     // Runnable to check if the shortcuts permission has changed.
     private final Runnable mShortcutPermissionCheckRunnable = new Runnable() {
         @Override
         public void run() {
             if (mModelLoaded && hasShortcutsPermission(mApp.getContext())
-                    != sBgDataModel.hasShortcutHostPermission) {
+                    != mBgDataModel.hasShortcutHostPermission) {
                 forceReload();
             }
         }
@@ -138,7 +138,7 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
     }
 
     public ModelWriter getWriter(boolean hasVerticalHotseat, boolean verifyChanges) {
-        return new ModelWriter(mApp.getContext(), this, sBgDataModel,
+        return new ModelWriter(mApp.getContext(), this, mBgDataModel,
                 hasVerticalHotseat, verifyChanges);
     }
 
@@ -303,7 +303,7 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
 
                 // If there is already one running, tell it to stop.
                 stopLoader();
-                LoaderResults loaderResults = new LoaderResults(mApp, sBgDataModel,
+                LoaderResults loaderResults = new LoaderResults(mApp, mBgDataModel,
                         mBgAllAppsList, synchronousBindPage, mCallbacks);
                 if (mModelLoaded && !mIsLoaderTaskRunning) {
                     // Divide the set of loaded items into those that we are binding synchronously,
@@ -339,7 +339,7 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
     public void startLoaderForResults(LoaderResults results) {
         synchronized (mLock) {
             stopLoader();
-            mLoaderTask = new LoaderTask(mApp, mBgAllAppsList, sBgDataModel, results);
+            mLoaderTask = new LoaderTask(mApp, mBgAllAppsList, mBgDataModel, results);
 
             // Always post the loader task, instead of running directly (even on same thread) so
             // that we exit any nested synchronized blocks
@@ -487,7 +487,7 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
     }
 
     public void enqueueModelUpdateTask(ModelUpdateTask task) {
-        task.init(mApp, this, sBgDataModel, mBgAllAppsList, MAIN_EXECUTOR);
+        task.init(mApp, this, mBgDataModel, mBgAllAppsList, MAIN_EXECUTOR);
         MODEL_EXECUTOR.execute(task);
     }
 
@@ -558,7 +558,7 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
                         + " componentName=" + info.componentName.getPackageName());
             }
         }
-        sBgDataModel.dump(prefix, fd, writer, args);
+        mBgDataModel.dump(prefix, fd, writer, args);
     }
 
     public Callbacks getCallback() {

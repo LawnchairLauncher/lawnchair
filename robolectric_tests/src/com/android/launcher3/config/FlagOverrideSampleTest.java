@@ -4,16 +4,16 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import com.android.launcher3.config.FlagOverrideRule.FlagOverride;
+import com.android.launcher3.util.LauncherRoboTestRunner;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
 
 /**
  * Sample Robolectric test that demonstrates flag-overriding.
  */
-@RunWith(RobolectricTestRunner.class)
+@RunWith(LauncherRoboTestRunner.class)
 public class FlagOverrideSampleTest {
 
     // Check out https://junit.org/junit4/javadoc/4.12/org/junit/Rule.html for more information

@@ -27,9 +27,10 @@ import static org.mockito.Mockito.spy;
 
 import android.content.pm.ShortcutInfo;
 
+import com.android.launcher3.util.LauncherRoboTestRunner;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
@@ -39,7 +40,7 @@ import java.util.List;
 /**
  * Tests the sorting and filtering of shortcuts in {@link PopupPopulator}.
  */
-@RunWith(RobolectricTestRunner.class)
+@RunWith(LauncherRoboTestRunner.class)
 public class PopupPopulatorTest {
 
     @Test

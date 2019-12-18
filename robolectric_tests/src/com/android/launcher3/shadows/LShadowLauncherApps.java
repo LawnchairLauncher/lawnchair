@@ -77,7 +77,7 @@ public class LShadowLauncherApps extends ShadowLauncherApps {
     protected LauncherActivityInfo resolveActivity(Intent intent, UserHandle user) {
         ResolveInfo ri = RuntimeEnvironment.application.getPackageManager()
                 .resolveActivity(intent, 0);
-        return getLauncherActivityInfo(ri.activityInfo);
+        return ri == null ? null : getLauncherActivityInfo(ri.activityInfo);
     }
 
     public LauncherActivityInfo getLauncherActivityInfo(ActivityInfo activityInfo) {
