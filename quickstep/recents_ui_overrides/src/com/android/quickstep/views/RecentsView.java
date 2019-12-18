@@ -1310,7 +1310,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     }
 
     private void dismissCurrentTask() {
-        TaskView taskView = getTaskView(getNextPage());
+        TaskView taskView = getNextPageTaskView();
         if (taskView != null) {
             dismissTask(taskView, true /*animateTaskView*/, true /*removeTask*/);
         }
