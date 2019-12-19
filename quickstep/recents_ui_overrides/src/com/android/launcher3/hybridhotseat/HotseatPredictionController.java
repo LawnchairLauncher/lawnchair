@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3;
+package com.android.launcher3.hybridhotseat;
 
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 
@@ -35,6 +35,20 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.AppInfo;
+import com.android.launcher3.BubbleTextView;
+import com.android.launcher3.DragSource;
+import com.android.launcher3.DropTarget;
+import com.android.launcher3.Hotseat;
+import com.android.launcher3.InvariantDeviceProfile;
+import com.android.launcher3.ItemInfo;
+import com.android.launcher3.ItemInfoWithIcon;
+import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherSettings;
+import com.android.launcher3.LauncherState;
+import com.android.launcher3.R;
+import com.android.launcher3.Workspace;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.appprediction.ComponentKeyMapper;
@@ -93,6 +107,7 @@ public class HotseatPredictionController implements DragController.DragListener,
     private AllAppsStore mAllAppsStore;
     private AnimatorSet mIconRemoveAnimators;
 
+    private HotseatEduController mHotseatEduController;
 
     private List<PredictedAppIcon.PredictedIconOutlineDrawing> mOutlineDrawings = new ArrayList<>();
 
@@ -118,6 +133,23 @@ public class HotseatPredictionController implements DragController.DragListener,
         }
     }
 
+    /**
+     * Returns whether or not the prediction controller is ready to show predictions
+     */
+    public boolean isReady() {
+        return mLauncher.getSharedPrefs().getBoolean(HotseatEduController.KEY_HOTSEAT_EDU_SEEN,
+                false);
+    }
+
+    /**
+     * Transitions to NORMAL workspace mode and shows edu dialog
+     */
+    public void showEduDialog() {
+        if (mHotseatEduController == null) return;
+        mLauncher.getStateManager().goToState(LauncherState.NORMAL, true,
+                () -> mHotseatEduController.showDialog());
+    }
+
     @Override
     public void onViewAttachedToWindow(View view) {
         mLauncher.getDragController().addDragListener(this);
@@ -133,7 +165,7 @@ public class HotseatPredictionController implements DragController.DragListener,
     }
 
     private void fillGapsWithPrediction(boolean animate, Runnable callback) {
-        if (mDragObject != null) {
+        if (!isReady() || mDragObject != null) {
             return;
         }
         List<WorkspaceItemInfo> predictedApps = mapToWorkspaceItemInfo(mComponentKeyMappers);
@@ -234,6 +266,12 @@ public class HotseatPredictionController implements DragController.DragListener,
         mAppPredictor.registerPredictionUpdates(mLauncher.getMainExecutor(),
                 this::setPredictedApps);
 
+        if (!isReady()) {
+            if (mHotseatEduController != null) {
+                mHotseatEduController.destroy();
+            }
+            mHotseatEduController = new HotseatEduController(mLauncher);
+        }
         mAppPredictor.requestPredictionUpdate();
     }
 
@@ -244,6 +282,7 @@ public class HotseatPredictionController implements DragController.DragListener,
         bundle.putParcelableArrayList(BUNDLE_KEY_WORKSPACE, getPinnedAppTargetsInViewGroup(
                 mLauncher.getWorkspace().getScreenWithId(
                         Workspace.FIRST_SCREEN_ID).getShortcutsAndWidgets()));
+
         return bundle;
     }
 
@@ -272,7 +311,11 @@ public class HotseatPredictionController implements DragController.DragListener,
             mComponentKeyMappers.add(new ComponentKeyMapper(key, mDynamicItemCache));
         }
         updateDependencies();
-        fillGapsWithPrediction();
+        if (isReady()) {
+            fillGapsWithPrediction();
+        } else if (mHotseatEduController != null) {
+            mHotseatEduController.setPredictedApps(mapToWorkspaceItemInfo(mComponentKeyMappers));
+        }
     }
 
     private void updateDependencies() {
@@ -466,9 +509,7 @@ public class HotseatPredictionController implements DragController.DragListener,
     }
 
     @Override
-    public void reapplyItemInfo(ItemInfoWithIcon info) {
-
-    }
+    public void reapplyItemInfo(ItemInfoWithIcon info) {}
 
     @Override
     public void onDropCompleted(View target, DropTarget.DragObject d, boolean success) {
