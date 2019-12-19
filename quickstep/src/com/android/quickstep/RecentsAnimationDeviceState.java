@@ -17,8 +17,6 @@ package com.android.quickstep;
 
 import static android.content.Intent.ACTION_USER_UNLOCKED;
 
-import static com.android.launcher3.ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE;
-import static com.android.launcher3.ResourceUtils.NAVBAR_LANDSCAPE_LEFT_RIGHT_SIZE;
 import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
 import static com.android.quickstep.SysUINavigationMode.Mode.THREE_BUTTONS;
 import static com.android.quickstep.SysUINavigationMode.Mode.TWO_BUTTONS;
@@ -40,13 +38,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
-import android.graphics.Point;
-import android.graphics.RectF;
 import android.graphics.Region;
 import android.os.Process;
 import android.os.UserManager;
-import android.graphics.Region;
-import android.os.Process;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -82,6 +76,7 @@ public class RecentsAnimationDeviceState implements
     private final SysUINavigationMode mSysUiNavMode;
     private final DefaultDisplay mDefaultDisplay;
     private final int mDisplayId;
+    private int mDisplayRotation;
 
     private final ArrayList<Runnable> mOnDestroyActions = new ArrayList<>();
 
@@ -234,6 +229,7 @@ public class RecentsAnimationDeviceState implements
             return;
         }
 
+        mDisplayRotation = info.rotation;
         mNavBarPosition = new NavBarPosition(mMode, info);
         updateGestureTouchRegions();
         mOrientationTouchTransformer.createOrAddTouchRegion(info);
@@ -499,6 +495,18 @@ public class RecentsAnimationDeviceState implements
         mOrientationTouchTransformer.transform(event);
     }
 
+    public void enableMultipleRegions(boolean enable) {
+        mOrientationTouchTransformer.enableMultipleRegions(enable, mDefaultDisplay.getInfo());
+    }
+
+    public int getCurrentActiveRotation() {
+        return mOrientationTouchTransformer.getCurrentActiveRotation();
+    }
+
+    public int getDisplayRotation() {
+        return mDisplayRotation;
+    }
+
     public void dump(PrintWriter pw) {
         pw.println("DeviceState:");
         pw.println("  canStartSystemGesture=" + canStartSystemGesture());
@@ -508,9 +516,8 @@ public class RecentsAnimationDeviceState implements
         pw.println("  assistantAvailable=" + mAssistantAvailable);
         pw.println("  assistantDisabled="
                 + QuickStepContract.isAssistantGestureDisabled(mSystemUiStateFlags));
-    }
-
-    public void enableMultipleRegions(boolean enable) {
-        mOrientationTouchTransformer.enableMultipleRegions(enable, mDefaultDisplay.getInfo());
+        pw.println("  currentActiveRotation=" + getCurrentActiveRotation());
+        pw.println("  displayRotation=" + getDisplayRotation());
+        mOrientationTouchTransformer.dump(pw);
     }
 }

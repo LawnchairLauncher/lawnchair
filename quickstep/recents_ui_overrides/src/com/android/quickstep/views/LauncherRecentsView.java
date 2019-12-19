@@ -42,6 +42,7 @@ import com.android.launcher3.Hotseat;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager.StateListener;
+import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.appprediction.PredictionUiStateManager;
@@ -180,19 +181,21 @@ public class LauncherRecentsView extends RecentsView<Launcher> implements StateL
      * @return The translationX to apply to this view so that the first task is just offscreen.
      */
     public float getOffscreenTranslationX(float recentsScale) {
-        float offscreenX = NORMAL.getOverviewScaleAndTranslation(mActivity).translationX;
+        LauncherState.ScaleAndTranslation overviewScaleAndTranslation =
+            NORMAL.getOverviewScaleAndTranslation(mActivity);
+        float offscreen = mOrientationHandler.getTranslationValue(overviewScaleAndTranslation);
         // Offset since scale pushes tasks outwards.
         getTaskSize(sTempRect);
-        int taskWidth = sTempRect.width();
-        offscreenX += taskWidth * (recentsScale - 1) / 2;
+        int taskSize = mOrientationHandler.getPrimarySize(sTempRect);
+        offscreen += taskSize * (recentsScale - 1) / 2;
         if (mRunningTaskTileHidden) {
             // The first task is hidden, so offset by its width.
-            offscreenX -= (taskWidth + getPageSpacing()) * recentsScale;
+            offscreen -= (taskSize + getPageSpacing()) * recentsScale;
         }
         if (isRtl()) {
-            offscreenX = -offscreenX;
+            offscreen = -offscreen;
         }
-        return offscreenX;
+        return offscreen;
     }
 
     @Override
@@ -277,6 +280,11 @@ public class LauncherRecentsView extends RecentsView<Launcher> implements StateL
     }
 
     @Override
+    protected boolean supportsVerticalLandscape() {
+        return PagedView.sFlagForcedRotation;
+    }
+
+    @Override
     public void reset() {
         super.reset();
 
@@ -339,19 +347,19 @@ public class LauncherRecentsView extends RecentsView<Launcher> implements StateL
     }
 
     @Override
-    protected int computeMinScrollX() {
+    protected int computeMinScroll() {
         if (canComputeScrollX() && !mIsRtl) {
             return computeScrollX();
         }
-        return super.computeMinScrollX();
+        return super.computeMinScroll();
     }
 
     @Override
-    protected int computeMaxScrollX() {
+    protected int computeMaxScroll() {
         if (canComputeScrollX() && mIsRtl) {
             return computeScrollX();
         }
-        return super.computeMaxScrollX();
+        return super.computeMaxScroll();
     }
 
     private boolean canComputeScrollX() {

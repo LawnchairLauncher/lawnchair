@@ -64,6 +64,7 @@ import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.logging.UserEventDispatcher;
+import com.android.launcher3.model.PagedViewOrientedState;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -261,6 +262,7 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
 
     @Override
     protected boolean onActivityInit(Boolean alreadyOnHome) {
+        super.onActivityInit(alreadyOnHome);
         final T activity = mActivityInterface.getCreatedActivity();
         if (mActivity == activity) {
             return true;

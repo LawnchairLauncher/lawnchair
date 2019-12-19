@@ -33,7 +33,10 @@ import android.view.Surface;
 
 import com.android.launcher3.R;
 import com.android.launcher3.ResourceUtils;
+import com.android.launcher3.states.RotationHelper;
 import com.android.launcher3.util.DefaultDisplay;
+
+import java.io.PrintWriter;
 
 /**
  * Maintains state for supporting nav bars and tracking their gestures in multiple orientations.
@@ -149,8 +152,7 @@ class OrientationTouchTransformer {
         Point size = display.realSize;
         int rotation = display.rotation;
         OrientationRectF orientationRectF =
-                new OrientationRectF(0, 0, size.x, size.y, rotation,
-                        size.y, size.x);
+                new OrientationRectF(0, 0, size.x, size.y, rotation);
         if (mMode == SysUINavigationMode.Mode.NO_BUTTON) {
             int touchHeight = getNavbarSize(ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE);
             orientationRectF.top = orientationRectF.bottom - touchHeight;
@@ -206,6 +208,14 @@ class OrientationTouchTransformer {
         return false;
     }
 
+    int getCurrentActiveRotation() {
+        if (mLastRectTouched == null) {
+            return 0;
+        } else {
+            return mLastRectTouched.mRotation;
+        }
+    }
+
     public void transform(MotionEvent event) {
         int eventAction = event.getActionMasked();
         switch (eventAction) {
@@ -249,6 +259,19 @@ class OrientationTouchTransformer {
         }
     }
 
+    public void dump(PrintWriter pw) {
+        pw.println("OrientationTouchTransformerState: ");
+        pw.println("  currentActiveRotation=" + getCurrentActiveRotation());
+        pw.println("  lastTouchedRegion=" + mLastRectTouched);
+        pw.println("  multipleRegionsEnabled=" + mEnableMultipleRegions);
+        StringBuilder regions = new StringBuilder("  currentTouchableRotations=");
+        for(int i = 0; i < mSwipeTouchRegions.size(); i++) {
+            OrientationRectF rectF = mSwipeTouchRegions.get(mSwipeTouchRegions.keyAt(i));
+            regions.append(rectF.mRotation).append(" ");
+        }
+        pw.println(regions.toString());
+    }
+
     private class OrientationRectF extends RectF {
 
         /**
@@ -262,12 +285,11 @@ class OrientationTouchTransformer {
         private float mHeight;
         private float mWidth;
 
-        OrientationRectF(float left, float top, float right, float bottom, int rotation,
-                float height, float width) {
+        OrientationRectF(float left, float top, float right, float bottom, int rotation) {
             super(left, top, right, bottom);
             this.mRotation = rotation;
-            mHeight = height - maxDelta;
-            mWidth = width - maxDelta;
+            mHeight = bottom - maxDelta;
+            mWidth = right - maxDelta;
         }
 
         @Override
@@ -280,7 +302,7 @@ class OrientationTouchTransformer {
         boolean applyTransform(MotionEvent event, boolean forceTransform) {
             MotionEvent tmp = MotionEvent.obtain(event);
             Matrix outMatrix = new Matrix();
-            int delta = deltaRotation(mCurrentRotation, mRotation);
+            int delta = RotationHelper.deltaRotation(mCurrentRotation, mRotation);
             switch (delta) {
                 case Surface.ROTATION_0:
                     outMatrix.reset();
@@ -313,17 +335,6 @@ class OrientationTouchTransformer {
                 return true;
             }
             return false;
-        }
-
-        /**
-         * @return how many factors {@param newRotation} is rotated 90 degrees clockwise.
-         * E.g. 1->Rotated by 90 degrees clockwise, 2->Rotated 180 clockwise...
-         * A value of 0 means no rotation has been applied
-         */
-        private int deltaRotation(int oldRotation, int newRotation) {
-            int delta = newRotation - oldRotation;
-            if (delta < 0) delta += 4;
-            return delta;
         }
     }
 }

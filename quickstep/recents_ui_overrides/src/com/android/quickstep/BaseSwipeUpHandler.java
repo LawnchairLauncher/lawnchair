@@ -45,7 +45,9 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
-import com.android.launcher3.graphics.RotationMode;
+import com.android.launcher3.model.PagedViewOrientedState;
+import com.android.launcher3.states.RotationHelper;
+import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.VibratorWrapper;
 import com.android.launcher3.views.FloatingIconView;
 import com.android.quickstep.BaseActivityInterface.HomeAnimationFactory;
@@ -94,7 +96,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
     protected final BaseActivityInterface<T> mActivityInterface;
     protected final InputConsumerController mInputConsumer;
 
-    protected final AppWindowAnimationHelper mAppWindowAnimationHelper;
+    protected AppWindowAnimationHelper mAppWindowAnimationHelper;
     protected final TransformParams mTransformParams = new TransformParams();
 
     // Shift in the range of [0, 1].
@@ -123,6 +125,8 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
     protected boolean mCanceled;
     protected int mFinishingRecentsAnimationForNewTaskId = -1;
 
+    protected PagedViewOrientedState mOrientedState;
+
     protected BaseSwipeUpHandler(Context context, RecentsAnimationDeviceState deviceState,
             GestureState gestureState, InputConsumerController inputConsumer) {
         mContext = context;
@@ -132,20 +136,18 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
         mActivityInitListener =
                 mActivityInterface.createActivityInitListener(this::onActivityInit);
         mInputConsumer = inputConsumer;
-
         mAppWindowAnimationHelper = new AppWindowAnimationHelper(context);
         mPageSpacing = context.getResources().getDimensionPixelSize(R.dimen.recents_page_spacing);
-
         initTransitionEndpoints(InvariantDeviceProfile.INSTANCE.get(mContext)
-                .getDeviceProfile(mContext));
+            .getDeviceProfile(mContext));
     }
 
     protected void performHapticFeedback() {
         VibratorWrapper.INSTANCE.get(mContext).vibrate(OVERVIEW_HAPTIC);
     }
 
-    public Consumer<MotionEvent> getRecentsViewDispatcher(RotationMode rotationMode) {
-        return mRecentsView != null ? mRecentsView.getEventDispatcher(rotationMode) : null;
+    public Consumer<MotionEvent> getRecentsViewDispatcher() {
+        return mRecentsView != null ? mRecentsView.getEventDispatcher() : null;
     }
 
     @UiThread
@@ -326,10 +328,19 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
             // we otherwise use the minimized home bounds provided by the system.
             mAppWindowAnimationHelper.updateHomeBounds(getStackBounds(dp));
         }
+        int displayRotation = 0;
+        if (mOrientedState != null) {
+            // TODO(b/150300347): The first recents animation after launcher is started with the
+            //  foreground app not in landscape will look funky until that bug is fixed
+            displayRotation = mOrientedState.getDisplayRotation();
+        }
+        RotationHelper.getTargetRectForRotation(TEMP_RECT, dp.widthPx, dp.heightPx,
+            displayRotation);
         mAppWindowAnimationHelper.updateTargetRect(TEMP_RECT);
         if (mDeviceState.isFullyGesturalNavMode()) {
             // We can drag all the way to the top of the screen.
-            mDragLengthFactor = (float) dp.heightPx / mTransitionDragLength;
+            mDragLengthFactor = orientationHandler
+                .getDragLengthFactor(dp.heightPx, mTransitionDragLength);
         }
     }
 
@@ -338,7 +349,17 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
      */
     protected abstract boolean moveWindowWithRecentsScroll();
 
-    protected abstract boolean onActivityInit(Boolean alreadyOnHome);
+    protected boolean onActivityInit(Boolean alreadyOnHome) {
+        T createdActivity = mActivityInterface.getCreatedActivity();
+        if (createdActivity != null) {
+            mOrientedState = ((RecentsView) createdActivity.getOverviewPanel())
+                .getPagedViewOrientedState();
+            mAppWindowAnimationHelper = new AppWindowAnimationHelper(mOrientedState, mContext);
+            initTransitionEndpoints(InvariantDeviceProfile.INSTANCE.get(mContext)
+                .getDeviceProfile(mContext));
+        }
+        return true;
+    }
 
     /**
      * Called to create a input proxy for the running task
@@ -381,21 +402,24 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
      * Applies the transform on the recents animation without any additional null checks
      */
     protected void applyTransformUnchecked() {
+        PagedOrientationHandler handler = mOrientedState.getOrientationHandler();
         float shift = mCurrentShift.value;
-        float offsetX = mRecentsView == null ? 0 : mRecentsView.getScrollOffset();
-        float offsetScale = getTaskCurveScaleForOffsetX(offsetX,
-        mAppWindowAnimationHelper.getTargetRect().width());
+        float offset = mRecentsView == null ? 0 : mRecentsView.getScrollOffset();
+        float taskSize = handler.getPrimarySize(mAppWindowAnimationHelper.getTargetRect());
+        float offsetScale = getTaskCurveScaleForOffset(offset, taskSize);
         mTransformParams.setProgress(shift)
-                .setOffsetX(offsetX)
+                .setOffset(offset)
                 .setOffsetScale(offsetScale)
                 .setTargetSet(mRecentsAnimationTargets)
-                .setLauncherOnTop(true);
+                .setLauncherOnTop(true)
+                .setPagedOrientedState(mOrientedState);
         mAppWindowAnimationHelper.applyTransform(mTransformParams);
     }
 
-    private float getTaskCurveScaleForOffsetX(float offsetX, float taskWidth) {
-        float distanceToReachEdge = mDp.widthPx / 2 + taskWidth / 2 + mPageSpacing;
-        float interpolation = Math.min(1, offsetX / distanceToReachEdge);
+    private float getTaskCurveScaleForOffset(float offset, float taskSize) {
+        int dpPixel = getOrientationHandler().getShortEdgeLength(mDp);
+        float distanceToReachEdge = dpPixel / 2 + taskSize / 2 + mPageSpacing;
+        float interpolation = Math.min(1, offset / distanceToReachEdge);
         return TaskView.getCurveScaleForInterpolation(interpolation);
     }
 
@@ -410,9 +434,9 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
                 mAppWindowAnimationHelper.applyTransform(
                         mTransformParams.setProgress(startProgress)
                                 .setTargetSet(mRecentsAnimationTargets)
+                                .setPagedOrientedState(mOrientedState)
                                 .setLauncherOnTop(false)));
         final RectF targetRect = homeAnimationFactory.getWindowTargetRect();
-
         final View floatingView = homeAnimationFactory.getFloatingView();
         final boolean isFloatingIconView = floatingView instanceof FloatingIconView;
         RectFSpringAnim anim = new RectFSpringAnim(startRect, targetRect, mContext.getResources());

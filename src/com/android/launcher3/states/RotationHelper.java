@@ -17,15 +17,26 @@ package com.android.launcher3.states;
 
 import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_LOCKED;
 import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_NOSENSOR;
+import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
 import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
 import static android.util.DisplayMetrics.DENSITY_DEVICE_STABLE;
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
+import android.content.ContentResolver;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Resources;
+import android.database.ContentObserver;
+import android.graphics.Matrix;
+import android.graphics.Rect;
+import android.graphics.RectF;
+import android.provider.Settings;
+import android.view.MotionEvent;
+import android.view.Surface;
 import android.view.WindowManager;
 
 import com.android.launcher3.Launcher;
+import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
@@ -37,6 +48,8 @@ import com.android.launcher3.util.UiThreadHelper;
 public class RotationHelper implements OnSharedPreferenceChangeListener {
 
     public static final String ALLOW_ROTATION_PREFERENCE_KEY = "pref_allowRotation";
+
+    public static final String FIXED_ROTATION_TRANSFORM_SETTING_NAME = "fixed_rotation_transform";
 
     public static boolean getAllowRotationDefaultValue() {
         // If the device was scaled, used the original dimensions to determine if rotation
@@ -92,6 +105,18 @@ public class RotationHelper implements OnSharedPreferenceChangeListener {
         } else {
             mPrefs = null;
         }
+
+        // TODO(b/150260456) Add this in home settings as well
+        final ContentResolver resolver = launcher.getContentResolver();
+        final ContentObserver observer = new ContentObserver(MAIN_EXECUTOR.getHandler()) {
+            @Override
+            public void onChange(boolean selfChange) {
+                PagedView.sFlagForcedRotation = Utilities.isForcedRotation(mLauncher);
+            }
+        };
+        resolver.registerContentObserver(Settings.Global.getUriFor(
+            FIXED_ROTATION_TRANSFORM_SETTING_NAME),
+            false, observer);
     }
 
     public void setRotationHadDifferentUI(boolean rotationHasDifferentUI) {
@@ -202,6 +227,118 @@ public class RotationHelper implements OnSharedPreferenceChangeListener {
             mLastActivityFlags = activityFlags;
             UiThreadHelper.setOrientationAsync(mLauncher, activityFlags);
         }
+    }
+
+    public static int getDegreesFromRotation(int rotation) {
+        int degrees;
+        switch (rotation) {
+            case Surface.ROTATION_90:
+                degrees = 90;
+                break;
+            case Surface.ROTATION_180:
+                degrees = 180;
+                break;
+            case Surface.ROTATION_270:
+                degrees = 270;
+                break;
+            case Surface.ROTATION_0:
+            default:
+                degrees = 0;
+                break;
+        }
+        return degrees;
+    }
+
+    public static int getRotationFromDegrees(int degrees, int currentRotation) {
+        int threshold = 70;
+        if (degrees >= (360 - threshold) || degrees < (threshold)) {
+            return Surface.ROTATION_0;
+        } else if (degrees < (90 + threshold)) {
+            return Surface.ROTATION_270;
+        } else if (degrees < 180 + threshold) {
+            return Surface.ROTATION_180;
+        } else {
+            return Surface.ROTATION_90;
+        }
+    }
+
+    /**
+     * @return how many factors {@param newRotation} is rotated 90 degrees clockwise.
+     * E.g. 1->Rotated by 90 degrees clockwise, 2->Rotated 180 clockwise...
+     * A value of 0 means no rotation has been applied
+     */
+    public static int deltaRotation(int oldRotation, int newRotation) {
+        int delta = newRotation - oldRotation;
+        if (delta < 0) delta += 4;
+        return delta;
+    }
+
+    /**
+     * Creates a matrix to transform the given motion event specified by degrees.
+     * If {@param inverse} is {@code true}, the inverse of that matrix will be applied
+     */
+    public static void transformEvent(int degrees, MotionEvent ev, boolean inverse) {
+        Matrix transform = new Matrix();
+        transform.setRotate(degrees);
+        if (inverse) {
+            Matrix inv = new Matrix();
+            transform.invert(inv);
+            ev.transform(inv);
+        } else {
+            ev.transform(transform);
+        }
+        // TODO: Add scaling back in based on degrees
+//        if (getWidth() > 0 && getHeight() > 0) {
+//            float scale = ((float) getWidth()) / getHeight();
+//            transform.postScale(scale, 1 / scale);
+//        }
+    }
+
+    /**
+     * TODO(b/149658423): Have {@link com.android.quickstep.OrientationTouchTransformer
+     *   also use this}
+     */
+    public static Matrix getRotationMatrix(int screenWidth, int screenHeight, int displayRotation) {
+        Matrix m = new Matrix();
+        switch (displayRotation) {
+            case Surface.ROTATION_0:
+                return m;
+            case Surface.ROTATION_90:
+                m.setRotate(360 - RotationHelper.getDegreesFromRotation(displayRotation));
+                m.postTranslate(0, screenWidth);
+                break;
+            case Surface.ROTATION_270:
+                m.setRotate(360 - RotationHelper.getDegreesFromRotation(displayRotation));
+                m.postTranslate(screenHeight, 0);
+                break;
+        }
+        return m;
+    }
+
+    public static void mapRectFromNormalOrientation(RectF src, int screenWidth, int screenHeight,
+        int displayRotation) {
+        Matrix m = RotationHelper.getRotationMatrix(screenWidth, screenHeight, displayRotation);
+        m.mapRect(src);
+    }
+
+    public static void mapInverseRectFromNormalOrientation(RectF src, int screenWidth,
+        int screenHeight, int displayRotation) {
+        Matrix m = RotationHelper.getRotationMatrix(screenWidth, screenHeight, displayRotation);
+        Matrix inverse = new Matrix();
+        m.invert(inverse);
+        inverse.mapRect(src);
+    }
+
+    public static void getTargetRectForRotation(Rect srcOut, int screenWidth, int screenHeight,
+        int displayRotation) {
+        RectF wrapped = new RectF(srcOut);
+        Matrix m = RotationHelper.getRotationMatrix(screenWidth, screenHeight, displayRotation);
+        m.mapRect(wrapped);
+        wrapped.round(srcOut);
+    }
+
+    public static boolean isRotationLandscape(int rotation) {
+        return rotation == Surface.ROTATION_270 || rotation == Surface.ROTATION_90;
     }
 
     @Override

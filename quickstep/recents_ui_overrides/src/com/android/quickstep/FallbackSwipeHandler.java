@@ -161,12 +161,12 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
 
     @Override
     protected boolean onActivityInit(Boolean alreadyOnHome) {
+        super.onActivityInit(alreadyOnHome);
         mActivity = mActivityInterface.getCreatedActivity();
         mRecentsView = mActivity.getOverviewPanel();
         linkRecentsViewScroll();
         mRecentsView.setDisallowScrollToClearAll(true);
         mRecentsView.getClearAllButton().setVisibilityAlpha(0);
-
         mRecentsView.setZoomProgress(1);
 
         if (!mContinuingLastGesture) {
@@ -177,6 +177,7 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
             }
         }
         mStateCallback.setStateOnUiThread(STATE_RECENTS_PRESENT);
+        mDeviceState.enableMultipleRegions(false);
         return true;
     }
 

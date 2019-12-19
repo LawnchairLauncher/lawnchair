@@ -41,6 +41,7 @@ import com.android.launcher3.model.WellbeingModel;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.proxy.ProxyActivityStarter;
 import com.android.launcher3.proxy.StartActivityParams;
+import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.uioverrides.BackButtonAlphaHandler;
 import com.android.launcher3.uioverrides.RecentsViewStateController;
 import com.android.launcher3.util.UiThreadHelper;
@@ -51,6 +52,7 @@ import com.android.quickstep.SysUINavigationMode.NavigationModeChangeListener;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.util.RemoteFadeOutAnimationListener;
 import com.android.quickstep.util.ShelfPeekAnim;
+import com.android.quickstep.views.RecentsView;
 
 import java.util.stream.Stream;
 
@@ -210,9 +212,10 @@ public abstract class BaseQuickstepLauncher extends Launcher
     @Override
     protected ScaleAndTranslation getOverviewScaleAndTranslationForNormalState() {
         if (SysUINavigationMode.getMode(this) == Mode.NO_BUTTON) {
-            float offscreenTranslationX = getDeviceProfile().widthPx
-                    - getOverviewPanel().getPaddingStart();
-            return new ScaleAndTranslation(1f, offscreenTranslationX, 0f);
+            PagedOrientationHandler layoutVertical =
+                ((RecentsView)getOverviewPanel()).getPagedViewOrientedState().getOrientationHandler();
+            return layoutVertical.getScaleAndTranslation(getDeviceProfile(),
+                getOverviewPanel());
         }
         return super.getOverviewScaleAndTranslationForNormalState();
     }

@@ -15,12 +15,6 @@
  */
 package com.android.quickstep.util;
 
-import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
-import static com.android.systemui.shared.system.QuickStepContract.getWindowCornerRadius;
-import static com.android.systemui.shared.system.QuickStepContract.supportsRoundedCornersOnWindows;
-import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
-import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING;
-
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Matrix;
@@ -37,6 +31,7 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.Interpolators;
+import com.android.launcher3.model.PagedViewOrientedState;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.quickstep.RemoteAnimationTargets;
 import com.android.quickstep.SystemUiProxy;
@@ -49,6 +44,12 @@ import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams;
 import com.android.systemui.shared.system.TransactionCompat;
 import com.android.systemui.shared.system.WindowManagerWrapper;
+
+import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
+import static com.android.systemui.shared.system.QuickStepContract.getWindowCornerRadius;
+import static com.android.systemui.shared.system.QuickStepContract.supportsRoundedCornersOnWindows;
+import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
+import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING;
 
 /**
  * Utility class to handle window clip animation
@@ -82,6 +83,7 @@ public class AppWindowAnimationHelper {
     private final Rect mTmpRect = new Rect();
     private final RectF mTmpRectF = new RectF();
     private final RectF mCurrentRectWithInsets = new RectF();
+    private PagedViewOrientedState mOrientedState;
     // Corner radius of windows, in pixels
     private final float mWindowCornerRadius;
     // Corner radius of windows when they're in overview mode.
@@ -100,11 +102,16 @@ public class AppWindowAnimationHelper {
     private TargetAlphaProvider mTaskAlphaCallback = (t, a) -> a;
     private TargetAlphaProvider mBaseAlphaCallback = (t, a) -> 1;
 
-    public AppWindowAnimationHelper(Context context) {
+    public AppWindowAnimationHelper(PagedViewOrientedState orientedState, Context context) {
+        mOrientedState = orientedState;
         mWindowCornerRadius = getWindowCornerRadius(context.getResources());
         mSupportsRoundedCornersOnWindows = supportsRoundedCornersOnWindows(context.getResources());
         mTaskCornerRadius = TaskCornerRadius.get(context);
         mUseRoundedCornersOnWindows = mSupportsRoundedCornersOnWindows;
+    }
+
+    public AppWindowAnimationHelper(Context context) {
+        this(null, context);
     }
 
     private void updateSourceStack(RemoteAnimationTargetCompat target) {
@@ -113,7 +120,6 @@ public class AppWindowAnimationHelper {
 
         // TODO: Should sourceContainerBounds already have this offset?
         mSourceStackBounds.offsetTo(target.position.x, target.position.y);
-
     }
 
     public void updateSource(Rect homeStackBounds, RemoteAnimationTargetCompat target) {
@@ -138,8 +144,9 @@ public class AppWindowAnimationHelper {
         // from the source rect. The difference between the target rect (scaled to the
         // source rect) is the amount to clip on each edge.
         RectF scaledTargetRect = new RectF(mTargetRect);
-        Utilities.scaleRectFAboutCenter(scaledTargetRect,
-                mSourceRect.width() / mTargetRect.width());
+        float scale = getSrcToTargetScale();
+        Utilities.scaleRectFAboutCenter(scaledTargetRect, scale);
+
         scaledTargetRect.offsetTo(mSourceRect.left, mSourceRect.top);
         mSourceWindowClipInsets.set(
                 Math.max(scaledTargetRect.left, 0),
@@ -147,6 +154,15 @@ public class AppWindowAnimationHelper {
                 Math.max(mSourceStackBounds.width() - scaledTargetRect.right, 0),
                 Math.max(mSourceStackBounds.height() - scaledTargetRect.bottom, 0));
         mSourceRect.set(scaledTargetRect);
+    }
+
+    private float getSrcToTargetScale() {
+        if (mOrientedState == null) {
+            return mSourceRect.width() / mTargetRect.width();
+        } else {
+            return mOrientedState.getOrientationHandler()
+                .getCurrentAppAnimationScale(mSourceRect, mTargetRect);
+        }
     }
 
     public void prepareAnimation(DeviceProfile dp, boolean isOpening) {
@@ -221,7 +237,6 @@ public class AppWindowAnimationHelper {
                     layer = Integer.MAX_VALUE;
                 }
             }
-
             // Since radius is in Surface space, but we draw the rounded corners in screen space, we
             // have to undo the scale.
             surfaceParams[i] = new SurfaceParams(app.leash, alpha, mTmpMatrix, crop, layer,
@@ -237,11 +252,16 @@ public class AppWindowAnimationHelper {
             mTmpRectF.set(mTargetRect);
             Utilities.scaleRectFAboutCenter(mTmpRectF, params.mOffsetScale);
             mCurrentRect.set(mRectFEvaluator.evaluate(params.mProgress, mSourceRect, mTmpRectF));
-            mCurrentRect.offset(params.mOffsetX, 0);
+            if (mOrientedState == null || mOrientedState.areMultipleLayoutOrientationsDisabled()) {
+                mCurrentRect.offset(params.mOffset, 0);
+            } else {
+                int displayRotation = mOrientedState.getDisplayRotation();
+                mOrientedState.getOrientationHandler().offsetTaskRect(mCurrentRect,
+                    params.mOffset, displayRotation);
+            }
         }
 
         updateClipRect(params);
-
         return mCurrentRect;
     }
 
@@ -340,7 +360,7 @@ public class AppWindowAnimationHelper {
      * @return The source rect's scale and translation relative to the target rect.
      */
     public LauncherState.ScaleAndTranslation getScaleAndTranslation() {
-        float scale = mSourceRect.width() / mTargetRect.width();
+        float scale = getSrcToTargetScale();
         float translationY = mSourceRect.centerY() - mSourceRect.top - mTargetRect.centerY();
         return new LauncherState.ScaleAndTranslation(scale, 0, translationY);
     }
@@ -390,7 +410,7 @@ public class AppWindowAnimationHelper {
 
     public static class TransformParams {
         private float mProgress;
-        private float mOffsetX;
+        private float mOffset;
         private float mOffsetScale;
         private @Nullable RectF mCurrentRect;
         private float mTargetAlpha;
@@ -401,7 +421,7 @@ public class AppWindowAnimationHelper {
 
         public TransformParams() {
             mProgress = 0;
-            mOffsetX = 0;
+            mOffset = 0;
             mOffsetScale = 1;
             mCurrentRect = null;
             mTargetAlpha = 1;
@@ -453,8 +473,8 @@ public class AppWindowAnimationHelper {
          * the default), then offset the current rect by this amount after computing the rect based
          * on {@link #mProgress}.
          */
-        public TransformParams setOffsetX(float offsetX) {
-            mOffsetX = offsetX;
+        public TransformParams setOffset(float offset) {
+            mOffset = offset;
             return this;
         }
 
@@ -504,8 +524,8 @@ public class AppWindowAnimationHelper {
             return mProgress;
         }
 
-        public float getOffsetX() {
-            return mOffsetX;
+        public float getOffset() {
+            return mOffset;
         }
 
         public float getOffsetScale() {

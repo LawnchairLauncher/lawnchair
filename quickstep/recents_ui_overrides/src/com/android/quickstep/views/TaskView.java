@@ -16,15 +16,6 @@
 
 package com.android.quickstep.views;
 
-import static android.widget.Toast.LENGTH_SHORT;
-
-import static com.android.launcher3.QuickstepAppTransitionManagerImpl.RECENTS_LAUNCH_DURATION;
-import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
-import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.launcher3.anim.Interpolators.TOUCH_RESPONSE_INTERPOLATOR;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
-import static com.android.quickstep.SysUINavigationMode.removeShelfFromOverview;
-
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
@@ -41,7 +32,7 @@ import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.util.Log;
-import android.view.Gravity;
+import android.view.Surface;
 import android.view.View;
 import android.view.ViewOutlineProvider;
 import android.view.accessibility.AccessibilityNodeInfo;
@@ -58,8 +49,10 @@ import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.popup.SystemShortcut;
+import com.android.launcher3.states.RotationHelper;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
@@ -82,6 +75,20 @@ import com.android.systemui.shared.system.QuickStepContract;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
+
+import static android.view.Gravity.BOTTOM;
+import static android.view.Gravity.CENTER_HORIZONTAL;
+import static android.view.Gravity.CENTER_VERTICAL;
+import static android.view.Gravity.END;
+import static android.view.Gravity.START;
+import static android.view.Gravity.TOP;
+import static android.widget.Toast.LENGTH_SHORT;
+import static com.android.launcher3.QuickstepAppTransitionManagerImpl.RECENTS_LAUNCH_DURATION;
+import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
+import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.launcher3.anim.Interpolators.TOUCH_RESPONSE_INTERPOLATOR;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
+import static com.android.quickstep.SysUINavigationMode.removeShelfFromOverview;
 
 /**
  * A task in the Recents view.
@@ -186,6 +193,8 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     private float mFooterVerticalOffset = 0;
     private float mFooterAlpha = 1;
     private int mStackHeight;
+    private boolean mHideActionsView;
+    private PagedOrientationHandler mOrientationHandler;
 
     public TaskView(Context context) {
         this(context, null);
@@ -244,7 +253,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             if (mActionsView != null) {
                 TaskView.LayoutParams params = new TaskView.LayoutParams(LayoutParams.MATCH_PARENT,
                         getResources().getDimensionPixelSize(R.dimen.overview_actions_height),
-                        Gravity.BOTTOM);
+                        BOTTOM);
                 addView(mActionsView, params);
                 mActionsView.setAlpha(0);
             }
@@ -266,10 +275,11 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     /**
      * Updates this task view to the given {@param task}.
      */
-    public void bind(Task task) {
+    public void bind(Task task, int recentsRotation) {
         cancelPendingLoadTasks();
         mTask = task;
         mSnapshotView.bind(task);
+        setOverviewRotation(recentsRotation);
     }
 
     public Task getTask() {
@@ -439,6 +449,45 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         }
     }
 
+    void setOverviewRotation(int iconRotation) {
+        PagedOrientationHandler orientationHandler = getRecentsView().getPagedOrientationHandler();
+        boolean isRtl = orientationHandler.getRecentsRtlSetting(getResources());
+        LayoutParams snapshotParams = (LayoutParams) mSnapshotView.getLayoutParams();
+        snapshotParams.bottomMargin = LayoutUtils.thumbnailBottomMargin(getContext());
+        int thumbnailPadding = (int) getResources().getDimension(R.dimen.task_thumbnail_top_margin);
+        LayoutParams iconParams = (LayoutParams) mIconView.getLayoutParams();
+        int rotation = RotationHelper.getDegreesFromRotation(iconRotation);
+        mHideActionsView = true;
+        switch (iconRotation) {
+            case Surface.ROTATION_90:
+                iconParams.gravity = (isRtl ? END : START) | CENTER_VERTICAL;
+                iconParams.rightMargin = -thumbnailPadding;
+                iconParams.leftMargin = iconParams.topMargin = iconParams.bottomMargin = 0;
+                break;
+            case Surface.ROTATION_180:
+                iconParams.gravity = BOTTOM | CENTER_HORIZONTAL;
+                iconParams.bottomMargin = -thumbnailPadding;
+                iconParams.leftMargin = iconParams.topMargin = iconParams.rightMargin = 0;
+                break;
+            case Surface.ROTATION_270:
+                iconParams.gravity = (isRtl ? END : START) | CENTER_VERTICAL;
+                iconParams.leftMargin = -thumbnailPadding;
+                iconParams.rightMargin = iconParams.topMargin = iconParams.bottomMargin = 0;
+                break;
+            case Surface.ROTATION_0:
+            default:
+                iconParams.gravity = TOP | CENTER_HORIZONTAL;
+                iconParams.leftMargin = iconParams.topMargin = iconParams.rightMargin =
+                    iconParams.bottomMargin = 0;
+                mHideActionsView = false;
+                break;
+        }
+        mSnapshotView.setLayoutParams(snapshotParams);
+        mIconView.setLayoutParams(iconParams);
+        mIconView.setRotation(rotation);
+        updateActionsViewVisibility(!mHideActionsView);
+    }
+
     private void setIconAndDimTransitionProgress(float progress, boolean invert) {
         if (invert) {
             progress = 1 - progress;
@@ -601,8 +650,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
 
             addView(view, indexToAdd);
             LayoutParams layoutParams = (LayoutParams) view.getLayoutParams();
-            layoutParams.gravity =
-                    Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
+            layoutParams.gravity = BOTTOM | CENTER_HORIZONTAL;
             layoutParams.bottomMargin =
                     ((MarginLayoutParams) mSnapshotView.getLayoutParams()).bottomMargin;
             view.setAlpha(mFooterAlpha);
@@ -855,9 +903,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         mFullscreenProgress = progress;
         boolean isFullscreen = mFullscreenProgress > 0;
         mIconView.setVisibility(progress < 1 ? VISIBLE : INVISIBLE);
-        if (mActionsView != null) {
-            mActionsView.setVisibility(progress < 1 ? VISIBLE : INVISIBLE);
-        }
+        updateActionsViewVisibility(progress < 1 && !mHideActionsView);
         setClipChildren(!isFullscreen);
         setClipToPadding(!isFullscreen);
 
@@ -889,6 +935,12 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         thumbnail.setFullscreenParams(mCurrentFullscreenParams);
         mOutlineProvider.setFullscreenParams(mCurrentFullscreenParams);
         invalidateOutline();
+    }
+
+    private void updateActionsViewVisibility(boolean isVisible) {
+        if (mActionsView != null) {
+            mActionsView.setVisibility(isVisible ? VISIBLE : GONE);
+        }
     }
 
     public boolean isRunningTask() {

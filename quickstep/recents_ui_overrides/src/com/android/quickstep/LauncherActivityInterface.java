@@ -54,6 +54,8 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.appprediction.PredictionUiStateManager;
+import com.android.launcher3.touch.PortraitPagedViewHandler;
+import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.views.FloatingIconView;
 import com.android.quickstep.SysUINavigationMode.Mode;
@@ -268,23 +270,28 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
                     float scrollOffsetX = recentsView.getScrollOffset();
                     float offscreenX = recentsView.getOffscreenTranslationX(currScale);
 
-                    float fromTranslationX = attached ? offscreenX - scrollOffsetX : 0;
-                    float toTranslationX = attached ? 0 : offscreenX - scrollOffsetX;
+                    float fromTranslation = attached ? offscreenX - scrollOffsetX : 0;
+                    float toTranslation = attached ? 0 : offscreenX - scrollOffsetX;
                     launcher.getStateManager()
                             .cancelStateElementAnimation(INDEX_RECENTS_TRANSLATE_X_ANIM);
 
+                    PagedOrientationHandler pagedOrientationHandler =
+                        recentsView.getPagedViewOrientedState().getOrientationHandler();
                     if (!recentsView.isShown() && animate) {
-                        recentsView.setTranslationX(fromTranslationX);
+                        pagedOrientationHandler
+                            .getPrimaryViewTranslate().set(recentsView, fromTranslation);
                     } else {
-                        fromTranslationX = recentsView.getTranslationX();
+                        fromTranslation =
+                            pagedOrientationHandler.getPrimaryViewTranslate().get(recentsView);
                     }
 
                     if (!animate) {
-                        recentsView.setTranslationX(toTranslationX);
+                        pagedOrientationHandler
+                            .getPrimaryViewTranslate().set(recentsView, toTranslation);
                     } else {
                         launcher.getStateManager().createStateElementAnimation(
                                 INDEX_RECENTS_TRANSLATE_X_ANIM,
-                                fromTranslationX, toTranslationX).start();
+                                fromTranslation, toTranslation).start();
                     }
 
                     fadeAnim.setInterpolator(attached ? INSTANT : ACCEL_2);
