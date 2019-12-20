@@ -25,7 +25,6 @@ import static com.android.launcher3.LauncherState.NORMAL;
 
 import android.graphics.PointF;
 import android.graphics.Rect;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
@@ -37,10 +36,9 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.dragndrop.DragLayer;
-import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.views.OptionsPopupView;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -168,6 +166,7 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
 
     @Override
     public void onLongPress(MotionEvent event) {
+        TestLogging.recordEvent("Workspace.longPress");
         if (mLongPressState == STATE_REQUESTED) {
             if (canHandleLongPress()) {
                 mLongPressState = STATE_PENDING_PARENT_INFORM;
@@ -178,9 +177,6 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
                 mLauncher.getUserEventDispatcher().logActionOnContainer(Action.Touch.LONGPRESS,
                         Action.Direction.NONE, ContainerType.WORKSPACE,
                         mWorkspace.getCurrentPage());
-                if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
-                    Log.d(TestProtocol.PERMANENT_DIAG_TAG, "Opening options popup on long press");
-                }
                 OptionsPopupView.showDefaultOptions(mLauncher, mTouchDownPoint.x, mTouchDownPoint.y);
             } else {
                 cancelLongPress();

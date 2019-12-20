@@ -33,6 +33,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.folder.Folder;
+import com.android.launcher3.testing.TestLogging;
 
 /**
  * Class to handle long-clicks on workspace items and start drag as a result.
@@ -46,6 +47,7 @@ public class ItemLongClickListener {
             ItemLongClickListener::onAllAppsItemLongClick;
 
     private static boolean onWorkspaceItemLongClick(View v) {
+        TestLogging.recordEvent("onWorkspaceItemLongClick");
         Launcher launcher = Launcher.getLauncher(v.getContext());
         if (!canStartDrag(launcher)) return false;
         if (!launcher.isInState(NORMAL) && !launcher.isInState(OVERVIEW)) return false;
@@ -75,6 +77,7 @@ public class ItemLongClickListener {
     }
 
     private static boolean onAllAppsItemLongClick(View v) {
+        TestLogging.recordEvent("onAllAppsItemLongClick");
         Launcher launcher = Launcher.getLauncher(v.getContext());
         if (!canStartDrag(launcher)) return false;
         // When we have exited all apps or are in transition, disregard long clicks

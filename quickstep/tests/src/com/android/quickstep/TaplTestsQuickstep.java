@@ -100,6 +100,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     @PortraitLandscape
     public void testOverview() throws Exception {
         startTestApps();
+        // mLauncher.pressHome() also tests an important case of pressing home while in background.
         Overview overview = mLauncher.pressHome().switchToOverview();
         assertTrue("Launcher internal state didn't switch to Overview",
                 isInState(LauncherState.OVERVIEW));

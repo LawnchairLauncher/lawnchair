@@ -22,10 +22,15 @@ import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.UiObject2;
 
+import java.util.regex.Pattern;
+
 /**
  * App icon, whether in all apps or in workspace/
  */
 public final class AppIcon extends Launchable {
+
+    private static final Pattern LONG_CLICK_EVENT = Pattern.compile("onAllAppsItemLongClick");
+
     AppIcon(LauncherInstrumentation launcher, UiObject2 icon) {
         super(launcher, icon);
     }
@@ -40,6 +45,11 @@ public final class AppIcon extends Launchable {
     public AppIconMenu openMenu() {
         return new AppIconMenu(mLauncher, mLauncher.clickAndGet(
                 mObject, "deep_shortcuts_container"));
+    }
+
+    @Override
+    protected void addExpectedEventsForLongClick() {
+        mLauncher.expectEvent(LONG_CLICK_EVENT);
     }
 
     @Override

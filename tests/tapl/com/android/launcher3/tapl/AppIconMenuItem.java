@@ -34,6 +34,10 @@ public class AppIconMenuItem extends Launchable {
     }
 
     @Override
+    protected void addExpectedEventsForLongClick() {
+    }
+
+    @Override
     protected String getLongPressIndicator() {
         return "drop_target_bar";
     }

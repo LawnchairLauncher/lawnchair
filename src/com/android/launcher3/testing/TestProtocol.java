@@ -31,6 +31,7 @@ public final class TestProtocol {
     public static final int QUICK_SWITCH_STATE_ORDINAL = 4;
     public static final int ALL_APPS_STATE_ORDINAL = 5;
     public static final int BACKGROUND_APP_STATE_ORDINAL = 6;
+    public static final String TAPL_EVENTS_TAG = "TaplEvents";
 
     public static String stateOrdinalToString(int ordinal) {
         switch (ordinal) {
