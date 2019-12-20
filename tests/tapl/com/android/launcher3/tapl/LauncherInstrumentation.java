@@ -560,60 +560,62 @@ public final class LauncherInstrumentation {
      * @return the Workspace object.
      */
     public Workspace pressHome() {
-        // Click home, then wait for any accessibility event, then wait until accessibility events
-        // stop.
-        // We need waiting for any accessibility event generated after pressing Home because
-        // otherwise waitForIdle may return immediately in case when there was a big enough pause in
-        // accessibility events prior to pressing Home.
-        final String action;
-        if (getNavigationModel() == NavigationModel.ZERO_BUTTON) {
-            checkForAnomaly();
+        try (LauncherInstrumentation.Closable e = eventsCheck()) {
+            // Click home, then wait for any accessibility event, then wait until accessibility
+            // events stop.
+            // We need waiting for any accessibility event generated after pressing Home because
+            // otherwise waitForIdle may return immediately in case when there was a big enough
+            // pause in accessibility events prior to pressing Home.
+            final String action;
+            if (getNavigationModel() == NavigationModel.ZERO_BUTTON) {
+                checkForAnomaly();
 
-            final Point displaySize = getRealDisplaySize();
+                final Point displaySize = getRealDisplaySize();
 
-            if (hasLauncherObject(CONTEXT_MENU_RES_ID)) {
-                linearGesture(
-                        displaySize.x / 2, displaySize.y - 1,
-                        displaySize.x / 2, 0,
-                        ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME,
-                        false);
-                try (LauncherInstrumentation.Closable c = addContextLayer(
-                        "Swiped up from context menu to home")) {
-                    waitUntilGone(CONTEXT_MENU_RES_ID);
-                }
-            }
-            if (hasLauncherObject(WORKSPACE_RES_ID)) {
-                log(action = "already at home");
-            } else {
-                log("Hierarchy before swiping up to home:");
-                dumpViewHierarchy();
-                log(action = "swiping up to home from " + getVisibleStateMessage());
-
-                try (LauncherInstrumentation.Closable c = addContextLayer(action)) {
-                    swipeToState(
+                if (hasLauncherObject(CONTEXT_MENU_RES_ID)) {
+                    linearGesture(
                             displaySize.x / 2, displaySize.y - 1,
                             displaySize.x / 2, 0,
-                            ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME, NORMAL_STATE_ORDINAL);
+                            ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME,
+                            false);
+                    try (LauncherInstrumentation.Closable c = addContextLayer(
+                            "Swiped up from context menu to home")) {
+                        waitUntilGone(CONTEXT_MENU_RES_ID);
+                    }
+                }
+                if (hasLauncherObject(WORKSPACE_RES_ID)) {
+                    log(action = "already at home");
+                } else {
+                    log("Hierarchy before swiping up to home:");
+                    dumpViewHierarchy();
+                    log(action = "swiping up to home from " + getVisibleStateMessage());
+
+                    try (LauncherInstrumentation.Closable c = addContextLayer(action)) {
+                        swipeToState(
+                                displaySize.x / 2, displaySize.y - 1,
+                                displaySize.x / 2, 0,
+                                ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME, NORMAL_STATE_ORDINAL);
+                    }
+                }
+            } else {
+                log("Hierarchy before clicking home:");
+                dumpViewHierarchy();
+                log(action = "clicking home button from " + getVisibleStateMessage());
+                try (LauncherInstrumentation.Closable c = addContextLayer(action)) {
+                    mDevice.waitForIdle();
+                    runToState(
+                            waitForSystemUiObject("home")::click,
+                            NORMAL_STATE_ORDINAL,
+                            !hasLauncherObject(WORKSPACE_RES_ID)
+                                    && (hasLauncherObject(APPS_RES_ID)
+                                    || hasLauncherObject(OVERVIEW_RES_ID)));
+                    mDevice.waitForIdle();
                 }
             }
-        } else {
-            log("Hierarchy before clicking home:");
-            dumpViewHierarchy();
-            log(action = "clicking home button from " + getVisibleStateMessage());
-            try (LauncherInstrumentation.Closable c = addContextLayer(action)) {
-                mDevice.waitForIdle();
-                runToState(
-                        waitForSystemUiObject("home")::click,
-                        NORMAL_STATE_ORDINAL,
-                        !hasLauncherObject(WORKSPACE_RES_ID)
-                                && (hasLauncherObject(APPS_RES_ID)
-                                || hasLauncherObject(OVERVIEW_RES_ID)));
-                mDevice.waitForIdle();
+            try (LauncherInstrumentation.Closable c = addContextLayer(
+                    "performed action to switch to Home - " + action)) {
+                return getWorkspace();
             }
-        }
-        try (LauncherInstrumentation.Closable c = addContextLayer(
-                "performed action to switch to Home - " + action)) {
-            return getWorkspace();
         }
     }
 
@@ -1218,6 +1220,6 @@ public final class LauncherInstrumentation {
     private String formatEventMismatchMessage(String message, List<String> actual, int position) {
         return message + ", pos=" + position
                 + ", expected=" + mExpectedEvents
-                + ", actual" + actual;
+                + ", actual=" + actual;
     }
 }

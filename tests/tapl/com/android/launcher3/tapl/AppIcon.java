@@ -39,8 +39,10 @@ public final class AppIcon extends Launchable {
      * Long-clicks the icon to open its menu.
      */
     public AppIconMenu openMenu() {
-        return new AppIconMenu(mLauncher, mLauncher.clickAndGet(
-                mObject, "deep_shortcuts_container"));
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
+            return new AppIconMenu(mLauncher, mLauncher.clickAndGet(
+                    mObject, "deep_shortcuts_container"));
+        }
     }
 
     @Override

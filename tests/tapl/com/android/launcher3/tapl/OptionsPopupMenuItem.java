@@ -35,12 +35,14 @@ public class OptionsPopupMenuItem {
      */
     @NonNull
     public void launch(@NonNull String expectedPackageName) {
-        LauncherInstrumentation.log("OptionsPopupMenuItem before click "
-                + mObject.getVisibleCenter() + " in " + mObject.getVisibleBounds());
-        mObject.click();
-        mLauncher.assertTrue(
-                "App didn't start: " + By.pkg(expectedPackageName),
-                mLauncher.getDevice().wait(Until.hasObject(By.pkg(expectedPackageName)),
-                        LauncherInstrumentation.WAIT_TIME_MS));
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
+            LauncherInstrumentation.log("OptionsPopupMenuItem before click "
+                    + mObject.getVisibleCenter() + " in " + mObject.getVisibleBounds());
+            mObject.click();
+            mLauncher.assertTrue(
+                    "App didn't start: " + By.pkg(expectedPackageName),
+                    mLauncher.getDevice().wait(Until.hasObject(By.pkg(expectedPackageName)),
+                            LauncherInstrumentation.WAIT_TIME_MS));
+        }
     }
 }

@@ -48,6 +48,12 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
      * Flings forward (left) and waits the fling's end.
      */
     public void flingForward() {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
+            flingForwardImpl();
+        }
+    }
+
+    private void flingForwardImpl() {
         try (LauncherInstrumentation.Closable c =
                      mLauncher.addContextLayer("want to fling forward in overview")) {
             LauncherInstrumentation.log("Overview.flingForward before fling");
@@ -65,14 +71,15 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
      * Dismissed all tasks by scrolling to Clear-all button and pressing it.
      */
     public void dismissAllTasks() {
-        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
-                "dismissing all tasks")) {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
+             LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                     "dismissing all tasks")) {
             final BySelector clearAllSelector = mLauncher.getOverviewObjectSelector("clear_all");
             for (int i = 0;
                     i < FLINGS_FOR_DISMISS_LIMIT
                             && !verifyActiveContainer().hasObject(clearAllSelector);
                     ++i) {
-                flingForward();
+                flingForwardImpl();
             }
 
             mLauncher.waitForObjectInContainer(verifyActiveContainer(), clearAllSelector).click();
@@ -83,7 +90,8 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
      * Flings backward (right) and waits the fling's end.
      */
     public void flingBackward() {
-        try (LauncherInstrumentation.Closable c =
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
+             LauncherInstrumentation.Closable c =
                      mLauncher.addContextLayer("want to fling backward in overview")) {
             LauncherInstrumentation.log("Overview.flingBackward before fling");
             final UiObject2 overview = verifyActiveContainer();

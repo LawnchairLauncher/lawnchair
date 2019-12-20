@@ -45,8 +45,9 @@ public final class Overview extends BaseOverview {
      */
     @NonNull
     public AllAppsFromOverview switchToAllApps() {
-        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
-                "want to switch from overview to all apps")) {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
+             LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                     "want to switch from overview to all apps")) {
             verifyActiveContainer();
 
             // Swipe from an app icon to the top.

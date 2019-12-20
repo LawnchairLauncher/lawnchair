@@ -21,7 +21,7 @@ import android.util.Log;
 import com.android.launcher3.Utilities;
 
 public final class TestLogging {
-    public static synchronized void recordEvent(String event) {
+    public static void recordEvent(String event) {
         if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
             Log.d(TestProtocol.TAPL_EVENTS_TAG, event);
         }
