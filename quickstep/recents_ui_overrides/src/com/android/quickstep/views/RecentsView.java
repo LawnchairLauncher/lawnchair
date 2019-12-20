@@ -830,6 +830,11 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
     public abstract void startHome();
 
+    /** `true` if there is a +1 space available in overview. */
+    public boolean hasRecentsExtraCard() {
+        return false;
+    }
+
     public void reset() {
         setCurrentTask(-1);
         mIgnoreResetTaskId = -1;

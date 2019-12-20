@@ -26,14 +26,17 @@ import static com.android.launcher3.Utilities.squaredHypot;
 
 import android.content.Context;
 import android.graphics.PointF;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.BaseDraggingActivity;
+import com.android.launcher3.R;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.InputConsumer;
+import com.android.quickstep.views.LauncherRecentsView;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.plugins.OverscrollPlugin;
 import com.android.systemui.shared.system.InputMonitorCompat;
@@ -47,12 +50,12 @@ public class OverscrollInputConsumer<T extends BaseDraggingActivity> extends Del
 
     private static final String TAG = "OverscrollInputConsumer";
 
-    private static final int ANGLE_THRESHOLD = 35; // Degrees
-
     private final PointF mDownPos = new PointF();
     private final PointF mLastPos = new PointF();
     private final PointF mStartDragPos = new PointF();
+    private final int mAngleThreshold;
 
+    private final float mFlingThresholdPx;
     private int mActivePointerId = -1;
     private boolean mPassedSlop = false;
 
@@ -60,19 +63,28 @@ public class OverscrollInputConsumer<T extends BaseDraggingActivity> extends Del
 
     private final Context mContext;
     private final GestureState mGestureState;
-    @Nullable private final OverscrollPlugin mPlugin;
+    @Nullable
+    private final OverscrollPlugin mPlugin;
+    private final GestureDetector mGestureDetector;
 
     private RecentsView mRecentsView;
 
     public OverscrollInputConsumer(Context context, GestureState gestureState,
             InputConsumer delegate, InputMonitorCompat inputMonitor, OverscrollPlugin plugin) {
         super(delegate, inputMonitor);
+
+        mAngleThreshold = context.getResources()
+                .getInteger(R.integer.assistant_gesture_corner_deg_threshold);
+        mFlingThresholdPx = context.getResources()
+            .getDimension(R.dimen.gestures_overscroll_fling_threshold);
         mContext = context;
         mGestureState = gestureState;
         mPlugin = plugin;
 
         float slop = ViewConfiguration.get(context).getScaledTouchSlop();
+
         mSquaredSlop = slop * slop;
+        mGestureDetector = new GestureDetector(context, new FlingGestureListener());
 
         gestureState.getActivityInterface().createActivityInitListener(this::onActivityInit)
                 .register();
@@ -139,13 +151,21 @@ public class OverscrollInputConsumer<T extends BaseDraggingActivity> extends Del
 
                         mPassedSlop = true;
                         mStartDragPos.set(mLastPos.x, mLastPos.y);
-
                         if (isOverscrolled()) {
                             setActive(ev);
+
+                            if (mPlugin != null) {
+                                mPlugin.onTouchStart(getDeviceState(), getUnderlyingActivity());
+                            }
                         } else {
                             mState = STATE_DELEGATE_ACTIVE;
                         }
                     }
+                }
+
+                if (mPassedSlop && mState != STATE_DELEGATE_ACTIVE && isOverscrolled()
+                        && mPlugin != null) {
+                    mPlugin.onTouchTraveled(getDistancePx());
                 }
 
                 break;
@@ -153,12 +173,16 @@ public class OverscrollInputConsumer<T extends BaseDraggingActivity> extends Del
             case ACTION_CANCEL:
             case ACTION_UP:
                 if (mState != STATE_DELEGATE_ACTIVE && mPassedSlop && mPlugin != null) {
-                    mPlugin.onOverscroll(getDeviceState());
+                    mPlugin.onTouchEnd(getDistancePx());
                 }
 
                 mPassedSlop = false;
                 mState = STATE_INACTIVE;
                 break;
+        }
+
+        if (mState != STATE_DELEGATE_ACTIVE) {
+            mGestureDetector.onTouchEvent(ev);
         }
 
         if (mState != STATE_ACTIVE) {
@@ -168,12 +192,19 @@ public class OverscrollInputConsumer<T extends BaseDraggingActivity> extends Del
 
     private boolean isOverscrolled() {
         // Make sure there isn't an app to quick switch to on our right
-        boolean atRightMostApp = (mRecentsView == null || mRecentsView.getRunningTaskIndex() <= 0);
+        int maxIndex = 0;
+        if ((mRecentsView instanceof LauncherRecentsView)
+                && ((LauncherRecentsView) mRecentsView).hasRecentsExtraCard()) {
+            maxIndex = 1;
+        }
+
+        boolean atRightMostApp = (mRecentsView == null
+                || mRecentsView.getRunningTaskIndex() <= maxIndex);
 
         // Check if the gesture is within our angle threshold of horizontal
         float deltaY = Math.abs(mLastPos.y - mDownPos.y);
         float deltaX = mDownPos.x - mLastPos.x; // Positive if this is a gesture to the left
-        boolean angleInBounds = Math.toDegrees(Math.atan2(deltaY, deltaX)) < ANGLE_THRESHOLD;
+        boolean angleInBounds = Math.toDegrees(Math.atan2(deltaY, deltaX)) < mAngleThreshold;
 
         return atRightMostApp && angleInBounds;
     }
@@ -192,5 +223,37 @@ public class OverscrollInputConsumer<T extends BaseDraggingActivity> extends Del
         }
 
         return deviceState;
+    }
+
+    private int getDistancePx() {
+        return (int) Math.hypot(mLastPos.x - mDownPos.x, mLastPos.y - mDownPos.y);
+    }
+
+    private String getUnderlyingActivity() {
+        return mGestureState.getRunningTask().topActivity.flattenToString();
+    }
+
+    private class FlingGestureListener extends GestureDetector.SimpleOnGestureListener {
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            if (isValidAngle(velocityX, -velocityY)
+                    && getDistancePx() >= mFlingThresholdPx
+                    && mState != STATE_DELEGATE_ACTIVE) {
+
+                if (mPlugin != null) {
+                    mPlugin.onFling(-velocityX);
+                }
+            }
+            return true;
+        }
+
+        private boolean isValidAngle(float deltaX, float deltaY) {
+            float angle = (float) Math.toDegrees(Math.atan2(deltaY, deltaX));
+            // normalize so that angle is measured clockwise from horizontal in the bottom right
+            // corner and counterclockwise from horizontal in the bottom left corner
+
+            angle = angle > 90 ? 180 - angle : angle;
+            return (angle < mAngleThreshold);
+        }
     }
 }
