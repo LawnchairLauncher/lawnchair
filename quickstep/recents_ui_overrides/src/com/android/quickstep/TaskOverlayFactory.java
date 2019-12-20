@@ -19,6 +19,9 @@ package com.android.quickstep;
 import static com.android.launcher3.util.MainThreadInitializedObject.forOverride;
 
 import android.graphics.Matrix;
+import android.view.View;
+
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BaseDraggingActivity;
@@ -74,6 +77,11 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
          * Called when the current task is interactive for the user
          */
         public void initOverlay(Task task, ThumbnailData thumbnail, Matrix matrix) { }
+
+        @Nullable
+        public View getActionsView() {
+            return null;
+        }
 
         /**
          * Called when the overlay is no longer used.
