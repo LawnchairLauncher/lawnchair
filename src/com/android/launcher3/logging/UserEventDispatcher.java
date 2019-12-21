@@ -147,6 +147,12 @@ public class UserEventDispatcher implements ResourceBasedOverride {
             }
             fillIntentInfo(event.srcTarget[0], intent, userHandle);
         }
+        ItemInfo info = (ItemInfo) v.getTag();
+        if (Utilities.IS_DEBUG_DEVICE && FeatureFlags.ENABLE_HYBRID_HOTSEAT.get()) {
+            FileLog.d(TAG, "appLaunch: packageName:" + info.getTargetComponent().getPackageName()
+                    + ",isWorkApp:" + (info.user != null && !Process.myUserHandle().equals(
+                    userHandle)) + ",launchLocation:" + info.container);
+        }
         dispatchUserEvent(event, intent);
         mAppOrTaskLaunch = true;
     }
