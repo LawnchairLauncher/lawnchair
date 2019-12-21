@@ -496,8 +496,18 @@
     <string name="drawer_folders">폴더</string>
     <string name="open_image_picker">사진 열기</string>
     <string name="import_icon">아이콘 가져오기</string>
+    <string name="import_as_adaptive">반응형 아이콘 가져오기</string>
+    <string name="about_app_description">Android를 위한 맞춤형 홈 화면 앱</string>
+    <string name="lawnchair_bug_report">Lawnchair 버그 신고하기</string>
+    <string name="action_dogbin_upload">Dogbin에 업로드하기</string>
+    <string name="action_dogbin_copy_link">링크 복사</string>
     <string name="action_copy">복사</string>
+    <string name="action_copy_link">링크 복사</string>
+    <string name="copied_toast">클립보드에 복사됨</string>
     <string name="action_share">공유</string>
+    <string name="action_dogbin_upload_error">업로드 실패.</string>
+    <string name="dogbin_uploading">업로드 중...</string>
+    <string name="bugreport_channel_name">버그 신고</string>
     <string name="status_channel_name">업로드 상태</string>
     <string name="bugreport_group_summary">새 보고 %d개</string>
     <string name="bugreport_group_summary_multiple">새 보고서가 여러 개 있음</string>
@@ -540,4 +550,6 @@
     <string name="action_switch_apps">앱 전환</string>
     <string name="icon_shape_system_default">시스템 설정에 따름</string>
     <string name="title_missing_notification_access">알림 접근 권한이 필요</string>
+    <string name="activity_not_found">앱이 설치되지 않았어요.</string>
+    <string name="out_of_space">화면에 더 이상 공간이 없습니다.</string>
 </resources>
