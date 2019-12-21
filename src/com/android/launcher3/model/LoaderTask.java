@@ -303,6 +303,8 @@ public class LoaderTask implements Runnable {
                         LauncherSettings.Favorites.CUSTOM_ICON_ENTRY);
                 final int swipeUpActionEntryIndex = c.getColumnIndexOrThrow(
                         LauncherSettings.Favorites.SWIPE_UP_ACTION);
+                final int badgeVisibleIndex = c.getColumnIndexOrThrow(
+                        LauncherSettings.Favorites.BADGE_VISIBLE);
 
                 final LongSparseArray<UserHandle> allUsers = c.allUsers;
                 final LongSparseArray<Boolean> quietMode = new LongSparseArray<>();
@@ -340,6 +342,7 @@ public class LoaderTask implements Runnable {
                 String titleAlias;
                 String customIconEntry;
                 String swipeUpAction;
+                boolean badgeVisible;
 
                 FolderIconPreviewVerifier verifier =
                         new FolderIconPreviewVerifier(mApp.getInvariantDeviceProfile());
@@ -369,6 +372,7 @@ public class LoaderTask implements Runnable {
                             titleAlias = c.getString(titleAliasIndex);
                             customIconEntry = c.getString(customIconEntryIndex);
                             swipeUpAction = c.getString(swipeUpActionEntryIndex);
+                            badgeVisible = c.getInt(badgeVisibleIndex) != 0;
 
                             if (!Process.myUserHandle().equals(c.user)) {
                                 if (c.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) {
@@ -508,7 +512,7 @@ public class LoaderTask implements Runnable {
                                     };
                                     LauncherIcons li = LauncherIcons.obtain(context);
                                     li.createShortcutIcon(pinnedShortcut,
-                                            true /* badged */, fallbackIconProvider).applyTo(info);
+                                            badgeVisible, fallbackIconProvider).applyTo(info);
                                     li.recycle();
                                     if (pmHelper.isAppSuspended(
                                             pinnedShortcut.getPackage(), info.user)) {
@@ -549,7 +553,7 @@ public class LoaderTask implements Runnable {
                             if (info != null) {
                                 c.applyCommonProperties(info);
 
-                                info.onLoadCustomizations(titleAlias, swipeUpAction,
+                                info.onLoadCustomizations(titleAlias, swipeUpAction, badgeVisible,
                                         IconPackManager.CustomIconEntry.Companion.fromNullableString(customIconEntry),
                                         c.loadCustomIcon(info));
                                 info.intent = intent;

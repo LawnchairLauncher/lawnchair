@@ -393,8 +393,8 @@ public class DragView extends View {
         int iconSize = appState.getInvariantDeviceProfile().iconBitmapSize;
         if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
             boolean iconBadged = (info instanceof ItemInfoWithIcon)
-                    && (((ItemInfoWithIcon) info).runtimeStatusFlags & FLAG_ICON_BADGED) > 0;
-            if ((info.id == ItemInfo.NO_ID && !iconBadged)
+                    && ((ItemInfoWithIcon) info).isBadgeVisible();
+            if (info.id == ItemInfo.NO_ID || !iconBadged
                     || !(obj instanceof ShortcutInfoCompat)) {
                 // The item is not yet added on home screen.
                 return new FixedSizeEmptyDrawable(iconSize);

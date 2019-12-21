@@ -158,7 +158,7 @@ public class PopupPopulator {
                 final ShortcutInfo si = new ShortcutInfo(shortcut, launcher);
                 // Use unbadged icon for the menu.
                 LauncherIcons li = LauncherIcons.obtain(launcher);
-                li.createShortcutIcon(shortcut, false /* badged */).applyTo(si);
+                li.createShortcutIcon(shortcut, si.isBadgeVisible()).applyTo(si);
                 li.recycle();
                 si.rank = i;
 

@@ -77,6 +77,10 @@ public class ShadowGenerator {
         mDrawPaint.setAlpha(keyAlpha);
         out.drawBitmap(shadow, offset[0], offset[1] + KEY_SHADOW_DISTANCE * mIconSize, mDrawPaint);
 
+        copyIcon(icon, out);
+    }
+
+    public synchronized void copyIcon(Bitmap icon, Canvas out) {
         // Draw the icon
         mDrawPaint.setAlpha(255);
         out.drawBitmap(icon, 0, 0, mDrawPaint);
