@@ -205,8 +205,10 @@
     <string name="searchbar_appearance_title">Stílus</string>
     <!-- Section 8 -->
     <string name="sesame">Sesame</string>
+    <string name="feed_theme_pref_title">Háttérszín</string>
     <!-- Section 9 -->
     <string name="gestures_pref_title">Mozdulatvezérlés</string>
+    <string name="gesture_swipe_up">Felfelé csúsztatás</string>
     <string name="action_sleep">Alvó mód</string>
     <!-- Section 10 -->
     <string name="new_backup">Új létrehozása</string>
@@ -241,7 +243,14 @@
     <string name="backup_loading">Betöltés...</string>
     <string name="loading">Betöltés…</string>
     <string name="backup_share">Megosztás</string>
+    <string name="backup_restoring">Visszaállítás...</string>
+    <string name="restore_success">Mentés visszaállítva.</string>
+    <string name="failed">Valami hiba történt.</string>
+    <string name="backup_share_text">Lawnchair mentés</string>
+    <string name="developer_options_enabled">Fejlesztői beállítások engedélyezve.</string>
     <string name="smartspace_hours_mins">%1$s: %2$s</string>
+    <string name="dock_style_p">Android Pie</string>
+    <string name="dock_style_n">Android Nougat</string>
     <string name="dock_style_hidden">Rejtett</string>
     <string name="opacity">Áttetszőség</string>
     <string name="gradient">Színátmenetes</string>
@@ -253,6 +262,7 @@
     <string name="title_attribouter_license_permissions">Jogosultságok</string>
     <string name="title_attribouter_license_conditions">Feltételek</string>
     <string name="title_attribouter_license_limitations">Korlátozások</string>
+    <string name="title_attribouter_more_info">Részletek</string>
     <string name="title_attribouter_translators">Fordítók</string>
     <string name="about_our_contributors">Közreműködők</string>
     <string name="about_bio_deletescape">Kotlin/Java-fejlesztő. Minden érdekli, ami Android. A Lawnchair és a dogbin projektek alapítója.</string>
@@ -281,6 +291,7 @@
     <string name="title_app_suggestions">Alkalmazások</string>
     <string name="theme_dark">Sötét</string>
     <string name="theme_dark_theme_mode">Sötét téma</string>
+    <string name="theme_dark_dark_text">Sötét, sötét szöveggel</string>
     <string name="theme_black">Fekete</string>
     <string name="theme_dark_theme_mode_follow_wallpaper">@string/theme_auto</string>
     <string name="theme_dark_theme_mode_follow_system">@string/theme_auto_night_mode</string>
@@ -291,29 +302,43 @@
     <string name="rename_tab">Átnevezés</string>
     <string name="show_in_tabs">Lapok</string>
     <string name="tabs_manage">Kezelés</string>
+    <string name="selected_count">%1$d kiválasztva</string>
+    <string name="tab_hide_from_main">Elrejtés a főlapról</string>
+    <string name="tab_color">Szín</string>
     <string name="delete">Törlés</string>
     <string name="none">Egyik sem</string>
     <string name="undo">Visszavonás</string>
     <string name="shortcut_sesame">Parancsikonok</string>
+    <string name="pref_sesame_enabled">Adathasználat megosztása a Sesame-mal.</string>
+    <string name="pref_sesame_disabled">Nem került adat megosztásra.</string>
     <string name="allow">Engedélyezés</string>
     <string name="deny">Elutasítás</string>
+    <string name="sesame_enable_integration_title">Adatmegosztás</string>
     <string name="sesame_enable_integration_description"><![CDATA[Engedélyezi az adatmegosztás használatát a Sesame-mal? Később módosítani tudja.]]></string>
+    <string name="sesame_shortcut_disabled">A Sesame le van tiltva.</string>
     <string name="font_variant_italic">Dőlt</string>
     <string name="font_weight_thin">Keskeny</string>
+    <string name="font_weight_extra_light">Nagyon vékony</string>
     <string name="font_weight_light">Vékony</string>
     <string name="font_weight_regular">Hagyományos</string>
     <string name="font_weight_medium">Közepes</string>
+    <string name="font_weight_semi_bold">Félkövér</string>
     <string name="font_weight_bold">Kövér</string>
+    <string name="font_weight_extra_bold">Nagyon vastag</string>
     <string name="font_weight_extra_black">Fekete</string>
+    <string name="pref_fonts_global_font">Fő betűtípus</string>
     <string name="pref_fonts_change_global_font">Váltás</string>
+    <string name="pref_fonts_home_icons">Címkék</string>
     <string name="pref_fonts_home_smartspace">Betekintő</string>
     <string name="pref_fonts_category_drawer">Alkalmazáslista</string>
+    <string name="pref_fonts_drawer_icons">Címkék</string>
     <string name="pref_fonts_drawer_app_actions_icons">Műveletek</string>
     <string name="pref_fonts_find_fonts">Keresés</string>
     <string name="drawer_folders">Mappák</string>
     <string name="action_copy">Másolás</string>
     <string name="action_share">Megosztás</string>
     <string name="weather_icons_default">Alapértelmezett</string>
+    <string name="pref_weather_icon_pack">Időjárás-ikoncsomag</string>
     <string name="icon_shape_corner_round">Kerek</string>
     <string name="icon_shape_corner_cut">Kivágás</string>
     <!-- Section 13 -->
