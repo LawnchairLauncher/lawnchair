@@ -42,6 +42,8 @@ public final class FileLog {
     private static Handler sHandler = null;
     private static File sLogsDirectory = null;
 
+    private static final int LOG_DAYS = 2;
+
     public static void setDir(File logsDir) {
         if (ENABLED) {
             synchronized (DATE_FORMAT) {
@@ -147,7 +149,7 @@ public final class FileLog {
                 case MSG_WRITE: {
                     Calendar cal = Calendar.getInstance();
                     // suffix with 0 or 1 based on the day of the year.
-                    String fileName = FILE_NAME_PREFIX + (cal.get(Calendar.DAY_OF_YEAR) & 1);
+                    String fileName = FILE_NAME_PREFIX + (cal.get(Calendar.DAY_OF_YEAR) % LOG_DAYS);
 
                     if (!fileName.equals(mCurrentFileName)) {
                         closeWriter();
@@ -195,8 +197,9 @@ public final class FileLog {
                             (Pair<PrintWriter, CountDownLatch>) msg.obj;
 
                     if (p.first != null) {
-                        dumpFile(p.first, FILE_NAME_PREFIX + 0);
-                        dumpFile(p.first, FILE_NAME_PREFIX + 1);
+                        for (int i = 0; i < LOG_DAYS; i++) {
+                            dumpFile(p.first, FILE_NAME_PREFIX + i);
+                        }
                     }
                     p.second.countDown();
                     return true;
@@ -225,5 +228,16 @@ public final class FileLog {
                 IOUtils.closeSilently(in);
             }
         }
+    }
+
+    /**
+     * Gets files used for FileLog
+     */
+    public static File[] getLogFiles() {
+        File[] files = new File[LOG_DAYS];
+        for (int i = 0; i < LOG_DAYS; i++) {
+            files[i] = new File(sLogsDirectory, FILE_NAME_PREFIX + i);
+        }
+        return files;
     }
 }

@@ -23,7 +23,10 @@
 # support jar.
 -keep class androidx.recyclerview.widget.RecyclerView { *; }
 
-# Preference fragments
+# Fragments
+-keep class ** extends androidx.fragment.app.Fragment {
+    public <init>(...);
+}
 -keep class ** extends android.app.Fragment {
     public <init>(...);
 }
