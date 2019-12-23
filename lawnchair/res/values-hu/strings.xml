@@ -184,13 +184,29 @@
     <string name="category_travel_and_navigation">Utazás &amp; navigáció</string>
     <string name="select_tab_type">Új lap</string>
     <string name="tab_type_smart">Automatikus</string>
+    <string name="pref_appcategorization_flowerpot_summary">Parancsikonok automatikus kijelölése.</string>
     <string name="tab_type_custom">Egyéni</string>
+    <string name="tab_type_custom_desc">Parancsikonok manuális kijelölése.</string>
+    <string name="pref_appcategorization_flowerpot_title">Alkalmazáskategóriák</string>
+    <string name="title_all_apps_search">Keresősáv megjelenítése</string>
+    <string name="title_all_apps_google_search">Globális kereső használata</string>
     <string name="suggestion_pref_screen_title">Javaslatok</string>
     <string name="app_actions_pref_title">Műveletek</string>
+    <string name="keep_scroll_state_pref_title">A pozíció megjegyzése</string>
     <!-- Section 7 -->
     <string name="search">Keresés</string>
+    <string name="pref_global_search_provider">Keresőmotor</string>
+    <string name="google">Google alkalmazás</string>
     <string name="search_provider_google_go">Google Go</string>
     <string name="web_search_google">Google</string>
+    <string name="web_search_ddg">DuckDuckGo (a böngészőben)</string>
+    <string name="web_search_startpage">Startpage.com (a böngészőben)</string>
+    <string name="web_search_bing">Bing (a böngészőben)</string>
+    <string name="web_search_qwant">Qwant (a böngészőben)</string>
+    <string name="web_search_ecosia">Ecosia (a böngészőben)</string>
+    <string name="web_search_yandex">Yandex (a böngészőben)</string>
+    <string name="web_search_naver">Naver (a böngészőben)</string>
+    <string name="web_search_baidu">Baidu (a böngészőben)</string>
     <string name="search_provider_yandex">Yandex</string>
     <string name="search_provider_ddg">DuckDuckGo</string>
     <string name="search_provider_bing">Bing</string>
@@ -203,8 +219,13 @@
     <string name="search_provider_qwant">Qwant</string>
     <string name="weather_provider_oneplus_weather">OnePlus Időjárás</string>
     <string name="searchbar_appearance_title">Stílus</string>
+    <string name="pref_show_assistant_title">Hangalapú keresés gombjának megjelenítése</string>
+    <string name="action_assistant">Asszisztens megnyitása</string>
+    <string name="pref_search_bar_radius">Saroklekerekítés</string>
     <!-- Section 8 -->
+    <string name="pref_integrations">Bővítmények</string>
     <string name="sesame">Sesame</string>
+    <string name="sesame_data_integration">Adatmegosztás</string>
     <string name="feed_theme_pref_title">Háttérszín</string>
     <!-- Section 9 -->
     <string name="gestures_pref_title">Mozdulatvezérlés</string>
@@ -226,6 +247,7 @@
     <string name="about_role_dev">Fejlesztő</string>
     <string name="about_role_designer">Designer</string>
     <string name="about_role_family_member">Alkotógárda-tag</string>
+    <string name="about_our_team">A csapat</string>
     <!-- Section 12 -->
     <string name="wallpaper_button_text">Háttérkép</string>
     <string name="pref_app_groups_create">Létrehozás</string>
@@ -237,13 +259,17 @@
     <string name="home_widget">Betekintő</string>
     <string name="about_app_version">Verzió</string>
     <string name="app_name_pixel_launcher">Pixel Launcher</string>
+    <string name="pixel_style_pref_title">Google Pixel</string>
     <string name="label_turn_off_suggestions">Kikapcsolás</string>
     <string name="about_summary_title">Összegzés</string>
+    <string name="hide_app">Parancsikon elrejtése</string>
+    <string name="hide_app_apply">Kész</string>
     <string name="choose_backup_path">Tallózás</string>
     <string name="backup_loading">Betöltés...</string>
     <string name="loading">Betöltés…</string>
     <string name="backup_share">Megosztás</string>
     <string name="backup_restoring">Visszaállítás...</string>
+    <string name="backup_restarting">Újraindítás...</string>
     <string name="restore_success">Mentés visszaállítva.</string>
     <string name="failed">Valami hiba történt.</string>
     <string name="backup_share_text">Lawnchair mentés</string>
