@@ -26,6 +26,8 @@ import android.os.Process;
 import android.os.UserHandle;
 import android.os.UserManager;
 
+import androidx.annotation.VisibleForTesting;
+
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageManagerHelper;
 
@@ -87,6 +89,15 @@ public class AppInfo extends ItemInfoWithIcon {
         intent = new Intent(info.intent);
         user = info.user;
         runtimeStatusFlags = info.runtimeStatusFlags;
+    }
+
+    @VisibleForTesting
+    public AppInfo(ComponentName componentName, CharSequence title,
+            UserHandle user, Intent intent) {
+        this.componentName = componentName;
+        this.title = title;
+        this.user = user;
+        this.intent = intent;
     }
 
     @Override
