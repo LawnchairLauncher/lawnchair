@@ -17,30 +17,34 @@
 package com.android.quickstep.logging;
 
 import static android.stats.launcher.nano.Launcher.ALLAPPS;
+import static android.stats.launcher.nano.Launcher.BACKGROUND;
+import static android.stats.launcher.nano.Launcher.DISMISS_TASK;
 import static android.stats.launcher.nano.Launcher.HOME;
 import static android.stats.launcher.nano.Launcher.LAUNCH_APP;
 import static android.stats.launcher.nano.Launcher.LAUNCH_TASK;
-import static android.stats.launcher.nano.Launcher.DISMISS_TASK;
-import static android.stats.launcher.nano.Launcher.BACKGROUND;
 import static android.stats.launcher.nano.Launcher.OVERVIEW;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.UserHandle;
 import android.stats.launcher.nano.Launcher;
 import android.stats.launcher.nano.LauncherExtension;
 import android.stats.launcher.nano.LauncherTarget;
 import android.util.Log;
 import android.view.View;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.logging.StatsLogUtils;
-import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
-import com.android.launcher3.userevent.nano.LauncherLogProto.ItemType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ItemType;
+import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.ComponentKey;
 import com.android.systemui.shared.system.StatsLogCompat;
+
 import com.google.protobuf.nano.MessageNano;
 
 /**
@@ -60,7 +64,7 @@ public class StatsLogCompatManager extends StatsLogManager {
     public StatsLogCompatManager(Context context) { }
 
     @Override
-    public void logAppLaunch(View v, Intent intent) {
+    public void logAppLaunch(View v, Intent intent, @Nullable UserHandle userHandle) {
         LauncherExtension ext = new LauncherExtension();
         ext.srcTarget = new LauncherTarget[SUPPORTED_TARGET_DEPTH];
         int srcState = mStateProvider.getCurrentState();

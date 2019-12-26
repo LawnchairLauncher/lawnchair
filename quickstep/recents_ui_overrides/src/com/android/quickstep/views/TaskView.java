@@ -62,7 +62,6 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.util.PendingAnimation;
 import com.android.launcher3.util.ViewPool.Reusable;
-import com.android.quickstep.OverviewActionsFactory;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.TaskIconCache;
 import com.android.quickstep.TaskOverlayFactory;
@@ -164,7 +163,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     private final float mWindowCornerRadius;
     private final BaseDraggingActivity mActivity;
 
-    private OverviewActionsFactory.OverviewActions mOverviewActions;
     @Nullable private View mActionsView;
 
     private ObjectAnimator mIconAndDimAnimator;
@@ -222,7 +220,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         mCurrentFullscreenParams = new FullscreenDrawParams(mCornerRadius);
         mDigitalWellBeingToast = new DigitalWellBeingToast(mActivity, this);
 
-        mOverviewActions = OverviewActionsFactory.INSTANCE.get(context).createOverviewActions();
         mOutlineProvider = new TaskOutlineProvider(getResources(), mCurrentFullscreenParams);
         setOutlineProvider(mOutlineProvider);
     }
@@ -239,7 +236,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
 
 
         if (FeatureFlags.ENABLE_OVERVIEW_ACTIONS.get()) {
-            mActionsView = mOverviewActions.getView();
+            mActionsView = mSnapshotView.getTaskOverlay().getActionsView();
             if (mActionsView != null) {
                 TaskView.LayoutParams params = new TaskView.LayoutParams(LayoutParams.MATCH_PARENT,
                         getResources().getDimensionPixelSize(R.dimen.overview_actions_height),

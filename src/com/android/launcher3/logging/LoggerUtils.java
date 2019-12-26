@@ -142,8 +142,10 @@ public class LoggerUtils {
             typeStr += ", grid(" + t.gridX + "," + t.gridY + ")";
         } else if ((t.packageNameHash != 0 || t.componentHash != 0 || t.intentHash != 0)
                 && t.itemType != ItemType.TASK) {
-            typeStr += ", predictiveRank=" + t.predictedRank + ", grid(" + t.gridX + "," + t.gridY
-                    + "), span(" + t.spanX + "," + t.spanY + "), pageIdx=" + t.pageIndex;
+            typeStr +=
+                    ", isWorkApp=" + t.isWorkApp + ", predictiveRank=" + t.predictedRank + ", grid("
+                            + t.gridX + "," + t.gridY + "), span(" + t.spanX + "," + t.spanY
+                            + "), pageIdx=" + t.pageIndex;
         }
         if (t.searchQueryLength != 0) {
             typeStr += ", searchQueryLength=" + t.searchQueryLength;

@@ -7,6 +7,8 @@ import com.android.launcher3.tapl.LauncherInstrumentation;
 
 import org.junit.Assert;
 
+import java.util.function.Supplier;
+
 /**
  * A utility class for waiting for a condition to be true.
  */
@@ -16,10 +18,16 @@ public class Wait {
 
     public static void atMost(String message, Condition condition, long timeout,
             LauncherInstrumentation launcher) {
+        atMost(() -> message, condition, timeout, DEFAULT_SLEEP_MS, launcher);
+    }
+
+    public static void atMost(Supplier<String> message, Condition condition, long timeout,
+            LauncherInstrumentation launcher) {
         atMost(message, condition, timeout, DEFAULT_SLEEP_MS, launcher);
     }
 
-    public static void atMost(String message, Condition condition, long timeout, long sleepMillis,
+    public static void atMost(Supplier<String> message, Condition condition, long timeout,
+            long sleepMillis,
             LauncherInstrumentation launcher) {
         final long startTime = SystemClock.uptimeMillis();
         long endTime = startTime + timeout;
@@ -45,6 +53,6 @@ public class Wait {
         }
         Log.d("Wait", "atMost: timed out: " + SystemClock.uptimeMillis());
         launcher.checkForAnomaly();
-        Assert.fail(message);
+        Assert.fail(message.get());
     }
 }

@@ -197,6 +197,10 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
         updateThumbnailPaintFilter();
     }
 
+    public TaskOverlay getTaskOverlay() {
+        return mOverlay;
+    }
+
     public float getDimAlpha() {
         return mDimAlpha;
     }

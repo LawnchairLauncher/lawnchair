@@ -103,11 +103,11 @@ public class AddConfigWidgetTest extends AbstractLauncherUiTest {
 
         setResult(acceptConfig);
         if (acceptConfig) {
-            Wait.atMost(null, new WidgetSearchCondition(), DEFAULT_ACTIVITY_TIMEOUT, mLauncher);
+            Wait.atMost("", new WidgetSearchCondition(), DEFAULT_ACTIVITY_TIMEOUT, mLauncher);
             assertNotNull(mAppWidgetManager.getAppWidgetInfo(mWidgetId));
         } else {
             // Verify that the widget id is deleted.
-            Wait.atMost(null, () -> mAppWidgetManager.getAppWidgetInfo(mWidgetId) == null,
+            Wait.atMost("", () -> mAppWidgetManager.getAppWidgetInfo(mWidgetId) == null,
                     DEFAULT_ACTIVITY_TIMEOUT, mLauncher);
         }
     }
