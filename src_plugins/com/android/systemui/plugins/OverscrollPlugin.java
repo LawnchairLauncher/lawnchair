@@ -24,11 +24,11 @@ import com.android.systemui.plugins.annotations.ProvidesInterface;
  * the user to a more recent app).
  */
 @ProvidesInterface(action = com.android.systemui.plugins.OverscrollPlugin.ACTION,
-        version = com.android.systemui.plugins.OverlayPlugin.VERSION)
+        version = com.android.systemui.plugins.OverscrollPlugin.VERSION)
 public interface OverscrollPlugin extends Plugin {
 
     String ACTION = "com.android.systemui.action.PLUGIN_LAUNCHER_OVERSCROLL";
-    int VERSION = 1;
+    int VERSION = 3;
 
     String DEVICE_STATE_LOCKED = "Locked";
     String DEVICE_STATE_LAUNCHER = "Launcher";
@@ -36,9 +36,38 @@ public interface OverscrollPlugin extends Plugin {
     String DEVICE_STATE_UNKNOWN = "Unknown";
 
     /**
-     * Called when the user completed a right to left swipe in the gesture area.
-     *
-     * @param deviceState One of the DEVICE_STATE_* constants.
+     * @return true if the plugin is active and will accept overscroll gestures
      */
-    void onOverscroll(String deviceState);
+    boolean isActive();
+
+    /**
+     * Called when a touch is down and has been recognized as an overscroll gesture.
+     * A call of this method will always result in `onTouchUp` being called, and possibly
+     * `onFling` as well.
+     *
+     * @param deviceState String representing the current device state
+     * @param underlyingActivity String representing the currently active Activity
+     */
+    void onTouchStart(String deviceState, String underlyingActivity);
+
+    /**
+     * Called when a touch that was previously recognized has moved.
+     *
+     * @param px distance between the position of touch on this update and the position of the
+     * touch when it was initially recognized.
+     */
+    void onTouchTraveled(int px);
+
+    /**
+     * Called when a touch that was previously recognized has ended.
+     *
+     * @param px distance between the position of touch on this update and the position of the
+     * touch when it was initially recognized.
+     */
+    void onTouchEnd(int px);
+
+    /**
+     * Called when the user starts Compose with a fling. `onTouchUp` will also be called.
+     */
+    void onFling(float velocity);
 }

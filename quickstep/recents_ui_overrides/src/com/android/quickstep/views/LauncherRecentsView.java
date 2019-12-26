@@ -378,6 +378,11 @@ public class LauncherRecentsView extends RecentsView<Launcher> implements StateL
     }
 
     @Override
+    public boolean hasRecentsExtraCard() {
+        return mRecentsExtraViewContainer != null;
+    }
+
+    @Override
     public void setContentAlpha(float alpha) {
         super.setContentAlpha(alpha);
         if (mRecentsExtraViewContainer != null) {

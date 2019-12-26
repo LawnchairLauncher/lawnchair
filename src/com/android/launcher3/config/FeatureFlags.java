@@ -114,7 +114,7 @@ public final class FeatureFlags {
             "ENABLE_PREDICTION_DISMISS", false, "Allow option to dimiss apps from predicted list");
 
     public static final TogglableFlag ENABLE_QUICK_CAPTURE_GESTURE = new TogglableFlag(
-            "ENABLE_QUICK_CAPTURE_GESTURE", false, "Swipe from right to left to quick capture");
+            "ENABLE_QUICK_CAPTURE_GESTURE", true, "Swipe from right to left to quick capture");
 
     public static final TogglableFlag ASSISTANT_GIVES_LAUNCHER_FOCUS = new TogglableFlag(
             "ASSISTANT_GIVES_LAUNCHER_FOCUS", false,
