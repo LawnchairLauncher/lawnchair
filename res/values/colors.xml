@@ -37,4 +37,10 @@
 
     <color name="all_apps_bg_hand_fill">#E5E5E5</color>
     <color name="all_apps_bg_hand_fill_dark">#9AA0A6</color>
+
+    <color name="back_gesture_tutorial_background_color">#FFFFFFFF</color>
+    <color name="back_gesture_tutorial_subtitle_color">#99000000</color> <!-- 60% black -->
+    <color name="back_gesture_tutorial_title_color">#FF000000</color>
+    <color name="back_gesture_tutorial_action_button_label_color">#FFFFFFFF</color>
+    <color name="back_gesture_tutorial_primary_color">#1A73E8</color> <!-- Blue -->
 </resources>

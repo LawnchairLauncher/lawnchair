@@ -80,4 +80,9 @@
 
     <!-- Overscroll Gesture -->
     <dimen name="gestures_overscroll_fling_threshold">40dp</dimen>
+
+    <!-- Tips Gesture Tutorial -->
+    <dimen name="back_gesture_tutorial_title_margin_start_end">40dp</dimen>
+    <dimen name="back_gesture_tutorial_subtitle_margin_start_end">16dp</dimen>
+    <dimen name="back_gesture_tutorial_button_margin_start_end">18dp</dimen>
 </resources>
