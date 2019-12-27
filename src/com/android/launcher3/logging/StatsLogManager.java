@@ -17,12 +17,15 @@ package com.android.launcher3.logging;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.UserHandle;
 import android.view.View;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.R;
+import com.android.launcher3.logging.StatsLogUtils.LogStateProvider;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ResourceBasedOverride;
-import com.android.launcher3.logging.StatsLogUtils.LogStateProvider;
 
 /**
  * Handles the user event logging in Q.
@@ -38,7 +41,10 @@ public class StatsLogManager implements ResourceBasedOverride {
         return mgr;
     }
 
-    public void logAppLaunch(View v, Intent intent) { }
+    /**
+     * Logs app launches
+     */
+    public void logAppLaunch(View v, Intent intent, @Nullable UserHandle userHandle) { }
     public void logTaskLaunch(View v, ComponentKey key) { }
     public void logTaskDismiss(View v, ComponentKey key) { }
     public void logSwipeOnContainer(boolean isSwipingToLeft, int pageId) { }

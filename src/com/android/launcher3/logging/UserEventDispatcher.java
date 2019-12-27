@@ -33,7 +33,9 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Process;
 import android.os.SystemClock;
+import android.os.UserHandle;
 import android.util.Log;
 import android.view.View;
 
@@ -135,7 +137,7 @@ public class UserEventDispatcher implements ResourceBasedOverride {
     // --------------------------------------------------------------
 
     @Deprecated
-    public void logAppLaunch(View v, Intent intent) {
+    public void logAppLaunch(View v, Intent intent, @Nullable  UserHandle userHandle) {
         LauncherEvent event = newLauncherEvent(newTouchAction(Action.Touch.TAP),
                 newItemTarget(v, mInstantAppResolver), newTarget(Target.Type.CONTAINER));
 
@@ -143,7 +145,13 @@ public class UserEventDispatcher implements ResourceBasedOverride {
             if (mDelegate != null) {
                 mDelegate.modifyUserEvent(event);
             }
-            fillIntentInfo(event.srcTarget[0], intent);
+            fillIntentInfo(event.srcTarget[0], intent, userHandle);
+        }
+        ItemInfo info = (ItemInfo) v.getTag();
+        if (Utilities.IS_DEBUG_DEVICE && FeatureFlags.ENABLE_HYBRID_HOTSEAT.get()) {
+            FileLog.d(TAG, "appLaunch: packageName:" + info.getTargetComponent().getPackageName()
+                    + ",isWorkApp:" + (info.user != null && !Process.myUserHandle().equals(
+                    userHandle)) + ",launchLocation:" + info.container);
         }
         dispatchUserEvent(event, intent);
         mAppOrTaskLaunch = true;
@@ -171,8 +179,9 @@ public class UserEventDispatcher implements ResourceBasedOverride {
         mAppOrTaskLaunch = true;
     }
 
-    protected void fillIntentInfo(Target target, Intent intent) {
+    protected void fillIntentInfo(Target target, Intent intent, @Nullable UserHandle userHandle) {
         target.intentHash = intent.hashCode();
+        target.isWorkApp = userHandle != null && !userHandle.equals(Process.myUserHandle());
         fillComponentInfo(target, intent.getComponent());
     }
 

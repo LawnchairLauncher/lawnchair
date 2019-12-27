@@ -308,13 +308,22 @@ public final class LauncherInstrumentation {
         }
     }
 
+    private String getVisiblePackages() {
+        return mDevice.findObjects(By.textStartsWith(""))
+                .stream()
+                .map(object -> object.getApplicationPackage())
+                .distinct()
+                .filter(pkg -> !"com.android.systemui".equals(pkg))
+                .collect(Collectors.joining(", "));
+    }
+
     private String getVisibleStateMessage() {
         if (hasLauncherObject(CONTEXT_MENU_RES_ID)) return "Context Menu";
         if (hasLauncherObject(WIDGETS_RES_ID)) return "Widgets";
         if (hasLauncherObject(OVERVIEW_RES_ID)) return "Overview";
         if (hasLauncherObject(WORKSPACE_RES_ID)) return "Workspace";
         if (hasLauncherObject(APPS_RES_ID)) return "AllApps";
-        return "Background";
+        return "Background (" + getVisiblePackages() + ")";
     }
 
     public void setSystemHealthSupplier(Function<Long, String> supplier) {
@@ -428,12 +437,6 @@ public final class LauncherInstrumentation {
 
         assertEquals("Unexpected display rotation",
                 mExpectedRotation, mDevice.getDisplayRotation());
-
-        // b/136278866
-        for (int i = 0; i != 100; ++i) {
-            if (getNavigationModeMismatchError() == null) break;
-            sleep(100);
-        }
 
         final String error = getNavigationModeMismatchError();
         assertTrue(error, error == null);
@@ -559,7 +562,7 @@ public final class LauncherInstrumentation {
             if (hasLauncherObject(WORKSPACE_RES_ID)) {
                 log(action = "already at home");
             } else {
-                log("Hierarchy before swiping up to home");
+                log("Hierarchy before swiping up to home:");
                 dumpViewHierarchy();
                 log(action = "swiping up to home from " + getVisibleStateMessage());
 
@@ -571,15 +574,19 @@ public final class LauncherInstrumentation {
                 }
             }
         } else {
-            log(action = "clicking home button");
-            executeAndWaitForEvent(
-                    () -> {
-                        log("LauncherInstrumentation.pressHome before clicking");
-                        waitForSystemUiObject("home").click();
-                    },
-                    event -> true,
-                    () -> "Pressing Home didn't produce any events");
-            mDevice.waitForIdle();
+            log("Hierarchy before clicking home:");
+            dumpViewHierarchy();
+            log(action = "clicking home button from " + getVisibleStateMessage());
+            try (LauncherInstrumentation.Closable c = addContextLayer(action)) {
+                mDevice.waitForIdle();
+                runToState(
+                        () -> waitForSystemUiObject("home").click(),
+                        NORMAL_STATE_ORDINAL,
+                        !hasLauncherObject(WORKSPACE_RES_ID)
+                                && (hasLauncherObject(APPS_RES_ID)
+                                || hasLauncherObject(OVERVIEW_RES_ID)));
+                mDevice.waitForIdle();
+            }
         }
         try (LauncherInstrumentation.Closable c = addContextLayer(
                 "performed action to switch to Home - " + action)) {
@@ -783,12 +790,20 @@ public final class LauncherInstrumentation {
                 + "]";
     }
 
+    void runToState(Runnable command, int expectedState, boolean requireEvent) {
+        if (requireEvent) {
+            runToState(command, expectedState);
+        } else {
+            command.run();
+        }
+    }
+
     void runToState(Runnable command, int expectedState) {
         final List<Integer> actualEvents = new ArrayList<>();
         executeAndWaitForEvent(
                 command,
                 event -> isSwitchToStateEvent(event, expectedState, actualEvents),
-                () -> "Failed to receive an event for the swipe end: expected "
+                () -> "Failed to receive an event for the state change: expected "
                         + TestProtocol.stateOrdinalToString(expectedState)
                         + ", actual: " + eventListToString(actualEvents));
     }
