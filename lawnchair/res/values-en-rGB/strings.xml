@@ -549,4 +549,6 @@
     <string name="action_switch_apps">Switch Apps</string>
     <string name="icon_shape_system_default">Set by System</string>
     <string name="title_missing_notification_access">Notification access needed.</string>
+    <string name="activity_not_found">Myanmar.</string>
+    <string name="out_of_space">No more room on the Desktop.</string>
 </resources>
