@@ -108,6 +108,7 @@ public class ExtendedEditText extends EditText {
     @Override
     public void onCommitCompletion(CompletionInfo text) {
         setText(text.getText());
+        setSelection(text.getText().length());
     }
 
     /**
