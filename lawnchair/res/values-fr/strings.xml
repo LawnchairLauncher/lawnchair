@@ -9,9 +9,9 @@
     <string name="search_menu">Rechercher</string>
     <string name="search_no_results">Aucun résultat</string>
     <string name="restart_lawnchair_pref_title">Redémarrer</string>
-    <string name="developer_options_title">Options développeurs</string>
+    <string name="developer_options_title">Options pour développeurs</string>
     <string name="change_default_home">Définir comme application d\'accueil</string>
-    <string name="action_apply">Fait</string>
+    <string name="action_apply">Terminé</string>
     <!-- Note: new. Replaces “OK” in dialogs. -->
     <string name="theme_dark_theme_mode_on">Activé</string>
     <string name="theme_dark_theme_mode_off">Désactivé</string>
@@ -24,7 +24,7 @@
     <string name="pref_icon_pack_masking_summary">Faire correspondre les icônes sans thème au Pack d\'Icônes.</string>
     <string name="pref_legacy_treatment_title">Créer des Icônes Adaptatives</string>
     <string name="pref_legacy_treatment_summary">Créer des Icônes Adaptatives pour tous les raccourcis.</string>
-    <string name="pref_legacy_colored_backgrounds">Colorier les fonds</string>
+    <string name="pref_legacy_colored_backgrounds">Couleur de fond</string>
     <string name="pref_legacy_colored_backgrounds_summary">Arrière-plans d’Icônes Adaptatives générés à partir de couleurs.</string>
     <string name="pref_white_only_treatment">Remplacer les Fonds Blancs</string>
     <string name="pref_white_only_treatment_summary">Colorier tous les fonds d’Icônes Adaptatives.</string>
@@ -291,9 +291,9 @@
     <string name="about">À propos</string>
     <string name="about_pref_summary">Équipe, liens, licences</string>
     <string name="about_translate">Traduction</string>
-    <string name="title_attribouter_rate">Noter</string>
+    <string name="title_attribouter_rate">Évaluer</string>
     <string name="title_attribouter_website">Site internet</string>
-    <string name="about_role_lead">Développeur en chef</string>
+    <string name="about_role_lead">Développeur principal</string>
     <string name="about_role_dev">Développeur</string>
     <string name="about_role_ui_ux_designer">Designer de l\'interface</string>
     <string name="about_role_writer">Rédacteur</string>
