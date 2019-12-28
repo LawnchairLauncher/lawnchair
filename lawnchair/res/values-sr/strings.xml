@@ -85,9 +85,20 @@
     <!-- Section 4 -->
     <string name="smartspace_preferences_in_settings">Кратак преглед</string>
     <!-- Note: replaces hard-coded copy (“Home widget”). -->
+    <string name="smartspace_preferences_in_settings_desc">Датум и време, извори података</string>
+    <string name="smartspace_time">Време</string>
+    <string name="smartspace_date">Датум</string>
+    <string name="pref_smartspace_time_above">Велики сат</string>
+    <string name="pref_hide_statusbar_clock">Сакриј сат из статусне траке</string>
+    <string name="root_access_required">Потребан је приступ руту.</string>
+    <string name="smartspace_time_24_h">24-часовни формат</string>
     <string name="pref_category_weather">Друго</string>
+    <string name="pref_smartspace_widget_provider">Извор временске прогнозе</string>
+    <string name="google_app">Апликација Google</string>
     <string name="weather_provider_disabled">Онемогућено</string>
     <string name="weather_provider_owm">OpenWeatherMap</string>
+    <string name="weather_provider_pe">Pixel Experience</string>
+    <string name="pref_weather_units">Јединица за температуру</string>
     <string name="units_metric">Целзијус</string>
     <string name="units_imperial">Фаренхајт</string>
     <string name="units_kelvin">Келвин</string>
@@ -96,31 +107,56 @@
     <string name="units_delisle">Делил</string>
     <string name="units_reaumur">Реомир</string>
     <string name="units_romer">Ремер</string>
+    <string name="pref_smartspace_event_providers">Извори података</string>
+    <string name="battery_status">Статус батерије</string>
+    <string name="event_provider_now_playing">Тренутно свира</string>
     <string name="event_provider_unread_notifications">Обавештења</string>
+    <string name="personality_provider">Контекстуалне поруке</string>
+    <string name="pref_smartspace_event_provider">Извор догађаја</string>
     <string-array name="greetings_morning">
         <item>Добро јутро!</item>
         <item>Уживајте у данашњем дану!</item>
-        <item>It’s a beautiful day outside!</item>
+        <item>Напољу је диван дан!</item>
     </string-array>
     <string-array name="greetings_evening">
-        <item>What’s up?</item>
-        <item>Good evening!</item>
-        <item>How did your day go?</item>
+        <item>Шта има?</item>
+        <item>Добро вече!</item>
+        <item>Како сте провели дан?</item>
         <item>Лаку ноћ!</item>
     </string-array>
     <string-array name="greetings_night">
         <item>Лепо спавајте!</item>
         <item>Видимо се сутра!</item>
         <item>Лаку ноћ!</item>
-        <item>Don’t stay up too late!</item>
+        <item>Лезите на време!</item>
     </string-array>
+    <string name="battery_low">Батерија је скоро празна</string>
     <!-- Section 5 -->
     <string name="dock_pref_title">Док</string>
+    <string name="dock_pref_summary">Изглед, стил, индикатори</string>
+    <string name="dock_fill">Позадина</string>
+    <string name="background_color">Боја позадине</string>
+    <string name="theme_based">На основу теме</string>
+    <string name="dock_shadow">Сенка</string>
+    <string name="radius">Заобљеност ивица</string>
+    <string name="hotseat_show_arrow">Стрелица</string>
+    <string name="hotseat_show_page_indicator">Индикатор страница</string>
+    <string name="two_row_dock">Два реда</string>
+    <string name="pref_category_searchbar">Трака за претрагу</string>
+    <string name="dock_search_bar">Претрага испод дока</string>
+    <string name="dock_colored_google">Обојене иконе</string>
     <!-- Section 6 -->
     <string name="app_drawer_pref_title">Drawer - Фиока</string>
+    <string name="app_drawer_pref_summary">Изглед, категорије, предлози</string>
     <string name="pref_category_theme">Стил</string>
+    <string name="pref_drawer_columns">Број колона</string>
+    <string name="pref_prediction_count">Број предлога</string>
+    <string name="pref_drawer_padding">Висина реда</string>
+    <string name="hide_apps">Скривање апликација</string>
+    <string name="categorization">Категорије</string>
     <string name="pref_appcategorization_enable_title">Категориши апликације</string>
     <string name="pref_appcategorization_folders_title">Фасцикле</string>
+    <string name="pref_appcategorization_folders_summary">Додирните да бисте отворили фасцикле.</string>
     <string name="pref_appcategorization_tabs_title">Картице</string>
     <string name="pref_appcategorization_tabs_summary">Пребацивање између категорија.</string>
     <string name="pref_app_groups_edit_tip">Додирните за уређивање, превуците да бисте прераспоредили.</string>
@@ -224,28 +260,74 @@
     <string name="about_role_dev">програмер</string>
     <string name="about_role_designer">дизајнер</string>
     <string name="about_role_family_member">Члан породице</string>
+    <string name="about_our_team">Тим</string>
+    <string name="title_attribouter_licenses">Коришћене библиотеке</string>
     <!-- Section 12 -->
+    <string name="settings_button_text">Подешавања почетног екрана</string>
+    <string name="button_organize_screens">Поредак страница</string>
     <string name="wallpaper_button_text">Позадина</string>
     <string name="pref_app_groups_create">Направи</string>
     <string name="pref_appcategorization_style_text">Стил</string>
     <string name="customize">Прилагоди</string>
+    <plurals name="tab_apps_count">
+        <item quantity="one">%1$d апликација</item>
+        <item quantity="few">%1$d апликације</item>
+        <item quantity="other">%1$d апликација</item>
+    </plurals>
+    <string name="advanced_settings">Још подешавања</string>
+    <string name="adaptive_icon">Прилагодљива икона</string>
     <string name="action_edit">Уреди</string>
+    <string name="dismiss_drop_target_label">"Не приказуј"</string>
     <string name="lawnchair_settings">Подешавања Lawnchair-а</string>
     <string name="icon_pack">Пакет икона</string>
     <string name="home_widget">Кратак преглед</string>
     <string name="about_app_version">Верзија</string>
     <string name="app_name_pixel_launcher">Пиксел Лаунчер</string>
+    <string name="msg_disable_suggestions_prompt">"Подаци о коришћењу ће бити уклоњени."</string>
+    <string name="pixel_style_pref_title">Google Pixel</string>
     <string name="label_turn_off_suggestions">Искључи</string>
     <string name="about_summary_title">Резиме</string>
+    <string name="hide_app">Сакриј пречицу</string>
+    <string name="icon_shape_rounded_square">Заобљени квадрат</string>
+    <string name="hide_app_selected">“&#160;” скривено</string>
+    <string name="hide_app_apply">Готово</string>
+    <string name="hide_dock_gradient">Онемогући градијент</string>
     <string name="choose_backup_path">Потражи</string>
+    <string name="backup_error_blank_name">Унесите име резервне копије.</string>
+    <string name="backup_error_blank_location">Изаберите локацију резервне копије.</string>
+    <string name="backup_error_blank_contents">Додајте садржај резервне копије.</string>
+    <string name="backup_creating">Израда резервне копије…</string>
     <string name="backup_loading">Учитавање…</string>
     <string name="loading">Учитавање…</string>
+    <string name="backup_timestamp">Креирано</string>
     <string name="backup_share">Дели</string>
+    <string name="backup_invalid">Неважећа датотека резервне копије.</string>
+    <string name="backup_restoring">Враћање…</string>
+    <string name="backup_restarting">Поновно покретање…</string>
+    <string name="restore_success">Враћено из резервне копије.</string>
+    <string name="failed">Нешто није у реду.</string>
+    <string name="backup_share_text">Резервна копија Lawnchair-а</string>
+    <string name="developer_options_enabled">Опције за програмере су омогућене.</string>
+    <string name="restart_lawnchair_pref_summary">Поново примените подешавања.</string>
+    <string name="show_debug_info_pref_title">Прикажи имена компонената</string>
+    <string name="debug_component_name">Име компоненте</string>
+    <string name="debug_component_name_copied">Копирано у привремену меморију.</string>
+    <string name="read_external_storage_required">Доделите дозволу за меморијски простор да бисте направили резервну копију.</string>
+    <string name="launcher_theme_override_label">Наметни тамну тему</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
+    <string name="dock_style_pref_title">Стил дока</string>
+    <string name="dock_style_p">Android Pie</string>
+    <string name="dock_style_n">Android Nougat</string>
     <string name="dock_style_hidden">Скривен</string>
     <string name="opacity">Непрозирност</string>
+    <string name="add_settings_shortcut_title">Додај пречицу на почетни екран</string>
+    <string name="low_performance_mode_pref_title">Режим ниских перформанси</string>
+    <string name="title_storage_permission_required">Потребан је приступ меморијском простору</string>
+    <string name="content_storage_permission_required">Доделите дозволу за меморијски простор да бисте променили позадину.</string>
+    <string name="reset_to_default">Врати на подразумевано</string>
     <string name="gradient">Градијент</string>
     <string name="pref_category_aag">Кратак преглед</string>
+    <string name="pref_category_pixel_searchbar">Трака за претрагу Google Pixel-а</string>
     <string name="pref_category_layout">Распоред</string>
     <string name="title_attribouter_email">Имејл</string>
     <string name="title_attribouter_version">Верзија %1$s</string>
@@ -253,15 +335,33 @@
     <string name="title_attribouter_license_permissions">Дозволе</string>
     <string name="title_attribouter_license_conditions">Услови</string>
     <string name="title_attribouter_license_limitations">Ограничења</string>
+    <string name="title_attribouter_more_info">Детаљи</string>
     <string name="title_attribouter_translators">Преводиоци</string>
     <string name="about_our_contributors">Сарадници</string>
+    <string name="about_our_family">Чланови породице</string>
+    <string name="about_bio_deletescape">Kotlin/Java програмер. Заинтересован за све везано за Android. Оснивач пројеката Lawnchair и dogbin.</string>
     <string name="about_bio_recoded">Благи програмер и графички дизајнер.</string>
     <string name="about_bio_josh">Независни графички дизајнер.</string>
+    <string name="about_bio_harsh">Програмер апликација и библиотека за Android. Главни програмер AOSiP-а.</string>
+    <string name="about_bio_david">Деветнаестогодишњак, претвара кофеин и пицу у кôд, пружа хостинг и свакодневну подршку за Lawnchair, у случају да настане проблем. У слободно време даје допринос пројектима отвореног кода. Раније познат као Codebucket.</string>
+    <string name="about_bio_lumiq">Направити лош производ постало је много теже.</string>
     <string name="about_bio_paphonb">Осамнаестогодишњи студент и један од водећих програмера Lawnchair-а.</string>
+    <string name="debug_crash_launcher">Принудно заустави</string>
+    <string name="action_open_drawer">Отвори листу апликација</string>
+    <string name="action_last_task">Покрени последњу апликацију</string>
+    <string name="action_open_widgets">Отвори панел са виџетима</string>
+    <string name="action_open_overview">Прикажи мени покретача</string>
+    <string name="action_global_search">Отвори глобалну претрагу</string>
+    <string name="action_app_search">Отвори претрагу апликација</string>
+    <string name="action_close_notifications">Затвори обавештења</string>
+    <string name="action_open_app_with_target">Отвори „“%s”</string>
+    <string name="action_open_app_select_app">Избор апликације</string>
+    <string name="smartspace_widget_provider_not_found">Преузмите апликацију Google.</string>
     <string name="apps_label">Апликације</string>
     <string name="all_apps_label">Све апликације</string>
     <string name="pref_weather_city_title">Град</string>
     <string name="default_city">Belgrade, RS</string>
+    <string name="pref_weather_api_key_title">API кључ</string>
     <string name="all_icons">Све иконе</string>
     <string name="week_day_format">%1$s, %2$s</string>
     <string name="full_wday_month_day_no_year">EEEE, d. MMMM</string>
