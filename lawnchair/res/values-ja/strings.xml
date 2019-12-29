@@ -21,15 +21,19 @@
     <string name="pref_legacy_treatment_title">アダプティブアイコンを生成</string>
     <string name="pref_legacy_treatment_summary">すべてのショートカットのためにアダプティブアイコンを造る。</string>
     <string name="pref_legacy_colored_backgrounds">背景の色</string>
+    <string name="pref_legacy_colored_backgrounds_summary">生成されたアダプティブアイコンの背景に色を付ける</string>
     <string name="pref_white_only_treatment">白の背景を置き換える</string>
     <string name="pref_white_only_treatment_summary">全てのアダプティブアイコンの背景に色を付ける</string>
+    <string name="adaptify_pack_title">アイコンパック用のアダプティブアイコンを作成</string>
     <string name="icon_shape_override_label">アイコンの形状</string>
     <string name="reset_custom_icons">カスタムしたアイコンを取り除く</string>
     <string name="appearance">外観</string>
     <!-- Note: new. Replaces title of 5th field (from bottom) in “Theme” page. -->
+    <string name="theme_auto">自動 (壁紙に基づく)</string>
     <string name="theme_auto_night_mode">システムに設定された</string>
     <string name="theme_dark_theme_mode_follow_daylight">自動設定(夜間はダークモードに変える)</string>
     <string name="theme_light">ライト</string>
+    <string name="theme_dark_text">ライトテーマに暗い文字</string>
     <string name="theme_with_dark_text">暗い文字</string>
     <string name="theme_use_black">漆黒を使用</string>
     <string name="theme_use_dark_text">暗い文字を使用</string>
@@ -49,11 +53,16 @@
     <string name="grid_size">アイコングリッド</string>
     <string name="grid_size_width">横幅</string>
     <string name="grid_size_height">高さ</string>
+    <string name="num_hotseat_icons_pref_title">アイコンのカウント</string>
     <string name="overlap_placement">重複を許す</string>
     <string name="lock_desktop">デスクトップをロック</string>
     <string name="pref_category_icons">ショートカット</string>
     <string name="hide_icon_labels_pref_title">ラベルを隠す</string>
+    <string name="pref_mutliline_labels">複数行のラベル</string>
+    <string name="icon_text_scale_pref_title">文字のサイズ</string>
+    <string name="text_color">文字の色</string>
     <string name="icon_scale_pref_title">アイコンサイズ</string>
+    <string name="pref_icon_popup_menu">ショートカットバブル</string>
     <string name="pref_category_misc">その他</string>
     <string name="animation_type_default">既定</string>
     <string name="animation_type_pie">Android Pie</string>
@@ -96,6 +105,7 @@
     <string name="units_reaumur">レオミュール度</string>
     <string name="units_romer">レーマー度</string>
     <string name="pref_smartspace_event_providers">データソース</string>
+    <string name="event_provider_now_playing">Now Playing</string>
     <string name="event_provider_unread_notifications">通知</string>
     <string-array name="greetings_morning">
         <item>おはようございます</item>
