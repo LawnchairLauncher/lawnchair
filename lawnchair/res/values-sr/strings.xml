@@ -50,6 +50,7 @@
     <string name="color_wallpaper_tertiary">Позадина – терцијарна</string>
     <string name="pref_fonts_title">Фонтови</string>
     <string name="blur_pref_title">Замагљење</string>
+    <string name="blur_pref_summary">Замагљује позадину.</string>
     <string name="blur_radius_pref_title">Јачина замагљења</string>
     <!-- Section 3 -->
     <string name="general_pref_title">Почетни екран</string>
@@ -82,6 +83,11 @@
     <string name="pref_notification_count_title">Број обавештења</string>
     <string name="allow_rotation_title">Омогући ротацију</string>
     <string name="pref_center_wallpaper">Центрирај позадину</string>
+    <string name="pref_center_wallpaper_summary">Искључује померање позадине.</string>
+    <string name="pref_hide_statusbar">Сакриј статусну траку</string>
+    <string name="full_width_width_widgets_pref_title">Широки виџети</string>
+    <string name="full_width_widgets_pref_summary">Нека се виџети протежу до ивица екрана.</string>
+    <string name="show_top_shadow_pref_title">Прикажи сенку на врху</string>
     <!-- Section 4 -->
     <string name="smartspace_preferences_in_settings">Кратак преглед</string>
     <!-- Note: replaces hard-coded copy (“Home widget”). -->
@@ -92,6 +98,7 @@
     <string name="pref_hide_statusbar_clock">Сакриј сат из статусне траке</string>
     <string name="root_access_required">Потребан је приступ руту.</string>
     <string name="smartspace_time_24_h">24-часовни формат</string>
+    <string name="title_use_pill_qsb">Трака за претрагу у облику пилуле</string>
     <string name="pref_category_weather">Друго</string>
     <string name="pref_smartspace_widget_provider">Извор временске прогнозе</string>
     <string name="google_app">Апликација Google</string>
@@ -122,7 +129,7 @@
         <item>Шта има?</item>
         <item>Добро вече!</item>
         <item>Како сте провели дан?</item>
-        <item>Лаку ноћ!</item>
+        <item>Како сте провели дан?</item>
     </string-array>
     <string-array name="greetings_night">
         <item>Лепо спавајте!</item>
@@ -130,6 +137,8 @@
         <item>Лаку ноћ!</item>
         <item>Лезите на време!</item>
     </string-array>
+    <string name="battery_charging">Батерија се пуни</string>
+    <string name="battery_full">Батерија је напуњена</string>
     <string name="battery_low">Батерија је скоро празна</string>
     <!-- Section 5 -->
     <string name="dock_pref_title">Док</string>
@@ -241,25 +250,62 @@
     <string name="pref_sesame_show_shortcuts">Прикажи у искачућем менију</string>
     <string name="sesame_search_engine">Користи као претраживач</string>
     <string name="pref_sesame_sync_look_and_feel">Дели подешавања стилова</string>
+    <string name="pref_sesame_sync_look_and_feel_summary">Примењује подешавања траке за претрагу на Sesame.</string>
+    <string name="sesame_version">Верзија библиотеке</string>
+    <string name="title_show_google_app">Прикажи %1$s фид</string>
+    <string name="feed_theme_pref_title">Боја позадине</string>
     <!-- Section 9 -->
     <string name="gestures_pref_title">Покрети</string>
+    <string name="gestures_pref_summary">Двоструки додир, превлачење нагоре преко дока</string>
+    <string name="gesture_double_tap">Двоструки додир</string>
+    <string name="gesture_long_press">Додир и задржавање</string>
+    <string name="gesture_press_home">Дугме „Почетна”</string>
+    <string name="gesture_press_back">Дугме „Назад”</string>
+    <string name="gesture_swipe_down">Превлачење надоле</string>
+    <string name="gesture_swipe_up">Превлачење нагоре</string>
+    <string name="gesture_dock_swipe_up">Превлачење нагоре преко дока</string>
+    <string name="action_none">Не ради ништа</string>
     <string name="action_sleep">Спавање</string>
+    <string name="action_sleep_timeout">Спавање (помоћу тајмера)</string>
+    <string name="action_open_settings">Отвори подешавања Lawnchair-а</string>
+    <string name="action_open_notifications">Отвори обавештења</string>
+    <string name="action_overlay">Отвори Google фид</string>
+    <string name="action_despacito">Пусти „YouTube Rewind 2018” (изобличено)</string>
+    <string name="action_open_app">Отвори апликацију</string>
     <!-- Section 10 -->
+    <string name="backups">Израда и враћање резервних копија</string>
+    <string name="backup_pref_summary">Чување и враћање подешавања почетног екрана</string>
     <string name="new_backup">Направи</string>
     <string name="restore_backup">Врати</string>
+    <string name="local_backups">У меморији</string>
+    <string name="no_recent_backups">Овде ће се појавити резервне копије.</string>
+    <string name="backup_contents">Подаци за чување</string>
+    <string name="restore_contents">Подаци за враћање</string>
     <string name="backup_settings">Подешавања</string>
+    <string name="homescreen">Почетни екран</string>
     <string name="backup_wallpaper">Позадина</string>
     <string name="name">Име</string>
     <string name="backup_location">Локација</string>
+    <string name="backup_location_device_storage">Фасцикла „Lawnchair”</string>
     <string name="custom">Прилагођени</string>
     <!-- Section 11 -->
     <string name="about">О апликацији</string>
+    <string name="about_pref_summary">Тим, линкови, лиценце</string>
+    <string name="about_translate">превод</string>
     <string name="title_attribouter_rate">Оцените</string>
     <string name="title_attribouter_website">Сајт</string>
     <string name="about_role_lead">главни програмер</string>
     <string name="about_role_dev">програмер</string>
+    <string name="about_role_ui_ux_designer">дизајнер интерфејса</string>
+    <string name="about_role_writer">писац</string>
+    <string name="about_role_dev_mod">програмер и модератор</string>
     <string name="about_role_designer">дизајнер</string>
+    <string name="about_role_devops">DevOps инжењер</string>
+    <string name="about_role_pr">менаџер за односе са јавношћу</string>
+    <string name="about_role_ops">инжењер за операције и инфраструктуру</string>
+    <string name="about_role_mod_support">представник подршке и модератор</string>
     <string name="about_role_family_member">Члан породице</string>
+    <string name="about_role_magisk_maintainer">одржавање модула QuickSwitch</string>
     <string name="about_our_team">Тим</string>
     <string name="title_attribouter_licenses">Коришћене библиотеке</string>
     <!-- Section 12 -->
@@ -278,11 +324,15 @@
     <string name="adaptive_icon">Прилагодљива икона</string>
     <string name="action_edit">Уреди</string>
     <string name="dismiss_drop_target_label">"Не приказуј"</string>
+    <string name="suggested_action_content_description">„%1$s” се отвара у „%2$s”.</string>
+    <string name="smartspace_setup_text">Додирните да бисте подесили</string>
     <string name="lawnchair_settings">Подешавања Lawnchair-а</string>
+    <string name="label_voice_search">Гласовна претрага</string>
     <string name="icon_pack">Пакет икона</string>
     <string name="home_widget">Кратак преглед</string>
     <string name="about_app_version">Верзија</string>
     <string name="app_name_pixel_launcher">Пиксел Лаунчер</string>
+    <string name="title_disable_suggestions_prompt">Искључивање предлога апликација</string>
     <string name="msg_disable_suggestions_prompt">"Подаци о коришћењу ће бити уклоњени."</string>
     <string name="pixel_style_pref_title">Google Pixel</string>
     <string name="label_turn_off_suggestions">Искључи</string>
@@ -339,7 +389,7 @@
     <string name="title_attribouter_translators">Преводиоци</string>
     <string name="about_our_contributors">Сарадници</string>
     <string name="about_our_family">Чланови породице</string>
-    <string name="about_bio_deletescape">Kotlin/Java програмер. Заинтересован за све везано за Android. Оснивач пројеката Lawnchair и dogbin.</string>
+    <string name="about_bio_deletescape">Kotlin/Java програмер. Заинтересован за све везано за Android. Оснивач пројеката Lawnchair и Dogbin.</string>
     <string name="about_bio_recoded">Благи програмер и графички дизајнер.</string>
     <string name="about_bio_josh">Независни графички дизајнер.</string>
     <string name="about_bio_harsh">Програмер апликација и библиотека за Android. Главни програмер AOSiP-а.</string>
@@ -362,54 +412,153 @@
     <string name="pref_weather_city_title">Град</string>
     <string name="default_city">Belgrade, RS</string>
     <string name="pref_weather_api_key_title">API кључ</string>
+    <string name="pref_weather_city_summary">За најбоље резултате наведите кôд земље.</string>
     <string name="all_icons">Све иконе</string>
+    <string name="error_no_browser">Прегледач није пронађен.</string>
+    <string name="no_icon_found">Икона није пронађена.</string>
+    <string name="icon_pack_external_picker">Отвори спољни бирач</string>
     <string name="week_day_format">%1$s, %2$s</string>
     <string name="full_wday_month_day_no_year">EEEE, d. MMMM</string>
     <string name="weather_provider_testing">Отклањање грешака</string>
+    <string name="backup_generate_report">Направи извештај о грешци</string>
     <string name="reset">Ресетуј</string>
     <string name="theme_automatic">Аутоматски</string>
     <string name="theme_default">Подразумевана</string>
     <string name="transparent">Прозирни</string>
     <string name="pref_open_source_licenses_title">Лиценце</string>
+    <string name="icon_pack_applied_toast">„%s” је примењен.</string>
+    <string name="dt2s_admin_hint">Доделите права администратора да бисте користили двоструки додир за закључавање.</string>
+    <string name="dt2s_admin_warning">Двоструки додир за закључавање ће бити онемогућен.</string>
     <string name="color_presets">Шаблони</string>
     <string name="automatic_short">аутом.</string>
+    <string name="recent_task_option_force_stop">Принудно заустави</string>
+    <string name="drag_to_enable_packs">Превуците нагоре за укључивање</string>
+    <string name="drag_to_disable_packs">Превуците надоле за искључивање</string>
+    <string name="get_more_icon_packs">Преузми још</string>
+    <string name="enabled_icon_packs">Примењено</string>
     <string name="lawnchair_actions">Радње</string>
+    <string name="bridge_missing_title">Преузмите Lawnfeed</string>
+    <string name="bridge_missing_message">Да бисте користили Google фид, инсталирајте Lawnfeed.</string>
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <string name="title_app_suggestions">Апликације</string>
     <string name="theme_dark">Тамна</string>
     <string name="theme_dark_theme_mode">Тамна тема</string>
+    <string name="theme_dark_dark_text">Тамна са тамним текстом</string>
     <string name="theme_black">Црна</string>
+    <string name="theme_black_dark_text">Црна са тамним текстом</string>
     <string name="pref_qsb_color">Боја</string>
+    <string name="hide_from_predictions">Сакриј из предлога</string>
+    <string name="recents_not_connected">QuickSwitch је онемогућен.</string>
     <string name="app_actions_pref_title_in_search">Радње</string>
+    <string name="search_clear_history">Обриши историју</string>
+    <string name="recent_task_option_popup_window">Дијалог</string>
     <string name="drawer_tabs">Картице</string>
     <string name="add_new_tab">Додај</string>
     <string name="rename_tab">Преименуј</string>
+    <string name="default_tab_name">Нова картица</string>
     <string name="show_in_tabs">Картице</string>
     <string name="tabs_manage">Управљај</string>
+    <string name="tab_manage_apps">Управљање апликацијама</string>
+    <string name="tab_bottom_sheet_save">Готово</string>
+    <string name="selected_count">%1$d изабрано</string>
+    <string name="tab_hide_from_main">Сакриј из главне картице</string>
+    <string name="tab_color">Боја</string>
     <string name="delete">Избриши</string>
     <string name="none">Нема</string>
     <string name="undo">Опозови</string>
     <string name="shortcut_sesame">Пречице</string>
+    <string name="pref_sesame_enabled">Подаци о коришћењу се деле са Sesame-ом.</string>
+    <string name="pref_sesame_disabled">Подаци о коришћењу се не деле.</string>
     <string name="allow">Дозволи</string>
     <string name="deny">Одбиј</string>
+    <string name="sesame_enable_integration_title">Дељење података</string>
+    <string name="sesame_enable_integration_description"><![CDATA[Делити податке о коришћењу са Sesame-ом? Ову опцију можете искључити касније.]]></string>
+    <string name="sesame_shortcut_disabled">Sesame је онемогућен.</string>
     <string name="font_variant_italic">курзив</string>
     <string name="font_weight_thin">танки</string>
+    <string name="font_weight_extra_light">веома бледи</string>
     <string name="font_weight_light">бледи</string>
     <string name="font_weight_regular">нормал</string>
     <string name="font_weight_medium">средњи</string>
+    <string name="font_weight_semi_bold">полумасни</string>
     <string name="font_weight_bold">масни</string>
+    <string name="font_weight_extra_bold">веома масни</string>
     <string name="font_weight_extra_black">црни</string>
+    <string name="owm_get_your_own_key">Преузмите API кључ на api.openweathermap.org.</string>
+    <string name="pref_fonts_global_font">Глобални фонт</string>
     <string name="pref_fonts_change_global_font">Промени</string>
+    <string name="pref_fonts_home_icons">Ознаке</string>
     <string name="pref_fonts_home_smartspace">Кратак преглед</string>
+    <string name="pref_fonts_home_shortcuts">Искачући мени са пречицама</string>
     <string name="pref_fonts_category_drawer">Листа апликација</string>
+    <string name="pref_fonts_drawer_icons">Ознаке</string>
     <string name="pref_fonts_drawer_app_actions_icons">Радње</string>
+    <string name="pref_fonts_drawer_tabs">Имена картица</string>
     <string name="pref_fonts_find_fonts">Претражи</string>
+    <string name="pref_fonts_add_fonts">Додај фонтове</string>
+    <string name="pref_fonts_add_fonts_summary">Подржани су формати OTF и TTF.</string>
+    <string name="pref_fonts_missing_font">Фонт није пронађен.</string>
+    <string name="pref_show_dev_options">Прикажи у подешавањима</string>
+    <string name="dock_scale">Величина дока</string>
+    <string name="default_folder_name">Нова фасцикла</string>
     <string name="drawer_folders">Фасцикле</string>
+    <string name="open_image_picker">Отвори фотографије</string>
+    <string name="import_icon">Увези икону</string>
+    <string name="import_as_adaptive">Увези прилагодљиву икону</string>
+    <string name="about_app_description">Прилагодљиви покретач за Android.</string>
+    <string name="lawnchair_bug_report">Lawnchair – извештај о грешци</string>
+    <string name="action_dogbin_upload">Отпреми на Dogbin</string>
+    <string name="action_dogbin_copy_link">Копирај линк</string>
     <string name="action_copy">Копирај</string>
+    <string name="action_copy_link">Копирај линк</string>
+    <string name="copied_toast">Копирано у привремену меморију.</string>
     <string name="action_share">Дели</string>
+    <string name="action_dogbin_upload_error">Отпремање није успело.</string>
+    <string name="dogbin_uploading">Отпремање…</string>
+    <string name="bugreport_channel_name">Извештаји о грешкама</string>
+    <string name="status_channel_name">Статус отпремања</string>
+    <string name="bugreport_group_summary">Нових извештаја: %d.</string>
+    <string name="bugreport_group_summary_multiple">Више нових извештаја.</string>
+    <string name="folder_cover_mode">Користи режим прекривања</string>
+    <string name="folder_cover_mode_desc">Додирните да за отварање прве апликације, превуците нагоре за отварање фасцикли.</string>
+    <string name="icon_shape_override_miui_explaination">Због грешке у ОС MIUI, може се десити да иконе остану квадратног облика.</string>
+    <string name="permission_iplocate">Приближна локација</string>
+    <string name="permission_iplocate_twilight_explanation">Дозволити приступ приближној локацији? Овим омогућавате прецизније предвиђање обданице.</string>
+    <string name="event_provider_missing_notification_access">Да бисте користили <xliff:g example="My Provider" id="providerName">„%1$s”</xliff:g>, укључите обавештења из <xliff:g example="My App" id="name">„%2$s”.</xliff:g></string>
+    <string name="event_provider_missing_notification_dots">Да бисте користили <xliff:g example="My Provider" id="providerName">„%1$s”</xliff:g>, укључите тачке за обавештења.</string>
+    <string name="zen_mode_enabled">Укључен је режим „Не узнемиравај”.</string>
+    <string name="crash_report_notif_title">%1$s је отказао</string>
+    <string name="onbording_settings_title">Подеси %s</string>
+    <string name="onbording_settings_summary">Притисните и задржите на почетном екрану.</string>
+    <string name="onboarding_swipe_up">Превуците нагоре да бисте отворили листу апликација.</string>
     <string name="weather_icons_default">Подразумевано</string>
+    <string name="pref_weather_icon_pack">Пакет икона за временску прогнозу</string>
+    <string name="weather_icon_packs_not_supported">Није подржано од стране добављача временске прогнозе.</string>
+    <string name="customnavbar_install">Додирните да бисте инсталирали Custom Navigation Bar.</string>
+    <string name="customnavbar_back_hiding">Сакриј дугме „Назад”</string>
+    <string name="customnavbar_back_hiding_desc">Скрива дугме „Назад” када није потребно.</string>
+    <string name="icon_shape_top_left">Горе лево</string>
+    <string name="icon_shape_top_right">Горе десно</string>
+    <string name="icon_shape_bottom_left">Доле лево</string>
+    <string name="icon_shape_bottom_right">Доле десно</string>
     <string name="icon_shape_corner_round">Заобљено</string>
+    <string name="icon_shape_corner_squircle">Заобљено</string>
     <string name="icon_shape_corner_cut">Опсечено</string>
+    <string name="smartspace_add_to_home">Додај на почетни екран</string>
+    <string name="get_lawnfeed">Преузми Lawnfeed</string>
     <!-- Section 13 -->
     <string name="quickstep_pref_title">Недавне апликације</string>
+    <string name="quickstep_pref_summary">Покрети, стил, навигација</string>
+    <string name="swipe_up_to_switch_apps_title">Превуците нагоре за пребацивање између апликација</string>
+    <string name="swipe_left_to_go_back_title">Превуците улево за враћање назад</string>
+    <string name="pref_category_nav_swipe_up_gestures">Превлачење нагоре</string>
+    <string name="gesture_nav_swipe_up_left">Слева</string>
+    <string name="gesture_nav_swipe_up_center">Од центра</string>
+    <string name="gesture_nav_swipe_up_right">Здесна</string>
+    <string name="action_switch_apps">Пребацивање између апликација</string>
+    <string name="icon_shape_system_default">На основу система</string>
+    <string name="title_missing_notification_access">Потребан је приступ обавештењима.</string>
+    <string name="activity_not_found">Апликација није инсталирана.</string>
+    <string name="out_of_space">На почетном екрану нема слободног простора.</string>
+    <string name="hotseat_out_of_space">У доку нема слободног простора.</string>
 </resources>
