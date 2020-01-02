@@ -15,13 +15,14 @@
  */
 package com.android.launcher3.allapps;
 
+import static com.android.launcher3.util.PackageManagerHelper.hasShortcutsPermission;
+
 import android.content.Context;
 import android.content.pm.PackageManager;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LabelComparator;
@@ -398,7 +399,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
 
     private boolean shouldShowWorkFooter() {
         return mIsWork && Utilities.ATLEAST_P &&
-                (DeepShortcutManager.getInstance(mLauncher).hasHostPermission()
+                (hasShortcutsPermission(mLauncher)
                         || mLauncher.checkSelfPermission("android.permission.MODIFY_QUIET_MODE")
                         == PackageManager.PERMISSION_GRANTED);
     }
