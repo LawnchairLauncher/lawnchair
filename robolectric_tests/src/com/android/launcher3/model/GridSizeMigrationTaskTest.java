@@ -190,7 +190,7 @@ public class GridSizeMigrationTaskTest {
 
     @Test
     public void testWorkspace_items_not_merged_in_next_screen() throws Exception {
-        // First screen has 2 items that need to be moved, but second screen has only one
+        // First screen has 2 mItems that need to be moved, but second screen has only one
         // empty space after migration (top-left corner)
         int[][][] ids = mModelHelper.createGrid(new int[][][]{{
                 {  0,  0,  0,  1},
@@ -277,7 +277,7 @@ public class GridSizeMigrationTaskTest {
     }
 
     /**
-     * Verifies that the workspace items are arranged in the provided order.
+     * Verifies that the workspace mItems are arranged in the provided order.
      * @param ids A 3d array where the first dimension represents the screen, and the rest two
      *            represent the workspace grid.
      */

@@ -20,13 +20,19 @@ import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.robolectric.Shadows.shadowOf;
 
 import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.net.Uri;
+import android.provider.Settings;
 
 import com.android.launcher3.AppInfo;
+import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
@@ -40,10 +46,14 @@ import org.mockito.ArgumentCaptor;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowContentResolver;
+import org.robolectric.shadows.ShadowPackageManager;
 import org.robolectric.util.ReflectionHelpers;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
@@ -62,6 +72,13 @@ public class LauncherModelHelper {
     public static final int SHORTCUT = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
     public static final int NO__ICON = -1;
     public static final String TEST_PACKAGE = "com.android.launcher3.validpackage";
+
+    // Authority for providing a dummy default-workspace-layout data.
+    private static final String TEST_PROVIDER_AUTHORITY =
+            LauncherModelHelper.class.getName().toLowerCase();
+    private static final int DEFAULT_BITMAP_SIZE = 10;
+    private static final int DEFAULT_GRID_SIZE = 4;
+
 
     private final HashMap<Class, HashMap<String, Field>> mFieldCache = new HashMap<>();
     public final TestLauncherProvider provider;
@@ -284,5 +301,43 @@ public class LauncherModelHelper {
         }
 
         return ids;
+    }
+
+    /**
+     * Sets up a dummy provider to load the provided layout by default, next time the layout loads
+     */
+    public void setupDefaultLayoutProvider(LauncherLayoutBuilder builder) throws Exception {
+        Context context = RuntimeEnvironment.application;
+        InvariantDeviceProfile idp = InvariantDeviceProfile.INSTANCE.get(context);
+        idp.numRows = idp.numColumns = idp.numHotseatIcons = DEFAULT_GRID_SIZE;
+        idp.iconBitmapSize = DEFAULT_BITMAP_SIZE;
+
+        provider.setAllowLoadDefaultFavorites(true);
+        Settings.Secure.putString(context.getContentResolver(),
+                "launcher3.layout.provider", TEST_PROVIDER_AUTHORITY);
+
+        shadowOf(context.getPackageManager())
+                .addProviderIfNotPresent(new ComponentName("com.test", "Dummy")).authority =
+                TEST_PROVIDER_AUTHORITY;
+
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        builder.build(new OutputStreamWriter(bos));
+        Uri layoutUri = LauncherProvider.getLayoutUri(TEST_PROVIDER_AUTHORITY, context);
+        shadowOf(context.getContentResolver()).registerInputStream(layoutUri,
+                new ByteArrayInputStream(bos.toByteArray()));
+    }
+
+    /**
+     * Simulates an apk install with a default main activity with same class and package name
+     */
+    public void installApp(String component) throws NameNotFoundException {
+        ShadowPackageManager spm = shadowOf(RuntimeEnvironment.application.getPackageManager());
+        ComponentName cn = new ComponentName(component, component);
+        spm.addActivityIfNotPresent(cn);
+
+        IntentFilter filter = new IntentFilter(Intent.ACTION_MAIN);
+        filter.addCategory(Intent.CATEGORY_LAUNCHER);
+        filter.addCategory(Intent.CATEGORY_DEFAULT);
+        spm.addIntentFilterForActivity(cn, filter);
     }
 }

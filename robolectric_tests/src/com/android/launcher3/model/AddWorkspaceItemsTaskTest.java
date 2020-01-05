@@ -127,7 +127,7 @@ public class AddWorkspaceItemsTaskTest {
     @Test
     public void testAddItem_some_items_added() throws Exception {
         Callbacks callbacks = mock(Callbacks.class);
-        mModelHelper.getModel().initialize(callbacks);
+        mModelHelper.getModel().addCallbacks(callbacks);
 
         WorkspaceItemInfo info = new WorkspaceItemInfo();
         info.intent = new Intent().setComponent(mComponent1);

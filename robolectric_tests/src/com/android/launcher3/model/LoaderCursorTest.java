@@ -46,7 +46,6 @@ import static org.robolectric.Shadows.shadowOf;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.LauncherApps;
 import android.database.MatrixCursor;
 import android.os.Process;
 
@@ -77,7 +76,6 @@ public class LoaderCursorTest {
     private MatrixCursor mCursor;
     private InvariantDeviceProfile mIDP;
     private Context mContext;
-    private LauncherApps mLauncherApps;
 
     private LoaderCursor mLoaderCursor;
 
@@ -86,7 +84,6 @@ public class LoaderCursorTest {
         mContext = RuntimeEnvironment.application;
         mIDP = InvariantDeviceProfile.INSTANCE.get(mContext);
         mApp = LauncherAppState.getInstance(mContext);
-        mLauncherApps = mContext.getSystemService(LauncherApps.class);
 
         mCursor = new MatrixCursor(new String[] {
                 ICON, ICON_PACKAGE, ICON_RESOURCE, TITLE,
@@ -174,7 +171,7 @@ public class LoaderCursorTest {
         mIDP.numColumns = 4;
         mIDP.numHotseatIcons = 3;
 
-        // Overlapping items are not placed
+        // Overlapping mItems are not placed
         assertTrue(mLoaderCursor.checkItemPlacement(
                 newItemInfo(0, 0, 1, 1, CONTAINER_DESKTOP, 1)));
         assertFalse(mLoaderCursor.checkItemPlacement(
@@ -200,7 +197,7 @@ public class LoaderCursorTest {
         mIDP.numColumns = 4;
         mIDP.numHotseatIcons = 3;
 
-        // Hotseat items are only placed based on screenId
+        // Hotseat mItems are only placed based on screenId
         assertTrue(mLoaderCursor.checkItemPlacement(
                 newItemInfo(3, 3, 1, 1, CONTAINER_HOTSEAT, 1)));
         assertTrue(mLoaderCursor.checkItemPlacement(

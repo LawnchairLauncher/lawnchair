@@ -77,7 +77,7 @@ public class HotseatEduController {
     }
 
     void finishOnboarding() {
-        mLauncher.rebindModel();
+        mLauncher.getModel().rebindCallbacks();
         mLauncher.getSharedPrefs().edit().putBoolean(KEY_HOTSEAT_EDU_SEEN, true).apply();
         removeNotification();
     }
