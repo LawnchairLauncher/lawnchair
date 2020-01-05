@@ -552,4 +552,5 @@
     <string name="title_missing_notification_access">알림 접근 권한이 필요</string>
     <string name="activity_not_found">앱이 설치되지 않았어요.</string>
     <string name="out_of_space">화면에 더 이상 공간이 없습니다.</string>
+    <string name="hotseat_out_of_space">독에 더 이상 공간이 없습니다.</string>
 </resources>
