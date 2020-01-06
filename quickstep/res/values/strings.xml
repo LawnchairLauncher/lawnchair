@@ -66,5 +66,33 @@
     <!-- Text of the tip when user lands in all apps view for the first time, indicating where the tip toast points to is the predicted apps section. [CHAR_LIMIT=50] -->
     <string name="all_apps_prediction_tip">Your predicted apps</string>
 
+    <!-- Content description for a close button. [CHAR LIMIT=NONE] -->
+    <string name="back_gesture_tutorial_close_button_content_description" translatable="false">Close</string>
 
+    <!-- Title shown on the notification of Back gesture tutorial. [CHAR LIMIT=30] -->
+    <string name="back_gesture_tutorial_notification_title" translatable="false">Try the new back gesture</string>
+    <!-- Subtitle shown on the notification of Back gesture tutorial. [CHAR LIMIT=60] -->
+    <string name="back_gesture_tutorial_notification_subtitle" translatable="false">Learn how to go back while using your apps</string>
+    <!-- Action text shown on the notification of Back gesture tutorial. [CHAR LIMIT=14] -->
+    <string name="back_gesture_tutorial_notification_action_label" translatable="false">Try it</string>
+
+    <!-- Title shown during interactive part of Back gesture tutorial for right edge. [CHAR LIMIT=30] -->
+    <string name="back_gesture_tutorial_playground_title_swipe_inward_right_edge" translatable="false">Try the back gesture</string>
+    <!-- Subtitle shown during interactive parts of Back gesture tutorial for right edge. [CHAR LIMIT=60] -->
+    <string name="back_gesture_tutorial_engaged_subtitle_swipe_inward_right_edge" translatable="false">Start at the right edge and swipe toward the middle</string>
+
+    <!-- Title shown during interactive part of Back gesture tutorial for left edge. [CHAR LIMIT=30] -->
+    <string name="back_gesture_tutorial_playground_title_swipe_inward_left_edge" translatable="false">Try the other side</string>
+    <!-- Subtitle shown during interactive parts of Back gesture tutorial for left edge. [CHAR LIMIT=60] -->
+    <string name="back_gesture_tutorial_engaged_subtitle_swipe_inward_left_edge" translatable="false">That\'s it! Now try swiping from the left edge.</string>
+
+    <!-- Title shown on the confirmation screen after successful gesture. [CHAR LIMIT=30] -->
+    <string name="back_gesture_tutorial_confirm_title" translatable="false">All set</string>
+    <!-- Subtitle shown on the confirmation screen after successful gesture. [CHAR LIMIT=60] -->
+    <string name="back_gesture_tutorial_confirm_subtitle" translatable="false">To change the sensitivity of the back gesture, go to Settings</string>
+
+    <!-- Button text shown on a button on the confirm screen. [CHAR LIMIT=14] -->
+    <string name="back_gesture_tutorial_action_button_label" translatable="false">Done</string>
+    <!-- Button text shown on a text button on the confirm screen. [CHAR LIMIT=14] -->
+    <string name="back_gesture_tutorial_action_text_button_label" translatable="false">Settings</string>
 </resources>

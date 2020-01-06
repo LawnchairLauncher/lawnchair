@@ -25,4 +25,39 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
+
+    <style name="TextAppearance.BackGestureTutorial"
+        parent="android:TextAppearance.Material.Body1" />
+
+    <style name="TextAppearance.BackGestureTutorial.CallToAction"
+        parent="android:TextAppearance.Material.Body2" />
+
+    <style name="TextAppearance.BackGestureTutorial.Title"
+        parent="TextAppearance.BackGestureTutorial">
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/back_gesture_tutorial_title_color</item>
+        <item name="android:textSize">28sp</item>
+    </style>
+
+    <style name="TextAppearance.BackGestureTutorial.Subtitle"
+        parent="TextAppearance.BackGestureTutorial">
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/back_gesture_tutorial_subtitle_color</item>
+        <item name="android:letterSpacing">0.03</item>
+        <item name="android:textSize">21sp</item>
+    </style>
+
+    <style name="TextAppearance.BackGestureTutorial.ButtonLabel"
+        parent="TextAppearance.BackGestureTutorial.CallToAction">
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/back_gesture_tutorial_action_button_label_color</item>
+        <item name="android:letterSpacing">0.02</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="TextAppearance.BackGestureTutorial.TextButtonLabel"
+        parent="TextAppearance.BackGestureTutorial.ButtonLabel">
+        <item name="android:textColor">@color/back_gesture_tutorial_primary_color</item>
+    </style>
 </resources>

@@ -27,8 +27,9 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.icons.LauncherIcons;
-import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutKey;
+import com.android.launcher3.shortcuts.ShortcutRequest;
+import com.android.launcher3.shortcuts.ShortcutRequest.QueryResult;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ItemInfoMatcher;
 
@@ -52,12 +53,11 @@ public class UserLockStateChangedTask extends BaseModelUpdateTask {
     public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
         Context context = app.getContext();
         boolean isUserUnlocked = context.getSystemService(UserManager.class).isUserUnlocked(mUser);
-        DeepShortcutManager deepShortcutManager = DeepShortcutManager.getInstance(context);
 
         HashMap<ShortcutKey, ShortcutInfo> pinnedShortcuts = new HashMap<>();
         if (isUserUnlocked) {
-            DeepShortcutManager.QueryResult shortcuts =
-                    deepShortcutManager.queryForPinnedShortcuts(null, mUser);
+            QueryResult shortcuts = new ShortcutRequest(context, mUser)
+                    .query(ShortcutRequest.PINNED);
             if (shortcuts.wasSuccess()) {
                 for (ShortcutInfo shortcut : shortcuts) {
                     pinnedShortcuts.put(ShortcutKey.fromInfo(shortcut), shortcut);
@@ -115,7 +115,8 @@ public class UserLockStateChangedTask extends BaseModelUpdateTask {
 
         if (isUserUnlocked) {
             dataModel.updateDeepShortcutCounts(
-                    null, mUser, deepShortcutManager.queryForAllShortcuts(mUser));
+                    null, mUser,
+                    new ShortcutRequest(context, mUser).query(ShortcutRequest.ALL));
         }
         bindDeepShortcuts(dataModel);
     }

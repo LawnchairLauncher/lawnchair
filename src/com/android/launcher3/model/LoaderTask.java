@@ -21,6 +21,7 @@ import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_SAFEMODE;
 import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_SUSPENDED;
 import static com.android.launcher3.model.ModelUtils.filterCurrentWorkspaceItems;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
+import static com.android.launcher3.util.PackageManagerHelper.hasShortcutsPermission;
 import static com.android.launcher3.util.PackageManagerHelper.isSystemApp;
 
 import android.appwidget.AppWidgetProviderInfo;
@@ -72,8 +73,9 @@ import com.android.launcher3.pm.PackageInstallInfo;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.provider.ImportDataTask;
 import com.android.launcher3.qsb.QsbContainerView;
-import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutKey;
+import com.android.launcher3.shortcuts.ShortcutRequest;
+import com.android.launcher3.shortcuts.ShortcutRequest.QueryResult;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IOUtils;
 import com.android.launcher3.util.LooperIdleLock;
@@ -114,7 +116,6 @@ public class LoaderTask implements Runnable {
     private final UserManager mUserManager;
     private final UserCache mUserCache;
 
-    private final DeepShortcutManager mShortcutManager;
     private final InstallSessionHelper mSessionHelper;
     private final IconCache mIconCache;
 
@@ -130,7 +131,6 @@ public class LoaderTask implements Runnable {
         mLauncherApps = mApp.getContext().getSystemService(LauncherApps.class);
         mUserManager = mApp.getContext().getSystemService(UserManager.class);
         mUserCache = UserCache.INSTANCE.get(mApp.getContext());
-        mShortcutManager = DeepShortcutManager.getInstance(mApp.getContext());
         mSessionHelper = InstallSessionHelper.INSTANCE.get(mApp.getContext());
         mIconCache = mApp.getIconCache();
     }
@@ -349,8 +349,8 @@ public class LoaderTask implements Runnable {
 
                     // We can only query for shortcuts when the user is unlocked.
                     if (userUnlocked) {
-                        DeepShortcutManager.QueryResult pinnedShortcuts =
-                                mShortcutManager.queryForPinnedShortcuts(null, user);
+                        QueryResult pinnedShortcuts = new ShortcutRequest(context, user)
+                                .query(ShortcutRequest.PINNED);
                         if (pinnedShortcuts.wasSuccess()) {
                             for (ShortcutInfo shortcut : pinnedShortcuts) {
                                 shortcutKeyToPinnedShortcuts.put(ShortcutKey.fromInfo(shortcut),
@@ -786,7 +786,7 @@ public class LoaderTask implements Runnable {
                 if ((numTimesPinned == null || numTimesPinned.value == 0)
                         && !pendingShortcuts.contains(key)) {
                     // Shortcut is pinned but doesn't exist on the workspace; unpin it.
-                    mShortcutManager.unpinShortcut(key);
+                    mBgDataModel.unpinShortcut(context, key);
                 }
             }
 
@@ -884,12 +884,12 @@ public class LoaderTask implements Runnable {
     private List<ShortcutInfo> loadDeepShortcuts() {
         List<ShortcutInfo> allShortcuts = new ArrayList<>();
         mBgDataModel.deepShortcutMap.clear();
-        mBgDataModel.hasShortcutHostPermission = mShortcutManager.hasHostPermission();
+        mBgDataModel.hasShortcutHostPermission = hasShortcutsPermission(mApp.getContext());
         if (mBgDataModel.hasShortcutHostPermission) {
             for (UserHandle user : mUserCache.getUserProfiles()) {
                 if (mUserManager.isUserUnlocked(user)) {
-                    List<ShortcutInfo> shortcuts =
-                            mShortcutManager.queryForAllShortcuts(user);
+                    List<ShortcutInfo> shortcuts = new ShortcutRequest(mApp.getContext(), user)
+                            .query(ShortcutRequest.ALL);
                     allShortcuts.addAll(shortcuts);
                     mBgDataModel.updateDeepShortcutCounts(null, user, shortcuts);
                 }

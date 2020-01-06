@@ -24,8 +24,8 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.icons.LauncherIcons;
-import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutKey;
+import com.android.launcher3.shortcuts.ShortcutRequest;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.MultiHashMap;
 
@@ -54,8 +54,6 @@ public class ShortcutsChangedTask extends BaseModelUpdateTask {
     @Override
     public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
         final Context context = app.getContext();
-        DeepShortcutManager deepShortcutManager = DeepShortcutManager.getInstance(context);
-
         // Find WorkspaceItemInfo's that have changed on the workspace.
         HashSet<ShortcutKey> removedKeys = new HashSet<>();
         MultiHashMap<ShortcutKey, WorkspaceItemInfo> keyToShortcutInfo = new MultiHashMap<>();
@@ -74,8 +72,9 @@ public class ShortcutsChangedTask extends BaseModelUpdateTask {
         final ArrayList<WorkspaceItemInfo> updatedWorkspaceItemInfos = new ArrayList<>();
         if (!keyToShortcutInfo.isEmpty()) {
             // Update the workspace to reflect the changes to updated shortcuts residing on it.
-            List<ShortcutInfo> shortcuts = deepShortcutManager.queryForFullDetails(
-                    mPackageName, new ArrayList<>(allIds), mUser);
+            List<ShortcutInfo> shortcuts = new ShortcutRequest(context, mUser)
+                    .forPackage(mPackageName, new ArrayList<>(allIds))
+                    .query(ShortcutRequest.ALL);
             for (ShortcutInfo fullDetails : shortcuts) {
                 ShortcutKey key = ShortcutKey.fromInfo(fullDetails);
                 List<WorkspaceItemInfo> workspaceItemInfos = keyToShortcutInfo.remove(key);

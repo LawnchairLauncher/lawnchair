@@ -44,8 +44,8 @@ import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.icons.LauncherIcons;
-import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutKey;
+import com.android.launcher3.shortcuts.ShortcutRequest;
 import com.android.launcher3.util.InstantAppResolver;
 
 import java.util.ArrayList;
@@ -167,11 +167,7 @@ public class DynamicItemCache {
 
     @WorkerThread
     private WorkspaceItemInfo loadShortcutWorker(ShortcutKey shortcutKey) {
-        DeepShortcutManager mgr = DeepShortcutManager.getInstance(mContext);
-        List<ShortcutInfo> details = mgr.queryForFullDetails(
-                shortcutKey.componentName.getPackageName(),
-                Collections.<String>singletonList(shortcutKey.getId()),
-                shortcutKey.user);
+        List<ShortcutInfo> details = shortcutKey.buildRequest(mContext).query(ShortcutRequest.ALL);
         if (!details.isEmpty()) {
             WorkspaceItemInfo si = new WorkspaceItemInfo(details.get(0), mContext);
             try (LauncherIcons li = LauncherIcons.obtain(mContext)) {

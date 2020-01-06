@@ -16,19 +16,22 @@
 
 package com.android.launcher3.icons;
 
+import static com.android.launcher3.model.WidgetsModel.GO_DISABLE_WIDGETS;
+
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.pm.LauncherApps;
 import android.content.pm.PackageInfo;
 import android.content.pm.ShortcutInfo;
 import android.graphics.drawable.Drawable;
 import android.os.UserHandle;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.cache.CachingLogic;
-import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.Themes;
 
@@ -36,6 +39,8 @@ import com.android.launcher3.util.Themes;
  * Caching logic for shortcuts.
  */
 public class ShortcutCachingLogic implements CachingLogic<ShortcutInfo> {
+
+    private static final String TAG = "ShortcutCachingLogic";
 
     @Override
     public ComponentName getComponent(ShortcutInfo info) {
@@ -56,8 +61,8 @@ public class ShortcutCachingLogic implements CachingLogic<ShortcutInfo> {
     @Override
     public BitmapInfo loadIcon(Context context, ShortcutInfo info) {
         try (LauncherIcons li = LauncherIcons.obtain(context)) {
-            Drawable unbadgedDrawable = DeepShortcutManager.getInstance(context)
-                    .getShortcutIconDrawable(info, LauncherAppState.getIDP(context).fillResIconDpi);
+            Drawable unbadgedDrawable = ShortcutCachingLogic.getIcon(
+                    context, info, LauncherAppState.getIDP(context).fillResIconDpi);
             if (unbadgedDrawable == null) return BitmapInfo.LOW_RES_INFO;
             return new BitmapInfo(li.createScaledBitmapWithoutShadow(
                     unbadgedDrawable, 0), Themes.getColorAccent(context));
@@ -75,5 +80,22 @@ public class ShortcutCachingLogic implements CachingLogic<ShortcutInfo> {
     @Override
     public boolean addToMemCache() {
         return false;
+    }
+
+    /**
+     * Similar to {@link LauncherApps#getShortcutIconDrawable(ShortcutInfo, int)} with additional
+     * Launcher specific checks
+     */
+    public static Drawable getIcon(Context context, ShortcutInfo shortcutInfo, int density) {
+        if (GO_DISABLE_WIDGETS) {
+            return null;
+        }
+        try {
+            return context.getSystemService(LauncherApps.class)
+                    .getShortcutIconDrawable(shortcutInfo, density);
+        } catch (SecurityException | IllegalStateException e) {
+            Log.e(TAG, "Failed to get shortcut icon", e);
+            return null;
+        }
     }
 }

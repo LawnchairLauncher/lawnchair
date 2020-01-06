@@ -31,8 +31,8 @@ import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.notification.NotificationInfo;
 import com.android.launcher3.notification.NotificationKeyData;
 import com.android.launcher3.notification.NotificationListener;
-import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.DeepShortcutView;
+import com.android.launcher3.shortcuts.ShortcutRequest;
 import com.android.launcher3.util.PackageUserKey;
 
 import java.util.ArrayList;
@@ -144,8 +144,9 @@ public class PopupPopulator {
                 uiHandler.post(() -> container.applyNotificationInfos(infos));
             }
 
-            List<ShortcutInfo> shortcuts = DeepShortcutManager.getInstance(launcher)
-                    .queryForShortcutsContainer(activity, user);
+            List<ShortcutInfo> shortcuts = new ShortcutRequest(launcher, user)
+                    .withContainer(activity)
+                    .query(ShortcutRequest.PUBLISHED);
             String shortcutIdToDeDupe = notificationKeys.isEmpty() ? null
                     : notificationKeys.get(0).shortcutId;
             shortcuts = PopupPopulator.sortAndFilterShortcuts(shortcuts, shortcutIdToDeDupe);
