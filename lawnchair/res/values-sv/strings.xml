@@ -294,6 +294,8 @@
     <string name="loading">Laddar…</string>
     <string name="backup_share">Dela</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
+    <string name="dock_style_p">Android Pie</string>
+    <string name="dock_style_n">Android Nougat</string>
     <string name="dock_style_hidden">Dold</string>
     <string name="opacity">Opacitet</string>
     <string name="gradient">Gradient</string>
