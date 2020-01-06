@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2019 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.android.launcher3.model;
 
 import static com.android.launcher3.LauncherSettings.Favorites.CELLX;
@@ -17,6 +33,7 @@ import static com.android.launcher3.LauncherSettings.Favorites.RESTORED;
 import static com.android.launcher3.LauncherSettings.Favorites.SCREEN;
 import static com.android.launcher3.LauncherSettings.Favorites.TITLE;
 import static com.android.launcher3.LauncherSettings.Favorites._ID;
+import static com.android.launcher3.util.LauncherModelHelper.TEST_PACKAGE;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
@@ -24,43 +41,38 @@ import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.robolectric.Shadows.shadowOf;
 
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.LauncherApps;
 import android.database.MatrixCursor;
-import android.graphics.Bitmap;
 import android.os.Process;
-
-import androidx.test.InstrumentationRegistry;
-import androidx.test.filters.SmallTest;
-import androidx.test.runner.AndroidJUnit4;
 
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.WorkspaceItemInfo;
-import com.android.launcher3.icons.BitmapInfo;
-import com.android.launcher3.icons.IconCache;
+import com.android.launcher3.util.Executors;
+import com.android.launcher3.util.LauncherRoboTestRunner;
 import com.android.launcher3.util.PackageManagerHelper;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.RuntimeEnvironment;
+import org.robolectric.annotation.LooperMode;
+import org.robolectric.annotation.LooperMode.Mode;
 
 /**
  * Tests for {@link LoaderCursor}
  */
-@SmallTest
-@RunWith(AndroidJUnit4.class)
+@RunWith(LauncherRoboTestRunner.class)
+@LooperMode(Mode.PAUSED)
 public class LoaderCursorTest {
 
-    private LauncherAppState mMockApp;
-    private IconCache mMockIconCache;
+    private LauncherAppState mApp;
 
     private MatrixCursor mCursor;
     private InvariantDeviceProfile mIDP;
@@ -71,22 +83,18 @@ public class LoaderCursorTest {
 
     @Before
     public void setup() {
-        mIDP = new InvariantDeviceProfile();
+        mContext = RuntimeEnvironment.application;
+        mIDP = InvariantDeviceProfile.INSTANCE.get(mContext);
+        mApp = LauncherAppState.getInstance(mContext);
+        mLauncherApps = mContext.getSystemService(LauncherApps.class);
+
         mCursor = new MatrixCursor(new String[] {
                 ICON, ICON_PACKAGE, ICON_RESOURCE, TITLE,
                 _ID, CONTAINER, ITEM_TYPE, PROFILE_ID,
                 SCREEN, CELLX, CELLY, RESTORED, INTENT
         });
-        mContext = InstrumentationRegistry.getTargetContext();
 
-        mMockApp = mock(LauncherAppState.class);
-        mMockIconCache = mock(IconCache.class);
-        when(mMockApp.getIconCache()).thenReturn(mMockIconCache);
-        when(mMockApp.getInvariantDeviceProfile()).thenReturn(mIDP);
-        when(mMockApp.getContext()).thenReturn(mContext);
-        mLauncherApps = mContext.getSystemService(LauncherApps.class);
-
-        mLoaderCursor = new LoaderCursor(mCursor, mMockApp);
+        mLoaderCursor = new LoaderCursor(mCursor, mApp);
         mLoaderCursor.allUsers.put(0, Process.myUserHandle());
     }
 
@@ -109,26 +117,31 @@ public class LoaderCursorTest {
     }
 
     @Test
-    public void getAppShortcutInfo_dontAllowMissing_validComponent() {
+    public void getAppShortcutInfo_dontAllowMissing_validComponent() throws Exception {
+        ComponentName cn = new ComponentName(TEST_PACKAGE, TEST_PACKAGE);
+        shadowOf(mContext.getPackageManager()).addActivityIfNotPresent(cn);
+
         initCursor(ITEM_TYPE_APPLICATION, "");
         assertTrue(mLoaderCursor.moveToNext());
 
-        ComponentName cn = mLauncherApps.getActivityList(null, mLoaderCursor.user)
-                .get(0).getComponentName();
-        WorkspaceItemInfo info = mLoaderCursor.getAppShortcutInfo(
-                new Intent().setComponent(cn), false /* allowMissingTarget */, true);
+        WorkspaceItemInfo info = Executors.MODEL_EXECUTOR.submit(() ->
+                mLoaderCursor.getAppShortcutInfo(
+                        new Intent().setComponent(cn), false  /* allowMissingTarget */, true))
+                .get();
         assertNotNull(info);
         assertTrue(PackageManagerHelper.isLauncherAppTarget(info.intent));
     }
 
     @Test
-    public void getAppShortcutInfo_allowMissing_invalidComponent() {
+    public void getAppShortcutInfo_allowMissing_invalidComponent() throws Exception {
         initCursor(ITEM_TYPE_APPLICATION, "");
         assertTrue(mLoaderCursor.moveToNext());
 
         ComponentName cn = new ComponentName(mContext.getPackageName(), "dummy-do");
-        WorkspaceItemInfo info = mLoaderCursor.getAppShortcutInfo(
-                new Intent().setComponent(cn), true  /* allowMissingTarget */, true);
+        WorkspaceItemInfo info = Executors.MODEL_EXECUTOR.submit(() ->
+                mLoaderCursor.getAppShortcutInfo(
+                        new Intent().setComponent(cn), true  /* allowMissingTarget */, true))
+                .get();
         assertNotNull(info);
         assertTrue(PackageManagerHelper.isLauncherAppTarget(info.intent));
     }
@@ -138,11 +151,8 @@ public class LoaderCursorTest {
         initCursor(ITEM_TYPE_SHORTCUT, "my-shortcut");
         assertTrue(mLoaderCursor.moveToNext());
 
-        Bitmap icon = Bitmap.createBitmap(1, 1, Bitmap.Config.ALPHA_8);
-        when(mMockIconCache.getDefaultIcon(eq(mLoaderCursor.user)))
-                .thenReturn(BitmapInfo.fromBitmap(icon));
         WorkspaceItemInfo info = mLoaderCursor.loadSimpleWorkspaceItem();
-        assertEquals(icon, info.bitmap.icon);
+        assertTrue(mApp.getIconCache().isDefaultIcon(info.bitmap, info.user));
         assertEquals("my-shortcut", info.title);
         assertEquals(ITEM_TYPE_SHORTCUT, info.itemType);
     }

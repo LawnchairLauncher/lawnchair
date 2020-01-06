@@ -6,33 +6,53 @@ import static android.database.DatabaseUtils.queryNumEntries;
 import static com.android.launcher3.LauncherSettings.Favorites.BACKUP_TABLE_NAME;
 import static com.android.launcher3.LauncherSettings.Favorites.TABLE_NAME;
 import static com.android.launcher3.provider.LauncherDbUtils.tableExists;
+import static com.android.launcher3.util.LauncherModelHelper.APP_ICON;
+import static com.android.launcher3.util.LauncherModelHelper.DESKTOP;
+import static com.android.launcher3.util.LauncherModelHelper.NO__ICON;
+import static com.android.launcher3.util.LauncherModelHelper.SHORTCUT;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import android.content.ContentValues;
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Point;
 
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.LauncherSettings.Settings;
+import com.android.launcher3.util.LauncherModelHelper;
+import com.android.launcher3.util.LauncherRoboTestRunner;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RuntimeEnvironment;
 
 /**
  * Unit tests for {@link GridBackupTable}
  */
-@RunWith(RobolectricTestRunner.class)
-public class GridBackupTableTest extends BaseGridChangesTestCase {
+@RunWith(LauncherRoboTestRunner.class)
+public class GridBackupTableTest {
 
     private static final int BACKUP_ITEM_COUNT = 12;
 
+    private LauncherModelHelper mModelHelper;
+    private Context mContext;
+    private SQLiteDatabase mDb;
+
     @Before
-    public void setupGridData() {
-        createGrid(new int[][][]{{
+    public void setUp() {
+        mModelHelper = new LauncherModelHelper();
+        mContext = RuntimeEnvironment.application;
+        mDb = mModelHelper.provider.getDb();
+
+        setupGridData();
+    }
+
+    private void setupGridData() {
+        mModelHelper.createGrid(new int[][][]{{
                 { APP_ICON, APP_ICON, SHORTCUT, SHORTCUT},
                 { SHORTCUT, SHORTCUT, NO__ICON, NO__ICON},
                 { NO__ICON, NO__ICON, SHORTCUT, SHORTCUT},
@@ -81,7 +101,7 @@ public class GridBackupTableTest extends BaseGridChangesTestCase {
 
         assertTrue(tableExists(mDb, BACKUP_TABLE_NAME));
 
-        addItem(1, 2, DESKTOP, 1, 1);
+        mModelHelper.addItem(1, 2, DESKTOP, 1, 1);
         assertFalse(tableExists(mDb, BACKUP_TABLE_NAME));
     }
 

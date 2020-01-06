@@ -1,25 +1,31 @@
 package com.android.launcher3.model;
 
 import static com.android.launcher3.model.GridSizeMigrationTask.getWorkspaceScreenIds;
+import static com.android.launcher3.util.LauncherModelHelper.APP_ICON;
+import static com.android.launcher3.util.LauncherModelHelper.HOTSEAT;
+import static com.android.launcher3.util.LauncherModelHelper.SHORTCUT;
+import static com.android.launcher3.util.LauncherModelHelper.TEST_PACKAGE;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Point;
 
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.config.FlagOverrideRule;
 import com.android.launcher3.model.GridSizeMigrationTask.MultiStepMigrationTask;
 import com.android.launcher3.util.IntArray;
+import com.android.launcher3.util.LauncherModelHelper;
+import com.android.launcher3.util.LauncherRoboTestRunner;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RuntimeEnvironment;
 
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -27,30 +33,35 @@ import java.util.LinkedList;
 /**
  * Unit tests for {@link GridSizeMigrationTask}
  */
-@RunWith(RobolectricTestRunner.class)
-public class GridSizeMigrationTaskTest extends BaseGridChangesTestCase {
+@RunWith(LauncherRoboTestRunner.class)
+public class GridSizeMigrationTaskTest {
 
-    @Rule
-    public final FlagOverrideRule flags = new FlagOverrideRule();
+    private LauncherModelHelper mModelHelper;
+    private Context mContext;
+    private SQLiteDatabase mDb;
 
     private HashSet<String> mValidPackages;
     private InvariantDeviceProfile mIdp;
 
     @Before
     public void setUp() {
+        mModelHelper = new LauncherModelHelper();
+        mContext = RuntimeEnvironment.application;
+        mDb = mModelHelper.provider.getDb();
+
         mValidPackages = new HashSet<>();
         mValidPackages.add(TEST_PACKAGE);
-        mIdp = new InvariantDeviceProfile();
+        mIdp = InvariantDeviceProfile.INSTANCE.get(mContext);
     }
 
     @Test
     public void testHotseatMigration_apps_dropped() throws Exception {
         int[] hotseatItems = {
-                addItem(APP_ICON, 0, HOTSEAT, 0, 0),
-                addItem(SHORTCUT, 1, HOTSEAT, 0, 0),
+                mModelHelper.addItem(APP_ICON, 0, HOTSEAT, 0, 0),
+                mModelHelper.addItem(SHORTCUT, 1, HOTSEAT, 0, 0),
                 -1,
-                addItem(SHORTCUT, 3, HOTSEAT, 0, 0),
-                addItem(APP_ICON, 4, HOTSEAT, 0, 0),
+                mModelHelper.addItem(SHORTCUT, 3, HOTSEAT, 0, 0),
+                mModelHelper.addItem(APP_ICON, 4, HOTSEAT, 0, 0),
         };
 
         mIdp.numHotseatIcons = 3;
@@ -63,11 +74,11 @@ public class GridSizeMigrationTaskTest extends BaseGridChangesTestCase {
     @Test
     public void testHotseatMigration_shortcuts_dropped() throws Exception {
         int[] hotseatItems = {
-                addItem(APP_ICON, 0, HOTSEAT, 0, 0),
-                addItem(30, 1, HOTSEAT, 0, 0),
+                mModelHelper.addItem(APP_ICON, 0, HOTSEAT, 0, 0),
+                mModelHelper.addItem(30, 1, HOTSEAT, 0, 0),
                 -1,
-                addItem(SHORTCUT, 3, HOTSEAT, 0, 0),
-                addItem(10, 4, HOTSEAT, 0, 0),
+                mModelHelper.addItem(SHORTCUT, 3, HOTSEAT, 0, 0),
+                mModelHelper.addItem(10, 4, HOTSEAT, 0, 0),
         };
 
         mIdp.numHotseatIcons = 3;
@@ -109,7 +120,7 @@ public class GridSizeMigrationTaskTest extends BaseGridChangesTestCase {
 
     @Test
     public void testWorkspace_empty_row_column_removed() throws Exception {
-        int[][][] ids = createGrid(new int[][][]{{
+        int[][][] ids = mModelHelper.createGrid(new int[][][]{{
                 {  0,  0, -1,  1},
                 {  3,  1, -1,  4},
                 { -1, -1, -1, -1},
@@ -129,7 +140,7 @@ public class GridSizeMigrationTaskTest extends BaseGridChangesTestCase {
 
     @Test
     public void testWorkspace_new_screen_created() throws Exception {
-        int[][][] ids = createGrid(new int[][][]{{
+        int[][][] ids = mModelHelper.createGrid(new int[][][]{{
                 {  0,  0,  0,  1},
                 {  3,  1,  0,  4},
                 { -1, -1, -1, -1},
@@ -151,7 +162,7 @@ public class GridSizeMigrationTaskTest extends BaseGridChangesTestCase {
 
     @Test
     public void testWorkspace_items_merged_in_next_screen() throws Exception {
-        int[][][] ids = createGrid(new int[][][]{{
+        int[][][] ids = mModelHelper.createGrid(new int[][][]{{
                 {  0,  0,  0,  1},
                 {  3,  1,  0,  4},
                 { -1, -1, -1, -1},
@@ -181,7 +192,7 @@ public class GridSizeMigrationTaskTest extends BaseGridChangesTestCase {
     public void testWorkspace_items_not_merged_in_next_screen() throws Exception {
         // First screen has 2 items that need to be moved, but second screen has only one
         // empty space after migration (top-left corner)
-        int[][][] ids = createGrid(new int[][][]{{
+        int[][][] ids = mModelHelper.createGrid(new int[][][]{{
                 {  0,  0,  0,  1},
                 {  3,  1,  0,  4},
                 { -1, -1, -1, -1},
@@ -217,7 +228,7 @@ public class GridSizeMigrationTaskTest extends BaseGridChangesTestCase {
         }
         // The first screen has one item on the 4th column which needs moving, as the first row
         // will be kept empty.
-        int[][][] ids = createGrid(new int[][][]{{
+        int[][][] ids = mModelHelper.createGrid(new int[][][]{{
                 { -1, -1, -1, -1},
                 {  3,  1,  7,  0},
                 {  8,  7,  7, -1},
@@ -244,7 +255,7 @@ public class GridSizeMigrationTaskTest extends BaseGridChangesTestCase {
             return;
         }
         // Items will get moved to the next screen to keep the first screen empty.
-        int[][][] ids = createGrid(new int[][][]{{
+        int[][][] ids = mModelHelper.createGrid(new int[][][]{{
                 { -1, -1, -1, -1},
                 {  0,  1,  0,  0},
                 {  8,  7,  7, -1},

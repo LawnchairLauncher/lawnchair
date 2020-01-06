@@ -45,6 +45,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.icons.BaseIconFactory;
 import com.android.launcher3.icons.BitmapInfo;
@@ -250,9 +251,9 @@ public abstract class BaseIconCache {
      * @param replaceExisting if true, it will recreate the bitmap even if it already exists in
      *                        the memory. This is useful then the previous bitmap was created using
      *                        old data.
-     * package private
      */
-    protected synchronized <T> void addIconToDBAndMemCache(T object, CachingLogic<T> cachingLogic,
+    @VisibleForTesting
+    public synchronized <T> void addIconToDBAndMemCache(T object, CachingLogic<T> cachingLogic,
             PackageInfo info, long userSerial, boolean replaceExisting) {
         UserHandle user = cachingLogic.getUser(object);
         ComponentName componentName = cachingLogic.getComponent(object);

@@ -2,7 +2,6 @@ package com.android.launcher3.util;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -11,7 +10,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * Unit tests for {@link GridOccupancy}
  */
-@RunWith(RobolectricTestRunner.class)
+@RunWith(LauncherRoboTestRunner.class)
 public class GridOccupancyTest {
 
     @Test

@@ -13,25 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.util;
 
-import static com.google.common.truth.Truth.assertThat;
+package com.android.launcher3.shadows;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import android.graphics.Bitmap;
+import android.graphics.Paint;
+
+import org.robolectric.annotation.Implementation;
+import org.robolectric.annotation.Implements;
+import org.robolectric.shadows.ShadowBitmap;
 
 /**
- * Robolectric unit tests for {@link IntArray}
+ * Extension of {@link ShadowBitmap} with missing shadow methods
  */
-@RunWith(LauncherRoboTestRunner.class)
-public class IntArrayTest {
+@Implements(value = Bitmap.class)
+public class LShadowBitmap extends ShadowBitmap {
 
-    @Test
-    public void concatAndParseString() {
-        int[] array = new int[] {0, 2, 3, 9};
-        String concat = IntArray.wrap(array).toConcatString();
-
-        int[] parsed = IntArray.fromConcatString(concat).toArray();
-        assertThat(array).isEqualTo(parsed);
+    @Implementation
+    protected Bitmap extractAlpha(Paint paint, int[] offsetXY) {
+        return extractAlpha();
     }
 }
