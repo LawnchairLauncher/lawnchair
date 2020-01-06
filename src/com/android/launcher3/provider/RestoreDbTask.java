@@ -34,8 +34,8 @@ import com.android.launcher3.AppWidgetsRestoredReceiver;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherProvider.DatabaseHelper;
 import com.android.launcher3.LauncherSettings.Favorites;
-import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction;
 import com.android.launcher3.util.IntArray;
@@ -112,9 +112,18 @@ public class RestoreDbTask {
             whereClause.append(" AND profileId != ?");
             profileIds[i] = Long.toString(profileMapping.keyAt(i));
         }
-        int itemsDeleted = db.delete(Favorites.TABLE_NAME, whereClause.toString(), profileIds);
-        if (itemsDeleted > 0) {
-            FileLog.d(TAG, itemsDeleted + " items from unrestored user(s) were deleted");
+        try {
+            int itemsDeleted = db.delete(Favorites.TABLE_NAME, whereClause.toString(), profileIds);
+            if (itemsDeleted > 0) {
+                FileLog.d(TAG, itemsDeleted + " items from unrestored user(s) were deleted");
+            }
+        } catch (IllegalArgumentException exception) {
+            // b/147114476
+            FileLog.e(TAG, new StringBuilder("Failed to execute delete, where clause: '")
+                    .append(whereClause).append("', profile Id size:").append(profileIds.length)
+                    .append("profileIds: ").append(String.join(", ", profileIds)).toString()
+            );
+            throw exception;
         }
 
         // Mark all items as restored.
