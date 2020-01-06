@@ -276,4 +276,15 @@ public final class Workspace extends Home {
                 By.clazz("com.android.launcher3.widget.PendingAppWidgetHostView"), timeout);
         return widget != null ? new Widget(mLauncher, widget) : null;
     }
+
+    /**
+     * Long-clicks the workspace to open menu.
+     */
+    public OptionsPopupMenu getMenu() {
+        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                "want to open menu from workspace")) {
+            return new OptionsPopupMenu(mLauncher, mLauncher.waitForLauncherObject(
+                    "deep_shortcuts_container"));
+        }
+    }
 }
