@@ -18,6 +18,7 @@
     <string name="pref_icon_packs">アイコンパック</string>
     <string name="icon_pack_default">システムアイコン</string>
     <string name="pref_icon_pack_masking">アイコンを覆う</string>
+    <string name="pref_icon_pack_masking_summary">テーマが適用されていないアイコンをアイコンパックに合わせる。</string>
     <string name="pref_legacy_treatment_title">アダプティブアイコンを生成</string>
     <string name="pref_legacy_treatment_summary">すべてのショートカットのためにアダプティブアイコンを造る。</string>
     <string name="pref_legacy_colored_backgrounds">背景の色</string>
