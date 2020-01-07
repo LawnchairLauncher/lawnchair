@@ -21,7 +21,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 
 import com.android.launcher3.AppInfo;
-import com.android.launcher3.Launcher;
+import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ItemInfoMatcher;
@@ -126,7 +126,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
         }
     }
 
-    private final Launcher mLauncher;
+    private final BaseDraggingActivity mLauncher;
 
     // The set of apps from the system
     private final List<AppInfo> mApps = new ArrayList<>();
@@ -151,7 +151,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
 
     public AlphabeticalAppsList(Context context, AllAppsStore appsStore, boolean isWork) {
         mAllAppsStore = appsStore;
-        mLauncher = Launcher.getLauncher(context);
+        mLauncher = BaseDraggingActivity.fromContext(context);
         mAppNameComparator = new AppInfoComparator(context);
         mIsWork = isWork;
         mNumAppsPerRow = mLauncher.getDeviceProfile().inv.numColumns;

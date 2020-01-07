@@ -245,7 +245,7 @@ public class DeviceProfile {
             allAppsIconTextSizePx = originalProfile.iconTextSizePx;
             allAppsCellHeightPx = originalProfile.allAppsCellHeightPx;
             allAppsIconDrawablePaddingPx = originalProfile.iconDrawablePaddingOriginalPx;
-            allAppsCellWidthPx = allAppsIconSizePx + allAppsIconDrawablePaddingPx;
+            allAppsCellWidthPx = allAppsIconSizePx + 2 * allAppsIconDrawablePaddingPx;
         }
         updateWorkspacePadding();
 
@@ -360,7 +360,7 @@ public class DeviceProfile {
         allAppsIconTextSizePx = iconTextSizePx;
         allAppsIconDrawablePaddingPx = iconDrawablePaddingPx;
         allAppsCellHeightPx = getCellSize().y;
-        allAppsCellWidthPx = allAppsIconSizePx + allAppsIconDrawablePaddingPx;
+        allAppsCellWidthPx = allAppsIconSizePx + 2 * allAppsIconDrawablePaddingPx;
 
         if (isVerticalBarLayout()) {
             // Always hide the Workspace text with vertical bar layout.

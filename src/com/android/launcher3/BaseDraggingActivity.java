@@ -29,6 +29,7 @@ import android.os.UserHandle;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -36,6 +37,7 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.testing.TestLogging;
+import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.uioverrides.DisplayRotationListener;
 import com.android.launcher3.uioverrides.WallpaperColorInfo;
 import com.android.launcher3.util.PackageManagerHelper;
@@ -260,6 +262,10 @@ public abstract class BaseDraggingActivity extends BaseActivity
         if (mDeviceProfile.updateIsSeascape(this)) {
             reapplyUi();
         }
+    }
+
+    public OnClickListener getItemOnClickListener() {
+        return ItemClickHandler.INSTANCE;
     }
 
     protected abstract void reapplyUi();

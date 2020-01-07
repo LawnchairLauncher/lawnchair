@@ -371,7 +371,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         mLauncherView = LayoutInflater.from(this).inflate(R.layout.launcher, null);
 
         setupViews();
-        mPopupDataProvider = new PopupDataProvider(this);
+        mPopupDataProvider = new PopupDataProvider(this::updateNotificationDots);
 
         mAppTransitionManager = LauncherAppTransitionManager.newInstance(this);
         mAppTransitionManager.registerRemoteAnimations();
@@ -1344,7 +1344,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         }
     };
 
-    public void updateNotificationDots(Predicate<PackageUserKey> updatedDots) {
+    private void updateNotificationDots(Predicate<PackageUserKey> updatedDots) {
         mWorkspace.updateNotificationDots(updatedDots);
         mAppsView.getAppsStore().updateNotificationDots(updatedDots);
     }
@@ -1807,7 +1807,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
         // Note: There should be at most one log per method call. This is enforced implicitly
         // by using if-else statements.
-        UserEventDispatcher ued = getUserEventDispatcher();
         AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(this);
         if (topView != null && topView.onBackPressed()) {
             // Handled by the floating view.
@@ -1875,6 +1874,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         }
     }
 
+    @Override
     public boolean startActivitySafely(View v, Intent intent, ItemInfo item,
             @Nullable String sourceContainer) {
         if (!hasBeenResumed()) {

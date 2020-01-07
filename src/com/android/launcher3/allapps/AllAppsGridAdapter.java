@@ -15,17 +15,22 @@
  */
 package com.android.launcher3.allapps;
 
+import static com.android.launcher3.touch.ItemLongClickListener.INSTANCE_ALL_APPS;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.core.view.accessibility.AccessibilityEventCompat;
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
 import androidx.core.view.accessibility.AccessibilityRecordCompat;
@@ -33,14 +38,12 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.launcher3.AppInfo;
+import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.BubbleTextView;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.AlphabeticalAppsList.AdapterItem;
 import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.pm.UserCache;
-import com.android.launcher3.touch.ItemClickHandler;
-import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.util.PackageManagerHelper;
 
 import java.util.List;
@@ -174,11 +177,14 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         }
     }
 
-    private final Launcher mLauncher;
+    private final BaseDraggingActivity mLauncher;
     private final LayoutInflater mLayoutInflater;
     private final AlphabeticalAppsList mApps;
     private final GridLayoutManager mGridLayoutMgr;
     private final GridSpanSizer mGridSizer;
+
+    private final OnClickListener mOnIconClickListener;
+    private OnLongClickListener mOnIconLongClickListener = INSTANCE_ALL_APPS;
 
     private int mAppsPerRow;
 
@@ -186,11 +192,11 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     private OnFocusChangeListener mIconFocusListener;
 
     // The text to show when there are no search results and no market search handler.
-    private String mEmptySearchMessage;
+    protected String mEmptySearchMessage;
     // The intent to send off to the market app, updated each time the search query changes.
     private Intent mMarketSearchIntent;
 
-    public AllAppsGridAdapter(Launcher launcher, AlphabeticalAppsList apps) {
+    public AllAppsGridAdapter(BaseDraggingActivity launcher, AlphabeticalAppsList apps) {
         Resources res = launcher.getResources();
         mLauncher = launcher;
         mApps = apps;
@@ -200,12 +206,21 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         mGridLayoutMgr.setSpanSizeLookup(mGridSizer);
         mLayoutInflater = LayoutInflater.from(launcher);
 
+        mOnIconClickListener = launcher.getItemOnClickListener();
+
         setAppsPerRow(mLauncher.getDeviceProfile().inv.numAllAppsColumns);
     }
 
     public void setAppsPerRow(int appsPerRow) {
         mAppsPerRow = appsPerRow;
         mGridLayoutMgr.setSpanCount(mAppsPerRow);
+    }
+
+    /**
+     * Sets the long click listener for icons
+     */
+    public void setOnIconLongClickListener(@Nullable OnLongClickListener listener) {
+        mOnIconLongClickListener = listener;
     }
 
     public static boolean isDividerViewType(int viewType) {
@@ -254,8 +269,8 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
             case VIEW_TYPE_ICON:
                 BubbleTextView icon = (BubbleTextView) mLayoutInflater.inflate(
                         R.layout.all_apps_icon, parent, false);
-                icon.setOnClickListener(ItemClickHandler.INSTANCE);
-                icon.setOnLongClickListener(ItemLongClickListener.INSTANCE_ALL_APPS);
+                icon.setOnClickListener(mOnIconClickListener);
+                icon.setOnLongClickListener(mOnIconLongClickListener);
                 icon.setLongPressTimeoutFactor(1f);
                 icon.setOnFocusChangeListener(mIconFocusListener);
 

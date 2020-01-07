@@ -40,6 +40,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.launcher3.AppInfo;
+import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.DragSource;
@@ -47,9 +48,6 @@ import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.ItemInfo;
-import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherState;
-import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.keyboard.FocusedItemDecorator;
@@ -61,7 +59,6 @@ import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.RecyclerViewFastScroller;
 import com.android.launcher3.views.SpringRelativeLayout;
-import com.android.launcher3.views.WorkEduView;
 
 /**
  * The all apps view container.
@@ -74,8 +71,8 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     private static final float FLING_ANIMATION_THRESHOLD = 0.55f;
     private static final int ALPHA_CHANNEL_COUNT = 2;
 
-    private final Launcher mLauncher;
-    private final AdapterHolder[] mAH;
+    protected final BaseDraggingActivity mLauncher;
+    protected final AdapterHolder[] mAH;
     private final ItemInfoMatcher mPersonalMatcher = ItemInfoMatcher.ofUser(Process.myUserHandle());
     private final ItemInfoMatcher mWorkMatcher = ItemInfoMatcher.not(mPersonalMatcher);
     private final AllAppsStore mAllAppsStore = new AllAppsStore();
@@ -83,17 +80,15 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     private final Paint mNavBarScrimPaint;
     private int mNavBarScrimHeight = 0;
 
-    private SearchUiManager mSearchUiManager;
+    protected SearchUiManager mSearchUiManager;
     private View mSearchContainer;
     private AllAppsPagedView mViewPager;
     private FloatingHeaderView mHeader;
 
     private SpannableStringBuilder mSearchQueryBuilder = null;
 
-    private boolean mUsingTabs;
+    protected boolean mUsingTabs;
     private boolean mSearchModeWhileUsingTabs = false;
-
-    private LauncherStateManager.StateListener mWorkTabListener;
 
     private RecyclerViewFastScroller mTouchHandler;
     private final Point mFastScrollerOffset = new Point();
@@ -111,7 +106,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     public AllAppsContainerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
-        mLauncher = Launcher.getLauncher(context);
+        mLauncher = BaseDraggingActivity.fromContext(context);
         mLauncher.addOnDeviceProfileChangeListener(this);
 
         mSearchQueryBuilder = new SpannableStringBuilder();
@@ -131,6 +126,15 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         addSpringView(R.id.all_apps_tabs_view_pager);
 
         mMultiValueAlpha = new MultiValueAlpha(this, ALPHA_CHANNEL_COUNT);
+    }
+
+    /**
+     * Sets the long click listener for icons
+     */
+    public void setOnIconLongClickListener(OnLongClickListener listener) {
+        for (AdapterHolder holder : mAH) {
+            holder.adapter.setOnIconLongClickListener(listener);
+        }
     }
 
     public AllAppsStore getAppsStore() {
@@ -193,11 +197,6 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-
-        // The AllAppsContainerView houses the QSB and is hence visible from the Workspace
-        // Overview states. We shouldn't intercept for the scrubber in these cases.
-        if (!mLauncher.isInState(LauncherState.ALL_APPS)) return false;
-
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             AllAppsRecyclerView rv = getActiveRecyclerView();
             if (rv != null &&
@@ -309,7 +308,6 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
                 + grid.cellLayoutPaddingLeftRightPx;
 
         for (int i = 0; i < mAH.length; i++) {
-            mAH[i].adapter.setAppsPerRow(grid.inv.numAllAppsColumns);
             mAH[i].padding.bottom = insets.bottom;
             mAH[i].padding.left = mAH[i].padding.right = leftRightPadding;
             mAH[i].applyPadding();
@@ -327,8 +325,6 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         setLayoutParams(mlp);
 
         InsettableFrameLayout.dispatchInsets(this, insets);
-        mLauncher.getAllAppsController()
-                .setScrollRangeDelta(mSearchUiManager.getScrollRangeDelta(insets));
     }
 
     @Override
@@ -375,7 +371,6 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             mAH[AdapterHolder.MAIN].setup(mViewPager.getChildAt(0), mPersonalMatcher);
             mAH[AdapterHolder.WORK].setup(mViewPager.getChildAt(1), mWorkMatcher);
             onTabChanged(mViewPager.getNextPage());
-            mWorkTabListener = WorkEduView.showEduFlowIfNeeded(mLauncher, mWorkTabListener);
         } else {
             mAH[AdapterHolder.MAIN].setup(findViewById(R.id.apps_list_view), null);
             mAH[AdapterHolder.WORK].recyclerView = null;
@@ -421,9 +416,6 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
                     .setOnClickListener((View view) -> mViewPager.snapToPage(AdapterHolder.MAIN));
             findViewById(R.id.tab_work)
                     .setOnClickListener((View view) -> mViewPager.snapToPage(AdapterHolder.WORK));
-            if (pos == AdapterHolder.WORK) {
-                WorkEduView.showWorkEduIfNeeded(mLauncher);
-            }
         }
     }
 
@@ -588,7 +580,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             appsList.updateItemFilter(matcher);
             recyclerView = (AllAppsRecyclerView) rv;
             recyclerView.setEdgeEffectFactory(createEdgeEffectFactory());
-            recyclerView.setApps(appsList, mUsingTabs);
+            recyclerView.setApps(appsList);
             recyclerView.setLayoutManager(layoutManager);
             recyclerView.setAdapter(adapter);
             recyclerView.setHasFixedSize(true);

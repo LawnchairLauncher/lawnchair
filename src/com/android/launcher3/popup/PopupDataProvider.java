@@ -24,7 +24,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.ItemInfo;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.notification.NotificationKeyData;
@@ -41,6 +40,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -52,7 +52,7 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
     private static final boolean LOGD = false;
     private static final String TAG = "PopupDataProvider";
 
-    private final Launcher mLauncher;
+    private final Consumer<Predicate<PackageUserKey>> mNotificationDotsChangeListener;
 
     /** Maps launcher activity components to a count of how many shortcuts they have. */
     private HashMap<ComponentKey, Integer> mDeepShortcutMap = new HashMap<>();
@@ -63,12 +63,12 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
 
     private PopupDataChangeListener mChangeListener = PopupDataChangeListener.INSTANCE;
 
-    public PopupDataProvider(Launcher launcher) {
-        mLauncher = launcher;
+    public PopupDataProvider(Consumer<Predicate<PackageUserKey>> notificationDotsChangeListener) {
+        mNotificationDotsChangeListener = notificationDotsChangeListener;
     }
 
     private void updateNotificationDots(Predicate<PackageUserKey> updatedDots) {
-        mLauncher.updateNotificationDots(updatedDots);
+        mNotificationDotsChangeListener.accept(updatedDots);
         mChangeListener.onNotificationDotsUpdated(updatedDots);
     }
 
