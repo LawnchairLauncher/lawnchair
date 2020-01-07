@@ -114,9 +114,7 @@ public class RestoreDbTask {
         }
         try {
             int itemsDeleted = db.delete(Favorites.TABLE_NAME, whereClause.toString(), profileIds);
-            if (itemsDeleted > 0) {
-                FileLog.d(TAG, itemsDeleted + " items from unrestored user(s) were deleted");
-            }
+            FileLog.d(TAG, itemsDeleted + " items from unrestored user(s) were deleted");
         } catch (IllegalArgumentException exception) {
             // b/147114476
             FileLog.e(TAG, new StringBuilder("Failed to execute delete, where clause: '")
