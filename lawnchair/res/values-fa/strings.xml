@@ -394,6 +394,7 @@
     <string name="action_open_drawer">بازکردن کشو</string>
     <string name="action_last_task">اجرای آخرین برنامه مورد استفاده</string>
     <string name="action_open_widgets">باز کردن منو ابزارک ها</string>
+    <string name="action_open_overview">نشان دادن حباب در صفحه اصلی</string>
     <string name="action_global_search">انجام جستجوی جهانی</string>
     <string name="action_app_search">انجام جستجوی برنامه ها</string>
     <string name="action_close_notifications">بستن پنل اعلان ها</string>
@@ -430,6 +431,7 @@
     <string name="get_more_icon_packs">دریافت بیشتر</string>
     <string name="enabled_icon_packs">پذیرفته شد</string>
     <string name="lawnchair_actions">عملیات</string>
+    <string name="bridge_missing_title">دریافت فید</string>
     <string name="smartspace_provider_bridge">پل پیکسل بدون روت</string>
     <string name="title_app_suggestions">برنامه‌ها</string>
     <string name="theme_dark">تیره</string>
@@ -495,6 +497,7 @@
     <string name="drawer_folders">پوشه ها</string>
     <string name="open_image_picker">بازکردن تصاویر</string>
     <string name="import_icon">واردکردن نمایه</string>
+    <string name="import_as_adaptive">آیکن منطبق را وارد کن</string>
     <string name="about_app_description">تخصیص برنامه خانه برای اندروید.</string>
     <string name="lawnchair_bug_report">گزارش خطای Lawnchair</string>
     <string name="action_dogbin_upload">آپلود به dogbin</string>
@@ -512,6 +515,7 @@
     <string name="folder_cover_mode">استفاده از حالت پوششی</string>
     <string name="folder_cover_mode_desc">برای بازکردن اولین برنامه ضربه بزنید ، جهت مشاهده همه به سمت بالا بکشید.</string>
     <string name="icon_shape_override_miui_explaination">وجود مشکلی در MIUI سبب ایجاد نمایه های مربعی شده است.</string>
+    <string name="permission_iplocate">لوکیشن تقریبی</string>
     <string name="zen_mode_enabled">حالت مزاحم نشوید روشن شد.</string>
     <string name="crash_report_notif_title">%1$s خراب شد</string>
     <string name="onbording_settings_title">%s را تنظیم کنید</string>
