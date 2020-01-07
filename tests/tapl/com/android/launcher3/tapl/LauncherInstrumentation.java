@@ -183,13 +183,8 @@ public final class LauncherInstrumentation {
                 .authority(testProviderAuthority)
                 .build();
 
-        try {
-            mDevice.executeShellCommand("pm grant " + testPackage +
-                    " android.permission.WRITE_SECURE_SETTINGS");
-        } catch (IOException e) {
-            fail(e.toString());
-        }
-
+        mInstrumentation.getUiAutomation().grantRuntimePermission(
+                testPackage, "android.permission.WRITE_SECURE_SETTINGS");
 
         PackageManager pm = getContext().getPackageManager();
         ProviderInfo pi = pm.resolveContentProvider(
@@ -336,14 +331,11 @@ public final class LauncherInstrumentation {
 
     private String getSystemHealthMessage() {
         final String testPackage = getContext().getPackageName();
-        try {
-            mDevice.executeShellCommand("pm grant " + testPackage +
-                    " android.permission.READ_LOGS");
-            mDevice.executeShellCommand("pm grant " + testPackage +
-                    " android.permission.PACKAGE_USAGE_STATS");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+        mInstrumentation.getUiAutomation().grantRuntimePermission(
+                testPackage, "android.permission.READ_LOGS");
+        mInstrumentation.getUiAutomation().grantRuntimePermission(
+                testPackage, "android.permission.PACKAGE_USAGE_STATS");
 
         return mSystemHealthSupplier != null
                 ? mSystemHealthSupplier.apply(START_TIME)
