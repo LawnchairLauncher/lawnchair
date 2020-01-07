@@ -69,13 +69,6 @@
     <!-- Content description for a close button. [CHAR LIMIT=NONE] -->
     <string name="back_gesture_tutorial_close_button_content_description" translatable="false">Close</string>
 
-    <!-- Title shown on the notification of Back gesture tutorial. [CHAR LIMIT=30] -->
-    <string name="back_gesture_tutorial_notification_title" translatable="false">Try the new back gesture</string>
-    <!-- Subtitle shown on the notification of Back gesture tutorial. [CHAR LIMIT=60] -->
-    <string name="back_gesture_tutorial_notification_subtitle" translatable="false">Learn how to go back while using your apps</string>
-    <!-- Action text shown on the notification of Back gesture tutorial. [CHAR LIMIT=14] -->
-    <string name="back_gesture_tutorial_notification_action_label" translatable="false">Try it</string>
-
     <!-- Title shown during interactive part of Back gesture tutorial for right edge. [CHAR LIMIT=30] -->
     <string name="back_gesture_tutorial_playground_title_swipe_inward_right_edge" translatable="false">Try the back gesture</string>
     <!-- Subtitle shown during interactive parts of Back gesture tutorial for right edge. [CHAR LIMIT=60] -->
