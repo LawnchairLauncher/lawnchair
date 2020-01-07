@@ -31,7 +31,7 @@ import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
-import static com.android.launcher3.config.FeatureFlags.QUICKSTEP_SPRINGS;
+import static com.android.launcher3.config.FeatureFlags.UNSTABLE_SPRINGS;
 import static com.android.launcher3.uioverrides.touchcontrollers.TaskViewTouchController.SUCCESS_TRANSITION_PROGRESS;
 import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch.TAP;
 import static com.android.launcher3.userevent.nano.LauncherLogProto.ControlType.CLEAR_ALL_BUTTON;
@@ -1105,13 +1105,13 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
     private void addDismissedTaskAnimations(View taskView, AnimatorSet anim, long duration) {
         addAnim(ObjectAnimator.ofFloat(taskView, ALPHA, 0), duration, ACCEL_2, anim);
-        if (QUICKSTEP_SPRINGS.get() && taskView instanceof TaskView)
+        if (UNSTABLE_SPRINGS.get() && taskView instanceof TaskView) {
             addAnim(new SpringObjectAnimator<>(taskView, VIEW_TRANSLATE_Y,
                             MIN_VISIBLE_CHANGE_PIXELS, SpringForce.DAMPING_RATIO_MEDIUM_BOUNCY,
                             SpringForce.STIFFNESS_MEDIUM,
                             0, -taskView.getHeight()),
                     duration, LINEAR, anim);
-        else {
+        } else {
             addAnim(ObjectAnimator.ofFloat(taskView, TRANSLATION_Y, -taskView.getHeight()),
                     duration, LINEAR, anim);
         }
@@ -1185,7 +1185,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                 }
                 int scrollDiff = newScroll[i] - oldScroll[i] + offset;
                 if (scrollDiff != 0) {
-                    if (QUICKSTEP_SPRINGS.get() && child instanceof TaskView) {
+                    if (UNSTABLE_SPRINGS.get() && child instanceof TaskView) {
                         addAnim(new SpringObjectAnimator<>(child, VIEW_TRANSLATE_X,
                                 MIN_VISIBLE_CHANGE_PIXELS, SpringForce.DAMPING_RATIO_MEDIUM_BOUNCY,
                                 SpringForce.STIFFNESS_MEDIUM,

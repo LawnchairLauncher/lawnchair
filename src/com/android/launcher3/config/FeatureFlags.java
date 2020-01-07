@@ -85,7 +85,10 @@ public final class FeatureFlags {
             "APPLY_CONFIG_AT_RUNTIME", true, "Apply display changes dynamically");
 
     public static final TogglableFlag QUICKSTEP_SPRINGS = new TogglableFlag("QUICKSTEP_SPRINGS",
-            false, "Enable springs for quickstep animations");
+            true, "Enable springs for quickstep animations");
+
+    public static final TogglableFlag UNSTABLE_SPRINGS = new TogglableFlag("UNSTABLE_SPRINGS",
+            false, "Enable unstable springs for quickstep animations");
 
     public static final TogglableFlag ADAPTIVE_ICON_WINDOW_ANIM = new TogglableFlag(
             "ADAPTIVE_ICON_WINDOW_ANIM", true,

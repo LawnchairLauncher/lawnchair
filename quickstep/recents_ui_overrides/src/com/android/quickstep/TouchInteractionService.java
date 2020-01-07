@@ -23,6 +23,7 @@ import static com.android.launcher3.config.FeatureFlags.ENABLE_HINTS_IN_OVERVIEW
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.config.FeatureFlags.FAKE_LANDSCAPE_UI;
 import static com.android.launcher3.config.FeatureFlags.QUICKSTEP_SPRINGS;
+import static com.android.launcher3.config.FeatureFlags.UNSTABLE_SPRINGS;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_INPUT_MONITOR;
@@ -715,6 +716,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
             pw.println("FeatureFlags:");
             pw.println("  APPLY_CONFIG_AT_RUNTIME=" + APPLY_CONFIG_AT_RUNTIME.get());
             pw.println("  QUICKSTEP_SPRINGS=" + QUICKSTEP_SPRINGS.get());
+            pw.println("  UNSTABLE_SPRINGS=" + UNSTABLE_SPRINGS.get());
             pw.println("  ADAPTIVE_ICON_WINDOW_ANIM=" + ADAPTIVE_ICON_WINDOW_ANIM.get());
             pw.println("  ENABLE_QUICKSTEP_LIVE_TILE=" + ENABLE_QUICKSTEP_LIVE_TILE.get());
             pw.println("  ENABLE_HINTS_IN_OVERVIEW=" + ENABLE_HINTS_IN_OVERVIEW.get());
