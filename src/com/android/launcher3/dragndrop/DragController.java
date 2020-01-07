@@ -594,9 +594,6 @@ public class DragController implements DragDriver.EventListener, TouchController
     }
 
     private void drop(DropTarget dropTarget, Runnable flingAnimation) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_DRAG_TO_WORKSPACE, "DragController.drop");
-        }
         final int[] coordinates = mCoordinatesTemp;
         mDragObject.x = coordinates[0];
         mDragObject.y = coordinates[1];

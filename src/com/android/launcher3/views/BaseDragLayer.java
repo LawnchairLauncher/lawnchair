@@ -261,10 +261,6 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
             }
             case ACTION_CANCEL:
             case ACTION_UP:
-                if (TestProtocol.sDebugTracing) {
-                    Log.d(TestProtocol.NO_DRAG_TO_WORKSPACE,
-                            "BaseDragLayer.ACTION_UP/CANCEL " + ev);
-                }
                 mTouchDispatchState &= ~TOUCH_DISPATCHING_GESTURE;
                 mTouchDispatchState &= ~TOUCH_DISPATCHING_VIEW;
                 break;
