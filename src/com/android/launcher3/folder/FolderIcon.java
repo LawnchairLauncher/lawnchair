@@ -180,6 +180,14 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
         icon.mLauncher = launcher;
         icon.mDotRenderer = grid.mDotRendererWorkSpace;
         icon.setContentDescription(launcher.getString(R.string.folder_name_format, folderInfo.title));
+
+        // Keep the notification dot up to date with the sum of all the content's dots.
+        FolderDotInfo folderDotInfo = new FolderDotInfo();
+        for (WorkspaceItemInfo si : folderInfo.contents) {
+            folderDotInfo.addDotInfo(launcher.getDotInfoForItem(si));
+        }
+        icon.setDotInfo(folderDotInfo);
+
         Folder folder = Folder.fromXml(launcher);
         folder.setDragController(launcher.getDragController());
         folder.setFolderIcon(icon);
