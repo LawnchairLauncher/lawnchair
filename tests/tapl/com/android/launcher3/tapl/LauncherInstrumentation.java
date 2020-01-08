@@ -55,6 +55,7 @@ import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.Configurator;
 import androidx.test.uiautomator.Direction;
+import androidx.test.uiautomator.StaleObjectException;
 import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.Until;
@@ -311,10 +312,19 @@ public final class LauncherInstrumentation {
     private String getVisiblePackages() {
         return mDevice.findObjects(By.textStartsWith(""))
                 .stream()
-                .map(object -> object.getApplicationPackage())
+                .map(LauncherInstrumentation::getApplicationPackageSafe)
                 .distinct()
-                .filter(pkg -> !"com.android.systemui".equals(pkg))
+                .filter(pkg -> pkg != null && !"com.android.systemui".equals(pkg))
                 .collect(Collectors.joining(", "));
+    }
+
+    private static String getApplicationPackageSafe(UiObject2 object) {
+        try {
+            return object.getApplicationPackage();
+        } catch (StaleObjectException e) {
+            // We are looking at all object in the system; external ones can suddenly go away.
+            return null;
+        }
     }
 
     private String getVisibleStateMessage() {
