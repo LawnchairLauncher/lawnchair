@@ -183,12 +183,6 @@ public final class Workspace extends Home {
                 mHotseat, AppIcon.getAppIconSelector(appName, mLauncher)));
     }
 
-    @NonNull
-    public Folder getHotseatFolder(String appName) {
-        return new Folder(mLauncher, mLauncher.waitForObjectInContainer(
-                mHotseat, Folder.getSelector(appName, mLauncher)));
-    }
-
     static void dragIconToWorkspace(
             LauncherInstrumentation launcher, Launchable launchable, Point dest,
             String longPressIndicator) {
