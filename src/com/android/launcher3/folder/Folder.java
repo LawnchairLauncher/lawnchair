@@ -423,7 +423,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
                 mFolderName.setHint(suggestName[0]);
                 mFolderName.setText(suggestName[0]);
                 mInfo.title = suggestName[0];
-                animateOpen();
+                animateOpen(mInfo.contents, 0, true);
                 mFolderName.showKeyboard();
                 mFolderName.displayCompletions(
                         Arrays.asList(suggestName).subList(1, suggestName.length));
@@ -519,6 +519,15 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
      * is played.
      */
     private void animateOpen(List<WorkspaceItemInfo> items, int pageNo) {
+        animateOpen(items, pageNo, false);
+    }
+
+    /**
+     * Opens the user folder described by the specified tag. The opening of the folder
+     * is animated relative to the specified View. If the View is null, no animation
+     * is played.
+     */
+    private void animateOpen(List<WorkspaceItemInfo> items, int pageNo, boolean skipUserEventLog) {
         Folder openFolder = getOpen(mLauncher);
         if (openFolder != null && openFolder != this) {
             // Close any open folder before opening a folder.
@@ -565,10 +574,13 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
                 mState = STATE_OPEN;
                 announceAccessibilityChanges();
 
-                mLauncher.getUserEventDispatcher().logActionOnItem(
+                if (!skipUserEventLog) {
+                    mLauncher.getUserEventDispatcher().logActionOnItem(
                         Touch.TAP,
                         Direction.NONE,
                         ItemType.FOLDER_ICON, mInfo.cellX, mInfo.cellY);
+                }
+
 
                 mContent.setFocusOnFirstChild();
             }
