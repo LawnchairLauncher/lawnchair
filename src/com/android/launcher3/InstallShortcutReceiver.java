@@ -49,8 +49,8 @@ import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.GraphicsUtils;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.pm.UserCache;
-import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutKey;
+import com.android.launcher3.shortcuts.ShortcutRequest;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.Thunk;
@@ -538,12 +538,9 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                     return new PendingInstallShortcutInfo(info, context);
                 }
             } else if (decoder.optBoolean(DEEPSHORTCUT_TYPE_KEY)) {
-                DeepShortcutManager sm = DeepShortcutManager.getInstance(context);
-                List<ShortcutInfo> si = sm.queryForFullDetails(
-                        decoder.launcherIntent.getPackage(),
-                        Arrays.asList(decoder.launcherIntent.getStringExtra(
-                                ShortcutKey.EXTRA_SHORTCUT_ID)),
-                        decoder.user);
+                List<ShortcutInfo> si = ShortcutKey.fromIntent(decoder.launcherIntent, decoder.user)
+                        .buildRequest(context)
+                        .query(ShortcutRequest.ALL);
                 if (si.isEmpty()) {
                     return null;
                 } else {

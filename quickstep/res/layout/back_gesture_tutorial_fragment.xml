@@ -1,0 +1,121 @@
+<!--
+    Copyright (C) 2020 The Android Open Source Project
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layerType="software"
+    android:background="@color/back_gesture_tutorial_background_color">
+    <!--The layout is rendered on the software layer to avoid b/136158117-->
+
+    <ImageView
+        android:id="@+id/back_gesture_tutorial_fragment_hand_coaching"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"/>
+
+    <ImageButton
+        android:id="@+id/back_gesture_tutorial_fragment_close_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="18dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="4dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:background="@android:color/transparent"
+        android:accessibilityTraversalAfter="@id/back_gesture_tutorial_fragment_titles_container"
+        android:contentDescription="@string/back_gesture_tutorial_close_button_content_description"
+        android:src="@drawable/back_gesture_tutorial_close_button"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="70dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/back_gesture_tutorial_fragment_titles_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:focusable="true">
+
+            <TextView
+                android:id="@+id/back_gesture_tutorial_fragment_title_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginStart="@dimen/back_gesture_tutorial_title_margin_start_end"
+                android:layout_marginEnd="@dimen/back_gesture_tutorial_title_margin_start_end"
+                style="@style/TextAppearance.BackGestureTutorial.Title"/>
+
+            <TextView
+                android:id="@+id/back_gesture_tutorial_fragment_subtitle_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="@dimen/back_gesture_tutorial_subtitle_margin_start_end"
+                android:layout_marginEnd="@dimen/back_gesture_tutorial_subtitle_margin_start_end"
+                style="@style/TextAppearance.BackGestureTutorial.Subtitle"/>
+
+        </LinearLayout>
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:layout_height="0dp"
+            android:layout_marginTop="48dp"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"/>
+
+        <!-- android:stateListAnimator="@null" removes shadow and normal on click behavior (increase
+             of elevation and shadow) which is replaced by ripple effect in android:foreground -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="46dp"
+            android:layout_marginBottom="48dp"
+            android:layout_gravity="center_horizontal">
+
+            <Button
+                android:id="@+id/back_gesture_tutorial_fragment_action_button"
+                android:layout_width="142dp"
+                android:layout_height="49dp"
+                android:layout_marginEnd="@dimen/back_gesture_tutorial_button_margin_start_end"
+                android:layout_alignParentEnd="true"
+                android:stateListAnimator="@null"
+                android:background="@drawable/back_gesture_tutorial_action_button_background"
+                android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                style="@style/TextAppearance.BackGestureTutorial.ButtonLabel"/>
+
+            <Button
+                android:id="@+id/back_gesture_tutorial_fragment_action_text_button"
+                android:layout_width="142dp"
+                android:layout_height="49dp"
+                android:layout_marginStart="@dimen/back_gesture_tutorial_button_margin_start_end"
+                android:layout_alignParentStart="true"
+                android:stateListAnimator="@null"
+                android:background="@null"
+                android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                style="@style/TextAppearance.BackGestureTutorial.TextButtonLabel"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

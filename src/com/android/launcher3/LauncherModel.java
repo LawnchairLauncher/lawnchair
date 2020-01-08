@@ -20,6 +20,7 @@ import static com.android.launcher3.LauncherAppState.ACTION_FORCE_ROLOAD;
 import static com.android.launcher3.config.FeatureFlags.IS_DOGFOOD_BUILD;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
+import static com.android.launcher3.util.PackageManagerHelper.hasShortcutsPermission;
 
 import android.content.Context;
 import android.content.Intent;
@@ -54,7 +55,7 @@ import com.android.launcher3.model.UserLockStateChangedTask;
 import com.android.launcher3.pm.InstallSessionTracker;
 import com.android.launcher3.pm.PackageInstallInfo;
 import com.android.launcher3.pm.UserCache;
-import com.android.launcher3.shortcuts.DeepShortcutManager;
+import com.android.launcher3.shortcuts.ShortcutRequest;
 import com.android.launcher3.util.IntSparseArrayMap;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.PackageUserKey;
@@ -113,12 +114,9 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
     private final Runnable mShortcutPermissionCheckRunnable = new Runnable() {
         @Override
         public void run() {
-            if (mModelLoaded) {
-                boolean hasShortcutHostPermission =
-                        DeepShortcutManager.getInstance(mApp.getContext()).hasHostPermission();
-                if (hasShortcutHostPermission != sBgDataModel.hasShortcutHostPermission) {
-                    forceReload();
-                }
+            if (mModelLoaded && hasShortcutsPermission(mApp.getContext())
+                    != sBgDataModel.hasShortcutHostPermission) {
+                forceReload();
             }
         }
     };
@@ -220,8 +218,8 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
         Context context = mApp.getContext();
         onPackageChanged(packageName, user);
 
-        List<ShortcutInfo> pinnedShortcuts = DeepShortcutManager.getInstance(context)
-                .queryForPinnedShortcuts(packageName, user);
+        List<ShortcutInfo> pinnedShortcuts = new ShortcutRequest(context, user)
+                .forPackage(packageName).query(ShortcutRequest.PINNED);
         if (!pinnedShortcuts.isEmpty()) {
             enqueueModelUpdateTask(new ShortcutsChangedTask(packageName, pinnedShortcuts, user,
                     false));

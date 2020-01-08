@@ -15,7 +15,11 @@
  */
 package com.android.launcher3.model;
 
+import static com.android.launcher3.model.WidgetsModel.GO_DISABLE_WIDGETS;
+import static com.android.launcher3.shortcuts.ShortcutRequest.PINNED;
+
 import android.content.Context;
+import android.content.pm.LauncherApps;
 import android.content.pm.ShortcutInfo;
 import android.os.UserHandle;
 import android.text.TextUtils;
@@ -29,15 +33,15 @@ import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.PromiseAppInfo;
-import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.Workspace;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.DumpTargetWrapper;
 import com.android.launcher3.model.nano.LauncherDumpProto;
 import com.android.launcher3.model.nano.LauncherDumpProto.ContainerType;
 import com.android.launcher3.model.nano.LauncherDumpProto.DumpTarget;
-import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutKey;
+import com.android.launcher3.shortcuts.ShortcutRequest;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
@@ -59,6 +63,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
 
 /**
  * All the data stored in-memory and managed by the LauncherModel
@@ -287,7 +293,7 @@ public class BgDataModel {
                     if ((count == null || --count.value == 0)
                             && !InstallShortcutReceiver.getPendingShortcuts(context)
                                 .contains(pinnedShortcut)) {
-                        DeepShortcutManager.getInstance(context).unpinShortcut(pinnedShortcut);
+                        unpinShortcut(context, pinnedShortcut);
                     }
                     // Fall through.
                 }
@@ -324,7 +330,7 @@ public class BgDataModel {
 
                 // Since this is a new item, pin the shortcut in the system server.
                 if (newItem && count.value == 1) {
-                    DeepShortcutManager.getInstance(context).pinShortcut(pinnedShortcut);
+                    updatePinnedShortcuts(context, pinnedShortcut, List::add);
                 }
                 // Fall through
             }
@@ -351,6 +357,36 @@ public class BgDataModel {
             case LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET:
                 appWidgets.add((LauncherAppWidgetInfo) item);
                 break;
+        }
+    }
+
+    /**
+     * Removes the given shortcut from the current list of pinned shortcuts.
+     * (Runs on background thread)
+     */
+    public void unpinShortcut(Context context, ShortcutKey key) {
+        updatePinnedShortcuts(context, key, List::remove);
+    }
+
+    private void updatePinnedShortcuts(Context context, ShortcutKey key,
+            BiConsumer<List<String>, String> idOp) {
+        if (GO_DISABLE_WIDGETS) {
+            return;
+        }
+        String packageName = key.componentName.getPackageName();
+        String id = key.getId();
+        UserHandle user = key.user;
+        List<String> pinnedIds = new ShortcutRequest(context, user)
+                .forPackage(packageName)
+                .query(PINNED)
+                .stream()
+                .map(ShortcutInfo::getId)
+                .collect(Collectors.toCollection(ArrayList::new));
+        idOp.accept(pinnedIds, id);
+        try {
+            context.getSystemService(LauncherApps.class).pinShortcuts(packageName, pinnedIds, user);
+        } catch (SecurityException | IllegalStateException e) {
+            Log.w(TAG, "Failed to pin shortcut", e);
         }
     }
 

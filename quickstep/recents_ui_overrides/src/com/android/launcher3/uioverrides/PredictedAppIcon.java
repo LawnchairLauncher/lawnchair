@@ -29,7 +29,6 @@ import android.view.ViewGroup;
 
 import androidx.core.graphics.ColorUtils;
 
-import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
@@ -37,7 +36,6 @@ import com.android.launcher3.R;
 import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.icons.IconNormalizer;
-import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.views.DoubleShadowBubbleTextView;
@@ -47,13 +45,12 @@ import com.android.launcher3.views.DoubleShadowBubbleTextView;
  */
 public class PredictedAppIcon extends DoubleShadowBubbleTextView {
 
-    private static final float RING_EFFECT_RATIO = 0.12f;
+    private static final float RING_EFFECT_RATIO = 0.11f;
 
     private DeviceProfile mDeviceProfile;
     private final Paint mIconRingPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private boolean mIsPinned = false;
     private int mNormalizedIconRadius;
-
 
     public PredictedAppIcon(Context context) {
         this(context, null, 0);
@@ -105,14 +102,8 @@ public class PredictedAppIcon extends DoubleShadowBubbleTextView {
     /**
      * prepares prediction icon for usage after bind
      */
-    public void finishBinding() {
-        setOnLongClickListener((v) -> {
-            PopupContainerWithArrow.showForIcon((BubbleTextView) v);
-            if (getParent() != null) {
-                getParent().requestDisallowInterceptTouchEvent(true);
-            }
-            return true;
-        });
+    public void finishBinding(OnLongClickListener longClickListener) {
+        setOnLongClickListener(longClickListener);
         ((CellLayout.LayoutParams) getLayoutParams()).canReorder = false;
         setTextVisibility(false);
         verifyHighRes();

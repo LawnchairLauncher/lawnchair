@@ -332,4 +332,17 @@ public class PackageManagerHelper {
         }
         return false;
     }
+
+    /**
+     * Returns true if Launcher has the permission to access shortcuts.
+     * @see LauncherApps#hasShortcutHostPermission()
+     */
+    public static boolean hasShortcutsPermission(Context context) {
+        try {
+            return context.getSystemService(LauncherApps.class).hasShortcutHostPermission();
+        } catch (SecurityException | IllegalStateException e) {
+            Log.e(TAG, "Failed to make shortcut manager call", e);
+        }
+        return false;
+    }
 }
