@@ -989,16 +989,6 @@ public final class LauncherInstrumentation {
         return getSystemIntegerRes(context, "config_navBarInteractionMode");
     }
 
-    @NonNull
-    public UiObject2 clickAndGet(@NonNull final UiObject2 target, @NonNull String resName) {
-        final Point targetCenter = target.getVisibleCenter();
-        final long downTime = SystemClock.uptimeMillis();
-        sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, targetCenter);
-        final UiObject2 result = waitForLauncherObject(resName);
-        sendPointer(downTime, SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, targetCenter);
-        return result;
-    }
-
     private static int getSystemIntegerRes(Context context, String resName) {
         Resources res = context.getResources();
         int resId = res.getIdentifier(resName, "integer", "android");
