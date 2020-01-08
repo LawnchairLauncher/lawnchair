@@ -24,6 +24,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Debug;
+import android.system.Os;
 import android.view.View;
 
 import androidx.annotation.Keep;
@@ -133,6 +134,11 @@ public class TestInformationHandler implements ResourceBasedOverride {
                 } catch (ExecutionException | InterruptedException e) {
                     throw new RuntimeException(e);
                 }
+                break;
+            }
+
+            case TestProtocol.REQUEST_PID: {
+                response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD, Os.getpid());
                 break;
             }
 

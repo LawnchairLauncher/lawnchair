@@ -16,9 +16,6 @@
 
 package com.android.launcher3.tapl;
 
-import android.graphics.Point;
-import android.os.SystemClock;
-import android.view.MotionEvent;
 import android.widget.TextView;
 
 import androidx.test.uiautomator.By;
@@ -41,14 +38,8 @@ public final class AppIcon extends Launchable {
      * Long-clicks the icon to open its menu.
      */
     public AppIconMenu openMenu() {
-        final Point iconCenter = mObject.getVisibleCenter();
-        final long downTime = SystemClock.uptimeMillis();
-        mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, iconCenter);
-        final UiObject2 deepShortcutsContainer = mLauncher.waitForLauncherObject(
-                "deep_shortcuts_container");
-        mLauncher.sendPointer(
-                downTime, SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, iconCenter);
-        return new AppIconMenu(mLauncher, deepShortcutsContainer);
+        return new AppIconMenu(mLauncher, mLauncher.clickAndGet(
+                mObject, "deep_shortcuts_container"));
     }
 
     @Override
