@@ -32,7 +32,7 @@
     <string name="icon_shape_override_label">Ikonok formája</string>
     <string name="reset_custom_icons">Egyedi ikonok törlése</string>
     <string name="reset_custom_icons_confirmation">Visszaállítod ebből az ikoncsomagból az alap ikonokra? Ez nem visszavonható.</string>
-    <string name="appearance">Megjelenítés</string>
+    <string name="appearance">Megjelenés</string>
     <!-- Note: new. Replaces title of 5th field (from bottom) in “Theme” page. -->
     <string name="theme_auto">Automatikus (a háttérkép alapján)</string>
     <string name="theme_auto_night_mode">Rendszerbeállítás</string>
@@ -40,10 +40,10 @@
     <string name="theme_light">Világos</string>
     <string name="theme_dark_text">Világos, sötét szöveggel</string>
     <string name="theme_with_dark_text">Sötét szöveg</string>
-    <string name="theme_use_black">Igazi fekete használata</string>
+    <string name="theme_use_black">Teljesen fekete használata</string>
     <string name="theme_use_dark_text">Sötét szöveg használata</string>
     <string name="lawnchair_accent">Kiemelőszín</string>
-    <string name="color_pixel_accent">Google kék</string>
+    <string name="color_pixel_accent">Google-kék</string>
     <string name="color_system_accent">Rendszerbeállítás</string>
     <string name="color_wallpaper_main">Háttérkép - Elsődleges</string>
     <string name="color_wallpaper_secondary">Háttérkép - Másodlagos</string>
@@ -83,10 +83,10 @@
     <string name="pref_notification_count_title">Értesítések számának mutatása</string>
     <string name="allow_rotation_title">Forgatás engedélyezése</string>
     <string name="pref_center_wallpaper">Háttérkép középre igazítása</string>
-    <string name="pref_center_wallpaper_summary">Háttérkép görgetésének kikapcsolása.</string>
+    <string name="pref_center_wallpaper_summary">Háttérkép-görgetés letiltása.</string>
     <string name="pref_hide_statusbar">Állapotsor elrejtése</string>
-    <string name="full_width_width_widgets_pref_title">Széles kisalkalmazások</string>
-    <string name="full_width_widgets_pref_summary">Engedélyezi, hogy a kisalkalmazások kinyúljanak a képernyő széléig.</string>
+    <string name="full_width_width_widgets_pref_title">Széles modulok</string>
+    <string name="full_width_widgets_pref_summary">A modulok kinyúlhatnak a képernyő széléig.</string>
     <string name="show_top_shadow_pref_title">Felső árnyék megjelenítése</string>
     <!-- Section 4 -->
     <string name="smartspace_preferences_in_settings">Betekintő</string>
@@ -98,6 +98,7 @@
     <string name="pref_hide_statusbar_clock">Az állapotsori óra elrejtése</string>
     <string name="root_access_required">Root hozzáférés szükséges.</string>
     <string name="smartspace_time_24_h">24 órás formátum használata</string>
+    <string name="title_use_pill_qsb">Kapszula formájú kereső megjelenítése</string>
     <string name="pref_category_weather">Egyéb</string>
     <string name="pref_smartspace_widget_provider">Időjárás forrása</string>
     <string name="google_app">Google-alkalmazás</string>
@@ -128,10 +129,10 @@
         <item>Mi újság?</item>
         <item>Jó estét!</item>
         <item>Hogy telt a napod?</item>
-        <item>Jó éjszakát!</item>
+        <item>Milyen volt a napod?</item>
     </string-array>
     <string-array name="greetings_night">
-        <item>Aludjon jól!</item>
+        <item>Aludj jól!</item>
         <item>Holnap találkozunk!</item>
         <item>Jó éjszakát!</item>
         <item>Ne maradj fent túl sokáig!</item>
@@ -154,7 +155,7 @@
     <string name="dock_search_bar">Keresősáv megjelenítése</string>
     <string name="dock_colored_google">Színezett ikonok</string>
     <!-- Section 6 -->
-    <string name="app_drawer_pref_title">Alkalmazásfiók</string>
+    <string name="app_drawer_pref_title">Alkalmazáslista</string>
     <string name="app_drawer_pref_summary">Elrendezés, kategóriák, javaslatok</string>
     <string name="pref_category_theme">Stílus</string>
     <string name="pref_drawer_columns">Oszlopok száma</string>
@@ -167,7 +168,11 @@
     <string name="pref_appcategorization_folders_summary">Koppints a mappa megnyitásához.</string>
     <string name="pref_appcategorization_tabs_title">Lapok</string>
     <string name="pref_appcategorization_tabs_summary">Lapozás a kategóriák között.</string>
-    <string name="pref_app_groups_edit_tip">Érintse meg a szerkesztéshez, húzza át az átrendezéshez.</string>
+    <string name="pref_app_groups_edit_tip">Koppints a szerkesztéshez, húzd az átrendezéshez.</string>
+    <plurals name="hidden_apps_count">
+        <item quantity="one">%1$d rejtett</item>
+        <item quantity="other">%1$d rejtett</item>
+    </plurals>
     <string name="category_business_and_productivity">Üzlet &amp; produktivitás</string>
     <string name="category_communication">Kommunikáció</string>
     <string name="category_entertainment">Szórakozás</string>
@@ -190,10 +195,15 @@
     <string name="pref_appcategorization_flowerpot_title">Alkalmazáskategóriák</string>
     <string name="title_all_apps_search">Keresősáv megjelenítése</string>
     <string name="title_all_apps_google_search">Globális kereső használata</string>
+    <string name="summary_all_apps_google_search">Weboldalak, névjegyek és ikonok keresése.</string>
+    <string name="title_search_hidden_apps">Rejtett parancsikonok megtalálása</string>
+    <string name="summary_search_hidden_apps">Rejtett parancsikonok mutatása az eredmények között.</string>
     <string name="suggestion_pref_screen_title">Javaslatok</string>
     <string name="title_app_suggestions_in_search">Alkalmazásjavaslatok</string>
     <string name="app_actions_pref_title">Műveletek</string>
+    <string name="app_actions_pref_desc">Parancsikon a gyakran használt képernyőkhöz.</string>
     <string name="app_actions_reset_pref_title">Műveleti tulajdonságok visszaállítása</string>
+    <string name="app_actions_reset_pref_summary">A \"Ne mutassa\" feliratra húzott elemek újra megjelenítése.</string>
     <string name="all_apps_label_pref_title">A \"Minden alkalmazás\" felirat megjelenítése</string>
     <string name="separate_work_apps_pref_title">Második oldal a Munkahelyi alkalmazásoknak</string>
     <string name="keep_scroll_state_pref_title">A pozíció megjegyzése</string>
@@ -217,7 +227,7 @@
     <string name="search_provider_bing">Bing</string>
     <string name="search_provider_baidu">Baidu</string>
     <string name="search_provider_s_finder">S Finder</string>
-    <string name="search_provider_appsearch">Alkalmazáskeresés</string>
+    <string name="search_provider_appsearch">Alkalmazás-kereső</string>
     <string name="search_provider_search_lite">Search Lite</string>
     <string name="search_provider_cool_search">Cool Search</string>
     <string name="search_provider_firefox">Firefox</string>
@@ -243,7 +253,8 @@
     <string name="title_show_google_app">%1$s hírfolyam megjelenítése</string>
     <string name="feed_theme_pref_title">Háttérszín</string>
     <!-- Section 9 -->
-    <string name="gestures_pref_title">Mozdulatvezérlés</string>
+    <string name="gestures_pref_title">Gesztusok</string>
+    <string name="gestures_pref_summary">Dupla koppintás, felfele húzás a Dokkról</string>
     <string name="gesture_double_tap">Dupla koppintás</string>
     <string name="gesture_long_press">Lenyomás hosszan</string>
     <string name="gesture_press_home">A Home gomb megérintése</string>
@@ -253,6 +264,7 @@
     <string name="gesture_dock_swipe_up">Felfelé csúsztatás a Dokkról</string>
     <string name="action_none">Nincs művelet</string>
     <string name="action_sleep">Alvó mód</string>
+    <string name="action_sleep_timeout">Képernyő lekapcsolása késleltetéssel</string>
     <string name="action_open_settings">Lawnchair beállítások megnyitása</string>
     <string name="action_open_notifications">Értesítési panel megnyitása</string>
     <string name="action_overlay">Google hírfolyam megnyitása</string>
@@ -261,7 +273,7 @@
     <!-- Section 10 -->
     <string name="backups">Mentés és visszaállítás</string>
     <string name="backup_pref_summary">Kezdőképernyő-beállítások mentése, visszaállítása</string>
-    <string name="new_backup">Új létrehozása</string>
+    <string name="new_backup">Létrehozás</string>
     <string name="restore_backup">Visszaállítás</string>
     <string name="local_backups">A belső tárhelyen</string>
     <string name="no_recent_backups">A mentések itt fognak megjelenni.</string>
@@ -271,7 +283,7 @@
     <string name="homescreen">Asztal elrendezése</string>
     <string name="backup_wallpaper">Háttérkép</string>
     <string name="name">Név</string>
-    <string name="backup_location">A mentés helye</string>
+    <string name="backup_location">Hely</string>
     <string name="backup_location_device_storage">\"Lawnchair\" mappa</string>
     <string name="custom">Egyéni</string>
     <!-- Section 11 -->
@@ -285,9 +297,13 @@
     <string name="about_role_ui_ux_designer">UI designer</string>
     <string name="about_role_writer">Író</string>
     <string name="about_role_dev_mod">Fejlesztő és közvetítő</string>
-    <string name="about_role_designer">Designer</string>
+    <string name="about_role_designer">Tervező</string>
+    <string name="about_role_devops">Fejlesztő-üzemeletető mérnök</string>
     <string name="about_role_pr">PR manager</string>
-    <string name="about_role_family_member">Alkotógárda-tag</string>
+    <string name="about_role_ops">Műveleti és infrastruktúra mérnök</string>
+    <string name="about_role_mod_support">Támogatási képviselő és közvetítő</string>
+    <string name="about_role_family_member">Családtag</string>
+    <string name="about_role_magisk_maintainer">Gyorskapcsoló-modul felelős</string>
     <string name="about_our_team">A csapat</string>
     <string name="title_attribouter_licenses">Tulajdonság</string>
     <!-- Section 12 -->
@@ -297,6 +313,10 @@
     <string name="pref_app_groups_create">Létrehozás</string>
     <string name="pref_appcategorization_style_text">Stílus</string>
     <string name="customize">Testreszabás</string>
+    <plurals name="tab_apps_count">
+        <item quantity="one">%1$d alkalmazás</item>
+        <item quantity="other">%1$d alkalmazás</item>
+    </plurals>
     <string name="advanced_settings">További beállítások</string>
     <string name="adaptive_icon">Adaptív ikon</string>
     <string name="action_edit">Szerkesztés</string>
@@ -341,12 +361,12 @@
     <string name="debug_component_name_copied">Vágólapra másolva.</string>
     <string name="read_external_storage_required">Mentés készítéséhez tárhely-hozzáférés szükséges.</string>
     <string name="launcher_theme_override_label">Sötét téma kényszerített megjelenítése</string>
-    <string name="smartspace_hours_mins">%1$s: %2$s</string>
+    <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="dock_style_pref_title">Dokk stílusa</string>
     <string name="dock_style_p">Android Pie</string>
     <string name="dock_style_n">Android Nougat</string>
     <string name="dock_style_hidden">Rejtett</string>
-    <string name="opacity">Áttetszőség</string>
+    <string name="opacity">Átlátszatlanság</string>
     <string name="add_settings_shortcut_title">Parancsikon hozzáadása az Asztalhoz</string>
     <string name="low_performance_mode_pref_title">Alacsony teljesítményű mód</string>
     <string name="title_storage_permission_required">Tárhely-hozzáférés szükséges</string>
@@ -367,16 +387,17 @@
     <string name="about_our_contributors">Közreműködők</string>
     <string name="about_our_family">Családtagok</string>
     <string name="about_bio_deletescape">Kotlin/Java-fejlesztő. Minden érdekli, ami Android. A Lawnchair és a dogbin projektek alapítója.</string>
-    <string name="about_bio_recoded">Könnyűprogramozó és grafikai dizájner.</string>
+    <string name="about_bio_recoded">Könnyűprogramozó és grafikai designer.</string>
     <string name="about_bio_josh">Független grafikai tervező.</string>
     <string name="about_bio_harsh">Androidos alkalmazás és könyvtárfejlesztő. Az AOSiP egyik fő fejlesztője.</string>
     <string name="about_bio_david">19 éves, a koffeint és a pizzát is kódolja, a hét minden napján 24 órában ügyel a Lawnchair ügyeire, ha valami hiba történne. Szabadidejében nyílt forráskódú projekteket támogat és hibákat javít. Korábban Codebucket néven volt ismert.</string>
     <string name="about_bio_lumiq">Egyre nehezebb egy rossz termék elkészítése.</string>
     <string name="about_bio_paphonb">18 éves tanulósrác, Android-fejlesztő és egyike a Lawnchair Launcher vezető-fejlesztőinek.</string>
     <string name="debug_crash_launcher">Kényszerleállítás</string>
-    <string name="action_open_drawer">Alkalmazásfiók megnyitása</string>
+    <string name="action_open_drawer">Alkalmazáslista megnyitása</string>
     <string name="action_last_task">Legutóbb használt alkalmazás indítása</string>
     <string name="action_open_widgets">Modulok megnyitása</string>
+    <string name="action_open_overview">Az Asztali buborék-menü megjelenítése</string>
     <string name="action_global_search">Globális kereső indítása</string>
     <string name="action_app_search">Alkalmazáskereső indítása</string>
     <string name="action_close_notifications">Értesítési panel bezárása</string>
@@ -385,7 +406,7 @@
     <string name="smartspace_widget_provider_not_found">Töltsd le a Google-alkalmazást.</string>
     <string name="apps_label">Alkalmazások</string>
     <string name="all_apps_label">Minden alkalmazás</string>
-    <string name="pref_weather_city_title">Település</string>
+    <string name="pref_weather_city_title">Város</string>
     <string name="default_city">Budapest, HU</string>
     <string name="pref_weather_api_key_title">API kulcs</string>
     <string name="pref_weather_city_summary">A jobb találatokhoz add meg az országkódot is.</string>
@@ -403,7 +424,9 @@
     <string name="transparent">Átlátszó</string>
     <string name="pref_open_source_licenses_title">Licenszek</string>
     <string name="icon_pack_applied_toast">\"%s\" alkalmazva.</string>
-    <string name="color_presets">Szín alapértelmezések</string>
+    <string name="dt2s_admin_hint">A \'Képernyő kikapcsolása dupla koppintással\' használatához rendszergazdai jogok kellenek.</string>
+    <string name="dt2s_admin_warning">A \'Képernyő kikapcsolása dupla koppintással\' letiltásra kerül.</string>
+    <string name="color_presets">Alapértelmezések</string>
     <string name="automatic_short">Automatikus</string>
     <string name="recent_task_option_force_stop">Kényszerleállítás</string>
     <string name="drag_to_enable_packs">Az engedélyezéshez húzd felfelé</string>
@@ -424,8 +447,10 @@
     <string name="theme_dark_theme_mode_follow_system">@string/theme_auto_night_mode</string>
     <string name="pref_qsb_color">Szín</string>
     <string name="hide_from_predictions">Elrejtés a javaslatokból</string>
+    <string name="recents_not_connected">A Gyorskapcsoló letiltásra került.</string>
     <string name="app_actions_pref_title_in_search">Műveletek</string>
     <string name="search_clear_history">Előzmények törlése</string>
+    <string name="recent_task_option_popup_window">Párbeszédablak</string>
     <string name="drawer_tabs">Lapok</string>
     <string name="add_new_tab">Hozzáadás</string>
     <string name="rename_tab">Átnevezés</string>
@@ -446,7 +471,7 @@
     <string name="allow">Engedélyezés</string>
     <string name="deny">Elutasítás</string>
     <string name="sesame_enable_integration_title">Adatmegosztás</string>
-    <string name="sesame_enable_integration_description"><![CDATA[Engedélyezi az adatmegosztás használatát a Sesame-mal? Később módosítani tudja.]]></string>
+    <string name="sesame_enable_integration_description"><![CDATA[Engedélyezed az adatmegosztás használatát a Sesame-mal? Ezt később is módosíthatod.]]></string>
     <string name="sesame_shortcut_disabled">A Sesame le van tiltva.</string>
     <string name="font_variant_italic">Dőlt</string>
     <string name="font_weight_thin">Keskeny</string>
@@ -455,14 +480,15 @@
     <string name="font_weight_regular">Hagyományos</string>
     <string name="font_weight_medium">Közepes</string>
     <string name="font_weight_semi_bold">Félkövér</string>
-    <string name="font_weight_bold">Kövér</string>
+    <string name="font_weight_bold">Félkövér</string>
     <string name="font_weight_extra_bold">Nagyon vastag</string>
     <string name="font_weight_extra_black">Fekete</string>
     <string name="owm_get_your_own_key">Szerezd be az API-kulcsot az api.openweathermap.org oldalról.</string>
     <string name="pref_fonts_global_font">Fő betűtípus</string>
-    <string name="pref_fonts_change_global_font">Váltás</string>
+    <string name="pref_fonts_change_global_font">Módosítás</string>
     <string name="pref_fonts_home_icons">Címkék</string>
     <string name="pref_fonts_home_smartspace">Betekintő</string>
+    <string name="pref_fonts_home_shortcuts">Parancsikon-buborékok</string>
     <string name="pref_fonts_category_drawer">Alkalmazáslista</string>
     <string name="pref_fonts_drawer_icons">Címkék</string>
     <string name="pref_fonts_drawer_app_actions_icons">Műveletek</string>
@@ -492,14 +518,24 @@
     <string name="status_channel_name">Feltöltés állapota</string>
     <string name="bugreport_group_summary">%d új bejelentés.</string>
     <string name="bugreport_group_summary_multiple">Több új bejelentés.</string>
+    <string name="folder_cover_mode">Borító-mód használata</string>
+    <string name="folder_cover_mode_desc">Koppints az első app megnyitásához, húzd fel az összes megtekintéséhez.</string>
+    <string name="icon_shape_override_miui_explaination">Egy MIUI-hiba miatt lehetséges, hogy az ikonok négyzet alakúak maradnak.</string>
     <string name="permission_iplocate">Becsült pozíció</string>
     <string name="permission_iplocate_twilight_explanation">Megadod a hozzáférést a becsült pozícióhoz? Ezzel pontosabb lesz a napfelkelte kiszámítása.</string>
+    <string name="event_provider_missing_notification_access">A(z) <xliff:g example="My Provider" id="providerName">%1$s</xliff:g> használatához engedélyezd a(z) <xliff:g example="My App" id="name">%2$s</xliff:g> -értesítéseket</string>
+    <string name="event_provider_missing_notification_dots">A(z) <xliff:g example="My Provider" id="providerName">%1$s</xliff:g> használatához engedélyezd az Értesítési pöttyöket.</string>
     <string name="zen_mode_enabled">A Ne zavarjanak mód engedélyezve van.</string>
     <string name="crash_report_notif_title">%1$s összeomlott</string>
     <string name="onbording_settings_title">%s beállítása</string>
+    <string name="onbording_settings_summary">Nyomj hosszan az Asztalra.</string>
+    <string name="onboarding_swipe_up">Húzd felfelé az Alkalmazáslista megnyitásához.</string>
     <string name="weather_icons_default">Alapértelmezett</string>
     <string name="pref_weather_icon_pack">Időjárás-ikoncsomag</string>
+    <string name="weather_icon_packs_not_supported">Nem támogatja az időjárás-szolgáltatód.</string>
+    <string name="customnavbar_install">Koppints az egyéni navigációs sáv telepítéséhez.</string>
     <string name="customnavbar_back_hiding">A Vissza-gomb elrejtése</string>
+    <string name="customnavbar_back_hiding_desc">Vissza gomb elrejtése, amikor nincs rá szükség.</string>
     <string name="icon_shape_top_left">Bal felső</string>
     <string name="icon_shape_top_right">Jobb felső</string>
     <string name="icon_shape_bottom_left">Bal alsó</string>
@@ -519,9 +555,9 @@
     <string name="gesture_nav_swipe_up_center">Középről</string>
     <string name="gesture_nav_swipe_up_right">Jobbról</string>
     <string name="action_switch_apps">Alkalmazásváltás</string>
-    <string name="icon_shape_system_default">A Rendszer által beállítva</string>
+    <string name="icon_shape_system_default">A rendszer által beállítva</string>
     <string name="title_missing_notification_access">Értesítési hozzáférésre van szükség.</string>
-    <string name="activity_not_found">Nincs alkalmazás telepítve.</string>
+    <string name="activity_not_found">Az alkalmazás nincs telepítve.</string>
     <string name="out_of_space">Nincs több hely az Asztalon.</string>
     <string name="hotseat_out_of_space">Nincs több hely a Dokkon.</string>
 </resources>
