@@ -20,7 +20,7 @@
     <string name="pixel_ui_pref_summary">Icônes, Couleurs, Flou</string>
     <string name="pref_icon_packs">Packs d\'icônes</string>
     <string name="icon_pack_default">Icônes système</string>
-    <string name="pref_icon_pack_masking">Masquage d\'Icônes</string>
+    <string name="pref_icon_pack_masking">Masquer les icônes</string>
     <string name="pref_icon_pack_masking_summary">Faire correspondre les icônes sans thème au Pack d\'Icônes.</string>
     <string name="pref_legacy_treatment_title">Créer des Icônes Adaptatives</string>
     <string name="pref_legacy_treatment_summary">Créer des Icônes Adaptatives pour tous les raccourcis.</string>
@@ -30,8 +30,8 @@
     <string name="pref_white_only_treatment_summary">Colorier tous les fonds d’Icônes Adaptatives.</string>
     <string name="adaptify_pack_title">Créer des Icônes Adaptatives pour le Pack d\'Icônes</string>
     <string name="icon_shape_override_label">Forme des icônes</string>
-    <string name="reset_custom_icons">Supprimer les Icônes Personnalisées</string>
-    <string name="reset_custom_icons_confirmation">Revenir aux icônes par défaut de ce Pack d\'Icônes ? Cela ne peut être annulé.</string>
+    <string name="reset_custom_icons">Supprimer les icônes personnalisées</string>
+    <string name="reset_custom_icons_confirmation">Revenir à l\'état d\'origine de ce pack d\'icônes ? Cette action est irréversible.</string>
     <string name="appearance">Apparence</string>
     <!-- Note: new. Replaces title of 5th field (from bottom) in “Theme” page. -->
     <string name="theme_auto">Automatique (Assorti au Fond d\'écran)</string>
@@ -40,8 +40,8 @@
     <string name="theme_light">Clair</string>
     <string name="theme_dark_text">Clair avec Texte Foncé</string>
     <string name="theme_with_dark_text">Texte foncé</string>
-    <string name="theme_use_black">Utiliser du Noir Pur</string>
-    <string name="theme_use_dark_text">Utiliser du Texte Foncé</string>
+    <string name="theme_use_black">Utiliser le noir pur</string>
+    <string name="theme_use_dark_text">Utiliser le texte foncé</string>
     <string name="lawnchair_accent">Couleur d\'accentuation </string>
     <string name="color_pixel_accent">Bleu Google</string>
     <string name="color_system_accent">Défini par le système</string>
@@ -51,15 +51,15 @@
     <string name="pref_fonts_title">Polices</string>
     <string name="blur_pref_title">Activer le flou</string>
     <string name="blur_pref_summary">Flouter les fonds de page.</string>
-    <string name="blur_radius_pref_title">Intensité de Flou</string>
+    <string name="blur_radius_pref_title">Intensité de flou</string>
     <!-- Section 3 -->
     <string name="general_pref_title">Écran d\'accueil</string>
-    <string name="general_pref_summary">Disposition, Verrouiller l\'Écran d\'accueil, Transitions</string>
+    <string name="general_pref_summary">Disposition, Verrouiller l\'écran d\'accueil</string>
     <string name="grid_size">Grille d\'icônes</string>
     <string name="grid_size_width">Largeur</string>
     <string name="grid_size_height">Hauteur</string>
     <string name="num_hotseat_icons_pref_title">Nombre d\'icônes</string>
-    <string name="overlap_placement">Autoriser les Chevauchements</string>
+    <string name="overlap_placement">Autoriser les chevauchements</string>
     <string name="lock_desktop">Verrouiller l\'écran d\'accueil</string>
     <string name="pref_category_icons">Raccourcis</string>
     <string name="hide_icon_labels_pref_title">Masquer les étiquettes</string>
@@ -67,10 +67,10 @@
     <string name="icon_text_scale_pref_title">Taille du texte</string>
     <string name="text_color">Couleur du texte</string>
     <string name="icon_scale_pref_title">Taille de l\'icône</string>
-    <string name="auto_add_shortcuts_label">Ajouter les Nouveaux Raccourcis sur l\'Écran d\'accueil</string>
+    <string name="auto_add_shortcuts_label">Ajouter nouv. raccourcis à l\'écran d\'acc.</string>
     <string name="pref_icon_popup_menu">Bulle de raccourci</string>
     <string name="pref_category_misc">Autres</string>
-    <string name="animation_type_title">Transition de Lancement d\'Application</string>
+    <string name="animation_type_title">Transition au lancement d\'applications</string>
     <string name="animation_type_default">Par défaut</string>
     <string name="animation_type_pie">Android Pie</string>
     <string name="animation_type_pie_like">Android Pie (Émulé)</string>
@@ -80,7 +80,7 @@
     <string name="animation_type_blink">Clignotement</string>
     <string name="animation_type_fade">Fondu</string>
     <string name="icon_badging_title">Pastilles des notifications</string>
-    <string name="pref_notification_count_title">Afficher le Nombre de Notifications</string>
+    <string name="pref_notification_count_title">Afficher le nombre de notifications</string>
     <string name="allow_rotation_title">Activer la rotation</string>
     <string name="pref_center_wallpaper">Centrer le fond d\'écran</string>
     <string name="pref_center_wallpaper_summary">Désactiver le défilement du fond d\'écran.</string>
@@ -91,7 +91,7 @@
     <!-- Section 4 -->
     <string name="smartspace_preferences_in_settings">En bref</string>
     <!-- Note: replaces hard-coded copy (“Home widget”). -->
-    <string name="smartspace_preferences_in_settings_desc">Date &amp; Heure, Sources de Données</string>
+    <string name="smartspace_preferences_in_settings_desc">Date et heure, Sources de données</string>
     <string name="smartspace_time">Afficher l\'heure</string>
     <string name="smartspace_date">Afficher la date</string>
     <string name="pref_smartspace_time_above">Afficher une grande horloge</string>
@@ -202,10 +202,10 @@
     <string name="title_app_suggestions_in_search">Suggestions d\'applications</string>
     <string name="app_actions_pref_title">Actions</string>
     <string name="app_actions_pref_desc">Raccourcis vers les écrans fréquemment utilisés.</string>
-    <string name="app_actions_reset_pref_title">Réinitialiser les Préférences d\'Actions</string>
+    <string name="app_actions_reset_pref_title">Réinitialiser les préférences d\'actions</string>
     <string name="app_actions_reset_pref_summary">Afficher les Actions glissées sur \"Ne pas afficher\".</string>
-    <string name="all_apps_label_pref_title">Afficher l\'étiquette \"Toutes les Applications\"</string>
-    <string name="separate_work_apps_pref_title">Deuxième onglet pour les applications professionnelles</string>
+    <string name="all_apps_label_pref_title">Afficher l\'étiquette \"Toutes les appli.\"</string>
+    <string name="separate_work_apps_pref_title">Deuxième onglet pour les appli. prof.</string>
     <string name="keep_scroll_state_pref_title">Se souvenir de la position</string>
     <!-- Section 7 -->
     <string name="search">Rechercher</string>
@@ -257,9 +257,9 @@
     <string name="gestures_pref_title">Gestes</string>
     <string name="gestures_pref_summary">Appuyer deux fois, Glisser vers le haut à partir du Dock</string>
     <string name="gesture_double_tap">Appuyer deux fois</string>
-    <string name="gesture_long_press">Appuyer &amp; Maintenir</string>
-    <string name="gesture_press_home">Appui sur le Bouton d\'Accueil</string>
-    <string name="gesture_press_back">Appui sur le Bouton de Retour</string>
+    <string name="gesture_long_press">Appuyer et maintenir</string>
+    <string name="gesture_press_home">Appui sur le bouton d\'accueil</string>
+    <string name="gesture_press_back">Appui sur le bouton de retour</string>
     <string name="gesture_swipe_down">Glisser vers le bas</string>
     <string name="gesture_swipe_up">Glisser vers le haut</string>
     <string name="gesture_dock_swipe_up">Glisser vers le Haut à partir du Dock</string>
@@ -272,7 +272,7 @@
     <string name="action_despacito">Lire \"YouTube Rewind 2018\" (Déformé)</string>
     <string name="action_open_app">Ouvrir l\'application</string>
     <!-- Section 10 -->
-    <string name="backups">Sauvegarde &amp; Restauration</string>
+    <string name="backups">Sauvegarde et restauration</string>
     <string name="backup_pref_summary">Enregistrer la Configuration de l\'Accueil, Restaurer les Sauvegardes</string>
     <string name="new_backup">Créer</string>
     <string name="restore_backup">Restaurer</string>
@@ -308,7 +308,7 @@
     <string name="about_our_team">L\'équipe</string>
     <string name="title_attribouter_licenses">Attribution</string>
     <!-- Section 12 -->
-    <string name="settings_button_text">Paramètres de l\'écran d\'accueil</string>
+    <string name="settings_button_text">Paramètres écran acc.</string>
     <string name="button_organize_screens">Organiser les pages</string>
     <string name="wallpaper_button_text">Fond d\'écran</string>
     <string name="pref_app_groups_create">Créer</string>
@@ -550,7 +550,7 @@ corriges des bugs pendant son temps libre. Également connu précédemment sous 
     <!-- Section 13 -->
     <string name="quickstep_pref_title">Récents</string>
     <string name="quickstep_pref_summary">Gestes, Style, Navigation</string>
-    <string name="swipe_up_to_switch_apps_title">Glisser vers le haut pour Changer d\'Applications</string>
+    <string name="swipe_up_to_switch_apps_title">Glisser vers le haut pour changer d\'applications</string>
     <string name="swipe_left_to_go_back_title">Glisser à Gauche pour Revenir en Arrière</string>
     <string name="pref_category_nav_swipe_up_gestures">Glisser vers le haut</string>
     <string name="gesture_nav_swipe_up_left">Depuis la gauche</string>
