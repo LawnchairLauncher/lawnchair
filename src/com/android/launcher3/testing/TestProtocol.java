@@ -73,6 +73,7 @@ public final class TestProtocol {
     public static final String REQUEST_APPS_LIST_SCROLL_Y = "apps-list-scroll-y";
     public static final String REQUEST_OVERVIEW_LEFT_GESTURE_MARGIN = "overview-left-margin";
     public static final String REQUEST_OVERVIEW_RIGHT_GESTURE_MARGIN = "overview-right-margin";
+    public static final String REQUEST_PID = "pid";
     public static final String REQUEST_TOTAL_PSS_KB = "total_pss";
     public static final String REQUEST_JAVA_LEAK = "java-leak";
     public static final String REQUEST_NATIVE_LEAK = "native-leak";

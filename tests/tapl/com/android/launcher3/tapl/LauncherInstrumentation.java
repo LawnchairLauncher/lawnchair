@@ -683,6 +683,20 @@ public final class LauncherInstrumentation {
         }
     }
 
+    /**
+     * Gets the Options Popup Menu object if the current state is showing the popup menu. Fails if
+     * the launcher is not in that state.
+     *
+     * @return Options Popup Menu object.
+     */
+    @NonNull
+    public OptionsPopupMenu getOptionsPopupMenu() {
+        try (LauncherInstrumentation.Closable c = addContextLayer(
+                "want to get context menu object")) {
+            return new OptionsPopupMenu(this);
+        }
+    }
+
     void waitUntilGone(String resId) {
         assertTrue("Unexpected launcher object visible: " + resId,
                 mDevice.wait(Until.gone(getLauncherObjectSelector(resId)),
@@ -991,6 +1005,16 @@ public final class LauncherInstrumentation {
         return getSystemIntegerRes(context, "config_navBarInteractionMode");
     }
 
+    @NonNull
+    UiObject2 clickAndGet(@NonNull final UiObject2 target, @NonNull String resName) {
+        final Point targetCenter = target.getVisibleCenter();
+        final long downTime = SystemClock.uptimeMillis();
+        sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, targetCenter);
+        final UiObject2 result = waitForLauncherObject(resName);
+        sendPointer(downTime, SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, targetCenter);
+        return result;
+    }
+
     private static int getSystemIntegerRes(Context context, String resName) {
         Resources res = context.getResources();
         int resId = res.getIdentifier(resName, "integer", "android");
@@ -1048,6 +1072,10 @@ public final class LauncherInstrumentation {
     public int getTotalPssKb() {
         return getTestInfo(TestProtocol.REQUEST_TOTAL_PSS_KB).
                 getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
+    }
+
+    public int getPid() {
+        return getTestInfo(TestProtocol.REQUEST_PID).getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
     public void produceJavaLeak() {
