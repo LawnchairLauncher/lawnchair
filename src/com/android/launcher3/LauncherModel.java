@@ -16,12 +16,6 @@
 
 package com.android.launcher3;
 
-import static com.android.launcher3.LauncherAppState.ACTION_FORCE_ROLOAD;
-import static com.android.launcher3.config.FeatureFlags.IS_DOGFOOD_BUILD;
-import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
-import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
-import static com.android.launcher3.util.PackageManagerHelper.hasShortcutsPermission;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.LauncherApps;
@@ -68,9 +62,16 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.Executor;
 import java.util.function.Supplier;
+
+import static com.android.launcher3.LauncherAppState.ACTION_FORCE_ROLOAD;
+import static com.android.launcher3.config.FeatureFlags.IS_DOGFOOD_BUILD;
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
+import static com.android.launcher3.util.PackageManagerHelper.hasShortcutsPermission;
 
 /**
  * Maintains in-memory state of the Launcher. It is expected that there should be only one
@@ -124,6 +125,16 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
     LauncherModel(LauncherAppState app, IconCache iconCache, AppFilter appFilter) {
         mApp = app;
         mBgAllAppsList = new AllAppsList(iconCache, appFilter);
+    }
+
+    /**
+     * Returns AppInfo with corresponding package name.
+     * TODO: move to enqueueModelTask
+     */
+    public Optional<AppInfo> getAppInfoByPackageName(String pkg) {
+        return mBgAllAppsList.data.stream()
+                .filter(info -> info.componentName.getPackageName().equals(pkg))
+                .findAny();
     }
 
     /**

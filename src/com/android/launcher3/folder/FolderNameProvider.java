@@ -15,13 +15,23 @@
  */
 package com.android.launcher3.folder;
 
-import android.content.ComponentName;
 import android.content.Context;
+import android.os.Process;
+import android.text.TextUtils;
 
-import com.android.launcher3.LauncherSettings.Favorites;
+import com.android.launcher3.AppInfo;
+import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.R;
 import com.android.launcher3.WorkspaceItemInfo;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * Locates provider for the folder name.
@@ -29,39 +39,65 @@ import java.util.ArrayList;
 public class FolderNameProvider {
 
     /**
-     * IME usually has up to 3 suggest slots. Adding one as in Launcher, there are folder
-     * name edit box that we can also provide suggestion.
+     * IME usually has up to 3 suggest slots. In total, there are 4 suggest slots as the folder
+     * name edit box can also be used to provide suggestion.
      */
     public static final int SUGGEST_MAX = 4;
 
-    /**
-     * Returns suggested folder name.
-     */
     public CharSequence getSuggestedFolderName(Context context,
-            ArrayList<WorkspaceItemInfo> workspaceItemInfos, CharSequence[] suggestName) {
-        // Currently only run the algorithm on initial folder creation.
-        // For more than 2 items in the folder, the ranking algorithm for finding
-        // candidate folder name should be rewritten.
-        if (workspaceItemInfos.size() == 2) {
-            ComponentName cmp1 = workspaceItemInfos.get(0).getTargetComponent();
-            ComponentName cmp2 = workspaceItemInfos.get(1).getTargetComponent();
+            ArrayList<WorkspaceItemInfo> workspaceItemInfos, CharSequence[] candidates) {
 
-            String pkgName0 = cmp1 == null ? "" : cmp1.getPackageName();
-            String pkgName1 = cmp2 == null ? "" : cmp2.getPackageName();
-            // If the two icons are from the same package,
-            // then assign the main icon's name
-            if (pkgName0.equals(pkgName1)) {
-                WorkspaceItemInfo wInfo0 = workspaceItemInfos.get(0);
-                WorkspaceItemInfo wInfo1 = workspaceItemInfos.get(1);
-                if (workspaceItemInfos.get(0).itemType == Favorites.ITEM_TYPE_APPLICATION) {
-                    suggestName[0] = wInfo0.title;
-                } else if (wInfo1.itemType == Favorites.ITEM_TYPE_APPLICATION) {
-                    suggestName[0] = wInfo1.title;
-                }
-                return suggestName[0];
-                // two icons are all shortcuts. Don't assign title
+        CharSequence suggest;
+        // If all the icons are from work profile,
+        // Then, suggest "Work" as the folder name
+        List<WorkspaceItemInfo> distinctItemInfos = workspaceItemInfos.stream()
+                .filter(distinctByKey(p-> p.user))
+                .collect(Collectors.toList());
+
+        if (distinctItemInfos.size() == 1
+                && !distinctItemInfos.get(0).user.equals(Process.myUserHandle())) {
+            // Place it as last viable suggestion
+            setAsLastSuggestion(candidates,
+                    context.getResources().getString(R.string.work_folder_name));
+        }
+
+        // If all the icons are from same package (e.g., main icon, shortcut, shortcut)
+        // Then, suggest the package's title as the folder name
+        distinctItemInfos = workspaceItemInfos.stream()
+                .filter(distinctByKey(p-> p.getTargetComponent() != null
+                        ? p.getTargetComponent().getPackageName() : ""))
+                .collect(Collectors.toList());
+
+        if (distinctItemInfos.size() == 1) {
+            Optional<AppInfo> info = LauncherAppState.getInstance(context).getModel()
+                    .getAppInfoByPackageName(distinctItemInfos.get(0).getTargetComponent()
+                            .getPackageName());
+            // Place it as first viable suggestion and shift everything else
+            info.ifPresent(i -> setAsFirstSuggestion(candidates, i.title.toString()));
+        }
+        return candidates[0];
+    }
+
+    private void setAsFirstSuggestion(CharSequence[] candidatesOut, CharSequence candidate) {
+        for (int i = candidatesOut.length - 1; i > 0; i--) {
+            if (TextUtils.isEmpty(candidatesOut[i])) {
+                candidatesOut[i - 1] = candidatesOut[i];
+            }
+            candidatesOut[0] = candidate;
+        }
+    }
+
+    private void setAsLastSuggestion(CharSequence[] candidatesOut, CharSequence candidate) {
+        for (int i = 0; i < candidate.length(); i++) {
+            if (TextUtils.isEmpty(candidatesOut[i])) {
+                candidatesOut[i] = candidate;
             }
         }
-        return suggestName[0];
+    }
+
+    // This method can be moved to some Utility class location.
+    private static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
+        Map<Object, Boolean> map = new ConcurrentHashMap<>();
+        return t -> map.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
     }
 }

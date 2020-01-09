@@ -16,6 +16,7 @@
 
 package com.android.launcher3.shadows;
 
+import android.os.Parcel;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.util.SparseBooleanArray;
@@ -49,5 +50,13 @@ public class LShadowUserManager extends ShadowUserManager {
 
     public void setUserLocked(UserHandle userHandle, boolean enabled) {
         mLockedUsers.put(userHandle.hashCode(), enabled);
+    }
+
+    // Create user handle from parcel since UserHandle.of() was only added in later APIs.
+    public static UserHandle newUserHandle(int uid) {
+        Parcel userParcel = Parcel.obtain();
+        userParcel.writeInt(uid);
+        userParcel.setDataPosition(0);
+        return new UserHandle(userParcel);
     }
 }
