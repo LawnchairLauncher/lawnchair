@@ -148,7 +148,8 @@ public class TestStabilityRule implements TestRule {
             Log.d(TAG, "PLATFORM PRESUBMIT");
             runFlavor = PLATFORM_PRESUBMIT;
         } else if (launcherBuildMatcher.group("platform") != null
-                && platformBuildMatcher.group("postsubmit") != null) {
+                && (platformBuildMatcher.group("postsubmit") != null
+                || platformBuildMatcher.group("commandLine") != null)) {
             Log.d(TAG, "PLATFORM POSTSUBMIT");
             runFlavor = PLATFORM_POSTSUBMIT;
         } else {
