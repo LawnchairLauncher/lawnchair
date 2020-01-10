@@ -432,6 +432,7 @@
     <string name="enabled_icon_packs">پذیرفته شد</string>
     <string name="lawnchair_actions">عملیات</string>
     <string name="bridge_missing_title">دریافت فید</string>
+    <string name="bridge_missing_message">دریافت فید, برای استفاده از گوگل خبری.</string>
     <string name="smartspace_provider_bridge">پل پیکسل بدون روت</string>
     <string name="title_app_suggestions">برنامه‌ها</string>
     <string name="theme_dark">تیره</string>
@@ -520,6 +521,7 @@
     <string name="crash_report_notif_title">%1$s خراب شد</string>
     <string name="onbording_settings_title">%s را تنظیم کنید</string>
     <string name="onbording_settings_summary">پس از لمس میزکار مدتی نگهدارید.</string>
+    <string name="onboarding_swipe_up">برای باز کردن کشو, به بالا بکشید.</string>
     <string name="weather_icons_default">پیش‌فرض</string>
     <string name="pref_weather_icon_pack">بسته آیکون آب و هوا</string>
     <string name="weather_icon_packs_not_supported">توسط ایستگاه هواشناسی شما پشتیبانی نمی شود.</string>
@@ -531,10 +533,13 @@
     <string name="icon_shape_bottom_left">پایین سمت چپ</string>
     <string name="icon_shape_bottom_right">پایین سمت راست</string>
     <string name="icon_shape_corner_round">گرد</string>
+    <string name="icon_shape_corner_squircle">روان</string>
     <string name="icon_shape_corner_cut">برش</string>
     <string name="smartspace_add_to_home">افزودن به ميزكار</string>
+    <string name="get_lawnfeed">دریافت فید</string>
     <!-- Section 13 -->
     <string name="quickstep_pref_title">برنامه‌های اخیر</string>
+    <string name="quickstep_pref_summary">حرکات, سبک, پیمایش</string>
     <string name="swipe_up_to_switch_apps_title">برای سوییچ بین برنامه ها به سمت بالا بکشید</string>
     <string name="swipe_left_to_go_back_title">برای بازگشت به چپ بکشید</string>
     <string name="pref_category_nav_swipe_up_gestures">به بالا بکشید</string>
