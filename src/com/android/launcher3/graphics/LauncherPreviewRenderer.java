@@ -70,6 +70,7 @@ import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.BitmapRenderer;
 import com.android.launcher3.model.AllAppsList;
 import com.android.launcher3.model.BgDataModel;
+import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.LoaderResults;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.BaseDragLayer;
@@ -377,7 +378,7 @@ public class LauncherPreviewRenderer implements Callable<Bitmap> {
             if (!mModel.isModelLoaded()) {
                 Log.d(TAG, "Workspace not loaded, loading now");
                 mModel.startLoaderForResults(
-                        new LoaderResults(mApp, mBgDataModel, mAllAppsList, 0, null));
+                        new LoaderResults(mApp, mBgDataModel, mAllAppsList, new Callbacks[0]));
                 return new ArrayList<>();
             }
             return mBgDataModel.workspaceItems;

@@ -41,7 +41,6 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.FileLog;
-import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.ItemInfoMatcher;
 
@@ -350,12 +349,15 @@ public class ModelWriter {
         mDeleteRunnables.clear();
     }
 
-    public void abortDelete(int pageToBindFirst) {
+    /**
+     * Aborts a previous delete operation pending commit
+     */
+    public void abortDelete() {
         mPreparingToUndo = false;
         mDeleteRunnables.clear();
         // We do a full reload here instead of just a rebind because Folders change their internal
         // state when dragging an item out, which clobbers the rebind unless we load from the DB.
-        mModel.forceReload(pageToBindFirst);
+        mModel.forceReload();
     }
 
     private class UpdateItemRunnable extends UpdateItemBaseRunnable {
@@ -472,7 +474,7 @@ public class ModelWriter {
         }
 
         void verifyModel() {
-            if (!mVerifyChanges || mModel.getCallback() == null) {
+            if (!mVerifyChanges || !mModel.hasCallbacks()) {
                 return;
             }
 
@@ -488,11 +490,9 @@ public class ModelWriter {
                     // Bound model has not changed during the job
                     return;
                 }
+
                 // Bound model was changed between submitting the job and executing the job
-                Callbacks callbacks = mModel.getCallback();
-                if (callbacks != null) {
-                    callbacks.rebindModel();
-                }
+                mModel.rebindCallbacks();
             });
         }
     }

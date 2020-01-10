@@ -160,11 +160,6 @@ public class LauncherAppState {
         }
     }
 
-    LauncherModel setLauncher(Launcher launcher) {
-        mModel.initialize(launcher);
-        return mModel;
-    }
-
     public IconCache getIconCache() {
         return mIconCache;
     }

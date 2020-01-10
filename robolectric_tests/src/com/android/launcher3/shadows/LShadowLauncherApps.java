@@ -43,6 +43,7 @@ import org.robolectric.shadows.ShadowLauncherApps;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Extension of {@link ShadowLauncherApps} with missing shadow methods
@@ -92,5 +93,27 @@ public class LShadowLauncherApps extends ShadowLauncherApps {
             throws PackageManager.NameNotFoundException {
         return RuntimeEnvironment.application.getPackageManager()
                 .getApplicationInfo(packageName, flags);
+    }
+
+    @Implementation
+    public List<LauncherActivityInfo> getActivityList(String packageName, UserHandle user) {
+        Intent intent = new Intent(Intent.ACTION_MAIN)
+                .addCategory(Intent.CATEGORY_LAUNCHER)
+                .setPackage(packageName);
+        return RuntimeEnvironment.application.getPackageManager().queryIntentActivities(intent, 0)
+                .stream()
+                .map(ri -> getLauncherActivityInfo(ri.activityInfo))
+                .collect(Collectors.toList());
+    }
+
+    @Implementation
+    public boolean hasShortcutHostPermission() {
+        return true;
+    }
+
+    @Override
+    protected List<LauncherActivityInfo> getShortcutConfigActivityList(String packageName,
+            UserHandle user) {
+        return Collections.emptyList();
     }
 }

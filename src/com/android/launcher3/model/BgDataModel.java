@@ -436,9 +436,10 @@ public class BgDataModel {
     }
 
     public interface Callbacks {
-        void rebindModel();
-
-        int getCurrentWorkspaceScreen();
+        /**
+         * Returns the page number to bind first, synchronously if possible or -1
+         */
+        int getPageToBindSynchronously();
         void clearPendingBinds();
         void startBinding();
         void bindItems(List<ItemInfo> shortcuts, boolean forceAnimateIcons);

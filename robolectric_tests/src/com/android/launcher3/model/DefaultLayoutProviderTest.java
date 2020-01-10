@@ -16,8 +16,9 @@
 
 package com.android.launcher3.model;
 
+import static com.android.launcher3.util.LauncherModelHelper.TEST_PACKAGE;
+
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
 import static org.robolectric.Shadows.shadowOf;
 import static org.robolectric.util.ReflectionHelpers.setField;
 
@@ -26,14 +27,10 @@ import android.content.Context;
 import android.content.pm.PackageInstaller;
 import android.content.pm.PackageInstaller.SessionInfo;
 import android.content.pm.PackageInstaller.SessionParams;
-import android.net.Uri;
-import android.provider.Settings;
 
 import com.android.launcher3.FolderInfo;
-import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherProvider;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.model.BgDataModel.Callbacks;
@@ -48,12 +45,7 @@ import org.junit.runner.RunWith;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.LooperMode;
 import org.robolectric.annotation.LooperMode.Mode;
-import org.robolectric.shadows.ShadowPackageManager;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStreamWriter;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 /**
@@ -63,40 +55,22 @@ import java.util.ArrayList;
 @LooperMode(Mode.PAUSED)
 public class DefaultLayoutProviderTest {
 
-    private static final String SETTINGS_APP = "com.android.settings";
-    private static final String TEST_PROVIDER_AUTHORITY =
-            DefaultLayoutProviderTest.class.getName().toLowerCase();
-
-    private static final int BITMAP_SIZE = 10;
-    private static final int GRID_SIZE = 4;
-
     private LauncherModelHelper mModelHelper;
     private Context mTargetContext;
-    private InvariantDeviceProfile mIdp;
 
     @Before
     public void setUp() {
         mModelHelper = new LauncherModelHelper();
         mTargetContext = RuntimeEnvironment.application;
 
-        mIdp = InvariantDeviceProfile.INSTANCE.get(mTargetContext);
-        mIdp.numRows = mIdp.numColumns = mIdp.numHotseatIcons = GRID_SIZE;
-        mIdp.iconBitmapSize = BITMAP_SIZE;
-
-        mModelHelper.provider.setAllowLoadDefaultFavorites(true);
-        Settings.Secure.putString(mTargetContext.getContentResolver(),
-                "launcher3.layout.provider", TEST_PROVIDER_AUTHORITY);
-
-        ShadowPackageManager spm = shadowOf(mTargetContext.getPackageManager());
-        spm.addProviderIfNotPresent(new ComponentName("com.test", "Dummy")).authority =
-                TEST_PROVIDER_AUTHORITY;
-        spm.addActivityIfNotPresent(new ComponentName(SETTINGS_APP, SETTINGS_APP));
+        shadowOf(mTargetContext.getPackageManager())
+                .addActivityIfNotPresent(new ComponentName(TEST_PACKAGE, TEST_PACKAGE));
     }
 
     @Test
     public void testCustomProfileLoaded_with_icon_on_hotseat() throws Exception {
         writeLayoutAndLoad(new LauncherLayoutBuilder().atHotseat(0)
-                .putApp(SETTINGS_APP, SETTINGS_APP));
+                .putApp(TEST_PACKAGE, TEST_PACKAGE));
 
         // Verify one item in hotseat
         assertEquals(1, mModelHelper.getBgDataModel().workspaceItems.size());
@@ -108,9 +82,9 @@ public class DefaultLayoutProviderTest {
     @Test
     public void testCustomProfileLoaded_with_folder() throws Exception {
         writeLayoutAndLoad(new LauncherLayoutBuilder().atHotseat(0).putFolder(android.R.string.copy)
-                .addApp(SETTINGS_APP, SETTINGS_APP)
-                .addApp(SETTINGS_APP, SETTINGS_APP)
-                .addApp(SETTINGS_APP, SETTINGS_APP)
+                .addApp(TEST_PACKAGE, TEST_PACKAGE)
+                .addApp(TEST_PACKAGE, TEST_PACKAGE)
+                .addApp(TEST_PACKAGE, TEST_PACKAGE)
                 .build());
 
         // Verify folder
@@ -146,19 +120,13 @@ public class DefaultLayoutProviderTest {
     }
 
     private void writeLayoutAndLoad(LauncherLayoutBuilder builder) throws Exception {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        builder.build(new OutputStreamWriter(bos));
-
-        Uri layoutUri = LauncherProvider.getLayoutUri(TEST_PROVIDER_AUTHORITY, mTargetContext);
-        shadowOf(mTargetContext.getContentResolver()).registerInputStream(layoutUri,
-                new ByteArrayInputStream(bos.toByteArray()));
+        mModelHelper.setupDefaultLayoutProvider(builder);
 
         LoaderResults results = new LoaderResults(
                 LauncherAppState.getInstance(mTargetContext),
                 mModelHelper.getBgDataModel(),
                 mModelHelper.getAllAppsList(),
-                0,
-                new WeakReference<>(mock(Callbacks.class)));
+                new Callbacks[0]);
         LoaderTask task = new LoaderTask(
                 LauncherAppState.getInstance(mTargetContext),
                 mModelHelper.getAllAppsList(),
