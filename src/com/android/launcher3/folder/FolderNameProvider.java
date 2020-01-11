@@ -18,13 +18,16 @@ package com.android.launcher3.folder;
 import android.content.Context;
 import android.os.Process;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.WorkspaceItemInfo;
+import com.android.launcher3.config.FeatureFlags;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -38,16 +41,26 @@ import java.util.stream.Collectors;
  */
 public class FolderNameProvider {
 
+    private static final String TAG = FeatureFlags.FOLDER_NAME_SUGGEST.getKey();
+    private static final boolean DEBUG = FeatureFlags.FOLDER_NAME_SUGGEST.get();
+
     /**
      * IME usually has up to 3 suggest slots. In total, there are 4 suggest slots as the folder
      * name edit box can also be used to provide suggestion.
      */
     public static final int SUGGEST_MAX = 4;
 
+    /**
+     * When inheriting class requires precaching, override this method.
+     */
+    public void load(Context context) {}
+
     public CharSequence getSuggestedFolderName(Context context,
             ArrayList<WorkspaceItemInfo> workspaceItemInfos, CharSequence[] candidates) {
 
-        CharSequence suggest;
+        if (DEBUG) {
+            Log.d(TAG, "getSuggestedFolderName:" + Arrays.toString(candidates));
+        }
         // If all the icons are from work profile,
         // Then, suggest "Work" as the folder name
         List<WorkspaceItemInfo> distinctItemInfos = workspaceItemInfos.stream()
@@ -75,24 +88,39 @@ public class FolderNameProvider {
             // Place it as first viable suggestion and shift everything else
             info.ifPresent(i -> setAsFirstSuggestion(candidates, i.title.toString()));
         }
+        if (DEBUG) {
+            Log.d(TAG, "getSuggestedFolderName:" + Arrays.toString(candidates));
+        }
         return candidates[0];
     }
 
     private void setAsFirstSuggestion(CharSequence[] candidatesOut, CharSequence candidate) {
-        for (int i = candidatesOut.length - 1; i > 0; i--) {
-            if (TextUtils.isEmpty(candidatesOut[i])) {
-                candidatesOut[i - 1] = candidatesOut[i];
-            }
-            candidatesOut[0] = candidate;
+        if (contains(candidatesOut, candidate)) {
+            return;
         }
+        for (int i = candidatesOut.length - 1; i > 0; i--) {
+            if (!TextUtils.isEmpty(candidatesOut[i - 1])) {
+                candidatesOut[i] = candidatesOut[i - 1];
+            }
+        }
+        candidatesOut[0] = candidate;
     }
 
     private void setAsLastSuggestion(CharSequence[] candidatesOut, CharSequence candidate) {
+        if (contains(candidatesOut, candidate)) {
+            return;
+        }
         for (int i = 0; i < candidate.length(); i++) {
             if (TextUtils.isEmpty(candidatesOut[i])) {
                 candidatesOut[i] = candidate;
             }
         }
+    }
+
+    private boolean contains(CharSequence[] list, CharSequence key) {
+        return Arrays.asList(list).stream()
+                .filter(s -> s != null)
+                .anyMatch(s -> s.toString().equalsIgnoreCase(key.toString()));
     }
 
     // This method can be moved to some Utility class location.
