@@ -183,8 +183,11 @@
     <string name="category_personalization">Cá nhân hóa</string>
     <string name="category_photography">Nhiếp ảnh</string>
     <string name="category_tools">Tiện ích</string>
+    <string name="select_tab_type">Thẻ mới</string>
     <string name="tab_type_smart">Tự động</string>
+    <string name="pref_appcategorization_flowerpot_summary">Chọn lối tắt tự động.</string>
     <string name="tab_type_custom">Tuỳ chỉnh</string>
+    <string name="tab_type_custom_desc">Chọn lối tắt thủ công.</string>
     <string name="pref_appcategorization_flowerpot_title">Danh mục Ứng dụng</string>
     <string name="title_all_apps_search">Hiển thị Thanh tìm kiếm</string>
     <string name="title_all_apps_google_search">Sử dụng Tìm kiếm tổng thể</string>
