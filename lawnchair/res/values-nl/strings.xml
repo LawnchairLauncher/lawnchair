@@ -557,4 +557,7 @@
     <string name="action_switch_apps">Apps wisselen</string>
     <string name="icon_shape_system_default">Door systeem ingesteld</string>
     <string name="title_missing_notification_access">Toegang tot meldingen vereist.</string>
+    <string name="activity_not_found">App niet geïnstalleerd.</string>
+    <string name="out_of_space">Geen ruimte meer op het Bureaublad.</string>
+    <string name="hotseat_out_of_space">Geen ruimte meer op het Bureaublad.</string>
 </resources>
