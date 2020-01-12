@@ -109,11 +109,14 @@ public class FolderNameProvider {
         if (contains(candidatesOut, candidate)) {
             return;
         }
+
         for (int i = 0; i < candidate.length(); i++) {
             if (TextUtils.isEmpty(candidatesOut[i])) {
                 candidatesOut[i] = candidate;
+                return;
             }
         }
+        candidatesOut[candidate.length() - 1] = candidate;
     }
 
     private boolean contains(CharSequence[] list, CharSequence key) {
