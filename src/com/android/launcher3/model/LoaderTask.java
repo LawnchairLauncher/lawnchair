@@ -36,6 +36,7 @@ import android.content.pm.LauncherApps;
 import android.content.pm.PackageInstaller;
 import android.content.pm.PackageInstaller.SessionInfo;
 import android.content.pm.ShortcutInfo;
+import android.net.Uri;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.text.TextUtils;
@@ -76,7 +77,6 @@ import com.android.launcher3.qsb.QsbContainerView;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.shortcuts.ShortcutRequest;
 import com.android.launcher3.shortcuts.ShortcutRequest.QueryResult;
-import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IOUtils;
 import com.android.launcher3.util.LooperIdleLock;
@@ -106,7 +106,7 @@ public class LoaderTask implements Runnable {
 
     private final LauncherAppState mApp;
     private final AllAppsList mBgAllAppsList;
-    private final BgDataModel mBgDataModel;
+    protected final BgDataModel mBgDataModel;
 
     private FirstScreenBroadcast mFirstScreenBroadcast;
 
@@ -284,6 +284,10 @@ public class LoaderTask implements Runnable {
 
     @VisibleForTesting
     void loadWorkspace(List<ShortcutInfo> allDeepShortcuts) {
+        loadWorkspace(allDeepShortcuts, LauncherSettings.Favorites.CONTENT_URI);
+    }
+
+    protected void loadWorkspace(List<ShortcutInfo> allDeepShortcuts, Uri contentUri) {
         final Context context = mApp.getContext();
         final ContentResolver contentResolver = context.getContentResolver();
         final PackageManagerHelper pmHelper = new PackageManagerHelper(context);
@@ -327,8 +331,8 @@ public class LoaderTask implements Runnable {
             mFirstScreenBroadcast = new FirstScreenBroadcast(installingPkgs);
 
             Map<ShortcutKey, ShortcutInfo> shortcutKeyToPinnedShortcuts = new HashMap<>();
-            final LoaderCursor c = new LoaderCursor(contentResolver.query(
-                    LauncherSettings.Favorites.CONTENT_URI, null, null, null, null), mApp);
+            final LoaderCursor c = new LoaderCursor(
+                    contentResolver.query(contentUri, null, null, null, null), contentUri, mApp);
 
             Map<ComponentKey, AppWidgetProviderInfo> widgetProvidersMap = null;
 

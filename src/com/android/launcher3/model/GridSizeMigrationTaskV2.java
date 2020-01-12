@@ -18,6 +18,8 @@ package com.android.launcher3.model;
 
 import android.content.Context;
 
+import com.android.launcher3.InvariantDeviceProfile;
+
 /**
  * This class takes care of shrinking the workspace (by maximum of one row and one column), as a
  * result of restoring from a larger device or device density change.
@@ -28,12 +30,19 @@ public class GridSizeMigrationTaskV2 {
 
     }
 
+    /** See {@link #migrateGridIfNeeded(Context, InvariantDeviceProfile)} */
+    public static boolean migrateGridIfNeeded(Context context) {
+        // To be implemented.
+        return true;
+    }
+
     /**
-     * Migrates the workspace and hotseat in case their sizes changed.
+     * Run the migration algorithm if needed. For preview, we provide the intended idp because it
+     * has not been changed. If idp is null, we read it from the context, for actual grid migration.
      *
      * @return false if the migration failed.
      */
-    public static boolean migrateGridIfNeeded(Context context) {
+    public static boolean migrateGridIfNeeded(Context context, InvariantDeviceProfile idp) {
         // To be implemented.
         return true;
     }
