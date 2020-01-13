@@ -256,9 +256,9 @@ public final class LauncherInstrumentation {
 
     Closable addContextLayer(String piece) {
         mDiagnosticContext.addLast(piece);
-        log("Added context: " + getContextDescription());
+        log("Entering context: " + piece);
         return () -> {
-            log("Removing context: " + getContextDescription());
+            log("Leaving context: " + piece);
             mDiagnosticContext.removeLast();
         };
     }
