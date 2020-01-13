@@ -517,6 +517,7 @@
     <string name="folder_cover_mode_desc">برای بازکردن اولین برنامه ضربه بزنید ، جهت مشاهده همه به سمت بالا بکشید.</string>
     <string name="icon_shape_override_miui_explaination">وجود مشکلی در MIUI سبب ایجاد نمایه های مربعی شده است.</string>
     <string name="permission_iplocate">لوکیشن تقریبی</string>
+    <string name="permission_iplocate_twilight_explanation">آیا اجازه دسترسی به مکان تقریبی خود را می دهید؟ این امکان محاسبه دقیق تر نور روز را فراهم می کند.</string>
     <string name="zen_mode_enabled">حالت مزاحم نشوید روشن شد.</string>
     <string name="crash_report_notif_title">%1$s خراب شد</string>
     <string name="onbording_settings_title">%s را تنظیم کنید</string>
