@@ -22,7 +22,7 @@
     <string name="pref_legacy_treatment_summary">为所有快捷方式创建自适应图标</string>
     <string name="pref_legacy_colored_backgrounds">背景颜色</string>
     <string name="pref_legacy_colored_backgrounds_summary">生成自适应图标背景颜色</string>
-    <string name="pref_white_only_treatment">替代白色背景</string>
+    <string name="pref_white_only_treatment">替换白色背景</string>
     <string name="pref_white_only_treatment_summary">自适应所有图标背景颜色</string>
     <string name="adaptify_pack_title">为图标包创造自适应图标</string>
     <string name="icon_shape_override_label">图标形状</string>
