@@ -17,6 +17,7 @@ package com.android.quickstep;
 
 import static com.android.launcher3.anim.Interpolators.ACCEL_1_5;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_ACTIONS;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.VibratorWrapper.OVERVIEW_HAPTIC;
@@ -75,9 +76,11 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
     protected static final Rect TEMP_RECT = new Rect();
 
     // Start resisting when swiping past this factor of mTransitionDragLength.
-    private static final float DRAG_LENGTH_FACTOR_START_PULLBACK = 1.4f;
+    private static final float DRAG_LENGTH_FACTOR_START_PULLBACK = ENABLE_OVERVIEW_ACTIONS.get()
+            ? 2.8f : 1.4f;
     // This is how far down we can scale down, where 0f is full screen and 1f is recents.
-    private static final float DRAG_LENGTH_FACTOR_MAX_PULLBACK = 1.8f;
+    private static final float DRAG_LENGTH_FACTOR_MAX_PULLBACK = ENABLE_OVERVIEW_ACTIONS.get()
+            ? 3.6f : 1.8f;
     private static final Interpolator PULLBACK_INTERPOLATOR = DEACCEL;
 
     // The distance needed to drag to reach the task size in recents.
