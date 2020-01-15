@@ -18,10 +18,15 @@ package com.android.launcher3.tapl;
 
 import androidx.test.uiautomator.UiObject2;
 
+import java.util.regex.Pattern;
+
 /**
  * Widget in workspace or a widget list.
  */
 public final class Widget extends Launchable {
+
+    private static final Pattern LONG_CLICK_EVENT = Pattern.compile("Widgets.onLongClick");
+
     Widget(LauncherInstrumentation launcher, UiObject2 icon) {
         super(launcher, icon);
     }
@@ -29,5 +34,10 @@ public final class Widget extends Launchable {
     @Override
     protected String getLongPressIndicator() {
         return "drop_target_bar";
+    }
+
+    @Override
+    protected void addExpectedEventsForLongClick() {
+        mLauncher.expectEvent(LONG_CLICK_EVENT);
     }
 }

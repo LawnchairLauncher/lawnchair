@@ -69,18 +69,24 @@ abstract class Launchable {
      * Drags an object to the center of homescreen.
      */
     public void dragToWorkspace() {
-        final Point launchableCenter = getObject().getVisibleCenter();
-        final Point displaySize = mLauncher.getRealDisplaySize();
-        final int width = displaySize.x / 2;
-        Workspace.dragIconToWorkspace(
-                mLauncher,
-                this,
-                new Point(
-                        launchableCenter.x >= width ?
-                                launchableCenter.x - width / 2 : launchableCenter.x + width / 2,
-                        displaySize.y / 2),
-                getLongPressIndicator());
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
+            final Point launchableCenter = getObject().getVisibleCenter();
+            final Point displaySize = mLauncher.getRealDisplaySize();
+            final int width = displaySize.x / 2;
+            addExpectedEventsForLongClick();
+            Workspace.dragIconToWorkspace(
+                    mLauncher,
+                    this,
+                    new Point(
+                            launchableCenter.x >= width
+                                    ? launchableCenter.x - width / 2
+                                    : launchableCenter.x + width / 2,
+                            displaySize.y / 2),
+                    getLongPressIndicator());
+        }
     }
+
+    protected abstract void addExpectedEventsForLongClick();
 
     protected abstract String getLongPressIndicator();
 }

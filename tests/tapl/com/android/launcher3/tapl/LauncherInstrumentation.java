@@ -79,6 +79,8 @@ import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -91,6 +93,13 @@ public final class LauncherInstrumentation {
     private static final int ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME = 20;
     private static final int GESTURE_STEP_MS = 16;
     private static long START_TIME = System.currentTimeMillis();
+
+    static final Pattern LOG_TIME = Pattern.compile(
+            "[0-9][0-9]-[0-9][0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9]\\.[0-9][0-9][0-9]");
+
+    static final Pattern EVENT_LOG_ENTRY = Pattern.compile(
+            "(?<time>[0-9][0-9]-[0-9][0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9]\\.[0-9][0-9][0-9])"
+                    + ".*" + TestProtocol.TAPL_EVENTS_TAG + ": (?<event>.*)");
 
     // Types for launcher containers that the user is interacting with. "Background" is a
     // pseudo-container corresponding to inactive launcher covered by another app.
@@ -145,6 +154,11 @@ public final class LauncherInstrumentation {
     private Function<Long, String> mSystemHealthSupplier;
 
     private Consumer<ContainerType> mOnSettledStateAction;
+
+    // Not null when we are collecting expected events to compare with actual ones.
+    private List<Pattern> mExpectedEvents;
+
+    private String mTimeBeforeFirstLogEvent;
 
     /**
      * Constructs the root of TAPL hierarchy. You get all other objects from it.
@@ -299,8 +313,11 @@ public final class LauncherInstrumentation {
     public void checkForAnomaly() {
         final String anomalyMessage = getAnomalyMessage();
         if (anomalyMessage != null) {
-            failWithSystemHealth(
-                    "Tests are broken by a non-Launcher system error: " + anomalyMessage);
+            String message = "Tests are broken by a non-Launcher system error: " + anomalyMessage;
+            log("Hierarchy dump for: " + message);
+            dumpViewHierarchy();
+
+            Assert.fail(formatSystemHealthMessage(message));
         }
     }
 
@@ -339,7 +356,7 @@ public final class LauncherInstrumentation {
         mOnSettledStateAction = onSettledStateAction;
     }
 
-    private String getSystemHealthMessage() {
+    private String formatSystemHealthMessage(String message) {
         final String testPackage = getContext().getPackageName();
 
         mInstrumentation.getUiAutomation().grantRuntimePermission(
@@ -347,30 +364,34 @@ public final class LauncherInstrumentation {
         mInstrumentation.getUiAutomation().grantRuntimePermission(
                 testPackage, "android.permission.PACKAGE_USAGE_STATS");
 
-        return mSystemHealthSupplier != null
+        final String systemHealth = mSystemHealthSupplier != null
                 ? mSystemHealthSupplier.apply(START_TIME)
                 : TestHelpers.getSystemHealthMessage(getContext(), START_TIME);
+
+        if (systemHealth != null) {
+            return message
+                    + ",\nperhaps linked to system health problems:\n<<<<<<<<<<<<<<<<<<\n"
+                    + systemHealth + "\n>>>>>>>>>>>>>>>>>>";
+        }
+
+        return message;
     }
 
     private void fail(String message) {
         checkForAnomaly();
 
-        failWithSystemHealth("http://go/tapl : " + getContextDescription() + message +
-                " (visible state: " + getVisibleStateMessage() + ")");
-    }
-
-    private void failWithSystemHealth(String message) {
-        final String systemHealth = getSystemHealthMessage();
-        if (systemHealth != null) {
-            message = message
-                    + ", perhaps because of system health problems:\n<<<<<<<<<<<<<<<<<<\n"
-                    + systemHealth + "\n>>>>>>>>>>>>>>>>>>";
-        }
-
+        message = "http://go/tapl : " + getContextDescription() + message
+                + " (visible state: " + getVisibleStateMessage() + ")";
         log("Hierarchy dump for: " + message);
         dumpViewHierarchy();
 
-        Assert.fail(message);
+        final String eventMismatch = getEventMismatchMessage();
+
+        if (eventMismatch != null) {
+            message = message + ",\nhaving produced wrong events:\n    " + eventMismatch;
+        }
+
+        Assert.fail(formatSystemHealthMessage(message));
     }
 
     private String getContextDescription() {
@@ -582,7 +603,7 @@ public final class LauncherInstrumentation {
             try (LauncherInstrumentation.Closable c = addContextLayer(action)) {
                 mDevice.waitForIdle();
                 runToState(
-                        () -> waitForSystemUiObject("home").click(),
+                        waitForSystemUiObject("home")::click,
                         NORMAL_STATE_ORDINAL,
                         !hasLauncherObject(WORKSPACE_RES_ID)
                                 && (hasLauncherObject(APPS_RES_ID)
@@ -1098,5 +1119,105 @@ public final class LauncherInstrumentation {
             tasks.add(ComponentName.unflattenFromString(s));
         }
         return tasks;
+    }
+
+    private List<String> getEvents() {
+        final ArrayList<String> events = new ArrayList<>();
+        try {
+            final String logcatTimeParameter =
+                    mTimeBeforeFirstLogEvent != null ? " -t " + mTimeBeforeFirstLogEvent : "";
+            final String logcatEvents = mDevice.executeShellCommand(
+                    "logcat -d --pid=" + getPid() + logcatTimeParameter
+                            + " -s " + TestProtocol.TAPL_EVENTS_TAG);
+            final Matcher matcher = EVENT_LOG_ENTRY.matcher(logcatEvents);
+            while (matcher.find()) {
+                final String eventTime = matcher.group("time");
+                if (eventTime.equals(mTimeBeforeFirstLogEvent)) continue;
+
+                events.add(matcher.group("event"));
+            }
+            return events;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void startRecordingEvents() {
+        Assert.assertTrue("Already recording events", mExpectedEvents == null);
+        mExpectedEvents = new ArrayList<>();
+
+        try {
+            final String lastLogLine =
+                    mDevice.executeShellCommand("logcat -d --pid=" + getPid() + " -t 1");
+            final Matcher matcher = LOG_TIME.matcher(lastLogLine);
+            mTimeBeforeFirstLogEvent = matcher.find() ? matcher.group().replaceAll(" ", "") : null;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void stopRecordingEvents() {
+        mExpectedEvents = null;
+    }
+
+    Closable eventsCheck() {
+        // Entering events check block.
+        startRecordingEvents();
+
+        return () -> {
+            // Leaving events check block.
+            if (mExpectedEvents == null) {
+                return; // There was a failure. Noo need to report another one.
+            }
+
+            // Wait until Launcher generates expected number of events.
+            final long endTime = SystemClock.uptimeMillis() + WAIT_TIME_MS;
+            while (SystemClock.uptimeMillis() < endTime
+                    && getEvents().size() < mExpectedEvents.size()) {
+                SystemClock.sleep(100);
+            }
+
+            final String message = getEventMismatchMessage();
+            if (message != null) {
+                Assert.fail(formatSystemHealthMessage(
+                        "http://go/tapl : unexpected event sequence: " + message));
+            }
+        };
+    }
+
+    void expectEvent(Pattern expected) {
+        if (mExpectedEvents != null) mExpectedEvents.add(expected);
+    }
+
+    private String getEventMismatchMessage() {
+        if (mExpectedEvents == null) return null;
+
+        try {
+            final List<String> actual = getEvents();
+
+            for (int i = 0; i < mExpectedEvents.size(); ++i) {
+                if (i >= actual.size()) {
+                    return formatEventMismatchMessage("too few actual events", actual, i);
+                }
+                if (!mExpectedEvents.get(i).matcher(actual.get(i)).find()) {
+                    return formatEventMismatchMessage("mismatched event", actual, i);
+                }
+            }
+
+            if (actual.size() > mExpectedEvents.size()) {
+                return formatEventMismatchMessage(
+                        "too many actual events", actual, mExpectedEvents.size());
+            }
+        } finally {
+            stopRecordingEvents();
+        }
+
+        return null;
+    }
+
+    private String formatEventMismatchMessage(String message, List<String> actual, int position) {
+        return message + ", pos=" + position
+                + ", expected=" + mExpectedEvents
+                + ", actual" + actual;
     }
 }
