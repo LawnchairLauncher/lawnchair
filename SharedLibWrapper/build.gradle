@@ -1,0 +1,17 @@
+apply plugin: 'java'
+
+final String ANDROID_TOP = "${rootDir}/../../.."
+final String FRAMEWORK_PREBUILTS_DIR = "${ANDROID_TOP}/prebuilts/framework_intermediates/"
+
+sourceSets {
+    main {
+        java.srcDirs = ["${ANDROID_TOP}/frameworks/lib/systemui/SharedLibWrapper/src"]
+    }
+}
+
+sourceCompatibility = 1.8
+
+dependencies {
+    implementation fileTree(dir: "${FRAMEWORK_PREBUILTS_DIR}/quickstep/libs", include: 'sysui_shared.jar')
+    compileOnly fileTree(dir: "$ANDROID_TOP/prebuilts/fullsdk-${org.gradle.internal.os.OperatingSystem.current().isMacOsX() ? "darwin" : "linux"}/platforms/${COMPILE_SDK}", include: 'android.jar')
+}
