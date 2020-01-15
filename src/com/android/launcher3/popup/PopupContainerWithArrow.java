@@ -351,7 +351,9 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
     }
 
     public void applyNotificationInfos(List<NotificationInfo> notificationInfos) {
-        mNotificationItemView.applyNotificationInfos(notificationInfos);
+        if (mNotificationItemView != null) {
+            mNotificationItemView.applyNotificationInfos(notificationInfos);
+        }
     }
 
     private void updateHiddenShortcuts() {
