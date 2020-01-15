@@ -508,7 +508,7 @@ public abstract class AbstractStateChangeTouchController
             mAtomicComponentsController.getAnimationPlayer().end();
             mAtomicComponentsController = null;
         }
-        cancelAnimationControllers();
+        clearState();
         boolean shouldGoToTargetState = true;
         if (mPendingAnimation != null) {
             boolean reachedTarget = mToState == targetState;
@@ -546,13 +546,13 @@ public abstract class AbstractStateChangeTouchController
             mAtomicAnim = null;
         }
         mScheduleResumeAtomicComponent = false;
+        mDetector.finishedScrolling();
+        mDetector.setDetectableScrollConditions(0, false);
     }
 
     private void cancelAnimationControllers() {
         mCurrentAnimation = null;
         cancelAtomicComponentsController();
-        mDetector.finishedScrolling();
-        mDetector.setDetectableScrollConditions(0, false);
     }
 
     private void cancelAtomicComponentsController() {
