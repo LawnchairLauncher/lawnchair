@@ -22,30 +22,34 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageInstaller;
+import android.content.pm.PackageInstaller.SessionCallback;
 import android.content.pm.ShortcutInfo;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.UserHandle;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.Utilities;
+import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.PackageUserKey;
 
 import java.util.List;
 
-import androidx.annotation.Nullable;
-
 public abstract class LauncherAppsCompat {
 
     public interface OnAppsChangedCallbackCompat {
-        void onPackageRemoved(String packageName, UserHandle user);
-        void onPackageAdded(String packageName, UserHandle user);
-        void onPackageChanged(String packageName, UserHandle user);
-        void onPackagesAvailable(String[] packageNames, UserHandle user, boolean replacing);
-        void onPackagesUnavailable(String[] packageNames, UserHandle user, boolean replacing);
-        void onPackagesSuspended(String[] packageNames, UserHandle user);
-        void onPackagesUnsuspended(String[] packageNames, UserHandle user);
-        void onShortcutsChanged(String packageName, List<ShortcutInfo> shortcuts,
-                UserHandle user);
+        default void onPackageRemoved(String packageName, UserHandle user) { }
+        default void onPackageAdded(String packageName, UserHandle user) { }
+        default void onPackageChanged(String packageName, UserHandle user) { }
+        default void onPackagesAvailable(String[] packageNames, UserHandle user,
+                boolean replacing) { }
+        default void onPackagesUnavailable(String[] packageNames, UserHandle user,
+                boolean replacing) { }
+        default void onPackagesSuspended(String[] packageNames, UserHandle user) { }
+        default void onPackagesUnsuspended(String[] packageNames, UserHandle user) { }
+        default void onShortcutsChanged(String packageName, List<ShortcutInfo> shortcuts,
+                UserHandle user) { }
     }
 
     protected LauncherAppsCompat() {
@@ -88,4 +92,8 @@ public abstract class LauncherAppsCompat {
             @Nullable PackageUserKey packageUser);
 
     public abstract List<PackageInstaller.SessionInfo> getAllPackageInstallerSessions();
+
+    public abstract void registerSessionCallback(LooperExecutor executor,
+                                                 SessionCallback sessionCallback);
+    public abstract void unregisterSessionCallback(SessionCallback sessionCallback);
 }

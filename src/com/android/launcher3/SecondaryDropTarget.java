@@ -2,6 +2,7 @@ package com.android.launcher3;
 
 import static android.appwidget.AppWidgetManager.INVALID_APPWIDGET_ID;
 import static android.appwidget.AppWidgetProviderInfo.WIDGET_FEATURE_RECONFIGURABLE;
+
 import static com.android.launcher3.ItemInfoWithIcon.FLAG_SYSTEM_MASK;
 import static com.android.launcher3.ItemInfoWithIcon.FLAG_SYSTEM_NO;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP;
@@ -29,6 +30,7 @@ import android.widget.Toast;
 import com.android.launcher3.Launcher.OnResumeCallback;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.dragndrop.DragOptions;
+import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.logging.LoggerUtils;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
@@ -240,6 +242,7 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
                     .setData(Uri.fromParts("package", cn.getPackageName(), cn.getClassName()))
                     .putExtra(Intent.EXTRA_USER, info.user);
             mLauncher.startActivity(i);
+            FileLog.d(TAG, "start uninstall activity " + cn.getPackageName());
             return cn;
         } catch (URISyntaxException e) {
             Log.e(TAG, "Failed to parse intent to start uninstall activity for item=" + info);

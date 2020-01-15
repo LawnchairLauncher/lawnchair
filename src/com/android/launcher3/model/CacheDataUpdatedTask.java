@@ -18,14 +18,10 @@ package com.android.launcher3.model;
 import android.content.ComponentName;
 import android.os.UserHandle;
 
-import com.android.launcher3.AllAppsList;
-import com.android.launcher3.AppInfo;
 import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherModel.CallbackTask;
-import com.android.launcher3.LauncherModel.Callbacks;
 import com.android.launcher3.LauncherSettings;
 
 import java.util.ArrayList;
@@ -53,9 +49,9 @@ public class CacheDataUpdatedTask extends BaseModelUpdateTask {
     public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
         IconCache iconCache = app.getIconCache();
 
-        final ArrayList<AppInfo> updatedApps = new ArrayList<>();
 
         ArrayList<WorkspaceItemInfo> updatedShortcuts = new ArrayList<>();
+
         synchronized (dataModel) {
             for (ItemInfo info : dataModel.itemsIdMap) {
                 if (info instanceof WorkspaceItemInfo && mUser.equals(info.user)) {
@@ -69,18 +65,10 @@ public class CacheDataUpdatedTask extends BaseModelUpdateTask {
                     }
                 }
             }
-            apps.updateIconsAndLabels(mPackages, mUser, updatedApps);
+            apps.updateIconsAndLabels(mPackages, mUser);
         }
         bindUpdatedWorkspaceItems(updatedShortcuts);
-
-        if (!updatedApps.isEmpty()) {
-            scheduleCallbackTask(new CallbackTask() {
-                @Override
-                public void execute(Callbacks callbacks) {
-                    callbacks.bindAppsAddedOrUpdated(updatedApps);
-                }
-            });
-        }
+        bindApplicationsIfNeeded();
     }
 
     public boolean isValidShortcut(WorkspaceItemInfo si) {

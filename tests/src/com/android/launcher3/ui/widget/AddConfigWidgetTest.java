@@ -41,7 +41,6 @@ import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.ShellCommandRule;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,7 +52,8 @@ import org.junit.runner.RunWith;
 @RunWith(AndroidJUnit4.class)
 public class AddConfigWidgetTest extends AbstractLauncherUiTest {
 
-    @Rule public ShellCommandRule mGrantWidgetRule = ShellCommandRule.grantWidgetBind();
+    @Rule
+    public ShellCommandRule mGrantWidgetRule = ShellCommandRule.grantWidgetBind();
 
     private LauncherAppWidgetProviderInfo mWidgetInfo;
     private AppWidgetManager mAppWidgetManager;
@@ -70,14 +70,12 @@ public class AddConfigWidgetTest extends AbstractLauncherUiTest {
 
     @Test
     @PortraitLandscape
-    @org.junit.Ignore
     public void testWidgetConfig() throws Throwable {
         runTest(true);
     }
 
     @Test
     @PortraitLandscape
-    @org.junit.Ignore
     public void testConfigCancelled() throws Throwable {
         runTest(false);
     }

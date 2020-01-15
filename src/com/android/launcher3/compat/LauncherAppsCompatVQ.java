@@ -18,8 +18,10 @@ package com.android.launcher3.compat;
 
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageInstaller;
+import android.content.pm.PackageInstaller.SessionCallback;
+
+import com.android.launcher3.util.LooperExecutor;
 
 import java.util.List;
 
@@ -32,5 +34,15 @@ public class LauncherAppsCompatVQ extends LauncherAppsCompatVO {
 
     public List<PackageInstaller.SessionInfo> getAllPackageInstallerSessions() {
         return mLauncherApps.getAllPackageInstallerSessions();
+    }
+
+    @Override
+    public void registerSessionCallback(LooperExecutor executor, SessionCallback sessionCallback) {
+        mLauncherApps.registerPackageInstallerSessionCallback(executor, sessionCallback);
+    }
+
+    @Override
+    public void unregisterSessionCallback(SessionCallback sessionCallback) {
+        mLauncherApps.unregisterPackageInstallerSessionCallback(sessionCallback);
     }
 }

@@ -36,6 +36,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.quickstep.util.RemoteAnimationProvider;
 import com.android.quickstep.util.RemoteAnimationTargetSet;
+import com.android.quickstep.util.ShelfPeekAnim;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.util.function.BiPredicate;
@@ -109,16 +110,6 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
     interface AnimationFactory {
 
-        enum ShelfAnimState {
-            HIDE(true), PEEK(true), OVERVIEW(false), CANCEL(false);
-
-            ShelfAnimState(boolean shouldPreformHaptic) {
-                this.shouldPreformHaptic = shouldPreformHaptic;
-            }
-
-            public final boolean shouldPreformHaptic;
-        }
-
         default void onRemoteAnimationReceived(RemoteAnimationTargetSet targets) { }
 
         void createActivityController(long transitionLength);
@@ -127,8 +118,8 @@ public interface ActivityControlHelper<T extends BaseDraggingActivity> {
 
         default void onTransitionCancelled() { }
 
-        default void setShelfState(ShelfAnimState animState, Interpolator interpolator,
-                long duration) { }
+        default void setShelfState(ShelfPeekAnim.ShelfAnimState animState,
+                Interpolator interpolator, long duration) { }
 
         /**
          * @param attached Whether to show RecentsView alongside the app window. If false, recents

@@ -1,5 +1,7 @@
 package com.android.launcher3.util;
 
+import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
+
 import android.app.WallpaperManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -198,7 +200,7 @@ public class WallpaperOffsetInterpolator extends BroadcastReceiver {
         private float mOffsetX;
 
         public OffsetHandler(Context context) {
-            super(UiThreadHelper.getBackgroundLooper());
+            super(UI_HELPER_EXECUTOR.getLooper());
             mInterpolator = Interpolators.DEACCEL_1_5;
             mWM = WallpaperManager.getInstance(context);
         }
