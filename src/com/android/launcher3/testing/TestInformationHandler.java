@@ -126,11 +126,11 @@ public class TestInformationHandler implements ResourceBasedOverride {
 
             case TestProtocol.REQUEST_APPS_LIST_SCROLL_Y: {
                 try {
-                    final int deferUpdatesFlags = MAIN_EXECUTOR.submit(() ->
+                    final int scroll = MAIN_EXECUTOR.submit(() ->
                             mLauncher.getAppsView().getActiveRecyclerView().getCurrentScrollY())
                             .get();
                     response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD,
-                            deferUpdatesFlags);
+                            scroll);
                 } catch (ExecutionException | InterruptedException e) {
                     throw new RuntimeException(e);
                 }
