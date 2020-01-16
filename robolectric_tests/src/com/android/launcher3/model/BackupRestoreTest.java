@@ -23,12 +23,14 @@ import static org.junit.Assert.assertTrue;
 
 import android.database.sqlite.SQLiteDatabase;
 
+import com.android.launcher3.provider.RestoreDbTask;
 import com.android.launcher3.util.LauncherModelHelper;
 import com.android.launcher3.util.LauncherRoboTestRunner;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.LooperMode;
 
 /**
@@ -44,7 +46,8 @@ public class BackupRestoreTest {
     @Before
     public void setUp() {
         mModelHelper = new LauncherModelHelper();
-        mDb = mModelHelper.provider.getDbWithRestoreDbTask();
+        RestoreDbTask.setPending(RuntimeEnvironment.application, true);
+        mDb = mModelHelper.provider.getDb();
     }
 
     @Test

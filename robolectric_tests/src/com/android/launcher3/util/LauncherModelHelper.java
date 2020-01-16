@@ -28,6 +28,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.provider.Settings;
 
@@ -276,6 +277,8 @@ public class LauncherModelHelper {
         Context context = RuntimeEnvironment.application;
         LauncherSettings.Settings.call(context.getContentResolver(),
                 LauncherSettings.Settings.METHOD_CREATE_EMPTY_DB);
+        LauncherSettings.Settings.call(context.getContentResolver(),
+                LauncherSettings.Settings.METHOD_CLEAR_EMPTY_DB_FLAG);
         int[][][] ids = new int[typeArray.length][][];
 
         for (int i = 0; i < typeArray.length; i++) {
@@ -312,7 +315,6 @@ public class LauncherModelHelper {
         idp.numRows = idp.numColumns = idp.numHotseatIcons = DEFAULT_GRID_SIZE;
         idp.iconBitmapSize = DEFAULT_BITMAP_SIZE;
 
-        provider.setAllowLoadDefaultFavorites(true);
         Settings.Secure.putString(context.getContentResolver(),
                 "launcher3.layout.provider", TEST_PROVIDER_AUTHORITY);
 
@@ -339,5 +341,21 @@ public class LauncherModelHelper {
         filter.addCategory(Intent.CATEGORY_LAUNCHER);
         filter.addCategory(Intent.CATEGORY_DEFAULT);
         spm.addIntentFilterForActivity(cn, filter);
+    }
+
+    /**
+     * An extension of LauncherProvider backed up by in-memory database.
+     */
+    public static class TestLauncherProvider extends LauncherProvider {
+
+        @Override
+        public boolean onCreate() {
+            return true;
+        }
+
+        public SQLiteDatabase getDb() {
+            createDbIfNotExists();
+            return mOpenHelper.getWritableDatabase();
+        }
     }
 }
