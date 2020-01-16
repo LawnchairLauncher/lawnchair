@@ -24,12 +24,13 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="32dp"
-        android:background="@drawable/hotseat_prediction_edu_top" />
+        android:backgroundTint="@color/bottom_panel_background"
+        android:background="@drawable/bottom_sheet_top_border" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/hotseat_edu_background"
+        android:background="@color/bottom_panel_background"
         android:orientation="vertical">
 
         <TextView
@@ -37,8 +38,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="18dp"
             android:fontFamily="google-sans"
-            android:paddingLeft="@dimen/hotseat_edu_padding"
-            android:paddingRight="@dimen/hotseat_edu_padding"
+            android:paddingLeft="@dimen/bottom_sheet_edu_padding"
+            android:paddingRight="@dimen/bottom_sheet_edu_padding"
             android:text="@string/hotseat_migrate_title"
             android:textAlignment="center"
             android:textColor="@android:color/white"
@@ -50,8 +51,8 @@
             android:layout_marginTop="18dp"
             android:layout_marginBottom="18dp"
             android:fontFamily="roboto-medium"
-            android:paddingLeft="@dimen/hotseat_edu_padding"
-            android:paddingRight="@dimen/hotseat_edu_padding"
+            android:paddingLeft="@dimen/bottom_sheet_edu_padding"
+            android:paddingRight="@dimen/bottom_sheet_edu_padding"
             android:text="@string/hotseat_migrate_message"
             android:textAlignment="center"
             android:textColor="@android:color/white"
@@ -72,9 +73,9 @@
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/hotseat_edu_padding"
+                android:paddingLeft="@dimen/bottom_sheet_edu_padding"
                 android:paddingTop="8dp"
-                android:paddingRight="@dimen/hotseat_edu_padding">
+                android:paddingRight="@dimen/bottom_sheet_edu_padding">
 
                 <Button
                     android:id="@+id/turn_predictions_on"

@@ -49,6 +49,7 @@ import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.keyboard.FocusedItemDecorator;
@@ -58,9 +59,9 @@ import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.launcher3.util.Themes;
-import com.android.launcher3.views.BottomUserEducationView;
 import com.android.launcher3.views.RecyclerViewFastScroller;
 import com.android.launcher3.views.SpringRelativeLayout;
+import com.android.launcher3.views.WorkEduView;
 
 /**
  * The all apps view container.
@@ -91,6 +92,8 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
     private boolean mUsingTabs;
     private boolean mSearchModeWhileUsingTabs = false;
+
+    private LauncherStateManager.StateListener mWorkTabListener;
 
     private RecyclerViewFastScroller mTouchHandler;
     private final Point mFastScrollerOffset = new Point();
@@ -287,7 +290,8 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     }
 
     @Override
-    public void onDropCompleted(View target, DragObject d, boolean success) { }
+    public void onDropCompleted(View target, DragObject d, boolean success) {
+    }
 
     @Override
     public void fillInLogContainerData(View v, ItemInfo info, Target target, Target targetParent) {
@@ -371,6 +375,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             mAH[AdapterHolder.MAIN].setup(mViewPager.getChildAt(0), mPersonalMatcher);
             mAH[AdapterHolder.WORK].setup(mViewPager.getChildAt(1), mWorkMatcher);
             onTabChanged(mViewPager.getNextPage());
+            mWorkTabListener = WorkEduView.showEduFlowIfNeeded(mLauncher, mWorkTabListener);
         } else {
             mAH[AdapterHolder.MAIN].setup(findViewById(R.id.apps_list_view), null);
             mAH[AdapterHolder.WORK].recyclerView = null;
@@ -416,10 +421,9 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
                     .setOnClickListener((View view) -> mViewPager.snapToPage(AdapterHolder.MAIN));
             findViewById(R.id.tab_work)
                     .setOnClickListener((View view) -> mViewPager.snapToPage(AdapterHolder.WORK));
-
-        }
-        if (pos == AdapterHolder.WORK) {
-            BottomUserEducationView.showIfNeeded(mLauncher);
+            if (pos == AdapterHolder.WORK) {
+                WorkEduView.showWorkEduIfNeeded(mLauncher);
+            }
         }
     }
 
