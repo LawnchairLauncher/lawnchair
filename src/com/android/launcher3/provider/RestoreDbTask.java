@@ -25,6 +25,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.UserHandle;
+import android.text.TextUtils;
 import android.util.LongSparseArray;
 import android.util.SparseLongArray;
 
@@ -42,6 +43,7 @@ import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.LogConfig;
 
 import java.io.InvalidObjectException;
+import java.util.Arrays;
 
 /**
  * Utility class to update DB schema after it has been restored.
@@ -107,22 +109,14 @@ public class RestoreDbTask {
         int numProfiles = profileMapping.size();
         String[] profileIds = new String[numProfiles];
         profileIds[0] = Long.toString(oldProfileId);
-        StringBuilder whereClause = new StringBuilder("profileId != ?");
-        for (int i = profileMapping.size() - 1; i >= 1; --i) {
-            whereClause.append(" AND profileId != ?");
+        for (int i = numProfiles - 1; i >= 1; --i) {
             profileIds[i] = Long.toString(profileMapping.keyAt(i));
         }
-        try {
-            int itemsDeleted = db.delete(Favorites.TABLE_NAME, whereClause.toString(), profileIds);
-            FileLog.d(TAG, itemsDeleted + " items from unrestored user(s) were deleted");
-        } catch (IllegalArgumentException exception) {
-            // b/147114476
-            FileLog.e(TAG, new StringBuilder("Failed to execute delete, where clause: '")
-                    .append(whereClause).append("', profile Id size:").append(profileIds.length)
-                    .append("profileIds: ").append(String.join(", ", profileIds)).toString()
-            );
-            throw exception;
-        }
+        final String[] args = new String[profileIds.length];
+        Arrays.fill(args, "?");
+        final String where = "profileId NOT IN (" + TextUtils.join(", ", Arrays.asList(args)) + ")";
+        int itemsDeleted = db.delete(Favorites.TABLE_NAME, where, profileIds);
+        FileLog.d(TAG, itemsDeleted + " items from unrestored user(s) were deleted");
 
         // Mark all items as restored.
         boolean keepAllIcons = Utilities.isPropertyEnabled(LogConfig.KEEP_ALL_ICONS);
