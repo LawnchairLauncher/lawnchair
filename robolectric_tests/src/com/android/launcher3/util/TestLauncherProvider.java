@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.android.launcher3.LauncherProvider;
+import com.android.launcher3.provider.RestoreDbTask;
 
 /**
  * An extension of LauncherProvider backed up by in-memory database.
@@ -30,6 +31,12 @@ public class TestLauncherProvider extends LauncherProvider {
 
     public SQLiteDatabase getDb() {
         createDbIfNotExists();
+        return mOpenHelper.getWritableDatabase();
+    }
+
+    public SQLiteDatabase getDbWithRestoreDbTask() {
+        RestoreDbTask.setPending(getContext(), true);
+        super.createDbIfNotExists();
         return mOpenHelper.getWritableDatabase();
     }
 
