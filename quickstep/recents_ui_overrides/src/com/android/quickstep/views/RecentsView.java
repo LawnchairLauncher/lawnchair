@@ -309,6 +309,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     private final Point mLastMeasureSize = new Point();
     private final int mEmptyMessagePadding;
     private boolean mShowEmptyMessage;
+    private OnEmptyMessageUpdatedListener mOnEmptyMessageUpdatedListener;
     private Layout mEmptyTextLayout;
     private boolean mLiveTileOverlayAttached;
 
@@ -1456,6 +1457,10 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         return null;
     }
 
+    public void setOnEmptyMessageUpdatedListener(OnEmptyMessageUpdatedListener listener) {
+        mOnEmptyMessageUpdatedListener = listener;
+    }
+
     public void updateEmptyMessage() {
         boolean isEmpty = getTaskViewCount() == 0;
         boolean hasSizeChanged = mLastMeasureSize.x != getWidth()
@@ -1467,6 +1472,10 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         mShowEmptyMessage = isEmpty;
         updateEmptyStateUi(hasSizeChanged);
         invalidate();
+
+        if (mOnEmptyMessageUpdatedListener != null) {
+            mOnEmptyMessageUpdatedListener.onEmptyMessageUpdated(mShowEmptyMessage);
+        }
     }
 
     @Override
@@ -1926,5 +1935,16 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     private boolean isExtraCardView(View view, int index) {
         return !(view instanceof TaskView) && !(view instanceof ClearAllButton)
                 && index <= mTaskViewStartIndex;
+    }
+
+    /**
+     * Used to register callbacks for when our empty message state changes.
+     *
+     * @see #setOnEmptyMessageUpdatedListener(OnEmptyMessageUpdatedListener)
+     * @see #updateEmptyMessage()
+     */
+    public interface OnEmptyMessageUpdatedListener {
+        /** @param isEmpty Whether RecentsView is empty (i.e. has no children) */
+        void onEmptyMessageUpdated(boolean isEmpty);
     }
 }
