@@ -385,7 +385,7 @@ public final class LauncherInstrumentation {
         log("Hierarchy dump for: " + message);
         dumpViewHierarchy();
 
-        final String eventMismatch = getEventMismatchMessage();
+        final String eventMismatch = getEventMismatchMessage(false);
 
         if (eventMismatch != null) {
             message = message + ",\nhaving produced wrong events:\n    " + eventMismatch;
@@ -1170,14 +1170,7 @@ public final class LauncherInstrumentation {
                 return; // There was a failure. Noo need to report another one.
             }
 
-            // Wait until Launcher generates expected number of events.
-            final long endTime = SystemClock.uptimeMillis() + WAIT_TIME_MS;
-            while (SystemClock.uptimeMillis() < endTime
-                    && getEvents().size() < mExpectedEvents.size()) {
-                SystemClock.sleep(100);
-            }
-
-            final String message = getEventMismatchMessage();
+            final String message = getEventMismatchMessage(true);
             if (message != null) {
                 Assert.fail(formatSystemHealthMessage(
                         "http://go/tapl : unexpected event sequence: " + message));
@@ -1189,11 +1182,21 @@ public final class LauncherInstrumentation {
         if (mExpectedEvents != null) mExpectedEvents.add(expected);
     }
 
-    private String getEventMismatchMessage() {
+    private String getEventMismatchMessage(boolean waitForExpectedCount) {
         if (mExpectedEvents == null) return null;
 
         try {
-            final List<String> actual = getEvents();
+            List<String> actual = getEvents();
+
+            if (waitForExpectedCount) {
+                // Wait until Launcher generates the expected number of events.
+                final long endTime = SystemClock.uptimeMillis() + WAIT_TIME_MS;
+                while (SystemClock.uptimeMillis() < endTime
+                        && actual.size() < mExpectedEvents.size()) {
+                    SystemClock.sleep(100);
+                    actual = getEvents();
+                }
+            }
 
             for (int i = 0; i < mExpectedEvents.size(); ++i) {
                 if (i >= actual.size()) {
