@@ -131,6 +131,9 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
                                 searchBox.getVisibleBounds().bottom
                                         - allAppsContainer.getVisibleBounds().top);
                         final int newScroll = getAllAppsScroll();
+                        mLauncher.assertTrue(
+                                "Scrolled in a wrong direction in AllApps: from " + scroll + " to "
+                                        + newScroll, newScroll >= scroll);
                         if (newScroll == scroll) break;
 
                         mLauncher.assertTrue(
