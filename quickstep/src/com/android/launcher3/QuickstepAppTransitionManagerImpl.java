@@ -69,9 +69,9 @@ import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.launcher3.views.FloatingIconView;
+import com.android.quickstep.RemoteAnimationTargets;
 import com.android.quickstep.util.MultiValueUpdateListener;
 import com.android.quickstep.util.RemoteAnimationProvider;
-import com.android.quickstep.RemoteAnimationTargets;
 import com.android.systemui.shared.system.ActivityCompat;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.QuickStepContract;
@@ -82,6 +82,8 @@ import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams;
 import com.android.systemui.shared.system.WindowManagerWrapper;
+
+import java.lang.ref.WeakReference;
 
 /**
  * {@link LauncherAppTransitionManager} with Quickstep-specific app transitions for launching from
@@ -149,6 +151,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
     private DeviceProfile mDeviceProfile;
 
     private RemoteAnimationProvider mRemoteAnimationProvider;
+    private WrappedAnimationRunnerImpl mWallpaperOpenRunner;
 
     private final AnimatorListenerAdapter mForceInvisibleListener = new AnimatorListenerAdapter() {
         @Override
@@ -176,7 +179,6 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
         mClosingWindowTransY = res.getDimensionPixelSize(R.dimen.closing_window_trans_y);
 
         mLauncher.addOnDeviceProfileChangeListener(this);
-        registerRemoteAnimations();
     }
 
     @Override
@@ -598,15 +600,33 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
     /**
      * Registers remote animations used when closing apps to home screen.
      */
-    private void registerRemoteAnimations() {
-        // Unregister this
+    @Override
+    public void registerRemoteAnimations() {
         if (hasControlRemoteAppTransitionPermission()) {
+            mWallpaperOpenRunner = createWallpaperOpenRunner(false /* fromUnlock */);
+
             RemoteAnimationDefinitionCompat definition = new RemoteAnimationDefinitionCompat();
             definition.addRemoteAnimation(WindowManagerWrapper.TRANSIT_WALLPAPER_OPEN,
                     WindowManagerWrapper.ACTIVITY_TYPE_STANDARD,
-                    new RemoteAnimationAdapterCompat(getWallpaperOpenRunner(false /* fromUnlock */),
+                    new RemoteAnimationAdapterCompat(
+                            new WrappedLauncherAnimationRunner<>(mWallpaperOpenRunner,
+                                    false /* startAtFrontOfQueue */),
                             CLOSING_TRANSITION_DURATION_MS, 0 /* statusBarTransitionDelay */));
             new ActivityCompat(mLauncher).registerRemoteAnimations(definition);
+        }
+    }
+
+    /**
+     * Unregisters all remote animations.
+     */
+    @Override
+    public void unregisterRemoteAnimations() {
+        if (hasControlRemoteAppTransitionPermission()) {
+            new ActivityCompat(mLauncher).unregisterRemoteAnimations();
+
+            // Also clear strong references to the runners registered with the remote animation
+            // definition so we don't have to wait for the system gc
+            mWallpaperOpenRunner = null;
         }
     }
 
@@ -618,9 +638,8 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
      * @return Runner that plays when user goes to Launcher
      *         ie. pressing home, swiping up from nav bar.
      */
-    RemoteAnimationRunnerCompat getWallpaperOpenRunner(boolean fromUnlock) {
-        return new WallpaperOpenLauncherAnimationRunner(mHandler, false /* startAtFrontOfQueue */,
-                fromUnlock);
+    WrappedAnimationRunnerImpl createWallpaperOpenRunner(boolean fromUnlock) {
+        return new WallpaperOpenLauncherAnimationRunner(mHandler, fromUnlock);
     }
 
     /**
@@ -701,7 +720,8 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
     }
 
     /**
-     * Creates an animator that modifies Launcher as a result from {@link #getWallpaperOpenRunner}.
+     * Creates an animator that modifies Launcher as a result from 
+     * {@link #createWallpaperOpenRunner}.
      */
     private void createLauncherResumeAnimation(AnimatorSet anim) {
         if (mLauncher.isInState(LauncherState.ALL_APPS)) {
@@ -761,15 +781,67 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
     }
 
     /**
+     * Used with WrappedLauncherAnimationRunner as an interface for the runner to call back to the
+     * implementation.
+     */
+    protected interface WrappedAnimationRunnerImpl {
+        Handler getHandler();
+        void onCreateAnimation(RemoteAnimationTargetCompat[] appTargets,
+                RemoteAnimationTargetCompat[] wallpaperTargets,
+                LauncherAnimationRunner.AnimationResult result);
+    }
+
+    /**
+     * This class is needed to wrap any animation runner that is a part of the
+     * RemoteAnimationDefinition:
+     * - Launcher creates a new instance of the LauncherAppTransitionManagerImpl whenever it is
+     *   created, which in turn registers a new definition
+     * - When the definition is registered, window manager retains a strong binder reference to the
+     *   runner passed in
+     * - If the Launcher activity is recreated, the new definition registered will replace the old
+     *   reference in the system's activity record, but until the system server is GC'd, the binder
+     *   reference will still exist, which references the runner in the Launcher process, which
+     *   references the (old) Launcher activity through this class
+     *
+     * Instead we make the runner provided to the definition static only holding a weak reference to
+     * the runner implementation.  When this animation manager is destroyed, we remove the Launcher
+     * reference to the runner, leaving only the weak ref from the runner.
+     */
+    protected static class WrappedLauncherAnimationRunner<R extends WrappedAnimationRunnerImpl>
+            extends LauncherAnimationRunner {
+        private WeakReference<R> mImpl;
+
+        public WrappedLauncherAnimationRunner(R animationRunnerImpl, boolean startAtFrontOfQueue) {
+            super(animationRunnerImpl.getHandler(), startAtFrontOfQueue);
+            mImpl = new WeakReference<>(animationRunnerImpl);
+        }
+
+        @Override
+        public void onCreateAnimation(RemoteAnimationTargetCompat[] appTargets,
+                RemoteAnimationTargetCompat[] wallpaperTargets, AnimationResult result) {
+            R animationRunnerImpl = mImpl.get();
+            if (animationRunnerImpl != null) {
+                animationRunnerImpl.onCreateAnimation(appTargets, wallpaperTargets, result);
+            }
+        }
+    }
+
+    /**
      * Remote animation runner for animation from the app to Launcher, including recents.
      */
-    class WallpaperOpenLauncherAnimationRunner extends LauncherAnimationRunner {
+    protected class WallpaperOpenLauncherAnimationRunner implements WrappedAnimationRunnerImpl {
+
+        private final Handler mHandler;
         private final boolean mFromUnlock;
 
-        public WallpaperOpenLauncherAnimationRunner(Handler handler, boolean startAtFrontOfQueue,
-                boolean fromUnlock) {
-            super(handler, startAtFrontOfQueue);
+        public WallpaperOpenLauncherAnimationRunner(Handler handler, boolean fromUnlock) {
+            mHandler = handler;
             mFromUnlock = fromUnlock;
+        }
+
+        @Override
+        public Handler getHandler() {
+            return mHandler;
         }
 
         @Override
