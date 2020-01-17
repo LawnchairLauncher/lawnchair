@@ -23,7 +23,7 @@ import static com.android.launcher3.LauncherStateManager.ANIM_ALL;
 import static com.android.launcher3.LauncherStateManager.ATOMIC_OVERVIEW_SCALE_COMPONENT;
 import static com.android.launcher3.LauncherStateManager.NON_ATOMIC_COMPONENT;
 import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelocity;
-import static com.android.launcher3.config.FeatureFlags.UNSTABLE_SPRINGS;
+import static com.android.launcher3.config.FeatureFlags.QUICKSTEP_SPRINGS;
 import static com.android.launcher3.util.DefaultDisplay.getSingleFrameMs;
 
 import android.animation.Animator;
@@ -380,6 +380,7 @@ public abstract class AbstractStateChangeTouchController
 
         final LauncherState targetState;
         final float progress = mCurrentAnimation.getProgressFraction();
+        final float progressVelocity = velocity * mProgressMultiplier;
         final float interpolatedProgress = mCurrentAnimation.getInterpolatedProgress();
         if (fling) {
             targetState =
@@ -406,7 +407,7 @@ public abstract class AbstractStateChangeTouchController
                 startProgress = 1;
             } else {
                 startProgress = Utilities.boundToRange(progress
-                        + velocity * getSingleFrameMs(mLauncher) * mProgressMultiplier, 0f, 1f);
+                        + progressVelocity * getSingleFrameMs(mLauncher), 0f, 1f);
                 duration = BaseSwipeDetector.calculateDuration(velocity,
                         endProgress - Math.max(progress, 0)) * durationMultiplier;
             }
@@ -421,7 +422,7 @@ public abstract class AbstractStateChangeTouchController
                 startProgress = 0;
             } else {
                 startProgress = Utilities.boundToRange(progress
-                        + velocity * getSingleFrameMs(mLauncher) * mProgressMultiplier, 0f, 1f);
+                        + progressVelocity * getSingleFrameMs(mLauncher), 0f, 1f);
                 duration = BaseSwipeDetector.calculateDuration(velocity,
                         Math.min(progress, 1) - endProgress) * durationMultiplier;
             }
@@ -433,8 +434,8 @@ public abstract class AbstractStateChangeTouchController
         maybeUpdateAtomicAnim(mFromState, targetState, targetState == mToState ? 1f : 0f);
         updateSwipeCompleteAnimation(anim, Math.max(duration, getRemainingAtomicDuration()),
                 targetState, velocity, fling);
-        mCurrentAnimation.dispatchOnStartWithVelocity(endProgress, velocity);
-        if (fling && targetState == LauncherState.ALL_APPS && !UNSTABLE_SPRINGS.get()) {
+        mCurrentAnimation.dispatchOnStartWithVelocity(endProgress, progressVelocity);
+        if (fling && targetState == LauncherState.ALL_APPS && !QUICKSTEP_SPRINGS.get()) {
             mLauncher.getAppsView().addSpringFromFlingUpdateListener(anim, velocity);
         }
         anim.start();
