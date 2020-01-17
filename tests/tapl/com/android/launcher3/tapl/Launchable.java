@@ -46,7 +46,9 @@ abstract class Launchable {
      * Clicks the object to launch its app.
      */
     public Background launch(String expectedPackageName) {
-        return launch(By.pkg(expectedPackageName));
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
+            return launch(By.pkg(expectedPackageName));
+        }
     }
 
     private Background launch(BySelector selector) {
