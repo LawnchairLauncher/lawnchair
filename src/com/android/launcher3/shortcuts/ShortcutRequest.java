@@ -58,10 +58,20 @@ public class ShortcutRequest {
         mUserHandle = userHandle;
     }
 
+    /** @see #forPackage(String, List) */
+    public ShortcutRequest forPackage(String packageName) {
+        return forPackage(packageName, (List<String>) null);
+    }
+
+    /** @see #forPackage(String, List) */
     public ShortcutRequest forPackage(String packageName, String... shortcutIds) {
         return forPackage(packageName, Arrays.asList(shortcutIds));
     }
 
+    /**
+     * @param shortcutIds If null, match all shortcuts, otherwise only match the given id's.
+     * @return A list of ShortcutInfo's associated with the given package.
+     */
     public ShortcutRequest forPackage(String packageName, @Nullable List<String> shortcutIds) {
         if (!GO_DISABLE_WIDGETS && packageName != null) {
             mQuery.setPackage(packageName);
