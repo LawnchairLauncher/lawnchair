@@ -16,6 +16,7 @@
 
 package com.android.launcher3.provider;
 
+import static com.android.launcher3.pm.InstallSessionHelper.KEY_INSTALL_SESSION_CREATED_TIMESTAMP;
 import static com.android.launcher3.provider.LauncherDbUtils.dropTable;
 
 import android.app.backup.BackupManager;
@@ -86,6 +87,8 @@ public class RestoreDbTask {
      */
     public static boolean restoreIfPossible(@NonNull Context context,
             @NonNull DatabaseHelper helper, @NonNull BackupManager backupManager) {
+        Utilities.getDevicePrefs(context).edit().putLong(
+                KEY_INSTALL_SESSION_CREATED_TIMESTAMP, System.currentTimeMillis()).apply();
         final SQLiteDatabase db = helper.getWritableDatabase();
         try (SQLiteTransaction t = new SQLiteTransaction(db)) {
             RestoreDbTask task = new RestoreDbTask();

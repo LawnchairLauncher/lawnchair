@@ -29,6 +29,10 @@ import android.os.Process;
 import android.os.UserHandle;
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+
+import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.SessionCommitReceiver;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
@@ -52,6 +56,8 @@ public class InstallSessionHelper {
     // Set<String> of session ids of promise icons that have been added to the home screen
     // as FLAG_PROMISE_NEW_INSTALLS.
     protected static final String PROMISE_ICON_IDS = "promise_icon_ids";
+    public static final String KEY_INSTALL_SESSION_CREATED_TIMESTAMP =
+            "key_install_session_created_timestamp";
 
     private static final boolean DEBUG = false;
 
@@ -157,6 +163,34 @@ public class InstallSessionHelper {
             }
         }
         return list;
+    }
+
+    /**
+     * Attempt to restore workspace layout if the session is triggered due to device restore and it
+     * has a newer timestamp.
+     */
+    public boolean restoreDbIfApplicable(@NonNull final SessionInfo info) {
+        if (!Utilities.ATLEAST_OREO || !FeatureFlags.ENABLE_DATABASE_RESTORE.get()) {
+            return false;
+        }
+        if (isRestore(info) && hasNewerTimestamp(mAppContext, info)) {
+            LauncherSettings.Settings.call(mAppContext.getContentResolver(),
+                    LauncherSettings.Settings.METHOD_RESTORE_BACKUP_TABLE);
+            return true;
+        }
+        return false;
+    }
+
+    @RequiresApi(26)
+    private static boolean isRestore(@NonNull final SessionInfo info) {
+        return info.getInstallReason() == PackageManager.INSTALL_REASON_DEVICE_RESTORE;
+    }
+
+    private static boolean hasNewerTimestamp(
+            @NonNull final Context context, @NonNull final SessionInfo info) {
+        return PackageManagerHelper.getSessionCreatedTimeInMillis(info)
+                > Utilities.getDevicePrefs(context).getLong(
+                        KEY_INSTALL_SESSION_CREATED_TIMESTAMP, 0);
     }
 
     public boolean promiseIconAddedForId(int sessionId) {
