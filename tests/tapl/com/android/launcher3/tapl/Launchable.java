@@ -73,7 +73,6 @@ abstract class Launchable {
             final Point launchableCenter = getObject().getVisibleCenter();
             final Point displaySize = mLauncher.getRealDisplaySize();
             final int width = displaySize.x / 2;
-            addExpectedEventsForLongClick();
             Workspace.dragIconToWorkspace(
                     mLauncher,
                     this,
@@ -85,8 +84,6 @@ abstract class Launchable {
                     getLongPressIndicator());
         }
     }
-
-    protected abstract void addExpectedEventsForLongClick();
 
     protected abstract String getLongPressIndicator();
 }
