@@ -43,6 +43,7 @@ import com.android.launcher3.ui.TaplTestsLauncher3;
 import com.android.quickstep.NavigationModeSwitchRule.NavigationModeSwitch;
 import com.android.quickstep.views.RecentsView;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -51,10 +52,18 @@ import org.junit.runner.RunWith;
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class TaplTestsQuickstep extends AbstractQuickStepTest {
+    private int mLauncherPid;
+
     @Before
     public void setUp() throws Exception {
         super.setUp();
         TaplTestsLauncher3.initialize(this);
+        mLauncherPid = mLauncher.getPid();
+    }
+
+    @After
+    public void teardown() {
+        assertEquals("Launcher crashed, pid mismatch:", mLauncherPid, mLauncher.getPid());
     }
 
     private void startTestApps() throws Exception {
