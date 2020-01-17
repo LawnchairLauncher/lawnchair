@@ -18,6 +18,8 @@ package com.android.quickstep;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Insets;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -25,6 +27,7 @@ import android.os.IBinder.DeathRecipient;
 import android.os.RemoteException;
 import android.util.Log;
 import android.view.MotionEvent;
+
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.quickstep.util.SharedApiCompat;
 import com.android.systemui.shared.recents.ISystemUiProxy;
@@ -279,6 +282,17 @@ public class SystemUiProxy implements ISystemUiProxy {
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call setShelfHeight visible: " + visible
                         + " height: " + shelfHeight, e);
+            }
+        }
+    }
+
+    @Override
+    public void handleImageAsScreenshot(Bitmap bitmap, Rect rect, Insets insets, int i) {
+        if (mSystemUiProxy != null) {
+            try {
+                mSystemUiProxy.handleImageAsScreenshot(bitmap, rect, insets, i);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call handleImageAsScreenshot", e);
             }
         }
     }
