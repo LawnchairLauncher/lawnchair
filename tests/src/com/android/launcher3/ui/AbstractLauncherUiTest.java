@@ -102,6 +102,7 @@ public abstract class AbstractLauncherUiTest {
     protected String mTargetPackage;
 
     protected AbstractLauncherUiTest() {
+        mLauncher.enableCheckEventsForSuccessfulGestures();
         try {
             mDevice.setOrientationNatural();
         } catch (RemoteException e) {

@@ -94,6 +94,7 @@ public class FallbackRecentsTest {
         mDevice = UiDevice.getInstance(instrumentation);
         mDevice.setOrientationNatural();
         mLauncher = new LauncherInstrumentation();
+        mLauncher.enableCheckEventsForSuccessfulGestures();
 
         if (TestHelpers.isInLauncherProcess()) {
             Utilities.enableRunningInTestHarnessForTests();

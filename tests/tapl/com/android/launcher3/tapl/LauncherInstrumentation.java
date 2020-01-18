@@ -168,6 +168,7 @@ public final class LauncherInstrumentation {
     private List<Pattern> mExpectedEvents;
 
     private String mTimeBeforeFirstLogEvent;
+    private boolean mCheckEventsForSuccessfulGestures = false;
 
     private static Pattern getTouchEventPattern(String action) {
         // The pattern includes sanity checks that we don't get a multi-touch events or other
@@ -237,6 +238,10 @@ public final class LauncherInstrumentation {
                 }
             }
         }
+    }
+
+    public void enableCheckEventsForSuccessfulGestures() {
+        mCheckEventsForSuccessfulGestures = true;
     }
 
     Context getContext() {
@@ -1217,6 +1222,11 @@ public final class LauncherInstrumentation {
             // Leaving events check block.
             if (mExpectedEvents == null) {
                 return; // There was a failure. Noo need to report another one.
+            }
+
+            if (!mCheckEventsForSuccessfulGestures) {
+                stopRecordingEvents();
+                return;
             }
 
             final String message = getEventMismatchMessage(true);
