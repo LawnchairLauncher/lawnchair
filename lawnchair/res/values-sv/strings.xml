@@ -79,6 +79,7 @@
     <string name="pref_notification_count_title">Visa aviseringsantal</string>
     <string name="allow_rotation_title">Aktivera Rotation</string>
     <string name="pref_center_wallpaper">Centrera bakgrund</string>
+    <string name="pref_center_wallpaper_summary">Stäng av scrollande bakgrund.</string>
     <string name="pref_hide_statusbar">Göm statusfält</string>
     <string name="full_width_width_widgets_pref_title">Breda widgets</string>
     <string name="full_width_widgets_pref_summary">Tillåt widgetar att täcka hela skärmbredden.</string>
@@ -86,12 +87,14 @@
     <!-- Section 4 -->
     <string name="smartspace_preferences_in_settings">At a Glance</string>
     <!-- Note: replaces hard-coded copy (“Home widget”). -->
+    <string name="smartspace_preferences_in_settings_desc">Datum &amp; Tid, Datakälla</string>
     <string name="smartspace_time">Visa tid</string>
     <string name="smartspace_date">Visa datum</string>
     <string name="pref_smartspace_time_above">Visa stor klocka</string>
     <string name="pref_hide_statusbar_clock">Göm klockan i statusfältet</string>
     <string name="root_access_required">Root-åtkomst krävs.</string>
     <string name="smartspace_time_24_h">Använd 24-timmarsformat</string>
+    <string name="title_use_pill_qsb">Visa sökgenväg</string>
     <string name="pref_category_weather">Övrigt</string>
     <string name="pref_smartspace_widget_provider">Väderleverantör</string>
     <string name="google_app">Google-appen</string>
@@ -116,12 +119,12 @@
     <string-array name="greetings_morning">
         <item>God morgon!</item>
         <item>Ha en bra dag!</item>
-        <item>It’s a beautiful day outside!</item>
+        <item>Det är en fin dag utomhus!</item>
     </string-array>
     <string-array name="greetings_evening">
         <item>Hur är läget?</item>
         <item>God kväll!</item>
-        <item>How did your day go?</item>
+        <item>Hur var din dag?</item>
         <item>Godnatt!</item>
     </string-array>
     <string-array name="greetings_night">
@@ -143,20 +146,24 @@
     <string name="radius">Hörnradie</string>
     <string name="hotseat_show_arrow">Visa pil</string>
     <string name="hotseat_show_page_indicator">Visa sidindikator</string>
+    <string name="two_row_dock">Visa andra raden</string>
     <string name="pref_category_searchbar">Sökfält</string>
     <string name="dock_search_bar">Visa sökfält</string>
     <string name="dock_colored_google">Färgade ikoner</string>
     <!-- Section 6 -->
     <string name="app_drawer_pref_title">Applista</string>
+    <string name="app_drawer_pref_summary">Layout, Kategorier, Förslag</string>
     <string name="pref_category_theme">Stil</string>
     <string name="pref_drawer_columns">Antal kolumner</string>
     <string name="pref_prediction_count">Antal förslag</string>
     <string name="pref_drawer_padding">Radhöjd</string>
+    <string name="hide_apps">Dolda appgenvägar</string>
     <string name="categorization">Kategorier</string>
     <string name="pref_appcategorization_enable_title">Kategorisera appar</string>
     <string name="pref_appcategorization_folders_title">Mappar</string>
     <string name="pref_appcategorization_folders_summary">Tryck för att öppna mappar.</string>
     <string name="pref_appcategorization_tabs_title">Flikar</string>
+    <string name="pref_appcategorization_tabs_summary">Svep mellan kategorier.</string>
     <string name="pref_app_groups_edit_tip">Tryck för att redigera, dra för att ordna om.</string>
     <plurals name="hidden_apps_count">
         <item quantity="one">%1$d dold</item>
@@ -192,14 +199,25 @@
     <string name="app_actions_pref_title">Åtgärder</string>
     <string name="app_actions_pref_desc">Genvägar till ofta öppnade skärmar.</string>
     <string name="app_actions_reset_pref_title">Återställ Handlings Preferenser</string>
+    <string name="app_actions_reset_pref_summary">Visa åtgärder som dras till \"Visa inte\".</string>
+    <string name="all_apps_label_pref_title">Visa \"Alla appar\"</string>
     <string name="separate_work_apps_pref_title">Annan flik för arbetsappar</string>
     <string name="keep_scroll_state_pref_title">Kom ihåg position</string>
     <!-- Section 7 -->
     <string name="search">Sök</string>
+    <string name="search_pref_summary">Layout, Stil, Sökmotor</string>
     <string name="pref_global_search_provider">Sökmotor</string>
     <string name="google">Google-appen</string>
     <string name="search_provider_google_go">Google Go</string>
     <string name="web_search_google">Google</string>
+    <string name="web_search_ddg">DuckDuckGo (i webbläsare)</string>
+    <string name="web_search_startpage">Startpage.com (i webbläsare)</string>
+    <string name="web_search_bing">Bing (i webbläsare)</string>
+    <string name="web_search_qwant">Qwant (i webbläsare)</string>
+    <string name="web_search_ecosia">Ecosia (i webbläsare)</string>
+    <string name="web_search_yandex">Yandex (i webbläsare)</string>
+    <string name="web_search_naver">Naver (i webbläsare)</string>
+    <string name="web_search_baidu">Baidu (i webbläsare)</string>
     <string name="search_provider_yandex">Yandex</string>
     <string name="search_provider_ddg">DuckDuckGo</string>
     <string name="search_provider_bing">Bing</string>
@@ -215,23 +233,35 @@
     <string name="searchbar_appearance_title">Stil</string>
     <string name="pref_show_assistant_title">Visa röstsökningsknapp</string>
     <string name="action_assistant">Öppna assistent</string>
+    <string name="pref_show_as_assistant_summary">Öppna assistent istället för röstsökning.</string>
+    <string name="bubble_searchbar">Visa två bubblor</string>
     <string name="pref_search_bar_radius">Hörnradie</string>
     <!-- Section 8 -->
     <string name="pref_integrations">Tillägg</string>
+    <string name="pref_integrations_summary">Sesame-genvägar, Google-flöde</string>
     <string name="sesame">Sesame</string>
     <string name="sesame_data_integration">Delning av data</string>
     <string name="sesame_upsell">Tryck för att installera Sesame.</string>
+    <string name="pref_sesame_show_shortcuts">Visa i genvägsbubblor</string>
+    <string name="sesame_search_engine">Använd som sökmotor</string>
+    <string name="pref_sesame_sync_look_and_feel">Dela stilinställningar</string>
+    <string name="pref_sesame_sync_look_and_feel_summary">Använd sökrutan inställningar på Sesame rutan.</string>
     <string name="sesame_version">Biblioteksversion</string>
+    <string name="title_show_google_app">Visa %1$s flöde</string>
     <string name="feed_theme_pref_title">Bakgrundsfärg</string>
     <!-- Section 9 -->
     <string name="gestures_pref_title">Gester</string>
+    <string name="gestures_pref_summary">Dubbeltryck, Svep upp från dockan</string>
     <string name="gesture_double_tap">Dubbeltryck</string>
     <string name="gesture_long_press">Tryck länge</string>
+    <string name="gesture_press_home">Tryck på hemknapp</string>
+    <string name="gesture_press_back">Tryck på bakåtknapp</string>
     <string name="gesture_swipe_down">Svep nedåt</string>
     <string name="gesture_swipe_up">Svep uppåt</string>
     <string name="gesture_dock_swipe_up">Svep uppåt från docken</string>
     <string name="action_none">Gör ingenting</string>
     <string name="action_sleep">Viloläge</string>
+    <string name="action_sleep_timeout">Viloläge använder skärmens tidsgräns</string>
     <string name="action_open_settings">Öppna Lawnchair-inställningar</string>
     <string name="action_open_notifications">Öppna aviseringspanel</string>
     <string name="action_overlay">Öppna Google-flödet</string>
@@ -243,10 +273,15 @@
     <string name="new_backup">Skapa</string>
     <string name="restore_backup">Återställ</string>
     <string name="local_backups">I lokal lagring</string>
+    <string name="no_recent_backups">Säkerhetskopior kommer att visas här.</string>
+    <string name="backup_contents">Data att säkerhetskopiera</string>
+    <string name="restore_contents">Data att återställa</string>
     <string name="backup_settings">Inställningar</string>
+    <string name="homescreen">Hemskärmslayout</string>
     <string name="backup_wallpaper">Bakgrund</string>
     <string name="name">Namn</string>
     <string name="backup_location">Plats</string>
+    <string name="backup_location_device_storage">“Lawnchair”-mapp</string>
     <string name="custom">Anpassad</string>
     <!-- Section 11 -->
     <string name="about">Om</string>
@@ -257,8 +292,12 @@
     <string name="about_role_lead">Ledande utvecklare</string>
     <string name="about_role_dev">Utvecklare</string>
     <string name="about_role_ui_ux_designer">Gränssnittsdesigner</string>
+    <string name="about_role_writer">Författare</string>
     <string name="about_role_dev_mod">Utvecklare &amp; moderator</string>
     <string name="about_role_designer">Designer</string>
+    <string name="about_role_devops">Utvecklare</string>
+    <string name="about_role_pr">PR-ansvarig</string>
+    <string name="about_role_ops">Drift &amp; Infrastruktur</string>
     <string name="about_role_family_member">Familjemedlem</string>
     <string name="about_our_team">Teamet</string>
     <!-- Section 12 -->
