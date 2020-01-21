@@ -35,12 +35,12 @@
         android:paddingRight="@dimen/bottom_sheet_edu_padding">
 
         <TextView
+            style="@style/TextHeadline"
             android:id="@+id/content_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="48dp"
             android:layout_marginBottom="48dp"
-            android:fontFamily="google-sans"
             android:text="@string/work_profile_edu_personal_apps"
             android:textAlignment="center"
             android:textColor="@android:color/white"

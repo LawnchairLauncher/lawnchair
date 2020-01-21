@@ -85,6 +85,9 @@
     <dimen name="all_apps_tabs_side_padding">12dp</dimen>
     <dimen name="all_apps_divider_height">1dp</dimen>
 
+    <dimen name="all_apps_work_profile_tab_footer_padding_vertical">20dp</dimen>
+    <dimen name="all_apps_work_profile_tab_footer_padding_horizontal">24dp</dimen>
+
 <!-- Search bar in All Apps -->
     <dimen name="all_apps_header_max_elevation">3dp</dimen>
     <dimen name="all_apps_header_scroll_to_elevation">16dp</dimen>

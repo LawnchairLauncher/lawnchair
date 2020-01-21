@@ -52,8 +52,6 @@ public class WorkEduView extends AbstractSlideInView implements Insettable {
     private static final int WORK_EDU_PERSONAL_APPS = 1;
     private static final int WORK_EDU_WORK_APPS = 2;
 
-    private static LauncherStateManager.StateListener sStateListener;
-
     private Rect mInsets = new Rect();
     private View mViewWrapper;
     private Button mProceedButton;

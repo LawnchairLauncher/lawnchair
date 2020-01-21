@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2017 The Android Open Source Project
+<!-- Copyright (C) 2020 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -19,5 +19,7 @@
     android:viewportWidth="24.0"
     android:viewportHeight="24.0"
     android:tint="?android:attr/textColorHint" >
-    <path android:fillColor="@android:color/white" android:pathData="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-8 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm2-9h-4V4h4v2z"/>
+    <path
+        android:pathData="M22 7.95c.05-1.11-.84-2-1.95-1.95H16V3.95c0-1.11-.84-2-1.95-1.95h-4C8.94 1.95 8 2.84 8 3.95v.32l14 14V7.95zM14 6h-4V4h4v2zm7.54 14.28l-7.56-7.56v.01l-1.7-1.7h.01L7.21 5.95 3.25 1.99 1.99 3.27 4.69 6h-.64c-1.11 0-1.99.86-1.99 1.97l-.01 11.02c0 1.11.89 2.01 2 2.01h15.64l2.05 2.02L23 21.75l-1.46-1.47z"
+        android:fillColor="@android:color/white"/>
 </vector>
