@@ -16,37 +16,25 @@
 
 package com.android.launcher3.config;
 
-import static androidx.core.util.Preconditions.checkNotNull;
-
 import android.content.Context;
-import android.content.SharedPreferences;
-
-import androidx.annotation.GuardedBy;
-import androidx.annotation.Keep;
-import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.BuildConfig;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.uioverrides.TogglableFlag;
+import com.android.launcher3.uioverrides.DeviceFlag;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 /**
  * Defines a set of flags used to control various launcher behaviors.
  *
  * <p>All the flags should be defined here with appropriate default values.
  */
-@Keep
 public final class FeatureFlags {
 
-    private static final Object sLock = new Object();
-    @GuardedBy("sLock")
-    private static final List<TogglableFlag> sFlags = new ArrayList<>();
+    private static final List<DebugFlag> sDebugFlags = new ArrayList<>();
 
-    static final String FLAGS_PREF_NAME = "featureFlags";
+    public static final String FLAGS_PREF_NAME = "featureFlags";
 
     private FeatureFlags() { }
 
@@ -62,7 +50,6 @@ public final class FeatureFlags {
      */
     public static final boolean QSB_ON_FIRST_SCREEN = true;
 
-
     /**
      * Feature flag to handle define config changes dynamically instead of killing the process.
      *
@@ -73,194 +60,145 @@ public final class FeatureFlags {
      *    and set a default value for the flag. This will be the default value on Debug builds.
      */
     // When enabled the promise icon is visible in all apps while installation an app.
-    public static final TogglableFlag PROMISE_APPS_IN_ALL_APPS = new TogglableFlag(
+    public static final BooleanFlag PROMISE_APPS_IN_ALL_APPS = getDebugFlag(
             "PROMISE_APPS_IN_ALL_APPS", false, "Add promise icon in all-apps");
 
     // When enabled a promise icon is added to the home screen when install session is active.
-    public static final TogglableFlag PROMISE_APPS_NEW_INSTALLS =
-            new TogglableFlag("PROMISE_APPS_NEW_INSTALLS", true,
-                    "Adds a promise icon to the home screen for new install sessions.");
+    public static final BooleanFlag PROMISE_APPS_NEW_INSTALLS = getDebugFlag(
+            "PROMISE_APPS_NEW_INSTALLS", true,
+            "Adds a promise icon to the home screen for new install sessions.");
 
-    public static final TogglableFlag APPLY_CONFIG_AT_RUNTIME = new TogglableFlag(
+    public static final BooleanFlag APPLY_CONFIG_AT_RUNTIME = getDebugFlag(
             "APPLY_CONFIG_AT_RUNTIME", true, "Apply display changes dynamically");
 
-    public static final TogglableFlag QUICKSTEP_SPRINGS = new TogglableFlag("QUICKSTEP_SPRINGS",
-            true, "Enable springs for quickstep animations");
+    public static final BooleanFlag QUICKSTEP_SPRINGS = getDebugFlag(
+            "QUICKSTEP_SPRINGS", true, "Enable springs for quickstep animations");
 
-    public static final TogglableFlag UNSTABLE_SPRINGS = new TogglableFlag("UNSTABLE_SPRINGS",
-            false, "Enable unstable springs for quickstep animations");
+    public static final BooleanFlag UNSTABLE_SPRINGS = getDebugFlag(
+            "UNSTABLE_SPRINGS", false, "Enable unstable springs for quickstep animations");
 
-    public static final TogglableFlag ADAPTIVE_ICON_WINDOW_ANIM = new TogglableFlag(
-            "ADAPTIVE_ICON_WINDOW_ANIM", true,
-            "Use adaptive icons for window animations.");
+    public static final BooleanFlag ADAPTIVE_ICON_WINDOW_ANIM = getDebugFlag(
+            "ADAPTIVE_ICON_WINDOW_ANIM", true, "Use adaptive icons for window animations.");
 
-    public static final TogglableFlag ENABLE_QUICKSTEP_LIVE_TILE = new TogglableFlag(
+    public static final BooleanFlag ENABLE_QUICKSTEP_LIVE_TILE = getDebugFlag(
             "ENABLE_QUICKSTEP_LIVE_TILE", false, "Enable live tile in Quickstep overview");
 
-    public static final TogglableFlag ENABLE_HINTS_IN_OVERVIEW = new TogglableFlag(
-            "ENABLE_HINTS_IN_OVERVIEW", false,
-            "Show chip hints and gleams on the overview screen");
+    public static final BooleanFlag ENABLE_HINTS_IN_OVERVIEW = getDebugFlag(
+            "ENABLE_HINTS_IN_OVERVIEW", false, "Show chip hints and gleams on the overview screen");
 
-    public static final TogglableFlag FAKE_LANDSCAPE_UI = new TogglableFlag(
-            "FAKE_LANDSCAPE_UI", false,
-            "Rotate launcher UI instead of using transposed layout");
+    public static final BooleanFlag FAKE_LANDSCAPE_UI = getDebugFlag(
+            "FAKE_LANDSCAPE_UI", false, "Rotate launcher UI instead of using transposed layout");
 
-    public static final TogglableFlag FOLDER_NAME_SUGGEST = new TogglableFlag(
-            "FOLDER_NAME_SUGGEST", true,
-            "Suggests folder names instead of blank text.");
+    public static final BooleanFlag FOLDER_NAME_SUGGEST = getDebugFlag(
+            "FOLDER_NAME_SUGGEST", true, "Suggests folder names instead of blank text.");
 
-    public static final TogglableFlag APP_SEARCH_IMPROVEMENTS = new TogglableFlag(
+    public static final BooleanFlag APP_SEARCH_IMPROVEMENTS = new DeviceFlag(
             "APP_SEARCH_IMPROVEMENTS", false,
             "Adds localized title and keyword search and ranking");
 
-    public static final TogglableFlag ENABLE_PREDICTION_DISMISS = new TogglableFlag(
+    public static final BooleanFlag ENABLE_PREDICTION_DISMISS = getDebugFlag(
             "ENABLE_PREDICTION_DISMISS", false, "Allow option to dimiss apps from predicted list");
 
-    public static final TogglableFlag ENABLE_QUICK_CAPTURE_GESTURE = new TogglableFlag(
+    public static final BooleanFlag ENABLE_QUICK_CAPTURE_GESTURE = getDebugFlag(
             "ENABLE_QUICK_CAPTURE_GESTURE", true, "Swipe from right to left to quick capture");
 
-    public static final TogglableFlag ASSISTANT_GIVES_LAUNCHER_FOCUS = new TogglableFlag(
+    public static final BooleanFlag ASSISTANT_GIVES_LAUNCHER_FOCUS = getDebugFlag(
             "ASSISTANT_GIVES_LAUNCHER_FOCUS", false,
             "Allow Launcher to handle nav bar gestures while Assistant is running over it");
 
-    public static final TogglableFlag ENABLE_HYBRID_HOTSEAT = new TogglableFlag(
+    public static final BooleanFlag ENABLE_HYBRID_HOTSEAT = getDebugFlag(
             "ENABLE_HYBRID_HOTSEAT", false, "Fill gaps in hotseat with predicted apps");
 
-    public static final TogglableFlag ENABLE_DEEP_SHORTCUT_ICON_CACHE = new TogglableFlag(
+    public static final BooleanFlag ENABLE_DEEP_SHORTCUT_ICON_CACHE = getDebugFlag(
             "ENABLE_DEEP_SHORTCUT_ICON_CACHE", true, "R/W deep shortcut in IconCache");
 
-    public static final TogglableFlag ENABLE_LAUNCHER_PREVIEW_IN_GRID_PICKER = new TogglableFlag(
+    public static final BooleanFlag ENABLE_LAUNCHER_PREVIEW_IN_GRID_PICKER = getDebugFlag(
             "ENABLE_LAUNCHER_PREVIEW_IN_GRID_PICKER", false,
             "Show launcher preview in grid picker");
 
-    public static final TogglableFlag ENABLE_OVERVIEW_ACTIONS = new TogglableFlag(
+    public static final BooleanFlag ENABLE_OVERVIEW_ACTIONS = getDebugFlag(
             "ENABLE_OVERVIEW_ACTIONS", false, "Show app actions in Overview");
 
-    public static final TogglableFlag ENABLE_DATABASE_RESTORE = new TogglableFlag(
+    public static final BooleanFlag ENABLE_DATABASE_RESTORE = getDebugFlag(
             "ENABLE_DATABASE_RESTORE", true,
             "Enable database restore when new restore session is created");
 
     public static void initialize(Context context) {
-        // Avoid the disk read for user builds
-        if (Utilities.IS_DEBUG_DEVICE) {
-            synchronized (sLock) {
-                for (BaseTogglableFlag flag : sFlags) {
-                    flag.initialize(context);
-                }
+        synchronized (sDebugFlags) {
+            for (DebugFlag flag : sDebugFlags) {
+                flag.initialize(context);
             }
         }
     }
 
-    static List<TogglableFlag> getTogglableFlags() {
-        // By Java Language Spec 12.4.2
-        // https://docs.oracle.com/javase/specs/jls/se7/html/jls-12.html#jls-12.4.2, the
-        // TogglableFlag instances on FeatureFlags will be created before those on the FeatureFlags
-        // subclass. This code handles flags that are redeclared in FeatureFlags, ensuring the
-        // FeatureFlags one takes priority.
-        SortedMap<String, TogglableFlag> flagsByKey = new TreeMap<>();
-        synchronized (sLock) {
-            for (TogglableFlag flag : sFlags) {
-                flagsByKey.put(flag.getKey(), flag);
-            }
+    static List<DebugFlag> getDebugFlags() {
+        synchronized (sDebugFlags) {
+            return new ArrayList<>(sDebugFlags);
         }
-        return new ArrayList<>(flagsByKey.values());
     }
 
-    public static abstract class BaseTogglableFlag {
-        private final String key;
-        // should be value that is hardcoded in client side.
-        // Comparatively, getDefaultValue() can be overridden.
-        private final boolean defaultValue;
-        private final String description;
-        private boolean currentValue;
+    public static class BooleanFlag {
 
-        public BaseTogglableFlag(
-                String key,
-                boolean defaultValue,
-                String description) {
-            this.key = checkNotNull(key);
-            this.currentValue = this.defaultValue = defaultValue;
-            this.description = checkNotNull(description);
+        public final String key;
+        public boolean defaultValue;
 
-            synchronized (sLock) {
-                sFlags.add((TogglableFlag)this);
-            }
+        public BooleanFlag(String key, boolean defaultValue) {
+            this.key = key;
+            this.defaultValue = defaultValue;
         }
 
-        /** Set the value of this flag. This should only be used in tests. */
-        @VisibleForTesting
-        void setForTests(boolean value) {
-            currentValue = value;
-        }
-
-        public String getKey() {
-            return key;
-        }
-
-        protected void initialize(Context context) {
-            currentValue = getFromStorage(context, getDefaultValue());
-        }
-
-        protected abstract boolean getOverridenDefaultValue(boolean value);
-
-        protected abstract void addChangeListener(Context context, Runnable r);
-
-        public void updateStorage(Context context, boolean value) {
-            SharedPreferences.Editor editor = context.getSharedPreferences(FLAGS_PREF_NAME,
-                    Context.MODE_PRIVATE).edit();
-            if (value == getDefaultValue()) {
-                editor.remove(key).apply();
-            } else {
-                editor.putBoolean(key, value).apply();
-            }
-        }
-
-        boolean getFromStorage(Context context, boolean defaultValue) {
-            return context.getSharedPreferences(FLAGS_PREF_NAME, Context.MODE_PRIVATE)
-                    .getBoolean(key, getDefaultValue());
-        }
-
-        boolean getDefaultValue() {
-            return getOverridenDefaultValue(defaultValue);
-        }
-
-        /** Returns the value of the flag at process start, including any overrides present. */
         public boolean get() {
-            return currentValue;
-        }
-
-        String getDescription() {
-            return description;
+            return defaultValue;
         }
 
         @Override
         public String toString() {
-            return "TogglableFlag{"
-                    + "key=" + key + ", "
-                    + "defaultValue=" + defaultValue + ", "
-                    + "overriddenDefaultValue=" + getOverridenDefaultValue(defaultValue) + ", "
-                    + "currentValue=" + currentValue + ", "
-                    + "description=" + description
-                    + "}";
+            return appendProps(new StringBuilder()
+                    .append(getClass().getSimpleName()).append('{'))
+                    .append('}').toString();
+        }
+
+        protected StringBuilder appendProps(StringBuilder src) {
+            return src.append("key=").append(key).append(", defaultValue=").append(defaultValue);
+        }
+
+        public void addChangeListener(Context context, Runnable r) { }
+    }
+
+    public static class DebugFlag extends BooleanFlag {
+
+        public final String description;
+        private boolean mCurrentValue;
+
+        public DebugFlag(String key, boolean defaultValue, String description) {
+            super(key, defaultValue);
+            this.description = description;
+            mCurrentValue = this.defaultValue;
+            synchronized (sDebugFlags) {
+                sDebugFlags.add(this);
+            }
         }
 
         @Override
-        public boolean equals(Object o) {
-            if (o == this) {
-                return true;
-            }
-            if (o instanceof TogglableFlag) {
-                BaseTogglableFlag that = (BaseTogglableFlag) o;
-                return (this.key.equals(that.getKey()))
-                        && (this.getDefaultValue() == that.getDefaultValue())
-                        && (this.description.equals(that.getDescription()));
-            }
-            return false;
+        public boolean get() {
+            return mCurrentValue;
+        }
+
+        public void initialize(Context context) {
+            mCurrentValue = context.getSharedPreferences(FLAGS_PREF_NAME, Context.MODE_PRIVATE)
+                    .getBoolean(key, defaultValue);
         }
 
         @Override
-        public int hashCode() {
-            return key.hashCode();
+        protected StringBuilder appendProps(StringBuilder src) {
+            return super.appendProps(src).append(", mCurrentValue=").append(mCurrentValue)
+                    .append(", description=").append(description);
         }
+    }
+
+    private static BooleanFlag getDebugFlag(String key, boolean defaultValue, String description) {
+        return Utilities.IS_DEBUG_DEVICE
+                ? new DebugFlag(key, defaultValue, description)
+                : new BooleanFlag(key, defaultValue);
     }
 }

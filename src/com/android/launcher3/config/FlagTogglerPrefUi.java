@@ -16,6 +16,8 @@
 
 package com.android.launcher3.config;
 
+import static com.android.launcher3.config.FeatureFlags.FLAGS_PREF_NAME;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Process;
@@ -31,8 +33,7 @@ import androidx.preference.PreferenceGroup;
 import androidx.preference.SwitchPreference;
 
 import com.android.launcher3.R;
-import com.android.launcher3.config.FeatureFlags.BaseTogglableFlag;
-import com.android.launcher3.uioverrides.TogglableFlag;
+import com.android.launcher3.config.FeatureFlags.DebugFlag;
 
 /**
  * Dev-build only UI allowing developers to toggle flag settings. See {@link FeatureFlags}.
@@ -49,23 +50,26 @@ public final class FlagTogglerPrefUi {
 
         @Override
         public void putBoolean(String key, boolean value) {
-            for (TogglableFlag flag : FeatureFlags.getTogglableFlags()) {
-                if (flag.getKey().equals(key)) {
-                    boolean prevValue = flag.get();
-                    flag.updateStorage(mContext, value);
-                    updateMenu();
-                    if (flag.get() != prevValue) {
-                        Toast.makeText(mContext, "Flag applied", Toast.LENGTH_SHORT).show();
+            for (DebugFlag flag : FeatureFlags.getDebugFlags()) {
+                if (flag.key.equals(key)) {
+                    SharedPreferences.Editor editor = mContext.getSharedPreferences(
+                            FLAGS_PREF_NAME, Context.MODE_PRIVATE).edit();
+                    if (value == flag.defaultValue) {
+                        editor.remove(key).apply();
+                    } else {
+                        editor.putBoolean(key, value).apply();
                     }
+                    updateMenu();
                 }
             }
         }
 
         @Override
         public boolean getBoolean(String key, boolean defaultValue) {
-            for (BaseTogglableFlag flag : FeatureFlags.getTogglableFlags()) {
-                if (flag.getKey().equals(key)) {
-                    return flag.getFromStorage(mContext, defaultValue);
+            for (DebugFlag flag : FeatureFlags.getDebugFlags()) {
+                if (flag.key.equals(key)) {
+                    return mContext.getSharedPreferences(FLAGS_PREF_NAME, Context.MODE_PRIVATE)
+                            .getBoolean(key, flag.defaultValue);
                 }
             }
             return defaultValue;
@@ -76,7 +80,7 @@ public final class FlagTogglerPrefUi {
         mFragment = fragment;
         mContext = fragment.getActivity();
         mSharedPreferences = mContext.getSharedPreferences(
-                FeatureFlags.FLAGS_PREF_NAME, Context.MODE_PRIVATE);
+                FLAGS_PREF_NAME, Context.MODE_PRIVATE);
     }
 
     public void applyTo(PreferenceGroup parent) {
@@ -84,12 +88,12 @@ public final class FlagTogglerPrefUi {
         // flag with a different value than the default. That way, when we flip flags in
         // future, engineers will pick up the new value immediately. To accomplish this, we use a
         // custom preference data store.
-        for (BaseTogglableFlag flag : FeatureFlags.getTogglableFlags()) {
+        for (DebugFlag flag : FeatureFlags.getDebugFlags()) {
             SwitchPreference switchPreference = new SwitchPreference(mContext);
-            switchPreference.setKey(flag.getKey());
-            switchPreference.setDefaultValue(flag.getDefaultValue());
+            switchPreference.setKey(flag.key);
+            switchPreference.setDefaultValue(flag.defaultValue);
             switchPreference.setChecked(getFlagStateFromSharedPrefs(flag));
-            switchPreference.setTitle(flag.getKey());
+            switchPreference.setTitle(flag.key);
             updateSummary(switchPreference, flag);
             switchPreference.setPreferenceDataStore(mDataStore);
             parent.addPreference(switchPreference);
@@ -100,11 +104,11 @@ public final class FlagTogglerPrefUi {
     /**
      * Updates the summary to show the description and whether the flag overrides the default value.
      */
-    private void updateSummary(SwitchPreference switchPreference, BaseTogglableFlag flag) {
-        String onWarning = flag.getDefaultValue() ? "" : "<b>OVERRIDDEN</b><br>";
-        String offWarning = flag.getDefaultValue() ? "<b>OVERRIDDEN</b><br>" : "";
-        switchPreference.setSummaryOn(Html.fromHtml(onWarning + flag.getDescription()));
-        switchPreference.setSummaryOff(Html.fromHtml(offWarning + flag.getDescription()));
+    private void updateSummary(SwitchPreference switchPreference, DebugFlag flag) {
+        String onWarning = flag.defaultValue ? "" : "<b>OVERRIDDEN</b><br>";
+        String offWarning = flag.defaultValue ? "<b>OVERRIDDEN</b><br>" : "";
+        switchPreference.setSummaryOn(Html.fromHtml(onWarning + flag.description));
+        switchPreference.setSummaryOff(Html.fromHtml(offWarning + flag.description));
     }
 
     private void updateMenu() {
@@ -135,12 +139,12 @@ public final class FlagTogglerPrefUi {
         }
     }
 
-    private boolean getFlagStateFromSharedPrefs(BaseTogglableFlag flag) {
-        return mDataStore.getBoolean(flag.getKey(), flag.getDefaultValue());
+    private boolean getFlagStateFromSharedPrefs(DebugFlag flag) {
+        return mDataStore.getBoolean(flag.key, flag.defaultValue);
     }
 
     private boolean anyChanged() {
-        for (TogglableFlag flag : FeatureFlags.getTogglableFlags()) {
+        for (DebugFlag flag : FeatureFlags.getDebugFlags()) {
             if (getFlagStateFromSharedPrefs(flag) != flag.get()) {
                 return true;
             }

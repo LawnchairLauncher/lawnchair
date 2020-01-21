@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
  */
 public class FolderNameProvider {
 
-    private static final String TAG = FeatureFlags.FOLDER_NAME_SUGGEST.getKey();
+    private static final String TAG = "FolderNameProvider";
     private static final boolean DEBUG = FeatureFlags.FOLDER_NAME_SUGGEST.get();
 
     /**
