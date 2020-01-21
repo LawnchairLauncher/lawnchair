@@ -53,7 +53,8 @@ public final class OverviewTask {
             final Rect taskBounds = mTask.getVisibleBounds();
             final int centerX = taskBounds.centerX();
             final int centerY = taskBounds.centerY();
-            mLauncher.linearGesture(centerX, centerY, centerX, 0, 10, false);
+            mLauncher.linearGesture(centerX, centerY, centerX, 0, 10, false,
+                    LauncherInstrumentation.GestureScope.INSIDE);
             mLauncher.waitForIdle();
         }
     }
@@ -67,7 +68,7 @@ public final class OverviewTask {
             try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                     "clicking an overview task")) {
                 mLauncher.executeAndWaitForEvent(
-                        () -> mTask.click(),
+                        () -> mLauncher.clickLauncherObject(mTask),
                         event -> event.getEventType() == TYPE_WINDOW_STATE_CHANGED,
                         () -> "Launching task didn't open a new window: "
                                 + mTask.getParent().getContentDescription());

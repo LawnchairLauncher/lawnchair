@@ -60,7 +60,8 @@ public final class Overview extends BaseOverview {
                     mLauncher.getDevice().getDisplayWidth() / 2,
                     0,
                     12,
-                    ALL_APPS_STATE_ORDINAL);
+                    ALL_APPS_STATE_ORDINAL,
+                    LauncherInstrumentation.GestureScope.INSIDE);
 
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
                     "swiped all way up from overview")) {

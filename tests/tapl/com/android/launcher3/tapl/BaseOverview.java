@@ -82,7 +82,8 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
                 flingForwardImpl();
             }
 
-            mLauncher.waitForObjectInContainer(verifyActiveContainer(), clearAllSelector).click();
+            mLauncher.clickLauncherObject(
+                    mLauncher.waitForObjectInContainer(verifyActiveContainer(), clearAllSelector));
         }
     }
 
