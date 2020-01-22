@@ -16,22 +16,28 @@
 
 package com.android.launcher3.uioverrides;
 
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.os.Build;
 import android.provider.DeviceConfig;
 
-import com.android.launcher3.config.FeatureFlags.BaseTogglableFlag;
+import com.android.launcher3.config.FeatureFlags.DebugFlag;
 
-public class TogglableFlag extends BaseTogglableFlag {
+@TargetApi(Build.VERSION_CODES.P)
+public class DeviceFlag extends DebugFlag {
+
     public static final String NAMESPACE_LAUNCHER = "launcher";
-    public static final String TAG = "TogglableFlag";
 
-    public TogglableFlag(String key, boolean defaultValue, String description) {
-        super(key, defaultValue, description);
+    private final boolean mDefaultValueInCode;
+
+    public DeviceFlag(String key, boolean defaultValue, String description) {
+        super(key, getDeviceValue(key, defaultValue), description);
+        mDefaultValueInCode = defaultValue;
     }
 
     @Override
-    public boolean getOverridenDefaultValue(boolean value) {
-        return DeviceConfig.getBoolean(NAMESPACE_LAUNCHER, getKey(), value);
+    protected StringBuilder appendProps(StringBuilder src) {
+        return super.appendProps(src).append(", mDefaultValueInCode=").append(mDefaultValueInCode);
     }
 
     @Override
@@ -39,12 +45,17 @@ public class TogglableFlag extends BaseTogglableFlag {
         DeviceConfig.addOnPropertiesChangedListener(
                 NAMESPACE_LAUNCHER,
                 context.getMainExecutor(),
-                (properties) -> {
+                properties -> {
                     if (!NAMESPACE_LAUNCHER.equals(properties.getNamespace())) {
                         return;
                     }
+                    defaultValue = getDeviceValue(key, mDefaultValueInCode);
                     initialize(context);
                     r.run();
                 });
+    }
+
+    protected static boolean getDeviceValue(String key, boolean defaultValue) {
+        return DeviceConfig.getBoolean(NAMESPACE_LAUNCHER, key, defaultValue);
     }
 }
