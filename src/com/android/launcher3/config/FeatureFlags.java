@@ -90,7 +90,7 @@ public final class FeatureFlags {
             "FAKE_LANDSCAPE_UI", false, "Rotate launcher UI instead of using transposed layout");
 
     public static final BooleanFlag FOLDER_NAME_SUGGEST = getDebugFlag(
-            "FOLDER_NAME_SUGGEST", true, "Suggests folder names instead of blank text.");
+            "FOLDER_NAME_SUGGEST", false, "Suggests folder names instead of blank text.");
 
     public static final BooleanFlag APP_SEARCH_IMPROVEMENTS = new DeviceFlag(
             "APP_SEARCH_IMPROVEMENTS", false,
@@ -123,7 +123,7 @@ public final class FeatureFlags {
             "ENABLE_DATABASE_RESTORE", true,
             "Enable database restore when new restore session is created");
 
-    public static final TogglableFlag ENABLE_UNIVERSAL_SMARTSPACE = new TogglableFlag(
+    public static final BooleanFlag ENABLE_UNIVERSAL_SMARTSPACE = getDebugFlag(
             "ENABLE_UNIVERSAL_SMARTSPACE", false,
             "Replace Smartspace with a version rendered by System UI.");
 
