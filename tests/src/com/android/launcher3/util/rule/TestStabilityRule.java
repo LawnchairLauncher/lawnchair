@@ -58,7 +58,7 @@ public class TestStabilityRule implements TestRule {
     public static final int PLATFORM_PRESUBMIT = 0x8;
     public static final int PLATFORM_POSTSUBMIT = 0x10;
 
-    public static final int RUN_FLAFOR = getRunFlavor();
+    private static int sRunFlavor;
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
@@ -73,7 +73,8 @@ public class TestStabilityRule implements TestRule {
             return new Statement() {
                 @Override
                 public void evaluate() throws Throwable {
-                    if ((stability.flavors() & RUN_FLAFOR) != 0) {
+                    if (sRunFlavor == 0) sRunFlavor = getRunFlavor();
+                    if ((stability.flavors() & sRunFlavor) != 0) {
                         Log.d(TAG, "Running " + description.getDisplayName());
                         base.evaluate();
                     } else {

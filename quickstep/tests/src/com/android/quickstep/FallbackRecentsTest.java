@@ -56,6 +56,7 @@ import com.android.launcher3.tapl.OverviewTask;
 import com.android.launcher3.tapl.TestHelpers;
 import com.android.launcher3.testcomponent.TestCommandReceiver;
 import com.android.launcher3.util.Wait;
+import com.android.launcher3.util.rule.FailureRewriterRule;
 import com.android.launcher3.util.rule.FailureWatcher;
 import com.android.quickstep.NavigationModeSwitchRule.NavigationModeSwitch;
 import com.android.quickstep.views.RecentsView;
@@ -99,7 +100,9 @@ public class FallbackRecentsTest {
             Utilities.enableRunningInTestHarnessForTests();
         }
 
-        mOrderSensitiveRules = RuleChain.outerRule(new NavigationModeSwitchRule(mLauncher))
+        mOrderSensitiveRules = RuleChain
+                .outerRule(new FailureRewriterRule())
+                .around(new NavigationModeSwitchRule(mLauncher))
                 .around(new FailureWatcher(mDevice));
 
         mOtherLauncherActivity = context.getPackageManager().queryIntentActivities(
