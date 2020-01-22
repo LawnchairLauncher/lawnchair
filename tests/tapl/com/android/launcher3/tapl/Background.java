@@ -62,6 +62,10 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
         }
     }
 
+    protected boolean zeroButtonToOverviewGestureStartsInLauncher() {
+        return false;
+    }
+
     protected void goToOverviewUnchecked() {
         switch (mLauncher.getNavigationModel()) {
             case ZERO_BUTTON: {
@@ -74,19 +78,26 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
                         new Point(centerX, startY - swipeHeight - mLauncher.getTouchSlop());
 
                 final long downTime = SystemClock.uptimeMillis();
-                mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, start);
+                final LauncherInstrumentation.GestureScope gestureScope =
+                        zeroButtonToOverviewGestureStartsInLauncher()
+                                ? LauncherInstrumentation.GestureScope.INSIDE_TO_OUTSIDE
+                                : LauncherInstrumentation.GestureScope.OUTSIDE;
+                mLauncher.sendPointer(
+                        downTime, downTime, MotionEvent.ACTION_DOWN, start, gestureScope);
                 mLauncher.executeAndWaitForEvent(
                         () -> mLauncher.movePointer(
                                 downTime,
                                 downTime,
                                 ZERO_BUTTON_SWIPE_UP_GESTURE_DURATION,
                                 start,
-                                end),
+                                end,
+                                gestureScope),
                         event -> TestProtocol.PAUSE_DETECTED_MESSAGE.equals(event.getClassName()),
                         () -> "Pause wasn't detected");
                 mLauncher.runToState(
                         () -> mLauncher.sendPointer(
-                                downTime, SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, end),
+                                downTime, SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, end,
+                                gestureScope),
                         OVERVIEW_STATE_ORDINAL);
                 break;
             }
@@ -109,7 +120,8 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
                     startY = endY = mLauncher.getDevice().getDisplayHeight() / 2;
                 }
 
-                mLauncher.swipeToState(startX, startY, endX, endY, 10, OVERVIEW_STATE_ORDINAL);
+                mLauncher.swipeToState(startX, startY, endX, endY, 10, OVERVIEW_STATE_ORDINAL,
+                        LauncherInstrumentation.GestureScope.OUTSIDE);
                 break;
             }
 
@@ -162,7 +174,12 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
                     endX = startX;
                     endY = 0;
                 }
-                mLauncher.swipeToState(startX, startY, endX, endY, 20, expectedState);
+                mLauncher.swipeToState(startX, startY, endX, endY, 20, expectedState,
+                        mLauncher.getNavigationModel()
+                                == LauncherInstrumentation.NavigationModel.ZERO_BUTTON
+                                ? LauncherInstrumentation.GestureScope.INSIDE_TO_OUTSIDE
+                                : LauncherInstrumentation.GestureScope.OUTSIDE
+                );
                 break;
             }
 

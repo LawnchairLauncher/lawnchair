@@ -76,6 +76,7 @@ import android.view.KeyboardShortcutGroup;
 import android.view.KeyboardShortcutInfo;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
@@ -121,6 +122,7 @@ import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.qsb.QsbContainerView;
 import com.android.launcher3.states.RotationHelper;
+import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.AllAppsSwipeController;
 import com.android.launcher3.touch.ItemClickHandler;
@@ -1778,7 +1780,18 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
+        if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+            TestLogging.recordEvent("Key event: " + event);
+        }
         return (event.getKeyCode() == KeyEvent.KEYCODE_HOME) || super.dispatchKeyEvent(event);
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (Utilities.IS_RUNNING_IN_TEST_HARNESS && ev.getAction() != MotionEvent.ACTION_MOVE) {
+            TestLogging.recordEvent("Touch event: " + ev);
+        }
+        return super.dispatchTouchEvent(ev);
     }
 
     @Override
