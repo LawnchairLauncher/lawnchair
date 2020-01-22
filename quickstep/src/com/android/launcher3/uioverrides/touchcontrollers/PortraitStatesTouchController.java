@@ -25,7 +25,7 @@ import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_VERTICAL_PROGRE
 import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.launcher3.config.FeatureFlags.QUICKSTEP_SPRINGS;
+import static com.android.launcher3.config.FeatureFlags.UNSTABLE_SPRINGS;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_OVERVIEW_DISABLED;
 
 import android.animation.TimeInterpolator;
@@ -277,7 +277,7 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
     private void handleFirstSwipeToOverview(final ValueAnimator animator,
             final long expectedDuration, final LauncherState targetState, final float velocity,
             final boolean isFling) {
-        if (QUICKSTEP_SPRINGS.get() && mFromState == OVERVIEW && mToState == ALL_APPS
+        if (UNSTABLE_SPRINGS.get() && mFromState == OVERVIEW && mToState == ALL_APPS
                 && targetState == OVERVIEW) {
             mFinishFastOnSecondTouch = true;
         } else  if (mFromState == NORMAL && mToState == OVERVIEW && targetState == OVERVIEW) {

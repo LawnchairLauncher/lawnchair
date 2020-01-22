@@ -52,8 +52,9 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
      */
     @NonNull
     public BaseOverview switchToOverview() {
-        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
-                "want to switch from background to overview")) {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
+             LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                     "want to switch from background to overview")) {
             verifyActiveContainer();
             goToOverviewUnchecked();
             return mLauncher.isFallbackOverview() ?
@@ -124,8 +125,9 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
      * Swipes right or double presses the square button to switch to the previous app.
      */
     public Background quickSwitchToPreviousApp() {
-        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
-                "want to quick switch to the previous app")) {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
+             LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                     "want to quick switch to the previous app")) {
             verifyActiveContainer();
             quickSwitchToPreviousApp(getExpectedStateForQuickSwitch());
             return new Background(mLauncher);

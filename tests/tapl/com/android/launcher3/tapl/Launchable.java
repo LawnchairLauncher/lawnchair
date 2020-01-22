@@ -46,7 +46,9 @@ abstract class Launchable {
      * Clicks the object to launch its app.
      */
     public Background launch(String expectedPackageName) {
-        return launch(By.pkg(expectedPackageName));
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
+            return launch(By.pkg(expectedPackageName));
+        }
     }
 
     private Background launch(BySelector selector) {
@@ -69,17 +71,20 @@ abstract class Launchable {
      * Drags an object to the center of homescreen.
      */
     public void dragToWorkspace() {
-        final Point launchableCenter = getObject().getVisibleCenter();
-        final Point displaySize = mLauncher.getRealDisplaySize();
-        final int width = displaySize.x / 2;
-        Workspace.dragIconToWorkspace(
-                mLauncher,
-                this,
-                new Point(
-                        launchableCenter.x >= width ?
-                                launchableCenter.x - width / 2 : launchableCenter.x + width / 2,
-                        displaySize.y / 2),
-                getLongPressIndicator());
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
+            final Point launchableCenter = getObject().getVisibleCenter();
+            final Point displaySize = mLauncher.getRealDisplaySize();
+            final int width = displaySize.x / 2;
+            Workspace.dragIconToWorkspace(
+                    mLauncher,
+                    this,
+                    new Point(
+                            launchableCenter.x >= width
+                                    ? launchableCenter.x - width / 2
+                                    : launchableCenter.x + width / 2,
+                            displaySize.y / 2),
+                    getLongPressIndicator());
+        }
     }
 
     protected abstract String getLongPressIndicator();

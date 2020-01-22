@@ -102,14 +102,15 @@ public class TestStabilityRule implements TestRule {
 
         final String launcherVersion;
         try {
+            final String launcherPackageName = UiDevice.getInstance(getInstrumentation())
+                    .getLauncherPackageName();
+            Log.d(TAG, "Launcher package: " + launcherPackageName);
+
             launcherVersion = getInstrumentation().
                     getContext().
                     getPackageManager().
-                    getPackageInfo(
-                            UiDevice.getInstance(getInstrumentation()).
-                                    getLauncherPackageName(),
-                            0).
-                    versionName;
+                    getPackageInfo(launcherPackageName, 0)
+                    .versionName;
         } catch (PackageManager.NameNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -148,7 +149,8 @@ public class TestStabilityRule implements TestRule {
             Log.d(TAG, "PLATFORM PRESUBMIT");
             runFlavor = PLATFORM_PRESUBMIT;
         } else if (launcherBuildMatcher.group("platform") != null
-                && platformBuildMatcher.group("postsubmit") != null) {
+                && (platformBuildMatcher.group("postsubmit") != null
+                || platformBuildMatcher.group("commandLine") != null)) {
             Log.d(TAG, "PLATFORM POSTSUBMIT");
             runFlavor = PLATFORM_POSTSUBMIT;
         } else {

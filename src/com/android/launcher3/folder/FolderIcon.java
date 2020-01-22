@@ -67,6 +67,7 @@ import com.android.launcher3.icons.DotRenderer;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.Thunk;
+import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.IconLabelDotView;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 
@@ -79,7 +80,7 @@ import java.util.function.Predicate;
  */
 public class FolderIcon extends FrameLayout implements FolderListener, IconLabelDotView {
 
-    @Thunk Launcher mLauncher;
+    @Thunk ActivityContext mActivity;
     @Thunk Folder mFolder;
     private FolderInfo mInfo;
 
@@ -153,7 +154,21 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
         mDotParams = new DotRenderer.DrawParams();
     }
 
-    public static FolderIcon fromXml(int resId, Launcher launcher, ViewGroup group,
+    public static FolderIcon inflateFolderAndIcon(int resId, Launcher launcher, ViewGroup group,
+            FolderInfo folderInfo) {
+        Folder folder = Folder.fromXml(launcher);
+        folder.setDragController(launcher.getDragController());
+
+        FolderIcon icon = inflateIcon(resId, launcher, group, folderInfo);
+        folder.setFolderIcon(icon);
+        folder.bind(folderInfo);
+        icon.setFolder(folder);
+
+        icon.setOnFocusChangeListener(launcher.getFocusHandler());
+        return icon;
+    }
+
+    public static FolderIcon inflateIcon(int resId, ActivityContext activity, ViewGroup group,
             FolderInfo folderInfo) {
         @SuppressWarnings("all") // suppress dead code warning
         final boolean error = INITIAL_ITEM_ANIMATION_DURATION >= DROP_IN_ANIMATION_DURATION;
@@ -163,7 +178,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
                     "is dependent on this");
         }
 
-        DeviceProfile grid = launcher.getWallpaperDeviceProfile();
+        DeviceProfile grid = activity.getWallpaperDeviceProfile();
         FolderIcon icon = (FolderIcon) LayoutInflater.from(group.getContext())
                 .inflate(resId, group, false);
 
@@ -177,19 +192,27 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
         icon.setTag(folderInfo);
         icon.setOnClickListener(ItemClickHandler.INSTANCE);
         icon.mInfo = folderInfo;
-        icon.mLauncher = launcher;
+        icon.mActivity = activity;
         icon.mDotRenderer = grid.mDotRendererWorkSpace;
-        icon.setContentDescription(launcher.getString(R.string.folder_name_format, folderInfo.title));
-        Folder folder = Folder.fromXml(launcher);
-        folder.setDragController(launcher.getDragController());
-        folder.setFolderIcon(icon);
-        folder.bind(folderInfo);
-        icon.setFolder(folder);
-        icon.setAccessibilityDelegate(launcher.getAccessibilityDelegate());
+
+        icon.setContentDescription(
+                group.getContext().getString(R.string.folder_name_format, folderInfo.title));
+
+        // Keep the notification dot up to date with the sum of all the content's dots.
+        FolderDotInfo folderDotInfo = new FolderDotInfo();
+        for (WorkspaceItemInfo si : folderInfo.contents) {
+            folderDotInfo.addDotInfo(activity.getDotInfoForItem(si));
+        }
+        icon.setDotInfo(folderDotInfo);
+
+        icon.setAccessibilityDelegate(activity.getAccessibilityDelegate());
+
+        icon.mPreviewVerifier = new FolderGridOrganizer(activity.getDeviceProfile().inv);
+        icon.mPreviewVerifier.setFolderInfo(folderInfo);
+        icon.updatePreviewItems(false);
 
         folderInfo.addListener(icon);
 
-        icon.setOnFocusChangeListener(launcher.mFocusHandler);
         return icon;
     }
 
@@ -217,9 +240,6 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
 
     private void setFolder(Folder folder) {
         mFolder = folder;
-        mPreviewVerifier = new FolderGridOrganizer(mLauncher.getDeviceProfile().inv);
-        mPreviewVerifier.setFolderInfo(mFolder.getInfo());
-        updatePreviewItems(false);
     }
 
     private boolean willAcceptItem(ItemInfo item) {
@@ -301,14 +321,15 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
         // Typically, the animateView corresponds to the DragView; however, if this is being done
         // after a configuration activity (ie. for a Shortcut being dragged from AllApps) we
         // will not have a view to animate
-        if (animateView != null) {
-            DragLayer dragLayer = mLauncher.getDragLayer();
+        if (animateView != null && mActivity instanceof Launcher) {
+            final Launcher launcher = (Launcher) mActivity;
+            DragLayer dragLayer = launcher.getDragLayer();
             Rect from = new Rect();
             dragLayer.getViewRectRelativeToSelf(animateView, from);
             Rect to = finalRect;
             if (to == null) {
                 to = new Rect();
-                Workspace workspace = mLauncher.getWorkspace();
+                Workspace workspace = launcher.getWorkspace();
                 // Set cellLayout and this to it's final state to compute final animation locations
                 workspace.setFinalTransitionTransform();
                 float scaleX = getScaleX();
@@ -374,7 +395,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
             String[] suggestedNameOut = new String[FolderNameProvider.SUGGEST_MAX];
             if (FeatureFlags.FOLDER_NAME_SUGGEST.get()) {
                 Executors.UI_HELPER_EXECUTOR.post(() -> {
-                    mLauncher.getFolderNameProvider().getSuggestedFolderName(
+                    launcher.getFolderNameProvider().getSuggestedFolderName(
                             getContext(), mInfo.contents, suggestedNameOut);
                     showFinalView(finalIndex, item, suggestedNameOut);
                 });
@@ -539,7 +560,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
         if (!mForceHideDot && ((mDotInfo != null && mDotInfo.hasDot()) || mDotScale > 0)) {
             Rect iconBounds = mDotParams.iconBounds;
             BubbleTextView.getIconBounds(this, iconBounds,
-                    mLauncher.getWallpaperDeviceProfile().iconSizePx);
+                    mActivity.getWallpaperDeviceProfile().iconSizePx);
             float iconScale = (float) mBackground.previewSize / iconBounds.width();
             Utilities.scaleRectAboutCenter(iconBounds, iconScale);
 
@@ -597,7 +618,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
     @Override
     public void onAdd(WorkspaceItemInfo item, int rank) {
         boolean wasDotted = mDotInfo.hasDot();
-        mDotInfo.addDotInfo(mLauncher.getDotInfoForItem(item));
+        mDotInfo.addDotInfo(mActivity.getDotInfoForItem(item));
         boolean isDotted = mDotInfo.hasDot();
         updateDotScale(wasDotted, isDotted);
         invalidate();
@@ -607,7 +628,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
     @Override
     public void onRemove(WorkspaceItemInfo item) {
         boolean wasDotted = mDotInfo.hasDot();
-        mDotInfo.subtractDotInfo(mLauncher.getDotInfoForItem(item));
+        mDotInfo.subtractDotInfo(mActivity.getDotInfoForItem(item));
         boolean isDotted = mDotInfo.hasDot();
         updateDotScale(wasDotted, isDotted);
         invalidate();

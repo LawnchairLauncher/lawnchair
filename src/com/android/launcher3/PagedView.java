@@ -64,7 +64,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     private static final String TAG = "PagedView";
     private static final boolean DEBUG = false;
 
-    protected static final int INVALID_PAGE = -1;
+    public static final int INVALID_PAGE = -1;
     protected static final ComputePageScrollsLogic SIMPLE_SCROLL_LOGIC = (v) -> v.getVisibility() != GONE;
 
     public static final int PAGE_SNAP_ANIMATION_DURATION = 750;
@@ -83,8 +83,6 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     private static final int FLING_THRESHOLD_VELOCITY = 500;
     private static final int MIN_SNAP_VELOCITY = 1500;
     private static final int MIN_FLING_VELOCITY = 250;
-
-    public static final int INVALID_RESTORE_PAGE = -1001;
 
     private boolean mFreeScroll = false;
 

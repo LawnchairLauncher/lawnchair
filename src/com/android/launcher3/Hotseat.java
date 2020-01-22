@@ -49,12 +49,17 @@ public class Hotseat extends CellLayout implements LogContainerProvider, Insetta
         super(context, attrs, defStyle);
     }
 
-    /* Get the orientation specific coordinates given an invariant order in the hotseat. */
-    int getCellXFromOrder(int rank) {
+    /**
+     * Returns orientation specific cell X given invariant order in the hotseat
+     */
+    public int getCellXFromOrder(int rank) {
         return mHasVerticalHotseat ? 0 : rank;
     }
 
-    int getCellYFromOrder(int rank) {
+    /**
+     * Returns orientation specific cell Y given invariant order in the hotseat
+     */
+    public int getCellYFromOrder(int rank) {
         return mHasVerticalHotseat ? (getCountY() - (rank + 1)) : 0;
     }
 

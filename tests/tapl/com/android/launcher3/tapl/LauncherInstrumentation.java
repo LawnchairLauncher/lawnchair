@@ -55,6 +55,7 @@ import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.Configurator;
 import androidx.test.uiautomator.Direction;
+import androidx.test.uiautomator.StaleObjectException;
 import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.Until;
@@ -78,6 +79,8 @@ import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -90,6 +93,13 @@ public final class LauncherInstrumentation {
     private static final int ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME = 20;
     private static final int GESTURE_STEP_MS = 16;
     private static long START_TIME = System.currentTimeMillis();
+
+    static final Pattern LOG_TIME = Pattern.compile(
+            "[0-9][0-9]-[0-9][0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9]\\.[0-9][0-9][0-9]");
+
+    static final Pattern EVENT_LOG_ENTRY = Pattern.compile(
+            "(?<time>[0-9][0-9]-[0-9][0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9]\\.[0-9][0-9][0-9])"
+                    + ".*" + TestProtocol.TAPL_EVENTS_TAG + ": (?<event>.*)");
 
     // Types for launcher containers that the user is interacting with. "Background" is a
     // pseudo-container corresponding to inactive launcher covered by another app.
@@ -145,6 +155,11 @@ public final class LauncherInstrumentation {
 
     private Consumer<ContainerType> mOnSettledStateAction;
 
+    // Not null when we are collecting expected events to compare with actual ones.
+    private List<Pattern> mExpectedEvents;
+
+    private String mTimeBeforeFirstLogEvent;
+
     /**
      * Constructs the root of TAPL hierarchy. You get all other objects from it.
      */
@@ -183,13 +198,8 @@ public final class LauncherInstrumentation {
                 .authority(testProviderAuthority)
                 .build();
 
-        try {
-            mDevice.executeShellCommand("pm grant " + testPackage +
-                    " android.permission.WRITE_SECURE_SETTINGS");
-        } catch (IOException e) {
-            fail(e.toString());
-        }
-
+        mInstrumentation.getUiAutomation().grantRuntimePermission(
+                testPackage, "android.permission.WRITE_SECURE_SETTINGS");
 
         PackageManager pm = getContext().getPackageManager();
         ProviderInfo pi = pm.resolveContentProvider(
@@ -260,9 +270,9 @@ public final class LauncherInstrumentation {
 
     Closable addContextLayer(String piece) {
         mDiagnosticContext.addLast(piece);
-        log("Added context: " + getContextDescription());
+        log("Entering context: " + piece);
         return () -> {
-            log("Removing context: " + getContextDescription());
+            log("Leaving context: " + piece);
             mDiagnosticContext.removeLast();
         };
     }
@@ -303,18 +313,30 @@ public final class LauncherInstrumentation {
     public void checkForAnomaly() {
         final String anomalyMessage = getAnomalyMessage();
         if (anomalyMessage != null) {
-            failWithSystemHealth(
-                    "Tests are broken by a non-Launcher system error: " + anomalyMessage);
+            String message = "Tests are broken by a non-Launcher system error: " + anomalyMessage;
+            log("Hierarchy dump for: " + message);
+            dumpViewHierarchy();
+
+            Assert.fail(formatSystemHealthMessage(message));
         }
     }
 
     private String getVisiblePackages() {
         return mDevice.findObjects(By.textStartsWith(""))
                 .stream()
-                .map(object -> object.getApplicationPackage())
+                .map(LauncherInstrumentation::getApplicationPackageSafe)
                 .distinct()
-                .filter(pkg -> !"com.android.systemui".equals(pkg))
+                .filter(pkg -> pkg != null && !"com.android.systemui".equals(pkg))
                 .collect(Collectors.joining(", "));
+    }
+
+    private static String getApplicationPackageSafe(UiObject2 object) {
+        try {
+            return object.getApplicationPackage();
+        } catch (StaleObjectException e) {
+            // We are looking at all object in the system; external ones can suddenly go away.
+            return null;
+        }
     }
 
     private String getVisibleStateMessage() {
@@ -334,41 +356,42 @@ public final class LauncherInstrumentation {
         mOnSettledStateAction = onSettledStateAction;
     }
 
-    private String getSystemHealthMessage() {
+    private String formatSystemHealthMessage(String message) {
         final String testPackage = getContext().getPackageName();
-        try {
-            mDevice.executeShellCommand("pm grant " + testPackage +
-                    " android.permission.READ_LOGS");
-            mDevice.executeShellCommand("pm grant " + testPackage +
-                    " android.permission.PACKAGE_USAGE_STATS");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
-        return mSystemHealthSupplier != null
+        mInstrumentation.getUiAutomation().grantRuntimePermission(
+                testPackage, "android.permission.READ_LOGS");
+        mInstrumentation.getUiAutomation().grantRuntimePermission(
+                testPackage, "android.permission.PACKAGE_USAGE_STATS");
+
+        final String systemHealth = mSystemHealthSupplier != null
                 ? mSystemHealthSupplier.apply(START_TIME)
                 : TestHelpers.getSystemHealthMessage(getContext(), START_TIME);
+
+        if (systemHealth != null) {
+            return message
+                    + ",\nperhaps linked to system health problems:\n<<<<<<<<<<<<<<<<<<\n"
+                    + systemHealth + "\n>>>>>>>>>>>>>>>>>>";
+        }
+
+        return message;
     }
 
     private void fail(String message) {
         checkForAnomaly();
 
-        failWithSystemHealth("http://go/tapl : " + getContextDescription() + message +
-                " (visible state: " + getVisibleStateMessage() + ")");
-    }
-
-    private void failWithSystemHealth(String message) {
-        final String systemHealth = getSystemHealthMessage();
-        if (systemHealth != null) {
-            message = message
-                    + ", perhaps because of system health problems:\n<<<<<<<<<<<<<<<<<<\n"
-                    + systemHealth + "\n>>>>>>>>>>>>>>>>>>";
-        }
-
+        message = "http://go/tapl : " + getContextDescription() + message
+                + " (visible state: " + getVisibleStateMessage() + ")";
         log("Hierarchy dump for: " + message);
         dumpViewHierarchy();
 
-        Assert.fail(message);
+        final String eventMismatch = getEventMismatchMessage();
+
+        if (eventMismatch != null) {
+            message = message + ",\nhaving produced wrong events:\n    " + eventMismatch;
+        }
+
+        Assert.fail(formatSystemHealthMessage(message));
     }
 
     private String getContextDescription() {
@@ -537,60 +560,62 @@ public final class LauncherInstrumentation {
      * @return the Workspace object.
      */
     public Workspace pressHome() {
-        // Click home, then wait for any accessibility event, then wait until accessibility events
-        // stop.
-        // We need waiting for any accessibility event generated after pressing Home because
-        // otherwise waitForIdle may return immediately in case when there was a big enough pause in
-        // accessibility events prior to pressing Home.
-        final String action;
-        if (getNavigationModel() == NavigationModel.ZERO_BUTTON) {
-            checkForAnomaly();
+        try (LauncherInstrumentation.Closable e = eventsCheck()) {
+            // Click home, then wait for any accessibility event, then wait until accessibility
+            // events stop.
+            // We need waiting for any accessibility event generated after pressing Home because
+            // otherwise waitForIdle may return immediately in case when there was a big enough
+            // pause in accessibility events prior to pressing Home.
+            final String action;
+            if (getNavigationModel() == NavigationModel.ZERO_BUTTON) {
+                checkForAnomaly();
 
-            final Point displaySize = getRealDisplaySize();
+                final Point displaySize = getRealDisplaySize();
 
-            if (hasLauncherObject(CONTEXT_MENU_RES_ID)) {
-                linearGesture(
-                        displaySize.x / 2, displaySize.y - 1,
-                        displaySize.x / 2, 0,
-                        ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME,
-                        false);
-                try (LauncherInstrumentation.Closable c = addContextLayer(
-                        "Swiped up from context menu to home")) {
-                    waitUntilGone(CONTEXT_MENU_RES_ID);
-                }
-            }
-            if (hasLauncherObject(WORKSPACE_RES_ID)) {
-                log(action = "already at home");
-            } else {
-                log("Hierarchy before swiping up to home:");
-                dumpViewHierarchy();
-                log(action = "swiping up to home from " + getVisibleStateMessage());
-
-                try (LauncherInstrumentation.Closable c = addContextLayer(action)) {
-                    swipeToState(
+                if (hasLauncherObject(CONTEXT_MENU_RES_ID)) {
+                    linearGesture(
                             displaySize.x / 2, displaySize.y - 1,
                             displaySize.x / 2, 0,
-                            ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME, NORMAL_STATE_ORDINAL);
+                            ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME,
+                            false);
+                    try (LauncherInstrumentation.Closable c = addContextLayer(
+                            "Swiped up from context menu to home")) {
+                        waitUntilGone(CONTEXT_MENU_RES_ID);
+                    }
+                }
+                if (hasLauncherObject(WORKSPACE_RES_ID)) {
+                    log(action = "already at home");
+                } else {
+                    log("Hierarchy before swiping up to home:");
+                    dumpViewHierarchy();
+                    log(action = "swiping up to home from " + getVisibleStateMessage());
+
+                    try (LauncherInstrumentation.Closable c = addContextLayer(action)) {
+                        swipeToState(
+                                displaySize.x / 2, displaySize.y - 1,
+                                displaySize.x / 2, 0,
+                                ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME, NORMAL_STATE_ORDINAL);
+                    }
+                }
+            } else {
+                log("Hierarchy before clicking home:");
+                dumpViewHierarchy();
+                log(action = "clicking home button from " + getVisibleStateMessage());
+                try (LauncherInstrumentation.Closable c = addContextLayer(action)) {
+                    mDevice.waitForIdle();
+                    runToState(
+                            waitForSystemUiObject("home")::click,
+                            NORMAL_STATE_ORDINAL,
+                            !hasLauncherObject(WORKSPACE_RES_ID)
+                                    && (hasLauncherObject(APPS_RES_ID)
+                                    || hasLauncherObject(OVERVIEW_RES_ID)));
+                    mDevice.waitForIdle();
                 }
             }
-        } else {
-            log("Hierarchy before clicking home:");
-            dumpViewHierarchy();
-            log(action = "clicking home button from " + getVisibleStateMessage());
-            try (LauncherInstrumentation.Closable c = addContextLayer(action)) {
-                mDevice.waitForIdle();
-                runToState(
-                        () -> waitForSystemUiObject("home").click(),
-                        NORMAL_STATE_ORDINAL,
-                        !hasLauncherObject(WORKSPACE_RES_ID)
-                                && (hasLauncherObject(APPS_RES_ID)
-                                || hasLauncherObject(OVERVIEW_RES_ID)));
-                mDevice.waitForIdle();
+            try (LauncherInstrumentation.Closable c = addContextLayer(
+                    "performed action to switch to Home - " + action)) {
+                return getWorkspace();
             }
-        }
-        try (LauncherInstrumentation.Closable c = addContextLayer(
-                "performed action to switch to Home - " + action)) {
-            return getWorkspace();
         }
     }
 
@@ -678,6 +703,20 @@ public final class LauncherInstrumentation {
     public AllAppsFromOverview getAllAppsFromOverview() {
         try (LauncherInstrumentation.Closable c = addContextLayer("want to get all apps object")) {
             return new AllAppsFromOverview(this);
+        }
+    }
+
+    /**
+     * Gets the Options Popup Menu object if the current state is showing the popup menu. Fails if
+     * the launcher is not in that state.
+     *
+     * @return Options Popup Menu object.
+     */
+    @NonNull
+    public OptionsPopupMenu getOptionsPopupMenu() {
+        try (LauncherInstrumentation.Closable c = addContextLayer(
+                "want to get context menu object")) {
+            return new OptionsPopupMenu(this);
         }
     }
 
@@ -989,6 +1028,16 @@ public final class LauncherInstrumentation {
         return getSystemIntegerRes(context, "config_navBarInteractionMode");
     }
 
+    @NonNull
+    UiObject2 clickAndGet(@NonNull final UiObject2 target, @NonNull String resName) {
+        final Point targetCenter = target.getVisibleCenter();
+        final long downTime = SystemClock.uptimeMillis();
+        sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, targetCenter);
+        final UiObject2 result = waitForLauncherObject(resName);
+        sendPointer(downTime, SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, targetCenter);
+        return result;
+    }
+
     private static int getSystemIntegerRes(Context context, String resName) {
         Resources res = context.getResources();
         int resId = res.getIdentifier(resName, "integer", "android");
@@ -1048,6 +1097,10 @@ public final class LauncherInstrumentation {
                 getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
+    public int getPid() {
+        return getTestInfo(TestProtocol.REQUEST_PID).getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
+    }
+
     public void produceJavaLeak() {
         getTestInfo(TestProtocol.REQUEST_JAVA_LEAK);
     }
@@ -1068,5 +1121,105 @@ public final class LauncherInstrumentation {
             tasks.add(ComponentName.unflattenFromString(s));
         }
         return tasks;
+    }
+
+    private List<String> getEvents() {
+        final ArrayList<String> events = new ArrayList<>();
+        try {
+            final String logcatTimeParameter =
+                    mTimeBeforeFirstLogEvent != null ? " -t " + mTimeBeforeFirstLogEvent : "";
+            final String logcatEvents = mDevice.executeShellCommand(
+                    "logcat -d --pid=" + getPid() + logcatTimeParameter
+                            + " -s " + TestProtocol.TAPL_EVENTS_TAG);
+            final Matcher matcher = EVENT_LOG_ENTRY.matcher(logcatEvents);
+            while (matcher.find()) {
+                final String eventTime = matcher.group("time");
+                if (eventTime.equals(mTimeBeforeFirstLogEvent)) continue;
+
+                events.add(matcher.group("event"));
+            }
+            return events;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void startRecordingEvents() {
+        Assert.assertTrue("Already recording events", mExpectedEvents == null);
+        mExpectedEvents = new ArrayList<>();
+
+        try {
+            final String lastLogLine =
+                    mDevice.executeShellCommand("logcat -d --pid=" + getPid() + " -t 1");
+            final Matcher matcher = LOG_TIME.matcher(lastLogLine);
+            mTimeBeforeFirstLogEvent = matcher.find() ? matcher.group().replaceAll(" ", "") : null;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void stopRecordingEvents() {
+        mExpectedEvents = null;
+    }
+
+    Closable eventsCheck() {
+        // Entering events check block.
+        startRecordingEvents();
+
+        return () -> {
+            // Leaving events check block.
+            if (mExpectedEvents == null) {
+                return; // There was a failure. Noo need to report another one.
+            }
+
+            // Wait until Launcher generates expected number of events.
+            final long endTime = SystemClock.uptimeMillis() + WAIT_TIME_MS;
+            while (SystemClock.uptimeMillis() < endTime
+                    && getEvents().size() < mExpectedEvents.size()) {
+                SystemClock.sleep(100);
+            }
+
+            final String message = getEventMismatchMessage();
+            if (message != null) {
+                Assert.fail(formatSystemHealthMessage(
+                        "http://go/tapl : unexpected event sequence: " + message));
+            }
+        };
+    }
+
+    void expectEvent(Pattern expected) {
+        if (mExpectedEvents != null) mExpectedEvents.add(expected);
+    }
+
+    private String getEventMismatchMessage() {
+        if (mExpectedEvents == null) return null;
+
+        try {
+            final List<String> actual = getEvents();
+
+            for (int i = 0; i < mExpectedEvents.size(); ++i) {
+                if (i >= actual.size()) {
+                    return formatEventMismatchMessage("too few actual events", actual, i);
+                }
+                if (!mExpectedEvents.get(i).matcher(actual.get(i)).find()) {
+                    return formatEventMismatchMessage("mismatched event", actual, i);
+                }
+            }
+
+            if (actual.size() > mExpectedEvents.size()) {
+                return formatEventMismatchMessage(
+                        "too many actual events", actual, mExpectedEvents.size());
+            }
+        } finally {
+            stopRecordingEvents();
+        }
+
+        return null;
+    }
+
+    private String formatEventMismatchMessage(String message, List<String> actual, int position) {
+        return message + ", pos=" + position
+                + ", expected=" + mExpectedEvents
+                + ", actual=" + actual;
     }
 }

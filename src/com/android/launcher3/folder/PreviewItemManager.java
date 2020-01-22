@@ -37,10 +37,10 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
-import com.android.launcher3.Launcher;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.graphics.PreloadIconDrawable;
+import com.android.launcher3.views.ActivityContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -94,7 +94,8 @@ public class PreviewItemManager {
     public PreviewItemManager(FolderIcon icon) {
         mContext = icon.getContext();
         mIcon = icon;
-        mIconSize = Launcher.getLauncher(mContext).getDeviceProfile().folderChildIconSizePx;
+        mIconSize = ActivityContext.lookupContext(
+                mContext).getDeviceProfile().folderChildIconSizePx;
     }
 
     /**
@@ -132,7 +133,7 @@ public class PreviewItemManager {
             mTotalWidth = totalSize;
             mPrevTopPadding = mIcon.getPaddingTop();
 
-            mIcon.mBackground.setup(mIcon.mLauncher, mIcon.mLauncher, mIcon, mTotalWidth,
+            mIcon.mBackground.setup(mIcon.getContext(), mIcon.mActivity, mIcon, mTotalWidth,
                     mIcon.getPaddingTop());
             mIcon.mPreviewLayoutRule.init(mIcon.mBackground.previewSize, mIntrinsicIconSize,
                     Utilities.isRtl(mIcon.getResources()));
@@ -152,7 +153,7 @@ public class PreviewItemManager {
     }
 
     private PreviewItemDrawingParams getFinalIconParams(PreviewItemDrawingParams params) {
-        float iconSize = mIcon.mLauncher.getDeviceProfile().iconSizePx;
+        float iconSize = mIcon.mActivity.getDeviceProfile().iconSizePx;
 
         final float scale = iconSize / mReferenceDrawable.getIntrinsicWidth();
         final float trans = (mIcon.mBackground.previewSize - iconSize) / 2;

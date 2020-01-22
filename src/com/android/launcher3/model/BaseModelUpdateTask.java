@@ -20,17 +20,16 @@ import android.util.Log;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
-import com.android.launcher3.LauncherModel.ModelUpdateTask;
 import com.android.launcher3.LauncherModel.CallbackTask;
-import com.android.launcher3.model.BgDataModel.Callbacks;
+import com.android.launcher3.LauncherModel.ModelUpdateTask;
 import com.android.launcher3.WorkspaceItemInfo;
+import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.widget.WidgetListRowEntry;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.concurrent.Executor;
 
 /**
@@ -78,13 +77,9 @@ public abstract class BaseModelUpdateTask implements ModelUpdateTask {
      * Schedules a {@param task} to be executed on the current callbacks.
      */
     public final void scheduleCallbackTask(final CallbackTask task) {
-        final Callbacks callbacks = mModel.getCallback();
-        mUiExecutor.execute(() -> {
-            Callbacks cb = mModel.getCallback();
-            if (callbacks == cb && cb != null) {
-                task.execute(callbacks);
-            }
-        });
+        for (final Callbacks cb : mModel.getCallbacks()) {
+            mUiExecutor.execute(() -> task.execute(cb));
+        }
     }
 
     public ModelWriter getModelWriter() {

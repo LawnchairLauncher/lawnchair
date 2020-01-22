@@ -48,7 +48,10 @@ public class RecentsRootView extends BaseDragLayer<RecentsActivity> {
     }
 
     public void setup() {
-        mControllers = new TouchController[] { new RecentsTaskController(mActivity) };
+        mControllers = new TouchController[] {
+                new RecentsTaskController(mActivity),
+                new FallbackNavBarTouchController(mActivity),
+        };
     }
 
     @Override

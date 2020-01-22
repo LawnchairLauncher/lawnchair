@@ -42,8 +42,9 @@ public final class AllAppsFromOverview extends AllApps {
      */
     @NonNull
     public Overview switchBackToOverview() {
-        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
-                "want to switch back from all apps to overview")) {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
+             LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                     "want to switch back from all apps to overview")) {
             final UiObject2 allAppsContainer = verifyActiveContainer();
             // Swipe from the search box to the bottom.
             final UiObject2 qsb = mLauncher.waitForObjectInContainer(

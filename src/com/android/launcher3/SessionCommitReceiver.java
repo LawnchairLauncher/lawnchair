@@ -78,6 +78,7 @@ public class SessionCommitReceiver extends BroadcastReceiver {
         }
 
         InstallSessionHelper packageInstallerCompat = InstallSessionHelper.INSTANCE.get(context);
+        packageInstallerCompat.restoreDbIfApplicable(info);
         if (TextUtils.isEmpty(info.getAppPackageName())
                 || info.getInstallReason() != PackageManager.INSTALL_REASON_USER
                 || packageInstallerCompat.promiseIconAddedForId(info.getSessionId())) {

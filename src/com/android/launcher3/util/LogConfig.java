@@ -28,4 +28,9 @@ public class LogConfig {
      * When turned on, icon cache is only fetched from memory and not disk.
      */
     public static final String MEMORY_ONLY_ICON_CACHE = "MemoryOnlyIconCache";
+
+    /**
+     * When turned on, we enable doodle related logging.
+     */
+    public static final String DOODLE_LOGGING = "DoodleLogging";
 }

@@ -85,7 +85,8 @@ public final class Workspace extends Home {
      */
     @NonNull
     public AllApps switchToAllApps() {
-        try (LauncherInstrumentation.Closable c =
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
+             LauncherInstrumentation.Closable c =
                      mLauncher.addContextLayer("want to switch from workspace to all apps")) {
             verifyActiveContainer();
             final int deviceHeight = mLauncher.getDevice().getDisplayHeight();
@@ -156,21 +157,23 @@ public final class Workspace extends Home {
      * second screen.
      */
     public void ensureWorkspaceIsScrollable() {
-        final UiObject2 workspace = verifyActiveContainer();
-        if (!isWorkspaceScrollable(workspace)) {
-            try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
-                    "dragging icon to a second page of workspace to make it scrollable")) {
-                dragIconToWorkspace(
-                        mLauncher,
-                        getHotseatAppIcon("Chrome"),
-                        new Point(mLauncher.getDevice().getDisplayWidth(),
-                                workspace.getVisibleBounds().centerY()),
-                        "deep_shortcuts_container");
-                verifyActiveContainer();
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
+            final UiObject2 workspace = verifyActiveContainer();
+            if (!isWorkspaceScrollable(workspace)) {
+                try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                        "dragging icon to a second page of workspace to make it scrollable")) {
+                    dragIconToWorkspace(
+                            mLauncher,
+                            getHotseatAppIcon("Chrome"),
+                            new Point(mLauncher.getDevice().getDisplayWidth(),
+                                    workspace.getVisibleBounds().centerY()),
+                            "deep_shortcuts_container");
+                    verifyActiveContainer();
+                }
             }
+            assertTrue("Home screen workspace didn't become scrollable",
+                    isWorkspaceScrollable(workspace));
         }
-        assertTrue("Home screen workspace didn't become scrollable",
-                isWorkspaceScrollable(workspace));
     }
 
     private boolean isWorkspaceScrollable(UiObject2 workspace) {
@@ -181,12 +184,6 @@ public final class Workspace extends Home {
     public AppIcon getHotseatAppIcon(String appName) {
         return new AppIcon(mLauncher, mLauncher.waitForObjectInContainer(
                 mHotseat, AppIcon.getAppIconSelector(appName, mLauncher)));
-    }
-
-    @NonNull
-    public Folder getHotseatFolder(String appName) {
-        return new Folder(mLauncher, mLauncher.waitForObjectInContainer(
-                mHotseat, Folder.getSelector(appName, mLauncher)));
     }
 
     static void dragIconToWorkspace(
@@ -219,11 +216,13 @@ public final class Workspace extends Home {
      * recoil to complete.
      */
     public void flingForward() {
-        final UiObject2 workspace = verifyActiveContainer();
-        mLauncher.scroll(workspace, Direction.RIGHT,
-                new Rect(0, 0, mLauncher.getEdgeSensitivityWidth() + 1, 0),
-                FLING_STEPS, false);
-        verifyActiveContainer();
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
+            final UiObject2 workspace = verifyActiveContainer();
+            mLauncher.scroll(workspace, Direction.RIGHT,
+                    new Rect(0, 0, mLauncher.getEdgeSensitivityWidth() + 1, 0),
+                    FLING_STEPS, false);
+            verifyActiveContainer();
+        }
     }
 
     /**
@@ -231,11 +230,13 @@ public final class Workspace extends Home {
      * recoil to complete.
      */
     public void flingBackward() {
-        final UiObject2 workspace = verifyActiveContainer();
-        mLauncher.scroll(workspace, Direction.LEFT,
-                new Rect(mLauncher.getEdgeSensitivityWidth() + 1, 0, 0, 0),
-                FLING_STEPS, false);
-        verifyActiveContainer();
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
+            final UiObject2 workspace = verifyActiveContainer();
+            mLauncher.scroll(workspace, Direction.LEFT,
+                    new Rect(mLauncher.getEdgeSensitivityWidth() + 1, 0, 0, 0),
+                    FLING_STEPS, false);
+            verifyActiveContainer();
+        }
     }
 
     /**
@@ -245,10 +246,12 @@ public final class Workspace extends Home {
      */
     @NonNull
     public Widgets openAllWidgets() {
-        verifyActiveContainer();
-        mLauncher.getDevice().pressKeyCode(KeyEvent.KEYCODE_W, KeyEvent.META_CTRL_ON);
-        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer("pressed Ctrl+W")) {
-            return new Widgets(mLauncher);
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
+            verifyActiveContainer();
+            mLauncher.getDevice().pressKeyCode(KeyEvent.KEYCODE_W, KeyEvent.META_CTRL_ON);
+            try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer("pressed Ctrl+W")) {
+                return new Widgets(mLauncher);
+            }
         }
     }
 

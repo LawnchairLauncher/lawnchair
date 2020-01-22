@@ -14,6 +14,7 @@ import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
@@ -34,6 +35,8 @@ import java.util.stream.Collectors;
  * </pre>
  */
 public final class FlagOverrideRule implements TestRule {
+
+    private final HashMap<String, Boolean> mDefaultOverrides = new HashMap<>();
 
     /**
      * Container annotation for handling multiple {@link FlagOverride} annotations.
@@ -58,6 +61,14 @@ public final class FlagOverrideRule implements TestRule {
     @Override
     public Statement apply(Statement base, Description description) {
         return new MyStatement(base, description);
+    }
+
+    /**
+     * Sets a default override to apply on all tests
+     */
+    public FlagOverrideRule setOverride(BaseTogglableFlag flag, boolean value) {
+        mDefaultOverrides.put(flag.getKey(), value);
+        return this;
     }
 
     private class MyStatement extends Statement {
@@ -87,11 +98,15 @@ public final class FlagOverrideRule implements TestRule {
                         overrides = ((FlagOverrides) annotation).value();
                     }
                 }
-                for (FlagOverride override : overrides) {
-                    BaseTogglableFlag flag = allFlags.get(override.key());
+
+                HashMap<String, Boolean> allOverrides = new HashMap<>(mDefaultOverrides);
+                Arrays.stream(overrides).forEach(o -> allOverrides.put(o.key(), o.value()));
+
+                allOverrides.forEach((key, val) -> {
+                    BaseTogglableFlag flag = allFlags.get(key);
                     changedValues.put(flag, flag.get());
-                    flag.setForTests(override.value());
-                }
+                    flag.setForTests(val);
+                });
                 mBase.evaluate();
             } finally {
                 // Clear the values

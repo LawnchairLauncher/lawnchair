@@ -19,8 +19,10 @@ package com.android.launcher3.model;
 import android.content.Context;
 import android.os.UserHandle;
 
-import com.android.launcher3.icons.ComponentWithLabel;
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.icons.ComponentWithLabel;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.widget.WidgetListRowEntry;
 
@@ -28,8 +30,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-
-import androidx.annotation.Nullable;
 
 /**
  * Widgets data model that is used by the adapters of the widget views and controllers.
@@ -39,7 +39,7 @@ import androidx.annotation.Nullable;
 public class WidgetsModel {
 
     // True is the widget support is disabled.
-    public static final boolean GO_DISABLE_WIDGETS = false;
+    public static final boolean GO_DISABLE_WIDGETS = true;
 
     private static final ArrayList<WidgetListRowEntry> EMPTY_WIDGET_LIST = new ArrayList<>();
 

@@ -23,6 +23,8 @@ import android.view.View;
 import android.view.View.OnAttachStateChangeListener;
 import android.view.ViewTreeObserver.OnDrawListener;
 
+import androidx.annotation.VisibleForTesting;
+
 import com.android.launcher3.Launcher;
 
 import java.util.ArrayList;
@@ -118,7 +120,11 @@ public class ViewOnDrawExecutor implements Executor, OnDrawListener, Runnable,
         return mCompleted;
     }
 
-    protected void runAllTasks() {
+    /**
+     * Executes all tasks immediately
+     */
+    @VisibleForTesting
+    public void runAllTasks() {
         for (final Runnable r : mTasks) {
             r.run();
         }

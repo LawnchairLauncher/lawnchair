@@ -31,6 +31,7 @@ public final class TestProtocol {
     public static final int QUICK_SWITCH_STATE_ORDINAL = 4;
     public static final int ALL_APPS_STATE_ORDINAL = 5;
     public static final int BACKGROUND_APP_STATE_ORDINAL = 6;
+    public static final String TAPL_EVENTS_TAG = "TaplEvents";
 
     public static String stateOrdinalToString(int ordinal) {
         switch (ordinal) {
@@ -73,6 +74,7 @@ public final class TestProtocol {
     public static final String REQUEST_APPS_LIST_SCROLL_Y = "apps-list-scroll-y";
     public static final String REQUEST_OVERVIEW_LEFT_GESTURE_MARGIN = "overview-left-margin";
     public static final String REQUEST_OVERVIEW_RIGHT_GESTURE_MARGIN = "overview-right-margin";
+    public static final String REQUEST_PID = "pid";
     public static final String REQUEST_TOTAL_PSS_KB = "total_pss";
     public static final String REQUEST_JAVA_LEAK = "java-leak";
     public static final String REQUEST_NATIVE_LEAK = "native-leak";
@@ -86,6 +88,5 @@ public final class TestProtocol {
     public static final String PERMANENT_DIAG_TAG = "TaplTarget";
 
     public static final String NO_BACKGROUND_TO_OVERVIEW_TAG = "b/138251824";
-    public static final String NO_DRAG_TO_WORKSPACE = "b/138729456";
     public static final String APP_NOT_DISABLED = "b/139891609";
 }

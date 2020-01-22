@@ -15,6 +15,8 @@
  */
 package com.android.quickstep.util;
 
+import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_ACTIONS;
+
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
 import android.content.Context;
@@ -26,7 +28,6 @@ import androidx.annotation.IntDef;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.quickstep.SysUINavigationMode;
 
 import java.lang.annotation.Retention;
@@ -58,7 +59,7 @@ public class LayoutUtils {
         } else {
             Resources res = context.getResources();
 
-            if (FeatureFlags.ENABLE_OVERVIEW_ACTIONS.get()) {
+            if (ENABLE_OVERVIEW_ACTIONS.get()) {
                 //TODO: this needs to account for the swipe gesture height and accessibility
                 // UI when shown.
                 extraSpace = 0;
@@ -111,7 +112,7 @@ public class LayoutUtils {
             final int paddingResId;
             if (dp.isVerticalBarLayout()) {
                 paddingResId = R.dimen.landscape_task_card_horz_space;
-            } else if (FeatureFlags.ENABLE_OVERVIEW_ACTIONS.get()) {
+            } else if (ENABLE_OVERVIEW_ACTIONS.get()) {
                 paddingResId = R.dimen.portrait_task_card_horz_space_big_overview;
             } else {
                 paddingResId = R.dimen.portrait_task_card_horz_space;
@@ -146,6 +147,11 @@ public class LayoutUtils {
 
     public static int getShelfTrackingDistance(Context context, DeviceProfile dp) {
         // Track the bottom of the window.
+        if (ENABLE_OVERVIEW_ACTIONS.get()) {
+            Rect taskSize = new Rect();
+            calculateLauncherTaskSize(context, dp, taskSize);
+            return (dp.heightPx - taskSize.height()) / 2;
+        }
         int shelfHeight = dp.hotseatBarSizePx + dp.getInsets().bottom;
         int spaceBetweenShelfAndRecents = (int) context.getResources().getDimension(
                 R.dimen.task_card_vert_space);
@@ -157,7 +163,7 @@ public class LayoutUtils {
      * @return the margin in pixels.
      */
     public static int thumbnailBottomMargin(Resources resources) {
-        if (FeatureFlags.ENABLE_OVERVIEW_ACTIONS.get()) {
+        if (ENABLE_OVERVIEW_ACTIONS.get()) {
             return resources.getDimensionPixelSize(R.dimen.overview_actions_height);
         } else {
             return 0;
