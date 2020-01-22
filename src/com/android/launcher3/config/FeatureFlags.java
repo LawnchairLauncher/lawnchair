@@ -140,6 +140,10 @@ public final class FeatureFlags {
             "ENABLE_DATABASE_RESTORE", true,
             "Enable database restore when new restore session is created");
 
+    public static final TogglableFlag ENABLE_UNIVERSAL_SMARTSPACE = new TogglableFlag(
+            "ENABLE_UNIVERSAL_SMARTSPACE", false,
+            "Replace Smartspace with a version rendered by System UI.");
+
     public static void initialize(Context context) {
         // Avoid the disk read for user builds
         if (Utilities.IS_DEBUG_DEVICE) {
