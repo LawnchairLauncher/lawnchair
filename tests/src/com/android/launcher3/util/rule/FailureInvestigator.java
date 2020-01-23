@@ -53,6 +53,14 @@ class FailureInvestigator {
                     logSinceTestsStart)) {
                 return 145935261;
             }
+        } else if (matches("Launcher didn't initialize", exception)) {
+            if (matches(
+                    "ActivityManager: Reason: executing service com.google.android.apps"
+                            + ".nexuslauncher/com.android.launcher3.notification"
+                            + ".NotificationListener",
+                    logSinceTestsStart)) {
+                return 148238677;
+            }
         }
 
         return 0;
