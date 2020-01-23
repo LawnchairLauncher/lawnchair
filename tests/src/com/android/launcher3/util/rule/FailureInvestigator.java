@@ -47,6 +47,12 @@ class FailureInvestigator {
                     logSinceTestsStart)) {
                 return 147845913;
             }
+        } else if (matches("java.lang.AssertionError: Launcher build match not found", exception)) {
+            if (matches(
+                    "TestStabilityRule: Launcher package: com.google.android.setupwizard",
+                    logSinceTestsStart)) {
+                return 145935261;
+            }
         }
 
         return 0;

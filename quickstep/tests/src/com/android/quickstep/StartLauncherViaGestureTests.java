@@ -18,9 +18,6 @@ package com.android.quickstep;
 
 import static com.android.launcher3.util.RaceConditionReproducer.enterEvt;
 import static com.android.launcher3.util.RaceConditionReproducer.exitEvt;
-import static com.android.launcher3.util.rule.TestStabilityRule.PLATFORM_PRESUBMIT;
-import static com.android.launcher3.util.rule.TestStabilityRule.RUN_FLAFOR;
-import static com.android.launcher3.util.rule.TestStabilityRule.UNBUNDLED_PRESUBMIT;
 
 import android.content.Intent;
 
