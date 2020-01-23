@@ -21,6 +21,8 @@ import static java.util.regex.Pattern.CASE_INSENSITIVE;
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.UiObject2;
 
+import com.android.launcher3.testing.TestProtocol;
+
 import java.util.regex.Pattern;
 
 public class AddToHomeScreenPrompt {
@@ -38,6 +40,13 @@ public class AddToHomeScreenPrompt {
 
     public void addAutomatically() {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
+            if (mLauncher.getNavigationModel()
+                    != LauncherInstrumentation.NavigationModel.THREE_BUTTON) {
+                mLauncher.expectEvent(
+                        TestProtocol.SEQUENCE_TIS, LauncherInstrumentation.EVENT_TOUCH_DOWN_TIS);
+                mLauncher.expectEvent(
+                        TestProtocol.SEQUENCE_TIS, LauncherInstrumentation.EVENT_TOUCH_UP_TIS);
+            }
             mLauncher.waitForObjectInContainer(
                     mWidgetCell.getParent().getParent().getParent().getParent(),
                     By.text(ADD_AUTOMATICALLY)).click();

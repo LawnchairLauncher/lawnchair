@@ -1778,17 +1778,13 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
-            TestLogging.recordEvent("Key event: " + event);
-        }
+        TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "Key event", event);
         return (event.getKeyCode() == KeyEvent.KEYCODE_HOME) || super.dispatchKeyEvent(event);
     }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (Utilities.IS_RUNNING_IN_TEST_HARNESS && ev.getAction() != MotionEvent.ACTION_MOVE) {
-            TestLogging.recordEvent("Touch event: " + ev);
-        }
+        TestLogging.recordMotionEvent(TestProtocol.SEQUENCE_MAIN, "Touch event", ev);
         return super.dispatchTouchEvent(ev);
     }
 

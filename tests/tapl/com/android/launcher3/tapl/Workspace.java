@@ -260,8 +260,8 @@ public final class Workspace extends Home {
     public Widgets openAllWidgets() {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
             verifyActiveContainer();
-            mLauncher.expectEvent(EVENT_CTRL_W_DOWN);
-            mLauncher.expectEvent(EVENT_CTRL_W_UP);
+            mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_CTRL_W_DOWN);
+            mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_CTRL_W_UP);
             mLauncher.getDevice().pressKeyCode(KeyEvent.KEYCODE_W, KeyEvent.META_CTRL_ON);
             try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer("pressed Ctrl+W")) {
                 return new Widgets(mLauncher);

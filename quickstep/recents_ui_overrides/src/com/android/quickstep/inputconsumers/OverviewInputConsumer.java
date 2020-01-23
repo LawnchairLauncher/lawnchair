@@ -26,6 +26,7 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.testing.TestLogging;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.quickstep.BaseActivityInterface;
 import com.android.quickstep.GestureState;
@@ -107,7 +108,7 @@ public class OverviewInputConsumer<T extends BaseDraggingActivity>
                 ActiveGestureLog.INSTANCE.addLog("startQuickstep");
             }
             if (mInputMonitor != null) {
-                TestLogging.recordEvent("pilferPointers");
+                TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "pilferPointers");
                 mInputMonitor.pilferPointers();
             }
         }

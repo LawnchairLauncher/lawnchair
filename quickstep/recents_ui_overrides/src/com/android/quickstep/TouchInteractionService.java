@@ -145,7 +145,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
         @BinderThread
         @Override
         public void onOverviewToggle() {
-            TestLogging.recordEvent("onOverviewToggle");
+            TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "onOverviewToggle");
             mOverviewCommandHelper.onOverviewToggle();
         }
 
@@ -428,13 +428,17 @@ public class TouchInteractionService extends Service implements PluginListener<O
             Log.e(TAG, "Unknown event " + ev);
             return;
         }
+        MotionEvent event = (MotionEvent) ev;
+
+        TestLogging.recordMotionEvent(
+                TestProtocol.SEQUENCE_TIS, "TouchInteractionService.onInputEvent", event);
+
         if (!mDeviceState.isUserUnlocked()) {
             return;
         }
 
         Object traceToken = TraceHelper.INSTANCE.beginFlagsOverride(
                 TraceHelper.FLAG_ALLOW_BINDER_TRACKING);
-        MotionEvent event = (MotionEvent) ev;
         if (event.getAction() == ACTION_DOWN) {
             GestureState newGestureState = new GestureState(mOverviewComponentObserver,
                     ActiveGestureLog.INSTANCE.generateAndSetLogId());
