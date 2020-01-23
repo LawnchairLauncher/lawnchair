@@ -56,7 +56,7 @@ abstract class Launchable {
                 mObject.getVisibleCenter() + " in " + mObject.getVisibleBounds());
 
         mLauncher.executeAndWaitForEvent(
-                () -> mObject.click(),
+                () -> mLauncher.clickLauncherObject(mObject),
                 event -> event.getEventType() == TYPE_WINDOW_STATE_CHANGED,
                 () -> "Launching an app didn't open a new window: " + mObject.getText());
 

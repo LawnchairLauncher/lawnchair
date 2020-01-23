@@ -151,7 +151,9 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
     private DeviceProfile mDeviceProfile;
 
     private RemoteAnimationProvider mRemoteAnimationProvider;
+    // Strong refs to runners which are cleared when the launcher activity is destroyed
     private WrappedAnimationRunnerImpl mWallpaperOpenRunner;
+    private WrappedAnimationRunnerImpl mAppLaunchRunner;
 
     private final AnimatorListenerAdapter mForceInvisibleListener = new AnimatorListenerAdapter() {
         @Override
@@ -200,32 +202,9 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
     public ActivityOptions getActivityLaunchOptions(Launcher launcher, View v) {
         if (hasControlRemoteAppTransitionPermission()) {
             boolean fromRecents = isLaunchingFromRecents(v, null /* targets */);
-            RemoteAnimationRunnerCompat runner = new LauncherAnimationRunner(mHandler,
-                    true /* startAtFrontOfQueue */) {
-
-                @Override
-                public void onCreateAnimation(RemoteAnimationTargetCompat[] appTargets,
-                        RemoteAnimationTargetCompat[] wallpaperTargets, AnimationResult result) {
-                    AnimatorSet anim = new AnimatorSet();
-
-                    boolean launcherClosing =
-                            launcherIsATargetWithMode(appTargets, MODE_CLOSING);
-
-                    if (isLaunchingFromRecents(v, appTargets)) {
-                        composeRecentsLaunchAnimator(anim, v, appTargets, wallpaperTargets,
-                                launcherClosing);
-                    } else {
-                        composeIconLaunchAnimator(anim, v, appTargets, wallpaperTargets,
-                                launcherClosing);
-                    }
-
-                    if (launcherClosing) {
-                        anim.addListener(mForceInvisibleListener);
-                    }
-
-                    result.setAnimation(anim, mLauncher);
-                }
-            };
+            mAppLaunchRunner = new AppLaunchAnimationRunner(mHandler, v);
+            RemoteAnimationRunnerCompat runner = new WrappedLauncherAnimationRunner<>(
+                    mAppLaunchRunner, true /* startAtFrontOfQueue */);
 
             // Note that this duration is a guess as we do not know if the animation will be a
             // recents launch or not for sure until we know the opening app targets.
@@ -627,6 +606,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
             // Also clear strong references to the runners registered with the remote animation
             // definition so we don't have to wait for the system gc
             mWallpaperOpenRunner = null;
+            mAppLaunchRunner = null;
         }
     }
 
@@ -911,6 +891,49 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
             }
 
             mLauncher.clearForceInvisibleFlag(INVISIBLE_ALL);
+            result.setAnimation(anim, mLauncher);
+        }
+    }
+
+    /**
+     * Remote animation runner for animation to launch an app.
+     */
+    private class AppLaunchAnimationRunner implements WrappedAnimationRunnerImpl {
+
+        private final Handler mHandler;
+        private final View mV;
+
+        AppLaunchAnimationRunner(Handler handler, View v) {
+            mHandler = handler;
+            mV = v;
+        }
+
+        @Override
+        public Handler getHandler() {
+            return mHandler;
+        }
+
+        @Override
+        public void onCreateAnimation(RemoteAnimationTargetCompat[] appTargets,
+                RemoteAnimationTargetCompat[] wallpaperTargets,
+                LauncherAnimationRunner.AnimationResult result) {
+            AnimatorSet anim = new AnimatorSet();
+
+            boolean launcherClosing =
+                    launcherIsATargetWithMode(appTargets, MODE_CLOSING);
+
+            if (isLaunchingFromRecents(mV, appTargets)) {
+                composeRecentsLaunchAnimator(anim, mV, appTargets, wallpaperTargets,
+                        launcherClosing);
+            } else {
+                composeIconLaunchAnimator(anim, mV, appTargets, wallpaperTargets,
+                        launcherClosing);
+            }
+
+            if (launcherClosing) {
+                anim.addListener(mForceInvisibleListener);
+            }
+
             result.setAnimation(anim, mLauncher);
         }
     }

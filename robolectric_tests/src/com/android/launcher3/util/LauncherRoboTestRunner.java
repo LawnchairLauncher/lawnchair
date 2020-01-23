@@ -23,7 +23,7 @@ import com.android.launcher3.shadows.LShadowLauncherApps;
 import com.android.launcher3.shadows.LShadowUserManager;
 import com.android.launcher3.shadows.ShadowLooperExecutor;
 import com.android.launcher3.shadows.ShadowMainThreadInitializedObject;
-import com.android.launcher3.shadows.ShadowTogglableFlag;
+import com.android.launcher3.shadows.ShadowDeviceFlag;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 
 import org.junit.runners.model.InitializationError;
@@ -50,7 +50,7 @@ public class LauncherRoboTestRunner extends RobolectricTestRunner {
 
             ShadowLooperExecutor.class,
             ShadowMainThreadInitializedObject.class,
-            ShadowTogglableFlag.class,
+            ShadowDeviceFlag.class,
     };
 
     public LauncherRoboTestRunner(Class<?> testClass) throws InitializationError {

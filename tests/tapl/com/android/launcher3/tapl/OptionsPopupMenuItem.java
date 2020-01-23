@@ -38,7 +38,7 @@ public class OptionsPopupMenuItem {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
             LauncherInstrumentation.log("OptionsPopupMenuItem before click "
                     + mObject.getVisibleCenter() + " in " + mObject.getVisibleBounds());
-            mObject.click();
+            mLauncher.clickLauncherObject(mObject);
             mLauncher.assertTrue(
                     "App didn't start: " + By.pkg(expectedPackageName),
                     mLauncher.getDevice().wait(Until.hasObject(By.pkg(expectedPackageName)),
