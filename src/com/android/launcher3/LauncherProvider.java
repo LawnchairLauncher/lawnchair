@@ -80,7 +80,7 @@ public class LauncherProvider extends ContentProvider {
     /**
      * Represents the schema of the database. Changes in scheme need not be backwards compatible.
      */
-    public static final int SCHEMA_VERSION = 31;
+    public static final int SCHEMA_VERSION = 32;
 
     public static final String AUTHORITY = FeatureFlags.AUTHORITY;
 
@@ -800,6 +800,8 @@ public class LauncherProvider extends ContentProvider {
                     db.execSQL("ALTER TABLE " + Favorites.TABLE_NAME + " ADD COLUMN " + Favorites.CUSTOM_ICON_ENTRY + " TEXT;");
                 case 30:
                     db.execSQL("ALTER TABLE " + Favorites.TABLE_NAME + " ADD COLUMN " + Favorites.SWIPE_UP_ACTION + " TEXT;");
+                case 31:
+                    db.execSQL("ALTER TABLE " + Favorites.TABLE_NAME + " ADD COLUMN " + Favorites.BADGE_VISIBLE + " INTEGER NOT NULL DEFAULT 0;");
                     return;
             }
 
