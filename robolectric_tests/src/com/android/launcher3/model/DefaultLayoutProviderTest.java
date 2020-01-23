@@ -16,97 +16,65 @@
 
 package com.android.launcher3.model;
 
+import static com.android.launcher3.util.LauncherModelHelper.TEST_PACKAGE;
+
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
 import static org.robolectric.Shadows.shadowOf;
 import static org.robolectric.util.ReflectionHelpers.setField;
 
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.pm.PackageInstaller;
 import android.content.pm.PackageInstaller.SessionInfo;
 import android.content.pm.PackageInstaller.SessionParams;
-import android.net.Uri;
-import android.provider.Settings;
 
 import com.android.launcher3.FolderInfo;
-import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfo;
-import com.android.launcher3.LauncherProvider;
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.icons.BitmapInfo;
-import com.android.launcher3.pm.InstallSessionHelper;
-import com.android.launcher3.shadows.LShadowLauncherApps;
-import com.android.launcher3.shadows.LShadowUserManager;
-import com.android.launcher3.shadows.ShadowLooperExecutor;
+import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.LauncherLayoutBuilder;
-import com.android.launcher3.widget.custom.CustomWidgetManager;
+import com.android.launcher3.util.LauncherModelHelper;
+import com.android.launcher3.util.LauncherRoboTestRunner;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.annotation.Config;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.LooperMode;
 import org.robolectric.annotation.LooperMode.Mode;
-import org.robolectric.shadows.ShadowPackageManager;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStreamWriter;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 /**
  * Tests for layout parser for remote layout
  */
-@RunWith(RobolectricTestRunner.class)
-@Config(shadows = {LShadowUserManager.class, LShadowLauncherApps.class, ShadowLooperExecutor.class})
+@RunWith(LauncherRoboTestRunner.class)
 @LooperMode(Mode.PAUSED)
-public class DefaultLayoutProviderTest extends BaseModelUpdateTaskTestCase {
+public class DefaultLayoutProviderTest {
 
-    private static final String SETTINGS_APP = "com.android.settings";
-    private static final String TEST_PROVIDER_AUTHORITY =
-            DefaultLayoutProviderTest.class.getName().toLowerCase();
-
-    private static final int BITMAP_SIZE = 10;
-    private static final int GRID_SIZE = 4;
+    private LauncherModelHelper mModelHelper;
+    private Context mTargetContext;
 
     @Before
-    public void setUp() throws Exception {
-        super.setUp();
-        InvariantDeviceProfile.INSTANCE.initializeForTesting(idp);
-        CustomWidgetManager.INSTANCE.initializeForTesting(mock(CustomWidgetManager.class));
+    public void setUp() {
+        mModelHelper = new LauncherModelHelper();
+        mTargetContext = RuntimeEnvironment.application;
 
-        idp.numRows = idp.numColumns = idp.numHotseatIcons = GRID_SIZE;
-        idp.iconBitmapSize = BITMAP_SIZE;
-
-        provider.setAllowLoadDefaultFavorites(true);
-        Settings.Secure.putString(targetContext.getContentResolver(),
-                "launcher3.layout.provider", TEST_PROVIDER_AUTHORITY);
-
-        ShadowPackageManager spm = shadowOf(targetContext.getPackageManager());
-        spm.addProviderIfNotPresent(new ComponentName("com.test", "Dummy")).authority =
-                TEST_PROVIDER_AUTHORITY;
-        spm.addActivityIfNotPresent(new ComponentName(SETTINGS_APP, SETTINGS_APP));
-    }
-
-    @After
-    public void cleanup() {
-        InvariantDeviceProfile.INSTANCE.initializeForTesting(null);
-        CustomWidgetManager.INSTANCE.initializeForTesting(null);
-        InstallSessionHelper.INSTANCE.initializeForTesting(null);
+        shadowOf(mTargetContext.getPackageManager())
+                .addActivityIfNotPresent(new ComponentName(TEST_PACKAGE, TEST_PACKAGE));
     }
 
     @Test
     public void testCustomProfileLoaded_with_icon_on_hotseat() throws Exception {
         writeLayoutAndLoad(new LauncherLayoutBuilder().atHotseat(0)
-                .putApp(SETTINGS_APP, SETTINGS_APP));
+                .putApp(TEST_PACKAGE, TEST_PACKAGE));
 
         // Verify one item in hotseat
-        assertEquals(1, bgDataModel.workspaceItems.size());
-        ItemInfo info = bgDataModel.workspaceItems.get(0);
+        assertEquals(1, mModelHelper.getBgDataModel().workspaceItems.size());
+        ItemInfo info = mModelHelper.getBgDataModel().workspaceItems.get(0);
         assertEquals(LauncherSettings.Favorites.CONTAINER_HOTSEAT, info.container);
         assertEquals(LauncherSettings.Favorites.ITEM_TYPE_APPLICATION, info.itemType);
     }
@@ -114,14 +82,14 @@ public class DefaultLayoutProviderTest extends BaseModelUpdateTaskTestCase {
     @Test
     public void testCustomProfileLoaded_with_folder() throws Exception {
         writeLayoutAndLoad(new LauncherLayoutBuilder().atHotseat(0).putFolder(android.R.string.copy)
-                .addApp(SETTINGS_APP, SETTINGS_APP)
-                .addApp(SETTINGS_APP, SETTINGS_APP)
-                .addApp(SETTINGS_APP, SETTINGS_APP)
+                .addApp(TEST_PACKAGE, TEST_PACKAGE)
+                .addApp(TEST_PACKAGE, TEST_PACKAGE)
+                .addApp(TEST_PACKAGE, TEST_PACKAGE)
                 .build());
 
         // Verify folder
-        assertEquals(1, bgDataModel.workspaceItems.size());
-        ItemInfo info = bgDataModel.workspaceItems.get(0);
+        assertEquals(1, mModelHelper.getBgDataModel().workspaceItems.size());
+        ItemInfo info = mModelHelper.getBgDataModel().workspaceItems.get(0);
         assertEquals(LauncherSettings.Favorites.ITEM_TYPE_FOLDER, info.itemType);
         assertEquals(3, ((FolderInfo) info).contents.size());
     }
@@ -134,7 +102,7 @@ public class DefaultLayoutProviderTest extends BaseModelUpdateTaskTestCase {
         SessionParams params = new SessionParams(SessionParams.MODE_FULL_INSTALL);
         params.setAppPackageName(pendingAppPkg);
 
-        PackageInstaller installer = targetContext.getPackageManager().getPackageInstaller();
+        PackageInstaller installer = mTargetContext.getPackageManager().getPackageInstaller();
         int sessionId = installer.createSession(params);
         SessionInfo sessionInfo = installer.getSessionInfo(sessionId);
         setField(sessionInfo, "installerPackageName", "com.test");
@@ -144,24 +112,26 @@ public class DefaultLayoutProviderTest extends BaseModelUpdateTaskTestCase {
                 .putWidget(pendingAppPkg, "DummyWidget", 2, 2));
 
         // Verify widget
-        assertEquals(1, bgDataModel.appWidgets.size());
-        ItemInfo info = bgDataModel.appWidgets.get(0);
+        assertEquals(1, mModelHelper.getBgDataModel().appWidgets.size());
+        ItemInfo info = mModelHelper.getBgDataModel().appWidgets.get(0);
         assertEquals(LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET, info.itemType);
         assertEquals(2, info.spanX);
         assertEquals(2, info.spanY);
     }
 
     private void writeLayoutAndLoad(LauncherLayoutBuilder builder) throws Exception {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        builder.build(new OutputStreamWriter(bos));
+        mModelHelper.setupDefaultLayoutProvider(builder);
 
-        Uri layoutUri = LauncherProvider.getLayoutUri(TEST_PROVIDER_AUTHORITY, targetContext);
-        shadowOf(targetContext.getContentResolver()).registerInputStream(layoutUri,
-                new ByteArrayInputStream(bos.toByteArray()));
-
-        LoaderResults results = new LoaderResults(appState, bgDataModel, allAppsList, 0,
-                new WeakReference<>(callbacks));
-        LoaderTask task = new LoaderTask(appState, allAppsList, bgDataModel, results);
+        LoaderResults results = new LoaderResults(
+                LauncherAppState.getInstance(mTargetContext),
+                mModelHelper.getBgDataModel(),
+                mModelHelper.getAllAppsList(),
+                new Callbacks[0]);
+        LoaderTask task = new LoaderTask(
+                LauncherAppState.getInstance(mTargetContext),
+                mModelHelper.getAllAppsList(),
+                mModelHelper.getBgDataModel(),
+                results);
         Executors.MODEL_EXECUTOR.submit(() -> task.loadWorkspace(new ArrayList<>())).get();
     }
 }

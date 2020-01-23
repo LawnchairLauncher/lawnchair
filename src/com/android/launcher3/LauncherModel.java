@@ -58,16 +58,16 @@ import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.shortcuts.ShortcutRequest;
 import com.android.launcher3.util.IntSparseArrayMap;
 import com.android.launcher3.util.ItemInfoMatcher;
+import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.Preconditions;
-import com.android.launcher3.util.Thunk;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.Executor;
 import java.util.function.Supplier;
@@ -82,11 +82,12 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
 
     static final String TAG = "Launcher.Model";
 
-    @Thunk final LauncherAppState mApp;
-    @Thunk final Object mLock = new Object();
-    @Thunk
-    LoaderTask mLoaderTask;
-    @Thunk boolean mIsLoaderTaskRunning;
+    private final LauncherAppState mApp;
+    private final Object mLock = new Object();
+    private final LooperExecutor mMainExecutor = MAIN_EXECUTOR;
+
+    private LoaderTask mLoaderTask;
+    private boolean mIsLoaderTaskRunning;
 
     // Indicates whether the current model data is valid or not.
     // We start off with everything not loaded. After that, we assume that
@@ -99,7 +100,7 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
         }
     }
 
-    @Thunk WeakReference<Callbacks> mCallbacks;
+    private final ArrayList<Callbacks> mCallbacksList = new ArrayList<>(1);
 
     // < only access in worker thread >
     private final AllAppsList mBgAllAppsList;
@@ -108,14 +109,14 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
      * All the static data should be accessed on the background thread, A lock should be acquired
      * on this object when accessing any data from this model.
      */
-    static final BgDataModel sBgDataModel = new BgDataModel();
+    private final BgDataModel mBgDataModel = new BgDataModel();
 
     // Runnable to check if the shortcuts permission has changed.
     private final Runnable mShortcutPermissionCheckRunnable = new Runnable() {
         @Override
         public void run() {
             if (mModelLoaded && hasShortcutsPermission(mApp.getContext())
-                    != sBgDataModel.hasShortcutHostPermission) {
+                    != mBgDataModel.hasShortcutHostPermission) {
                 forceReload();
             }
         }
@@ -127,29 +128,28 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
     }
 
     /**
+     * Returns AppInfo with corresponding package name.
+     * TODO: move to enqueueModelTask
+     */
+    public Optional<AppInfo> getAppInfoByPackageName(String pkg) {
+        return mBgAllAppsList.data.stream()
+                .filter(info -> info.componentName.getPackageName().equals(pkg))
+                .findAny();
+    }
+
+    /**
      * Adds the provided items to the workspace.
      */
     public void addAndBindAddedWorkspaceItems(List<Pair<ItemInfo, Object>> itemList) {
-        Callbacks callbacks = getCallback();
-        if (callbacks != null) {
-            callbacks.preAddApps();
+        for (Callbacks cb : getCallbacks()) {
+            cb.preAddApps();
         }
         enqueueModelUpdateTask(new AddWorkspaceItemsTask(itemList));
     }
 
     public ModelWriter getWriter(boolean hasVerticalHotseat, boolean verifyChanges) {
-        return new ModelWriter(mApp.getContext(), this, sBgDataModel,
+        return new ModelWriter(mApp.getContext(), this, mBgDataModel,
                 hasVerticalHotseat, verifyChanges);
-    }
-
-    /**
-     * Set this as the current Launcher activity object for the loader.
-     */
-    public void initialize(Callbacks callbacks) {
-        synchronized (mLock) {
-            Preconditions.assertUIThread();
-            mCallbacks = new WeakReference<>(callbacks);
-        }
     }
 
     @Override
@@ -251,21 +251,19 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
                 }
             }
         } else if (IS_DOGFOOD_BUILD && ACTION_FORCE_ROLOAD.equals(action)) {
-            Launcher l = (Launcher) getCallback();
-            l.reload();
+            for (Callbacks cb : getCallbacks()) {
+                if (cb instanceof Launcher) {
+                    ((Launcher) cb).recreate();
+                }
+            }
         }
-    }
-
-    public void forceReload() {
-        forceReload(-1);
     }
 
     /**
      * Reloads the workspace items from the DB and re-binds the workspace. This should generally
      * not be called as DB updates are automatically followed by UI update
-     * @param synchronousBindPage The page to bind first. Can pass -1 to use the current page.
      */
-    public void forceReload(int synchronousBindPage) {
+    public void forceReload() {
         synchronized (mLock) {
             // Stop any existing loaders first, so they don't set mModelLoaded to true later
             stopLoader();
@@ -274,37 +272,77 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
 
         // Start the loader if launcher is already running, otherwise the loader will run,
         // the next time launcher starts
-        Callbacks callbacks = getCallback();
-        if (callbacks != null) {
-            if (synchronousBindPage < 0) {
-                synchronousBindPage = callbacks.getCurrentWorkspaceScreen();
-            }
-            startLoader(synchronousBindPage);
+        if (hasCallbacks()) {
+            startLoader();
         }
     }
 
-    public boolean isCurrentCallbacks(Callbacks callbacks) {
-        return (mCallbacks != null && mCallbacks.get() == callbacks);
+    /**
+     * Rebinds all existing callbacks with already loaded model
+     */
+    public void rebindCallbacks() {
+        if (hasCallbacks()) {
+            startLoader();
+        }
+    }
+
+    /**
+     * Removes an existing callback
+     */
+    public void removeCallbacks(Callbacks callbacks) {
+        synchronized (mCallbacksList) {
+            Preconditions.assertUIThread();
+            if (mCallbacksList.remove(callbacks)) {
+                if (stopLoader()) {
+                    // Rebind existing callbacks
+                    startLoader();
+                }
+            }
+        }
+    }
+
+    /**
+     * Adds a callbacks to receive model updates
+     * @return true if workspace load was performed synchronously
+     */
+    public boolean addCallbacksAndLoad(Callbacks callbacks) {
+        synchronized (mLock) {
+            addCallbacks(callbacks);
+            return startLoader();
+
+        }
+    }
+
+    /**
+     * Adds a callbacks to receive model updates
+     */
+    public void addCallbacks(Callbacks callbacks) {
+        Preconditions.assertUIThread();
+        synchronized (mCallbacksList) {
+            mCallbacksList.add(callbacks);
+        }
     }
 
     /**
      * Starts the loader. Tries to bind {@params synchronousBindPage} synchronously if possible.
      * @return true if the page could be bound synchronously.
      */
-    public boolean startLoader(int synchronousBindPage) {
+    public boolean startLoader() {
         // Enable queue before starting loader. It will get disabled in Launcher#finishBindingItems
         InstallShortcutReceiver.enableInstallQueue(InstallShortcutReceiver.FLAG_LOADER_RUNNING);
         synchronized (mLock) {
             // Don't bother to start the thread if we know it's not going to do anything
-            if (mCallbacks != null && mCallbacks.get() != null) {
-                final Callbacks oldCallbacks = mCallbacks.get();
+            final Callbacks[] callbacksList = getCallbacks();
+            if (callbacksList.length > 0) {
                 // Clear any pending bind-runnables from the synchronized load process.
-                MAIN_EXECUTOR.execute(oldCallbacks::clearPendingBinds);
+                for (Callbacks cb : callbacksList) {
+                    mMainExecutor.execute(cb::clearPendingBinds);
+                }
 
                 // If there is already one running, tell it to stop.
                 stopLoader();
-                LoaderResults loaderResults = new LoaderResults(mApp, sBgDataModel,
-                        mBgAllAppsList, synchronousBindPage, mCallbacks);
+                LoaderResults loaderResults = new LoaderResults(
+                        mApp, mBgDataModel, mBgAllAppsList, callbacksList, mMainExecutor);
                 if (mModelLoaded && !mIsLoaderTaskRunning) {
                     // Divide the set of loaded items into those that we are binding synchronously,
                     // and everything else that is to be bound normally (asynchronously).
@@ -325,21 +363,24 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
 
     /**
      * If there is already a loader task running, tell it to stop.
+     * @return true if an existing loader was stopped.
      */
-    public void stopLoader() {
+    public boolean stopLoader() {
         synchronized (mLock) {
             LoaderTask oldTask = mLoaderTask;
             mLoaderTask = null;
             if (oldTask != null) {
                 oldTask.stopLocked();
+                return true;
             }
+            return false;
         }
     }
 
     public void startLoaderForResults(LoaderResults results) {
         synchronized (mLock) {
             stopLoader();
-            mLoaderTask = new LoaderTask(mApp, mBgAllAppsList, sBgDataModel, results);
+            mLoaderTask = new LoaderTask(mApp, mBgAllAppsList, mBgDataModel, results);
 
             // Always post the loader task, instead of running directly (even on same thread) so
             // that we exit any nested synchronized blocks
@@ -487,7 +528,7 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
     }
 
     public void enqueueModelUpdateTask(ModelUpdateTask task) {
-        task.init(mApp, this, sBgDataModel, mBgAllAppsList, MAIN_EXECUTOR);
+        task.init(mApp, this, mBgDataModel, mBgAllAppsList, mMainExecutor);
         MODEL_EXECUTOR.execute(task);
     }
 
@@ -558,10 +599,24 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
                         + " componentName=" + info.componentName.getPackageName());
             }
         }
-        sBgDataModel.dump(prefix, fd, writer, args);
+        mBgDataModel.dump(prefix, fd, writer, args);
     }
 
-    public Callbacks getCallback() {
-        return mCallbacks != null ? mCallbacks.get() : null;
+    /**
+     * Returns true if there are any callbacks attached to the model
+     */
+    public boolean hasCallbacks() {
+        synchronized (mCallbacksList) {
+            return !mCallbacksList.isEmpty();
+        }
+    }
+
+    /**
+     * Returns an array of currently attached callbacks
+     */
+    public Callbacks[] getCallbacks() {
+        synchronized (mCallbacksList) {
+            return mCallbacksList.toArray(new Callbacks[mCallbacksList.size()]);
+        }
     }
 }

@@ -14,22 +14,23 @@
  * limitations under the License.
  */
 
-package com.android.launcher3.tapl;
+package com.android.launcher3.shadows;
 
-import android.widget.FrameLayout;
+import android.graphics.Bitmap;
+import android.graphics.Paint;
 
-import androidx.test.uiautomator.By;
-import androidx.test.uiautomator.BySelector;
-import androidx.test.uiautomator.UiObject2;
+import org.robolectric.annotation.Implementation;
+import org.robolectric.annotation.Implements;
+import org.robolectric.shadows.ShadowBitmap;
 
 /**
- * App folder in workspace/
+ * Extension of {@link ShadowBitmap} with missing shadow methods
  */
-public final class Folder {
-    Folder(LauncherInstrumentation launcher, UiObject2 icon) {
-    }
+@Implements(value = Bitmap.class)
+public class LShadowBitmap extends ShadowBitmap {
 
-    static BySelector getSelector(String folderName, LauncherInstrumentation launcher) {
-        return By.clazz(FrameLayout.class).desc(folderName).pkg(launcher.getLauncherPackageName());
+    @Implementation
+    protected Bitmap extractAlpha(Paint paint, int[] offsetXY) {
+        return extractAlpha();
     }
 }

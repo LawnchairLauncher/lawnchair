@@ -178,7 +178,10 @@ public abstract class SystemShortcut<T extends BaseDraggingActivity> extends Ite
 
     public static final Factory<Launcher> DISMISS_PREDICTION = (launcher, itemInfo) -> {
         if (!FeatureFlags.ENABLE_PREDICTION_DISMISS.get()) return null;
-        if (itemInfo.container != LauncherSettings.Favorites.CONTAINER_PREDICTION) return null;
+        if (itemInfo.container != LauncherSettings.Favorites.CONTAINER_PREDICTION
+                && itemInfo.container != LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION) {
+            return null;
+        }
         return new DismissPrediction(launcher, itemInfo);
     };
 

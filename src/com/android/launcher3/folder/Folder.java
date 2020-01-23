@@ -297,15 +297,21 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     }
 
     public void startEditingFolderName() {
-        post(new Runnable() {
-            @Override
-            public void run() {
-                mFolderName.setHint("");
-                mIsEditingName = true;
+        post(() -> {
+            if (FeatureFlags.FOLDER_NAME_SUGGEST.get()) {
+                if (TextUtils.isEmpty(mFolderName.getText())) {
+                    final String[] suggestedNames = new String[FolderNameProvider.SUGGEST_MAX];
+                    mLauncher.getFolderNameProvider().getSuggestedFolderName(getContext(),
+                            mInfo.contents, suggestedNames);
+                    mFolderName.setText(suggestedNames[0]);
+                    mFolderName.displayCompletions(Arrays.asList(suggestedNames).subList(1,
+                            suggestedNames.length));
+                }
             }
+            mFolderName.setHint("");
+            mIsEditingName = true;
         });
     }
-
 
     @Override
     public boolean onBackKey() {
@@ -316,10 +322,18 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         mFolderIcon.onTitleChanged(newTitle);
         mLauncher.getModelWriter().updateItemInDatabase(mInfo);
 
-        if (TextUtils.isEmpty(mInfo.title)) {
-            mFolderName.setHint(R.string.folder_hint_text);
+        if (FeatureFlags.FOLDER_NAME_SUGGEST.get()) {
+            mFolderName.setText(mInfo.title);
+            // TODO: depending on whether the title was manually edited or automatically
+            // suggested, apply different hint.
+            mFolderName.setHint("");
         } else {
-            mFolderName.setHint(null);
+            if (TextUtils.isEmpty(mInfo.title)) {
+                mFolderName.setHint(R.string.folder_hint_text);
+                mFolderName.setText("");
+            } else {
+                mFolderName.setHint(null);
+            }
         }
 
         sendCustomAccessibilityEvent(
@@ -403,7 +417,11 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
             mFolderName.setHint(null);
         } else {
             mFolderName.setText("");
-            mFolderName.setHint(R.string.folder_hint_text);
+            if (FeatureFlags.FOLDER_NAME_SUGGEST.get()) {
+                mFolderName.setHint("");
+            } else {
+                mFolderName.setHint(R.string.folder_hint_text);
+            }
         }
         // In case any children didn't come across during loading, clean up the folder accordingly
         mFolderIcon.post(() -> {
@@ -420,10 +438,10 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         if (FeatureFlags.FOLDER_NAME_SUGGEST.get()
                 && TextUtils.isEmpty(mFolderName.getText().toString())) {
             if (suggestName.length > 0 && !TextUtils.isEmpty(suggestName[0])) {
-                mFolderName.setHint(suggestName[0]);
+                mFolderName.setHint("");
                 mFolderName.setText(suggestName[0]);
                 mInfo.title = suggestName[0];
-                animateOpen();
+                animateOpen(mInfo.contents, 0, true);
                 mFolderName.showKeyboard();
                 mFolderName.displayCompletions(
                         Arrays.asList(suggestName).subList(1, suggestName.length));
@@ -519,12 +537,24 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
      * is played.
      */
     private void animateOpen(List<WorkspaceItemInfo> items, int pageNo) {
+        animateOpen(items, pageNo, false);
+    }
+
+    /**
+     * Opens the user folder described by the specified tag. The opening of the folder
+     * is animated relative to the specified View. If the View is null, no animation
+     * is played.
+     */
+    private void animateOpen(List<WorkspaceItemInfo> items, int pageNo, boolean skipUserEventLog) {
         Folder openFolder = getOpen(mLauncher);
         if (openFolder != null && openFolder != this) {
             // Close any open folder before opening a folder.
             openFolder.close(true);
         }
 
+        if (FeatureFlags.FOLDER_NAME_SUGGEST.get()) {
+            mLauncher.getFolderNameProvider().load(getContext());
+        }
         mContent.bindItems(items);
         centerAboutIcon();
         mItemsInvalidated = true;
@@ -565,10 +595,13 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
                 mState = STATE_OPEN;
                 announceAccessibilityChanges();
 
-                mLauncher.getUserEventDispatcher().logActionOnItem(
+                if (!skipUserEventLog) {
+                    mLauncher.getUserEventDispatcher().logActionOnItem(
                         Touch.TAP,
                         Direction.NONE,
                         ItemType.FOLDER_ICON, mInfo.cellX, mInfo.cellY);
+                }
+
 
                 mContent.setFocusOnFirstChild();
             }
@@ -1338,6 +1371,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         return itemsOnCurrentPage;
     }
 
+    @Override
     public void onFocusChange(View v, boolean hasFocus) {
         if (v == mFolderName) {
             if (hasFocus) {

@@ -86,6 +86,13 @@ public class NotificationItemView {
         }
     }
 
+    /**
+     * Sets width for notification footer and spaces out items evenly
+     */
+    public void setFooterWidth(int footerWidth) {
+        mFooter.setWidth(footerWidth);
+    }
+
     public void removeFooter() {
         if (mContainer.indexOfChild(mFooter) >= 0) {
             mContainer.removeView(mFooter);

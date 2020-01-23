@@ -45,8 +45,9 @@ public final class OverviewTask {
      * Swipes the task up.
      */
     public void dismiss() {
-        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
-                "want to dismiss a task")) {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
+             LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                     "want to dismiss a task")) {
             verifyActiveContainer();
             // Dismiss the task via flinging it up.
             final Rect taskBounds = mTask.getVisibleBounds();
@@ -61,15 +62,17 @@ public final class OverviewTask {
      * Clicks at the task.
      */
     public Background open() {
-        verifyActiveContainer();
-        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
-                "clicking an overview task")) {
-            mLauncher.executeAndWaitForEvent(
-                    () -> mTask.click(),
-                    event -> event.getEventType() == TYPE_WINDOW_STATE_CHANGED,
-                    () -> "Launching task didn't open a new window: "
-                            + mTask.getParent().getContentDescription());
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
+            verifyActiveContainer();
+            try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                    "clicking an overview task")) {
+                mLauncher.executeAndWaitForEvent(
+                        () -> mTask.click(),
+                        event -> event.getEventType() == TYPE_WINDOW_STATE_CHANGED,
+                        () -> "Launching task didn't open a new window: "
+                                + mTask.getParent().getContentDescription());
+            }
+            return new Background(mLauncher);
         }
-        return new Background(mLauncher);
     }
 }

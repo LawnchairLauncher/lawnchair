@@ -23,7 +23,7 @@ import static com.android.launcher3.LauncherStateManager.ANIM_ALL;
 import static com.android.launcher3.LauncherStateManager.ATOMIC_OVERVIEW_SCALE_COMPONENT;
 import static com.android.launcher3.LauncherStateManager.NON_ATOMIC_COMPONENT;
 import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelocity;
-import static com.android.launcher3.config.FeatureFlags.QUICKSTEP_SPRINGS;
+import static com.android.launcher3.config.FeatureFlags.UNSTABLE_SPRINGS;
 import static com.android.launcher3.util.DefaultDisplay.getSingleFrameMs;
 
 import android.animation.Animator;
@@ -434,7 +434,7 @@ public abstract class AbstractStateChangeTouchController
         updateSwipeCompleteAnimation(anim, Math.max(duration, getRemainingAtomicDuration()),
                 targetState, velocity, fling);
         mCurrentAnimation.dispatchOnStartWithVelocity(endProgress, velocity);
-        if (fling && targetState == LauncherState.ALL_APPS && !QUICKSTEP_SPRINGS.get()) {
+        if (fling && targetState == LauncherState.ALL_APPS && !UNSTABLE_SPRINGS.get()) {
             mLauncher.getAppsView().addSpringFromFlingUpdateListener(anim, velocity);
         }
         anim.start();
@@ -508,7 +508,7 @@ public abstract class AbstractStateChangeTouchController
             mAtomicComponentsController.getAnimationPlayer().end();
             mAtomicComponentsController = null;
         }
-        cancelAnimationControllers();
+        clearState();
         boolean shouldGoToTargetState = true;
         if (mPendingAnimation != null) {
             boolean reachedTarget = mToState == targetState;
@@ -546,13 +546,13 @@ public abstract class AbstractStateChangeTouchController
             mAtomicAnim = null;
         }
         mScheduleResumeAtomicComponent = false;
+        mDetector.finishedScrolling();
+        mDetector.setDetectableScrollConditions(0, false);
     }
 
     private void cancelAnimationControllers() {
         mCurrentAnimation = null;
         cancelAtomicComponentsController();
-        mDetector.finishedScrolling();
-        mDetector.setDetectableScrollConditions(0, false);
     }
 
     private void cancelAtomicComponentsController() {

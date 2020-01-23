@@ -151,8 +151,7 @@ public class TestHelpers {
                     ? "Current time: " + new Date(System.currentTimeMillis()) + "\n" + errors
                     : null;
         } catch (Exception e) {
-            return "Failed to get system health diags, maybe build your test via .bp instead of "
-                    + ".mk? " + android.util.Log.getStackTraceString(e);
+            return null;
         }
     }
 }

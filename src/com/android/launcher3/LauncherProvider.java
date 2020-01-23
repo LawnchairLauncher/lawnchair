@@ -18,6 +18,7 @@ package com.android.launcher3;
 
 import static com.android.launcher3.provider.LauncherDbUtils.dropTable;
 import static com.android.launcher3.provider.LauncherDbUtils.tableExists;
+import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
 import android.annotation.TargetApi;
 import android.app.backup.BackupManager;
@@ -45,6 +46,7 @@ import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Process;
 import android.os.UserHandle;
 import android.os.UserManager;
@@ -87,6 +89,8 @@ public class LauncherProvider extends ContentProvider {
     private static final boolean LOGD = false;
 
     private static final String DOWNGRADE_SCHEMA_FILE = "downgrade_schema.json";
+    private static final String TOKEN_RESTORE_BACKUP_TABLE = "restore_backup_table";
+    private static final long RESTORE_BACKUP_TABLE_DELAY = 60000;
 
     /**
      * Represents the schema of the database. Changes in scheme need not be backwards compatible.
@@ -385,6 +389,14 @@ public class LauncherProvider extends ContentProvider {
             case LauncherSettings.Settings.METHOD_REFRESH_BACKUP_TABLE: {
                 mOpenHelper.mBackupTableExists =
                         tableExists(mOpenHelper.getReadableDatabase(), Favorites.BACKUP_TABLE_NAME);
+                return null;
+            }
+            case LauncherSettings.Settings.METHOD_RESTORE_BACKUP_TABLE: {
+                final Handler handler = MODEL_EXECUTOR.getHandler();
+                handler.removeCallbacksAndMessages(TOKEN_RESTORE_BACKUP_TABLE);
+                handler.postDelayed(() -> RestoreDbTask.restoreIfPossible(
+                        getContext(), mOpenHelper, new BackupManager(getContext())),
+                        TOKEN_RESTORE_BACKUP_TABLE, RESTORE_BACKUP_TABLE_DELAY);
                 return null;
             }
         }

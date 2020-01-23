@@ -47,7 +47,7 @@ public class PredictedAppIcon extends DoubleShadowBubbleTextView {
 
     private static final float RING_EFFECT_RATIO = 0.11f;
 
-    private DeviceProfile mDeviceProfile;
+    private final DeviceProfile mDeviceProfile;
     private final Paint mIconRingPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private boolean mIsPinned = false;
     private int mNormalizedIconRadius;
@@ -65,7 +65,7 @@ public class PredictedAppIcon extends DoubleShadowBubbleTextView {
         mDeviceProfile = Launcher.getLauncher(context).getDeviceProfile();
         mNormalizedIconRadius = IconNormalizer.getNormalizedCircleSize(getIconSize()) / 2;
         setOnClickListener(ItemClickHandler.INSTANCE);
-        setOnFocusChangeListener(Launcher.getLauncher(context).mFocusHandler);
+        setOnFocusChangeListener(Launcher.getLauncher(context).getFocusHandler());
     }
 
     @Override

@@ -22,6 +22,7 @@ import androidx.test.uiautomator.UiObject2;
  * Widget in workspace or a widget list.
  */
 public final class Widget extends Launchable {
+
     Widget(LauncherInstrumentation launcher, UiObject2 icon) {
         super(launcher, icon);
     }

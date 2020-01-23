@@ -20,8 +20,6 @@ import static com.google.common.truth.Truth.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import org.robolectric.RobolectricTestRunner;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -29,7 +27,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * Robolectric unit tests for {@link IntSet}
  */
-@RunWith(RobolectricTestRunner.class)
+@RunWith(LauncherRoboTestRunner.class)
 public class IntSetTest {
 
     @Test

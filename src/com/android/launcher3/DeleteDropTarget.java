@@ -126,7 +126,8 @@ public class DeleteDropTarget extends ButtonDropTarget {
             onAccessibilityDrop(null, item);
             ModelWriter modelWriter = mLauncher.getModelWriter();
             Runnable onUndoClicked = () -> {
-                modelWriter.abortDelete(itemPage);
+                mLauncher.setPageToBindSynchronously(itemPage);
+                modelWriter.abortDelete();
                 mLauncher.getUserEventDispatcher().logActionOnControl(TAP, UNDO);
             };
             Snackbar.show(mLauncher, R.string.item_removed, R.string.undo,

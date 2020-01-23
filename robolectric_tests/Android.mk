@@ -19,6 +19,8 @@ LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE := LauncherRoboTests
+LOCAL_MODULE_CLASS := JAVA_LIBRARIES
+
 LOCAL_SDK_VERSION := current
 LOCAL_SRC_FILES := $(call all-java-files-under, src)
 LOCAL_STATIC_JAVA_LIBRARIES := \
@@ -34,6 +36,9 @@ LOCAL_JAVA_RESOURCE_DIRS := resources config
 LOCAL_INSTRUMENTATION_FOR := Launcher3
 LOCAL_MODULE_TAGS := optional
 
+# Generate test_config.properties
+include external/robolectric-shadows/gen_test_config.mk
+
 include $(BUILD_STATIC_JAVA_LIBRARY)
 
 ############################################
@@ -43,14 +48,11 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE := RunLauncherRoboTests
 LOCAL_SDK_VERSION := current
-LOCAL_JAVA_LIBRARIES := \
-    LauncherRoboTests
+LOCAL_JAVA_LIBRARIES := LauncherRoboTests
 
 LOCAL_RESOURCE_DIR := $(LOCAL_PATH)/res
-
 LOCAL_TEST_PACKAGE := Launcher3
-
-LOCAL_INSTRUMENT_SOURCE_DIRS := $(dir $(LOCAL_PATH))../src \
+LOCAL_INSTRUMENT_SOURCE_DIRS := $(dir $(LOCAL_PATH))../src
 
 LOCAL_ROBOTEST_TIMEOUT := 36000
 

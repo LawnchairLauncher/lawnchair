@@ -41,8 +41,9 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
      * Flings forward (down) and waits the fling's end.
      */
     public void flingForward() {
-        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
-                "want to fling forward in widgets")) {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
+             LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                     "want to fling forward in widgets")) {
             LauncherInstrumentation.log("Widgets.flingForward enter");
             final UiObject2 widgetsContainer = verifyActiveContainer();
             mLauncher.scroll(
@@ -62,8 +63,9 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
      * Flings backward (up) and waits the fling's end.
      */
     public void flingBackward() {
-        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
-                "want to fling backwards in widgets")) {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
+             LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                     "want to fling backwards in widgets")) {
             LauncherInstrumentation.log("Widgets.flingBackward enter");
             final UiObject2 widgetsContainer = verifyActiveContainer();
             mLauncher.scroll(

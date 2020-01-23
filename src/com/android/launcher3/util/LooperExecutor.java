@@ -41,10 +41,10 @@ public class LooperExecutor extends AbstractExecutorService {
 
     @Override
     public void execute(Runnable runnable) {
-        if (mHandler.getLooper() == Looper.myLooper()) {
+        if (getHandler().getLooper() == Looper.myLooper()) {
             runnable.run();
         } else {
-            mHandler.post(runnable);
+            getHandler().post(runnable);
         }
     }
 
@@ -52,7 +52,7 @@ public class LooperExecutor extends AbstractExecutorService {
      * Same as execute, but never runs the action inline.
      */
     public void post(Runnable runnable) {
-        mHandler.post(runnable);
+        getHandler().post(runnable);
     }
 
     /**
@@ -96,14 +96,14 @@ public class LooperExecutor extends AbstractExecutorService {
      * Returns the thread for this executor
      */
     public Thread getThread() {
-        return mHandler.getLooper().getThread();
+        return getHandler().getLooper().getThread();
     }
 
     /**
      * Returns the looper for this executor
      */
     public Looper getLooper() {
-        return mHandler.getLooper();
+        return getHandler().getLooper();
     }
 
     /**

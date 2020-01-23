@@ -292,6 +292,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     private PopupDataProvider mPopupDataProvider;
 
     private int mSynchronouslyBoundPage = PagedView.INVALID_PAGE;
+    private int mPageToBindSynchronously = PagedView.INVALID_PAGE;
 
     // We only want to get the SharedPreferences once since it does an FS stat each time we get
     // it from the context.
@@ -307,7 +308,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     // Request id for any pending activity result
     protected int mPendingActivityRequestCode = -1;
 
-    public ViewGroupFocusHelper mFocusHandler;
+    private ViewGroupFocusHelper mFocusHandler;
 
     private RotationHelper mRotationHelper;
 
@@ -348,7 +349,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
         LauncherAppState app = LauncherAppState.getInstance(this);
         mOldConfig = new Configuration(getResources().getConfiguration());
-        mModel = app.setLauncher(this);
+        mModel = app.getModel();
         mRotationHelper = new RotationHelper(this);
         InvariantDeviceProfile idp = app.getInvariantDeviceProfile();
         initDeviceProfile(idp);
@@ -372,6 +373,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         mPopupDataProvider = new PopupDataProvider(this);
 
         mAppTransitionManager = LauncherAppTransitionManager.newInstance(this);
+        mAppTransitionManager.registerRemoteAnimations();
 
         boolean internalStateHandled = ACTIVITY_TRACKER.handleCreate(this);
         if (internalStateHandled) {
@@ -386,22 +388,18 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
         // We only load the page synchronously if the user rotates (or triggers a
         // configuration change) while launcher is in the foreground
-        int currentScreen = PagedView.INVALID_RESTORE_PAGE;
+        int currentScreen = PagedView.INVALID_PAGE;
         if (savedInstanceState != null) {
             currentScreen = savedInstanceState.getInt(RUNTIME_STATE_CURRENT_SCREEN, currentScreen);
         }
+        mPageToBindSynchronously = currentScreen;
 
-        if (!mModel.startLoader(currentScreen)) {
+        if (!mModel.addCallbacksAndLoad(this)) {
             if (!internalStateHandled) {
                 // If we are not binding synchronously, show a fade in animation when
                 // the first page bind completes.
                 mDragLayer.getAlphaProperty(ALPHA_INDEX_LAUNCHER_LOAD).setValue(0);
             }
-        } else {
-            // Pages bound synchronously.
-            mWorkspace.setCurrentPage(currentScreen);
-
-            setWorkspaceLoading(true);
         }
 
         // For handling default keys
@@ -522,15 +520,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     }
 
     @Override
-    public void rebindModel() {
-        int currentPage = mWorkspace.getNextPage();
-        if (mModel.startLoader(currentPage)) {
-            mWorkspace.setCurrentPage(currentPage);
-            setWorkspaceLoading(true);
-        }
-    }
-
-    @Override
     public void onIdpChanged(int changeFlags, InvariantDeviceProfile idp) {
         onIdpChanged(idp);
     }
@@ -548,7 +537,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         // initialized properly.
         onSaveInstanceState(new Bundle());
         if (oldWallpaperProfile != getWallpaperDeviceProfile()) {
-            rebindModel();
+            mModel.rebindCallbacks();
         }
     }
 
@@ -615,6 +604,10 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     public RotationHelper getRotationHelper() {
         return mRotationHelper;
+    }
+
+    public ViewGroupFocusHelper getFocusHandler() {
+        return mFocusHandler;
     }
 
     public LauncherStateManager getStateManager() {
@@ -1561,13 +1554,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         mWorkspace.removeFolderListeners();
         PluginManagerWrapper.INSTANCE.get(this).removePluginListener(this);
 
-        // Stop callbacks from LauncherModel
-        // It's possible to receive onDestroy after a new Launcher activity has
-        // been created. In this case, don't interfere with the new Launcher.
-        if (mModel.isCurrentCallbacks(this)) {
-            mModel.stopLoader();
-            LauncherAppState.getInstance(this).setLauncher(null);
-        }
+        mModel.removeCallbacks(this);
         mRotationHelper.destroy();
 
         try {
@@ -1581,6 +1568,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         LauncherAppState.getIDP(this).removeOnChangeListener(this);
 
         mOverlayManager.onActivityDestroyed(this);
+        mAppTransitionManager.unregisterRemoteAnimations();
     }
 
     public LauncherAccessibilityDelegate getAccessibilityDelegate() {
@@ -1762,7 +1750,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         getModelWriter().addItemToDatabase(folderInfo, container, screenId, cellX, cellY);
 
         // Create the view
-        FolderIcon newFolder = FolderIcon.fromXml(R.layout.folder_icon, this, layout, folderInfo);
+        FolderIcon newFolder = FolderIcon.inflateFolderAndIcon(R.layout.folder_icon, this, layout, folderInfo);
         mWorkspace.addInScreen(newFolder, folderInfo);
         // Force measure the new folder icon
         CellLayout parent = mWorkspace.getParentCellLayoutForView(newFolder);
@@ -1975,11 +1963,21 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     }
 
     /**
+     * Sets the next page to bind synchronously on next bind.
+     * @param page
+     */
+    public void setPageToBindSynchronously(int page) {
+        mPageToBindSynchronously = page;
+    }
+
+    /**
      * Implementation of the method from LauncherModel.Callbacks.
      */
     @Override
-    public int getCurrentWorkspaceScreen() {
-        if (mWorkspace != null) {
+    public int getPageToBindSynchronously() {
+        if (mPageToBindSynchronously != PagedView.INVALID_PAGE) {
+            return mPageToBindSynchronously;
+        } else  if (mWorkspace != null) {
             return mWorkspace.getCurrentPage();
         } else {
             return 0;
@@ -2123,7 +2121,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                     break;
                 }
                 case LauncherSettings.Favorites.ITEM_TYPE_FOLDER: {
-                    view = FolderIcon.fromXml(R.layout.folder_icon, this,
+                    view = FolderIcon.inflateFolderAndIcon(R.layout.folder_icon, this,
                             (ViewGroup) workspace.getChildAt(workspace.getCurrentPage()),
                             (FolderInfo) item);
                     break;
@@ -2357,6 +2355,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     public void onPageBoundSynchronously(int page) {
         mSynchronouslyBoundPage = page;
+        mWorkspace.setCurrentPage(page);
+        mPageToBindSynchronously = PagedView.INVALID_PAGE;
     }
 
     @Override
@@ -2421,6 +2421,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         // Since we are just resetting the current page without user interaction,
         // override the previous page so we don't log the page switch.
         mWorkspace.setCurrentPage(pageBoundFirst, pageBoundFirst /* overridePrevPage */);
+        mPageToBindSynchronously = PagedView.INVALID_PAGE;
 
         // Cache one page worth of icons
         getViewCache().setCacheSize(R.layout.folder_application,

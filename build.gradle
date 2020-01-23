@@ -2,6 +2,7 @@ buildscript {
     repositories {
         mavenCentral()
         google()
+        jcenter()
     }
     dependencies {
         classpath GRADLE_CLASS_PATH
@@ -62,12 +63,6 @@ android {
             minSdkVersion 28
         }
 
-        withQuickstepIconRecents {
-            dimension "recents"
-
-            minSdkVersion 28
-        }
-
         withoutQuickstep {
             dimension "recents"
         }
@@ -76,11 +71,6 @@ android {
     // Disable release builds for now
     android.variantFilter { variant ->
         if (variant.buildType.name.endsWith('release')) {
-            variant.setIgnore(true)
-        }
-
-        // Icon recents is Go only
-        if (name.contains("WithQuickstepIconRecents") && !name.contains("l3go")) {
             variant.setIgnore(true)
         }
     }
@@ -96,10 +86,6 @@ android {
             }
         }
 
-        debug {
-            manifest.srcFile "AndroidManifest.xml"
-        }
-
         androidTest {
             res.srcDirs = ['tests/res']
             java.srcDirs = ['tests/src', 'tests/tapl']
@@ -112,13 +98,28 @@ android {
 
         aosp {
             java.srcDirs = ['src_flags', 'src_shortcuts_overrides']
+        }
+
+        aospWithoutQuickstep {
             manifest.srcFile "AndroidManifest.xml"
+        }
+
+        aospWithQuickstep {
+            manifest.srcFile "quickstep/AndroidManifest-launcher.xml"
         }
 
         l3go {
             res.srcDirs = ['go/res']
             java.srcDirs = ['go/src']
             manifest.srcFile "go/AndroidManifest.xml"
+        }
+
+        l3goWithoutQuickstepDebug {
+            manifest.srcFile "AndroidManifest.xml"
+        }
+
+        l3goWithQuickstepDebug {
+            manifest.srcFile "quickstep/AndroidManifest-launcher.xml"
         }
 
         withoutQuickstep {
@@ -130,20 +131,17 @@ android {
             java.srcDirs = ['quickstep/src', 'quickstep/recents_ui_overrides/src']
             manifest.srcFile "quickstep/AndroidManifest.xml"
         }
-
-        withQuickstepIconRecents {
-            res.srcDirs = ['quickstep/res', 'go/quickstep/res']
-            java.srcDirs = ['quickstep/src', 'go/quickstep/src']
-            manifest.srcFile "quickstep/AndroidManifest.xml"
-        }
     }
 }
 
-repositories {
-    maven { url "../../../prebuilts/fullsdk-darwin/extras/android/m2repository" }
-    maven { url "../../../prebuilts/fullsdk-linux/extras/android/m2repository" }
-    mavenCentral()
-    google()
+allprojects {
+    repositories {
+        maven { url "../../../prebuilts/sdk/current/androidx/m2repository" }
+        maven { url "../../../prebuilts/fullsdk-darwin/extras/android/m2repository" }
+        maven { url "../../../prebuilts/fullsdk-linux/extras/android/m2repository" }
+        mavenCentral()
+        google()
+    }
 }
 
 dependencies {
@@ -151,13 +149,11 @@ dependencies {
     implementation "androidx.recyclerview:recyclerview:${ANDROID_X_VERSION}"
     implementation "androidx.preference:preference:${ANDROID_X_VERSION}"
     implementation project(':IconLoader')
+    withQuickstepImplementation project(':SharedLibWrapper')
     implementation fileTree(dir: "${FRAMEWORK_PREBUILTS_DIR}/libs", include: 'launcher_protos.jar')
 
     // Recents lib dependency
     withQuickstepImplementation fileTree(dir: "${FRAMEWORK_PREBUILTS_DIR}/quickstep/libs", include: 'sysui_shared.jar')
-
-    // Recents lib dependency for Go
-    withQuickstepIconRecentsImplementation fileTree(dir: "${FRAMEWORK_PREBUILTS_DIR}/quickstep/libs", include: 'sysui_shared.jar')
 
     // Required for AOSP to compile. This is already included in the sysui_shared.jar
     withoutQuickstepImplementation fileTree(dir: "${FRAMEWORK_PREBUILTS_DIR}/libs", include: 'plugin_core.jar')
@@ -175,7 +171,7 @@ dependencies {
 protobuf {
     // Configure the protoc executable
     protoc {
-        artifact = 'com.google.protobuf:protoc:3.0.0-alpha-3'
+        artifact = 'com.google.protobuf:protoc:3.0.0'
 
         generateProtoTasks {
             all().each { task ->

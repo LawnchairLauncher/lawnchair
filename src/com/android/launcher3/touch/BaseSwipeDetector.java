@@ -24,6 +24,10 @@ import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
+
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * Scroll/drag/swipe gesture detector.
@@ -49,13 +53,15 @@ public abstract class BaseSwipeDetector {
     protected final boolean mIsRtl;
     protected final float mTouchSlop;
     protected final float mMaxVelocity;
+    private final Queue<Runnable> mSetStateQueue = new LinkedList<>();
 
     private int mActivePointerId = INVALID_POINTER_ID;
     private VelocityTracker mVelocityTracker;
     private PointF mLastDisplacement = new PointF();
     private PointF mDisplacement = new PointF();
     protected PointF mSubtractDisplacement = new PointF();
-    private ScrollState mState = ScrollState.IDLE;
+    @VisibleForTesting ScrollState mState = ScrollState.IDLE;
+    private boolean mIsSettingState;
 
     protected boolean mIgnoreSlopWhenSettling;
 
@@ -195,6 +201,12 @@ public abstract class BaseSwipeDetector {
     // SETTLING -> (View settled) -> IDLE
 
     private void setState(ScrollState newState) {
+        if (mIsSettingState) {
+            mSetStateQueue.add(() -> setState(newState));
+            return;
+        }
+        mIsSettingState = true;
+
         if (DBG) {
             Log.d(TAG, "setState:" + mState + "->" + newState);
         }
@@ -212,6 +224,10 @@ public abstract class BaseSwipeDetector {
         }
 
         mState = newState;
+        mIsSettingState = false;
+        if (!mSetStateQueue.isEmpty()) {
+            mSetStateQueue.remove().run();
+        }
     }
 
     private void initializeDragging() {
