@@ -29,6 +29,11 @@ class FailureInvestigator {
     }
 
     static int getBugForFailure(CharSequence exception, String testsStartTime) {
+        if ("com.google.android.setupwizard".equals(
+                UiDevice.getInstance(getInstrumentation()).getLauncherPackageName())) {
+            return 145935261;
+        }
+
         final String logSinceTestsStart;
         try {
             logSinceTestsStart =
