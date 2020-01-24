@@ -56,6 +56,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
 
     @Before
     public void setUp() throws Exception {
+        mLauncherPid = 0;
         super.setUp();
         TaplTestsLauncher3.initialize(this);
         mLauncherPid = mLauncher.getPid();
@@ -63,7 +64,9 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
 
     @After
     public void teardown() {
-        assertEquals("Launcher crashed, pid mismatch:", mLauncherPid, mLauncher.getPid());
+        if (mLauncherPid != 0) {
+            assertEquals("Launcher crashed, pid mismatch:", mLauncherPid, mLauncher.getPid());
+        }
     }
 
     private void startTestApps() throws Exception {

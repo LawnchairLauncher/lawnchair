@@ -59,6 +59,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
 
     @Before
     public void setUp() throws Exception {
+        mLauncherPid = 0;
         super.setUp();
         initialize(this);
         mLauncherPid = mLauncher.getPid();
@@ -66,7 +67,9 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
 
     @After
     public void teardown() {
-        assertEquals("Launcher crashed, pid mismatch:", mLauncherPid, mLauncher.getPid());
+        if (mLauncherPid != 0) {
+            assertEquals("Launcher crashed, pid mismatch:", mLauncherPid, mLauncher.getPid());
+        }
     }
 
     public static void initialize(AbstractLauncherUiTest test) throws Exception {
@@ -120,7 +123,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         mDevice.pressMenu();
         mDevice.waitForIdle();
         mLauncher.getOptionsPopupMenu().getMenuItem("Home settings")
-                        .launch(mDevice.getLauncherPackageName());
+                .launch(mDevice.getLauncherPackageName());
     }
 
     @Test
