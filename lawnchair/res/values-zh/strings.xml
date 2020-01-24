@@ -21,17 +21,17 @@
     <string name="pref_legacy_treatment_title">创建自适应图标</string>
     <string name="pref_legacy_treatment_summary">为所有快捷方式创建自适应图标</string>
     <string name="pref_legacy_colored_backgrounds">背景颜色</string>
-    <string name="pref_legacy_colored_backgrounds_summary">生成自适应图标背景颜色</string>
+    <string name="pref_legacy_colored_backgrounds_summary">生成自适应图标背景色</string>
     <string name="pref_white_only_treatment">替换白色背景</string>
     <string name="pref_white_only_treatment_summary">自适应所有图标背景颜色</string>
     <string name="adaptify_pack_title">为图标包创造自适应图标</string>
     <string name="icon_shape_override_label">图标形状</string>
     <string name="reset_custom_icons">移除自定义图标</string>
-    <string name="reset_custom_icons_confirmation">从这个图标包回复到默认图标？</string>
+    <string name="reset_custom_icons_confirmation">从现有图标包恢复为默认为默认图标？此操作无法撤销。</string>
     <string name="appearance">外观</string>
     <!-- Note: new. Replaces title of 5th field (from bottom) in “Theme” page. -->
     <string name="theme_auto">自动(匹配壁纸)</string>
-    <string name="theme_auto_night_mode">通过系统进行设置</string>
+    <string name="theme_auto_night_mode">跟随系统设置</string>
     <string name="theme_dark_theme_mode_follow_daylight">时间表(夜间模式)</string>
     <string name="theme_light">亮色主题</string>
     <string name="theme_dark_text">浅色背景 + 暗色文字</string>
@@ -40,10 +40,10 @@
     <string name="theme_use_dark_text">使用暗色文字</string>
     <string name="lawnchair_accent">强调色</string>
     <string name="color_pixel_accent">Google 蓝</string>
-    <string name="color_system_accent">遵循系统设置</string>
-    <string name="color_wallpaper_main">壁纸 — 首选</string>
-    <string name="color_wallpaper_secondary">壁纸 — 次选</string>
-    <string name="color_wallpaper_tertiary">壁纸 — 第三</string>
+    <string name="color_system_accent">跟随系统设置</string>
+    <string name="color_wallpaper_main">壁纸主要色调</string>
+    <string name="color_wallpaper_secondary">壁纸次要色调</string>
+    <string name="color_wallpaper_tertiary">壁纸第三色调</string>
     <string name="pref_fonts_title">字体</string>
     <string name="blur_pref_title">模糊</string>
     <string name="blur_pref_summary">模糊化页面背景</string>
@@ -66,7 +66,7 @@
     <string name="auto_add_shortcuts_label">添加快捷方式到桌面</string>
     <string name="pref_icon_popup_menu">快捷方式气泡</string>
     <string name="pref_category_misc">其它</string>
-    <string name="animation_type_title">应用启动转场</string>
+    <string name="animation_type_title">应用启动转场动画</string>
     <string name="animation_type_default">默认</string>
     <string name="animation_type_pie">Android Pie</string>
     <string name="animation_type_pie_like">Android Pie（模拟）</string>
