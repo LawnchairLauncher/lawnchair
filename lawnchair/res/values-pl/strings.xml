@@ -9,7 +9,7 @@
     <string name="search_menu">Szukaj</string>
     <string name="search_no_results">Brak wyników</string>
     <string name="restart_lawnchair_pref_title">Uruchom ponownie</string>
-    <string name="developer_options_title">Ustawienia programisty</string>
+    <string name="developer_options_title">Opcje Programistyczne</string>
     <string name="change_default_home">Ustaw jako aplikację ekranu głównego</string>
     <string name="action_apply">Gotowe</string>
     <!-- Note: new. Replaces “OK” in dialogs. -->
@@ -25,7 +25,7 @@
     <string name="pref_legacy_treatment_title">Stwórz ikony adaptacyjne</string>
     <string name="pref_legacy_treatment_summary">Stwórz ikony adaptacyjne dla wszystkich skrótów.</string>
     <string name="pref_legacy_colored_backgrounds">Kolorowe tła</string>
-    <string name="pref_legacy_colored_backgrounds_summary">Nałóż kolor na tła wygenerowanych ikon adaptacyjnych.</string>
+    <string name="pref_legacy_colored_backgrounds_summary">Nałóż kolor tła dla wygenerowanych ikon adaptacyjnych.</string>
     <string name="pref_white_only_treatment">Zamień białe tła</string>
     <string name="pref_white_only_treatment_summary">Nałóż kolor na tła wszystkich ikon adaptacyjnych.</string>
     <string name="adaptify_pack_title">Twórz ikony adaptacyjne dla paczek ikon</string>
