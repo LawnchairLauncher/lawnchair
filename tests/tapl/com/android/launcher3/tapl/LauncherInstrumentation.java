@@ -1208,6 +1208,7 @@ public final class LauncherInstrumentation {
         mTimeBeforeFirstLogEvent = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
                 .format(new Date())
                 .replaceAll(" ", "");
+        log("startRecordingEvents: " + mTimeBeforeFirstLogEvent);
     }
 
     private void stopRecordingEvents() {
