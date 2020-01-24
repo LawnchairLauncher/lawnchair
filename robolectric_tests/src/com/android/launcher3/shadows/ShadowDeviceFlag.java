@@ -18,7 +18,7 @@ package com.android.launcher3.shadows;
 
 import android.content.Context;
 
-import com.android.launcher3.uioverrides.TogglableFlag;
+import com.android.launcher3.uioverrides.DeviceFlag;
 import com.android.launcher3.util.LooperExecutor;
 
 import org.robolectric.annotation.Implementation;
@@ -27,12 +27,17 @@ import org.robolectric.annotation.Implements;
 /**
  * Shadow for {@link LooperExecutor} to provide reset functionality for static executors.
  */
-@Implements(value = TogglableFlag.class, isInAndroidSdk = false)
-public class ShadowTogglableFlag {
+@Implements(value = DeviceFlag.class, isInAndroidSdk = false)
+public class ShadowDeviceFlag {
 
     /**
      * Mock change listener as it uses internal system classes not available to robolectric
      */
     @Implementation
     protected void addChangeListener(Context context, Runnable r) { }
+
+    @Implementation
+    protected static boolean getDeviceValue(String key, boolean defaultValue) {
+        return defaultValue;
+    }
 }

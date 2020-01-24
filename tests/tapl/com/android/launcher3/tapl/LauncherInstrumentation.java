@@ -49,7 +49,6 @@ import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.test.InstrumentationRegistry;
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.BySelector;
@@ -69,9 +68,11 @@ import org.junit.Assert;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
@@ -94,12 +95,13 @@ public final class LauncherInstrumentation {
     private static final int GESTURE_STEP_MS = 16;
     private static long START_TIME = System.currentTimeMillis();
 
-    static final Pattern LOG_TIME = Pattern.compile(
-            "[0-9][0-9]-[0-9][0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9]\\.[0-9][0-9][0-9]");
-
     static final Pattern EVENT_LOG_ENTRY = Pattern.compile(
-            "(?<time>[0-9][0-9]-[0-9][0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9]\\.[0-9][0-9][0-9])"
+            "[0-9][0-9]-[0-9][0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9]\\.[0-9][0-9][0-9]"
                     + ".*" + TestProtocol.TAPL_EVENTS_TAG + ": (?<event>.*)");
+
+    private static final Pattern EVENT_TOUCH_DOWN = getTouchEventPattern("ACTION_DOWN");
+    private static final Pattern EVENT_TOUCH_UP = getTouchEventPattern("ACTION_UP");
+    private static final Pattern EVENT_TOUCH_CANCEL = getTouchEventPattern("ACTION_CANCEL");
 
     // Types for launcher containers that the user is interacting with. "Background" is a
     // pseudo-container corresponding to inactive launcher covered by another app.
@@ -108,6 +110,13 @@ public final class LauncherInstrumentation {
     }
 
     public enum NavigationModel {ZERO_BUTTON, TWO_BUTTON, THREE_BUTTON}
+
+    // Where the gesture happens: outside of Launcher, inside or from inside to outside.
+    enum GestureScope {
+        OUTSIDE, INSIDE, INSIDE_TO_OUTSIDE
+    }
+
+    ;
 
     // Base class for launcher containers.
     static abstract class VisibleContainer {
@@ -159,6 +168,15 @@ public final class LauncherInstrumentation {
     private List<Pattern> mExpectedEvents;
 
     private String mTimeBeforeFirstLogEvent;
+
+    private static Pattern getTouchEventPattern(String action) {
+        // The pattern includes sanity checks that we don't get a multi-touch events or other
+        // surprises.
+        return Pattern.compile(
+                "Touch event: MotionEvent.*?action=" + action + ".*?id\\[0\\]=0"
+                        +
+                        ".*?toolType\\[0\\]=TOOL_TYPE_FINGER.*?buttonState=0.*?pointerCount=1");
+    }
 
     /**
      * Constructs the root of TAPL hierarchy. You get all other objects from it.
@@ -385,7 +403,7 @@ public final class LauncherInstrumentation {
         log("Hierarchy dump for: " + message);
         dumpViewHierarchy();
 
-        final String eventMismatch = getEventMismatchMessage();
+        final String eventMismatch = getEventMismatchMessage(false);
 
         if (eventMismatch != null) {
             message = message + ",\nhaving produced wrong events:\n    " + eventMismatch;
@@ -577,7 +595,7 @@ public final class LauncherInstrumentation {
                             displaySize.x / 2, displaySize.y - 1,
                             displaySize.x / 2, 0,
                             ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME,
-                            false);
+                            false, GestureScope.INSIDE_TO_OUTSIDE);
                     try (LauncherInstrumentation.Closable c = addContextLayer(
                             "Swiped up from context menu to home")) {
                         waitUntilGone(CONTEXT_MENU_RES_ID);
@@ -594,7 +612,10 @@ public final class LauncherInstrumentation {
                         swipeToState(
                                 displaySize.x / 2, displaySize.y - 1,
                                 displaySize.x / 2, 0,
-                                ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME, NORMAL_STATE_ORDINAL);
+                                ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME, NORMAL_STATE_ORDINAL,
+                                hasLauncherObject(By.textStartsWith(""))
+                                        ? GestureScope.INSIDE_TO_OUTSIDE
+                                        : GestureScope.OUTSIDE);
                     }
                 }
             } else {
@@ -763,9 +784,16 @@ public final class LauncherInstrumentation {
         return object;
     }
 
-    @Nullable
     private boolean hasLauncherObject(String resId) {
         return mDevice.hasObject(getLauncherObjectSelector(resId));
+    }
+
+    private boolean hasLauncherObject(BySelector selector) {
+        return mDevice.hasObject(makeLauncherSelector(selector));
+    }
+
+    private BySelector makeLauncherSelector(BySelector selector) {
+        return By.copy(selector).pkg(getLauncherPackageName());
     }
 
     @NonNull
@@ -775,12 +803,12 @@ public final class LauncherInstrumentation {
 
     @NonNull
     UiObject2 waitForLauncherObject(BySelector selector) {
-        return waitForObjectBySelector(By.copy(selector).pkg(getLauncherPackageName()));
+        return waitForObjectBySelector(makeLauncherSelector(selector));
     }
 
     @NonNull
     UiObject2 tryWaitForLauncherObject(BySelector selector, long timeout) {
-        return tryWaitForObjectBySelector(By.copy(selector).pkg(getLauncherPackageName()), timeout);
+        return tryWaitForObjectBySelector(makeLauncherSelector(selector), timeout);
     }
 
     @NonNull
@@ -857,8 +885,11 @@ public final class LauncherInstrumentation {
         return actualState == expectedState;
     }
 
-    void swipeToState(int startX, int startY, int endX, int endY, int steps, int expectedState) {
-        runToState(() -> linearGesture(startX, startY, endX, endY, steps, false), expectedState);
+    void swipeToState(int startX, int startY, int endX, int endY, int steps, int expectedState,
+            GestureScope gestureScope) {
+        runToState(
+                () -> linearGesture(startX, startY, endX, endY, steps, false, gestureScope),
+                expectedState);
     }
 
     int getBottomGestureSize() {
@@ -869,6 +900,12 @@ public final class LauncherInstrumentation {
     int getBottomGestureMarginInContainer(UiObject2 container) {
         final int bottomGestureStartOnScreen = getRealDisplaySize().y - getBottomGestureSize();
         return container.getVisibleBounds().bottom - bottomGestureStartOnScreen;
+    }
+
+    void clickLauncherObject(UiObject2 object) {
+        expectEvent(LauncherInstrumentation.EVENT_TOUCH_DOWN);
+        expectEvent(LauncherInstrumentation.EVENT_TOUCH_UP);
+        object.click();
     }
 
     void scrollToLastVisibleRow(
@@ -942,7 +979,8 @@ public final class LauncherInstrumentation {
         }
 
         executeAndWaitForEvent(
-                () -> linearGesture(startX, startY, endX, endY, steps, slowDown),
+                () -> linearGesture(
+                        startX, startY, endX, endY, steps, slowDown, GestureScope.INSIDE),
                 event -> TestProtocol.SCROLL_FINISHED_MESSAGE.equals(event.getClassName()),
                 () -> "Didn't receive a scroll end message: " + startX + ", " + startY
                         + ", " + endX + ", " + endY);
@@ -950,21 +988,24 @@ public final class LauncherInstrumentation {
 
     // Inject a swipe gesture. Inject exactly 'steps' motion points, incrementing event time by a
     // fixed interval each time.
-    void linearGesture(int startX, int startY, int endX, int endY, int steps, boolean slowDown) {
+    void linearGesture(int startX, int startY, int endX, int endY, int steps, boolean slowDown,
+            GestureScope gestureScope) {
         log("linearGesture: " + startX + ", " + startY + " -> " + endX + ", " + endY);
         final long downTime = SystemClock.uptimeMillis();
         final Point start = new Point(startX, startY);
         final Point end = new Point(endX, endY);
-        sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, start);
-        final long endTime = movePointer(start, end, steps, downTime, slowDown);
-        sendPointer(downTime, endTime, MotionEvent.ACTION_UP, end);
+        sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, start, gestureScope);
+        final long endTime = movePointer(start, end, steps, downTime, slowDown, gestureScope);
+        sendPointer(downTime, endTime, MotionEvent.ACTION_UP, end, gestureScope);
     }
 
-    long movePointer(Point start, Point end, int steps, long downTime, boolean slowDown) {
-        long endTime = movePointer(downTime, downTime, steps * GESTURE_STEP_MS, start, end);
+    long movePointer(Point start, Point end, int steps, long downTime, boolean slowDown,
+            GestureScope gestureScope) {
+        long endTime = movePointer(
+                downTime, downTime, steps * GESTURE_STEP_MS, start, end, gestureScope);
         if (slowDown) {
             endTime = movePointer(downTime, endTime + GESTURE_STEP_MS, 5 * GESTURE_STEP_MS, end,
-                    end);
+                    end, gestureScope);
         }
         return endTime;
     }
@@ -999,13 +1040,27 @@ public final class LauncherInstrumentation {
                 0, 0, 1.0f, 1.0f, 0, 0, InputDevice.SOURCE_TOUCHSCREEN, 0);
     }
 
-    void sendPointer(long downTime, long currentTime, int action, Point point) {
+    void sendPointer(long downTime, long currentTime, int action, Point point,
+            GestureScope gestureScope) {
+        if (gestureScope != GestureScope.OUTSIDE) {
+            switch (action) {
+                case MotionEvent.ACTION_DOWN:
+                    expectEvent(EVENT_TOUCH_DOWN);
+                    break;
+                case MotionEvent.ACTION_UP:
+                    expectEvent(gestureScope == GestureScope.INSIDE
+                            ? EVENT_TOUCH_UP : EVENT_TOUCH_CANCEL);
+                    break;
+            }
+        }
+
         final MotionEvent event = getMotionEvent(downTime, currentTime, action, point.x, point.y);
         mInstrumentation.getUiAutomation().injectInputEvent(event, true);
         event.recycle();
     }
 
-    long movePointer(long downTime, long startTime, long duration, Point from, Point to) {
+    long movePointer(long downTime, long startTime, long duration, Point from, Point to,
+            GestureScope gestureScope) {
         log("movePointer: " + from + " to " + to);
         final Point point = new Point();
         long steps = duration / GESTURE_STEP_MS;
@@ -1019,7 +1074,7 @@ public final class LauncherInstrumentation {
             point.x = from.x + (int) (progress * (to.x - from.x));
             point.y = from.y + (int) (progress * (to.y - from.y));
 
-            sendPointer(downTime, currentTime, MotionEvent.ACTION_MOVE, point);
+            sendPointer(downTime, currentTime, MotionEvent.ACTION_MOVE, point, gestureScope);
         }
         return currentTime;
     }
@@ -1032,9 +1087,10 @@ public final class LauncherInstrumentation {
     UiObject2 clickAndGet(@NonNull final UiObject2 target, @NonNull String resName) {
         final Point targetCenter = target.getVisibleCenter();
         final long downTime = SystemClock.uptimeMillis();
-        sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, targetCenter);
+        sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, targetCenter, GestureScope.INSIDE);
         final UiObject2 result = waitForLauncherObject(resName);
-        sendPointer(downTime, SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, targetCenter);
+        sendPointer(downTime, SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, targetCenter,
+                GestureScope.INSIDE);
         return result;
     }
 
@@ -1133,9 +1189,6 @@ public final class LauncherInstrumentation {
                             + " -s " + TestProtocol.TAPL_EVENTS_TAG);
             final Matcher matcher = EVENT_LOG_ENTRY.matcher(logcatEvents);
             while (matcher.find()) {
-                final String eventTime = matcher.group("time");
-                if (eventTime.equals(mTimeBeforeFirstLogEvent)) continue;
-
                 events.add(matcher.group("event"));
             }
             return events;
@@ -1147,15 +1200,9 @@ public final class LauncherInstrumentation {
     private void startRecordingEvents() {
         Assert.assertTrue("Already recording events", mExpectedEvents == null);
         mExpectedEvents = new ArrayList<>();
-
-        try {
-            final String lastLogLine =
-                    mDevice.executeShellCommand("logcat -d --pid=" + getPid() + " -t 1");
-            final Matcher matcher = LOG_TIME.matcher(lastLogLine);
-            mTimeBeforeFirstLogEvent = matcher.find() ? matcher.group().replaceAll(" ", "") : null;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        mTimeBeforeFirstLogEvent = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
+                .format(new Date())
+                .replaceAll(" ", "");
     }
 
     private void stopRecordingEvents() {
@@ -1172,14 +1219,7 @@ public final class LauncherInstrumentation {
                 return; // There was a failure. Noo need to report another one.
             }
 
-            // Wait until Launcher generates expected number of events.
-            final long endTime = SystemClock.uptimeMillis() + WAIT_TIME_MS;
-            while (SystemClock.uptimeMillis() < endTime
-                    && getEvents().size() < mExpectedEvents.size()) {
-                SystemClock.sleep(100);
-            }
-
-            final String message = getEventMismatchMessage();
+            final String message = getEventMismatchMessage(true);
             if (message != null) {
                 Assert.fail(formatSystemHealthMessage(
                         "http://go/tapl : unexpected event sequence: " + message));
@@ -1191,11 +1231,21 @@ public final class LauncherInstrumentation {
         if (mExpectedEvents != null) mExpectedEvents.add(expected);
     }
 
-    private String getEventMismatchMessage() {
+    private String getEventMismatchMessage(boolean waitForExpectedCount) {
         if (mExpectedEvents == null) return null;
 
         try {
-            final List<String> actual = getEvents();
+            List<String> actual = getEvents();
+
+            if (waitForExpectedCount) {
+                // Wait until Launcher generates the expected number of events.
+                final long endTime = SystemClock.uptimeMillis() + WAIT_TIME_MS;
+                while (SystemClock.uptimeMillis() < endTime
+                        && actual.size() < mExpectedEvents.size()) {
+                    SystemClock.sleep(100);
+                    actual = getEvents();
+                }
+            }
 
             for (int i = 0; i < mExpectedEvents.size(); ++i) {
                 if (i >= actual.size()) {

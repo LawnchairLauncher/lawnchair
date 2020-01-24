@@ -16,21 +16,11 @@
 
 package com.android.launcher3.uioverrides;
 
-import android.content.Context;
+import com.android.launcher3.config.FeatureFlags.DebugFlag;
 
-import com.android.launcher3.config.FeatureFlags.BaseTogglableFlag;
+public class DeviceFlag extends DebugFlag {
 
-public class TogglableFlag extends BaseTogglableFlag {
-
-    public TogglableFlag(String key, boolean defaultValue, String description) {
+    public DeviceFlag(String key, boolean defaultValue, String description) {
         super(key, defaultValue, description);
     }
-
-    @Override
-    public boolean getOverridenDefaultValue(boolean value) {
-        return value;
-    }
-
-    @Override
-    public void addChangeListener(Context context, Runnable r) { }
 }

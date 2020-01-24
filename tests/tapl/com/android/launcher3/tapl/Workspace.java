@@ -38,11 +38,21 @@ import androidx.test.uiautomator.UiObject2;
 import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.testing.TestProtocol;
 
+import java.util.regex.Pattern;
+
 /**
  * Operations on the workspace screen.
  */
 public final class Workspace extends Home {
     private static final int FLING_STEPS = 10;
+
+    static final Pattern EVENT_CTRL_W_DOWN = Pattern.compile(
+            "Key event: KeyEvent.*?action=ACTION_DOWN.*?keyCode=KEYCODE_W"
+                    + ".*?metaState=META_CTRL_ON");
+    static final Pattern EVENT_CTRL_W_UP = Pattern.compile(
+            "Key event: KeyEvent.*?action=ACTION_UP.*?keyCode=KEYCODE_W"
+                    + ".*?metaState=META_CTRL_ON");
+
     private final UiObject2 mHotseat;
 
     Workspace(LauncherInstrumentation launcher) {
@@ -108,7 +118,7 @@ public final class Workspace extends Home {
                     0,
                     startY - swipeHeight - mLauncher.getTouchSlop(),
                     12,
-                    ALL_APPS_STATE_ORDINAL);
+                    ALL_APPS_STATE_ORDINAL, LauncherInstrumentation.GestureScope.INSIDE);
 
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
                     "swiped to all apps")) {
@@ -195,17 +205,19 @@ public final class Workspace extends Home {
         launcher.runToState(
                 () -> {
                     launcher.sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN,
-                            launchableCenter);
+                            launchableCenter, LauncherInstrumentation.GestureScope.INSIDE);
                     LauncherInstrumentation.log("dragIconToWorkspace: sent down");
                     launcher.waitForLauncherObject(longPressIndicator);
                     LauncherInstrumentation.log("dragIconToWorkspace: indicator");
-                    launcher.movePointer(launchableCenter, dest, 10, downTime, true);
+                    launcher.movePointer(launchableCenter, dest, 10, downTime, true,
+                            LauncherInstrumentation.GestureScope.INSIDE);
                 },
                 SPRING_LOADED_STATE_ORDINAL);
         LauncherInstrumentation.log("dragIconToWorkspace: moved pointer");
         launcher.runToState(
                 () -> launcher.sendPointer(
-                        downTime, SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, dest),
+                        downTime, SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, dest,
+                        LauncherInstrumentation.GestureScope.INSIDE),
                 NORMAL_STATE_ORDINAL);
         LauncherInstrumentation.log("dragIconToWorkspace: end");
         launcher.waitUntilGone("drop_target_bar");
@@ -248,6 +260,8 @@ public final class Workspace extends Home {
     public Widgets openAllWidgets() {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
             verifyActiveContainer();
+            mLauncher.expectEvent(EVENT_CTRL_W_DOWN);
+            mLauncher.expectEvent(EVENT_CTRL_W_UP);
             mLauncher.getDevice().pressKeyCode(KeyEvent.KEYCODE_W, KeyEvent.META_CTRL_ON);
             try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer("pressed Ctrl+W")) {
                 return new Widgets(mLauncher);
