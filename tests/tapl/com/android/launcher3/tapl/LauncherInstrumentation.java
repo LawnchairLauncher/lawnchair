@@ -68,6 +68,7 @@ import org.junit.Assert;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -93,10 +94,13 @@ public final class LauncherInstrumentation {
     private static final String TAG = "Tapl";
     private static final int ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME = 20;
     private static final int GESTURE_STEP_MS = 16;
+    private static final SimpleDateFormat DATE_TIME_FORMAT =
+            new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
     private static long START_TIME = System.currentTimeMillis();
 
     static final Pattern EVENT_LOG_ENTRY = Pattern.compile(
-            "[0-9][0-9]-[0-9][0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9]\\.[0-9][0-9][0-9]"
+            "(?<time>[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9] "
+                    + "[0-9][0-9]:[0-9][0-9]:[0-9][0-9]\\.[0-9][0-9][0-9])"
                     + ".*" + TestProtocol.TAPL_EVENTS_TAG + ": (?<event>.*)");
 
     private static final Pattern EVENT_TOUCH_DOWN = getTouchEventPattern("ACTION_DOWN");
@@ -167,7 +171,7 @@ public final class LauncherInstrumentation {
     // Not null when we are collecting expected events to compare with actual ones.
     private List<Pattern> mExpectedEvents;
 
-    private String mTimeBeforeFirstLogEvent;
+    private Date mStartRecordingTime;
     private boolean mCheckEventsForSuccessfulGestures = false;
 
     private static Pattern getTouchEventPattern(String action) {
@@ -1187,32 +1191,38 @@ public final class LauncherInstrumentation {
     private List<String> getEvents() {
         final ArrayList<String> events = new ArrayList<>();
         try {
-            final String logcatTimeParameter =
-                    mTimeBeforeFirstLogEvent != null ? " -t " + mTimeBeforeFirstLogEvent : "";
             final String logcatEvents = mDevice.executeShellCommand(
-                    "logcat -d --pid=" + getPid() + logcatTimeParameter
+                    "logcat -d -v year --pid=" + getPid() + " -t "
+                            + DATE_TIME_FORMAT.format(mStartRecordingTime).replaceAll(" ", "")
                             + " -s " + TestProtocol.TAPL_EVENTS_TAG);
             final Matcher matcher = EVENT_LOG_ENTRY.matcher(logcatEvents);
             while (matcher.find()) {
+                // Skip events before recording start time.
+                if (DATE_TIME_FORMAT.parse(matcher.group("time"))
+                        .compareTo(mStartRecordingTime) < 0) {
+                    continue;
+                }
+
                 events.add(matcher.group("event"));
             }
             return events;
         } catch (IOException e) {
             throw new RuntimeException(e);
+        } catch (ParseException e) {
+            throw new AssertionError(e);
         }
     }
 
     private void startRecordingEvents() {
         Assert.assertTrue("Already recording events", mExpectedEvents == null);
         mExpectedEvents = new ArrayList<>();
-        mTimeBeforeFirstLogEvent = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
-                .format(new Date())
-                .replaceAll(" ", "");
-        log("startRecordingEvents: " + mTimeBeforeFirstLogEvent);
+        mStartRecordingTime = new Date();
+        log("startRecordingEvents: " + DATE_TIME_FORMAT.format(mStartRecordingTime));
     }
 
     private void stopRecordingEvents() {
         mExpectedEvents = null;
+        mStartRecordingTime = null;
     }
 
     Closable eventsCheck() {
