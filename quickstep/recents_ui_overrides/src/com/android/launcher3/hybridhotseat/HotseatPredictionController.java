@@ -56,6 +56,7 @@ import com.android.launcher3.appprediction.DynamicItemCache;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.icons.IconCache;
+import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.touch.ItemLongClickListener;
@@ -300,6 +301,7 @@ public class HotseatPredictionController implements DragController.DragListener,
 
     private void setPredictedApps(List<AppTarget> appTargets) {
         mComponentKeyMappers.clear();
+        StringBuilder predictionLog = new StringBuilder("predictedApps: [\n");
         for (AppTarget appTarget : appTargets) {
             ComponentKey key;
             if (appTarget.getShortcutInfo() != null) {
@@ -308,8 +310,14 @@ public class HotseatPredictionController implements DragController.DragListener,
                 key = new ComponentKey(new ComponentName(appTarget.getPackageName(),
                         appTarget.getClassName()), appTarget.getUser());
             }
+            predictionLog.append(key.toString());
+            predictionLog.append(",rank:");
+            predictionLog.append(appTarget.getRank());
+            predictionLog.append("\n");
             mComponentKeyMappers.add(new ComponentKeyMapper(key, mDynamicItemCache));
         }
+        predictionLog.append("]");
+        FileLog.d(TAG, predictionLog.toString());
         updateDependencies();
         if (isReady()) {
             fillGapsWithPrediction();
