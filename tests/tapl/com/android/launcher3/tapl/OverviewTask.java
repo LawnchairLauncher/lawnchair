@@ -22,10 +22,14 @@ import android.graphics.Rect;
 
 import androidx.test.uiautomator.UiObject2;
 
+import java.util.regex.Pattern;
+
 /**
  * A recent task in the overview panel carousel.
  */
 public final class OverviewTask {
+    static final Pattern TASK_START_EVENT =
+            Pattern.compile("startActivityFromRecentsAsync");
     private final LauncherInstrumentation mLauncher;
     private final UiObject2 mTask;
     private final BaseOverview mOverview;
@@ -72,6 +76,7 @@ public final class OverviewTask {
                         event -> event.getEventType() == TYPE_WINDOW_STATE_CHANGED,
                         () -> "Launching task didn't open a new window: "
                                 + mTask.getParent().getContentDescription());
+                mLauncher.expectEvent(TASK_START_EVENT);
             }
             return new Background(mLauncher);
         }

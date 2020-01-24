@@ -57,6 +57,7 @@ import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.popup.SystemShortcut;
+import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
@@ -331,6 +332,9 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             Consumer<Boolean> resultCallback, Handler resultCallbackHandler) {
         if (mTask != null) {
             final ActivityOptions opts;
+            if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+                TestLogging.recordEvent("startActivityFromRecentsAsync:" + mTask);
+            }
             if (animate) {
                 opts = mActivity.getActivityLaunchOptions(this);
                 if (freezeTaskList) {

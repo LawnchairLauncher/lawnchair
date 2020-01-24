@@ -16,6 +16,7 @@
 
 package com.android.launcher3.tapl;
 
+import static com.android.launcher3.tapl.OverviewTask.TASK_START_EVENT;
 import static com.android.launcher3.testing.TestProtocol.BACKGROUND_APP_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.OVERVIEW_STATE_ORDINAL;
 
@@ -27,6 +28,8 @@ import androidx.annotation.NonNull;
 import androidx.test.uiautomator.UiObject2;
 
 import com.android.launcher3.testing.TestProtocol;
+
+import java.util.regex.Pattern;
 
 /**
  * Indicates the base state with a UI other than Overview running as foreground. It can also
@@ -191,6 +194,7 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
                 recentsButton.click();
                 break;
         }
+        mLauncher.expectEvent(TASK_START_EVENT);
     }
 
     protected String getSwipeHeightRequestName() {
