@@ -411,7 +411,7 @@ public final class LauncherInstrumentation {
         final String eventMismatch = getEventMismatchMessage(false);
 
         if (eventMismatch != null) {
-            message = message + ",\nhaving produced wrong events:\n    " + eventMismatch;
+            message = message + ", having produced " + eventMismatch;
         }
 
         Assert.fail(formatSystemHealthMessage(message));
@@ -1262,7 +1262,7 @@ public final class LauncherInstrumentation {
                     return formatEventMismatchMessage("too few actual events", actual, i);
                 }
                 if (!mExpectedEvents.get(i).matcher(actual.get(i)).find()) {
-                    return formatEventMismatchMessage("mismatched event", actual, i);
+                    return formatEventMismatchMessage("a mismatched event", actual, i);
                 }
             }
 
@@ -1277,9 +1277,20 @@ public final class LauncherInstrumentation {
         return null;
     }
 
+    private String formatEventList(List events, int position) {
+        final StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < events.size(); ++i) {
+            sb.append("\n| ");
+            sb.append(i == position ? "---> " : "     ");
+            sb.append(events.get(i).toString());
+        }
+        if (position == events.size()) sb.append("\n| ---> (end)");
+        return sb.toString();
+    }
+
     private String formatEventMismatchMessage(String message, List<String> actual, int position) {
-        return message + ", pos=" + position
-                + ", expected=" + mExpectedEvents
-                + ", actual=" + actual;
+        return message + ":"
+                + "\nExpected:" + formatEventList(mExpectedEvents, position)
+                + "\nActual:" + formatEventList(actual, position);
     }
 }
