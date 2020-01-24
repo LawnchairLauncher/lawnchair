@@ -24,7 +24,6 @@ import com.android.launcher3.AppInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.WorkspaceItemInfo;
-import com.android.launcher3.config.FeatureFlags;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,7 +41,7 @@ import java.util.stream.Collectors;
 public class FolderNameProvider {
 
     private static final String TAG = "FolderNameProvider";
-    private static final boolean DEBUG = FeatureFlags.FOLDER_NAME_SUGGEST.get();
+    private static final boolean DEBUG = false;
 
     /**
      * IME usually has up to 3 suggest slots. In total, there are 4 suggest slots as the folder
