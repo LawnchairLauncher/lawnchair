@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.util;
 
+import static com.android.launcher3.LauncherSettings.Favorites.CONTENT_URI;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
 import static org.mockito.Mockito.atLeast;
@@ -30,6 +31,7 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.os.Process;
 import android.provider.Settings;
 
 import com.android.launcher3.AppInfo;
@@ -42,6 +44,7 @@ import com.android.launcher3.LauncherProvider;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.model.AllAppsList;
 import com.android.launcher3.model.BgDataModel;
+import com.android.launcher3.pm.UserCache;
 
 import org.mockito.ArgumentCaptor;
 import org.robolectric.Robolectric;
@@ -80,15 +83,17 @@ public class LauncherModelHelper {
     private static final int DEFAULT_BITMAP_SIZE = 10;
     private static final int DEFAULT_GRID_SIZE = 4;
 
-
     private final HashMap<Class, HashMap<String, Field>> mFieldCache = new HashMap<>();
     public final TestLauncherProvider provider;
+    private final long mDefaultProfileId;
 
     private BgDataModel mDataModel;
     private AllAppsList mAllAppsList;
 
     public LauncherModelHelper() {
         provider = Robolectric.setupContentProvider(TestLauncherProvider.class);
+        mDefaultProfileId = UserCache.INSTANCE.get(RuntimeEnvironment.application)
+                .getSerialNumberForUser(Process.myUserHandle());
         ShadowContentResolver.registerProviderInternal(LauncherProvider.AUTHORITY, provider);
     }
 
@@ -224,12 +229,16 @@ public class LauncherModelHelper {
         return item;
     }
 
+    public int addItem(int type, int screen, int container, int x, int y) {
+        return addItem(type, screen, container, x, y, mDefaultProfileId);
+    }
+
     /**
      * Adds a dummy item in the DB.
      * @param type {@link #APP_ICON} or {@link #SHORTCUT} or >= 2 for
      *             folder (where the type represents the number of items in the folder).
      */
-    public int addItem(int type, int screen, int container, int x, int y) {
+    public int addItem(int type, int screen, int container, int x, int y, long profileId) {
         Context context = RuntimeEnvironment.application;
         int id = LauncherSettings.Settings.call(context.getContentResolver(),
                 LauncherSettings.Settings.METHOD_NEW_ITEM_ID)
@@ -243,6 +252,7 @@ public class LauncherModelHelper {
         values.put(LauncherSettings.Favorites.CELLY, y);
         values.put(LauncherSettings.Favorites.SPANX, 1);
         values.put(LauncherSettings.Favorites.SPANY, 1);
+        values.put(LauncherSettings.Favorites.PROFILE_ID, profileId);
 
         if (type == APP_ICON || type == SHORTCUT) {
             values.put(LauncherSettings.Favorites.ITEM_TYPE, type);
@@ -253,16 +263,25 @@ public class LauncherModelHelper {
                     LauncherSettings.Favorites.ITEM_TYPE_FOLDER);
             // Add folder items.
             for (int i = 0; i < type; i++) {
-                addItem(APP_ICON, 0, id, 0, 0);
+                addItem(APP_ICON, 0, id, 0, 0, profileId);
             }
         }
 
-        context.getContentResolver().insert(LauncherSettings.Favorites.CONTENT_URI, values);
+        context.getContentResolver().insert(CONTENT_URI, values);
         return id;
     }
 
     public int[][][] createGrid(int[][][] typeArray) {
         return createGrid(typeArray, 1);
+    }
+
+    public int[][][] createGrid(int[][][] typeArray, int startScreen) {
+        final Context context = RuntimeEnvironment.application;
+        LauncherSettings.Settings.call(context.getContentResolver(),
+                LauncherSettings.Settings.METHOD_CREATE_EMPTY_DB);
+        LauncherSettings.Settings.call(context.getContentResolver(),
+                LauncherSettings.Settings.METHOD_CLEAR_EMPTY_DB_FLAG);
+        return createGrid(typeArray, startScreen, mDefaultProfileId);
     }
 
     /**
@@ -273,14 +292,9 @@ public class LauncherModelHelper {
      * @param startScreen First screen id from where the icons will be added.
      * @return the same grid representation where each entry is the corresponding item id.
      */
-    public int[][][] createGrid(int[][][] typeArray, int startScreen) {
+    public int[][][] createGrid(int[][][] typeArray, int startScreen, long profileId) {
         Context context = RuntimeEnvironment.application;
-        LauncherSettings.Settings.call(context.getContentResolver(),
-                LauncherSettings.Settings.METHOD_CREATE_EMPTY_DB);
-        LauncherSettings.Settings.call(context.getContentResolver(),
-                LauncherSettings.Settings.METHOD_CLEAR_EMPTY_DB_FLAG);
         int[][][] ids = new int[typeArray.length][][];
-
         for (int i = 0; i < typeArray.length; i++) {
             // Add screen to DB
             int screenId = startScreen + i;
@@ -297,7 +311,8 @@ public class LauncherModelHelper {
                         // Empty cell
                         ids[i][y][x] = -1;
                     } else {
-                        ids[i][y][x] = addItem(typeArray[i][y][x], screenId, DESKTOP, x, y);
+                        ids[i][y][x] = addItem(
+                                typeArray[i][y][x], screenId, DESKTOP, x, y, profileId);
                     }
                 }
             }
@@ -356,6 +371,10 @@ public class LauncherModelHelper {
         public SQLiteDatabase getDb() {
             createDbIfNotExists();
             return mOpenHelper.getWritableDatabase();
+        }
+
+        public DatabaseHelper getHelper() {
+            return mOpenHelper;
         }
     }
 }
