@@ -43,7 +43,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ItemType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.ComponentKey;
-import com.android.systemui.shared.system.SysUiStatsLog;
+import com.android.systemui.shared.system.StatsLogCompat;
 
 import com.google.protobuf.nano.MessageNano;
 
@@ -72,8 +72,8 @@ public class StatsLogCompatManager extends StatsLogManager {
         if (ext.srcTarget[0] != null) {
             ext.srcTarget[0].item = LauncherTarget.APP_ICON;
         }
-        SysUiStatsLog.write(SysUiStatsLog.LAUNCHER_EVENT, LAUNCH_APP, srcState,
-                BACKGROUND /* dstState */, MessageNano.toByteArray(ext), true);
+        StatsLogCompat.write(LAUNCH_APP, srcState, BACKGROUND /* dstState */,
+                MessageNano.toByteArray(ext), true);
     }
 
     @Override
@@ -82,8 +82,8 @@ public class StatsLogCompatManager extends StatsLogManager {
         ext.srcTarget = new LauncherTarget[SUPPORTED_TARGET_DEPTH];
         int srcState = OVERVIEW;
         fillInLauncherExtension(v, ext);
-        SysUiStatsLog.write(SysUiStatsLog.LAUNCHER_EVENT, LAUNCH_TASK, srcState,
-                BACKGROUND /* dstState */, MessageNano.toByteArray(ext), true);
+        StatsLogCompat.write(LAUNCH_TASK, srcState, BACKGROUND /* dstState */,
+                MessageNano.toByteArray(ext), true);
     }
 
     @Override
@@ -92,8 +92,8 @@ public class StatsLogCompatManager extends StatsLogManager {
         ext.srcTarget = new LauncherTarget[SUPPORTED_TARGET_DEPTH];
         int srcState = OVERVIEW;
         fillInLauncherExtension(v, ext);
-        SysUiStatsLog.write(SysUiStatsLog.LAUNCHER_EVENT, DISMISS_TASK, srcState,
-                BACKGROUND /* dstState */, MessageNano.toByteArray(ext), true);
+        StatsLogCompat.write(DISMISS_TASK, srcState, BACKGROUND /* dstState */,
+                MessageNano.toByteArray(ext), true);
     }
 
     @Override
@@ -103,7 +103,7 @@ public class StatsLogCompatManager extends StatsLogManager {
         int srcState = mStateProvider.getCurrentState();
         fillInLauncherExtensionWithPageId(ext, pageId);
         int launcherAction = isSwipingToLeft ? Launcher.SWIPE_LEFT : Launcher.SWIPE_RIGHT;
-        SysUiStatsLog.write(SysUiStatsLog.LAUNCHER_EVENT, launcherAction, srcState, srcState,
+        StatsLogCompat.write(launcherAction, srcState, srcState,
                 MessageNano.toByteArray(ext), true);
     }
 
