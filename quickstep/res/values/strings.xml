@@ -75,11 +75,11 @@
     <!-- Hotseat migration wizard message -->
     <string translatable="false" name="hotseat_migrate_message">To pin a favorite app, drag it over a suggested app. To hide a suggested app, touch &amp; hold it.</string>
     <!-- Toast message user sees after opting into fully predicted hybrid hotseat -->
-    <string translatable="false" name="hotseat_items_migrated">Your hotseat items have been moved to the last page.</string>
+    <string translatable="false" name="hotseat_items_migrated">Bottom row of apps moved to last screen</string>
     <!-- Toast message user sees after opting into fully predicted hybrid hotseat -->
-    <string translatable="false" name="hotseat_no_migration">You can remove items from the hotseat manually to see suggested apps in their spot.</string>
+    <string translatable="false" name="hotseat_no_migration">Bottom row won\'t be replaced. Manually drag apps for predictions.</string>
     <!-- Button text to opt in for fully predicted hotseat -->
-    <string translatable="false" name="hotseat_migrate_accept">I\'m in</string>
+    <string translatable="false" name="hotseat_migrate_accept">Turn On</string>
     <!-- Button text to dismiss opt in for fully predicted hotseat -->
     <string translatable="false" name="hotseat_migrate_dismiss">No thanks</string>
     <!-- Hotseat onboard notification title -->
