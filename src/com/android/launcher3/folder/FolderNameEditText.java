@@ -61,6 +61,9 @@ public class FolderNameEditText extends ExtendedEditText {
         return connectionWrapper;
     }
 
+    /**
+     * Send strings in @param suggestList to the IME to show up as suggestions.
+     */
     public void displayCompletions(List<String> suggestList) {
         int cnt = Math.min(suggestList.size(), FolderNameProvider.SUGGEST_MAX);
         CompletionInfo[] cInfo = new CompletionInfo[cnt];

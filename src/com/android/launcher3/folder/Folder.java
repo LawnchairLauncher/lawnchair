@@ -26,6 +26,7 @@ import android.animation.AnimatorSet;
 import android.annotation.SuppressLint;
 import android.appwidget.AppWidgetHostView;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Path;
 import android.graphics.Rect;
@@ -300,9 +301,8 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         post(() -> {
             if (FeatureFlags.FOLDER_NAME_SUGGEST.get()) {
                 if (TextUtils.isEmpty(mFolderName.getText())) {
-                    final String[] suggestedNames = new String[FolderNameProvider.SUGGEST_MAX];
-                    mLauncher.getFolderNameProvider().getSuggestedFolderName(getContext(),
-                            mInfo.contents, suggestedNames);
+                    String[] suggestedNames =
+                            mInfo.suggestedFolderNames.getStringArrayExtra("suggest");
                     mFolderName.setText(suggestedNames[0]);
                     mFolderName.displayCompletions(Arrays.asList(suggestedNames).subList(1,
                             suggestedNames.length));
@@ -446,17 +446,19 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
      * Show suggested folder title.
      */
     public void showSuggestedTitle(String[] suggestName) {
-        if (FeatureFlags.FOLDER_NAME_SUGGEST.get()
-                && TextUtils.isEmpty(mFolderName.getText().toString())
-                && !mInfo.hasOption(FolderInfo.FLAG_MANUAL_FOLDER_NAME)) {
-            if (suggestName.length > 0 && !TextUtils.isEmpty(suggestName[0])) {
-                mFolderName.setHint("");
-                mFolderName.setText(suggestName[0]);
-                mInfo.title = suggestName[0];
-                animateOpen(mInfo.contents, 0, true);
-                mFolderName.showKeyboard();
-                mFolderName.displayCompletions(
-                        Arrays.asList(suggestName).subList(1, suggestName.length));
+        if (FeatureFlags.FOLDER_NAME_SUGGEST.get()) {
+            mInfo.suggestedFolderNames = new Intent().putExtra("suggest", suggestName);
+            if (TextUtils.isEmpty(mFolderName.getText().toString())
+                    && !mInfo.hasOption(FolderInfo.FLAG_MANUAL_FOLDER_NAME)) {
+                if (suggestName.length > 0 && !TextUtils.isEmpty(suggestName[0])) {
+                    mFolderName.setHint("");
+                    mFolderName.setText(suggestName[0]);
+                    mInfo.title = suggestName[0];
+                    animateOpen(mInfo.contents, 0, true);
+                    mFolderName.showKeyboard();
+                    mFolderName.displayCompletions(
+                            Arrays.asList(suggestName).subList(1, suggestName.length));
+                }
             }
         }
     }

@@ -24,6 +24,7 @@ import com.android.launcher3.AppInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.WorkspaceItemInfo;
+import com.android.launcher3.util.ResourceBasedOverride;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,10 +39,10 @@ import java.util.stream.Collectors;
 /**
  * Locates provider for the folder name.
  */
-public class FolderNameProvider {
+public class FolderNameProvider implements ResourceBasedOverride {
 
     private static final String TAG = "FolderNameProvider";
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
 
     /**
      * IME usually has up to 3 suggest slots. In total, there are 4 suggest slots as the folder
@@ -50,9 +51,14 @@ public class FolderNameProvider {
     public static final int SUGGEST_MAX = 4;
 
     /**
-     * When inheriting class requires precaching, override this method.
+     * Retrieve instance of this object that can be overridden in runtime based on the build
+     * variant of the application.
      */
-    public void load(Context context) {}
+    public static FolderNameProvider newInstance(Context context) {
+        FolderNameProvider fnp = Overrides.getObject(FolderNameProvider.class,
+                context.getApplicationContext(), R.string.folder_name_provider_class);
+        return fnp;
+    }
 
     public CharSequence getSuggestedFolderName(Context context,
             ArrayList<WorkspaceItemInfo> workspaceItemInfos, CharSequence[] candidates) {

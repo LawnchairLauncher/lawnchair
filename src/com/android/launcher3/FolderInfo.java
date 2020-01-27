@@ -16,6 +16,7 @@
 
 package com.android.launcher3;
 
+import android.content.Intent;
 import android.os.Process;
 
 import com.android.launcher3.model.ModelWriter;
@@ -48,6 +49,8 @@ public class FolderInfo extends ItemInfo {
     public static final int FLAG_MANUAL_FOLDER_NAME = 0x00000008;
 
     public int options;
+
+    public Intent suggestedFolderNames;
 
     /**
      * The apps and shortcuts

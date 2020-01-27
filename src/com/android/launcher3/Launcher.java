@@ -103,7 +103,6 @@ import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.folder.FolderGridOrganizer;
 import com.android.launcher3.folder.FolderIcon;
-import com.android.launcher3.folder.FolderNameProvider;
 import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.keyboard.CustomActionsPopup;
@@ -614,10 +613,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     public LauncherStateManager getStateManager() {
         return mStateManager;
-    }
-
-    public FolderNameProvider getFolderNameProvider() {
-        return new FolderNameProvider();
     }
 
     @Override
@@ -1259,13 +1254,13 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                 cellXY[1] = cellY;
                 foundCellSpan = true;
 
+                DragObject dragObject = new DragObject(getApplicationContext());
+                dragObject.dragInfo = info;
                 // If appropriate, either create a folder or add to an existing folder
                 if (mWorkspace.createUserFolderIfNecessary(view, container, layout, cellXY, 0,
-                        true, null)) {
+                        true, dragObject)) {
                     return;
                 }
-                DragObject dragObject = new DragObject();
-                dragObject.dragInfo = info;
                 if (mWorkspace.addToExistingFolderIfNecessary(view, layout, cellXY, 0, dragObject,
                         true)) {
                     return;

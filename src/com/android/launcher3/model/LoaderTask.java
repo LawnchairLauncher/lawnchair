@@ -60,6 +60,7 @@ import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderGridOrganizer;
+import com.android.launcher3.folder.FolderNameProvider;
 import com.android.launcher3.icons.ComponentWithLabel;
 import com.android.launcher3.icons.ComponentWithLabel.ComponentCachingLogic;
 import com.android.launcher3.icons.IconCache;
@@ -255,6 +256,11 @@ public class LoaderTask implements Runnable {
             updateHandler.updateIcons(allWidgetsList, new ComponentCachingLogic(
                     mApp.getContext(), true), mApp.getModel()::onWidgetLabelsUpdated);
             logger.addSplit("save widgets in icon cache");
+
+            // fifth step
+            if (FeatureFlags.FOLDER_NAME_SUGGEST.get()) {
+                loadFolderNames();
+            }
 
             verifyNotStopped();
             updateHandler.finish();
@@ -896,6 +902,21 @@ public class LoaderTask implements Runnable {
             }
         }
         return allShortcuts;
+    }
+
+    private void loadFolderNames() {
+        FolderNameProvider provider = FolderNameProvider.newInstance(mApp.getContext());
+
+        synchronized (mBgDataModel) {
+            for (int i = 0; i < mBgDataModel.folders.size(); i++) {
+                String[] suggestedOut = new String[FolderNameProvider.SUGGEST_MAX];
+                FolderInfo info = mBgDataModel.folders.valueAt(i);
+                if (info.suggestedFolderNames == null) {
+                    provider.getSuggestedFolderName(mApp.getContext(), info.contents, suggestedOut);
+                    info.suggestedFolderNames = new Intent().putExtra("suggest", suggestedOut);
+                }
+            }
+        }
     }
 
     public static boolean isValidProvider(AppWidgetProviderInfo provider) {
