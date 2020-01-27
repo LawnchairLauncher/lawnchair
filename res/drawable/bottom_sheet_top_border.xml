@@ -15,5 +15,5 @@
 -->
 <vector android:height="15.53398dp" android:viewportHeight="32"
     android:viewportWidth="412" android:width="200dp" xmlns:android="http://schemas.android.com/apk/res/android">
-    <path android:fillColor="@color/hotseat_edu_background" android:pathData="M412,32v-2.64C349.26,10.51 279.5,0 206,0S62.74,10.51 0,29.36V32H412z"/>
+    <path android:fillColor="@android:color/white" android:pathData="M412,32v-2.64C349.26,10.51 279.5,0 206,0S62.74,10.51 0,29.36V32H412z"/>
 </vector>

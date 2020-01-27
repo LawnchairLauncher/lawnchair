@@ -235,4 +235,7 @@
 <!-- Theming related -->
     <dimen name="default_dialog_corner_radius">8dp</dimen>
 
+    <!-- Onboarding bottomsheet related -->
+    <dimen name="bottom_sheet_edu_padding">24dp</dimen>
+
 </resources>
