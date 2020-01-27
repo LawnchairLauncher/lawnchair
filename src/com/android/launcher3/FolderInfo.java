@@ -45,6 +45,8 @@ public class FolderInfo extends ItemInfo {
      */
     public static final int FLAG_MULTI_PAGE_ANIMATION = 0x00000004;
 
+    public static final int FLAG_MANUAL_FOLDER_NAME = 0x00000008;
+
     public int options;
 
     /**
@@ -139,5 +141,11 @@ public class FolderInfo extends ItemInfo {
         if (writer != null && oldOptions != options) {
             writer.updateItemInDatabase(this);
         }
+    }
+
+    @Override
+    protected String dumpProperties() {
+        return super.dumpProperties()
+                + " manuallyTypedTitle=" + hasOption(FLAG_MANUAL_FOLDER_NAME);
     }
 }

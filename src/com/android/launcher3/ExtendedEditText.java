@@ -21,14 +21,10 @@ import android.util.AttributeSet;
 import android.view.DragEvent;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.CompletionInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
-import com.android.launcher3.folder.FolderNameProvider;
 import com.android.launcher3.util.UiThreadHelper;
-
-import java.util.List;
 
 
 /**
@@ -103,25 +99,6 @@ public class ExtendedEditText extends EditText {
 
     public void hideKeyboard() {
         UiThreadHelper.hideKeyboardAsync(getContext(), getWindowToken());
-    }
-
-    @Override
-    public void onCommitCompletion(CompletionInfo text) {
-        setText(text.getText());
-        setSelection(text.getText().length());
-    }
-
-    /**
-     * Currently only used for folder name suggestion.
-     */
-    public void displayCompletions(List<String> suggestList) {
-        int cnt = Math.min(suggestList.size(), FolderNameProvider.SUGGEST_MAX);
-        CompletionInfo[] cInfo = new CompletionInfo[cnt];
-        for (int i = 0; i < cnt; i++) {
-            cInfo[i] = new CompletionInfo(i, i, suggestList.get(i));
-        }
-        post(() -> getContext().getSystemService(InputMethodManager.class)
-                .displayCompletions(this, cInfo));
     }
 
     private boolean showSoftInput() {

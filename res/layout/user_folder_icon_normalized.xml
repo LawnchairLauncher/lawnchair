@@ -41,7 +41,7 @@
         android:paddingLeft="12dp"
         android:paddingRight="12dp" >
 
-        <com.android.launcher3.ExtendedEditText
+        <com.android.launcher3.folder.FolderNameEditText
             android:id="@+id/folder_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
