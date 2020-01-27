@@ -112,6 +112,9 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_DEEP_SHORTCUT_ICON_CACHE = getDebugFlag(
             "ENABLE_DEEP_SHORTCUT_ICON_CACHE", true, "R/W deep shortcut in IconCache");
 
+    public static final BooleanFlag MULTI_DB_GRID_MIRATION_ALGO = getDebugFlag(
+            "MULTI_DB_GRID_MIRATION_ALGO", false, "Use the multi-db grid migration algorithm");
+
     public static final BooleanFlag ENABLE_LAUNCHER_PREVIEW_IN_GRID_PICKER = getDebugFlag(
             "ENABLE_LAUNCHER_PREVIEW_IN_GRID_PICKER", false,
             "Show launcher preview in grid picker");
