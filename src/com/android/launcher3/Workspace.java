@@ -39,7 +39,6 @@ import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -79,6 +78,7 @@ import com.android.launcher3.folder.PreviewBackground;
 import com.android.launcher3.graphics.DragPreviewProvider;
 import com.android.launcher3.graphics.PreloadIconDrawable;
 import com.android.launcher3.graphics.RotationMode;
+import com.android.launcher3.icons.BitmapRenderer;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.pageindicators.WorkspacePageIndicator;
 import com.android.launcher3.popup.PopupContainerWithArrow;
@@ -2606,11 +2606,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
         int width = MeasureSpec.makeMeasureSpec(unScaledSize[0], MeasureSpec.EXACTLY);
         int height = MeasureSpec.makeMeasureSpec(unScaledSize[1], MeasureSpec.EXACTLY);
-        Bitmap b = Bitmap.createBitmap(unScaledSize[0], unScaledSize[1],
-                Bitmap.Config.ARGB_8888);
         layout.measure(width, height);
         layout.layout(0, 0, unScaledSize[0], unScaledSize[1]);
-        layout.draw(new Canvas(b));
+        Bitmap b = BitmapRenderer.createHardwareBitmap(
+                unScaledSize[0], unScaledSize[1], layout::draw);
         layout.setVisibility(visibility);
         return b;
     }
