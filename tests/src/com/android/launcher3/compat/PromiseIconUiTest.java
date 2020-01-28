@@ -49,7 +49,7 @@ public class PromiseIconUiTest extends AbstractLauncherUiTest {
         super.setUp();
         mDevice.pressHome();
         waitForLauncherCondition("Launcher didn't start", launcher -> launcher != null);
-        waitForState("Launcher internal state didn't switch to Home", LauncherState.NORMAL);
+        waitForState("Launcher internal state didn't switch to Home", () -> LauncherState.NORMAL);
         mSessionId = -1;
     }
 
