@@ -47,6 +47,12 @@ class FailureInvestigator {
                     logSinceTestsStart)) {
                 return 147845913;
             }
+            if (matches(
+                    "Attempt to invoke virtual method 'boolean android\\.graphics\\.Bitmap\\"
+                            + ".isRecycled\\(\\)' on a null object reference",
+                    logSinceTestsStart)) {
+                return 148424291;
+            }
         } else if (matches("java.lang.AssertionError: Launcher build match not found", exception)) {
             if (matches(
                     "TestStabilityRule: Launcher package: com.google.android.setupwizard",
