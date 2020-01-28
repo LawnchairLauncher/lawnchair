@@ -36,8 +36,8 @@ import com.android.launcher3.tapl.Widgets;
 import com.android.launcher3.testcomponent.WidgetConfigActivity;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.ui.TestViewHelpers;
-import com.android.launcher3.util.Condition;
 import com.android.launcher3.util.Wait;
+import com.android.launcher3.util.Wait.Condition;
 import com.android.launcher3.util.rule.ShellCommandRule;
 
 import org.junit.Before;
