@@ -6,7 +6,7 @@
     <string name="search_no_results">بدون نتیجه</string>
     <string name="restart_lawnchair_pref_title">راه‌اندازی مجدد</string>
     <string name="developer_options_title">گزینه‌های توسعه‌دهنده</string>
-    <string name="change_default_home">برنامه ای را به عنوان خانه برگزینید</string>
+    <string name="change_default_home">به عنوان برنامه خانه انتخاب شود</string>
     <string name="action_apply">انجام شد</string>
     <!-- Note: new. Replaces “OK” in dialogs. -->
     <string name="theme_dark_theme_mode_on">فعال‌شده</string>
@@ -25,8 +25,8 @@
     <string name="pref_white_only_treatment">پس‌زمینه‌های سفید جایگزین شوند</string>
     <string name="pref_white_only_treatment_summary">زمینه نمایه ها را به شکل جذابی رنگ آمیزی کنید.</string>
     <string name="adaptify_pack_title">نمایه های جذابی را برای بسته آیکون ها بسازید</string>
-    <string name="icon_shape_override_label">مقیاس نمایه ها</string>
-    <string name="reset_custom_icons">نمایه های منتخب را حذف کنید</string>
+    <string name="icon_shape_override_label">شکل آیکن ها</string>
+    <string name="reset_custom_icons">آیکن های دستکاری شده حذف شوند</string>
     <string name="reset_custom_icons_confirmation">مقادیر پیش فرض برای نمایه ها را از همین بسته آیکون ها انتخاب میکنید؟ توجه کنید که اینکار غیر قابل برگشت است.</string>
     <string name="appearance">ظاهر</string>
     <!-- Note: new. Replaces title of 5th field (from bottom) in “Theme” page. -->
@@ -278,7 +278,7 @@
     <string name="restore_contents">داده هایی برای بازیابی</string>
     <string name="backup_settings">تنظیمات</string>
     <string name="homescreen">طرح بندی میزکار</string>
-    <string name="backup_wallpaper">تصویر ضمینه</string>
+    <string name="backup_wallpaper">تصویر زمینه</string>
     <string name="name">نام</string>
     <string name="backup_location">موقعیت جغرافیایی</string>
     <string name="backup_location_device_storage">پوشه «Lawnchair»</string>
@@ -519,6 +519,7 @@
     <string name="permission_iplocate">لوکیشن تقریبی</string>
     <string name="permission_iplocate_twilight_explanation">آیا اجازه دسترسی به مکان تقریبی خود را می دهید؟ این امکان محاسبه دقیق تر نور روز را فراهم می کند.</string>
     <string name="event_provider_missing_notification_access">PERSIAN TRANSLATIONS</string>
+    <string name="event_provider_missing_notification_dots">برای استفاده از <xliff:g example="My Provider" id="providerName">“%1$s”</xliff:g>, نقطه های اعلان را فعال کنید.</string>
     <string name="zen_mode_enabled">حالت مزاحم نشوید روشن شد.</string>
     <string name="crash_report_notif_title">%1$s خراب شد</string>
     <string name="onbording_settings_title">%s را تنظیم کنید</string>
