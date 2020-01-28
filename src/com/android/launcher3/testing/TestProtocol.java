@@ -89,4 +89,5 @@ public final class TestProtocol {
 
     public static final String NO_BACKGROUND_TO_OVERVIEW_TAG = "b/138251824";
     public static final String APP_NOT_DISABLED = "b/139891609";
+    public static final String LAUNCHER_DIDNT_INITIALIZE = "b/148313079";
 }

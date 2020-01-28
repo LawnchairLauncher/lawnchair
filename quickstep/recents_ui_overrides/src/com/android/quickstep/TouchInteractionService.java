@@ -135,6 +135,9 @@ public class TouchInteractionService extends Service implements PluginListener<O
                 TouchInteractionService.this.initInputMonitor();
                 preloadOverview(true /* fromInit */);
             });
+            if (TestProtocol.sDebugTracing) {
+                Log.d(TestProtocol.LAUNCHER_DIDNT_INITIALIZE, "TIS initialized");
+            }
             sIsInitialized = true;
         }
 
@@ -392,6 +395,9 @@ public class TouchInteractionService extends Service implements PluginListener<O
 
     @Override
     public void onDestroy() {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.LAUNCHER_DIDNT_INITIALIZE, "TIS destroyed");
+        }
         sIsInitialized = false;
         if (mDeviceState.isUserUnlocked()) {
             mInputConsumer.unregisterInputConsumer();
