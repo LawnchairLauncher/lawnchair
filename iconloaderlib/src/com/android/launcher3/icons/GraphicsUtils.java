@@ -30,6 +30,8 @@ public class GraphicsUtils {
 
     private static final String TAG = "GraphicsUtils";
 
+    public static Runnable sOnNewBitmapRunnable = () -> { };
+
     /**
      * Set the alpha component of {@code color} to be {@code alpha}. Unlike the support lib version,
      * it bounds the alpha in valid range instead of throwing an exception to allow for safer
@@ -77,5 +79,7 @@ public class GraphicsUtils {
     /**
      * Utility method to track new bitmap creation
      */
-    public static void noteNewBitmapCreated() { }
+    public static void noteNewBitmapCreated() {
+        sOnNewBitmapRunnable.run();
+    }
 }
