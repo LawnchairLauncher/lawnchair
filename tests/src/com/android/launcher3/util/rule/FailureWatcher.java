@@ -8,6 +8,7 @@ import androidx.test.uiautomator.UiDevice;
 
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
+import org.junit.runners.model.Statement;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -15,6 +16,7 @@ import java.io.IOException;
 
 public class FailureWatcher extends TestWatcher {
     private static final String TAG = "FailureWatcher";
+    private static boolean sHadFailedTestDeinitialization;
     final private UiDevice mDevice;
 
     public FailureWatcher(UiDevice device) {
@@ -59,5 +61,32 @@ public class FailureWatcher extends TestWatcher {
         }
 
         device.takeScreenshot(new File(pathname));
+    }
+
+    @Override
+    public Statement apply(Statement base, Description description) {
+        return new Statement() {
+
+            @Override
+            public void evaluate() throws Throwable {
+                if (sHadFailedTestDeinitialization) {
+                    Log.d(TAG, "Skipping due to a recent test deinitialization failure: " +
+                            description.getDisplayName());
+                    return;
+                }
+
+                try {
+                    base.evaluate();
+                } catch (Throwable e) {
+                    if (!Log.getStackTraceString(e).contains(
+                            "androidx.test.internal.runner.junit4.statement.RunBefores.evaluate")) {
+                        // Test failed to deinitialize. Since the global state is probably
+                        // corrupted, won't execute other tests.
+                        sHadFailedTestDeinitialization = true;
+                    }
+                    throw e;
+                }
+            }
+        };
     }
 }
