@@ -62,6 +62,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.AnimatorSetBuilder;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.OverviewScrim;
 import com.android.launcher3.touch.BaseSwipeDetector;
 import com.android.launcher3.touch.BothAxesSwipeDetector;
@@ -181,6 +182,12 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
 
     @Override
     public void onMotionPauseChanged(boolean isPaused) {
+        VibratorWrapper.INSTANCE.get(mLauncher).vibrate(OVERVIEW_HAPTIC);
+
+        if (FeatureFlags.ENABLE_OVERVIEW_ACTIONS.get()) {
+            return;
+        }
+
         ShelfAnimState shelfState = isPaused ? PEEK : HIDE;
         if (shelfState == PEEK) {
             // Some shelf elements (e.g. qsb) were hidden, but we need them visible when peeking.
@@ -197,7 +204,6 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         }
         mShelfPeekAnim.setShelfState(shelfState, ShelfPeekAnim.INTERPOLATOR,
                 ShelfPeekAnim.DURATION);
-        VibratorWrapper.INSTANCE.get(mLauncher).vibrate(OVERVIEW_HAPTIC);
     }
 
     private void setupAnimators() {

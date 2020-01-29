@@ -525,7 +525,11 @@ public abstract class AbstractStateChangeTouchController
         if (targetState != mStartState) {
             logReachedState(logAction, targetState);
         }
-        mLauncher.getStateManager().goToState(targetState, false /* animated */);
+        if (!mLauncher.isInState(targetState)) {
+            // If we're already in the target state, don't jump to it at the end of the animation in
+            // case the user started interacting with it before the animation finished.
+            mLauncher.getStateManager().goToState(targetState, false /* animated */);
+        }
         mLauncher.getDragLayer().getScrim().animateToSysuiMultiplier(1, 0, 0);
     }
 

@@ -37,6 +37,7 @@ import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.uioverrides.touchcontrollers.FlingAndHoldTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.LandscapeEdgeSwipeController;
 import com.android.launcher3.uioverrides.touchcontrollers.NavBarToHomeTouchController;
+import com.android.launcher3.uioverrides.touchcontrollers.NoButtonNavbarToOverviewTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.NoButtonQuickSwitchTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.OverviewToAllAppsTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.PortraitStatesTouchController;
@@ -224,7 +225,11 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
         if (mode == NO_BUTTON) {
             list.add(new NoButtonQuickSwitchTouchController(this));
             list.add(new NavBarToHomeTouchController(this));
-            list.add(new FlingAndHoldTouchController(this));
+            if (FeatureFlags.ENABLE_OVERVIEW_ACTIONS.get()) {
+                list.add(new NoButtonNavbarToOverviewTouchController(this));
+            } else {
+                list.add(new FlingAndHoldTouchController(this));
+            }
         } else {
             if (getDeviceProfile().isVerticalBarLayout()) {
                 list.add(new OverviewToAllAppsTouchController(this));

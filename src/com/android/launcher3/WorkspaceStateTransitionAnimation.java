@@ -36,6 +36,7 @@ import android.view.animation.Interpolator;
 import com.android.launcher3.LauncherState.PageAlphaProvider;
 import com.android.launcher3.LauncherState.ScaleAndTranslation;
 import com.android.launcher3.LauncherStateManager.AnimationConfig;
+import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.graphics.WorkspaceAndHotseatScrim;
@@ -77,6 +78,7 @@ public class WorkspaceStateTransitionAnimation {
         ScaleAndTranslation scaleAndTranslation = state.getWorkspaceScaleAndTranslation(mLauncher);
         ScaleAndTranslation hotseatScaleAndTranslation = state.getHotseatScaleAndTranslation(
                 mLauncher);
+        ScaleAndTranslation qsbScaleAndTranslation = state.getQsbScaleAndTranslation(mLauncher);
         mNewScale = scaleAndTranslation.scale;
         PageAlphaProvider pageAlphaProvider = state.getWorkspacePageAlphaProvider(mLauncher);
         final int childCount = mWorkspace.getChildCount();
@@ -90,23 +92,23 @@ public class WorkspaceStateTransitionAnimation {
                 pageAlphaProvider.interpolator);
         boolean playAtomicComponent = config.playAtomicOverviewScaleComponent();
         Hotseat hotseat = mWorkspace.getHotseat();
+        // Since we set the pivot relative to mWorkspace, we need to scale a sibling of Workspace.
+        AllAppsContainerView qsbScaleView = mLauncher.getAppsView();
+        View qsbView = qsbScaleView.getSearchView();
         if (playAtomicComponent) {
             Interpolator scaleInterpolator = builder.getInterpolator(ANIM_WORKSPACE_SCALE, ZOOM_OUT);
             propertySetter.setFloat(mWorkspace, SCALE_PROPERTY, mNewScale, scaleInterpolator);
 
             if (!hotseat.getRotationMode().isTransposed) {
-                // Set the hotseat's pivot point to match the workspace's, so that it scales
-                // together. Since both hotseat and workspace can move, transform the point
-                // manually instead of using dragLayer.getDescendantCoordRelativeToSelf and
-                // related methods.
-                hotseat.setPivotY(mWorkspace.getPivotY() + mWorkspace.getTop() - hotseat.getTop());
-                hotseat.setPivotX(mWorkspace.getPivotX()
-                        + mWorkspace.getLeft() - hotseat.getLeft());
+                setPivotToScaleWithWorkspace(hotseat);
+                setPivotToScaleWithWorkspace(qsbScaleView);
             }
             float hotseatScale = hotseatScaleAndTranslation.scale;
             Interpolator hotseatScaleInterpolator = builder.getInterpolator(ANIM_HOTSEAT_SCALE,
                     scaleInterpolator);
             propertySetter.setFloat(hotseat, SCALE_PROPERTY, hotseatScale,
+                    hotseatScaleInterpolator);
+            propertySetter.setFloat(qsbScaleView, SCALE_PROPERTY, qsbScaleAndTranslation.scale,
                     hotseatScaleInterpolator);
 
             float hotseatIconsAlpha = (elements & HOTSEAT_ICONS) != 0 ? 1 : 0;
@@ -134,8 +136,22 @@ public class WorkspaceStateTransitionAnimation {
                 hotseatScaleAndTranslation.translationY, hotseatTranslationInterpolator);
         propertySetter.setFloat(mWorkspace.getPageIndicator(), View.TRANSLATION_Y,
                 hotseatScaleAndTranslation.translationY, hotseatTranslationInterpolator);
+        propertySetter.setFloat(qsbView, View.TRANSLATION_Y,
+                qsbScaleAndTranslation.translationY, hotseatTranslationInterpolator);
 
         setScrim(propertySetter, state);
+    }
+
+    /**
+     * Set the given view's pivot point to match the workspace's, so that it scales together. Since
+     * both this view and workspace can move, transform the point manually instead of using
+     * dragLayer.getDescendantCoordRelativeToSelf and related methods.
+     */
+    private void setPivotToScaleWithWorkspace(View sibling) {
+        sibling.setPivotY(mWorkspace.getPivotY() + mWorkspace.getTop()
+                - sibling.getTop() - sibling.getTranslationY());
+        sibling.setPivotX(mWorkspace.getPivotX() + mWorkspace.getLeft()
+                - sibling.getLeft() - sibling.getTranslationX());
     }
 
     public void setScrim(PropertySetter propertySetter, LauncherState state) {

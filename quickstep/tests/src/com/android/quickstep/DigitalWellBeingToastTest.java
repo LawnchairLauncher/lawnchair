@@ -68,7 +68,7 @@ public class DigitalWellBeingToastTest extends AbstractQuickStepTest {
 
     private DigitalWellBeingToast getToast() {
         executeOnLauncher(launcher -> launcher.getStateManager().goToState(OVERVIEW));
-        waitForState("Launcher internal state didn't switch to Overview", OVERVIEW);
+        waitForState("Launcher internal state didn't switch to Overview", () -> OVERVIEW);
         final TaskView task = getOnceNotNull("No latest task", launcher -> getLatestTask(launcher));
 
         return getFromLauncher(launcher -> {
