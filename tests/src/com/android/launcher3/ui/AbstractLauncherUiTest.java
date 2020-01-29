@@ -184,16 +184,8 @@ public abstract class AbstractLauncherUiTest {
 
     @After
     public void verifyLauncherState() {
-        try {
-            // Limits UI tests affecting tests running after them.
-            mLauncher.waitForLauncherInitialized();
-        } catch (Throwable t) {
-            Log.e(TAG,
-                    "Couldn't deinit after a test, exiting tests, see logs for failures that "
-                            + "could have caused this",
-                    t);
-            exit(1);
-        }
+        // Limits UI tests affecting tests running after them.
+        mLauncher.waitForLauncherInitialized();
     }
 
     protected void clearLauncherData() throws IOException, InterruptedException {
