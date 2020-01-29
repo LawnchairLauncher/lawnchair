@@ -18,9 +18,13 @@ package com.android.launcher3.util.rule;
 
 import static androidx.test.InstrumentationRegistry.getInstrumentation;
 
+import android.os.SystemClock;
+
 import androidx.test.uiautomator.UiDevice;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.regex.Pattern;
 
 class FailureInvestigator {
@@ -28,17 +32,21 @@ class FailureInvestigator {
         return Pattern.compile(regex).matcher(string).find();
     }
 
-    static int getBugForFailure(CharSequence exception, String testsStartTime) {
+    static int getBugForFailure(CharSequence exception) {
         if ("com.google.android.setupwizard".equals(
                 UiDevice.getInstance(getInstrumentation()).getLauncherPackageName())) {
             return 145935261;
         }
 
-        final String logSinceTestsStart;
+        final String logSinceBoot;
         try {
-            logSinceTestsStart =
+            final String systemBootTime =
+                    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(
+                            new Date(System.currentTimeMillis() - SystemClock.elapsedRealtime()));
+
+            logSinceBoot =
                     UiDevice.getInstance(getInstrumentation())
-                            .executeShellCommand("logcat -d -t " + testsStartTime.replace(" ", ""));
+                            .executeShellCommand("logcat -d -t " + systemBootTime.replace(" ", ""));
         } catch (IOException e) {
             return 0;
         }
@@ -49,19 +57,24 @@ class FailureInvestigator {
                 exception)) {
             if (matches(
                     "BroadcastQueue: Can't deliver broadcast to com.android.systemui.*Crashing it",
-                    logSinceTestsStart)) {
+                    logSinceBoot)) {
                 return 147845913;
             }
             if (matches(
                     "Attempt to invoke virtual method 'boolean android\\.graphics\\.Bitmap\\"
                             + ".isRecycled\\(\\)' on a null object reference",
-                    logSinceTestsStart)) {
+                    logSinceBoot)) {
                 return 148424291;
+            }
+            if (matches(
+                    "java\\.lang\\.IllegalArgumentException\\: Ranking map doesn't contain key",
+                    logSinceBoot)) {
+                return 148570537;
             }
         } else if (matches("java.lang.AssertionError: Launcher build match not found", exception)) {
             if (matches(
                     "TestStabilityRule: Launcher package: com.google.android.setupwizard",
-                    logSinceTestsStart)) {
+                    logSinceBoot)) {
                 return 145935261;
             }
         } else if (matches("Launcher didn't initialize", exception)) {
@@ -69,7 +82,7 @@ class FailureInvestigator {
                     "ActivityManager: Reason: executing service com.google.android.apps"
                             + ".nexuslauncher/com.android.launcher3.notification"
                             + ".NotificationListener",
-                    logSinceTestsStart)) {
+                    logSinceBoot)) {
                 return 148238677;
             }
         }

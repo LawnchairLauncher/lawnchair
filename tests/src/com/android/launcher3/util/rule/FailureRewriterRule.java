@@ -22,14 +22,8 @@ import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 public class FailureRewriterRule implements TestRule {
     private static final String TAG = "FailureRewriter";
-
-    private static final String testsStartTime =
-            new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date());
 
     @Override
     public Statement apply(Statement base, Description description) {
@@ -39,8 +33,7 @@ public class FailureRewriterRule implements TestRule {
                 try {
                     base.evaluate();
                 } catch (Throwable e) {
-                    final int bug =
-                            FailureInvestigator.getBugForFailure(e.toString(), testsStartTime);
+                    final int bug = FailureInvestigator.getBugForFailure(e.toString());
                     if (bug == 0) throw e;
 
                     Log.e(TAG, "Known bug found for the original failure "
