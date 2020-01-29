@@ -55,7 +55,10 @@ public abstract class LauncherAnimationRunner implements RemoteAnimationRunnerCo
             RemoteAnimationTargetCompat[] wallpaperTargets, Runnable runnable) {
         Runnable r = () -> {
             finishExistingAnimation();
-            mAnimationResult = new AnimationResult(runnable);
+            mAnimationResult = new AnimationResult(() -> {
+                runnable.run();
+                mAnimationResult = null;
+            });
             onCreateAnimation(appTargets, wallpaperTargets, mAnimationResult);
         };
         if (mStartAtFrontOfQueue) {
