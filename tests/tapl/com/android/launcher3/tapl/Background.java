@@ -37,6 +37,7 @@ import java.util.regex.Pattern;
  */
 public class Background extends LauncherInstrumentation.VisibleContainer {
     private static final int ZERO_BUTTON_SWIPE_UP_GESTURE_DURATION = 500;
+    private static final Pattern SQUARE_BUTTON_EVENT = Pattern.compile("onOverviewToggle");
 
     Background(LauncherInstrumentation launcher) {
         super(launcher);
@@ -129,6 +130,7 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
             }
 
             case THREE_BUTTON:
+                mLauncher.expectEvent(SQUARE_BUTTON_EVENT);
                 mLauncher.runToState(
                         () -> mLauncher.waitForSystemUiObject("recent_apps").click(),
                         OVERVIEW_STATE_ORDINAL);
@@ -189,8 +191,10 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
             case THREE_BUTTON:
                 // Double press the recents button.
                 UiObject2 recentsButton = mLauncher.waitForSystemUiObject("recent_apps");
+                mLauncher.expectEvent(SQUARE_BUTTON_EVENT);
                 mLauncher.runToState(() -> recentsButton.click(), OVERVIEW_STATE_ORDINAL);
                 mLauncher.getOverview();
+                mLauncher.expectEvent(SQUARE_BUTTON_EVENT);
                 recentsButton.click();
                 break;
         }

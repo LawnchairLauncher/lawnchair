@@ -61,6 +61,7 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.provider.RestoreDbTask;
+import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.TraceHelper;
@@ -144,6 +145,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
         @BinderThread
         @Override
         public void onOverviewToggle() {
+            TestLogging.recordEvent("onOverviewToggle");
             mOverviewCommandHelper.onOverviewToggle();
         }
 
