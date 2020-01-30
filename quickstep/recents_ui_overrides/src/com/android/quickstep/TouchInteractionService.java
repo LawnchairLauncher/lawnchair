@@ -28,6 +28,7 @@ import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_INPUT_MONITOR;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SYSUI_PROXY;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_TRACING_ENABLED;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.ACTIVITY_TYPE_ASSISTANT;
 
 import android.annotation.TargetApi;
@@ -62,6 +63,8 @@ import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.provider.RestoreDbTask;
 import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.tracing.nano.LauncherTraceProto;
+import com.android.launcher3.tracing.nano.TouchInteractionServiceProto;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.TraceHelper;
 import com.android.quickstep.inputconsumers.AccessibilityInputConsumer;
@@ -75,6 +78,7 @@ import com.android.quickstep.inputconsumers.ResetGestureInputConsumer;
 import com.android.quickstep.inputconsumers.ScreenPinnedInputConsumer;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.AssistantUtilities;
+import com.android.quickstep.util.ProtoTracer;
 import com.android.systemui.plugins.OverscrollPlugin;
 import com.android.systemui.plugins.PluginListener;
 import com.android.systemui.shared.recents.IOverviewProxy;
@@ -84,6 +88,7 @@ import com.android.systemui.shared.system.InputChannelCompat.InputEventReceiver;
 import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.InputMonitorCompat;
 import com.android.systemui.shared.system.RecentsAnimationListener;
+import com.android.systemui.shared.tracing.ProtoTraceable;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -112,7 +117,8 @@ class ArgList extends LinkedList<String> {
  * Service connected by system-UI for handling touch interaction.
  */
 @TargetApi(Build.VERSION_CODES.Q)
-public class TouchInteractionService extends Service implements PluginListener<OverscrollPlugin> {
+public class TouchInteractionService extends Service implements PluginListener<OverscrollPlugin>,
+        ProtoTraceable<LauncherTraceProto> {
 
     private static final String TAG = "TouchInteractionService";
 
@@ -273,6 +279,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
         mDeviceState = new RecentsAnimationDeviceState(this);
         mDeviceState.addNavigationModeChangedCallback(this::onNavigationModeChanged);
         mDeviceState.runOnUserUnlocked(this::onUserUnlocked);
+        ProtoTracer.INSTANCE.get(this).add(this);
 
         sConnected = true;
     }
@@ -379,6 +386,13 @@ public class TouchInteractionService extends Service implements PluginListener<O
             SystemUiProxy.INSTANCE.get(this).setLastSystemUiStateFlags(
                     mDeviceState.getSystemUiStateFlags());
             mOverviewComponentObserver.onSystemUiStateChanged();
+
+            // Update the tracing state
+            if ((mDeviceState.getSystemUiStateFlags() & SYSUI_STATE_TRACING_ENABLED) != 0) {
+                ProtoTracer.INSTANCE.get(TouchInteractionService.this).start();
+            } else {
+                ProtoTracer.INSTANCE.get(TouchInteractionService.this).stop();
+            }
         }
     }
 
@@ -401,6 +415,8 @@ public class TouchInteractionService extends Service implements PluginListener<O
         disposeEventHandlers();
         mDeviceState.destroy();
         SystemUiProxy.INSTANCE.get(this).setProxy(null);
+        ProtoTracer.INSTANCE.get(TouchInteractionService.this).stop();
+        ProtoTracer.INSTANCE.get(this).remove(this);
 
         sConnected = false;
         super.onDestroy();
@@ -722,6 +738,9 @@ public class TouchInteractionService extends Service implements PluginListener<O
             pw.println("  ENABLE_HINTS_IN_OVERVIEW=" + ENABLE_HINTS_IN_OVERVIEW.get());
             pw.println("  FAKE_LANDSCAPE_UI=" + FAKE_LANDSCAPE_UI.get());
             ActiveGestureLog.INSTANCE.dump("", pw);
+            pw.println("ProtoTrace:");
+            pw.println("  file="
+                    + ProtoTracer.INSTANCE.get(TouchInteractionService.this).getTraceFile());
         }
     }
 
@@ -779,5 +798,14 @@ public class TouchInteractionService extends Service implements PluginListener<O
     @Override
     public void onPluginDisconnected(OverscrollPlugin overscrollPlugin) {
         mOverscrollPlugin = null;
+    }
+
+    @Override
+    public void writeToProto(LauncherTraceProto proto) {
+        if (proto.touchInteractionService == null) {
+            proto.touchInteractionService = new TouchInteractionServiceProto();
+        }
+        proto.touchInteractionService.serviceConnected = true;
+        proto.touchInteractionService.serviceConnected = true;
     }
 }
