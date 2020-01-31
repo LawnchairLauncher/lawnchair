@@ -317,8 +317,8 @@ public class PredictionUiStateManager implements StateListener, ItemInfoUpdateRe
                 && itemInfo.itemType != LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT)) {
             return;
         }
-        if (itemInfo.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION) {
-            HotseatPredictionController.fillInHybridHotseatRank(itemInfo, target);
+        if (itemInfo.container != LauncherSettings.Favorites.CONTAINER_PREDICTION) {
+            HotseatPredictionController.encodeHotseatLayoutIntoPredictionRank(itemInfo, target);
             return;
         }
 
@@ -327,7 +327,7 @@ public class PredictionUiStateManager implements StateListener, ItemInfoUpdateRe
         IntStream.range(0, predictedApps.size())
                 .filter((i) -> k.equals(predictedApps.get(i).getComponentKey()))
                 .findFirst()
-                .ifPresent((rank) -> target.predictedRank = rank);
+                .ifPresent((rank) -> target.predictedRank = 0 - rank);
     }
 
     public static class PredictionState {

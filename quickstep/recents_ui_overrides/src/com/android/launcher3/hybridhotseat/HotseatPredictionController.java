@@ -68,6 +68,7 @@ import com.android.launcher3.util.ComponentKey;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.OptionalInt;
 import java.util.stream.IntStream;
 
 /**
@@ -548,12 +549,11 @@ public class HotseatPredictionController implements DragController.DragListener,
      * Fill in predicted_rank field based on app prediction.
      * Only applicable when {@link ItemInfo#itemType} is PREDICTED_HOTSEAT
      */
-    public static void fillInHybridHotseatRank(
+    public static void encodeHotseatLayoutIntoPredictionRank(
             @NonNull ItemInfo itemInfo, @NonNull LauncherLogProto.Target target) {
         QuickstepLauncher launcher = QuickstepLauncher.ACTIVITY_TRACKER.getCreatedActivity();
         if (launcher == null || launcher.getHotseatPredictionController() == null
-                || itemInfo.getTargetComponent() == null
-                || itemInfo.container != LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION) {
+                || itemInfo.getTargetComponent() == null) {
             return;
         }
         HotseatPredictionController controller = launcher.getHotseatPredictionController();
@@ -561,11 +561,12 @@ public class HotseatPredictionController implements DragController.DragListener,
         final ComponentKey k = new ComponentKey(itemInfo.getTargetComponent(), itemInfo.user);
 
         final List<ComponentKeyMapper> predictedApps = controller.mComponentKeyMappers;
-        IntStream.range(0, predictedApps.size())
+        OptionalInt rank = IntStream.range(0, predictedApps.size())
                 .filter((i) -> k.equals(predictedApps.get(i).getComponentKey()))
-                .findFirst()
-                .ifPresent((rank) -> target.predictedRank =
-                        Integer.parseInt(controller.mPredictedSpotsCount + "0" + rank));
+                .findFirst();
+
+        target.predictedRank = 10000 + (controller.mPredictedSpotsCount * 100)
+                + (rank.isPresent() ? rank.getAsInt() + 1 : 0);
     }
 
     private static boolean isPredictedIcon(View view) {
