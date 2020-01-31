@@ -43,6 +43,7 @@ import android.view.ViewConfiguration;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppTransitionManagerImpl;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
@@ -86,6 +87,10 @@ public class FlingAndHoldTouchController extends PortraitStatesTouchController {
 
         if (handlingOverviewAnim()) {
             mMotionPauseDetector.setOnMotionPauseListener(this::onMotionPauseChanged);
+        }
+
+        if (mAtomicAnim != null) {
+            mAtomicAnim.cancel();
         }
     }
 
@@ -193,13 +198,27 @@ public class FlingAndHoldTouchController extends PortraitStatesTouchController {
 
         Animator overviewAnim = mLauncher.getAppTransitionManager().createStateElementAnimation(
                 INDEX_PAUSE_TO_OVERVIEW_ANIM);
-        overviewAnim.addListener(new AnimatorListenerAdapter() {
+        mAtomicAnim = new AnimatorSet();
+        mAtomicAnim.addListener(new AnimationSuccessListener() {
             @Override
-            public void onAnimationEnd(Animator animation) {
+            public void onAnimationSuccess(Animator animator) {
                 onSwipeInteractionCompleted(OVERVIEW, Touch.SWIPE);
             }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                if (mCancelled) {
+                    mPeekAnim = mLauncher.getStateManager().createAtomicAnimation(mFromState,
+                            mToState, new AnimatorSetBuilder(), ATOMIC_OVERVIEW_PEEK_COMPONENT,
+                            PEEK_OUT_ANIM_DURATION);
+                    mPeekAnim.start();
+                }
+                mAtomicAnim = null;
+            }
         });
-        overviewAnim.start();
+        mAtomicAnim.play(overviewAnim);
+        mAtomicAnim.start();
     }
 
     @Override
