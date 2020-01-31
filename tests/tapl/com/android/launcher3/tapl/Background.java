@@ -25,6 +25,7 @@ import android.os.SystemClock;
 import android.view.MotionEvent;
 
 import androidx.annotation.NonNull;
+import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.UiObject2;
 
 import com.android.launcher3.testing.TestProtocol;
@@ -179,9 +180,12 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
                     endX = startX;
                     endY = 0;
                 }
+                final boolean launcherIsVisible =
+                        mLauncher.hasLauncherObject(By.textStartsWith(""));
+                final boolean isZeroButton = mLauncher.getNavigationModel()
+                        == LauncherInstrumentation.NavigationModel.ZERO_BUTTON;
                 mLauncher.swipeToState(startX, startY, endX, endY, 20, expectedState,
-                        mLauncher.getNavigationModel()
-                                == LauncherInstrumentation.NavigationModel.ZERO_BUTTON
+                        launcherIsVisible && isZeroButton
                                 ? LauncherInstrumentation.GestureScope.INSIDE_TO_OUTSIDE
                                 : LauncherInstrumentation.GestureScope.OUTSIDE
                 );
