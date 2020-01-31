@@ -166,13 +166,22 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
     }
 
     public boolean performAction(final View host, final ItemInfo item, int action) {
-        if (action == ACTION_LONG_CLICK && ShortcutUtil.isDeepShortcut(item)) {
-            CustomActionsPopup popup = new CustomActionsPopup(mLauncher, host);
-            if (popup.canShow()) {
-                popup.show();
+        if (action == ACTION_LONG_CLICK) {
+            if (ShortcutUtil.isDeepShortcut(item)) {
+                CustomActionsPopup popup = new CustomActionsPopup(mLauncher, host);
+                if (popup.canShow()) {
+                    popup.show();
+                    return true;
+                }
+            } else if (host instanceof BubbleTextView) {
+                // Long press should be consumed for workspace items, and it should invoke the
+                // Shortcuts / Notifications / Actions pop-up menu, and not start a drag as the
+                // standard long press path does.
+                PopupContainerWithArrow.showForIcon((BubbleTextView) host);
                 return true;
             }
         }
+
         if (action == MOVE) {
             beginAccessibleDrag(host, item);
         } else if (action == ADD_TO_WORKSPACE) {

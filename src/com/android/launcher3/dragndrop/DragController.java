@@ -565,11 +565,13 @@ public class DragController implements DragDriver.EventListener, TouchController
 
     /**
      * Since accessible drag and drop won't cause the same sequence of touch events, we manually
-     * inject the appropriate state.
+     * inject the appropriate state which would have been otherwise initiated via touch events.
      */
     public void prepareAccessibleDrag(int x, int y) {
         mMotionDownX = x;
         mMotionDownY = y;
+        mLastTouch[0] = x;
+        mLastTouch[1] = y;
     }
 
     /**
