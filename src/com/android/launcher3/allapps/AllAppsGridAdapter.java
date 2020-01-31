@@ -43,7 +43,6 @@ import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.AlphabeticalAppsList.AdapterItem;
 import com.android.launcher3.model.AppLaunchTracker;
-import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.util.PackageManagerHelper;
 
 import java.util.List;
@@ -67,7 +66,6 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
 
     // A divider that separates the apps list and the search market button
     public static final int VIEW_TYPE_ALL_APPS_DIVIDER = 1 << 4;
-    public static final int VIEW_TYPE_WORK_TAB_FOOTER = 1 << 5;
 
     // Common view type masks
     public static final int VIEW_TYPE_MASK_DIVIDER = VIEW_TYPE_ALL_APPS_DIVIDER;
@@ -289,9 +287,6 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
             case VIEW_TYPE_ALL_APPS_DIVIDER:
                 return new ViewHolder(mLayoutInflater.inflate(
                         R.layout.all_apps_divider, parent, false));
-            case VIEW_TYPE_WORK_TAB_FOOTER:
-                View footer = mLayoutInflater.inflate(R.layout.work_tab_footer, parent, false);
-                return new ViewHolder(footer);
             default:
                 throw new RuntimeException("Unexpected view type");
         }
@@ -322,15 +317,6 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 break;
             case VIEW_TYPE_ALL_APPS_DIVIDER:
                 // nothing to do
-                break;
-            case VIEW_TYPE_WORK_TAB_FOOTER:
-                WorkModeSwitch workModeToggle = holder.itemView.findViewById(R.id.work_mode_toggle);
-                workModeToggle.refresh();
-                TextView managedByLabel = holder.itemView.findViewById(R.id.managed_by_label);
-                boolean anyProfileQuietModeEnabled = UserCache.INSTANCE.get(
-                        managedByLabel.getContext()).isAnyProfileQuietModeEnabled();
-                managedByLabel.setText(anyProfileQuietModeEnabled
-                        ? R.string.work_mode_off_label : R.string.work_mode_on_label);
                 break;
         }
         if (mBindViewCallback != null) {

@@ -34,10 +34,10 @@
         android:orientation="vertical">
 
         <TextView
+            style="@style/TextHeadline"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="18dp"
-            android:fontFamily="google-sans"
             android:paddingLeft="@dimen/bottom_sheet_edu_padding"
             android:paddingRight="@dimen/bottom_sheet_edu_padding"
             android:text="@string/hotseat_migrate_title"

@@ -338,9 +338,12 @@
 
     <!-- This string is in the work profile tab when a user has All Apps open on their phone. It describes the label of a toggle, "Work profile," as being managed by the user's employer.
     "Organization" is used to represent a variety of businesses, non-profits, and educational institutions).-->
-    <string name="work_mode_on_label">Managed by your organization</string>
+    <string name="work_mode_on_label">Work apps: On</string>
     <!-- This string appears under a the label of a toggle in the work profile tab on a user's phone. It describes the status of the toggle, "Work profile," when it's turned off. "Work profile" means a separate profile on a user's phone that's speficially for their work apps and is managed by their company.-->
-    <string name="work_mode_off_label">Notifications and apps are off</string>
+    <string name="work_mode_off_label">Work apps: Paused</string>
+
+    <string name="work_apps_paused_title">Work apps are paused</string>
+    <string name="work_apps_paused_body">You won\'t get any work notifications, and your IT admin can\'t see your location</string>
 
     <!-- Failed action error message: e.g. Failed: Pause -->
     <string name="remote_action_failed">Failed: <xliff:g id="what" example="Pause">%1$s</xliff:g></string>
