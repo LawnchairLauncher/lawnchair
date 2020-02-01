@@ -797,7 +797,7 @@ public final class LauncherInstrumentation {
         return mDevice.hasObject(getLauncherObjectSelector(resId));
     }
 
-    private boolean hasLauncherObject(BySelector selector) {
+    boolean hasLauncherObject(BySelector selector) {
         return mDevice.hasObject(makeLauncherSelector(selector));
     }
 
