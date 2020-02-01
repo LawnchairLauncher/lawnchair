@@ -32,11 +32,61 @@ class FailureInvestigator {
         return Pattern.compile(regex).matcher(string).find();
     }
 
+    static class LogcatMatch {
+        String logcatPattern;
+        int bug;
+
+        LogcatMatch(String logcatPattern, int bug) {
+            this.logcatPattern = logcatPattern;
+            this.bug = bug;
+        }
+    }
+
+    static class ExceptionMatch {
+        String exceptionPattern;
+        LogcatMatch[] logcatMatches;
+
+        ExceptionMatch(String exceptionPattern, LogcatMatch[] logcatMatches) {
+            this.exceptionPattern = exceptionPattern;
+            this.logcatMatches = logcatMatches;
+        }
+    }
+
+    private static final ExceptionMatch[] EXCEPTION_MATCHES = {
+            new ExceptionMatch(
+                    "java.lang.AssertionError: http://go/tapl : Tests are broken by a "
+                            + "non-Launcher system error: Phone is locked",
+                    new LogcatMatch[]{
+                            new LogcatMatch(
+                                    "BroadcastQueue: Can't deliver broadcast to com.android"
+                                            + ".systemui.*Crashing it",
+                                    147845913),
+                            new LogcatMatch(
+                                    "Attempt to invoke virtual method 'boolean android\\"
+                                            + ".graphics\\.Bitmap\\.isRecycled\\(\\)' on a null "
+                                            + "object reference",
+                                    148424291),
+                            new LogcatMatch(
+                                    "java\\.lang\\.IllegalArgumentException\\: Ranking map "
+                                            + "doesn't contain key",
+                                    148570537),
+                    }),
+            new ExceptionMatch("Launcher didn't initialize",
+                    new LogcatMatch[]{
+                            new LogcatMatch(
+                                    "ActivityManager: Reason: executing service com.google"
+                                            + ".android.apps.nexuslauncher/com.android.launcher3"
+                                            + ".notification.NotificationListener",
+                                    148238677),
+                    }),
+    };
+
     static int getBugForFailure(CharSequence exception) {
         if ("com.google.android.setupwizard".equals(
                 UiDevice.getInstance(getInstrumentation()).getLauncherPackageName())) {
             return 145935261;
         }
+
 
         final String logSinceBoot;
         try {
@@ -51,39 +101,14 @@ class FailureInvestigator {
             return 0;
         }
 
-        if (matches(
-                "java.lang.AssertionError: http://go/tapl : Tests are broken by a non-Launcher "
-                        + "system error: Phone is locked",
-                exception)) {
-            if (matches(
-                    "BroadcastQueue: Can't deliver broadcast to com.android.systemui.*Crashing it",
-                    logSinceBoot)) {
-                return 147845913;
-            }
-            if (matches(
-                    "Attempt to invoke virtual method 'boolean android\\.graphics\\.Bitmap\\"
-                            + ".isRecycled\\(\\)' on a null object reference",
-                    logSinceBoot)) {
-                return 148424291;
-            }
-            if (matches(
-                    "java\\.lang\\.IllegalArgumentException\\: Ranking map doesn't contain key",
-                    logSinceBoot)) {
-                return 148570537;
-            }
-        } else if (matches("java.lang.AssertionError: Launcher build match not found", exception)) {
-            if (matches(
-                    "TestStabilityRule: Launcher package: com.google.android.setupwizard",
-                    logSinceBoot)) {
-                return 145935261;
-            }
-        } else if (matches("Launcher didn't initialize", exception)) {
-            if (matches(
-                    "ActivityManager: Reason: executing service com.google.android.apps"
-                            + ".nexuslauncher/com.android.launcher3.notification"
-                            + ".NotificationListener",
-                    logSinceBoot)) {
-                return 148238677;
+        for (ExceptionMatch exceptionMatch : EXCEPTION_MATCHES) {
+            if (matches(exceptionMatch.exceptionPattern, exception)) {
+                for (LogcatMatch logcatMatch : exceptionMatch.logcatMatches) {
+                    if (matches(logcatMatch.logcatPattern, logSinceBoot)) {
+                        return logcatMatch.bug;
+                    }
+                }
+                break;
             }
         }
 
