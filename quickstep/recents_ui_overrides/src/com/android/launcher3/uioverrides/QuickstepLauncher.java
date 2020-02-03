@@ -20,13 +20,18 @@ import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.View;
+
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.anim.AnimatorPlaybackController;
@@ -158,6 +163,15 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
     }
 
     @Override
+    public boolean startActivitySafely(View v, Intent intent, ItemInfo item,
+            @Nullable String sourceContainer) {
+        if (mHotseatPredictionController != null) {
+            mHotseatPredictionController.setPauseUIUpdate(true);
+        }
+        return super.startActivitySafely(v, intent, item, sourceContainer);
+    }
+
+    @Override
     protected void onActivityFlagsChanged(int changeBits) {
         super.onActivityFlagsChanged(changeBits);
 
@@ -165,6 +179,11 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
                 | ACTIVITY_STATE_USER_ACTIVE | ACTIVITY_STATE_TRANSITION_ACTIVE)) != 0
                 && (getActivityFlags() & ACTIVITY_STATE_TRANSITION_ACTIVE) == 0) {
             onStateOrResumeChanged();
+        }
+
+        if ((changeBits & ACTIVITY_STATE_STARTED) != 0 && mHotseatPredictionController != null
+                && (getActivityFlags() & ACTIVITY_STATE_USER_ACTIVE) == 0) {
+            mHotseatPredictionController.setPauseUIUpdate(false);
         }
     }
 

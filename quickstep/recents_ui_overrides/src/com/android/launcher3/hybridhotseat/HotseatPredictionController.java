@@ -108,6 +108,7 @@ public class HotseatPredictionController implements DragController.DragListener,
     private AppPredictor mAppPredictor;
     private AllAppsStore mAllAppsStore;
     private AnimatorSet mIconRemoveAnimators;
+    private boolean mUIUpdatePaused = false;
 
     private HotseatEduController mHotseatEduController;
 
@@ -167,7 +168,7 @@ public class HotseatPredictionController implements DragController.DragListener,
     }
 
     private void fillGapsWithPrediction(boolean animate, Runnable callback) {
-        if (!isReady() || mDragObject != null) {
+        if (!isReady() || mUIUpdatePaused || mDragObject != null) {
             return;
         }
         List<WorkspaceItemInfo> predictedApps = mapToWorkspaceItemInfo(mComponentKeyMappers);
@@ -245,6 +246,16 @@ public class HotseatPredictionController implements DragController.DragListener,
         mHotseat.removeOnAttachStateChangeListener(this);
         if (mAppPredictor != null) {
             mAppPredictor.destroy();
+        }
+    }
+
+    /**
+     * start and pauses predicted apps update on the hotseat
+     */
+    public void setPauseUIUpdate(boolean paused) {
+        mUIUpdatePaused = paused;
+        if (!paused) {
+            fillGapsWithPrediction();
         }
     }
 
