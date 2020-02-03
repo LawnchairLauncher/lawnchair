@@ -187,7 +187,7 @@ public abstract class SystemShortcut<T extends BaseDraggingActivity> extends Ite
 
     public static class DismissPrediction extends SystemShortcut<Launcher> {
         public DismissPrediction(Launcher launcher, ItemInfo itemInfo) {
-            super(R.drawable.ic_remove_no_shadow, R.string.dismiss_prediction_label, launcher,
+            super(R.drawable.ic_block, R.string.dismiss_prediction_label, launcher,
                     itemInfo);
         }
 
