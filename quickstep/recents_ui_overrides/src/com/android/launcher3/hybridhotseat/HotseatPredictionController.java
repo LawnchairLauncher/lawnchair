@@ -39,6 +39,7 @@ import com.android.launcher3.AppInfo;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
+import com.android.launcher3.FolderInfo;
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfo;
@@ -441,6 +442,20 @@ public class HotseatPredictionController implements DragController.DragListener,
             mHotseat.addDelegatedCellDrawing(outlineDrawing);
         }
         mHotseat.invalidate();
+    }
+
+    /**
+     * Unpins pinned app when it's converted into a folder
+     */
+    public void folderCreatedFromIcon(ItemInfo info, FolderInfo folderInfo) {
+        AppTarget target = getAppTargetFromItemInfo(info);
+        if (folderInfo.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT && !isInHotseat(
+                info)) {
+            notifyItemAction(target, APP_LOCATION_HOTSEAT, APPTARGET_ACTION_UNPIN);
+        } else if (folderInfo.container == LauncherSettings.Favorites.CONTAINER_DESKTOP
+                && folderInfo.screenId == Workspace.FIRST_SCREEN_ID && !isInFirstPage(info)) {
+            notifyItemAction(target, APP_LOCATION_WORKSPACE, APPTARGET_ACTION_UNPIN);
+        }
     }
 
     @Override

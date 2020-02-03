@@ -1721,8 +1721,11 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         }
     }
 
-    FolderIcon addFolder(CellLayout layout, int container, final int screenId, int cellX,
-            int cellY) {
+    /**
+     * Creates and adds new folder to CellLayout
+     */
+    public FolderIcon addFolder(CellLayout layout, WorkspaceItemInfo info, int container,
+            final int screenId, int cellX, int cellY) {
         final FolderInfo folderInfo = new FolderInfo();
         folderInfo.title = "";
 
@@ -1730,7 +1733,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         getModelWriter().addItemToDatabase(folderInfo, container, screenId, cellX, cellY);
 
         // Create the view
-        FolderIcon newFolder = FolderIcon.inflateFolderAndIcon(R.layout.folder_icon, this, layout, folderInfo);
+        FolderIcon newFolder = FolderIcon.inflateFolderAndIcon(R.layout.folder_icon, this, layout,
+                folderInfo);
         mWorkspace.addInScreen(newFolder, folderInfo);
         // Force measure the new folder icon
         CellLayout parent = mWorkspace.getParentCellLayoutForView(newFolder);

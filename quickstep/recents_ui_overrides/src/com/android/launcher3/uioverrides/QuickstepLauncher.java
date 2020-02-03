@@ -26,11 +26,14 @@ import android.os.Bundle;
 import android.view.Gravity;
 
 import com.android.launcher3.BaseQuickstepLauncher;
+import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.hybridhotseat.HotseatPredictionController;
 import com.android.launcher3.popup.SystemShortcut;
@@ -166,6 +169,16 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
                 && (getActivityFlags() & ACTIVITY_STATE_TRANSITION_ACTIVE) == 0) {
             onStateOrResumeChanged();
         }
+    }
+
+    @Override
+    public FolderIcon addFolder(CellLayout layout, WorkspaceItemInfo info, int container,
+            int screenId, int cellX, int cellY) {
+        FolderIcon fi =  super.addFolder(layout, info, container, screenId, cellX, cellY);
+        if (mHotseatPredictionController != null) {
+            mHotseatPredictionController.folderCreatedFromIcon(info, fi.getFolder().getInfo());
+        }
+        return fi;
     }
 
     @Override
