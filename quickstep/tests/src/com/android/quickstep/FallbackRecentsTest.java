@@ -147,7 +147,7 @@ public class FallbackRecentsTest {
     @Test
     @Ignore // b/143488140
     public void goToOverviewFromApp() {
-        startAppFastAndWaitForRecentTask(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
+        startAppFast(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
 
         mLauncher.getBackground().switchToOverview();
     }
@@ -182,8 +182,8 @@ public class FallbackRecentsTest {
     @Test
     @Ignore // b/143488140
     public void testOverview() {
-        startAppFastAndWaitForRecentTask(getAppPackageName());
-        startAppFastAndWaitForRecentTask(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
+        startAppFast(getAppPackageName());
+        startAppFast(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
         startTestActivity(2);
         Wait.atMost("Expected three apps in the task list",
                 () -> mLauncher.getRecentTasks().size() >= 3, DEFAULT_ACTIVITY_TIMEOUT, mLauncher);
@@ -235,26 +235,5 @@ public class FallbackRecentsTest {
 
     private int getTaskCount(RecentsActivity recents) {
         return recents.<RecentsView>getOverviewPanel().getTaskViewCount();
-    }
-
-    /**
-     * Workaround for b/141580748, there was an issue where the recent task is only updated when the
-     * activity starting the task is resumed.  In this case, we should wait until the task is in
-     * the recents task list before continuing.
-     */
-    private void startAppFastAndWaitForRecentTask(String packageName) {
-        startAppFast(packageName);
-        Wait.atMost("Expected app in task list",
-                () -> containsRecentTaskWithPackage(packageName), DEFAULT_ACTIVITY_TIMEOUT,
-                mLauncher);
-    }
-
-    private boolean containsRecentTaskWithPackage(String packageName) {
-        for (ComponentName cn : mLauncher.getRecentTasks()) {
-            if (cn.getPackageName().equals(packageName)) {
-                return true;
-            }
-        }
-        return false;
     }
 }
