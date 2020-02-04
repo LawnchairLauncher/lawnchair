@@ -29,11 +29,12 @@ import android.os.Looper;
 import android.util.FloatProperty;
 import android.util.Log;
 
-import java.util.ArrayList;
-
 import androidx.dynamicanimation.animation.DynamicAnimation.OnAnimationEndListener;
 import androidx.dynamicanimation.animation.SpringAnimation;
 import androidx.dynamicanimation.animation.SpringForce;
+
+import java.util.ArrayList;
+
 
 /**
  * This animator allows for an object's property to be be controlled by an {@link ObjectAnimator} or
@@ -137,11 +138,13 @@ public class SpringObjectAnimator<T> extends ValueAnimator {
 
         mProperty.switchToSpring();
 
-        mSpring.setStartVelocity(velocity);
-
         float startValue = end == 0 ? mValues[1] : mValues[0];
         float endValue = end == 0 ? mValues[0] : mValues[1];
-        mSpring.setStartValue(startValue);
+
+        // Ensures that the velocity matches the direction of the values.
+        velocity = Math.signum(endValue - startValue) * Math.abs(velocity);
+        mSpring.setStartVelocity(velocity);
+
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             mSpring.animateToFinalPosition(endValue);
         }, getStartDelay());
