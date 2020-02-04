@@ -17,6 +17,7 @@
 
 package ch.deletescape.lawnchair.root
 
+import android.os.SystemClock
 import com.android.launcher3.BuildConfig
 import eu.chainfire.librootjava.RootIPC
 import android.view.InputDevice
@@ -27,6 +28,9 @@ class RootHelper : IRootHelper.Stub() {
 
     override fun goToSleep() {
         RootHelperUtils.goToSleep()
+        //         val time = SystemClock.uptimeMillis()
+        //        sendKeyEvent(KeyEvent.KEYCODE_SLEEP, KeyEvent.ACTION_DOWN, 0, time, time)
+        //        sendKeyEvent(KeyEvent.KEYCODE_SLEEP, KeyEvent.ACTION_UP, 0, time, time)
     }
 
     override fun sendKeyEvent(code: Int, action: Int, flags: Int, downTime: Long, eventTime: Long) {

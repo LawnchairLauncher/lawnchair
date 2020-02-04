@@ -52,7 +52,7 @@ class SleepGestureHandler(context: Context, config: JSONObject?) : GestureHandle
     // Preferred methods should appear earlier in the list
     private val method: SleepMethod? by lazy {
         listOf(
-                SleepMethodPowerManager(context),
+                // SleepMethodPowerManager(context), // This will realistically never actually work
                 SleepMethodRoot(context),
                 SleepMethodPieAccessibility(context),
                 SleepMethodDeviceAdmin(context)
