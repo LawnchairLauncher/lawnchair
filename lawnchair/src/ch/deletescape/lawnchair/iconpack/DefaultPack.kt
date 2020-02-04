@@ -32,6 +32,7 @@ import ch.deletescape.lawnchair.adaptive.AdaptiveIconGenerator
 import ch.deletescape.lawnchair.getLauncherActivityInfo
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.util.ApkAssets
+import ch.deletescape.lawnchair.util.extensions.TAG
 import ch.deletescape.lawnchair.util.extensions.e
 import ch.deletescape.lawnchair.util.overrideSdk
 import com.android.launcher3.*
@@ -157,7 +158,12 @@ class DefaultPack(context: Context) : IconPack(context, "") {
 
         if (Utilities.ATLEAST_OREO && itemInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
             val component = if (customIconEntry?.icon != null) {
-                makeComponentKey(context, customIconEntry.icon).componentName
+                try {
+                    makeComponentKey(context, customIconEntry.icon).componentName
+                } catch (e: NullPointerException) {
+                    Log.e(TAG, e.message, e)
+                    itemInfo.targetComponent
+                }
             } else {
                 itemInfo.targetComponent
             }
