@@ -25,6 +25,7 @@ import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.runOnMainThread
 import ch.deletescape.lawnchair.util.LawnchairSingletonHolder
@@ -39,7 +40,8 @@ class LawnchairPredictionManager(private val context: Context) {
 
     private val noOpAppPredictor = NoOpAppPredictor(context)
     private val lawnchairAppPredictor by lazy {
-        LawnchairAppPredictor(context, 12, null) }
+        LawnchairAppPredictor(context, 12, null)
+    }
     private val predictionsEnabled get() = context.lawnchairPrefs.showPredictions
 
     fun createPredictor(client: PredictionUiStateManager.Client, count: Int, extras: Bundle?): AppPredictorCompat {
@@ -55,6 +57,8 @@ class LawnchairPredictionManager(private val context: Context) {
             return false
         }
         val predictorService = getPredictorService() ?: return false
+        Log.i("LawnchairPredictionManager", "Platform predictor: ${predictorService.packageName}")
+        if (predictorService.packageName in platformPredictorBlacklist) return false
         return PackageManagerHelper.isAppEnabled(
                 context.packageManager, predictorService.packageName, 0) && usageStatsGranted()
     }
@@ -94,5 +98,8 @@ class LawnchairPredictionManager(private val context: Context) {
         }
     }
 
-    companion object : LawnchairSingletonHolder<LawnchairPredictionManager>(::LawnchairPredictionManager)
+    companion object :
+            LawnchairSingletonHolder<LawnchairPredictionManager>(::LawnchairPredictionManager) {
+        private val platformPredictorBlacklist = listOf("com.oneplus.asti")
+    }
 }
