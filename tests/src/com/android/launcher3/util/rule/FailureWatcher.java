@@ -78,10 +78,14 @@ public class FailureWatcher extends TestWatcher {
                 try {
                     base.evaluate();
                 } catch (Throwable e) {
-                    if (!Log.getStackTraceString(e).contains(
+                    final String stackTrace = Log.getStackTraceString(e);
+                    if (!stackTrace.contains(
                             "androidx.test.internal.runner.junit4.statement.RunBefores.evaluate")) {
                         // Test failed to deinitialize. Since the global state is probably
                         // corrupted, won't execute other tests.
+                        Log.d(TAG,
+                                "Detected an exception from test finalizer, will skip further "
+                                        + "tests: " + stackTrace);
                         sHadFailedTestDeinitialization = true;
                     }
                     throw e;
