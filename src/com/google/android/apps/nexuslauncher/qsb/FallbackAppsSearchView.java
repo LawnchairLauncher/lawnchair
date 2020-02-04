@@ -79,13 +79,13 @@ public class FallbackAppsSearchView extends ExtendedEditText implements OnUpdate
 
     @Override
     public boolean onSubmitSearch() {
-        if (mApps.hasNoFilteredResults()) {
-            return false;
-        }
         SearchProvider provider = getSearchProvider();
         if (provider instanceof WebSearchProvider) {
             ((WebSearchProvider) provider).openResults(getText().toString());
             return true;
+        }
+        if (mApps.hasNoFilteredResults()) {
+            return false;
         }
         Intent i = mApps.getFilteredApps().get(0).getIntent();
         getContext().startActivity(i);
