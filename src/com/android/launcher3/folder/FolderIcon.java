@@ -35,6 +35,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.FrameLayout;
 import ch.deletescape.lawnchair.LawnchairLauncher;
 import ch.deletescape.lawnchair.LawnchairUtilsKt;
@@ -799,8 +800,10 @@ public class FolderIcon extends FrameLayout implements FolderListener, OnResumeC
             return;
         }
         ((CellLayout.LayoutParams) getLayoutParams()).canReorder = true;
-        if (mInfo != null && mInfo.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-            CellLayout cl = (CellLayout) getParent().getParent();
+        ViewParent parent = getParent();
+        if (mInfo != null && mInfo.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT
+                && parent != null) {
+            CellLayout cl = (CellLayout) parent.getParent();
             cl.clearFolderLeaveBehind();
         }
     }
