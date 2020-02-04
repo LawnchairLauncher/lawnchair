@@ -362,6 +362,11 @@ public abstract class AbstractStateChangeTouchController
 
     @Override
     public void onDragEnd(float velocity, boolean fling) {
+        // TODO: evaluate if this workaround breaks anything
+        if (mCurrentAnimation == null) {
+            return;
+        }
+
         final int logAction = fling ? Touch.FLING : Touch.SWIPE;
 
         boolean blockedFling = fling && mFlingBlockCheck.isBlocked();
