@@ -340,7 +340,8 @@ public final class LauncherInstrumentation {
     public void checkForAnomaly() {
         final String anomalyMessage = getAnomalyMessage();
         if (anomalyMessage != null) {
-            String message = "Tests are broken by a non-Launcher system error: " + anomalyMessage;
+            String message = "http://go/tapl : Tests are broken by a non-Launcher system error: "
+                    + anomalyMessage;
             log("Hierarchy dump for: " + message);
             dumpViewHierarchy();
 
