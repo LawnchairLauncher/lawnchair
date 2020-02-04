@@ -127,6 +127,7 @@ class LawnchairBugReporter(private val context: Context, private val crashHandle
             stream.println("version.incremental: ${Build.VERSION.INCREMENTAL}")
             stream.println("version.release: ${Build.VERSION.RELEASE}")
             stream.println("version.sdk_int: ${Build.VERSION.SDK_INT}")
+            stream.println("display.density_dpi: ${context.resources.displayMetrics.densityDpi}")
             stream.println()
             stream.println("error: $error")
             if (throwable != null) {
