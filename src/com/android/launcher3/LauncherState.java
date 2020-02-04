@@ -56,7 +56,7 @@ import java.util.Arrays;
 /**
  * Base state for various states used for the Launcher
  */
-public class LauncherState {
+public abstract class LauncherState {
 
 
     /**
@@ -97,9 +97,15 @@ public class LauncherState {
      * TODO: Create a separate class for NORMAL state.
      */
     public static final LauncherState NORMAL = new LauncherState(NORMAL_STATE_ORDINAL,
-            ContainerType.WORKSPACE, 0,
+            ContainerType.WORKSPACE,
             FLAG_DISABLE_RESTORE | FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED | FLAG_HIDE_BACK_BUTTON |
-            FLAG_HAS_SYS_UI_SCRIM);
+                    FLAG_HAS_SYS_UI_SCRIM) {
+        @Override
+        public int getTransitionDuration(Launcher launcher) {
+            // Arbitrary duration, when going to NORMAL we use the state we're coming from instead.
+            return 0;
+        }
+    };
 
     /**
      * Various Launcher states arranged in the increasing order of UI layers
@@ -147,8 +153,6 @@ public class LauncherState {
      */
     public final boolean hasWorkspacePageBackground;
 
-    public final int transitionDuration;
-
     /**
      * True if the state allows workspace icons to be dragged.
      */
@@ -178,9 +182,8 @@ public class LauncherState {
 
     public final boolean hasSysUiScrim;
 
-    public LauncherState(int id, int containerType, int transitionDuration, int flags) {
+    public LauncherState(int id, int containerType, int flags) {
         this.containerType = containerType;
-        this.transitionDuration = transitionDuration;
 
         this.hasWorkspacePageBackground = (flags & FLAG_PAGE_BACKGROUNDS) != 0;
         this.hasMultipleVisiblePages = (flags & FLAG_MULTI_PAGE) != 0;
@@ -202,6 +205,12 @@ public class LauncherState {
     public static LauncherState[] values() {
         return Arrays.copyOf(sAllStates, sAllStates.length);
     }
+
+    /**
+     * @return How long the animation to this state should take (or from this state to NORMAL).
+     * @param launcher
+     */
+    public abstract int getTransitionDuration(Launcher launcher);
 
     public ScaleAndTranslation getWorkspaceScaleAndTranslation(Launcher launcher) {
         return new ScaleAndTranslation(1, 0, 0);

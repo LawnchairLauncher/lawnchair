@@ -16,12 +16,11 @@
 
 package com.android.launcher3;
 
-import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
-import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_TRANSITION_MS;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.SPRING_LOADED;
 import static com.android.launcher3.config.FeatureFlags.ADAPTIVE_ICON_WINDOW_ANIM;
 import static com.android.launcher3.dragndrop.DragLayer.ALPHA_INDEX_OVERLAY;
@@ -1350,7 +1349,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     }
 
     public void snapToPageFromOverView(int whichPage) {
-        snapToPage(whichPage, OVERVIEW_TRANSITION_MS, Interpolators.ZOOM_IN);
+        snapToPage(whichPage, OVERVIEW.getTransitionDuration(mLauncher), Interpolators.ZOOM_IN);
     }
 
     private void onStartStateTransition(LauncherState state) {
@@ -1915,7 +1914,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                     // Animate the item to its original position, while simultaneously exiting
                     // spring-loaded mode so the page meets the icon where it was picked up.
                     mLauncher.getDragController().animateDragViewToOriginalPosition(
-                            onCompleteRunnable, cell, SPRING_LOADED_TRANSITION_MS);
+                            onCompleteRunnable, cell,
+                            SPRING_LOADED.getTransitionDuration(mLauncher));
                     mLauncher.getStateManager().goToState(NORMAL);
                     mLauncher.getDropTargetBar().onDragEnd();
                     parent.onDropChild(cell);

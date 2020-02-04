@@ -109,7 +109,7 @@ public class NoButtonNavbarToOverviewTouchController extends FlingAndHoldTouchCo
             // Normally we compute the duration based on the velocity and distance to the given
             // state, but since the hint state tracks the entire screen without a clear endpoint, we
             // need to manually set the duration to a reasonable value.
-            animator.setDuration(HINT_STATE.transitionDuration);
+            animator.setDuration(HINT_STATE.getTransitionDuration(mLauncher));
         }
     }
 
@@ -173,7 +173,7 @@ public class NoButtonNavbarToOverviewTouchController extends FlingAndHoldTouchCo
                 // StaggeredWorkspaceAnim doesn't animate overview, so we handle it here.
                 stateManager.cancelAnimation();
                 AnimatorSetBuilder builder = new AnimatorSetBuilder();
-                long duration = OVERVIEW.transitionDuration;
+                long duration = OVERVIEW.getTransitionDuration(mLauncher);
                 AnimatorSet anim = stateManager.createAtomicAnimation(
                         stateManager.getState(), NORMAL, builder,
                         ATOMIC_OVERVIEW_PEEK_COMPONENT, duration);

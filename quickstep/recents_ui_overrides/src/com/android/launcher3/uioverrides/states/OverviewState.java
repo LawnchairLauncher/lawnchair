@@ -17,7 +17,6 @@ package com.android.launcher3.uioverrides.states;
 
 import static android.view.View.VISIBLE;
 
-import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_FADE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_SCALE;
@@ -33,6 +32,7 @@ import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_7;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_ACTIONS;
 import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
 import static com.android.launcher3.states.RotationHelper.REQUEST_ROTATE;
+import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
 
 import android.graphics.Rect;
 import android.view.View;
@@ -67,15 +67,22 @@ public class OverviewState extends LauncherState {
             | FLAG_DISABLE_RESTORE | FLAG_OVERVIEW_UI | FLAG_DISABLE_ACCESSIBILITY;
 
     public OverviewState(int id) {
-        this(id, OVERVIEW_TRANSITION_MS, STATE_FLAGS);
+        this(id, STATE_FLAGS);
     }
 
-    protected OverviewState(int id, int transitionDuration, int stateFlags) {
-        this(id, ContainerType.TASKSWITCHER, transitionDuration, stateFlags);
+    protected OverviewState(int id, int stateFlags) {
+        this(id, ContainerType.TASKSWITCHER, stateFlags);
     }
 
-    protected OverviewState(int id, int logContainer, int transitionDuration, int stateFlags) {
-        super(id, logContainer, transitionDuration, stateFlags);
+    protected OverviewState(int id, int logContainer, int stateFlags) {
+        super(id, logContainer, stateFlags);
+    }
+
+    @Override
+    public int getTransitionDuration(Launcher launcher) {
+        // In no-button mode, overview comes in all the way from the left, so give it more time.
+        boolean isNoButtonMode = SysUINavigationMode.INSTANCE.get(launcher).getMode() == NO_BUTTON;
+        return isNoButtonMode && ENABLE_OVERVIEW_ACTIONS.get() ? 380 : 250;
     }
 
     @Override
@@ -206,7 +213,7 @@ public class OverviewState extends LauncherState {
     public void prepareForAtomicAnimation(Launcher launcher, LauncherState fromState,
             AnimatorSetBuilder builder) {
         if ((fromState == NORMAL || fromState == HINT_STATE) && this == OVERVIEW) {
-            if (SysUINavigationMode.getMode(launcher) == SysUINavigationMode.Mode.NO_BUTTON) {
+            if (SysUINavigationMode.getMode(launcher) == NO_BUTTON) {
                 builder.setInterpolator(ANIM_WORKSPACE_SCALE,
                         fromState == NORMAL ? ACCEL : OVERSHOOT_1_2);
                 builder.setInterpolator(ANIM_WORKSPACE_TRANSLATE, ACCEL);

@@ -15,8 +15,6 @@
  */
 package com.android.launcher3.states;
 
-import static com.android.launcher3.LauncherAnimUtils.HINT_TRANSITION_MS;
-
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Workspace;
@@ -31,7 +29,12 @@ public class HintState extends LauncherState {
             | FLAG_HAS_SYS_UI_SCRIM;
 
     public HintState(int id) {
-        super(id, ContainerType.DEFAULT_CONTAINERTYPE, HINT_TRANSITION_MS, STATE_FLAGS);
+        super(id, ContainerType.DEFAULT_CONTAINERTYPE, STATE_FLAGS);
+    }
+
+    @Override
+    public int getTransitionDuration(Launcher launcher) {
+        return 80;
     }
 
     @Override
