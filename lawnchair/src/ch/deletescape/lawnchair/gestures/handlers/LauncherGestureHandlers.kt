@@ -267,6 +267,9 @@ class StartAppGestureHandler(context: Context, config: JSONObject?) : GestureHan
                 } catch (e: NullPointerException){
                     // App is probably not installed anymore, show a Toast
                     Toast.makeText(context, R.string.failed, Toast.LENGTH_LONG).show()
+                } catch (e: SecurityException) {
+                    // App is probably not installed anymore, show a Toast
+                    Toast.makeText(context, R.string.failed, Toast.LENGTH_LONG).show()
                 }
             }
             "shortcut" -> {
