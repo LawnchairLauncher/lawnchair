@@ -40,6 +40,7 @@
     <attr name="folderIconRadius" format="float" />
     <attr name="folderIconBorderColor" format="color" />
     <attr name="folderTextColor" format="color" />
+    <attr name="folderHintColor" format="color" />
 
     <!-- BubbleTextView specific attributes. -->
     <declare-styleable name="BubbleTextView">
