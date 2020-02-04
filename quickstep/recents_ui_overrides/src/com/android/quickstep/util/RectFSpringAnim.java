@@ -148,9 +148,6 @@ public class RectFSpringAnim {
             maybeOnEnd();
         });
 
-        // Shitty workaround
-        mMinVisChange = Math.max(mMinVisChange, 1);
-
         float startX = mCurrentCenterX;
         float endX = mTargetRect.centerX();
         float minXValue = Math.min(startX, endX);
@@ -168,7 +165,7 @@ public class RectFSpringAnim {
         mRectYAnim = new FlingSpringAnim(this, RECT_Y, startY, endY, startVelocityY,
                 mMinVisChange, minYValue, maxYValue, springVelocityFactor, onYEndListener);
 
-        float minVisibleChange = 1f / mStartRect.height();
+        float minVisibleChange = Math.max(1f / mStartRect.height(), 1);
         mRectScaleAnim = new SpringAnimation(this, RECT_SCALE_PROGRESS)
                 .setSpring(new SpringForce(1f)
                 .setDampingRatio(SpringForce.DAMPING_RATIO_LOW_BOUNCY)
