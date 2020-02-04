@@ -57,11 +57,15 @@ public abstract class IconLoader {
      */
     public ActivityInfo getAndUpdateActivityInfo(Task.TaskKey taskKey) {
         ComponentName cn = taskKey.getComponent();
+        if (cn == null) {
+            Log.e(TAG, "Unexpected null component name: " + taskKey);
+            return null;
+        }
         ActivityInfo activityInfo = mActivityInfoCache.get(cn);
         if (activityInfo == null) {
             activityInfo = PackageManagerWrapper.getInstance().getActivityInfo(cn, taskKey.userId);
-            if (cn == null || activityInfo == null) {
-                Log.e(TAG, "Unexpected null component name or activity info: " + cn + ", " +
+            if (activityInfo == null) {
+                Log.e(TAG, "Unexpected null activity info: " + cn + ", " +
                         activityInfo);
                 return null;
             }
