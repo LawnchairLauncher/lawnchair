@@ -32,7 +32,6 @@ import static com.android.launcher3.dragndrop.DragLayer.ALPHA_INDEX_LAUNCHER_LOA
 import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
 import static com.android.launcher3.logging.LoggerUtils.newTarget;
 import static com.android.launcher3.popup.SystemShortcut.APP_INFO;
-import static com.android.launcher3.popup.SystemShortcut.DISMISS_PREDICTION;
 import static com.android.launcher3.popup.SystemShortcut.INSTALL;
 import static com.android.launcher3.popup.SystemShortcut.WIDGETS;
 import static com.android.launcher3.states.RotationHelper.REQUEST_NONE;
@@ -2691,7 +2690,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     }
 
     public Stream<SystemShortcut.Factory> getSupportedShortcuts() {
-        return Stream.of(APP_INFO, WIDGETS, INSTALL, DISMISS_PREDICTION);
+        return Stream.of(APP_INFO, WIDGETS, INSTALL);
     }
 
     public static Launcher getLauncher(Context context) {
