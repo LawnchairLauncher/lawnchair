@@ -165,7 +165,7 @@ public class RectFSpringAnim {
         mRectYAnim = new FlingSpringAnim(this, RECT_Y, startY, endY, startVelocityY,
                 mMinVisChange, minYValue, maxYValue, springVelocityFactor, onYEndListener);
 
-        float minVisibleChange = Math.max(1f / mStartRect.height(), 1);
+        float minVisibleChange = Math.max(1f / mStartRect.height(), 0.01f);
         mRectScaleAnim = new SpringAnimation(this, RECT_SCALE_PROGRESS)
                 .setSpring(new SpringForce(1f)
                 .setDampingRatio(SpringForce.DAMPING_RATIO_LOW_BOUNCY)
