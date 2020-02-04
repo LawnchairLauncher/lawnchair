@@ -54,6 +54,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
 
     public static final int REMOVE = R.id.action_remove;
     public static final int UNINSTALL = R.id.action_uninstall;
+    public static final int DISMISS_PREDICTION = R.id.action_dismiss_prediction;
     public static final int RECONFIGURE = R.id.action_reconfigure;
     protected static final int ADD_TO_WORKSPACE = R.id.action_add_to_workspace;
     protected static final int MOVE = R.id.action_move;
@@ -86,6 +87,8 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
                 launcher.getText(R.string.remove_drop_target_label)));
         mActions.put(UNINSTALL, new AccessibilityAction(UNINSTALL,
                 launcher.getText(R.string.uninstall_drop_target_label)));
+        mActions.put(DISMISS_PREDICTION, new AccessibilityAction(DISMISS_PREDICTION,
+                launcher.getText(R.string.dismiss_prediction_label)));
         mActions.put(RECONFIGURE, new AccessibilityAction(RECONFIGURE,
                 launcher.getText(R.string.gadget_setup_text)));
         mActions.put(ADD_TO_WORKSPACE, new AccessibilityAction(ADD_TO_WORKSPACE,

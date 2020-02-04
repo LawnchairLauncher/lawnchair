@@ -214,4 +214,11 @@ public class ItemInfo {
         return id;
     }
 
+    /**
+     * Returns if an Item is a predicted item
+     */
+    public boolean isPredictedItem() {
+        return container == LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION
+                || container == LauncherSettings.Favorites.CONTAINER_PREDICTION;
+    }
 }
