@@ -57,7 +57,6 @@
                 android:layout_weight="1"
                 android:background="?android:attr/selectableItemBackground"
                 android:text="@string/all_apps_personal_tab"
-                android:textAllCaps="true"
                 android:textColor="@color/all_apps_tab_text"
                 android:textSize="14sp" />
 
@@ -68,7 +67,6 @@
                 android:layout_weight="1"
                 android:background="?android:attr/selectableItemBackground"
                 android:text="@string/all_apps_work_tab"
-                android:textAllCaps="true"
                 android:textColor="@color/all_apps_tab_text"
                 android:textSize="14sp" />
         </com.android.launcher3.allapps.PersonalWorkSlidingTabStrip>
