@@ -22,6 +22,7 @@ import android.graphics.Color;
 import android.os.UserHandle;
 import androidx.core.graphics.ColorUtils;
 import ch.deletescape.lawnchair.LawnchairPreferences;
+import ch.deletescape.lawnchair.LawnchairUtilsKt;
 import ch.deletescape.lawnchair.allapps.AppColorComparator;
 import ch.deletescape.lawnchair.groups.DrawerFolderInfo;
 import ch.deletescape.lawnchair.groups.DrawerFolderItem;
@@ -34,7 +35,6 @@ import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
-import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LabelComparator;
@@ -47,6 +47,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import kotlin.Unit;
 
 /**
  * The alphabetically sorted list of applications.
@@ -373,8 +374,10 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
      * mCachedSectionNames to have been calculated for the set of all apps in mApps.
      */
     private void updateAdapterItems() {
-        refillAdapterItems();
-        refreshRecyclerView();
+        LawnchairUtilsKt.getWorkerHandler().postAtFrontOfQueue(() -> {
+            refillAdapterItems();
+            LawnchairUtilsKt.getMainHandler().postAtFrontOfQueue(this::refreshRecyclerView);
+        });
     }
 
     private void refreshRecyclerView() {
