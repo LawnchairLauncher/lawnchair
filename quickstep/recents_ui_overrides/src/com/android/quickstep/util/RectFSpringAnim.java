@@ -148,6 +148,9 @@ public class RectFSpringAnim {
             maybeOnEnd();
         });
 
+        // Shitty workaround
+        mMinVisChange = Math.max(mMinVisChange, 1);
+
         float startX = mCurrentCenterX;
         float endX = mTargetRect.centerX();
         float minXValue = Math.min(startX, endX);
