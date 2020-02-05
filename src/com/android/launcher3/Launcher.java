@@ -1138,7 +1138,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     /**
      * Finds all the views we need and configure them properly.
      */
-    private void setupViews() {
+    protected void setupViews() {
         mDragLayer = findViewById(R.id.drag_layer);
         mFocusHandler = mDragLayer.getFocusIndicatorHelper();
         mWorkspace = mDragLayer.findViewById(R.id.workspace);
@@ -1174,11 +1174,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         mDropTargetBar.setup(mDragController);
 
         mAllAppsController.setupViews(mAppsView);
-
-        if (FeatureFlags.ENABLE_OVERVIEW_ACTIONS.get()) {
-            // Overview is above all other launcher elements, including qsb, so move it to the top.
-            mOverviewPanel.bringToFront();
-        }
     }
 
     /**

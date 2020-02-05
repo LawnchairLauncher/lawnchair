@@ -346,7 +346,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         setLayoutDirection(mIsRtl ? View.LAYOUT_DIRECTION_RTL : View.LAYOUT_DIRECTION_LTR);
         mTaskTopMargin = getResources()
                 .getDimensionPixelSize(R.dimen.task_thumbnail_top_margin);
-        mTaskBottomMargin = LayoutUtils.thumbnailBottomMargin(getResources());
+        mTaskBottomMargin = LayoutUtils.thumbnailBottomMargin(context);
         mSquaredTouchSlop = squaredTouchSlop(context);
 
         mEmptyIcon = context.getDrawable(R.drawable.ic_empty_recents);
