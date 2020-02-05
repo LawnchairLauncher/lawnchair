@@ -106,6 +106,7 @@ public final class LauncherInstrumentation {
     private static final Pattern EVENT_TOUCH_DOWN = getTouchEventPattern("ACTION_DOWN");
     private static final Pattern EVENT_TOUCH_UP = getTouchEventPattern("ACTION_UP");
     private static final Pattern EVENT_TOUCH_CANCEL = getTouchEventPattern("ACTION_CANCEL");
+    private static final Pattern EVENT_PILFER_POINTERS = Pattern.compile("pilferPointers");
 
     // Types for launcher containers that the user is interacting with. "Background" is a
     // pseudo-container corresponding to inactive launcher covered by another app.
@@ -633,6 +634,15 @@ public final class LauncherInstrumentation {
                 log(action = "clicking home button from " + getVisibleStateMessage());
                 try (LauncherInstrumentation.Closable c = addContextLayer(action)) {
                     mDevice.waitForIdle();
+
+                    if (getNavigationModel() == NavigationModel.TWO_BUTTON) {
+                        if (hasLauncherObject(CONTEXT_MENU_RES_ID) ||
+                                hasLauncherObject(WIDGETS_RES_ID)
+                                        && !mDevice.isNaturalOrientation()) {
+                            expectEvent(EVENT_PILFER_POINTERS);
+                        }
+                    }
+
                     runToState(
                             waitForSystemUiObject("home")::click,
                             NORMAL_STATE_ORDINAL,
@@ -1051,16 +1061,21 @@ public final class LauncherInstrumentation {
 
     void sendPointer(long downTime, long currentTime, int action, Point point,
             GestureScope gestureScope) {
-        if (gestureScope != GestureScope.OUTSIDE) {
-            switch (action) {
-                case MotionEvent.ACTION_DOWN:
+        switch (action) {
+            case MotionEvent.ACTION_DOWN:
+                if (gestureScope != GestureScope.OUTSIDE) {
                     expectEvent(EVENT_TOUCH_DOWN);
-                    break;
-                case MotionEvent.ACTION_UP:
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                if (gestureScope != GestureScope.INSIDE) {
+                    expectEvent(EVENT_PILFER_POINTERS);
+                }
+                if (gestureScope != GestureScope.OUTSIDE) {
                     expectEvent(gestureScope == GestureScope.INSIDE
                             ? EVENT_TOUCH_UP : EVENT_TOUCH_CANCEL);
-                    break;
-            }
+                }
+                break;
         }
 
         final MotionEvent event = getMotionEvent(downTime, currentTime, action, point.x, point.y);
@@ -1226,6 +1241,12 @@ public final class LauncherInstrumentation {
     }
 
     Closable eventsCheck() {
+        if ("com.android.launcher3".equals(getLauncherPackageName())) {
+            // Not checking specific Launcher3 event sequences.
+            return () -> {
+            };
+        }
+
         // Entering events check block.
         startRecordingEvents();
 
