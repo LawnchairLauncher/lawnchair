@@ -16,6 +16,8 @@
 
 package com.android.launcher3.model;
 
+import static android.graphics.BitmapFactory.decodeByteArray;
+
 import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
@@ -26,7 +28,6 @@ import android.content.pm.LauncherApps;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.CursorWrapper;
-import android.graphics.BitmapFactory;
 import android.os.UserHandle;
 import android.provider.BaseColumns;
 import android.text.TextUtils;
@@ -166,37 +167,30 @@ public class LoaderCursor extends CursorWrapper {
      */
     protected boolean loadIcon(WorkspaceItemInfo info) {
         try (LauncherIcons li = LauncherIcons.obtain(mContext)) {
-            return loadIcon(info, li);
-        }
-    }
-
-    /**
-     * Loads the icon from the cursor and updates the {@param info} if the icon is an app resource.
-     */
-    protected boolean loadIcon(WorkspaceItemInfo info, LauncherIcons li) {
-        if (itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) {
-            String packageName = getString(iconPackageIndex);
-            String resourceName = getString(iconResourceIndex);
-            if (!TextUtils.isEmpty(packageName) || !TextUtils.isEmpty(resourceName)) {
-                info.iconResource = new ShortcutIconResource();
-                info.iconResource.packageName = packageName;
-                info.iconResource.resourceName = resourceName;
-                BitmapInfo iconInfo = li.createIconBitmap(info.iconResource);
-                if (iconInfo != null) {
-                    info.bitmap = iconInfo;
-                    return true;
+            if (itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) {
+                String packageName = getString(iconPackageIndex);
+                String resourceName = getString(iconResourceIndex);
+                if (!TextUtils.isEmpty(packageName) || !TextUtils.isEmpty(resourceName)) {
+                    info.iconResource = new ShortcutIconResource();
+                    info.iconResource.packageName = packageName;
+                    info.iconResource.resourceName = resourceName;
+                    BitmapInfo iconInfo = li.createIconBitmap(info.iconResource);
+                    if (iconInfo != null) {
+                        info.bitmap = iconInfo;
+                        return true;
+                    }
                 }
             }
-        }
 
-        // Failed to load from resource, try loading from DB.
-        byte[] data = getBlob(iconIndex);
-        try {
-            info.bitmap = li.createIconBitmap(BitmapFactory.decodeByteArray(data, 0, data.length));
-            return true;
-        } catch (Exception e) {
-            Log.e(TAG, "Failed to decode byte array for info " + info, e);
-            return false;
+            // Failed to load from resource, try loading from DB.
+            byte[] data = getBlob(iconIndex);
+            try {
+                info.bitmap = li.createIconBitmap(decodeByteArray(data, 0, data.length));
+                return true;
+            } catch (Exception e) {
+                Log.e(TAG, "Failed to decode byte array for info " + info, e);
+                return false;
+            }
         }
     }
 

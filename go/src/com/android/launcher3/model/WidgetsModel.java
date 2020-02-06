@@ -22,7 +22,7 @@ import android.os.UserHandle;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.icons.ComponentWithLabel;
+import com.android.launcher3.icons.ComponentWithLabelAndIcon;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.widget.WidgetListRowEntry;
 
@@ -59,7 +59,7 @@ public class WidgetsModel {
      * @param packageUser If null, all widgets and shortcuts are updated and returned, otherwise
      *                    only widgets and shortcuts associated with the package/user are.
      */
-    public List<ComponentWithLabel> update(LauncherAppState app,
+    public List<ComponentWithLabelAndIcon> update(LauncherAppState app,
             @Nullable PackageUserKey packageUser) {
         return Collections.emptyList();
     }

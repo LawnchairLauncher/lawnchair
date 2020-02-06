@@ -25,6 +25,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.ShortcutInfo;
 import android.graphics.drawable.Drawable;
 import android.os.UserHandle;
+import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -55,6 +56,12 @@ public class ShortcutCachingLogic implements CachingLogic<ShortcutInfo> {
     @Override
     public CharSequence getLabel(ShortcutInfo info) {
         return info.getShortLabel();
+    }
+
+    @Override
+    public CharSequence getDescription(ShortcutInfo object, CharSequence fallback) {
+        CharSequence label = object.getLongLabel();
+        return TextUtils.isEmpty(label) ? fallback : label;
     }
 
     @NonNull

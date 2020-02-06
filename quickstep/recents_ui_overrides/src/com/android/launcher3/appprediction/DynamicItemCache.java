@@ -43,7 +43,6 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.icons.IconCache;
-import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.shortcuts.ShortcutRequest;
 import com.android.launcher3.util.InstantAppResolver;
@@ -170,14 +169,7 @@ public class DynamicItemCache {
         List<ShortcutInfo> details = shortcutKey.buildRequest(mContext).query(ShortcutRequest.ALL);
         if (!details.isEmpty()) {
             WorkspaceItemInfo si = new WorkspaceItemInfo(details.get(0), mContext);
-            try (LauncherIcons li = LauncherIcons.obtain(mContext)) {
-                si.bitmap = li.createShortcutIcon(details.get(0), true /* badged */, null);
-            } catch (Exception e) {
-                if (DEBUG) {
-                    Log.e(TAG, "Error loading shortcut icon for " + shortcutKey.toString());
-                }
-                return null;
-            }
+            mIconCache.getShortcutIcon(si, details.get(0));
             return si;
         }
         if (DEBUG) {
