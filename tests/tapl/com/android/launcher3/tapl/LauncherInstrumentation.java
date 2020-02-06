@@ -489,6 +489,12 @@ public final class LauncherInstrumentation {
         assertEquals("Unexpected display rotation",
                 mExpectedRotation, mDevice.getDisplayRotation());
 
+        // b/149024111
+        for (int i = 0; i != 100; ++i) {
+            if (getNavigationModeMismatchError() == null) break;
+            sleep(100);
+        }
+
         final String error = getNavigationModeMismatchError();
         assertTrue(error, error == null);
         log("verifyContainerType: " + containerType);
