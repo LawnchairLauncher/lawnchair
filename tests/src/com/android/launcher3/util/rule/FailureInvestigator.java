@@ -55,7 +55,7 @@ class FailureInvestigator {
     private static final ExceptionMatch[] EXCEPTION_MATCHES = {
             new ExceptionMatch(
                     "java.lang.AssertionError: http://go/tapl : Tests are broken by a "
-                            + "non-Launcher system error: Phone is locked",
+                            + "non-Launcher system error: (Phone is locked|Screen is empty)",
                     new LogcatMatch[]{
                             new LogcatMatch(
                                     "BroadcastQueue: Can't deliver broadcast to com.android"
