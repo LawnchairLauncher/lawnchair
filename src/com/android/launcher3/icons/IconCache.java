@@ -19,6 +19,7 @@ package com.android.launcher3.icons;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -56,6 +57,7 @@ import com.android.launcher3.util.InstantAppResolver;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.Preconditions;
 
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 /**
@@ -64,6 +66,9 @@ import java.util.function.Supplier;
 public class IconCache extends BaseIconCache {
 
     private static final String TAG = "Launcher.IconCache";
+
+    private final Predicate<ItemInfoWithIcon> mIsUsingFallbackIconCheck = w -> w.bitmap != null
+            && w.bitmap.isNullOrLowRes() && !isDefaultIcon(w.bitmap, w.user);
 
     private final CachingLogic<ComponentWithLabel> mComponentWithLabelCachingLogic;
     private final CachingLogic<LauncherActivityInfo> mLauncherActivityInfoCachingLogic;
@@ -177,6 +182,77 @@ public class IconCache extends BaseIconCache {
             LauncherActivityInfo activityInfo, boolean useLowResIcon) {
         // If we already have activity info, no need to use package icon
         getTitleAndIcon(info, () -> activityInfo, false, useLowResIcon);
+    }
+
+    /**
+     * Fill in {@param info} with the icon for {@param si}
+     */
+    public void getShortcutIcon(ItemInfoWithIcon info, ShortcutInfo si) {
+        getShortcutIcon(info, si, true, mIsUsingFallbackIconCheck);
+    }
+
+    /**
+     * Fill in {@param info} with an unbadged icon for {@param si}
+     */
+    public void getUnbadgedShortcutIcon(ItemInfoWithIcon info, ShortcutInfo si) {
+        getShortcutIcon(info, si, false, mIsUsingFallbackIconCheck);
+    }
+
+    /**
+     * Fill in {@param info} with the icon and label for {@param si}. If the icon is not
+     * available, and fallback check returns true, it keeps the old icon.
+     */
+    public <T extends ItemInfoWithIcon> void getShortcutIcon(T info, ShortcutInfo si,
+            @NonNull Predicate<T> fallbackIconCheck) {
+        getShortcutIcon(info, si, true /* use badged */, fallbackIconCheck);
+    }
+
+    private synchronized <T extends ItemInfoWithIcon> void getShortcutIcon(T info, ShortcutInfo si,
+            boolean useBadged, @NonNull Predicate<T> fallbackIconCheck) {
+        BitmapInfo bitmapInfo;
+        if (FeatureFlags.ENABLE_DEEP_SHORTCUT_ICON_CACHE.get()) {
+            bitmapInfo = cacheLocked(ShortcutKey.fromInfo(si).componentName, si.getUserHandle(),
+                    () -> si, mShortcutCachingLogic, false, false).bitmap;
+        } else {
+            // If caching is disabled, load the full icon
+            bitmapInfo = mShortcutCachingLogic.loadIcon(mContext, si);
+        }
+        if (bitmapInfo.isNullOrLowRes()) {
+            bitmapInfo = getDefaultIcon(si.getUserHandle());
+        }
+
+        if (isDefaultIcon(bitmapInfo, si.getUserHandle()) && fallbackIconCheck.test(info)) {
+            return;
+        }
+        info.bitmap = bitmapInfo;
+        if (useBadged) {
+            BitmapInfo badgeInfo = getShortcutInfoBadge(si);
+            try (LauncherIcons li = LauncherIcons.obtain(mContext)) {
+                info.bitmap = li.badgeBitmap(info.bitmap.icon, badgeInfo);
+            }
+        }
+    }
+
+    /**
+     * Returns the badging info for the shortcut
+     */
+    public BitmapInfo getShortcutInfoBadge(ShortcutInfo shortcutInfo) {
+        ComponentName cn = shortcutInfo.getActivity();
+        if (cn != null) {
+            // Get the app info for the source activity.
+            AppInfo appInfo = new AppInfo();
+            appInfo.user = shortcutInfo.getUserHandle();
+            appInfo.componentName = cn;
+            appInfo.intent = new Intent(Intent.ACTION_MAIN)
+                    .addCategory(Intent.CATEGORY_LAUNCHER)
+                    .setComponent(cn);
+            getTitleAndIcon(appInfo, false);
+            return appInfo.bitmap;
+        } else {
+            PackageItemInfo pkgInfo = new PackageItemInfo(shortcutInfo.getPackage());
+            getTitleAndIconForApp(pkgInfo, false);
+            return pkgInfo.bitmap;
+        }
     }
 
     /**

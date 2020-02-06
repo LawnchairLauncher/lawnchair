@@ -37,7 +37,6 @@ import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.IconCache;
-import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.AddWorkspaceItemsTask;
 import com.android.launcher3.model.AllAppsList;
@@ -573,9 +572,7 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
     public void updateAndBindWorkspaceItem(WorkspaceItemInfo si, ShortcutInfo info) {
         updateAndBindWorkspaceItem(() -> {
             si.updateFromDeepShortcutInfo(info, mApp.getContext());
-            LauncherIcons li = LauncherIcons.obtain(mApp.getContext());
-            si.bitmap = li.createShortcutIcon(info);
-            li.recycle();
+            mApp.getIconCache().getShortcutIcon(si, info);
             return si;
         });
     }

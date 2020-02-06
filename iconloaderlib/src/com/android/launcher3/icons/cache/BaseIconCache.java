@@ -281,7 +281,8 @@ public abstract class BaseIconCache {
 
         ContentValues values = newContentValues(entry.bitmap, entry.title.toString(),
                 componentName.getPackageName(), cachingLogic.getKeywords(object, mLocaleList));
-        addIconToDB(values, componentName, info, userSerial);
+        addIconToDB(values, componentName, info, userSerial,
+                cachingLogic.getLastUpdatedTime(object, info));
     }
 
     /**
@@ -289,10 +290,10 @@ public abstract class BaseIconCache {
      * @param values {@link ContentValues} containing icon & title
      */
     private void addIconToDB(ContentValues values, ComponentName key,
-            PackageInfo info, long userSerial) {
+            PackageInfo info, long userSerial, long lastUpdateTime) {
         values.put(IconDB.COLUMN_COMPONENT, key.flattenToString());
         values.put(IconDB.COLUMN_USER, userSerial);
-        values.put(IconDB.COLUMN_LAST_UPDATED, info.lastUpdateTime);
+        values.put(IconDB.COLUMN_LAST_UPDATED, lastUpdateTime);
         values.put(IconDB.COLUMN_VERSION, info.versionCode);
         mIconDb.insertOrReplace(values);
     }
@@ -362,7 +363,8 @@ public abstract class BaseIconCache {
                 }
                 if (object != null) {
                     entry.title = cachingLogic.getLabel(object);
-                    entry.contentDescription = mPackageManager.getUserBadgedLabel(entry.title, user);
+                    entry.contentDescription = mPackageManager.getUserBadgedLabel(
+                            cachingLogic.getDescription(object, entry.title), user);
                 }
             }
         }
@@ -449,7 +451,8 @@ public abstract class BaseIconCache {
                     // package updates.
                     ContentValues values = newContentValues(
                             iconInfo, entry.title.toString(), packageName, null);
-                    addIconToDB(values, cacheKey.componentName, info, getSerialNumberForUser(user));
+                    addIconToDB(values, cacheKey.componentName, info, getSerialNumberForUser(user),
+                            info.lastUpdateTime);
 
                 } catch (NameNotFoundException e) {
                     if (DEBUG) Log.d(TAG, "Application not installed " + packageName);

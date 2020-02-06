@@ -7,10 +7,12 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.UserHandle;
 
-import com.android.launcher3.icons.ComponentWithLabel;
+import com.android.launcher3.icons.ComponentWithLabelAndIcon;
+import com.android.launcher3.icons.IconCache;
 
 /**
  * This class is a thin wrapper around the framework AppWidgetProviderInfo class. This class affords
@@ -19,7 +21,7 @@ import com.android.launcher3.icons.ComponentWithLabel;
  * as opposed to a widget instance, and so should not be confused with {@link LauncherAppWidgetInfo}
  */
 public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo
-        implements ComponentWithLabel {
+        implements ComponentWithLabelAndIcon {
 
     public static final String CLS_CUSTOM_WIDGET_PREFIX = "#custom-widget-";
 
@@ -110,5 +112,10 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo
     @Override
     public final UserHandle getUser() {
         return getProfile();
+    }
+
+    @Override
+    public Drawable getFullResIcon(IconCache cache) {
+        return cache.getFullResIcon(provider.getPackageName(), icon);
     }
 }

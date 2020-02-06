@@ -26,8 +26,9 @@ import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.ItemInfo;
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.WorkspaceItemInfo;
-import com.android.launcher3.icons.LauncherIcons;
+import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.notification.NotificationInfo;
 import com.android.launcher3.notification.NotificationKeyData;
 import com.android.launcher3.notification.NotificationListener;
@@ -153,13 +154,11 @@ public class PopupPopulator {
             String shortcutIdToDeDupe = notificationKeys.isEmpty() ? null
                     : notificationKeys.get(0).shortcutId;
             shortcuts = PopupPopulator.sortAndFilterShortcuts(shortcuts, shortcutIdToDeDupe);
+            IconCache cache = LauncherAppState.getInstance(launcher).getIconCache();
             for (int i = 0; i < shortcuts.size() && i < shortcutViews.size(); i++) {
                 final ShortcutInfo shortcut = shortcuts.get(i);
                 final WorkspaceItemInfo si = new WorkspaceItemInfo(shortcut, launcher);
-                // Use unbadged icon for the menu.
-                LauncherIcons li = LauncherIcons.obtain(launcher);
-                si.bitmap = li.createShortcutIcon(shortcut, false /* badged */);
-                li.recycle();
+                cache.getUnbadgedShortcutIcon(si, shortcut);
                 si.rank = i;
 
                 final DeepShortcutView view = shortcutViews.get(i);

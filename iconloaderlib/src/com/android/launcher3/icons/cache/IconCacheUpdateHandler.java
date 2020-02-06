@@ -24,6 +24,7 @@ import android.database.sqlite.SQLiteException;
 import android.os.SystemClock;
 import android.os.UserHandle;
 import android.text.TextUtils;
+import android.util.ArrayMap;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 
@@ -61,7 +62,7 @@ public class IconCacheUpdateHandler {
     private final HashMap<String, PackageInfo> mPkgInfoMap;
     private final BaseIconCache mIconCache;
 
-    private final HashMap<UserHandle, Set<String>> mPackagesToIgnore = new HashMap<>();
+    private final ArrayMap<UserHandle, Set<String>> mPackagesToIgnore = new ArrayMap<>();
 
     private final SparseBooleanArray mItemsToDelete = new SparseBooleanArray();
     private boolean mFilterMode = MODE_SET_INVALID_ITEMS;
@@ -77,8 +78,16 @@ public class IconCacheUpdateHandler {
         createPackageInfoMap();
     }
 
-    public void setPackagesToIgnore(UserHandle userHandle, Set<String> packages) {
-        mPackagesToIgnore.put(userHandle, packages);
+    /**
+     * Sets a package to ignore for processing
+     */
+    public void addPackagesToIgnore(UserHandle userHandle, String packageName) {
+        Set<String> packages = mPackagesToIgnore.get(userHandle);
+        if (packages == null) {
+            packages = new HashSet<>();
+            mPackagesToIgnore.put(userHandle, packages);
+        }
+        packages.add(packageName);
     }
 
     private void createPackageInfoMap() {
@@ -181,6 +190,7 @@ public class IconCacheUpdateHandler {
                     }
                     continue;
                 }
+
                 if (app == null) {
                     if (mFilterMode == MODE_SET_INVALID_ITEMS) {
                         mIconCache.remove(component, user);
@@ -263,6 +273,7 @@ public class IconCacheUpdateHandler {
                 T app = mAppsToUpdate.pop();
                 String pkg = mCachingLogic.getComponent(app).getPackageName();
                 PackageInfo info = mPkgInfoMap.get(pkg);
+
                 mIconCache.addIconToDBAndMemCache(
                         app, mCachingLogic, info, mUserSerial, true /*replace existing*/);
                 mUpdatedPackages.add(pkg);

@@ -350,6 +350,17 @@ public class BaseIconFactory implements AutoCloseable {
                 iconDpi);
     }
 
+    /**
+     * Badges the provided source with the badge info
+     */
+    public BitmapInfo badgeBitmap(Bitmap source, BitmapInfo badgeInfo) {
+        Bitmap icon = BitmapRenderer.createHardwareBitmap(mIconBitmapSize, mIconBitmapSize, (c) -> {
+            getShadowGenerator().recreateIcon(source, c);
+            badgeWithDrawable(c, new FixedSizeBitmapDrawable(badgeInfo.icon));
+        });
+        return BitmapInfo.of(icon, badgeInfo.color);
+    }
+
     private int extractColor(Bitmap bitmap) {
         return mDisableColorExtractor ? 0 : mColorExtractor.findDominantColorByHue(bitmap);
     }
