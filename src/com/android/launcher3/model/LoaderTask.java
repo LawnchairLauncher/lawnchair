@@ -60,6 +60,7 @@ import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderGridOrganizer;
+import com.android.launcher3.folder.FolderNameProvider;
 import com.android.launcher3.icons.ComponentWithLabel;
 import com.android.launcher3.icons.ComponentWithLabel.ComponentCachingLogic;
 import com.android.launcher3.icons.IconCache;
@@ -76,6 +77,7 @@ import com.android.launcher3.qsb.QsbContainerView;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.shortcuts.ShortcutRequest;
 import com.android.launcher3.shortcuts.ShortcutRequest.QueryResult;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IOUtils;
 import com.android.launcher3.util.LooperIdleLock;
@@ -168,15 +170,32 @@ public class LoaderTask implements Runnable {
     }
 
     public void run() {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.LAUNCHER_DIDNT_INITIALIZE,
+                    "LoaderTask1 " + this);
+        }
         synchronized (this) {
             // Skip fast if we are already stopped.
             if (mStopped) {
                 return;
             }
         }
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.LAUNCHER_DIDNT_INITIALIZE,
+                    "LoaderTask2 " + this);
+        }
 
         Object traceToken = TraceHelper.INSTANCE.beginSection(TAG);
-        TimingLogger logger = new TimingLogger(TAG, "run");
+        TimingLogger logger = TestProtocol.sDebugTracing ?
+                new TimingLogger(TAG, "run") {
+                    @Override
+                    public void addSplit(String splitLabel) {
+                        super.addSplit(splitLabel);
+                        Log.d(TestProtocol.LAUNCHER_DIDNT_INITIALIZE,
+                                "LoaderTask.addSplit " + splitLabel);
+                    }
+                }
+                : new TimingLogger(TAG, "run");
         try (LauncherModel.LoaderTransaction transaction = mApp.getModel().beginLoader(this)) {
             List<ShortcutInfo> allShortcuts = new ArrayList<>();
             loadWorkspace(allShortcuts);
@@ -256,10 +275,19 @@ public class LoaderTask implements Runnable {
                     mApp.getContext(), true), mApp.getModel()::onWidgetLabelsUpdated);
             logger.addSplit("save widgets in icon cache");
 
+            // fifth step
+            if (FeatureFlags.FOLDER_NAME_SUGGEST.get()) {
+                loadFolderNames();
+            }
+
             verifyNotStopped();
             updateHandler.finish();
             logger.addSplit("finish icon update");
 
+            if (TestProtocol.sDebugTracing) {
+                Log.d(TestProtocol.LAUNCHER_DIDNT_INITIALIZE,
+                        "LoaderTask3 " + this);
+            }
             transaction.commit();
         } catch (CancellationException e) {
             // Loader stopped, ignore
@@ -896,6 +924,21 @@ public class LoaderTask implements Runnable {
             }
         }
         return allShortcuts;
+    }
+
+    private void loadFolderNames() {
+        FolderNameProvider provider = FolderNameProvider.newInstance(mApp.getContext());
+
+        synchronized (mBgDataModel) {
+            for (int i = 0; i < mBgDataModel.folders.size(); i++) {
+                String[] suggestedOut = new String[FolderNameProvider.SUGGEST_MAX];
+                FolderInfo info = mBgDataModel.folders.valueAt(i);
+                if (info.suggestedFolderNames == null) {
+                    provider.getSuggestedFolderName(mApp.getContext(), info.contents, suggestedOut);
+                    info.suggestedFolderNames = new Intent().putExtra("suggest", suggestedOut);
+                }
+            }
+        }
     }
 
     public static boolean isValidProvider(AppWidgetProviderInfo provider) {

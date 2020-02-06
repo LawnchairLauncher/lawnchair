@@ -44,7 +44,7 @@ import java.lang.reflect.Modifier;
 public class LoggerUtils {
     private static final ArrayMap<Class, SparseArray<String>> sNameCache = new ArrayMap<>();
     private static final String UNKNOWN = "UNKNOWN";
-    private static final int DEFAULT_PREDICTED_RANK = -100;
+    private static final int DEFAULT_PREDICTED_RANK = 10000;
 
     public static String getFieldName(int value, Class c) {
         SparseArray<String> cache;

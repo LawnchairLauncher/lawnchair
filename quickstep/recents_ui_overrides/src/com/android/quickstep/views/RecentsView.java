@@ -1917,6 +1917,11 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
     @Override
     public void addView(View child, int index) {
+        // RecentsView is set to RTL in the constructor when system is using LTR. Here we set the
+        // child direction back to match system settings.
+        child.setLayoutDirection(
+                Utilities.isRtl(getResources())
+                        ? View.LAYOUT_DIRECTION_RTL : View.LAYOUT_DIRECTION_LTR);
         super.addView(child, index);
         if (isExtraCardView(child, index)) {
             mTaskViewStartIndex++;

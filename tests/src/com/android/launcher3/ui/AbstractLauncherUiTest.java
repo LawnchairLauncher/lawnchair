@@ -62,6 +62,7 @@ import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Wait;
+import com.android.launcher3.util.rule.FailureRewriterRule;
 import com.android.launcher3.util.rule.FailureWatcher;
 import com.android.launcher3.util.rule.LauncherActivityRule;
 import com.android.launcher3.util.rule.ShellCommandRule;
@@ -83,6 +84,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * Base class for all instrumentation tests providing various utility methods.
@@ -102,6 +104,7 @@ public abstract class AbstractLauncherUiTest {
     protected String mTargetPackage;
 
     protected AbstractLauncherUiTest() {
+        mLauncher.enableCheckEventsForSuccessfulGestures();
         try {
             mDevice.setOrientationNatural();
         } catch (RemoteException e) {
@@ -161,9 +164,10 @@ public abstract class AbstractLauncherUiTest {
 
     @Rule
     public TestRule mOrderSensitiveRules = RuleChain.
-            outerRule(new TestStabilityRule()).
-            around(mActivityMonitor).
-            around(getRulesInsideActivityMonitor());
+            outerRule(new FailureRewriterRule())
+            .around(new TestStabilityRule())
+            .around(mActivityMonitor)
+            .around(getRulesInsideActivityMonitor());
 
     public UiDevice getDevice() {
         return mDevice;
@@ -180,16 +184,8 @@ public abstract class AbstractLauncherUiTest {
 
     @After
     public void verifyLauncherState() {
-        try {
-            // Limits UI tests affecting tests running after them.
-            mLauncher.waitForLauncherInitialized();
-        } catch (Throwable t) {
-            Log.e(TAG,
-                    "Couldn't deinit after a test, exiting tests, see logs for failures that "
-                            + "could have caused this",
-                    t);
-            exit(1);
-        }
+        // Limits UI tests affecting tests running after them.
+        mLauncher.waitForLauncherInitialized();
     }
 
     protected void clearLauncherData() throws IOException, InterruptedException {
@@ -278,9 +274,9 @@ public abstract class AbstractLauncherUiTest {
 
     // Cannot be used in TaplTests between a Tapl call injecting a gesture and a tapl call expecting
     // the results of that gesture because the wait can hide flakeness.
-    protected void waitForState(String message, LauncherState state) {
+    protected void waitForState(String message, Supplier<LauncherState> state) {
         waitForLauncherCondition(message,
-                launcher -> launcher.getStateManager().getCurrentStableState() == state);
+                launcher -> launcher.getStateManager().getCurrentStableState() == state.get());
     }
 
     protected void waitForResumed(String message) {
@@ -427,9 +423,9 @@ public abstract class AbstractLauncherUiTest {
         return !launcher.hasBeenResumed();
     }
 
-    protected boolean isInState(LauncherState state) {
+    protected boolean isInState(Supplier<LauncherState> state) {
         if (!TestHelpers.isInLauncherProcess()) return true;
-        return getFromLauncher(launcher -> launcher.getStateManager().getState() == state);
+        return getFromLauncher(launcher -> launcher.getStateManager().getState() == state.get());
     }
 
     protected int getAllAppsScroll(Launcher launcher) {

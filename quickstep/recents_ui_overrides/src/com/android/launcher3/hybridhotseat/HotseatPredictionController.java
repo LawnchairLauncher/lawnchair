@@ -39,6 +39,7 @@ import com.android.launcher3.AppInfo;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
+import com.android.launcher3.FolderInfo;
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfo;
@@ -68,6 +69,7 @@ import com.android.launcher3.util.ComponentKey;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.OptionalInt;
 import java.util.stream.IntStream;
 
 /**
@@ -442,6 +444,20 @@ public class HotseatPredictionController implements DragController.DragListener,
         mHotseat.invalidate();
     }
 
+    /**
+     * Unpins pinned app when it's converted into a folder
+     */
+    public void folderCreatedFromIcon(ItemInfo info, FolderInfo folderInfo) {
+        AppTarget target = getAppTargetFromItemInfo(info);
+        if (folderInfo.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT && !isInHotseat(
+                info)) {
+            notifyItemAction(target, APP_LOCATION_HOTSEAT, APPTARGET_ACTION_UNPIN);
+        } else if (folderInfo.container == LauncherSettings.Favorites.CONTAINER_DESKTOP
+                && folderInfo.screenId == Workspace.FIRST_SCREEN_ID && !isInFirstPage(info)) {
+            notifyItemAction(target, APP_LOCATION_WORKSPACE, APPTARGET_ACTION_UNPIN);
+        }
+    }
+
     @Override
     public void onDragEnd() {
         if (mDragObject == null) {
@@ -548,12 +564,11 @@ public class HotseatPredictionController implements DragController.DragListener,
      * Fill in predicted_rank field based on app prediction.
      * Only applicable when {@link ItemInfo#itemType} is PREDICTED_HOTSEAT
      */
-    public static void fillInHybridHotseatRank(
+    public static void encodeHotseatLayoutIntoPredictionRank(
             @NonNull ItemInfo itemInfo, @NonNull LauncherLogProto.Target target) {
         QuickstepLauncher launcher = QuickstepLauncher.ACTIVITY_TRACKER.getCreatedActivity();
         if (launcher == null || launcher.getHotseatPredictionController() == null
-                || itemInfo.getTargetComponent() == null
-                || itemInfo.container != LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION) {
+                || itemInfo.getTargetComponent() == null) {
             return;
         }
         HotseatPredictionController controller = launcher.getHotseatPredictionController();
@@ -561,11 +576,12 @@ public class HotseatPredictionController implements DragController.DragListener,
         final ComponentKey k = new ComponentKey(itemInfo.getTargetComponent(), itemInfo.user);
 
         final List<ComponentKeyMapper> predictedApps = controller.mComponentKeyMappers;
-        IntStream.range(0, predictedApps.size())
+        OptionalInt rank = IntStream.range(0, predictedApps.size())
                 .filter((i) -> k.equals(predictedApps.get(i).getComponentKey()))
-                .findFirst()
-                .ifPresent((rank) -> target.predictedRank =
-                        Integer.parseInt(controller.mPredictedSpotsCount + "0" + rank));
+                .findFirst();
+
+        target.predictedRank = 10000 + (controller.mPredictedSpotsCount * 100)
+                + (rank.isPresent() ? rank.getAsInt() + 1 : 0);
     }
 
     private static boolean isPredictedIcon(View view) {

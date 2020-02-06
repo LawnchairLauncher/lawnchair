@@ -536,6 +536,9 @@ public class DragLayer extends BaseDragLayer<Launcher> {
         mOverviewScrim.updateCurrentScrimmedView(this);
         mFocusIndicatorHelper.draw(canvas);
         super.dispatchDraw(canvas);
+        if (mOverviewScrim.getScrimmedView() == null) {
+            mOverviewScrim.draw(canvas);
+        }
     }
 
     @Override

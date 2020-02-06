@@ -57,6 +57,7 @@ import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.popup.SystemShortcut;
+import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
@@ -242,6 +243,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                         getResources().getDimensionPixelSize(R.dimen.overview_actions_height),
                         Gravity.BOTTOM);
                 addView(mActionsView, params);
+                mActionsView.setAlpha(0);
             }
         }
     }
@@ -331,6 +333,9 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             Consumer<Boolean> resultCallback, Handler resultCallbackHandler) {
         if (mTask != null) {
             final ActivityOptions opts;
+            if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+                TestLogging.recordEvent("startActivityFromRecentsAsync:" + mTask);
+            }
             if (animate) {
                 opts = mActivity.getActivityLaunchOptions(this);
                 if (freezeTaskList) {
@@ -443,7 +448,8 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         mIconView.setScaleX(scale);
         mIconView.setScaleY(scale);
 
-        if (mActionsView != null) {
+
+        if (mActionsView != null && isRunningTask()) {
             mActionsView.setAlpha(scale);
         }
 
@@ -519,9 +525,11 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     public void onPageScroll(ScrollState scrollState) {
         float curveInterpolation =
                 CURVE_INTERPOLATOR.getInterpolation(scrollState.linearInterpolation);
+        float curveScaleForCurveInterpolation = getCurveScaleForCurveInterpolation(
+                curveInterpolation);
 
         mSnapshotView.setDimAlpha(curveInterpolation * MAX_PAGE_SCRIM_ALPHA);
-        setCurveScale(getCurveScaleForCurveInterpolation(curveInterpolation));
+        setCurveScale(curveScaleForCurveInterpolation);
 
         mFooterAlpha = Utilities.boundToRange(1.0f - 2 * scrollState.linearInterpolation, 0f, 1f);
         for (FooterWrapper footer : mFooters) {
@@ -535,6 +543,28 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             mMenuView.setScaleX(getScaleX());
             mMenuView.setScaleY(getScaleY());
         }
+
+        // This is not the proper implementation and will be replaced with a proper layout.
+        if (mActionsView != null) {
+            if (mFocusTransitionProgress == 1f) {
+                mActionsView.setAlpha(1 - curveInterpolation / MAX_PAGE_SCRIM_ALPHA);
+            }
+            maintainActionViewPosition(curveScaleForCurveInterpolation);
+        }
+
+    }
+
+    private void maintainActionViewPosition(float curveScaleForCurveInterpolation) {
+        float inverseCurveScaleFactor = curveScaleForCurveInterpolation == 0 ? 0 :
+                (1f / curveScaleForCurveInterpolation);
+        mActionsView.setScaleX(inverseCurveScaleFactor);
+        mActionsView.setScaleY(inverseCurveScaleFactor);
+        mActionsView.setTranslationX(inverseCurveScaleFactor * (-getX()
+                + getRecentsView().getScrollX() + getRecentsView().scrollOffsetLeft()));
+        mActionsView.setTranslationY(
+                (1f - curveScaleForCurveInterpolation) * (mSnapshotView.getHeight()
+                        + mActionsView.getHeight()) / 2f
+                        + inverseCurveScaleFactor * (-getTranslationY()));
     }
 
 

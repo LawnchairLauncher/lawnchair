@@ -111,6 +111,11 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
 
     @Override
     protected boolean isLauncherInitialized() {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.LAUNCHER_DIDNT_INITIALIZE,
+                    "isLauncherInitialized.TouchInteractionService.isInitialized=" +
+                            TouchInteractionService.isInitialized());
+        }
         return super.isLauncherInitialized() && TouchInteractionService.isInitialized();
     }
 }

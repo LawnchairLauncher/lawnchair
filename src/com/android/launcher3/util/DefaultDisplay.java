@@ -128,8 +128,10 @@ public class DefaultDisplay implements DisplayListener {
         public final DisplayMetrics metrics;
 
         private Info(Context context) {
-            Display display = context.getSystemService(WindowManager.class).getDefaultDisplay();
+            this(context.getSystemService(WindowManager.class).getDefaultDisplay());
+        }
 
+        public Info(Display display) {
             id = display.getDisplayId();
             rotation = display.getRotation();
 

@@ -26,8 +26,6 @@ import static com.android.launcher3.icons.IconNormalizer.ICON_VISIBLE_AREA_FACTO
 import android.content.Context;
 import android.graphics.Rect;
 import android.text.Selection;
-import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.method.TextKeyListener;
 import android.util.AttributeSet;
@@ -36,18 +34,16 @@ import android.view.View;
 import android.view.ViewGroup.MarginLayoutParams;
 import android.view.animation.Interpolator;
 
+import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.ExtendedEditText;
 import com.android.launcher3.Insettable;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.allapps.AlphabeticalAppsList;
 import com.android.launcher3.allapps.SearchUiManager;
 import com.android.launcher3.anim.PropertySetter;
-import com.android.launcher3.graphics.TintedDrawableSpan;
 import com.android.launcher3.util.ComponentKey;
 
 import java.util.ArrayList;
@@ -59,8 +55,7 @@ public class AppsSearchContainerLayout extends ExtendedEditText
         implements SearchUiManager, AllAppsSearchBarController.Callbacks,
         AllAppsStore.OnUpdateListener, Insettable {
 
-
-    private final Launcher mLauncher;
+    private final BaseDraggingActivity mLauncher;
     private final AllAppsSearchBarController mSearchBarController;
     private final SpannableStringBuilder mSearchQueryBuilder;
 
@@ -82,7 +77,7 @@ public class AppsSearchContainerLayout extends ExtendedEditText
     public AppsSearchContainerLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
-        mLauncher = Launcher.getLauncher(context);
+        mLauncher = BaseDraggingActivity.fromContext(context);
         mSearchBarController = new AllAppsSearchBarController();
 
         mSearchQueryBuilder = new SpannableStringBuilder();
@@ -97,13 +92,13 @@ public class AppsSearchContainerLayout extends ExtendedEditText
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        mLauncher.getAppsView().getAppsStore().addUpdateListener(this);
+        mAppsView.getAppsStore().addUpdateListener(this);
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        mLauncher.getAppsView().getAppsStore().removeUpdateListener(this);
+        mAppsView.getAppsStore().removeUpdateListener(this);
     }
 
     @Override

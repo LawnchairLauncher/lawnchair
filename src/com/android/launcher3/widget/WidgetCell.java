@@ -104,7 +104,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     }
 
     private void setContainerWidth() {
-        mCellSize = (int) (mDeviceProfile.allAppsCellWidthPx * WIDTH_SCALE);
+        mCellSize = (int) (mDeviceProfile.cellWidthPx * WIDTH_SCALE);
         mPresetPreviewSize = (int) (mCellSize * PREVIEW_SCALE);
     }
 

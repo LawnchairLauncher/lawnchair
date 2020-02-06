@@ -291,4 +291,15 @@ public class SystemUiProxy implements ISystemUiProxy {
             }
         }
     }
+
+    @Override
+    public void handleImageAsScreenshot(Bitmap bitmap, Rect rect, Insets insets, int i) {
+        if (mSystemUiProxy != null) {
+            try {
+                mSystemUiProxy.handleImageAsScreenshot(bitmap, rect, insets, i);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call handleImageAsScreenshot", e);
+            }
+        }
+    }
 }

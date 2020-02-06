@@ -18,12 +18,13 @@ package com.android.launcher3.util;
 import static org.mockito.Mockito.mock;
 
 import com.android.launcher3.shadows.LShadowAppWidgetManager;
+import com.android.launcher3.shadows.LShadowBackupManager;
 import com.android.launcher3.shadows.LShadowBitmap;
 import com.android.launcher3.shadows.LShadowLauncherApps;
 import com.android.launcher3.shadows.LShadowUserManager;
+import com.android.launcher3.shadows.ShadowDeviceFlag;
 import com.android.launcher3.shadows.ShadowLooperExecutor;
 import com.android.launcher3.shadows.ShadowMainThreadInitializedObject;
-import com.android.launcher3.shadows.ShadowDeviceFlag;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 
 import org.junit.runners.model.InitializationError;
@@ -47,7 +48,7 @@ public class LauncherRoboTestRunner extends RobolectricTestRunner {
             LShadowUserManager.class,
             LShadowLauncherApps.class,
             LShadowBitmap.class,
-
+            LShadowBackupManager.class,
             ShadowLooperExecutor.class,
             ShadowMainThreadInitializedObject.class,
             ShadowDeviceFlag.class,

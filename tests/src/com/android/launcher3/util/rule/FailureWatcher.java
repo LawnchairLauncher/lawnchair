@@ -13,11 +13,10 @@ import org.junit.runners.model.Statement;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class FailureWatcher extends TestWatcher {
     private static final String TAG = "FailureWatcher";
+    private static boolean sHadFailedTestDeinitialization;
     final private UiDevice mDevice;
 
     public FailureWatcher(UiDevice device) {
@@ -36,30 +35,6 @@ public class FailureWatcher extends TestWatcher {
         } catch (IOException e) {
             Log.e(TAG, "error dumping XML to logcat", e);
         }
-    }
-
-    private static final String testsStartTime =
-            new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date());
-
-    @Override
-    public Statement apply(Statement base, Description description) {
-        return new Statement() {
-            @Override
-            public void evaluate() throws Throwable {
-                try {
-                    base.evaluate();
-                } catch (Throwable e) {
-                    final int bug =
-                            FailureInvestigator.getBugForFailure(e.toString(), testsStartTime);
-                    if (bug == 0) throw e;
-
-                    Log.e(TAG, "Known bug found for the original failure "
-                            + android.util.Log.getStackTraceString(e));
-                    throw new AssertionError(
-                            "Detected a failure that matches a known bug b/" + bug);
-                }
-            }
-        };
     }
 
     @Override
@@ -86,5 +61,36 @@ public class FailureWatcher extends TestWatcher {
         }
 
         device.takeScreenshot(new File(pathname));
+    }
+
+    @Override
+    public Statement apply(Statement base, Description description) {
+        return new Statement() {
+
+            @Override
+            public void evaluate() throws Throwable {
+                if (sHadFailedTestDeinitialization) {
+                    Log.d(TAG, "Skipping due to a recent test deinitialization failure: " +
+                            description.getDisplayName());
+                    return;
+                }
+
+                try {
+                    base.evaluate();
+                } catch (Throwable e) {
+                    final String stackTrace = Log.getStackTraceString(e);
+                    if (!stackTrace.contains(
+                            "androidx.test.internal.runner.junit4.statement.RunBefores.evaluate")) {
+                        // Test failed to deinitialize. Since the global state is probably
+                        // corrupted, won't execute other tests.
+                        Log.d(TAG,
+                                "Detected an exception from test finalizer, will skip further "
+                                        + "tests: " + stackTrace);
+                        sHadFailedTestDeinitialization = true;
+                    }
+                    throw e;
+                }
+            }
+        };
     }
 }
