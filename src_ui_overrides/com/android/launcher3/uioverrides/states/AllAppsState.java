@@ -15,7 +15,6 @@
  */
 package com.android.launcher3.uioverrides.states;
 
-import static com.android.launcher3.LauncherAnimUtils.ALL_APPS_TRANSITION_MS;
 import static com.android.launcher3.allapps.DiscoveryBounce.HOME_BOUNCE_SEEN;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
 
@@ -42,7 +41,12 @@ public class AllAppsState extends LauncherState {
     };
 
     public AllAppsState(int id) {
-        super(id, ContainerType.ALLAPPS, ALL_APPS_TRANSITION_MS, STATE_FLAGS);
+        super(id, ContainerType.ALLAPPS, STATE_FLAGS);
+    }
+
+    @Override
+    public int getTransitionDuration(Launcher context) {
+        return 320;
     }
 
     @Override

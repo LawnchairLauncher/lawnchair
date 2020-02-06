@@ -16,8 +16,6 @@
 
 package com.android.launcher3;
 
-import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_ACTIONS;
-
 import android.graphics.drawable.Drawable;
 import android.util.FloatProperty;
 import android.util.Property;
@@ -29,11 +27,7 @@ public class LauncherAnimUtils {
      * Durations for various state animations. These are not defined in resources to allow
      * easier access from static classes and enums
      */
-    public static final int ALL_APPS_TRANSITION_MS = 320;
-    public static final int OVERVIEW_TRANSITION_MS = ENABLE_OVERVIEW_ACTIONS.get() ? 380 : 250;
-    public static final int SPRING_LOADED_TRANSITION_MS = 150;
     public static final int SPRING_LOADED_EXIT_DELAY = 500;
-    public static final int HINT_TRANSITION_MS = 80;
 
     // The progress of an animation to all apps must be at least this far along to snap to all apps.
     public static final float MIN_PROGRESS_TO_ALL_APPS = 0.5f;
