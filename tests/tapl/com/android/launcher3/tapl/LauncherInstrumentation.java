@@ -33,6 +33,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.pm.ProviderInfo;
 import android.content.res.Resources;
+import android.graphics.Insets;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.net.Uri;
@@ -255,6 +256,11 @@ public final class LauncherInstrumentation {
 
     Bundle getTestInfo(String request) {
         return getContext().getContentResolver().call(mTestProviderUri, request, null, null);
+    }
+
+    Insets getTargetInsets() {
+        return getTestInfo(TestProtocol.REQUEST_WINDOW_INSETS)
+                .getParcelable(TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
     void setActiveContainer(VisibleContainer container) {
