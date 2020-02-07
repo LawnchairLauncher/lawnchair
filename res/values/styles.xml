@@ -48,6 +48,7 @@
         <item name="folderFillColor">#CDFFFFFF</item>
         <item name="folderIconBorderColor">?android:attr/colorPrimary</item>
         <item name="folderTextColor">#FF212121</item>
+        <item name="folderHintColor">#FF616161</item>
         <item name="loadingIconColor">#CCFFFFFF</item>
 
         <item name="android:windowTranslucentStatus">false</item>
@@ -96,6 +97,7 @@
         <item name="folderFillColor">#DD3C4043</item> <!-- 87% GM2 800 -->
         <item name="folderIconBorderColor">#FF80868B</item>
         <item name="folderTextColor">@android:color/white</item>
+        <item name="folderHintColor">#FFCCCCCC</item>
         <item name="isMainColorDark">true</item>
         <item name="loadingIconColor">#99FFFFFF</item>
     </style>
