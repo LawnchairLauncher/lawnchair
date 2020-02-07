@@ -18,10 +18,13 @@ package com.android.launcher3.compat;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
+
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.Utilities;
 import com.android.launcher3.testing.TestProtocol;
@@ -37,11 +40,13 @@ public class AccessibilityManagerCompat {
         return isAccessibilityEnabled(context);
     }
 
-    public static void sendCustomAccessibilityEvent(View target, int type, String text) {
+    public static void sendCustomAccessibilityEvent(View target, int type, @Nullable String text) {
         if (isObservedEventType(target.getContext(), type)) {
             AccessibilityEvent event = AccessibilityEvent.obtain(type);
             target.onInitializeAccessibilityEvent(event);
-            event.getText().add(text);
+            if (!TextUtils.isEmpty(text)) {
+                event.getText().add(text);
+            }
             getManager(target.getContext()).sendAccessibilityEvent(event);
         }
     }
