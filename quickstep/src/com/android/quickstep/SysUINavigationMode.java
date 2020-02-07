@@ -122,6 +122,12 @@ public class SysUINavigationMode {
         }
     }
 
+    /** @return Whether we can remove the shelf from overview. */
+    public static boolean removeShelfFromOverview(Context context) {
+        // The shelf is core to the two-button mode model, so we need to continue supporting it.
+        return getMode(context) != Mode.TWO_BUTTONS;
+    }
+
     public interface NavigationModeChangeListener {
 
         void onNavigationModeChanged(Mode newMode);
