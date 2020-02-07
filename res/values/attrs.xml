@@ -115,6 +115,7 @@
         <attr name="numFolderColumns" format="integer" />
         <!-- numHotseatIcons defaults to numColumns, if not specified -->
         <attr name="numHotseatIcons" format="integer" />
+        <attr name="dbFile" format="string" />
         <attr name="defaultLayoutId" format="reference" />
         <attr name="demoModeLayoutId" format="reference" />
     </declare-styleable>

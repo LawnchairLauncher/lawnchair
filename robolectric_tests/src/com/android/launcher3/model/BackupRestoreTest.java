@@ -134,7 +134,7 @@ public class BackupRestoreTest {
                 { APP_ICON, SHORTCUT, SHORTCUT, NO__ICON},
             }}, 2, OLD_WORK_PROFILE_ID);
         // simulates the creation of backup upon restore
-        new GridBackupTable(RuntimeEnvironment.application, mDb, mIdp.numHotseatIcons,
+        new GridBackupTable(RuntimeEnvironment.application, mDb, mDb, mIdp.numHotseatIcons,
                 mIdp.numColumns, mIdp.numRows).doBackup(
                         MY_OLD_PROFILE_ID, GridBackupTable.OPTION_REQUIRES_SANITIZATION);
         // reset favorites table
