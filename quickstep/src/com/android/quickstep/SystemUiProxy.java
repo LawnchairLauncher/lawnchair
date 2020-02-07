@@ -269,12 +269,6 @@ public class SystemUiProxy implements ISystemUiProxy {
         }
     }
 
-    @Override
-    public void handleImageAsScreenshot(
-            Bitmap screenImage, Rect locationInScreen, Insets visibleInsets, int taskId) {
-
-    }
-
     /**
      * See SharedApiCompat#setShelfHeight()
      */
