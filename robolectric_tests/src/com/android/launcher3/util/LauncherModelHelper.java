@@ -230,7 +230,21 @@ public class LauncherModelHelper {
     }
 
     public int addItem(int type, int screen, int container, int x, int y) {
-        return addItem(type, screen, container, x, y, mDefaultProfileId);
+        return addItem(type, screen, container, x, y, mDefaultProfileId, TEST_PACKAGE);
+    }
+
+    public int addItem(int type, int screen, int container, int x, int y, long profileId) {
+        return addItem(type, screen, container, x, y, profileId, TEST_PACKAGE);
+    }
+
+    public int addItem(int type, int screen, int container, int x, int y, String packageName) {
+        return addItem(type, screen, container, x, y, mDefaultProfileId, packageName);
+    }
+
+    public int addItem(int type, int screen, int container, int x, int y, String packageName,
+            int id, Uri contentUri) {
+        addItem(type, screen, container, x, y, mDefaultProfileId, packageName, id, contentUri);
+        return id;
     }
 
     /**
@@ -238,11 +252,19 @@ public class LauncherModelHelper {
      * @param type {@link #APP_ICON} or {@link #SHORTCUT} or >= 2 for
      *             folder (where the type represents the number of items in the folder).
      */
-    public int addItem(int type, int screen, int container, int x, int y, long profileId) {
+    public int addItem(int type, int screen, int container, int x, int y, long profileId,
+            String packageName) {
         Context context = RuntimeEnvironment.application;
         int id = LauncherSettings.Settings.call(context.getContentResolver(),
                 LauncherSettings.Settings.METHOD_NEW_ITEM_ID)
                 .getInt(LauncherSettings.Settings.EXTRA_VALUE);
+        addItem(type, screen, container, x, y, profileId, packageName, id, CONTENT_URI);
+        return id;
+    }
+
+    public void addItem(int type, int screen, int container, int x, int y, long profileId,
+            String packageName, int id, Uri contentUri) {
+        Context context = RuntimeEnvironment.application;
 
         ContentValues values = new ContentValues();
         values.put(LauncherSettings.Favorites._ID, id);
@@ -257,7 +279,7 @@ public class LauncherModelHelper {
         if (type == APP_ICON || type == SHORTCUT) {
             values.put(LauncherSettings.Favorites.ITEM_TYPE, type);
             values.put(LauncherSettings.Favorites.INTENT,
-                    new Intent(Intent.ACTION_MAIN).setPackage(TEST_PACKAGE).toUri(0));
+                    new Intent(Intent.ACTION_MAIN).setPackage(packageName).toUri(0));
         } else {
             values.put(LauncherSettings.Favorites.ITEM_TYPE,
                     LauncherSettings.Favorites.ITEM_TYPE_FOLDER);
@@ -267,8 +289,7 @@ public class LauncherModelHelper {
             }
         }
 
-        context.getContentResolver().insert(CONTENT_URI, values);
-        return id;
+        context.getContentResolver().insert(contentUri, values);
     }
 
     public int[][][] createGrid(int[][][] typeArray) {
