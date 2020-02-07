@@ -197,7 +197,8 @@ public class NavigationModeSwitchRule implements TestRule {
 
         Wait.atMost(() -> "Switching nav mode: "
                         + launcher.getNavigationModeMismatchError(),
-                () -> launcher.getNavigationModeMismatchError() == null, WAIT_TIME_MS, launcher);
+                () -> launcher.getNavigationModeMismatchError() == null,
+                60000 /* b/148422894 */, launcher);
 
         return true;
     }
