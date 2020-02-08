@@ -29,15 +29,13 @@ import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.Property;
-import android.util.SparseArray;
 
 import com.android.launcher3.graphics.PlaceHolderIconDrawable;
 import com.android.launcher3.icons.BitmapInfo;
+
 
 public class FastBitmapDrawable extends Drawable {
 
@@ -45,20 +43,11 @@ public class FastBitmapDrawable extends Drawable {
 
     private static final float DISABLED_DESATURATION = 1f;
     private static final float DISABLED_BRIGHTNESS = 0.5f;
+    private static final float DISABLED_ALPHA = 0.54f;
 
     public static final int CLICK_FEEDBACK_DURATION = 200;
 
-    // Since we don't need 256^2 values for combinations of both the brightness and saturation, we
-    // reduce the value space to a smaller value V, which reduces the number of cached
-    // ColorMatrixColorFilters that we need to keep to V^2
-    private static final int REDUCED_FILTER_VALUE_SPACE = 48;
-
-    // A cache of ColorFilters for optimizing brightness and saturation animations
-    private static final SparseArray<ColorFilter> sCachedFilter = new SparseArray<>();
-
-    // Temporary matrices used for calculation
-    private static final ColorMatrix sTempBrightnessMatrix = new ColorMatrix();
-    private static final ColorMatrix sTempFilterMatrix = new ColorMatrix();
+    private static ColorFilter sDisabledFColorFilter;
 
     protected final Paint mPaint = new Paint(Paint.FILTER_BITMAP_FLAG | Paint.ANTI_ALIAS_FLAG);
     protected Bitmap mBitmap;
@@ -84,13 +73,7 @@ public class FastBitmapDrawable extends Drawable {
     private ObjectAnimator mScaleAnimation;
     private float mScale = 1;
 
-
-    // The saturation and brightness are values that are mapped to REDUCED_FILTER_VALUE_SPACE and
-    // as a result, can be used to compose the key for the cached ColorMatrixColorFilters
-    private int mDesaturation = 0;
-    private int mBrightness = 0;
     private int mAlpha = 255;
-    private int mPrevUpdateKey = Integer.MAX_VALUE;
 
     public FastBitmapDrawable(Bitmap b) {
         this(b, Color.TRANSPARENT);
@@ -243,15 +226,10 @@ public class FastBitmapDrawable extends Drawable {
         return false;
     }
 
-    private void invalidateDesaturationAndBrightness() {
-        setDesaturation(mIsDisabled ? DISABLED_DESATURATION : 0);
-        setBrightness(mIsDisabled ? DISABLED_BRIGHTNESS : 0);
-    }
-
     public void setIsDisabled(boolean isDisabled) {
         if (mIsDisabled != isDisabled) {
             mIsDisabled = isDisabled;
-            invalidateDesaturationAndBrightness();
+            updateFilter();
         }
     }
 
@@ -259,90 +237,33 @@ public class FastBitmapDrawable extends Drawable {
         return mIsDisabled;
     }
 
-    /**
-     * Sets the saturation of this icon, 0 [full color] -> 1 [desaturated]
-     */
-    private void setDesaturation(float desaturation) {
-        int newDesaturation = (int) Math.floor(desaturation * REDUCED_FILTER_VALUE_SPACE);
-        if (mDesaturation != newDesaturation) {
-            mDesaturation = newDesaturation;
-            updateFilter();
+    private ColorFilter getDisabledColorFilter() {
+        if (sDisabledFColorFilter == null) {
+            ColorMatrix tempBrightnessMatrix = new ColorMatrix();
+            ColorMatrix tempFilterMatrix = new ColorMatrix();
+
+            tempFilterMatrix.setSaturation(1f - DISABLED_DESATURATION);
+            float scale = 1 - DISABLED_BRIGHTNESS;
+            int brightnessI =   (int) (255 * DISABLED_BRIGHTNESS);
+            float[] mat = tempBrightnessMatrix.getArray();
+            mat[0] = scale;
+            mat[6] = scale;
+            mat[12] = scale;
+            mat[4] = brightnessI;
+            mat[9] = brightnessI;
+            mat[14] = brightnessI;
+            mat[18] = DISABLED_ALPHA;
+            tempFilterMatrix.preConcat(tempBrightnessMatrix);
+            sDisabledFColorFilter = new ColorMatrixColorFilter(tempFilterMatrix);
         }
-    }
-
-    public float getDesaturation() {
-        return (float) mDesaturation / REDUCED_FILTER_VALUE_SPACE;
-    }
-
-    /**
-     * Sets the brightness of this icon, 0 [no add. brightness] -> 1 [2bright2furious]
-     */
-    private void setBrightness(float brightness) {
-        int newBrightness = (int) Math.floor(brightness * REDUCED_FILTER_VALUE_SPACE);
-        if (mBrightness != newBrightness) {
-            mBrightness = newBrightness;
-            updateFilter();
-        }
-    }
-
-    private float getBrightness() {
-        return (float) mBrightness / REDUCED_FILTER_VALUE_SPACE;
+        return sDisabledFColorFilter;
     }
 
     /**
      * Updates the paint to reflect the current brightness and saturation.
      */
     protected void updateFilter() {
-        boolean usePorterDuffFilter = false;
-        int key = -1;
-        if (mDesaturation > 0) {
-            key = (mDesaturation << 16) | mBrightness;
-        } else if (mBrightness > 0) {
-            // Compose a key with a fully saturated icon if we are just animating brightness
-            key = (1 << 16) | mBrightness;
-
-            // We found that in L, ColorFilters cause drawing artifacts with shadows baked into
-            // icons, so just use a PorterDuff filter when we aren't animating saturation
-            usePorterDuffFilter = true;
-        }
-
-        // Debounce multiple updates on the same frame
-        if (key == mPrevUpdateKey) {
-            return;
-        }
-        mPrevUpdateKey = key;
-
-        if (key != -1) {
-            ColorFilter filter = sCachedFilter.get(key);
-            if (filter == null) {
-                float brightnessF = getBrightness();
-                int brightnessI = (int) (255 * brightnessF);
-                if (usePorterDuffFilter) {
-                    filter = new PorterDuffColorFilter(Color.argb(brightnessI, 255, 255, 255),
-                            PorterDuff.Mode.SRC_ATOP);
-                } else {
-                    float saturationF = 1f - getDesaturation();
-                    sTempFilterMatrix.setSaturation(saturationF);
-                    if (mBrightness > 0) {
-                        // Brightness: C-new = C-old*(1-amount) + amount
-                        float scale = 1f - brightnessF;
-                        float[] mat = sTempBrightnessMatrix.getArray();
-                        mat[0] = scale;
-                        mat[6] = scale;
-                        mat[12] = scale;
-                        mat[4] = brightnessI;
-                        mat[9] = brightnessI;
-                        mat[14] = brightnessI;
-                        sTempFilterMatrix.preConcat(sTempBrightnessMatrix);
-                    }
-                    filter = new ColorMatrixColorFilter(sTempFilterMatrix);
-                }
-                sCachedFilter.append(key, filter);
-            }
-            mPaint.setColorFilter(filter);
-        } else {
-            mPaint.setColorFilter(null);
-        }
+        mPaint.setColorFilter(mIsDisabled ? getDisabledColorFilter() : null);
         invalidateSelf();
     }
 

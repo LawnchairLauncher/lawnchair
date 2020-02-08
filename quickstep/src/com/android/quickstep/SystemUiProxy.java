@@ -269,12 +269,6 @@ public class SystemUiProxy implements ISystemUiProxy {
         }
     }
 
-    @Override
-    public void handleImageAsScreenshot(
-            Bitmap screenImage, Rect locationInScreen, Insets visibleInsets, int taskId) {
-
-    }
-
     /**
      * See SharedApiCompat#setShelfHeight()
      */
@@ -288,6 +282,17 @@ public class SystemUiProxy implements ISystemUiProxy {
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call setShelfHeight visible: " + visible
                         + " height: " + shelfHeight, e);
+            }
+        }
+    }
+
+    @Override
+    public void handleImageAsScreenshot(Bitmap bitmap, Rect rect, Insets insets, int i) {
+        if (mSystemUiProxy != null) {
+            try {
+                mSystemUiProxy.handleImageAsScreenshot(bitmap, rect, insets, i);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call handleImageAsScreenshot", e);
             }
         }
     }

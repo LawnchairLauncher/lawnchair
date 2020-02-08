@@ -22,6 +22,7 @@ import android.view.MotionEvent;
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.logging.StatsLogUtils;
+import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.quickstep.GestureState;
@@ -63,6 +64,7 @@ public class OverviewWithoutFocusInputConsumer implements InputConsumer {
 
     private void onInterceptTouch() {
         if (mInputMonitor != null) {
+            TestLogging.recordEvent("pilferPointers");
             mInputMonitor.pilferPointers();
         }
     }

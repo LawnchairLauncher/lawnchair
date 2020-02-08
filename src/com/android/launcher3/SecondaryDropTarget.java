@@ -6,6 +6,7 @@ import static android.appwidget.AppWidgetProviderInfo.WIDGET_FEATURE_RECONFIGURA
 import static com.android.launcher3.ItemInfoWithIcon.FLAG_SYSTEM_MASK;
 import static com.android.launcher3.ItemInfoWithIcon.FLAG_SYSTEM_NO;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP;
+import static com.android.launcher3.accessibility.LauncherAccessibilityDelegate.DISMISS_PREDICTION;
 import static com.android.launcher3.accessibility.LauncherAccessibilityDelegate.RECONFIGURE;
 import static com.android.launcher3.accessibility.LauncherAccessibilityDelegate.UNINSTALL;
 
@@ -29,9 +30,11 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.android.launcher3.Launcher.OnResumeCallback;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.logging.LoggerUtils;
+import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.PackageManagerHelper;
@@ -43,6 +46,7 @@ import java.net.URISyntaxException;
  * Drop target which provides a secondary option for an item.
  *    For app targets: shows as uninstall
  *    For configurable widgets: shows as setup
+ *    For predicted app icons: don't suggest app
  */
 public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmListener {
 
@@ -81,7 +85,11 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
             mHoverColor = getResources().getColor(R.color.uninstall_target_hover_tint);
             setDrawable(R.drawable.ic_uninstall_shadow);
             updateText(R.string.uninstall_drop_target_label);
-        } else {
+        } else if (action == DISMISS_PREDICTION) {
+            mHoverColor = Themes.getColorAccent(getContext());
+            setDrawable(R.drawable.ic_block);
+            updateText(R.string.dismiss_prediction_label);
+        } else if (action == RECONFIGURE) {
             mHoverColor = Themes.getColorAccent(getContext());
             setDrawable(R.drawable.ic_setup_shadow);
             updateText(R.string.gadget_setup_text);
@@ -101,8 +109,13 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
     @Override
     public Target getDropTargetForLogging() {
         Target t = LoggerUtils.newTarget(Target.Type.CONTROL);
-        t.controlType = mCurrentAccessibilityAction == UNINSTALL ? ControlType.UNINSTALL_TARGET
-                : ControlType.SETTINGS_BUTTON;
+        if (mCurrentAccessibilityAction == UNINSTALL) {
+            t.controlType = ControlType.UNINSTALL_TARGET;
+        } else if (mCurrentAccessibilityAction == DISMISS_PREDICTION) {
+            t.controlType = ControlType.DISMISS_PREDICTION;
+        } else {
+            t.controlType = ControlType.SETTINGS_BUTTON;
+        }
         return t;
     }
 
@@ -119,6 +132,9 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
                 return true;
             }
             return false;
+        } else if (FeatureFlags.ENABLE_PREDICTION_DISMISS.get() && info.isPredictedItem()) {
+            setupUi(DISMISS_PREDICTION);
+            return true;
         }
 
         setupUi(UNINSTALL);
@@ -227,6 +243,11 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
             if (widgetId != INVALID_APPWIDGET_ID) {
                 mLauncher.getAppWidgetHost().startConfigActivity(mLauncher, widgetId, -1);
             }
+            return null;
+        }
+        if (mCurrentAccessibilityAction == DISMISS_PREDICTION) {
+            AppLaunchTracker.INSTANCE.get(getContext()).onDismissApp(info.getTargetComponent(),
+                    info.user, AppLaunchTracker.CONTAINER_PREDICTIONS);
             return null;
         }
         // else: mCurrentAccessibilityAction == UNINSTALL

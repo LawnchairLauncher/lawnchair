@@ -31,4 +31,8 @@ public final class Widget extends Launchable {
     protected String getLongPressIndicator() {
         return "drop_target_bar";
     }
+
+    @Override
+    protected void expectActivityStartEvents() {
+    }
 }

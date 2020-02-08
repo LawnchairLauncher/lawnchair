@@ -24,14 +24,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
-import com.android.launcher3.Launcher;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.pageindicators.PageIndicator;
 import com.android.launcher3.util.Themes;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 /**
  * Supports two indicator colors, dedicated for personal and work tabs.
@@ -73,7 +72,7 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
         mDividerPaint.setStrokeWidth(
                 getResources().getDimensionPixelSize(R.dimen.all_apps_divider_height));
 
-        mSharedPreferences = Launcher.getLauncher(getContext()).getSharedPrefs();
+        mSharedPreferences = Utilities.getPrefs(context);
         mIsRtl = Utilities.isRtl(getResources());
     }
 

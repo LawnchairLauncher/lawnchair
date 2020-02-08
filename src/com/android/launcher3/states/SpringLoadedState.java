@@ -15,7 +15,6 @@
  */
 package com.android.launcher3.states;
 
-import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_TRANSITION_MS;
 import static com.android.launcher3.states.RotationHelper.REQUEST_LOCK;
 
 import android.graphics.Rect;
@@ -37,7 +36,12 @@ public class SpringLoadedState extends LauncherState {
             FLAG_DISABLE_PAGE_CLIPPING | FLAG_PAGE_BACKGROUNDS | FLAG_HIDE_BACK_BUTTON;
 
     public SpringLoadedState(int id) {
-        super(id, ContainerType.OVERVIEW, SPRING_LOADED_TRANSITION_MS, STATE_FLAGS);
+        super(id, ContainerType.OVERVIEW, STATE_FLAGS);
+    }
+
+    @Override
+    public int getTransitionDuration(Launcher launcher) {
+        return 150;
     }
 
     @Override

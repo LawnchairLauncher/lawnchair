@@ -68,6 +68,7 @@ import org.junit.Assert;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -93,15 +94,19 @@ public final class LauncherInstrumentation {
     private static final String TAG = "Tapl";
     private static final int ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME = 20;
     private static final int GESTURE_STEP_MS = 16;
+    private static final SimpleDateFormat DATE_TIME_FORMAT =
+            new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
     private static long START_TIME = System.currentTimeMillis();
 
     static final Pattern EVENT_LOG_ENTRY = Pattern.compile(
-            "[0-9][0-9]-[0-9][0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9]\\.[0-9][0-9][0-9]"
+            "(?<time>[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9] "
+                    + "[0-9][0-9]:[0-9][0-9]:[0-9][0-9]\\.[0-9][0-9][0-9])"
                     + ".*" + TestProtocol.TAPL_EVENTS_TAG + ": (?<event>.*)");
 
     private static final Pattern EVENT_TOUCH_DOWN = getTouchEventPattern("ACTION_DOWN");
     private static final Pattern EVENT_TOUCH_UP = getTouchEventPattern("ACTION_UP");
     private static final Pattern EVENT_TOUCH_CANCEL = getTouchEventPattern("ACTION_CANCEL");
+    private static final Pattern EVENT_PILFER_POINTERS = Pattern.compile("pilferPointers");
 
     // Types for launcher containers that the user is interacting with. "Background" is a
     // pseudo-container corresponding to inactive launcher covered by another app.
@@ -167,7 +172,8 @@ public final class LauncherInstrumentation {
     // Not null when we are collecting expected events to compare with actual ones.
     private List<Pattern> mExpectedEvents;
 
-    private String mTimeBeforeFirstLogEvent;
+    private Date mStartRecordingTime;
+    private boolean mCheckEventsForSuccessfulGestures = false;
 
     private static Pattern getTouchEventPattern(String action) {
         // The pattern includes sanity checks that we don't get a multi-touch events or other
@@ -237,6 +243,10 @@ public final class LauncherInstrumentation {
                 }
             }
         }
+    }
+
+    public void enableCheckEventsForSuccessfulGestures() {
+        mCheckEventsForSuccessfulGestures = true;
     }
 
     Context getContext() {
@@ -406,7 +416,7 @@ public final class LauncherInstrumentation {
         final String eventMismatch = getEventMismatchMessage(false);
 
         if (eventMismatch != null) {
-            message = message + ",\nhaving produced wrong events:\n    " + eventMismatch;
+            message = message + ", having produced " + eventMismatch;
         }
 
         Assert.fail(formatSystemHealthMessage(message));
@@ -624,6 +634,15 @@ public final class LauncherInstrumentation {
                 log(action = "clicking home button from " + getVisibleStateMessage());
                 try (LauncherInstrumentation.Closable c = addContextLayer(action)) {
                     mDevice.waitForIdle();
+
+                    if (getNavigationModel() == NavigationModel.TWO_BUTTON) {
+                        if (hasLauncherObject(CONTEXT_MENU_RES_ID) ||
+                                hasLauncherObject(WIDGETS_RES_ID)
+                                        && !mDevice.isNaturalOrientation()) {
+                            expectEvent(EVENT_PILFER_POINTERS);
+                        }
+                    }
+
                     runToState(
                             waitForSystemUiObject("home")::click,
                             NORMAL_STATE_ORDINAL,
@@ -788,7 +807,7 @@ public final class LauncherInstrumentation {
         return mDevice.hasObject(getLauncherObjectSelector(resId));
     }
 
-    private boolean hasLauncherObject(BySelector selector) {
+    boolean hasLauncherObject(BySelector selector) {
         return mDevice.hasObject(makeLauncherSelector(selector));
     }
 
@@ -1042,16 +1061,21 @@ public final class LauncherInstrumentation {
 
     void sendPointer(long downTime, long currentTime, int action, Point point,
             GestureScope gestureScope) {
-        if (gestureScope != GestureScope.OUTSIDE) {
-            switch (action) {
-                case MotionEvent.ACTION_DOWN:
+        switch (action) {
+            case MotionEvent.ACTION_DOWN:
+                if (gestureScope != GestureScope.OUTSIDE) {
                     expectEvent(EVENT_TOUCH_DOWN);
-                    break;
-                case MotionEvent.ACTION_UP:
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                if (gestureScope != GestureScope.INSIDE) {
+                    expectEvent(EVENT_PILFER_POINTERS);
+                }
+                if (gestureScope != GestureScope.OUTSIDE) {
                     expectEvent(gestureScope == GestureScope.INSIDE
                             ? EVENT_TOUCH_UP : EVENT_TOUCH_CANCEL);
-                    break;
-            }
+                }
+                break;
         }
 
         final MotionEvent event = getMotionEvent(downTime, currentTime, action, point.x, point.y);
@@ -1182,34 +1206,47 @@ public final class LauncherInstrumentation {
     private List<String> getEvents() {
         final ArrayList<String> events = new ArrayList<>();
         try {
-            final String logcatTimeParameter =
-                    mTimeBeforeFirstLogEvent != null ? " -t " + mTimeBeforeFirstLogEvent : "";
             final String logcatEvents = mDevice.executeShellCommand(
-                    "logcat -d --pid=" + getPid() + logcatTimeParameter
+                    "logcat -d -v year --pid=" + getPid() + " -t "
+                            + DATE_TIME_FORMAT.format(mStartRecordingTime).replaceAll(" ", "")
                             + " -s " + TestProtocol.TAPL_EVENTS_TAG);
             final Matcher matcher = EVENT_LOG_ENTRY.matcher(logcatEvents);
             while (matcher.find()) {
+                // Skip events before recording start time.
+                if (DATE_TIME_FORMAT.parse(matcher.group("time"))
+                        .compareTo(mStartRecordingTime) < 0) {
+                    continue;
+                }
+
                 events.add(matcher.group("event"));
             }
             return events;
         } catch (IOException e) {
             throw new RuntimeException(e);
+        } catch (ParseException e) {
+            throw new AssertionError(e);
         }
     }
 
     private void startRecordingEvents() {
         Assert.assertTrue("Already recording events", mExpectedEvents == null);
         mExpectedEvents = new ArrayList<>();
-        mTimeBeforeFirstLogEvent = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
-                .format(new Date())
-                .replaceAll(" ", "");
+        mStartRecordingTime = new Date();
+        log("startRecordingEvents: " + DATE_TIME_FORMAT.format(mStartRecordingTime));
     }
 
     private void stopRecordingEvents() {
         mExpectedEvents = null;
+        mStartRecordingTime = null;
     }
 
     Closable eventsCheck() {
+        if ("com.android.launcher3".equals(getLauncherPackageName())) {
+            // Not checking specific Launcher3 event sequences.
+            return () -> {
+            };
+        }
+
         // Entering events check block.
         startRecordingEvents();
 
@@ -1217,6 +1254,11 @@ public final class LauncherInstrumentation {
             // Leaving events check block.
             if (mExpectedEvents == null) {
                 return; // There was a failure. Noo need to report another one.
+            }
+
+            if (!mCheckEventsForSuccessfulGestures) {
+                stopRecordingEvents();
+                return;
             }
 
             final String message = getEventMismatchMessage(true);
@@ -1252,7 +1294,7 @@ public final class LauncherInstrumentation {
                     return formatEventMismatchMessage("too few actual events", actual, i);
                 }
                 if (!mExpectedEvents.get(i).matcher(actual.get(i)).find()) {
-                    return formatEventMismatchMessage("mismatched event", actual, i);
+                    return formatEventMismatchMessage("a mismatched event", actual, i);
                 }
             }
 
@@ -1267,9 +1309,20 @@ public final class LauncherInstrumentation {
         return null;
     }
 
+    private String formatEventList(List events, int position) {
+        final StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < events.size(); ++i) {
+            sb.append("\n| ");
+            sb.append(i == position ? "---> " : "     ");
+            sb.append(events.get(i).toString());
+        }
+        if (position == events.size()) sb.append("\n| ---> (end)");
+        return sb.toString();
+    }
+
     private String formatEventMismatchMessage(String message, List<String> actual, int position) {
-        return message + ", pos=" + position
-                + ", expected=" + mExpectedEvents
-                + ", actual=" + actual;
+        return message + ":"
+                + "\nExpected:" + formatEventList(mExpectedEvents, position)
+                + "\nActual:" + formatEventList(actual, position);
     }
 }

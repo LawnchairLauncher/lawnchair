@@ -15,14 +15,11 @@
  */
 package com.android.launcher3.allapps;
 
-import static com.android.launcher3.util.PackageManagerHelper.hasShortcutsPermission;
 
 import android.content.Context;
-import android.content.pm.PackageManager;
 
 import com.android.launcher3.AppInfo;
-import com.android.launcher3.Launcher;
-import com.android.launcher3.Utilities;
+import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LabelComparator;
@@ -117,16 +114,9 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
             item.position = pos;
             return item;
         }
-
-        public static AdapterItem asWorkTabFooter(int pos) {
-            AdapterItem item = new AdapterItem();
-            item.viewType = AllAppsGridAdapter.VIEW_TYPE_WORK_TAB_FOOTER;
-            item.position = pos;
-            return item;
-        }
     }
 
-    private final Launcher mLauncher;
+    private final BaseDraggingActivity mLauncher;
 
     // The set of apps from the system
     private final List<AppInfo> mApps = new ArrayList<>();
@@ -151,7 +141,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
 
     public AlphabeticalAppsList(Context context, AllAppsStore appsStore, boolean isWork) {
         mAllAppsStore = appsStore;
-        mLauncher = Launcher.getLauncher(context);
+        mLauncher = BaseDraggingActivity.fromContext(context);
         mAppNameComparator = new AppInfoComparator(context);
         mIsWork = isWork;
         mNumAppsPerRow = mLauncher.getDeviceProfile().inv.numColumns;
@@ -390,18 +380,6 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
                     break;
             }
         }
-
-        // Add the work profile footer if required.
-        if (shouldShowWorkFooter()) {
-            mAdapterItems.add(AdapterItem.asWorkTabFooter(position++));
-        }
-    }
-
-    private boolean shouldShowWorkFooter() {
-        return mIsWork && Utilities.ATLEAST_P &&
-                (hasShortcutsPermission(mLauncher)
-                        || mLauncher.checkSelfPermission("android.permission.MODIFY_QUIET_MODE")
-                        == PackageManager.PERMISSION_GRANTED);
     }
 
     private List<AppInfo> getFiltersAppInfos() {

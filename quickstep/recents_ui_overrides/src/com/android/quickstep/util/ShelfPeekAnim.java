@@ -25,6 +25,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.view.animation.Interpolator;
 
 import com.android.launcher3.Launcher;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.uioverrides.states.OverviewState;
 
 /**
@@ -48,7 +49,7 @@ public class ShelfPeekAnim {
      * Animates to the given state, canceling the previous animation if it was still running.
      */
     public void setShelfState(ShelfAnimState shelfState, Interpolator interpolator, long duration) {
-        if (mShelfState == shelfState) {
+        if (mShelfState == shelfState || FeatureFlags.ENABLE_OVERVIEW_ACTIONS.get()) {
             return;
         }
         mLauncher.getStateManager().cancelStateElementAnimation(INDEX_SHELF_ANIM);

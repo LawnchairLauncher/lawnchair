@@ -26,6 +26,7 @@ import android.animation.AnimatorSet;
 import android.annotation.SuppressLint;
 import android.appwidget.AppWidgetHostView;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Path;
 import android.graphics.Rect;
@@ -96,7 +97,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         View.OnLongClickListener, DropTarget, FolderListener, TextView.OnEditorActionListener,
         View.OnFocusChangeListener, DragListener, ExtendedEditText.OnBackKeyListener {
     private static final String TAG = "Launcher.Folder";
-
+    private static final boolean DEBUG = false;
     /**
      * We avoid measuring {@link #mContent} with a 0 width or height, as this
      * results in CellLayout being measured as UNSPECIFIED, which it does not support.
@@ -146,7 +147,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     @Thunk FolderIcon mFolderIcon;
 
     @Thunk FolderPagedView mContent;
-    public ExtendedEditText mFolderName;
+    public FolderNameEditText mFolderName;
     private PageIndicatorDots mPageIndicator;
 
     protected View mFooter;
@@ -300,12 +301,12 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         post(() -> {
             if (FeatureFlags.FOLDER_NAME_SUGGEST.get()) {
                 if (TextUtils.isEmpty(mFolderName.getText())) {
-                    final String[] suggestedNames = new String[FolderNameProvider.SUGGEST_MAX];
-                    mLauncher.getFolderNameProvider().getSuggestedFolderName(getContext(),
-                            mInfo.contents, suggestedNames);
+                    String[] suggestedNames =
+                            mInfo.suggestedFolderNames.getStringArrayExtra("suggest");
                     mFolderName.setText(suggestedNames[0]);
                     mFolderName.displayCompletions(Arrays.asList(suggestedNames).subList(1,
                             suggestedNames.length));
+                    mFolderName.setEnteredCompose(false);
                 }
             }
             mFolderName.setHint("");
@@ -318,7 +319,13 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         // Convert to a string here to ensure that no other state associated with the text field
         // gets saved.
         String newTitle = mFolderName.getText().toString();
+        if (DEBUG) {
+            Log.d(TAG, "onBackKey newTitle=" + newTitle);
+        }
+
         mInfo.title = newTitle;
+        mInfo.setOption(FolderInfo.FLAG_MANUAL_FOLDER_NAME, mFolderName.isEnteredCompose(),
+                mLauncher.getModelWriter());
         mFolderIcon.onTitleChanged(newTitle);
         mLauncher.getModelWriter().updateItemInDatabase(mInfo);
 
@@ -350,6 +357,10 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     }
 
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+        if (DEBUG) {
+            Log.d(TAG, "onEditorAction actionId=" + actionId + " key="
+                    + (event != null ? event.getKeyCode() : "null event"));
+        }
         if (actionId == EditorInfo.IME_ACTION_DONE) {
             mFolderName.dispatchBackKey();
             return true;
@@ -435,16 +446,19 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
      * Show suggested folder title.
      */
     public void showSuggestedTitle(String[] suggestName) {
-        if (FeatureFlags.FOLDER_NAME_SUGGEST.get()
-                && TextUtils.isEmpty(mFolderName.getText().toString())) {
-            if (suggestName.length > 0 && !TextUtils.isEmpty(suggestName[0])) {
-                mFolderName.setHint("");
-                mFolderName.setText(suggestName[0]);
-                mInfo.title = suggestName[0];
-                animateOpen(mInfo.contents, 0, true);
-                mFolderName.showKeyboard();
-                mFolderName.displayCompletions(
-                        Arrays.asList(suggestName).subList(1, suggestName.length));
+        if (FeatureFlags.FOLDER_NAME_SUGGEST.get()) {
+            mInfo.suggestedFolderNames = new Intent().putExtra("suggest", suggestName);
+            if (TextUtils.isEmpty(mFolderName.getText().toString())
+                    && !mInfo.hasOption(FolderInfo.FLAG_MANUAL_FOLDER_NAME)) {
+                if (suggestName.length > 0 && !TextUtils.isEmpty(suggestName[0])) {
+                    mFolderName.setHint("");
+                    mFolderName.setText(suggestName[0]);
+                    mInfo.title = suggestName[0];
+                    animateOpen(mInfo.contents, 0, true);
+                    mFolderName.showKeyboard();
+                    mFolderName.displayCompletions(
+                            Arrays.asList(suggestName).subList(1, suggestName.length));
+                }
             }
         }
     }
@@ -552,9 +566,6 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
             openFolder.close(true);
         }
 
-        if (FeatureFlags.FOLDER_NAME_SUGGEST.get()) {
-            mLauncher.getFolderNameProvider().load(getContext());
-        }
         mContent.bindItems(items);
         centerAboutIcon();
         mItemsInvalidated = true;
@@ -1495,6 +1506,9 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         return ContainerType.FOLDER;
     }
 
+    /**
+     * Navigation bar back key or hardware input back key has been issued.
+     */
     @Override
     public boolean onBackPressed() {
         if (isEditingName()) {

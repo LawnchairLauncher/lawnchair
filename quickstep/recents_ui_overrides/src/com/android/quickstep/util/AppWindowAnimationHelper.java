@@ -224,7 +224,6 @@ public class AppWindowAnimationHelper {
             surfaceParams[i] = new SurfaceParams(app.leash, alpha, mTmpMatrix, crop, layer,
                     cornerRadius / scale);
         }
-        applySurfaceParams(params.syncTransactionApplier, surfaceParams);
         return surfaceParams;
     }
 

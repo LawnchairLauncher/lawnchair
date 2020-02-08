@@ -16,14 +16,10 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.WorkspaceItemInfo;
-import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
-import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 import com.android.launcher3.util.InstantAppResolver;
 import com.android.launcher3.util.PackageManagerHelper;
@@ -173,33 +169,6 @@ public abstract class SystemShortcut<T extends BaseDraggingActivity> extends Ite
                     mItemInfo.getTargetComponent().getPackageName());
             mTarget.startActivitySafely(view, intent, mItemInfo, null);
             AbstractFloatingView.closeAllOpenViews(mTarget);
-        }
-    }
-
-    public static final Factory<Launcher> DISMISS_PREDICTION = (launcher, itemInfo) -> {
-        if (!FeatureFlags.ENABLE_PREDICTION_DISMISS.get()) return null;
-        if (itemInfo.container != LauncherSettings.Favorites.CONTAINER_PREDICTION
-                && itemInfo.container != LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION) {
-            return null;
-        }
-        return new DismissPrediction(launcher, itemInfo);
-    };
-
-    public static class DismissPrediction extends SystemShortcut<Launcher> {
-        public DismissPrediction(Launcher launcher, ItemInfo itemInfo) {
-            super(R.drawable.ic_remove_no_shadow, R.string.dismiss_prediction_label, launcher,
-                    itemInfo);
-        }
-
-        @Override
-        public void onClick(View view) {
-            PopupContainerWithArrow.closeAllOpenViews(mTarget);
-            mTarget.getUserEventDispatcher().logActionOnControl(Action.Touch.TAP,
-                    ControlType.DISMISS_PREDICTION, ContainerType.DEEPSHORTCUTS);
-            AppLaunchTracker.INSTANCE.get(view.getContext()).onDismissApp(
-                    mItemInfo.getTargetComponent(),
-                    mItemInfo.user,
-                    AppLaunchTracker.CONTAINER_PREDICTIONS);
         }
     }
 

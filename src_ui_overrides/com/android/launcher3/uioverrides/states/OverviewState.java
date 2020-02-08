@@ -15,8 +15,7 @@
  */
 package com.android.launcher3.uioverrides.states;
 
-import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
-
+import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 
@@ -26,7 +25,12 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 public class OverviewState extends LauncherState {
 
     public OverviewState(int id) {
-        super(id, ContainerType.WORKSPACE, OVERVIEW_TRANSITION_MS, FLAG_DISABLE_RESTORE);
+        super(id, ContainerType.WORKSPACE, FLAG_DISABLE_RESTORE);
+    }
+
+    @Override
+    public int getTransitionDuration(Launcher context) {
+        return 250;
     }
 
     public static OverviewState newBackgroundState(int id) {

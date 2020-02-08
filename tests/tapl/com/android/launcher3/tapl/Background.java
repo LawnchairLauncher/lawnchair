@@ -16,6 +16,7 @@
 
 package com.android.launcher3.tapl;
 
+import static com.android.launcher3.tapl.OverviewTask.TASK_START_EVENT;
 import static com.android.launcher3.testing.TestProtocol.BACKGROUND_APP_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.OVERVIEW_STATE_ORDINAL;
 
@@ -24,9 +25,12 @@ import android.os.SystemClock;
 import android.view.MotionEvent;
 
 import androidx.annotation.NonNull;
+import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.UiObject2;
 
 import com.android.launcher3.testing.TestProtocol;
+
+import java.util.regex.Pattern;
 
 /**
  * Indicates the base state with a UI other than Overview running as foreground. It can also
@@ -34,6 +38,7 @@ import com.android.launcher3.testing.TestProtocol;
  */
 public class Background extends LauncherInstrumentation.VisibleContainer {
     private static final int ZERO_BUTTON_SWIPE_UP_GESTURE_DURATION = 500;
+    private static final Pattern SQUARE_BUTTON_EVENT = Pattern.compile("onOverviewToggle");
 
     Background(LauncherInstrumentation launcher) {
         super(launcher);
@@ -126,6 +131,7 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
             }
 
             case THREE_BUTTON:
+                mLauncher.expectEvent(SQUARE_BUTTON_EVENT);
                 mLauncher.runToState(
                         () -> mLauncher.waitForSystemUiObject("recent_apps").click(),
                         OVERVIEW_STATE_ORDINAL);
@@ -174,9 +180,12 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
                     endX = startX;
                     endY = 0;
                 }
+                final boolean launcherIsVisible =
+                        mLauncher.hasLauncherObject(By.textStartsWith(""));
+                final boolean isZeroButton = mLauncher.getNavigationModel()
+                        == LauncherInstrumentation.NavigationModel.ZERO_BUTTON;
                 mLauncher.swipeToState(startX, startY, endX, endY, 20, expectedState,
-                        mLauncher.getNavigationModel()
-                                == LauncherInstrumentation.NavigationModel.ZERO_BUTTON
+                        launcherIsVisible && isZeroButton
                                 ? LauncherInstrumentation.GestureScope.INSIDE_TO_OUTSIDE
                                 : LauncherInstrumentation.GestureScope.OUTSIDE
                 );
@@ -186,11 +195,14 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
             case THREE_BUTTON:
                 // Double press the recents button.
                 UiObject2 recentsButton = mLauncher.waitForSystemUiObject("recent_apps");
+                mLauncher.expectEvent(SQUARE_BUTTON_EVENT);
                 mLauncher.runToState(() -> recentsButton.click(), OVERVIEW_STATE_ORDINAL);
                 mLauncher.getOverview();
+                mLauncher.expectEvent(SQUARE_BUTTON_EVENT);
                 recentsButton.click();
                 break;
         }
+        mLauncher.expectEvent(TASK_START_EVENT);
     }
 
     protected String getSwipeHeightRequestName() {

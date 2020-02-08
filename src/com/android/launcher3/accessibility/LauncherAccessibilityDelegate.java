@@ -54,6 +54,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
 
     public static final int REMOVE = R.id.action_remove;
     public static final int UNINSTALL = R.id.action_uninstall;
+    public static final int DISMISS_PREDICTION = R.id.action_dismiss_prediction;
     public static final int RECONFIGURE = R.id.action_reconfigure;
     protected static final int ADD_TO_WORKSPACE = R.id.action_add_to_workspace;
     protected static final int MOVE = R.id.action_move;
@@ -86,6 +87,8 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
                 launcher.getText(R.string.remove_drop_target_label)));
         mActions.put(UNINSTALL, new AccessibilityAction(UNINSTALL,
                 launcher.getText(R.string.uninstall_drop_target_label)));
+        mActions.put(DISMISS_PREDICTION, new AccessibilityAction(DISMISS_PREDICTION,
+                launcher.getText(R.string.dismiss_prediction_label)));
         mActions.put(RECONFIGURE, new AccessibilityAction(RECONFIGURE,
                 launcher.getText(R.string.gadget_setup_text)));
         mActions.put(ADD_TO_WORKSPACE, new AccessibilityAction(ADD_TO_WORKSPACE,
@@ -166,13 +169,22 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
     }
 
     public boolean performAction(final View host, final ItemInfo item, int action) {
-        if (action == ACTION_LONG_CLICK && ShortcutUtil.isDeepShortcut(item)) {
-            CustomActionsPopup popup = new CustomActionsPopup(mLauncher, host);
-            if (popup.canShow()) {
-                popup.show();
+        if (action == ACTION_LONG_CLICK) {
+            if (ShortcutUtil.isDeepShortcut(item)) {
+                CustomActionsPopup popup = new CustomActionsPopup(mLauncher, host);
+                if (popup.canShow()) {
+                    popup.show();
+                    return true;
+                }
+            } else if (host instanceof BubbleTextView) {
+                // Long press should be consumed for workspace items, and it should invoke the
+                // Shortcuts / Notifications / Actions pop-up menu, and not start a drag as the
+                // standard long press path does.
+                PopupContainerWithArrow.showForIcon((BubbleTextView) host);
                 return true;
             }
         }
+
         if (action == MOVE) {
             beginAccessibleDrag(host, item);
         } else if (action == ADD_TO_WORKSPACE) {

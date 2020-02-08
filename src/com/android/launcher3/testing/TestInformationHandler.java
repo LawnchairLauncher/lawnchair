@@ -25,6 +25,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Debug;
 import android.system.Os;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.Keep;
@@ -190,6 +191,11 @@ public class TestInformationHandler implements ResourceBasedOverride {
     }
 
     protected boolean isLauncherInitialized() {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.LAUNCHER_DIDNT_INITIALIZE,
+                    "isLauncherInitialized " + Launcher.ACTIVITY_TRACKER.getCreatedActivity() + ", "
+                            + LauncherAppState.getInstance(mContext).getModel().isModelLoaded());
+        }
         return Launcher.ACTIVITY_TRACKER.getCreatedActivity() == null
                 || LauncherAppState.getInstance(mContext).getModel().isModelLoaded();
     }

@@ -55,16 +55,17 @@ public class OverviewScrim extends Scrim {
         mCurrentScrimmedView = mStableScrimmedView;
         int currentIndex = root.indexOfChild(mCurrentScrimmedView);
         final int childCount = root.getChildCount();
-        while (mCurrentScrimmedView.getVisibility() != VISIBLE && currentIndex < childCount) {
+        while (mCurrentScrimmedView != null && mCurrentScrimmedView.getVisibility() != VISIBLE
+                && currentIndex < childCount) {
             currentIndex++;
             mCurrentScrimmedView = root.getChildAt(currentIndex);
         }
     }
 
     /**
-     * @return The view to draw the scrim behind.
+     * @return The view to draw the scrim behind, or null if all visible views should be scrimmed.
      */
-    public View getScrimmedView() {
+    public @Nullable View getScrimmedView() {
         return mCurrentScrimmedView;
     }
 }

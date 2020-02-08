@@ -26,6 +26,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
+import android.content.pm.PackageInstaller;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.pm.ShortcutInfo;
@@ -43,6 +44,7 @@ import org.robolectric.shadows.ShadowLauncherApps;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Executor;
 import java.util.stream.Collectors;
 
 /**
@@ -109,6 +111,17 @@ public class LShadowLauncherApps extends ShadowLauncherApps {
     @Implementation
     public boolean hasShortcutHostPermission() {
         return true;
+    }
+
+    @Implementation
+    public List<PackageInstaller.SessionInfo> getAllPackageInstallerSessions() {
+        return RuntimeEnvironment.application.getPackageManager().getPackageInstaller()
+                .getAllSessions();
+    }
+
+    @Implementation
+    public void registerPackageInstallerSessionCallback(
+            Executor executor, PackageInstaller.SessionCallback callback) {
     }
 
     @Override
