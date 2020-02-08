@@ -118,7 +118,7 @@ public final class LauncherInstrumentation {
     public enum NavigationModel {ZERO_BUTTON, TWO_BUTTON, THREE_BUTTON}
 
     // Where the gesture happens: outside of Launcher, inside or from inside to outside.
-    enum GestureScope {
+    public enum GestureScope {
         OUTSIDE, INSIDE, INSIDE_TO_OUTSIDE
     }
 
@@ -147,7 +147,7 @@ public final class LauncherInstrumentation {
         }
     }
 
-    interface Closable extends AutoCloseable {
+    public interface Closable extends AutoCloseable {
         void close();
     }
 
@@ -1020,7 +1020,8 @@ public final class LauncherInstrumentation {
 
     // Inject a swipe gesture. Inject exactly 'steps' motion points, incrementing event time by a
     // fixed interval each time.
-    void linearGesture(int startX, int startY, int endX, int endY, int steps, boolean slowDown,
+    public void linearGesture(int startX, int startY, int endX, int endY, int steps,
+            boolean slowDown,
             GestureScope gestureScope) {
         log("linearGesture: " + startX + ", " + startY + " -> " + endX + ", " + endY);
         final long downTime = SystemClock.uptimeMillis();
@@ -1072,7 +1073,7 @@ public final class LauncherInstrumentation {
                 0, 0, 1.0f, 1.0f, 0, 0, InputDevice.SOURCE_TOUCHSCREEN, 0);
     }
 
-    void sendPointer(long downTime, long currentTime, int action, Point point,
+    public void sendPointer(long downTime, long currentTime, int action, Point point,
             GestureScope gestureScope) {
         switch (action) {
             case MotionEvent.ACTION_DOWN:
@@ -1096,7 +1097,7 @@ public final class LauncherInstrumentation {
         event.recycle();
     }
 
-    long movePointer(long downTime, long startTime, long duration, Point from, Point to,
+    public long movePointer(long downTime, long startTime, long duration, Point from, Point to,
             GestureScope gestureScope) {
         log("movePointer: " + from + " to " + to);
         final Point point = new Point();
@@ -1256,7 +1257,7 @@ public final class LauncherInstrumentation {
         mStartRecordingTime = null;
     }
 
-    Closable eventsCheck() {
+    public Closable eventsCheck() {
         if ("com.android.launcher3".equals(getLauncherPackageName())) {
             // Not checking specific Launcher3 event sequences.
             return () -> {
