@@ -1219,9 +1219,12 @@ public final class LauncherInstrumentation {
     private List<String> getEvents() {
         final ArrayList<String> events = new ArrayList<>();
         try {
+            // Logcat may skip events after the specified time. Querying for events starting 1 sec
+            // earlier.
+            final Date startTime = new Date(mStartRecordingTime.getTime() - 1000);
             final String logcatEvents = mDevice.executeShellCommand(
                     "logcat -d -v year --pid=" + getPid() + " -t "
-                            + DATE_TIME_FORMAT.format(mStartRecordingTime).replaceAll(" ", "")
+                            + DATE_TIME_FORMAT.format(startTime).replaceAll(" ", "")
                             + " -s " + TestProtocol.TAPL_EVENTS_TAG);
             final Matcher matcher = EVENT_LOG_ENTRY.matcher(logcatEvents);
             while (matcher.find()) {
