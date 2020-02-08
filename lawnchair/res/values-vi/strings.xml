@@ -298,6 +298,10 @@
     <string name="about_role_writer">Người biên soạn</string>
     <string name="about_role_dev_mod">Nhà phát triển &amp; Người kiểm duyệt</string>
     <string name="about_role_designer">Nhà thiết kế</string>
+    <string name="about_role_devops">Kỹ sư DevOps</string>
+    <string name="about_role_pr">Quản lý PR</string>
+    <string name="about_role_ops">Hoạt động &amp; Kỹ sư hạ tầng</string>
+    <string name="about_role_mod_support">Đại diện hỗ trợ &amp; Người điều hành</string>
     <string name="about_role_family_member">Thành viên trong gia đình</string>
     <string name="about_role_magisk_maintainer">Người duy trì module QuickSwitch</string>
     <string name="about_our_team">Đội ngũ</string>
