@@ -10,7 +10,7 @@
     <string name="search_no_results">Không có kết quả</string>
     <string name="restart_lawnchair_pref_title">Khởi động lại</string>
     <string name="developer_options_title">Tuỳ chọn Nhà phát triển</string>
-    <string name="change_default_home">Đặt làm ứng dụng trên màn hình chính</string>
+    <string name="change_default_home">Đặt làm ứng dụng màn hình chính</string>
     <string name="action_apply">Hoàn thành</string>
     <!-- Note: new. Replaces “OK” in dialogs. -->
     <string name="theme_dark_theme_mode_on">Kích hoạt</string>
@@ -91,14 +91,14 @@
     <!-- Section 4 -->
     <string name="smartspace_preferences_in_settings">Xem nhanh</string>
     <!-- Note: replaces hard-coded copy (“Home widget”). -->
-    <string name="smartspace_preferences_in_settings_desc">Date &amp; Time, Data Sources</string>
+    <string name="smartspace_preferences_in_settings_desc">Ngày &amp; Giờ, Nguồn dữ liệu</string>
     <string name="smartspace_time">Hiển thị đồng hồ</string>
     <string name="smartspace_date">Hiển thị ngày</string>
     <string name="pref_smartspace_time_above">Hiển thị đồng hồ lớn</string>
     <string name="pref_hide_statusbar_clock">Ẩn đồng hồ thanh trạng thái</string>
     <string name="root_access_required">Yêu cầu quyền root.</string>
     <string name="smartspace_time_24_h">Sử dụng định dạng 24 giờ</string>
-    <string name="title_use_pill_qsb">Sử dụng thành tìm kiếm hình con nhộng</string>
+    <string name="title_use_pill_qsb">Hiển thị Phím tắt Tìm kiếm hình thuốc</string>
     <string name="pref_category_weather">Khác</string>
     <string name="pref_smartspace_widget_provider">Nguồn dữ liệu thời tiết</string>
     <string name="google_app">Ứng dụng Google</string>
@@ -118,7 +118,7 @@
     <string name="battery_status">Tình trạng pin</string>
     <string name="event_provider_now_playing">Hiện đang phát</string>
     <string name="event_provider_unread_notifications">Thông báo</string>
-    <string name="personality_provider">Lời chào</string>
+    <string name="personality_provider">Chào mừng</string>
     <string name="pref_smartspace_event_provider">Nguồn cấp Sự kiện</string>
     <string-array name="greetings_morning">
         <item>Chào buổi sáng!</item>
@@ -153,7 +153,7 @@
     <string name="two_row_dock">Hiện hàng thứ hai</string>
     <string name="pref_category_searchbar">Thanh tìm kiếm</string>
     <string name="dock_search_bar">Hiện thanh tìm kiếm</string>
-    <string name="dock_colored_google">Màu biểu tượng</string>
+    <string name="dock_colored_google">Biểu tượng màu</string>
     <!-- Section 6 -->
     <string name="app_drawer_pref_title">Ngăn chứa ứng dụng</string>
     <string name="app_drawer_pref_summary">Bố cục, chủng loại, gợi ý</string>
@@ -161,7 +161,7 @@
     <string name="pref_drawer_columns">Số cột</string>
     <string name="pref_prediction_count">Số lượng đề xuất</string>
     <string name="pref_drawer_padding">Chiều cao hàng</string>
-    <string name="hide_apps">Ẩn ứng dụng</string>
+    <string name="hide_apps">Ẩn phím tắt ứng dụng</string>
     <string name="categorization">Thể loại</string>
     <string name="pref_appcategorization_enable_title">Phân loại ứng dụng</string>
     <string name="pref_appcategorization_folders_title">Thư mục</string>
@@ -227,8 +227,8 @@
     <string name="search_provider_baidu">Baidu</string>
     <string name="search_provider_s_finder">S Finder</string>
     <string name="search_provider_appsearch">Tìm kiếm ứng dụng</string>
-    <string name="search_provider_search_lite">Tìm kiếm Lite</string>
-    <string name="search_provider_cool_search">Cool Search</string>
+    <string name="search_provider_search_lite">Tìm kiếm nhẹ</string>
+    <string name="search_provider_cool_search">Tìm kiếm tuyệt vời</string>
     <string name="search_provider_firefox">Firefox</string>
     <string name="search_provider_qwant">Qwant</string>
     <string name="search_provider_edge">Cạnh</string>
@@ -305,6 +305,7 @@
     <string name="about_role_family_member">Thành viên trong gia đình</string>
     <string name="about_role_magisk_maintainer">Người duy trì module QuickSwitch</string>
     <string name="about_our_team">Đội ngũ</string>
+    <string name="title_attribouter_licenses">Người góp ý</string>
     <!-- Section 12 -->
     <string name="settings_button_text">Cài đặt màn hình chính</string>
     <string name="button_organize_screens">Sắp xếp các trang</string>
@@ -319,6 +320,7 @@
     <string name="adaptive_icon">Biểu tượng tương thích</string>
     <string name="action_edit">Chỉnh sửa</string>
     <string name="dismiss_drop_target_label">"Không hiển thị"</string>
+    <string name="suggested_action_content_description">%1$s Mở trong %2$s.</string>
     <string name="smartspace_setup_text">Nhấn để thiết lập</string>
     <string name="lawnchair_settings">Cài đặt Lawnchair</string>
     <string name="label_voice_search">Tìm kiếm bằng giọng nói</string>
@@ -331,7 +333,9 @@
     <string name="pixel_style_pref_title">Google Pixel</string>
     <string name="label_turn_off_suggestions">Tắt</string>
     <string name="about_summary_title">Sơ lược</string>
+    <string name="hide_app">Ẩn lối tắt</string>
     <string name="icon_shape_rounded_square">Hình vuông bo tròn</string>
+    <string name="hide_app_selected">&#160; ẩn.</string>
     <string name="hide_app_apply">Hoàn thành</string>
     <string name="hide_dock_gradient">Tắt màu chuyển sắc</string>
     <string name="choose_backup_path">Chọn</string>
@@ -511,9 +515,11 @@
     <string name="status_channel_name">Trạng thái tải lên</string>
     <string name="bugreport_group_summary">%d báo cáo mới.</string>
     <string name="bugreport_group_summary_multiple">Nhiều báo cáo mới.</string>
+    <string name="folder_cover_mode">Sử dụng chế độ che đậy</string>
     <string name="folder_cover_mode_desc">Chạm để mở ứng dụng đầu tiên, vuốt lên để mở tất cả.</string>
     <string name="icon_shape_override_miui_explaination">Lỗi có thể khiến các biểu tượng luôn là hình vuông đối với MIUI.</string>
     <string name="permission_iplocate">Vị trí gần chính xác</string>
+    <string name="permission_iplocate_twilight_explanation">Cho phép truy cập vào vị trí gần đúng của bạn? Điều này cho phép tính toán ánh sáng ban ngày chính xác hơn.</string>
     <string name="event_provider_missing_notification_access">Để sử dụng <xliff:g example="My Provider" id="providerName">“%1$s”</xliff:g>, hãy bật thông báo cho <xliff:g example="My App" id="name">“%2$s”.</xliff:g></string>
     <string name="event_provider_missing_notification_dots">Để sử dụng <xliff:g example="My Provider" id="providerName">“%1$s”</xliff:g>, hãy bật dấu chấm thông báo.</string>
     <string name="zen_mode_enabled">Không làm phiền đang bật.</string>
@@ -532,11 +538,12 @@
     <string name="icon_shape_bottom_left">Góc dưới phía bên trái</string>
     <string name="icon_shape_bottom_right">Góc dưới phía bên phải</string>
     <string name="icon_shape_corner_round">Tròn</string>
+    <string name="icon_shape_corner_squircle">Mượt mà</string>
     <string name="icon_shape_corner_cut">Cắt</string>
     <string name="smartspace_add_to_home">Thêm vào màn hình chính</string>
     <string name="get_lawnfeed">Cài đặt Lawnfeed</string>
     <!-- Section 13 -->
-    <string name="quickstep_pref_title">Đa Nhiệm</string>
+    <string name="quickstep_pref_title">Gần đây</string>
     <string name="quickstep_pref_summary">Cử chỉ, Kiểu, Điều hướng</string>
     <string name="swipe_up_to_switch_apps_title">Vuốt lên để chuyển đổi ứng dụng</string>
     <string name="swipe_left_to_go_back_title">Vuốt sang trái để quay lại</string>
