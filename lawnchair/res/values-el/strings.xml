@@ -189,6 +189,7 @@
     <string name="suggestion_pref_screen_title">Προτάσεις</string>
     <string name="title_app_suggestions_in_search">Προτάσεις εφαρμογών</string>
     <string name="app_actions_pref_title">Ενέργειες</string>
+    <string name="app_actions_reset_pref_title">Επαναφορά λειτουργίκον προτιμήσεων</string>
     <string name="all_apps_label_pref_title">Εμφάνιση Ετικέτας \"Όλες οι εφαρμογές\"</string>
     <string name="separate_work_apps_pref_title">Δεύτερη Καρτέλα για Εφαρμογές Εργασίας</string>
     <!-- Section 7 -->
