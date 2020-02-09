@@ -9,7 +9,7 @@
     <string name="search_menu">Szukaj</string>
     <string name="search_no_results">Brak wyników</string>
     <string name="restart_lawnchair_pref_title">Uruchom ponownie</string>
-    <string name="developer_options_title">Opcje Programistyczne</string>
+    <string name="developer_options_title">Opcje programistyczne</string>
     <string name="change_default_home">Ustaw jako aplikację ekranu głównego</string>
     <string name="action_apply">Gotowe</string>
     <!-- Note: new. Replaces “OK” in dialogs. -->
