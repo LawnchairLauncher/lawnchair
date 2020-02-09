@@ -100,6 +100,7 @@ import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragView;
+import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderGridOrganizer;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.RotationMode;
@@ -1718,8 +1719,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     /**
      * Creates and adds new folder to CellLayout
      */
-    public FolderIcon addFolder(CellLayout layout, WorkspaceItemInfo info, int container,
-            final int screenId, int cellX, int cellY) {
+    public FolderIcon addFolder(CellLayout layout, int container, final int screenId, int cellX,
+            int cellY) {
         final FolderInfo folderInfo = new FolderInfo();
         folderInfo.title = "";
 
@@ -1735,6 +1736,16 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         parent.getShortcutsAndWidgets().measureChild(newFolder);
         return newFolder;
     }
+
+    /**
+     * Called when a workspace item is converted into a folder
+     */
+    public void folderCreatedFromItem(Folder folder, WorkspaceItemInfo itemInfo){}
+
+    /**
+     * Called when a folder is converted into a workspace item
+     */
+    public void folderConvertedToItem(Folder folder, WorkspaceItemInfo itemInfo) {}
 
     /**
      * Unbinds the view for the specified item, and removes the item and all its children.

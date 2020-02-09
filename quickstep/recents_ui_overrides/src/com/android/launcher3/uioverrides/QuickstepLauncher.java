@@ -30,7 +30,6 @@ import android.view.View;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.BaseQuickstepLauncher;
-import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
@@ -38,7 +37,7 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.folder.Folder;
 import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.hybridhotseat.HotseatPredictionController;
 import com.android.launcher3.popup.SystemShortcut;
@@ -191,13 +190,19 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
     }
 
     @Override
-    public FolderIcon addFolder(CellLayout layout, WorkspaceItemInfo info, int container,
-            int screenId, int cellX, int cellY) {
-        FolderIcon fi =  super.addFolder(layout, info, container, screenId, cellX, cellY);
+    public void folderCreatedFromItem(Folder folder, WorkspaceItemInfo itemInfo) {
+        super.folderCreatedFromItem(folder, itemInfo);
         if (mHotseatPredictionController != null) {
-            mHotseatPredictionController.folderCreatedFromIcon(info, fi.getFolder().getInfo());
+            mHotseatPredictionController.folderCreatedFromWorkspaceItem(itemInfo, folder.getInfo());
         }
-        return fi;
+    }
+
+    @Override
+    public void folderConvertedToItem(Folder folder, WorkspaceItemInfo itemInfo) {
+        super.folderConvertedToItem(folder, itemInfo);
+        if (mHotseatPredictionController != null) {
+            mHotseatPredictionController.folderConvertedToWorkspaceItem(itemInfo, folder.getInfo());
+        }
     }
 
     @Override

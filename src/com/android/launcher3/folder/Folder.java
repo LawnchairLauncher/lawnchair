@@ -1109,13 +1109,14 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
                 int itemCount = getItemCount();
                 if (itemCount <= 1) {
                     View newIcon = null;
+                    WorkspaceItemInfo finalItem = null;
 
                     if (itemCount == 1) {
                         // Move the item from the folder to the workspace, in the position of the
                         // folder
                         CellLayout cellLayout = mLauncher.getCellLayout(mInfo.container,
                                 mInfo.screenId);
-                        WorkspaceItemInfo finalItem = mInfo.contents.remove(0);
+                        finalItem =  mInfo.contents.remove(0);
                         newIcon = mLauncher.createShortcut(cellLayout, finalItem);
                         mLauncher.getModelWriter().addOrMoveItemInDatabase(finalItem,
                                 mInfo.container, mInfo.screenId, mInfo.cellX, mInfo.cellY);
@@ -1135,6 +1136,9 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
 
                         // Focus the newly created child
                         newIcon.requestFocus();
+                    }
+                    if (finalItem != null) {
+                        mLauncher.folderConvertedToItem(mFolderIcon.getFolder(), finalItem);
                     }
                 }
             }
