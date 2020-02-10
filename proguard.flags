@@ -48,3 +48,6 @@
 -dontwarn android.view.**
 -dontwarn android.os.**
 -dontwarn android.graphics.**
+
+# Ignore warnings for hidden utility classes referenced from the shared lib
+-dontwarn com.android.internal.util.**
