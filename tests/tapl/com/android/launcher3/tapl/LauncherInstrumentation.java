@@ -1222,7 +1222,7 @@ public final class LauncherInstrumentation {
         try {
             // Logcat may skip events after the specified time. Querying for events starting 1 sec
             // earlier.
-            final Date startTime = new Date(mStartRecordingTime.getTime() - 1000);
+            final Date startTime = new Date(mStartRecordingTime.getTime() - 10000);
             final String logcatEvents = mDevice.executeShellCommand(
                     "logcat -d -v year --pid=" + getPid() + " -t "
                             + DATE_TIME_FORMAT.format(startTime).replaceAll(" ", "")
