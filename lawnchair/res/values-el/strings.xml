@@ -194,6 +194,7 @@
     <string name="separate_work_apps_pref_title">Δεύτερη Καρτέλα για Εφαρμογές Εργασίας</string>
     <!-- Section 7 -->
     <string name="search">Αναζήτηση</string>
+    <string name="search_pref_summary">Διάταξη, Στυλ, Μηχανή Αναζήτησης</string>
     <string name="pref_global_search_provider">Μηχανή Αναζήτησης</string>
     <string name="google">Εφαρμογή Google</string>
     <string name="search_provider_google_go">Google Go</string>
@@ -226,8 +227,10 @@
     <string name="pref_integrations">Πρόσθετα</string>
     <string name="pref_integrations_summary">Συντομεύσεις Sesame, Google Feed</string>
     <string name="sesame">Sesame</string>
+    <string name="sesame_data_integration">Κοινή χρήση Δεδομένων</string>
     <string name="sesame_upsell">Πατήστε για εγκατάσταση της εφαρμογής Sesame.</string>
     <string name="sesame_search_engine">Χρήση ως Μηχανή Αναζήτησης</string>
+    <string name="pref_sesame_sync_look_and_feel">Κοινή χρήση Ρυθμίσεων Στυλ</string>
     <string name="sesame_version">Έκδοση Βιβλιοθήκης</string>
     <string name="feed_theme_pref_title">Χρώμα Φόντου</string>
     <!-- Section 9 -->
@@ -242,6 +245,7 @@
     <string name="action_none">Καμία Ενέργεια</string>
     <string name="action_sleep">Αναστολή</string>
     <string name="action_open_settings">Άνοιγμα Ρυθμίσεων Lawnchair</string>
+    <string name="action_open_notifications">Άνοιγμα του Πίνακα Ειδοποιήσεων</string>
     <string name="action_overlay">Άνοιγμα Google Feed</string>
     <string name="action_open_app">Άνοιγμα εφαρμογής</string>
     <!-- Section 10 -->
@@ -276,6 +280,7 @@
     <string name="about_our_team">H Ομάδα</string>
     <!-- Section 12 -->
     <string name="settings_button_text">Ρυθμίσεις Αρχικής Οθόνης</string>
+    <string name="button_organize_screens">Ταξινόμηση Σελίδων</string>
     <string name="wallpaper_button_text">Ταπετσαρία</string>
     <string name="pref_app_groups_create">Δημιουργία</string>
     <string name="pref_appcategorization_style_text">Στυλ</string>
@@ -288,12 +293,14 @@
     <string name="adaptive_icon">Προσαρμοσμένο Εικονίδιο</string>
     <string name="action_edit">Επεξεργασία</string>
     <string name="dismiss_drop_target_label">"Απόκρυψη"</string>
+    <string name="smartspace_setup_text">Πατήστε για να ρυθμίσετε</string>
     <string name="lawnchair_settings">Ρυθμίσεις Lawnchair</string>
     <string name="label_voice_search">Φωνητική Αναζήτηση</string>
     <string name="icon_pack">Πακέτο εικονιδίων</string>
     <string name="home_widget">Με μια ματιά</string>
     <string name="about_app_version">Έκδοση</string>
     <string name="app_name_pixel_launcher">Εκκινητής Pixel</string>
+    <string name="title_disable_suggestions_prompt">Απενεργοποιήστε τις Προτάσεις Εφαρμογών</string>
     <string name="msg_disable_suggestions_prompt">"Τα δεδομένα χρήσης θα διαγραφούν."</string>
     <string name="app_name_lawnchair">Lawnchair</string>
     <string name="pixel_style_pref_title">Google Pixel</string>
@@ -324,6 +331,7 @@
     <string name="read_external_storage_required">Για να δημιουργήσετε ένα Αντίγραφο Ασφαλείας, παραχωρήστε την Άδεια Αποθήκευσης.</string>
     <string name="launcher_theme_override_label">Εξαναγκασμός Σκοτεινής Εμφάνισης</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
+    <string name="dock_style_pref_title">Στυλ μπάρας εφαρμογών</string>
     <string name="dock_style_p">Android Pie</string>
     <string name="dock_style_n">Android Nougat</string>
     <string name="dock_style_hidden">Κρυφή</string>
@@ -355,6 +363,8 @@
     <string name="about_bio_paphonb">18χρονος φοιτητής, προγραμματιστής Android και ένας από τους κορυφαίους προγραμματιστές του εκκινητή Lawnchair.</string>
     <string name="debug_crash_launcher">Αναγκαστική Διακοπή</string>
     <string name="action_open_drawer">Άνοιγμα συρταριού</string>
+    <string name="action_open_widgets">Άνοιγμα συρταριού γραφικών στοιχείων</string>
+    <string name="action_close_notifications">Κλείσιμο Πίνακα Ειδοποιήσεων</string>
     <string name="action_open_app_with_target">Άνοιγμα \"%s\"</string>
     <string name="action_open_app_select_app">Επιλογή εφαρμογής</string>
     <string name="smartspace_widget_provider_not_found">Αποκτήστε την εφαρμογή Google.</string>
@@ -367,6 +377,7 @@
     <string name="all_icons">Όλα τα εικονίδια</string>
     <string name="error_no_browser">Δεν βρέθηκε περιηγητής διαδικτύου.</string>
     <string name="no_icon_found">Δεν βρέθηκε εικονίδιο.</string>
+    <string name="icon_pack_external_picker">Άνοιγμα Εξωτερικού Επιλογέα</string>
     <string name="week_day_format">%1$s, %2$s</string>
     <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
     <string name="weather_provider_testing">Αποσφαλμάτωση</string>
@@ -398,6 +409,7 @@
     <string name="theme_dark_theme_mode_follow_wallpaper">@string/theme_auto</string>
     <string name="theme_dark_theme_mode_follow_system">@string/theme_auto_night_mode</string>
     <string name="pref_qsb_color">Χρώμα</string>
+    <string name="hide_from_predictions">Απόκρυψη από Προτάσεις</string>
     <string name="app_actions_pref_title_in_search">Ενέργειες</string>
     <string name="search_clear_history">Εκκαθάριση Ιστορικού</string>
     <string name="recent_task_option_popup_window">Διάλογος</string>
@@ -409,6 +421,7 @@
     <string name="tabs_manage">Διαχείριση</string>
     <string name="tab_manage_apps">Διαχείριση Εφαρμογών</string>
     <string name="tab_bottom_sheet_save">Ολοκληρώθηκε</string>
+    <string name="selected_count">%1$d Επιλεγμένο</string>
     <string name="tab_color">Χρώμα</string>
     <string name="delete">Διαγραφή</string>
     <string name="none">Κανένα</string>
@@ -446,8 +459,16 @@
     <string name="action_dogbin_copy_link">Αντιγραφή υπερσυνδέσμου</string>
     <string name="action_copy">Αντιγραφή</string>
     <string name="action_copy_link">Αντιγραφή υπερσυνδέσμου</string>
+    <string name="copied_toast">Αντιγράφηκε στο πρόχειρο.</string>
     <string name="action_share">Κοινοποίηση</string>
+    <string name="action_dogbin_upload_error">Η μεταφόρτωση απέτυχε.</string>
+    <string name="dogbin_uploading">Μεταφόρτωση...</string>
     <string name="bugreport_channel_name">Αναφορές σφαλμάτων</string>
+    <string name="status_channel_name">Κατάσταση Μεταφόρτωσης</string>
+    <string name="bugreport_group_summary">%d νέες αναφορές.</string>
+    <string name="bugreport_group_summary_multiple">Πολλαπλές νέες αναφορές.</string>
+    <string name="folder_cover_mode">Χρησιμοποιήστε τη Λειτουργία Κάλυψης</string>
+    <string name="folder_cover_mode_desc">Πατήστε για να ανοίξετε την πρώτη εφαρμογή, σύρετε προς τα πάνω για προβολή όλων.</string>
     <string name="icon_shape_override_miui_explaination">Ένα σφάλμα στο MIUI μπορεί να προκαλέσει τα εικονίδια να παραμείνουν τετράγωνα.</string>
     <string name="permission_iplocate">Τοποθεσία κατά προσέγγιση</string>
     <string name="permission_iplocate_twilight_explanation">Να επιτρέπεται η πρόσβαση στην τοποθεσία κατά προσέγγιση σας; Αυτό επιτρέπει ακριβέστερο υπολογισμό του φωτός ημέρας.</string>
@@ -473,4 +494,5 @@
     <string name="gesture_nav_swipe_up_left">Από τα Αριστερά</string>
     <string name="gesture_nav_swipe_up_center">Από το Κέντρο</string>
     <string name="gesture_nav_swipe_up_right">Από τα Δεξιά</string>
+    <string name="icon_shape_system_default">Καθορισμός από το Σύστημα</string>
 </resources>
