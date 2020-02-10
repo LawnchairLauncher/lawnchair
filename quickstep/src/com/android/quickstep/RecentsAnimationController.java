@@ -201,6 +201,7 @@ public class RecentsAnimationController {
         if (mInputConsumerController != null) {
             mInputConsumerController.setInputListener(null);
         }
+        mInputProxySupplier = null;
     }
 
     private boolean onInputConsumerEvent(InputEvent ev) {
