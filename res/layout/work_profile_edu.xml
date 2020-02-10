@@ -21,22 +21,22 @@
 
     <View
         android:layout_width="match_parent"
-        android:backgroundTint="@color/bottom_panel_background"
         android:layout_height="32dp"
-        android:background="@drawable/bottom_sheet_top_border" />
+        android:background="@drawable/bottom_sheet_top_border"
+        android:backgroundTint="?android:attr/colorAccent" />
 
     <LinearLayout
         android:id="@+id/view_wrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/bottom_panel_background"
+        android:background="?android:attr/colorAccent"
         android:orientation="vertical"
         android:paddingLeft="@dimen/bottom_sheet_edu_padding"
         android:paddingRight="@dimen/bottom_sheet_edu_padding">
 
         <TextView
-            style="@style/TextHeadline"
             android:id="@+id/content_text"
+            style="@style/TextHeadline"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="48dp"
@@ -57,5 +57,4 @@
             android:textAlignment="center"
             android:textColor="@android:color/white" />
     </LinearLayout>
-
 </com.android.launcher3.views.WorkEduView>

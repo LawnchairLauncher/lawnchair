@@ -482,7 +482,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     @Override
     public void onEnterAnimationComplete() {
         super.onEnterAnimationComplete();
-        mAllAppsController.highlightWorkTabIfNecessary();
         mRotationHelper.setCurrentTransitionRequest(REQUEST_NONE);
     }
 

@@ -330,7 +330,7 @@
     <!--- User onboarding title for personal apps -->
     <string name="work_profile_edu_personal_apps">Personal apps are private &amp; can\'t be seen by IT</string>
     <!--- User onboarding title for work profile apps -->
-    <string name="work_profile_edu_work_apps">Work apps are badged and monitored by IT</string>
+    <string name="work_profile_edu_work_apps">Work apps are badged &amp; visible to IT</string>
     <!-- Action label to proceed to the next work profile edu section-->
     <string name="work_profile_edu_next">Next</string>
     <!-- Action label to finish work profile edu-->
