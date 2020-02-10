@@ -11,7 +11,7 @@ import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_VERTICAL_PROGRE
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
-import static com.android.launcher3.config.FeatureFlags.QUICKSTEP_SPRINGS;
+import static com.android.launcher3.config.FeatureFlags.UNSTABLE_SPRINGS;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_ALL_APPS;
 
 import android.animation.Animator;
@@ -185,7 +185,7 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
     }
 
     public Animator createSpringAnimation(float... progressValues) {
-        if (QUICKSTEP_SPRINGS.get()) {
+        if (UNSTABLE_SPRINGS.get()) {
             return new SpringObjectAnimator<>(this, ALL_APPS_PROGRESS, 1f / mShiftRange,
                     SPRING_DAMPING_RATIO, SPRING_STIFFNESS, progressValues);
         }

@@ -21,7 +21,7 @@ import static com.android.launcher3.anim.Interpolators.DEACCEL;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_2;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
-import static com.android.launcher3.config.FeatureFlags.QUICKSTEP_SPRINGS;
+import static com.android.launcher3.config.FeatureFlags.UNSTABLE_SPRINGS;
 import static com.android.launcher3.util.DefaultDisplay.getSingleFrameMs;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_OVERVIEW;
 import static com.android.quickstep.GestureState.GestureEndTarget.HOME;
@@ -972,7 +972,7 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
         }
         mLauncherTransitionController.getAnimationPlayer().setDuration(Math.max(0, duration));
 
-        if (QUICKSTEP_SPRINGS.get()) {
+        if (UNSTABLE_SPRINGS.get()) {
             mLauncherTransitionController.dispatchOnStartWithVelocity(end, velocityPxPerMs.y);
         }
         mLauncherTransitionController.getAnimationPlayer().start();
