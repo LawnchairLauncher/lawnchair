@@ -76,8 +76,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -102,12 +104,16 @@ public final class LauncherInstrumentation {
     static final Pattern EVENT_LOG_ENTRY = Pattern.compile(
             "(?<time>[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9] "
                     + "[0-9][0-9]:[0-9][0-9]:[0-9][0-9]\\.[0-9][0-9][0-9])"
-                    + ".*" + TestProtocol.TAPL_EVENTS_TAG + ": (?<event>.*)");
+                    + ".*" + TestProtocol.TAPL_EVENTS_TAG + ": (?<sequence>[a-zA-Z]+) / "
+                    + "(?<event>.*)");
 
     private static final Pattern EVENT_TOUCH_DOWN = getTouchEventPattern("ACTION_DOWN");
     private static final Pattern EVENT_TOUCH_UP = getTouchEventPattern("ACTION_UP");
     private static final Pattern EVENT_TOUCH_CANCEL = getTouchEventPattern("ACTION_CANCEL");
     private static final Pattern EVENT_PILFER_POINTERS = Pattern.compile("pilferPointers");
+
+    static final Pattern EVENT_TOUCH_DOWN_TIS = getTouchEventPatternTIS("ACTION_DOWN");
+    static final Pattern EVENT_TOUCH_UP_TIS = getTouchEventPatternTIS("ACTION_UP");
 
     // Types for launcher containers that the user is interacting with. "Background" is a
     // pseudo-container corresponding to inactive launcher covered by another app.
@@ -170,19 +176,27 @@ public final class LauncherInstrumentation {
 
     private Consumer<ContainerType> mOnSettledStateAction;
 
+    // Map from an event sequence name to an ordered list of expected events in that sequence.
     // Not null when we are collecting expected events to compare with actual ones.
-    private List<Pattern> mExpectedEvents;
+    private Map<String, List<Pattern>> mExpectedEvents;
 
     private Date mStartRecordingTime;
     private boolean mCheckEventsForSuccessfulGestures = false;
 
-    private static Pattern getTouchEventPattern(String action) {
+    private static Pattern getTouchEventPattern(String prefix, String action) {
         // The pattern includes sanity checks that we don't get a multi-touch events or other
         // surprises.
         return Pattern.compile(
-                "Touch event: MotionEvent.*?action=" + action + ".*?id\\[0\\]=0"
-                        +
-                        ".*?toolType\\[0\\]=TOOL_TYPE_FINGER.*?buttonState=0.*?pointerCount=1");
+                prefix + ": MotionEvent.*?action=" + action + ".*?id\\[0\\]=0"
+                        + ".*?toolType\\[0\\]=TOOL_TYPE_FINGER.*?buttonState=0.*?pointerCount=1");
+    }
+
+    private static Pattern getTouchEventPattern(String action) {
+        return getTouchEventPattern("Touch event", action);
+    }
+
+    private static Pattern getTouchEventPatternTIS(String action) {
+        return getTouchEventPattern("TouchInteractionService.onInputEvent", action);
     }
 
     /**
@@ -652,10 +666,14 @@ public final class LauncherInstrumentation {
                         if (hasLauncherObject(CONTEXT_MENU_RES_ID) ||
                                 hasLauncherObject(WIDGETS_RES_ID)
                                         && !mDevice.isNaturalOrientation()) {
-                            expectEvent(EVENT_PILFER_POINTERS);
+                            expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_PILFER_POINTERS);
                         }
                     }
 
+                    if (getNavigationModel() == NavigationModel.TWO_BUTTON) {
+                        expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_DOWN_TIS);
+                        expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_UP_TIS);
+                    }
                     runToState(
                             waitForSystemUiObject("home")::click,
                             NORMAL_STATE_ORDINAL,
@@ -935,8 +953,12 @@ public final class LauncherInstrumentation {
     }
 
     void clickLauncherObject(UiObject2 object) {
-        expectEvent(LauncherInstrumentation.EVENT_TOUCH_DOWN);
-        expectEvent(LauncherInstrumentation.EVENT_TOUCH_UP);
+        expectEvent(TestProtocol.SEQUENCE_MAIN, LauncherInstrumentation.EVENT_TOUCH_DOWN);
+        expectEvent(TestProtocol.SEQUENCE_MAIN, LauncherInstrumentation.EVENT_TOUCH_UP);
+        if (getNavigationModel() != NavigationModel.THREE_BUTTON) {
+            expectEvent(TestProtocol.SEQUENCE_TIS, LauncherInstrumentation.EVENT_TOUCH_DOWN_TIS);
+            expectEvent(TestProtocol.SEQUENCE_TIS, LauncherInstrumentation.EVENT_TOUCH_UP_TIS);
+        }
         object.click();
     }
 
@@ -1078,16 +1100,22 @@ public final class LauncherInstrumentation {
         switch (action) {
             case MotionEvent.ACTION_DOWN:
                 if (gestureScope != GestureScope.OUTSIDE) {
-                    expectEvent(EVENT_TOUCH_DOWN);
+                    expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_TOUCH_DOWN);
+                }
+                if (getNavigationModel() != NavigationModel.THREE_BUTTON) {
+                    expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_DOWN_TIS);
                 }
                 break;
             case MotionEvent.ACTION_UP:
                 if (gestureScope != GestureScope.INSIDE) {
-                    expectEvent(EVENT_PILFER_POINTERS);
+                    expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_PILFER_POINTERS);
                 }
                 if (gestureScope != GestureScope.OUTSIDE) {
-                    expectEvent(gestureScope == GestureScope.INSIDE
+                    expectEvent(TestProtocol.SEQUENCE_MAIN, gestureScope == GestureScope.INSIDE
                             ? EVENT_TOUCH_UP : EVENT_TOUCH_CANCEL);
+                }
+                if (getNavigationModel() != NavigationModel.THREE_BUTTON) {
+                    expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_UP_TIS);
                 }
                 break;
         }
@@ -1217,8 +1245,11 @@ public final class LauncherInstrumentation {
         return tasks;
     }
 
-    private List<String> getEvents() {
-        final ArrayList<String> events = new ArrayList<>();
+    // Returns actual events retrieved from logcat. The return value's key set is the set of all
+    // sequence names that actually had at least one event, and the values are lists of events in
+    // the given sequence, in the order they were recorded.
+    private Map<String, List<String>> getEvents() {
+        final Map<String, List<String>> events = new HashMap<>();
         try {
             // Logcat may skip events after the specified time. Querying for events starting 1 sec
             // earlier.
@@ -1235,7 +1266,8 @@ public final class LauncherInstrumentation {
                     continue;
                 }
 
-                events.add(matcher.group("event"));
+                eventsListForSequence(matcher.group("sequence"), events).add(
+                        matcher.group("event"));
             }
             return events;
         } catch (IOException e) {
@@ -1245,9 +1277,20 @@ public final class LauncherInstrumentation {
         }
     }
 
+    // Returns an event list for a given sequence, adding it to the map as needed.
+    private static <T> List<T> eventsListForSequence(
+            String sequenceName, Map<String, List<T>> events) {
+        List<T> eventSequence = events.get(sequenceName);
+        if (eventSequence == null) {
+            eventSequence = new ArrayList<>();
+            events.put(sequenceName, eventSequence);
+        }
+        return eventSequence;
+    }
+
     private void startRecordingEvents() {
         Assert.assertTrue("Already recording events", mExpectedEvents == null);
-        mExpectedEvents = new ArrayList<>();
+        mExpectedEvents = new HashMap<>();
         mStartRecordingTime = new Date();
         log("startRecordingEvents: " + DATE_TIME_FORMAT.format(mStartRecordingTime));
     }
@@ -1281,65 +1324,124 @@ public final class LauncherInstrumentation {
             final String message = getEventMismatchMessage(true);
             if (message != null) {
                 Assert.fail(formatSystemHealthMessage(
-                        "http://go/tapl : unexpected event sequence: " + message));
+                        "http://go/tapl : successful gesture produced " + message));
             }
         };
     }
 
-    void expectEvent(Pattern expected) {
-        if (mExpectedEvents != null) mExpectedEvents.add(expected);
+    void expectEvent(String sequence, Pattern expected) {
+        if (mExpectedEvents != null) {
+            eventsListForSequence(sequence, mExpectedEvents).add(expected);
+        }
     }
 
+    // Returns non-null error message if the actual events in logcat don't match expected events.
+    // If we are not checking events, returns null.
     private String getEventMismatchMessage(boolean waitForExpectedCount) {
         if (mExpectedEvents == null) return null;
 
         try {
-            List<String> actual = getEvents();
+            Map<String, List<String>> actual = getEvents();
 
             if (waitForExpectedCount) {
                 // Wait until Launcher generates the expected number of events.
                 final long endTime = SystemClock.uptimeMillis() + WAIT_TIME_MS;
                 while (SystemClock.uptimeMillis() < endTime
-                        && actual.size() < mExpectedEvents.size()) {
+                        && !receivedEnoughEvents(actual)) {
                     SystemClock.sleep(100);
                     actual = getEvents();
                 }
             }
 
-            for (int i = 0; i < mExpectedEvents.size(); ++i) {
-                if (i >= actual.size()) {
-                    return formatEventMismatchMessage("too few actual events", actual, i);
-                }
-                if (!mExpectedEvents.get(i).matcher(actual.get(i)).find()) {
-                    return formatEventMismatchMessage("a mismatched event", actual, i);
-                }
-            }
-
-            if (actual.size() > mExpectedEvents.size()) {
-                return formatEventMismatchMessage(
-                        "too many actual events", actual, mExpectedEvents.size());
-            }
+            return getEventMismatchErrorMessage(actual);
         } finally {
             stopRecordingEvents();
         }
-
-        return null;
     }
 
-    private String formatEventList(List events, int position) {
+    // Returns whether there is a sufficient number of events in the logcat to match the expected
+    // events.
+    private boolean receivedEnoughEvents(Map<String, List<String>> actual) {
+        for (Map.Entry<String, List<Pattern>> expectedNamedSequence : mExpectedEvents.entrySet()) {
+            final List<String> actualEventSequence = actual.get(expectedNamedSequence.getKey());
+            if (actualEventSequence == null
+                    || actualEventSequence.size() < expectedNamedSequence.getValue().size()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // If the list of actual events matches the list of expected events, returns -1, otherwise
+    // the position of the mismatch.
+    private static int getMismatchPosition(List<Pattern> expected, List<String> actual) {
+        for (int i = 0; i < expected.size(); ++i) {
+            if (i >= actual.size()
+                    || !expected.get(i).matcher(actual.get(i)).find()) {
+                return i;
+            }
+        }
+
+        if (actual.size() > expected.size()) return expected.size();
+
+        return -1;
+    }
+
+    // Returns non-null error message if the actual events passed as a param don't match expected
+    // events.
+    private String getEventMismatchErrorMessage(Map<String, List<String>> actualEvents) {
         final StringBuilder sb = new StringBuilder();
+
+        // Check that all expected even sequences match the actual data.
+        for (Map.Entry<String, List<Pattern>> expectedNamedSequence : mExpectedEvents.entrySet()) {
+            List<String> actualEventSequence = actualEvents.get(expectedNamedSequence.getKey());
+            if (actualEventSequence == null) actualEventSequence = new ArrayList<>();
+            final int mismatchPosition = getMismatchPosition(
+                    expectedNamedSequence.getValue(), actualEventSequence);
+            if (mismatchPosition != -1) {
+                formatSequenceWithMismatch(
+                        sb,
+                        expectedNamedSequence.getKey(),
+                        expectedNamedSequence.getValue(),
+                        actualEventSequence,
+                        mismatchPosition);
+            }
+        }
+
+        // Check for unexpected event sequences in the actual data.
+        for (Map.Entry<String, List<String>> actualNamedSequence : actualEvents.entrySet()) {
+            if (!mExpectedEvents.containsKey(actualNamedSequence.getKey())) {
+                formatSequenceWithMismatch(
+                        sb,
+                        actualNamedSequence.getKey(),
+                        new ArrayList<>(),
+                        actualNamedSequence.getValue(),
+                        0);
+            }
+        }
+
+        return sb.length() != 0 ? "mismatching events: " + sb.toString() : null;
+    }
+
+    private static void formatSequenceWithMismatch(
+            StringBuilder sb,
+            String sequenceName,
+            List<Pattern> expected,
+            List<String> actualEvents,
+            int mismatchPosition) {
+        sb.append("\n>> Sequence " + sequenceName);
+        sb.append("\n  Expected:");
+        formatEventListWithMismatch(sb, expected, mismatchPosition);
+        sb.append("\n  Actual:");
+        formatEventListWithMismatch(sb, actualEvents, mismatchPosition);
+    }
+
+    private static void formatEventListWithMismatch(StringBuilder sb, List events, int position) {
         for (int i = 0; i < events.size(); ++i) {
-            sb.append("\n| ");
+            sb.append("\n  | ");
             sb.append(i == position ? "---> " : "     ");
             sb.append(events.get(i).toString());
         }
-        if (position == events.size()) sb.append("\n| ---> (end)");
-        return sb.toString();
-    }
-
-    private String formatEventMismatchMessage(String message, List<String> actual, int position) {
-        return message + ":"
-                + "\nExpected:" + formatEventList(mExpectedEvents, position)
-                + "\nActual:" + formatEventList(actual, position);
+        if (position == events.size()) sb.append("\n  | ---> (end)");
     }
 }

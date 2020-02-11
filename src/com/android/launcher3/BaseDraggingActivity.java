@@ -39,6 +39,7 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.testing.TestLogging;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.uioverrides.WallpaperColorInfo;
 import com.android.launcher3.util.DefaultDisplay;
@@ -169,9 +170,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
                 startShortcutIntentSafely(intent, optsBundle, item, sourceContainer);
             } else if (user == null || user.equals(Process.myUserHandle())) {
                 // Could be launching some bookkeeping activity
-                if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
-                    TestLogging.recordEvent("start: activity: " + intent);
-                }
+                TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "start: activity", intent);
                 startActivity(intent, optsBundle);
                 AppLaunchTracker.INSTANCE.get(this).onStartApp(intent.getComponent(),
                         Process.myUserHandle(), sourceContainer);

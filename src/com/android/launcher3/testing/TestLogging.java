@@ -17,13 +17,30 @@
 package com.android.launcher3.testing;
 
 import android.util.Log;
+import android.view.MotionEvent;
 
 import com.android.launcher3.Utilities;
 
 public final class TestLogging {
-    public static void recordEvent(String event) {
+    private static void recordEventSlow(String sequence, String event) {
+        Log.d(TestProtocol.TAPL_EVENTS_TAG, sequence + " / " + event);
+    }
+
+    public static void recordEvent(String sequence, String event) {
         if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
-            Log.d(TestProtocol.TAPL_EVENTS_TAG, event);
+            recordEventSlow(sequence, event);
+        }
+    }
+
+    public static void recordEvent(String sequence, String message, Object parameter) {
+        if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+            recordEventSlow(sequence, message + ": " + parameter);
+        }
+    }
+
+    public static void recordMotionEvent(String sequence, String message, MotionEvent event) {
+        if (Utilities.IS_RUNNING_IN_TEST_HARNESS && event.getAction() != MotionEvent.ACTION_MOVE) {
+            recordEventSlow(sequence, message + ": " + event);
         }
     }
 }

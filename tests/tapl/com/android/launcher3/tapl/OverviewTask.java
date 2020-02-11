@@ -22,6 +22,8 @@ import android.graphics.Rect;
 
 import androidx.test.uiautomator.UiObject2;
 
+import com.android.launcher3.testing.TestProtocol;
+
 import java.util.regex.Pattern;
 
 /**
@@ -76,7 +78,7 @@ public final class OverviewTask {
                         event -> event.getEventType() == TYPE_WINDOW_STATE_CHANGED,
                         () -> "Launching task didn't open a new window: "
                                 + mTask.getParent().getContentDescription());
-                mLauncher.expectEvent(TASK_START_EVENT);
+                mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, TASK_START_EVENT);
             }
             return new Background(mLauncher);
         }

@@ -33,6 +33,8 @@ public final class TestProtocol {
     public static final int BACKGROUND_APP_STATE_ORDINAL = 6;
     public static final int HINT_STATE_ORDINAL = 7;
     public static final String TAPL_EVENTS_TAG = "TaplEvents";
+    public static final String SEQUENCE_MAIN = "Main";
+    public static final String SEQUENCE_TIS = "TIS";
 
     public static String stateOrdinalToString(int ordinal) {
         switch (ordinal) {

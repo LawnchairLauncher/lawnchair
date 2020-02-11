@@ -38,6 +38,7 @@ import android.view.ViewConfiguration;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.testing.TestLogging;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.DefaultDisplay;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.InputConsumer;
@@ -203,7 +204,7 @@ public class DeviceLockedInputConsumer implements InputConsumer,
 
     private void startRecentsTransition() {
         mThresholdCrossed = true;
-        TestLogging.recordEvent("pilferPointers");
+        TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "pilferPointers");
         mInputMonitorCompat.pilferPointers();
 
         Intent intent = new Intent(Intent.ACTION_MAIN)
