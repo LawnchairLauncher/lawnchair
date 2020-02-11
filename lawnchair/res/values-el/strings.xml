@@ -168,6 +168,10 @@
     <string name="pref_appcategorization_tabs_title">Καρτέλες</string>
     <string name="pref_appcategorization_tabs_summary">Σύρετε μεταξύ των Κατηγοριών.</string>
     <string name="pref_app_groups_edit_tip">Πατήστε για επεξεργασία, σύρετε για αναδιάταξη.</string>
+    <plurals name="hidden_apps_count">
+        <item quantity="one">%1$d Κρυμμένη</item>
+        <item quantity="other">%1$d Κρυμμένες</item>
+    </plurals>
     <string name="category_business_and_productivity">Επιχειρησιακή &amp; Παραγωγικότητα</string>
     <string name="category_communication">Επικοινωνία</string>
     <string name="category_entertainment">Ψυχαγωγία</string>
@@ -472,27 +476,37 @@
     <string name="icon_shape_override_miui_explaination">Ένα σφάλμα στο MIUI μπορεί να προκαλέσει τα εικονίδια να παραμείνουν τετράγωνα.</string>
     <string name="permission_iplocate">Τοποθεσία κατά προσέγγιση</string>
     <string name="permission_iplocate_twilight_explanation">Να επιτρέπεται η πρόσβαση στην τοποθεσία κατά προσέγγιση σας; Αυτό επιτρέπει ακριβέστερο υπολογισμό του φωτός ημέρας.</string>
+    <string name="zen_mode_enabled">Η λειτουργία \"Μην ενοχλείτε\" είναι ενεργοποιημένη.</string>
     <string name="crash_report_notif_title">%1$s Κράσαρε</string>
     <string name="onbording">Καλωσορίσατε</string>
     <string name="onbording_settings_title">Ρύθμιση %s</string>
+    <string name="onbording_settings_summary">Αγγίξτε &amp; παρατεταμένα την Αρχική Οθόνη.</string>
     <string name="onboarding_swipe_up">Σύρετε πάνω για να ανοίξετε το Drawer.</string>
     <string name="weather_icons_default">Προεπιλογή</string>
     <string name="pref_weather_icon_pack">Πακέτο Εικονιδίων Καιρού</string>
     <string name="weather_icon_packs_not_supported">Δεν υποστηρίζεται από τον πάροχο καιρού σας.</string>
     <string name="customnavbar">Προσαρμοσμένη μπάρα πλοήγησης</string>
+    <string name="customnavbar_install">Πατήστε για εγκατάσταση Προσαρμοζόμενης Μπάρας Πλοήγησης.</string>
+    <string name="customnavbar_back_hiding">Απόκρυψη του Κουμπιού Πίσω</string>
+    <string name="customnavbar_back_hiding_desc">Απόκρυψη του κουμπιού Πίσω όταν δεν είναι απαραίτητο.</string>
     <string name="icon_shape_top_left">Πάνω Αριστερά</string>
     <string name="icon_shape_top_right">Πάνω Δεξιά</string>
     <string name="icon_shape_bottom_left">Κάτω Αριστερά</string>
     <string name="icon_shape_bottom_right">Κάτω Δεξιά</string>
     <string name="icon_shape_corner_round">Κυκλικό</string>
+    <string name="icon_shape_corner_squircle">Στρογγυλεμένο</string>
     <string name="icon_shape_corner_cut">Αποκοπή</string>
+    <string name="smartspace_add_to_home">Προσθήκη στην Αρχική Οθόνη</string>
+    <string name="get_lawnfeed">Αποκτήστε το Lawnfeed</string>
     <!-- Section 13 -->
     <string name="quickstep_pref_title">Πρόσφατα</string>
+    <string name="quickstep_pref_summary">Χειρονομίες, Στυλ, Πλοήγηση</string>
     <string name="swipe_up_to_switch_apps_title">Σύρετε προς τα επάνω για Εναλλαγή Εφαρμογών</string>
     <string name="swipe_left_to_go_back_title">Σύρετε προς τα Αριστερά για να Πάτε Πίσω</string>
     <string name="pref_category_nav_swipe_up_gestures">Σύρσιμο Πάνω</string>
     <string name="gesture_nav_swipe_up_left">Από τα Αριστερά</string>
     <string name="gesture_nav_swipe_up_center">Από το Κέντρο</string>
     <string name="gesture_nav_swipe_up_right">Από τα Δεξιά</string>
+    <string name="action_switch_apps">Εναλλαγή Εφαρμογών</string>
     <string name="icon_shape_system_default">Καθορισμός από το Σύστημα</string>
 </resources>
