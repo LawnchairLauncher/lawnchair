@@ -16,9 +16,12 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.ItemInfoWithIcon.FLAG_ICON_BADGED;
+
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
+import android.app.Person;
 import android.app.WallpaperManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -92,8 +95,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.android.launcher3.ItemInfoWithIcon.FLAG_ICON_BADGED;
-
 /**
  * Various utilities shared amongst the Launcher's classes.
  */
@@ -108,6 +109,9 @@ public final class Utilities {
     private static final int[] sLoc1 = new int[2];
     private static final Matrix sMatrix = new Matrix();
     private static final Matrix sInverseMatrix = new Matrix();
+
+    public static final String[] EMPTY_STRING_ARRAY = new String[0];
+    public static final Person[] EMPTY_PERSON_ARRAY = new Person[0];
 
     public static final boolean ATLEAST_Q = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
 
@@ -126,16 +130,6 @@ public final class Utilities {
      * Set on a motion event dispatched from the nav bar. See {@link MotionEvent#setEdgeFlags(int)}.
      */
     public static final int EDGE_NAV_BAR = 1 << 8;
-
-    /**
-     * Set on a motion event do disallow any gestures and only handle touch.
-     * See {@link MotionEvent#setEdgeFlags(int)}.
-     */
-    public static final int FLAG_NO_GESTURES = 1 << 9;
-
-    public static boolean shouldDisableGestures(MotionEvent ev) {
-        return (ev.getEdgeFlags() & FLAG_NO_GESTURES) == FLAG_NO_GESTURES;
-    }
 
     /**
      * Indicates if the device has a debug build. Should only be used to store additional info or
@@ -738,7 +732,7 @@ public final class Utilities {
         int[] array = new int[tokenizer.countTokens()];
         int count = 0;
         while (tokenizer.hasMoreTokens()) {
-            array[count] = Integer.parseInt(tokenizer.nextToken());
+            array[count] = Integer.parseInt(tokenizer.nextToken().trim());
             count++;
         }
         return array;

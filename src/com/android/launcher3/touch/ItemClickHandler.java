@@ -25,9 +25,15 @@ import static com.android.launcher3.Launcher.REQUEST_RECONFIGURE_APPWIDGET;
 import static com.android.launcher3.model.AppLaunchTracker.CONTAINER_ALL_APPS;
 
 import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.LauncherApps;
+import android.content.pm.PackageInstaller.SessionInfo;
 import android.os.Process;
+import android.os.UserHandle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
@@ -43,11 +49,12 @@ import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.PromiseAppInfo;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
+import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
-import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.views.FloatingIconView;
 import com.android.launcher3.widget.PendingAppWidgetHostView;
@@ -57,6 +64,8 @@ import com.android.launcher3.widget.WidgetAddFlowHandler;
  * Class for handling clicks on workspace and all-apps items
  */
 public class ItemClickHandler {
+
+    private static final String TAG = ItemClickHandler.class.getSimpleName();
 
     /**
      * Instance used for click handling on items
@@ -68,28 +77,12 @@ public class ItemClickHandler {
     }
 
     private static void onClick(View v, String sourceContainer) {
-        if (TestProtocol.sDebugTracing) {
-            android.util.Log.d(TestProtocol.NO_START_TAG,
-                    "onClick 1");
-        }
         // Make sure that rogue clicks don't get through while allapps is launching, or after the
         // view has detached (it's possible for this to happen if the view is removed mid touch).
-        if (v.getWindowToken() == null) {
-            if (TestProtocol.sDebugTracing) {
-                android.util.Log.d(TestProtocol.NO_START_TAG,
-                        "onClick 2");
-            }
-            return;
-        }
+        if (v.getWindowToken() == null) return;
 
         Launcher launcher = Launcher.getLauncher(v.getContext());
-        if (!launcher.getWorkspace().isFinishedSwitchingState()) {
-            if (TestProtocol.sDebugTracing) {
-                android.util.Log.d(TestProtocol.NO_START_TAG,
-                        "onClick 3");
-            }
-            return;
-        }
+        if (!launcher.getWorkspace().isFinishedSwitchingState()) return;
 
         Object tag = v.getTag();
         if (tag instanceof WorkspaceItemInfo) {
@@ -99,10 +92,6 @@ public class ItemClickHandler {
                 onClickFolderIcon(v);
             }
         } else if (tag instanceof AppInfo) {
-            if (TestProtocol.sDebugTracing) {
-                android.util.Log.d(TestProtocol.NO_START_TAG,
-                        "onClick 4");
-            }
             startAppShortcutOrInfoActivity(v, (AppInfo) tag, launcher,
                     sourceContainer == null ? CONTAINER_ALL_APPS: sourceContainer);
         } else if (tag instanceof LauncherAppWidgetInfo) {
@@ -166,6 +155,8 @@ public class ItemClickHandler {
             startMarketIntentForPackage(v, launcher, packageName);
             return;
         }
+        UserHandle user = v.getTag() instanceof ItemInfo
+                ? ((ItemInfo) v.getTag()).user : Process.myUserHandle();
         new AlertDialog.Builder(launcher)
                 .setTitle(R.string.abandoned_promises_title)
                 .setMessage(R.string.abandoned_promise_explanation)
@@ -173,12 +164,28 @@ public class ItemClickHandler {
                         (d, i) -> startMarketIntentForPackage(v, launcher, packageName))
                 .setNeutralButton(R.string.abandoned_clean_this,
                         (d, i) -> launcher.getWorkspace()
-                                .removeAbandonedPromise(packageName, Process.myUserHandle()))
+                                .removeAbandonedPromise(packageName, user))
                 .create().show();
     }
 
     private static void startMarketIntentForPackage(View v, Launcher launcher, String packageName) {
         ItemInfo item = (ItemInfo) v.getTag();
+        if (Utilities.ATLEAST_Q) {
+            PackageInstallerCompat pkgInstaller = PackageInstallerCompat.getInstance(launcher);
+            SessionInfo sessionInfo = pkgInstaller.getActiveSessionInfo(item.user, packageName);
+            if (sessionInfo != null) {
+                LauncherApps launcherApps = launcher.getSystemService(LauncherApps.class);
+                try {
+                    launcherApps.startPackageInstallerSessionDetailsActivity(sessionInfo, null,
+                            launcher.getActivityLaunchOptionsAsBundle(v));
+                    return;
+                } catch (Exception e) {
+                    Log.e(TAG, "Unable to launch market intent for package=" + packageName, e);
+                }
+            }
+        }
+
+        // Fallback to using custom market intent.
         Intent intent = new PackageManagerHelper(launcher).getMarketIntent(packageName);
         launcher.startActivitySafely(v, intent, item, null);
     }
@@ -234,10 +241,6 @@ public class ItemClickHandler {
 
     private static void startAppShortcutOrInfoActivity(View v, ItemInfo item, Launcher launcher,
             @Nullable String sourceContainer) {
-        if (TestProtocol.sDebugTracing) {
-            android.util.Log.d(TestProtocol.NO_START_TAG,
-                    "startAppShortcutOrInfoActivity");
-        }
         Intent intent;
         if (item instanceof PromiseAppInfo) {
             PromiseAppInfo promiseAppInfo = (PromiseAppInfo) item;

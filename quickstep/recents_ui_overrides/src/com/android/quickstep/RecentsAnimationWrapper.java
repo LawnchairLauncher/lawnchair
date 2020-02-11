@@ -19,11 +19,13 @@ import static android.view.MotionEvent.ACTION_CANCEL;
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
 
-import static com.android.launcher3.Utilities.FLAG_NO_GESTURES;
-
+import android.os.SystemClock;
+import android.util.Log;
 import android.view.InputEvent;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+
+import androidx.annotation.UiThread;
 
 import com.android.launcher3.util.Preconditions;
 import com.android.quickstep.inputconsumers.InputConsumer;
@@ -33,12 +35,12 @@ import com.android.systemui.shared.system.InputConsumerController;
 import java.util.ArrayList;
 import java.util.function.Supplier;
 
-import androidx.annotation.UiThread;
-
 /**
  * Wrapper around RecentsAnimationController to help with some synchronization
  */
 public class RecentsAnimationWrapper {
+
+    private static final String TAG = "RecentsAnimationWrapper";
 
     // A list of callbacks to run when we receive the recents animation target. There are different
     // than the state callbacks as these run on the current worker thread.
@@ -127,6 +129,7 @@ public class RecentsAnimationWrapper {
             boolean sendUserLeaveHint) {
         SwipeAnimationTargetSet controller = targetSet;
         targetSet = null;
+        disableInputProxy();
         if (controller != null) {
             controller.finishController(toRecents, onFinishComplete, sendUserLeaveHint);
         }
@@ -155,6 +158,16 @@ public class RecentsAnimationWrapper {
         mInputConsumerController.setInputListener(this::onInputConsumerEvent);
     }
 
+    private void disableInputProxy() {
+        if (mInputConsumer != null && mTouchInProgress) {
+            long now = SystemClock.uptimeMillis();
+            MotionEvent dummyCancel = MotionEvent.obtain(now,  now, ACTION_CANCEL, 0, 0, 0);
+            mInputConsumer.onMotionEvent(dummyCancel);
+            dummyCancel.recycle();
+        }
+        mInputConsumerController.setInputListener(null);
+    }
+
     private boolean onInputConsumerEvent(InputEvent ev) {
         if (ev instanceof MotionEvent) {
             onInputConsumerMotionEvent((MotionEvent) ev);
@@ -170,6 +183,18 @@ public class RecentsAnimationWrapper {
 
     private boolean onInputConsumerMotionEvent(MotionEvent ev) {
         int action = ev.getAction();
+
+        // Just to be safe, verify that ACTION_DOWN comes before any other action,
+        // and ignore any ACTION_DOWN after the first one (though that should not happen).
+        if (!mTouchInProgress && action != ACTION_DOWN) {
+            Log.w(TAG, "Received non-down motion before down motion: " + action);
+            return false;
+        }
+        if (mTouchInProgress && action == ACTION_DOWN) {
+            Log.w(TAG, "Received down motion while touch was already in progress");
+            return false;
+        }
+
         if (action == ACTION_DOWN) {
             mTouchInProgress = true;
             if (mInputConsumer == null) {
@@ -184,18 +209,15 @@ public class RecentsAnimationWrapper {
             }
         }
         if (mInputConsumer != null) {
-            int flags = ev.getEdgeFlags();
-            ev.setEdgeFlags(flags | FLAG_NO_GESTURES);
             mInputConsumer.onMotionEvent(ev);
-            ev.setEdgeFlags(flags);
         }
 
         return true;
     }
 
-    public void setCancelWithDeferredScreenshot(boolean deferredWithScreenshot) {
+    public void setDeferCancelUntilNextTransition(boolean defer, boolean screenshot) {
         if (targetSet != null) {
-            targetSet.controller.setCancelWithDeferredScreenshot(deferredWithScreenshot);
+            targetSet.controller.setDeferCancelUntilNextTransition(defer, screenshot);
         }
     }
 

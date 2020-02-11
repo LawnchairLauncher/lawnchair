@@ -104,6 +104,7 @@
     </style>
 
     <style name="LauncherTheme.Dark.DarkText" parent="@style/LauncherTheme.Dark">
+        <item name="android:colorControlHighlight">#75212121</item>
         <item name="allAppsInterimScrimAlpha">25</item>
         <item name="folderFillColor">#CDFFFFFF</item>
         <item name="folderTextColor">?attr/workspaceTextColor</item>

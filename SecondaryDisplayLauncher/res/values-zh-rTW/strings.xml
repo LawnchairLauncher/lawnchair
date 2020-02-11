@@ -21,5 +21,5 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="couldnt_launch" msgid="7873588052226763866">"無法啟動活動"</string>
     <string name="add_app_shortcut" msgid="2756755330707509435">"新增應用程式捷徑"</string>
-    <string name="set_wallpaper" msgid="6475195450505435904">"設定桌布"</string>
+    <string name="set_wallpaper" msgid="6475195450505435904">"套用桌布"</string>
 </resources>

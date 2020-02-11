@@ -227,6 +227,11 @@ public class LauncherStateManager {
 
     private void goToState(LauncherState state, boolean animated, long delay,
             final Runnable onCompleteRunnable) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.ALL_APPS_UPON_RECENTS, "goToState: " +
+                    state.getClass().getSimpleName() +
+                    " @ " + Log.getStackTraceString(new Throwable()));
+        }
         animated &= Utilities.areAnimationsEnabled(mLauncher);
         if (mLauncher.isInState(state)) {
             if (mConfig.mCurrentAnimation == null) {
@@ -403,14 +408,15 @@ public class LauncherStateManager {
     }
 
     private void onStateTransitionStart(LauncherState state) {
-        if (TestProtocol.sDebugTracing) {
-            android.util.Log.d(TestProtocol.NO_DRAG_TAG,
-                    "onStateTransitionStart");
-        }
         if (mState != state) {
             mState.onStateDisabled(mLauncher);
         }
         mState = state;
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.STABLE_STATE_MISMATCH, "onStateTransitionStart: " +
+                    state.getClass().getSimpleName() +
+                    " @ " + Log.getStackTraceString(new Throwable()));
+        }
         mState.onStateEnabled(mLauncher);
         mLauncher.onStateSet(mState);
 
@@ -429,12 +435,12 @@ public class LauncherStateManager {
         // Only change the stable states after the transitions have finished
         if (state != mCurrentStableState) {
             mLastStableState = state.getHistoryForState(mCurrentStableState);
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.NO_ALLAPPS_EVENT_TAG,
-                        "mCurrentStableState = " + state.getClass().getSimpleName() + " @ " +
-                                android.util.Log.getStackTraceString(new Throwable()));
-            }
             mCurrentStableState = state;
+            if (TestProtocol.sDebugTracing) {
+                Log.d(TestProtocol.ALL_APPS_UPON_RECENTS, "onStateTransitionEnd: " +
+                        state.getClass().getSimpleName() +
+                        " @ " + Log.getStackTraceString(new Throwable()));
+            }
         }
 
         state.onStateTransitionEnd(mLauncher);
@@ -580,10 +586,6 @@ public class LauncherStateManager {
         private final AnimatorSet mAnim;
 
         public StartAnimRunnable(AnimatorSet anim) {
-            if (TestProtocol.sDebugTracing) {
-                android.util.Log.d(TestProtocol.NO_DRAG_TAG,
-                        "StartAnimRunnable");
-            }
             mAnim = anim;
         }
 

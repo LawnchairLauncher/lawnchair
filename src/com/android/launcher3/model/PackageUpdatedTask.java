@@ -43,6 +43,7 @@ import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.FlagOp;
 import com.android.launcher3.util.IntSparseArrayMap;
 import com.android.launcher3.util.ItemInfoMatcher;
@@ -54,6 +55,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+
+import static com.android.launcher3.WorkspaceItemInfo.FLAG_AUTOINSTALL_ICON;
 
 /**
  * Handles updates due to changes in package manager (app installed/updated/removed)
@@ -85,6 +88,10 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
 
     @Override
     public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList appsList) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.APP_NOT_DISABLED, "PackageUpdatedTask: " + mOp + ", " +
+                    Arrays.toString(mPackages));
+        }
         final Context context = app.getContext();
         final IconCache iconCache = app.getIconCache();
 
@@ -99,7 +106,7 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                     if (DEBUG) Log.d(TAG, "mAllAppsList.addPackage " + packages[i]);
                     iconCache.updateIconsForPkg(packages[i], mUser);
                     if (FeatureFlags.LAUNCHER3_PROMISE_APPS_IN_ALL_APPS) {
-                        appsList.removePackage(packages[i], Process.myUserHandle());
+                        appsList.removePackage(packages[i], mUser);
                     }
                     appsList.addPackage(context, packages[i], mUser);
 
@@ -227,8 +234,7 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                                     isTargetValid = LauncherAppsCompat.getInstance(context)
                                             .isActivityEnabledForProfile(cn, mUser);
                                 }
-                                if (si.hasStatusFlag(WorkspaceItemInfo.FLAG_AUTOINSTALL_ICON)
-                                        && !isTargetValid) {
+                                if (si.hasStatusFlag(FLAG_AUTOINSTALL_ICON)) {
                                     if (updateWorkspaceItemIntent(context, si, packageName)) {
                                         infoUpdated = true;
                                     } else if (si.hasPromiseIconUi()) {

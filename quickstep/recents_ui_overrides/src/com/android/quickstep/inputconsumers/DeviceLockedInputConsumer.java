@@ -23,6 +23,7 @@ import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.Utilities.squaredTouchSlop;
 import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
 import static com.android.quickstep.WindowTransformSwipeHandler.MIN_PROGRESS_FOR_OVERVIEW;
+import static com.android.quickstep.TouchInteractionService.startRecentsActivityAsync;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -44,8 +45,6 @@ import com.android.quickstep.SwipeSharedState;
 import com.android.quickstep.util.ClipAnimationHelper;
 import com.android.quickstep.util.RecentsAnimationListenerSet;
 import com.android.quickstep.util.SwipeAnimationTargetSet;
-import com.android.systemui.shared.system.ActivityManagerWrapper;
-import com.android.systemui.shared.system.BackgroundExecutor;
 import com.android.systemui.shared.system.InputMonitorCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
@@ -209,9 +208,7 @@ public class DeviceLockedInputConsumer implements InputConsumer,
                 .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
         mInputMonitorCompat.pilferPointers();
-        BackgroundExecutor.get().submit(
-                () -> ActivityManagerWrapper.getInstance().startRecentsActivity(
-                        intent, null, newListenerSet, null, null));
+        startRecentsActivityAsync(intent, newListenerSet);
     }
 
     @Override

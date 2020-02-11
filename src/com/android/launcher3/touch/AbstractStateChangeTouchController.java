@@ -22,16 +22,15 @@ import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherStateManager.ANIM_ALL;
 import static com.android.launcher3.LauncherStateManager.ATOMIC_OVERVIEW_SCALE_COMPONENT;
 import static com.android.launcher3.LauncherStateManager.NON_ATOMIC_COMPONENT;
-import static com.android.launcher3.Utilities.SINGLE_FRAME_MS;
 import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelocity;
 import static com.android.launcher3.config.FeatureFlags.QUICKSTEP_SPRINGS;
+import static com.android.launcher3.util.DefaultDisplay.getSingleFrameMs;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.os.SystemClock;
-import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 
@@ -43,7 +42,6 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.AnimatorSetBuilder;
-import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
@@ -56,8 +54,6 @@ import com.android.launcher3.util.TouchController;
  */
 public abstract class AbstractStateChangeTouchController
         implements TouchController, SwipeDetector.Listener {
-
-    private static final String TAG = "ASCTouchController";
 
     // Progress after which the transition is assumed to be a success in case user does not fling
     public static final float SUCCESS_TRANSITION_PROGRESS = 0.5f;
@@ -73,6 +69,7 @@ public abstract class AbstractStateChangeTouchController
     protected final SwipeDetector.Direction mSwipeDirection;
 
     private boolean mNoIntercept;
+    private boolean mIsLogContainerSet;
     protected int mStartContainerType;
 
     protected LauncherState mStartState;
@@ -118,9 +115,6 @@ public abstract class AbstractStateChangeTouchController
 
     @Override
     public final boolean onControllerInterceptTouchEvent(MotionEvent ev) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_ALLAPPS_EVENT_TAG, "onControllerInterceptTouchEvent 1 " + ev);
-        }
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             mNoIntercept = !canInterceptTouch(ev);
             if (mNoIntercept) {
@@ -150,9 +144,6 @@ public abstract class AbstractStateChangeTouchController
             return false;
         }
 
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_ALLAPPS_EVENT_TAG, "onControllerInterceptTouchEvent 2 ");
-        }
         onControllerTouchEvent(ev);
         return mDetector.isDraggingOrSettling();
     }
@@ -190,7 +181,7 @@ public abstract class AbstractStateChangeTouchController
     /**
      * Returns the container that the touch started from when leaving NORMAL state.
      */
-    protected abstract int getLogContainerTypeForNormalState();
+    protected abstract int getLogContainerTypeForNormalState(MotionEvent ev);
 
     private boolean reinitCurrentAnimation(boolean reachedToState, boolean isDragTowardPositive) {
         LauncherState newFromState = mFromState == null ? mLauncher.getStateManager().getState()
@@ -240,21 +231,9 @@ public abstract class AbstractStateChangeTouchController
 
     @Override
     public void onDragStart(boolean start) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_ALLAPPS_EVENT_TAG, "onDragStart 1 " + start);
-        }
         mStartState = mLauncher.getStateManager().getState();
-        if (mStartState == ALL_APPS) {
-            mStartContainerType = LauncherLogProto.ContainerType.ALLAPPS;
-        } else if (mStartState == NORMAL) {
-            mStartContainerType = getLogContainerTypeForNormalState();
-        } else if (mStartState == OVERVIEW){
-            mStartContainerType = LauncherLogProto.ContainerType.TASKSWITCHER;
-        }
+        mIsLogContainerSet = false;
         if (mCurrentAnimation == null) {
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.NO_ALLAPPS_EVENT_TAG, "onDragStart 2");
-            }
             mFromState = mStartState;
             mToState = null;
             cancelAnimationControllers();
@@ -299,6 +278,21 @@ public abstract class AbstractStateChangeTouchController
         }
 
         return true;
+    }
+
+    @Override
+    public boolean onDrag(float displacement, MotionEvent ev) {
+        if (!mIsLogContainerSet) {
+            if (mStartState == ALL_APPS) {
+                mStartContainerType = LauncherLogProto.ContainerType.ALLAPPS;
+            } else if (mStartState == NORMAL) {
+                mStartContainerType = getLogContainerTypeForNormalState(ev);
+            } else if (mStartState == OVERVIEW) {
+                mStartContainerType = LauncherLogProto.ContainerType.TASKSWITCHER;
+            }
+            mIsLogContainerSet = true;
+        }
+        return onDrag(displacement);
     }
 
     protected void updateProgress(float fraction) {
@@ -376,9 +370,6 @@ public abstract class AbstractStateChangeTouchController
 
     @Override
     public void onDragEnd(float velocity, boolean fling) {
-        if (com.android.launcher3.testing.TestProtocol.sDebugTracing) {
-            android.util.Log.e(TestProtocol.NO_ALLAPPS_EVENT_TAG, "onDragEnd");
-        }
         final int logAction = fling ? Touch.FLING : Touch.SWIPE;
 
         boolean blockedFling = fling && mFlingBlockCheck.isBlocked();
@@ -413,8 +404,8 @@ public abstract class AbstractStateChangeTouchController
                 duration = 0;
                 startProgress = 1;
             } else {
-                startProgress = Utilities.boundToRange(
-                        progress + velocity * SINGLE_FRAME_MS * mProgressMultiplier, 0f, 1f);
+                startProgress = Utilities.boundToRange(progress
+                        + velocity * getSingleFrameMs(mLauncher) * mProgressMultiplier, 0f, 1f);
                 duration = SwipeDetector.calculateDuration(velocity,
                         endProgress - Math.max(progress, 0)) * durationMultiplier;
             }
@@ -431,8 +422,8 @@ public abstract class AbstractStateChangeTouchController
                 duration = 0;
                 startProgress = 0;
             } else {
-                startProgress = Utilities.boundToRange(
-                        progress + velocity * SINGLE_FRAME_MS * mProgressMultiplier, 0f, 1f);
+                startProgress = Utilities.boundToRange(progress
+                        + velocity * getSingleFrameMs(mLauncher) * mProgressMultiplier, 0f, 1f);
                 duration = SwipeDetector.calculateDuration(velocity,
                         Math.min(progress, 1) - endProgress) * durationMultiplier;
             }
@@ -515,9 +506,6 @@ public abstract class AbstractStateChangeTouchController
     }
 
     protected void onSwipeInteractionCompleted(LauncherState targetState, int logAction) {
-        if (com.android.launcher3.testing.TestProtocol.sDebugTracing) {
-            android.util.Log.e(TestProtocol.NO_ALLAPPS_EVENT_TAG, "onSwipeInteractionCompleted 1");
-        }
         if (mAtomicComponentsController != null) {
             mAtomicComponentsController.getAnimationPlayer().end();
             mAtomicComponentsController = null;
@@ -531,16 +519,16 @@ public abstract class AbstractStateChangeTouchController
             shouldGoToTargetState = !reachedTarget;
         }
         if (shouldGoToTargetState) {
-            if (targetState != mStartState) {
-                logReachedState(logAction, targetState);
-            }
-            mLauncher.getStateManager().goToState(targetState, false /* animated */);
-
-            if (com.android.launcher3.testing.TestProtocol.sDebugTracing) {
-                android.util.Log.e(
-                        TestProtocol.NO_ALLAPPS_EVENT_TAG, "onSwipeInteractionCompleted 2");
-            }
+            goToTargetState(targetState, logAction);
         }
+    }
+
+    protected void goToTargetState(LauncherState targetState, int logAction) {
+        if (targetState != mStartState) {
+            logReachedState(logAction, targetState);
+        }
+        mLauncher.getStateManager().goToState(targetState, false /* animated */);
+        mLauncher.getDragLayer().getScrim().animateToSysuiMultiplier(1, 0, 0);
     }
 
     private void logReachedState(int logAction, LauncherState targetState) {
@@ -563,9 +551,6 @@ public abstract class AbstractStateChangeTouchController
     }
 
     private void cancelAnimationControllers() {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_ALLAPPS_EVENT_TAG, "cancelAnimationControllers");
-        }
         mCurrentAnimation = null;
         cancelAtomicComponentsController();
         mDetector.finishedScrolling();

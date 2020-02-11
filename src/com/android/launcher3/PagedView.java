@@ -16,7 +16,6 @@
 
 package com.android.launcher3;
 
-import static com.android.launcher3.Utilities.shouldDisableGestures;
 import static com.android.launcher3.compat.AccessibilityManagerCompat.isAccessibilityEnabled;
 import static com.android.launcher3.compat.AccessibilityManagerCompat.isObservedEventType;
 import static com.android.launcher3.config.FeatureFlags.QUICKSTEP_SPRINGS;
@@ -48,6 +47,7 @@ import android.view.animation.Interpolator;
 import android.widget.ScrollView;
 
 import com.android.launcher3.anim.Interpolators;
+import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.pageindicators.PageIndicator;
 import com.android.launcher3.touch.OverScroll;
@@ -368,6 +368,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
      */
     protected void onPageEndTransition() {
         mWasInOverscroll = false;
+        AccessibilityManagerCompat.sendScrollFinishedEventToTest(getContext());
     }
 
     protected int getUnboundedScrollX() {
@@ -847,7 +848,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
          */
 
         // Skip touch handling if there are no pages to swipe
-        if (getChildCount() <= 0 || shouldDisableGestures(ev)) return false;
+        if (getChildCount() <= 0) return false;
 
         acquireVelocityTrackerAndAddMovement(ev);
 
@@ -889,23 +890,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                 mTotalMotionX = 0;
                 mActivePointerId = ev.getPointerId(0);
 
-                /*
-                 * If being flinged and user touches the screen, initiate drag;
-                 * otherwise don't.  mScroller.isFinished should be false when
-                 * being flinged.
-                 */
-                final int xDist = Math.abs(mScroller.getFinalPos() - mScroller.getCurrPos());
-                final boolean finishedScrolling = (mScroller.isFinished() || xDist < mTouchSlop / 3);
-
-                if (finishedScrolling) {
-                    mIsBeingDragged = false;
-                    if (!mScroller.isFinished() && !mFreeScroll) {
-                        setCurrentPage(getNextPage());
-                        pageEndTransition();
-                    }
-                } else {
-                    mIsBeingDragged = true;
-                }
+                updateIsBeingDraggedOnTouchDown();
 
                 break;
             }
@@ -926,6 +911,25 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
          * drag mode.
          */
         return mIsBeingDragged;
+    }
+
+    /**
+     * If being flinged and user touches the screen, initiate drag; otherwise don't.
+     */
+    private void updateIsBeingDraggedOnTouchDown() {
+        // mScroller.isFinished should be false when being flinged.
+        final int xDist = Math.abs(mScroller.getFinalPos() - mScroller.getCurrPos());
+        final boolean finishedScrolling = (mScroller.isFinished() || xDist < mTouchSlop / 3);
+
+        if (finishedScrolling) {
+            mIsBeingDragged = false;
+            if (!mScroller.isFinished() && !mFreeScroll) {
+                setCurrentPage(getNextPage());
+                pageEndTransition();
+            }
+        } else {
+            mIsBeingDragged = true;
+        }
     }
 
     public boolean isHandlingTouch() {
@@ -1084,7 +1088,9 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         if (mFreeScroll) {
             setCurrentPage(getNextPage());
         } else if (wasFreeScroll) {
-            snapToPage(getNextPage());
+            if (getScrollForPage(getNextPage()) != getScrollX()) {
+                snapToPage(getNextPage());
+            }
         }
     }
 
@@ -1095,7 +1101,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         // Skip touch handling if there are no pages to swipe
-        if (getChildCount() <= 0 || shouldDisableGestures(ev)) return false;
+        if (getChildCount() <= 0) return false;
 
         acquireVelocityTrackerAndAddMovement(ev);
 
@@ -1103,6 +1109,8 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
         switch (action & MotionEvent.ACTION_MASK) {
         case MotionEvent.ACTION_DOWN:
+            updateIsBeingDraggedOnTouchDown();
+
             /*
              * If being flinged and user touches, stop the fling. isFinished
              * will be false if being flinged.
@@ -1561,12 +1569,20 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         final boolean pagesFlipped = isPageOrderFlipped();
         info.setScrollable(getPageCount() > 1);
         if (getCurrentPage() < getPageCount() - 1) {
-            info.addAction(pagesFlipped ? AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD
-                    : AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
+            info.addAction(pagesFlipped ?
+                AccessibilityNodeInfo.AccessibilityAction.ACTION_SCROLL_BACKWARD
+                : AccessibilityNodeInfo.AccessibilityAction.ACTION_SCROLL_FORWARD);
+            info.addAction(mIsRtl ?
+                AccessibilityNodeInfo.AccessibilityAction.ACTION_PAGE_LEFT
+                : AccessibilityNodeInfo.AccessibilityAction.ACTION_PAGE_RIGHT);
         }
         if (getCurrentPage() > 0) {
-            info.addAction(pagesFlipped ? AccessibilityNodeInfo.ACTION_SCROLL_FORWARD
-                    : AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD);
+            info.addAction(pagesFlipped ?
+                AccessibilityNodeInfo.AccessibilityAction.ACTION_SCROLL_FORWARD
+                : AccessibilityNodeInfo.AccessibilityAction.ACTION_SCROLL_BACKWARD);
+            info.addAction(mIsRtl ?
+                AccessibilityNodeInfo.AccessibilityAction.ACTION_PAGE_RIGHT
+                : AccessibilityNodeInfo.AccessibilityAction.ACTION_PAGE_LEFT);
         }
 
         // Accessibility-wise, PagedView doesn't support long click, so disabling it.
@@ -1606,8 +1622,21 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                 if (pagesFlipped ? scrollRight() : scrollLeft()) {
                     return true;
                 }
+            } break;
+            case android.R.id.accessibilityActionPageRight: {
+                if (!mIsRtl) {
+                  return scrollRight();
+                } else {
+                  return scrollLeft();
+                }
             }
-            break;
+            case android.R.id.accessibilityActionPageLeft: {
+                if (!mIsRtl) {
+                  return scrollLeft();
+                } else {
+                  return scrollRight();
+                }
+            }
         }
         return false;
     }

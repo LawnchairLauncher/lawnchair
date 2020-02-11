@@ -33,5 +33,5 @@
     <string name="time_left_for_app" msgid="3111996412933644358">"Encore <xliff:g id="TIME">%1$s</xliff:g> aujourd\'hui"</string>
     <string name="title_app_suggestions" msgid="4185902664111965088">"Suggestions d\'applications"</string>
     <string name="all_apps_label" msgid="8542784161730910663">"Toutes les applications"</string>
-    <string name="all_apps_prediction_tip" msgid="2672336544844936186">"Vos applications prévues"</string>
+    <string name="all_apps_prediction_tip" msgid="2672336544844936186">"Applications prévues pour vous"</string>
 </resources>

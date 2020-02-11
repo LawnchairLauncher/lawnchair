@@ -17,10 +17,12 @@
 package com.android.launcher3.dragndrop;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.DragEvent;
 import android.view.MotionEvent;
 
 import com.android.launcher3.DropTarget.DragObject;
+import com.android.launcher3.testing.TestProtocol;
 
 /**
  * Base class for driving a drag/drop operation.
@@ -52,10 +54,16 @@ public abstract class DragDriver {
                 mEventListener.onDriverDragMove(ev.getX(), ev.getY());
                 break;
             case MotionEvent.ACTION_UP:
+                if (TestProtocol.sDebugTracing) {
+                    Log.d(TestProtocol.NO_DRAG_TO_WORKSPACE, "DragDriver.ACTION_UP");
+                }
                 mEventListener.onDriverDragMove(ev.getX(), ev.getY());
                 mEventListener.onDriverDragEnd(ev.getX(), ev.getY());
                 break;
             case MotionEvent.ACTION_CANCEL:
+                if (TestProtocol.sDebugTracing) {
+                    Log.d(TestProtocol.NO_DRAG_TO_WORKSPACE, "DragDriver.ACTION_CANCEL");
+                }
                 mEventListener.onDriverDragCancel();
                 break;
         }
