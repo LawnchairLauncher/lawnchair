@@ -76,7 +76,7 @@ public class FailureWatcher extends TestWatcher {
                 }
 
                 try {
-                    base.evaluate();
+                    FailureWatcher.super.apply(base, description).evaluate();
                 } catch (Throwable e) {
                     final String stackTrace = Log.getStackTraceString(e);
                     if (!stackTrace.contains(
