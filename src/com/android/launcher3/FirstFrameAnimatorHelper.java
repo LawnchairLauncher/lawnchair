@@ -15,7 +15,7 @@
  */
 package com.android.launcher3;
 
-import static com.android.launcher3.Utilities.SINGLE_FRAME_MS;
+import static com.android.launcher3.util.DefaultDisplay.getSingleFrameMs;
 
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
@@ -108,17 +108,20 @@ public class FirstFrameAnimatorHelper implements OnDrawListener, OnAttachStateCh
                     // For the second frame, if the first frame took more than 16ms,
                     // adjust the start time and pretend it took only 16ms anyway. This
                     // prevents a large jump in the animation due to an expensive first frame
-                } else if (frameNum == 1 && currentTime < mStartTime + MAX_DELAY &&
-                        !mAdjustedSecondFrameTime &&
-                        currentTime > mStartTime + SINGLE_FRAME_MS &&
-                        currentPlayTime > SINGLE_FRAME_MS) {
-                    animation.setCurrentPlayTime(SINGLE_FRAME_MS);
-                    mAdjustedSecondFrameTime = true;
                 } else {
-                    if (frameNum > 1) {
-                        mRootView.post(() -> animation.removeUpdateListener(this));
+                    int singleFrameMS = getSingleFrameMs(mRootView.getContext());
+                    if (frameNum == 1 && currentTime < mStartTime + MAX_DELAY &&
+                            !mAdjustedSecondFrameTime &&
+                            currentTime > mStartTime + singleFrameMS &&
+                            currentPlayTime > singleFrameMS) {
+                        animation.setCurrentPlayTime(singleFrameMS);
+                        mAdjustedSecondFrameTime = true;
+                    } else {
+                        if (frameNum > 1) {
+                            mRootView.post(() -> animation.removeUpdateListener(this));
+                        }
+                        if (DEBUG) print(animation);
                     }
-                    if (DEBUG) print(animation);
                 }
                 mHandlingOnAnimationUpdate = false;
             } else {

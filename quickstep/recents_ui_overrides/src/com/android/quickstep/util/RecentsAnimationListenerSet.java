@@ -23,6 +23,7 @@ import android.util.ArraySet;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.Preconditions;
 import com.android.quickstep.util.SwipeAnimationTargetSet.SwipeAnimationListener;
+import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
 import com.android.systemui.shared.system.RecentsAnimationListener;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
@@ -39,7 +40,7 @@ import androidx.annotation.UiThread;
 public class RecentsAnimationListenerSet implements RecentsAnimationListener {
 
     // The actual app surface is replaced by a screenshot upon recents animation cancelation when
-    // deferredWithScreenshot is true. Launcher takes the responsibility to clean up this screenshot
+    // the thumbnailData exists. Launcher takes the responsibility to clean up this screenshot
     // after app transition is finished. This delay is introduced to cover the app transition
     // period of time.
     private final int TRANSITION_DELAY = 100;
@@ -90,14 +91,14 @@ public class RecentsAnimationListenerSet implements RecentsAnimationListener {
     }
 
     @Override
-    public final void onAnimationCanceled(boolean deferredWithScreenshot) {
+    public final void onAnimationCanceled(ThumbnailData thumbnailData) {
         Utilities.postAsyncCallback(MAIN_THREAD_EXECUTOR.getHandler(), () -> {
             for (SwipeAnimationListener listener : getListeners()) {
                 listener.onRecentsAnimationCanceled();
             }
         });
         // TODO: handle the transition better instead of simply using a transition delay.
-        if (deferredWithScreenshot) {
+        if (thumbnailData != null) {
             MAIN_THREAD_EXECUTOR.getHandler().postDelayed(() -> mController.cleanupScreenshot(),
                     TRANSITION_DELAY);
         }
@@ -109,6 +110,6 @@ public class RecentsAnimationListenerSet implements RecentsAnimationListener {
 
     public void cancelListener() {
         mCancelled = true;
-        onAnimationCanceled(false);
+        onAnimationCanceled(null);
     }
 }

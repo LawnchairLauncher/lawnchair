@@ -81,6 +81,7 @@ import com.android.launcher3.folder.PreviewBackground;
 import com.android.launcher3.graphics.DragPreviewProvider;
 import com.android.launcher3.graphics.PreloadIconDrawable;
 import com.android.launcher3.graphics.RotationMode;
+import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.pageindicators.WorkspacePageIndicator;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.shortcuts.ShortcutDragPreviewProvider;
@@ -370,10 +371,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     @Override
     public void onDragStart(DropTarget.DragObject dragObject, DragOptions options) {
-        if (TestProtocol.sDebugTracing) {
-            android.util.Log.d(TestProtocol.NO_DRAG_TAG,
-                    "onDragStart 1");
-        }
         if (ENFORCE_DRAG_EVENT_ORDER) {
             enforceDragParity("onDragStart", 0, 0);
         }
@@ -425,8 +422,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
         // Always enter the spring loaded mode
         if (TestProtocol.sDebugTracing) {
-            android.util.Log.d(TestProtocol.NO_DRAG_TAG,
-                    "onDragStart 2");
+            Log.d(TestProtocol.NO_DRAG_TO_WORKSPACE, "Switching to SPRING_LOADED");
         }
         mLauncher.getStateManager().goToState(SPRING_LOADED);
     }
@@ -1056,13 +1052,18 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             if (!mOverlayShown) {
                 mLauncher.getUserEventDispatcher().logActionOnContainer(Action.Touch.SWIPE,
                         Action.Direction.LEFT, ContainerType.WORKSPACE, 0);
+                mLauncher.getStatsLogManager().logSwipeOnContainer(true, 0);
             }
             mOverlayShown = true;
             // Not announcing the overlay page for accessibility since it announces itself.
         } else if (Float.compare(scroll, 0f) == 0) {
             if (mOverlayShown) {
-                mLauncher.getUserEventDispatcher().logActionOnContainer(Action.Touch.SWIPE,
+                UserEventDispatcher ued = mLauncher.getUserEventDispatcher();
+                if (!ued.isPreviousHomeGesture()) {
+                    mLauncher.getUserEventDispatcher().logActionOnContainer(Action.Touch.SWIPE,
                         Action.Direction.RIGHT, ContainerType.WORKSPACE, -1);
+                    mLauncher.getStatsLogManager().logSwipeOnContainer(false, -1);
+                }
             } else if (Float.compare(mOverlayTranslation, 0f) != 0) {
                 // When arriving to 0 overscroll from non-zero overscroll, announce page for
                 // accessibility since default announcements were disabled while in overscroll
@@ -1746,6 +1747,9 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     public void prepareAccessibilityDrop() { }
 
     public void onDrop(final DragObject d, DragOptions options) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.NO_DRAG_TO_WORKSPACE, "Workspace.onDrop");
+        }
         mDragViewVisualCenter = d.getVisualCenter(mDragViewVisualCenter);
         CellLayout dropTargetLayout = mDropToLayout;
 
@@ -2423,6 +2427,9 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
      * to add an item to one of the workspace screens.
      */
     private void onDropExternal(final int[] touchXY, final CellLayout cellLayout, DragObject d) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.NO_DRAG_TO_WORKSPACE, "Workspace.onDropExternal");
+        }
         if (d.dragInfo instanceof PendingAddShortcutInfo) {
             WorkspaceItemInfo si = ((PendingAddShortcutInfo) d.dragInfo)
                     .activityInfo.createWorkspaceItemInfo();
@@ -3254,6 +3261,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                 });
             }
         }
+    }
+
+    public boolean isOverlayShown() {
+        return mOverlayShown;
     }
 
     void moveToDefaultScreen() {

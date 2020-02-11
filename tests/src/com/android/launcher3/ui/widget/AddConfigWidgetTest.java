@@ -27,20 +27,18 @@ import android.view.View;
 
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
-import androidx.test.uiautomator.By;
-import androidx.test.uiautomator.UiObject2;
 
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.Workspace;
+import com.android.launcher3.tapl.Widgets;
 import com.android.launcher3.testcomponent.WidgetConfigActivity;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.ui.TestViewHelpers;
 import com.android.launcher3.util.Condition;
 import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.ShellCommandRule;
-import com.android.launcher3.widget.WidgetCell;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -71,57 +69,36 @@ public class AddConfigWidgetTest extends AbstractLauncherUiTest {
     }
 
     @Test
-    // Convert test to TAPL b/131116002
+    @PortraitLandscape
+    @org.junit.Ignore
     public void testWidgetConfig() throws Throwable {
-        runTest(false, true);
+        runTest(true);
     }
 
     @Test
-    @Ignore // b/121280703
-    public void testWidgetConfig_rotate() throws Throwable {
-        runTest(true, true);
-    }
-
-    @Test
-    // Convert test to TAPL b/131116002
+    @PortraitLandscape
+    @org.junit.Ignore
     public void testConfigCancelled() throws Throwable {
-        runTest(false, false);
+        runTest(false);
     }
 
-    @Test
-    @Ignore // b/121280703
-    public void testConfigCancelled_rotate() throws Throwable {
-        runTest(true, false);
-    }
 
     /**
-     * @param rotateConfig should the config screen be rotated
      * @param acceptConfig accept the config activity
      */
-    private void runTest(boolean rotateConfig, boolean acceptConfig) throws Throwable {
-        lockRotation(true);
-
+    private void runTest(boolean acceptConfig) throws Throwable {
         clearHomescreen();
-        mActivityMonitor.startLauncher();
+        mDevice.pressHome();
 
-        // Open widget tray and wait for load complete.
-        final UiObject2 widgetContainer = TestViewHelpers.openWidgetsTray();
-        Wait.atMost(null, Condition.minChildCount(widgetContainer, 2), DEFAULT_UI_TIMEOUT);
+        final Widgets widgets = mLauncher.getWorkspace().openAllWidgets();
 
         // Drag widget to homescreen
         WidgetConfigStartupMonitor monitor = new WidgetConfigStartupMonitor();
-        UiObject2 widget = scrollAndFind(widgetContainer, By.clazz(WidgetCell.class)
-                .hasDescendant(By.text(mWidgetInfo.getLabel(mTargetContext.getPackageManager()))));
-        TestViewHelpers.dragToWorkspace(widget, false);
+        widgets.
+                getWidget(mWidgetInfo.getLabel(mTargetContext.getPackageManager())).
+                dragToWorkspace();
         // Widget id for which the config activity was opened
         mWidgetId = monitor.getWidgetId();
-
-        if (rotateConfig) {
-            // Rotate the screen and verify that the config activity is recreated
-            monitor = new WidgetConfigStartupMonitor();
-            lockRotation(false);
-            assertEquals(mWidgetId, monitor.getWidgetId());
-        }
 
         // Verify that the widget id is valid and bound
         assertNotNull(mAppWidgetManager.getAppWidgetInfo(mWidgetId));

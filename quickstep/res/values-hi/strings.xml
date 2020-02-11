@@ -27,7 +27,7 @@
     <string name="accessibility_close_task" msgid="5354563209433803643">"बंद करें"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"ऐप्लिकेशन इस्तेमाल की सेटिंग"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"सभी ऐप्लिकेशन बंद करें"</string>
-    <string name="accessibility_recent_apps" msgid="4058661986695117371">"हाल ही में इस्तेमाल किए गए एेप्लिकेशन"</string>
+    <string name="accessibility_recent_apps" msgid="4058661986695117371">"हाल ही में इस्तेमाल किए गए ऐप्लिकेशन"</string>
     <string name="task_contents_description_with_remaining_time" msgid="4479688746574672685">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>, <xliff:g id="REMAINING_TIME">%2$s</xliff:g>"</string>
     <string name="shorter_duration_less_than_one_minute" msgid="4722015666335015336">"&lt;1 मिनट"</string>
     <string name="time_left_for_app" msgid="3111996412933644358">"आज <xliff:g id="TIME">%1$s</xliff:g> और चलेगा"</string>

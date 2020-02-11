@@ -128,10 +128,8 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
         if (!Utilities.ATLEAST_OREO) {
             return;
         }
-        lockRotation(true);
-
         clearHomescreen();
-        mActivityMonitor.startLauncher();
+        mDevice.pressHome();
 
         // Open Pin item activity
         BlockingBroadcastReceiver openMonitor = new BlockingBroadcastReceiver(

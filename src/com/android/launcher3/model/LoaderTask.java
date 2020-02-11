@@ -19,6 +19,7 @@ package com.android.launcher3.model;
 import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_LOCKED_USER;
 import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_SAFEMODE;
 import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_SUSPENDED;
+import static com.android.launcher3.compat.PackageInstallerCompat.getUserHandle;
 import static com.android.launcher3.model.LoaderResults.filterCurrentWorkspaceItems;
 
 import android.appwidget.AppWidgetProviderInfo;
@@ -49,8 +50,8 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;
@@ -61,7 +62,7 @@ import com.android.launcher3.folder.FolderIconPreviewVerifier;
 import com.android.launcher3.icons.ComponentWithLabel;
 import com.android.launcher3.icons.ComponentWithLabel.ComponentCachingLogic;
 import com.android.launcher3.icons.IconCache;
-import com.android.launcher3.icons.LauncherActivtiyCachingLogic;
+import com.android.launcher3.icons.LauncherActivityCachingLogic;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.icons.cache.IconCacheUpdateHandler;
 import com.android.launcher3.logging.FileLog;
@@ -72,6 +73,7 @@ import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.LooperIdleLock;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageManagerHelper;
+import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.TraceHelper;
 
 import java.util.ArrayList;
@@ -196,7 +198,7 @@ public class LoaderTask implements Runnable {
             IconCacheUpdateHandler updateHandler = mIconCache.getUpdateHandler();
             setIgnorePackages(updateHandler);
             updateHandler.updateIcons(allActivityList,
-                    new LauncherActivtiyCachingLogic(mApp.getIconCache()),
+                    LauncherActivityCachingLogic.newInstance(mApp.getContext()),
                     mApp.getModel()::onPackageIconsUpdated);
 
             // Take a break
@@ -281,8 +283,9 @@ public class LoaderTask implements Runnable {
         synchronized (mBgDataModel) {
             mBgDataModel.clear();
 
-            final HashMap<String, SessionInfo> installingPkgs =
+            final HashMap<PackageUserKey, SessionInfo> installingPkgs =
                     mPackageInstaller.updateAndGetActiveSessionCache();
+            final PackageUserKey tempPackageKey = new PackageUserKey(null, null);
             mFirstScreenBroadcast = new FirstScreenBroadcast(installingPkgs);
 
             Map<ShortcutKey, ShortcutInfo> shortcutKeyToPinnedShortcuts = new HashMap<>();
@@ -419,9 +422,10 @@ public class LoaderTask implements Runnable {
                                     // installed later.
                                     FileLog.d(TAG, "package not yet restored: " + targetPkg);
 
+                                    tempPackageKey.update(targetPkg, c.user);
                                     if (c.hasRestoreFlag(WorkspaceItemInfo.FLAG_RESTORE_STARTED)) {
                                         // Restore has started once.
-                                    } else if (installingPkgs.containsKey(targetPkg)) {
+                                    } else if (installingPkgs.containsKey(tempPackageKey)) {
                                         // App restore has started. Update the flag
                                         c.restoreFlag |= WorkspaceItemInfo.FLAG_RESTORE_STARTED;
                                         c.updater().put(LauncherSettings.Favorites.RESTORED,
@@ -536,7 +540,8 @@ public class LoaderTask implements Runnable {
                                 }
 
                                 if (c.restoreFlag != 0 && !TextUtils.isEmpty(targetPkg)) {
-                                    SessionInfo si = installingPkgs.get(targetPkg);
+                                    tempPackageKey.update(targetPkg, c.user);
+                                    SessionInfo si = installingPkgs.get(tempPackageKey);
                                     if (si == null) {
                                         info.status &= ~WorkspaceItemInfo.FLAG_INSTALL_SESSION_ACTIVE;
                                     } else {
@@ -630,8 +635,10 @@ public class LoaderTask implements Runnable {
                                     appWidgetInfo = new LauncherAppWidgetInfo(appWidgetId,
                                             component);
                                     appWidgetInfo.restoreStatus = c.restoreFlag;
+
+                                    tempPackageKey.update(component.getPackageName(), c.user);
                                     SessionInfo si =
-                                            installingPkgs.get(component.getPackageName());
+                                            installingPkgs.get(tempPackageKey);
                                     Integer installProgress = si == null
                                             ? null
                                             : (int) (si.getProgress() * 100);

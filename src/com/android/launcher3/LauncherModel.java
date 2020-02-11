@@ -20,6 +20,7 @@ import static com.android.launcher3.LauncherAppState.ACTION_FORCE_ROLOAD;
 import static com.android.launcher3.config.FeatureFlags.IS_DOGFOOD_BUILD;
 
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ShortcutInfo;
@@ -51,6 +52,7 @@ import com.android.launcher3.model.UserLockStateChangedTask;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IntArray;
+import com.android.launcher3.util.IntSparseArrayMap;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.Preconditions;
@@ -209,6 +211,30 @@ public class LauncherModel extends BroadcastReceiver
     public void onPackageChanged(String packageName, UserHandle user) {
         int op = PackageUpdatedTask.OP_UPDATE;
         enqueueModelUpdateTask(new PackageUpdatedTask(op, user, packageName));
+    }
+
+    public void onSessionFailure(String packageName, UserHandle user) {
+        enqueueModelUpdateTask(new BaseModelUpdateTask() {
+            @Override
+            public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
+                final IntSparseArrayMap<Boolean> removedIds = new IntSparseArrayMap<>();
+                synchronized (dataModel) {
+                    for (ItemInfo info : dataModel.itemsIdMap) {
+                        if (info instanceof WorkspaceItemInfo
+                                && ((WorkspaceItemInfo) info).hasPromiseIconUi()
+                                && user.equals(info.user)
+                                && info.getIntent() != null
+                                && TextUtils.equals(packageName, info.getIntent().getPackage())) {
+                            removedIds.put(info.id, true /* remove */);
+                        }
+                    }
+                }
+
+                if (!removedIds.isEmpty()) {
+                    deleteAndBindComponentsRemoved(ItemInfoMatcher.ofItemIds(removedIds, false));
+                }
+            }
+        });
     }
 
     @Override

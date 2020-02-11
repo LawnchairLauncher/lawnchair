@@ -89,7 +89,7 @@ public class AllAppsList {
     public void addPromiseApp(Context context,
                               PackageInstallerCompat.PackageInstallInfo installInfo) {
         ApplicationInfo applicationInfo = LauncherAppsCompat.getInstance(context)
-                .getApplicationInfo(installInfo.packageName, 0, Process.myUserHandle());
+                .getApplicationInfo(installInfo.packageName, 0, installInfo.user);
         // only if not yet installed
         if (applicationInfo == null) {
             PromiseAppInfo info = new PromiseAppInfo(installInfo);

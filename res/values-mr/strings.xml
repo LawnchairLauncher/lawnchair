@@ -35,18 +35,18 @@
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d रूंद बाय %2$d उंच"</string>
     <string name="add_item_request_drag_hint" msgid="5899764264480397019">"स्वतः ठेवण्यासाठी स्पर्श करा आणि धरून ठेवा"</string>
     <string name="place_automatically" msgid="8064208734425456485">"आपोआप जोडा"</string>
-    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"अॅप्स शोधा"</string>
-    <string name="all_apps_loading_message" msgid="5813968043155271636">"अॅप्स लोड करत आहे…"</string>
-    <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" शी जुळणारे कोणतेही अॅप्स आढळले नाहीत"</string>
-    <string name="all_apps_search_market_message" msgid="1366263386197059176">"अधिक अॅप्स शोधा"</string>
+    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"अ‍ॅप्स शोधा"</string>
+    <string name="all_apps_loading_message" msgid="5813968043155271636">"अ‍ॅप्स लोड करत आहे…"</string>
+    <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" शी जुळणारे कोणतेही अ‍ॅप्स आढळले नाहीत"</string>
+    <string name="all_apps_search_market_message" msgid="1366263386197059176">"अधिक अ‍ॅप्स शोधा"</string>
     <string name="label_application" msgid="8531721983832654978">"ॲप"</string>
     <string name="notifications_header" msgid="1404149926117359025">"सूचना"</string>
     <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"शॉर्टकट निवडण्यासाठी स्पर्श करा आणि धरून ठेवा."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"शॉर्टकट निवडण्यासाठी किंवा कस्टम क्रिया वापरण्यासाठी दोनदा टॅप करा आणि धरून ठेवा."</string>
     <string name="out_of_space" msgid="4691004494942118364">"या मुख्य स्क्रीनवर आणखी जागा नाही."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"आवडीच्या ट्रे मध्ये आणखी जागा नाही"</string>
-    <string name="all_apps_button_label" msgid="8130441508702294465">"अॅप्स सूची"</string>
-    <string name="all_apps_button_personal_label" msgid="1315764287305224468">"वैयक्तिक अॅप्स सूची"</string>
+    <string name="all_apps_button_label" msgid="8130441508702294465">"अ‍ॅप्स सूची"</string>
+    <string name="all_apps_button_personal_label" msgid="1315764287305224468">"वैयक्तिक अ‍ॅप्स सूची"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"कामाच्या ठिकाणी वापरली जाणाऱ्या अॅप्सची सूची"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"होम"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"काढा"</string>
@@ -136,7 +136,7 @@
     <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"कामाची अ‍ॅप्स येथे मिळवा"</string>
     <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"प्रत्येक कार्य अ‍ॅपला एक बॅज असतो आणि तो तुमच्या संस्थेकडून सुरक्षित ठेवला जातो. अधिक सहज अ‍ॅक्सेससाठी अ‍ॅप्स तुमच्या होम स्क्रीनवर हलवा."</string>
     <string name="work_mode_on_label" msgid="4781128097185272916">"तुमच्या संस्थेकडून व्यवस्थापित"</string>
-    <string name="work_mode_off_label" msgid="3194894777601421047">"सूचना आणि अॅप्स बंद आहेत"</string>
+    <string name="work_mode_off_label" msgid="3194894777601421047">"सूचना आणि अ‍ॅप्स बंद आहेत"</string>
     <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"बंद करा"</string>
     <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"बंद केले"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"हे करता आले नाही: <xliff:g id="WHAT">%1$s</xliff:g>"</string>

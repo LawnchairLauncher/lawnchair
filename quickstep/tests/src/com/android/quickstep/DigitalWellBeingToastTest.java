@@ -51,7 +51,7 @@ public class DigitalWellBeingToastTest extends AbstractQuickStepTest {
             mLauncher.pressHome();
             final DigitalWellBeingToast toast = getToast();
 
-            assertTrue("Toast is not visible", toast.hasLimit());
+            waitForLauncherCondition("Toast is not visible", launcher -> toast.hasLimit());
             assertEquals("Toast text: ", "5 minutes left today", toast.getText());
 
             // Unset time limit for app.
@@ -69,10 +69,9 @@ public class DigitalWellBeingToastTest extends AbstractQuickStepTest {
     private DigitalWellBeingToast getToast() {
         executeOnLauncher(launcher -> launcher.getStateManager().goToState(OVERVIEW));
         waitForState("Launcher internal state didn't switch to Overview", OVERVIEW);
-        waitForLauncherCondition("No latest task", launcher -> getLatestTask(launcher) != null);
+        final TaskView task = getOnceNotNull("No latest task", launcher -> getLatestTask(launcher));
 
         return getFromLauncher(launcher -> {
-            final TaskView task = getLatestTask(launcher);
             assertTrue("Latest task is not Calculator",
                     CALCULATOR_PACKAGE.equals(task.getTask().getTopComponent().getPackageName()));
             return task.getDigitalWellBeingToast();

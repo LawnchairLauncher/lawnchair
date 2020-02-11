@@ -20,8 +20,7 @@ import static android.view.MotionEvent.ACTION_CANCEL;
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
 
-import static com.android.launcher3.Utilities.SINGLE_FRAME_MS;
-import static com.android.launcher3.Utilities.shouldDisableGestures;
+import static com.android.launcher3.util.DefaultDisplay.getSingleFrameMs;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -152,8 +151,6 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
     }
 
     private TouchController findControllerToHandleTouch(MotionEvent ev) {
-        if (shouldDisableGestures(ev)) return null;
-
         AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(mActivity);
         if (topView != null && topView.onControllerInterceptTouchEvent(ev)) {
             return topView;
@@ -223,17 +220,13 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
             // This can happen if something goes wrong during a state change/transition.
             AbstractFloatingView floatingView = (AbstractFloatingView) child;
             if (floatingView.isOpen()) {
-                postDelayed(() -> floatingView.close(false), SINGLE_FRAME_MS);
+                postDelayed(() -> floatingView.close(false), getSingleFrameMs(getContext()));
             }
         }
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        if (TestProtocol.sDebugTracing) {
-            android.util.Log.d(TestProtocol.NO_DRAG_TAG,
-                    "onTouchEvent " + ev);
-        }
         int action = ev.getAction();
         if (action == ACTION_UP || action == ACTION_CANCEL) {
             if (mTouchCompleteListener != null) {
@@ -243,10 +236,6 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
         }
 
         if (mActiveController != null) {
-            if (TestProtocol.sDebugTracing) {
-                android.util.Log.d(TestProtocol.NO_DRAG_TAG,
-                        "onTouchEvent 1");
-            }
             return mActiveController.onControllerTouchEvent(ev);
         } else {
             // In case no child view handled the touch event, we may not get onIntercept anymore
@@ -256,9 +245,6 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_START_TAG, "BaseDragLayer.dispatchTouchEvent " + ev);
-        }
         switch (ev.getAction()) {
             case ACTION_DOWN: {
                 float x = ev.getX();
@@ -277,6 +263,10 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
             }
             case ACTION_CANCEL:
             case ACTION_UP:
+                if (TestProtocol.sDebugTracing) {
+                    Log.d(TestProtocol.NO_DRAG_TO_WORKSPACE,
+                            "BaseDragLayer.ACTION_UP/CANCEL " + ev);
+                }
                 mTouchDispatchState &= ~TOUCH_DISPATCHING_GESTURE;
                 mTouchDispatchState &= ~TOUCH_DISPATCHING_VIEW;
                 break;

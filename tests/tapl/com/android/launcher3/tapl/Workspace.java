@@ -21,6 +21,7 @@ import static com.android.launcher3.testing.TestProtocol.ALL_APPS_STATE_ORDINAL;
 import static junit.framework.TestCase.assertTrue;
 
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.os.SystemClock;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -40,6 +41,7 @@ public final class Workspace extends Home {
     private static final float FLING_SPEED =
             LauncherInstrumentation.isAvd() ? 1500.0F : 3500.0F;
     private static final int DRAG_DURACTION = 2000;
+    private static final int FLING_STEPS = 10;
     private final UiObject2 mHotseat;
 
     Workspace(LauncherInstrumentation launcher) {
@@ -67,7 +69,6 @@ public final class Workspace extends Home {
                     "switchToAllApps: swipeHeight = " + swipeHeight + ", slop = "
                             + mLauncher.getTouchSlop());
 
-            mLauncher.getTestInfo(TestProtocol.REQUEST_ENABLE_DEBUG_TRACING);
             mLauncher.swipeToState(
                     start.x,
                     start.y,
@@ -75,7 +76,6 @@ public final class Workspace extends Home {
                     start.y - swipeHeight - mLauncher.getTouchSlop(),
                     60,
                     ALL_APPS_STATE_ORDINAL);
-            mLauncher.getTestInfo(TestProtocol.REQUEST_DISABLE_DEBUG_TRACING);
 
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
                     "swiped to all apps")) {
@@ -110,10 +110,13 @@ public final class Workspace extends Home {
      */
     @NonNull
     public AppIcon getWorkspaceAppIcon(String appName) {
-        return new AppIcon(mLauncher,
-                mLauncher.getObjectInContainer(
-                        verifyActiveContainer(),
-                        AppIcon.getAppIconSelector(appName, mLauncher)));
+        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                "want to get a workspace icon")) {
+            return new AppIcon(mLauncher,
+                    mLauncher.waitForObjectInContainer(
+                            verifyActiveContainer(),
+                            AppIcon.getAppIconSelector(appName, mLauncher)));
+        }
     }
 
     /**
@@ -144,20 +147,19 @@ public final class Workspace extends Home {
 
     @NonNull
     public AppIcon getHotseatAppIcon(String appName) {
-        return new AppIcon(mLauncher, mLauncher.getObjectInContainer(
+        return new AppIcon(mLauncher, mLauncher.waitForObjectInContainer(
                 mHotseat, AppIcon.getAppIconSelector(appName, mLauncher)));
     }
 
     @NonNull
     public Folder getHotseatFolder(String appName) {
-        return new Folder(mLauncher, mLauncher.getObjectInContainer(
+        return new Folder(mLauncher, mLauncher.waitForObjectInContainer(
                 mHotseat, Folder.getSelector(appName, mLauncher)));
     }
 
     static void dragIconToWorkspace(
             LauncherInstrumentation launcher, Launchable launchable, Point dest,
             String longPressIndicator) {
-        launcher.getTestInfo(TestProtocol.REQUEST_ENABLE_DEBUG_TRACING);
         LauncherInstrumentation.log("dragIconToWorkspace: begin");
         final Point launchableCenter = launchable.getObject().getVisibleCenter();
         final long downTime = SystemClock.uptimeMillis();
@@ -172,7 +174,6 @@ public final class Workspace extends Home {
                 downTime, SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, dest);
         LauncherInstrumentation.log("dragIconToWorkspace: end");
         launcher.waitUntilGone("drop_target_bar");
-        launcher.getTestInfo(TestProtocol.REQUEST_DISABLE_DEBUG_TRACING);
     }
 
     /**
@@ -181,9 +182,9 @@ public final class Workspace extends Home {
      */
     public void flingForward() {
         final UiObject2 workspace = verifyActiveContainer();
-        workspace.setGestureMargins(0, 0, mLauncher.getEdgeSensitivityWidth(), 0);
-        workspace.fling(Direction.RIGHT, (int) (FLING_SPEED * mLauncher.getDisplayDensity()));
-        mLauncher.waitForIdle();
+        mLauncher.scroll(workspace, Direction.RIGHT, 1f,
+                new Rect(0, 0, mLauncher.getEdgeSensitivityWidth(), 0),
+                FLING_STEPS);
         verifyActiveContainer();
     }
 
@@ -193,9 +194,9 @@ public final class Workspace extends Home {
      */
     public void flingBackward() {
         final UiObject2 workspace = verifyActiveContainer();
-        workspace.setGestureMargins(mLauncher.getEdgeSensitivityWidth(), 0, 0, 0);
-        workspace.fling(Direction.LEFT, (int) (FLING_SPEED * mLauncher.getDisplayDensity()));
-        mLauncher.waitForIdle();
+        mLauncher.scroll(workspace, Direction.LEFT, 1f,
+                new Rect(mLauncher.getEdgeSensitivityWidth(), 0, 0, 0),
+                FLING_STEPS);
         verifyActiveContainer();
     }
 

@@ -19,9 +19,9 @@ package com.android.launcher3.tapl;
 import static com.android.launcher3.testing.TestProtocol.ALL_APPS_STATE_ORDINAL;
 
 import androidx.annotation.NonNull;
-import androidx.test.uiautomator.UiObject2;
 
 import com.android.launcher3.tapl.LauncherInstrumentation.ContainerType;
+import com.android.launcher3.testing.TestProtocol;
 
 /**
  * Overview pane.
@@ -51,11 +51,15 @@ public final class Overview extends BaseOverview {
 
             // Swipe from an app icon to the top.
             LauncherInstrumentation.log("Overview.switchToAllApps before swipe");
-            final UiObject2 allApps = mLauncher.waitForLauncherObject("apps_view");
-            mLauncher.swipeToState(mLauncher.getDevice().getDisplayWidth() / 2,
-                    allApps.getVisibleBounds().top,
+            mLauncher.swipeToState(
                     mLauncher.getDevice().getDisplayWidth() / 2,
-                    0, 50, ALL_APPS_STATE_ORDINAL);
+                    mLauncher.getTestInfo(
+                            TestProtocol.REQUEST_HOTSEAT_TOP).
+                            getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD),
+                    mLauncher.getDevice().getDisplayWidth() / 2,
+                    0,
+                    50,
+                    ALL_APPS_STATE_ORDINAL);
 
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
                     "swiped all way up from overview")) {
