@@ -25,7 +25,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import android.content.Intent;
-import android.os.RemoteException;
 
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
@@ -81,17 +80,6 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
                 "Launcher activity is the top activity; expecting another activity to be the top "
                         + "one",
                 isInBackground(launcher)));
-    }
-
-    @Test
-    @PortraitLandscape
-    @Ignore // Enable after b/131115533
-    public void testPressRecentAppsLauncherAndGetOverview() throws RemoteException {
-        mDevice.pressRecentApps();
-        waitForState("Launcher internal state didn't switch to Overview",
-                () -> LauncherState.OVERVIEW);
-
-        assertNotNull("getOverview() returned null", mLauncher.getOverview());
     }
 
     @Test
