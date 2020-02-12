@@ -393,15 +393,16 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
             if (!itemAdded) mPreviewItemManager.hidePreviewItem(index, true);
             final int finalIndex = index;
 
-            String[] suggestedNameOut = new String[FolderNameProvider.SUGGEST_MAX];
+            FolderNameInfo[] nameInfos =
+                    new FolderNameInfo[FolderNameProvider.SUGGEST_MAX];
             if (FeatureFlags.FOLDER_NAME_SUGGEST.get()) {
                 Executors.UI_HELPER_EXECUTOR.post(() -> {
                     d.folderNameProvider.getSuggestedFolderName(
-                            getContext(), mInfo.contents, suggestedNameOut);
-                    showFinalView(finalIndex, item, suggestedNameOut);
+                            getContext(), mInfo.contents, nameInfos);
+                    showFinalView(finalIndex, item, nameInfos);
                 });
             } else {
-                showFinalView(finalIndex, item, suggestedNameOut);
+                showFinalView(finalIndex, item, nameInfos);
             }
         } else {
             addItem(item);
@@ -409,12 +410,12 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
     }
 
     private void showFinalView(int finalIndex, final WorkspaceItemInfo item,
-            String[] suggestedNameOut) {
+            FolderNameInfo[] nameInfos) {
         postDelayed(() -> {
             mPreviewItemManager.hidePreviewItem(finalIndex, false);
             mFolder.showItem(item);
             invalidate();
-            mFolder.showSuggestedTitle(suggestedNameOut);
+            mFolder.showSuggestedTitle(nameInfos);
         }, DROP_IN_ANIMATION_DURATION);
     }
 
