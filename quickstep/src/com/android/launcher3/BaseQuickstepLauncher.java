@@ -167,7 +167,7 @@ public abstract class BaseQuickstepLauncher extends Launcher
     @Override
     public void startActivityForResult(Intent intent, int requestCode, Bundle options) {
         if (requestCode != -1) {
-            mPendingActivityRequestCode = -1;
+            mPendingActivityRequestCode = requestCode;
             StartActivityParams params = new StartActivityParams(this, requestCode);
             params.intent = intent;
             params.options = options;
