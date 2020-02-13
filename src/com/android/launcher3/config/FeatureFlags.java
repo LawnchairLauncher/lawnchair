@@ -22,6 +22,7 @@ import com.android.launcher3.BuildConfig;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.uioverrides.DeviceFlag;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -142,6 +143,15 @@ public final class FeatureFlags {
     static List<DebugFlag> getDebugFlags() {
         synchronized (sDebugFlags) {
             return new ArrayList<>(sDebugFlags);
+        }
+    }
+
+    public static void dump(PrintWriter pw) {
+        pw.println("FeatureFlags:");
+        synchronized (sDebugFlags) {
+            for (DebugFlag flag : sDebugFlags) {
+                pw.println("  " + flag.key + "=" + flag.get());
+            }
         }
     }
 
