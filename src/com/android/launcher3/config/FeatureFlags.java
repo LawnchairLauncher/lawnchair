@@ -96,7 +96,7 @@ public final class FeatureFlags {
             "APP_SEARCH_IMPROVEMENTS", false,
             "Adds localized title and keyword search and ranking");
 
-    public static final BooleanFlag ENABLE_PREDICTION_DISMISS = getDebugFlag(
+    public static final BooleanFlag ENABLE_PREDICTION_DISMISS = new DeviceFlag(
             "ENABLE_PREDICTION_DISMISS", false, "Allow option to dimiss apps from predicted list");
 
     public static final BooleanFlag ENABLE_QUICK_CAPTURE_GESTURE = getDebugFlag(
@@ -106,7 +106,7 @@ public final class FeatureFlags {
             "ASSISTANT_GIVES_LAUNCHER_FOCUS", false,
             "Allow Launcher to handle nav bar gestures while Assistant is running over it");
 
-    public static final BooleanFlag ENABLE_HYBRID_HOTSEAT = getDebugFlag(
+    public static final BooleanFlag ENABLE_HYBRID_HOTSEAT = new DeviceFlag(
             "ENABLE_HYBRID_HOTSEAT", false, "Fill gaps in hotseat with predicted apps");
 
     public static final BooleanFlag ENABLE_DEEP_SHORTCUT_ICON_CACHE = getDebugFlag(
