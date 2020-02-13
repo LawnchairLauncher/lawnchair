@@ -108,7 +108,7 @@ public class RestoreDbTask {
     private void backupWorkspace(Context context, SQLiteDatabase db) throws Exception {
         InvariantDeviceProfile idp = LauncherAppState.getIDP(context);
         // TODO(pinyaoting): Support backing up workspace with multiple grid options.
-        new GridBackupTable(context, db, db, idp.numHotseatIcons, idp.numColumns, idp.numRows)
+        new GridBackupTable(context, db, idp.numHotseatIcons, idp.numColumns, idp.numRows)
                 .doBackup(getDefaultProfileId(db), GridBackupTable.OPTION_REQUIRES_SANITIZATION);
     }
 
@@ -117,8 +117,8 @@ public class RestoreDbTask {
             throws Exception {
         // TODO(pinyaoting): Support restoring workspace with multiple grid options.
         final InvariantDeviceProfile idp = LauncherAppState.getIDP(context);
-        GridBackupTable backupTable = new GridBackupTable(context, db, db,
-                idp.numHotseatIcons, idp.numColumns, idp.numRows);
+        GridBackupTable backupTable = new GridBackupTable(context, db, idp.numHotseatIcons,
+                idp.numColumns, idp.numRows);
         if (backupTable.restoreFromRawBackupIfAvailable(getDefaultProfileId(db))) {
             sanitizeDB(helper, db, backupManager);
             LauncherAppState.getInstance(context).getModel().forceReload();

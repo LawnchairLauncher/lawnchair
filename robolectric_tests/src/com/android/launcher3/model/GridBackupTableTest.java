@@ -63,7 +63,7 @@ public class GridBackupTableTest {
 
     @Test
     public void backupTableCreated() {
-        GridBackupTable backupTable = new GridBackupTable(mContext, mDb, mDb, 4, 4, 4);
+        GridBackupTable backupTable = new GridBackupTable(mContext, mDb, 4, 4, 4);
         assertFalse(backupTable.backupOrRestoreAsNeeded());
         Settings.call(mContext.getContentResolver(), Settings.METHOD_REFRESH_BACKUP_TABLE);
 
@@ -75,14 +75,14 @@ public class GridBackupTableTest {
 
     @Test
     public void backupTableRestored() {
-        assertFalse(new GridBackupTable(mContext, mDb, mDb, 4, 4, 4).backupOrRestoreAsNeeded());
+        assertFalse(new GridBackupTable(mContext, mDb, 4, 4, 4).backupOrRestoreAsNeeded());
         Settings.call(mContext.getContentResolver(), Settings.METHOD_REFRESH_BACKUP_TABLE);
 
         // Delete entries
         mDb.delete(TABLE_NAME, null, null);
         assertEquals(0, queryNumEntries(mDb, TABLE_NAME));
 
-        GridBackupTable backupTable = new GridBackupTable(mContext, mDb, mDb, 3, 3, 3);
+        GridBackupTable backupTable = new GridBackupTable(mContext, mDb, 3, 3, 3);
         assertTrue(backupTable.backupOrRestoreAsNeeded());
 
         // Items have been restored
@@ -96,7 +96,7 @@ public class GridBackupTableTest {
 
     @Test
     public void backupTableRemovedOnAdd() {
-        assertFalse(new GridBackupTable(mContext, mDb, mDb, 4, 4, 4).backupOrRestoreAsNeeded());
+        assertFalse(new GridBackupTable(mContext, mDb, 4, 4, 4).backupOrRestoreAsNeeded());
         Settings.call(mContext.getContentResolver(), Settings.METHOD_REFRESH_BACKUP_TABLE);
 
         assertTrue(tableExists(mDb, BACKUP_TABLE_NAME));
@@ -107,7 +107,7 @@ public class GridBackupTableTest {
 
     @Test
     public void backupTableRemovedOnDelete() {
-        assertFalse(new GridBackupTable(mContext, mDb, mDb, 4, 4, 4).backupOrRestoreAsNeeded());
+        assertFalse(new GridBackupTable(mContext, mDb, 4, 4, 4).backupOrRestoreAsNeeded());
         Settings.call(mContext.getContentResolver(), Settings.METHOD_REFRESH_BACKUP_TABLE);
 
         assertTrue(tableExists(mDb, BACKUP_TABLE_NAME));
@@ -118,7 +118,7 @@ public class GridBackupTableTest {
 
     @Test
     public void backupTableRetainedOnUpdate() {
-        assertFalse(new GridBackupTable(mContext, mDb, mDb, 4, 4, 4).backupOrRestoreAsNeeded());
+        assertFalse(new GridBackupTable(mContext, mDb, 4, 4, 4).backupOrRestoreAsNeeded());
         Settings.call(mContext.getContentResolver(), Settings.METHOD_REFRESH_BACKUP_TABLE);
 
         assertTrue(tableExists(mDb, BACKUP_TABLE_NAME));
