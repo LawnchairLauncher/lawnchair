@@ -909,7 +909,7 @@ public class GridSizeMigrationTask {
             boolean dbChanged = false;
 
             GridBackupTable backupTable = new GridBackupTable(context, transaction.getDb(),
-                    transaction.getDb(), srcHotseatCount, sourceSize.x, sourceSize.y);
+                    srcHotseatCount, sourceSize.x, sourceSize.y);
             if (backupTable.backupOrRestoreAsNeeded()) {
                 dbChanged = true;
                 srcHotseatCount = backupTable.getRestoreHotseatAndGridSize(sourceSize);

@@ -33,8 +33,6 @@ import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.LauncherSettings.Settings;
 import com.android.launcher3.pm.UserCache;
 
-import java.util.Objects;
-
 /**
  * Helper class to backup and restore Favorites table into a separate table
  * within the same data base.
@@ -63,8 +61,7 @@ public class GridBackupTable {
     private static final int STATE_SANITIZED = 2;
 
     private final Context mContext;
-    private final SQLiteDatabase mFavoritesDb;
-    private final SQLiteDatabase mBackupDb;
+    private final SQLiteDatabase mDb;
 
     private final int mOldHotseatSize;
     private final int mOldGridX;
@@ -77,11 +74,10 @@ public class GridBackupTable {
     @IntDef({STATE_NOT_FOUND, STATE_RAW, STATE_SANITIZED})
     private @interface BackupState { }
 
-    public GridBackupTable(Context context, SQLiteDatabase favoritesDb, SQLiteDatabase backupDb,
-            int hotseatSize, int gridX, int gridY) {
+    public GridBackupTable(Context context, SQLiteDatabase db, int hotseatSize, int gridX,
+            int gridY) {
         mContext = context;
-        mFavoritesDb = favoritesDb;
-        mBackupDb = backupDb;
+        mDb = db;
 
         mOldHotseatSize = hotseatSize;
         mOldGridX = gridX;
@@ -94,7 +90,7 @@ public class GridBackupTable {
      */
     public boolean backupOrRestoreAsNeeded() {
         // Check if backup table exists
-        if (!tableExists(mBackupDb, BACKUP_TABLE_NAME)) {
+        if (!tableExists(mDb, BACKUP_TABLE_NAME)) {
             if (Settings.call(mContext.getContentResolver(), Settings.METHOD_WAS_EMPTY_DB_CREATED)
                     .getBoolean(Settings.EXTRA_VALUE, false)) {
                 // No need to copy if empty DB was created.
@@ -109,7 +105,7 @@ public class GridBackupTable {
         }
         long userSerial = UserCache.INSTANCE.get(mContext).getSerialNumberForUser(
                 Process.myUserHandle());
-        copyTable(mBackupDb, BACKUP_TABLE_NAME, mFavoritesDb, Favorites.TABLE_NAME, userSerial);
+        copyTable(mDb, BACKUP_TABLE_NAME, Favorites.TABLE_NAME, userSerial);
         Log.d(TAG, "Backup table found");
         return true;
     }
@@ -122,37 +118,28 @@ public class GridBackupTable {
     /**
      * Copy valid grid entries from one table to another.
      */
-    private static void copyTable(SQLiteDatabase fromDb, String fromTable, SQLiteDatabase toDb,
-            String toTable, long userSerial) {
-        dropTable(toDb, toTable);
-        Favorites.addTableToDb(toDb, userSerial, false, toTable);
-        if (fromDb != toDb) {
-            toDb.execSQL("ATTACH DATABASE '" + fromDb.getPath() + "' AS from_db");
-            toDb.execSQL(
-                    "INSERT INTO " + toTable + " SELECT * FROM from_db." + fromTable
-                            + " where _id > " + ID_PROPERTY);
-        } else {
-            toDb.execSQL("INSERT INTO " + toTable + " SELECT * FROM " + fromTable + " where _id > "
-                    + ID_PROPERTY);
-        }
+    private static void copyTable(SQLiteDatabase db, String from, String to, long userSerial) {
+        dropTable(db, to);
+        Favorites.addTableToDb(db, userSerial, false, to);
+        db.execSQL("INSERT INTO " + to + " SELECT * FROM " + from + " where _id > " + ID_PROPERTY);
     }
 
     private void encodeDBProperties(int options) {
         ContentValues values = new ContentValues();
         values.put(Favorites._ID, ID_PROPERTY);
-        values.put(KEY_DB_VERSION, mFavoritesDb.getVersion());
+        values.put(KEY_DB_VERSION, mDb.getVersion());
         values.put(KEY_GRID_X_SIZE, mOldGridX);
         values.put(KEY_GRID_Y_SIZE, mOldGridY);
         values.put(KEY_HOTSEAT_SIZE, mOldHotseatSize);
         values.put(Favorites.OPTIONS, options);
-        mBackupDb.insert(BACKUP_TABLE_NAME, null, values);
+        mDb.insert(BACKUP_TABLE_NAME, null, values);
     }
 
     /**
      * Load DB properties from grid backup table.
      */
     public @BackupState int loadDBProperties() {
-        try (Cursor c = mBackupDb.query(BACKUP_TABLE_NAME, new String[] {
+        try (Cursor c = mDb.query(BACKUP_TABLE_NAME, new String[] {
                 KEY_DB_VERSION,     // 0
                 KEY_GRID_X_SIZE,    // 1
                 KEY_GRID_Y_SIZE,    // 2
@@ -163,7 +150,7 @@ public class GridBackupTable {
                 Log.e(TAG, "Meta data not found in backup table");
                 return STATE_NOT_FOUND;
             }
-            if (!validateDBVersion(mBackupDb.getVersion(), c.getInt(0))) {
+            if (!validateDBVersion(mDb.getVersion(), c.getInt(0))) {
                 return STATE_NOT_FOUND;
             }
 
@@ -179,7 +166,7 @@ public class GridBackupTable {
      * Restore workspace from raw backup if available.
      */
     public boolean restoreFromRawBackupIfAvailable(long oldProfileId) {
-        if (!tableExists(mBackupDb, Favorites.BACKUP_TABLE_NAME)
+        if (!tableExists(mDb, Favorites.BACKUP_TABLE_NAME)
                 || loadDBProperties() != STATE_RAW
                 || mOldHotseatSize != mRestoredHotseatSize
                 || mOldGridX != mRestoredGridX
@@ -187,8 +174,7 @@ public class GridBackupTable {
             // skip restore if dimensions in backup table differs from current setup.
             return false;
         }
-        copyTable(mBackupDb, Favorites.BACKUP_TABLE_NAME, mFavoritesDb, Favorites.TABLE_NAME,
-                oldProfileId);
+        copyTable(mDb, Favorites.BACKUP_TABLE_NAME, Favorites.TABLE_NAME, oldProfileId);
         Log.d(TAG, "Backup restored");
         return true;
     }
@@ -197,8 +183,7 @@ public class GridBackupTable {
      * Performs a backup on the workspace layout.
      */
     public void doBackup(long profileId, int options) {
-        copyTable(mFavoritesDb, Favorites.TABLE_NAME, mBackupDb, Favorites.BACKUP_TABLE_NAME,
-                profileId);
+        copyTable(mDb, Favorites.TABLE_NAME, Favorites.BACKUP_TABLE_NAME, profileId);
         encodeDBProperties(options);
     }
 
