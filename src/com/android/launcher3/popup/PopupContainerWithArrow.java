@@ -169,6 +169,10 @@ public class PopupContainerWithArrow<T extends BaseDraggingActivity> extends Arr
 
     @Override
     public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
+        if (ev.getY() > (mLauncher.getDragLayer().getHeight()
+                - mLauncher.getDeviceProfile().getInsets().bottom)) {
+            return false;
+        }
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             BaseDragLayer dl = getPopupContainer();
             if (!dl.isEventOverView(this, ev)) {

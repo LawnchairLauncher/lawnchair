@@ -663,9 +663,7 @@ public final class LauncherInstrumentation {
                     mDevice.waitForIdle();
 
                     if (getNavigationModel() == NavigationModel.TWO_BUTTON) {
-                        if (hasLauncherObject(CONTEXT_MENU_RES_ID) ||
-                                hasLauncherObject(WIDGETS_RES_ID)
-                                        && !mDevice.isNaturalOrientation()) {
+                        if (hasLauncherObject(WIDGETS_RES_ID) && !mDevice.isNaturalOrientation()) {
                             expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_PILFER_POINTERS);
                         }
                     }
