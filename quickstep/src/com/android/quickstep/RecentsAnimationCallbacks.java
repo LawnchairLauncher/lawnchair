@@ -62,6 +62,12 @@ public class RecentsAnimationCallbacks implements
         mListeners.remove(listener);
     }
 
+    @UiThread
+    public void removeAllListeners() {
+        Preconditions.assertUIThread();
+        mListeners.clear();
+    }
+
     public void notifyAnimationCanceled() {
         mCancelled = true;
         onAnimationCanceled(null);

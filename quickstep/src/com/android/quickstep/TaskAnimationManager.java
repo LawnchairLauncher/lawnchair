@@ -156,9 +156,9 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
             mTargets.release();
         }
 
-        // Remove gesture state from callbacks
-        if (mCallbacks != null && mLastGestureState != null) {
-            mCallbacks.removeListener(mLastGestureState);
+        // Clean up all listeners to ensure we don't get subsequent callbacks
+        if (mCallbacks != null) {
+            mCallbacks.removeAllListeners();
         }
 
         mController = null;
