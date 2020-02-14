@@ -47,7 +47,6 @@ import com.android.quickstep.views.RecentsView;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -259,10 +258,8 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     @Test
     @NavigationModeSwitch
     @PortraitLandscape
-    // b/143285809 Remove @Stability on 02/21/20 if the test doesn't flake.
+    // b/143285809 Remove @Stability on 02/27/20 if the test doesn't flake.
     @TestStabilityRule.Stability(flavors = LOCAL | UNBUNDLED_POSTSUBMIT)
-    // b/143285809
-    @Ignore
     public void testQuickSwitchFromApp() throws Exception {
         startTestActivity(2);
         startTestActivity(3);

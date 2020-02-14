@@ -180,7 +180,7 @@ public class RecentsAnimationDeviceState implements
             mDefaultDisplay.addChangeListener(this);
         }
 
-        if (mMode == NO_BUTTON) {
+        if (newMode == NO_BUTTON) {
             mExclusionListener.register();
         } else {
             mExclusionListener.unregister();
