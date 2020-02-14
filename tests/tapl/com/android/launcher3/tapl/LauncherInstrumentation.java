@@ -97,6 +97,8 @@ public final class LauncherInstrumentation {
     private static final Pattern EVENT_TOUCH_UP = getTouchEventPattern("ACTION_UP");
     private static final Pattern EVENT_TOUCH_CANCEL = getTouchEventPattern("ACTION_CANCEL");
     private static final Pattern EVENT_PILFER_POINTERS = Pattern.compile("pilferPointers");
+    static final Pattern EVENT_START_ACTIVITY = Pattern.compile("Activity\\.onStart");
+    static final Pattern EVENT_STOP_ACTIVITY = Pattern.compile("Activity\\.onStop");
 
     static final Pattern EVENT_TOUCH_DOWN_TIS = getTouchEventPatternTIS("ACTION_DOWN");
     static final Pattern EVENT_TOUCH_UP_TIS = getTouchEventPatternTIS("ACTION_UP");
@@ -609,6 +611,7 @@ public final class LauncherInstrumentation {
             // otherwise waitForIdle may return immediately in case when there was a big enough
             // pause in accessibility events prior to pressing Home.
             final String action;
+            final boolean launcherWasVisible = isLauncherVisible();
             if (getNavigationModel() == NavigationModel.ZERO_BUTTON) {
                 checkForAnomaly();
 
@@ -637,12 +640,18 @@ public final class LauncherInstrumentation {
                                 displaySize.x / 2, displaySize.y - 1,
                                 displaySize.x / 2, 0,
                                 ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME, NORMAL_STATE_ORDINAL,
-                                hasLauncherObject(By.textStartsWith(""))
+                                launcherWasVisible
                                         ? GestureScope.INSIDE_TO_OUTSIDE
                                         : GestureScope.OUTSIDE);
                     }
+                    if (!launcherWasVisible) {
+                        expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_START_ACTIVITY);
+                    }
                 }
             } else {
+                if (!launcherWasVisible) {
+                    expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_START_ACTIVITY);
+                }
                 log("Hierarchy before clicking home:");
                 dumpViewHierarchy();
                 log(action = "clicking home button from " + getVisibleStateMessage());
@@ -653,6 +662,7 @@ public final class LauncherInstrumentation {
                         expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_DOWN_TIS);
                         expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_UP_TIS);
                     }
+
                     runToState(
                             waitForSystemUiObject("home")::click,
                             NORMAL_STATE_ORDINAL,
@@ -667,6 +677,10 @@ public final class LauncherInstrumentation {
                 return getWorkspace();
             }
         }
+    }
+
+    boolean isLauncherVisible() {
+        return hasLauncherObject(By.textStartsWith(""));
     }
 
     /**
@@ -1087,7 +1101,7 @@ public final class LauncherInstrumentation {
                 break;
             case MotionEvent.ACTION_UP:
                 if (gestureScope != GestureScope.INSIDE) {
-                    expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_PILFER_POINTERS);
+                    expectEvent(TestProtocol.SEQUENCE_PILFER, EVENT_PILFER_POINTERS);
                 }
                 if (gestureScope != GestureScope.OUTSIDE) {
                     expectEvent(TestProtocol.SEQUENCE_MAIN, gestureScope == GestureScope.INSIDE

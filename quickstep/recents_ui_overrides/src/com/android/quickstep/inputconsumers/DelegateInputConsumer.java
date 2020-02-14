@@ -36,7 +36,7 @@ public abstract class DelegateInputConsumer implements InputConsumer {
 
     protected void setActive(MotionEvent ev) {
         mState = STATE_ACTIVE;
-        TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "pilferPointers");
+        TestLogging.recordEvent(TestProtocol.SEQUENCE_PILFER, "pilferPointers");
         mInputMonitor.pilferPointers();
 
         // Send cancel event
