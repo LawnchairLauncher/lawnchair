@@ -32,7 +32,7 @@ android_library {
 }
 
 java_library_static {
-    name: "launcher-log-protos-lite",
+    name: "launcher_log_protos_lite",
     srcs: [
         "protos/*.proto",
         "proto_overrides/*.proto",
@@ -45,4 +45,5 @@ java_library_static {
             "proto_overrides",
         ],
     },
+    static_libs: ["libprotobuf-java-lite"],
 }
