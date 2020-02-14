@@ -55,7 +55,7 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
         // Notify if recents animation is still running
         if (mController != null) {
             String msg = "New recents animation started before old animation completed";
-            if (FeatureFlags.IS_DOGFOOD_BUILD) {
+            if (FeatureFlags.IS_STUDIO_BUILD) {
                 throw new IllegalArgumentException(msg);
             } else {
                 Log.e("TaskAnimationManager", msg, new Exception());

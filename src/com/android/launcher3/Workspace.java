@@ -1858,7 +1858,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                         CellLayout parentCell = getParentCellLayoutForView(cell);
                         if (parentCell != null) {
                             parentCell.removeView(cell);
-                        } else if (FeatureFlags.IS_DOGFOOD_BUILD) {
+                        } else if (FeatureFlags.IS_STUDIO_BUILD) {
                             throw new NullPointerException("mDragInfo.cell has null parent");
                         }
                         addInScreen(cell, container, screenId, mTargetCell[0], mTargetCell[1],
@@ -2153,7 +2153,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
         ItemInfo item = d.dragInfo;
         if (item == null) {
-            if (FeatureFlags.IS_DOGFOOD_BUILD) {
+            if (FeatureFlags.IS_STUDIO_BUILD) {
                 throw new NullPointerException("DragObject has null info");
             }
             return;
@@ -2775,7 +2775,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                     mDragInfo.container, mDragInfo.screenId);
             if (cellLayout != null) {
                 cellLayout.onDropChild(mDragInfo.cell);
-            } else if (FeatureFlags.IS_DOGFOOD_BUILD) {
+            } else if (FeatureFlags.IS_STUDIO_BUILD) {
                 throw new RuntimeException("Invalid state: cellLayout == null in "
                         + "Workspace#onDropCompleted. Please file a bug. ");
             }
@@ -2794,7 +2794,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         CellLayout parentCell = getParentCellLayoutForView(v);
         if (parentCell != null) {
             parentCell.removeView(v);
-        } else if (FeatureFlags.IS_DOGFOOD_BUILD) {
+        } else if (FeatureFlags.IS_STUDIO_BUILD) {
             // When an app is uninstalled using the drop target, we wait until resume to remove
             // the icon. We also remove all the corresponding items from the workspace at
             // {@link Launcher#bindComponentsRemoved}. That call can come before or after

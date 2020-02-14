@@ -97,7 +97,7 @@ public class ModelUtils {
                         return Integer.compare(lhs.screenId, rhs.screenId);
                     }
                     default:
-                        if (FeatureFlags.IS_DOGFOOD_BUILD) {
+                        if (FeatureFlags.IS_STUDIO_BUILD) {
                             throw new RuntimeException(
                                     "Unexpected container type when sorting workspace items.");
                         }

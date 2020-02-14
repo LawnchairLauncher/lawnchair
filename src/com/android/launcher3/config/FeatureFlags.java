@@ -43,7 +43,10 @@ public final class FeatureFlags {
         return Utilities.IS_DEBUG_DEVICE && Utilities.isDevelopersOptionsEnabled(context);
     }
 
-    public static final boolean IS_DOGFOOD_BUILD = BuildConfig.DEBUG;
+    /**
+     * True when the build has come from Android Studio and is being used for local debugging.
+     */
+    public static final boolean IS_STUDIO_BUILD = BuildConfig.DEBUG;
 
     /**
      * Enable moving the QSB on the 0th screen of the workspace. This is not a configuration feature

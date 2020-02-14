@@ -152,7 +152,7 @@ public class DragPreviewProvider {
     }
 
     public final void generateDragOutline(Bitmap preview) {
-        if (FeatureFlags.IS_DOGFOOD_BUILD && mOutlineGeneratorCallback != null) {
+        if (FeatureFlags.IS_STUDIO_BUILD && mOutlineGeneratorCallback != null) {
             throw new RuntimeException("Drag outline generated twice");
         }
 

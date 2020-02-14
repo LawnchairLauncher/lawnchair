@@ -1251,7 +1251,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     }
 
     public PendingAnimation createAllTasksDismissAnimation(long duration) {
-        if (FeatureFlags.IS_DOGFOOD_BUILD && mPendingAnimation != null) {
+        if (FeatureFlags.IS_STUDIO_BUILD && mPendingAnimation != null) {
             throw new IllegalStateException("Another pending animation is still running");
         }
         AnimatorSet anim = new AnimatorSet();
@@ -1595,7 +1595,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     }
 
     public PendingAnimation createTaskLauncherAnimation(TaskView tv, long duration) {
-        if (FeatureFlags.IS_DOGFOOD_BUILD && mPendingAnimation != null) {
+        if (FeatureFlags.IS_STUDIO_BUILD && mPendingAnimation != null) {
             throw new IllegalStateException("Another pending animation is still running");
         }
 
