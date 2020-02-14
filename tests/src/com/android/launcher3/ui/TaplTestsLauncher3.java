@@ -42,7 +42,6 @@ import com.android.launcher3.widget.WidgetsRecyclerView;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -122,7 +121,6 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     }
 
     @Test
-    @Ignore
     public void testPressHomeOnAllAppsContextMenu() throws Exception {
         final AllApps allApps = mLauncher.getWorkspace().switchToAllApps();
         allApps.freeze();
