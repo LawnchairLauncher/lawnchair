@@ -917,6 +917,12 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
             windowAnim.addAnimatorListener(new AnimationSuccessListener() {
                 @Override
                 public void onAnimationSuccess(Animator animator) {
+                    if (mRecentsAnimationController == null) {
+                        // If the recents animation is interrupted, we still end the running
+                        // animation (not canceled) so this is still called. In that case, we can
+                        // skip doing any future work here for the current gesture.
+                        return;
+                    }
                     // Finalize the state and notify of the change
                     mGestureState.setState(STATE_END_TARGET_ANIMATION_FINISHED);
                 }
@@ -938,6 +944,12 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
             windowAnim.addListener(new AnimationSuccessListener() {
                 @Override
                 public void onAnimationSuccess(Animator animator) {
+                    if (mRecentsAnimationController == null) {
+                        // If the recents animation is interrupted, we still end the running
+                        // animation (not canceled) so this is still called. In that case, we can
+                        // skip doing any future work here for the current gesture.
+                        return;
+                    }
                     if (target == NEW_TASK && mRecentsView != null
                             && mRecentsView.getNextPage() == mRecentsView.getRunningTaskIndex()) {
                         // We are about to launch the current running task, so use LAST_TASK state
