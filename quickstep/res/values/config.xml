@@ -13,11 +13,13 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<resources>
-    <string name="task_overlay_factory_class" translatable="false"></string>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="task_overlay_factory_class" translatable="false"/>
 
-    <!-- Activity which blocks home gesture -->
-    <string name="gesture_blocking_activity" translatable="false"></string>
+    <!-- Activities which block home gesture -->
+    <string-array name="gesture_blocking_activities" tools:ignore="InconsistentArrays">
+        <item>com.android.launcher3/com.android.quickstep.interaction.BackGestureTutorialActivity</item>
+    </string-array>
 
     <string name="stats_log_manager_class" translatable="false">com.android.quickstep.logging.StatsLogCompatManager</string>
 
@@ -32,5 +34,5 @@
     <integer name="assistant_gesture_min_time_threshold">200</integer>
     <integer name="assistant_gesture_corner_deg_threshold">20</integer>
 
-    <string name="wellbeing_provider_pkg" translatable="false"></string>
+    <string name="wellbeing_provider_pkg" translatable="false"/>
 </resources>

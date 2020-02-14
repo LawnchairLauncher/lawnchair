@@ -753,7 +753,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
 
     protected boolean shouldNotifyBackGesture() {
         return mBackGestureNotificationCounter > 0 &&
-                mDeviceState.getGestureBlockedActivityPackage() != null;
+                !mDeviceState.getGestureBlockedActivityPackages().isEmpty();
     }
 
     @WorkerThread
@@ -762,8 +762,8 @@ public class TouchInteractionService extends Service implements PluginListener<O
             mBackGestureNotificationCounter--;
             Utilities.getDevicePrefs(this).edit()
                     .putInt(KEY_BACK_NOTIFICATION_COUNT, mBackGestureNotificationCounter).apply();
-            sendBroadcast(new Intent(NOTIFY_ACTION_BACK).setPackage(
-                    mDeviceState.getGestureBlockedActivityPackage()));
+            mDeviceState.getGestureBlockedActivityPackages().forEach(blockedPackage ->
+                    sendBroadcast(new Intent(NOTIFY_ACTION_BACK).setPackage(blockedPackage)));
         }
     }
 
