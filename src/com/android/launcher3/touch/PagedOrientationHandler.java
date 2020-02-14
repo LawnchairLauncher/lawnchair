@@ -18,6 +18,7 @@ package com.android.launcher3.touch;
 
 import android.content.res.Resources;
 import android.graphics.Canvas;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.FloatProperty;
@@ -75,8 +76,6 @@ public interface PagedOrientationHandler {
     boolean getRecentsRtlSetting(Resources resources);
     float getDegreesRotated();
     void offsetTaskRect(RectF rect, float value, int delta);
-    void mapRectFromNormalOrientation(Rect src, int screenWidth, int screenHeight);
-    float getCurrentAppAnimationScale(RectF src, RectF target);
     int getPrimaryValue(int x, int y);
     int getSecondaryValue(int x, int y);
     void delegateScrollTo(PagedView pagedView, int secondaryScroll, int primaryScroll);
@@ -85,8 +84,13 @@ public interface PagedOrientationHandler {
     void delegateScrollBy(PagedView pagedView, int unboundedScroll, int x, int y);
     void scrollerStartScroll(OverScroller scroller, int newPosition);
     CurveProperties getCurveProperties(PagedView pagedView, Rect insets);
-    float getDragLengthFactor(int dimension, int transitionDragLength);
     boolean isGoingUp(float displacement);
+
+    /**
+     * Maps the velocity from the coordinate plane of the foreground app to that
+     * of Launcher's (which now will always be portrait)
+     */
+    void adjustFloatingIconStartVelocity(PointF velocity);
 
     class CurveProperties {
         public final int scroll;

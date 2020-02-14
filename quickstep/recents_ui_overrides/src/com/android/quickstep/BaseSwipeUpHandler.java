@@ -125,7 +125,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
     protected boolean mCanceled;
     protected int mFinishingRecentsAnimationForNewTaskId = -1;
 
-    protected PagedViewOrientedState mOrientedState;
+    private PagedViewOrientedState mOrientedState;
 
     protected BaseSwipeUpHandler(Context context, RecentsAnimationDeviceState deviceState,
             GestureState gestureState, InputConsumerController inputConsumer) {
@@ -339,8 +339,10 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
         mAppWindowAnimationHelper.updateTargetRect(TEMP_RECT);
         if (mDeviceState.isFullyGesturalNavMode()) {
             // We can drag all the way to the top of the screen.
-            mDragLengthFactor = orientationHandler
-                .getDragLengthFactor(dp.heightPx, mTransitionDragLength);
+            // TODO(b/149609070): Landscape apps are currently limited in
+            //   their ability to scale past the target rect.
+            float dragFactor = (float) dp.heightPx / mTransitionDragLength;
+            mDragLengthFactor = displayRotation == 0 ? dragFactor : Math.min(1.0f, dragFactor);
         }
     }
 
@@ -402,17 +404,16 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
      * Applies the transform on the recents animation without any additional null checks
      */
     protected void applyTransformUnchecked() {
-        PagedOrientationHandler handler = mOrientedState.getOrientationHandler();
         float shift = mCurrentShift.value;
         float offset = mRecentsView == null ? 0 : mRecentsView.getScrollOffset();
-        float taskSize = handler.getPrimarySize(mAppWindowAnimationHelper.getTargetRect());
+        float taskSize = getOrientationHandler()
+            .getPrimarySize(mAppWindowAnimationHelper.getTargetRect());
         float offsetScale = getTaskCurveScaleForOffset(offset, taskSize);
         mTransformParams.setProgress(shift)
                 .setOffset(offset)
                 .setOffsetScale(offsetScale)
                 .setTargetSet(mRecentsAnimationTargets)
-                .setLauncherOnTop(true)
-                .setPagedOrientedState(mOrientedState);
+                .setLauncherOnTop(true);
         mAppWindowAnimationHelper.applyTransform(mTransformParams);
     }
 
@@ -423,6 +424,10 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
         return TaskView.getCurveScaleForInterpolation(interpolation);
     }
 
+    protected PagedOrientationHandler getOrientationHandler() {
+        return mOrientedState.getOrientationHandler();
+    }
+
     /**
      * Creates an animation that transforms the current app window into the home app.
      * @param startProgress The progress of {@link #mCurrentShift} to start the window from.
@@ -430,15 +435,18 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
      */
     protected RectFSpringAnim createWindowAnimationToHome(float startProgress,
             HomeAnimationFactory homeAnimationFactory) {
-        final RectF startRect = new RectF(
-                mAppWindowAnimationHelper.applyTransform(
-                        mTransformParams.setProgress(startProgress)
-                                .setTargetSet(mRecentsAnimationTargets)
-                                .setPagedOrientedState(mOrientedState)
-                                .setLauncherOnTop(false)));
         final RectF targetRect = homeAnimationFactory.getWindowTargetRect();
         final View floatingView = homeAnimationFactory.getFloatingView();
         final boolean isFloatingIconView = floatingView instanceof FloatingIconView;
+        final RectF startRect = new RectF(
+            mAppWindowAnimationHelper.applyTransform(
+                mTransformParams.setProgress(startProgress)
+                    .setTargetSet(mRecentsAnimationTargets)
+                    .setLauncherOnTop(false)));
+        if (isFloatingIconView) {
+            RotationHelper.mapInverseRectFromNormalOrientation(startRect,
+                mDp.widthPx, mDp.heightPx, mOrientedState.getDisplayRotation());
+        }
         RectFSpringAnim anim = new RectFSpringAnim(startRect, targetRect, mContext.getResources());
         if (isFloatingIconView) {
             FloatingIconView fiv = (FloatingIconView) floatingView;
@@ -459,6 +467,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
         // We want the window alpha to be 0 once this threshold is met, so that the
         // FolderIconView can be seen morphing into the icon shape.
         final float windowAlphaThreshold = isFloatingIconView ? 1f - SHAPE_PROGRESS_DURATION : 1f;
+        final RectF rotatedRect = new RectF();
         anim.addOnUpdateListener(new RectFSpringAnim.OnUpdateListener() {
 
             @Override
@@ -469,9 +478,12 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
                         Utilities.mapRange(progress, startTransformProgress, endTransformProgress))
                         .setCurrentRect(currentRect)
                         .setTargetAlpha(getWindowAlpha(progress));
+                rotatedRect.set(currentRect);
                 if (isFloatingIconView) {
+                    RotationHelper.mapRectFromNormalOrientation(rotatedRect,
+                        mDp.widthPx, mDp.heightPx, mOrientedState.getDisplayRotation());
                     mTransformParams.setCornerRadius(endRadius * progress + startRadius
-                            * (1f - progress));
+                        * (1f - progress));
                 }
                 mAppWindowAnimationHelper.applyTransform(mTransformParams);
 

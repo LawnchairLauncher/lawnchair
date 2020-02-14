@@ -130,7 +130,6 @@ public final class TaskViewUtils {
                     .setLauncherOnTop(true);
 
         final RecentsView recentsView = v.getRecentsView();
-        params.setPagedOrientedState(recentsView.getPagedViewOrientedState());
         final ValueAnimator appAnimator = ValueAnimator.ofFloat(0, 1);
         appAnimator.setInterpolator(TOUCH_RESPONSE_INTERPOLATOR);
         appAnimator.addUpdateListener(new MultiValueUpdateListener() {

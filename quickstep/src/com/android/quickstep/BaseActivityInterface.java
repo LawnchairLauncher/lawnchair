@@ -149,13 +149,18 @@ public interface BaseActivityInterface<T extends BaseDraggingActivity> {
             // No-op
         }
 
-        static RectF getDefaultWindowTargetRect(DeviceProfile dp) {
+        static RectF getDefaultWindowTargetRect(PagedOrientationHandler orientationHandler,
+            DeviceProfile dp) {
             final int halfIconSize = dp.iconSizePx / 2;
-            final float targetCenterX = dp.availableWidthPx / 2f;
-            final float targetCenterY = dp.availableHeightPx - dp.hotseatBarSizePx;
+            float primaryDimension = orientationHandler
+                .getPrimaryValue(dp.availableWidthPx, dp.availableHeightPx);
+            float secondaryDimension = orientationHandler
+                .getSecondaryValue(dp.availableWidthPx, dp.availableHeightPx);
+            final float targetX =  primaryDimension / 2f;
+            final float targetY = secondaryDimension - dp.hotseatBarSizePx;
             // Fallback to animate to center of screen.
-            return new RectF(targetCenterX - halfIconSize, targetCenterY - halfIconSize,
-                    targetCenterX + halfIconSize, targetCenterY + halfIconSize);
+            return new RectF(targetX - halfIconSize, targetY - halfIconSize,
+                    targetX + halfIconSize, targetY + halfIconSize);
         }
 
     }

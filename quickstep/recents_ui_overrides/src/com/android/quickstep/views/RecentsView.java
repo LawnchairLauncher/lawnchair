@@ -381,7 +381,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         mOrientationListener = new OrientationEventListener(getContext()) {
             @Override
             public void onOrientationChanged(int i) {
-                int rotation = RotationHelper.getRotationFromDegrees(i, mPreviousRotation);
+                int rotation = RotationHelper.getRotationFromDegrees(i);
                 if (mPreviousRotation != rotation) {
                     animateRecentsRotationInPlace(rotation);
                     mPreviousRotation = rotation;

@@ -18,10 +18,12 @@ package com.android.launcher3.touch;
 
 import android.content.res.Resources;
 import android.graphics.Matrix;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.FloatProperty;
 import android.view.MotionEvent;
+import android.view.Surface;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
@@ -30,6 +32,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherState.ScaleAndTranslation;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.states.RotationHelper;
 import com.android.launcher3.util.OverScroller;
 
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
@@ -37,10 +40,6 @@ import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
 import static com.android.launcher3.touch.SingleAxisSwipeDetector.HORIZONTAL;
 
 public class LandscapePagedViewHandler implements PagedOrientationHandler {
-    @Override
-    public float getCurrentAppAnimationScale(RectF src, RectF target) {
-        return src.height() / target.height();
-    }
 
     @Override
     public int getPrimaryValue(int x, int y) {
@@ -77,13 +76,15 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public float getDragLengthFactor(int dimension, int transitionDragLength) {
-        return Math.min(1.0f, (float) dimension / transitionDragLength);
+    public boolean isGoingUp(float displacement) {
+        return displacement > 0;
     }
 
     @Override
-    public boolean isGoingUp(float displacement) {
-        return displacement > 0;
+    public void adjustFloatingIconStartVelocity(PointF velocity) {
+        float oldX = velocity.x;
+        float oldY = velocity.y;
+        velocity.set(-oldY, oldX);
     }
 
     @Override
@@ -189,27 +190,16 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public void offsetTaskRect(RectF rect, float value, int delta) {
-        if (delta == 0) {
-            rect.offset(value, 0);
-        } else if (delta == 1) {
-            rect.offset(0, -value);
-        } else if (delta == 2) {
-            rect.offset(-value, 0);
-        } else {
+    public void offsetTaskRect(RectF rect, float value, int displayRotation) {
+        if (displayRotation == Surface.ROTATION_0) {
             rect.offset(0, value);
+        } else if (displayRotation == Surface.ROTATION_90) {
+            rect.offset(value, 0);
+        } else if (displayRotation == Surface.ROTATION_180) {
+            rect.offset(0, -value);
+        } else {
+            rect.offset(-value, 0);
         }
-    }
-
-    @Override
-    public void mapRectFromNormalOrientation(Rect src, int screenWidth, int screenHeight) {
-        Matrix m = new Matrix();
-        m.setRotate(270);
-        m.postTranslate(0, screenWidth);
-        RectF newTarget = new RectF();
-        RectF oldTarget = new RectF(src);
-        m.mapRect(newTarget, oldTarget);
-        src.set((int)newTarget.left, (int)newTarget.top, (int)newTarget.right, (int)newTarget.bottom);
     }
 
     @Override

@@ -941,6 +941,7 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
                     mGestureState.setState(STATE_END_TARGET_ANIMATION_FINISHED);
                 }
             });
+            getOrientationHandler().adjustFloatingIconStartVelocity(velocityPxPerMs);
             windowAnim.start(velocityPxPerMs);
             homeAnimFactory.playAtomicAnimation(velocityPxPerMs.y);
             mRunningWindowAnim = RunningWindowAnim.wrap(windowAnim);

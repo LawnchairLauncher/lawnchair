@@ -178,7 +178,8 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
                 if (canUseWorkspaceView) {
                     return iconLocation;
                 } else {
-                    return HomeAnimationFactory.getDefaultWindowTargetRect(dp);
+                    return HomeAnimationFactory
+                        .getDefaultWindowTargetRect(recentsView.getPagedOrientationHandler(), dp);
                 }
             }
 

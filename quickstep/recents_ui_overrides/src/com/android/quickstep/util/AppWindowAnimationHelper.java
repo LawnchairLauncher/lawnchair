@@ -22,6 +22,7 @@ import android.graphics.Matrix.ScaleToFit;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Build;
+import android.view.Surface;
 
 import androidx.annotation.Nullable;
 
@@ -157,11 +158,12 @@ public class AppWindowAnimationHelper {
     }
 
     private float getSrcToTargetScale() {
-        if (mOrientedState == null) {
+        if (mOrientedState == null ||
+            (mOrientedState.getDisplayRotation() == Surface.ROTATION_0
+                || mOrientedState.getDisplayRotation() == Surface.ROTATION_180)) {
             return mSourceRect.width() / mTargetRect.width();
         } else {
-            return mOrientedState.getOrientationHandler()
-                .getCurrentAppAnimationScale(mSourceRect, mTargetRect);
+            return mSourceRect.height() / mTargetRect.height();
         }
     }
 

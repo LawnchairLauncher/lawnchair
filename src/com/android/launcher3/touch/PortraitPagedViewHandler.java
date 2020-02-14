@@ -17,10 +17,13 @@
 package com.android.launcher3.touch;
 
 import android.content.res.Resources;
+import android.graphics.Matrix;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.FloatProperty;
 import android.view.MotionEvent;
+import android.view.Surface;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
@@ -29,6 +32,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherState.ScaleAndTranslation;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.states.RotationHelper;
 import com.android.launcher3.util.OverScroller;
 
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
@@ -36,11 +40,6 @@ import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
 import static com.android.launcher3.touch.SingleAxisSwipeDetector.VERTICAL;
 
 public class PortraitPagedViewHandler implements PagedOrientationHandler {
-
-    @Override
-    public float getCurrentAppAnimationScale(RectF src, RectF target) {
-        return src.width() / target.width();
-    }
 
     @Override
     public int getPrimaryValue(int x, int y) {
@@ -77,13 +76,13 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public float getDragLengthFactor(int dimension, int transitionDragLength) {
-        return (float) dimension / transitionDragLength;
+    public boolean isGoingUp(float displacement) {
+        return displacement < 0;
     }
 
     @Override
-    public boolean isGoingUp(float displacement) {
-        return displacement < 0;
+    public void adjustFloatingIconStartVelocity(PointF velocity) {
+        //no-op
     }
 
     @Override
@@ -189,21 +188,16 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public void offsetTaskRect(RectF rect, float value, int delta) {
-        if (delta == 0) {
+    public void offsetTaskRect(RectF rect, float value, int displayRotation) {
+        if (displayRotation == Surface.ROTATION_0) {
             rect.offset(value, 0);
-        } else if (delta == 1) {
+        } else if (displayRotation == Surface.ROTATION_90) {
             rect.offset(0, -value);
-        } else if (delta == 2) {
+        } else if (displayRotation == Surface.ROTATION_180) {
             rect.offset(-value, 0);
         } else {
             rect.offset(0, value);
         }
-    }
-
-    @Override
-    public void mapRectFromNormalOrientation(Rect src, int screenWidth, int screenHeight) {
-        //no-op
     }
 
     @Override

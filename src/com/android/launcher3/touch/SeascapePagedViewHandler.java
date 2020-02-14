@@ -17,9 +17,9 @@
 package com.android.launcher3.touch;
 
 import android.content.res.Resources;
-import android.graphics.Matrix;
-import android.graphics.Rect;
+import android.graphics.PointF;
 import android.graphics.RectF;
+import android.view.Surface;
 
 import com.android.launcher3.Utilities;
 
@@ -36,27 +36,16 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
     }
 
     @Override
-    public void offsetTaskRect(RectF rect, float value, int delta) {
-        if (delta == 0) {
-            rect.offset(-value, 0);
-        } else if (delta == 1) {
+    public void offsetTaskRect(RectF rect, float value, int displayRotation) {
+        if (displayRotation == Surface.ROTATION_0) {
             rect.offset(0, value);
-        } else if (delta == 2) {
-            rect.offset(-value, 0);
-        } else {
+        } else if (displayRotation == Surface.ROTATION_90) {
+            rect.offset(value, 0);
+        } else if (displayRotation == Surface.ROTATION_180) {
             rect.offset(0, -value);
+        } else {
+            rect.offset(-value, 0);
         }
-    }
-
-    @Override
-    public void mapRectFromNormalOrientation(Rect src, int screenWidth, int screenHeight) {
-        Matrix m = new Matrix();
-        m.setRotate(90);
-        m.postTranslate(screenHeight, 0);
-        RectF newTarget = new RectF();
-        RectF oldTarget = new RectF(src);
-        m.mapRect(newTarget, oldTarget);
-        src.set((int)newTarget.left, (int)newTarget.top, (int)newTarget.right, (int)newTarget.bottom);
     }
 
     @Override
@@ -67,5 +56,12 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
     @Override
     public boolean isGoingUp(float displacement) {
         return displacement < 0;
+    }
+
+    @Override
+    public void adjustFloatingIconStartVelocity(PointF velocity) {
+        float oldX = velocity.x;
+        float oldY = velocity.y;
+        velocity.set(oldY, -oldX);
     }
 }

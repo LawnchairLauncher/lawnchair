@@ -83,6 +83,10 @@ public final class PagedViewOrientedState {
         }
     }
 
+    public int getDisplayRotation() {
+        return mDisplayRotation;
+    }
+
     /**
      * Gets the difference between the rotation of the device/display and which region the
      * user is currently interacting with in factors of 90 degree clockwise rotations.

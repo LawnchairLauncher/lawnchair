@@ -249,7 +249,7 @@ public class RotationHelper implements OnSharedPreferenceChangeListener {
         return degrees;
     }
 
-    public static int getRotationFromDegrees(int degrees, int currentRotation) {
+    public static int getRotationFromDegrees(int degrees) {
         int threshold = 70;
         if (degrees >= (360 - threshold) || degrees < (threshold)) {
             return Surface.ROTATION_0;

@@ -470,7 +470,8 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
         HomeAnimationFactory factory = new HomeAnimationFactory() {
             @Override
             public RectF getWindowTargetRect() {
-                return HomeAnimationFactory.getDefaultWindowTargetRect(mDp);
+                return HomeAnimationFactory
+                    .getDefaultWindowTargetRect(mRecentsView.getPagedOrientationHandler(), mDp);
             }
 
             @Override

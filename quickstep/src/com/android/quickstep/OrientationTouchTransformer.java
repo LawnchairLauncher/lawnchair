@@ -300,6 +300,7 @@ class OrientationTouchTransformer {
         }
 
         boolean applyTransform(MotionEvent event, boolean forceTransform) {
+            // TODO(b/149658423): See if we can use RotationHelper.getRotationMatrix here
             MotionEvent tmp = MotionEvent.obtain(event);
             Matrix outMatrix = new Matrix();
             int delta = RotationHelper.deltaRotation(mCurrentRotation, mRotation);
