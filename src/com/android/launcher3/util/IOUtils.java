@@ -19,7 +19,6 @@ package com.android.launcher3.util;
 import android.content.Context;
 import android.util.Log;
 
-import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 
 import java.io.ByteArrayOutputStream;
@@ -67,7 +66,7 @@ public class IOUtils {
      * Utility method to debug binary data
      */
     public static String createTempFile(Context context, byte[] data) {
-        if (!FeatureFlags.IS_DOGFOOD_BUILD) {
+        if (!FeatureFlags.IS_STUDIO_BUILD) {
             throw new IllegalStateException("Method only allowed in development mode");
         }
 
@@ -87,7 +86,7 @@ public class IOUtils {
             try {
                 c.close();
             } catch (IOException e) {
-                if (FeatureFlags.IS_DOGFOOD_BUILD) {
+                if (FeatureFlags.IS_STUDIO_BUILD) {
                     Log.d(TAG, "Error closing", e);
                 }
             }

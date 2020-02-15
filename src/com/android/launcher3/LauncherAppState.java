@@ -91,7 +91,7 @@ public class LauncherAppState {
                 Intent.ACTION_MANAGED_PROFILE_AVAILABLE,
                 Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE,
                 Intent.ACTION_MANAGED_PROFILE_UNLOCKED);
-        if (FeatureFlags.IS_DOGFOOD_BUILD) {
+        if (FeatureFlags.IS_STUDIO_BUILD) {
             mModelChangeReceiver.register(mContext, ACTION_FORCE_ROLOAD);
         }
 

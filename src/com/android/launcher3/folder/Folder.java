@@ -629,7 +629,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
             dragLayer.addView(this);
             mDragController.addDropTarget(this);
         } else {
-            if (FeatureFlags.IS_DOGFOOD_BUILD) {
+            if (FeatureFlags.IS_STUDIO_BUILD) {
                 Log.e(TAG, "Opening folder (" + this + ") which already has a parent:"
                         + getParent());
             }
