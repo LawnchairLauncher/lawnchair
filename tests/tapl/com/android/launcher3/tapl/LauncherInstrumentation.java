@@ -1249,13 +1249,14 @@ public final class LauncherInstrumentation {
     private Map<String, List<String>> getEvents() {
         final Map<String, List<String>> events = new HashMap<>();
         try {
-            // Logcat may skip events after the specified time. Querying for events starting 1 sec
+            // Logcat may skip events after the specified time. Querying for events starting 1 min
             // earlier.
-            final Date startTime = new Date(mStartRecordingTime.getTime() - 10000);
-            final String logcatEvents = mDevice.executeShellCommand(
-                    "logcat -d -v year --pid=" + getPid() + " -t "
-                            + DATE_TIME_FORMAT.format(startTime).replaceAll(" ", "")
-                            + " -s " + TestProtocol.TAPL_EVENTS_TAG);
+            final Date startTime = new Date(mStartRecordingTime.getTime() - 60000);
+            final String logcatCommand = "logcat -d -v year --pid=" + getPid() + " -t "
+                    + DATE_TIME_FORMAT.format(startTime).replaceAll(" ", "")
+                    + " -s " + TestProtocol.TAPL_EVENTS_TAG;
+            log("Events query command: " + logcatCommand);
+            final String logcatEvents = mDevice.executeShellCommand(logcatCommand);
             final Matcher matcher = EVENT_LOG_ENTRY.matcher(logcatEvents);
             while (matcher.find()) {
                 // Skip events before recording start time.
