@@ -75,7 +75,6 @@ import com.android.launcher3.views.Transposable;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -382,7 +381,7 @@ public final class Utilities {
         return res.getConfiguration().getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
     }
 
-    public static float dpiFromPx(int size, DisplayMetrics metrics){
+    public static float dpiFromPx(float size, DisplayMetrics metrics) {
         float densityRatio = (float) metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT;
         return (size / densityRatio);
     }
@@ -465,12 +464,14 @@ public final class Utilities {
     }
 
     public static SharedPreferences getPrefs(Context context) {
-        return context.getSharedPreferences(
+        // Use application context for shared preferences, so that we use a single cached instance
+        return context.getApplicationContext().getSharedPreferences(
                 LauncherFiles.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE);
     }
 
     public static SharedPreferences getDevicePrefs(Context context) {
-        return context.getSharedPreferences(
+        // Use application context for shared preferences, so that we use a single cached instance
+        return context.getApplicationContext().getSharedPreferences(
                 LauncherFiles.DEVICE_PREFERENCES_KEY, Context.MODE_PRIVATE);
     }
 

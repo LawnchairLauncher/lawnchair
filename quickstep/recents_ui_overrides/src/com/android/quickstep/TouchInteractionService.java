@@ -62,6 +62,7 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.provider.RestoreDbTask;
+import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.tracing.nano.LauncherTraceProto;
 import com.android.launcher3.tracing.nano.TouchInteractionServiceProto;
@@ -141,12 +142,16 @@ public class TouchInteractionService extends Service implements PluginListener<O
                 TouchInteractionService.this.initInputMonitor();
                 preloadOverview(true /* fromInit */);
             });
+            if (TestProtocol.sDebugTracing) {
+                Log.d(TestProtocol.LAUNCHER_DIDNT_INITIALIZE, "TIS initialized");
+            }
             sIsInitialized = true;
         }
 
         @BinderThread
         @Override
         public void onOverviewToggle() {
+            TestLogging.recordEvent("onOverviewToggle");
             mOverviewCommandHelper.onOverviewToggle();
         }
 
@@ -406,6 +411,9 @@ public class TouchInteractionService extends Service implements PluginListener<O
 
     @Override
     public void onDestroy() {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.LAUNCHER_DIDNT_INITIALIZE, "TIS destroyed");
+        }
         sIsInitialized = false;
         if (mDeviceState.isUserUnlocked()) {
             mInputConsumer.unregisterInputConsumer();

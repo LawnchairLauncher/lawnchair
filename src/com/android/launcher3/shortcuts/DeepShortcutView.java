@@ -27,8 +27,8 @@ import android.widget.FrameLayout;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
-import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 
 /**
@@ -111,8 +111,8 @@ public class DeepShortcutView extends FrameLayout {
 
         // TODO: Add the click handler to this view directly and not the child view.
         mBubbleText.setOnClickListener(container.getItemClickListener());
-        mBubbleText.setOnLongClickListener(container);
-        mBubbleText.setOnTouchListener(container);
+        mBubbleText.setOnLongClickListener(container.getItemDragHandler());
+        mBubbleText.setOnTouchListener(container.getItemDragHandler());
     }
 
     /**

@@ -40,8 +40,8 @@ import android.view.ViewOutlineProvider;
 import android.widget.FrameLayout;
 
 import com.android.launcher3.AbstractFloatingView;
+import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.InsettableFrameLayout;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -57,14 +57,16 @@ import java.util.Collections;
 
 /**
  * A container for shortcuts to deep links and notifications associated with an app.
+ *
+ * @param <T> The activity on with the popup shows
  */
-public abstract class ArrowPopup extends AbstractFloatingView {
+public abstract class ArrowPopup<T extends BaseDraggingActivity> extends AbstractFloatingView {
 
     private final Rect mTempRect = new Rect();
 
     protected final LayoutInflater mInflater;
     private final float mOutlineRadius;
-    protected final Launcher mLauncher;
+    protected final T mLauncher;
     protected final boolean mIsRtl;
 
     private final int mArrowOffset;
@@ -83,7 +85,7 @@ public abstract class ArrowPopup extends AbstractFloatingView {
         super(context, attrs, defStyleAttr);
         mInflater = LayoutInflater.from(context);
         mOutlineRadius = Themes.getDialogCornerRadius(context);
-        mLauncher = Launcher.getLauncher(context);
+        mLauncher = BaseDraggingActivity.fromContext(context);
         mIsRtl = Utilities.isRtl(getResources());
 
         setClipToOutline(true);
@@ -120,16 +122,22 @@ public abstract class ArrowPopup extends AbstractFloatingView {
         }
     }
 
-    public <T extends View> T inflateAndAdd(int resId, ViewGroup container) {
+    /**
+     * Utility method for inflating and adding a view
+     */
+    public <R extends View> R inflateAndAdd(int resId, ViewGroup container) {
         View view = mInflater.inflate(resId, container, false);
         container.addView(view);
-        return (T) view;
+        return (R) view;
     }
 
-    public <T extends View> T inflateAndAdd(int resId, ViewGroup container, int index) {
+    /**
+     * Utility method for inflating and adding a view
+     */
+    public <R extends View> R inflateAndAdd(int resId, ViewGroup container, int index) {
         View view = mInflater.inflate(resId, container, false);
         container.addView(view, index);
-        return (T) view;
+        return (R) view;
     }
 
     /**

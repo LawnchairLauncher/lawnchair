@@ -44,6 +44,7 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
     <uses-permission android:name="android.permission.READ_DEVICE_CONFIG" />
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
 
 
     <!--
@@ -184,5 +185,20 @@
             android:writePermission="android.permission.WRITE_SECURE_SETTINGS"
             android:exported="true"
             android:enabled="false" />
+
+        <!--
+        Launcher activity for secondary display
+        -->
+        <activity
+            android:name="com.android.launcher3.secondarydisplay.SecondaryDisplayLauncher"
+            android:theme="@style/AppTheme"
+            android:launchMode="singleTop"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.SECONDARY_HOME" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
     </application>
 </manifest>

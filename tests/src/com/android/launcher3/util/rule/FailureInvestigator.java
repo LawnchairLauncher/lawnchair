@@ -18,9 +18,13 @@ package com.android.launcher3.util.rule;
 
 import static androidx.test.InstrumentationRegistry.getInstrumentation;
 
+import android.os.SystemClock;
+
 import androidx.test.uiautomator.UiDevice;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.regex.Pattern;
 
 class FailureInvestigator {
@@ -28,24 +32,83 @@ class FailureInvestigator {
         return Pattern.compile(regex).matcher(string).find();
     }
 
-    static int getBugForFailure(CharSequence exception, String testsStartTime) {
-        final String logSinceTestsStart;
+    static class LogcatMatch {
+        String logcatPattern;
+        int bug;
+
+        LogcatMatch(String logcatPattern, int bug) {
+            this.logcatPattern = logcatPattern;
+            this.bug = bug;
+        }
+    }
+
+    static class ExceptionMatch {
+        String exceptionPattern;
+        LogcatMatch[] logcatMatches;
+
+        ExceptionMatch(String exceptionPattern, LogcatMatch[] logcatMatches) {
+            this.exceptionPattern = exceptionPattern;
+            this.logcatMatches = logcatMatches;
+        }
+    }
+
+    private static final ExceptionMatch[] EXCEPTION_MATCHES = {
+            new ExceptionMatch(
+                    "java.lang.AssertionError: http://go/tapl : Tests are broken by a "
+                            + "non-Launcher system error: Phone is locked",
+                    new LogcatMatch[]{
+                            new LogcatMatch(
+                                    "BroadcastQueue: Can't deliver broadcast to com.android"
+                                            + ".systemui.*Crashing it",
+                                    147845913),
+                            new LogcatMatch(
+                                    "Attempt to invoke virtual method 'boolean android\\"
+                                            + ".graphics\\.Bitmap\\.isRecycled\\(\\)' on a null "
+                                            + "object reference",
+                                    148424291),
+                            new LogcatMatch(
+                                    "java\\.lang\\.IllegalArgumentException\\: Ranking map "
+                                            + "doesn't contain key",
+                                    148570537),
+                    }),
+            new ExceptionMatch("Launcher didn't initialize",
+                    new LogcatMatch[]{
+                            new LogcatMatch(
+                                    "ActivityManager: Reason: executing service com.google"
+                                            + ".android.apps.nexuslauncher/com.android.launcher3"
+                                            + ".notification.NotificationListener",
+                                    148238677),
+                    }),
+    };
+
+    static int getBugForFailure(CharSequence exception) {
+        if ("com.google.android.setupwizard".equals(
+                UiDevice.getInstance(getInstrumentation()).getLauncherPackageName())) {
+            return 145935261;
+        }
+
+
+        final String logSinceBoot;
         try {
-            logSinceTestsStart =
+            final String systemBootTime =
+                    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(
+                            new Date(System.currentTimeMillis() - SystemClock.elapsedRealtime()));
+
+            logSinceBoot =
                     UiDevice.getInstance(getInstrumentation())
-                            .executeShellCommand("logcat -d -t " + testsStartTime.replace(" ", ""));
+                            .executeShellCommand("logcat -d -t " + systemBootTime.replace(" ", ""));
         } catch (IOException e) {
             return 0;
         }
 
-        if (matches(
-                "java.lang.AssertionError: http://go/tapl : Tests are broken by a non-Launcher "
-                        + "system error: Phone is locked",
-                exception)) {
-            if (matches(
-                    "BroadcastQueue: Can't deliver broadcast to com.android.systemui.*Crashing it",
-                    logSinceTestsStart)) {
-                return 147845913;
+        for (ExceptionMatch exceptionMatch : EXCEPTION_MATCHES) {
+            if (matches(exceptionMatch.exceptionPattern, exception)) {
+                for (LogcatMatch logcatMatch : exceptionMatch.logcatMatches) {
+                    if (matches(logcatMatch.logcatPattern, logSinceBoot)) {
+                        return logcatMatch.bug;
+                    }
+                }
+                break;
             }
         }
 

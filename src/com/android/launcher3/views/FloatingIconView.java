@@ -399,7 +399,8 @@ public class FloatingIconView extends View implements
         Drawable drawable = null;
         Drawable badge = null;
         boolean supportsAdaptiveIcons = ADAPTIVE_ICON_WINDOW_ANIM.get()
-                && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
+                && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+                && !info.isDisabled(); // Use original icon for disabled icons.
         Drawable btvIcon = originalView instanceof BubbleTextView
                 ? ((BubbleTextView) originalView).getIcon() : null;
         if (info instanceof SystemShortcut) {

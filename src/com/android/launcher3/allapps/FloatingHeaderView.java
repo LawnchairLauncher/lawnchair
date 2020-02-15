@@ -31,9 +31,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
@@ -393,7 +393,7 @@ public class FloatingHeaderView extends LinearLayout implements
 
     @Override
     public void setInsets(Rect insets) {
-        DeviceProfile grid = Launcher.getLauncher(getContext()).getDeviceProfile();
+        DeviceProfile grid = BaseDraggingActivity.fromContext(getContext()).getDeviceProfile();
         for (FloatingHeaderRow row : mAllRows) {
             row.setInsets(insets, grid);
         }

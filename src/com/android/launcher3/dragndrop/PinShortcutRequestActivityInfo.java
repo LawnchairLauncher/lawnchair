@@ -29,9 +29,11 @@ import android.os.Build;
 import android.os.Process;
 
 import com.android.launcher3.FastBitmapDrawable;
+import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
+import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.icons.IconCache;
@@ -86,7 +88,7 @@ class PinShortcutRequestActivityInfo extends ShortcutConfigActivityInfo {
         // Total duration for the drop animation to complete.
         long duration = mContext.getResources().getInteger(R.integer.config_dropAnimMaxDuration) +
                 LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY +
-                LauncherAnimUtils.SPRING_LOADED_TRANSITION_MS;
+                LauncherState.SPRING_LOADED.getTransitionDuration(Launcher.getLauncher(mContext));
         // Delay the actual accept() call until the drop animation is complete.
         return PinRequestHelper.createWorkspaceItemFromPinItemRequest(
                 mContext, mRequest, duration);

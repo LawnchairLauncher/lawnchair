@@ -29,7 +29,4 @@
     <dimen name="swipe_up_y_overshoot">10dp</dimen>
     <dimen name="swipe_up_max_workspace_trans_y">-60dp</dimen>
 
-    <!-- Hybrid hotseat related -->
-    <dimen name="hotseat_edu_padding">24dp</dimen>
-
 </resources>

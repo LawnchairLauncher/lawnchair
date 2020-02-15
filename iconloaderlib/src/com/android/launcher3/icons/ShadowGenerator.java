@@ -19,7 +19,6 @@ package com.android.launcher3.icons;
 import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
 
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
 import android.graphics.BlurMaskFilter;
 import android.graphics.BlurMaskFilter.Blur;
 import android.graphics.Canvas;
@@ -135,9 +134,7 @@ public class ShadowGenerator {
             bounds.offsetTo(center - width / 2f, center - height / 2f);
 
             int size = center * 2;
-            Bitmap result = Bitmap.createBitmap(size, size, Config.ARGB_8888);
-            drawShadow(new Canvas(result));
-            return result;
+            return BitmapRenderer.createHardwareBitmap(size, size, this::drawShadow);
         }
 
         public void drawShadow(Canvas c) {

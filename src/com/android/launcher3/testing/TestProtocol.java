@@ -31,6 +31,7 @@ public final class TestProtocol {
     public static final int QUICK_SWITCH_STATE_ORDINAL = 4;
     public static final int ALL_APPS_STATE_ORDINAL = 5;
     public static final int BACKGROUND_APP_STATE_ORDINAL = 6;
+    public static final int HINT_STATE_ORDINAL = 7;
     public static final String TAPL_EVENTS_TAG = "TaplEvents";
 
     public static String stateOrdinalToString(int ordinal) {
@@ -49,6 +50,8 @@ public final class TestProtocol {
                 return "AllApps";
             case BACKGROUND_APP_STATE_ORDINAL:
                 return "Background";
+            case HINT_STATE_ORDINAL:
+                return "Hint";
             default:
                 return null;
         }
@@ -89,4 +92,5 @@ public final class TestProtocol {
 
     public static final String NO_BACKGROUND_TO_OVERVIEW_TAG = "b/138251824";
     public static final String APP_NOT_DISABLED = "b/139891609";
+    public static final String LAUNCHER_DIDNT_INITIALIZE = "b/148313079";
 }

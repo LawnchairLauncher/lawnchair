@@ -58,7 +58,7 @@ public class TestStabilityRule implements TestRule {
     public static final int PLATFORM_PRESUBMIT = 0x8;
     public static final int PLATFORM_POSTSUBMIT = 0x10;
 
-    public static final int RUN_FLAFOR = getRunFlavor();
+    private static int sRunFlavor;
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
@@ -73,7 +73,7 @@ public class TestStabilityRule implements TestRule {
             return new Statement() {
                 @Override
                 public void evaluate() throws Throwable {
-                    if ((stability.flavors() & RUN_FLAFOR) != 0) {
+                    if ((stability.flavors() & getRunFlavor()) != 0) {
                         Log.d(TAG, "Running " + description.getDisplayName());
                         base.evaluate();
                     } else {
@@ -86,7 +86,9 @@ public class TestStabilityRule implements TestRule {
         }
     }
 
-    private static int getRunFlavor() {
+    public static int getRunFlavor() {
+        if (sRunFlavor != 0) return sRunFlavor;
+
         final String flavorOverride = InstrumentationRegistry.getArguments().getString("flavor");
 
         if (flavorOverride != null) {
@@ -129,34 +131,32 @@ public class TestStabilityRule implements TestRule {
             throw new AssertionError("Platform build match not found");
         }
 
-        final int runFlavor;
-
         if (launcherBuildMatcher.group("local") != null && (
                 platformBuildMatcher.group("commandLine") != null ||
                         platformBuildMatcher.group("postsubmit") != null)) {
             Log.d(TAG, "LOCAL RUN");
-            runFlavor = LOCAL;
+            sRunFlavor = LOCAL;
         } else if (launcherBuildMatcher.group("presubmit") != null
                 && platformBuildMatcher.group("postsubmit") != null) {
             Log.d(TAG, "UNBUNDLED PRESUBMIT");
-            runFlavor = UNBUNDLED_PRESUBMIT;
+            sRunFlavor = UNBUNDLED_PRESUBMIT;
         } else if (launcherBuildMatcher.group("postsubmit") != null
                 && platformBuildMatcher.group("postsubmit") != null) {
             Log.d(TAG, "UNBUNDLED POSTSUBMIT");
-            runFlavor = UNBUNDLED_POSTSUBMIT;
+            sRunFlavor = UNBUNDLED_POSTSUBMIT;
         } else if (launcherBuildMatcher.group("platform") != null
                 && platformBuildMatcher.group("presubmit") != null) {
             Log.d(TAG, "PLATFORM PRESUBMIT");
-            runFlavor = PLATFORM_PRESUBMIT;
+            sRunFlavor = PLATFORM_PRESUBMIT;
         } else if (launcherBuildMatcher.group("platform") != null
                 && (platformBuildMatcher.group("postsubmit") != null
                 || platformBuildMatcher.group("commandLine") != null)) {
             Log.d(TAG, "PLATFORM POSTSUBMIT");
-            runFlavor = PLATFORM_POSTSUBMIT;
+            sRunFlavor = PLATFORM_POSTSUBMIT;
         } else {
             throw new AssertionError("Unrecognized run flavor");
         }
 
-        return runFlavor;
+        return sRunFlavor;
     }
 }

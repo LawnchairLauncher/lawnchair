@@ -109,7 +109,7 @@ public class HotseatEduController {
                 NOTIFICATION_CHANNEL_ID)
                 .setContentTitle(name)
                 .setOngoing(true)
-                .setColor(mLauncher.getColor(R.color.hotseat_edu_background))
+                .setColor(mLauncher.getColor(R.color.bottom_panel_background))
                 .setContentIntent(PendingIntent.getActivity(mLauncher, 0, intent,
                         PendingIntent.FLAG_CANCEL_CURRENT))
                 .setSmallIcon(R.drawable.hotseat_edu_notification_icon)

@@ -55,4 +55,12 @@ public class Wait {
         launcher.checkForAnomaly();
         Assert.fail(message.get());
     }
+
+    /**
+     * Interface representing a generic condition
+     */
+    public interface Condition {
+
+        boolean isTrue() throws Throwable;
+    }
 }

@@ -26,17 +26,21 @@ import android.os.Bundle;
 import android.view.Gravity;
 
 import com.android.launcher3.BaseQuickstepLauncher;
+import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.hybridhotseat.HotseatPredictionController;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.uioverrides.touchcontrollers.FlingAndHoldTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.LandscapeEdgeSwipeController;
 import com.android.launcher3.uioverrides.touchcontrollers.NavBarToHomeTouchController;
+import com.android.launcher3.uioverrides.touchcontrollers.NoButtonNavbarToOverviewTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.NoButtonQuickSwitchTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.OverviewToAllAppsTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.PortraitStatesTouchController;
@@ -169,6 +173,16 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
     }
 
     @Override
+    public FolderIcon addFolder(CellLayout layout, WorkspaceItemInfo info, int container,
+            int screenId, int cellX, int cellY) {
+        FolderIcon fi =  super.addFolder(layout, info, container, screenId, cellX, cellY);
+        if (mHotseatPredictionController != null) {
+            mHotseatPredictionController.folderCreatedFromIcon(info, fi.getFolder().getInfo());
+        }
+        return fi;
+    }
+
+    @Override
     public Stream<SystemShortcut.Factory> getSupportedShortcuts() {
         if (mHotseatPredictionController != null) {
             return Stream.concat(super.getSupportedShortcuts(),
@@ -225,7 +239,11 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
         if (mode == NO_BUTTON) {
             list.add(new NoButtonQuickSwitchTouchController(this));
             list.add(new NavBarToHomeTouchController(this));
-            list.add(new FlingAndHoldTouchController(this));
+            if (FeatureFlags.ENABLE_OVERVIEW_ACTIONS.get()) {
+                list.add(new NoButtonNavbarToOverviewTouchController(this));
+            } else {
+                list.add(new FlingAndHoldTouchController(this));
+            }
         } else {
             if (getDeviceProfile().isVerticalBarLayout()) {
                 list.add(new OverviewToAllAppsTouchController(this));
