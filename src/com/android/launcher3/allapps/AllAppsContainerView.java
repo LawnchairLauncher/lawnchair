@@ -153,6 +153,11 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         return mMultiValueAlpha.getProperty(index);
     }
 
+    public WorkFooterContainer getWorkFooterContainer() {
+        return mWorkFooterContainer;
+    }
+
+
     @Override
     protected void setDampedScrollShift(float shift) {
         // Bound the shift amount to avoid content from drawing on top (Y-val) of the QSB.

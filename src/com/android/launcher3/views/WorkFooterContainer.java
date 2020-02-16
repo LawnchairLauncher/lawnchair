@@ -119,6 +119,13 @@ public class WorkFooterContainer extends LinearLayout implements Insettable {
         mWorkModeSwitch.refresh();
     }
 
+    /**
+     * Returns work mode switch
+     */
+    public WorkModeSwitch getWorkModeSwitch() {
+        return mWorkModeSwitch;
+    }
+
     private boolean shouldShowWorkFooter() {
         Launcher launcher = Launcher.getLauncher(getContext());
         return Utilities.ATLEAST_P && (hasShortcutsPermission(launcher)
