@@ -350,18 +350,11 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         mFolderIcon.onTitleChanged(newTitle);
         mLauncher.getModelWriter().updateItemInDatabase(mInfo);
 
-        if (FeatureFlags.FOLDER_NAME_SUGGEST.get()) {
-            mFolderName.setText(mInfo.title);
-            // TODO: depending on whether the title was manually edited or automatically
-            // suggested, apply different hint.
-            mFolderName.setHint("");
+        if (TextUtils.isEmpty(mInfo.title)) {
+            mFolderName.setHint(R.string.folder_hint_text);
+            mFolderName.setText("");
         } else {
-            if (isEmpty(mInfo.title)) {
-                mFolderName.setHint(R.string.folder_hint_text);
-                mFolderName.setText("");
-            } else {
-                mFolderName.setHint(null);
-            }
+            mFolderName.setHint(null);
         }
 
         sendCustomAccessibilityEvent(
