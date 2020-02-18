@@ -93,12 +93,12 @@
                   android:directBootAware="true" />
 
         <activity
-            android:name="com.android.quickstep.interaction.BackGestureTutorialActivity"
+            android:name="com.android.quickstep.interaction.GestureSandboxActivity"
             android:autoRemoveFromRecents="true"
             android:excludeFromRecents="true"
             android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="com.android.quickstep.action.BACK_GESTURE_TUTORIAL" />
+                <action android:name="com.android.quickstep.action.GESTURE_SANDBOX" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
