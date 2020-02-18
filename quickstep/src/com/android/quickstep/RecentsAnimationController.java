@@ -81,9 +81,12 @@ public class RecentsAnimationController {
             mWindowThresholdCrossed = windowThresholdCrossed;
             UI_HELPER_EXECUTOR.execute(() -> {
                 mController.setAnimationTargetsBehindSystemBars(!windowThresholdCrossed);
-                SystemUiProxy p = SystemUiProxy.INSTANCE.getNoCreate();
-                if (p != null && mShouldMinimizeSplitScreen) {
-                    p.setSplitScreenMinimized(windowThresholdCrossed);
+                if (mShouldMinimizeSplitScreen && windowThresholdCrossed) {
+                    // NOTE: As a workaround for conflicting animations (Launcher animating the task
+                    // leash, and SystemUI resizing the docked stack, which resizes the task), we
+                    // currently only set the minimized mode, and not the inverse.
+                    // TODO: Synchronize the minimize animation with the launcher animation
+                    mController.setSplitScreenMinimized(windowThresholdCrossed);
                 }
             });
         }
