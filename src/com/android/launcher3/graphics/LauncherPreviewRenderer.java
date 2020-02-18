@@ -25,6 +25,7 @@ import static com.android.launcher3.model.ModelUtils.sortWorkspaceItemsSpatially
 
 import android.annotation.TargetApi;
 import android.app.Fragment;
+import android.appwidget.AppWidgetHostView;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.TypedArray;
@@ -55,6 +56,7 @@ import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
@@ -72,6 +74,8 @@ import com.android.launcher3.model.AllAppsList;
 import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.LoaderResults;
+import com.android.launcher3.model.WidgetItem;
+import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.BaseDragLayer;
 
@@ -248,6 +252,16 @@ public class LauncherPreviewRenderer implements Callable<Bitmap> {
             addInScreenFromBind(folderIcon, info);
         }
 
+        private void inflateAndAddWidgets(LauncherAppWidgetInfo info, WidgetsModel widgetsModel) {
+            WidgetItem widgetItem = widgetsModel.getWidgetProviderInfoByProviderName(
+                    info.providerName);
+            AppWidgetHostView view = new AppWidgetHostView(mContext);
+            view.setAppWidget(-1, widgetItem.widgetInfo);
+            view.updateAppWidget(null);
+            view.setTag(info);
+            addInScreenFromBind(view, info);
+        }
+
         private void dispatchVisibilityAggregated(View view, boolean isVisible) {
             // Similar to View.dispatchVisibilityAggregated implementation.
             final boolean thisVisible = view.getVisibility() == VISIBLE;
@@ -272,9 +286,9 @@ public class LauncherPreviewRenderer implements Callable<Bitmap> {
                         mContext).getModel();
                 final WorkspaceItemsInfoFetcher fetcher = new WorkspaceItemsInfoFetcher();
                 launcherModel.enqueueModelUpdateTask(fetcher);
-                ArrayList<ItemInfo> workspaceItems;
+                WorkspaceResult workspaceResult;
                 try {
-                    workspaceItems = fetcher.mTask.get(5, TimeUnit.SECONDS);
+                    workspaceResult = fetcher.mTask.get(5, TimeUnit.SECONDS);
                 } catch (InterruptedException | ExecutionException | TimeoutException e) {
                     Log.d(TAG, "Error fetching workspace items info", e);
                     return;
@@ -284,9 +298,14 @@ public class LauncherPreviewRenderer implements Callable<Bitmap> {
                 // items
                 ArrayList<ItemInfo> currentWorkspaceItems = new ArrayList<>();
                 ArrayList<ItemInfo> otherWorkspaceItems = new ArrayList<>();
+                ArrayList<LauncherAppWidgetInfo> currentAppWidgets = new ArrayList<>();
+                ArrayList<LauncherAppWidgetInfo> otherAppWidgets = new ArrayList<>();
 
-                filterCurrentWorkspaceItems(0 /* currentScreenId */, workspaceItems,
-                        currentWorkspaceItems, otherWorkspaceItems);
+                filterCurrentWorkspaceItems(0 /* currentScreenId */,
+                        workspaceResult.mWorkspaceItems, currentWorkspaceItems,
+                        otherWorkspaceItems);
+                filterCurrentWorkspaceItems(0 /* currentScreenId */, workspaceResult.mAppWidgets,
+                        currentAppWidgets, otherAppWidgets);
                 sortWorkspaceItemsSpatially(mIdp, currentWorkspaceItems);
 
                 for (ItemInfo itemInfo : currentWorkspaceItems) {
@@ -298,6 +317,17 @@ public class LauncherPreviewRenderer implements Callable<Bitmap> {
                             break;
                         case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
                             inflateAndAddFolder((FolderInfo) itemInfo);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                for (ItemInfo itemInfo : currentAppWidgets) {
+                    switch (itemInfo.itemType) {
+                        case Favorites.ITEM_TYPE_APPWIDGET:
+                        case Favorites.ITEM_TYPE_CUSTOM_APPWIDGET:
+                            inflateAndAddWidgets((LauncherAppWidgetInfo) itemInfo,
+                                    workspaceResult.mWidgetsModel);
                             break;
                         default:
                             break;
@@ -349,10 +379,10 @@ public class LauncherPreviewRenderer implements Callable<Bitmap> {
         }
     }
 
-    private static class WorkspaceItemsInfoFetcher implements Callable<ArrayList<ItemInfo>>,
+    private static class WorkspaceItemsInfoFetcher implements Callable<WorkspaceResult>,
             LauncherModel.ModelUpdateTask {
 
-        private final FutureTask<ArrayList<ItemInfo>> mTask = new FutureTask<>(this);
+        private final FutureTask<WorkspaceResult> mTask = new FutureTask<>(this);
 
         private LauncherAppState mApp;
         private LauncherModel mModel;
@@ -374,19 +404,34 @@ public class LauncherPreviewRenderer implements Callable<Bitmap> {
         }
 
         @Override
-        public ArrayList<ItemInfo> call() throws Exception {
+        public WorkspaceResult call() throws Exception {
             if (!mModel.isModelLoaded()) {
                 Log.d(TAG, "Workspace not loaded, loading now");
                 mModel.startLoaderForResults(
                         new LoaderResults(mApp, mBgDataModel, mAllAppsList, new Callbacks[0]));
-                return new ArrayList<>();
+                return null;
             }
-            return mBgDataModel.workspaceItems;
+
+            return new WorkspaceResult(mBgDataModel.workspaceItems, mBgDataModel.appWidgets,
+                    mBgDataModel.widgetsModel);
         }
     }
 
     private static void measureView(View view, int width, int height) {
         view.measure(makeMeasureSpec(width, EXACTLY), makeMeasureSpec(height, EXACTLY));
         view.layout(0, 0, width, height);
+    }
+
+    private static class WorkspaceResult {
+        private final ArrayList<ItemInfo> mWorkspaceItems;
+        private final ArrayList<LauncherAppWidgetInfo> mAppWidgets;
+        private final WidgetsModel mWidgetsModel;
+
+        private WorkspaceResult(ArrayList<ItemInfo> workspaceItems,
+                ArrayList<LauncherAppWidgetInfo> appWidgets, WidgetsModel widgetsModel) {
+            mWorkspaceItems = workspaceItems;
+            mAppWidgets = appWidgets;
+            mWidgetsModel = widgetsModel;
+        }
     }
 }
