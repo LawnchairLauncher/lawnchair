@@ -59,6 +59,7 @@ import com.android.quickstep.TaskAnimationManager;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.CachedEventDispatcher;
 import com.android.quickstep.util.MotionPauseDetector;
+import com.android.quickstep.util.NavBarPosition;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.InputMonitorCompat;
 
@@ -77,6 +78,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     public static final float QUICKSTEP_TOUCH_SLOP_RATIO = 3;
 
     private final RecentsAnimationDeviceState mDeviceState;
+    private final NavBarPosition mNavBarPosition;
     private final TaskAnimationManager mTaskAnimationManager;
     private final GestureState mGestureState;
     private RecentsAnimationCallbacks mActiveCallbacks;
@@ -126,13 +128,16 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
             Factory handlerFactory) {
         super(base);
         mDeviceState = deviceState;
+        mNavBarPosition = mDeviceState.getNavBarPosition();
         mTaskAnimationManager = taskAnimationManager;
         mGestureState = gestureState;
         mMainThreadHandler = new Handler(Looper.getMainLooper());
         mHandlerFactory = handlerFactory;
         mActivityInterface = mGestureState.getActivityInterface();
 
-        mMotionPauseDetector = new MotionPauseDetector(base);
+        mMotionPauseDetector = new MotionPauseDetector(base, false,
+                mNavBarPosition.isLeftEdge() || mNavBarPosition.isRightEdge()
+                        ? MotionEvent.AXIS_X : MotionEvent.AXIS_Y);
         mMotionPauseMinDisplacement = base.getResources().getDimension(
                 R.dimen.motion_pause_detector_min_displacement_from_app);
         mOnCompleteCallback = onCompleteCallback;
@@ -172,7 +177,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         if (mPassedWindowMoveSlop && mInteractionHandler != null
                 && !mRecentsViewDispatcher.hasConsumer()) {
             mRecentsViewDispatcher.setConsumer(mInteractionHandler.getRecentsViewDispatcher(
-                    mDeviceState.getNavBarPosition().getRotationMode()));
+                    mNavBarPosition.getRotationMode()));
         }
         int edgeFlags = ev.getEdgeFlags();
         ev.setEdgeFlags(edgeFlags | EDGE_NAV_BAR);
@@ -285,7 +290,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                     if (mDeviceState.isFullyGesturalNavMode()) {
                         mMotionPauseDetector.setDisallowPause(upDist < mMotionPauseMinDisplacement
                                 || isLikelyToStartNewTask);
-                        mMotionPauseDetector.addPosition(displacement, ev.getEventTime());
+                        mMotionPauseDetector.addPosition(ev);
                         mInteractionHandler.setIsLikelyToStartNewTask(isLikelyToStartNewTask);
                     }
                 }
@@ -354,9 +359,9 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                         ViewConfiguration.get(this).getScaledMaximumFlingVelocity());
                 float velocityX = mVelocityTracker.getXVelocity(mActivePointerId);
                 float velocityY = mVelocityTracker.getYVelocity(mActivePointerId);
-                float velocity = mDeviceState.getNavBarPosition().isRightEdge()
+                float velocity = mNavBarPosition.isRightEdge()
                         ? velocityX
-                        : mDeviceState.getNavBarPosition().isLeftEdge()
+                        : mNavBarPosition.isLeftEdge()
                                 ? -velocityX
                                 : velocityY;
 
@@ -410,9 +415,9 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     }
 
     private float getDisplacement(MotionEvent ev) {
-        if (mDeviceState.getNavBarPosition().isRightEdge()) {
+        if (mNavBarPosition.isRightEdge()) {
             return ev.getX() - mDownPos.x;
-        } else if (mDeviceState.getNavBarPosition().isLeftEdge()) {
+        } else if (mNavBarPosition.isLeftEdge()) {
             return mDownPos.x - ev.getX();
         } else {
             return ev.getY() - mDownPos.y;

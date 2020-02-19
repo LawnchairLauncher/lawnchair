@@ -37,8 +37,7 @@ public class MotionPauseDetector {
     private static final long FORCE_PAUSE_TIMEOUT = 300;
 
     /**
-     * After {@link #makePauseHarderToTrigger()}, must
-     * move slowly for this long to trigger a pause.
+     * After {@link #mMakePauseHarderToTrigger}, must move slowly for this long to trigger a pause.
      */
     private static final long HARDER_TRIGGER_TIMEOUT = 400;
 
@@ -49,12 +48,9 @@ public class MotionPauseDetector {
     private final Alarm mForcePauseTimeout;
     private final boolean mMakePauseHarderToTrigger;
     private final Context mContext;
+    private final VelocityProvider mVelocityProvider;
 
-    private Long mPreviousTime = null;
-    private Float mPreviousPosition = null;
     private Float mPreviousVelocity = null;
-
-    private Float mFirstPosition = null;
 
     private OnMotionPauseListener mOnMotionPauseListener;
     private boolean mIsPaused;
@@ -73,6 +69,13 @@ public class MotionPauseDetector {
      * @param makePauseHarderToTrigger Used for gestures that require a more explicit pause.
      */
     public MotionPauseDetector(Context context, boolean makePauseHarderToTrigger) {
+        this(context, makePauseHarderToTrigger, MotionEvent.AXIS_Y);
+    }
+
+    /**
+     * @param makePauseHarderToTrigger Used for gestures that require a more explicit pause.
+     */
+    public MotionPauseDetector(Context context, boolean makePauseHarderToTrigger, int axis) {
         mContext = context;
         Resources res = context.getResources();
         mSpeedVerySlow = res.getDimension(R.dimen.motion_pause_detector_speed_very_slow);
@@ -82,6 +85,7 @@ public class MotionPauseDetector {
         mForcePauseTimeout = new Alarm();
         mForcePauseTimeout.setOnAlarmListener(alarm -> updatePaused(true /* isPaused */));
         mMakePauseHarderToTrigger = makePauseHarderToTrigger;
+        mVelocityProvider = new LinearVelocityProvider(axis);
     }
 
     /**
@@ -101,28 +105,28 @@ public class MotionPauseDetector {
 
     /**
      * Computes velocity and acceleration to determine whether the motion is paused.
-     * @param position The x or y component of the motion being tracked.
+     * @param ev The motion being tracked.
      *
      * TODO: Use historical positions as well, e.g. {@link MotionEvent#getHistoricalY(int, int)}.
      */
-    public void addPosition(float position, long time) {
-        if (mFirstPosition == null) {
-            mFirstPosition = position;
-        }
+    public void addPosition(MotionEvent ev) {
+        addPosition(ev, 0);
+    }
+
+    /**
+     * Computes velocity and acceleration to determine whether the motion is paused.
+     * @param ev The motion being tracked.
+     * @param pointerIndex Index for the pointer being tracked in the motion event
+     */
+    public void addPosition(MotionEvent ev, int pointerIndex) {
         mForcePauseTimeout.setAlarm(mMakePauseHarderToTrigger
                 ? HARDER_TRIGGER_TIMEOUT
                 : FORCE_PAUSE_TIMEOUT);
-        if (mPreviousTime != null && mPreviousPosition != null) {
-            long changeInTime = Math.max(1, time - mPreviousTime);
-            float changeInPosition = position - mPreviousPosition;
-            float velocity = changeInPosition / changeInTime;
-            if (mPreviousVelocity != null) {
-                checkMotionPaused(velocity, mPreviousVelocity, time);
-            }
-            mPreviousVelocity = velocity;
+        Float newVelocity = mVelocityProvider.addMotionEvent(ev, pointerIndex);
+        if (newVelocity != null && mPreviousVelocity != null) {
+            checkMotionPaused(newVelocity, mPreviousVelocity, ev.getEventTime());
         }
-        mPreviousTime = time;
-        mPreviousPosition = position;
+        mPreviousVelocity = newVelocity;
     }
 
     private void checkMotionPaused(float velocity, float prevVelocity, long time) {
@@ -178,10 +182,8 @@ public class MotionPauseDetector {
     }
 
     public void clear() {
-        mPreviousTime = null;
-        mPreviousPosition = null;
+        mVelocityProvider.clear();
         mPreviousVelocity = null;
-        mFirstPosition = null;
         setOnMotionPauseListener(null);
         mIsPaused = mHasEverBeenPaused = false;
         mSlowStartTime = 0;
@@ -194,5 +196,56 @@ public class MotionPauseDetector {
 
     public interface OnMotionPauseListener {
         void onMotionPauseChanged(boolean isPaused);
+    }
+
+    /**
+     * Interface to abstract out velocity calculations
+     */
+    protected interface VelocityProvider {
+
+        /**
+         * Adds a new motion events, and returns the velocity at this point, or null if
+         * the velocity is not available
+         */
+        Float addMotionEvent(MotionEvent ev, int pointer);
+
+        /**
+         * Clears all stored motion event records
+         */
+        void clear();
+    }
+
+    private static class LinearVelocityProvider implements VelocityProvider {
+
+        private Long mPreviousTime = null;
+        private Float mPreviousPosition = null;
+
+        private final int mAxis;
+
+        LinearVelocityProvider(int axis) {
+            mAxis = axis;
+        }
+
+        @Override
+        public Float addMotionEvent(MotionEvent ev, int pointer) {
+            long time = ev.getEventTime();
+            float position = ev.getAxisValue(mAxis, pointer);
+            Float velocity = null;
+
+            if (mPreviousTime != null && mPreviousPosition != null) {
+                long changeInTime = Math.max(1, time - mPreviousTime);
+                float changeInPosition = position - mPreviousPosition;
+                velocity = changeInPosition / changeInTime;
+            }
+            mPreviousTime = time;
+            mPreviousPosition = position;
+            return velocity;
+        }
+
+        @Override
+        public void clear() {
+            mPreviousTime = null;
+            mPreviousPosition = null;
+        }
     }
 }
