@@ -27,7 +27,7 @@
     <string name="adaptify_pack_title">为图标包创造自适应图标</string>
     <string name="icon_shape_override_label">图标形状</string>
     <string name="reset_custom_icons">移除自定义图标</string>
-    <string name="reset_custom_icons_confirmation">从这个图标包回复到默认图标？</string>
+    <string name="reset_custom_icons_confirmation">从这个图标包恢复到默认图标？</string>
     <string name="appearance">外观</string>
     <!-- Note: new. Replaces title of 5th field (from bottom) in “Theme” page. -->
     <string name="theme_auto">自动(匹配壁纸)</string>
@@ -131,7 +131,7 @@
         <item>晚安！</item>
         <item>明天见！</item>
         <item>晚上好！</item>
-        <item>别熬夜到太晚哦</item>
+        <item>别熬夜到太晚哦。</item>
     </string-array>
     <string name="battery_charging">正在充电</string>
     <string name="battery_full">已充满</string>
@@ -415,7 +415,7 @@
     <string name="tabs_manage">管理</string>
     <string name="tab_manage_apps">管理应用</string>
     <string name="tab_bottom_sheet_save">完成</string>
-    <string name="selected_count">以选择 %1$d 个</string>
+    <string name="selected_count">已选择 %1$d 个</string>
     <string name="tab_hide_from_main">从主标签页中隐藏</string>
     <string name="tab_color">颜色</string>
     <string name="delete">删除</string>
