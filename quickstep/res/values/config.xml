@@ -18,7 +18,7 @@
 
     <!-- Activities which block home gesture -->
     <string-array name="gesture_blocking_activities" tools:ignore="InconsistentArrays">
-        <item>com.android.launcher3/com.android.quickstep.interaction.BackGestureTutorialActivity</item>
+        <item>com.android.launcher3/com.android.quickstep.interaction.GestureSandboxActivity</item>
     </string-array>
 
     <string name="stats_log_manager_class" translatable="false">com.android.quickstep.logging.StatsLogCompatManager</string>
