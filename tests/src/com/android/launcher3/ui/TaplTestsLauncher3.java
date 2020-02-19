@@ -18,9 +18,6 @@ package com.android.launcher3.ui;
 
 import static androidx.test.InstrumentationRegistry.getInstrumentation;
 
-import static com.android.launcher3.util.rule.TestStabilityRule.LOCAL;
-import static com.android.launcher3.util.rule.TestStabilityRule.UNBUNDLED_POSTSUBMIT;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -39,7 +36,6 @@ import com.android.launcher3.tapl.AppIconMenu;
 import com.android.launcher3.tapl.AppIconMenuItem;
 import com.android.launcher3.tapl.Widgets;
 import com.android.launcher3.tapl.Workspace;
-import com.android.launcher3.util.rule.TestStabilityRule.Stability;
 import com.android.launcher3.views.OptionsPopupView;
 import com.android.launcher3.widget.WidgetsFullSheet;
 import com.android.launcher3.widget.WidgetsRecyclerView;
@@ -117,9 +113,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         mLauncher.pressHome();
     }
 
-    // b/146432215: remove @Stability after 2/1/2020 if this test doesn't flake
     @Test
-    @Stability(flavors = LOCAL | UNBUNDLED_POSTSUBMIT)
     public void testOpenHomeSettingsFromWorkspace() {
         mDevice.pressMenu();
         mDevice.waitForIdle();

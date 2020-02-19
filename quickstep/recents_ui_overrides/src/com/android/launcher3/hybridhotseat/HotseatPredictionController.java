@@ -109,6 +109,7 @@ public class HotseatPredictionController implements DragController.DragListener,
     private AppPredictor mAppPredictor;
     private AllAppsStore mAllAppsStore;
     private AnimatorSet mIconRemoveAnimators;
+    private boolean mUIUpdatePaused = false;
 
     private HotseatEduController mHotseatEduController;
 
@@ -168,7 +169,7 @@ public class HotseatPredictionController implements DragController.DragListener,
     }
 
     private void fillGapsWithPrediction(boolean animate, Runnable callback) {
-        if (!isReady() || mDragObject != null) {
+        if (!isReady() || mUIUpdatePaused || mDragObject != null) {
             return;
         }
         List<WorkspaceItemInfo> predictedApps = mapToWorkspaceItemInfo(mComponentKeyMappers);
@@ -246,6 +247,16 @@ public class HotseatPredictionController implements DragController.DragListener,
         mHotseat.removeOnAttachStateChangeListener(this);
         if (mAppPredictor != null) {
             mAppPredictor.destroy();
+        }
+    }
+
+    /**
+     * start and pauses predicted apps update on the hotseat
+     */
+    public void setPauseUIUpdate(boolean paused) {
+        mUIUpdatePaused = paused;
+        if (!paused) {
+            fillGapsWithPrediction();
         }
     }
 
@@ -447,16 +458,39 @@ public class HotseatPredictionController implements DragController.DragListener,
     /**
      * Unpins pinned app when it's converted into a folder
      */
-    public void folderCreatedFromIcon(ItemInfo info, FolderInfo folderInfo) {
+    public void folderCreatedFromWorkspaceItem(ItemInfo info, FolderInfo folderInfo) {
+        if (info.itemType != LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
+            return;
+        }
         AppTarget target = getAppTargetFromItemInfo(info);
-        if (folderInfo.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT && !isInHotseat(
-                info)) {
+        ViewGroup hotseatVG = mHotseat.getShortcutsAndWidgets();
+        ViewGroup firstScreenVG = mLauncher.getWorkspace().getScreenWithId(
+                Workspace.FIRST_SCREEN_ID).getShortcutsAndWidgets();
+
+        if (isInHotseat(folderInfo) && !getPinnedAppTargetsInViewGroup(hotseatVG).contains(
+                target)) {
             notifyItemAction(target, APP_LOCATION_HOTSEAT, APPTARGET_ACTION_UNPIN);
-        } else if (folderInfo.container == LauncherSettings.Favorites.CONTAINER_DESKTOP
-                && folderInfo.screenId == Workspace.FIRST_SCREEN_ID && !isInFirstPage(info)) {
+        } else if (isInFirstPage(folderInfo) && !getPinnedAppTargetsInViewGroup(
+                firstScreenVG).contains(target)) {
             notifyItemAction(target, APP_LOCATION_WORKSPACE, APPTARGET_ACTION_UNPIN);
         }
     }
+
+    /**
+     * Pins workspace item created when all folder items are removed but one
+     */
+    public void folderConvertedToWorkspaceItem(ItemInfo info, FolderInfo folderInfo) {
+        if (info.itemType != LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
+            return;
+        }
+        AppTarget target = getAppTargetFromItemInfo(info);
+        if (isInHotseat(info)) {
+            notifyItemAction(target, APP_LOCATION_HOTSEAT, AppTargetEvent.ACTION_PIN);
+        } else if (isInFirstPage(info)) {
+            notifyItemAction(target, APP_LOCATION_WORKSPACE, AppTargetEvent.ACTION_PIN);
+        }
+    }
+
 
     @Override
     public void onDragEnd() {

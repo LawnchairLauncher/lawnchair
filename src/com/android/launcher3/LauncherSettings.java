@@ -302,6 +302,8 @@ public class LauncherSettings {
 
         public static final String METHOD_RESTORE_BACKUP_TABLE = "restore_backup_table";
 
+        public static final String METHOD_UPDATE_CURRENT_OPEN_HELPER = "update_current_open_helper";
+
         public static final String EXTRA_VALUE = "value";
 
         public static Bundle call(ContentResolver cr, String method) {

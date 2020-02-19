@@ -17,7 +17,7 @@
 package com.android.launcher3;
 
 import static com.android.launcher3.LauncherAppState.ACTION_FORCE_ROLOAD;
-import static com.android.launcher3.config.FeatureFlags.IS_DOGFOOD_BUILD;
+import static com.android.launcher3.config.FeatureFlags.IS_STUDIO_BUILD;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 import static com.android.launcher3.util.PackageManagerHelper.hasShortcutsPermission;
@@ -37,7 +37,6 @@ import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.IconCache;
-import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.AddWorkspaceItemsTask;
 import com.android.launcher3.model.AllAppsList;
@@ -56,7 +55,6 @@ import com.android.launcher3.pm.InstallSessionTracker;
 import com.android.launcher3.pm.PackageInstallInfo;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.shortcuts.ShortcutRequest;
-import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.IntSparseArrayMap;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LooperExecutor;
@@ -68,7 +66,6 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.Executor;
 import java.util.function.Supplier;
@@ -97,10 +94,6 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
     private boolean mModelLoaded;
     public boolean isModelLoaded() {
         synchronized (mLock) {
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.LAUNCHER_DIDNT_INITIALIZE,
-                        "isModelLoaded: " + mModelLoaded + ", " + mLoaderTask);
-            }
             return mModelLoaded && mLoaderTask == null;
         }
     }
@@ -130,16 +123,6 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
     LauncherModel(LauncherAppState app, IconCache iconCache, AppFilter appFilter) {
         mApp = app;
         mBgAllAppsList = new AllAppsList(iconCache, appFilter);
-    }
-
-    /**
-     * Returns AppInfo with corresponding package name.
-     * TODO: move to enqueueModelTask
-     */
-    public Optional<AppInfo> getAppInfoByPackageName(String pkg) {
-        return mBgAllAppsList.data.stream()
-                .filter(info -> info.componentName.getPackageName().equals(pkg))
-                .findAny();
     }
 
     /**
@@ -255,7 +238,7 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
                     enqueueModelUpdateTask(new UserLockStateChangedTask(user));
                 }
             }
-        } else if (IS_DOGFOOD_BUILD && ACTION_FORCE_ROLOAD.equals(action)) {
+        } else if (IS_STUDIO_BUILD && ACTION_FORCE_ROLOAD.equals(action)) {
             for (Callbacks cb : getCallbacks()) {
                 if (cb instanceof Launcher) {
                     ((Launcher) cb).recreate();
@@ -373,9 +356,6 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
     public boolean stopLoader() {
         synchronized (mLock) {
             LoaderTask oldTask = mLoaderTask;
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.LAUNCHER_DIDNT_INITIALIZE, "LauncherModel.stopLoader");
-            }
             mLoaderTask = null;
             if (oldTask != null) {
                 oldTask.stopLocked();
@@ -389,10 +369,6 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
         synchronized (mLock) {
             stopLoader();
             mLoaderTask = new LoaderTask(mApp, mBgAllAppsList, mBgDataModel, results);
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.LAUNCHER_DIDNT_INITIALIZE,
-                        "LauncherModel.startLoaderForResults " + mLoaderTask);
-            }
 
             // Always post the loader task, instead of running directly (even on same thread) so
             // that we exit any nested synchronized blocks
@@ -494,10 +470,6 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
         public void close() {
             synchronized (mLock) {
                 // If we are still the last one to be scheduled, remove ourselves.
-                if (TestProtocol.sDebugTracing) {
-                    Log.d(TestProtocol.LAUNCHER_DIDNT_INITIALIZE,
-                            "LauncherModel.close " + mLoaderTask + ", " + mTask);
-                }
                 if (mLoaderTask == mTask) {
                     mLoaderTask = null;
                 }
@@ -573,9 +545,7 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
     public void updateAndBindWorkspaceItem(WorkspaceItemInfo si, ShortcutInfo info) {
         updateAndBindWorkspaceItem(() -> {
             si.updateFromDeepShortcutInfo(info, mApp.getContext());
-            LauncherIcons li = LauncherIcons.obtain(mApp.getContext());
-            si.bitmap = li.createShortcutIcon(info);
-            li.recycle();
+            mApp.getIconCache().getShortcutIcon(si, info);
             return si;
         });
     }

@@ -73,7 +73,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
-import android.view.WindowInsets;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.ListView;
@@ -345,7 +344,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         setLayoutDirection(mIsRtl ? View.LAYOUT_DIRECTION_RTL : View.LAYOUT_DIRECTION_LTR);
         mTaskTopMargin = getResources()
                 .getDimensionPixelSize(R.dimen.task_thumbnail_top_margin);
-        mTaskBottomMargin = LayoutUtils.thumbnailBottomMargin(getResources());
+        mTaskBottomMargin = LayoutUtils.thumbnailBottomMargin(context);
         mSquaredTouchSlop = squaredTouchSlop(context);
 
         mEmptyIcon = context.getDrawable(R.drawable.ic_empty_recents);
@@ -1251,7 +1250,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     }
 
     public PendingAnimation createAllTasksDismissAnimation(long duration) {
-        if (FeatureFlags.IS_DOGFOOD_BUILD && mPendingAnimation != null) {
+        if (FeatureFlags.IS_STUDIO_BUILD && mPendingAnimation != null) {
             throw new IllegalStateException("Another pending animation is still running");
         }
         AnimatorSet anim = new AnimatorSet();
@@ -1595,7 +1594,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     }
 
     public PendingAnimation createTaskLauncherAnimation(TaskView tv, long duration) {
-        if (FeatureFlags.IS_DOGFOOD_BUILD && mPendingAnimation != null) {
+        if (FeatureFlags.IS_STUDIO_BUILD && mPendingAnimation != null) {
             throw new IllegalStateException("Another pending animation is still running");
         }
 
@@ -1887,16 +1886,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             mOverlayEnabled = overlayEnabled;
             updateEnabledOverlays();
         }
-    }
-
-    public int getLeftGestureMargin() {
-        final WindowInsets insets = getRootWindowInsets();
-        return Math.max(insets.getSystemGestureInsets().left, insets.getSystemWindowInsetLeft());
-    }
-
-    public int getRightGestureMargin() {
-        final WindowInsets insets = getRootWindowInsets();
-        return Math.max(insets.getSystemGestureInsets().right, insets.getSystemWindowInsetRight());
     }
 
     /** If it's in the live tile mode, switch the running task into screenshot mode. */

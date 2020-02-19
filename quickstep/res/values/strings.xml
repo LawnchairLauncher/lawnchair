@@ -67,13 +67,13 @@
     <string  name="back_gesture_tutorial_close_button_content_description" translatable="false">Close</string>
 
     <!-- Hotseat migration notification title -->
-    <string translatable="false" name="hotseat_migrate_prompt_title">Get suggested apps on the home screen</string>
+    <string translatable="false" name="hotseat_migrate_prompt_title">Easily access your most-used apps</string>
     <!-- Hotseat migration notification content -->
-    <string translatable="false" name="hotseat_migrate_prompt_content">Tap to set up</string>
+    <string translatable="false" name="hotseat_migrate_prompt_content">Pixel suggests your favorite apps based on your routines. Tap to learn more.</string>
     <!-- Hotseat migration wizard title -->
     <string translatable="false" name="hotseat_migrate_title">Suggested apps replace the bottom row of apps</string>
     <!-- Hotseat migration wizard message -->
-    <string translatable="false" name="hotseat_migrate_message">To pin a favorite app, drag it over a suggested app. To hide a suggested app, touch &amp; hold it.</string>
+    <string translatable="false" name="hotseat_migrate_message">Your current apps will move to the last screen. To pin or block a suggested app, drag it off the bottom row.</string>
     <!-- Toast message user sees after opting into fully predicted hybrid hotseat -->
     <string translatable="false" name="hotseat_items_migrated">Bottom row of apps moved to last screen</string>
     <!-- Toast message user sees after opting into fully predicted hybrid hotseat -->

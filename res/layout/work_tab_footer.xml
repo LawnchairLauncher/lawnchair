@@ -32,6 +32,8 @@
         android:layout_weight="1"
         android:drawableStart="@drawable/ic_corp"
         android:drawablePadding="3dp"
+        android:drawableTint="?attr/workProfileOverlayTextColor"
+        android:textColor="?attr/workProfileOverlayTextColor"
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:gravity="center_vertical"

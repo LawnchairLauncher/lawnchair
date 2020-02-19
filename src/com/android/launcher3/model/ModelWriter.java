@@ -115,8 +115,9 @@ public class ModelWriter {
         ItemInfo modelItem = mBgDataModel.itemsIdMap.get(itemId);
         if (modelItem != null && item != modelItem) {
             // check all the data is consistent
-            if (!Utilities.IS_DEBUG_DEVICE && !FeatureFlags.IS_DOGFOOD_BUILD &&
-                    modelItem instanceof WorkspaceItemInfo && item instanceof WorkspaceItemInfo) {
+            if (!Utilities.IS_DEBUG_DEVICE && !FeatureFlags.IS_STUDIO_BUILD
+                    && modelItem instanceof WorkspaceItemInfo
+                    && item instanceof WorkspaceItemInfo) {
                 if (modelItem.title.toString().equals(item.title.toString()) &&
                         modelItem.getIntent().filterEquals(item.getIntent()) &&
                         modelItem.id == item.id &&
@@ -320,7 +321,7 @@ public class ModelWriter {
      */
     public void prepareToUndoDelete() {
         if (!mPreparingToUndo) {
-            if (!mDeleteRunnables.isEmpty() && FeatureFlags.IS_DOGFOOD_BUILD) {
+            if (!mDeleteRunnables.isEmpty() && FeatureFlags.IS_STUDIO_BUILD) {
                 throw new IllegalStateException("There are still uncommitted delete operations!");
             }
             mDeleteRunnables.clear();

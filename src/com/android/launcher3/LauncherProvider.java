@@ -16,6 +16,7 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.config.FeatureFlags.MULTI_DB_GRID_MIRATION_ALGO;
 import static com.android.launcher3.provider.LauncherDbUtils.dropTable;
 import static com.android.launcher3.provider.LauncherDbUtils.tableExists;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
@@ -118,7 +119,7 @@ public class LauncherProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
-        if (FeatureFlags.IS_DOGFOOD_BUILD) {
+        if (FeatureFlags.IS_STUDIO_BUILD) {
             Log.d(TAG, "Launcher process started");
         }
 
@@ -155,6 +156,17 @@ public class LauncherProvider extends ContentProvider {
                 RestoreDbTask.setPending(getContext(), false);
             }
         }
+    }
+
+    private synchronized boolean updateCurrentOpenHelper() {
+        final InvariantDeviceProfile idp = InvariantDeviceProfile.INSTANCE.get(getContext());
+        if (TextUtils.equals(idp.dbFile, mOpenHelper.getDatabaseName())) {
+            return false;
+        }
+
+        mOpenHelper.close();
+        mOpenHelper = new DatabaseHelper(getContext());
+        return true;
     }
 
     @Override
@@ -210,7 +222,7 @@ public class LauncherProvider extends ContentProvider {
         addModifiedTime(initialValues);
         final int rowId = dbInsertAndCheck(mOpenHelper, db, args.table, null, initialValues);
         if (rowId < 0) return null;
-        mOpenHelper.onAddOrDeleteOp(db);
+        onAddOrDeleteOp(db);
 
         uri = ContentUris.withAppendedId(uri, rowId);
         reloadLauncherIfExternal();
@@ -268,7 +280,7 @@ public class LauncherProvider extends ContentProvider {
                     return 0;
                 }
             }
-            mOpenHelper.onAddOrDeleteOp(db);
+            onAddOrDeleteOp(db);
             t.commit();
         }
 
@@ -294,7 +306,7 @@ public class LauncherProvider extends ContentProvider {
                         results[i].count != null && results[i].count > 0;
             }
             if (isAddOrDelete) {
-                mOpenHelper.onAddOrDeleteOp(t.getDb());
+                onAddOrDeleteOp(t.getDb());
             }
 
             t.commit();
@@ -316,7 +328,7 @@ public class LauncherProvider extends ContentProvider {
         }
         int count = db.delete(args.table, args.where, args.args);
         if (count > 0) {
-            mOpenHelper.onAddOrDeleteOp(db);
+            onAddOrDeleteOp(db);
             reloadLauncherIfExternal();
         }
         return count;
@@ -360,12 +372,14 @@ public class LauncherProvider extends ContentProvider {
             }
             case LauncherSettings.Settings.METHOD_NEW_ITEM_ID: {
                 Bundle result = new Bundle();
-                result.putInt(LauncherSettings.Settings.EXTRA_VALUE, mOpenHelper.generateNewItemId());
+                result.putInt(LauncherSettings.Settings.EXTRA_VALUE,
+                        mOpenHelper.generateNewItemId());
                 return result;
             }
             case LauncherSettings.Settings.METHOD_NEW_SCREEN_ID: {
                 Bundle result = new Bundle();
-                result.putInt(LauncherSettings.Settings.EXTRA_VALUE, mOpenHelper.generateNewScreenId());
+                result.putInt(LauncherSettings.Settings.EXTRA_VALUE,
+                        mOpenHelper.generateNewScreenId());
                 return result;
             }
             case LauncherSettings.Settings.METHOD_CREATE_EMPTY_DB: {
@@ -387,8 +401,12 @@ public class LauncherProvider extends ContentProvider {
                 return result;
             }
             case LauncherSettings.Settings.METHOD_REFRESH_BACKUP_TABLE: {
-                mOpenHelper.mBackupTableExists =
-                        tableExists(mOpenHelper.getReadableDatabase(), Favorites.BACKUP_TABLE_NAME);
+                // TODO(pinyaoting): Update the behavior here.
+                if (!MULTI_DB_GRID_MIRATION_ALGO.get()) {
+                    mOpenHelper.mBackupTableExists =
+                            tableExists(mOpenHelper.getReadableDatabase(),
+                                    Favorites.BACKUP_TABLE_NAME);
+                }
                 return null;
             }
             case LauncherSettings.Settings.METHOD_RESTORE_BACKUP_TABLE: {
@@ -399,8 +417,24 @@ public class LauncherProvider extends ContentProvider {
                         TOKEN_RESTORE_BACKUP_TABLE, RESTORE_BACKUP_TABLE_DELAY);
                 return null;
             }
+            case LauncherSettings.Settings.METHOD_UPDATE_CURRENT_OPEN_HELPER: {
+                if (MULTI_DB_GRID_MIRATION_ALGO.get()) {
+                    Bundle result = new Bundle();
+                    result.putBoolean(LauncherSettings.Settings.EXTRA_VALUE,
+                            updateCurrentOpenHelper());
+                    return result;
+                }
+            }
         }
         return null;
+    }
+
+    private void onAddOrDeleteOp(SQLiteDatabase db) {
+        if (MULTI_DB_GRID_MIRATION_ALGO.get()) {
+            // TODO(pingyaoting): Implement the behavior here.
+        } else {
+            mOpenHelper.onAddOrDeleteOp(db);
+        }
     }
 
     /**
@@ -551,14 +585,16 @@ public class LauncherProvider extends ContentProvider {
     /**
      * The class is subclassed in tests to create an in-memory db.
      */
-    public static class DatabaseHelper extends NoLocaleSQLiteHelper implements LayoutParserCallback {
+    public static class DatabaseHelper extends NoLocaleSQLiteHelper implements
+            LayoutParserCallback {
         private final Context mContext;
         private int mMaxItemId = -1;
         private int mMaxScreenId = -1;
         private boolean mBackupTableExists;
 
         DatabaseHelper(Context context) {
-            this(context, LauncherFiles.LAUNCHER_DB);
+            this(context, MULTI_DB_GRID_MIRATION_ALGO.get() ? InvariantDeviceProfile.INSTANCE.get(
+                    context).dbFile : LauncherFiles.LAUNCHER_DB);
             // Table creation sometimes fails silently, which leads to a crash loop.
             // This way, we will try to create a table every time after crash, so the device
             // would eventually be able to recover.
@@ -567,7 +603,10 @@ public class LauncherProvider extends ContentProvider {
                 // This operation is a no-op if the table already exists.
                 addFavoritesTable(getWritableDatabase(), true);
             }
-            mBackupTableExists = tableExists(getReadableDatabase(), Favorites.BACKUP_TABLE_NAME);
+            if (!MULTI_DB_GRID_MIRATION_ALGO.get()) {
+                mBackupTableExists = tableExists(getReadableDatabase(),
+                        Favorites.BACKUP_TABLE_NAME);
+            }
 
             initIds();
         }
@@ -575,8 +614,8 @@ public class LauncherProvider extends ContentProvider {
         /**
          * Constructor used in tests and for restore.
          */
-        public DatabaseHelper(Context context, String tableName) {
-            super(context, tableName, SCHEMA_VERSION);
+        public DatabaseHelper(Context context, String dbName) {
+            super(context, dbName, SCHEMA_VERSION);
             mContext = context;
         }
 
@@ -606,7 +645,7 @@ public class LauncherProvider extends ContentProvider {
         }
 
         protected void onAddOrDeleteOp(SQLiteDatabase db) {
-            if (mBackupTableExists) {
+            if (!MULTI_DB_GRID_MIRATION_ALGO.get() && mBackupTableExists) {
                 dropTable(db, Favorites.BACKUP_TABLE_NAME);
                 mBackupTableExists = false;
             }

@@ -234,6 +234,7 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
             public void adjustActivityControllerInterpolators() {
                 if (mAdjustInterpolatorsRunnable != null) {
                     mAdjustInterpolatorsRunnable.run();
+                    mAdjustInterpolatorsRunnable = null;
                 }
             }
 

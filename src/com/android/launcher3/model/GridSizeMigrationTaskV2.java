@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 The Android Open Source Project
+ * Copyright (C) 2020 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,25 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.uioverrides;
+
+package com.android.launcher3.model;
 
 import android.content.Context;
-import android.view.OrientationEventListener;
 
 /**
- * Utility class for listening for rotation changes
+ * This class takes care of shrinking the workspace (by maximum of one row and one column), as a
+ * result of restoring from a larger device or device density change.
  */
-public class DisplayRotationListener extends OrientationEventListener {
+public class GridSizeMigrationTaskV2 {
 
-    private final Runnable mCallback;
+    private GridSizeMigrationTaskV2(Context context) {
 
-    public DisplayRotationListener(Context context, Runnable callback) {
-        super(context);
-        mCallback = callback;
     }
 
-    @Override
-    public void onOrientationChanged(int i) {
-        mCallback.run();
+    /**
+     * Migrates the workspace and hotseat in case their sizes changed.
+     *
+     * @return false if the migration failed.
+     */
+    public static boolean migrateGridIfNeeded(Context context) {
+        // To be implemented.
+        return true;
     }
 }

@@ -22,6 +22,7 @@ import com.android.launcher3.BuildConfig;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.uioverrides.DeviceFlag;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +43,10 @@ public final class FeatureFlags {
         return Utilities.IS_DEBUG_DEVICE && Utilities.isDevelopersOptionsEnabled(context);
     }
 
-    public static final boolean IS_DOGFOOD_BUILD = BuildConfig.DEBUG;
+    /**
+     * True when the build has come from Android Studio and is being used for local debugging.
+     */
+    public static final boolean IS_STUDIO_BUILD = BuildConfig.DEBUG;
 
     /**
      * Enable moving the QSB on the 0th screen of the workspace. This is not a configuration feature
@@ -90,13 +94,13 @@ public final class FeatureFlags {
             "FAKE_LANDSCAPE_UI", false, "Rotate launcher UI instead of using transposed layout");
 
     public static final BooleanFlag FOLDER_NAME_SUGGEST = getDebugFlag(
-            "FOLDER_NAME_SUGGEST", false, "Suggests folder names instead of blank text.");
+            "FOLDER_NAME_SUGGEST", true, "Suggests folder names instead of blank text.");
 
     public static final BooleanFlag APP_SEARCH_IMPROVEMENTS = new DeviceFlag(
             "APP_SEARCH_IMPROVEMENTS", false,
             "Adds localized title and keyword search and ranking");
 
-    public static final BooleanFlag ENABLE_PREDICTION_DISMISS = getDebugFlag(
+    public static final BooleanFlag ENABLE_PREDICTION_DISMISS = new DeviceFlag(
             "ENABLE_PREDICTION_DISMISS", false, "Allow option to dimiss apps from predicted list");
 
     public static final BooleanFlag ENABLE_QUICK_CAPTURE_GESTURE = getDebugFlag(
@@ -106,11 +110,14 @@ public final class FeatureFlags {
             "ASSISTANT_GIVES_LAUNCHER_FOCUS", false,
             "Allow Launcher to handle nav bar gestures while Assistant is running over it");
 
-    public static final BooleanFlag ENABLE_HYBRID_HOTSEAT = getDebugFlag(
+    public static final BooleanFlag ENABLE_HYBRID_HOTSEAT = new DeviceFlag(
             "ENABLE_HYBRID_HOTSEAT", false, "Fill gaps in hotseat with predicted apps");
 
     public static final BooleanFlag ENABLE_DEEP_SHORTCUT_ICON_CACHE = getDebugFlag(
             "ENABLE_DEEP_SHORTCUT_ICON_CACHE", true, "R/W deep shortcut in IconCache");
+
+    public static final BooleanFlag MULTI_DB_GRID_MIRATION_ALGO = getDebugFlag(
+            "MULTI_DB_GRID_MIRATION_ALGO", false, "Use the multi-db grid migration algorithm");
 
     public static final BooleanFlag ENABLE_LAUNCHER_PREVIEW_IN_GRID_PICKER = getDebugFlag(
             "ENABLE_LAUNCHER_PREVIEW_IN_GRID_PICKER", false,
@@ -139,6 +146,15 @@ public final class FeatureFlags {
     static List<DebugFlag> getDebugFlags() {
         synchronized (sDebugFlags) {
             return new ArrayList<>(sDebugFlags);
+        }
+    }
+
+    public static void dump(PrintWriter pw) {
+        pw.println("FeatureFlags:");
+        synchronized (sDebugFlags) {
+            for (DebugFlag flag : sDebugFlags) {
+                pw.println("  " + flag.key + "=" + flag.get());
+            }
         }
     }
 

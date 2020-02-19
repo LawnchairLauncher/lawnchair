@@ -54,6 +54,7 @@ import com.android.systemui.plugins.OverviewScreenshotActions;
 import com.android.systemui.plugins.PluginListener;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
+import com.android.systemui.shared.system.ConfigurationCompat;
 
 /**
  * A task in the Recents view.
@@ -357,7 +358,8 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
 
             final float thumbnailScale;
             int thumbnailRotation = mThumbnailData.rotation;
-            int currentRotation = getDisplay() != null ? getDisplay().getRotation() : 0;
+            int currentRotation = ConfigurationCompat.getWindowConfigurationRotation(
+                    getResources().getConfiguration());
             int deltaRotate = getRotationDelta(currentRotation, thumbnailRotation);
             // Landscape vs portrait change
             boolean windowingModeSupportsRotation = !mActivity.isInMultiWindowMode()
