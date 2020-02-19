@@ -487,9 +487,9 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
                 nameInfos[0].getLabel())
                 || nameInfos.length > 1 && nameInfos[1] != null && !isEmpty(
                 nameInfos[1].getLabel());
-        CharSequence firstLabel = nameInfos[0].getLabel();
 
         if (shouldOpen) {
+            CharSequence firstLabel = nameInfos[0] == null ? "" : nameInfos[0].getLabel();
             if (!isEmpty(firstLabel)) {
                 mFolderName.setHint("");
                 mFolderName.setText(firstLabel);
