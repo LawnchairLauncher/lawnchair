@@ -93,6 +93,7 @@
             android:name="com.android.quickstep.interaction.GestureSandboxActivity"
             android:autoRemoveFromRecents="true"
             android:excludeFromRecents="true"
+            android:taskAffinity="${packageName}.launcher"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="com.android.quickstep.action.GESTURE_SANDBOX" />
