@@ -438,7 +438,8 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
                 homeAnim.setPlayFraction(progress);
 
                 mTransformParams.setProgress(progress)
-                        .setCurrentRectAndTargetAlpha(currentRect, getWindowAlpha(progress));
+                        .setCurrentRect(currentRect)
+                        .setTargetAlpha(getWindowAlpha(progress));
                 if (isFloatingIconView) {
                     mTransformParams.setCornerRadius(endRadius * progress + startRadius
                             * (1f - progress));
