@@ -160,8 +160,8 @@ public class DragController implements DragDriver.EventListener, TouchController
 
         mOptions = options;
         if (mOptions.systemDndStartPoint != null) {
-            mMotionDownX = mOptions.systemDndStartPoint.x;
-            mMotionDownY = mOptions.systemDndStartPoint.y;
+            mLastTouch[0] = mMotionDownX = mOptions.systemDndStartPoint.x;
+            mLastTouch[1] = mMotionDownY = mOptions.systemDndStartPoint.y;
         }
 
         final int registrationX = mMotionDownX - dragLayerX;
