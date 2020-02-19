@@ -70,9 +70,23 @@ public class FolderNameProvider implements ResourceBasedOverride {
         return fnp;
     }
 
+    public static FolderNameProvider newInstance(Context context, List<AppInfo> appInfos,
+            IntSparseArrayMap<FolderInfo> folderInfos) {
+        FolderNameProvider fnp = Overrides.getObject(FolderNameProvider.class,
+                context.getApplicationContext(), R.string.folder_name_provider_class);
+        fnp.load(appInfos, folderInfos);
+
+        return fnp;
+    }
+
     private void load(Context context) {
         LauncherAppState.getInstance(context).getModel().enqueueModelUpdateTask(
                 new FolderNameWorker());
+    }
+
+    private void load(List<AppInfo> appInfos, IntSparseArrayMap<FolderInfo> folderInfos) {
+        mAppInfos = appInfos;
+        mFolderInfos = folderInfos;
     }
 
     /**
