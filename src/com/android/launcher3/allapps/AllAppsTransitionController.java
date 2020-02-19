@@ -248,18 +248,6 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
     private void onProgressAnimationEnd() {
         if (Float.compare(mProgress, 1f) == 0) {
             mAppsView.reset(false /* animate */);
-        } else if (isAllAppsExpanded()) {
-            mAppsView.onScrollUpEnd();
-        }
-    }
-
-    private boolean isAllAppsExpanded() {
-        return Float.compare(mProgress, 0f) == 0;
-    }
-
-    public void highlightWorkTabIfNecessary() {
-        if (isAllAppsExpanded()) {
-            mAppsView.highlightWorkTabIfNecessary();
         }
     }
 }
