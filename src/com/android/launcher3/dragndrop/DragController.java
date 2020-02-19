@@ -140,6 +140,8 @@ public class DragController implements DragDriver.EventListener, TouchController
      *
      * @param b The bitmap to display as the drag image.  It will be re-scaled to the
      *          enlarged size.
+     * @param originalView The source view (ie. icon, widget etc.) that is being dragged
+     *          and which the DragView represents
      * @param dragLayerX The x position in the DragLayer of the left-top of the bitmap.
      * @param dragLayerY The y position in the DragLayer of the left-top of the bitmap.
      * @param source An object representing where the drag originated
@@ -147,7 +149,7 @@ public class DragController implements DragDriver.EventListener, TouchController
      * @param dragRegion Coordinates within the bitmap b for the position of item being dragged.
      *          Makes dragging feel more precise, e.g. you can clip out a transparent border
      */
-    public DragView startDrag(Bitmap b, int dragLayerX, int dragLayerY,
+    public DragView startDrag(Bitmap b, DraggableView originalView, int dragLayerX, int dragLayerY,
             DragSource source, ItemInfo dragInfo, Point dragOffset, Rect dragRegion,
             float initialDragViewScale, float dragViewScaleOnDrop, DragOptions options) {
         if (PROFILE_DRAWING_DURING_DRAG) {
@@ -173,6 +175,7 @@ public class DragController implements DragDriver.EventListener, TouchController
         mLastDropTarget = null;
 
         mDragObject = new DropTarget.DragObject(mLauncher.getApplicationContext());
+        mDragObject.originalView = originalView;
 
         mIsInPreDrag = mOptions.preDragCondition != null
                 && !mOptions.preDragCondition.shouldStartDrag(0);

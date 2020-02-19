@@ -20,6 +20,7 @@ import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.PointF;
+import android.graphics.Rect;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.util.SparseBooleanArray;
@@ -44,6 +45,7 @@ import com.android.launcher3.SimpleOnStylusPressListener;
 import com.android.launcher3.StylusEventHelper;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.dragndrop.DragLayer;
+import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.BaseDragLayer.TouchCompleteListener;
@@ -52,7 +54,7 @@ import com.android.launcher3.views.BaseDragLayer.TouchCompleteListener;
  * {@inheritDoc}
  */
 public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
-        implements TouchCompleteListener, View.OnLongClickListener {
+        implements TouchCompleteListener, View.OnLongClickListener, DraggableView {
 
     // Related to the auto-advancing of widgets
     private static final long ADVANCE_INTERVAL = 20000;
@@ -411,5 +413,19 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
             return item.spanX == 1 && item.spanY == 1;
         }
         return false;
+    }
+
+    @Override
+    public int getViewType() {
+        return DRAGGABLE_WIDGET;
+    }
+
+    @Override
+    public void getVisualDragBounds(Rect bounds) {
+        int x = (int) (1 - getScaleToFit()) * getMeasuredWidth() / 2;
+        int y = (int) (1 - getScaleToFit()) * getMeasuredWidth() / 2;
+        int width = (int) getScaleToFit() * getMeasuredWidth();
+        int height = (int) getScaleToFit() * getMeasuredHeight();
+        bounds.set(x, y , x + width, y + height);
     }
 }
