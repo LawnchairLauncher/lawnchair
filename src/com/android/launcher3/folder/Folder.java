@@ -326,7 +326,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
                             (FolderNameInfo[]) mInfo.suggestedFolderNames.getParcelableArrayExtra(
                                     FolderInfo.EXTRA_FOLDER_SUGGESTIONS);
                     if (nameInfos != null) {
-                        showLabelSuggestion(nameInfos);
+                        showLabelSuggestion(nameInfos, false);
                     }
                 }
             }
@@ -468,7 +468,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
                     nameInfos);
             if (isEmpty(mFolderName.getText().toString())
                     && !mInfo.hasOption(FLAG_MANUAL_FOLDER_NAME)) {
-                showLabelSuggestion(nameInfos);
+                showLabelSuggestion(nameInfos, true);
             }
         }
     }
@@ -477,7 +477,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
      * Show suggested folder title in FolderEditText if the first suggestion is non-empty, push
      * InputMethodManager suggestions.
      */
-    private void showLabelSuggestion(FolderNameInfo[] nameInfos) {
+    private void showLabelSuggestion(FolderNameInfo[] nameInfos, boolean animate) {
         if (nameInfos == null) {
             return;
         }
@@ -493,9 +493,10 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
             if (!isEmpty(firstLabel)) {
                 mFolderName.setHint("");
                 mFolderName.setText(firstLabel);
-                mInfo.title = firstLabel;
             }
-            animateOpen(mInfo.contents, 0, true);
+            if (animate) {
+                animateOpen(mInfo.contents, 0, true);
+            }
             mFolderName.showKeyboard();
             mFolderName.displayCompletions(
                     asList(nameInfos).subList(1, nameInfos.length).stream()
@@ -1651,6 +1652,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
                         .getParcelableArrayExtra(FolderInfo.EXTRA_FOLDER_SUGGESTIONS))
                 .map(folderNameInfoArray ->
                         stream(folderNameInfoArray)
+                                .filter(Objects::nonNull)
                                 .map(FolderNameInfo::getLabel)
                                 .map(CharSequence::toString)
                                 .toArray(String[]::new));

@@ -901,7 +901,8 @@ public class LoaderTask implements Runnable {
     }
 
     private void loadFolderNames() {
-        FolderNameProvider provider = FolderNameProvider.newInstance(mApp.getContext());
+        FolderNameProvider provider = FolderNameProvider.newInstance(mApp.getContext(),
+                mBgAllAppsList.data, mBgDataModel.folders);
 
         synchronized (mBgDataModel) {
             for (int i = 0; i < mBgDataModel.folders.size(); i++) {
