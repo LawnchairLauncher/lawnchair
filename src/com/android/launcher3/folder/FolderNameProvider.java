@@ -21,9 +21,14 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.launcher3.AppInfo;
+import com.android.launcher3.FolderInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.WorkspaceItemInfo;
+import com.android.launcher3.model.AllAppsList;
+import com.android.launcher3.model.BaseModelUpdateTask;
+import com.android.launcher3.model.BgDataModel;
+import com.android.launcher3.util.IntSparseArrayMap;
 import com.android.launcher3.util.ResourceBasedOverride;
 
 import java.util.ArrayList;
@@ -50,6 +55,8 @@ public class FolderNameProvider implements ResourceBasedOverride {
      * name edit box can also be used to provide suggestion.
      */
     public static final int SUGGEST_MAX = 4;
+    protected IntSparseArrayMap<FolderInfo> mFolderInfos;
+    protected List<AppInfo> mAppInfos;
 
     /**
      * Retrieve instance of this object that can be overridden in runtime based on the build
@@ -58,7 +65,14 @@ public class FolderNameProvider implements ResourceBasedOverride {
     public static FolderNameProvider newInstance(Context context) {
         FolderNameProvider fnp = Overrides.getObject(FolderNameProvider.class,
                 context.getApplicationContext(), R.string.folder_name_provider_class);
+        fnp.load(context);
+
         return fnp;
+    }
+
+    private void load(Context context) {
+        LauncherAppState.getInstance(context).getModel().enqueueModelUpdateTask(
+                new FolderNameWorker());
     }
 
     /**
@@ -92,15 +106,23 @@ public class FolderNameProvider implements ResourceBasedOverride {
                 .collect(Collectors.toList());
 
         if (distinctItemInfos.size() == 1) {
-            Optional<AppInfo> info = LauncherAppState.getInstance(context).getModel()
-                    .getAppInfoByPackageName(distinctItemInfos.get(0).getTargetComponent()
-                            .getPackageName());
+            Optional<AppInfo> info = getAppInfoByPackageName(
+                    distinctItemInfos.get(0).getTargetComponent().getPackageName());
             // Place it as first viable suggestion and shift everything else
             info.ifPresent(i -> setAsFirstSuggestion(nameInfos, i.title.toString()));
         }
         if (DEBUG) {
             Log.d(TAG, "getSuggestedFolderName:" + Arrays.toString(nameInfos));
         }
+    }
+
+    private Optional<AppInfo> getAppInfoByPackageName(String packageName) {
+        if (mAppInfos == null || mAppInfos.isEmpty()) {
+            return Optional.empty();
+        }
+        return mAppInfos.stream()
+                .filter(info -> info.componentName.getPackageName().equals(packageName))
+                .findAny();
     }
 
     private void setAsFirstSuggestion(FolderNameInfo[] nameInfos, CharSequence label) {
@@ -143,4 +165,13 @@ public class FolderNameProvider implements ResourceBasedOverride {
         Map<Object, Boolean> map = new ConcurrentHashMap<>();
         return t -> map.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
     }
+
+    private class FolderNameWorker extends BaseModelUpdateTask {
+        @Override
+        public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
+            mFolderInfos = dataModel.folders.clone();
+            mAppInfos = Arrays.asList(apps.copyData());
+        }
+    }
+
 }

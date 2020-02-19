@@ -66,7 +66,6 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.Executor;
 import java.util.function.Supplier;
@@ -124,16 +123,6 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
     LauncherModel(LauncherAppState app, IconCache iconCache, AppFilter appFilter) {
         mApp = app;
         mBgAllAppsList = new AllAppsList(iconCache, appFilter);
-    }
-
-    /**
-     * Returns AppInfo with corresponding package name.
-     * TODO: move to enqueueModelTask
-     */
-    public Optional<AppInfo> getAppInfoByPackageName(String pkg) {
-        return mBgAllAppsList.data.stream()
-                .filter(info -> info.componentName.getPackageName().equals(pkg))
-                .findAny();
     }
 
     /**
