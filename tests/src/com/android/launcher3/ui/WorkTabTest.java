@@ -88,7 +88,7 @@ public class WorkTabTest extends AbstractLauncherUiTest {
         executeOnLauncher(launcher -> launcher.getStateManager().goToState(ALL_APPS));
         waitForState("Launcher internal state didn't switch to All Apps", () -> ALL_APPS);
         getOnceNotNull("Apps view did not bind",
-                launcher -> launcher.getAppsView().getWorkFooterContainer());
+                launcher -> launcher.getAppsView().getWorkFooterContainer(), 60000);
 
         UserManager userManager = getFromLauncher(l -> l.getSystemService(UserManager.class));
         assertEquals(2, userManager.getUserProfiles().size());
