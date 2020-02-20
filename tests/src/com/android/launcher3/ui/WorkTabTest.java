@@ -73,11 +73,10 @@ public class WorkTabTest extends AbstractLauncherUiTest {
         mDevice.pressHome();
         waitForLauncherCondition("Launcher didn't start", Objects::nonNull);
         executeOnLauncher(launcher -> launcher.getStateManager().goToState(ALL_APPS));
-
         waitForLauncherCondition("Personal tab is missing",
-                launcher -> launcher.getAppsView().isPersonalTabVisible());
+                launcher -> launcher.getAppsView().isPersonalTabVisible(), 60000);
         waitForLauncherCondition("Work tab is missing",
-                launcher -> launcher.getAppsView().isWorkTabVisible());
+                launcher -> launcher.getAppsView().isWorkTabVisible(), 60000);
     }
 
     @Test
