@@ -242,9 +242,10 @@ public class AppWindowAnimationHelper {
             Utilities.scaleRectFAboutCenter(mTmpRectF, params.mOffsetScale);
             mCurrentRect.set(mRectFEvaluator.evaluate(params.mProgress, mSourceRect, mTmpRectF));
             mCurrentRect.offset(params.mOffsetX, 0);
-
-            updateClipRect(params);
         }
+
+        updateClipRect(params);
+
         return mCurrentRect;
     }
 
