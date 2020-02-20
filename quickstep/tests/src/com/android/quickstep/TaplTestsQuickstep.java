@@ -81,6 +81,11 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
 
     @Test
     public void testAllAppsFromOverview() throws Exception {
+        // When actions are enabled, all apps isn't present in overview
+        if (mLauncher.overviewActionsEnabled()) {
+            return;
+        }
+
         // Test opening all apps from Overview.
         assertNotNull("switchToAllApps() returned null",
                 mLauncher.getWorkspace().switchToOverview().switchToAllApps());
@@ -141,8 +146,8 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
                 launcher -> assertEquals("Dismissing a task didn't remove 1 task from Overview",
                         numTasks - 1, getTaskCount(launcher)));
 
-        if (!TestHelpers.isInLauncherProcess() ||
-                getFromLauncher(launcher -> !launcher.getDeviceProfile().isLandscape)) {
+        if (!mLauncher.overviewActionsEnabled() && (!TestHelpers.isInLauncherProcess()
+                || getFromLauncher(launcher -> !launcher.getDeviceProfile().isLandscape))) {
             // Test switching to all apps and back.
             final AllAppsFromOverview allApps = overview.switchToAllApps();
             assertNotNull("overview.switchToAllApps() returned null (1)", allApps);
@@ -185,6 +190,11 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
 
     @Test
     public void testAppIconLaunchFromAllAppsFromOverview() throws Exception {
+        // All apps doesn't exist in Overview when actions are enabled
+        if (mLauncher.overviewActionsEnabled()) {
+            return;
+        }
+
         final AllApps allApps =
                 mLauncher.getWorkspace().switchToOverview().switchToAllApps();
         assertTrue("Launcher internal state is not All Apps",
