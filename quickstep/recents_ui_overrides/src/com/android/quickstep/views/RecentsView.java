@@ -92,6 +92,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.anim.SpringObjectAnimator;
+import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
@@ -972,6 +973,10 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         TaskView runningTask = getRunningTaskView();
         if (runningTask != null) {
             runningTask.setStableAlpha(isHidden ? 0 : mContentAlpha);
+            if (!isHidden) {
+                AccessibilityManagerCompat.sendCustomAccessibilityEvent(runningTask,
+                        AccessibilityEvent.TYPE_VIEW_FOCUSED, null);
+            }
         }
     }
 
