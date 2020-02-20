@@ -200,6 +200,7 @@ public class LauncherRecentsView extends RecentsView<Launcher> implements StateL
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             if (tv.isRunningTask()) {
                 mTransformParams.setProgress(1 - progress)
+                        .setCurrentRect(null)
                         .setSyncTransactionApplier(mSyncTransactionApplier)
                         .setForLiveTile(true);
                 mAppWindowAnimationHelper.applyTransform(mTransformParams);
@@ -267,7 +268,8 @@ public class LauncherRecentsView extends RecentsView<Launcher> implements StateL
             }
             mTempRectF.set(mTempRect);
             mTransformParams.setProgress(1f)
-                    .setCurrentRectAndTargetAlpha(mTempRectF, taskView.getAlpha())
+                    .setCurrentRect(mTempRectF)
+                    .setTargetAlpha(taskView.getAlpha())
                     .setSyncTransactionApplier(mSyncTransactionApplier)
                     .setTargetSet(mRecentsAnimationTargets)
                     .setLauncherOnTop(true);

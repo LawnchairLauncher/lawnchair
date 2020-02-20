@@ -60,10 +60,12 @@ public class AppWindowAnimationHelper {
     private final Rect mSourceStackBounds = new Rect();
     // The insets of the source app
     private final Rect mSourceInsets = new Rect();
-    // The source app bounds with the source insets applied, in the source app window coordinates
+    // The source app bounds with the source insets applied, in the device coordinates
     private final RectF mSourceRect = new RectF();
-    // The bounds of the task view in launcher window coordinates
+    // The bounds of the task view in device coordinates
     private final RectF mTargetRect = new RectF();
+    // The bounds of the app window (between mSourceRect and mTargetRect) in device coordinates
+    private final RectF mCurrentRect = new RectF();
     // The insets to be used for clipping the app window, which can be larger than mSourceInsets
     // if the aspect ratio of the target is smaller than the aspect ratio of the source rect. In
     // app window coordinates.
@@ -71,12 +73,13 @@ public class AppWindowAnimationHelper {
     // The insets to be used for clipping the app window. For live tile, we don't transform the clip
     // relative to the target rect.
     private final RectF mSourceWindowClipInsetsForLiveTile = new RectF();
+    // The clip rect in source app window coordinates. The app window surface will only be drawn
+    // within these bounds. This clip rect starts at the full mSourceStackBounds, and insets by
+    // mSourceWindowClipInsets as the transform progress goes to 1.
+    private final RectF mCurrentClipRectF = new RectF();
 
     // The bounds of launcher (not including insets) in device coordinates
     public final Rect mHomeStackBounds = new Rect();
-
-    // The clip rect in source app window coordinates
-    private final RectF mClipRectF = new RectF();
     private final RectFEvaluator mRectFEvaluator = new RectFEvaluator();
     private final Matrix mTmpMatrix = new Matrix();
     private final Rect mTmpRect = new Rect();
@@ -156,25 +159,29 @@ public class AppWindowAnimationHelper {
     }
 
     public RectF applyTransform(TransformParams params) {
-        SurfaceParams[] surfaceParams = getSurfaceParams(params);
+        SurfaceParams[] surfaceParams = computeSurfaceParams(params);
         if (surfaceParams == null) {
             return null;
         }
-        applySurfaceParams(params.syncTransactionApplier, surfaceParams);
-        return params.currentRect;
+        applySurfaceParams(params.mSyncTransactionApplier, surfaceParams);
+        return mCurrentRect;
     }
 
-    public SurfaceParams[] getSurfaceParams(TransformParams params) {
-        if (params.targetSet == null) {
+    /**
+     * Updates this AppWindowAnimationHelper's state based on the given TransformParams, and returns
+     * the SurfaceParams to apply via {@link SyncRtSurfaceTransactionApplierCompat#applyParams}.
+     */
+    public SurfaceParams[] computeSurfaceParams(TransformParams params) {
+        if (params.mTargetSet == null) {
             return null;
         }
 
-        float progress = Utilities.boundToRange(params.progress, 0, 1);
+        float progress = Utilities.boundToRange(params.mProgress, 0, 1);
         updateCurrentRect(params);
 
-        SurfaceParams[] surfaceParams = new SurfaceParams[params.targetSet.unfilteredApps.length];
-        for (int i = 0; i < params.targetSet.unfilteredApps.length; i++) {
-            RemoteAnimationTargetCompat app = params.targetSet.unfilteredApps[i];
+        SurfaceParams[] surfaceParams = new SurfaceParams[params.mTargetSet.unfilteredApps.length];
+        for (int i = 0; i < params.mTargetSet.unfilteredApps.length; i++) {
+            RemoteAnimationTargetCompat app = params.mTargetSet.unfilteredApps[i];
             mTmpMatrix.setTranslate(app.position.x, app.position.y);
             Rect crop = mTmpRect;
             crop.set(app.sourceContainerBounds);
@@ -182,17 +189,17 @@ public class AppWindowAnimationHelper {
             float alpha;
             int layer = RemoteAnimationProvider.getLayer(app, mBoostModeTargetLayers);
             float cornerRadius = 0f;
-            float scale = Math.max(params.currentRect.width(), mTargetRect.width()) / crop.width();
-            if (app.mode == params.targetSet.targetMode) {
-                alpha = mTaskAlphaCallback.getAlpha(app, params.targetAlpha);
+            float scale = Math.max(mCurrentRect.width(), mTargetRect.width()) / crop.width();
+            if (app.mode == params.mTargetSet.targetMode) {
+                alpha = mTaskAlphaCallback.getAlpha(app, params.mTargetAlpha);
                 if (app.activityType != RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME) {
-                    mTmpMatrix.setRectToRect(mSourceRect, params.currentRect, ScaleToFit.FILL);
+                    mTmpMatrix.setRectToRect(mSourceRect, mCurrentRect, ScaleToFit.FILL);
                     mTmpMatrix.postTranslate(app.position.x, app.position.y);
-                    mClipRectF.roundOut(crop);
+                    mCurrentClipRectF.roundOut(crop);
                     if (mSupportsRoundedCornersOnWindows) {
-                        if (params.cornerRadius > -1) {
-                            cornerRadius = params.cornerRadius;
-                            scale = params.currentRect.width() / crop.width();
+                        if (params.mCornerRadius > -1) {
+                            cornerRadius = params.mCornerRadius;
+                            scale = mCurrentRect.width() / crop.width();
                         } else {
                             float windowCornerRadius = mUseRoundedCornersOnWindows
                                     ? mWindowCornerRadius : 0;
@@ -206,14 +213,14 @@ public class AppWindowAnimationHelper {
                             && app.isNotInRecents) {
                         alpha = 1 - Interpolators.DEACCEL_2_5.getInterpolation(progress);
                     }
-                } else if (params.targetSet.hasRecents) {
+                } else if (params.mTargetSet.hasRecents) {
                     // If home has a different target then recents, reverse anim the
                     // home target.
-                    alpha = 1 - (progress * params.targetAlpha);
+                    alpha = 1 - (progress * params.mTargetAlpha);
                 }
             } else {
                 alpha = mBaseAlphaCallback.getAlpha(app, progress);
-                if (ENABLE_QUICKSTEP_LIVE_TILE.get() && params.launcherOnTop) {
+                if (ENABLE_QUICKSTEP_LIVE_TILE.get() && params.mLauncherOnTop) {
                     crop = null;
                     layer = Integer.MAX_VALUE;
                 }
@@ -228,31 +235,35 @@ public class AppWindowAnimationHelper {
     }
 
     public RectF updateCurrentRect(TransformParams params) {
-        float progress = params.progress;
-        if (params.currentRect == null) {
-            RectF currentRect;
+        if (params.mCurrentRect != null) {
+            mCurrentRect.set(params.mCurrentRect);
+        } else {
             mTmpRectF.set(mTargetRect);
-            Utilities.scaleRectFAboutCenter(mTmpRectF, params.offsetScale);
-            currentRect = mRectFEvaluator.evaluate(progress, mSourceRect, mTmpRectF);
-            currentRect.offset(params.offsetX, 0);
-
-            // Don't clip past progress > 1.
-            progress = Math.min(1, progress);
-            final RectF sourceWindowClipInsets = params.forLiveTile
-                    ? mSourceWindowClipInsetsForLiveTile : mSourceWindowClipInsets;
-            mClipRectF.left = sourceWindowClipInsets.left * progress;
-            mClipRectF.top = sourceWindowClipInsets.top * progress;
-            mClipRectF.right =
-                    mSourceStackBounds.width() - (sourceWindowClipInsets.right * progress);
-            mClipRectF.bottom =
-                    mSourceStackBounds.height() - (sourceWindowClipInsets.bottom * progress);
-            params.setCurrentRectAndTargetAlpha(currentRect, 1);
+            Utilities.scaleRectFAboutCenter(mTmpRectF, params.mOffsetScale);
+            mCurrentRect.set(mRectFEvaluator.evaluate(params.mProgress, mSourceRect, mTmpRectF));
+            mCurrentRect.offset(params.mOffsetX, 0);
         }
-        return params.currentRect;
+
+        updateClipRect(params);
+
+        return mCurrentRect;
+    }
+
+    private void updateClipRect(TransformParams params) {
+        // Don't clip past progress > 1.
+        float progress = Math.min(1, params.mProgress);
+        final RectF sourceWindowClipInsets = params.mForLiveTile
+                ? mSourceWindowClipInsetsForLiveTile : mSourceWindowClipInsets;
+        mCurrentClipRectF.left = sourceWindowClipInsets.left * progress;
+        mCurrentClipRectF.top = sourceWindowClipInsets.top * progress;
+        mCurrentClipRectF.right =
+                mSourceStackBounds.width() - (sourceWindowClipInsets.right * progress);
+        mCurrentClipRectF.bottom =
+                mSourceStackBounds.height() - (sourceWindowClipInsets.bottom * progress);
     }
 
     public RectF getCurrentRectWithInsets() {
-        mTmpMatrix.mapRect(mCurrentRectWithInsets, mClipRectF);
+        mTmpMatrix.mapRect(mCurrentRectWithInsets, mCurrentClipRectF);
         return mCurrentRectWithInsets;
     }
 
@@ -384,75 +395,168 @@ public class AppWindowAnimationHelper {
     }
 
     public static class TransformParams {
-        float progress;
-        public float offsetX;
-        public float offsetScale;
-        public @Nullable RectF currentRect;
-        float targetAlpha;
-        boolean forLiveTile;
-        float cornerRadius;
-        boolean launcherOnTop;
-
-        public RemoteAnimationTargets targetSet;
-        public SyncRtSurfaceTransactionApplierCompat syncTransactionApplier;
+        private float mProgress;
+        private float mOffsetX;
+        private float mOffsetScale;
+        private @Nullable RectF mCurrentRect;
+        private float mTargetAlpha;
+        private boolean mForLiveTile;
+        private float mCornerRadius;
+        private boolean mLauncherOnTop;
+        private RemoteAnimationTargets mTargetSet;
+        private SyncRtSurfaceTransactionApplierCompat mSyncTransactionApplier;
 
         public TransformParams() {
-            progress = 0;
-            offsetX = 0;
-            offsetScale = 1;
-            currentRect = null;
-            targetAlpha = 0;
-            forLiveTile = false;
-            cornerRadius = -1;
-            launcherOnTop = false;
+            mProgress = 0;
+            mOffsetX = 0;
+            mOffsetScale = 1;
+            mCurrentRect = null;
+            mTargetAlpha = 1;
+            mForLiveTile = false;
+            mCornerRadius = -1;
+            mLauncherOnTop = false;
         }
 
+        /**
+         * Sets the progress of the transformation, where 0 is the source and 1 is the target. We
+         * automatically adjust properties such as currentRect and cornerRadius based on this
+         * progress, unless they are manually overridden by setting them on this TransformParams.
+         */
         public TransformParams setProgress(float progress) {
-            this.progress = progress;
-            this.currentRect = null;
+            mProgress = progress;
             return this;
         }
 
+        /**
+         * Sets the corner radius of the transformed window, in pixels. If unspecified (-1), we
+         * simply interpolate between the window's corner radius to the task view's corner radius,
+         * based on {@link #mProgress}.
+         */
         public TransformParams setCornerRadius(float cornerRadius) {
-            this.cornerRadius = cornerRadius;
+            mCornerRadius = cornerRadius;
             return this;
         }
 
-        public TransformParams setCurrentRectAndTargetAlpha(RectF currentRect, float targetAlpha) {
-            this.currentRect = currentRect;
-            this.targetAlpha = targetAlpha;
+        /**
+         * Sets the current rect to show the transformed window, in device coordinates. This gives
+         * the caller manual control of where to show the window. If unspecified (null), we
+         * interpolate between {@link AppWindowAnimationHelper#mSourceRect} and
+         * {@link AppWindowAnimationHelper#mTargetRect}, based on {@link #mProgress}.
+         */
+        public TransformParams setCurrentRect(RectF currentRect) {
+            mCurrentRect = currentRect;
             return this;
         }
 
+        /**
+         * Specifies the alpha of the transformed window. Default is 1.
+         */
+        public TransformParams setTargetAlpha(float targetAlpha) {
+            mTargetAlpha = targetAlpha;
+            return this;
+        }
+
+        /**
+         * If {@link #mCurrentRect} is null (i.e. {@link #setCurrentRect(RectF)} hasn't overridden
+         * the default), then offset the current rect by this amount after computing the rect based
+         * on {@link #mProgress}.
+         */
         public TransformParams setOffsetX(float offsetX) {
-            this.offsetX = offsetX;
+            mOffsetX = offsetX;
             return this;
         }
 
+        /**
+         * If {@link #mCurrentRect} is null (i.e. {@link #setCurrentRect(RectF)} hasn't overridden
+         * the default), then scale the current rect by this amount after computing the rect based
+         * on {@link #mProgress}.
+         */
         public TransformParams setOffsetScale(float offsetScale) {
-            this.offsetScale = offsetScale;
+            mOffsetScale = offsetScale;
             return this;
         }
 
+        /**
+         * Specifies whether we should clip the source window based on
+         * {@link AppWindowAnimationHelper#mSourceWindowClipInsetsForLiveTile} rather than
+         * {@link AppWindowAnimationHelper#mSourceWindowClipInsets} as {@link #mProgress} goes to 1.
+         */
         public TransformParams setForLiveTile(boolean forLiveTile) {
-            this.forLiveTile = forLiveTile;
+            mForLiveTile = forLiveTile;
             return this;
         }
 
+        /**
+         * If true, sets the crop = null and layer = Integer.MAX_VALUE for targets that don't match
+         * {@link #mTargetSet}.targetMode. (Currently only does this when live tiles are enabled.)
+         */
         public TransformParams setLauncherOnTop(boolean launcherOnTop) {
-            this.launcherOnTop = launcherOnTop;
+            mLauncherOnTop = launcherOnTop;
             return this;
         }
 
+        /**
+         * Specifies the set of RemoteAnimationTargetCompats that are included in the transformation
+         * that these TransformParams help compute. These TransformParams generally only apply to
+         * the targetSet.apps which match the targetSet.targetMode (e.g. the MODE_CLOSING app when
+         * swiping to home).
+         */
         public TransformParams setTargetSet(RemoteAnimationTargets targetSet) {
-            this.targetSet = targetSet;
+            mTargetSet = targetSet;
             return this;
         }
 
+        /**
+         * Sets the SyncRtSurfaceTransactionApplierCompat that will apply the SurfaceParams that
+         * are computed based on these TransformParams.
+         */
         public TransformParams setSyncTransactionApplier(
                 SyncRtSurfaceTransactionApplierCompat applier) {
-            this.syncTransactionApplier = applier;
+            mSyncTransactionApplier = applier;
             return this;
+        }
+
+        // Pubic getters so outside packages can read the values.
+
+        public float getProgress() {
+            return mProgress;
+        }
+
+        public float getOffsetX() {
+            return mOffsetX;
+        }
+
+        public float getOffsetScale() {
+            return mOffsetScale;
+        }
+
+        @Nullable
+        public RectF getCurrentRect() {
+            return mCurrentRect;
+        }
+
+        public float getTargetAlpha() {
+            return mTargetAlpha;
+        }
+
+        public boolean isForLiveTile() {
+            return mForLiveTile;
+        }
+
+        public float getCornerRadius() {
+            return mCornerRadius;
+        }
+
+        public boolean isLauncherOnTop() {
+            return mLauncherOnTop;
+        }
+
+        public RemoteAnimationTargets getTargetSet() {
+            return mTargetSet;
+        }
+
+        public SyncRtSurfaceTransactionApplierCompat getSyncTransactionApplier() {
+            return mSyncTransactionApplier;
         }
     }
 }
