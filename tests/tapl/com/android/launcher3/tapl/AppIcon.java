@@ -22,6 +22,8 @@ import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.UiObject2;
 
+import com.android.launcher3.testing.TestProtocol;
+
 import java.util.regex.Pattern;
 
 /**
@@ -56,6 +58,6 @@ public final class AppIcon extends Launchable {
 
     @Override
     protected void expectActivityStartEvents() {
-        mLauncher.expectEvent(START_EVENT);
+        mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, START_EVENT);
     }
 }

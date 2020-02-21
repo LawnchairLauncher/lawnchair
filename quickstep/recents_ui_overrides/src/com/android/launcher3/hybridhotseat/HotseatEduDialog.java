@@ -15,6 +15,9 @@
  */
 package com.android.launcher3.hybridhotseat;
 
+import static com.android.launcher3.logging.LoggerUtils.newLauncherEvent;
+import static com.android.launcher3.userevent.nano.LauncherLogProto.ControlType.HYBRID_HOTSEAT_CANCELED;
+
 import android.animation.PropertyValuesHolder;
 import android.content.Context;
 import android.content.res.Configuration;
@@ -32,6 +35,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.anim.Interpolators;
+import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.uioverrides.PredictedAppIcon;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.views.AbstractSlideInView;
@@ -95,6 +99,7 @@ public class HotseatEduDialog extends AbstractSlideInView implements Insettable 
         handleClose(true);
         mHotseatEduController.migrate();
         mHotseatEduController.finishOnboarding();
+        logUserAction(true);
         Toast.makeText(mLauncher, R.string.hotseat_items_migrated, Toast.LENGTH_LONG).show();
     }
 
@@ -102,6 +107,7 @@ public class HotseatEduDialog extends AbstractSlideInView implements Insettable 
         if (mHotseatEduController == null) return;
         Toast.makeText(getContext(), R.string.hotseat_no_migration, Toast.LENGTH_LONG).show();
         mHotseatEduController.finishOnboarding();
+        logUserAction(false);
         handleClose(true);
     }
 
@@ -133,7 +139,28 @@ public class HotseatEduDialog extends AbstractSlideInView implements Insettable 
                 mLauncher.getDeviceProfile().hotseatBarSizePx + insets.bottom;
     }
 
+    private void logUserAction(boolean migrated) {
+        LauncherLogProto.Action action = new LauncherLogProto.Action();
+        LauncherLogProto.Target target = new LauncherLogProto.Target();
+        action.type = LauncherLogProto.Action.Type.TOUCH;
+        action.touch = LauncherLogProto.Action.Touch.TAP;
+        target.containerType = LauncherLogProto.ContainerType.TIP;
+        target.tipType = LauncherLogProto.TipType.HYBRID_HOTSEAT;
+        target.controlType = migrated ? LauncherLogProto.ControlType.HYBRID_HOTSEAT_ACCEPTED
+                : HYBRID_HOTSEAT_CANCELED;
+        LauncherLogProto.LauncherEvent event = newLauncherEvent(action, target);
+        UserEventDispatcher.newInstance(getContext()).dispatchUserEvent(event, null);
+    }
 
+    private void logOnBoardingSeen() {
+        LauncherLogProto.Action action = new LauncherLogProto.Action();
+        LauncherLogProto.Target target = new LauncherLogProto.Target();
+        action.type = LauncherLogProto.Action.Type.TIP;
+        target.containerType = LauncherLogProto.ContainerType.TIP;
+        target.tipType = LauncherLogProto.TipType.HYBRID_HOTSEAT;
+        LauncherLogProto.LauncherEvent event = newLauncherEvent(action, target);
+        UserEventDispatcher.newInstance(getContext()).dispatchUserEvent(event, null);
+    }
     private void animateOpen() {
         if (mIsOpen || mOpenCloseAnimator.isRunning()) {
             return;
@@ -165,6 +192,7 @@ public class HotseatEduDialog extends AbstractSlideInView implements Insettable 
             return;
         }
         mLauncher.getDragLayer().addView(this);
+        logOnBoardingSeen();
         animateOpen();
         for (int i = 0; i < mLauncher.getDeviceProfile().inv.numHotseatIcons; i++) {
             WorkspaceItemInfo info = predictions.get(i);

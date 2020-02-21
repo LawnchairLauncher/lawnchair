@@ -33,6 +33,7 @@ import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_ACTIONS;
 import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
 import static com.android.launcher3.states.RotationHelper.REQUEST_ROTATE;
 import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
+import static com.android.quickstep.SysUINavigationMode.removeShelfFromOverview;
 
 import android.graphics.Rect;
 import android.view.View;
@@ -125,7 +126,8 @@ public class OverviewState extends LauncherState {
 
     @Override
     public ScaleAndTranslation getQsbScaleAndTranslation(Launcher launcher) {
-        if (this == OVERVIEW && ENABLE_OVERVIEW_ACTIONS.get()) {
+        if (this == OVERVIEW && ENABLE_OVERVIEW_ACTIONS.get()
+                && removeShelfFromOverview(launcher)) {
             // Treat the QSB as part of the hotseat so they move together.
             return getHotseatScaleAndTranslation(launcher);
         }
@@ -158,7 +160,7 @@ public class OverviewState extends LauncherState {
         if (launcher.getDeviceProfile().isVerticalBarLayout()) {
             return VERTICAL_SWIPE_INDICATOR | RECENTS_CLEAR_ALL_BUTTON;
         } else {
-            if (ENABLE_OVERVIEW_ACTIONS.get()) {
+            if (ENABLE_OVERVIEW_ACTIONS.get() && removeShelfFromOverview(launcher)) {
                 return VERTICAL_SWIPE_INDICATOR | RECENTS_CLEAR_ALL_BUTTON;
             }
 
@@ -229,6 +231,7 @@ public class OverviewState extends LauncherState {
             builder.setInterpolator(ANIM_WORKSPACE_FADE, OVERSHOOT_1_2);
             builder.setInterpolator(ANIM_OVERVIEW_SCALE, OVERSHOOT_1_2);
             Interpolator translationInterpolator = ENABLE_OVERVIEW_ACTIONS.get()
+                    && removeShelfFromOverview(launcher)
                     ? OVERSHOOT_1_2
                     : OVERSHOOT_1_7;
             builder.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X, translationInterpolator);

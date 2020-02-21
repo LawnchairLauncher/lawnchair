@@ -96,7 +96,7 @@ public class FocusHelper {
             }
 
             if (!(v.getParent() instanceof ShortcutAndWidgetContainer)) {
-                if (FeatureFlags.IS_DOGFOOD_BUILD) {
+                if (FeatureFlags.IS_STUDIO_BUILD) {
                     throw new IllegalStateException("Parent of the focused item is not supported.");
                 } else {
                     return false;

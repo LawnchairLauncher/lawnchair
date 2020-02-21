@@ -42,7 +42,7 @@ public final class FileLog {
     private static Handler sHandler = null;
     private static File sLogsDirectory = null;
 
-    private static final int LOG_DAYS = 2;
+    public static final int LOG_DAYS = 4;
 
     public static void setDir(File logsDir) {
         if (ENABLED) {

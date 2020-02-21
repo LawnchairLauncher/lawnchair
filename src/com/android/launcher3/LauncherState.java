@@ -41,8 +41,10 @@ import static com.android.launcher3.testing.TestProtocol.OVERVIEW_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.QUICK_SWITCH_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.SPRING_LOADED_STATE_ORDINAL;
 
+import android.view.View;
 import android.view.animation.Interpolator;
 
+import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.states.HintState;
 import com.android.launcher3.states.SpringLoadedState;
@@ -337,8 +339,13 @@ public abstract class LauncherState {
                 hotseat.setScaleX(0.92f);
                 hotseat.setScaleY(0.92f);
                 if (ENABLE_OVERVIEW_ACTIONS.get()) {
-                    launcher.getAppsView().setScaleX(0.92f);
-                    launcher.getAppsView().setScaleY(0.92f);
+                    AllAppsContainerView qsbContainer = launcher.getAppsView();
+                    View qsb = qsbContainer.getSearchView();
+                    boolean qsbVisible = qsb.getVisibility() == VISIBLE && qsb.getAlpha() > 0;
+                    if (!qsbVisible) {
+                        qsbContainer.setScaleX(0.92f);
+                        qsbContainer.setScaleY(0.92f);
+                    }
                 }
             }
         } else if (this == NORMAL && fromState == OVERVIEW_PEEK) {

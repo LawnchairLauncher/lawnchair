@@ -86,6 +86,7 @@ public class PredictedAppIcon extends DoubleShadowBubbleTextView {
         mIsDrawingDot = true;
         int count = canvas.save();
         canvas.translate(-getWidth() * RING_EFFECT_RATIO, -getHeight() * RING_EFFECT_RATIO);
+        canvas.scale(1 + 2 * RING_EFFECT_RATIO, 1 + 2 * RING_EFFECT_RATIO);
         super.drawDotIfNecessary(canvas);
         canvas.restoreToCount(count);
         mIsDrawingDot = false;
