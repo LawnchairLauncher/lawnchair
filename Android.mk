@@ -17,24 +17,6 @@
 LOCAL_PATH := $(call my-dir)
 
 #
-# Build rule for plugin lib (needed to write a plugin).
-#
-include $(CLEAR_VARS)
-LOCAL_USE_AAPT2 := true
-LOCAL_AAPT2_ONLY := true
-LOCAL_MODULE_TAGS := optional
-LOCAL_STATIC_JAVA_LIBRARIES:= PluginCoreLib
-
-LOCAL_SRC_FILES := \
-    $(call all-java-files-under, src_plugins)
-
-LOCAL_SDK_VERSION := current
-LOCAL_MIN_SDK_VERSION := 28
-LOCAL_MODULE := LauncherPluginLib
-
-include $(BUILD_STATIC_JAVA_LIBRARY)
-
-#
 # Build rule for Launcher3 dependencies lib.
 #
 include $(CLEAR_VARS)
