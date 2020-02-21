@@ -23,7 +23,6 @@ import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.WorkspaceItemInfo;
-import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.shortcuts.ShortcutRequest;
 import com.android.launcher3.util.ItemInfoMatcher;
@@ -89,12 +88,7 @@ public class ShortcutsChangedTask extends BaseModelUpdateTask {
                 }
                 for (final WorkspaceItemInfo workspaceItemInfo : workspaceItemInfos) {
                     workspaceItemInfo.updateFromDeepShortcutInfo(fullDetails, context);
-                    // If the shortcut is pinned but no longer has an icon in the system,
-                    // keep the current icon instead of reverting to the default icon.
-                    LauncherIcons li = LauncherIcons.obtain(context);
-                    workspaceItemInfo.bitmap = li.createShortcutIcon(
-                            fullDetails, true, () -> workspaceItemInfo);
-                    li.recycle();
+                    app.getIconCache().getShortcutIcon(workspaceItemInfo, fullDetails);
                     updatedWorkspaceItemInfos.add(workspaceItemInfo);
                 }
             }

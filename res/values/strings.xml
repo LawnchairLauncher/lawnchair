@@ -142,7 +142,7 @@
     <string name="uninstall_system_app_text">This is a system app and can\'t be uninstalled.</string>
 
     <!-- Default folder title -->
-    <string name="folder_hint_text">Unnamed Folder</string>
+    <string name="folder_hint_text">Edit Name</string>
 
     <!-- Accessibility -->
     <!-- The format string for when an app is temporarily disabled. -->

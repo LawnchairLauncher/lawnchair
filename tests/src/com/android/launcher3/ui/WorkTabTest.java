@@ -16,16 +16,31 @@
 package com.android.launcher3.ui;
 
 import static com.android.launcher3.LauncherState.ALL_APPS;
+import static com.android.launcher3.util.rule.TestStabilityRule.LOCAL;
+import static com.android.launcher3.util.rule.TestStabilityRule.UNBUNDLED_POSTSUBMIT;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
+import android.os.Process;
+import android.os.UserHandle;
+import android.os.UserManager;
 
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
+
+import com.android.launcher3.allapps.AllAppsContainerView;
+import com.android.launcher3.allapps.AllAppsPagedView;
+import com.android.launcher3.util.rule.TestStabilityRule;
+import com.android.launcher3.views.WorkFooterContainer;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.util.List;
+import java.util.Objects;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
@@ -52,16 +67,50 @@ public class WorkTabTest extends AbstractLauncherUiTest {
     }
 
     @Test
+    // b/143285809 Remove @Stability on 02/21/20 if the test doesn't flake.
+    @TestStabilityRule.Stability(flavors = LOCAL | UNBUNDLED_POSTSUBMIT)
     public void workTabExists() {
         mDevice.pressHome();
-        waitForLauncherCondition("Launcher didn't start", launcher -> launcher != null);
+        waitForLauncherCondition("Launcher didn't start", Objects::nonNull);
         executeOnLauncher(launcher -> launcher.getStateManager().goToState(ALL_APPS));
 
-        /*
-        assertTrue("Personal tab is missing", waitForLauncherCondition(
-                launcher -> launcher.getAppsView().isPersonalTabVisible()));
-        assertTrue("Work tab is missing", waitForLauncherCondition(
-                launcher -> launcher.getAppsView().isWorkTabVisible()));
-        */
+        waitForLauncherCondition("Personal tab is missing",
+                launcher -> launcher.getAppsView().isPersonalTabVisible());
+        waitForLauncherCondition("Work tab is missing",
+                launcher -> launcher.getAppsView().isWorkTabVisible());
     }
+
+    @Test
+    // b/143285809 Remove @Stability on 02/21/20 if the test doesn't flake.
+    @TestStabilityRule.Stability(flavors = LOCAL | UNBUNDLED_POSTSUBMIT)
+    public void toggleWorks() {
+        mDevice.pressHome();
+        waitForLauncherCondition("Launcher didn't start", Objects::nonNull);
+        executeOnLauncher(launcher -> launcher.getStateManager().goToState(ALL_APPS));
+        waitForState("Launcher internal state didn't switch to All Apps", () -> ALL_APPS);
+        getOnceNotNull("Apps view did not bind",
+                launcher -> launcher.getAppsView().getWorkFooterContainer());
+
+        UserManager userManager = getFromLauncher(l -> l.getSystemService(UserManager.class));
+        assertEquals(2, userManager.getUserProfiles().size());
+        UserHandle workProfile = getFromLauncher(l -> {
+            UserHandle myHandle = Process.myUserHandle();
+            List<UserHandle> userProfiles = userManager.getUserProfiles();
+            return userProfiles.get(0) == myHandle ? userProfiles.get(1) : userProfiles.get(0);
+        });
+
+        waitForLauncherCondition("work profile can't be turned off",
+                l -> userManager.requestQuietModeEnabled(true, workProfile));
+
+        assertTrue(userManager.isQuietModeEnabled(workProfile));
+        executeOnLauncher(launcher -> {
+            WorkFooterContainer wf = launcher.getAppsView().getWorkFooterContainer();
+            ((AllAppsPagedView) launcher.getAppsView().getContentView()).snapToPageImmediately(
+                    AllAppsContainerView.AdapterHolder.WORK);
+            wf.getWorkModeSwitch().toggle();
+        });
+        waitForLauncherCondition("Work toggle did not work",
+                l -> l.getSystemService(UserManager.class).isQuietModeEnabled(workProfile));
+    }
+
 }

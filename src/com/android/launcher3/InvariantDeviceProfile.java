@@ -119,6 +119,7 @@ public class InvariantDeviceProfile {
      */
     public int numAllAppsColumns;
 
+    public String dbFile;
     public int defaultLayoutId;
     int demoModeLayoutId;
 
@@ -146,6 +147,7 @@ public class InvariantDeviceProfile {
         iconTextSize = p.iconTextSize;
         numHotseatIcons = p.numHotseatIcons;
         numAllAppsColumns = p.numAllAppsColumns;
+        dbFile = p.dbFile;
         defaultLayoutId = p.defaultLayoutId;
         demoModeLayoutId = p.demoModeLayoutId;
         mExtraAttrs = p.mExtraAttrs;
@@ -292,6 +294,7 @@ public class InvariantDeviceProfile {
         numRows = closestProfile.numRows;
         numColumns = closestProfile.numColumns;
         numHotseatIcons = closestProfile.numHotseatIcons;
+        dbFile = closestProfile.dbFile;
         defaultLayoutId = closestProfile.defaultLayoutId;
         demoModeLayoutId = closestProfile.demoModeLayoutId;
         numFolderRows = closestProfile.numFolderRows;
@@ -559,6 +562,7 @@ public class InvariantDeviceProfile {
 
         private final int numHotseatIcons;
 
+        private final String dbFile;
         private final int defaultLayoutId;
         private final int demoModeLayoutId;
 
@@ -571,6 +575,7 @@ public class InvariantDeviceProfile {
             numRows = a.getInt(R.styleable.GridDisplayOption_numRows, 0);
             numColumns = a.getInt(R.styleable.GridDisplayOption_numColumns, 0);
 
+            dbFile = a.getString(R.styleable.GridDisplayOption_dbFile);
             defaultLayoutId = a.getResourceId(
                     R.styleable.GridDisplayOption_defaultLayoutId, 0);
             demoModeLayoutId = a.getResourceId(

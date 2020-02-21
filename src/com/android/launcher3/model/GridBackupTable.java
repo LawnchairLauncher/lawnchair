@@ -74,8 +74,8 @@ public class GridBackupTable {
     @IntDef({STATE_NOT_FOUND, STATE_RAW, STATE_SANITIZED})
     private @interface BackupState { }
 
-    public GridBackupTable(Context context, SQLiteDatabase db,
-            int hotseatSize, int gridX, int gridY) {
+    public GridBackupTable(Context context, SQLiteDatabase db, int hotseatSize, int gridX,
+            int gridY) {
         mContext = context;
         mDb = db;
 
@@ -105,7 +105,7 @@ public class GridBackupTable {
         }
         long userSerial = UserCache.INSTANCE.get(mContext).getSerialNumberForUser(
                 Process.myUserHandle());
-        copyTable(BACKUP_TABLE_NAME, Favorites.TABLE_NAME, userSerial);
+        copyTable(mDb, BACKUP_TABLE_NAME, Favorites.TABLE_NAME, userSerial);
         Log.d(TAG, "Backup table found");
         return true;
     }
@@ -118,10 +118,10 @@ public class GridBackupTable {
     /**
      * Copy valid grid entries from one table to another.
      */
-    private void copyTable(String from, String to, long userSerial) {
-        dropTable(mDb, to);
-        Favorites.addTableToDb(mDb, userSerial, false, to);
-        mDb.execSQL("INSERT INTO " + to + " SELECT * FROM " + from + " where _id > " + ID_PROPERTY);
+    private static void copyTable(SQLiteDatabase db, String from, String to, long userSerial) {
+        dropTable(db, to);
+        Favorites.addTableToDb(db, userSerial, false, to);
+        db.execSQL("INSERT INTO " + to + " SELECT * FROM " + from + " where _id > " + ID_PROPERTY);
     }
 
     private void encodeDBProperties(int options) {
@@ -174,7 +174,7 @@ public class GridBackupTable {
             // skip restore if dimensions in backup table differs from current setup.
             return false;
         }
-        copyTable(Favorites.BACKUP_TABLE_NAME, Favorites.TABLE_NAME, oldProfileId);
+        copyTable(mDb, Favorites.BACKUP_TABLE_NAME, Favorites.TABLE_NAME, oldProfileId);
         Log.d(TAG, "Backup restored");
         return true;
     }
@@ -183,7 +183,7 @@ public class GridBackupTable {
      * Performs a backup on the workspace layout.
      */
     public void doBackup(long profileId, int options) {
-        copyTable(Favorites.TABLE_NAME, Favorites.BACKUP_TABLE_NAME, profileId);
+        copyTable(mDb, Favorites.TABLE_NAME, Favorites.BACKUP_TABLE_NAME, profileId);
         encodeDBProperties(options);
     }
 

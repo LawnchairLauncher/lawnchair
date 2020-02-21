@@ -49,8 +49,9 @@ public class FileLogTest {
     @After
     public void tearDown() {
         // Clear existing logs
-        new File(mTempDir, "log-0").delete();
-        new File(mTempDir, "log-1").delete();
+        for (int i = 0; i < FileLog.LOG_DAYS; i++) {
+            new File(mTempDir, "log-" + i).delete();
+        }
         mTempDir.delete();
 
         mTestActive = false;
@@ -89,8 +90,9 @@ public class FileLogTest {
 
         Calendar threeDaysAgo = Calendar.getInstance();
         threeDaysAgo.add(Calendar.HOUR, -72);
-        new File(mTempDir, "log-0").setLastModified(threeDaysAgo.getTimeInMillis());
-        new File(mTempDir, "log-1").setLastModified(threeDaysAgo.getTimeInMillis());
+        for (int i = 0; i < FileLog.LOG_DAYS; i++) {
+            new File(mTempDir, "log-" + i).setLastModified(threeDaysAgo.getTimeInMillis());
+        }
 
         FileLog.print("Testing", "abracadabra", new Exception("cat! cat!"));
         writer = new StringWriter();

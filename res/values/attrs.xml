@@ -40,6 +40,8 @@
     <attr name="folderIconRadius" format="float" />
     <attr name="folderIconBorderColor" format="color" />
     <attr name="folderTextColor" format="color" />
+    <attr name="folderHintColor" format="color" />
+    <attr name="workProfileOverlayTextColor" format="color" />
 
     <!-- BubbleTextView specific attributes. -->
     <declare-styleable name="BubbleTextView">
@@ -115,6 +117,7 @@
         <attr name="numFolderColumns" format="integer" />
         <!-- numHotseatIcons defaults to numColumns, if not specified -->
         <attr name="numHotseatIcons" format="integer" />
+        <attr name="dbFile" format="string" />
         <attr name="defaultLayoutId" format="reference" />
         <attr name="demoModeLayoutId" format="reference" />
     </declare-styleable>

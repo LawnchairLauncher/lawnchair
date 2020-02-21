@@ -35,6 +35,7 @@ import android.util.SparseIntArray;
 
 import com.android.systemui.shared.system.PackageManagerWrapper;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -232,5 +233,14 @@ public final class OverviewComponentObserver {
      */
     public BaseActivityInterface getActivityInterface() {
         return mActivityInterface;
+    }
+
+    public void dump(PrintWriter pw) {
+        pw.println("OverviewComponentObserver:");
+        pw.println("  isDefaultHome=" + mIsDefaultHome);
+        pw.println("  isHomeDisabled=" + mIsHomeDisabled);
+        pw.println("  homeAndOverviewSame=" + mIsHomeAndOverviewSame);
+        pw.println("  overviewIntent=" + mOverviewIntent);
+        pw.println("  homeIntent=" + mCurrentHomeIntent);
     }
 }

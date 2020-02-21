@@ -48,6 +48,8 @@ public class FolderInfo extends ItemInfo {
 
     public static final int FLAG_MANUAL_FOLDER_NAME = 0x00000008;
 
+    public static final String EXTRA_FOLDER_SUGGESTIONS = "suggest";
+
     public int options;
 
     public Intent suggestedFolderNames;

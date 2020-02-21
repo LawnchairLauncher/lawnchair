@@ -16,6 +16,7 @@
 package com.android.quickstep.util;
 
 import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_ACTIONS;
+import static com.android.quickstep.SysUINavigationMode.removeShelfFromOverview;
 
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
@@ -59,7 +60,7 @@ public class LayoutUtils {
         } else {
             Resources res = context.getResources();
 
-            if (ENABLE_OVERVIEW_ACTIONS.get()) {
+            if (ENABLE_OVERVIEW_ACTIONS.get() && removeShelfFromOverview(context)) {
                 //TODO: this needs to account for the swipe gesture height and accessibility
                 // UI when shown.
                 extraSpace = 0;
@@ -83,6 +84,7 @@ public class LayoutUtils {
         float taskWidth, taskHeight, paddingHorz;
         Resources res = context.getResources();
         Rect insets = dp.getInsets();
+        final boolean overviewActionsEnabled = ENABLE_OVERVIEW_ACTIONS.get();
 
         if (dp.isMultiWindowMode) {
             if (multiWindowStrategy == MULTI_WINDOW_STRATEGY_HALF_SCREEN) {
@@ -112,7 +114,7 @@ public class LayoutUtils {
             final int paddingResId;
             if (dp.isVerticalBarLayout()) {
                 paddingResId = R.dimen.landscape_task_card_horz_space;
-            } else if (ENABLE_OVERVIEW_ACTIONS.get()) {
+            } else if (overviewActionsEnabled && removeShelfFromOverview(context)) {
                 paddingResId = R.dimen.portrait_task_card_horz_space_big_overview;
             } else {
                 paddingResId = R.dimen.portrait_task_card_horz_space;
@@ -120,9 +122,11 @@ public class LayoutUtils {
             paddingHorz = res.getDimension(paddingResId);
         }
 
-        float topIconMargin =   res.getDimension(R.dimen.task_thumbnail_top_margin);
-        float bottomMargin = thumbnailBottomMargin(res);
-        float paddingVert = res.getDimension(R.dimen.task_card_vert_space);
+        float topIconMargin = res.getDimension(R.dimen.task_thumbnail_top_margin);
+        float bottomMargin = thumbnailBottomMargin(context);
+
+        float paddingVert = overviewActionsEnabled && removeShelfFromOverview(context)
+                ? 0 : res.getDimension(R.dimen.task_card_vert_space);
 
         // Note this should be same as dp.availableWidthPx and dp.availableHeightPx unless
         // we override the insets ourselves.
@@ -140,14 +144,14 @@ public class LayoutUtils {
         // Center in the visible space
         float x = insets.left + (launcherVisibleWidth - outWidth) / 2;
         float y = insets.top + Math.max(topIconMargin,
-                (launcherVisibleHeight - extraVerticalSpace - outHeight) / 2);
+                (launcherVisibleHeight - extraVerticalSpace - outHeight - bottomMargin) / 2);
         outRect.set(Math.round(x), Math.round(y),
                 Math.round(x) + Math.round(outWidth), Math.round(y) + Math.round(outHeight));
     }
 
     public static int getShelfTrackingDistance(Context context, DeviceProfile dp) {
         // Track the bottom of the window.
-        if (ENABLE_OVERVIEW_ACTIONS.get()) {
+        if (ENABLE_OVERVIEW_ACTIONS.get() && removeShelfFromOverview(context)) {
             Rect taskSize = new Rect();
             calculateLauncherTaskSize(context, dp, taskSize);
             return (dp.heightPx - taskSize.height()) / 2;
@@ -162,9 +166,9 @@ public class LayoutUtils {
      * Get the margin that the task thumbnail view should use.
      * @return the margin in pixels.
      */
-    public static int thumbnailBottomMargin(Resources resources) {
-        if (ENABLE_OVERVIEW_ACTIONS.get()) {
-            return resources.getDimensionPixelSize(R.dimen.overview_actions_height);
+    public static int thumbnailBottomMargin(Context context) {
+        if (ENABLE_OVERVIEW_ACTIONS.get() && removeShelfFromOverview(context)) {
+            return context.getResources().getDimensionPixelSize(R.dimen.overview_actions_height);
         } else {
             return 0;
         }

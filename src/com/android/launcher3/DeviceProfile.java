@@ -271,7 +271,7 @@ public class DeviceProfile {
         // In multi-window mode, we can have widthPx = availableWidthPx
         // and heightPx = availableHeightPx because Launcher uses the InvariantDeviceProfiles'
         // widthPx and heightPx values where it's needed.
-        DeviceProfile profile = new DeviceProfile(context, inv, originalIdp, mwSize, mwSize,
+        DeviceProfile profile = new DeviceProfile(context, inv, null, mwSize, mwSize,
                 mwSize.x, mwSize.y, isLandscape, true);
 
         // If there isn't enough vertical cell padding with the labels displayed, hide the labels.

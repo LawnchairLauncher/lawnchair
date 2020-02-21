@@ -55,7 +55,7 @@ class FailureInvestigator {
     private static final ExceptionMatch[] EXCEPTION_MATCHES = {
             new ExceptionMatch(
                     "java.lang.AssertionError: http://go/tapl : Tests are broken by a "
-                            + "non-Launcher system error: Phone is locked",
+                            + "non-Launcher system error: (Phone is locked|Screen is empty)",
                     new LogcatMatch[]{
                             new LogcatMatch(
                                     "BroadcastQueue: Can't deliver broadcast to com.android"
@@ -87,6 +87,11 @@ class FailureInvestigator {
             return 145935261;
         }
 
+        if (matches("java\\.lang\\.AssertionError\\: http\\:\\/\\/go\\/tapl \\: want to get "
+                + "workspace object; Presence of recents button doesn't match the interaction "
+                + "mode, mode\\=ZERO_BUTTON, hasRecents\\=true", exception)) {
+            return 148422894;
+        }
 
         final String logSinceBoot;
         try {

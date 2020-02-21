@@ -41,7 +41,7 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.WorkspaceItemInfo;
-import com.android.launcher3.icons.ComponentWithLabel;
+import com.android.launcher3.icons.ComponentWithLabelAndIcon;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.util.PackageUserKey;
 
@@ -51,7 +51,7 @@ import java.util.List;
 /**
  * Wrapper class for representing a shortcut configure activity.
  */
-public abstract class ShortcutConfigActivityInfo implements ComponentWithLabel {
+public abstract class ShortcutConfigActivityInfo implements ComponentWithLabelAndIcon {
 
     private static final String TAG = "SCActivityInfo";
 
@@ -77,6 +77,7 @@ public abstract class ShortcutConfigActivityInfo implements ComponentWithLabel {
         return LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
     }
 
+    @Override
     public abstract Drawable getFullResIcon(IconCache cache);
 
     /**

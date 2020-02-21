@@ -130,7 +130,7 @@ public class MultiStateCallback {
             final LinkedList<Runnable> callbacks;
             if (mCallbacks.indexOfKey(stateMask) >= 0) {
                 callbacks = mCallbacks.get(stateMask);
-                if (FeatureFlags.IS_DOGFOOD_BUILD && callbacks.contains(callback)) {
+                if (FeatureFlags.IS_STUDIO_BUILD && callbacks.contains(callback)) {
                     throw new IllegalStateException("Existing callback for state found");
                 }
             } else {
