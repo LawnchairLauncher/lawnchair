@@ -33,6 +33,7 @@ import static com.android.launcher3.userevent.LauncherLogProto.Target.FromFolder
 
 import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
+import static java.util.Optional.ofNullable;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -322,12 +323,11 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         post(() -> {
             if (FeatureFlags.FOLDER_NAME_SUGGEST.get()) {
                 if (isEmpty(mFolderName.getText())) {
-                    FolderNameInfo[] nameInfos =
-                            (FolderNameInfo[]) mInfo.suggestedFolderNames.getParcelableArrayExtra(
-                                    FolderInfo.EXTRA_FOLDER_SUGGESTIONS);
-                    if (nameInfos != null) {
-                        showLabelSuggestion(nameInfos, false);
-                    }
+                    ofNullable(mInfo)
+                            .map(info -> info.suggestedFolderNames)
+                            .map(folderNames -> (FolderNameInfo[]) folderNames
+                                    .getParcelableArrayExtra(FolderInfo.EXTRA_FOLDER_SUGGESTIONS))
+                            .ifPresent(nameInfos -> showLabelSuggestion(nameInfos, false));
                 }
             }
             mFolderName.setHint("");
@@ -1647,26 +1647,8 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
                 checkNotNull(mFolderName.getText().toString(),
                         "Expected valid folder label, but found null");
 
-        Optional<String[]> suggestedLabels = Optional.ofNullable(
-                (FolderNameInfo[]) mInfo.suggestedFolderNames
-                        .getParcelableArrayExtra(FolderInfo.EXTRA_FOLDER_SUGGESTIONS))
-                .map(folderNameInfoArray ->
-                        stream(folderNameInfoArray)
-                                .filter(Objects::nonNull)
-                                .map(FolderNameInfo::getLabel)
-                                .map(CharSequence::toString)
-                                .toArray(String[]::new));
-
-
-        int accepted_suggestion_index = suggestedLabels
-                .map(folderNameInfoArray ->
-                        IntStream.range(0, folderNameInfoArray.length)
-                                .filter(index -> newLabel.equalsIgnoreCase(
-                                        folderNameInfoArray[index]))
-                                .findFirst()
-                                .orElse(-1)
-                ).orElse(-1);
-
+        Optional<String[]> suggestedLabels = getSuggestedLabels();
+        int accepted_suggestion_index = getAcceptedSuggestionIndex();
         boolean hasValidPrimary = suggestedLabels
                 .map(labels -> labels.length > 0 && !isEmpty(labels[0]))
                 .orElse(false);
@@ -1693,6 +1675,39 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
                             + accepted_suggestion_index
                             + primarySuffix)
                         : Target.ToFolderLabelState.valueOf("TO_CUSTOM" + suggestionsSuffix);
+    }
+
+    private Optional<String[]> getSuggestedLabels() {
+        return ofNullable(mInfo)
+            .map(info -> info.suggestedFolderNames)
+            .map(
+                folderNames ->
+                    (FolderNameInfo[])
+                        folderNames.getParcelableArrayExtra(FolderInfo.EXTRA_FOLDER_SUGGESTIONS))
+            .map(
+                folderNameInfoArray ->
+                    stream(folderNameInfoArray)
+                        .filter(Objects::nonNull)
+                        .map(FolderNameInfo::getLabel)
+                        .filter(Objects::nonNull)
+                        .map(CharSequence::toString)
+                        .toArray(String[]::new));
+    }
+
+    private int getAcceptedSuggestionIndex() {
+        String newLabel =
+                checkNotNull(mFolderName.getText().toString(),
+                        "Expected valid folder label, but found null");
+
+        return getSuggestedLabels()
+                .map(suggestionsArray ->
+                        IntStream.range(0, suggestionsArray.length)
+                                .filter(index -> newLabel.equalsIgnoreCase(
+                                        suggestionsArray[index]))
+                                .findFirst()
+                                .orElse(-1)
+                ).orElse(-1);
+
     }
 
 
