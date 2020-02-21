@@ -346,7 +346,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         }
 
         mInfo.title = newTitle;
-        mInfo.setOption(FLAG_MANUAL_FOLDER_NAME, mFolderName.isEnteredCompose(),
+        mInfo.setOption(FLAG_MANUAL_FOLDER_NAME, getAcceptedSuggestionIndex() < 0,
                 mLauncher.getModelWriter());
         mFolderIcon.onTitleChanged(newTitle);
         mLauncher.getModelWriter().updateItemInDatabase(mInfo);
@@ -437,11 +437,11 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         }
         mItemsInvalidated = true;
         mInfo.addListener(this);
+        mPreviousLabel = mInfo.title.toString();
+        mIsPreviousLabelSuggested = !mInfo.hasOption(FLAG_MANUAL_FOLDER_NAME);
 
         if (!isEmpty(mInfo.title)) {
             mFolderName.setText(mInfo.title);
-            mPreviousLabel = mInfo.title.toString();
-            mIsPreviousLabelSuggested = !mInfo.hasOption(FLAG_MANUAL_FOLDER_NAME);
             mFolderName.setHint(null);
         } else {
             mFolderName.setText("");
