@@ -80,6 +80,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.OvershootInterpolator;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -273,6 +274,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     // UI and state for the overview panel
     private View mOverviewPanel;
+    private FrameLayout mOverviewPanelContainer;
 
     @Thunk
     boolean mWorkspaceLoading = true;
@@ -1143,7 +1145,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         mFocusHandler = mDragLayer.getFocusIndicatorHelper();
         mWorkspace = mDragLayer.findViewById(R.id.workspace);
         mWorkspace.initParentViews(mDragLayer);
-        mOverviewPanel = findViewById(R.id.overview_panel);
+        mOverviewPanel = findViewById(R.id.overview_panel_recents);
+        mOverviewPanelContainer = findViewById(R.id.overview_panel_container);
         mHotseat = findViewById(R.id.hotseat);
 
         mLauncherView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -1384,6 +1387,10 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     public <T extends View> T getOverviewPanel() {
         return (T) mOverviewPanel;
+    }
+
+    public FrameLayout getOverviewPanelContainer() {
+        return mOverviewPanelContainer;
     }
 
     public DropTargetBar getDropTargetBar() {
