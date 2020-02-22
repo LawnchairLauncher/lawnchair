@@ -201,8 +201,7 @@ public class LauncherRecentsView extends RecentsView<Launcher> implements StateL
             if (tv.isRunningTask()) {
                 mTransformParams.setProgress(1 - progress)
                         .setCurrentRect(null)
-                        .setSyncTransactionApplier(mSyncTransactionApplier)
-                        .setForLiveTile(true);
+                        .setSyncTransactionApplier(mSyncTransactionApplier);
                 mAppWindowAnimationHelper.applyTransform(mTransformParams);
             } else {
                 redrawLiveTile(true);

@@ -70,9 +70,6 @@ public class AppWindowAnimationHelper {
     // if the aspect ratio of the target is smaller than the aspect ratio of the source rect. In
     // app window coordinates.
     private final RectF mSourceWindowClipInsets = new RectF();
-    // The insets to be used for clipping the app window. For live tile, we don't transform the clip
-    // relative to the target rect.
-    private final RectF mSourceWindowClipInsetsForLiveTile = new RectF();
     // The clip rect in source app window coordinates. The app window surface will only be drawn
     // within these bounds. This clip rect starts at the full mSourceStackBounds, and insets by
     // mSourceWindowClipInsets as the transform progress goes to 1.
@@ -149,7 +146,6 @@ public class AppWindowAnimationHelper {
                 Math.max(scaledTargetRect.top, 0),
                 Math.max(mSourceStackBounds.width() - scaledTargetRect.right, 0),
                 Math.max(mSourceStackBounds.height() - scaledTargetRect.bottom, 0));
-        mSourceWindowClipInsetsForLiveTile.set(mSourceWindowClipInsets);
         mSourceRect.set(scaledTargetRect);
     }
 
@@ -252,14 +248,12 @@ public class AppWindowAnimationHelper {
     private void updateClipRect(TransformParams params) {
         // Don't clip past progress > 1.
         float progress = Math.min(1, params.mProgress);
-        final RectF sourceWindowClipInsets = params.mForLiveTile
-                ? mSourceWindowClipInsetsForLiveTile : mSourceWindowClipInsets;
-        mCurrentClipRectF.left = sourceWindowClipInsets.left * progress;
-        mCurrentClipRectF.top = sourceWindowClipInsets.top * progress;
+        mCurrentClipRectF.left = mSourceWindowClipInsets.left * progress;
+        mCurrentClipRectF.top = mSourceWindowClipInsets.top * progress;
         mCurrentClipRectF.right =
-                mSourceStackBounds.width() - (sourceWindowClipInsets.right * progress);
+                mSourceStackBounds.width() - (mSourceWindowClipInsets.right * progress);
         mCurrentClipRectF.bottom =
-                mSourceStackBounds.height() - (sourceWindowClipInsets.bottom * progress);
+                mSourceStackBounds.height() - (mSourceWindowClipInsets.bottom * progress);
     }
 
     public RectF getCurrentRectWithInsets() {
@@ -400,7 +394,6 @@ public class AppWindowAnimationHelper {
         private float mOffsetScale;
         private @Nullable RectF mCurrentRect;
         private float mTargetAlpha;
-        private boolean mForLiveTile;
         private float mCornerRadius;
         private boolean mLauncherOnTop;
         private RemoteAnimationTargets mTargetSet;
@@ -412,7 +405,6 @@ public class AppWindowAnimationHelper {
             mOffsetScale = 1;
             mCurrentRect = null;
             mTargetAlpha = 1;
-            mForLiveTile = false;
             mCornerRadius = -1;
             mLauncherOnTop = false;
         }
@@ -477,16 +469,6 @@ public class AppWindowAnimationHelper {
         }
 
         /**
-         * Specifies whether we should clip the source window based on
-         * {@link AppWindowAnimationHelper#mSourceWindowClipInsetsForLiveTile} rather than
-         * {@link AppWindowAnimationHelper#mSourceWindowClipInsets} as {@link #mProgress} goes to 1.
-         */
-        public TransformParams setForLiveTile(boolean forLiveTile) {
-            mForLiveTile = forLiveTile;
-            return this;
-        }
-
-        /**
          * If true, sets the crop = null and layer = Integer.MAX_VALUE for targets that don't match
          * {@link #mTargetSet}.targetMode. (Currently only does this when live tiles are enabled.)
          */
@@ -537,10 +519,6 @@ public class AppWindowAnimationHelper {
 
         public float getTargetAlpha() {
             return mTargetAlpha;
-        }
-
-        public boolean isForLiveTile() {
-            return mForLiveTile;
         }
 
         public float getCornerRadius() {
