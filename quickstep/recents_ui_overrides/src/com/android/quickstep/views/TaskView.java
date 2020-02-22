@@ -16,6 +16,20 @@
 
 package com.android.quickstep.views;
 
+import static android.view.Gravity.BOTTOM;
+import static android.view.Gravity.CENTER_HORIZONTAL;
+import static android.view.Gravity.CENTER_VERTICAL;
+import static android.view.Gravity.END;
+import static android.view.Gravity.START;
+import static android.view.Gravity.TOP;
+import static android.widget.Toast.LENGTH_SHORT;
+
+import static com.android.launcher3.QuickstepAppTransitionManagerImpl.RECENTS_LAUNCH_DURATION;
+import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
+import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.launcher3.anim.Interpolators.TOUCH_RESPONSE_INTERPOLATOR;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
@@ -39,14 +53,11 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
-
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.states.RotationHelper;
@@ -75,20 +86,6 @@ import com.android.systemui.shared.system.QuickStepContract;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
-
-import static android.view.Gravity.BOTTOM;
-import static android.view.Gravity.CENTER_HORIZONTAL;
-import static android.view.Gravity.CENTER_VERTICAL;
-import static android.view.Gravity.END;
-import static android.view.Gravity.START;
-import static android.view.Gravity.TOP;
-import static android.widget.Toast.LENGTH_SHORT;
-import static com.android.launcher3.QuickstepAppTransitionManagerImpl.RECENTS_LAUNCH_DURATION;
-import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
-import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.launcher3.anim.Interpolators.TOUCH_RESPONSE_INTERPOLATOR;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
-import static com.android.quickstep.SysUINavigationMode.removeShelfFromOverview;
 
 /**
  * A task in the Recents view.
@@ -173,8 +170,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     private final float mWindowCornerRadius;
     private final BaseDraggingActivity mActivity;
 
-    @Nullable private View mActionsView;
-
     private ObjectAnimator mIconAndDimAnimator;
     private float mIconScaleAnimStartProgress = 0;
     private float mFocusTransitionProgress = 1;
@@ -193,8 +188,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     private float mFooterVerticalOffset = 0;
     private float mFooterAlpha = 1;
     private int mStackHeight;
-    private boolean mHideActionsView;
-    private PagedOrientationHandler mOrientationHandler;
 
     public TaskView(Context context) {
         this(context, null);
@@ -246,18 +239,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         TaskView.LayoutParams thumbnailParams = (LayoutParams) mSnapshotView.getLayoutParams();
         thumbnailParams.bottomMargin = LayoutUtils.thumbnailBottomMargin(context);
         mSnapshotView.setLayoutParams(thumbnailParams);
-
-
-        if (FeatureFlags.ENABLE_OVERVIEW_ACTIONS.get() && removeShelfFromOverview(context)) {
-            mActionsView = mSnapshotView.getTaskOverlay().getActionsView();
-            if (mActionsView != null) {
-                TaskView.LayoutParams params = new TaskView.LayoutParams(LayoutParams.MATCH_PARENT,
-                        getResources().getDimensionPixelSize(R.dimen.overview_actions_height),
-                        BOTTOM);
-                addView(mActionsView, params);
-                mActionsView.setAlpha(0);
-            }
-        }
     }
 
     public boolean isTaskOverlayModal() {
@@ -457,7 +438,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         int thumbnailPadding = (int) getResources().getDimension(R.dimen.task_thumbnail_top_margin);
         LayoutParams iconParams = (LayoutParams) mIconView.getLayoutParams();
         int rotation = RotationHelper.getDegreesFromRotation(iconRotation);
-        mHideActionsView = true;
         switch (iconRotation) {
             case Surface.ROTATION_90:
                 iconParams.gravity = (isRtl ? END : START) | CENTER_VERTICAL;
@@ -479,13 +459,11 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                 iconParams.gravity = TOP | CENTER_HORIZONTAL;
                 iconParams.leftMargin = iconParams.topMargin = iconParams.rightMargin =
                     iconParams.bottomMargin = 0;
-                mHideActionsView = false;
                 break;
         }
         mSnapshotView.setLayoutParams(snapshotParams);
         mIconView.setLayoutParams(iconParams);
         mIconView.setRotation(rotation);
-        updateActionsViewVisibility(!mHideActionsView);
     }
 
     private void setIconAndDimTransitionProgress(float progress, boolean invert) {
@@ -501,11 +479,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                 .getInterpolation(progress);
         mIconView.setScaleX(scale);
         mIconView.setScaleY(scale);
-
-
-        if (mActionsView != null && isRunningTask()) {
-            mActionsView.setAlpha(scale);
-        }
 
         mFooterVerticalOffset = 1.0f - scale;
         for (FooterWrapper footer : mFooters) {
@@ -597,30 +570,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             mMenuView.setScaleX(getScaleX());
             mMenuView.setScaleY(getScaleY());
         }
-
-        // This is not the proper implementation and will be replaced with a proper layout.
-        if (mActionsView != null) {
-            if (mFocusTransitionProgress == 1f) {
-                mActionsView.setAlpha(1 - curveInterpolation / MAX_PAGE_SCRIM_ALPHA);
-            }
-            maintainActionViewPosition(curveScaleForCurveInterpolation);
-        }
-
     }
-
-    private void maintainActionViewPosition(float curveScaleForCurveInterpolation) {
-        float inverseCurveScaleFactor = curveScaleForCurveInterpolation == 0 ? 0 :
-                (1f / curveScaleForCurveInterpolation);
-        mActionsView.setScaleX(inverseCurveScaleFactor);
-        mActionsView.setScaleY(inverseCurveScaleFactor);
-        mActionsView.setTranslationX(inverseCurveScaleFactor * (-getX()
-                + getRecentsView().getScrollX() + getRecentsView().scrollOffsetLeft()));
-        mActionsView.setTranslationY(
-                (1f - curveScaleForCurveInterpolation) * (mSnapshotView.getHeight()
-                        + mActionsView.getHeight()) / 2f
-                        + inverseCurveScaleFactor * (-getTranslationY()));
-    }
-
 
     /**
      * Sets the footer at the specific index and returns the previously set footer.
@@ -903,7 +853,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         mFullscreenProgress = progress;
         boolean isFullscreen = mFullscreenProgress > 0;
         mIconView.setVisibility(progress < 1 ? VISIBLE : INVISIBLE);
-        updateActionsViewVisibility(progress < 1 && !mHideActionsView);
         setClipChildren(!isFullscreen);
         setClipToPadding(!isFullscreen);
 
@@ -935,12 +884,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         thumbnail.setFullscreenParams(mCurrentFullscreenParams);
         mOutlineProvider.setFullscreenParams(mCurrentFullscreenParams);
         invalidateOutline();
-    }
-
-    private void updateActionsViewVisibility(boolean isVisible) {
-        if (mActionsView != null) {
-            mActionsView.setVisibility(isVisible ? VISIBLE : GONE);
-        }
     }
 
     public boolean isRunningTask() {
@@ -990,5 +933,4 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             mScale = scale;
         }
     }
-
 }
