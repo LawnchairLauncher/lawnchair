@@ -135,6 +135,10 @@ public final class FeatureFlags {
             "ENABLE_UNIVERSAL_SMARTSPACE", false,
             "Replace Smartspace with a version rendered by System UI.");
 
+    public static final BooleanFlag ENABLE_LSQ_VELOCITY_PROVIDER = getDebugFlag(
+            "ENABLE_LSQ_VELOCITY_PROVIDER", false,
+            "Use Least Square algorithm for motion pause detection.");
+
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {
             for (DebugFlag flag : sDebugFlags) {
