@@ -9,7 +9,7 @@
     <string name="search_no_results">Κανένα αποτέλεσμα</string>
     <string name="restart_lawnchair_pref_title">Επανεκκίνηση</string>
     <string name="developer_options_title">Επιλογές για προγραμματιστές</string>
-    <string name="change_default_home">Ορίστε ως Αρχική Eφαρμογή</string>
+    <string name="change_default_home">Ορισμός ως εφαρμογής εκκινητή</string>
     <string name="action_apply">Ολοκληρώθηκε</string>
     <!-- Note: new. Replaces “OK” in dialogs. -->
     <string name="theme_dark_theme_mode_on">Ενεργοποιημένο</string>
@@ -234,6 +234,7 @@
     <string name="searchbar_appearance_title">Στυλ</string>
     <string name="pref_show_assistant_title">Εμφάνιση κουμπιού φωνητικής αναζήτησης</string>
     <string name="action_assistant">Άνοιγμα βοηθού Google</string>
+    <string name="pref_show_as_assistant_summary">Εμφάνιση βοηθού αντί της φωνητικής αναζήτησης.</string>
     <string name="bubble_searchbar">Εμφάνιση δύο φυσαλίδων</string>
     <string name="pref_search_bar_radius">Ακτίνα Γωνίας</string>
     <!-- Section 8 -->
@@ -245,7 +246,9 @@
     <string name="pref_sesame_show_shortcuts">Εμφάνιση σε φυσαλίδες συντόμευσης</string>
     <string name="sesame_search_engine">Χρήση ως Μηχανή Αναζήτησης</string>
     <string name="pref_sesame_sync_look_and_feel">Κοινή χρήση Ρυθμίσεων Στυλ</string>
+    <string name="pref_sesame_sync_look_and_feel_summary">Εφαρμογή ρυθμίσεων γρ, αναζήτησης στη γρ, Sesame.</string>
     <string name="sesame_version">Έκδοση Βιβλιοθήκης</string>
+    <string name="title_show_google_app">Εμφάνιση ροής %1$s</string>
     <string name="feed_theme_pref_title">Χρώμα Φόντου</string>
     <!-- Section 9 -->
     <string name="gestures_pref_title">Χειρονομίες αφής</string>
@@ -263,6 +266,7 @@
     <string name="action_open_settings">Άνοιγμα Ρυθμίσεων Lawnchair</string>
     <string name="action_open_notifications">Άνοιγμα του Πίνακα Ειδοποιήσεων</string>
     <string name="action_overlay">Άνοιγμα Google Feed</string>
+    <string name="action_despacito">Παραμορφωμένη αναπαραγωγή του YouTube Rewind 2018</string>
     <string name="action_open_app">Άνοιγμα εφαρμογής</string>
     <!-- Section 10 -->
     <string name="backups">Αντίγραφα ασφαλείας &amp; Επαναφορά</string>
@@ -296,9 +300,10 @@
     <string name="about_role_pr">Υπεύθυνος Δημόσεων Σχέσεων</string>
     <string name="about_role_family_member">Μέλος Οικογενείας</string>
     <string name="about_our_team">H Ομάδα</string>
+    <string name="title_attribouter_licenses">Ιδιότητα</string>
     <!-- Section 12 -->
     <string name="settings_button_text">Ρυθμίσεις Αρχικής Οθόνης</string>
-    <string name="button_organize_screens">Ταξινόμηση Σελίδων</string>
+    <string name="button_organize_screens">Ταξινόμηση σελίδων</string>
     <string name="wallpaper_button_text">Ταπετσαρία</string>
     <string name="pref_app_groups_create">Δημιουργία</string>
     <string name="pref_appcategorization_style_text">Στυλ</string>
@@ -326,6 +331,7 @@
     <string name="about_summary_title">Σύνοψη</string>
     <string name="hide_app">Απόκρυψη Συντόμευσης</string>
     <string name="icon_shape_rounded_square">Στρογγυλεμένο τετράγωνο</string>
+    <string name="hide_app_selected">“&#160;” κρυφό.</string>
     <string name="hide_app_apply">Ολοκληρώθηκε</string>
     <string name="hide_dock_gradient">Απενεργοποίηση Gradient εφέ</string>
     <string name="choose_backup_path">Περιήγηση</string>
@@ -460,6 +466,7 @@
     <string name="allow">Αποδοχή</string>
     <string name="deny">Απόρριψη</string>
     <string name="sesame_enable_integration_title">Κοινή χρήση Δεδομένων</string>
+    <string name="sesame_shortcut_disabled">Το Sesame είναι ανενεργό.</string>
     <string name="font_variant_italic">Πλάγια</string>
     <string name="font_weight_thin">Λεπτή</string>
     <string name="font_weight_light">Ημικανονική</string>
@@ -539,4 +546,8 @@
     <string name="gesture_nav_swipe_up_right">Από τα Δεξιά</string>
     <string name="action_switch_apps">Εναλλαγή Εφαρμογών</string>
     <string name="icon_shape_system_default">Καθορισμός από το Σύστημα</string>
+    <string name="title_missing_notification_access">Απαιτείται πρόσβαση στις ειδοποιήσεις.</string>
+    <string name="activity_not_found">Η εφαρμογή δεν έχει εγκατασταθεί.</string>
+    <string name="out_of_space">Δεν υπάρχει άλλος χώρος στην αρχική οθόνη.</string>
+    <string name="hotseat_out_of_space">Δεν υπάρχει άλλος χώρος στη βάση.</string>
 </resources>
