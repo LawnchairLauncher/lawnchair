@@ -32,6 +32,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.ShapeDrawable;
 import android.util.AttributeSet;
+import android.util.Pair;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -356,6 +357,11 @@ public abstract class ArrowPopup<T extends BaseDraggingActivity> extends Abstrac
         if (Gravity.isVertical(mGravity)) {
             setY(dragLayer.getHeight() / 2 - getMeasuredHeight() / 2);
         }
+    }
+
+    @Override
+    protected Pair<View, String> getAccessibilityTarget() {
+        return Pair.create(this, "");
     }
 
     private void animateOpen() {
