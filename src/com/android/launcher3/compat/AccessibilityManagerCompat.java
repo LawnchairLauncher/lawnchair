@@ -40,8 +40,16 @@ public class AccessibilityManagerCompat {
         return isAccessibilityEnabled(context);
     }
 
-    public static void sendCustomAccessibilityEvent(View target, int type, @Nullable String text) {
-        if (isObservedEventType(target.getContext(), type)) {
+    /**
+     *
+     * @param target The view the accessibility event is initialized on.
+     *               If null, this method has no effect.
+     * @param type See TYPE_ constants defined in {@link AccessibilityEvent}.
+     * @param text Optional text to add to the event, which will be announced to the user.
+     */
+    public static void sendCustomAccessibilityEvent(@Nullable View target, int type,
+            @Nullable String text) {
+        if (target != null && isObservedEventType(target.getContext(), type)) {
             AccessibilityEvent event = AccessibilityEvent.obtain(type);
             target.onInitializeAccessibilityEvent(event);
             if (!TextUtils.isEmpty(text)) {
