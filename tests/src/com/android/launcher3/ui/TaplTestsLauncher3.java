@@ -65,6 +65,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         test.waitForResumed("Launcher internal state is still Background");
         // Check that we switched to home.
         test.mLauncher.getWorkspace();
+        AbstractLauncherUiTest.checkDetectedLeaks();
     }
 
     // Please don't add negative test cases for methods that fail only after a long wait.

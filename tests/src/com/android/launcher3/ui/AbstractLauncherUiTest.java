@@ -37,6 +37,7 @@ import android.content.pm.LauncherApps;
 import android.content.pm.PackageManager;
 import android.os.Process;
 import android.os.RemoteException;
+import android.os.StrictMode;
 
 import androidx.test.InstrumentationRegistry;
 import androidx.test.uiautomator.By;
@@ -95,12 +96,50 @@ public abstract class AbstractLauncherUiTest {
     public static final long DEFAULT_UI_TIMEOUT = 10000;
     private static final String TAG = "AbstractLauncherUiTest";
 
+    private static String sDetectedActivityLeak;
+    private static boolean sActivityLeakReported;
+
     protected LooperExecutor mMainThreadExecutor = MAIN_EXECUTOR;
     protected final UiDevice mDevice = UiDevice.getInstance(getInstrumentation());
     protected final LauncherInstrumentation mLauncher = new LauncherInstrumentation();
     protected Context mTargetContext;
     protected String mTargetPackage;
     private int mLauncherPid;
+
+    static {
+        if (TestHelpers.isInLauncherProcess()) {
+            StrictMode.VmPolicy.Builder builder =
+                    new StrictMode.VmPolicy.Builder()
+                            .detectActivityLeaks()
+                            .penaltyLog()
+                            .penaltyListener(Runnable::run, violation -> {
+                                // Runs in the main thread. We can't dumpheap in the main thread,
+                                // so let's just mark the fact that the leak has happened.
+                                if (sDetectedActivityLeak == null) {
+                                    sDetectedActivityLeak = violation.toString();
+                                }
+                            });
+            StrictMode.setVmPolicy(builder.build());
+        }
+    }
+
+    public static void checkDetectedLeaks() {
+        if (sDetectedActivityLeak != null && !sActivityLeakReported) {
+            sActivityLeakReported = true;
+
+            final UiDevice device = UiDevice.getInstance(getInstrumentation());
+            try {
+                device.executeShellCommand(
+                        "am dumpheap "
+                                + device.getLauncherPackageName()
+                                + " "
+                                + getInstrumentation().getTargetContext().getFilesDir().getPath()
+                                + "/ActivityLeakHeapDump.hprof");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 
     protected AbstractLauncherUiTest() {
         mLauncher.enableCheckEventsForSuccessfulGestures();
@@ -190,6 +229,7 @@ public abstract class AbstractLauncherUiTest {
         if (mLauncherPid != 0) {
             assertEquals("Launcher crashed, pid mismatch:", mLauncherPid, mLauncher.getPid());
         }
+        checkDetectedLeaks();
     }
 
     protected void clearLauncherData() throws IOException, InterruptedException {
