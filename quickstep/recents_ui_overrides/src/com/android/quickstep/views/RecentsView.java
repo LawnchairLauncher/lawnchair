@@ -17,6 +17,7 @@
 package com.android.quickstep.views;
 
 import static androidx.dynamicanimation.animation.DynamicAnimation.MIN_VISIBLE_CHANGE_PIXELS;
+
 import static com.android.launcher3.BaseActivity.STATE_HANDLER_INVISIBILITY_FLAGS;
 import static com.android.launcher3.InvariantDeviceProfile.CHANGE_FLAG_ICON_PARAMS;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
@@ -105,11 +106,13 @@ import com.android.quickstep.RecentsAnimationController;
 import com.android.quickstep.RecentsAnimationTargets;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.RecentsModel.TaskVisualsChangeListener;
+import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskThumbnailCache;
 import com.android.quickstep.TaskUtils;
 import com.android.quickstep.ViewUtils;
 import com.android.quickstep.util.AppWindowAnimationHelper;
 import com.android.quickstep.util.LayoutUtils;
+import com.android.systemui.shared.recents.IPinnedStackAnimationListener;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
@@ -261,7 +264,10 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                 }
             });
         }
+    };
 
+    private final IPinnedStackAnimationListener mIPinnedStackAnimationListener =
+            new IPinnedStackAnimationListener.Stub() {
         @Override
         public void onPinnedStackAnimationStarted() {
             // Needed for activities that auto-enter PiP, which will not trigger a remote
@@ -443,6 +449,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         mSyncTransactionApplier = new SyncRtSurfaceTransactionApplierCompat(this);
         RecentsModel.INSTANCE.get(getContext()).addThumbnailChangeListener(this);
         mIdp.addOnChangeListener(this);
+        SystemUiProxy.INSTANCE.get(getContext()).setPinnedStackAnimationListener(
+                mIPinnedStackAnimationListener);
     }
 
     @Override
@@ -455,6 +463,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         mSyncTransactionApplier = null;
         RecentsModel.INSTANCE.get(getContext()).removeThumbnailChangeListener(this);
         mIdp.removeOnChangeListener(this);
+        SystemUiProxy.INSTANCE.get(getContext()).setPinnedStackAnimationListener(null);
     }
 
     @Override
