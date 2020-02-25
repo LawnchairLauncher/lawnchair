@@ -117,6 +117,9 @@
     <!-- Recents -->
     <item type="id" name="overview_panel"/>
 
+    <!-- Whether to enable background preloading of task thumbnails. -->
+    <bool name="config_enableTaskSnapshotPreloading">true</bool>
+
     <!-- Configuration resources -->
     <array name="dynamic_resources"> </array>
 </resources>
