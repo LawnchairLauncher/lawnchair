@@ -43,6 +43,7 @@ public class TaskThumbnailCache {
     private final int mCacheSize;
     private final TaskKeyLruCache<ThumbnailData> mCache;
     private final HighResLoadingState mHighResLoadingState;
+    private final boolean mEnableTaskSnapshotPreloading;
 
     public static class HighResLoadingState {
         private boolean mIsLowRamDevice;
@@ -100,6 +101,7 @@ public class TaskThumbnailCache {
 
         Resources res = context.getResources();
         mCacheSize = res.getInteger(R.integer.recentsThumbnailCacheSize);
+        mEnableTaskSnapshotPreloading = res.getBoolean(R.bool.config_enableTaskSnapshotPreloading);
         mCache = new TaskKeyLruCache<>(mCacheSize);
     }
 
@@ -212,7 +214,7 @@ public class TaskThumbnailCache {
      * @return Whether to enable background preloading of task thumbnails.
      */
     public boolean isPreloadingEnabled() {
-        return !mHighResLoadingState.mIsLowRamDevice && mHighResLoadingState.mVisible;
+        return mEnableTaskSnapshotPreloading && mHighResLoadingState.mVisible;
     }
 
     public static abstract class ThumbnailLoadRequest extends HandlerRunnable {
