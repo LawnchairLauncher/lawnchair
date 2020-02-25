@@ -171,7 +171,8 @@ public class NavBarToHomeTouchController implements TouchController,
             }
         }
         anim.setDuration(accuracy);
-        mCurrentAnimation = AnimatorPlaybackController.wrap(anim, accuracy, this::clearState);
+        mCurrentAnimation = AnimatorPlaybackController.wrap(anim, accuracy)
+                .setOnCancelRunnable(this::clearState);
     }
 
     private void clearState() {

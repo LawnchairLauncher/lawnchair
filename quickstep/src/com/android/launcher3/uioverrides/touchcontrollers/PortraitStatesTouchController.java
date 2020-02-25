@@ -87,8 +87,7 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
     protected boolean canInterceptTouch(MotionEvent ev) {
         if (mCurrentAnimation != null) {
             if (mFinishFastOnSecondTouch) {
-                // TODO: Animate to finish instead.
-                mCurrentAnimation.skipToEnd();
+                mCurrentAnimation.getAnimationPlayer().end();
             }
 
             AllAppsTransitionController allAppsController = mLauncher.getAllAppsController();
@@ -233,8 +232,8 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
                 cancelPendingAnim();
                 clearState();
             };
-            mCurrentAnimation = AnimatorPlaybackController.wrap(
-                    mPendingAnimation.anim, maxAccuracy, onCancelRunnable);
+            mCurrentAnimation = AnimatorPlaybackController.wrap(mPendingAnimation, maxAccuracy)
+                    .setOnCancelRunnable(onCancelRunnable);
             mLauncher.getStateManager().setCurrentUserControlledAnimation(mCurrentAnimation);
             totalShift = LayoutUtils.getShelfTrackingDistance(mLauncher,
                     mLauncher.getDeviceProfile());

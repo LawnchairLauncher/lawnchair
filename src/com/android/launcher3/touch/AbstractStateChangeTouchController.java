@@ -42,11 +42,11 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.AnimatorSetBuilder;
+import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.util.FlingBlockCheck;
-import com.android.launcher3.util.PendingAnimation;
 import com.android.launcher3.util.TouchController;
 
 /**
@@ -434,7 +434,7 @@ public abstract class AbstractStateChangeTouchController
         maybeUpdateAtomicAnim(mFromState, targetState, targetState == mToState ? 1f : 0f);
         updateSwipeCompleteAnimation(anim, Math.max(duration, getRemainingAtomicDuration()),
                 targetState, velocity, fling);
-        mCurrentAnimation.dispatchOnStartWithVelocity(endProgress, progressVelocity);
+        mCurrentAnimation.dispatchOnStart();
         if (fling && targetState == LauncherState.ALL_APPS && !UNSTABLE_SPRINGS.get()) {
             mLauncher.getAppsView().addSpringFromFlingUpdateListener(anim, velocity);
         }

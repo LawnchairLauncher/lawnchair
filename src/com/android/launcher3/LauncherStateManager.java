@@ -376,8 +376,8 @@ public class LauncherStateManager {
         mConfig.animComponents = animComponents;
         mConfig.duration = duration;
         mConfig.playbackController = AnimatorPlaybackController.wrap(
-                createAnimationToNewWorkspaceInternal(state, builder, null), duration,
-                onCancelRunnable);
+                createAnimationToNewWorkspaceInternal(state, builder, null), duration)
+                .setOnCancelRunnable(onCancelRunnable);
         return mConfig.playbackController;
     }
 
