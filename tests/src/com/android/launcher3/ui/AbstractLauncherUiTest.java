@@ -22,9 +22,8 @@ import static com.android.launcher3.tapl.LauncherInstrumentation.ContainerType;
 import static com.android.launcher3.ui.TaplTestsLauncher3.getAppPackageName;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-
-import static java.lang.System.exit;
 
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -38,7 +37,6 @@ import android.content.pm.LauncherApps;
 import android.content.pm.PackageManager;
 import android.os.Process;
 import android.os.RemoteException;
-import android.util.Log;
 
 import androidx.test.InstrumentationRegistry;
 import androidx.test.uiautomator.By;
@@ -102,6 +100,7 @@ public abstract class AbstractLauncherUiTest {
     protected final LauncherInstrumentation mLauncher = new LauncherInstrumentation();
     protected Context mTargetContext;
     protected String mTargetPackage;
+    private int mLauncherPid;
 
     protected AbstractLauncherUiTest() {
         mLauncher.enableCheckEventsForSuccessfulGestures();
@@ -158,7 +157,7 @@ public abstract class AbstractLauncherUiTest {
 
         return TestHelpers.isInLauncherProcess()
                 ? RuleChain.outerRule(ShellCommandRule.setDefaultLauncher())
-                        .around(inner) :
+                .around(inner) :
                 inner;
     }
 
@@ -175,17 +174,22 @@ public abstract class AbstractLauncherUiTest {
 
     @Before
     public void setUp() throws Exception {
+        mLauncherPid = 0;
         // Disable app tracker
         AppLaunchTracker.INSTANCE.initializeForTesting(new AppLaunchTracker());
 
         mTargetContext = InstrumentationRegistry.getTargetContext();
         mTargetPackage = mTargetContext.getPackageName();
+        mLauncherPid = mLauncher.getPid();
     }
 
     @After
     public void verifyLauncherState() {
         // Limits UI tests affecting tests running after them.
         mLauncher.waitForLauncherInitialized();
+        if (mLauncherPid != 0) {
+            assertEquals("Launcher crashed, pid mismatch:", mLauncherPid, mLauncher.getPid());
+        }
     }
 
     protected void clearLauncherData() throws IOException, InterruptedException {
@@ -196,6 +200,7 @@ public abstract class AbstractLauncherUiTest {
         } else {
             clearPackageData(mDevice.getLauncherPackageName());
             mLauncher.enableDebugTracing();
+            mLauncherPid = mLauncher.getPid();
         }
     }
 

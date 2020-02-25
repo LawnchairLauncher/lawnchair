@@ -40,7 +40,6 @@ import com.android.launcher3.views.OptionsPopupView;
 import com.android.launcher3.widget.WidgetsFullSheet;
 import com.android.launcher3.widget.WidgetsRecyclerView;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -51,21 +50,10 @@ import org.junit.runner.RunWith;
 public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     private static final String APP_NAME = "LauncherTestApp";
 
-    private int mLauncherPid;
-
     @Before
     public void setUp() throws Exception {
-        mLauncherPid = 0;
         super.setUp();
         initialize(this);
-        mLauncherPid = mLauncher.getPid();
-    }
-
-    @After
-    public void teardown() {
-        if (mLauncherPid != 0) {
-            assertEquals("Launcher crashed, pid mismatch:", mLauncherPid, mLauncher.getPid());
-        }
     }
 
     public static void initialize(AbstractLauncherUiTest test) throws Exception {
