@@ -251,6 +251,10 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         }
     }
 
+    public boolean isTaskOverlayModal() {
+        return mSnapshotView.getTaskOverlay().isOverlayModal();
+    }
+
     public TaskMenuView getMenuView() {
         return mMenuView;
     }

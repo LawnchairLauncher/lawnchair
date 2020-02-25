@@ -87,5 +87,12 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
          * Called when the overlay is no longer used.
          */
         public void reset() { }
+
+        /**
+         * Whether the overlay is modal, which means only tapping is enabled, but no swiping.
+         */
+        public boolean isOverlayModal() {
+            return false;
+        }
     }
 }
