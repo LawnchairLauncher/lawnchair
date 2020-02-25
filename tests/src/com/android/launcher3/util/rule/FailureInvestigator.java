@@ -106,6 +106,11 @@ class FailureInvestigator {
             return 0;
         }
 
+        if (matches("android\\:\\:uirenderer\\:\\:renderthread\\:\\:EglManager\\:\\:swapBuffers",
+                logSinceBoot)) {
+            return 148529608;
+        }
+
         for (ExceptionMatch exceptionMatch : EXCEPTION_MATCHES) {
             if (matches(exceptionMatch.exceptionPattern, exception)) {
                 for (LogcatMatch logcatMatch : exceptionMatch.logcatMatches) {
