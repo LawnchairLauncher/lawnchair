@@ -332,6 +332,8 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
                     // Send a home intent to clear the task stack
                     mContext.startActivity(mGestureState.getHomeIntent());
                 } else {
+                    // Notify swipe-to-home (recents animation) is finished
+                    SystemUiProxy.INSTANCE.get(mContext).notifySwipeToHomeFinished();
                     mRecentsAnimationController.finish(true, () -> {
                         if (!mTouchedHomeDuringTransition) {
                             // If the user hasn't interacted with the screen during the transition,
