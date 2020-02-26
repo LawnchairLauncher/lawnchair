@@ -17,7 +17,6 @@ package com.android.quickstep;
 
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
-import android.app.ActivityManager;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Handler;
@@ -43,9 +42,10 @@ public class TaskThumbnailCache {
     private final int mCacheSize;
     private final TaskKeyLruCache<ThumbnailData> mCache;
     private final HighResLoadingState mHighResLoadingState;
+    private final boolean mEnableTaskSnapshotPreloading;
 
     public static class HighResLoadingState {
-        private boolean mIsLowRamDevice;
+        private boolean mForceHighResThumbnails;
         private boolean mVisible;
         private boolean mFlingingFast;
         private boolean mHighResLoadingEnabled;
@@ -56,9 +56,9 @@ public class TaskThumbnailCache {
         }
 
         private HighResLoadingState(Context context) {
-            ActivityManager activityManager =
-                    (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-            mIsLowRamDevice = activityManager.isLowRamDevice();
+            // If the device does not support low-res thumbnails, only attempt to load high-res
+            // thumbnails
+            mForceHighResThumbnails = !supportsLowResThumbnails();
         }
 
         public void addCallback(HighResLoadingStateChangedCallback callback) {
@@ -85,7 +85,7 @@ public class TaskThumbnailCache {
 
         private void updateState() {
             boolean prevState = mHighResLoadingEnabled;
-            mHighResLoadingEnabled = !mIsLowRamDevice && mVisible && !mFlingingFast;
+            mHighResLoadingEnabled = mForceHighResThumbnails || (mVisible && !mFlingingFast);
             if (prevState != mHighResLoadingEnabled) {
                 for (int i = mCallbacks.size() - 1; i >= 0; i--) {
                     mCallbacks.get(i).onHighResLoadingStateChanged(mHighResLoadingEnabled);
@@ -100,6 +100,7 @@ public class TaskThumbnailCache {
 
         Resources res = context.getResources();
         mCacheSize = res.getInteger(R.integer.recentsThumbnailCacheSize);
+        mEnableTaskSnapshotPreloading = res.getBoolean(R.bool.config_enableTaskSnapshotPreloading);
         mCache = new TaskKeyLruCache<>(mCacheSize);
     }
 
@@ -110,7 +111,7 @@ public class TaskThumbnailCache {
         Preconditions.assertUIThread();
         // Fetch the thumbnail for this task and put it in the cache
         if (task.thumbnail == null) {
-            updateThumbnailInBackground(task.key, true /* reducedResolution */,
+            updateThumbnailInBackground(task.key, true /* lowResolution */,
                     t -> task.thumbnail = t);
         }
     }
@@ -133,8 +134,8 @@ public class TaskThumbnailCache {
             Task task, Consumer<ThumbnailData> callback) {
         Preconditions.assertUIThread();
 
-        boolean reducedResolution = !mHighResLoadingState.isEnabled();
-        if (task.thumbnail != null && (!task.thumbnail.reducedResolution || reducedResolution)) {
+        boolean lowResolution = !mHighResLoadingState.isEnabled();
+        if (task.thumbnail != null && (!task.thumbnail.reducedResolution || lowResolution)) {
             // Nothing to load, the thumbnail is already high-resolution or matches what the
             // request, so just callback
             callback.accept(task.thumbnail);
@@ -148,23 +149,23 @@ public class TaskThumbnailCache {
         });
     }
 
-    private ThumbnailLoadRequest updateThumbnailInBackground(TaskKey key, boolean reducedResolution,
+    private ThumbnailLoadRequest updateThumbnailInBackground(TaskKey key, boolean lowResolution,
             Consumer<ThumbnailData> callback) {
         Preconditions.assertUIThread();
 
         ThumbnailData cachedThumbnail = mCache.getAndInvalidateIfModified(key);
-        if (cachedThumbnail != null && (!cachedThumbnail.reducedResolution || reducedResolution)) {
+        if (cachedThumbnail != null && (!cachedThumbnail.reducedResolution || lowResolution)) {
             // Already cached, lets use that thumbnail
             callback.accept(cachedThumbnail);
             return null;
         }
 
         ThumbnailLoadRequest request = new ThumbnailLoadRequest(mBackgroundHandler,
-                reducedResolution) {
+                lowResolution) {
             @Override
             public void run() {
                 ThumbnailData thumbnail = ActivityManagerWrapper.getInstance().getTaskThumbnail(
-                        key.id, reducedResolution);
+                        key.id, lowResolution);
                 if (isCanceled()) {
                     // We don't call back to the provided callback in this case
                     return;
@@ -212,15 +213,31 @@ public class TaskThumbnailCache {
      * @return Whether to enable background preloading of task thumbnails.
      */
     public boolean isPreloadingEnabled() {
-        return !mHighResLoadingState.mIsLowRamDevice && mHighResLoadingState.mVisible;
+        return mEnableTaskSnapshotPreloading && mHighResLoadingState.mVisible;
     }
 
     public static abstract class ThumbnailLoadRequest extends HandlerRunnable {
-        public final boolean reducedResolution;
+        public final boolean mLowResolution;
 
-        ThumbnailLoadRequest(Handler handler, boolean reducedResolution) {
+        ThumbnailLoadRequest(Handler handler, boolean lowResolution) {
             super(handler, null);
-            this.reducedResolution = reducedResolution;
+            mLowResolution = lowResolution;
         }
     }
+
+    /**
+     * @return Whether device supports low-res thumbnails. Low-res files are an optimization
+     * for faster load times of snapshots. Devices can optionally disable low-res files so that
+     * they only store snapshots at high-res scale. The actual scale can be configured in
+     * frameworks/base config overlay.
+     */
+    private static boolean supportsLowResThumbnails() {
+        Resources res = Resources.getSystem();
+        int resId = res.getIdentifier("config_lowResTaskSnapshotScale", "dimen", "android");
+        if (resId != 0) {
+            return 0 < res.getFloat(resId);
+        }
+        return true;
+    }
+
 }
