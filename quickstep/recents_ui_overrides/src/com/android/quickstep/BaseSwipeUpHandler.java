@@ -17,7 +17,6 @@ package com.android.quickstep;
 
 import static com.android.launcher3.anim.Interpolators.ACCEL_1_5;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_ACTIONS;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.VibratorWrapper.OVERVIEW_HAPTIC;
@@ -32,6 +31,7 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Build;
+import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Interpolator;
@@ -78,18 +78,16 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
     private static final String TAG = "BaseSwipeUpHandler";
     protected static final Rect TEMP_RECT = new Rect();
 
-    // Start resisting when swiping past this factor of mTransitionDragLength.
-    private static final float DRAG_LENGTH_FACTOR_START_PULLBACK = ENABLE_OVERVIEW_ACTIONS.get()
-            ? 2.8f : 1.4f;
-    // This is how far down we can scale down, where 0f is full screen and 1f is recents.
-    private static final float DRAG_LENGTH_FACTOR_MAX_PULLBACK = ENABLE_OVERVIEW_ACTIONS.get()
-            ? 3.6f : 1.8f;
     private static final Interpolator PULLBACK_INTERPOLATOR = DEACCEL;
 
     // The distance needed to drag to reach the task size in recents.
     protected int mTransitionDragLength;
     // How much further we can drag past recents, as a factor of mTransitionDragLength.
     protected float mDragLengthFactor = 1;
+    // Start resisting when swiping past this factor of mTransitionDragLength.
+    private float mDragLengthFactorStartPullback = 1f;
+    // This is how far down we can scale down, where 0f is full screen and 1f is recents.
+    private float mDragLengthFactorMaxPullback = 1f;
 
     protected final Context mContext;
     protected final RecentsAnimationDeviceState mDeviceState;
@@ -161,12 +159,12 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
         } else {
             float translation = Math.max(displacement, 0);
             shift = mTransitionDragLength == 0 ? 0 : translation / mTransitionDragLength;
-            if (shift > DRAG_LENGTH_FACTOR_START_PULLBACK) {
+            if (shift > mDragLengthFactorStartPullback) {
                 float pullbackProgress = Utilities.getProgress(shift,
-                        DRAG_LENGTH_FACTOR_START_PULLBACK, mDragLengthFactor);
+                        mDragLengthFactorStartPullback, mDragLengthFactor);
                 pullbackProgress = PULLBACK_INTERPOLATOR.getInterpolation(pullbackProgress);
-                shift = DRAG_LENGTH_FACTOR_START_PULLBACK + pullbackProgress
-                        * (DRAG_LENGTH_FACTOR_MAX_PULLBACK - DRAG_LENGTH_FACTOR_START_PULLBACK);
+                shift = mDragLengthFactorStartPullback + pullbackProgress
+                        * (mDragLengthFactorMaxPullback - mDragLengthFactorStartPullback);
             }
         }
 
@@ -344,6 +342,10 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
             //   their ability to scale past the target rect.
             float dragFactor = (float) dp.heightPx / mTransitionDragLength;
             mDragLengthFactor = displayRotation == 0 ? dragFactor : Math.min(1.0f, dragFactor);
+            Pair<Float, Float> dragFactorStartAndMaxProgress =
+                    mActivityInterface.getSwipeUpPullbackStartAndMaxProgress();
+            mDragLengthFactorStartPullback = dragFactorStartAndMaxProgress.first;
+            mDragLengthFactorMaxPullback = dragFactorStartAndMaxProgress.second;
         }
     }
 

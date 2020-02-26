@@ -38,6 +38,7 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.UserHandle;
+import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Interpolator;
@@ -54,7 +55,6 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.appprediction.PredictionUiStateManager;
-import com.android.launcher3.touch.PortraitPagedViewHandler;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.views.FloatingIconView;
@@ -80,6 +80,8 @@ import java.util.function.Predicate;
 public final class LauncherActivityInterface implements BaseActivityInterface<Launcher> {
 
     private Runnable mAdjustInterpolatorsRunnable;
+    private Pair<Float, Float> mSwipeUpPullbackStartAndMaxProgress =
+            BaseActivityInterface.super.getSwipeUpPullbackStartAndMaxProgress();
 
     @Override
     public int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context, Rect outRect) {
@@ -91,6 +93,11 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
         } else {
             return LayoutUtils.getShelfTrackingDistance(context, dp);
         }
+    }
+
+    @Override
+    public Pair<Float, Float> getSwipeUpPullbackStartAndMaxProgress() {
+        return mSwipeUpPullbackStartAndMaxProgress;
     }
 
     @Override
@@ -385,6 +392,14 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
                 return newT <= 1f ? newT : newT + normalizedTranslationY * (newT - 1);
             });
         };
+
+        // Start pulling back when RecentsView scale is 0.75f, and let it go down to 0.5f.
+        float pullbackStartProgress = (0.75f - fromScaleAndTranslation.scale)
+                / (endScaleAndTranslation.scale - fromScaleAndTranslation.scale);
+        float pullbackMaxProgress = (0.5f - fromScaleAndTranslation.scale)
+                / (endScaleAndTranslation.scale - fromScaleAndTranslation.scale);
+        mSwipeUpPullbackStartAndMaxProgress = new Pair<>(
+                pullbackStartProgress, pullbackMaxProgress);
     }
 
     @Override
