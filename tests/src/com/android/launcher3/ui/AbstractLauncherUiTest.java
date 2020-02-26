@@ -120,6 +120,8 @@ public abstract class AbstractLauncherUiTest {
                                     checkLauncherIntegrity(launcher, containerType)));
         }
         mLauncher.enableDebugTracing();
+        // Avoid double-reporting of Launcher crashes.
+        mLauncher.setOnLauncherCrashed(() -> mLauncherPid = 0);
     }
 
     protected final LauncherActivityRule mActivityMonitor = new LauncherActivityRule();
