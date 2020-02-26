@@ -113,6 +113,10 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_HYBRID_HOTSEAT = new DeviceFlag(
             "ENABLE_HYBRID_HOTSEAT", false, "Fill gaps in hotseat with predicted apps");
 
+    public static final BooleanFlag HOTSEAT_MIGRATE_NEW_PAGE = new DeviceFlag(
+            "HOTSEAT_MIGRATE_NEW_PAGE", true,
+            "Migrates hotseat to a new workspace page instead of same page");
+
     public static final BooleanFlag ENABLE_DEEP_SHORTCUT_ICON_CACHE = getDebugFlag(
             "ENABLE_DEEP_SHORTCUT_ICON_CACHE", true, "R/W deep shortcut in IconCache");
 
