@@ -419,6 +419,8 @@ public abstract class ArrowPopup<T extends BaseDraggingActivity> extends Abstrac
         }
         if (getOutlineProvider() instanceof RevealOutlineAnimation) {
             ((RevealOutlineAnimation) getOutlineProvider()).getOutline(mEndRect);
+        } else {
+            mEndRect.set(0, 0, getMeasuredWidth(), getMeasuredHeight());
         }
         if (mOpenCloseAnimator != null) {
             mOpenCloseAnimator.cancel();
