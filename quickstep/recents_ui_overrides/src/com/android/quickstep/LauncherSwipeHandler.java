@@ -699,6 +699,8 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
         switch (mGestureState.getEndTarget()) {
             case HOME:
                 mStateCallback.setState(STATE_SCALED_CONTROLLER_HOME | STATE_CAPTURE_SCREENSHOT);
+                // Notify swipe-to-home (recents animation) is finished
+                SystemUiProxy.INSTANCE.get(mContext).notifySwipeToHomeFinished();
                 break;
             case RECENTS:
                 mStateCallback.setState(STATE_SCALED_CONTROLLER_RECENTS | STATE_CAPTURE_SCREENSHOT
