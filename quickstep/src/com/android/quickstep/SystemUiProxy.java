@@ -295,4 +295,15 @@ public class SystemUiProxy implements ISystemUiProxy {
             }
         }
     }
+
+    @Override
+    public void setSplitScreenMinimized(boolean minimized) {
+        if (mSystemUiProxy != null) {
+            try {
+                mSystemUiProxy.setSplitScreenMinimized(minimized);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call stopScreenPinning", e);
+            }
+        }
+    }
 }
