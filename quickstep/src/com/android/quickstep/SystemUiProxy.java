@@ -29,6 +29,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 
 import com.android.launcher3.util.MainThreadInitializedObject;
+import com.android.systemui.shared.recents.IPinnedStackAnimationListener;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 
 /**
@@ -268,9 +269,7 @@ public class SystemUiProxy implements ISystemUiProxy {
         }
     }
 
-    /**
-     * See SharedApiCompat#setShelfHeight()
-     */
+    @Override
     public void setShelfHeight(boolean visible, int shelfHeight) {
         boolean changed = visible != mLastShelfVisible || shelfHeight != mLastShelfHeight;
         if (mSystemUiProxy != null && changed) {
@@ -303,6 +302,34 @@ public class SystemUiProxy implements ISystemUiProxy {
                 mSystemUiProxy.setSplitScreenMinimized(minimized);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call stopScreenPinning", e);
+            }
+        }
+    }
+
+    /**
+     * Notifies that swipe-to-home action is finished.
+     */
+    @Override
+    public void notifySwipeToHomeFinished() {
+        if (mSystemUiProxy != null) {
+            try {
+                mSystemUiProxy.notifySwipeToHomeFinished();
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call setPinnedStackAnimationType", e);
+            }
+        }
+    }
+
+    /**
+     * Sets listener to get pinned stack animation callbacks.
+     */
+    @Override
+    public void setPinnedStackAnimationListener(IPinnedStackAnimationListener listener) {
+        if (mSystemUiProxy != null) {
+            try {
+                mSystemUiProxy.setPinnedStackAnimationListener(listener);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call setPinnedStackAnimationListener", e);
             }
         }
     }
