@@ -51,3 +51,12 @@
 
 # Ignore warnings for hidden utility classes referenced from the shared lib
 -dontwarn com.android.internal.util.**
+
+################ Do not optimize recents lib #############
+-keep class com.android.systemui.** {
+  *;
+}
+
+-keep class com.android.quickstep.** {
+  *;
+}
