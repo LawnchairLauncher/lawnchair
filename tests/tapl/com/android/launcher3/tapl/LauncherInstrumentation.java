@@ -650,14 +650,6 @@ public final class LauncherInstrumentation {
                     mDevice.waitForIdle();
 
                     if (getNavigationModel() == NavigationModel.TWO_BUTTON) {
-                        if (hasLauncherObject(CONTEXT_MENU_RES_ID) ||
-                                hasLauncherObject(WIDGETS_RES_ID)
-                                        && !mDevice.isNaturalOrientation()) {
-                            expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_PILFER_POINTERS);
-                        }
-                    }
-
-                    if (getNavigationModel() == NavigationModel.TWO_BUTTON) {
                         expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_DOWN_TIS);
                         expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_UP_TIS);
                     }
