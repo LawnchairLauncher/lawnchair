@@ -565,7 +565,7 @@ public final class LauncherInstrumentation {
                     return waitForLauncherObject(APPS_RES_ID);
                 }
                 case OVERVIEW: {
-                    if (mDevice.isNaturalOrientation()) {
+                    if (mDevice.isNaturalOrientation() && !overviewActionsEnabled()) {
                         waitForLauncherObject(APPS_RES_ID);
                     } else {
                         waitUntilGone(APPS_RES_ID);
@@ -1211,6 +1211,11 @@ public final class LauncherInstrumentation {
 
     public void enableDebugTracing() {
         getTestInfo(TestProtocol.REQUEST_ENABLE_DEBUG_TRACING);
+    }
+
+    public boolean overviewActionsEnabled() {
+        return getTestInfo(TestProtocol.REQUEST_OVERVIEW_ACTIONS_ENABLED).getBoolean(
+                TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
     public void disableDebugTracing() {
