@@ -167,6 +167,8 @@ public final class LauncherInstrumentation {
     private static boolean sCheckingEvents;
 
     private boolean mCheckEventsForSuccessfulGestures = false;
+    private int mExpectedPid;
+    private Runnable mOnLauncherCrashed;
 
     private static Pattern getTouchEventPattern(String prefix, String action) {
         // The pattern includes sanity checks that we don't get a multi-touch events or other
@@ -249,6 +251,10 @@ public final class LauncherInstrumentation {
         mCheckEventsForSuccessfulGestures = true;
     }
 
+    public void setOnLauncherCrashed(Runnable onLauncherCrashed) {
+        mOnLauncherCrashed = onLauncherCrashed;
+    }
+
     Context getContext() {
         return mInstrumentation.getContext();
     }
@@ -324,7 +330,7 @@ public final class LauncherInstrumentation {
         }
     }
 
-    private String getAnomalyMessage() {
+    private String getSystemAnomalyMessage() {
         UiObject2 object = mDevice.findObject(By.res("android", "alertTitle"));
         if (object != null) {
             return "System alert popup is visible: " + object.getText();
@@ -343,15 +349,33 @@ public final class LauncherInstrumentation {
         return null;
     }
 
+    private String getAnomalyMessage() {
+        if (mExpectedPid != 0 && mExpectedPid != getPid()) {
+            mExpectedPid = 0;
+            if (mOnLauncherCrashed != null) mOnLauncherCrashed.run();
+            return "Launcher crashed";
+        }
+
+        final String systemAnomalyMessage = getSystemAnomalyMessage();
+        if (systemAnomalyMessage != null) {
+            return "http://go/tapl : Tests are broken by a non-Launcher system error: "
+                    + systemAnomalyMessage;
+        }
+
+        return null;
+    }
+
     public void checkForAnomaly() {
         final String anomalyMessage = getAnomalyMessage();
         if (anomalyMessage != null) {
-            String message = "http://go/tapl : Tests are broken by a non-Launcher system error: "
-                    + anomalyMessage;
-            log("Hierarchy dump for: " + message);
+            if (sCheckingEvents) {
+                sCheckingEvents = false;
+                sEventChecker.finishNoWait();
+            }
+            log("Hierarchy dump for: " + anomalyMessage);
             dumpViewHierarchy();
 
-            Assert.fail(formatSystemHealthMessage(message));
+            Assert.fail(formatSystemHealthMessage(anomalyMessage));
         }
     }
 
@@ -1232,10 +1256,13 @@ public final class LauncherInstrumentation {
             };
         }
         sCheckingEvents = true;
+        mExpectedPid = getPid();
         if (sEventChecker == null) sEventChecker = new LogEventChecker();
         sEventChecker.start();
 
         return () -> {
+            checkForAnomaly();
+
             if (sCheckingEvents) {
                 sCheckingEvents = false;
                 if (mCheckEventsForSuccessfulGestures) {
