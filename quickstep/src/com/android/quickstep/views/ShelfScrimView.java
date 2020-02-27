@@ -41,6 +41,8 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.Interpolators;
+import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.uioverrides.states.OverviewState;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ScrimView;
 import com.android.quickstep.SysUINavigationMode;
@@ -155,12 +157,19 @@ public class ShelfScrimView extends ScrimView<BaseQuickstepLauncher>
             mRemainingScreenPathValid = false;
             mShiftRange = mLauncher.getAllAppsController().getShiftRange();
 
+            Context context = getContext();
             if ((OVERVIEW.getVisibleElements(mLauncher) & ALL_APPS_HEADER_EXTRA) == 0) {
-                mMidProgress = 1;
                 mDragHandleProgress = 1;
-                mMidAlpha = 0;
+                if (FeatureFlags.ENABLE_OVERVIEW_ACTIONS.get()
+                        && SysUINavigationMode.removeShelfFromOverview(context)) {
+                    // Fade in all apps background quickly to distinguish from swiping from nav bar.
+                    mMidAlpha = Themes.getAttrInteger(context, R.attr.allAppsInterimScrimAlpha);
+                    mMidProgress = OverviewState.getDefaultVerticalProgress(mLauncher);
+                } else {
+                    mMidAlpha = 0;
+                    mMidProgress = 1;
+                }
             } else {
-                Context context = getContext();
                 mMidAlpha = Themes.getAttrInteger(context, R.attr.allAppsInterimScrimAlpha);
                 mMidProgress =  OVERVIEW.getVerticalProgress(mLauncher);
                 Rect hotseatPadding = dp.getHotseatLayoutPadding();

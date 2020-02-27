@@ -34,6 +34,10 @@ public interface CachingLogic<T> {
 
     CharSequence getLabel(T object);
 
+    default CharSequence getDescription(T object, CharSequence fallback) {
+        return fallback;
+    }
+
     @NonNull
     BitmapInfo loadIcon(Context context, T object);
 

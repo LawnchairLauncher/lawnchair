@@ -25,6 +25,7 @@ import static com.android.launcher3.allapps.DiscoveryBounce.HOME_BOUNCE_COUNT;
 import static com.android.launcher3.allapps.DiscoveryBounce.HOME_BOUNCE_SEEN;
 import static com.android.launcher3.allapps.DiscoveryBounce.SHELF_BOUNCE_COUNT;
 import static com.android.launcher3.allapps.DiscoveryBounce.SHELF_BOUNCE_SEEN;
+import static com.android.quickstep.SysUINavigationMode.removeShelfFromOverview;
 
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
@@ -35,6 +36,7 @@ import android.os.CancellationSignal;
 
 import com.android.launcher3.LauncherState.ScaleAndTranslation;
 import com.android.launcher3.LauncherStateManager.StateHandler;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.WellbeingModel;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.proxy.ProxyActivityStarter;
@@ -172,7 +174,7 @@ public abstract class BaseQuickstepLauncher extends Launcher
     @Override
     public void startActivityForResult(Intent intent, int requestCode, Bundle options) {
         if (requestCode != -1) {
-            mPendingActivityRequestCode = -1;
+            mPendingActivityRequestCode = requestCode;
             StartActivityParams params = new StartActivityParams(this, requestCode);
             params.intent = intent;
             params.options = options;
@@ -190,6 +192,16 @@ public abstract class BaseQuickstepLauncher extends Launcher
             // ProxyActivityStarter is started with clear task to reset the task after which it
             // removes the task itself.
             startActivity(ProxyActivityStarter.getLaunchIntent(this, null));
+        }
+    }
+
+    @Override
+    protected void setupViews() {
+        super.setupViews();
+
+        if (FeatureFlags.ENABLE_OVERVIEW_ACTIONS.get() && removeShelfFromOverview(this)) {
+            // Overview is above all other launcher elements, including qsb, so move it to the top.
+            getOverviewPanel().bringToFront();
         }
     }
 

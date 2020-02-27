@@ -293,7 +293,9 @@ public class LauncherStateManager {
             Runnable onCompleteRunnable) {
         // Since state NORMAL can be reached from multiple states, just assume that the
         // transition plays in reverse and use the same duration as previous state.
-        mConfig.duration = state == NORMAL ? fromState.transitionDuration : state.transitionDuration;
+        mConfig.duration = state == NORMAL
+                ? fromState.getTransitionDuration(mLauncher)
+                : state.getTransitionDuration(mLauncher);
 
         AnimatorSetBuilder builder = new AnimatorSetBuilder();
         prepareForAtomicAnimation(fromState, state, builder);

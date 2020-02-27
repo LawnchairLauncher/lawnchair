@@ -30,18 +30,23 @@ import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_1_7;
 import static com.android.launcher3.anim.Interpolators.clampToProgress;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_ACTIONS;
 import static com.android.launcher3.states.RotationHelper.REQUEST_NONE;
 import static com.android.launcher3.testing.TestProtocol.ALL_APPS_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.BACKGROUND_APP_STATE_ORDINAL;
+import static com.android.launcher3.testing.TestProtocol.HINT_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.NORMAL_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.OVERVIEW_PEEK_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.OVERVIEW_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.QUICK_SWITCH_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.SPRING_LOADED_STATE_ORDINAL;
 
+import android.view.View;
 import android.view.animation.Interpolator;
 
+import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.anim.AnimatorSetBuilder;
+import com.android.launcher3.states.HintState;
 import com.android.launcher3.states.SpringLoadedState;
 import com.android.launcher3.uioverrides.states.AllAppsState;
 import com.android.launcher3.uioverrides.states.OverviewState;
@@ -53,7 +58,7 @@ import java.util.Arrays;
 /**
  * Base state for various states used for the Launcher
  */
-public class LauncherState {
+public abstract class LauncherState {
 
 
     /**
@@ -88,15 +93,21 @@ public class LauncherState {
                 }
             };
 
-    private static final LauncherState[] sAllStates = new LauncherState[7];
+    private static final LauncherState[] sAllStates = new LauncherState[8];
 
     /**
      * TODO: Create a separate class for NORMAL state.
      */
     public static final LauncherState NORMAL = new LauncherState(NORMAL_STATE_ORDINAL,
-            ContainerType.WORKSPACE, 0,
+            ContainerType.WORKSPACE,
             FLAG_DISABLE_RESTORE | FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED | FLAG_HIDE_BACK_BUTTON |
-            FLAG_HAS_SYS_UI_SCRIM);
+                    FLAG_HAS_SYS_UI_SCRIM) {
+        @Override
+        public int getTransitionDuration(Launcher launcher) {
+            // Arbitrary duration, when going to NORMAL we use the state we're coming from instead.
+            return 0;
+        }
+    };
 
     /**
      * Various Launcher states arranged in the increasing order of UI layers
@@ -104,6 +115,7 @@ public class LauncherState {
     public static final LauncherState SPRING_LOADED = new SpringLoadedState(
             SPRING_LOADED_STATE_ORDINAL);
     public static final LauncherState ALL_APPS = new AllAppsState(ALL_APPS_STATE_ORDINAL);
+    public static final LauncherState HINT_STATE = new HintState(HINT_STATE_ORDINAL);
 
     public static final LauncherState OVERVIEW = new OverviewState(OVERVIEW_STATE_ORDINAL);
     public static final LauncherState OVERVIEW_PEEK =
@@ -143,8 +155,6 @@ public class LauncherState {
      */
     public final boolean hasWorkspacePageBackground;
 
-    public final int transitionDuration;
-
     /**
      * True if the state allows workspace icons to be dragged.
      */
@@ -174,9 +184,8 @@ public class LauncherState {
 
     public final boolean hasSysUiScrim;
 
-    public LauncherState(int id, int containerType, int transitionDuration, int flags) {
+    public LauncherState(int id, int containerType, int flags) {
         this.containerType = containerType;
-        this.transitionDuration = transitionDuration;
 
         this.hasWorkspacePageBackground = (flags & FLAG_PAGE_BACKGROUNDS) != 0;
         this.hasMultipleVisiblePages = (flags & FLAG_MULTI_PAGE) != 0;
@@ -199,6 +208,12 @@ public class LauncherState {
         return Arrays.copyOf(sAllStates, sAllStates.length);
     }
 
+    /**
+     * @return How long the animation to this state should take (or from this state to NORMAL).
+     * @param launcher
+     */
+    public abstract int getTransitionDuration(Launcher launcher);
+
     public ScaleAndTranslation getWorkspaceScaleAndTranslation(Launcher launcher) {
         return new ScaleAndTranslation(1, 0, 0);
     }
@@ -210,6 +225,10 @@ public class LauncherState {
 
     public ScaleAndTranslation getOverviewScaleAndTranslation(Launcher launcher) {
         return launcher.getOverviewScaleAndTranslationForNormalState();
+    }
+
+    public ScaleAndTranslation getQsbScaleAndTranslation(Launcher launcher) {
+        return new ScaleAndTranslation(1, 0, 0);
     }
 
     public float getOverviewFullscreenProgress() {
@@ -319,6 +338,15 @@ public class LauncherState {
             if (!isHotseatVisible) {
                 hotseat.setScaleX(0.92f);
                 hotseat.setScaleY(0.92f);
+                if (ENABLE_OVERVIEW_ACTIONS.get()) {
+                    AllAppsContainerView qsbContainer = launcher.getAppsView();
+                    View qsb = qsbContainer.getSearchView();
+                    boolean qsbVisible = qsb.getVisibility() == VISIBLE && qsb.getAlpha() > 0;
+                    if (!qsbVisible) {
+                        qsbContainer.setScaleX(0.92f);
+                        qsbContainer.setScaleY(0.92f);
+                    }
+                }
             }
         } else if (this == NORMAL && fromState == OVERVIEW_PEEK) {
             // Keep fully visible until the very end (when overview is offscreen) to make invisible.

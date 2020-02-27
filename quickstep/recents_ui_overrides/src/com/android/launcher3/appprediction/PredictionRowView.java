@@ -296,7 +296,7 @@ public class PredictionRowView extends LinearLayout implements
                 predictedApp.container = LauncherSettings.Favorites.CONTAINER_PREDICTION;
                 predictedApps.add(predictedApp);
             } else {
-                if (FeatureFlags.IS_DOGFOOD_BUILD) {
+                if (FeatureFlags.IS_STUDIO_BUILD) {
                     Log.e(TAG, "Predicted app not found: " + mapper);
                 }
             }

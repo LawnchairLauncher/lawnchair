@@ -73,6 +73,9 @@ public class NavigationModeSwitchRule implements TestRule {
 
     private final LauncherInstrumentation mLauncher;
 
+    static final SysUINavigationMode SYS_UI_NAVIGATION_MODE =
+            SysUINavigationMode.INSTANCE.get(getInstrumentation().getTargetContext());
+
     public NavigationModeSwitchRule(LauncherInstrumentation launcher) {
         mLauncher = launcher;
     }
@@ -83,32 +86,13 @@ public class NavigationModeSwitchRule implements TestRule {
                 description.getAnnotation(NavigationModeSwitch.class) != null) {
             Mode mode = description.getAnnotation(NavigationModeSwitch.class).mode();
             return new Statement() {
-                private void assertTrue(String message, boolean condition) {
-                    if (mLauncher.getDevice().hasObject(By.textStartsWith(""))) {
-                        // The condition above is "screen is not empty". We are not treating
-                        // "Screen is empty" as an anomaly here. It's an acceptable state when
-                        // Launcher just starts under instrumentation.
-                        mLauncher.checkForAnomaly();
-                    }
-                    if (!condition) {
-                        final AssertionError assertionError = new AssertionError(message);
-                        FailureWatcher.onError(mLauncher.getDevice(), description, assertionError);
-                        throw assertionError;
-                    }
-                }
-
                 @Override
                 public void evaluate() throws Throwable {
                     mLauncher.enableDebugTracing();
                     final Context context = getInstrumentation().getContext();
                     final int currentInteractionMode =
                             LauncherInstrumentation.getCurrentInteractionMode(context);
-                    final String prevOverlayPkg =
-                            QuickStepContract.isGesturalMode(currentInteractionMode)
-                                    ? NAV_BAR_MODE_GESTURAL_OVERLAY
-                                    : QuickStepContract.isSwipeUpMode(currentInteractionMode)
-                                            ? NAV_BAR_MODE_2BUTTON_OVERLAY
-                                            : NAV_BAR_MODE_3BUTTON_OVERLAY;
+                    final String prevOverlayPkg = getCurrentOverlayPackage(currentInteractionMode);
                     final LauncherInstrumentation.NavigationModel originalMode =
                             mLauncher.getNavigationModel();
                     try {
@@ -125,102 +109,45 @@ public class NavigationModeSwitchRule implements TestRule {
                         Log.e(TAG, "Error", e);
                         throw e;
                     } finally {
-                        assertTrue("Couldn't set overlay",
-                                setActiveOverlay(prevOverlayPkg, originalMode));
+                        Log.d(TAG, "In Finally block");
+                        assertTrue(mLauncher, "Couldn't set overlay",
+                                setActiveOverlay(mLauncher, prevOverlayPkg, originalMode,
+                                        description), description);
                     }
                 }
 
                 private void evaluateWithThreeButtons() throws Throwable {
-                    if (setActiveOverlay(NAV_BAR_MODE_3BUTTON_OVERLAY,
-                            LauncherInstrumentation.NavigationModel.THREE_BUTTON)) {
+                    if (setActiveOverlay(mLauncher, NAV_BAR_MODE_3BUTTON_OVERLAY,
+                            LauncherInstrumentation.NavigationModel.THREE_BUTTON, description)) {
                         base.evaluate();
                     }
                 }
 
                 private void evaluateWithTwoButtons() throws Throwable {
-                    if (setActiveOverlay(NAV_BAR_MODE_2BUTTON_OVERLAY,
-                            LauncherInstrumentation.NavigationModel.TWO_BUTTON)) {
+                    if (setActiveOverlay(mLauncher, NAV_BAR_MODE_2BUTTON_OVERLAY,
+                            LauncherInstrumentation.NavigationModel.TWO_BUTTON, description)) {
                         base.evaluate();
                     }
                 }
 
                 private void evaluateWithZeroButtons() throws Throwable {
-                    if (setActiveOverlay(NAV_BAR_MODE_GESTURAL_OVERLAY,
-                            LauncherInstrumentation.NavigationModel.ZERO_BUTTON)) {
+                    if (setActiveOverlay(mLauncher, NAV_BAR_MODE_GESTURAL_OVERLAY,
+                            LauncherInstrumentation.NavigationModel.ZERO_BUTTON, description)) {
                         base.evaluate();
                     }
-                }
-
-                private boolean packageExists(String packageName) {
-                    try {
-                        PackageManager pm = getInstrumentation().getContext().getPackageManager();
-                        if (pm.getApplicationInfo(packageName, 0 /* flags */) == null) {
-                            return false;
-                        }
-                    } catch (PackageManager.NameNotFoundException e) {
-                        return false;
-                    }
-                    return true;
-                }
-
-                private boolean setActiveOverlay(String overlayPackage,
-                        LauncherInstrumentation.NavigationModel expectedMode) throws Exception {
-                    if (!packageExists(overlayPackage)) {
-                        Log.d(TAG, "setActiveOverlay: " + overlayPackage + " pkg does not exist");
-                        return false;
-                    }
-
-                    setOverlayPackageEnabled(NAV_BAR_MODE_3BUTTON_OVERLAY,
-                            overlayPackage == NAV_BAR_MODE_3BUTTON_OVERLAY);
-                    setOverlayPackageEnabled(NAV_BAR_MODE_2BUTTON_OVERLAY,
-                            overlayPackage == NAV_BAR_MODE_2BUTTON_OVERLAY);
-                    setOverlayPackageEnabled(NAV_BAR_MODE_GESTURAL_OVERLAY,
-                            overlayPackage == NAV_BAR_MODE_GESTURAL_OVERLAY);
-
-                    if (currentSysUiNavigationMode() != expectedMode) {
-                        final CountDownLatch latch = new CountDownLatch(1);
-                        final Context targetContext = getInstrumentation().getTargetContext();
-                        final SysUINavigationMode.NavigationModeChangeListener listener =
-                                newMode -> {
-                                    if (LauncherInstrumentation.getNavigationModel(newMode.resValue)
-                                            == expectedMode) {
-                                        latch.countDown();
-                                    }
-                                };
-                        final SysUINavigationMode sysUINavigationMode =
-                                SysUINavigationMode.INSTANCE.get(targetContext);
-                        targetContext.getMainExecutor().execute(() ->
-                                sysUINavigationMode.addModeChangeListener(listener));
-                        latch.await(60, TimeUnit.SECONDS);
-                        targetContext.getMainExecutor().execute(() ->
-                                sysUINavigationMode.removeModeChangeListener(listener));
-                        assertTrue("Navigation mode didn't change to " + expectedMode,
-                                currentSysUiNavigationMode() == expectedMode);
-                    }
-
-                    Wait.atMost("Couldn't switch to " + overlayPackage,
-                            () -> mLauncher.getNavigationModel() == expectedMode, WAIT_TIME_MS,
-                            mLauncher);
-
-                    Wait.atMost(() -> "Switching nav mode: "
-                                    + mLauncher.getNavigationModeMismatchError(),
-                            () -> mLauncher.getNavigationModeMismatchError() == null, WAIT_TIME_MS,
-                            mLauncher);
-
-                    return true;
-                }
-
-                private void setOverlayPackageEnabled(String overlayPackage, boolean enable)
-                        throws Exception {
-                    Log.d(TAG, "setOverlayPackageEnabled: " + overlayPackage + " " + enable);
-                    final String action = enable ? "enable" : "disable";
-                    UiDevice.getInstance(getInstrumentation()).executeShellCommand(
-                            "cmd overlay " + action + " " + overlayPackage);
                 }
             };
         } else {
             return base;
         }
+    }
+
+    public static String getCurrentOverlayPackage(int currentInteractionMode) {
+        return QuickStepContract.isGesturalMode(currentInteractionMode)
+                ? NAV_BAR_MODE_GESTURAL_OVERLAY
+                : QuickStepContract.isSwipeUpMode(currentInteractionMode)
+                        ? NAV_BAR_MODE_2BUTTON_OVERLAY
+                        : NAV_BAR_MODE_3BUTTON_OVERLAY;
     }
 
     private static LauncherInstrumentation.NavigationModel currentSysUiNavigationMode() {
@@ -229,5 +156,87 @@ public class NavigationModeSwitchRule implements TestRule {
                         getInstrumentation().
                                 getTargetContext()).
                         resValue);
+    }
+
+    public static boolean setActiveOverlay(LauncherInstrumentation launcher, String overlayPackage,
+            LauncherInstrumentation.NavigationModel expectedMode, Description description)
+            throws Exception {
+        if (!packageExists(overlayPackage)) {
+            Log.d(TAG, "setActiveOverlay: " + overlayPackage + " pkg does not exist");
+            return false;
+        }
+
+        setOverlayPackageEnabled(NAV_BAR_MODE_3BUTTON_OVERLAY,
+                overlayPackage == NAV_BAR_MODE_3BUTTON_OVERLAY);
+        setOverlayPackageEnabled(NAV_BAR_MODE_2BUTTON_OVERLAY,
+                overlayPackage == NAV_BAR_MODE_2BUTTON_OVERLAY);
+        setOverlayPackageEnabled(NAV_BAR_MODE_GESTURAL_OVERLAY,
+                overlayPackage == NAV_BAR_MODE_GESTURAL_OVERLAY);
+
+        if (currentSysUiNavigationMode() != expectedMode) {
+            final CountDownLatch latch = new CountDownLatch(1);
+            final Context targetContext = getInstrumentation().getTargetContext();
+            final SysUINavigationMode.NavigationModeChangeListener listener =
+                    newMode -> {
+                        if (LauncherInstrumentation.getNavigationModel(newMode.resValue)
+                                == expectedMode) {
+                            latch.countDown();
+                        }
+                    };
+            targetContext.getMainExecutor().execute(() ->
+                    SYS_UI_NAVIGATION_MODE.addModeChangeListener(listener));
+            latch.await(60, TimeUnit.SECONDS);
+            targetContext.getMainExecutor().execute(() ->
+                    SYS_UI_NAVIGATION_MODE.removeModeChangeListener(listener));
+            assertTrue(launcher, "Navigation mode didn't change to " + expectedMode,
+                    currentSysUiNavigationMode() == expectedMode, description);
+        }
+
+        Wait.atMost("Couldn't switch to " + overlayPackage,
+                () -> launcher.getNavigationModel() == expectedMode, WAIT_TIME_MS, launcher);
+
+        Wait.atMost(() -> "Switching nav mode: "
+                        + launcher.getNavigationModeMismatchError(),
+                () -> launcher.getNavigationModeMismatchError() == null,
+                60000 /* b/148422894 */, launcher);
+
+        return true;
+    }
+
+    private static void setOverlayPackageEnabled(String overlayPackage, boolean enable)
+            throws Exception {
+        Log.d(TAG, "setOverlayPackageEnabled: " + overlayPackage + " " + enable);
+        final String action = enable ? "enable" : "disable";
+        UiDevice.getInstance(getInstrumentation()).executeShellCommand(
+                "cmd overlay " + action + " " + overlayPackage);
+    }
+
+    private static boolean packageExists(String packageName) {
+        try {
+            PackageManager pm = getInstrumentation().getContext().getPackageManager();
+            if (pm.getApplicationInfo(packageName, 0 /* flags */) == null) {
+                return false;
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
+        return true;
+    }
+
+    private static void assertTrue(LauncherInstrumentation launcher, String message,
+            boolean condition, Description description) {
+        if (launcher.getDevice().hasObject(By.textStartsWith(""))) {
+            // The condition above is "screen is not empty". We are not treating
+            // "Screen is empty" as an anomaly here. It's an acceptable state when
+            // Launcher just starts under instrumentation.
+            launcher.checkForAnomaly();
+        }
+        if (!condition) {
+            final AssertionError assertionError = new AssertionError(message);
+            if (description != null) {
+                FailureWatcher.onError(launcher.getDevice(), description, assertionError);
+            }
+            throw assertionError;
+        }
     }
 }

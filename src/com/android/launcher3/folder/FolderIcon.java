@@ -288,8 +288,9 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
     }
 
     public void performCreateAnimation(final WorkspaceItemInfo destInfo, final View destView,
-            final WorkspaceItemInfo srcInfo, final DragView srcView, Rect dstRect,
+            final WorkspaceItemInfo srcInfo, final DragObject d, Rect dstRect,
             float scaleRelativeToDragLayer) {
+        final DragView srcView = d.dragView;
         prepareCreateAnimation(destView);
         addItem(destInfo);
         // This will animate the first item from it's position as an icon into its
@@ -298,7 +299,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
                 .start();
 
         // This will animate the dragView (srcView) into the new folder
-        onDrop(srcInfo, srcView, dstRect, scaleRelativeToDragLayer, 1,
+        onDrop(srcInfo, d, dstRect, scaleRelativeToDragLayer, 1,
                 false /* itemReturnedOnFailedDrop */);
     }
 
@@ -313,11 +314,11 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
         mOpenAlarm.cancelAlarm();
     }
 
-    private void onDrop(final WorkspaceItemInfo item, DragView animateView, Rect finalRect,
+    private void onDrop(final WorkspaceItemInfo item, DragObject d, Rect finalRect,
             float scaleRelativeToDragLayer, int index, boolean itemReturnedOnFailedDrop) {
         item.cellX = -1;
         item.cellY = -1;
-
+        DragView animateView = d.dragView;
         // Typically, the animateView corresponds to the DragView; however, if this is being done
         // after a configuration activity (ie. for a Shortcut being dragged from AllApps) we
         // will not have a view to animate
@@ -392,15 +393,16 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
             if (!itemAdded) mPreviewItemManager.hidePreviewItem(index, true);
             final int finalIndex = index;
 
-            String[] suggestedNameOut = new String[FolderNameProvider.SUGGEST_MAX];
+            FolderNameInfo[] nameInfos =
+                    new FolderNameInfo[FolderNameProvider.SUGGEST_MAX];
             if (FeatureFlags.FOLDER_NAME_SUGGEST.get()) {
                 Executors.UI_HELPER_EXECUTOR.post(() -> {
-                    launcher.getFolderNameProvider().getSuggestedFolderName(
-                            getContext(), mInfo.contents, suggestedNameOut);
-                    showFinalView(finalIndex, item, suggestedNameOut);
+                    d.folderNameProvider.getSuggestedFolderName(
+                            getContext(), mInfo.contents, nameInfos);
+                    showFinalView(finalIndex, item, nameInfos);
                 });
             } else {
-                showFinalView(finalIndex, item, suggestedNameOut);
+                showFinalView(finalIndex, item, nameInfos);
             }
         } else {
             addItem(item);
@@ -408,12 +410,12 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
     }
 
     private void showFinalView(int finalIndex, final WorkspaceItemInfo item,
-            String[] suggestedNameOut) {
+            FolderNameInfo[] nameInfos) {
         postDelayed(() -> {
             mPreviewItemManager.hidePreviewItem(finalIndex, false);
             mFolder.showItem(item);
             invalidate();
-            mFolder.showSuggestedTitle(suggestedNameOut);
+            mFolder.showSuggestedTitle(nameInfos);
         }, DROP_IN_ANIMATION_DURATION);
     }
 
@@ -429,9 +431,10 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
             item = (WorkspaceItemInfo) d.dragInfo;
         }
         mFolder.notifyDrop();
-        onDrop(item, d.dragView, null, 1.0f,
+        onDrop(item, d, null, 1.0f,
                 itemReturnedOnFailedDrop ? item.rank : mInfo.contents.size(),
-                itemReturnedOnFailedDrop);
+                itemReturnedOnFailedDrop
+        );
     }
 
     public void setDotInfo(FolderDotInfo dotInfo) {

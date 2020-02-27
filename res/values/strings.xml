@@ -142,7 +142,7 @@
     <string name="uninstall_system_app_text">This is a system app and can\'t be uninstalled.</string>
 
     <!-- Default folder title -->
-    <string name="folder_hint_text">Unnamed Folder</string>
+    <string name="folder_hint_text">Edit Name</string>
 
     <!-- Accessibility -->
     <!-- The format string for when an app is temporarily disabled. -->
@@ -327,17 +327,23 @@
 
     <!-- This string is in the work profile tab when a user has All Apps open on their phone. This is a label for a toggle to turn the work profile on and off. "Work profile" means a separate profile on a user's phone that's specifically for their work apps and managed by their company. "Work" is used as an adjective.-->
     <string name="work_profile_toggle_label">Work profile</string>
-    <!-- Title of an overlay in All Apps. This overlay is letting a user know about their work profile, which is managed by their employer. "Work apps" are apps in a user's work profile.-->
-    <string name="bottom_work_tab_user_education_title">Find work apps here</string>
-    <!-- Text in an overlay in All Apps. This overlay is letting a user know about their work profile, which is managed by their employer.-->
-    <string name="bottom_work_tab_user_education_body">Each work app has a badge and is kept secure by your organization. Move apps to your Home screen for easier access.</string>
+    <!--- User onboarding title for personal apps -->
+    <string name="work_profile_edu_personal_apps">Personal apps are private &amp; can\'t be seen by IT</string>
+    <!--- User onboarding title for work profile apps -->
+    <string name="work_profile_edu_work_apps">Work apps are badged and monitored by IT</string>
+    <!-- Action label to proceed to the next work profile edu section-->
+    <string name="work_profile_edu_next">Next</string>
+    <!-- Action label to finish work profile edu-->
+    <string name="work_profile_edu_accept">Got it</string>
+
     <!-- This string is in the work profile tab when a user has All Apps open on their phone. It describes the label of a toggle, "Work profile," as being managed by the user's employer.
     "Organization" is used to represent a variety of businesses, non-profits, and educational institutions).-->
-    <string name="work_mode_on_label">Managed by your organization</string>
+    <string name="work_mode_on_label">Work apps: On</string>
     <!-- This string appears under a the label of a toggle in the work profile tab on a user's phone. It describes the status of the toggle, "Work profile," when it's turned off. "Work profile" means a separate profile on a user's phone that's speficially for their work apps and is managed by their company.-->
-    <string name="work_mode_off_label">Notifications and apps are off</string>
-    <string name="bottom_work_tab_user_education_close_button">Close</string>
-    <string name="bottom_work_tab_user_education_closed">Closed</string>
+    <string name="work_mode_off_label">Work apps: Paused</string>
+
+    <string name="work_apps_paused_title">Work apps are paused</string>
+    <string name="work_apps_paused_body">You won\'t get any work notifications, and your IT admin can\'t see your location</string>
 
     <!-- Failed action error message: e.g. Failed: Pause -->
     <string name="remote_action_failed">Failed: <xliff:g id="what" example="Pause">%1$s</xliff:g></string>

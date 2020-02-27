@@ -29,7 +29,7 @@ LOCAL_STATIC_JAVA_LIBRARIES := \
     mockito-robolectric-prebuilt \
     truth-prebuilt
 LOCAL_JAVA_LIBRARIES := \
-    platform-robolectric-4.3-prebuilt
+    platform-robolectric-4.3.1-prebuilt
 
 LOCAL_JAVA_RESOURCE_DIRS := resources config
 
@@ -52,8 +52,8 @@ LOCAL_JAVA_LIBRARIES := LauncherRoboTests
 
 LOCAL_RESOURCE_DIR := $(LOCAL_PATH)/res
 LOCAL_TEST_PACKAGE := Launcher3
-LOCAL_INSTRUMENT_SOURCE_DIRS := $(dir $(LOCAL_PATH))../src
+LOCAL_INSTRUMENT_SOURCE_DIRS := packages/apps/Launcher3/src
 
 LOCAL_ROBOTEST_TIMEOUT := 36000
 
-include prebuilts/misc/common/robolectric/4.3/run_robotests.mk
+include prebuilts/misc/common/robolectric/4.3.1/run_robotests.mk

@@ -23,8 +23,6 @@ import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.UiObject2;
 
-import com.android.launcher3.testing.TestProtocol;
-
 import java.util.Collections;
 import java.util.List;
 
@@ -58,9 +56,7 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
                      mLauncher.addContextLayer("want to fling forward in overview")) {
             LauncherInstrumentation.log("Overview.flingForward before fling");
             final UiObject2 overview = verifyActiveContainer();
-            final int leftMargin = mLauncher.getTestInfo(
-                    TestProtocol.REQUEST_OVERVIEW_LEFT_GESTURE_MARGIN).
-                    getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
+            final int leftMargin = mLauncher.getTargetInsets().left;
             mLauncher.scroll(
                     overview, Direction.LEFT, new Rect(leftMargin + 1, 0, 0, 0), 20, false);
             verifyActiveContainer();
@@ -96,9 +92,7 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
                      mLauncher.addContextLayer("want to fling backward in overview")) {
             LauncherInstrumentation.log("Overview.flingBackward before fling");
             final UiObject2 overview = verifyActiveContainer();
-            final int rightMargin = mLauncher.getTestInfo(
-                    TestProtocol.REQUEST_OVERVIEW_RIGHT_GESTURE_MARGIN).
-                    getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
+            final int rightMargin = mLauncher.getTargetInsets().right;
             mLauncher.scroll(
                     overview, Direction.RIGHT, new Rect(0, 0, rightMargin + 1, 0), 20, false);
             verifyActiveContainer();

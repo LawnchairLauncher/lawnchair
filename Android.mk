@@ -48,7 +48,9 @@ LOCAL_STATIC_ANDROID_LIBRARIES := \
     androidx.preference_preference \
     iconloader_base
 
-LOCAL_STATIC_JAVA_LIBRARIES := LauncherPluginLib
+LOCAL_STATIC_JAVA_LIBRARIES := \
+    LauncherPluginLib \
+    launcher_log_protos_lite
 
 LOCAL_SRC_FILES := \
     $(call all-proto-files-under, protos) \
@@ -78,9 +80,8 @@ include $(CLEAR_VARS)
 LOCAL_USE_AAPT2 := true
 LOCAL_MODULE_TAGS := optional
 
-LOCAL_STATIC_ANDROID_LIBRARIES := \
-    Launcher3CommonDepsLib \
-    SecondaryDisplayLauncherLib
+LOCAL_STATIC_ANDROID_LIBRARIES := Launcher3CommonDepsLib
+
 LOCAL_SRC_FILES := \
     $(call all-java-files-under, src) \
     $(call all-java-files-under, src_shortcuts_overrides) \
@@ -145,7 +146,10 @@ LOCAL_USE_AAPT2 := true
 LOCAL_AAPT2_ONLY := true
 LOCAL_MODULE_TAGS := optional
 
-LOCAL_STATIC_JAVA_LIBRARIES := SystemUISharedLibLauncherWrapper launcherprotosnano
+LOCAL_STATIC_JAVA_LIBRARIES := \
+    SystemUISharedLib \
+    launcherprotosnano \
+    launcher_log_protos_lite
 ifneq (,$(wildcard frameworks/base))
   LOCAL_PRIVATE_PLATFORM_APIS := true
 else
@@ -154,9 +158,7 @@ else
 endif
 LOCAL_MODULE := Launcher3QuickStepLib
 LOCAL_PRIVILEGED_MODULE := true
-LOCAL_STATIC_ANDROID_LIBRARIES := \
-    Launcher3CommonDepsLib \
-    SecondaryDisplayLauncherLib
+LOCAL_STATIC_ANDROID_LIBRARIES := Launcher3CommonDepsLib
 
 LOCAL_SRC_FILES := \
     $(call all-java-files-under, src) \
@@ -216,7 +218,10 @@ include $(CLEAR_VARS)
 LOCAL_USE_AAPT2 := true
 LOCAL_MODULE_TAGS := optional
 
-LOCAL_STATIC_JAVA_LIBRARIES := SystemUISharedLibLauncherWrapper launcherprotosnano
+LOCAL_STATIC_JAVA_LIBRARIES := \
+    SystemUISharedLib \
+    launcherprotosnano \
+    launcher_log_protos_lite
 ifneq (,$(wildcard frameworks/base))
   LOCAL_PRIVATE_PLATFORM_APIS := true
 else

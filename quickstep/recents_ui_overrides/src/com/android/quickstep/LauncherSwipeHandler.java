@@ -75,7 +75,6 @@ import com.android.quickstep.inputconsumers.OverviewInputConsumer;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.AppWindowAnimationHelper.TargetAlphaProvider;
 import com.android.quickstep.util.RectFSpringAnim;
-import com.android.quickstep.util.SharedApiCompat;
 import com.android.quickstep.util.ShelfPeekAnim;
 import com.android.quickstep.util.ShelfPeekAnim.ShelfAnimState;
 import com.android.quickstep.views.LiveTileOverlay;
@@ -700,6 +699,8 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
         switch (mGestureState.getEndTarget()) {
             case HOME:
                 mStateCallback.setState(STATE_SCALED_CONTROLLER_HOME | STATE_CAPTURE_SCREENSHOT);
+                // Notify swipe-to-home (recents animation) is finished
+                SystemUiProxy.INSTANCE.get(mContext).notifySwipeToHomeFinished();
                 break;
             case RECENTS:
                 mStateCallback.setState(STATE_SCALED_CONTROLLER_RECENTS | STATE_CAPTURE_SCREENSHOT
@@ -918,6 +919,12 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
             windowAnim.addAnimatorListener(new AnimationSuccessListener() {
                 @Override
                 public void onAnimationSuccess(Animator animator) {
+                    if (mRecentsAnimationController == null) {
+                        // If the recents animation is interrupted, we still end the running
+                        // animation (not canceled) so this is still called. In that case, we can
+                        // skip doing any future work here for the current gesture.
+                        return;
+                    }
                     // Finalize the state and notify of the change
                     mGestureState.setState(STATE_END_TARGET_ANIMATION_FINISHED);
                 }
@@ -939,6 +946,12 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
             windowAnim.addListener(new AnimationSuccessListener() {
                 @Override
                 public void onAnimationSuccess(Animator animator) {
+                    if (mRecentsAnimationController == null) {
+                        // If the recents animation is interrupted, we still end the running
+                        // animation (not canceled) so this is still called. In that case, we can
+                        // skip doing any future work here for the current gesture.
+                        return;
+                    }
                     if (target == NEW_TASK && mRecentsView != null
                             && mRecentsView.getNextPage() == mRecentsView.getRunningTaskIndex()) {
                         // We are about to launch the current running task, so use LAST_TASK state
@@ -1142,8 +1155,7 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
         final int runningTaskId = mGestureState.getRunningTaskId();
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             if (mRecentsAnimationController != null) {
-                SharedApiCompat.setWillFinishToHome(mRecentsAnimationController.getController(),
-                        true /* willFinishToHome */);
+                mRecentsAnimationController.getController().setWillFinishToHome(true);
                 // Update the screenshot of the task
                 if (mTaskSnapshot == null) {
                     mTaskSnapshot = mRecentsAnimationController.screenshotTask(runningTaskId);

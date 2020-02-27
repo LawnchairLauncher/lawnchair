@@ -259,7 +259,7 @@ public class WorkspaceAndHotseatScrim extends Scrim {
         }
     }
 
-    public Bitmap createDitheredAlphaMask() {
+    private Bitmap createDitheredAlphaMask() {
         DisplayMetrics dm = mLauncher.getResources().getDisplayMetrics();
         int width = ResourceUtils.pxFromDp(ALPHA_MASK_WIDTH_DP, dm);
         int gradientHeight = ResourceUtils.pxFromDp(ALPHA_MASK_HEIGHT_DP, dm);

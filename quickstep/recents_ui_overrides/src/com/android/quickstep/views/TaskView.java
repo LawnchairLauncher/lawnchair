@@ -22,6 +22,7 @@ import static com.android.launcher3.QuickstepAppTransitionManagerImpl.RECENTS_LA
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
+import static com.android.quickstep.SysUINavigationMode.removeShelfFromOverview;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -30,7 +31,6 @@ import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.app.ActivityOptions;
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Outline;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -57,6 +57,8 @@ import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.popup.SystemShortcut;
+import com.android.launcher3.testing.TestLogging;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
@@ -220,7 +222,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         mCurrentFullscreenParams = new FullscreenDrawParams(mCornerRadius);
         mDigitalWellBeingToast = new DigitalWellBeingToast(mActivity, this);
 
-        mOutlineProvider = new TaskOutlineProvider(getResources(), mCurrentFullscreenParams);
+        mOutlineProvider = new TaskOutlineProvider(getContext(), mCurrentFullscreenParams);
         setOutlineProvider(mOutlineProvider);
     }
 
@@ -229,19 +231,21 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         super.onFinishInflate();
         mSnapshotView = findViewById(R.id.snapshot);
         mIconView = findViewById(R.id.icon);
+        final Context context = getContext();
 
         TaskView.LayoutParams thumbnailParams = (LayoutParams) mSnapshotView.getLayoutParams();
-        thumbnailParams.bottomMargin = LayoutUtils.thumbnailBottomMargin(getResources());
+        thumbnailParams.bottomMargin = LayoutUtils.thumbnailBottomMargin(context);
         mSnapshotView.setLayoutParams(thumbnailParams);
 
 
-        if (FeatureFlags.ENABLE_OVERVIEW_ACTIONS.get()) {
+        if (FeatureFlags.ENABLE_OVERVIEW_ACTIONS.get() && removeShelfFromOverview(context)) {
             mActionsView = mSnapshotView.getTaskOverlay().getActionsView();
             if (mActionsView != null) {
                 TaskView.LayoutParams params = new TaskView.LayoutParams(LayoutParams.MATCH_PARENT,
                         getResources().getDimensionPixelSize(R.dimen.overview_actions_height),
                         Gravity.BOTTOM);
                 addView(mActionsView, params);
+                mActionsView.setAlpha(0);
             }
         }
     }
@@ -331,6 +335,8 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             Consumer<Boolean> resultCallback, Handler resultCallbackHandler) {
         if (mTask != null) {
             final ActivityOptions opts;
+            TestLogging.recordEvent(
+                    TestProtocol.SEQUENCE_MAIN, "startActivityFromRecentsAsync", mTask);
             if (animate) {
                 opts = mActivity.getActivityLaunchOptions(this);
                 if (freezeTaskList) {
@@ -443,7 +449,8 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         mIconView.setScaleX(scale);
         mIconView.setScaleY(scale);
 
-        if (mActionsView != null) {
+
+        if (mActionsView != null && isRunningTask()) {
             mActionsView.setAlpha(scale);
         }
 
@@ -519,9 +526,11 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     public void onPageScroll(ScrollState scrollState) {
         float curveInterpolation =
                 CURVE_INTERPOLATOR.getInterpolation(scrollState.linearInterpolation);
+        float curveScaleForCurveInterpolation = getCurveScaleForCurveInterpolation(
+                curveInterpolation);
 
         mSnapshotView.setDimAlpha(curveInterpolation * MAX_PAGE_SCRIM_ALPHA);
-        setCurveScale(getCurveScaleForCurveInterpolation(curveInterpolation));
+        setCurveScale(curveScaleForCurveInterpolation);
 
         mFooterAlpha = Utilities.boundToRange(1.0f - 2 * scrollState.linearInterpolation, 0f, 1f);
         for (FooterWrapper footer : mFooters) {
@@ -535,6 +544,28 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             mMenuView.setScaleX(getScaleX());
             mMenuView.setScaleY(getScaleY());
         }
+
+        // This is not the proper implementation and will be replaced with a proper layout.
+        if (mActionsView != null) {
+            if (mFocusTransitionProgress == 1f) {
+                mActionsView.setAlpha(1 - curveInterpolation / MAX_PAGE_SCRIM_ALPHA);
+            }
+            maintainActionViewPosition(curveScaleForCurveInterpolation);
+        }
+
+    }
+
+    private void maintainActionViewPosition(float curveScaleForCurveInterpolation) {
+        float inverseCurveScaleFactor = curveScaleForCurveInterpolation == 0 ? 0 :
+                (1f / curveScaleForCurveInterpolation);
+        mActionsView.setScaleX(inverseCurveScaleFactor);
+        mActionsView.setScaleY(inverseCurveScaleFactor);
+        mActionsView.setTranslationX(inverseCurveScaleFactor * (-getX()
+                + getRecentsView().getScrollX() + getRecentsView().scrollOffsetLeft()));
+        mActionsView.setTranslationY(
+                (1f - curveScaleForCurveInterpolation) * (mSnapshotView.getHeight()
+                        + mActionsView.getHeight()) / 2f
+                        + inverseCurveScaleFactor * (-getTranslationY()));
     }
 
 
@@ -649,9 +680,10 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         private final int mMarginBottom;
         private FullscreenDrawParams mFullscreenParams;
 
-        TaskOutlineProvider(Resources res, FullscreenDrawParams fullscreenParams) {
-            mMarginTop = res.getDimensionPixelSize(R.dimen.task_thumbnail_top_margin);
-            mMarginBottom = LayoutUtils.thumbnailBottomMargin(res);
+        TaskOutlineProvider(Context context, FullscreenDrawParams fullscreenParams) {
+            mMarginTop = context.getResources().getDimensionPixelSize(
+                    R.dimen.task_thumbnail_top_margin);
+            mMarginBottom = LayoutUtils.thumbnailBottomMargin(context);
             mFullscreenParams = fullscreenParams;
         }
 

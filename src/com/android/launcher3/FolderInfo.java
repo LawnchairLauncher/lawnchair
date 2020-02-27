@@ -16,6 +16,7 @@
 
 package com.android.launcher3;
 
+import android.content.Intent;
 import android.os.Process;
 
 import com.android.launcher3.model.ModelWriter;
@@ -45,7 +46,13 @@ public class FolderInfo extends ItemInfo {
      */
     public static final int FLAG_MULTI_PAGE_ANIMATION = 0x00000004;
 
+    public static final int FLAG_MANUAL_FOLDER_NAME = 0x00000008;
+
+    public static final String EXTRA_FOLDER_SUGGESTIONS = "suggest";
+
     public int options;
+
+    public Intent suggestedFolderNames;
 
     /**
      * The apps and shortcuts
@@ -139,5 +146,11 @@ public class FolderInfo extends ItemInfo {
         if (writer != null && oldOptions != options) {
             writer.updateItemInDatabase(this);
         }
+    }
+
+    @Override
+    protected String dumpProperties() {
+        return super.dumpProperties()
+                + " manuallyTypedTitle=" + hasOption(FLAG_MANUAL_FOLDER_NAME);
     }
 }

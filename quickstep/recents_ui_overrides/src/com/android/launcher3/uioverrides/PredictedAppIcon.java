@@ -47,6 +47,7 @@ public class PredictedAppIcon extends DoubleShadowBubbleTextView {
 
     private static final float RING_EFFECT_RATIO = 0.11f;
 
+    boolean mIsDrawingDot = false;
     private final DeviceProfile mDeviceProfile;
     private final Paint mIconRingPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private boolean mIsPinned = false;
@@ -81,6 +82,17 @@ public class PredictedAppIcon extends DoubleShadowBubbleTextView {
     }
 
     @Override
+    protected void drawDotIfNecessary(Canvas canvas) {
+        mIsDrawingDot = true;
+        int count = canvas.save();
+        canvas.translate(-getWidth() * RING_EFFECT_RATIO, -getHeight() * RING_EFFECT_RATIO);
+        canvas.scale(1 + 2 * RING_EFFECT_RATIO, 1 + 2 * RING_EFFECT_RATIO);
+        super.drawDotIfNecessary(canvas);
+        canvas.restoreToCount(count);
+        mIsDrawingDot = false;
+    }
+
+    @Override
     public void applyFromWorkspaceItem(WorkspaceItemInfo info) {
         super.applyFromWorkspaceItem(info);
         int color = IconPalette.getMutedColor(info.bitmap.color, 0.54f);
@@ -112,7 +124,7 @@ public class PredictedAppIcon extends DoubleShadowBubbleTextView {
     @Override
     public void getIconBounds(Rect outBounds) {
         super.getIconBounds(outBounds);
-        if (!mIsPinned) {
+        if (!mIsPinned && !mIsDrawingDot) {
             int predictionInset = (int) (getIconSize() * RING_EFFECT_RATIO);
             outBounds.inset(predictionInset, predictionInset);
         }

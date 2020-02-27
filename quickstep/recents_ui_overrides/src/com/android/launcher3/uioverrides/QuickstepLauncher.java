@@ -20,23 +20,31 @@ import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.View;
+
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.folder.Folder;
 import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.hybridhotseat.HotseatPredictionController;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.uioverrides.touchcontrollers.FlingAndHoldTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.LandscapeEdgeSwipeController;
 import com.android.launcher3.uioverrides.touchcontrollers.NavBarToHomeTouchController;
+import com.android.launcher3.uioverrides.touchcontrollers.NoButtonNavbarToOverviewTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.NoButtonQuickSwitchTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.OverviewToAllAppsTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.PortraitStatesTouchController;
@@ -158,6 +166,15 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
     }
 
     @Override
+    public boolean startActivitySafely(View v, Intent intent, ItemInfo item,
+            @Nullable String sourceContainer) {
+        if (mHotseatPredictionController != null) {
+            mHotseatPredictionController.setPauseUIUpdate(true);
+        }
+        return super.startActivitySafely(v, intent, item, sourceContainer);
+    }
+
+    @Override
     protected void onActivityFlagsChanged(int changeBits) {
         super.onActivityFlagsChanged(changeBits);
 
@@ -165,6 +182,27 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
                 | ACTIVITY_STATE_USER_ACTIVE | ACTIVITY_STATE_TRANSITION_ACTIVE)) != 0
                 && (getActivityFlags() & ACTIVITY_STATE_TRANSITION_ACTIVE) == 0) {
             onStateOrResumeChanged();
+        }
+
+        if ((changeBits & ACTIVITY_STATE_STARTED) != 0 && mHotseatPredictionController != null
+                && (getActivityFlags() & ACTIVITY_STATE_USER_ACTIVE) == 0) {
+            mHotseatPredictionController.setPauseUIUpdate(false);
+        }
+    }
+
+    @Override
+    public void folderCreatedFromItem(Folder folder, WorkspaceItemInfo itemInfo) {
+        super.folderCreatedFromItem(folder, itemInfo);
+        if (mHotseatPredictionController != null) {
+            mHotseatPredictionController.folderCreatedFromWorkspaceItem(itemInfo, folder.getInfo());
+        }
+    }
+
+    @Override
+    public void folderConvertedToItem(Folder folder, WorkspaceItemInfo itemInfo) {
+        super.folderConvertedToItem(folder, itemInfo);
+        if (mHotseatPredictionController != null) {
+            mHotseatPredictionController.folderConvertedToWorkspaceItem(itemInfo, folder.getInfo());
         }
     }
 
@@ -225,7 +263,11 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
         if (mode == NO_BUTTON) {
             list.add(new NoButtonQuickSwitchTouchController(this));
             list.add(new NavBarToHomeTouchController(this));
-            list.add(new FlingAndHoldTouchController(this));
+            if (FeatureFlags.ENABLE_OVERVIEW_ACTIONS.get()) {
+                list.add(new NoButtonNavbarToOverviewTouchController(this));
+            } else {
+                list.add(new FlingAndHoldTouchController(this));
+            }
         } else {
             if (getDeviceProfile().isVerticalBarLayout()) {
                 list.add(new OverviewToAllAppsTouchController(this));

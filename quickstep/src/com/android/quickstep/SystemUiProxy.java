@@ -29,7 +29,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 
 import com.android.launcher3.util.MainThreadInitializedObject;
-import com.android.quickstep.util.SharedApiCompat;
+import com.android.systemui.shared.recents.IPinnedStackAnimationListener;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 
 /**
@@ -270,24 +270,66 @@ public class SystemUiProxy implements ISystemUiProxy {
     }
 
     @Override
-    public void handleImageAsScreenshot(
-            Bitmap screenImage, Rect locationInScreen, Insets visibleInsets, int taskId) {
-
-    }
-
-    /**
-     * See SharedApiCompat#setShelfHeight()
-     */
     public void setShelfHeight(boolean visible, int shelfHeight) {
         boolean changed = visible != mLastShelfVisible || shelfHeight != mLastShelfHeight;
         if (mSystemUiProxy != null && changed) {
             mLastShelfVisible = visible;
             mLastShelfHeight = shelfHeight;
             try {
-                SharedApiCompat.setShelfHeight(mSystemUiProxy, visible, shelfHeight);
+                mSystemUiProxy.setShelfHeight(visible, shelfHeight);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call setShelfHeight visible: " + visible
                         + " height: " + shelfHeight, e);
+            }
+        }
+    }
+
+    @Override
+    public void handleImageAsScreenshot(Bitmap bitmap, Rect rect, Insets insets, int i) {
+        if (mSystemUiProxy != null) {
+            try {
+                mSystemUiProxy.handleImageAsScreenshot(bitmap, rect, insets, i);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call handleImageAsScreenshot", e);
+            }
+        }
+    }
+
+    @Override
+    public void setSplitScreenMinimized(boolean minimized) {
+        if (mSystemUiProxy != null) {
+            try {
+                mSystemUiProxy.setSplitScreenMinimized(minimized);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call stopScreenPinning", e);
+            }
+        }
+    }
+
+    /**
+     * Notifies that swipe-to-home action is finished.
+     */
+    @Override
+    public void notifySwipeToHomeFinished() {
+        if (mSystemUiProxy != null) {
+            try {
+                mSystemUiProxy.notifySwipeToHomeFinished();
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call setPinnedStackAnimationType", e);
+            }
+        }
+    }
+
+    /**
+     * Sets listener to get pinned stack animation callbacks.
+     */
+    @Override
+    public void setPinnedStackAnimationListener(IPinnedStackAnimationListener listener) {
+        if (mSystemUiProxy != null) {
+            try {
+                mSystemUiProxy.setPinnedStackAnimationListener(listener);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call setPinnedStackAnimationListener", e);
             }
         }
     }

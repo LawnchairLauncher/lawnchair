@@ -245,7 +245,7 @@ public class DeviceProfile {
             allAppsIconTextSizePx = originalProfile.iconTextSizePx;
             allAppsCellHeightPx = originalProfile.allAppsCellHeightPx;
             allAppsIconDrawablePaddingPx = originalProfile.iconDrawablePaddingOriginalPx;
-            allAppsCellWidthPx = allAppsIconSizePx + allAppsIconDrawablePaddingPx;
+            allAppsCellWidthPx = allAppsIconSizePx + 2 * allAppsIconDrawablePaddingPx;
         }
         updateWorkspacePadding();
 
@@ -271,7 +271,7 @@ public class DeviceProfile {
         // In multi-window mode, we can have widthPx = availableWidthPx
         // and heightPx = availableHeightPx because Launcher uses the InvariantDeviceProfiles'
         // widthPx and heightPx values where it's needed.
-        DeviceProfile profile = new DeviceProfile(context, inv, originalIdp, mwSize, mwSize,
+        DeviceProfile profile = new DeviceProfile(context, inv, null, mwSize, mwSize,
                 mwSize.x, mwSize.y, isLandscape, true);
 
         // If there isn't enough vertical cell padding with the labels displayed, hide the labels.
@@ -360,7 +360,7 @@ public class DeviceProfile {
         allAppsIconTextSizePx = iconTextSizePx;
         allAppsIconDrawablePaddingPx = iconDrawablePaddingPx;
         allAppsCellHeightPx = getCellSize().y;
-        allAppsCellWidthPx = allAppsIconSizePx + allAppsIconDrawablePaddingPx;
+        allAppsCellWidthPx = allAppsIconSizePx + 2 * allAppsIconDrawablePaddingPx;
 
         if (isVerticalBarLayout()) {
             // Always hide the Workspace text with vertical bar layout.

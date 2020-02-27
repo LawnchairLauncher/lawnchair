@@ -74,6 +74,10 @@ public class OverviewCommandHelper {
 
     @BinderThread
     public void onOverviewShown(boolean triggeredFromAltTab) {
+        if (triggeredFromAltTab) {
+            ActivityManagerWrapper.getInstance()
+                    .closeSystemWindows(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
+        }
         MAIN_EXECUTOR.execute(new ShowRecentsCommand(triggeredFromAltTab));
     }
 

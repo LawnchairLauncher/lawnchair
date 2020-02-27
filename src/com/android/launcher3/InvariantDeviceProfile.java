@@ -18,8 +18,8 @@ package com.android.launcher3;
 
 import static com.android.launcher3.Utilities.getDevicePrefs;
 import static com.android.launcher3.config.FeatureFlags.APPLY_CONFIG_AT_RUNTIME;
-import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.settings.SettingsActivity.GRID_OPTIONS_PREFERENCE_KEY;
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.PackageManagerHelper.getPackageFilter;
 
 import android.annotation.TargetApi;
@@ -41,6 +41,7 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.util.TypedValue;
 import android.util.Xml;
+import android.view.Display;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
@@ -48,6 +49,7 @@ import androidx.annotation.VisibleForTesting;
 import com.android.launcher3.graphics.IconShape;
 import com.android.launcher3.util.ConfigMonitor;
 import com.android.launcher3.util.DefaultDisplay;
+import com.android.launcher3.util.DefaultDisplay.Info;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.Themes;
@@ -117,6 +119,7 @@ public class InvariantDeviceProfile {
      */
     public int numAllAppsColumns;
 
+    public String dbFile;
     public int defaultLayoutId;
     int demoModeLayoutId;
 
@@ -144,6 +147,7 @@ public class InvariantDeviceProfile {
         iconTextSize = p.iconTextSize;
         numHotseatIcons = p.numHotseatIcons;
         numAllAppsColumns = p.numAllAppsColumns;
+        dbFile = p.dbFile;
         defaultLayoutId = p.defaultLayoutId;
         demoModeLayoutId = p.demoModeLayoutId;
         mExtraAttrs = p.mExtraAttrs;
@@ -172,6 +176,13 @@ public class InvariantDeviceProfile {
     }
 
     /**
+     * This constructor should NOT have any monitors by design.
+     */
+    public InvariantDeviceProfile(Context context, Display display) {
+        initGrid(context, null, new Info(display));
+    }
+
+    /**
      * Retrieve system defined or RRO overriden icon shape.
      */
     private static String getIconShapePath(Context context) {
@@ -183,8 +194,10 @@ public class InvariantDeviceProfile {
     }
 
     private String initGrid(Context context, String gridName) {
-        DefaultDisplay.Info displayInfo = DefaultDisplay.INSTANCE.get(context).getInfo();
+        return initGrid(context, gridName, DefaultDisplay.INSTANCE.get(context).getInfo());
+    }
 
+    private String initGrid(Context context, String gridName, DefaultDisplay.Info displayInfo) {
         Point smallestSize = new Point(displayInfo.smallestSize);
         Point largestSize = new Point(displayInfo.largestSize);
 
@@ -281,6 +294,7 @@ public class InvariantDeviceProfile {
         numRows = closestProfile.numRows;
         numColumns = closestProfile.numColumns;
         numHotseatIcons = closestProfile.numHotseatIcons;
+        dbFile = closestProfile.dbFile;
         defaultLayoutId = closestProfile.defaultLayoutId;
         demoModeLayoutId = closestProfile.demoModeLayoutId;
         numFolderRows = closestProfile.numFolderRows;
@@ -548,6 +562,7 @@ public class InvariantDeviceProfile {
 
         private final int numHotseatIcons;
 
+        private final String dbFile;
         private final int defaultLayoutId;
         private final int demoModeLayoutId;
 
@@ -560,6 +575,7 @@ public class InvariantDeviceProfile {
             numRows = a.getInt(R.styleable.GridDisplayOption_numRows, 0);
             numColumns = a.getInt(R.styleable.GridDisplayOption_numColumns, 0);
 
+            dbFile = a.getString(R.styleable.GridDisplayOption_dbFile);
             defaultLayoutId = a.getResourceId(
                     R.styleable.GridDisplayOption_defaultLayoutId, 0);
             demoModeLayoutId = a.getResourceId(

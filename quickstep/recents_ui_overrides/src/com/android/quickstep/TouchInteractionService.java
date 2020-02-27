@@ -62,6 +62,7 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.provider.RestoreDbTask;
+import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.tracing.nano.LauncherTraceProto;
 import com.android.launcher3.tracing.nano.TouchInteractionServiceProto;
@@ -147,6 +148,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
         @BinderThread
         @Override
         public void onOverviewToggle() {
+            TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "onOverviewToggle");
             mOverviewCommandHelper.onOverviewToggle();
         }
 
@@ -436,13 +438,17 @@ public class TouchInteractionService extends Service implements PluginListener<O
             Log.e(TAG, "Unknown event " + ev);
             return;
         }
+        MotionEvent event = (MotionEvent) ev;
+
+        TestLogging.recordMotionEvent(
+                TestProtocol.SEQUENCE_TIS, "TouchInteractionService.onInputEvent", event);
+
         if (!mDeviceState.isUserUnlocked()) {
             return;
         }
 
         Object traceToken = TraceHelper.INSTANCE.beginFlagsOverride(
                 TraceHelper.FLAG_ALLOW_BINDER_TRACKING);
-        MotionEvent event = (MotionEvent) ev;
         if (event.getAction() == ACTION_DOWN) {
             GestureState newGestureState = new GestureState(mOverviewComponentObserver,
                     ActiveGestureLog.INSTANCE.generateAndSetLogId());
@@ -723,20 +729,15 @@ public class TouchInteractionService extends Service implements PluginListener<O
             }
         } else {
             // Dump everything
+            FeatureFlags.dump(pw);
+            PluginManagerWrapper.INSTANCE.get(getBaseContext()).dump(pw);
             mDeviceState.dump(pw);
+            mOverviewComponentObserver.dump(pw);
             pw.println("TouchState:");
             boolean resumed = mOverviewComponentObserver != null
                     && mOverviewComponentObserver.getActivityInterface().isResumed();
             pw.println("  resumed=" + resumed);
             pw.println("  mConsumer=" + mConsumer.getName());
-            pw.println("FeatureFlags:");
-            pw.println("  APPLY_CONFIG_AT_RUNTIME=" + APPLY_CONFIG_AT_RUNTIME.get());
-            pw.println("  QUICKSTEP_SPRINGS=" + QUICKSTEP_SPRINGS.get());
-            pw.println("  UNSTABLE_SPRINGS=" + UNSTABLE_SPRINGS.get());
-            pw.println("  ADAPTIVE_ICON_WINDOW_ANIM=" + ADAPTIVE_ICON_WINDOW_ANIM.get());
-            pw.println("  ENABLE_QUICKSTEP_LIVE_TILE=" + ENABLE_QUICKSTEP_LIVE_TILE.get());
-            pw.println("  ENABLE_HINTS_IN_OVERVIEW=" + ENABLE_HINTS_IN_OVERVIEW.get());
-            pw.println("  FAKE_LANDSCAPE_UI=" + FAKE_LANDSCAPE_UI.get());
             ActiveGestureLog.INSTANCE.dump("", pw);
             pw.println("ProtoTrace:");
             pw.println("  file="

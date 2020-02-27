@@ -69,8 +69,7 @@ import java.util.UUID;
 public class UserEventDispatcher implements ResourceBasedOverride {
 
     private static final String TAG = "UserEvent";
-    private static final boolean IS_VERBOSE =
-            FeatureFlags.IS_DOGFOOD_BUILD && Utilities.isPropertyEnabled(LogConfig.USEREVENT);
+    private static final boolean IS_VERBOSE = Utilities.isPropertyEnabled(LogConfig.USEREVENT);
     private static final String UUID_STORAGE = "uuid";
 
     public static UserEventDispatcher newInstance(Context context,
@@ -370,6 +369,25 @@ public class UserEventDispatcher implements ResourceBasedOverride {
         LauncherEvent event = newLauncherEvent(newTouchAction(touchAction), itemTarget);
         event.action.dir = dir;
         dispatchUserEvent(event, null);
+    }
+
+    /**
+     * Logs proto lite version of LauncherEvent object to clearcut.
+     */
+    public void logLauncherEvent(
+                com.android.launcher3.userevent.LauncherLogProto.LauncherEvent launcherEvent) {
+
+        if (mPreviousHomeGesture) {
+            mPreviousHomeGesture = false;
+        }
+        mAppOrTaskLaunch = false;
+        launcherEvent.toBuilder()
+            .setElapsedContainerMillis(SystemClock.uptimeMillis() - mElapsedContainerMillis)
+            .setElapsedSessionMillis(SystemClock.uptimeMillis() - mElapsedSessionMillis).build();
+        if (!IS_VERBOSE) {
+            return;
+        }
+        Log.d(TAG, launcherEvent.toString());
     }
 
     public void logDeepShortcutsOpen(View icon) {

@@ -46,7 +46,7 @@ import com.android.launcher3.views.ScrimView;
  */
 public class AllAppsTransitionController implements StateHandler, OnDeviceProfileChangeListener {
 
-    private static final float SPRING_DAMPING_RATIO = 0.9f;
+    private static final float SPRING_DAMPING_RATIO = 0.75f;
     private static final float SPRING_STIFFNESS = 600f;
 
     public static final FloatProperty<AllAppsTransitionController> ALL_APPS_PROGRESS =

@@ -17,7 +17,7 @@
 package com.android.launcher3;
 
 import static com.android.launcher3.LauncherAppState.ACTION_FORCE_ROLOAD;
-import static com.android.launcher3.config.FeatureFlags.IS_DOGFOOD_BUILD;
+import static com.android.launcher3.config.FeatureFlags.IS_STUDIO_BUILD;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 import static com.android.launcher3.util.PackageManagerHelper.hasShortcutsPermission;
@@ -37,7 +37,6 @@ import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.IconCache;
-import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.AddWorkspaceItemsTask;
 import com.android.launcher3.model.AllAppsList;
@@ -67,7 +66,6 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.Executor;
 import java.util.function.Supplier;
@@ -125,16 +123,6 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
     LauncherModel(LauncherAppState app, IconCache iconCache, AppFilter appFilter) {
         mApp = app;
         mBgAllAppsList = new AllAppsList(iconCache, appFilter);
-    }
-
-    /**
-     * Returns AppInfo with corresponding package name.
-     * TODO: move to enqueueModelTask
-     */
-    public Optional<AppInfo> getAppInfoByPackageName(String pkg) {
-        return mBgAllAppsList.data.stream()
-                .filter(info -> info.componentName.getPackageName().equals(pkg))
-                .findAny();
     }
 
     /**
@@ -250,7 +238,7 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
                     enqueueModelUpdateTask(new UserLockStateChangedTask(user));
                 }
             }
-        } else if (IS_DOGFOOD_BUILD && ACTION_FORCE_ROLOAD.equals(action)) {
+        } else if (IS_STUDIO_BUILD && ACTION_FORCE_ROLOAD.equals(action)) {
             for (Callbacks cb : getCallbacks()) {
                 if (cb instanceof Launcher) {
                     ((Launcher) cb).recreate();
@@ -557,9 +545,7 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
     public void updateAndBindWorkspaceItem(WorkspaceItemInfo si, ShortcutInfo info) {
         updateAndBindWorkspaceItem(() -> {
             si.updateFromDeepShortcutInfo(info, mApp.getContext());
-            LauncherIcons li = LauncherIcons.obtain(mApp.getContext());
-            si.bitmap = li.createShortcutIcon(info);
-            li.recycle();
+            mApp.getIconCache().getShortcutIcon(si, info);
             return si;
         });
     }

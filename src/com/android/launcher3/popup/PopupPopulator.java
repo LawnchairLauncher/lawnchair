@@ -24,16 +24,16 @@ import android.os.UserHandle;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
+import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.ItemInfo;
-import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.WorkspaceItemInfo;
-import com.android.launcher3.icons.LauncherIcons;
+import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.notification.NotificationInfo;
 import com.android.launcher3.notification.NotificationKeyData;
 import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.shortcuts.ShortcutRequest;
-import com.android.launcher3.util.PackageUserKey;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -123,7 +123,11 @@ public class PopupPopulator {
         return filteredShortcuts;
     }
 
-    public static Runnable createUpdateRunnable(final Launcher launcher, final ItemInfo originalInfo,
+    /**
+     * Returns a runnable to update the provided shortcuts and notifications
+     */
+    public static Runnable createUpdateRunnable(final BaseDraggingActivity launcher,
+            final ItemInfo originalInfo,
             final Handler uiHandler, final PopupContainerWithArrow container,
             final List<DeepShortcutView> shortcutViews,
             final List<NotificationKeyData> notificationKeys) {
@@ -150,23 +154,16 @@ public class PopupPopulator {
             String shortcutIdToDeDupe = notificationKeys.isEmpty() ? null
                     : notificationKeys.get(0).shortcutId;
             shortcuts = PopupPopulator.sortAndFilterShortcuts(shortcuts, shortcutIdToDeDupe);
+            IconCache cache = LauncherAppState.getInstance(launcher).getIconCache();
             for (int i = 0; i < shortcuts.size() && i < shortcutViews.size(); i++) {
                 final ShortcutInfo shortcut = shortcuts.get(i);
                 final WorkspaceItemInfo si = new WorkspaceItemInfo(shortcut, launcher);
-                // Use unbadged icon for the menu.
-                LauncherIcons li = LauncherIcons.obtain(launcher);
-                si.bitmap = li.createShortcutIcon(shortcut, false /* badged */);
-                li.recycle();
+                cache.getUnbadgedShortcutIcon(si, shortcut);
                 si.rank = i;
 
                 final DeepShortcutView view = shortcutViews.get(i);
                 uiHandler.post(() -> view.applyShortcutInfo(si, shortcut, container));
             }
-
-            // This ensures that mLauncher.getWidgetsForPackageUser()
-            // doesn't return null (it puts all the widgets in memory).
-            uiHandler.post(() -> launcher.refreshAndBindWidgetsForPackageUser(
-                    PackageUserKey.fromItemInfo(originalInfo)));
         };
     }
 }

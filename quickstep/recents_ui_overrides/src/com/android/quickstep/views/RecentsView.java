@@ -17,6 +17,7 @@
 package com.android.quickstep.views;
 
 import static androidx.dynamicanimation.animation.DynamicAnimation.MIN_VISIBLE_CHANGE_PIXELS;
+
 import static com.android.launcher3.BaseActivity.STATE_HANDLER_INVISIBILITY_FLAGS;
 import static com.android.launcher3.InvariantDeviceProfile.CHANGE_FLAG_ICON_PARAMS;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
@@ -73,7 +74,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
-import android.view.WindowInsets;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.ListView;
@@ -106,11 +106,13 @@ import com.android.quickstep.RecentsAnimationController;
 import com.android.quickstep.RecentsAnimationTargets;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.RecentsModel.TaskVisualsChangeListener;
+import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskThumbnailCache;
 import com.android.quickstep.TaskUtils;
 import com.android.quickstep.ViewUtils;
 import com.android.quickstep.util.AppWindowAnimationHelper;
 import com.android.quickstep.util.LayoutUtils;
+import com.android.systemui.shared.recents.IPinnedStackAnimationListener;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
@@ -262,7 +264,10 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                 }
             });
         }
+    };
 
+    private final IPinnedStackAnimationListener mIPinnedStackAnimationListener =
+            new IPinnedStackAnimationListener.Stub() {
         @Override
         public void onPinnedStackAnimationStarted() {
             // Needed for activities that auto-enter PiP, which will not trigger a remote
@@ -345,7 +350,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         setLayoutDirection(mIsRtl ? View.LAYOUT_DIRECTION_RTL : View.LAYOUT_DIRECTION_LTR);
         mTaskTopMargin = getResources()
                 .getDimensionPixelSize(R.dimen.task_thumbnail_top_margin);
-        mTaskBottomMargin = LayoutUtils.thumbnailBottomMargin(getResources());
+        mTaskBottomMargin = LayoutUtils.thumbnailBottomMargin(context);
         mSquaredTouchSlop = squaredTouchSlop(context);
 
         mEmptyIcon = context.getDrawable(R.drawable.ic_empty_recents);
@@ -444,6 +449,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         mSyncTransactionApplier = new SyncRtSurfaceTransactionApplierCompat(this);
         RecentsModel.INSTANCE.get(getContext()).addThumbnailChangeListener(this);
         mIdp.addOnChangeListener(this);
+        SystemUiProxy.INSTANCE.get(getContext()).setPinnedStackAnimationListener(
+                mIPinnedStackAnimationListener);
     }
 
     @Override
@@ -456,6 +463,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         mSyncTransactionApplier = null;
         RecentsModel.INSTANCE.get(getContext()).removeThumbnailChangeListener(this);
         mIdp.removeOnChangeListener(this);
+        SystemUiProxy.INSTANCE.get(getContext()).setPinnedStackAnimationListener(null);
     }
 
     @Override
@@ -1251,7 +1259,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     }
 
     public PendingAnimation createAllTasksDismissAnimation(long duration) {
-        if (FeatureFlags.IS_DOGFOOD_BUILD && mPendingAnimation != null) {
+        if (FeatureFlags.IS_STUDIO_BUILD && mPendingAnimation != null) {
             throw new IllegalStateException("Another pending animation is still running");
         }
         AnimatorSet anim = new AnimatorSet();
@@ -1595,7 +1603,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     }
 
     public PendingAnimation createTaskLauncherAnimation(TaskView tv, long duration) {
-        if (FeatureFlags.IS_DOGFOOD_BUILD && mPendingAnimation != null) {
+        if (FeatureFlags.IS_STUDIO_BUILD && mPendingAnimation != null) {
             throw new IllegalStateException("Another pending animation is still running");
         }
 
@@ -1889,16 +1897,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         }
     }
 
-    public int getLeftGestureMargin() {
-        final WindowInsets insets = getRootWindowInsets();
-        return Math.max(insets.getSystemGestureInsets().left, insets.getSystemWindowInsetLeft());
-    }
-
-    public int getRightGestureMargin() {
-        final WindowInsets insets = getRootWindowInsets();
-        return Math.max(insets.getSystemGestureInsets().right, insets.getSystemWindowInsetRight());
-    }
-
     /** If it's in the live tile mode, switch the running task into screenshot mode. */
     public void switchToScreenshot(ThumbnailData thumbnailData, Runnable onFinishRunnable) {
         TaskView taskView = getRunningTaskView();
@@ -1917,6 +1915,11 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
     @Override
     public void addView(View child, int index) {
+        // RecentsView is set to RTL in the constructor when system is using LTR. Here we set the
+        // child direction back to match system settings.
+        child.setLayoutDirection(
+                Utilities.isRtl(getResources())
+                        ? View.LAYOUT_DIRECTION_RTL : View.LAYOUT_DIRECTION_LTR);
         super.addView(child, index);
         if (isExtraCardView(child, index)) {
             mTaskViewStartIndex++;

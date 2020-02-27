@@ -31,7 +31,10 @@ public final class TestProtocol {
     public static final int QUICK_SWITCH_STATE_ORDINAL = 4;
     public static final int ALL_APPS_STATE_ORDINAL = 5;
     public static final int BACKGROUND_APP_STATE_ORDINAL = 6;
+    public static final int HINT_STATE_ORDINAL = 7;
     public static final String TAPL_EVENTS_TAG = "TaplEvents";
+    public static final String SEQUENCE_MAIN = "Main";
+    public static final String SEQUENCE_TIS = "TIS";
 
     public static String stateOrdinalToString(int ordinal) {
         switch (ordinal) {
@@ -49,6 +52,8 @@ public final class TestProtocol {
                 return "AllApps";
             case BACKGROUND_APP_STATE_ORDINAL:
                 return "Background";
+            case HINT_STATE_ORDINAL:
+                return "Hint";
             default:
                 return null;
         }
@@ -72,8 +77,7 @@ public final class TestProtocol {
     public static final String REQUEST_UNFREEZE_APP_LIST = "unfreeze-app-list";
     public static final String REQUEST_APP_LIST_FREEZE_FLAGS = "app-list-freeze-flags";
     public static final String REQUEST_APPS_LIST_SCROLL_Y = "apps-list-scroll-y";
-    public static final String REQUEST_OVERVIEW_LEFT_GESTURE_MARGIN = "overview-left-margin";
-    public static final String REQUEST_OVERVIEW_RIGHT_GESTURE_MARGIN = "overview-right-margin";
+    public static final String REQUEST_WINDOW_INSETS = "window-insets";
     public static final String REQUEST_PID = "pid";
     public static final String REQUEST_TOTAL_PSS_KB = "total_pss";
     public static final String REQUEST_JAVA_LEAK = "java-leak";

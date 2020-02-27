@@ -22,10 +22,16 @@ import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.UiObject2;
 
+import com.android.launcher3.testing.TestProtocol;
+
+import java.util.regex.Pattern;
+
 /**
  * App icon, whether in all apps or in workspace/
  */
 public final class AppIcon extends Launchable {
+
+    private static final Pattern START_EVENT = Pattern.compile("start:");
 
     AppIcon(LauncherInstrumentation launcher, UiObject2 icon) {
         super(launcher, icon);
@@ -48,5 +54,10 @@ public final class AppIcon extends Launchable {
     @Override
     protected String getLongPressIndicator() {
         return "deep_shortcuts_container";
+    }
+
+    @Override
+    protected void expectActivityStartEvents() {
+        mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, START_EVENT);
     }
 }

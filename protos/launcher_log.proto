@@ -58,6 +58,35 @@ message Target {
   optional TipType tip_type = 17;
   optional int32 search_query_length = 18;
   optional bool is_work_app = 19;
+  optional FromFolderLabelState from_folder_label_state = 20;
+  optional ToFolderLabelState to_folder_label_state = 21;
+
+  // Note: proto does not support duplicate enum values, even if they belong to different enum type.
+  // Hence "FROM" and "TO" prefix added.
+  enum FromFolderLabelState{
+    FROM_FOLDER_LABEL_STATE_UNSPECIFIED = 0;
+    FROM_EMPTY = 1;
+    FROM_CUSTOM = 2;
+    FROM_SUGGESTED = 3;
+  }
+
+  enum ToFolderLabelState{
+    TO_FOLDER_LABEL_STATE_UNSPECIFIED = 0;
+    TO_SUGGESTION0_WITH_VALID_PRIMARY = 1;
+    TO_SUGGESTION1_WITH_VALID_PRIMARY = 2;
+    TO_SUGGESTION1_WITH_EMPTY_PRIMARY = 3;
+    TO_SUGGESTION2_WITH_VALID_PRIMARY = 4;
+    TO_SUGGESTION2_WITH_EMPTY_PRIMARY = 5;
+    TO_SUGGESTION3_WITH_VALID_PRIMARY = 6;
+    TO_SUGGESTION3_WITH_EMPTY_PRIMARY = 7;
+    TO_EMPTY_WITH_VALID_SUGGESTIONS = 8;
+    TO_EMPTY_WITH_EMPTY_SUGGESTIONS = 9;
+    TO_EMPTY_WITH_SUGGESTIONS_DISABLED = 10;
+    TO_CUSTOM_WITH_VALID_SUGGESTIONS = 11;
+    TO_CUSTOM_WITH_EMPTY_SUGGESTIONS = 12;
+    TO_CUSTOM_WITH_SUGGESTIONS_DISABLED = 13;
+    UNCHANGED = 14;
+  }
 }
 
 // Used to define what type of item a Target would represent.
@@ -120,6 +149,8 @@ enum ControlType {
   BACK_GESTURE = 19;
   UNDO = 20;
   DISMISS_PREDICTION = 21;
+  HYBRID_HOTSEAT_ACCEPTED = 22;
+  HYBRID_HOTSEAT_CANCELED = 23;
 }
 
 enum TipType {
@@ -129,6 +160,7 @@ enum TipType {
   QUICK_SCRUB_TEXT = 3;
   PREDICTION_TEXT = 4;
   DWB_TOAST = 5;
+  HYBRID_HOTSEAT = 6;
 }
 
 // Used to define the action component of the LauncherEvent.
@@ -138,7 +170,8 @@ message Action {
     AUTOMATED = 1;
     COMMAND = 2;
     TIP = 3;
-    // SOFT_KEYBOARD, HARD_KEYBOARD, ASSIST
+    SOFT_KEYBOARD = 4;
+    // HARD_KEYBOARD, ASSIST
   }
 
   enum Touch {

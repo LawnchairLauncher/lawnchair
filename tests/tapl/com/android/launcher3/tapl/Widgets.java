@@ -24,6 +24,8 @@ import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.UiObject2;
 
+import com.android.launcher3.tapl.LauncherInstrumentation.GestureScope;
+
 import java.util.Collection;
 
 /**
@@ -93,7 +95,7 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
         int i = 0;
         for (; ; ) {
             final Collection<UiObject2> cells = mLauncher.getObjectsInContainer(
-                    widgetsContainer, "widgets_cell_list_container");
+                    widgetsContainer, "widgets_scroll_container");
             mLauncher.assertTrue("Widgets doesn't have 2 rows", cells.size() >= 2);
             for (UiObject2 cell : cells) {
                 final UiObject2 label = cell.findObject(labelSelector);
@@ -104,6 +106,19 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
                         "View is not WidgetCell",
                         "com.android.launcher3.widget.WidgetCell",
                         widget.getClassName());
+
+                int maxWidth = 0;
+                for (UiObject2 sibling : widget.getParent().getChildren()) {
+                    maxWidth = Math.max(sibling.getVisibleBounds().width(), maxWidth);
+                }
+
+                int visibleDelta = maxWidth - widget.getVisibleBounds().width();
+                if (visibleDelta > 0) {
+                    Rect parentBounds = cell.getVisibleBounds();
+                    mLauncher.linearGesture(parentBounds.centerX() + visibleDelta,
+                            parentBounds.centerY(), parentBounds.centerX(),
+                            parentBounds.centerY(), 10, true, GestureScope.INSIDE);
+                }
 
                 if (widget.getVisibleBounds().bottom
                         <= displaySize.y - mLauncher.getBottomGestureSize()) {

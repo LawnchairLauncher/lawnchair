@@ -538,7 +538,7 @@ public class CellLayout extends ViewGroup implements Transposable {
         try {
             dispatchRestoreInstanceState(states);
         } catch (IllegalArgumentException ex) {
-            if (FeatureFlags.IS_DOGFOOD_BUILD) {
+            if (FeatureFlags.IS_STUDIO_BUILD) {
                 throw ex;
             }
             // Mismatched viewId / viewType preventing restore. Skip restore on production builds.

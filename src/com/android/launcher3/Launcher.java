@@ -32,7 +32,6 @@ import static com.android.launcher3.dragndrop.DragLayer.ALPHA_INDEX_LAUNCHER_LOA
 import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
 import static com.android.launcher3.logging.LoggerUtils.newTarget;
 import static com.android.launcher3.popup.SystemShortcut.APP_INFO;
-import static com.android.launcher3.popup.SystemShortcut.DISMISS_PREDICTION;
 import static com.android.launcher3.popup.SystemShortcut.INSTALL;
 import static com.android.launcher3.popup.SystemShortcut.WIDGETS;
 import static com.android.launcher3.states.RotationHelper.REQUEST_NONE;
@@ -101,9 +100,9 @@ import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragView;
+import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderGridOrganizer;
 import com.android.launcher3.folder.FolderIcon;
-import com.android.launcher3.folder.FolderNameProvider;
 import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.keyboard.CustomActionsPopup;
@@ -372,7 +371,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         mLauncherView = LayoutInflater.from(this).inflate(R.layout.launcher, null);
 
         setupViews();
-        mPopupDataProvider = new PopupDataProvider(this);
+        mPopupDataProvider = new PopupDataProvider(this::updateNotificationDots);
 
         mAppTransitionManager = LauncherAppTransitionManager.newInstance(this);
         mAppTransitionManager.registerRemoteAnimations();
@@ -614,10 +613,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     public LauncherStateManager getStateManager() {
         return mStateManager;
-    }
-
-    public FolderNameProvider getFolderNameProvider() {
-        return new FolderNameProvider();
     }
 
     @Override
@@ -1161,7 +1156,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     /**
      * Finds all the views we need and configure them properly.
      */
-    private void setupViews() {
+    protected void setupViews() {
         mDragLayer = findViewById(R.id.drag_layer);
         mFocusHandler = mDragLayer.getFocusIndicatorHelper();
         mWorkspace = mDragLayer.findViewById(R.id.workspace);
@@ -1271,13 +1266,13 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                 cellXY[1] = cellY;
                 foundCellSpan = true;
 
+                DragObject dragObject = new DragObject(getApplicationContext());
+                dragObject.dragInfo = info;
                 // If appropriate, either create a folder or add to an existing folder
                 if (mWorkspace.createUserFolderIfNecessary(view, container, layout, cellXY, 0,
-                        true, null)) {
+                        true, dragObject)) {
                     return;
                 }
-                DragObject dragObject = new DragObject();
-                dragObject.dragInfo = info;
                 if (mWorkspace.addToExistingFolderIfNecessary(view, layout, cellXY, 0, dragObject,
                         true)) {
                     return;
@@ -1743,7 +1738,10 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         }
     }
 
-    FolderIcon addFolder(CellLayout layout, int container, final int screenId, int cellX,
+    /**
+     * Creates and adds new folder to CellLayout
+     */
+    public FolderIcon addFolder(CellLayout layout, int container, final int screenId, int cellX,
             int cellY) {
         final FolderInfo folderInfo = new FolderInfo();
         folderInfo.title = "";
@@ -1752,13 +1750,24 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         getModelWriter().addItemToDatabase(folderInfo, container, screenId, cellX, cellY);
 
         // Create the view
-        FolderIcon newFolder = FolderIcon.inflateFolderAndIcon(R.layout.folder_icon, this, layout, folderInfo);
+        FolderIcon newFolder = FolderIcon.inflateFolderAndIcon(R.layout.folder_icon, this, layout,
+                folderInfo);
         mWorkspace.addInScreen(newFolder, folderInfo);
         // Force measure the new folder icon
         CellLayout parent = mWorkspace.getParentCellLayoutForView(newFolder);
         parent.getShortcutsAndWidgets().measureChild(newFolder);
         return newFolder;
     }
+
+    /**
+     * Called when a workspace item is converted into a folder
+     */
+    public void folderCreatedFromItem(Folder folder, WorkspaceItemInfo itemInfo){}
+
+    /**
+     * Called when a folder is converted into a workspace item
+     */
+    public void folderConvertedToItem(Folder folder, WorkspaceItemInfo itemInfo) {}
 
     /**
      * Unbinds the view for the specified item, and removes the item and all its children.
@@ -1802,17 +1811,13 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
-            TestLogging.recordEvent("Key event: " + event);
-        }
+        TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "Key event", event);
         return (event.getKeyCode() == KeyEvent.KEYCODE_HOME) || super.dispatchKeyEvent(event);
     }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (Utilities.IS_RUNNING_IN_TEST_HARNESS && ev.getAction() != MotionEvent.ACTION_MOVE) {
-            TestLogging.recordEvent("Touch event: " + ev);
-        }
+        TestLogging.recordMotionEvent(TestProtocol.SEQUENCE_MAIN, "Touch event", ev);
         return super.dispatchTouchEvent(ev);
     }
 
@@ -1829,7 +1834,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
         // Note: There should be at most one log per method call. This is enforced implicitly
         // by using if-else statements.
-        UserEventDispatcher ued = getUserEventDispatcher();
         AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(this);
         if (topView != null && topView.onBackPressed()) {
             // Handled by the floating view.
@@ -1897,6 +1901,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         }
     }
 
+    @Override
     public boolean startActivitySafely(View v, Intent intent, ItemInfo item,
             @Nullable String sourceContainer) {
         if (!hasBeenResumed()) {
@@ -2161,7 +2166,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                     Object tag = v.getTag();
                     String desc = "Collision while binding workspace item: " + item
                             + ". Collides with " + tag;
-                    if (FeatureFlags.IS_DOGFOOD_BUILD) {
+                    if (FeatureFlags.IS_STUDIO_BUILD) {
                         throw (new RuntimeException(desc));
                     } else {
                         Log.d(TAG, desc);
@@ -2713,7 +2718,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     }
 
     public Stream<SystemShortcut.Factory> getSupportedShortcuts() {
-        return Stream.of(APP_INFO, WIDGETS, INSTALL, DISMISS_PREDICTION);
+        return Stream.of(APP_INFO, WIDGETS, INSTALL);
     }
 
     public static Launcher getLauncher(Context context) {

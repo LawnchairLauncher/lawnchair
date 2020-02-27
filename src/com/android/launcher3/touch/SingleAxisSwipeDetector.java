@@ -54,8 +54,8 @@ public class SingleAxisSwipeDetector extends BaseSwipeDetector {
         }
 
         @Override
-        boolean canScrollStart(PointF displacement, float touchSlop) {
-            return Math.abs(displacement.y) >= Math.max(Math.abs(displacement.x), touchSlop);
+        float extractOrthogonalDirection(PointF direction) {
+            return direction.x;
         }
 
     };
@@ -80,9 +80,10 @@ public class SingleAxisSwipeDetector extends BaseSwipeDetector {
         }
 
         @Override
-        boolean canScrollStart(PointF displacement, float touchSlop) {
-            return Math.abs(displacement.x) >= Math.max(Math.abs(displacement.y), touchSlop);
+        float extractOrthogonalDirection(PointF direction) {
+            return direction.y;
         }
+
     };
 
     private final Direction mDir;
@@ -126,7 +127,9 @@ public class SingleAxisSwipeDetector extends BaseSwipeDetector {
     @Override
     protected boolean shouldScrollStart(PointF displacement) {
         // Reject cases where the angle or slop condition is not met.
-        if (!mDir.canScrollStart(displacement, mTouchSlop)) {
+        float minDisplacement = Math.max(mTouchSlop,
+                Math.abs(mDir.extractOrthogonalDirection(displacement)));
+        if (Math.abs(mDir.extractDirection(displacement)) < minDisplacement) {
             return false;
         }
 
@@ -150,7 +153,8 @@ public class SingleAxisSwipeDetector extends BaseSwipeDetector {
 
     @Override
     protected void reportDraggingInternal(PointF displacement, MotionEvent event) {
-        mListener.onDrag(mDir.extractDirection(displacement), event);
+        mListener.onDrag(mDir.extractDirection(displacement),
+                mDir.extractOrthogonalDirection(displacement), event);
     }
 
     @Override
@@ -164,11 +168,14 @@ public class SingleAxisSwipeDetector extends BaseSwipeDetector {
         /** @param start whether this was the original drag start, as opposed to a recatch. */
         void onDragStart(boolean start);
 
-        // TODO remove
         boolean onDrag(float displacement);
 
         default boolean onDrag(float displacement, MotionEvent event) {
             return onDrag(displacement);
+        }
+
+        default boolean onDrag(float displacement, float orthogonalDisplacement, MotionEvent ev) {
+            return onDrag(displacement, ev);
         }
 
         void onDragEnd(float velocity);
@@ -183,8 +190,7 @@ public class SingleAxisSwipeDetector extends BaseSwipeDetector {
         /** Returns the part of the given {@link PointF} that is relevant to this direction. */
         abstract float extractDirection(PointF point);
 
-        /** Reject cases where the angle or slop condition is not met. */
-        abstract boolean canScrollStart(PointF displacement, float touchSlop);
+        abstract float extractOrthogonalDirection(PointF point);
 
     }
 }

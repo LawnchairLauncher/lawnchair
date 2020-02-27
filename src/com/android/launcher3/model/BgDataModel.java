@@ -273,7 +273,7 @@ public class BgDataModel {
             switch (item.itemType) {
                 case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
                     folders.remove(item.id);
-                    if (FeatureFlags.IS_DOGFOOD_BUILD) {
+                    if (FeatureFlags.IS_STUDIO_BUILD) {
                         for (ItemInfo info : itemsIdMap) {
                             if (info.container == item.id) {
                                 // We are deleting a folder which still contains items that

@@ -16,7 +16,10 @@
 package com.android.quickstep.interaction;
 
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.View;
 import android.view.Window;
 
@@ -26,6 +29,7 @@ import com.android.launcher3.R;
 import com.android.quickstep.interaction.BackGestureTutorialFragment.TutorialStep;
 import com.android.quickstep.interaction.BackGestureTutorialFragment.TutorialType;
 
+import java.util.List;
 import java.util.Optional;
 
 /** Shows the Back gesture interactive tutorial in full screen mode. */
@@ -44,6 +48,12 @@ public class BackGestureTutorialActivity extends FragmentActivity {
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.back_gesture_tutorial_fragment_container, mFragment.get())
                 .commit();
+    }
+
+    @Override
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        disableSystemGestures();
     }
 
     @Override
@@ -69,5 +79,15 @@ public class BackGestureTutorialActivity extends FragmentActivity {
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                         | View.SYSTEM_UI_FLAG_FULLSCREEN);
         getWindow().setNavigationBarColor(Color.TRANSPARENT);
+    }
+
+    private void disableSystemGestures() {
+        Display display = getDisplay();
+        if (display != null) {
+            DisplayMetrics metrics = new DisplayMetrics();
+            display.getMetrics(metrics);
+            getWindow().setSystemGestureExclusionRects(
+                    List.of(new Rect(0, 0, metrics.widthPixels, metrics.heightPixels)));
+        }
     }
 }

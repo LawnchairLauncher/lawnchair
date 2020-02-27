@@ -21,7 +21,7 @@ import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.AlphabeticIndexCompat;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.icons.ComponentWithLabel;
+import com.android.launcher3.icons.ComponentWithLabelAndIcon;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.pm.ShortcutConfigActivityInfo;
 import com.android.launcher3.util.MultiHashMap;
@@ -85,12 +85,13 @@ public class WidgetsModel {
      * @param packageUser If null, all widgets and shortcuts are updated and returned, otherwise
      *                    only widgets and shortcuts associated with the package/user are.
      */
-    public List<ComponentWithLabel> update(LauncherAppState app, @Nullable PackageUserKey packageUser) {
+    public List<ComponentWithLabelAndIcon> update(
+            LauncherAppState app, @Nullable PackageUserKey packageUser) {
         Preconditions.assertWorkerThread();
 
         Context context = app.getContext();
         final ArrayList<WidgetItem> widgetsAndShortcuts = new ArrayList<>();
-        List<ComponentWithLabel> updatedItems = new ArrayList<>();
+        List<ComponentWithLabelAndIcon> updatedItems = new ArrayList<>();
         try {
             InvariantDeviceProfile idp = app.getInvariantDeviceProfile();
             PackageManager pm = app.getContext().getPackageManager();
@@ -114,7 +115,7 @@ public class WidgetsModel {
             }
             setWidgetsAndShortcuts(widgetsAndShortcuts, app, packageUser);
         } catch (Exception e) {
-            if (!FeatureFlags.IS_DOGFOOD_BUILD && Utilities.isBinderSizeError(e)) {
+            if (!FeatureFlags.IS_STUDIO_BUILD && Utilities.isBinderSizeError(e)) {
                 // the returned value may be incomplete and will not be refreshed until the next
                 // time Launcher starts.
                 // TODO: after figuring out a repro step, introduce a dirty bit to check when

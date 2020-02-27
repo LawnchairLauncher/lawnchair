@@ -63,6 +63,7 @@
     <!-- Various classes overriden by projects/build flavors. -->
     <string name="app_filter_class" translatable="false"></string>
     <string name="user_event_dispatcher_class" translatable="false"></string>
+    <string name="folder_name_provider_class" translatable="false"></string>
     <string name="stats_log_manager_class" translatable="false"></string>
     <string name="app_transition_manager_class" translatable="false"></string>
     <string name="instant_app_resolver_class" translatable="false"></string>
@@ -107,6 +108,7 @@
     <item type="id" name="action_shortcuts_and_notifications"/>
     <item type="id" name="action_dismiss_notification" />
     <item type="id" name="action_remote_action_shortcut" />
+    <item type="id" name="action_dismiss_prediction" />
 
     <!-- QSB IDs. DO not change -->
     <item type="id" name="search_container_workspace" />
@@ -114,6 +116,9 @@
 
     <!-- Recents -->
     <item type="id" name="overview_panel"/>
+
+    <!-- Whether to enable background preloading of task thumbnails. -->
+    <bool name="config_enableTaskSnapshotPreloading">true</bool>
 
     <!-- Configuration resources -->
     <array name="dynamic_resources"> </array>

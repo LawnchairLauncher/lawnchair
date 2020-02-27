@@ -245,6 +245,13 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         forceFinishScroller(true);
     }
 
+    /**
+     * Returns left offset of a page. This is the gap between pages and prevents overlap.
+     */
+    public int scrollOffsetLeft() {
+        return mInsets.left + getPaddingLeft();
+    }
+
     private void abortScrollerAnimation(boolean resetNextPage) {
         mScroller.abortAnimation();
         // We need to clean up the next page here to avoid computeScrollHelper from
@@ -1495,7 +1502,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
             return false;
         }
 
-        if (FeatureFlags.IS_DOGFOOD_BUILD) {
+        if (FeatureFlags.IS_STUDIO_BUILD) {
             duration *= Settings.Global.getFloat(getContext().getContentResolver(),
                     Settings.Global.WINDOW_ANIMATION_SCALE, 1);
         }

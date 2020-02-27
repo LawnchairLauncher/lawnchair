@@ -380,6 +380,7 @@ public abstract class AbstractStateChangeTouchController
 
         final LauncherState targetState;
         final float progress = mCurrentAnimation.getProgressFraction();
+        final float progressVelocity = velocity * mProgressMultiplier;
         final float interpolatedProgress = mCurrentAnimation.getInterpolatedProgress();
         if (fling) {
             targetState =
@@ -406,7 +407,7 @@ public abstract class AbstractStateChangeTouchController
                 startProgress = 1;
             } else {
                 startProgress = Utilities.boundToRange(progress
-                        + velocity * getSingleFrameMs(mLauncher) * mProgressMultiplier, 0f, 1f);
+                        + progressVelocity * getSingleFrameMs(mLauncher), 0f, 1f);
                 duration = BaseSwipeDetector.calculateDuration(velocity,
                         endProgress - Math.max(progress, 0)) * durationMultiplier;
             }
@@ -421,7 +422,7 @@ public abstract class AbstractStateChangeTouchController
                 startProgress = 0;
             } else {
                 startProgress = Utilities.boundToRange(progress
-                        + velocity * getSingleFrameMs(mLauncher) * mProgressMultiplier, 0f, 1f);
+                        + progressVelocity * getSingleFrameMs(mLauncher), 0f, 1f);
                 duration = BaseSwipeDetector.calculateDuration(velocity,
                         Math.min(progress, 1) - endProgress) * durationMultiplier;
             }
@@ -433,7 +434,7 @@ public abstract class AbstractStateChangeTouchController
         maybeUpdateAtomicAnim(mFromState, targetState, targetState == mToState ? 1f : 0f);
         updateSwipeCompleteAnimation(anim, Math.max(duration, getRemainingAtomicDuration()),
                 targetState, velocity, fling);
-        mCurrentAnimation.dispatchOnStartWithVelocity(endProgress, velocity);
+        mCurrentAnimation.dispatchOnStartWithVelocity(endProgress, progressVelocity);
         if (fling && targetState == LauncherState.ALL_APPS && !UNSTABLE_SPRINGS.get()) {
             mLauncher.getAppsView().addSpringFromFlingUpdateListener(anim, velocity);
         }
@@ -525,7 +526,11 @@ public abstract class AbstractStateChangeTouchController
         if (targetState != mStartState) {
             logReachedState(logAction, targetState);
         }
-        mLauncher.getStateManager().goToState(targetState, false /* animated */);
+        if (!mLauncher.isInState(targetState)) {
+            // If we're already in the target state, don't jump to it at the end of the animation in
+            // case the user started interacting with it before the animation finished.
+            mLauncher.getStateManager().goToState(targetState, false /* animated */);
+        }
         mLauncher.getDragLayer().getScrim().animateToSysuiMultiplier(1, 0, 0);
     }
 

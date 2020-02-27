@@ -16,12 +16,11 @@
 
 package com.android.launcher3;
 
-import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
-import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_TRANSITION_MS;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.SPRING_LOADED;
 import static com.android.launcher3.config.FeatureFlags.ADAPTIVE_ICON_WINDOW_ANIM;
 import static com.android.launcher3.dragndrop.DragLayer.ALPHA_INDEX_OVERLAY;
@@ -39,7 +38,6 @@ import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -79,6 +77,7 @@ import com.android.launcher3.folder.PreviewBackground;
 import com.android.launcher3.graphics.DragPreviewProvider;
 import com.android.launcher3.graphics.PreloadIconDrawable;
 import com.android.launcher3.graphics.RotationMode;
+import com.android.launcher3.icons.BitmapRenderer;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.pageindicators.WorkspacePageIndicator;
 import com.android.launcher3.popup.PopupContainerWithArrow;
@@ -1350,7 +1349,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     }
 
     public void snapToPageFromOverView(int whichPage) {
-        snapToPage(whichPage, OVERVIEW_TRANSITION_MS, Interpolators.ZOOM_IN);
+        snapToPage(whichPage, OVERVIEW.getTransitionDuration(mLauncher), Interpolators.ZOOM_IN);
     }
 
     private void onStartStateTransition(LauncherState state) {
@@ -1673,7 +1672,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     }
 
     boolean createUserFolderIfNecessary(View newView, int container, CellLayout target,
-            int[] targetCell, float distance, boolean external, DragView dragView) {
+            int[] targetCell, float distance, boolean external, DragObject d) {
         if (distance > mMaxDistanceForFolderCreation) return false;
         View v = target.getChildAt(targetCell[0], targetCell[1]);
 
@@ -1703,27 +1702,27 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             float scale = mLauncher.getDragLayer().getDescendantRectRelativeToSelf(v, folderLocation);
             target.removeView(v);
 
-            FolderIcon fi =
-                mLauncher.addFolder(target, container, screenId, targetCell[0], targetCell[1]);
+            FolderIcon fi = mLauncher.addFolder(target, container, screenId, targetCell[0],
+                    targetCell[1]);
             destInfo.cellX = -1;
             destInfo.cellY = -1;
             sourceInfo.cellX = -1;
             sourceInfo.cellY = -1;
 
             // If the dragView is null, we can't animate
-            boolean animate = dragView != null;
+            boolean animate = d != null;
             if (animate) {
                 // In order to keep everything continuous, we hand off the currently rendered
                 // folder background to the newly created icon. This preserves animation state.
                 fi.setFolderBackground(mFolderCreateBg);
                 mFolderCreateBg = new PreviewBackground();
-                fi.performCreateAnimation(destInfo, v, sourceInfo, dragView, folderLocation, scale
-                );
+                fi.performCreateAnimation(destInfo, v, sourceInfo, d, folderLocation, scale);
             } else {
                 fi.prepareCreateAnimation(v);
                 fi.addItem(destInfo);
                 fi.addItem(sourceInfo);
             }
+            mLauncher.folderCreatedFromItem(fi.getFolder(), destInfo);
             return true;
         }
         return false;
@@ -1799,8 +1798,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                 // If the item being dropped is a shortcut and the nearest drop
                 // cell also contains a shortcut, then create a folder with the two shortcuts.
                 if (createUserFolderIfNecessary(cell, container,
-                        dropTargetLayout, mTargetCell, distance, false, d.dragView) ||
-                        addToExistingFolderIfNecessary(cell, dropTargetLayout, mTargetCell,
+                        dropTargetLayout, mTargetCell, distance, false, d)
+                        || addToExistingFolderIfNecessary(cell, dropTargetLayout, mTargetCell,
                                 distance, d, false)) {
                     mLauncher.getStateManager().goToState(NORMAL, SPRING_LOADED_EXIT_DELAY);
                     return;
@@ -1859,7 +1858,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                         CellLayout parentCell = getParentCellLayoutForView(cell);
                         if (parentCell != null) {
                             parentCell.removeView(cell);
-                        } else if (FeatureFlags.IS_DOGFOOD_BUILD) {
+                        } else if (FeatureFlags.IS_STUDIO_BUILD) {
                             throw new NullPointerException("mDragInfo.cell has null parent");
                         }
                         addInScreen(cell, container, screenId, mTargetCell[0], mTargetCell[1],
@@ -1916,7 +1915,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                     // Animate the item to its original position, while simultaneously exiting
                     // spring-loaded mode so the page meets the icon where it was picked up.
                     mLauncher.getDragController().animateDragViewToOriginalPosition(
-                            onCompleteRunnable, cell, SPRING_LOADED_TRANSITION_MS);
+                            onCompleteRunnable, cell,
+                            SPRING_LOADED.getTransitionDuration(mLauncher));
                     mLauncher.getStateManager().goToState(NORMAL);
                     mLauncher.getDropTargetBar().onDragEnd();
                     parent.onDropChild(cell);
@@ -2153,7 +2153,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
         ItemInfo item = d.dragInfo;
         if (item == null) {
-            if (FeatureFlags.IS_DOGFOOD_BUILD) {
+            if (FeatureFlags.IS_STUDIO_BUILD) {
                 throw new NullPointerException("DragObject has null info");
             }
             return;
@@ -2561,7 +2561,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                 float distance = cellLayout.getDistanceFromCell(mDragViewVisualCenter[0],
                         mDragViewVisualCenter[1], mTargetCell);
                 if (createUserFolderIfNecessary(view, container, cellLayout, mTargetCell, distance,
-                        true, d.dragView)) {
+                        true, d)) {
                     return;
                 }
                 if (addToExistingFolderIfNecessary(view, cellLayout, mTargetCell, distance, d,
@@ -2606,11 +2606,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
         int width = MeasureSpec.makeMeasureSpec(unScaledSize[0], MeasureSpec.EXACTLY);
         int height = MeasureSpec.makeMeasureSpec(unScaledSize[1], MeasureSpec.EXACTLY);
-        Bitmap b = Bitmap.createBitmap(unScaledSize[0], unScaledSize[1],
-                Bitmap.Config.ARGB_8888);
         layout.measure(width, height);
         layout.layout(0, 0, unScaledSize[0], unScaledSize[1]);
-        layout.draw(new Canvas(b));
+        Bitmap b = BitmapRenderer.createHardwareBitmap(
+                unScaledSize[0], unScaledSize[1], layout::draw);
         layout.setVisibility(visibility);
         return b;
     }
@@ -2776,7 +2775,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                     mDragInfo.container, mDragInfo.screenId);
             if (cellLayout != null) {
                 cellLayout.onDropChild(mDragInfo.cell);
-            } else if (FeatureFlags.IS_DOGFOOD_BUILD) {
+            } else if (FeatureFlags.IS_STUDIO_BUILD) {
                 throw new RuntimeException("Invalid state: cellLayout == null in "
                         + "Workspace#onDropCompleted. Please file a bug. ");
             }
@@ -2795,7 +2794,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         CellLayout parentCell = getParentCellLayoutForView(v);
         if (parentCell != null) {
             parentCell.removeView(v);
-        } else if (FeatureFlags.IS_DOGFOOD_BUILD) {
+        } else if (FeatureFlags.IS_STUDIO_BUILD) {
             // When an app is uninstalled using the drop target, we wait until resume to remove
             // the icon. We also remove all the corresponding items from the workspace at
             // {@link Launcher#bindComponentsRemoved}. That call can come before or after
@@ -3256,7 +3255,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         return mOverlayShown;
     }
 
-    void moveToDefaultScreen() {
+    /** Calls {@link #snapToPage(int)} on the {@link #DEFAULT_PAGE}, then requests focus on it. */
+    public void moveToDefaultScreen() {
         int page = DEFAULT_PAGE;
         if (!workspaceInModalState() && getNextPage() != page) {
             snapToPage(page);

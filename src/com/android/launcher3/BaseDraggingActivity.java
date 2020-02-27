@@ -16,6 +16,8 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.util.DefaultDisplay.CHANGE_ROTATION;
+
 import android.app.ActivityOptions;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -29,14 +31,20 @@ import android.os.UserHandle;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.model.AppLaunchTracker;
-import com.android.launcher3.uioverrides.DisplayRotationListener;
+import com.android.launcher3.testing.TestLogging;
+import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.uioverrides.WallpaperColorInfo;
+import com.android.launcher3.util.DefaultDisplay;
+import com.android.launcher3.util.DefaultDisplay.DisplayInfoChangeListener;
+import com.android.launcher3.util.DefaultDisplay.Info;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.TraceHelper;
@@ -45,7 +53,7 @@ import com.android.launcher3.util.TraceHelper;
  * Extension of BaseActivity allowing support for drag-n-drop
  */
 public abstract class BaseDraggingActivity extends BaseActivity
-        implements WallpaperColorInfo.OnChangeListener {
+        implements WallpaperColorInfo.OnChangeListener, DisplayInfoChangeListener {
 
     private static final String TAG = "BaseDraggingActivity";
 
@@ -60,8 +68,6 @@ public abstract class BaseDraggingActivity extends BaseActivity
 
     private int mThemeRes = R.style.AppTheme;
 
-    private DisplayRotationListener mRotationListener;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,7 +75,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
 
         mIsSafeModeEnabled = TraceHelper.whitelistIpcs("isSafeMode",
                 () -> getPackageManager().isSafeMode());
-        mRotationListener = new DisplayRotationListener(this, this::onDeviceRotationChanged);
+        DefaultDisplay.INSTANCE.get(this).addChangeListener(this);
 
         // Update theme
         WallpaperColorInfo.INSTANCE.get(this).addOnChangeListener(this);
@@ -164,6 +170,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
                 startShortcutIntentSafely(intent, optsBundle, item, sourceContainer);
             } else if (user == null || user.equals(Process.myUserHandle())) {
                 // Could be launching some bookkeeping activity
+                TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "start: activity", intent);
                 startActivity(intent, optsBundle);
                 AppLaunchTracker.INSTANCE.get(this).onStartApp(intent.getComponent(),
                         Process.myUserHandle(), sourceContainer);
@@ -232,7 +239,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
     protected void onDestroy() {
         super.onDestroy();
         WallpaperColorInfo.INSTANCE.get(this).removeOnChangeListener(this);
-        mRotationListener.disable();
+        DefaultDisplay.INSTANCE.get(this).removeChangeListener(this);
     }
 
     public void runOnceOnStart(Runnable action) {
@@ -245,17 +252,19 @@ public abstract class BaseDraggingActivity extends BaseActivity
 
     protected void onDeviceProfileInitiated() {
         if (mDeviceProfile.isVerticalBarLayout()) {
-            mRotationListener.enable();
             mDeviceProfile.updateIsSeascape(this);
-        } else {
-            mRotationListener.disable();
         }
     }
 
-    private void onDeviceRotationChanged() {
-        if (mDeviceProfile.updateIsSeascape(this)) {
+    @Override
+    public void onDisplayInfoChanged(Info info, int flags) {
+        if ((flags & CHANGE_ROTATION) != 0 && mDeviceProfile.updateIsSeascape(this)) {
             reapplyUi();
         }
+    }
+
+    public OnClickListener getItemOnClickListener() {
+        return ItemClickHandler.INSTANCE;
     }
 
     protected abstract void reapplyUi();
