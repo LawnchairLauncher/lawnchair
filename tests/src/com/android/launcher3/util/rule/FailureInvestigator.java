@@ -102,7 +102,7 @@ class FailureInvestigator {
             logSinceBoot =
                     UiDevice.getInstance(getInstrumentation())
                             .executeShellCommand("logcat -d -t " + systemBootTime.replace(" ", ""));
-        } catch (IOException e) {
+        } catch (IOException | OutOfMemoryError e) {
             return 0;
         }
 
