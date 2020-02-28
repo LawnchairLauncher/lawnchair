@@ -941,7 +941,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
         // Workaround for b/78520668, explicitly trim memory once UI is hidden
         onTrimMemory(TRIM_MEMORY_UI_HIDDEN);
-        TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "Activity.onStop");
     }
 
     @Override
@@ -955,7 +954,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
         mAppWidgetHost.setListenIfResumed(true);
         TraceHelper.INSTANCE.endSection(traceToken);
-        TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "Activity.onStart");
     }
 
     private void handleDeferredResume() {
