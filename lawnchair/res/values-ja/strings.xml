@@ -105,6 +105,7 @@
     <string name="units_reaumur">レオミュール度</string>
     <string name="units_romer">レーマー度</string>
     <string name="pref_smartspace_event_providers">データソース</string>
+    <string name="battery_status">バッテリー状態</string>
     <string name="event_provider_now_playing">Now Playing</string>
     <string name="event_provider_unread_notifications">通知</string>
     <string-array name="greetings_morning">
@@ -124,11 +125,24 @@
         <item>おやすみなさい</item>
         <item>Don’t stay up too late!</item>
     </string-array>
+    <string name="battery_charging">充電中</string>
+    <string name="battery_full">充電完了</string>
+    <string name="battery_low">残量低下</string>
     <!-- Section 5 -->
     <string name="dock_pref_title">ドック</string>
+    <string name="dock_fill">背景を表示</string>
+    <string name="background_color">背景の色</string>
+    <string name="dock_shadow">影を表示</string>
+    <string name="radius">角の丸み</string>
+    <string name="hotseat_show_arrow">矢印を表示</string>
+    <string name="hotseat_show_page_indicator">ページインジケーターを表示</string>
+    <string name="pref_category_searchbar">検索バー</string>
+    <string name="dock_search_bar">検索バーを表示</string>
+    <string name="dock_colored_google">カラーアイコン</string>
     <!-- Section 6 -->
     <string name="app_drawer_pref_title">ドロワー</string>
     <string name="pref_category_theme">スタイル</string>
+    <string name="categorization">カテゴリ</string>
     <string name="pref_appcategorization_enable_title">アプリをカテゴリ分け</string>
     <string name="pref_appcategorization_folders_title">フォルダ</string>
     <string name="pref_appcategorization_tabs_title">タブ</string>
@@ -141,8 +155,11 @@
     <string name="category_personalization">個人</string>
     <string name="category_photography">写真</string>
     <string name="category_tools">ユーティリティ</string>
+    <string name="select_tab_type">新しいタブ</string>
     <string name="tab_type_smart">自動</string>
     <string name="tab_type_custom">カスタム</string>
+    <string name="pref_appcategorization_flowerpot_title">アプリのカテゴリ</string>
+    <string name="title_all_apps_search">検索バーを表示</string>
     <string name="summary_all_apps_google_search">ウェブサイト、連絡先、ショートカットを探す</string>
     <string name="title_search_hidden_apps">非表示のショートカットを探す</string>
     <string name="summary_search_hidden_apps">非表示のショートカットを結果に含める</string>
