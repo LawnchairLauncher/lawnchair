@@ -22,6 +22,7 @@ import static com.android.launcher3.BaseActivity.STATE_HANDLER_INVISIBILITY_FLAG
 import static com.android.launcher3.InvariantDeviceProfile.CHANGE_FLAG_ICON_PARAMS;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
+import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
 import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.Utilities.squaredTouchSlop;
@@ -32,6 +33,7 @@ import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_ACTIONS;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.config.FeatureFlags.UNSTABLE_SPRINGS;
+import static com.android.launcher3.uioverrides.BackgroundBlurController.BACKGROUND_BLUR;
 import static com.android.launcher3.uioverrides.touchcontrollers.TaskViewTouchController.SUCCESS_TRANSITION_PROGRESS;
 import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch.TAP;
 import static com.android.launcher3.userevent.nano.LauncherLogProto.ControlType.CLEAR_ALL_BUTTON;
@@ -103,6 +105,7 @@ import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.states.RotationHelper;
 import com.android.launcher3.touch.PagedOrientationHandler.CurveProperties;
+import com.android.launcher3.uioverrides.BackgroundBlurController;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
@@ -1767,8 +1770,16 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         appWindowAnimationHelper.fromTaskThumbnailView(tv.getThumbnail(), this);
         appWindowAnimationHelper.prepareAnimation(mActivity.getDeviceProfile(), true /* isOpening */);
         AnimatorSet anim = createAdjacentPageAnimForTaskLaunch(tv, appWindowAnimationHelper);
+
+        BackgroundBlurController blurController = getBackgroundBlurController();
+        if (blurController != null) {
+            ObjectAnimator backgroundBlur = ObjectAnimator.ofInt(blurController, BACKGROUND_BLUR,
+                    BACKGROUND_APP.getBackgroundBlurRadius(mActivity));
+            anim.play(backgroundBlur);
+        }
         anim.play(progressAnim);
-        anim.setDuration(duration).setInterpolator(interpolator);
+        anim.setDuration(duration)
+                .setInterpolator(interpolator);
 
         Consumer<Boolean> onTaskLaunchFinish = this::onTaskLaunched;
 
@@ -2058,6 +2069,11 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             mTaskViewStartIndex--;
         }
         super.removeView(view);
+    }
+
+    @Nullable
+    protected BackgroundBlurController getBackgroundBlurController() {
+        return null;
     }
 
     private boolean isExtraCardView(View view, int index) {
