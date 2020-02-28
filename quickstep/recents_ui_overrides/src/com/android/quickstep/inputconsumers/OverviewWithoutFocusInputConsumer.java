@@ -65,7 +65,7 @@ public class OverviewWithoutFocusInputConsumer implements InputConsumer {
 
     private void onInterceptTouch() {
         if (mInputMonitor != null) {
-            TestLogging.recordEvent(TestProtocol.SEQUENCE_PILFER, "pilferPointers");
+            TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "pilferPointers");
             mInputMonitor.pilferPointers();
         }
     }

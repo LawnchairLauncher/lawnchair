@@ -72,7 +72,6 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
     }
 
     protected void goToOverviewUnchecked() {
-        final boolean launcherWasVisible = mLauncher.isLauncherVisible();
         switch (mLauncher.getNavigationModel()) {
             case ZERO_BUTTON: {
                 final int centerX = mLauncher.getDevice().getDisplayWidth() / 2;
@@ -138,10 +137,6 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
                         OVERVIEW_STATE_ORDINAL);
                 break;
         }
-        if (!launcherWasVisible) {
-            mLauncher.expectEvent(
-                    TestProtocol.SEQUENCE_MAIN, LauncherInstrumentation.EVENT_START_ACTIVITY);
-        }
     }
 
     /**
@@ -162,7 +157,6 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
     }
 
     protected void quickSwitchToPreviousApp(int expectedState) {
-        final boolean launcherWasVisible = mLauncher.isLauncherVisible();
         boolean transposeInLandscape = false;
         switch (mLauncher.getNavigationModel()) {
             case TWO_BUTTON:
@@ -186,17 +180,15 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
                     endX = startX;
                     endY = 0;
                 }
+                final boolean launcherIsVisible =
+                        mLauncher.hasLauncherObject(By.textStartsWith(""));
                 final boolean isZeroButton = mLauncher.getNavigationModel()
                         == LauncherInstrumentation.NavigationModel.ZERO_BUTTON;
-                if (!launcherWasVisible) {
-                    mLauncher.expectEvent(
-                            TestProtocol.SEQUENCE_MAIN,
-                            LauncherInstrumentation.EVENT_START_ACTIVITY);
-                }
                 mLauncher.swipeToState(startX, startY, endX, endY, 20, expectedState,
-                        launcherWasVisible && isZeroButton
+                        launcherIsVisible && isZeroButton
                                 ? LauncherInstrumentation.GestureScope.INSIDE_TO_OUTSIDE
-                                : LauncherInstrumentation.GestureScope.OUTSIDE);
+                                : LauncherInstrumentation.GestureScope.OUTSIDE
+                );
                 break;
             }
 
@@ -204,11 +196,6 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
                 // Double press the recents button.
                 UiObject2 recentsButton = mLauncher.waitForSystemUiObject("recent_apps");
                 mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, SQUARE_BUTTON_EVENT);
-                if (!launcherWasVisible) {
-                    mLauncher.expectEvent(
-                            TestProtocol.SEQUENCE_MAIN,
-                            LauncherInstrumentation.EVENT_START_ACTIVITY);
-                }
                 mLauncher.runToState(() -> recentsButton.click(), OVERVIEW_STATE_ORDINAL);
                 mLauncher.getOverview();
                 mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, SQUARE_BUTTON_EVENT);
@@ -216,8 +203,6 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
                 break;
         }
         mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, TASK_START_EVENT);
-        mLauncher.expectEvent(
-                TestProtocol.SEQUENCE_MAIN, LauncherInstrumentation.EVENT_STOP_ACTIVITY);
     }
 
     protected String getSwipeHeightRequestName() {

@@ -309,7 +309,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         if (mInteractionHandler == null) {
             return;
         }
-        TestLogging.recordEvent(TestProtocol.SEQUENCE_PILFER, "pilferPointers");
+        TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "pilferPointers");
         mInputMonitorCompat.pilferPointers();
 
         mActivityInterface.closeOverlay();
