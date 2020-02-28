@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.views;
 
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+
 import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelocity;
 
 import android.animation.Animator;
@@ -62,6 +64,7 @@ public abstract class AbstractSlideInView extends AbstractFloatingView
     protected final ObjectAnimator mOpenCloseAnimator;
 
     protected View mContent;
+    private final View mColorScrim;
     protected Interpolator mScrollInterpolator;
 
     // range [0, 1], 0=> completely open, 1=> completely closed
@@ -85,11 +88,30 @@ public abstract class AbstractSlideInView extends AbstractFloatingView
                 announceAccessibilityChanges();
             }
         });
+        int scrimColor = getScrimColor(mLauncher);
+        mColorScrim = scrimColor != -1 ? createColorScrim(mLauncher, scrimColor) : null;
+    }
+
+    protected void attachToContainer() {
+        if (mColorScrim != null) {
+            getPopupContainer().addView(mColorScrim);
+        }
+        getPopupContainer().addView(this);
+    }
+
+    /**
+     * Returns a scrim color for a sliding view. if returned value is -1, no scrim is added.
+     */
+    protected int getScrimColor(Context context) {
+        return -1;
     }
 
     protected void setTranslationShift(float translationShift) {
         mTranslationShift = translationShift;
         mContent.setTranslationY(mTranslationShift * mContent.getHeight());
+        if (mColorScrim != null) {
+            mColorScrim.setAlpha(1 - mTranslationShift);
+        }
     }
 
     @Override
@@ -127,7 +149,8 @@ public abstract class AbstractSlideInView extends AbstractFloatingView
     /* SingleAxisSwipeDetector.Listener */
 
     @Override
-    public void onDragStart(boolean start) { }
+    public void onDragStart(boolean start) {
+    }
 
     @Override
     public boolean onDrag(float displacement) {
@@ -185,9 +208,25 @@ public abstract class AbstractSlideInView extends AbstractFloatingView
     protected void onCloseComplete() {
         mIsOpen = false;
         getPopupContainer().removeView(this);
+        if (mColorScrim != null) {
+            getPopupContainer().removeView(mColorScrim);
+        }
     }
 
     protected BaseDragLayer getPopupContainer() {
         return mLauncher.getDragLayer();
+    }
+
+
+    protected static View createColorScrim(Context context, int bgColor) {
+        View view = new View(context);
+        view.forceHasOverlappingRendering(false);
+        view.setBackgroundColor(bgColor);
+
+        BaseDragLayer.LayoutParams lp = new BaseDragLayer.LayoutParams(MATCH_PARENT, MATCH_PARENT);
+        lp.ignoreInsets = true;
+        view.setLayoutParams(lp);
+
+        return view;
     }
 }
