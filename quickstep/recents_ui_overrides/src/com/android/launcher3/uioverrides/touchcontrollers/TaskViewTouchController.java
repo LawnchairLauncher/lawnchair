@@ -105,6 +105,10 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
 
     @Override
     public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
+        if ((ev.getAction() == MotionEvent.ACTION_UP || ev.getAction() == MotionEvent.ACTION_CANCEL)
+                && mCurrentAnimation == null) {
+            clearState();
+        }
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             mNoIntercept = !canInterceptTouch();
             if (mNoIntercept) {
@@ -125,6 +129,11 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
                     TaskView view = mRecentsView.getTaskViewAt(i);
                     if (mRecentsView.isTaskViewVisible(view) && mActivity.getDragLayer()
                             .isEventOverView(view, ev)) {
+                        // Disable swiping up and down if the task overlay is modal.
+                        if (view.isTaskOverlayModal()) {
+                            mTaskBeingDragged = null;
+                            break;
+                        }
                         mTaskBeingDragged = view;
                         if (!SysUINavigationMode.getMode(mActivity).hasGestures) {
                             // Don't allow swipe down to open if we don't support swipe up
