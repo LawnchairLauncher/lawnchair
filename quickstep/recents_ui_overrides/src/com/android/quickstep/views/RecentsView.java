@@ -565,13 +565,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         return isHandlingTouch() || shouldStealTouchFromSiblingsBelow(ev);
     }
 
-    @Override
-    protected void determineScrollingStart(MotionEvent ev, float touchSlopScale) {
-        // If the task overlay is modal, should disable left and right swiping.
-        if (getCurrentPageTaskView() != null && !getCurrentPageTaskView().isTaskOverlayModal()) {
-            super.determineScrollingStart(ev, touchSlopScale);
-        }
-    }
     protected boolean shouldStealTouchFromSiblingsBelow(MotionEvent ev) {
         return true;
     }
