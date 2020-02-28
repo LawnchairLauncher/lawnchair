@@ -17,6 +17,8 @@ package com.android.launcher3.allapps;
 
 import static android.view.View.MeasureSpec.UNSPECIFIED;
 
+import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
+
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
@@ -40,6 +42,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.views.RecyclerViewFastScroller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -145,12 +148,10 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
     }
 
     @Override
-    public void fillInLogContainerData(View v, ItemInfo info, Target target, Target targetParent) {
-        if (mApps.hasFilter()) {
-            targetParent.containerType = ContainerType.SEARCHRESULT;
-        } else {
-            targetParent.containerType = ContainerType.ALLAPPS;
-        }
+    public void fillInLogContainerData(ItemInfo childInfo, Target child,
+            ArrayList<Target> parents) {
+        parents.add(newContainerTarget(
+                getApps().hasFilter() ? ContainerType.SEARCHRESULT : ContainerType.ALLAPPS));
     }
 
     public void onSearchResultsChanged() {

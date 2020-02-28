@@ -575,9 +575,9 @@ public class HotseatPredictionController implements DragController.DragListener,
     }
 
     @Override
-    public void fillInLogContainerData(View v, ItemInfo info, LauncherLogProto.Target target,
-            LauncherLogProto.Target targetParent) {
-        mHotseat.fillInLogContainerData(v, info, target, targetParent);
+    public void fillInLogContainerData(ItemInfo childInfo, LauncherLogProto.Target child,
+            ArrayList<LauncherLogProto.Target> parents) {
+        mHotseat.fillInLogContainerData(childInfo, child, parents);
     }
 
     private class PinPrediction extends SystemShortcut<QuickstepLauncher> {

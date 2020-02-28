@@ -30,7 +30,6 @@ import static com.android.launcher3.LauncherState.OVERVIEW_PEEK;
 import static com.android.launcher3.Utilities.postAsyncCallback;
 import static com.android.launcher3.dragndrop.DragLayer.ALPHA_INDEX_LAUNCHER_LOAD;
 import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
-import static com.android.launcher3.logging.LoggerUtils.newTarget;
 import static com.android.launcher3.popup.SystemShortcut.APP_INFO;
 import static com.android.launcher3.popup.SystemShortcut.INSTALL;
 import static com.android.launcher3.popup.SystemShortcut.WIDGETS;
@@ -110,7 +109,6 @@ import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.logging.StatsLogUtils;
 import com.android.launcher3.logging.UserEventDispatcher;
-import com.android.launcher3.logging.UserEventDispatcher.UserEventDelegate;
 import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.ModelWriter;
@@ -126,7 +124,6 @@ import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.AllAppsSwipeController;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
-import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
@@ -183,8 +180,7 @@ import java.util.stream.Stream;
  * Default launcher application.
  */
 public class Launcher extends BaseDraggingActivity implements LauncherExterns,
-        Callbacks, UserEventDelegate,
-        InvariantDeviceProfile.OnIDPChangeListener, PluginListener<OverlayPlugin> {
+        Callbacks, InvariantDeviceProfile.OnIDPChangeListener, PluginListener<OverlayPlugin> {
     public static final String TAG = "Launcher";
 
     public static final ActivityTracker<Launcher> ACTIVITY_TRACKER = new ActivityTracker<>();
@@ -1887,24 +1883,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             return StatsLogUtils.LAUNCHER_STATE_OVERVIEW;
         }
         return StatsLogUtils.LAUNCHER_STATE_HOME;
-    }
-
-    @Override
-    public void modifyUserEvent(LauncherLogProto.LauncherEvent event) {
-        if (event.srcTarget != null && event.srcTarget.length > 0 &&
-                event.srcTarget[1].containerType == ContainerType.PREDICTION) {
-            Target[] targets = new Target[3];
-            targets[0] = event.srcTarget[0];
-            targets[1] = event.srcTarget[1];
-            targets[2] = newTarget(Target.Type.CONTAINER);
-            event.srcTarget = targets;
-            LauncherState state = mStateManager.getState();
-            if (state == LauncherState.ALL_APPS) {
-                event.srcTarget[2].containerType = ContainerType.ALLAPPS;
-            } else if (state == OVERVIEW) {
-                event.srcTarget[2].containerType = ContainerType.TASKSWITCHER;
-            }
-        }
     }
 
     @Override
