@@ -20,12 +20,15 @@ import static com.android.launcher3.compat.AccessibilityManagerCompat.isAccessib
 import static com.android.launcher3.compat.AccessibilityManagerCompat.isObservedEventType;
 import static com.android.launcher3.config.FeatureFlags.QUICKSTEP_SPRINGS;
 import static com.android.launcher3.touch.OverScroll.OVERSCROLL_DAMP_FACTOR;
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
 import android.animation.LayoutTransition;
 import android.animation.TimeInterpolator;
 import android.annotation.SuppressLint;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.database.ContentObserver;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -63,6 +66,9 @@ import java.util.ArrayList;
 public abstract class PagedView<T extends View & PageIndicator> extends ViewGroup {
     private static final String TAG = "PagedView";
     private static final boolean DEBUG = false;
+
+    public static boolean sFlagForcedRotation = false;
+    public static final String FIXED_ROTATION_TRANSFORM_SETTING_NAME = "fixed_rotation_transform";
 
     public static final int INVALID_PAGE = -1;
     protected static final ComputePageScrollsLogic SIMPLE_SCROLL_LOGIC = (v) -> v.getVisibility() != GONE;
@@ -166,11 +172,12 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
      * Initializes various states for this workspace.
      */
     protected void init() {
-        mScroller = new OverScroller(getContext());
+        Context context = getContext();
+        mScroller = new OverScroller(context);
         setDefaultInterpolator(Interpolators.SCROLL);
         mCurrentPage = 0;
 
-        final ViewConfiguration configuration = ViewConfiguration.get(getContext());
+        final ViewConfiguration configuration = ViewConfiguration.get(context);
         mTouchSlop = configuration.getScaledPagingTouchSlop();
         mMaximumVelocity = configuration.getScaledMaximumFlingVelocity();
 
@@ -182,6 +189,18 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         if (Utilities.ATLEAST_OREO) {
             setDefaultFocusHighlightEnabled(false);
         }
+
+        sFlagForcedRotation = Utilities.isFixedRotationTransformEnabled(context);
+        final ContentResolver resolver = context.getContentResolver();
+        final ContentObserver observer = new ContentObserver(MAIN_EXECUTOR.getHandler()) {
+            @Override
+            public void onChange(boolean selfChange) {
+                sFlagForcedRotation = Utilities.isFixedRotationTransformEnabled(context);
+            }
+        };
+        resolver.registerContentObserver(Settings.Global.getUriFor(
+                FIXED_ROTATION_TRANSFORM_SETTING_NAME),
+                false, observer);
     }
 
     protected void setDefaultInterpolator(Interpolator interpolator) {
