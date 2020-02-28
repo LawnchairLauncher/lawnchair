@@ -31,7 +31,6 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Build;
-import android.util.Log;
 import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
@@ -46,7 +45,6 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
-import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.VibratorWrapper;
 import com.android.launcher3.views.FloatingIconView;
@@ -133,8 +131,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
         mDeviceState = deviceState;
         mGestureState = gestureState;
         mActivityInterface = gestureState.getActivityInterface();
-        mActivityInitListener =
-                mActivityInterface.createActivityInitListener(this::onActivityInit);
+        mActivityInitListener = mActivityInterface.createActivityInitListener(this::onActivityInit);
         mInputConsumer = inputConsumer;
         mAppWindowAnimationHelper = new AppWindowAnimationHelper(context);
         mPageSpacing = context.getResources().getDimensionPixelSize(R.dimen.recents_page_spacing);
@@ -395,11 +392,15 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
 
     public void setIsLikelyToStartNewTask(boolean isLikelyToStartNewTask) { }
 
-    public void initWhenReady() {
+    /**
+     * Registers a callback to run when the activity is ready.
+     * @param intent The intent that will be used to start the activity if it doesn't exist already.
+     */
+    public void initWhenReady(Intent intent) {
         // Preload the plan
         RecentsModel.INSTANCE.get(mContext).getTasks(null);
 
-        mActivityInitListener.register();
+        mActivityInitListener.register(intent);
     }
 
     /**

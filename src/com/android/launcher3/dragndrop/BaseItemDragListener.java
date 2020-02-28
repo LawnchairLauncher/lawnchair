@@ -161,7 +161,6 @@ public abstract class BaseItemDragListener implements View.OnDragListener, DragS
     }
 
     protected void postCleanup() {
-        Launcher.ACTIVITY_TRACKER.clearReference(this);
         if (mLauncher != null) {
             // Remove any drag params from the launcher intent since the drag operation is complete.
             Intent newIntent = new Intent(mLauncher.getIntent());
