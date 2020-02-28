@@ -81,8 +81,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
 
     @Test
     public void testAllAppsFromOverview() throws Exception {
-        // When actions are enabled, all apps isn't present in overview
-        if (mLauncher.overviewActionsEnabled()) {
+        if (!mLauncher.hasAllAppsInOverview()) {
             return;
         }
 
@@ -146,7 +145,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
                 launcher -> assertEquals("Dismissing a task didn't remove 1 task from Overview",
                         numTasks - 1, getTaskCount(launcher)));
 
-        if (!mLauncher.overviewActionsEnabled() && (!TestHelpers.isInLauncherProcess()
+        if (mLauncher.hasAllAppsInOverview() && (!TestHelpers.isInLauncherProcess()
                 || getFromLauncher(launcher -> !launcher.getDeviceProfile().isLandscape))) {
             // Test switching to all apps and back.
             final AllAppsFromOverview allApps = overview.switchToAllApps();
@@ -190,8 +189,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
 
     @Test
     public void testAppIconLaunchFromAllAppsFromOverview() throws Exception {
-        // All apps doesn't exist in Overview when actions are enabled
-        if (mLauncher.overviewActionsEnabled()) {
+        if (!mLauncher.hasAllAppsInOverview()) {
             return;
         }
 
