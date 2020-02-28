@@ -108,7 +108,7 @@ public class OverviewInputConsumer<T extends BaseDraggingActivity>
                 ActiveGestureLog.INSTANCE.addLog("startQuickstep");
             }
             if (mInputMonitor != null) {
-                TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "pilferPointers");
+                TestLogging.recordEvent(TestProtocol.SEQUENCE_PILFER, "pilferPointers");
                 mInputMonitor.pilferPointers();
             }
         }

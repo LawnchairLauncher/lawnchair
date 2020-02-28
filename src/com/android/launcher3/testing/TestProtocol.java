@@ -35,6 +35,7 @@ public final class TestProtocol {
     public static final String TAPL_EVENTS_TAG = "TaplEvents";
     public static final String SEQUENCE_MAIN = "Main";
     public static final String SEQUENCE_TIS = "TIS";
+    public static final String SEQUENCE_PILFER = "Pilfer";
 
     public static String stateOrdinalToString(int ordinal) {
         switch (ordinal) {
