@@ -565,7 +565,7 @@ public final class LauncherInstrumentation {
                     return waitForLauncherObject(APPS_RES_ID);
                 }
                 case OVERVIEW: {
-                    if (mDevice.isNaturalOrientation() && !overviewActionsEnabled()) {
+                    if (hasAllAppsInOverview()) {
                         waitForLauncherObject(APPS_RES_ID);
                     } else {
                         waitUntilGone(APPS_RES_ID);
@@ -1213,7 +1213,24 @@ public final class LauncherInstrumentation {
         getTestInfo(TestProtocol.REQUEST_ENABLE_DEBUG_TRACING);
     }
 
-    public boolean overviewActionsEnabled() {
+    public boolean hasAllAppsInOverview() {
+        // Vertical bar layouts don't contain all apps
+        if (!mDevice.isNaturalOrientation()) {
+            return false;
+        }
+        // Portrait two button (quickstep) always has all apps.
+        if (getNavigationModel() == NavigationModel.TWO_BUTTON) {
+            return true;
+        }
+        // Overview actions hide all apps
+        if (overviewActionsEnabled()) {
+            return false;
+        }
+        // ...otherwise there should be all apps
+        return true;
+    }
+
+    private boolean overviewActionsEnabled() {
         return getTestInfo(TestProtocol.REQUEST_OVERVIEW_ACTIONS_ENABLED).getBoolean(
                 TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
