@@ -52,11 +52,15 @@ public class WorkEduView extends AbstractSlideInView implements Insettable {
     private static final int WORK_EDU_PERSONAL_APPS = 1;
     private static final int WORK_EDU_WORK_APPS = 2;
 
+    protected static final int FINAL_SCRIM_BG_COLOR = 0x88000000;
+
+
     private Rect mInsets = new Rect();
     private View mViewWrapper;
     private Button mProceedButton;
     private TextView mContentText;
     private AllAppsPagedView mAllAppsPagedView;
+
     private int mNextWorkEduStep = WORK_EDU_PERSONAL_APPS;
 
 
@@ -141,8 +145,13 @@ public class WorkEduView extends AbstractSlideInView implements Insettable {
     }
 
     private void show() {
-        mLauncher.getDragLayer().addView(this);
+        attachToContainer();
         animateOpen();
+    }
+
+    @Override
+    protected int getScrimColor(Context context) {
+        return FINAL_SCRIM_BG_COLOR;
     }
 
     private void goToFirstPage() {

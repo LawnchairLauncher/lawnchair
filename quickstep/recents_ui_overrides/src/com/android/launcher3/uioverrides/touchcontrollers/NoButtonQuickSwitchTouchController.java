@@ -317,7 +317,7 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         // home screen elements will appear in the shelf on motion pause.
         mMotionPauseDetector.setDisallowPause(mIsHomeScreenVisible
                 || -displacement.y < mMotionPauseMinDisplacement);
-        mMotionPauseDetector.addPosition(displacement.y, ev.getEventTime());
+        mMotionPauseDetector.addPosition(ev);
 
         if (mIsHomeScreenVisible) {
             // Cancel the shelf anim so it doesn't clobber mNonOverviewAnim.

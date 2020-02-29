@@ -37,7 +37,6 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.AttributeSet;
-import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -327,11 +326,6 @@ public class PopupContainerWithArrow<T extends BaseDraggingActivity> extends Arr
         return getContext().getString(mNumNotifications == 0 ?
                 R.string.action_deep_shortcut :
                 R.string.shortcuts_menu_with_notifications_description);
-    }
-
-    @Override
-    protected Pair<View, String> getAccessibilityTarget() {
-        return Pair.create(this, "");
     }
 
     @Override

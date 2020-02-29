@@ -22,10 +22,12 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Binder;
+import android.os.Process;
 import android.util.Log;
 
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings.Favorites;
+import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.util.IntArray;
 
 import java.util.Locale;
@@ -114,6 +116,15 @@ public class LauncherDbUtils {
 
     public static void dropTable(SQLiteDatabase db, String tableName) {
         db.execSQL("DROP TABLE IF EXISTS " + tableName);
+    }
+
+    /** Copy from table to the to table. */
+    public static void copyTable(SQLiteDatabase db, String from, String to, Context context) {
+        long userSerial = UserCache.INSTANCE.get(context).getSerialNumberForUser(
+                Process.myUserHandle());
+        dropTable(db, to);
+        Favorites.addTableToDb(db, userSerial, false, to);
+        db.execSQL("INSERT INTO " + to + " SELECT * FROM " + from);
     }
 
     /**
