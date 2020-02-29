@@ -28,6 +28,7 @@ import android.content.pm.LauncherApps;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.CursorWrapper;
+import android.net.Uri;
 import android.os.UserHandle;
 import android.provider.BaseColumns;
 import android.text.TextUtils;
@@ -64,6 +65,7 @@ public class LoaderCursor extends CursorWrapper {
 
     public final LongSparseArray<UserHandle> allUsers = new LongSparseArray<>();
 
+    private final Uri mContentUri;
     private final Context mContext;
     private final PackageManager mPM;
     private final IconCache mIconCache;
@@ -96,8 +98,10 @@ public class LoaderCursor extends CursorWrapper {
     public int itemType;
     public int restoreFlag;
 
-    public LoaderCursor(Cursor c, LauncherAppState app) {
-        super(c);
+    public LoaderCursor(Cursor cursor, Uri contentUri, LauncherAppState app) {
+        super(cursor);
+
+        mContentUri = contentUri;
         mContext = app.getContext();
         mIconCache = app.getIconCache();
         mIDP = app.getInvariantDeviceProfile();
@@ -312,9 +316,8 @@ public class LoaderCursor extends CursorWrapper {
     public boolean commitDeleted() {
         if (itemsToRemove.size() > 0) {
             // Remove dead items
-            mContext.getContentResolver().delete(LauncherSettings.Favorites.CONTENT_URI,
-                    Utilities.createDbSelectionQuery(
-                            LauncherSettings.Favorites._ID, itemsToRemove), null);
+            mContext.getContentResolver().delete(mContentUri, Utilities.createDbSelectionQuery(
+                    LauncherSettings.Favorites._ID, itemsToRemove), null);
             return true;
         }
         return false;
@@ -339,7 +342,7 @@ public class LoaderCursor extends CursorWrapper {
             // Update restored items that no longer require special handling
             ContentValues values = new ContentValues();
             values.put(LauncherSettings.Favorites.RESTORED, 0);
-            mContext.getContentResolver().update(LauncherSettings.Favorites.CONTENT_URI, values,
+            mContext.getContentResolver().update(mContentUri, values,
                     Utilities.createDbSelectionQuery(
                             LauncherSettings.Favorites._ID, restoredRows), null);
         }

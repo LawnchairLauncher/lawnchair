@@ -35,6 +35,7 @@ import androidx.test.uiautomator.UiDevice;
 
 import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.tapl.TestHelpers;
+import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.FailureWatcher;
 import com.android.systemui.shared.system.QuickStepContract;
@@ -199,7 +200,7 @@ public class NavigationModeSwitchRule implements TestRule {
                         + launcher.getNavigationModeMismatchError(),
                 () -> launcher.getNavigationModeMismatchError() == null,
                 60000 /* b/148422894 */, launcher);
-
+        AbstractLauncherUiTest.checkDetectedLeaks();
         return true;
     }
 

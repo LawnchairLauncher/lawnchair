@@ -19,8 +19,8 @@ package com.android.launcher3.icons;
 import android.content.Context;
 
 import com.android.launcher3.InvariantDeviceProfile;
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.graphics.IconShape;
+import com.android.launcher3.graphics.LauncherPreviewRenderer;
 
 /**
  * Wrapper class to provide access to {@link BaseIconFactory} and also to provide pool of this class
@@ -41,6 +41,11 @@ public class LauncherIcons extends BaseIconFactory implements AutoCloseable {
      * avoid allocating new objects in many cases.
      */
     public static LauncherIcons obtain(Context context, boolean shapeDetection) {
+        if (context instanceof LauncherPreviewRenderer.PreviewContext) {
+            return ((LauncherPreviewRenderer.PreviewContext) context).newLauncherIcons(context,
+                    shapeDetection);
+        }
+
         int poolId;
         synchronized (sPoolSync) {
             if (sPool != null) {
@@ -52,7 +57,7 @@ public class LauncherIcons extends BaseIconFactory implements AutoCloseable {
             poolId = sPoolId;
         }
 
-        InvariantDeviceProfile idp = LauncherAppState.getIDP(context);
+        InvariantDeviceProfile idp = InvariantDeviceProfile.INSTANCE.get(context);
         return new LauncherIcons(context, idp.fillResIconDpi, idp.iconBitmapSize, poolId,
                 shapeDetection);
     }
@@ -68,7 +73,7 @@ public class LauncherIcons extends BaseIconFactory implements AutoCloseable {
 
     private LauncherIcons next;
 
-    private LauncherIcons(Context context, int fillResIconDpi, int iconBitmapSize, int poolId,
+    protected LauncherIcons(Context context, int fillResIconDpi, int iconBitmapSize, int poolId,
             boolean shapeDetection) {
         super(context, fillResIconDpi, iconBitmapSize, shapeDetection);
         mPoolId = poolId;
