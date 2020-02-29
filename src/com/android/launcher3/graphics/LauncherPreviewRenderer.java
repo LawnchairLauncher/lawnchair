@@ -20,13 +20,19 @@ import static android.view.View.MeasureSpec.makeMeasureSpec;
 import static android.view.View.VISIBLE;
 
 import static com.android.launcher3.config.FeatureFlags.ENABLE_LAUNCHER_PREVIEW_IN_GRID_PICKER;
+import static com.android.launcher3.config.FeatureFlags.MULTI_DB_GRID_MIRATION_ALGO;
+import static com.android.launcher3.model.GridSizeMigrationTask.needsToMigrate;
 import static com.android.launcher3.model.ModelUtils.filterCurrentWorkspaceItems;
 import static com.android.launcher3.model.ModelUtils.sortWorkspaceItemsSpatially;
+import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
 import android.annotation.TargetApi;
 import android.app.Fragment;
+import android.appwidget.AppWidgetHostView;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
+import android.content.pm.ShortcutInfo;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -55,6 +61,7 @@ import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
@@ -68,15 +75,31 @@ import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.icons.BaseIconFactory;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.BitmapRenderer;
+import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.model.AllAppsList;
 import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.model.BgDataModel.Callbacks;
+import com.android.launcher3.model.GridSizeMigrationTask;
+import com.android.launcher3.model.GridSizeMigrationTaskV2;
 import com.android.launcher3.model.LoaderResults;
+import com.android.launcher3.model.LoaderTask;
+import com.android.launcher3.model.WidgetItem;
+import com.android.launcher3.model.WidgetsModel;
+import com.android.launcher3.pm.InstallSessionHelper;
+import com.android.launcher3.pm.UserCache;
+import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.BaseDragLayer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
@@ -96,6 +119,81 @@ import java.util.concurrent.TimeoutException;
 public class LauncherPreviewRenderer implements Callable<Bitmap> {
 
     private static final String TAG = "LauncherPreviewRenderer";
+
+    /**
+     * Context used just for preview. It also provides a few objects (e.g. UserCache) just for
+     * preview purposes.
+     */
+    public static class PreviewContext extends ContextWrapper {
+
+        private static final Set<MainThreadInitializedObject> WHITELIST = new HashSet<>(
+                Arrays.asList(UserCache.INSTANCE, InstallSessionHelper.INSTANCE,
+                        LauncherAppState.INSTANCE, InvariantDeviceProfile.INSTANCE));
+
+        private final InvariantDeviceProfile mIdp;
+        private final Map<MainThreadInitializedObject, Object> mObjectMap = new HashMap<>();
+        private final ConcurrentLinkedQueue<LauncherIconsForPreview> mIconPool =
+                new ConcurrentLinkedQueue<>();
+
+        public PreviewContext(Context base, InvariantDeviceProfile idp) {
+            super(base);
+            mIdp = idp;
+        }
+
+        @Override
+        public Context getApplicationContext() {
+            return this;
+        }
+
+        /**
+         * Find a cached object from mObjectMap if we have already created one. If not, generate
+         * an object using the provider.
+         */
+        public <T> T getObject(MainThreadInitializedObject<T> mainThreadInitializedObject,
+                MainThreadInitializedObject.ObjectProvider<T> provider) {
+            if (!WHITELIST.contains(mainThreadInitializedObject)) {
+                throw new IllegalStateException("Leaking unknown objects");
+            }
+            if (mainThreadInitializedObject == LauncherAppState.INSTANCE) {
+                throw new IllegalStateException(
+                        "Should not use MainThreadInitializedObject to initialize this with "
+                                + "PreviewContext");
+            }
+            if (mainThreadInitializedObject == InvariantDeviceProfile.INSTANCE) {
+                return (T) mIdp;
+            }
+            if (mObjectMap.containsKey(mainThreadInitializedObject)) {
+                return (T) mObjectMap.get(mainThreadInitializedObject);
+            }
+            T t = provider.get(this);
+            mObjectMap.put(mainThreadInitializedObject, t);
+            return t;
+        }
+
+        public LauncherIcons newLauncherIcons(Context context, boolean shapeDetection) {
+            LauncherIconsForPreview launcherIconsForPreview = mIconPool.poll();
+            if (launcherIconsForPreview != null) {
+                return launcherIconsForPreview;
+            }
+            return new LauncherIconsForPreview(context, mIdp.fillResIconDpi, mIdp.iconBitmapSize,
+                    -1 /* poolId */, shapeDetection);
+        }
+
+        private final class LauncherIconsForPreview extends LauncherIcons {
+
+            private LauncherIconsForPreview(Context context, int fillResIconDpi, int iconBitmapSize,
+                    int poolId, boolean shapeDetection) {
+                super(context, fillResIconDpi, iconBitmapSize, poolId, shapeDetection);
+            }
+
+            @Override
+            public void recycle() {
+                // Clear any temporary state variables
+                clear();
+                mIconPool.offer(this);
+            }
+        }
+    }
 
     private final Handler mUiHandler;
     private final Context mContext;
@@ -248,6 +346,16 @@ public class LauncherPreviewRenderer implements Callable<Bitmap> {
             addInScreenFromBind(folderIcon, info);
         }
 
+        private void inflateAndAddWidgets(LauncherAppWidgetInfo info, WidgetsModel widgetsModel) {
+            WidgetItem widgetItem = widgetsModel.getWidgetProviderInfoByProviderName(
+                    info.providerName);
+            AppWidgetHostView view = new AppWidgetHostView(mContext);
+            view.setAppWidget(-1, widgetItem.widgetInfo);
+            view.updateAppWidget(null);
+            view.setTag(info);
+            addInScreenFromBind(view, info);
+        }
+
         private void dispatchVisibilityAggregated(View view, boolean isVisible) {
             // Similar to View.dispatchVisibilityAggregated implementation.
             final boolean thisVisible = view.getVisibility() == VISIBLE;
@@ -268,15 +376,28 @@ public class LauncherPreviewRenderer implements Callable<Bitmap> {
 
         private void renderScreenShot(Canvas canvas) {
             if (ENABLE_LAUNCHER_PREVIEW_IN_GRID_PICKER.get()) {
-                final LauncherModel launcherModel = LauncherAppState.getInstance(
-                        mContext).getModel();
-                final WorkspaceItemsInfoFetcher fetcher = new WorkspaceItemsInfoFetcher();
-                launcherModel.enqueueModelUpdateTask(fetcher);
-                ArrayList<ItemInfo> workspaceItems;
-                try {
-                    workspaceItems = fetcher.mTask.get(5, TimeUnit.SECONDS);
-                } catch (InterruptedException | ExecutionException | TimeoutException e) {
-                    Log.d(TAG, "Error fetching workspace items info", e);
+                boolean needsToMigrate = needsToMigrate(mContext, mIdp);
+                boolean success = false;
+                if (needsToMigrate) {
+                    success = MULTI_DB_GRID_MIRATION_ALGO.get()
+                            ? GridSizeMigrationTaskV2.migrateGridIfNeeded(mContext, mIdp)
+                            : GridSizeMigrationTask.migrateGridIfNeeded(mContext, mIdp);
+                }
+
+                WorkspaceFetcher fetcher;
+                if (needsToMigrate && success) {
+                    LauncherAppState appForPreview = new LauncherAppState(
+                            new PreviewContext(mContext, mIdp), null /* iconCacheFileName */);
+                    fetcher = new WorkspaceItemsInfoFromPreviewFetcher(appForPreview);
+                    MODEL_EXECUTOR.execute(fetcher);
+                } else {
+                    fetcher = new WorkspaceItemsInfoFetcher();
+                    LauncherAppState.getInstance(mContext).getModel().enqueueModelUpdateTask(
+                            (LauncherModel.ModelUpdateTask) fetcher);
+                }
+                WorkspaceResult workspaceResult = fetcher.get();
+
+                if (workspaceResult == null) {
                     return;
                 }
 
@@ -284,9 +405,14 @@ public class LauncherPreviewRenderer implements Callable<Bitmap> {
                 // items
                 ArrayList<ItemInfo> currentWorkspaceItems = new ArrayList<>();
                 ArrayList<ItemInfo> otherWorkspaceItems = new ArrayList<>();
+                ArrayList<LauncherAppWidgetInfo> currentAppWidgets = new ArrayList<>();
+                ArrayList<LauncherAppWidgetInfo> otherAppWidgets = new ArrayList<>();
 
-                filterCurrentWorkspaceItems(0 /* currentScreenId */, workspaceItems,
-                        currentWorkspaceItems, otherWorkspaceItems);
+                filterCurrentWorkspaceItems(0 /* currentScreenId */,
+                        workspaceResult.mWorkspaceItems, currentWorkspaceItems,
+                        otherWorkspaceItems);
+                filterCurrentWorkspaceItems(0 /* currentScreenId */, workspaceResult.mAppWidgets,
+                        currentAppWidgets, otherAppWidgets);
                 sortWorkspaceItemsSpatially(mIdp, currentWorkspaceItems);
 
                 for (ItemInfo itemInfo : currentWorkspaceItems) {
@@ -298,6 +424,17 @@ public class LauncherPreviewRenderer implements Callable<Bitmap> {
                             break;
                         case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
                             inflateAndAddFolder((FolderInfo) itemInfo);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                for (ItemInfo itemInfo : currentAppWidgets) {
+                    switch (itemInfo.itemType) {
+                        case Favorites.ITEM_TYPE_APPWIDGET:
+                        case Favorites.ITEM_TYPE_CUSTOM_APPWIDGET:
+                            inflateAndAddWidgets((LauncherAppWidgetInfo) itemInfo,
+                                    workspaceResult.mWidgetsModel);
                             break;
                         default:
                             break;
@@ -349,10 +486,15 @@ public class LauncherPreviewRenderer implements Callable<Bitmap> {
         }
     }
 
-    private static class WorkspaceItemsInfoFetcher implements Callable<ArrayList<ItemInfo>>,
-            LauncherModel.ModelUpdateTask {
+    private static void measureView(View view, int width, int height) {
+        view.measure(makeMeasureSpec(width, EXACTLY), makeMeasureSpec(height, EXACTLY));
+        view.layout(0, 0, width, height);
+    }
 
-        private final FutureTask<ArrayList<ItemInfo>> mTask = new FutureTask<>(this);
+    private static class WorkspaceItemsInfoFetcher implements LauncherModel.ModelUpdateTask,
+            WorkspaceFetcher {
+
+        private final FutureTask<WorkspaceResult> mTask = new FutureTask<>(this);
 
         private LauncherAppState mApp;
         private LauncherModel mModel;
@@ -369,24 +511,80 @@ public class LauncherPreviewRenderer implements Callable<Bitmap> {
         }
 
         @Override
+        public FutureTask<WorkspaceResult> getTask() {
+            return mTask;
+        }
+
+        @Override
         public void run() {
             mTask.run();
         }
 
         @Override
-        public ArrayList<ItemInfo> call() throws Exception {
+        public WorkspaceResult call() throws Exception {
             if (!mModel.isModelLoaded()) {
                 Log.d(TAG, "Workspace not loaded, loading now");
                 mModel.startLoaderForResults(
                         new LoaderResults(mApp, mBgDataModel, mAllAppsList, new Callbacks[0]));
-                return new ArrayList<>();
+                return null;
             }
-            return mBgDataModel.workspaceItems;
+
+            return new WorkspaceResult(mBgDataModel.workspaceItems, mBgDataModel.appWidgets,
+                    mBgDataModel.widgetsModel);
         }
     }
 
-    private static void measureView(View view, int width, int height) {
-        view.measure(makeMeasureSpec(width, EXACTLY), makeMeasureSpec(height, EXACTLY));
-        view.layout(0, 0, width, height);
+    private static class WorkspaceItemsInfoFromPreviewFetcher extends LoaderTask implements
+            WorkspaceFetcher {
+
+        private final FutureTask<WorkspaceResult> mTask = new FutureTask<>(this);
+
+        WorkspaceItemsInfoFromPreviewFetcher(LauncherAppState app) {
+            super(app, null, new BgDataModel(), null);
+        }
+
+        @Override
+        public FutureTask<WorkspaceResult> getTask() {
+            return mTask;
+        }
+
+        @Override
+        public void run() {
+            mTask.run();
+        }
+
+        @Override
+        public WorkspaceResult call() throws Exception {
+            List<ShortcutInfo> allShortcuts = new ArrayList<>();
+            loadWorkspace(allShortcuts, LauncherSettings.Favorites.PREVIEW_CONTENT_URI);
+            return new WorkspaceResult(mBgDataModel.workspaceItems, mBgDataModel.appWidgets,
+                    mBgDataModel.widgetsModel);
+        }
+    }
+
+    private interface WorkspaceFetcher extends Runnable, Callable<WorkspaceResult> {
+        FutureTask<WorkspaceResult> getTask();
+
+        default WorkspaceResult get() {
+            try {
+                return getTask().get(5, TimeUnit.SECONDS);
+            } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                Log.d(TAG, "Error fetching workspace items info", e);
+                return null;
+            }
+        }
+    }
+
+    private static class WorkspaceResult {
+        private final ArrayList<ItemInfo> mWorkspaceItems;
+        private final ArrayList<LauncherAppWidgetInfo> mAppWidgets;
+        private final WidgetsModel mWidgetsModel;
+
+        private WorkspaceResult(ArrayList<ItemInfo> workspaceItems,
+                ArrayList<LauncherAppWidgetInfo> appWidgets, WidgetsModel widgetsModel) {
+            mWorkspaceItems = workspaceItems;
+            mAppWidgets = appWidgets;
+            mWidgetsModel = widgetsModel;
+        }
     }
 }

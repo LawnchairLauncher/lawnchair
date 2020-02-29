@@ -393,6 +393,8 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     protected void onPageEndTransition() {
         mWasInOverscroll = false;
         AccessibilityManagerCompat.sendScrollFinishedEventToTest(getContext());
+        AccessibilityManagerCompat.sendCustomAccessibilityEvent(getPageAt(mCurrentPage),
+                AccessibilityEvent.TYPE_VIEW_FOCUSED, null);
     }
 
     protected int getUnboundedScrollX() {

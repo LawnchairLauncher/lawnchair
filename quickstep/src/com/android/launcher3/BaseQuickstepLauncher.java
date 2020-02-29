@@ -201,7 +201,7 @@ public abstract class BaseQuickstepLauncher extends Launcher
 
         if (FeatureFlags.ENABLE_OVERVIEW_ACTIONS.get() && removeShelfFromOverview(this)) {
             // Overview is above all other launcher elements, including qsb, so move it to the top.
-            getOverviewPanel().bringToFront();
+            getOverviewPanelContainer().bringToFront();
         }
     }
 

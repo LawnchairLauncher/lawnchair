@@ -66,6 +66,8 @@ import com.android.systemui.shared.system.SystemGestureExclusionListenerCompat;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Manages the state of the system during a swipe up gesture.
@@ -107,7 +109,7 @@ public class RecentsAnimationDeviceState implements
     private Region mExclusionRegion;
     private SystemGestureExclusionListenerCompat mExclusionListener;
 
-    private ComponentName mGestureBlockedActivity;
+    private final List<ComponentName> mGestureBlockedActivities;
 
     public RecentsAnimationDeviceState(Context context) {
         final ContentResolver resolver = context.getContentResolver();
@@ -142,9 +144,19 @@ public class RecentsAnimationDeviceState implements
         runOnDestroy(() -> mSysUiNavMode.removeModeChangeListener(this));
 
         // Add any blocked activities
-        String blockingActivity = context.getString(R.string.gesture_blocking_activity);
-        if (!TextUtils.isEmpty(blockingActivity)) {
-            mGestureBlockedActivity = ComponentName.unflattenFromString(blockingActivity);
+        String[] blockingActivities;
+        try {
+            blockingActivities =
+                    context.getResources().getStringArray(R.array.gesture_blocking_activities);
+        } catch (Resources.NotFoundException e) {
+            blockingActivities = new String[0];
+        }
+        mGestureBlockedActivities = new ArrayList<>(blockingActivities.length);
+        for (String blockingActivity : blockingActivities) {
+            if (!TextUtils.isEmpty(blockingActivity)) {
+                mGestureBlockedActivities.add(
+                        ComponentName.unflattenFromString(blockingActivity));
+            }
         }
     }
 
@@ -272,17 +284,16 @@ public class RecentsAnimationDeviceState implements
      * @return whether the given running task info matches the gesture-blocked activity.
      */
     public boolean isGestureBlockedActivity(ActivityManager.RunningTaskInfo runningTaskInfo) {
-        return runningTaskInfo != null && mGestureBlockedActivity != null
-                && mGestureBlockedActivity.equals(runningTaskInfo.topActivity);
+        return runningTaskInfo != null
+                && mGestureBlockedActivities.contains(runningTaskInfo.topActivity);
     }
 
     /**
-     * @return the package of the gesture-blocked activity or {@code null} if there is none.
+     * @return the packages of gesture-blocked activities.
      */
-    public String getGestureBlockedActivityPackage() {
-        return (mGestureBlockedActivity != null)
-                ? mGestureBlockedActivity.getPackageName()
-                : null;
+    public List<String> getGestureBlockedActivityPackages() {
+        return mGestureBlockedActivities.stream().map(ComponentName::getPackageName)
+                .collect(Collectors.toList());
     }
 
     /**

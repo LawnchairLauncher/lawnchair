@@ -6,6 +6,7 @@ import static android.appwidget.AppWidgetProviderInfo.WIDGET_FEATURE_HIDE_FROM_P
 import static com.android.launcher3.pm.ShortcutConfigActivityInfo.queryList;
 
 import android.appwidget.AppWidgetProviderInfo;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Process;
@@ -242,5 +243,17 @@ public class WidgetsModel {
                 }
             }
         }
+    }
+
+    public WidgetItem getWidgetProviderInfoByProviderName(
+            ComponentName providerName) {
+        ArrayList<WidgetItem> widgetsList = mWidgetsList.get(
+                new PackageItemInfo(providerName.getPackageName()));
+        for (WidgetItem item : widgetsList) {
+            if (item.componentName.equals(providerName)) {
+                return item;
+            }
+        }
+        return null;
     }
 }

@@ -80,4 +80,10 @@ public final class FolderNameInfo implements Parcelable {
     public int describeContents() {
         return 0;
     }
+
+    @Override
+    @NonNull
+    public String toString() {
+        return String.format("%s:%.2f", mLabel, mScore);
+    }
 }

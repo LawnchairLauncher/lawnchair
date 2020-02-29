@@ -191,9 +191,8 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
 
             mEndDisplacement = -mTaskBeingDragged.getHeight();
         } else {
-            mPendingAnimation = mRecentsView.createTaskLauncherAnimation(
-                    mTaskBeingDragged, maxDuration);
-            mPendingAnimation.anim.setInterpolator(Interpolators.ZOOM_IN);
+            mPendingAnimation = mRecentsView.createTaskLaunchAnimation(
+                    mTaskBeingDragged, maxDuration, Interpolators.ZOOM_IN);
 
             mTempCords[1] = mTaskBeingDragged.getHeight();
             dl.getDescendantCoordRelativeToSelf(mTaskBeingDragged, mTempCords);
@@ -203,8 +202,8 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
         if (mCurrentAnimation != null) {
             mCurrentAnimation.setOnCancelRunnable(null);
         }
-        mCurrentAnimation = AnimatorPlaybackController
-                .wrap(mPendingAnimation.anim, maxDuration, this::clearState);
+        mCurrentAnimation = AnimatorPlaybackController.wrap(
+                mPendingAnimation.anim, maxDuration, this::clearState);
         onUserControlledAnimationCreated(mCurrentAnimation);
         mCurrentAnimation.getTarget().addListener(this);
         mCurrentAnimation.dispatchOnStart();

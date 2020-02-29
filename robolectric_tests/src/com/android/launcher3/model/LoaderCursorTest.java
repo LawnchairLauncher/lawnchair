@@ -52,6 +52,7 @@ import android.os.Process;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.LauncherRoboTestRunner;
@@ -91,7 +92,7 @@ public class LoaderCursorTest {
                 SCREEN, CELLX, CELLY, RESTORED, INTENT
         });
 
-        mLoaderCursor = new LoaderCursor(mCursor, mApp);
+        mLoaderCursor = new LoaderCursor(mCursor, LauncherSettings.Favorites.CONTENT_URI, mApp);
         mLoaderCursor.allUsers.put(0, Process.myUserHandle());
     }
 

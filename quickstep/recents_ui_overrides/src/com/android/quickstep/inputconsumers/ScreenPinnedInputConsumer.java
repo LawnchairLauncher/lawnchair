@@ -23,8 +23,8 @@ import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.R;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.InputConsumer;
-import com.android.quickstep.util.MotionPauseDetector;
 import com.android.quickstep.SystemUiProxy;
+import com.android.quickstep.util.MotionPauseDetector;
 
 /**
  * An input consumer that detects swipe up and hold to exit screen pinning mode.
@@ -72,7 +72,7 @@ public class ScreenPinnedInputConsumer implements InputConsumer {
             case MotionEvent.ACTION_MOVE:
                 float displacement = mTouchDownY - y;
                 mMotionPauseDetector.setDisallowPause(displacement < mMotionPauseMinDisplacement);
-                mMotionPauseDetector.addPosition(y, ev.getEventTime());
+                mMotionPauseDetector.addPosition(ev);
                 break;
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:

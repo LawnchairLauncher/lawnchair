@@ -191,7 +191,7 @@ public class HotseatEduDialog extends AbstractSlideInView implements Insettable 
                 || predictions.size() < mLauncher.getDeviceProfile().inv.numHotseatIcons) {
             return;
         }
-        mLauncher.getDragLayer().addView(this);
+        attachToContainer();
         logOnBoardingSeen();
         animateOpen();
         for (int i = 0; i < mLauncher.getDeviceProfile().inv.numHotseatIcons; i++) {
