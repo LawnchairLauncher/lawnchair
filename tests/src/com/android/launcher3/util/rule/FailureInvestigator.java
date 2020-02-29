@@ -102,8 +102,13 @@ class FailureInvestigator {
             logSinceBoot =
                     UiDevice.getInstance(getInstrumentation())
                             .executeShellCommand("logcat -d -t " + systemBootTime.replace(" ", ""));
-        } catch (IOException e) {
+        } catch (IOException | OutOfMemoryError e) {
             return 0;
+        }
+
+        if (matches("android\\:\\:uirenderer\\:\\:renderthread\\:\\:EglManager\\:\\:swapBuffers",
+                logSinceBoot)) {
+            return 148529608;
         }
 
         for (ExceptionMatch exceptionMatch : EXCEPTION_MATCHES) {

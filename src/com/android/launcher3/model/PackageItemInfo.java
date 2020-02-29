@@ -19,6 +19,8 @@ package com.android.launcher3.model;
 import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.LauncherSettings;
 
+import java.util.Objects;
+
 /**
  * Represents a {@link Package} in the widget tray section.
  */
@@ -47,5 +49,18 @@ public class PackageItemInfo extends ItemInfoWithIcon {
     @Override
     public PackageItemInfo clone() {
         return new PackageItemInfo(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PackageItemInfo that = (PackageItemInfo) o;
+        return Objects.equals(packageName, that.packageName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(packageName);
     }
 }

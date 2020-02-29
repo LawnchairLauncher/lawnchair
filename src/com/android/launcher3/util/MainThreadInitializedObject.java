@@ -22,6 +22,7 @@ import android.os.Looper;
 
 import androidx.annotation.VisibleForTesting;
 
+import com.android.launcher3.graphics.LauncherPreviewRenderer.PreviewContext;
 import com.android.launcher3.util.ResourceBasedOverride.Overrides;
 
 import java.util.concurrent.ExecutionException;
@@ -39,6 +40,10 @@ public class MainThreadInitializedObject<T> {
     }
 
     public T get(Context context) {
+        if (context instanceof PreviewContext) {
+            return ((PreviewContext) context).getObject(this, mProvider);
+        }
+
         if (mValue == null) {
             if (Looper.myLooper() == Looper.getMainLooper()) {
                 mValue = TraceHelper.whitelistIpcs("main.thread.object",

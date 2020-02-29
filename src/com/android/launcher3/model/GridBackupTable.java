@@ -100,12 +100,24 @@ public class GridBackupTable {
                     Process.myUserHandle()), 0);
             return false;
         }
+        return restoreIfBackupExists(Favorites.TABLE_NAME);
+    }
+
+    public boolean restoreToPreviewIfBackupExists() {
+        if (!tableExists(mDb, BACKUP_TABLE_NAME)) {
+            return false;
+        }
+
+        return restoreIfBackupExists(Favorites.PREVIEW_TABLE_NAME);
+    }
+
+    private boolean restoreIfBackupExists(String toTableName) {
         if (loadDBProperties() != STATE_SANITIZED) {
             return false;
         }
         long userSerial = UserCache.INSTANCE.get(mContext).getSerialNumberForUser(
                 Process.myUserHandle());
-        copyTable(mDb, BACKUP_TABLE_NAME, Favorites.TABLE_NAME, userSerial);
+        copyTable(mDb, BACKUP_TABLE_NAME, toTableName, userSerial);
         Log.d(TAG, "Backup table found");
         return true;
     }
