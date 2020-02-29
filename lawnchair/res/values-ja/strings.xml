@@ -10,16 +10,16 @@
     <string name="action_apply">完了</string>
     <!-- Note: new. Replaces “OK” in dialogs. -->
     <string name="theme_dark_theme_mode_on">有効</string>
-    <string name="theme_dark_theme_mode_off">無効になっています</string>
+    <string name="theme_dark_theme_mode_off">無効</string>
     <!-- Section 2 -->
     <string name="theme_title">テーマ</string>
-    <string name="pixel_ui_pref_summary">アイコン、色彩または暈し</string>
+    <string name="pixel_ui_pref_summary">アイコン、色、ぼかし</string>
     <string name="pref_icon_packs">アイコンパック</string>
     <string name="icon_pack_default">システムアイコン</string>
     <string name="pref_icon_pack_masking">アイコンを覆う</string>
-    <string name="pref_icon_pack_masking_summary">テーマが適用されていないアイコンをアイコンパックに合わせる。</string>
+    <string name="pref_icon_pack_masking_summary">テーマが適用されていないアイコンをアイコンパックに合わせる</string>
     <string name="pref_legacy_treatment_title">アダプティブアイコンを生成</string>
-    <string name="pref_legacy_treatment_summary">すべてのショートカットのためにアダプティブアイコンを造る。</string>
+    <string name="pref_legacy_treatment_summary">全てのショートカットにアダプティブアイコンを生成する</string>
     <string name="pref_legacy_colored_backgrounds">背景の色</string>
     <string name="pref_legacy_colored_backgrounds_summary">生成されたアダプティブアイコンの背景に色を付ける</string>
     <string name="pref_white_only_treatment">白の背景を置き換える</string>
@@ -27,6 +27,7 @@
     <string name="adaptify_pack_title">アイコンパック用のアダプティブアイコンを作成</string>
     <string name="icon_shape_override_label">アイコンの形状</string>
     <string name="reset_custom_icons">カスタムしたアイコンを取り除く</string>
+    <string name="reset_custom_icons_confirmation">このアイコンパックから既定のものに戻しますか? この操作は取り消せません。</string>
     <string name="appearance">外観</string>
     <!-- Note: new. Replaces title of 5th field (from bottom) in “Theme” page. -->
     <string name="theme_auto">自動 (壁紙に基づく)</string>
@@ -44,7 +45,7 @@
     <string name="color_wallpaper_secondary">壁紙 - 2番</string>
     <string name="color_wallpaper_tertiary">壁紙 - 3番</string>
     <string name="pref_fonts_title">フォント</string>
-    <string name="blur_pref_title">ぼかしを有効にする</string>
+    <string name="blur_pref_title">ぼかし</string>
     <string name="blur_pref_summary">ページ背景のぼかし</string>
     <string name="blur_radius_pref_title">ぼかしの強さ</string>
     <!-- Section 3 -->
@@ -54,7 +55,7 @@
     <string name="grid_size_width">横幅</string>
     <string name="grid_size_height">高さ</string>
     <string name="num_hotseat_icons_pref_title">アイコンのカウント</string>
-    <string name="overlap_placement">重複を許す</string>
+    <string name="overlap_placement">重なりを許す</string>
     <string name="lock_desktop">デスクトップをロック</string>
     <string name="pref_category_icons">ショートカット</string>
     <string name="hide_icon_labels_pref_title">ラベルを隠す</string>
@@ -62,8 +63,10 @@
     <string name="icon_text_scale_pref_title">文字のサイズ</string>
     <string name="text_color">文字の色</string>
     <string name="icon_scale_pref_title">アイコンサイズ</string>
+    <string name="auto_add_shortcuts_label">デスクトップに新規ショートカットを追加</string>
     <string name="pref_icon_popup_menu">ショートカットバブル</string>
     <string name="pref_category_misc">その他</string>
+    <string name="animation_type_title">アプリ起動の遷移</string>
     <string name="animation_type_default">既定</string>
     <string name="animation_type_pie">Android Pie</string>
     <string name="animation_type_pie_like">Android Pie (エミュレーション)</string>
@@ -75,27 +78,30 @@
     <string name="icon_badging_title">通知ドット</string>
     <string name="pref_notification_count_title">通知の数を表示</string>
     <string name="allow_rotation_title">回転を有効</string>
-    <string name="pref_center_wallpaper_summary">壁紙のスクロールを無効にします。</string>
+    <string name="pref_center_wallpaper">壁紙の中央揃え</string>
+    <string name="pref_center_wallpaper_summary">壁紙のスクロールを無効にする</string>
     <string name="pref_hide_statusbar">ステータスバーを隠す</string>
     <string name="full_width_width_widgets_pref_title">全画面ウィジェット</string>
-    <string name="full_width_widgets_pref_summary">ウィジェットを画面の端まで広げます。</string>
-    <string name="show_top_shadow_pref_title">上部にシャドウを表示する</string>
+    <string name="full_width_widgets_pref_summary">ウィジェットを画面の端まで広げる</string>
+    <string name="show_top_shadow_pref_title">上部に影を表示</string>
     <!-- Section 4 -->
     <string name="smartspace_preferences_in_settings">At A Glance</string>
     <!-- Note: replaces hard-coded copy (“Home widget”). -->
+    <string name="smartspace_preferences_in_settings_desc">日付と時刻、データソース</string>
     <string name="smartspace_time">時間を表示</string>
     <string name="smartspace_date">日付を表示</string>
     <string name="pref_smartspace_time_above">大きな時計を表示</string>
     <string name="pref_hide_statusbar_clock">ステータスバーの時計を非表示</string>
-    <string name="root_access_required">ルートアクセスが必要です。</string>
+    <string name="root_access_required">ルートアクセスが必要です</string>
     <string name="smartspace_time_24_h">24時間形式を使用</string>
+    <string name="title_use_pill_qsb">ピル型の検索ショートカットを表示</string>
     <string name="pref_category_weather">その他</string>
     <string name="pref_smartspace_widget_provider">天気の提供元</string>
-    <string name="google_app">Googleアプリ</string>
+    <string name="google_app">Google アプリ</string>
     <string name="weather_provider_disabled">無効</string>
     <string name="weather_provider_owm">OpenWeatherMap</string>
     <string name="weather_provider_pe">Pixel Experience</string>
-    <string name="pref_weather_units">温度単位</string>
+    <string name="pref_weather_units">温度の単位</string>
     <string name="units_metric">摂氏</string>
     <string name="units_imperial">華氏</string>
     <string name="units_kelvin">ケルビン</string>
@@ -108,58 +114,82 @@
     <string name="battery_status">バッテリー状態</string>
     <string name="event_provider_now_playing">Now Playing</string>
     <string name="event_provider_unread_notifications">通知</string>
+    <string name="personality_provider">あいさつ</string>
+    <string name="pref_smartspace_event_provider">イベントソース</string>
     <string-array name="greetings_morning">
         <item>おはようございます</item>
         <item>よい一日を</item>
-        <item>It’s a beautiful day outside!</item>
+        <item>今日は美しい景色です!</item>
     </string-array>
     <string-array name="greetings_evening">
-        <item>What’s up?</item>
-        <item>Good evening!</item>
-        <item>How did your day go?</item>
+        <item>どうしましたか?</item>
+        <item>こんばんは!</item>
+        <item>今日はどうでしたか?</item>
         <item>おやすみなさい</item>
     </string-array>
     <string-array name="greetings_night">
         <item>よい眠りを</item>
         <item>また明日</item>
         <item>おやすみなさい</item>
-        <item>Don’t stay up too late!</item>
+        <item>遅くまで起きないで下さい!</item>
     </string-array>
     <string name="battery_charging">充電中</string>
     <string name="battery_full">充電完了</string>
     <string name="battery_low">残量低下</string>
     <!-- Section 5 -->
     <string name="dock_pref_title">ドック</string>
+    <string name="dock_pref_summary">レイアウト、スタイル、インジケータ</string>
     <string name="dock_fill">背景を表示</string>
     <string name="background_color">背景の色</string>
+    <string name="theme_based">テーマに合わせる</string>
     <string name="dock_shadow">影を表示</string>
     <string name="radius">角の丸み</string>
     <string name="hotseat_show_arrow">矢印を表示</string>
     <string name="hotseat_show_page_indicator">ページインジケーターを表示</string>
+    <string name="two_row_dock">2行目を表示</string>
     <string name="pref_category_searchbar">検索バー</string>
     <string name="dock_search_bar">検索バーを表示</string>
     <string name="dock_colored_google">カラーアイコン</string>
     <!-- Section 6 -->
     <string name="app_drawer_pref_title">ドロワー</string>
+    <string name="app_drawer_pref_summary">レイアウト、カテゴリ、候補</string>
     <string name="pref_category_theme">スタイル</string>
+    <string name="pref_drawer_columns">列数</string>
+    <string name="pref_prediction_count">候補数</string>
+    <string name="pref_drawer_padding">行の高さ</string>
+    <string name="hide_apps">非表示のアプリのショートカット</string>
     <string name="categorization">カテゴリ</string>
     <string name="pref_appcategorization_enable_title">アプリをカテゴリ分け</string>
     <string name="pref_appcategorization_folders_title">フォルダ</string>
+    <string name="pref_appcategorization_folders_summary">タップしてフォルダを開く</string>
     <string name="pref_appcategorization_tabs_title">タブ</string>
+    <string name="pref_appcategorization_tabs_summary">カテゴリの間をスワイプ</string>
     <string name="pref_app_groups_edit_tip">タップして編集、ドラッグして並び替える。</string>
+    <plurals name="hidden_apps_count">
+        <item quantity="other">%1$d 個を非表示</item>
+    </plurals>
+    <string name="category_business_and_productivity">ビジネスと生産</string>
     <string name="category_communication">コミュニケーション</string>
-    <string name="category_entertainment">エンターテイメント</string>
+    <string name="category_entertainment">エンターテインメント</string>
+    <string name="category_food_and_drink">食べ物と飲み物</string>
     <string name="category_game">ゲーム</string>
+    <string name="category_health_and_fitness">健康とフィットネス</string>
+    <string name="category_knowledge_and_reference">知識とリファレンス</string>
+    <string name="category_lifestyle">ショッピングとライフスタイル</string>
     <string name="category_music">音楽</string>
     <string name="category_news">ニュース</string>
     <string name="category_personalization">個人</string>
     <string name="category_photography">写真</string>
     <string name="category_tools">ユーティリティ</string>
+    <string name="category_travel_and_navigation">旅行とナビゲーション</string>
     <string name="select_tab_type">新しいタブ</string>
     <string name="tab_type_smart">自動</string>
+    <string name="pref_appcategorization_flowerpot_summary">自動でショートカットを選択</string>
     <string name="tab_type_custom">カスタム</string>
+    <string name="tab_type_custom_desc">手動でショートカットを選択</string>
     <string name="pref_appcategorization_flowerpot_title">アプリのカテゴリ</string>
     <string name="title_all_apps_search">検索バーを表示</string>
+    <string name="title_all_apps_google_search">グローバル検索を使用</string>
     <string name="summary_all_apps_google_search">ウェブサイト、連絡先、ショートカットを探す</string>
     <string name="title_search_hidden_apps">非表示のショートカットを探す</string>
     <string name="summary_search_hidden_apps">非表示のショートカットを結果に含める</string>
@@ -168,6 +198,9 @@
     <string name="app_actions_pref_title">アクション</string>
     <string name="app_actions_pref_desc">頻繁に使わてれいるショートカット</string>
     <string name="app_actions_reset_pref_title">アクションの設定をリセット</string>
+    <string name="app_actions_reset_pref_summary">非表示アイテムのアクションを再表示する</string>
+    <string name="all_apps_label_pref_title">\"全てのアプリ\" ラベルを表示</string>
+    <string name="separate_work_apps_pref_title">仕事用アプリのタブを表示</string>
     <string name="keep_scroll_state_pref_title">位置を記憶</string>
     <!-- Section 7 -->
     <string name="search">検索</string>
@@ -204,7 +237,7 @@
     <string name="pref_search_bar_radius">角の丸み</string>
     <!-- Section 8 -->
     <string name="pref_integrations">プラグイン</string>
-    <string name="pref_integrations_summary">Sesameショートカット、Google フィード</string>
+    <string name="pref_integrations_summary">Sesame ショートカット、Google フィード</string>
     <string name="sesame">Sesame</string>
     <string name="sesame_data_integration">データ共有</string>
     <string name="sesame_upsell">タップして Sesame をインストール</string>
@@ -235,7 +268,7 @@
     <string name="action_open_app">アプリを開く</string>
     <!-- Section 10 -->
     <string name="backups">バックアップと復元</string>
-    <string name="backup_pref_summary">ホームセットアップの保存、バックアップの復元</string>
+    <string name="backup_pref_summary">ホーム設定の保存、バックアップの復元</string>
     <string name="new_backup">作成</string>
     <string name="restore_backup">復元</string>
     <string name="local_backups">ストレージ</string>
