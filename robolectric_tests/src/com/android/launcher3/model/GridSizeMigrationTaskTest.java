@@ -65,7 +65,7 @@ public class GridSizeMigrationTaskTest {
         };
 
         mIdp.numHotseatIcons = 3;
-        new GridSizeMigrationTask(mContext, mDb, mValidPackages, 5, 3)
+        new GridSizeMigrationTask(mContext, mDb, mValidPackages, false, 5, 3)
                 .migrateHotseat();
         // First item is dropped as it has the least weight.
         verifyHotseat(hotseatItems[1], hotseatItems[3], hotseatItems[4]);
@@ -82,7 +82,7 @@ public class GridSizeMigrationTaskTest {
         };
 
         mIdp.numHotseatIcons = 3;
-        new GridSizeMigrationTask(mContext, mDb, mValidPackages, 5, 3)
+        new GridSizeMigrationTask(mContext, mDb, mValidPackages, false, 5, 3)
                 .migrateHotseat();
         // First item is dropped as it has the least weight.
         verifyHotseat(hotseatItems[1], hotseatItems[3], hotseatItems[4]);
@@ -127,7 +127,7 @@ public class GridSizeMigrationTaskTest {
                 {  5,  2, -1,  6},
         }});
 
-        new GridSizeMigrationTask(mContext, mDb, mValidPackages,
+        new GridSizeMigrationTask(mContext, mDb, mValidPackages, false,
                 new Point(4, 4), new Point(3, 3)).migrateWorkspace();
 
         // Column 2 and row 2 got removed.
@@ -147,7 +147,7 @@ public class GridSizeMigrationTaskTest {
                 {  5,  2, -1,  6},
         }});
 
-        new GridSizeMigrationTask(mContext, mDb, mValidPackages,
+        new GridSizeMigrationTask(mContext, mDb, mValidPackages, false,
                 new Point(4, 4), new Point(3, 3)).migrateWorkspace();
 
         // Items in the second column get moved to new screen
@@ -172,7 +172,7 @@ public class GridSizeMigrationTaskTest {
                 {  3,  1, -1,  4},
         }});
 
-        new GridSizeMigrationTask(mContext, mDb, mValidPackages,
+        new GridSizeMigrationTask(mContext, mDb, mValidPackages, false,
                 new Point(4, 4), new Point(3, 3)).migrateWorkspace();
 
         // Items in the second column of the first screen should get placed on the 3rd
@@ -204,7 +204,7 @@ public class GridSizeMigrationTaskTest {
                 {  5,  2, -1,  6},
         }});
 
-        new GridSizeMigrationTask(mContext, mDb, mValidPackages,
+        new GridSizeMigrationTask(mContext, mDb, mValidPackages, false,
                 new Point(4, 4), new Point(3, 3)).migrateWorkspace();
 
         // Items in the second column of the first screen should get placed on a new screen.
@@ -235,7 +235,7 @@ public class GridSizeMigrationTaskTest {
                 {  5,  2,  7, -1},
         }}, 0);
 
-        new GridSizeMigrationTask(mContext, mDb, mValidPackages,
+        new GridSizeMigrationTask(mContext, mDb, mValidPackages, false,
                 new Point(4, 4), new Point(3, 4)).migrateWorkspace();
 
         // Items in the second column of the first screen should get placed on a new screen.
@@ -262,7 +262,7 @@ public class GridSizeMigrationTaskTest {
                 {  5,  6,  7, -1},
         }}, 0);
 
-        new GridSizeMigrationTask(mContext, mDb, mValidPackages,
+        new GridSizeMigrationTask(mContext, mDb, mValidPackages, false,
                 new Point(4, 4), new Point(3, 3)).migrateWorkspace();
 
         // Items in the second column of the first screen should get placed on a new screen.
@@ -282,7 +282,7 @@ public class GridSizeMigrationTaskTest {
      *            represent the workspace grid.
      */
     private void verifyWorkspace(int[][][] ids) {
-        IntArray allScreens = getWorkspaceScreenIds(mDb);
+        IntArray allScreens = getWorkspaceScreenIds(mDb, LauncherSettings.Favorites.TABLE_NAME);
         assertEquals(ids.length, allScreens.size());
         int total = 0;
 
@@ -351,7 +351,7 @@ public class GridSizeMigrationTaskTest {
         private final LinkedList<Point> mPoints;
 
         public MultiStepMigrationTaskVerifier(int... points) {
-            super(null, null, null);
+            super(null, null, null, false);
 
             mPoints = new LinkedList<>();
             for (int i = 0; i < points.length; i += 2) {

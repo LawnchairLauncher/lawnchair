@@ -16,6 +16,7 @@
 
 package com.android.launcher3.model;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.os.UserHandle;
 
@@ -67,5 +68,10 @@ public class WidgetsModel {
 
     public void onPackageIconsUpdated(Set<String> packageNames, UserHandle user,
             LauncherAppState app) {
+    }
+
+    public WidgetItem getWidgetProviderInfoByProviderName(
+            ComponentName providerName) {
+        return null;
     }
 }

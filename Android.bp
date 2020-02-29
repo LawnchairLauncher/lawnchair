@@ -47,3 +47,14 @@ java_library_static {
     },
     static_libs: ["libprotobuf-java-lite"],
 }
+
+java_library {
+    name: "LauncherPluginLib",
+
+    static_libs: ["PluginCoreLib"],
+
+    srcs: ["src_plugins/**/*.java"],
+
+    sdk_version: "current",
+    min_sdk_version: "28",
+}

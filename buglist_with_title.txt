@@ -1,0 +1,29 @@
+133381284  erosky    P1        ASSIGNED  [R] Move split-screen presentation/layout to system-ui. ----
+139750033  sunnygoyal  P2        ASSIGNED  Overview misfired ----
+139828243  xuqiu     P2        ASSIGNED  [Overview Actions] Add Overview actions ----
+142753423  sfufa     P3        ACCEPTED  Prototype predictive hotseat ----
+144052839  tracyzhou  P2        ACCEPTED  Improving Launcher preview in ThemePicker ----
+144854916  winsonc   P2        ASSIGNED  Add winscope logging for systemui/launcher ----
+145253300  awickham  P1        FIXED   [a11y]Talkback doesn't focus on pop up window when long press Smart space. ----
+145297320  zakcohen  P2        FIXED   Overview layout with anchor chips ----
+145595763  sfufa     P4        FIXED   Wrong Tab is highlighted after creating Work profile ----
+145647019  twickham  P1        FIXED   [a11y] Use Talkback page navigation to switch apps in Overview, Talkback couldn't move focus across apps one by one. ----
+148099851  peskal    P1        FIXED   Make reduced scale snapshots toggle on/off base on config_reducedTaskSnapshotScale=0 ----
+148542211  awickham  P2        ASSIGNED  Sandbox for gesture nav tutorial ----
+148867106  vadimt    P2        ASSIGNED  [Flaky test] AddConfigWidgetTest.testConfigCancelled ----
+148896221  hyunyoungs  P3        ASSIGNED  Migrate to soong ----
+148900990  hyunyoungs  P2        FIXED   Hard to know if there's a text field for naming folders without a cursor ----
+149197172  sfufa     P1        FIXED   [Regression] New work profile OOBE doesn't adopt theme color ----
+149198955  sfufa     P2        FIXED   Work tab flash seems superfluous with new OOBE ----
+149199058  sfufa     P1        FIXED   Work profile OOBE not dismissed after locking/unlocking screen ----
+149200572  sfufa     P1        FIXED   [Regression] Work profile toggle is obscured by system navigation bar ----
+149215103  sfufa     P1        FIXED   OOBE still displayed after removing work profile ----
+149422395  vadimt    P2        ASSIGNED  Test should fail with a clear diags if it can't install a required package ----
+149481723  sfufa     P2        FIXED   Launcher OOBE for work profile and COPE devices improvements ----
+149867607  sfufa     P0        FIXED   [Failing test] WorkTabTest.workTabExists ----
+149870691  twickham  P2        ASSIGNED  Cleanup AppWindowAnimationHelper and TransformParams ----
+149927292  sfufa     P0        FIXED   [Flaky test] Apps view did not bind WorkTabTest.toggleWorks ----
+149935239  hyunyoungs  P1        FIXED   Update the suggestFolderName when items are added and deleted from folders ----
+149967272  hyunyoungs  P1        FIXED   Tap on Edit Name interaction drops the first recommendation ----
+149969889  sfufa     P2        FIXED   [Crash] java.lang.NullPointerException: Attempt to invoke virtual method 'android.content.ComponentName ----
+149993849  thiruram  P1        FIXED   Pixel launcher crashes when tapping on empty shortcut folder name ----

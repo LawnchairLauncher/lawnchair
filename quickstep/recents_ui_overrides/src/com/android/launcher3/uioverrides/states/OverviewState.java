@@ -37,6 +37,7 @@ import static com.android.quickstep.SysUINavigationMode.removeShelfFromOverview;
 
 import android.graphics.Rect;
 import android.view.View;
+import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.Interpolator;
 
 import com.android.launcher3.AbstractFloatingView;
@@ -47,6 +48,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.AnimatorSetBuilder;
+import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.quickstep.SysUINavigationMode;
@@ -143,6 +145,10 @@ public class OverviewState extends LauncherState {
     public void onStateTransitionEnd(Launcher launcher) {
         launcher.getRotationHelper().setCurrentStateRequest(REQUEST_ROTATE);
         DiscoveryBounce.showForOverviewIfNeeded(launcher);
+        RecentsView recentsView = launcher.getOverviewPanel();
+        AccessibilityManagerCompat.sendCustomAccessibilityEvent(
+                recentsView.getPageAt(recentsView.getCurrentPage()),
+                AccessibilityEvent.TYPE_VIEW_FOCUSED, null);
     }
 
     @Override
