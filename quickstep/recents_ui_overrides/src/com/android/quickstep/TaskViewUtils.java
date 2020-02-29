@@ -163,7 +163,7 @@ public final class TaskViewUtils {
                 if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
                     List<SurfaceParams> surfaceParamsList = new ArrayList<>();
                     // Append the surface transform params for the app that's being opened.
-                    Collections.addAll(surfaceParamsList, inOutHelper.getSurfaceParams(params));
+                    Collections.addAll(surfaceParamsList, inOutHelper.computeSurfaceParams(params));
 
                     AppWindowAnimationHelper liveTileAnimationHelper =
                             v.getRecentsView().getClipAnimationHelper();
@@ -173,14 +173,14 @@ public final class TaskViewUtils {
                                 v.getRecentsView().getLiveTileParams(true /* mightNeedToRefill */);
                         if (liveTileParams != null) {
                             SurfaceParams[] liveTileSurfaceParams =
-                                    liveTileAnimationHelper.getSurfaceParams(liveTileParams);
+                                    liveTileAnimationHelper.computeSurfaceParams(liveTileParams);
                             if (liveTileSurfaceParams != null) {
                                 Collections.addAll(surfaceParamsList, liveTileSurfaceParams);
                             }
                         }
                     }
                     // Apply surface transform using the surface params list.
-                    AppWindowAnimationHelper.applySurfaceParams(params.syncTransactionApplier,
+                    AppWindowAnimationHelper.applySurfaceParams(params.getSyncTransactionApplier(),
                             surfaceParamsList.toArray(new SurfaceParams[surfaceParamsList.size()]));
                     // Get the task bounds for the app that's being opened after surface transform
                     // update.

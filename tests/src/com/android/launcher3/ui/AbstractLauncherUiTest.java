@@ -22,9 +22,8 @@ import static com.android.launcher3.tapl.LauncherInstrumentation.ContainerType;
 import static com.android.launcher3.ui.TaplTestsLauncher3.getAppPackageName;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-
-import static java.lang.System.exit;
 
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -38,7 +37,7 @@ import android.content.pm.LauncherApps;
 import android.content.pm.PackageManager;
 import android.os.Process;
 import android.os.RemoteException;
-import android.util.Log;
+import android.os.StrictMode;
 
 import androidx.test.InstrumentationRegistry;
 import androidx.test.uiautomator.By;
@@ -97,11 +96,50 @@ public abstract class AbstractLauncherUiTest {
     public static final long DEFAULT_UI_TIMEOUT = 10000;
     private static final String TAG = "AbstractLauncherUiTest";
 
+    private static String sDetectedActivityLeak;
+    private static boolean sActivityLeakReported;
+
     protected LooperExecutor mMainThreadExecutor = MAIN_EXECUTOR;
     protected final UiDevice mDevice = UiDevice.getInstance(getInstrumentation());
     protected final LauncherInstrumentation mLauncher = new LauncherInstrumentation();
     protected Context mTargetContext;
     protected String mTargetPackage;
+    private int mLauncherPid;
+
+    static {
+        if (TestHelpers.isInLauncherProcess()) {
+            StrictMode.VmPolicy.Builder builder =
+                    new StrictMode.VmPolicy.Builder()
+                            .detectActivityLeaks()
+                            .penaltyLog()
+                            .penaltyListener(Runnable::run, violation -> {
+                                // Runs in the main thread. We can't dumpheap in the main thread,
+                                // so let's just mark the fact that the leak has happened.
+                                if (sDetectedActivityLeak == null) {
+                                    sDetectedActivityLeak = violation.toString();
+                                }
+                            });
+            StrictMode.setVmPolicy(builder.build());
+        }
+    }
+
+    public static void checkDetectedLeaks() {
+        if (sDetectedActivityLeak != null && !sActivityLeakReported) {
+            sActivityLeakReported = true;
+
+            final UiDevice device = UiDevice.getInstance(getInstrumentation());
+            try {
+                device.executeShellCommand(
+                        "am dumpheap "
+                                + device.getLauncherPackageName()
+                                + " "
+                                + getInstrumentation().getTargetContext().getFilesDir().getPath()
+                                + "/ActivityLeakHeapDump.hprof");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 
     protected AbstractLauncherUiTest() {
         mLauncher.enableCheckEventsForSuccessfulGestures();
@@ -121,6 +159,8 @@ public abstract class AbstractLauncherUiTest {
                                     checkLauncherIntegrity(launcher, containerType)));
         }
         mLauncher.enableDebugTracing();
+        // Avoid double-reporting of Launcher crashes.
+        mLauncher.setOnLauncherCrashed(() -> mLauncherPid = 0);
     }
 
     protected final LauncherActivityRule mActivityMonitor = new LauncherActivityRule();
@@ -158,7 +198,7 @@ public abstract class AbstractLauncherUiTest {
 
         return TestHelpers.isInLauncherProcess()
                 ? RuleChain.outerRule(ShellCommandRule.setDefaultLauncher())
-                        .around(inner) :
+                .around(inner) :
                 inner;
     }
 
@@ -175,17 +215,23 @@ public abstract class AbstractLauncherUiTest {
 
     @Before
     public void setUp() throws Exception {
+        mLauncherPid = 0;
         // Disable app tracker
         AppLaunchTracker.INSTANCE.initializeForTesting(new AppLaunchTracker());
 
         mTargetContext = InstrumentationRegistry.getTargetContext();
         mTargetPackage = mTargetContext.getPackageName();
+        mLauncherPid = mLauncher.getPid();
     }
 
     @After
     public void verifyLauncherState() {
         // Limits UI tests affecting tests running after them.
         mLauncher.waitForLauncherInitialized();
+        if (mLauncherPid != 0) {
+            assertEquals("Launcher crashed, pid mismatch:", mLauncherPid, mLauncher.getPid());
+        }
+        checkDetectedLeaks();
     }
 
     protected void clearLauncherData() throws IOException, InterruptedException {
@@ -196,6 +242,7 @@ public abstract class AbstractLauncherUiTest {
         } else {
             clearPackageData(mDevice.getLauncherPackageName());
             mLauncher.enableDebugTracing();
+            mLauncherPid = mLauncher.getPid();
         }
     }
 

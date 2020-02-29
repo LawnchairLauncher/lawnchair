@@ -31,8 +31,8 @@ import android.view.ViewConfiguration;
 import com.android.launcher3.R;
 import com.android.quickstep.InputConsumer;
 import com.android.quickstep.RecentsAnimationDeviceState;
-import com.android.quickstep.util.MotionPauseDetector;
 import com.android.quickstep.SystemUiProxy;
+import com.android.quickstep.util.MotionPauseDetector;
 import com.android.systemui.shared.system.InputMonitorCompat;
 
 /**
@@ -117,9 +117,7 @@ public class AccessibilityInputConsumer extends DelegateInputConsumer {
                     if (pointerIndex == -1) {
                         break;
                     }
-
-                    mMotionPauseDetector.addPosition(ev.getY(pointerIndex) - mDownY,
-                            ev.getEventTime());
+                    mMotionPauseDetector.addPosition(ev, pointerIndex);
                 }
                 break;
             }

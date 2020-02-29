@@ -32,6 +32,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.ShapeDrawable;
 import android.util.AttributeSet;
+import android.util.Pair;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -358,6 +359,11 @@ public abstract class ArrowPopup<T extends BaseDraggingActivity> extends Abstrac
         }
     }
 
+    @Override
+    protected Pair<View, String> getAccessibilityTarget() {
+        return Pair.create(this, "");
+    }
+
     private void animateOpen() {
         setVisibility(View.VISIBLE);
 
@@ -413,6 +419,8 @@ public abstract class ArrowPopup<T extends BaseDraggingActivity> extends Abstrac
         }
         if (getOutlineProvider() instanceof RevealOutlineAnimation) {
             ((RevealOutlineAnimation) getOutlineProvider()).getOutline(mEndRect);
+        } else {
+            mEndRect.set(0, 0, getMeasuredWidth(), getMeasuredHeight());
         }
         if (mOpenCloseAnimator != null) {
             mOpenCloseAnimator.cancel();

@@ -74,6 +74,10 @@ public abstract class LauncherState {
     public static final int VERTICAL_SWIPE_INDICATOR = 1 << 5;
     public static final int RECENTS_CLEAR_ALL_BUTTON = 1 << 6;
 
+    /** Mask of all the items that are contained in the apps view. */
+    public static final int APPS_VIEW_ITEM_MASK =
+            HOTSEAT_SEARCH_BOX | ALL_APPS_HEADER | ALL_APPS_HEADER_EXTRA | ALL_APPS_CONTENT;
+
     protected static final int FLAG_MULTI_PAGE = 1 << 0;
     protected static final int FLAG_DISABLE_ACCESSIBILITY = 1 << 1;
     protected static final int FLAG_DISABLE_RESTORE = 1 << 2;
