@@ -27,6 +27,8 @@ import android.content.pm.LauncherApps;
 import android.os.Handler;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.icons.IconProvider;
@@ -55,12 +57,12 @@ public class LauncherAppState {
     private final IconCache mIconCache;
     private final WidgetPreviewLoader mWidgetCache;
     private final InvariantDeviceProfile mInvariantDeviceProfile;
-    private final SecureSettingsObserver mNotificationDotsObserver;
 
-    private final InstallSessionTracker mInstallSessionTracker;
-    private final SimpleBroadcastReceiver mModelChangeReceiver;
-    private final SafeCloseable mCalendarChangeTracker;
-    private final SafeCloseable mUserChangeListener;
+    private SecureSettingsObserver mNotificationDotsObserver;
+    private InstallSessionTracker mInstallSessionTracker;
+    private SimpleBroadcastReceiver mModelChangeReceiver;
+    private SafeCloseable mCalendarChangeTracker;
+    private SafeCloseable mUserChangeListener;
 
     public static LauncherAppState getInstance(final Context context) {
         return INSTANCE.get(context);
@@ -74,15 +76,8 @@ public class LauncherAppState {
         return mContext;
     }
 
-    private LauncherAppState(Context context) {
-        Log.v(Launcher.TAG, "LauncherAppState initiated");
-        Preconditions.assertUIThread();
-        mContext = context;
-
-        mInvariantDeviceProfile = InvariantDeviceProfile.INSTANCE.get(mContext);
-        mIconCache = new IconCache(mContext, mInvariantDeviceProfile);
-        mWidgetCache = new WidgetPreviewLoader(mContext, mIconCache);
-        mModel = new LauncherModel(this, mIconCache, AppFilter.newInstance(mContext));
+    public LauncherAppState(Context context) {
+        this(context, LauncherFiles.APP_ICONS_DB);
 
         mModelChangeReceiver = new SimpleBroadcastReceiver(mModel::onBroadcastIntent);
 
@@ -123,6 +118,17 @@ public class LauncherAppState {
         }
     }
 
+    public LauncherAppState(Context context, @Nullable String iconCacheFileName) {
+        Log.v(Launcher.TAG, "LauncherAppState initiated");
+        Preconditions.assertUIThread();
+        mContext = context;
+
+        mInvariantDeviceProfile = InvariantDeviceProfile.INSTANCE.get(context);
+        mIconCache = new IconCache(mContext, mInvariantDeviceProfile, iconCacheFileName);
+        mWidgetCache = new WidgetPreviewLoader(mContext, mIconCache);
+        mModel = new LauncherModel(this, mIconCache, AppFilter.newInstance(mContext));
+    }
+
     protected void onNotificationSettingsChanged(boolean areNotificationDotsEnabled) {
         if (areNotificationDotsEnabled) {
             NotificationListener.requestRebind(new ComponentName(
@@ -148,11 +154,19 @@ public class LauncherAppState {
      * Call from Application.onTerminate(), which is not guaranteed to ever be called.
      */
     public void onTerminate() {
-        mContext.unregisterReceiver(mModelChangeReceiver);
+        if (mModelChangeReceiver != null) {
+            mContext.unregisterReceiver(mModelChangeReceiver);
+        }
         mContext.getSystemService(LauncherApps.class).unregisterCallback(mModel);
-        mInstallSessionTracker.unregister();
-        mCalendarChangeTracker.close();
-        mUserChangeListener.close();
+        if (mInstallSessionTracker != null) {
+            mInstallSessionTracker.unregister();
+        }
+        if (mCalendarChangeTracker != null) {
+            mCalendarChangeTracker.close();
+        }
+        if (mUserChangeListener != null) {
+            mUserChangeListener.close();
+        }
         CustomWidgetManager.INSTANCE.get(mContext).setWidgetRefreshCallback(null);
 
         if (mNotificationDotsObserver != null) {

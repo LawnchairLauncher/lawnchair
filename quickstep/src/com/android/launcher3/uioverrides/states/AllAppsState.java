@@ -54,6 +54,12 @@ public class AllAppsState extends LauncherState {
     }
 
     @Override
+    public void onStateDisabled(Launcher launcher) {
+        super.onStateDisabled(launcher);
+        AbstractFloatingView.closeAllOpenViews(launcher);
+    }
+
+    @Override
     public String getDescription(Launcher launcher) {
         AllAppsContainerView appsView = launcher.getAppsView();
         return appsView.getDescription();

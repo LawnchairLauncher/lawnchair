@@ -35,7 +35,6 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager.StateListener;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.pm.UserCache;
 
 /**
  * Abstract base class of floating view responsible for showing discovery bounce animation
@@ -144,8 +143,7 @@ public class DiscoveryBounce extends AbstractFloatingView {
 
     private static void showForHomeIfNeeded(Launcher launcher, boolean withDelay) {
         if (!launcher.isInState(NORMAL)
-                || (launcher.getSharedPrefs().getBoolean(HOME_BOUNCE_SEEN, false)
-                && !shouldShowForWorkProfile(launcher))
+                || launcher.getSharedPrefs().getBoolean(HOME_BOUNCE_SEEN, false)
                 || AbstractFloatingView.getTopOpenView(launcher) != null
                 || launcher.getSystemService(UserManager.class).isDemoUser()
                 || Utilities.IS_RUNNING_IN_TEST_HARNESS) {
@@ -170,8 +168,7 @@ public class DiscoveryBounce extends AbstractFloatingView {
                 || !launcher.hasBeenResumed()
                 || launcher.isForceInvisible()
                 || launcher.getDeviceProfile().isVerticalBarLayout()
-                || (launcher.getSharedPrefs().getBoolean(SHELF_BOUNCE_SEEN, false)
-                && !shouldShowForWorkProfile(launcher))
+                || launcher.getSharedPrefs().getBoolean(SHELF_BOUNCE_SEEN, false)
                 || launcher.getSystemService(UserManager.class).isDemoUser()
                 || Utilities.IS_RUNNING_IN_TEST_HARNESS) {
             return;
@@ -211,12 +208,6 @@ public class DiscoveryBounce extends AbstractFloatingView {
         public void setProgress(float progress) {
             mController.setProgress(progress - mDelta);
         }
-    }
-
-    private static boolean shouldShowForWorkProfile(Launcher launcher) {
-        return !launcher.getSharedPrefs().getBoolean(
-                PersonalWorkSlidingTabStrip.KEY_SHOWED_PEEK_WORK_TAB, false)
-                && UserCache.INSTANCE.get(launcher).hasWorkProfile();
     }
 
     private static void incrementShelfBounceCount(Launcher launcher) {
