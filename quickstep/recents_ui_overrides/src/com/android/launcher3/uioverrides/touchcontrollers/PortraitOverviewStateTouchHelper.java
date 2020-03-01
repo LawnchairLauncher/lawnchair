@@ -19,6 +19,7 @@ package com.android.launcher3.uioverrides.touchcontrollers;
 import static com.android.launcher3.uioverrides.touchcontrollers.PortraitStatesTouchController.isTouchOverHotseat;
 
 import android.view.MotionEvent;
+import android.view.animation.Interpolator;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.util.PendingAnimation;
@@ -74,12 +75,12 @@ public final class PortraitOverviewStateTouchHelper {
      * @param duration how long the animation should be
      * @return the animation
      */
-    PendingAnimation createSwipeDownToTaskAppAnimation(long duration) {
+    PendingAnimation createSwipeDownToTaskAppAnimation(long duration, Interpolator interpolator) {
         mRecentsView.setCurrentPage(mRecentsView.getPageNearestToCenterOfScreen());
         TaskView taskView = mRecentsView.getCurrentPageTaskView();
         if (taskView == null) {
             throw new IllegalStateException("There is no task view to animate to.");
         }
-        return mRecentsView.createTaskLauncherAnimation(taskView, duration);
+        return mRecentsView.createTaskLaunchAnimation(taskView, duration, interpolator);
     }
 }

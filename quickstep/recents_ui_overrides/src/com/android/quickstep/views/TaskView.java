@@ -21,6 +21,7 @@ import static android.widget.Toast.LENGTH_SHORT;
 import static com.android.launcher3.QuickstepAppTransitionManagerImpl.RECENTS_LAUNCH_DURATION;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.launcher3.anim.Interpolators.TOUCH_RESPONSE_INTERPOLATOR;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.quickstep.SysUINavigationMode.removeShelfFromOverview;
 
@@ -280,11 +281,10 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     }
 
     public AnimatorPlaybackController createLaunchAnimationForRunningTask() {
-        final PendingAnimation pendingAnimation =
-                getRecentsView().createTaskLauncherAnimation(this, RECENTS_LAUNCH_DURATION);
-        pendingAnimation.anim.setInterpolator(Interpolators.TOUCH_RESPONSE_INTERPOLATOR);
-        AnimatorPlaybackController currentAnimation = AnimatorPlaybackController
-                .wrap(pendingAnimation.anim, RECENTS_LAUNCH_DURATION, null);
+        final PendingAnimation pendingAnimation = getRecentsView().createTaskLaunchAnimation(
+                this, RECENTS_LAUNCH_DURATION, TOUCH_RESPONSE_INTERPOLATOR);
+        AnimatorPlaybackController currentAnimation = AnimatorPlaybackController.wrap(
+                pendingAnimation.anim, RECENTS_LAUNCH_DURATION);
         currentAnimation.setEndAction(() -> {
             pendingAnimation.finish(true, Touch.SWIPE);
             launchTask(false);

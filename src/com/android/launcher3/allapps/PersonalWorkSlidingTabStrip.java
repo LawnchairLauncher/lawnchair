@@ -16,7 +16,6 @@
 package com.android.launcher3.allapps;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
@@ -39,11 +38,8 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
     private static final int POSITION_PERSONAL = 0;
     private static final int POSITION_WORK = 1;
 
-    public static final String KEY_SHOWED_PEEK_WORK_TAB = "showed_peek_work_tab";
-
     private final Paint mSelectedIndicatorPaint;
     private final Paint mDividerPaint;
-    private final SharedPreferences mSharedPreferences;
 
     private int mSelectedIndicatorHeight;
     private int mIndicatorLeft = -1;
@@ -72,7 +68,6 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
         mDividerPaint.setStrokeWidth(
                 getResources().getDimensionPixelSize(R.dimen.all_apps_divider_height));
 
-        mSharedPreferences = Utilities.getPrefs(context);
         mIsRtl = Utilities.isRtl(getResources());
     }
 
@@ -126,25 +121,6 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
         canvas.drawLine(getPaddingLeft(), y, getWidth() - getPaddingRight(), y, mDividerPaint);
         canvas.drawRect(mIndicatorLeft, getHeight() - mSelectedIndicatorHeight,
             mIndicatorRight, getHeight(), mSelectedIndicatorPaint);
-    }
-
-    public void highlightWorkTabIfNecessary() {
-        if (mSharedPreferences.getBoolean(KEY_SHOWED_PEEK_WORK_TAB, false)) {
-            return;
-        }
-        if (mLastActivePage != POSITION_PERSONAL) {
-            return;
-        }
-        highlightWorkTab();
-        mSharedPreferences.edit().putBoolean(KEY_SHOWED_PEEK_WORK_TAB, true).apply();
-    }
-
-    private void highlightWorkTab() {
-        View v = getChildAt(POSITION_WORK);
-        v.post(() -> {
-            v.setPressed(true);
-            v.setPressed(false);
-        });
     }
 
     @Override

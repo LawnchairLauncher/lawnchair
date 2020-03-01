@@ -102,13 +102,6 @@ public class FolderNameEditText extends ExtendedEditText {
         mEnteredCompose = value;
     }
 
-    protected boolean isEnteredCompose() {
-        if (DEBUG) {
-            Log.d(TAG, "isEnteredCompose " + mEnteredCompose);
-        }
-        return mEnteredCompose;
-    }
-
     private class FolderNameEditTextInputConnection extends InputConnectionWrapper {
 
         FolderNameEditTextInputConnection(InputConnection target, boolean mutable) {
