@@ -93,15 +93,26 @@ public class LauncherSettings {
         public static final String TABLE_NAME = "favorites";
 
         /**
-         * Backup table created when when the favorites table is modified during grid migration
+         * Backup table created when the favorites table is modified during grid migration
          */
         public static final String BACKUP_TABLE_NAME = "favorites_bakup";
 
         /**
-         * The content:// style URL for this table
+         * Temporary table used specifically for grid migrations during wallpaper preview
          */
-        public static final Uri CONTENT_URI = Uri.parse("content://" +
-                LauncherProvider.AUTHORITY + "/" + TABLE_NAME);
+        public static final String PREVIEW_TABLE_NAME = "favorites_preview";
+
+        /**
+         * The content:// style URL for "favorites" table
+         */
+        public static final Uri CONTENT_URI = Uri.parse("content://"
+                + LauncherProvider.AUTHORITY + "/" + TABLE_NAME);
+
+        /**
+         * The content:// style URL for "favorites_preview" table
+         */
+        public static final Uri PREVIEW_CONTENT_URI = Uri.parse("content://"
+                + LauncherProvider.AUTHORITY + "/" + PREVIEW_TABLE_NAME);
 
         /**
          * The content:// style URL for a given row, identified by its id.
@@ -111,8 +122,8 @@ public class LauncherSettings {
          * @return The unique content URL for the specified row.
          */
         public static Uri getContentUri(int id) {
-            return Uri.parse("content://" + LauncherProvider.AUTHORITY +
-                    "/" + TABLE_NAME + "/" + id);
+            return Uri.parse("content://" + LauncherProvider.AUTHORITY
+                    + "/" + TABLE_NAME + "/" + id);
         }
 
         /**

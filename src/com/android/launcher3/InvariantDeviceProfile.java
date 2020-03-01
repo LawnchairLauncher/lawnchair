@@ -47,6 +47,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.graphics.IconShape;
+import com.android.launcher3.graphics.LauncherPreviewRenderer;
 import com.android.launcher3.util.ConfigMonitor;
 import com.android.launcher3.util.DefaultDisplay;
 import com.android.launcher3.util.DefaultDisplay.Info;
@@ -156,6 +157,11 @@ public class InvariantDeviceProfile {
 
     @TargetApi(23)
     private InvariantDeviceProfile(Context context) {
+        if (context instanceof LauncherPreviewRenderer.PreviewContext) {
+            throw new IllegalArgumentException(
+                    "PreviewContext is passed into this IDP constructor");
+        }
+
         String gridName = Utilities.getPrefs(context).getBoolean(GRID_OPTIONS_PREFERENCE_KEY, false)
                 ? Utilities.getPrefs(context).getString(KEY_IDP_GRID_NAME, null)
                 : null;

@@ -3,8 +3,8 @@ package com.android.quickstep;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.testing.TestInformationHandler;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.uioverrides.touchcontrollers.PortraitStatesTouchController;
@@ -62,6 +62,12 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
                 }
                 response.putStringArrayList(TestProtocol.TEST_INFO_RESPONSE_FIELD,
                         taskBaseIntentComponents);
+                return response;
+            }
+
+            case TestProtocol.REQUEST_OVERVIEW_ACTIONS_ENABLED: {
+                response.putBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD,
+                        FeatureFlags.ENABLE_OVERVIEW_ACTIONS.get());
                 return response;
             }
         }
