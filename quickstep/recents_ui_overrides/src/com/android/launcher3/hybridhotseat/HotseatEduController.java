@@ -34,6 +34,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.ActivityTracker;
+import com.android.launcher3.util.Themes;
 
 import java.util.List;
 
@@ -109,7 +110,7 @@ public class HotseatEduController {
                 NOTIFICATION_CHANNEL_ID)
                 .setContentTitle(name)
                 .setOngoing(true)
-                .setColor(mLauncher.getColor(R.color.bottom_panel_background))
+                .setColor(Themes.getColorAccent(mLauncher))
                 .setContentIntent(PendingIntent.getActivity(mLauncher, 0, intent,
                         PendingIntent.FLAG_CANCEL_CURRENT))
                 .setSmallIcon(R.drawable.hotseat_edu_notification_icon)

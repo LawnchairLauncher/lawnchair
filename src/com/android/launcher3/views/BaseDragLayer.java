@@ -29,7 +29,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.Property;
 import android.view.MotionEvent;
 import android.view.View;
@@ -41,8 +40,8 @@ import android.widget.FrameLayout;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.InsettableFrameLayout;
+import com.android.launcher3.Launcher;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.launcher3.util.TouchController;
@@ -150,10 +149,20 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
         return findActiveController(ev);
     }
 
+    private boolean isEventInLauncher(MotionEvent ev) {
+        final float x = ev.getX();
+        final float y = ev.getY();
+
+        return x >= mSystemGestureRegion.left && x < getWidth() - mSystemGestureRegion.right
+                && y >= mSystemGestureRegion.top && y < getHeight() - mSystemGestureRegion.bottom;
+    }
+
     private TouchController findControllerToHandleTouch(MotionEvent ev) {
-        AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(mActivity);
-        if (topView != null && topView.onControllerInterceptTouchEvent(ev)) {
-            return topView;
+        if (isEventInLauncher(ev)) {
+            AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(mActivity);
+            if (topView != null && topView.onControllerInterceptTouchEvent(ev)) {
+                return topView;
+            }
         }
 
         for (TouchController controller : mControllers) {
@@ -245,17 +254,12 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
     public boolean dispatchTouchEvent(MotionEvent ev) {
         switch (ev.getAction()) {
             case ACTION_DOWN: {
-                float x = ev.getX();
-                float y = ev.getY();
                 mTouchDispatchState |= TOUCH_DISPATCHING_VIEW;
 
-                if ((y < mSystemGestureRegion.top
-                        || x < mSystemGestureRegion.left
-                        || x > (getWidth() - mSystemGestureRegion.right)
-                        || y > (getHeight() - mSystemGestureRegion.bottom))) {
-                    mTouchDispatchState |= TOUCH_DISPATCHING_GESTURE;
-                } else {
+                if (isEventInLauncher(ev)) {
                     mTouchDispatchState &= ~TOUCH_DISPATCHING_GESTURE;
+                } else {
+                    mTouchDispatchState |= TOUCH_DISPATCHING_GESTURE;
                 }
                 break;
             }

@@ -64,6 +64,14 @@ public class LauncherAllAppsContainerView extends AllAppsContainerView {
     }
 
     @Override
+    public void setupHeader() {
+        super.setupHeader();
+        if (mWorkTabListener != null && !mUsingTabs) {
+            mLauncher.getStateManager().removeStateListener(mWorkTabListener);
+        }
+    }
+
+    @Override
     public void onTabChanged(int pos) {
         super.onTabChanged(pos);
         if (mUsingTabs) {

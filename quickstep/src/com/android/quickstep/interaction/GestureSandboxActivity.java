@@ -32,8 +32,8 @@ import com.android.quickstep.interaction.BackGestureTutorialFragment.TutorialTyp
 import java.util.List;
 import java.util.Optional;
 
-/** Shows the Back gesture interactive tutorial in full screen mode. */
-public class BackGestureTutorialActivity extends FragmentActivity {
+/** Shows the gesture interactive sandbox in full screen mode. */
+public class GestureSandboxActivity extends FragmentActivity {
 
     Optional<BackGestureTutorialFragment> mFragment = Optional.empty();
 

@@ -172,7 +172,7 @@ public class FlingAndHoldTouchController extends PortraitStatesTouchController {
         mMotionPauseDetector.setDisallowPause(!handlingOverviewAnim()
                 || upDisplacement < mMotionPauseMinDisplacement
                 || upDisplacement > mMotionPauseMaxDisplacement);
-        mMotionPauseDetector.addPosition(displacement, event.getEventTime());
+        mMotionPauseDetector.addPosition(event);
         return super.onDrag(displacement, event);
     }
 

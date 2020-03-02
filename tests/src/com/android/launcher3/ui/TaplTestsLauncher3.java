@@ -40,9 +40,7 @@ import com.android.launcher3.views.OptionsPopupView;
 import com.android.launcher3.widget.WidgetsFullSheet;
 import com.android.launcher3.widget.WidgetsRecyclerView;
 
-import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -51,21 +49,10 @@ import org.junit.runner.RunWith;
 public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     private static final String APP_NAME = "LauncherTestApp";
 
-    private int mLauncherPid;
-
     @Before
     public void setUp() throws Exception {
-        mLauncherPid = 0;
         super.setUp();
         initialize(this);
-        mLauncherPid = mLauncher.getPid();
-    }
-
-    @After
-    public void teardown() {
-        if (mLauncherPid != 0) {
-            assertEquals("Launcher crashed, pid mismatch:", mLauncherPid, mLauncher.getPid());
-        }
     }
 
     public static void initialize(AbstractLauncherUiTest test) throws Exception {
@@ -77,6 +64,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         test.waitForResumed("Launcher internal state is still Background");
         // Check that we switched to home.
         test.mLauncher.getWorkspace();
+        AbstractLauncherUiTest.checkDetectedLeaks();
     }
 
     // Please don't add negative test cases for methods that fail only after a long wait.
@@ -122,7 +110,6 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     }
 
     @Test
-    @Ignore
     public void testPressHomeOnAllAppsContextMenu() throws Exception {
         final AllApps allApps = mLauncher.getWorkspace().switchToAllApps();
         allApps.freeze();

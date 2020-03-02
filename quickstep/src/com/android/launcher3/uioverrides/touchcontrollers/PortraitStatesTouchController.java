@@ -228,15 +228,13 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
             // Reset the state manager, when changing the interaction mode
             mLauncher.getStateManager().goToState(OVERVIEW, false /* animate */);
             mPendingAnimation = mOverviewPortraitStateTouchHelper
-                    .createSwipeDownToTaskAppAnimation(maxAccuracy);
-            mPendingAnimation.anim.setInterpolator(Interpolators.LINEAR);
-
+                    .createSwipeDownToTaskAppAnimation(maxAccuracy, Interpolators.LINEAR);
             Runnable onCancelRunnable = () -> {
                 cancelPendingAnim();
                 clearState();
             };
-            mCurrentAnimation = AnimatorPlaybackController.wrap(mPendingAnimation.anim, maxAccuracy,
-                    onCancelRunnable);
+            mCurrentAnimation = AnimatorPlaybackController.wrap(
+                    mPendingAnimation.anim, maxAccuracy, onCancelRunnable);
             mLauncher.getStateManager().setCurrentUserControlledAnimation(mCurrentAnimation);
             totalShift = LayoutUtils.getShelfTrackingDistance(mLauncher,
                     mLauncher.getDeviceProfile());
