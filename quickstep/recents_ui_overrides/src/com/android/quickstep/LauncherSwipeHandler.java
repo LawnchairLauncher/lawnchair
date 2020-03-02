@@ -64,7 +64,6 @@ import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.logging.UserEventDispatcher;
-import com.android.launcher3.model.PagedViewOrientedState;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -942,7 +941,7 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
                 }
             });
             getOrientationHandler().adjustFloatingIconStartVelocity(velocityPxPerMs);
-            windowAnim.start(velocityPxPerMs);
+            windowAnim.start(mContext, velocityPxPerMs);
             homeAnimFactory.playAtomicAnimation(velocityPxPerMs.y);
             mRunningWindowAnim = RunningWindowAnim.wrap(windowAnim);
             mLauncherTransitionController = null;

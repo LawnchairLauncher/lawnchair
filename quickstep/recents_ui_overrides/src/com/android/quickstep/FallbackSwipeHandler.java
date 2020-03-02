@@ -420,7 +420,7 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
                         this::createNewInputProxyHandler);
                 RectFSpringAnim anim = createWindowAnimationToHome(mCurrentShift.value, duration);
                 anim.addAnimatorListener(endListener);
-                anim.start(mEndVelocityPxPerMs);
+                anim.start(mContext, mEndVelocityPxPerMs);
                 mFinishAnimation = RunningWindowAnim.wrap(anim);
             } else {
 

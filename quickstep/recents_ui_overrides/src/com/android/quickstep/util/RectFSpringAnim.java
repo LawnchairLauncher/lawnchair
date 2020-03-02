@@ -16,6 +16,7 @@
 package com.android.quickstep.util;
 
 import android.animation.Animator;
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.PointF;
 import android.graphics.RectF;
@@ -28,6 +29,8 @@ import androidx.dynamicanimation.animation.SpringForce;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.FlingSpringAnim;
+import com.android.launcher3.util.DynamicResource;
+import com.android.systemui.plugins.ResourceProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -137,7 +140,12 @@ public class RectFSpringAnim {
         mAnimatorListeners.add(animatorListener);
     }
 
-    public void start(PointF velocityPxPerMs) {
+    /**
+     * Starts the fling/spring animation.
+     * @param context The activity context.
+     * @param velocityPxPerMs Velocity of swipe in px/ms.
+     */
+    public void start(Context context, PointF velocityPxPerMs) {
         // Only tell caller that we ended if both x and y animations have ended.
         OnAnimationEndListener onXEndListener = ((animation, canceled, centerX, velocityX) -> {
             mRectXAnimEnded = true;
@@ -166,10 +174,14 @@ public class RectFSpringAnim {
                 mMinVisChange, minYValue, maxYValue, springVelocityFactor, onYEndListener);
 
         float minVisibleChange = Math.abs(1f / mStartRect.height());
+        ResourceProvider rp = DynamicResource.provider(context);
+        float damping = rp.getFloat(R.dimen.swipe_up_rect_damping_ratio);
+        float stiffness = rp.getFloat(R.dimen.swipe_up_rect_stiffness);
+
         mRectScaleAnim = new SpringAnimation(this, RECT_SCALE_PROGRESS)
                 .setSpring(new SpringForce(1f)
-                .setDampingRatio(SpringForce.DAMPING_RATIO_LOW_BOUNCY)
-                .setStiffness(SpringForce.STIFFNESS_LOW))
+                .setDampingRatio(damping)
+                .setStiffness(stiffness))
                 .setStartVelocity(velocityPxPerMs.y * minVisibleChange)
                 .setMaxValue(1f)
                 .setMinimumVisibleChange(minVisibleChange)

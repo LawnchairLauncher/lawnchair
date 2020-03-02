@@ -32,8 +32,10 @@ import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.anim.SpringObjectAnimator;
+import com.android.launcher3.util.DynamicResource;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ScrimView;
+import com.android.systemui.plugins.ResourceProvider;
 
 /**
  * Handles AllApps view transition.
@@ -46,9 +48,6 @@ import com.android.launcher3.views.ScrimView;
  * closer to top or closer to the page indicator.
  */
 public class AllAppsTransitionController implements StateHandler, OnDeviceProfileChangeListener {
-
-    private static final float SPRING_DAMPING_RATIO = 0.75f;
-    private static final float SPRING_STIFFNESS = 600f;
 
     public static final FloatProperty<AllAppsTransitionController> ALL_APPS_PROGRESS =
             new FloatProperty<AllAppsTransitionController>("allAppsProgress") {
@@ -187,8 +186,12 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
 
     public Animator createSpringAnimation(float... progressValues) {
         if (UNSTABLE_SPRINGS.get()) {
+            ResourceProvider rp = DynamicResource.provider(mLauncher);
+            float damping = rp.getFloat(R.dimen.all_apps_spring_damping_ratio);
+            float stiffness = rp.getFloat(R.dimen.all_apps_spring_stiffness);
+
             return new SpringObjectAnimator<>(this, ALL_APPS_PROGRESS, 1f / mShiftRange,
-                    SPRING_DAMPING_RATIO, SPRING_STIFFNESS, progressValues);
+                    damping, stiffness, progressValues);
         }
         return ObjectAnimator.ofFloat(this, ALL_APPS_PROGRESS, progressValues);
     }

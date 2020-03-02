@@ -121,5 +121,41 @@
     <bool name="config_enableTaskSnapshotPreloading">true</bool>
 
     <!-- Configuration resources -->
-    <array name="dynamic_resources"> </array>
+    <item name="all_apps_spring_damping_ratio" type="dimen" format="float">0.75</item>
+    <item name="all_apps_spring_stiffness" type="dimen" format="float">600</item>
+
+    <item name="dismiss_task_trans_y_damping_ratio" type="dimen" format="float">0.5</item>
+    <item name="dismiss_task_trans_y_stiffness" type="dimen" format="float">1500</item>
+
+    <item name="dismiss_task_trans_x_damping_ratio" type="dimen" format="float">0.5</item>
+    <item name="dismiss_task_trans_x_stiffness" type="dimen" format="float">1500</item>
+
+    <item name="horizontal_spring_damping_ratio" type="dimen" format="float">0.75</item>
+    <item name="horizontal_spring_stiffness" type="dimen" format="float">200</item>
+
+    <item name="swipe_up_rect_damping_ratio" type="dimen" format="float">0.75</item>
+    <item name="swipe_up_rect_stiffness" type="dimen" format="float">200</item>
+
+    <item name="staggered_damping_ratio" type="dimen" format="float">0.7</item>
+    <item name="staggered_stiffness" type="dimen" format="float">150</item>
+
+    <array name="dynamic_resources">
+        <item>@dimen/all_apps_spring_damping_ratio</item>
+        <item>@dimen/all_apps_spring_stiffness</item>
+
+        <item>@dimen/dismiss_task_trans_y_damping_ratio</item>
+        <item>@dimen/dismiss_task_trans_y_stiffness</item>
+
+        <item>@dimen/dismiss_task_trans_x_damping_ratio</item>
+        <item>@dimen/dismiss_task_trans_x_stiffness</item>
+
+        <item>@dimen/horizontal_spring_damping_ratio</item>
+        <item>@dimen/horizontal_spring_stiffness</item>
+
+        <item>@dimen/swipe_up_rect_damping_ratio</item>
+        <item>@dimen/swipe_up_rect_stiffness</item>
+
+        <item>@dimen/staggered_damping_ratio</item>
+        <item>@dimen/staggered_stiffness</item>
+    </array>
 </resources>

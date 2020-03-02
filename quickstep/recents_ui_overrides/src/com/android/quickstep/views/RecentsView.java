@@ -80,7 +80,6 @@ import android.view.animation.Interpolator;
 import android.widget.ListView;
 
 import androidx.annotation.Nullable;
-import androidx.dynamicanimation.animation.SpringForce;
 
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
@@ -103,6 +102,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.DynamicResource;
 import com.android.launcher3.util.OverScroller;
 import com.android.launcher3.util.PendingAnimation;
 import com.android.launcher3.util.Themes;
@@ -117,6 +117,7 @@ import com.android.quickstep.TaskUtils;
 import com.android.quickstep.ViewUtils;
 import com.android.quickstep.util.AppWindowAnimationHelper;
 import com.android.quickstep.util.LayoutUtils;
+import com.android.systemui.plugins.ResourceProvider;
 import com.android.systemui.shared.recents.IPinnedStackAnimationListener;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
@@ -1199,10 +1200,14 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         int secondaryTaskDimension = mOrientationHandler.getSecondaryDimension(taskView);
         int verticalFactor = mOrientationHandler.getTaskDismissDirectionFactor();
         if (UNSTABLE_SPRINGS.get() && taskView instanceof TaskView) {
+            ResourceProvider rp = DynamicResource.provider(mActivity);
+            float dampingRatio = rp.getFloat(R.dimen.dismiss_task_trans_y_damping_ratio);
+            float stiffness = rp.getFloat(R.dimen.dismiss_task_trans_y_stiffness);
+
             addAnim(new SpringObjectAnimator<>(taskView, secondaryViewTranslate,
-                    MIN_VISIBLE_CHANGE_PIXELS, SpringForce.DAMPING_RATIO_MEDIUM_BOUNCY,
-                    SpringForce.STIFFNESS_MEDIUM, 0, verticalFactor * secondaryTaskDimension),
-                duration, LINEAR, anim);
+                            MIN_VISIBLE_CHANGE_PIXELS, dampingRatio,
+                            stiffness, 0, verticalFactor * secondaryTaskDimension),
+                    duration, LINEAR, anim);
         } else {
             addAnim(ObjectAnimator.ofFloat(taskView, secondaryViewTranslate,
                 verticalFactor * secondaryTaskDimension), duration, LINEAR, anim);
@@ -1276,10 +1281,13 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                 int scrollDiff = newScroll[i] - oldScroll[i] + offset;
                 if (scrollDiff != 0) {
                     if (UNSTABLE_SPRINGS.get() && child instanceof TaskView) {
+                        ResourceProvider rp = DynamicResource.provider(mActivity);
+                        float damping = rp.getFloat(R.dimen.dismiss_task_trans_x_damping_ratio);
+                        float stiffness = rp.getFloat(R.dimen.dismiss_task_trans_x_stiffness);
+
                         addAnim(new SpringObjectAnimator<>(child, VIEW_TRANSLATE_X,
-                                MIN_VISIBLE_CHANGE_PIXELS, SpringForce.DAMPING_RATIO_MEDIUM_BOUNCY,
-                                SpringForce.STIFFNESS_MEDIUM,
-                                0, scrollDiff), duration, ACCEL, anim);
+                                MIN_VISIBLE_CHANGE_PIXELS, damping,
+                                stiffness, 0, scrollDiff), duration, ACCEL, anim);
                     } else {
                         Property translationProperty = mOrientationHandler.getPrimaryViewTranslate();
                         addAnim(ObjectAnimator.ofFloat(child, translationProperty, scrollDiff),
