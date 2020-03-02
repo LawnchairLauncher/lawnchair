@@ -331,20 +331,24 @@ public final class LauncherInstrumentation {
     }
 
     private String getSystemAnomalyMessage() {
-        UiObject2 object = mDevice.findObject(By.res("android", "alertTitle"));
-        if (object != null) {
-            return "System alert popup is visible: " + object.getText();
+        try {
+            UiObject2 object = mDevice.findObject(By.res("android", "alertTitle"));
+            if (object != null) {
+                return "System alert popup is visible: " + object.getText();
+            }
+
+            object = mDevice.findObject(By.res("android", "message"));
+            if (object != null) {
+                return "Message popup by " + object.getApplicationPackage() + " is visible: "
+                        + object.getText();
+            }
+
+            if (hasSystemUiObject("keyguard_status_view")) return "Phone is locked";
+
+            if (!mDevice.hasObject(By.textStartsWith(""))) return "Screen is empty";
+        } catch (Throwable e) {
+            Log.w(TAG, "getSystemAnomalyMessage failed", e);
         }
-
-        object = mDevice.findObject(By.res("android", "message"));
-        if (object != null) {
-            return "Message popup by " + object.getApplicationPackage() + " is visible: "
-                    + object.getText();
-        }
-
-        if (hasSystemUiObject("keyguard_status_view")) return "Phone is locked";
-
-        if (!mDevice.hasObject(By.textStartsWith(""))) return "Screen is empty";
 
         return null;
     }
