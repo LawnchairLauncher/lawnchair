@@ -17,13 +17,7 @@ package com.android.quickstep;
 
 import static android.view.MotionEvent.ACTION_DOWN;
 
-import static com.android.launcher3.config.FeatureFlags.ADAPTIVE_ICON_WINDOW_ANIM;
-import static com.android.launcher3.config.FeatureFlags.APPLY_CONFIG_AT_RUNTIME;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_HINTS_IN_OVERVIEW;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
-import static com.android.launcher3.config.FeatureFlags.FAKE_LANDSCAPE_UI;
-import static com.android.launcher3.config.FeatureFlags.QUICKSTEP_SPRINGS;
-import static com.android.launcher3.config.FeatureFlags.UNSTABLE_SPRINGS;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_INPUT_MONITOR;
@@ -755,10 +749,18 @@ public class TouchInteractionService extends Service implements PluginListener<O
             FeatureFlags.dump(pw);
             PluginManagerWrapper.INSTANCE.get(getBaseContext()).dump(pw);
             mDeviceState.dump(pw);
-            mOverviewComponentObserver.dump(pw);
+            if (mOverviewComponentObserver != null) {
+                mOverviewComponentObserver.dump(pw);
+            }
+            if (mGestureState != null) {
+                mGestureState.dump(pw);
+            }
             pw.println("TouchState:");
+            BaseDraggingActivity createdOverviewActivity = mOverviewComponentObserver == null ? null
+                    : mOverviewComponentObserver.getActivityInterface().getCreatedActivity();
             boolean resumed = mOverviewComponentObserver != null
                     && mOverviewComponentObserver.getActivityInterface().isResumed();
+            pw.println("  createdOverviewActivity=" + createdOverviewActivity);
             pw.println("  resumed=" + resumed);
             pw.println("  mConsumer=" + mConsumer.getName());
             ActiveGestureLog.INSTANCE.dump("", pw);

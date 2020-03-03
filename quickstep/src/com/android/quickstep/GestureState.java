@@ -19,10 +19,12 @@ import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
 
 import android.app.ActivityManager;
 import android.content.Intent;
+
 import com.android.launcher3.BaseDraggingActivity;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.systemui.shared.recents.model.ThumbnailData;
+
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 /**
@@ -280,5 +282,14 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
     public void onRecentsAnimationFinished(RecentsAnimationController controller) {
         mStateCallback.setState(STATE_RECENTS_ANIMATION_FINISHED);
         mStateCallback.setState(STATE_RECENTS_ANIMATION_ENDED);
+    }
+
+    public void dump(PrintWriter pw) {
+        pw.println("GestureState:");
+        pw.println("  gestureID=" + mGestureId);
+        pw.println("  runningTask=" + mRunningTask);
+        pw.println("  endTarget=" + mEndTarget);
+        pw.println("  finishingRecentsAnimationTaskId=" + mFinishingRecentsAnimationTaskId);
+        pw.println("  isRecentsAnimationRunning=" + isRecentsAnimationRunning());
     }
 }
