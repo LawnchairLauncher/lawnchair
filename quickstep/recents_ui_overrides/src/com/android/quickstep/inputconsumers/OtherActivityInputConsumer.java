@@ -176,7 +176,8 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         // Proxy events to recents view
         if (mPassedWindowMoveSlop && mInteractionHandler != null
                 && !mRecentsViewDispatcher.hasConsumer()) {
-            mRecentsViewDispatcher.setConsumer(mInteractionHandler.getRecentsViewDispatcher());
+            mRecentsViewDispatcher.setConsumer(mInteractionHandler
+                .getRecentsViewDispatcher(mNavBarPosition.getRotationMode()));
         }
         int edgeFlags = ev.getEdgeFlags();
         ev.setEdgeFlags(edgeFlags | EDGE_NAV_BAR);

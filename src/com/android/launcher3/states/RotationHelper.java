@@ -17,7 +17,6 @@ package com.android.launcher3.states;
 
 import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_LOCKED;
 import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_NOSENSOR;
-import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
 import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
 import static android.util.DisplayMetrics.DENSITY_DEVICE_STABLE;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
@@ -277,7 +276,7 @@ public class RotationHelper implements OnSharedPreferenceChangeListener {
      * Creates a matrix to transform the given motion event specified by degrees.
      * If {@param inverse} is {@code true}, the inverse of that matrix will be applied
      */
-    public static void transformEvent(int degrees, MotionEvent ev, boolean inverse) {
+    public static void transformEvent(float degrees, MotionEvent ev, boolean inverse) {
         Matrix transform = new Matrix();
         transform.setRotate(degrees);
         if (inverse) {

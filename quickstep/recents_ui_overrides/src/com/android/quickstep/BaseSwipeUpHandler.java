@@ -45,6 +45,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
+import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.model.PagedViewOrientedState;
 import com.android.launcher3.states.RotationHelper;
 import com.android.launcher3.touch.PagedOrientationHandler;
@@ -146,8 +147,8 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
         VibratorWrapper.INSTANCE.get(mContext).vibrate(OVERVIEW_HAPTIC);
     }
 
-    public Consumer<MotionEvent> getRecentsViewDispatcher() {
-        return mRecentsView != null ? mRecentsView.getEventDispatcher() : null;
+    public Consumer<MotionEvent> getRecentsViewDispatcher(RotationMode navBarRotationMode) {
+        return mRecentsView != null ? mRecentsView.getEventDispatcher(navBarRotationMode) : null;
     }
 
     @UiThread

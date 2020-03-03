@@ -96,6 +96,7 @@ import com.android.launcher3.anim.SpringObjectAnimator;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragLayer;
+import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.states.RotationHelper;
 import com.android.launcher3.touch.PagedOrientationHandler.CurveProperties;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
@@ -1946,8 +1947,13 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         return offsetX;
     }
 
-    public Consumer<MotionEvent> getEventDispatcher() {
-        int degreesRotated = RotationHelper.getDegreesFromRotation(mLayoutRotation);
+    public Consumer<MotionEvent> getEventDispatcher(RotationMode navBarRotationMode) {
+        float degreesRotated;
+        if (navBarRotationMode == RotationMode.NORMAL) {
+            degreesRotated = RotationHelper.getDegreesFromRotation(mLayoutRotation);
+        } else {
+            degreesRotated = -navBarRotationMode.surfaceRotation;
+        }
         if (degreesRotated == 0) {
             return super::onTouchEvent;
         }
