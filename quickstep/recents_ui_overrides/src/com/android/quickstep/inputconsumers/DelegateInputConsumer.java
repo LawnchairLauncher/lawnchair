@@ -25,6 +25,11 @@ public abstract class DelegateInputConsumer implements InputConsumer {
     }
 
     @Override
+    public boolean isConsumerDetachedFromGesture() {
+        return mDelegate.isConsumerDetachedFromGesture();
+    }
+
+    @Override
     public boolean allowInterceptByParent() {
         return mDelegate.allowInterceptByParent() && mState != STATE_ACTIVE;
     }
