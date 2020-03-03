@@ -220,8 +220,12 @@ public abstract class AbstractLauncherUiTest {
 
     @Before
     public void setUp() throws Exception {
+        mDevice.executeShellCommand("settings put global stay_on_while_plugged_in 3");
         if (hasSystemUiObject("keyguard_status_view")) {
+            Log.d(TAG, "Before unlocking the phone");
             mDevice.executeShellCommand("input keyevent 82");
+        } else {
+            Log.d(TAG, "Phone isn't locked");
         }
 
         final String launcherPackageName = mDevice.getLauncherPackageName();
