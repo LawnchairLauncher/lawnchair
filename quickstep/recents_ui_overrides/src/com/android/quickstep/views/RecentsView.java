@@ -274,15 +274,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         }
     };
 
-    private final IPinnedStackAnimationListener mIPinnedStackAnimationListener =
-            new IPinnedStackAnimationListener.Stub() {
-        @Override
-        public void onPinnedStackAnimationStarted() {
-            // Needed for activities that auto-enter PiP, which will not trigger a remote
-            // animation to be created
-            mActivity.clearForceInvisibleFlag(STATE_HANDLER_INVISIBILITY_FLAGS);
-        }
-    };
+    private final PinnedStackAnimationListener mIPinnedStackAnimationListener =
+            new PinnedStackAnimationListener();
 
     // Used to keep track of the last requested task list id, so that we do not request to load the
     // tasks again if we have already requested it and the task list has not changed
@@ -470,6 +463,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         mSyncTransactionApplier = new SyncRtSurfaceTransactionApplierCompat(this);
         RecentsModel.INSTANCE.get(getContext()).addThumbnailChangeListener(this);
         mIdp.addOnChangeListener(this);
+        mIPinnedStackAnimationListener.setActivity(mActivity);
         SystemUiProxy.INSTANCE.get(getContext()).setPinnedStackAnimationListener(
                 mIPinnedStackAnimationListener);
     }
@@ -485,6 +479,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         RecentsModel.INSTANCE.get(getContext()).removeThumbnailChangeListener(this);
         mIdp.removeOnChangeListener(this);
         SystemUiProxy.INSTANCE.get(getContext()).setPinnedStackAnimationListener(null);
+        mIPinnedStackAnimationListener.setActivity(null);
     }
 
     @Override
@@ -2046,5 +2041,21 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     public interface OnEmptyMessageUpdatedListener {
         /** @param isEmpty Whether RecentsView is empty (i.e. has no children) */
         void onEmptyMessageUpdated(boolean isEmpty);
+    }
+
+    private static class PinnedStackAnimationListener<T extends BaseActivity> extends
+            IPinnedStackAnimationListener.Stub {
+        private T mActivity;
+
+        public void setActivity(T activity) {
+            mActivity = activity;
+        }
+
+        @Override
+        public void onPinnedStackAnimationStarted() {
+            // Needed for activities that auto-enter PiP, which will not trigger a remote
+            // animation to be created
+            mActivity.clearForceInvisibleFlag(STATE_HANDLER_INVISIBILITY_FLAGS);
+        }
     }
 }
