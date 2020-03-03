@@ -31,6 +31,7 @@ import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.ResourceBasedOverride;
 import com.android.quickstep.views.TaskThumbnailView;
 import com.android.quickstep.views.TaskView;
+import com.android.systemui.plugins.OverscrollPlugin;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 
@@ -66,6 +67,13 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
 
     public static final MainThreadInitializedObject<TaskOverlayFactory> INSTANCE =
             forOverride(TaskOverlayFactory.class, R.string.task_overlay_factory_class);
+
+    /**
+     * @return a launcher-provided OverscrollPlugin if available, otherwise null
+     */
+    public OverscrollPlugin getLocalOverscrollPlugin() {
+        return null;
+    }
 
     public TaskOverlay createOverlay(TaskThumbnailView thumbnailView) {
         return new TaskOverlay();

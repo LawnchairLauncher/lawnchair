@@ -17,13 +17,7 @@ package com.android.quickstep;
 
 import static android.view.MotionEvent.ACTION_DOWN;
 
-import static com.android.launcher3.config.FeatureFlags.ADAPTIVE_ICON_WINDOW_ANIM;
-import static com.android.launcher3.config.FeatureFlags.APPLY_CONFIG_AT_RUNTIME;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_HINTS_IN_OVERVIEW;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
-import static com.android.launcher3.config.FeatureFlags.FAKE_LANDSCAPE_UI;
-import static com.android.launcher3.config.FeatureFlags.QUICKSTEP_SPRINGS;
-import static com.android.launcher3.config.FeatureFlags.UNSTABLE_SPRINGS;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_INPUT_MONITOR;
@@ -507,12 +501,25 @@ public class TouchInteractionService extends Service implements PluginListener<O
                 base = new AssistantInputConsumer(this, newGestureState, base, mInputMonitorCompat);
             }
 
-            if (FeatureFlags.ENABLE_QUICK_CAPTURE_GESTURE.get()
-                    && (mOverscrollPlugin != null)
-                    && mOverscrollPlugin.isActive()) {
-                // Put the overscroll gesture as higher priority than the Assistant or base gestures
-                base = new OverscrollInputConsumer(this, newGestureState, base, mInputMonitorCompat,
-                        mOverscrollPlugin);
+            if (FeatureFlags.ENABLE_QUICK_CAPTURE_GESTURE.get()) {
+                OverscrollPlugin plugin = null;
+                if (FeatureFlags.FORCE_LOCAL_OVERSCROLL_PLUGIN.get()) {
+                    TaskOverlayFactory factory =
+                            TaskOverlayFactory.INSTANCE.get(getApplicationContext());
+                    plugin = factory.getLocalOverscrollPlugin();  // may be null
+                }
+
+                // If not local plugin was forced, use the actual overscroll plugin if available.
+                if (plugin == null && mOverscrollPlugin != null && mOverscrollPlugin.isActive()) {
+                    plugin = mOverscrollPlugin;
+                }
+
+                if (plugin != null) {
+                    // Put the overscroll gesture as higher priority than the Assistant or base
+                    // gestures
+                    base = new OverscrollInputConsumer(this, newGestureState, base,
+                        mInputMonitorCompat, plugin);
+                }
             }
 
             if (mDeviceState.isScreenPinningActive()) {
