@@ -120,7 +120,7 @@ public final class FeatureFlags {
             "MULTI_DB_GRID_MIRATION_ALGO", false, "Use the multi-db grid migration algorithm");
 
     public static final BooleanFlag ENABLE_LAUNCHER_PREVIEW_IN_GRID_PICKER = getDebugFlag(
-            "ENABLE_LAUNCHER_PREVIEW_IN_GRID_PICKER", false,
+            "ENABLE_LAUNCHER_PREVIEW_IN_GRID_PICKER", true,
             "Show launcher preview in grid picker");
 
     public static final BooleanFlag ENABLE_OVERVIEW_ACTIONS = getDebugFlag(
