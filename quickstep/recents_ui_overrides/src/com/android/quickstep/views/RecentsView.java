@@ -85,6 +85,7 @@ import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.InvariantDeviceProfile;
+import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
@@ -274,6 +275,9 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             });
         }
     };
+
+    private RotationHelper.ForcedRotationChangedListener mForcedRotationChangedListener =
+        isForcedRotation -> RecentsView.this.disableMultipleLayoutRotations(!isForcedRotation);
 
     private final PinnedStackAnimationListener mIPinnedStackAnimationListener =
             new PinnedStackAnimationListener();
@@ -467,6 +471,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         mIPinnedStackAnimationListener.setActivity(mActivity);
         SystemUiProxy.INSTANCE.get(getContext()).setPinnedStackAnimationListener(
                 mIPinnedStackAnimationListener);
+        Launcher launcher = Launcher.getLauncher(getContext());
+        launcher.getRotationHelper().addForcedRotationCallback(mForcedRotationChangedListener);
     }
 
     @Override
@@ -481,6 +487,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         mIdp.removeOnChangeListener(this);
         SystemUiProxy.INSTANCE.get(getContext()).setPinnedStackAnimationListener(null);
         mIPinnedStackAnimationListener.setActivity(null);
+        Launcher launcher = Launcher.getLauncher(getContext());
+        launcher.getRotationHelper().removeForcedRotationCallback(mForcedRotationChangedListener);
     }
 
     @Override
