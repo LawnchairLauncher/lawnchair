@@ -1,3 +1,4 @@
+<<<<<<< HEAD   (cc6caf Merge "Let launcher to provide its own OverscrollPlugin" int)
 /*
  * Copyright (C) 2018 The Android Open Source Project
  *
@@ -312,3 +313,5 @@ public class IconCacheUpdateHandler {
         void onPackageIconsUpdated(HashSet<String> updatedPackages, UserHandle user);
     }
 }
+=======
+>>>>>>> CHANGE (805b52 Removes iconloaderlib from Launcher3.)
