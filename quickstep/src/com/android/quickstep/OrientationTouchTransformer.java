@@ -49,7 +49,7 @@ import java.io.PrintWriter;
 class OrientationTouchTransformer {
 
     private static final String TAG = "OrientationTouchTransformer";
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
     private static final int MAX_ORIENTATIONS = 4;
 
     private SparseArray<OrientationRectF> mSwipeTouchRegions = new SparseArray<>(MAX_ORIENTATIONS);

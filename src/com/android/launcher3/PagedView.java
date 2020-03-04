@@ -47,6 +47,7 @@ import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.PagedViewOrientedState;
 import com.android.launcher3.pageindicators.PageIndicator;
+import com.android.launcher3.states.RotationHelper;
 import com.android.launcher3.touch.PortraitPagedViewHandler;
 import com.android.launcher3.touch.OverScroll;
 import com.android.launcher3.touch.PagedOrientationHandler;
