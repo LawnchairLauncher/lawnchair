@@ -17,7 +17,6 @@ package com.android.quickstep.util;
 
 import android.animation.Animator;
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.PointF;
 import android.graphics.RectF;
 
@@ -106,7 +105,7 @@ public class RectFSpringAnim {
     private float mMinVisChange;
     private float mYOvershoot;
 
-    public RectFSpringAnim(RectF startRect, RectF targetRect, Resources resources) {
+    public RectFSpringAnim(RectF startRect, RectF targetRect, Context context) {
         mStartRect = startRect;
         mTargetRect = targetRect;
         mCurrentCenterX = mStartRect.centerX();
@@ -114,8 +113,9 @@ public class RectFSpringAnim {
         mTrackingBottomY = startRect.bottom < targetRect.bottom;
         mCurrentY = mTrackingBottomY ? mStartRect.bottom : mStartRect.top;
 
-        mMinVisChange = resources.getDimensionPixelSize(R.dimen.swipe_up_fling_min_visible_change);
-        mYOvershoot = resources.getDimensionPixelSize(R.dimen.swipe_up_y_overshoot);
+        ResourceProvider rp = DynamicResource.provider(context);
+        mMinVisChange = rp.getDimension(R.dimen.swipe_up_fling_min_visible_change);
+        mYOvershoot = rp.getDimension(R.dimen.swipe_up_y_overshoot);
     }
 
     public void onTargetPositionChanged() {
@@ -160,7 +160,7 @@ public class RectFSpringAnim {
         float endX = mTargetRect.centerX();
         float minXValue = Math.min(startX, endX);
         float maxXValue = Math.max(startX, endX);
-        mRectXAnim = new FlingSpringAnim(this, RECT_CENTER_X, startX, endX,
+        mRectXAnim = new FlingSpringAnim(this, context, RECT_CENTER_X, startX, endX,
                 velocityPxPerMs.x * 1000, mMinVisChange, minXValue, maxXValue, 1f, onXEndListener);
 
         float startVelocityY = velocityPxPerMs.y * 1000;
@@ -170,13 +170,13 @@ public class RectFSpringAnim {
         float endY = mTrackingBottomY ? mTargetRect.bottom : mTargetRect.top;
         float minYValue = Math.min(startY, endY - mYOvershoot);
         float maxYValue = Math.max(startY, endY);
-        mRectYAnim = new FlingSpringAnim(this, RECT_Y, startY, endY, startVelocityY,
+        mRectYAnim = new FlingSpringAnim(this, context, RECT_Y, startY, endY, startVelocityY,
                 mMinVisChange, minYValue, maxYValue, springVelocityFactor, onYEndListener);
 
         float minVisibleChange = Math.abs(1f / mStartRect.height());
         ResourceProvider rp = DynamicResource.provider(context);
-        float damping = rp.getFloat(R.dimen.swipe_up_rect_damping_ratio);
-        float stiffness = rp.getFloat(R.dimen.swipe_up_rect_stiffness);
+        float damping = rp.getFloat(R.dimen.swipe_up_rect_scale_damping_ratio);
+        float stiffness = rp.getFloat(R.dimen.swipe_up_rect_scale_stiffness);
 
         mRectScaleAnim = new SpringAnimation(this, RECT_SCALE_PROGRESS)
                 .setSpring(new SpringForce(1f)

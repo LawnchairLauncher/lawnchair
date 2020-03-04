@@ -448,7 +448,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
             RotationHelper.mapInverseRectFromNormalOrientation(startRect,
                 mDp.widthPx, mDp.heightPx, mOrientedState.getDisplayRotation());
         }
-        RectFSpringAnim anim = new RectFSpringAnim(startRect, targetRect, mContext.getResources());
+        RectFSpringAnim anim = new RectFSpringAnim(startRect, targetRect, mContext);
         if (isFloatingIconView) {
             FloatingIconView fiv = (FloatingIconView) floatingView;
             anim.addAnimatorListener(fiv);
