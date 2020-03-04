@@ -2305,6 +2305,13 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                     item.restoreStatus = LauncherAppWidgetInfo.RESTORE_COMPLETED;
                     getModelWriter().updateItemInDatabase(item);
                 }
+                else if (item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_UI_NOT_READY)
+                        && appWidgetInfo.configure != null) {
+                    if (mAppWidgetManager.isAppWidgetRestored(item.appWidgetId)) {
+                        item.restoreStatus = LauncherAppWidgetInfo.RESTORE_COMPLETED;
+                        getModelWriter().updateItemInDatabase(item);
+                    }
+                }
             }
 
             if (item.restoreStatus == LauncherAppWidgetInfo.RESTORE_COMPLETED) {
@@ -2317,6 +2324,11 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
                 item.minSpanX = appWidgetInfo.minSpanX;
                 item.minSpanY = appWidgetInfo.minSpanY;
+                view = mAppWidgetHost.createView(this, item.appWidgetId, appWidgetInfo);
+            } else if (!item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_ID_NOT_VALID)
+                    && appWidgetInfo != null) {
+                mAppWidgetHost.addPendingView(item.appWidgetId,
+                        new PendingAppWidgetHostView(this, item, mIconCache, false));
                 view = mAppWidgetHost.createView(this, item.appWidgetId, appWidgetInfo);
             } else {
                 view = new PendingAppWidgetHostView(this, item, mIconCache, false);
