@@ -1520,7 +1520,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
     @Override
     public void setLayoutRotation(int touchRotation, int displayRotation) {
-        if (!sFlagForcedRotation) {
+        if (!FeatureFlags.ENABLE_FIXED_ROTATION_TRANSFORM.get()) {
             return;
         }
 
@@ -1972,7 +1972,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     public Consumer<MotionEvent> getEventDispatcher(RotationMode navBarRotationMode) {
         float degreesRotated;
         if (navBarRotationMode == RotationMode.NORMAL) {
-            degreesRotated = RotationHelper.getDegreesFromRotation(mLayoutRotation);
+            degreesRotated = mOrientationState.areMultipleLayoutOrientationsDisabled() ? 0 :
+                    RotationHelper.getDegreesFromRotation(mLayoutRotation);
         } else {
             degreesRotated = -navBarRotationMode.surfaceRotation;
         }
@@ -1984,6 +1985,13 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         // undo that transformation since PagedView also accommodates for the transformation via
         // PagedOrientationHandler
         return e -> {
+            if (navBarRotationMode != RotationMode.NORMAL
+                    && !mOrientationState.areMultipleLayoutOrientationsDisabled()) {
+                RotationHelper.transformEventForNavBar(e, true);
+                super.onTouchEvent(e);
+                RotationHelper.transformEventForNavBar(e, false);
+                return;
+            }
             RotationHelper.transformEvent(-degreesRotated, e, true);
             super.onTouchEvent(e);
             RotationHelper.transformEvent(-degreesRotated, e, false);

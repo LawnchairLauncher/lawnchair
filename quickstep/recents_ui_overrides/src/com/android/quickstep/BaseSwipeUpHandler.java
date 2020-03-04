@@ -482,10 +482,6 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
             public void onUpdate(RectF currentRect, float progress) {
                 homeAnim.setPlayFraction(progress);
 
-                mTransformParams.setProgress(
-                        Utilities.mapRange(progress, startTransformProgress, endTransformProgress))
-                        .setCurrentRect(currentRect)
-                        .setTargetAlpha(getWindowAlpha(progress));
                 rotatedRect.set(currentRect);
                 if (isFloatingIconView) {
                     RotationHelper.mapRectFromNormalOrientation(rotatedRect,
@@ -493,6 +489,10 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
                     mTransformParams.setCornerRadius(endRadius * progress + startRadius
                         * (1f - progress));
                 }
+                mTransformParams.setProgress(
+                    Utilities.mapRange(progress, startTransformProgress, endTransformProgress))
+                    .setCurrentRect(rotatedRect)
+                    .setTargetAlpha(getWindowAlpha(progress));
                 mAppWindowAnimationHelper.applyTransform(mTransformParams);
 
                 if (isFloatingIconView) {

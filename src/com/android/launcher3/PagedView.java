@@ -72,8 +72,6 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     private static final String TAG = "PagedView";
     private static final boolean DEBUG = false;
 
-    public static boolean sFlagForcedRotation = false;
-
     public static final int INVALID_PAGE = -1;
     protected static final ComputePageScrollsLogic SIMPLE_SCROLL_LOGIC = (v) -> v.getVisibility() != GONE;
 
@@ -199,8 +197,6 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         if (Utilities.ATLEAST_OREO) {
             setDefaultFocusHighlightEnabled(false);
         }
-
-        sFlagForcedRotation = Utilities.isForcedRotation(context);
     }
 
     protected void setDefaultInterpolator(Interpolator interpolator) {

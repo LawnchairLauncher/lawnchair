@@ -36,6 +36,8 @@ public final class FeatureFlags {
     private static final List<DebugFlag> sDebugFlags = new ArrayList<>();
 
     public static final String FLAGS_PREF_NAME = "featureFlags";
+    public static final String FLAG_ENABLE_FIXED_ROTATION_TRANSFORM =
+            "ENABLE_FIXED_ROTATION_TRANSFORM";
 
     private FeatureFlags() { }
 
@@ -152,6 +154,10 @@ public final class FeatureFlags {
             getDebugFlag(
             "ALWAYS_USE_HARDWARE_OPTIMIZATION_FOR_FOLDER_ANIMATIONS", false,
             "Always use hardware optimization for folder animations.");
+
+    public static final BooleanFlag ENABLE_FIXED_ROTATION_TRANSFORM = getDebugFlag(
+            FLAG_ENABLE_FIXED_ROTATION_TRANSFORM, true,
+            "Launch/close apps without rotation animation. Fix Launcher to portrait");
 
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {

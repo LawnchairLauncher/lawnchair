@@ -502,8 +502,10 @@ public class TouchInteractionService extends Service implements PluginListener<O
                         ? newBaseConsumer(previousGestureState, newGestureState, event)
                         : mResetGestureInputConsumer;
         // TODO(b/149880412): 2 button landscape mode is wrecked. Fixit!
-        if (mDeviceState.isFullyGesturalNavMode()) {
+        if (mDeviceState.isGesturalNavMode()) {
             handleOrientationSetup(base);
+        }
+        if (mDeviceState.isFullyGesturalNavMode()) {
             if (mDeviceState.canTriggerAssistantAction(event)) {
                 base = new AssistantInputConsumer(this, newGestureState, base, mInputMonitorCompat);
             }
@@ -548,7 +550,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
     }
 
     private void handleOrientationSetup(InputConsumer baseInputConsumer) {
-        if (!PagedView.sFlagForcedRotation) {
+        if (!FeatureFlags.ENABLE_FIXED_ROTATION_TRANSFORM.get()) {
             return;
         }
         mDeviceState.enableMultipleRegions(baseInputConsumer instanceof OtherActivityInputConsumer);
