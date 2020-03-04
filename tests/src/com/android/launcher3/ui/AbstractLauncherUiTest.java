@@ -35,9 +35,11 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
 import android.content.pm.PackageManager;
+import android.os.Debug;
 import android.os.Process;
 import android.os.RemoteException;
 import android.os.StrictMode;
+import android.util.Log;
 
 import androidx.test.InstrumentationRegistry;
 import androidx.test.uiautomator.By;
@@ -117,6 +119,14 @@ public abstract class AbstractLauncherUiTest {
                                 // so let's just mark the fact that the leak has happened.
                                 if (sDetectedActivityLeak == null) {
                                     sDetectedActivityLeak = violation.toString();
+                                    try {
+                                        Debug.dumpHprofData(
+                                                getInstrumentation().getTargetContext()
+                                                        .getFilesDir().getPath()
+                                                        + "/ActivityLeakHeapDump.hprof");
+                                    } catch (IOException e) {
+                                        Log.e(TAG, "dumpHprofData failed", e);
+                                    }
                                 }
                             });
             StrictMode.setVmPolicy(builder.build());
@@ -126,18 +136,6 @@ public abstract class AbstractLauncherUiTest {
     public static void checkDetectedLeaks() {
         if (sDetectedActivityLeak != null && !sActivityLeakReported) {
             sActivityLeakReported = true;
-
-            final UiDevice device = UiDevice.getInstance(getInstrumentation());
-            try {
-                device.executeShellCommand(
-                        "am dumpheap "
-                                + device.getLauncherPackageName()
-                                + " "
-                                + getInstrumentation().getTargetContext().getFilesDir().getPath()
-                                + "/ActivityLeakHeapDump.hprof");
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
         }
     }
 
