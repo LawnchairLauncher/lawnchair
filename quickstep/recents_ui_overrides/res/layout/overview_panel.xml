@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
      Copyright (C) 2017 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,17 +13,12 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.launcher3.InsettableFrameLayout
+<com.android.quickstep.views.LauncherRecentsView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
-    <com.android.quickstep.views.LauncherRecentsView
-        android:id="@+id/overview_panel_recents"
-        android:theme="@style/HomeScreenElementTheme"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:accessibilityPaneTitle="@string/accessibility_recent_apps"
-        android:visibility="invisible" />
-</com.android.launcher3.InsettableFrameLayout>
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:accessibilityPaneTitle="@string/accessibility_recent_apps"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:theme="@style/HomeScreenElementTheme"
+    android:visibility="invisible" />

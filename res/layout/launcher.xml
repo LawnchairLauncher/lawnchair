@@ -44,8 +44,13 @@
             layout="@layout/hotseat" />
 
         <include
-            android:id="@+id/overview_panel_container"
-            layout="@layout/overview_panel"/>
+            android:id="@+id/overview_panel"
+            layout="@layout/overview_panel"
+            android:visibility="gone" />
+
+        <include
+            android:id="@+id/overview_actions_view"
+            layout="@layout/overview_actions_holder" />
 
         <!-- Keep these behind the workspace so that they are not visible when
          we go into AllApps -->
