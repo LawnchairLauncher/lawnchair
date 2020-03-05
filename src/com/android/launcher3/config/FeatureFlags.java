@@ -143,6 +143,11 @@ public final class FeatureFlags {
             "ENABLE_LSQ_VELOCITY_PROVIDER", false,
             "Use Least Square algorithm for motion pause detection.");
 
+    public static final BooleanFlag ALWAYS_USE_HARDWARE_OPTIMIZATION_FOR_FOLDER_ANIMATIONS =
+            getDebugFlag(
+            "ALWAYS_USE_HARDWARE_OPTIMIZATION_FOR_FOLDER_ANIMATIONS", false,
+            "Always use hardware optimization for folder animations.");
+
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {
             for (DebugFlag flag : sDebugFlags) {
