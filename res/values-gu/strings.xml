@@ -20,7 +20,6 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name" msgid="649227358658669779">"Launcher3"</string>
-    <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="work_folder_name" msgid="3753320833950115786">"કાર્યાલય"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"ઍપ્લિકેશન ઇન્સ્ટોલ થઈ નથી."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"ઍપ્લિકેશન ઉપલબ્ધ નથી"</string>
@@ -81,7 +80,7 @@
     <string name="widget_button_text" msgid="2880537293434387943">"વિજેટ્સ"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"વૉલપેપર્સ"</string>
     <string name="styles_wallpaper_button_text" msgid="4342122323125579619">"શૈલીઓ અને વૉલપેપર"</string>
-    <string name="settings_button_text" msgid="8873672322605444408">"હોમ સેટિંગ્સ"</string>
+    <string name="settings_button_text" msgid="8873672322605444408">"હોમ સેટિંગ"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"તમારા વ્યવસ્થાપક દ્વારા અક્ષમ કરેલ"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"હોમ સ્ક્રીનને ફેરવવાની મંજૂરી આપો"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"જ્યારે ફોન ફેરવવામાં આવે ત્યારે"</string>

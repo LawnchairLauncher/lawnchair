@@ -42,6 +42,7 @@ import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.Until;
 
 import com.android.launcher3.tapl.LauncherInstrumentation;
+import com.android.launcher3.tapl.TestHelpers;
 import com.android.launcher3.testcomponent.TestCommandReceiver;
 import com.android.launcher3.util.rule.FailureWatcher;
 import com.android.quickstep.NavigationModeSwitchRule.NavigationModeSwitch;
@@ -78,7 +79,7 @@ public class FallbackRecentsTest {
         Context context = instrumentation.getContext();
         mDevice = UiDevice.getInstance(instrumentation);
         mDevice.setOrientationNatural();
-        mLauncher = new LauncherInstrumentation(instrumentation);
+        mLauncher = new LauncherInstrumentation();
 
         mOrderSensitiveRules = RuleChain.
                 outerRule(new NavigationModeSwitchRule(mLauncher)).
@@ -103,6 +104,11 @@ public class FallbackRecentsTest {
                 }
             }
         };
+        if (TestHelpers.isInLauncherProcess()) {
+            mLauncher.setSystemHealthSupplier(startTime -> TestCommandReceiver.callCommand(
+                    TestCommandReceiver.GET_SYSTEM_HEALTH_MESSAGE, startTime.toString()).
+                    getString("result"));
+        }
     }
 
     @NavigationModeSwitch(mode = THREE_BUTTON)

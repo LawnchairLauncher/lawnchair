@@ -17,6 +17,7 @@
 package com.android.launcher3.util;
 
 import java.util.Arrays;
+import java.util.StringTokenizer;
 
 /**
  * Copy of the platform hidden implementation of android.util.IntArray.
@@ -246,6 +247,17 @@ public class IntArray implements Cloneable {
             b.append(mValues[i]);
         }
         return b.toString();
+    }
+
+    public static IntArray fromConcatString(String concatString) {
+        StringTokenizer tokenizer = new StringTokenizer(concatString, ",");
+        int[] array = new int[tokenizer.countTokens()];
+        int count = 0;
+        while (tokenizer.hasMoreTokens()) {
+            array[count] = Integer.parseInt(tokenizer.nextToken().trim());
+            count++;
+        }
+        return new IntArray(array, array.length);
     }
 
     /**

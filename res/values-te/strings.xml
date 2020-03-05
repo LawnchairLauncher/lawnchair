@@ -20,7 +20,6 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name" msgid="649227358658669779">"Launcher3"</string>
-    <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="work_folder_name" msgid="3753320833950115786">"కార్యాలయం"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"యాప్ ఇన్‌స్టాల్ చేయబడలేదు."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"యాప్ అందుబాటులో లేదు"</string>
@@ -53,7 +52,7 @@
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"అన్ఇన్‌స్టాల్ చేయి"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"యాప్ సమాచారం"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"ఇన్‌స్టాల్ చేయండి"</string>
-    <string name="permlab_install_shortcut" msgid="5632423390354674437">"సత్వరమార్గాలను ఇన్‌స్టాల్ చేయడం"</string>
+    <string name="permlab_install_shortcut" msgid="5632423390354674437">"షార్ట్‌కట్‌లను ఇన్‌స్టాల్ చేయడం"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"వినియోగదారు ప్రమేయం లేకుండా సత్వరమార్గాలను జోడించడానికి అనువర్తనాన్ని అనుమతిస్తుంది."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"హోమ్ సెట్టింగ్‌లు మరియు సత్వరమార్గాలను చదవడం"</string>
     <string name="permdesc_read_settings" msgid="5833423719057558387">"హోమ్‌లో సెట్టింగ్‌లు మరియు సత్వరమార్గాలను చదవడానికి అనువర్తనాన్ని అనుమతిస్తుంది."</string>

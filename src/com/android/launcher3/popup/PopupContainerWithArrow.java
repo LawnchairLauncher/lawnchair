@@ -24,6 +24,7 @@ import static com.android.launcher3.popup.PopupPopulator.MAX_SHORTCUTS_IF_NOTIFI
 import static com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import static com.android.launcher3.userevent.nano.LauncherLogProto.ItemType;
 import static com.android.launcher3.userevent.nano.LauncherLogProto.Target;
+import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
 import android.animation.AnimatorSet;
 import android.animation.LayoutTransition;
@@ -36,6 +37,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
@@ -50,7 +52,6 @@ import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherModel;
 import com.android.launcher3.R;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.accessibility.ShortcutMenuAccessibilityDelegate;
@@ -65,6 +66,7 @@ import com.android.launcher3.notification.NotificationKeyData;
 import com.android.launcher3.popup.PopupDataProvider.PopupDataChangeListener;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.shortcuts.ShortcutDragPreviewProvider;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.util.PackageUserKey;
@@ -166,7 +168,10 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
     }
 
     public OnClickListener getItemClickListener() {
-        return ItemClickHandler.INSTANCE;
+        return (view) -> {
+            ItemClickHandler.INSTANCE.onClick(view);
+            close(true);
+        };
     }
 
     @Override
@@ -191,6 +196,9 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
      * @return the container if shown or null.
      */
     public static PopupContainerWithArrow showForIcon(BubbleTextView icon) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.NO_CONTEXT_MENU, "showForIcon");
+        }
         Launcher launcher = Launcher.getLauncher(icon.getContext());
         if (getOpen(launcher) != null) {
             // There is already an items container open, so don't open this one.
@@ -232,6 +240,9 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
 
     protected void populateAndShow(
             BubbleTextView icon, ItemInfo item, SystemShortcutFactory factory) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.NO_CONTEXT_MENU, "populateAndShow");
+        }
         PopupDataProvider popupDataProvider = mLauncher.getPopupDataProvider();
         populateAndShow(icon,
                 popupDataProvider.getShortcutCountForItem(item),
@@ -303,8 +314,7 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
         setLayoutTransition(new LayoutTransition());
 
         // Load the shortcuts on a background thread and update the container as it animates.
-        final Looper workerLooper = LauncherModel.getWorkerLooper();
-        new Handler(workerLooper).postAtFrontOfQueue(PopupPopulator.createUpdateRunnable(
+        MODEL_EXECUTOR.getHandler().postAtFrontOfQueue(PopupPopulator.createUpdateRunnable(
                 mLauncher, originalItemInfo, new Handler(Looper.getMainLooper()),
                 this, mShortcuts, notificationKeys));
     }
@@ -565,9 +575,12 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
 
     @Override
     protected void closeComplete() {
+        PopupContainerWithArrow openPopup = getOpen(mLauncher);
+        if (openPopup == null || openPopup.mOriginalIcon != mOriginalIcon) {
+            mOriginalIcon.setTextVisibility(mOriginalIcon.shouldTextBeVisible());
+            mOriginalIcon.setForceHideDot(false);
+        }
         super.closeComplete();
-        mOriginalIcon.setTextVisibility(mOriginalIcon.shouldTextBeVisible());
-        mOriginalIcon.setForceHideDot(false);
     }
 
     @Override

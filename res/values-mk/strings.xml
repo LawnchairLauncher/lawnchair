@@ -20,7 +20,6 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name" msgid="649227358658669779">"Стартер3"</string>
-    <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="work_folder_name" msgid="3753320833950115786">"Работа"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"Апликацијата не е инсталирана."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"Апликацијата не е достапна"</string>
@@ -81,9 +80,9 @@
     <string name="widget_button_text" msgid="2880537293434387943">"Виџети"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Тапети"</string>
     <string name="styles_wallpaper_button_text" msgid="4342122323125579619">"Стилови и тапети"</string>
-    <string name="settings_button_text" msgid="8873672322605444408">"Поставки за Home"</string>
+    <string name="settings_button_text" msgid="8873672322605444408">"Поставки за почетен екран"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Оневозможено од администраторот"</string>
-    <string name="allow_rotation_title" msgid="7728578836261442095">"Дозволете ротација на Почетниот екран"</string>
+    <string name="allow_rotation_title" msgid="7728578836261442095">"Дозволете ротација на почетниот екран"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Кога телефонот се ротира"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"Точки за известување"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"Вклучено"</string>

@@ -16,6 +16,8 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
+
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.BroadcastReceiver;
@@ -29,8 +31,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.ShortcutInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Handler;
-import android.os.Message;
 import android.os.Parcelable;
 import android.os.Process;
 import android.os.UserHandle;
@@ -68,9 +68,6 @@ import java.util.Set;
 
 public class InstallShortcutReceiver extends BroadcastReceiver {
 
-    private static final int MSG_ADD_TO_QUEUE = 1;
-    private static final int MSG_FLUSH_QUEUE = 2;
-
     public static final int FLAG_ACTIVITY_PAUSED = 1;
     public static final int FLAG_LOADER_RUNNING = 2;
     public static final int FLAG_DRAG_AND_DROP = 4;
@@ -103,66 +100,57 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
     public static final int NEW_SHORTCUT_BOUNCE_DURATION = 450;
     public static final int NEW_SHORTCUT_STAGGER_DELAY = 85;
 
-    private static final Handler sHandler = new Handler(LauncherModel.getWorkerLooper()) {
+    @WorkerThread
+    private static void addToQueue(Context context, PendingInstallShortcutInfo info) {
+        String encoded = info.encodeToString();
+        SharedPreferences prefs = Utilities.getPrefs(context);
+        Set<String> strings = prefs.getStringSet(APPS_PENDING_INSTALL, null);
+        strings = (strings != null) ? new HashSet<>(strings) : new HashSet<>(1);
+        strings.add(encoded);
+        prefs.edit().putStringSet(APPS_PENDING_INSTALL, strings).apply();
+    }
 
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case MSG_ADD_TO_QUEUE: {
-                    Pair<Context, PendingInstallShortcutInfo> pair =
-                            (Pair<Context, PendingInstallShortcutInfo>) msg.obj;
-                    String encoded = pair.second.encodeToString();
-                    SharedPreferences prefs = Utilities.getPrefs(pair.first);
-                    Set<String> strings = prefs.getStringSet(APPS_PENDING_INSTALL, null);
-                    strings = (strings != null) ? new HashSet<>(strings) : new HashSet<String>(1);
-                    strings.add(encoded);
-                    prefs.edit().putStringSet(APPS_PENDING_INSTALL, strings).apply();
-                    return;
-                }
-                case MSG_FLUSH_QUEUE: {
-                    Context context = (Context) msg.obj;
-                    LauncherModel model = LauncherAppState.getInstance(context).getModel();
-                    if (model.getCallback() == null) {
-                        // Launcher not loaded
-                        return;
-                    }
-
-                    ArrayList<Pair<ItemInfo, Object>> installQueue = new ArrayList<>();
-                    SharedPreferences prefs = Utilities.getPrefs(context);
-                    Set<String> strings = prefs.getStringSet(APPS_PENDING_INSTALL, null);
-                    if (DBG) Log.d(TAG, "Getting and clearing APPS_PENDING_INSTALL: " + strings);
-                    if (strings == null) {
-                        return;
-                    }
-
-                    LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(context);
-                    for (String encoded : strings) {
-                        PendingInstallShortcutInfo info = decode(encoded, context);
-                        if (info == null) {
-                            continue;
-                        }
-
-                        String pkg = getIntentPackage(info.launchIntent);
-                        if (!TextUtils.isEmpty(pkg)
-                                && !launcherApps.isPackageEnabledForProfile(pkg, info.user)
-                                && !info.isActivity) {
-                            if (DBG) Log.d(TAG, "Ignoring shortcut for absent package: "
-                                    + info.launchIntent);
-                            continue;
-                        }
-
-                        // Generate a shortcut info to add into the model
-                        installQueue.add(info.getItemInfo());
-                    }
-                    prefs.edit().remove(APPS_PENDING_INSTALL).apply();
-                    if (!installQueue.isEmpty()) {
-                        model.addAndBindAddedWorkspaceItems(installQueue);
-                    }
-                    return;
-                }
-            }
+    @WorkerThread
+    private static void flushQueueInBackground(Context context) {
+        LauncherModel model = LauncherAppState.getInstance(context).getModel();
+        if (model.getCallback() == null) {
+            // Launcher not loaded
+            return;
         }
-    };
+
+        ArrayList<Pair<ItemInfo, Object>> installQueue = new ArrayList<>();
+        SharedPreferences prefs = Utilities.getPrefs(context);
+        Set<String> strings = prefs.getStringSet(APPS_PENDING_INSTALL, null);
+        if (DBG) Log.d(TAG, "Getting and clearing APPS_PENDING_INSTALL: " + strings);
+        if (strings == null) {
+            return;
+        }
+
+        LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(context);
+        for (String encoded : strings) {
+            PendingInstallShortcutInfo info = decode(encoded, context);
+            if (info == null) {
+                continue;
+            }
+
+            String pkg = getIntentPackage(info.launchIntent);
+            if (!TextUtils.isEmpty(pkg)
+                    && !launcherApps.isPackageEnabledForProfile(pkg, info.user)
+                    && !info.isActivity) {
+                if (DBG) {
+                    Log.d(TAG, "Ignoring shortcut for absent package: " + info.launchIntent);
+                }
+                continue;
+            }
+
+            // Generate a shortcut info to add into the model
+            installQueue.add(info.getItemInfo());
+        }
+        prefs.edit().remove(APPS_PENDING_INSTALL).apply();
+        if (!installQueue.isEmpty()) {
+            model.addAndBindAddedWorkspaceItems(installQueue);
+        }
+    }
 
     public static void removeFromInstallQueue(Context context, HashSet<String> packageNames,
             UserHandle user) {
@@ -289,7 +277,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
 
     private static void queuePendingShortcutInfo(PendingInstallShortcutInfo info, Context context) {
         // Queue the item up for adding if launcher has not loaded properly yet
-        Message.obtain(sHandler, MSG_ADD_TO_QUEUE, Pair.create(context, info)).sendToTarget();
+        MODEL_EXECUTOR.post(() -> addToQueue(context, info));
         flushInstallQueue(context);
     }
 
@@ -305,7 +293,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         if (sInstallQueueDisabledFlags != 0) {
             return;
         }
-        Message.obtain(sHandler, MSG_FLUSH_QUEUE, context.getApplicationContext()).sendToTarget();
+        MODEL_EXECUTOR.post(() -> flushQueueInBackground(context));
     }
 
     /**
@@ -470,6 +458,8 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                     .object()
                     .key(LAUNCH_INTENT_KEY).value(launchIntent.toUri(0))
                     .key(NAME_KEY).value(name)
+                    .key(USER_HANDLE_KEY).value(
+                            UserManagerCompat.getInstance(mContext).getSerialNumberForUser(user))
                     .key(APP_SHORTCUT_TYPE_KEY).value(isActivity);
                 if (icon != null) {
                     byte[] iconByteArray = GraphicsUtils.flattenBitmap(icon);
@@ -493,7 +483,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
 
         public Pair<ItemInfo, Object> getItemInfo() {
             if (isActivity) {
-                WorkspaceItemInfo si = createWorkspaceItemInfo(data,
+                WorkspaceItemInfo si = createWorkspaceItemInfo(data, user,
                         LauncherAppState.getInstance(mContext));
                 si.itemType = LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
                 si.status |= WorkspaceItemInfo.FLAG_AUTOINSTALL_ICON;
@@ -518,7 +508,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                 return Pair.create(widgetInfo, providerInfo);
             } else {
                 WorkspaceItemInfo itemInfo =
-                        createWorkspaceItemInfo(data, LauncherAppState.getInstance(mContext));
+                        createWorkspaceItemInfo(data, user, LauncherAppState.getInstance(mContext));
                 return Pair.create(itemInfo, null);
             }
         }
@@ -623,7 +613,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
             // Already an activity target
             return original;
         }
-        if (!Utilities.isLauncherAppTarget(original.launchIntent)) {
+        if (!PackageManagerHelper.isLauncherAppTarget(original.launchIntent)) {
             return original;
         }
 
@@ -636,7 +626,8 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         return new PendingInstallShortcutInfo(info, original.mContext);
     }
 
-    private static WorkspaceItemInfo createWorkspaceItemInfo(Intent data, LauncherAppState app) {
+    private static WorkspaceItemInfo createWorkspaceItemInfo(Intent data, UserHandle user,
+            LauncherAppState app) {
         if (data == null) {
             Log.e(TAG, "Can't construct WorkspaceItemInfo with null data");
             return null;
@@ -653,10 +644,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         }
 
         final WorkspaceItemInfo info = new WorkspaceItemInfo();
-
-        // Only support intents for current user for now. Intents sent from other
-        // users wouldn't get here without intent forwarding anyway.
-        info.user = Process.myUserHandle();
+        info.user = user;
 
         BitmapInfo iconInfo = null;
         LauncherIcons li = LauncherIcons.obtain(app.getContext());

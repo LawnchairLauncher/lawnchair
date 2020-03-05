@@ -212,7 +212,7 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
     public ComponentName getTargetComponent() {
         ComponentName cn = super.getTargetComponent();
         if (cn == null && (itemType == Favorites.ITEM_TYPE_SHORTCUT
-                || hasStatusFlag(FLAG_SUPPORTS_WEB_UI | FLAG_AUTOINSTALL_ICON))) {
+                || hasStatusFlag(FLAG_SUPPORTS_WEB_UI|FLAG_AUTOINSTALL_ICON|FLAG_RESTORED_ICON))) {
             // Legacy shortcuts and promise icons with web UI may not have a componentName but just
             // a packageName. In that case create a dummy componentName instead of adding additional
             // check everywhere.
@@ -220,5 +220,10 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
             return pkg == null ? null : new ComponentName(pkg, IconCache.EMPTY_CLASS_NAME);
         }
         return cn;
+    }
+
+    @Override
+    public ItemInfoWithIcon clone() {
+        return new WorkspaceItemInfo(this);
     }
 }
