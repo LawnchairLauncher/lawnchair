@@ -508,12 +508,25 @@ public class TouchInteractionService extends Service implements PluginListener<O
                 base = new AssistantInputConsumer(this, newGestureState, base, mInputMonitorCompat);
             }
 
-            if (FeatureFlags.ENABLE_QUICK_CAPTURE_GESTURE.get()
-                    && (mOverscrollPlugin != null)
-                    && mOverscrollPlugin.isActive()) {
-                // Put the overscroll gesture as higher priority than the Assistant or base gestures
-                base = new OverscrollInputConsumer(this, newGestureState, base, mInputMonitorCompat,
-                        mOverscrollPlugin);
+            if (FeatureFlags.ENABLE_QUICK_CAPTURE_GESTURE.get()) {
+                OverscrollPlugin plugin = null;
+                if (FeatureFlags.FORCE_LOCAL_OVERSCROLL_PLUGIN.get()) {
+                    TaskOverlayFactory factory =
+                            TaskOverlayFactory.INSTANCE.get(getApplicationContext());
+                    plugin = factory.getLocalOverscrollPlugin();  // may be null
+                }
+
+                // If not local plugin was forced, use the actual overscroll plugin if available.
+                if (plugin == null && mOverscrollPlugin != null && mOverscrollPlugin.isActive()) {
+                    plugin = mOverscrollPlugin;
+                }
+
+                if (plugin != null) {
+                    // Put the overscroll gesture as higher priority than the Assistant or base
+                    // gestures
+                    base = new OverscrollInputConsumer(this, newGestureState, base,
+                        mInputMonitorCompat, plugin);
+                }
             }
 
             if (mDeviceState.isScreenPinningActive()) {
