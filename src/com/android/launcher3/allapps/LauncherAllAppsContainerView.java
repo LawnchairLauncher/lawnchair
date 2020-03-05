@@ -51,7 +51,10 @@ public class LauncherAllAppsContainerView extends AllAppsContainerView {
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         // The AllAppsContainerView houses the QSB and is hence visible from the Workspace
         // Overview states. We shouldn't intercept for the scrubber in these cases.
-        if (!mLauncher.isInState(LauncherState.ALL_APPS)) return false;
+        if (!mLauncher.isInState(LauncherState.ALL_APPS)) {
+            mTouchHandler = null;
+            return false;
+        }
 
         return super.onInterceptTouchEvent(ev);
     }
