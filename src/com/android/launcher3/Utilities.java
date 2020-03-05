@@ -17,7 +17,6 @@
 package com.android.launcher3;
 
 import static com.android.launcher3.ItemInfoWithIcon.FLAG_ICON_BADGED;
-import static com.android.launcher3.PagedView.FIXED_ROTATION_TRANSFORM_SETTING_NAME;
 
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
@@ -126,14 +125,6 @@ public final class Utilities {
     public static boolean isDevelopersOptionsEnabled(Context context) {
         return Settings.Global.getInt(context.getApplicationContext().getContentResolver(),
                         Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0) != 0;
-    }
-
-    /**
-     * Checks whether the fixed_rotation_flag is enabled.
-     */
-    public static boolean isFixedRotationTransformEnabled(Context context) {
-        return Settings.Global.getInt(context.getContentResolver(),
-            FIXED_ROTATION_TRANSFORM_SETTING_NAME, 0) != 0;
     }
 
     // An intent extra to indicate the horizontal scroll of the wallpaper.
