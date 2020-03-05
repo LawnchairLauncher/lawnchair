@@ -115,7 +115,8 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
                 int visibleDelta = maxWidth - widget.getVisibleBounds().width();
                 if (visibleDelta > 0) {
                     Rect parentBounds = cell.getVisibleBounds();
-                    mLauncher.linearGesture(parentBounds.centerX() + visibleDelta,
+                    mLauncher.linearGesture(parentBounds.centerX() + visibleDelta
+                                    + mLauncher.getTouchSlop(),
                             parentBounds.centerY(), parentBounds.centerX(),
                             parentBounds.centerY(), 10, true, GestureScope.INSIDE);
                 }
