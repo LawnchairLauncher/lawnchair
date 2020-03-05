@@ -34,6 +34,7 @@ import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Debug;
 import android.os.Process;
@@ -70,6 +71,7 @@ import com.android.launcher3.util.rule.ShellCommandRule;
 import com.android.launcher3.util.rule.TestStabilityRule;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.RuleChain;
@@ -213,6 +215,21 @@ public abstract class AbstractLauncherUiTest {
 
     @Before
     public void setUp() throws Exception {
+        final String launcherPackageName = mDevice.getLauncherPackageName();
+        try {
+            final Context context = InstrumentationRegistry.getContext();
+            final PackageManager pm = context.getPackageManager();
+            final PackageInfo launcherPackage = pm.getPackageInfo(launcherPackageName, 0);
+
+            if (!launcherPackage.versionName.equals("BuildFromAndroidStudio")) {
+                Assert.assertEquals("Launcher version doesn't match tests version",
+                        pm.getPackageInfo(context.getPackageName(), 0).getLongVersionCode(),
+                        launcherPackage.getLongVersionCode());
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
         mLauncherPid = 0;
         // Disable app tracker
         AppLaunchTracker.INSTANCE.initializeForTesting(new AppLaunchTracker());
