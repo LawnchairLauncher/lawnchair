@@ -833,6 +833,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                         ON_ACTIVITY_RESULT_ANIMATION_DELAY, false);
             }
         }
+
         mDragLayer.clearAnimatedView();
     }
 
