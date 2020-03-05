@@ -29,5 +29,5 @@ peanutbutter@google.com
 xuqiu@google.com
 sreyasr@google.com
 
-per-file FeatureFlags.java = sunnygoyal@google.com, adamcohen@google.com
-per-file BaseFlags.java = sunnygoyal@google.com, adamcohen@google.com
+per-file FeatureFlags.java, globs = set noparent
+per-file FeatureFlags.java = sunnygoyal@google.com, winsonc@google.com, zakcohen@google.com, mrcasey@google.com, adamcohen@google.com, hyunyoungs@google.com
