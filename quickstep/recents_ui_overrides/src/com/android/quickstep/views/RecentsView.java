@@ -37,7 +37,6 @@ import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_OVERVIEW;
 import static com.android.quickstep.TaskUtils.checkCurrentOrManagedUserId;
 
-import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.LayoutTransition;
 import android.animation.LayoutTransition.TransitionListener;
@@ -698,6 +697,21 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             taskViewCount--;
         }
         return taskViewCount;
+    }
+
+    /**
+     * Updates UI for a modal task, including hiding other tasks.
+     */
+    public void updateUiForModalTask(TaskView taskView, boolean isTaskOverlayModal) {
+        int currentIndex = indexOfChild(taskView);
+        TaskView previousTask = getTaskViewAt(currentIndex - 1);
+        TaskView nextTask = getTaskViewAt(currentIndex + 1);
+        if (previousTask != null) {
+            previousTask.setVisibility(isTaskOverlayModal ? View.INVISIBLE : View.VISIBLE);
+        }
+        if (nextTask != null) {
+            nextTask.setVisibility(isTaskOverlayModal ? View.INVISIBLE : View.VISIBLE);
+        }
     }
 
     protected void onTaskStackUpdated() { }

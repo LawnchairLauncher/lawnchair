@@ -245,6 +245,13 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         return mSnapshotView.getTaskOverlay().isOverlayModal();
     }
 
+    /** Updates UI based on whether the task is modal. */
+    public void updateUiForModalTask() {
+        if (getRecentsView() != null) {
+            getRecentsView().updateUiForModalTask(this, isTaskOverlayModal());
+        }
+    }
+
     public TaskMenuView getMenuView() {
         return mMenuView;
     }
