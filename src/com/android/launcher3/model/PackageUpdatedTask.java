@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.model;
 
+import static com.android.launcher3.WorkspaceItemInfo.FLAG_AUTOINSTALL_ICON;
+
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -23,23 +25,19 @@ import android.os.Process;
 import android.os.UserHandle;
 import android.util.Log;
 
-import com.android.launcher3.AllAppsList;
-import com.android.launcher3.AppInfo;
-import com.android.launcher3.WorkspaceItemInfo;
-import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.InstallShortcutReceiver;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetInfo;
-import com.android.launcher3.LauncherModel.CallbackTask;
-import com.android.launcher3.LauncherModel.Callbacks;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.SessionCommitReceiver;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.BitmapInfo;
+import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
@@ -49,6 +47,7 @@ import com.android.launcher3.util.IntSparseArrayMap;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.PackageUserKey;
+import com.android.launcher3.util.SafeCloseable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -57,6 +56,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import static com.android.launcher3.WorkspaceItemInfo.FLAG_AUTOINSTALL_ICON;
+import static com.android.launcher3.WorkspaceItemInfo.FLAG_RESTORED_ICON;
 
 /**
  * Handles updates due to changes in package manager (app installed/updated/removed)
@@ -100,6 +100,8 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
         FlagOp flagOp = FlagOp.NO_OP;
         final HashSet<String> packageSet = new HashSet<>(Arrays.asList(packages));
         ItemInfoMatcher matcher = ItemInfoMatcher.ofPackages(packageSet, mUser);
+        final HashSet<ComponentName> removedComponents = new HashSet<>();
+
         switch (mOp) {
             case OP_ADD: {
                 for (int i = 0; i < N; i++) {
@@ -119,17 +121,21 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                 break;
             }
             case OP_UPDATE:
-                for (int i = 0; i < N; i++) {
-                    if (DEBUG) Log.d(TAG, "mAllAppsList.updatePackage " + packages[i]);
-                    iconCache.updateIconsForPkg(packages[i], mUser);
-                    appsList.updatePackage(context, packages[i], mUser);
-                    app.getWidgetCache().removePackage(packages[i], mUser);
+                try (SafeCloseable t =
+                             appsList.trackRemoves(a -> removedComponents.add(a.componentName))) {
+                    for (int i = 0; i < N; i++) {
+                        if (DEBUG) Log.d(TAG, "mAllAppsList.updatePackage " + packages[i]);
+                        iconCache.updateIconsForPkg(packages[i], mUser);
+                        appsList.updatePackage(context, packages[i], mUser);
+                        app.getWidgetCache().removePackage(packages[i], mUser);
+                    }
                 }
                 // Since package was just updated, the target must be available now.
                 flagOp = FlagOp.removeFlag(WorkspaceItemInfo.FLAG_DISABLED_NOT_AVAILABLE);
                 break;
             case OP_REMOVE: {
                 for (int i = 0; i < N; i++) {
+                    FileLog.d(TAG, "Removing app icon" + packages[i]);
                     iconCache.removeIconsForPkg(packages[i], mUser);
                 }
                 // Fall through
@@ -160,23 +166,7 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                 break;
         }
 
-        final ArrayList<AppInfo> addedOrModified = new ArrayList<>();
-        addedOrModified.addAll(appsList.added);
-        appsList.added.clear();
-        addedOrModified.addAll(appsList.modified);
-        appsList.modified.clear();
-        if (!addedOrModified.isEmpty()) {
-            scheduleCallbackTask((callbacks) -> callbacks.bindAppsAddedOrUpdated(addedOrModified));
-        }
-
-        final ArrayList<AppInfo> removedApps = new ArrayList<>(appsList.removed);
-        appsList.removed.clear();
-        final HashSet<ComponentName> removedComponents = new HashSet<>();
-        if (mOp == OP_UPDATE) {
-            for (AppInfo ai : removedApps) {
-                removedComponents.add(ai.componentName);
-            }
-        }
+        bindApplicationsIfNeeded();
 
         final IntSparseArrayMap<Boolean> removedShortcuts = new IntSparseArrayMap<>();
 
@@ -234,7 +224,7 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                                     isTargetValid = LauncherAppsCompat.getInstance(context)
                                             .isActivityEnabledForProfile(cn, mUser);
                                 }
-                                if (si.hasStatusFlag(FLAG_AUTOINSTALL_ICON)) {
+                                if (si.hasStatusFlag(FLAG_RESTORED_ICON | FLAG_AUTOINSTALL_ICON)) {
                                     if (updateWorkspaceItemIntent(context, si, packageName)) {
                                         infoUpdated = true;
                                     } else if (si.hasPromiseIconUi()) {
@@ -302,12 +292,7 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
             }
 
             if (!widgets.isEmpty()) {
-                scheduleCallbackTask(new CallbackTask() {
-                    @Override
-                    public void execute(Callbacks callbacks) {
-                        callbacks.bindWidgetsRestored(widgets);
-                    }
-                });
+                scheduleCallbackTask(c -> c.bindWidgetsRestored(widgets));
             }
         }
 
@@ -336,16 +321,6 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
 
             // Remove any queued items from the install queue
             InstallShortcutReceiver.removeFromInstallQueue(context, removedPackages, mUser);
-        }
-
-        if (!removedApps.isEmpty()) {
-            // Remove corresponding apps from All-Apps
-            scheduleCallbackTask(new CallbackTask() {
-                @Override
-                public void execute(Callbacks callbacks) {
-                    callbacks.bindAppInfosRemoved(removedApps);
-                }
-            });
         }
 
         if (Utilities.ATLEAST_OREO && mOp == OP_ADD) {

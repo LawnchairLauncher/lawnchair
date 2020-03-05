@@ -16,6 +16,8 @@
 
 package com.android.launcher3.notification;
 
+import static com.android.launcher3.touch.SingleAxisSwipeDetector.HORIZONTAL;
+
 import android.app.Notification;
 import android.content.Context;
 import android.graphics.Color;
@@ -28,12 +30,10 @@ import android.widget.TextView;
 import com.android.launcher3.R;
 import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.popup.PopupContainerWithArrow;
-import com.android.launcher3.touch.SwipeDetector;
+import com.android.launcher3.touch.SingleAxisSwipeDetector;
 import com.android.launcher3.util.Themes;
 
 import java.util.List;
-
-import static com.android.launcher3.touch.SwipeDetector.HORIZONTAL;
 
 /**
  * Utility class to manage notification UI
@@ -49,7 +49,7 @@ public class NotificationItemView {
     private final TextView mHeaderCount;
     private final NotificationMainView mMainView;
     private final NotificationFooterLayout mFooter;
-    private final SwipeDetector mSwipeDetector;
+    private final SingleAxisSwipeDetector mSwipeDetector;
     private final View mIconView;
 
     private final View mHeader;
@@ -74,8 +74,8 @@ public class NotificationItemView {
         mHeader = container.findViewById(R.id.header);
         mDivider = container.findViewById(R.id.divider);
 
-        mSwipeDetector = new SwipeDetector(mContext, mMainView, HORIZONTAL);
-        mSwipeDetector.setDetectableScrollConditions(SwipeDetector.DIRECTION_BOTH, false);
+        mSwipeDetector = new SingleAxisSwipeDetector(mContext, mMainView, HORIZONTAL);
+        mSwipeDetector.setDetectableScrollConditions(SingleAxisSwipeDetector.DIRECTION_BOTH, false);
         mMainView.setSwipeDetector(mSwipeDetector);
         mFooter.setContainer(this);
     }

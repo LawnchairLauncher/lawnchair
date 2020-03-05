@@ -21,5 +21,5 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="couldnt_launch" msgid="7873588052226763866">"تعذَّر تشغيل النشاط."</string>
     <string name="add_app_shortcut" msgid="2756755330707509435">"إضافة اختصار التطبيق"</string>
-    <string name="set_wallpaper" msgid="6475195450505435904">"تعيين الخلفية"</string>
+    <string name="set_wallpaper" msgid="6475195450505435904">"ضبط الخلفية"</string>
 </resources>

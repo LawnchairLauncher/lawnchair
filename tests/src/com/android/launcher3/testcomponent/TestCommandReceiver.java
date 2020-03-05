@@ -104,7 +104,8 @@ public class TestCommandReceiver extends ContentProvider {
 
             case GET_SYSTEM_HEALTH_MESSAGE: {
                 final Bundle response = new Bundle();
-                response.putString("result", TestHelpers.getSystemHealthMessage(getContext()));
+                response.putString("result",
+                        TestHelpers.getSystemHealthMessage(getContext(), Long.parseLong(arg)));
                 return response;
             }
         }

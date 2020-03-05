@@ -271,7 +271,6 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
 
         // Launch the home activity
         mDevice.pressHome();
-        waitForModelLoaded();
     }
 
     private void verifyWidgetPresent(LauncherAppWidgetProviderInfo info) {

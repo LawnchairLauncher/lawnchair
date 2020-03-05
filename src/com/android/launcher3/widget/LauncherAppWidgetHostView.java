@@ -44,6 +44,7 @@ import com.android.launcher3.SimpleOnStylusPressListener;
 import com.android.launcher3.StylusEventHelper;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.dragndrop.DragLayer;
+import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.BaseDragLayer.TouchCompleteListener;
 
@@ -96,7 +97,7 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
         setBackgroundResource(R.drawable.widget_internal_focus_bg);
 
         if (Utilities.ATLEAST_OREO) {
-            setExecutor(Utilities.THREAD_POOL_EXECUTOR);
+            setExecutor(Executors.THREAD_POOL_EXECUTOR);
         }
         if (Utilities.ATLEAST_Q && Themes.getAttrBoolean(mLauncher, R.attr.isWorkspaceDarkText)) {
             setOnLightBackground(true);
@@ -332,12 +333,7 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
         if (shouldRegisterAutoAdvance != mIsAutoAdvanceRegistered) {
             mIsAutoAdvanceRegistered = shouldRegisterAutoAdvance;
             if (mAutoAdvanceRunnable == null) {
-                mAutoAdvanceRunnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        runAutoAdvance();
-                    }
-                };
+                mAutoAdvanceRunnable = this::runAutoAdvance;
             }
 
             handler.removeCallbacks(mAutoAdvanceRunnable);

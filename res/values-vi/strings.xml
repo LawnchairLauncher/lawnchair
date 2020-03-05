@@ -20,7 +20,6 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name" msgid="649227358658669779">"Trình chạy 3"</string>
-    <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="work_folder_name" msgid="3753320833950115786">"Work"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"Ứng dụng chưa được cài đặt."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"Ứng dụng không có sẵn"</string>
@@ -86,7 +85,7 @@
     <string name="allow_rotation_title" msgid="7728578836261442095">"Cho phép xoay Màn hình chính"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Khi xoay điện thoại"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"Dấu chấm thông báo"</string>
-    <string name="notification_dots_desc_on" msgid="1679848116452218908">"Bật"</string>
+    <string name="notification_dots_desc_on" msgid="1679848116452218908">"Đang bật"</string>
     <string name="notification_dots_desc_off" msgid="1760796511504341095">"Tắt"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"Cần quyền truy cập thông báo"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Để hiển thị Dấu chấm thông báo, hãy bật thông báo ứng dụng cho <xliff:g id="NAME">%1$s</xliff:g>"</string>
