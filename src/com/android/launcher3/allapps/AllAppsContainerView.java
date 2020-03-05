@@ -15,9 +15,6 @@
  */
 package com.android.launcher3.allapps;
 
-import static android.view.View.MeasureSpec.EXACTLY;
-import static android.view.View.MeasureSpec.makeMeasureSpec;
-
 import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
 
 import android.animation.ValueAnimator;
@@ -395,7 +392,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         rebindAdapters(showTabs, false /* force */);
     }
 
-    private void rebindAdapters(boolean showTabs, boolean force) {
+    protected void rebindAdapters(boolean showTabs, boolean force) {
         if (showTabs == mUsingTabs && !force) {
             return;
         }
@@ -463,6 +460,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     public void onTabChanged(int pos) {
         mHeader.setMainActive(pos == 0);
         reset(true /* animate */);
+        mViewPager.getPageIndicator().updateTabTextColor(pos);
         if (mAH[pos].recyclerView != null) {
             mAH[pos].recyclerView.bindFastScrollbar();
 
@@ -608,6 +606,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         public static final int MAIN = 0;
         public static final int WORK = 1;
 
+        private ItemInfoMatcher mInfoMatcher;
         private final boolean mIsWork;
         public final AllAppsGridAdapter adapter;
         final LinearLayoutManager layoutManager;
@@ -627,6 +626,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         }
 
         void setup(@NonNull View rv, @Nullable ItemInfoMatcher matcher) {
+            mInfoMatcher = matcher;
             appsList.updateItemFilter(matcher);
             recyclerView = (AllAppsRecyclerView) rv;
             recyclerView.setEdgeEffectFactory(createEdgeEffectFactory());
@@ -647,19 +647,14 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         void setupOverlay() {
             if (!mIsWork || recyclerView == null) return;
             boolean workDisabled = UserCache.INSTANCE.get(mLauncher).isAnyProfileQuietModeEnabled();
-            recyclerView.getOverlay().clear();
+            if (mWorkDisabled == workDisabled) return;
             if (workDisabled) {
-                View pausedOverlay = mLauncher.getLayoutInflater().inflate(
-                        R.layout.work_apps_paused, null);
-                recyclerView.post(() -> {
-                    int width = recyclerView.getWidth();
-                    int height = recyclerView.getHeight() -  mWorkFooterContainer.getHeight();
-                    pausedOverlay.measure(makeMeasureSpec(recyclerView.getWidth(), EXACTLY),
-                            makeMeasureSpec(recyclerView.getHeight(), EXACTLY));
-                    pausedOverlay.layout(0, 0, width, height);
-                    applyPadding();
-                });
-                recyclerView.getOverlay().add(pausedOverlay);
+                appsList.updateItemFilter((info, cn) -> false);
+                recyclerView.addAutoSizedOverlay(
+                        mLauncher.getLayoutInflater().inflate(R.layout.work_apps_paused, null));
+            } else if (mInfoMatcher != null) {
+                appsList.updateItemFilter(mInfoMatcher);
+                recyclerView.clearAutoSizedOverlays();
             }
             mWorkDisabled = workDisabled;
         }
