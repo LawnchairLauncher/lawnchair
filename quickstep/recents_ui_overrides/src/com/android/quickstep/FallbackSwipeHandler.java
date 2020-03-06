@@ -41,6 +41,9 @@ import android.view.MotionEvent;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
+import com.android.launcher3.touch.LandscapePagedViewHandler;
+import com.android.launcher3.touch.PagedOrientationHandler;
+import com.android.launcher3.touch.PortraitPagedViewHandler;
 import com.android.launcher3.util.ObjectWrapper;
 import com.android.quickstep.BaseActivityInterface.HomeAnimationFactory;
 import com.android.quickstep.GestureState.GestureEndTarget;
@@ -470,8 +473,13 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
         HomeAnimationFactory factory = new HomeAnimationFactory() {
             @Override
             public RectF getWindowTargetRect() {
+                PagedOrientationHandler orientationHandler = mRecentsView != null
+                        ? mRecentsView.getPagedOrientationHandler()
+                        : (mDp.isLandscape
+                                ? new LandscapePagedViewHandler()
+                                : new PortraitPagedViewHandler());
                 return HomeAnimationFactory
-                    .getDefaultWindowTargetRect(mRecentsView.getPagedOrientationHandler(), mDp);
+                    .getDefaultWindowTargetRect(orientationHandler, mDp);
             }
 
             @Override
