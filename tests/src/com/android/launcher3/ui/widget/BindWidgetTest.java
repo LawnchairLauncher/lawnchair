@@ -21,6 +21,7 @@ import static com.android.launcher3.widget.WidgetHostViewLoader.getDefaultOption
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import android.appwidget.AppWidgetHost;
@@ -33,6 +34,7 @@ import android.content.pm.PackageInstaller.SessionParams;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.widget.RemoteViews;
 
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
@@ -41,6 +43,7 @@ import com.android.launcher3.LauncherAppWidgetHost;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.LauncherSettings;
+import com.android.launcher3.R;
 import com.android.launcher3.pm.InstallSessionHelper;
 import com.android.launcher3.tapl.Workspace;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
@@ -86,7 +89,8 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
 
         // Clear all existing data
         LauncherSettings.Settings.call(mResolver, LauncherSettings.Settings.METHOD_CREATE_EMPTY_DB);
-        LauncherSettings.Settings.call(mResolver, LauncherSettings.Settings.METHOD_CLEAR_EMPTY_DB_FLAG);
+        LauncherSettings.Settings.call(mResolver,
+                LauncherSettings.Settings.METHOD_CLEAR_EMPTY_DB_FLAG);
     }
 
     @After
@@ -172,6 +176,26 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
         assertNotNull(AppWidgetManager.getInstance(mTargetContext)
                 .getAppWidgetInfo(mCursor.getInt(mCursor.getColumnIndex(
                         LauncherSettings.Favorites.APPWIDGET_ID))));
+
+        // send OPTION_APPWIDGET_RESTORE_COMPLETED
+        int appWidgetId = mCursor.getInt(
+                mCursor.getColumnIndex(LauncherSettings.Favorites.APPWIDGET_ID));
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(mTargetContext);
+
+        Bundle b = new Bundle();
+        b.putBoolean(WidgetManagerHelper.WIDGET_OPTION_RESTORE_COMPLETED, true);
+        RemoteViews remoteViews = new RemoteViews(mTargetPackage, R.layout.appwidget_not_ready);
+        appWidgetManager.updateAppWidgetOptions(appWidgetId, b);
+        appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
+
+
+        // verify changes are reflected
+        waitForLauncherCondition("App widget options did not update",
+                l -> appWidgetManager.getAppWidgetOptions(appWidgetId).getBoolean(
+                        WidgetManagerHelper.WIDGET_OPTION_RESTORE_COMPLETED));
+        executeOnLauncher(l -> l.getAppWidgetHost().startListening());
+        verifyWidgetPresent(info);
+        assertNull(mLauncher.getWorkspace().tryGetPendingWidget(DEFAULT_UI_TIMEOUT));
     }
 
     @Test
@@ -254,6 +278,7 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
 
     /**
      * Creates a LauncherAppWidgetInfo corresponding to {@param info}
+     *
      * @param bindWidget if true the info is bound and a valid widgetId is assigned to
      *                   the LauncherAppWidgetInfo
      */
@@ -306,7 +331,7 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
                     .keySet().forEach(packageUserKey -> packages.add(packageUserKey.mPackageName));
             return packages;
         });
-        while(true) {
+        while (true) {
             try {
                 mTargetContext.getPackageManager().getPackageInfo(
                         pkg, PackageManager.GET_UNINSTALLED_PACKAGES);
@@ -316,7 +341,7 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
                 }
             }
             pkg = invalidPackage + count;
-            count ++;
+            count++;
         }
         LauncherAppWidgetInfo item = new LauncherAppWidgetInfo(10,
                 new ComponentName(pkg, "com.test.widgetprovider"));

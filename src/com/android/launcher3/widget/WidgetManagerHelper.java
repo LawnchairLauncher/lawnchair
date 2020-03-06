@@ -49,6 +49,9 @@ import java.util.stream.Stream;
  */
 public class WidgetManagerHelper {
 
+    //TODO: replace this with OPTION_APPWIDGET_RESTORE_COMPLETED b/63667276
+    public static final String WIDGET_OPTION_RESTORE_COMPLETED = "appWidgetRestoreCompleted";
+
     final AppWidgetManager mAppWidgetManager;
     final Context mContext;
 
@@ -125,6 +128,14 @@ public class WidgetManagerHelper {
             }
         }
         return null;
+    }
+
+    /**
+     * Returns if a AppWidgetProvider has marked a widget restored
+     */
+    public boolean isAppWidgetRestored(int appWidgetId) {
+        return !WidgetsModel.GO_DISABLE_WIDGETS && mAppWidgetManager.getAppWidgetOptions(
+                appWidgetId).getBoolean(WIDGET_OPTION_RESTORE_COMPLETED);
     }
 
     public static Map<ComponentKey, AppWidgetProviderInfo> getAllProvidersMap(Context context) {

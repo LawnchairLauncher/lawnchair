@@ -249,6 +249,10 @@ public class WidgetsModel {
             ComponentName providerName) {
         ArrayList<WidgetItem> widgetsList = mWidgetsList.get(
                 new PackageItemInfo(providerName.getPackageName()));
+        if (widgetsList == null) {
+            return null;
+        }
+
         for (WidgetItem item : widgetsList) {
             if (item.componentName.equals(providerName)) {
                 return item;

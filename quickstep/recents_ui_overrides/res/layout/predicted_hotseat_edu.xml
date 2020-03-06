@@ -35,25 +35,27 @@
 
         <TextView
             style="@style/TextHeadline"
+            android:id="@+id/hotseat_edu_heading"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="18dp"
             android:paddingLeft="@dimen/bottom_sheet_edu_padding"
             android:paddingRight="@dimen/bottom_sheet_edu_padding"
-            android:text="@string/hotseat_migrate_title"
+            android:text="@string/hotseat_edu_title_migrate"
             android:textAlignment="center"
             android:textColor="@android:color/white"
             android:textSize="20sp" />
 
         <TextView
             android:layout_width="match_parent"
+            android:id="@+id/hotseat_edu_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="18dp"
             android:layout_marginBottom="18dp"
             android:fontFamily="roboto-medium"
             android:paddingLeft="@dimen/bottom_sheet_edu_padding"
             android:paddingRight="@dimen/bottom_sheet_edu_padding"
-            android:text="@string/hotseat_migrate_message"
+            android:text="@string/hotseat_edu_message_migrate"
             android:textAlignment="center"
             android:textColor="@android:color/white"
             android:textSize="16sp" />
@@ -83,7 +85,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
                     android:background="?android:attr/selectableItemBackground"
-                    android:text="@string/hotseat_migrate_accept"
+                    android:text="@string/hotseat_edu_accept"
                     android:textAlignment="textEnd"
                     android:textColor="@android:color/white" />
 
@@ -91,7 +93,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/no_thanks"
-                    android:text="@string/hotseat_migrate_dismiss"
+                    android:text="@string/hotseat_edu_dismiss"
                     android:layout_gravity="start"
                     android:background="?android:attr/selectableItemBackground"
                     android:textColor="@android:color/white" />

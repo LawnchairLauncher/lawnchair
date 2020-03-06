@@ -36,6 +36,7 @@ import android.graphics.RectF;
 import android.graphics.Shader;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
+import android.util.Log;
 import android.util.Property;
 import android.view.Surface;
 import android.view.View;

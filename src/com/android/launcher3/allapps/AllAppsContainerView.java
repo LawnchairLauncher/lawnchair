@@ -98,8 +98,8 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     protected boolean mUsingTabs;
     private boolean mSearchModeWhileUsingTabs = false;
 
-    private RecyclerViewFastScroller mTouchHandler;
-    private final Point mFastScrollerOffset = new Point();
+    protected RecyclerViewFastScroller mTouchHandler;
+    protected final Point mFastScrollerOffset = new Point();
 
     private final MultiValueAlpha mMultiValueAlpha;
 
@@ -238,6 +238,16 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            AllAppsRecyclerView rv = getActiveRecyclerView();
+            if (rv != null && rv.getScrollbar().isHitInParent(ev.getX(), ev.getY(),
+                    mFastScrollerOffset)) {
+                mTouchHandler = rv.getScrollbar();
+            } else {
+                mTouchHandler = null;
+
+            }
+        }
         if (mTouchHandler != null) {
             mTouchHandler.handleTouchEvent(ev, mFastScrollerOffset);
             return true;

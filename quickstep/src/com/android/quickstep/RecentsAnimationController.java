@@ -39,7 +39,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
- * Wrapper around RecentsAnimationController to help with some synchronization
+ * Wrapper around RecentsAnimationControllerCompat to help with some synchronization
  */
 public class RecentsAnimationController {
 
