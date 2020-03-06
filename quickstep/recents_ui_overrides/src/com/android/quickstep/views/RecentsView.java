@@ -88,7 +88,6 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.InvariantDeviceProfile;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
@@ -479,7 +478,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         mIPinnedStackAnimationListener.setActivity(mActivity);
         SystemUiProxy.INSTANCE.get(getContext()).setPinnedStackAnimationListener(
                 mIPinnedStackAnimationListener);
-        addActionsView();
+        setActionsView();
     }
 
     @Override
@@ -2105,7 +2104,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         }
     }
 
-    private void addActionsView() {
+    private void setActionsView() {
         if (mActionsView == null && ENABLE_OVERVIEW_ACTIONS.get()
                 && SysUINavigationMode.removeShelfFromOverview(mActivity)) {
             mActionsView = ((ViewGroup) getParent()).findViewById(R.id.overview_actions_view);
