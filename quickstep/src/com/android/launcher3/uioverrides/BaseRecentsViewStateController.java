@@ -17,6 +17,9 @@
 package com.android.launcher3.uioverrides;
 
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
+import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
+import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
+import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_FADE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_SCALE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_SCRIM_FADE;
@@ -116,8 +119,8 @@ public abstract class BaseRecentsViewStateController<T extends View>
         if (mRecentsView.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
             translationX = -translationX;
         }
-        setter.setFloat(mRecentsView, View.TRANSLATION_X, translationX, translateXInterpolator);
-        setter.setFloat(mRecentsView, View.TRANSLATION_Y, scaleAndTranslation.translationY,
+        setter.setFloat(mRecentsView, VIEW_TRANSLATE_X, translationX, translateXInterpolator);
+        setter.setFloat(mRecentsView, VIEW_TRANSLATE_Y, scaleAndTranslation.translationY,
                 translateYInterpolator);
         setter.setFloat(mRecentsView, getContentAlphaProperty(), toState.overviewUi ? 1 : 0,
                 builder.getInterpolator(ANIM_OVERVIEW_FADE, AGGRESSIVE_EASE_IN_OUT));
@@ -125,8 +128,8 @@ public abstract class BaseRecentsViewStateController<T extends View>
         setter.setFloat(scrim, SCRIM_PROGRESS, toState.getOverviewScrimAlpha(mLauncher),
                 builder.getInterpolator(ANIM_OVERVIEW_SCRIM_FADE, LINEAR));
         if (mActionsView != null) {
-            setter.setFloat(mActionsView, View.TRANSLATION_X, translationX, translateXInterpolator);
-            setter.setFloat(mActionsView, View.ALPHA, toState.overviewUi ? 1 : 0,
+            setter.setFloat(mActionsView, VIEW_TRANSLATE_X, translationX, translateXInterpolator);
+            setter.setFloat(mActionsView, VIEW_ALPHA, toState.overviewUi ? 1 : 0,
                     builder.getInterpolator(ANIM_OVERVIEW_FADE, AGGRESSIVE_EASE_IN_OUT));
         }
     }
