@@ -261,6 +261,7 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
 
     @Override
     protected boolean onActivityInit(Boolean alreadyOnHome) {
+        super.onActivityInit(alreadyOnHome);
         final T activity = mActivityInterface.getCreatedActivity();
         if (mActivity == activity) {
             return true;
@@ -770,6 +771,16 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
             }
         }
 
+        if (endTarget == NEW_TASK) {
+            SystemUiProxy.INSTANCE.get(mContext).onQuickSwitchToNewTask();
+        }
+
+        if (endTarget == RECENTS || endTarget == HOME) {
+            // Since we're now done quickStepping, we want to only listen for touch events
+            // for the main orientation's nav bar, instead of multiple
+            mDeviceState.enableMultipleRegions(false);
+        }
+
         if (mDeviceState.isOverviewDisabled() && (endTarget == RECENTS || endTarget == LAST_TASK)) {
             return LAST_TASK;
         }
@@ -929,7 +940,8 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
                     mGestureState.setState(STATE_END_TARGET_ANIMATION_FINISHED);
                 }
             });
-            windowAnim.start(velocityPxPerMs);
+            getOrientationHandler().adjustFloatingIconStartVelocity(velocityPxPerMs);
+            windowAnim.start(mContext, velocityPxPerMs);
             homeAnimFactory.playAtomicAnimation(velocityPxPerMs.y);
             mRunningWindowAnim = RunningWindowAnim.wrap(windowAnim);
             mLauncherTransitionController = null;

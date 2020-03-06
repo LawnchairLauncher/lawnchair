@@ -33,6 +33,9 @@ import com.android.quickstep.SysUINavigationMode;
 
 import java.lang.annotation.Retention;
 
+import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_ACTIONS;
+import static java.lang.annotation.RetentionPolicy.SOURCE;
+
 public class LayoutUtils {
 
     private static final int MULTI_WINDOW_STRATEGY_HALF_SCREEN = 1;

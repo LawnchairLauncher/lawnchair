@@ -52,10 +52,12 @@ public abstract class BaseRecentsViewStateController<T extends View>
         implements StateHandler {
     protected final T mRecentsView;
     protected final Launcher mLauncher;
+    protected final View mActionsView;
 
     public BaseRecentsViewStateController(@NonNull Launcher launcher) {
         mLauncher = launcher;
         mRecentsView = launcher.getOverviewPanel();
+        mActionsView = launcher.getActionsView();
     }
 
     @Override
@@ -72,6 +74,10 @@ public abstract class BaseRecentsViewStateController<T extends View>
         getContentAlphaProperty().set(mRecentsView, state.overviewUi ? 1f : 0);
         OverviewScrim scrim = mLauncher.getDragLayer().getOverviewScrim();
         SCRIM_PROGRESS.set(scrim, state.getOverviewScrimAlpha(mLauncher));
+        if (mActionsView != null) {
+            mActionsView.setTranslationX(translationX);
+            mActionsView.setAlpha(state.overviewUi ? 1f : 0);
+        }
     }
 
     @Override
@@ -118,6 +124,11 @@ public abstract class BaseRecentsViewStateController<T extends View>
         OverviewScrim scrim = mLauncher.getDragLayer().getOverviewScrim();
         setter.setFloat(scrim, SCRIM_PROGRESS, toState.getOverviewScrimAlpha(mLauncher),
                 builder.getInterpolator(ANIM_OVERVIEW_SCRIM_FADE, LINEAR));
+        if (mActionsView != null) {
+            setter.setFloat(mActionsView, View.TRANSLATION_X, translationX, translateXInterpolator);
+            setter.setFloat(mActionsView, View.ALPHA, toState.overviewUi ? 1 : 0,
+                    builder.getInterpolator(ANIM_OVERVIEW_FADE, AGGRESSIVE_EASE_IN_OUT));
+        }
     }
 
     /**

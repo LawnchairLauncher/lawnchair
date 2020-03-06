@@ -80,10 +80,10 @@ public class FlingAndHoldTouchController extends PortraitStatesTouchController {
     }
 
     @Override
-    public void onDragStart(boolean start) {
+    public void onDragStart(boolean start, float startDisplacement) {
         mMotionPauseDetector.clear();
 
-        super.onDragStart(start);
+        super.onDragStart(start, startDisplacement);
 
         if (handlingOverviewAnim()) {
             mMotionPauseDetector.setOnMotionPauseListener(this::onMotionPauseChanged);

@@ -195,4 +195,9 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity> {
         }
         super.applyLoadPlan(tasks);
     }
+
+    @Override
+    protected boolean supportsVerticalLandscape() {
+        return false;
+    }
 }

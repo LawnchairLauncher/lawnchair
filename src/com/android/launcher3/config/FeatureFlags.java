@@ -101,10 +101,14 @@ public final class FeatureFlags {
             "Adds localized title and keyword search and ranking");
 
     public static final BooleanFlag ENABLE_PREDICTION_DISMISS = new DeviceFlag(
-            "ENABLE_PREDICTION_DISMISS", false, "Allow option to dimiss apps from predicted list");
+            "ENABLE_PREDICTION_DISMISS", true, "Allow option to dimiss apps from predicted list");
 
     public static final BooleanFlag ENABLE_QUICK_CAPTURE_GESTURE = getDebugFlag(
             "ENABLE_QUICK_CAPTURE_GESTURE", true, "Swipe from right to left to quick capture");
+
+    public static final BooleanFlag FORCE_LOCAL_OVERSCROLL_PLUGIN = getDebugFlag(
+            "FORCE_LOCAL_OVERSCROLL_PLUGIN", false,
+            "Use a launcher-provided OverscrollPlugin if available");
 
     public static final BooleanFlag ASSISTANT_GIVES_LAUNCHER_FOCUS = getDebugFlag(
             "ASSISTANT_GIVES_LAUNCHER_FOCUS", false,
@@ -113,6 +117,10 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_HYBRID_HOTSEAT = new DeviceFlag(
             "ENABLE_HYBRID_HOTSEAT", false, "Fill gaps in hotseat with predicted apps");
 
+    public static final BooleanFlag HOTSEAT_MIGRATE_NEW_PAGE = new DeviceFlag(
+            "HOTSEAT_MIGRATE_NEW_PAGE", true,
+            "Migrates hotseat to a new workspace page instead of same page");
+
     public static final BooleanFlag ENABLE_DEEP_SHORTCUT_ICON_CACHE = getDebugFlag(
             "ENABLE_DEEP_SHORTCUT_ICON_CACHE", true, "R/W deep shortcut in IconCache");
 
@@ -120,7 +128,7 @@ public final class FeatureFlags {
             "MULTI_DB_GRID_MIRATION_ALGO", false, "Use the multi-db grid migration algorithm");
 
     public static final BooleanFlag ENABLE_LAUNCHER_PREVIEW_IN_GRID_PICKER = getDebugFlag(
-            "ENABLE_LAUNCHER_PREVIEW_IN_GRID_PICKER", false,
+            "ENABLE_LAUNCHER_PREVIEW_IN_GRID_PICKER", true,
             "Show launcher preview in grid picker");
 
     public static final BooleanFlag ENABLE_OVERVIEW_ACTIONS = getDebugFlag(
@@ -138,6 +146,11 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_LSQ_VELOCITY_PROVIDER = getDebugFlag(
             "ENABLE_LSQ_VELOCITY_PROVIDER", false,
             "Use Least Square algorithm for motion pause detection.");
+
+    public static final BooleanFlag ALWAYS_USE_HARDWARE_OPTIMIZATION_FOR_FOLDER_ANIMATIONS =
+            getDebugFlag(
+            "ALWAYS_USE_HARDWARE_OPTIMIZATION_FOR_FOLDER_ANIMATIONS", false,
+            "Always use hardware optimization for folder animations.");
 
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {

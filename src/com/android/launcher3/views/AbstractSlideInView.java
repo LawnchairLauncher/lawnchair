@@ -149,8 +149,7 @@ public abstract class AbstractSlideInView extends AbstractFloatingView
     /* SingleAxisSwipeDetector.Listener */
 
     @Override
-    public void onDragStart(boolean start) {
-    }
+    public void onDragStart(boolean start, float startDisplacement) { }
 
     @Override
     public boolean onDrag(float displacement) {

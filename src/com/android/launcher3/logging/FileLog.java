@@ -38,7 +38,7 @@ public final class FileLog {
     private static final DateFormat DATE_FORMAT =
             DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
 
-    private static final long MAX_LOG_FILE_SIZE = 4 << 20;  // 4 mb
+    private static final long MAX_LOG_FILE_SIZE = 8 << 20;  // 4 mb
 
     private static Handler sHandler = null;
     private static File sLogsDirectory = null;
