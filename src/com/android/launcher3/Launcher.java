@@ -80,7 +80,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.OvershootInterpolator;
-import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -274,7 +273,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     // UI and state for the overview panel
     private View mOverviewPanel;
-    private FrameLayout mOverviewPanelContainer;
+    private View mActionsView;
 
     @Thunk
     boolean mWorkspaceLoading = true;
@@ -834,6 +833,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                         ON_ACTIVITY_RESULT_ANIMATION_DELAY, false);
             }
         }
+
         mDragLayer.clearAnimatedView();
     }
 
@@ -1162,8 +1162,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         mFocusHandler = mDragLayer.getFocusIndicatorHelper();
         mWorkspace = mDragLayer.findViewById(R.id.workspace);
         mWorkspace.initParentViews(mDragLayer);
-        mOverviewPanel = findViewById(R.id.overview_panel_recents);
-        mOverviewPanelContainer = findViewById(R.id.overview_panel_container);
+        mOverviewPanel = findViewById(R.id.overview_panel);
+        mActionsView = findViewById(R.id.overview_actions_view);
         mHotseat = findViewById(R.id.hotseat);
 
         mLauncherView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -1363,7 +1363,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     protected void onUiChangedWhileSleeping() { }
 
-    public void updateNotificationDots(Predicate<PackageUserKey> updatedDots) {
+    private void updateNotificationDots(Predicate<PackageUserKey> updatedDots) {
         mWorkspace.updateNotificationDots(updatedDots);
         mAppsView.getAppsStore().updateNotificationDots(updatedDots);
     }
@@ -1411,8 +1411,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         return (T) mOverviewPanel;
     }
 
-    public FrameLayout getOverviewPanelContainer() {
-        return mOverviewPanelContainer;
+    public View getActionsView() {
+        return mActionsView;
     }
 
     public DropTargetBar getDropTargetBar() {
@@ -2327,6 +2327,13 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                     item.restoreStatus = LauncherAppWidgetInfo.RESTORE_COMPLETED;
                     getModelWriter().updateItemInDatabase(item);
                 }
+                else if (item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_UI_NOT_READY)
+                        && appWidgetInfo.configure != null) {
+                    if (mAppWidgetManager.isAppWidgetRestored(item.appWidgetId)) {
+                        item.restoreStatus = LauncherAppWidgetInfo.RESTORE_COMPLETED;
+                        getModelWriter().updateItemInDatabase(item);
+                    }
+                }
             }
 
             if (item.restoreStatus == LauncherAppWidgetInfo.RESTORE_COMPLETED) {
@@ -2339,6 +2346,11 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
                 item.minSpanX = appWidgetInfo.minSpanX;
                 item.minSpanY = appWidgetInfo.minSpanY;
+                view = mAppWidgetHost.createView(this, item.appWidgetId, appWidgetInfo);
+            } else if (!item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_ID_NOT_VALID)
+                    && appWidgetInfo != null) {
+                mAppWidgetHost.addPendingView(item.appWidgetId,
+                        new PendingAppWidgetHostView(this, item, mIconCache, false));
                 view = mAppWidgetHost.createView(this, item.appWidgetId, appWidgetInfo);
             } else {
                 view = new PendingAppWidgetHostView(this, item, mIconCache, false);

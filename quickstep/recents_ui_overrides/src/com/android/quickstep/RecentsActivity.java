@@ -183,7 +183,8 @@ public final class RecentsActivity extends BaseRecentsActivity {
             RemoteAnimationTargetCompat[] wallpaperTargets) {
         AnimatorSet target = new AnimatorSet();
         boolean activityClosing = taskIsATargetWithMode(appTargets, getTaskId(), MODE_CLOSING);
-        AppWindowAnimationHelper helper = new AppWindowAnimationHelper(this);
+        AppWindowAnimationHelper helper = new AppWindowAnimationHelper(
+            mFallbackRecentsView.getPagedViewOrientedState(), this);
         target.play(getRecentsWindowAnimator(taskView, !activityClosing, appTargets,
                 wallpaperTargets, helper).setDuration(RECENTS_LAUNCH_DURATION));
 

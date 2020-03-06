@@ -15,11 +15,17 @@
  */
 package com.android.launcher3.anim;
 
+import android.content.Context;
+
 import androidx.dynamicanimation.animation.DynamicAnimation.OnAnimationEndListener;
 import androidx.dynamicanimation.animation.FlingAnimation;
 import androidx.dynamicanimation.animation.FloatPropertyCompat;
 import androidx.dynamicanimation.animation.SpringAnimation;
 import androidx.dynamicanimation.animation.SpringForce;
+
+import com.android.launcher3.R;
+import com.android.launcher3.util.DynamicResource;
+import com.android.systemui.plugins.ResourceProvider;
 
 /**
  * Given a property to animate and a target value and starting velocity, first apply friction to
@@ -27,20 +33,22 @@ import androidx.dynamicanimation.animation.SpringForce;
  */
 public class FlingSpringAnim {
 
-    private static final float FLING_FRICTION = 1.5f;
-    private static final float SPRING_STIFFNESS = 200;
-    private static final float SPRING_DAMPING = 0.8f;
-
     private final FlingAnimation mFlingAnim;
     private SpringAnimation mSpringAnim;
 
     private float mTargetPosition;
 
-    public <K> FlingSpringAnim(K object, FloatPropertyCompat<K> property, float startPosition,
-            float targetPosition, float startVelocity, float minVisChange, float minValue,
-            float maxValue, float springVelocityFactor, OnAnimationEndListener onEndListener) {
+    public <K> FlingSpringAnim(K object, Context context, FloatPropertyCompat<K> property,
+            float startPosition, float targetPosition, float startVelocity, float minVisChange,
+            float minValue, float maxValue, float springVelocityFactor,
+            OnAnimationEndListener onEndListener) {
+        ResourceProvider rp = DynamicResource.provider(context);
+        float damping = rp.getFloat(R.dimen.swipe_up_rect_xy_damping_ratio);
+        float stiffness = rp.getFloat(R.dimen.swipe_up_rect_xy_stiffness);
+        float friction = rp.getFloat(R.dimen.swipe_up_rect_xy_fling_friction);
+
         mFlingAnim = new FlingAnimation(object, property)
-                .setFriction(FLING_FRICTION)
+                .setFriction(friction)
                 // Have the spring pull towards the target if we've slowed down too much before
                 // reaching it.
                 .setMinimumVisibleChange(minVisChange)
@@ -54,8 +62,8 @@ public class FlingSpringAnim {
                     .setStartValue(value)
                     .setStartVelocity(velocity * springVelocityFactor)
                     .setSpring(new SpringForce(mTargetPosition)
-                            .setStiffness(SPRING_STIFFNESS)
-                            .setDampingRatio(SPRING_DAMPING));
+                            .setStiffness(stiffness)
+                            .setDampingRatio(damping));
             mSpringAnim.addEndListener(onEndListener);
             mSpringAnim.animateToFinalPosition(mTargetPosition);
         }));

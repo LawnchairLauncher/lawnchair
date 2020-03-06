@@ -125,7 +125,8 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
             return anim;
         }
 
-        final AppWindowAnimationHelper clipHelper = new AppWindowAnimationHelper(mActivity);
+        final AppWindowAnimationHelper clipHelper = new AppWindowAnimationHelper(
+            mRecentsView.getPagedViewOrientedState(), mActivity);
 
         // At this point, the activity is already started and laid-out. Get the home-bounds
         // relative to the screen using the rootView of the activity.

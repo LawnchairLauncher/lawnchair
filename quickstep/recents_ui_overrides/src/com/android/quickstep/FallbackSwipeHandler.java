@@ -161,12 +161,12 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
 
     @Override
     protected boolean onActivityInit(Boolean alreadyOnHome) {
+        super.onActivityInit(alreadyOnHome);
         mActivity = mActivityInterface.getCreatedActivity();
         mRecentsView = mActivity.getOverviewPanel();
         linkRecentsViewScroll();
         mRecentsView.setDisallowScrollToClearAll(true);
         mRecentsView.getClearAllButton().setVisibilityAlpha(0);
-
         mRecentsView.setZoomProgress(1);
 
         if (!mContinuingLastGesture) {
@@ -177,6 +177,7 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
             }
         }
         mStateCallback.setStateOnUiThread(STATE_RECENTS_PRESENT);
+        mDeviceState.enableMultipleRegions(false);
         return true;
     }
 
@@ -419,7 +420,7 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
                         this::createNewInputProxyHandler);
                 RectFSpringAnim anim = createWindowAnimationToHome(mCurrentShift.value, duration);
                 anim.addAnimatorListener(endListener);
-                anim.start(mEndVelocityPxPerMs);
+                anim.start(mContext, mEndVelocityPxPerMs);
                 mFinishAnimation = RunningWindowAnim.wrap(anim);
             } else {
 
@@ -469,7 +470,8 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
         HomeAnimationFactory factory = new HomeAnimationFactory() {
             @Override
             public RectF getWindowTargetRect() {
-                return HomeAnimationFactory.getDefaultWindowTargetRect(mDp);
+                return HomeAnimationFactory
+                    .getDefaultWindowTargetRect(mRecentsView.getPagedOrientationHandler(), mDp);
             }
 
             @Override

@@ -64,6 +64,7 @@ public class SimpleActivityRule<T extends Activity> implements TestRule {
                 mBase.evaluate();
             } finally {
                 app.unregisterActivityLifecycleCallbacks(this);
+                mActivity = null;
             }
         }
 
