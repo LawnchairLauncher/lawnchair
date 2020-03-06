@@ -52,7 +52,7 @@
             android:configChanges="keyboard|keyboardHidden|mcc|mnc|navigation|orientation|screenSize|screenLayout|smallestScreenSize"
             android:resizeableActivity="true"
             android:resumeWhilePausing="true"
-            android:taskAffinity=""
+            android:taskAffinity="${packageName}.launcher"
             android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

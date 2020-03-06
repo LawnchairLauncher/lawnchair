@@ -33,6 +33,7 @@ import android.util.TypedValue;
 import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.RemoteViews;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.FastBitmapDrawable;
@@ -90,6 +91,15 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
             cache.updateIconInBackground(this, info.pendingItemInfo);
         } else {
             reapplyItemInfo(info.pendingItemInfo);
+        }
+    }
+
+    @Override
+    public void updateAppWidget(RemoteViews remoteViews) {
+        super.updateAppWidget(remoteViews);
+        WidgetManagerHelper widgetManagerHelper = new WidgetManagerHelper(getContext());
+        if (widgetManagerHelper.isAppWidgetRestored(mInfo.appWidgetId)) {
+            reInflate();
         }
     }
 

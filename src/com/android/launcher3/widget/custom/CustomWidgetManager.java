@@ -51,6 +51,7 @@ public class CustomWidgetManager implements PluginListener<CustomWidgetPlugin> {
     public static final MainThreadInitializedObject<CustomWidgetManager> INSTANCE =
             new MainThreadInitializedObject<>(CustomWidgetManager::new);
 
+    private final Context mContext;
     /**
      * auto provider Id is an ever-increasing number that serves as the providerId whenever a new
      * custom widget has been connected.
@@ -62,11 +63,16 @@ public class CustomWidgetManager implements PluginListener<CustomWidgetPlugin> {
     private Consumer<PackageUserKey> mWidgetRefreshCallback;
 
     private CustomWidgetManager(Context context) {
+        mContext = context;
         mPlugins = new SparseArray<>();
         mCustomWidgets = new ArrayList<>();
         mWidgetsIdMap = new SparseArray<>();
         PluginManagerWrapper.INSTANCE.get(context)
                 .addPluginListener(this, CustomWidgetPlugin.class, true);
+    }
+
+    public void onDestroy() {
+        PluginManagerWrapper.INSTANCE.get(mContext).removePluginListener(this);
     }
 
     @Override
