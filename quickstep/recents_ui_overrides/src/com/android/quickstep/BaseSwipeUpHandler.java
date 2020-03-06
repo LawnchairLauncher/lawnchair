@@ -49,6 +49,7 @@ import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.model.PagedViewOrientedState;
 import com.android.launcher3.states.RotationHelper;
 import com.android.launcher3.touch.PagedOrientationHandler;
+import com.android.launcher3.touch.PortraitPagedViewHandler;
 import com.android.launcher3.util.VibratorWrapper;
 import com.android.launcher3.views.FloatingIconView;
 import com.android.quickstep.BaseActivityInterface.HomeAnimationFactory;
@@ -428,6 +429,9 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
     }
 
     protected PagedOrientationHandler getOrientationHandler() {
+        if (mOrientedState == null) {
+            return new PortraitPagedViewHandler();
+        }
         return mOrientedState.getOrientationHandler();
     }
 
