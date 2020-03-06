@@ -27,11 +27,15 @@ import android.view.ViewGroup;
 
 import androidx.core.app.NotificationCompat;
 
+import com.android.launcher3.CellLayout;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
+import com.android.launcher3.Workspace;
 import com.android.launcher3.WorkspaceItemInfo;
+import com.android.launcher3.WorkspaceLayoutManager;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.ActivityTracker;
 import com.android.launcher3.util.Themes;
@@ -61,16 +65,25 @@ public class HotseatEduController {
         mNotification = createNotification();
     }
 
-    void migrate() {
+    boolean migrate() {
+        Workspace workspace = mLauncher.getWorkspace();
+        CellLayout firstScreen = workspace.getScreenWithId(WorkspaceLayoutManager.FIRST_SCREEN_ID);
+        int toPage = Workspace.FIRST_SCREEN_ID;
+        int toRow = mLauncher.getDeviceProfile().inv.numRows - 1;
+        if (FeatureFlags.HOTSEAT_MIGRATE_NEW_PAGE.get()) {
+            toPage = workspace.getScreenIdForPageIndex(workspace.getPageCount());
+            toRow = 0;
+        } else if (!firstScreen.makeSpaceForHotseatMigration(true)) {
+            return false;
+        }
         ViewGroup hotseatVG = mLauncher.getHotseat().getShortcutsAndWidgets();
-        int workspacePageCount = mLauncher.getWorkspace().getPageCount();
         for (int i = 0; i < hotseatVG.getChildCount(); i++) {
             View child = hotseatVG.getChildAt(i);
             ItemInfo tag = (ItemInfo) child.getTag();
             mLauncher.getModelWriter().moveItemInDatabase(tag,
-                    LauncherSettings.Favorites.CONTAINER_DESKTOP, workspacePageCount, tag.screenId,
-                    0);
+                    LauncherSettings.Favorites.CONTAINER_DESKTOP, toPage, tag.screenId, toRow);
         }
+        return true;
     }
 
     void removeNotification() {
@@ -93,7 +106,7 @@ public class HotseatEduController {
 
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return;
-        CharSequence name = mLauncher.getString(R.string.hotseat_migrate_title);
+        CharSequence name = mLauncher.getString(R.string.hotseat_edu_prompt_title);
         int importance = NotificationManager.IMPORTANCE_LOW;
         NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, name,
                 importance);
@@ -104,8 +117,8 @@ public class HotseatEduController {
         Intent intent = new Intent(mLauncher.getApplicationContext(), mLauncher.getClass());
         intent = new NotificationHandler().addToIntent(intent);
 
-        CharSequence name = mLauncher.getString(R.string.hotseat_migrate_prompt_title);
-        String description = mLauncher.getString(R.string.hotseat_migrate_prompt_content);
+        CharSequence name = mLauncher.getString(R.string.hotseat_edu_prompt_title);
+        String description = mLauncher.getString(R.string.hotseat_edu_prompt_content);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(mLauncher,
                 NOTIFICATION_CHANNEL_ID)
                 .setContentTitle(name)

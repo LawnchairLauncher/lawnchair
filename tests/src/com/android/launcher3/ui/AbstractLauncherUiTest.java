@@ -34,10 +34,13 @@ import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.os.Debug;
 import android.os.Process;
 import android.os.RemoteException;
 import android.os.StrictMode;
+import android.util.Log;
 
 import androidx.test.InstrumentationRegistry;
 import androidx.test.uiautomator.By;
@@ -68,6 +71,7 @@ import com.android.launcher3.util.rule.ShellCommandRule;
 import com.android.launcher3.util.rule.TestStabilityRule;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.RuleChain;
@@ -117,6 +121,14 @@ public abstract class AbstractLauncherUiTest {
                                 // so let's just mark the fact that the leak has happened.
                                 if (sDetectedActivityLeak == null) {
                                     sDetectedActivityLeak = violation.toString();
+                                    try {
+                                        Debug.dumpHprofData(
+                                                getInstrumentation().getTargetContext()
+                                                        .getFilesDir().getPath()
+                                                        + "/ActivityLeakHeapDump.hprof");
+                                    } catch (IOException e) {
+                                        Log.e(TAG, "dumpHprofData failed", e);
+                                    }
                                 }
                             });
             StrictMode.setVmPolicy(builder.build());
@@ -126,18 +138,6 @@ public abstract class AbstractLauncherUiTest {
     public static void checkDetectedLeaks() {
         if (sDetectedActivityLeak != null && !sActivityLeakReported) {
             sActivityLeakReported = true;
-
-            final UiDevice device = UiDevice.getInstance(getInstrumentation());
-            try {
-                device.executeShellCommand(
-                        "am dumpheap "
-                                + device.getLauncherPackageName()
-                                + " "
-                                + getInstrumentation().getTargetContext().getFilesDir().getPath()
-                                + "/ActivityLeakHeapDump.hprof");
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
         }
     }
 
@@ -215,6 +215,21 @@ public abstract class AbstractLauncherUiTest {
 
     @Before
     public void setUp() throws Exception {
+        final String launcherPackageName = mDevice.getLauncherPackageName();
+        try {
+            final Context context = InstrumentationRegistry.getContext();
+            final PackageManager pm = context.getPackageManager();
+            final PackageInfo launcherPackage = pm.getPackageInfo(launcherPackageName, 0);
+
+            if (!launcherPackage.versionName.equals("BuildFromAndroidStudio")) {
+                Assert.assertEquals("Launcher version doesn't match tests version",
+                        pm.getPackageInfo(context.getPackageName(), 0).getLongVersionCode(),
+                        launcherPackage.getLongVersionCode());
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
         mLauncherPid = 0;
         // Disable app tracker
         AppLaunchTracker.INSTANCE.initializeForTesting(new AppLaunchTracker());

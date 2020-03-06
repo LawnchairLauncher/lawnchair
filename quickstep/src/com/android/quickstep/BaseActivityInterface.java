@@ -20,6 +20,7 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Build;
+import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Interpolator;
@@ -31,6 +32,7 @@ import androidx.annotation.UiThread;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.anim.AnimatorPlaybackController;
+import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.ShelfPeekAnim;
 import com.android.systemui.shared.recents.model.ThumbnailData;
@@ -48,6 +50,15 @@ public interface BaseActivityInterface<T extends BaseDraggingActivity> {
     void onTransitionCancelled(boolean activityVisible);
 
     int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context, Rect outRect);
+
+    /**
+     * @return The progress of the swipe where we start resisting the user, where 0 is fullscreen
+     * and 1 is recents. These values should probably be greater than 1 to let the user swipe past
+     * recents before we start resisting them.
+     */
+    default Pair<Float, Float> getSwipeUpPullbackStartAndMaxProgress() {
+        return new Pair<>(1.4f, 1.8f);
+    }
 
     void onSwipeUpToRecentsComplete();
 
@@ -148,13 +159,18 @@ public interface BaseActivityInterface<T extends BaseDraggingActivity> {
             // No-op
         }
 
-        static RectF getDefaultWindowTargetRect(DeviceProfile dp) {
+        static RectF getDefaultWindowTargetRect(PagedOrientationHandler orientationHandler,
+            DeviceProfile dp) {
             final int halfIconSize = dp.iconSizePx / 2;
-            final float targetCenterX = dp.availableWidthPx / 2f;
-            final float targetCenterY = dp.availableHeightPx - dp.hotseatBarSizePx;
+            float primaryDimension = orientationHandler
+                .getPrimaryValue(dp.availableWidthPx, dp.availableHeightPx);
+            float secondaryDimension = orientationHandler
+                .getSecondaryValue(dp.availableWidthPx, dp.availableHeightPx);
+            final float targetX =  primaryDimension / 2f;
+            final float targetY = secondaryDimension - dp.hotseatBarSizePx;
             // Fallback to animate to center of screen.
-            return new RectF(targetCenterX - halfIconSize, targetCenterY - halfIconSize,
-                    targetCenterX + halfIconSize, targetCenterY + halfIconSize);
+            return new RectF(targetX - halfIconSize, targetY - halfIconSize,
+                    targetX + halfIconSize, targetY + halfIconSize);
         }
 
     }

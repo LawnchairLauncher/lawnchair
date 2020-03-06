@@ -44,4 +44,9 @@ public interface ResourceProvider extends Plugin {
      * @see android.content.res.Resources#getColor(int)
      */
     int getColor(int resId);
+
+    /**
+     * @see android.content.res.Resources#getFloat(int)
+     */
+    float getFloat(int resId);
 }

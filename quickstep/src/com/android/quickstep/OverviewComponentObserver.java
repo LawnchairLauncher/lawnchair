@@ -33,6 +33,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.util.SparseIntArray;
 
+import com.android.launcher3.util.SimpleBroadcastReceiver;
 import com.android.systemui.shared.system.PackageManagerWrapper;
 
 import java.io.PrintWriter;
@@ -44,18 +45,11 @@ import java.util.Objects;
  * and provide callers the relevant classes.
  */
 public final class OverviewComponentObserver {
-    private final BroadcastReceiver mUserPreferenceChangeReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            updateOverviewTargets();
-        }
-    };
-    private final BroadcastReceiver mOtherHomeAppUpdateReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            updateOverviewTargets();
-        }
-    };
+    private final BroadcastReceiver mUserPreferenceChangeReceiver =
+            new SimpleBroadcastReceiver(this::updateOverviewTargets);
+    private final BroadcastReceiver mOtherHomeAppUpdateReceiver =
+            new SimpleBroadcastReceiver(this::updateOverviewTargets);
+
     private final Context mContext;
     private final RecentsAnimationDeviceState mDeviceState;
     private final Intent mCurrentHomeIntent;
@@ -106,6 +100,10 @@ public final class OverviewComponentObserver {
         }
     }
 
+    private void updateOverviewTargets(Intent unused) {
+        updateOverviewTargets();
+    }
+
     /**
      * Update overview intent and {@link BaseActivityInterface} based off the current launcher home
      * component.
@@ -131,11 +129,8 @@ public final class OverviewComponentObserver {
             mOverviewIntent = mMyHomeIntent;
             mCurrentHomeIntent.setComponent(mMyHomeIntent.getComponent());
 
-            if (mUpdateRegisteredPackage != null) {
-                // Remove any update listener as we don't care about other packages.
-                mContext.unregisterReceiver(mOtherHomeAppUpdateReceiver);
-                mUpdateRegisteredPackage = null;
-            }
+            // Remove any update listener as we don't care about other packages.
+            unregisterOtherHomeAppUpdateReceiver();
         } else {
             // The default home app is a different launcher. Use the fallback Overview instead.
 
@@ -149,13 +144,9 @@ public final class OverviewComponentObserver {
             // Listen for package updates of this app (and remove any previously attached
             // package listener).
             if (defaultHome == null) {
-                if (mUpdateRegisteredPackage != null) {
-                    mContext.unregisterReceiver(mOtherHomeAppUpdateReceiver);
-                }
+                unregisterOtherHomeAppUpdateReceiver();
             } else if (!defaultHome.getPackageName().equals(mUpdateRegisteredPackage)) {
-                if (mUpdateRegisteredPackage != null) {
-                    mContext.unregisterReceiver(mOtherHomeAppUpdateReceiver);
-                }
+                unregisterOtherHomeAppUpdateReceiver();
 
                 mUpdateRegisteredPackage = defaultHome.getPackageName();
                 mContext.registerReceiver(mOtherHomeAppUpdateReceiver, getPackageFilter(
@@ -170,7 +161,10 @@ public final class OverviewComponentObserver {
      */
     public void onDestroy() {
         mContext.unregisterReceiver(mUserPreferenceChangeReceiver);
+        unregisterOtherHomeAppUpdateReceiver();
+    }
 
+    private void unregisterOtherHomeAppUpdateReceiver() {
         if (mUpdateRegisteredPackage != null) {
             mContext.unregisterReceiver(mOtherHomeAppUpdateReceiver);
             mUpdateRegisteredPackage = null;
