@@ -176,7 +176,7 @@ public class NotificationMainView extends FrameLayout implements SingleAxisSwipe
 
     // SingleAxisSwipeDetector.Listener's
     @Override
-    public void onDragStart(boolean start) { }
+    public void onDragStart(boolean start, float startDisplacement) { }
 
 
     @Override

@@ -17,13 +17,7 @@ package com.android.quickstep;
 
 import static android.view.MotionEvent.ACTION_DOWN;
 
-import static com.android.launcher3.config.FeatureFlags.ADAPTIVE_ICON_WINDOW_ANIM;
-import static com.android.launcher3.config.FeatureFlags.APPLY_CONFIG_AT_RUNTIME;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_HINTS_IN_OVERVIEW;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
-import static com.android.launcher3.config.FeatureFlags.FAKE_LANDSCAPE_UI;
-import static com.android.launcher3.config.FeatureFlags.QUICKSTEP_SPRINGS;
-import static com.android.launcher3.config.FeatureFlags.UNSTABLE_SPRINGS;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_INPUT_MONITOR;
@@ -56,6 +50,8 @@ import androidx.annotation.UiThread;
 import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.BaseDraggingActivity;
+import com.android.launcher3.Launcher;
+import com.android.launcher3.PagedView;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.config.FeatureFlags;
@@ -80,6 +76,7 @@ import com.android.quickstep.inputconsumers.ScreenPinnedInputConsumer;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.AssistantUtilities;
 import com.android.quickstep.util.ProtoTracer;
+import com.android.quickstep.views.RecentsView;
 import com.android.systemui.plugins.OverscrollPlugin;
 import com.android.systemui.plugins.PluginListener;
 import com.android.systemui.shared.recents.IOverviewProxy;
@@ -449,6 +446,8 @@ public class TouchInteractionService extends Service implements PluginListener<O
 
         Object traceToken = TraceHelper.INSTANCE.beginFlagsOverride(
                 TraceHelper.FLAG_ALLOW_BINDER_TRACKING);
+        mDeviceState.setOrientationTransformIfNeeded(event);
+
         if (event.getAction() == ACTION_DOWN) {
             GestureState newGestureState = new GestureState(mOverviewComponentObserver,
                     ActiveGestureLog.INSTANCE.generateAndSetLogId());
@@ -502,17 +501,32 @@ public class TouchInteractionService extends Service implements PluginListener<O
                 || previousGestureState.isRecentsAnimationRunning()
                         ? newBaseConsumer(previousGestureState, newGestureState, event)
                         : mResetGestureInputConsumer;
+        // TODO(b/149880412): 2 button landscape mode is wrecked. Fixit!
         if (mDeviceState.isFullyGesturalNavMode()) {
+            handleOrientationSetup(base);
             if (mDeviceState.canTriggerAssistantAction(event)) {
                 base = new AssistantInputConsumer(this, newGestureState, base, mInputMonitorCompat);
             }
 
-            if (FeatureFlags.ENABLE_QUICK_CAPTURE_GESTURE.get()
-                    && (mOverscrollPlugin != null)
-                    && mOverscrollPlugin.isActive()) {
-                // Put the overscroll gesture as higher priority than the Assistant or base gestures
-                base = new OverscrollInputConsumer(this, newGestureState, base, mInputMonitorCompat,
-                        mOverscrollPlugin);
+            if (FeatureFlags.ENABLE_QUICK_CAPTURE_GESTURE.get()) {
+                OverscrollPlugin plugin = null;
+                if (FeatureFlags.FORCE_LOCAL_OVERSCROLL_PLUGIN.get()) {
+                    TaskOverlayFactory factory =
+                            TaskOverlayFactory.INSTANCE.get(getApplicationContext());
+                    plugin = factory.getLocalOverscrollPlugin();  // may be null
+                }
+
+                // If not local plugin was forced, use the actual overscroll plugin if available.
+                if (plugin == null && mOverscrollPlugin != null && mOverscrollPlugin.isActive()) {
+                    plugin = mOverscrollPlugin;
+                }
+
+                if (plugin != null) {
+                    // Put the overscroll gesture as higher priority than the Assistant or base
+                    // gestures
+                    base = new OverscrollInputConsumer(this, newGestureState, base,
+                        mInputMonitorCompat, plugin);
+                }
             }
 
             if (mDeviceState.isScreenPinningActive()) {
@@ -531,6 +545,22 @@ public class TouchInteractionService extends Service implements PluginListener<O
             }
         }
         return base;
+    }
+
+    private void handleOrientationSetup(InputConsumer baseInputConsumer) {
+        if (!PagedView.sFlagForcedRotation) {
+            return;
+        }
+        mDeviceState.enableMultipleRegions(baseInputConsumer instanceof OtherActivityInputConsumer);
+        Launcher l = (Launcher) mOverviewComponentObserver
+            .getActivityInterface().getCreatedActivity();
+        if (l == null || !(l.getOverviewPanel() instanceof RecentsView)) {
+            return;
+        }
+        ((RecentsView)l.getOverviewPanel())
+            .setLayoutRotation(mDeviceState.getCurrentActiveRotation(),
+                mDeviceState.getDisplayRotation());
+        l.getDragLayer().recreateControllers();
     }
 
     private InputConsumer newBaseConsumer(GestureState previousGestureState,
@@ -732,10 +762,18 @@ public class TouchInteractionService extends Service implements PluginListener<O
             FeatureFlags.dump(pw);
             PluginManagerWrapper.INSTANCE.get(getBaseContext()).dump(pw);
             mDeviceState.dump(pw);
-            mOverviewComponentObserver.dump(pw);
+            if (mOverviewComponentObserver != null) {
+                mOverviewComponentObserver.dump(pw);
+            }
+            if (mGestureState != null) {
+                mGestureState.dump(pw);
+            }
             pw.println("TouchState:");
+            BaseDraggingActivity createdOverviewActivity = mOverviewComponentObserver == null ? null
+                    : mOverviewComponentObserver.getActivityInterface().getCreatedActivity();
             boolean resumed = mOverviewComponentObserver != null
                     && mOverviewComponentObserver.getActivityInterface().isResumed();
+            pw.println("  createdOverviewActivity=" + createdOverviewActivity);
             pw.println("  resumed=" + resumed);
             pw.println("  mConsumer=" + mConsumer.getName());
             ActiveGestureLog.INSTANCE.dump("", pw);

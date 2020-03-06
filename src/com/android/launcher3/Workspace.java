@@ -966,8 +966,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     private boolean isScrollingOverlay() {
         return mLauncherOverlay != null &&
-                ((mIsRtl && getUnboundedScrollX() > mMaxScrollX)
-                        || (!mIsRtl && getUnboundedScrollX() < mMinScrollX));
+                ((mIsRtl && getUnboundedScroll() > mMaxScroll)
+                        || (!mIsRtl && getUnboundedScroll() < mMinScroll));
     }
 
     @Override
@@ -1003,7 +1003,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     public void showPageIndicatorAtCurrentScroll() {
         if (mPageIndicator != null) {
-            mPageIndicator.setScroll(getScrollX(), computeMaxScrollX());
+            mPageIndicator.setScroll(getScrollX(), computeMaxScroll());
         }
     }
 

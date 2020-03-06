@@ -87,9 +87,11 @@ import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.pm.InstallSessionHelper;
 import com.android.launcher3.pm.UserCache;
+import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.BaseDragLayer;
+import com.android.launcher3.widget.custom.CustomWidgetManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -128,7 +130,8 @@ public class LauncherPreviewRenderer implements Callable<Bitmap> {
 
         private static final Set<MainThreadInitializedObject> WHITELIST = new HashSet<>(
                 Arrays.asList(UserCache.INSTANCE, InstallSessionHelper.INSTANCE,
-                        LauncherAppState.INSTANCE, InvariantDeviceProfile.INSTANCE));
+                        LauncherAppState.INSTANCE, InvariantDeviceProfile.INSTANCE,
+                        CustomWidgetManager.INSTANCE, PluginManagerWrapper.INSTANCE));
 
         private final InvariantDeviceProfile mIdp;
         private final Map<MainThreadInitializedObject, Object> mObjectMap = new HashMap<>();
@@ -143,6 +146,14 @@ public class LauncherPreviewRenderer implements Callable<Bitmap> {
         @Override
         public Context getApplicationContext() {
             return this;
+        }
+
+        public void onDestroy() {
+            CustomWidgetManager customWidgetManager = (CustomWidgetManager) mObjectMap.get(
+                    CustomWidgetManager.INSTANCE);
+            if (customWidgetManager != null) {
+                customWidgetManager.onDestroy();
+            }
         }
 
         /**
@@ -349,6 +360,9 @@ public class LauncherPreviewRenderer implements Callable<Bitmap> {
         private void inflateAndAddWidgets(LauncherAppWidgetInfo info, WidgetsModel widgetsModel) {
             WidgetItem widgetItem = widgetsModel.getWidgetProviderInfoByProviderName(
                     info.providerName);
+            if (widgetItem == null) {
+                return;
+            }
             AppWidgetHostView view = new AppWidgetHostView(mContext);
             view.setAppWidget(-1, widgetItem.widgetInfo);
             view.updateAppWidget(null);
@@ -385,9 +399,11 @@ public class LauncherPreviewRenderer implements Callable<Bitmap> {
                 }
 
                 WorkspaceFetcher fetcher;
+                PreviewContext previewContext = null;
                 if (needsToMigrate && success) {
+                    previewContext = new PreviewContext(mContext, mIdp);
                     LauncherAppState appForPreview = new LauncherAppState(
-                            new PreviewContext(mContext, mIdp), null /* iconCacheFileName */);
+                            previewContext, null /* iconCacheFileName */);
                     fetcher = new WorkspaceItemsInfoFromPreviewFetcher(appForPreview);
                     MODEL_EXECUTOR.execute(fetcher);
                 } else {
@@ -396,6 +412,9 @@ public class LauncherPreviewRenderer implements Callable<Bitmap> {
                             (LauncherModel.ModelUpdateTask) fetcher);
                 }
                 WorkspaceResult workspaceResult = fetcher.get();
+                if (previewContext != null) {
+                    previewContext.onDestroy();
+                }
 
                 if (workspaceResult == null) {
                     return;
@@ -557,6 +576,7 @@ public class LauncherPreviewRenderer implements Callable<Bitmap> {
         public WorkspaceResult call() throws Exception {
             List<ShortcutInfo> allShortcuts = new ArrayList<>();
             loadWorkspace(allShortcuts, LauncherSettings.Favorites.PREVIEW_CONTENT_URI);
+            mBgDataModel.widgetsModel.update(mApp, null);
             return new WorkspaceResult(mBgDataModel.workspaceItems, mBgDataModel.appWidgets,
                     mBgDataModel.widgetsModel);
         }

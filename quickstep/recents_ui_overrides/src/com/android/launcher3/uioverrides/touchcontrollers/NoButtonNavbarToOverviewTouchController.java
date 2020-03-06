@@ -94,8 +94,8 @@ public class NoButtonNavbarToOverviewTouchController extends FlingAndHoldTouchCo
     }
 
     @Override
-    public void onDragStart(boolean start) {
-        super.onDragStart(start);
+    public void onDragStart(boolean start, float startDisplacement) {
+        super.onDragStart(start, startDisplacement);
 
         mReachedOverview = false;
     }
