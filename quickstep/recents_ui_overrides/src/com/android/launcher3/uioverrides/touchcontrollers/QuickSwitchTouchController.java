@@ -92,8 +92,8 @@ public class QuickSwitchTouchController extends AbstractStateChangeTouchControll
     }
 
     @Override
-    public void onDragStart(boolean start) {
-        super.onDragStart(start);
+    public void onDragStart(boolean start, float startDisplacement) {
+        super.onDragStart(start, startDisplacement);
         mStartContainerType = LauncherLogProto.ContainerType.NAVBAR;
         mTaskToLaunch = mLauncher.<RecentsView>getOverviewPanel().getTaskViewAt(0);
         ActivityManagerWrapper.getInstance()

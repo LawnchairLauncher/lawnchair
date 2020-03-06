@@ -32,6 +32,7 @@ import android.widget.Toast;
 import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.widget.DeferredAppWidgetHostView;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
+import com.android.launcher3.widget.PendingAppWidgetHostView;
 import com.android.launcher3.widget.custom.CustomWidgetManager;
 
 import java.util.ArrayList;
@@ -53,11 +54,13 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
 
     private final ArrayList<ProviderChangedListener> mProviderChangeListeners = new ArrayList<>();
     private final SparseArray<LauncherAppWidgetHostView> mViews = new SparseArray<>();
+    private final SparseArray<PendingAppWidgetHostView> mPendingViews = new SparseArray<>();
 
     private final Context mContext;
     private int mFlags = FLAG_RESUMED;
 
     private IntConsumer mAppWidgetRemovedCallback = null;
+
 
     public LauncherAppWidgetHost(Context context) {
         this(context, null);
@@ -73,7 +76,13 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
     @Override
     protected LauncherAppWidgetHostView onCreateView(Context context, int appWidgetId,
             AppWidgetProviderInfo appWidget) {
-        LauncherAppWidgetHostView view = new LauncherAppWidgetHostView(context);
+        final LauncherAppWidgetHostView view;
+        if (mPendingViews.get(appWidgetId) != null) {
+            view = mPendingViews.get(appWidgetId);
+            mPendingViews.remove(appWidgetId);
+        } else {
+            view = new LauncherAppWidgetHostView(context);
+        }
         mViews.put(appWidgetId, view);
         return view;
     }
@@ -189,6 +198,10 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
         }
     }
 
+    void addPendingView(int appWidgetId, PendingAppWidgetHostView view) {
+        mPendingViews.put(appWidgetId, view);
+    }
+
     public AppWidgetHostView createView(Context context, int appWidgetId,
             LauncherAppWidgetProviderInfo appWidget) {
         if (appWidget.isCustomWidget()) {
@@ -238,8 +251,8 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
 
     /**
      * Called on an appWidget is removed for a widgetId
-     * @param appWidgetId
-     * TODO: make this override when SDK is updated
+     *
+     * @param appWidgetId TODO: make this override when SDK is updated
      */
     public void onAppWidgetRemoved(int appWidgetId) {
         if (mAppWidgetRemovedCallback == null) {

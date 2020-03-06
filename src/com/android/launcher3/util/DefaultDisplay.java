@@ -28,6 +28,8 @@ import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
 
+import androidx.annotation.VisibleForTesting;
+
 import java.util.ArrayList;
 
 /**
@@ -126,6 +128,18 @@ public class DefaultDisplay implements DisplayListener {
         public final Point largestSize;
 
         public final DisplayMetrics metrics;
+
+        @VisibleForTesting
+        public Info(int id, int rotation, int singleFrameMs, Point realSize, Point smallestSize,
+                Point largestSize, DisplayMetrics metrics) {
+            this.id = id;
+            this.rotation = rotation;
+            this.singleFrameMs = singleFrameMs;
+            this.realSize = realSize;
+            this.smallestSize = smallestSize;
+            this.largestSize = largestSize;
+            this.metrics = metrics;
+        }
 
         private Info(Context context) {
             this(context.getSystemService(WindowManager.class).getDefaultDisplay());

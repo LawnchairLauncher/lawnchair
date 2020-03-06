@@ -145,7 +145,7 @@ public final class LauncherInstrumentation {
 
     private static final String WORKSPACE_RES_ID = "workspace";
     private static final String APPS_RES_ID = "apps_view";
-    private static final String OVERVIEW_RES_ID = "overview_panel_recents";
+    private static final String OVERVIEW_RES_ID = "overview_panel";
     private static final String WIDGETS_RES_ID = "widgets_list_view";
     private static final String CONTEXT_MENU_RES_ID = "deep_shortcuts_container";
     public static final int WAIT_TIME_MS = 10000;
@@ -331,20 +331,24 @@ public final class LauncherInstrumentation {
     }
 
     private String getSystemAnomalyMessage() {
-        UiObject2 object = mDevice.findObject(By.res("android", "alertTitle"));
-        if (object != null) {
-            return "System alert popup is visible: " + object.getText();
+        try {
+            UiObject2 object = mDevice.findObject(By.res("android", "alertTitle"));
+            if (object != null) {
+                return "System alert popup is visible: " + object.getText();
+            }
+
+            object = mDevice.findObject(By.res("android", "message"));
+            if (object != null) {
+                return "Message popup by " + object.getApplicationPackage() + " is visible: "
+                        + object.getText();
+            }
+
+            if (hasSystemUiObject("keyguard_status_view")) return "Phone is locked";
+
+            if (!mDevice.hasObject(By.textStartsWith(""))) return "Screen is empty";
+        } catch (Throwable e) {
+            Log.w(TAG, "getSystemAnomalyMessage failed", e);
         }
-
-        object = mDevice.findObject(By.res("android", "message"));
-        if (object != null) {
-            return "Message popup by " + object.getApplicationPackage() + " is visible: "
-                    + object.getText();
-        }
-
-        if (hasSystemUiObject("keyguard_status_view")) return "Phone is locked";
-
-        if (!mDevice.hasObject(By.textStartsWith(""))) return "Screen is empty";
 
         return null;
     }
