@@ -91,8 +91,9 @@ public final class LauncherAppTransitionManagerImpl extends QuickstepAppTransiti
 
         AppWindowAnimationHelper helper =
             new AppWindowAnimationHelper(recentsView.getPagedViewOrientedState(), mLauncher);
-        anim.play(getRecentsWindowAnimator(taskView, skipLauncherChanges, appTargets,
-                wallpaperTargets, helper).setDuration(RECENTS_LAUNCH_DURATION));
+        Animator recentsAnimator = getRecentsWindowAnimator(taskView, skipLauncherChanges,
+                appTargets, wallpaperTargets, mLauncher.getBackgroundBlurController(), helper);
+        anim.play(recentsAnimator.setDuration(RECENTS_LAUNCH_DURATION));
 
         Animator childStateAnimation = null;
         // Found a visible recents task that matches the opening app, lets launch the app from there
