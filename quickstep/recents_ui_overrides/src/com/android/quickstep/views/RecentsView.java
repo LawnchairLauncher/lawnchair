@@ -88,7 +88,6 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.InvariantDeviceProfile;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
@@ -962,15 +961,12 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         }
 
         AnimatorSet pa = setRecentsChangedOrientation(true);
-        pa.addListener(new AnimationSuccessListener() {
-            @Override
-            public void onAnimationSuccess(Animator animator) {
-                updateLayoutRotation(newRotation);
-                ((DragLayer)mActivity.getDragLayer()).recreateControllers();
-                rotateAllChildTasks();
-                setRecentsChangedOrientation(false).start();
-            }
-        });
+        pa.addListener(AnimationSuccessListener.forRunnable(() -> {
+            updateLayoutRotation(newRotation);
+            ((DragLayer) mActivity.getDragLayer()).recreateControllers();
+            rotateAllChildTasks();
+            setRecentsChangedOrientation(false).start();
+        }));
         pa.start();
     }
 

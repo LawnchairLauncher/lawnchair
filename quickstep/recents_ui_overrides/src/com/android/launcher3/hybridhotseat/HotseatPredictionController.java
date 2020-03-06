@@ -226,12 +226,9 @@ public class HotseatPredictionController implements DragController.DragListener,
             }
         }
         if (animate) {
-            animationSet.addListener(new AnimationSuccessListener() {
-                @Override
-                public void onAnimationSuccess(Animator animator) {
-                    if (callback != null) callback.run();
-                }
-            });
+            if (callback != null) {
+                animationSet.addListener(AnimationSuccessListener.forRunnable(callback));
+            }
             animationSet.start();
         } else {
             if (callback != null) callback.run();
