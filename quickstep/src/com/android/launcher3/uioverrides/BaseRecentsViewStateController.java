@@ -20,12 +20,14 @@ import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
+import static com.android.launcher3.LauncherStateManager.PLAY_ATOMIC_OVERVIEW_PEEK;
+import static com.android.launcher3.LauncherStateManager.PLAY_ATOMIC_OVERVIEW_SCALE;
+import static com.android.launcher3.LauncherStateManager.SKIP_OVERVIEW;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_FADE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_SCALE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_SCRIM_FADE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_TRANSLATE_X;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_TRANSLATE_Y;
-import static com.android.launcher3.anim.AnimatorSetBuilder.FLAG_DONT_ANIMATE_OVERVIEW;
 import static com.android.launcher3.anim.Interpolators.AGGRESSIVE_EASE_IN_OUT;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.graphics.Scrim.SCRIM_PROGRESS;
@@ -86,13 +88,11 @@ public abstract class BaseRecentsViewStateController<T extends View>
     @Override
     public final void setStateWithAnimation(@NonNull final LauncherState toState,
             @NonNull AnimatorSetBuilder builder, @NonNull AnimationConfig config) {
-        boolean playAtomicOverviewComponent = config.playAtomicOverviewScaleComponent()
-                || config.playAtomicOverviewPeekComponent();
-        if (!playAtomicOverviewComponent) {
+        if (!config.hasAnimationComponent(PLAY_ATOMIC_OVERVIEW_PEEK | PLAY_ATOMIC_OVERVIEW_SCALE)) {
             // The entire recents animation is played atomically.
             return;
         }
-        if (builder.hasFlag(FLAG_DONT_ANIMATE_OVERVIEW)) {
+        if (config.hasAnimationComponent(SKIP_OVERVIEW)) {
             return;
         }
         setStateWithAnimationInternal(toState, builder, config);
