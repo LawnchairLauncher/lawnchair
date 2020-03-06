@@ -118,6 +118,16 @@ public class RecentsAnimationCallbacks implements
         });
     }
 
+    @BinderThread
+    @Override
+    public void onTaskAppeared(RemoteAnimationTargetCompat app) {
+        Utilities.postAsyncCallback(MAIN_EXECUTOR.getHandler(), () -> {
+            for (RecentsAnimationListener listener : getListeners()) {
+                listener.onTaskAppeared(app);
+            }
+        });
+    }
+
     private final void onAnimationFinished(RecentsAnimationController controller) {
         Utilities.postAsyncCallback(MAIN_EXECUTOR.getHandler(), () -> {
             for (RecentsAnimationListener listener : getListeners()) {
@@ -147,5 +157,10 @@ public class RecentsAnimationCallbacks implements
          * Callback made whenever the recents animation is finished.
          */
         default void onRecentsAnimationFinished(RecentsAnimationController controller) {}
+
+        /**
+         * Callback made when a task started from the recents is ready for an app transition.
+         */
+        default void onTaskAppeared(RemoteAnimationTargetCompat app) {}
     }
 }

@@ -30,6 +30,7 @@ import static com.android.quickstep.GestureState.GestureEndTarget.NEW_TASK;
 import static com.android.quickstep.GestureState.GestureEndTarget.RECENTS;
 import static com.android.quickstep.GestureState.STATE_END_TARGET_ANIMATION_FINISHED;
 import static com.android.quickstep.GestureState.STATE_RECENTS_SCROLLING_FINISHED;
+import static com.android.quickstep.GestureState.STATE_TASK_APPEARED_DURING_SWITCH;
 import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
 import static com.android.quickstep.SysUINavigationMode.Mode.TWO_BUTTONS;
 import static com.android.quickstep.util.ShelfPeekAnim.ShelfAnimState.HIDE;
@@ -252,6 +253,8 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
         mGestureState.runOnceAtState(STATE_END_TARGET_ANIMATION_FINISHED
                         | STATE_RECENTS_SCROLLING_FINISHED,
                 this::onSettledOnEndTarget);
+
+        mGestureState.runOnceAtState(STATE_TASK_APPEARED_DURING_SWITCH, this::onTaskAppeared);
 
         mStateCallback.runOnceAtState(STATE_HANDLER_INVALIDATED, this::invalidateHandler);
         mStateCallback.runOnceAtState(STATE_LAUNCHER_PRESENT | STATE_HANDLER_INVALIDATED,
@@ -724,6 +727,22 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
             case LAST_TASK:
                 mStateCallback.setState(STATE_RESUME_LAST_TASK);
                 break;
+        }
+    }
+
+    private void onTaskAppeared() {
+        RemoteAnimationTargetCompat app = mGestureState.getAnimationTarget();
+        if (mRecentsAnimationController != null && app != null) {
+
+            // TODO(b/152480470): Update Task target animation after onTaskAppeared holistically.
+            /* android.util.Log.d("LauncherSwipeHandler", "onTaskAppeared");
+
+            final boolean result = mRecentsAnimationController.removeTaskTarget(app);
+            mGestureState.setAnimationTarget(null);
+            android.util.Log.d("LauncherSwipeHandler", "removeTask, result=" + result); */
+
+            mRecentsAnimationController.finish(false /* toRecents */,
+                    null /* onFinishComplete */);
         }
     }
 
