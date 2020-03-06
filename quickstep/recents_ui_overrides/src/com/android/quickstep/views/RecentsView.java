@@ -280,9 +280,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         }
     };
 
-    private RotationHelper.ForcedRotationChangedListener mForcedRotationChangedListener =
-        isForcedRotation -> RecentsView.this.disableMultipleLayoutRotations(!isForcedRotation);
-
     private final PinnedStackAnimationListener mIPinnedStackAnimationListener =
             new PinnedStackAnimationListener();
 
@@ -482,8 +479,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         mIPinnedStackAnimationListener.setActivity(mActivity);
         SystemUiProxy.INSTANCE.get(getContext()).setPinnedStackAnimationListener(
                 mIPinnedStackAnimationListener);
-        Launcher launcher = Launcher.getLauncher(getContext());
-        launcher.getRotationHelper().addForcedRotationCallback(mForcedRotationChangedListener);
         addActionsView();
     }
 
@@ -499,8 +494,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         mIdp.removeOnChangeListener(this);
         SystemUiProxy.INSTANCE.get(getContext()).setPinnedStackAnimationListener(null);
         mIPinnedStackAnimationListener.setActivity(null);
-        Launcher launcher = Launcher.getLauncher(getContext());
-        launcher.getRotationHelper().removeForcedRotationCallback(mForcedRotationChangedListener);
     }
 
     @Override
