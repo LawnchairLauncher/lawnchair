@@ -96,6 +96,7 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
 
         initFlags();
         loadPluginPrefs();
+        maybeAddSandboxCategory();
     }
 
     @Override
@@ -201,6 +202,31 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
                 mPluginsCategory.addPreference(pref);
             }
         });
+    }
+
+    private void maybeAddSandboxCategory() {
+        Context context = getContext();
+        if (context == null) {
+            return;
+        }
+        Intent launchSandboxIntent =
+                new Intent("com.android.quickstep.action.GESTURE_SANDBOX")
+                        .setPackage(context.getPackageName())
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (launchSandboxIntent.resolveActivity(context.getPackageManager()) == null) {
+            return;
+        }
+        PreferenceCategory sandboxCategory = newCategory("Sandbox");
+        Preference launchSandboxPreference = new Preference(context);
+        launchSandboxPreference.setKey("launchSandbox");
+        launchSandboxPreference.setTitle("Launch Gesture Navigation Sandbox");
+        launchSandboxPreference.setSummary(
+                "This provides tutorials and a place to practice navigation gestures.");
+        launchSandboxPreference.setOnPreferenceClickListener(preference -> {
+            startActivity(launchSandboxIntent);
+            return true;
+        });
+        sandboxCategory.addPreference(launchSandboxPreference);
     }
 
     private String toName(String action) {

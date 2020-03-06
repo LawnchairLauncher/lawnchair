@@ -8,9 +8,26 @@ adamcohen@google.com
 hyunyoungs@google.com
 mrcasey@google.com
 sunnygoyal@google.com
+awickham@google.com
 twickham@google.com
 winsonc@google.com
 zakcohen@google.com
+santie@google.com
+vadimt@google.com
+mett@google.com
+jonmiranda@google.com
+pinyaoting@google.com
+sfufa@google.com
+gwasserman@google.com
+jamesoleary@google.com
+joshtrask@google.com
+mrenouf@google.com
+mkephart@google.com
+hwwang@google.com
+tracyzhou@google.com
+peanutbutter@google.com
+xuqiu@google.com
+sreyasr@google.com
 
-per-file FeatureFlags.java = sunnygoyal@google.com, adamcohen@google.com
-per-file BaseFlags.java = sunnygoyal@google.com, adamcohen@google.com
+per-file FeatureFlags.java, globs = set noparent
+per-file FeatureFlags.java = sunnygoyal@google.com, winsonc@google.com, zakcohen@google.com, mrcasey@google.com, adamcohen@google.com, hyunyoungs@google.com

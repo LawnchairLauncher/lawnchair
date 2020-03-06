@@ -69,6 +69,11 @@ public class DynamicResource implements ResourceProvider, PluginListener<Resourc
     }
 
     @Override
+    public float getFloat(@DimenRes int resId) {
+        return mContext.getResources().getFloat(resId);
+    }
+
+    @Override
     public void onPluginConnected(ResourceProvider plugin, Context context) {
         mPlugin = plugin;
     }

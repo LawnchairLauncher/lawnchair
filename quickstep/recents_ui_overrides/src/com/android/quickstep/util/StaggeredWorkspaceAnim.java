@@ -41,7 +41,9 @@ import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.anim.SpringAnimationBuilder;
 import com.android.launcher3.graphics.OverviewScrim;
+import com.android.launcher3.util.DynamicResource;
 import com.android.quickstep.views.RecentsView;
+import com.android.systemui.plugins.ResourceProvider;
 
 /**
  * Creates an animation where all the workspace items are moved into their final location,
@@ -54,9 +56,6 @@ public class StaggeredWorkspaceAnim {
     private static final int ALPHA_DURATION_MS = 250;
 
     private static final float MAX_VELOCITY_PX_PER_S = 22f;
-
-    private static final float DAMPING_RATIO = 0.7f;
-    private static final float STIFFNESS = 150f;
 
     private final float mVelocity;
     private final float mSpringTransY;
@@ -177,9 +176,12 @@ public class StaggeredWorkspaceAnim {
 
         v.setTranslationY(mSpringTransY);
 
+        ResourceProvider rp = DynamicResource.provider(v.getContext());
+        float stiffness = rp.getFloat(R.dimen.staggered_stiffness);
+        float damping = rp.getFloat(R.dimen.staggered_damping_ratio);
         ObjectAnimator springTransY = new SpringAnimationBuilder<>(v, VIEW_TRANSLATE_Y)
-                .setStiffness(STIFFNESS)
-                .setDampingRatio(DAMPING_RATIO)
+                .setStiffness(stiffness)
+                .setDampingRatio(damping)
                 .setMinimumVisibleChange(1f)
                 .setEndValue(0)
                 .setStartVelocity(mVelocity)

@@ -148,7 +148,8 @@ public class SingleAxisSwipeDetector extends BaseSwipeDetector {
 
     @Override
     protected void reportDragStartInternal(boolean recatch) {
-        mListener.onDragStart(!recatch);
+        float startDisplacement = mDir.extractDirection(mSubtractDisplacement);
+        mListener.onDragStart(!recatch, startDisplacement);
     }
 
     @Override
@@ -165,8 +166,13 @@ public class SingleAxisSwipeDetector extends BaseSwipeDetector {
 
     /** Listener to receive updates on the swipe. */
     public interface Listener {
-        /** @param start whether this was the original drag start, as opposed to a recatch. */
-        void onDragStart(boolean start);
+        /**
+         * TODO(b/150256055) consolidate all the different onDrag() methods into one
+         * @param start whether this was the original drag start, as opposed to a recatch.
+         * @param startDisplacement the initial touch displacement for the primary direction as
+         *        given by by {@link Direction#extractDirection(PointF)}
+         */
+        void onDragStart(boolean start, float startDisplacement);
 
         boolean onDrag(float displacement);
 

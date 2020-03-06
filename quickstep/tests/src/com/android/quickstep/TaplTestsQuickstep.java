@@ -17,8 +17,6 @@
 package com.android.quickstep;
 
 import static com.android.launcher3.ui.TaplTestsLauncher3.getAppPackageName;
-import static com.android.launcher3.util.rule.TestStabilityRule.LOCAL;
-import static com.android.launcher3.util.rule.TestStabilityRule.UNBUNDLED_POSTSUBMIT;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -41,7 +39,6 @@ import com.android.launcher3.tapl.Overview;
 import com.android.launcher3.tapl.OverviewTask;
 import com.android.launcher3.tapl.TestHelpers;
 import com.android.launcher3.ui.TaplTestsLauncher3;
-import com.android.launcher3.util.rule.TestStabilityRule;
 import com.android.quickstep.NavigationModeSwitchRule.NavigationModeSwitch;
 import com.android.quickstep.views.RecentsView;
 
@@ -254,8 +251,6 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     @Test
     @NavigationModeSwitch
     @PortraitLandscape
-    // b/143285809 Remove @Stability on 02/27/20 if the test doesn't flake.
-    @TestStabilityRule.Stability(flavors = LOCAL | UNBUNDLED_POSTSUBMIT)
     public void testQuickSwitchFromApp() throws Exception {
         startTestActivity(2);
         startTestActivity(3);
