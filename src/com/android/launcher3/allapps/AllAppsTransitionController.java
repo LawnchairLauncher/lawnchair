@@ -162,7 +162,7 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
             return;
         }
 
-        if (!config.playNonAtomicComponent()) {
+        if (config.onlyPlayAtomicComponent()) {
             // There is no atomic component for the all apps transition, so just return early.
             return;
         }

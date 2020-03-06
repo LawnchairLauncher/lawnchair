@@ -20,6 +20,7 @@ import static com.android.launcher3.anim.Interpolators.LINEAR;
 
 import android.util.IntProperty;
 import android.view.View;
+
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager;
@@ -134,7 +135,7 @@ public class BackgroundBlurController implements LauncherStateManager.StateHandl
     @Override
     public void setStateWithAnimation(LauncherState toState, AnimatorSetBuilder builder,
             LauncherStateManager.AnimationConfig config) {
-        if (mSurface == null || !config.playNonAtomicComponent()) {
+        if (mSurface == null || config.onlyPlayAtomicComponent()) {
             return;
         }
 
