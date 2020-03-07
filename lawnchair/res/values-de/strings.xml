@@ -8,7 +8,7 @@
     <string name="search_menu">Suchen</string>
     <string name="search_no_results">Keine Ergebnisse</string>
     <string name="restart_lawnchair_pref_title">Neustart</string>
-    <string name="developer_options_title">Entwicklereinstellungen</string>
+    <string name="developer_options_title">Entwickleroptionen</string>
     <string name="change_default_home">Als Startbildschirm festlegen</string>
     <string name="action_apply">Fertig</string>
     <!-- Note: new. Replaces “OK” in dialogs. -->
@@ -353,7 +353,7 @@
     <string name="restore_success">Sicherung wiederhergestellt.</string>
     <string name="failed">Etwas lief schief.</string>
     <string name="backup_share_text">Lawnchair-Sicherung</string>
-    <string name="developer_options_enabled">Entwicklereinstellungen aktiviert.</string>
+    <string name="developer_options_enabled">Entwickleroptionen aktiviert.</string>
     <string name="restart_lawnchair_pref_summary">Wende Einstellungen erneut an.</string>
     <string name="show_debug_info_pref_title">Zeige den Komponenten Namen</string>
     <string name="debug_component_name">Komponenten Name</string>
@@ -433,7 +433,7 @@
     <string name="get_more_icon_packs">Mehr bekommen</string>
     <string name="enabled_icon_packs">Angewendet</string>
     <string name="lawnchair_actions">Aktionen</string>
-    <string name="bridge_missing_title">Hole dir Lawnfeed</string>
+    <string name="bridge_missing_title">Hol dir Lawnfeed</string>
     <string name="bridge_missing_message">Um Google-Feed zu benutzen, hole dir Lawnfeed.</string>
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <string name="title_app_suggestions">Apps</string>
