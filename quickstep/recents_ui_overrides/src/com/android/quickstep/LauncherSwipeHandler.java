@@ -1000,7 +1000,7 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
         mLauncherTransitionController.getAnimationPlayer().setDuration(Math.max(0, duration));
 
         if (UNSTABLE_SPRINGS.get()) {
-            mLauncherTransitionController.dispatchOnStartWithVelocity(end, velocityPxPerMs.y);
+            mLauncherTransitionController.dispatchOnStart();
         }
         mLauncherTransitionController.getAnimationPlayer().start();
         mHasLauncherTransitionControllerStarted = true;

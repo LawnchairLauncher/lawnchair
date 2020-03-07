@@ -393,7 +393,7 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         xOverviewAnim.setFloatValues(startXProgress, endXProgress);
         xOverviewAnim.setDuration(xDuration)
                 .setInterpolator(scrollInterpolatorForVelocity(velocity.x));
-        mXOverviewAnim.dispatchOnStartWithVelocity(endXProgress, velocity.x);
+        mXOverviewAnim.dispatchOnStart();
 
         boolean flingUpToNormal = verticalFling && velocity.y < 0 && targetState == NORMAL;
 
@@ -414,7 +414,7 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         ValueAnimator yOverviewAnim = mYOverviewAnim.getAnimationPlayer();
         yOverviewAnim.setFloatValues(startYProgress, endYProgress);
         yOverviewAnim.setDuration(yDuration);
-        mYOverviewAnim.dispatchOnStartWithVelocity(endYProgress, velocity.y);
+        mYOverviewAnim.dispatchOnStart();
 
         ValueAnimator nonOverviewAnim = mNonOverviewAnim.getAnimationPlayer();
         if (flingUpToNormal && !mIsHomeScreenVisible) {
@@ -436,8 +436,7 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
             float startProgress = mNonOverviewAnim.getProgressFraction();
             float endProgress = canceled ? 0 : 1;
             nonOverviewAnim.setFloatValues(startProgress, endProgress);
-            mNonOverviewAnim.dispatchOnStartWithVelocity(endProgress,
-                    horizontalFling ? velocity.x : velocity.y);
+            mNonOverviewAnim.dispatchOnStart();
         }
 
         nonOverviewAnim.setDuration(Math.max(xDuration, yDuration));
