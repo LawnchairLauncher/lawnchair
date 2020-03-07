@@ -230,7 +230,7 @@ public abstract class AbstractStateChangeTouchController
     }
 
     @Override
-    public void onDragStart(boolean start) {
+    public void onDragStart(boolean start, float startDisplacement) {
         mStartState = mLauncher.getStateManager().getState();
         mIsLogContainerSet = false;
         if (mCurrentAnimation == null) {

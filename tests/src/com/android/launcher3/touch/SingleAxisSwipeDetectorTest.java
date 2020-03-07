@@ -89,7 +89,7 @@ public class SingleAxisSwipeDetectorTest {
         mGenerator.put(0, 100, 100);
         mGenerator.move(0, 100, 100 - mTouchSlop);
         // TODO: actually calculate the following parameters and do exact value checks.
-        verify(mMockListener).onDragStart(anyBoolean());
+        verify(mMockListener).onDragStart(anyBoolean(), anyFloat());
     }
 
     @Test
@@ -99,7 +99,7 @@ public class SingleAxisSwipeDetectorTest {
         mGenerator.put(0, 100, 100);
         mGenerator.move(0, 100, 100 + mTouchSlop);
         // TODO: actually calculate the following parameters and do exact value checks.
-        verify(mMockListener).onDragStart(anyBoolean());
+        verify(mMockListener).onDragStart(anyBoolean(), anyFloat());
     }
 
     @Test
@@ -107,7 +107,7 @@ public class SingleAxisSwipeDetectorTest {
         mGenerator.put(0, 100, 100);
         mGenerator.move(0, 100 + mTouchSlop, 100);
         // TODO: actually calculate the following parameters and do exact value checks.
-        verify(mMockListener, never()).onDragStart(anyBoolean());
+        verify(mMockListener, never()).onDragStart(anyBoolean(), anyFloat());
     }
 
     @Test
@@ -118,7 +118,7 @@ public class SingleAxisSwipeDetectorTest {
         mGenerator.put(0, 100, 100);
         mGenerator.move(0, 100 + mTouchSlop, 100);
         // TODO: actually calculate the following parameters and do exact value checks.
-        verify(mMockListener).onDragStart(anyBoolean());
+        verify(mMockListener).onDragStart(anyBoolean(), anyFloat());
     }
 
     @Test
@@ -129,7 +129,7 @@ public class SingleAxisSwipeDetectorTest {
         mGenerator.put(0, 100, 100);
         mGenerator.move(0, 100 - mTouchSlop, 100);
         // TODO: actually calculate the following parameters and do exact value checks.
-        verify(mMockListener).onDragStart(anyBoolean());
+        verify(mMockListener).onDragStart(anyBoolean(), anyFloat());
     }
 
     @Test
@@ -140,7 +140,7 @@ public class SingleAxisSwipeDetectorTest {
         mGenerator.put(0, 100, 100);
         mGenerator.move(0, 100 - mTouchSlop, 100);
         // TODO: actually calculate the following parameters and do exact value checks.
-        verify(mMockListener).onDragStart(anyBoolean());
+        verify(mMockListener).onDragStart(anyBoolean(), anyFloat());
     }
 
     @Test
@@ -151,7 +151,7 @@ public class SingleAxisSwipeDetectorTest {
         mGenerator.put(0, 100, 100);
         mGenerator.move(0, 100 + mTouchSlop, 100);
         // TODO: actually calculate the following parameters and do exact value checks.
-        verify(mMockListener).onDragStart(anyBoolean());
+        verify(mMockListener).onDragStart(anyBoolean(), anyFloat());
     }
 
     @Test

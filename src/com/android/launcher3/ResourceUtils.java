@@ -21,12 +21,12 @@ import android.util.DisplayMetrics;
 import android.util.TypedValue;
 
 public class ResourceUtils {
+    public static final int DEFAULT_NAVBAR_VALUE = 48;
     public static final String NAVBAR_LANDSCAPE_LEFT_RIGHT_SIZE = "navigation_bar_width";
     public static final String NAVBAR_BOTTOM_GESTURE_SIZE = "navigation_bar_gesture_height";
 
-
     public static int getNavbarSize(String resName, Resources res) {
-        return getDimenByName(resName, res, 48);
+        return getDimenByName(resName, res, DEFAULT_NAVBAR_VALUE);
     }
 
     public static int getDimenByName(String resName, Resources res, int defaultValue) {

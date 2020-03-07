@@ -126,7 +126,7 @@ public class NavBarToHomeTouchController implements TouchController,
     }
 
     @Override
-    public void onDragStart(boolean start) {
+    public void onDragStart(boolean start, float startDisplacement) {
         initCurrentAnimation();
     }
 
