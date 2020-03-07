@@ -121,5 +121,57 @@
     <bool name="config_enableTaskSnapshotPreloading">true</bool>
 
     <!-- Configuration resources -->
-    <array name="dynamic_resources"> </array>
+    <item name="all_apps_spring_damping_ratio" type="dimen" format="float">0.75</item>
+    <item name="all_apps_spring_stiffness" type="dimen" format="float">600</item>
+
+    <item name="dismiss_task_trans_y_damping_ratio" type="dimen" format="float">0.5</item>
+    <item name="dismiss_task_trans_y_stiffness" type="dimen" format="float">1500</item>
+
+    <item name="dismiss_task_trans_x_damping_ratio" type="dimen" format="float">0.5</item>
+    <item name="dismiss_task_trans_x_stiffness" type="dimen" format="float">1500</item>
+
+    <item name="horizontal_spring_damping_ratio" type="dimen" format="float">0.75</item>
+    <item name="horizontal_spring_stiffness" type="dimen" format="float">200</item>
+
+    <item name="swipe_up_rect_scale_damping_ratio" type="dimen" format="float">0.75</item>
+    <item name="swipe_up_rect_scale_stiffness" type="dimen" format="float">200</item>
+
+    <item name="swipe_up_rect_xy_fling_friction" type="dimen" format="float">1.5</item>
+    <item name="swipe_up_rect_xy_damping_ratio" type="dimen" format="float">0.8</item>
+    <item name="swipe_up_rect_xy_stiffness" type="dimen" format="float">200</item>
+
+    <item name="staggered_damping_ratio" type="dimen" format="float">0.7</item>
+    <item name="staggered_stiffness" type="dimen" format="float">150</item>
+
+    <!-- Swipe up to home related -->
+    <dimen name="swipe_up_fling_min_visible_change">18dp</dimen>
+    <dimen name="swipe_up_y_overshoot">10dp</dimen>
+    <dimen name="swipe_up_max_workspace_trans_y">-60dp</dimen>
+
+    <array name="dynamic_resources">
+        <item>@dimen/all_apps_spring_damping_ratio</item>
+        <item>@dimen/all_apps_spring_stiffness</item>
+
+        <item>@dimen/dismiss_task_trans_y_damping_ratio</item>
+        <item>@dimen/dismiss_task_trans_y_stiffness</item>
+
+        <item>@dimen/dismiss_task_trans_x_damping_ratio</item>
+        <item>@dimen/dismiss_task_trans_x_stiffness</item>
+
+        <item>@dimen/horizontal_spring_damping_ratio</item>
+        <item>@dimen/horizontal_spring_stiffness</item>
+
+        <item>@dimen/swipe_up_rect_scale_damping_ratio</item>
+        <item>@dimen/swipe_up_rect_scale_stiffness</item>
+
+        <item>@dimen/swipe_up_rect_xy_fling_friction</item>
+        <item>@dimen/swipe_up_rect_xy_damping_ratio</item>
+        <item>@dimen/swipe_up_rect_xy_stiffness</item>
+
+        <item>@dimen/staggered_damping_ratio</item>
+        <item>@dimen/staggered_stiffness</item>
+
+        <item>@dimen/swipe_up_fling_min_visible_change</item>
+        <item>@dimen/swipe_up_y_overshoot</item>
+    </array>
 </resources>

@@ -2783,6 +2783,26 @@ public class CellLayout extends ViewGroup implements Transposable {
         return false;
     }
 
+    /**
+     * Finds solution to accept hotseat migration to cell layout. commits solution if commitConfig
+     */
+    public boolean makeSpaceForHotseatMigration(boolean commitConfig) {
+        if (FeatureFlags.HOTSEAT_MIGRATE_NEW_PAGE.get()) return false;
+        int[] cellPoint = new int[2];
+        int[] directionVector = new int[]{0, -1};
+        cellToPoint(0, mCountY, cellPoint);
+        ItemConfiguration configuration = new ItemConfiguration();
+        if (findReorderSolution(cellPoint[0], cellPoint[1], mCountX, 1, mCountX, 1,
+                directionVector, null, false, configuration).isSolution) {
+            if (commitConfig) {
+                copySolutionToTempState(configuration, null);
+                commitTempPlacement();
+            }
+            return true;
+        }
+        return false;
+    }
+
     public boolean isRegionVacant(int x, int y, int spanX, int spanY) {
         return mOccupied.isRegionVacant(x, y, spanX, spanY);
     }
