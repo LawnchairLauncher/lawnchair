@@ -36,6 +36,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.touch.BaseSwipeDetector;
+import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.touch.SingleAxisSwipeDetector;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.util.FlingBlockCheck;
@@ -77,7 +78,9 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
     public TaskViewTouchController(T activity) {
         mActivity = activity;
         mRecentsView = activity.getOverviewPanel();
-        mDetector = new SingleAxisSwipeDetector(activity, this, SingleAxisSwipeDetector.VERTICAL);
+        SingleAxisSwipeDetector.Direction dir =
+            mRecentsView.getPagedOrientationHandler().getOppositeSwipeDirection();
+        mDetector = new SingleAxisSwipeDetector(activity, this, dir);
     }
 
     private boolean canInterceptTouch() {
@@ -105,6 +108,10 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
 
     @Override
     public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
+        if ((ev.getAction() == MotionEvent.ACTION_UP || ev.getAction() == MotionEvent.ACTION_CANCEL)
+                && mCurrentAnimation == null) {
+            clearState();
+        }
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             mNoIntercept = !canInterceptTouch();
             if (mNoIntercept) {
@@ -125,6 +132,11 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
                     TaskView view = mRecentsView.getTaskViewAt(i);
                     if (mRecentsView.isTaskViewVisible(view) && mActivity.getDragLayer()
                             .isEventOverView(view, ev)) {
+                        // Disable swiping up and down if the task overlay is modal.
+                        if (view.isTaskOverlayModal()) {
+                            mTaskBeingDragged = null;
+                            break;
+                        }
                         mTaskBeingDragged = view;
                         if (!SysUINavigationMode.getMode(mActivity).hasGestures) {
                             // Don't allow swipe down to open if we don't support swipe up
@@ -181,15 +193,18 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
             mPendingAnimation = null;
         }
 
+        PagedOrientationHandler orientationHandler = mRecentsView.getPagedOrientationHandler();
         mCurrentAnimationIsGoingUp = goingUp;
         BaseDragLayer dl = mActivity.getDragLayer();
-        long maxDuration = (long) (2 * dl.getHeight());
-
+        final int secondaryLayerDimension = orientationHandler.getSecondaryDimension(dl);
+        long maxDuration = (long) (2 * secondaryLayerDimension);
+        int verticalFactor = -orientationHandler.getTaskDismissDirectionFactor();
+        int secondaryTaskDimension = orientationHandler.getSecondaryDimension(mTaskBeingDragged);
         if (goingUp) {
             mPendingAnimation = mRecentsView.createTaskDismissAnimation(mTaskBeingDragged,
                     true /* animateTaskView */, true /* removeTask */, maxDuration);
 
-            mEndDisplacement = -mTaskBeingDragged.getHeight();
+            mEndDisplacement = -secondaryTaskDimension;
         } else {
             mPendingAnimation = mRecentsView.createTaskLaunchAnimation(
                     mTaskBeingDragged, maxDuration, Interpolators.ZOOM_IN);
@@ -198,6 +213,7 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
             dl.getDescendantCoordRelativeToSelf(mTaskBeingDragged, mTempCords);
             mEndDisplacement = dl.getHeight() - mTempCords[1];
         }
+        mEndDisplacement *= verticalFactor;
 
         if (mCurrentAnimation != null) {
             mCurrentAnimation.setOnCancelRunnable(null);
@@ -211,9 +227,10 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
     }
 
     @Override
-    public void onDragStart(boolean start) {
+    public void onDragStart(boolean start, float startDisplacement) {
+        PagedOrientationHandler orientationHandler = mRecentsView.getPagedOrientationHandler();
         if (mCurrentAnimation == null) {
-            reInitAnimationController(mDetector.wasInitialTouchPositive());
+            reInitAnimationController(orientationHandler.isGoingUp(startDisplacement));
             mDisplacementShift = 0;
         } else {
             mDisplacementShift = mCurrentAnimation.getProgressFraction() / mProgressMultiplier;
@@ -224,9 +241,10 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
 
     @Override
     public boolean onDrag(float displacement) {
+        PagedOrientationHandler orientationHandler = mRecentsView.getPagedOrientationHandler();
         float totalDisplacement = displacement + mDisplacementShift;
-        boolean isGoingUp =
-                totalDisplacement == 0 ? mCurrentAnimationIsGoingUp : totalDisplacement < 0;
+        boolean isGoingUp = totalDisplacement == 0 ? mCurrentAnimationIsGoingUp :
+                orientationHandler.isGoingUp(totalDisplacement);
         if (isGoingUp != mCurrentAnimationIsGoingUp) {
             reInitAnimationController(isGoingUp);
             mFlingBlockCheck.blockFling();
@@ -253,11 +271,12 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
         if (blockedFling) {
             fling = false;
         }
+        PagedOrientationHandler orientationHandler = mRecentsView.getPagedOrientationHandler();
         float progress = mCurrentAnimation.getProgressFraction();
         float interpolatedProgress = mCurrentAnimation.getInterpolatedProgress();
         if (fling) {
             logAction = Touch.FLING;
-            boolean goingUp = velocity < 0;
+            boolean goingUp = orientationHandler.isGoingUp(velocity);
             goingToEnd = goingUp == mCurrentAnimationIsGoingUp;
         } else {
             logAction = Touch.SWIPE;

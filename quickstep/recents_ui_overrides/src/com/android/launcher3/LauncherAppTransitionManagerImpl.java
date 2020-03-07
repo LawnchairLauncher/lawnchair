@@ -16,7 +16,6 @@
 
 package com.android.launcher3;
 
-import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.HOTSEAT_ICONS;
 import static com.android.launcher3.LauncherState.NORMAL;
@@ -39,6 +38,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.util.FloatProperty;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -50,6 +50,7 @@ import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.SpringAnimationBuilder;
+import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.quickstep.util.AppWindowAnimationHelper;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
@@ -88,7 +89,8 @@ public final class LauncherAppTransitionManagerImpl extends QuickstepAppTransiti
 
         TaskView taskView = findTaskViewToLaunch(mLauncher, v, appTargets);
 
-        AppWindowAnimationHelper helper = new AppWindowAnimationHelper(mLauncher);
+        AppWindowAnimationHelper helper =
+            new AppWindowAnimationHelper(recentsView.getPagedViewOrientedState(), mLauncher);
         anim.play(getRecentsWindowAnimator(taskView, skipLauncherChanges, appTargets,
                 wallpaperTargets, helper).setDuration(RECENTS_LAUNCH_DURATION));
 
@@ -197,7 +199,11 @@ public final class LauncherAppTransitionManagerImpl extends QuickstepAppTransiti
                 return ObjectAnimator.ofFloat(mLauncher.getOverviewPanel(),
                         RecentsView.CONTENT_ALPHA, values);
             case INDEX_RECENTS_TRANSLATE_X_ANIM:
-                return new SpringAnimationBuilder<>(mLauncher.getOverviewPanel(), VIEW_TRANSLATE_X)
+                PagedOrientationHandler orientationHandler =
+                    ((RecentsView)mLauncher.getOverviewPanel()).getPagedViewOrientedState()
+                        .getOrientationHandler();
+                FloatProperty<View> translate = orientationHandler.getPrimaryViewTranslate();
+                return new SpringAnimationBuilder<>(mLauncher.getOverviewPanel(), translate)
                         .setDampingRatio(0.8f)
                         .setStiffness(250)
                         .setValues(values)

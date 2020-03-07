@@ -236,7 +236,7 @@ public abstract class BaseSwipeDetector {
         } else {
             mSubtractDisplacement.x = mDisplacement.x > 0 ? mTouchSlop : -mTouchSlop;
             mSubtractDisplacement.y = mDisplacement.y > 0 ? mTouchSlop : -mTouchSlop;
-        }
+        } 
     }
 
     protected abstract boolean shouldScrollStart(PointF displacement);

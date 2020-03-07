@@ -48,7 +48,7 @@ public class AllAppsPagedView extends PagedView<PersonalWorkSlidingTabStrip> {
     @Override
     protected void onScrollChanged(int l, int t, int oldl, int oldt) {
         super.onScrollChanged(l, t, oldl, oldt);
-        mPageIndicator.setScroll(l, mMaxScrollX);
+        mPageIndicator.setScroll(l, mMaxScroll);
     }
 
     @Override
