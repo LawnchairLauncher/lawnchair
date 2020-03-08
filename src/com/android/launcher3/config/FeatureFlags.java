@@ -93,8 +93,9 @@ public final class FeatureFlags {
     public static final BooleanFlag FAKE_LANDSCAPE_UI = getDebugFlag(
             "FAKE_LANDSCAPE_UI", false, "Rotate launcher UI instead of using transposed layout");
 
-    public static final BooleanFlag FOLDER_NAME_SUGGEST = getDebugFlag(
-            "FOLDER_NAME_SUGGEST", true, "Suggests folder names instead of blank text.");
+    public static final BooleanFlag FOLDER_NAME_SUGGEST = new DeviceFlag(
+            "FOLDER_NAME_SUGGEST", true,
+            "Suggests folder names instead of blank text.");
 
     public static final BooleanFlag APP_SEARCH_IMPROVEMENTS = new DeviceFlag(
             "APP_SEARCH_IMPROVEMENTS", false,
