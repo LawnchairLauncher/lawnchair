@@ -330,6 +330,7 @@
     <string name="label_turn_off_suggestions">Inaktivera</string>
     <string name="about_summary_title">Sammanfattning</string>
     <string name="hide_app">Göm genväg</string>
+    <string name="hide_badge">Göm prick</string>
     <string name="icon_shape_rounded_square">Avrundad kvadrat</string>
     <string name="hide_app_selected">gömd.</string>
     <string name="hide_app_apply">Klart</string>
