@@ -132,6 +132,7 @@ public abstract class BaseFlags {
                 }
             }
         }
+        APP_SEARCH_IMPROVEMENTS.initialize(context);
     }
 
     static List<TogglableFlag> getTogglableFlags() {
