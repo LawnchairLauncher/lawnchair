@@ -660,7 +660,7 @@ public class LauncherModel extends BroadcastReceiver
             public ShortcutInfo get() {
                 si.updateFromDeepShortcutInfo(info, mApp.getContext());
                 LauncherIcons li = LauncherIcons.obtain(mApp.getContext());
-                li.createShortcutIcon(info).applyTo(si);
+                li.createShortcutIcon(info, si.isBadgeVisible()).applyTo(si);
                 li.recycle();
                 return si;
             }

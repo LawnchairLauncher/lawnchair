@@ -25,6 +25,8 @@ import ch.deletescape.lawnchair.iconpack.IconPackManager
 import ch.deletescape.lawnchair.useApplicationContext
 import ch.deletescape.lawnchair.util.SingletonHolder
 import com.android.launcher3.LauncherAppState
+import com.android.launcher3.LauncherSettings.BaseLauncherColumns.ITEM_TYPE_SHORTCUT
+import com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT
 import com.android.launcher3.ShortcutInfo
 import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.graphics.LauncherIcons
@@ -74,6 +76,20 @@ class ShortcutInfoProvider private constructor(context: Context) : CustomInfoPro
 
     override fun getSwipeUpAction(info: ShortcutInfo): String? {
         return info.swipeUpAction
+    }
+
+    override fun supportsBadgeVisible(info: ShortcutInfo) = when (info.itemType) {
+        ITEM_TYPE_SHORTCUT, ITEM_TYPE_DEEP_SHORTCUT -> true
+        // TODO if work badge is present
+        else -> false
+    }
+
+    override fun setBadgeVisible(info: ShortcutInfo, visible: Boolean) {
+        info.setBadgeVisible(context, visible)
+    }
+
+    override fun getBadgeVisible(info: ShortcutInfo): Boolean {
+        return info.isBadgeVisible
     }
 
     private fun getLauncherActivityInfo(info: ShortcutInfo): LauncherActivityInfo? {

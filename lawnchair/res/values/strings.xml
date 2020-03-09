@@ -480,6 +480,7 @@
     <string name="about_summary_title">Summary</string>
 
     <string name="hide_app">Hide Shortcut</string>
+    <string name="hide_badge">Hide Badge</string>
     <string name="icon_shape_rounded_square">Rounded Square</string>
 
     <string name="hide_app_selected">“&#160;” hidden.</string>

@@ -265,6 +265,8 @@ public class LauncherSettings {
 
         public static final String SWIPE_UP_ACTION = "swipeUpAction";
 
+        public static final String BADGE_VISIBLE = "badgeVisible";
+
         public static void addTableToDb(SQLiteDatabase db, long myProfileId, boolean optional) {
             String ifNotExists = optional ? " IF NOT EXISTS " : "";
             db.execSQL("CREATE TABLE " + ifNotExists + TABLE_NAME + " (" +
@@ -287,6 +289,7 @@ public class LauncherSettings {
                     "titleAlias TEXT," +
                     "swipeUpAction TEXT," +
                     "appWidgetProvider TEXT," +
+                    "badgeVisible INTEGER NOT NULL DEFAULT 0," +
                     "modified INTEGER NOT NULL DEFAULT 0," +
                     "restored INTEGER NOT NULL DEFAULT 0," +
                     "profileId INTEGER DEFAULT " + myProfileId + "," +

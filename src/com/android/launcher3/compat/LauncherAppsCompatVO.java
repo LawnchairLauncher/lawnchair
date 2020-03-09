@@ -30,6 +30,7 @@ import android.os.Process;
 import android.os.UserHandle;
 import android.support.annotation.Nullable;
 
+import android.util.Log;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.ShortcutInfo;
@@ -138,7 +139,7 @@ public class LauncherAppsCompatVO extends LauncherAppsCompatVL {
             ShortcutInfo info = new ShortcutInfo(compat, context);
             // Apply the unbadged icon and fetch the actual icon asynchronously.
             LauncherIcons li = LauncherIcons.obtain(context);
-            li.createShortcutIcon(compat, false /* badged */).applyTo(info);
+            li.createShortcutIconPlain(compat).applyTo(info);
             li.recycle();
             LauncherAppState.getInstance(context).getModel()
                     .updateAndBindShortcutInfo(info, compat);
