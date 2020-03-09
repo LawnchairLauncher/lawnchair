@@ -333,6 +333,7 @@
     <string name="label_turn_off_suggestions">停用</string>
     <string name="about_summary_title">說明</string>
     <string name="hide_app">隱藏捷徑</string>
+    <string name="hide_badge">隱藏計數</string>
     <string name="icon_shape_rounded_square">圓角矩形</string>
     <string name="hide_app_selected">「&#160;」個已隱藏</string>
     <string name="hide_app_apply">完成</string>
