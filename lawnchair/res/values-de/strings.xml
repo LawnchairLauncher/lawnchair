@@ -334,6 +334,7 @@
     <string name="label_turn_off_suggestions">Deaktivieren</string>
     <string name="about_summary_title">Übersicht</string>
     <string name="hide_app">Verknüpfung verstecken</string>
+    <string name="hide_badge">Plakette ausblenden</string>
     <string name="icon_shape_rounded_square">Abgerundetes Quadrat</string>
     <string name="hide_app_selected">\"&#160;\" versteckt.</string>
     <string name="hide_app_apply">Fertig</string>
