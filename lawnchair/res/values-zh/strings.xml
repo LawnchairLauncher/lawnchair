@@ -329,6 +329,7 @@
     <string name="label_turn_off_suggestions">禁用</string>
     <string name="about_summary_title">概述</string>
     <string name="hide_app">隐藏快捷方式</string>
+    <string name="hide_badge">隐藏徽标</string>
     <string name="icon_shape_rounded_square">圆角矩形</string>
     <string name="hide_app_selected">“&#160;” 隐藏</string>
     <string name="hide_app_apply">完成</string>
