@@ -326,6 +326,7 @@
     <string name="label_turn_off_suggestions">Dezactivează</string>
     <string name="about_summary_title">Rezumat</string>
     <string name="hide_app">Ascunde Scurtătura</string>
+    <string name="hide_badge">Ascunde insignă</string>
     <string name="icon_shape_rounded_square">Pătrat rotunjit</string>
     <string name="hide_app_selected">\"&#160;\" ascuns.</string>
     <string name="hide_app_apply">Efectuat</string>
