@@ -335,6 +335,7 @@
     <string name="label_turn_off_suggestions">Disabilita</string>
     <string name="about_summary_title">Sommario</string>
     <string name="hide_app">Nascondi scorciatoia</string>
+    <string name="hide_badge">Nascondi badge</string>
     <string name="icon_shape_rounded_square">Quadrato con angoli arrotondati</string>
     <string name="hide_app_selected">\"&#160;\" nascosta.</string>
     <string name="hide_app_apply">Fatto</string>
