@@ -7,13 +7,13 @@
     <!-- Section 1 -->
     <string name="search_menu">ค้นหา</string>
     <string name="search_no_results">ไม่พบผลลัพธ์</string>
-    <string name="restart_lawnchair_pref_title">เริ่มใหม่</string>
+    <string name="restart_lawnchair_pref_title">เริ่มต้นใหม่</string>
     <string name="developer_options_title">ตัวเลือกสำหรับนักพัฒนา</string>
     <string name="change_default_home">ตั้งเป็นแอปหน้าจอหลัก</string>
     <string name="action_apply">เสร็จสิ้น</string>
     <!-- Note: new. Replaces “OK” in dialogs. -->
-    <string name="theme_dark_theme_mode_on">ที่เปิดใช้งาน</string>
-    <string name="theme_dark_theme_mode_off">ปิด</string>
+    <string name="theme_dark_theme_mode_on">เปิดใช้งาน</string>
+    <string name="theme_dark_theme_mode_off">ปิดการใช้งาน</string>
     <!-- Section 2 -->
     <string name="theme_title">ธีม</string>
     <string name="pixel_ui_pref_summary">ไอคอน, สี, การเบลอ</string>
@@ -23,27 +23,27 @@
     <string name="pref_icon_pack_masking_summary">ทำให้ไอคอนที่ไม่ได้ปรับแต่งเข้ากันกับชุดไอคอน</string>
     <string name="pref_legacy_treatment_title">สร้างไอคอนแบบปรับอัตโนมัติ</string>
     <string name="pref_legacy_treatment_summary">สร้างไอคอนแบบปรับอัตโนมัติสำหรับทางลัดทั้งหมด</string>
-    <string name="pref_legacy_colored_backgrounds">สีพื้นหลัง</string>
-    <string name="pref_legacy_colored_backgrounds_summary">ใส่สีพื้นหลังไอคอนแบบปรับอัตโนมัติที่สร้างขึ้น</string>
+    <string name="pref_legacy_colored_backgrounds">พื้นหลังแบบสี</string>
+    <string name="pref_legacy_colored_backgrounds_summary">สีพื้นหลังไอคอนแบบอัตโนมัติ</string>
     <string name="pref_white_only_treatment">แทนที่พื้นหลังสีขาว</string>
     <string name="pref_white_only_treatment_summary">ใส่สีพื้นหลังไอคอนแบบปรับอัตโนมัติทั้งหมด</string>
     <string name="adaptify_pack_title">สร้างไอคอนแบบปรับอัตโนมัติสำหรับชุดไอคอน</string>
-    <string name="icon_shape_override_label">รูปร่างไอคอน</string>
-    <string name="reset_custom_icons">ลบไอคอนที่ปรับแต่ง</string>
-    <string name="reset_custom_icons_confirmation">เปลี่ยนกลับเป็นไอคอนเริ่มต้นจากชุดไอคอนนี้?</string>
-    <string name="appearance">ลักษณะ</string>
+    <string name="icon_shape_override_label">รูปทรงไอคอน</string>
+    <string name="reset_custom_icons">ลบไอคอนแบบกำหนดเอง</string>
+    <string name="reset_custom_icons_confirmation">กลับไปใช้เริ่มต้นจากชุดไอคอนนี้? ไม่สามารถย้อนกระบวนการได้</string>
+    <string name="appearance">รูปร่างหน้าตา</string>
     <!-- Note: new. Replaces title of 5th field (from bottom) in “Theme” page. -->
-    <string name="theme_auto">อัตโนมัติ (ตามภาพพื้นหลัง)</string>
-    <string name="theme_auto_night_mode">ใช้การตั้งค่าระบบ</string>
-    <string name="theme_dark_theme_mode_follow_daylight">กำหนดเวลา (สีมืดในตอนกลางคืน)</string>
+    <string name="theme_auto">อัตโนมัติ (ปรับตามภาพพื้นหลัง)</string>
+    <string name="theme_auto_night_mode">ตั้งค่าโดยระบบ</string>
+    <string name="theme_dark_theme_mode_follow_daylight">กำหนดเวลา (สีเข้มในตอนกลางคืน)</string>
     <string name="theme_light">สว่าง</string>
-    <string name="theme_dark_text">สีสว่างและอักษรสีมืด</string>
+    <string name="theme_dark_text">สว่างและอักษรสีเข้ม</string>
     <string name="theme_with_dark_text">ตัวอักษรสีมืด</string>
     <string name="theme_use_black">ใช้สีดำสนิท</string>
-    <string name="theme_use_dark_text">ใช้อักษรสีมืด</string>
+    <string name="theme_use_dark_text">ใช้อักษรสีเข้ม</string>
     <string name="lawnchair_accent">สีรอง</string>
     <string name="color_pixel_accent">สีน้ำเงิน Google</string>
-    <string name="color_system_accent">ใช้การตั้งค่าระบบ</string>
+    <string name="color_system_accent">ตั้งค่าโดยระบบ</string>
     <string name="color_wallpaper_main">ภาพพื้นหลัง - สีหลัก</string>
     <string name="color_wallpaper_secondary">ภาพพื้นหลัง - สีรอง</string>
     <string name="color_wallpaper_tertiary">ภาพพื้นหลัง - สีที่สาม</string>
@@ -332,6 +332,7 @@
     <string name="label_turn_off_suggestions">ปิด</string>
     <string name="about_summary_title">ภาพรวม</string>
     <string name="hide_app">ซ่อนแอป</string>
+    <string name="hide_badge">ซ่อนป้ายบนไอคอนแอป</string>
     <string name="icon_shape_rounded_square">สี่เหลี่ยมจตุรัสขอบมน</string>
     <string name="hide_app_selected">“&#160;” ซ่อนอยู่</string>
     <string name="hide_app_apply">เสร็จสิ้น</string>
@@ -552,7 +553,7 @@
     <string name="gesture_nav_swipe_up_center">จากตรงกลาง</string>
     <string name="gesture_nav_swipe_up_right">จากด้านขวา</string>
     <string name="action_switch_apps">สลัปแอป</string>
-    <string name="icon_shape_system_default">ใช้การตั้งค่าระบบ</string>
+    <string name="icon_shape_system_default">ตั้งค่าโดยระบบ</string>
     <string name="title_missing_notification_access">ต้องการสิทธิ์เพื่อเข้าถึงการแจ้งเตือน</string>
     <string name="activity_not_found">แอปไม่ได้ติดตั้ง</string>
     <string name="out_of_space">ไม่มีที่ว่างบนหน้าจอหลัก</string>
