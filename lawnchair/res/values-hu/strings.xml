@@ -334,6 +334,7 @@
     <string name="label_turn_off_suggestions">Kikapcsolás</string>
     <string name="about_summary_title">Összegzés</string>
     <string name="hide_app">Parancsikon elrejtése</string>
+    <string name="hide_badge">Jelzőpötty elrejtése</string>
     <string name="icon_shape_rounded_square">Lekerekített négyzet</string>
     <string name="hide_app_selected">“&#160;” elrejtve.</string>
     <string name="hide_app_apply">Kész</string>
