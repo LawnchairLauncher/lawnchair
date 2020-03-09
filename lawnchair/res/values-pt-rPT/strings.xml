@@ -334,6 +334,7 @@
     <string name="label_turn_off_suggestions">Desativar</string>
     <string name="about_summary_title">Resumo</string>
     <string name="hide_app">Ocultar atalho</string>
+    <string name="hide_badge">Ocultar emblemas</string>
     <string name="icon_shape_rounded_square">Quadrado arredondado</string>
     <string name="hide_app_selected">“&#160;” oculta.</string>
     <string name="hide_app_apply">Feito</string>
