@@ -1475,7 +1475,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         if (isActionMain) {
             if (!internalStateHandled) {
                 // In all these cases, only animate if we're already on home
-                AbstractFloatingView.closeAllOpenViews(this, isStarted());
+                closeOpenViews(isStarted());
 
                 if (!isInState(NORMAL)) {
                     // Only change state, if not already the same. This prevents cancelling any
@@ -2198,7 +2198,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                 mWorkspace.postDelayed(new Runnable() {
                     public void run() {
                         if (mWorkspace != null) {
-                            AbstractFloatingView.closeAllOpenViews(Launcher.this, false);
+                            closeOpenViews(false);
 
                             mWorkspace.snapToPage(newScreenIndex);
                             mWorkspace.postDelayed(startBounceAnimRunnable,
@@ -2686,7 +2686,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             if (!mDragController.isDragging() && !mWorkspace.isSwitchingState() &&
                     isInState(NORMAL)) {
                 // Close any open floating views.
-                AbstractFloatingView.closeAllOpenViews(this);
+                closeOpenViews();
 
                 // Setting the touch point to (-1, -1) will show the options popup in the center of
                 // the screen.
@@ -2725,6 +2725,14 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     public void returnToHomescreen() {
         super.returnToHomescreen();
         getStateManager().goToState(LauncherState.NORMAL);
+    }
+
+    private void closeOpenViews() {
+        closeOpenViews(true);
+    }
+
+    protected void closeOpenViews(boolean animate) {
+        AbstractFloatingView.closeAllOpenViews(this, animate);
     }
 
     public Stream<SystemShortcut.Factory> getSupportedShortcuts() {

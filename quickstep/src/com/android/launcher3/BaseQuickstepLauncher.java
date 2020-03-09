@@ -26,6 +26,7 @@ import static com.android.launcher3.allapps.DiscoveryBounce.HOME_BOUNCE_SEEN;
 import static com.android.launcher3.allapps.DiscoveryBounce.SHELF_BOUNCE_COUNT;
 import static com.android.launcher3.allapps.DiscoveryBounce.SHELF_BOUNCE_SEEN;
 import static com.android.quickstep.SysUINavigationMode.removeShelfFromOverview;
+import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_HOME_KEY;
 
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
@@ -227,6 +228,13 @@ public abstract class BaseQuickstepLauncher extends Launcher
                 getActionsView().bringToFront();
             }
         }
+    }
+
+    @Override
+    protected void closeOpenViews(boolean animate) {
+        super.closeOpenViews(animate);
+        ActivityManagerWrapper.getInstance()
+                .closeSystemWindows(CLOSE_SYSTEM_WINDOWS_REASON_HOME_KEY);
     }
 
     @Override
