@@ -20,7 +20,6 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name" msgid="649227358658669779">"Launcher3"</string>
-    <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="work_folder_name" msgid="3753320833950115786">"කාර්යාලය"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"යෙදුම ස්ථාපනය කර නැත."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"යෙදුම නොතිබේ"</string>
@@ -63,7 +62,7 @@
     <string name="gadget_error_text" msgid="6081085226050792095">"ගැටලු පූරණ විජට් එක"</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"ස්ථාපනය කරන්න"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"මෙය පද්ධති යෙදුමක් වන අතර අස්ථාපනය කළ නොහැක."</string>
-    <string name="folder_hint_text" msgid="6617836969016293992">"නම් නොකළ ෆෝල්ඩරය"</string>
+    <string name="folder_hint_text" msgid="5174843001373488816">"නම සංස්කරණය කරන්න"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> අබල කෙරිණි"</string>
     <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
       <item quantity="one"><xliff:g id="APP_NAME_2">%1$s</xliff:g>, දැනුම්දීම් <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g>ක් ඇත</item>
@@ -133,11 +132,13 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"පුද්ගලික"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"කාර්යාලය"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"කාර්යාල පැතිකඩ"</string>
-    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"මෙහි කාර්යාල යෙදුම් සොයා ගන්න"</string>
-    <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"සෑම කාර්යාල යෙදුමකම ලාංඡනයක් ඇත ඇති අතර එය ඔබේ සංවිධානය මගින් සුරක්ෂිතව තබා ගනී. වඩාත් පහසු ප්‍රවේශයකට යෙදුම් ඔබේ මුල් පිටු තිරය වෙත ගෙන යන්න."</string>
-    <string name="work_mode_on_label" msgid="4781128097185272916">"ඔබේ සංවිධානය විසින් කළමනාකරණය කරනු ලැබේ"</string>
-    <string name="work_mode_off_label" msgid="3194894777601421047">"දැනුම්දීම් සහ යෙදුම් ක්‍රියාවිරහිතයි"</string>
-    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"වසන්න"</string>
-    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"වසා ඇත"</string>
+    <string name="work_profile_edu_personal_apps" msgid="835703904784988952">"පෞද්ගලික යෙදුම් පුද්ගලික වන අතර IT විසින් බැලිය නොහැකිය"</string>
+    <string name="work_profile_edu_work_apps" msgid="2780791410780522606">"කාර්යාල යෙදුම් ලාංඡනයකින් සලකුණු කර ඇති අතර IT ට දෘශ්‍යමාන වේ"</string>
+    <string name="work_profile_edu_next" msgid="8783418929296503629">"ඊළඟ"</string>
+    <string name="work_profile_edu_accept" msgid="6069788082535149071">"තේරුණා"</string>
+    <string name="work_mode_on_label" msgid="5386806494898086318">"කාර්යාල යෙදුම්: ක්‍රියාත්මකයි"</string>
+    <string name="work_mode_off_label" msgid="108732939698502466">"කාර්යාල යෙදුම්: විරාම කරන ලදී"</string>
+    <string name="work_apps_paused_title" msgid="3040901117349444598">"කාර්යාල යෙදුම් විරාම කර ඇත"</string>
+    <string name="work_apps_paused_body" msgid="4779164212204239118">"ඔබට කිසිදු කාර්යාල දැනුම් දීමක් නොලැබෙනු ඇති අතර ඔබේ IT පරිපාලකට ඔබේ ස්ථානය බැලිය නොහැකිය"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"අසාර්ථකයි: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

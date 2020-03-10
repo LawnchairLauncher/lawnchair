@@ -20,7 +20,6 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name" msgid="649227358658669779">"Launcher3"</string>
-    <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="work_folder_name" msgid="3753320833950115786">"कार्य"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"अनुप्रयोग स्थापित छैन।"</string>
     <string name="activity_not_available" msgid="7456344436509528827">"अनुप्रयोग उपलब्ध छैन"</string>
@@ -63,7 +62,7 @@
     <string name="gadget_error_text" msgid="6081085226050792095">"समस्या लोडिङ गर्ने विजेट"</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"सेटअप"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"यो प्रणाली अनुप्रयोग हो र यसलाई स्थापना रद्द गर्न सकिँदैन।"</string>
-    <string name="folder_hint_text" msgid="6617836969016293992">"बेनाम फोल्डर"</string>
+    <string name="folder_hint_text" msgid="5174843001373488816">"नाम सम्पादन गर्नुहोस्"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"असक्षम पारिएको <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
     <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
       <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g>, का <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> सूचनाहरू छन्</item>
@@ -133,11 +132,13 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"व्यक्तिगत"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"कार्यसम्बन्धी"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"कार्य प्रोफाइल"</string>
-    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"कार्यसम्बन्धी अनुप्रयोगहरू यहाँ प्राप्त गर्नुहोस्"</string>
-    <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"कार्यसम्बन्धी प्रत्येक अनुप्रयोगमा एउटा ब्याज छ र तपाईंको संगठनले यसलाई सुरक्षित राखेको छ । अझ सजिलो गरी पहुँच राख्नका लागि अनुप्रयोगहरूलाई आफ्नो गृहस्क्रिनमा सार्नुहोस्‌।"</string>
-    <string name="work_mode_on_label" msgid="4781128097185272916">"तपाईंको सङ्गठनले व्यवस्थापन गरेको"</string>
-    <string name="work_mode_off_label" msgid="3194894777601421047">"सूचना र अनुप्रयोगहरू निष्क्रिय छन्‌"</string>
-    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"बन्द गर्नुहोस्"</string>
-    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"बन्द गरियो"</string>
+    <string name="work_profile_edu_personal_apps" msgid="835703904784988952">"व्यक्तिगत अनुप्रयोगहरू निजी हुन्छन् र IT ले ती अनुप्रयोग देख्न सक्दैनन्"</string>
+    <string name="work_profile_edu_work_apps" msgid="2780791410780522606">"कार्यसम्बन्धी अनुप्रयोगहरूमा ब्याज चिन्ह लगाइएको हुन्छ र IT ले ती अनुप्रयोग देख्न सक्छन्"</string>
+    <string name="work_profile_edu_next" msgid="8783418929296503629">"अर्को"</string>
+    <string name="work_profile_edu_accept" msgid="6069788082535149071">"बुझेँ"</string>
+    <string name="work_mode_on_label" msgid="5386806494898086318">"कार्यसम्बन्धी अनुप्रयोगहरू: सक्रिय छन्"</string>
+    <string name="work_mode_off_label" msgid="108732939698502466">"कार्यसम्बन्धी अनुप्रयोगहरू: पज गरिएका छन्"</string>
+    <string name="work_apps_paused_title" msgid="3040901117349444598">"कार्यसम्बन्धी अनुप्रयोगहरू पज गरिएका छन्"</string>
+    <string name="work_apps_paused_body" msgid="4779164212204239118">"तपाईं कार्यसम्बन्धी कुनै पनि सूचना प्राप्त गर्नु हुने छैन र तपाईंका IT प्रशासक तपाईंको स्थान देख्न सक्नुहुन्न"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"कार्य पूरा गर्न सकिएन: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

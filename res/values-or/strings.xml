@@ -20,7 +20,6 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name" msgid="649227358658669779">"ଲଞ୍ଚର୍3"</string>
-    <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="work_folder_name" msgid="3753320833950115786">"କାମ"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"ଆପ୍‌ ଇନଷ୍ଟଲ୍‌ ହୋଇନାହିଁ"</string>
     <string name="activity_not_available" msgid="7456344436509528827">"ଆପ୍‌ ଉପଲବ୍ଧ ନାହିଁ"</string>
@@ -63,7 +62,7 @@
     <string name="gadget_error_text" msgid="6081085226050792095">"ୱିଜେଟ୍‌ ଲୋଡ୍‌ ହେବାରେ ସମସ୍ୟା ଅଛି"</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"ସେଟ୍ ଅପ୍ କରନ୍ତୁ"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"ଏହା ଏକ ସିଷ୍ଟମ୍‌ ଆପ୍‌ ଅଟେ ଏବଂ ଏହା ଅନଇନଷ୍ଟଲ୍‌ କରାଯାଇ ପାରିବ ନାହିଁ।"</string>
-    <string name="folder_hint_text" msgid="6617836969016293992">"ବେନାମୀ ଫୋଲ୍ଡର୍‌"</string>
+    <string name="folder_hint_text" msgid="5174843001373488816">"ନାମ ସମ୍ପାଦନ କରନ୍ତୁ"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> ଅକ୍ଷମ କରାଗଲା"</string>
     <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
       <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g>, <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g>ଟି ବିଜ୍ଞପ୍ତି ରହିଛି</item>
@@ -85,8 +84,8 @@
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"ଆପଣଙ୍କ ଆଡମିନଙ୍କ ଦ୍ୱାରା ଅକ୍ଷମ କରାଯାଇଛି"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"ହୋମ୍‌ ସ୍କ୍ରୀନ୍ ବୁଲାଇବା ଅନୁମତି ଦିଅନ୍ତୁ"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"ଯେତେବେଳେ ଫୋନକୁ ବୁଲାଯାଇଥାଏ"</string>
-    <string name="notification_dots_title" msgid="9062440428204120317">"ବିଜ୍ଞପ୍ତି ବିନ୍ଦୁଗୁଡ଼ିକ"</string>
-    <string name="notification_dots_desc_on" msgid="1679848116452218908">"ଚାଲୁ କରନ୍ତୁ"</string>
+    <string name="notification_dots_title" msgid="9062440428204120317">"ବିଜ୍ଞପ୍ତି ଡଟ୍ସ"</string>
+    <string name="notification_dots_desc_on" msgid="1679848116452218908">"ଚାଲୁ"</string>
     <string name="notification_dots_desc_off" msgid="1760796511504341095">"ବନ୍ଦ କରନ୍ତୁ"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"ବିଜ୍ଞପ୍ତି ଆକ୍ସେସ୍‌ ଆବଶ୍ୟକ ଅଟେ"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"ବିଜ୍ଞପ୍ତି ବିନ୍ଦୁ ଦେଖାଇବାକୁ, <xliff:g id="NAME">%1$s</xliff:g> ପାଇଁ ଆପ୍‌ ବିଜ୍ଞପ୍ତି ଅନ୍‌ କରନ୍ତୁ"</string>
@@ -133,11 +132,13 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"ବ୍ୟକ୍ତିଗତ"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"କାମ"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"ୱର୍କ ପ୍ରୋଫାଇଲ୍‌"</string>
-    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"ଏଠାରେ କାମ ଆପ୍‌ ଖୋଜନ୍ତୁ"</string>
-    <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"ପ୍ରତ୍ୟେକ କାଯ୍ୟକାରୀ ଆପ୍‌ର ଗୋଟିଏ ବ୍ୟାଜ୍ (ଚିହ୍ନ) ଅଛି, ଯାହାକୁ ଆପଣଙ୍କ ସଂସ୍ଥା ସୁରକ୍ଷିତ ରଖିଥାଏ। ସହଜରେ ଆକ୍ସେସ୍ କରିବା ପାଇଁ ଆପ୍‌କୁ ହୋମ୍ ସ୍କ୍ରୀନ୍ ଉପରକୁ ଆଣନ୍ତୁ।"</string>
-    <string name="work_mode_on_label" msgid="4781128097185272916">"ଆପଣଙ୍କ ସଂସ୍ଥା ଦ୍ୱାରା ପରିଚାଳିତ"</string>
-    <string name="work_mode_off_label" msgid="3194894777601421047">"ବିଜ୍ଞପ୍ତି ଓ ଆପ୍‌ଗୁଡ଼ିକ ବନ୍ଦ ଅଛି"</string>
-    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"ବନ୍ଦ କରନ୍ତୁ"</string>
-    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"ବନ୍ଦ ହୋଇଯାଇଛି"</string>
+    <string name="work_profile_edu_personal_apps" msgid="835703904784988952">"ବ୍ୟକ୍ତିଗତ ଆପଗୁଡ଼ିକ ନିଜସ୍ୱ ଅଟେ &amp; IT ଟିମ୍ ଦ୍ୱାରା ଦେଖାଯାଇପାରିବ ନାହିଁ"</string>
+    <string name="work_profile_edu_work_apps" msgid="2780791410780522606">"ୱାର୍କ ଆପଗୁଡ଼ିକୁ ବ୍ୟାଜ୍ କରାଯାଇଛି &amp; IT ଟିମକୁ ଦେଖାଯିବ"</string>
+    <string name="work_profile_edu_next" msgid="8783418929296503629">"ପରବର୍ତ୍ତୀ"</string>
+    <string name="work_profile_edu_accept" msgid="6069788082535149071">"ବୁଝିଗଲି"</string>
+    <string name="work_mode_on_label" msgid="5386806494898086318">"ୱାର୍କ ଆପ୍ସ: ଚାଲୁ ଅଛି"</string>
+    <string name="work_mode_off_label" msgid="108732939698502466">"ୱାର୍କ ଆପ୍ସ: ବିରତ କରାଯାଇଛି"</string>
+    <string name="work_apps_paused_title" msgid="3040901117349444598">"ୱାର୍କ ଆପ୍ସ ବିରତ କରାଯାଇଛି"</string>
+    <string name="work_apps_paused_body" msgid="4779164212204239118">"ଆପଣ କୌଣସି କାର୍ଯ୍ୟ ସମ୍ବନ୍ଧୀୟ ବିଜ୍ଞପ୍ତି ପାଇବେ ନାହିଁ ଏବଂ ଆପଣଙ୍କର IT ଆଡମିନ୍ ଆପଣଙ୍କର ଲୋକେସନକୁ ଦେଖିପାରିବେ ନାହିଁ"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"ବିଫଳ ହୋଇଛି: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

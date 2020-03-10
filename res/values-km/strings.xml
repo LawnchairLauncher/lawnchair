@@ -62,7 +62,7 @@
     <string name="gadget_error_text" msgid="6081085226050792095">"បញ្ហា​ក្នុង​ការ​ផ្ទុក​ធាតុ​​ក្រាហ្វិក"</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"រៀបចំ"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"នេះ​​​ជា​កម្មវិធី​ប្រព័ន្ធ មិន​អាច​លុប​បាន​ទេ។"</string>
-    <string name="folder_hint_text" msgid="6617836969016293992">"ថត​គ្មាន​ឈ្មោះ"</string>
+    <string name="folder_hint_text" msgid="5174843001373488816">"កែ​ឈ្មោះ"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"បានបិទដំណើរការ <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
     <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
       <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g>, មាន​ការជូនដំណឹង <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g></item>
@@ -132,11 +132,13 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"ផ្ទាល់ខ្លួន"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"ការងារ"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"កម្រងព័ត៌មានការងារ"</string>
-    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"ស្វែង​រក​កម្មវិធី​ការងារ​នៅទីនេះ"</string>
-    <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"កម្មវិធី​ការងារ​នីមួយៗ​មាន​ស្លាកមួយ និងត្រូវ​បានរក្សាទុក​យ៉ាងមានសុវត្ថិភាព​ដោយស្ថាប័ន​របស់អ្នក។ សូម​ផ្លាស់ទី​កម្មវិធី​ទៅកាន់​អេក្រង់​ដើម​របស់អ្នក​ ដើម្បី​ងាយស្រួល​ចូលប្រើជាងមុន។"</string>
-    <string name="work_mode_on_label" msgid="4781128097185272916">"គ្រប់គ្រងដោយ​ស្ថាប័ន​របស់អ្នក"</string>
-    <string name="work_mode_off_label" msgid="3194894777601421047">"ការជូនដំណឹង​ និងកម្មវិធី​ត្រូវបានបិទ"</string>
-    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"បិទ"</string>
-    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"បានបិទ"</string>
+    <string name="work_profile_edu_personal_apps" msgid="835703904784988952">"កម្មវិធីផ្ទាល់ខ្លួន​មានលក្ខណៈ​ឯកជន ហើយអ្នកគ្រប់គ្រង​ផ្នែកព័ត៌មានវិទ្យា​មិនអាចមើលឃើញ​កម្មវិធីទាំងនេះទេ"</string>
+    <string name="work_profile_edu_work_apps" msgid="2780791410780522606">"កម្មវិធីការងារ​ត្រូវបានដាក់​គ្រឿងសម្គាល់ និង​អាចមើលឃើញដោយ​អ្នកគ្រប់គ្រង​ផ្នែកព័ត៌មានវិទ្យា"</string>
+    <string name="work_profile_edu_next" msgid="8783418929296503629">"បន្ទាប់"</string>
+    <string name="work_profile_edu_accept" msgid="6069788082535149071">"យល់ហើយ"</string>
+    <string name="work_mode_on_label" msgid="5386806494898086318">"កម្មវិធីការងារ៖ បើក"</string>
+    <string name="work_mode_off_label" msgid="108732939698502466">"កម្មវិធី​ការងារ៖ បានផ្អាក"</string>
+    <string name="work_apps_paused_title" msgid="3040901117349444598">"កម្មវិធី​ការងារ​ត្រូវបានផ្អាក"</string>
+    <string name="work_apps_paused_body" msgid="4779164212204239118">"អ្នកនឹងមិន​ទទួលបាន​ការជូនដំណឹង​អំពីការងារទេ ហើយអ្នកគ្រប់គ្រង​ផ្នែកព័ត៌មានវិទ្យា​របស់អ្នក​ក៏មិន​អាចមើលឃើញ​ទីតាំង​របស់អ្នក​បានដែរ"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"បានបរាជ័យ៖ <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>
