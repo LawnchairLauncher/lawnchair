@@ -180,6 +180,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     private float mStableAlpha = 1;
 
     private boolean mShowScreenshot;
+    private boolean mRunningModalAnimation = false;
 
     // The current background requests to load the task thumbnail and icon
     private TaskThumbnailCache.ThumbnailLoadRequest mThumbnailLoadRequest;
@@ -262,17 +263,40 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     /** Updates UI based on whether the task is modal. */
     public void updateUiForModalTask() {
         boolean isOverlayModal = isTaskOverlayModal();
+        mRunningModalAnimation = true;
         if (getRecentsView() != null) {
             getRecentsView().updateUiForModalTask(this, isOverlayModal);
         }
-        // Hide footers when overlay is modal.
+
+        // Hides footers and icon when overlay is modal.
         if (isOverlayModal) {
             for (FooterWrapper footer : mFooters) {
                 if (footer != null) {
                     footer.animateHide();
                 }
             }
+            mIconView.animate().alpha(0.0f);
+        } else {
+            mIconView.animate().alpha(1.0f);
         }
+
+        // Sets animations for modal UI. We will remove the margins to zoom in the snapshot.
+        float topMargin =
+                getResources().getDimension(R.dimen.task_thumbnail_top_margin_with_actions);
+        float bottomMargin =
+                getResources().getDimension(R.dimen.task_thumbnail_bottom_margin_with_actions);
+        float newHeight = mSnapshotView.getHeight() + topMargin + bottomMargin;
+        float scale = isOverlayModal ? newHeight / mSnapshotView.getHeight() : 1.0f;
+        float centerDifference = (bottomMargin - topMargin) / 2;
+        float translationY = isOverlayModal ? centerDifference : 0;
+        this.animate().scaleX(scale).scaleY(scale).translationY(translationY)
+                .withEndAction(new Runnable() {
+                    @Override
+                    public void run() {
+                        setCurveScale(scale);
+                        mRunningModalAnimation = false;
+                    }
+                });
     }
 
     public TaskMenuView getMenuView() {
@@ -579,11 +603,15 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
 
     @Override
     public void onPageScroll(ScrollState scrollState) {
+        // Don't do anything if it's modal.
+        if (mRunningModalAnimation || isTaskOverlayModal()) {
+            return;
+        }
+
         float curveInterpolation =
                 CURVE_INTERPOLATOR.getInterpolation(scrollState.linearInterpolation);
         float curveScaleForCurveInterpolation = getCurveScaleForCurveInterpolation(
                 curveInterpolation);
-
         mSnapshotView.setDimAlpha(curveInterpolation * MAX_PAGE_SCRIM_ALPHA);
         setCurveScale(curveScaleForCurveInterpolation);
 
