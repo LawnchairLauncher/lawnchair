@@ -13,7 +13,7 @@
     <string name="action_apply">पूर्ण</string>
     <!-- Note: new. Replaces “OK” in dialogs. -->
     <string name="theme_dark_theme_mode_on">सक्षम</string>
-    <string name="theme_dark_theme_mode_off">डिसेबल्ड</string>
+    <string name="theme_dark_theme_mode_off">अक्षम</string>
     <!-- Section 2 -->
     <string name="theme_title">थीम</string>
     <string name="pixel_ui_pref_summary">चिह्न, रंग, धुंधला</string>
@@ -333,6 +333,7 @@
     <string name="label_turn_off_suggestions">अक्षम</string>
     <string name="about_summary_title">सारांश</string>
     <string name="hide_app">शॉर्टकट छिपाएं</string>
+    <string name="hide_badge">बिंदु छुपाए</string>
     <string name="icon_shape_rounded_square">गोल वर्गाकार</string>
     <string name="hide_app_selected">“&#160;” छुपा हुआ</string>
     <string name="hide_app_apply">समाप्त</string>
