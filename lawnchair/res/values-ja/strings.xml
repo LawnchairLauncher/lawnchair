@@ -31,7 +31,7 @@
     <string name="appearance">外観</string>
     <!-- Note: new. Replaces title of 5th field (from bottom) in “Theme” page. -->
     <string name="theme_auto">自動 (壁紙に基づく)</string>
-    <string name="theme_auto_night_mode">システムに設定された</string>
+    <string name="theme_auto_night_mode">システム設定を使用</string>
     <string name="theme_dark_theme_mode_follow_daylight">自動設定(夜間はダークモードに変える)</string>
     <string name="theme_light">ライト</string>
     <string name="theme_dark_text">ライトテーマに暗い文字</string>
@@ -329,6 +329,7 @@
     <string name="label_turn_off_suggestions">無効化</string>
     <string name="about_summary_title">概要</string>
     <string name="hide_app">ショートカットを隠す</string>
+    <string name="hide_badge">バッジを隠す</string>
     <string name="icon_shape_rounded_square">角が丸い正方形</string>
     <string name="hide_app_selected">”&#160;” を非表示</string>
     <string name="hide_app_apply">完了</string>
