@@ -336,6 +336,7 @@
     <string name="label_turn_off_suggestions">Devre dışı bırak</string>
     <string name="about_summary_title">Özet</string>
     <string name="hide_app">Kısayolu Gizle</string>
+    <string name="hide_badge">Rozeti Gizle</string>
     <string name="icon_shape_rounded_square">Yuvarlatılmış Kare</string>
     <string name="hide_app_selected">“&#160;” gizlendi.</string>
     <string name="hide_app_apply">Tamamlandı</string>
