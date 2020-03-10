@@ -518,7 +518,6 @@ public class RecentsAnimationDeviceState implements
                 + QuickStepContract.isAssistantGestureDisabled(mSystemUiStateFlags));
         pw.println("  currentActiveRotation=" + getCurrentActiveRotation());
         pw.println("  displayRotation=" + getDisplayRotation());
-        pw.println("  isUserUnlocked=" + mIsUserUnlocked);
         mOrientationTouchTransformer.dump(pw);
     }
 }

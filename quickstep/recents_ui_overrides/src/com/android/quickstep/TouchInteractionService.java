@@ -760,9 +760,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
         } else {
             // Dump everything
             FeatureFlags.dump(pw);
-            if (mDeviceState.isUserUnlocked()) {
-                PluginManagerWrapper.INSTANCE.get(getBaseContext()).dump(pw);
-            }
+            PluginManagerWrapper.INSTANCE.get(getBaseContext()).dump(pw);
             mDeviceState.dump(pw);
             if (mOverviewComponentObserver != null) {
                 mOverviewComponentObserver.dump(pw);
