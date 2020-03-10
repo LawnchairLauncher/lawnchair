@@ -27,9 +27,9 @@
     <string name="safemode_widget_error" msgid="4863470563535682004">"பாதுகாப்புப் பயன்முறையில் விட்ஜெட்கள் முடக்கப்பட்டுள்ளன"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"ஷார்ட்கட் இல்லை"</string>
     <string name="home_screen" msgid="806512411299847073">"முகப்புத் திரை"</string>
-    <string name="custom_actions" msgid="3747508247759093328">"தனிப்பயன் செயல்கள்"</string>
+    <string name="custom_actions" msgid="3747508247759093328">"பிரத்தியேக செயல்கள்"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"விட்ஜெட்டைத் தேர்வுசெய்ய தொட்டுப் பிடிக்கவும்."</string>
-    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"விட்ஜெட்டைத் தேர்ந்தெடுக்க இருமுறை தட்டிப் பிடிக்கவும் அல்லது தனிப்பயன் செயல்களைப் பயன்படுத்தவும்."</string>
+    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"விட்ஜெட்டைத் தேர்ந்தெடுக்க இருமுறை தட்டிப் பிடிக்கவும் அல்லது பிரத்தியேக செயல்களைப் பயன்படுத்தவும்."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d அகலத்திற்கு %2$d உயரம்"</string>
     <string name="add_item_request_drag_hint" msgid="5899764264480397019">"நீங்களே சேர்க்க, தொட்டுப் பிடித்திருக்கவும்"</string>
@@ -41,7 +41,7 @@
     <string name="label_application" msgid="8531721983832654978">"ஆப்ஸ்"</string>
     <string name="notifications_header" msgid="1404149926117359025">"அறிவிப்புகள்"</string>
     <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"ஷார்ட்கட்டைச் சேர்க்க, தொட்டு பிடித்திருக்கவும்."</string>
-    <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"ஷார்ட்கட்டைச் சேர்க்க, இருமுறை தட்டிப் பிடித்திருக்கவும் (அ) தனிப்பயன் செயல்களைப் பயன்படுத்தவும்."</string>
+    <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"ஷார்ட்கட்டைச் சேர்க்க, இருமுறை தட்டிப் பிடித்திருக்கவும் (அ) பிரத்தியேக செயல்களைப் பயன்படுத்தவும்."</string>
     <string name="out_of_space" msgid="4691004494942118364">"முகப்புத் திரையில் இடமில்லை."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"பிடித்தவை ட்ரேயில் இடமில்லை"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"ஆப்ஸின் பட்டியல்"</string>

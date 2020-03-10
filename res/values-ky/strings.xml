@@ -88,7 +88,7 @@
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"Күйүк"</string>
     <string name="notification_dots_desc_off" msgid="1760796511504341095">"Өчүк"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"Эскертмелерге уруксат берилиши керек"</string>
-    <string name="msg_missing_notification_access" msgid="281113995110910548">"Эскертме белгилерин көрсөтүү максатында, <xliff:g id="NAME">%1$s</xliff:g> үчүн колдонмонун эскертмелерин күйгүзүү керек"</string>
+    <string name="msg_missing_notification_access" msgid="281113995110910548">"Эскертме белгилерин көрсөтүү максатында, <xliff:g id="NAME">%1$s</xliff:g> үчүн колдонмонун билдирмелерин күйгүзүү керек"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Жөндөөлөрдү өзгөртүү"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Билдирмелер белгилерин көрсөтүү"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Башкы экранга сүрөтчө кошуу"</string>
@@ -111,7 +111,7 @@
     <string name="action_move" msgid="4339390619886385032">"Муну жылдыруу"</string>
     <string name="move_to_empty_cell" msgid="2833711483015685619">"<xliff:g id="NUMBER_0">%1$s</xliff:g> катарга <xliff:g id="NUMBER_1">%2$s</xliff:g> тилкеге жылдыруу"</string>
     <string name="move_to_position" msgid="6750008980455459790">"<xliff:g id="NUMBER">%1$s</xliff:g> орунга жылдыруу"</string>
-    <string name="move_to_hotseat_position" msgid="6295412897075147808">"Сүйүктүүлөргө <xliff:g id="NUMBER">%1$s</xliff:g> жылдыруу"</string>
+    <string name="move_to_hotseat_position" msgid="6295412897075147808">"Тандалмаларга <xliff:g id="NUMBER">%1$s</xliff:g> жылдыруу"</string>
     <string name="item_moved" msgid="4606538322571412879">"Нерсе жылдырылды"</string>
     <string name="add_to_folder" msgid="9040534766770853243">"Куржунга кошуу: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="add_to_folder_with_app" msgid="4534929978967147231">"<xliff:g id="NAME">%1$s</xliff:g> куржунуна кошуу"</string>

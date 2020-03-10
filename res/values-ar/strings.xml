@@ -91,8 +91,8 @@
     <string name="notification_dots_title" msgid="9062440428204120317">"نقاط الإشعارات"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"مفعّل"</string>
     <string name="notification_dots_desc_off" msgid="1760796511504341095">"غير مفعّل"</string>
-    <string name="title_missing_notification_access" msgid="7503287056163941064">"يلزم تفعيل الوصول إلى الإشعارات"</string>
-    <string name="msg_missing_notification_access" msgid="281113995110910548">"لعرض نقاط الإشعارات، يجب تشغيل إشعارات التطبيق في <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="title_missing_notification_access" msgid="7503287056163941064">"يلزم تمكين الوصول إلى الإشعارات"</string>
+    <string name="msg_missing_notification_access" msgid="281113995110910548">"لعرض نقاط الإشعارات، يجب تفعيل إشعارات التطبيق في <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"تغيير الإعدادات"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"عرض نقاط الإشعارات"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"إضافة رمز إلى الشاشة الرئيسية"</string>
