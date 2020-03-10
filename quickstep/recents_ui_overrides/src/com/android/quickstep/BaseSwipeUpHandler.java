@@ -386,6 +386,10 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
         // rounding at the end of the animation.
         float startRadius = mClipAnimationHelper.getCurrentCornerRadius();
         float endRadius = startRect.width() / 6f;
+
+        float startTransformProgress = mTransformParams.getProgress();
+        float endTransformProgress = 1;
+
         // We want the window alpha to be 0 once this threshold is met, so that the
         // FolderIconView can be seen morphing into the icon shape.
         final float windowAlphaThreshold = isFloatingIconView ? 1f - SHAPE_PROGRESS_DURATION : 1f;
@@ -409,7 +413,8 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
             public void onUpdate(RectF currentRect, float progress) {
                 homeAnim.setPlayFraction(progress);
 
-                mTransformParams.setProgress(progress)
+                mTransformParams.setProgress(
+                        Utilities.mapRange(progress, startTransformProgress, endTransformProgress))
                         .setCurrentRectAndTargetAlpha(currentRect, getWindowAlpha(progress));
                 if (isFloatingIconView) {
                     mTransformParams.setCornerRadius(endRadius * progress + startRadius
