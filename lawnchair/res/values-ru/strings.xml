@@ -339,6 +339,7 @@
     <string name="label_turn_off_suggestions">Не показывать</string>
     <string name="about_summary_title">Описание</string>
     <string name="hide_app">Скрыть ярлык</string>
+    <string name="hide_badge">Скрыть значок</string>
     <string name="icon_shape_rounded_square">Закруглённый квадрат</string>
     <string name="hide_app_selected">&#160; скрыто.</string>
     <string name="hide_app_apply">Готово</string>
