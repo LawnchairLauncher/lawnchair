@@ -330,6 +330,7 @@
     <string name="label_turn_off_suggestions">Desactiva</string>
     <string name="about_summary_title">Resum</string>
     <string name="hide_app">Amaga la drecera</string>
+    <string name="hide_badge">Oculta la insígnia</string>
     <string name="icon_shape_rounded_square">Quadrat arrodonit</string>
     <string name="hide_app_selected">«&#160;» ocult.</string>
     <string name="hide_app_apply">Fet</string>
