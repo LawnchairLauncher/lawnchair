@@ -336,7 +336,7 @@ public class ScrimView<T extends Launcher> extends View implements Insettable, O
     }
 
     private void updateDragHandleVisibility(Drawable recycle) {
-        boolean visible = mLauncher.getDeviceProfile().isVerticalBarLayout() || mAM.isEnabled();
+        boolean visible = shouldDragHandleBeVisible();
         boolean wasVisible = mDragHandle != null;
         if (visible != wasVisible) {
             if (visible) {
@@ -350,6 +350,10 @@ public class ScrimView<T extends Launcher> extends View implements Insettable, O
             }
             invalidate();
         }
+    }
+
+    protected boolean shouldDragHandleBeVisible() {
+        return mLauncher.getDeviceProfile().isVerticalBarLayout() || mAM.isEnabled();
     }
 
     @Override
