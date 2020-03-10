@@ -20,7 +20,6 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name" msgid="649227358658669779">"Launcher3"</string>
-    <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="work_folder_name" msgid="3753320833950115786">"Praca"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"Aplikacja nie jest zainstalowana."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"Aplikacja niedostępna"</string>
@@ -63,7 +62,7 @@
     <string name="gadget_error_text" msgid="6081085226050792095">"Problem podczas ładowania widżetu"</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"Konfiguracja"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"To aplikacja systemowa i nie można jej odinstalować."</string>
-    <string name="folder_hint_text" msgid="6617836969016293992">"Folder bez nazwy"</string>
+    <string name="folder_hint_text" msgid="5174843001373488816">"Edytuj nazwę"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"Aplikacja <xliff:g id="APP_NAME">%1$s</xliff:g> jest wyłączona"</string>
     <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
       <item quantity="few"><xliff:g id="APP_NAME_2">%1$s</xliff:g> – <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> powiadomienia</item>
@@ -130,16 +129,18 @@
     <string name="widget_resized" msgid="9130327887929620">"Szerokość i wysokość widżetu zmieniła się na <xliff:g id="NUMBER_0">%1$s</xliff:g> x <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"Skróty"</string>
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"Skróty i powiadomienia"</string>
-    <string name="action_dismiss_notification" msgid="5909461085055959187">"Odrzuć"</string>
+    <string name="action_dismiss_notification" msgid="5909461085055959187">"Zamknij"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Powiadomienie odrzucone"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Osobiste"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Praca"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Profil służbowy"</string>
-    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Aplikacje do pracy"</string>
-    <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"Każda aplikacja do pracy ma plakietkę, a o jej bezpieczeństwo dba Twoja organizacja. Aplikacje można przenieść na ekran główny, by były łatwiej dostępne."</string>
-    <string name="work_mode_on_label" msgid="4781128097185272916">"Profil zarządzany przez Twoją organizację"</string>
-    <string name="work_mode_off_label" msgid="3194894777601421047">"Powiadomienia i aplikacje są wyłączone"</string>
-    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"Zamknij"</string>
-    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"Zamknięto"</string>
+    <string name="work_profile_edu_personal_apps" msgid="835703904784988952">"Aplikacje osobiste są prywatne i IT nie może ich zobaczyć"</string>
+    <string name="work_profile_edu_work_apps" msgid="2780791410780522606">"Aplikacje do pracy są oznaczone plakietką i widoczne dla IT"</string>
+    <string name="work_profile_edu_next" msgid="8783418929296503629">"Dalej"</string>
+    <string name="work_profile_edu_accept" msgid="6069788082535149071">"OK"</string>
+    <string name="work_mode_on_label" msgid="5386806494898086318">"Aplikacje do pracy: włączono"</string>
+    <string name="work_mode_off_label" msgid="108732939698502466">"Aplikacje do pracy: wstrzymano"</string>
+    <string name="work_apps_paused_title" msgid="3040901117349444598">"Aplikacje do pracy zostały wstrzymane"</string>
+    <string name="work_apps_paused_body" msgid="4779164212204239118">"Nie będziesz otrzymywać żadnych powiadomień związanych z pracą, a administrator IT nie będzie mógł zobaczyć Twojej lokalizacji"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Niepowodzenie: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

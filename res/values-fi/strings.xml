@@ -20,7 +20,6 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name" msgid="649227358658669779">"Launcher3"</string>
-    <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="work_folder_name" msgid="3753320833950115786">"Työ"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"Sovellusta ei ole asennettu."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"Sovellus ei ole käytettävissä"</string>
@@ -63,7 +62,7 @@
     <string name="gadget_error_text" msgid="6081085226050792095">"Ongelma ladattaessa widgetiä"</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"Asetus"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Tämä on järjestelmäsovellus, eikä sitä voi poistaa."</string>
-    <string name="folder_hint_text" msgid="6617836969016293992">"Nimetön kansio"</string>
+    <string name="folder_hint_text" msgid="5174843001373488816">"Muokkaa nimeä"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> poistettiin käytöstä"</string>
     <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
       <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g>: <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> ilmoitusta</item>
@@ -133,11 +132,13 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Henkilökohtaiset"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Työsovellukset"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Työprofiili"</string>
-    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Etsi työsovelluksia tästä"</string>
-    <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"Kaikki työsovellukset on merkitty, ja organisaatiosi vastaa niiden suojaamisesta. Voit siirtää työsovelluksia aloitusnäytölle käytön helpottamiseksi."</string>
-    <string name="work_mode_on_label" msgid="4781128097185272916">"Organisaatiosi hallinnoima"</string>
-    <string name="work_mode_off_label" msgid="3194894777601421047">"Ilmoitukset ja sovellukset ovat poissa käytöstä"</string>
-    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"Sulje"</string>
-    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"Suljettu"</string>
+    <string name="work_profile_edu_personal_apps" msgid="835703904784988952">"Henkilökohtaiset sovellukset ovat yksityisiä ja IT-osasto ei näe niitä"</string>
+    <string name="work_profile_edu_work_apps" msgid="2780791410780522606">"Työsovellukset ovat merkittyjä ja IT-osasto näkee ne"</string>
+    <string name="work_profile_edu_next" msgid="8783418929296503629">"Seuraava"</string>
+    <string name="work_profile_edu_accept" msgid="6069788082535149071">"Selvä"</string>
+    <string name="work_mode_on_label" msgid="5386806494898086318">"Työsovellukset: Päällä"</string>
+    <string name="work_mode_off_label" msgid="108732939698502466">"Työsovellukset: Keskeytetty"</string>
+    <string name="work_apps_paused_title" msgid="3040901117349444598">"Työsovellukset on keskeytetty"</string>
+    <string name="work_apps_paused_body" msgid="4779164212204239118">"Et saa työilmoituksia ja IT-järjestelmänvalvojasi ei näe sijaintiasi"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Epäonnistui: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

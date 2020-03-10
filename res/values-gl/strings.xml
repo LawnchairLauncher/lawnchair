@@ -62,7 +62,7 @@
     <string name="gadget_error_text" msgid="6081085226050792095">"Produciuse un problema ao cargar o widget"</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"Configuración"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Esta aplicación é do sistema e non se pode desinstalar."</string>
-    <string name="folder_hint_text" msgid="6617836969016293992">"Cartafol sen nome"</string>
+    <string name="folder_hint_text" msgid="5174843001373488816">"Edita o nome"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"Desactivouse <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
     <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
       <item quantity="other">A aplicación <xliff:g id="APP_NAME_2">%1$s</xliff:g> ten <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> notificacións</item>
@@ -132,11 +132,13 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Persoal"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Traballo"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Perfil de traballo"</string>
-    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Buscar aplicacións do traballo aquí"</string>
-    <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"As aplicacións do traballo teñen unha insignia e están protexidas pola túa organización. Traslada as aplicacións á pantalla de inicio para acceder a elas de forma máis fácil."</string>
-    <string name="work_mode_on_label" msgid="4781128097185272916">"Perfil xestionado pola túa organización"</string>
-    <string name="work_mode_off_label" msgid="3194894777601421047">"As notificacións e as aplicacións están desactivadas"</string>
-    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"Pechar"</string>
-    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"Pechada"</string>
+    <string name="work_profile_edu_personal_apps" msgid="835703904784988952">"As aplicación persoais son privadas e o persoal de TI non as pode ver"</string>
+    <string name="work_profile_edu_work_apps" msgid="2780791410780522606">"As aplicacións do traballo inclúen insignias e o persoal de TI pode velas"</string>
+    <string name="work_profile_edu_next" msgid="8783418929296503629">"Seguinte"</string>
+    <string name="work_profile_edu_accept" msgid="6069788082535149071">"De acordo"</string>
+    <string name="work_mode_on_label" msgid="5386806494898086318">"Aplicacións do traballo: activadas"</string>
+    <string name="work_mode_off_label" msgid="108732939698502466">"Aplicacións do traballo: en pausa"</string>
+    <string name="work_apps_paused_title" msgid="3040901117349444598">"Puxéronse en pausa as aplicacións do traballo"</string>
+    <string name="work_apps_paused_body" msgid="4779164212204239118">"Non recibirás notificacións do traballo e o administrador de TI non poderá ver a túa localización"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Erro: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

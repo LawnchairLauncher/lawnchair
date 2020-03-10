@@ -20,7 +20,6 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name" msgid="649227358658669779">"ലോഞ്ചർ3"</string>
-    <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="work_folder_name" msgid="3753320833950115786">"ഔദ്യോഗികം"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"അപ്ലിക്കേഷൻ ഇൻസ്‌റ്റാളുചെ‌യ്‌തിട്ടില്ല."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"അപ്ലിക്കേഷൻ ലഭ്യമല്ല"</string>
@@ -63,7 +62,7 @@
     <string name="gadget_error_text" msgid="6081085226050792095">"വിജറ്റ് ലോഡുചെയ്യുന്നതിൽ പ്രശ്നമുണ്ട്"</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"സജ്ജീകരിക്കുക"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"ഇതൊരു സിസ്‌റ്റം അപ്ലിക്കേഷനായതിനാൽ അൺഇൻസ്‌റ്റാളുചെയ്യാനാവില്ല."</string>
-    <string name="folder_hint_text" msgid="6617836969016293992">"പേരുനൽകാത്ത ഫോൾഡർ"</string>
+    <string name="folder_hint_text" msgid="5174843001373488816">"പേര് എഡിറ്റ് ചെയ്യുക"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> പ്രവർത്തനരഹിതമാക്കി"</string>
     <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
       <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g> എന്ന ആപ്പിന്, <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> അറിയിപ്പുകൾ ഉണ്ട്</item>
@@ -133,11 +132,13 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"വ്യക്തിപരം"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"ജോലി"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"ഔദ്യോഗിക പ്രൊഫൈൽ"</string>
-    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"ഔദ്യോഗിക ആപ്പുകൾ ഇവിടെ കണ്ടെത്തുക"</string>
-    <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"എല്ലാ ഔദ്യോഗിക ആപ്പിനും ഒരു ബാഡ്‌ജ് ഉണ്ട്, നിങ്ങളുടെ സ്ഥാപനം അത് സുരക്ഷിതമായി സൂക്ഷിക്കുന്നു. എളുപ്പത്തിൽ ആക്സസ് ചെയ്യാൻ ആപ്പുകളെ ഹോം സ്‌ക്രീനിലേക്ക് നീക്കുക."</string>
-    <string name="work_mode_on_label" msgid="4781128097185272916">"നിങ്ങളുടെ സ്ഥാപനം നിയന്ത്രിക്കുന്നത്"</string>
-    <string name="work_mode_off_label" msgid="3194894777601421047">"അറിയിപ്പുകളും ആപ്പുകളും ഓഫാണ്"</string>
-    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"അടയ്ക്കുക"</string>
-    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"അടച്ചു"</string>
+    <string name="work_profile_edu_personal_apps" msgid="835703904784988952">"വ്യക്തിപരമായ ആപ്പുകൾ സ്വകാര്യമാണ്, ഐടി വിഭാഗത്തിന് ദൃശ്യമാവില്ല"</string>
+    <string name="work_profile_edu_work_apps" msgid="2780791410780522606">"ഔദ്യോഗിക ആപ്പുകൾ ബാഡ്‌ജുള്ളവയാണ്, ഐടി വിഭാഗത്തിന് ദൃശ്യമാണ്"</string>
+    <string name="work_profile_edu_next" msgid="8783418929296503629">"അടുത്തത്"</string>
+    <string name="work_profile_edu_accept" msgid="6069788082535149071">"മനസ്സിലായി"</string>
+    <string name="work_mode_on_label" msgid="5386806494898086318">"ഔദ്യോഗിക ആപ്പുകൾ: ഓണാണ്"</string>
+    <string name="work_mode_off_label" msgid="108732939698502466">"ഔദ്യോഗിക ആപ്പുകൾ: തൽക്കാലം നിർത്തിയിരിക്കുന്നു"</string>
+    <string name="work_apps_paused_title" msgid="3040901117349444598">"ഔദ്യോഗിക ആപ്പുകൾ തൽക്കാലം നിർത്തിയിരിക്കുന്നു"</string>
+    <string name="work_apps_paused_body" msgid="4779164212204239118">"നിങ്ങൾക്ക് ഔദ്യോഗിക അറിയിപ്പുകളൊന്നും ലഭിക്കുകയില്ല, ഐടി അഡ്‌മിന് നിങ്ങളുടെ ലൊക്കേഷൻ കാണാൻ കഴിയില്ല"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"പരാജയപ്പെട്ടു: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

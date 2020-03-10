@@ -20,7 +20,6 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name" msgid="649227358658669779">"Launcher3"</string>
-    <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="work_folder_name" msgid="3753320833950115786">"Trabaho"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"Hindi naka-install ang app."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"Hindi available ang app"</string>
@@ -63,7 +62,7 @@
     <string name="gadget_error_text" msgid="6081085226050792095">"Problema sa pag-load ng widget"</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"I-setup"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Isa itong app ng system at hindi maaaring i-uninstall."</string>
-    <string name="folder_hint_text" msgid="6617836969016293992">"Walang Pangalang Folder"</string>
+    <string name="folder_hint_text" msgid="5174843001373488816">"I-edit ang Pangalan"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"Naka-disable ang <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
     <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
       <item quantity="one">May <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> (na) notification ang <xliff:g id="APP_NAME_2">%1$s</xliff:g></item>
@@ -133,11 +132,13 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Personal"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Trabaho"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Profile sa trabaho"</string>
-    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Maghanap ng mga app para sa trabaho rito"</string>
-    <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"Ang bawat app para sa trabaho ay may badge at pinapanatiling ligtas ng iyong organisasyon. Ilipat ang mga app sa iyong Home screen para mas madaling ma-access."</string>
-    <string name="work_mode_on_label" msgid="4781128097185272916">"Pinamamahalaan ng iyong organisasyon"</string>
-    <string name="work_mode_off_label" msgid="3194894777601421047">"Naka-off ang mga notification at app"</string>
-    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"Isara"</string>
-    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"Nakasara"</string>
+    <string name="work_profile_edu_personal_apps" msgid="835703904784988952">"Pribado at hindi nakikita ng IT ang mga personal na app"</string>
+    <string name="work_profile_edu_work_apps" msgid="2780791410780522606">"May badge at nakikita ng IT ang mga app para sa trabaho"</string>
+    <string name="work_profile_edu_next" msgid="8783418929296503629">"Susunod"</string>
+    <string name="work_profile_edu_accept" msgid="6069788082535149071">"OK"</string>
+    <string name="work_mode_on_label" msgid="5386806494898086318">"Mga app para sa trabaho: Naka-on"</string>
+    <string name="work_mode_off_label" msgid="108732939698502466">"Mga app para sa trabaho: Naka-pause"</string>
+    <string name="work_apps_paused_title" msgid="3040901117349444598">"Naka-pause ang mga app para sa trabaho"</string>
+    <string name="work_apps_paused_body" msgid="4779164212204239118">"Hindi ka makakatanggap ng anumang notification sa trabaho, at hindi makikita ng iyong IT admin ang lokasyon mo"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Hindi nagawa: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

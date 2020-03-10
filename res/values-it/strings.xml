@@ -20,7 +20,6 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name" msgid="649227358658669779">"Launcher3"</string>
-    <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="work_folder_name" msgid="3753320833950115786">"Lavoro"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"App non installata."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"App non disponibile"</string>
@@ -63,7 +62,7 @@
     <string name="gadget_error_text" msgid="6081085226050792095">"Errore durante il caricamento del widget"</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"Configurazione"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Questa è un\'app di sistema e non può essere disinstallata."</string>
-    <string name="folder_hint_text" msgid="6617836969016293992">"Cartella senza nome"</string>
+    <string name="folder_hint_text" msgid="5174843001373488816">"Modifica nome"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"App <xliff:g id="APP_NAME">%1$s</xliff:g> disattivata"</string>
     <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
       <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g>, ha <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> notifiche</item>
@@ -87,7 +86,7 @@
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Con il telefono ruotato"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"Indicatori di notifica"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"On"</string>
-    <string name="notification_dots_desc_off" msgid="1760796511504341095">"Off"</string>
+    <string name="notification_dots_desc_off" msgid="1760796511504341095">"OFF"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"Accesso alle notifiche necessario"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Per mostrare gli indicatori di notifica, attiva le notifiche per l\'app <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Modifica impostazioni"</string>
@@ -133,11 +132,13 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Personali"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Lavoro"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Profilo di lavoro"</string>
-    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Qui puoi trovare le tue app di lavoro"</string>
-    <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"Ogni app di lavoro è contrassegnata da un badge e viene tenuta al sicuro dalla tua organizzazione. Sposta le app nella schermata Home per accedervi più facilmente."</string>
-    <string name="work_mode_on_label" msgid="4781128097185272916">"Gestito dalla tua organizzazione"</string>
-    <string name="work_mode_off_label" msgid="3194894777601421047">"Le notifiche e le app non sono attive"</string>
-    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"Chiudi"</string>
-    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"Chiusa"</string>
+    <string name="work_profile_edu_personal_apps" msgid="835703904784988952">"Le app personali sono private e non possono essere visualizzate dall\'amministratore IT"</string>
+    <string name="work_profile_edu_work_apps" msgid="2780791410780522606">"Le app di lavoro sono contrassegnate e visibili all\'amministratore IT"</string>
+    <string name="work_profile_edu_next" msgid="8783418929296503629">"Avanti"</string>
+    <string name="work_profile_edu_accept" msgid="6069788082535149071">"OK"</string>
+    <string name="work_mode_on_label" msgid="5386806494898086318">"App di lavoro: attive"</string>
+    <string name="work_mode_off_label" msgid="108732939698502466">"App di lavoro: in pausa"</string>
+    <string name="work_apps_paused_title" msgid="3040901117349444598">"Le app di lavoro sono in pausa"</string>
+    <string name="work_apps_paused_body" msgid="4779164212204239118">"Non riceverai notifiche di lavoro e il tuo amministratore IT non potrà visualizzare la tua posizione"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Operazione non riuscita: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

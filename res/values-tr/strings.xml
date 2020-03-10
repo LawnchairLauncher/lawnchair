@@ -20,7 +20,6 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name" msgid="649227358658669779">"Launcher3"</string>
-    <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="work_folder_name" msgid="3753320833950115786">"İş"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"Uygulama yüklü değil."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"Uygulama kullanılamıyor"</string>
@@ -63,7 +62,7 @@
     <string name="gadget_error_text" msgid="6081085226050792095">"Widget yüklenirken sorun oluştu"</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"Kurulum"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Bu bir sistem uygulamasıdır ve yüklemesi kaldırılamaz."</string>
-    <string name="folder_hint_text" msgid="6617836969016293992">"Adsız Klasör"</string>
+    <string name="folder_hint_text" msgid="5174843001373488816">"Adı Düzenle"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> devre dışı"</string>
     <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
       <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g> uygulamasının <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> bildirimi var</item>
@@ -133,11 +132,13 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Kişisel"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"İş"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"İş profili"</string>
-    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"İş uygulamalarını burada bulabilirsiniz"</string>
-    <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"Her iş uygulamasında, uygulama güvenliğinin kuruluşunuz tarafından sağlandığını gösteren bir rozet bulunur. Daha kolay erişim için uygulamaları Ana ekranınıza taşıyın."</string>
-    <string name="work_mode_on_label" msgid="4781128097185272916">"Kuruluşunuz tarafından yönetiliyor"</string>
-    <string name="work_mode_off_label" msgid="3194894777601421047">"Bildirimler ve uygulamalar kapalı"</string>
-    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"Kapat"</string>
-    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"Kapalı"</string>
+    <string name="work_profile_edu_personal_apps" msgid="835703904784988952">"Kişisel uygulamalar gizli olup BT yöneticisi tarafından görülemez"</string>
+    <string name="work_profile_edu_work_apps" msgid="2780791410780522606">"İş uygulamaları rozetle işaretlenmiş olup BT yöneticisi tarafından görülebilir"</string>
+    <string name="work_profile_edu_next" msgid="8783418929296503629">"İleri"</string>
+    <string name="work_profile_edu_accept" msgid="6069788082535149071">"Anladım"</string>
+    <string name="work_mode_on_label" msgid="5386806494898086318">"İş uygulamaları: Açık"</string>
+    <string name="work_mode_off_label" msgid="108732939698502466">"İş uygulamaları: Duraklatıldı"</string>
+    <string name="work_apps_paused_title" msgid="3040901117349444598">"İş uygulamaları duraklatıldı"</string>
+    <string name="work_apps_paused_body" msgid="4779164212204239118">"İş bildirimlerini almazsınız ve BT yöneticiniz konumunuzu göremez"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Başarısız: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

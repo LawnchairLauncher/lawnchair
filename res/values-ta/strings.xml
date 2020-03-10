@@ -27,21 +27,21 @@
     <string name="safemode_widget_error" msgid="4863470563535682004">"பாதுகாப்புப் பயன்முறையில் விட்ஜெட்கள் முடக்கப்பட்டுள்ளன"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"ஷார்ட்கட் இல்லை"</string>
     <string name="home_screen" msgid="806512411299847073">"முகப்புத் திரை"</string>
-    <string name="custom_actions" msgid="3747508247759093328">"தனிப்பயன் செயல்கள்"</string>
+    <string name="custom_actions" msgid="3747508247759093328">"பிரத்தியேக செயல்கள்"</string>
     <string name="long_press_widget_to_add" msgid="7699152356777458215">"விட்ஜெட்டைத் தேர்வுசெய்ய தொட்டுப் பிடிக்கவும்."</string>
-    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"விட்ஜெட்டைத் தேர்ந்தெடுக்க இருமுறை தட்டிப் பிடிக்கவும் அல்லது தனிப்பயன் செயல்களைப் பயன்படுத்தவும்."</string>
+    <string name="long_accessible_way_to_add" msgid="4289502106628154155">"விட்ஜெட்டைத் தேர்ந்தெடுக்க இருமுறை தட்டிப் பிடிக்கவும் அல்லது பிரத்தியேக செயல்களைப் பயன்படுத்தவும்."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d அகலத்திற்கு %2$d உயரம்"</string>
     <string name="add_item_request_drag_hint" msgid="5899764264480397019">"நீங்களே சேர்க்க, தொட்டுப் பிடித்திருக்கவும்"</string>
     <string name="place_automatically" msgid="8064208734425456485">"தானாகவே சேர்"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"பயன்பாடுகளில் தேடுக"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"ஆப்ஸை ஏற்றுகிறது…"</string>
-    <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" உடன் பொருந்தும் பயன்பாடுகள் இல்லை"</string>
+    <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" உடன் பொருந்தும் ஆப்ஸ் இல்லை"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"கூடுதல் பயன்பாடுகளைத் தேடு"</string>
     <string name="label_application" msgid="8531721983832654978">"ஆப்ஸ்"</string>
     <string name="notifications_header" msgid="1404149926117359025">"அறிவிப்புகள்"</string>
     <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"ஷார்ட்கட்டைச் சேர்க்க, தொட்டு பிடித்திருக்கவும்."</string>
-    <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"ஷார்ட்கட்டைச் சேர்க்க, இருமுறை தட்டிப் பிடித்திருக்கவும் (அ) தனிப்பயன் செயல்களைப் பயன்படுத்தவும்."</string>
+    <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"ஷார்ட்கட்டைச் சேர்க்க, இருமுறை தட்டிப் பிடித்திருக்கவும் (அ) பிரத்தியேக செயல்களைப் பயன்படுத்தவும்."</string>
     <string name="out_of_space" msgid="4691004494942118364">"முகப்புத் திரையில் இடமில்லை."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"பிடித்தவை ட்ரேயில் இடமில்லை"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"ஆப்ஸின் பட்டியல்"</string>
@@ -62,7 +62,8 @@
     <string name="gadget_error_text" msgid="6081085226050792095">"விட்ஜெட்டை ஏற்றுவதில் சிக்கல்"</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"அமைவு"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"இது அமைப்பு ஆப்ஸ் என்பதால் நிறுவல் நீக்கம் செய்ய முடியாது."</string>
-    <string name="folder_hint_text" msgid="6617836969016293992">"பெயரிடப்படாத கோப்புறை"</string>
+    <!-- no translation found for folder_hint_text (5174843001373488816) -->
+    <skip />
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> முடக்கப்பட்டது"</string>
     <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
       <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g> ஆப்ஸில் <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> அறிவிப்புகள் வந்துள்ளன</item>
@@ -132,11 +133,21 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"தனிப்பட்டவை"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"பணி"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"பணிக் கணக்கு"</string>
-    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"பணி ஆப்ஸை இங்கு காணலாம்"</string>
-    <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"ஒவ்வொரு பணிப் பயன்பாடும் ஒரு பேட்ஜைக் கொண்டிருக்கும். இவை, ஆப்ஸ் உங்கள் நிறுவனத்தால் பாதுகாப்பாக வைக்கப்பட்டுள்ளன என்பதைக் குறிக்கின்றன. இந்த ஆப்ஸை எளிதாக அணுக, முகப்புத் திரைக்கு நகர்த்திக்கொள்ளவும்."</string>
-    <string name="work_mode_on_label" msgid="4781128097185272916">"உங்கள் நிறுவனம் நிர்வகிக்கிறது"</string>
-    <string name="work_mode_off_label" msgid="3194894777601421047">"ஆப்ஸும் அறிவிப்புகளும் ஆஃப் செய்யப்பட்டுள்ளன"</string>
-    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"மூடுக"</string>
-    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"மூடப்பட்டது"</string>
+    <!-- no translation found for work_profile_edu_personal_apps (835703904784988952) -->
+    <skip />
+    <!-- no translation found for work_profile_edu_work_apps (2780791410780522606) -->
+    <skip />
+    <!-- no translation found for work_profile_edu_next (8783418929296503629) -->
+    <skip />
+    <!-- no translation found for work_profile_edu_accept (6069788082535149071) -->
+    <skip />
+    <!-- no translation found for work_mode_on_label (5386806494898086318) -->
+    <skip />
+    <!-- no translation found for work_mode_off_label (108732939698502466) -->
+    <skip />
+    <!-- no translation found for work_apps_paused_title (3040901117349444598) -->
+    <skip />
+    <!-- no translation found for work_apps_paused_body (4779164212204239118) -->
+    <skip />
     <string name="remote_action_failed" msgid="1383965239183576790">"தோல்வி: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>
