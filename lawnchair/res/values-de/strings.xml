@@ -9,7 +9,7 @@
     <string name="search_no_results">Keine Ergebnisse</string>
     <string name="restart_lawnchair_pref_title">Neustart</string>
     <string name="developer_options_title">Entwickleroptionen</string>
-    <string name="change_default_home">Als Startbildschirm festlegen</string>
+    <string name="change_default_home">Als Startbildschirm-App festlegen</string>
     <string name="action_apply">Fertig</string>
     <!-- Note: new. Replaces “OK” in dialogs. -->
     <string name="theme_dark_theme_mode_on">Aktiviert</string>
