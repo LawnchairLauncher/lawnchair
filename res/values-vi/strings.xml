@@ -24,11 +24,11 @@
     <string name="activity_not_found" msgid="8071924732094499514">"Ứng dụng chưa được cài đặt."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"Ứng dụng không có sẵn"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"Ứng dụng đã tải xuống bị tắt ở chế độ An toàn"</string>
-    <string name="safemode_widget_error" msgid="4863470563535682004">"Tiện ích con bị vô hiệu hóa ở chế độ an toàn"</string>
+    <string name="safemode_widget_error" msgid="4863470563535682004">"Tiện ích bị vô hiệu hóa ở chế độ an toàn"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"Lối tắt không khả dụng"</string>
     <string name="home_screen" msgid="806512411299847073">"Màn hình chính"</string>
     <string name="custom_actions" msgid="3747508247759093328">"Tác vụ tùy chỉnh"</string>
-    <string name="long_press_widget_to_add" msgid="7699152356777458215">"Chạm và giữ để chọn tiện ích con."</string>
+    <string name="long_press_widget_to_add" msgid="7699152356777458215">"Chạm và giữ để chọn tiện ích."</string>
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Nhấn đúp và giữ để chọn tiện ích hoặc sử dụng tác vụ tùy chỉnh."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"Rộng %1$d x cao %2$d"</string>
@@ -59,7 +59,7 @@
     <string name="permlab_write_settings" msgid="3574213698004620587">"ghi cài đặt và lối tắt trên Màn hình chính"</string>
     <string name="permdesc_write_settings" msgid="5440712911516509985">"Cho phép ứng dụng thay đổi cài đặt và lối tắt trên Màn hình chính."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> không được phép thực hiện cuộc gọi điện thoại"</string>
-    <string name="gadget_error_text" msgid="6081085226050792095">"Sự cố khi tải tiện ích con"</string>
+    <string name="gadget_error_text" msgid="6081085226050792095">"Sự cố khi tải tiện ích"</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"Thiết lập"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Đây là ứng dụng hệ thống và không thể gỡ cài đặt."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Thư mục chưa đặt tên"</string>
