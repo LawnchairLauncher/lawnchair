@@ -329,6 +329,16 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     private BackgroundBlurController mBackgroundBlurController =
             new BackgroundBlurController(this);
 
+    private final ViewTreeObserver.OnDrawListener mOnDrawListener =
+            new ViewTreeObserver.OnDrawListener() {
+                @Override
+                public void onDraw() {
+                    getBackgroundBlurController().setSurfaceToLauncher(mDragLayer);
+                    mDragLayer.post(() -> mDragLayer.getViewTreeObserver().removeOnDrawListener(
+                            this));
+                }
+            };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Object traceToken = TraceHelper.INSTANCE.beginSection(ON_CREATE_EVT,
@@ -930,6 +940,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         final int origDragLayerChildCount = mDragLayer.getChildCount();
         super.onStop();
 
+        mDragLayer.getViewTreeObserver().removeOnDrawListener(mOnDrawListener);
+
         if (mDeferOverlayCallbacks) {
             checkIfOverlayStillDeferred();
         } else {
@@ -970,13 +982,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         if (!mDeferOverlayCallbacks) {
             mOverlayManager.onActivityStarted(this);
         }
-        mDragLayer.getViewTreeObserver().addOnDrawListener(new ViewTreeObserver.OnDrawListener() {
-            @Override
-            public void onDraw() {
-                getBackgroundBlurController().setSurfaceToLauncher(mDragLayer);
-                mDragLayer.post(() -> mDragLayer.getViewTreeObserver().removeOnDrawListener(this));
-            }
-        });
+        mDragLayer.getViewTreeObserver().addOnDrawListener(mOnDrawListener);
 
         mAppWidgetHost.setListenIfResumed(true);
         TraceHelper.INSTANCE.endSection(traceToken);
