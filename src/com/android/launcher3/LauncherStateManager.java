@@ -244,12 +244,8 @@ public class LauncherStateManager {
             } else if (!mConfig.userControlled && animated && mConfig.mTargetState == state) {
                 // We are running the same animation as requested
                 if (onCompleteRunnable != null) {
-                    mConfig.mCurrentAnimation.addListener(new AnimationSuccessListener() {
-                        @Override
-                        public void onAnimationSuccess(Animator animator) {
-                            onCompleteRunnable.run();
-                        }
-                    });
+                    mConfig.mCurrentAnimation.addListener(
+                            AnimationSuccessListener.forRunnable(onCompleteRunnable));
                 }
                 return;
             }

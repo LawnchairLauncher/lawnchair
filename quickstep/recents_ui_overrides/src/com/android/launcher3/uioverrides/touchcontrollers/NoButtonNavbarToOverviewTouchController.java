@@ -24,7 +24,6 @@ import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
 import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
 import static com.android.launcher3.util.VibratorWrapper.OVERVIEW_HAPTIC;
 
-import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.graphics.PointF;
@@ -177,12 +176,8 @@ public class NoButtonNavbarToOverviewTouchController extends FlingAndHoldTouchCo
                 AnimatorSet anim = stateManager.createAtomicAnimation(
                         stateManager.getState(), NORMAL, builder,
                         ATOMIC_OVERVIEW_PEEK_COMPONENT, duration);
-                anim.addListener(new AnimationSuccessListener() {
-                    @Override
-                    public void onAnimationSuccess(Animator animator) {
-                        onSwipeInteractionCompleted(NORMAL, Touch.SWIPE);
-                    }
-                });
+                anim.addListener(AnimationSuccessListener.forRunnable(
+                        () -> onSwipeInteractionCompleted(NORMAL, Touch.SWIPE)));
                 anim.start();
             }
         } else {

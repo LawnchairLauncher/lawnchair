@@ -212,12 +212,7 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
     }
 
     public AnimatorListenerAdapter getProgressAnimatorListener() {
-        return new AnimationSuccessListener() {
-            @Override
-            public void onAnimationSuccess(Animator animator) {
-                onProgressAnimationEnd();
-            }
-        };
+        return AnimationSuccessListener.forRunnable(this::onProgressAnimationEnd);
     }
 
     public void setupViews(AllAppsContainerView appsView) {

@@ -960,15 +960,12 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         }
 
         AnimatorSet pa = setRecentsChangedOrientation(true);
-        pa.addListener(new AnimationSuccessListener() {
-            @Override
-            public void onAnimationSuccess(Animator animator) {
-                updateLayoutRotation(newRotation);
-                ((DragLayer)mActivity.getDragLayer()).recreateControllers();
-                rotateAllChildTasks();
-                setRecentsChangedOrientation(false).start();
-            }
-        });
+        pa.addListener(AnimationSuccessListener.forRunnable(() -> {
+            updateLayoutRotation(newRotation);
+            ((DragLayer) mActivity.getDragLayer()).recreateControllers();
+            rotateAllChildTasks();
+            setRecentsChangedOrientation(false).start();
+        }));
         pa.start();
     }
 

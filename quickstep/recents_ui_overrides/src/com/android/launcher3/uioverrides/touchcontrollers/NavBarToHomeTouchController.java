@@ -220,12 +220,8 @@ public class NavBarToHomeTouchController implements TouchController,
             // Quickly return to the state we came from (we didn't move far).
             ValueAnimator anim = mCurrentAnimation.getAnimationPlayer();
             anim.setFloatValues(progress, 0);
-            anim.addListener(new AnimationSuccessListener() {
-                @Override
-                public void onAnimationSuccess(Animator animator) {
-                    onSwipeInteractionCompleted(mStartState);
-                }
-            });
+            anim.addListener(AnimationSuccessListener.forRunnable(
+                    () -> onSwipeInteractionCompleted(mStartState)));
             anim.setDuration(80).start();
         }
     }
