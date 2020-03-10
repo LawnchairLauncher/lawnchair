@@ -47,7 +47,7 @@
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"No hi ha més espai a la safata Preferits."</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Llista d\'aplicacions"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Llista d\'aplicacions personals"</string>
-    <string name="all_apps_button_work_label" msgid="7270707118948892488">"Llista d\'aplicacions per a la feina"</string>
+    <string name="all_apps_button_work_label" msgid="7270707118948892488">"Llista d\'aplicacions de treball"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"Inici"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Suprimeix"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Desinstal·la"</string>
@@ -132,9 +132,9 @@
     <string name="notification_dismissed" msgid="6002233469409822874">"S\'ha ignorat la notificació"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Personal"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Feina"</string>
-    <string name="work_profile_toggle_label" msgid="3081029915775481146">"Perfil professional"</string>
-    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Cerca aplicacions per a la feina aquí"</string>
-    <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"Totes les aplicacions per a la feina tenen una insígnia que indica que estan protegides per la teva organització. Mou les aplicacions a la pantalla d\'inici per poder-hi accedir més fàcilment."</string>
+    <string name="work_profile_toggle_label" msgid="3081029915775481146">"Perfil de treball"</string>
+    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Cerca aplicacions de treball aquí"</string>
+    <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"Totes les aplicacions de treball tenen una insígnia que indica que estan protegides per la teva organització. Mou les aplicacions a la pantalla d\'inici per poder-hi accedir més fàcilment."</string>
     <string name="work_mode_on_label" msgid="4781128097185272916">"Gestionat per la teva organització"</string>
     <string name="work_mode_off_label" msgid="3194894777601421047">"Les notificacions i les aplicacions estan desactivades"</string>
     <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"Tanca"</string>
