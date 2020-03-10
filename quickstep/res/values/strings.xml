@@ -113,4 +113,10 @@
     <string name="back_gesture_tutorial_action_button_label" translatable="false">Done</string>
     <!-- Button text shown on a text button on the confirm screen. [CHAR LIMIT=14] -->
     <string name="back_gesture_tutorial_action_text_button_label" translatable="false">Settings</string>
+
+    <!-- ******* Overview ******* -->
+    <!-- Label for a button that causes the current overview app to be shared. [CHAR_LIMIT=40] -->
+    <string translatable="false" name="action_share">Share</string>
+    <!-- Label for a button that causes a screen shot of the current app to be taken. [CHAR_LIMIT=40] -->
+    <string translatable="false" name="action_screenshot">Screenshot</string>
 </resources>
