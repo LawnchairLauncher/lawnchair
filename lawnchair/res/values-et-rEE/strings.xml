@@ -330,6 +330,7 @@
     <string name="label_turn_off_suggestions">Keela</string>
     <string name="about_summary_title">Kokkuvõte</string>
     <string name="hide_app">Peida otsetee</string>
+    <string name="hide_badge">Peida märk</string>
     <string name="icon_shape_rounded_square">Ümardatud nurkadega ruut</string>
     <string name="hide_app_selected">“&#160;” peidetud.</string>
     <string name="hide_app_apply">Valmis</string>
