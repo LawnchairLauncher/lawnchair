@@ -101,4 +101,6 @@ public class UiFactory {
     public static Person[] getPersons(ShortcutInfo si) {
         return Utilities.EMPTY_PERSON_ARRAY;
     }
+
+    public static void closeSystemWindows() {}
 }
