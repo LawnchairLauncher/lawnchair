@@ -85,6 +85,7 @@ import com.android.launcher3.Workspace;
 import com.android.launcher3.Workspace.ItemOperator;
 import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.accessibility.AccessibleDragListenerAdapter;
+import com.android.launcher3.accessibility.FolderAccessibilityHelper;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragController.DragListener;
@@ -271,16 +272,15 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
             mDragController.addDragListener(this);
             if (options.isAccessibleDrag) {
                 mDragController.addDragListener(new AccessibleDragListenerAdapter(
-                        mContent, CellLayout.FOLDER_ACCESSIBILITY_DRAG) {
-
-                    @Override
-                    protected void enableAccessibleDrag(boolean enable) {
-                        super.enableAccessibleDrag(enable);
-                        mFooter.setImportantForAccessibility(enable
-                                ? IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
-                                : IMPORTANT_FOR_ACCESSIBILITY_AUTO);
-                    }
-                });
+                        mContent, FolderAccessibilityHelper::new) {
+                            @Override
+                            protected void enableAccessibleDrag(boolean enable) {
+                                super.enableAccessibleDrag(enable);
+                                mFooter.setImportantForAccessibility(enable
+                                        ? IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
+                                        : IMPORTANT_FOR_ACCESSIBILITY_AUTO);
+                            }
+                        });
             }
 
             mLauncher.getWorkspace().beginDragShared(v, this, options);
