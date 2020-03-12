@@ -25,6 +25,9 @@ import static com.android.launcher3.logging.LoggerUtils.newItemTarget;
 import static com.android.launcher3.logging.LoggerUtils.newLauncherEvent;
 import static com.android.launcher3.logging.LoggerUtils.newTarget;
 import static com.android.launcher3.logging.LoggerUtils.newTouchAction;
+import static com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
+import static com.android.launcher3.userevent.nano.LauncherLogProto.ItemType;
+import static com.android.launcher3.userevent.nano.LauncherLogProto.TipType;
 
 import static java.util.Optional.ofNullable;
 
@@ -48,7 +51,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.StatsLogUtils.LogContainerProvider;
-import com.android.launcher3.userevent.nano.LauncherLogProto;
+import com.android.launcher3.userevent.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.LauncherEvent;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
@@ -57,8 +60,11 @@ import com.android.launcher3.util.InstantAppResolver;
 import com.android.launcher3.util.LogConfig;
 import com.android.launcher3.util.ResourceBasedOverride;
 
+import com.google.protobuf.InvalidProtocolBufferException;
+import com.google.protobuf.nano.InvalidProtocolBufferNanoException;
+import com.google.protobuf.nano.MessageNano;
+
 import java.util.ArrayList;
-import java.util.Locale;
 import java.util.UUID;
 
 /**
@@ -162,7 +168,7 @@ public class UserEventDispatcher implements ResourceBasedOverride {
             // Direction DOWN means the task was launched, UP means it was dismissed.
             event.action.dir = direction;
         }
-        event.srcTarget[0].itemType = LauncherLogProto.ItemType.TASK;
+        event.srcTarget[0].itemType = ItemType.TASK;
         event.srcTarget[0].pageIndex = taskIndex;
         fillComponentInfo(event.srcTarget[0], componentKey.componentName);
         dispatchUserEvent(event, null);
@@ -289,7 +295,7 @@ public class UserEventDispatcher implements ResourceBasedOverride {
     public void logActionBounceTip(int containerType) {
         LauncherEvent event = newLauncherEvent(newAction(Action.Type.TIP),
                 newContainerTarget(containerType));
-        event.srcTarget[0].tipType = LauncherLogProto.TipType.BOUNCE;
+        event.srcTarget[0].tipType = TipType.BOUNCE;
         dispatchUserEvent(event, null);
     }
 
@@ -316,7 +322,7 @@ public class UserEventDispatcher implements ResourceBasedOverride {
             int srcChildTargetType, int srcParentContainerType, int dstContainerType,
             int pageIndex) {
         LauncherEvent event;
-        if (srcChildTargetType == LauncherLogProto.ItemType.TASK) {
+        if (srcChildTargetType == ItemType.TASK) {
             event = newLauncherEvent(newTouchAction(action),
                     newItemTarget(srcChildTargetType),
                     newContainerTarget(srcParentContainerType));
@@ -374,10 +380,11 @@ public class UserEventDispatcher implements ResourceBasedOverride {
                 .setElapsedContainerMillis(SystemClock.uptimeMillis() - mElapsedContainerMillis)
                 .setElapsedSessionMillis(
                         SystemClock.uptimeMillis() - mElapsedSessionMillis).build();
-        if (!IS_VERBOSE) {
-            return;
+        try {
+            dispatchUserEvent(LauncherEvent.parseFrom(launcherEvent.toByteArray()), null);
+        } catch (InvalidProtocolBufferNanoException e) {
+            throw new RuntimeException("Cannot convert LauncherEvent from Lite to Nano version.");
         }
-        Log.d(TAG, launcherEvent.toString());
     }
 
     public void logDeepShortcutsOpen(View icon) {
@@ -421,8 +428,8 @@ public class UserEventDispatcher implements ResourceBasedOverride {
         action.command = Action.Command.BACK;
         action.dir = isButton ? Action.Direction.NONE :
                 gestureSwipeLeft ? Action.Direction.LEFT : Action.Direction.RIGHT;
-        Target target = newControlTarget(isButton ? LauncherLogProto.ControlType.BACK_BUTTON :
-                LauncherLogProto.ControlType.BACK_GESTURE);
+        Target target = newControlTarget(isButton ? ControlType.BACK_BUTTON :
+                ControlType.BACK_GESTURE);
         target.spanX = downX;
         target.spanY = downY;
         target.cardinality = completed ? 1 : 0;
@@ -471,36 +478,14 @@ public class UserEventDispatcher implements ResourceBasedOverride {
         if (!IS_VERBOSE) {
             return;
         }
-        Log.d(TAG, generateLog(ev));
-    }
-
-    /**
-     * Returns a human-readable log for given user event.
-     */
-    public static String generateLog(LauncherEvent ev) {
-        String log = "\n-----------------------------------------------------"
-                + "\naction:" + LoggerUtils.getActionStr(ev.action);
-        if (ev.srcTarget != null && ev.srcTarget.length > 0) {
-            log += "\n Source " + getTargetsStr(ev.srcTarget);
+        LauncherLogProto.LauncherEvent liteLauncherEvent;
+        try {
+            liteLauncherEvent =
+                    LauncherLogProto.LauncherEvent.parseFrom(MessageNano.toByteArray(ev));
+        } catch (InvalidProtocolBufferException e) {
+            throw new RuntimeException("Cannot parse LauncherEvent from Nano to Lite version");
         }
-        if (ev.destTarget != null && ev.destTarget.length > 0) {
-            log += "\n Destination " + getTargetsStr(ev.destTarget);
-        }
-        log += String.format(Locale.US,
-                "\n Elapsed container %d ms, session %d ms, action %d ms",
-                ev.elapsedContainerMillis,
-                ev.elapsedSessionMillis,
-                ev.actionDurationMillis);
-        log += "\n\n";
-        return log;
-    }
-
-    private static String getTargetsStr(Target[] targets) {
-        String result = "child:" + LoggerUtils.getTargetStr(targets[0]);
-        for (int i = 1; i < targets.length; i++) {
-            result += "\tparent:" + LoggerUtils.getTargetStr(targets[i]);
-        }
-        return result;
+        Log.d(TAG, liteLauncherEvent.toString());
     }
 
     /**
