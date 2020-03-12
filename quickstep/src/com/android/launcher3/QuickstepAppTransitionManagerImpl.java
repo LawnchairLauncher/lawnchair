@@ -57,6 +57,9 @@ import android.os.Looper;
 import android.util.Pair;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.anim.Interpolators;
@@ -69,6 +72,7 @@ import com.android.launcher3.views.FloatingIconView;
 import com.android.quickstep.util.MultiValueUpdateListener;
 import com.android.quickstep.util.RemoteAnimationProvider;
 import com.android.quickstep.util.RemoteAnimationTargetSet;
+import com.android.quickstep.util.ShelfPeekAnim;
 import com.android.systemui.shared.system.ActivityCompat;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.QuickStepContract;
@@ -79,9 +83,6 @@ import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams;
 import com.android.systemui.shared.system.WindowManagerWrapper;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 /**
  * {@link LauncherAppTransitionManager} with Quickstep-specific app transitions for launching from
@@ -150,6 +151,8 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
 
     private RemoteAnimationProvider mRemoteAnimationProvider;
 
+    private final ShelfPeekAnim mShelfPeekAnim;
+
     private final AnimatorListenerAdapter mForceInvisibleListener = new AnimatorListenerAdapter() {
         @Override
         public void onAnimationStart(Animator animation) {
@@ -177,6 +180,12 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
 
         mLauncher.addOnDeviceProfileChangeListener(this);
         registerRemoteAnimations();
+
+        mShelfPeekAnim = new ShelfPeekAnim(mLauncher);
+    }
+
+    public ShelfPeekAnim getShelfPeekAnim() {
+        return mShelfPeekAnim;
     }
 
     @Override

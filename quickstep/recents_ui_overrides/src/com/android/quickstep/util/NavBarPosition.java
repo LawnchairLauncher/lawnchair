@@ -21,9 +21,9 @@ import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
 
 import android.content.Context;
 import android.view.Surface;
-import android.view.WindowManager;
 
 import com.android.launcher3.graphics.RotationMode;
+import com.android.launcher3.util.DefaultDisplay;
 import com.android.quickstep.SysUINavigationMode;
 
 /**
@@ -36,8 +36,7 @@ public class NavBarPosition {
 
     public NavBarPosition(Context context) {
         mMode = SysUINavigationMode.getMode(context);
-        mDisplayRotation = context.getSystemService(WindowManager.class)
-                .getDefaultDisplay().getRotation();
+        mDisplayRotation = DefaultDisplay.INSTANCE.get(context).getInfo().rotation;
     }
 
     public boolean isRightEdge() {

@@ -19,7 +19,6 @@ import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.quickstep.util.LayoutUtils;
@@ -69,8 +68,16 @@ public class BackgroundAppState extends OverviewState {
         if (taskCount == 0) {
             return super.getOverviewScaleAndTranslation(launcher);
         }
-        TaskView dummyTask = recentsView.getTaskViewAt(Utilities.boundToRange(
-                recentsView.getCurrentPage(), 0, taskCount - 1));
+        TaskView dummyTask;
+        if (recentsView.getCurrentPage() >= 0) {
+            if (recentsView.getCurrentPage() <= taskCount - 1) {
+                dummyTask = recentsView.getCurrentPageTaskView();
+            } else {
+                dummyTask = recentsView.getTaskViewAt(taskCount - 1);
+            }
+        } else {
+            dummyTask = recentsView.getTaskViewAt(0);
+        }
         return recentsView.getTempClipAnimationHelper().updateForFullscreenOverview(dummyTask)
                 .getScaleAndTranslation();
     }
@@ -91,7 +98,7 @@ public class BackgroundAppState extends OverviewState {
         if ((getVisibleElements(launcher) & HOTSEAT_ICONS) != 0) {
             // Translate hotseat offscreen if we show it in overview.
             ScaleAndTranslation scaleAndTranslation = super.getHotseatScaleAndTranslation(launcher);
-            scaleAndTranslation.translationY = LayoutUtils.getShelfTrackingDistance(launcher,
+            scaleAndTranslation.translationY += LayoutUtils.getShelfTrackingDistance(launcher,
                     launcher.getDeviceProfile());
             return scaleAndTranslation;
         }

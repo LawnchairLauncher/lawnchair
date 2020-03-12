@@ -24,7 +24,8 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
+
+import androidx.annotation.IntDef;
 
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
@@ -32,15 +33,12 @@ import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.anim.PropertySetter.AnimatedPropertySetter;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
-import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.uioverrides.UiFactory;
 
 import java.io.PrintWriter;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
-
-import androidx.annotation.IntDef;
 
 /**
  * TODO: figure out what kind of tests we can write for this
@@ -136,7 +134,7 @@ public class LauncherStateManager {
     }
 
     public void dump(String prefix, PrintWriter writer) {
-        writer.println(prefix + "LauncherState");
+        writer.println(prefix + "LauncherState:");
         writer.println(prefix + "\tmLastStableState:" + mLastStableState);
         writer.println(prefix + "\tmCurrentStableState:" + mCurrentStableState);
         writer.println(prefix + "\tmState:" + mState);
@@ -227,11 +225,6 @@ public class LauncherStateManager {
 
     private void goToState(LauncherState state, boolean animated, long delay,
             final Runnable onCompleteRunnable) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.ALL_APPS_UPON_RECENTS, "goToState: " +
-                    state.getClass().getSimpleName() +
-                    " @ " + Log.getStackTraceString(new Throwable()));
-        }
         animated &= Utilities.areAnimationsEnabled(mLauncher);
         if (mLauncher.isInState(state)) {
             if (mConfig.mCurrentAnimation == null) {
@@ -412,13 +405,8 @@ public class LauncherStateManager {
             mState.onStateDisabled(mLauncher);
         }
         mState = state;
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.STABLE_STATE_MISMATCH, "onStateTransitionStart: " +
-                    state.getClass().getSimpleName() +
-                    " @ " + Log.getStackTraceString(new Throwable()));
-        }
         mState.onStateEnabled(mLauncher);
-        mLauncher.onStateSet(mState);
+        mLauncher.onStateSetStart(mState);
 
         if (state.disablePageClipping) {
             // Only disable clipping if needed, otherwise leave it as previous value.
@@ -436,16 +424,10 @@ public class LauncherStateManager {
         if (state != mCurrentStableState) {
             mLastStableState = state.getHistoryForState(mCurrentStableState);
             mCurrentStableState = state;
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.ALL_APPS_UPON_RECENTS, "onStateTransitionEnd: " +
-                        state.getClass().getSimpleName() +
-                        " @ " + Log.getStackTraceString(new Throwable()));
-            }
         }
 
         state.onStateTransitionEnd(mLauncher);
-        mLauncher.getWorkspace().setClipChildren(!state.disablePageClipping);
-        mLauncher.finishAutoCancelActionMode();
+        mLauncher.onStateSetEnd(state);
 
         if (state == NORMAL) {
             setRestState(null);

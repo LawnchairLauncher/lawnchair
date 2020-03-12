@@ -20,7 +20,6 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name" msgid="649227358658669779">"Launcher3"</string>
-    <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="work_folder_name" msgid="3753320833950115786">"பணியிடம்"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"ஆப்ஸ் நிறுவப்படவில்லை."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"ஆப்ஸ் இல்லை"</string>
@@ -36,8 +35,8 @@
     <string name="add_item_request_drag_hint" msgid="5899764264480397019">"நீங்களே சேர்க்க, தொட்டுப் பிடித்திருக்கவும்"</string>
     <string name="place_automatically" msgid="8064208734425456485">"தானாகவே சேர்"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"பயன்பாடுகளில் தேடுக"</string>
-    <string name="all_apps_loading_message" msgid="5813968043155271636">"பயன்பாடுகளை ஏற்றுகிறது…"</string>
-    <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" உடன் பொருந்தும் பயன்பாடுகள் இல்லை"</string>
+    <string name="all_apps_loading_message" msgid="5813968043155271636">"ஆப்ஸை ஏற்றுகிறது…"</string>
+    <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" உடன் பொருந்தும் ஆப்ஸ் இல்லை"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"கூடுதல் பயன்பாடுகளைத் தேடு"</string>
     <string name="label_application" msgid="8531721983832654978">"ஆப்ஸ்"</string>
     <string name="notifications_header" msgid="1404149926117359025">"அறிவிப்புகள்"</string>
@@ -45,7 +44,7 @@
     <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"ஷார்ட்கட்டைச் சேர்க்க, இருமுறை தட்டிப் பிடித்திருக்கவும் (அ) தனிப்பயன் செயல்களைப் பயன்படுத்தவும்."</string>
     <string name="out_of_space" msgid="4691004494942118364">"முகப்புத் திரையில் இடமில்லை."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"பிடித்தவை ட்ரேயில் இடமில்லை"</string>
-    <string name="all_apps_button_label" msgid="8130441508702294465">"பயன்பாடுகளின் பட்டியல்"</string>
+    <string name="all_apps_button_label" msgid="8130441508702294465">"ஆப்ஸின் பட்டியல்"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"தனிப்பட்ட ஆப்ஸ் பட்டியல்"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"பணி ஆப்ஸ் பட்டியல்"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"முகப்பு"</string>
