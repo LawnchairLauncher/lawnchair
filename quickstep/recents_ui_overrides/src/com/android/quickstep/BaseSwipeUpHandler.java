@@ -79,6 +79,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
     private static final String TAG = "BaseSwipeUpHandler";
     protected static final Rect TEMP_RECT = new Rect();
 
+    public static final float MIN_PROGRESS_FOR_OVERVIEW = 0.7f;
     private static final Interpolator PULLBACK_INTERPOLATOR = DEACCEL;
 
     // The distance needed to drag to reach the task size in recents.
