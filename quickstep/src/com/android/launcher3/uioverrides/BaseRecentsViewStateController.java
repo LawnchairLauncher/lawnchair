@@ -88,11 +88,11 @@ public abstract class BaseRecentsViewStateController<T extends View>
     @Override
     public final void setStateWithAnimation(@NonNull final LauncherState toState,
             @NonNull AnimatorSetBuilder builder, @NonNull AnimationConfig config) {
-        if (!config.hasAnimationComponent(PLAY_ATOMIC_OVERVIEW_PEEK | PLAY_ATOMIC_OVERVIEW_SCALE)) {
+        if (!config.hasAnimationFlag(PLAY_ATOMIC_OVERVIEW_PEEK | PLAY_ATOMIC_OVERVIEW_SCALE)) {
             // The entire recents animation is played atomically.
             return;
         }
-        if (config.hasAnimationComponent(SKIP_OVERVIEW)) {
+        if (config.hasAnimationFlag(SKIP_OVERVIEW)) {
             return;
         }
         setStateWithAnimationInternal(toState, builder, config);

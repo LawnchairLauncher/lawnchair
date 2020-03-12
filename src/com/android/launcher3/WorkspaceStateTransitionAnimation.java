@@ -120,7 +120,7 @@ public class WorkspaceStateTransitionAnimation {
                     hotseatIconsAlpha, fadeInterpolator);
         }
 
-        if (!config.playNonAtomicComponent()) {
+        if (config.onlyPlayAtomicComponent()) {
             // Only the alpha and scale, handled above, are included in the atomic animation.
             return;
         }
@@ -175,7 +175,8 @@ public class WorkspaceStateTransitionAnimation {
         float pageAlpha = pageAlphaProvider.getPageAlpha(childIndex);
         int drawableAlpha = Math.round(pageAlpha * (state.hasWorkspacePageBackground ? 255 : 0));
 
-        if (config.playNonAtomicComponent()) {
+        if (!config.onlyPlayAtomicComponent()) {
+            // Don't update the scrim during the atomic animation.
             propertySetter.setInt(cl.getScrimBackground(),
                     DRAWABLE_ALPHA, drawableAlpha, ZOOM_OUT);
         }

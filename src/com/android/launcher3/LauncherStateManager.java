@@ -313,10 +313,10 @@ public class LauncherStateManager {
     }
 
     public AnimatorSet createAtomicAnimation(LauncherState fromState, LauncherState toState,
-            AnimatorSetBuilder builder, @AnimationFlags int atomicComponent, long duration) {
+            AnimatorSetBuilder builder, @AnimationFlags int animFlags, long duration) {
         prepareForAtomicAnimation(fromState, toState, builder);
         AnimationConfig config = new AnimationConfig();
-        config.animComponents = atomicComponent;
+        config.mAnimFlags = animFlags;
         config.duration = duration;
         for (StateHandler handler : mLauncher.getStateManager().getStateHandlers()) {
             handler.setStateWithAnimation(toState, builder, config);
@@ -371,7 +371,7 @@ public class LauncherStateManager {
             @AnimationFlags int animComponents) {
         mConfig.reset();
         mConfig.userControlled = true;
-        mConfig.animComponents = animComponents;
+        mConfig.mAnimFlags = animComponents;
         mConfig.duration = duration;
         mConfig.playbackController = AnimatorPlaybackController.wrap(
                 createAnimationToNewWorkspaceInternal(state, builder, null), duration)
@@ -585,7 +585,7 @@ public class LauncherStateManager {
         public long duration;
         public boolean userControlled;
         public AnimatorPlaybackController playbackController;
-        public @AnimationFlags int animComponents = ANIM_ALL_COMPONENTS;
+        private @AnimationFlags int mAnimFlags = ANIM_ALL_COMPONENTS;
         private PropertySetter mPropertySetter;
 
         private AnimatorSet mCurrentAnimation;
@@ -599,7 +599,7 @@ public class LauncherStateManager {
         public void reset() {
             duration = 0;
             userControlled = false;
-            animComponents = ANIM_ALL_COMPONENTS;
+            mAnimFlags = ANIM_ALL_COMPONENTS;
             mPropertySetter = null;
             mTargetState = null;
 
@@ -640,19 +640,39 @@ public class LauncherStateManager {
             mCurrentAnimation.addListener(this);
         }
 
+        /**
+         * @return Whether Overview is scaling as part of this animation. If this is the only
+         * component (i.e. NON_ATOMIC_COMPONENT isn't included), then this scaling is happening
+         * atomically, rather than being part of a normal state animation. StateHandlers can use
+         * this to designate part of their animation that should scale with Overview.
+         */
         public boolean playAtomicOverviewScaleComponent() {
-            return hasAnimationComponent(PLAY_ATOMIC_OVERVIEW_SCALE);
+            return hasAnimationFlag(PLAY_ATOMIC_OVERVIEW_SCALE);
         }
 
-        public boolean playNonAtomicComponent() {
-            return hasAnimationComponent(PLAY_NON_ATOMIC);
+        /**
+         * @return Whether this animation will play atomically at the same time as a different,
+         * user-controlled state transition. StateHandlers, which contribute to both animations, can
+         * use this to avoid animating the same properties in both animations, since they'd conflict
+         * with one another.
+         */
+        public boolean onlyPlayAtomicComponent() {
+            return getAnimComponents() == PLAY_ATOMIC_OVERVIEW_SCALE
+                    || getAnimComponents() == PLAY_ATOMIC_OVERVIEW_PEEK;
         }
 
         /**
          * Returns true if the config and any of the provided component flags
          */
-        public boolean hasAnimationComponent(@AnimationFlags int a) {
-            return (animComponents & a) != 0;
+        public boolean hasAnimationFlag(@AnimationFlags int a) {
+            return (mAnimFlags & a) != 0;
+        }
+
+        /**
+         * @return Only the flags that determine which animation components to play.
+         */
+        public @AnimationFlags int getAnimComponents() {
+            return mAnimFlags & ANIM_ALL_COMPONENTS;
         }
     }
 
