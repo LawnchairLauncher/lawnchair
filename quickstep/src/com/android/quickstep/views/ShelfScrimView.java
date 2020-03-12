@@ -18,6 +18,7 @@ package com.android.quickstep.views;
 import static com.android.launcher3.LauncherState.ALL_APPS_HEADER_EXTRA;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.OVERVIEW;
+import static com.android.launcher3.LauncherState.QUICK_SWITCH;
 import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
@@ -35,15 +36,18 @@ import android.util.AttributeSet;
 import android.view.animation.Interpolator;
 
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.LauncherState;
+import com.android.launcher3.QuickstepAppTransitionManagerImpl;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.Interpolators;
-import com.android.launcher3.uioverrides.states.OverviewState;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ScrimView;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.SysUINavigationMode.NavigationModeChangeListener;
+import com.android.quickstep.util.LayoutUtils;
+import com.android.quickstep.util.ShelfPeekAnim;
 
 /**
  * Scrim used for all-apps and shelf in Overview
@@ -161,9 +165,9 @@ public class ShelfScrimView extends ScrimView implements NavigationModeChangeLis
                 mMidProgress =  OVERVIEW.getVerticalProgress(mLauncher);
                 Rect hotseatPadding = dp.getHotseatLayoutPadding();
                 int hotseatSize = dp.hotseatBarSizePx + dp.getInsets().bottom
-                        - hotseatPadding.bottom - hotseatPadding.top;
+                        + hotseatPadding.bottom + hotseatPadding.top;
                 float dragHandleTop =
-                        Math.min(hotseatSize, OverviewState.getDefaultSwipeHeight(context, dp));
+                        Math.min(hotseatSize, LayoutUtils.getDefaultSwipeHeight(context, dp));
                 mDragHandleProgress =  1 - (dragHandleTop / mShiftRange);
             }
             mTopOffset = dp.getInsets().top - mShelfOffset;
@@ -193,8 +197,12 @@ public class ShelfScrimView extends ScrimView implements NavigationModeChangeLis
         if (mProgress >= 1) {
             mRemainingScreenColor = 0;
             mShelfColor = 0;
+            ShelfPeekAnim shelfPeekAnim = ((QuickstepAppTransitionManagerImpl)
+                    mLauncher.getAppTransitionManager()).getShelfPeekAnim();
+            LauncherState state = mLauncher.getStateManager().getState();
             if (mSysUINavigationMode == Mode.NO_BUTTON
-                    && mLauncher.getStateManager().getState() == BACKGROUND_APP) {
+                    && (state == BACKGROUND_APP || state == QUICK_SWITCH)
+                    && shelfPeekAnim.isPeeking()) {
                 // Show the shelf background when peeking during swipe up.
                 mShelfColor = setColorAlphaBound(mEndScrim, mMidAlpha);
             }

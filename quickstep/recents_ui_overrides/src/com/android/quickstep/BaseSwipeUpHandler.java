@@ -15,16 +15,13 @@
  */
 package com.android.quickstep;
 
-import static android.os.VibrationEffect.EFFECT_CLICK;
-import static android.os.VibrationEffect.createPredefined;
-
 import static com.android.launcher3.Utilities.postAsyncCallback;
 import static com.android.launcher3.anim.Interpolators.ACCEL_1_5;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.launcher3.util.VibratorWrapper.OVERVIEW_HAPTIC;
 import static com.android.launcher3.views.FloatingIconView.SHAPE_PROGRESS_DURATION;
-import static com.android.quickstep.TouchInteractionService.BACKGROUND_EXECUTOR;
-import static com.android.quickstep.TouchInteractionService.MAIN_THREAD_EXECUTOR;
 import static com.android.quickstep.TouchInteractionService.TOUCH_INTERACTION_LOG;
 
 import android.animation.Animator;
@@ -39,13 +36,11 @@ import android.graphics.RectF;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.VibrationEffect;
-import android.os.Vibrator;
-import android.provider.Settings;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.animation.Interpolator;
+
+import androidx.annotation.UiThread;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
@@ -54,8 +49,8 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
-import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.graphics.RotationMode;
+import com.android.launcher3.util.VibratorWrapper;
 import com.android.launcher3.views.FloatingIconView;
 import com.android.quickstep.ActivityControlHelper.ActivityInitListener;
 import com.android.quickstep.ActivityControlHelper.HomeAnimationFactory;
@@ -74,8 +69,6 @@ import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
 
 import java.util.function.Consumer;
-
-import androidx.annotation.UiThread;
 
 /**
  * Base class for swipe up handler with some utility methods
@@ -107,7 +100,6 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
     protected final ClipAnimationHelper mClipAnimationHelper;
     protected final TransformParams mTransformParams = new TransformParams();
 
-    private final Vibrator mVibrator;
     protected final Mode mMode;
 
     // Shift in the range of [0, 1].
@@ -126,7 +118,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
 
     protected Runnable mGestureEndCallback;
 
-    protected final Handler mMainThreadHandler = MAIN_THREAD_EXECUTOR.getHandler();
+    protected final Handler mMainThreadHandler = MAIN_EXECUTOR.getHandler();
     protected MultiStateCallback mStateCallback;
 
     protected boolean mCanceled;
@@ -148,7 +140,6 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
 
         mClipAnimationHelper = new ClipAnimationHelper(context);
         mPageSpacing = context.getResources().getDimensionPixelSize(R.dimen.recents_page_spacing);
-        mVibrator = context.getSystemService(Vibrator.class);
         initTransitionEndpoints(InvariantDeviceProfile.INSTANCE.get(mContext)
                 .getDeviceProfile(mContext));
     }
@@ -162,19 +153,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
     }
 
     protected void performHapticFeedback() {
-        if (!mVibrator.hasVibrator()) {
-            return;
-        }
-        if (Settings.System.getInt(
-                mContext.getContentResolver(), Settings.System.HAPTIC_FEEDBACK_ENABLED, 0) == 0) {
-            return;
-        }
-
-        VibrationEffect effect = createPredefined(EFFECT_CLICK);
-        if (effect == null) {
-            return;
-        }
-        BACKGROUND_EXECUTOR.execute(() -> mVibrator.vibrate(effect));
+        VibratorWrapper.INSTANCE.get(mContext).vibrate(OVERVIEW_HAPTIC);
     }
 
     public Consumer<MotionEvent> getRecentsViewDispatcher(RotationMode rotationMode) {
@@ -229,10 +208,10 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
         // Launch the task user scrolled to (mRecentsView.getNextPage()).
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             // We finish recents animation inside launchTask() when live tile is enabled.
-            mRecentsView.getTaskViewAt(mRecentsView.getNextPage()).launchTask(false /* animate */,
+            mRecentsView.getNextPageTaskView().launchTask(false /* animate */,
                     true /* freezeTaskList */);
         } else {
-            int taskId = mRecentsView.getTaskViewAt(mRecentsView.getNextPage()).getTask().key.id;
+            int taskId = mRecentsView.getNextPageTaskView().getTask().key.id;
             mFinishingRecentsAnimationForNewTaskId = taskId;
             mRecentsAnimationWrapper.finish(true /* toRecents */, () -> {
                 if (!mCanceled) {
@@ -275,7 +254,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
             overviewStackBounds = getStackBounds(dp);
         }
         dp.updateInsets(targetSet.homeContentInsets);
-        dp.updateIsSeascape(mContext.getSystemService(WindowManager.class));
+        dp.updateIsSeascape(mContext);
         if (runningTaskTarget != null) {
             mClipAnimationHelper.updateSource(overviewStackBounds, runningTaskTarget);
         }

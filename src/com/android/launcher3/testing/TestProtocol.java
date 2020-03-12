@@ -66,6 +66,8 @@ public final class TestProtocol {
             "all-apps-to-overview-swipe-height";
     public static final String REQUEST_HOME_TO_ALL_APPS_SWIPE_HEIGHT =
             "home-to-all-apps-swipe-height";
+    public static final String REQUEST_ICON_HEIGHT =
+            "icon-height";
     public static final String REQUEST_HOTSEAT_TOP = "hotseat-top";
     public static final String REQUEST_IS_LAUNCHER_INITIALIZED = "is-launcher-initialized";
     public static final String REQUEST_FREEZE_APP_LIST = "freeze-app-list";
@@ -84,6 +86,5 @@ public final class TestProtocol {
     public static final String NO_BACKGROUND_TO_OVERVIEW_TAG = "b/138251824";
     public static final String NO_DRAG_TO_WORKSPACE = "b/138729456";
     public static final String APP_NOT_DISABLED = "b/139891609";
-    public static final String ALL_APPS_UPON_RECENTS = "b/139941530";
-    public static final String STABLE_STATE_MISMATCH = "b/140311911";
+    public static final String NO_CONTEXT_MENU = "b/141770616";
 }

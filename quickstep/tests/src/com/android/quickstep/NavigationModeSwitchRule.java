@@ -181,7 +181,7 @@ public class NavigationModeSwitchRule implements TestRule {
                                 SysUINavigationMode.INSTANCE.get(targetContext);
                         targetContext.getMainExecutor().execute(() ->
                                 sysUINavigationMode.addModeChangeListener(listener));
-                        latch.await(10, TimeUnit.SECONDS);
+                        latch.await(60, TimeUnit.SECONDS);
                         targetContext.getMainExecutor().execute(() ->
                                 sysUINavigationMode.removeModeChangeListener(listener));
                         assertTrue("Navigation mode didn't change to " + expectedMode,

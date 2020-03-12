@@ -81,4 +81,9 @@ public class AllAppsPagedView extends PagedView<PersonalWorkSlidingTabStrip> {
     public boolean hasOverlappingRendering() {
         return false;
     }
+
+    @Override
+    protected boolean isVerticalScrollable() {
+        return false;
+    }
 }

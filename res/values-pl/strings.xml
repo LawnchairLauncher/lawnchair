@@ -20,7 +20,6 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name" msgid="649227358658669779">"Launcher3"</string>
-    <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="work_folder_name" msgid="3753320833950115786">"Praca"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"Aplikacja nie jest zainstalowana."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"Aplikacja niedostępna"</string>
@@ -130,7 +129,7 @@
     <string name="widget_resized" msgid="9130327887929620">"Szerokość i wysokość widżetu zmieniła się na <xliff:g id="NUMBER_0">%1$s</xliff:g> x <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"Skróty"</string>
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"Skróty i powiadomienia"</string>
-    <string name="action_dismiss_notification" msgid="5909461085055959187">"Odrzuć"</string>
+    <string name="action_dismiss_notification" msgid="5909461085055959187">"Zamknij"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Powiadomienie odrzucone"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Osobiste"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Praca"</string>

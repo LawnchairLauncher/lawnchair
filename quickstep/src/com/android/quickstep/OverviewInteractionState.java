@@ -15,19 +15,20 @@
  */
 package com.android.quickstep;
 
+import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
+
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 import android.os.RemoteException;
 import android.util.Log;
 
+import androidx.annotation.WorkerThread;
+
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.util.MainThreadInitializedObject;
-import com.android.launcher3.util.UiThreadHelper;
 import com.android.systemui.shared.recents.ISystemUiProxy;
-
-import androidx.annotation.WorkerThread;
 
 /**
  * Sets alpha for the back button
@@ -62,7 +63,7 @@ public class OverviewInteractionState {
         // because of its high send frequency and data may be very different than the previous value
         // For example, send back alpha on uihandler to avoid flickering when setting its visibility
         mUiHandler = new Handler(this::handleUiMessage);
-        mBgHandler = new Handler(UiThreadHelper.getBackgroundLooper(), this::handleBgMessage);
+        mBgHandler = new Handler(UI_HELPER_EXECUTOR.getLooper(), this::handleBgMessage);
 
         onNavigationModeChanged(SysUINavigationMode.INSTANCE.get(context)
                 .addModeChangeListener(this::onNavigationModeChanged));

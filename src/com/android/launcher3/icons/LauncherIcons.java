@@ -24,6 +24,8 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Process;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.InvariantDeviceProfile;
@@ -36,8 +38,6 @@ import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.util.Themes;
 
 import java.util.function.Supplier;
-
-import androidx.annotation.Nullable;
 
 /**
  * Wrapper class to provide access to {@link BaseIconFactory} and also to provide pool of this class
