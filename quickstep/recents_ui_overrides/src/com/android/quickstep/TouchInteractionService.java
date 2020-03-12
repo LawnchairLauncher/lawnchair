@@ -50,8 +50,6 @@ import androidx.annotation.UiThread;
 import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.BaseDraggingActivity;
-import com.android.launcher3.Launcher;
-import com.android.launcher3.PagedView;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.config.FeatureFlags;
@@ -351,17 +349,6 @@ public class TouchInteractionService extends Service implements PluginListener<O
                 OverscrollPlugin.class, false /* allowMultiple */);
     }
 
-    private void onDeferredActivityLaunch() {
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-            mOverviewComponentObserver.getActivityInterface().switchRunningTaskViewToScreenshot(
-                    null, () -> {
-                        mTaskAnimationManager.finishRunningRecentsAnimation(true /* toHome */);
-                    });
-        } else {
-            mTaskAnimationManager.finishRunningRecentsAnimation(true /* toHome */);
-        }
-    }
-
     private void resetHomeBounceSeenOnQuickstepEnabledFirstTime() {
         if (!mDeviceState.isUserUnlocked() || mDeviceState.isButtonNavMode()) {
             // Skip if not yet unlocked (can't read user shared prefs) or if the current navigation
@@ -554,15 +541,15 @@ public class TouchInteractionService extends Service implements PluginListener<O
             return;
         }
         mDeviceState.enableMultipleRegions(baseInputConsumer instanceof OtherActivityInputConsumer);
-        Launcher l = (Launcher) mOverviewComponentObserver
-            .getActivityInterface().getCreatedActivity();
-        if (l == null || !(l.getOverviewPanel() instanceof RecentsView)) {
+        BaseDraggingActivity activity =
+                mOverviewComponentObserver.getActivityInterface().getCreatedActivity();
+        if (activity == null || !(activity.getOverviewPanel() instanceof RecentsView)) {
             return;
         }
-        ((RecentsView)l.getOverviewPanel())
+        ((RecentsView) activity.getOverviewPanel())
             .setLayoutRotation(mDeviceState.getCurrentActiveRotation(),
                 mDeviceState.getDisplayRotation());
-        l.getDragLayer().recreateControllers();
+        activity.getDragLayer().recreateControllers();
     }
 
     private InputConsumer newBaseConsumer(GestureState previousGestureState,

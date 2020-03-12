@@ -70,7 +70,7 @@ public final class RecentsActivity extends BaseRecentsActivity {
         setContentView(R.layout.fallback_recents_activity);
         mRecentsRootView = findViewById(R.id.drag_layer);
         mFallbackRecentsView = findViewById(R.id.overview_panel);
-        mRecentsRootView.setup();
+        mRecentsRootView.recreateControllers();
     }
 
     @Override
@@ -108,7 +108,7 @@ public final class RecentsActivity extends BaseRecentsActivity {
     @Override
     protected void onHandleConfigChanged() {
         super.onHandleConfigChanged();
-        mRecentsRootView.setup();
+        mRecentsRootView.recreateControllers();
     }
 
     @Override

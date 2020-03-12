@@ -40,7 +40,6 @@ import android.widget.FrameLayout;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.InsettableFrameLayout;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
@@ -114,6 +113,11 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
         mActivity = (T) ActivityContext.lookupContext(context);
         mMultiValueAlpha = new MultiValueAlpha(this, alphaChannelCount);
     }
+
+    /**
+     * Called to reinitialize touch controllers.
+     */
+    public abstract void recreateControllers();
 
     /**
      * Same as {@link #isEventOverView(View, MotionEvent, View)} where evView == this drag layer.
