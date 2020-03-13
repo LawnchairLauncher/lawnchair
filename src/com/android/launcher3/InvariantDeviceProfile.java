@@ -162,9 +162,7 @@ public class InvariantDeviceProfile {
                     "PreviewContext is passed into this IDP constructor");
         }
 
-        String gridName = Utilities.getPrefs(context).getBoolean(GRID_OPTIONS_PREFERENCE_KEY, false)
-                ? Utilities.getPrefs(context).getString(KEY_IDP_GRID_NAME, null)
-                : null;
+        String gridName = getCurrentGridName(context);
         initGrid(context, gridName);
         mConfigMonitor = new ConfigMonitor(context,
                 APPLY_CONFIG_AT_RUNTIME.get() ? this::onConfigChanged : this::killProcess);
@@ -186,6 +184,12 @@ public class InvariantDeviceProfile {
      */
     public InvariantDeviceProfile(Context context, Display display) {
         initGrid(context, null, new Info(display));
+    }
+
+    public static String getCurrentGridName(Context context) {
+        return Utilities.getPrefs(context).getBoolean(GRID_OPTIONS_PREFERENCE_KEY, false)
+                ? Utilities.getPrefs(context).getString(KEY_IDP_GRID_NAME, null)
+                : null;
     }
 
     /**
