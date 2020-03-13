@@ -331,6 +331,7 @@
     <string name="label_turn_off_suggestions">Onemogući</string>
     <string name="about_summary_title">Sažetak</string>
     <string name="hide_app">Sakrij prečac</string>
+    <string name="hide_badge">Sakrij bedž</string>
     <string name="icon_shape_rounded_square">Zaobljeni kvadrat</string>
     <string name="hide_app_selected">&#160; skriveno.</string>
     <string name="hide_app_apply">Izvršeno</string>
