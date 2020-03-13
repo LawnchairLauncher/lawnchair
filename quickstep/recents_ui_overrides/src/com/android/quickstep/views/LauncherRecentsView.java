@@ -287,7 +287,8 @@ public class LauncherRecentsView extends RecentsView<Launcher> implements StateL
 
     @Override
     protected boolean supportsVerticalLandscape() {
-        return FeatureFlags.ENABLE_FIXED_ROTATION_TRANSFORM.get();
+        return FeatureFlags.ENABLE_FIXED_ROTATION_TRANSFORM.get()
+                && !mOrientationState.areMultipleLayoutOrientationsDisabled();
     }
 
     @Override
