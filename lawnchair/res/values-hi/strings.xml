@@ -21,7 +21,7 @@
     <string name="icon_pack_default">सिस्टम आइकन्स</string>
     <string name="pref_icon_pack_masking">आइकन मास्किंग</string>
     <string name="pref_icon_pack_masking_summary">सभी आइकन एक जैसे करे|</string>
-    <string name="pref_legacy_treatment_title">अनुकूलक चिह्न बनाएँ</string>
+    <string name="pref_legacy_treatment_title">अनुकूलक आईकन/चिह्न बनाएँ</string>
     <string name="pref_legacy_treatment_summary">सभी शॉर्टकट के लिए अनुकूलित आईकन बनाएँ</string>
     <string name="pref_legacy_colored_backgrounds">रंग पृष्ठभूमि</string>
     <string name="pref_legacy_colored_backgrounds_summary">रंग ने अनुकूली आइकन की पृष्ठभूमि तैयार की।</string>
@@ -43,14 +43,14 @@
     <string name="theme_use_dark_text">काले अक्षर इस्तेमाल करें</string>
     <string name="lawnchair_accent">एक्सेंट रंग</string>
     <string name="color_pixel_accent">गूगल नीला</string>
-    <string name="color_system_accent">सिस्टम द्वारा सेट करें</string>
-    <string name="color_wallpaper_main">वॉलपेपर — प्राइमरी</string>
-    <string name="color_wallpaper_secondary">वॉलपेपर — सेकंडरी</string>
-    <string name="color_wallpaper_tertiary">वॉलपेपर — टर्शियरी</string>
+    <string name="color_system_accent">सिस्टम द्वारा निर्धारित</string>
+    <string name="color_wallpaper_main">वॉलपेपर — प्रमुख</string>
+    <string name="color_wallpaper_secondary">वॉलपेपर — द्वितीयक</string>
+    <string name="color_wallpaper_tertiary">वॉलपेपर — तृतीयक</string>
     <string name="pref_fonts_title">फ़ॉन्ट्स</string>
     <string name="blur_pref_title">ब्लर सक्षम करें</string>
     <string name="blur_pref_summary">पृष्ठभूमि धुंधली करें</string>
-    <string name="blur_radius_pref_title">धुंधलापन</string>
+    <string name="blur_radius_pref_title">धुंधलेपन की मात्रा</string>
     <!-- Section 3 -->
     <string name="general_pref_title">डेस्कटॉप</string>
     <string name="general_pref_summary">लेआउट, लॉक डेस्कटॉप, बदलाव</string>
@@ -64,12 +64,12 @@
     <string name="hide_icon_labels_pref_title">लेबल छिपाएं</string>
     <string name="pref_mutliline_labels">लेबल कोई एक से अधिक लाइन में दिखाएं</string>
     <string name="icon_text_scale_pref_title">शब्दों का आकर</string>
-    <string name="text_color">शब्दों का रंग</string>
+    <string name="text_color">अक्षरों का रंग</string>
     <string name="icon_scale_pref_title">आइकन का आकार</string>
     <string name="auto_add_shortcuts_label">डेस्कटॉप पर नए शॉर्टकट जोड़ें</string>
     <string name="pref_icon_popup_menu">शार्टकट बबल</string>
     <string name="pref_category_misc">अन्य</string>
-    <string name="animation_type_title">ऐप लॉन्च संक्रमण</string>
+    <string name="animation_type_title">ऐप लॉन्च बदलाव</string>
     <string name="animation_type_default">पूर्व निर्धारित</string>
     <string name="animation_type_pie">एंड्राइड पाई</string>
     <string name="animation_type_pie_like">एंड्रॉइड पाई (अनुकरणित)</string>
@@ -82,17 +82,17 @@
     <string name="pref_notification_count_title">सूचना संख्या दिखाएं</string>
     <string name="allow_rotation_title">घुर्णन चालु करें</string>
     <string name="pref_center_wallpaper">वॉलपेपर केंद्रित करे</string>
-    <string name="pref_center_wallpaper_summary">सेंटर वॉलपेपर विवरण</string>
+    <string name="pref_center_wallpaper_summary">सेंटर वॉलपेपर विवरण।</string>
     <string name="pref_hide_statusbar">स्टेटस बार को छुपाएँ</string>
-    <string name="full_width_width_widgets_pref_title">पूरा चोड़ा विजेट शीर्षक</string>
+    <string name="full_width_width_widgets_pref_title">चौड़ी विजट्स</string>
     <string name="full_width_widgets_pref_summary">विजेट स्क्रीन के कोनों तक खींचने दें</string>
-    <string name="show_top_shadow_pref_title">टॉप बार छाया शीर्षक</string>
+    <string name="show_top_shadow_pref_title">शीर्ष छाया दिखाएँ</string>
     <!-- Section 4 -->
     <string name="smartspace_preferences_in_settings">एट अ ग्लांस</string>
     <!-- Note: replaces hard-coded copy (“Home widget”). -->
-    <string name="smartspace_preferences_in_settings_desc">सेटिंग्स में स्मार्ट स्पेस विवरण</string>
+    <string name="smartspace_preferences_in_settings_desc">दिनांक और समय, डाटा स्रोत</string>
     <string name="smartspace_time">समय दिखाएं</string>
-    <string name="smartspace_date">तारीख/दिनांक दिखाएं</string>
+    <string name="smartspace_date">दिनांक दिखाएँ</string>
     <string name="pref_smartspace_time_above">घड़ी/समय को बड़ा दिखाएं</string>
     <string name="pref_hide_statusbar_clock">स्टेटस बार में घड़ी को छुपाएं</string>
     <string name="root_access_required">रूट अधिकार चाहिए</string>
@@ -116,7 +116,7 @@
     <string name="battery_status">बैटरी अवस्था</string>
     <string name="event_provider_now_playing">जो गाना आप सुन रहे हैं</string>
     <string name="event_provider_unread_notifications">सूचनाएँ/नोटिफिकेशन</string>
-    <string name="personality_provider">ग्रीटिंग</string>
+    <string name="personality_provider">अभिवादन</string>
     <string name="pref_smartspace_event_provider">इवेंट स्रोत</string>
     <string-array name="greetings_morning">
         <item>सुप्रभात!</item>
@@ -130,7 +130,7 @@
         <item>आपका दिन कैसा था?</item>
     </string-array>
     <string-array name="greetings_night">
-        <item>अच्छी नींद लें</item>
+        <item>अच्छी नींद लें!</item>
         <item>कल मिलते हैं!</item>
         <item>शुभ रात्रि!</item>
         <item>देर रात तक जगे ना रहे!</item>
