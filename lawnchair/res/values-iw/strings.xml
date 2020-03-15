@@ -21,8 +21,8 @@
     <string name="pref_legacy_treatment_summary">צור סמלים מסתגלים בשביל כל הקיצורים.</string>
     <string name="pref_legacy_colored_backgrounds">רקעי צבע</string>
     <string name="pref_legacy_colored_backgrounds_summary">צבעי הרקע שנוצרו על בסיס הסמלים המסתגלים.</string>
-    <string name="pref_white_only_treatment">החלף רקעים לבנים</string>
-    <string name="pref_white_only_treatment_summary">צבע את הרקעים של כל הסמלים המסתגלים.</string>
+    <string name="pref_white_only_treatment">החלף רקעים ללבן</string>
+    <string name="pref_white_only_treatment_summary">צבעו את הרקעים של כל הסמלים המסתגלים.</string>
     <string name="adaptify_pack_title">צור סמלים מסתגלים בשביל ערכת הסמלים הקיימת</string>
     <string name="icon_shape_override_label">צורת הסמל</string>
     <string name="reset_custom_icons">הסר סמלים מותאמים אישית</string>
@@ -333,6 +333,7 @@
     <string name="label_turn_off_suggestions">השבת</string>
     <string name="about_summary_title">סיכום</string>
     <string name="hide_app">הסתר קיצור דרך</string>
+    <string name="hide_badge">הסתר תג</string>
     <string name="icon_shape_rounded_square">ריבוע מעוגל</string>
     <string name="hide_app_selected">\"&#160;\" מוסתר.</string>
     <string name="hide_app_apply">בוצע</string>
