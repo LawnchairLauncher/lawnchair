@@ -62,8 +62,7 @@
     <string name="gadget_error_text" msgid="6081085226050792095">"விட்ஜெட்டை ஏற்றுவதில் சிக்கல்"</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"அமைவு"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"இது அமைப்பு ஆப்ஸ் என்பதால் நிறுவல் நீக்கம் செய்ய முடியாது."</string>
-    <!-- no translation found for folder_hint_text (5174843001373488816) -->
-    <skip />
+    <string name="folder_hint_text" msgid="5174843001373488816">"பெயரைத் திருத்துதல்"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> முடக்கப்பட்டது"</string>
     <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
       <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g> ஆப்ஸில் <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> அறிவிப்புகள் வந்துள்ளன</item>
@@ -133,21 +132,13 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"தனிப்பட்டவை"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"பணி"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"பணிக் கணக்கு"</string>
-    <!-- no translation found for work_profile_edu_personal_apps (835703904784988952) -->
-    <skip />
-    <!-- no translation found for work_profile_edu_work_apps (2780791410780522606) -->
-    <skip />
-    <!-- no translation found for work_profile_edu_next (8783418929296503629) -->
-    <skip />
-    <!-- no translation found for work_profile_edu_accept (6069788082535149071) -->
-    <skip />
-    <!-- no translation found for work_mode_on_label (5386806494898086318) -->
-    <skip />
-    <!-- no translation found for work_mode_off_label (108732939698502466) -->
-    <skip />
-    <!-- no translation found for work_apps_paused_title (3040901117349444598) -->
-    <skip />
-    <!-- no translation found for work_apps_paused_body (4779164212204239118) -->
-    <skip />
+    <string name="work_profile_edu_personal_apps" msgid="835703904784988952">"தனிப்பட்ட ஆப்ஸ் தனித்துவமானவை &amp; அவற்றை IT நிர்வாகியால் பார்க்க முடியாது"</string>
+    <string name="work_profile_edu_work_apps" msgid="2780791410780522606">"பணி ஆப்ஸ் பேட்ஜ் இடப்பட்டவை &amp; அவற்றை IT நிர்வாகியால் பார்க்க முடியும்"</string>
+    <string name="work_profile_edu_next" msgid="8783418929296503629">"அடுத்து"</string>
+    <string name="work_profile_edu_accept" msgid="6069788082535149071">"முடிந்தது"</string>
+    <string name="work_mode_on_label" msgid="5386806494898086318">"பணி ஆப்ஸ்: இயக்கத்தில் உள்ளன"</string>
+    <string name="work_mode_off_label" msgid="108732939698502466">"பணி ஆப்ஸ்: இடைநிறுத்தப்பட்டுள்ளன"</string>
+    <string name="work_apps_paused_title" msgid="3040901117349444598">"பணி ஆப்ஸ் இடைநிறுத்தப்பட்டுள்ளன"</string>
+    <string name="work_apps_paused_body" msgid="4779164212204239118">"பணி குறித்த எந்தவொரு அறிவிப்பையும் பெறமாட்டீர்கள். உங்களது IT நிர்வாகியால் உங்களது இருப்பிடத்தைப் பார்க்க முடியாது"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"தோல்வி: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>
