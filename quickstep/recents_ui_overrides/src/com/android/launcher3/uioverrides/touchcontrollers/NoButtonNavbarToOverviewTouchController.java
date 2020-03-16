@@ -19,12 +19,11 @@ package com.android.launcher3.uioverrides.touchcontrollers;
 import static com.android.launcher3.LauncherState.HINT_STATE;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
-import static com.android.launcher3.LauncherStateManager.ATOMIC_OVERVIEW_PEEK_COMPONENT;
+import static com.android.launcher3.LauncherStateManager.PLAY_ATOMIC_OVERVIEW_PEEK;
 import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
 import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
 import static com.android.launcher3.util.VibratorWrapper.OVERVIEW_HAPTIC;
 
-import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.graphics.PointF;
@@ -176,13 +175,9 @@ public class NoButtonNavbarToOverviewTouchController extends FlingAndHoldTouchCo
                 long duration = OVERVIEW.getTransitionDuration(mLauncher);
                 AnimatorSet anim = stateManager.createAtomicAnimation(
                         stateManager.getState(), NORMAL, builder,
-                        ATOMIC_OVERVIEW_PEEK_COMPONENT, duration);
-                anim.addListener(new AnimationSuccessListener() {
-                    @Override
-                    public void onAnimationSuccess(Animator animator) {
-                        onSwipeInteractionCompleted(NORMAL, Touch.SWIPE);
-                    }
-                });
+                        PLAY_ATOMIC_OVERVIEW_PEEK, duration);
+                anim.addListener(AnimationSuccessListener.forRunnable(
+                        () -> onSwipeInteractionCompleted(NORMAL, Touch.SWIPE)));
                 anim.start();
             }
         } else {
