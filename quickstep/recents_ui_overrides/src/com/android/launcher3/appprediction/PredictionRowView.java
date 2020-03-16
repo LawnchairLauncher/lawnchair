@@ -1,5 +1,5 @@
-/**
- * Copyright (C) 2019 The Android Open Source Project
+/*
+ * Copyright (C) 2012 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,11 @@
 
 package com.android.launcher3.appprediction;
 
+import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
+import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
+import static com.android.launcher3.logging.LoggerUtils.newTarget;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -44,6 +47,7 @@ import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
+import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.allapps.AllAppsStore;
@@ -187,7 +191,7 @@ public class PredictionRowView extends LinearLayout implements
     public int getExpectedHeight() {
         return getVisibility() == GONE ? 0 :
                 Launcher.getLauncher(getContext()).getDeviceProfile().allAppsCellHeightPx
-                + getPaddingTop() + getPaddingBottom();
+                        + getPaddingTop() + getPaddingBottom();
     }
 
     @Override
@@ -282,7 +286,8 @@ public class PredictionRowView extends LinearLayout implements
         mParent.onHeightUpdated();
     }
 
-    private List<ItemInfoWithIcon> processPredictedAppComponents(List<ComponentKeyMapper> components) {
+    private List<ItemInfoWithIcon> processPredictedAppComponents(
+            List<ComponentKeyMapper> components) {
         if (getAppsStore().getApps().length == 0) {
             // Apps have not been bound yet.
             return Collections.emptyList();
@@ -309,16 +314,26 @@ public class PredictionRowView extends LinearLayout implements
     }
 
     @Override
-    public void fillInLogContainerData(View v, ItemInfo info, LauncherLogProto.Target target,
-            LauncherLogProto.Target targetParent) {
+    public void fillInLogContainerData(ItemInfo childInfo, LauncherLogProto.Target child,
+            ArrayList<LauncherLogProto.Target> parents) {
         for (int i = 0; i < mPredictedApps.size(); i++) {
             ItemInfoWithIcon appInfo = mPredictedApps.get(i);
-            if (appInfo == info) {
-                targetParent.containerType = LauncherLogProto.ContainerType.PREDICTION;
-                target.predictedRank = i;
+            if (appInfo == childInfo) {
+                child.predictedRank = i;
                 break;
             }
         }
+        parents.add(newContainerTarget(LauncherLogProto.ContainerType.PREDICTION));
+
+        // include where the prediction is coming this used to be Launcher#modifyUserEvent
+        LauncherLogProto.Target parent = newTarget(LauncherLogProto.Target.Type.CONTAINER);
+        LauncherState state = mLauncher.getStateManager().getState();
+        if (state == LauncherState.ALL_APPS) {
+            parent.containerType = LauncherLogProto.ContainerType.ALLAPPS;
+        } else if (state == OVERVIEW) {
+            parent.containerType = LauncherLogProto.ContainerType.TASKSWITCHER;
+        }
+        parents.add(parent);
     }
 
     public void setTextAlpha(int textAlpha) {

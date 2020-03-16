@@ -22,7 +22,7 @@ import android.view.MotionEvent;
 import android.view.animation.Interpolator;
 
 import com.android.launcher3.Launcher;
-import com.android.launcher3.util.PendingAnimation;
+import com.android.launcher3.anim.PendingAnimation;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 

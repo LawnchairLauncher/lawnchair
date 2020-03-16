@@ -88,20 +88,22 @@ public class LauncherStateManager {
     // components may be run atomically - that is, all at once, instead of user-controlled. However,
     // atomic components are not restricted to this purpose; they can be user-controlled alongside
     // non atomic components as well. Note that each gesture model has exactly one atomic component,
-    // ATOMIC_OVERVIEW_SCALE_COMPONENT *or* ATOMIC_OVERVIEW_PEEK_COMPONENT.
+    // PLAY_ATOMIC_OVERVIEW_SCALE *or* PLAY_ATOMIC_OVERVIEW_PEEK.
     @IntDef(flag = true, value = {
-            NON_ATOMIC_COMPONENT,
-            ATOMIC_OVERVIEW_SCALE_COMPONENT,
-            ATOMIC_OVERVIEW_PEEK_COMPONENT,
+            PLAY_NON_ATOMIC,
+            PLAY_ATOMIC_OVERVIEW_SCALE,
+            PLAY_ATOMIC_OVERVIEW_PEEK,
+            SKIP_OVERVIEW,
     })
     @Retention(RetentionPolicy.SOURCE)
-    public @interface AnimationComponents {}
-    public static final int NON_ATOMIC_COMPONENT = 1 << 0;
-    public static final int ATOMIC_OVERVIEW_SCALE_COMPONENT = 1 << 1;
-    public static final int ATOMIC_OVERVIEW_PEEK_COMPONENT = 1 << 2;
+    public @interface AnimationFlags {}
+    public static final int PLAY_NON_ATOMIC = 1 << 0;
+    public static final int PLAY_ATOMIC_OVERVIEW_SCALE = 1 << 1;
+    public static final int PLAY_ATOMIC_OVERVIEW_PEEK = 1 << 2;
+    public static final int SKIP_OVERVIEW = 1 << 3;
 
-    public static final int ANIM_ALL = NON_ATOMIC_COMPONENT | ATOMIC_OVERVIEW_SCALE_COMPONENT
-            | ATOMIC_OVERVIEW_PEEK_COMPONENT;
+    public static final int ANIM_ALL_COMPONENTS = PLAY_NON_ATOMIC | PLAY_ATOMIC_OVERVIEW_SCALE
+            | PLAY_ATOMIC_OVERVIEW_PEEK;
 
     private final AnimationConfig mConfig = new AnimationConfig();
     private final Handler mUiHandler;
@@ -244,12 +246,8 @@ public class LauncherStateManager {
             } else if (!mConfig.userControlled && animated && mConfig.mTargetState == state) {
                 // We are running the same animation as requested
                 if (onCompleteRunnable != null) {
-                    mConfig.mCurrentAnimation.addListener(new AnimationSuccessListener() {
-                        @Override
-                        public void onAnimationSuccess(Animator animator) {
-                            onCompleteRunnable.run();
-                        }
-                    });
+                    mConfig.mCurrentAnimation.addListener(
+                            AnimationSuccessListener.forRunnable(onCompleteRunnable));
                 }
                 return;
             }
@@ -315,10 +313,10 @@ public class LauncherStateManager {
     }
 
     public AnimatorSet createAtomicAnimation(LauncherState fromState, LauncherState toState,
-            AnimatorSetBuilder builder, @AnimationComponents int atomicComponent, long duration) {
+            AnimatorSetBuilder builder, @AnimationFlags int animFlags, long duration) {
         prepareForAtomicAnimation(fromState, toState, builder);
         AnimationConfig config = new AnimationConfig();
-        config.animComponents = atomicComponent;
+        config.mAnimFlags = animFlags;
         config.duration = duration;
         for (StateHandler handler : mLauncher.getStateManager().getStateHandlers()) {
             handler.setStateWithAnimation(toState, builder, config);
@@ -359,25 +357,25 @@ public class LauncherStateManager {
      */
     public AnimatorPlaybackController createAnimationToNewWorkspace(
             LauncherState state, long duration) {
-        return createAnimationToNewWorkspace(state, duration, LauncherStateManager.ANIM_ALL);
+        return createAnimationToNewWorkspace(state, duration, ANIM_ALL_COMPONENTS);
     }
 
     public AnimatorPlaybackController createAnimationToNewWorkspace(
-            LauncherState state, long duration, @AnimationComponents int animComponents) {
+            LauncherState state, long duration, @AnimationFlags int animComponents) {
         return createAnimationToNewWorkspace(state, new AnimatorSetBuilder(), duration, null,
                 animComponents);
     }
 
     public AnimatorPlaybackController createAnimationToNewWorkspace(LauncherState state,
             AnimatorSetBuilder builder, long duration, Runnable onCancelRunnable,
-            @AnimationComponents int animComponents) {
+            @AnimationFlags int animComponents) {
         mConfig.reset();
         mConfig.userControlled = true;
-        mConfig.animComponents = animComponents;
+        mConfig.mAnimFlags = animComponents;
         mConfig.duration = duration;
         mConfig.playbackController = AnimatorPlaybackController.wrap(
-                createAnimationToNewWorkspaceInternal(state, builder, null), duration,
-                onCancelRunnable);
+                createAnimationToNewWorkspaceInternal(state, builder, null), duration)
+                .setOnCancelRunnable(onCancelRunnable);
         return mConfig.playbackController;
     }
 
@@ -587,7 +585,7 @@ public class LauncherStateManager {
         public long duration;
         public boolean userControlled;
         public AnimatorPlaybackController playbackController;
-        public @AnimationComponents int animComponents = ANIM_ALL;
+        private @AnimationFlags int mAnimFlags = ANIM_ALL_COMPONENTS;
         private PropertySetter mPropertySetter;
 
         private AnimatorSet mCurrentAnimation;
@@ -601,7 +599,7 @@ public class LauncherStateManager {
         public void reset() {
             duration = 0;
             userControlled = false;
-            animComponents = ANIM_ALL;
+            mAnimFlags = ANIM_ALL_COMPONENTS;
             mPropertySetter = null;
             mTargetState = null;
 
@@ -642,16 +640,39 @@ public class LauncherStateManager {
             mCurrentAnimation.addListener(this);
         }
 
+        /**
+         * @return Whether Overview is scaling as part of this animation. If this is the only
+         * component (i.e. NON_ATOMIC_COMPONENT isn't included), then this scaling is happening
+         * atomically, rather than being part of a normal state animation. StateHandlers can use
+         * this to designate part of their animation that should scale with Overview.
+         */
         public boolean playAtomicOverviewScaleComponent() {
-            return (animComponents & ATOMIC_OVERVIEW_SCALE_COMPONENT) != 0;
+            return hasAnimationFlag(PLAY_ATOMIC_OVERVIEW_SCALE);
         }
 
-        public boolean playAtomicOverviewPeekComponent() {
-            return (animComponents & ATOMIC_OVERVIEW_PEEK_COMPONENT) != 0;
+        /**
+         * @return Whether this animation will play atomically at the same time as a different,
+         * user-controlled state transition. StateHandlers, which contribute to both animations, can
+         * use this to avoid animating the same properties in both animations, since they'd conflict
+         * with one another.
+         */
+        public boolean onlyPlayAtomicComponent() {
+            return getAnimComponents() == PLAY_ATOMIC_OVERVIEW_SCALE
+                    || getAnimComponents() == PLAY_ATOMIC_OVERVIEW_PEEK;
         }
 
-        public boolean playNonAtomicComponent() {
-            return (animComponents & NON_ATOMIC_COMPONENT) != 0;
+        /**
+         * Returns true if the config and any of the provided component flags
+         */
+        public boolean hasAnimationFlag(@AnimationFlags int a) {
+            return (mAnimFlags & a) != 0;
+        }
+
+        /**
+         * @return Only the flags that determine which animation components to play.
+         */
+        public @AnimationFlags int getAnimComponents() {
+            return mAnimFlags & ANIM_ALL_COMPONENTS;
         }
     }
 

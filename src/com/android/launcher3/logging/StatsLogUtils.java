@@ -5,11 +5,13 @@ import static com.android.launcher3.userevent.nano.LauncherLogProto.ContainerTyp
 import android.view.View;
 import android.view.ViewParent;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 
-import androidx.annotation.Nullable;
+import java.util.ArrayList;
 
 
 public class StatsLogUtils {
@@ -35,14 +37,9 @@ public class StatsLogUtils {
     public interface LogContainerProvider {
 
         /**
-         * Copies data from the source to the destination proto.
-         *
-         * @param v            source of the data
-         * @param info         source of the data
-         * @param target       dest of the data
-         * @param targetParent dest of the data
+         * Populates parent container targets for an item
          */
-        void fillInLogContainerData(View v, ItemInfo info, Target target, Target targetParent);
+        void fillInLogContainerData(ItemInfo childInfo, Target child, ArrayList<Target> parents);
     }
 
     /**
