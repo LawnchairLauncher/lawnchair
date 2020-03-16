@@ -103,8 +103,8 @@ public final class FeatureFlags {
             "APP_SEARCH_IMPROVEMENTS", true,
             "Adds localized title and keyword search and ranking");
 
-    public static final BooleanFlag ENABLE_PREDICTION_DISMISS = new DeviceFlag(
-            "ENABLE_PREDICTION_DISMISS", true, "Allow option to dimiss apps from predicted list");
+    public static final BooleanFlag ENABLE_PREDICTION_DISMISS = getDebugFlag(
+            "ENABLE_PREDICTION_DISMISS", false, "Allow option to dimiss apps from predicted list");
 
     public static final BooleanFlag ENABLE_QUICK_CAPTURE_GESTURE = getDebugFlag(
             "ENABLE_QUICK_CAPTURE_GESTURE", true, "Swipe from right to left to quick capture");
@@ -117,11 +117,11 @@ public final class FeatureFlags {
             "ASSISTANT_GIVES_LAUNCHER_FOCUS", false,
             "Allow Launcher to handle nav bar gestures while Assistant is running over it");
 
-    public static final BooleanFlag ENABLE_HYBRID_HOTSEAT = new DeviceFlag(
+    public static final BooleanFlag ENABLE_HYBRID_HOTSEAT = getDebugFlag(
             "ENABLE_HYBRID_HOTSEAT", false, "Fill gaps in hotseat with predicted apps");
 
-    public static final BooleanFlag HOTSEAT_MIGRATE_NEW_PAGE = new DeviceFlag(
-            "HOTSEAT_MIGRATE_NEW_PAGE", true,
+    public static final BooleanFlag HOTSEAT_MIGRATE_NEW_PAGE = getDebugFlag(
+            "HOTSEAT_MIGRATE_NEW_PAGE", false,
             "Migrates hotseat to a new workspace page instead of same page");
 
     public static final BooleanFlag ENABLE_DEEP_SHORTCUT_ICON_CACHE = getDebugFlag(
