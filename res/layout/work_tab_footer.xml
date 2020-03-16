@@ -19,20 +19,19 @@
     android:layout_height="wrap_content"
     android:id="@+id/work_toggle_container"
     android:focusable="true"
+    android:paddingBottom="@dimen/all_apps_work_profile_tab_footer_padding_vertical"
     android:orientation="horizontal"
+    android:paddingLeft="@dimen/all_apps_work_profile_tab_footer_padding_horizontal"
     android:background="?attr/allAppsScrimColor"
-    android:paddingBottom="@dimen/all_apps_work_profile_tab_footer_padding"
-    android:paddingLeft="@dimen/all_apps_work_profile_tab_footer_padding"
-    android:paddingRight="@dimen/all_apps_work_profile_tab_footer_padding"
-    android:paddingTop="@dimen/all_apps_work_profile_tab_footer_padding">
+    android:paddingRight="@dimen/all_apps_work_profile_tab_footer_padding_horizontal"
+    android:paddingTop="@dimen/all_apps_work_profile_tab_footer_padding_vertical">
 
     <TextView
-        style="@style/PrimaryMediumText"
         android:id="@+id/work_mode_label"
         android:layout_width="0dp"
         android:layout_weight="1"
         android:drawableStart="@drawable/ic_corp"
-        android:drawablePadding="16dp"
+        android:drawablePadding="3dp"
         android:drawableTint="?attr/workProfileOverlayTextColor"
         android:textColor="?attr/workProfileOverlayTextColor"
         android:layout_height="wrap_content"

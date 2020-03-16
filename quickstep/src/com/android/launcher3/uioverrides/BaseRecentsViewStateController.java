@@ -17,17 +17,12 @@
 package com.android.launcher3.uioverrides;
 
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
-import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
-import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
-import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
-import static com.android.launcher3.LauncherStateManager.PLAY_ATOMIC_OVERVIEW_PEEK;
-import static com.android.launcher3.LauncherStateManager.PLAY_ATOMIC_OVERVIEW_SCALE;
-import static com.android.launcher3.LauncherStateManager.SKIP_OVERVIEW;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_FADE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_SCALE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_SCRIM_FADE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_TRANSLATE_X;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_TRANSLATE_Y;
+import static com.android.launcher3.anim.AnimatorSetBuilder.FLAG_DONT_ANIMATE_OVERVIEW;
 import static com.android.launcher3.anim.Interpolators.AGGRESSIVE_EASE_IN_OUT;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.graphics.Scrim.SCRIM_PROGRESS;
@@ -88,11 +83,13 @@ public abstract class BaseRecentsViewStateController<T extends View>
     @Override
     public final void setStateWithAnimation(@NonNull final LauncherState toState,
             @NonNull AnimatorSetBuilder builder, @NonNull AnimationConfig config) {
-        if (!config.hasAnimationFlag(PLAY_ATOMIC_OVERVIEW_PEEK | PLAY_ATOMIC_OVERVIEW_SCALE)) {
+        boolean playAtomicOverviewComponent = config.playAtomicOverviewScaleComponent()
+                || config.playAtomicOverviewPeekComponent();
+        if (!playAtomicOverviewComponent) {
             // The entire recents animation is played atomically.
             return;
         }
-        if (config.hasAnimationFlag(SKIP_OVERVIEW)) {
+        if (builder.hasFlag(FLAG_DONT_ANIMATE_OVERVIEW)) {
             return;
         }
         setStateWithAnimationInternal(toState, builder, config);
@@ -119,8 +116,8 @@ public abstract class BaseRecentsViewStateController<T extends View>
         if (mRecentsView.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
             translationX = -translationX;
         }
-        setter.setFloat(mRecentsView, VIEW_TRANSLATE_X, translationX, translateXInterpolator);
-        setter.setFloat(mRecentsView, VIEW_TRANSLATE_Y, scaleAndTranslation.translationY,
+        setter.setFloat(mRecentsView, View.TRANSLATION_X, translationX, translateXInterpolator);
+        setter.setFloat(mRecentsView, View.TRANSLATION_Y, scaleAndTranslation.translationY,
                 translateYInterpolator);
         setter.setFloat(mRecentsView, getContentAlphaProperty(), toState.overviewUi ? 1 : 0,
                 builder.getInterpolator(ANIM_OVERVIEW_FADE, AGGRESSIVE_EASE_IN_OUT));
@@ -128,8 +125,8 @@ public abstract class BaseRecentsViewStateController<T extends View>
         setter.setFloat(scrim, SCRIM_PROGRESS, toState.getOverviewScrimAlpha(mLauncher),
                 builder.getInterpolator(ANIM_OVERVIEW_SCRIM_FADE, LINEAR));
         if (mActionsView != null) {
-            setter.setFloat(mActionsView, VIEW_TRANSLATE_X, translationX, translateXInterpolator);
-            setter.setFloat(mActionsView, VIEW_ALPHA, toState.overviewUi ? 1 : 0,
+            setter.setFloat(mActionsView, View.TRANSLATION_X, translationX, translateXInterpolator);
+            setter.setFloat(mActionsView, View.ALPHA, toState.overviewUi ? 1 : 0,
                     builder.getInterpolator(ANIM_OVERVIEW_FADE, AGGRESSIVE_EASE_IN_OUT));
         }
     }

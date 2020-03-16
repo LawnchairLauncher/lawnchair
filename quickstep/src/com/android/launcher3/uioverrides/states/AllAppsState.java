@@ -17,12 +17,9 @@ package com.android.launcher3.uioverrides.states;
 
 import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
 
-import android.content.Context;
-
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.R;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.quickstep.SysUINavigationMode;
@@ -85,11 +82,6 @@ public class AllAppsState extends LauncherState {
             scaleAndTranslation.scale = 1;
         }
         return scaleAndTranslation;
-    }
-
-    @Override
-    public int getBackgroundBlurRadius(Context context) {
-        return context.getResources().getInteger(R.integer.allapps_background_blur_radius);
     }
 
     @Override

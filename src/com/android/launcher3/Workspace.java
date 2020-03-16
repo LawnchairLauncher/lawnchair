@@ -24,7 +24,6 @@ import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.SPRING_LOADED;
 import static com.android.launcher3.config.FeatureFlags.ADAPTIVE_ICON_WINDOW_ANIM;
 import static com.android.launcher3.dragndrop.DragLayer.ALPHA_INDEX_OVERLAY;
-import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -3310,21 +3309,17 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     }
 
     @Override
-    public void fillInLogContainerData(ItemInfo childInfo, Target child,
-            ArrayList<Target> parents) {
-        if (childInfo.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT
-                || childInfo.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION) {
-            getHotseat().fillInLogContainerData(childInfo, child, parents);
-            return;
-        } else if (childInfo.container >= 0) {
-            FolderIcon icon = (FolderIcon) getHomescreenIconByItemId(childInfo.container);
-            icon.getFolder().fillInLogContainerData(childInfo, child, parents);
-            return;
+    public void fillInLogContainerData(View v, ItemInfo info, Target target, Target targetParent) {
+        target.gridX = info.cellX;
+        target.gridY = info.cellY;
+        target.pageIndex = getCurrentPage();
+        targetParent.containerType = ContainerType.WORKSPACE;
+        if (info.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
+            target.rank = info.rank;
+            targetParent.containerType = ContainerType.HOTSEAT;
+        } else if (info.container >= 0) {
+            targetParent.containerType = ContainerType.FOLDER;
         }
-        child.gridX = childInfo.cellX;
-        child.gridY = childInfo.cellY;
-        child.pageIndex = getCurrentPage();
-        parents.add(newContainerTarget(ContainerType.WORKSPACE));
     }
 
     /**
