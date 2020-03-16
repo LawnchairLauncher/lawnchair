@@ -677,7 +677,7 @@ public final class LauncherInstrumentation {
                 try (LauncherInstrumentation.Closable c = addContextLayer(action)) {
                     mDevice.waitForIdle();
 
-                    if (getNavigationModel() == NavigationModel.TWO_BUTTON) {
+                    if (!isLauncher3() && getNavigationModel() == NavigationModel.TWO_BUTTON) {
                         expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_DOWN_TIS);
                         expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_UP_TIS);
                     }
@@ -962,7 +962,7 @@ public final class LauncherInstrumentation {
     void clickLauncherObject(UiObject2 object) {
         expectEvent(TestProtocol.SEQUENCE_MAIN, LauncherInstrumentation.EVENT_TOUCH_DOWN);
         expectEvent(TestProtocol.SEQUENCE_MAIN, LauncherInstrumentation.EVENT_TOUCH_UP);
-        if (getNavigationModel() != NavigationModel.THREE_BUTTON) {
+        if (!isLauncher3() && getNavigationModel() != NavigationModel.THREE_BUTTON) {
             expectEvent(TestProtocol.SEQUENCE_TIS, LauncherInstrumentation.EVENT_TOUCH_DOWN_TIS);
             expectEvent(TestProtocol.SEQUENCE_TIS, LauncherInstrumentation.EVENT_TOUCH_UP_TIS);
         }
@@ -1104,24 +1104,25 @@ public final class LauncherInstrumentation {
 
     public void sendPointer(long downTime, long currentTime, int action, Point point,
             GestureScope gestureScope) {
+        final boolean notLauncher3 = !isLauncher3();
         switch (action) {
             case MotionEvent.ACTION_DOWN:
                 if (gestureScope != GestureScope.OUTSIDE) {
                     expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_TOUCH_DOWN);
                 }
-                if (getNavigationModel() != NavigationModel.THREE_BUTTON) {
+                if (notLauncher3 && getNavigationModel() != NavigationModel.THREE_BUTTON) {
                     expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_DOWN_TIS);
                 }
                 break;
             case MotionEvent.ACTION_UP:
-                if (gestureScope != GestureScope.INSIDE) {
+                if (notLauncher3 && gestureScope != GestureScope.INSIDE) {
                     expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_PILFER_POINTERS);
                 }
                 if (gestureScope != GestureScope.OUTSIDE) {
                     expectEvent(TestProtocol.SEQUENCE_MAIN, gestureScope == GestureScope.INSIDE
                             ? EVENT_TOUCH_UP : EVENT_TOUCH_CANCEL);
                 }
-                if (getNavigationModel() != NavigationModel.THREE_BUTTON) {
+                if (notLauncher3 && getNavigationModel() != NavigationModel.THREE_BUTTON) {
                     expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_UP_TIS);
                 }
                 break;
@@ -1276,11 +1277,6 @@ public final class LauncherInstrumentation {
 
     public Closable eventsCheck() {
         Assert.assertTrue("Nested event checking", !sCheckingEvents);
-        if ("com.android.launcher3".equals(getLauncherPackageName())) {
-            // Not checking specific Launcher3 event sequences.
-            return () -> {
-            };
-        }
         sCheckingEvents = true;
         mExpectedPid = getPid();
         if (sEventChecker == null) sEventChecker = new LogEventChecker();
@@ -1302,6 +1298,10 @@ public final class LauncherInstrumentation {
                 }
             }
         };
+    }
+
+    boolean isLauncher3() {
+        return "com.android.launcher3".equals(getLauncherPackageName());
     }
 
     void expectEvent(String sequence, Pattern expected) {

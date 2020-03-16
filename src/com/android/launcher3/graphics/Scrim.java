@@ -19,7 +19,7 @@ package com.android.launcher3.graphics;
 import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
 
 import android.graphics.Canvas;
-import android.util.Property;
+import android.util.FloatProperty;
 import android.view.View;
 
 import com.android.launcher3.Launcher;
@@ -31,16 +31,16 @@ import com.android.launcher3.uioverrides.WallpaperColorInfo;
 public class Scrim implements View.OnAttachStateChangeListener,
         WallpaperColorInfo.OnChangeListener {
 
-    public static final Property<Scrim, Float> SCRIM_PROGRESS =
-            new Property<Scrim, Float>(Float.TYPE, "scrimProgress") {
+    public static final FloatProperty<Scrim> SCRIM_PROGRESS =
+            new FloatProperty<Scrim>("scrimProgress") {
                 @Override
                 public Float get(Scrim scrim) {
                     return scrim.mScrimProgress;
                 }
 
                 @Override
-                public void set(Scrim scrim, Float value) {
-                    scrim.setScrimProgress(value);
+                public void setValue(Scrim scrim, float v) {
+                    scrim.setScrimProgress(v);
                 }
             };
 
