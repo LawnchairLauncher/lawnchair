@@ -22,6 +22,7 @@ import static android.content.Intent.ACTION_PACKAGE_REMOVED;
 
 import static com.android.launcher3.util.PackageManagerHelper.getPackageFilter;
 import static com.android.systemui.shared.system.PackageManagerWrapper.ACTION_PREFERRED_ACTIVITY_CHANGED;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_ASSIST_GESTURE_CONSTRAINED;
 
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -102,6 +103,10 @@ public final class OverviewComponentObserver {
 
     private void updateOverviewTargets(Intent unused) {
         updateOverviewTargets();
+    }
+
+    public boolean assistantGestureIsConstrained() {
+        return (mDeviceState.getSystemUiStateFlags() & SYSUI_STATE_ASSIST_GESTURE_CONSTRAINED) != 0;
     }
 
     /**
