@@ -42,6 +42,21 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.animation.Interpolator;
 import android.widget.ScrollView;
 
+import com.android.launcher3.anim.Interpolators;
+import com.android.launcher3.compat.AccessibilityManagerCompat;
+import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.model.PagedViewOrientedState;
+import com.android.launcher3.pageindicators.PageIndicator;
+import com.android.launcher3.states.RotationHelper;
+import com.android.launcher3.touch.PortraitPagedViewHandler;
+import com.android.launcher3.touch.OverScroll;
+import com.android.launcher3.touch.PagedOrientationHandler;
+import com.android.launcher3.touch.PagedOrientationHandler.ChildBounds;
+import com.android.launcher3.util.OverScroller;
+import com.android.launcher3.util.Thunk;
+
+import java.util.ArrayList;
+
 import static com.android.launcher3.compat.AccessibilityManagerCompat.isAccessibilityEnabled;
 import static com.android.launcher3.compat.AccessibilityManagerCompat.isObservedEventType;
 import static com.android.launcher3.config.FeatureFlags.QUICKSTEP_SPRINGS;
@@ -50,20 +65,6 @@ import static com.android.launcher3.touch.PagedOrientationHandler.CANVAS_TRANSLA
 import static com.android.launcher3.touch.PagedOrientationHandler.VIEW_SCROLL_BY;
 import static com.android.launcher3.touch.PagedOrientationHandler.VIEW_SCROLL_TO;
 
-import com.android.launcher3.anim.Interpolators;
-import com.android.launcher3.compat.AccessibilityManagerCompat;
-import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.model.PagedViewOrientedState;
-import com.android.launcher3.pageindicators.PageIndicator;
-import com.android.launcher3.touch.OverScroll;
-import com.android.launcher3.touch.PagedOrientationHandler;
-import com.android.launcher3.touch.PagedOrientationHandler.ChildBounds;
-import com.android.launcher3.touch.PortraitPagedViewHandler;
-import com.android.launcher3.util.OverScroller;
-import com.android.launcher3.util.Thunk;
-
-import java.util.ArrayList;
-
 /**
  * An abstraction of the original Workspace which supports browsing through a
  * sequential list of "pages"
@@ -71,6 +72,8 @@ import java.util.ArrayList;
 public abstract class PagedView<T extends View & PageIndicator> extends ViewGroup {
     private static final String TAG = "PagedView";
     private static final boolean DEBUG = false;
+
+    public static boolean sFlagForcedRotation = false;
 
     public static final int INVALID_PAGE = -1;
     protected static final ComputePageScrollsLogic SIMPLE_SCROLL_LOGIC = (v) -> v.getVisibility() != GONE;
@@ -197,6 +200,8 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         if (Utilities.ATLEAST_OREO) {
             setDefaultFocusHighlightEnabled(false);
         }
+
+        sFlagForcedRotation = Utilities.isForcedRotation(context);
     }
 
     protected void setDefaultInterpolator(Interpolator interpolator) {
@@ -1510,7 +1515,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         // interpolator at zero, ie. 5. We use 4 to make it a little slower.
         duration = 4 * Math.round(1000 * Math.abs(distance / velocity));
 
-        if (QUICKSTEP_SPRINGS.get() && mCurrentPage != whichPage) {
+        if (QUICKSTEP_SPRINGS.get()) {
             return snapToPage(whichPage, delta, duration, false, null,
                     velocity * Math.signum(delta), true);
         } else {

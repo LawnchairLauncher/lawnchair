@@ -42,13 +42,10 @@ public class AddToHomeScreenPrompt {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
             if (mLauncher.getNavigationModel()
                     != LauncherInstrumentation.NavigationModel.THREE_BUTTON) {
-                if (!mLauncher.isLauncher3()) {
-                    mLauncher.expectEvent(
-                            TestProtocol.SEQUENCE_TIS,
-                            LauncherInstrumentation.EVENT_TOUCH_DOWN_TIS);
-                    mLauncher.expectEvent(
-                            TestProtocol.SEQUENCE_TIS, LauncherInstrumentation.EVENT_TOUCH_UP_TIS);
-                }
+                mLauncher.expectEvent(
+                        TestProtocol.SEQUENCE_TIS, LauncherInstrumentation.EVENT_TOUCH_DOWN_TIS);
+                mLauncher.expectEvent(
+                        TestProtocol.SEQUENCE_TIS, LauncherInstrumentation.EVENT_TOUCH_UP_TIS);
             }
             mLauncher.waitForObjectInContainer(
                     mWidgetCell.getParent().getParent().getParent().getParent(),

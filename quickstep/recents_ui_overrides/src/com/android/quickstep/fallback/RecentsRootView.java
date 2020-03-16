@@ -21,6 +21,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 
+import com.android.launcher3.BaseActivity;
 import com.android.launcher3.R;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.TouchController;
@@ -30,11 +31,13 @@ import com.android.quickstep.RecentsActivity;
 public class RecentsRootView extends BaseDragLayer<RecentsActivity> {
 
     private static final int MIN_SIZE = 10;
+    private final RecentsActivity mActivity;
 
     private final Point mLastKnownSize = new Point(MIN_SIZE, MIN_SIZE);
 
     public RecentsRootView(Context context, AttributeSet attrs) {
         super(context, attrs, 1 /* alphaChannelCount */);
+        mActivity = BaseActivity.fromContext(context);
         setSystemUiVisibility(SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                 | SYSTEM_UI_FLAG_LAYOUT_STABLE);
@@ -44,8 +47,7 @@ public class RecentsRootView extends BaseDragLayer<RecentsActivity> {
         return mLastKnownSize;
     }
 
-    @Override
-    public void recreateControllers() {
+    public void setup() {
         mControllers = new TouchController[] {
                 new RecentsTaskController(mActivity),
                 new FallbackNavBarTouchController(mActivity),

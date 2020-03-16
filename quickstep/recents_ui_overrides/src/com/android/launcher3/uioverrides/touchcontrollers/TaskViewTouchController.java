@@ -16,13 +16,17 @@
 package com.android.launcher3.uioverrides.touchcontrollers;
 
 import static com.android.launcher3.AbstractFloatingView.TYPE_ACCESSIBLE;
+import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelocity;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
+import static com.android.launcher3.config.FeatureFlags.UNSTABLE_SPRINGS;
 import static com.android.launcher3.touch.SingleAxisSwipeDetector.DIRECTION_BOTH;
 import static com.android.launcher3.touch.SingleAxisSwipeDetector.DIRECTION_NEGATIVE;
 import static com.android.launcher3.touch.SingleAxisSwipeDetector.DIRECTION_POSITIVE;
+import static com.android.launcher3.util.DefaultDisplay.getSingleFrameMs;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.ValueAnimator;
 import android.view.MotionEvent;
 
 import com.android.launcher3.AbstractFloatingView;
@@ -31,12 +35,12 @@ import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
-import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.touch.BaseSwipeDetector;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.touch.SingleAxisSwipeDetector;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.util.FlingBlockCheck;
+import com.android.launcher3.util.PendingAnimation;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.quickstep.SysUINavigationMode;
@@ -214,8 +218,8 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
         if (mCurrentAnimation != null) {
             mCurrentAnimation.setOnCancelRunnable(null);
         }
-        mCurrentAnimation = AnimatorPlaybackController.wrap(mPendingAnimation, maxDuration)
-                .setOnCancelRunnable(this::clearState);
+        mCurrentAnimation = AnimatorPlaybackController.wrap(
+                mPendingAnimation.anim, maxDuration, this::clearState);
         onUserControlledAnimationCreated(mCurrentAnimation);
         mCurrentAnimation.getTarget().addListener(this);
         mCurrentAnimation.dispatchOnStart();
@@ -284,16 +288,26 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
             animationDuration *= LauncherAnimUtils.blockedFlingDurationFactor(velocity);
         }
 
+        float nextFrameProgress = Utilities.boundToRange(progress
+                + velocity * getSingleFrameMs(mActivity) / Math.abs(mEndDisplacement), 0f, 1f);
+
         mCurrentAnimation.setEndAction(() -> onCurrentAnimationEnd(goingToEnd, logAction));
+
+        ValueAnimator anim = mCurrentAnimation.getAnimationPlayer();
+        anim.setFloatValues(nextFrameProgress, goingToEnd ? 1f : 0f);
+        anim.setDuration(animationDuration);
+        anim.setInterpolator(scrollInterpolatorForVelocity(velocity));
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-            mCurrentAnimation.getAnimationPlayer().addUpdateListener(valueAnimator -> {
+            anim.addUpdateListener(valueAnimator -> {
                 if (mRecentsView.getCurrentPage() != 0 || mCurrentAnimationIsGoingUp) {
                     mRecentsView.redrawLiveTile(true);
                 }
             });
         }
-        mCurrentAnimation.startWithVelocity(mActivity, goingToEnd,
-                velocity, mEndDisplacement, animationDuration);
+        if (UNSTABLE_SPRINGS.get()) {
+            mCurrentAnimation.dispatchOnStartWithVelocity(goingToEnd ? 1f : 0f, velocity);
+        }
+        anim.start();
     }
 
     private void onCurrentAnimationEnd(boolean wasSuccess, int logAction) {

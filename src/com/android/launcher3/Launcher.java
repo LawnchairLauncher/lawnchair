@@ -30,6 +30,7 @@ import static com.android.launcher3.LauncherState.OVERVIEW_PEEK;
 import static com.android.launcher3.Utilities.postAsyncCallback;
 import static com.android.launcher3.dragndrop.DragLayer.ALPHA_INDEX_LAUNCHER_LOAD;
 import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
+import static com.android.launcher3.logging.LoggerUtils.newTarget;
 import static com.android.launcher3.popup.SystemShortcut.APP_INFO;
 import static com.android.launcher3.popup.SystemShortcut.INSTALL;
 import static com.android.launcher3.popup.SystemShortcut.WIDGETS;
@@ -77,7 +78,6 @@ import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.OvershootInterpolator;
 import android.widget.Toast;
@@ -110,6 +110,7 @@ import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.logging.StatsLogUtils;
 import com.android.launcher3.logging.UserEventDispatcher;
+import com.android.launcher3.logging.UserEventDispatcher.UserEventDelegate;
 import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.ModelWriter;
@@ -124,8 +125,8 @@ import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.AllAppsSwipeController;
 import com.android.launcher3.touch.ItemClickHandler;
-import com.android.launcher3.uioverrides.BackgroundBlurController;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
+import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
@@ -182,7 +183,8 @@ import java.util.stream.Stream;
  * Default launcher application.
  */
 public class Launcher extends BaseDraggingActivity implements LauncherExterns,
-        Callbacks, InvariantDeviceProfile.OnIDPChangeListener, PluginListener<OverlayPlugin> {
+        Callbacks, UserEventDelegate,
+        InvariantDeviceProfile.OnIDPChangeListener, PluginListener<OverlayPlugin> {
     public static final String TAG = "Launcher";
 
     public static final ActivityTracker<Launcher> ACTIVITY_TRACKER = new ActivityTracker<>();
@@ -325,19 +327,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     // If true, overlay callbacks are deferred
     private boolean mDeferOverlayCallbacks;
     private final Runnable mDeferredOverlayCallbacks = this::checkIfOverlayStillDeferred;
-
-    private BackgroundBlurController mBackgroundBlurController =
-            new BackgroundBlurController(this);
-
-    private final ViewTreeObserver.OnDrawListener mOnDrawListener =
-            new ViewTreeObserver.OnDrawListener() {
-                @Override
-                public void onDraw() {
-                    getBackgroundBlurController().setSurfaceToLauncher(mDragLayer);
-                    mDragLayer.post(() -> mDragLayer.getViewTreeObserver().removeOnDrawListener(
-                            this));
-                }
-            };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -940,8 +929,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         final int origDragLayerChildCount = mDragLayer.getChildCount();
         super.onStop();
 
-        mDragLayer.getViewTreeObserver().removeOnDrawListener(mOnDrawListener);
-
         if (mDeferOverlayCallbacks) {
             checkIfOverlayStillDeferred();
         } else {
@@ -954,7 +941,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
         NotificationListener.removeNotificationsChangedListener();
         getStateManager().moveToRestState();
-        getBackgroundBlurController().setSurfaceToLauncher(null);
 
         // Workaround for b/78520668, explicitly trim memory once UI is hidden
         onTrimMemory(TRIM_MEMORY_UI_HIDDEN);
@@ -982,7 +968,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         if (!mDeferOverlayCallbacks) {
             mOverlayManager.onActivityStarted(this);
         }
-        mDragLayer.getViewTreeObserver().addOnDrawListener(mOnDrawListener);
 
         mAppWidgetHost.setListenIfResumed(true);
         TraceHelper.INSTANCE.endSection(traceToken);
@@ -1905,6 +1890,24 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     }
 
     @Override
+    public void modifyUserEvent(LauncherLogProto.LauncherEvent event) {
+        if (event.srcTarget != null && event.srcTarget.length > 0 &&
+                event.srcTarget[1].containerType == ContainerType.PREDICTION) {
+            Target[] targets = new Target[3];
+            targets[0] = event.srcTarget[0];
+            targets[1] = event.srcTarget[1];
+            targets[2] = newTarget(Target.Type.CONTAINER);
+            event.srcTarget = targets;
+            LauncherState state = mStateManager.getState();
+            if (state == LauncherState.ALL_APPS) {
+                event.srcTarget[2].containerType = ContainerType.ALLAPPS;
+            } else if (state == OVERVIEW) {
+                event.srcTarget[2].containerType = ContainerType.TASKSWITCHER;
+            }
+        }
+    }
+
+    @Override
     public boolean startActivitySafely(View v, Intent intent, ItemInfo item,
             @Nullable String sourceContainer) {
         if (!hasBeenResumed()) {
@@ -2707,8 +2710,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     }
 
     protected StateHandler[] createStateHandlers() {
-        return new StateHandler[] { getAllAppsController(), getWorkspace(),
-                getBackgroundBlurController() };
+        return new StateHandler[] { getAllAppsController(), getWorkspace() };
     }
 
     public TouchController[] createTouchControllers() {
@@ -2745,12 +2747,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         return Stream.of(APP_INFO, WIDGETS, INSTALL);
     }
 
-    public BackgroundBlurController getBackgroundBlurController() {
-        return mBackgroundBlurController;
-    }
-
     public static Launcher getLauncher(Context context) {
-        return fromContext(context);
+        return (Launcher) fromContext(context);
     }
 
     /**

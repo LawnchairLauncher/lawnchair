@@ -23,8 +23,6 @@ import com.android.launcher3.ItemInfo;
 import com.android.launcher3.appprediction.PredictionUiStateManager;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 
-import java.util.ArrayList;
-
 /**
  * This class handles AOSP MetricsLogger function calls and logging around
  * quickstep interactions and app launches.
@@ -43,7 +41,7 @@ public class UserEventDispatcherAppPredictionExtension extends UserEventDispatch
     @Override
     protected void onFillInLogContainerData(
             @NonNull ItemInfo itemInfo, @NonNull LauncherLogProto.Target target,
-            @NonNull ArrayList<LauncherLogProto.Target> targets) {
+            @NonNull LauncherLogProto.Target targetParent) {
         PredictionUiStateManager.fillInPredictedRank(itemInfo, target);
     }
 }
