@@ -15,11 +15,8 @@
  */
 package com.android.launcher3.uioverrides.states;
 
-import android.content.Context;
-
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.R;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.quickstep.util.LayoutUtils;
@@ -104,10 +101,5 @@ public class BackgroundAppState extends OverviewState {
             return scaleAndTranslation;
         }
         return super.getHotseatScaleAndTranslation(launcher);
-    }
-
-    @Override
-    public int getBackgroundBlurRadius(Context context) {
-        return context.getResources().getInteger(R.integer.app_background_blur_radius);
     }
 }

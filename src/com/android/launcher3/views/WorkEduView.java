@@ -46,8 +46,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto;
 public class WorkEduView extends AbstractSlideInView implements Insettable {
 
     private static final int DEFAULT_CLOSE_DURATION = 200;
-    public static final String KEY_WORK_EDU_STEP = "showed_work_profile_edu";
-    public static final String KEY_LEGACY_WORK_EDU_SEEN = "showed_bottom_user_education";
+    private static final String KEY_WORK_EDU_STEP = "showed_work_profile_edu";
 
     private static final int WORK_EDU_NOT_STARTED = 0;
     private static final int WORK_EDU_PERSONAL_APPS = 1;
@@ -103,8 +102,6 @@ public class WorkEduView extends AbstractSlideInView implements Insettable {
         mProceedButton = findViewById(R.id.proceed);
         mContentText = findViewById(R.id.content_text);
 
-        // make sure layout does not shrink when we change the text
-        mContentText.post(() -> mContentText.setMinLines(mContentText.getLineCount()));
         if (mLauncher.getAppsView().getContentView() instanceof AllAppsPagedView) {
             mAllAppsPagedView = (AllAppsPagedView) mLauncher.getAppsView().getContentView();
         }
@@ -182,8 +179,8 @@ public class WorkEduView extends AbstractSlideInView implements Insettable {
         if (oldListener != null) {
             launcher.getStateManager().removeStateListener(oldListener);
         }
-        if (hasSeenLegacyEdu(launcher) || launcher.getSharedPrefs().getInt(KEY_WORK_EDU_STEP,
-                WORK_EDU_NOT_STARTED) != WORK_EDU_NOT_STARTED) {
+        if (launcher.getSharedPrefs().getInt(KEY_WORK_EDU_STEP, WORK_EDU_NOT_STARTED)
+                != WORK_EDU_NOT_STARTED) {
             return null;
         }
 
@@ -213,8 +210,8 @@ public class WorkEduView extends AbstractSlideInView implements Insettable {
      * Shows work apps edu if user had dismissed full edu flow
      */
     public static void showWorkEduIfNeeded(Launcher launcher) {
-        if (hasSeenLegacyEdu(launcher) || launcher.getSharedPrefs().getInt(KEY_WORK_EDU_STEP,
-                WORK_EDU_NOT_STARTED) != WORK_EDU_PERSONAL_APPS) {
+        if (launcher.getSharedPrefs().getInt(KEY_WORK_EDU_STEP, WORK_EDU_NOT_STARTED)
+                != WORK_EDU_PERSONAL_APPS) {
             return;
         }
         LayoutInflater layoutInflater = LayoutInflater.from(launcher);
@@ -222,9 +219,5 @@ public class WorkEduView extends AbstractSlideInView implements Insettable {
                 R.layout.work_profile_edu, launcher.getDragLayer(), false);
         v.show();
         v.goToWorkTab(false);
-    }
-
-    private static boolean hasSeenLegacyEdu(Launcher launcher) {
-        return launcher.getSharedPrefs().getBoolean(KEY_LEGACY_WORK_EDU_SEEN, false);
     }
 }
