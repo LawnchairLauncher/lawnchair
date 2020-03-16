@@ -54,11 +54,6 @@ public class SecondaryDragLayer extends BaseDragLayer<SecondaryDisplayLauncher> 
 
     public SecondaryDragLayer(Context context, AttributeSet attrs) {
         super(context, attrs, 1 /* alphaChannelCount */);
-        recreateControllers();
-    }
-
-    @Override
-    public void recreateControllers() {
         mControllers = new TouchController[] {new CloseAllAppsTouchController()};
     }
 

@@ -27,22 +27,3 @@
 149967272  hyunyoungs  P1        FIXED   Tap on Edit Name interaction drops the first recommendation ----
 149969889  sfufa     P2        FIXED   [Crash] java.lang.NullPointerException: Attempt to invoke virtual method 'android.content.ComponentName ----
 149993849  thiruram  P1        FIXED   Pixel launcher crashes when tapping on empty shortcut folder name ----
-138964382  awickham  P2        ASSIGNED  Move all shared libs to a common location (plugin / iconloaderlib) ----
-139137636  vadimt    P2        ASSIGNED  Create memory tests for Launcher ----
-139828243  xuqiu     P2        ASSIGNED  [Overview Actions] Add Overview actions ----
-143361609  twickham  P2        ASSIGNED  Overview gesture in R ----
-146593239  awickham  P2        FIXED   Gesture navigation fail in Facebook messenger ----
-147305863  sfufa     P2        FIXED   DragNDrop userevent missing target hierarchy ----
-148867106  vadimt    P2        FIXED   [Flaky test] AddConfigWidgetTest.testConfigCancelled ----
-149792636  dupin     P2        ASSIGNED  [Android 11] Blur polish ----
-150122946  sfufa     P4        FIXED   Work toggle styling not correct ----
-150260456  peanutbutter  P1        FIXED   Add Fixed Rotation Transform to Home Settings ----
-150522230  hyunyoungs  P1        ASSIGNED  Pixel launcher keeps crashing ('java.lang.String android.content.ComponentName.getPackageName()) ----
-150644839  twickham  P3        FIXED   In landscape mode, long press on app shortcut UI issue observed. ----
-150680980  jonmiranda  P2        FIXED   Slide up to home screen animation is not smooth ----
-150788630  hyunyoungs  P1        ASSIGNED  Turn off FOLDER_NAME_SUGGEST flag on QQ builds earliest possible ----
-150864182  twickham  P4        FIXED   Crash when dumping while user is locked ----
-150876921  jonmiranda  P2        FIXED   Pages views seem to snap back to previous page ----
-151025334  hyunyoungs  P1        VERIFIED  DeviceConfig doesn't update immediately when Pheonotype pushes ----
-151050221  dupin     P1        FIXED   [NO LAST KMSG] [Short Uptime] [R]DUT will display the "Pixel is starting..." after rebooting and unlocking SIM pin code ----
-151166786  sunnygoyal  P2        FIXED   Swipe handler and activity interface mismatch ----

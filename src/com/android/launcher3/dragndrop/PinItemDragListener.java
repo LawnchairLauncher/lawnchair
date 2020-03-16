@@ -16,8 +16,6 @@
 
 package com.android.launcher3.dragndrop;
 
-import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
-
 import android.annotation.TargetApi;
 import android.appwidget.AppWidgetManager;
 import android.content.pm.LauncherApps.PinItemRequest;
@@ -39,8 +37,6 @@ import com.android.launcher3.widget.PendingAddShortcutInfo;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.PendingItemDragHelper;
 import com.android.launcher3.widget.WidgetAddFlowHandler;
-
-import java.util.ArrayList;
 
 /**
  * {@link DragSource} for handling drop from a different window. This object is initialized
@@ -107,9 +103,9 @@ public class PinItemDragListener extends BaseItemDragListener {
     }
 
     @Override
-    public void fillInLogContainerData(ItemInfo childInfo, LauncherLogProto.Target child,
-            ArrayList<LauncherLogProto.Target> parents) {
-        parents.add(newContainerTarget(LauncherLogProto.ContainerType.PINITEM));
+    public void fillInLogContainerData(View v, ItemInfo info, LauncherLogProto.Target target,
+            LauncherLogProto.Target targetParent) {
+        targetParent.containerType = LauncherLogProto.ContainerType.PINITEM;
     }
 
     @Override

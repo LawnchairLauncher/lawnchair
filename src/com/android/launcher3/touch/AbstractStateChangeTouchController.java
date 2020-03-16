@@ -19,9 +19,9 @@ import static com.android.launcher3.LauncherAnimUtils.MIN_PROGRESS_TO_ALL_APPS;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
-import static com.android.launcher3.LauncherStateManager.ANIM_ALL_COMPONENTS;
-import static com.android.launcher3.LauncherStateManager.PLAY_ATOMIC_OVERVIEW_SCALE;
-import static com.android.launcher3.LauncherStateManager.PLAY_NON_ATOMIC;
+import static com.android.launcher3.LauncherStateManager.ANIM_ALL;
+import static com.android.launcher3.LauncherStateManager.ATOMIC_OVERVIEW_SCALE_COMPONENT;
+import static com.android.launcher3.LauncherStateManager.NON_ATOMIC_COMPONENT;
 import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelocity;
 import static com.android.launcher3.config.FeatureFlags.UNSTABLE_SPRINGS;
 import static com.android.launcher3.util.DefaultDisplay.getSingleFrameMs;
@@ -37,16 +37,16 @@ import android.view.MotionEvent;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.LauncherStateManager.AnimationFlags;
+import com.android.launcher3.LauncherStateManager.AnimationComponents;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.AnimatorSetBuilder;
-import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.util.FlingBlockCheck;
+import com.android.launcher3.util.PendingAnimation;
 import com.android.launcher3.util.TouchController;
 
 /**
@@ -176,7 +176,7 @@ public abstract class AbstractStateChangeTouchController
     protected abstract LauncherState getTargetState(LauncherState fromState,
             boolean isDragTowardPositive);
 
-    protected abstract float initCurrentAnimation(@AnimationFlags int animComponents);
+    protected abstract float initCurrentAnimation(@AnimationComponents int animComponents);
 
     /**
      * Returns the container that the touch started from when leaving NORMAL state.
@@ -201,10 +201,10 @@ public abstract class AbstractStateChangeTouchController
             mCurrentAnimation.setOnCancelRunnable(null);
         }
         int animComponents = goingBetweenNormalAndOverview(mFromState, mToState)
-                ? PLAY_NON_ATOMIC : ANIM_ALL_COMPONENTS;
+                ? NON_ATOMIC_COMPONENT : ANIM_ALL;
         mScheduleResumeAtomicComponent = false;
         if (mAtomicAnim != null) {
-            animComponents = PLAY_NON_ATOMIC;
+            animComponents = NON_ATOMIC_COMPONENT;
             // Control the non-atomic components until the atomic animation finishes, then control
             // the atomic components as well.
             mScheduleResumeAtomicComponent = true;
@@ -215,7 +215,7 @@ public abstract class AbstractStateChangeTouchController
         }
 
         if (mAtomicComponentsController != null) {
-            animComponents &= ~PLAY_ATOMIC_OVERVIEW_SCALE;
+            animComponents &= ~ATOMIC_OVERVIEW_SCALE_COMPONENT;
         }
         mProgressMultiplier = initCurrentAnimation(animComponents);
         mCurrentAnimation.dispatchOnStart();
@@ -360,7 +360,7 @@ public abstract class AbstractStateChangeTouchController
             long duration) {
         AnimatorSetBuilder builder = getAnimatorSetBuilderForStates(fromState, targetState);
         return mLauncher.getStateManager().createAtomicAnimation(fromState, targetState, builder,
-                PLAY_ATOMIC_OVERVIEW_SCALE, duration);
+                ATOMIC_OVERVIEW_SCALE_COMPONENT, duration);
     }
 
     protected AnimatorSetBuilder getAnimatorSetBuilderForStates(LauncherState fromState,
@@ -434,7 +434,7 @@ public abstract class AbstractStateChangeTouchController
         maybeUpdateAtomicAnim(mFromState, targetState, targetState == mToState ? 1f : 0f);
         updateSwipeCompleteAnimation(anim, Math.max(duration, getRemainingAtomicDuration()),
                 targetState, velocity, fling);
-        mCurrentAnimation.dispatchOnStart();
+        mCurrentAnimation.dispatchOnStartWithVelocity(endProgress, progressVelocity);
         if (fling && targetState == LauncherState.ALL_APPS && !UNSTABLE_SPRINGS.get()) {
             mLauncher.getAppsView().addSpringFromFlingUpdateListener(anim, velocity);
         }
