@@ -100,7 +100,7 @@ public final class FeatureFlags {
             "Suggests folder names instead of blank text.");
 
     public static final BooleanFlag APP_SEARCH_IMPROVEMENTS = new DeviceFlag(
-            "APP_SEARCH_IMPROVEMENTS", false,
+            "APP_SEARCH_IMPROVEMENTS", true,
             "Adds localized title and keyword search and ranking");
 
     public static final BooleanFlag ENABLE_PREDICTION_DISMISS = new DeviceFlag(
