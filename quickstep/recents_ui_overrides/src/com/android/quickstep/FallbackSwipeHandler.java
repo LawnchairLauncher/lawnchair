@@ -21,7 +21,6 @@ import static com.android.quickstep.GestureState.GestureEndTarget.HOME;
 import static com.android.quickstep.GestureState.GestureEndTarget.LAST_TASK;
 import static com.android.quickstep.GestureState.GestureEndTarget.NEW_TASK;
 import static com.android.quickstep.GestureState.GestureEndTarget.RECENTS;
-import static com.android.quickstep.LauncherSwipeHandler.MIN_PROGRESS_FOR_OVERVIEW;
 import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
 import static com.android.quickstep.RecentsActivity.EXTRA_TASK_ID;
 import static com.android.quickstep.RecentsActivity.EXTRA_THUMBNAIL;
@@ -97,7 +96,7 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
 
     private final AnimatedFloat mLauncherAlpha = new AnimatedFloat(this::onLauncherAlphaChanged);
 
-    private boolean mIsMotionPaused = false;
+    private boolean mOverviewThresholdPassed = false;
 
     private final boolean mInQuickSwitchMode;
     private final boolean mContinuingLastGesture;
@@ -222,10 +221,16 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
 
     @Override
     public void onMotionPauseChanged(boolean isPaused) {
-        if (!mInQuickSwitchMode) {
-            mIsMotionPaused = isPaused;
+        if (!mInQuickSwitchMode && mDeviceState.isFullyGesturalNavMode()) {
+            updateOverviewThresholdPassed(isPaused);
+        }
+    }
+
+    private void updateOverviewThresholdPassed(boolean passed) {
+        if (passed != mOverviewThresholdPassed) {
+            mOverviewThresholdPassed = passed;
             if (mSwipeUpOverHome) {
-                mLauncherAlpha.animateToValue(mLauncherAlpha.value, isPaused ? 0 : 1)
+                mLauncherAlpha.animateToValue(mLauncherAlpha.value, passed ? 0 : 1)
                         .setDuration(150).start();
             }
             performHapticFeedback();
@@ -234,7 +239,7 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
 
     @Override
     public Intent getLaunchIntent() {
-        if (mInQuickSwitchMode || mSwipeUpOverHome) {
+        if (mInQuickSwitchMode || mSwipeUpOverHome || !mDeviceState.isFullyGesturalNavMode()) {
             return mGestureState.getOverviewIntent();
         } else {
             return mGestureState.getHomeIntent();
@@ -248,6 +253,11 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
             mRecentsAnimationController.setWindowThresholdCrossed(!mInQuickSwitchMode
                     && (mCurrentShift.value > 1 - UPDATE_SYSUI_FLAGS_THRESHOLD));
         }
+
+        if (!mInQuickSwitchMode && !mDeviceState.isFullyGesturalNavMode()) {
+            updateOverviewThresholdPassed(mCurrentShift.value >= MIN_PROGRESS_FOR_OVERVIEW);
+        }
+
         if (mRecentsAnimationTargets != null) {
             applyTransformUnchecked();
         }
@@ -271,14 +281,25 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
                     .getDimension(R.dimen.quickstep_fling_threshold_velocity);
             boolean isFling = Math.abs(endVelocity) > flingThreshold;
 
-            if (isFling) {
-                mGestureState.setEndTarget(endVelocity < 0 ? HOME : LAST_TASK);
-            } else if (mIsMotionPaused) {
-                mGestureState.setEndTarget(RECENTS);
+            if (mDeviceState.isFullyGesturalNavMode()) {
+                if (isFling) {
+                    mGestureState.setEndTarget(endVelocity < 0 ? HOME : LAST_TASK);
+                } else if (mOverviewThresholdPassed) {
+                    mGestureState.setEndTarget(RECENTS);
+                } else {
+                    mGestureState.setEndTarget(mCurrentShift.value >= MIN_PROGRESS_FOR_OVERVIEW
+                            ? HOME
+                            : LAST_TASK);
+                }
             } else {
-                mGestureState.setEndTarget(mCurrentShift.value >= MIN_PROGRESS_FOR_OVERVIEW
-                        ? HOME
-                        : LAST_TASK);
+                GestureEndTarget startState = mSwipeUpOverHome ? HOME : LAST_TASK;
+                if (isFling) {
+                    mGestureState.setEndTarget(endVelocity < 0 ? RECENTS : startState);
+                } else {
+                    mGestureState.setEndTarget(mCurrentShift.value >= MIN_PROGRESS_FOR_OVERVIEW
+                            ? RECENTS
+                            : startState);
+                }
             }
         }
         mStateCallback.setStateOnUiThread(STATE_GESTURE_COMPLETED);
@@ -353,7 +374,7 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
                 mRecentsAnimationController.finish(false, null, false);
                 break;
             case RECENTS: {
-                if (mSwipeUpOverHome) {
+                if (mSwipeUpOverHome || !mDeviceState.isFullyGesturalNavMode()) {
                     mRecentsAnimationController.finish(true, null, true);
                     break;
                 }

@@ -68,4 +68,26 @@ public interface RemoteAnimationProvider {
                 ? Z_BOOST_BASE + target.prefixOrderIndex
                 : target.prefixOrderIndex;
     }
+
+    /**
+     * @return the target with the lowest opaque layer for a certain app animation, or null.
+     */
+    static RemoteAnimationTargetCompat findLowestOpaqueLayerTarget(
+            RemoteAnimationTargetCompat[] appTargets, int mode) {
+        int lowestLayer = Integer.MAX_VALUE;
+        int lowestLayerIndex = -1;
+        for (int i = appTargets.length - 1; i >= 0; i--) {
+            RemoteAnimationTargetCompat target = appTargets[i];
+            if (target.mode == mode && !target.isTranslucent) {
+                int layer = getLayer(target, mode);
+                if (layer < lowestLayer) {
+                    lowestLayer = layer;
+                    lowestLayerIndex = i;
+                }
+            }
+        }
+        return lowestLayerIndex != -1
+                ? appTargets[lowestLayerIndex]
+                : null;
+    }
 }

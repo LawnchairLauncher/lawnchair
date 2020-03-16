@@ -27,6 +27,7 @@ import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.compat.AccessibilityManagerCompat.sendCustomAccessibilityEvent;
 import static com.android.launcher3.config.FeatureFlags.ALWAYS_USE_HARDWARE_OPTIMIZATION_FOR_FOLDER_ANIMATIONS;
+import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
 import static com.android.launcher3.userevent.LauncherLogProto.Target.FromFolderLabelState.FROM_CUSTOM;
 import static com.android.launcher3.userevent.LauncherLogProto.Target.FromFolderLabelState.FROM_EMPTY;
 import static com.android.launcher3.userevent.LauncherLogProto.Target.FromFolderLabelState.FROM_FOLDER_LABEL_STATE_UNSPECIFIED;
@@ -89,7 +90,6 @@ import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragController.DragListener;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
-import com.android.launcher3.logging.LoggerUtils;
 import com.android.launcher3.pageindicators.PageIndicatorDots;
 import com.android.launcher3.userevent.LauncherLogProto.Action;
 import com.android.launcher3.userevent.LauncherLogProto.ContainerType;
@@ -1459,12 +1459,24 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     }
 
     @Override
-    public void fillInLogContainerData(View v, ItemInfo info, LauncherLogProto.Target target,
-            LauncherLogProto.Target targetParent) {
-        target.gridX = info.cellX;
-        target.gridY = info.cellY;
-        target.pageIndex = mContent.getCurrentPage();
-        targetParent.containerType = LauncherLogProto.ContainerType.FOLDER;
+    public void fillInLogContainerData(ItemInfo childInfo, LauncherLogProto.Target child,
+            ArrayList<LauncherLogProto.Target> targets) {
+        child.gridX = childInfo.cellX;
+        child.gridY = childInfo.cellY;
+        child.pageIndex = mContent.getCurrentPage();
+
+        LauncherLogProto.Target target = newContainerTarget(LauncherLogProto.ContainerType.FOLDER);
+        target.pageIndex = mInfo.screenId;
+        target.gridX = mInfo.cellX;
+        target.gridY = mInfo.cellY;
+        targets.add(target);
+
+        // continue to parent
+        if (mInfo.container == CONTAINER_HOTSEAT) {
+            mLauncher.getHotseat().fillInLogContainerData(mInfo, target, targets);
+        } else {
+            mLauncher.getWorkspace().fillInLogContainerData(mInfo, target, targets);
+        }
     }
 
     private class OnScrollHintListener implements OnAlarmListener {
@@ -1597,7 +1609,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
                     }
                 } else {
                     mLauncher.getUserEventDispatcher().logActionTapOutside(
-                            LoggerUtils.newContainerTarget(LauncherLogProto.ContainerType.FOLDER));
+                            newContainerTarget(LauncherLogProto.ContainerType.FOLDER));
                     close(true);
                     return true;
                 }
