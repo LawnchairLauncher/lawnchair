@@ -17,6 +17,7 @@ package com.android.launcher3.uioverrides.touchcontrollers;
 
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.QUICK_SWITCH;
+import static com.android.launcher3.LauncherStateManager.ANIM_ALL_COMPONENTS;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_ALL_APPS_FADE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_FADE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_SCALE;
@@ -39,7 +40,6 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.touch.AbstractStateChangeTouchController;
@@ -112,7 +112,7 @@ public class QuickSwitchTouchController extends AbstractStateChangeTouchControll
         setupInterpolators(animatorSetBuilder);
         long accuracy = (long) (getShiftRange() * 2);
         mCurrentAnimation = mLauncher.getStateManager().createAnimationToNewWorkspace(mToState,
-                animatorSetBuilder, accuracy, this::clearState, LauncherStateManager.ANIM_ALL);
+                animatorSetBuilder, accuracy, this::clearState, ANIM_ALL_COMPONENTS);
         mCurrentAnimation.getAnimationPlayer().addUpdateListener(valueAnimator -> {
             updateFullscreenProgress((Float) valueAnimator.getAnimatedValue());
         });
