@@ -30,7 +30,6 @@ import androidx.annotation.NonNull;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager.AnimationConfig;
-import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.PropertySetter;
 import com.android.quickstep.views.ClearAllButton;
@@ -65,16 +64,20 @@ public final class RecentsViewStateController extends
             @NonNull AnimatorSetBuilder builder, @NonNull AnimationConfig config) {
         super.setStateWithAnimationInternal(toState, builder, config);
 
-        ValueAnimator updateAnim = ValueAnimator.ofFloat(0, 1).setDuration(config.duration);
-        if (toState.overviewUi) {
-            // While animating into recents, update the visible task data as needed
-            updateAnim.addUpdateListener(valueAnimator -> mRecentsView.loadVisibleTaskData());
-            mRecentsView.updateEmptyMessage();
-        } else {
-            updateAnim.addListener(
-                    AnimationSuccessListener.forRunnable(mRecentsView::resetTaskVisuals));
+        if (!toState.overviewUi) {
+            builder.addOnFinishRunnable(mRecentsView::resetTaskVisuals);
         }
-        builder.play(updateAnim);
+
+        if (toState.overviewUi) {
+            ValueAnimator updateAnim = ValueAnimator.ofFloat(0, 1);
+            updateAnim.addUpdateListener(valueAnimator -> {
+                // While animating into recents, update the visible task data as needed
+                mRecentsView.loadVisibleTaskData();
+            });
+            updateAnim.setDuration(config.duration);
+            builder.play(updateAnim);
+            mRecentsView.updateEmptyMessage();
+        }
 
         PropertySetter propertySetter = config.getPropertySetter(builder);
         setAlphas(propertySetter, toState.getVisibleElements(mLauncher));

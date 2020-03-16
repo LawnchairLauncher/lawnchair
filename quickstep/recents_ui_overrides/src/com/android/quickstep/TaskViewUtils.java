@@ -15,17 +15,13 @@
  */
 package com.android.quickstep;
 
-import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.TOUCH_RESPONSE_INTERPOLATOR;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
-import static com.android.launcher3.uioverrides.BackgroundBlurController.BACKGROUND_BLUR;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.ComponentName;
 import android.graphics.RectF;
@@ -35,7 +31,6 @@ import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.uioverrides.BackgroundBlurController;
 import com.android.quickstep.util.AppWindowAnimationHelper;
 import com.android.quickstep.util.MultiValueUpdateListener;
 import com.android.quickstep.views.RecentsView;
@@ -120,11 +115,9 @@ public final class TaskViewUtils {
      * @return Animator that controls the window of the opening targets for the recents launch
      * animation.
      */
-    public static Animator getRecentsWindowAnimator(TaskView v, boolean skipViewChanges,
+    public static ValueAnimator getRecentsWindowAnimator(TaskView v, boolean skipViewChanges,
             RemoteAnimationTargetCompat[] appTargets,
-            RemoteAnimationTargetCompat[] wallpaperTargets,
-            BackgroundBlurController backgroundBlurController,
-            final AppWindowAnimationHelper inOutHelper) {
+            RemoteAnimationTargetCompat[] wallpaperTargets, final AppWindowAnimationHelper inOutHelper) {
         SyncRtSurfaceTransactionApplierCompat applier =
                 new SyncRtSurfaceTransactionApplierCompat(v);
         final RemoteAnimationTargets targets =
@@ -136,7 +129,6 @@ public final class TaskViewUtils {
                     .setTargetSet(targets)
                     .setLauncherOnTop(true);
 
-        AnimatorSet animatorSet = new AnimatorSet();
         final RecentsView recentsView = v.getRecentsView();
         final ValueAnimator appAnimator = ValueAnimator.ofFloat(0, 1);
         appAnimator.setInterpolator(TOUCH_RESPONSE_INTERPOLATOR);
@@ -145,6 +137,8 @@ public final class TaskViewUtils {
             // Defer fading out the view until after the app window gets faded in
             final FloatProp mViewAlpha = new FloatProp(1f, 0f, 75, 75, LINEAR);
             final FloatProp mTaskAlpha = new FloatProp(0f, 1f, 0, 75, LINEAR);
+
+
             final RectF mThumbnailRect;
 
             {
@@ -214,14 +208,6 @@ public final class TaskViewUtils {
                 targets.release();
             }
         });
-
-        if (backgroundBlurController != null) {
-            ObjectAnimator backgroundRadiusAnim = ObjectAnimator.ofInt(backgroundBlurController,
-                    BACKGROUND_BLUR, BACKGROUND_APP.getBackgroundBlurRadius(v.getContext()));
-            animatorSet.playTogether(appAnimator, backgroundRadiusAnim);
-        } else {
-            animatorSet.play(appAnimator);
-        }
-        return animatorSet;
+        return appAnimator;
     }
 }

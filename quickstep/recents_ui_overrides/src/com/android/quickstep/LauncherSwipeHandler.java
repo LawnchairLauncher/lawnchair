@@ -294,7 +294,6 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
         }
 
         setupRecentsViewUi();
-        mActivityInterface.getBackgroundBlurController().setSurfaceToLauncher(mRecentsView);
 
         if (mDeviceState.getNavMode() == TWO_BUTTONS) {
             // If the device is in two button mode, swiping up will show overview with predictions
@@ -1000,7 +999,7 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
         mLauncherTransitionController.getAnimationPlayer().setDuration(Math.max(0, duration));
 
         if (UNSTABLE_SPRINGS.get()) {
-            mLauncherTransitionController.dispatchOnStart();
+            mLauncherTransitionController.dispatchOnStartWithVelocity(end, velocityPxPerMs.y);
         }
         mLauncherTransitionController.getAnimationPlayer().start();
         mHasLauncherTransitionControllerStarted = true;
@@ -1016,9 +1015,7 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
             HomeAnimationFactory homeAnimationFactory) {
         RectFSpringAnim anim =
                 super.createWindowAnimationToHome(startProgress, homeAnimationFactory);
-        anim.addOnUpdateListener((r, p) -> {
-            updateSysUiFlags(Math.max(p, mCurrentShift.value));
-        });
+        anim.addOnUpdateListener((r, p) -> updateSysUiFlags(Math.max(p, mCurrentShift.value)));
         anim.addAnimatorListener(new AnimationSuccessListener() {
             @Override
             public void onAnimationStart(Animator animation) {

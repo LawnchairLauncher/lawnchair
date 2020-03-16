@@ -79,7 +79,6 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
     private static final String TAG = "BaseSwipeUpHandler";
     protected static final Rect TEMP_RECT = new Rect();
 
-    public static final float MIN_PROGRESS_FOR_OVERVIEW = 0.7f;
     private static final Interpolator PULLBACK_INTERPOLATOR = DEACCEL;
 
     // The distance needed to drag to reach the task size in recents.
@@ -482,6 +481,10 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
             public void onUpdate(RectF currentRect, float progress) {
                 homeAnim.setPlayFraction(progress);
 
+                mTransformParams.setProgress(
+                        Utilities.mapRange(progress, startTransformProgress, endTransformProgress))
+                        .setCurrentRect(currentRect)
+                        .setTargetAlpha(getWindowAlpha(progress));
                 rotatedRect.set(currentRect);
                 if (isFloatingIconView) {
                     RotationHelper.mapRectFromNormalOrientation(rotatedRect,
@@ -489,10 +492,6 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
                     mTransformParams.setCornerRadius(endRadius * progress + startRadius
                         * (1f - progress));
                 }
-                mTransformParams.setProgress(
-                    Utilities.mapRange(progress, startTransformProgress, endTransformProgress))
-                    .setCurrentRect(rotatedRect)
-                    .setTargetAlpha(getWindowAlpha(progress));
                 mAppWindowAnimationHelper.applyTransform(mTransformParams);
 
                 if (isFloatingIconView) {

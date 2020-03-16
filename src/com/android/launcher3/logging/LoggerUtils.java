@@ -37,7 +37,6 @@ import com.android.launcher3.util.InstantAppResolver;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 
 /**
  * Helper methods for logging.
@@ -255,14 +254,5 @@ public class LoggerUtils {
         event.srcTarget = srcTargets;
         event.action = action;
         return event;
-    }
-
-    /**
-     * Creates LauncherEvent using Action and ArrayList of Targets
-     */
-    public static LauncherEvent newLauncherEvent(Action action, ArrayList<Target> targets) {
-        Target[] targetsArray = new Target[targets.size()];
-        targets.toArray(targetsArray);
-        return newLauncherEvent(action, targetsArray);
     }
 }
