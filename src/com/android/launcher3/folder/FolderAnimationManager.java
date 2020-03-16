@@ -21,7 +21,6 @@ import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
 import static com.android.launcher3.graphics.IconShape.getShape;
 import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
-import static com.android.launcher3.uioverrides.BackgroundBlurController.BACKGROUND_BLUR;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -47,7 +46,6 @@ import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PropertyResetListener;
 import com.android.launcher3.dragndrop.DragLayer;
-import com.android.launcher3.uioverrides.BackgroundBlurController;
 import com.android.launcher3.util.Themes;
 
 import java.util.List;
@@ -222,13 +220,6 @@ public class FolderAnimationManager {
         Animator z = getAnimator(mFolder, View.TRANSLATION_Z, -mFolder.getElevation(), 0);
         play(a, z, mIsOpening ? midDuration : 0, midDuration);
 
-        BackgroundBlurController blurController = mLauncher.getBackgroundBlurController();
-        int stateBackgroundBlur = mLauncher.getStateManager().getState()
-                .getBackgroundBlurRadius(mLauncher);
-        int folderBackgroundBlurAdjustment = blurController.getFolderBackgroundBlurAdjustment();
-        play(a, ObjectAnimator.ofInt(blurController, BACKGROUND_BLUR, mIsOpening
-                ? stateBackgroundBlur + folderBackgroundBlurAdjustment
-                : stateBackgroundBlur));
 
         // Store clip variables
         CellLayout cellLayout = mContent.getCurrentCellLayout();

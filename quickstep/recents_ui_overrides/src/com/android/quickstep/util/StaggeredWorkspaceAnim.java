@@ -18,8 +18,7 @@ package com.android.quickstep.util;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.NORMAL;
-import static com.android.launcher3.LauncherStateManager.ANIM_ALL_COMPONENTS;
-import static com.android.launcher3.LauncherStateManager.SKIP_OVERVIEW;
+import static com.android.launcher3.LauncherStateManager.ANIM_ALL;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 
 import android.animation.Animator;
@@ -33,6 +32,7 @@ import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.LauncherStateManager.AnimationConfig;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutAndWidgetContainer;
@@ -143,10 +143,11 @@ public class StaggeredWorkspaceAnim {
      * Setup workspace with 0 duration to prepare for our staggered animation.
      */
     private void prepareToAnimate(Launcher launcher) {
+        LauncherStateManager stateManager = launcher.getStateManager();
         AnimatorSetBuilder builder = new AnimatorSetBuilder();
         // setRecentsAttachedToAppWindow() will animate recents out.
-        launcher.getStateManager().createAtomicAnimation(
-                BACKGROUND_APP, NORMAL, builder, ANIM_ALL_COMPONENTS | SKIP_OVERVIEW, 0);
+        builder.addFlag(AnimatorSetBuilder.FLAG_DONT_ANIMATE_OVERVIEW);
+        stateManager.createAtomicAnimation(BACKGROUND_APP, NORMAL, builder, ANIM_ALL, 0);
         builder.build().start();
 
         // Stop scrolling so that it doesn't interfere with the translation offscreen.

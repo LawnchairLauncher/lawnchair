@@ -70,7 +70,7 @@ public final class RecentsActivity extends BaseRecentsActivity {
         setContentView(R.layout.fallback_recents_activity);
         mRecentsRootView = findViewById(R.id.drag_layer);
         mFallbackRecentsView = findViewById(R.id.overview_panel);
-        mRecentsRootView.recreateControllers();
+        mRecentsRootView.setup();
     }
 
     @Override
@@ -108,7 +108,7 @@ public final class RecentsActivity extends BaseRecentsActivity {
     @Override
     protected void onHandleConfigChanged() {
         super.onHandleConfigChanged();
-        mRecentsRootView.recreateControllers();
+        mRecentsRootView.setup();
     }
 
     @Override
@@ -185,10 +185,8 @@ public final class RecentsActivity extends BaseRecentsActivity {
         boolean activityClosing = taskIsATargetWithMode(appTargets, getTaskId(), MODE_CLOSING);
         AppWindowAnimationHelper helper = new AppWindowAnimationHelper(
             mFallbackRecentsView.getPagedViewOrientedState(), this);
-        Animator recentsAnimator = getRecentsWindowAnimator(taskView, !activityClosing, appTargets,
-                wallpaperTargets, null /* backgroundBlurController */,
-                helper);
-        target.play(recentsAnimator.setDuration(RECENTS_LAUNCH_DURATION));
+        target.play(getRecentsWindowAnimator(taskView, !activityClosing, appTargets,
+                wallpaperTargets, helper).setDuration(RECENTS_LAUNCH_DURATION));
 
         // Found a visible recents task that matches the opening app, lets launch the app from there
         if (activityClosing) {

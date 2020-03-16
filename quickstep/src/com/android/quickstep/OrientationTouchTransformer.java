@@ -75,12 +75,8 @@ class OrientationTouchTransformer {
         mContractInfo = contractInfo;
     }
 
-    void setNavigationMode(SysUINavigationMode.Mode newMode, DefaultDisplay.Info info) {
-        if (mMode == newMode) {
-            return;
-        }
+    void setNavigationMode(SysUINavigationMode.Mode newMode) {
         this.mMode = newMode;
-        resetSwipeRegions(info);
     }
 
     /**
@@ -124,9 +120,7 @@ class OrientationTouchTransformer {
             mQuickStepStartingRotation = -1;
             resetSwipeRegions(info);
         } else {
-            if (mLastRectTouched != null) {
-                // mLastRectTouched can be null if gesture type is changed (ex. from settings)
-                // but nav bar hasn't been interacted with yet.
+            if (mQuickStepStartingRotation < 0) {
                 mQuickStepStartingRotation = mLastRectTouched.mRotation;
             }
         }
@@ -144,8 +138,10 @@ class OrientationTouchTransformer {
         }
 
         mCurrentRotation = region.rotation;
+        OrientationRectF regionToKeep = mSwipeTouchRegions.get(mCurrentRotation);
         mSwipeTouchRegions.clear();
-        mSwipeTouchRegions.put(mCurrentRotation, createRegionForDisplay(region));
+        mSwipeTouchRegions.put(mCurrentRotation,
+                regionToKeep != null ? regionToKeep : createRegionForDisplay(region));
     }
 
     private OrientationRectF createRegionForDisplay(DefaultDisplay.Info display) {
