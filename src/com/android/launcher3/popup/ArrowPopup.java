@@ -240,6 +240,17 @@ public abstract class ArrowPopup<T extends BaseDraggingActivity> extends Abstrac
      * and align above if there is enough vertical space.
      */
     protected void orientAboutObject() {
+        orientAboutObject(true /* allowAlignLeft */, true /* allowAlignRight */);
+    }
+
+    /**
+     * @see #orientAboutObject()
+     *
+     * @param allowAlignLeft Set to false if we already tried aligning left and didn't have room.
+     * @param allowAlignRight Set to false if we already tried aligning right and didn't have room.
+     * TODO: Can we test this with all permutations of widths/heights and icon locations + RTL?
+     */
+    private void orientAboutObject(boolean allowAlignLeft, boolean allowAlignRight) {
         measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
         int width = getMeasuredWidth();
         int extraVerticalSpace = mArrow.getLayoutParams().height + mArrowOffset
@@ -253,14 +264,8 @@ public abstract class ArrowPopup<T extends BaseDraggingActivity> extends Abstrac
         // Align left (right in RTL) if there is room.
         int leftAlignedX = mTempRect.left;
         int rightAlignedX = mTempRect.right - width;
-        int x = leftAlignedX;
-        boolean canBeLeftAligned = leftAlignedX + width + insets.left
-                < dragLayer.getRight() - insets.right;
-        boolean canBeRightAligned = rightAlignedX > dragLayer.getLeft() + insets.left;
-        if (!canBeLeftAligned || (mIsRtl && canBeRightAligned)) {
-            x = rightAlignedX;
-        }
-        mIsLeftAligned = x == leftAlignedX;
+        mIsLeftAligned = !mIsRtl ? allowAlignLeft : !allowAlignRight;
+        int x = mIsLeftAligned ? leftAlignedX : rightAlignedX;
 
         // Offset x so that the arrow and shortcut icons are center-aligned with the original icon.
         int iconWidth = mTempRect.width();
@@ -281,6 +286,24 @@ public abstract class ArrowPopup<T extends BaseDraggingActivity> extends Abstrac
             xOffset = iconWidth / 2 - shortcutDragHandleWidth / 2 - shortcutPaddingEnd;
         }
         x += mIsLeftAligned ? xOffset : -xOffset;
+
+        // Check whether we can still align as we originally wanted, now that we've calculated x.
+        if (!allowAlignLeft && !allowAlignRight) {
+            // We've already tried both ways and couldn't make it fit. onLayout() will set the
+            // gravity to CENTER_HORIZONTAL, but continue below to update y.
+        } else {
+            boolean canBeLeftAligned = x + width + insets.left
+                    < dragLayer.getRight() - insets.right;
+            boolean canBeRightAligned = x > dragLayer.getLeft() + insets.left;
+            boolean alignmentStillValid = mIsLeftAligned && canBeLeftAligned
+                    || !mIsLeftAligned && canBeRightAligned;
+            if (!alignmentStillValid) {
+                // Try again, but don't allow this alignment we already know won't work.
+                orientAboutObject(allowAlignLeft && !mIsLeftAligned /* allowAlignLeft */,
+                        allowAlignRight && mIsLeftAligned /* allowAlignRight */);
+                return;
+            }
+        }
 
         // Open above icon if there is room.
         int iconHeight = mTempRect.height();
