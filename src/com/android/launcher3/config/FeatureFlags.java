@@ -138,6 +138,9 @@ public final class FeatureFlags {
             "ENABLE_OVERVIEW_ACTIONS", true, "Show app actions instead of the shelf in Overview."
             + " As part of this decoupling, also distinguish swipe up from nav bar vs above it.");
 
+    public static final BooleanFlag ENABLE_SELECT_MODE = getDebugFlag(
+            "ENABLE_SELECT_MODE", true, "Show Select Mode button in Overview Actions");
+
     public static final BooleanFlag ENABLE_DATABASE_RESTORE = getDebugFlag(
             "ENABLE_DATABASE_RESTORE", true,
             "Enable database restore when new restore session is created");
