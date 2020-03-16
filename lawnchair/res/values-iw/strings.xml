@@ -26,8 +26,8 @@
     <string name="adaptify_pack_title">צור סמלים מסתגלים בשביל ערכת הסמלים הקיימת</string>
     <string name="icon_shape_override_label">צורת הסמל</string>
     <string name="reset_custom_icons">הסר סמלים מותאמים אישית</string>
-    <string name="reset_custom_icons_confirmation">אפס לסמלי ברירת המחדל של ערכת הסמלים הזאת? אי אפשר לשחזר את הפעולה הזאת.</string>
-    <string name="appearance">מראה</string>
+    <string name="reset_custom_icons_confirmation">אפס לסמלי ברירת המחדל של ערכת הסמלים הזאת? לא ניתן  לשחזר את הפעולה הזאת.</string>
+    <string name="appearance">מראה חיצוני</string>
     <!-- Note: new. Replaces title of 5th field (from bottom) in “Theme” page. -->
     <string name="theme_auto">אוטומטי (בהתאם לרקע)</string>
     <string name="theme_auto_night_mode">החל לפי המערכת</string>
@@ -38,8 +38,8 @@
     <string name="theme_use_black">השתמש בשחור אמיתי</string>
     <string name="theme_use_dark_text">השתמש בטקסט כהה</string>
     <string name="lawnchair_accent">צבע הדגשה</string>
-    <string name="color_pixel_accent">כחול גוגל</string>
-    <string name="color_system_accent">לפי המערכת</string>
+    <string name="color_pixel_accent">גוגל כחול</string>
+    <string name="color_system_accent">החל לפי המערכת</string>
     <string name="color_wallpaper_main">רקע - ראשי</string>
     <string name="color_wallpaper_secondary">רקע - משני</string>
     <string name="color_wallpaper_tertiary">רקע - שלישי</string>
@@ -48,7 +48,7 @@
     <string name="blur_pref_summary">טשטש את רקע העמודים.</string>
     <string name="blur_radius_pref_title">רמת הטשטוש</string>
     <!-- Section 3 -->
-    <string name="general_pref_title">מסך הבית</string>
+    <string name="general_pref_title">דן הבית</string>
     <string name="general_pref_summary">פריסה, נעילת דף הבית, מעברים</string>
     <string name="grid_size">טבלת סמלים</string>
     <string name="grid_size_width">רוחב</string>
