@@ -126,7 +126,7 @@ public abstract class AbstractLauncherUiTest {
                                                 getInstrumentation().getTargetContext()
                                                         .getFilesDir().getPath()
                                                         + "/ActivityLeakHeapDump.hprof");
-                                    } catch (Throwable e) {
+                                    } catch (IOException e) {
                                         Log.e(TAG, "dumpHprofData failed", e);
                                     }
                                 }

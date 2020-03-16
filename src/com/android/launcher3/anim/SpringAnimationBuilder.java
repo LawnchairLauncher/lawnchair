@@ -15,14 +15,15 @@
  */
 package com.android.launcher3.anim;
 
+import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.util.FloatProperty;
 
+import com.android.launcher3.util.DefaultDisplay;
+
 import androidx.annotation.FloatRange;
 import androidx.dynamicanimation.animation.SpringForce;
-
-import com.android.launcher3.util.DefaultDisplay;
 
 /**
  * Utility class to build an object animator which follows the same path as a spring animation for
@@ -191,8 +192,12 @@ public class SpringAnimationBuilder<T> extends FloatProperty<T> {
         long durationMs = (long) (1000.0 * duration);
         ObjectAnimator animator = ObjectAnimator.ofFloat(mTarget, this, 0, (float) duration);
         animator.setDuration(durationMs).setInterpolator(Interpolators.LINEAR);
-        animator.addListener(AnimationSuccessListener.forRunnable(
-                () -> mProperty.setValue(mTarget, mEndValue)));
+        animator.addListener(new AnimationSuccessListener() {
+            @Override
+            public void onAnimationSuccess(Animator animator) {
+                mProperty.setValue(mTarget, mEndValue);
+            }
+        });
         return animator;
     }
 

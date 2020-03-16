@@ -16,10 +16,12 @@
 
 package com.android.quickstep.views;
 
+import static androidx.dynamicanimation.animation.DynamicAnimation.MIN_VISIBLE_CHANGE_PIXELS;
+
 import static com.android.launcher3.BaseActivity.STATE_HANDLER_INVISIBILITY_FLAGS;
 import static com.android.launcher3.InvariantDeviceProfile.CHANGE_FLAG_ICON_PARAMS;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
-import static com.android.launcher3.LauncherState.BACKGROUND_APP;
+import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
 import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
 import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.Utilities.squaredTouchSlop;
@@ -29,7 +31,7 @@ import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_ACTIONS;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
-import static com.android.launcher3.uioverrides.BackgroundBlurController.BACKGROUND_BLUR;
+import static com.android.launcher3.config.FeatureFlags.UNSTABLE_SPRINGS;
 import static com.android.launcher3.uioverrides.touchcontrollers.TaskViewTouchController.SUCCESS_TRANSITION_PROGRESS;
 import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch.TAP;
 import static com.android.launcher3.userevent.nano.LauncherLogProto.ControlType.CLEAR_ALL_BUTTON;
@@ -37,10 +39,12 @@ import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_OVERVIEW;
 import static com.android.quickstep.TaskUtils.checkCurrentOrManagedUserId;
 
+import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.LayoutTransition;
 import android.animation.LayoutTransition.TransitionListener;
 import android.animation.ObjectAnimator;
+import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
@@ -84,29 +88,28 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.InvariantDeviceProfile;
+import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
-import com.android.launcher3.anim.PendingAnimation;
-import com.android.launcher3.anim.PendingAnimation.EndState;
 import com.android.launcher3.anim.PropertyListBuilder;
-import com.android.launcher3.anim.SpringProperty;
+import com.android.launcher3.anim.SpringObjectAnimator;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.states.RotationHelper;
 import com.android.launcher3.touch.PagedOrientationHandler.CurveProperties;
-import com.android.launcher3.uioverrides.BackgroundBlurController;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.DynamicResource;
 import com.android.launcher3.util.OverScroller;
+import com.android.launcher3.util.PendingAnimation;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.ViewPool;
 import com.android.quickstep.RecentsAnimationController;
@@ -169,6 +172,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                 }
             };
 
+    private final OrientationEventListener mOrientationListener;
     private int mPreviousRotation;
     protected RecentsAnimationController mRecentsAnimationController;
     protected RecentsAnimationTargets mRecentsAnimationTargets;
@@ -376,6 +380,22 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
         // Initialize quickstep specific cache params here, as this is constructed only once
         mActivity.getViewCache().setCacheSize(R.layout.digital_wellbeing_toast, 5);
+        mOrientationListener = new OrientationEventListener(getContext()) {
+            @Override
+            public void onOrientationChanged(int i) {
+                int rotation = RotationHelper.getRotationFromDegrees(i);
+                if (mPreviousRotation != rotation) {
+                    animateRecentsRotationInPlace(rotation);
+                    if (rotation == 0) {
+                        showActionsView();
+                    } else {
+                        hideActionsView();
+                    }
+                    mPreviousRotation = rotation;
+                }
+            }
+        };
+
     }
 
     public OverScroller getScroller() {
@@ -459,7 +479,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         mIPinnedStackAnimationListener.setActivity(mActivity);
         SystemUiProxy.INSTANCE.get(getContext()).setPinnedStackAnimationListener(
                 mIPinnedStackAnimationListener);
-        setActionsView();
+        addActionsView();
     }
 
     @Override
@@ -504,6 +524,13 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     }
 
     public void setOverviewStateEnabled(boolean enabled) {
+        if (supportsVerticalLandscape() && mOrientationListener.canDetectOrientation()) {
+            if (enabled) {
+                mOrientationListener.enable();
+            } else {
+                mOrientationListener.disable();
+            }
+        }
         mOverviewStateEnabled = enabled;
         updateTaskStackListenerState();
         if (!enabled) {
@@ -594,7 +621,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
     protected void applyLoadPlan(ArrayList<Task> tasks) {
         if (mPendingAnimation != null) {
-            mPendingAnimation.addEndListener((endState) -> applyLoadPlan(tasks));
+            mPendingAnimation.addEndListener((onEndListener) -> applyLoadPlan(tasks));
             return;
         }
 
@@ -673,21 +700,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             taskViewCount--;
         }
         return taskViewCount;
-    }
-
-    /**
-     * Updates UI for a modal task, including hiding other tasks.
-     */
-    public void updateUiForModalTask(TaskView taskView, boolean isTaskOverlayModal) {
-        int currentIndex = indexOfChild(taskView);
-        TaskView previousTask = getTaskViewAt(currentIndex - 1);
-        TaskView nextTask = getTaskViewAt(currentIndex + 1);
-        if (previousTask != null) {
-            previousTask.setVisibility(isTaskOverlayModal ? View.INVISIBLE : View.VISIBLE);
-        }
-        if (nextTask != null) {
-            nextTask.setVisibility(isTaskOverlayModal ? View.INVISIBLE : View.VISIBLE);
-        }
     }
 
     protected void onTaskStackUpdated() { }
@@ -944,6 +956,38 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         setSwipeDownShouldLaunchApp(true);
     }
 
+    private void animateRecentsRotationInPlace(int newRotation) {
+        if (!supportsVerticalLandscape()) {
+            return;
+        }
+
+        AnimatorSet pa = setRecentsChangedOrientation(true);
+        pa.addListener(new AnimationSuccessListener() {
+            @Override
+            public void onAnimationSuccess(Animator animator) {
+                updateLayoutRotation(newRotation);
+                ((DragLayer)mActivity.getDragLayer()).recreateControllers();
+                rotateAllChildTasks();
+                setRecentsChangedOrientation(false).start();
+            }
+        });
+        pa.start();
+    }
+
+    public AnimatorSet setRecentsChangedOrientation(boolean fadeInChildren) {
+        getRunningTaskIndex();
+        int runningIndex = getCurrentPage();
+        AnimatorSet as = new AnimatorSet();
+        for (int i = 0; i < getTaskViewCount(); i++) {
+            if (runningIndex == i) {
+                continue;
+            }
+            View taskView = getTaskViewAt(i);
+            as.play(ObjectAnimator.ofFloat(taskView, View.ALPHA, fadeInChildren ? 0 : 1));
+        }
+        return as;
+    }
+
     abstract protected boolean supportsVerticalLandscape();
 
     private void rotateAllChildTasks() {
@@ -1164,29 +1208,37 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         }
     }
 
-    private void addDismissedTaskAnimations(View taskView, long duration, PendingAnimation anim) {
-        anim.add(ObjectAnimator.ofFloat(taskView, ALPHA, 0).setDuration(duration), ACCEL_2);
+    private void addDismissedTaskAnimations(View taskView, AnimatorSet anim, long duration) {
+        addAnim(ObjectAnimator.ofFloat(taskView, ALPHA, 0), duration, ACCEL_2, anim);
         FloatProperty<View> secondaryViewTranslate =
             mOrientationHandler.getSecondaryViewTranslate();
         int secondaryTaskDimension = mOrientationHandler.getSecondaryDimension(taskView);
         int verticalFactor = mOrientationHandler.getTaskDismissDirectionFactor();
+        if (UNSTABLE_SPRINGS.get() && taskView instanceof TaskView) {
+            ResourceProvider rp = DynamicResource.provider(mActivity);
+            float dampingRatio = rp.getFloat(R.dimen.dismiss_task_trans_y_damping_ratio);
+            float stiffness = rp.getFloat(R.dimen.dismiss_task_trans_y_stiffness);
 
-        ResourceProvider rp = DynamicResource.provider(mActivity);
-        SpringProperty sp = new SpringProperty(SpringProperty.FLAG_CAN_SPRING_ON_START)
-                .setDampingRatio(rp.getFloat(R.dimen.dismiss_task_trans_y_damping_ratio))
-                .setStiffness(rp.getFloat(R.dimen.dismiss_task_trans_y_stiffness));
-
-        anim.add(ObjectAnimator.ofFloat(taskView, secondaryViewTranslate,
-                verticalFactor * secondaryTaskDimension).setDuration(duration), LINEAR, sp);
+            addAnim(new SpringObjectAnimator<>(taskView, secondaryViewTranslate,
+                            MIN_VISIBLE_CHANGE_PIXELS, dampingRatio,
+                            stiffness, 0, verticalFactor * secondaryTaskDimension),
+                    duration, LINEAR, anim);
+        } else {
+            addAnim(ObjectAnimator.ofFloat(taskView, secondaryViewTranslate,
+                verticalFactor * secondaryTaskDimension), duration, LINEAR, anim);
+        }
     }
 
-    private void removeTask(Task task, int index, EndState endState) {
+    private void removeTask(Task task, int index, PendingAnimation.OnEndListener onEndListener,
+                            boolean shouldLog) {
         if (task != null) {
             ActivityManagerWrapper.getInstance().removeTask(task.key.id);
-            ComponentKey componentKey = TaskUtils.getLaunchComponentKeyForTask(task.key);
-            mActivity.getUserEventDispatcher().logTaskLaunchOrDismiss(
-                    endState.logAction, Direction.UP, index, componentKey);
-            mActivity.getStatsLogManager().logTaskDismiss(this, componentKey);
+            if (shouldLog) {
+                ComponentKey componentKey = TaskUtils.getLaunchComponentKeyForTask(task.key);
+                mActivity.getUserEventDispatcher().logTaskLaunchOrDismiss(
+                        onEndListener.logAction, Direction.UP, index, componentKey);
+                mActivity.getStatsLogManager().logTaskDismiss(this, componentKey);
+            }
         }
     }
 
@@ -1195,11 +1247,12 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         if (mPendingAnimation != null) {
             mPendingAnimation.finish(false, Touch.SWIPE);
         }
-        PendingAnimation anim = new PendingAnimation();
+        AnimatorSet anim = new AnimatorSet();
+        PendingAnimation pendingAnimation = new PendingAnimation(anim);
 
         int count = getPageCount();
         if (count == 0) {
-            return anim;
+            return pendingAnimation;
         }
 
         int[] oldScroll = new int[count];
@@ -1218,7 +1271,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             View child = getChildAt(i);
             if (child == taskView) {
                 if (animateTaskView) {
-                    addDismissedTaskAnimations(taskView, duration, anim);
+                    addDismissedTaskAnimations(taskView, anim, duration);
                 }
             } else {
                 // If we just take newScroll - oldScroll, everything to the right of dragged task
@@ -1242,15 +1295,20 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                 }
                 int scrollDiff = newScroll[i] - oldScroll[i] + offset;
                 if (scrollDiff != 0) {
-                    Property translationProperty = mOrientationHandler.getPrimaryViewTranslate();
+                    if (UNSTABLE_SPRINGS.get() && child instanceof TaskView) {
+                        ResourceProvider rp = DynamicResource.provider(mActivity);
+                        float damping = rp.getFloat(R.dimen.dismiss_task_trans_x_damping_ratio);
+                        float stiffness = rp.getFloat(R.dimen.dismiss_task_trans_x_stiffness);
 
-                    ResourceProvider rp = DynamicResource.provider(mActivity);
-                    SpringProperty sp = new SpringProperty(SpringProperty.FLAG_CAN_SPRING_ON_END)
-                            .setDampingRatio(
-                                    rp.getFloat(R.dimen.dismiss_task_trans_x_damping_ratio))
-                            .setStiffness(rp.getFloat(R.dimen.dismiss_task_trans_x_stiffness));
-                    anim.add(ObjectAnimator.ofFloat(child, translationProperty, scrollDiff)
-                            .setDuration(duration), ACCEL, sp);
+                        addAnim(new SpringObjectAnimator<>(child, VIEW_TRANSLATE_X,
+                                MIN_VISIBLE_CHANGE_PIXELS, damping,
+                                stiffness, 0, scrollDiff), duration, ACCEL, anim);
+                    } else {
+                        Property translationProperty = mOrientationHandler.getPrimaryViewTranslate();
+                        addAnim(ObjectAnimator.ofFloat(child, translationProperty, scrollDiff),
+                            duration, ACCEL, anim);
+                    }
+
                     needsCurveUpdates = true;
                 }
             }
@@ -1259,7 +1317,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         if (needsCurveUpdates) {
             ValueAnimator va = ValueAnimator.ofFloat(0, 1);
             va.addUpdateListener((a) -> updateCurveProperties());
-            anim.add(va);
+            anim.play(va);
         }
 
         // Add a tiny bit of translation Z, so that it draws on top of other views
@@ -1267,22 +1325,22 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             taskView.setTranslationZ(0.1f);
         }
 
-        mPendingAnimation = anim;
-        mPendingAnimation.addEndListener(new Consumer<EndState>() {
+        mPendingAnimation = pendingAnimation;
+        mPendingAnimation.addEndListener(new Consumer<PendingAnimation.OnEndListener>() {
             @Override
-            public void accept(EndState endState) {
+            public void accept(PendingAnimation.OnEndListener onEndListener) {
                 if (ENABLE_QUICKSTEP_LIVE_TILE.get() &&
-                        taskView.isRunningTask() && endState.isSuccess) {
-                    finishRecentsAnimation(true /* toHome */, () -> onEnd(endState));
+                        taskView.isRunningTask() && onEndListener.isSuccess) {
+                    finishRecentsAnimation(true /* toHome */, () -> onEnd(onEndListener));
                 } else {
-                    onEnd(endState);
+                    onEnd(onEndListener);
                 }
             }
 
-            private void onEnd(EndState endState) {
-                if (endState.isSuccess) {
+            private void onEnd(PendingAnimation.OnEndListener onEndListener) {
+                if (onEndListener.isSuccess) {
                     if (shouldRemoveTask) {
-                        removeTask(taskView.getTask(), draggedIndex, endState);
+                        removeTask(taskView.getTask(), draggedIndex, onEndListener, true);
                     }
 
                     int pageToSnapTo = mCurrentPage;
@@ -1304,23 +1362,24 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                 mPendingAnimation = null;
             }
         });
-        return anim;
+        return pendingAnimation;
     }
 
     public PendingAnimation createAllTasksDismissAnimation(long duration) {
         if (FeatureFlags.IS_STUDIO_BUILD && mPendingAnimation != null) {
             throw new IllegalStateException("Another pending animation is still running");
         }
-        PendingAnimation anim = new PendingAnimation();
+        AnimatorSet anim = new AnimatorSet();
+        PendingAnimation pendingAnimation = new PendingAnimation(anim);
 
         int count = getTaskViewCount();
         for (int i = 0; i < count; i++) {
-            addDismissedTaskAnimations(getTaskViewAt(i), duration, anim);
+            addDismissedTaskAnimations(getTaskViewAt(i), anim, duration);
         }
 
-        mPendingAnimation = anim;
-        mPendingAnimation.addEndListener((endState) -> {
-            if (endState.isSuccess) {
+        mPendingAnimation = pendingAnimation;
+        mPendingAnimation.addEndListener((onEndListener) -> {
+            if (onEndListener.isSuccess) {
                 // Remove all the task views now
                 ActivityManagerWrapper.getInstance().removeAllRecentTasks();
                 removeTasksViewsAndClearAllButton();
@@ -1328,7 +1387,13 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             }
             mPendingAnimation = null;
         });
-        return anim;
+        return pendingAnimation;
+    }
+
+    private static void addAnim(Animator anim, long duration,
+            TimeInterpolator interpolator, AnimatorSet set) {
+        anim.setDuration(duration).setInterpolator(interpolator);
+        set.play(anim);
     }
 
     private boolean snapToPageRelative(int pageCount, int delta, boolean cycle) {
@@ -1345,8 +1410,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     }
 
     private void runDismissAnimation(PendingAnimation pendingAnim) {
-        AnimatorPlaybackController controller =
-                AnimatorPlaybackController.wrap(pendingAnim, DISMISS_TASK_DURATION);
+        AnimatorPlaybackController controller = AnimatorPlaybackController.wrap(
+                pendingAnim.anim, DISMISS_TASK_DURATION);
         controller.dispatchOnStart();
         controller.setEndAction(() -> pendingAnim.finish(true, Touch.SWIPE));
         controller.getAnimationPlayer().setInterpolator(FAST_OUT_SLOW_IN);
@@ -1467,7 +1532,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
     @Override
     public void setLayoutRotation(int touchRotation, int displayRotation) {
-        if (!FeatureFlags.ENABLE_FIXED_ROTATION_TRANSFORM.get()) {
+        if (!sFlagForcedRotation) {
             return;
         }
 
@@ -1671,7 +1736,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
         int count = getTaskViewCount();
         if (count == 0) {
-            return new PendingAnimation();
+            return new PendingAnimation(new AnimatorSet());
         }
 
         int targetSysUiFlags = tv.getThumbnail().getSysUiStatusNavFlags();
@@ -1702,23 +1767,16 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         appWindowAnimationHelper.fromTaskThumbnailView(tv.getThumbnail(), this);
         appWindowAnimationHelper.prepareAnimation(mActivity.getDeviceProfile(), true /* isOpening */);
         AnimatorSet anim = createAdjacentPageAnimForTaskLaunch(tv, appWindowAnimationHelper);
-
-        BackgroundBlurController blurController = getBackgroundBlurController();
-        if (blurController != null) {
-            ObjectAnimator backgroundBlur = ObjectAnimator.ofInt(blurController, BACKGROUND_BLUR,
-                    BACKGROUND_APP.getBackgroundBlurRadius(mActivity));
-            anim.play(backgroundBlur);
-        }
         anim.play(progressAnim);
-        anim.setDuration(duration)
-                .setInterpolator(interpolator);
+        anim.setDuration(duration).setInterpolator(interpolator);
 
-        mPendingAnimation = new PendingAnimation();
-        mPendingAnimation.add(anim);
-        mPendingAnimation.addEndListener((endState) -> {
-            if (endState.isSuccess) {
+        Consumer<Boolean> onTaskLaunchFinish = this::onTaskLaunched;
+
+        mPendingAnimation = new PendingAnimation(anim);
+        mPendingAnimation.addEndListener((onEndListener) -> {
+            if (onEndListener.isSuccess) {
                 Consumer<Boolean> onLaunchResult = (result) -> {
-                    onTaskLaunched(result);
+                    onTaskLaunchFinish.accept(result);
                     if (!result) {
                         tv.notifyTaskLaunchFailed(TAG);
                     }
@@ -1727,11 +1785,11 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                 Task task = tv.getTask();
                 if (task != null) {
                     mActivity.getUserEventDispatcher().logTaskLaunchOrDismiss(
-                            endState.logAction, Direction.DOWN, indexOfChild(tv),
+                            onEndListener.logAction, Direction.DOWN, indexOfChild(tv),
                             TaskUtils.getLaunchComponentKeyForTask(task.key));
                 }
             } else {
-                onTaskLaunched(false);
+                onTaskLaunchFinish.accept(false);
             }
             mPendingAnimation = null;
         });
@@ -1919,8 +1977,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     public Consumer<MotionEvent> getEventDispatcher(RotationMode navBarRotationMode) {
         float degreesRotated;
         if (navBarRotationMode == RotationMode.NORMAL) {
-            degreesRotated = mOrientationState.areMultipleLayoutOrientationsDisabled() ? 0 :
-                    RotationHelper.getDegreesFromRotation(mLayoutRotation);
+            degreesRotated = RotationHelper.getDegreesFromRotation(mLayoutRotation);
         } else {
             degreesRotated = -navBarRotationMode.surfaceRotation;
         }
@@ -1932,13 +1989,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         // undo that transformation since PagedView also accommodates for the transformation via
         // PagedOrientationHandler
         return e -> {
-            if (navBarRotationMode != RotationMode.NORMAL
-                    && !mOrientationState.areMultipleLayoutOrientationsDisabled()) {
-                RotationHelper.transformEventForNavBar(e, true);
-                super.onTouchEvent(e);
-                RotationHelper.transformEventForNavBar(e, false);
-                return;
-            }
             RotationHelper.transformEvent(-degreesRotated, e, true);
             super.onTouchEvent(e);
             RotationHelper.transformEvent(-degreesRotated, e, false);
@@ -2010,11 +2060,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         super.removeView(view);
     }
 
-    @Nullable
-    protected BackgroundBlurController getBackgroundBlurController() {
-        return null;
-    }
-
     private boolean isExtraCardView(View view, int index) {
         return !(view instanceof TaskView) && !(view instanceof ClearAllButton)
                 && index <= mTaskViewStartIndex;
@@ -2060,7 +2105,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         }
     }
 
-    private void setActionsView() {
+    private void addActionsView() {
         if (mActionsView == null && ENABLE_OVERVIEW_ACTIONS.get()
                 && SysUINavigationMode.removeShelfFromOverview(mActivity)) {
             mActionsView = ((ViewGroup) getParent()).findViewById(R.id.overview_actions_view);

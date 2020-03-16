@@ -18,9 +18,6 @@ package com.android.launcher3;
 
 import static com.android.launcher3.LauncherAnimUtils.DRAWABLE_ALPHA;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
-import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
-import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
-import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
 import static com.android.launcher3.LauncherState.HOTSEAT_ICONS;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_HOTSEAT_SCALE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_HOTSEAT_TRANSLATE;
@@ -120,7 +117,7 @@ public class WorkspaceStateTransitionAnimation {
                     hotseatIconsAlpha, fadeInterpolator);
         }
 
-        if (config.onlyPlayAtomicComponent()) {
+        if (!config.playNonAtomicComponent()) {
             // Only the alpha and scale, handled above, are included in the atomic animation.
             return;
         }
@@ -128,18 +125,18 @@ public class WorkspaceStateTransitionAnimation {
         Interpolator translationInterpolator = !playAtomicComponent
                 ? LINEAR
                 : builder.getInterpolator(ANIM_WORKSPACE_TRANSLATE, ZOOM_OUT);
-        propertySetter.setFloat(mWorkspace, VIEW_TRANSLATE_X,
+        propertySetter.setFloat(mWorkspace, View.TRANSLATION_X,
                 scaleAndTranslation.translationX, translationInterpolator);
-        propertySetter.setFloat(mWorkspace, VIEW_TRANSLATE_Y,
+        propertySetter.setFloat(mWorkspace, View.TRANSLATION_Y,
                 scaleAndTranslation.translationY, translationInterpolator);
 
         Interpolator hotseatTranslationInterpolator = builder.getInterpolator(
                 ANIM_HOTSEAT_TRANSLATE, translationInterpolator);
-        propertySetter.setFloat(hotseat, VIEW_TRANSLATE_Y,
+        propertySetter.setFloat(hotseat, View.TRANSLATION_Y,
                 hotseatScaleAndTranslation.translationY, hotseatTranslationInterpolator);
-        propertySetter.setFloat(mWorkspace.getPageIndicator(), VIEW_TRANSLATE_Y,
+        propertySetter.setFloat(mWorkspace.getPageIndicator(), View.TRANSLATION_Y,
                 hotseatScaleAndTranslation.translationY, hotseatTranslationInterpolator);
-        propertySetter.setFloat(qsbView, VIEW_TRANSLATE_Y,
+        propertySetter.setFloat(qsbView, View.TRANSLATION_Y,
                 qsbScaleAndTranslation.translationY, hotseatTranslationInterpolator);
 
         setScrim(propertySetter, state);
@@ -175,15 +172,14 @@ public class WorkspaceStateTransitionAnimation {
         float pageAlpha = pageAlphaProvider.getPageAlpha(childIndex);
         int drawableAlpha = Math.round(pageAlpha * (state.hasWorkspacePageBackground ? 255 : 0));
 
-        if (!config.onlyPlayAtomicComponent()) {
-            // Don't update the scrim during the atomic animation.
+        if (config.playNonAtomicComponent()) {
             propertySetter.setInt(cl.getScrimBackground(),
                     DRAWABLE_ALPHA, drawableAlpha, ZOOM_OUT);
         }
         if (config.playAtomicOverviewScaleComponent()) {
             Interpolator fadeInterpolator = builder.getInterpolator(ANIM_WORKSPACE_FADE,
                     pageAlphaProvider.interpolator);
-            propertySetter.setFloat(cl.getShortcutsAndWidgets(), VIEW_ALPHA,
+            propertySetter.setFloat(cl.getShortcutsAndWidgets(), View.ALPHA,
                     pageAlpha, fadeInterpolator);
         }
     }
