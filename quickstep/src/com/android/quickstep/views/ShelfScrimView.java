@@ -238,13 +238,6 @@ public class ShelfScrimView extends ScrimView<BaseQuickstepLauncher>
     }
 
     @Override
-    protected boolean shouldDragHandleBeVisible() {
-        boolean twoZoneSwipeModel = FeatureFlags.ENABLE_OVERVIEW_ACTIONS.get()
-                && SysUINavigationMode.removeShelfFromOverview(mLauncher);
-        return twoZoneSwipeModel || super.shouldDragHandleBeVisible();
-    }
-
-    @Override
     protected void onDraw(Canvas canvas) {
         drawBackground(canvas);
         drawDragHandle(canvas);
