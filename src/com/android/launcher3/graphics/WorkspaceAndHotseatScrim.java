@@ -37,7 +37,7 @@ import android.graphics.Region;
 import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
 import android.util.DisplayMetrics;
-import android.util.Property;
+import android.util.FloatProperty;
 import android.view.View;
 
 import androidx.core.graphics.ColorUtils;
@@ -54,28 +54,28 @@ import com.android.launcher3.util.Themes;
  */
 public class WorkspaceAndHotseatScrim extends Scrim {
 
-    public static final Property<WorkspaceAndHotseatScrim, Float> SYSUI_PROGRESS =
-            new Property<WorkspaceAndHotseatScrim, Float>(Float.TYPE, "sysUiProgress") {
+    public static final FloatProperty<WorkspaceAndHotseatScrim> SYSUI_PROGRESS =
+            new FloatProperty<WorkspaceAndHotseatScrim>("sysUiProgress") {
                 @Override
                 public Float get(WorkspaceAndHotseatScrim scrim) {
                     return scrim.mSysUiProgress;
                 }
 
                 @Override
-                public void set(WorkspaceAndHotseatScrim scrim, Float value) {
+                public void setValue(WorkspaceAndHotseatScrim scrim, float value) {
                     scrim.setSysUiProgress(value);
                 }
             };
 
-    private static final Property<WorkspaceAndHotseatScrim, Float> SYSUI_ANIM_MULTIPLIER =
-            new Property<WorkspaceAndHotseatScrim, Float>(Float.TYPE, "sysUiAnimMultiplier") {
+    private static final FloatProperty<WorkspaceAndHotseatScrim> SYSUI_ANIM_MULTIPLIER =
+            new FloatProperty<WorkspaceAndHotseatScrim>("sysUiAnimMultiplier") {
                 @Override
                 public Float get(WorkspaceAndHotseatScrim scrim) {
                     return scrim.mSysUiAnimMultiplier;
                 }
 
                 @Override
-                public void set(WorkspaceAndHotseatScrim scrim, Float value) {
+                public void setValue(WorkspaceAndHotseatScrim scrim, float value) {
                     scrim.mSysUiAnimMultiplier = value;
                     scrim.reapplySysUiAlpha();
                 }
