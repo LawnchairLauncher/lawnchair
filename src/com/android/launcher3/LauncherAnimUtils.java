@@ -18,7 +18,7 @@ package com.android.launcher3;
 
 import android.graphics.drawable.Drawable;
 import android.util.FloatProperty;
-import android.util.IntProperty;
+import android.util.Property;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 
@@ -32,15 +32,15 @@ public class LauncherAnimUtils {
     // The progress of an animation to all apps must be at least this far along to snap to all apps.
     public static final float MIN_PROGRESS_TO_ALL_APPS = 0.5f;
 
-    public static final IntProperty<Drawable> DRAWABLE_ALPHA =
-            new IntProperty<Drawable>("drawableAlpha") {
+    public static final Property<Drawable, Integer> DRAWABLE_ALPHA =
+            new Property<Drawable, Integer>(Integer.TYPE, "drawableAlpha") {
                 @Override
                 public Integer get(Drawable drawable) {
                     return drawable.getAlpha();
                 }
 
                 @Override
-                public void setValue(Drawable drawable, int alpha) {
+                public void set(Drawable drawable, Integer alpha) {
                     drawable.setAlpha(alpha);
                 }
             };
@@ -64,28 +64,28 @@ public class LauncherAnimUtils {
         return (int) Utilities.boundToRange(Math.abs(velocity) / 2, 2f, 6f);
     }
 
-    public static final IntProperty<LayoutParams> LAYOUT_WIDTH =
-            new IntProperty<LayoutParams>("width") {
+    public static final Property<LayoutParams, Integer> LAYOUT_WIDTH =
+            new Property<LayoutParams, Integer>(Integer.TYPE, "width") {
                 @Override
                 public Integer get(LayoutParams lp) {
                     return lp.width;
                 }
 
                 @Override
-                public void setValue(LayoutParams lp, int width) {
+                public void set(LayoutParams lp, Integer width) {
                     lp.width = width;
                 }
             };
 
-    public static final IntProperty<LayoutParams> LAYOUT_HEIGHT =
-            new IntProperty<LayoutParams>("height") {
+    public static final Property<LayoutParams, Integer> LAYOUT_HEIGHT =
+            new Property<LayoutParams, Integer>(Integer.TYPE, "height") {
                 @Override
                 public Integer get(LayoutParams lp) {
                     return lp.height;
                 }
 
                 @Override
-                public void setValue(LayoutParams lp, int height) {
+                public void set(LayoutParams lp, Integer height) {
                     lp.height = height;
                 }
             };
@@ -115,20 +115,6 @@ public class LauncherAnimUtils {
                         @Override
                         public Float get(View view) {
                             return view.getTranslationY();
-                        }
-                    };
-
-    public static final FloatProperty<View> VIEW_ALPHA =
-            View.ALPHA instanceof FloatProperty ? (FloatProperty) View.ALPHA
-                    : new FloatProperty<View>("alpha") {
-                        @Override
-                        public void setValue(View view, float v) {
-                            view.setAlpha(v);
-                        }
-
-                        @Override
-                        public Float get(View view) {
-                            return view.getAlpha();
                         }
                     };
 }

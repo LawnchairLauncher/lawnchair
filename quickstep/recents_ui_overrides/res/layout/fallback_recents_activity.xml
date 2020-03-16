@@ -31,6 +31,6 @@
 
     <include
         android:id="@+id/overview_actions_view"
-        layout="@layout/overview_actions_container" />
+        layout="@layout/overview_actions_holder" />
 
 </com.android.quickstep.fallback.RecentsRootView>

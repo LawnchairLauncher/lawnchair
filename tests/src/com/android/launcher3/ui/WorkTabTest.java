@@ -16,6 +16,8 @@
 package com.android.launcher3.ui;
 
 import static com.android.launcher3.LauncherState.ALL_APPS;
+import static com.android.launcher3.util.rule.TestStabilityRule.LOCAL;
+import static com.android.launcher3.util.rule.TestStabilityRule.UNBUNDLED_POSTSUBMIT;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -23,16 +25,13 @@ import static org.junit.Assert.assertTrue;
 import android.os.Process;
 import android.os.UserHandle;
 import android.os.UserManager;
-import android.widget.TextView;
 
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
 
-import com.android.launcher3.R;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsPagedView;
-import com.android.launcher3.dragndrop.DragLayer;
-import com.android.launcher3.views.WorkEduView;
+import com.android.launcher3.util.rule.TestStabilityRule;
 import com.android.launcher3.views.WorkFooterContainer;
 
 import org.junit.After;
@@ -48,8 +47,6 @@ import java.util.Objects;
 public class WorkTabTest extends AbstractLauncherUiTest {
 
     private int mProfileUserId;
-
-    private static final int WORK_PAGE = AllAppsContainerView.AdapterHolder.WORK;
 
     @Before
     public void createWorkProfile() throws Exception {
@@ -70,6 +67,8 @@ public class WorkTabTest extends AbstractLauncherUiTest {
     }
 
     @Test
+    // b/143285809 Remove @Stability on 02/21/20 if the test doesn't flake.
+    @TestStabilityRule.Stability(flavors = LOCAL | UNBUNDLED_POSTSUBMIT)
     public void workTabExists() {
         mDevice.pressHome();
         waitForLauncherCondition("Launcher didn't start", Objects::nonNull);
@@ -81,6 +80,8 @@ public class WorkTabTest extends AbstractLauncherUiTest {
     }
 
     @Test
+    // b/143285809 Remove @Stability on 02/21/20 if the test doesn't flake.
+    @TestStabilityRule.Stability(flavors = LOCAL | UNBUNDLED_POSTSUBMIT)
     public void toggleWorks() {
         mDevice.pressHome();
         waitForLauncherCondition("Launcher didn't start", Objects::nonNull);
@@ -109,80 +110,6 @@ public class WorkTabTest extends AbstractLauncherUiTest {
         });
         waitForLauncherCondition("Work toggle did not work",
                 l -> l.getSystemService(UserManager.class).isQuietModeEnabled(workProfile));
-    }
-
-    @Test
-    public void testWorkEduFlow() {
-        mDevice.pressHome();
-        waitForLauncherCondition("Launcher didn't start", Objects::nonNull);
-        executeOnLauncher(launcher -> launcher.getSharedPrefs().edit().remove(
-                WorkEduView.KEY_WORK_EDU_STEP).remove(
-                WorkEduView.KEY_LEGACY_WORK_EDU_SEEN).commit());
-
-        waitForLauncherCondition("Work tab not setup",
-                launcher -> launcher.getAppsView().getContentView() instanceof AllAppsPagedView,
-                60000);
-
-        executeOnLauncher(launcher -> launcher.getStateManager().goToState(ALL_APPS));
-        WorkEduView workEduView = getEduView();
-        // verify personal app edu is seen first and click "next"
-        executeOnLauncher(l -> {
-            assertEquals(((TextView) workEduView.findViewById(R.id.content_text)).getText(),
-                    l.getResources().getString(R.string.work_profile_edu_personal_apps));
-            workEduView.findViewById(R.id.proceed).callOnClick();
-        });
-        // verify work edu is seen next
-        waitForLauncherCondition("Launcher did not show the next edu screen", l ->
-                ((AllAppsPagedView) l.getAppsView().getContentView()).getCurrentPage() == WORK_PAGE
-                        && ((TextView) workEduView.findViewById(
-                        R.id.content_text)).getText().equals(
-                        l.getResources().getString(R.string.work_profile_edu_work_apps)));
-    }
-
-    @Test
-    public void testWorkEduIntermittent() {
-        mDevice.pressHome();
-        waitForLauncherCondition("Launcher didn't start", Objects::nonNull);
-        executeOnLauncher(launcher -> launcher.getSharedPrefs().edit().remove(
-                WorkEduView.KEY_WORK_EDU_STEP).remove(
-                WorkEduView.KEY_LEGACY_WORK_EDU_SEEN).commit());
-
-
-        waitForLauncherCondition("Work tab not setup",
-                launcher -> launcher.getAppsView().getContentView() instanceof AllAppsPagedView,
-                60000);
-        executeOnLauncher(launcher -> launcher.getStateManager().goToState(ALL_APPS));
-
-        // verify personal app edu is seen
-        getEduView();
-
-        // dismiss personal edu
-        mDevice.pressHome();
-
-        // open work tab
-        executeOnLauncher(launcher -> launcher.getStateManager().goToState(ALL_APPS));
-        executeOnLauncher(launcher -> {
-            AllAppsPagedView pagedView = (AllAppsPagedView) launcher.getAppsView().getContentView();
-            pagedView.setCurrentPage(WORK_PAGE);
-        });
-
-        WorkEduView workEduView = getEduView();
-
-        // verify work tab edu is shown
-        waitForLauncherCondition("Launcher did not show the next edu screen",
-                l -> ((TextView) workEduView.findViewById(R.id.content_text)).getText().equals(
-                        l.getResources().getString(R.string.work_profile_edu_work_apps)));
-    }
-
-
-    private WorkEduView getEduView() {
-        waitForLauncherCondition("Edu did not show", l -> {
-            DragLayer dragLayer = l.getDragLayer();
-            return dragLayer.getChildCount() > 0 && dragLayer.getChildAt(
-                    dragLayer.getChildCount() - 1) instanceof WorkEduView;
-        });
-        return getFromLauncher(launcher -> (WorkEduView) launcher.getDragLayer().getChildAt(
-                launcher.getDragLayer().getChildCount() - 1));
     }
 
 }

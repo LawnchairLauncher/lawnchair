@@ -50,6 +50,8 @@ import androidx.annotation.UiThread;
 import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.BaseDraggingActivity;
+import com.android.launcher3.Launcher;
+import com.android.launcher3.PagedView;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.config.FeatureFlags;
@@ -349,6 +351,17 @@ public class TouchInteractionService extends Service implements PluginListener<O
                 OverscrollPlugin.class, false /* allowMultiple */);
     }
 
+    private void onDeferredActivityLaunch() {
+        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+            mOverviewComponentObserver.getActivityInterface().switchRunningTaskViewToScreenshot(
+                    null, () -> {
+                        mTaskAnimationManager.finishRunningRecentsAnimation(true /* toHome */);
+                    });
+        } else {
+            mTaskAnimationManager.finishRunningRecentsAnimation(true /* toHome */);
+        }
+    }
+
     private void resetHomeBounceSeenOnQuickstepEnabledFirstTime() {
         if (!mDeviceState.isUserUnlocked() || mDeviceState.isButtonNavMode()) {
             // Skip if not yet unlocked (can't read user shared prefs) or if the current navigation
@@ -489,10 +502,8 @@ public class TouchInteractionService extends Service implements PluginListener<O
                         ? newBaseConsumer(previousGestureState, newGestureState, event)
                         : mResetGestureInputConsumer;
         // TODO(b/149880412): 2 button landscape mode is wrecked. Fixit!
-        if (mDeviceState.isGesturalNavMode()) {
-            handleOrientationSetup(base);
-        }
         if (mDeviceState.isFullyGesturalNavMode()) {
+            handleOrientationSetup(base);
             if (mDeviceState.canTriggerAssistantAction(event)) {
                 base = new AssistantInputConsumer(this, newGestureState, base, mInputMonitorCompat);
             }
@@ -537,19 +548,19 @@ public class TouchInteractionService extends Service implements PluginListener<O
     }
 
     private void handleOrientationSetup(InputConsumer baseInputConsumer) {
-        if (!FeatureFlags.ENABLE_FIXED_ROTATION_TRANSFORM.get()) {
+        if (!PagedView.sFlagForcedRotation) {
             return;
         }
         mDeviceState.enableMultipleRegions(baseInputConsumer instanceof OtherActivityInputConsumer);
-        BaseDraggingActivity activity =
-                mOverviewComponentObserver.getActivityInterface().getCreatedActivity();
-        if (activity == null || !(activity.getOverviewPanel() instanceof RecentsView)) {
+        Launcher l = (Launcher) mOverviewComponentObserver
+            .getActivityInterface().getCreatedActivity();
+        if (l == null || !(l.getOverviewPanel() instanceof RecentsView)) {
             return;
         }
-        ((RecentsView) activity.getOverviewPanel())
+        ((RecentsView)l.getOverviewPanel())
             .setLayoutRotation(mDeviceState.getCurrentActiveRotation(),
                 mDeviceState.getDisplayRotation());
-        activity.getDragLayer().recreateControllers();
+        l.getDragLayer().recreateControllers();
     }
 
     private InputConsumer newBaseConsumer(GestureState previousGestureState,
@@ -605,7 +616,11 @@ public class TouchInteractionService extends Service implements PluginListener<O
 
         if (!mOverviewComponentObserver.isHomeAndOverviewSame()) {
             shouldDefer = previousGestureState.getFinishingRecentsAnimationTaskId() < 0;
-            factory = mFallbackSwipeHandlerFactory;
+            if (mDeviceState.isFullyGesturalNavMode()) {
+                factory = mFallbackSwipeHandlerFactory;
+            } else {
+                factory = this::determineFallbackTwoButtonSwipeHandler;
+            }
         } else {
             shouldDefer = gestureState.getActivityInterface().deferStartingActivity(mDeviceState,
                     event);
@@ -616,6 +631,23 @@ public class TouchInteractionService extends Service implements PluginListener<O
         return new OtherActivityInputConsumer(this, mDeviceState, mTaskAnimationManager,
                 gestureState, shouldDefer, this::onConsumerInactive,
                 mInputMonitorCompat, disableHorizontalSwipe, factory);
+    }
+
+    /**
+     * Determines whether to use the LauncherSwipeHandler or FallbackSwipeHandler at runtime.
+     * We need to use the FallbackSwipeHandler to handle quick switch from home, otherwise the
+     * normal LauncherSwipeHandler works.
+     */
+    private BaseSwipeUpHandler determineFallbackTwoButtonSwipeHandler(GestureState gestureState,
+            long touchTimeMs, boolean continuingLastGesture, boolean isLikelyToStartNewTask) {
+        boolean runningOverHome = gestureState.getRunningTask() == null
+                || ActivityManagerWrapper.isHomeTask(gestureState.getRunningTask());
+        boolean isQuickSwitchMode = isLikelyToStartNewTask || continuingLastGesture;
+        BaseSwipeUpHandler.Factory factory = runningOverHome && isQuickSwitchMode
+                ? mFallbackSwipeHandlerFactory
+                : mLauncherSwipeHandlerFactory;
+        return factory.newHandler(gestureState, touchTimeMs, continuingLastGesture,
+                isLikelyToStartNewTask);
     }
 
     private InputConsumer createDeviceLockedInputConsumer(GestureState gestureState) {
