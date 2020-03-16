@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.allapps;
 
+import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
+
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Point;
@@ -370,7 +372,7 @@ public class FloatingHeaderView extends LinearLayout implements
         }
 
         allowTouchForwarding(hasAllAppsContent);
-        setter.setFloat(mTabLayout, ALPHA, hasAllAppsContent ? 1 : 0, headerFade);
+        setter.setFloat(mTabLayout, VIEW_ALPHA, hasAllAppsContent ? 1 : 0, headerFade);
     }
 
     protected void allowTouchForwarding(boolean allow) {
