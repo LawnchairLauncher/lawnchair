@@ -167,12 +167,9 @@ public class NavigationModeSwitchRule implements TestRule {
             return false;
         }
 
-        setOverlayPackageEnabled(NAV_BAR_MODE_3BUTTON_OVERLAY,
-                overlayPackage == NAV_BAR_MODE_3BUTTON_OVERLAY);
-        setOverlayPackageEnabled(NAV_BAR_MODE_2BUTTON_OVERLAY,
-                overlayPackage == NAV_BAR_MODE_2BUTTON_OVERLAY);
-        setOverlayPackageEnabled(NAV_BAR_MODE_GESTURAL_OVERLAY,
-                overlayPackage == NAV_BAR_MODE_GESTURAL_OVERLAY);
+        Log.d(TAG, "setActiveOverlay: " + overlayPackage + "...");
+        UiDevice.getInstance(getInstrumentation()).executeShellCommand(
+                "cmd overlay enable-exclusive " + overlayPackage);
 
         if (currentSysUiNavigationMode() != expectedMode) {
             final CountDownLatch latch = new CountDownLatch(1);
@@ -202,14 +199,6 @@ public class NavigationModeSwitchRule implements TestRule {
                 60000 /* b/148422894 */, launcher);
         AbstractLauncherUiTest.checkDetectedLeaks();
         return true;
-    }
-
-    private static void setOverlayPackageEnabled(String overlayPackage, boolean enable)
-            throws Exception {
-        Log.d(TAG, "setOverlayPackageEnabled: " + overlayPackage + " " + enable);
-        final String action = enable ? "enable" : "disable";
-        UiDevice.getInstance(getInstrumentation()).executeShellCommand(
-                "cmd overlay " + action + " " + overlayPackage);
     }
 
     private static boolean packageExists(String packageName) {
