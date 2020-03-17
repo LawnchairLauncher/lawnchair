@@ -50,7 +50,16 @@ public final class PagedViewOrientedState {
      */
     private boolean mDisableMultipleOrientations;
 
+    /**
+     * Sets the appropriate {@link PagedOrientationHandler} for {@link #mOrientationHandler}
+     * @param touchRotation The rotation the nav bar region that is touched is in
+     * @param displayRotation Rotation of the display/device
+     */
     public void update(int touchRotation, int displayRotation) {
+        if (mDisableMultipleOrientations) {
+            return;
+        }
+
         mDisplayRotation = displayRotation;
         mTouchRotation = touchRotation;
         if (mTouchRotation == Surface.ROTATION_90) {
@@ -62,20 +71,13 @@ public final class PagedViewOrientedState {
         }
     }
 
-    /**
-     * @return {@code true} if the area where the user touched the nav bar is the expected
-     * location for the given display rotation. Ex. bottom of phone in portrait, or left side of
-     * phone in landscape, right side in seascape, etc.
-     * False otherwise
-     */
-    public boolean isTouchRegionNaturalForDisplay() {
-        return mTouchRotation == mDisplayRotation;
-    }
-
     public boolean areMultipleLayoutOrientationsDisabled() {
         return mDisableMultipleOrientations;
     }
 
+    /**
+     * Setting this preference will render future calls to {@link #update(int, int)} as a no-op.
+     */
     public void disableMultipleOrientations(boolean disable) {
         mDisableMultipleOrientations = disable;
         if (disable) {

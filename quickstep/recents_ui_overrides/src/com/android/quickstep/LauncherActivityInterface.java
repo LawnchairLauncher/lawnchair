@@ -56,6 +56,8 @@ import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.appprediction.PredictionUiStateManager;
 import com.android.launcher3.touch.PagedOrientationHandler;
+import com.android.launcher3.uioverrides.BackgroundBlurController;
+import com.android.launcher3.uioverrides.BackgroundBlurController.ClampedBlurProperty;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.views.FloatingIconView;
 import com.android.quickstep.SysUINavigationMode.Mode;
@@ -327,7 +329,18 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
                     fromState.getVerticalProgress(activity),
                     endState.getVerticalProgress(activity)));
         }
+
+        // Animate the blur
+        BackgroundBlurController blurController = getBackgroundBlurController();
+        int fromBlurRadius = fromState.getBackgroundBlurRadius(activity);
+        int toBlurRadius = endState.getBackgroundBlurRadius(activity);
+        Animator backgroundBlur = ObjectAnimator.ofInt(blurController,
+                new ClampedBlurProperty(toBlurRadius, fromBlurRadius),
+                fromBlurRadius, toBlurRadius);
+        anim.play(backgroundBlur);
+
         playScaleDownAnim(anim, activity, fromState, endState);
+
 
         anim.setDuration(transitionLength * 2);
         anim.setInterpolator(LINEAR);
@@ -541,5 +554,15 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
         }
         PredictionUiStateManager.INSTANCE.get(launcher).switchClient(
                 PredictionUiStateManager.Client.OVERVIEW);
+    }
+
+    @Nullable
+    @Override
+    public BackgroundBlurController getBackgroundBlurController() {
+        BaseQuickstepLauncher launcher = getCreatedActivity();
+        if (launcher == null) {
+            return null;
+        }
+        return launcher.getBackgroundBlurController();
     }
 }

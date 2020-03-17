@@ -16,12 +16,13 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
+
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.MotionEvent;
-import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -31,6 +32,8 @@ import com.android.launcher3.logging.StatsLogUtils.LogContainerProvider;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.views.Transposable;
+
+import java.util.ArrayList;
 
 public class Hotseat extends CellLayout implements LogContainerProvider, Insettable, Transposable {
 
@@ -75,10 +78,12 @@ public class Hotseat extends CellLayout implements LogContainerProvider, Insetta
     }
 
     @Override
-    public void fillInLogContainerData(View v, ItemInfo info, Target target, Target targetParent) {
-        target.gridX = info.cellX;
-        target.gridY = info.cellY;
-        targetParent.containerType = LauncherLogProto.ContainerType.HOTSEAT;
+    public void fillInLogContainerData(ItemInfo childInfo, Target child,
+            ArrayList<Target> parents) {
+        child.rank = childInfo.rank;
+        child.gridX = childInfo.cellX;
+        child.gridY = childInfo.cellY;
+        parents.add(newContainerTarget(LauncherLogProto.ContainerType.HOTSEAT));
     }
 
     @Override

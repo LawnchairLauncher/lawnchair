@@ -21,6 +21,7 @@ import static com.android.launcher3.BaseActivity.INVISIBLE_BY_APP_TRANSITIONS;
 import static com.android.launcher3.BaseActivity.INVISIBLE_BY_PENDING_FLAGS;
 import static com.android.launcher3.BaseActivity.PENDING_INVISIBLE_BY_WALLPAPER_ANIMATION;
 import static com.android.launcher3.LauncherState.ALL_APPS;
+import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.Utilities.postAsyncCallback;
 import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
@@ -29,6 +30,7 @@ import static com.android.launcher3.anim.Interpolators.DEACCEL_1_7;
 import static com.android.launcher3.anim.Interpolators.EXAGGERATED_EASE;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.dragndrop.DragLayer.ALPHA_INDEX_TRANSITIONS;
+import static com.android.launcher3.uioverrides.BackgroundBlurController.BACKGROUND_BLUR;
 import static com.android.launcher3.views.FloatingIconView.SHAPE_PROGRESS_DURATION;
 import static com.android.quickstep.TaskUtils.taskIsATargetWithMode;
 import static com.android.systemui.shared.system.QuickStepContract.getWindowCornerRadius;
@@ -66,6 +68,7 @@ import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.shortcuts.DeepShortcutView;
+import com.android.launcher3.uioverrides.BackgroundBlurController;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.launcher3.views.FloatingIconView;
@@ -87,7 +90,7 @@ import java.lang.ref.WeakReference;
 
 /**
  * {@link LauncherAppTransitionManager} with Quickstep-specific app transitions for launching from
- * home and/or all-apps.
+ * home and/or all-apps.  Not used for 3p launchers.
  */
 @TargetApi(Build.VERSION_CODES.O)
 @SuppressWarnings("unused")
@@ -136,7 +139,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
     // Progress = 0: All apps is fully pulled up, Progress = 1: All apps is fully pulled down.
     public static final float ALL_APPS_PROGRESS_OFF_SCREEN = 1.3059858f;
 
-    protected final Launcher mLauncher;
+    protected final BaseQuickstepLauncher mLauncher;
 
     private final DragLayer mDragLayer;
     private final AlphaProperty mDragLayerAlpha;
@@ -168,7 +171,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
     };
 
     public QuickstepAppTransitionManagerImpl(Context context) {
-        mLauncher = Launcher.getLauncher(context);
+        mLauncher = Launcher.cast(Launcher.getLauncher(context));
         mDragLayer = mLauncher.getDragLayer();
         mDragLayerAlpha = mDragLayer.getAlphaProperty(ALPHA_INDEX_TRANSITIONS);
         mHandler = new Handler(Looper.getMainLooper());
@@ -402,9 +405,9 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
             float[] alphas, float[] trans);
 
     /**
-     * @return Animator that controls the window of the opening targets.
+     * @return Animator that controls the window of the opening targets from app icons.
      */
-    private ValueAnimator getOpeningWindowAnimators(View v,
+    private Animator getOpeningWindowAnimators(View v,
             RemoteAnimationTargetCompat[] appTargets,
             RemoteAnimationTargetCompat[] wallpaperTargets,
             Rect windowTargetBounds, boolean toggleVisibility) {
@@ -458,6 +461,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
         RectF currentBounds = new RectF();
         RectF temp = new RectF();
 
+        AnimatorSet animatorSet = new AnimatorSet();
         ValueAnimator appAnimator = ValueAnimator.ofFloat(0, 1);
         appAnimator.setDuration(APP_LAUNCH_DURATION);
         appAnimator.setInterpolator(LINEAR);
@@ -542,15 +546,10 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                 SurfaceParams[] params = new SurfaceParams[appTargets.length];
                 for (int i = appTargets.length - 1; i >= 0; i--) {
                     RemoteAnimationTargetCompat target = appTargets[i];
-                    Rect targetCrop;
-                    final float alpha;
-                    final float cornerRadius;
+                    SurfaceParams.Builder builder = new SurfaceParams.Builder(target.leash);
                     if (target.mode == MODE_OPENING) {
                         matrix.setScale(scale, scale);
                         matrix.postTranslate(transX0, transY0);
-                        targetCrop = crop;
-                        alpha = 1f - mIconAlpha.value;
-                        cornerRadius = mWindowRadius.value;
                         matrix.mapRect(currentBounds, targetBounds);
                         if (mDeviceProfile.isVerticalBarLayout()) {
                             currentBounds.right -= croppedWidth;
@@ -558,22 +557,44 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                             currentBounds.bottom -= croppedHeight;
                         }
                         floatingView.update(currentBounds, mIconAlpha.value, percent, 0f,
-                                cornerRadius * scale, true /* isOpening */);
+                                mWindowRadius.value * scale, true /* isOpening */);
+                        builder.withMatrix(matrix)
+                                .withWindowCrop(crop)
+                                .withAlpha(1f - mIconAlpha.value)
+                                .withCornerRadius(mWindowRadius.value);
                     } else {
                         matrix.setTranslate(target.position.x, target.position.y);
-                        targetCrop = target.sourceContainerBounds;
-                        alpha = 1f;
-                        cornerRadius = 0;
+                        builder.withMatrix(matrix)
+                                .withWindowCrop(target.sourceContainerBounds)
+                                .withAlpha(1f);
                     }
-
-                    params[i] = new SurfaceParams(target.leash, alpha, matrix, targetCrop,
-                            RemoteAnimationProvider.getLayer(target, MODE_OPENING),
-                            cornerRadius);
+                    builder.withLayer(RemoteAnimationProvider.getLayer(target, MODE_OPENING));
+                    params[i] = builder.build();
                 }
                 surfaceApplier.scheduleApply(params);
             }
         });
-        return appAnimator;
+
+        // When launching an app from overview that doesn't map to a task, we still want to just
+        // blur the wallpaper instead of the launcher surface as well
+        boolean allowBlurringLauncher = mLauncher.getStateManager().getState() != OVERVIEW;
+        BackgroundBlurController blurController = mLauncher.getBackgroundBlurController();
+        ObjectAnimator backgroundRadiusAnim = ObjectAnimator.ofInt(blurController, BACKGROUND_BLUR,
+                BACKGROUND_APP.getBackgroundBlurRadius(mLauncher))
+                .setDuration(APP_LAUNCH_DURATION);
+        if (allowBlurringLauncher) {
+            blurController.setSurfaceToApp(RemoteAnimationProvider.findLowestOpaqueLayerTarget(
+                    appTargets, MODE_OPENING));
+            backgroundRadiusAnim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    blurController.setSurfaceToLauncher(mLauncher.getDragLayer());
+                }
+            });
+        }
+
+        animatorSet.playTogether(appAnimator, backgroundRadiusAnim);
+        return animatorSet;
     }
 
     /**
@@ -639,9 +660,12 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                 SurfaceParams[] params = new SurfaceParams[appTargets.length];
                 for (int i = appTargets.length - 1; i >= 0; i--) {
                     RemoteAnimationTargetCompat target = appTargets[i];
-                    params[i] = new SurfaceParams(target.leash, 1f, null,
-                            target.sourceContainerBounds,
-                            RemoteAnimationProvider.getLayer(target, MODE_OPENING), cornerRadius);
+                    params[i] = new SurfaceParams.Builder(target.leash)
+                            .withAlpha(1f)
+                            .withWindowCrop(target.sourceContainerBounds)
+                            .withLayer(RemoteAnimationProvider.getLayer(target, MODE_OPENING))
+                            .withCornerRadius(cornerRadius)
+                            .build();
                 }
                 surfaceApplier.scheduleApply(params);
             }
@@ -672,25 +696,25 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                 SurfaceParams[] params = new SurfaceParams[appTargets.length];
                 for (int i = appTargets.length - 1; i >= 0; i--) {
                     RemoteAnimationTargetCompat target = appTargets[i];
-                    final float alpha;
-                    final float cornerRadius;
+                    SurfaceParams.Builder builder = new SurfaceParams.Builder(target.leash);
                     if (target.mode == MODE_CLOSING) {
                         matrix.setScale(mScale.value, mScale.value,
                                 target.sourceContainerBounds.centerX(),
                                 target.sourceContainerBounds.centerY());
                         matrix.postTranslate(0, mDy.value);
                         matrix.postTranslate(target.position.x, target.position.y);
-                        alpha = mAlpha.value;
-                        cornerRadius = windowCornerRadius;
+                        builder.withMatrix(matrix)
+                                .withAlpha(mAlpha.value)
+                                .withCornerRadius(windowCornerRadius);
                     } else {
                         matrix.setTranslate(target.position.x, target.position.y);
-                        alpha = 1f;
-                        cornerRadius = 0f;
+                        builder.withMatrix(matrix)
+                                .withAlpha(1f);
                     }
-                    params[i] = new SurfaceParams(target.leash, alpha, matrix,
-                            target.sourceContainerBounds,
-                            RemoteAnimationProvider.getLayer(target, MODE_CLOSING),
-                            cornerRadius);
+                    params[i] = builder
+                            .withWindowCrop(target.sourceContainerBounds)
+                            .withLayer(RemoteAnimationProvider.getLayer(target, MODE_CLOSING))
+                            .build();
                 }
                 surfaceApplier.scheduleApply(params);
             }
