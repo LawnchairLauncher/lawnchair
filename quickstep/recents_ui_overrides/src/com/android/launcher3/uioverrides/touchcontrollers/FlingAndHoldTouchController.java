@@ -120,8 +120,8 @@ public class FlingAndHoldTouchController extends PortraitStatesTouchController {
         mPeekAnim.start();
         VibratorWrapper.INSTANCE.get(mLauncher).vibrate(OVERVIEW_HAPTIC);
 
-        mLauncher.getDragLayer().getScrim().animateToSysuiMultiplier(isPaused ? 0 : 1,
-                peekDuration, 0);
+        mLauncher.getDragLayer().getScrim().createSysuiMultiplierAnim(isPaused ? 0 : 1)
+                .setDuration(peekDuration).start();
     }
 
     /**

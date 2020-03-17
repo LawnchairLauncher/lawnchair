@@ -19,6 +19,7 @@ package com.android.launcher3.graphics;
 import static android.content.Intent.ACTION_SCREEN_OFF;
 import static android.content.Intent.ACTION_USER_PRESENT;
 
+import static com.android.launcher3.config.FeatureFlags.KEYGUARD_ANIMATION;
 import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
 
 import android.animation.ObjectAnimator;
@@ -81,6 +82,10 @@ public class WorkspaceAndHotseatScrim extends Scrim {
                 }
             };
 
+    /**
+     * Receiver used to get a signal that the user unlocked their device.
+     * @see KEYGUARD_ANIMATION For proper signal.
+     */
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -164,8 +169,10 @@ public class WorkspaceAndHotseatScrim extends Scrim {
                 mSysUiAnimMultiplier = 0;
                 reapplySysUiAlphaNoInvalidate();
 
-                animateToSysuiMultiplier(1, 600,
-                        mLauncher.getWindow().getTransitionBackgroundFadeDuration());
+                ObjectAnimator oa = createSysuiMultiplierAnim(1);
+                oa.setDuration(600);
+                oa.setStartDelay(mLauncher.getWindow().getTransitionBackgroundFadeDuration());
+                oa.start();
                 mAnimateScrimOnNextDraw = false;
             }
 
@@ -178,13 +185,13 @@ public class WorkspaceAndHotseatScrim extends Scrim {
         }
     }
 
-    public void animateToSysuiMultiplier(float toMultiplier, long duration,
-            long startDelay) {
-        ObjectAnimator anim = ObjectAnimator.ofFloat(this, SYSUI_ANIM_MULTIPLIER, toMultiplier);
+    /**
+     * @return an ObjectAnimator that controls the fade in/out of the sys ui scrim.
+     */
+    public ObjectAnimator createSysuiMultiplierAnim(float... values) {
+        ObjectAnimator anim = ObjectAnimator.ofFloat(this, SYSUI_ANIM_MULTIPLIER, values);
         anim.setAutoCancel(true);
-        anim.setDuration(duration);
-        anim.setStartDelay(startDelay);
-        anim.start();
+        return anim;
     }
 
     public void onInsetsChanged(Rect insets) {
@@ -197,7 +204,7 @@ public class WorkspaceAndHotseatScrim extends Scrim {
     public void onViewAttachedToWindow(View view) {
         super.onViewAttachedToWindow(view);
 
-        if (mTopScrim != null) {
+        if (!KEYGUARD_ANIMATION.get() && mTopScrim != null) {
             IntentFilter filter = new IntentFilter(ACTION_SCREEN_OFF);
             filter.addAction(ACTION_USER_PRESENT); // When the device wakes up + keyguard is gone
             mRoot.getContext().registerReceiver(mReceiver, filter);
@@ -207,7 +214,7 @@ public class WorkspaceAndHotseatScrim extends Scrim {
     @Override
     public void onViewDetachedFromWindow(View view) {
         super.onViewDetachedFromWindow(view);
-        if (mTopScrim != null) {
+        if (!KEYGUARD_ANIMATION.get() && mTopScrim != null) {
             mRoot.getContext().unregisterReceiver(mReceiver);
         }
     }

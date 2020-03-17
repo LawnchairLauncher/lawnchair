@@ -126,6 +126,8 @@ public class StaggeredWorkspaceAnim {
             addScrimAnimationForState(launcher, NORMAL, ALPHA_DURATION_MS);
         }
 
+        mAnimators.play(launcher.getDragLayer().getScrim().createSysuiMultiplierAnim(0f, 1f)
+                .setDuration(ALPHA_DURATION_MS));
         mAnimators.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -151,6 +153,10 @@ public class StaggeredWorkspaceAnim {
 
         // Stop scrolling so that it doesn't interfere with the translation offscreen.
         launcher.<RecentsView>getOverviewPanel().getScroller().forceFinished(true);
+    }
+
+    public AnimatorSet getAnimators() {
+        return mAnimators;
     }
 
     /**
