@@ -17,6 +17,7 @@
 package com.android.launcher3;
 
 import static com.android.launcher3.config.FeatureFlags.MULTI_DB_GRID_MIRATION_ALGO;
+import static com.android.launcher3.provider.LauncherDbUtils.copyTable;
 import static com.android.launcher3.provider.LauncherDbUtils.dropTable;
 import static com.android.launcher3.provider.LauncherDbUtils.tableExists;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
@@ -164,8 +165,11 @@ public class LauncherProvider extends ContentProvider {
             return false;
         }
 
-        mOpenHelper.close();
+        DatabaseHelper oldHelper = mOpenHelper;
         mOpenHelper = new DatabaseHelper(getContext());
+        copyTable(oldHelper.getReadableDatabase(), Favorites.TABLE_NAME,
+                mOpenHelper.getWritableDatabase(), Favorites.TMP_TABLE, getContext());
+        oldHelper.close();
         return true;
     }
 
