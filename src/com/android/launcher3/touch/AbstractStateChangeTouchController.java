@@ -535,7 +535,7 @@ public abstract class AbstractStateChangeTouchController
             // case the user started interacting with it before the animation finished.
             mLauncher.getStateManager().goToState(targetState, false /* animated */);
         }
-        mLauncher.getDragLayer().getScrim().animateToSysuiMultiplier(1, 0, 0);
+        mLauncher.getDragLayer().getScrim().createSysuiMultiplierAnim(1f).setDuration(0).start();
     }
 
     private void logReachedState(int logAction, LauncherState targetState) {

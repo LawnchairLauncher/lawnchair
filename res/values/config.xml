@@ -142,6 +142,7 @@
 
     <item name="staggered_damping_ratio" type="dimen" format="float">0.7</item>
     <item name="staggered_stiffness" type="dimen" format="float">150</item>
+    <dimen name="unlock_staggered_velocity_dp_per_s">3dp</dimen>
 
     <!-- Swipe up to home related -->
     <dimen name="swipe_up_fling_min_visible_change">18dp</dimen>
@@ -170,6 +171,7 @@
 
         <item>@dimen/staggered_damping_ratio</item>
         <item>@dimen/staggered_stiffness</item>
+        <item>@dimen/unlock_staggered_velocity_dp_per_s</item>
 
         <item>@dimen/swipe_up_fling_min_visible_change</item>
         <item>@dimen/swipe_up_y_overshoot</item>

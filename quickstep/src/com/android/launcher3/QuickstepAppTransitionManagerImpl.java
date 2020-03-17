@@ -16,6 +16,8 @@
 
 package com.android.launcher3;
 
+import static android.util.TypedValue.COMPLEX_UNIT_DIP;
+
 import static com.android.launcher3.BaseActivity.INVISIBLE_ALL;
 import static com.android.launcher3.BaseActivity.INVISIBLE_BY_APP_TRANSITIONS;
 import static com.android.launcher3.BaseActivity.INVISIBLE_BY_PENDING_FLAGS;
@@ -29,6 +31,7 @@ import static com.android.launcher3.anim.Interpolators.AGGRESSIVE_EASE;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_1_7;
 import static com.android.launcher3.anim.Interpolators.EXAGGERATED_EASE;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.launcher3.config.FeatureFlags.KEYGUARD_ANIMATION;
 import static com.android.launcher3.dragndrop.DragLayer.ALPHA_INDEX_TRANSITIONS;
 import static com.android.launcher3.uioverrides.BackgroundBlurController.BACKGROUND_BLUR;
 import static com.android.launcher3.views.FloatingIconView.SHAPE_PROGRESS_DURATION;
@@ -58,6 +61,7 @@ import android.os.CancellationSignal;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Pair;
+import android.util.TypedValue;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -70,12 +74,14 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.uioverrides.BackgroundBlurController;
+import com.android.launcher3.util.DynamicResource;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.launcher3.views.FloatingIconView;
 import com.android.quickstep.RemoteAnimationTargets;
 import com.android.quickstep.util.MultiValueUpdateListener;
 import com.android.quickstep.util.RemoteAnimationProvider;
+import com.android.quickstep.util.StaggeredWorkspaceAnim;
 import com.android.systemui.shared.system.ActivityCompat;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.QuickStepContract;
@@ -156,6 +162,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
     // Strong refs to runners which are cleared when the launcher activity is destroyed
     private WrappedAnimationRunnerImpl mWallpaperOpenRunner;
     private WrappedAnimationRunnerImpl mAppLaunchRunner;
+    private WrappedAnimationRunnerImpl mKeyguardGoingAwayRunner;
 
     private final AnimatorListenerAdapter mForceInvisibleListener = new AnimatorListenerAdapter() {
         @Override
@@ -623,6 +630,17 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                             new WrappedLauncherAnimationRunner<>(mWallpaperOpenRunner,
                                     false /* startAtFrontOfQueue */),
                             CLOSING_TRANSITION_DURATION_MS, 0 /* statusBarTransitionDelay */));
+
+            if (KEYGUARD_ANIMATION.get()) {
+                mKeyguardGoingAwayRunner = createWallpaperOpenRunner(true /* fromUnlock */);
+                definition.addRemoteAnimation(
+                        WindowManagerWrapper.TRANSIT_KEYGUARD_GOING_AWAY_ON_WALLPAPER,
+                        new RemoteAnimationAdapterCompat(
+                                new WrappedLauncherAnimationRunner<>(mKeyguardGoingAwayRunner,
+                                        true /* startAtFrontOfQueue */),
+                                CLOSING_TRANSITION_DURATION_MS, 0 /* statusBarTransitionDelay */));
+            }
+
             new ActivityCompat(mLauncher).registerRemoteAnimations(definition);
         }
     }
@@ -639,6 +657,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
             // definition so we don't have to wait for the system gc
             mWallpaperOpenRunner = null;
             mAppLaunchRunner = null;
+            mKeyguardGoingAwayRunner = null;
         }
     }
 
@@ -868,18 +887,14 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                         || mLauncher.isForceInvisible()) {
                     // Only register the content animation for cancellation when state changes
                     mLauncher.getStateManager().setCurrentAnimation(anim);
+
                     if (mFromUnlock) {
-                        Pair<AnimatorSet, Runnable> contentAnimator =
-                                getLauncherContentAnimator(false /* isAppOpening */,
-                                        new float[] {mContentTransY, 0});
-                        contentAnimator.first.setStartDelay(0);
-                        anim.play(contentAnimator.first);
-                        anim.addListener(new AnimatorListenerAdapter() {
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                                contentAnimator.second.run();
-                            }
-                        });
+                        float velocityDpPerS = DynamicResource.provider(mLauncher)
+                                .getDimension(R.dimen.unlock_staggered_velocity_dp_per_s);
+                        float velocityPxPerS = TypedValue.applyDimension(COMPLEX_UNIT_DIP,
+                                velocityDpPerS, mLauncher.getResources().getDisplayMetrics());
+                        anim.play(new StaggeredWorkspaceAnim(mLauncher, velocityPxPerS, false)
+                                .getAnimators());
                     } else {
                         createLauncherResumeAnimation(anim);
                     }
