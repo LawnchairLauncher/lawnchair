@@ -324,13 +324,11 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     public void startEditingFolderName() {
         post(() -> {
             if (FeatureFlags.FOLDER_NAME_SUGGEST.get()) {
-                if (isEmpty(mFolderName.getText())) {
-                    ofNullable(mInfo)
-                            .map(info -> info.suggestedFolderNames)
-                            .map(folderNames -> (FolderNameInfo[]) folderNames
-                                    .getParcelableArrayExtra(FolderInfo.EXTRA_FOLDER_SUGGESTIONS))
-                            .ifPresent(nameInfos -> showLabelSuggestion(nameInfos, false));
-                }
+                ofNullable(mInfo)
+                        .map(info -> info.suggestedFolderNames)
+                        .map(folderNames -> (FolderNameInfo[]) folderNames
+                                .getParcelableArrayExtra(FolderInfo.EXTRA_FOLDER_SUGGESTIONS))
+                        .ifPresent(nameInfos -> showLabelSuggestion(nameInfos, false));
             }
             mFolderName.setHint("");
             mIsEditingName = true;
@@ -485,19 +483,24 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
                 nameInfos[1].getLabel());
 
         if (shouldOpen) {
-            CharSequence firstLabel = nameInfos[0] == null ? "" : nameInfos[0].getLabel();
-            if (!isEmpty(firstLabel)) {
-                mFolderName.setHint("");
-                mFolderName.setText(firstLabel);
+            // update the primary suggestion if the folder name is empty.
+            if (isEmpty(mFolderName.getText())) {
+                CharSequence firstLabel = nameInfos[0] == null ? "" : nameInfos[0].getLabel();
+                if (!isEmpty(firstLabel)) {
+                    mFolderName.setHint("");
+                    mFolderName.setText(firstLabel);
+                }
             }
             if (animate) {
                 animateOpen(mInfo.contents, 0, true);
             }
             mFolderName.showKeyboard();
             mFolderName.displayCompletions(
-                    asList(nameInfos).subList(1, nameInfos.length).stream()
+                    asList(nameInfos).subList(0, nameInfos.length).stream()
                             .filter(Objects::nonNull)
                             .map(s -> s.getLabel().toString())
+                            .filter(s -> !s.isEmpty())
+                            .filter(s -> !s.equalsIgnoreCase(mFolderName.getText().toString()))
                             .collect(Collectors.toList()));
         }
     }
