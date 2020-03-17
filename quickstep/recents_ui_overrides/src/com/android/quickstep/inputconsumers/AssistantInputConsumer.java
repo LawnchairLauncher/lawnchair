@@ -90,12 +90,18 @@ public class AssistantInputConsumer extends DelegateInputConsumer {
     private final float mSquaredSlop;
     private final Context mContext;
     private final GestureDetector mGestureDetector;
+    private final boolean mIsAssistGestureConstrained;
 
-    public AssistantInputConsumer(Context context, GestureState gestureState,
-            InputConsumer delegate, InputMonitorCompat inputMonitor) {
+    public AssistantInputConsumer(
+            Context context,
+            GestureState gestureState,
+            InputConsumer delegate,
+            InputMonitorCompat inputMonitor,
+            boolean isAssistGestureConstrained) {
         super(delegate, inputMonitor);
         final Resources res = context.getResources();
         mContext = context;
+        mIsAssistGestureConstrained = isAssistGestureConstrained;
         mDragDistThreshold = res.getDimension(R.dimen.gestures_assistant_drag_threshold);
         mFlingDistThreshold = res.getDimension(R.dimen.gestures_assistant_fling_threshold);
         mTimeThreshold = res.getInteger(R.integer.assistant_gesture_min_time_threshold);
@@ -258,7 +264,8 @@ public class AssistantInputConsumer extends DelegateInputConsumer {
     private class AssistantGestureListener extends SimpleOnGestureListener {
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            if (isValidAssistantGestureAngle(velocityX, -velocityY)
+            if (!mIsAssistGestureConstrained
+                && isValidAssistantGestureAngle(velocityX, -velocityY)
                     && mDistance >= mFlingDistThreshold
                     && !mLaunchedAssistant
                     && mState != STATE_DELEGATE_ACTIVE) {
