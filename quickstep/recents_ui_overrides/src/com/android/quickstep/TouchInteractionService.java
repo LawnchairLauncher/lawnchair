@@ -466,8 +466,11 @@ public class TouchInteractionService extends Service implements PluginListener<O
                 // Do not change mConsumer as if there is an ongoing QuickSwitch gesture, we should
                 // not interrupt it. QuickSwitch assumes that interruption can only happen if the
                 // next gesture is also quick switch.
-                mUncheckedConsumer = new AssistantInputConsumer(this, newGestureState,
-                        InputConsumer.NO_OP, mInputMonitorCompat);
+                mUncheckedConsumer = new AssistantInputConsumer(
+                    this,
+                    newGestureState,
+                    InputConsumer.NO_OP, mInputMonitorCompat,
+                    mOverviewComponentObserver.assistantGestureIsConstrained());
             } else {
                 mUncheckedConsumer = InputConsumer.NO_OP;
             }
@@ -505,7 +508,12 @@ public class TouchInteractionService extends Service implements PluginListener<O
         if (mDeviceState.isFullyGesturalNavMode()) {
             handleOrientationSetup(base);
             if (mDeviceState.canTriggerAssistantAction(event)) {
-                base = new AssistantInputConsumer(this, newGestureState, base, mInputMonitorCompat);
+                base = new AssistantInputConsumer(
+                    this,
+                    newGestureState,
+                    base,
+                    mInputMonitorCompat,
+                    mOverviewComponentObserver.assistantGestureIsConstrained());
             }
 
             if (FeatureFlags.ENABLE_QUICK_CAPTURE_GESTURE.get()) {
