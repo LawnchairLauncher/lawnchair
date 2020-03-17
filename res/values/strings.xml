@@ -208,7 +208,7 @@
     <string name="notification_dots_service_title">Show notification dots</string>
 
     <!-- Label for the setting that allows the automatic placement of launcher shortcuts for applications and games installed on the device [CHAR LIMIT=40] -->
-    <string name="auto_add_shortcuts_label">Add icon to Home screen</string>
+    <string name="auto_add_shortcuts_label">Add app icons to Home screen</string>
     <!-- Text description of the setting that allows the automatic placement of launcher shortcuts for applications and games installed on the device [CHAR LIMIT=NONE] -->
     <string name="auto_add_shortcuts_description">For new apps</string>
 
