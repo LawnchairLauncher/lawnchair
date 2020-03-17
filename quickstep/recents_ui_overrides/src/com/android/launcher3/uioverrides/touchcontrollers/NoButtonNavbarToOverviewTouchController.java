@@ -19,9 +19,9 @@ package com.android.launcher3.uioverrides.touchcontrollers;
 import static com.android.launcher3.LauncherState.HINT_STATE;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
-import static com.android.launcher3.LauncherStateManager.PLAY_ATOMIC_OVERVIEW_PEEK;
 import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
 import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
+import static com.android.launcher3.states.StateAnimationConfig.PLAY_ATOMIC_OVERVIEW_PEEK;
 import static com.android.launcher3.util.VibratorWrapper.OVERVIEW_HAPTIC;
 
 import android.animation.AnimatorSet;
@@ -34,7 +34,7 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
-import com.android.launcher3.anim.AnimatorSetBuilder;
+import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.util.VibratorWrapper;
 import com.android.quickstep.util.StaggeredWorkspaceAnim;
@@ -171,11 +171,11 @@ public class NoButtonNavbarToOverviewTouchController extends FlingAndHoldTouchCo
 
                 // StaggeredWorkspaceAnim doesn't animate overview, so we handle it here.
                 stateManager.cancelAnimation();
-                AnimatorSetBuilder builder = new AnimatorSetBuilder();
-                long duration = OVERVIEW.getTransitionDuration(mLauncher);
+                StateAnimationConfig config = new StateAnimationConfig();
+                config.duration = OVERVIEW.getTransitionDuration(mLauncher);
+                config.animFlags = PLAY_ATOMIC_OVERVIEW_PEEK;
                 AnimatorSet anim = stateManager.createAtomicAnimation(
-                        stateManager.getState(), NORMAL, builder,
-                        PLAY_ATOMIC_OVERVIEW_PEEK, duration);
+                        stateManager.getState(), NORMAL, config);
                 anim.addListener(AnimationSuccessListener.forRunnable(
                         () -> onSwipeInteractionCompleted(NORMAL, Touch.SWIPE)));
                 anim.start();

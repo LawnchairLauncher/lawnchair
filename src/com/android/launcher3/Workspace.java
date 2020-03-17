@@ -60,11 +60,10 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Toast;
 
 import com.android.launcher3.LauncherAppWidgetHost.ProviderChangedListener;
-import com.android.launcher3.LauncherStateManager.AnimationConfig;
 import com.android.launcher3.accessibility.AccessibleDragListenerAdapter;
 import com.android.launcher3.accessibility.WorkspaceAccessibilityHelper;
-import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.Interpolators;
+import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dot.FolderDotInfo;
 import com.android.launcher3.dragndrop.DragController;
@@ -83,6 +82,7 @@ import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.pageindicators.WorkspacePageIndicator;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.shortcuts.ShortcutDragPreviewProvider;
+import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.touch.WorkspaceTouchListener;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -1383,10 +1383,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
      * Sets the current workspace {@link LauncherState}, then animates the UI
      */
     @Override
-    public void setStateWithAnimation(LauncherState toState,
-            AnimatorSetBuilder builder, AnimationConfig config) {
+    public void setStateWithAnimation(
+            LauncherState toState, StateAnimationConfig config, PendingAnimation animation) {
         StateTransitionListener listener = new StateTransitionListener(toState);
-        mStateTransitionAnimation.setStateWithAnimation(toState, builder, config);
+        mStateTransitionAnimation.setStateWithAnimation(toState, config, animation);
 
         // Invalidate the pages now, so that we have the visible pages before the
         // animation is started
@@ -1399,7 +1399,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         stepAnimator.addUpdateListener(listener);
         stepAnimator.setDuration(config.duration);
         stepAnimator.addListener(listener);
-        builder.play(stepAnimator);
+        animation.add(stepAnimator);
     }
 
     public WorkspaceStateTransitionAnimation getStateTransitionAnimation() {
