@@ -21,18 +21,18 @@ import static com.android.launcher3.LauncherState.HOTSEAT_ICONS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.QUICK_SWITCH;
-import static com.android.launcher3.LauncherStateManager.ANIM_ALL_COMPONENTS;
-import static com.android.launcher3.LauncherStateManager.SKIP_OVERVIEW;
 import static com.android.launcher3.anim.AlphaUpdateListener.ALPHA_CUTOFF_THRESHOLD;
-import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_ALL_APPS_FADE;
-import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_VERTICAL_PROGRESS;
-import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_FADE;
-import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_TRANSLATE;
 import static com.android.launcher3.anim.Interpolators.ACCEL_0_75;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_5;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelocity;
+import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_FADE;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_VERTICAL_PROGRESS;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_FADE;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_TRANSLATE;
+import static com.android.launcher3.states.StateAnimationConfig.SKIP_OVERVIEW;
 import static com.android.launcher3.touch.BothAxesSwipeDetector.DIRECTION_RIGHT;
 import static com.android.launcher3.touch.BothAxesSwipeDetector.DIRECTION_UP;
 import static com.android.launcher3.util.DefaultDisplay.getSingleFrameMs;
@@ -55,15 +55,13 @@ import android.view.animation.Interpolator;
 
 import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.LauncherStateManager.AnimationConfig;
-import com.android.launcher3.LauncherStateManager.AnimationFlags;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.anim.AnimatorPlaybackController;
-import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.OverviewScrim;
+import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.touch.BaseSwipeDetector;
 import com.android.launcher3.touch.BothAxesSwipeDetector;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
@@ -192,11 +190,9 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         ShelfAnimState shelfState = isPaused ? PEEK : HIDE;
         if (shelfState == PEEK) {
             // Some shelf elements (e.g. qsb) were hidden, but we need them visible when peeking.
-            AnimatorSetBuilder builder = new AnimatorSetBuilder();
             AllAppsTransitionController allAppsController = mLauncher.getAllAppsController();
-            allAppsController.setAlphas(NORMAL.getVisibleElements(mLauncher),
-                    new AnimationConfig(), builder);
-            builder.build().setDuration(0).start();
+            allAppsController.setAlphas(
+                    NORMAL, new StateAnimationConfig(), NO_ANIM_PROPERTY_SETTER);
 
             if ((OVERVIEW.getVisibleElements(mLauncher) & HOTSEAT_ICONS) != 0) {
                 // Hotseat was hidden, but we need it visible when peeking.
@@ -209,12 +205,12 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
 
     private void setupAnimators() {
         // Animate the non-overview components (e.g. workspace, shelf) out of the way.
-        AnimatorSetBuilder nonOverviewBuilder = new AnimatorSetBuilder();
+        StateAnimationConfig nonOverviewBuilder = new StateAnimationConfig();
         nonOverviewBuilder.setInterpolator(ANIM_WORKSPACE_FADE, FADE_OUT_INTERPOLATOR);
         nonOverviewBuilder.setInterpolator(ANIM_ALL_APPS_FADE, FADE_OUT_INTERPOLATOR);
         nonOverviewBuilder.setInterpolator(ANIM_WORKSPACE_TRANSLATE, TRANSLATE_OUT_INTERPOLATOR);
         nonOverviewBuilder.setInterpolator(ANIM_VERTICAL_PROGRESS, TRANSLATE_OUT_INTERPOLATOR);
-        updateNonOverviewAnim(QUICK_SWITCH, nonOverviewBuilder, ANIM_ALL_COMPONENTS);
+        updateNonOverviewAnim(QUICK_SWITCH, nonOverviewBuilder);
         mNonOverviewAnim.dispatchOnStart();
 
         if (mRecentsView.getTaskViewCount() == 0) {
@@ -230,11 +226,12 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
     }
 
     /** Create state animation to control non-overview components. */
-    private void updateNonOverviewAnim(LauncherState toState, AnimatorSetBuilder builder,
-            @AnimationFlags int animComponents) {
-        long accuracy = (long) (Math.max(mXRange, mYRange) * 2);
-        mNonOverviewAnim = mLauncher.getStateManager().createAnimationToNewWorkspace(toState,
-                builder, accuracy, this::clearState, animComponents | SKIP_OVERVIEW);
+    private void updateNonOverviewAnim(LauncherState toState, StateAnimationConfig config) {
+        config.duration = (long) (Math.max(mXRange, mYRange) * 2);
+        config.animFlags = config.animFlags | SKIP_OVERVIEW;
+        mNonOverviewAnim = mLauncher.getStateManager()
+                .createAnimationToNewWorkspace(toState, config)
+                .setOnCancelRunnable(this::clearState);
     }
 
     private void setupOverviewAnimators() {
@@ -419,8 +416,10 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         if (flingUpToNormal && !mIsHomeScreenVisible) {
             // We are flinging to home while workspace is invisible, run the same staggered
             // animation as from an app.
+            StateAnimationConfig config = new StateAnimationConfig();
             // Update mNonOverviewAnim to do nothing so it doesn't interfere.
-            updateNonOverviewAnim(targetState, new AnimatorSetBuilder(), 0 /* animComponents */);
+            config.animFlags = 0;
+            updateNonOverviewAnim(targetState, config);
             nonOverviewAnim = mNonOverviewAnim.getAnimationPlayer();
 
             new StaggeredWorkspaceAnim(mLauncher, velocity.y, false /* animateOverviewScrim */)

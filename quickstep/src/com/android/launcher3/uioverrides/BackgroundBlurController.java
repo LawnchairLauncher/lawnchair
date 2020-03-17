@@ -26,8 +26,8 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.anim.AnimatorSetBuilder;
-import com.android.launcher3.anim.PropertySetter;
+import com.android.launcher3.anim.PendingAnimation;
+import com.android.launcher3.states.StateAnimationConfig;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.SurfaceControlCompat;
 import com.android.systemui.shared.system.TransactionCompat;
@@ -133,16 +133,15 @@ public class BackgroundBlurController implements LauncherStateManager.StateHandl
     }
 
     @Override
-    public void setStateWithAnimation(LauncherState toState, AnimatorSetBuilder builder,
-            LauncherStateManager.AnimationConfig config) {
+    public void setStateWithAnimation(LauncherState toState, StateAnimationConfig config,
+            PendingAnimation animation) {
         if (mSurface == null || config.onlyPlayAtomicComponent()) {
             return;
         }
 
         int toBackgroundBlurRadius = toState.getBackgroundBlurRadius(mLauncher);
         if (mBackgroundBlurRadius != toBackgroundBlurRadius) {
-            PropertySetter propertySetter = config.getPropertySetter(builder);
-            propertySetter.setInt(this, BACKGROUND_BLUR, toBackgroundBlurRadius, LINEAR);
+            animation.setInt(this, BACKGROUND_BLUR, toBackgroundBlurRadius, LINEAR);
         }
     }
 

@@ -50,6 +50,7 @@ import com.android.systemui.shared.system.WindowManagerWrapper;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.systemui.shared.system.QuickStepContract.getWindowCornerRadius;
 import static com.android.systemui.shared.system.QuickStepContract.supportsRoundedCornersOnWindows;
+import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING;
 
@@ -119,7 +120,7 @@ public class AppWindowAnimationHelper {
 
     private void updateSourceStack(RemoteAnimationTargetCompat target) {
         mSourceInsets.set(target.contentInsets);
-        mSourceStackBounds.set(target.sourceContainerBounds);
+        mSourceStackBounds.set(target.screenSpaceBounds);
 
         // TODO: Should sourceContainerBounds already have this offset?
         mSourceStackBounds.offsetTo(target.position.x, target.position.y);
@@ -199,9 +200,17 @@ public class AppWindowAnimationHelper {
         for (int i = 0; i < params.mTargetSet.unfilteredApps.length; i++) {
             RemoteAnimationTargetCompat app = params.mTargetSet.unfilteredApps[i];
             SurfaceParams.Builder builder = new SurfaceParams.Builder(app.leash);
-            mTmpMatrix.setTranslate(app.position.x, app.position.y);
+            if (app.localBounds != null) {
+                mTmpMatrix.setTranslate(0, 0);
+                if (app.activityType == ACTIVITY_TYPE_HOME && app.mode == MODE_CLOSING) {
+                    mTmpMatrix.setTranslate(app.localBounds.left, app.localBounds.top);
+                }
+            } else {
+                mTmpMatrix.setTranslate(app.position.x, app.position.y);
+            }
+
             Rect crop = mTmpRect;
-            crop.set(app.sourceContainerBounds);
+            crop.set(app.screenSpaceBounds);
             crop.offsetTo(0, 0);
             float alpha;
             float cornerRadius = 0f;
@@ -211,7 +220,11 @@ public class AppWindowAnimationHelper {
                 alpha = mTaskAlphaCallback.getAlpha(app, params.mTargetAlpha);
                 if (app.activityType != RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME) {
                     mTmpMatrix.setRectToRect(mSourceRect, mCurrentRect, ScaleToFit.FILL);
-                    mTmpMatrix.postTranslate(app.position.x, app.position.y);
+                    if (app.localBounds != null) {
+                        mTmpMatrix.postTranslate(app.localBounds.left, app.localBounds.top);
+                    } else {
+                        mTmpMatrix.postTranslate(app.position.x, app.position.y);
+                    }
                     mCurrentClipRectF.roundOut(crop);
                     if (mSupportsRoundedCornersOnWindows) {
                         if (params.mCornerRadius > -1) {
