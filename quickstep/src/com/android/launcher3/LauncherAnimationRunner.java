@@ -34,7 +34,8 @@ import com.android.systemui.shared.system.RemoteAnimationRunnerCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 @TargetApi(Build.VERSION_CODES.P)
-public abstract class LauncherAnimationRunner implements RemoteAnimationRunnerCompat {
+public abstract class LauncherAnimationRunner implements RemoteAnimationRunnerCompat,
+        WrappedAnimationRunnerImpl {
 
     private final Handler mHandler;
     private final boolean mStartAtFrontOfQueue;
@@ -47,6 +48,10 @@ public abstract class LauncherAnimationRunner implements RemoteAnimationRunnerCo
     public LauncherAnimationRunner(Handler handler, boolean startAtFrontOfQueue) {
         mHandler = handler;
         mStartAtFrontOfQueue = startAtFrontOfQueue;
+    }
+
+    public Handler getHandler() {
+        return mHandler;
     }
 
     // Called only in R+ platform
