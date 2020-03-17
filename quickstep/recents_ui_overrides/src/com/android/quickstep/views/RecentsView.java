@@ -68,7 +68,6 @@ import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
-import android.view.OrientationEventListener;
 import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
@@ -88,7 +87,6 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.anim.PendingAnimation.EndState;
@@ -96,7 +94,6 @@ import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.anim.SpringProperty;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.states.RotationHelper;
 import com.android.launcher3.touch.PagedOrientationHandler.CurveProperties;
@@ -1165,7 +1162,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     }
 
     private void addDismissedTaskAnimations(View taskView, long duration, PendingAnimation anim) {
-        anim.add(ObjectAnimator.ofFloat(taskView, ALPHA, 0).setDuration(duration), ACCEL_2);
+        anim.setViewAlpha(taskView, 0, ACCEL_2);
         FloatProperty<View> secondaryViewTranslate =
             mOrientationHandler.getSecondaryViewTranslate();
         int secondaryTaskDimension = mOrientationHandler.getSecondaryDimension(taskView);
@@ -1257,9 +1254,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         }
 
         if (needsCurveUpdates) {
-            ValueAnimator va = ValueAnimator.ofFloat(0, 1);
-            va.addUpdateListener((a) -> updateCurveProperties());
-            anim.add(va);
+            anim.addOnFrameCallback(this::updateCurveProperties);
         }
 
         // Add a tiny bit of translation Z, so that it draws on top of other views
@@ -1279,6 +1274,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                 }
             }
 
+            @SuppressWarnings("WrongCall")
             private void onEnd(EndState endState) {
                 if (endState.isSuccess) {
                     if (shouldRemoveTask) {
@@ -1290,15 +1286,18 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                             pageToSnapTo == (getTaskViewCount() - 1)) {
                         pageToSnapTo -= 1;
                     }
-                    removeView(taskView);
+                    removeViewInLayout(taskView);
 
                     if (getTaskViewCount() == 0) {
-                        removeView(mClearAllButton);
+                        removeViewInLayout(mClearAllButton);
                         hideActionsView();
                         startHome();
                     } else {
                         snapToPageImmediately(pageToSnapTo);
                     }
+                    // Update the layout synchronously so that the position of next view is
+                    // immediately available.
+                    onLayout(false /*  changed */, getLeft(), getTop(), getRight(), getBottom());
                 }
                 resetTaskVisuals();
                 mPendingAnimation = null;
@@ -1548,6 +1547,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
+
         updateEmptyStateUi(changed);
 
         // Set the pivot points to match the task preview center
