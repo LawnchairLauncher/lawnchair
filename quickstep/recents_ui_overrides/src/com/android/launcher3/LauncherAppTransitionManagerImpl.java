@@ -20,7 +20,7 @@ import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.HOTSEAT_ICONS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
-import static com.android.launcher3.LauncherStateManager.ANIM_ALL;
+import static com.android.launcher3.LauncherStateManager.ANIM_ALL_COMPONENTS;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_ALL_APPS_FADE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_HOTSEAT_SCALE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_HOTSEAT_TRANSLATE;
@@ -91,8 +91,9 @@ public final class LauncherAppTransitionManagerImpl extends QuickstepAppTransiti
 
         AppWindowAnimationHelper helper =
             new AppWindowAnimationHelper(recentsView.getPagedViewOrientedState(), mLauncher);
-        anim.play(getRecentsWindowAnimator(taskView, skipLauncherChanges, appTargets,
-                wallpaperTargets, helper).setDuration(RECENTS_LAUNCH_DURATION));
+        Animator recentsAnimator = getRecentsWindowAnimator(taskView, skipLauncherChanges,
+                appTargets, wallpaperTargets, mLauncher.getBackgroundBlurController(), helper);
+        anim.play(recentsAnimator.setDuration(RECENTS_LAUNCH_DURATION));
 
         Animator childStateAnimation = null;
         // Found a visible recents task that matches the opening app, lets launch the app from there
@@ -219,7 +220,7 @@ public final class LauncherAppTransitionManagerImpl extends QuickstepAppTransiti
                 LauncherStateManager stateManager = mLauncher.getStateManager();
                 return stateManager.createAtomicAnimation(
                         stateManager.getCurrentStableState(), OVERVIEW, builder,
-                        ANIM_ALL, ATOMIC_DURATION_FROM_PAUSED_TO_OVERVIEW);
+                        ANIM_ALL_COMPONENTS, ATOMIC_DURATION_FROM_PAUSED_TO_OVERVIEW);
             }
 
             default:

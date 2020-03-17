@@ -35,6 +35,7 @@ import static com.android.launcher3.states.RotationHelper.REQUEST_ROTATE;
 import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
 import static com.android.quickstep.SysUINavigationMode.removeShelfFromOverview;
 
+import android.content.Context;
 import android.graphics.Rect;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
@@ -203,6 +204,11 @@ public class OverviewState extends LauncherState {
 
     public static float getDefaultSwipeHeight(Launcher launcher) {
         return LayoutUtils.getDefaultSwipeHeight(launcher, launcher.getDeviceProfile());
+    }
+
+    @Override
+    public int getBackgroundBlurRadius(Context context) {
+        return context.getResources().getInteger(R.integer.overview_background_blur_radius);
     }
 
     @Override

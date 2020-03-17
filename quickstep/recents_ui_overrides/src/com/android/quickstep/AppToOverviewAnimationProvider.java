@@ -15,13 +15,17 @@
  */
 package com.android.quickstep;
 
+import static com.android.launcher3.LauncherState.BACKGROUND_APP;
+import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.TOUCH_RESPONSE_INTERPOLATOR;
+import static com.android.launcher3.uioverrides.BackgroundBlurController.BACKGROUND_BLUR;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.graphics.Rect;
 import android.util.Log;
@@ -30,7 +34,9 @@ import android.view.View;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.anim.AnimationSuccessListener;
+import com.android.launcher3.uioverrides.BackgroundBlurController;
 import com.android.quickstep.util.AppWindowAnimationHelper;
+import com.android.quickstep.util.AppWindowAnimationHelper.TransformParams;
 import com.android.quickstep.util.RemoteAnimationProvider;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
@@ -38,7 +44,7 @@ import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
 import com.android.systemui.shared.system.TransactionCompat;
 
 /**
- * Provider for the atomic remote window animation from the app to the overview.
+ * Provider for the atomic (for 3-button mode) remote window animation from the app to the overview.
  *
  * @param <T> activity that contains the overview
  */
@@ -48,15 +54,15 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
     private static final long RECENTS_LAUNCH_DURATION = 250;
     private static final String TAG = "AppToOverviewAnimationProvider";
 
-    private final BaseActivityInterface<T> mHelper;
+    private final BaseActivityInterface<T> mActivityInterface;
     // The id of the currently running task that is transitioning to overview.
     private final int mTargetTaskId;
 
     private T mActivity;
     private RecentsView mRecentsView;
 
-    AppToOverviewAnimationProvider(BaseActivityInterface<T> helper, int targetTaskId) {
-        mHelper = helper;
+    AppToOverviewAnimationProvider(BaseActivityInterface<T> activityInterface, int targetTaskId) {
+        mActivityInterface = activityInterface;
         mTargetTaskId = targetTaskId;
     }
 
@@ -70,7 +76,7 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
         activity.<RecentsView>getOverviewPanel().showCurrentTask(mTargetTaskId);
         AbstractFloatingView.closeAllOpenViews(activity, wasVisible);
         BaseActivityInterface.AnimationFactory factory =
-                mHelper.prepareRecentsUI(wasVisible,
+                mActivityInterface.prepareRecentsUI(wasVisible,
                 false /* animate activity */, (controller) -> {
                     controller.dispatchOnStart();
                     ValueAnimator anim = controller.getAnimationPlayer()
@@ -98,11 +104,18 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
         if (mRecentsView != null) {
             mRecentsView.setRunningTaskIconScaledDown(true);
         }
+
+        BackgroundBlurController blurController = mActivityInterface.getBackgroundBlurController();
+        if (blurController != null) {
+            // Update the surface to be the lowest closing app surface
+            blurController.setSurfaceToLauncher(mRecentsView);
+        }
+
         AnimatorSet anim = new AnimatorSet();
         anim.addListener(new AnimationSuccessListener() {
             @Override
             public void onAnimationSuccess(Animator animator) {
-                mHelper.onSwipeUpToRecentsComplete();
+                mActivityInterface.onSwipeUpToRecentsComplete();
                 if (mRecentsView != null) {
                     mRecentsView.animateUpRunningTaskIconScale();
                 }
@@ -110,7 +123,8 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
         });
         if (mActivity == null) {
             Log.e(TAG, "Animation created, before activity");
-            anim.play(ValueAnimator.ofInt(0, 1).setDuration(RECENTS_LAUNCH_DURATION));
+            anim.play(ValueAnimator.ofInt(0, 1).setDuration(RECENTS_LAUNCH_DURATION))
+                    .with(createBackgroundBlurAnimator(blurController));
             return anim;
         }
 
@@ -121,7 +135,8 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
         RemoteAnimationTargetCompat runningTaskTarget = targets.findTask(mTargetTaskId);
         if (runningTaskTarget == null) {
             Log.e(TAG, "No closing app");
-            anim.play(ValueAnimator.ofInt(0, 1).setDuration(RECENTS_LAUNCH_DURATION));
+            anim.play(ValueAnimator.ofInt(0, 1).setDuration(RECENTS_LAUNCH_DURATION))
+                    .with(createBackgroundBlurAnimator(blurController));
             return anim;
         }
 
@@ -138,11 +153,12 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
         clipHelper.updateSource(homeBounds, runningTaskTarget);
 
         Rect targetRect = new Rect();
-        mHelper.getSwipeUpDestinationAndLength(mActivity.getDeviceProfile(), mActivity, targetRect);
+        mActivityInterface.getSwipeUpDestinationAndLength(mActivity.getDeviceProfile(), mActivity,
+                targetRect);
         clipHelper.updateTargetRect(targetRect);
         clipHelper.prepareAnimation(mActivity.getDeviceProfile(), false /* isOpening */);
 
-        AppWindowAnimationHelper.TransformParams params = new AppWindowAnimationHelper.TransformParams()
+        TransformParams params = new TransformParams()
                 .setSyncTransactionApplier(new SyncRtSurfaceTransactionApplierCompat(rootView));
         ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, 1);
         valueAnimator.setDuration(RECENTS_LAUNCH_DURATION);
@@ -167,7 +183,8 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
                 transaction.apply();
             });
         }
-        anim.play(valueAnimator);
+        anim.play(valueAnimator)
+                .with(createBackgroundBlurAnimator(blurController));
         return anim;
     }
 
@@ -178,5 +195,16 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> imple
      */
     long getRecentsLaunchDuration() {
         return RECENTS_LAUNCH_DURATION;
+    }
+
+    private Animator createBackgroundBlurAnimator(BackgroundBlurController blurController) {
+        if (blurController == null) {
+            // Dummy animation
+            return ValueAnimator.ofInt(0);
+        }
+        return ObjectAnimator.ofInt(blurController, BACKGROUND_BLUR,
+                BACKGROUND_APP.getBackgroundBlurRadius(mActivity),
+                OVERVIEW.getBackgroundBlurRadius(mActivity))
+                .setDuration(RECENTS_LAUNCH_DURATION);
     }
 }

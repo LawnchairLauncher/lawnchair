@@ -21,7 +21,8 @@ import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.OVERVIEW_PEEK;
-import static com.android.launcher3.LauncherStateManager.ATOMIC_OVERVIEW_PEEK_COMPONENT;
+import static com.android.launcher3.LauncherStateManager.PLAY_ATOMIC_OVERVIEW_PEEK;
+import static com.android.launcher3.LauncherStateManager.SKIP_OVERVIEW;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_ALL_APPS_FADE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_ALL_APPS_HEADER_FADE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_FADE;
@@ -43,6 +44,7 @@ import android.view.ViewConfiguration;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppTransitionManagerImpl;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.LauncherStateManager.AnimationFlags;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.Interpolators;
@@ -104,7 +106,7 @@ public class FlingAndHoldTouchController extends PortraitStatesTouchController {
         LauncherState toState = isPaused ? OVERVIEW_PEEK : NORMAL;
         long peekDuration = isPaused ? PEEK_IN_ANIM_DURATION : PEEK_OUT_ANIM_DURATION;
         mPeekAnim = mLauncher.getStateManager().createAtomicAnimation(fromState, toState,
-                new AnimatorSetBuilder(), ATOMIC_OVERVIEW_PEEK_COMPONENT, peekDuration);
+                new AnimatorSetBuilder(), PLAY_ATOMIC_OVERVIEW_PEEK, peekDuration);
         mPeekAnim.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -210,7 +212,7 @@ public class FlingAndHoldTouchController extends PortraitStatesTouchController {
                 super.onAnimationEnd(animation);
                 if (mCancelled) {
                     mPeekAnim = mLauncher.getStateManager().createAtomicAnimation(mFromState,
-                            mToState, new AnimatorSetBuilder(), ATOMIC_OVERVIEW_PEEK_COMPONENT,
+                            mToState, new AnimatorSetBuilder(), PLAY_ATOMIC_OVERVIEW_PEEK,
                             PEEK_OUT_ANIM_DURATION);
                     mPeekAnim.start();
                 }
@@ -237,11 +239,14 @@ public class FlingAndHoldTouchController extends PortraitStatesTouchController {
     }
 
     @Override
-    protected void updateAnimatorBuilderOnReinit(AnimatorSetBuilder builder) {
+    @AnimationFlags
+    protected int updateAnimComponentsOnReinit(@AnimationFlags int animComponents) {
         if (handlingOverviewAnim()) {
             // We don't want the state transition to all apps to animate overview,
             // as that will cause a jump after our atomic animation.
-            builder.addFlag(AnimatorSetBuilder.FLAG_DONT_ANIMATE_OVERVIEW);
+            return animComponents | SKIP_OVERVIEW;
+        } else {
+            return animComponents;
         }
     }
 
