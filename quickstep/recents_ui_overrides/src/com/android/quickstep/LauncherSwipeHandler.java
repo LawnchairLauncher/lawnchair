@@ -588,7 +588,7 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
             // We will handle the sysui flags based on the centermost task view.
             if (mRecentsAnimationController != null) {
                 mRecentsAnimationController.setWindowThresholdCrossed(centermostTaskFlags != 0
-                        || useHomeScreenFlags);
+                        && useHomeScreenFlags);
             }
             int sysuiFlags = useHomeScreenFlags ? 0 : centermostTaskFlags;
             mActivity.getSystemUiController().updateUiState(UI_STATE_OVERVIEW, sysuiFlags);
