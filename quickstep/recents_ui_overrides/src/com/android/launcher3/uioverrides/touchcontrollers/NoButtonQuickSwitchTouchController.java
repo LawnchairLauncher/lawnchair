@@ -21,13 +21,13 @@ import static com.android.launcher3.LauncherState.HOTSEAT_ICONS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.QUICK_SWITCH;
-import static com.android.launcher3.LauncherStateManager.ANIM_ALL;
+import static com.android.launcher3.LauncherStateManager.ANIM_ALL_COMPONENTS;
+import static com.android.launcher3.LauncherStateManager.SKIP_OVERVIEW;
 import static com.android.launcher3.anim.AlphaUpdateListener.ALPHA_CUTOFF_THRESHOLD;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_ALL_APPS_FADE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_VERTICAL_PROGRESS;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_FADE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_TRANSLATE;
-import static com.android.launcher3.anim.AnimatorSetBuilder.FLAG_DONT_ANIMATE_OVERVIEW;
 import static com.android.launcher3.anim.Interpolators.ACCEL_0_75;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_5;
@@ -55,8 +55,8 @@ import android.view.animation.Interpolator;
 
 import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.LauncherStateManager.AnimationConfig;
+import com.android.launcher3.LauncherStateManager.AnimationFlags;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsTransitionController;
@@ -214,7 +214,7 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         nonOverviewBuilder.setInterpolator(ANIM_ALL_APPS_FADE, FADE_OUT_INTERPOLATOR);
         nonOverviewBuilder.setInterpolator(ANIM_WORKSPACE_TRANSLATE, TRANSLATE_OUT_INTERPOLATOR);
         nonOverviewBuilder.setInterpolator(ANIM_VERTICAL_PROGRESS, TRANSLATE_OUT_INTERPOLATOR);
-        updateNonOverviewAnim(QUICK_SWITCH, nonOverviewBuilder, ANIM_ALL);
+        updateNonOverviewAnim(QUICK_SWITCH, nonOverviewBuilder, ANIM_ALL_COMPONENTS);
         mNonOverviewAnim.dispatchOnStart();
 
         if (mRecentsView.getTaskViewCount() == 0) {
@@ -231,11 +231,10 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
 
     /** Create state animation to control non-overview components. */
     private void updateNonOverviewAnim(LauncherState toState, AnimatorSetBuilder builder,
-            @LauncherStateManager.AnimationComponents int animComponents) {
-        builder.addFlag(FLAG_DONT_ANIMATE_OVERVIEW);
+            @AnimationFlags int animComponents) {
         long accuracy = (long) (Math.max(mXRange, mYRange) * 2);
         mNonOverviewAnim = mLauncher.getStateManager().createAnimationToNewWorkspace(toState,
-                builder, accuracy, this::clearState, animComponents);
+                builder, accuracy, this::clearState, animComponents | SKIP_OVERVIEW);
     }
 
     private void setupOverviewAnimators() {
@@ -393,7 +392,7 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         xOverviewAnim.setFloatValues(startXProgress, endXProgress);
         xOverviewAnim.setDuration(xDuration)
                 .setInterpolator(scrollInterpolatorForVelocity(velocity.x));
-        mXOverviewAnim.dispatchOnStartWithVelocity(endXProgress, velocity.x);
+        mXOverviewAnim.dispatchOnStart();
 
         boolean flingUpToNormal = verticalFling && velocity.y < 0 && targetState == NORMAL;
 
@@ -414,7 +413,7 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         ValueAnimator yOverviewAnim = mYOverviewAnim.getAnimationPlayer();
         yOverviewAnim.setFloatValues(startYProgress, endYProgress);
         yOverviewAnim.setDuration(yDuration);
-        mYOverviewAnim.dispatchOnStartWithVelocity(endYProgress, velocity.y);
+        mYOverviewAnim.dispatchOnStart();
 
         ValueAnimator nonOverviewAnim = mNonOverviewAnim.getAnimationPlayer();
         if (flingUpToNormal && !mIsHomeScreenVisible) {
@@ -436,8 +435,7 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
             float startProgress = mNonOverviewAnim.getProgressFraction();
             float endProgress = canceled ? 0 : 1;
             nonOverviewAnim.setFloatValues(startProgress, endProgress);
-            mNonOverviewAnim.dispatchOnStartWithVelocity(endProgress,
-                    horizontalFling ? velocity.x : velocity.y);
+            mNonOverviewAnim.dispatchOnStart();
         }
 
         nonOverviewAnim.setDuration(Math.max(xDuration, yDuration));

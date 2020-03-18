@@ -23,12 +23,15 @@ import android.provider.DeviceConfig;
 
 import com.android.launcher3.config.FeatureFlags.DebugFlag;
 
+import java.util.ArrayList;
+
 @TargetApi(Build.VERSION_CODES.P)
 public class DeviceFlag extends DebugFlag {
 
     public static final String NAMESPACE_LAUNCHER = "launcher";
 
     private final boolean mDefaultValueInCode;
+    ArrayList<Runnable> mListeners;
 
     public DeviceFlag(String key, boolean defaultValue, String description) {
         super(key, getDeviceValue(key, defaultValue), description);
@@ -41,17 +44,33 @@ public class DeviceFlag extends DebugFlag {
     }
 
     @Override
+    public void initialize(Context context) {
+        super.initialize(context);
+        if (mListeners == null) {
+            mListeners = new ArrayList<>();
+            registerDeviceConfigChangedListener(context);
+        }
+    }
+
+    @Override
     public void addChangeListener(Context context, Runnable r) {
+        mListeners.add(r);
+    }
+
+    private void registerDeviceConfigChangedListener(Context context) {
         DeviceConfig.addOnPropertiesChangedListener(
                 NAMESPACE_LAUNCHER,
                 context.getMainExecutor(),
                 properties -> {
-                    if (!NAMESPACE_LAUNCHER.equals(properties.getNamespace())) {
+                    if (!NAMESPACE_LAUNCHER.equals(properties.getNamespace())
+                            || !properties.getKeyset().contains(key)) {
                         return;
                     }
                     defaultValue = getDeviceValue(key, mDefaultValueInCode);
                     initialize(context);
-                    r.run();
+                    for (Runnable r: mListeners) {
+                        r.run();
+                    }
                 });
     }
 

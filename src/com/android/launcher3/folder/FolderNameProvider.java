@@ -15,8 +15,10 @@
  */
 package com.android.launcher3.folder;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.os.Process;
+import android.os.UserHandle;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -34,12 +36,9 @@ import com.android.launcher3.util.ResourceBasedOverride;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -101,27 +100,23 @@ public class FolderNameProvider implements ResourceBasedOverride {
         }
         // If all the icons are from work profile,
         // Then, suggest "Work" as the folder name
-        List<WorkspaceItemInfo> distinctItemInfos = workspaceItemInfos.stream()
-                .filter(distinctByKey(p -> p.user))
-                .collect(Collectors.toList());
-
-        if (distinctItemInfos.size() == 1
-                && !distinctItemInfos.get(0).user.equals(Process.myUserHandle())) {
-            // Place it as last viable suggestion
+        Set<UserHandle> users = workspaceItemInfos.stream().map(w -> w.user)
+                .collect(Collectors.toSet());
+        if (users.size() == 1 && !users.contains(Process.myUserHandle())) {
             setAsLastSuggestion(nameInfos,
                     context.getResources().getString(R.string.work_folder_name));
         }
 
         // If all the icons are from same package (e.g., main icon, shortcut, shortcut)
         // Then, suggest the package's title as the folder name
-        distinctItemInfos = workspaceItemInfos.stream()
-                .filter(distinctByKey(p -> p.getTargetComponent() != null
-                        ? p.getTargetComponent().getPackageName() : ""))
-                .collect(Collectors.toList());
+        Set<String> packageNames = workspaceItemInfos.stream()
+                .map(WorkspaceItemInfo::getTargetComponent)
+                .filter(Objects::nonNull)
+                .map(ComponentName::getPackageName)
+                .collect(Collectors.toSet());
 
-        if (distinctItemInfos.size() == 1) {
-            Optional<AppInfo> info = getAppInfoByPackageName(
-                    distinctItemInfos.get(0).getTargetComponent().getPackageName());
+        if (packageNames.size() == 1) {
+            Optional<AppInfo> info = getAppInfoByPackageName(packageNames.iterator().next());
             // Place it as first viable suggestion and shift everything else
             info.ifPresent(i -> setAsFirstSuggestion(nameInfos, i.title.toString()));
         }
@@ -135,6 +130,7 @@ public class FolderNameProvider implements ResourceBasedOverride {
             return Optional.empty();
         }
         return mAppInfos.stream()
+                .filter(info -> info.componentName != null)
                 .filter(info -> info.componentName.getPackageName().equals(packageName))
                 .findAny();
     }
@@ -172,12 +168,6 @@ public class FolderNameProvider implements ResourceBasedOverride {
                 .filter(Objects::nonNull)
                 .anyMatch(nameInfo -> nameInfo.getLabel().toString().equalsIgnoreCase(
                         label.toString()));
-    }
-
-    // This method can be moved to some Utility class location.
-    private static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
-        Map<Object, Boolean> map = new ConcurrentHashMap<>();
-        return t -> map.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
     }
 
     private class FolderNameWorker extends BaseModelUpdateTask {
