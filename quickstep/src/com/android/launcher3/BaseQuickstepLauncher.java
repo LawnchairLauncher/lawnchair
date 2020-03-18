@@ -244,7 +244,7 @@ public abstract class BaseQuickstepLauncher extends Launcher
         return new StateHandler[] {
                 getAllAppsController(),
                 getWorkspace(),
-                getBackgroundBlurController(),
+                getDepthController(),
                 new RecentsViewStateController(this),
                 new BackButtonAlphaHandler(this)};
     }

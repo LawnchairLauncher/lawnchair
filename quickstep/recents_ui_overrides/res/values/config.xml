@@ -14,8 +14,5 @@
      limitations under the License.
 -->
 <resources>
-    <integer name="app_background_blur_radius">150</integer>
-    <integer name="allapps_background_blur_radius">90</integer>
-    <integer name="overview_background_blur_radius">50</integer>
-    <integer name="folder_background_blur_radius_adjustment">20</integer>
+    <integer name="max_depth_blur_radius">150</integer>
 </resources>

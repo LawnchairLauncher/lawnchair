@@ -33,7 +33,7 @@ import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.touch.PagedOrientationHandler;
-import com.android.launcher3.uioverrides.BackgroundBlurController;
+import com.android.launcher3.uioverrides.DepthController;
 import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.ShelfPeekAnim;
 import com.android.systemui.shared.recents.model.ThumbnailData;
@@ -81,7 +81,8 @@ public interface BaseActivityInterface<T extends BaseDraggingActivity> {
     @Nullable
     T getCreatedActivity();
 
-    default @Nullable BackgroundBlurController getBackgroundBlurController() {
+    @Nullable
+    default DepthController getDepthController() {
         return null;
     }
 
