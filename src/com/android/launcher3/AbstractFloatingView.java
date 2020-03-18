@@ -22,7 +22,6 @@ import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CH
 import static com.android.launcher3.compat.AccessibilityManagerCompat.isAccessibilityEnabled;
 import static com.android.launcher3.compat.AccessibilityManagerCompat.sendCustomAccessibilityEvent;
 
-import android.animation.Animator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
@@ -30,11 +29,12 @@ import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.accessibility.AccessibilityNodeInfo;
+import android.view.animation.Interpolator;
 import android.widget.LinearLayout;
 
 import androidx.annotation.IntDef;
-import androidx.annotation.Nullable;
 
+import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.util.TouchController;
@@ -134,9 +134,8 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
      * Creates a user-controlled animation to hint that the view will be closed if completed.
      * @param distanceToMove The max distance that elements should move from their starting point.
      */
-    public @Nullable Animator createHintCloseAnim(float distanceToMove) {
-        return null;
-    }
+    public void addHintCloseAnim(
+            float distanceToMove, Interpolator interpolator, PendingAnimation target) { }
 
     public abstract void logActionCommand(int command);
 

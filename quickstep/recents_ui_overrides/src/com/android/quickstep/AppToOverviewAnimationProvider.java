@@ -48,7 +48,7 @@ import com.android.systemui.shared.system.TransactionCompat;
  *
  * @param <T> activity that contains the overview
  */
-final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> implements
+final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> extends
         RemoteAnimationProvider {
 
     private static final long RECENTS_LAUNCH_DURATION = 250;
