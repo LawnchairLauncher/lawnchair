@@ -24,6 +24,8 @@ import static android.stats.launcher.nano.Launcher.LAUNCH_APP;
 import static android.stats.launcher.nano.Launcher.LAUNCH_TASK;
 import static android.stats.launcher.nano.Launcher.OVERVIEW;
 
+import static com.android.launcher3.logging.UserEventDispatcher.makeTargetsList;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.UserHandle;
@@ -47,6 +49,8 @@ import com.android.systemui.shared.system.SysUiStatsLog;
 
 import com.google.protobuf.nano.MessageNano;
 
+import java.util.ArrayList;
+
 /**
  * This method calls the StatsLog hidden method until they are made available public.
  *
@@ -61,7 +65,8 @@ public class StatsLogCompatManager extends StatsLogManager {
     private static final String TAG = "StatsLogCompatManager";
     private static final boolean DEBUG = false;
 
-    public StatsLogCompatManager(Context context) { }
+    public StatsLogCompatManager(Context context) {
+    }
 
     @Override
     public void logAppLaunch(View v, Intent intent, @Nullable UserHandle userHandle) {
@@ -120,14 +125,17 @@ public class StatsLogCompatManager extends StatsLogManager {
 
             return false;
         }
-        ItemInfo itemInfo = (ItemInfo) v.getTag();
         Target child = new Target();
-        Target parent = new Target();
-        provider.fillInLogContainerData(v, itemInfo, child, parent);
-        extension.srcTarget[0] = new LauncherTarget();
-        extension.srcTarget[1] = new LauncherTarget();
-        copy(child, extension.srcTarget[0]);
-        copy(parent, extension.srcTarget[1]);
+        ArrayList<Target> targets = makeTargetsList(child);
+        targets.add(child);
+        provider.fillInLogContainerData((ItemInfo) v.getTag(), child, targets);
+
+        int maxDepth = Math.min(SUPPORTED_TARGET_DEPTH, targets.size());
+        extension.srcTarget = new LauncherTarget[maxDepth];
+        for (int i = 0; i < maxDepth; i++) {
+            extension.srcTarget[i] = new LauncherTarget();
+            copy(targets.get(i), extension.srcTarget[i]);
+        }
         return true;
     }
 
@@ -238,10 +246,10 @@ public class StatsLogCompatManager extends StatsLogManager {
 
     @Override
     public void verify() {
-        if(!(StatsLogUtils.LAUNCHER_STATE_ALLAPPS == ALLAPPS &&
-                StatsLogUtils.LAUNCHER_STATE_BACKGROUND == BACKGROUND &&
-                StatsLogUtils.LAUNCHER_STATE_OVERVIEW == OVERVIEW &&
-                StatsLogUtils.LAUNCHER_STATE_HOME == HOME)) {
+        if (!(StatsLogUtils.LAUNCHER_STATE_ALLAPPS == ALLAPPS
+                && StatsLogUtils.LAUNCHER_STATE_BACKGROUND == BACKGROUND
+                && StatsLogUtils.LAUNCHER_STATE_OVERVIEW == OVERVIEW
+                && StatsLogUtils.LAUNCHER_STATE_HOME == HOME)) {
             throw new IllegalStateException(
                     "StatsLogUtil constants doesn't match enums in launcher.proto");
         }

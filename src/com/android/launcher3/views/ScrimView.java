@@ -40,7 +40,7 @@ import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.AttributeSet;
-import android.util.Property;
+import android.util.IntProperty;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -80,8 +80,8 @@ import java.util.List;
 public class ScrimView<T extends Launcher> extends View implements Insettable, OnChangeListener,
         AccessibilityStateChangeListener, StateListener {
 
-    public static final Property<ScrimView, Integer> DRAG_HANDLE_ALPHA =
-            new Property<ScrimView, Integer>(Integer.TYPE, "dragHandleAlpha") {
+    public static final IntProperty<ScrimView> DRAG_HANDLE_ALPHA =
+            new IntProperty<ScrimView>("dragHandleAlpha") {
 
                 @Override
                 public Integer get(ScrimView scrimView) {
@@ -89,7 +89,7 @@ public class ScrimView<T extends Launcher> extends View implements Insettable, O
                 }
 
                 @Override
-                public void set(ScrimView scrimView, Integer value) {
+                public void setValue(ScrimView scrimView, int value) {
                     scrimView.setDragHandleAlpha(value);
                 }
             };
@@ -336,7 +336,7 @@ public class ScrimView<T extends Launcher> extends View implements Insettable, O
     }
 
     private void updateDragHandleVisibility(Drawable recycle) {
-        boolean visible = mLauncher.getDeviceProfile().isVerticalBarLayout() || mAM.isEnabled();
+        boolean visible = shouldDragHandleBeVisible();
         boolean wasVisible = mDragHandle != null;
         if (visible != wasVisible) {
             if (visible) {
@@ -350,6 +350,10 @@ public class ScrimView<T extends Launcher> extends View implements Insettable, O
             }
             invalidate();
         }
+    }
+
+    protected boolean shouldDragHandleBeVisible() {
+        return mLauncher.getDeviceProfile().isVerticalBarLayout() || mAM.isEnabled();
     }
 
     @Override

@@ -41,6 +41,7 @@ import static com.android.launcher3.testing.TestProtocol.OVERVIEW_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.QUICK_SWITCH_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.SPRING_LOADED_STATE_ORDINAL;
 
+import android.content.Context;
 import android.view.View;
 import android.view.animation.Interpolator;
 
@@ -266,6 +267,14 @@ public abstract class LauncherState {
     }
 
     public float getOverviewScrimAlpha(Launcher launcher) {
+        return 0;
+    }
+
+    /**
+     * The amount of blur to apply to the background of either the app or Launcher surface in this
+     * state.
+     */
+    public int getBackgroundBlurRadius(Context context) {
         return 0;
     }
 
