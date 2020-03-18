@@ -134,7 +134,7 @@ public final class FeatureFlags {
             "ENABLE_LAUNCHER_PREVIEW_IN_GRID_PICKER", true, "Show launcher preview in grid picker");
 
     public static final BooleanFlag USE_SURFACE_VIEW_FOR_GRID_PREVIEW = getDebugFlag(
-            "USE_SURFACE_VIEW_FOR_GRID_PREVIEW", false, "Use surface view for grid preview");
+            "USE_SURFACE_VIEW_FOR_GRID_PREVIEW", true, "Use surface view for grid preview");
 
     public static final BooleanFlag ENABLE_OVERVIEW_ACTIONS = getDebugFlag(
             "ENABLE_OVERVIEW_ACTIONS", true, "Show app actions instead of the shelf in Overview."
