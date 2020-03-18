@@ -192,10 +192,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     final WallpaperOffsetInterpolator mWallpaperOffset;
     private boolean mUnlockWallpaperFromDefaultPageOnLayout;
 
-    // Variables relating to the creation of user folders by hovering shortcuts over shortcuts
-    private static final int FOLDER_CREATION_TIMEOUT = 0;
     public static final int REORDER_TIMEOUT = 650;
-    private final Alarm mFolderCreationAlarm = new Alarm();
     private final Alarm mReorderAlarm = new Alarm();
     private PreviewBackground mFolderCreateBg;
     private FolderIcon mDragOverFolderIcon = null;
@@ -567,11 +564,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         addView(newScreen, insertIndex);
         mStateTransitionAnimation.applyChildState(
                 mLauncher.getStateManager().getState(), newScreen, insertIndex);
-
-        if (mLauncher.getAccessibilityDelegate().isInAccessibleDrag()) {
-            newScreen.enableAccessibleDrag(true, CellLayout.WORKSPACE_ACCESSIBILITY_DRAG);
-        }
-
         return newScreen;
     }
 
@@ -818,11 +810,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                 if (indexOfChild(cl) < currentPage) {
                     pageShift++;
                 }
-
-                if (isInAccessibleDrag) {
-                    cl.enableAccessibleDrag(false, CellLayout.WORKSPACE_ACCESSIBILITY_DRAG);
-                }
-
                 removeView(cl);
             } else {
                 // if this is the last screen, convert it to the empty screen
@@ -1444,14 +1431,14 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         child.setVisibility(INVISIBLE);
 
         if (options.isAccessibleDrag) {
-            mDragController.addDragListener(new AccessibleDragListenerAdapter(
-                    this, CellLayout.WORKSPACE_ACCESSIBILITY_DRAG) {
-                @Override
-                protected void enableAccessibleDrag(boolean enable) {
-                    super.enableAccessibleDrag(enable);
-                    setEnableForLayout(mLauncher.getHotseat(),enable);
-                }
-            });
+            mDragController.addDragListener(
+                    new AccessibleDragListenerAdapter(this, WorkspaceAccessibilityHelper::new) {
+                        @Override
+                        protected void enableAccessibleDrag(boolean enable) {
+                            super.enableAccessibleDrag(enable);
+                            setEnableForLayout(mLauncher.getHotseat(), enable);
+                        }
+                    });
         }
 
         beginDragShared(child, this, options);
@@ -1883,12 +1870,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                         final LauncherAppWidgetHostView hostView = (LauncherAppWidgetHostView) cell;
                         AppWidgetProviderInfo pInfo = hostView.getAppWidgetInfo();
                         if (pInfo != null && pInfo.resizeMode != AppWidgetProviderInfo.RESIZE_NONE
-                                && !d.accessibleDrag) {
-                            onCompleteRunnable = new Runnable() {
-                                public void run() {
-                                    if (!isPageInTransition()) {
-                                        AppWidgetResizeFrame.showForWidget(hostView, cellLayout);
-                                    }
+                                && !options.isAccessibleDrag) {
+                            onCompleteRunnable = () -> {
+                                if (!isPageInTransition()) {
+                                    AppWidgetResizeFrame.showForWidget(hostView, cellLayout);
                                 }
                             };
                         }
@@ -2088,8 +2073,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         if (mFolderCreateBg != null) {
             mFolderCreateBg.animateToRest();
         }
-        mFolderCreationAlarm.setOnAlarmListener(null);
-        mFolderCreationAlarm.cancelAlarm();
     }
 
     private void cleanupAddToFolder() {
@@ -2196,7 +2179,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             float targetCellDistance = mDragTargetLayout.getDistanceFromCell(
                     mDragViewVisualCenter[0], mDragViewVisualCenter[1], mTargetCell);
 
-            manageFolderFeedback(mDragTargetLayout, mTargetCell, targetCellDistance, d);
+            manageFolderFeedback(targetCellDistance, d);
 
             boolean nearestDropOccupied = mDragTargetLayout.isNearestDropLocationOccupied((int)
                     mDragViewVisualCenter[0], (int) mDragViewVisualCenter[1], item.spanX,
@@ -2294,8 +2277,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         return null;
     }
 
-    private void manageFolderFeedback(CellLayout targetLayout,
-            int[] targetCell, float distance, DragObject dragObject) {
+    private void manageFolderFeedback(float distance, DragObject dragObject) {
         if (distance > mMaxDistanceForFolderCreation) {
             if (mDragMode != DRAG_MODE_NONE) {
                 setDragMode(DRAG_MODE_NONE);
@@ -2306,18 +2288,18 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         final View dragOverView = mDragTargetLayout.getChildAt(mTargetCell[0], mTargetCell[1]);
         ItemInfo info = dragObject.dragInfo;
         boolean userFolderPending = willCreateUserFolder(info, dragOverView, false);
-        if (mDragMode == DRAG_MODE_NONE && userFolderPending &&
-                !mFolderCreationAlarm.alarmPending()) {
+        if (mDragMode == DRAG_MODE_NONE && userFolderPending) {
 
-            FolderCreationAlarmListener listener = new
-                    FolderCreationAlarmListener(targetLayout, targetCell[0], targetCell[1]);
+            mFolderCreateBg = new PreviewBackground();
+            mFolderCreateBg.setup(mLauncher, mLauncher, null,
+                    dragOverView.getMeasuredWidth(), dragOverView.getPaddingTop());
 
-            if (!dragObject.accessibleDrag) {
-                mFolderCreationAlarm.setOnAlarmListener(listener);
-                mFolderCreationAlarm.setAlarm(FOLDER_CREATION_TIMEOUT);
-            } else {
-                listener.onAlarm(mFolderCreationAlarm);
-            }
+            // The full preview background should appear behind the icon
+            mFolderCreateBg.isClipping = false;
+
+            mFolderCreateBg.animateToAccept(mDragTargetLayout, mTargetCell[0], mTargetCell[1]);
+            mDragTargetLayout.clearDragOutlines();
+            setDragMode(DRAG_MODE_CREATE_FOLDER);
 
             if (dragObject.stateAnnouncer != null) {
                 dragObject.stateAnnouncer.announce(WorkspaceAccessibilityHelper
@@ -2330,8 +2312,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         if (willAddToFolder && mDragMode == DRAG_MODE_NONE) {
             mDragOverFolderIcon = ((FolderIcon) dragOverView);
             mDragOverFolderIcon.onDragEnter(info);
-            if (targetLayout != null) {
-                targetLayout.clearDragOutlines();
+            if (mDragTargetLayout != null) {
+                mDragTargetLayout.clearDragOutlines();
             }
             setDragMode(DRAG_MODE_ADD_TO_FOLDER);
 
@@ -2347,33 +2329,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         }
         if (mDragMode == DRAG_MODE_CREATE_FOLDER && !userFolderPending) {
             setDragMode(DRAG_MODE_NONE);
-        }
-    }
-
-    class FolderCreationAlarmListener implements OnAlarmListener {
-        final CellLayout layout;
-        final int cellX;
-        final int cellY;
-
-        final PreviewBackground bg = new PreviewBackground();
-
-        public FolderCreationAlarmListener(CellLayout layout, int cellX, int cellY) {
-            this.layout = layout;
-            this.cellX = cellX;
-            this.cellY = cellY;
-
-            BubbleTextView cell = (BubbleTextView) layout.getChildAt(cellX, cellY);
-            bg.setup(mLauncher, mLauncher, null, cell.getMeasuredWidth(), cell.getPaddingTop());
-
-            // The full preview background should appear behind the icon
-            bg.isClipping = false;
-        }
-
-        public void onAlarm(Alarm alarm) {
-            mFolderCreateBg = bg;
-            mFolderCreateBg.animateToAccept(layout, cellX, cellY);
-            layout.clearDragOutlines();
-            setDragMode(DRAG_MODE_CREATE_FOLDER);
         }
     }
 

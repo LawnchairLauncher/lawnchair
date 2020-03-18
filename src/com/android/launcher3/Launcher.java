@@ -339,6 +339,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                 }
             };
 
+    private long mLastTouchUpTime = -1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Object traceToken = TraceHelper.INSTANCE.beginSection(ON_CREATE_EVT,
@@ -1115,7 +1117,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
         super.onPause();
         mDragController.cancelDrag();
-        mDragController.resetLastGestureUpTime();
+        mLastTouchUpTime = -1;
         mDropTargetBar.animateToVisibility(false);
 
         if (!mDeferOverlayCallbacks) {
@@ -1838,6 +1840,9 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_UP) {
+            mLastTouchUpTime = System.currentTimeMillis();
+        }
         TestLogging.recordMotionEvent(TestProtocol.SEQUENCE_MAIN, "Touch event", ev);
         return super.dispatchTouchEvent(ev);
     }
@@ -2465,8 +2470,12 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     }
 
     private boolean canRunNewAppsAnimation() {
-        long diff = System.currentTimeMillis() - mDragController.getLastGestureUpTime();
-        return diff > (NEW_APPS_ANIMATION_INACTIVE_TIMEOUT_SECONDS * 1000);
+        if (mDragController.isDragging()) {
+            return false;
+        } else {
+            return (System.currentTimeMillis() - mLastTouchUpTime)
+                    > (NEW_APPS_ANIMATION_INACTIVE_TIMEOUT_SECONDS * 1000);
+        }
     }
 
     private ValueAnimator createNewAppBounceAnimation(View v, int i) {

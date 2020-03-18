@@ -53,8 +53,6 @@ import androidx.core.view.ViewCompat;
 
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.accessibility.DragAndDropAccessibilityDelegate;
-import com.android.launcher3.accessibility.FolderAccessibilityHelper;
-import com.android.launcher3.accessibility.WorkspaceAccessibilityHelper;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.config.FeatureFlags;
@@ -79,9 +77,6 @@ import java.util.Comparator;
 import java.util.Stack;
 
 public class CellLayout extends ViewGroup implements Transposable {
-    public static final int WORKSPACE_ACCESSIBILITY_DRAG = 2;
-    public static final int FOLDER_ACCESSIBILITY_DRAG = 1;
-
     private static final String TAG = "CellLayout";
     private static final boolean LOGD = false;
 
@@ -182,7 +177,6 @@ public class CellLayout extends ViewGroup implements Transposable {
     private static final Paint sPaint = new Paint();
 
     // Related to accessible drag and drop
-    private DragAndDropAccessibilityDelegate mTouchHelper;
     private boolean mUseTouchHelper = false;
     private RotationMode mRotationMode = RotationMode.NORMAL;
 
@@ -292,26 +286,20 @@ public class CellLayout extends ViewGroup implements Transposable {
         addView(mShortcutsAndWidgets);
     }
 
-    public void enableAccessibleDrag(boolean enable, int dragType) {
-        mUseTouchHelper = enable;
-        if (!enable) {
-            ViewCompat.setAccessibilityDelegate(this, null);
-            setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);
-            getShortcutsAndWidgets().setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);
-            setOnClickListener(null);
-        } else {
-            if (dragType == WORKSPACE_ACCESSIBILITY_DRAG &&
-                    !(mTouchHelper instanceof WorkspaceAccessibilityHelper)) {
-                mTouchHelper = new WorkspaceAccessibilityHelper(this);
-            } else if (dragType == FOLDER_ACCESSIBILITY_DRAG &&
-                    !(mTouchHelper instanceof FolderAccessibilityHelper)) {
-                mTouchHelper = new FolderAccessibilityHelper(this);
-            }
-            ViewCompat.setAccessibilityDelegate(this, mTouchHelper);
-            setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_YES);
-            getShortcutsAndWidgets().setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_YES);
-            setOnClickListener(mTouchHelper);
-        }
+
+    /**
+     * Sets or clears a delegate used for accessible drag and drop
+     */
+    public void setDragAndDropAccessibilityDelegate(DragAndDropAccessibilityDelegate delegate) {
+        setOnClickListener(delegate);
+        setOnHoverListener(delegate);
+        ViewCompat.setAccessibilityDelegate(this, delegate);
+
+        mUseTouchHelper = delegate != null;
+        int accessibilityFlag = mUseTouchHelper
+                ? IMPORTANT_FOR_ACCESSIBILITY_YES : IMPORTANT_FOR_ACCESSIBILITY_NO;
+        setImportantForAccessibility(accessibilityFlag);
+        getShortcutsAndWidgets().setImportantForAccessibility(accessibilityFlag);
 
         // Invalidate the accessibility hierarchy
         if (getParent() != null) {
@@ -336,15 +324,6 @@ public class CellLayout extends ViewGroup implements Transposable {
     public void setPadding(int left, int top, int right, int bottom) {
         mRotationMode.mapRect(left, top, right, bottom, mTempRect);
         super.setPadding(mTempRect.left, mTempRect.top, mTempRect.right, mTempRect.bottom);
-    }
-
-    @Override
-    public boolean dispatchHoverEvent(MotionEvent event) {
-        // Always attempt to dispatch hover events to accessibility first.
-        if (mUseTouchHelper && mTouchHelper.dispatchHoverEvent(event)) {
-            return true;
-        }
-        return super.dispatchHoverEvent(event);
     }
 
     @Override
