@@ -214,7 +214,7 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
         if (mCurrentAnimation != null) {
             mCurrentAnimation.setOnCancelRunnable(null);
         }
-        mCurrentAnimation = AnimatorPlaybackController.wrap(mPendingAnimation, maxDuration)
+        mCurrentAnimation = mPendingAnimation.createPlaybackController()
                 .setOnCancelRunnable(this::clearState);
         onUserControlledAnimationCreated(mCurrentAnimation);
         mCurrentAnimation.getTarget().addListener(this);

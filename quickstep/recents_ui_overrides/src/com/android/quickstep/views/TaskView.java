@@ -285,8 +285,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     public AnimatorPlaybackController createLaunchAnimationForRunningTask() {
         final PendingAnimation pendingAnimation = getRecentsView().createTaskLaunchAnimation(
                 this, RECENTS_LAUNCH_DURATION, TOUCH_RESPONSE_INTERPOLATOR);
-        AnimatorPlaybackController currentAnimation =
-                AnimatorPlaybackController.wrap(pendingAnimation, RECENTS_LAUNCH_DURATION);
+        AnimatorPlaybackController currentAnimation = pendingAnimation.createPlaybackController();
         currentAnimation.setEndAction(() -> {
             pendingAnimation.finish(true, Touch.SWIPE);
             launchTask(false);
