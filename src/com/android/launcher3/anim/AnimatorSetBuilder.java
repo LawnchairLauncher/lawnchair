@@ -21,7 +21,6 @@ import android.util.SparseArray;
 import android.view.animation.Interpolator;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Utility class for building animator set
@@ -42,36 +41,17 @@ public class AnimatorSetBuilder {
     public static final int ANIM_OVERVIEW_SCRIM_FADE = 11;
     public static final int ANIM_ALL_APPS_HEADER_FADE = 12; // e.g. predictions
 
-    public static final int FLAG_DONT_ANIMATE_OVERVIEW = 1 << 0;
-
     protected final ArrayList<Animator> mAnims = new ArrayList<>();
 
     private final SparseArray<Interpolator> mInterpolators = new SparseArray<>();
-    private List<Runnable> mOnFinishRunnables = new ArrayList<>();
-    private int mFlags = 0;
 
     public void play(Animator anim) {
         mAnims.add(anim);
     }
 
-    public void addOnFinishRunnable(Runnable onFinishRunnable) {
-        mOnFinishRunnables.add(onFinishRunnable);
-    }
-
     public AnimatorSet build() {
         AnimatorSet anim = new AnimatorSet();
         anim.playTogether(mAnims);
-        if (!mOnFinishRunnables.isEmpty()) {
-            anim.addListener(new AnimationSuccessListener() {
-                @Override
-                public void onAnimationSuccess(Animator animation) {
-                    for (Runnable onFinishRunnable : mOnFinishRunnables) {
-                        onFinishRunnable.run();
-                    }
-                    mOnFinishRunnables.clear();
-                }
-            });
-        }
         return anim;
     }
 
@@ -81,13 +61,5 @@ public class AnimatorSetBuilder {
 
     public void setInterpolator(int animId, Interpolator interpolator) {
         mInterpolators.put(animId, interpolator);
-    }
-
-    public void addFlag(int flag) {
-        mFlags |= flag;
-    }
-
-    public boolean hasFlag(int flag) {
-        return (mFlags & flag) != 0;
     }
 }

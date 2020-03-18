@@ -16,7 +16,9 @@
 package com.android.launcher3.anim;
 
 import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.launcher3.config.FeatureFlags.QUICKSTEP_SPRINGS;
+import static com.android.launcher3.anim.Interpolators.clampToProgress;
+import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelocity;
+import static com.android.launcher3.util.DefaultDisplay.getSingleFrameMs;
 
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
@@ -24,17 +26,18 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
-import android.util.Log;
+import android.content.Context;
+import android.util.FloatProperty;
 
 import androidx.annotation.Nullable;
-import androidx.dynamicanimation.animation.DynamicAnimation;
-import androidx.dynamicanimation.animation.SpringAnimation;
+
+import com.android.launcher3.Utilities;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 /**
  * Helper class to control the playback of an {@link AnimatorSet}, with custom interpolators
@@ -43,14 +46,7 @@ import java.util.Set;
  * Note: The implementation does not support start delays on child animations or
  * sequential playbacks.
  */
-public abstract class AnimatorPlaybackController implements ValueAnimator.AnimatorUpdateListener {
-
-    private static final String TAG = "AnimatorPlaybackCtrler";
-    private static boolean DEBUG = false;
-
-    public static AnimatorPlaybackController wrap(AnimatorSet anim, long duration) {
-        return wrap(anim, duration, null);
-    }
+public class AnimatorPlaybackController implements ValueAnimator.AnimatorUpdateListener {
 
     /**
      * Creates an animation controller for the provided animation.
@@ -58,20 +54,41 @@ public abstract class AnimatorPlaybackController implements ValueAnimator.Animat
      * needs to be larger than the total number of pixels so that we don't have jittering due
      * to float (animation-fraction * total duration) to int conversion.
      */
-    public static AnimatorPlaybackController wrap(AnimatorSet anim, long duration,
-            Runnable onCancelRunnable) {
-
+    public static AnimatorPlaybackController wrap(AnimatorSet anim, long duration) {
         /**
          * TODO: use {@link AnimatorSet#setCurrentPlayTime(long)} once b/68382377 is fixed.
          */
-        return new AnimatorPlaybackControllerVL(anim, duration, onCancelRunnable);
+        ArrayList<Holder> childAnims = new ArrayList<>();
+        addAnimationHoldersRecur(anim, SpringProperty.DEFAULT, childAnims);
+
+        return new AnimatorPlaybackController(anim, duration, childAnims);
     }
+
+    public static AnimatorPlaybackController wrap(PendingAnimation anim, long duration) {
+        /**
+         * TODO: use {@link AnimatorSet#setCurrentPlayTime(long)} once b/68382377 is fixed.
+         */
+        return new AnimatorPlaybackController(anim.anim, duration, anim.animHolders);
+    }
+
+    private static final FloatProperty<ValueAnimator> CURRENT_PLAY_TIME =
+            new FloatProperty<ValueAnimator>("current-play-time") {
+                @Override
+                public void setValue(ValueAnimator animator, float v) {
+                    animator.setCurrentPlayTime((long) v);
+                }
+
+                @Override
+                public Float get(ValueAnimator animator) {
+                    return (float) animator.getCurrentPlayTime();
+                }
+            };
 
     private final ValueAnimator mAnimationPlayer;
     private final long mDuration;
 
-    protected final AnimatorSet mAnim;
-    private Set<SpringAnimation> mSprings;
+    private final AnimatorSet mAnim;
+    private final Holder[] mChildAnimations;
 
     protected float mCurrentFraction;
     private Runnable mEndAction;
@@ -79,22 +96,14 @@ public abstract class AnimatorPlaybackController implements ValueAnimator.Animat
     protected boolean mTargetCancelled = false;
     protected Runnable mOnCancelRunnable;
 
-    private OnAnimationEndDispatcher mEndListener;
-    private DynamicAnimation.OnAnimationEndListener mSpringEndListener;
-    // We need this variable to ensure the end listener is called immediately, otherwise we run into
-    // issues where the callback interferes with the states of the swipe detector.
-    private boolean mSkipToEnd = false;
-
-    protected AnimatorPlaybackController(AnimatorSet anim, long duration,
-            Runnable onCancelRunnable) {
+    private AnimatorPlaybackController(
+            AnimatorSet anim, long duration, ArrayList<Holder> childAnims) {
         mAnim = anim;
         mDuration = duration;
-        mOnCancelRunnable = onCancelRunnable;
 
         mAnimationPlayer = ValueAnimator.ofFloat(0, 1);
         mAnimationPlayer.setInterpolator(LINEAR);
-        mEndListener = new OnAnimationEndDispatcher();
-        mAnimationPlayer.addListener(mEndListener);
+        mAnimationPlayer.addListener(new OnAnimationEndDispatcher());
         mAnimationPlayer.addUpdateListener(this);
 
         mAnim.addListener(new AnimatorListenerAdapter() {
@@ -119,14 +128,7 @@ public abstract class AnimatorPlaybackController implements ValueAnimator.Animat
             }
         });
 
-        mSprings = new HashSet<>();
-        mSpringEndListener = (animation, canceled, value, velocity1) -> {
-            if (canceled) {
-                mEndListener.onAnimationCancel(mAnimationPlayer);
-            } else {
-                mEndListener.onAnimationEnd(mAnimationPlayer);
-            }
-        };
+        mChildAnimations = childAnims.toArray(new Holder[childAnims.size()]);
     }
 
     public AnimatorSet getTarget() {
@@ -160,9 +162,68 @@ public abstract class AnimatorPlaybackController implements ValueAnimator.Animat
     }
 
     /**
+     * Starts playing the animation with the provided velocity optionally playing any
+     * physics based animations
+     */
+    public void startWithVelocity(Context context, boolean goingToEnd,
+            float velocity, float scale, long animationDuration) {
+        float scaleInverse = 1 / Math.abs(scale);
+        float scaledVelocity = velocity * scaleInverse;
+
+        float nextFrameProgress = Utilities.boundToRange(getProgressFraction()
+                + scaledVelocity * getSingleFrameMs(context), 0f, 1f);
+
+        // Update setters for spring
+        int springFlag = goingToEnd
+                ? SpringProperty.FLAG_CAN_SPRING_ON_END
+                : SpringProperty.FLAG_CAN_SPRING_ON_START;
+
+        long springDuration = animationDuration;
+        for (Holder h : mChildAnimations) {
+            if ((h.springProperty.flags & springFlag) != 0) {
+                SpringAnimationBuilder s = new SpringAnimationBuilder(h.anim, CURRENT_PLAY_TIME)
+                        .setStartValue(clampDuration(mCurrentFraction))
+                        .setEndValue(goingToEnd ? h.anim.getDuration() : 0)
+                        .setStartVelocity(scaledVelocity * h.anim.getDuration())
+                        .setMinimumVisibleChange(scaleInverse)
+                        .setDampingRatio(h.springProperty.mDampingRatio)
+                        .setStiffness(h.springProperty.mStiffness);
+
+                long expectedDurationL = s.build(context).getDuration();
+                springDuration = Math.max(expectedDurationL, springDuration);
+
+                float expectedDuration = expectedDurationL;
+                h.setter = (a, l) ->
+                    s.setValue(a, mAnimationPlayer.getCurrentPlayTime() / expectedDuration);
+                h.anim.setInterpolator(LINEAR);
+            }
+        }
+
+        mAnimationPlayer.setFloatValues(nextFrameProgress, goingToEnd ? 1f : 0f);
+
+        if (springDuration <= animationDuration) {
+            mAnimationPlayer.setDuration(animationDuration);
+            mAnimationPlayer.setInterpolator(scrollInterpolatorForVelocity(velocity));
+        } else {
+            // Since spring requires more time to run, we let the other animations play with
+            // current time and interpolation and by clamping the duration.
+            mAnimationPlayer.setDuration(springDuration);
+
+            float cutOff = animationDuration / (float) springDuration;
+            mAnimationPlayer.setInterpolator(
+                    clampToProgress(scrollInterpolatorForVelocity(velocity), 0, cutOff));
+        }
+        mAnimationPlayer.start();
+    }
+
+    /**
      * Pauses the currently playing animation.
      */
     public void pause() {
+        // Reset property setters
+        for (Holder h : mChildAnimations) {
+            h.reset();
+        }
         mAnimationPlayer.cancel();
     }
 
@@ -176,7 +237,18 @@ public abstract class AnimatorPlaybackController implements ValueAnimator.Animat
     /**
      * Sets the current animation position and updates all the child animators accordingly.
      */
-    public abstract void setPlayFraction(float fraction);
+    public void setPlayFraction(float fraction) {
+        mCurrentFraction = fraction;
+        // Let the animator report the progress but don't apply the progress to child
+        // animations if it has been cancelled.
+        if (mTargetCancelled) {
+            return;
+        }
+        long playPos = clampDuration(fraction);
+        for (Holder holder : mChildAnimations) {
+            holder.setter.set(holder.anim, playPos);
+        }
+    }
 
     public float getProgressFraction() {
         return mCurrentFraction;
@@ -208,49 +280,6 @@ public abstract class AnimatorPlaybackController implements ValueAnimator.Animat
         }
     }
 
-    /**
-     * Starts playback and sets the spring.
-     */
-    public void dispatchOnStartWithVelocity(float end, float velocity) {
-        if (!QUICKSTEP_SPRINGS.get()) {
-            dispatchOnStart();
-            return;
-        }
-
-        if (DEBUG) Log.d(TAG, "dispatchOnStartWithVelocity#end=" + end + ", velocity=" + velocity);
-
-        for (Animator a : mAnim.getChildAnimations()) {
-            if (a instanceof SpringObjectAnimator) {
-                if (DEBUG) Log.d(TAG, "Found springAnimator=" + a);
-                SpringObjectAnimator springAnimator = (SpringObjectAnimator) a;
-                mSprings.add(springAnimator.getSpring());
-                springAnimator.startSpring(end, velocity, mSpringEndListener);
-            }
-        }
-
-        dispatchOnStart();
-    }
-
-    public void dispatchOnStart() {
-        dispatchOnStartRecursively(mAnim);
-    }
-
-    private void dispatchOnStartRecursively(Animator animator) {
-        List<AnimatorListener> listeners = animator instanceof SpringObjectAnimator
-                ? nonNullList(((SpringObjectAnimator) animator).getObjectAnimatorListeners())
-                : nonNullList(animator.getListeners());
-
-        for (AnimatorListener l : listeners) {
-            l.onAnimationStart(animator);
-        }
-
-        if (animator instanceof AnimatorSet) {
-            for (Animator anim : nonNullList(((AnimatorSet) animator).getChildAnimations())) {
-                dispatchOnStartRecursively(anim);
-            }
-        }
-    }
-
     /** @see #dispatchOnCancelWithoutCancelRunnable(Runnable) */
     public void dispatchOnCancelWithoutCancelRunnable() {
         dispatchOnCancelWithoutCancelRunnable(null);
@@ -272,106 +301,40 @@ public abstract class AnimatorPlaybackController implements ValueAnimator.Animat
         setOnCancelRunnable(onCancel);
     }
 
-    public void dispatchOnCancel() {
-        dispatchOnCancelRecursively(mAnim);
+
+    public AnimatorPlaybackController setOnCancelRunnable(Runnable runnable) {
+        mOnCancelRunnable = runnable;
+        return this;
     }
 
-    private void dispatchOnCancelRecursively(Animator animator) {
-        for (AnimatorListener l : nonNullList(animator.getListeners())) {
-            l.onAnimationCancel(animator);
-        }
+    public void dispatchOnStart() {
+        callListenerCommandRecursively(mAnim, AnimatorListener::onAnimationStart);
+    }
 
-        if (animator instanceof AnimatorSet) {
-            for (Animator anim : nonNullList(((AnimatorSet) animator).getChildAnimations())) {
-                dispatchOnCancelRecursively(anim);
-            }
-        }
+    public void dispatchOnCancel() {
+        callListenerCommandRecursively(mAnim, AnimatorListener::onAnimationCancel);
     }
 
     public void dispatchSetInterpolator(TimeInterpolator interpolator) {
-        dispatchSetInterpolatorRecursively(mAnim, interpolator);
+        callAnimatorCommandRecursively(mAnim, a -> a.setInterpolator(interpolator));
     }
 
-    private void dispatchSetInterpolatorRecursively(Animator anim, TimeInterpolator interpolator) {
-        anim.setInterpolator(interpolator);
+    private static void callListenerCommandRecursively(
+            Animator anim, BiConsumer<AnimatorListener, Animator> command) {
+        callAnimatorCommandRecursively(anim, a-> {
+            for (AnimatorListener l : nonNullList(a.getListeners())) {
+                command.accept(l, a);
+            }
+        });
+    }
+
+    private static void callAnimatorCommandRecursively(Animator anim, Consumer<Animator> command) {
+        command.accept(anim);
         if (anim instanceof AnimatorSet) {
             for (Animator child : nonNullList(((AnimatorSet) anim).getChildAnimations())) {
-                dispatchSetInterpolatorRecursively(child, interpolator);
+                callAnimatorCommandRecursively(child, command);
             }
         }
-    }
-
-    public void setOnCancelRunnable(Runnable runnable) {
-        mOnCancelRunnable = runnable;
-    }
-
-    public void skipToEnd() {
-        mSkipToEnd = true;
-        for (SpringAnimation spring : mSprings) {
-            if (spring.canSkipToEnd()) {
-                spring.skipToEnd();
-            }
-        }
-        mAnimationPlayer.end();
-        mSkipToEnd = false;
-    }
-
-    public static class AnimatorPlaybackControllerVL extends AnimatorPlaybackController {
-
-        private final ValueAnimator[] mChildAnimations;
-
-        private AnimatorPlaybackControllerVL(AnimatorSet anim, long duration,
-                Runnable onCancelRunnable) {
-            super(anim, duration, onCancelRunnable);
-
-            // Build animation list
-            ArrayList<ValueAnimator> childAnims = new ArrayList<>();
-            getAnimationsRecur(mAnim, childAnims);
-            mChildAnimations = childAnims.toArray(new ValueAnimator[childAnims.size()]);
-        }
-
-        private void getAnimationsRecur(AnimatorSet anim, ArrayList<ValueAnimator> out) {
-            long forceDuration = anim.getDuration();
-            TimeInterpolator forceInterpolator = anim.getInterpolator();
-            for (Animator child : anim.getChildAnimations()) {
-                if (forceDuration > 0) {
-                    child.setDuration(forceDuration);
-                }
-                if (forceInterpolator != null) {
-                    child.setInterpolator(forceInterpolator);
-                }
-                if (child instanceof ValueAnimator) {
-                    out.add((ValueAnimator) child);
-                } else if (child instanceof AnimatorSet) {
-                    getAnimationsRecur((AnimatorSet) child, out);
-                } else {
-                    throw new RuntimeException("Unknown animation type " + child);
-                }
-            }
-        }
-
-        @Override
-        public void setPlayFraction(float fraction) {
-            mCurrentFraction = fraction;
-            // Let the animator report the progress but don't apply the progress to child
-            // animations if it has been cancelled.
-            if (mTargetCancelled) {
-                return;
-            }
-            long playPos = clampDuration(fraction);
-            for (ValueAnimator anim : mChildAnimations) {
-                anim.setCurrentPlayTime(Math.min(playPos, anim.getDuration()));
-            }
-        }
-    }
-
-    private boolean isAnySpringRunning() {
-        for (SpringAnimation spring : mSprings) {
-            if (spring.isRunning()) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**
@@ -379,8 +342,6 @@ public abstract class AnimatorPlaybackController implements ValueAnimator.Animat
      */
     private class OnAnimationEndDispatcher extends AnimationSuccessListener {
 
-        boolean mAnimatorDone = false;
-        boolean mSpringsDone = false;
         boolean mDispatched = false;
 
         @Override
@@ -391,39 +352,76 @@ public abstract class AnimatorPlaybackController implements ValueAnimator.Animat
 
         @Override
         public void onAnimationSuccess(Animator animator) {
-            if (mSprings.isEmpty()) {
-                mSpringsDone = mAnimatorDone = true;
-            }
-            if (isAnySpringRunning()) {
-                mAnimatorDone = true;
-            } else {
-                mSpringsDone = true;
-            }
-
             // We wait for the spring (if any) to finish running before completing the end callback.
-            if (!mDispatched && (mSkipToEnd || (mAnimatorDone && mSpringsDone))) {
-                dispatchOnEndRecursively(mAnim);
+            if (!mDispatched) {
+                callListenerCommandRecursively(mAnim, AnimatorListener::onAnimationEnd);
                 if (mEndAction != null) {
                     mEndAction.run();
                 }
                 mDispatched = true;
             }
         }
-
-        private void dispatchOnEndRecursively(Animator animator) {
-            for (AnimatorListener l : nonNullList(animator.getListeners())) {
-                l.onAnimationEnd(animator);
-            }
-
-            if (animator instanceof AnimatorSet) {
-                for (Animator anim : nonNullList(((AnimatorSet) animator).getChildAnimations())) {
-                    dispatchOnEndRecursively(anim);
-                }
-            }
-        }
     }
 
     private static <T> List<T> nonNullList(ArrayList<T> list) {
         return list == null ? Collections.emptyList() : list;
+    }
+
+    /**
+     * Interface for setting position of value animator
+     */
+    private interface PositionSetter {
+
+        PositionSetter DEFAULT = (anim, playPos) ->
+                anim.setCurrentPlayTime(Math.min(playPos, anim.getDuration()));
+
+        void set(ValueAnimator anim, long position);
+    }
+
+    /**
+     * Holder class for various child animations
+     */
+    static class Holder {
+
+        public final ValueAnimator anim;
+
+        public final SpringProperty springProperty;
+
+        public final TimeInterpolator interpolator;
+
+        public PositionSetter setter;
+
+        Holder(Animator anim, SpringProperty springProperty) {
+            this.anim = (ValueAnimator) anim;
+            this.springProperty = springProperty;
+            this.interpolator = this.anim.getInterpolator();
+            this.setter = PositionSetter.DEFAULT;
+        }
+
+        public void reset() {
+            anim.setInterpolator(interpolator);
+            setter = PositionSetter.DEFAULT;
+        }
+    }
+
+    static void addAnimationHoldersRecur(
+            Animator anim, SpringProperty springProperty, ArrayList<Holder> out) {
+        long forceDuration = anim.getDuration();
+        TimeInterpolator forceInterpolator = anim.getInterpolator();
+        if (anim instanceof ValueAnimator) {
+            out.add(new Holder(anim, springProperty));
+        } else if (anim instanceof AnimatorSet) {
+            for (Animator child : ((AnimatorSet) anim).getChildAnimations()) {
+                if (forceDuration > 0) {
+                    child.setDuration(forceDuration);
+                }
+                if (forceInterpolator != null) {
+                    child.setInterpolator(forceInterpolator);
+                }
+                addAnimationHoldersRecur(child, springProperty, out);
+            }
+        } else {
+            throw new RuntimeException("Unknown animation type " + anim);
+        }
     }
 }

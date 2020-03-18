@@ -15,18 +15,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/allAppsScrimColor"
-    android:padding="8dp"
+    android:padding="48dp"
     android:orientation="vertical"
     android:gravity="center">
-
-    <ImageView
-        android:id="@+id/icon"
-        android:contentDescription="@string/work_apps_paused_title"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:tint="?attr/workProfileOverlayTextColor"
-        android:src="@drawable/ic_corp_off" />
 
     <TextView
         style="@style/TextHeadline"
