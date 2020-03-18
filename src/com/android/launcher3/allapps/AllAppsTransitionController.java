@@ -5,13 +5,13 @@ import static com.android.launcher3.LauncherState.ALL_APPS_HEADER_EXTRA;
 import static com.android.launcher3.LauncherState.APPS_VIEW_ITEM_MASK;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.VERTICAL_SWIPE_INDICATOR;
-import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_ALL_APPS_FADE;
-import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_ALL_APPS_HEADER_FADE;
-import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_SCALE;
-import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_VERTICAL_PROGRESS;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_FADE;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_HEADER_FADE;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_SCALE;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_VERTICAL_PROGRESS;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_ALL_APPS;
 
 import android.animation.Animator;
@@ -24,12 +24,12 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.LauncherStateManager.AnimationConfig;
 import com.android.launcher3.LauncherStateManager.StateHandler;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimationSuccessListener;
-import com.android.launcher3.anim.AnimatorSetBuilder;
+import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.anim.PropertySetter;
+import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ScrimView;
 
@@ -112,7 +112,7 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
      * @param progress value between 0 and 1, 0 shows all apps and 1 shows workspace
      *
      * @see #setState(LauncherState)
-     * @see #setStateWithAnimation(LauncherState, AnimatorSetBuilder, AnimationConfig)
+     * @see #setStateWithAnimation(LauncherState, StateAnimationConfig, PendingAnimation)
      */
     public void setProgress(float progress) {
         mProgress = progress;
@@ -143,7 +143,7 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
     @Override
     public void setState(LauncherState state) {
         setProgress(state.getVerticalProgress(mLauncher));
-        setAlphas(state, null, new AnimatorSetBuilder());
+        setAlphas(state, new StateAnimationConfig(), NO_ANIM_PROPERTY_SETTER);
         onProgressAnimationEnd();
     }
 
@@ -153,7 +153,7 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
      */
     @Override
     public void setStateWithAnimation(LauncherState toState,
-            AnimatorSetBuilder builder, AnimationConfig config) {
+            StateAnimationConfig config, PendingAnimation builder) {
         float targetProgress = toState.getVerticalProgress(mLauncher);
         if (Float.compare(mProgress, targetProgress) == 0) {
             setAlphas(toState, config, builder);
@@ -168,14 +168,14 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
         }
 
         Interpolator interpolator = config.userControlled ? LINEAR : toState == OVERVIEW
-                ? builder.getInterpolator(ANIM_OVERVIEW_SCALE, FAST_OUT_SLOW_IN)
+                ? config.getInterpolator(ANIM_OVERVIEW_SCALE, FAST_OUT_SLOW_IN)
                 : FAST_OUT_SLOW_IN;
+
         Animator anim = createSpringAnimation(mProgress, targetProgress);
         anim.setDuration(config.duration);
-        anim.setInterpolator(builder.getInterpolator(ANIM_VERTICAL_PROGRESS, interpolator));
+        anim.setInterpolator(config.getInterpolator(ANIM_VERTICAL_PROGRESS, interpolator));
         anim.addListener(getProgressAnimatorListener());
-
-        builder.play(anim);
+        builder.add(anim);
 
         setAlphas(toState, config, builder);
     }
@@ -184,21 +184,18 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
         return ObjectAnimator.ofFloat(this, ALL_APPS_PROGRESS, progressValues);
     }
 
-    private void setAlphas(LauncherState toState, AnimationConfig config,
-            AnimatorSetBuilder builder) {
-        setAlphas(toState.getVisibleElements(mLauncher), config, builder);
-    }
-
-    public void setAlphas(int visibleElements, AnimationConfig config, AnimatorSetBuilder builder) {
-        PropertySetter setter = config == null ? NO_ANIM_PROPERTY_SETTER
-                : config.getPropertySetter(builder);
+    /**
+     * Updates the property for the provided state
+     */
+    public void setAlphas(LauncherState state, StateAnimationConfig config, PropertySetter setter) {
+        int visibleElements = state.getVisibleElements(mLauncher);
         boolean hasHeaderExtra = (visibleElements & ALL_APPS_HEADER_EXTRA) != 0;
         boolean hasAllAppsContent = (visibleElements & ALL_APPS_CONTENT) != 0;
 
         boolean hasAnyVisibleItem = (visibleElements & APPS_VIEW_ITEM_MASK) != 0;
 
-        Interpolator allAppsFade = builder.getInterpolator(ANIM_ALL_APPS_FADE, LINEAR);
-        Interpolator headerFade = builder.getInterpolator(ANIM_ALL_APPS_HEADER_FADE, allAppsFade);
+        Interpolator allAppsFade = config.getInterpolator(ANIM_ALL_APPS_FADE, LINEAR);
+        Interpolator headerFade = config.getInterpolator(ANIM_ALL_APPS_HEADER_FADE, allAppsFade);
         setter.setViewAlpha(mAppsView.getContentView(), hasAllAppsContent ? 1 : 0, allAppsFade);
         setter.setViewAlpha(mAppsView.getScrollBar(), hasAllAppsContent ? 1 : 0, allAppsFade);
         mAppsView.getFloatingHeaderView().setContentVisibility(hasHeaderExtra, hasAllAppsContent,

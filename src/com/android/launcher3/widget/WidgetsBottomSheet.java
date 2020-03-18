@@ -16,8 +16,8 @@
 
 package com.android.launcher3.widget;
 
-import android.animation.Animator;
-import android.animation.ObjectAnimator;
+import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
+
 import android.animation.PropertyValuesHolder;
 import android.content.Context;
 import android.graphics.Rect;
@@ -28,16 +28,15 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Interpolator;
 import android.widget.TextView;
-
-import androidx.annotation.Nullable;
 
 import com.android.launcher3.Insettable;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.ResourceUtils;
-import com.android.launcher3.anim.Interpolators;
+import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.util.PackageUserKey;
 
@@ -156,7 +155,7 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
         setupNavBarColor();
         mOpenCloseAnimator.setValues(
                 PropertyValuesHolder.ofFloat(TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED));
-        mOpenCloseAnimator.setInterpolator(Interpolators.FAST_OUT_SLOW_IN);
+        mOpenCloseAnimator.setInterpolator(FAST_OUT_SLOW_IN);
         mOpenCloseAnimator.start();
     }
 
@@ -191,9 +190,9 @@ public class WidgetsBottomSheet extends BaseWidgetSheet implements Insettable {
                 mIsOpen ? R.string.widgets_list : R.string.widgets_list_closed));
     }
 
-    @Nullable
     @Override
-    public Animator createHintCloseAnim(float distanceToMove) {
-        return ObjectAnimator.ofInt(this, PADDING_BOTTOM, (int) (distanceToMove + mInsets.bottom));
+    public void addHintCloseAnim(
+            float distanceToMove, Interpolator interpolator, PendingAnimation target) {
+        target.setInt(this, PADDING_BOTTOM, (int) (distanceToMove + mInsets.bottom), interpolator);
     }
 }
