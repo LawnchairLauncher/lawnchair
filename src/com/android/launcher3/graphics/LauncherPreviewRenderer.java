@@ -262,6 +262,13 @@ public class LauncherPreviewRenderer implements Callable<Bitmap> {
         });
     }
 
+    /** Populate preview and render it. */
+    public View getRenderedView() {
+        MainThreadRenderer renderer = new MainThreadRenderer(mContext);
+        renderer.populate();
+        return renderer.mRootView;
+    }
+
     private class MainThreadRenderer extends ContextThemeWrapper
             implements ActivityContext, WorkspaceLayoutManager, LayoutInflater.Factory2 {
 
@@ -388,7 +395,7 @@ public class LauncherPreviewRenderer implements Callable<Bitmap> {
             }
         }
 
-        private void renderScreenShot(Canvas canvas) {
+        private void populate() {
             if (ENABLE_LAUNCHER_PREVIEW_IN_GRID_PICKER.get()) {
                 boolean needsToMigrate = needsToMigrate(mContext, mIdp);
                 boolean success = false;
@@ -499,7 +506,10 @@ public class LauncherPreviewRenderer implements Callable<Bitmap> {
             measureView(mRootView, mDp.widthPx, mDp.heightPx);
             // Additional measure for views which use auto text size API
             measureView(mRootView, mDp.widthPx, mDp.heightPx);
+        }
 
+        private void renderScreenShot(Canvas canvas) {
+            populate();
             mRootView.draw(canvas);
             dispatchVisibilityAggregated(mRootView, false);
         }

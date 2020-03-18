@@ -936,8 +936,8 @@ public class GridSizeMigrationTask {
 
             boolean dbChanged = false;
             if (migrateForPreview) {
-                copyTable(transaction.getDb(), Favorites.TABLE_NAME, Favorites.PREVIEW_TABLE_NAME,
-                        context);
+                copyTable(transaction.getDb(), Favorites.TABLE_NAME, transaction.getDb(),
+                        Favorites.PREVIEW_TABLE_NAME, context);
             }
 
             GridBackupTable backupTable = new GridBackupTable(context, transaction.getDb(),
@@ -950,10 +950,11 @@ public class GridSizeMigrationTask {
 
             HashSet<String> validPackages = getValidPackages(context);
             // Hotseat.
-            if (srcHotseatCount != idp.numHotseatIcons) {
-                // Migrate hotseat.
-                dbChanged = new GridSizeMigrationTask(context, transaction.getDb(), validPackages,
-                        migrateForPreview, srcHotseatCount, idp.numHotseatIcons).migrateHotseat();
+            if (srcHotseatCount != idp.numHotseatIcons
+                    && new GridSizeMigrationTask(context, transaction.getDb(), validPackages,
+                            migrateForPreview, srcHotseatCount,
+                            idp.numHotseatIcons).migrateHotseat()) {
+                dbChanged = true;
             }
 
             // Grid size

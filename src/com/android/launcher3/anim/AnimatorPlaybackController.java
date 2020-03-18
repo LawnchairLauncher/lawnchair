@@ -64,13 +64,6 @@ public class AnimatorPlaybackController implements ValueAnimator.AnimatorUpdateL
         return new AnimatorPlaybackController(anim, duration, childAnims);
     }
 
-    public static AnimatorPlaybackController wrap(PendingAnimation anim, long duration) {
-        /**
-         * TODO: use {@link AnimatorSet#setCurrentPlayTime(long)} once b/68382377 is fixed.
-         */
-        return new AnimatorPlaybackController(anim.anim, duration, anim.animHolders);
-    }
-
     private static final FloatProperty<ValueAnimator> CURRENT_PLAY_TIME =
             new FloatProperty<ValueAnimator>("current-play-time") {
                 @Override
@@ -96,8 +89,8 @@ public class AnimatorPlaybackController implements ValueAnimator.AnimatorUpdateL
     protected boolean mTargetCancelled = false;
     protected Runnable mOnCancelRunnable;
 
-    private AnimatorPlaybackController(
-            AnimatorSet anim, long duration, ArrayList<Holder> childAnims) {
+    /** package private */
+    AnimatorPlaybackController(AnimatorSet anim, long duration, ArrayList<Holder> childAnims) {
         mAnim = anim;
         mDuration = duration;
 
