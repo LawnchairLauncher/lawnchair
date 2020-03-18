@@ -1,5 +1,6 @@
 package com.android.launcher3.graphics;
 
+import static com.android.launcher3.config.FeatureFlags.USE_SURFACE_VIEW_FOR_GRID_PREVIEW;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
 import android.content.ContentProvider;
@@ -19,6 +20,7 @@ import android.util.Xml;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile.GridOption;
 import com.android.launcher3.R;
+import com.android.launcher3.uioverrides.PreviewSurfaceRenderer;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -62,6 +64,11 @@ public class GridOptionsProvider extends ContentProvider {
     private static final String KEY_PREVIEW = "preview";
     private static final String MIME_TYPE_PNG = "image/png";
 
+    private static final String METHOD_GET_PREVIEW = "get_preview";
+    private static final String METADATA_KEY_PREVIEW_VERSION = "preview_version";
+
+
+
     public static final PipeDataWriter<Future<Bitmap>> BITMAP_WRITER =
             new PipeDataWriter<Future<Bitmap>>() {
                 @Override
@@ -98,6 +105,10 @@ public class GridOptionsProvider extends ContentProvider {
                     .add(KEY_IS_DEFAULT, idp.numColumns == gridOption.numColumns
                             && idp.numRows == gridOption.numRows);
         }
+        Bundle metadata = new Bundle();
+        metadata.putString(METADATA_KEY_PREVIEW_VERSION,
+                USE_SURFACE_VIEW_FOR_GRID_PREVIEW.get() ? "V2" : "V1");
+        cursor.setExtras(metadata);
         return cursor;
     }
 
@@ -187,5 +198,15 @@ public class GridOptionsProvider extends ContentProvider {
         } catch (Exception e) {
             throw new FileNotFoundException(e.getMessage());
         }
+    }
+
+    @Override
+    public Bundle call(String method, String arg, Bundle extras)  {
+        if (!METHOD_GET_PREVIEW.equals(method)) {
+            return null;
+        }
+
+        PreviewSurfaceRenderer.render(getContext(), extras);
+        return null;
     }
 }

@@ -19,10 +19,12 @@ package com.android.launcher3.uioverrides;
 
 import android.util.IntProperty;
 import android.view.View;
+
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager;
-import com.android.launcher3.anim.AnimatorSetBuilder;
+import com.android.launcher3.anim.PendingAnimation;
+import com.android.launcher3.states.StateAnimationConfig;
 
 /**
  * Controls the blur, for the Launcher surface only.
@@ -52,6 +54,6 @@ public class BackgroundBlurController implements LauncherStateManager.StateHandl
     public void setState(LauncherState toState) {}
 
     @Override
-    public void setStateWithAnimation(LauncherState toState, AnimatorSetBuilder builder,
-            LauncherStateManager.AnimationConfig config) {}
+    public void setStateWithAnimation(LauncherState toState, StateAnimationConfig config,
+            PendingAnimation animation) { }
 }

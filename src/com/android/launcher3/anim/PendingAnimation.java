@@ -19,9 +19,12 @@ import static com.android.launcher3.anim.AnimatorPlaybackController.addAnimation
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
-import android.annotation.TargetApi;
-import android.os.Build;
+import android.animation.ValueAnimator;
+import android.util.FloatProperty;
+import android.util.IntProperty;
+import android.view.View;
 
 import com.android.launcher3.anim.AnimatorPlaybackController.Holder;
 
@@ -37,14 +40,24 @@ import java.util.function.Consumer;
  *
  * TODO: Find a better name
  */
-@TargetApi(Build.VERSION_CODES.O)
-public class PendingAnimation {
+public class PendingAnimation implements PropertySetter {
 
     private final ArrayList<Consumer<EndState>> mEndListeners = new ArrayList<>();
 
-    /** package private **/
-    final AnimatorSet anim = new AnimatorSet();
-    final ArrayList<Holder> animHolders = new ArrayList<>();
+    private final ArrayList<Holder> mAnimHolders = new ArrayList<>();
+    private final AnimatorSet mAnim;
+    private final long mDuration;
+
+    private ValueAnimator mProgressAnimator;
+
+    public PendingAnimation(long  duration) {
+        this(duration, new AnimatorSet());
+    }
+
+    public PendingAnimation(long  duration, AnimatorSet targetSet) {
+        mDuration = duration;
+        mAnim = targetSet;
+    }
 
     /**
      * Utility method to sent an interpolator on an animation and add it to the list
@@ -63,8 +76,8 @@ public class PendingAnimation {
     }
 
     public void add(Animator a, SpringProperty springProperty) {
-        anim.play(a);
-        addAnimationHoldersRecur(a, springProperty, animHolders);
+        mAnim.play(a);
+        addAnimationHoldersRecur(a, springProperty, mAnimHolders);
     }
 
     public void finish(boolean isSuccess, int logAction) {
@@ -74,6 +87,67 @@ public class PendingAnimation {
         mEndListeners.clear();
     }
 
+    @Override
+    public void setViewAlpha(View view, float alpha, TimeInterpolator interpolator) {
+        if (view == null || view.getAlpha() == alpha) {
+            return;
+        }
+        ObjectAnimator anim = ObjectAnimator.ofFloat(view, View.ALPHA, alpha);
+        anim.addListener(new AlphaUpdateListener(view));
+        anim.setDuration(mDuration).setInterpolator(interpolator);
+        add(anim);
+    }
+
+    @Override
+    public <T> void setFloat(T target, FloatProperty<T> property, float value,
+            TimeInterpolator interpolator) {
+        if (property.get(target) == value) {
+            return;
+        }
+        Animator anim = ObjectAnimator.ofFloat(target, property, value);
+        anim.setDuration(mDuration).setInterpolator(interpolator);
+        add(anim);
+    }
+
+    @Override
+    public <T> void setInt(T target, IntProperty<T> property, int value,
+            TimeInterpolator interpolator) {
+        if (property.get(target) == value) {
+            return;
+        }
+        Animator anim = ObjectAnimator.ofInt(target, property, value);
+        anim.setDuration(mDuration).setInterpolator(interpolator);
+        add(anim);
+    }
+
+    /**
+     * Adds a callback to be run on every frame of the animation
+     */
+    public void addOnFrameCallback(Runnable runnable) {
+        if (mProgressAnimator == null) {
+            mProgressAnimator = ValueAnimator.ofFloat(0, 1).setDuration(mDuration);
+            add(mProgressAnimator);
+        }
+
+        mProgressAnimator.addUpdateListener(anim -> runnable.run());
+    }
+
+    public AnimatorSet getAnim() {
+        return mAnim;
+    }
+
+    /**
+     * Creates a controller for this animation
+     */
+    public AnimatorPlaybackController createPlaybackController() {
+        return new AnimatorPlaybackController(mAnim, mDuration, mAnimHolders);
+    }
+
+    /**
+     * Add a listener of receiving the end state.
+     * Note that the listeners are called as a result of calling {@link #finish(boolean, int)}
+     * and not automatically
+     */
     public void addEndListener(Consumer<EndState> listener) {
         mEndListeners.add(listener);
     }
