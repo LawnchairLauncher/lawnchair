@@ -68,30 +68,25 @@
 
 
     <!-- Hotseat migration notification title -->
-    <string translatable="false" name="hotseat_edu_prompt_title">Get app suggestions based on your routines</string>
+    <string name="hotseat_edu_prompt_title">Easily access your most-used apps</string>
     <!-- Hotseat migration notification content -->
-    <string translatable="false" name="hotseat_edu_prompt_content">Tap to set up</string>
-
+    <string name="hotseat_edu_prompt_content">Pixel predicts apps you\’ll need next, right on your Home screen. Tap to set up.</string>
 
     <!-- Hotseat educational strings for users who don't qualify for migration -->
-    <string translatable="false" name="hotseat_edu_title_migrate">Suggested apps replace the bottom row of apps</string>
-    <string translatable="false" name="hotseat_edu_message_migrate">Your hotseat items will be moved up on the homescreen</string>
-    <string translatable="false" name="hotseat_edu_message_migrate_alt">Your hotseat items will be moved to the last page of your workspace</string>
+    <string name="hotseat_edu_title_migrate">Get app suggestions on the bottom row of your Home screen</string>
 
-
-    <!-- Hotseat educational strings for users who don't qualify -->
-    <string translatable="false" name="hotseat_edu_title_no_migrate">Suggested apps will be found at the bottom row of your home screen</string>
-    <string translatable="false" name="hotseat_edu_message_no_migrate">Drag one or many apps off the bottom row of home screen to see app suggestions</string>
+    <string name="hotseat_edu_message_migrate">Easily access your most-used apps right on the Home screen. Suggestions will change based on your routines. Apps on the bottom row will move up to your Home screen. </string>
+    <string name="hotseat_edu_message_migrate_alt">Easily access your most-used apps, right on the Home screen. Suggestions will change based on your routines. Apps on the bottom row will move to a new folder.</string>
 
     <!-- Toast message user sees after opting into fully predicted hybrid hotseat -->
-    <string translatable="false" name="hotseat_items_migrated">Bottom row of apps moved up.</string>
-    <string translatable="false" name="hotseat_items_migrated_alt">Bottom row of apps moved to last page.</string>
+    <string name="hotseat_items_migrated">Your hotseat items have been moved up to your homescreen</string>
+    <string name="hotseat_items_migrated_alt">Your hotseat items have been moved to a folder</string>
     <!-- Toast message user sees after opting into fully predicted hybrid hotseat -->
-    <string translatable="false" name="hotseat_no_migration">Bottom row won\'t be replaced. Manually drag apps for predictions.</string>
+    <string name="hotseat_no_migration">Drag apps off the bottom row to see app suggestions</string>
     <!-- Button text to opt in for fully predicted hotseat -->
-    <string translatable="false" name="hotseat_edu_accept">Got it</string>
+    <string name="hotseat_edu_accept">Get app suggestions</string>
     <!-- Button text to dismiss opt in for fully predicted hotseat -->
-    <string translatable="false" name="hotseat_edu_dismiss">No thanks</string>
+    <string name="hotseat_edu_dismiss">No thanks</string>
 
 
     <!-- Title shown during interactive part of Back gesture tutorial for right edge. [CHAR LIMIT=30] -->
