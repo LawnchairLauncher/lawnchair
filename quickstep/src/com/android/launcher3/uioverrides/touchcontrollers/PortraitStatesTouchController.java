@@ -37,7 +37,7 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.LauncherStateManager.AnimationComponents;
+import com.android.launcher3.LauncherStateManager.AnimationFlags;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.AnimatorSetBuilder;
@@ -87,8 +87,7 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
     protected boolean canInterceptTouch(MotionEvent ev) {
         if (mCurrentAnimation != null) {
             if (mFinishFastOnSecondTouch) {
-                // TODO: Animate to finish instead.
-                mCurrentAnimation.skipToEnd();
+                mCurrentAnimation.getAnimationPlayer().end();
             }
 
             AllAppsTransitionController allAppsController = mLauncher.getAllAppsController();
@@ -208,7 +207,8 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
     }
 
     @Override
-    protected float initCurrentAnimation(@AnimationComponents int animComponents) {
+    protected float initCurrentAnimation(@AnimationFlags int animComponents) {
+        animComponents = updateAnimComponentsOnReinit(animComponents);
         float range = getShiftRange();
         long maxAccuracy = (long) (2 * range);
 
@@ -219,7 +219,6 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
 
         final AnimatorSetBuilder builder = totalShift == 0 ? new AnimatorSetBuilder()
                 : getAnimatorSetBuilderForStates(mFromState, mToState);
-        updateAnimatorBuilderOnReinit(builder);
 
         cancelPendingAnim();
 
@@ -233,8 +232,8 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
                 cancelPendingAnim();
                 clearState();
             };
-            mCurrentAnimation = AnimatorPlaybackController.wrap(
-                    mPendingAnimation.anim, maxAccuracy, onCancelRunnable);
+            mCurrentAnimation = AnimatorPlaybackController.wrap(mPendingAnimation, maxAccuracy)
+                    .setOnCancelRunnable(onCancelRunnable);
             mLauncher.getStateManager().setCurrentUserControlledAnimation(mCurrentAnimation);
             totalShift = LayoutUtils.getShelfTrackingDistance(mLauncher,
                     mLauncher.getDeviceProfile());
@@ -254,7 +253,9 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
     /**
      * Give subclasses the chance to update the animation when we re-initialize towards a new state.
      */
-    protected void updateAnimatorBuilderOnReinit(AnimatorSetBuilder builder) {
+    @AnimationFlags
+    protected int updateAnimComponentsOnReinit(@AnimationFlags int animComponents) {
+        return animComponents;
     }
 
     private void cancelPendingAnim() {

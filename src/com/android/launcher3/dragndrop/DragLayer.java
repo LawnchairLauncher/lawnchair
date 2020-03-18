@@ -119,6 +119,7 @@ public class DragLayer extends BaseDragLayer<Launcher> {
         recreateControllers();
     }
 
+    @Override
     public void recreateControllers() {
         mControllers = mActivity.createTouchControllers();
     }

@@ -18,6 +18,7 @@ package com.android.launcher3.popup;
 
 import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.Utilities.squaredTouchSlop;
+import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
 import static com.android.launcher3.notification.NotificationMainView.NOTIFICATION_ITEM_INFO;
 import static com.android.launcher3.popup.PopupPopulator.MAX_SHORTCUTS;
 import static com.android.launcher3.popup.PopupPopulator.MAX_SHORTCUTS_IF_NOTIFICATIONS;
@@ -58,7 +59,6 @@ import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragView;
-import com.android.launcher3.logging.LoggerUtils;
 import com.android.launcher3.notification.NotificationInfo;
 import com.android.launcher3.notification.NotificationItemView;
 import com.android.launcher3.notification.NotificationKeyData;
@@ -172,7 +172,7 @@ public class PopupContainerWithArrow<T extends BaseDraggingActivity> extends Arr
             BaseDragLayer dl = getPopupContainer();
             if (!dl.isEventOverView(this, ev)) {
                 mLauncher.getUserEventDispatcher().logActionTapOutside(
-                        LoggerUtils.newContainerTarget(ContainerType.DEEPSHORTCUTS));
+                        newContainerTarget(ContainerType.DEEPSHORTCUTS));
                 close(true);
 
                 // We let touches on the original icon go through so that users can launch
@@ -485,14 +485,15 @@ public class PopupContainerWithArrow<T extends BaseDraggingActivity> extends Arr
     }
 
     @Override
-    public void fillInLogContainerData(View v, ItemInfo info, Target target, Target targetParent) {
-        if (info == NOTIFICATION_ITEM_INFO) {
-            target.itemType = ItemType.NOTIFICATION;
+    public void fillInLogContainerData(ItemInfo childInfo, Target child,
+            ArrayList<Target> parents) {
+        if (childInfo == NOTIFICATION_ITEM_INFO) {
+            child.itemType = ItemType.NOTIFICATION;
         } else {
-            target.itemType = ItemType.DEEPSHORTCUT;
-            target.rank = info.rank;
+            child.itemType = ItemType.DEEPSHORTCUT;
+            child.rank = childInfo.rank;
         }
-        targetParent.containerType = ContainerType.DEEPSHORTCUTS;
+        parents.add(newContainerTarget(ContainerType.DEEPSHORTCUTS));
     }
 
     @Override

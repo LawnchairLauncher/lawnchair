@@ -16,6 +16,7 @@
 
 package com.android.launcher3.appprediction;
 
+import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 
 import android.annotation.TargetApi;
@@ -291,7 +292,7 @@ public class AppsDividerView extends View implements LauncherStateManager.StateL
     public void setContentVisibility(boolean hasHeaderExtra, boolean hasAllAppsContent,
             PropertySetter setter, Interpolator headerFade, Interpolator allAppsFade) {
         // Don't use setViewAlpha as we want to control the visibility ourselves.
-        setter.setFloat(this, ALPHA, hasAllAppsContent ? 1 : 0, allAppsFade);
+        setter.setFloat(this, VIEW_ALPHA, hasAllAppsContent ? 1 : 0, allAppsFade);
     }
 
     @Override
