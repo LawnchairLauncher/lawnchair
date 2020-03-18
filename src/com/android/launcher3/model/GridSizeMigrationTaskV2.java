@@ -123,8 +123,16 @@ public class GridSizeMigrationTaskV2 {
     }
 
     /**
-     * Run the migration algorithm if needed. For preview, we provide the intended idp because it
-     * has not been changed. If idp is null, we read it from the context, for actual grid migration.
+     * When migrating the grid for preview, we copy the table
+     * {@link LauncherSettings.Favorites.TABLE_NAME} into
+     * {@link LauncherSettings.Favorites.PREVIEW_TABLE_NAME}, run grid size migration from the
+     * former to the later, then use the later table for preview.
+     *
+     * Similarly when doing the actual grid migration, the former grid option's table
+     * {@link LauncherSettings.Favorites.TABLE_NAME} is copied into the new grid option's
+     * {@link LauncherSettings.Favorites.TMP_TABLE}, we then run the grid size migration algorithm
+     * to migrate the later to the former, and load the workspace from the default
+     * {@link LauncherSettings.Favorites.TABLE_NAME}.
      *
      * @return false if the migration failed.
      */
@@ -151,7 +159,14 @@ public class GridSizeMigrationTaskV2 {
         HashSet<String> validPackages = getValidPackages(context);
         int srcHotseatCount = prefs.getInt(KEY_MIGRATION_SRC_HOTSEAT_COUNT, idp.numHotseatIcons);
 
-        if (!LauncherSettings.Settings.call(
+        if (migrateForPreview) {
+            if (!LauncherSettings.Settings.call(
+                    context.getContentResolver(),
+                    LauncherSettings.Settings.METHOD_PREP_FOR_PREVIEW, idp.dbFile).getBoolean(
+                    LauncherSettings.Settings.EXTRA_VALUE)) {
+                return false;
+            }
+        } else if (!LauncherSettings.Settings.call(
                 context.getContentResolver(),
                 LauncherSettings.Settings.METHOD_UPDATE_CURRENT_OPEN_HELPER).getBoolean(
                 LauncherSettings.Settings.EXTRA_VALUE)) {
@@ -164,9 +179,13 @@ public class GridSizeMigrationTaskV2 {
                 LauncherSettings.Settings.METHOD_NEW_TRANSACTION).getBinder(
                 LauncherSettings.Settings.EXTRA_VALUE)) {
 
-            DbReader srcReader = new DbReader(t.getDb(), LauncherSettings.Favorites.TMP_TABLE,
+            DbReader srcReader = new DbReader(t.getDb(),
+                    migrateForPreview ? LauncherSettings.Favorites.TABLE_NAME
+                            : LauncherSettings.Favorites.TMP_TABLE,
                     context, validPackages, srcHotseatCount);
-            DbReader destReader = new DbReader(t.getDb(), LauncherSettings.Favorites.TABLE_NAME,
+            DbReader destReader = new DbReader(t.getDb(),
+                    migrateForPreview ? LauncherSettings.Favorites.PREVIEW_TABLE_NAME
+                            : LauncherSettings.Favorites.TABLE_NAME,
                     context, validPackages, idp.numHotseatIcons);
 
             Point targetSize = new Point(idp.numColumns, idp.numRows);
@@ -174,7 +193,9 @@ public class GridSizeMigrationTaskV2 {
                     srcReader, destReader, idp.numHotseatIcons, targetSize);
             task.migrate();
 
-            dropTable(t.getDb(), LauncherSettings.Favorites.TMP_TABLE);
+            if (!migrateForPreview) {
+                dropTable(t.getDb(), LauncherSettings.Favorites.TMP_TABLE);
+            }
 
             t.commit();
             return true;
@@ -186,11 +207,13 @@ public class GridSizeMigrationTaskV2 {
             Log.v(TAG, "Workspace migration completed in "
                     + (System.currentTimeMillis() - migrationStartTime));
 
-            // Save current configuration, so that the migration does not run again.
-            prefs.edit()
-                    .putString(KEY_MIGRATION_SRC_WORKSPACE_SIZE, gridSizeString)
-                    .putInt(KEY_MIGRATION_SRC_HOTSEAT_COUNT, idp.numHotseatIcons)
-                    .apply();
+            if (!migrateForPreview) {
+                // Save current configuration, so that the migration does not run again.
+                prefs.edit()
+                        .putString(KEY_MIGRATION_SRC_WORKSPACE_SIZE, gridSizeString)
+                        .putInt(KEY_MIGRATION_SRC_HOTSEAT_COUNT, idp.numHotseatIcons)
+                        .apply();
+            }
         }
     }
 
@@ -202,7 +225,7 @@ public class GridSizeMigrationTaskV2 {
 
         // Migrate hotseat
         HotseatPlacementSolution hotseatSolution = new HotseatPlacementSolution(mDb, mSrcReader,
-                mContext, mDestHotseatSize, mHotseatItems, mHotseatDiff);
+                mDestReader, mContext, mDestHotseatSize, mHotseatItems, mHotseatDiff);
         hotseatSolution.find();
 
         // Sort the items by the reading order.
@@ -215,7 +238,7 @@ public class GridSizeMigrationTaskV2 {
             }
             List<DbEntry> entries = mDestReader.loadWorkspaceEntries(screenId);
             GridPlacementSolution workspaceSolution = new GridPlacementSolution(mDb, mSrcReader,
-                    mContext, entries, screenId, mTrgX, mTrgY, mWorkspaceDiff);
+                    mDestReader, mContext, entries, screenId, mTrgX, mTrgY, mWorkspaceDiff);
             workspaceSolution.find();
             if (mWorkspaceDiff.isEmpty()) {
                 break;
@@ -225,7 +248,8 @@ public class GridSizeMigrationTaskV2 {
         int screenId = mDestReader.mLastScreenId + 1;
         while (!mWorkspaceDiff.isEmpty()) {
             GridPlacementSolution workspaceSolution = new GridPlacementSolution(mDb, mSrcReader,
-                    mContext, new ArrayList<>(), screenId, mTrgX, mTrgY, mWorkspaceDiff);
+                    mDestReader, mContext, new ArrayList<>(), screenId, mTrgX, mTrgY,
+                    mWorkspaceDiff);
             workspaceSolution.find();
             screenId++;
         }
@@ -246,7 +270,8 @@ public class GridSizeMigrationTaskV2 {
     }
 
     private static void insertEntryInDb(SQLiteDatabase db, Context context,
-            ArrayList<DbEntry> entriesFromSrcDb, DbEntry entry) {
+            ArrayList<DbEntry> entriesFromSrcDb, DbEntry entry, String srcTableName,
+            String destTableName) {
         int id = -1;
         switch (entry.itemType) {
             case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
@@ -283,8 +308,8 @@ public class GridSizeMigrationTaskV2 {
                 return;
         }
 
-        Cursor c = db.query(LauncherSettings.Favorites.TMP_TABLE, null,
-                LauncherSettings.Favorites._ID + " = '" + id + "'", null, null, null, null);
+        Cursor c = db.query(srcTableName, null, LauncherSettings.Favorites._ID + " = '" + id + "'",
+                null, null, null, null);
 
         while (c.moveToNext()) {
             ContentValues values = new ContentValues();
@@ -294,14 +319,14 @@ public class GridSizeMigrationTaskV2 {
                     LauncherSettings.Settings.call(context.getContentResolver(),
                             LauncherSettings.Settings.METHOD_NEW_ITEM_ID).getInt(
                             LauncherSettings.Settings.EXTRA_VALUE));
-            db.insert(LauncherSettings.Favorites.TABLE_NAME, null, values);
+            db.insert(destTableName, null, values);
         }
         c.close();
     }
 
-    private static void removeEntryFromDb(SQLiteDatabase db, IntArray entryId) {
-        db.delete(LauncherSettings.Favorites.TABLE_NAME, Utilities.createDbSelectionQuery(
-                LauncherSettings.Favorites._ID, entryId), null);
+    private static void removeEntryFromDb(SQLiteDatabase db, String tableName, IntArray entryId) {
+        db.delete(tableName,
+                Utilities.createDbSelectionQuery(LauncherSettings.Favorites._ID, entryId), null);
     }
 
     private static HashSet<String> getValidPackages(Context context) {
@@ -325,6 +350,7 @@ public class GridSizeMigrationTaskV2 {
 
         private final SQLiteDatabase mDb;
         private final DbReader mSrcReader;
+        private final DbReader mDestReader;
         private final Context mContext;
         private final GridOccupancy mOccupied;
         private final int mScreenId;
@@ -335,11 +361,12 @@ public class GridSizeMigrationTaskV2 {
         private int mNextStartX;
         private int mNextStartY;
 
-        GridPlacementSolution(SQLiteDatabase db, DbReader srcReader, Context context,
-                List<DbEntry> placedWorkspaceItems, int screenId, int trgX,
+        GridPlacementSolution(SQLiteDatabase db, DbReader srcReader, DbReader destReader,
+                Context context, List<DbEntry> placedWorkspaceItems, int screenId, int trgX,
                 int trgY, List<DbEntry> itemsToPlace) {
             mDb = db;
             mSrcReader = srcReader;
+            mDestReader = destReader;
             mContext = context;
             mOccupied = new GridOccupancy(trgX, trgY);
             mScreenId = screenId;
@@ -362,7 +389,8 @@ public class GridSizeMigrationTaskV2 {
                     continue;
                 }
                 if (findPlacement(entry)) {
-                    insertEntryInDb(mDb, mContext, mSrcReader.mWorkspaceEntries, entry);
+                    insertEntryInDb(mDb, mContext, mSrcReader.mWorkspaceEntries, entry,
+                            mSrcReader.mTableName, mDestReader.mTableName);
                     iterator.remove();
                 }
             }
@@ -397,14 +425,17 @@ public class GridSizeMigrationTaskV2 {
 
         private final SQLiteDatabase mDb;
         private final DbReader mSrcReader;
+        private final DbReader mDestReader;
         private final Context mContext;
         private final HotseatOccupancy mOccupied;
         private final List<DbEntry> mItemsToPlace;
 
-        HotseatPlacementSolution(SQLiteDatabase db, DbReader srcReader, Context context,
-                int hotseatSize, List<DbEntry> placedHotseatItems, List<DbEntry> itemsToPlace) {
+        HotseatPlacementSolution(SQLiteDatabase db, DbReader srcReader, DbReader destReader,
+                Context context, int hotseatSize, List<DbEntry> placedHotseatItems,
+                List<DbEntry> itemsToPlace) {
             mDb = db;
             mSrcReader = srcReader;
+            mDestReader = destReader;
             mContext = context;
             mOccupied = new HotseatOccupancy(hotseatSize);
             for (DbEntry entry : placedHotseatItems) {
@@ -422,7 +453,8 @@ public class GridSizeMigrationTaskV2 {
                     // to something other than -1.
                     entry.cellX = i;
                     entry.cellY = 0;
-                    insertEntryInDb(mDb, mContext, mSrcReader.mHotseatEntries, entry);
+                    insertEntryInDb(mDb, mContext, mSrcReader.mHotseatEntries, entry,
+                            mSrcReader.mTableName, mDestReader.mTableName);
                     mOccupied.markCells(entry, true);
                 }
             }
@@ -519,7 +551,7 @@ public class GridSizeMigrationTaskV2 {
                 }
                 mHotseatEntries.add(entry);
             }
-            removeEntryFromDb(mDb, entriesToRemove);
+            removeEntryFromDb(mDb, mTableName, entriesToRemove);
             c.close();
             return mHotseatEntries;
         }
@@ -639,7 +671,7 @@ public class GridSizeMigrationTaskV2 {
                 }
                 mWorkspaceEntries.add(entry);
             }
-            removeEntryFromDb(mDb, entriesToRemove);
+            removeEntryFromDb(mDb, mTableName, entriesToRemove);
             c.close();
             return mWorkspaceEntries;
         }
@@ -657,7 +689,7 @@ public class GridSizeMigrationTaskV2 {
                     total++;
                     entry.mFolderItems.add(intent);
                 } catch (Exception e) {
-                    removeEntryFromDb(mDb, IntArray.wrap(c.getInt(0)));
+                    removeEntryFromDb(mDb, mTableName, IntArray.wrap(c.getInt(0)));
                 }
             }
             c.close();
