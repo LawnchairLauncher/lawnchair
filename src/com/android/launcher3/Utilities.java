@@ -17,7 +17,6 @@
 package com.android.launcher3;
 
 import static com.android.launcher3.ItemInfoWithIcon.FLAG_ICON_BADGED;
-import static com.android.launcher3.states.RotationHelper.FIXED_ROTATION_TRANSFORM_SETTING_NAME;
 
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
@@ -61,6 +60,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.animation.Interpolator;
 
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.FolderAdaptiveIcon;
 import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.graphics.TintedDrawableSpan;
@@ -126,11 +126,6 @@ public final class Utilities {
     public static boolean isDevelopersOptionsEnabled(Context context) {
         return Settings.Global.getInt(context.getApplicationContext().getContentResolver(),
                         Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0) != 0;
-    }
-
-    public static boolean isForcedRotation(Context context) {
-        return Settings.Global.getInt(context.getContentResolver(),
-            FIXED_ROTATION_TRANSFORM_SETTING_NAME, 0) != 0;
     }
 
     // An intent extra to indicate the horizontal scroll of the wallpaper.
@@ -479,6 +474,15 @@ public final class Utilities {
         // Use application context for shared preferences, so that we use a single cached instance
         return context.getApplicationContext().getSharedPreferences(
                 LauncherFiles.DEVICE_PREFERENCES_KEY, Context.MODE_PRIVATE);
+    }
+
+    /**
+     * @return {@link SharedPreferences} that backs {@link FeatureFlags}
+     */
+    public static SharedPreferences getFeatureFlagsPrefs(Context context) {
+        // Use application context for shared preferences, so that we use a single cached instance
+        return context.getApplicationContext().getSharedPreferences(
+            FeatureFlags.FLAGS_PREF_NAME, Context.MODE_PRIVATE);
     }
 
     public static boolean areAnimationsEnabled(Context context) {
