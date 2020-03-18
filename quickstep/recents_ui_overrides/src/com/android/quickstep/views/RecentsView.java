@@ -29,7 +29,7 @@ import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_ACTIONS;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
-import static com.android.launcher3.uioverrides.BackgroundBlurController.BACKGROUND_BLUR;
+import static com.android.launcher3.uioverrides.DepthController.DEPTH;
 import static com.android.launcher3.uioverrides.touchcontrollers.TaskViewTouchController.SUCCESS_TRANSITION_PROGRESS;
 import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch.TAP;
 import static com.android.launcher3.userevent.nano.LauncherLogProto.ControlType.CLEAR_ALL_BUTTON;
@@ -97,7 +97,7 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.states.RotationHelper;
 import com.android.launcher3.touch.PagedOrientationHandler.CurveProperties;
-import com.android.launcher3.uioverrides.BackgroundBlurController;
+import com.android.launcher3.uioverrides.DepthController;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
@@ -1702,11 +1702,11 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         appWindowAnimationHelper.prepareAnimation(mActivity.getDeviceProfile(), true /* isOpening */);
         AnimatorSet anim = createAdjacentPageAnimForTaskLaunch(tv, appWindowAnimationHelper);
 
-        BackgroundBlurController blurController = getBackgroundBlurController();
-        if (blurController != null) {
-            ObjectAnimator backgroundBlur = ObjectAnimator.ofInt(blurController, BACKGROUND_BLUR,
-                    BACKGROUND_APP.getBackgroundBlurRadius(mActivity));
-            anim.play(backgroundBlur);
+        DepthController depthController = getDepthController();
+        if (depthController != null) {
+            ObjectAnimator depthAnimator = ObjectAnimator.ofFloat(depthController, DEPTH,
+                    BACKGROUND_APP.getDepth(mActivity));
+            anim.play(depthAnimator);
         }
         anim.play(progressAnim);
         anim.setDuration(duration).setInterpolator(interpolator);
@@ -2009,7 +2009,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     }
 
     @Nullable
-    protected BackgroundBlurController getBackgroundBlurController() {
+    protected DepthController getDepthController() {
         return null;
     }
 

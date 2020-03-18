@@ -207,8 +207,8 @@ public class OverviewState extends LauncherState {
     }
 
     @Override
-    public int getBackgroundBlurRadius(Context context) {
-        return context.getResources().getInteger(R.integer.overview_background_blur_radius);
+    public float getDepth(Context context) {
+        return 1f;
     }
 
     @Override
