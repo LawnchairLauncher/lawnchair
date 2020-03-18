@@ -19,7 +19,8 @@ package com.android.launcher3.anim;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
-import android.util.Property;
+import android.util.FloatProperty;
+import android.util.IntProperty;
 import android.view.View;
 
 /**
@@ -36,14 +37,14 @@ public class PropertySetter {
         }
     }
 
-    public <T> void setFloat(T target, Property<T, Float> property, float value,
+    public <T> void setFloat(T target, FloatProperty<T> property, float value,
             TimeInterpolator interpolator) {
-        property.set(target, value);
+        property.setValue(target, value);
     }
 
-    public <T> void setInt(T target, Property<T, Integer> property, int value,
+    public <T> void setInt(T target, IntProperty<T> property, int value,
             TimeInterpolator interpolator) {
-        property.set(target, value);
+        property.setValue(target, value);
     }
 
     public static class AnimatedPropertySetter extends PropertySetter {
@@ -68,7 +69,7 @@ public class PropertySetter {
         }
 
         @Override
-        public <T> void setFloat(T target, Property<T, Float> property, float value,
+        public <T> void setFloat(T target, FloatProperty<T> property, float value,
                 TimeInterpolator interpolator) {
             if (property.get(target) == value) {
                 return;
@@ -79,7 +80,7 @@ public class PropertySetter {
         }
 
         @Override
-        public <T> void setInt(T target, Property<T, Integer> property, int value,
+        public <T> void setInt(T target, IntProperty<T> property, int value,
                 TimeInterpolator interpolator) {
             if (property.get(target) == value) {
                 return;
