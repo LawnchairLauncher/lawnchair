@@ -118,13 +118,20 @@ public class LauncherDbUtils {
         db.execSQL("DROP TABLE IF EXISTS " + tableName);
     }
 
-    /** Copy from table to the to table. */
-    public static void copyTable(SQLiteDatabase db, String from, String to, Context context) {
+    /** Copy fromTable in fromDb to toTable in toDb. */
+    public static void copyTable(SQLiteDatabase fromDb, String fromTable, SQLiteDatabase toDb,
+            String toTable, Context context) {
         long userSerial = UserCache.INSTANCE.get(context).getSerialNumberForUser(
                 Process.myUserHandle());
-        dropTable(db, to);
-        Favorites.addTableToDb(db, userSerial, false, to);
-        db.execSQL("INSERT INTO " + to + " SELECT * FROM " + from);
+        dropTable(toDb, toTable);
+        Favorites.addTableToDb(toDb, userSerial, false, toTable);
+        if (fromDb != toDb) {
+            toDb.execSQL("ATTACH DATABASE '" + fromDb.getPath() + "' AS from_db");
+            toDb.execSQL(
+                    "INSERT INTO " + toTable + " SELECT * FROM from_db." + fromTable);
+        } else {
+            toDb.execSQL("INSERT INTO " + toTable + " SELECT * FROM " + fromTable);
+        }
     }
 
     /**

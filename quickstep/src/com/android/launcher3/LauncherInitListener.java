@@ -15,6 +15,7 @@
  */
 package com.android.launcher3;
 
+import android.animation.AnimatorSet;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
@@ -25,6 +26,7 @@ import android.os.Handler;
 import com.android.launcher3.util.ActivityTracker;
 import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.RemoteAnimationProvider;
+import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.util.function.BiPredicate;
 
@@ -51,17 +53,21 @@ public class LauncherInitListener extends ActivityInitListener<Launcher> {
             // Set a one-time animation provider. After the first call, this will get cleared.
             // TODO: Probably also check the intended target id.
             CancellationSignal cancellationSignal = new CancellationSignal();
-            appTransitionManager.setRemoteAnimationProvider((appTargets, wallpaperTargets) -> {
+            appTransitionManager.setRemoteAnimationProvider(new RemoteAnimationProvider() {
+                @Override
+                public AnimatorSet createWindowAnimation(RemoteAnimationTargetCompat[] appTargets,
+                        RemoteAnimationTargetCompat[] wallpaperTargets) {
 
-                // On the first call clear the reference.
-                cancellationSignal.cancel();
-                RemoteAnimationProvider provider = mRemoteAnimationProvider;
-                mRemoteAnimationProvider = null;
+                    // On the first call clear the reference.
+                    cancellationSignal.cancel();
+                    RemoteAnimationProvider provider = mRemoteAnimationProvider;
+                    mRemoteAnimationProvider = null;
 
-                if (provider != null && launcher.getStateManager().getState().overviewUi) {
-                    return provider.createWindowAnimation(appTargets, wallpaperTargets);
+                    if (provider != null && launcher.getStateManager().getState().overviewUi) {
+                        return provider.createWindowAnimation(appTargets, wallpaperTargets);
+                    }
+                    return null;
                 }
-                return null;
             }, cancellationSignal);
         }
         launcher.deferOverlayCallbacksUntilNextResumeOrStop();
