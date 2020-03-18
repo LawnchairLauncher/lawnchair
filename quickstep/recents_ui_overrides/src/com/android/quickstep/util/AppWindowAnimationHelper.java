@@ -17,6 +17,7 @@ package com.android.quickstep.util;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Matrix;
 import android.graphics.Matrix.ScaleToFit;
 import android.graphics.Rect;
@@ -104,9 +105,10 @@ public class AppWindowAnimationHelper {
     private TargetAlphaProvider mBaseAlphaCallback = (t, a) -> 1;
 
     public AppWindowAnimationHelper(PagedViewOrientedState orientedState, Context context) {
+        Resources res = context.getResources();
         mOrientedState = orientedState;
-        mWindowCornerRadius = getWindowCornerRadius(context.getResources());
-        mSupportsRoundedCornersOnWindows = supportsRoundedCornersOnWindows(context.getResources());
+        mWindowCornerRadius = getWindowCornerRadius(res);
+        mSupportsRoundedCornersOnWindows = supportsRoundedCornersOnWindows(res);
         mTaskCornerRadius = TaskCornerRadius.get(context);
         mUseRoundedCornersOnWindows = mSupportsRoundedCornersOnWindows;
     }
@@ -196,14 +198,15 @@ public class AppWindowAnimationHelper {
         SurfaceParams[] surfaceParams = new SurfaceParams[params.mTargetSet.unfilteredApps.length];
         for (int i = 0; i < params.mTargetSet.unfilteredApps.length; i++) {
             RemoteAnimationTargetCompat app = params.mTargetSet.unfilteredApps[i];
+            SurfaceParams.Builder builder = new SurfaceParams.Builder(app.leash);
             mTmpMatrix.setTranslate(app.position.x, app.position.y);
             Rect crop = mTmpRect;
             crop.set(app.sourceContainerBounds);
             crop.offsetTo(0, 0);
             float alpha;
-            int layer = RemoteAnimationProvider.getLayer(app, mBoostModeTargetLayers);
             float cornerRadius = 0f;
             float scale = Math.max(mCurrentRect.width(), mTargetRect.width()) / crop.width();
+            int layer = RemoteAnimationProvider.getLayer(app, mBoostModeTargetLayers);
             if (app.mode == params.mTargetSet.targetMode) {
                 alpha = mTaskAlphaCallback.getAlpha(app, params.mTargetAlpha);
                 if (app.activityType != RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME) {
@@ -239,10 +242,14 @@ public class AppWindowAnimationHelper {
                     layer = Integer.MAX_VALUE;
                 }
             }
-            // Since radius is in Surface space, but we draw the rounded corners in screen space, we
-            // have to undo the scale.
-            surfaceParams[i] = new SurfaceParams(app.leash, alpha, mTmpMatrix, crop, layer,
-                    cornerRadius / scale);
+            builder.withAlpha(alpha)
+                    .withMatrix(mTmpMatrix)
+                    .withWindowCrop(crop)
+                    .withLayer(layer)
+                    // Since radius is in Surface space, but we draw the rounded corners in screen
+                    // space, we have to undo the scale
+                    .withCornerRadius(cornerRadius / scale);
+            surfaceParams[i] = builder.build();
         }
         return surfaceParams;
     }

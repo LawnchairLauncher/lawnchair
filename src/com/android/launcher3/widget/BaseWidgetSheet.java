@@ -41,6 +41,8 @@ import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.AbstractSlideInView;
 
+import java.util.ArrayList;
+
 /**
  * Base class for various widgets popup
  */
@@ -144,9 +146,11 @@ abstract class BaseWidgetSheet extends AbstractSlideInView
     }
 
     @Override
-    public void fillInLogContainerData(View v, ItemInfo info, Target target, Target targetParent) {
-        targetParent.containerType = ContainerType.WIDGETS;
-        targetParent.cardinality = getElementsRowCount();
+    public void fillInLogContainerData(ItemInfo childInfo, Target child,
+            ArrayList<Target> parents) {
+        Target target = newContainerTarget(ContainerType.WIDGETS);
+        target.cardinality = getElementsRowCount();
+        parents.add(target);
     }
 
     @Override

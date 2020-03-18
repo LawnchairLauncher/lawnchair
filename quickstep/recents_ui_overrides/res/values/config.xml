@@ -14,10 +14,8 @@
      limitations under the License.
 -->
 <resources>
-    <color name="chip_hint_foreground_color">#fff</color>
-
-    <color name="all_apps_label_text">#61000000</color>
-    <color name="all_apps_label_text_dark">#61FFFFFF</color>
-    <color name="all_apps_prediction_row_separator">#3c000000</color>
-    <color name="all_apps_prediction_row_separator_dark">#3cffffff</color>
+    <integer name="app_background_blur_radius">150</integer>
+    <integer name="allapps_background_blur_radius">90</integer>
+    <integer name="overview_background_blur_radius">50</integer>
+    <integer name="folder_background_blur_radius_adjustment">20</integer>
 </resources>

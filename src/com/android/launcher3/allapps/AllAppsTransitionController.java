@@ -12,7 +12,6 @@ import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_VERTICAL_PROGRE
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
-import static com.android.launcher3.config.FeatureFlags.UNSTABLE_SPRINGS;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_ALL_APPS;
 
 import android.animation.Animator;
@@ -31,11 +30,8 @@ import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.PropertySetter;
-import com.android.launcher3.anim.SpringObjectAnimator;
-import com.android.launcher3.util.DynamicResource;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ScrimView;
-import com.android.systemui.plugins.ResourceProvider;
 
 /**
  * Handles AllApps view transition.
@@ -166,7 +162,7 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
             return;
         }
 
-        if (!config.playNonAtomicComponent()) {
+        if (config.onlyPlayAtomicComponent()) {
             // There is no atomic component for the all apps transition, so just return early.
             return;
         }
@@ -185,14 +181,6 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
     }
 
     public Animator createSpringAnimation(float... progressValues) {
-        if (UNSTABLE_SPRINGS.get()) {
-            ResourceProvider rp = DynamicResource.provider(mLauncher);
-            float damping = rp.getFloat(R.dimen.all_apps_spring_damping_ratio);
-            float stiffness = rp.getFloat(R.dimen.all_apps_spring_stiffness);
-
-            return new SpringObjectAnimator<>(this, ALL_APPS_PROGRESS, 1f / mShiftRange,
-                    damping, stiffness, progressValues);
-        }
         return ObjectAnimator.ofFloat(this, ALL_APPS_PROGRESS, progressValues);
     }
 
@@ -224,12 +212,7 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
     }
 
     public AnimatorListenerAdapter getProgressAnimatorListener() {
-        return new AnimationSuccessListener() {
-            @Override
-            public void onAnimationSuccess(Animator animator) {
-                onProgressAnimationEnd();
-            }
-        };
+        return AnimationSuccessListener.forRunnable(this::onProgressAnimationEnd);
     }
 
     public void setupViews(AllAppsContainerView appsView) {
