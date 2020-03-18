@@ -21,16 +21,16 @@ import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.OVERVIEW_PEEK;
-import static com.android.launcher3.LauncherStateManager.PLAY_ATOMIC_OVERVIEW_PEEK;
-import static com.android.launcher3.LauncherStateManager.SKIP_OVERVIEW;
-import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_ALL_APPS_FADE;
-import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_ALL_APPS_HEADER_FADE;
-import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_FADE;
-import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_SCALE;
-import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_TRANSLATE;
 import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_3;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_FADE;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_HEADER_FADE;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_FADE;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_SCALE;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_TRANSLATE;
+import static com.android.launcher3.states.StateAnimationConfig.PLAY_ATOMIC_OVERVIEW_PEEK;
+import static com.android.launcher3.states.StateAnimationConfig.SKIP_OVERVIEW;
 import static com.android.launcher3.util.VibratorWrapper.OVERVIEW_HAPTIC;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_OVERVIEW_DISABLED;
 
@@ -44,10 +44,10 @@ import android.view.ViewConfiguration;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppTransitionManagerImpl;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.LauncherStateManager.AnimationFlags;
 import com.android.launcher3.anim.AnimationSuccessListener;
-import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.Interpolators;
+import com.android.launcher3.states.StateAnimationConfig;
+import com.android.launcher3.states.StateAnimationConfig.AnimationFlags;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.util.VibratorWrapper;
 import com.android.quickstep.SystemUiProxy;
@@ -105,8 +105,12 @@ public class FlingAndHoldTouchController extends PortraitStatesTouchController {
         LauncherState fromState = isPaused ? NORMAL : OVERVIEW_PEEK;
         LauncherState toState = isPaused ? OVERVIEW_PEEK : NORMAL;
         long peekDuration = isPaused ? PEEK_IN_ANIM_DURATION : PEEK_OUT_ANIM_DURATION;
-        mPeekAnim = mLauncher.getStateManager().createAtomicAnimation(fromState, toState,
-                new AnimatorSetBuilder(), PLAY_ATOMIC_OVERVIEW_PEEK, peekDuration);
+
+        StateAnimationConfig config = new StateAnimationConfig();
+        config.duration = peekDuration;
+        config.animFlags = PLAY_ATOMIC_OVERVIEW_PEEK;
+        mPeekAnim = mLauncher.getStateManager().createAtomicAnimation(
+                fromState, toState, config);
         mPeekAnim.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -130,10 +134,10 @@ public class FlingAndHoldTouchController extends PortraitStatesTouchController {
     }
 
     @Override
-    protected AnimatorSetBuilder getAnimatorSetBuilderForStates(LauncherState fromState,
-            LauncherState toState) {
+    protected StateAnimationConfig getConfigForStates(
+            LauncherState fromState, LauncherState toState) {
         if (fromState == NORMAL && toState == ALL_APPS) {
-            AnimatorSetBuilder builder = new AnimatorSetBuilder();
+            StateAnimationConfig builder = new StateAnimationConfig();
             // Fade in prediction icons quickly, then rest of all apps after reaching overview.
             float progressToReachOverview = NORMAL.getVerticalProgress(mLauncher)
                     - OVERVIEW.getVerticalProgress(mLauncher);
@@ -152,7 +156,7 @@ public class FlingAndHoldTouchController extends PortraitStatesTouchController {
             builder.setInterpolator(ANIM_WORKSPACE_FADE, DEACCEL_3);
             return builder;
         } else if (fromState == ALL_APPS && toState == NORMAL) {
-            AnimatorSetBuilder builder = new AnimatorSetBuilder();
+            StateAnimationConfig builder = new StateAnimationConfig();
             // Keep all apps/predictions opaque until the very end of the transition.
             float progressToReachOverview = OVERVIEW.getVerticalProgress(mLauncher);
             builder.setInterpolator(ANIM_ALL_APPS_FADE, Interpolators.clampToProgress(
@@ -165,7 +169,7 @@ public class FlingAndHoldTouchController extends PortraitStatesTouchController {
                     1));
             return builder;
         }
-        return super.getAnimatorSetBuilderForStates(fromState, toState);
+        return super.getConfigForStates(fromState, toState);
     }
 
     @Override
@@ -211,9 +215,11 @@ public class FlingAndHoldTouchController extends PortraitStatesTouchController {
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
                 if (mCancelled) {
-                    mPeekAnim = mLauncher.getStateManager().createAtomicAnimation(mFromState,
-                            mToState, new AnimatorSetBuilder(), PLAY_ATOMIC_OVERVIEW_PEEK,
-                            PEEK_OUT_ANIM_DURATION);
+                    StateAnimationConfig config = new StateAnimationConfig();
+                    config.animFlags = PLAY_ATOMIC_OVERVIEW_PEEK;
+                    config.duration = PEEK_OUT_ANIM_DURATION;
+                    mPeekAnim = mLauncher.getStateManager().createAtomicAnimation(
+                            mFromState, mToState, config);
                     mPeekAnim.start();
                 }
                 mAtomicAnim = null;

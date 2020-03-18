@@ -103,6 +103,11 @@ public class LauncherSettings {
         public static final String PREVIEW_TABLE_NAME = "favorites_preview";
 
         /**
+         * Temporary table used specifically for multi-db grid migrations
+         */
+        public static final String TMP_TABLE = "favorites_tmp";
+
+        /**
          * The content:// style URL for "favorites" table
          */
         public static final Uri CONTENT_URI = Uri.parse("content://"
@@ -113,6 +118,12 @@ public class LauncherSettings {
          */
         public static final Uri PREVIEW_CONTENT_URI = Uri.parse("content://"
                 + LauncherProvider.AUTHORITY + "/" + PREVIEW_TABLE_NAME);
+
+        /**
+         * The content:// style URL for "favorites_tmp" table
+         */
+        public static final Uri TMP_CONTENT_URI = Uri.parse("content://"
+                + LauncherProvider.AUTHORITY + "/" + TMP_TABLE);
 
         /**
          * The content:// style URL for a given row, identified by its id.
