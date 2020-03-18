@@ -112,8 +112,6 @@ public class WorkFooterContainer extends LinearLayout implements Insettable {
         boolean anyProfileQuietModeEnabled = UserCache.INSTANCE.get(
                 getContext()).isAnyProfileQuietModeEnabled();
 
-        mWorkModeLabel.setText(anyProfileQuietModeEnabled
-                ? R.string.work_mode_off_label : R.string.work_mode_on_label);
         mWorkModeLabel.setCompoundDrawablesWithIntrinsicBounds(
                 anyProfileQuietModeEnabled ? R.drawable.ic_corp_off : R.drawable.ic_corp, 0, 0, 0);
         mWorkModeSwitch.refresh();

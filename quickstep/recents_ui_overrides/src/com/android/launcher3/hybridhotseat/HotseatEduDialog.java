@@ -35,7 +35,6 @@ import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.WorkspaceItemInfo;
-import com.android.launcher3.WorkspaceLayoutManager;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.UserEventDispatcher;
@@ -53,9 +52,6 @@ public class HotseatEduDialog extends AbstractSlideInView implements Insettable 
 
     private static final int DEFAULT_CLOSE_DURATION = 200;
     protected static final int FINAL_SCRIM_BG_COLOR = 0x88000000;
-
-    // We don't migrate if user has more than SAME_PAGE_MAX_ROWS rows of item in their screen
-    private static final int SAME_PAGE_MAX_ROWS = 2;
 
     private static final int MIGRATE_SAME_PAGE = 0;
     private static final int MIGRATE_NEW_PAGE = 1;
@@ -228,19 +224,6 @@ public class HotseatEduDialog extends AbstractSlideInView implements Insettable 
         if (FeatureFlags.HOTSEAT_MIGRATE_NEW_PAGE.get()) {
             mEduContent.setText(R.string.hotseat_edu_message_migrate_alt);
             mMigrationMode = MIGRATE_NEW_PAGE;
-            return;
-        }
-        CellLayout page = mLauncher.getWorkspace().getScreenWithId(
-                WorkspaceLayoutManager.FIRST_SCREEN_ID);
-
-        int maxItemsOnPage = SAME_PAGE_MAX_ROWS * mLauncher.getDeviceProfile().inv.numColumns
-                + (FeatureFlags.QSB_ON_FIRST_SCREEN ? 1 : 0);
-        if (page.getShortcutsAndWidgets().getChildCount() > maxItemsOnPage
-                || !page.makeSpaceForHotseatMigration(false)) {
-            mMigrationMode = MIGRATE_NO_MIGRATE;
-            mEduContent.setText(R.string.hotseat_edu_message_no_migrate);
-            mEduHeading.setText(R.string.hotseat_edu_title_no_migrate);
-            mDismissBtn.setVisibility(GONE);
         }
     }
 

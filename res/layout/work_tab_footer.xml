@@ -41,6 +41,7 @@
         android:lines="1"
         android:minHeight="24dp"
         android:paddingEnd="12dp"
+        android:text="@string/work_profile_toggle_label"
         android:textSize="16sp"/>
     <com.android.launcher3.allapps.WorkModeSwitch
         android:id="@+id/work_mode_toggle"
