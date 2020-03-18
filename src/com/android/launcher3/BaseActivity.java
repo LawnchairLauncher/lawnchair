@@ -40,7 +40,6 @@ import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.logging.StatsLogUtils;
 import com.android.launcher3.logging.StatsLogUtils.LogStateProvider;
 import com.android.launcher3.logging.UserEventDispatcher;
-import com.android.launcher3.logging.UserEventDispatcher.UserEventDelegate;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
@@ -52,8 +51,10 @@ import java.io.PrintWriter;
 import java.lang.annotation.Retention;
 import java.util.ArrayList;
 
-public abstract class BaseActivity extends Activity
-        implements UserEventDelegate, LogStateProvider, ActivityContext {
+/**
+ * Launcher BaseActivity
+ */
+public abstract class BaseActivity extends Activity implements LogStateProvider, ActivityContext {
 
     private static final String TAG = "BaseActivity";
 
@@ -155,7 +156,7 @@ public abstract class BaseActivity extends Activity
 
     public final UserEventDispatcher getUserEventDispatcher() {
         if (mUserEventDispatcher == null) {
-            mUserEventDispatcher = UserEventDispatcher.newInstance(this, this);
+            mUserEventDispatcher = UserEventDispatcher.newInstance(this);
         }
         return mUserEventDispatcher;
     }

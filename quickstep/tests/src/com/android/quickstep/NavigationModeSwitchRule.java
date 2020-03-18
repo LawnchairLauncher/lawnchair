@@ -49,7 +49,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Test rule that allows executing a test with Quickstep on and then Quickstep off.
@@ -167,12 +166,9 @@ public class NavigationModeSwitchRule implements TestRule {
             return false;
         }
 
-        setOverlayPackageEnabled(NAV_BAR_MODE_3BUTTON_OVERLAY,
-                overlayPackage == NAV_BAR_MODE_3BUTTON_OVERLAY);
-        setOverlayPackageEnabled(NAV_BAR_MODE_2BUTTON_OVERLAY,
-                overlayPackage == NAV_BAR_MODE_2BUTTON_OVERLAY);
-        setOverlayPackageEnabled(NAV_BAR_MODE_GESTURAL_OVERLAY,
-                overlayPackage == NAV_BAR_MODE_GESTURAL_OVERLAY);
+        Log.d(TAG, "setActiveOverlay: " + overlayPackage + "...");
+        UiDevice.getInstance(getInstrumentation()).executeShellCommand(
+                "cmd overlay enable-exclusive " + overlayPackage);
 
         if (currentSysUiNavigationMode() != expectedMode) {
             final CountDownLatch latch = new CountDownLatch(1);
@@ -186,11 +182,18 @@ public class NavigationModeSwitchRule implements TestRule {
                     };
             targetContext.getMainExecutor().execute(() ->
                     SYS_UI_NAVIGATION_MODE.addModeChangeListener(listener));
-            latch.await(60, TimeUnit.SECONDS);
+            // b/139137636
+//            latch.await(60, TimeUnit.SECONDS);
             targetContext.getMainExecutor().execute(() ->
                     SYS_UI_NAVIGATION_MODE.removeModeChangeListener(listener));
-            assertTrue(launcher, "Navigation mode didn't change to " + expectedMode,
-                    currentSysUiNavigationMode() == expectedMode, description);
+
+            Wait.atMost(() -> "Navigation mode didn't change to " + expectedMode,
+                    () -> currentSysUiNavigationMode() == expectedMode, 60000 /* b/148422894 */,
+                    launcher);
+            // b/139137636
+//            assertTrue(launcher, "Navigation mode didn't change to " + expectedMode,
+//                    currentSysUiNavigationMode() == expectedMode, description);
+
         }
 
         Wait.atMost("Couldn't switch to " + overlayPackage,
@@ -202,14 +205,6 @@ public class NavigationModeSwitchRule implements TestRule {
                 60000 /* b/148422894 */, launcher);
         AbstractLauncherUiTest.checkDetectedLeaks();
         return true;
-    }
-
-    private static void setOverlayPackageEnabled(String overlayPackage, boolean enable)
-            throws Exception {
-        Log.d(TAG, "setOverlayPackageEnabled: " + overlayPackage + " " + enable);
-        final String action = enable ? "enable" : "disable";
-        UiDevice.getInstance(getInstrumentation()).executeShellCommand(
-                "cmd overlay " + action + " " + overlayPackage);
     }
 
     private static boolean packageExists(String packageName) {
