@@ -251,4 +251,6 @@ public class UiFactory extends RecentsUiFactory {
         Person[] persons = si.getPersons();
         return persons == null ? Utilities.EMPTY_PERSON_ARRAY : persons;
     }
+
+    public static void closeSystemWindows() {}
 }
