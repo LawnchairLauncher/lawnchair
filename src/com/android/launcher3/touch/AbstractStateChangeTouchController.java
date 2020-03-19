@@ -19,11 +19,11 @@ import static com.android.launcher3.LauncherAnimUtils.MIN_PROGRESS_TO_ALL_APPS;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
-import static com.android.launcher3.LauncherStateManager.ANIM_ALL_COMPONENTS;
-import static com.android.launcher3.LauncherStateManager.PLAY_ATOMIC_OVERVIEW_SCALE;
-import static com.android.launcher3.LauncherStateManager.PLAY_NON_ATOMIC;
 import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelocity;
 import static com.android.launcher3.config.FeatureFlags.UNSTABLE_SPRINGS;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_COMPONENTS;
+import static com.android.launcher3.states.StateAnimationConfig.PLAY_ATOMIC_OVERVIEW_SCALE;
+import static com.android.launcher3.states.StateAnimationConfig.PLAY_NON_ATOMIC;
 import static com.android.launcher3.util.DefaultDisplay.getSingleFrameMs;
 
 import android.animation.Animator;
@@ -37,12 +37,12 @@ import android.view.MotionEvent;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.LauncherStateManager.AnimationFlags;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
-import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.PendingAnimation;
+import com.android.launcher3.states.StateAnimationConfig;
+import com.android.launcher3.states.StateAnimationConfig.AnimationFlags;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
@@ -358,14 +358,18 @@ public abstract class AbstractStateChangeTouchController
 
     private AnimatorSet createAtomicAnimForState(LauncherState fromState, LauncherState targetState,
             long duration) {
-        AnimatorSetBuilder builder = getAnimatorSetBuilderForStates(fromState, targetState);
-        return mLauncher.getStateManager().createAtomicAnimation(fromState, targetState, builder,
-                PLAY_ATOMIC_OVERVIEW_SCALE, duration);
+        StateAnimationConfig config = getConfigForStates(fromState, targetState);
+        config.animFlags = PLAY_ATOMIC_OVERVIEW_SCALE;
+        config.duration = duration;
+        return mLauncher.getStateManager().createAtomicAnimation(fromState, targetState, config);
     }
 
-    protected AnimatorSetBuilder getAnimatorSetBuilderForStates(LauncherState fromState,
-            LauncherState toState) {
-        return new AnimatorSetBuilder();
+    /**
+     * Returns animation config for state transition between provided states
+     */
+    protected StateAnimationConfig getConfigForStates(
+            LauncherState fromState, LauncherState toState) {
+        return new StateAnimationConfig();
     }
 
     @Override

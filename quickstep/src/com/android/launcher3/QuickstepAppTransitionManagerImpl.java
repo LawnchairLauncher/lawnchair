@@ -49,6 +49,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Matrix;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
@@ -85,8 +86,6 @@ import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams;
 import com.android.systemui.shared.system.WindowManagerWrapper;
-
-import java.lang.ref.WeakReference;
 
 /**
  * {@link LauncherAppTransitionManager} with Quickstep-specific app transitions for launching from
@@ -299,8 +298,12 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
         if (mLauncher.isInMultiWindowMode()) {
             for (RemoteAnimationTargetCompat target : appTargets) {
                 if (target.mode == MODE_OPENING) {
-                    bounds.set(target.sourceContainerBounds);
-                    bounds.offsetTo(target.position.x, target.position.y);
+                    bounds.set(target.screenSpaceBounds);
+                    if (target.localBounds != null) {
+                        bounds.set(target.localBounds);
+                    } else {
+                        bounds.offsetTo(target.position.x, target.position.y);
+                    }
                     return bounds;
                 }
             }
@@ -460,6 +463,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
         RectF targetBounds = new RectF(windowTargetBounds);
         RectF currentBounds = new RectF();
         RectF temp = new RectF();
+        Point tmpPos = new Point();
 
         AnimatorSet animatorSet = new AnimatorSet();
         ValueAnimator appAnimator = ValueAnimator.ofFloat(0, 1);
@@ -547,6 +551,13 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                 for (int i = appTargets.length - 1; i >= 0; i--) {
                     RemoteAnimationTargetCompat target = appTargets[i];
                     SurfaceParams.Builder builder = new SurfaceParams.Builder(target.leash);
+
+                    tmpPos.set(target.position.x, target.position.y);
+                    if (target.localBounds != null) {
+                        final Rect localBounds = target.localBounds;
+                        tmpPos.set(target.localBounds.left, target.localBounds.top);
+                    }
+
                     if (target.mode == MODE_OPENING) {
                         matrix.setScale(scale, scale);
                         matrix.postTranslate(transX0, transY0);
@@ -563,9 +574,9 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                                 .withAlpha(1f - mIconAlpha.value)
                                 .withCornerRadius(mWindowRadius.value);
                     } else {
-                        matrix.setTranslate(target.position.x, target.position.y);
+                        matrix.setTranslate(tmpPos.x, tmpPos.y);
                         builder.withMatrix(matrix)
-                                .withWindowCrop(target.sourceContainerBounds)
+                                .withWindowCrop(target.screenSpaceBounds)
                                 .withAlpha(1f);
                     }
                     builder.withLayer(RemoteAnimationProvider.getLayer(target, MODE_OPENING));
@@ -662,7 +673,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                     RemoteAnimationTargetCompat target = appTargets[i];
                     params[i] = new SurfaceParams.Builder(target.leash)
                             .withAlpha(1f)
-                            .withWindowCrop(target.sourceContainerBounds)
+                            .withWindowCrop(target.screenSpaceBounds)
                             .withLayer(RemoteAnimationProvider.getLayer(target, MODE_OPENING))
                             .withCornerRadius(cornerRadius)
                             .build();
@@ -681,6 +692,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
         SyncRtSurfaceTransactionApplierCompat surfaceApplier =
                 new SyncRtSurfaceTransactionApplierCompat(mDragLayer);
         Matrix matrix = new Matrix();
+        Point tmpPos = new Point();
         ValueAnimator closingAnimator = ValueAnimator.ofFloat(0, 1);
         int duration = CLOSING_TRANSITION_DURATION_MS;
         float windowCornerRadius = mDeviceProfile.isMultiWindowMode
@@ -697,22 +709,28 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                 for (int i = appTargets.length - 1; i >= 0; i--) {
                     RemoteAnimationTargetCompat target = appTargets[i];
                     SurfaceParams.Builder builder = new SurfaceParams.Builder(target.leash);
+
+                    tmpPos.set(target.position.x, target.position.y);
+                    if (target.localBounds != null) {
+                        tmpPos.set(target.localBounds.left, target.localBounds.top);
+                    }
+
                     if (target.mode == MODE_CLOSING) {
                         matrix.setScale(mScale.value, mScale.value,
-                                target.sourceContainerBounds.centerX(),
-                                target.sourceContainerBounds.centerY());
+                                target.screenSpaceBounds.centerX(),
+                                target.screenSpaceBounds.centerY());
                         matrix.postTranslate(0, mDy.value);
-                        matrix.postTranslate(target.position.x, target.position.y);
+                        matrix.postTranslate(tmpPos.x, tmpPos.y);
                         builder.withMatrix(matrix)
                                 .withAlpha(mAlpha.value)
                                 .withCornerRadius(windowCornerRadius);
                     } else {
-                        matrix.setTranslate(target.position.x, target.position.y);
+                        matrix.setTranslate(tmpPos.x, tmpPos.y);
                         builder.withMatrix(matrix)
                                 .withAlpha(1f);
                     }
                     params[i] = builder
-                            .withWindowCrop(target.sourceContainerBounds)
+                            .withWindowCrop(target.screenSpaceBounds)
                             .withLayer(RemoteAnimationProvider.getLayer(target, MODE_CLOSING))
                             .build();
                 }
@@ -782,52 +800,6 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
     private boolean hasControlRemoteAppTransitionPermission() {
         return mLauncher.checkSelfPermission(CONTROL_REMOTE_APP_TRANSITION_PERMISSION)
                 == PackageManager.PERMISSION_GRANTED;
-    }
-
-    /**
-     * Used with WrappedLauncherAnimationRunner as an interface for the runner to call back to the
-     * implementation.
-     */
-    protected interface WrappedAnimationRunnerImpl {
-        Handler getHandler();
-        void onCreateAnimation(RemoteAnimationTargetCompat[] appTargets,
-                RemoteAnimationTargetCompat[] wallpaperTargets,
-                LauncherAnimationRunner.AnimationResult result);
-    }
-
-    /**
-     * This class is needed to wrap any animation runner that is a part of the
-     * RemoteAnimationDefinition:
-     * - Launcher creates a new instance of the LauncherAppTransitionManagerImpl whenever it is
-     *   created, which in turn registers a new definition
-     * - When the definition is registered, window manager retains a strong binder reference to the
-     *   runner passed in
-     * - If the Launcher activity is recreated, the new definition registered will replace the old
-     *   reference in the system's activity record, but until the system server is GC'd, the binder
-     *   reference will still exist, which references the runner in the Launcher process, which
-     *   references the (old) Launcher activity through this class
-     *
-     * Instead we make the runner provided to the definition static only holding a weak reference to
-     * the runner implementation.  When this animation manager is destroyed, we remove the Launcher
-     * reference to the runner, leaving only the weak ref from the runner.
-     */
-    protected static class WrappedLauncherAnimationRunner<R extends WrappedAnimationRunnerImpl>
-            extends LauncherAnimationRunner {
-        private WeakReference<R> mImpl;
-
-        public WrappedLauncherAnimationRunner(R animationRunnerImpl, boolean startAtFrontOfQueue) {
-            super(animationRunnerImpl.getHandler(), startAtFrontOfQueue);
-            mImpl = new WeakReference<>(animationRunnerImpl);
-        }
-
-        @Override
-        public void onCreateAnimation(RemoteAnimationTargetCompat[] appTargets,
-                RemoteAnimationTargetCompat[] wallpaperTargets, AnimationResult result) {
-            R animationRunnerImpl = mImpl.get();
-            if (animationRunnerImpl != null) {
-                animationRunnerImpl.onCreateAnimation(appTargets, wallpaperTargets, result);
-            }
-        }
     }
 
     /**
