@@ -102,6 +102,7 @@ public abstract class AbstractLauncherUiTest {
 
     private static String sDetectedActivityLeak;
     private static boolean sActivityLeakReported;
+    private static final String SYSTEMUI_PACKAGE = "com.android.systemui";
 
     protected LooperExecutor mMainThreadExecutor = MAIN_EXECUTOR;
     protected final UiDevice mDevice = UiDevice.getInstance(getInstrumentation());
@@ -213,8 +214,16 @@ public abstract class AbstractLauncherUiTest {
         return mDevice;
     }
 
+    private boolean hasSystemUiObject(String resId) {
+        return mDevice.hasObject(By.res(SYSTEMUI_PACKAGE, resId));
+    }
+
     @Before
     public void setUp() throws Exception {
+        if (hasSystemUiObject("keyguard_status_view")) {
+            mDevice.executeShellCommand("input keyevent 82");
+        }
+
         final String launcherPackageName = mDevice.getLauncherPackageName();
         try {
             final Context context = InstrumentationRegistry.getContext();
