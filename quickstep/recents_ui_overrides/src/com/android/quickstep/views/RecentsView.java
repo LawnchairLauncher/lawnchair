@@ -1195,7 +1195,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         if (mPendingAnimation != null) {
             mPendingAnimation.finish(false, Touch.SWIPE);
         }
-        PendingAnimation anim = new PendingAnimation();
+        PendingAnimation anim = new PendingAnimation(duration);
 
         int count = getPageCount();
         if (count == 0) {
@@ -1311,7 +1311,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         if (FeatureFlags.IS_STUDIO_BUILD && mPendingAnimation != null) {
             throw new IllegalStateException("Another pending animation is still running");
         }
-        PendingAnimation anim = new PendingAnimation();
+        PendingAnimation anim = new PendingAnimation(duration);
 
         int count = getTaskViewCount();
         for (int i = 0; i < count; i++) {
@@ -1345,8 +1345,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     }
 
     private void runDismissAnimation(PendingAnimation pendingAnim) {
-        AnimatorPlaybackController controller =
-                AnimatorPlaybackController.wrap(pendingAnim, DISMISS_TASK_DURATION);
+        AnimatorPlaybackController controller = pendingAnim.createPlaybackController();
         controller.dispatchOnStart();
         controller.setEndAction(() -> pendingAnim.finish(true, Touch.SWIPE));
         controller.getAnimationPlayer().setInterpolator(FAST_OUT_SLOW_IN);
@@ -1671,7 +1670,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
         int count = getTaskViewCount();
         if (count == 0) {
-            return new PendingAnimation();
+            return new PendingAnimation(duration);
         }
 
         int targetSysUiFlags = tv.getThumbnail().getSysUiStatusNavFlags();
@@ -1710,10 +1709,9 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             anim.play(backgroundBlur);
         }
         anim.play(progressAnim);
-        anim.setDuration(duration)
-                .setInterpolator(interpolator);
+        anim.setDuration(duration).setInterpolator(interpolator);
 
-        mPendingAnimation = new PendingAnimation();
+        mPendingAnimation = new PendingAnimation(duration);
         mPendingAnimation.add(anim);
         mPendingAnimation.addEndListener((endState) -> {
             if (endState.isSuccess) {

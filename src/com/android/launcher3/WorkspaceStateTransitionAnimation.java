@@ -22,27 +22,27 @@ import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
 import static com.android.launcher3.LauncherState.HOTSEAT_ICONS;
-import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_HOTSEAT_SCALE;
-import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_HOTSEAT_TRANSLATE;
-import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_FADE;
-import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_SCALE;
-import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_TRANSLATE;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.ZOOM_OUT;
 import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
 import static com.android.launcher3.graphics.WorkspaceAndHotseatScrim.SCRIM_PROGRESS;
 import static com.android.launcher3.graphics.WorkspaceAndHotseatScrim.SYSUI_PROGRESS;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_HOTSEAT_SCALE;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_HOTSEAT_TRANSLATE;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_FADE;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_SCALE;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_TRANSLATE;
 
 import android.view.View;
 import android.view.animation.Interpolator;
 
 import com.android.launcher3.LauncherState.PageAlphaProvider;
 import com.android.launcher3.LauncherState.ScaleAndTranslation;
-import com.android.launcher3.LauncherStateManager.AnimationConfig;
 import com.android.launcher3.allapps.AllAppsContainerView;
-import com.android.launcher3.anim.AnimatorSetBuilder;
+import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.graphics.WorkspaceAndHotseatScrim;
+import com.android.launcher3.states.StateAnimationConfig;
 
 /**
  * Manages the animations between each of the workspace states.
@@ -60,13 +60,15 @@ public class WorkspaceStateTransitionAnimation {
     }
 
     public void setState(LauncherState toState) {
-        setWorkspaceProperty(toState, NO_ANIM_PROPERTY_SETTER, new AnimatorSetBuilder(),
-                new AnimationConfig());
+        setWorkspaceProperty(toState, NO_ANIM_PROPERTY_SETTER, new StateAnimationConfig());
     }
 
-    public void setStateWithAnimation(LauncherState toState, AnimatorSetBuilder builder,
-            AnimationConfig config) {
-        setWorkspaceProperty(toState, config.getPropertySetter(builder), builder, config);
+    /**
+     * @see com.android.launcher3.LauncherStateManager.StateHandler#setStateWithAnimation
+     */
+    public void setStateWithAnimation(
+            LauncherState toState, StateAnimationConfig config, PendingAnimation animation) {
+        setWorkspaceProperty(toState, animation, config);
     }
 
     public float getFinalScale() {
@@ -77,7 +79,7 @@ public class WorkspaceStateTransitionAnimation {
      * Starts a transition animation for the workspace.
      */
     private void setWorkspaceProperty(LauncherState state, PropertySetter propertySetter,
-            AnimatorSetBuilder builder, AnimationConfig config) {
+            StateAnimationConfig config) {
         ScaleAndTranslation scaleAndTranslation = state.getWorkspaceScaleAndTranslation(mLauncher);
         ScaleAndTranslation hotseatScaleAndTranslation = state.getHotseatScaleAndTranslation(
                 mLauncher);
@@ -87,11 +89,11 @@ public class WorkspaceStateTransitionAnimation {
         final int childCount = mWorkspace.getChildCount();
         for (int i = 0; i < childCount; i++) {
             applyChildState(state, (CellLayout) mWorkspace.getChildAt(i), i, pageAlphaProvider,
-                    propertySetter, builder, config);
+                    propertySetter, config);
         }
 
         int elements = state.getVisibleElements(mLauncher);
-        Interpolator fadeInterpolator = builder.getInterpolator(ANIM_WORKSPACE_FADE,
+        Interpolator fadeInterpolator = config.getInterpolator(ANIM_WORKSPACE_FADE,
                 pageAlphaProvider.interpolator);
         boolean playAtomicComponent = config.playAtomicOverviewScaleComponent();
         Hotseat hotseat = mWorkspace.getHotseat();
@@ -99,7 +101,7 @@ public class WorkspaceStateTransitionAnimation {
         AllAppsContainerView qsbScaleView = mLauncher.getAppsView();
         View qsbView = qsbScaleView.getSearchView();
         if (playAtomicComponent) {
-            Interpolator scaleInterpolator = builder.getInterpolator(ANIM_WORKSPACE_SCALE, ZOOM_OUT);
+            Interpolator scaleInterpolator = config.getInterpolator(ANIM_WORKSPACE_SCALE, ZOOM_OUT);
             propertySetter.setFloat(mWorkspace, SCALE_PROPERTY, mNewScale, scaleInterpolator);
 
             if (!hotseat.getRotationMode().isTransposed) {
@@ -107,7 +109,7 @@ public class WorkspaceStateTransitionAnimation {
                 setPivotToScaleWithWorkspace(qsbScaleView);
             }
             float hotseatScale = hotseatScaleAndTranslation.scale;
-            Interpolator hotseatScaleInterpolator = builder.getInterpolator(ANIM_HOTSEAT_SCALE,
+            Interpolator hotseatScaleInterpolator = config.getInterpolator(ANIM_HOTSEAT_SCALE,
                     scaleInterpolator);
             propertySetter.setFloat(hotseat, SCALE_PROPERTY, hotseatScale,
                     hotseatScaleInterpolator);
@@ -127,13 +129,13 @@ public class WorkspaceStateTransitionAnimation {
 
         Interpolator translationInterpolator = !playAtomicComponent
                 ? LINEAR
-                : builder.getInterpolator(ANIM_WORKSPACE_TRANSLATE, ZOOM_OUT);
+                : config.getInterpolator(ANIM_WORKSPACE_TRANSLATE, ZOOM_OUT);
         propertySetter.setFloat(mWorkspace, VIEW_TRANSLATE_X,
                 scaleAndTranslation.translationX, translationInterpolator);
         propertySetter.setFloat(mWorkspace, VIEW_TRANSLATE_Y,
                 scaleAndTranslation.translationY, translationInterpolator);
 
-        Interpolator hotseatTranslationInterpolator = builder.getInterpolator(
+        Interpolator hotseatTranslationInterpolator = config.getInterpolator(
                 ANIM_HOTSEAT_TRANSLATE, translationInterpolator);
         propertySetter.setFloat(hotseat, VIEW_TRANSLATE_Y,
                 hotseatScaleAndTranslation.translationY, hotseatTranslationInterpolator);
@@ -166,12 +168,12 @@ public class WorkspaceStateTransitionAnimation {
 
     public void applyChildState(LauncherState state, CellLayout cl, int childIndex) {
         applyChildState(state, cl, childIndex, state.getWorkspacePageAlphaProvider(mLauncher),
-                NO_ANIM_PROPERTY_SETTER, new AnimatorSetBuilder(), new AnimationConfig());
+                NO_ANIM_PROPERTY_SETTER, new StateAnimationConfig());
     }
 
     private void applyChildState(LauncherState state, CellLayout cl, int childIndex,
             PageAlphaProvider pageAlphaProvider, PropertySetter propertySetter,
-            AnimatorSetBuilder builder, AnimationConfig config) {
+            StateAnimationConfig config) {
         float pageAlpha = pageAlphaProvider.getPageAlpha(childIndex);
         int drawableAlpha = Math.round(pageAlpha * (state.hasWorkspacePageBackground ? 255 : 0));
 
@@ -181,7 +183,7 @@ public class WorkspaceStateTransitionAnimation {
                     DRAWABLE_ALPHA, drawableAlpha, ZOOM_OUT);
         }
         if (config.playAtomicOverviewScaleComponent()) {
-            Interpolator fadeInterpolator = builder.getInterpolator(ANIM_WORKSPACE_FADE,
+            Interpolator fadeInterpolator = config.getInterpolator(ANIM_WORKSPACE_FADE,
                     pageAlphaProvider.interpolator);
             propertySetter.setFloat(cl.getShortcutsAndWidgets(), VIEW_ALPHA,
                     pageAlpha, fadeInterpolator);

@@ -16,19 +16,23 @@
 
 package com.android.launcher3.uioverrides;
 
-import android.animation.ValueAnimator;
+import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.quickstep.AnimatedFloat.VALUE;
 
 import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager;
-import com.android.launcher3.anim.AnimatorSetBuilder;
+import com.android.launcher3.anim.PendingAnimation;
+import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.util.UiThreadHelper;
+import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SystemUiProxy;
 
 public class BackButtonAlphaHandler implements LauncherStateManager.StateHandler {
 
     private final BaseQuickstepLauncher mLauncher;
+    private final AnimatedFloat mBackAlpha = new AnimatedFloat(this::updateBackAlpha);
 
     public BackButtonAlphaHandler(BaseQuickstepLauncher launcher) {
         mLauncher = launcher;
@@ -38,8 +42,8 @@ public class BackButtonAlphaHandler implements LauncherStateManager.StateHandler
     public void setState(LauncherState state) { }
 
     @Override
-    public void setStateWithAnimation(LauncherState toState,
-            AnimatorSetBuilder builder, LauncherStateManager.AnimationConfig config) {
+    public void setStateWithAnimation(LauncherState toState, StateAnimationConfig config,
+            PendingAnimation animation) {
         if (config.onlyPlayAtomicComponent()) {
             return;
         }
@@ -51,17 +55,12 @@ public class BackButtonAlphaHandler implements LauncherStateManager.StateHandler
             return;
         }
 
-        float fromAlpha = SystemUiProxy.INSTANCE.get(mLauncher).getLastBackButtonAlpha();
-        float toAlpha = toState.hideBackButton ? 0 : 1;
-        if (Float.compare(fromAlpha, toAlpha) != 0) {
-            ValueAnimator anim = ValueAnimator.ofFloat(fromAlpha, toAlpha);
-            anim.setDuration(config.duration);
-            anim.addUpdateListener(valueAnimator -> {
-                final float alpha = (float) valueAnimator.getAnimatedValue();
-                UiThreadHelper.setBackButtonAlphaAsync(mLauncher,
-                        BaseQuickstepLauncher.SET_BACK_BUTTON_ALPHA, alpha, false /* animate */);
-            });
-            builder.play(anim);
-        }
+        mBackAlpha.value = SystemUiProxy.INSTANCE.get(mLauncher).getLastBackButtonAlpha();
+        animation.setFloat(mBackAlpha, VALUE, toState.hideBackButton ? 0 : 1, LINEAR);
+    }
+
+    private void updateBackAlpha() {
+        UiThreadHelper.setBackButtonAlphaAsync(mLauncher,
+                BaseQuickstepLauncher.SET_BACK_BUTTON_ALPHA, mBackAlpha.value, false /* animate */);
     }
 }
