@@ -236,14 +236,6 @@ public class WorkspaceAndHotseatScrim extends Scrim {
         }
     }
 
-    public void hideSysUiScrim(boolean hideSysUiScrim) {
-        mHideSysUiScrim = hideSysUiScrim || (mTopScrim == null);
-        if (!hideSysUiScrim) {
-            mAnimateScrimOnNextDraw = true;
-        }
-        invalidate();
-    }
-
     private void setSysUiProgress(float progress) {
         if (progress != mSysUiProgress) {
             mSysUiProgress = progress;
