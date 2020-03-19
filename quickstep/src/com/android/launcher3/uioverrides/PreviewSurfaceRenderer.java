@@ -32,8 +32,11 @@ public class PreviewSurfaceRenderer {
 
     /** Handle a received surface view request. */
     public static void render(Context context, Bundle bundle) {
-        final String gridName = bundle.getString("name");
+        String gridName = bundle.getString("name");
         bundle.remove("name");
+        if (gridName == null) {
+            gridName = InvariantDeviceProfile.getCurrentGridName(context);
+        }
         final InvariantDeviceProfile idp = new InvariantDeviceProfile(context, gridName);
 
         MAIN_EXECUTOR.execute(() -> {
