@@ -109,7 +109,7 @@ public abstract class BaseFlags {
             "Rotate launcher UI instead of using transposed layout");
 
     public static final TogglableFlag FOLDER_NAME_SUGGEST = new TogglableFlag(
-            "FOLDER_NAME_SUGGEST", false,
+            "FOLDER_NAME_SUGGEST", true,
             "Suggests folder names instead of blank text.");
 
     public static final TogglableFlag APP_SEARCH_IMPROVEMENTS = new TogglableFlag(
