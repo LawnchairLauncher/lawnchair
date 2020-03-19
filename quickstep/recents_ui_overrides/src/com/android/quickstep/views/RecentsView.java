@@ -68,7 +68,6 @@ import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
-import android.view.OrientationEventListener;
 import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
@@ -88,7 +87,6 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.anim.PendingAnimation.EndState;
@@ -96,7 +94,6 @@ import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.anim.SpringProperty;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.states.RotationHelper;
 import com.android.launcher3.touch.PagedOrientationHandler.CurveProperties;
@@ -719,6 +716,9 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         int taskCount = getTaskViewCount();
         for (int i = 0; i < taskCount; i++) {
             getTaskViewAt(i).setFullscreenProgress(mFullscreenProgress);
+        }
+        if (mActionsView != null) {
+            mActionsView.setVisibility(fullscreenProgress == 0 ? VISIBLE : INVISIBLE);
         }
     }
 
@@ -2028,7 +2028,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         /** @param isEmpty Whether RecentsView is empty (i.e. has no children) */
         void onEmptyMessageUpdated(boolean isEmpty);
     }
-
 
     private static class PinnedStackAnimationListener<T extends BaseActivity> extends
             IPinnedStackAnimationListener.Stub {
