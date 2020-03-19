@@ -718,6 +718,9 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         for (int i = 0; i < taskCount; i++) {
             getTaskViewAt(i).setFullscreenProgress(mFullscreenProgress);
         }
+        if (mActionsView != null) {
+            mActionsView.setVisibility(fullscreenProgress == 0 ? VISIBLE : INVISIBLE);
+        }
     }
 
     private void updateTaskStackListenerState() {
@@ -2031,7 +2034,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         /** @param isEmpty Whether RecentsView is empty (i.e. has no children) */
         void onEmptyMessageUpdated(boolean isEmpty);
     }
-
 
     private static class PinnedStackAnimationListener<T extends BaseActivity> extends
             IPinnedStackAnimationListener.Stub {
