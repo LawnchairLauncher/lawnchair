@@ -328,22 +328,21 @@
     <!-- This string is in the work profile tab when a user has All Apps open on their phone. This is a label for a toggle to turn the work profile on and off. "Work profile" means a separate profile on a user's phone that's specifically for their work apps and managed by their company. "Work" is used as an adjective.-->
     <string name="work_profile_toggle_label">Work profile</string>
     <!--- User onboarding title for personal apps -->
-    <string name="work_profile_edu_personal_apps">Personal apps are private &amp; can\'t be seen by IT</string>
+    <string name="work_profile_edu_personal_apps">Personal data is separate &amp; hidden from work apps</string>
     <!--- User onboarding title for work profile apps -->
-    <string name="work_profile_edu_work_apps">Work apps are badged &amp; visible to IT</string>
+    <string name="work_profile_edu_work_apps">Work apps &amp; data are visible to your IT admin</string>
     <!-- Action label to proceed to the next work profile edu section-->
     <string name="work_profile_edu_next">Next</string>
     <!-- Action label to finish work profile edu-->
     <string name="work_profile_edu_accept">Got it</string>
 
-    <!-- This string is in the work profile tab when a user has All Apps open on their phone. It describes the label of a toggle, "Work profile," as being managed by the user's employer.
-    "Organization" is used to represent a variety of businesses, non-profits, and educational institutions).-->
-    <string name="work_mode_on_label">Work apps: On</string>
-    <!-- This string appears under a the label of a toggle in the work profile tab on a user's phone. It describes the status of the toggle, "Work profile," when it's turned off. "Work profile" means a separate profile on a user's phone that's speficially for their work apps and is managed by their company.-->
-    <string name="work_mode_off_label">Work apps: Paused</string>
+    <!--- heading shown when user opens work apps tab while work apps are paused -->
+    <string name="work_apps_paused_title">Work profile is paused</string>
+    <!--- body shown when user opens work apps tab while work apps are paused -->
+    <string name="work_apps_paused_body">Work apps can\’t send you notifications, use your battery, or access your location</string>
 
-    <string name="work_apps_paused_title">Work apps are paused</string>
-    <string name="work_apps_paused_body">You won\'t get any work notifications, and your IT admin can\'t see your location</string>
+    <!-- A tip shown pointing at work toggle -->
+    <string name="work_switch_tip">Pause work apps and notifications</string>
 
     <!-- Failed action error message: e.g. Failed: Pause -->
     <string name="remote_action_failed">Failed: <xliff:g id="what" example="Pause">%1$s</xliff:g></string>
