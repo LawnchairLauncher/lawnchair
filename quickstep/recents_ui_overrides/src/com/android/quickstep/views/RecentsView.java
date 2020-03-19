@@ -19,6 +19,7 @@ package com.android.quickstep.views;
 import static com.android.launcher3.BaseActivity.STATE_HANDLER_INVISIBILITY_FLAGS;
 import static com.android.launcher3.InvariantDeviceProfile.CHANGE_FLAG_ICON_PARAMS;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
+import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
 import static com.android.launcher3.Utilities.squaredHypot;
@@ -1162,7 +1163,9 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     }
 
     private void addDismissedTaskAnimations(View taskView, long duration, PendingAnimation anim) {
-        anim.setViewAlpha(taskView, 0, ACCEL_2);
+        // Use setFloat instead of setViewAlpha as we want to keep the view visible even when it's
+        // alpha is set to 0 so that it can be recycled in the view pool properly
+        anim.setFloat(taskView, VIEW_ALPHA, 0, ACCEL_2);
         FloatProperty<View> secondaryViewTranslate =
             mOrientationHandler.getSecondaryViewTranslate();
         int secondaryTaskDimension = mOrientationHandler.getSecondaryDimension(taskView);
