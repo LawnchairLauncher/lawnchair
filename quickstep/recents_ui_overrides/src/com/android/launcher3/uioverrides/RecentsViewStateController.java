@@ -20,7 +20,6 @@ import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.quickstep.views.RecentsView.CONTENT_ALPHA;
 import static com.android.quickstep.views.RecentsView.FULLSCREEN_PROGRESS;
 
-import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.util.FloatProperty;
@@ -29,9 +28,10 @@ import androidx.annotation.NonNull;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.LauncherStateManager.AnimationConfig;
-import com.android.launcher3.anim.AnimatorSetBuilder;
+import com.android.launcher3.anim.AnimationSuccessListener;
+import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.anim.PropertySetter;
+import com.android.launcher3.states.StateAnimationConfig;
 import com.android.quickstep.views.ClearAllButton;
 import com.android.quickstep.views.LauncherRecentsView;
 import com.android.quickstep.views.RecentsView;
@@ -60,29 +60,22 @@ public final class RecentsViewStateController extends
     }
 
     @Override
-    void setStateWithAnimationInternal(@NonNull final LauncherState toState,
-            @NonNull AnimatorSetBuilder builder, @NonNull AnimationConfig config) {
-        super.setStateWithAnimationInternal(toState, builder, config);
-
-        if (!toState.overviewUi) {
-            builder.addOnFinishRunnable(mRecentsView::resetTaskVisuals);
-        }
+    void setStateWithAnimationInternal(@NonNull LauncherState toState,
+            @NonNull StateAnimationConfig config, @NonNull PendingAnimation builder) {
+        super.setStateWithAnimationInternal(toState, config, builder);
 
         if (toState.overviewUi) {
-            ValueAnimator updateAnim = ValueAnimator.ofFloat(0, 1);
-            updateAnim.addUpdateListener(valueAnimator -> {
-                // While animating into recents, update the visible task data as needed
-                mRecentsView.loadVisibleTaskData();
-            });
-            updateAnim.setDuration(config.duration);
-            builder.play(updateAnim);
+            // While animating into recents, update the visible task data as needed
+            builder.addOnFrameCallback(mRecentsView::loadVisibleTaskData);
             mRecentsView.updateEmptyMessage();
+        } else {
+            builder.getAnim().addListener(
+                    AnimationSuccessListener.forRunnable(mRecentsView::resetTaskVisuals));
         }
 
-        PropertySetter propertySetter = config.getPropertySetter(builder);
-        setAlphas(propertySetter, toState.getVisibleElements(mLauncher));
-        float fullscreenProgress = toState.getOverviewFullscreenProgress();
-        propertySetter.setFloat(mRecentsView, FULLSCREEN_PROGRESS, fullscreenProgress, LINEAR);
+        setAlphas(builder, toState.getVisibleElements(mLauncher));
+        builder.setFloat(mRecentsView, FULLSCREEN_PROGRESS,
+                toState.getOverviewFullscreenProgress(), LINEAR);
     }
 
     private void setAlphas(PropertySetter propertySetter, int visibleElements) {

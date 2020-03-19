@@ -18,8 +18,10 @@ package com.android.quickstep.util;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.NORMAL;
-import static com.android.launcher3.LauncherStateManager.ANIM_ALL;
+import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_COMPONENTS;
+import static com.android.launcher3.states.StateAnimationConfig.SKIP_OVERVIEW;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -32,15 +34,13 @@ import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.LauncherStateManager;
-import com.android.launcher3.LauncherStateManager.AnimationConfig;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Workspace;
-import com.android.launcher3.anim.AnimatorSetBuilder;
-import com.android.launcher3.anim.PropertySetter;
+import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.anim.SpringAnimationBuilder;
 import com.android.launcher3.graphics.OverviewScrim;
+import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.util.DynamicResource;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.plugins.ResourceProvider;
@@ -143,12 +143,11 @@ public class StaggeredWorkspaceAnim {
      * Setup workspace with 0 duration to prepare for our staggered animation.
      */
     private void prepareToAnimate(Launcher launcher) {
-        LauncherStateManager stateManager = launcher.getStateManager();
-        AnimatorSetBuilder builder = new AnimatorSetBuilder();
+        StateAnimationConfig config = new StateAnimationConfig();
+        config.animFlags = ANIM_ALL_COMPONENTS | SKIP_OVERVIEW;
+        config.duration = 0;
         // setRecentsAttachedToAppWindow() will animate recents out.
-        builder.addFlag(AnimatorSetBuilder.FLAG_DONT_ANIMATE_OVERVIEW);
-        stateManager.createAtomicAnimation(BACKGROUND_APP, NORMAL, builder, ANIM_ALL, 0);
-        builder.build().start();
+        launcher.getStateManager().createAtomicAnimation(BACKGROUND_APP, NORMAL, config).start();
 
         // Stop scrolling so that it doesn't interfere with the translation offscreen.
         launcher.<RecentsView>getOverviewPanel().getScroller().forceFinished(true);
@@ -198,16 +197,12 @@ public class StaggeredWorkspaceAnim {
     }
 
     private void addScrimAnimationForState(Launcher launcher, LauncherState state, long duration) {
-        AnimatorSetBuilder scrimAnimBuilder = new AnimatorSetBuilder();
-        AnimationConfig scrimAnimConfig = new AnimationConfig();
-        scrimAnimConfig.duration = duration;
-        PropertySetter scrimPropertySetter = scrimAnimConfig.getPropertySetter(scrimAnimBuilder);
-        launcher.getWorkspace().getStateTransitionAnimation().setScrim(scrimPropertySetter, state);
-        mAnimators.play(scrimAnimBuilder.build());
-        Animator fadeOverviewScrim = ObjectAnimator.ofFloat(
-                launcher.getDragLayer().getOverviewScrim(), OverviewScrim.SCRIM_PROGRESS,
-                state.getOverviewScrimAlpha(launcher));
-        fadeOverviewScrim.setDuration(duration);
-        mAnimators.play(fadeOverviewScrim);
+        PendingAnimation builder = new PendingAnimation(duration, mAnimators);
+        launcher.getWorkspace().getStateTransitionAnimation().setScrim(builder, state);
+        builder.setFloat(
+                launcher.getDragLayer().getOverviewScrim(),
+                OverviewScrim.SCRIM_PROGRESS,
+                state.getOverviewScrimAlpha(launcher),
+                ACCEL_DEACCEL);
     }
 }

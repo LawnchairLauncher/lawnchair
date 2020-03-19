@@ -24,6 +24,7 @@ import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.SPRING_LOADED;
 import static com.android.launcher3.config.FeatureFlags.ADAPTIVE_ICON_WINDOW_ANIM;
 import static com.android.launcher3.dragndrop.DragLayer.ALPHA_INDEX_OVERLAY;
+import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -59,11 +60,10 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Toast;
 
 import com.android.launcher3.LauncherAppWidgetHost.ProviderChangedListener;
-import com.android.launcher3.LauncherStateManager.AnimationConfig;
 import com.android.launcher3.accessibility.AccessibleDragListenerAdapter;
 import com.android.launcher3.accessibility.WorkspaceAccessibilityHelper;
-import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.Interpolators;
+import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dot.FolderDotInfo;
 import com.android.launcher3.dragndrop.DragController;
@@ -82,6 +82,7 @@ import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.pageindicators.WorkspacePageIndicator;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.shortcuts.ShortcutDragPreviewProvider;
+import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.touch.WorkspaceTouchListener;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -1382,10 +1383,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
      * Sets the current workspace {@link LauncherState}, then animates the UI
      */
     @Override
-    public void setStateWithAnimation(LauncherState toState,
-            AnimatorSetBuilder builder, AnimationConfig config) {
+    public void setStateWithAnimation(
+            LauncherState toState, StateAnimationConfig config, PendingAnimation animation) {
         StateTransitionListener listener = new StateTransitionListener(toState);
-        mStateTransitionAnimation.setStateWithAnimation(toState, builder, config);
+        mStateTransitionAnimation.setStateWithAnimation(toState, config, animation);
 
         // Invalidate the pages now, so that we have the visible pages before the
         // animation is started
@@ -1398,7 +1399,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         stepAnimator.addUpdateListener(listener);
         stepAnimator.setDuration(config.duration);
         stepAnimator.addListener(listener);
-        builder.play(stepAnimator);
+        animation.add(stepAnimator);
     }
 
     public WorkspaceStateTransitionAnimation getStateTransitionAnimation() {
@@ -3309,17 +3310,21 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     }
 
     @Override
-    public void fillInLogContainerData(View v, ItemInfo info, Target target, Target targetParent) {
-        target.gridX = info.cellX;
-        target.gridY = info.cellY;
-        target.pageIndex = getCurrentPage();
-        targetParent.containerType = ContainerType.WORKSPACE;
-        if (info.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-            target.rank = info.rank;
-            targetParent.containerType = ContainerType.HOTSEAT;
-        } else if (info.container >= 0) {
-            targetParent.containerType = ContainerType.FOLDER;
+    public void fillInLogContainerData(ItemInfo childInfo, Target child,
+            ArrayList<Target> parents) {
+        if (childInfo.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT
+                || childInfo.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION) {
+            getHotseat().fillInLogContainerData(childInfo, child, parents);
+            return;
+        } else if (childInfo.container >= 0) {
+            FolderIcon icon = (FolderIcon) getHomescreenIconByItemId(childInfo.container);
+            icon.getFolder().fillInLogContainerData(childInfo, child, parents);
+            return;
         }
+        child.gridX = childInfo.cellX;
+        child.gridY = childInfo.cellY;
+        child.pageIndex = getCurrentPage();
+        parents.add(newContainerTarget(ContainerType.WORKSPACE));
     }
 
     /**

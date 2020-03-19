@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 package com.android.launcher3.uioverrides.states;
-import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_FADE;
-import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_SCRIM_FADE;
-import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_TRANSLATE_X;
+
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.INSTANT;
 import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_7;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_FADE;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_SCRIM_FADE;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_TRANSLATE_X;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
-import com.android.launcher3.anim.AnimatorSetBuilder;
+import com.android.launcher3.states.StateAnimationConfig;
 
 public class OverviewPeekState extends OverviewState {
     public OverviewPeekState(int id) {
@@ -41,11 +42,11 @@ public class OverviewPeekState extends OverviewState {
 
     @Override
     public void prepareForAtomicAnimation(Launcher launcher, LauncherState fromState,
-            AnimatorSetBuilder builder) {
+            StateAnimationConfig config) {
         if (this == OVERVIEW_PEEK && fromState == NORMAL) {
-            builder.setInterpolator(ANIM_OVERVIEW_FADE, INSTANT);
-            builder.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X, OVERSHOOT_1_7);
-            builder.setInterpolator(ANIM_OVERVIEW_SCRIM_FADE, FAST_OUT_SLOW_IN);
+            config.setInterpolator(ANIM_OVERVIEW_FADE, INSTANT);
+            config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X, OVERSHOOT_1_7);
+            config.setInterpolator(ANIM_OVERVIEW_SCRIM_FADE, FAST_OUT_SLOW_IN);
         }
     }
 }

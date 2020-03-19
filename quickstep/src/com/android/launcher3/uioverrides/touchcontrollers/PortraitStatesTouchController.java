@@ -19,13 +19,13 @@ import static com.android.launcher3.AbstractFloatingView.TYPE_ACCESSIBLE;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
-import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_ALL_APPS_FADE;
-import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_FADE;
-import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_VERTICAL_PROGRESS;
 import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.config.FeatureFlags.UNSTABLE_SPRINGS;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_FADE;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_FADE;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_VERTICAL_PROGRESS;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_OVERVIEW_DISABLED;
 
 import android.animation.TimeInterpolator;
@@ -37,11 +37,10 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.LauncherStateManager.AnimationComponents;
 import com.android.launcher3.allapps.AllAppsTransitionController;
-import com.android.launcher3.anim.AnimatorPlaybackController;
-import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.Interpolators;
+import com.android.launcher3.states.StateAnimationConfig;
+import com.android.launcher3.states.StateAnimationConfig.AnimationFlags;
 import com.android.launcher3.touch.AbstractStateChangeTouchController;
 import com.android.launcher3.touch.SingleAxisSwipeDetector;
 import com.android.launcher3.uioverrides.states.OverviewState;
@@ -87,8 +86,7 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
     protected boolean canInterceptTouch(MotionEvent ev) {
         if (mCurrentAnimation != null) {
             if (mFinishFastOnSecondTouch) {
-                // TODO: Animate to finish instead.
-                mCurrentAnimation.skipToEnd();
+                mCurrentAnimation.getAnimationPlayer().end();
             }
 
             AllAppsTransitionController allAppsController = mLauncher.getAllAppsController();
@@ -149,16 +147,16 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
         return isTouchOverHotseat(mLauncher, ev) ? ContainerType.HOTSEAT : ContainerType.WORKSPACE;
     }
 
-    private AnimatorSetBuilder getNormalToOverviewAnimation() {
+    private StateAnimationConfig getNormalToOverviewAnimation() {
         mAllAppsInterpolatorWrapper.baseInterpolator = LINEAR;
 
-        AnimatorSetBuilder builder = new AnimatorSetBuilder();
+        StateAnimationConfig builder = new StateAnimationConfig();
         builder.setInterpolator(ANIM_VERTICAL_PROGRESS, mAllAppsInterpolatorWrapper);
         return builder;
     }
 
-    public static AnimatorSetBuilder getOverviewToAllAppsAnimation() {
-        AnimatorSetBuilder builder = new AnimatorSetBuilder();
+    private static StateAnimationConfig getOverviewToAllAppsAnimation() {
+        StateAnimationConfig builder = new StateAnimationConfig();
         builder.setInterpolator(ANIM_ALL_APPS_FADE, Interpolators.clampToProgress(ACCEL,
                 0, ALL_APPS_CONTENT_FADE_THRESHOLD));
         builder.setInterpolator(ANIM_OVERVIEW_FADE, Interpolators.clampToProgress(DEACCEL,
@@ -166,8 +164,8 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
         return builder;
     }
 
-    private AnimatorSetBuilder getAllAppsToOverviewAnimation() {
-        AnimatorSetBuilder builder = new AnimatorSetBuilder();
+    private StateAnimationConfig getAllAppsToOverviewAnimation() {
+        StateAnimationConfig builder = new StateAnimationConfig();
         builder.setInterpolator(ANIM_ALL_APPS_FADE, Interpolators.clampToProgress(DEACCEL,
                 1 - ALL_APPS_CONTENT_FADE_THRESHOLD, 1));
         builder.setInterpolator(ANIM_OVERVIEW_FADE, Interpolators.clampToProgress(ACCEL,
@@ -175,40 +173,42 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
         return builder;
     }
 
-    private AnimatorSetBuilder getNormalToAllAppsAnimation() {
-        AnimatorSetBuilder builder = new AnimatorSetBuilder();
+    private StateAnimationConfig getNormalToAllAppsAnimation() {
+        StateAnimationConfig builder = new StateAnimationConfig();
         builder.setInterpolator(ANIM_ALL_APPS_FADE, Interpolators.clampToProgress(ACCEL,
                 0, ALL_APPS_CONTENT_FADE_THRESHOLD));
         return builder;
     }
 
-    private AnimatorSetBuilder getAllAppsToNormalAnimation() {
-        AnimatorSetBuilder builder = new AnimatorSetBuilder();
+    private StateAnimationConfig getAllAppsToNormalAnimation() {
+        StateAnimationConfig builder = new StateAnimationConfig();
         builder.setInterpolator(ANIM_ALL_APPS_FADE, Interpolators.clampToProgress(DEACCEL,
                 1 - ALL_APPS_CONTENT_FADE_THRESHOLD, 1));
         return builder;
     }
 
     @Override
-    protected AnimatorSetBuilder getAnimatorSetBuilderForStates(LauncherState fromState,
-            LauncherState toState) {
-        AnimatorSetBuilder builder = new AnimatorSetBuilder();
+    protected StateAnimationConfig getConfigForStates(
+            LauncherState fromState, LauncherState toState) {
+        final StateAnimationConfig config;
         if (fromState == NORMAL && toState == OVERVIEW) {
-            builder = getNormalToOverviewAnimation();
+            config = getNormalToOverviewAnimation();
         } else if (fromState == OVERVIEW && toState == ALL_APPS) {
-            builder = getOverviewToAllAppsAnimation();
+            config = getOverviewToAllAppsAnimation();
         } else if (fromState == ALL_APPS && toState == OVERVIEW) {
-            builder = getAllAppsToOverviewAnimation();
+            config = getAllAppsToOverviewAnimation();
         } else if (fromState == NORMAL && toState == ALL_APPS) {
-            builder = getNormalToAllAppsAnimation();
+            config = getNormalToAllAppsAnimation();
         } else if (fromState == ALL_APPS && toState == NORMAL) {
-            builder = getAllAppsToNormalAnimation();
+            config = getAllAppsToNormalAnimation();
+        }  else {
+            config = new StateAnimationConfig();
         }
-        return builder;
+        return config;
     }
 
     @Override
-    protected float initCurrentAnimation(@AnimationComponents int animComponents) {
+    protected float initCurrentAnimation(@AnimationFlags int animFlags) {
         float range = getShiftRange();
         long maxAccuracy = (long) (2 * range);
 
@@ -217,9 +217,10 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
 
         float totalShift = endVerticalShift - startVerticalShift;
 
-        final AnimatorSetBuilder builder = totalShift == 0 ? new AnimatorSetBuilder()
-                : getAnimatorSetBuilderForStates(mFromState, mToState);
-        updateAnimatorBuilderOnReinit(builder);
+        final StateAnimationConfig config = totalShift == 0 ? new StateAnimationConfig()
+                : getConfigForStates(mFromState, mToState);
+        config.animFlags = updateAnimComponentsOnReinit(animFlags);
+        config.duration = maxAccuracy;
 
         cancelPendingAnim();
 
@@ -233,15 +234,15 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
                 cancelPendingAnim();
                 clearState();
             };
-            mCurrentAnimation = AnimatorPlaybackController.wrap(
-                    mPendingAnimation.anim, maxAccuracy, onCancelRunnable);
+            mCurrentAnimation = mPendingAnimation.createPlaybackController()
+                    .setOnCancelRunnable(onCancelRunnable);
             mLauncher.getStateManager().setCurrentUserControlledAnimation(mCurrentAnimation);
             totalShift = LayoutUtils.getShelfTrackingDistance(mLauncher,
                     mLauncher.getDeviceProfile());
         } else {
             mCurrentAnimation = mLauncher.getStateManager()
-                    .createAnimationToNewWorkspace(mToState, builder, maxAccuracy, this::clearState,
-                            animComponents);
+                    .createAnimationToNewWorkspace(mToState, config)
+                    .setOnCancelRunnable(this::clearState);
         }
 
         if (totalShift == 0) {
@@ -254,7 +255,9 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
     /**
      * Give subclasses the chance to update the animation when we re-initialize towards a new state.
      */
-    protected void updateAnimatorBuilderOnReinit(AnimatorSetBuilder builder) {
+    @AnimationFlags
+    protected int updateAnimComponentsOnReinit(@AnimationFlags int animComponents) {
+        return animComponents;
     }
 
     private void cancelPendingAnim() {

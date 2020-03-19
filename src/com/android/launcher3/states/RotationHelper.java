@@ -21,13 +21,13 @@ import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
 import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
 import static android.util.DisplayMetrics.DENSITY_DEVICE_STABLE;
 
-import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.launcher3.config.FeatureFlags.FLAG_ENABLE_FIXED_ROTATION_TRANSFORM;
+import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
 import android.content.ContentResolver;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Resources;
-import android.database.ContentObserver;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -72,26 +72,13 @@ public class RotationHelper implements OnSharedPreferenceChangeListener {
         return originalSmallestWidth >= 600;
     }
 
-
-    private final ContentObserver mContentObserver =
-        new ContentObserver(MAIN_EXECUTOR.getHandler()) {
-            @Override
-            public void onChange(boolean selfChange) {
-                boolean forcedRotation = Utilities.isForcedRotation(mLauncher);
-                PagedView.sFlagForcedRotation = forcedRotation;
-                updateForcedRotation();
-                for (ForcedRotationChangedListener listener : mForcedRotationChangedListeners) {
-                    listener.onForcedRotationChanged(forcedRotation);
-                }
-            }
-        };
-
     public static final int REQUEST_NONE = 0;
     public static final int REQUEST_ROTATE = 1;
     public static final int REQUEST_LOCK = 2;
 
     private final Launcher mLauncher;
-    private final SharedPreferences mPrefs;
+    private final SharedPreferences mSharedPrefs;
+    private final SharedPreferences mFeatureFlagsPrefs;
 
     private boolean mIgnoreAutoRotateSettings;
     private boolean mAutoRotateEnabled;
@@ -125,24 +112,42 @@ public class RotationHelper implements OnSharedPreferenceChangeListener {
 
         // On large devices we do not handle auto-rotate differently.
         mIgnoreAutoRotateSettings = mLauncher.getResources().getBoolean(R.bool.allow_rotation);
-        updateForcedRotation();
         if (!mIgnoreAutoRotateSettings) {
-            mPrefs = Utilities.getPrefs(mLauncher);
-            mPrefs.registerOnSharedPreferenceChangeListener(this);
-            mAutoRotateEnabled = mPrefs.getBoolean(ALLOW_ROTATION_PREFERENCE_KEY,
+            mSharedPrefs = Utilities.getPrefs(mLauncher);
+            mSharedPrefs.registerOnSharedPreferenceChangeListener(this);
+            mAutoRotateEnabled = mSharedPrefs.getBoolean(ALLOW_ROTATION_PREFERENCE_KEY,
                     getAllowRotationDefaultValue());
         } else {
-            mPrefs = null;
+            mSharedPrefs = null;
         }
 
-        // TODO(b/150260456) Add this in home settings as well
         mContentResolver = launcher.getContentResolver();
-        mContentResolver.registerContentObserver(Settings.Global.getUriFor(
-            FIXED_ROTATION_TRANSFORM_SETTING_NAME), false, mContentObserver);
+        mFeatureFlagsPrefs = Utilities.getFeatureFlagsPrefs(mLauncher);
+        mFeatureFlagsPrefs.registerOnSharedPreferenceChangeListener(this);
+        updateForcedRotation(true);
     }
 
-    private void updateForcedRotation() {
-        mForcedRotation = !getAllowRotationDefaultValue() && Utilities.isForcedRotation(mLauncher);
+    /**
+     * @param setValueFromPrefs If true, then {@link #mForcedRotation} will get set to the value
+     *                          from the home developer settings. Otherwise it will not.
+     *                          This is primarily to allow tests to set their own conditions.
+     */
+    private void updateForcedRotation(boolean setValueFromPrefs) {
+        boolean isForcedRotation = mFeatureFlagsPrefs
+                .getBoolean(FLAG_ENABLE_FIXED_ROTATION_TRANSFORM, false)
+                && !getAllowRotationDefaultValue();
+        if (mForcedRotation == isForcedRotation) {
+            return;
+        }
+        if (setValueFromPrefs) {
+            mForcedRotation = isForcedRotation;
+        }
+        UI_HELPER_EXECUTOR.execute(
+                () -> Settings.Global.putInt(mContentResolver, FIXED_ROTATION_TRANSFORM_SETTING_NAME,
+                        mForcedRotation ? 1 : 0));
+        for (ForcedRotationChangedListener listener : mForcedRotationChangedListeners) {
+            listener.onForcedRotationChanged(mForcedRotation);
+        }
     }
 
     /**
@@ -181,8 +186,13 @@ public class RotationHelper implements OnSharedPreferenceChangeListener {
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
+        if (FLAG_ENABLE_FIXED_ROTATION_TRANSFORM.equals(s)) {
+            updateForcedRotation(true);
+            return;
+        }
+
         boolean wasRotationEnabled = mAutoRotateEnabled;
-        mAutoRotateEnabled = mPrefs.getBoolean(ALLOW_ROTATION_PREFERENCE_KEY,
+        mAutoRotateEnabled = mSharedPrefs.getBoolean(ALLOW_ROTATION_PREFERENCE_KEY,
                 getAllowRotationDefaultValue());
         if (mAutoRotateEnabled != wasRotationEnabled) {
 
@@ -218,6 +228,10 @@ public class RotationHelper implements OnSharedPreferenceChangeListener {
     public void forceAllowRotationForTesting(boolean allowRotation) {
         mIgnoreAutoRotateSettings =
                 allowRotation || mLauncher.getResources().getBoolean(R.bool.allow_rotation);
+        // TODO(b/150214193) Tests currently expect launcher to be able to be rotated
+        //   Modify tests for this new behavior
+        mForcedRotation = !allowRotation;
+        updateForcedRotation(false);
         notifyChange();
     }
 
@@ -232,13 +246,11 @@ public class RotationHelper implements OnSharedPreferenceChangeListener {
     public void destroy() {
         if (!mDestroyed) {
             mDestroyed = true;
-            if (mPrefs != null) {
-                mPrefs.unregisterOnSharedPreferenceChangeListener(this);
-            }
-            if (mContentResolver != null) {
-                mContentResolver.unregisterContentObserver(mContentObserver);
+            if (mSharedPrefs != null) {
+                mSharedPrefs.unregisterOnSharedPreferenceChangeListener(this);
             }
             mForcedRotationChangedListeners.clear();
+            mFeatureFlagsPrefs.unregisterOnSharedPreferenceChangeListener(this);
         }
     }
 
@@ -293,7 +305,7 @@ public class RotationHelper implements OnSharedPreferenceChangeListener {
         return degrees;
     }
 
-    public static int getRotationFromDegrees(int degrees) {
+    public static int getRotationFromDegrees(float degrees) {
         int threshold = 70;
         if (degrees >= (360 - threshold) || degrees < (threshold)) {
             return Surface.ROTATION_0;
@@ -318,11 +330,30 @@ public class RotationHelper implements OnSharedPreferenceChangeListener {
     }
 
     /**
+     * For landscape, since the navbar is already in a vertical position, we don't have to do any
+     * rotations as the change in Y coordinate is what is read. We only flip the sign of the
+     * y coordinate to make it match existing behavior of swipe to the top to go previous
+     */
+    public static void transformEventForNavBar(MotionEvent ev, boolean inverse) {
+        // TODO(b/151269990): Use a temp matrix
+        Matrix m = new Matrix();
+        m.setScale(1, -1);
+        if (inverse) {
+            Matrix inv = new Matrix();
+            m.invert(inv);
+            ev.transform(inv);
+        } else {
+            ev.transform(m);
+        }
+    }
+
+    /**
      * Creates a matrix to transform the given motion event specified by degrees.
      * If {@param inverse} is {@code true}, the inverse of that matrix will be applied
      */
     public static void transformEvent(float degrees, MotionEvent ev, boolean inverse) {
         Matrix transform = new Matrix();
+        // TODO(b/151269990): Use a temp matrix
         transform.setRotate(degrees);
         if (inverse) {
             Matrix inv = new Matrix();
@@ -344,6 +375,7 @@ public class RotationHelper implements OnSharedPreferenceChangeListener {
      */
     public static Matrix getRotationMatrix(int screenWidth, int screenHeight, int displayRotation) {
         Matrix m = new Matrix();
+        // TODO(b/151269990): Use a temp matrix
         switch (displayRotation) {
             case Surface.ROTATION_0:
                 return m;

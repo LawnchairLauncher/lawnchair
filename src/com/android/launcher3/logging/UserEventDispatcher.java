@@ -25,6 +25,9 @@ import static com.android.launcher3.logging.LoggerUtils.newItemTarget;
 import static com.android.launcher3.logging.LoggerUtils.newLauncherEvent;
 import static com.android.launcher3.logging.LoggerUtils.newTarget;
 import static com.android.launcher3.logging.LoggerUtils.newTouchAction;
+import static com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
+import static com.android.launcher3.userevent.nano.LauncherLogProto.ItemType;
+import static com.android.launcher3.userevent.nano.LauncherLogProto.TipType;
 
 import static java.util.Optional.ofNullable;
 
@@ -48,7 +51,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.StatsLogUtils.LogContainerProvider;
-import com.android.launcher3.userevent.nano.LauncherLogProto;
+import com.android.launcher3.userevent.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.LauncherEvent;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
@@ -57,7 +60,11 @@ import com.android.launcher3.util.InstantAppResolver;
 import com.android.launcher3.util.LogConfig;
 import com.android.launcher3.util.ResourceBasedOverride;
 
-import java.util.Locale;
+import com.google.protobuf.InvalidProtocolBufferException;
+import com.google.protobuf.nano.InvalidProtocolBufferNanoException;
+import com.google.protobuf.nano.MessageNano;
+
+import java.util.ArrayList;
 import java.util.UUID;
 
 /**
@@ -72,8 +79,10 @@ public class UserEventDispatcher implements ResourceBasedOverride {
     private static final boolean IS_VERBOSE = Utilities.isPropertyEnabled(LogConfig.USEREVENT);
     private static final String UUID_STORAGE = "uuid";
 
-    public static UserEventDispatcher newInstance(Context context,
-            UserEventDelegate delegate) {
+    /**
+     * A factory method for UserEventDispatcher
+     */
+    public static UserEventDispatcher newInstance(Context context) {
         SharedPreferences sharedPrefs = Utilities.getDevicePrefs(context);
         String uuidStr = sharedPrefs.getString(UUID_STORAGE, null);
         if (uuidStr == null) {
@@ -82,41 +91,31 @@ public class UserEventDispatcher implements ResourceBasedOverride {
         }
         UserEventDispatcher ued = Overrides.getObject(UserEventDispatcher.class,
                 context.getApplicationContext(), R.string.user_event_dispatcher_class);
-        ued.mDelegate = delegate;
         ued.mUuidStr = uuidStr;
         ued.mInstantAppResolver = InstantAppResolver.newInstance(context);
         return ued;
     }
 
-    public static UserEventDispatcher newInstance(Context context) {
-        return newInstance(context, null);
-    }
-
-    public interface UserEventDelegate {
-        void modifyUserEvent(LauncherEvent event);
-    }
 
     /**
      * Fills in the container data on the given event if the given view is not null.
      *
      * @return whether container data was added.
      */
-    public boolean fillInLogContainerData(LauncherLogProto.LauncherEvent event, @Nullable View v) {
-        // Fill in grid(x,y), pageIndex of the child and container type of the parent
-        LogContainerProvider provider = StatsLogUtils.getLaunchProviderRecursive(v);
-        if (v == null || !(v.getTag() instanceof ItemInfo) || provider == null) {
+    public boolean fillLogContainer(@Nullable View v, Target child,
+            @Nullable ArrayList<Target> targets) {
+        LogContainerProvider firstParent = StatsLogUtils.getLaunchProviderRecursive(v);
+        if (v == null || !(v.getTag() instanceof ItemInfo) || firstParent == null) {
             return false;
         }
         final ItemInfo itemInfo = (ItemInfo) v.getTag();
-        final Target target = event.srcTarget[0];
-        final Target targetParent = event.srcTarget[1];
-        onFillInLogContainerData(itemInfo, target, targetParent);
-        provider.fillInLogContainerData(v, itemInfo, target, targetParent);
+        firstParent.fillInLogContainerData(itemInfo, child, targets);
         return true;
     }
 
-    protected void onFillInLogContainerData(
-            @NonNull ItemInfo itemInfo, @NonNull Target target, @NonNull Target targetParent) { }
+    protected void onFillInLogContainerData(@NonNull ItemInfo itemInfo, @NonNull Target target,
+            @NonNull ArrayList<Target> targets) {
+    }
 
     private boolean mSessionStarted;
     private long mElapsedContainerMillis;
@@ -125,7 +124,6 @@ public class UserEventDispatcher implements ResourceBasedOverride {
     private String mUuidStr;
     protected InstantAppResolver mInstantAppResolver;
     private boolean mAppOrTaskLaunch;
-    private UserEventDelegate mDelegate;
     private boolean mPreviousHomeGesture;
 
     //                      APP_ICON    SHORTCUT    WIDGET
@@ -136,17 +134,16 @@ public class UserEventDispatcher implements ResourceBasedOverride {
     // --------------------------------------------------------------
 
     @Deprecated
-    public void logAppLaunch(View v, Intent intent, @Nullable  UserHandle userHandle) {
-        LauncherEvent event = newLauncherEvent(newTouchAction(Action.Touch.TAP),
-                newItemTarget(v, mInstantAppResolver), newTarget(Target.Type.CONTAINER));
-
-        if (fillInLogContainerData(event, v)) {
-            if (mDelegate != null) {
-                mDelegate.modifyUserEvent(event);
-            }
-            fillIntentInfo(event.srcTarget[0], intent, userHandle);
+    public void logAppLaunch(View v, Intent intent, @Nullable UserHandle userHandle) {
+        Target itemTarget = newItemTarget(v, mInstantAppResolver);
+        Action action = newTouchAction(Action.Touch.TAP);
+        ArrayList<Target> targets = makeTargetsList(itemTarget);
+        if (fillLogContainer(v, itemTarget, targets)) {
+            onFillInLogContainerData((ItemInfo) v.getTag(), itemTarget, targets);
+            fillIntentInfo(itemTarget, intent, userHandle);
         }
-        ItemInfo info = (ItemInfo) v.getTag();
+        LauncherEvent event = newLauncherEvent(action,  targets);
+        ItemInfo info = v == null ? null : (ItemInfo) v.getTag();
         if (info != null && Utilities.IS_DEBUG_DEVICE && FeatureFlags.ENABLE_HYBRID_HOTSEAT.get()) {
             FileLog.d(TAG, "appLaunch: packageName:" + info.getTargetComponent().getPackageName()
                     + ",isWorkApp:" + (info.user != null && !Process.myUserHandle().equals(
@@ -171,7 +168,7 @@ public class UserEventDispatcher implements ResourceBasedOverride {
             // Direction DOWN means the task was launched, UP means it was dismissed.
             event.action.dir = direction;
         }
-        event.srcTarget[0].itemType = LauncherLogProto.ItemType.TASK;
+        event.srcTarget[0].itemType = ItemType.TASK;
         event.srcTarget[0].pageIndex = taskIndex;
         fillComponentInfo(event.srcTarget[0], componentKey.componentName);
         dispatchUserEvent(event, null);
@@ -194,8 +191,11 @@ public class UserEventDispatcher implements ResourceBasedOverride {
     public void logNotificationLaunch(View v, PendingIntent intent) {
         LauncherEvent event = newLauncherEvent(newTouchAction(Action.Touch.TAP),
                 newItemTarget(v, mInstantAppResolver), newTarget(Target.Type.CONTAINER));
-        if (fillInLogContainerData(event, v)) {
-            event.srcTarget[0].packageNameHash = (mUuidStr + intent.getCreatorPackage()).hashCode();
+        Target itemTarget = newItemTarget(v, mInstantAppResolver);
+        ArrayList<Target> targets = makeTargetsList(itemTarget);
+
+        if (fillLogContainer(v, itemTarget, targets)) {
+            itemTarget.packageNameHash = (mUuidStr + intent.getCreatorPackage()).hashCode();
         }
         dispatchUserEvent(event, null);
     }
@@ -241,50 +241,45 @@ public class UserEventDispatcher implements ResourceBasedOverride {
         LauncherEvent event = newLauncherEvent(newCommandAction(command),
                 newItemTarget(itemView, mInstantAppResolver), newTarget(Target.Type.CONTAINER));
 
-        if (fillInLogContainerData(event, itemView)) {
+        Target itemTarget = newItemTarget(itemView, mInstantAppResolver);
+        ArrayList<Target> targets = makeTargetsList(itemTarget);
+
+        if (fillLogContainer(itemView, itemTarget, targets)) {
             // TODO: Remove the following two lines once fillInLogContainerData can take in a
             // container view.
-            event.srcTarget[0].type = Target.Type.CONTAINER;
-            event.srcTarget[0].containerType = srcContainerType;
+            itemTarget.type = Target.Type.CONTAINER;
+            itemTarget.containerType = srcContainerType;
         }
         dispatchUserEvent(event, null);
     }
 
     public void logActionOnControl(int action, int controlType) {
-        logActionOnControl(action, controlType, null, -1);
+        logActionOnControl(action, controlType, null);
     }
 
     public void logActionOnControl(int action, int controlType, int parentContainerType) {
         logActionOnControl(action, controlType, null, parentContainerType);
     }
 
-    public void logActionOnControl(int action, int controlType, @Nullable View controlInContainer) {
-        logActionOnControl(action, controlType, controlInContainer, -1);
-    }
+    /**
+     * Logs control action with proper parent hierarchy
+     */
+    public void logActionOnControl(int actionType, int controlType,
+            @Nullable View controlInContainer, int... parentTypes) {
+        Target control = newTarget(Target.Type.CONTROL);
+        control.controlType = controlType;
+        Action action = newAction(actionType);
 
-    public void logActionOnControl(int action, int controlType, int parentContainer,
-            int grandParentContainer) {
-        LauncherEvent event = newLauncherEvent(newTouchAction(action),
-                newControlTarget(controlType),
-                newContainerTarget(parentContainer),
-                newContainerTarget(grandParentContainer));
-        dispatchUserEvent(event, null);
-    }
-
-    public void logActionOnControl(int action, int controlType, @Nullable View controlInContainer,
-            int parentContainerType) {
-        final LauncherEvent event = (controlInContainer == null && parentContainerType < 0)
-                ? newLauncherEvent(newTouchAction(action), newTarget(Target.Type.CONTROL))
-                : newLauncherEvent(newTouchAction(action), newTarget(Target.Type.CONTROL),
-                newTarget(Target.Type.CONTAINER));
-        event.srcTarget[0].controlType = controlType;
+        ArrayList<Target> targets = makeTargetsList(control);
         if (controlInContainer != null) {
-            fillInLogContainerData(event, controlInContainer);
+            fillLogContainer(controlInContainer, control, targets);
         }
-        if (parentContainerType >= 0) {
-            event.srcTarget[1].containerType = parentContainerType;
+        for (int parentContainerType : parentTypes) {
+            if (parentContainerType < 0) continue;
+            targets.add(newContainerTarget(parentContainerType));
         }
-        if (action == Action.Touch.DRAGDROP) {
+        LauncherEvent event = newLauncherEvent(action, targets);
+        if (actionType == Action.Touch.DRAGDROP) {
             event.actionDurationMillis = SystemClock.uptimeMillis() - mActionDurationMillis;
         }
         dispatchUserEvent(event, null);
@@ -300,7 +295,7 @@ public class UserEventDispatcher implements ResourceBasedOverride {
     public void logActionBounceTip(int containerType) {
         LauncherEvent event = newLauncherEvent(newAction(Action.Type.TIP),
                 newContainerTarget(containerType));
-        event.srcTarget[0].tipType = LauncherLogProto.TipType.BOUNCE;
+        event.srcTarget[0].tipType = TipType.BOUNCE;
         dispatchUserEvent(event, null);
     }
 
@@ -327,7 +322,7 @@ public class UserEventDispatcher implements ResourceBasedOverride {
             int srcChildTargetType, int srcParentContainerType, int dstContainerType,
             int pageIndex) {
         LauncherEvent event;
-        if (srcChildTargetType == LauncherLogProto.ItemType.TASK) {
+        if (srcChildTargetType == ItemType.TASK) {
             event = newLauncherEvent(newTouchAction(action),
                     newItemTarget(srcChildTargetType),
                     newContainerTarget(srcParentContainerType));
@@ -375,52 +370,53 @@ public class UserEventDispatcher implements ResourceBasedOverride {
      * Logs proto lite version of LauncherEvent object to clearcut.
      */
     public void logLauncherEvent(
-                com.android.launcher3.userevent.LauncherLogProto.LauncherEvent launcherEvent) {
+            com.android.launcher3.userevent.LauncherLogProto.LauncherEvent launcherEvent) {
 
         if (mPreviousHomeGesture) {
             mPreviousHomeGesture = false;
         }
         mAppOrTaskLaunch = false;
         launcherEvent.toBuilder()
-            .setElapsedContainerMillis(SystemClock.uptimeMillis() - mElapsedContainerMillis)
-            .setElapsedSessionMillis(SystemClock.uptimeMillis() - mElapsedSessionMillis).build();
-        if (!IS_VERBOSE) {
-            return;
+                .setElapsedContainerMillis(SystemClock.uptimeMillis() - mElapsedContainerMillis)
+                .setElapsedSessionMillis(
+                        SystemClock.uptimeMillis() - mElapsedSessionMillis).build();
+        try {
+            dispatchUserEvent(LauncherEvent.parseFrom(launcherEvent.toByteArray()), null);
+        } catch (InvalidProtocolBufferNanoException e) {
+            throw new RuntimeException("Cannot convert LauncherEvent from Lite to Nano version.");
         }
-        Log.d(TAG, launcherEvent.toString());
     }
 
     public void logDeepShortcutsOpen(View icon) {
-        LogContainerProvider provider = StatsLogUtils.getLaunchProviderRecursive(icon);
-        if (icon == null || !(icon.getTag() instanceof ItemInfo || provider == null)) {
-            return;
-        }
         ItemInfo info = (ItemInfo) icon.getTag();
-        LauncherEvent event = newLauncherEvent(newTouchAction(Action.Touch.LONGPRESS),
-                newItemTarget(info, mInstantAppResolver), newTarget(Target.Type.CONTAINER));
-        provider.fillInLogContainerData(icon, info, event.srcTarget[0], event.srcTarget[1]);
-        dispatchUserEvent(event, null);
-
+        Target child = newItemTarget(info, mInstantAppResolver);
+        ArrayList<Target> targets = makeTargetsList(child);
+        fillLogContainer(icon, child, targets);
+        dispatchUserEvent(newLauncherEvent(newTouchAction(Action.Touch.TAP), targets), null);
         resetElapsedContainerMillis("deep shortcut open");
     }
 
     public void logDragNDrop(DropTarget.DragObject dragObj, View dropTargetAsView) {
-        LauncherEvent event = newLauncherEvent(newTouchAction(Action.Touch.DRAGDROP),
-                newItemTarget(dragObj.originalDragInfo, mInstantAppResolver),
-                newTarget(Target.Type.CONTAINER));
-        event.destTarget = new Target[]{
-                newItemTarget(dragObj.originalDragInfo, mInstantAppResolver),
-                newDropTarget(dropTargetAsView)
-        };
+        Target srcChild = newItemTarget(dragObj.originalDragInfo, mInstantAppResolver);
+        ArrayList<Target> srcTargets = makeTargetsList(srcChild);
 
-        dragObj.dragSource.fillInLogContainerData(null, dragObj.originalDragInfo,
-                event.srcTarget[0], event.srcTarget[1]);
 
+        Target destChild = newItemTarget(dragObj.originalDragInfo, mInstantAppResolver);
+        ArrayList<Target> destTargets = makeTargetsList(destChild);
+
+        dragObj.dragSource.fillInLogContainerData(dragObj.originalDragInfo, srcChild, srcTargets);
         if (dropTargetAsView instanceof LogContainerProvider) {
-            ((LogContainerProvider) dropTargetAsView).fillInLogContainerData(null,
-                    dragObj.dragInfo, event.destTarget[0], event.destTarget[1]);
-
+            ((LogContainerProvider) dropTargetAsView).fillInLogContainerData(dragObj.dragInfo,
+                    destChild, destTargets);
         }
+        else {
+            destTargets.add(newDropTarget(dropTargetAsView));
+        }
+        LauncherEvent event = newLauncherEvent(newTouchAction(Action.Touch.DRAGDROP), srcTargets);
+        Target[] destTargetsArray = new Target[destTargets.size()];
+        destTargets.toArray(destTargetsArray);
+        event.destTarget = destTargetsArray;
+
         event.actionDurationMillis = SystemClock.uptimeMillis() - mActionDurationMillis;
         dispatchUserEvent(event, null);
     }
@@ -432,8 +428,8 @@ public class UserEventDispatcher implements ResourceBasedOverride {
         action.command = Action.Command.BACK;
         action.dir = isButton ? Action.Direction.NONE :
                 gestureSwipeLeft ? Action.Direction.LEFT : Action.Direction.RIGHT;
-        Target target = newControlTarget(isButton ? LauncherLogProto.ControlType.BACK_BUTTON :
-                LauncherLogProto.ControlType.BACK_GESTURE);
+        Target target = newControlTarget(isButton ? ControlType.BACK_BUTTON :
+                ControlType.BACK_GESTURE);
         target.spanX = downX;
         target.spanY = downY;
         target.cardinality = completed ? 1 : 0;
@@ -444,8 +440,6 @@ public class UserEventDispatcher implements ResourceBasedOverride {
 
     /**
      * Currently logs following containers: workspace, allapps, widget tray.
-     *
-     * @param reason
      */
     public final void resetElapsedContainerMillis(String reason) {
         mElapsedContainerMillis = SystemClock.uptimeMillis();
@@ -484,34 +478,23 @@ public class UserEventDispatcher implements ResourceBasedOverride {
         if (!IS_VERBOSE) {
             return;
         }
-        Log.d(TAG, generateLog(ev));
+        LauncherLogProto.LauncherEvent liteLauncherEvent;
+        try {
+            liteLauncherEvent =
+                    LauncherLogProto.LauncherEvent.parseFrom(MessageNano.toByteArray(ev));
+        } catch (InvalidProtocolBufferException e) {
+            throw new RuntimeException("Cannot parse LauncherEvent from Nano to Lite version");
+        }
+        Log.d(TAG, liteLauncherEvent.toString());
     }
 
     /**
-     * Returns a human-readable log for given user event.
+     * Constructs an ArrayList with targets
      */
-    public static String generateLog(LauncherEvent ev) {
-        String log = "\n-----------------------------------------------------"
-                + "\naction:" + LoggerUtils.getActionStr(ev.action);
-        if (ev.srcTarget != null && ev.srcTarget.length > 0) {
-            log += "\n Source " + getTargetsStr(ev.srcTarget);
-        }
-        if (ev.destTarget != null && ev.destTarget.length > 0) {
-            log += "\n Destination " + getTargetsStr(ev.destTarget);
-        }
-        log += String.format(Locale.US,
-                "\n Elapsed container %d ms, session %d ms, action %d ms",
-                ev.elapsedContainerMillis,
-                ev.elapsedSessionMillis,
-                ev.actionDurationMillis);
-        log += "\n\n";
-        return log;
-    }
-
-    private static String getTargetsStr(Target[] targets) {
-        String result = "child:" + LoggerUtils.getTargetStr(targets[0]);
-        for (int i = 1; i < targets.length; i++) {
-            result += "\tparent:" + LoggerUtils.getTargetStr(targets[i]);
+    public static ArrayList<Target> makeTargetsList(Target... targets) {
+        ArrayList<Target> result = new ArrayList<>();
+        for (Target target : targets) {
+            result.add(target);
         }
         return result;
     }

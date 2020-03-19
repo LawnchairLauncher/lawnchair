@@ -21,21 +21,22 @@ import android.content.Context;
 import android.os.Handler;
 
 import com.android.launcher3.LauncherAnimationRunner;
+import com.android.launcher3.WrappedLauncherAnimationRunner;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.RemoteAnimationAdapterCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.TransactionCompat;
 
-@FunctionalInterface
-public interface RemoteAnimationProvider {
+public abstract class RemoteAnimationProvider {
 
+    LauncherAnimationRunner mAnimationRunner;
     static final int Z_BOOST_BASE = 800570000;
 
-    AnimatorSet createWindowAnimation(RemoteAnimationTargetCompat[] appTargets,
+    public abstract AnimatorSet createWindowAnimation(RemoteAnimationTargetCompat[] appTargets,
             RemoteAnimationTargetCompat[] wallpaperTargets);
 
-    default ActivityOptions toActivityOptions(Handler handler, long duration, Context context) {
-        LauncherAnimationRunner runner = new LauncherAnimationRunner(handler,
+    ActivityOptions toActivityOptions(Handler handler, long duration, Context context) {
+        mAnimationRunner = new LauncherAnimationRunner(handler,
                 false /* startAtFrontOfQueue */) {
 
             @Override
@@ -44,8 +45,11 @@ public interface RemoteAnimationProvider {
                 result.setAnimation(createWindowAnimation(appTargets, wallpaperTargets), context);
             }
         };
+        final LauncherAnimationRunner wrapper = new WrappedLauncherAnimationRunner(
+                mAnimationRunner, false /* startAtFrontOfQueue */);
+
         return ActivityOptionsCompat.makeRemoteAnimation(
-                new RemoteAnimationAdapterCompat(runner, duration, 0));
+                new RemoteAnimationAdapterCompat(wrapper, duration, 0));
     }
 
     /**
@@ -63,9 +67,31 @@ public interface RemoteAnimationProvider {
         }
     }
 
-    static int getLayer(RemoteAnimationTargetCompat target, int boostModeTarget) {
+    public static int getLayer(RemoteAnimationTargetCompat target, int boostModeTarget) {
         return target.mode == boostModeTarget
                 ? Z_BOOST_BASE + target.prefixOrderIndex
                 : target.prefixOrderIndex;
+    }
+
+    /**
+     * @return the target with the lowest opaque layer for a certain app animation, or null.
+     */
+    public static RemoteAnimationTargetCompat findLowestOpaqueLayerTarget(
+            RemoteAnimationTargetCompat[] appTargets, int mode) {
+        int lowestLayer = Integer.MAX_VALUE;
+        int lowestLayerIndex = -1;
+        for (int i = appTargets.length - 1; i >= 0; i--) {
+            RemoteAnimationTargetCompat target = appTargets[i];
+            if (target.mode == mode && !target.isTranslucent) {
+                int layer = getLayer(target, mode);
+                if (layer < lowestLayer) {
+                    lowestLayer = layer;
+                    lowestLayerIndex = i;
+                }
+            }
+        }
+        return lowestLayerIndex != -1
+                ? appTargets[lowestLayerIndex]
+                : null;
     }
 }

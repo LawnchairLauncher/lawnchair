@@ -213,7 +213,7 @@ public final class FallbackActivityInterface implements
     @Override
     public Rect getOverviewWindowBounds(Rect homeBounds, RemoteAnimationTargetCompat target) {
         // TODO: Remove this once b/77875376 is fixed
-        return target.sourceContainerBounds;
+        return target.screenSpaceBounds;
     }
 
     @Override

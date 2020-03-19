@@ -58,6 +58,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
+import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.states.RotationHelper;
@@ -67,7 +68,6 @@ import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
-import com.android.launcher3.util.PendingAnimation;
 import com.android.launcher3.util.ViewPool.Reusable;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.TaskIconCache;
@@ -245,6 +245,13 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         return mSnapshotView.getTaskOverlay().isOverlayModal();
     }
 
+    /** Updates UI based on whether the task is modal. */
+    public void updateUiForModalTask() {
+        if (getRecentsView() != null) {
+            getRecentsView().updateUiForModalTask(this, isTaskOverlayModal());
+        }
+    }
+
     public TaskMenuView getMenuView() {
         return mMenuView;
     }
@@ -278,8 +285,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     public AnimatorPlaybackController createLaunchAnimationForRunningTask() {
         final PendingAnimation pendingAnimation = getRecentsView().createTaskLaunchAnimation(
                 this, RECENTS_LAUNCH_DURATION, TOUCH_RESPONSE_INTERPOLATOR);
-        AnimatorPlaybackController currentAnimation = AnimatorPlaybackController.wrap(
-                pendingAnimation.anim, RECENTS_LAUNCH_DURATION);
+        AnimatorPlaybackController currentAnimation = pendingAnimation.createPlaybackController();
         currentAnimation.setEndAction(() -> {
             pendingAnimation.finish(true, Touch.SWIPE);
             launchTask(false);

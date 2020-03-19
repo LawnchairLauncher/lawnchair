@@ -52,10 +52,12 @@ import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.SysUINavigationMode.NavigationModeChangeListener;
 import com.android.quickstep.SystemUiProxy;
+import com.android.quickstep.util.RemoteAnimationProvider;
 import com.android.quickstep.util.RemoteFadeOutAnimationListener;
 import com.android.quickstep.util.ShelfPeekAnim;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
+import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.util.stream.Stream;
 
@@ -242,6 +244,7 @@ public abstract class BaseQuickstepLauncher extends Launcher
         return new StateHandler[] {
                 getAllAppsController(),
                 getWorkspace(),
+                getBackgroundBlurController(),
                 new RecentsViewStateController(this),
                 new BackButtonAlphaHandler(this)};
     }
@@ -261,17 +264,21 @@ public abstract class BaseQuickstepLauncher extends Launcher
     public void useFadeOutAnimationForLauncherStart(CancellationSignal signal) {
         QuickstepAppTransitionManagerImpl appTransitionManager =
                 (QuickstepAppTransitionManagerImpl) getAppTransitionManager();
-        appTransitionManager.setRemoteAnimationProvider((appTargets, wallpaperTargets) -> {
+        appTransitionManager.setRemoteAnimationProvider(new RemoteAnimationProvider() {
+            @Override
+            public AnimatorSet createWindowAnimation(RemoteAnimationTargetCompat[] appTargets,
+                    RemoteAnimationTargetCompat[] wallpaperTargets) {
 
-            // On the first call clear the reference.
-            signal.cancel();
+                // On the first call clear the reference.
+                signal.cancel();
 
-            ValueAnimator fadeAnimation = ValueAnimator.ofFloat(1, 0);
-            fadeAnimation.addUpdateListener(new RemoteFadeOutAnimationListener(appTargets,
-                    wallpaperTargets));
-            AnimatorSet anim = new AnimatorSet();
-            anim.play(fadeAnimation);
-            return anim;
+                ValueAnimator fadeAnimation = ValueAnimator.ofFloat(1, 0);
+                fadeAnimation.addUpdateListener(new RemoteFadeOutAnimationListener(appTargets,
+                        wallpaperTargets));
+                AnimatorSet anim = new AnimatorSet();
+                anim.play(fadeAnimation);
+                return anim;
+            }
         }, signal);
     }
 

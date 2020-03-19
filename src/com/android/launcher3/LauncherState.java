@@ -20,11 +20,6 @@ import static android.view.View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS;
 import static android.view.View.VISIBLE;
 import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
 
-import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_FADE;
-import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_SCALE;
-import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_TRANSLATE_X;
-import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_FADE;
-import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_SCALE;
 import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
@@ -32,6 +27,11 @@ import static com.android.launcher3.anim.Interpolators.DEACCEL_1_7;
 import static com.android.launcher3.anim.Interpolators.clampToProgress;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_ACTIONS;
 import static com.android.launcher3.states.RotationHelper.REQUEST_NONE;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_FADE;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_SCALE;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_TRANSLATE_X;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_FADE;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_SCALE;
 import static com.android.launcher3.testing.TestProtocol.ALL_APPS_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.BACKGROUND_APP_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.HINT_STATE_ORDINAL;
@@ -41,13 +41,14 @@ import static com.android.launcher3.testing.TestProtocol.OVERVIEW_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.QUICK_SWITCH_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.SPRING_LOADED_STATE_ORDINAL;
 
+import android.content.Context;
 import android.view.View;
 import android.view.animation.Interpolator;
 
 import com.android.launcher3.allapps.AllAppsContainerView;
-import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.states.HintState;
 import com.android.launcher3.states.SpringLoadedState;
+import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.uioverrides.states.AllAppsState;
 import com.android.launcher3.uioverrides.states.OverviewState;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -269,6 +270,14 @@ public abstract class LauncherState {
         return 0;
     }
 
+    /**
+     * The amount of blur to apply to the background of either the app or Launcher surface in this
+     * state.
+     */
+    public int getBackgroundBlurRadius(Context context) {
+        return 0;
+    }
+
     public String getDescription(Launcher launcher) {
         return launcher.getWorkspace().getCurrentPageDescription();
     }
@@ -316,13 +325,13 @@ public abstract class LauncherState {
      * - Setting some start values (e.g. scale) for views that are hidden but about to be shown.
      */
     public void prepareForAtomicAnimation(Launcher launcher, LauncherState fromState,
-            AnimatorSetBuilder builder) {
+            StateAnimationConfig config) {
         if (this == NORMAL && fromState == OVERVIEW) {
-            builder.setInterpolator(ANIM_WORKSPACE_SCALE, DEACCEL);
-            builder.setInterpolator(ANIM_WORKSPACE_FADE, ACCEL);
-            builder.setInterpolator(ANIM_OVERVIEW_SCALE, clampToProgress(ACCEL, 0, 0.9f));
-            builder.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X, ACCEL);
-            builder.setInterpolator(ANIM_OVERVIEW_FADE, DEACCEL_1_7);
+            config.setInterpolator(ANIM_WORKSPACE_SCALE, DEACCEL);
+            config.setInterpolator(ANIM_WORKSPACE_FADE, ACCEL);
+            config.setInterpolator(ANIM_OVERVIEW_SCALE, clampToProgress(ACCEL, 0, 0.9f));
+            config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X, ACCEL);
+            config.setInterpolator(ANIM_OVERVIEW_FADE, DEACCEL_1_7);
             Workspace workspace = launcher.getWorkspace();
 
             // Start from a higher workspace scale, but only if we're invisible so we don't jump.
@@ -354,7 +363,7 @@ public abstract class LauncherState {
             }
         } else if (this == NORMAL && fromState == OVERVIEW_PEEK) {
             // Keep fully visible until the very end (when overview is offscreen) to make invisible.
-            builder.setInterpolator(ANIM_OVERVIEW_FADE, t -> t < 1 ? 0 : 1);
+            config.setInterpolator(ANIM_OVERVIEW_FADE, t -> t < 1 ? 0 : 1);
         }
     }
 

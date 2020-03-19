@@ -1,693 +1,556 @@
-[34mCOMMAND>> git log 6a8d59d9649cde5626f57935dfeba27cb866583f..d8995a6fdaf363c5cbef2c7209b4b199c7e083af(B[m
-commit d8995a6fdaf363c5cbef2c7209b4b199c7e083af
-Merge: 3be0443d3 3dd64ca3a
-Author: Vadim Tryshev <vadimt@google.com>
-Date:   Fri Feb 28 22:29:47 2020 +0000
+[34mCOMMAND>> git log f3779f129f7326cb7acb57bf6aabd68aca5b6218..3aaf3967348ff55d2b8ac6d50e59ea01d9362af9(B[m
+commit 3aaf3967348ff55d2b8ac6d50e59ea01d9362af9
+Author: Vinit Nayak <peanutbutter@google.com>
+Date:   Fri Mar 13 13:57:09 2020 -0700
 
-    Merge "Revert "TAPL: Verifying activity start/stop events"" into ub-launcher3-master
-
-commit 3dd64ca3a8a43c4b0fcb28a761d9379c0de0e1de
-Author: Vadim Tryshev <vadimt@google.com>
-Date:   Fri Feb 28 22:28:16 2020 +0000
-
-    Revert "TAPL: Verifying activity start/stop events"
+    Remove sensor manager from RecentsView
     
-    This reverts commit 1186700c9a9d282824bad4b9cc566974c287a49d.
+    This disables the rotation animation in
+    overview, but should hopefully fix tests.
     
-    Reason for revert: Fails in the lab
+    fixes: 150260456
+    Change-Id: I121cad155672c2e325cc0f83ce209be0d3806b1c
+
+commit 9caed38e34671e6b07b95bea1e971dee03b010ce
+Merge: 6d8203ef4 f546e0599
+Author: Hyunyoung Song <hyunyoungs@google.com>
+Date:   Fri Mar 13 16:41:17 2020 +0000
+
+    Merge "Null check every ComponentName call inside FolderNameProvider" into ub-launcher3-master
+
+commit f546e0599e8127068e7d75ff787483453c781275
+Author: Hyunyoung Song <hyunyoungs@google.com>
+Date:   Thu Mar 12 12:53:43 2020 -0700
+
+    Null check every ComponentName call inside FolderNameProvider
     
-    Change-Id: I6715a058c76d96752b904331968b46a07ce93f85
+    Bug: 150522230
+    Change-Id: I50007a3a781234797e16d830935a8b8585ac242b
 
-commit 3be0443d377ee78af88bbe5d9551cfeefd280e06
-Merge: 23ceafe3d f450b2500
-Author: Vadim Tryshev <vadimt@google.com>
-Date:   Fri Feb 28 21:34:25 2020 +0000
-
-    Merge "Revert "Enabling flaky tests per our new flaky test policy"" into ub-launcher3-master
-
-commit f450b2500c6854f59ad9b8ccc373199c631e681b
-Author: Vadim Tryshev <vadimt@google.com>
-Date:   Fri Feb 28 21:33:16 2020 +0000
-
-    Revert "Enabling flaky tests per our new flaky test policy"
-    
-    This reverts commit 983145c5944ae8c44166a1bccce94f077e3e9106.
-    
-    Reason for revert: Too flaky
-    
-    Change-Id: Ifabb638d6ce0a539518bc0b6b667a9783b6ca29d
-
-commit 23ceafe3d5d1766f458c5cfe3234e92ea35db85a
-Merge: 64a932ed2 dc24231e4
-Author: Zak Cohen <zakcohen@google.com>
-Date:   Fri Feb 28 21:21:36 2020 +0000
-
-    Merge "TAPL tests - make all apps in overview checks less fragile." into ub-launcher3-master
-
-commit dc24231e4faff53750a06e64a16d596add296dbe
-Author: Zak Cohen <zakcohen@google.com>
-Date:   Fri Feb 28 11:59:33 2020 -0800
-
-    TAPL tests - make all apps in overview checks less fragile.
-    
-    Tests that check for all apps in overview mode were only checking for
-    actions being enabled. This isn't sufficient logic, two button mode also
-    uses all apps.
-    
-    Centralize the check for all apps.
-    
-    Test: local tapl tests
-    Change-Id: If1bf98019e6f1aea8f7967883aba6780743e9d6b
-
-commit 64a932ed2a7e166257c107676f35eb2e3c3c4c7c
-Merge: 1fabbf5a2 1186700c9
-Author: Vadim Tryshev <vadimt@google.com>
-Date:   Fri Feb 28 19:22:32 2020 +0000
-
-    Merge "TAPL: Verifying activity start/stop events" into ub-launcher3-master
-
-commit 1fabbf5a23f2bb0aa83a2b9ceb7b255274e9ff03
-Merge: 7ff297a81 983145c59
-Author: Vadim Tryshev <vadimt@google.com>
-Date:   Fri Feb 28 18:29:23 2020 +0000
-
-    Merge "Enabling flaky tests per our new flaky test policy" into ub-launcher3-master
-
-commit 983145c5944ae8c44166a1bccce94f077e3e9106
-Author: vadimt <vadimt@google.com>
-Date:   Thu Feb 27 17:58:59 2020 -0800
-
-    Enabling flaky tests per our new flaky test policy
-    
-    I'll check whether the tests are still flaky and assign to the test
-    owner if they are.
-    
-    Bug: 148867106
-    Change-Id: Ic850abc862b0f266b100aa6bfff4e89b3802e50d
-
-commit 7ff297a81faee4815a1feba6d64e6dd464bb7f0d
-Author: Becky Qiu <xuqiu@google.com>
-Date:   Fri Feb 28 01:38:44 2020 +0000
-
-    Revert "[Overview Actions] Disable swiping for TaskView if it's in select mode."
-    
-    This reverts commit 0499fb2060af0b7d065d77b22c81f4f77ee24eed.
-    
-    Reason for revert: This might break the post submit test. See b/150401176
-    
-    Change-Id: Iafc420fff72de8e83ce5e325fc1e5b1a1efe7350
-
-commit 2fe6fb967163e4c91f90a1680b2004ec45e0730e
-Merge: eecb258cc 3d64ffd4a
-Author: Vadim Tryshev <vadimt@google.com>
-Date:   Thu Feb 27 22:28:59 2020 +0000
-
-    Merge "Fixing activity leak via alarm in SecondaryDropTarget" into ub-launcher3-master
-
-commit 3d64ffd4a53e73c6fb4c04d6f144878ce4710d65
-Author: vadimt <vadimt@google.com>
-Date:   Thu Feb 27 11:28:47 2020 -0800
-
-    Fixing activity leak via alarm in SecondaryDropTarget
-    
-    Change-Id: I12c099ee1bb55d9db81e14d27d2eb09fbbc83e0f
-
-commit eecb258cc7c81ce04feb903b15267257d480c8bc
-Merge: 0e0b17636 9a4df4dba
-Author: Zak Cohen <zakcohen@google.com>
-Date:   Thu Feb 27 19:48:51 2020 +0000
-
-    Merge changes from topic "enable" into ub-launcher3-master
-    
-    * changes:
-      Overview Actions - Enable by default.
-      TAPL test update - don't run all apps in overview tests with actions.
-
-commit 0e0b1763612778dc94d3c29e4d32018c854dbcc7
-Merge: 3ba680055 da12b805c
-Author: Vadim Tryshev <vadimt@google.com>
-Date:   Thu Feb 27 19:45:39 2020 +0000
-
-    Merge "Not showing "mismatched events" and other diags after Launcher crashes" into ub-launcher3-master
-
-commit 3ba6800552f699f6937e7ff6d24ff66c20d6c2cc
-Merge: 9f62bc10a 1779a3829
+commit 6d8203ef4495f9550999f483f7c9822316b29971
+Merge: 3af717835 3388323bc
 Author: TreeHugger Robot <treehugger-gerrit@google.com>
-Date:   Thu Feb 27 19:19:14 2020 +0000
+Date:   Fri Mar 13 03:00:46 2020 +0000
 
-    Merge "Using StrictMode to detect activity leaks" into ub-launcher3-master
+    Merge "Disable OrientationListener if vertical landscape not supported" into ub-launcher3-master
 
-commit 1186700c9a9d282824bad4b9cc566974c287a49d
-Author: vadimt <vadimt@google.com>
-Date:   Fri Feb 14 14:42:35 2020 -0800
+commit 3388323bc1b598dcee37d9522c14f968a1318f8e
+Author: Vinit Nayak <peanutbutter@google.com>
+Date:   Thu Mar 12 17:18:51 2020 -0700
 
-    TAPL: Verifying activity start/stop events
+    Disable OrientationListener if vertical landscape not supported
     
-    It also turned out that Pilfer event seems to come in a
-    non-deterministic order relative to the events from the Main and TIS
-    sequences. So I moved it to its own sequence.
+    Even if multiple orientations are disabled but the flag
+    is on, we'll be listneing and setting different layouts.
+    Seeing in some tests that that callback was getting fired
+    for some reason.
     
-    Change-Id: I5851aafb6d04398c5727712eaf8561916a30c4c5
+    Fixes: 150260456
+    Change-Id: I0a1c9f06cc4830d3dc8410a777d595851f1c35eb
 
-commit 9f62bc10afe375032453d5361707acd6c9df439b
-Merge: b5565fb62 dbc758305
-Author: Vadim Tryshev <vadimt@google.com>
-Date:   Thu Feb 27 19:08:29 2020 +0000
+commit 3af717835652536726e42d46d5875adf5ceb3cb7
+Author: thiruram <thiruram@google.com>
+Date:   Thu Mar 12 16:16:24 2020 -0700
 
-    Merge "Remove unnecessary PilferPointer events and enable testPressHomeOnAllAppsContextMenu" into ub-launcher3-master
-
-commit b5565fb62fb0256395c4a2fd9abf07c83451f26b
-Merge: 39c610192 0499fb206
-Author: Becky Qiu <xuqiu@google.com>
-Date:   Thu Feb 27 18:48:09 2020 +0000
-
-    Merge "[Overview Actions] Disable swiping for TaskView if it's in select mode." into ub-launcher3-master
-
-commit 39c610192a8350adba64fdf6869f9b560163cb80
-Merge: de9823243 6f9637662
-Author: TreeHugger Robot <treehugger-gerrit@google.com>
-Date:   Thu Feb 27 01:14:52 2020 +0000
-
-    Merge "Catching OOM exceptions in auto-investigator" into ub-launcher3-master
-
-commit de9823243a73662c211a5d405511d6bcf4f1f0a6
-Merge: 833cd4320 f2a15f1be
-Author: Zak Cohen <zakcohen@google.com>
-Date:   Wed Feb 26 21:25:36 2020 +0000
-
-    Merge "Make RectFSpringAnim resilient to negative height starting rect." into ub-launcher3-master
-
-commit da12b805cc1c02b03048430840d4772399bcb733
-Author: vadimt <vadimt@google.com>
-Date:   Wed Feb 26 12:17:47 2020 -0800
-
-    Not showing "mismatched events" and other diags after Launcher crashes
+    Fixes missing smart folder logging bug. Uses ProtoLite.toString method to log LauncherEvents.
     
-    Change-Id: Iee5f8813c3610314d486589bc361466a05da0ecb
+    Change-Id: I45dbf189e7bd47f8d4d7ba55180e59686bd6ecae
 
-commit f2a15f1be54735ef41fe3a1dfea7f196a2e93b04
-Author: Zak Cohen <zakcohen@google.com>
-Date:   Wed Feb 26 10:53:53 2020 -0800
-
-    Make RectFSpringAnim resilient to negative height starting rect.
-    
-    Test: ran tapl tests, failed before, passed after
-    Change-Id: I10b82dd348b5c12550e60b145c76dad542aa56e8
-
-commit 833cd43206cefdc2d653d2ab42cb5b6c9317b278
-Merge: 5991eb833 65ed9c3d9
-Author: TreeHugger Robot <treehugger-gerrit@google.com>
-Date:   Wed Feb 26 17:47:59 2020 +0000
-
-    Merge "Adding a failure investigator" into ub-launcher3-master
-
-commit 5991eb83377e84011d90cc40eb3ebe7617292a49
-Merge: b066af18a 5bb63c916
-Author: TreeHugger Robot <treehugger-gerrit@google.com>
-Date:   Wed Feb 26 17:42:40 2020 +0000
-
-    Merge changes from topic "new-task-snapshots-ub-launcher3-master" into ub-launcher3-master
-    
-    * changes:
-      Toggle loading state based on config_lowResTaskSnapshotScale
-      Add config to enable snapshot preloading
-
-commit b066af18a51a7ab6ac167c3b9c5532c6aed1f294
-Merge: 0c5f58afb e6981a606
-Author: TreeHugger Robot <treehugger-gerrit@google.com>
-Date:   Wed Feb 26 07:59:20 2020 +0000
-
-    Merge "Update mEndRect when closing ArrowPopup" into ub-launcher3-master
-
-commit dbc7583054405ab0f87a9394c56ecbf4241d8159
-Author: vadimt <vadimt@google.com>
-Date:   Wed Feb 19 19:17:28 2020 -0800
-
-    Remove unnecessary PilferPointer events and enable testPressHomeOnAllAppsContextMenu
-    
-    Change-Id: I04199f46024b05f05d04ba2be7a797842bb48527
-
-commit 0499fb2060af0b7d065d77b22c81f4f77ee24eed
-Author: Becky Qiu <xuqiu@google.com>
-Date:   Tue Feb 25 15:12:55 2020 -0800
-
-    [Overview Actions] Disable swiping for TaskView if it's in select mode.
-    
-    This including swiping up to dismiss, down to launch app, left and right to switch apps.
-    
-    Test: local
-    Bug: 139828243
-    Change-Id: Ib588c8725fb765097d03a5def719abdffd603708
-
-commit 0c5f58afb716d22fa3adb3a1962483f4430ae63c
-Merge: f17241918 e7e91fd60
-Author: Tracy Zhou <tracyzhou@google.com>
-Date:   Wed Feb 26 01:01:24 2020 +0000
-
-    Merge "Connect split-screen things to systemui divider" into ub-launcher3-master
-
-commit f1724191896786e5e957489b34ef5692d43aed46
-Merge: 37f435d62 bb18f4c9c
-Author: TreeHugger Robot <treehugger-gerrit@google.com>
-Date:   Wed Feb 26 00:50:47 2020 +0000
-
-    Merge "Fixing log message" into ub-launcher3-master
-
-commit 37f435d62462c31c99c32d9222f539b104338a06
-Merge: 43a161579 20cc7a3b5
-Author: TreeHugger Robot <treehugger-gerrit@google.com>
-Date:   Wed Feb 26 00:35:40 2020 +0000
-
-    Merge "Update proguard flags." into ub-launcher3-master
-
-commit e7e91fd60e5f78e63dd1b92fe21cb38a9f0cc494
-Author: Evan Rosky <erosky@google.com>
-Date:   Wed Nov 20 17:00:06 2019 -0800
-
-    Connect split-screen things to systemui divider
-    
-    Since divider stuff lives in sysui instead of framework
-    
-    Bug: 133381284
-    Test: Manual, open 2 apps in split and drag-up to show
-          recents.
-    Change-Id: If6740b7ee4829bf4cac6e829e81943f16a41f977
-    (cherry picked from commit 3ef159becdbda1041781920eb816d041bd88da44)
-
-commit bb18f4c9c6acfeef5666493ae904020b55414fd9
-Author: Sunny Goyal <sunnygoyal@google.com>
-Date:   Tue Feb 25 15:27:06 2020 -0800
-
-    Fixing log message
-    
-    Change-Id: I0668ea273a54ea741b1b871a50a8738c0ec4788b
-
-commit 9a4df4dba1512f4aa67da5c7f9d69a1ad22f3805
-Author: Zak Cohen <zakcohen@google.com>
-Date:   Wed Feb 19 14:52:10 2020 -0800
-
-    Overview Actions - Enable by default.
-    
-    Enable the Overview Actions feature flag by default.
-    
-    Test: local
-    Bug: 145297320
-    Change-Id: I6f4a2b6e90704b78d1ff1f77bbfea2d8789169ff
-
-commit 43a161579600c2f7cbce8d96e2474f97983f7d15
-Author: Zak Cohen <zakcohen@google.com>
-Date:   Tue Feb 25 14:29:37 2020 -0800
-
-    Hide apps view in transitions if none of its parts are visible.
-    
-    Check where the all apps view has any pieces visible, if not hide it.
-    
-    Test: local
-    Change-Id: I1d9b957b6c10dfbe4beaa56c4fee920844699a6c
-
-commit fe935dfbc198192780f9c3bdd94fdfb1b849d33b
-Author: Zak Cohen <zakcohen@google.com>
-Date:   Thu Feb 20 15:08:10 2020 -0800
-
-    TAPL test update - don't run all apps in overview tests with actions.
-    
-    Overview actions removes the all apps from overview. Don't run the tests
-    that depend on these.
-    Ultimately need to add more tests for the actions.
-    
-    Test: tapl local
-    Change-Id: I2471d10af7bc03a40a94f99aa16354b85bdb3ad7
-
-commit 1779a38290933a2b72df87795b5c8f1758da2ece
-Author: vadimt <vadimt@google.com>
-Date:   Tue Feb 25 14:41:01 2020 -0800
-
-    Using StrictMode to detect activity leaks
-    
-    Change-Id: I615f641897d57be0cd31be944796c6931ef9ab00
-
-commit 6f96376620b34b68c5896d25a315fc0f8b72ac80
-Author: vadimt <vadimt@google.com>
-Date:   Tue Feb 25 11:05:39 2020 -0800
-
-    Catching OOM exceptions in auto-investigator
-    
-    In the development environment, the device may stay for long time
-    without reboot, and the logcat size may turn to be long enough to
-    overflow the memory.
-    
-    Suppressing OOM exceptions.
-    
-    Change-Id: I562e2c03312e88f669d9cb660af6e8849dc0c8ef
-
-commit d71c3b185de62a50b730bbf389d48ead9ccc6315
-Merge: 86430dd2d 93c4de741
-Author: TreeHugger Robot <treehugger-gerrit@google.com>
-Date:   Tue Feb 25 18:23:19 2020 +0000
-
-    Merge "Setting interpolator beforehand, instead of overriding it after the pending animaiton is created" into ub-launcher3-master
-
-commit 86430dd2d25ba69220f20e5cc2f5379cadcef27c
-Merge: 6382b39ff b79614cc9
-Author: TreeHugger Robot <treehugger-gerrit@google.com>
-Date:   Tue Feb 25 18:20:39 2020 +0000
-
-    Merge "Performing a check for a crashed Launcher process for each UI test" into ub-launcher3-master
-
-commit 65ed9c3d9bb6c0086613b3e6512bdb0a1f673936
-Author: vadimt <vadimt@google.com>
-Date:   Mon Feb 24 19:10:50 2020 -0800
-
-    Adding a failure investigator
-    
-    Change-Id: Ie1c9820ecb7373a1f4428a24867c51332a84e65c
-
-commit b79614cc93f7a54dead7c19e6e225cc4a832ba53
-Author: vadimt <vadimt@google.com>
-Date:   Mon Feb 24 18:24:05 2020 -0800
-
-    Performing a check for a crashed Launcher process for each UI test
-
-commit 6382b39ff4605fbe30d8edf9ba25d32a7c04d7e5
+commit b6bc08ad5751e360a0e0407f7fc5cd708b7a28be
+Merge: 6aa63d9f8 984c01cbc
 Author: Tony Wickham <twickham@google.com>
-Date:   Mon Feb 24 17:06:17 2020 -0800
+Date:   Thu Mar 12 21:48:42 2020 +0000
 
-    Add null check to sendCustomAccessibilityEvent()
-    
-    ag/10273975 caused a regression where launcher crashes if RecentsView is
-    empty.
-    
-    Change-Id: I1607627be0a9748fd552adc757296d7b6bbfd1e2
+    Merge "Invert playNonAtomicComponent() as onlyPlayAtomicComponent()" into ub-launcher3-master
 
-commit e6981a606abac6fe70cbb9fdefd16a25fb2f2f58
-Author: Tony Wickham <twickham@google.com>
-Date:   Mon Feb 24 17:33:20 2020 -0800
+commit 6aa63d9f8ec9a20c431da2f0cd05be610ed0d152
+Merge: 4e82f5bc3 f0d96f83f
+Author: Vadim Tryshev <vadimt@google.com>
+Date:   Thu Mar 12 21:01:30 2020 +0000
 
-    Update mEndRect when closing ArrowPopup
-    
-    Generally mEndRect is still correct from when we set it in
-    animateOpen(), but there are cases where it is no longer valid and
-    should be recomputed in animateClose(). For example, if you dismiss
-    notifications, the height of the popup changes between opening and
-    closing it.
-    
-    Test: Long press an icon with a notification dot, dismiss all
-    notifications from the popup and then close the popup. The shadow
-    follows the outline of the popup, instead of extending well below it.
-    
-    Change-Id: Ic5d6ad2807ea1ec8aff5e3d6ce8abaa11ce5d33c
+    Merge "Fixing activity leak via accumulation of draw listeners" into ub-launcher3-master
 
-commit 93c4de7413f40a3660fdecb3a19fe5271e93d360
+commit f0d96f83f72e81ffc0f14db60c50c022839bb6e7
+Author: vadimt <vadimt@google.com>
+Date:   Tue Mar 10 13:44:58 2020 -0700
+
+    Fixing activity leak via accumulation of draw listeners
+    
+    Bug: 139137636
+    Change-Id: I0a2f0849f886acaac31746ac7c9724c765692e88
+
+commit 4e82f5bc364f66d9a6ac72071db0d18e5a7fd956
 Author: Sunny Goyal <sunnygoyal@google.com>
-Date:   Mon Feb 24 16:39:36 2020 -0800
+Date:   Thu Mar 12 12:29:33 2020 -0700
 
-    Setting interpolator beforehand, instead of overriding it after the pending
-    animaiton is created
+    Fixing crash when swiping up using 3P Launcher
     
-    Change-Id: I7caec2eeb86084591fa627518d064b7ebb895d65
+    Change-Id: Ia181edc1a00136374b3f0d848beccf0c9acd7b5c
 
-commit 20cc7a3b5b2ef2e49b85d2cd51320c4c0183e244
-Author: Amos Bianchi <amosbianchi@google.com>
-Date:   Mon Feb 24 15:35:49 2020 -0800
+commit f85fcc792f74b3143670cef9e260ffb1b68a1f9f
+Merge: b9ec9319c f5a4deb12
+Author: TreeHugger Robot <treehugger-gerrit@google.com>
+Date:   Thu Mar 12 18:12:59 2020 +0000
 
-    Update proguard flags.
+    Merge "Hide work apps when work profile is paused" into ub-launcher3-master
+
+commit f5a4deb120731f116aea6b2161560f4e81502260
+Author: Samuel Fufa <sfufa@google.com>
+Date:   Wed Mar 4 16:24:06 2020 -0800
+
+    Hide work apps when work profile is paused
     
-    Fully R8 optimized variants may crash with:
-    java.lang.AbstractMethodError exception.
+    - hide overlay icon in landscape mode
+    - don't show edu if user has already seen legacy work profile edu
+    - make sure personal tab is highlighted when work profile is reinstalled
+    - always go home after a work profile is added or removed
+    - add tests for work edu flow
     
-    Test: build, manual test on device.
-    Change-Id: I18a7b011ddd3536e3d33b991954a52e5fc5c7d56
+    Bug: 150122946
+    Test: Manual
+    Change-Id: I8f80ac763acf03ca31a534464f4ddfd84528d329
 
-commit 436573401765cdc97d8cf672ace3ccbea16badeb
-Merge: 6b7fbd22d be13d109b
-Author: Tracy Zhou <tracyzhou@google.com>
-Date:   Mon Feb 24 20:01:58 2020 +0000
+commit b9ec9319c5534cf6ebd8df2ee1144e1ebb477c33
+Author: Vinit Nayak <peanutbutter@google.com>
+Date:   Wed Mar 4 12:05:28 2020 -0800
 
-    Merge "Render user's actual workspace in ThemePicker preview (Part 3)" into ub-launcher3-master
+    Add fixed_rotation_transform to home settings
+    
+    This sets the feature flag on launcher side
+    and also updates the setting in Settings.Global
+    Launcher DOES NOT listen to the Settings.Global
+    change from adb anymore. This should take
+    preference over setting it from command line.
+    
+    Also fix a related swipe to home animation bug
+    that happened w/ merge conflict.
+    
+    Fixes: 150260456
+    Test: Set and unset, visually verified behavior.
+    Tested w/ autorotate on and off.
+    Checked Settings.Global value correctly updated
+    via "adb shell settings get global
+    fixed_rotation_transform"
+    TODO: Update tests to reflect this new
+    default-on fixed rotation behavior.
+    
+    Change-Id: Id95f006eb1e92a59e24b05567298fd21b1409b13
 
-commit 6b7fbd22dda79a31e75da18da4b0bf05cd25a85a
-Merge: d2c56525b 27d3c595c
+commit 984c01cbcda8ab31c24c6a27118d9c1934c23795
+Author: Tony Wickham <twickham@google.com>
+Date:   Fri Mar 6 15:56:46 2020 -0800
+
+    Invert playNonAtomicComponent() as onlyPlayAtomicComponent()
+    
+    This avoids the double negative we use in a few places, so should be clearer.
+    Also added some comments to explain what the animComponents are used for.
+    
+    Change-Id: Ibd25bd12efce6553b377bbd9c0651e4f4ac3e498
+
+commit 31ff98e14491edda33a7ccd2be04795bdaad124c
+Merge: 4acdb3bcd 9e19866ed
+Author: TreeHugger Robot <treehugger-gerrit@google.com>
+Date:   Thu Mar 12 00:26:57 2020 +0000
+
+    Merge "Only allow horizontal spring if page will change." into ub-launcher3-master
+
+commit 4acdb3bcd7f69e0cd42b7fae16176cbe15b551aa
+Merge: 6a550f26a 003782f93
+Author: Sunny Goyal <sunnygoyal@google.com>
+Date:   Thu Mar 12 00:20:15 2020 +0000
+
+    Merge "Removing some properties out of AnimationBuilder" into ub-launcher3-master
+
+commit 6a550f26a79564575cee5dfe15338c64ffe00d2b
+Merge: 0abe81991 fa617d89c
+Author: TreeHugger Robot <treehugger-gerrit@google.com>
+Date:   Thu Mar 12 00:15:44 2020 +0000
+
+    Merge "Using FallbackSwipeHandler in 2-button mode" into ub-launcher3-master
+
+commit 003782f93c8b5096ebf6e64fbfa7e3483c11d685
+Author: Sunny Goyal <sunnygoyal@google.com>
+Date:   Fri Mar 6 14:52:17 2020 -0800
+
+    Removing some properties out of AnimationBuilder
+    
+    AnimationBuilder and PendingAnimation have similar logic. This will
+    allow to unify the two classes
+    
+    Change-Id: Id8c1d8a7020d132adbccdc6c80538ed6556cb75e
+
+commit 0abe81991398556485d6605dbeb57b64e2414f92
+Merge: 9c47ddd2a 21167f01d
+Author: TreeHugger Robot <treehugger-gerrit@google.com>
+Date:   Wed Mar 11 23:27:05 2020 +0000
+
+    Merge "[Overview Actions] Hide other tasks for select mode UI." into ub-launcher3-master
+
+commit fa617d89cece2c08c03fa7506700bed93d060cf7
+Author: Sunny Goyal <sunnygoyal@google.com>
+Date:   Wed Mar 11 16:20:25 2020 -0700
+
+    Using FallbackSwipeHandler in 2-button mode
+    
+    Bug: 151166786
+    Change-Id: Ia86af76c1779bafa4690e733a7e6764973c8ae0d
+
+commit 21167f01d4877d5927e4cd473cf6fcf61acc54d8
+Author: Becky Qiu <xuqiu@google.com>
+Date:   Thu Mar 5 11:26:34 2020 -0800
+
+    [Overview Actions] Hide other tasks for select mode UI.
+    
+    Test:local
+    Bug:139828243
+    
+    Change-Id: Idc9c6a0e354b9df7f48f3ce93b560fdc4999fc3a
+
+commit 9e19866ed86de5237ea02810e28fb56f3ab80616
+Author: Jon Miranda <jonmiranda@google.com>
+Date:   Wed Mar 11 14:42:02 2020 -0700
+
+    Only allow horizontal spring if page will change.
+    
+    Bug: 150876921
+    Change-Id: I88db4c28ec3f8213c583e8a0dcd1cce2b1fee322
+
+commit 9c47ddd2a60aacd5663e040cf1f90d65896544a4
+Merge: 8780065fd ddb08885f
+Author: Tony Wickham <twickham@google.com>
+Date:   Wed Mar 11 21:10:04 2020 +0000
+
+    Merge "Try orienting popup the other way if offset pushes it out of bounds" into ub-launcher3-master
+
+commit 8780065fdbe9e0b012f110d523447bcf4022a191
+Merge: 25960bcd8 2768a2468
+Author: Automerger Merge Worker <android-build-automerger-merge-worker@system.gserviceaccount.com>
+Date:   Wed Mar 11 20:17:17 2020 +0000
+
+    [automerger skipped] Merge "[DO NOT MERGE] Adds fling gesture suppression to Launcher" into ub-launcher3-qt-qpr1-dev am: 631ed598ee -s ours am: 2768a24688 -s ours
+    
+    am skip reason: subject contains skip directive
+    
+    Change-Id: I36a95c05e2cef2bb615c67c30697c8a1b07b4c6f
+
+commit 25960bcd88b97727c9892dfce0ad57761ef3a992
+Merge: 9c40c83d7 f3b22ffee
+Author: Automerger Merge Worker <android-build-automerger-merge-worker@system.gserviceaccount.com>
+Date:   Wed Mar 11 20:17:10 2020 +0000
+
+    [automerger skipped] [DO NOT MERGE] Adds fling gesture suppression to Launcher am: f3b22ffee6 -s ours
+    
+    am skip reason: subject contains skip directive
+    
+    Change-Id: I38695bd05d74b8a526e61c2b55b2d2669e4e31a7
+
+commit 2768a24688171fddd0ed4e8fa720d308736c2ca8
+Merge: f3b22ffee 631ed598e
+Author: Automerger Merge Worker <android-build-automerger-merge-worker@system.gserviceaccount.com>
+Date:   Wed Mar 11 20:05:05 2020 +0000
+
+    [automerger skipped] Merge "[DO NOT MERGE] Adds fling gesture suppression to Launcher" into ub-launcher3-qt-qpr1-dev am: 631ed598ee -s ours
+    
+    am skip reason: subject contains skip directive
+    
+    Change-Id: I6a1906e1e7e302ca6886f3ecdeac5d374476020e
+
+commit ddb08885f9d51db577aedc386cc3a90d054132b2
+Author: Tony Wickham <twickham@google.com>
+Date:   Tue Mar 10 18:25:31 2020 -0700
+
+    Try orienting popup the other way if offset pushes it out of bounds
+    
+    orientAboutObject() currently determines whether the popup should align
+    its left side with the icon or the right side. However, after
+    determining this, there is an offset to ensure the popup lines up with
+    the icon as expected, which might push it out of bounds. In that case,
+    we fallback to centering the popup. However, there might be plenty of
+    room on the other side, so we should just align the other direction
+    instead. Updated the logic to do that by first trying to align left
+    (in LTR) or right (in RTL), then trying again with the other alignment
+    if it doesn't fit after all x calculations are made.
+    
+    Bug: 150644839
+    Change-Id: I219dae331bf790e461d91394ffe025d40ec54c9b
+
+commit f3b22ffee691dca3e8a5cc3c0a1fb1d19ce8a5ad
+Author: Govinda Wasserman <gwasserman@google.com>
+Date:   Thu Mar 5 16:50:22 2020 -0500
+
+    [DO NOT MERGE] Adds fling gesture suppression to Launcher
+    
+    Test: Tested locally
+    BUG: 150688842
+    Change-Id: Ifa96bd01363de47cf1d8cdce34d81d525c8c2c04
+    (cherry picked from commit 9b90b1b0345ea57a6152919d318f4ce9cacd7556)
+
+commit 631ed598ee115bdfa1b3249a87c1f266eb93d57d
+Merge: 9a32222ce 9b90b1b03
+Author: Govinda Wasserman <gwasserman@google.com>
+Date:   Wed Mar 11 18:19:26 2020 +0000
+
+    Merge "[DO NOT MERGE] Adds fling gesture suppression to Launcher" into ub-launcher3-qt-qpr1-dev
+
+commit 9b90b1b0345ea57a6152919d318f4ce9cacd7556
+Author: Govinda Wasserman <gwasserman@google.com>
+Date:   Thu Mar 5 16:50:22 2020 -0500
+
+    [DO NOT MERGE] Adds fling gesture suppression to Launcher
+    
+    Test: Tested locally
+    BUG: 150688842
+    Change-Id: Ifa96bd01363de47cf1d8cdce34d81d525c8c2c04
+
+commit 9c40c83d70bbe4689e1bddc012aec6d7a04dc490
+Merge: b41aa64b8 86ace5452
+Author: Automerger Merge Worker <android-build-automerger-merge-worker@system.gserviceaccount.com>
+Date:   Tue Mar 10 20:55:30 2020 +0000
+
+    [automerger skipped] Merge "Dismisses system overlays for Home intent." into ub-launcher3-qt-future-dev am: 86ace54523 -s ours
+    
+    am skip reason: Change-Id Ib9c85de2f83f99d1ef53fb17fde5d0b3c514849a with SHA-1 65ced1b1d0 is in history
+    
+    Change-Id: I70904c253ac6ad36820069f64d9338ee067d159b
+
+commit b41aa64b8df2256f554c7ea4fa96c10464d1a7b6
+Merge: d7c844167 5e72945a8
+Author: Automerger Merge Worker <android-build-automerger-merge-worker@system.gserviceaccount.com>
+Date:   Tue Mar 10 20:55:18 2020 +0000
+
+    [automerger skipped] Merge "Import translations. DO NOT MERGE" into ub-launcher3-rvc-dev am: 5e72945a85 -s ours
+    
+    am skip reason: subject contains skip directive
+    
+    Change-Id: Ib8b27aa6ad4e4f0ed4bdebf3bb7b7cac654fad25
+
+commit d7c84416765d4883fa2d8bba595c058db042325f
+Merge: 0a9471546 3c1db273b
+Author: Hyunyoung Song <hyunyoungs@google.com>
+Date:   Tue Mar 10 19:15:37 2020 +0000
+
+    Merge "DeviceFlag change is not detected when phenotype updates." into ub-launcher3-master
+
+commit 5e72945a852ba56976835874a7c012726d2e00d6
+Merge: a066cb443 a159b77ef
+Author: TreeHugger Robot <treehugger-gerrit@google.com>
+Date:   Tue Mar 10 17:45:51 2020 +0000
+
+    Merge "Import translations. DO NOT MERGE" into ub-launcher3-rvc-dev
+
+commit 86ace54523dc354fadd65987e5ace43f89586e34
+Merge: 44e729895 b3b8aefe5
+Author: TreeHugger Robot <treehugger-gerrit@google.com>
+Date:   Tue Mar 10 17:42:54 2020 +0000
+
+    Merge "Dismisses system overlays for Home intent." into ub-launcher3-qt-future-dev
+
+commit a159b77ef149652daf56e4f413fd4dbc264b032b
+Author: Bill Yi <byi@google.com>
+Date:   Tue Mar 10 09:56:26 2020 -0700
+
+    Import translations. DO NOT MERGE
+    
+    Auto-generated-cl: translation import
+    Change-Id: I4d6b82f9e793cf2649102e913c81c27f6ccc004a
+
+commit 0a947154691988747aae405018c8ddb36be27a05
+Merge: f2508e783 44e729895
+Author: Automerger Merge Worker <android-build-automerger-merge-worker@system.gserviceaccount.com>
+Date:   Tue Mar 10 16:21:57 2020 +0000
+
+    [automerger skipped] Merge "Import translations. DO NOT MERGE" into ub-launcher3-qt-future-dev am: 44e7298953 -s ours
+    am skip reason: subject contains skip directive
+    
+    Change-Id: I1b060550e9d0f839c96b1582712321ef530e353f
+
+commit 44e729895391cd49acc938004c6044fc652ea9db
+Merge: defd3c0e6 83730697f
+Author: TreeHugger Robot <treehugger-gerrit@google.com>
+Date:   Tue Mar 10 16:18:29 2020 +0000
+
+    Merge "Import translations. DO NOT MERGE" into ub-launcher3-qt-future-dev
+
+commit f2508e783f624f423bb892a0060d84cbfc36052f
+Merge: e635a2689 defd3c0e6
+Author: Automerger Merge Worker <android-build-automerger-merge-worker@system.gserviceaccount.com>
+Date:   Tue Mar 10 16:16:51 2020 +0000
+
+    [automerger skipped] Import translations. DO NOT MERGE am: 9a32222ce7 -s ours am: defd3c0e6f -s ours
+    am skip reason: subject contains skip directive
+    
+    Change-Id: I5eb69f5179f420f1ab678a025ab7bf28f93f595a
+
+commit defd3c0e6fc964cbbb5801cf045bd6de9689a0c7
+Merge: 94c993a63 9a32222ce
+Author: Automerger Merge Worker <android-build-automerger-merge-worker@system.gserviceaccount.com>
+Date:   Tue Mar 10 16:04:16 2020 +0000
+
+    [automerger skipped] Import translations. DO NOT MERGE am: 9a32222ce7 -s ours
+    am skip reason: subject contains skip directive
+    
+    Change-Id: I4fe5c187cc89f91199f3265f43d323556a992841
+
+commit e635a2689d0b75065a7a8d5fae031382137303a6
+Merge: dbcc63ede a066cb443
+Author: Automerger Merge Worker <android-build-automerger-merge-worker@system.gserviceaccount.com>
+Date:   Tue Mar 10 16:04:12 2020 +0000
+
+    [automerger skipped] Import translations. DO NOT MERGE am: a066cb4430 -s ours
+    am skip reason: subject contains skip directive
+    
+    Change-Id: I2cd255fd2f265718df096d05f3c8a67c78662c58
+
+commit dbcc63edebe373d5f698e7d404eff83898a5b8b2
+Author: Sunny Goyal <sunnygoyal@google.com>
+Date:   Fri Mar 6 15:35:55 2020 -0800
+
+    Removing some autoboxing during property animation
+    
+    Change-Id: Ibd6f20c565a4d66dc6d606b3f0bbc96fec66fe56
+
+commit add170098c5696948edbd7d7e3f220c801cfc9eb
+Merge: d01ee6d6a 4c9ee6354
+Author: Sunny Goyal <sunnygoyal@google.com>
+Date:   Tue Mar 10 08:43:41 2020 +0000
+
+    Merge "Converting some anonymous classes to lambda calls" into ub-launcher3-master
+
+commit b3b8aefe5751bf55ef32f61148f2a9b6c811db9e
 Author: Andy Wickham <awickham@google.com>
-Date:   Mon Feb 24 18:49:12 2020 +0000
+Date:   Tue Mar 10 01:36:02 2020 +0000
 
-    Merge "Makes all ArrowPopups AccessibilityTargets." into ub-launcher3-master
-
-commit d2c56525bb18c5e971aced5f60857c2f70d502d6
-Merge: 7fa947cb3 a173193af
-Author: Sunny Goyal <sunnygoyal@google.com>
-Date:   Mon Feb 24 18:30:13 2020 +0000
-
-    Merge "Using LeastSquaresVelocityTrackerStrategy for calculating velocity when detecting motion pause events. This is the same logic used by the platform implementation VelocityTracker" into ub-launcher3-master
-
-commit 7fa947cb316945f40cab5cf7b5ed20e8b82dc219
-Merge: bc5056391 5a93eb3ba
-Author: TreeHugger Robot <treehugger-gerrit@google.com>
-Date:   Mon Feb 24 18:24:22 2020 +0000
-
-    Merge "Fix NPE on app launch log" into ub-launcher3-master
-
-commit 5a93eb3bafbe38bccd34c59c4843c318135f7975
-Author: Samuel Fufa <sfufa@google.com>
-Date:   Fri Feb 21 18:51:36 2020 -0800
-
-    Fix NPE on app launch log
+    Dismisses system overlays for Home intent.
     
-    Bug: 149969889
-    Change-Id: I60fd283ac082fab1ebf6ea90568e054525c414cc
+    Test: Used Facebook chatheads (not system bubble).
+    Before the change, Home gesture didn't work. After
+    the change, it does work :)
+    Bug: 146593239
+    
+    Merged-In: Ib9c85de2f83f99d1ef53fb17fde5d0b3c514849a
+    Change-Id: I19d91aaed19ccaec68478e364ce6b80049d49a98
 
-commit bc50563915e92d3eec594c45af365f327d277996
-Merge: 218f5276a a241df66d
-Author: Sreyas Rangaraju <sreyasr@google.com>
-Date:   Sat Feb 22 01:11:47 2020 +0000
+commit a066cb4430989496e80770bbac04c68b2d515f2b
+Author: Bill Yi <byi@google.com>
+Date:   Mon Mar 9 19:41:30 2020 -0700
 
-    Merge "OverviewActions: Creating parent view to house RecentsView and Overview Actions." into ub-launcher3-master
+    Import translations. DO NOT MERGE
+    
+    Auto-generated-cl: translation import
+    Change-Id: I91780ce30d4eb9825d415e2825b9a94e2a4fade8
 
-commit 218f5276a3b8e7ac3a5d3dc95c30087149e52e5b
-Merge: 3310b76a2 15d79a9b8
+commit 83730697f8416f8124bb0a6593aba5334f38546e
+Author: Bill Yi <byi@google.com>
+Date:   Mon Mar 9 19:37:07 2020 -0700
+
+    Import translations. DO NOT MERGE
+    
+    Auto-generated-cl: translation import
+    Change-Id: I833e37768c8b22a17cd5e36ac7b01ac024f3bbfc
+
+commit 9a32222ce76b37911e42fdfa500d3e47623d459d
+Author: Bill Yi <byi@google.com>
+Date:   Mon Mar 9 19:32:09 2020 -0700
+
+    Import translations. DO NOT MERGE
+    
+    Auto-generated-cl: translation import
+    Change-Id: I4cb33e7020ee7cb582982fecba72dfd7f2c70469
+
+commit d01ee6d6a84ca0fcc2dbc4757cdc90e36da02692
+Merge: 7dfe1360e 94c993a63
+Author: Automerger Merge Worker <android-build-automerger-merge-worker@system.gserviceaccount.com>
+Date:   Tue Mar 10 01:05:38 2020 +0000
+
+    [automerger skipped] Merge "[DO NOT MERGE] Fix some visual jumps when swiping home" into ub-launcher3-qt-future-dev am: 94c993a635 -s ours
+    am skip reason: subject contains skip directive
+    
+    Change-Id: I2b30725cd240cdc7ebfcb50eb2180aaf81ab4267
+
+commit 94c993a635f00796b00c45b47b29496fe891839c
+Merge: e1664fcf1 8caa78790
+Author: Jonathan Miranda <jonmiranda@google.com>
+Date:   Tue Mar 10 00:49:17 2020 +0000
+
+    Merge "[DO NOT MERGE] Fix some visual jumps when swiping home" into ub-launcher3-qt-future-dev
+
+commit 7dfe1360edbe9ea64c0b8c591ffc525ba9a5a581
+Merge: 590914cc5 79a352169
 Author: TreeHugger Robot <treehugger-gerrit@google.com>
-Date:   Sat Feb 22 00:55:55 2020 +0000
+Date:   Tue Mar 10 00:46:11 2020 +0000
 
-    Merge "Fixes incorrect FromFolderLabelState in clearcut log when updating folder label." into ub-launcher3-master
+    Merge "Show drag handle indictor in 2 zone model" into ub-launcher3-master
 
-commit 3310b76a27ef0f7bdb332e82faea498e868c5f9a
-Merge: 6b029c30b a754374c3
+commit 79a352169f0197f5d0ea2be32cd8cf2f7dbef1ad
 Author: Tony Wickham <twickham@google.com>
-Date:   Sat Feb 22 00:34:09 2020 +0000
+Date:   Mon Mar 9 16:31:21 2020 -0700
 
-    Merge "Remove mSourceWindowClipInsetsForLiveTile" into ub-launcher3-master
-
-commit 15d79a9b85cb58319e51ffa364ab38e804da307f
-Author: thiruram <thiruram@google.com>
-Date:   Fri Feb 21 14:31:02 2020 -0800
-
-    Fixes incorrect FromFolderLabelState in clearcut log when updating folder label.
+    Show drag handle indictor in 2 zone model
     
-    Bug description: When folder label is updated from a suggested label to a custom label,
-    EditFolderLabelEvent log expected to have FromFolderLabelState = FROM_SUGGESTED.
-    Currently FromFolderLabelState is logged as FROM_CUSTOM in such scenarios.
+    Note this is just the tiny arrow we show in accessibility mode, will
+    probably need to get some updated visual treatment going forward.
     
-    Root cause: Folder label state is decided based on whether IME has entered into compose mode while editing.
-    This works fine for initial folder creation and also updated to non-empty label(to both custom or suggested).
-    But when folder is edited from suggested to empty label, its internal state changes from SUGGESTED to CUSTOM as expected.
-    Later when empty label is updated to suggested again, its internal state remains custom forever.
-    
-    Fix: Instead of setting folder's internal state based on IME's compose mode, comparing actual folder label with suggestions
-    and set it to SUGGESTED if any suggestion matches else CUSTOM.
-    
-    Change-Id: Ieea572ee93fd5567e3128c9bbcea3b670f0f01d9
+    Bug: 143361609
+    Change-Id: I65975727f101984429aadc35a650826e36d9c9aa
 
-commit a241df66df203e1fcb5133cb93f0968591003b25
-Author: Sreyas <sreyasr@google.com>
-Date:   Wed Feb 5 16:58:34 2020 -0800
-
-    OverviewActions: Creating parent view to house RecentsView and Overview Actions.
-    
-    Creating RecentsViewHolder to be contain LauncherRecentsView in OverviewPanel so Overview Actions View can be created only once.
-    
-    Change-Id: I111f88903d2ff80275cc2e07b761577260073c17
-
-commit be13d109b7d422e89a994554d2c4be30a86338b2
-Author: Tracy Zhou <tracyzhou@google.com>
-Date:   Sun Jan 12 01:07:59 2020 -0800
-
-    Render user's actual workspace in ThemePicker preview (Part 3)
-    
-    go/grid-migration-preview
-    
-    With this change, we can see actual grid migration in wallpaper preview.
-    
-    The approach here: we use a tmp table (favorites_preview) here specifically for this preview (to write off the migration results), and load from this tmp table workspace items if migration is necessary and successful. Otherwise, we load from the current workspace.
-    
-    UPDATED: this change should be completely compatible with the new multi-db grid migration algorithm. Here is why
-    1. In LauncherPreviewRender#renderScreenShot, I added a check to decide which grid migration preview method we should call. Once v2 preview method is implemented, it should be integrated with other parts of this change perfectly (the reason will be mentioned below).
-    2. While we have multiple DBs, mOpenHelper in LauncherProvider always points to the current db we are using. Queries using CONTENT_URI is routed to whatever DB mOpenHelper points to, so it works perfectly to directly operate on CONTENT_URI even when we use multi-db underneath the hood.
-    3. With 1 and 2 mentioned, I believe in order for this preview change to support multi-db, we only need to implement the V2 grid migration algorithm. Because most of what we are doing in this change is wrapped in GridSizeMigrationTask, it's perfectly safeguarded.
-    
-    Bug: 144052839
-    Change-Id: Ie6d6048d77326f96546c8a180a7cd8f15b47e4c4
-
-commit 5bb63c916e757ca90a3ad56ccb6a8e340bb4fcab
-Author: Peter Kalauskas <peskal@google.com>
-Date:   Fri Jan 24 18:51:13 2020 -0800
-
-    Toggle loading state based on config_lowResTaskSnapshotScale
-    
-    Change high res loading state implementation to toggle on/off based on
-    config_lowResTaskSnapshotScale!=0 instead of ro.config.low_ram=true
-    
-    Test: TaskSnapshotCacheTest
-    Test: TaskSnapshotControllerTest
-    Test: TaskSnapshotPersisterLoaderTest
-    Test: TaskSnapshotSurfaceTest
-    Bug: 148099851
-    Change-Id: I316e553a8a13fe38f1224c38f7aa717a0f628f57
-
-commit 6b029c30b1e36435f4fd6c65bbe6d9f6f6b4d0c0
-Merge: 977940502 8605be316
-Author: Hyunyoung Song <hyunyoungs@google.com>
-Date:   Fri Feb 21 23:36:29 2020 +0000
-
-    Merge "Convert LauncherPluginLib to soong" into ub-launcher3-master
-
-commit 03c8f296cd9ed6a95c4de07213c0ba0fda277023
-Author: Peter Kalauskas <peskal@google.com>
-Date:   Tue Feb 18 16:20:27 2020 -0800
-
-    Add config to enable snapshot preloading
-    
-    Enable preloading if config_enableTaskSnapshotPreloading instead of
-    assuming it should be off for all low ram devices. This allows it to be
-    configured via an overlay.
-    
-    Test: TaskSnapshotCacheTest
-    Test: TaskSnapshotControllerTest
-    Test: TaskSnapshotPersisterLoaderTest
-    Test: TaskSnapshotSurfaceTest
-    Bug: 148099851
-    Change-Id: I9e3320dcff5b710e110cc7199c41c5a004991592
-
-commit a173193afa082647db3cd44ce34403773aacad6a
-Author: Sunny Goyal <sunnygoyal@google.com>
-Date:   Thu Feb 20 12:03:39 2020 -0800
-
-    Using LeastSquaresVelocityTrackerStrategy for calculating velocity
-    when detecting motion pause events. This is the same logic used by
-    the platform implementation VelocityTracker
-    
-    Bug: 139750033
-    Change-Id: I87aabd46e58a5caa1395be3a63fd38d0ee75e355
-
-commit 8605be3162fab552a0b950a2c4016986abe62148
-Author: Hyunyoung Song <hyunyoungs@google.com>
-Date:   Fri Feb 21 14:52:25 2020 -0800
-
-    Convert LauncherPluginLib to soong
-    
-    Bug: 148896221
-    Change-Id: I0c09ba2994cf2a8e230aebc51eb52a8acadf8686
-
-commit 9779405023996bbe6bc2f9a050d66f4dbd9d5385
-Merge: 621c1a8be 4e3eaa5a7
+commit 590914cc5ec219590f56cea52d975865187e7e0e
+Merge: e9801665a 65ced1b1d
 Author: TreeHugger Robot <treehugger-gerrit@google.com>
-Date:   Fri Feb 21 20:36:35 2020 +0000
+Date:   Mon Mar 9 22:00:20 2020 +0000
 
-    Merge "[Overview Actions] Add ControlType for overview action buttons." into ub-launcher3-master
+    Merge "Dismisses system overlays for Home intent." into ub-launcher3-master
 
-commit 621c1a8be7a0ee1ffff4af7a3f1e8c0e5a3c10ee
-Merge: b47a08ad1 6d3e5465e
+commit e9801665ac81ac0d4059991377a3a782f92dfe66
+Merge: b365cc438 e1664fcf1
+Author: Automerger Merge Worker <android-build-automerger-merge-worker@system.gserviceaccount.com>
+Date:   Mon Mar 9 21:42:07 2020 +0000
+
+    [automerger skipped] [DO NOT MERGE] Initiailize APP_SEARCH_IMRPOVEMENT flag outside DEBUG builds. am: e1664fcf14 -s ours
+    am skip reason: subject contains skip directive
+    
+    Change-Id: I06a7e3ef6f5a0d6ed852b0b32238426ca3ba3809
+
+commit 3c1db273bec12d4bb0573e20bc0f6ecc5b7e18b7
 Author: Hyunyoung Song <hyunyoungs@google.com>
-Date:   Fri Feb 21 20:08:20 2020 +0000
+Date:   Sat Mar 7 23:52:17 2020 -0800
 
-    Merge "Update the suggestFolderName when items are added and deleted from folders" into ub-launcher3-master
-
-commit b47a08ad1eb7ce8b7b6ef7eb00b02f45ba6f88d6
-Merge: fb5d542f5 888b516a2
-Author: TreeHugger Robot <treehugger-gerrit@google.com>
-Date:   Fri Feb 21 20:05:38 2020 +0000
-
-    Merge "Fixes NPE when creating folder with null suggestedFolderNames." into ub-launcher3-master
-
-commit 888b516a22ebb0a33be0656ede18606c037e9db3
-Author: thiruram <thiruram@google.com>
-Date:   Fri Feb 21 10:42:23 2020 -0800
-
-    Fixes NPE when creating folder with null suggestedFolderNames.
+    DeviceFlag change is not detected when phenotype updates.
     
-    Bug: 149993849
+    Bug: 151025334
+    Test: adb shell device_config put launcher FOLDER_NAME_SUGGEST false
     
-    Change-Id: Ia2758b76aef1812dab225c8a95e7141fcdeefab4
+    Change-Id: I5e478aebfea5847cf7cbe7c0cb6cb0c6f81481cb
 
-commit 6d3e5465e23ef48bdd7a572c985ada779cbb9f42
-Author: Hyunyoung Song <hyunyoungs@google.com>
-Date:   Wed Feb 19 23:32:04 2020 -0800
-
-    Update the suggestFolderName when items are added and deleted from folders
-    
-    Bug: 149935239
-    Bug: 149967272
-    Bug: 148900990
-    
-    Change-Id: I0ed27236ad22579a1f3dcfd35a32252c5b1f6691
-
-commit fb5d542f51cb2a4532bb006bd36cf5f71a9e68f3
-Merge: 1562d104b 46b4f5816
-Author: TreeHugger Robot <treehugger-gerrit@google.com>
-Date:   Fri Feb 21 17:33:27 2020 +0000
-
-    Merge "Increase FileLog days" into ub-launcher3-master
-
-commit 46b4f581610d322287473e8070a10f649c6985d6
-Author: Samuel Fufa <sfufa@google.com>
-Date:   Wed Feb 19 15:56:12 2020 -0800
-
-    Increase FileLog days
-    
-    Bug: 142753423
-    Change-Id: I43ccfe540cb0899a4a4ab6722b6670e830457f60
-
-commit 1562d104b86fa4f231dbe823d96c61d27fb65057
-Merge: f1030cf56 2f41808e9
-Author: Vadim Tryshev <vadimt@google.com>
-Date:   Fri Feb 21 00:27:46 2020 +0000
-
-    Merge "Updating logcat reading logic" into ub-launcher3-master
-
-commit f1030cf5642d8d21b1d1c47d3b3518fa7a388b64
-Merge: aeaad97eb d1d342b1c
+commit b365cc43878e0cb4e6d4b998c10cd590adc4cb8d
 Author: Tony Wickham <twickham@google.com>
-Date:   Thu Feb 20 22:53:10 2020 +0000
+Date:   Mon Mar 9 13:20:04 2020 -0700
 
-    Merge changes Ie48f4b66,Ia48f4453 into ub-launcher3-master
+    Fix crash when dumping before user unlocks
     
-    * changes:
-      Always update clip rect before applying surface params
-      Clean up AppWindowAnimationHelper and TransformParams
+    Bug: 150864182
+    Bug: 151050221
+    Change-Id: I29ba2ef66b4359a47f866d02306498537c45236e
 
-commit a754374c30195ecac5f54b3243f5a23e8dfaa8d2
-Author: Tony Wickham <twickham@google.com>
-Date:   Wed Feb 19 13:30:34 2020 -0800
+commit e1664fcf1486d337ea998ded70d092590a0bfbd9
+Author: Alex Mang <alexmang@google.com>
+Date:   Mon Mar 9 12:57:11 2020 -0700
 
-    Remove mSourceWindowClipInsetsForLiveTile
+    [DO NOT MERGE] Initiailize APP_SEARCH_IMRPOVEMENT flag outside DEBUG builds.
     
-    It seems that the only time it is used, it is the same as
-    mSourceWindowClipInsets anyway.
+    This is addressing a bug where flags are only changed on debug build
+    devices or initially when changes. When nexuslauncher restarts the flag
+    is no longer retrieved.
     
-    Bug: 149870691
-    Change-Id: I3b1a5a47a0d49cdd6eb8a3271ca24da6c17109cb
+    Change-Id: Ieb6f460a271c918ee4e493b34692244f39cb3740
 
-commit d1d342b1c72c1dd500208098d82be18f4b23cf62
-Author: Tony Wickham <twickham@google.com>
-Date:   Wed Feb 19 16:04:25 2020 -0800
+commit 8caa787906b49427afed77e7bd63b72d9bbbe8a7
+Author: Jon Miranda <jonmiranda@google.com>
+Date:   Mon Mar 9 12:50:38 2020 -0700
 
-    Always update clip rect before applying surface params
+    [DO NOT MERGE] Fix some visual jumps when swiping home
     
-    Previously, we were only updating the clip rect when params.currentRect
-    == null, meaning the clip would be stale once the caller started
-    providing its own rect (e.g. when swiping to home).
-    
-    Also fix some visual jumps when swiping home, all caused by running the
-    transform progress from 0 to 1 instead of starting at whatever the
-    progress was before ending the gesture, e.g.:
+    All caused by running the transform progress from 0 to 1 instead of
+    starting at whatever the progress was before ending the gesture, e.g.:
     - When swiping to home without animating into an icon, the corner radius
       was set back to the window corner radius.
     - Before this change, the clip didn't update throughout the animation,
@@ -695,271 +558,220 @@ Date:   Wed Feb 19 16:04:25 2020 -0800
       this change, the clip jumped to show the insets again before clipping
       back down during the home animation.
     
-    Bug: 149870691
-    Change-Id: Ie48f4b665a5bf3cbef76bdf7f043febe99fb84a0
-
-commit badab61ace41602c78dd59732a1b954c7c0cf4aa
-Author: Tony Wickham <twickham@google.com>
-Date:   Wed Feb 19 12:59:37 2020 -0800
-
-    Clean up AppWindowAnimationHelper and TransformParams
+    Partial backport of ag/Ie48f4b665a5bf3cbef76bdf7f043febe99fb84a0
     
-    AppWindowAnimationHelper and TransformParams were being very tightly
-    intertwined, to the point that you really had to understand subtle
-    nuances of both in order to get a desired behavior. This makes making
-    changes really difficult, because there are lots of "traps" to know
-    about and navigate. To help alleviate this burden, cleaned up some of
-    these traps and give AWAH and TP distinct roles:
-    - A caller who needs to animate an app window needs both AWAH and TP.
-      TP defines specific parameters of how the app window should be
-      controlled, and AWAH simply reads from TP in order to provide the
-      desired behavior.
-    - Only the caller should write to TP; AWAH should no longer change
-      anything in a TP that is passed to it. For instance, instead of
-      repurposing TP.currentRect, AWAH now has its own mCurrentRect to
-      update based on passed parameters.
-    - TP is a very basic class that just holds various values that callers
-      can set one at a time. The order should not matter (setting one value
-      will never set another one), and defaults make sense.
-    - Commented the setter methods in TP so developers shouldn't have to
-      follow the code to see how they are used.
-    
-    Bug: 149870691
-    Change-Id: Ia48f4453c29549271a3fc6538128a1a77439e015
+    Bug: 150680980
+    Change-Id: Ida65097f0ef7d2e11d48b84ecdd353ef89078015
 
-commit 2f41808e9b7e361341c70c6978301f90bbacfc03
-Author: vadimt <vadimt@google.com>
-Date:   Wed Feb 19 14:19:17 2020 -0800
-
-    Updating logcat reading logic
-    
-    Start a thread to read logcat synchronusly instead
-    of back-tracking at the end of the test
-    
-    Also:
-    * Reusing the same logcat process for all checks. This eliminates
-    reading the log from its start for every gesture. We don’t kill that
-    process at the end, and don’t stop the thread. I’ve verified that
-    “am instrument” doesn’t hang, and the logcat process gets automatically
-    killed after the test process exits.
-    * Not using mStarted latch, as there is no need to wait until the reader
-    reaches the start mark.
-    
-    Bug: 149422395
-    Change-Id: Ide4ed19ad8d099c41918f38c2b073b8b2e143b69
-
-commit 27d3c595cfd3c462b93364c357253c2f4b686f37
+commit bf48cd480cd131c370760117681917dedd784c51
 Author: Andy Wickham <awickham@google.com>
-Date:   Thu Feb 20 20:32:07 2020 +0000
+Date:   Tue Mar 3 01:15:27 2020 +0000
 
-    Makes all ArrowPopups AccessibilityTargets.
+    Removes iconloaderlib from Launcher3.
     
-    This currently includes the menu that pops up when
-    long pressing an app icon in Launcher or Search, or
-    long pressing Smartspace. Previously, only the menu
-    for Launcher apps grabbed accessibility focus after
-    the open animation completed, and now all three do.
+    (It's now in frameworks/libs/systemui)
     
-    Fixes: 145253300
-    Change-Id: I147b45d38a04ab9a55eee9b5bd5551b4c7185fcf
+    Bug: 138964382
+    Test: builds
+    Change-Id: Ic60adfb2ebdcf1a72b440df26023b861fd6e62d5
 
-commit aeaad97eb7ac5610491c35d2bc7bd15758d22966
-Author: Samuel Fufa <sfufa@google.com>
-Date:   Thu Feb 20 11:21:26 2020 -0800
-
-    Increase timeout for WorkTabTest.toggleWorks test
-    
-    Bug: 149927292
-    Change-Id: I6dcd0bfa2fe584be9e46f653992f9c748e795614
-
-commit d446f984576fa7fbd5ed0555bdcb6a42440f12a4
-Merge: 7be160170 f3b7246bf
-Author: Winson Chung <winsonc@google.com>
-Date:   Thu Feb 20 06:37:46 2020 +0000
-
-    Merge "Adding new tracing call from SysUI" into ub-launcher3-master
-
-commit 7be160170d1f1e81f0eea4305a8d01031a8633be
-Merge: 91f97cb2d 10a285dc2
-Author: Tracy Zhou <tracyzhou@google.com>
-Date:   Thu Feb 20 05:53:45 2020 +0000
-
-    Merge "Render user's actual workspace in ThemePicker preview (Part 5)" into ub-launcher3-master
-
-commit f3b7246bf273b69a1a7390b4fbb7794ed57168ee
-Author: Winson Chung <winsonc@google.com>
-Date:   Wed Nov 20 12:27:06 2019 -0800
-
-    Adding new tracing call from SysUI
-    
-    Bug: 144854916
-    Test: This change is only to ensure the changes build
-    Change-Id: I62b247b45454861328b6062ed571c854a374aa34
-
-commit 91f97cb2d1e5be3a17b040e34732b10df14c975f
-Merge: 6e82910a4 d1c077972
+commit a9bcd82554534d55e38ca039eb52c1dfacbdb70a
+Merge: e6df7da2a cfaa4889e
 Author: TreeHugger Robot <treehugger-gerrit@google.com>
-Date:   Thu Feb 20 01:49:30 2020 +0000
+Date:   Sat Mar 7 08:38:49 2020 +0000
 
-    Merge "Increase timeout for flaky work test" into ub-launcher3-master
+    Merge "Enabling springs for start dismiss animation" into ub-launcher3-master
 
-commit 4e3eaa5a71d127f30927e07cc42ddfa7afcb4887
-Author: Becky Qiu <xuqiu@google.com>
-Date:   Wed Feb 19 17:37:22 2020 -0800
-
-    [Overview Actions] Add ControlType for overview action buttons.
-    
-    Design: go/logging_for_overview_actions
-    
-    Test:local, logging result: https://paste.googleplex.com/6489148393259008
-    
-    Bug:139828243
-    
-    Change-Id: I61fa66f8ec6edae43f6242599f8d4ea8e28d735d
-
-commit 6e82910a45539afab26f60d60261c1b56c3885d7
-Merge: 9fb7d28b6 619daaf82
+commit e6df7da2a252c5d57114346d6bf6d6883b4a9f9a
+Merge: df8232c22 16eca5500
 Author: TreeHugger Robot <treehugger-gerrit@google.com>
-Date:   Thu Feb 20 01:16:42 2020 +0000
+Date:   Sat Mar 7 07:19:13 2020 +0000
 
-    Merge "Give current TaskView accessibility focus" into ub-launcher3-master
+    Merge "Enabling event verification for Launcher3" into ub-launcher3-master
 
-commit d1c07797269afc77608809b72088f89fad71acf9
-Author: Samuel Fufa <sfufa@google.com>
-Date:   Wed Feb 19 17:07:00 2020 -0800
-
-    Increase timeout for flaky work test
-    
-    Bug:149867607
-    Change-Id: Ic746a4857a47fc29372d19419ddfa6eaebd06f87
-
-commit 10a285dc24b75cb7469f284c945ea348ea305139
-Author: Tracy Zhou <tracyzhou@google.com>
-Date:   Tue Feb 18 11:52:53 2020 -0800
-
-    Render user's actual workspace in ThemePicker preview (Part 5)
-    
-    This change takes care of rendering widgets using widget provider's layout info.
-    
-    Test: manual
-    Bug: 144052839
-    
-    Change-Id: I7002d8bf653513cdd317736d550a47f61f0ee474
-
-commit 9fb7d28b638d70be07337ce2c73038bdcfaf8b5d
-Author: Andy Wickham <awickham@google.com>
-Date:   Thu Feb 20 00:07:06 2020 +0000
-
-    Removes exported="true" for RecentsActivity.
-    
-    Change-Id: Iea9ad04886c3221cefa709c14b6501b2af83af06
-
-commit 2eac20e3789bbd3d47d07a291d85fec9a7c53772
-Merge: b3c991f7d 63b7f3633
-Author: Andy Wickham <awickham@google.com>
-Date:   Wed Feb 19 23:51:20 2020 +0000
-
-    Merge "Renames BackGestureTutorialActivity to GestureSandboxActivity." into ub-launcher3-master
-
-commit b3c991f7d344966a1892efd1a4077ad9b6d91161
-Merge: 1e33123a0 9ac4b580a
-Author: TreeHugger Robot <treehugger-gerrit@google.com>
-Date:   Wed Feb 19 21:45:38 2020 +0000
-
-    Merge "null check in showLableSuggestion()." into ub-launcher3-master
-
-commit 63b7f36338c5ccce05b97d8fa16e740142360d4a
-Author: Andy Wickham <awickham@google.com>
-Date:   Tue Feb 18 23:19:42 2020 +0000
-
-    Renames BackGestureTutorialActivity to GestureSandboxActivity.
-    
-    Bug: 148542211
-    Change-Id: Iaac537380b02f1c52f967748c30fe49ac36bb91e
-
-commit 1e33123a0ba651ccd9f020d333e6787948344bd5
-Merge: 6eebaab5d 3b0c1f3ac
-Author: Andy Wickham <awickham@google.com>
-Date:   Wed Feb 19 21:11:20 2020 +0000
-
-    Merge "Allows multiple gesture blocking activities to be specified." into ub-launcher3-master
-
-commit 9ac4b580a1a5caabab15cb5b1eafa584da5f9504
-Author: jayaprakashs <jayaprakashs@google.com>
-Date:   Wed Feb 19 12:38:05 2020 -0800
-
-    null check in showLableSuggestion().
-    
-    It throws NPE when the data is missing for all the packages and all the suggestions are null.
-    
-    Change-Id: I4aa36969e1aee00bcfc577a839d6da01d4e67a75
-
-commit 6eebaab5d6ba9094715652f4b1107e43e5cb6035
-Merge: aeb185e74 c3bd4d0e7
-Author: TreeHugger Robot <treehugger-gerrit@google.com>
-Date:   Wed Feb 19 20:10:59 2020 +0000
-
-    Merge "Updating Pause detection to use motion events directly" into ub-launcher3-master
-
-commit aeb185e744f8d1edac11dad6bd254bd0b741d9fb
-Merge: b8d1e3526 ccebfbe27
-Author: Samuel Fufa <sfufa@google.com>
-Date:   Wed Feb 19 19:53:38 2020 +0000
-
-    Merge "Clean up work profile" into ub-launcher3-master
-
-commit ccebfbe2733e6570d3af0622262a1eb2e5633478
-Author: Samuel Fufa <sfufa@google.com>
-Date:   Mon Feb 10 09:26:20 2020 -0800
-
-    Clean up work profile
-    
-    This includes
-    - Dismiss work edu on launcher state change
-    - Remove work tab flash on first setup
-    - Make edu bottom sheet adopt theme color
-    - Fix Work toggle bottom inset
-    
-    
-    Bug: 149200572
-    Bug: 149197172
-    Bug: 149199058
-    Bug: 149215103
-    Bug: 149198955
-    Bug: 145595763
-    Bug:149481723
-    
-    Test: Manual
-    Change-Id: I39a30782b80fd3a66bede55754fa30a940d2caee
-
-commit c3bd4d0e75e150a44169551eba27db48bc66a462
+commit cfaa4889e65190b40ea988dd03421a01c9e06abc
 Author: Sunny Goyal <sunnygoyal@google.com>
-Date:   Tue Feb 18 17:32:57 2020 -0800
+Date:   Tue Feb 25 14:37:01 2020 -0800
 
-    Updating Pause detection to use motion events directly
+    Enabling springs for start dismiss animation
     
-    Bug: 139750033
-    Change-Id: Ib261b203fec941f3c5303eafc1d435efdf3dbcaf
+    > Adding flag support for PendingAnimation which can be used
+      to define custom behavior for various animations
+    > Using SpringAnimationBuild for spring animation instead of
+      SpringObjectanimator
+    
+    Change-Id: I41ca34b0574981bb3fc7894639a321c12e6feac1
 
-commit 3b0c1f3acaea80c332da2b49b35a58f1d5a1f53c
+commit df8232c2242eeb2d8efc050a5e7afb88782ed9ca
+Merge: cfea0fb34 f538393e4
+Author: Automerger Merge Worker <android-build-automerger-merge-worker@system.gserviceaccount.com>
+Date:   Sat Mar 7 06:50:59 2020 +0000
+
+    [automerger skipped] [DO NOT MERGE] Turn off FOLDER_NAME_SUGGEST feature flag am: f538393e42 -s ours
+    am skip reason: subject contains skip directive
+    
+    Change-Id: I1bbffc4f9582d106ce28ac07e6c6719c9f8f063d
+
+commit f538393e42896e5488ca10fccc4cf9409d7295e2
+Author: Hyunyoung Song <hyunyoungs@google.com>
+Date:   Fri Mar 6 12:53:42 2020 -0800
+
+    [DO NOT MERGE] Turn off FOLDER_NAME_SUGGEST feature flag
+    Bug: 150788630
+    
+    Change-Id: I740d6b6f3ee1a33a95debfafa29b3caea24a03c3
+
+commit 65ced1b1d00bc6a6713b442162020df31d497f54
 Author: Andy Wickham <awickham@google.com>
-Date:   Fri Feb 14 00:31:54 2020 +0000
+Date:   Sat Mar 7 02:14:19 2020 +0000
 
-    Allows multiple gesture blocking activities to be specified.
+    Dismisses system overlays for Home intent.
     
-    Bug: 148542211
-    Change-Id: Ie299359eb2df60f5f08d156dc6882fa133fab27c
+    Test: Used Facebook chatheads (not system bubble).
+    Before the change, Home gesture didn't work. After
+    the change, it does work :)
+    Fixes: 146593239
+    
+    Change-Id: Ib9c85de2f83f99d1ef53fb17fde5d0b3c514849a
 
-commit 619daaf82a65cbd1190a676b8582f1a7eb1cb774
-Author: Tony Wickham <twickham@google.com>
-Date:   Fri Feb 7 12:29:06 2020 -0800
+commit cfea0fb348910bb245a03df0e178f0be59905dc7
+Merge: 312340504 e7dd35ef0
+Author: TreeHugger Robot <treehugger-gerrit@google.com>
+Date:   Sat Mar 7 00:20:56 2020 +0000
 
-    Give current TaskView accessibility focus
+    Merge "OverviewActions: Renaming overview_actions_container and setActionsView" into ub-launcher3-master
+
+commit 31234050473d511a61ce4dc257c15281c1c886b4
+Merge: f655f5cd1 27409e23d
+Author: Sunny Goyal <sunnygoyal@google.com>
+Date:   Fri Mar 6 23:44:57 2020 +0000
+
+    Merge "Removing SecondaryDisplayLauncher library as it is directly included in Launcher" into ub-launcher3-master
+
+commit f655f5cd16a9579afc11088e5545148261225b9f
+Merge: a579ddc9c 8687bc213
+Author: Winson Chung <winsonc@google.com>
+Date:   Fri Mar 6 23:33:26 2020 +0000
+
+    Merge "Initial changes to support blur" into ub-launcher3-master
+
+commit 4c9ee63540dcd2c039831edb0816a56458e30f8f
+Author: Sunny Goyal <sunnygoyal@google.com>
+Date:   Fri Mar 6 15:16:22 2020 -0800
+
+    Converting some anonymous classes to lambda calls
     
-    Send TYPE_VIEW_FOCUSED in the following places:
-    - When page transition ends on a task
-    - When finishing state transition to overview
-    - When un-hiding the current running task view
+    Change-Id: I386046a4a515d84801a8bbd11cfa090ba7adfd71
+
+commit 8687bc2131ce98ea0d058290dd21f03b5a429c82
+Author: Winson Chung <winsonc@google.com>
+Date:   Thu Feb 27 23:34:24 2020 -0800
+
+    Initial changes to support blur
     
-    Bug: 145647019
-    Change-Id: I7bb357ea60e1dea79daf2ad50efa51071e064da8
+    - Add a new controller to update the background blur on either the
+      launcher or app surfaces based on state or transition
+    
+    Bug: 149792636
+    
+    Change-Id: I6103cd3d53a00c8025558dd49bb73137e2980014
+
+commit a579ddc9c813f314ab3dfd4e80a9c0cf1c77ec61
+Author: Samuel Fufa <sfufa@google.com>
+Date:   Thu Feb 27 16:59:19 2020 -0800
+
+    Refactor logging to capture Target hierarchy
+    
+    Instead of creating a fixed number of targets, we now pass an ArrayList
+    of targets to. Any class implementing
+    LogContainerProviders#fillInLogContainerData can setup it's own target
+    and add it to the ArrayList, It can also pass the ArrayList to other
+    LogContainerProvider to capture full Target hierarchy.
+    
+    Bug: 147305863
+    Change-Id: I0063c692120fb9e1cff2d8902c5da972d0623418
+
+commit e7dd35ef0dd653764e57665756e33ce75446e520
+Author: Sreyas <sreyasr@google.com>
+Date:   Fri Mar 6 10:50:43 2020 -0800
+
+    OverviewActions: Renaming overview_actions_container and setActionsView
+    
+    Change-Id: Ie444101f246e0d00980b47ce39f6e74dade23f73
+
+commit 9099dfcfb75dff987c157a659de5883fe92b22c4
+Merge: e90adc47e 04b90c0fc
+Author: Vadim Tryshev <vadimt@google.com>
+Date:   Fri Mar 6 18:36:05 2020 +0000
+
+    Merge "Test tweaks for the memory activity recreation test" into ub-launcher3-master
+
+commit e90adc47ef114e129a14382f30d84910ef394348
+Author: Winson Chung <winsonc@google.com>
+Date:   Fri Mar 6 00:01:49 2020 -0800
+
+    Fallback to predefined orientation handler if recents view isn't available
+    
+    Change-Id: Iaed42fb9ef598d65e1cf2d166cc343f888352d47
+
+commit d9da5a45fd1653c14e6fd54b15708a696c43c037
+Merge: f67ab6c64 3abc8511a
+Author: TreeHugger Robot <treehugger-gerrit@google.com>
+Date:   Fri Mar 6 06:53:51 2020 +0000
+
+    Merge "Enabling widget config tests after fixing flakiness" into ub-launcher3-master
+
+commit 16eca5500dab2f253f52920edaed477f5e43f413
+Author: vadimt <vadimt@google.com>
+Date:   Thu Mar 5 19:02:18 2020 -0800
+
+    Enabling event verification for Launcher3
+    
+    Will help investigating otherwise mysterious failures.
+    
+    Change-Id: I805ed136baf6d86921fdb4782304fcdafbd3af5c
+
+commit f67ab6c64d0691f7ff1ede3942179172122dac1e
+Merge: 93648b0a5 bb2bf277c
+Author: TreeHugger Robot <treehugger-gerrit@google.com>
+Date:   Fri Mar 6 02:14:19 2020 +0000
+
+    Merge "Catching everything from dumpHprofData" into ub-launcher3-master
+
+commit bb2bf277c0b22ecb1dc64d9971978d3c958dda44
+Author: vadimt <vadimt@google.com>
+Date:   Thu Mar 5 17:22:18 2020 -0800
+
+    Catching everything from dumpHprofData
+    
+    Change-Id: I79ced1d4bb3e6ea43ce6fa5bd07fe22b577006f9
+
+commit 3abc8511a51afe983b481bdf6631535aa8b94f28
+Author: vadimt <vadimt@google.com>
+Date:   Thu Mar 5 14:01:23 2020 -0800
+
+    Enabling widget config tests after fixing flakiness
+    
+    Bug: 148867106
+    Change-Id: I8bbd9ef9b1ca574f79f3f76869051495b59734ce
+
+commit 27409e23d1ba7ca94031de8ff0603c53b86cfcdc
+Author: Sunny Goyal <sunnygoyal@google.com>
+Date:   Wed Feb 26 16:08:20 2020 -0800
+
+    Removing SecondaryDisplayLauncher library as it is directly included in Launcher
+    
+    Change-Id: I97a1fad07f2f6d34fc31c720fcc1e03d0f56477e
+
+commit 04b90c0fcb316c830f7dc66475ff85c6760402f5
+Author: vadimt <vadimt@google.com>
+Date:   Tue Oct 15 10:47:51 2019 -0700
+
+    Test tweaks for the memory activity recreation test
+    
+    Speeding up switching navigation mode by switching from latch
+    (which is not fired) to polling. I'll figure out later why the latch
+    doesn't work.
+    
+    Bug: 139137636
+    Change-Id: I28a9b2b9a3882919fd2a3280b9804afe1b44a46e
