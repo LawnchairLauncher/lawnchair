@@ -176,4 +176,7 @@
         <item>@dimen/swipe_up_fling_min_visible_change</item>
         <item>@dimen/swipe_up_y_overshoot</item>
     </array>
+
+    <string-array name="live_wallpapers_remove_sysui_scrims">
+    </string-array>
 </resources>
