@@ -62,7 +62,6 @@ import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.RecyclerViewFastScroller;
 import com.android.launcher3.views.SpringRelativeLayout;
-import com.android.launcher3.views.WorkFooterContainer;
 
 import java.util.ArrayList;
 
@@ -91,7 +90,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     private AllAppsPagedView mViewPager;
 
     private FloatingHeaderView mHeader;
-    private WorkFooterContainer mWorkFooterContainer;
+    private WorkModeSwitch mWorkModeSwitch;
 
 
     private SpannableStringBuilder mSearchQueryBuilder = null;
@@ -156,8 +155,8 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         return mMultiValueAlpha.getProperty(index);
     }
 
-    public WorkFooterContainer getWorkFooterContainer() {
-        return mWorkFooterContainer;
+    public WorkModeSwitch getWorkModeSwitch() {
+        return mWorkModeSwitch;
     }
 
 
@@ -195,7 +194,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     }
 
     private void resetWorkProfile() {
-        mWorkFooterContainer.refresh();
+        mWorkModeSwitch.refresh();
         mAH[AdapterHolder.WORK].setupOverlay();
         mAH[AdapterHolder.WORK].applyPadding();
     }
@@ -410,9 +409,9 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         } else {
             mAH[AdapterHolder.MAIN].setup(findViewById(R.id.apps_list_view), null);
             mAH[AdapterHolder.WORK].recyclerView = null;
-            if (mWorkFooterContainer != null) {
-                ((ViewGroup) mWorkFooterContainer.getParent()).removeView(mWorkFooterContainer);
-                mWorkFooterContainer = null;
+            if (mWorkModeSwitch != null) {
+                ((ViewGroup) mWorkModeSwitch.getParent()).removeView(mWorkModeSwitch);
+                mWorkModeSwitch = null;
             }
         }
         setupHeader();
@@ -422,14 +421,11 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     }
 
     private void setupWorkToggle() {
-        mWorkFooterContainer = (WorkFooterContainer) mLauncher.getLayoutInflater().inflate(
-                R.layout.work_tab_footer, findViewById(R.id.work_toggle_container));
-        mWorkFooterContainer.setLayoutParams(
-                new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT));
-        this.addView(mWorkFooterContainer);
-        mWorkFooterContainer.setInsets(mInsets);
-        mWorkFooterContainer.post(() -> mAH[AdapterHolder.WORK].applyPadding());
+        mWorkModeSwitch = (WorkModeSwitch) mLauncher.getLayoutInflater().inflate(
+                R.layout.work_mode_switch, this, false);
+        this.addView(mWorkModeSwitch);
+        mWorkModeSwitch.setInsets(mInsets);
+        mWorkModeSwitch.post(() -> mAH[AdapterHolder.WORK].applyPadding());
     }
 
     private void replaceRVContainer(boolean showTabs) {
@@ -469,8 +465,8 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             findViewById(R.id.tab_work)
                     .setOnClickListener((View view) -> mViewPager.snapToPage(AdapterHolder.WORK));
         }
-        if (mWorkFooterContainer != null) {
-            mWorkFooterContainer.setWorkTabVisible(pos == AdapterHolder.WORK);
+        if (mWorkModeSwitch != null) {
+            mWorkModeSwitch.setWorkTabVisible(pos == AdapterHolder.WORK);
         }
     }
 
@@ -648,6 +644,8 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             if (!mIsWork || recyclerView == null) return;
             boolean workDisabled = UserCache.INSTANCE.get(mLauncher).isAnyProfileQuietModeEnabled();
             if (mWorkDisabled == workDisabled) return;
+            recyclerView.setContentDescription(
+                    workDisabled ? mLauncher.getString(R.string.work_apps_paused_title) : null);
             if (workDisabled) {
                 appsList.updateItemFilter((info, cn) -> false);
                 recyclerView.addAutoSizedOverlay(
@@ -662,8 +660,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         void applyPadding() {
             if (recyclerView != null) {
                 int bottomOffset =
-                        mWorkFooterContainer != null && mIsWork ? mWorkFooterContainer.getHeight()
-                                : 0;
+                        mWorkModeSwitch != null && mIsWork ? mWorkModeSwitch.getHeight() : 0;
                 recyclerView.setPadding(padding.left, padding.top, padding.right,
                         padding.bottom + bottomOffset);
             }
