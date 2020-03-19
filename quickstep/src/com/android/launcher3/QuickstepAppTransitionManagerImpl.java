@@ -69,7 +69,6 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.allapps.AllAppsTransitionController;
-import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.shortcuts.DeepShortcutView;
@@ -387,18 +386,35 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
             alpha.setInterpolator(LINEAR);
             launcherAnimator.play(alpha);
 
-            mDragLayer.setTranslationY(trans[0]);
-            ObjectAnimator transY = ObjectAnimator.ofFloat(mDragLayer, View.TRANSLATION_Y, trans);
-            transY.setInterpolator(AGGRESSIVE_EASE);
-            transY.setDuration(CONTENT_TRANSLATION_DURATION);
-            launcherAnimator.play(transY);
+            Workspace workspace = mLauncher.getWorkspace();
+            View currentPage = ((CellLayout) workspace.getChildAt(workspace.getCurrentPage()))
+                    .getShortcutsAndWidgets();
+            View hotseat = mLauncher.getHotseat();
+            View qsb = mLauncher.findViewById(R.id.search_container_all_apps);
 
-            mDragLayer.getScrim().hideSysUiScrim(true);
+            currentPage.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+            hotseat.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+            qsb.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+
+            launcherAnimator.play(ObjectAnimator.ofFloat(currentPage, View.TRANSLATION_Y, trans));
+            launcherAnimator.play(ObjectAnimator.ofFloat(hotseat, View.TRANSLATION_Y, trans));
+            launcherAnimator.play(ObjectAnimator.ofFloat(qsb, View.TRANSLATION_Y, trans));
+
             // Pause page indicator animations as they lead to layer trashing.
             mLauncher.getWorkspace().getPageIndicator().pauseAnimations();
-            mDragLayer.setLayerType(View.LAYER_TYPE_HARDWARE, null);
 
-            endListener = this::resetContentView;
+            endListener = () -> {
+                currentPage.setTranslationY(0);
+                hotseat.setTranslationY(0);
+                qsb.setTranslationY(0);
+
+                currentPage.setLayerType(View.LAYER_TYPE_NONE, null);
+                hotseat.setLayerType(View.LAYER_TYPE_NONE, null);
+                qsb.setLayerType(View.LAYER_TYPE_NONE, null);
+
+                mDragLayerAlpha.setValue(1f);
+                mLauncher.getWorkspace().getPageIndicator().skipAnimationsToEnd();
+            };
         }
         return new Pair<>(launcherAnimator, endListener);
     }
@@ -760,62 +776,6 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
         return closingAnimator;
     }
 
-    /**
-     * Creates an animator that modifies Launcher as a result from 
-     * {@link #createWallpaperOpenRunner}.
-     */
-    private void createLauncherResumeAnimation(AnimatorSet anim) {
-        if (mLauncher.isInState(LauncherState.ALL_APPS)) {
-            Pair<AnimatorSet, Runnable> contentAnimator =
-                    getLauncherContentAnimator(false /* isAppOpening */,
-                            new float[] {-mContentTransY, 0});
-            contentAnimator.first.setStartDelay(LAUNCHER_RESUME_START_DELAY);
-            anim.play(contentAnimator.first);
-            anim.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    contentAnimator.second.run();
-                }
-            });
-        } else {
-            AnimatorSet workspaceAnimator = new AnimatorSet();
-
-            mDragLayer.setTranslationY(-mWorkspaceTransY);;
-            workspaceAnimator.play(ObjectAnimator.ofFloat(mDragLayer, View.TRANSLATION_Y,
-                    -mWorkspaceTransY, 0));
-
-            mDragLayerAlpha.setValue(0);
-            workspaceAnimator.play(ObjectAnimator.ofFloat(
-                    mDragLayerAlpha, MultiValueAlpha.VALUE, 0, 1f));
-
-            workspaceAnimator.setStartDelay(LAUNCHER_RESUME_START_DELAY);
-            workspaceAnimator.setDuration(333);
-            workspaceAnimator.setInterpolator(Interpolators.DEACCEL_1_7);
-
-            mDragLayer.getScrim().hideSysUiScrim(true);
-
-            // Pause page indicator animations as they lead to layer trashing.
-            mLauncher.getWorkspace().getPageIndicator().pauseAnimations();
-            mDragLayer.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-
-            workspaceAnimator.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    resetContentView();
-                }
-            });
-            anim.play(workspaceAnimator);
-        }
-    }
-
-    private void resetContentView() {
-        mLauncher.getWorkspace().getPageIndicator().skipAnimationsToEnd();
-        mDragLayerAlpha.setValue(1f);
-        mDragLayer.setLayerType(View.LAYER_TYPE_NONE, null);
-        mDragLayer.setTranslationY(0f);
-        mDragLayer.getScrim().hideSysUiScrim(false);
-    }
-
     private boolean hasControlRemoteAppTransitionPermission() {
         return mLauncher.checkSelfPermission(CONTROL_REMOTE_APP_TRANSITION_PERMISSION)
                 == PackageManager.PERMISSION_GRANTED;
@@ -888,15 +848,25 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                     // Only register the content animation for cancellation when state changes
                     mLauncher.getStateManager().setCurrentAnimation(anim);
 
-                    if (mFromUnlock) {
+                    if (mLauncher.isInState(LauncherState.ALL_APPS)) {
+                        Pair<AnimatorSet, Runnable> contentAnimator =
+                                getLauncherContentAnimator(false /* isAppOpening */,
+                                        new float[] {-mContentTransY, 0});
+                        contentAnimator.first.setStartDelay(LAUNCHER_RESUME_START_DELAY);
+                        anim.play(contentAnimator.first);
+                        anim.addListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                contentAnimator.second.run();
+                            }
+                        });
+                    } else {
                         float velocityDpPerS = DynamicResource.provider(mLauncher)
                                 .getDimension(R.dimen.unlock_staggered_velocity_dp_per_s);
                         float velocityPxPerS = TypedValue.applyDimension(COMPLEX_UNIT_DIP,
                                 velocityDpPerS, mLauncher.getResources().getDisplayMetrics());
                         anim.play(new StaggeredWorkspaceAnim(mLauncher, velocityPxPerS, false)
                                 .getAnimators());
-                    } else {
-                        createLauncherResumeAnimation(anim);
                     }
                 }
             }
