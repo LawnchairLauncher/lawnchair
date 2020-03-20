@@ -22,6 +22,7 @@ import static com.android.quickstep.SysUINavigationMode.Mode.THREE_BUTTONS;
 import static com.android.quickstep.SysUINavigationMode.Mode.TWO_BUTTONS;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_A11Y_BUTTON_CLICKABLE;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_A11Y_BUTTON_LONG_CLICKABLE;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_BUBBLES_EXPANDED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_HOME_DISABLED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NAV_BAR_HIDDEN;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED;
@@ -356,6 +357,7 @@ public class RecentsAnimationDeviceState implements
         return (mSystemUiStateFlags & SYSUI_STATE_NAV_BAR_HIDDEN) == 0
                 && (mSystemUiStateFlags & SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED) == 0
                 && (mSystemUiStateFlags & SYSUI_STATE_QUICK_SETTINGS_EXPANDED) == 0
+                && (mSystemUiStateFlags & SYSUI_STATE_BUBBLES_EXPANDED) == 0
                 && ((mSystemUiStateFlags & SYSUI_STATE_HOME_DISABLED) == 0
                         || (mSystemUiStateFlags & SYSUI_STATE_OVERVIEW_DISABLED) == 0);
     }
