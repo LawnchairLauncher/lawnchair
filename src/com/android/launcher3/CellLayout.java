@@ -2766,7 +2766,6 @@ public class CellLayout extends ViewGroup implements Transposable {
      * Finds solution to accept hotseat migration to cell layout. commits solution if commitConfig
      */
     public boolean makeSpaceForHotseatMigration(boolean commitConfig) {
-        if (FeatureFlags.HOTSEAT_MIGRATE_NEW_PAGE.get()) return false;
         int[] cellPoint = new int[2];
         int[] directionVector = new int[]{0, -1};
         cellToPoint(0, mCountY, cellPoint);
@@ -2776,10 +2775,21 @@ public class CellLayout extends ViewGroup implements Transposable {
             if (commitConfig) {
                 copySolutionToTempState(configuration, null);
                 commitTempPlacement();
+                // undo marking cells occupied since there is actually nothing being placed yet.
+                mOccupied.markCells(0, mCountY - 1, mCountX, 1, false);
             }
             return true;
         }
         return false;
+    }
+
+    /**
+     * returns a copy of cell layout's grid occupancy
+     */
+    public GridOccupancy cloneGridOccupancy() {
+        GridOccupancy occupancy = new GridOccupancy(mCountX, mCountY);
+        mOccupied.copyTo(occupancy);
+        return occupancy;
     }
 
     public boolean isRegionVacant(int x, int y, int spanX, int spanY) {
