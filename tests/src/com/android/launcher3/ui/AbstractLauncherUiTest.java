@@ -220,6 +220,7 @@ public abstract class AbstractLauncherUiTest {
 
     @Before
     public void setUp() throws Exception {
+        mDevice.executeShellCommand("setprop vendor.battery.defender.disable 1");
         mDevice.executeShellCommand("settings put global stay_on_while_plugged_in 3");
         if (hasSystemUiObject("keyguard_status_view")) {
             Log.d(TAG, "Before unlocking the phone");
