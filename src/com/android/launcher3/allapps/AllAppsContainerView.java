@@ -405,6 +405,11 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             setupWorkToggle();
             mAH[AdapterHolder.MAIN].setup(mViewPager.getChildAt(0), mPersonalMatcher);
             mAH[AdapterHolder.WORK].setup(mViewPager.getChildAt(1), mWorkMatcher);
+            mViewPager.getPageIndicator().setActiveMarker(AdapterHolder.MAIN);
+            findViewById(R.id.tab_personal)
+                    .setOnClickListener((View view) -> mViewPager.snapToPage(AdapterHolder.MAIN));
+            findViewById(R.id.tab_work)
+                    .setOnClickListener((View view) -> mViewPager.snapToPage(AdapterHolder.WORK));
             onTabChanged(mViewPager.getNextPage());
         } else {
             mAH[AdapterHolder.MAIN].setup(findViewById(R.id.apps_list_view), null);
@@ -455,16 +460,10 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
     public void onTabChanged(int pos) {
         mHeader.setMainActive(pos == 0);
-        reset(true /* animate */);
-        mViewPager.getPageIndicator().updateTabTextColor(pos);
         if (mAH[pos].recyclerView != null) {
             mAH[pos].recyclerView.bindFastScrollbar();
-
-            findViewById(R.id.tab_personal)
-                    .setOnClickListener((View view) -> mViewPager.snapToPage(AdapterHolder.MAIN));
-            findViewById(R.id.tab_work)
-                    .setOnClickListener((View view) -> mViewPager.snapToPage(AdapterHolder.WORK));
         }
+        reset(true /* animate */);
         if (mWorkModeSwitch != null) {
             mWorkModeSwitch.setWorkTabVisible(pos == AdapterHolder.WORK);
         }
