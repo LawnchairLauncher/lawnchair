@@ -23,6 +23,11 @@
 
         <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
             android:defaultValue="false"
+            android:key="pref_keepEmptyScreens"
+            android:title="@string/pref_keep_empty" />
+
+        <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+            android:defaultValue="false"
             android:key="pref_lockDesktop"
             android:title="@string/lock_desktop" />
 

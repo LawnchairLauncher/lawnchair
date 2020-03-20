@@ -104,7 +104,7 @@ public class WorkspaceOptionModeTouchHelper {
             if ((Math.abs(x) > mMinSnapDistance || mVelocity >= ((float) mMinSnapVelocity)) && !(mIsStillPossibleClick && isPossibleClick)) {
                 workspace.snapToPage(getNextPage(mTouchDownWorkspaceCurrentPage, x > 0));
             } else {
-                if (mIsStillPossibleClick && isPossibleClick(motionEvent)) {
+                if (mIsStillPossibleClick && isPossibleClick) {
                     workspace.snapToPage(getNextPage(mTouchDownWorkspaceCurrentPage,
                             mTouchDownX > mLauncher.getDeviceProfile().widthPx / 2));
                     mLauncher.getStateManager().goToState(LauncherState.NORMAL, true);

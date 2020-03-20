@@ -140,6 +140,7 @@ class LawnchairPreferences(val context: Context) : SharedPreferences.OnSharedPre
     val lockDesktop by BooleanPref("pref_lockDesktop", false, reloadAll)
     val usePopupMenuView by BooleanPref("pref_desktopUsePopupMenuView", true, doNothing)
     var workspaceBlurScreens by IntSetPref("pref_workspaceBlurScreens", emptySet())
+    var keepEmptyScreens by BooleanPref("pref_keepEmptyScreens", false)
 
     // Smartspace
     val enableSmartspace by BooleanPref("pref_smartspace", lawnchairConfig.enableSmartspace)

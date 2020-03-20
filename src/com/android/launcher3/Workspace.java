@@ -63,6 +63,7 @@ import android.widget.Toast;
 
 import ch.deletescape.lawnchair.ClockVisibilityManager;
 import ch.deletescape.lawnchair.LawnchairLauncher;
+import ch.deletescape.lawnchair.LawnchairPreferences;
 import ch.deletescape.lawnchair.settings.WorkspaceBlur;
 import ch.deletescape.lawnchair.views.LawnchairBackgroundView;
 import com.android.launcher3.Launcher.LauncherOverlay;
@@ -626,6 +627,12 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         }
 
         if (hasExtraEmptyScreen() || mScreenOrder.size() == 0) return;
+
+        if (LawnchairPreferences.Companion
+                .getInstance(mLauncher).getKeepEmptyScreens()) {
+            return;
+        }
+
         int finalScreenId = mScreenOrder.get(mScreenOrder.size() - 1);
 
         CellLayout finalScreen = mWorkspaceScreens.get(finalScreenId);
@@ -829,6 +836,11 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         if (mLauncher.isWorkspaceLoading()) {
             // Don't strip empty screens if the workspace is still loading.
             // This is dangerous and can result in data loss.
+            return;
+        }
+
+        if (LawnchairPreferences.Companion.getInstance(mLauncher).getKeepEmptyScreens()) {
+            // Don't strip empty screens if we should keep them
             return;
         }
 
