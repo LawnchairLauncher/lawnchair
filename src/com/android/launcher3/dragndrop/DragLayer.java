@@ -559,7 +559,7 @@ public class DragLayer extends BaseDragLayer<Launcher> {
     @Override
     public void setInsets(Rect insets) {
         super.setInsets(insets);
-        mWorkspaceScrim.onInsetsChanged(insets);
+        mWorkspaceScrim.onInsetsChanged(insets, mAllowSysuiScrims);
         mOverviewScrim.onInsetsChanged(insets);
     }
 
