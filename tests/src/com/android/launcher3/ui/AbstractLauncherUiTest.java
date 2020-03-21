@@ -220,7 +220,9 @@ public abstract class AbstractLauncherUiTest {
 
     @Before
     public void setUp() throws Exception {
+        Log.d(TAG, "Before disabling battery defender");
         mDevice.executeShellCommand("setprop vendor.battery.defender.disable 1");
+        Log.d(TAG, "Before enabling stay awake");
         mDevice.executeShellCommand("settings put global stay_on_while_plugged_in 3");
         if (hasSystemUiObject("keyguard_status_view")) {
             Log.d(TAG, "Before unlocking the phone");
@@ -228,6 +230,9 @@ public abstract class AbstractLauncherUiTest {
         } else {
             Log.d(TAG, "Phone isn't locked");
         }
+        Assert.assertTrue("Keyguard still visible",
+                mDevice.wait(Until.gone(By.res(SYSTEMUI_PACKAGE, "keyguard_status_view")), 10000));
+        Log.d(TAG, "Keyguard is not visible");
 
         final String launcherPackageName = mDevice.getLauncherPackageName();
         try {
