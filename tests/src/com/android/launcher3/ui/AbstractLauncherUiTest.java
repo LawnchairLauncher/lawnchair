@@ -231,7 +231,7 @@ public abstract class AbstractLauncherUiTest {
             Log.d(TAG, "Phone isn't locked");
         }
         Assert.assertTrue("Keyguard still visible",
-                mDevice.wait(Until.gone(By.res(SYSTEMUI_PACKAGE, "keyguard_status_view")), 10000));
+                mDevice.wait(Until.gone(By.res(SYSTEMUI_PACKAGE, "keyguard_status_view")), 60000));
         Log.d(TAG, "Keyguard is not visible");
 
         final String launcherPackageName = mDevice.getLauncherPackageName();
