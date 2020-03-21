@@ -70,6 +70,7 @@ import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragView;
+import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.dragndrop.SpringLoadedDragController;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
@@ -81,7 +82,6 @@ import com.android.launcher3.icons.BitmapRenderer;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.pageindicators.WorkspacePageIndicator;
 import com.android.launcher3.popup.PopupContainerWithArrow;
-import com.android.launcher3.shortcuts.ShortcutDragPreviewProvider;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.touch.WorkspaceTouchListener;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
@@ -1452,12 +1452,17 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                     + "View: " + child + "  tag: " + child.getTag();
             throw new IllegalStateException(msg);
         }
-        beginDragShared(child, source, (ItemInfo) dragObject,
+        beginDragShared(child, null, source, (ItemInfo) dragObject,
                 new DragPreviewProvider(child), options);
     }
 
-    public DragView beginDragShared(View child, DragSource source, ItemInfo dragObject,
-            DragPreviewProvider previewProvider, DragOptions dragOptions) {
+    /**
+     * Core functionality for beginning a drag operation for an item that will be dropped within
+     * the workspace
+     */
+    public DragView beginDragShared(View child, DraggableView draggableView, DragSource source,
+            ItemInfo dragObject, DragPreviewProvider previewProvider, DragOptions dragOptions) {
+
         float iconScale = 1f;
         if (child instanceof BubbleTextView) {
             Drawable icon = ((BubbleTextView) child).getIcon();
@@ -1466,41 +1471,36 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             }
         }
 
+        // Clear the pressed state if necessary
         child.clearFocus();
         child.setPressed(false);
+        if (child instanceof BubbleTextView) {
+            BubbleTextView icon = (BubbleTextView) child;
+            icon.clearPressedBackground();
+        }
+
         mOutlineProvider = previewProvider;
 
         // The drag bitmap follows the touch point around on the screen
         final Bitmap b = previewProvider.createDragBitmap();
         int halfPadding = previewProvider.previewPadding / 2;
-
         float scale = previewProvider.getScaleAndPosition(b, mTempXY);
         int dragLayerX = mTempXY[0];
         int dragLayerY = mTempXY[1];
 
-        DeviceProfile grid = mLauncher.getDeviceProfile();
         Point dragVisualizeOffset = null;
-        Rect dragRect = null;
-        if (child instanceof BubbleTextView) {
-            dragRect = new Rect();
-            BubbleTextView.getIconBounds(child, dragRect, grid.iconSizePx);
+        Rect dragRect = new Rect();
+
+        if (draggableView == null && child instanceof DraggableView) {
+            draggableView = (DraggableView) child;
+        }
+
+        if (draggableView != null) {
+            draggableView.getVisualDragBounds(dragRect);
             dragLayerY += dragRect.top;
-            // Note: The dragRect is used to calculate drag layer offsets, but the
-            // dragVisualizeOffset in addition to the dragRect (the size) to position the outline.
-            dragVisualizeOffset = new Point(- halfPadding, halfPadding);
-        } else if (child instanceof FolderIcon) {
-            int previewSize = grid.folderIconSizePx;
-            dragVisualizeOffset = new Point(- halfPadding, halfPadding - child.getPaddingTop());
-            dragRect = new Rect(0, child.getPaddingTop(), child.getWidth(), previewSize);
-        } else if (previewProvider instanceof ShortcutDragPreviewProvider) {
             dragVisualizeOffset = new Point(- halfPadding, halfPadding);
         }
 
-        // Clear the pressed state if necessary
-        if (child instanceof BubbleTextView) {
-            BubbleTextView icon = (BubbleTextView) child;
-            icon.clearPressedBackground();
-        }
 
         if (child.getParent() instanceof ShortcutAndWidgetContainer) {
             mDragSourceInternal = (ShortcutAndWidgetContainer) child.getParent();
@@ -1511,13 +1511,13 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                     .showForIcon((BubbleTextView) child);
             if (popupContainer != null) {
                 dragOptions.preDragCondition = popupContainer.createPreDragCondition();
-
                 mLauncher.getUserEventDispatcher().resetElapsedContainerMillis("dragging started");
             }
         }
 
-        DragView dv = mDragController.startDrag(b, dragLayerX, dragLayerY, source,
-                dragObject, dragVisualizeOffset, dragRect, scale * iconScale, scale, dragOptions);
+        DragView dv = mDragController.startDrag(b, draggableView, dragLayerX, dragLayerY, source,
+                dragObject, dragVisualizeOffset, dragRect, scale * iconScale,
+                scale, dragOptions);
         dv.setIntrinsicIconScaleFactor(dragOptions.intrinsicIconScaleFactor);
         return dv;
     }
@@ -2186,7 +2186,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                     item.spanY, child, mTargetCell);
 
             if (!nearestDropOccupied) {
-                mDragTargetLayout.visualizeDropLocation(child, mOutlineProvider,
+                mDragTargetLayout.visualizeDropLocation(d.originalView, mOutlineProvider,
                         mTargetCell[0], mTargetCell[1], item.spanX, item.spanY, false, d);
             } else if ((mDragMode == DRAG_MODE_NONE || mDragMode == DRAG_MODE_REORDER)
                     && !mReorderAlarm.alarmPending() && (mLastReorderX != reorderX ||
@@ -2279,7 +2279,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     private void manageFolderFeedback(float distance, DragObject dragObject) {
         if (distance > mMaxDistanceForFolderCreation) {
-            if (mDragMode != DRAG_MODE_NONE) {
+            if ((mDragMode == DRAG_MODE_ADD_TO_FOLDER
+                    || mDragMode == DRAG_MODE_CREATE_FOLDER)) {
                 setDragMode(DRAG_MODE_NONE);
             }
             return;
@@ -2368,7 +2369,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             }
 
             boolean resize = resultSpan[0] != spanX || resultSpan[1] != spanY;
-            mDragTargetLayout.visualizeDropLocation(child, mOutlineProvider,
+            mDragTargetLayout.visualizeDropLocation(dragObject.originalView, mOutlineProvider,
                 mTargetCell[0], mTargetCell[1], resultSpan[0], resultSpan[1], resize, dragObject);
         }
     }

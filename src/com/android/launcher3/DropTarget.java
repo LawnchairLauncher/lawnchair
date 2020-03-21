@@ -23,6 +23,7 @@ import com.android.launcher3.accessibility.DragViewStateAnnouncer;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragView;
+import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.folder.FolderNameProvider;
 
 /**
@@ -68,6 +69,10 @@ public interface DropTarget {
         public DragViewStateAnnouncer stateAnnouncer;
 
         public FolderNameProvider folderNameProvider;
+
+        /** The source view (ie. icon, widget etc.) that is being dragged and which the
+         * DragView represents. May be an actual View class or a virtual stand-in */
+        public DraggableView originalView = null;
 
         public DragObject(Context context) {
             if (FeatureFlags.FOLDER_NAME_SUGGEST.get()) {

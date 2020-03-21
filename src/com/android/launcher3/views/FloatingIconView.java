@@ -67,7 +67,6 @@ import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.FolderAdaptiveIcon;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.IconShape;
-import com.android.launcher3.graphics.ShiftedBitmapDrawable;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.shortcuts.DeepShortcutView;
@@ -412,9 +411,8 @@ public class FloatingIconView extends View implements
                 drawable = originalView.getBackground();
             }
         } else {
-            boolean isFolderIcon = originalView instanceof FolderIcon;
-            int width = isFolderIcon ? originalView.getWidth() : (int) pos.width();
-            int height = isFolderIcon ? originalView.getHeight() : (int) pos.height();
+            int width = (int) pos.width();
+            int height = (int) pos.height();
             if (supportsAdaptiveIcons) {
                 drawable = getFullDrawable(l, info, width, height, sTmpObjArray);
                 if (drawable instanceof AdaptiveIconDrawable) {
@@ -499,20 +497,7 @@ public class FloatingIconView extends View implements
                 }
             }
 
-            if (isFolderIcon) {
-                ((FolderIcon) originalView).getPreviewBounds(sTmpRect);
-                float bgStroke = ((FolderIcon) originalView).getBackgroundStrokeWidth();
-                if (mForeground instanceof ShiftedBitmapDrawable) {
-                    ShiftedBitmapDrawable sbd = (ShiftedBitmapDrawable) mForeground;
-                    sbd.setShiftX(sbd.getShiftX() - sTmpRect.left - bgStroke);
-                    sbd.setShiftY(sbd.getShiftY() - sTmpRect.top - bgStroke);
-                }
-                if (mBadge instanceof ShiftedBitmapDrawable) {
-                    ShiftedBitmapDrawable sbd = (ShiftedBitmapDrawable) mBadge;
-                    sbd.setShiftX(sbd.getShiftX() - sTmpRect.left - bgStroke);
-                    sbd.setShiftY(sbd.getShiftY() - sTmpRect.top - bgStroke);
-                }
-            } else {
+            if (!isFolderIcon) {
                 Utilities.scaleRectAboutCenter(mStartRevealRect,
                         IconShape.getNormalizationScale());
             }
@@ -615,8 +600,9 @@ public class FloatingIconView extends View implements
     @WorkerThread
     @SuppressWarnings("WrongThread")
     private static int getOffsetForIconBounds(Launcher l, Drawable drawable, RectF position) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O ||
-                !(drawable instanceof AdaptiveIconDrawable)) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O
+                || !(drawable instanceof AdaptiveIconDrawable)
+                || (drawable instanceof FolderAdaptiveIcon)) {
             return 0;
         }
         int blurSizeOutline =
