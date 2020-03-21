@@ -38,6 +38,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.dynamicanimation.animation.DynamicAnimation;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -610,6 +611,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         final Rect padding = new Rect();
         AllAppsRecyclerView recyclerView;
         boolean verticalFadingEdge;
+        private View mOverlay;
 
         boolean mWorkDisabled;
 
@@ -646,13 +648,20 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             if (mWorkDisabled == workDisabled) return;
             recyclerView.setContentDescription(
                     workDisabled ? mLauncher.getString(R.string.work_apps_paused_title) : null);
+            View overlayView = getOverlayView();
+            recyclerView.setItemAnimator(new DefaultItemAnimator());
             if (workDisabled) {
+                overlayView.setAlpha(0);
                 appsList.updateItemFilter((info, cn) -> false);
-                recyclerView.addAutoSizedOverlay(
-                        mLauncher.getLayoutInflater().inflate(R.layout.work_apps_paused, null));
+                recyclerView.addAutoSizedOverlay(overlayView);
+                overlayView.animate().alpha(1).withEndAction(
+                        () -> recyclerView.setItemAnimator(null)).start();
             } else if (mInfoMatcher != null) {
                 appsList.updateItemFilter(mInfoMatcher);
-                recyclerView.clearAutoSizedOverlays();
+                overlayView.animate().alpha(0).withEndAction(() -> {
+                    recyclerView.setItemAnimator(null);
+                    recyclerView.clearAutoSizedOverlays();
+                }).start();
             }
             mWorkDisabled = workDisabled;
         }
@@ -670,6 +679,13 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             verticalFadingEdge = enabled;
             mAH[AdapterHolder.MAIN].recyclerView.setVerticalFadingEdgeEnabled(!mUsingTabs
                     && verticalFadingEdge);
+        }
+
+        private View getOverlayView() {
+            if (mOverlay == null) {
+                mOverlay = mLauncher.getLayoutInflater().inflate(R.layout.work_apps_paused, null);
+            }
+            return mOverlay;
         }
     }
 }
