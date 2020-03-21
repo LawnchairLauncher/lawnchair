@@ -16,6 +16,7 @@
 package com.android.launcher3.ui;
 
 import static com.android.launcher3.LauncherState.ALL_APPS;
+import static com.android.launcher3.LauncherState.NORMAL;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -158,9 +159,11 @@ public class WorkTabTest extends AbstractLauncherUiTest {
 
         // dismiss personal edu
         mDevice.pressHome();
+        waitForState("Launcher did not go home", () -> NORMAL);
 
         // open work tab
         executeOnLauncher(launcher -> launcher.getStateManager().goToState(ALL_APPS));
+        waitForState("Launcher did not switch to all apps", () -> ALL_APPS);
         executeOnLauncher(launcher -> {
             AllAppsPagedView pagedView = (AllAppsPagedView) launcher.getAppsView().getContentView();
             pagedView.setCurrentPage(WORK_PAGE);
