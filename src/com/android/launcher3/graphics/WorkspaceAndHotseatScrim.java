@@ -40,12 +40,14 @@ import android.graphics.drawable.Drawable;
 import android.util.DisplayMetrics;
 import android.util.FloatProperty;
 import android.view.View;
+import android.view.WindowInsets;
 
 import androidx.core.graphics.ColorUtils;
 
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.R;
 import com.android.launcher3.ResourceUtils;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.uioverrides.WallpaperColorInfo;
 import com.android.launcher3.util.Themes;
@@ -198,9 +200,22 @@ public class WorkspaceAndHotseatScrim extends Scrim {
      * Determines whether to draw the top and/or bottom scrim based on new insets.
      */
     public void onInsetsChanged(Rect insets, boolean allowSysuiScrims) {
-        mDrawTopScrim = allowSysuiScrims && mTopScrim != null && insets.top > 0;
-        mDrawBottomScrim = allowSysuiScrims && mBottomMask != null
-                && !mLauncher.getDeviceProfile().isVerticalBarLayout();
+        mDrawTopScrim = allowSysuiScrims
+                && mTopScrim != null
+                && insets.top > 0;
+        mDrawBottomScrim = allowSysuiScrims
+                && mBottomMask != null
+                && !mLauncher.getDeviceProfile().isVerticalBarLayout()
+                && hasBottomNavButtons();
+    }
+
+    private boolean hasBottomNavButtons() {
+        if (Utilities.ATLEAST_Q && mLauncher.getRootView() != null
+                && mLauncher.getRootView().getRootWindowInsets() != null) {
+            WindowInsets windowInsets = mLauncher.getRootView().getRootWindowInsets();
+            return windowInsets.getTappableElementInsets().bottom > 0;
+        }
+        return true;
     }
 
     @Override
