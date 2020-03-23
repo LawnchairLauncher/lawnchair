@@ -311,9 +311,17 @@
     <string name="pref_app_groups_create">Creare</string>
     <string name="pref_appcategorization_style_text">Stil</string>
     <string name="customize">Personalizează</string>
+    <plurals name="tab_apps_count">
+        <item quantity="one">%1$d aplicație</item>
+        <item quantity="few">%1$d aplicații</item>
+        <item quantity="other">%1$d aplicații</item>
+    </plurals>
     <string name="advanced_settings">Mai multe setări</string>
+    <string name="adaptive_icon">Pictograme adaptive</string>
     <string name="action_edit">Modifică</string>
     <string name="dismiss_drop_target_label">"Nu afișa"</string>
+    <string name="suggested_action_content_description">“%1$s” se deschide în “%2$s”.</string>
+    <string name="smartspace_setup_text">Atingeți pentru a configura</string>
     <string name="lawnchair_settings">Setări Lawnchair</string>
     <string name="label_voice_search">Căutare vocală</string>
     <string name="icon_pack">Set de pictograme</string>
@@ -352,6 +360,7 @@
     <string name="debug_component_name">Numele componentei</string>
     <string name="debug_component_name_copied">Copiat în clipboard.</string>
     <string name="read_external_storage_required">Pentru a salva copia de rezervă, acordați permisiunea pentru stocare.</string>
+    <string name="launcher_theme_override_label">Forțați aspectul întunecat</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
     <string name="dock_style_pref_title">Stil zonă de andocare</string>
     <string name="dock_style_p">Android Pie</string>
@@ -365,6 +374,7 @@
     <string name="reset_to_default">Resetează la valorile implicite</string>
     <string name="gradient">Gradient</string>
     <string name="pref_category_aag">Pe scurt</string>
+    <string name="pref_category_pixel_searchbar">Bară de căutare Google Pixel</string>
     <string name="pref_category_layout">Dispunere</string>
     <string name="title_attribouter_email">Email</string>
     <string name="title_attribouter_version">Versiunea %1$s</string>
