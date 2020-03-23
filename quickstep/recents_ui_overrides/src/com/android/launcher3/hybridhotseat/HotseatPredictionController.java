@@ -48,6 +48,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.allapps.AllAppsStore;
@@ -325,7 +326,7 @@ public class HotseatPredictionController implements DragController.DragListener,
             mComponentKeyMappers.add(new ComponentKeyMapper(key, mDynamicItemCache));
         }
         predictionLog.append("]");
-        if (false) FileLog.d(TAG, predictionLog.toString());
+        if (Utilities.IS_DEBUG_DEVICE) FileLog.d(TAG, predictionLog.toString());
         updateDependencies();
         if (isReady()) {
             fillGapsWithPrediction();
