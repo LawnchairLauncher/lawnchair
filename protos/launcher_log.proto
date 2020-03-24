@@ -137,7 +137,8 @@ message Action {
     AUTOMATED = 1;
     COMMAND = 2;
     TIP = 3;
-    // SOFT_KEYBOARD, HARD_KEYBOARD, ASSIST
+    SOFT_KEYBOARD = 4;
+    // HARD_KEYBOARD, ASSIST
   }
 
   enum Touch {
