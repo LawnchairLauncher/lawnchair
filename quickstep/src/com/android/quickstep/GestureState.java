@@ -64,6 +64,8 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
     private static final String TAG = "GestureState";
 
     private static final ArrayList<String> STATE_NAMES = new ArrayList<>();
+    public static final GestureState DEFAULT_STATE = new GestureState();
+
     private static int FLAG_COUNT = 0;
     private static int getFlagForIndex(String name) {
         if (DEBUG_STATES) {
