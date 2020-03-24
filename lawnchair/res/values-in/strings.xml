@@ -333,6 +333,7 @@
     <string name="label_turn_off_suggestions">Nonaktifkan</string>
     <string name="about_summary_title">Ringkasan</string>
     <string name="hide_app">Sembunyikan Pintasan</string>
+    <string name="hide_badge">Sembunyikan lencana</string>
     <string name="icon_shape_rounded_square">Kotak Membulat</string>
     <string name="hide_app_selected">\"&#160;\" disembunyikan.</string>
     <string name="hide_app_apply">Selesai</string>
