@@ -21,6 +21,7 @@ import static android.view.View.MeasureSpec.EXACTLY;
 import static android.view.View.MeasureSpec.getMode;
 import static android.view.View.MeasureSpec.getSize;
 
+import static com.android.launcher3.anim.Interpolators.DEACCEL_1_5;
 import static com.android.launcher3.compat.AccessibilityManagerCompat.sendCustomAccessibilityEvent;
 
 import android.animation.Animator;
@@ -49,7 +50,6 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Workspace;
-import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.graphics.OverviewScrim;
 import com.android.launcher3.graphics.RotationMode;
@@ -74,11 +74,11 @@ public class DragLayer extends BaseDragLayer<Launcher> {
     public static final int ANIMATION_END_DISAPPEAR = 0;
     public static final int ANIMATION_END_REMAIN_VISIBLE = 2;
 
-    @Thunk DragController mDragController;
+    private DragController mDragController;
 
     // Variables relating to animation of views after drop
     private ValueAnimator mDropAnim = null;
-    private final TimeInterpolator mCubicEaseOutInterpolator = Interpolators.DEACCEL_1_5;
+
     @Thunk DragView mDropView = null;
     @Thunk int mAnchorViewInitialScrollX = 0;
     @Thunk View mAnchorView = null;
@@ -88,12 +88,13 @@ public class DragLayer extends BaseDragLayer<Launcher> {
     private int mTopViewIndex;
     private int mChildCountOnLastUpdate = -1;
 
-    private Rect mTmpRect = new Rect();
-
     // Related to adjacent page hints
     private final ViewGroupFocusHelper mFocusIndicatorHelper;
     private final WorkspaceAndHotseatScrim mWorkspaceScrim;
     private final OverviewScrim mOverviewScrim;
+
+    // View that should handle move events
+    private View mMoveTarget;
 
     /**
      * Used to create a new DragLayer from XML.
@@ -116,6 +117,7 @@ public class DragLayer extends BaseDragLayer<Launcher> {
     public void setup(DragController dragController, Workspace workspace) {
         mDragController = dragController;
         mWorkspaceScrim.setWorkspace(workspace);
+        mMoveTarget = workspace;
         recreateControllers();
     }
 
@@ -223,7 +225,7 @@ public class DragLayer extends BaseDragLayer<Launcher> {
     @Override
     public boolean dispatchUnhandledMove(View focused, int direction) {
         return super.dispatchUnhandledMove(focused, direction)
-                || mDragController.dispatchUnhandledMove(focused, direction);
+                || mMoveTarget.dispatchUnhandledMove(focused, direction);
     }
 
     @Override
@@ -260,9 +262,10 @@ public class DragLayer extends BaseDragLayer<Launcher> {
         parentChildren.measureChild(child);
         parentChildren.layoutChild(child);
 
-        getViewRectRelativeToSelf(dragView, mTmpRect);
-        final int fromX = mTmpRect.left;
-        final int fromY = mTmpRect.top;
+        Rect dragViewBounds = new Rect();
+        getViewRectRelativeToSelf(dragView, dragViewBounds);
+        final int fromX = dragViewBounds.left;
+        final int fromY = dragViewBounds.top;
 
         float coord[] = new float[2];
         float childScale = child.getScaleX();
@@ -283,15 +286,15 @@ public class DragLayer extends BaseDragLayer<Launcher> {
 
         if (child instanceof DraggableView) {
             DraggableView d = (DraggableView) child;
-            d.getVisualDragBounds(mTmpRect);
+            d.getVisualDragBounds(dragViewBounds);
 
             // This accounts for the offset of the DragView created by scaling it about its
             // center as it animates into place.
             float scaleShiftX = dragView.getMeasuredWidth() * (1 - scale) / 2;
             float scaleShiftY = dragView.getMeasuredHeight() * (1 - scale) / 2;
 
-            toX += scale * (mTmpRect.left - dragView.getBlurSizeOutline() / 2) - scaleShiftX;
-            toY += scale * (mTmpRect.top - dragView.getBlurSizeOutline() / 2) - scaleShiftY;
+            toX += scale * (dragViewBounds.left - dragView.getBlurSizeOutline() / 2) - scaleShiftX;
+            toY += scale * (dragViewBounds.top - dragView.getBlurSizeOutline() / 2) - scaleShiftY;
         }
 
         child.setVisibility(INVISIBLE);
@@ -348,7 +351,7 @@ public class DragLayer extends BaseDragLayer<Launcher> {
         if (duration < 0) {
             duration = res.getInteger(R.integer.config_dropAnimMaxDuration);
             if (dist < maxDist) {
-                duration *= mCubicEaseOutInterpolator.getInterpolation(dist / maxDist);
+                duration *= DEACCEL_1_5.getInterpolation(dist / maxDist);
             }
             duration = Math.max(duration, res.getInteger(R.integer.config_dropAnimMinDuration));
         }
@@ -356,7 +359,7 @@ public class DragLayer extends BaseDragLayer<Launcher> {
         // Fall back to cubic ease out interpolator for the animation if none is specified
         TimeInterpolator interpolator = null;
         if (alphaInterpolator == null || motionInterpolator == null) {
-            interpolator = mCubicEaseOutInterpolator;
+            interpolator = DEACCEL_1_5;
         }
 
         // Animate the view

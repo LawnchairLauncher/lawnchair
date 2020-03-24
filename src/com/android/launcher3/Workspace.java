@@ -43,7 +43,6 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Message;
 import android.os.Parcelable;
 import android.os.UserHandle;
@@ -1224,10 +1223,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        IBinder windowToken = getWindowToken();
-        mWallpaperOffset.setWindowToken(windowToken);
+        mWallpaperOffset.setWindowToken(getWindowToken());
         computeScroll();
-        mDragController.setWindowToken(windowToken);
     }
 
     protected void onDetachedFromWindow() {
