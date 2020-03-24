@@ -134,7 +134,7 @@ public class RotationHelper implements OnSharedPreferenceChangeListener {
      */
     private void updateForcedRotation(boolean setValueFromPrefs) {
         boolean isForcedRotation = mFeatureFlagsPrefs
-                .getBoolean(FLAG_ENABLE_FIXED_ROTATION_TRANSFORM, true)
+                .getBoolean(FLAG_ENABLE_FIXED_ROTATION_TRANSFORM, false)
                 && !getAllowRotationDefaultValue();
         if (mForcedRotation == isForcedRotation) {
             return;
