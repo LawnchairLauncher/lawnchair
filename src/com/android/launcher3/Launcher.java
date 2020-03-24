@@ -340,6 +340,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             };
 
     private long mLastTouchUpTime = -1;
+    private boolean mTouchInProgress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -1840,11 +1841,26 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (ev.getAction() == MotionEvent.ACTION_UP) {
-            mLastTouchUpTime = System.currentTimeMillis();
+        switch (ev.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                mTouchInProgress = true;
+                break;
+            case MotionEvent.ACTION_UP:
+                mLastTouchUpTime = System.currentTimeMillis();
+                // Follow through
+            case MotionEvent.ACTION_CANCEL:
+                mTouchInProgress = false;
+                break;
         }
         TestLogging.recordMotionEvent(TestProtocol.SEQUENCE_MAIN, "Touch event", ev);
         return super.dispatchTouchEvent(ev);
+    }
+
+    /**
+     * Returns true if a touch interaction is in progress
+     */
+    public boolean isTouchInProgress() {
+        return mTouchInProgress;
     }
 
     @Override

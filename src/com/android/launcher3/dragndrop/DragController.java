@@ -20,6 +20,7 @@ import static com.android.launcher3.AbstractFloatingView.TYPE_DISCOVERY_BOUNCE;
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.Utilities.ATLEAST_Q;
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
 import android.animation.ValueAnimator;
 import android.content.ComponentName;
@@ -64,7 +65,7 @@ public class DragController implements DragDriver.EventListener, TouchController
     private final FlingToDeleteHelper mFlingToDeleteHelper;
 
     // temporaries to avoid gc thrash
-    private Rect mRectTemp = new Rect();
+    private final Rect mRectTemp = new Rect();
     private final int[] mCoordinatesTemp = new int[2];
 
     /**
@@ -217,6 +218,11 @@ public class DragController implements DragDriver.EventListener, TouchController
 
         handleMoveEvent(mLastTouch.x, mLastTouch.y);
         mLauncher.getUserEventDispatcher().resetActionDurationMillis();
+
+        if (!mLauncher.isTouchInProgress() && options.simulatedDndStartPoint == null) {
+            // If it is an internal drag and the touch is already complete, cancel immediately
+            MAIN_EXECUTOR.submit(this::cancelDrag);
+        }
         return dragView;
     }
 
