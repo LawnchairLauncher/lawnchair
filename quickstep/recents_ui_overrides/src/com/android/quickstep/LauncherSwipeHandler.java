@@ -294,7 +294,7 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
         }
 
         setupRecentsViewUi();
-        mActivityInterface.getBackgroundBlurController().setSurfaceToLauncher(mRecentsView);
+        mActivityInterface.getDepthController().setSurfaceToLauncher(mRecentsView);
 
         if (mDeviceState.getNavMode() == TWO_BUTTONS) {
             // If the device is in two button mode, swiping up will show overview with predictions
@@ -588,7 +588,7 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
             // We will handle the sysui flags based on the centermost task view.
             if (mRecentsAnimationController != null) {
                 mRecentsAnimationController.setWindowThresholdCrossed(centermostTaskFlags != 0
-                        || useHomeScreenFlags);
+                        && useHomeScreenFlags);
             }
             int sysuiFlags = useHomeScreenFlags ? 0 : centermostTaskFlags;
             mActivity.getSystemUiController().updateUiState(UI_STATE_OVERVIEW, sysuiFlags);
