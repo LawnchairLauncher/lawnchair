@@ -77,7 +77,6 @@ import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.OvershootInterpolator;
 import android.widget.Toast;
@@ -124,7 +123,6 @@ import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.AllAppsSwipeController;
 import com.android.launcher3.touch.ItemClickHandler;
-import com.android.launcher3.uioverrides.DepthController;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -325,19 +323,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     // If true, overlay callbacks are deferred
     private boolean mDeferOverlayCallbacks;
     private final Runnable mDeferredOverlayCallbacks = this::checkIfOverlayStillDeferred;
-
-    private DepthController mDepthController =
-            new DepthController(this);
-
-    private final ViewTreeObserver.OnDrawListener mOnDrawListener =
-            new ViewTreeObserver.OnDrawListener() {
-                @Override
-                public void onDraw() {
-                    getDepthController().setSurfaceToLauncher(mDragLayer);
-                    mDragLayer.post(() -> mDragLayer.getViewTreeObserver().removeOnDrawListener(
-                            this));
-                }
-            };
 
     private long mLastTouchUpTime = -1;
 
@@ -942,8 +927,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         final int origDragLayerChildCount = mDragLayer.getChildCount();
         super.onStop();
 
-        mDragLayer.getViewTreeObserver().removeOnDrawListener(mOnDrawListener);
-
         if (mDeferOverlayCallbacks) {
             checkIfOverlayStillDeferred();
         } else {
@@ -956,7 +939,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
         NotificationListener.removeNotificationsChangedListener();
         getStateManager().moveToRestState();
-        getDepthController().setSurfaceToLauncher(null);
 
         // Workaround for b/78520668, explicitly trim memory once UI is hidden
         onTrimMemory(TRIM_MEMORY_UI_HIDDEN);
@@ -984,7 +966,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         if (!mDeferOverlayCallbacks) {
             mOverlayManager.onActivityStarted(this);
         }
-        mDragLayer.getViewTreeObserver().addOnDrawListener(mOnDrawListener);
 
         mAppWidgetHost.setListenIfResumed(true);
         TraceHelper.INSTANCE.endSection(traceToken);
@@ -2716,8 +2697,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     }
 
     protected StateHandler[] createStateHandlers() {
-        return new StateHandler[] { getAllAppsController(), getWorkspace(),
-                getDepthController() };
+        return new StateHandler[] { getAllAppsController(), getWorkspace() };
     }
 
     public TouchController[] createTouchControllers() {
@@ -2752,10 +2732,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     public Stream<SystemShortcut.Factory> getSupportedShortcuts() {
         return Stream.of(APP_INFO, WIDGETS, INSTALL);
-    }
-
-    public DepthController getDepthController() {
-        return mDepthController;
     }
 
     public static Launcher getLauncher(Context context) {

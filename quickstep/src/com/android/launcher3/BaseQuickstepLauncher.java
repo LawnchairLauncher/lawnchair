@@ -43,8 +43,9 @@ import com.android.launcher3.model.WellbeingModel;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.proxy.ProxyActivityStarter;
 import com.android.launcher3.proxy.StartActivityParams;
+import com.android.launcher3.statehandlers.BackButtonAlphaHandler;
+import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.touch.PagedOrientationHandler;
-import com.android.launcher3.uioverrides.BackButtonAlphaHandler;
 import com.android.launcher3.uioverrides.RecentsViewStateController;
 import com.android.launcher3.util.UiThreadHelper;
 import com.android.quickstep.RecentsModel;
@@ -67,6 +68,7 @@ import java.util.stream.Stream;
 public abstract class BaseQuickstepLauncher extends Launcher
         implements NavigationModeChangeListener {
 
+    private DepthController mDepthController = new DepthController(this);
     protected SystemActions mSystemActions;
 
     /**
@@ -249,6 +251,10 @@ public abstract class BaseQuickstepLauncher extends Launcher
                 new BackButtonAlphaHandler(this)};
     }
 
+    public DepthController getDepthController() {
+        return mDepthController;
+    }
+
     @Override
     protected ScaleAndTranslation getOverviewScaleAndTranslationForNormalState() {
         if (SysUINavigationMode.getMode(this) == Mode.NO_BUTTON) {
@@ -292,6 +298,10 @@ public abstract class BaseQuickstepLauncher extends Launcher
         if ((changeBits
                 & (ACTIVITY_STATE_WINDOW_FOCUSED | ACTIVITY_STATE_TRANSITION_ACTIVE)) != 0) {
             onLauncherStateOrFocusChanged();
+        }
+
+        if ((changeBits & ACTIVITY_STATE_STARTED) != 0) {
+            mDepthController.setActivityStarted(isStarted());
         }
 
         super.onActivityFlagsChanged(changeBits);

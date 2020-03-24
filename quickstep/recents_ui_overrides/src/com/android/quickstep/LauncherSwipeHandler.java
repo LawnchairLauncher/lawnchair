@@ -294,7 +294,6 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
         }
 
         setupRecentsViewUi();
-        mActivityInterface.getDepthController().setSurfaceToLauncher(mRecentsView);
 
         if (mDeviceState.getNavMode() == TWO_BUTTONS) {
             // If the device is in two button mode, swiping up will show overview with predictions
