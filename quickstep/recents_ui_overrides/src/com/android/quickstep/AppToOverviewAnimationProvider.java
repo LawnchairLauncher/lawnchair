@@ -19,7 +19,7 @@ import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.TOUCH_RESPONSE_INTERPOLATOR;
-import static com.android.launcher3.uioverrides.DepthController.DEPTH;
+import static com.android.launcher3.statehandlers.DepthController.DEPTH;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING;
 
@@ -34,7 +34,7 @@ import android.view.View;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.anim.AnimationSuccessListener;
-import com.android.launcher3.uioverrides.DepthController;
+import com.android.launcher3.statehandlers.DepthController;
 import com.android.quickstep.util.AppWindowAnimationHelper;
 import com.android.quickstep.util.AppWindowAnimationHelper.TransformParams;
 import com.android.quickstep.util.RemoteAnimationProvider;
@@ -105,12 +105,6 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> exten
             mRecentsView.setRunningTaskIconScaledDown(true);
         }
 
-        DepthController depthController = mActivityInterface.getDepthController();
-        if (depthController != null) {
-            // Update the surface to be the lowest closing app surface
-            depthController.setSurfaceToLauncher(mRecentsView);
-        }
-
         AnimatorSet anim = new AnimatorSet();
         anim.addListener(new AnimationSuccessListener() {
             @Override
@@ -123,9 +117,15 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> exten
         });
         if (mActivity == null) {
             Log.e(TAG, "Animation created, before activity");
-            anim.play(ValueAnimator.ofInt(0, 1).setDuration(RECENTS_LAUNCH_DURATION))
-                    .with(createDepthAnimator(depthController));
             return anim;
+        }
+
+        DepthController depthController = mActivityInterface.getDepthController();
+        if (depthController != null) {
+            anim.play(ObjectAnimator.ofFloat(depthController, DEPTH,
+                    BACKGROUND_APP.getDepth(mActivity),
+                    OVERVIEW.getDepth(mActivity))
+                    .setDuration(RECENTS_LAUNCH_DURATION));
         }
 
         RemoteAnimationTargets targets = new RemoteAnimationTargets(appTargets,
@@ -135,8 +135,6 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> exten
         RemoteAnimationTargetCompat runningTaskTarget = targets.findTask(mTargetTaskId);
         if (runningTaskTarget == null) {
             Log.e(TAG, "No closing app");
-            anim.play(ValueAnimator.ofInt(0, 1).setDuration(RECENTS_LAUNCH_DURATION))
-                    .with(createDepthAnimator(depthController));
             return anim;
         }
 
@@ -183,8 +181,6 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> exten
                 transaction.apply();
             });
         }
-        anim.play(valueAnimator)
-                .with(createDepthAnimator(depthController));
         return anim;
     }
 
@@ -195,16 +191,5 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> exten
      */
     long getRecentsLaunchDuration() {
         return RECENTS_LAUNCH_DURATION;
-    }
-
-    private Animator createDepthAnimator(DepthController depthController) {
-        if (depthController == null) {
-            // Dummy animation
-            return ValueAnimator.ofInt(0);
-        }
-        return ObjectAnimator.ofFloat(depthController, DEPTH,
-                BACKGROUND_APP.getDepth(mActivity),
-                OVERVIEW.getDepth(mActivity))
-                .setDuration(RECENTS_LAUNCH_DURATION);
     }
 }
