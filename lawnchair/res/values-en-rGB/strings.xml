@@ -329,6 +329,7 @@
     <string name="label_turn_off_suggestions">Disable</string>
     <string name="about_summary_title">Summary</string>
     <string name="hide_app">Hide Shortcut</string>
+    <string name="hide_badge">Hide Badge</string>
     <string name="icon_shape_rounded_square">Rounded Square</string>
     <string name="hide_app_selected">‘&#160;’ hidden.</string>
     <string name="hide_app_apply">Done</string>
@@ -550,4 +551,5 @@
     <string name="title_missing_notification_access">Notification access needed.</string>
     <string name="activity_not_found">Myanmar.</string>
     <string name="out_of_space">No more room on the Desktop.</string>
+    <string name="hotseat_out_of_space">No more room in the Dock.</string>
 </resources>
