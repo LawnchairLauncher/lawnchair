@@ -264,6 +264,7 @@
     <string name="gesture_dock_swipe_up">Deslize desde a doca</string>
     <string name="action_none">Nada fazer</string>
     <string name="action_sleep">Suspender</string>
+    <string name="action_sleep_timeout">Dormir usando o tempo limite</string>
     <string name="action_open_settings">Abrir definições Lawnchair</string>
     <string name="action_open_notifications">Abrir painel de notificações</string>
     <string name="action_overlay">Abrir Google Feed</string>
