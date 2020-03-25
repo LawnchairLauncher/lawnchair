@@ -186,7 +186,7 @@ public final class RecentsActivity extends BaseRecentsActivity {
         AppWindowAnimationHelper helper = new AppWindowAnimationHelper(
             mFallbackRecentsView.getPagedViewOrientedState(), this);
         Animator recentsAnimator = getRecentsWindowAnimator(taskView, !activityClosing, appTargets,
-                wallpaperTargets, null /* backgroundBlurController */,
+                wallpaperTargets, null /* depthController */,
                 helper);
         target.play(recentsAnimator.setDuration(RECENTS_LAUNCH_DURATION));
 

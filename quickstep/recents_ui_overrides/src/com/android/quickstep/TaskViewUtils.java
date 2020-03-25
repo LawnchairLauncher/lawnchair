@@ -19,7 +19,7 @@ import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.TOUCH_RESPONSE_INTERPOLATOR;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
-import static com.android.launcher3.uioverrides.BackgroundBlurController.BACKGROUND_BLUR;
+import static com.android.launcher3.uioverrides.DepthController.DEPTH;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING;
 
 import android.animation.Animator;
@@ -35,7 +35,7 @@ import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.uioverrides.BackgroundBlurController;
+import com.android.launcher3.uioverrides.DepthController;
 import com.android.quickstep.util.AppWindowAnimationHelper;
 import com.android.quickstep.util.MultiValueUpdateListener;
 import com.android.quickstep.views.RecentsView;
@@ -123,7 +123,7 @@ public final class TaskViewUtils {
     public static Animator getRecentsWindowAnimator(TaskView v, boolean skipViewChanges,
             RemoteAnimationTargetCompat[] appTargets,
             RemoteAnimationTargetCompat[] wallpaperTargets,
-            BackgroundBlurController backgroundBlurController,
+            DepthController depthController,
             final AppWindowAnimationHelper inOutHelper) {
         SyncRtSurfaceTransactionApplierCompat applier =
                 new SyncRtSurfaceTransactionApplierCompat(v);
@@ -215,9 +215,9 @@ public final class TaskViewUtils {
             }
         });
 
-        if (backgroundBlurController != null) {
-            ObjectAnimator backgroundRadiusAnim = ObjectAnimator.ofInt(backgroundBlurController,
-                    BACKGROUND_BLUR, BACKGROUND_APP.getBackgroundBlurRadius(v.getContext()));
+        if (depthController != null) {
+            ObjectAnimator backgroundRadiusAnim = ObjectAnimator.ofFloat(depthController,
+                    DEPTH, BACKGROUND_APP.getDepth(v.getContext()));
             animatorSet.playTogether(appAnimator, backgroundRadiusAnim);
         } else {
             animatorSet.play(appAnimator);

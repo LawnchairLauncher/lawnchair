@@ -16,6 +16,8 @@
 
 package com.android.launcher3;
 
+import static android.util.TypedValue.COMPLEX_UNIT_DIP;
+
 import static com.android.launcher3.BaseActivity.INVISIBLE_ALL;
 import static com.android.launcher3.BaseActivity.INVISIBLE_BY_APP_TRANSITIONS;
 import static com.android.launcher3.BaseActivity.INVISIBLE_BY_PENDING_FLAGS;
@@ -29,8 +31,9 @@ import static com.android.launcher3.anim.Interpolators.AGGRESSIVE_EASE;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_1_7;
 import static com.android.launcher3.anim.Interpolators.EXAGGERATED_EASE;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.launcher3.config.FeatureFlags.KEYGUARD_ANIMATION;
 import static com.android.launcher3.dragndrop.DragLayer.ALPHA_INDEX_TRANSITIONS;
-import static com.android.launcher3.uioverrides.BackgroundBlurController.BACKGROUND_BLUR;
+import static com.android.launcher3.uioverrides.DepthController.DEPTH;
 import static com.android.launcher3.views.FloatingIconView.SHAPE_PROGRESS_DURATION;
 import static com.android.quickstep.TaskUtils.taskIsATargetWithMode;
 import static com.android.systemui.shared.system.QuickStepContract.getWindowCornerRadius;
@@ -58,6 +61,7 @@ import android.os.CancellationSignal;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Pair;
+import android.util.TypedValue;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -65,17 +69,18 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.allapps.AllAppsTransitionController;
-import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.shortcuts.DeepShortcutView;
-import com.android.launcher3.uioverrides.BackgroundBlurController;
+import com.android.launcher3.uioverrides.DepthController;
+import com.android.launcher3.util.DynamicResource;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.launcher3.views.FloatingIconView;
 import com.android.quickstep.RemoteAnimationTargets;
 import com.android.quickstep.util.MultiValueUpdateListener;
 import com.android.quickstep.util.RemoteAnimationProvider;
+import com.android.quickstep.util.StaggeredWorkspaceAnim;
 import com.android.systemui.shared.system.ActivityCompat;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.QuickStepContract;
@@ -156,6 +161,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
     // Strong refs to runners which are cleared when the launcher activity is destroyed
     private WrappedAnimationRunnerImpl mWallpaperOpenRunner;
     private WrappedAnimationRunnerImpl mAppLaunchRunner;
+    private WrappedAnimationRunnerImpl mKeyguardGoingAwayRunner;
 
     private final AnimatorListenerAdapter mForceInvisibleListener = new AnimatorListenerAdapter() {
         @Override
@@ -380,18 +386,35 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
             alpha.setInterpolator(LINEAR);
             launcherAnimator.play(alpha);
 
-            mDragLayer.setTranslationY(trans[0]);
-            ObjectAnimator transY = ObjectAnimator.ofFloat(mDragLayer, View.TRANSLATION_Y, trans);
-            transY.setInterpolator(AGGRESSIVE_EASE);
-            transY.setDuration(CONTENT_TRANSLATION_DURATION);
-            launcherAnimator.play(transY);
+            Workspace workspace = mLauncher.getWorkspace();
+            View currentPage = ((CellLayout) workspace.getChildAt(workspace.getCurrentPage()))
+                    .getShortcutsAndWidgets();
+            View hotseat = mLauncher.getHotseat();
+            View qsb = mLauncher.findViewById(R.id.search_container_all_apps);
 
-            mDragLayer.getScrim().hideSysUiScrim(true);
+            currentPage.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+            hotseat.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+            qsb.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+
+            launcherAnimator.play(ObjectAnimator.ofFloat(currentPage, View.TRANSLATION_Y, trans));
+            launcherAnimator.play(ObjectAnimator.ofFloat(hotseat, View.TRANSLATION_Y, trans));
+            launcherAnimator.play(ObjectAnimator.ofFloat(qsb, View.TRANSLATION_Y, trans));
+
             // Pause page indicator animations as they lead to layer trashing.
             mLauncher.getWorkspace().getPageIndicator().pauseAnimations();
-            mDragLayer.setLayerType(View.LAYER_TYPE_HARDWARE, null);
 
-            endListener = this::resetContentView;
+            endListener = () -> {
+                currentPage.setTranslationY(0);
+                hotseat.setTranslationY(0);
+                qsb.setTranslationY(0);
+
+                currentPage.setLayerType(View.LAYER_TYPE_NONE, null);
+                hotseat.setLayerType(View.LAYER_TYPE_NONE, null);
+                qsb.setLayerType(View.LAYER_TYPE_NONE, null);
+
+                mDragLayerAlpha.setValue(1f);
+                mLauncher.getWorkspace().getPageIndicator().skipAnimationsToEnd();
+            };
         }
         return new Pair<>(launcherAnimator, endListener);
     }
@@ -589,17 +612,17 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
         // When launching an app from overview that doesn't map to a task, we still want to just
         // blur the wallpaper instead of the launcher surface as well
         boolean allowBlurringLauncher = mLauncher.getStateManager().getState() != OVERVIEW;
-        BackgroundBlurController blurController = mLauncher.getBackgroundBlurController();
-        ObjectAnimator backgroundRadiusAnim = ObjectAnimator.ofInt(blurController, BACKGROUND_BLUR,
-                BACKGROUND_APP.getBackgroundBlurRadius(mLauncher))
+        DepthController depthController = mLauncher.getDepthController();
+        ObjectAnimator backgroundRadiusAnim = ObjectAnimator.ofFloat(depthController, DEPTH,
+                BACKGROUND_APP.getDepth(mLauncher))
                 .setDuration(APP_LAUNCH_DURATION);
         if (allowBlurringLauncher) {
-            blurController.setSurfaceToApp(RemoteAnimationProvider.findLowestOpaqueLayerTarget(
+            depthController.setSurfaceToApp(RemoteAnimationProvider.findLowestOpaqueLayerTarget(
                     appTargets, MODE_OPENING));
             backgroundRadiusAnim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    blurController.setSurfaceToLauncher(mLauncher.getDragLayer());
+                    depthController.setSurfaceToLauncher(mLauncher.getDragLayer());
                 }
             });
         }
@@ -623,6 +646,17 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                             new WrappedLauncherAnimationRunner<>(mWallpaperOpenRunner,
                                     false /* startAtFrontOfQueue */),
                             CLOSING_TRANSITION_DURATION_MS, 0 /* statusBarTransitionDelay */));
+
+            if (KEYGUARD_ANIMATION.get()) {
+                mKeyguardGoingAwayRunner = createWallpaperOpenRunner(true /* fromUnlock */);
+                definition.addRemoteAnimation(
+                        WindowManagerWrapper.TRANSIT_KEYGUARD_GOING_AWAY_ON_WALLPAPER,
+                        new RemoteAnimationAdapterCompat(
+                                new WrappedLauncherAnimationRunner<>(mKeyguardGoingAwayRunner,
+                                        true /* startAtFrontOfQueue */),
+                                CLOSING_TRANSITION_DURATION_MS, 0 /* statusBarTransitionDelay */));
+            }
+
             new ActivityCompat(mLauncher).registerRemoteAnimations(definition);
         }
     }
@@ -639,6 +673,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
             // definition so we don't have to wait for the system gc
             mWallpaperOpenRunner = null;
             mAppLaunchRunner = null;
+            mKeyguardGoingAwayRunner = null;
         }
     }
 
@@ -741,62 +776,6 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
         return closingAnimator;
     }
 
-    /**
-     * Creates an animator that modifies Launcher as a result from 
-     * {@link #createWallpaperOpenRunner}.
-     */
-    private void createLauncherResumeAnimation(AnimatorSet anim) {
-        if (mLauncher.isInState(LauncherState.ALL_APPS)) {
-            Pair<AnimatorSet, Runnable> contentAnimator =
-                    getLauncherContentAnimator(false /* isAppOpening */,
-                            new float[] {-mContentTransY, 0});
-            contentAnimator.first.setStartDelay(LAUNCHER_RESUME_START_DELAY);
-            anim.play(contentAnimator.first);
-            anim.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    contentAnimator.second.run();
-                }
-            });
-        } else {
-            AnimatorSet workspaceAnimator = new AnimatorSet();
-
-            mDragLayer.setTranslationY(-mWorkspaceTransY);;
-            workspaceAnimator.play(ObjectAnimator.ofFloat(mDragLayer, View.TRANSLATION_Y,
-                    -mWorkspaceTransY, 0));
-
-            mDragLayerAlpha.setValue(0);
-            workspaceAnimator.play(ObjectAnimator.ofFloat(
-                    mDragLayerAlpha, MultiValueAlpha.VALUE, 0, 1f));
-
-            workspaceAnimator.setStartDelay(LAUNCHER_RESUME_START_DELAY);
-            workspaceAnimator.setDuration(333);
-            workspaceAnimator.setInterpolator(Interpolators.DEACCEL_1_7);
-
-            mDragLayer.getScrim().hideSysUiScrim(true);
-
-            // Pause page indicator animations as they lead to layer trashing.
-            mLauncher.getWorkspace().getPageIndicator().pauseAnimations();
-            mDragLayer.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-
-            workspaceAnimator.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    resetContentView();
-                }
-            });
-            anim.play(workspaceAnimator);
-        }
-    }
-
-    private void resetContentView() {
-        mLauncher.getWorkspace().getPageIndicator().skipAnimationsToEnd();
-        mDragLayerAlpha.setValue(1f);
-        mDragLayer.setLayerType(View.LAYER_TYPE_NONE, null);
-        mDragLayer.setTranslationY(0f);
-        mDragLayer.getScrim().hideSysUiScrim(false);
-    }
-
     private boolean hasControlRemoteAppTransitionPermission() {
         return mLauncher.checkSelfPermission(CONTROL_REMOTE_APP_TRANSITION_PERMISSION)
                 == PackageManager.PERMISSION_GRANTED;
@@ -868,11 +847,12 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                         || mLauncher.isForceInvisible()) {
                     // Only register the content animation for cancellation when state changes
                     mLauncher.getStateManager().setCurrentAnimation(anim);
-                    if (mFromUnlock) {
+
+                    if (mLauncher.isInState(LauncherState.ALL_APPS)) {
                         Pair<AnimatorSet, Runnable> contentAnimator =
                                 getLauncherContentAnimator(false /* isAppOpening */,
-                                        new float[] {mContentTransY, 0});
-                        contentAnimator.first.setStartDelay(0);
+                                        new float[] {-mContentTransY, 0});
+                        contentAnimator.first.setStartDelay(LAUNCHER_RESUME_START_DELAY);
                         anim.play(contentAnimator.first);
                         anim.addListener(new AnimatorListenerAdapter() {
                             @Override
@@ -881,7 +861,12 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                             }
                         });
                     } else {
-                        createLauncherResumeAnimation(anim);
+                        float velocityDpPerS = DynamicResource.provider(mLauncher)
+                                .getDimension(R.dimen.unlock_staggered_velocity_dp_per_s);
+                        float velocityPxPerS = TypedValue.applyDimension(COMPLEX_UNIT_DIP,
+                                velocityDpPerS, mLauncher.getResources().getDisplayMetrics());
+                        anim.play(new StaggeredWorkspaceAnim(mLauncher, velocityPxPerS, false)
+                                .getAnimators());
                     }
                 }
             }

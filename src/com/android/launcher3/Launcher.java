@@ -124,7 +124,7 @@ import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.AllAppsSwipeController;
 import com.android.launcher3.touch.ItemClickHandler;
-import com.android.launcher3.uioverrides.BackgroundBlurController;
+import com.android.launcher3.uioverrides.DepthController;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -326,18 +326,20 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     private boolean mDeferOverlayCallbacks;
     private final Runnable mDeferredOverlayCallbacks = this::checkIfOverlayStillDeferred;
 
-    private BackgroundBlurController mBackgroundBlurController =
-            new BackgroundBlurController(this);
+    private DepthController mDepthController =
+            new DepthController(this);
 
     private final ViewTreeObserver.OnDrawListener mOnDrawListener =
             new ViewTreeObserver.OnDrawListener() {
                 @Override
                 public void onDraw() {
-                    getBackgroundBlurController().setSurfaceToLauncher(mDragLayer);
+                    getDepthController().setSurfaceToLauncher(mDragLayer);
                     mDragLayer.post(() -> mDragLayer.getViewTreeObserver().removeOnDrawListener(
                             this));
                 }
             };
+
+    private long mLastTouchUpTime = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -954,7 +956,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
         NotificationListener.removeNotificationsChangedListener();
         getStateManager().moveToRestState();
-        getBackgroundBlurController().setSurfaceToLauncher(null);
+        getDepthController().setSurfaceToLauncher(null);
 
         // Workaround for b/78520668, explicitly trim memory once UI is hidden
         onTrimMemory(TRIM_MEMORY_UI_HIDDEN);
@@ -1115,7 +1117,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
         super.onPause();
         mDragController.cancelDrag();
-        mDragController.resetLastGestureUpTime();
+        mLastTouchUpTime = -1;
         mDropTargetBar.animateToVisibility(false);
 
         if (!mDeferOverlayCallbacks) {
@@ -1838,6 +1840,9 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_UP) {
+            mLastTouchUpTime = System.currentTimeMillis();
+        }
         TestLogging.recordMotionEvent(TestProtocol.SEQUENCE_MAIN, "Touch event", ev);
         return super.dispatchTouchEvent(ev);
     }
@@ -2465,8 +2470,12 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     }
 
     private boolean canRunNewAppsAnimation() {
-        long diff = System.currentTimeMillis() - mDragController.getLastGestureUpTime();
-        return diff > (NEW_APPS_ANIMATION_INACTIVE_TIMEOUT_SECONDS * 1000);
+        if (mDragController.isDragging()) {
+            return false;
+        } else {
+            return (System.currentTimeMillis() - mLastTouchUpTime)
+                    > (NEW_APPS_ANIMATION_INACTIVE_TIMEOUT_SECONDS * 1000);
+        }
     }
 
     private ValueAnimator createNewAppBounceAnimation(View v, int i) {
@@ -2708,7 +2717,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     protected StateHandler[] createStateHandlers() {
         return new StateHandler[] { getAllAppsController(), getWorkspace(),
-                getBackgroundBlurController() };
+                getDepthController() };
     }
 
     public TouchController[] createTouchControllers() {
@@ -2745,8 +2754,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         return Stream.of(APP_INFO, WIDGETS, INSTALL);
     }
 
-    public BackgroundBlurController getBackgroundBlurController() {
-        return mBackgroundBlurController;
+    public DepthController getDepthController() {
+        return mDepthController;
     }
 
     public static Launcher getLauncher(Context context) {
