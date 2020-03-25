@@ -24,12 +24,15 @@ import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
 
+import com.android.launcher3.dragndrop.DraggableView;
+
 import java.util.ArrayList;
 
 /**
  * Extension of AppWidgetHostView with support for controlled keyboard navigation.
  */
-public abstract class NavigableAppWidgetHostView extends AppWidgetHostView {
+public abstract class NavigableAppWidgetHostView extends AppWidgetHostView
+        implements DraggableView {
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mChildrenFocused;
@@ -132,5 +135,15 @@ public abstract class NavigableAppWidgetHostView extends AppWidgetHostView {
     private void dispatchChildFocus(boolean childIsFocused) {
         // The host view's background changes when selected, to indicate the focus is inside.
         setSelected(childIsFocused);
+    }
+
+    @Override
+    public int getViewType() {
+        return DRAGGABLE_WIDGET;
+    }
+
+    @Override
+    public void getVisualDragBounds(Rect bounds) {
+        bounds.set(0, 0 , getMeasuredWidth(), getMeasuredHeight());
     }
 }

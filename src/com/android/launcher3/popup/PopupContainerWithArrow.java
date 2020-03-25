@@ -59,6 +59,7 @@ import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragView;
+import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.notification.NotificationInfo;
 import com.android.launcher3.notification.NotificationItemView;
 import com.android.launcher3.notification.NotificationKeyData;
@@ -662,7 +663,8 @@ public class PopupContainerWithArrow<T extends BaseDraggingActivity> extends Arr
             iconShift.x = mIconLastTouchPos.x - sv.getIconCenter().x;
             iconShift.y = mIconLastTouchPos.y - mLauncher.getDeviceProfile().iconSizePx;
 
-            DragView dv = mLauncher.getWorkspace().beginDragShared(sv.getIconView(),
+            DraggableView draggableView = DraggableView.ofType(DraggableView.DRAGGABLE_ICON);
+            DragView dv = mLauncher.getWorkspace().beginDragShared(sv.getIconView(), draggableView,
                     mContainer, sv.getFinalInfo(),
                     new ShortcutDragPreviewProvider(sv.getIconView(), iconShift),
                     new DragOptions());

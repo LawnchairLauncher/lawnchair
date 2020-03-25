@@ -26,7 +26,6 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.SystemClock;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
@@ -63,7 +62,6 @@ public abstract class BaseItemDragListener implements View.OnDragListener, DragS
 
     protected Launcher mLauncher;
     private DragController mDragController;
-    private long mDragStartTime;
 
     public BaseItemDragListener(Rect previewRect, int previewBitmapWidth, int previewViewWidth) {
         mPreviewRect = previewRect;
@@ -102,7 +100,7 @@ public abstract class BaseItemDragListener implements View.OnDragListener, DragS
                 return false;
             }
         }
-        return mDragController.onDragEvent(mDragStartTime, event);
+        return mDragController.onDragEvent(event);
     }
 
     protected boolean onDragStart(DragEvent event) {
@@ -118,7 +116,7 @@ public abstract class BaseItemDragListener implements View.OnDragListener, DragS
 
         Point downPos = new Point((int) event.getX(), (int) event.getY());
         DragOptions options = new DragOptions();
-        options.systemDndStartPoint = downPos;
+        options.simulatedDndStartPoint = downPos;
         options.preDragCondition = preDragCondition;
 
         // We use drag event position as the screenPos for the preview image. Since mPreviewRect
@@ -128,7 +126,6 @@ public abstract class BaseItemDragListener implements View.OnDragListener, DragS
         // to source window.
         createDragHelper().startDrag(new Rect(mPreviewRect),
                 mPreviewBitmapWidth, mPreviewViewWidth, downPos, this, options);
-        mDragStartTime = SystemClock.uptimeMillis();
         return true;
     }
 

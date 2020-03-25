@@ -16,6 +16,7 @@
 package com.android.launcher3.ui;
 
 import static com.android.launcher3.LauncherState.ALL_APPS;
+import static com.android.launcher3.LauncherState.NORMAL;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -31,9 +32,9 @@ import androidx.test.runner.AndroidJUnit4;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsPagedView;
+import com.android.launcher3.allapps.WorkModeSwitch;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.views.WorkEduView;
-import com.android.launcher3.views.WorkFooterContainer;
 
 import org.junit.After;
 import org.junit.Before;
@@ -87,7 +88,7 @@ public class WorkTabTest extends AbstractLauncherUiTest {
         executeOnLauncher(launcher -> launcher.getStateManager().goToState(ALL_APPS));
         waitForState("Launcher internal state didn't switch to All Apps", () -> ALL_APPS);
         getOnceNotNull("Apps view did not bind",
-                launcher -> launcher.getAppsView().getWorkFooterContainer(), 60000);
+                launcher -> launcher.getAppsView().getWorkModeSwitch(), 60000);
 
         UserManager userManager = getFromLauncher(l -> l.getSystemService(UserManager.class));
         assertEquals(2, userManager.getUserProfiles().size());
@@ -102,10 +103,10 @@ public class WorkTabTest extends AbstractLauncherUiTest {
 
         assertTrue(userManager.isQuietModeEnabled(workProfile));
         executeOnLauncher(launcher -> {
-            WorkFooterContainer wf = launcher.getAppsView().getWorkFooterContainer();
+            WorkModeSwitch wf = launcher.getAppsView().getWorkModeSwitch();
             ((AllAppsPagedView) launcher.getAppsView().getContentView()).snapToPageImmediately(
                     AllAppsContainerView.AdapterHolder.WORK);
-            wf.getWorkModeSwitch().toggle();
+            wf.toggle();
         });
         waitForLauncherCondition("Work toggle did not work",
                 l -> l.getSystemService(UserManager.class).isQuietModeEnabled(workProfile));
@@ -158,9 +159,11 @@ public class WorkTabTest extends AbstractLauncherUiTest {
 
         // dismiss personal edu
         mDevice.pressHome();
+        waitForState("Launcher did not go home", () -> NORMAL);
 
         // open work tab
         executeOnLauncher(launcher -> launcher.getStateManager().goToState(ALL_APPS));
+        waitForState("Launcher did not switch to all apps", () -> ALL_APPS);
         executeOnLauncher(launcher -> {
             AllAppsPagedView pagedView = (AllAppsPagedView) launcher.getAppsView().getContentView();
             pagedView.setCurrentPage(WORK_PAGE);
