@@ -16,9 +16,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layerType="software"
     android:background="@color/back_gesture_tutorial_background_color">
-    <!--The layout is rendered on the software layer to avoid b/136158117-->
 
     <ImageView
         android:id="@+id/back_gesture_tutorial_fragment_hand_coaching"

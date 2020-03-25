@@ -180,7 +180,10 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
         return null;
     }
 
-    protected static <T extends AbstractFloatingView> T getOpenView(
+    /**
+     * Returns a view matching FloatingViewType
+     */
+    public static <T extends AbstractFloatingView> T getOpenView(
             ActivityContext activity, @FloatingViewType int type) {
         BaseDragLayer dragLayer = activity.getDragLayer();
         if (dragLayer == null) return null;

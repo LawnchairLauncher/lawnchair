@@ -62,10 +62,6 @@ public class PendingAnimation implements PropertySetter {
     /**
      * Utility method to sent an interpolator on an animation and add it to the list
      */
-    public void add(Animator anim, TimeInterpolator interpolator) {
-        add(anim, interpolator, SpringProperty.DEFAULT);
-    }
-
     public void add(Animator anim, TimeInterpolator interpolator, SpringProperty springProperty) {
         anim.setInterpolator(interpolator);
         add(anim, springProperty);

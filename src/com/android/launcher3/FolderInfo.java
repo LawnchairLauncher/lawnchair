@@ -79,7 +79,7 @@ public class FolderInfo extends ItemInfo {
      * Add an app or shortcut for a specified rank.
      */
     public void add(WorkspaceItemInfo item, int rank, boolean animate) {
-        rank = Utilities.boundToRange(rank, 0, contents.size() + 1);
+        rank = Utilities.boundToRange(rank, 0, contents.size());
         contents.add(rank, item);
         for (int i = 0; i < mListeners.size(); i++) {
             mListeners.get(i).onAdd(item, rank);
