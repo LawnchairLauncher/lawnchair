@@ -147,12 +147,12 @@ public class HotseatPredictionController implements DragController.DragListener,
     }
 
     /**
-     * Transitions to NORMAL workspace mode and shows edu dialog
+     * Transitions to NORMAL workspace mode and shows edu
      */
-    public void showEduDialog() {
+    public void showEdu() {
         if (mHotseatEduController == null) return;
         mLauncher.getStateManager().goToState(LauncherState.NORMAL, true,
-                () -> mHotseatEduController.showDialog());
+                () -> mHotseatEduController.showEdu());
     }
 
     @Override
