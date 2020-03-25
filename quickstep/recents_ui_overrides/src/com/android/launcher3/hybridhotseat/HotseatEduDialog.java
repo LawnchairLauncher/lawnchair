@@ -16,7 +16,8 @@
 package com.android.launcher3.hybridhotseat;
 
 import static com.android.launcher3.logging.LoggerUtils.newLauncherEvent;
-import static com.android.launcher3.userevent.nano.LauncherLogProto.ControlType.HYBRID_HOTSEAT_CANCELED;
+import static com.android.launcher3.userevent.nano.LauncherLogProto.ControlType
+        .HYBRID_HOTSEAT_CANCELED;
 
 import android.animation.PropertyValuesHolder;
 import android.content.Context;
@@ -27,9 +28,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.android.launcher3.ArrowTipView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
@@ -109,18 +108,16 @@ public class HotseatEduDialog extends AbstractSlideInView implements Insettable 
     private void onAccept(View v) {
         mHotseatEduController.migrate();
         handleClose(true);
+
+        mHotseatEduController.moveHotseatItems();
         mHotseatEduController.finishOnboarding();
         //TODO: pass actual page index here.
         // Temporarily we're passing 1 for folder migration and 2 for page migration
         logUserAction(true, FeatureFlags.HOTSEAT_MIGRATE_TO_FOLDER.get() ? 1 : 2);
-        int toastStringRes = !FeatureFlags.HOTSEAT_MIGRATE_TO_FOLDER.get()
-                ? R.string.hotseat_items_migrated : R.string.hotseat_items_migrated_alt;
-        Toast.makeText(mLauncher, toastStringRes, Toast.LENGTH_LONG).show();
     }
 
     private void onDismiss(View v) {
-        int top = mLauncher.getHotseat().getTop();
-        new ArrowTipView(mLauncher).show(mLauncher.getString(R.string.hotseat_no_migration), top);
+        mHotseatEduController.showDimissTip();
         mHotseatEduController.finishOnboarding();
         logUserAction(false, -1);
         handleClose(true);
