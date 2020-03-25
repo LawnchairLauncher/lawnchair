@@ -238,6 +238,9 @@ public class HotseatEduController {
                 && mLauncher.getOrientation() == Configuration.ORIENTATION_PORTRAIT) {
             mNotificationManager.notify(ONBOARDING_NOTIFICATION_ID, mNotification);
         }
+        else {
+            removeNotification();
+        }
     }
 
     private void createNotificationChannel() {
