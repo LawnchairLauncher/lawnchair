@@ -22,7 +22,6 @@ import android.content.Context;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.R;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.quickstep.SysUINavigationMode;
@@ -88,8 +87,8 @@ public class AllAppsState extends LauncherState {
     }
 
     @Override
-    public int getBackgroundBlurRadius(Context context) {
-        return context.getResources().getInteger(R.integer.allapps_background_blur_radius);
+    public float getDepth(Context context) {
+        return 1f;
     }
 
     @Override
