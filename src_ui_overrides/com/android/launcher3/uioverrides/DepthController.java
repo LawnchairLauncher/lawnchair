@@ -17,7 +17,7 @@
 package com.android.launcher3.uioverrides;
 
 
-import android.util.IntProperty;
+import android.util.FloatProperty;
 import android.view.View;
 
 import com.android.launcher3.Launcher;
@@ -27,26 +27,22 @@ import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.states.StateAnimationConfig;
 
 /**
- * Controls the blur, for the Launcher surface only.
+ * Controls blur and wallpaper zoom, for the Launcher surface only.
  */
-public class BackgroundBlurController implements LauncherStateManager.StateHandler {
+public class DepthController implements LauncherStateManager.StateHandler {
 
-    public static final IntProperty<BackgroundBlurController> BACKGROUND_BLUR =
-            new IntProperty<BackgroundBlurController>("backgroundBlur") {
+    public static final FloatProperty<DepthController> DEPTH =
+            new FloatProperty<DepthController>("depth") {
                 @Override
-                public void setValue(BackgroundBlurController blurController, int blurRadius) {}
+                public void setValue(DepthController depthController, float depth) {}
 
                 @Override
-                public Integer get(BackgroundBlurController blurController) {
-                    return 0;
+                public Float get(DepthController depthController) {
+                    return 0f;
                 }
             };
 
-    public BackgroundBlurController(Launcher l) {}
-
-    public int getFolderBackgroundBlurAdjustment() {
-        return 0;
-    }
+    public DepthController(Launcher l) {}
 
     public void setSurfaceToLauncher(View v) {}
 

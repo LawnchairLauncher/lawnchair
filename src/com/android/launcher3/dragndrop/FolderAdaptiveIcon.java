@@ -20,10 +20,10 @@ import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
 import android.annotation.TargetApi;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Path;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -33,7 +33,6 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.Launcher;
-import com.android.launcher3.R;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.folder.PreviewBackground;
 import com.android.launcher3.graphics.ShiftedBitmapDrawable;
@@ -50,6 +49,7 @@ public class FolderAdaptiveIcon extends AdaptiveIconDrawable {
     private final Drawable mBadge;
     private final Path mMask;
     private final ConstantState mConstantState;
+    private static final Rect sTmpRect = new Rect();
 
     private FolderAdaptiveIcon(Drawable bg, Drawable fg, Drawable badge, Path mask) {
         super(bg, fg);
@@ -72,23 +72,14 @@ public class FolderAdaptiveIcon extends AdaptiveIconDrawable {
     public static @Nullable FolderAdaptiveIcon createFolderAdaptiveIcon(
             Launcher launcher, int folderId, Point dragViewSize) {
         Preconditions.assertNonUiThread();
-        int margin = launcher.getResources()
-                .getDimensionPixelSize(R.dimen.blur_size_medium_outline);
-
-        // Allocate various bitmaps on the background thread, because why not!
-        int width = dragViewSize.x - margin;
-        int height = dragViewSize.y - margin;
-        if (width <= 0 || height <= 0) {
-            return null;
-        }
-        final Bitmap badge = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
 
         // Create the actual drawable on the UI thread to avoid race conditions with
         // FolderIcon draw pass
         try {
             return MAIN_EXECUTOR.submit(() -> {
                 FolderIcon icon = launcher.findFolderIcon(folderId);
-                return icon == null ? null : createDrawableOnUiThread(icon, badge, dragViewSize);
+                return icon == null ? null : createDrawableOnUiThread(icon, dragViewSize);
+
             }).get();
         } catch (Exception e) {
             Log.e(TAG, "Unable to create folder icon", e);
@@ -96,49 +87,50 @@ public class FolderAdaptiveIcon extends AdaptiveIconDrawable {
         }
     }
 
-    /**
-     * Initializes various bitmaps on the UI thread and returns the final drawable.
-     */
     private static FolderAdaptiveIcon createDrawableOnUiThread(FolderIcon icon,
-            Bitmap badgeBitmap, Point dragViewSize) {
+                                                               Point dragViewSize) {
         Preconditions.assertUIThread();
-        float margin = icon.getResources().getDimension(R.dimen.blur_size_medium_outline) / 2;
 
-        Canvas c = new Canvas();
+        icon.getPreviewBounds(sTmpRect);
+
         PreviewBackground bg = icon.getFolderBackground();
 
-        // Initialize badge
-        c.setBitmap(badgeBitmap);
-        bg.drawShadow(c);
-        bg.drawBackgroundStroke(c);
-        icon.drawDot(c);
+        // assume square
+        assert (dragViewSize.x == dragViewSize.y);
+        final int previewSize = sTmpRect.width();
 
-        // Initialize preview
-        final float sizeScaleFactor = 1 + 2 * AdaptiveIconDrawable.getExtraInsetFraction();
-        final int previewWidth = (int) (dragViewSize.x * sizeScaleFactor);
-        final int previewHeight = (int) (dragViewSize.y * sizeScaleFactor);
+        final int margin = (dragViewSize.x - previewSize) / 2;
+        final float previewShiftX = -sTmpRect.left + margin;
+        final float previewShiftY = -sTmpRect.top + margin;
 
-        final float shiftFactor = AdaptiveIconDrawable.getExtraInsetFraction() / sizeScaleFactor;
-        final float previewShiftX = shiftFactor * previewWidth;
-        final float previewShiftY = shiftFactor * previewHeight;
-
-        Bitmap previewBitmap = BitmapRenderer.createHardwareBitmap(previewWidth, previewHeight,
+        // Initialize badge, which consists of the outline stroke, shadow and dot; these
+        // must be rendered above the foreground
+        Bitmap badgeBmp = BitmapRenderer.createHardwareBitmap(dragViewSize.x, dragViewSize.y,
                 (canvas) -> {
-                    int count = canvas.save();
+                    canvas.save();
                     canvas.translate(previewShiftX, previewShiftY);
-                    icon.getPreviewItemManager().draw(canvas);
-                    canvas.restoreToCount(count);
+                    bg.drawShadow(canvas);
+                    bg.drawBackgroundStroke(canvas);
+                    icon.drawDot(canvas);
+                    canvas.restore();
                 });
 
         // Initialize mask
         Path mask = new Path();
         Matrix m = new Matrix();
-        m.setTranslate(margin, margin);
+        m.setTranslate(previewShiftX, previewShiftY);
         bg.getClipPath().transform(m, mask);
 
-        ShiftedBitmapDrawable badge = new ShiftedBitmapDrawable(badgeBitmap, margin, margin);
-        ShiftedBitmapDrawable foreground = new ShiftedBitmapDrawable(previewBitmap,
-                margin - previewShiftX, margin - previewShiftY);
+        Bitmap previewBitmap = BitmapRenderer.createHardwareBitmap(dragViewSize.x, dragViewSize.y,
+                (canvas) -> {
+                    canvas.save();
+                    canvas.translate(previewShiftX, previewShiftY);
+                    icon.getPreviewItemManager().draw(canvas);
+                    canvas.restore();
+                });
+
+        ShiftedBitmapDrawable badge = new ShiftedBitmapDrawable(badgeBmp, 0, 0);
+        ShiftedBitmapDrawable foreground = new ShiftedBitmapDrawable(previewBitmap, 0, 0);
 
         return new FolderAdaptiveIcon(new ColorDrawable(bg.getBgColor()), foreground, badge, mask);
     }
