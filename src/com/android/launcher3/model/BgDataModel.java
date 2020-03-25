@@ -424,7 +424,8 @@ public class BgDataModel {
         // Now add the new shortcuts to the map.
         for (ShortcutInfo shortcut : shortcuts) {
             boolean shouldShowInContainer = shortcut.isEnabled()
-                    && (shortcut.isDeclaredInManifest() || shortcut.isDynamic());
+                    && (shortcut.isDeclaredInManifest() || shortcut.isDynamic())
+                    && shortcut.getActivity() != null;
             if (shouldShowInContainer) {
                 ComponentKey targetComponent
                         = new ComponentKey(shortcut.getActivity(), shortcut.getUserHandle());

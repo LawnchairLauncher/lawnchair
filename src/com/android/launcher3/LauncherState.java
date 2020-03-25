@@ -271,11 +271,13 @@ public abstract class LauncherState {
     }
 
     /**
-     * The amount of blur to apply to the background of either the app or Launcher surface in this
-     * state.
+     * The amount of blur and wallpaper zoom to apply to the background of either the app
+     * or Launcher surface in this state. Should be a number between 0 and 1, inclusive.
+     *
+     * 0 means completely zoomed in, without blurs. 1 is zoomed out, with blurs.
      */
-    public int getBackgroundBlurRadius(Context context) {
-        return 0;
+    public float getDepth(Context context) {
+        return 0f;
     }
 
     public String getDescription(Launcher launcher) {

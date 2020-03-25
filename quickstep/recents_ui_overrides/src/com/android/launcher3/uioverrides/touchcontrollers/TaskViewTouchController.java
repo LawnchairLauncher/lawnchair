@@ -81,6 +81,9 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
 
     private boolean canInterceptTouch() {
         if (mCurrentAnimation != null) {
+            mCurrentAnimation.forceFinishIfCloseToEnd();
+        }
+        if (mCurrentAnimation != null) {
             // If we are already animating from a previous state, we can intercept.
             return true;
         }
@@ -126,6 +129,7 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
 
                 for (int i = 0; i < mRecentsView.getTaskViewCount(); i++) {
                     TaskView view = mRecentsView.getTaskViewAt(i);
+
                     if (mRecentsView.isTaskViewVisible(view) && mActivity.getDragLayer()
                             .isEventOverView(view, ev)) {
                         // Disable swiping up and down if the task overlay is modal.

@@ -41,7 +41,6 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
-import android.widget.TextView;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.CellLayout;
@@ -52,7 +51,6 @@ import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.folder.Folder;
-import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.OverviewScrim;
 import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.graphics.WorkspaceAndHotseatScrim;
@@ -89,6 +87,8 @@ public class DragLayer extends BaseDragLayer<Launcher> {
 
     private int mTopViewIndex;
     private int mChildCountOnLastUpdate = -1;
+
+    private Rect mTmpRect = new Rect();
 
     // Related to adjacent page hints
     private final ViewGroupFocusHelper mFocusIndicatorHelper;
@@ -254,59 +254,46 @@ public class DragLayer extends BaseDragLayer<Launcher> {
 
     public void animateViewIntoPosition(DragView dragView, final View child, int duration,
             View anchorView) {
+
         ShortcutAndWidgetContainer parentChildren = (ShortcutAndWidgetContainer) child.getParent();
         CellLayout.LayoutParams lp =  (CellLayout.LayoutParams) child.getLayoutParams();
         parentChildren.measureChild(child);
+        parentChildren.layoutChild(child);
 
-        Rect r = new Rect();
-        getViewRectRelativeToSelf(dragView, r);
+        getViewRectRelativeToSelf(dragView, mTmpRect);
+        final int fromX = mTmpRect.left;
+        final int fromY = mTmpRect.top;
 
         float coord[] = new float[2];
         float childScale = child.getScaleX();
+
         coord[0] = lp.x + (child.getMeasuredWidth() * (1 - childScale) / 2);
         coord[1] = lp.y + (child.getMeasuredHeight() * (1 - childScale) / 2);
 
         // Since the child hasn't necessarily been laid out, we force the lp to be updated with
         // the correct coordinates (above) and use these to determine the final location
         float scale = getDescendantCoordRelativeToSelf((View) child.getParent(), coord);
+
         // We need to account for the scale of the child itself, as the above only accounts for
         // for the scale in parents.
         scale *= childScale;
         int toX = Math.round(coord[0]);
         int toY = Math.round(coord[1]);
         float toScale = scale;
-        if (child instanceof TextView) {
-            TextView tv = (TextView) child;
-            // Account for the source scale of the icon (ie. from AllApps to Workspace, in which
-            // the workspace may have smaller icon bounds).
-            toScale = scale / dragView.getIntrinsicIconScaleFactor();
 
-            // The child may be scaled (always about the center of the view) so to account for it,
-            // we have to offset the position by the scaled size.  Once we do that, we can center
-            // the drag view about the scaled child view.
-            // padding will remain constant (does not scale with size)
-            toY += tv.getPaddingTop();
-            toY -= dragView.getMeasuredHeight() * (1 - toScale) / 2;
-            if (dragView.getDragVisualizeOffset() != null) {
-                toY -=  Math.round(toScale * dragView.getDragVisualizeOffset().y);
-            }
+        if (child instanceof DraggableView) {
+            DraggableView d = (DraggableView) child;
+            d.getVisualDragBounds(mTmpRect);
 
-            toX -= (dragView.getMeasuredWidth() - Math.round(scale * child.getMeasuredWidth())) / 2;
-        } else if (child instanceof FolderIcon) {
-            // Account for holographic blur padding on the drag view
-            toY += Math.round(scale * (child.getPaddingTop() - dragView.getDragRegionTop()));
-            toY -= scale * dragView.getBlurSizeOutline() / 2;
-            toY -= (1 - scale) * dragView.getMeasuredHeight() / 2;
-            // Center in the x coordinate about the target's drawable
-            toX -= (dragView.getMeasuredWidth() - Math.round(scale * child.getMeasuredWidth())) / 2;
-        } else {
-            toY -= (Math.round(scale * (dragView.getHeight() - child.getMeasuredHeight()))) / 2;
-            toX -= (Math.round(scale * (dragView.getMeasuredWidth()
-                    - child.getMeasuredWidth()))) / 2;
+            // This accounts for the offset of the DragView created by scaling it about its
+            // center as it animates into place.
+            float scaleShiftX = dragView.getMeasuredWidth() * (1 - scale) / 2;
+            float scaleShiftY = dragView.getMeasuredHeight() * (1 - scale) / 2;
+
+            toX += scale * (mTmpRect.left - dragView.getBlurSizeOutline() / 2) - scaleShiftX;
+            toY += scale * (mTmpRect.top - dragView.getBlurSizeOutline() / 2) - scaleShiftY;
         }
 
-        final int fromX = r.left;
-        final int fromY = r.top;
         child.setVisibility(INVISIBLE);
         Runnable onCompleteRunnable = () -> child.setVisibility(VISIBLE);
         animateViewIntoPosition(dragView, fromX, fromY, toX, toY, 1, 1, 1, toScale, toScale,
@@ -559,7 +546,7 @@ public class DragLayer extends BaseDragLayer<Launcher> {
     @Override
     public void setInsets(Rect insets) {
         super.setInsets(insets);
-        mWorkspaceScrim.onInsetsChanged(insets);
+        mWorkspaceScrim.onInsetsChanged(insets, mAllowSysuiScrims);
         mOverviewScrim.onInsetsChanged(insets);
     }
 

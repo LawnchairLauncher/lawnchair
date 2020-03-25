@@ -247,8 +247,17 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
 
     /** Updates UI based on whether the task is modal. */
     public void updateUiForModalTask() {
+        boolean isOverlayModal = isTaskOverlayModal();
         if (getRecentsView() != null) {
-            getRecentsView().updateUiForModalTask(this, isTaskOverlayModal());
+            getRecentsView().updateUiForModalTask(this, isOverlayModal);
+        }
+        // Hide footers when overlay is modal.
+        if (isOverlayModal) {
+            for (FooterWrapper footer : mFooters) {
+                if (footer != null) {
+                    footer.animateHide();
+                }
+            }
         }
     }
 
@@ -776,6 +785,22 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                int totalShift = mExpectedHeight + mView.getPaddingBottom() - mOldPaddingBottom;
                 mEntryAnimationOffset = Math.round(factor * totalShift);
                 updateFooterOffset();
+            });
+            animator.setDuration(100);
+            animator.start();
+        }
+
+        void animateHide() {
+            ValueAnimator animator = ValueAnimator.ofFloat(0.0f, 1.0f);
+            animator.addUpdateListener(anim -> {
+                mFooterVerticalOffset = anim.getAnimatedFraction();
+                updateFooterOffset();
+            });
+            animator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    removeView(mView);
+                }
             });
             animator.setDuration(100);
             animator.start();

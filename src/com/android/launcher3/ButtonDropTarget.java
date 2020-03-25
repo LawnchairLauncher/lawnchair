@@ -155,7 +155,7 @@ public abstract class ButtonDropTarget extends TextView
 
     @Override
     public final void onDragEnter(DragObject d) {
-        if (!d.accessibleDrag && !mTextVisible) {
+        if (!mAccessibleDrag && !mTextVisible) {
             // Show tooltip
             hideTooltip();
 
