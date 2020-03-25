@@ -62,6 +62,7 @@ public class HotseatEduController {
             "android.settings.ACTION_CONTENT_SUGGESTIONS_SETTINGS";
 
     private final Launcher mLauncher;
+    private final Hotseat mHotseat;
     private final NotificationManager mNotificationManager;
     private final Notification mNotification;
     private List<WorkspaceItemInfo> mPredictedApps;
@@ -70,7 +71,6 @@ public class HotseatEduController {
     private ArrayList<ItemInfo> mNewItems = new ArrayList<>();
     private IntArray mNewScreens = null;
     private Runnable mOnOnboardingComplete;
-    private Hotseat mHotseat;
 
     HotseatEduController(Launcher launcher, Runnable runnable) {
         mLauncher = launcher;
