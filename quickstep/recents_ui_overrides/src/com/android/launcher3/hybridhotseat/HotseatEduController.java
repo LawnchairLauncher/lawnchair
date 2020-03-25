@@ -26,6 +26,7 @@ import android.view.View;
 
 import androidx.core.app.NotificationCompat;
 
+import com.android.launcher3.ArrowTipView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.FolderInfo;
 import com.android.launcher3.Hotseat;
@@ -42,6 +43,7 @@ import com.android.launcher3.util.ActivityTracker;
 import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.Themes;
+import com.android.launcher3.views.Snackbar;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -56,6 +58,9 @@ public class HotseatEduController {
     private static final String NOTIFICATION_CHANNEL_ID = "launcher_onboarding";
     private static final int ONBOARDING_NOTIFICATION_ID = 7641;
 
+    private static final String SETTINGS_ACTION =
+            "android.settings.ACTION_CONTENT_SUGGESTIONS_SETTINGS";
+
     private final Launcher mLauncher;
     private final NotificationManager mNotificationManager;
     private final Notification mNotification;
@@ -65,9 +70,11 @@ public class HotseatEduController {
     private ArrayList<ItemInfo> mNewItems = new ArrayList<>();
     private IntArray mNewScreens = null;
     private Runnable mOnOnboardingComplete;
+    private Hotseat mHotseat;
 
     HotseatEduController(Launcher launcher, Runnable runnable) {
         mLauncher = launcher;
+        mHotseat = launcher.getHotseat();
         mOnOnboardingComplete = runnable;
         mNotificationManager = mLauncher.getSystemService(NotificationManager.class);
         createNotificationChannel();
@@ -98,7 +105,7 @@ public class HotseatEduController {
 
         //separate folders and items that can get in folders
         for (int i = 0; i < mLauncher.getDeviceProfile().inv.numHotseatIcons; i++) {
-            View view = mLauncher.getHotseat().getChildAt(i, 0);
+            View view = mHotseat.getChildAt(i, 0);
             if (view == null) continue;
             ItemInfo info = (ItemInfo) view.getTag();
             if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
@@ -178,7 +185,6 @@ public class HotseatEduController {
      */
     private int migrateHotseatWhole() {
         Workspace workspace = mLauncher.getWorkspace();
-        Hotseat hotseatVG = mLauncher.getHotseat();
 
         int pageId = -1;
         int toRow = 0;
@@ -196,7 +202,7 @@ public class HotseatEduController {
                     .getInt(LauncherSettings.Settings.EXTRA_VALUE);
         }
         for (int i = 0; i < mLauncher.getDeviceProfile().inv.numHotseatIcons; i++) {
-            View child = hotseatVG.getChildAt(i, 0);
+            View child = mHotseat.getChildAt(i, 0);
             if (child == null || child.getTag() == null) continue;
             ItemInfo tag = (ItemInfo) child.getTag();
             mLauncher.getModelWriter().moveItemInDatabase(tag,
@@ -211,8 +217,8 @@ public class HotseatEduController {
         mNotificationManager.cancel(ONBOARDING_NOTIFICATION_ID);
     }
 
-    void finishOnboarding() {
-        mLauncher.getHotseat().removeAllViewsInLayout();
+    void moveHotseatItems() {
+        mHotseat.removeAllViewsInLayout();
         if (!mNewItems.isEmpty()) {
             int lastPage = mNewItems.get(mNewItems.size() - 1).screenId;
             ArrayList<ItemInfo> animated = new ArrayList<>();
@@ -227,9 +233,23 @@ public class HotseatEduController {
             }
             mLauncher.bindAppsAdded(mNewScreens, nonAnimated, animated);
         }
+    }
+
+    void finishOnboarding() {
         mOnOnboardingComplete.run();
         destroy();
         mLauncher.getSharedPrefs().edit().putBoolean(KEY_HOTSEAT_EDU_SEEN, true).apply();
+    }
+
+    void showDimissTip() {
+        if (mHotseat.getShortcutsAndWidgets().getChildCount()
+                < mLauncher.getDeviceProfile().inv.numHotseatIcons) {
+            Snackbar.show(mLauncher, R.string.hotseat_tip_gaps_filled, R.string.hotseat_turn_off,
+                    null, () -> mLauncher.startActivity(new Intent(SETTINGS_ACTION)));
+        } else {
+            new ArrowTipView(mLauncher).show(
+                    mLauncher.getString(R.string.hotseat_tip_no_empty_slots), mHotseat.getTop());
+        }
     }
 
     void setPredictedApps(List<WorkspaceItemInfo> predictedApps) {
@@ -278,6 +298,17 @@ public class HotseatEduController {
         }
     }
 
+    void showEdu() {
+        // hotseat is already empty and does not require migration. show edu tip
+        if (mHotseat.getShortcutsAndWidgets().getChildCount() == 0) {
+            new ArrowTipView(mLauncher).show(mLauncher.getString(R.string.hotseat_auto_enrolled),
+                    mHotseat.getTop());
+            finishOnboarding();
+        } else {
+            showDialog();
+        }
+    }
+
     void showDialog() {
         if (mPredictedApps == null || mPredictedApps.isEmpty()) {
             return;
@@ -294,7 +325,7 @@ public class HotseatEduController {
             ActivityTracker.SchedulerCallback<QuickstepLauncher> {
         @Override
         public boolean init(QuickstepLauncher activity, boolean alreadyOnHome) {
-            activity.getHotseatPredictionController().showEduDialog();
+            activity.getHotseatPredictionController().showEdu();
             return true;
         }
     }
