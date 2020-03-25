@@ -162,6 +162,7 @@ public class HotseatEduDialog extends AbstractSlideInView implements Insettable 
         target.rank = MIGRATION_EXPERIMENT_IDENTIFIER;
         // encoding migration type on pageIndex
         target.pageIndex = pageIndex;
+        target.cardinality = HotseatPredictionController.MAX_ITEMS_FOR_MIGRATION;
         LauncherLogProto.LauncherEvent event = newLauncherEvent(action, target);
         UserEventDispatcher.newInstance(getContext()).dispatchUserEvent(event, null);
     }
