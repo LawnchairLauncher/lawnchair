@@ -83,15 +83,15 @@
     <!-- Button text to dismiss opt in for fully predicted hotseat -->
     <string name="hotseat_edu_dismiss">No thanks</string>
 
-    <!-- action shown to turn of predictions after onboarding -->
+    <!-- action shown to turn off predictions after onboarding -->
     <string name="hotseat_turn_off">Settings</string>
 
     <!-- tip shown if user has no items in hotseat to migrate -->
     <string name="hotseat_auto_enrolled">Most-used apps appear here, and change based on routines</string>
-    <!-- tip shown if user declines migration and has some open spots for prediction -->
-    <string name="hotseat_tip_no_empty_slots">Drag apps off the bottom row to get app suggestions</string>
     <!-- tip shown if user declines migration and has no open spots for prediction -->
-    <string name="hotseat_tip_gaps_filled">App suggestions added to empty space.</string>
+    <string name="hotseat_tip_no_empty_slots">Drag apps off the bottom row to get app suggestions</string>
+    <!-- tip shown if user declines migration and has some open spots for prediction -->
+    <string name="hotseat_tip_gaps_filled">App suggestions added to empty space</string>
 
 
     <!-- Title shown during interactive part of Back gesture tutorial for right edge. [CHAR LIMIT=30] -->
