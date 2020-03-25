@@ -1188,7 +1188,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         mScrimView = findViewById(R.id.scrim_view);
 
         // Setup the drag controller (drop targets have to be added in reverse order in priority)
-        mDragController.setMoveTarget(mWorkspace);
         mDropTargetBar.setup(mDragController);
 
         mAllAppsController.setupViews(mAppsView);
@@ -1488,11 +1487,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             target.pageIndex = mWorkspace.getCurrentPage();
             ued.logActionCommand(Action.Command.HOME_INTENT, target,
                     newContainerTarget(ContainerType.WORKSPACE));
-
-            final View v = getWindow().peekDecorView();
-            if (v != null && v.getWindowToken() != null) {
-                UiThreadHelper.hideKeyboardAsync(this, v.getWindowToken());
-            }
+            hideKeyboard();
 
             if (mLauncherCallbacks != null) {
                 mLauncherCallbacks.onHomeIntent(internalStateHandled);
@@ -1501,6 +1496,16 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         }
 
         TraceHelper.INSTANCE.endSection(traceToken);
+    }
+
+    /**
+     * Hides the keyboard if visible
+     */
+    public void hideKeyboard() {
+        final View v = getWindow().peekDecorView();
+        if (v != null && v.getWindowToken() != null) {
+            UiThreadHelper.hideKeyboardAsync(this, v.getWindowToken());
+        }
     }
 
     @Override
