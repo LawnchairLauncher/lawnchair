@@ -114,6 +114,7 @@ import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.pm.PinRequestHelper;
+import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.popup.SystemShortcut;
@@ -137,6 +138,7 @@ import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.PendingRequestArgs;
+import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.util.ShortcutUtil;
 import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.Themes;
@@ -327,6 +329,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     private long mLastTouchUpTime = -1;
     private boolean mTouchInProgress;
 
+    private SafeCloseable mUserChangedCallbackCloseable;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Object traceToken = TraceHelper.INSTANCE.beginSection(ON_CREATE_EVT,
@@ -445,6 +449,9 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         });
 
         TraceHelper.INSTANCE.endSection(traceToken);
+
+        mUserChangedCallbackCloseable = UserCache.INSTANCE.get(this).addUserChangeListener(
+                () -> getStateManager().goToState(NORMAL));
     }
 
     protected LauncherOverlayManager getDefaultOverlay() {
@@ -1576,6 +1583,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
         mOverlayManager.onActivityDestroyed(this);
         mAppTransitionManager.unregisterRemoteAnimations();
+        mUserChangedCallbackCloseable.close();
     }
 
     public LauncherAccessibilityDelegate getAccessibilityDelegate() {
