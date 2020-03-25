@@ -63,6 +63,7 @@ import com.android.launcher3.dot.FolderDotInfo;
 import com.android.launcher3.dragndrop.BaseItemDragListener;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragView;
+import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.icons.DotRenderer;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.util.Executors;
@@ -78,7 +79,8 @@ import java.util.function.Predicate;
 /**
  * An icon that can appear on in the workspace representing an {@link Folder}.
  */
-public class FolderIcon extends FrameLayout implements FolderListener, IconLabelDotView {
+public class FolderIcon extends FrameLayout implements FolderListener, IconLabelDotView,
+        DraggableView {
 
     @Thunk ActivityContext mActivity;
     @Thunk Folder mFolder;
@@ -228,6 +230,16 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
     public void getPreviewBounds(Rect outBounds) {
         mPreviewItemManager.recomputePreviewDrawingParams();
         mBackground.getBounds(outBounds);
+    }
+
+    @Override
+    public int getViewType() {
+        return DRAGGABLE_ICON;
+    }
+
+    @Override
+    public void getVisualDragBounds(Rect bounds) {
+        getPreviewBounds(bounds);
     }
 
     public float getBackgroundStrokeWidth() {
@@ -523,6 +535,10 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
     public void setIconVisible(boolean visible) {
         mBackgroundIsVisible = visible;
         invalidate();
+    }
+
+    public boolean getIconVisible() {
+        return mBackgroundIsVisible;
     }
 
     public PreviewBackground getFolderBackground() {

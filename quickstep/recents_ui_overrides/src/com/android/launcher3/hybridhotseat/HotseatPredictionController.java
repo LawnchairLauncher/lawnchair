@@ -94,7 +94,6 @@ public class HotseatPredictionController implements DragController.DragListener,
     private static final String BUNDLE_KEY_WORKSPACE = "workspace_apps";
 
     private static final String PREDICTION_CLIENT = "hotseat";
-
     private DropTarget.DragObject mDragObject;
     private int mHotSeatItemsCount;
     private int mPredictedSpotsCount = 0;
@@ -114,6 +113,7 @@ public class HotseatPredictionController implements DragController.DragListener,
     private HotseatEduController mHotseatEduController;
 
     private List<PredictedAppIcon.PredictedIconOutlineDrawing> mOutlineDrawings = new ArrayList<>();
+
 
     private final View.OnLongClickListener mPredictionLongClickListener = v -> {
         if (!ItemLongClickListener.canStartDrag(mLauncher)) return false;
@@ -276,12 +276,10 @@ public class HotseatPredictionController implements DragController.DragListener,
                         .build());
         mAppPredictor.registerPredictionUpdates(mLauncher.getMainExecutor(),
                 this::setPredictedApps);
+        setPauseUIUpdate(false);
 
         if (!isReady()) {
-            if (mHotseatEduController != null) {
-                mHotseatEduController.destroy();
-            }
-            mHotseatEduController = new HotseatEduController(mLauncher);
+            mHotseatEduController = new HotseatEduController(mLauncher, this::createPredictor);
         }
         mAppPredictor.requestPredictionUpdate();
     }
@@ -327,7 +325,7 @@ public class HotseatPredictionController implements DragController.DragListener,
             mComponentKeyMappers.add(new ComponentKeyMapper(key, mDynamicItemCache));
         }
         predictionLog.append("]");
-        FileLog.d(TAG, predictionLog.toString());
+        if (false) FileLog.d(TAG, predictionLog.toString());
         updateDependencies();
         if (isReady()) {
             fillGapsWithPrediction();
@@ -488,7 +486,6 @@ public class HotseatPredictionController implements DragController.DragListener,
         }
     }
 
-
     @Override
     public void onDragEnd() {
         if (mDragObject == null) {
@@ -564,7 +561,8 @@ public class HotseatPredictionController implements DragController.DragListener,
     }
 
     @Override
-    public void reapplyItemInfo(ItemInfoWithIcon info) {}
+    public void reapplyItemInfo(ItemInfoWithIcon info) {
+    }
 
     @Override
     public void onDropCompleted(View target, DropTarget.DragObject d, boolean success) {
