@@ -753,8 +753,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                     data.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, -1) : -1;
             if (resultCode == RESULT_CANCELED) {
                 completeTwoStageWidgetDrop(RESULT_CANCELED, appWidgetId, requestArgs);
-                mWorkspace.removeExtraEmptyScreenDelayed(true, exitSpringLoaded,
-                        ON_ACTIVITY_RESULT_ANIMATION_DELAY, false);
+                mWorkspace.removeExtraEmptyScreenDelayed(
+                        ON_ACTIVITY_RESULT_ANIMATION_DELAY, false, exitSpringLoaded);
             } else if (resultCode == RESULT_OK) {
                 addAppWidgetImpl(
                         appWidgetId, requestArgs, null,
@@ -784,15 +784,9 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                         "returned from the widget configuration activity.");
                 result = RESULT_CANCELED;
                 completeTwoStageWidgetDrop(result, appWidgetId, requestArgs);
-                final Runnable onComplete = new Runnable() {
-                    @Override
-                    public void run() {
-                        getStateManager().goToState(NORMAL);
-                    }
-                };
-
-                mWorkspace.removeExtraEmptyScreenDelayed(true, onComplete,
-                        ON_ACTIVITY_RESULT_ANIMATION_DELAY, false);
+                mWorkspace.removeExtraEmptyScreenDelayed(
+                        ON_ACTIVITY_RESULT_ANIMATION_DELAY, false,
+                        () -> getStateManager().goToState(NORMAL));
             } else {
                 if (requestArgs.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
                     // When the screen id represents an actual screen (as opposed to a rank)
@@ -811,8 +805,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                         dropLayout.setDropPending(false);
                     }
                 };
-                mWorkspace.removeExtraEmptyScreenDelayed(true, onComplete,
-                        ON_ACTIVITY_RESULT_ANIMATION_DELAY, false);
+                mWorkspace.removeExtraEmptyScreenDelayed(
+                        ON_ACTIVITY_RESULT_ANIMATION_DELAY, false, onComplete);
             }
             return;
         }
@@ -831,12 +825,12 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             // Handle custom shortcuts created using ACTION_CREATE_SHORTCUT.
             if (resultCode == RESULT_OK && requestArgs.container != ItemInfo.NO_ID) {
                 completeAdd(requestCode, data, -1, requestArgs);
-                mWorkspace.removeExtraEmptyScreenDelayed(true, exitSpringLoaded,
-                        ON_ACTIVITY_RESULT_ANIMATION_DELAY, false);
+                mWorkspace.removeExtraEmptyScreenDelayed(
+                        ON_ACTIVITY_RESULT_ANIMATION_DELAY, false, exitSpringLoaded);
 
             } else if (resultCode == RESULT_CANCELED) {
-                mWorkspace.removeExtraEmptyScreenDelayed(true, exitSpringLoaded,
-                        ON_ACTIVITY_RESULT_ANIMATION_DELAY, false);
+                mWorkspace.removeExtraEmptyScreenDelayed(
+                        ON_ACTIVITY_RESULT_ANIMATION_DELAY, false, exitSpringLoaded);
             }
         }
 
@@ -1677,7 +1671,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             };
             completeAddAppWidget(appWidgetId, info, boundWidget,
                     addFlowHandler.getProviderInfo(this));
-            mWorkspace.removeExtraEmptyScreenDelayed(true, onComplete, delay, false);
+            mWorkspace.removeExtraEmptyScreenDelayed(delay, false, onComplete);
         }
     }
 
@@ -2122,7 +2116,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         }
 
         // Remove the extra empty screen
-        mWorkspace.removeExtraEmptyScreen(false, false);
+        mWorkspace.removeExtraEmptyScreen(false);
     }
 
     /**

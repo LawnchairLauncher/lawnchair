@@ -29,7 +29,6 @@ import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.LayoutTransition;
-import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.annotation.SuppressLint;
@@ -124,9 +123,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     private static final boolean ENFORCE_DRAG_EVENT_ORDER = false;
 
-    private static final int SNAP_OFF_EMPTY_SCREEN_DURATION = 400;
-    private static final int FADE_EMPTY_SCREEN_DURATION = 150;
-
     private static final int ADJACENT_SCREEN_DROP_DURATION = 300;
 
     private static final int DEFAULT_PAGE = 0;
@@ -139,7 +135,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     @Thunk final IntSparseArrayMap<CellLayout> mWorkspaceScreens = new IntSparseArrayMap<>();
     @Thunk final IntArray mScreenOrder = new IntArray();
 
-    @Thunk Runnable mRemoveEmptyScreenRunnable;
     @Thunk boolean mDeferRemoveExtraEmptyScreen = false;
 
     /**
@@ -427,7 +422,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         }
 
         if (!mDeferRemoveExtraEmptyScreen) {
-            removeExtraEmptyScreen(true, mDragSourceInternal != null);
+            removeExtraEmptyScreen(mDragSourceInternal != null);
         }
 
         updateChildrenLayersEnabled();
@@ -452,8 +447,16 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     private void setupLayoutTransition() {
         // We want to show layout transitions when pages are deleted, to close the gap.
         mLayoutTransition = new LayoutTransition();
+
         mLayoutTransition.enableTransitionType(LayoutTransition.DISAPPEARING);
         mLayoutTransition.enableTransitionType(LayoutTransition.CHANGE_DISAPPEARING);
+        // Change the interpolators such that the fade animation plays before the move animation.
+        // This prevents empty adjacent pages to overlay during animation
+        mLayoutTransition.setInterpolator(LayoutTransition.DISAPPEARING,
+                Interpolators.clampToProgress(Interpolators.ACCEL_DEACCEL, 0, 0.5f));
+        mLayoutTransition.setInterpolator(LayoutTransition.CHANGE_DISAPPEARING,
+                Interpolators.clampToProgress(Interpolators.ACCEL_DEACCEL, 0.5f, 1));
+
         mLayoutTransition.disableTransitionType(LayoutTransition.APPEARING);
         mLayoutTransition.disableTransitionType(LayoutTransition.CHANGE_APPEARING);
         setLayoutTransition(mLayoutTransition);
@@ -570,9 +573,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         boolean lastChildOnScreen = false;
         boolean childOnFinalScreen = false;
 
-        // Cancel any pending removal of empty screen
-        mRemoveEmptyScreenRunnable = null;
-
         if (mDragSourceInternal != null) {
             if (mDragSourceInternal.getChildCount() == 1) {
                 lastChildOnScreen = true;
@@ -623,87 +623,40 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         }
     }
 
-    public void removeExtraEmptyScreen(final boolean animate, boolean stripEmptyScreens) {
-        removeExtraEmptyScreenDelayed(animate, null, 0, stripEmptyScreens);
+    public void removeExtraEmptyScreen(boolean stripEmptyScreens) {
+        removeExtraEmptyScreenDelayed(0, stripEmptyScreens, null);
     }
 
-    public void removeExtraEmptyScreenDelayed(final boolean animate, final Runnable onComplete,
-            final int delay, final boolean stripEmptyScreens) {
+    public void removeExtraEmptyScreenDelayed(
+            int delay, boolean stripEmptyScreens, Runnable onComplete) {
         if (mLauncher.isWorkspaceLoading()) {
             // Don't strip empty screens if the workspace is still loading
             return;
         }
 
         if (delay > 0) {
-            postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    removeExtraEmptyScreenDelayed(animate, onComplete, 0, stripEmptyScreens);
-                }
-            }, delay);
+            postDelayed(
+                    () -> removeExtraEmptyScreenDelayed(0, stripEmptyScreens, onComplete), delay);
             return;
         }
 
         convertFinalScreenToEmptyScreenIfNecessary();
         if (hasExtraEmptyScreen()) {
-            int emptyIndex = mScreenOrder.indexOf(EXTRA_EMPTY_SCREEN_ID);
-            if (getNextPage() == emptyIndex) {
-                snapToPage(getNextPage() - 1, SNAP_OFF_EMPTY_SCREEN_DURATION);
-                fadeAndRemoveEmptyScreen(SNAP_OFF_EMPTY_SCREEN_DURATION, FADE_EMPTY_SCREEN_DURATION,
-                        onComplete, stripEmptyScreens);
-            } else {
-                snapToPage(getNextPage(), 0);
-                fadeAndRemoveEmptyScreen(0, FADE_EMPTY_SCREEN_DURATION,
-                        onComplete, stripEmptyScreens);
-            }
-            return;
-        } else if (stripEmptyScreens) {
-            // If we're not going to strip the empty screens after removing
-            // the extra empty screen, do it right away.
+            removeView(mWorkspaceScreens.get(EXTRA_EMPTY_SCREEN_ID));
+            mWorkspaceScreens.remove(EXTRA_EMPTY_SCREEN_ID);
+            mScreenOrder.removeValue(EXTRA_EMPTY_SCREEN_ID);
+
+            // Update the page indicator to reflect the removed page.
+            showPageIndicatorAtCurrentScroll();
+        }
+
+        if (stripEmptyScreens) {
             stripEmptyScreens();
         }
 
         if (onComplete != null) {
             onComplete.run();
         }
-    }
-
-    private void fadeAndRemoveEmptyScreen(int delay, int duration, final Runnable onComplete,
-            final boolean stripEmptyScreens) {
-        // XXX: Do we need to update LM workspace screens below?
-        final CellLayout cl = mWorkspaceScreens.get(EXTRA_EMPTY_SCREEN_ID);
-
-        mRemoveEmptyScreenRunnable = new Runnable() {
-            @Override
-            public void run() {
-                if (hasExtraEmptyScreen()) {
-                    mWorkspaceScreens.remove(EXTRA_EMPTY_SCREEN_ID);
-                    mScreenOrder.removeValue(EXTRA_EMPTY_SCREEN_ID);
-                    removeView(cl);
-                    if (stripEmptyScreens) {
-                        stripEmptyScreens();
-                    }
-                    // Update the page indicator to reflect the removed page.
-                    showPageIndicatorAtCurrentScroll();
-                }
-            }
-        };
-
-        ObjectAnimator oa = ObjectAnimator.ofFloat(cl, ALPHA, 0f);
-        oa.setDuration(duration);
-        oa.setStartDelay(delay);
-        oa.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                if (mRemoveEmptyScreenRunnable != null) {
-                    mRemoveEmptyScreenRunnable.run();
-                }
-                if (onComplete != null) {
-                    onComplete.run();
-                }
-            }
-        });
-        oa.start();
     }
 
     public boolean hasExtraEmptyScreen() {
@@ -792,8 +745,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             }
         }
 
-        boolean isInAccessibleDrag = mLauncher.getAccessibilityDelegate().isInAccessibleDrag();
-
         // We enforce at least one page to add new items to. In the case that we remove the last
         // such screen, we convert the last screen to the empty screen
         int minScreens = 1;
@@ -812,7 +763,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                 removeView(cl);
             } else {
                 // if this is the last screen, convert it to the empty screen
-                mRemoveEmptyScreenRunnable = null;
                 mWorkspaceScreens.put(EXTRA_EMPTY_SCREEN_ID, cl);
                 mScreenOrder.add(EXTRA_EMPTY_SCREEN_ID);
             }
