@@ -46,6 +46,7 @@ import android.widget.TextView;
 import com.android.launcher3.Launcher.OnResumeCallback;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.dot.DotInfo;
+import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.graphics.IconShape;
@@ -65,7 +66,7 @@ import java.text.NumberFormat;
  * too aggressive.
  */
 public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, OnResumeCallback,
-        IconLabelDotView {
+        IconLabelDotView, DraggableView {
 
     private static final int DISPLAY_WORKSPACE = 0;
     private static final int DISPLAY_ALL_APPS = 1;
@@ -103,7 +104,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
     private final ActivityContext mActivity;
     private Drawable mIcon;
-    private final boolean mCenterVertically;
+    private boolean mCenterVertically;
 
     private final int mDisplay;
 
@@ -700,5 +701,25 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
     public int getIconSize() {
         return mIconSize;
+    }
+
+    @Override
+    public int getViewType() {
+        return DRAGGABLE_ICON;
+    }
+
+    @Override
+    public void getVisualDragBounds(Rect bounds) {
+        DeviceProfile grid = mActivity.getDeviceProfile();
+        BubbleTextView.getIconBounds(this, bounds, grid.iconSizePx);
+    }
+
+    @Override
+    public void prepareDrawDragView() {
+        if (getIcon() instanceof FastBitmapDrawable) {
+            FastBitmapDrawable icon = (FastBitmapDrawable) getIcon();
+            icon.setScale(1f);
+        }
+        setForceHideDot(true);
     }
 }

@@ -19,8 +19,6 @@ package com.android.launcher3.dragndrop;
 import static com.android.launcher3.Utilities.getBadge;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.animation.FloatArrayEvaluator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
@@ -143,15 +141,6 @@ public class DragView extends View implements LauncherStateManager.StateListener
             setScaleY(initialScale + (value * (scale - initialScale)));
             if (!isAttachedToWindow()) {
                 animation.cancel();
-            }
-        });
-
-        mAnim.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                if (!mAnimationCancelled) {
-                    mDragController.onDragViewAnimationEnd();
-                }
             }
         });
 
