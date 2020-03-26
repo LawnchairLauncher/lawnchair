@@ -56,8 +56,8 @@ import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.appprediction.PredictionUiStateManager;
 import com.android.launcher3.touch.PagedOrientationHandler;
-import com.android.launcher3.uioverrides.BackgroundBlurController;
-import com.android.launcher3.uioverrides.BackgroundBlurController.ClampedBlurProperty;
+import com.android.launcher3.uioverrides.DepthController;
+import com.android.launcher3.uioverrides.DepthController.ClampedDepthProperty;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.views.FloatingIconView;
 import com.android.quickstep.SysUINavigationMode.Mode;
@@ -330,17 +330,16 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
                     endState.getVerticalProgress(activity)));
         }
 
-        // Animate the blur
-        BackgroundBlurController blurController = getBackgroundBlurController();
-        int fromBlurRadius = fromState.getBackgroundBlurRadius(activity);
-        int toBlurRadius = endState.getBackgroundBlurRadius(activity);
-        Animator backgroundBlur = ObjectAnimator.ofInt(blurController,
-                new ClampedBlurProperty(toBlurRadius, fromBlurRadius),
-                fromBlurRadius, toBlurRadius);
-        anim.play(backgroundBlur);
+        // Animate the blur and wallpaper zoom
+        DepthController depthController = getDepthController();
+        float fromDepthRatio = fromState.getDepth(activity);
+        float toDepthRatio = endState.getDepth(activity);
+        Animator depthAnimator = ObjectAnimator.ofFloat(depthController,
+                new ClampedDepthProperty(fromDepthRatio, toDepthRatio),
+                fromDepthRatio, toDepthRatio);
+        anim.play(depthAnimator);
 
         playScaleDownAnim(anim, activity, fromState, endState);
-
 
         anim.setDuration(transitionLength * 2);
         anim.setInterpolator(LINEAR);
@@ -558,11 +557,11 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
 
     @Nullable
     @Override
-    public BackgroundBlurController getBackgroundBlurController() {
+    public DepthController getDepthController() {
         BaseQuickstepLauncher launcher = getCreatedActivity();
         if (launcher == null) {
             return null;
         }
-        return launcher.getBackgroundBlurController();
+        return launcher.getDepthController();
     }
 }

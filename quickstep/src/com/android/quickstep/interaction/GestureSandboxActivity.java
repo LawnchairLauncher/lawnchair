@@ -30,12 +30,11 @@ import com.android.quickstep.interaction.BackGestureTutorialFragment.TutorialSte
 import com.android.quickstep.interaction.BackGestureTutorialFragment.TutorialType;
 
 import java.util.List;
-import java.util.Optional;
 
 /** Shows the gesture interactive sandbox in full screen mode. */
 public class GestureSandboxActivity extends FragmentActivity {
 
-    Optional<BackGestureTutorialFragment> mFragment = Optional.empty();
+    private BackGestureTutorialFragment mFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,10 +42,10 @@ public class GestureSandboxActivity extends FragmentActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.back_gesture_tutorial_activity);
 
-        mFragment = Optional.of(BackGestureTutorialFragment.newInstance(TutorialStep.ENGAGED,
-                TutorialType.RIGHT_EDGE_BACK_NAVIGATION));
+        mFragment = BackGestureTutorialFragment.newInstance(
+            TutorialStep.ENGAGED, TutorialType.RIGHT_EDGE_BACK_NAVIGATION);
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.back_gesture_tutorial_fragment_container, mFragment.get())
+                .add(R.id.back_gesture_tutorial_fragment_container, mFragment)
                 .commit();
     }
 
@@ -54,6 +53,13 @@ public class GestureSandboxActivity extends FragmentActivity {
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
         disableSystemGestures();
+        mFragment.onAttachedToWindow();
+    }
+
+    @Override
+    public void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        mFragment.onDetachedFromWindow();
     }
 
     @Override
@@ -61,13 +67,6 @@ public class GestureSandboxActivity extends FragmentActivity {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
             hideSystemUI();
-        }
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (mFragment.isPresent()) {
-            mFragment.get().onBackPressed();
         }
     }
 

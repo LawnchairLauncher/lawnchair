@@ -77,6 +77,9 @@ public class AnimatorPlaybackController implements ValueAnimator.AnimatorUpdateL
                 }
             };
 
+    // Progress factor after which an animation is considered almost completed.
+    private static final float ANIMATION_COMPLETE_THRESHOLD = 0.95f;
+
     private final ValueAnimator mAnimationPlayer;
     private final long mDuration;
 
@@ -207,6 +210,16 @@ public class AnimatorPlaybackController implements ValueAnimator.AnimatorUpdateL
                     clampToProgress(scrollInterpolatorForVelocity(velocity), 0, cutOff));
         }
         mAnimationPlayer.start();
+    }
+
+    /**
+     * Tries to finish the running animation if it is close to completion.
+     */
+    public void forceFinishIfCloseToEnd() {
+        if (mAnimationPlayer.isRunning()
+                && mAnimationPlayer.getAnimatedFraction() > ANIMATION_COMPLETE_THRESHOLD) {
+            mAnimationPlayer.end();
+        }
     }
 
     /**

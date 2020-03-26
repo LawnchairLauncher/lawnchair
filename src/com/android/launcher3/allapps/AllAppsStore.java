@@ -18,6 +18,7 @@ package com.android.launcher3.allapps;
 import static com.android.launcher3.AppInfo.COMPONENT_KEY_COMPARATOR;
 import static com.android.launcher3.AppInfo.EMPTY_ARRAY;
 
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -54,6 +55,8 @@ public class AllAppsStore {
 
     private int mDeferUpdatesFlags = 0;
     private boolean mUpdatePending = false;
+
+    private boolean mListenerUpdateInProgress = false;
 
     public AppInfo[] getApps() {
         return mApps;
@@ -99,10 +102,12 @@ public class AllAppsStore {
             mUpdatePending = true;
             return;
         }
+        mListenerUpdateInProgress = true;
         int count = mUpdateListeners.size();
         for (int i = 0; i < count; i++) {
             mUpdateListeners.get(i).onAppsUpdated();
         }
+        mListenerUpdateInProgress = false;
     }
 
     public void addUpdateListener(OnUpdateListener listener) {
@@ -110,6 +115,9 @@ public class AllAppsStore {
     }
 
     public void removeUpdateListener(OnUpdateListener listener) {
+        if (mListenerUpdateInProgress) {
+            Log.e("AllAppsStore", "Trying to remove listener during update", new Exception());
+        }
         mUpdateListeners.remove(listener);
     }
 

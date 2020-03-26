@@ -70,6 +70,7 @@ import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragView;
+import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.dragndrop.SpringLoadedDragController;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
@@ -81,7 +82,6 @@ import com.android.launcher3.icons.BitmapRenderer;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.pageindicators.WorkspacePageIndicator;
 import com.android.launcher3.popup.PopupContainerWithArrow;
-import com.android.launcher3.shortcuts.ShortcutDragPreviewProvider;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.touch.WorkspaceTouchListener;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
@@ -192,10 +192,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     final WallpaperOffsetInterpolator mWallpaperOffset;
     private boolean mUnlockWallpaperFromDefaultPageOnLayout;
 
-    // Variables relating to the creation of user folders by hovering shortcuts over shortcuts
-    private static final int FOLDER_CREATION_TIMEOUT = 0;
     public static final int REORDER_TIMEOUT = 650;
-    private final Alarm mFolderCreationAlarm = new Alarm();
     private final Alarm mReorderAlarm = new Alarm();
     private PreviewBackground mFolderCreateBg;
     private FolderIcon mDragOverFolderIcon = null;
@@ -567,11 +564,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         addView(newScreen, insertIndex);
         mStateTransitionAnimation.applyChildState(
                 mLauncher.getStateManager().getState(), newScreen, insertIndex);
-
-        if (mLauncher.getAccessibilityDelegate().isInAccessibleDrag()) {
-            newScreen.enableAccessibleDrag(true, CellLayout.WORKSPACE_ACCESSIBILITY_DRAG);
-        }
-
         return newScreen;
     }
 
@@ -818,11 +810,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                 if (indexOfChild(cl) < currentPage) {
                     pageShift++;
                 }
-
-                if (isInAccessibleDrag) {
-                    cl.enableAccessibleDrag(false, CellLayout.WORKSPACE_ACCESSIBILITY_DRAG);
-                }
-
                 removeView(cl);
             } else {
                 // if this is the last screen, convert it to the empty screen
@@ -1444,14 +1431,14 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         child.setVisibility(INVISIBLE);
 
         if (options.isAccessibleDrag) {
-            mDragController.addDragListener(new AccessibleDragListenerAdapter(
-                    this, CellLayout.WORKSPACE_ACCESSIBILITY_DRAG) {
-                @Override
-                protected void enableAccessibleDrag(boolean enable) {
-                    super.enableAccessibleDrag(enable);
-                    setEnableForLayout(mLauncher.getHotseat(),enable);
-                }
-            });
+            mDragController.addDragListener(
+                    new AccessibleDragListenerAdapter(this, WorkspaceAccessibilityHelper::new) {
+                        @Override
+                        protected void enableAccessibleDrag(boolean enable) {
+                            super.enableAccessibleDrag(enable);
+                            setEnableForLayout(mLauncher.getHotseat(), enable);
+                        }
+                    });
         }
 
         beginDragShared(child, this, options);
@@ -1465,12 +1452,17 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                     + "View: " + child + "  tag: " + child.getTag();
             throw new IllegalStateException(msg);
         }
-        beginDragShared(child, source, (ItemInfo) dragObject,
+        beginDragShared(child, null, source, (ItemInfo) dragObject,
                 new DragPreviewProvider(child), options);
     }
 
-    public DragView beginDragShared(View child, DragSource source, ItemInfo dragObject,
-            DragPreviewProvider previewProvider, DragOptions dragOptions) {
+    /**
+     * Core functionality for beginning a drag operation for an item that will be dropped within
+     * the workspace
+     */
+    public DragView beginDragShared(View child, DraggableView draggableView, DragSource source,
+            ItemInfo dragObject, DragPreviewProvider previewProvider, DragOptions dragOptions) {
+
         float iconScale = 1f;
         if (child instanceof BubbleTextView) {
             Drawable icon = ((BubbleTextView) child).getIcon();
@@ -1479,41 +1471,36 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             }
         }
 
+        // Clear the pressed state if necessary
         child.clearFocus();
         child.setPressed(false);
+        if (child instanceof BubbleTextView) {
+            BubbleTextView icon = (BubbleTextView) child;
+            icon.clearPressedBackground();
+        }
+
         mOutlineProvider = previewProvider;
 
         // The drag bitmap follows the touch point around on the screen
         final Bitmap b = previewProvider.createDragBitmap();
         int halfPadding = previewProvider.previewPadding / 2;
-
         float scale = previewProvider.getScaleAndPosition(b, mTempXY);
         int dragLayerX = mTempXY[0];
         int dragLayerY = mTempXY[1];
 
-        DeviceProfile grid = mLauncher.getDeviceProfile();
         Point dragVisualizeOffset = null;
-        Rect dragRect = null;
-        if (child instanceof BubbleTextView) {
-            dragRect = new Rect();
-            BubbleTextView.getIconBounds(child, dragRect, grid.iconSizePx);
+        Rect dragRect = new Rect();
+
+        if (draggableView == null && child instanceof DraggableView) {
+            draggableView = (DraggableView) child;
+        }
+
+        if (draggableView != null) {
+            draggableView.getVisualDragBounds(dragRect);
             dragLayerY += dragRect.top;
-            // Note: The dragRect is used to calculate drag layer offsets, but the
-            // dragVisualizeOffset in addition to the dragRect (the size) to position the outline.
-            dragVisualizeOffset = new Point(- halfPadding, halfPadding);
-        } else if (child instanceof FolderIcon) {
-            int previewSize = grid.folderIconSizePx;
-            dragVisualizeOffset = new Point(- halfPadding, halfPadding - child.getPaddingTop());
-            dragRect = new Rect(0, child.getPaddingTop(), child.getWidth(), previewSize);
-        } else if (previewProvider instanceof ShortcutDragPreviewProvider) {
             dragVisualizeOffset = new Point(- halfPadding, halfPadding);
         }
 
-        // Clear the pressed state if necessary
-        if (child instanceof BubbleTextView) {
-            BubbleTextView icon = (BubbleTextView) child;
-            icon.clearPressedBackground();
-        }
 
         if (child.getParent() instanceof ShortcutAndWidgetContainer) {
             mDragSourceInternal = (ShortcutAndWidgetContainer) child.getParent();
@@ -1524,13 +1511,13 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                     .showForIcon((BubbleTextView) child);
             if (popupContainer != null) {
                 dragOptions.preDragCondition = popupContainer.createPreDragCondition();
-
                 mLauncher.getUserEventDispatcher().resetElapsedContainerMillis("dragging started");
             }
         }
 
-        DragView dv = mDragController.startDrag(b, dragLayerX, dragLayerY, source,
-                dragObject, dragVisualizeOffset, dragRect, scale * iconScale, scale, dragOptions);
+        DragView dv = mDragController.startDrag(b, draggableView, dragLayerX, dragLayerY, source,
+                dragObject, dragVisualizeOffset, dragRect, scale * iconScale,
+                scale, dragOptions);
         dv.setIntrinsicIconScaleFactor(dragOptions.intrinsicIconScaleFactor);
         return dv;
     }
@@ -1883,12 +1870,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                         final LauncherAppWidgetHostView hostView = (LauncherAppWidgetHostView) cell;
                         AppWidgetProviderInfo pInfo = hostView.getAppWidgetInfo();
                         if (pInfo != null && pInfo.resizeMode != AppWidgetProviderInfo.RESIZE_NONE
-                                && !d.accessibleDrag) {
-                            onCompleteRunnable = new Runnable() {
-                                public void run() {
-                                    if (!isPageInTransition()) {
-                                        AppWidgetResizeFrame.showForWidget(hostView, cellLayout);
-                                    }
+                                && !options.isAccessibleDrag) {
+                            onCompleteRunnable = () -> {
+                                if (!isPageInTransition()) {
+                                    AppWidgetResizeFrame.showForWidget(hostView, cellLayout);
                                 }
                             };
                         }
@@ -2088,8 +2073,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         if (mFolderCreateBg != null) {
             mFolderCreateBg.animateToRest();
         }
-        mFolderCreationAlarm.setOnAlarmListener(null);
-        mFolderCreationAlarm.cancelAlarm();
     }
 
     private void cleanupAddToFolder() {
@@ -2196,14 +2179,14 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             float targetCellDistance = mDragTargetLayout.getDistanceFromCell(
                     mDragViewVisualCenter[0], mDragViewVisualCenter[1], mTargetCell);
 
-            manageFolderFeedback(mDragTargetLayout, mTargetCell, targetCellDistance, d);
+            manageFolderFeedback(targetCellDistance, d);
 
             boolean nearestDropOccupied = mDragTargetLayout.isNearestDropLocationOccupied((int)
                     mDragViewVisualCenter[0], (int) mDragViewVisualCenter[1], item.spanX,
                     item.spanY, child, mTargetCell);
 
             if (!nearestDropOccupied) {
-                mDragTargetLayout.visualizeDropLocation(child, mOutlineProvider,
+                mDragTargetLayout.visualizeDropLocation(d.originalView, mOutlineProvider,
                         mTargetCell[0], mTargetCell[1], item.spanX, item.spanY, false, d);
             } else if ((mDragMode == DRAG_MODE_NONE || mDragMode == DRAG_MODE_REORDER)
                     && !mReorderAlarm.alarmPending() && (mLastReorderX != reorderX ||
@@ -2294,10 +2277,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         return null;
     }
 
-    private void manageFolderFeedback(CellLayout targetLayout,
-            int[] targetCell, float distance, DragObject dragObject) {
+    private void manageFolderFeedback(float distance, DragObject dragObject) {
         if (distance > mMaxDistanceForFolderCreation) {
-            if (mDragMode != DRAG_MODE_NONE) {
+            if ((mDragMode == DRAG_MODE_ADD_TO_FOLDER
+                    || mDragMode == DRAG_MODE_CREATE_FOLDER)) {
                 setDragMode(DRAG_MODE_NONE);
             }
             return;
@@ -2306,18 +2289,18 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         final View dragOverView = mDragTargetLayout.getChildAt(mTargetCell[0], mTargetCell[1]);
         ItemInfo info = dragObject.dragInfo;
         boolean userFolderPending = willCreateUserFolder(info, dragOverView, false);
-        if (mDragMode == DRAG_MODE_NONE && userFolderPending &&
-                !mFolderCreationAlarm.alarmPending()) {
+        if (mDragMode == DRAG_MODE_NONE && userFolderPending) {
 
-            FolderCreationAlarmListener listener = new
-                    FolderCreationAlarmListener(targetLayout, targetCell[0], targetCell[1]);
+            mFolderCreateBg = new PreviewBackground();
+            mFolderCreateBg.setup(mLauncher, mLauncher, null,
+                    dragOverView.getMeasuredWidth(), dragOverView.getPaddingTop());
 
-            if (!dragObject.accessibleDrag) {
-                mFolderCreationAlarm.setOnAlarmListener(listener);
-                mFolderCreationAlarm.setAlarm(FOLDER_CREATION_TIMEOUT);
-            } else {
-                listener.onAlarm(mFolderCreationAlarm);
-            }
+            // The full preview background should appear behind the icon
+            mFolderCreateBg.isClipping = false;
+
+            mFolderCreateBg.animateToAccept(mDragTargetLayout, mTargetCell[0], mTargetCell[1]);
+            mDragTargetLayout.clearDragOutlines();
+            setDragMode(DRAG_MODE_CREATE_FOLDER);
 
             if (dragObject.stateAnnouncer != null) {
                 dragObject.stateAnnouncer.announce(WorkspaceAccessibilityHelper
@@ -2330,8 +2313,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         if (willAddToFolder && mDragMode == DRAG_MODE_NONE) {
             mDragOverFolderIcon = ((FolderIcon) dragOverView);
             mDragOverFolderIcon.onDragEnter(info);
-            if (targetLayout != null) {
-                targetLayout.clearDragOutlines();
+            if (mDragTargetLayout != null) {
+                mDragTargetLayout.clearDragOutlines();
             }
             setDragMode(DRAG_MODE_ADD_TO_FOLDER);
 
@@ -2347,33 +2330,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         }
         if (mDragMode == DRAG_MODE_CREATE_FOLDER && !userFolderPending) {
             setDragMode(DRAG_MODE_NONE);
-        }
-    }
-
-    class FolderCreationAlarmListener implements OnAlarmListener {
-        final CellLayout layout;
-        final int cellX;
-        final int cellY;
-
-        final PreviewBackground bg = new PreviewBackground();
-
-        public FolderCreationAlarmListener(CellLayout layout, int cellX, int cellY) {
-            this.layout = layout;
-            this.cellX = cellX;
-            this.cellY = cellY;
-
-            BubbleTextView cell = (BubbleTextView) layout.getChildAt(cellX, cellY);
-            bg.setup(mLauncher, mLauncher, null, cell.getMeasuredWidth(), cell.getPaddingTop());
-
-            // The full preview background should appear behind the icon
-            bg.isClipping = false;
-        }
-
-        public void onAlarm(Alarm alarm) {
-            mFolderCreateBg = bg;
-            mFolderCreateBg.animateToAccept(layout, cellX, cellY);
-            layout.clearDragOutlines();
-            setDragMode(DRAG_MODE_CREATE_FOLDER);
         }
     }
 
@@ -2413,7 +2369,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             }
 
             boolean resize = resultSpan[0] != spanX || resultSpan[1] != spanY;
-            mDragTargetLayout.visualizeDropLocation(child, mOutlineProvider,
+            mDragTargetLayout.visualizeDropLocation(dragObject.originalView, mOutlineProvider,
                 mTargetCell[0], mTargetCell[1], resultSpan[0], resultSpan[1], resize, dragObject);
         }
     }

@@ -25,6 +25,7 @@ import android.widget.TextView;
 import com.android.launcher3.R;
 import com.android.quickstep.interaction.BackGestureTutorialFragment.TutorialStep;
 import com.android.quickstep.interaction.BackGestureTutorialFragment.TutorialType;
+import com.android.quickstep.interaction.EdgeBackGestureHandler.BackGestureResult;
 
 import java.util.Optional;
 
@@ -79,21 +80,33 @@ abstract class BackGestureTutorialController {
         mHandCoachingAnimation.stop();
     }
 
-    void onGestureDetected() {
-        hideHandCoachingAnimation();
-
-        if (mTutorialStep == TutorialStep.CONFIRM) {
+    void onGestureAttempted(BackGestureResult result) {
+        if (mTutorialStep == TutorialStep.CONFIRM
+                && (result == BackGestureResult.BACK_COMPLETED_FROM_LEFT
+                    || result == BackGestureResult.BACK_COMPLETED_FROM_RIGHT)) {
             mFragment.closeTutorial();
             return;
         }
 
-        if (mTutorialTypeInfo.get().getTutorialType() == TutorialType.RIGHT_EDGE_BACK_NAVIGATION) {
-            mFragment.changeController(TutorialStep.ENGAGED,
-                    TutorialType.LEFT_EDGE_BACK_NAVIGATION);
+        if (!mTutorialTypeInfo.isPresent()) {
             return;
         }
 
-        mFragment.changeController(TutorialStep.CONFIRM);
+        switch (mTutorialTypeInfo.get().getTutorialType()) {
+            case RIGHT_EDGE_BACK_NAVIGATION:
+                if (result == BackGestureResult.BACK_COMPLETED_FROM_RIGHT) {
+                    hideHandCoachingAnimation();
+                    mFragment.changeController(
+                            TutorialStep.ENGAGED, TutorialType.LEFT_EDGE_BACK_NAVIGATION);
+                }
+                break;
+            case LEFT_EDGE_BACK_NAVIGATION:
+                if (result == BackGestureResult.BACK_COMPLETED_FROM_LEFT) {
+                    hideHandCoachingAnimation();
+                    mFragment.changeController(TutorialStep.CONFIRM);
+                }
+                break;
+        }
     }
 
     abstract Optional<Integer> getTitleStringId();

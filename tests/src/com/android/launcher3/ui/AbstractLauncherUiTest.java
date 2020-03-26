@@ -18,7 +18,6 @@ package com.android.launcher3.ui;
 import static androidx.test.InstrumentationRegistry.getInstrumentation;
 
 import static com.android.launcher3.WorkspaceLayoutManager.FIRST_SCREEN_ID;
-import static com.android.launcher3.tapl.LauncherInstrumentation.ContainerType;
 import static com.android.launcher3.ui.TaplTestsLauncher3.getAppPackageName;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
@@ -57,6 +56,7 @@ import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.tapl.LauncherInstrumentation;
+import com.android.launcher3.tapl.LauncherInstrumentation.ContainerType;
 import com.android.launcher3.tapl.TestHelpers;
 import com.android.launcher3.testcomponent.TestCommandReceiver;
 import com.android.launcher3.testing.TestProtocol;
@@ -102,6 +102,7 @@ public abstract class AbstractLauncherUiTest {
 
     private static String sDetectedActivityLeak;
     private static boolean sActivityLeakReported;
+    private static final String SYSTEMUI_PACKAGE = "com.android.systemui";
 
     protected LooperExecutor mMainThreadExecutor = MAIN_EXECUTOR;
     protected final UiDevice mDevice = UiDevice.getInstance(getInstrumentation());
@@ -213,8 +214,26 @@ public abstract class AbstractLauncherUiTest {
         return mDevice;
     }
 
+    private boolean hasSystemUiObject(String resId) {
+        return mDevice.hasObject(By.res(SYSTEMUI_PACKAGE, resId));
+    }
+
     @Before
     public void setUp() throws Exception {
+        Log.d(TAG, "Before disabling battery defender");
+        mDevice.executeShellCommand("setprop vendor.battery.defender.disable 1");
+        Log.d(TAG, "Before enabling stay awake");
+        mDevice.executeShellCommand("settings put global stay_on_while_plugged_in 3");
+        for (int i = 0; i < 10 && hasSystemUiObject("keyguard_status_view"); ++i) {
+            Log.d(TAG, "Before unlocking the phone");
+            mDevice.executeShellCommand("input keyevent 82");
+            mDevice.waitForIdle();
+        }
+        Assert.assertTrue("Keyguard still visible",
+                mDevice.wait(
+                        Until.gone(By.res(SYSTEMUI_PACKAGE, "keyguard_status_view")), 60000));
+        Log.d(TAG, "Keyguard is not visible");
+
         final String launcherPackageName = mDevice.getLauncherPackageName();
         try {
             final Context context = InstrumentationRegistry.getContext();
@@ -275,7 +294,8 @@ public abstract class AbstractLauncherUiTest {
     protected void resetLoaderState() {
         try {
             mMainThreadExecutor.execute(
-                    () -> LauncherAppState.getInstance(mTargetContext).getModel().forceReload());
+                    () -> LauncherAppState.getInstance(
+                            mTargetContext).getModel().forceReload());
         } catch (Throwable t) {
             throw new IllegalArgumentException(t);
         }
@@ -289,7 +309,8 @@ public abstract class AbstractLauncherUiTest {
         ContentResolver resolver = mTargetContext.getContentResolver();
         int screenId = FIRST_SCREEN_ID;
         // Update the screen id counter for the provider.
-        LauncherSettings.Settings.call(resolver, LauncherSettings.Settings.METHOD_NEW_SCREEN_ID);
+        LauncherSettings.Settings.call(resolver,
+                LauncherSettings.Settings.METHOD_NEW_SCREEN_ID);
 
         if (screenId > FIRST_SCREEN_ID) {
             screenId = FIRST_SCREEN_ID;
@@ -303,7 +324,8 @@ public abstract class AbstractLauncherUiTest {
         item.screenId = screenId;
         item.onAddToDatabase(writer);
         writer.put(LauncherSettings.Favorites._ID, item.id);
-        resolver.insert(LauncherSettings.Favorites.CONTENT_URI, writer.getValues(mTargetContext));
+        resolver.insert(LauncherSettings.Favorites.CONTENT_URI,
+                writer.getValues(mTargetContext));
         resetLoaderState();
 
         // Launch the home activity
@@ -334,7 +356,8 @@ public abstract class AbstractLauncherUiTest {
         });
     }
 
-    // Cannot be used in TaplTests between a Tapl call injecting a gesture and a tapl call expecting
+    // Cannot be used in TaplTests between a Tapl call injecting a gesture and a tapl call
+    // expecting
     // the results of that gesture because the wait can hide flakeness.
     protected void waitForState(String message, Supplier<LauncherState> state) {
         waitForLauncherCondition(message,
@@ -347,7 +370,8 @@ public abstract class AbstractLauncherUiTest {
 
     // Cannot be used in TaplTests after injecting any gesture using Tapl because this can hide
     // flakiness.
-    protected void waitForLauncherCondition(String message, Function<Launcher, Boolean> condition) {
+    protected void waitForLauncherCondition(String
+            message, Function<Launcher, Boolean> condition) {
         waitForLauncherCondition(message, condition, DEFAULT_ACTIVITY_TIMEOUT);
     }
 
@@ -423,7 +447,8 @@ public abstract class AbstractLauncherUiTest {
 
         public Intent blockingGetExtraIntent() throws InterruptedException {
             Intent intent = blockingGetIntent();
-            return intent == null ? null : (Intent) intent.getParcelableExtra(Intent.EXTRA_INTENT);
+            return intent == null ? null : (Intent) intent.getParcelableExtra(
+                    Intent.EXTRA_INTENT);
         }
     }
 
@@ -450,7 +475,8 @@ public abstract class AbstractLauncherUiTest {
         if (newTask) {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         } else {
-            intent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK | Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
+            intent.addFlags(
+                    Intent.FLAG_ACTIVITY_MULTIPLE_TASK | Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
         }
         getInstrumentation().getTargetContext().startActivity(intent);
         assertTrue("App didn't start: " + selector,
@@ -487,7 +513,8 @@ public abstract class AbstractLauncherUiTest {
 
     protected boolean isInState(Supplier<LauncherState> state) {
         if (!TestHelpers.isInLauncherProcess()) return true;
-        return getFromLauncher(launcher -> launcher.getStateManager().getState() == state.get());
+        return getFromLauncher(
+                launcher -> launcher.getStateManager().getState() == state.get());
     }
 
     protected int getAllAppsScroll(Launcher launcher) {
