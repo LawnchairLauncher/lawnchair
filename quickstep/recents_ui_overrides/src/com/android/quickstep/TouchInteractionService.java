@@ -15,7 +15,9 @@
  */
 package com.android.quickstep;
 
+import static android.view.MotionEvent.ACTION_CANCEL;
 import static android.view.MotionEvent.ACTION_DOWN;
+import static android.view.MotionEvent.ACTION_UP;
 
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
@@ -435,7 +437,8 @@ public class TouchInteractionService extends Service implements PluginListener<O
                 TraceHelper.FLAG_ALLOW_BINDER_TRACKING);
         mDeviceState.setOrientationTransformIfNeeded(event);
 
-        if (event.getAction() == ACTION_DOWN) {
+        final int action = event.getAction();
+        if (action == ACTION_DOWN) {
             GestureState newGestureState = new GestureState(mOverviewComponentObserver,
                     ActiveGestureLog.INSTANCE.generateAndSetLogId());
             newGestureState.updateRunningTask(TraceHelper.whitelistIpcs("getRunningTask.0",
@@ -468,6 +471,13 @@ public class TouchInteractionService extends Service implements PluginListener<O
 
         ActiveGestureLog.INSTANCE.addLog("onMotionEvent", event.getActionMasked());
         mUncheckedConsumer.onMotionEvent(event);
+
+        if (action == ACTION_UP || action == ACTION_CANCEL) {
+            if (mConsumer != null && !mConsumer.isConsumerDetachedFromGesture()) {
+                onConsumerInactive(mConsumer);
+            }
+        }
+
         TraceHelper.INSTANCE.endFlagsOverride(traceToken);
     }
 
@@ -661,8 +671,8 @@ public class TouchInteractionService extends Service implements PluginListener<O
      */
     private void onConsumerInactive(InputConsumer caller) {
         if (mConsumer == caller) {
-            mConsumer = mResetGestureInputConsumer;
-            mUncheckedConsumer = mConsumer;
+            mConsumer = mUncheckedConsumer = mResetGestureInputConsumer;
+            mGestureState = new GestureState();
         }
     }
 

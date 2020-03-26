@@ -18,7 +18,8 @@ package com.android.launcher3.uioverrides;
 
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 
-import android.util.IntProperty;
+import android.os.IBinder;
+import android.util.FloatProperty;
 import android.view.View;
 
 import com.android.launcher3.Launcher;
@@ -31,22 +32,23 @@ import com.android.launcher3.states.StateAnimationConfig;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.SurfaceControlCompat;
 import com.android.systemui.shared.system.TransactionCompat;
+import com.android.systemui.shared.system.WallpaperManagerCompat;
 
 /**
- * Controls the blur, for the Launcher surface only.
+ * Controls blur and wallpaper zoom, for the Launcher surface only.
  */
-public class BackgroundBlurController implements LauncherStateManager.StateHandler {
+public class DepthController implements LauncherStateManager.StateHandler {
 
-    public static final IntProperty<BackgroundBlurController> BACKGROUND_BLUR =
-            new IntProperty<BackgroundBlurController>("backgroundBlur") {
+    public static final FloatProperty<DepthController> DEPTH =
+            new FloatProperty<DepthController>("depth") {
                 @Override
-                public void setValue(BackgroundBlurController blurController, int blurRadius) {
-                    blurController.setBackgroundBlurRadius(blurRadius);
+                public void setValue(DepthController depthController, float depth) {
+                    depthController.setDepth(depth);
                 }
 
                 @Override
-                public Integer get(BackgroundBlurController blurController) {
-                    return blurController.mBackgroundBlurRadius;
+                public Float get(DepthController depthController) {
+                    return depthController.mDepth;
                 }
             };
 
@@ -54,42 +56,50 @@ public class BackgroundBlurController implements LauncherStateManager.StateHandl
      * A property that updates the background blur within a given range of values (ie. even if the
      * animator goes beyond 0..1, the interpolated value will still be bounded).
      */
-    public static class ClampedBlurProperty extends IntProperty<BackgroundBlurController> {
-        private final int mMinValue;
-        private final int mMaxValue;
+    public static class ClampedDepthProperty extends FloatProperty<DepthController> {
+        private final float mMinValue;
+        private final float mMaxValue;
 
-        public ClampedBlurProperty(int minValue, int maxValue) {
-            super(("backgroundBlurClamped"));
+        public ClampedDepthProperty(float minValue, float maxValue) {
+            super("depthClamped");
             mMinValue = minValue;
             mMaxValue = maxValue;
         }
 
         @Override
-        public void setValue(BackgroundBlurController blurController, int blurRadius) {
-            blurController.setBackgroundBlurRadius(Utilities.boundToRange(blurRadius,
-                    mMinValue, mMaxValue));
+        public void setValue(DepthController depthController, float depth) {
+            depthController.setDepth(Utilities.boundToRange(depth, mMinValue, mMaxValue));
         }
 
         @Override
-        public Integer get(BackgroundBlurController blurController) {
-            return blurController.mBackgroundBlurRadius;
+        public Float get(DepthController depthController) {
+            return depthController.mDepth;
         }
     }
 
     private final Launcher mLauncher;
+    /**
+     * Blur radius when completely zoomed out, in pixels.
+     */
+    private int mMaxBlurRadius;
+    private WallpaperManagerCompat mWallpaperManager;
     private SurfaceControlCompat mSurface;
-    private int mBackgroundBlurRadius;
+    /**
+     * Ratio from 0 to 1, where 0 is fully zoomed out, and 1 is zoomed in.
+     * @see android.service.wallpaper.WallpaperService.Engine#onZoomChanged(float)
+     */
+    private float mDepth;
 
-    public BackgroundBlurController(Launcher l) {
+    public DepthController(Launcher l) {
         mLauncher = l;
     }
 
-    /**
-     * @return the background blur adjustment for folders
-     */
-    public int getFolderBackgroundBlurAdjustment() {
-        return mLauncher.getResources().getInteger(
-                R.integer.folder_background_blur_radius_adjustment);
+    private void ensureDependencies() {
+        if (mWallpaperManager != null) {
+            return;
+        }
+        mMaxBlurRadius = mLauncher.getResources().getInteger(R.integer.max_depth_blur_radius);
+        mWallpaperManager = new WallpaperManagerCompat(mLauncher);
     }
 
     /**
@@ -112,10 +122,10 @@ public class BackgroundBlurController implements LauncherStateManager.StateHandl
         if (mSurface != surface) {
             mSurface = surface;
             if (surface != null) {
-                setBackgroundBlurRadius(mBackgroundBlurRadius);
+                setDepth(mDepth);
             } else {
-                // If there is no surface, then reset the blur radius
-                setBackgroundBlurRadius(0);
+                // If there is no surface, then reset the ratio
+                setDepth(0f);
             }
         }
     }
@@ -126,9 +136,9 @@ public class BackgroundBlurController implements LauncherStateManager.StateHandl
             return;
         }
 
-        int toBackgroundBlurRadius = toState.getBackgroundBlurRadius(mLauncher);
-        if (mBackgroundBlurRadius != toBackgroundBlurRadius) {
-            setBackgroundBlurRadius(toBackgroundBlurRadius);
+        float toDepth = toState.getDepth(mLauncher);
+        if (Float.compare(mDepth, toDepth) != 0) {
+            setDepth(toDepth);
         }
     }
 
@@ -139,22 +149,24 @@ public class BackgroundBlurController implements LauncherStateManager.StateHandl
             return;
         }
 
-        int toBackgroundBlurRadius = toState.getBackgroundBlurRadius(mLauncher);
-        if (mBackgroundBlurRadius != toBackgroundBlurRadius) {
-            animation.setInt(this, BACKGROUND_BLUR, toBackgroundBlurRadius, LINEAR);
+        float toDepth = toState.getDepth(mLauncher);
+        if (Float.compare(mDepth, toDepth) != 0) {
+            animation.setFloat(this, DEPTH, toDepth, LINEAR);
         }
     }
 
-    private void setBackgroundBlurRadius(int blurRadius) {
-        // TODO: Do nothing if the shadows are not enabled
-        // Always update the background blur as it will be reapplied when a surface is next
-        // available
-        mBackgroundBlurRadius = blurRadius;
+    private void setDepth(float depth) {
+        mDepth = depth;
         if (mSurface == null || !mSurface.isValid()) {
             return;
         }
+        ensureDependencies();
+        IBinder windowToken = mLauncher.getRootView().getWindowToken();
+        if (windowToken != null) {
+            mWallpaperManager.setWallpaperZoomOut(windowToken, mDepth);
+        }
         new TransactionCompat()
-                .setBackgroundBlurRadius(mSurface, blurRadius)
+                .setBackgroundBlurRadius(mSurface, (int) (mDepth * mMaxBlurRadius))
                 .apply();
     }
 }

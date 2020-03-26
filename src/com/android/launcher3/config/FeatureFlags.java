@@ -83,6 +83,9 @@ public final class FeatureFlags {
     public static final BooleanFlag UNSTABLE_SPRINGS = getDebugFlag(
             "UNSTABLE_SPRINGS", false, "Enable unstable springs for quickstep animations");
 
+    public static final BooleanFlag KEYGUARD_ANIMATION = getDebugFlag(
+            "KEYGUARD_ANIMATION", false, "Enable animation for keyguard going away on wallpaper");
+
     public static final BooleanFlag ADAPTIVE_ICON_WINDOW_ANIM = getDebugFlag(
             "ADAPTIVE_ICON_WINDOW_ANIM", true, "Use adaptive icons for window animations.");
 
@@ -117,12 +120,11 @@ public final class FeatureFlags {
             "ASSISTANT_GIVES_LAUNCHER_FOCUS", false,
             "Allow Launcher to handle nav bar gestures while Assistant is running over it");
 
-    public static final BooleanFlag ENABLE_HYBRID_HOTSEAT = getDebugFlag(
+    public static final BooleanFlag ENABLE_HYBRID_HOTSEAT = new DeviceFlag(
             "ENABLE_HYBRID_HOTSEAT", false, "Fill gaps in hotseat with predicted apps");
 
-    public static final BooleanFlag HOTSEAT_MIGRATE_NEW_PAGE = getDebugFlag(
-            "HOTSEAT_MIGRATE_NEW_PAGE", false,
-            "Migrates hotseat to a new workspace page instead of same page");
+    public static final BooleanFlag HOTSEAT_MIGRATE_TO_FOLDER = new DeviceFlag(
+            "HOTSEAT_MIGRATE_TO_FOLDER", false, "Should move hotseat items into a folder");
 
     public static final BooleanFlag ENABLE_DEEP_SHORTCUT_ICON_CACHE = getDebugFlag(
             "ENABLE_DEEP_SHORTCUT_ICON_CACHE", true, "R/W deep shortcut in IconCache");
@@ -134,7 +136,7 @@ public final class FeatureFlags {
             "ENABLE_LAUNCHER_PREVIEW_IN_GRID_PICKER", true, "Show launcher preview in grid picker");
 
     public static final BooleanFlag USE_SURFACE_VIEW_FOR_GRID_PREVIEW = getDebugFlag(
-            "USE_SURFACE_VIEW_FOR_GRID_PREVIEW", false, "Use surface view for grid preview");
+            "USE_SURFACE_VIEW_FOR_GRID_PREVIEW", true, "Use surface view for grid preview");
 
     public static final BooleanFlag ENABLE_OVERVIEW_ACTIONS = getDebugFlag(
             "ENABLE_OVERVIEW_ACTIONS", true, "Show app actions instead of the shelf in Overview."
