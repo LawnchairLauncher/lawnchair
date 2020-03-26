@@ -160,6 +160,11 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         return TYPE_OTHER_ACTIVITY;
     }
 
+    @Override
+    public boolean isConsumerDetachedFromGesture() {
+        return true;
+    }
+
     private void forceCancelGesture(MotionEvent ev) {
         int action = ev.getAction();
         ev.setAction(ACTION_CANCEL);

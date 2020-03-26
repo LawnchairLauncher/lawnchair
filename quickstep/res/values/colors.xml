@@ -14,5 +14,5 @@
      limitations under the License.
 -->
 <resources>
-    <integer name="max_depth_blur_radius">150</integer>
+    <color name="back_arrow_color_dark">#99000000</color>
 </resources>
