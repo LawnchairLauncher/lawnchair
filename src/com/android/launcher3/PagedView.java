@@ -50,6 +50,8 @@ import static com.android.launcher3.touch.PagedOrientationHandler.CANVAS_TRANSLA
 import static com.android.launcher3.touch.PagedOrientationHandler.VIEW_SCROLL_BY;
 import static com.android.launcher3.touch.PagedOrientationHandler.VIEW_SCROLL_TO;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
@@ -133,6 +135,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     protected int mActivePointerId = INVALID_POINTER;
 
     protected boolean mIsPageInTransition = false;
+    private Runnable mOnPageTransitionEndCallback;
 
     protected float mSpringOverScroll;
 
@@ -391,6 +394,22 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         AccessibilityManagerCompat.sendScrollFinishedEventToTest(getContext());
         AccessibilityManagerCompat.sendCustomAccessibilityEvent(getPageAt(mCurrentPage),
                 AccessibilityEvent.TYPE_VIEW_FOCUSED, null);
+        if (mOnPageTransitionEndCallback != null) {
+            mOnPageTransitionEndCallback.run();
+            mOnPageTransitionEndCallback = null;
+        }
+    }
+
+    /**
+     * Sets a callback to run once when the scrolling finishes. If there is currently
+     * no page in transition, then the callback is called immediately.
+     */
+    public void setOnPageTransitionEndCallback(@Nullable Runnable callback) {
+        if (mIsPageInTransition || callback == null) {
+            mOnPageTransitionEndCallback = callback;
+        } else {
+            callback.run();
+        }
     }
 
     protected int getUnboundedScroll() {

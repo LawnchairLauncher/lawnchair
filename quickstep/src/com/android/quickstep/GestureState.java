@@ -105,6 +105,10 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
     public static final int STATE_RECENTS_ANIMATION_ENDED =
             getFlagForIndex("STATE_RECENTS_ANIMATION_ENDED");
 
+    // Called when RecentsView stops scrolling and settles on a TaskView.
+    public static final int STATE_RECENTS_SCROLLING_FINISHED =
+            getFlagForIndex("STATE_RECENTS_SCROLLING_FINISHED");
+
 
     // Needed to interact with the current activity
     private final Intent mHomeIntent;

@@ -29,6 +29,7 @@ import static com.android.quickstep.GestureState.GestureEndTarget.LAST_TASK;
 import static com.android.quickstep.GestureState.GestureEndTarget.NEW_TASK;
 import static com.android.quickstep.GestureState.GestureEndTarget.RECENTS;
 import static com.android.quickstep.GestureState.STATE_END_TARGET_ANIMATION_FINISHED;
+import static com.android.quickstep.GestureState.STATE_RECENTS_SCROLLING_FINISHED;
 import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
 import static com.android.quickstep.SysUINavigationMode.Mode.TWO_BUTTONS;
 import static com.android.quickstep.util.ShelfPeekAnim.ShelfAnimState.HIDE;
@@ -244,7 +245,11 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
                         | STATE_GESTURE_STARTED,
                 this::setupLauncherUiAfterSwipeUpToRecentsAnimation);
 
-        mGestureState.runOnceAtState(STATE_END_TARGET_ANIMATION_FINISHED, this::onEndTargetSet);
+        mGestureState.runOnceAtState(STATE_END_TARGET_ANIMATION_FINISHED,
+                this::continueComputingRecentsScrollIfNecessary);
+        mGestureState.runOnceAtState(STATE_END_TARGET_ANIMATION_FINISHED
+                        | STATE_RECENTS_SCROLLING_FINISHED,
+                this::onSettledOnEndTarget);
 
         mStateCallback.runOnceAtState(STATE_HANDLER_INVALIDATED, this::invalidateHandler);
         mStateCallback.runOnceAtState(STATE_LAUNCHER_PRESENT | STATE_HANDLER_INVALIDATED,
@@ -283,6 +288,7 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
         }
 
         mRecentsView = activity.getOverviewPanel();
+        mRecentsView.setOnPageTransitionEndCallback(null);
         linkRecentsViewScroll();
         addLiveTileOverlay();
 
@@ -699,7 +705,7 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
         }
     }
 
-    private void onEndTargetSet() {
+    private void onSettledOnEndTarget() {
         switch (mGestureState.getEndTarget()) {
             case HOME:
                 mStateCallback.setState(STATE_SCALED_CONTROLLER_HOME | STATE_CAPTURE_SCREENSHOT);
@@ -862,13 +868,17 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
             if (mDeviceState.isFullyGesturalNavMode()) {
                 setShelfState(ShelfAnimState.OVERVIEW, interpolator, duration);
             }
-        } else if (endTarget == NEW_TASK || endTarget == LAST_TASK) {
-            // Let RecentsView handle the scrolling to the task, which we launch in startNewTask()
-            // or resumeLastTask().
-            if (mRecentsView != null) {
-                duration = Math.max(duration, mRecentsView.getScroller().getDuration());
-            }
         }
+
+        // Let RecentsView handle the scrolling to the task, which we launch in startNewTask()
+        // or resumeLastTask().
+        if (mRecentsView != null) {
+            mRecentsView.setOnPageTransitionEndCallback(
+                    () -> mGestureState.setState(STATE_RECENTS_SCROLLING_FINISHED));
+        } else {
+            mGestureState.setState(STATE_RECENTS_SCROLLING_FINISHED);
+        }
+
         animateToProgress(startShift, endShift, duration, interpolator, endTarget, velocityPxPerMs);
     }
 
@@ -952,11 +962,7 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
             ValueAnimator windowAnim = mCurrentShift.animateToValue(start, end);
             windowAnim.setDuration(duration).setInterpolator(interpolator);
             windowAnim.addUpdateListener(valueAnimator -> {
-                if (mRecentsView != null && mRecentsView.getVisibility() != View.VISIBLE) {
-                    // Views typically don't compute scroll when invisible as an optimization,
-                    // but in our case we need to since the window offset depends on the scroll.
-                    mRecentsView.computeScroll();
-                }
+                computeRecentsScrollIfInvisible();
             });
             windowAnim.addListener(new AnimationSuccessListener() {
                 @Override
@@ -1006,6 +1012,21 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
         }
         mLauncherTransitionController.getAnimationPlayer().start();
         mHasLauncherTransitionControllerStarted = true;
+    }
+
+    private void computeRecentsScrollIfInvisible() {
+        if (mRecentsView != null && mRecentsView.getVisibility() != View.VISIBLE) {
+            // Views typically don't compute scroll when invisible as an optimization,
+            // but in our case we need to since the window offset depends on the scroll.
+            mRecentsView.computeScroll();
+        }
+    }
+
+    private void continueComputingRecentsScrollIfNecessary() {
+        if (!mGestureState.hasState(STATE_RECENTS_SCROLLING_FINISHED)) {
+            computeRecentsScrollIfInvisible();
+            mRecentsView.post(this::continueComputingRecentsScrollIfNecessary);
+        }
     }
 
     /**
