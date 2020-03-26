@@ -165,14 +165,14 @@ public class OverviewState extends LauncherState {
     @Override
     public int getVisibleElements(Launcher launcher) {
         if (ENABLE_OVERVIEW_ACTIONS.get() && removeShelfFromOverview(launcher)) {
-            return RECENTS_CLEAR_ALL_BUTTON;
+            return OVERVIEW_BUTTONS;
         } else if (launcher.getDeviceProfile().isVerticalBarLayout()) {
-            return VERTICAL_SWIPE_INDICATOR | RECENTS_CLEAR_ALL_BUTTON;
+            return VERTICAL_SWIPE_INDICATOR | OVERVIEW_BUTTONS;
         } else {
             boolean hasAllAppsHeaderExtra = launcher.getAppsView() != null
                     && launcher.getAppsView().getFloatingHeaderView().hasVisibleContent();
-            return HOTSEAT_SEARCH_BOX | VERTICAL_SWIPE_INDICATOR | RECENTS_CLEAR_ALL_BUTTON |
-                    (hasAllAppsHeaderExtra ? ALL_APPS_HEADER_EXTRA : HOTSEAT_ICONS);
+            return HOTSEAT_SEARCH_BOX | VERTICAL_SWIPE_INDICATOR | OVERVIEW_BUTTONS
+                    | (hasAllAppsHeaderExtra ? ALL_APPS_HEADER_EXTRA : HOTSEAT_ICONS);
         }
     }
 

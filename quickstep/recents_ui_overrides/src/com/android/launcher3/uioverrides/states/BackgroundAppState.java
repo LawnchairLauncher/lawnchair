@@ -90,7 +90,7 @@ public class BackgroundAppState extends OverviewState {
     @Override
     public int getVisibleElements(Launcher launcher) {
         return super.getVisibleElements(launcher)
-                & ~RECENTS_CLEAR_ALL_BUTTON & ~VERTICAL_SWIPE_INDICATOR;
+                & ~OVERVIEW_BUTTONS & ~VERTICAL_SWIPE_INDICATOR;
     }
 
     @Override

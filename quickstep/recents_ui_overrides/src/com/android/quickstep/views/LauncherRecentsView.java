@@ -19,7 +19,7 @@ import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.ALL_APPS_HEADER_EXTRA;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
-import static com.android.launcher3.LauncherState.RECENTS_CLEAR_ALL_BUTTON;
+import static com.android.launcher3.LauncherState.OVERVIEW_BUTTONS;
 import static com.android.launcher3.LauncherState.SPRING_LOADED;
 import static com.android.launcher3.QuickstepAppTransitionManagerImpl.ALL_APPS_PROGRESS_OFF_SCREEN;
 import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
@@ -323,7 +323,7 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher>
         if (enabled) {
             LauncherState state = mActivity.getStateManager().getState();
             boolean hasClearAllButton = (state.getVisibleElements(mActivity)
-                    & RECENTS_CLEAR_ALL_BUTTON) != 0;
+                    & OVERVIEW_BUTTONS) != 0;
             setDisallowScrollToClearAll(!hasClearAllButton);
         }
     }

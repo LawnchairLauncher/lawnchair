@@ -34,6 +34,7 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
 import android.os.CancellationSignal;
+import android.view.View;
 
 import com.android.launcher3.LauncherState.ScaleAndTranslation;
 import com.android.launcher3.LauncherStateManager.StateHandler;
@@ -79,6 +80,8 @@ public abstract class BaseQuickstepLauncher extends Launcher
                     Float.intBitsToFloat(arg1), arg2 != 0);
 
     private final ShelfPeekAnim mShelfPeekAnim = new ShelfPeekAnim(this);
+
+    private View mActionsView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -224,14 +227,20 @@ public abstract class BaseQuickstepLauncher extends Launcher
     @Override
     protected void setupViews() {
         super.setupViews();
+        mActionsView = findViewById(R.id.overview_actions_view);
+
 
         if (FeatureFlags.ENABLE_OVERVIEW_ACTIONS.get() && removeShelfFromOverview(this)) {
             // Overview is above all other launcher elements, including qsb, so move it to the top.
             getOverviewPanel().bringToFront();
-            if (getActionsView() != null) {
-                getActionsView().bringToFront();
+            if (mActionsView != null) {
+                mActionsView.bringToFront();
             }
         }
+    }
+
+    public View getActionsView() {
+        return mActionsView;
     }
 
     @Override

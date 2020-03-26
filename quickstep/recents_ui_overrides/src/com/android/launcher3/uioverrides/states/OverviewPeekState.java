@@ -25,6 +25,7 @@ import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_TR
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.states.StateAnimationConfig;
 
 public class OverviewPeekState extends OverviewState {
@@ -37,6 +38,9 @@ public class OverviewPeekState extends OverviewState {
         ScaleAndTranslation result = super.getOverviewScaleAndTranslation(launcher);
         result.translationX = NORMAL.getOverviewScaleAndTranslation(launcher).translationX
                 - launcher.getResources().getDimension(R.dimen.overview_peek_distance);
+        if (Utilities.isRtl(launcher.getResources())) {
+            result.translationX = -result.translationX;
+        }
         return result;
     }
 
