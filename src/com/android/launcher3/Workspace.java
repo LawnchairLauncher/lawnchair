@@ -991,7 +991,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             if (!mOverlayShown) {
                 mLauncher.getUserEventDispatcher().logActionOnContainer(Action.Touch.SWIPE,
                         Action.Direction.LEFT, ContainerType.WORKSPACE, 0);
-                mLauncher.getStatsLogManager().logSwipeOnContainer(true, 0);
             }
             mOverlayShown = true;
             // Not announcing the overlay page for accessibility since it announces itself.
@@ -1001,7 +1000,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                 if (!ued.isPreviousHomeGesture()) {
                     mLauncher.getUserEventDispatcher().logActionOnContainer(Action.Touch.SWIPE,
                         Action.Direction.RIGHT, ContainerType.WORKSPACE, -1);
-                    mLauncher.getStatsLogManager().logSwipeOnContainer(false, -1);
                 }
             } else if (Float.compare(mOverlayTranslation, 0f) != 0) {
                 // When arriving to 0 overscroll from non-zero overscroll, announce page for

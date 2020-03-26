@@ -30,6 +30,8 @@ import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_ACTIONS;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.TASK_DISMISS_SWIPE_UP;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.TASK_LAUNCH_SWIPE_DOWN;
 import static com.android.launcher3.statehandlers.DepthController.DEPTH;
 import static com.android.launcher3.uioverrides.touchcontrollers.TaskViewTouchController.SUCCESS_TRANSITION_PROGRESS;
 import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch.TAP;
@@ -1183,13 +1185,13 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                 verticalFactor * secondaryTaskDimension).setDuration(duration), LINEAR, sp);
     }
 
-    private void removeTask(Task task, int index, EndState endState) {
-        if (task != null) {
-            ActivityManagerWrapper.getInstance().removeTask(task.key.id);
-            ComponentKey componentKey = TaskUtils.getLaunchComponentKeyForTask(task.key);
+    private void removeTask(TaskView taskView, int index, EndState endState) {
+        if (taskView.getTask() != null) {
+            ActivityManagerWrapper.getInstance().removeTask(taskView.getTask().key.id);
+            ComponentKey compKey = TaskUtils.getLaunchComponentKeyForTask(taskView.getTask().key);
             mActivity.getUserEventDispatcher().logTaskLaunchOrDismiss(
-                    endState.logAction, Direction.UP, index, componentKey);
-            mActivity.getStatsLogManager().logTaskDismiss(this, componentKey);
+                    endState.logAction, Direction.UP, index, compKey);
+            mActivity.getStatsLogManager().log(TASK_DISMISS_SWIPE_UP, taskView.buildProto());
         }
     }
 
@@ -1284,7 +1286,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             private void onEnd(EndState endState) {
                 if (endState.isSuccess) {
                     if (shouldRemoveTask) {
-                        removeTask(taskView.getTask(), draggedIndex, endState);
+                        removeTask(taskView, draggedIndex, endState);
                     }
 
                     int pageToSnapTo = mCurrentPage;
@@ -1733,6 +1735,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                     mActivity.getUserEventDispatcher().logTaskLaunchOrDismiss(
                             endState.logAction, Direction.DOWN, indexOfChild(tv),
                             TaskUtils.getLaunchComponentKeyForTask(task.key));
+                    mActivity.getStatsLogManager().log(TASK_LAUNCH_SWIPE_DOWN, tv.buildProto()
+                    );
                 }
             } else {
                 onTaskLaunched(false);

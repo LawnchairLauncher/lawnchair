@@ -29,6 +29,7 @@ import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.TOUCH_RESPONSE_INTERPOLATOR;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.TASK_LAUNCH_TAP;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -43,6 +44,7 @@ import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Process;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.util.Log;
@@ -59,6 +61,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PendingAnimation;
+import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.states.RotationHelper;
@@ -68,6 +71,7 @@ import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
+import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ViewPool.Reusable;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.TaskIconCache;
@@ -217,8 +221,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             mActivity.getUserEventDispatcher().logTaskLaunchOrDismiss(
                     Touch.TAP, Direction.NONE, getRecentsView().indexOfChild(this),
                     TaskUtils.getLaunchComponentKeyForTask(getTask().key));
-            mActivity.getStatsLogManager().logTaskLaunch(getRecentsView(),
-                    TaskUtils.getLaunchComponentKeyForTask(getTask().key));
+            mActivity.getStatsLogManager().log(TASK_LAUNCH_TAP, buildProto());
         });
         mCornerRadius = TaskCornerRadius.get(context);
         mWindowCornerRadius = QuickStepContract.getWindowCornerRadius(context.getResources());
@@ -227,6 +230,17 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
 
         mOutlineProvider = new TaskOutlineProvider(getContext(), mCurrentFullscreenParams);
         setOutlineProvider(mOutlineProvider);
+    }
+
+    /* Builds proto for logging */
+    protected LauncherAtom.ItemInfo buildProto() {
+        ComponentKey componentKey = TaskUtils.getLaunchComponentKeyForTask(getTask().key);
+        LauncherAtom.ItemInfo.Builder itemBuilder = LauncherAtom.ItemInfo.newBuilder();
+        itemBuilder.setIsWork(componentKey.user != Process.myUserHandle());
+        itemBuilder.setTask(LauncherAtom.Task.newBuilder()
+                .setComponentName(componentKey.componentName.flattenToShortString())
+                .setIndex(getRecentsView().indexOfChild(this)));
+        return itemBuilder.build();
     }
 
     @Override
