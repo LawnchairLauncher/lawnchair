@@ -53,11 +53,10 @@ import androidx.core.view.ViewCompat;
 
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.accessibility.DragAndDropAccessibilityDelegate;
-import com.android.launcher3.accessibility.FolderAccessibilityHelper;
-import com.android.launcher3.accessibility.WorkspaceAccessibilityHelper;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.folder.PreviewBackground;
 import com.android.launcher3.graphics.DragPreviewProvider;
 import com.android.launcher3.graphics.RotationMode;
@@ -79,9 +78,6 @@ import java.util.Comparator;
 import java.util.Stack;
 
 public class CellLayout extends ViewGroup implements Transposable {
-    public static final int WORKSPACE_ACCESSIBILITY_DRAG = 2;
-    public static final int FOLDER_ACCESSIBILITY_DRAG = 1;
-
     private static final String TAG = "CellLayout";
     private static final boolean LOGD = false;
 
@@ -104,6 +100,11 @@ public class CellLayout extends ViewGroup implements Transposable {
     // return an (x, y) value from helper functions. Do NOT use them to maintain other state.
     @Thunk final int[] mTmpPoint = new int[2];
     @Thunk final int[] mTempLocation = new int[2];
+
+    // Used to visualize / debug the Grid of the CellLayout
+    private static final boolean VISUALIZE_GRID = false;
+    private Rect mVisualizeGridRect = new Rect();
+    private Paint mVisualizeGridPaint = new Paint();
 
     private GridOccupancy mOccupied;
     private GridOccupancy mTmpOccupied;
@@ -182,7 +183,6 @@ public class CellLayout extends ViewGroup implements Transposable {
     private static final Paint sPaint = new Paint();
 
     // Related to accessible drag and drop
-    private DragAndDropAccessibilityDelegate mTouchHelper;
     private boolean mUseTouchHelper = false;
     private RotationMode mRotationMode = RotationMode.NORMAL;
 
@@ -292,26 +292,20 @@ public class CellLayout extends ViewGroup implements Transposable {
         addView(mShortcutsAndWidgets);
     }
 
-    public void enableAccessibleDrag(boolean enable, int dragType) {
-        mUseTouchHelper = enable;
-        if (!enable) {
-            ViewCompat.setAccessibilityDelegate(this, null);
-            setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);
-            getShortcutsAndWidgets().setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);
-            setOnClickListener(null);
-        } else {
-            if (dragType == WORKSPACE_ACCESSIBILITY_DRAG &&
-                    !(mTouchHelper instanceof WorkspaceAccessibilityHelper)) {
-                mTouchHelper = new WorkspaceAccessibilityHelper(this);
-            } else if (dragType == FOLDER_ACCESSIBILITY_DRAG &&
-                    !(mTouchHelper instanceof FolderAccessibilityHelper)) {
-                mTouchHelper = new FolderAccessibilityHelper(this);
-            }
-            ViewCompat.setAccessibilityDelegate(this, mTouchHelper);
-            setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_YES);
-            getShortcutsAndWidgets().setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_YES);
-            setOnClickListener(mTouchHelper);
-        }
+
+    /**
+     * Sets or clears a delegate used for accessible drag and drop
+     */
+    public void setDragAndDropAccessibilityDelegate(DragAndDropAccessibilityDelegate delegate) {
+        setOnClickListener(delegate);
+        setOnHoverListener(delegate);
+        ViewCompat.setAccessibilityDelegate(this, delegate);
+
+        mUseTouchHelper = delegate != null;
+        int accessibilityFlag = mUseTouchHelper
+                ? IMPORTANT_FOR_ACCESSIBILITY_YES : IMPORTANT_FOR_ACCESSIBILITY_NO;
+        setImportantForAccessibility(accessibilityFlag);
+        getShortcutsAndWidgets().setImportantForAccessibility(accessibilityFlag);
 
         // Invalidate the accessibility hierarchy
         if (getParent() != null) {
@@ -336,15 +330,6 @@ public class CellLayout extends ViewGroup implements Transposable {
     public void setPadding(int left, int top, int right, int bottom) {
         mRotationMode.mapRect(left, top, right, bottom, mTempRect);
         super.setPadding(mTempRect.left, mTempRect.top, mTempRect.right, mTempRect.bottom);
-    }
-
-    @Override
-    public boolean dispatchHoverEvent(MotionEvent event) {
-        // Always attempt to dispatch hover events to accessibility first.
-        if (mUseTouchHelper && mTouchHelper.dispatchHoverEvent(event)) {
-            return true;
-        }
-        return super.dispatchHoverEvent(event);
     }
 
     @Override
@@ -482,6 +467,37 @@ public class CellLayout extends ViewGroup implements Transposable {
             canvas.translate(mTempLocation[0], mTempLocation[1]);
             mFolderLeaveBehind.drawLeaveBehind(canvas);
             canvas.restore();
+        }
+
+        if (VISUALIZE_GRID) {
+            visualizeGrid(canvas);
+        }
+    }
+
+    protected void visualizeGrid(Canvas canvas) {
+        mVisualizeGridRect.set(0, 0, mCellWidth, mCellHeight);
+        mVisualizeGridPaint.setStrokeWidth(4);
+
+        for (int i = 0; i < mCountX; i++) {
+            for (int j = 0; j < mCountY; j++) {
+                canvas.save();
+
+                int transX = i * mCellWidth;
+                int transY = j * mCellHeight;
+
+                canvas.translate(getPaddingLeft() + transX, getPaddingTop() + transY);
+
+                mVisualizeGridPaint.setStyle(Paint.Style.FILL);
+                mVisualizeGridPaint.setColor(Color.argb(80, 255, 100, 100));
+
+                canvas.drawRect(mVisualizeGridRect, mVisualizeGridPaint);
+
+                mVisualizeGridPaint.setStyle(Paint.Style.STROKE);
+                mVisualizeGridPaint.setColor(Color.argb(255, 255, 100, 100));
+
+                canvas.drawRect(mVisualizeGridRect, mVisualizeGridPaint);
+                canvas.restore();
+            }
         }
     }
 
@@ -949,8 +965,8 @@ public class CellLayout extends ViewGroup implements Transposable {
         return false;
     }
 
-    void visualizeDropLocation(View v, DragPreviewProvider outlineProvider, int cellX, int cellY,
-            int spanX, int spanY, boolean resize, DropTarget.DragObject dragObject) {
+    void visualizeDropLocation(DraggableView v, DragPreviewProvider outlineProvider, int cellX, int
+            cellY, int spanX, int spanY, boolean resize, DropTarget.DragObject dragObject) {
         final int oldDragCellX = mDragCell[0];
         final int oldDragCellY = mDragCell[1];
 
@@ -960,9 +976,6 @@ public class CellLayout extends ViewGroup implements Transposable {
 
         Bitmap dragOutline = outlineProvider.generatedDragOutline;
         if (cellX != oldDragCellX || cellY != oldDragCellY) {
-            Point dragOffset = dragObject.dragView.getDragVisualizeOffset();
-            Rect dragRegion = dragObject.dragView.getDragRegion();
-
             mDragCell[0] = cellX;
             mDragCell[1] = cellY;
 
@@ -971,49 +984,26 @@ public class CellLayout extends ViewGroup implements Transposable {
             mDragOutlineCurrent = (oldIndex + 1) % mDragOutlines.length;
             Rect r = mDragOutlines[mDragOutlineCurrent];
 
+            cellToRect(cellX, cellY, spanX, spanY, r);
+            int left = r.left;
+            int top = r.top;
+
+            int width = dragOutline.getWidth();
+            int height = dragOutline.getHeight();
+
             if (resize) {
-                cellToRect(cellX, cellY, spanX, spanY, r);
-                if (v instanceof LauncherAppWidgetHostView) {
-                    DeviceProfile profile = mActivity.getWallpaperDeviceProfile();
-                    Utilities.shrinkRect(r, profile.appWidgetScale.x, profile.appWidgetScale.y);
-                }
-            } else {
-                // Find the top left corner of the rect the object will occupy
-                final int[] topLeft = mTmpPoint;
-                cellToPoint(cellX, cellY, topLeft);
-
-                int left = topLeft[0];
-                int top = topLeft[1];
-
-                if (v != null && dragOffset == null) {
-                    // When drawing the drag outline, it did not account for margin offsets
-                    // added by the view's parent.
-                    MarginLayoutParams lp = (MarginLayoutParams) v.getLayoutParams();
-                    left += lp.leftMargin;
-                    top += lp.topMargin;
-
-                    // Offsets due to the size difference between the View and the dragOutline.
-                    // There is a size difference to account for the outer blur, which may lie
-                    // outside the bounds of the view.
-                    top += ((mCellHeight * spanY) - dragOutline.getHeight()) / 2;
-                    // We center about the x axis
-                    left += ((mCellWidth * spanX) - dragOutline.getWidth()) / 2;
-                } else {
-                    if (dragOffset != null && dragRegion != null) {
-                        // Center the drag region *horizontally* in the cell and apply a drag
-                        // outline offset
-                        left += dragOffset.x + ((mCellWidth * spanX) - dragRegion.width()) / 2;
-                        int cHeight = getShortcutsAndWidgets().getCellContentHeight();
-                        int cellPaddingY = (int) Math.max(0, ((mCellHeight - cHeight) / 2f));
-                        top += dragOffset.y + cellPaddingY;
-                    } else {
-                        // Center the drag outline in the cell
-                        left += ((mCellWidth * spanX) - dragOutline.getWidth()) / 2;
-                        top += ((mCellHeight * spanY) - dragOutline.getHeight()) / 2;
-                    }
-                }
-                r.set(left, top, left + dragOutline.getWidth(), top + dragOutline.getHeight());
+                width = r.width();
+                height = r.height();
             }
+
+            if (v != null && v.getViewType() == DraggableView.DRAGGABLE_ICON) {
+                left +=  ((mCellWidth * spanX) - dragOutline.getWidth()) / 2;
+                int cHeight = getShortcutsAndWidgets().getCellContentHeight();
+                int cellPaddingY = (int) Math.max(0, ((mCellHeight - cHeight) / 2f));
+                top += cellPaddingY;
+            }
+
+            r.set(left, top, left + width, top + height);
 
             Utilities.scaleRectAboutCenter(r, mChildScale);
             mDragOutlineAnims[mDragOutlineCurrent].setTag(dragOutline);
@@ -1900,7 +1890,7 @@ public class CellLayout extends ViewGroup implements Transposable {
 
     // This method starts or changes the reorder preview animations
     private void beginOrAdjustReorderPreviewAnimations(ItemConfiguration solution,
-            View dragView, int delay, int mode) {
+            View dragView, int mode) {
         int childCount = mShortcutsAndWidgets.getChildCount();
         for (int i = 0; i < childCount; i++) {
             View child = mShortcutsAndWidgets.getChildAt(i);
@@ -1967,6 +1957,8 @@ public class CellLayout extends ViewGroup implements Transposable {
 
             this.child = child;
             this.mode = mode;
+
+            // TODO issue!
             setInitialAnimationValues(false);
             finalScale = (mChildScale - (CHILD_DIVIDEND / child.getWidth())) * initScale;
             finalDeltaX = initDeltaX;
@@ -2162,6 +2154,8 @@ public class CellLayout extends ViewGroup implements Transposable {
     */
     private void getDirectionVectorForDrop(int dragViewCenterX, int dragViewCenterY, int spanX,
             int spanY, View dragView, int[] resultDirection) {
+
+        //TODO(adamcohen) b/151776141 use the items visual center for the direction vector
         int[] targetDestination = new int[2];
 
         findNearestArea(dragViewCenterX, dragViewCenterY, spanX, spanY, targetDestination);
@@ -2272,7 +2266,7 @@ public class CellLayout extends ViewGroup implements Transposable {
                 setItemPlacementDirty(false);
             } else {
                 beginOrAdjustReorderPreviewAnimations(swapSolution, dragView,
-                        REORDER_ANIMATION_DURATION, ReorderPreviewAnimation.MODE_PREVIEW);
+                        ReorderPreviewAnimation.MODE_PREVIEW);
             }
             mShortcutsAndWidgets.requestLayout();
         }
@@ -2326,7 +2320,7 @@ public class CellLayout extends ViewGroup implements Transposable {
 
         if (mode == MODE_SHOW_REORDER_HINT) {
             if (finalSolution != null) {
-                beginOrAdjustReorderPreviewAnimations(finalSolution, dragView, 0,
+                beginOrAdjustReorderPreviewAnimations(finalSolution, dragView,
                         ReorderPreviewAnimation.MODE_HINT);
                 result[0] = finalSolution.cellX;
                 result[1] = finalSolution.cellY;
@@ -2366,7 +2360,7 @@ public class CellLayout extends ViewGroup implements Transposable {
                     setItemPlacementDirty(false);
                 } else {
                     beginOrAdjustReorderPreviewAnimations(finalSolution, dragView,
-                            REORDER_ANIMATION_DURATION,  ReorderPreviewAnimation.MODE_PREVIEW);
+                            ReorderPreviewAnimation.MODE_PREVIEW);
                 }
             }
         } else {
@@ -2787,7 +2781,6 @@ public class CellLayout extends ViewGroup implements Transposable {
      * Finds solution to accept hotseat migration to cell layout. commits solution if commitConfig
      */
     public boolean makeSpaceForHotseatMigration(boolean commitConfig) {
-        if (FeatureFlags.HOTSEAT_MIGRATE_NEW_PAGE.get()) return false;
         int[] cellPoint = new int[2];
         int[] directionVector = new int[]{0, -1};
         cellToPoint(0, mCountY, cellPoint);
@@ -2797,10 +2790,21 @@ public class CellLayout extends ViewGroup implements Transposable {
             if (commitConfig) {
                 copySolutionToTempState(configuration, null);
                 commitTempPlacement();
+                // undo marking cells occupied since there is actually nothing being placed yet.
+                mOccupied.markCells(0, mCountY - 1, mCountX, 1, false);
             }
             return true;
         }
         return false;
+    }
+
+    /**
+     * returns a copy of cell layout's grid occupancy
+     */
+    public GridOccupancy cloneGridOccupancy() {
+        GridOccupancy occupancy = new GridOccupancy(mCountX, mCountY);
+        mOccupied.copyTo(occupancy);
+        return occupancy;
     }
 
     public boolean isRegionVacant(int x, int y, int spanX, int spanY) {

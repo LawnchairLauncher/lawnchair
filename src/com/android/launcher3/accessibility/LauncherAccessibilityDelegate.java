@@ -7,6 +7,7 @@ import static com.android.launcher3.LauncherState.NORMAL;
 import android.app.AlertDialog;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.DialogInterface;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
@@ -400,11 +401,11 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
 
         Rect pos = new Rect();
         mLauncher.getDragLayer().getDescendantRectRelativeToSelf(item, pos);
-        mLauncher.getDragController().prepareAccessibleDrag(pos.centerX(), pos.centerY());
         mLauncher.getDragController().addDragListener(this);
 
         DragOptions options = new DragOptions();
         options.isAccessibleDrag = true;
+        options.simulatedDndStartPoint = new Point(pos.centerX(), pos.centerY());
         ItemLongClickListener.beginDrag(item, mLauncher, info, options);
     }
 
