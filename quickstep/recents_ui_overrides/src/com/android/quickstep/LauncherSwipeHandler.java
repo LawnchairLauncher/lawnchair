@@ -505,14 +505,20 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
     }
 
     private void buildAnimationController() {
-        if (mGestureState.getEndTarget() == HOME || mHasLauncherTransitionControllerStarted) {
-            // We don't want a new mLauncherTransitionController if
-            // mGestureState.getEndTarget() == HOME (it has its own animation) or if we're already
-            // animating the current controller.
+        if (!canCreateNewOrUpdateExistingLauncherTransitionController()) {
             return;
         }
         initTransitionEndpoints(mActivity.getDeviceProfile());
         mAnimationFactory.createActivityInterface(mTransitionDragLength);
+    }
+
+    /**
+     * We don't want to change mLauncherTransitionController if mGestureState.getEndTarget() == HOME
+     * (it has its own animation) or if we're already animating the current controller.
+     * @return Whether we can create the launcher controller or update its progress.
+     */
+    private boolean canCreateNewOrUpdateExistingLauncherTransitionController() {
+        return mGestureState.getEndTarget() != HOME && !mHasLauncherTransitionControllerStarted;
     }
 
     @Override
@@ -558,15 +564,12 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
             }
         }
 
-        if (mLauncherTransitionController == null || mLauncherTransitionController
-                .getAnimationPlayer().isStarted()) {
-            return;
-        }
         updateLauncherTransitionProgress();
     }
 
     private void updateLauncherTransitionProgress() {
-        if (mGestureState.getEndTarget() == HOME) {
+        if (mLauncherTransitionController == null
+                || !canCreateNewOrUpdateExistingLauncherTransitionController()) {
             return;
         }
         // Normalize the progress to 0 to 1, as the animation controller will clamp it to that
