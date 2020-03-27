@@ -163,7 +163,7 @@ public final class FeatureFlags {
             "Always use hardware optimization for folder animations.");
 
     public static final BooleanFlag ENABLE_FIXED_ROTATION_TRANSFORM = getDebugFlag(
-            FLAG_ENABLE_FIXED_ROTATION_TRANSFORM, false,
+            FLAG_ENABLE_FIXED_ROTATION_TRANSFORM, true,
             "Launch/close apps without rotation animation. Fix Launcher to portrait");
 
     public static void initialize(Context context) {

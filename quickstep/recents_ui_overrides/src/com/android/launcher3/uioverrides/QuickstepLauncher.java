@@ -184,8 +184,8 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
             onStateOrResumeChanged();
         }
 
-        if ((changeBits & ACTIVITY_STATE_STARTED) != 0 && mHotseatPredictionController != null
-                && (getActivityFlags() & ACTIVITY_STATE_USER_ACTIVE) == 0) {
+        if (mHotseatPredictionController != null && ((changeBits & ACTIVITY_STATE_STARTED) != 0
+                || (changeBits & getActivityFlags() & ACTIVITY_STATE_DEFERRED_RESUMED) != 0)) {
             mHotseatPredictionController.setPauseUIUpdate(false);
         }
     }
