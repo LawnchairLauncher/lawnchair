@@ -30,6 +30,11 @@ public abstract class DelegateInputConsumer implements InputConsumer {
     }
 
     @Override
+    public boolean isInConsumerHierarchy(InputConsumer candidate) {
+        return this == candidate || mDelegate.isInConsumerHierarchy(candidate);
+    }
+
+    @Override
     public boolean allowInterceptByParent() {
         return mDelegate.allowInterceptByParent() && mState != STATE_ACTIVE;
     }
