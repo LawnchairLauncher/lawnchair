@@ -281,16 +281,22 @@ public final class Workspace extends Home {
 
     @Nullable
     public Widget tryGetWidget(String label, long timeout) {
-        final UiObject2 widget = mLauncher.tryWaitForLauncherObject(
-                By.clazz("com.android.launcher3.widget.LauncherAppWidgetHostView").desc(label),
-                timeout);
-        return widget != null ? new Widget(mLauncher, widget) : null;
+        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                "getting widget " + label + " on workspace with timeout " + timeout)) {
+            final UiObject2 widget = mLauncher.tryWaitForLauncherObject(
+                    By.clazz("com.android.launcher3.widget.LauncherAppWidgetHostView").desc(label),
+                    timeout);
+            return widget != null ? new Widget(mLauncher, widget) : null;
+        }
     }
 
     @Nullable
     public Widget tryGetPendingWidget(long timeout) {
-        final UiObject2 widget = mLauncher.tryWaitForLauncherObject(
-                By.clazz("com.android.launcher3.widget.PendingAppWidgetHostView"), timeout);
-        return widget != null ? new Widget(mLauncher, widget) : null;
+        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                "getting pending widget on workspace with timeout " + timeout)) {
+            final UiObject2 widget = mLauncher.tryWaitForLauncherObject(
+                    By.clazz("com.android.launcher3.widget.PendingAppWidgetHostView"), timeout);
+            return widget != null ? new Widget(mLauncher, widget) : null;
+        }
     }
 }

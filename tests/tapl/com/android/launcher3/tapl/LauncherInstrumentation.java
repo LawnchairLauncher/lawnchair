@@ -316,7 +316,7 @@ public final class LauncherInstrumentation {
         };
     }
 
-    private void dumpViewHierarchy() {
+    public void dumpViewHierarchy() {
         final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         try {
             mDevice.dumpWindowHierarchy(stream);
