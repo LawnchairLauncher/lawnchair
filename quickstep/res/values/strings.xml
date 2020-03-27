@@ -78,15 +78,20 @@
     <string name="hotseat_edu_message_migrate">Easily access your most-used apps right on the Home screen. Suggestions will change based on your routines. Apps on the bottom row will move up to your Home screen. </string>
     <string name="hotseat_edu_message_migrate_alt">Easily access your most-used apps, right on the Home screen. Suggestions will change based on your routines. Apps on the bottom row will move to a new folder.</string>
 
-    <!-- Toast message user sees after opting into fully predicted hybrid hotseat -->
-    <string name="hotseat_items_migrated">Your hotseat items have been moved up to your homescreen</string>
-    <string name="hotseat_items_migrated_alt">Your hotseat items have been moved to a folder</string>
-    <!-- Toast message user sees after opting into fully predicted hybrid hotseat -->
-    <string name="hotseat_no_migration">Drag apps off the bottom row to see app suggestions</string>
     <!-- Button text to opt in for fully predicted hotseat -->
     <string name="hotseat_edu_accept">Get app suggestions</string>
     <!-- Button text to dismiss opt in for fully predicted hotseat -->
     <string name="hotseat_edu_dismiss">No thanks</string>
+
+    <!-- action shown to turn of predictions after onboarding -->
+    <string name="hotseat_turn_off">Settings</string>
+
+    <!-- tip shown if user has no items in hotseat to migrate -->
+    <string name="hotseat_auto_enrolled">Most-used apps appear here, and change based on routines</string>
+    <!-- tip shown if user declines migration and has some open spots for prediction -->
+    <string name="hotseat_tip_no_empty_slots">Drag apps off the bottom row to get app suggestions</string>
+    <!-- tip shown if user declines migration and has no open spots for prediction -->
+    <string name="hotseat_tip_gaps_filled">App suggestions added to empty space.</string>
 
 
     <!-- Title shown during interactive part of Back gesture tutorial for right edge. [CHAR LIMIT=30] -->
