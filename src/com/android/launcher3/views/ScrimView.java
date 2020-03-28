@@ -33,8 +33,10 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.RectEvaluator;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
@@ -115,7 +117,9 @@ public class ScrimView<T extends Launcher> extends View implements Insettable, O
     protected int mEndFlatColor;
     protected int mEndFlatColorAlpha;
 
-    protected final int mDragHandleSize;
+    protected final Point mDragHandleSize;
+    private final int mDragHandleTouchSize;
+    private final int mDragHandlePaddingInVerticalBarLayout;
     protected float mDragHandleOffset;
     private final Rect mDragHandleBounds;
     private final RectF mHitRect = new RectF();
@@ -136,9 +140,13 @@ public class ScrimView<T extends Launcher> extends View implements Insettable, O
 
         mMaxScrimAlpha = 0.7f;
 
-        mDragHandleSize = context.getResources()
-                .getDimensionPixelSize(R.dimen.vertical_drag_handle_size);
-        mDragHandleBounds = new Rect(0, 0, mDragHandleSize, mDragHandleSize);
+        Resources res = context.getResources();
+        mDragHandleSize = new Point(res.getDimensionPixelSize(R.dimen.vertical_drag_handle_width),
+                res.getDimensionPixelSize(R.dimen.vertical_drag_handle_height));
+        mDragHandleBounds = new Rect(0, 0, mDragHandleSize.x, mDragHandleSize.y);
+        mDragHandleTouchSize = res.getDimensionPixelSize(R.dimen.vertical_drag_handle_touch_size);
+        mDragHandlePaddingInVerticalBarLayout = context.getResources()
+                .getDimensionPixelSize(R.dimen.vertical_drag_handle_padding_in_vertical_bar_layout);
 
         mAccessibilityHelper = createAccessibilityHelper();
         ViewCompat.setAccessibilityDelegate(this, mAccessibilityHelper);
@@ -297,24 +305,26 @@ public class ScrimView<T extends Launcher> extends View implements Insettable, O
         DeviceProfile grid = mLauncher.getDeviceProfile();
         final int left;
         final int width = getMeasuredWidth();
-        final int top = getMeasuredHeight() - mDragHandleSize - grid.getInsets().bottom;
+        final int top = getMeasuredHeight() - mDragHandleSize.y - grid.getInsets().bottom;
         final int topMargin;
 
         if (grid.isVerticalBarLayout()) {
-            topMargin = grid.workspacePadding.bottom;
+            topMargin = grid.workspacePadding.bottom + mDragHandlePaddingInVerticalBarLayout;
             if (grid.isSeascape()) {
-                left = width - grid.getInsets().right - mDragHandleSize;
+                left = width - grid.getInsets().right - mDragHandleSize.x
+                        - mDragHandlePaddingInVerticalBarLayout;
             } else {
-                left = mDragHandleSize + grid.getInsets().left;
+                left = grid.getInsets().left + mDragHandlePaddingInVerticalBarLayout;
             }
         } else {
-            left = (width - mDragHandleSize) / 2;
+            left = Math.round((width - mDragHandleSize.x) / 2f);
             topMargin = grid.hotseatBarSizePx;
         }
         mDragHandleBounds.offsetTo(left, top - topMargin);
         mHitRect.set(mDragHandleBounds);
-        float inset = -mDragHandleSize / 2;
-        mHitRect.inset(inset, inset);
+        // Inset outwards to increase touch size.
+        mHitRect.inset((mDragHandleSize.x - mDragHandleTouchSize) / 2f,
+                (mDragHandleSize.y - mDragHandleTouchSize) / 2f);
 
         if (mDragHandle != null) {
             mDragHandle.setBounds(mDragHandleBounds);
@@ -341,7 +351,7 @@ public class ScrimView<T extends Launcher> extends View implements Insettable, O
         if (visible != wasVisible) {
             if (visible) {
                 mDragHandle = recycle != null ? recycle :
-                        mLauncher.getDrawable(R.drawable.drag_handle_indicator);
+                        mLauncher.getDrawable(R.drawable.drag_handle_indicator_shadow);
                 mDragHandle.setBounds(mDragHandleBounds);
 
                 updateDragHandleAlpha();
@@ -397,7 +407,7 @@ public class ScrimView<T extends Launcher> extends View implements Insettable, O
 
         @Override
         protected int getVirtualViewAt(float x, float y) {
-            return  mDragHandleBounds.contains((int) x, (int) y)
+            return  mHitRect.contains((int) x, (int) y)
                     ? DRAG_HANDLE_ID : INVALID_ID;
         }
 
@@ -470,7 +480,10 @@ public class ScrimView<T extends Launcher> extends View implements Insettable, O
         }
     }
 
-    public int getDragHandleSize() {
-        return mDragHandleSize;
+    /**
+     * @return The top of this scrim view, or {@link Float#MAX_VALUE} if there's no distinct top.
+     */
+    public float getVisualTop() {
+        return Float.MAX_VALUE;
     }
 }
