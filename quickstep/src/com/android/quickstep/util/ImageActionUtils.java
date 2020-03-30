@@ -21,6 +21,8 @@ import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
+import android.content.ClipData;
+import android.content.ClipDescription;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -152,13 +154,16 @@ public class ImageActionUtils {
         if (intent == null) {
             intent = new Intent();
         }
+        ClipData clipdata = new ClipData(new ClipDescription("content",
+                new String[]{ClipDescription.MIMETYPE_TEXT_PLAIN}),
+                new ClipData.Item(uri));
         intent.setAction(Intent.ACTION_SEND)
                 .setComponent(null)
                 .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 .setType("image/png")
-                .setData(uri)
                 .setFlags(FLAG_GRANT_READ_URI_PERMISSION)
-                .putExtra(Intent.EXTRA_STREAM, uri);
+                .putExtra(Intent.EXTRA_STREAM, uri)
+                .setClipData(clipdata);
         return new Intent[]{Intent.createChooser(intent, null).addFlags(FLAG_ACTIVITY_NEW_TASK)};
     }
 }
