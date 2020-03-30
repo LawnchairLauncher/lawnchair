@@ -138,14 +138,6 @@
         </activity>
 
         <!--
-        Should point to the content provider which can be used to dump Launcher3 compatible
-        worspace configuration to the dump's file descriptor by using launcher_dump.proto
-        -->
-        <meta-data
-            android:name="com.android.launcher3.launcher_dump_provider"
-            android:value="com.android.launcher3.LauncherProvider" />
-
-        <!--
         The settings provider contains Home's data, like the workspace favorites. The permissions
         should be changed to what is defined above. The authorities should also be changed to
         represent the package name.
