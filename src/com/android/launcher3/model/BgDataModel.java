@@ -36,10 +36,6 @@ import com.android.launcher3.PromiseAppInfo;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.logging.DumpTargetWrapper;
-import com.android.launcher3.model.nano.LauncherDumpProto;
-import com.android.launcher3.model.nano.LauncherDumpProto.ContainerType;
-import com.android.launcher3.model.nano.LauncherDumpProto.DumpTarget;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.shortcuts.ShortcutRequest;
 import com.android.launcher3.util.ComponentKey;
@@ -50,11 +46,7 @@ import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.ViewOnDrawExecutor;
 import com.android.launcher3.widget.WidgetListRowEntry;
 
-import com.google.protobuf.nano.MessageNano;
-
 import java.io.FileDescriptor;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -150,10 +142,6 @@ public class BgDataModel {
 
     public synchronized void dump(String prefix, FileDescriptor fd, PrintWriter writer,
             String[] args) {
-        if (Arrays.asList(args).contains("--proto")) {
-            dumpProto(prefix, fd, writer, args);
-            return;
-        }
         writer.println(prefix + "Data Model:");
         writer.println(prefix + " ---- workspace items ");
         for (int i = 0; i < workspaceItems.size(); i++) {
@@ -178,89 +166,6 @@ public class BgDataModel {
                 writer.print(count + ", ");
             }
             writer.println();
-        }
-    }
-
-    private synchronized void dumpProto(String prefix, FileDescriptor fd, PrintWriter writer,
-            String[] args) {
-
-        // Add top parent nodes. (L1)
-        DumpTargetWrapper hotseat = new DumpTargetWrapper(ContainerType.HOTSEAT, 0);
-        IntSparseArrayMap<DumpTargetWrapper> workspaces = new IntSparseArrayMap<>();
-        IntArray workspaceScreens = collectWorkspaceScreens();
-        for (int i = 0; i < workspaceScreens.size(); i++) {
-            workspaces.put(workspaceScreens.get(i),
-                    new DumpTargetWrapper(ContainerType.WORKSPACE, i));
-        }
-        DumpTargetWrapper dtw;
-        // Add non leaf / non top nodes (L2)
-        for (int i = 0; i < folders.size(); i++) {
-            FolderInfo fInfo = folders.valueAt(i);
-            dtw = new DumpTargetWrapper(ContainerType.FOLDER, folders.size());
-            dtw.writeToDumpTarget(fInfo);
-            for(WorkspaceItemInfo sInfo: fInfo.contents) {
-                DumpTargetWrapper child = new DumpTargetWrapper(sInfo);
-                child.writeToDumpTarget(sInfo);
-                dtw.add(child);
-            }
-            if (fInfo.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-                hotseat.add(dtw);
-            } else if (fInfo.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-                workspaces.get(fInfo.screenId).add(dtw);
-            }
-        }
-        // Add leaf nodes (L3): *Info
-        for (int i = 0; i < workspaceItems.size(); i++) {
-            ItemInfo info = workspaceItems.get(i);
-            if (info instanceof FolderInfo) {
-                continue;
-            }
-            dtw = new DumpTargetWrapper(info);
-            dtw.writeToDumpTarget(info);
-            if (info.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-                hotseat.add(dtw);
-            } else if (info.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-                workspaces.get(info.screenId).add(dtw);
-            }
-        }
-        for (int i = 0; i < appWidgets.size(); i++) {
-            ItemInfo info = appWidgets.get(i);
-            dtw = new DumpTargetWrapper(info);
-            dtw.writeToDumpTarget(info);
-            if (info.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-                hotseat.add(dtw);
-            } else if (info.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-                workspaces.get(info.screenId).add(dtw);
-            }
-        }
-
-
-        // Traverse target wrapper
-        ArrayList<DumpTarget> targetList = new ArrayList<>();
-        targetList.addAll(hotseat.getFlattenedList());
-        for (int i = 0; i < workspaces.size(); i++) {
-            targetList.addAll(workspaces.valueAt(i).getFlattenedList());
-        }
-
-        if (Arrays.asList(args).contains("--debug")) {
-            for (int i = 0; i < targetList.size(); i++) {
-                writer.println(prefix + DumpTargetWrapper.getDumpTargetStr(targetList.get(i)));
-            }
-            return;
-        } else {
-            LauncherDumpProto.LauncherImpression proto = new LauncherDumpProto.LauncherImpression();
-            proto.targets = new DumpTarget[targetList.size()];
-            for (int i = 0; i < targetList.size(); i++) {
-                proto.targets[i] = targetList.get(i);
-            }
-            FileOutputStream fos = new FileOutputStream(fd);
-            try {
-
-                fos.write(MessageNano.toByteArray(proto));
-                Log.d(TAG, MessageNano.toByteArray(proto).length + "Bytes");
-            } catch (IOException e) {
-                Log.e(TAG, "Exception writing dumpsys --proto", e);
-            }
         }
     }
 
