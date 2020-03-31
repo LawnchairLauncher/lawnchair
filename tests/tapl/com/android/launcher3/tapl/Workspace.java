@@ -176,7 +176,7 @@ public final class Workspace extends Home {
                             mLauncher,
                             getHotseatAppIcon("Chrome"),
                             new Point(mLauncher.getDevice().getDisplayWidth(),
-                                    workspace.getVisibleBounds().centerY()),
+                                    mLauncher.getVisibleBounds(workspace).centerY()),
                             "deep_shortcuts_container",
                             false);
                     verifyActiveContainer();
