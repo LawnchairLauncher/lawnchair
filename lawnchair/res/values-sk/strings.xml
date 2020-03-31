@@ -338,6 +338,7 @@
     <string name="label_turn_off_suggestions">Vypnúť</string>
     <string name="about_summary_title">Zhrnutie</string>
     <string name="hide_app">Skryť odkaz</string>
+    <string name="hide_badge">Skryť odznak</string>
     <string name="icon_shape_rounded_square">Zaoblený štvorec</string>
     <string name="hide_app_selected">“&#160;” skrytých.</string>
     <string name="hide_app_apply">Dokončené</string>
