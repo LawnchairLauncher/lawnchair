@@ -92,9 +92,12 @@ abstract class Launchable {
                                     : launchableCenter.x + width / 2,
                             displaySize.y / 2),
                     getLongPressIndicator(),
-                    startsActivity);
+                    startsActivity,
+                    () -> addExpectedEventsForLongClick());
         }
     }
+
+    protected abstract void addExpectedEventsForLongClick();
 
     protected abstract String getLongPressIndicator();
 }

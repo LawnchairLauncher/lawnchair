@@ -52,6 +52,7 @@ public final class Workspace extends Home {
     static final Pattern EVENT_CTRL_W_UP = Pattern.compile(
             "Key event: KeyEvent.*?action=ACTION_UP.*?keyCode=KEYCODE_W"
                     + ".*?metaState=META_CTRL_ON");
+    private static final Pattern LONG_CLICK_EVENT = Pattern.compile("onWorkspaceItemLongClick");
 
     private final UiObject2 mHotseat;
 
@@ -178,7 +179,9 @@ public final class Workspace extends Home {
                             new Point(mLauncher.getDevice().getDisplayWidth(),
                                     workspace.getVisibleBounds().centerY()),
                             "deep_shortcuts_container",
-                            false);
+                            false,
+                            () -> mLauncher.expectEvent(
+                                    TestProtocol.SEQUENCE_MAIN, LONG_CLICK_EVENT));
                     verifyActiveContainer();
                 }
             }
@@ -199,7 +202,7 @@ public final class Workspace extends Home {
 
     static void dragIconToWorkspace(
             LauncherInstrumentation launcher, Launchable launchable, Point dest,
-            String longPressIndicator, boolean startsActivity) {
+            String longPressIndicator, boolean startsActivity, Runnable expectLongClickEvents) {
         LauncherInstrumentation.log("dragIconToWorkspace: begin");
         final Point launchableCenter = launchable.getObject().getVisibleCenter();
         final long downTime = SystemClock.uptimeMillis();
@@ -208,6 +211,7 @@ public final class Workspace extends Home {
                     launcher.sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN,
                             launchableCenter, LauncherInstrumentation.GestureScope.INSIDE);
                     LauncherInstrumentation.log("dragIconToWorkspace: sent down");
+                    expectLongClickEvents.run();
                     launcher.waitForLauncherObject(longPressIndicator);
                     LauncherInstrumentation.log("dragIconToWorkspace: indicator");
                     launcher.movePointer(launchableCenter, dest, 10, downTime, true,
