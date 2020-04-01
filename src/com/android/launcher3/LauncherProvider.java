@@ -85,6 +85,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.function.Supplier;
 
 public class LauncherProvider extends ContentProvider {
     private static final String TAG = "LauncherProvider";
@@ -145,7 +146,7 @@ public class LauncherProvider extends ContentProvider {
      */
     protected synchronized void createDbIfNotExists() {
         if (mOpenHelper == null) {
-            mOpenHelper = new DatabaseHelper(getContext());
+            mOpenHelper = DatabaseHelper.createDatabaseHelper(getContext());
 
             if (RestoreDbTask.isPending(getContext())) {
                 if (!RestoreDbTask.performRestore(getContext(), mOpenHelper,
@@ -159,17 +160,17 @@ public class LauncherProvider extends ContentProvider {
         }
     }
 
-    private synchronized boolean updateCurrentOpenHelper() {
-        final InvariantDeviceProfile idp = InvariantDeviceProfile.INSTANCE.get(getContext());
-        if (TextUtils.equals(idp.dbFile, mOpenHelper.getDatabaseName())) {
+    private synchronized boolean prepForMigration(String dbFile, String targetTableName,
+            Supplier<DatabaseHelper> src, Supplier<DatabaseHelper> dst) {
+        if (TextUtils.equals(dbFile, mOpenHelper.getDatabaseName())) {
             return false;
         }
 
-        DatabaseHelper oldHelper = mOpenHelper;
-        mOpenHelper = new DatabaseHelper(getContext());
-        copyTable(oldHelper.getReadableDatabase(), Favorites.TABLE_NAME,
-                mOpenHelper.getWritableDatabase(), Favorites.TMP_TABLE, getContext());
-        oldHelper.close();
+        final DatabaseHelper helper = src.get();
+        mOpenHelper = dst.get();
+        copyTable(helper.getReadableDatabase(), Favorites.TABLE_NAME,
+                mOpenHelper.getWritableDatabase(), targetTableName, getContext());
+        helper.close();
         return true;
     }
 
@@ -425,7 +426,23 @@ public class LauncherProvider extends ContentProvider {
                 if (MULTI_DB_GRID_MIRATION_ALGO.get()) {
                     Bundle result = new Bundle();
                     result.putBoolean(LauncherSettings.Settings.EXTRA_VALUE,
-                            updateCurrentOpenHelper());
+                            prepForMigration(
+                                    InvariantDeviceProfile.INSTANCE.get(getContext()).dbFile,
+                                    Favorites.TMP_TABLE,
+                                    () -> mOpenHelper,
+                                    () -> DatabaseHelper.createDatabaseHelper(getContext())));
+                    return result;
+                }
+            }
+            case LauncherSettings.Settings.METHOD_PREP_FOR_PREVIEW: {
+                if (MULTI_DB_GRID_MIRATION_ALGO.get()) {
+                    Bundle result = new Bundle();
+                    result.putBoolean(LauncherSettings.Settings.EXTRA_VALUE,
+                            prepForMigration(
+                                    arg /* dbFile */,
+                                    Favorites.PREVIEW_TABLE_NAME,
+                                    () -> DatabaseHelper.createDatabaseHelper(getContext(), arg),
+                                    () -> mOpenHelper));
                     return result;
                 }
             }
@@ -596,23 +613,31 @@ public class LauncherProvider extends ContentProvider {
         private int mMaxScreenId = -1;
         private boolean mBackupTableExists;
 
-        DatabaseHelper(Context context) {
-            this(context, MULTI_DB_GRID_MIRATION_ALGO.get() ? InvariantDeviceProfile.INSTANCE.get(
-                    context).dbFile : LauncherFiles.LAUNCHER_DB);
+        static DatabaseHelper createDatabaseHelper(Context context) {
+            return createDatabaseHelper(context, null);
+        }
+
+        static DatabaseHelper createDatabaseHelper(Context context, String dbName) {
+            if (dbName == null) {
+                dbName = MULTI_DB_GRID_MIRATION_ALGO.get() ? InvariantDeviceProfile.INSTANCE.get(
+                        context).dbFile : LauncherFiles.LAUNCHER_DB;
+            }
+            DatabaseHelper databaseHelper = new DatabaseHelper(context, dbName);
             // Table creation sometimes fails silently, which leads to a crash loop.
             // This way, we will try to create a table every time after crash, so the device
             // would eventually be able to recover.
-            if (!tableExists(getReadableDatabase(), Favorites.TABLE_NAME)) {
+            if (!tableExists(databaseHelper.getReadableDatabase(), Favorites.TABLE_NAME)) {
                 Log.e(TAG, "Tables are missing after onCreate has been called. Trying to recreate");
                 // This operation is a no-op if the table already exists.
-                addFavoritesTable(getWritableDatabase(), true);
+                databaseHelper.addFavoritesTable(databaseHelper.getWritableDatabase(), true);
             }
             if (!MULTI_DB_GRID_MIRATION_ALGO.get()) {
-                mBackupTableExists = tableExists(getReadableDatabase(),
-                        Favorites.BACKUP_TABLE_NAME);
+                databaseHelper.mBackupTableExists = tableExists(
+                        databaseHelper.getReadableDatabase(), Favorites.BACKUP_TABLE_NAME);
             }
 
-            initIds();
+            databaseHelper.initIds();
+            return databaseHelper;
         }
 
         /**

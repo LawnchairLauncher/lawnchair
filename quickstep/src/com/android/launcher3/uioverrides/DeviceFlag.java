@@ -54,6 +54,9 @@ public class DeviceFlag extends DebugFlag {
 
     @Override
     public void addChangeListener(Context context, Runnable r) {
+        if (mListeners == null) {
+            initialize(context);
+        }
         mListeners.add(r);
     }
 
