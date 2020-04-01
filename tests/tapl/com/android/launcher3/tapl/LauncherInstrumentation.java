@@ -1173,10 +1173,12 @@ public final class LauncherInstrumentation {
     }
 
     @NonNull
-    UiObject2 clickAndGet(@NonNull final UiObject2 target, @NonNull String resName) {
+    UiObject2 clickAndGet(
+            @NonNull final UiObject2 target, @NonNull String resName, Pattern longClickEvent) {
         final Point targetCenter = target.getVisibleCenter();
         final long downTime = SystemClock.uptimeMillis();
         sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, targetCenter, GestureScope.INSIDE);
+        expectEvent(TestProtocol.SEQUENCE_MAIN, longClickEvent);
         final UiObject2 result = waitForLauncherObject(resName);
         sendPointer(downTime, SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, targetCenter,
                 GestureScope.INSIDE);
