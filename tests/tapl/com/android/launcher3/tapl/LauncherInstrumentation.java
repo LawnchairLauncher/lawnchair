@@ -334,15 +334,21 @@ public final class LauncherInstrumentation {
 
     private String getSystemAnomalyMessage() {
         try {
+            final StringBuilder sb = new StringBuilder();
+
             UiObject2 object = mDevice.findObject(By.res("android", "alertTitle"));
             if (object != null) {
-                return "System alert popup is visible: " + object.getText();
+                sb.append("TITLE: ").append(object.getText());
             }
 
             object = mDevice.findObject(By.res("android", "message"));
             if (object != null) {
-                return "Message popup by " + object.getApplicationPackage() + " is visible: "
-                        + object.getText();
+                sb.append(" PACKAGE: ").append(object.getApplicationPackage())
+                        .append(" MESSAGE: ").append(object.getText());
+            }
+
+            if (sb.length() != 0) {
+                return "System alert popup is visible: " + sb;
             }
 
             if (hasSystemUiObject("keyguard_status_view")) return "Phone is locked";
