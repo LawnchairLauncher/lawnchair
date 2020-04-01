@@ -977,7 +977,7 @@ public final class LauncherInstrumentation {
 
     int getBottomGestureMarginInContainer(UiObject2 container) {
         final int bottomGestureStartOnScreen = getRealDisplaySize().y - getBottomGestureSize();
-        return container.getVisibleBounds().bottom - bottomGestureStartOnScreen;
+        return getVisibleBounds(container).bottom - bottomGestureStartOnScreen;
     }
 
     void clickLauncherObject(UiObject2 object) {
@@ -995,10 +995,10 @@ public final class LauncherInstrumentation {
             Collection<UiObject2> items,
             int topPaddingInContainer) {
         final UiObject2 lowestItem = Collections.max(items, (i1, i2) ->
-                Integer.compare(i1.getVisibleBounds().top, i2.getVisibleBounds().top));
+                Integer.compare(getVisibleBounds(i1).top, getVisibleBounds(i2).top));
 
-        final int itemRowCurrentTopOnScreen = lowestItem.getVisibleBounds().top;
-        final Rect containerRect = container.getVisibleBounds();
+        final int itemRowCurrentTopOnScreen = getVisibleBounds(lowestItem).top;
+        final Rect containerRect = getVisibleBounds(container);
         final int itemRowNewTopOnScreen = containerRect.top + topPaddingInContainer;
         final int distance = itemRowCurrentTopOnScreen - itemRowNewTopOnScreen + getTouchSlop();
 
@@ -1017,7 +1017,7 @@ public final class LauncherInstrumentation {
 
     void scroll(
             UiObject2 container, Direction direction, Rect margins, int steps, boolean slowDown) {
-        final Rect rect = container.getVisibleBounds();
+        final Rect rect = getVisibleBounds(container);
         if (margins != null) {
             rect.left += margins.left;
             rect.top += margins.top;
@@ -1329,5 +1329,14 @@ public final class LauncherInstrumentation {
 
     void expectEvent(String sequence, Pattern expected) {
         if (sCheckingEvents) sEventChecker.expectPattern(sequence, expected);
+    }
+
+    Rect getVisibleBounds(UiObject2 object) {
+        try {
+            return object.getVisibleBounds();
+        } catch (Throwable t) {
+            fail(t.toString());
+            return null;
+        }
     }
 }
