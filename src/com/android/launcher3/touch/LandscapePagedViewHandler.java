@@ -78,6 +78,11 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
+    public boolean isLayoutNaturalToLauncher() {
+        return false;
+    }
+
+    @Override
     public void adjustFloatingIconStartVelocity(PointF velocity) {
         float oldX = velocity.x;
         float oldY = velocity.y;
@@ -182,7 +187,7 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public void offsetTaskRect(RectF rect, float value, int displayRotation) {
+    public void offsetTaskRect(RectF rect, float value, int displayRotation, int launcherRotation) {
         if (displayRotation == Surface.ROTATION_0) {
             rect.offset(0, value);
         } else if (displayRotation == Surface.ROTATION_90) {

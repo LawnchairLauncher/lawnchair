@@ -78,6 +78,11 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
+    public boolean isLayoutNaturalToLauncher() {
+        return true;
+    }
+
+    @Override
     public void adjustFloatingIconStartVelocity(PointF velocity) {
         //no-op
     }
@@ -180,7 +185,7 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public void offsetTaskRect(RectF rect, float value, int displayRotation) {
+    public void offsetTaskRect(RectF rect, float value, int displayRotation, int launcherRotation) {
         if (displayRotation == Surface.ROTATION_0) {
             rect.offset(value, 0);
         } else if (displayRotation == Surface.ROTATION_90) {
