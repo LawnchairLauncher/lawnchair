@@ -343,6 +343,7 @@
     <string name="label_turn_off_suggestions">تعطيل</string>
     <string name="about_summary_title">الملخص</string>
     <string name="hide_app">إخفاء الاختصار</string>
+    <string name="hide_badge">Hide Badge</string>
     <string name="icon_shape_rounded_square">مربع مدور الزوايا</string>
     <string name="hide_app_selected">“&#160;” خفية.</string>
     <string name="hide_app_apply">تم</string>
