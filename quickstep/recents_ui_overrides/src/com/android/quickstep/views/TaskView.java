@@ -826,8 +826,8 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         super.onInitializeAccessibilityNodeInfo(info);
 
         info.addAction(
-                new AccessibilityNodeInfo.AccessibilityAction(R.string.accessibility_close_task,
-                        getContext().getText(R.string.accessibility_close_task)));
+                new AccessibilityNodeInfo.AccessibilityAction(R.string.accessibility_close,
+                        getContext().getText(R.string.accessibility_close)));
 
         final Context context = getContext();
         for (SystemShortcut s : TaskOverlayFactory.getEnabledShortcuts(this)) {
@@ -851,7 +851,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
 
     @Override
     public boolean performAccessibilityAction(int action, Bundle arguments) {
-        if (action == R.string.accessibility_close_task) {
+        if (action == R.string.accessibility_close) {
             getRecentsView().dismissTask(this, true /*animateTaskView*/,
                     true /*removeTask*/);
             return true;
