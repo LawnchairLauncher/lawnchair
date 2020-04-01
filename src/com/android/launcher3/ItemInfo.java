@@ -16,6 +16,13 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP;
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT;
+import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
+import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET;
+import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
+import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
+
 import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -24,13 +31,17 @@ import android.os.UserHandle;
 
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.util.ContentWriter;
+
+
 
 /**
  * Represents an item in the launcher.
  */
 public class ItemInfo {
 
+    public static final boolean DEBUG = true;
     public static final int NO_ID = -1;
 
     /**
@@ -190,6 +201,7 @@ public class ItemInfo {
         return "id=" + id
                 + " type=" + LauncherSettings.Favorites.itemTypeToString(itemType)
                 + " container=" + LauncherSettings.Favorites.containerToString((int)container)
+                + " targetComponent=" + getTargetComponent()
                 + " screen=" + screenId
                 + " cell(" + cellX + "," + cellY + ")"
                 + " span(" + spanX + "," + spanY + ")"
@@ -220,5 +232,71 @@ public class ItemInfo {
     public boolean isPredictedItem() {
         return container == LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION
                 || container == LauncherSettings.Favorites.CONTAINER_PREDICTION;
+    }
+
+    /**
+     * Can be overridden by inherited classes to fill in {@link LauncherAtom.ItemInfo}
+     */
+    public void setItemBuilder(LauncherAtom.ItemInfo.Builder builder) {
+    }
+
+    /**
+     * Creates {@link LauncherAtom.ItemInfo} with important fields and parent container info.
+     */
+    public LauncherAtom.ItemInfo buildProto(Intent intent, FolderInfo fInfo) {
+
+        LauncherAtom.ItemInfo.Builder itemBuilder = LauncherAtom.ItemInfo.newBuilder();
+        itemBuilder.setIsWork(user != Process.myUserHandle());
+        ComponentName cn = getTargetComponent();
+        switch (itemType) {
+            case ITEM_TYPE_APPLICATION:
+                itemBuilder.setApplication(LauncherAtom.Application.newBuilder()
+                        .setComponentName(cn.flattenToShortString())
+                        .setPackageName(cn.getPackageName()));
+                break;
+            case ITEM_TYPE_DEEP_SHORTCUT:
+            case ITEM_TYPE_SHORTCUT:
+                itemBuilder.setShortcut(LauncherAtom.Shortcut.newBuilder()
+                        .setShortcutName(cn.flattenToShortString()));
+                break;
+            case ITEM_TYPE_APPWIDGET:
+                setItemBuilder(itemBuilder);
+                break;
+            default:
+                break;
+
+        }
+        if (fInfo != null) {
+            LauncherAtom.FolderContainer.Builder folderBuilder =
+                    LauncherAtom.FolderContainer.newBuilder();
+            folderBuilder.setGridX(cellX).setGridY(cellY).setPageIndex(screenId);
+
+            switch (fInfo.container) {
+                case CONTAINER_HOTSEAT:
+                    folderBuilder.setHotseat(LauncherAtom.HotseatContainer.newBuilder()
+                            .setIndex(fInfo.screenId));
+                    break;
+                case CONTAINER_DESKTOP:
+                    folderBuilder.setWorkspace(LauncherAtom.WorkspaceContainer.newBuilder()
+                            .setPageIndex(fInfo.screenId)
+                            .setGridX(fInfo.cellX).setGridY(fInfo.cellY));
+                    break;
+            }
+            itemBuilder.setFolder(folderBuilder);
+        } else {
+            switch (container) {
+                case CONTAINER_HOTSEAT:
+                    itemBuilder.setHotseat(LauncherAtom.HotseatContainer.newBuilder()
+                            .setIndex(screenId));
+                    break;
+                case CONTAINER_DESKTOP:
+                    itemBuilder.setWorkspace(LauncherAtom.WorkspaceContainer.newBuilder()
+                            .setGridX(cellX)
+                            .setGridY(cellY)
+                            .setPageIndex(screenId));
+                    break;
+            }
+        }
+        return itemBuilder.build();
     }
 }
