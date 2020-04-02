@@ -71,6 +71,7 @@ import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.OrientationEventListener;
 import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
@@ -90,6 +91,7 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.anim.PendingAnimation.EndState;
@@ -100,6 +102,7 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.states.RotationHelper;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.PagedOrientationHandler.CurveProperties;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
@@ -169,6 +172,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                 }
             };
 
+    private OrientationEventListener mOrientationListener;
     private int mPreviousRotation;
     protected RecentsAnimationController mRecentsAnimationController;
     protected RecentsAnimationTargets mRecentsAnimationTargets;
@@ -376,6 +380,22 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
         // Initialize quickstep specific cache params here, as this is constructed only once
         mActivity.getViewCache().setCacheSize(R.layout.digital_wellbeing_toast, 5);
+
+        mOrientationListener = new OrientationEventListener(getContext()) {
+            @Override
+            public void onOrientationChanged(int i) {
+                int rotation = RotationHelper.getRotationFromDegrees(i);
+                if (mPreviousRotation != rotation) {
+                    animateRecentsRotationInPlace(rotation);
+                    if (rotation == 0) {
+                        showActionsView();
+                    } else {
+                        hideActionsView();
+                    }
+                    mPreviousRotation = rotation;
+                }
+            }
+        };
     }
 
     public OverScroller getScroller() {
@@ -504,6 +524,15 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     }
 
     public void setOverviewStateEnabled(boolean enabled) {
+        if (supportsVerticalLandscape()
+                && !TestProtocol.sDisableSensorRotation // Ignore hardware dependency for tests
+                && mOrientationListener.canDetectOrientation()) {
+            if (enabled) {
+                mOrientationListener.enable();
+            } else {
+                mOrientationListener.disable();
+            }
+        }
         mOverviewStateEnabled = enabled;
         updateTaskStackListenerState();
         if (!enabled) {
@@ -945,6 +974,35 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             animateUpRunningTaskIconScale(startProgress);
         }
         setSwipeDownShouldLaunchApp(true);
+    }
+
+    private void animateRecentsRotationInPlace(int newRotation) {
+        if (!supportsVerticalLandscape()) {
+            return;
+        }
+
+        AnimatorSet pa = setRecentsChangedOrientation(true);
+        pa.addListener(AnimationSuccessListener.forRunnable(() -> {
+            updateLayoutRotation(newRotation);
+            mActivity.getDragLayer().recreateControllers();
+            rotateAllChildTasks();
+            setRecentsChangedOrientation(false).start();
+        }));
+        pa.start();
+    }
+
+    public AnimatorSet setRecentsChangedOrientation(boolean fadeInChildren) {
+        getRunningTaskIndex();
+        int runningIndex = getCurrentPage();
+        AnimatorSet as = new AnimatorSet();
+        for (int i = 0; i < getTaskViewCount(); i++) {
+            if (runningIndex == i) {
+                continue;
+            }
+            View taskView = getTaskViewAt(i);
+            as.play(ObjectAnimator.ofFloat(taskView, View.ALPHA, fadeInChildren ? 0 : 1));
+        }
+        return as;
     }
 
     abstract protected boolean supportsVerticalLandscape();
