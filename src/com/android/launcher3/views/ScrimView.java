@@ -22,8 +22,10 @@ import static androidx.core.graphics.ColorUtils.compositeColors;
 
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
-import static com.android.launcher3.anim.Interpolators.ACCEL;
+import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
+import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.launcher3.anim.Interpolators.clampToProgress;
 import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
 
 import android.animation.Animator;
@@ -100,6 +102,12 @@ public class ScrimView<T extends Launcher> extends View implements Insettable, O
     private static final int SETTINGS = R.string.settings_button_text;
     private static final int ALPHA_CHANNEL_COUNT = 1;
 
+    private static final long DRAG_HANDLE_BOUNCE_DURATION_MS = 300;
+    // How much to delay before repeating the bounce.
+    private static final long DRAG_HANDLE_BOUNCE_DELAY_MS = 200;
+    // Repeat this many times (i.e. total number of bounces is 1 + this).
+    private static final int DRAG_HANDLE_BOUNCE_REPEAT_COUNT = 2;
+
     private final Rect mTempRect = new Rect();
     private final int[] mTempPos = new int[2];
 
@@ -123,6 +131,7 @@ public class ScrimView<T extends Launcher> extends View implements Insettable, O
     protected float mDragHandleOffset;
     private final Rect mDragHandleBounds;
     private final RectF mHitRect = new RectF();
+    private ObjectAnimator mDragHandleAnim;
 
     private final MultiValueAlpha mMultiValueAlpha;
 
@@ -212,6 +221,7 @@ public class ScrimView<T extends Launcher> extends View implements Insettable, O
     public void setProgress(float progress) {
         if (mProgress != progress) {
             mProgress = progress;
+            stopDragHandleEducationAnim();
             updateColors();
             updateDragHandleAlpha();
             invalidate();
@@ -259,46 +269,77 @@ public class ScrimView<T extends Launcher> extends View implements Insettable, O
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        boolean value = super.onTouchEvent(event);
-        if (!value && mDragHandle != null && event.getAction() == ACTION_DOWN
-                && mDragHandle.getAlpha() == 255
-                && mHitRect.contains(event.getX(), event.getY())) {
-
-            final Drawable drawable = mDragHandle;
-            mDragHandle = null;
-
-            Rect bounds = new Rect(mDragHandleBounds);
-            bounds.offset(0, -(int) mDragHandleOffset);
-            drawable.setBounds(bounds);
-
-            Rect topBounds = new Rect(bounds);
-            topBounds.offset(0, -bounds.height() / 2);
-
-            Rect invalidateRegion = new Rect(bounds);
-            invalidateRegion.top = topBounds.top;
-
-            Keyframe frameTop = Keyframe.ofObject(0.6f, topBounds);
-            frameTop.setInterpolator(DEACCEL);
-            Keyframe frameBot = Keyframe.ofObject(1, bounds);
-            frameBot.setInterpolator(ACCEL);
-            PropertyValuesHolder holder = PropertyValuesHolder .ofKeyframe("bounds",
-                    Keyframe.ofObject(0, bounds), frameTop, frameBot);
-            holder.setEvaluator(new RectEvaluator());
-
-            ObjectAnimator anim = ObjectAnimator.ofPropertyValuesHolder(drawable, holder);
-            anim.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    getOverlay().remove(drawable);
-                    updateDragHandleVisibility(drawable);
+        boolean superHandledTouch = super.onTouchEvent(event);
+        if (event.getAction() == ACTION_DOWN) {
+            if (!superHandledTouch && mHitRect.contains(event.getX(), event.getY())) {
+                if (startDragHandleEducationAnim()) {
+                    return true;
                 }
-            });
-            anim.addUpdateListener((v) -> invalidate(invalidateRegion));
-            getOverlay().add(drawable);
-            anim.start();
-            return true;
+            }
+            stopDragHandleEducationAnim();
         }
-        return value;
+        return superHandledTouch;
+    }
+
+    /**
+     * Animates the drag handle to demonstrate how to get to all apps.
+     * @return Whether the animation was started (false if drag handle is invisible).
+     */
+    public boolean startDragHandleEducationAnim() {
+        stopDragHandleEducationAnim();
+
+        if (mDragHandle == null || mDragHandle.getAlpha() != 255) {
+            return false;
+        }
+
+        final Drawable drawable = mDragHandle;
+        mDragHandle = null;
+
+        Rect bounds = new Rect(mDragHandleBounds);
+        bounds.offset(0, -(int) mDragHandleOffset);
+        drawable.setBounds(bounds);
+
+        Rect topBounds = new Rect(bounds);
+        topBounds.offset(0, -bounds.height());
+
+        Rect invalidateRegion = new Rect(bounds);
+        invalidateRegion.top = topBounds.top;
+
+        final float progressToReachTop = 0.6f;
+        Keyframe frameTop = Keyframe.ofObject(progressToReachTop, topBounds);
+        frameTop.setInterpolator(DEACCEL);
+        Keyframe frameBot = Keyframe.ofObject(1, bounds);
+        frameBot.setInterpolator(ACCEL_DEACCEL);
+        PropertyValuesHolder holder = PropertyValuesHolder.ofKeyframe("bounds",
+                Keyframe.ofObject(0, bounds), frameTop, frameBot);
+        holder.setEvaluator(new RectEvaluator());
+
+        mDragHandleAnim = ObjectAnimator.ofPropertyValuesHolder(drawable, holder);
+        long totalBounceDuration = DRAG_HANDLE_BOUNCE_DURATION_MS + DRAG_HANDLE_BOUNCE_DELAY_MS;
+        // The bounce finishes by this progress, the rest of the duration just delays next bounce.
+        float delayStartProgress = 1f - (float) DRAG_HANDLE_BOUNCE_DELAY_MS / totalBounceDuration;
+        mDragHandleAnim.addUpdateListener((v) -> invalidate(invalidateRegion));
+        mDragHandleAnim.setDuration(totalBounceDuration);
+        mDragHandleAnim.setInterpolator(clampToProgress(LINEAR, 0, delayStartProgress));
+        mDragHandleAnim.setRepeatCount(DRAG_HANDLE_BOUNCE_REPEAT_COUNT);
+        getOverlay().add(drawable);
+
+        mDragHandleAnim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mDragHandleAnim = null;
+                getOverlay().remove(drawable);
+                updateDragHandleVisibility(drawable);
+            }
+        });
+        mDragHandleAnim.start();
+        return true;
+    }
+
+    private void stopDragHandleEducationAnim() {
+        if (mDragHandleAnim != null) {
+            mDragHandleAnim.end();
+        }
     }
 
     protected void updateDragHandleBounds() {

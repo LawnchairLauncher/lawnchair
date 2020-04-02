@@ -212,9 +212,9 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
         return AnimationSuccessListener.forRunnable(this::onProgressAnimationEnd);
     }
 
-    public void setupViews(AllAppsContainerView appsView) {
+    public void setupViews(AllAppsContainerView appsView, ScrimView scrimView) {
         mAppsView = appsView;
-        mScrimView = mLauncher.findViewById(R.id.scrim_view);
+        mScrimView = scrimView;
     }
 
     /**
