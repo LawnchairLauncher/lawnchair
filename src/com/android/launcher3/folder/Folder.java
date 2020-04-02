@@ -1648,6 +1648,10 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         }
     }
 
+    public FolderPagedView getContent() {
+        return mContent;
+    }
+
     private void logEditFolderLabel() {
         LauncherEvent launcherEvent = LauncherEvent.newBuilder()
                 .setAction(Action.newBuilder().setType(Action.Type.SOFT_KEYBOARD))

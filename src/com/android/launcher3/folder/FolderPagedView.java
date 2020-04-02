@@ -16,6 +16,9 @@
 
 package com.android.launcher3.folder;
 
+import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
+import static com.android.launcher3.AbstractFloatingView.TYPE_FOLDER;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -27,6 +30,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewDebug;
 
+import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
@@ -258,7 +262,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
     @Override
     protected void onScrollChanged(int l, int t, int oldl, int oldt) {
         super.onScrollChanged(l, t, oldl, oldt);
-        mPageIndicator.setScroll(l, mMaxScroll);
+        if (mMaxScroll > 0) mPageIndicator.setScroll(l, mMaxScroll);
     }
 
     /**
@@ -612,6 +616,12 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
                 delayAmount *= VIEW_REORDER_DELAY_FACTOR;
             }
         }
+    }
+
+    @Override
+    protected boolean canScroll(float absVScroll, float absHScroll) {
+        return AbstractFloatingView.getTopOpenViewWithType(mFolder.mLauncher,
+                TYPE_ALL & ~TYPE_FOLDER) == null;
     }
 
     public int itemsPerPage() {
