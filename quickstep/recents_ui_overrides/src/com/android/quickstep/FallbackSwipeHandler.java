@@ -129,6 +129,7 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
         mEndTargetAnimationParams.put(LAST_TASK, new EndTargetAnimationParams(0, 150, 1));
         mEndTargetAnimationParams.put(NEW_TASK, new EndTargetAnimationParams(0, 150, 1));
 
+        initAfterSubclassConstructor();
         initStateCallbacks();
     }
 

@@ -18,9 +18,9 @@ package com.android.quickstep.util;
 
 import static android.Manifest.permission.WRITE_SECURE_SETTINGS;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
-import static android.hardware.camera2.params.OutputConfiguration.ROTATION_180;
 import static android.util.DisplayMetrics.DENSITY_DEVICE_STABLE;
 import static android.view.Surface.ROTATION_0;
+import static android.view.Surface.ROTATION_180;
 import static android.view.Surface.ROTATION_270;
 import static android.view.Surface.ROTATION_90;
 
@@ -28,6 +28,7 @@ import static com.android.launcher3.config.FeatureFlags.FLAG_ENABLE_FIXED_ROTATI
 import static com.android.launcher3.states.RotationHelper.ALLOW_ROTATION_PREFERENCE_KEY;
 import static com.android.launcher3.states.RotationHelper.FIXED_ROTATION_TRANSFORM_SETTING_NAME;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
+
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
 import android.content.ContentResolver;
@@ -36,6 +37,8 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.graphics.Matrix;
+import android.graphics.PointF;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Handler;
 import android.provider.Settings;
@@ -45,6 +48,7 @@ import android.view.Surface;
 
 import androidx.annotation.IntDef;
 
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.touch.PagedOrientationHandler;
@@ -135,7 +139,7 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
      */
     public boolean update(
             @SurfaceRotation int touchRotation, @SurfaceRotation int displayRotation,
-            int launcherRotation) {
+            @SurfaceRotation int launcherRotation) {
         if (!FeatureFlags.ENABLE_FIXED_ROTATION_TRANSFORM.get()) {
             return false;
         }
@@ -275,6 +279,25 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
             default:
                 return 0;
         }
+    }
+
+    /**
+     * Returns the scale and pivot so that the provided taskRect can fit the provided full size
+     */
+    public float getFullScreenScaleAndPivot(Rect taskView, DeviceProfile dp, PointF outPivot) {
+        Rect insets = dp.getInsets();
+        float fullWidth = dp.widthPx - insets.left - insets.right;
+        float fullHeight = dp.heightPx - insets.top - insets.bottom;
+        final float scale = LayoutUtils.getTaskScale(this,
+                fullWidth, fullHeight, taskView.width(), taskView.height());
+
+        if (scale == 1) {
+            outPivot.set(fullWidth / 2, fullHeight / 2);
+        } else {
+            float factor = scale / (scale - 1);
+            outPivot.set(taskView.left * factor, taskView.top * factor);
+        }
+        return scale;
     }
 
     public PagedOrientationHandler getOrientationHandler() {

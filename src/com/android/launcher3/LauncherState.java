@@ -90,6 +90,9 @@ public abstract class LauncherState {
     protected static final int FLAG_HIDE_BACK_BUTTON = 1 << 8;
     protected static final int FLAG_HAS_SYS_UI_SCRIM = 1 << 9;
 
+    public static final float NO_OFFSET = 0;
+    public static final float NO_SCALE = 1;
+
     protected static final PageAlphaProvider DEFAULT_ALPHA_PROVIDER =
             new PageAlphaProvider(ACCEL_2) {
                 @Override
@@ -220,7 +223,7 @@ public abstract class LauncherState {
     public abstract int getTransitionDuration(Launcher launcher);
 
     public ScaleAndTranslation getWorkspaceScaleAndTranslation(Launcher launcher) {
-        return new ScaleAndTranslation(1, 0, 0);
+        return new ScaleAndTranslation(NO_SCALE, NO_OFFSET, NO_OFFSET);
     }
 
     public ScaleAndTranslation getHotseatScaleAndTranslation(Launcher launcher) {
@@ -228,12 +231,18 @@ public abstract class LauncherState {
         return getWorkspaceScaleAndTranslation(launcher);
     }
 
-    public ScaleAndTranslation getOverviewScaleAndTranslation(Launcher launcher) {
-        return launcher.getOverviewScaleAndTranslationForNormalState();
+    /**
+     * Returns an array of two elements.
+     *   The first specifies the scale for the overview
+     *   The second is the factor ([0, 1], 0 => center-screen; 1 => offscreen) by which overview
+     *   should be shifted horizontally.
+     */
+    public float[] getOverviewScaleAndOffset(Launcher launcher) {
+        return launcher.getNormalOverviewScaleAndOffset();
     }
 
     public ScaleAndTranslation getQsbScaleAndTranslation(Launcher launcher) {
-        return new ScaleAndTranslation(1, 0, 0);
+        return new ScaleAndTranslation(NO_SCALE, NO_OFFSET, NO_OFFSET);
     }
 
     public float getOverviewFullscreenProgress() {
