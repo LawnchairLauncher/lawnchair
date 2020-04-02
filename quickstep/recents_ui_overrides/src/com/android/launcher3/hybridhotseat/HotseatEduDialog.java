@@ -210,6 +210,7 @@ public class HotseatEduDialog extends AbstractSlideInView implements Insettable 
             WorkspaceItemInfo info = predictions.get(i);
             PredictedAppIcon icon = PredictedAppIcon.createIcon(mSampleHotseat, info);
             icon.setEnabled(false);
+            icon.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
             icon.verifyHighRes();
             CellLayout.LayoutParams lp = new CellLayout.LayoutParams(i, 0, 1, 1);
             mSampleHotseat.addViewToCellLayout(icon, i, info.getViewId(), lp, true);
