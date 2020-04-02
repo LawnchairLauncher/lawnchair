@@ -19,11 +19,14 @@ package com.android.launcher3.widget;
 import android.content.Context;
 import android.graphics.Point;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
 import com.android.launcher3.BaseRecyclerView;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
+import com.android.launcher3.testing.TestProtocol;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -169,4 +172,14 @@ public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouch
 
     @Override
     public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) { }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+            Log.d(TestProtocol.NO_SCROLL_END_WIDGETS, "WidgetsRecyclerView: state:"
+            + getScrollState()
+            + " can scroll: " + getLayoutManager().canScrollVertically() + " event: " + ev);
+        }
+        return super.dispatchTouchEvent(ev);
+    }
 }
