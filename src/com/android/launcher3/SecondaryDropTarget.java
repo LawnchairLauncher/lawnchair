@@ -108,7 +108,7 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
             updateText(R.string.uninstall_drop_target_label);
         } else if (action == DISMISS_PREDICTION) {
             mHoverColor = Themes.getColorAccent(getContext());
-            setDrawable(R.drawable.ic_block);
+            setDrawable(R.drawable.ic_block_shadow);
             updateText(R.string.dismiss_prediction_label);
         } else if (action == RECONFIGURE) {
             mHoverColor = Themes.getColorAccent(getContext());

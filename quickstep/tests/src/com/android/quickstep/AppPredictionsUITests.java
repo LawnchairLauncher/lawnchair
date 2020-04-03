@@ -88,7 +88,6 @@ public class AppPredictionsUITests extends AbstractQuickStepTest {
      */
     @Test
     public void testPredictionExistsInAllApps() {
-        mDevice.pressHome();
         mLauncher.pressHome().switchToAllApps();
 
         // Dispatch an update
