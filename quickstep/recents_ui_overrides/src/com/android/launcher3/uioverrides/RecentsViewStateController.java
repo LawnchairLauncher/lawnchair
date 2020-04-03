@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.uioverrides;
 
+import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
 import static com.android.launcher3.LauncherState.OVERVIEW_BUTTONS;
 import static com.android.launcher3.anim.Interpolators.AGGRESSIVE_EASE_IN_OUT;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
@@ -91,7 +92,7 @@ public final class RecentsViewStateController extends
 
         View actionsView = mLauncher.getActionsView();
         if (actionsView != null) {
-            propertySetter.setViewAlpha(actionsView, buttonAlpha, actionInterpolator);
+            propertySetter.setFloat(actionsView, VIEW_ALPHA, buttonAlpha, actionInterpolator);
         }
     }
 
