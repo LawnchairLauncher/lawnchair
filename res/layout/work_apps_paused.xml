@@ -20,7 +20,7 @@
     android:gravity="center">
 
     <TextView
-        style="@style/TextHeadline"
+        style="@style/PrimaryMediumText"
         android:textColor="?attr/workProfileOverlayTextColor"
         android:id="@+id/work_apps_paused_title"
         android:layout_width="wrap_content"

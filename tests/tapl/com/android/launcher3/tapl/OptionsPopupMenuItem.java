@@ -15,10 +15,14 @@
  */
 package com.android.launcher3.tapl;
 
+import android.os.Build;
+
 import androidx.annotation.NonNull;
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.Until;
+
+import com.android.launcher3.testing.TestProtocol;
 
 public class OptionsPopupMenuItem {
 
@@ -39,6 +43,12 @@ public class OptionsPopupMenuItem {
             LauncherInstrumentation.log("OptionsPopupMenuItem before click "
                     + mObject.getVisibleCenter() + " in " + mObject.getVisibleBounds());
             mLauncher.clickLauncherObject(mObject);
+            if (!Build.MODEL.contains("Cuttlefish") ||
+                    Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q &&
+                            !"R".equals(Build.VERSION.CODENAME)) {
+                mLauncher.expectEvent(
+                        TestProtocol.SEQUENCE_MAIN, LauncherInstrumentation.EVENT_STOP_ACTIVITY);
+            }
             mLauncher.assertTrue(
                     "App didn't start: " + By.pkg(expectedPackageName),
                     mLauncher.getDevice().wait(Until.hasObject(By.pkg(expectedPackageName)),

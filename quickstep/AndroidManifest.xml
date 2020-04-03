@@ -73,6 +73,17 @@
             </intent-filter>
         </provider>
 
+        <!-- FileProvider used for sharing images. -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${packageName}.overview.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/overview_file_provider_paths" />
+        </provider>
+
         <service
             android:name="com.android.launcher3.uioverrides.dynamicui.WallpaperManagerCompatVL$ColorExtractionService"
             tools:node="remove" />

@@ -33,7 +33,7 @@ import static com.android.launcher3.anim.Interpolators.EXAGGERATED_EASE;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.config.FeatureFlags.KEYGUARD_ANIMATION;
 import static com.android.launcher3.dragndrop.DragLayer.ALPHA_INDEX_TRANSITIONS;
-import static com.android.launcher3.uioverrides.DepthController.DEPTH;
+import static com.android.launcher3.statehandlers.DepthController.DEPTH;
 import static com.android.launcher3.views.FloatingIconView.SHAPE_PROGRESS_DURATION;
 import static com.android.quickstep.TaskUtils.taskIsATargetWithMode;
 import static com.android.systemui.shared.system.QuickStepContract.getWindowCornerRadius;
@@ -72,7 +72,7 @@ import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.shortcuts.DeepShortcutView;
-import com.android.launcher3.uioverrides.DepthController;
+import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.util.DynamicResource;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
@@ -622,7 +622,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
             backgroundRadiusAnim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    depthController.setSurfaceToLauncher(mLauncher.getDragLayer());
+                    depthController.setSurfaceToApp(null);
                 }
             });
         }

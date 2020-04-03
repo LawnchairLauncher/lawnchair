@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package com.android.launcher3.uioverrides;
+package com.android.launcher3.statehandlers;
 
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 
 import android.os.IBinder;
 import android.util.FloatProperty;
 import android.view.View;
+import android.view.ViewTreeObserver;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
@@ -77,6 +78,16 @@ public class DepthController implements LauncherStateManager.StateHandler {
         }
     }
 
+    private final ViewTreeObserver.OnDrawListener mOnDrawListener =
+            new ViewTreeObserver.OnDrawListener() {
+                @Override
+                public void onDraw() {
+                    View view = mLauncher.getDragLayer();
+                    setSurface(new SurfaceControlCompat(view));
+                    view.post(() -> view.getViewTreeObserver().removeOnDrawListener(this));
+                }
+            };
+
     private final Launcher mLauncher;
     /**
      * Blur radius when completely zoomed out, in pixels.
@@ -103,19 +114,26 @@ public class DepthController implements LauncherStateManager.StateHandler {
     }
 
     /**
+     * Sets if the underlying activity is started or not
+     */
+    public void setActivityStarted(boolean isStarted) {
+        if (isStarted) {
+            mLauncher.getDragLayer().getViewTreeObserver().addOnDrawListener(mOnDrawListener);
+        } else {
+            mLauncher.getDragLayer().getViewTreeObserver().removeOnDrawListener(mOnDrawListener);
+            setSurface(null);
+        }
+    }
+
+    /**
      * Sets the specified app target surface to apply the blur to.
      */
     public void setSurfaceToApp(RemoteAnimationTargetCompat target) {
         if (target != null) {
             setSurface(target.leash);
+        } else {
+            setActivityStarted(mLauncher.isStarted());
         }
-    }
-
-    /**
-     * Sets the surface to apply the blur to as the launcher surface.
-     */
-    public void setSurfaceToLauncher(View v) {
-        setSurface(v != null ? new SurfaceControlCompat(v) : null);
     }
 
     private void setSurface(SurfaceControlCompat surface) {

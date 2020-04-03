@@ -19,7 +19,7 @@ import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.ALL_APPS_HEADER_EXTRA;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
-import static com.android.launcher3.LauncherState.RECENTS_CLEAR_ALL_BUTTON;
+import static com.android.launcher3.LauncherState.OVERVIEW_BUTTONS;
 import static com.android.launcher3.LauncherState.SPRING_LOADED;
 import static com.android.launcher3.QuickstepAppTransitionManagerImpl.ALL_APPS_PROGRESS_OFF_SCREEN;
 import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
@@ -37,9 +37,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Hotseat;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager.StateListener;
 import com.android.launcher3.R;
@@ -47,8 +47,8 @@ import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.appprediction.PredictionUiStateManager;
 import com.android.launcher3.appprediction.PredictionUiStateManager.Client;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.states.RotationHelper;
-import com.android.launcher3.uioverrides.DepthController;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.TraceHelper;
 import com.android.launcher3.views.ScrimView;
@@ -63,7 +63,8 @@ import com.android.systemui.plugins.RecentsExtraCard;
  * {@link RecentsView} used in Launcher activity
  */
 @TargetApi(Build.VERSION_CODES.O)
-public class LauncherRecentsView extends RecentsView<Launcher> implements StateListener {
+public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher>
+        implements StateListener {
 
     private static final Rect sTempRect = new Rect();
 
@@ -322,7 +323,7 @@ public class LauncherRecentsView extends RecentsView<Launcher> implements StateL
         if (enabled) {
             LauncherState state = mActivity.getStateManager().getState();
             boolean hasClearAllButton = (state.getVisibleElements(mActivity)
-                    & RECENTS_CLEAR_ALL_BUTTON) != 0;
+                    & OVERVIEW_BUTTONS) != 0;
             setDisallowScrollToClearAll(!hasClearAllButton);
         }
     }
