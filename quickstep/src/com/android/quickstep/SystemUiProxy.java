@@ -334,14 +334,13 @@ public class SystemUiProxy implements ISystemUiProxy {
         }
     }
 
-    public void onQuickSwitchToNewTask() {
-        //TODO(b/150250451) add back in after big CL goes through
-//        if (mSystemUiProxy != null) {
-//            try {
-//                mSystemUiProxy.onQuickSwitchToNewTask();
-//            } catch (RemoteException e) {
-//                Log.w(TAG, "Failed call onQuickstepStarted", e);
-//            }
-//        }
+    public void onQuickSwitchToNewTask(int rotation) {
+        if (mSystemUiProxy != null) {
+            try {
+                mSystemUiProxy.onQuickSwitchToNewTask(rotation);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call onQuickSwitchToNewTask with arg: " + rotation, e);
+            }
+        }
     }
 }
