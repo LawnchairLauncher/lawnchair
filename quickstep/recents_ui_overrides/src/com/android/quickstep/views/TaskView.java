@@ -64,7 +64,6 @@ import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.popup.SystemShortcut;
-import com.android.launcher3.states.RotationHelper;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.PagedOrientationHandler;
@@ -79,6 +78,7 @@ import com.android.quickstep.TaskOverlayFactory;
 import com.android.quickstep.TaskThumbnailCache;
 import com.android.quickstep.TaskUtils;
 import com.android.quickstep.util.LayoutUtils;
+import com.android.quickstep.util.RecentsOrientedState;
 import com.android.quickstep.util.TaskCornerRadius;
 import com.android.quickstep.views.RecentsView.PageCallbacks;
 import com.android.quickstep.views.RecentsView.ScrollState;
@@ -118,19 +118,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
 
     private static final List<Rect> SYSTEM_GESTURE_EXCLUSION_RECT =
             Collections.singletonList(new Rect());
-
-    public static final FloatProperty<TaskView> FULLSCREEN_PROGRESS =
-            new FloatProperty<TaskView>("fullscreenProgress") {
-                @Override
-                public void setValue(TaskView taskView, float v) {
-                    taskView.setFullscreenProgress(v);
-                }
-
-                @Override
-                public Float get(TaskView taskView) {
-                    return taskView.mFullscreenProgress;
-                }
-            };
 
     private static final FloatProperty<TaskView> FOCUS_TRANSITION =
             new FloatProperty<TaskView>("focusTransition") {
@@ -286,11 +273,11 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     /**
      * Updates this task view to the given {@param task}.
      */
-    public void bind(Task task, int recentsRotation) {
+    public void bind(Task task, RecentsOrientedState orientedState) {
         cancelPendingLoadTasks();
         mTask = task;
         mSnapshotView.bind(task);
-        setOverviewRotation(recentsRotation);
+        setOrientationState(orientedState);
     }
 
     public Task getTask() {
@@ -459,14 +446,15 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         }
     }
 
-    void setOverviewRotation(int iconRotation) {
-        PagedOrientationHandler orientationHandler = getRecentsView().getPagedOrientationHandler();
+    public void setOrientationState(RecentsOrientedState orientationState) {
+        int iconRotation = orientationState.getTouchRotation();
+        PagedOrientationHandler orientationHandler = orientationState.getOrientationHandler();
         boolean isRtl = orientationHandler.getRecentsRtlSetting(getResources());
         LayoutParams snapshotParams = (LayoutParams) mSnapshotView.getLayoutParams();
         snapshotParams.bottomMargin = LayoutUtils.thumbnailBottomMargin(getContext());
         int thumbnailPadding = (int) getResources().getDimension(R.dimen.task_thumbnail_top_margin);
         LayoutParams iconParams = (LayoutParams) mIconView.getLayoutParams();
-        int rotation = RotationHelper.getDegreesFromRotation(iconRotation);
+        int rotation = orientationState.getTouchRotationDegrees();
         switch (iconRotation) {
             case Surface.ROTATION_90:
                 iconParams.gravity = (isRtl ? END : START) | CENTER_VERTICAL;

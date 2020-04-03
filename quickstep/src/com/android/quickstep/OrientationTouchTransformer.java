@@ -22,6 +22,8 @@ import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_POINTER_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
 
+import static com.android.quickstep.util.RecentsOrientedState.postDisplayRotation;
+
 import android.content.res.Resources;
 import android.graphics.Matrix;
 import android.graphics.Point;
@@ -33,8 +35,8 @@ import android.view.Surface;
 
 import com.android.launcher3.R;
 import com.android.launcher3.ResourceUtils;
-import com.android.launcher3.states.RotationHelper;
 import com.android.launcher3.util.DefaultDisplay;
+import com.android.quickstep.util.RecentsOrientedState.SurfaceRotation;
 
 import java.io.PrintWriter;
 
@@ -51,6 +53,9 @@ class OrientationTouchTransformer {
     private static final String TAG = "OrientationTouchTransformer";
     private static final boolean DEBUG = false;
     private static final int MAX_ORIENTATIONS = 4;
+
+    private final Matrix mTmpMatrix = new Matrix();
+    private final float[] mTmpPoint = new float[2];
 
     private SparseArray<OrientationRectF> mSwipeTouchRegions = new SparseArray<>(MAX_ORIENTATIONS);
     private final RectF mAssistantLeftRegion = new RectF();
@@ -304,42 +309,46 @@ class OrientationTouchTransformer {
         }
 
         boolean applyTransform(MotionEvent event, boolean forceTransform) {
-            // TODO(b/149658423): See if we can use RotationHelper.getRotationMatrix here
-            MotionEvent tmp = MotionEvent.obtain(event);
-            Matrix outMatrix = new Matrix();
-            int delta = RotationHelper.deltaRotation(mCurrentRotation, mRotation);
-            switch (delta) {
-                case Surface.ROTATION_0:
-                    outMatrix.reset();
-                    break;
-                case Surface.ROTATION_90:
-                    outMatrix.setRotate(270);
-                    outMatrix.postTranslate(0, mHeight);
-                    break;
-                case Surface.ROTATION_180:
-                    outMatrix.setRotate(180);
-                    outMatrix.postTranslate(mHeight, mWidth);
-                    break;
-                case Surface.ROTATION_270:
-                    outMatrix.setRotate(90);
-                    outMatrix.postTranslate(mWidth, 0);
-                    break;
+            mTmpMatrix.reset();
+            postDisplayRotation(deltaRotation(mCurrentRotation, mRotation),
+                    mHeight, mWidth, mTmpMatrix);
+            if (forceTransform) {
+                if (DEBUG) {
+                    Log.d(TAG, "Transforming rotation due to forceTransform, "
+                            + "mCurrentRotation: " + mCurrentRotation
+                            + "mRotation: " + mRotation);
+                }
+                event.transform(mTmpMatrix);
+                return true;
             }
+            mTmpPoint[0] = event.getX();
+            mTmpPoint[1] = event.getY();
+            mTmpMatrix.mapPoints(mTmpPoint);
 
-            tmp.transform(outMatrix);
             if (DEBUG) {
                 Log.d(TAG, "original: " + event.getX() + ", " + event.getY()
-                                + " new: " + tmp.getX() + ", " + tmp.getY()
+                                + " new: " + mTmpPoint[0] + ", " + mTmpPoint[1]
                                 + " rect: " + this + " forceTransform: " + forceTransform
-                                + " contains: " + contains(tmp.getX(), tmp.getY()));
+                                + " contains: " + contains(mTmpPoint[0], mTmpPoint[1]));
             }
 
-            if (forceTransform || contains(tmp.getX(), tmp.getY())) {
-                event.transform(outMatrix);
-                tmp.recycle();
+            if (contains(mTmpPoint[0], mTmpPoint[1])) {
+                event.transform(mTmpMatrix);
                 return true;
             }
             return false;
         }
+    }
+
+    /**
+     * @return how many factors {@param newRotation} is rotated 90 degrees clockwise.
+     * E.g. 1->Rotated by 90 degrees clockwise, 2->Rotated 180 clockwise...
+     * A value of 0 means no rotation has been applied
+     */
+    @SurfaceRotation
+    private static int deltaRotation(int oldRotation, int newRotation) {
+        int delta = newRotation - oldRotation;
+        if (delta < 0) delta += 4;
+        return delta;
     }
 }

@@ -39,6 +39,10 @@ import com.android.launcher3.util.OverScroller;
  */
 public interface PagedOrientationHandler {
 
+    PagedOrientationHandler PORTRAIT = new PortraitPagedViewHandler();
+    PagedOrientationHandler LANDSCAPE = new LandscapePagedViewHandler();
+    PagedOrientationHandler SEASCAPE = new SeascapePagedViewHandler();
+
     interface Int2DAction<T> {
         void call(T target, int x, int y);
     }

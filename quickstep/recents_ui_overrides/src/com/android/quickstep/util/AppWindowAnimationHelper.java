@@ -15,6 +15,13 @@
  */
 package com.android.quickstep.util;
 
+import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
+import static com.android.systemui.shared.system.QuickStepContract.getWindowCornerRadius;
+import static com.android.systemui.shared.system.QuickStepContract.supportsRoundedCornersOnWindows;
+import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME;
+import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
+import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING;
+
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
@@ -33,7 +40,6 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.Interpolators;
-import com.android.launcher3.model.PagedViewOrientedState;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.quickstep.RemoteAnimationTargets;
 import com.android.quickstep.SystemUiProxy;
@@ -46,13 +52,6 @@ import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams;
 import com.android.systemui.shared.system.TransactionCompat;
 import com.android.systemui.shared.system.WindowManagerWrapper;
-
-import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
-import static com.android.systemui.shared.system.QuickStepContract.getWindowCornerRadius;
-import static com.android.systemui.shared.system.QuickStepContract.supportsRoundedCornersOnWindows;
-import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME;
-import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
-import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING;
 
 /**
  * Utility class to handle window clip animation
@@ -86,7 +85,7 @@ public class AppWindowAnimationHelper {
     private final Rect mTmpRect = new Rect();
     private final RectF mTmpRectF = new RectF();
     private final RectF mCurrentRectWithInsets = new RectF();
-    private PagedViewOrientedState mOrientedState;
+    private RecentsOrientedState mOrientedState;
     // Corner radius of windows, in pixels
     private final float mWindowCornerRadius;
     // Corner radius of windows when they're in overview mode.
@@ -105,7 +104,7 @@ public class AppWindowAnimationHelper {
     private TargetAlphaProvider mTaskAlphaCallback = (t, a) -> a;
     private TargetAlphaProvider mBaseAlphaCallback = (t, a) -> 1;
 
-    public AppWindowAnimationHelper(PagedViewOrientedState orientedState, Context context) {
+    public AppWindowAnimationHelper(RecentsOrientedState orientedState, Context context) {
         Resources res = context.getResources();
         mOrientedState = orientedState;
         mWindowCornerRadius = getWindowCornerRadius(res);
