@@ -813,23 +813,14 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         if (getPageCount() == 0 || getPageAt(0).getMeasuredWidth() == 0) {
             return;
         }
-        CurveProperties curveProperties = mOrientationHandler
-            .getCurveProperties(this, mInsets);
-        int scroll = curveProperties.scroll;
-        final int halfPageSize = curveProperties.halfPageSize;
-        final int screenCenter = curveProperties.screenCenter;
-        final int halfScreenSize = curveProperties.halfScreenSize;
-        final int pageSpacing = mPageSpacing;
-        mScrollState.scrollFromEdge = mIsRtl ? scroll : (mMaxScroll - scroll);
+        mOrientationHandler.getCurveProperties(this, mInsets, mScrollState);
+        mScrollState.scrollFromEdge =
+                mIsRtl ? mScrollState.scroll : (mMaxScroll - mScrollState.scroll);
 
         final int pageCount = getPageCount();
         for (int i = 0; i < pageCount; i++) {
             View page = getPageAt(i);
-            float pageCenter = mOrientationHandler.getViewCenterPosition(page) + halfPageSize;
-            float distanceFromScreenCenter = screenCenter - pageCenter;
-            float distanceToReachEdge = halfScreenSize + halfPageSize + pageSpacing;
-            mScrollState.linearInterpolation = Math.min(1,
-                    Math.abs(distanceFromScreenCenter) / distanceToReachEdge);
+            mScrollState.updateInterpolation(mOrientationHandler.getChildStart(page), mPageSpacing);
             ((PageCallbacks) page).onPageScroll(mScrollState);
         }
     }
@@ -1201,7 +1192,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         default void onPageScroll(ScrollState scrollState) {}
     }
 
-    public static class ScrollState {
+    public static class ScrollState extends CurveProperties {
 
         /**
          * The progress from 0 to 1, where 0 is the center
@@ -1213,6 +1204,17 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
          * The amount by which all the content is scrolled relative to the end of the list.
          */
         public float scrollFromEdge;
+
+        /**
+         * Updates linearInterpolation for the provided child position
+         */
+        public void updateInterpolation(int childStart, int pageSpacing) {
+            float pageCenter = childStart + halfPageSize;
+            float distanceFromScreenCenter = screenCenter - pageCenter;
+            float distanceToReachEdge = halfScreenSize + halfPageSize + pageSpacing;
+            linearInterpolation = Math.min(1,
+                    Math.abs(distanceFromScreenCenter) / distanceToReachEdge);
+        }
     }
 
     public void setIgnoreResetTask(int taskId) {
