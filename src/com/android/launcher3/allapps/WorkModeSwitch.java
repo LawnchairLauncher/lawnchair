@@ -17,8 +17,6 @@ package com.android.launcher3.allapps;
 
 import static com.android.launcher3.util.PackageManagerHelper.hasShortcutsPermission;
 
-import android.animation.ObjectAnimator;
-import android.animation.PropertyValuesHolder;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Rect;
@@ -27,7 +25,6 @@ import android.os.Process;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
 import android.widget.Switch;
 
 import com.android.launcher3.Insettable;
@@ -35,6 +32,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.pm.UserCache;
+import com.android.launcher3.views.ArrowTipView;
 
 import java.lang.ref.WeakReference;
 
@@ -43,27 +41,21 @@ import java.lang.ref.WeakReference;
  */
 public class WorkModeSwitch extends Switch implements Insettable {
 
-    private Rect mInsets = new Rect();
-    protected ObjectAnimator mOpenCloseAnimator;
+    private static final int WORK_TIP_THRESHOLD = 2;
+    public static final String KEY_WORK_TIP_COUNTER = "worked_tip_counter";
 
+    private Rect mInsets = new Rect();
 
     public WorkModeSwitch(Context context) {
         super(context);
-        init();
     }
 
     public WorkModeSwitch(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init();
     }
 
     public WorkModeSwitch(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
-    }
-
-    private void init() {
-        mOpenCloseAnimator = ObjectAnimator.ofPropertyValuesHolder(this);
     }
 
     @Override
@@ -73,6 +65,9 @@ public class WorkModeSwitch extends Switch implements Insettable {
 
     @Override
     public void toggle() {
+        Launcher launcher = Launcher.getLauncher(getContext());
+        // don't show tip if user uses toggle
+        launcher.getSharedPrefs().edit().putInt(KEY_WORK_TIP_COUNTER, -1).apply();
         trySetQuietModeEnabledToAllProfilesAsync(isChecked());
     }
 
@@ -95,11 +90,6 @@ public class WorkModeSwitch extends Switch implements Insettable {
         this.setVisibility(shouldShowWorkSwitch() ? VISIBLE : GONE);
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent ev) {
-        return ev.getActionMasked() == MotionEvent.ACTION_MOVE || super.onTouchEvent(ev);
-    }
-
     private void trySetQuietModeEnabledToAllProfilesAsync(boolean enabled) {
         new SetQuietModeEnabledAsyncTask(enabled, new WeakReference<>(this)).execute();
     }
@@ -117,9 +107,15 @@ public class WorkModeSwitch extends Switch implements Insettable {
      */
     public void setWorkTabVisible(boolean workTabVisible) {
         if (!shouldShowWorkSwitch()) return;
-
-        mOpenCloseAnimator.setValues(PropertyValuesHolder.ofFloat(ALPHA, workTabVisible ? 1 : 0));
-        mOpenCloseAnimator.start();
+        clearAnimation();
+        if (workTabVisible) {
+            setVisibility(VISIBLE);
+            setAlpha(0);
+            animate().alpha(1).start();
+            showTipifNeeded();
+        } else {
+            animate().alpha(0).withEndAction(() -> this.setVisibility(GONE)).start();
+        }
     }
 
     private static final class SetQuietModeEnabledAsyncTask
@@ -178,5 +174,18 @@ public class WorkModeSwitch extends Switch implements Insettable {
         return Utilities.ATLEAST_P && (hasShortcutsPermission(launcher)
                 || launcher.checkSelfPermission("android.permission.MODIFY_QUIET_MODE")
                 == PackageManager.PERMISSION_GRANTED);
+    }
+
+    /**
+     * Shows a work tip on the Nth work tab open
+     */
+    public void showTipifNeeded() {
+        Launcher launcher = Launcher.getLauncher(getContext());
+        int tipCounter = launcher.getSharedPrefs().getInt(KEY_WORK_TIP_COUNTER, WORK_TIP_THRESHOLD);
+        if (tipCounter < 0) return;
+        if (tipCounter == 0) {
+            new ArrowTipView(launcher).show(launcher.getString(R.string.work_switch_tip), getTop());
+        }
+        launcher.getSharedPrefs().edit().putInt(KEY_WORK_TIP_COUNTER, tipCounter - 1).apply();
     }
 }

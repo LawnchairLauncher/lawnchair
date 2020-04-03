@@ -21,7 +21,6 @@ import static android.view.View.VISIBLE;
 
 import static com.android.launcher3.config.FeatureFlags.ENABLE_LAUNCHER_PREVIEW_IN_GRID_PICKER;
 import static com.android.launcher3.config.FeatureFlags.MULTI_DB_GRID_MIRATION_ALGO;
-import static com.android.launcher3.model.GridSizeMigrationTask.needsToMigrate;
 import static com.android.launcher3.model.ModelUtils.filterCurrentWorkspaceItems;
 import static com.android.launcher3.model.ModelUtils.sortWorkspaceItemsSpatially;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
@@ -397,7 +396,10 @@ public class LauncherPreviewRenderer implements Callable<Bitmap> {
 
         private void populate() {
             if (ENABLE_LAUNCHER_PREVIEW_IN_GRID_PICKER.get()) {
-                boolean needsToMigrate = needsToMigrate(mContext, mIdp);
+                boolean needsToMigrate =
+                        MULTI_DB_GRID_MIRATION_ALGO.get()
+                                ? GridSizeMigrationTaskV2.needsToMigrate(mContext, mIdp)
+                                : GridSizeMigrationTask.needsToMigrate(mContext, mIdp);
                 boolean success = false;
                 if (needsToMigrate) {
                     success = MULTI_DB_GRID_MIRATION_ALGO.get()
