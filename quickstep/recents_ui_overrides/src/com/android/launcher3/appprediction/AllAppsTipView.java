@@ -24,13 +24,13 @@ import static com.android.quickstep.logging.UserEventDispatcherExtension.ALL_APP
 import android.os.UserManager;
 
 import com.android.launcher3.AbstractFloatingView;
-import com.android.launcher3.ArrowTipView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.FloatingHeaderView;
+import com.android.launcher3.views.ArrowTipView;
 import com.android.systemui.shared.system.LauncherEventUtil;
 
 /**

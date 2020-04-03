@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.launcher3.uioverrides;
+package com.android.launcher3.statehandlers;
 
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.quickstep.AnimatedFloat.VALUE;
@@ -29,6 +29,9 @@ import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SystemUiProxy;
 
+/**
+ * State handler for animating back button alpha
+ */
 public class BackButtonAlphaHandler implements LauncherStateManager.StateHandler {
 
     private final BaseQuickstepLauncher mLauncher;

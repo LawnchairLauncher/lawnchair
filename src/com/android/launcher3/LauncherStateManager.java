@@ -324,6 +324,7 @@ public class LauncherStateManager {
 
     public AnimatorPlaybackController createAnimationToNewWorkspace(LauncherState state,
             StateAnimationConfig config) {
+        config.userControlled = true;
         mConfig.reset();
         config.copyTo(mConfig);
         mConfig.playbackController = createAnimationToNewWorkspaceInternal(state)

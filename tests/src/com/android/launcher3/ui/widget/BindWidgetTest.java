@@ -45,6 +45,7 @@ import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.pm.InstallSessionHelper;
+import com.android.launcher3.tapl.Widget;
 import com.android.launcher3.tapl.Workspace;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.ui.TestViewHelpers;
@@ -267,8 +268,10 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
     }
 
     private void verifyWidgetPresent(LauncherAppWidgetProviderInfo info) {
+        final Widget widget = mLauncher.getWorkspace().tryGetWidget(info.label, DEFAULT_UI_TIMEOUT);
+        if (widget == null) mLauncher.dumpViewHierarchy(); // b/152645831
         assertTrue("Widget is not present",
-                mLauncher.getWorkspace().tryGetWidget(info.label, DEFAULT_UI_TIMEOUT) != null);
+                widget != null);
     }
 
     private void verifyPendingWidgetPresent() {

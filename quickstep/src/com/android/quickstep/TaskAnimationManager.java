@@ -26,6 +26,7 @@ import androidx.annotation.UiThread;
 
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 
@@ -52,6 +53,9 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
     @UiThread
     public RecentsAnimationCallbacks startRecentsAnimation(GestureState gestureState,
             Intent intent, RecentsAnimationCallbacks.RecentsAnimationListener listener) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.NO_START_FROM_RECENTS, "startRecentsAnimation");
+        }
         // Notify if recents animation is still running
         if (mController != null) {
             String msg = "New recents animation started before old animation completed";

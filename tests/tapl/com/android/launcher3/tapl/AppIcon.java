@@ -32,6 +32,7 @@ import java.util.regex.Pattern;
 public final class AppIcon extends Launchable {
 
     private static final Pattern START_EVENT = Pattern.compile("start:");
+    private static final Pattern LONG_CLICK_EVENT = Pattern.compile("onAllAppsItemLongClick");
 
     AppIcon(LauncherInstrumentation launcher, UiObject2 icon) {
         super(launcher, icon);
@@ -47,8 +48,13 @@ public final class AppIcon extends Launchable {
     public AppIconMenu openMenu() {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
             return new AppIconMenu(mLauncher, mLauncher.clickAndGet(
-                    mObject, "deep_shortcuts_container"));
+                    mObject, "deep_shortcuts_container", LONG_CLICK_EVENT));
         }
+    }
+
+    @Override
+    protected void addExpectedEventsForLongClick() {
+        mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, LONG_CLICK_EVENT);
     }
 
     @Override
