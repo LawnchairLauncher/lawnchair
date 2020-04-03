@@ -25,6 +25,8 @@ import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.Until;
 
+import com.android.launcher3.testing.TestProtocol;
+
 /**
  * Ancestor for AppIcon and AppMenuItem.
  */
@@ -62,6 +64,8 @@ abstract class Launchable {
                 event -> event.getEventType() == TYPE_WINDOW_STATE_CHANGED,
                 () -> "Launching an app didn't open a new window: " + mObject.getText());
         expectActivityStartEvents();
+        mLauncher.expectEvent(
+                TestProtocol.SEQUENCE_MAIN, LauncherInstrumentation.EVENT_STOP_ACTIVITY);
 
         mLauncher.assertTrue(
                 "App didn't start: " + selector,
@@ -72,8 +76,9 @@ abstract class Launchable {
 
     /**
      * Drags an object to the center of homescreen.
+     * @param startsActivity whether it's expected to start an activity.
      */
-    public void dragToWorkspace() {
+    public void dragToWorkspace(boolean startsActivity) {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
             final Point launchableCenter = getObject().getVisibleCenter();
             final Point displaySize = mLauncher.getRealDisplaySize();
@@ -86,9 +91,13 @@ abstract class Launchable {
                                     ? launchableCenter.x - width / 2
                                     : launchableCenter.x + width / 2,
                             displaySize.y / 2),
-                    getLongPressIndicator());
+                    getLongPressIndicator(),
+                    startsActivity,
+                    () -> addExpectedEventsForLongClick());
         }
     }
+
+    protected abstract void addExpectedEventsForLongClick();
 
     protected abstract String getLongPressIndicator();
 }

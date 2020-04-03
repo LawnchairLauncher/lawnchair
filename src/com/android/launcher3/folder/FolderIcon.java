@@ -31,7 +31,6 @@ import android.util.Property;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -52,8 +51,6 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.OnAlarmListener;
 import com.android.launcher3.R;
-import com.android.launcher3.SimpleOnStylusPressListener;
-import com.android.launcher3.StylusEventHelper;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.WorkspaceItemInfo;
@@ -87,7 +84,6 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
     private FolderInfo mInfo;
 
     private CheckLongPressHelper mLongPressHelper;
-    private StylusEventHelper mStylusEventHelper;
 
     static final int DROP_IN_ANIMATION_DURATION = 400;
 
@@ -109,8 +105,6 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
     private List<WorkspaceItemInfo> mCurrentPreviewItems = new ArrayList<>();
 
     boolean mAnimating = false;
-
-    private float mSlop;
 
     private Alarm mOpenAlarm = new Alarm();
 
@@ -149,9 +143,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
 
     private void init() {
         mLongPressHelper = new CheckLongPressHelper(this);
-        mStylusEventHelper = new StylusEventHelper(new SimpleOnStylusPressListener(this), this);
         mPreviewLayoutRule = new ClippedFolderIconLayoutRule();
-        mSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
         mPreviewItemManager = new PreviewItemManager(this);
         mDotParams = new DotRenderer.DrawParams();
     }
@@ -663,29 +655,10 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
     public boolean onTouchEvent(MotionEvent event) {
         // Call the superclass onTouchEvent first, because sometimes it changes the state to
         // isPressed() on an ACTION_UP
-        boolean result = super.onTouchEvent(event);
-
-        // Check for a stylus button press, if it occurs cancel any long press checks.
-        if (mStylusEventHelper.onMotionEvent(event)) {
-            mLongPressHelper.cancelLongPress();
-            return true;
-        }
-
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                mLongPressHelper.postCheckForLongPress();
-                break;
-            case MotionEvent.ACTION_CANCEL:
-            case MotionEvent.ACTION_UP:
-                mLongPressHelper.cancelLongPress();
-                break;
-            case MotionEvent.ACTION_MOVE:
-                if (!Utilities.pointInView(this, event.getX(), event.getY(), mSlop)) {
-                    mLongPressHelper.cancelLongPress();
-                }
-                break;
-        }
-        return result;
+        super.onTouchEvent(event);
+        mLongPressHelper.onTouchEvent(event);
+        // Keep receiving the rest of the events
+        return true;
     }
 
     @Override

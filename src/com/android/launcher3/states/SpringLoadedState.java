@@ -17,6 +17,7 @@ package com.android.launcher3.states;
 
 import static com.android.launcher3.states.RotationHelper.REQUEST_LOCK;
 
+import android.content.Context;
 import android.graphics.Rect;
 
 import com.android.launcher3.DeviceProfile;
@@ -74,6 +75,11 @@ public class SpringLoadedState extends LauncherState {
         float cellTopFromCenter = halfHeight - ws.getChildAt(0).getTop();
         float actualCellTop = myCenter - cellTopFromCenter * scale;
         return new ScaleAndTranslation(scale, 0, (desiredCellTop - actualCellTop) / scale);
+    }
+
+    @Override
+    public float getDepth(Context context) {
+        return 0.5f;
     }
 
     @Override

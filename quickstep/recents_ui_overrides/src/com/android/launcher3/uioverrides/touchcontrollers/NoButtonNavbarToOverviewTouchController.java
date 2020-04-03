@@ -66,6 +66,13 @@ public class NoButtonNavbarToOverviewTouchController extends FlingAndHoldTouchCo
     }
 
     @Override
+    protected float getMotionPauseMaxDisplacement() {
+        // No need to disallow pause when swiping up all the way up the screen (unlike
+        // FlingAndHoldTouchController where user is probably intending to go to all apps).
+        return Float.MAX_VALUE;
+    }
+
+    @Override
     protected boolean canInterceptTouch(MotionEvent ev) {
         mDidTouchStartInNavBar = (ev.getEdgeFlags() & EDGE_NAV_BAR) != 0;
         return super.canInterceptTouch(ev);

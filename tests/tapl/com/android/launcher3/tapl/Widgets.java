@@ -88,47 +88,50 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
     }
 
     public Widget getWidget(String labelText) {
-        final UiObject2 widgetsContainer = verifyActiveContainer();
-        final Point displaySize = mLauncher.getRealDisplaySize();
-        final BySelector labelSelector = By.clazz("android.widget.TextView").text(labelText);
+        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                "getting widget " + labelText + " in widgets list")) {
+            final UiObject2 widgetsContainer = verifyActiveContainer();
+            final Point displaySize = mLauncher.getRealDisplaySize();
+            final BySelector labelSelector = By.clazz("android.widget.TextView").text(labelText);
 
-        int i = 0;
-        for (; ; ) {
-            final Collection<UiObject2> cells = mLauncher.getObjectsInContainer(
-                    widgetsContainer, "widgets_scroll_container");
-            mLauncher.assertTrue("Widgets doesn't have 2 rows", cells.size() >= 2);
-            for (UiObject2 cell : cells) {
-                final UiObject2 label = cell.findObject(labelSelector);
-                if (label == null) continue;
+            int i = 0;
+            for (; ; ) {
+                final Collection<UiObject2> cells = mLauncher.getObjectsInContainer(
+                        widgetsContainer, "widgets_scroll_container");
+                mLauncher.assertTrue("Widgets doesn't have 2 rows", cells.size() >= 2);
+                for (UiObject2 cell : cells) {
+                    final UiObject2 label = cell.findObject(labelSelector);
+                    if (label == null) continue;
 
-                final UiObject2 widget = label.getParent().getParent();
-                mLauncher.assertEquals(
-                        "View is not WidgetCell",
-                        "com.android.launcher3.widget.WidgetCell",
-                        widget.getClassName());
+                    final UiObject2 widget = label.getParent().getParent();
+                    mLauncher.assertEquals(
+                            "View is not WidgetCell",
+                            "com.android.launcher3.widget.WidgetCell",
+                            widget.getClassName());
 
-                int maxWidth = 0;
-                for (UiObject2 sibling : widget.getParent().getChildren()) {
-                    maxWidth = Math.max(sibling.getVisibleBounds().width(), maxWidth);
+                    int maxWidth = 0;
+                    for (UiObject2 sibling : widget.getParent().getChildren()) {
+                        maxWidth = Math.max(sibling.getVisibleBounds().width(), maxWidth);
+                    }
+
+                    int visibleDelta = maxWidth - widget.getVisibleBounds().width();
+                    if (visibleDelta > 0) {
+                        Rect parentBounds = cell.getVisibleBounds();
+                        mLauncher.linearGesture(parentBounds.centerX() + visibleDelta
+                                        + mLauncher.getTouchSlop(),
+                                parentBounds.centerY(), parentBounds.centerX(),
+                                parentBounds.centerY(), 10, true, GestureScope.INSIDE);
+                    }
+
+                    if (widget.getVisibleBounds().bottom
+                            <= displaySize.y - mLauncher.getBottomGestureSize()) {
+                        return new Widget(mLauncher, widget);
+                    }
                 }
 
-                int visibleDelta = maxWidth - widget.getVisibleBounds().width();
-                if (visibleDelta > 0) {
-                    Rect parentBounds = cell.getVisibleBounds();
-                    mLauncher.linearGesture(parentBounds.centerX() + visibleDelta
-                                    + mLauncher.getTouchSlop(),
-                            parentBounds.centerY(), parentBounds.centerX(),
-                            parentBounds.centerY(), 10, true, GestureScope.INSIDE);
-                }
-
-                if (widget.getVisibleBounds().bottom
-                        <= displaySize.y - mLauncher.getBottomGestureSize()) {
-                    return new Widget(mLauncher, widget);
-                }
+                mLauncher.assertTrue("Too many attempts", ++i <= 40);
+                mLauncher.scrollToLastVisibleRow(widgetsContainer, cells, 0);
             }
-
-            mLauncher.assertTrue("Too many attempts", ++i <= 40);
-            mLauncher.scrollToLastVisibleRow(widgetsContainer, cells, 0);
         }
     }
 }
