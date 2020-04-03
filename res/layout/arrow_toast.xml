@@ -50,7 +50,7 @@
             android:src="@drawable/ic_remove_no_shadow"
             android:tint="@android:color/white"
             android:background="?android:attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/accessibility_close_task"/>
+            android:contentDescription="@string/accessibility_close"/>
     </LinearLayout>
 
     <View

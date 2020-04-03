@@ -31,6 +31,7 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Build;
+import android.util.Log;
 import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
@@ -48,6 +49,7 @@ import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.model.PagedViewOrientedState;
 import com.android.launcher3.states.RotationHelper;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.touch.PortraitPagedViewHandler;
 import com.android.launcher3.util.VibratorWrapper;
@@ -198,18 +200,33 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
     }
 
     protected void startNewTask(int successStateFlag, Consumer<Boolean> resultCallback) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.NO_START_FROM_RECENTS, "startNewTask1");
+        }
         // Launch the task user scrolled to (mRecentsView.getNextPage()).
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             // We finish recents animation inside launchTask() when live tile is enabled.
             mRecentsView.getNextPageTaskView().launchTask(false /* animate */,
                     true /* freezeTaskList */);
         } else {
+            if (TestProtocol.sDebugTracing) {
+                Log.d(TestProtocol.NO_START_FROM_RECENTS, "startNewTask2");
+            }
             int taskId = mRecentsView.getNextPageTaskView().getTask().key.id;
             mFinishingRecentsAnimationForNewTaskId = taskId;
             mRecentsAnimationController.finish(true /* toRecents */, () -> {
+                if (TestProtocol.sDebugTracing) {
+                    Log.d(TestProtocol.NO_START_FROM_RECENTS, "onFinishComplete1");
+                }
                 if (!mCanceled) {
+                    if (TestProtocol.sDebugTracing) {
+                        Log.d(TestProtocol.NO_START_FROM_RECENTS, "onFinishComplete2");
+                    }
                     TaskView nextTask = mRecentsView.getTaskView(taskId);
                     if (nextTask != null) {
+                        if (TestProtocol.sDebugTracing) {
+                            Log.d(TestProtocol.NO_START_FROM_RECENTS, "onFinishComplete3");
+                        }
                         nextTask.launchTask(false /* animate */, true /* freezeTaskList */,
                                 success -> {
                                     resultCallback.accept(success);

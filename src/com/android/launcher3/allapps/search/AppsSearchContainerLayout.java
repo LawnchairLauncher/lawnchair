@@ -62,9 +62,8 @@ public class AppsSearchContainerLayout extends ExtendedEditText
     private AlphabeticalAppsList mApps;
     private AllAppsContainerView mAppsView;
 
-    // This value was used to position the QSB. We store it here for translationY animations.
-    private final float mFixedTranslationY;
-    private final float mMarginTopAdjusting;
+    // The amount of pixels to shift down and overlap with the rest of the content.
+    private final int mContentOverlap;
 
     public AppsSearchContainerLayout(Context context) {
         this(context, null);
@@ -82,11 +81,10 @@ public class AppsSearchContainerLayout extends ExtendedEditText
 
         mSearchQueryBuilder = new SpannableStringBuilder();
         Selection.setSelection(mSearchQueryBuilder, 0);
-
-        mFixedTranslationY = getTranslationY();
-        mMarginTopAdjusting = mFixedTranslationY - getPaddingTop();
-
         setHint(prefixTextWithIcon(getContext(), R.drawable.ic_allapps_search, getHint()));
+
+        mContentOverlap =
+                getResources().getDimensionPixelSize(R.dimen.all_apps_search_bar_field_height) / 2;
     }
 
     @Override
@@ -128,6 +126,8 @@ public class AppsSearchContainerLayout extends ExtendedEditText
         int expectedLeft = parent.getPaddingLeft() + (availableWidth - myWidth) / 2;
         int shift = expectedLeft - left;
         setTranslationX(shift);
+
+        offsetTopAndBottom(mContentOverlap);
     }
 
     @Override
@@ -196,7 +196,7 @@ public class AppsSearchContainerLayout extends ExtendedEditText
     @Override
     public void setInsets(Rect insets) {
         MarginLayoutParams mlp = (MarginLayoutParams) getLayoutParams();
-        mlp.topMargin = Math.round(Math.max(-mFixedTranslationY, insets.top - mMarginTopAdjusting));
+        mlp.topMargin = insets.top;
         requestLayout();
     }
 
@@ -205,9 +205,7 @@ public class AppsSearchContainerLayout extends ExtendedEditText
         if (mLauncher.getDeviceProfile().isVerticalBarLayout()) {
             return 0;
         } else {
-            int topMargin = Math.round(Math.max(
-                    -mFixedTranslationY, insets.top - mMarginTopAdjusting));
-           return insets.bottom + topMargin + mFixedTranslationY;
+            return insets.bottom + insets.top;
         }
     }
 

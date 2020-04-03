@@ -79,6 +79,8 @@ public final class OverviewTask {
                         () -> "Launching task didn't open a new window: "
                                 + mTask.getParent().getContentDescription());
                 mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, TASK_START_EVENT);
+                mLauncher.expectEvent(
+                        TestProtocol.SEQUENCE_MAIN, LauncherInstrumentation.EVENT_STOP_ACTIVITY);
             }
             return new Background(mLauncher);
         }
