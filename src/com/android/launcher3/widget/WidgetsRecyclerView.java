@@ -209,4 +209,15 @@ public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouch
         }
         super.stopNestedScroll();
     }
+
+    @Override
+    public void setLayoutFrozen(boolean frozen) {
+        if (frozen != isLayoutSuppressed()) {
+            if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+                Log.d(TestProtocol.NO_SCROLL_END_WIDGETS, "setLayoutFrozen " + frozen
+                        + " @ " + android.util.Log.getStackTraceString(new Throwable()));
+            }
+        }
+        super.setLayoutFrozen(frozen);
+    }
 }
