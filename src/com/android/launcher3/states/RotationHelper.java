@@ -15,10 +15,12 @@
  */
 package com.android.launcher3.states;
 
+import static android.Manifest.permission.WRITE_SECURE_SETTINGS;
 import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_LOCKED;
 import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_NOSENSOR;
 import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
 import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
+import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static android.util.DisplayMetrics.DENSITY_DEVICE_STABLE;
 
 import static com.android.launcher3.config.FeatureFlags.FLAG_ENABLE_FIXED_ROTATION_TRANSFORM;
@@ -37,7 +39,6 @@ import android.view.Surface;
 import android.view.WindowManager;
 
 import com.android.launcher3.Launcher;
-import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
@@ -142,9 +143,12 @@ public class RotationHelper implements OnSharedPreferenceChangeListener {
         if (setValueFromPrefs) {
             mForcedRotation = isForcedRotation;
         }
-        UI_HELPER_EXECUTOR.execute(
-                () -> Settings.Global.putInt(mContentResolver, FIXED_ROTATION_TRANSFORM_SETTING_NAME,
-                        mForcedRotation ? 1 : 0));
+        UI_HELPER_EXECUTOR.execute(() -> {
+            if (mLauncher.checkSelfPermission(WRITE_SECURE_SETTINGS) == PERMISSION_GRANTED) {
+                Settings.Global.putInt(mContentResolver, FIXED_ROTATION_TRANSFORM_SETTING_NAME,
+                            mForcedRotation ? 1 : 0);
+            }
+        });
         for (ForcedRotationChangedListener listener : mForcedRotationChangedListeners) {
             listener.onForcedRotationChanged(mForcedRotation);
         }

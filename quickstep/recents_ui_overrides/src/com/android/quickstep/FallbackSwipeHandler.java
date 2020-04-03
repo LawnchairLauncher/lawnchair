@@ -166,6 +166,7 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
         super.onActivityInit(alreadyOnHome);
         mActivity = mActivityInterface.getCreatedActivity();
         mRecentsView = mActivity.getOverviewPanel();
+        mRecentsView.setOnPageTransitionEndCallback(null);
         linkRecentsViewScroll();
         mRecentsView.setDisallowScrollToClearAll(true);
         mRecentsView.getClearAllButton().setVisibilityAlpha(0);
@@ -434,7 +435,12 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
 
                 @Override
                 public void onAnimationSuccess(Animator animator) {
-                    finishAnimationTargetSetAnimationComplete();
+                    if (mRecentsView != null) {
+                        mRecentsView.setOnPageTransitionEndCallback(FallbackSwipeHandler.this
+                                ::finishAnimationTargetSetAnimationComplete);
+                    } else {
+                        finishAnimationTargetSetAnimationComplete();
+                    }
                     mFinishAnimation = null;
                 }
             };

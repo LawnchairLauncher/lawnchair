@@ -16,23 +16,44 @@
 package com.android.launcher3.logging;
 
 import android.content.Context;
-import android.content.Intent;
-import android.os.UserHandle;
-import android.view.View;
-
-import androidx.annotation.Nullable;
 
 import com.android.launcher3.R;
+import com.android.launcher3.logger.LauncherAtom;
+import com.android.launcher3.logger.LauncherAtom.ItemInfo;
 import com.android.launcher3.logging.StatsLogUtils.LogStateProvider;
-import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ResourceBasedOverride;
 
 /**
- * Handles the user event logging in Q.
+ * Handles the user event logging in R+.
  */
 public class StatsLogManager implements ResourceBasedOverride {
 
+    interface EventEnum {
+        int getId();
+    }
+
+    public enum LauncherEvent implements EventEnum {
+        @LauncherUiEvent(doc = "App launched from workspace, hotseat or folder in launcher")
+        APP_LAUNCH_TAP(1),
+        @LauncherUiEvent(doc = "Task launched from overview using TAP")
+        TASK_LAUNCH_TAP(2),
+        @LauncherUiEvent(doc = "Task launched from overview using SWIPE DOWN")
+        TASK_LAUNCH_SWIPE_DOWN(2),
+        @LauncherUiEvent(doc = "TASK dismissed from overview using SWIPE UP")
+        TASK_DISMISS_SWIPE_UP(3);
+        // ADD MORE
+
+        private final int mId;
+        LauncherEvent(int id) {
+            mId = id;
+        }
+        public int getId() {
+            return mId;
+        }
+    }
+
     protected LogStateProvider mStateProvider;
+
     public static StatsLogManager newInstance(Context context, LogStateProvider stateProvider) {
         StatsLogManager mgr = Overrides.getObject(StatsLogManager.class,
                 context.getApplicationContext(), R.string.stats_log_manager_class);
@@ -42,11 +63,14 @@ public class StatsLogManager implements ResourceBasedOverride {
     }
 
     /**
-     * Logs app launches
+     * Logs an event and accompanying {@link ItemInfo}
      */
-    public void logAppLaunch(View v, Intent intent, @Nullable UserHandle userHandle) { }
-    public void logTaskLaunch(View v, ComponentKey key) { }
-    public void logTaskDismiss(View v, ComponentKey key) { }
-    public void logSwipeOnContainer(boolean isSwipingToLeft, int pageId) { }
+    public void log(LauncherEvent eventId, LauncherAtom.ItemInfo itemInfo) { }
+
+    /**
+     * Logs snapshot, or impression of the current workspace.
+     */
+    public void logSnapshot() { }
+
     public void verify() {}     // TODO: should move into robo tests
 }

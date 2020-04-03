@@ -95,7 +95,7 @@ public class UserCache {
 
     private void removeUserChangeListener(Runnable command) {
         synchronized (this) {
-            mUserChangeListeners.add(command);
+            mUserChangeListeners.remove(command);
             if (mUserChangeListeners.isEmpty()) {
                 // Disable cache and stop listening
                 mContext.unregisterReceiver(mUserChangeReceiver);
