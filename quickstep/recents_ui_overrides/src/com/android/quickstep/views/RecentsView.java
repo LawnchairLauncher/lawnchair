@@ -99,7 +99,6 @@ import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.anim.SpringProperty;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.states.RotationHelper;
 import com.android.launcher3.testing.TestProtocol;
@@ -1984,13 +1983,13 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         return offsetX;
     }
 
-    public Consumer<MotionEvent> getEventDispatcher(RotationMode navBarRotationMode) {
+    public Consumer<MotionEvent> getEventDispatcher(float navbarRotation) {
         float degreesRotated;
-        if (navBarRotationMode == RotationMode.NORMAL) {
+        if (navbarRotation == 0) {
             degreesRotated = mOrientationState.areMultipleLayoutOrientationsDisabled() ? 0 :
                     RotationHelper.getDegreesFromRotation(mLayoutRotation);
         } else {
-            degreesRotated = -navBarRotationMode.surfaceRotation;
+            degreesRotated = -navbarRotation;
         }
         if (degreesRotated == 0) {
             return super::onTouchEvent;
@@ -2000,7 +1999,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         // undo that transformation since PagedView also accommodates for the transformation via
         // PagedOrientationHandler
         return e -> {
-            if (navBarRotationMode != RotationMode.NORMAL
+            if (navbarRotation != 0
                     && !mOrientationState.areMultipleLayoutOrientationsDisabled()) {
                 RotationHelper.transformEventForNavBar(e, true);
                 super.onTouchEvent(e);

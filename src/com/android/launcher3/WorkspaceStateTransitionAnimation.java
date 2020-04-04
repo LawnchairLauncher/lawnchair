@@ -104,10 +104,8 @@ public class WorkspaceStateTransitionAnimation {
             Interpolator scaleInterpolator = config.getInterpolator(ANIM_WORKSPACE_SCALE, ZOOM_OUT);
             propertySetter.setFloat(mWorkspace, SCALE_PROPERTY, mNewScale, scaleInterpolator);
 
-            if (!hotseat.getRotationMode().isTransposed) {
-                setPivotToScaleWithWorkspace(hotseat);
-                setPivotToScaleWithWorkspace(qsbScaleView);
-            }
+            setPivotToScaleWithWorkspace(hotseat);
+            setPivotToScaleWithWorkspace(qsbScaleView);
             float hotseatScale = hotseatScaleAndTranslation.scale;
             Interpolator hotseatScaleInterpolator = config.getInterpolator(ANIM_HOTSEAT_SCALE,
                     scaleInterpolator);
