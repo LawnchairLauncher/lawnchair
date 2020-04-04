@@ -333,6 +333,7 @@
     <string name="label_turn_off_suggestions">Tắt</string>
     <string name="about_summary_title">Sơ lược</string>
     <string name="hide_app">Ẩn lối tắt</string>
+    <string name="hide_badge">Ẩn huy hiệu</string>
     <string name="icon_shape_rounded_square">Hình vuông bo tròn</string>
     <string name="hide_app_selected">&#160; ẩn.</string>
     <string name="hide_app_apply">Hoàn thành</string>
