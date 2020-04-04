@@ -316,6 +316,9 @@
     <!-- Accessibility action to dismiss a notification in the shortcuts menu for an icon. [CHAR_LIMIT=30] -->
     <string name="action_dismiss_notification">Dismiss</string>
 
+    <!-- Content description for arrow tip close button. [CHAR LIMIT=NONE] -->
+    <string name="accessibility_close">Close</string>
+
     <!-- Accessibility confirmation for notification being dismissed. -->
     <string name="notification_dismissed">Notification dismissed</string>
 

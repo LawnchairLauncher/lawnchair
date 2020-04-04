@@ -17,7 +17,6 @@
 package com.android.launcher3.uioverrides;
 
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
-import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
 import static com.android.launcher3.anim.Interpolators.AGGRESSIVE_EASE_IN_OUT;
@@ -34,11 +33,10 @@ import static com.android.launcher3.states.StateAnimationConfig.SKIP_OVERVIEW;
 
 import android.util.FloatProperty;
 import android.view.View;
-import android.view.animation.Interpolator;
 
 import androidx.annotation.NonNull;
 
-import com.android.launcher3.Launcher;
+import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherState.ScaleAndTranslation;
 import com.android.launcher3.LauncherStateManager.StateHandler;
@@ -55,13 +53,11 @@ import com.android.launcher3.states.StateAnimationConfig;
 public abstract class BaseRecentsViewStateController<T extends View>
         implements StateHandler {
     protected final T mRecentsView;
-    protected final Launcher mLauncher;
-    protected final View mActionsView;
+    protected final BaseQuickstepLauncher mLauncher;
 
-    public BaseRecentsViewStateController(@NonNull Launcher launcher) {
+    public BaseRecentsViewStateController(@NonNull BaseQuickstepLauncher launcher) {
         mLauncher = launcher;
         mRecentsView = launcher.getOverviewPanel();
-        mActionsView = launcher.getActionsView();
     }
 
     @Override
@@ -69,19 +65,12 @@ public abstract class BaseRecentsViewStateController<T extends View>
         ScaleAndTranslation scaleAndTranslation = state
                 .getOverviewScaleAndTranslation(mLauncher);
         SCALE_PROPERTY.set(mRecentsView, scaleAndTranslation.scale);
-        float translationX = scaleAndTranslation.translationX;
-        if (mRecentsView.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
-            translationX = -translationX;
-        }
-        mRecentsView.setTranslationX(translationX);
+        mRecentsView.setTranslationX(scaleAndTranslation.translationX);
         mRecentsView.setTranslationY(scaleAndTranslation.translationY);
+
         getContentAlphaProperty().set(mRecentsView, state.overviewUi ? 1f : 0);
         OverviewScrim scrim = mLauncher.getDragLayer().getOverviewScrim();
         SCRIM_PROGRESS.set(scrim, state.getOverviewScrimAlpha(mLauncher));
-        if (mActionsView != null) {
-            mActionsView.setTranslationX(translationX);
-            mActionsView.setAlpha(state.overviewUi ? 1f : 0);
-        }
     }
 
     @Override
@@ -107,29 +96,18 @@ public abstract class BaseRecentsViewStateController<T extends View>
     void setStateWithAnimationInternal(@NonNull final LauncherState toState,
             @NonNull StateAnimationConfig config, @NonNull PendingAnimation setter) {
         ScaleAndTranslation scaleAndTranslation = toState.getOverviewScaleAndTranslation(mLauncher);
-        Interpolator scaleInterpolator = config.getInterpolator(ANIM_OVERVIEW_SCALE, LINEAR);
-        setter.setFloat(mRecentsView, SCALE_PROPERTY, scaleAndTranslation.scale, scaleInterpolator);
-        Interpolator translateXInterpolator = config.getInterpolator(
-                ANIM_OVERVIEW_TRANSLATE_X, LINEAR);
-        Interpolator translateYInterpolator = config.getInterpolator(
-                ANIM_OVERVIEW_TRANSLATE_Y, LINEAR);
-        float translationX = scaleAndTranslation.translationX;
-        if (mRecentsView.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
-            translationX = -translationX;
-        }
-        setter.setFloat(mRecentsView, VIEW_TRANSLATE_X, translationX, translateXInterpolator);
+        setter.setFloat(mRecentsView, SCALE_PROPERTY, scaleAndTranslation.scale,
+                config.getInterpolator(ANIM_OVERVIEW_SCALE, LINEAR));
+        setter.setFloat(mRecentsView, VIEW_TRANSLATE_X, scaleAndTranslation.translationX,
+                config.getInterpolator(ANIM_OVERVIEW_TRANSLATE_X, LINEAR));
         setter.setFloat(mRecentsView, VIEW_TRANSLATE_Y, scaleAndTranslation.translationY,
-                translateYInterpolator);
+                config.getInterpolator(ANIM_OVERVIEW_TRANSLATE_Y, LINEAR));
+
         setter.setFloat(mRecentsView, getContentAlphaProperty(), toState.overviewUi ? 1 : 0,
                 config.getInterpolator(ANIM_OVERVIEW_FADE, AGGRESSIVE_EASE_IN_OUT));
         OverviewScrim scrim = mLauncher.getDragLayer().getOverviewScrim();
         setter.setFloat(scrim, SCRIM_PROGRESS, toState.getOverviewScrimAlpha(mLauncher),
                 config.getInterpolator(ANIM_OVERVIEW_SCRIM_FADE, LINEAR));
-        if (mActionsView != null) {
-            setter.setFloat(mActionsView, VIEW_TRANSLATE_X, translationX, translateXInterpolator);
-            setter.setFloat(mActionsView, VIEW_ALPHA, toState.overviewUi ? 1 : 0,
-                    config.getInterpolator(ANIM_OVERVIEW_FADE, AGGRESSIVE_EASE_IN_OUT));
-        }
     }
 
     /**

@@ -16,12 +16,13 @@
 
 package com.android.quickstep;
 
+import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_ACTIONS;
 import static com.android.launcher3.util.MainThreadInitializedObject.forOverride;
 
+import android.content.Context;
+import android.graphics.Insets;
 import android.graphics.Matrix;
-import android.view.View;
-
-import androidx.annotation.Nullable;
+import android.graphics.Rect;
 
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BaseDraggingActivity;
@@ -29,6 +30,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.ResourceBasedOverride;
+import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.TaskThumbnailView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.plugins.OverscrollPlugin;
@@ -42,16 +44,6 @@ import java.util.List;
  * Factory class to create and add an overlays on the TaskView
  */
 public class TaskOverlayFactory implements ResourceBasedOverride {
-
-    /** Note that these will be shown in order from top to bottom, if available for the task. */
-    private static final TaskShortcutFactory[] MENU_OPTIONS = new TaskShortcutFactory[]{
-            TaskShortcutFactory.APP_INFO,
-            TaskShortcutFactory.SPLIT_SCREEN,
-            TaskShortcutFactory.PIN,
-            TaskShortcutFactory.INSTALL,
-            TaskShortcutFactory.FREE_FORM,
-            TaskShortcutFactory.WELLBEING
-    };
 
     public static List<SystemShortcut> getEnabledShortcuts(TaskView taskView) {
         final ArrayList<SystemShortcut> shortcuts = new ArrayList<>();
@@ -76,31 +68,97 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
     }
 
     public TaskOverlay createOverlay(TaskThumbnailView thumbnailView) {
-        return new TaskOverlay();
+        return new TaskOverlay(thumbnailView);
     }
 
+    /** Note that these will be shown in order from top to bottom, if available for the task. */
+    private static final TaskShortcutFactory[] MENU_OPTIONS = new TaskShortcutFactory[]{
+            TaskShortcutFactory.APP_INFO,
+            TaskShortcutFactory.SPLIT_SCREEN,
+            TaskShortcutFactory.PIN,
+            TaskShortcutFactory.INSTALL,
+            TaskShortcutFactory.FREE_FORM,
+            TaskShortcutFactory.WELLBEING
+    };
+
+    /**
+     * Overlay on each task handling Overview Action Buttons.
+     */
     public static class TaskOverlay {
+
+        private final Context mApplicationContext;
+        private OverviewActionsView mActionsView;
+        private final TaskThumbnailView mThumbnailView;
+
+
+        protected TaskOverlay(TaskThumbnailView taskThumbnailView) {
+            mApplicationContext = taskThumbnailView.getContext().getApplicationContext();
+            mThumbnailView = taskThumbnailView;
+        }
 
         /**
          * Called when the current task is interactive for the user
          */
-        public void initOverlay(Task task, ThumbnailData thumbnail, Matrix matrix) { }
+        public void initOverlay(Task task, ThumbnailData thumbnail, Matrix matrix) {
+            ImageActionsApi imageApi = new ImageActionsApi(
+                    mApplicationContext, mThumbnailView::getThumbnail);
 
-        @Nullable
-        public View getActionsView() {
-            return null;
+            if (mActionsView == null && ENABLE_OVERVIEW_ACTIONS.get()
+                    && SysUINavigationMode.removeShelfFromOverview(mApplicationContext)) {
+                mActionsView = BaseActivity.fromContext(mThumbnailView.getContext()).findViewById(
+                        R.id.overview_actions_view);
+            }
+            if (mActionsView != null) {
+                mActionsView.setListener(new OverviewActionsView.Listener() {
+                    @Override
+                    public void onShare() {
+                        imageApi.startShareActivity();
+                    }
+
+                    @Override
+                    public void onScreenshot() {
+                        imageApi.saveScreenshot(mThumbnailView.getThumbnail(),
+                                getTaskSnapshotBounds(), getTaskSnapshotInsets(), task.key.id);
+                    }
+                });
+            }
+
         }
 
         /**
          * Called when the overlay is no longer used.
          */
-        public void reset() { }
+        public void reset() {
+        }
 
         /**
          * Whether the overlay is modal, which means only tapping is enabled, but no swiping.
          */
         public boolean isOverlayModal() {
             return false;
+        }
+
+        /**
+         * Gets the task snapshot as it is displayed on the screen.
+         *
+         * @return the bounds of the snapshot in screen coordinates.
+         */
+        public Rect getTaskSnapshotBounds() {
+            int[] location = new int[2];
+            mThumbnailView.getLocationOnScreen(location);
+
+            return new Rect(location[0], location[1], mThumbnailView.getWidth() + location[0],
+                    mThumbnailView.getHeight() + location[1]);
+        }
+
+        /**
+         * Gets the insets that the snapshot is drawn with.
+         *
+         * @return the insets in screen coordinates.
+         */
+        public Insets getTaskSnapshotInsets() {
+            // TODO: return the real insets
+            return Insets.of(0, 0, 0, 0);
         }
     }
 }

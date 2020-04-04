@@ -21,6 +21,7 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Process;
 
+import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.util.ContentWriter;
 
@@ -162,7 +163,9 @@ public class LauncherAppWidgetInfo extends ItemInfo {
 
     @Override
     protected String dumpProperties() {
-        return super.dumpProperties() + " appWidgetId=" + appWidgetId;
+        return super.dumpProperties()
+                + " providerName=" + providerName
+                + " appWidgetId=" + appWidgetId;
     }
 
     public final boolean isWidgetIdAllocated() {
@@ -181,5 +184,14 @@ public class LauncherAppWidgetInfo extends ItemInfo {
      */
     public final boolean hasOptionFlag(int option) {
         return (options & option) != 0;
+    }
+
+    @Override
+    public void setItemBuilder(LauncherAtom.ItemInfo.Builder builder) {
+        builder.setWidget(LauncherAtom.Widget.newBuilder()
+                .setSpanX(spanX)
+                .setSpanY(spanY)
+                .setComponentName(providerName.toString())
+                .setPackageName(providerName.getPackageName()));
     }
 }

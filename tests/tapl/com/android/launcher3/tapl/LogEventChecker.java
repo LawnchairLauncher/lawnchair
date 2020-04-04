@@ -149,23 +149,24 @@ public class LogEventChecker {
         finishSync(waitForExpectedCountMs);
 
         final StringBuilder sb = new StringBuilder();
+        boolean hasMismatches = false;
         for (Map.Entry<String, List<Pattern>> expectedEvents : mExpectedEvents.entrySet()) {
             String sequence = expectedEvents.getKey();
 
             List<String> actual = new ArrayList<>(mEvents.getNonNull(sequence));
             final int mismatchPosition = getMismatchPosition(expectedEvents.getValue(), actual);
-            if (mismatchPosition != -1) {
-                formatSequenceWithMismatch(
-                        sb,
-                        sequence,
-                        expectedEvents.getValue(),
-                        actual,
-                        mismatchPosition);
-            }
+            hasMismatches = hasMismatches || mismatchPosition != -1;
+            formatSequenceWithMismatch(
+                    sb,
+                    sequence,
+                    expectedEvents.getValue(),
+                    actual,
+                    mismatchPosition);
         }
         // Check for unexpected event sequences in the actual data.
         for (String actualNamedSequence : mEvents.keySet()) {
             if (!mExpectedEvents.containsKey(actualNamedSequence)) {
+                hasMismatches = true;
                 formatSequenceWithMismatch(
                         sb,
                         actualNamedSequence,
@@ -175,7 +176,7 @@ public class LogEventChecker {
             }
         }
 
-        return sb.length() != 0 ? "mismatching events: " + sb.toString() : null;
+        return hasMismatches ? "mismatching events: " + sb.toString() : null;
     }
 
     // If the list of actual events matches the list of expected events, returns -1, otherwise
@@ -199,10 +200,11 @@ public class LogEventChecker {
             List<Pattern> expected,
             List<String> actualEvents,
             int mismatchPosition) {
-        sb.append("\n>> Sequence " + sequenceName);
-        sb.append("\n  Expected:");
+        sb.append("\n>> SEQUENCE " + sequenceName + " - "
+                + (mismatchPosition == -1 ? "MATCH" : "MISMATCH"));
+        sb.append("\n  EXPECTED:");
         formatEventListWithMismatch(sb, expected, mismatchPosition);
-        sb.append("\n  Actual:");
+        sb.append("\n  ACTUAL:");
         formatEventListWithMismatch(sb, actualEvents, mismatchPosition);
     }
 

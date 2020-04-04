@@ -19,11 +19,13 @@ import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
 import android.graphics.Rect;
 import android.util.ArraySet;
+import android.util.Log;
 
 import androidx.annotation.BinderThread;
 import androidx.annotation.UiThread;
 
 import com.android.launcher3.Utilities;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.Preconditions;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
@@ -89,6 +91,9 @@ public class RecentsAnimationCallbacks implements
             RemoteAnimationTargetCompat[] appTargets,
             RemoteAnimationTargetCompat[] wallpaperTargets,
             Rect homeContentInsets, Rect minimizedHomeBounds) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.NO_START_FROM_RECENTS, "onAnimationStart");
+        }
         RecentsAnimationTargets targets = new RecentsAnimationTargets(appTargets,
                 wallpaperTargets, homeContentInsets, minimizedHomeBounds);
         mController = new RecentsAnimationController(animationController,

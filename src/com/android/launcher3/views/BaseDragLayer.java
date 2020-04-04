@@ -33,6 +33,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.Property;
 import android.view.MotionEvent;
 import android.view.View;
@@ -48,6 +49,7 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.launcher3.util.SimpleBroadcastReceiver;
@@ -273,6 +275,9 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+            Log.d(TestProtocol.NO_SCROLL_END_WIDGETS, "BaseDragLayer: " + ev);
+        }
         switch (ev.getAction()) {
             case ACTION_DOWN: {
                 mTouchDispatchState |= TOUCH_DISPATCHING_VIEW;
