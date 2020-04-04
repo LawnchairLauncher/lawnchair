@@ -326,10 +326,16 @@ public class LauncherSettings {
 
         public static final String METHOD_UPDATE_CURRENT_OPEN_HELPER = "update_current_open_helper";
 
+        public static final String METHOD_PREP_FOR_PREVIEW = "prep_for_preview";
+
         public static final String EXTRA_VALUE = "value";
 
         public static Bundle call(ContentResolver cr, String method) {
-            return cr.call(CONTENT_URI, method, null, null);
+            return call(cr, method, null);
+        }
+
+        public static Bundle call(ContentResolver cr, String method, String arg) {
+            return cr.call(CONTENT_URI, method, arg, null);
         }
     }
 }

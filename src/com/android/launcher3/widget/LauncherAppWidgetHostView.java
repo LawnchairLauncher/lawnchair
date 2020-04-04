@@ -27,7 +27,6 @@ import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityNodeInfo;
@@ -41,8 +40,6 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.R;
-import com.android.launcher3.SimpleOnStylusPressListener;
-import com.android.launcher3.StylusEventHelper;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DraggableView;
@@ -66,13 +63,10 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
     protected final LayoutInflater mInflater;
 
     private final CheckLongPressHelper mLongPressHelper;
-    private final StylusEventHelper mStylusEventHelper;
     protected final Launcher mLauncher;
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mReinflateOnConfigChange;
-
-    private float mSlop;
 
     private boolean mIsScrollable;
     private boolean mIsAttachedToWindow;
@@ -93,7 +87,6 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
         super(context);
         mLauncher = Launcher.getLauncher(context);
         mLongPressHelper = new CheckLongPressHelper(this, this);
-        mStylusEventHelper = new StylusEventHelper(new SimpleOnStylusPressListener(this), this);
         mInflater = LayoutInflater.from(context);
         setAccessibilityDelegate(mLauncher.getAccessibilityDelegate());
         setBackgroundResource(R.drawable.widget_internal_focus_bg);
@@ -157,68 +150,19 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
     }
 
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        // Just in case the previous long press hasn't been cleared, we make sure to start fresh
-        // on touch down.
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            mLongPressHelper.cancelLongPress();
-        }
-
-        // Consume any touch events for ourselves after longpress is triggered
-        if (mLongPressHelper.hasPerformedLongPress()) {
-            mLongPressHelper.cancelLongPress();
-            return true;
-        }
-
-        // Watch for longpress or stylus button press events at this level to
-        // make sure users can always pick up this widget
-        if (mStylusEventHelper.onMotionEvent(ev)) {
-            mLongPressHelper.cancelLongPress();
-            return true;
-        }
-
-        switch (ev.getAction()) {
-            case MotionEvent.ACTION_DOWN: {
-                DragLayer dragLayer = Launcher.getLauncher(getContext()).getDragLayer();
-
-                if (mIsScrollable) {
-                     dragLayer.requestDisallowInterceptTouchEvent(true);
-                }
-                if (!mStylusEventHelper.inStylusButtonPressed()) {
-                    mLongPressHelper.postCheckForLongPress();
-                }
-                dragLayer.setTouchCompleteListener(this);
-                break;
+            DragLayer dragLayer = Launcher.getLauncher(getContext()).getDragLayer();
+            if (mIsScrollable) {
+                dragLayer.requestDisallowInterceptTouchEvent(true);
             }
-
-            case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_CANCEL:
-                mLongPressHelper.cancelLongPress();
-                break;
-            case MotionEvent.ACTION_MOVE:
-                if (!Utilities.pointInView(this, ev.getX(), ev.getY(), mSlop)) {
-                    mLongPressHelper.cancelLongPress();
-                }
-                break;
+            dragLayer.setTouchCompleteListener(this);
         }
-
-        // Otherwise continue letting touch events fall through to children
-        return false;
+        mLongPressHelper.onTouchEvent(ev);
+        return mLongPressHelper.hasPerformedLongPress();
     }
 
     public boolean onTouchEvent(MotionEvent ev) {
-        // If the widget does not handle touch, then cancel
-        // long press when we release the touch
-        switch (ev.getAction()) {
-            case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_CANCEL:
-                mLongPressHelper.cancelLongPress();
-                break;
-            case MotionEvent.ACTION_MOVE:
-                if (!Utilities.pointInView(this, ev.getX(), ev.getY(), mSlop)) {
-                    mLongPressHelper.cancelLongPress();
-                }
-                break;
-        }
+        mLongPressHelper.onTouchEvent(ev);
         // We want to keep receiving though events to be able to cancel long press on ACTION_UP
         return true;
     }
@@ -226,7 +170,6 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        mSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
 
         mIsAttachedToWindow = true;
         checkIfAutoAdvance();

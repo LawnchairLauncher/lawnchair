@@ -204,7 +204,7 @@ public class DeviceLockedInputConsumer implements InputConsumer,
 
     private void startRecentsTransition() {
         mThresholdCrossed = true;
-        TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "pilferPointers");
+        TestLogging.recordEvent(TestProtocol.SEQUENCE_PILFER, "pilferPointers");
         mInputMonitorCompat.pilferPointers();
 
         Intent intent = new Intent(Intent.ACTION_MAIN)

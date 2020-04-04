@@ -35,6 +35,7 @@ public final class TestProtocol {
     public static final String TAPL_EVENTS_TAG = "TaplEvents";
     public static final String SEQUENCE_MAIN = "Main";
     public static final String SEQUENCE_TIS = "TIS";
+    public static final String SEQUENCE_PILFER = "Pilfer";
 
     public static String stateOrdinalToString(int ordinal) {
         switch (ordinal) {
@@ -95,4 +96,6 @@ public final class TestProtocol {
 
     public static final String NO_BACKGROUND_TO_OVERVIEW_TAG = "b/138251824";
     public static final String APP_NOT_DISABLED = "b/139891609";
+    public static final String NO_SCROLL_END_WIDGETS = "b/152354290";
+    public static final String NO_START_FROM_RECENTS = "b/152658211";
 }

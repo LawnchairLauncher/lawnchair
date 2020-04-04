@@ -146,9 +146,19 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
             }
         }
 
+        if (!fromKeyboard && !itemSupportsLongClick(host, item)) {
+            info.setLongClickable(false);
+            info.removeAction(AccessibilityAction.ACTION_LONG_CLICK);
+        }
+
         if ((item instanceof AppInfo) || (item instanceof PendingAddItemInfo)) {
             info.addAction(mActions.get(ADD_TO_WORKSPACE));
         }
+    }
+
+    private boolean itemSupportsLongClick(View host, ItemInfo info) {
+        return new CustomActionsPopup(mLauncher, host).canShow()
+                || ShortcutUtil.supportsShortcuts(info);
     }
 
     private boolean itemSupportsAccessibleDrag(ItemInfo item) {
@@ -171,18 +181,18 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
 
     public boolean performAction(final View host, final ItemInfo item, int action) {
         if (action == ACTION_LONG_CLICK) {
-            if (ShortcutUtil.isDeepShortcut(item)) {
-                CustomActionsPopup popup = new CustomActionsPopup(mLauncher, host);
-                if (popup.canShow()) {
-                    popup.show();
-                    return true;
-                }
-            } else if (host instanceof BubbleTextView) {
+            if (ShortcutUtil.supportsShortcuts(item)) {
                 // Long press should be consumed for workspace items, and it should invoke the
                 // Shortcuts / Notifications / Actions pop-up menu, and not start a drag as the
                 // standard long press path does.
                 PopupContainerWithArrow.showForIcon((BubbleTextView) host);
                 return true;
+            } else {
+                CustomActionsPopup popup = new CustomActionsPopup(mLauncher, host);
+                if (popup.canShow()) {
+                    popup.show();
+                    return true;
+                }
             }
         }
 

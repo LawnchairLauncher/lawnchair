@@ -23,7 +23,7 @@
     <dimen name="task_corner_radius_small">2dp</dimen>
 
     <!-- Overrideable in overlay that provides the Overview Actions. -->
-    <dimen name="overview_actions_height">0dp</dimen>
+    <dimen name="overview_actions_height">110dp</dimen>
 
     <dimen name="recents_page_spacing">10dp</dimen>
     <dimen name="recents_clear_all_deadzone_vertical_margin">70dp</dimen>
