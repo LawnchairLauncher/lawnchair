@@ -73,7 +73,11 @@ public class FlingAndHoldTouchController extends PortraitStatesTouchController {
         super(l, false /* allowDragToOverview */);
         mMotionPauseDetector = new MotionPauseDetector(l);
         mMotionPauseMinDisplacement = ViewConfiguration.get(l).getScaledTouchSlop();
-        mMotionPauseMaxDisplacement = getShiftRange() * MAX_DISPLACEMENT_PERCENT;
+        mMotionPauseMaxDisplacement = getMotionPauseMaxDisplacement();
+    }
+
+    protected float getMotionPauseMaxDisplacement() {
+        return getShiftRange() * MAX_DISPLACEMENT_PERCENT;
     }
 
     @Override

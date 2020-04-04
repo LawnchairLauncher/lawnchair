@@ -94,7 +94,7 @@ public class AddConfigWidgetTest extends AbstractLauncherUiTest {
         WidgetConfigStartupMonitor monitor = new WidgetConfigStartupMonitor();
         widgets.
                 getWidget(mWidgetInfo.getLabel(mTargetContext.getPackageManager())).
-                dragToWorkspace();
+                dragToWorkspace(true);
         // Widget id for which the config activity was opened
         mWidgetId = monitor.getWidgetId();
 

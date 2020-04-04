@@ -32,9 +32,6 @@
     <!-- Recents: The empty recents string. [CHAR LIMIT=NONE] -->
     <string name="recents_empty_message">No recent items</string>
 
-    <!-- Content description for the recent apps's accessibility option that closes it. [CHAR LIMIT=NONE] -->
-    <string name="accessibility_close_task">Close</string>
-
     <!-- Content description for the recent apps's accessibility option that opens its usage settings. [CHAR LIMIT=NONE] -->
     <string name="accessibility_app_usage_settings">App usage settings</string>
 
@@ -83,16 +80,15 @@
     <!-- Button text to dismiss opt in for fully predicted hotseat -->
     <string name="hotseat_edu_dismiss">No thanks</string>
 
-    <!-- action shown to turn of predictions after onboarding -->
+    <!-- action shown to turn off predictions after onboarding -->
     <string name="hotseat_turn_off">Settings</string>
 
     <!-- tip shown if user has no items in hotseat to migrate -->
     <string name="hotseat_auto_enrolled">Most-used apps appear here, and change based on routines</string>
-    <!-- tip shown if user declines migration and has some open spots for prediction -->
-    <string name="hotseat_tip_no_empty_slots">Drag apps off the bottom row to get app suggestions</string>
     <!-- tip shown if user declines migration and has no open spots for prediction -->
-    <string name="hotseat_tip_gaps_filled">App suggestions added to empty space.</string>
-
+    <string name="hotseat_tip_no_empty_slots">Drag apps off the bottom row to get app suggestions</string>
+    <!-- tip shown if user declines migration and has some open spots for prediction -->
+    <string name="hotseat_tip_gaps_filled">App suggestions added to empty space</string>
 
     <!-- Title shown during interactive part of Back gesture tutorial for right edge. [CHAR LIMIT=30] -->
     <string name="back_gesture_tutorial_playground_title_swipe_inward_right_edge" translatable="false">Try the back gesture</string>
@@ -113,4 +109,10 @@
     <string name="back_gesture_tutorial_action_button_label" translatable="false">Done</string>
     <!-- Button text shown on a text button on the confirm screen. [CHAR LIMIT=14] -->
     <string name="back_gesture_tutorial_action_text_button_label" translatable="false">Settings</string>
+
+    <!-- ******* Overview ******* -->
+    <!-- Label for a button that causes the current overview app to be shared. [CHAR_LIMIT=40] -->
+    <string name="action_share">Share</string>
+    <!-- Label for a button that causes a screen shot of the current app to be taken. [CHAR_LIMIT=40] -->
+    <string name="action_screenshot">Screenshot</string>
 </resources>
