@@ -27,15 +27,13 @@ import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.logging.StatsLogUtils.LogContainerProvider;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
-import com.android.launcher3.views.Transposable;
 
 import java.util.ArrayList;
 
-public class Hotseat extends CellLayout implements LogContainerProvider, Insettable, Transposable {
+public class Hotseat extends CellLayout implements LogContainerProvider, Insettable {
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mHasVerticalHotseat;
@@ -89,7 +87,7 @@ public class Hotseat extends CellLayout implements LogContainerProvider, Insetta
     @Override
     public void setInsets(Rect insets) {
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) getLayoutParams();
-        DeviceProfile grid = mActivity.getWallpaperDeviceProfile();
+        DeviceProfile grid = mActivity.getDeviceProfile();
         insets = grid.getInsets();
 
         if (grid.isVerticalBarLayout()) {
@@ -116,10 +114,5 @@ public class Hotseat extends CellLayout implements LogContainerProvider, Insetta
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         return event.getY() > getCellHeight();
-    }
-
-    @Override
-    public RotationMode getRotationMode() {
-        return Launcher.getLauncher(getContext()).getRotationMode();
     }
 }

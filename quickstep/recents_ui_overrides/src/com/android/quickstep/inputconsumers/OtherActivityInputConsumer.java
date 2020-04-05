@@ -182,7 +182,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         if (mPassedWindowMoveSlop && mInteractionHandler != null
                 && !mRecentsViewDispatcher.hasConsumer()) {
             mRecentsViewDispatcher.setConsumer(mInteractionHandler
-                .getRecentsViewDispatcher(mNavBarPosition.getRotationMode()));
+                    .getRecentsViewDispatcher(mNavBarPosition.getRotation()));
         }
         int edgeFlags = ev.getEdgeFlags();
         ev.setEdgeFlags(edgeFlags | EDGE_NAV_BAR);

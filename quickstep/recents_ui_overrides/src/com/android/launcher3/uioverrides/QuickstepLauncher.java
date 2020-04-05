@@ -19,12 +19,9 @@ import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.Rect;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.View;
 
 import androidx.annotation.Nullable;
@@ -38,7 +35,6 @@ import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.Folder;
-import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.hybridhotseat.HotseatPredictionController;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.uioverrides.touchcontrollers.FlingAndHoldTouchController;
@@ -71,77 +67,6 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
      */
     public static final AsyncCommand SET_SHELF_HEIGHT = (context, arg1, arg2) ->
             SystemUiProxy.INSTANCE.get(context).setShelfHeight(arg1 != 0, arg2);
-    public static final RotationMode ROTATION_LANDSCAPE = new RotationMode(-90) {
-        @Override
-        public void mapRect(int left, int top, int right, int bottom, Rect out) {
-            out.left = top;
-            out.top = right;
-            out.right = bottom;
-            out.bottom = left;
-        }
-
-        @Override
-        public void mapInsets(Context context, Rect insets, Rect out) {
-            // If there is a display cutout, the top insets in portrait would also include the
-            // cutout, which we will get as the left inset in landscape. Using the max of left and
-            // top allows us to cover both cases (with or without cutout).
-            if (SysUINavigationMode.getMode(context) == NO_BUTTON) {
-                out.top = Math.max(insets.top, insets.left);
-                out.bottom = Math.max(insets.right, insets.bottom);
-                out.left = out.right = 0;
-            } else {
-                out.top = Math.max(insets.top, insets.left);
-                out.bottom = insets.right;
-                out.left = insets.bottom;
-                out.right = 0;
-            }
-        }
-    };
-    public static final RotationMode ROTATION_SEASCAPE = new RotationMode(90) {
-        @Override
-        public void mapRect(int left, int top, int right, int bottom, Rect out) {
-            out.left = bottom;
-            out.top = left;
-            out.right = top;
-            out.bottom = right;
-        }
-
-        @Override
-        public void mapInsets(Context context, Rect insets, Rect out) {
-            if (SysUINavigationMode.getMode(context) == NO_BUTTON) {
-                out.top = Math.max(insets.top, insets.right);
-                out.bottom = Math.max(insets.left, insets.bottom);
-                out.left = out.right = 0;
-            } else {
-                out.top = Math.max(insets.top, insets.right);
-                out.bottom = insets.left;
-                out.right = insets.bottom;
-                out.left = 0;
-            }
-        }
-
-        @Override
-        public int toNaturalGravity(int absoluteGravity) {
-            int horizontalGravity = absoluteGravity & Gravity.HORIZONTAL_GRAVITY_MASK;
-            int verticalGravity = absoluteGravity & Gravity.VERTICAL_GRAVITY_MASK;
-
-            if (horizontalGravity == Gravity.RIGHT) {
-                horizontalGravity = Gravity.LEFT;
-            } else if (horizontalGravity == Gravity.LEFT) {
-                horizontalGravity = Gravity.RIGHT;
-            }
-
-            if (verticalGravity == Gravity.TOP) {
-                verticalGravity = Gravity.BOTTOM;
-            } else if (verticalGravity == Gravity.BOTTOM) {
-                verticalGravity = Gravity.TOP;
-            }
-
-            return ((absoluteGravity & ~Gravity.HORIZONTAL_GRAVITY_MASK)
-                    & ~Gravity.VERTICAL_GRAVITY_MASK)
-                    | horizontalGravity | verticalGravity;
-        }
-    };
     private HotseatPredictionController mHotseatPredictionController;
 
     @Override
@@ -150,12 +75,6 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
         if (FeatureFlags.ENABLE_HYBRID_HOTSEAT.get()) {
             mHotseatPredictionController = new HotseatPredictionController(this);
         }
-    }
-
-    @Override
-    protected RotationMode getFakeRotationMode(DeviceProfile dp) {
-        return !dp.isVerticalBarLayout() ? RotationMode.NORMAL
-                : (dp.isSeascape() ? ROTATION_SEASCAPE : ROTATION_LANDSCAPE);
     }
 
     @Override
