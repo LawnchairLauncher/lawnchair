@@ -129,6 +129,7 @@ public class LauncherDbUtils {
             toDb.execSQL("ATTACH DATABASE '" + fromDb.getPath() + "' AS from_db");
             toDb.execSQL(
                     "INSERT INTO " + toTable + " SELECT * FROM from_db." + fromTable);
+            toDb.execSQL("DETACH DATABASE 'from_db'");
         } else {
             toDb.execSQL("INSERT INTO " + toTable + " SELECT * FROM " + fromTable);
         }

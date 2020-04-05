@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.launcher3;
+package com.android.launcher3.views;
 
 import android.content.Context;
 import android.graphics.CornerPathEffect;
@@ -31,6 +31,9 @@ import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
 
+import com.android.launcher3.AbstractFloatingView;
+import com.android.launcher3.Launcher;
+import com.android.launcher3.R;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.graphics.TriangleShape;

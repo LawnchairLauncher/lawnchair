@@ -165,6 +165,9 @@ public class OverScroller {
     /**
      * Returns how long the scroll event will take, in milliseconds.
      *
+     * Note that if mScroller.mState == SPRING, this duration is ignored, so can only
+     * serve as an estimate for how long the spring-controlled scroll will take.
+     *
      * @return The duration of the scroll in milliseconds.
      */
     public final int getDuration() {

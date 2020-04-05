@@ -26,7 +26,6 @@ import android.view.View;
 
 import androidx.core.app.NotificationCompat;
 
-import com.android.launcher3.ArrowTipView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.FolderInfo;
 import com.android.launcher3.Hotseat;
@@ -43,6 +42,7 @@ import com.android.launcher3.util.ActivityTracker;
 import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.Themes;
+import com.android.launcher3.views.ArrowTipView;
 import com.android.launcher3.views.Snackbar;
 
 import java.util.ArrayDeque;
