@@ -1140,7 +1140,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         // Setup the drag controller (drop targets have to be added in reverse order in priority)
         mDropTargetBar.setup(mDragController);
 
-        mAllAppsController.setupViews(mAppsView);
+        mAllAppsController.setupViews(mAppsView, mScrimView);
     }
 
     /**
@@ -1360,6 +1360,10 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     public DropTargetBar getDropTargetBar() {
         return mDropTargetBar;
+    }
+
+    public ScrimView getScrimView() {
+        return mScrimView;
     }
 
     public LauncherAppWidgetHost getAppWidgetHost() {
