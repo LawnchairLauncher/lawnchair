@@ -75,5 +75,22 @@ public class QuickstepOnboardingPrefs extends OnboardingPrefs<BaseQuickstepLaunc
                 }
             });
         }
+
+        if (!hasReachedMaxCount(ALL_APPS_COUNT)) {
+            mStateManager.addStateListener(new StateListener() {
+                @Override
+                public void onStateTransitionStart(LauncherState toState) { }
+
+                @Override
+                public void onStateTransitionComplete(LauncherState finalState) {
+                    if (finalState == ALL_APPS) {
+                        if (incrementEventCount(ALL_APPS_COUNT)) {
+                            mStateManager.removeStateListener(this);
+                            mLauncher.getScrimView().updateDragHandleVisibility();
+                        }
+                    }
+                }
+            });
+        }
     }
 }

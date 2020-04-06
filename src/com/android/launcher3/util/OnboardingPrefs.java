@@ -37,6 +37,7 @@ public class OnboardingPrefs<T extends Launcher> {
     public static final String SHELF_BOUNCE_SEEN = "launcher.shelf_bounce_seen";
     public static final String HOME_BOUNCE_COUNT = "launcher.home_bounce_count";
     public static final String SHELF_BOUNCE_COUNT = "launcher.shelf_bounce_count";
+    public static final String ALL_APPS_COUNT = "launcher.all_apps_count";
 
     /**
      * Events that either have happened or have not (booleans).
@@ -54,15 +55,17 @@ public class OnboardingPrefs<T extends Launcher> {
     @StringDef(value = {
             HOME_BOUNCE_COUNT,
             SHELF_BOUNCE_COUNT,
+            ALL_APPS_COUNT,
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface EventCountKey {}
 
     private static final Map<String, Integer> MAX_COUNTS;
     static {
-        Map<String, Integer> maxCounts = new ArrayMap<>(2);
+        Map<String, Integer> maxCounts = new ArrayMap<>(3);
         maxCounts.put(HOME_BOUNCE_COUNT, 3);
         maxCounts.put(SHELF_BOUNCE_COUNT, 3);
+        maxCounts.put(ALL_APPS_COUNT, 5);
         MAX_COUNTS = Collections.unmodifiableMap(maxCounts);
     }
 
@@ -98,13 +101,15 @@ public class OnboardingPrefs<T extends Launcher> {
 
     /**
      * Add 1 to the given event count, if we haven't already reached the max count.
+     * @return Whether we have now reached the max count.
      */
-    public void incrementEventCount(@EventCountKey String eventKey) {
+    public boolean incrementEventCount(@EventCountKey String eventKey) {
         int count = getCount(eventKey);
         if (hasReachedMaxCount(count, eventKey)) {
-            return;
+            return true;
         }
         count++;
         mSharedPrefs.edit().putInt(eventKey, count).apply();
+        return hasReachedMaxCount(count, eventKey);
     }
 }
