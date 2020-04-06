@@ -14,11 +14,11 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
-import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
-import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.model.WidgetItem;
+import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 import com.android.launcher3.util.InstantAppResolver;
@@ -145,8 +145,9 @@ public abstract class SystemShortcut<T extends BaseDraggingActivity> extends Ite
                 && ((WorkspaceItemInfo) itemInfo).hasStatusFlag(
                         WorkspaceItemInfo.FLAG_SUPPORTS_WEB_UI);
         boolean isInstantApp = false;
-        if (itemInfo instanceof com.android.launcher3.AppInfo) {
-            com.android.launcher3.AppInfo appInfo = (com.android.launcher3.AppInfo) itemInfo;
+        if (itemInfo instanceof com.android.launcher3.model.data.AppInfo) {
+            com.android.launcher3.model.data.AppInfo
+                    appInfo = (com.android.launcher3.model.data.AppInfo) itemInfo;
             isInstantApp = InstantAppResolver.newInstance(activity).isInstantApp(appInfo);
         }
         boolean enabled = supportsWebUI || isInstantApp;

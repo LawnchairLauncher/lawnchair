@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.launcher3;
+package com.android.launcher3.model.data;
 
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT;
@@ -31,10 +31,11 @@ import android.os.UserHandle;
 
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.LauncherSettings;
+import com.android.launcher3.LauncherSettings.Favorites;
+import com.android.launcher3.Workspace;
 import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.util.ContentWriter;
-
-
 
 /**
  * Represents an item in the launcher.
@@ -50,18 +51,18 @@ public class ItemInfo {
     public int id = NO_ID;
 
     /**
-     * One of {@link LauncherSettings.Favorites#ITEM_TYPE_APPLICATION},
-     * {@link LauncherSettings.Favorites#ITEM_TYPE_SHORTCUT},
-     * {@link LauncherSettings.Favorites#ITEM_TYPE_DEEP_SHORTCUT}
-     * {@link LauncherSettings.Favorites#ITEM_TYPE_FOLDER},
-     * {@link LauncherSettings.Favorites#ITEM_TYPE_APPWIDGET} or
-     * {@link LauncherSettings.Favorites#ITEM_TYPE_CUSTOM_APPWIDGET}.
+     * One of {@link Favorites#ITEM_TYPE_APPLICATION},
+     * {@link Favorites#ITEM_TYPE_SHORTCUT},
+     * {@link Favorites#ITEM_TYPE_DEEP_SHORTCUT}
+     * {@link Favorites#ITEM_TYPE_FOLDER},
+     * {@link Favorites#ITEM_TYPE_APPWIDGET} or
+     * {@link Favorites#ITEM_TYPE_CUSTOM_APPWIDGET}.
      */
     public int itemType;
 
     /**
      * The id of the container that holds this item. For the desktop, this will be
-     * {@link LauncherSettings.Favorites#CONTAINER_DESKTOP}. For the all applications folder it
+     * {@link Favorites#CONTAINER_DESKTOP}. For the all applications folder it
      * will be {@link #NO_ID} (since it is not stored in the settings DB). For user folders
      * it will be the id of the folder.
      */
@@ -69,8 +70,8 @@ public class ItemInfo {
 
     /**
      * Indicates the screen in which the shortcut appears if the container types is
-     * {@link LauncherSettings.Favorites#CONTAINER_DESKTOP}. (i.e., ignore if the container type is
-     * {@link LauncherSettings.Favorites#CONTAINER_HOTSEAT})
+     * {@link Favorites#CONTAINER_DESKTOP}. (i.e., ignore if the container type is
+     * {@link Favorites#CONTAINER_HOTSEAT})
      */
     public int screenId = -1;
 
@@ -125,7 +126,7 @@ public class ItemInfo {
         user = Process.myUserHandle();
     }
 
-    ItemInfo(ItemInfo info) {
+    protected ItemInfo(ItemInfo info) {
         copyFrom(info);
     }
 
@@ -200,7 +201,7 @@ public class ItemInfo {
     protected String dumpProperties() {
         return "id=" + id
                 + " type=" + LauncherSettings.Favorites.itemTypeToString(itemType)
-                + " container=" + LauncherSettings.Favorites.containerToString((int)container)
+                + " container=" + LauncherSettings.Favorites.containerToString(container)
                 + " targetComponent=" + getTargetComponent()
                 + " screen=" + screenId
                 + " cell(" + cellX + "," + cellY + ")"
