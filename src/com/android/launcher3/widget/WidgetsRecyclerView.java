@@ -19,11 +19,14 @@ package com.android.launcher3.widget;
 import android.content.Context;
 import android.graphics.Point;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
 import com.android.launcher3.BaseRecyclerView;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
+import com.android.launcher3.testing.TestProtocol;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -155,18 +158,66 @@ public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouch
                     mScrollbar.isHitInParent(e.getX(), e.getY(), mFastScrollerOffset);
         }
         if (mTouchDownOnScroller) {
-            return mScrollbar.handleTouchEvent(e, mFastScrollerOffset);
+            final boolean result = mScrollbar.handleTouchEvent(e, mFastScrollerOffset);
+            if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+                Log.d(TestProtocol.NO_SCROLL_END_WIDGETS, "onInterceptTouchEvent 1 " + result);
+            }
+            return result;
+        }
+        if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+            Log.d(TestProtocol.NO_SCROLL_END_WIDGETS, "onInterceptTouchEvent 2 false");
         }
         return false;
     }
 
     @Override
     public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+        if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+            Log.d(TestProtocol.NO_SCROLL_END_WIDGETS, "WidgetsRecyclerView.onTouchEvent");
+        }
         if (mTouchDownOnScroller) {
             mScrollbar.handleTouchEvent(e, mFastScrollerOffset);
         }
     }
 
     @Override
-    public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) { }
+    public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+        if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+            Log.d(TestProtocol.NO_SCROLL_END_WIDGETS, "onRequestDisallowInterceptTouchEvent "
+                    + disallowIntercept);
+        }
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        final boolean result = super.dispatchTouchEvent(ev);
+        if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+            Log.d(TestProtocol.NO_SCROLL_END_WIDGETS, "WidgetsRecyclerView: state: "
+                    + getScrollState()
+                    + " can scroll: " + getLayoutManager().canScrollVertically()
+                    + " result: " + result
+                    + " layout suppressed: " + isLayoutSuppressed()
+                    + " event: " + ev);
+        }
+        return result;
+    }
+
+    @Override
+    public void stopNestedScroll() {
+        if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+            Log.d(TestProtocol.NO_SCROLL_END_WIDGETS, "stopNestedScroll");
+        }
+        super.stopNestedScroll();
+    }
+
+    @Override
+    public void setLayoutFrozen(boolean frozen) {
+        if (frozen != isLayoutSuppressed()) {
+            if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+                Log.d(TestProtocol.NO_SCROLL_END_WIDGETS, "setLayoutFrozen " + frozen
+                        + " @ " + android.util.Log.getStackTraceString(new Throwable()));
+            }
+        }
+        super.setLayoutFrozen(frozen);
+    }
 }

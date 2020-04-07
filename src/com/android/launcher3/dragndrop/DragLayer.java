@@ -17,10 +17,6 @@
 
 package com.android.launcher3.dragndrop;
 
-import static android.view.View.MeasureSpec.EXACTLY;
-import static android.view.View.MeasureSpec.getMode;
-import static android.view.View.MeasureSpec.getSize;
-
 import static com.android.launcher3.anim.Interpolators.DEACCEL_1_5;
 import static com.android.launcher3.compat.AccessibilityManagerCompat.sendCustomAccessibilityEvent;
 
@@ -34,14 +30,12 @@ import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.view.animation.Interpolator;
-import android.widget.FrameLayout;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.CellLayout;
@@ -52,12 +46,10 @@ import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.graphics.OverviewScrim;
-import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.graphics.WorkspaceAndHotseatScrim;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.views.BaseDragLayer;
-import com.android.launcher3.views.Transposable;
 
 import java.util.ArrayList;
 
@@ -559,146 +551,5 @@ public class DragLayer extends BaseDragLayer<Launcher> {
 
     public OverviewScrim getOverviewScrim() {
         return mOverviewScrim;
-    }
-
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        RotationMode rotation = mActivity.getRotationMode();
-        int count = getChildCount();
-
-        if (!rotation.isTransposed
-                || getMode(widthMeasureSpec) != EXACTLY
-                || getMode(heightMeasureSpec) != EXACTLY) {
-
-            for (int i = 0; i < count; i++) {
-                final View child = getChildAt(i);
-                child.setRotation(rotation.surfaceRotation);
-            }
-            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        } else {
-
-            for (int i = 0; i < count; i++) {
-                final View child = getChildAt(i);
-                if (child.getVisibility() == GONE) {
-                    continue;
-                }
-                if (!(child instanceof Transposable)) {
-                    measureChildWithMargins(child, widthMeasureSpec, 0, heightMeasureSpec, 0);
-                } else {
-                    measureChildWithMargins(child, heightMeasureSpec, 0, widthMeasureSpec, 0);
-
-                    child.setPivotX(child.getMeasuredWidth() / 2);
-                    child.setPivotY(child.getMeasuredHeight() / 2);
-                    child.setRotation(rotation.surfaceRotation);
-                }
-            }
-            setMeasuredDimension(getSize(widthMeasureSpec), getSize(heightMeasureSpec));
-        }
-    }
-
-    @Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        RotationMode rotation = mActivity.getRotationMode();
-        if (!rotation.isTransposed) {
-            super.onLayout(changed, left, top, right, bottom);
-            return;
-        }
-
-        final int count = getChildCount();
-
-        final int parentWidth = right - left;
-        final int parentHeight = bottom - top;
-
-        for (int i = 0; i < count; i++) {
-            final View child = getChildAt(i);
-            if (child.getVisibility() == GONE) {
-                continue;
-            }
-
-            final FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) child.getLayoutParams();
-
-            if (lp instanceof LayoutParams) {
-                final LayoutParams dlp = (LayoutParams) lp;
-                if (dlp.customPosition) {
-                    child.layout(dlp.x, dlp.y, dlp.x + dlp.width, dlp.y + dlp.height);
-                    continue;
-                }
-            }
-
-            final int width = child.getMeasuredWidth();
-            final int height = child.getMeasuredHeight();
-
-            int childLeft;
-            int childTop;
-
-            int gravity = lp.gravity;
-            if (gravity == -1) {
-                gravity = Gravity.TOP | Gravity.START;
-            }
-
-            final int layoutDirection = getLayoutDirection();
-
-            int absoluteGravity = Gravity.getAbsoluteGravity(gravity, layoutDirection);
-
-            if (child instanceof Transposable) {
-                absoluteGravity = rotation.toNaturalGravity(absoluteGravity);
-
-                switch (absoluteGravity & Gravity.HORIZONTAL_GRAVITY_MASK) {
-                    case Gravity.CENTER_HORIZONTAL:
-                        childTop = (parentHeight - height) / 2 +
-                                lp.topMargin - lp.bottomMargin;
-                        break;
-                    case Gravity.RIGHT:
-                        childTop = width / 2 + lp.rightMargin - height / 2;
-                        break;
-                    case Gravity.LEFT:
-                    default:
-                        childTop = parentHeight - lp.leftMargin - width / 2 - height / 2;
-                }
-
-                switch (absoluteGravity & Gravity.VERTICAL_GRAVITY_MASK) {
-                    case Gravity.CENTER_VERTICAL:
-                        childLeft = (parentWidth - width) / 2 +
-                                lp.leftMargin - lp.rightMargin;
-                        break;
-                    case Gravity.BOTTOM:
-                        childLeft = parentWidth - width / 2 - height / 2 - lp.bottomMargin;
-                        break;
-                    case Gravity.TOP:
-                    default:
-                        childLeft = height / 2 - width / 2 + lp.topMargin;
-                }
-            } else {
-                switch (absoluteGravity & Gravity.HORIZONTAL_GRAVITY_MASK) {
-                    case Gravity.CENTER_HORIZONTAL:
-                        childLeft = (parentWidth - width) / 2 +
-                                lp.leftMargin - lp.rightMargin;
-                        break;
-                    case Gravity.RIGHT:
-                        childLeft = parentWidth - width - lp.rightMargin;
-                        break;
-                    case Gravity.LEFT:
-                    default:
-                        childLeft = lp.leftMargin;
-                }
-
-                switch (absoluteGravity & Gravity.VERTICAL_GRAVITY_MASK) {
-                    case Gravity.TOP:
-                        childTop = lp.topMargin;
-                        break;
-                    case Gravity.CENTER_VERTICAL:
-                        childTop = (parentHeight - height) / 2 +
-                                lp.topMargin - lp.bottomMargin;
-                        break;
-                    case Gravity.BOTTOM:
-                        childTop = parentHeight - height - lp.bottomMargin;
-                        break;
-                    default:
-                        childTop = lp.topMargin;
-                }
-            }
-
-            child.layout(childLeft, childTop, childLeft + width, childTop + height);
-        }
     }
 }

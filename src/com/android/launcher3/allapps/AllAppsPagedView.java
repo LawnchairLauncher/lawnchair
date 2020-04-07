@@ -83,7 +83,7 @@ public class AllAppsPagedView extends PagedView<PersonalWorkSlidingTabStrip> {
     }
 
     @Override
-    protected boolean isVerticalScrollable() {
-        return false;
+    protected boolean canScroll(float absVScroll, float absHScroll) {
+        return (absHScroll > absVScroll) && super.canScroll(absVScroll, absHScroll);
     }
 }

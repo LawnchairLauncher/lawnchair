@@ -153,7 +153,7 @@ public class PreviewBackground extends CellLayout.DelegatedCellDrawing {
         mBgColor = ta.getColor(R.styleable.FolderIconPreview_folderFillColor, 0);
         ta.recycle();
 
-        DeviceProfile grid = activity.getWallpaperDeviceProfile();
+        DeviceProfile grid = activity.getDeviceProfile();
         previewSize = grid.folderIconSizePx;
 
         basePreviewOffsetX = (availableSpaceX - previewSize) / 2;

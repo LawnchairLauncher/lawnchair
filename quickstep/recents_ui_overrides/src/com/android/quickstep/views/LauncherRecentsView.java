@@ -42,7 +42,6 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager.StateListener;
-import com.android.launcher3.R;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.appprediction.PredictionUiStateManager;
 import com.android.launcher3.appprediction.PredictionUiStateManager.Client;
@@ -172,7 +171,7 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher>
                 mActivity.getAllAppsController(), ALL_APPS_PROGRESS, allAppsProgressOffscreen));
 
         ObjectAnimator dragHandleAnim = ObjectAnimator.ofInt(
-                mActivity.findViewById(R.id.scrim_view), ScrimView.DRAG_HANDLE_ALPHA, 0);
+                mActivity.getScrimView(), ScrimView.DRAG_HANDLE_ALPHA, 0);
         dragHandleAnim.setInterpolator(Interpolators.ACCEL_2);
         anim.play(dragHandleAnim);
 

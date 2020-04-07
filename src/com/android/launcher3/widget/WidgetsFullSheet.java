@@ -98,6 +98,11 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         onWidgetsBound();
     }
 
+    @VisibleForTesting
+    public WidgetsRecyclerView getRecyclerView() {
+        return mRecyclerView;
+    }
+
     @Override
     protected Pair<View, String> getAccessibilityTarget() {
         return Pair.create(mRecyclerView, getContext().getString(
