@@ -496,7 +496,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
         GestureState gestureState = new GestureState(mOverviewComponentObserver,
                 ActiveGestureLog.INSTANCE.generateAndSetLogId());
         gestureState.updateRunningTask(TraceHelper.whitelistIpcs("getRunningTask.0",
-                () -> mAM.getRunningTask(true /* filterOnlyVisibleRecents */)));
+                () -> mAM.getRunningTask(false /* filterOnlyVisibleRecents */)));
         return gestureState;
     }
 
@@ -596,10 +596,18 @@ public class TouchInteractionService extends Service implements PluginListener<O
             return createDeviceLockedInputConsumer(gestureState);
         }
 
-        RunningTaskInfo runningTask = gestureState.getRunningTask();
-        ComponentName homeComponent = mOverviewComponentObserver.getHomeIntent().getComponent();
-        boolean forceOverviewInputConsumer = runningTask != null
-                && runningTask.baseIntent.getComponent().equals(homeComponent);
+        boolean forceOverviewInputConsumer = false;
+        if (AssistantUtilities.isExcludedAssistant(gestureState.getRunningTask())) {
+            // In the case where we are in the excluded assistant state, ignore it and treat the
+            // running activity as the task behind the assistant
+            gestureState.updateRunningTask(TraceHelper.whitelistIpcs("getRunningTask.assistant",
+                    () -> mAM.getRunningTask(true /* filterOnlyVisibleRecents */)));
+            ComponentName homeComponent = mOverviewComponentObserver.getHomeIntent().getComponent();
+            ComponentName runningComponent =
+                    gestureState.getRunningTask().baseIntent.getComponent();
+            forceOverviewInputConsumer =
+                    runningComponent != null && runningComponent.equals(homeComponent);
+        }
 
         if (previousGestureState.getFinishingRecentsAnimationTaskId() > 0) {
             // If the finish animation was interrupted, then continue using the other activity input
