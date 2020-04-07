@@ -26,11 +26,11 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.os.SystemClock;
-import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
-import android.view.WindowManager;
+import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.view.animation.Interpolator;
 import android.view.animation.PathInterpolator;
 
@@ -110,7 +110,6 @@ public class EdgeBackGesturePanel extends View {
     private static final Interpolator RUBBER_BAND_INTERPOLATOR_APPEAR =
             new PathInterpolator(1.0f / RUBBER_BAND_AMOUNT_APPEAR, 1.0f, 1.0f, 1.0f);
 
-    private final WindowManager mWindowManager;
     private BackCallback mBackCallback;
 
     /**
@@ -147,7 +146,6 @@ public class EdgeBackGesturePanel extends View {
 
     private VelocityTracker mVelocityTracker;
     private int mArrowPaddingEnd;
-    private WindowManager.LayoutParams mLayoutParams;
 
     /**
      * True if the panel is currently on the left of the screen
@@ -232,10 +230,8 @@ public class EdgeBackGesturePanel extends View {
                 }
             };
 
-    public EdgeBackGesturePanel(Context context) {
+    public EdgeBackGesturePanel(Context context, ViewGroup parent, LayoutParams layoutParams) {
         super(context);
-
-        mWindowManager = context.getSystemService(WindowManager.class);
 
         mDensity = context.getResources().getDisplayMetrics().density;
 
@@ -290,11 +286,15 @@ public class EdgeBackGesturePanel extends View {
 
         mSwipeThreshold = ResourceUtils.getDimenByName(
             "navigation_edge_action_drag_threshold", context.getResources(), 16 /* defaultValue */);
+        parent.addView(this, layoutParams);
         setVisibility(GONE);
     }
 
     void onDestroy() {
-        mWindowManager.removeView(this);
+        ViewGroup parent = (ViewGroup) getParent();
+        if (parent != null) {
+            parent.removeView(this);
+        }
     }
 
     @Override
@@ -305,9 +305,6 @@ public class EdgeBackGesturePanel extends View {
     @SuppressLint("RtlHardcoded")
     void setIsLeftPanel(boolean isLeftPanel) {
         mIsLeftPanel = isLeftPanel;
-        mLayoutParams.gravity = mIsLeftPanel
-                ? (Gravity.LEFT | Gravity.TOP)
-                : (Gravity.RIGHT | Gravity.TOP);
     }
 
     boolean getIsLeftPanel() {
@@ -321,11 +318,6 @@ public class EdgeBackGesturePanel extends View {
 
     void setBackCallback(BackCallback callback) {
         mBackCallback = callback;
-    }
-
-    void setLayoutParams(WindowManager.LayoutParams layoutParams) {
-        mLayoutParams = layoutParams;
-        mWindowManager.addView(this, mLayoutParams);
     }
 
     private float getCurrentAngle() {
@@ -349,7 +341,6 @@ public class EdgeBackGesturePanel extends View {
                 mStartY = event.getY();
                 setVisibility(VISIBLE);
                 updatePosition(event.getY());
-                mWindowManager.updateViewLayout(this, mLayoutParams);
                 break;
             case MotionEvent.ACTION_MOVE:
                 handleMoveEvent(event);
@@ -614,10 +605,11 @@ public class EdgeBackGesturePanel extends View {
     }
 
     private void updatePosition(float touchY) {
-        float position = touchY - mFingerOffset;
-        position = Math.max(position, mMinArrowPosition);
-        position -= mLayoutParams.height / 2.0f;
-        mLayoutParams.y = MathUtils.clamp((int) position, 0, mDisplaySize.y);
+        float positionY = touchY - mFingerOffset;
+        positionY = Math.max(positionY, mMinArrowPosition);
+        positionY -= getLayoutParams().height / 2.0f;
+        setX(mIsLeftPanel ? 0 : mDisplaySize.x - getLayoutParams().width);
+        setY(MathUtils.clamp((int) positionY, 0, mDisplaySize.y));
     }
 
     private void setDesiredVerticalTransition(float verticalTranslation, boolean animated) {

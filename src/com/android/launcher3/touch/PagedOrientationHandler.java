@@ -83,7 +83,7 @@ public interface PagedOrientationHandler {
     void delegateScrollTo(PagedView pagedView, int primaryScroll);
     void delegateScrollBy(PagedView pagedView, int unboundedScroll, int x, int y);
     void scrollerStartScroll(OverScroller scroller, int newPosition);
-    CurveProperties getCurveProperties(PagedView pagedView, Rect insets);
+    void getCurveProperties(PagedView view, Rect mInsets, CurveProperties out);
     boolean isGoingUp(float displacement);
 
     /**
@@ -92,18 +92,12 @@ public interface PagedOrientationHandler {
      */
     void adjustFloatingIconStartVelocity(PointF velocity);
 
-    class CurveProperties {
-        public final int scroll;
-        public final int halfPageSize;
-        public final int screenCenter;
-        public final int halfScreenSize;
 
-        public CurveProperties(int scroll, int halfPageSize, int screenCenter, int halfScreenSize) {
-            this.scroll = scroll;
-            this.halfPageSize = halfPageSize;
-            this.screenCenter = screenCenter;
-            this.halfScreenSize = halfScreenSize;
-        }
+    class CurveProperties {
+        public int scroll;
+        public int halfPageSize;
+        public int screenCenter;
+        public int halfScreenSize;
     }
 
     class ChildBounds {

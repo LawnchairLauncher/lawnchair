@@ -66,9 +66,6 @@
        docked_stack_divider_thickness - 2 * docked_stack_divider_insets -->
     <dimen name="multi_window_task_divider_size">10dp</dimen>
 
-    <!-- same as vertical_drag_handle_size -->
-    <dimen name="shelf_surface_offset">24dp</dimen>
-
     <!-- Assistant Gestures -->
     <!-- Distance from the vertical edges of the screen in which assist gestures are recognized -->
     <dimen name="gestures_assistant_width">48dp</dimen>
