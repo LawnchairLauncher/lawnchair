@@ -98,6 +98,7 @@ import com.android.launcher3.userevent.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.LauncherLogProto.ItemType;
 import com.android.launcher3.userevent.LauncherLogProto.LauncherEvent;
 import com.android.launcher3.userevent.LauncherLogProto.Target;
+import com.android.launcher3.userevent.LauncherLogProto.Target.ToFolderLabelState;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.Thunk;
@@ -110,6 +111,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -346,7 +348,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         }
 
         mInfo.title = newTitle;
-        mInfo.setOption(FLAG_MANUAL_FOLDER_NAME, getAcceptedSuggestionIndex() < 0,
+        mInfo.setOption(FLAG_MANUAL_FOLDER_NAME, !getAcceptedSuggestionIndex().isPresent(),
                 mLauncher.getModelWriter());
         mFolderIcon.onTitleChanged(newTitle);
         mLauncher.getModelWriter().updateItemInDatabase(mInfo);
@@ -1679,36 +1681,58 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     private Target.ToFolderLabelState getToFolderLabelState() {
         String newLabel =
                 checkNotNull(mFolderName.getText().toString(),
-                        "Expected valid folder label, but found null");
+                "Expected valid folder label, but found null");
+        if (newLabel.equals(mPreviousLabel)) {
+            return Target.ToFolderLabelState.UNCHANGED;
+        }
+
+        if (!FeatureFlags.FOLDER_NAME_SUGGEST.get()) {
+            return newLabel.isEmpty()
+                ? ToFolderLabelState.TO_EMPTY_WITH_SUGGESTIONS_DISABLED
+                : ToFolderLabelState.TO_CUSTOM_WITH_SUGGESTIONS_DISABLED;
+        }
 
         Optional<String[]> suggestedLabels = getSuggestedLabels();
-        int accepted_suggestion_index = getAcceptedSuggestionIndex();
-        boolean hasValidPrimary = suggestedLabels
-                .map(labels -> labels.length > 0 && !isEmpty(labels[0]))
-                .orElse(false);
-        String primarySuffix = hasValidPrimary
-                ? "_WITH_VALID_PRIMARY"
-                : "_WITH_EMPTY_PRIMARY";
-
         boolean isEmptySuggestions = suggestedLabels
                 .map(labels -> stream(labels).allMatch(TextUtils::isEmpty))
                 .orElse(true);
-        boolean isSuggestionsEnabled = FeatureFlags.FOLDER_NAME_SUGGEST.get();
-        String suggestionsSuffix =  isSuggestionsEnabled
-                ? isEmptySuggestions
-                    ? "_WITH_EMPTY_SUGGESTIONS"
-                    : "_WITH_VALID_SUGGESTIONS"
-                : "_WITH_SUGGESTIONS_DISABLED";
+        if (isEmptySuggestions) {
+            return newLabel.isEmpty()
+                ? ToFolderLabelState.TO_EMPTY_WITH_EMPTY_SUGGESTIONS
+                : ToFolderLabelState.TO_CUSTOM_WITH_EMPTY_SUGGESTIONS;
+        }
 
-        return newLabel.equals(mPreviousLabel)
-                ? Target.ToFolderLabelState.UNCHANGED
-                : newLabel.isEmpty()
-                    ? Target.ToFolderLabelState.valueOf("TO_EMPTY" + suggestionsSuffix)
-                    : accepted_suggestion_index >= 0
-                        ? Target.ToFolderLabelState.valueOf("TO_SUGGESTION"
-                            + accepted_suggestion_index
-                            + primarySuffix)
-                        : Target.ToFolderLabelState.valueOf("TO_CUSTOM" + suggestionsSuffix);
+        boolean hasValidPrimary = suggestedLabels
+                .map(labels -> !isEmpty(labels[0]))
+                .orElse(false);
+        if (newLabel.isEmpty()) {
+            return hasValidPrimary ? ToFolderLabelState.TO_EMPTY_WITH_VALID_PRIMARY
+                : ToFolderLabelState.TO_EMPTY_WITH_VALID_SUGGESTIONS_AND_EMPTY_PRIMARY;
+        }
+
+        OptionalInt accepted_suggestion_index = getAcceptedSuggestionIndex();
+        if (!accepted_suggestion_index.isPresent()) {
+            return hasValidPrimary ? ToFolderLabelState.TO_CUSTOM_WITH_VALID_PRIMARY
+                : ToFolderLabelState.TO_CUSTOM_WITH_VALID_SUGGESTIONS_AND_EMPTY_PRIMARY;
+        }
+
+        switch (accepted_suggestion_index.getAsInt()) {
+            case 0:
+                return ToFolderLabelState.TO_SUGGESTION0_WITH_VALID_PRIMARY;
+            case 1:
+                return hasValidPrimary ? ToFolderLabelState.TO_SUGGESTION1_WITH_VALID_PRIMARY
+                    : ToFolderLabelState.TO_SUGGESTION1_WITH_EMPTY_PRIMARY;
+            case 2:
+                return hasValidPrimary ? ToFolderLabelState.TO_SUGGESTION2_WITH_VALID_PRIMARY
+                    : ToFolderLabelState.TO_SUGGESTION2_WITH_EMPTY_PRIMARY;
+            case 3:
+                return hasValidPrimary ? ToFolderLabelState.TO_SUGGESTION3_WITH_VALID_PRIMARY
+                    : ToFolderLabelState.TO_SUGGESTION3_WITH_EMPTY_PRIMARY;
+            default:
+                // fall through
+        }
+        return ToFolderLabelState.TO_FOLDER_LABEL_STATE_UNSPECIFIED;
+
     }
 
     private Optional<String[]> getSuggestedLabels() {
@@ -1728,19 +1752,18 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
                         .toArray(String[]::new));
     }
 
-    private int getAcceptedSuggestionIndex() {
-        String newLabel =
-                checkNotNull(mFolderName.getText().toString(),
-                        "Expected valid folder label, but found null");
-
+    private OptionalInt getAcceptedSuggestionIndex() {
+        String newLabel = checkNotNull(mFolderName.getText().toString(),
+                "Expected valid folder label, but found null");
         return getSuggestedLabels()
                 .map(suggestionsArray ->
-                        IntStream.range(0, suggestionsArray.length)
-                                .filter(index -> newLabel.equalsIgnoreCase(
-                                        suggestionsArray[index]))
-                                .findFirst()
-                                .orElse(-1)
-                ).orElse(-1);
+                    IntStream.range(0, suggestionsArray.length)
+                        .filter(
+                            index -> !isEmpty(suggestionsArray[index])
+                                && newLabel.equalsIgnoreCase(suggestionsArray[index]))
+                        .sequential()
+                        .findFirst()
+                ).orElse(OptionalInt.empty());
 
     }
 
@@ -1761,7 +1784,6 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
 
     private Target.Builder newParentContainerTarget() {
         Target.Builder builder = Target.newBuilder().setType(Target.Type.CONTAINER);
-
         switch (mInfo.container) {
             case CONTAINER_HOTSEAT:
                 return builder.setContainerType(ContainerType.HOTSEAT);
