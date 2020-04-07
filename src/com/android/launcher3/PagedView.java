@@ -38,7 +38,6 @@ import android.util.Log;
 import android.view.InputDevice;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
-import android.view.Surface;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -55,12 +54,10 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.model.PagedViewOrientedState;
 import com.android.launcher3.pageindicators.PageIndicator;
 import com.android.launcher3.touch.OverScroll;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.touch.PagedOrientationHandler.ChildBounds;
-import com.android.launcher3.touch.PortraitPagedViewHandler;
 import com.android.launcher3.util.OverScroller;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.views.ActivityContext;
@@ -121,8 +118,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     private float mLastMotion;
     private float mLastMotionRemainder;
     private float mTotalMotion;
-    protected PagedOrientationHandler mOrientationHandler = new PortraitPagedViewHandler();
-    protected final PagedViewOrientedState mOrientationState = new PagedViewOrientedState();
+    protected PagedOrientationHandler mOrientationHandler = PagedOrientationHandler.PORTRAIT;
 
     protected int[] mPageScrolls;
     private boolean mIsBeingDragged;
@@ -143,9 +139,6 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     protected boolean mWasInOverscroll = false;
 
     protected int mUnboundedScroll;
-
-    protected int mLayoutRotation = Surface.ROTATION_0;
-    protected int mDisplayRotation = Surface.ROTATION_0;
 
     // Page Indicator
     @Thunk int mPageIndicatorViewId;
@@ -415,37 +408,6 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
     protected int getUnboundedScroll() {
         return mUnboundedScroll;
-    }
-
-    protected void updateLayoutRotation(int touchRotation) {
-        setLayoutRotation(touchRotation, mDisplayRotation);
-    }
-
-    /** @param touchRotation Must be one of {@link android.view.Surface.ROTATION_0/90/180/270} */
-    public void setLayoutRotation(int touchRotation, int displayRotation) {
-        if (mLayoutRotation == touchRotation && mDisplayRotation == displayRotation) {
-            return;
-        }
-
-        mOrientationState.update(touchRotation, displayRotation);
-        mOrientationHandler = mOrientationState.getOrientationHandler();
-        mLayoutRotation = touchRotation;
-        mDisplayRotation = displayRotation;
-        requestLayout();
-    }
-
-    public PagedViewOrientedState getPagedViewOrientedState() {
-        return mOrientationState;
-    }
-
-    public PagedOrientationHandler getPagedOrientationHandler() {
-        return getPagedViewOrientedState().getOrientationHandler();
-    }
-
-    public void disableMultipleLayoutRotations(boolean disable) {
-        mOrientationState.disableMultipleOrientations(disable);
-        mOrientationHandler = mOrientationState.getOrientationHandler();
-        requestLayout();
     }
 
     @Override
