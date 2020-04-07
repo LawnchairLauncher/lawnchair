@@ -508,6 +508,29 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             mHasVisibleTaskData.delete(taskView.getTask().key.id);
             mTaskViewPool.recycle(taskView);
         }
+        updateTaskStartIndex(child);
+    }
+
+    @Override
+    public void onViewAdded(View child) {
+        super.onViewAdded(child);
+        child.setAlpha(mContentAlpha);
+        // RecentsView is set to RTL in the constructor when system is using LTR. Here we set the
+        // child direction back to match system settings.
+        child.setLayoutDirection(mIsRtl ? View.LAYOUT_DIRECTION_LTR : View.LAYOUT_DIRECTION_RTL);
+        updateTaskStartIndex(child);
+    }
+
+    private void updateTaskStartIndex(View affectingView) {
+        if (!(affectingView instanceof TaskView) && !(affectingView instanceof ClearAllButton)) {
+            int childCount = getChildCount();
+
+            mTaskViewStartIndex = 0;
+            while (mTaskViewStartIndex < childCount
+                    && !(getChildAt(mTaskViewStartIndex) instanceof TaskView)) {
+                mTaskViewStartIndex++;
+            }
+        }
     }
 
     public boolean isTaskViewVisible(TaskView tv) {
@@ -1560,12 +1583,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         return mOrientationHandler;
     }
 
-    @Override
-    public void onViewAdded(View child) {
-        super.onViewAdded(child);
-        child.setAlpha(mContentAlpha);
-    }
-
     @Nullable
     public TaskView getNextTaskView() {
         return getTaskViewAtByAbsoluteIndex(getRunningTaskIndex() + 1);
@@ -2073,35 +2090,9 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         }
     }
 
-    @Override
-    public void addView(View child, int index) {
-        // RecentsView is set to RTL in the constructor when system is using LTR. Here we set the
-        // child direction back to match system settings.
-        child.setLayoutDirection(
-                Utilities.isRtl(getResources())
-                        ? View.LAYOUT_DIRECTION_RTL : View.LAYOUT_DIRECTION_LTR);
-        super.addView(child, index);
-        if (isExtraCardView(child, index)) {
-            mTaskViewStartIndex++;
-        }
-    }
-
-    @Override
-    public void removeView(View view) {
-        if (isExtraCardView(view, indexOfChild(view))) {
-            mTaskViewStartIndex--;
-        }
-        super.removeView(view);
-    }
-
     @Nullable
     protected DepthController getDepthController() {
         return null;
-    }
-
-    private boolean isExtraCardView(View view, int index) {
-        return !(view instanceof TaskView) && !(view instanceof ClearAllButton)
-                && index <= mTaskViewStartIndex;
     }
 
     /**
