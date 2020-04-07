@@ -75,7 +75,6 @@ import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.folder.PreviewBackground;
 import com.android.launcher3.graphics.DragPreviewProvider;
 import com.android.launcher3.graphics.PreloadIconDrawable;
-import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.icons.BitmapRenderer;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.pageindicators.WorkspacePageIndicator;
@@ -125,7 +124,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     private static final int ADJACENT_SCREEN_DROP_DURATION = 300;
 
-    private static final int DEFAULT_PAGE = 0;
+    public static final int DEFAULT_PAGE = 0;
 
     private LayoutTransition mLayoutTransition;
     @Thunk final WallpaperManager mWallpaperManager;
@@ -276,20 +275,13 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     @Override
     public void setInsets(Rect insets) {
         DeviceProfile grid = mLauncher.getDeviceProfile();
-        DeviceProfile stableGrid = mLauncher.getWallpaperDeviceProfile();
 
-        mMaxDistanceForFolderCreation = stableGrid.isTablet
-                ? 0.75f * stableGrid.iconSizePx
-                : 0.55f * stableGrid.iconSizePx;
+        mMaxDistanceForFolderCreation = grid.isTablet
+                ? 0.75f * grid.iconSizePx : 0.55f * grid.iconSizePx;
         mWorkspaceFadeInAdjacentScreens = grid.shouldFadeAdjacentWorkspaceScreens();
 
-        Rect padding = stableGrid.workspacePadding;
-
-        RotationMode rotationMode = mLauncher.getRotationMode();
-
-        rotationMode.mapRect(padding, mTempRect);
-        setPadding(mTempRect.left, mTempRect.top, mTempRect.right, mTempRect.bottom);
-        rotationMode.mapRect(stableGrid.getInsets(), mInsets);
+        Rect padding = grid.workspacePadding;
+        setPadding(padding.left, padding.top, padding.right, padding.bottom);
 
         if (mWorkspaceFadeInAdjacentScreens) {
             // In landscape mode the page spacing is set to the default.
@@ -302,12 +294,11 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         }
 
 
-        int paddingLeftRight = stableGrid.cellLayoutPaddingLeftRightPx;
-        int paddingBottom = stableGrid.cellLayoutBottomPaddingPx;
+        int paddingLeftRight = grid.cellLayoutPaddingLeftRightPx;
+        int paddingBottom = grid.cellLayoutBottomPaddingPx;
         for (int i = mWorkspaceScreens.size() - 1; i >= 0; i--) {
-            CellLayout page = mWorkspaceScreens.valueAt(i);
-            page.setRotationMode(rotationMode);
-            page.setPadding(paddingLeftRight, 0, paddingLeftRight, paddingBottom);
+            mWorkspaceScreens.valueAt(i)
+                    .setPadding(paddingLeftRight, 0, paddingLeftRight, paddingBottom);
         }
     }
 
@@ -327,7 +318,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
             float scale = 1;
             if (isWidget) {
-                DeviceProfile profile = mLauncher.getWallpaperDeviceProfile();
+                DeviceProfile profile = mLauncher.getDeviceProfile();
                 scale = Utilities.shrinkRect(r, profile.appWidgetScale.x, profile.appWidgetScale.y);
             }
             size[0] = r.width();
@@ -555,10 +546,9 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         // created CellLayout.
         CellLayout newScreen = (CellLayout) LayoutInflater.from(getContext()).inflate(
                         R.layout.workspace_screen, this, false /* attachToRoot */);
-        DeviceProfile grid = mLauncher.getWallpaperDeviceProfile();
+        DeviceProfile grid = mLauncher.getDeviceProfile();
         int paddingLeftRight = grid.cellLayoutPaddingLeftRightPx;
         int paddingBottom = grid.cellLayoutBottomPaddingPx;
-        newScreen.setRotationMode(mLauncher.getRotationMode());
         newScreen.setPadding(paddingLeftRight, 0, paddingLeftRight, paddingBottom);
 
         mWorkspaceScreens.put(screenId, newScreen);

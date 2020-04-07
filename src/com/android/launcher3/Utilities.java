@@ -62,7 +62,6 @@ import android.view.animation.Interpolator;
 
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.FolderAdaptiveIcon;
-import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.graphics.TintedDrawableSpan;
 import com.android.launcher3.icons.IconProvider;
 import com.android.launcher3.icons.LauncherIcons;
@@ -72,7 +71,6 @@ import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.shortcuts.ShortcutRequest;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.PackageManagerHelper;
-import com.android.launcher3.views.Transposable;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 
 import java.lang.reflect.Method;
@@ -165,7 +163,7 @@ public final class Utilities {
     public static float getDescendantCoordRelativeToAncestor(
             View descendant, View ancestor, float[] coord, boolean includeRootScroll) {
         return getDescendantCoordRelativeToAncestor(descendant, ancestor, coord, includeRootScroll,
-                false, null);
+                false);
     }
 
     /**
@@ -178,15 +176,12 @@ public final class Utilities {
      * @param includeRootScroll Whether or not to account for the scroll of the descendant:
      *          sometimes this is relevant as in a child's coordinates within the descendant.
      * @param ignoreTransform If true, view transform is ignored
-     * @param outRotation If not null, and {@param ignoreTransform} is true, this is set to the
-     *                   overall rotation of the view in degrees.
      * @return The factor by which this descendant is scaled relative to this DragLayer. Caution
      *         this scale factor is assumed to be equal in X and Y, and so if at any point this
      *         assumption fails, we will need to return a pair of scale factors.
      */
     public static float getDescendantCoordRelativeToAncestor(View descendant, View ancestor,
-            float[] coord, boolean includeRootScroll, boolean ignoreTransform,
-            float[] outRotation) {
+            float[] coord, boolean includeRootScroll, boolean ignoreTransform) {
         float scale = 1.0f;
         View v = descendant;
         while(v != ancestor && v != null) {
@@ -196,19 +191,7 @@ public final class Utilities {
                 offsetPoints(coord, -v.getScrollX(), -v.getScrollY());
             }
 
-            if (ignoreTransform) {
-                if (v instanceof Transposable) {
-                    RotationMode m = ((Transposable) v).getRotationMode();
-                    if (m.isTransposed) {
-                        sMatrix.setRotate(m.surfaceRotation, v.getPivotX(), v.getPivotY());
-                        sMatrix.mapPoints(coord);
-
-                        if (outRotation != null) {
-                            outRotation[0] += m.surfaceRotation;
-                        }
-                    }
-                }
-            } else {
+            if (!ignoreTransform) {
                 v.getMatrix().mapPoints(coord);
             }
             offsetPoints(coord, v.getLeft(), v.getTop());

@@ -17,6 +17,7 @@ package com.android.launcher3.states;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 
@@ -50,8 +51,13 @@ public class HintState extends LauncherState {
 
     @Override
     public void onStateTransitionEnd(Launcher launcher) {
-        launcher.getStateManager().goToState(NORMAL);
+        LauncherStateManager stateManager = launcher.getStateManager();
         Workspace workspace = launcher.getWorkspace();
-        workspace.post(workspace::moveToDefaultScreen);
+        boolean willMoveScreens = workspace.getNextPage() != Workspace.DEFAULT_PAGE;
+        stateManager.goToState(NORMAL, true, willMoveScreens ? null
+                : launcher.getScrimView()::startDragHandleEducationAnim);
+        if (willMoveScreens) {
+            workspace.post(workspace::moveToDefaultScreen);
+        }
     }
 }

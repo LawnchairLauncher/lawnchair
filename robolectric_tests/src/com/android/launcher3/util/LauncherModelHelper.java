@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.util;
 
+import static android.content.Intent.ACTION_CREATE_SHORTCUT;
+
 import static com.android.launcher3.LauncherSettings.Favorites.CONTENT_URI;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
@@ -44,6 +46,7 @@ import com.android.launcher3.LauncherProvider;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.model.AllAppsList;
 import com.android.launcher3.model.BgDataModel;
+import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.pm.UserCache;
 
 import org.mockito.ArgumentCaptor;
@@ -61,6 +64,7 @@ import java.io.OutputStreamWriter;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.function.Function;
 
@@ -345,7 +349,8 @@ public class LauncherModelHelper {
     /**
      * Sets up a dummy provider to load the provided layout by default, next time the layout loads
      */
-    public void setupDefaultLayoutProvider(LauncherLayoutBuilder builder) throws Exception {
+    public LauncherModelHelper setupDefaultLayoutProvider(LauncherLayoutBuilder builder)
+            throws Exception {
         Context context = RuntimeEnvironment.application;
         InvariantDeviceProfile idp = InvariantDeviceProfile.INSTANCE.get(context);
         idp.numRows = idp.numColumns = idp.numHotseatIcons = DEFAULT_GRID_SIZE;
@@ -363,20 +368,50 @@ public class LauncherModelHelper {
         Uri layoutUri = LauncherProvider.getLayoutUri(TEST_PROVIDER_AUTHORITY, context);
         shadowOf(context.getContentResolver()).registerInputStream(layoutUri,
                 new ByteArrayInputStream(bos.toByteArray()));
+        return this;
     }
 
     /**
      * Simulates an apk install with a default main activity with same class and package name
      */
     public void installApp(String component) throws NameNotFoundException {
-        ShadowPackageManager spm = shadowOf(RuntimeEnvironment.application.getPackageManager());
-        ComponentName cn = new ComponentName(component, component);
-        spm.addActivityIfNotPresent(cn);
-
         IntentFilter filter = new IntentFilter(Intent.ACTION_MAIN);
         filter.addCategory(Intent.CATEGORY_LAUNCHER);
+        installApp(component, component, filter);
+    }
+
+    /**
+     * Simulates a custom shortcut install
+     */
+    public void installCustomShortcut(String pkg, String clazz) throws NameNotFoundException {
+        installApp(pkg, clazz, new IntentFilter(ACTION_CREATE_SHORTCUT));
+    }
+
+    private void installApp(String pkg, String clazz, IntentFilter filter)
+            throws NameNotFoundException {
+        ShadowPackageManager spm = shadowOf(RuntimeEnvironment.application.getPackageManager());
+        ComponentName cn = new ComponentName(pkg, clazz);
+        spm.addActivityIfNotPresent(cn);
+
         filter.addCategory(Intent.CATEGORY_DEFAULT);
         spm.addIntentFilterForActivity(cn, filter);
+    }
+
+    /**
+     * Loads the model in memory synchronously
+     */
+    public void loadModelSync() throws ExecutionException, InterruptedException {
+        // Since robolectric tests run on main thread, we run the loader-UI calls on a temp thread,
+        // so that we can wait appropriately for the loader to complete.
+        ReflectionHelpers.setField(getModel(), "mMainExecutor", Executors.UI_HELPER_EXECUTOR);
+
+        Callbacks mockCb = mock(Callbacks.class);
+        getModel().addCallbacksAndLoad(mockCb);
+
+        Executors.MODEL_EXECUTOR.submit(() -> { }).get();
+        Executors.UI_HELPER_EXECUTOR.submit(() -> { }).get();
+        ReflectionHelpers.setField(getModel(), "mMainExecutor", Executors.MAIN_EXECUTOR);
+        getModel().removeCallbacks(mockCb);
     }
 
     /**
