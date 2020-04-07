@@ -4,24 +4,24 @@
     <string name="search_menu">חיפוש</string>
     <string name="search_no_results">אין תוצאות</string>
     <string name="restart_lawnchair_pref_title">הפעל מחדש</string>
-    <string name="developer_options_title">אפשריות מפתחים</string>
-    <string name="change_default_home">הגדר כיישומון בית</string>
+    <string name="developer_options_title">אפשרויות מפתח</string>
+    <string name="change_default_home">הגדר כמשגר אפליקציות</string>
     <string name="action_apply">בוצע</string>
     <!-- Note: new. Replaces “OK” in dialogs. -->
     <string name="theme_dark_theme_mode_on">פעיל</string>
     <string name="theme_dark_theme_mode_off">מבוטל</string>
     <!-- Section 2 -->
     <string name="theme_title">ערכת נושא</string>
-    <string name="pixel_ui_pref_summary">סמלים, צבעים, טשטוש</string>
+    <string name="pixel_ui_pref_summary">סמלים, צבעים וטשטוש</string>
     <string name="pref_icon_packs">ערכות סמלים</string>
     <string name="icon_pack_default">סמלי מערכת</string>
     <string name="pref_icon_pack_masking">יצירת מסכה לסמלים</string>
     <string name="pref_icon_pack_masking_summary">התאם סמלים ללא ערכת נושא לערכת הנושא הקיימת.</string>
     <string name="pref_legacy_treatment_title">צור סמלים מסתגלים</string>
-    <string name="pref_legacy_treatment_summary">צור סמלים מסתגלים בשביל כל הקיצורים.</string>
+    <string name="pref_legacy_treatment_summary">צור סמלים מסתגלים עבור כל הקיצורים.</string>
     <string name="pref_legacy_colored_backgrounds">רקעי צבע</string>
     <string name="pref_legacy_colored_backgrounds_summary">צבעי הרקע שנוצרו על בסיס הסמלים המסתגלים.</string>
-    <string name="pref_white_only_treatment">החלף רקעים ללבן</string>
+    <string name="pref_white_only_treatment">החלף רקעים לבנים</string>
     <string name="pref_white_only_treatment_summary">צבעו את הרקעים של כל הסמלים המסתגלים.</string>
     <string name="adaptify_pack_title">צור סמלים מסתגלים בשביל ערכת הסמלים הקיימת</string>
     <string name="icon_shape_override_label">צורת הסמל</string>
