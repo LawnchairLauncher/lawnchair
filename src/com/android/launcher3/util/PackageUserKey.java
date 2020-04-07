@@ -3,6 +3,7 @@ package com.android.launcher3.util;
 import android.os.UserHandle;
 import android.service.notification.StatusBarNotification;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.model.data.ItemInfo;
@@ -59,5 +60,11 @@ public class PackageUserKey {
         if (!(obj instanceof PackageUserKey)) return false;
         PackageUserKey otherKey = (PackageUserKey) obj;
         return mPackageName.equals(otherKey.mPackageName) && mUser.equals(otherKey.mUser);
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return mPackageName + "#" + mUser;
     }
 }
