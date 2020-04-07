@@ -56,6 +56,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
     public static final int REMOVE = R.id.action_remove;
     public static final int UNINSTALL = R.id.action_uninstall;
     public static final int DISMISS_PREDICTION = R.id.action_dismiss_prediction;
+    public static final int PIN_PREDICTION = R.id.action_pin_prediction;
     public static final int RECONFIGURE = R.id.action_reconfigure;
     protected static final int ADD_TO_WORKSPACE = R.id.action_add_to_workspace;
     protected static final int MOVE = R.id.action_move;
@@ -120,6 +121,10 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
         if (!(host.getTag() instanceof ItemInfo)) return;
         ItemInfo item = (ItemInfo) host.getTag();
 
+        if (host instanceof AccessibilityActionHandler) {
+            ((AccessibilityActionHandler) host).addSupportedAccessibilityActions(info);
+        }
+
         // If the request came from keyboard, do not add custom shortcuts as that is already
         // exposed as a direct shortcut
         if (!fromKeyboard && ShortcutUtil.supportsShortcuts(item)) {
@@ -157,14 +162,14 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
     }
 
     private boolean itemSupportsLongClick(View host, ItemInfo info) {
-        return new CustomActionsPopup(mLauncher, host).canShow()
-                || ShortcutUtil.supportsShortcuts(info);
+        return PopupContainerWithArrow.canShow(host, info)
+                || new CustomActionsPopup(mLauncher, host).canShow();
     }
 
     private boolean itemSupportsAccessibleDrag(ItemInfo item) {
         if (item instanceof WorkspaceItemInfo) {
             // Support the action unless the item is in a context menu.
-            return item.screenId >= 0;
+            return item.screenId >= 0 && item.container != Favorites.CONTAINER_HOTSEAT_PREDICTION;
         }
         return (item instanceof LauncherAppWidgetInfo)
                 || (item instanceof FolderInfo);
@@ -181,7 +186,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
 
     public boolean performAction(final View host, final ItemInfo item, int action) {
         if (action == ACTION_LONG_CLICK) {
-            if (ShortcutUtil.supportsShortcuts(item)) {
+            if (PopupContainerWithArrow.canShow(host, item)) {
                 // Long press should be consumed for workspace items, and it should invoke the
                 // Shortcuts / Notifications / Actions pop-up menu, and not start a drag as the
                 // standard long press path does.
@@ -195,7 +200,10 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
                 }
             }
         }
-
+        if (host instanceof AccessibilityActionHandler
+                && ((AccessibilityActionHandler) host).performAccessibilityAction(action, item)) {
+            return true;
+        }
         if (action == MOVE) {
             beginAccessibleDrag(host, item);
         } else if (action == ADD_TO_WORKSPACE) {
@@ -465,5 +473,21 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
             Log.wtf(TAG, "Not enough space on an empty screen");
         }
         return screenId;
+    }
+
+    /**
+     * An interface allowing views to handle their own action.
+     */
+    public interface AccessibilityActionHandler {
+
+        /**
+         * performs accessibility action and returns true on success
+         */
+        boolean performAccessibilityAction(int action, ItemInfo itemInfo);
+
+        /**
+         * adds all the accessibility actions that can be handled.
+         */
+        void addSupportedAccessibilityActions(AccessibilityNodeInfo accessibilityNodeInfo);
     }
 }

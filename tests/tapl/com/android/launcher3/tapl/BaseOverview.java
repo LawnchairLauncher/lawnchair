@@ -117,8 +117,8 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
             // part) one in the center, and parts of its right and left siblings. Find the
             // main task view by its width.
             final UiObject2 widestTask = Collections.max(taskViews,
-                    (t1, t2) -> Integer.compare(t1.getVisibleBounds().width(),
-                            t2.getVisibleBounds().width()));
+                    (t1, t2) -> Integer.compare(mLauncher.getVisibleBounds(t1).width(),
+                            mLauncher.getVisibleBounds(t2).width()));
 
             return new OverviewTask(mLauncher, widestTask, this);
         }

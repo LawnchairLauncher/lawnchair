@@ -59,14 +59,12 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.folder.PreviewBackground;
 import com.android.launcher3.graphics.DragPreviewProvider;
-import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.util.CellAndSpan;
 import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.ParcelableSparseArray;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.views.ActivityContext;
-import com.android.launcher3.views.Transposable;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 
 import java.lang.annotation.Retention;
@@ -77,7 +75,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Stack;
 
-public class CellLayout extends ViewGroup implements Transposable {
+public class CellLayout extends ViewGroup {
     private static final String TAG = "CellLayout";
     private static final boolean LOGD = false;
 
@@ -184,7 +182,6 @@ public class CellLayout extends ViewGroup implements Transposable {
 
     // Related to accessible drag and drop
     private boolean mUseTouchHelper = false;
-    private RotationMode mRotationMode = RotationMode.NORMAL;
 
     public CellLayout(Context context) {
         this(context, null);
@@ -206,7 +203,7 @@ public class CellLayout extends ViewGroup implements Transposable {
         setClipToPadding(false);
         mActivity = ActivityContext.lookupContext(context);
 
-        DeviceProfile grid = mActivity.getWallpaperDeviceProfile();
+        DeviceProfile grid = mActivity.getDeviceProfile();
 
         mCellWidth = mCellHeight = -1;
         mFixedCellWidth = mFixedCellHeight = -1;
@@ -312,24 +309,6 @@ public class CellLayout extends ViewGroup implements Transposable {
             getParent().notifySubtreeAccessibilityStateChanged(
                     this, this, AccessibilityEvent.CONTENT_CHANGE_TYPE_SUBTREE);
         }
-    }
-
-    public void setRotationMode(RotationMode mode) {
-        if (mRotationMode != mode) {
-            mRotationMode = mode;
-            requestLayout();
-        }
-    }
-
-    @Override
-    public RotationMode getRotationMode() {
-        return mRotationMode;
-    }
-
-    @Override
-    public void setPadding(int left, int top, int right, int bottom) {
-        mRotationMode.mapRect(left, top, right, bottom, mTempRect);
-        super.setPadding(mTempRect.left, mTempRect.top, mTempRect.right, mTempRect.bottom);
     }
 
     @Override
@@ -789,13 +768,6 @@ public class CellLayout extends ViewGroup implements Transposable {
         int childWidthSize = widthSize - (getPaddingLeft() + getPaddingRight());
         int childHeightSize = heightSize - (getPaddingTop() + getPaddingBottom());
 
-        mShortcutsAndWidgets.setRotation(mRotationMode.surfaceRotation);
-        if (mRotationMode.isTransposed) {
-            int tmp = childWidthSize;
-            childWidthSize = childHeightSize;
-            childHeightSize = tmp;
-        }
-
         if (mFixedCellWidth < 0 || mFixedCellHeight < 0) {
             int cw = DeviceProfile.calculateCellWidth(childWidthSize, mCountX);
             int ch = DeviceProfile.calculateCellHeight(childHeightSize, mCountY);
@@ -846,15 +818,7 @@ public class CellLayout extends ViewGroup implements Transposable {
                 right + mTempRect.right + getPaddingRight(),
                 bottom + mTempRect.bottom + getPaddingBottom());
 
-        if (mRotationMode.isTransposed) {
-            int halfW = mShortcutsAndWidgets.getMeasuredWidth() / 2;
-            int halfH = mShortcutsAndWidgets.getMeasuredHeight() / 2;
-            int cX = (left + right) / 2;
-            int cY = (top + bottom) / 2;
-            mShortcutsAndWidgets.layout(cX - halfW, cY - halfH, cX + halfW, cY + halfH);
-        } else {
-            mShortcutsAndWidgets.layout(left, top, right, bottom);
-        }
+        mShortcutsAndWidgets.layout(left, top, right, bottom);
     }
 
     /**
@@ -863,8 +827,7 @@ public class CellLayout extends ViewGroup implements Transposable {
      * width in {@link DeviceProfile#calculateCellWidth(int, int)}.
      */
     public int getUnusedHorizontalSpace() {
-        return (mRotationMode.isTransposed ? getMeasuredHeight() : getMeasuredWidth())
-                - getPaddingLeft() - getPaddingRight() - (mCountX * mCellWidth);
+        return getMeasuredWidth() - getPaddingLeft() - getPaddingRight() - (mCountX * mCellWidth);
     }
 
     public Drawable getScrimBackground() {
