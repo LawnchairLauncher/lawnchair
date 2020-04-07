@@ -713,11 +713,15 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         int currentIndex = indexOfChild(taskView);
         TaskView previousTask = getTaskViewAt(currentIndex - 1);
         TaskView nextTask = getTaskViewAt(currentIndex + 1);
+        float alpha = isTaskOverlayModal ? 0.0f : 1.0f;
         if (previousTask != null) {
-            previousTask.setVisibility(isTaskOverlayModal ? View.INVISIBLE : View.VISIBLE);
+            previousTask.animate().alpha(alpha)
+                    .translationX(isTaskOverlayModal ? previousTask.getWidth() / 2 : 0);
         }
         if (nextTask != null) {
-            nextTask.setVisibility(isTaskOverlayModal ? View.INVISIBLE : View.VISIBLE);
+            nextTask.animate().alpha(alpha)
+                    .translationX(isTaskOverlayModal ? -nextTask.getWidth() / 2 : 0);
+
         }
     }
 

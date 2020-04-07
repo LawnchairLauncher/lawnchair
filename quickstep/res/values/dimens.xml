@@ -17,6 +17,8 @@
 <resources>
 
     <dimen name="task_thumbnail_top_margin">24dp</dimen>
+    <dimen name="task_thumbnail_top_margin_with_actions">60dp</dimen>
+    <dimen name="task_thumbnail_bottom_margin_with_actions">76dp</dimen>
     <dimen name="task_thumbnail_half_top_margin">12dp</dimen>
     <dimen name="task_thumbnail_icon_size">48dp</dimen>
     <!-- For screens without rounded corners -->
