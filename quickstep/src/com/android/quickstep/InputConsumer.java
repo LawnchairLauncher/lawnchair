@@ -70,10 +70,10 @@ public interface InputConsumer {
     }
 
     /**
-     * Returns true if the given input consumer is in the hierarchy of this input consumer.
+     * Returns the active input consumer is in the hierarchy of this input consumer.
      */
-    default boolean isInConsumerHierarchy(InputConsumer candidate) {
-        return this == candidate;
+    default InputConsumer getActiveConsumerInHierarchy() {
+        return this;
     }
 
     /**

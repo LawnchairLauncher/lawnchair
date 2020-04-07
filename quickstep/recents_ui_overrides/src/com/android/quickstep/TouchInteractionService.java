@@ -481,14 +481,14 @@ public class TouchInteractionService extends Service implements PluginListener<O
         }
 
         ActiveGestureLog.INSTANCE.addLog("onMotionEvent", event.getActionMasked());
+        boolean cleanUpConsumer = (action == ACTION_UP || action == ACTION_CANCEL)
+                && mConsumer != null
+                && !mConsumer.getActiveConsumerInHierarchy().isConsumerDetachedFromGesture();
         mUncheckedConsumer.onMotionEvent(event);
 
-        if (action == ACTION_UP || action == ACTION_CANCEL) {
-            if (mConsumer != null && !mConsumer.isConsumerDetachedFromGesture()) {
-                onConsumerInactive(mConsumer);
-            }
+        if (cleanUpConsumer) {
+            reset();
         }
-
         TraceHelper.INSTANCE.endFlagsOverride(traceToken);
     }
 
@@ -686,13 +686,19 @@ public class TouchInteractionService extends Service implements PluginListener<O
     }
 
     /**
-     * To be called by the consumer when it's no longer active.
+     * To be called by the consumer when it's no longer active. This can be called by any consumer
+     * in the hierarchy at any point during the gesture (ie. if a delegate consumer starts
+     * intercepting touches, the base consumer can try to call this).
      */
     private void onConsumerInactive(InputConsumer caller) {
-        if (mConsumer != null && mConsumer.isInConsumerHierarchy(caller)) {
-            mConsumer = mUncheckedConsumer = mResetGestureInputConsumer;
-            mGestureState = new GestureState();
+        if (mConsumer != null && mConsumer.getActiveConsumerInHierarchy() == caller) {
+            reset();
         }
+    }
+
+    private void reset() {
+        mConsumer = mUncheckedConsumer = mResetGestureInputConsumer;
+        mGestureState = new GestureState();
     }
 
     private void preloadOverview(boolean fromInit) {
