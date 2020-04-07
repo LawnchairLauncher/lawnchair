@@ -235,7 +235,8 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
                 // we need to run the state change task again.
                 if (Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE.equals(action) ||
                         Intent.ACTION_MANAGED_PROFILE_UNLOCKED.equals(action)) {
-                    enqueueModelUpdateTask(new UserLockStateChangedTask(user));
+                    enqueueModelUpdateTask(new UserLockStateChangedTask(
+                            user, Intent.ACTION_MANAGED_PROFILE_UNLOCKED.equals(action)));
                 }
             }
         } else if (IS_STUDIO_BUILD && ACTION_FORCE_ROLOAD.equals(action)) {
