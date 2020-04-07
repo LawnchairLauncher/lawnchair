@@ -107,11 +107,11 @@ public class BackGestureTutorialFragment extends Fragment implements BackGesture
     }
 
     void onAttachedToWindow() {
-        mEdgeBackGestureHandler.setIsEnabled(true);
+        mEdgeBackGestureHandler.setViewGroupParent((ViewGroup) getRootView());
     }
 
     void onDetachedFromWindow() {
-        mEdgeBackGestureHandler.setIsEnabled(false);
+        mEdgeBackGestureHandler.setViewGroupParent(null);
     }
 
     @Override

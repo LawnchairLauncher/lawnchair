@@ -88,9 +88,7 @@ public abstract class BaseQuickstepLauncher extends Launcher
         super.onCreate(savedInstanceState);
         mSystemActions = new SystemActions(this);
 
-        SysUINavigationMode.Mode mode = SysUINavigationMode.INSTANCE.get(this)
-                .addModeChangeListener(this);
-        getRotationHelper().setRotationHadDifferentUI(mode != Mode.NO_BUTTON);
+        SysUINavigationMode.INSTANCE.get(this).addModeChangeListener(this);
 
         if (!getSharedPrefs().getBoolean(HOME_BOUNCE_SEEN, false)) {
             getStateManager().addStateListener(new LauncherStateManager.StateListener() {
@@ -141,7 +139,6 @@ public abstract class BaseQuickstepLauncher extends Launcher
     @Override
     public void onNavigationModeChanged(Mode newMode) {
         getDragLayer().recreateControllers();
-        getRotationHelper().setRotationHadDifferentUI(newMode != Mode.NO_BUTTON);
     }
 
     @Override

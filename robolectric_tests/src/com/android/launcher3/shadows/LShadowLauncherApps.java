@@ -127,6 +127,10 @@ public class LShadowLauncherApps extends ShadowLauncherApps {
     @Override
     protected List<LauncherActivityInfo> getShortcutConfigActivityList(String packageName,
             UserHandle user) {
-        return Collections.emptyList();
+        Intent intent = new Intent(Intent.ACTION_CREATE_SHORTCUT).setPackage(packageName);
+        return RuntimeEnvironment.application.getPackageManager().queryIntentActivities(intent, 0)
+                .stream()
+                .map(ri -> getLauncherActivityInfo(ri.activityInfo))
+                .collect(Collectors.toList());
     }
 }

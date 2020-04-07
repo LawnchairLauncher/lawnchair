@@ -130,6 +130,17 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
         mGestureId = gestureId;
     }
 
+    public GestureState(GestureState other) {
+        mHomeIntent = other.mHomeIntent;
+        mOverviewIntent = other.mOverviewIntent;
+        mActivityInterface = other.mActivityInterface;
+        mStateCallback = other.mStateCallback;
+        mGestureId = other.mGestureId;
+        mRunningTask = other.mRunningTask;
+        mEndTarget = other.mEndTarget;
+        mFinishingRecentsAnimationTaskId = other.mFinishingRecentsAnimationTaskId;
+    }
+
     public GestureState() {
         // Do nothing, only used for initializing the gesture state prior to user unlock
         mHomeIntent = new Intent();

@@ -57,7 +57,7 @@ abstract class Launchable {
 
     private Background launch(BySelector selector) {
         LauncherInstrumentation.log("Launchable.launch before click " +
-                mObject.getVisibleCenter() + " in " + mObject.getVisibleBounds());
+                mObject.getVisibleCenter() + " in " + mLauncher.getVisibleBounds(mObject));
 
         mLauncher.executeAndWaitForEvent(
                 () -> mLauncher.clickLauncherObject(mObject),

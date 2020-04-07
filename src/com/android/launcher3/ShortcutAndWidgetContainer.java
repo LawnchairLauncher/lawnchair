@@ -93,7 +93,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
     public void setupLp(View child) {
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
         if (child instanceof LauncherAppWidgetHostView) {
-            DeviceProfile profile = mActivity.getWallpaperDeviceProfile();
+            DeviceProfile profile = mActivity.getDeviceProfile();
             lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX,
                     profile.appWidgetScale.x, profile.appWidgetScale.y);
         } else {
@@ -108,12 +108,12 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
 
     public int getCellContentHeight() {
         return Math.min(getMeasuredHeight(),
-                mActivity.getWallpaperDeviceProfile().getCellHeight(mContainerType));
+                mActivity.getDeviceProfile().getCellHeight(mContainerType));
     }
 
     public void measureChild(View child) {
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
-        final DeviceProfile profile = mActivity.getWallpaperDeviceProfile();
+        final DeviceProfile profile = mActivity.getDeviceProfile();
 
         if (child instanceof LauncherAppWidgetHostView) {
             lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX,
