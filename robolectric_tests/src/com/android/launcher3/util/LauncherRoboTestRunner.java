@@ -21,10 +21,13 @@ import com.android.launcher3.shadows.LShadowAppWidgetManager;
 import com.android.launcher3.shadows.LShadowBackupManager;
 import com.android.launcher3.shadows.LShadowBitmap;
 import com.android.launcher3.shadows.LShadowLauncherApps;
+import com.android.launcher3.shadows.LShadowTypeface;
 import com.android.launcher3.shadows.LShadowUserManager;
+import com.android.launcher3.shadows.LShadowWallpaperManager;
 import com.android.launcher3.shadows.ShadowDeviceFlag;
 import com.android.launcher3.shadows.ShadowLooperExecutor;
 import com.android.launcher3.shadows.ShadowMainThreadInitializedObject;
+import com.android.launcher3.shadows.ShadowOverrides;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 
 import org.junit.runners.model.InitializationError;
@@ -49,9 +52,12 @@ public class LauncherRoboTestRunner extends RobolectricTestRunner {
             LShadowLauncherApps.class,
             LShadowBitmap.class,
             LShadowBackupManager.class,
+            LShadowTypeface.class,
+            LShadowWallpaperManager.class,
             ShadowLooperExecutor.class,
             ShadowMainThreadInitializedObject.class,
             ShadowDeviceFlag.class,
+            ShadowOverrides.class
     };
 
     public LauncherRoboTestRunner(Class<?> testClass) throws InitializationError {
@@ -78,6 +84,9 @@ public class LauncherRoboTestRunner extends RobolectricTestRunner {
 
             // Disable plugins
             PluginManagerWrapper.INSTANCE.initializeForTesting(mock(PluginManagerWrapper.class));
+
+            // Initialize mock wallpaper manager
+            LShadowWallpaperManager.initializeMock();
         }
 
         @Override
@@ -86,6 +95,7 @@ public class LauncherRoboTestRunner extends RobolectricTestRunner {
 
             ShadowLog.stream = null;
             ShadowMainThreadInitializedObject.resetInitializedObjects();
+            ShadowOverrides.clearProvider();
         }
     }
 }

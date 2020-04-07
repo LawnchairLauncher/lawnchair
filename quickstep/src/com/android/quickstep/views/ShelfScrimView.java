@@ -88,7 +88,6 @@ public class ShelfScrimView extends ScrimView<BaseQuickstepLauncher>
 
     private float mShiftRange;
 
-    private final float mShelfOffset;
     private float mTopOffset;
     private float mShelfTop;
     private float mShelfTopAtThreshold;
@@ -110,7 +109,6 @@ public class ShelfScrimView extends ScrimView<BaseQuickstepLauncher>
         mRadius = BOTTOM_CORNER_RADIUS_RATIO * Themes.getDialogCornerRadius(context);
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-        mShelfOffset = context.getResources().getDimension(R.dimen.shelf_surface_offset);
         // Just assume the easiest UI for now, until we have the proper layout information.
         mDrawingFlatColor = true;
     }
@@ -179,7 +177,7 @@ public class ShelfScrimView extends ScrimView<BaseQuickstepLauncher>
                         Math.min(hotseatSize, LayoutUtils.getDefaultSwipeHeight(context, dp));
                 mDragHandleProgress =  1 - (dragHandleTop / mShiftRange);
             }
-            mTopOffset = dp.getInsets().top - mShelfOffset;
+            mTopOffset = dp.getInsets().top - mDragHandleSize.y;
             mShelfTopAtThreshold = mShiftRange * SCRIM_CATCHUP_THRESHOLD + mTopOffset;
         }
         updateColors();
@@ -190,12 +188,15 @@ public class ShelfScrimView extends ScrimView<BaseQuickstepLauncher>
     @Override
     public void updateColors() {
         super.updateColors();
+        mDragHandleOffset = 0;
         if (mDrawingFlatColor) {
-            mDragHandleOffset = 0;
             return;
         }
 
-        mDragHandleOffset = mShelfOffset - mDragHandleSize;
+        if (mProgress < mDragHandleProgress) {
+            mDragHandleOffset = mShiftRange * (mDragHandleProgress - mProgress);
+        }
+
         if (mProgress >= SCRIM_CATCHUP_THRESHOLD) {
             mShelfTop = mShiftRange * mProgress + mTopOffset;
         } else {
@@ -230,10 +231,6 @@ public class ShelfScrimView extends ScrimView<BaseQuickstepLauncher>
                     Utilities.mapToRange(mProgress, (float) 0, mMidProgress, mMaxScrimAlpha,
                             (float) 0, LINEAR));
             mRemainingScreenColor = setColorAlphaBound(mScrimColor, remainingScrimAlpha);
-        }
-
-        if (mProgress < mDragHandleProgress) {
-            mDragHandleOffset += mShiftRange * (mDragHandleProgress - mProgress);
         }
     }
 
@@ -289,5 +286,10 @@ public class ShelfScrimView extends ScrimView<BaseQuickstepLauncher>
 
         mPaint.setColor(mShelfColor);
         canvas.drawRoundRect(0, mShelfTop, width, height + mRadius, mRadius, mRadius, mPaint);
+    }
+
+    @Override
+    public float getVisualTop() {
+        return mShelfTop;
     }
 }

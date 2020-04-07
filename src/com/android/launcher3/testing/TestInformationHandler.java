@@ -184,6 +184,10 @@ public class TestInformationHandler implements ResourceBasedOverride {
                         mDeviceProfile.allAppsCellHeightPx);
                 break;
             }
+
+            case TestProtocol.REQUEST_MOCK_SENSOR_ROTATION:
+                TestProtocol.sDisableSensorRotation = true;
+                break;
         }
         return response;
     }
