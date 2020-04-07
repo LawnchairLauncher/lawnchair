@@ -444,9 +444,12 @@ public class TouchInteractionService extends Service implements PluginListener<O
             GestureState newGestureState;
 
             if (mDeviceState.isInSwipeUpTouchRegion(event)) {
+                // Clone the previous gesture state since onConsumerAboutToBeSwitched might trigger
+                // onConsumerInactive and wipe the previous gesture state
+                GestureState prevGestureState = new GestureState(mGestureState);
                 newGestureState = createGestureState();
                 mConsumer.onConsumerAboutToBeSwitched();
-                mConsumer = newConsumer(mGestureState, newGestureState, event);
+                mConsumer = newConsumer(prevGestureState, newGestureState, event);
 
                 ActiveGestureLog.INSTANCE.addLog("setInputConsumer", mConsumer.getType());
                 mUncheckedConsumer = mConsumer;
@@ -678,7 +681,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
      * To be called by the consumer when it's no longer active.
      */
     private void onConsumerInactive(InputConsumer caller) {
-        if (mConsumer == caller) {
+        if (mConsumer != null && mConsumer.isInConsumerHierarchy(caller)) {
             mConsumer = mUncheckedConsumer = mResetGestureInputConsumer;
             mGestureState = new GestureState();
         }

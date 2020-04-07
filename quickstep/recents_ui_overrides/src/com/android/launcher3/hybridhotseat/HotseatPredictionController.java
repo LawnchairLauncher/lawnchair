@@ -349,7 +349,10 @@ public class HotseatPredictionController implements DragController.DragListener,
                 mHotSeatItemsCount);
     }
 
-    private void pinPrediction(ItemInfo info) {
+    /**
+     * Pins a predicted app icon into place.
+     */
+    public void pinPrediction(ItemInfo info) {
         PredictedAppIcon icon = (PredictedAppIcon) mHotseat.getChildAt(
                 mHotseat.getCellXFromOrder(info.rank),
                 mHotseat.getCellYFromOrder(info.rank));

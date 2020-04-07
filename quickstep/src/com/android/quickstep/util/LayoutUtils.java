@@ -33,9 +33,6 @@ import com.android.quickstep.SysUINavigationMode;
 
 import java.lang.annotation.Retention;
 
-import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_ACTIONS;
-import static java.lang.annotation.RetentionPolicy.SOURCE;
-
 public class LayoutUtils {
 
     private static final int MULTI_WINDOW_STRATEGY_HALF_SCREEN = 1;
@@ -68,7 +65,7 @@ public class LayoutUtils {
                 // UI when shown.
                 extraSpace = 0;
             } else {
-                extraSpace = getDefaultSwipeHeight(context, dp) + dp.verticalDragHandleSizePx
+                extraSpace = getDefaultSwipeHeight(context, dp) + dp.workspacePageIndicatorHeight
                         + res.getDimensionPixelSize(
                                 R.dimen.dynamic_grid_hotseat_extra_vertical_size)
                         + res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_bottom_padding);

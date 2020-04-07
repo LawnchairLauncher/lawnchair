@@ -30,11 +30,8 @@ import android.content.pm.PackageInstaller.SessionParams;
 
 import com.android.launcher3.FolderInfo;
 import com.android.launcher3.ItemInfo;
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.icons.BitmapInfo;
-import com.android.launcher3.model.BgDataModel.Callbacks;
-import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.LauncherLayoutBuilder;
 import com.android.launcher3.util.LauncherModelHelper;
 import com.android.launcher3.util.LauncherRoboTestRunner;
@@ -45,8 +42,6 @@ import org.junit.runner.RunWith;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.LooperMode;
 import org.robolectric.annotation.LooperMode.Mode;
-
-import java.util.ArrayList;
 
 /**
  * Tests for layout parser for remote layout
@@ -120,18 +115,6 @@ public class DefaultLayoutProviderTest {
     }
 
     private void writeLayoutAndLoad(LauncherLayoutBuilder builder) throws Exception {
-        mModelHelper.setupDefaultLayoutProvider(builder);
-
-        LoaderResults results = new LoaderResults(
-                LauncherAppState.getInstance(mTargetContext),
-                mModelHelper.getBgDataModel(),
-                mModelHelper.getAllAppsList(),
-                new Callbacks[0]);
-        LoaderTask task = new LoaderTask(
-                LauncherAppState.getInstance(mTargetContext),
-                mModelHelper.getAllAppsList(),
-                mModelHelper.getBgDataModel(),
-                results);
-        Executors.MODEL_EXECUTOR.submit(() -> task.loadWorkspace(new ArrayList<>())).get();
+        mModelHelper.setupDefaultLayoutProvider(builder).loadModelSync();
     }
 }

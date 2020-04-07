@@ -43,7 +43,7 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
     AllApps(LauncherInstrumentation launcher) {
         super(launcher);
         final UiObject2 allAppsContainer = verifyActiveContainer();
-        mHeight = allAppsContainer.getVisibleBounds().height();
+        mHeight = mLauncher.getVisibleBounds(allAppsContainer).height();
         final UiObject2 appListRecycler = mLauncher.waitForObjectInContainer(allAppsContainer,
                 "apps_list_view");
         // Wait for the recycler to populate.
@@ -66,7 +66,7 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
             LauncherInstrumentation.log("hasClickableIcon: icon not visible");
             return false;
         }
-        final Rect iconBounds = icon.getVisibleBounds();
+        final Rect iconBounds = mLauncher.getVisibleBounds(icon);
         LauncherInstrumentation.log("hasClickableIcon: icon bounds: " + iconBounds);
         if (iconBounds.height() < mIconHeight / 2) {
             LauncherInstrumentation.log("hasClickableIcon: icon has insufficient height");
@@ -86,7 +86,7 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
 
     private boolean iconCenterInSearchBox(UiObject2 allAppsContainer, UiObject2 icon) {
         final Point iconCenter = icon.getVisibleCenter();
-        return getSearchBox(allAppsContainer).getVisibleBounds().contains(
+        return mLauncher.getVisibleBounds(getSearchBox(allAppsContainer)).contains(
                 iconCenter.x, iconCenter.y);
     }
 
@@ -125,11 +125,11 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
                                 mLauncher.getObjectsInContainer(allAppsContainer, "icon")
                                         .stream()
                                         .filter(icon ->
-                                                icon.getVisibleBounds().bottom
+                                                        mLauncher.getVisibleBounds(icon).bottom
                                                         <= displayBottom)
                                         .collect(Collectors.toList()),
-                                searchBox.getVisibleBounds().bottom
-                                        - allAppsContainer.getVisibleBounds().top);
+                                mLauncher.getVisibleBounds(searchBox).bottom
+                                        - mLauncher.getVisibleBounds(allAppsContainer).top);
                         final int newScroll = getAllAppsScroll();
                         mLauncher.assertTrue(
                                 "Scrolled in a wrong direction in AllApps: from " + scroll + " to "
@@ -166,7 +166,8 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
             final UiObject2 searchBox = getSearchBox(allAppsContainer);
 
             int attempts = 0;
-            final Rect margins = new Rect(0, searchBox.getVisibleBounds().bottom + 1, 0, 5);
+            final Rect margins =
+                    new Rect(0, mLauncher.getVisibleBounds(searchBox).bottom + 1, 0, 5);
 
             for (int scroll = getAllAppsScroll();
                     scroll != 0;

@@ -67,7 +67,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
     public boolean supportsAccessibilityDrop(ItemInfo info, View view) {
         if (info instanceof WorkspaceItemInfo) {
             // Support the action unless the item is in a context menu.
-            return info.screenId >= 0;
+            return canRemove(info);
         }
 
         return (info instanceof LauncherAppWidgetInfo)
