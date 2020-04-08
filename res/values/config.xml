@@ -109,6 +109,7 @@
     <item type="id" name="action_dismiss_notification" />
     <item type="id" name="action_remote_action_shortcut" />
     <item type="id" name="action_dismiss_prediction" />
+    <item type="id" name="action_pin_prediction"/>
 
     <!-- QSB IDs. DO not change -->
     <item type="id" name="search_container_workspace" />

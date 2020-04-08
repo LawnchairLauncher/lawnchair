@@ -41,7 +41,7 @@ public class OptionsPopupMenuItem {
     public void launch(@NonNull String expectedPackageName) {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
             LauncherInstrumentation.log("OptionsPopupMenuItem before click "
-                    + mObject.getVisibleCenter() + " in " + mObject.getVisibleBounds());
+                    + mObject.getVisibleCenter() + " in " + mLauncher.getVisibleBounds(mObject));
             mLauncher.clickLauncherObject(mObject);
             if (!Build.MODEL.contains("Cuttlefish") ||
                     Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q &&

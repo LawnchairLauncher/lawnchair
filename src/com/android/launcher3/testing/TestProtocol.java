@@ -92,6 +92,9 @@ public final class TestProtocol {
 
     public static final String REQUEST_OVERVIEW_ACTIONS_ENABLED = "overview-actions-enabled";
 
+    public static boolean sDisableSensorRotation;
+    public static final String REQUEST_MOCK_SENSOR_ROTATION = "mock-sensor-rotation";
+
     public static final String PERMANENT_DIAG_TAG = "TaplTarget";
 
     public static final String NO_BACKGROUND_TO_OVERVIEW_TAG = "b/138251824";

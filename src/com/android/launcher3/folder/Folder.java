@@ -437,7 +437,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         }
         mItemsInvalidated = true;
         mInfo.addListener(this);
-        mPreviousLabel = mInfo.title.toString();
+        Optional.ofNullable(mInfo.title).ifPresent(title -> mPreviousLabel = title.toString());
         mIsPreviousLabelSuggested = !mInfo.hasOption(FLAG_MANUAL_FOLDER_NAME);
 
         if (!isEmpty(mInfo.title)) {
@@ -1646,6 +1646,10 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         } else {
             super.draw(canvas);
         }
+    }
+
+    public FolderPagedView getContent() {
+        return mContent;
     }
 
     private void logEditFolderLabel() {

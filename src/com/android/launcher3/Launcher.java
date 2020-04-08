@@ -56,7 +56,6 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Point;
-import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CancellationSignal;
@@ -102,7 +101,6 @@ import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderGridOrganizer;
 import com.android.launcher3.folder.FolderIcon;
-import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.keyboard.CustomActionsPopup;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
@@ -317,9 +315,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     private float mCurrentAssistantVisibility = 0f;
 
-    private DeviceProfile mStableDeviceProfile;
-    private RotationMode mRotationMode = RotationMode.NORMAL;
-
     protected LauncherOverlayManager mOverlayManager;
     // If true, overlay callbacks are deferred
     private boolean mDeferOverlayCallbacks;
@@ -503,24 +498,12 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         super.onConfigurationChanged(newConfig);
     }
 
-    public void reload() {
-        onIdpChanged(mDeviceProfile.inv);
-    }
-
-    private boolean supportsFakeLandscapeUI() {
-        return FeatureFlags.FAKE_LANDSCAPE_UI.get() && !mRotationHelper.homeScreenCanRotate();
-    }
-
     @Override
     public void reapplyUi() {
         reapplyUi(true /* cancelCurrentAnimation */);
     }
 
     public void reapplyUi(boolean cancelCurrentAnimation) {
-        if (supportsFakeLandscapeUI()) {
-            mRotationMode = mStableDeviceProfile == null
-                    ? RotationMode.NORMAL : getFakeRotationMode(mDeviceProfile);
-        }
         getRootView().dispatchInsets();
         getStateManager().reapplyState(cancelCurrentAnimation);
     }
@@ -533,7 +516,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     private void onIdpChanged(InvariantDeviceProfile idp) {
         mUserEventDispatcher = null;
 
-        DeviceProfile oldWallpaperProfile = getWallpaperDeviceProfile();
         initDeviceProfile(idp);
         dispatchDeviceProfileChanged();
         reapplyUi();
@@ -542,9 +524,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         // Calling onSaveInstanceState ensures that static cache used by listWidgets is
         // initialized properly.
         onSaveInstanceState(new Bundle());
-        if (oldWallpaperProfile != getWallpaperDeviceProfile()) {
-            mModel.rebindCallbacks();
-        }
+        mModel.rebindCallbacks();
     }
 
     public void onAssistantVisibilityChanged(float visibility) {
@@ -571,41 +551,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             mDeviceProfile = mDeviceProfile.getMultiWindowProfile(this, mwSize);
         }
 
-        if (supportsFakeLandscapeUI() && mDeviceProfile.isVerticalBarLayout()) {
-            mStableDeviceProfile = mDeviceProfile.inv.portraitProfile;
-            mRotationMode = getFakeRotationMode(mDeviceProfile);
-        } else {
-            mStableDeviceProfile = null;
-            mRotationMode = RotationMode.NORMAL;
-        }
-
-        mRotationHelper.updateRotationAnimation();
         onDeviceProfileInitiated();
-        mModelWriter = mModel.getWriter(getWallpaperDeviceProfile().isVerticalBarLayout(), true);
-    }
-
-    public void updateInsets(Rect insets) {
-        mDeviceProfile.updateInsets(insets);
-        if (mStableDeviceProfile != null) {
-            Rect r = mStableDeviceProfile.getInsets();
-            mRotationMode.mapInsets(this, insets, r);
-            mStableDeviceProfile.updateInsets(r);
-        }
-    }
-
-    @Override
-    public RotationMode getRotationMode() {
-        return mRotationMode;
-    }
-
-    /**
-     * Device profile to be used by UI elements which are shown directly on top of the wallpaper
-     * and whose presentation is tied to the wallpaper (and physical device) and not the activity
-     * configuration.
-     */
-    @Override
-    public DeviceProfile getWallpaperDeviceProfile() {
-        return mStableDeviceProfile == null ? mDeviceProfile : mStableDeviceProfile;
+        mModelWriter = mModel.getWriter(getDeviceProfile().isVerticalBarLayout(), true);
     }
 
     public RotationHelper getRotationHelper() {
@@ -1193,7 +1140,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         // Setup the drag controller (drop targets have to be added in reverse order in priority)
         mDropTargetBar.setup(mDragController);
 
-        mAllAppsController.setupViews(mAppsView);
+        mAllAppsController.setupViews(mAppsView, mScrimView);
     }
 
     /**
@@ -1413,6 +1360,10 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     public DropTargetBar getDropTargetBar() {
         return mDropTargetBar;
+    }
+
+    public ScrimView getScrimView() {
+        return mScrimView;
     }
 
     public LauncherAppWidgetHost getAppWidgetHost() {
@@ -1753,7 +1704,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     public FolderIcon addFolder(CellLayout layout, int container, final int screenId, int cellX,
             int cellY) {
         final FolderInfo folderInfo = new FolderInfo();
-        folderInfo.title = "";
 
         // Update the model
         getModelWriter().addItemToDatabase(folderInfo, container, screenId, cellX, cellY);
@@ -2049,7 +1999,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         mAppWidgetHost.clearViews();
 
         if (mHotseat != null) {
-            mHotseat.resetLayout(getWallpaperDeviceProfile().isVerticalBarLayout());
+            mHotseat.resetLayout(getDeviceProfile().isVerticalBarLayout());
         }
         TraceHelper.INSTANCE.endSection(traceToken);
     }
@@ -2722,10 +2672,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     public TouchController[] createTouchControllers() {
         return new TouchController[] {getDragController(), new AllAppsSwipeController(this)};
-    }
-
-    protected RotationMode getFakeRotationMode(DeviceProfile deviceProfile) {
-        return RotationMode.NORMAL;
     }
 
     protected ScaleAndTranslation getOverviewScaleAndTranslationForNormalState() {

@@ -56,7 +56,7 @@ public final class OverviewTask {
                      "want to dismiss a task")) {
             verifyActiveContainer();
             // Dismiss the task via flinging it up.
-            final Rect taskBounds = mTask.getVisibleBounds();
+            final Rect taskBounds = mLauncher.getVisibleBounds(mTask);
             final int centerX = taskBounds.centerX();
             final int centerY = taskBounds.centerY();
             mLauncher.linearGesture(centerX, centerY, centerX, 0, 10, false,
