@@ -45,8 +45,6 @@ import android.util.LongSparseArray;
 import android.util.MutableInt;
 import android.util.TimingLogger;
 
-import androidx.annotation.VisibleForTesting;
-
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.FolderInfo;
 import com.android.launcher3.InstallShortcutReceiver;
@@ -282,8 +280,7 @@ public class LoaderTask implements Runnable {
         this.notify();
     }
 
-    @VisibleForTesting
-    void loadWorkspace(List<ShortcutInfo> allDeepShortcuts) {
+    private void loadWorkspace(List<ShortcutInfo> allDeepShortcuts) {
         loadWorkspace(allDeepShortcuts, LauncherSettings.Favorites.CONTENT_URI);
     }
 

@@ -16,8 +16,11 @@
 
 package com.android.launcher3.touch;
 
+import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
+import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
+import static com.android.launcher3.touch.SingleAxisSwipeDetector.VERTICAL;
+
 import android.content.res.Resources;
-import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -32,12 +35,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherState.ScaleAndTranslation;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.states.RotationHelper;
 import com.android.launcher3.util.OverScroller;
-
-import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
-import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
-import static com.android.launcher3.touch.SingleAxisSwipeDetector.VERTICAL;
 
 public class PortraitPagedViewHandler implements PagedOrientationHandler {
 
@@ -67,12 +65,11 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public CurveProperties getCurveProperties(PagedView pagedView, Rect mInsets) {
-        int scroll = pagedView.getScrollX();
-        final int halfPageSize = pagedView.getNormalChildWidth() / 2;
-        final int screenCenter = mInsets.left + pagedView.getPaddingLeft() + scroll + halfPageSize;
-        final int halfScreenSize = pagedView.getMeasuredWidth() / 2;
-        return new CurveProperties(scroll, halfPageSize, screenCenter, halfScreenSize);
+    public void getCurveProperties(PagedView view, Rect mInsets, CurveProperties out) {
+        out.scroll = view.getScrollX();
+        out.halfPageSize = view.getNormalChildWidth() / 2;
+        out.halfScreenSize = view.getMeasuredWidth() / 2;
+        out.screenCenter = mInsets.left + view.getPaddingLeft() + out.scroll + out.halfPageSize;
     }
 
     @Override

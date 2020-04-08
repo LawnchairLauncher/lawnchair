@@ -76,9 +76,9 @@ public class DeviceProfile {
     public float workspaceSpringLoadShrinkFactor;
     public final int workspaceSpringLoadedBottomSpace;
 
-    // Drag handle
-    public final int verticalDragHandleSizePx;
-    private final int verticalDragHandleOverlapWorkspace;
+    // Workspace page indicator
+    public final int workspacePageIndicatorHeight;
+    private final int mWorkspacePageIndicatorOverlapWorkspace;
 
     // Workspace icons
     public int iconSizePx;
@@ -190,10 +190,10 @@ public class DeviceProfile {
             cellLayoutBottomPaddingPx = 0;
         }
 
-        verticalDragHandleSizePx = res.getDimensionPixelSize(
-                R.dimen.vertical_drag_handle_size);
-        verticalDragHandleOverlapWorkspace =
-                res.getDimensionPixelSize(R.dimen.vertical_drag_handle_overlap_workspace);
+        workspacePageIndicatorHeight = res.getDimensionPixelSize(
+                R.dimen.workspace_page_indicator_height);
+        mWorkspacePageIndicatorOverlapWorkspace =
+                res.getDimensionPixelSize(R.dimen.workspace_page_indicator_overlap_workspace);
 
         iconDrawablePaddingOriginalPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_icon_drawable_padding);
@@ -211,7 +211,7 @@ public class DeviceProfile {
         hotseatBarSidePaddingEndPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_side_padding);
         // Add a bit of space between nav bar and hotseat in vertical bar layout.
-        hotseatBarSidePaddingStartPx = isVerticalBarLayout() ? verticalDragHandleSizePx : 0;
+        hotseatBarSidePaddingStartPx = isVerticalBarLayout() ? workspacePageIndicatorHeight : 0;
         hotseatBarSizePx = ResourceUtils.pxFromDp(inv.iconSize, dm) + (isVerticalBarLayout()
                 ? (hotseatBarSidePaddingStartPx + hotseatBarSidePaddingEndPx)
                 : (res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_extra_vertical_size)
@@ -227,7 +227,7 @@ public class DeviceProfile {
             // in portrait mode closer together by adding more height to the hotseat.
             // Note: This calculation was created after noticing a pattern in the design spec.
             int extraSpace = getCellSize().y - iconSizePx - iconDrawablePaddingPx * 2
-                    - verticalDragHandleSizePx;
+                    - workspacePageIndicatorHeight;
             hotseatBarSizePx += extraSpace;
             hotseatBarBottomPaddingPx += extraSpace;
 
@@ -376,7 +376,7 @@ public class DeviceProfile {
 
         if (!isVerticalLayout) {
             int expectedWorkspaceHeight = availableHeightPx - hotseatBarSizePx
-                    - verticalDragHandleSizePx - edgeMarginPx;
+                    - workspacePageIndicatorHeight - edgeMarginPx;
             float minRequiredHeight = dropTargetBarSizePx + workspaceSpringLoadedBottomSpace;
             workspaceSpringLoadShrinkFactor = Math.min(
                     res.getInteger(R.integer.config_workspaceSpringLoadShrinkPercentage) / 100.0f,
@@ -480,14 +480,14 @@ public class DeviceProfile {
             padding.bottom = edgeMarginPx;
             if (isSeascape()) {
                 padding.left = hotseatBarSizePx;
-                padding.right = verticalDragHandleSizePx;
+                padding.right = hotseatBarSidePaddingStartPx;
             } else {
-                padding.left = verticalDragHandleSizePx;
+                padding.left = hotseatBarSidePaddingStartPx;
                 padding.right = hotseatBarSizePx;
             }
         } else {
-            int paddingBottom = hotseatBarSizePx + verticalDragHandleSizePx
-                    - verticalDragHandleOverlapWorkspace;
+            int paddingBottom = hotseatBarSizePx + workspacePageIndicatorHeight
+                    - mWorkspacePageIndicatorOverlapWorkspace;
             if (isTablet) {
                 // Pad the left and right of the workspace to ensure consistent spacing
                 // between all icons
@@ -554,7 +554,7 @@ public class DeviceProfile {
                     mInsets.top + dropTargetBarSizePx + edgeMarginPx,
                     mInsets.left + availableWidthPx - edgeMarginPx,
                     mInsets.top + availableHeightPx - hotseatBarSizePx
-                            - verticalDragHandleSizePx - edgeMarginPx);
+                            - workspacePageIndicatorHeight - edgeMarginPx);
         }
     }
 
