@@ -122,9 +122,7 @@ public class LayoutUtils {
             paddingHorz = res.getDimension(paddingResId);
         }
 
-        float topIconMargin = overviewActionsEnabled
-                ? res.getDimension(R.dimen.task_thumbnail_top_margin_with_actions)
-                : res.getDimension(R.dimen.task_thumbnail_top_margin);
+        float topIconMargin = res.getDimension(R.dimen.task_thumbnail_top_margin);
         float bottomMargin = thumbnailBottomMargin(context);
 
         float paddingVert = overviewActionsEnabled && removeShelfFromOverview(context)
