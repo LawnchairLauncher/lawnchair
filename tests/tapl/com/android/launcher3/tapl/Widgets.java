@@ -73,7 +73,7 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
             mLauncher.scroll(
                     widgetsContainer,
                     Direction.UP,
-                    new Rect(0, 0, widgetsContainer.getVisibleBounds().width(), 0),
+                    new Rect(0, 0, mLauncher.getVisibleBounds(widgetsContainer).width(), 0),
                     FLING_STEPS, false);
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer("flung back")) {
                 verifyActiveContainer();
@@ -111,19 +111,19 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
 
                     int maxWidth = 0;
                     for (UiObject2 sibling : widget.getParent().getChildren()) {
-                        maxWidth = Math.max(sibling.getVisibleBounds().width(), maxWidth);
+                        maxWidth = Math.max(mLauncher.getVisibleBounds(sibling).width(), maxWidth);
                     }
 
-                    int visibleDelta = maxWidth - widget.getVisibleBounds().width();
+                    int visibleDelta = maxWidth - mLauncher.getVisibleBounds(widget).width();
                     if (visibleDelta > 0) {
-                        Rect parentBounds = cell.getVisibleBounds();
+                        Rect parentBounds = mLauncher.getVisibleBounds(cell);
                         mLauncher.linearGesture(parentBounds.centerX() + visibleDelta
                                         + mLauncher.getTouchSlop(),
                                 parentBounds.centerY(), parentBounds.centerX(),
                                 parentBounds.centerY(), 10, true, GestureScope.INSIDE);
                     }
 
-                    if (widget.getVisibleBounds().bottom
+                    if (mLauncher.getVisibleBounds(widget).bottom
                             <= displaySize.y - mLauncher.getBottomGestureSize()) {
                         return new Widget(mLauncher, widget);
                     }

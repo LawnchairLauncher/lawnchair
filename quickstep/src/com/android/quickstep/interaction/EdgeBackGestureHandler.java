@@ -17,21 +17,18 @@ package com.android.quickstep.interaction;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.graphics.PointF;
-import android.hardware.display.DisplayManager;
-import android.hardware.display.DisplayManager.DisplayListener;
-import android.os.Handler;
-import android.os.Looper;
 import android.os.SystemProperties;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.ViewConfiguration;
-import android.view.WindowManager;
-import android.view.WindowManager.LayoutParams;
+import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
+
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.ResourceUtils;
 
@@ -40,7 +37,7 @@ import com.android.launcher3.ResourceUtils;
  *
  * Forked from platform/frameworks/base/packages/SystemUI/src/com/android/systemui/statusbar/phone/EdgeBackGestureHandler.java.
  */
-public class EdgeBackGestureHandler implements DisplayListener, OnTouchListener {
+public class EdgeBackGestureHandler implements OnTouchListener {
 
     private static final String TAG = "EdgeBackGestureHandler";
     private static final int MAX_LONG_PRESS_TIMEOUT = SystemProperties.getInt(
@@ -106,29 +103,22 @@ public class EdgeBackGestureHandler implements DisplayListener, OnTouchListener 
         mEdgeWidth = ResourceUtils.getNavbarSize("config_backGestureInset", res);
     }
 
-    void setIsEnabled(boolean isEnabled) {
-        if (isEnabled == mIsEnabled) {
-            return;
-        }
-        mIsEnabled = isEnabled;
+    void setViewGroupParent(@Nullable ViewGroup parent) {
+        mIsEnabled = parent != null;
 
         if (mEdgeBackPanel != null) {
             mEdgeBackPanel.onDestroy();
             mEdgeBackPanel = null;
         }
 
-        if (!mIsEnabled) {
-            mContext.getSystemService(DisplayManager.class).unregisterDisplayListener(this);
-        } else {
-            updateDisplaySize();
-            mContext.getSystemService(DisplayManager.class).registerDisplayListener(this,
-                    new Handler(Looper.getMainLooper()));
-
+        if (mIsEnabled) {
             // Add a nav bar panel window.
-            mEdgeBackPanel = new EdgeBackGesturePanel(mContext);
+            mEdgeBackPanel = new EdgeBackGesturePanel(mContext, parent, createLayoutParams());
             mEdgeBackPanel.setBackCallback(mBackCallback);
-            mEdgeBackPanel.setLayoutParams(createLayoutParams());
-            updateDisplaySize();
+            if (mContext.getDisplay() != null) {
+                mContext.getDisplay().getRealSize(mDisplaySize);
+                mEdgeBackPanel.setDisplaySize(mDisplaySize);
+            }
         }
     }
 
@@ -136,21 +126,11 @@ public class EdgeBackGestureHandler implements DisplayListener, OnTouchListener 
         mGestureCallback = callback;
     }
 
-    private WindowManager.LayoutParams createLayoutParams() {
+    private LayoutParams createLayoutParams() {
         Resources resources = mContext.getResources();
-        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams(
+        return new LayoutParams(
                 ResourceUtils.getNavbarSize("navigation_edge_panel_width", resources),
-                ResourceUtils.getNavbarSize("navigation_edge_panel_height", resources),
-                LayoutParams.TYPE_APPLICATION_PANEL,
-                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-                        | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
-                        | WindowManager.LayoutParams.FLAG_SPLIT_TOUCH
-                        | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
-                PixelFormat.TRANSLUCENT);
-        layoutParams.setTitle(TAG + mDisplayId);
-        layoutParams.windowAnimations = 0;
-        layoutParams.setFitInsetsTypes(0 /* types */);
-        return layoutParams;
+                ResourceUtils.getNavbarSize("navigation_edge_panel_height", resources));
     }
 
     @Override
@@ -229,26 +209,6 @@ public class EdgeBackGestureHandler implements DisplayListener, OnTouchListener 
             if (!mAllowGesture && mGestureCallback != null) {
                 mGestureCallback.onBackGestureAttempted(BackGestureResult.BACK_NOT_STARTED);
             }
-        }
-    }
-
-    @Override
-    public void onDisplayAdded(int displayId) { }
-
-    @Override
-    public void onDisplayRemoved(int displayId) { }
-
-    @Override
-    public void onDisplayChanged(int displayId) {
-        if (displayId == mDisplayId) {
-            updateDisplaySize();
-        }
-    }
-
-    private void updateDisplaySize() {
-        mContext.getDisplay().getRealSize(mDisplaySize);
-        if (mEdgeBackPanel != null) {
-            mEdgeBackPanel.setDisplaySize(mDisplaySize);
         }
     }
 

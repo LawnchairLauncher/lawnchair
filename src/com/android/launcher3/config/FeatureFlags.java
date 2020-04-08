@@ -95,9 +95,6 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_HINTS_IN_OVERVIEW = getDebugFlag(
             "ENABLE_HINTS_IN_OVERVIEW", false, "Show chip hints and gleams on the overview screen");
 
-    public static final BooleanFlag FAKE_LANDSCAPE_UI = getDebugFlag(
-            "FAKE_LANDSCAPE_UI", false, "Rotate launcher UI instead of using transposed layout");
-
     public static final BooleanFlag FOLDER_NAME_SUGGEST = new DeviceFlag(
             "FOLDER_NAME_SUGGEST", true,
             "Suggests folder names instead of blank text.");

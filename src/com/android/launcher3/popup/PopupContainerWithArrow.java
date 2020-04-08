@@ -185,6 +185,13 @@ public class PopupContainerWithArrow<T extends BaseDraggingActivity> extends Arr
     }
 
     /**
+     * Returns true if we can show the container.
+     */
+    public static boolean canShow(View icon, ItemInfo item) {
+        return icon instanceof BubbleTextView && ShortcutUtil.supportsShortcuts(item);
+    }
+
+    /**
      * Shows the notifications and deep shortcuts associated with {@param icon}.
      * @return the container if shown or null.
      */
@@ -196,7 +203,7 @@ public class PopupContainerWithArrow<T extends BaseDraggingActivity> extends Arr
             return null;
         }
         ItemInfo item = (ItemInfo) icon.getTag();
-        if (!ShortcutUtil.supportsShortcuts(item)) {
+        if (!canShow(icon, item)) {
             return null;
         }
 
