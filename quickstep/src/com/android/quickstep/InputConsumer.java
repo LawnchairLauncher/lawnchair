@@ -70,6 +70,13 @@ public interface InputConsumer {
     }
 
     /**
+     * Returns true if the given input consumer is in the hierarchy of this input consumer.
+     */
+    default boolean isInConsumerHierarchy(InputConsumer candidate) {
+        return this == candidate;
+    }
+
+    /**
      * Called by the event queue when the consumer is about to be switched to a new consumer.
      * Consumers should update the state accordingly here before the state is passed to the new
      * consumer.

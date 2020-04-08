@@ -92,8 +92,6 @@ public class FloatingIconView extends FrameLayout implements
     private ClipIconView mClipIconView;
     private @Nullable Drawable mBadge;
 
-    private float mRotation;
-
     private View mOriginalIcon;
     private RectF mPositionOut;
     private Runnable mOnTargetChangeRunnable;
@@ -194,18 +192,17 @@ public class FloatingIconView extends FrameLayout implements
      * @param positionOut Rect that will hold the size and position of v.
      */
     private void matchPositionOf(Launcher launcher, View v, boolean isOpening, RectF positionOut) {
-        float rotation = getLocationBoundsForView(launcher, v, isOpening, positionOut);
+        getLocationBoundsForView(launcher, v, isOpening, positionOut);
         final InsettableFrameLayout.LayoutParams lp = new InsettableFrameLayout.LayoutParams(
                 Math.round(positionOut.width()),
                 Math.round(positionOut.height()));
-        updatePosition(rotation, positionOut, lp);
+        updatePosition(positionOut, lp);
         setLayoutParams(lp);
 
         mClipIconView.setLayoutParams(new FrameLayout.LayoutParams(lp.width, lp.height));
     }
 
-    private void updatePosition(float rotation, RectF pos, InsettableFrameLayout.LayoutParams lp) {
-        mRotation = rotation;
+    private void updatePosition(RectF pos, InsettableFrameLayout.LayoutParams lp) {
         mPositionOut.set(pos);
         lp.ignoreInsets = true;
         // Position the floating view exactly on top of the original
@@ -228,7 +225,7 @@ public class FloatingIconView extends FrameLayout implements
      * - For DeepShortcutView, we return the bounds of the icon view.
      * - For BubbleTextView, we return the icon bounds.
      */
-    private static float getLocationBoundsForView(Launcher launcher, View v, boolean isOpening,
+    private static void getLocationBoundsForView(Launcher launcher, View v, boolean isOpening,
             RectF outRect) {
         boolean ignoreTransform = !isOpening;
         if (v instanceof DeepShortcutView) {
@@ -239,7 +236,7 @@ public class FloatingIconView extends FrameLayout implements
             ignoreTransform = false;
         }
         if (v == null) {
-            return 0;
+            return;
         }
 
         Rect iconBounds = new Rect();
@@ -253,15 +250,13 @@ public class FloatingIconView extends FrameLayout implements
 
         float[] points = new float[] {iconBounds.left, iconBounds.top, iconBounds.right,
                 iconBounds.bottom};
-        float[] rotation = new float[] {0};
         Utilities.getDescendantCoordRelativeToAncestor(v, launcher.getDragLayer(), points,
-                false, ignoreTransform, rotation);
+                false, ignoreTransform);
         outRect.set(
                 Math.min(points[0], points[2]),
                 Math.min(points[1], points[3]),
                 Math.max(points[0], points[2]),
                 Math.max(points[1], points[3]));
-        return rotation[0];
     }
 
     /**
@@ -443,14 +438,10 @@ public class FloatingIconView extends FrameLayout implements
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
-        int count = canvas.save();
-        canvas.rotate(mRotation,
-                mFinalDrawableBounds.exactCenterX(), mFinalDrawableBounds.exactCenterY());
         super.dispatchDraw(canvas);
         if (mBadge != null) {
             mBadge.draw(canvas);
         }
-        canvas.restoreToCount(count);
     }
 
     public void fastFinish() {
@@ -487,11 +478,10 @@ public class FloatingIconView extends FrameLayout implements
     @Override
     public void onGlobalLayout() {
         if (mOriginalIcon.isAttachedToWindow() && mPositionOut != null) {
-            float rotation = getLocationBoundsForView(mLauncher, mOriginalIcon, mIsOpening,
+            getLocationBoundsForView(mLauncher, mOriginalIcon, mIsOpening,
                     sTmpRectF);
-            if (rotation != mRotation || !sTmpRectF.equals(mPositionOut)) {
-                updatePosition(rotation, sTmpRectF,
-                        (InsettableFrameLayout.LayoutParams) getLayoutParams());
+            if (!sTmpRectF.equals(mPositionOut)) {
+                updatePosition(sTmpRectF, (InsettableFrameLayout.LayoutParams) getLayoutParams());
                 if (mOnTargetChangeRunnable != null) {
                     mOnTargetChangeRunnable.run();
                 }

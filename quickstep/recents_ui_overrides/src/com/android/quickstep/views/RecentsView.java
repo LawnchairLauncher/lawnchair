@@ -71,6 +71,7 @@ import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.OrientationEventListener;
 import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
@@ -90,6 +91,7 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.anim.PendingAnimation.EndState;
@@ -97,9 +99,9 @@ import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.anim.SpringProperty;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.states.RotationHelper;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.PagedOrientationHandler.CurveProperties;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
@@ -169,6 +171,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                 }
             };
 
+    private OrientationEventListener mOrientationListener;
     private int mPreviousRotation;
     protected RecentsAnimationController mRecentsAnimationController;
     protected RecentsAnimationTargets mRecentsAnimationTargets;
@@ -376,6 +379,22 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
         // Initialize quickstep specific cache params here, as this is constructed only once
         mActivity.getViewCache().setCacheSize(R.layout.digital_wellbeing_toast, 5);
+
+        mOrientationListener = new OrientationEventListener(getContext()) {
+            @Override
+            public void onOrientationChanged(int i) {
+                int rotation = RotationHelper.getRotationFromDegrees(i);
+                if (mPreviousRotation != rotation) {
+                    animateRecentsRotationInPlace(rotation);
+                    if (rotation == 0) {
+                        showActionsView();
+                    } else {
+                        hideActionsView();
+                    }
+                    mPreviousRotation = rotation;
+                }
+            }
+        };
     }
 
     public OverScroller getScroller() {
@@ -504,6 +523,15 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     }
 
     public void setOverviewStateEnabled(boolean enabled) {
+        if (supportsVerticalLandscape()
+                && !TestProtocol.sDisableSensorRotation // Ignore hardware dependency for tests
+                && mOrientationListener.canDetectOrientation()) {
+            if (enabled) {
+                mOrientationListener.enable();
+            } else {
+                mOrientationListener.disable();
+            }
+        }
         mOverviewStateEnabled = enabled;
         updateTaskStackListenerState();
         if (!enabled) {
@@ -784,23 +812,14 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         if (getPageCount() == 0 || getPageAt(0).getMeasuredWidth() == 0) {
             return;
         }
-        CurveProperties curveProperties = mOrientationHandler
-            .getCurveProperties(this, mInsets);
-        int scroll = curveProperties.scroll;
-        final int halfPageSize = curveProperties.halfPageSize;
-        final int screenCenter = curveProperties.screenCenter;
-        final int halfScreenSize = curveProperties.halfScreenSize;
-        final int pageSpacing = mPageSpacing;
-        mScrollState.scrollFromEdge = mIsRtl ? scroll : (mMaxScroll - scroll);
+        mOrientationHandler.getCurveProperties(this, mInsets, mScrollState);
+        mScrollState.scrollFromEdge =
+                mIsRtl ? mScrollState.scroll : (mMaxScroll - mScrollState.scroll);
 
         final int pageCount = getPageCount();
         for (int i = 0; i < pageCount; i++) {
             View page = getPageAt(i);
-            float pageCenter = mOrientationHandler.getViewCenterPosition(page) + halfPageSize;
-            float distanceFromScreenCenter = screenCenter - pageCenter;
-            float distanceToReachEdge = halfScreenSize + halfPageSize + pageSpacing;
-            mScrollState.linearInterpolation = Math.min(1,
-                    Math.abs(distanceFromScreenCenter) / distanceToReachEdge);
+            mScrollState.updateInterpolation(mOrientationHandler.getChildStart(page), mPageSpacing);
             ((PageCallbacks) page).onPageScroll(mScrollState);
         }
     }
@@ -945,6 +964,35 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             animateUpRunningTaskIconScale(startProgress);
         }
         setSwipeDownShouldLaunchApp(true);
+    }
+
+    private void animateRecentsRotationInPlace(int newRotation) {
+        if (!supportsVerticalLandscape()) {
+            return;
+        }
+
+        AnimatorSet pa = setRecentsChangedOrientation(true);
+        pa.addListener(AnimationSuccessListener.forRunnable(() -> {
+            updateLayoutRotation(newRotation);
+            mActivity.getDragLayer().recreateControllers();
+            rotateAllChildTasks();
+            setRecentsChangedOrientation(false).start();
+        }));
+        pa.start();
+    }
+
+    public AnimatorSet setRecentsChangedOrientation(boolean fadeInChildren) {
+        getRunningTaskIndex();
+        int runningIndex = getCurrentPage();
+        AnimatorSet as = new AnimatorSet();
+        for (int i = 0; i < getTaskViewCount(); i++) {
+            if (runningIndex == i) {
+                continue;
+            }
+            View taskView = getTaskViewAt(i);
+            as.play(ObjectAnimator.ofFloat(taskView, View.ALPHA, fadeInChildren ? 0 : 1));
+        }
+        return as;
     }
 
     abstract protected boolean supportsVerticalLandscape();
@@ -1143,7 +1191,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         default void onPageScroll(ScrollState scrollState) {}
     }
 
-    public static class ScrollState {
+    public static class ScrollState extends CurveProperties {
 
         /**
          * The progress from 0 to 1, where 0 is the center
@@ -1155,6 +1203,17 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
          * The amount by which all the content is scrolled relative to the end of the list.
          */
         public float scrollFromEdge;
+
+        /**
+         * Updates linearInterpolation for the provided child position
+         */
+        public void updateInterpolation(int childStart, int pageSpacing) {
+            float pageCenter = childStart + halfPageSize;
+            float distanceFromScreenCenter = screenCenter - pageCenter;
+            float distanceToReachEdge = halfScreenSize + halfPageSize + pageSpacing;
+            linearInterpolation = Math.min(1,
+                    Math.abs(distanceFromScreenCenter) / distanceToReachEdge);
+        }
     }
 
     public void setIgnoreResetTask(int taskId) {
@@ -1924,13 +1983,13 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         return offsetX;
     }
 
-    public Consumer<MotionEvent> getEventDispatcher(RotationMode navBarRotationMode) {
+    public Consumer<MotionEvent> getEventDispatcher(float navbarRotation) {
         float degreesRotated;
-        if (navBarRotationMode == RotationMode.NORMAL) {
+        if (navbarRotation == 0) {
             degreesRotated = mOrientationState.areMultipleLayoutOrientationsDisabled() ? 0 :
                     RotationHelper.getDegreesFromRotation(mLayoutRotation);
         } else {
-            degreesRotated = -navBarRotationMode.surfaceRotation;
+            degreesRotated = -navbarRotation;
         }
         if (degreesRotated == 0) {
             return super::onTouchEvent;
@@ -1940,7 +1999,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         // undo that transformation since PagedView also accommodates for the transformation via
         // PagedOrientationHandler
         return e -> {
-            if (navBarRotationMode != RotationMode.NORMAL
+            if (navbarRotation != 0
                     && !mOrientationState.areMultipleLayoutOrientationsDisabled()) {
                 RotationHelper.transformEventForNavBar(e, true);
                 super.onTouchEvent(e);
