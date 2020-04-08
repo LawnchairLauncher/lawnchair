@@ -21,7 +21,7 @@ include $(CLEAR_VARS)
 LOCAL_MODULE := LauncherRoboTests
 LOCAL_MODULE_CLASS := JAVA_LIBRARIES
 
-LOCAL_SDK_VERSION := current
+LOCAL_SDK_VERSION := system_current
 LOCAL_SRC_FILES := $(call all-java-files-under, src)
 LOCAL_STATIC_JAVA_LIBRARIES := \
     androidx.test.runner \
@@ -47,7 +47,7 @@ include $(BUILD_STATIC_JAVA_LIBRARY)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE := RunLauncherRoboTests
-LOCAL_SDK_VERSION := current
+LOCAL_SDK_VERSION := system_current
 LOCAL_JAVA_LIBRARIES := LauncherRoboTests
 
 LOCAL_RESOURCE_DIR := $(LOCAL_PATH)/res

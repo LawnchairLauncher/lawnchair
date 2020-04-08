@@ -20,20 +20,20 @@ import static org.junit.Assert.assertEquals;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.os.UserHandle;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.WorkspaceItemInfo;
-import com.android.launcher3.shadows.LShadowUserManager;
-import com.android.launcher3.util.LauncherRoboTestRunner;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
 
-@RunWith(LauncherRoboTestRunner.class)
+@RunWith(RobolectricTestRunner.class)
 public final class FolderNameProviderTest {
     private Context mContext;
     private WorkspaceItemInfo mItem1;
@@ -45,13 +45,13 @@ public final class FolderNameProviderTest {
         mItem1 = new WorkspaceItemInfo(new AppInfo(
                 new ComponentName("a.b.c", "a.b.c/a.b.c.d"),
                 "title1",
-                LShadowUserManager.newUserHandle(10),
+                UserHandle.of(10),
                 new Intent().setComponent(new ComponentName("a.b.c", "a.b.c/a.b.c.d"))
         ));
         mItem2 = new WorkspaceItemInfo(new AppInfo(
                 new ComponentName("a.b.c", "a.b.c/a.b.c.d"),
                 "title2",
-                LShadowUserManager.newUserHandle(10),
+                UserHandle.of(10),
                 new Intent().setComponent(new ComponentName("a.b.c", "a.b.c/a.b.c.d"))
         ));
     }
