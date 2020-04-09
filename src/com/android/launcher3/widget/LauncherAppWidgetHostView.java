@@ -365,10 +365,9 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
 
     @Override
     public void getVisualDragBounds(Rect bounds) {
-        int x = (int) (1 - getScaleToFit()) * getMeasuredWidth() / 2;
-        int y = (int) (1 - getScaleToFit()) * getMeasuredWidth() / 2;
-        int width = (int) getScaleToFit() * getMeasuredWidth();
-        int height = (int) getScaleToFit() * getMeasuredHeight();
-        bounds.set(x, y , x + width, y + height);
+        int width = (int) (getMeasuredWidth() * mScaleToFit);
+        int height = (int) (getMeasuredHeight() * mScaleToFit);
+
+        bounds.set(0, 0 , width, height);
     }
 }
