@@ -2139,13 +2139,15 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                 && SysUINavigationMode.removeShelfFromOverview(mActivity)) {
             mActionsView = ((ViewGroup) getParent()).findViewById(R.id.overview_actions_view);
             if (mActionsView != null) {
-                Rect rect = new Rect();
-                getTaskSize(rect);
                 InsettableFrameLayout.LayoutParams layoutParams =
-                        new InsettableFrameLayout.LayoutParams(rect.width(),
+                        new InsettableFrameLayout.LayoutParams(LayoutParams.MATCH_PARENT,
                                 getResources().getDimensionPixelSize(
                                         R.dimen.overview_actions_height));
                 layoutParams.gravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
+                int margin = getResources().getDimensionPixelSize(
+                        R.dimen.overview_actions_horizontal_margin);
+                layoutParams.setMarginStart(margin);
+                layoutParams.setMarginEnd(margin);
                 mActionsView.setLayoutParams(layoutParams);
                 showActionsView();
             }
