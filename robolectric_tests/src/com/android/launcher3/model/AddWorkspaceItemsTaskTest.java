@@ -25,12 +25,12 @@ import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSparseArrayMap;
 import com.android.launcher3.util.LauncherModelHelper;
-import com.android.launcher3.util.LauncherRoboTestRunner;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.LooperMode;
 import org.robolectric.annotation.LooperMode.Mode;
@@ -41,7 +41,7 @@ import java.util.List;
 /**
  * Tests for {@link AddWorkspaceItemsTask}
  */
-@RunWith(LauncherRoboTestRunner.class)
+@RunWith(RobolectricTestRunner.class)
 @LooperMode(Mode.PAUSED)
 public class AddWorkspaceItemsTaskTest {
 
