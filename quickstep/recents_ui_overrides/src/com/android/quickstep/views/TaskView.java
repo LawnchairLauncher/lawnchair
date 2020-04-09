@@ -268,8 +268,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         }
 
         // Sets animations for modal UI. We will remove the margins to zoom in the snapshot.
-        float topMargin =
-                getResources().getDimension(R.dimen.task_thumbnail_top_margin_with_actions);
+        float topMargin = getResources().getDimension(R.dimen.task_thumbnail_top_margin);
         float bottomMargin =
                 getResources().getDimension(R.dimen.task_thumbnail_bottom_margin_with_actions);
         float newHeight = mSnapshotView.getHeight() + topMargin + bottomMargin;
