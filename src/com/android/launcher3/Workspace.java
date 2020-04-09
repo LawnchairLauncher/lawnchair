@@ -282,6 +282,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
         Rect padding = grid.workspacePadding;
         setPadding(padding.left, padding.top, padding.right, padding.bottom);
+        mInsets.set(insets);
 
         if (mWorkspaceFadeInAdjacentScreens) {
             // In landscape mode the page spacing is set to the default.
