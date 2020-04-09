@@ -248,6 +248,7 @@ public class ItemInfo {
         LauncherAtom.ItemInfo.Builder itemBuilder = LauncherAtom.ItemInfo.newBuilder();
         itemBuilder.setIsWork(user != Process.myUserHandle());
         ComponentName cn = getTargetComponent();
+        if (cn == null) return itemBuilder.build();
         switch (itemType) {
             case ITEM_TYPE_APPLICATION:
                 itemBuilder.setApplication(LauncherAtom.Application.newBuilder()
