@@ -26,7 +26,6 @@ import static com.android.quickstep.GestureState.DEFAULT_STATE;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_INPUT_MONITOR;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SYSUI_PROXY;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_TRACING_ENABLED;
-import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.ACTIVITY_TYPE_ASSISTANT;
 
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
@@ -486,7 +485,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
                 mConsumer.onConsumerAboutToBeSwitched();
                 mConsumer = newConsumer(prevGestureState, newGestureState, event);
 
-                ActiveGestureLog.INSTANCE.addLog("setInputConsumer", mConsumer.getType());
+                ActiveGestureLog.INSTANCE.addLog("setInputConsumer: " + mConsumer.getName());
                 mUncheckedConsumer = mConsumer;
             } else if (mDeviceState.isUserUnlocked()
                     && mDeviceState.isFullyGesturalNavMode()

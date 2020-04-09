@@ -96,15 +96,15 @@ public interface InputConsumer {
     }
 
     default String getName() {
-        String name = "";
+        StringBuilder name = new StringBuilder();
         for (int i = 0; i < NAMES.length; i++) {
             if ((getType() & (1 << i)) != 0) {
                 if (name.length() > 0) {
-                    name += ":";
+                    name.append(":");
                 }
-                name += NAMES[i];
+                name.append(NAMES[i]);
             }
         }
-        return name;
+        return name.toString();
     }
 }
