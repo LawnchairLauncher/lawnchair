@@ -18,9 +18,9 @@ package com.android.launcher3.appprediction;
 
 import static com.android.quickstep.InstantAppResolverImpl.COMPONENT_CLASS_MARKER;
 
-import com.android.launcher3.AppInfo;
-import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.allapps.AllAppsStore;
+import com.android.launcher3.model.data.AppInfo;
+import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.ComponentKey;
 

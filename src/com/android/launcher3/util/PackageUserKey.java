@@ -5,7 +5,7 @@ import android.service.notification.StatusBarNotification;
 
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.ItemInfo;
+import com.android.launcher3.model.data.ItemInfo;
 
 import java.util.Arrays;
 

@@ -16,8 +16,7 @@
 package com.android.launcher3.hybridhotseat;
 
 import static com.android.launcher3.logging.LoggerUtils.newLauncherEvent;
-import static com.android.launcher3.userevent.nano.LauncherLogProto.ControlType
-        .HYBRID_HOTSEAT_CANCELED;
+import static com.android.launcher3.userevent.nano.LauncherLogProto.ControlType.HYBRID_HOTSEAT_CANCELED;
 
 import android.animation.PropertyValuesHolder;
 import android.content.Context;
@@ -34,10 +33,10 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
-import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.UserEventDispatcher;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.uioverrides.PredictedAppIcon;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.views.AbstractSlideInView;

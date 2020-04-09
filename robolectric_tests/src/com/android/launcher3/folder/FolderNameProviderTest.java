@@ -22,8 +22,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.UserHandle;
 
-import com.android.launcher3.AppInfo;
-import com.android.launcher3.WorkspaceItemInfo;
+import com.android.launcher3.model.data.AppInfo;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
 
 import org.junit.Before;
 import org.junit.Test;

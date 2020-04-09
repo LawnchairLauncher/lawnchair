@@ -26,10 +26,10 @@ import static org.robolectric.Shadows.shadowOf;
 
 import android.os.Process;
 
-import com.android.launcher3.AppInfo;
-import com.android.launcher3.ItemInfo;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.model.BgDataModel.Callbacks;
+import com.android.launcher3.model.data.AppInfo;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.LauncherLayoutBuilder;
 import com.android.launcher3.util.LauncherModelHelper;

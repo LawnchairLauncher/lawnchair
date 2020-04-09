@@ -23,9 +23,9 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.ItemInfo;
 import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.model.WidgetItem;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.notification.NotificationKeyData;
 import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.util.ComponentKey;

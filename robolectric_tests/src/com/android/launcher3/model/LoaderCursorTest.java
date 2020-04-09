@@ -50,10 +50,10 @@ import android.database.MatrixCursor;
 import android.os.Process;
 
 import com.android.launcher3.InvariantDeviceProfile;
-import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.WorkspaceItemInfo;
+import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.PackageManagerHelper;
 
@@ -127,7 +127,7 @@ public class LoaderCursorTest {
                         new Intent().setComponent(cn), false  /* allowMissingTarget */, true))
                 .get();
         assertNotNull(info);
-        assertTrue(PackageManagerHelper.isLauncherAppTarget(info.intent));
+        assertTrue(PackageManagerHelper.isLauncherAppTarget(info.getIntent()));
     }
 
     @Test
@@ -141,7 +141,7 @@ public class LoaderCursorTest {
                         new Intent().setComponent(cn), true  /* allowMissingTarget */, true))
                 .get();
         assertNotNull(info);
-        assertTrue(PackageManagerHelper.isLauncherAppTarget(info.intent));
+        assertTrue(PackageManagerHelper.isLauncherAppTarget(info.getIntent()));
     }
 
     @Test
