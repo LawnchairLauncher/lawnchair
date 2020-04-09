@@ -16,6 +16,8 @@
 
 package com.android.launcher3.tapl;
 
+import static com.android.launcher3.tapl.LauncherInstrumentation.WAIT_TIME_MS;
+
 import android.graphics.Point;
 import android.graphics.Rect;
 
@@ -23,6 +25,7 @@ import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.UiObject2;
+import androidx.test.uiautomator.Until;
 
 import com.android.launcher3.tapl.LauncherInstrumentation.GestureScope;
 
@@ -91,6 +94,8 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
         try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                 "getting widget " + labelText + " in widgets list")) {
             final UiObject2 widgetsContainer = verifyActiveContainer();
+            mLauncher.assertTrue("Widgets container didn't become scrollable",
+                    widgetsContainer.wait(Until.scrollable(true), WAIT_TIME_MS));
             final Point displaySize = mLauncher.getRealDisplaySize();
             final BySelector labelSelector = By.clazz("android.widget.TextView").text(labelText);
 
