@@ -31,6 +31,8 @@ import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.ACT
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningTaskInfo;
+import android.app.PendingIntent;
+import android.app.RemoteAction;
 import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
@@ -38,6 +40,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Region;
+import android.graphics.drawable.Icon;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -46,6 +49,7 @@ import android.util.Log;
 import android.view.Choreographer;
 import android.view.InputEvent;
 import android.view.MotionEvent;
+import android.view.accessibility.AccessibilityManager;
 
 import androidx.annotation.BinderThread;
 import androidx.annotation.Nullable;
@@ -53,6 +57,7 @@ import androidx.annotation.UiThread;
 import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.BaseDraggingActivity;
+import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.config.FeatureFlags;
@@ -125,6 +130,12 @@ public class TouchInteractionService extends Service implements PluginListener<O
     private static final String NOTIFY_ACTION_BACK = "com.android.quickstep.action.BACK_GESTURE";
     private static final String HAS_ENABLED_QUICKSTEP_ONCE = "launcher.has_enabled_quickstep_once";
     private static final int MAX_BACK_NOTIFICATION_COUNT = 3;
+
+    /**
+     * System Action ID to show all apps.  This ID should follow the ones in
+     * com.android.systemui.accessibility.SystemActions.
+     */
+    private static final int SYSTEM_ACTION_ID_ALL_APPS = 100;
 
     private int mBackGestureNotificationCounter = -1;
     @Nullable
@@ -351,6 +362,9 @@ public class TouchInteractionService extends Service implements PluginListener<O
 
         PluginManagerWrapper.INSTANCE.get(getBaseContext()).addPluginListener(this,
                 OverscrollPlugin.class, false /* allowMultiple */);
+
+        mOverviewComponentObserver.setOverviewChangeListener(this::onOverviewTargetChange);
+        onOverviewTargetChange(mOverviewComponentObserver.isHomeAndOverviewSame());
     }
 
     private void resetHomeBounceSeenOnQuickstepEnabledFirstTime() {
@@ -367,6 +381,24 @@ public class TouchInteractionService extends Service implements PluginListener<O
                     .putBoolean(HAS_ENABLED_QUICKSTEP_ONCE, true)
                     .putBoolean(DiscoveryBounce.HOME_BOUNCE_SEEN, false)
                     .apply();
+        }
+    }
+
+    private void onOverviewTargetChange(boolean isHomeAndOverviewSame) {
+        AccessibilityManager am = getSystemService(AccessibilityManager.class);
+
+        if (isHomeAndOverviewSame) {
+            Intent intent = new Intent(mOverviewComponentObserver.getHomeIntent())
+                    .setAction(Intent.ACTION_ALL_APPS);
+            RemoteAction allAppsAction = new RemoteAction(
+                    Icon.createWithResource(this, R.drawable.ic_apps),
+                    getString(R.string.all_apps_label),
+                    getString(R.string.all_apps_label),
+                    PendingIntent.getActivity(this, SYSTEM_ACTION_ID_ALL_APPS, intent,
+                            PendingIntent.FLAG_UPDATE_CURRENT));
+            am.registerSystemAction(allAppsAction, SYSTEM_ACTION_ID_ALL_APPS);
+        } else {
+            am.unregisterSystemAction(SYSTEM_ACTION_ID_ALL_APPS);
         }
     }
 
@@ -407,6 +439,9 @@ public class TouchInteractionService extends Service implements PluginListener<O
         SystemUiProxy.INSTANCE.get(this).setProxy(null);
         ProtoTracer.INSTANCE.get(TouchInteractionService.this).stop();
         ProtoTracer.INSTANCE.get(this).remove(this);
+
+        getSystemService(AccessibilityManager.class)
+                .unregisterSystemAction(SYSTEM_ACTION_ID_ALL_APPS);
 
         sConnected = false;
         super.onDestroy();

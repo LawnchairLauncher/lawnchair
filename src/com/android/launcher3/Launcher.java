@@ -1443,6 +1443,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                 mLauncherCallbacks.onHomeIntent(internalStateHandled);
             }
             mOverlayManager.hideOverlay(isStarted() && !isForceInvisible());
+        } else if (Intent.ACTION_ALL_APPS.equals(intent.getAction())) {
+            getStateManager().goToState(ALL_APPS, alreadyOnHome);
         }
 
         TraceHelper.INSTANCE.endSection(traceToken);

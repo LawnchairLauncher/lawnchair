@@ -38,7 +38,6 @@ import android.view.View;
 
 import com.android.launcher3.LauncherState.ScaleAndTranslation;
 import com.android.launcher3.LauncherStateManager.StateHandler;
-import com.android.launcher3.accessibility.SystemActions;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.WellbeingModel;
 import com.android.launcher3.popup.SystemShortcut;
@@ -70,7 +69,6 @@ public abstract class BaseQuickstepLauncher extends Launcher
         implements NavigationModeChangeListener {
 
     private DepthController mDepthController = new DepthController(this);
-    protected SystemActions mSystemActions;
 
     /**
      * Reusable command for applying the back button alpha on the background thread.
@@ -86,7 +84,6 @@ public abstract class BaseQuickstepLauncher extends Launcher
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mSystemActions = new SystemActions(this);
 
         SysUINavigationMode.INSTANCE.get(this).addModeChangeListener(this);
 
@@ -139,12 +136,6 @@ public abstract class BaseQuickstepLauncher extends Launcher
     @Override
     public void onNavigationModeChanged(Mode newMode) {
         getDragLayer().recreateControllers();
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        mSystemActions.onActivityResult(requestCode);
     }
 
     @Override
@@ -210,15 +201,6 @@ public abstract class BaseQuickstepLauncher extends Launcher
             // removes the task itself.
             startActivity(ProxyActivityStarter.getLaunchIntent(this, null));
         }
-
-        // Register all system actions once they are available
-        mSystemActions.register();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        mSystemActions.unregister();
     }
 
     @Override
