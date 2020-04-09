@@ -55,12 +55,12 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.util.Executors;
-import com.android.launcher3.util.LauncherRoboTestRunner;
 import com.android.launcher3.util.PackageManagerHelper;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.LooperMode;
 import org.robolectric.annotation.LooperMode.Mode;
@@ -68,7 +68,7 @@ import org.robolectric.annotation.LooperMode.Mode;
 /**
  * Tests for {@link LoaderCursor}
  */
-@RunWith(LauncherRoboTestRunner.class)
+@RunWith(RobolectricTestRunner.class)
 @LooperMode(Mode.PAUSED)
 public class LoaderCursorTest {
 

@@ -20,11 +20,11 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.GridSizeMigrationTask.MultiStepMigrationTask;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.LauncherModelHelper;
-import com.android.launcher3.util.LauncherRoboTestRunner;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 
 import java.util.HashSet;
@@ -33,7 +33,7 @@ import java.util.LinkedList;
 /**
  * Unit tests for {@link GridSizeMigrationTask}
  */
-@RunWith(LauncherRoboTestRunner.class)
+@RunWith(RobolectricTestRunner.class)
 public class GridSizeMigrationTaskTest {
 
     private LauncherModelHelper mModelHelper;
