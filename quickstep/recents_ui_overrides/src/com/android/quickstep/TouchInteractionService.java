@@ -58,7 +58,6 @@ import androidx.annotation.WorkerThread;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.model.AppLaunchTracker;
@@ -68,6 +67,7 @@ import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.tracing.nano.LauncherTraceProto;
 import com.android.launcher3.tracing.nano.TouchInteractionServiceProto;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
+import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.util.TraceHelper;
 import com.android.quickstep.inputconsumers.AccessibilityInputConsumer;
 import com.android.quickstep.inputconsumers.AssistantInputConsumer;
@@ -378,7 +378,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
         if (!sharedPrefs.getBoolean(HAS_ENABLED_QUICKSTEP_ONCE, true)) {
             sharedPrefs.edit()
                     .putBoolean(HAS_ENABLED_QUICKSTEP_ONCE, true)
-                    .putBoolean(DiscoveryBounce.HOME_BOUNCE_SEEN, false)
+                    .putBoolean(OnboardingPrefs.HOME_BOUNCE_SEEN, false)
                     .apply();
         }
     }

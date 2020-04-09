@@ -17,14 +17,7 @@ package com.android.launcher3;
 
 import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
 import static com.android.launcher3.AbstractFloatingView.TYPE_HIDE_BACK_BUTTON;
-import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
-import static com.android.launcher3.LauncherState.OVERVIEW;
-import static com.android.launcher3.allapps.DiscoveryBounce.BOUNCE_MAX_COUNT;
-import static com.android.launcher3.allapps.DiscoveryBounce.HOME_BOUNCE_COUNT;
-import static com.android.launcher3.allapps.DiscoveryBounce.HOME_BOUNCE_SEEN;
-import static com.android.launcher3.allapps.DiscoveryBounce.SHELF_BOUNCE_COUNT;
-import static com.android.launcher3.allapps.DiscoveryBounce.SHELF_BOUNCE_SEEN;
 import static com.android.quickstep.SysUINavigationMode.removeShelfFromOverview;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_HOME_KEY;
 
@@ -32,6 +25,7 @@ import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.CancellationSignal;
 import android.view.View;
@@ -47,12 +41,14 @@ import com.android.launcher3.statehandlers.BackButtonAlphaHandler;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.uioverrides.RecentsViewStateController;
+import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.util.UiThreadHelper;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.SysUINavigationMode.NavigationModeChangeListener;
 import com.android.quickstep.SystemUiProxy;
+import com.android.quickstep.util.QuickstepOnboardingPrefs;
 import com.android.quickstep.util.RemoteAnimationProvider;
 import com.android.quickstep.util.RemoteFadeOutAnimationListener;
 import com.android.quickstep.util.ShelfPeekAnim;
@@ -86,45 +82,6 @@ public abstract class BaseQuickstepLauncher extends Launcher
         super.onCreate(savedInstanceState);
 
         SysUINavigationMode.INSTANCE.get(this).addModeChangeListener(this);
-
-        if (!getSharedPrefs().getBoolean(HOME_BOUNCE_SEEN, false)) {
-            getStateManager().addStateListener(new LauncherStateManager.StateListener() {
-                @Override
-                public void onStateTransitionStart(LauncherState toState) { }
-
-                @Override
-                public void onStateTransitionComplete(LauncherState finalState) {
-                    boolean swipeUpEnabled = SysUINavigationMode.INSTANCE
-                            .get(BaseQuickstepLauncher.this).getMode().hasGestures;
-                    LauncherState prevState = getStateManager().getLastState();
-
-                    if (((swipeUpEnabled && finalState == OVERVIEW) || (!swipeUpEnabled
-                            && finalState == ALL_APPS && prevState == NORMAL) || BOUNCE_MAX_COUNT
-                            <= getSharedPrefs().getInt(HOME_BOUNCE_COUNT, 0))) {
-                        getSharedPrefs().edit().putBoolean(HOME_BOUNCE_SEEN, true).apply();
-                        getStateManager().removeStateListener(this);
-                    }
-                }
-            });
-        }
-
-        if (!getSharedPrefs().getBoolean(SHELF_BOUNCE_SEEN, false)) {
-            getStateManager().addStateListener(new LauncherStateManager.StateListener() {
-                @Override
-                public void onStateTransitionStart(LauncherState toState) { }
-
-                @Override
-                public void onStateTransitionComplete(LauncherState finalState) {
-                    LauncherState prevState = getStateManager().getLastState();
-
-                    if ((finalState == ALL_APPS && prevState == OVERVIEW) || BOUNCE_MAX_COUNT
-                            <= getSharedPrefs().getInt(SHELF_BOUNCE_COUNT, 0)) {
-                        getSharedPrefs().edit().putBoolean(SHELF_BOUNCE_SEEN, true).apply();
-                        getStateManager().removeStateListener(this);
-                    }
-                }
-            });
-        }
     }
 
     @Override
@@ -241,6 +198,12 @@ public abstract class BaseQuickstepLauncher extends Launcher
 
     public DepthController getDepthController() {
         return mDepthController;
+    }
+
+    @Override
+    protected OnboardingPrefs createOnboardingPrefs(SharedPreferences sharedPrefs,
+            LauncherStateManager stateManager) {
+        return new QuickstepOnboardingPrefs(this, sharedPrefs, stateManager);
     }
 
     @Override
