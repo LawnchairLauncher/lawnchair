@@ -959,8 +959,13 @@ public class CellLayout extends ViewGroup {
                 height = r.height();
             }
 
-            if (v != null && v.getViewType() == DraggableView.DRAGGABLE_ICON) {
-                left +=  ((mCellWidth * spanX) - dragOutline.getWidth()) / 2;
+            // Center horizontaly
+            left += ((mCellWidth * spanX) - dragOutline.getWidth()) / 2;
+
+            if (v != null && v.getViewType() == DraggableView.DRAGGABLE_WIDGET) {
+                // Center vertically
+                top += ((mCellHeight * spanY) - dragOutline.getHeight()) / 2;
+            } else if (v != null && v.getViewType() == DraggableView.DRAGGABLE_ICON) {
                 int cHeight = getShortcutsAndWidgets().getCellContentHeight();
                 int cellPaddingY = (int) Math.max(0, ((mCellHeight - cHeight) / 2f));
                 top += cellPaddingY;
