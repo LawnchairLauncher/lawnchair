@@ -2565,9 +2565,10 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         writer.println(prefix + "\tmRotationHelper: " + mRotationHelper);
         writer.println(prefix + "\tmAppWidgetHost.isListening: " + mAppWidgetHost.isListening());
 
-        // Extra logging for b/116853349
+        // Extra logging for general debugging
         mDragLayer.dump(prefix, writer);
         mStateManager.dump(prefix, writer);
+        mPopupDataProvider.dump(prefix, writer);
 
         try {
             FileLog.flushAll(writer);

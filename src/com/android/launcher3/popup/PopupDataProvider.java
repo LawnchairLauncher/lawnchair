@@ -33,6 +33,7 @@ import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.ShortcutUtil;
 import com.android.launcher3.widget.WidgetListRowEntry;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -236,6 +237,11 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
                     }
                     return false;
                 }).collect(Collectors.toList());
+    }
+
+    public void dump(String prefix, PrintWriter writer) {
+        writer.println(prefix + "PopupDataProvider:");
+        writer.println(prefix + "\tmPackageUserToDotInfos:" + mPackageUserToDotInfos);
     }
 
     public interface PopupDataChangeListener {
