@@ -51,6 +51,7 @@ import com.android.launcher3.DropTarget;
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.accessibility.ShortcutMenuAccessibilityDelegate;
 import com.android.launcher3.dot.DotInfo;
@@ -397,6 +398,9 @@ public class PopupContainerWithArrow<T extends BaseDraggingActivity> extends Arr
         } else if (view instanceof ImageView) {
             // Only the system shortcut icon shows on a gray background header.
             info.setIconAndContentDescriptionFor((ImageView) view);
+            if (Utilities.ATLEAST_OREO) {
+                view.setTooltipText(view.getContentDescription());
+            }
         }
         view.setTag(info);
         view.setOnClickListener(info);
