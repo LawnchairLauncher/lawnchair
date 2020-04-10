@@ -131,8 +131,8 @@
     <item name="dismiss_task_trans_x_damping_ratio" type="dimen" format="float">0.5</item>
     <item name="dismiss_task_trans_x_stiffness" type="dimen" format="float">1500</item>
 
-    <item name="horizontal_spring_damping_ratio" type="dimen" format="float">0.75</item>
-    <item name="horizontal_spring_stiffness" type="dimen" format="float">200</item>
+    <item name="horizontal_spring_damping_ratio" type="dimen" format="float">0.8</item>
+    <item name="horizontal_spring_stiffness" type="dimen" format="float">400</item>
 
     <item name="swipe_up_rect_scale_damping_ratio" type="dimen" format="float">0.75</item>
     <item name="swipe_up_rect_scale_stiffness" type="dimen" format="float">200</item>
