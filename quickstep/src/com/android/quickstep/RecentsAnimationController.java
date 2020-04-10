@@ -22,6 +22,7 @@ import static android.view.MotionEvent.ACTION_UP;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
+import android.annotation.NonNull;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.InputEvent;
@@ -34,6 +35,7 @@ import com.android.launcher3.util.Preconditions;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
+import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -105,6 +107,15 @@ public class RecentsAnimationController {
      */
     public void cleanupScreenshot() {
         UI_HELPER_EXECUTOR.execute(() -> mController.cleanupScreenshot());
+    }
+
+    /**
+     * Remove task remote animation target from
+     * {@link RecentsAnimationCallbacks#onTaskAppeared(RemoteAnimationTargetCompat)}}.
+     */
+    @UiThread
+    public boolean removeTaskTarget(@NonNull RemoteAnimationTargetCompat target) {
+        return mController.removeTask(target.taskId);
     }
 
     @UiThread
