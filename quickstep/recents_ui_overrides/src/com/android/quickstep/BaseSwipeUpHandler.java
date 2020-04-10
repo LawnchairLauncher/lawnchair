@@ -197,33 +197,18 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
     }
 
     protected void startNewTask(int successStateFlag, Consumer<Boolean> resultCallback) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_START_FROM_RECENTS, "startNewTask1");
-        }
         // Launch the task user scrolled to (mRecentsView.getNextPage()).
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             // We finish recents animation inside launchTask() when live tile is enabled.
             mRecentsView.getNextPageTaskView().launchTask(false /* animate */,
                     true /* freezeTaskList */);
         } else {
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.NO_START_FROM_RECENTS, "startNewTask2");
-            }
             int taskId = mRecentsView.getNextPageTaskView().getTask().key.id;
             mFinishingRecentsAnimationForNewTaskId = taskId;
             mRecentsAnimationController.finish(true /* toRecents */, () -> {
-                if (TestProtocol.sDebugTracing) {
-                    Log.d(TestProtocol.NO_START_FROM_RECENTS, "onFinishComplete1");
-                }
                 if (!mCanceled) {
-                    if (TestProtocol.sDebugTracing) {
-                        Log.d(TestProtocol.NO_START_FROM_RECENTS, "onFinishComplete2");
-                    }
                     TaskView nextTask = mRecentsView.getTaskView(taskId);
                     if (nextTask != null) {
-                        if (TestProtocol.sDebugTracing) {
-                            Log.d(TestProtocol.NO_START_FROM_RECENTS, "onFinishComplete3");
-                        }
                         nextTask.launchTask(false /* animate */, true /* freezeTaskList */,
                                 success -> {
                                     resultCallback.accept(success);

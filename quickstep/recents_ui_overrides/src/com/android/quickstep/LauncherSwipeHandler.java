@@ -965,9 +965,6 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
             windowAnim.addListener(new AnimationSuccessListener() {
                 @Override
                 public void onAnimationSuccess(Animator animator) {
-                    if (TestProtocol.sDebugTracing) {
-                        Log.d(TestProtocol.NO_START_FROM_RECENTS, "onAnimationSuccess");
-                    }
                     if (mRecentsAnimationController == null) {
                         // If the recents animation is interrupted, we still end the running
                         // animation (not canceled) so this is still called. In that case, we can
@@ -1191,9 +1188,6 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
     }
 
     private void switchToScreenshot() {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_START_FROM_RECENTS, "switchToScreenshot");
-        }
         final int runningTaskId = mGestureState.getRunningTaskId();
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             if (mRecentsAnimationController != null) {
