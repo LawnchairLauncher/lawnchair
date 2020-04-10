@@ -19,7 +19,6 @@ package com.android.launcher3.uioverrides;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
-import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 
 import android.content.Context;
 import android.graphics.Rect;
@@ -49,7 +48,6 @@ import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.TouchInteractionService;
 import com.android.quickstep.views.RecentsView;
-import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
 import java.util.ArrayList;
@@ -208,12 +206,6 @@ public abstract class RecentsUiFactory {
         if (state == NORMAL) {
             launcher.<RecentsView>getOverviewPanel().setSwipeDownShouldLaunchApp(false);
         }
-    }
-
-    /** Closes system windows. */
-    public static void closeSystemWindows() {
-        ActivityManagerWrapper.getInstance()
-            .closeSystemWindows(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
     }
 
     private static final class LauncherTaskViewController extends

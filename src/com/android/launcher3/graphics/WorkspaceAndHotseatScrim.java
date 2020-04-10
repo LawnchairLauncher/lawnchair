@@ -187,10 +187,13 @@ public class WorkspaceAndHotseatScrim extends Scrim {
         anim.start();
     }
 
-    public void onInsetsChanged(Rect insets) {
-        mDrawTopScrim = mTopScrim != null && insets.top > 0;
-        mDrawBottomScrim = mBottomMask != null &&
-                !mLauncher.getDeviceProfile().isVerticalBarLayout();
+    /**
+     * Determines whether to draw the top and/or bottom scrim based on new insets.
+     */
+    public void onInsetsChanged(Rect insets, boolean allowSysuiScrims) {
+        mDrawTopScrim = allowSysuiScrims && mTopScrim != null && insets.top > 0;
+        mDrawBottomScrim = allowSysuiScrims && mBottomMask != null
+                && !mLauncher.getDeviceProfile().isVerticalBarLayout();
     }
 
     @Override
