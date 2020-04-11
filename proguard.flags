@@ -146,6 +146,9 @@
 }
 
 -keep class ch.deletescape.lawnchair.smartspace.accu.** { *; }
+-keep class ch.deletescape.lawnchair.smartspace.OnboardingProvider {
+  public <init>(...);
+}
 
 -dontwarn android.graphics.**
 
