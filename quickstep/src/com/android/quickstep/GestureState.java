@@ -23,6 +23,7 @@ import android.content.Intent;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.systemui.shared.recents.model.ThumbnailData;
+import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -109,6 +110,9 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
     public static final int STATE_RECENTS_SCROLLING_FINISHED =
             getFlagForIndex("STATE_RECENTS_SCROLLING_FINISHED");
 
+    // Called when the new task appeared from quick switching.
+    public static final int STATE_TASK_APPEARED_DURING_SWITCH =
+            getFlagForIndex("STATE_TASK_APPEARED_DURING_SWITCH");
 
     // Needed to interact with the current activity
     private final Intent mHomeIntent;
@@ -119,6 +123,7 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
 
     private ActivityManager.RunningTaskInfo mRunningTask;
     private GestureEndTarget mEndTarget;
+    private RemoteAnimationTargetCompat mAnimationTarget;
     // TODO: This can be removed once we stop finishing the animation when starting a new task
     private int mFinishingRecentsAnimationTaskId = -1;
 
@@ -227,6 +232,14 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
         return mEndTarget;
     }
 
+    public void setAnimationTarget(RemoteAnimationTargetCompat target) {
+        mAnimationTarget = target;
+    }
+
+    public RemoteAnimationTargetCompat getAnimationTarget() {
+        return mAnimationTarget;
+    }
+
     /**
      * Sets the end target of this gesture and immediately notifies the state changes.
      */
@@ -299,6 +312,12 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
     public void onRecentsAnimationFinished(RecentsAnimationController controller) {
         mStateCallback.setState(STATE_RECENTS_ANIMATION_FINISHED);
         mStateCallback.setState(STATE_RECENTS_ANIMATION_ENDED);
+    }
+
+    @Override
+    public void onTaskAppeared(RemoteAnimationTargetCompat app) {
+        mAnimationTarget = app;
+        mStateCallback.setState(STATE_TASK_APPEARED_DURING_SWITCH);
     }
 
     public void dump(PrintWriter pw) {
