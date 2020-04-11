@@ -1069,16 +1069,28 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         }
     }
 
+    /**
+     * Returns the amount of overscroll caused by the spring in {@link OverScroller}.
+     */
+    private int getSpringOverScroll(int amount) {
+        if (mScroller.isSpringing()) {
+            return amount < 0
+                    ? mScroller.getCurrPos()
+                    : Math.max(0, mScroller.getCurrPos() - mMaxScroll);
+        } else {
+            return 0;
+        }
+    }
+
     protected void dampedOverScroll(int amount) {
-        mSpringOverScroll = amount;
         if (amount == 0) {
             return;
         }
 
         int size = mOrientationHandler.getMeasuredSize(this);
         int overScrollAmount = OverScroll.dampedScroll(amount, size);
-        mSpringOverScroll = overScrollAmount;
         if (mScroller.isSpringing()) {
+            mSpringOverScroll = getSpringOverScroll(amount);
             invalidate();
             return;
         }
@@ -1090,8 +1102,8 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     }
 
     protected void overScroll(int amount) {
-        mSpringOverScroll = amount;
         if (mScroller.isSpringing()) {
+            mSpringOverScroll = getSpringOverScroll(amount);
             invalidate();
             return;
         }
