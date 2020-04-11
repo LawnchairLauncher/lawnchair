@@ -15,7 +15,7 @@
  */
 package com.android.quickstep.util;
 
-import static com.android.systemui.shared.system.QuickStepContract.supportsRoundedCornersOnWindows;
+import static com.android.launcher3.Utilities.supportsRoundedCornersOnWindows;
 
 import android.content.Context;
 

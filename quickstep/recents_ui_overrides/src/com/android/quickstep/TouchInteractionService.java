@@ -422,7 +422,7 @@ public class TouchInteractionService extends Service implements
             final int assistantWidth = getResources()
                     .getDimensionPixelSize(R.dimen.gestures_assistant_width);
             final float assistantHeight = Math.max(touchHeight,
-                    QuickStepContract.getWindowCornerRadius(getResources()));
+                    Utilities.getWindowCornerRadius(this));
             mAssistantLeftRegion.bottom = mAssistantRightRegion.bottom = mSwipeTouchRegion.bottom;
             mAssistantLeftRegion.top = mAssistantRightRegion.top =
                     mSwipeTouchRegion.bottom - assistantHeight;

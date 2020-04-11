@@ -109,6 +109,7 @@ import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.views.Transposable;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 
+import com.android.systemui.shared.system.QuickStepContract;
 import java.io.Closeable;
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -196,6 +197,8 @@ public final class Utilities {
 
     public static boolean IS_RUNNING_IN_TEST_HARNESS =
                     ActivityManager.isRunningInTestHarness();
+
+    public static boolean IS_ONEPLUS_STOCK = isOnePlusStock();
 
     public static void enableRunningInTestHarnessForTests() {
         IS_RUNNING_IN_TEST_HARNESS = true;
@@ -1161,6 +1164,39 @@ public final class Utilities {
             return new ComponentKey(componentName, user);
         } catch (NullPointerException e) {
             throw new NullPointerException("Trying to create invalid component key: " + componentKeyStr);
+        }
+    }
+
+    public static float ONEPLUS_WINDOW_CORNER_RADIUS = -1;
+
+    public static float getWindowCornerRadius(Context context) {
+        if (IS_ONEPLUS_STOCK) {
+            if (ONEPLUS_WINDOW_CORNER_RADIUS == -1) {
+                try {
+                    String sysui = "com.android.systemui";
+                    Context sysuiContext = context.createPackageContext(sysui, 0);
+                    Resources res = sysuiContext.getResources();
+                    int topId = res.getIdentifier("rounded_corner_radius_top", "dimen", sysui);
+                    int bottomId = res.getIdentifier("rounded_corner_radius_bottom", "dimen", sysui);
+                    float top = res.getDimension(topId);
+                    float bottom = res.getDimension(bottomId);
+                    ONEPLUS_WINDOW_CORNER_RADIUS = Math.min(top, bottom) * 0.8f;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    ONEPLUS_WINDOW_CORNER_RADIUS = Utilities.getWindowCornerRadius(context);
+                }
+            }
+            return ONEPLUS_WINDOW_CORNER_RADIUS;
+        } else {
+            return QuickStepContract.getWindowCornerRadius(context.getResources());
+        }
+    }
+
+    public static boolean supportsRoundedCornersOnWindows(Resources resources) {
+        if (IS_ONEPLUS_STOCK) {
+            return true;
+        } else {
+            return QuickStepContract.supportsRoundedCornersOnWindows(resources);
         }
     }
 }
