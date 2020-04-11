@@ -917,7 +917,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                 // Remember location of down touch
                 mDownMotionX = x;
                 mDownMotionY = y;
-                mLastMotion = mOrientationHandler.getPrimaryDirection(ev, 0);
+                mDownMotionPrimary = mLastMotion = mOrientationHandler.getPrimaryDirection(ev, 0);
                 mLastMotionRemainder = 0;
                 mTotalMotion = 0;
                 mActivePointerId = ev.getPointerId(0);
