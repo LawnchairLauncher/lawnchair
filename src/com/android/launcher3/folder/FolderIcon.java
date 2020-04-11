@@ -16,6 +16,8 @@
 
 package com.android.launcher3.folder;
 
+import static android.text.TextUtils.isEmpty;
+
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
 import static com.android.launcher3.folder.PreviewItemManager.INITIAL_ITEM_ANIMATION_DURATION;
 
@@ -418,10 +420,32 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
         postDelayed(() -> {
             mPreviewItemManager.hidePreviewItem(finalIndex, false);
             mFolder.showItem(item);
+            setLabelSuggestion(nameInfos);
             invalidate();
-            mFolder.showSuggestedTitle(nameInfos);
         }, DROP_IN_ANIMATION_DURATION);
     }
+
+    /**
+     * Set the suggested folder name.
+     */
+    public void setLabelSuggestion(FolderNameInfo[] nameInfos) {
+        if (!FeatureFlags.FOLDER_NAME_SUGGEST.get()) {
+            return;
+        }
+        if (!isEmpty(mFolderName.getText().toString())
+                || mInfo.hasOption(FolderInfo.FLAG_MANUAL_FOLDER_NAME)) {
+            return;
+        }
+        if (nameInfos == null || nameInfos[0] == null || isEmpty(nameInfos[0].getLabel())) {
+            return;
+        }
+        mInfo.title = nameInfos[0].getLabel();
+        onTitleChanged(mInfo.title);
+        mFolder.mFolderName.setText(mInfo.title);
+        mFolder.mLauncher.getModelWriter().updateItemInDatabase(mInfo);
+        // TODO: Add logging while folder creation.
+    }
+
 
     public void onDrop(DragObject d, boolean itemReturnedOnFailedDrop) {
         WorkspaceItemInfo item;
