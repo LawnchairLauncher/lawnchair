@@ -849,7 +849,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         final int pageCount = getPageCount();
         for (int i = 0; i < pageCount; i++) {
             View page = getPageAt(i);
-            mScrollState.updateInterpolation(mOrientationHandler.getChildStart(page), mPageSpacing);
+            mScrollState.updateInterpolation(mOrientationHandler.getChildStartWithTranslation(page),
+                    mPageSpacing);
             ((PageCallbacks) page).onPageScroll(mScrollState);
         }
     }
@@ -1236,7 +1237,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         /**
          * Updates linearInterpolation for the provided child position
          */
-        public void updateInterpolation(int childStart, int pageSpacing) {
+        public void updateInterpolation(float childStart, int pageSpacing) {
             float pageCenter = childStart + halfPageSize;
             float distanceFromScreenCenter = screenCenter - pageCenter;
             float distanceToReachEdge = halfScreenSize + halfPageSize + pageSpacing;
