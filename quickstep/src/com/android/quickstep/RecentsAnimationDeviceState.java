@@ -74,6 +74,8 @@ public class RecentsAnimationDeviceState implements
         NavigationModeChangeListener,
         DefaultDisplay.DisplayInfoChangeListener {
 
+    private static final String TAG = "RecentsAnimationDeviceState";
+
     private final Context mContext;
     private final SysUINavigationMode mSysUiNavMode;
     private final DefaultDisplay mDefaultDisplay;
@@ -96,6 +98,7 @@ public class RecentsAnimationDeviceState implements
         @Override
         public void onReceive(Context context, Intent intent) {
             if (ACTION_USER_UNLOCKED.equals(intent.getAction())) {
+                Log.d(TAG, "User Unlocked Broadcast Received");
                 mIsUserUnlocked = true;
                 notifyUserUnlocked();
             }
