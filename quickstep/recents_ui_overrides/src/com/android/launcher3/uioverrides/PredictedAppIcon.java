@@ -136,9 +136,11 @@ public class PredictedAppIcon extends DoubleShadowBubbleTextView implements
 
     @Override
     public void addSupportedAccessibilityActions(AccessibilityNodeInfo accessibilityNodeInfo) {
-        accessibilityNodeInfo.addAction(
-                new AccessibilityNodeInfo.AccessibilityAction(PIN_PREDICTION,
-                        getContext().getText(R.string.pin_prediction)));
+        if (!mIsPinned) {
+            accessibilityNodeInfo.addAction(
+                    new AccessibilityNodeInfo.AccessibilityAction(PIN_PREDICTION,
+                            getContext().getText(R.string.pin_prediction)));
+        }
     }
 
     @Override
