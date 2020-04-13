@@ -73,7 +73,7 @@ public class WorkModeSwitch extends Switch implements Insettable {
 
     private void setCheckedInternal(boolean checked) {
         super.setChecked(checked);
-        setCompoundDrawablesWithIntrinsicBounds(
+        setCompoundDrawablesRelativeWithIntrinsicBounds(
                 checked ? R.drawable.ic_corp : R.drawable.ic_corp_off, 0, 0, 0);
     }
 
