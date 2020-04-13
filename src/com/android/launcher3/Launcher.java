@@ -139,6 +139,7 @@ import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
+import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.PendingRequestArgs;
@@ -300,6 +301,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     // We only want to get the SharedPreferences once since it does an FS stat each time we get
     // it from the context.
     private SharedPreferences mSharedPrefs;
+    private OnboardingPrefs mOnboardingPrefs;
 
     // Activity result which needs to be processed after workspace has loaded.
     private ActivityResultInfo mPendingActivityResult;
@@ -366,6 +368,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         mDragController = new DragController(this);
         mAllAppsController = new AllAppsTransitionController(this);
         mStateManager = new LauncherStateManager(this);
+
+        mOnboardingPrefs = createOnboardingPrefs(mSharedPrefs, mStateManager);
 
         mAppWidgetManager = new WidgetManagerHelper(this);
         mAppWidgetHost = new LauncherAppWidgetHost(this,
@@ -456,6 +460,15 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     protected LauncherOverlayManager getDefaultOverlay() {
         return new LauncherOverlayManager() { };
+    }
+
+    protected OnboardingPrefs createOnboardingPrefs(SharedPreferences sharedPrefs,
+            LauncherStateManager stateManager) {
+        return new OnboardingPrefs<>(this, sharedPrefs, stateManager);
+    }
+
+    public OnboardingPrefs getOnboardingPrefs() {
+        return mOnboardingPrefs;
     }
 
     @Override
