@@ -3,38 +3,101 @@
     <string name="icu_abbrev_time">HH:mm</string>
     <!-- Section 1 -->
     <string name="search_menu">Търсене</string>
+    <string name="search_no_results">Няма резултати</string>
     <string name="restart_lawnchair_pref_title">Рестартиране</string>
+    <string name="developer_options_title">Опции за разработчици</string>
+    <string name="change_default_home">Задай като приложение за Начален екран</string>
+    <string name="action_apply">Готово</string>
     <!-- Note: new. Replaces “OK” in dialogs. -->
     <string name="theme_dark_theme_mode_on">Включени</string>
     <string name="theme_dark_theme_mode_off">Изключено</string>
     <!-- Section 2 -->
     <string name="theme_title">Тема</string>
+    <string name="pixel_ui_pref_summary">Икони, Цветове, Размиване</string>
     <string name="pref_icon_packs">Пакети с икони</string>
     <string name="icon_pack_default">Системни икони</string>
     <string name="pref_icon_pack_masking">Маскиране на икони</string>
+    <string name="pref_legacy_treatment_title">Създай адаптивни икони</string>
+    <string name="pref_legacy_treatment_summary">Създай адаптивни икони за всички преки пътища.</string>
+    <string name="pref_legacy_colored_backgrounds">Цветни фонове</string>
+    <string name="pref_white_only_treatment">Замени белите фонове</string>
+    <string name="pref_white_only_treatment_summary">Оцвети фона на всички адаптивни икони.</string>
+    <string name="adaptify_pack_title">Създай адаптивни икони за пакета с икони</string>
+    <string name="icon_shape_override_label">Форма на иконите</string>
+    <string name="reset_custom_icons">Премахни потребителските икони</string>
+    <string name="reset_custom_icons_confirmation">Да се възстановят ли стандартните икони за този пакет? Това не може да бъде отменено.</string>
     <string name="appearance">Външен вид</string>
     <!-- Note: new. Replaces title of 5th field (from bottom) in “Theme” page. -->
+    <string name="theme_auto">Автоматично (Според тапета)</string>
+    <string name="theme_auto_night_mode">Зададен от системата</string>
+    <string name="theme_dark_theme_mode_follow_daylight">Планирана (Тъмна през ноща)</string>
     <string name="theme_light">Светла</string>
+    <string name="theme_dark_text">Светла с тъмен текст</string>
+    <string name="theme_with_dark_text">Тъмен текст</string>
+    <string name="theme_use_black">Използвай чисто черно</string>
+    <string name="theme_use_dark_text">Използвай тъмен текст</string>
+    <string name="color_pixel_accent">Google Синьо</string>
+    <string name="color_system_accent">Зададен от системата</string>
+    <string name="color_wallpaper_main">Тапет — основен</string>
+    <string name="color_wallpaper_secondary">Тапет — вторичен</string>
+    <string name="color_wallpaper_tertiary">Тапет — третичен</string>
     <string name="pref_fonts_title">Шрифтове</string>
-    <string name="blur_pref_title">Замъгляване</string>
+    <string name="blur_pref_title">Размиване</string>
+    <string name="blur_pref_summary">Размиване на фоновете.</string>
+    <string name="blur_radius_pref_title">Плътност на размиването</string>
     <!-- Section 3 -->
     <string name="general_pref_title">Работен плот</string>
+    <string name="general_pref_summary">Изглед, Заключване на осн. екран, Преходи</string>
+    <string name="grid_size">Решетка с икони</string>
     <string name="grid_size_width">Широчина</string>
     <string name="grid_size_height">Височина</string>
+    <string name="num_hotseat_icons_pref_title">Брой икони</string>
+    <string name="overlap_placement">Ползволи припокриване</string>
+    <string name="lock_desktop">Заключи осн. екран</string>
     <string name="pref_category_icons">Преки пътища</string>
+    <string name="hide_icon_labels_pref_title">Скрий етикетите</string>
+    <string name="pref_mutliline_labels">Многоредови етикети</string>
+    <string name="icon_text_scale_pref_title">Размер на текста</string>
+    <string name="text_color">Цвят на текста</string>
+    <string name="icon_scale_pref_title">Icon Size</string>
+    <string name="auto_add_shortcuts_label">Add New Shortcuts to Desktop</string>
+    <string name="pref_icon_popup_menu">Shortcut Bubble</string>
     <string name="pref_category_misc">Други</string>
+    <string name="animation_type_title">App Launch Transition</string>
     <string name="animation_type_default">По подразбиране</string>
+    <string name="animation_type_pie">Android Pie</string>
+    <string name="animation_type_pie_like">Android Pie (Емулирана)</string>
     <string name="animation_type_reveal">Разкриване</string>
     <string name="animation_type_slide_up">Плъзгане нагоре</string>
     <string name="animation_type_scale_up">Мащабиране</string>
     <string name="animation_type_blink">Премигване</string>
     <string name="animation_type_fade">Плавен преход</string>
+    <string name="icon_badging_title">Точки за известия</string>
+    <string name="pref_notification_count_title">Покажи брой известия</string>
+    <string name="allow_rotation_title">Позволи завъртане</string>
+    <string name="pref_center_wallpaper">Центриран тапет</string>
+    <string name="pref_hide_statusbar">Скрий лентата за състоянието</string>
+    <string name="full_width_width_widgets_pref_title">Широки джаджи</string>
+    <string name="full_width_widgets_pref_summary">Позволи разширяване на джаджите до ръба на екрана.</string>
+    <string name="show_top_shadow_pref_title">Покажи сянка отгоре</string>
     <!-- Section 4 -->
     <string name="smartspace_preferences_in_settings">Бърз поглед</string>
     <!-- Note: replaces hard-coded copy (“Home widget”). -->
+    <string name="smartspace_preferences_in_settings_desc">Дата &amp; Час, Източници на данни</string>
+    <string name="smartspace_time">Покажи Час</string>
+    <string name="smartspace_date">Покажи Дата</string>
+    <string name="pref_smartspace_time_above">Покажи голям часовник</string>
+    <string name="pref_hide_statusbar_clock">Скрий часа в лентата за състоянието</string>
+    <string name="root_access_required">Изисква се root достъп.</string>
+    <string name="smartspace_time_24_h">Ползвай 24-часов формат</string>
+    <string name="title_use_pill_qsb">Покажи Pill Search панел</string>
     <string name="pref_category_weather">Други</string>
+    <string name="pref_smartspace_widget_provider">Източник на прогноза за време  </string>
+    <string name="google_app">Приложението Google</string>
     <string name="weather_provider_disabled">Изключено</string>
     <string name="weather_provider_owm">OpenWeatherMap</string>
+    <string name="weather_provider_pe">Pixel Experience</string>
+    <string name="pref_weather_units">Единица за температура</string>
     <string name="units_metric">Целзий</string>
     <string name="units_imperial">Фаренхайт</string>
     <string name="units_kelvin">Келвин</string>
@@ -43,48 +106,92 @@
     <string name="units_delisle">Делил</string>
     <string name="units_reaumur">Реомюр</string>
     <string name="units_romer">Рьомер</string>
+    <string name="pref_smartspace_event_providers">Източници на данни</string>
+    <string name="battery_status">Статус на батерията</string>
+    <string name="event_provider_unread_notifications">Известия</string>
     <string-array name="greetings_morning">
         <item>Добро утро!</item>
         <item>Лек ден!</item>
-        <item>It’s a beautiful day outside!</item>
+        <item>Навън е чудесен ден!</item>
     </string-array>
     <string-array name="greetings_evening">
-        <item>What’s up?</item>
-        <item>Good evening!</item>
-        <item>How did your day go?</item>
+        <item>Как си?</item>
+        <item>Добър вечер!</item>
+        <item>Как беше денят ти?</item>
         <item>Лека нощ!</item>
     </string-array>
     <string-array name="greetings_night">
         <item>Лека нощ!</item>
         <item>До утре!</item>
         <item>Лека нощ!</item>
-        <item>Don’t stay up too late!</item>
+        <item>Не стой до късно!</item>
     </string-array>
+    <string name="battery_charging">Зареждане</string>
+    <string name="battery_full">Зареден</string>
+    <string name="battery_low">Батерията е разредена</string>
     <!-- Section 5 -->
     <string name="dock_pref_title">Док</string>
+    <string name="dock_pref_summary">Изглед, Стил, Индикатори</string>
+    <string name="dock_fill">Покажи фон</string>
+    <string name="background_color">Цвят на фона</string>
+    <string name="theme_based">Зададен от темата</string>
+    <string name="dock_shadow">Покажи сянка</string>
+    <string name="hotseat_show_arrow">Покажи стрелка</string>
+    <string name="hotseat_show_page_indicator">Покажи индикатор за страница</string>
+    <string name="two_row_dock">Покажи втори ред</string>
+    <string name="pref_category_searchbar">Панел за търсене</string>
+    <string name="dock_search_bar">Покажи Панел за търсене</string>
+    <string name="dock_colored_google">Цветни икони</string>
     <!-- Section 6 -->
     <string name="app_drawer_pref_title">Списък с приложения</string>
+    <string name="app_drawer_pref_summary">Изглед, Категории, Предложения</string>
     <string name="pref_category_theme">Стил</string>
+    <string name="pref_drawer_columns">Брой колони</string>
+    <string name="pref_prediction_count">Брой предложения</string>
+    <string name="pref_drawer_padding">Височина на реда</string>
+    <string name="categorization">Категории</string>
     <string name="pref_appcategorization_enable_title">Категоризиране на приложенията</string>
     <string name="pref_appcategorization_folders_title">Папки</string>
     <string name="pref_appcategorization_tabs_title">Раздели</string>
+    <string name="pref_appcategorization_tabs_summary">Плъзни за смяна на категориите.</string>
     <string name="pref_app_groups_edit_tip">Натиснете за редактиране, влачете за да пренаредите.</string>
+    <plurals name="hidden_apps_count">
+        <item quantity="one">%1$d скрито</item>
+        <item quantity="other">%1$d скрити</item>
+    </plurals>
+    <string name="category_business_and_productivity">Бизнес &amp; Продуктивност</string>
     <string name="category_communication">Комуникация</string>
     <string name="category_entertainment">Развлечения</string>
+    <string name="category_food_and_drink">Храна &amp; Напитки</string>
     <string name="category_game">Игри</string>
+    <string name="category_health_and_fitness">Здраве &amp; Фитнес</string>
+    <string name="category_knowledge_and_reference">Знания &amp; Справки</string>
+    <string name="category_lifestyle">Пазаруване &amp; Lifestyle</string>
     <string name="category_music">Музика</string>
     <string name="category_news">Новини</string>
     <string name="category_personalization">Персонализиране</string>
     <string name="category_photography">Фотография</string>
     <string name="category_tools">Инструменти</string>
+    <string name="category_travel_and_navigation">Пътешествия &amp; Навигация</string>
     <string name="tab_type_smart">Автоматично</string>
     <string name="tab_type_custom">Персонализиран</string>
+    <string name="pref_appcategorization_flowerpot_title">Категория приложение</string>
     <string name="suggestion_pref_screen_title">Предложения</string>
     <string name="app_actions_pref_title">Действия</string>
+    <string name="all_apps_label_pref_title">Покажи надпис \"Всички приложения\"</string>
     <!-- Section 7 -->
     <string name="search">Търсене</string>
+    <string name="google">Приложението Google</string>
     <string name="search_provider_google_go">Google Go</string>
     <string name="web_search_google">Google</string>
+    <string name="web_search_ddg">DuckDuckGo (в браузър)</string>
+    <string name="web_search_startpage">Startpage.com (в браузър)</string>
+    <string name="web_search_bing">Bing (в браузер)</string>
+    <string name="web_search_qwant">Qwant (в браузър)</string>
+    <string name="web_search_ecosia">Ecosia (в браузър)</string>
+    <string name="web_search_yandex">Yandex (в браузър)</string>
+    <string name="web_search_naver">Naver (в браузър)</string>
+    <string name="web_search_baidu">Baidu (в браузър)</string>
     <string name="search_provider_yandex">Yandex</string>
     <string name="search_provider_ddg">DuckDuckGo</string>
     <string name="search_provider_bing">Bing</string>
@@ -98,44 +205,116 @@
     <string name="search_provider_edge">Edge</string>
     <string name="weather_provider_oneplus_weather">Време на OnePlus</string>
     <string name="searchbar_appearance_title">Стил</string>
+    <string name="action_assistant">Отвори Асистента</string>
+    <string name="pref_show_as_assistant_summary">Отвори Асистент вместо Гласово търсене.</string>
     <!-- Section 8 -->
+    <string name="pref_integrations">Плъгини</string>
     <string name="sesame">Sesame</string>
+    <string name="sesame_upsell">Натисни за да инсталираш Sesame.</string>
+    <string name="sesame_search_engine">Използвай като търсачка</string>
+    <string name="sesame_version">Версия на библиотеката</string>
+    <string name="title_show_google_app">Покажи %1$s Feed</string>
+    <string name="feed_theme_pref_title">Цвят на фона</string>
     <!-- Section 9 -->
     <string name="gestures_pref_title">Жестове</string>
+    <string name="gestures_pref_summary">Двойно почукване, Плъзване от Док</string>
+    <string name="gesture_double_tap">Двойно почукване</string>
+    <string name="gesture_long_press">Докосни &amp; Задръж</string>
+    <string name="gesture_swipe_down">Плъзни надолу</string>
+    <string name="gesture_swipe_up">Плъзни нагоре</string>
+    <string name="gesture_dock_swipe_up">Плъзни нагоре от Дока</string>
+    <string name="action_none">Не прави нищо</string>
     <string name="action_sleep">Изключване на екрана</string>
+    <string name="action_open_settings">Отвори настройките на Lawnchair</string>
+    <string name="action_open_app">Отвори приложение</string>
     <!-- Section 10 -->
+    <string name="backups">Архивиране &amp; Възстановяване</string>
     <string name="new_backup">Създай</string>
     <string name="restore_backup">Възстанови</string>
+    <string name="local_backups">В локално хранилище</string>
+    <string name="no_recent_backups">Архивите ще бъдат тук.</string>
+    <string name="backup_contents">Данни за архивиране</string>
+    <string name="restore_contents">Данни за възстановяване</string>
     <string name="backup_settings">Настройки</string>
+    <string name="homescreen">Изглед на екарана</string>
     <string name="backup_wallpaper">Тапет</string>
     <string name="name">Име</string>
     <string name="backup_location">Местоположение</string>
+    <string name="backup_location_device_storage">Папка \"Lawnchair\"</string>
     <string name="custom">Персонализиран</string>
     <!-- Section 11 -->
     <string name="about">Относно</string>
+    <string name="about_pref_summary">Екип, Връзки, Лицензии</string>
+    <string name="about_translate">Превод</string>
     <string name="title_attribouter_rate">Оценете</string>
     <string name="title_attribouter_website">Уебсайт</string>
     <string name="about_role_lead">Главен програмист</string>
     <string name="about_role_dev">Програмист</string>
+    <string name="about_role_ui_ux_designer">Дизайнер на интерфейса</string>
+    <string name="about_role_writer">Автор</string>
+    <string name="about_role_dev_mod">Разработчик &amp; модератор</string>
     <string name="about_role_designer">Дизайнер</string>
+    <string name="about_role_devops">DevOps инженер</string>
+    <string name="about_role_pr">PR Мениджър</string>
+    <string name="about_role_family_member">Член на семейството</string>
+    <string name="about_our_team">Екипът</string>
     <!-- Section 12 -->
     <string name="wallpaper_button_text">Тапет</string>
     <string name="pref_app_groups_create">Създай</string>
     <string name="pref_appcategorization_style_text">Стил</string>
     <string name="customize">Персонализиране</string>
+    <plurals name="tab_apps_count">
+        <item quantity="one">%1$d Приложение</item>
+        <item quantity="other">%1$d Приложения</item>
+    </plurals>
+    <string name="advanced_settings">Повече настройки</string>
+    <string name="adaptive_icon">Адаптивна икона</string>
     <string name="action_edit">Редактиране</string>
+    <string name="dismiss_drop_target_label">"Не показвай"</string>
+    <string name="suggested_action_content_description">“%1$s” се отваря в “%2$s”.</string>
+    <string name="smartspace_setup_text">Натисни за настройка</string>
     <string name="lawnchair_settings">Настройки на Lawnchair</string>
+    <string name="label_voice_search">Гласово търсене</string>
+    <string name="icon_pack">Пакет икони</string>
     <string name="home_widget">Бърз поглед</string>
     <string name="about_app_version">Версия</string>
+    <string name="title_disable_suggestions_prompt">Изключи предложенията за приложения</string>
+    <string name="msg_disable_suggestions_prompt">"Данните за използването ще бъдат изтрити."</string>
+    <string name="pixel_style_pref_title">Google Pixel</string>
     <string name="label_turn_off_suggestions">Деактивирай</string>
     <string name="about_summary_title">Обобщение</string>
+    <string name="hide_app">Скрий пряк път</string>
+    <string name="hide_badge">Скрий значка</string>
+    <string name="icon_shape_rounded_square">Заоблен квадрат</string>
+    <string name="hide_app_selected">“&#160;” скрито.</string>
+    <string name="hide_app_apply">Готово</string>
+    <string name="hide_dock_gradient">Изключи градиент</string>
     <string name="choose_backup_path">Избери</string>
+    <string name="backup_creating">Създаване на архив...</string>
     <string name="backup_loading">Зареждане...</string>
     <string name="loading">Зареждане…</string>
+    <string name="backup_timestamp">Създадено</string>
     <string name="backup_share">Споделяне</string>
+    <string name="backup_invalid">Невалиден архивен файл.</string>
+    <string name="backup_restoring">Възстановяване...</string>
+    <string name="backup_restarting">Рестартиране...</string>
+    <string name="restore_success">Архивът е възстановен.</string>
+    <string name="failed">Нещо лошо се случи.</string>
+    <string name="backup_share_text">Архив на Lawnchair</string>
+    <string name="show_debug_info_pref_title">Покажи имената на компонентите</string>
+    <string name="debug_component_name">Име на компонента</string>
+    <string name="debug_component_name_copied">Копирано в клипборда.</string>
+    <string name="read_external_storage_required">За да създадете архив, дайте разрешение за достъп до Хранилище.</string>
+    <string name="launcher_theme_override_label">Принудително включи тъмен режим</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
+    <string name="dock_style_pref_title">Стил на дока</string>
+    <string name="dock_style_p">Android Pie</string>
+    <string name="dock_style_n">Android Nougat</string>
     <string name="dock_style_hidden">Скрит</string>
     <string name="opacity">Прозрачност</string>
+    <string name="title_storage_permission_required">Нужен е достъп до хранилището</string>
+    <string name="content_storage_permission_required">За да зададете тапет, дайте разрешение за достъп до Хранилище.</string>
+    <string name="reset_to_default">Възстанови към първоначални настройки</string>
     <string name="gradient">Градиент</string>
     <string name="pref_category_aag">Бърз поглед</string>
     <string name="pref_category_layout">Оформление</string>
@@ -145,17 +324,28 @@
     <string name="title_attribouter_license_permissions">Разрешения</string>
     <string name="title_attribouter_license_conditions">Условия</string>
     <string name="title_attribouter_license_limitations">Ограничения</string>
+    <string name="title_attribouter_more_info">Детайли</string>
     <string name="title_attribouter_translators">Преводачи</string>
+    <string name="about_our_contributors">Участници</string>
+    <string name="about_our_family">Членове на семейството</string>
     <string name="about_bio_deletescape">Kotlin/Java програмист. Интересува се от всичко, свързано с Android. Основател на проектите Lawnchair и dogbin.</string>
     <string name="about_bio_recoded">Лек програмист и графичен дизайнер.</string>
     <string name="about_bio_josh">Графичен дизайнер на свободна практика.</string>
     <string name="about_bio_harsh">Разработчик на Android приложения и библиотеки. Главен разработчик в AOSiP.</string>
     <string name="about_bio_david">На 19 години, превръща кофеин и пица в код, предоставя хостинг и 24/7 поддръжка за Lawnchair ако нещо се обърка. Допринася към проекти с отворен код и поправя бъгове в свободното си време. Също така по-рано известен като Codebucket.</string>
     <string name="about_bio_paphonb">18-годишен студент, Android разработчик и един от основните разработчици на Lawnchair Launcher.</string>
+    <string name="action_open_app_with_target">Отвори “%s”</string>
+    <string name="action_open_app_select_app">Избери приложение</string>
+    <string name="smartspace_widget_provider_not_found">Вземи приложението Google.</string>
     <string name="apps_label">Приложения</string>
     <string name="all_apps_label">Всички приложения</string>
     <string name="pref_weather_city_title">Град</string>
     <string name="default_city">Lucerne, CH</string>
+    <string name="pref_weather_api_key_title">API ключ</string>
+    <string name="pref_weather_city_summary">За по-точни резултати, добави код на държавата.</string>
+    <string name="all_icons">Всички икони</string>
+    <string name="error_no_browser">Не е намерен браузър.</string>
+    <string name="no_icon_found">Няма икона.</string>
     <string name="week_day_format">%1$s, %2$s</string>
     <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
     <string name="weather_provider_testing">Отстраняване на грешки</string>
@@ -164,21 +354,35 @@
     <string name="theme_default">По подразбиране</string>
     <string name="transparent">Прозрачен</string>
     <string name="pref_open_source_licenses_title">Лицензи</string>
+    <string name="dt2s_admin_hint">За да използвате двойно почукване за заспиване, дайте административно разрешение.</string>
+    <string name="dt2s_admin_warning">Двойно почукване за заспиване ще бъде изключено.</string>
     <string name="color_presets">Предварителни настройки</string>
     <string name="automatic_short">Автоматично</string>
+    <string name="recent_task_option_force_stop">Принудително спиране</string>
     <string name="lawnchair_actions">Действия</string>
+    <string name="bridge_missing_title">Вземете Lawnfeed</string>
+    <string name="bridge_missing_message">За да ползвате Google Feed, инсталирайте Lawnfeed.</string>
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <string name="title_app_suggestions">Приложения</string>
     <string name="theme_dark">Тъмна</string>
     <string name="theme_dark_theme_mode">Тъмна тема</string>
+    <string name="theme_dark_dark_text">Тъмна с тъмен текст</string>
     <string name="theme_black">Черна</string>
+    <string name="theme_black_dark_text">Черна с тъмен текст</string>
     <string name="pref_qsb_color">Цвят</string>
+    <string name="hide_from_predictions">Скрий от предложенията</string>
     <string name="app_actions_pref_title_in_search">Действия</string>
+    <string name="search_clear_history">Изчисти история</string>
+    <string name="recent_task_option_popup_window">Диалог</string>
     <string name="drawer_tabs">Раздели</string>
     <string name="add_new_tab">Добави</string>
     <string name="rename_tab">Преименувай</string>
     <string name="show_in_tabs">Раздели</string>
     <string name="tabs_manage">Управление</string>
+    <string name="tab_manage_apps">Управление на приложения</string>
+    <string name="tab_bottom_sheet_save">Готово</string>
+    <string name="selected_count">%1$d избрано</string>
+    <string name="tab_color">Цвят</string>
     <string name="delete">Изтрий</string>
     <string name="none">Няма</string>
     <string name="undo">Отмяна</string>
@@ -192,13 +396,27 @@
     <string name="font_weight_medium">Среден</string>
     <string name="font_weight_bold">Удебелен</string>
     <string name="font_weight_extra_black">Черен</string>
+    <string name="owm_get_your_own_key">Вземете API ключ от api.openweathermap.org.</string>
+    <string name="pref_fonts_global_font">Основен шрифт</string>
     <string name="pref_fonts_change_global_font">Промяна</string>
+    <string name="pref_fonts_home_icons">Етикети</string>
     <string name="pref_fonts_home_smartspace">Бърз поглед</string>
     <string name="pref_fonts_category_drawer">Списък с приложения</string>
+    <string name="pref_fonts_drawer_icons">Етикети</string>
     <string name="pref_fonts_drawer_app_actions_icons">Действия</string>
     <string name="pref_fonts_find_fonts">Търсене</string>
+    <string name="pref_fonts_add_fonts">Добави шрифтове</string>
+    <string name="pref_fonts_add_fonts_summary">Поддържат се OTF &amp; TTF.</string>
+    <string name="pref_fonts_missing_font">Шрифта не е намерен.</string>
+    <string name="pref_show_dev_options">Покажи в настройките</string>
+    <string name="dock_scale">Размер на дока</string>
+    <string name="default_folder_name">Нова папка</string>
     <string name="drawer_folders">Папки</string>
+    <string name="open_image_picker">Отвори снимки</string>
+    <string name="action_dogbin_copy_link">Копирай връзка</string>
     <string name="action_copy">Копирай</string>
+    <string name="action_copy_link">Копирай връзка</string>
+    <string name="copied_toast">Копирано в клипборда.</string>
     <string name="action_share">Споделяне</string>
     <string name="weather_icons_default">По подразбиране</string>
     <string name="icon_shape_corner_round">Закръглено</string>
