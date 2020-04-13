@@ -645,8 +645,8 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             if (!mIsWork || recyclerView == null) return;
             boolean workDisabled = UserCache.INSTANCE.get(mLauncher).isAnyProfileQuietModeEnabled();
             if (mWorkDisabled == workDisabled) return;
-            recyclerView.setContentDescription(
-                    workDisabled ? mLauncher.getString(R.string.work_apps_paused_title) : null);
+            recyclerView.setContentDescription(workDisabled ? mLauncher.getString(
+                    R.string.work_apps_paused_content_description) : null);
             View overlayView = getOverlayView();
             recyclerView.setItemAnimator(new DefaultItemAnimator());
             if (workDisabled) {
