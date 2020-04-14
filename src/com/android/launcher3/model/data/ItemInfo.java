@@ -37,6 +37,8 @@ import com.android.launcher3.Workspace;
 import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.util.ContentWriter;
 
+import java.util.Optional;
+
 /**
  * Represents an item in the launcher.
  */
@@ -248,24 +250,29 @@ public class ItemInfo {
 
         LauncherAtom.ItemInfo.Builder itemBuilder = LauncherAtom.ItemInfo.newBuilder();
         itemBuilder.setIsWork(user != Process.myUserHandle());
-        ComponentName cn = getTargetComponent();
+        Optional<ComponentName> nullableComponent = Optional.ofNullable(getTargetComponent());
         switch (itemType) {
             case ITEM_TYPE_APPLICATION:
-                itemBuilder.setApplication(LauncherAtom.Application.newBuilder()
-                        .setComponentName(cn.flattenToShortString())
-                        .setPackageName(cn.getPackageName()));
+                itemBuilder
+                        .setApplication(nullableComponent
+                                .map(component -> LauncherAtom.Application.newBuilder()
+                                        .setComponentName(component.flattenToShortString())
+                                        .setPackageName(component.getPackageName()))
+                                .orElse(LauncherAtom.Application.newBuilder()));
                 break;
             case ITEM_TYPE_DEEP_SHORTCUT:
             case ITEM_TYPE_SHORTCUT:
-                itemBuilder.setShortcut(LauncherAtom.Shortcut.newBuilder()
-                        .setShortcutName(cn.flattenToShortString()));
+                itemBuilder
+                        .setShortcut(nullableComponent
+                                .map(component -> LauncherAtom.Shortcut.newBuilder()
+                                        .setShortcutName(component.flattenToShortString()))
+                                .orElse(LauncherAtom.Shortcut.newBuilder()));
                 break;
             case ITEM_TYPE_APPWIDGET:
                 setItemBuilder(itemBuilder);
                 break;
             default:
                 break;
-
         }
         if (fInfo != null) {
             LauncherAtom.FolderContainer.Builder folderBuilder =
