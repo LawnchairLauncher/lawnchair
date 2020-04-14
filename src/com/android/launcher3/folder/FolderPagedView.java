@@ -153,6 +153,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
             CellLayout page = (CellLayout) getChildAt(i);
             ShortcutAndWidgetContainer container = page.getShortcutsAndWidgets();
             for (int j = container.getChildCount() - 1; j >= 0; j--) {
+                container.getChildAt(j).setVisibility(View.VISIBLE);
                 mViewCache.recycleView(R.layout.folder_application, container.getChildAt(j));
             }
             page.removeAllViews();
