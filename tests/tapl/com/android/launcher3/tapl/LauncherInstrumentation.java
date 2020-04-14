@@ -247,6 +247,8 @@ public final class LauncherInstrumentation {
                 }
             }
         }
+
+        disableSensorRotation();
     }
 
     public void enableCheckEventsForSuccessfulGestures() {
