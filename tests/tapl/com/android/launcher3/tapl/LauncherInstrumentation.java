@@ -250,7 +250,8 @@ public final class LauncherInstrumentation {
     }
 
     public void enableCheckEventsForSuccessfulGestures() {
-        mCheckEventsForSuccessfulGestures = true;
+        // b/153824894
+        // mCheckEventsForSuccessfulGestures = true;
     }
 
     public void setOnLauncherCrashed(Runnable onLauncherCrashed) {
