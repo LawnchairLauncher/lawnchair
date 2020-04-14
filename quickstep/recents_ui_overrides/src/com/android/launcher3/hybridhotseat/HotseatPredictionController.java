@@ -95,9 +95,6 @@ public class HotseatPredictionController implements DragController.DragListener,
     private static final String TAG = "PredictiveHotseat";
     private static final boolean DEBUG = false;
 
-    public static final int MAX_ITEMS_FOR_MIGRATION = DeviceConfig.getInt(
-            DeviceFlag.NAMESPACE_LAUNCHER, "max_homepage_items_for_migration", 5);
-
     //TODO: replace this with AppTargetEvent.ACTION_UNPIN (b/144119543)
     private static final int APPTARGET_ACTION_UNPIN = 4;
 
@@ -642,6 +639,9 @@ public class HotseatPredictionController implements DragController.DragListener,
         if (isReady()) return;
         int hotseatItemsCount = mHotseat.getShortcutsAndWidgets().getChildCount();
 
+        int maxItems = DeviceConfig.getInt(
+                DeviceFlag.NAMESPACE_LAUNCHER, "max_homepage_items_for_migration", 5);
+
         // -1 to exclude smart space
         int workspaceItemCount = mLauncher.getWorkspace().getScreenWithId(
                 Workspace.FIRST_SCREEN_ID).getShortcutsAndWidgets().getChildCount() - 1;
@@ -650,7 +650,7 @@ public class HotseatPredictionController implements DragController.DragListener,
         // open spots in their hotseat and have more than maxItems in their hotseat + workspace
 
         if (hotseatItemsCount == mHotSeatItemsCount && workspaceItemCount + hotseatItemsCount
-                > MAX_ITEMS_FOR_MIGRATION) {
+                > maxItems) {
             mLauncher.getSharedPrefs().edit().putBoolean(HotseatEduController.KEY_HOTSEAT_EDU_SEEN,
                     true).apply();
 
@@ -662,8 +662,8 @@ public class HotseatPredictionController implements DragController.DragListener,
 
             // temporarily encode details in log target (go/hotseat_migration)
             target.rank = 2;
-            target.cardinality = MAX_ITEMS_FOR_MIGRATION;
-            target.pageIndex = (workspaceItemCount * 1000) + hotseatItemsCount;
+            target.cardinality = (workspaceItemCount * 1000) + hotseatItemsCount;
+            target.pageIndex = maxItems;
             LauncherLogProto.LauncherEvent event = newLauncherEvent(action, target);
             UserEventDispatcher.newInstance(mLauncher).dispatchUserEvent(event, null);
 
