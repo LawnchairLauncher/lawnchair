@@ -204,27 +204,23 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
                     true /* freezeTaskList */);
         } else {
             int taskId = mRecentsView.getNextPageTaskView().getTask().key.id;
-            mFinishingRecentsAnimationForNewTaskId = taskId;
-            mRecentsAnimationController.finish(true /* toRecents */, () -> {
-                if (!mCanceled) {
-                    TaskView nextTask = mRecentsView.getTaskView(taskId);
-                    if (nextTask != null) {
-                        nextTask.launchTask(false /* animate */, true /* freezeTaskList */,
-                                success -> {
-                                    resultCallback.accept(success);
-                                    if (!success) {
-                                        mActivityInterface.onLaunchTaskFailed();
-                                        nextTask.notifyTaskLaunchFailed(TAG);
-                                    } else {
-                                        mActivityInterface.onLaunchTaskSuccess();
-                                    }
-                                }, MAIN_EXECUTOR.getHandler());
-                    }
-                    mStateCallback.setStateOnUiThread(successStateFlag);
+            if (!mCanceled) {
+                TaskView nextTask = mRecentsView.getTaskView(taskId);
+                if (nextTask != null) {
+                    nextTask.launchTask(false /* animate */, true /* freezeTaskList */,
+                            success -> {
+                                resultCallback.accept(success);
+                                if (!success) {
+                                    mActivityInterface.onLaunchTaskFailed();
+                                    nextTask.notifyTaskLaunchFailed(TAG);
+                                } else {
+                                    mActivityInterface.onLaunchTaskSuccess();
+                                }
+                            }, MAIN_EXECUTOR.getHandler());
                 }
-                mCanceled = false;
-                mFinishingRecentsAnimationForNewTaskId = -1;
-            });
+                mStateCallback.setStateOnUiThread(successStateFlag);
+            }
+            mCanceled = false;
         }
         ActiveGestureLog.INSTANCE.addLog("finishRecentsAnimation", true);
     }
