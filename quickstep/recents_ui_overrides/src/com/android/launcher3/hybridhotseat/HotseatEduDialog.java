@@ -33,6 +33,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
+import com.android.launcher3.Workspace;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.UserEventDispatcher;
@@ -153,6 +154,12 @@ public class HotseatEduDialog extends AbstractSlideInView implements Insettable 
     private void logUserAction(boolean migrated, int pageIndex) {
         LauncherLogProto.Action action = new LauncherLogProto.Action();
         LauncherLogProto.Target target = new LauncherLogProto.Target();
+
+        int hotseatItemsCount = mLauncher.getHotseat().getShortcutsAndWidgets().getChildCount();
+        // -1 to exclude smart space
+        int workspaceItemCount = mLauncher.getWorkspace().getScreenWithId(
+                Workspace.FIRST_SCREEN_ID).getShortcutsAndWidgets().getChildCount() - 1;
+
         action.type = LauncherLogProto.Action.Type.TOUCH;
         action.touch = LauncherLogProto.Action.Touch.TAP;
         target.containerType = LauncherLogProto.ContainerType.TIP;
@@ -162,7 +169,7 @@ public class HotseatEduDialog extends AbstractSlideInView implements Insettable 
         target.rank = MIGRATION_EXPERIMENT_IDENTIFIER;
         // encoding migration type on pageIndex
         target.pageIndex = pageIndex;
-        target.cardinality = HotseatPredictionController.MAX_ITEMS_FOR_MIGRATION;
+        target.cardinality = (workspaceItemCount * 1000) + hotseatItemsCount;
         LauncherLogProto.LauncherEvent event = newLauncherEvent(action, target);
         UserEventDispatcher.newInstance(getContext()).dispatchUserEvent(event, null);
     }
