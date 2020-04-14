@@ -200,6 +200,7 @@ public class HotseatEduController {
             pageId = LauncherSettings.Settings.call(mLauncher.getContentResolver(),
                     LauncherSettings.Settings.METHOD_NEW_SCREEN_ID)
                     .getInt(LauncherSettings.Settings.EXTRA_VALUE);
+            mNewScreens = IntArray.wrap(pageId);
         }
         for (int i = 0; i < mLauncher.getDeviceProfile().inv.numHotseatIcons; i++) {
             View child = mHotseat.getChildAt(i, 0);
