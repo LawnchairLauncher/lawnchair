@@ -21,7 +21,6 @@ import static com.android.quickstep.InstantAppResolverImpl.COMPONENT_CLASS_MARKE
 import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
-import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.ComponentKey;
 
 public class ComponentKeyMapper {
@@ -57,9 +56,8 @@ public class ComponentKeyMapper {
             return item;
         } else if (getComponentClass().equals(COMPONENT_CLASS_MARKER)) {
             return mCache.getInstantApp(componentKey.componentName.getPackageName());
-        } else if (componentKey instanceof ShortcutKey) {
-            return mCache.getShortcutInfo((ShortcutKey) componentKey);
+        } else {
+            return mCache.getShortcutInfo(componentKey);
         }
-        return null;
     }
 }
