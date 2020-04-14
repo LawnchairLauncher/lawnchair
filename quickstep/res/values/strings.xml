@@ -61,7 +61,7 @@
     <string name="all_apps_prediction_tip">Your predicted apps</string>
 
     <!-- Content description for a close button. [CHAR LIMIT=NONE] -->
-    <string  name="back_gesture_tutorial_close_button_content_description" translatable="false">Close</string>
+    <string  name="gesture_tutorial_close_button_content_description" translatable="false">Close</string>
 
 
     <!-- Hotseat migration notification title -->
@@ -110,9 +110,9 @@
     <string name="back_gesture_tutorial_confirm_subtitle" translatable="false">To change the sensitivity of the back gesture, go to Settings</string>
 
     <!-- Button text shown on a button on the confirm screen. [CHAR LIMIT=14] -->
-    <string name="back_gesture_tutorial_action_button_label" translatable="false">Done</string>
+    <string name="gesture_tutorial_action_button_label" translatable="false">Done</string>
     <!-- Button text shown on a text button on the confirm screen. [CHAR LIMIT=14] -->
-    <string name="back_gesture_tutorial_action_text_button_label" translatable="false">Settings</string>
+    <string name="gesture_tutorial_action_text_button_label" translatable="false">Settings</string>
 
     <!-- ******* Overview ******* -->
     <!-- Label for a button that causes the current overview app to be shared. [CHAR_LIMIT=40] -->
