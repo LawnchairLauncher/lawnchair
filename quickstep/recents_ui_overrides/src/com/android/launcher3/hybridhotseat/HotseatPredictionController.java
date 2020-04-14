@@ -31,6 +31,7 @@ import android.app.prediction.AppTargetEvent;
 import android.app.prediction.AppTargetId;
 import android.content.ComponentName;
 import android.os.Bundle;
+import android.os.Process;
 import android.provider.DeviceConfig;
 import android.util.Log;
 import android.view.View;
@@ -40,6 +41,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.BubbleTextView;
+import com.android.launcher3.CellLayout;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
 import com.android.launcher3.Hotseat;
@@ -63,6 +65,7 @@ import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
+import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.shortcuts.ShortcutKey;
@@ -76,6 +79,7 @@ import com.android.launcher3.util.ComponentKey;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.OptionalInt;
 import java.util.stream.IntStream;
 
@@ -102,6 +106,8 @@ public class HotseatPredictionController implements DragController.DragListener,
 
     private static final String BUNDLE_KEY_HOTSEAT = "hotseat_apps";
     private static final String BUNDLE_KEY_WORKSPACE = "workspace_apps";
+
+    private static final String BUNDLE_KEY_PIN_EVENTS = "pin_events";
 
     private static final String PREDICTION_CLIENT = "hotseat";
     private DropTarget.DragObject mDragObject;
@@ -296,14 +302,44 @@ public class HotseatPredictionController implements DragController.DragListener,
 
     private Bundle getAppPredictionContextExtra() {
         Bundle bundle = new Bundle();
+
+        //TODO: remove this way of reporting items
         bundle.putParcelableArrayList(BUNDLE_KEY_HOTSEAT,
                 getPinnedAppTargetsInViewGroup((mHotseat.getShortcutsAndWidgets())));
         bundle.putParcelableArrayList(BUNDLE_KEY_WORKSPACE, getPinnedAppTargetsInViewGroup(
                 mLauncher.getWorkspace().getScreenWithId(
                         Workspace.FIRST_SCREEN_ID).getShortcutsAndWidgets()));
 
+        ArrayList<AppTargetEvent> pinEvents = new ArrayList<>();
+        getPinEventsForViewGroup(pinEvents, mHotseat.getShortcutsAndWidgets(),
+                APP_LOCATION_HOTSEAT);
+        getPinEventsForViewGroup(pinEvents, mLauncher.getWorkspace().getScreenWithId(
+                Workspace.FIRST_SCREEN_ID).getShortcutsAndWidgets(), APP_LOCATION_WORKSPACE);
+        bundle.putParcelableArrayList(BUNDLE_KEY_PIN_EVENTS, pinEvents);
+
         return bundle;
     }
+
+    private ArrayList<AppTargetEvent> getPinEventsForViewGroup(ArrayList<AppTargetEvent> pinEvents,
+            ViewGroup views, String root) {
+        for (int i = 0; i < views.getChildCount(); i++) {
+            View child = views.getChildAt(i);
+            final AppTargetEvent event;
+            if (child.getTag() instanceof ItemInfo && getAppTargetFromInfo(
+                    (ItemInfo) child.getTag()) != null) {
+                ItemInfo info = (ItemInfo) child.getTag();
+                event = wrapAppTargetWithLocation(getAppTargetFromInfo(info),
+                        AppTargetEvent.ACTION_PIN, info);
+            } else {
+                CellLayout.LayoutParams params = (CellLayout.LayoutParams) views.getLayoutParams();
+                event = wrapAppTargetWithLocation(getBlockAppTarget(), AppTargetEvent.ACTION_PIN,
+                        root, 0, params.cellX, params.cellY, params.cellHSpan, params.cellVSpan);
+            }
+            pinEvents.add(event);
+        }
+        return pinEvents;
+    }
+
 
     private ArrayList<AppTarget> getPinnedAppTargetsInViewGroup(ViewGroup viewGroup) {
         ArrayList<AppTarget> pinnedApps = new ArrayList<>();
@@ -688,5 +724,53 @@ public class HotseatPredictionController implements DragController.DragListener,
         ComponentName cn = info.getTargetComponent();
         return new AppTarget.Builder(new AppTargetId("app:" + cn.getPackageName()),
                 cn.getPackageName(), info.user).setClassName(cn.getClassName()).build();
+    }
+
+    private AppTarget getAppTargetFromInfo(ItemInfo info) {
+        if (info == null) return null;
+        if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET
+                && info instanceof LauncherAppWidgetInfo
+                && ((LauncherAppWidgetInfo) info).providerName != null) {
+            ComponentName cn = ((LauncherAppWidgetInfo) info).providerName;
+            return new AppTarget.Builder(new AppTargetId("widget:" + cn.getPackageName()),
+                    cn.getPackageName(), info.user).setClassName(cn.getClassName()).build();
+        } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION
+                && info.getTargetComponent() != null) {
+            ComponentName cn = info.getTargetComponent();
+            return new AppTarget.Builder(new AppTargetId("app:" + cn.getPackageName()),
+                    cn.getPackageName(), info.user).setClassName(cn.getClassName()).build();
+        } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT
+                && info instanceof WorkspaceItemInfo) {
+            ShortcutKey shortcutKey = ShortcutKey.fromItemInfo(info);
+            //TODO: switch to using full shortcut info
+            return new AppTarget.Builder(new AppTargetId("shortcut:" + shortcutKey.getId()),
+                    shortcutKey.componentName.getPackageName(), shortcutKey.user).build();
+        } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
+            return new AppTarget.Builder(new AppTargetId("folder:" + info.id),
+                    mLauncher.getPackageName(), info.user).build();
+        }
+        return null;
+    }
+
+    private AppTargetEvent wrapAppTargetWithLocation(AppTarget target, int action, ItemInfo info) {
+        return wrapAppTargetWithLocation(target, action,
+                info.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT
+                        ? APP_LOCATION_HOTSEAT : APP_LOCATION_WORKSPACE, info.screenId, info.cellX,
+                info.cellY, info.spanX, info.spanY);
+    }
+
+    private AppTargetEvent wrapAppTargetWithLocation(AppTarget target, int action, String root,
+            int screenId, int x, int y, int spanX, int spanY) {
+        return new AppTargetEvent.Builder(target, action).setLaunchLocation(
+                String.format(Locale.ENGLISH, "%s/%d/[%d,%d]/[%d,%d]", root, screenId, x, y, spanX,
+                        spanY)).build();
+    }
+
+    /**
+     * A helper method to generate an AppTarget that's used to communicate workspace layout
+     */
+    private AppTarget getBlockAppTarget() {
+        return new AppTarget.Builder(new AppTargetId("block"),
+                mLauncher.getPackageName(), Process.myUserHandle()).build();
     }
 }
