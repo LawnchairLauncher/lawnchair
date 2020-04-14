@@ -98,6 +98,8 @@ public class HotseatPredictionController implements DragController.DragListener,
     //TODO: replace this with AppTargetEvent.ACTION_UNPIN (b/144119543)
     private static final int APPTARGET_ACTION_UNPIN = 4;
 
+    private static final String PREDICTED_ITEMS_CACHE_KEY = "predicted_item_keys";
+
     private static final String APP_LOCATION_HOTSEAT = "hotseat";
     private static final String APP_LOCATION_WORKSPACE = "workspace";
 
@@ -122,6 +124,7 @@ public class HotseatPredictionController implements DragController.DragListener,
     private AllAppsStore mAllAppsStore;
     private AnimatorSet mIconRemoveAnimators;
     private boolean mUIUpdatePaused = false;
+    private boolean mRequiresCacheUpdate = false;
 
     private HotseatEduController mHotseatEduController;
 
@@ -148,6 +151,7 @@ public class HotseatPredictionController implements DragController.DragListener,
         if (mHotseat.isAttachedToWindow()) {
             onViewAttachedToWindow(mHotseat);
         }
+        showCachedItems();
     }
 
     /**
@@ -297,6 +301,16 @@ public class HotseatPredictionController implements DragController.DragListener,
         mAppPredictor.requestPredictionUpdate();
     }
 
+    private void showCachedItems() {
+        ArrayList<ComponentKey> componentKeys = getCachedComponentKeys();
+        mComponentKeyMappers.clear();
+        for (ComponentKey key : componentKeys) {
+            mComponentKeyMappers.add(new ComponentKeyMapper(key, mDynamicItemCache));
+        }
+        updateDependencies();
+        fillGapsWithPrediction();
+    }
+
     private Bundle getAppPredictionContextExtra() {
         Bundle bundle = new Bundle();
 
@@ -353,6 +367,7 @@ public class HotseatPredictionController implements DragController.DragListener,
     private void setPredictedApps(List<AppTarget> appTargets) {
         mComponentKeyMappers.clear();
         StringBuilder predictionLog = new StringBuilder("predictedApps: [\n");
+        ArrayList<ComponentKey> componentKeys = new ArrayList<>();
         for (AppTarget appTarget : appTargets) {
             ComponentKey key;
             if (appTarget.getShortcutInfo() != null) {
@@ -361,6 +376,7 @@ public class HotseatPredictionController implements DragController.DragListener,
                 key = new ComponentKey(new ComponentName(appTarget.getPackageName(),
                         appTarget.getClassName()), appTarget.getUser());
             }
+            componentKeys.add(key);
             predictionLog.append(key.toString());
             predictionLog.append(",rank:");
             predictionLog.append(appTarget.getRank());
@@ -375,6 +391,35 @@ public class HotseatPredictionController implements DragController.DragListener,
         } else if (mHotseatEduController != null) {
             mHotseatEduController.setPredictedApps(mapToWorkspaceItemInfo(mComponentKeyMappers));
         }
+        // should invalidate cache if AiAi sends empty list of AppTargets
+        if (appTargets.isEmpty()) {
+            mRequiresCacheUpdate = true;
+        }
+        cachePredictionComponentKeys(componentKeys);
+    }
+
+    private void cachePredictionComponentKeys(ArrayList<ComponentKey> componentKeys) {
+        if (!mRequiresCacheUpdate) return;
+        StringBuilder builder = new StringBuilder();
+        for (ComponentKey componentKey : componentKeys) {
+            builder.append(componentKey);
+            builder.append("\n");
+        }
+        mLauncher.getDevicePrefs().edit().putString(PREDICTED_ITEMS_CACHE_KEY,
+                builder.toString()).apply();
+        mRequiresCacheUpdate = false;
+    }
+
+    private ArrayList<ComponentKey> getCachedComponentKeys() {
+        String cachedBlob = mLauncher.getDevicePrefs().getString(PREDICTED_ITEMS_CACHE_KEY, "");
+        ArrayList<ComponentKey> results = new ArrayList<>();
+        for (String line : cachedBlob.split("\n")) {
+            ComponentKey key = ComponentKey.fromString(line);
+            if (key != null) {
+                results.add(key);
+            }
+        }
+        return results;
     }
 
     private void updateDependencies() {
@@ -400,6 +445,7 @@ public class HotseatPredictionController implements DragController.DragListener,
         icon.pin(workspaceItemInfo);
         AppTarget appTarget = getAppTargetFromItemInfo(workspaceItemInfo);
         notifyItemAction(appTarget, APP_LOCATION_HOTSEAT, AppTargetEvent.ACTION_PIN);
+        mRequiresCacheUpdate = true;
     }
 
     private List<WorkspaceItemInfo> mapToWorkspaceItemInfo(
@@ -566,6 +612,7 @@ public class HotseatPredictionController implements DragController.DragListener,
         }
         mDragObject = null;
         fillGapsWithPrediction(true, this::removeOutlineDrawings);
+        mRequiresCacheUpdate = true;
     }
 
     @Nullable
