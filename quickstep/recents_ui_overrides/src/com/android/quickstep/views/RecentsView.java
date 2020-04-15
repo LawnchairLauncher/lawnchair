@@ -28,7 +28,6 @@ import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_ACTIONS;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.TASK_DISMISS_SWIPE_UP;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.TASK_LAUNCH_SWIPE_DOWN;
@@ -39,6 +38,10 @@ import static com.android.launcher3.userevent.nano.LauncherLogProto.ControlType.
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_OVERVIEW;
 import static com.android.quickstep.TaskUtils.checkCurrentOrManagedUserId;
+import static com.android.quickstep.views.OverviewActionsView.HIDDEN_GESTURE_RUNNING;
+import static com.android.quickstep.views.OverviewActionsView.HIDDEN_NON_ZERO_ROTATION;
+import static com.android.quickstep.views.OverviewActionsView.HIDDEN_NO_RECENTS;
+import static com.android.quickstep.views.OverviewActionsView.HIDDEN_NO_TASKS;
 
 import android.animation.AnimatorSet;
 import android.animation.LayoutTransition;
@@ -67,7 +70,6 @@ import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.util.Property;
 import android.util.SparseBooleanArray;
-import android.view.Gravity;
 import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -87,7 +89,6 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
-import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.PagedView;
@@ -117,7 +118,6 @@ import com.android.quickstep.RecentsAnimationController;
 import com.android.quickstep.RecentsAnimationTargets;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.RecentsModel.TaskVisualsChangeListener;
-import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskThumbnailCache;
 import com.android.quickstep.TaskUtils;
@@ -331,8 +331,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
     // Keeps track of the index where the first TaskView should be
     private int mTaskViewStartIndex = 0;
-    private View mActionsView;
-    private boolean mGestureRunning = false;
+    private OverviewActionsView mActionsView;
 
     private BaseActivity.MultiWindowModeChangedListener mMultiWindowModeChangedListener =
             (inMultiWindowMode) -> {
@@ -393,11 +392,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                 int rotation = RecentsOrientedState.getRotationForUserDegreesRotated(i);
                 if (mPreviousRotation != rotation) {
                     animateRecentsRotationInPlace(rotation);
-                    if (rotation == 0) {
-                        showActionsView();
-                    } else {
-                        hideActionsView();
-                    }
                     mPreviousRotation = rotation;
                 }
             }
@@ -472,6 +466,10 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         reset();
     }
 
+    public void init(OverviewActionsView actionsView) {
+        mActionsView = actionsView;
+    }
+
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
@@ -485,7 +483,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         mIPinnedStackAnimationListener.setActivity(mActivity);
         SystemUiProxy.INSTANCE.get(getContext()).setPinnedStackAnimationListener(
                 mIPinnedStackAnimationListener);
-        setActionsView();
         mOrientationState.init();
     }
 
@@ -513,6 +510,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             TaskView taskView = (TaskView) child;
             mHasVisibleTaskData.delete(taskView.getTask().key.id);
             mTaskViewPool.recycle(taskView);
+            mActionsView.updateHiddenFlags(HIDDEN_NO_TASKS, getTaskViewCount() == 0);
         }
         updateTaskStartIndex(child);
     }
@@ -525,6 +523,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         // child direction back to match system settings.
         child.setLayoutDirection(mIsRtl ? View.LAYOUT_DIRECTION_LTR : View.LAYOUT_DIRECTION_RTL);
         updateTaskStartIndex(child);
+        mActionsView.updateHiddenFlags(HIDDEN_NO_TASKS, false);
     }
 
     private void updateTaskStartIndex(View affectingView) {
@@ -688,7 +687,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         if (getTaskViewCount() != requiredTaskCount) {
             if (indexOfChild(mClearAllButton) != -1) {
                 removeView(mClearAllButton);
-                hideActionsView();
             }
             for (int i = getTaskViewCount(); i < requiredTaskCount; i++) {
                 addView(mTaskViewPool.getView());
@@ -698,7 +696,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             }
             if (requiredTaskCount > 0) {
                 addView(mClearAllButton);
-                showActionsView();
             }
         }
 
@@ -738,7 +735,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         if (indexOfChild(mClearAllButton) != -1) {
             removeView(mClearAllButton);
         }
-        hideActionsView();
     }
 
     public int getTaskViewCount() {
@@ -1000,7 +996,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         setEnableDrawingLiveTile(false);
         setRunningTaskHidden(true);
         setRunningTaskIconScaledDown(true);
-        mGestureRunning = true;
+        mActionsView.updateHiddenFlags(HIDDEN_GESTURE_RUNNING, true);
     }
 
     /**
@@ -1066,7 +1062,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         }
         setRunningTaskHidden(false);
         animateUpRunningTaskIconScale();
-        mGestureRunning = false;
+        mActionsView.updateHiddenFlags(HIDDEN_GESTURE_RUNNING, false);
     }
 
     /**
@@ -1083,7 +1079,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             addView(taskView, mTaskViewStartIndex);
             if (wasEmpty) {
                 addView(mClearAllButton);
-                showActionsView();
             }
             // The temporary running task is only used for the duration between the start of the
             // gesture and the task list is loaded and applied
@@ -1407,7 +1402,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
                     if (getTaskViewCount() == 0) {
                         removeViewInLayout(mClearAllButton);
-                        hideActionsView();
                         startHome();
                     } else {
                         snapToPageImmediately(pageToSnapTo);
@@ -1550,14 +1544,12 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         int alphaInt = Math.round(alpha * 255);
         mEmptyMessagePaint.setAlpha(alphaInt);
         mEmptyIcon.setAlpha(alphaInt);
+        mActionsView.getContentAlpha().setValue(mContentAlpha);
+
         if (alpha > 0) {
             setVisibility(VISIBLE);
-            if (!mGestureRunning) {
-                showActionsView();
-            }
         } else if (!mFreezeViewVisibility) {
             setVisibility(GONE);
-            hideActionsView();
         }
     }
 
@@ -1568,15 +1560,17 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     public void setFreezeViewVisibility(boolean freezeViewVisibility) {
         if (mFreezeViewVisibility != freezeViewVisibility) {
             mFreezeViewVisibility = freezeViewVisibility;
-
             if (!mFreezeViewVisibility) {
                 setVisibility(mContentAlpha > 0 ? VISIBLE : GONE);
-                if (mContentAlpha > 0) {
-                    showActionsView();
-                } else {
-                    hideActionsView();
-                }
             }
+        }
+    }
+
+    @Override
+    public void setVisibility(int visibility) {
+        super.setVisibility(visibility);
+        if (mActionsView != null) {
+            mActionsView.updateHiddenFlags(HIDDEN_NO_RECENTS, visibility != VISIBLE);
         }
     }
 
@@ -1592,6 +1586,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             setLayoutDirection(mIsRtl ? View.LAYOUT_DIRECTION_RTL : View.LAYOUT_DIRECTION_LTR);
             mClearAllButton.setRotation(mOrientationHandler.getDegreesRotated());
             mActivity.getDragLayer().recreateControllers();
+            mActionsView.updateHiddenFlags(HIDDEN_NON_ZERO_ROTATION, touchRotation != 0);
             requestLayout();
         }
     }
@@ -2148,38 +2143,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             // Needed for activities that auto-enter PiP, which will not trigger a remote
             // animation to be created
             mActivity.clearForceInvisibleFlag(STATE_HANDLER_INVISIBILITY_FLAGS);
-        }
-    }
-
-    private void showActionsView() {
-        if (mActionsView != null && getTaskViewCount() > 0) {
-            mActionsView.setVisibility(VISIBLE);
-        }
-    }
-
-    private void hideActionsView() {
-        if (mActionsView != null) {
-            mActionsView.setVisibility(GONE);
-        }
-    }
-
-    private void setActionsView() {
-        if (mActionsView == null && ENABLE_OVERVIEW_ACTIONS.get()
-                && SysUINavigationMode.removeShelfFromOverview(mActivity)) {
-            mActionsView = ((ViewGroup) getParent()).findViewById(R.id.overview_actions_view);
-            if (mActionsView != null) {
-                InsettableFrameLayout.LayoutParams layoutParams =
-                        new InsettableFrameLayout.LayoutParams(LayoutParams.MATCH_PARENT,
-                                getResources().getDimensionPixelSize(
-                                        R.dimen.overview_actions_height));
-                layoutParams.gravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
-                int margin = getResources().getDimensionPixelSize(
-                        R.dimen.overview_actions_horizontal_margin);
-                layoutParams.setMarginStart(margin);
-                layoutParams.setMarginEnd(margin);
-                mActionsView.setLayoutParams(layoutParams);
-                showActionsView();
-            }
         }
     }
 }

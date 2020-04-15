@@ -47,7 +47,6 @@ import com.android.launcher3.appprediction.PredictionUiStateManager;
 import com.android.launcher3.appprediction.PredictionUiStateManager.Client;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.statehandlers.DepthController;
-import com.android.launcher3.states.RotationHelper;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.TraceHelper;
 import com.android.launcher3.views.ScrimView;
@@ -98,8 +97,13 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher>
 
     public LauncherRecentsView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        setContentAlpha(0);
         mActivity.getStateManager().addStateListener(this);
+    }
+
+    @Override
+    public void init(OverviewActionsView actionsView) {
+        super.init(actionsView);
+        setContentAlpha(0);
     }
 
     @Override
