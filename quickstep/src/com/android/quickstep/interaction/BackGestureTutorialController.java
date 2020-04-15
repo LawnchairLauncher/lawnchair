@@ -46,7 +46,7 @@ final class BackGestureTutorialController extends TutorialController {
             case LEFT_EDGE_BACK_NAVIGATION:
                 return R.string.back_gesture_tutorial_playground_title_swipe_inward_left_edge;
             case BACK_NAVIGATION_COMPLETE:
-                return R.string.back_gesture_tutorial_confirm_title;
+                return R.string.gesture_tutorial_confirm_title;
         }
         return null;
     }
@@ -82,10 +82,12 @@ final class BackGestureTutorialController extends TutorialController {
 
     @Override
     void onActionButtonClicked(View button) {
-        hideHandCoachingAnimation();
-        if (button == mActionTextButton) {
-            mTutorialFragment.startSystemNavigationSetting();
-        }
+        mTutorialFragment.closeTutorial();
+    }
+
+    @Override
+    void onActionTextButtonClicked(View button) {
+        mTutorialFragment.startSystemNavigationSetting();
         mTutorialFragment.closeTutorial();
     }
 

@@ -18,15 +18,15 @@ package com.android.quickstep.interaction;
 import com.android.launcher3.R;
 import com.android.quickstep.interaction.TutorialController.TutorialType;
 
-/** Shows the Back gesture interactive tutorial. */
-public class BackGestureTutorialFragment extends TutorialFragment {
+/** Shows the Home gesture interactive tutorial. */
+public class HomeGestureTutorialFragment extends TutorialFragment {
     @Override
     int getHandAnimationResId() {
-        return R.drawable.back_gesture;
+        return R.drawable.home_gesture;
     }
 
     @Override
     TutorialController createController(TutorialType type) {
-        return new BackGestureTutorialController(this, type);
+        return new HomeGestureTutorialController(this, type);
     }
 }

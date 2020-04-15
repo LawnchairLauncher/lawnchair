@@ -31,11 +31,13 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
 import com.android.launcher3.R;
+import com.android.quickstep.interaction.EdgeBackGestureHandler.BackGestureAttemptCallback;
+import com.android.quickstep.interaction.EdgeBackGestureHandler.BackGestureResult;
 import com.android.quickstep.interaction.TutorialController.TutorialType;
 
 import java.net.URISyntaxException;
 
-abstract class TutorialFragment extends Fragment {
+abstract class TutorialFragment extends Fragment implements BackGestureAttemptCallback {
 
     private static final String LOG_TAG = "TutorialFragment";
     private static final String SYSTEM_NAVIGATION_SETTING_INTENT =
@@ -43,7 +45,7 @@ abstract class TutorialFragment extends Fragment {
                     + ".:settings:fragment_args_key=gesture_system_navigation_input_summary;S"
                     + ".:settings:show_fragment=com.android.settings.gestures"
                     + ".SystemNavigationGestureSettings;end";
-    private static final String KEY_TUTORIAL_TYPE = "tutorialType";
+    static final String KEY_TUTORIAL_TYPE = "tutorial_type";
 
     TutorialType mTutorialType;
     @Nullable TutorialController mTutorialController = null;
@@ -51,14 +53,32 @@ abstract class TutorialFragment extends Fragment {
     TutorialHandAnimation mHandCoachingAnimation;
     EdgeBackGestureHandler mEdgeBackGestureHandler;
 
-    public static TutorialFragment newInstance(
-            Class<? extends TutorialFragment> fragmentClass, TutorialType tutorialType)
-            throws java.lang.InstantiationException, IllegalAccessException {
-        TutorialFragment fragment = fragmentClass.newInstance();
+    public static TutorialFragment newInstance(TutorialType tutorialType) {
+        TutorialFragment fragment = getFragmentForTutorialType(tutorialType);
+        if (fragment == null) {
+            fragment = new BackGestureTutorialFragment();
+            tutorialType = TutorialType.RIGHT_EDGE_BACK_NAVIGATION;
+        }
         Bundle args = new Bundle();
         args.putSerializable(KEY_TUTORIAL_TYPE, tutorialType);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Nullable
+    private static TutorialFragment getFragmentForTutorialType(TutorialType tutorialType) {
+        switch (tutorialType) {
+            case RIGHT_EDGE_BACK_NAVIGATION:
+            case LEFT_EDGE_BACK_NAVIGATION:
+            case BACK_NAVIGATION_COMPLETE:
+                return new BackGestureTutorialFragment();
+            case HOME_NAVIGATION:
+            case HOME_NAVIGATION_COMPLETE:
+                return new HomeGestureTutorialFragment();
+            default:
+                Log.e(LOG_TAG, "Failed to find an appropriate fragment for " + tutorialType.name());
+        }
+        return null;
     }
 
     abstract int getHandAnimationResId();
@@ -71,6 +91,13 @@ abstract class TutorialFragment extends Fragment {
         Bundle args = savedInstanceState != null ? savedInstanceState : getArguments();
         mTutorialType = (TutorialType) args.getSerializable(KEY_TUTORIAL_TYPE);
         mEdgeBackGestureHandler = new EdgeBackGestureHandler(getContext());
+        mEdgeBackGestureHandler.registerBackGestureAttemptCallback(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mEdgeBackGestureHandler.unregisterBackGestureAttemptCallback();
     }
 
     @Override
@@ -131,6 +158,13 @@ abstract class TutorialFragment extends Fragment {
         return mHandCoachingAnimation;
     }
 
+    @Override
+    public void onBackGestureAttempted(BackGestureResult result) {
+        if (mTutorialController != null) {
+            mTutorialController.onBackGestureAttempted(result);
+        }
+    }
+
     void closeTutorial() {
         FragmentActivity activity = getActivity();
         if (activity != null) {
@@ -149,5 +183,4 @@ abstract class TutorialFragment extends Fragment {
             Log.e(LOG_TAG, "The launch Activity not found: " + e);
         }
     }
-
 }
