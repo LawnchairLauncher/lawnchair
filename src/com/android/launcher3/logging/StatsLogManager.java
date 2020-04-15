@@ -17,6 +17,8 @@ package com.android.launcher3.logging;
 
 import android.content.Context;
 
+import com.android.internal.logging.UiEvent;
+import com.android.internal.logging.UiEventLogger;
 import com.android.launcher3.R;
 import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.logger.LauncherAtom.ItemInfo;
@@ -28,19 +30,15 @@ import com.android.launcher3.util.ResourceBasedOverride;
  */
 public class StatsLogManager implements ResourceBasedOverride {
 
-    interface EventEnum {
-        int getId();
-    }
-
-    public enum LauncherEvent implements EventEnum {
-        @LauncherUiEvent(doc = "App launched from workspace, hotseat or folder in launcher")
-        APP_LAUNCH_TAP(1),
-        @LauncherUiEvent(doc = "Task launched from overview using TAP")
-        TASK_LAUNCH_TAP(2),
-        @LauncherUiEvent(doc = "Task launched from overview using SWIPE DOWN")
-        TASK_LAUNCH_SWIPE_DOWN(2),
-        @LauncherUiEvent(doc = "TASK dismissed from overview using SWIPE UP")
-        TASK_DISMISS_SWIPE_UP(3);
+    public enum LauncherEvent implements UiEventLogger.UiEventEnum {
+        @UiEvent(doc = "App launched from workspace, hotseat or folder in launcher")
+        LAUNCHER_APP_LAUNCH_TAP(338),
+        @UiEvent(doc = "Task launched from overview using TAP")
+        LAUNCHER_TASK_LAUNCH_TAP(339),
+        @UiEvent(doc = "Task launched from overview using SWIPE DOWN")
+        LAUNCHER_TASK_LAUNCH_SWIPE_DOWN(340),
+        @UiEvent(doc = "TASK dismissed from overview using SWIPE UP")
+        LAUNCHER_TASK_DISMISS_SWIPE_UP(341);
         // ADD MORE
 
         private final int mId;

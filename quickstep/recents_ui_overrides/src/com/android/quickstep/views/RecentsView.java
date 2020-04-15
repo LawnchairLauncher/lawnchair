@@ -30,8 +30,8 @@ import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_ACTIONS;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
-import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.TASK_DISMISS_SWIPE_UP;
-import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.TASK_LAUNCH_SWIPE_DOWN;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_DISMISS_SWIPE_UP;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_LAUNCH_SWIPE_DOWN;
 import static com.android.launcher3.statehandlers.DepthController.DEPTH;
 import static com.android.launcher3.uioverrides.touchcontrollers.TaskViewTouchController.SUCCESS_TRANSITION_PROGRESS;
 import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch.TAP;
@@ -1280,7 +1280,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             ComponentKey compKey = TaskUtils.getLaunchComponentKeyForTask(taskView.getTask().key);
             mActivity.getUserEventDispatcher().logTaskLaunchOrDismiss(
                     endState.logAction, Direction.UP, index, compKey);
-            mActivity.getStatsLogManager().log(TASK_DISMISS_SWIPE_UP, taskView.buildProto());
+            mActivity.getStatsLogManager().log(LAUNCHER_TASK_DISMISS_SWIPE_UP,
+                    taskView.buildProto());
         }
     }
 
@@ -1830,7 +1831,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                     mActivity.getUserEventDispatcher().logTaskLaunchOrDismiss(
                             endState.logAction, Direction.DOWN, indexOfChild(tv),
                             TaskUtils.getLaunchComponentKeyForTask(task.key));
-                    mActivity.getStatsLogManager().log(TASK_LAUNCH_SWIPE_DOWN, tv.buildProto()
+                    mActivity.getStatsLogManager().log(LAUNCHER_TASK_LAUNCH_SWIPE_DOWN,
+                            tv.buildProto()
                     );
                 }
             } else {

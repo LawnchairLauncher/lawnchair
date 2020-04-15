@@ -32,7 +32,8 @@ LOCAL_STATIC_ANDROID_LIBRARIES := \
 
 LOCAL_STATIC_JAVA_LIBRARIES := \
     LauncherPluginLib \
-    launcher_log_protos_lite
+    launcher_log_protos_lite \
+    uieventloggerlib
 
 LOCAL_SRC_FILES := \
     $(call all-proto-files-under, protos) \
@@ -130,8 +131,10 @@ LOCAL_MODULE_TAGS := optional
 
 LOCAL_STATIC_JAVA_LIBRARIES := \
     SystemUISharedLib \
+    SystemUI-statsd \
     launcherprotosnano \
     launcher_log_protos_lite
+
 ifneq (,$(wildcard frameworks/base))
   LOCAL_PRIVATE_PLATFORM_APIS := true
 else
@@ -202,8 +205,10 @@ LOCAL_MODULE_TAGS := optional
 
 LOCAL_STATIC_JAVA_LIBRARIES := \
     SystemUISharedLib \
+    SystemUI-statsd \
     launcherprotosnano \
     launcher_log_protos_lite
+
 ifneq (,$(wildcard frameworks/base))
   LOCAL_PRIVATE_PLATFORM_APIS := true
 else
