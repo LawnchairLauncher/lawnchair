@@ -77,8 +77,9 @@ abstract class Launchable {
     /**
      * Drags an object to the center of homescreen.
      * @param startsActivity whether it's expected to start an activity.
+     * @param isWidgetShortcut whether we drag a widget shortcut
      */
-    public void dragToWorkspace(boolean startsActivity) {
+    public void dragToWorkspace(boolean startsActivity, boolean isWidgetShortcut) {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
             final Point launchableCenter = getObject().getVisibleCenter();
             final Point displaySize = mLauncher.getRealDisplaySize();
@@ -93,6 +94,7 @@ abstract class Launchable {
                             displaySize.y / 2),
                     getLongPressIndicator(),
                     startsActivity,
+                    isWidgetShortcut,
                     () -> addExpectedEventsForLongClick());
         }
     }
