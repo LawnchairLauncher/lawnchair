@@ -92,7 +92,7 @@ public abstract class BaseItemDragListener implements View.OnDragListener, DragS
             postCleanup();
             return false;
         }
-        if (event.getAction() == DragEvent.ACTION_DRAG_STARTED) {
+        if (event.getAction() == DragEvent.ACTION_DRAG_STARTED || !mDragController.isDragging()) {
             if (onDragStart(event)) {
                 return true;
             } else {
