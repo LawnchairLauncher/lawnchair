@@ -19,7 +19,7 @@ import android.content.Context;
 import android.os.Process;
 import android.os.UserHandle;
 
-import com.android.launcher3.AppInfo;
+import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.util.LabelComparator;
 

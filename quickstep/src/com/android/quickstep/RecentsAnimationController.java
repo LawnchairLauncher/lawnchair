@@ -22,13 +22,13 @@ import static android.view.MotionEvent.ACTION_UP;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
-import android.annotation.NonNull;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.InputEvent;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.UiThread;
 
 import com.android.launcher3.util.Preconditions;
