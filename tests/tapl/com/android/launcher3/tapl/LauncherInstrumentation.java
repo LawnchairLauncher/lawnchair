@@ -1265,7 +1265,7 @@ public final class LauncherInstrumentation {
                 TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
-    private void disableSensorRotation() {
+    public void disableSensorRotation() {
         getTestInfo(TestProtocol.REQUEST_MOCK_SENSOR_ROTATION);
     }
 
