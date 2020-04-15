@@ -32,7 +32,7 @@ import ch.deletescape.lawnchair.colors.ColorEngine
 import ch.deletescape.lawnchair.settings.ui.SettingsBottomSheet
 import com.android.launcher3.R
 
-class DrawerTabTypeSelectionBottomSheet(context: Context, selectionItems: Map<Int, Array<Int>>, callback: (which: Int) -> Unit): FrameLayout(context) {
+class DrawerTabTypeSelectionBottomSheet(context: Context, selectionItems: Map<String, Array<Int>>, callback: (which: String) -> Unit): FrameLayout(context) {
     init {
         View.inflate(context, R.layout.drawer_tab_select_type_bottom_sheet, this)
 
@@ -82,7 +82,7 @@ class DrawerTabTypeSelectionBottomSheet(context: Context, selectionItems: Map<In
     }
 
     companion object {
-        fun show(context: Context, selectionItems: Map<Int, Array<Int>>, callback: (which: Int) -> Unit) {
+        fun show(context: Context, selectionItems: Map<String, Array<Int>>, callback: (which: String) -> Unit) {
             val sheet = SettingsBottomSheet.inflate(context)
             sheet.show(DrawerTabTypeSelectionBottomSheet(context, selectionItems) {
                 sheet.close(false)

@@ -57,14 +57,14 @@ class FlowerpotTabs(manager: AppGroupsManager) : DrawerTabs(manager, AppGroupsMa
         saveToJson()
     }
 
-    override fun getGroupCreator(type: Int): GroupCreator<Tab> {
+    override fun getGroupCreator(type: String): GroupCreator<Tab> {
         return when (type) {
-            TYPE_FLOWERPOT -> ::FlowerpotTab
+            TYPE_FLOWERPOT -> GroupCreator { context -> FlowerpotTab(context) }
             else -> super.getGroupCreator(type)
         }
     }
 
-    class FlowerpotTab(private val context: Context) : Tab(context, TYPE_FLOWERPOT, R.string.default_tab_name) {
+    class FlowerpotTab(private val context: Context) : Tab(context, TYPE_FLOWERPOT, context.getString(R.string.default_tab_name)) {
         // todo: make updating the title dynamically less hacky (aka make it actually work)
         val potName: FlowerpotCustomization = FlowerpotCustomization(KEY_FLOWERPOT, DEFAULT, context, customizations.entries.first { it is CustomTitle } as CustomTitle)
 
@@ -154,6 +154,6 @@ class FlowerpotTabs(manager: AppGroupsManager) : DrawerTabs(manager, AppGroupsMa
 
     companion object {
 
-        const val TYPE_FLOWERPOT = 4
+        const val TYPE_FLOWERPOT = "4"
     }
 }

@@ -26,7 +26,6 @@ import android.os.Handler
 import android.os.Process
 import android.os.ResultReceiver
 import android.os.UserHandle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -35,7 +34,6 @@ import ch.deletescape.lawnchair.groups.DrawerTabs
 import ch.deletescape.lawnchair.settings.ui.SettingsActivity
 import com.android.launcher3.AppFilter
 import com.android.launcher3.R
-import com.android.launcher3.Utilities
 import com.android.launcher3.Utilities.makeComponentKey
 import com.android.launcher3.util.ComponentKey
 
@@ -67,15 +65,14 @@ class SelectableAppsActivity : SettingsActivity() {
 
         override fun onRecyclerViewCreated(recyclerView: RecyclerView) {
             val arguments = arguments!!
-            val isWork = if (arguments.containsKey(KEY_FILTER_IS_WORK))
-                arguments.getBoolean(KEY_FILTER_IS_WORK) else null
+            val profile = arguments.getParcelable<DrawerTabs.Profile>(KEY_FILTER_IS_WORK)!!
             selection = HashSet(arguments.getStringArrayList(KEY_SELECTION))
 
             val context = recyclerView.context
             recyclerView.setHasFixedSize(true)
             recyclerView.layoutManager = LinearLayoutManager(context)
             recyclerView.adapter = SelectableAppsAdapter.ofProperty(activity!!,
-                    ::selection, this, createAppFilter(context, DrawerTabs.getWorkFilter(isWork)))
+                    ::selection, this, createAppFilter(context, DrawerTabs.getWorkFilter(profile)))
         }
 
         override fun onDestroy() {
@@ -114,7 +111,7 @@ class SelectableAppsActivity : SettingsActivity() {
         private const val KEY_FILTER_IS_WORK = "filterIsWork"
 
         fun start(context: Context, selection: Collection<ComponentKey>,
-                  callback: (Collection<ComponentKey>?) -> Unit, filterIsWork: Boolean? = null) {
+                  callback: (Collection<ComponentKey>?) -> Unit, profile: DrawerTabs.Profile) {
             val intent = Intent(context, SelectableAppsActivity::class.java).apply {
                 putStringArrayListExtra(KEY_SELECTION, ArrayList(selection.map { it.toString() }))
                 putExtra(KEY_CALLBACK, object : ResultReceiver(Handler()) {
@@ -129,7 +126,7 @@ class SelectableAppsActivity : SettingsActivity() {
                         }
                     }
                 })
-                filterIsWork?.let { putExtra(KEY_FILTER_IS_WORK, it) }
+                putExtra(KEY_FILTER_IS_WORK, profile)
             }
             context.startActivity(intent)
         }

@@ -26,18 +26,20 @@ import com.android.launcher3.util.ComponentKey
 
 class DrawerFolders(private val manager: AppGroupsManager) : AppGroups<DrawerFolders.Folder>(manager, AppGroupsManager.CategorizationType.Folders) {
 
+    init {
+        loadGroups()
+    }
+
     override fun getDefaultCreators(): List<GroupCreator<Folder>> {
         return emptyList()
     }
 
-    override fun getGroupCreator(type: Int): GroupCreator<Folder> {
+    override fun getGroupCreator(type: String): GroupCreator<Folder> {
         return when (type) {
-            TYPE_CUSTOM -> ::createCustomFolder
-            else -> ::createNull
+            TYPE_CUSTOM -> GroupCreator { context -> CustomFolder(context) }
+            else -> GroupCreator { null }
         }
     }
-
-    private fun createCustomFolder(context: Context) = CustomFolder(context)
 
     override fun onGroupsChanged(changeCallback: LawnchairPreferencesChangeCallback) {
         // TODO: reload after icon cache is ready to ensure high res folder previews
@@ -64,7 +66,7 @@ class DrawerFolders(private val manager: AppGroupsManager) : AppGroups<DrawerFol
             .mapNotNull { it.contents.value }
             .flatMapTo(mutableSetOf()) { it.asSequence() }
 
-    abstract class Folder(val context: Context, type: Int, titleRes: Int) : Group(type, context, titleRes) {
+    abstract class Folder(val context: Context, type: String, titleRes: Int) : Group(type, context, context.getString(titleRes)) {
         // Ensure icon customization sticks across group changes
         val id = LongCustomization(KEY_ID, Long.random + 9999L)
         open val isEmpty = true
@@ -114,7 +116,7 @@ class DrawerFolders(private val manager: AppGroupsManager) : AppGroups<DrawerFol
 
     companion object {
 
-        const val TYPE_CUSTOM = 0
+        const val TYPE_CUSTOM = "0"
 
         const val KEY_ITEMS = "items"
     }

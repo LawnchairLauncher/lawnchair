@@ -18,53 +18,72 @@
 package ch.deletescape.lawnchair.groups
 
 import android.content.Context
+import android.os.Parcel
+import android.os.Parcelable
 import android.os.Process
+import android.os.UserHandle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import ch.deletescape.lawnchair.LawnchairPreferences
 import ch.deletescape.lawnchair.LawnchairPreferencesChangeCallback
 import ch.deletescape.lawnchair.groups.FlowerpotTabs.FlowerpotTab
 import ch.deletescape.lawnchair.lawnchairPrefs
 import ch.deletescape.lawnchair.preferences.SelectableAppsActivity
 import ch.deletescape.lawnchair.tintDrawable
+import ch.deletescape.lawnchair.util.extensions.e
 import com.android.launcher3.R
 import com.android.launcher3.Utilities.makeComponentKey
+import com.android.launcher3.compat.UserManagerCompat
 import com.android.launcher3.util.ComponentKey
+import com.android.launcher3.util.ItemInfoMatcher
+import org.json.JSONObject
 
 abstract class DrawerTabs(manager: AppGroupsManager, type: AppGroupsManager.CategorizationType)
     : AppGroups<DrawerTabs.Tab>(manager, type) {
 
-    override fun getDefaultCreators(): List<GroupCreator<Tab>> {
-        return listOf(::createAllAppsTab, ::createPersonalTab, ::createWorkTab)
+    private val personalTabCreator = ProfileTabCreator(Profile(null))
+    private val workTabCreator by lazy {
+        val workUser = UserManagerCompat.getInstance(context).userProfiles.firstOrNull { it != Process.myUserHandle() }
+        if (workUser != null) ProfileTabCreator(Profile(workUser)) else GroupCreator<Tab> { null }
+    }
+    private val allAppsTabCreator = ProfileTabCreator(Profile())
+    private val customTabCreator = GroupCreator<Tab> { context -> CustomTab(context) }
+    private val flowerpotTabCreator = GroupCreator<Tab> { context -> FlowerpotTab(context) }
+
+    init {
+        loadGroups()
     }
 
-    override fun getGroupCreator(type: Int): GroupCreator<Tab> {
-        return when (type) {
-            TYPE_CUSTOM, TYPE_UNDEFINED -> ::createCustomTab
-            TYPE_PERSONAL -> ::createPersonalTab
-            TYPE_WORK -> ::createWorkTab
-            TYPE_ALL_APPS -> ::createAllAppsTab
-            FlowerpotTabs.TYPE_FLOWERPOT -> ::FlowerpotTab
-            else -> ::createNull
+    override fun getDefaultCreators(): List<GroupCreator<Tab>> {
+        return listOf(allAppsTabCreator) + personalTabCreator + UserManagerCompat.getInstance(context)
+                .userProfiles.mapNotNull {
+            if (it != Process.myUserHandle()) ProfileTabCreator(Profile(it)) else null
         }
     }
 
-    private fun createPersonalTab(context: Context) = PersonalTab(context)
-
-    private fun createWorkTab(context: Context) = WorkTab(context)
-
-    private fun createAllAppsTab(context: Context) = AllAppsTab(context)
-
-    private fun createCustomTab(context: Context) = CustomTab(context)
+    override fun getGroupCreator(type: String): GroupCreator<Tab> {
+        if (type.startsWith(TYPE_PROFILE_PREFIX)) {
+            val profile = Profile.fromString(context, type.substring(TYPE_PROFILE_PREFIX.length))
+                          ?: return GroupCreator { null }
+            return ProfileTabCreator(profile)
+        }
+        return when (type) {
+            TYPE_CUSTOM, TYPE_UNDEFINED -> customTabCreator
+            TYPE_PERSONAL -> personalTabCreator
+            TYPE_WORK -> workTabCreator
+            TYPE_ALL_APPS -> allAppsTabCreator
+            FlowerpotTabs.TYPE_FLOWERPOT -> flowerpotTabCreator
+            else -> GroupCreator { null }
+        }
+    }
 
     override fun onGroupsChanged(changeCallback: LawnchairPreferencesChangeCallback) {
         changeCallback.launcher.allAppsController.appsView.reloadTabs()
     }
 
-    abstract class Tab(context: Context, type: Int, titleRes: Int) : Group(type, context, titleRes) {
+    abstract class Tab(context: Context, type: String, title: String) : Group(type, context, title) {
 
         val colorResolver = ColorRow(KEY_COLOR, AppGroupsUtils.getInstance(context).defaultColorResolver)
 
@@ -73,7 +92,7 @@ abstract class DrawerTabs(manager: AppGroupsManager, type: AppGroupsManager.Cate
         }
     }
 
-    class CustomTab(context: Context) : Tab(context, TYPE_CUSTOM, R.string.default_tab_name) {
+    class CustomTab(context: Context) : Tab(context, TYPE_CUSTOM, context.getString(R.string.default_tab_name)) {
 
         val hideFromAllApps = SwitchRow(R.drawable.tab_hide_from_main, R.string.tab_hide_from_main,
                 KEY_HIDE_FROM_ALL_APPS, true)
@@ -94,36 +113,38 @@ abstract class DrawerTabs(manager: AppGroupsManager, type: AppGroupsManager.Cate
         fun getFilter(context: Context): Filter<*> = CustomFilter(context, contents.value()) // IconPackFilter(context)
     }
 
-    open class PredefinedTab(context: Context, type: Int, titleRes: Int,
-                             private val filterIsWork: Boolean?) : Tab(context, type, titleRes) {
+    open class ProfileTab(context: Context, val profile: Profile) : Tab(context, "$TYPE_PROFILE_PREFIX$profile}", getTitle(context, profile)) {
 
         init {
-            addCustomization(HiddenAppsRow(filterIsWork))
+            addCustomization(HiddenAppsRow(profile))
             customizations.setOrder(KEY_TITLE, KEY_COLOR, KEY_HIDDEN)
         }
 
         override fun getSummary(context: Context): String? {
             val hidden = context.lawnchairPrefs.hiddenAppSet
                     .map { makeComponentKey(context, it) }
-                    .filter(getWorkFilter(filterIsWork))
+                    .filter(getWorkFilter(profile))
             val size = hidden.size
             if (size == 0) {
                 return null
             }
             return context.resources.getQuantityString(R.plurals.hidden_apps_count, size, size)
         }
+
+        companion object {
+
+            private fun getTitle(context: Context, profile: Profile): String {
+                if (profile.matchesAll) return context.getString(R.string.apps_label)
+                if (profile.isWork) return context.getString(R.string.all_apps_work_tab)
+                return context.getString(R.string.all_apps_personal_tab)
+            }
+        }
     }
 
-    class AllAppsTab(context: Context) : PredefinedTab(context, TYPE_ALL_APPS, R.string.apps_label, null)
-
-    class PersonalTab(context: Context) : PredefinedTab(context, TYPE_PERSONAL, R.string.all_apps_personal_tab, false)
-
-    class WorkTab(context: Context) : PredefinedTab(context, TYPE_WORK, R.string.all_apps_work_tab, true)
-
-    class HiddenAppsRow(private val filterIsWork: Boolean? = null) :
+    class HiddenAppsRow(private val profile: Profile) :
             Group.Customization<Collection<ComponentKey>, Boolean>(KEY_HIDDEN, emptySet()) {
 
-        private val predicate get() = getWorkFilter(filterIsWork)
+        private val predicate get() = getWorkFilter(profile)
 
         override fun createRow(context: Context, parent: ViewGroup, accent: Int): View? {
             val view = LayoutInflater.from(context).inflate(R.layout.drawer_tab_hidden_apps_row, parent, false)
@@ -137,7 +158,7 @@ abstract class DrawerTabs(manager: AppGroupsManager, type: AppGroupsManager.Cate
                         value = HashSet(newSelections)
                         updateCount(view)
                     }
-                }, filterIsWork)
+                }, profile)
             }
 
             return view
@@ -176,34 +197,103 @@ abstract class DrawerTabs(manager: AppGroupsManager, type: AppGroupsManager.Cate
         }
 
         override fun clone(): Group.Customization<Collection<ComponentKey>, Boolean> {
-            return HiddenAppsRow(filterIsWork).also { it.value = value }
+            return HiddenAppsRow(profile).also { it.value = value }
         }
     }
 
     companion object {
 
-        const val TYPE_PERSONAL = 0
-        const val TYPE_WORK = 1
-        const val TYPE_CUSTOM = 2
-        const val TYPE_ALL_APPS = 3
+        const val TYPE_PERSONAL = "0"
+        const val TYPE_WORK = "1"
+        const val TYPE_CUSTOM = "2"
+        const val TYPE_ALL_APPS = "3"
+        const val TYPE_PROFILE_PREFIX = "profile"
 
         const val KEY_ITEMS = "items"
         const val KEY_HIDDEN = "hidden"
 
-        private val noFilter = { _: ComponentKey -> true }
-        private val personalFilter = { key: ComponentKey ->
-            key.user == null || key.user == Process.myUserHandle()
+        fun getWorkFilter(profile: Profile): (ComponentKey) -> Boolean {
+            return profile::filter
         }
-        private val workFilter = { key: ComponentKey ->
-            key.user != null && key.user != Process.myUserHandle()
+    }
+
+    data class Profile(val user: UserHandle?, val matchesAll: Boolean = false) : Parcelable {
+
+        val isWork = user != null && user != Process.myUserHandle()
+        val matcher: ItemInfoMatcher? = if (user != null) {
+            ItemInfoMatcher.ofUser(user)
+        } else if (!matchesAll) {
+            ItemInfoMatcher.ofUser(Process.myUserHandle())
+        } else {
+            null
         }
 
-        fun getWorkFilter(isWork: Boolean?): (ComponentKey) -> Boolean {
-            return when (isWork) {
-                null -> noFilter
-                false -> personalFilter
-                true -> workFilter
+        constructor() : this(null, true)
+
+        constructor(parcel: Parcel) : this(
+                parcel.readParcelable<UserHandle?>(UserHandle::class.java.classLoader),
+                parcel.readBoolean())
+
+        fun matches(user: UserHandle): Boolean {
+            if (matchesAll) return true
+            return if (this.user == null) {
+                user == Process.myUserHandle()
+            } else {
+                user == this.user
             }
+        }
+
+        fun filter(key: ComponentKey): Boolean {
+            return matches(key.user)
+        }
+
+        override fun writeToParcel(dest: Parcel, flags: Int) {
+            dest.writeParcelable(user, flags)
+            dest.writeBoolean(matchesAll)
+        }
+
+        override fun describeContents() = 0
+
+        override fun toString(): String {
+            val obj = JSONObject()
+            if (user != null) {
+                obj.put(KEY_ID, user.toString().replace("\\D+".toRegex(), "").toLong())
+            }
+            obj.put(KEY_MATCHES_ALL, matchesAll)
+            return obj.toString()
+        }
+
+        companion object {
+            private const val KEY_ID = "id"
+            private const val KEY_MATCHES_ALL = "matchesAll"
+
+            @JvmField
+            val CREATOR = object : Parcelable.Creator<Profile> {
+                override fun createFromParcel(parcel: Parcel): Profile {
+                    return Profile(parcel)
+                }
+
+                override fun newArray(size: Int): Array<Profile?> {
+                    return arrayOfNulls(size)
+                }
+            }
+
+            fun fromString(context: Context, profile: String): Profile? {
+                val obj = JSONObject(profile)
+                val user = if (obj.has(KEY_ID)) {
+                    UserManagerCompat.getInstance(context)
+                            .getUserForSerialNumber(obj.getLong(KEY_ID)) ?: return null
+                } else null
+                val matchesAll = obj.getBoolean(KEY_MATCHES_ALL)
+                return Profile(user, matchesAll)
+            }
+        }
+    }
+
+    data class ProfileTabCreator(private val profile: Profile) : GroupCreator<Tab> {
+
+        override fun createGroup(context: Context): Tab? {
+            return ProfileTab(context, profile)
         }
     }
 }

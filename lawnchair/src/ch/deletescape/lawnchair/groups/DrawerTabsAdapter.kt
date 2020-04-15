@@ -54,9 +54,9 @@ open class DrawerTabsAdapter(context: Context) : AppGroupsAdapter<DrawerTabsAdap
 
     override fun filterGroups(): Collection<DrawerTabs.Tab> {
         return if (hasWorkApps) {
-            groupsModel.getGroups().filter { it !is DrawerTabs.AllAppsTab }
+            groupsModel.getGroups().filter { it !is DrawerTabs.ProfileTab || !it.profile.matchesAll }
         } else {
-            groupsModel.getGroups().filter { it !is DrawerTabs.PersonalTab && it !is DrawerTabs.WorkTab }
+            groupsModel.getGroups().filter { it !is DrawerTabs.ProfileTab || it.profile.matchesAll }
         }
     }
 
