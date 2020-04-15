@@ -299,9 +299,6 @@ public class TouchInteractionService extends Service implements PluginListener<O
         if (mInputEventReceiver != null) {
             mInputEventReceiver.dispose();
             mInputEventReceiver = null;
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.NO_BACKGROUND_TO_OVERVIEW_TAG, "disposeEventHandlers");
-            }
         }
         if (mInputMonitorCompat != null) {
             mInputMonitorCompat.dispose();
@@ -310,15 +307,9 @@ public class TouchInteractionService extends Service implements PluginListener<O
     }
 
     private void initInputMonitor() {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_BACKGROUND_TO_OVERVIEW_TAG, "initInputMonitor 1");
-        }
         disposeEventHandlers();
         if (mDeviceState.isButtonNavMode() || !SystemUiProxy.INSTANCE.get(this).isActive()) {
             return;
-        }
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_BACKGROUND_TO_OVERVIEW_TAG, "initInputMonitor 2");
         }
 
         Bundle bundle = SystemUiProxy.INSTANCE.get(this).monitorGestureInput("swipe-up",
@@ -326,9 +317,6 @@ public class TouchInteractionService extends Service implements PluginListener<O
         mInputMonitorCompat = InputMonitorCompat.fromBundle(bundle, KEY_EXTRA_INPUT_MONITOR);
         mInputEventReceiver = mInputMonitorCompat.getInputReceiver(Looper.getMainLooper(),
                 mMainChoreographer, this::onInputEvent);
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_BACKGROUND_TO_OVERVIEW_TAG, "initInputMonitor 3");
-        }
 
         mDeviceState.updateGestureTouchRegions();
     }
@@ -453,9 +441,6 @@ public class TouchInteractionService extends Service implements PluginListener<O
     }
 
     private void onInputEvent(InputEvent ev) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_BACKGROUND_TO_OVERVIEW_TAG, "onInputEvent " + ev);
-        }
         if (!(ev instanceof MotionEvent)) {
             Log.e(TAG, "Unknown event " + ev);
             return;
