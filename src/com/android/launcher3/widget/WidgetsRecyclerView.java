@@ -22,7 +22,6 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.android.launcher3.BaseRecyclerView;
 import com.android.launcher3.R;
@@ -209,25 +208,5 @@ public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouch
             Log.d(TestProtocol.NO_SCROLL_END_WIDGETS, "stopNestedScroll");
         }
         super.stopNestedScroll();
-    }
-
-    @Override
-    public void setLayoutFrozen(boolean frozen) {
-        if (frozen != isLayoutSuppressed()) {
-            if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
-                Log.d(TestProtocol.NO_SCROLL_END_WIDGETS, "setLayoutFrozen " + frozen
-                        + " @ " + android.util.Log.getStackTraceString(new Throwable()));
-            }
-        }
-        super.setLayoutFrozen(frozen);
-    }
-
-    @Override
-    public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
-        super.onInitializeAccessibilityNodeInfo(info);
-        if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
-            Log.d(TestProtocol.NO_SCROLL_END_WIDGETS,
-                    "onInitializeAccessibilityNodeInfo, scrollable: " + info.isScrollable());
-        }
     }
 }
