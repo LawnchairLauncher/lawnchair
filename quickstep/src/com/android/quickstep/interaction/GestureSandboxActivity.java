@@ -19,6 +19,7 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.Window;
@@ -26,26 +27,32 @@ import android.view.Window;
 import androidx.fragment.app.FragmentActivity;
 
 import com.android.launcher3.R;
-import com.android.quickstep.interaction.BackGestureTutorialFragment.TutorialStep;
-import com.android.quickstep.interaction.BackGestureTutorialFragment.TutorialType;
+import com.android.quickstep.interaction.TutorialController.TutorialType;
 
 import java.util.List;
 
 /** Shows the gesture interactive sandbox in full screen mode. */
 public class GestureSandboxActivity extends FragmentActivity {
 
-    private BackGestureTutorialFragment mFragment;
+    private static final String LOG_TAG = "GestureSandboxActivity";
+
+    private TutorialFragment mFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.back_gesture_tutorial_activity);
+        setContentView(R.layout.gesture_tutorial_activity);
 
-        mFragment = BackGestureTutorialFragment.newInstance(
-            TutorialStep.ENGAGED, TutorialType.RIGHT_EDGE_BACK_NAVIGATION);
+        try {
+            mFragment = TutorialFragment.newInstance(BackGestureTutorialFragment.class,
+                    TutorialType.RIGHT_EDGE_BACK_NAVIGATION);
+        } catch (InstantiationException | IllegalAccessException e) {
+            Log.wtf(LOG_TAG, "Failed to create tutorial fragment!", e);
+            mFragment = new BackGestureTutorialFragment();
+        }
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.back_gesture_tutorial_fragment_container, mFragment)
+                .add(R.id.gesture_tutorial_fragment_container, mFragment)
                 .commit();
     }
 
