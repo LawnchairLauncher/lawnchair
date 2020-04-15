@@ -162,6 +162,7 @@ public abstract class AbstractLauncherUiTest {
         mLauncher.enableDebugTracing();
         // Avoid double-reporting of Launcher crashes.
         mLauncher.setOnLauncherCrashed(() -> mLauncherPid = 0);
+        mLauncher.disableSensorRotation();
     }
 
     protected final LauncherActivityRule mActivityMonitor = new LauncherActivityRule();
@@ -277,6 +278,7 @@ public abstract class AbstractLauncherUiTest {
             clearPackageData(mDevice.getLauncherPackageName());
             mLauncher.enableDebugTracing();
             mLauncherPid = mLauncher.getPid();
+            mLauncher.disableSensorRotation();
         }
     }
 
