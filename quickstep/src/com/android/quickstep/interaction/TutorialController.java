@@ -96,9 +96,9 @@ abstract class TutorialController {
 
     private void updateTitles() {
         updateTitleView(mTitleTextView, getTitleStringId(),
-                R.style.TextAppearance_BackGestureTutorial_Title);
+                R.style.TextAppearance_GestureTutorial_Title);
         updateTitleView(mSubtitleTextView, getSubtitleStringId(),
-                R.style.TextAppearance_BackGestureTutorial_Subtitle);
+                R.style.TextAppearance_GestureTutorial_Subtitle);
     }
 
     private void updateTitleView(TextView textView, @Nullable Integer stringId, int styleId) {
