@@ -7,7 +7,7 @@ import android.view.ViewParent;
 
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.ItemInfo;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 

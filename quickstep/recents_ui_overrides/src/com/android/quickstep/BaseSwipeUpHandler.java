@@ -46,11 +46,8 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
-import com.android.launcher3.model.PagedViewOrientedState;
-import com.android.launcher3.states.RotationHelper;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.PagedOrientationHandler;
-import com.android.launcher3.touch.PortraitPagedViewHandler;
 import com.android.launcher3.util.VibratorWrapper;
 import com.android.launcher3.views.FloatingIconView;
 import com.android.quickstep.BaseActivityInterface.HomeAnimationFactory;
@@ -59,6 +56,7 @@ import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.AppWindowAnimationHelper;
 import com.android.quickstep.util.AppWindowAnimationHelper.TransformParams;
+import com.android.quickstep.util.RecentsOrientedState;
 import com.android.quickstep.util.RectFSpringAnim;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
@@ -127,7 +125,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
     protected boolean mCanceled;
     protected int mFinishingRecentsAnimationForNewTaskId = -1;
 
-    private PagedViewOrientedState mOrientedState;
+    private RecentsOrientedState mOrientedState;
 
     protected BaseSwipeUpHandler(Context context, RecentsAnimationDeviceState deviceState,
             GestureState gestureState, InputConsumerController inputConsumer) {
@@ -199,18 +197,12 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
     }
 
     protected void startNewTask(int successStateFlag, Consumer<Boolean> resultCallback) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_START_FROM_RECENTS, "startNewTask1");
-        }
         // Launch the task user scrolled to (mRecentsView.getNextPage()).
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             // We finish recents animation inside launchTask() when live tile is enabled.
             mRecentsView.getNextPageTaskView().launchTask(false /* animate */,
                     true /* freezeTaskList */);
         } else {
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.NO_START_FROM_RECENTS, "startNewTask2");
-            }
             int taskId = mRecentsView.getNextPageTaskView().getTask().key.id;
             if (!mCanceled) {
                 TaskView nextTask = mRecentsView.getTaskView(taskId);
@@ -337,9 +329,11 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
             // TODO(b/150300347): The first recents animation after launcher is started with the
             //  foreground app not in landscape will look funky until that bug is fixed
             displayRotation = mOrientedState.getDisplayRotation();
+
+            RectF tempRectF = new RectF(TEMP_RECT);
+            mOrientedState.mapRectFromNormalOrientation(tempRectF, dp.widthPx, dp.heightPx);
+            tempRectF.roundOut(TEMP_RECT);
         }
-        RotationHelper.getTargetRectForRotation(TEMP_RECT, dp.widthPx, dp.heightPx,
-            displayRotation);
         mAppWindowAnimationHelper.updateTargetRect(TEMP_RECT);
         if (mDeviceState.isFullyGesturalNavMode()) {
             // We can drag all the way to the top of the screen.
@@ -434,7 +428,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
 
     protected PagedOrientationHandler getOrientationHandler() {
         if (mOrientedState == null) {
-            return new PortraitPagedViewHandler();
+            return PagedOrientationHandler.PORTRAIT;
         }
         return mOrientedState.getOrientationHandler();
     }
@@ -455,8 +449,8 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
                     .setTargetSet(mRecentsAnimationTargets)
                     .setLauncherOnTop(false)));
         if (isFloatingIconView) {
-            RotationHelper.mapInverseRectFromNormalOrientation(startRect,
-                mDp.widthPx, mDp.heightPx, mOrientedState.getDisplayRotation());
+            mOrientedState.mapInverseRectFromNormalOrientation(
+                    startRect, mDp.widthPx, mDp.heightPx);
         }
         RectFSpringAnim anim = new RectFSpringAnim(startRect, targetRect, mContext);
         if (isFloatingIconView) {
@@ -487,8 +481,8 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
 
                 rotatedRect.set(currentRect);
                 if (isFloatingIconView) {
-                    RotationHelper.mapRectFromNormalOrientation(rotatedRect,
-                        mDp.widthPx, mDp.heightPx, mOrientedState.getDisplayRotation());
+                    mOrientedState.mapRectFromNormalOrientation(
+                            rotatedRect, mDp.widthPx, mDp.heightPx);
                     mTransformParams.setCornerRadius(endRadius * progress + startRadius
                         * (1f - progress));
                 }

@@ -33,14 +33,14 @@ import androidx.core.graphics.ColorUtils;
 
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
-import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.hybridhotseat.HotseatPredictionController;
 import com.android.launcher3.icons.IconNormalizer;
+import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.views.DoubleShadowBubbleTextView;
@@ -136,9 +136,11 @@ public class PredictedAppIcon extends DoubleShadowBubbleTextView implements
 
     @Override
     public void addSupportedAccessibilityActions(AccessibilityNodeInfo accessibilityNodeInfo) {
-        accessibilityNodeInfo.addAction(
-                new AccessibilityNodeInfo.AccessibilityAction(PIN_PREDICTION,
-                        getContext().getText(R.string.pin_prediction)));
+        if (!mIsPinned) {
+            accessibilityNodeInfo.addAction(
+                    new AccessibilityNodeInfo.AccessibilityAction(PIN_PREDICTION,
+                            getContext().getText(R.string.pin_prediction)));
+        }
     }
 
     @Override
