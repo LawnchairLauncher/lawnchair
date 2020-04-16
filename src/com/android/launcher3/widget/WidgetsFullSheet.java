@@ -193,6 +193,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                     .setDuration(DEFAULT_OPEN_DURATION)
                     .setInterpolator(AnimationUtils.loadInterpolator(
                             getContext(), android.R.interpolator.linear_out_slow_in));
+            mRecyclerView.setLayoutFrozen(true);
             mOpenCloseAnimator.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
@@ -202,7 +203,6 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                 }
             });
             post(() -> {
-                mRecyclerView.setLayoutFrozen(true);
                 mOpenCloseAnimator.start();
                 mContent.animate().alpha(1).setDuration(FADE_IN_DURATION);
             });

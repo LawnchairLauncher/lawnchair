@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.launcher3;
+package com.android.launcher3.model.data;
 
 import android.app.Person;
 import android.content.ComponentName;
@@ -25,7 +25,9 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
+import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.uioverrides.ApiWrapper;
@@ -120,7 +122,7 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
     public WorkspaceItemInfo(AppInfo info) {
         super(info);
         title = Utilities.trim(info.title);
-        intent = new Intent(info.intent);
+        intent = new Intent(info.getIntent());
     }
 
     /**
@@ -199,8 +201,8 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
 
     /** Returns the WorkspaceItemInfo id associated with the deep shortcut. */
     public String getDeepShortcutId() {
-        return itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT ?
-                getIntent().getStringExtra(ShortcutKey.EXTRA_SHORTCUT_ID) : null;
+        return itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT
+                ? getIntent().getStringExtra(ShortcutKey.EXTRA_SHORTCUT_ID) : null;
     }
 
     @NonNull
@@ -211,8 +213,8 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
     @Override
     public ComponentName getTargetComponent() {
         ComponentName cn = super.getTargetComponent();
-        if (cn == null && (itemType == Favorites.ITEM_TYPE_SHORTCUT
-                || hasStatusFlag(FLAG_SUPPORTS_WEB_UI|FLAG_AUTOINSTALL_ICON|FLAG_RESTORED_ICON))) {
+        if (cn == null && (itemType == Favorites.ITEM_TYPE_SHORTCUT || hasStatusFlag(
+                FLAG_SUPPORTS_WEB_UI | FLAG_AUTOINSTALL_ICON | FLAG_RESTORED_ICON))) {
             // Legacy shortcuts and promise icons with web UI may not have a componentName but just
             // a packageName. In that case create a dummy componentName instead of adding additional
             // check everywhere.

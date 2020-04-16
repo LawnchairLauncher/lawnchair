@@ -17,6 +17,7 @@ import androidx.annotation.WorkerThread;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.model.LoaderTask;
 import com.android.launcher3.model.WidgetsModel;
+import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.provider.RestoreDbTask;
 import com.android.launcher3.util.ContentWriter;

@@ -32,12 +32,12 @@ import android.view.animation.Interpolator;
 import android.widget.TextView;
 
 import com.android.launcher3.Insettable;
-import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.model.WidgetItem;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.PackageUserKey;
 
 import java.util.List;

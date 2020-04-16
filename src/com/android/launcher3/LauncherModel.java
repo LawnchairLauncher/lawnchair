@@ -51,6 +51,9 @@ import com.android.launcher3.model.PackageInstallStateChangedTask;
 import com.android.launcher3.model.PackageUpdatedTask;
 import com.android.launcher3.model.ShortcutsChangedTask;
 import com.android.launcher3.model.UserLockStateChangedTask;
+import com.android.launcher3.model.data.AppInfo;
+import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pm.InstallSessionTracker;
 import com.android.launcher3.pm.PackageInstallInfo;
 import com.android.launcher3.pm.UserCache;
@@ -235,7 +238,8 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
                 // we need to run the state change task again.
                 if (Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE.equals(action) ||
                         Intent.ACTION_MANAGED_PROFILE_UNLOCKED.equals(action)) {
-                    enqueueModelUpdateTask(new UserLockStateChangedTask(user));
+                    enqueueModelUpdateTask(new UserLockStateChangedTask(
+                            user, Intent.ACTION_MANAGED_PROFILE_UNLOCKED.equals(action)));
                 }
             }
         } else if (IS_STUDIO_BUILD && ACTION_FORCE_ROLOAD.equals(action)) {

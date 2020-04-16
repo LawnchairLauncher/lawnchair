@@ -3,12 +3,11 @@ package com.android.launcher3.logging;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import com.android.launcher3.util.LauncherRoboTestRunner;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.Shadows;
 import org.robolectric.util.Scheduler;
@@ -21,7 +20,7 @@ import java.util.Calendar;
 /**
  * Tests for {@link FileLog}
  */
-@RunWith(LauncherRoboTestRunner.class)
+@RunWith(RobolectricTestRunner.class)
 public class FileLogTest {
 
     private File mTempDir;

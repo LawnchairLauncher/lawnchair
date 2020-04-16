@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package com.android.launcher3.model;
+package com.android.launcher3.model.data;
 
-import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.LauncherSettings;
 
 import java.util.Objects;
