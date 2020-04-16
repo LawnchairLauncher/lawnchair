@@ -42,6 +42,8 @@ import android.graphics.Outline;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.InsetDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Process;
@@ -256,13 +258,20 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                     footer.animateHide();
                 }
             }
+            if (mContextualChipWrapper != null) {
+                mContextualChipWrapper.animate().alpha(0f).setDuration(300);
+            }
             if (mContextualChip != null) {
                 mContextualChip.animate().scaleX(0f).scaleY(0f).setDuration(300);
             }
+
             mIconView.animate().alpha(0.0f);
         } else {
             if (mContextualChip != null) {
                 mContextualChip.animate().scaleX(1f).scaleY(1f).setDuration(300);
+            }
+            if (mContextualChipWrapper != null) {
+                mContextualChipWrapper.animate().alpha(1f).setDuration(300);
             }
             mIconView.animate().alpha(1.0f);
         }
@@ -678,20 +687,33 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT,
                     LayoutParams.WRAP_CONTENT);
             layoutParams.gravity = BOTTOM | CENTER_HORIZONTAL;
+            int expectedChipHeight = getExpectedViewHeight(view);
+            float chipOffset = getResources().getDimension(R.dimen.chip_hint_vertical_offset);
             layoutParams.bottomMargin = (int)
                     (((MarginLayoutParams) mSnapshotView.getLayoutParams()).bottomMargin
-                            - getExpectedViewHeight(view) + getResources().getDimension(
-                            R.dimen.chip_hint_vertical_offset));
+                            - expectedChipHeight + chipOffset);
             mContextualChip = ((FrameLayout) mContextualChipWrapper).getChildAt(0);
             mContextualChip.setScaleX(0f);
             mContextualChip.setScaleY(0f);
+            GradientDrawable scrimDrawable = (GradientDrawable) getResources().getDrawable(
+                    R.drawable.chip_scrim_gradient, mActivity.getTheme());
+            float cornerRadius = TaskCornerRadius.get(mActivity);
+            scrimDrawable.setCornerRadii(
+                    new float[]{0, 0, 0, 0, cornerRadius, cornerRadius, cornerRadius,
+                            cornerRadius});
+            InsetDrawable scrimDrawableInset = new InsetDrawable(scrimDrawable, 0, 0, 0,
+                    (int) (expectedChipHeight - chipOffset));
+            mContextualChipWrapper.setBackground(scrimDrawableInset);
+            mContextualChipWrapper.setPadding(0, 0, 0, 0);
+            mContextualChipWrapper.setAlpha(0f);
             addView(view, getChildCount(), layoutParams);
-            view.setAlpha(mFooterAlpha);
             if (mContextualChip != null) {
                 mContextualChip.animate().scaleX(1f).scaleY(1f).setDuration(50);
             }
+            if (mContextualChipWrapper != null) {
+                mContextualChipWrapper.animate().alpha(1f).setDuration(50);
+            }
         }
-
     }
 
     /**
