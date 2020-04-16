@@ -247,8 +247,6 @@ public final class LauncherInstrumentation {
                 }
             }
         }
-
-        disableSensorRotation();
     }
 
     public void enableCheckEventsForSuccessfulGestures() {
@@ -1265,7 +1263,7 @@ public final class LauncherInstrumentation {
                 TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
-    public void disableSensorRotation() {
+    private void disableSensorRotation() {
         getTestInfo(TestProtocol.REQUEST_MOCK_SENSOR_ROTATION);
     }
 
@@ -1306,6 +1304,7 @@ public final class LauncherInstrumentation {
 
     public Closable eventsCheck() {
         Assert.assertTrue("Nested event checking", !sCheckingEvents);
+        disableSensorRotation();
         sCheckingEvents = true;
         mExpectedPid = getPid();
         if (sEventChecker == null) sEventChecker = new LogEventChecker();
