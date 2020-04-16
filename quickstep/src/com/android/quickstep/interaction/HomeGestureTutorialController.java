@@ -21,6 +21,7 @@ import android.view.View;
 
 import com.android.launcher3.R;
 import com.android.quickstep.interaction.EdgeBackGestureHandler.BackGestureResult;
+import com.android.quickstep.interaction.NavBarGestureHandler.NavBarGestureResult;
 
 /** A {@link TutorialController} for the Home tutorial. */
 final class HomeGestureTutorialController extends TutorialController {
@@ -77,6 +78,23 @@ final class HomeGestureTutorialController extends TutorialController {
             case HOME_NAVIGATION_COMPLETE:
                 if (result == BackGestureResult.BACK_COMPLETED_FROM_LEFT
                         || result == BackGestureResult.BACK_COMPLETED_FROM_RIGHT) {
+                    mTutorialFragment.closeTutorial();
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void onNavBarGestureAttempted(NavBarGestureResult result) {
+        switch (mTutorialType) {
+            case HOME_NAVIGATION:
+                if (result == NavBarGestureResult.HOME_GESTURE_COMPLETED) {
+                    hideHandCoachingAnimation();
+                    mTutorialFragment.changeController(HOME_NAVIGATION_COMPLETE);
+                }
+                break;
+            case HOME_NAVIGATION_COMPLETE:
+                if (result == NavBarGestureResult.HOME_GESTURE_COMPLETED) {
                     mTutorialFragment.closeTutorial();
                 }
                 break;

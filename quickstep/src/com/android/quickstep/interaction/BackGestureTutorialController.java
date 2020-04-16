@@ -22,6 +22,7 @@ import android.view.View;
 
 import com.android.launcher3.R;
 import com.android.quickstep.interaction.EdgeBackGestureHandler.BackGestureResult;
+import com.android.quickstep.interaction.NavBarGestureHandler.NavBarGestureResult;
 
 /** A {@link TutorialController} for the Back tutorial. */
 final class BackGestureTutorialController extends TutorialController {
@@ -112,6 +113,15 @@ final class BackGestureTutorialController extends TutorialController {
                     mTutorialFragment.closeTutorial();
                 }
                 break;
+        }
+    }
+
+    @Override
+    public void onNavBarGestureAttempted(NavBarGestureResult result) {
+        if (mTutorialType == BACK_NAVIGATION_COMPLETE) {
+            if (result == NavBarGestureResult.HOME_GESTURE_COMPLETED) {
+                mTutorialFragment.closeTutorial();
+            }
         }
     }
 }
