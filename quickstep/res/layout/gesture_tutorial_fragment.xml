@@ -39,79 +39,58 @@
         android:src="@drawable/gesture_tutorial_close_button"/>
 
     <LinearLayout
+        android:id="@+id/gesture_tutorial_fragment_titles_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="70dp"
+        android:layout_alignParentTop="true"
+        android:focusable="true"
+        android:gravity="center_horizontal"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/gesture_tutorial_fragment_titles_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:focusable="true">
-
-            <TextView
-                android:id="@+id/gesture_tutorial_fragment_title_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginStart="@dimen/gesture_tutorial_title_margin_start_end"
-                android:layout_marginEnd="@dimen/gesture_tutorial_title_margin_start_end"
-                style="@style/TextAppearance.GestureTutorial.Title"/>
-
-            <TextView
-                android:id="@+id/gesture_tutorial_fragment_subtitle_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="10dp"
-                android:layout_marginStart="@dimen/gesture_tutorial_subtitle_margin_start_end"
-                android:layout_marginEnd="@dimen/gesture_tutorial_subtitle_margin_start_end"
-                style="@style/TextAppearance.GestureTutorial.Subtitle"/>
-
-        </LinearLayout>
-
-        <Space
+        <TextView
+            android:id="@+id/gesture_tutorial_fragment_title_view"
             android:layout_width="wrap_content"
-            android:layout_weight="1"
-            android:layout_height="0dp"
-            android:layout_marginTop="48dp"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center_horizontal"
-            android:orientation="vertical"/>
-
-        <!-- android:stateListAnimator="@null" removes shadow and normal on click behavior (increase
-             of elevation and shadow) which is replaced by ripple effect in android:foreground -->
-        <RelativeLayout
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="46dp"
-            android:layout_marginBottom="48dp"
-            android:layout_gravity="center_horizontal">
+            android:layout_marginStart="@dimen/gesture_tutorial_title_margin_start_end"
+            android:layout_marginEnd="@dimen/gesture_tutorial_title_margin_start_end"
+            style="@style/TextAppearance.GestureTutorial.Title"/>
 
-            <Button
-                android:id="@+id/gesture_tutorial_fragment_action_button"
-                android:layout_width="142dp"
-                android:layout_height="49dp"
-                android:layout_marginEnd="@dimen/gesture_tutorial_button_margin_start_end"
-                android:layout_alignParentEnd="true"
-                android:stateListAnimator="@null"
-                android:background="@drawable/gesture_tutorial_action_button_background"
-                android:foreground="?android:attr/selectableItemBackgroundBorderless"
-                style="@style/TextAppearance.GestureTutorial.ButtonLabel"/>
-
-            <Button
-                android:id="@+id/gesture_tutorial_fragment_action_text_button"
-                android:layout_width="142dp"
-                android:layout_height="49dp"
-                android:layout_marginStart="@dimen/gesture_tutorial_button_margin_start_end"
-                android:layout_alignParentStart="true"
-                android:stateListAnimator="@null"
-                android:background="@null"
-                android:foreground="?android:attr/selectableItemBackgroundBorderless"
-                style="@style/TextAppearance.GestureTutorial.TextButtonLabel"/>
-
-        </RelativeLayout>
+        <TextView
+            android:id="@+id/gesture_tutorial_fragment_subtitle_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="@dimen/gesture_tutorial_subtitle_margin_start_end"
+            android:layout_marginEnd="@dimen/gesture_tutorial_subtitle_margin_start_end"
+            style="@style/TextAppearance.GestureTutorial.Subtitle"/>
     </LinearLayout>
+
+    <!-- android:stateListAnimator="@null" removes shadow and normal on click behavior (increase
+         of elevation and shadow) which is replaced by ripple effect in android:foreground -->
+    <Button
+        android:id="@+id/gesture_tutorial_fragment_action_button"
+        android:layout_width="142dp"
+        android:layout_height="49dp"
+        android:layout_marginEnd="@dimen/gesture_tutorial_button_margin_start_end"
+        android:layout_marginBottom="48dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:stateListAnimator="@null"
+        android:background="@drawable/gesture_tutorial_action_button_background"
+        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+        style="@style/TextAppearance.GestureTutorial.ButtonLabel"/>
+
+    <Button
+        android:id="@+id/gesture_tutorial_fragment_action_text_button"
+        android:layout_width="142dp"
+        android:layout_height="49dp"
+        android:layout_marginStart="@dimen/gesture_tutorial_button_margin_start_end"
+        android:layout_marginBottom="48dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:stateListAnimator="@null"
+        android:background="@null"
+        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+        style="@style/TextAppearance.GestureTutorial.TextButtonLabel"/>
 </RelativeLayout>
