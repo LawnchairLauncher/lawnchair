@@ -40,10 +40,10 @@ import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
 
 import com.android.launcher3.LauncherAppWidgetHost;
-import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
+import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.pm.InstallSessionHelper;
 import com.android.launcher3.tapl.Widget;
 import com.android.launcher3.tapl.Workspace;

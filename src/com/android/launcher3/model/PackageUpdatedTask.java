@@ -15,8 +15,8 @@
  */
 package com.android.launcher3.model;
 
-import static com.android.launcher3.WorkspaceItemInfo.FLAG_AUTOINSTALL_ICON;
-import static com.android.launcher3.WorkspaceItemInfo.FLAG_RESTORED_ICON;
+import static com.android.launcher3.model.data.WorkspaceItemInfo.FLAG_AUTOINSTALL_ICON;
+import static com.android.launcher3.model.data.WorkspaceItemInfo.FLAG_RESTORED_ICON;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -29,18 +29,18 @@ import android.os.UserManager;
 import android.util.Log;
 
 import com.android.launcher3.InstallShortcutReceiver;
-import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.SessionCommitReceiver;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.logging.FileLog;
+import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.LauncherAppWidgetInfo;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.shortcuts.ShortcutRequest;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.FlagOp;
@@ -233,7 +233,7 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                                 } else if (!isTargetValid) {
                                     removedShortcuts.put(si.id, true);
                                     FileLog.e(TAG, "Restored shortcut no longer valid "
-                                            + si.intent);
+                                            + si.getIntent());
                                     continue;
                                 } else {
                                     si.status = WorkspaceItemInfo.DEFAULT;

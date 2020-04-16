@@ -35,8 +35,8 @@ import android.view.View;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
-import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.model.WellbeingModel;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.popup.SystemShortcut.AppInfo;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
@@ -71,7 +71,7 @@ public interface TaskShortcutFactory {
         WorkspaceItemInfo dummyInfo = new WorkspaceItemInfo();
         dummyInfo.intent = new Intent();
         ComponentName component = task.getTopComponent();
-        dummyInfo.intent.setComponent(component);
+        dummyInfo.getIntent().setComponent(component);
         dummyInfo.user = UserHandle.of(task.key.userId);
         dummyInfo.title = TaskUtils.getTitle(view.getContext(), task);
         return dummyInfo;

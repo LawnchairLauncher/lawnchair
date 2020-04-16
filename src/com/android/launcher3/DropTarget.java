@@ -25,6 +25,7 @@ import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.folder.FolderNameProvider;
+import com.android.launcher3.model.data.ItemInfo;
 
 /**
  * Interface defining an object that can receive a drag.

@@ -62,10 +62,13 @@ public abstract class BaseRecentsViewStateController<T extends View>
 
     @Override
     public void setState(@NonNull LauncherState state) {
-        ScaleAndTranslation scaleAndTranslation = state
-                .getOverviewScaleAndTranslation(mLauncher);
+        ScaleAndTranslation scaleAndTranslation = state.getOverviewScaleAndTranslation(mLauncher);
+        float translationX = scaleAndTranslation.translationX;
+        if (mRecentsView.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
+            translationX = -translationX;
+        }
         SCALE_PROPERTY.set(mRecentsView, scaleAndTranslation.scale);
-        mRecentsView.setTranslationX(scaleAndTranslation.translationX);
+        mRecentsView.setTranslationX(translationX);
         mRecentsView.setTranslationY(scaleAndTranslation.translationY);
 
         getContentAlphaProperty().set(mRecentsView, state.overviewUi ? 1f : 0);
@@ -96,9 +99,13 @@ public abstract class BaseRecentsViewStateController<T extends View>
     void setStateWithAnimationInternal(@NonNull final LauncherState toState,
             @NonNull StateAnimationConfig config, @NonNull PendingAnimation setter) {
         ScaleAndTranslation scaleAndTranslation = toState.getOverviewScaleAndTranslation(mLauncher);
+        float translationX = scaleAndTranslation.translationX;
+        if (mRecentsView.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
+            translationX = -translationX;
+        }
         setter.setFloat(mRecentsView, SCALE_PROPERTY, scaleAndTranslation.scale,
                 config.getInterpolator(ANIM_OVERVIEW_SCALE, LINEAR));
-        setter.setFloat(mRecentsView, VIEW_TRANSLATE_X, scaleAndTranslation.translationX,
+        setter.setFloat(mRecentsView, VIEW_TRANSLATE_X, translationX,
                 config.getInterpolator(ANIM_OVERVIEW_TRANSLATE_X, LINEAR));
         setter.setFloat(mRecentsView, VIEW_TRANSLATE_Y, scaleAndTranslation.translationY,
                 config.getInterpolator(ANIM_OVERVIEW_TRANSLATE_Y, LINEAR));

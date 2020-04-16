@@ -14,23 +14,20 @@
  * limitations under the License.
  */package com.android.launcher3.ui;
 
-import static android.view.View.MeasureSpec.EXACTLY;
-import static android.view.View.MeasureSpec.makeMeasureSpec;
-
 import static com.android.launcher3.util.LauncherModelHelper.TEST_PACKAGE;
+import static com.android.launcher3.util.LauncherUIHelper.buildAndBindLauncher;
+import static com.android.launcher3.util.LauncherUIHelper.doLayout;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.mockito.Mockito.mock;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.SystemClock;
 import android.provider.Settings;
 import android.view.InputDevice;
 import android.view.MotionEvent;
 import android.view.MotionEvent.PointerProperties;
-import android.view.View;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
@@ -44,24 +41,21 @@ import com.android.launcher3.shadows.ShadowOverrides;
 import com.android.launcher3.util.LauncherLayoutBuilder;
 import com.android.launcher3.util.LauncherLayoutBuilder.FolderBuilder;
 import com.android.launcher3.util.LauncherModelHelper;
-import com.android.launcher3.util.LauncherRoboTestRunner;
-import com.android.launcher3.util.ViewOnDrawExecutor;
 import com.android.launcher3.widget.WidgetsFullSheet;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.Robolectric;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.LooperMode;
 import org.robolectric.annotation.LooperMode.Mode;
 import org.robolectric.shadows.ShadowLooper;
-import org.robolectric.util.ReflectionHelpers;
 
 /**
  * Tests scroll behavior at various Launcher UI components
  */
-@RunWith(LauncherRoboTestRunner.class)
+@RunWith(RobolectricTestRunner.class)
 @LooperMode(Mode.PAUSED)
 public class LauncherUIScrollTest {
 
@@ -166,23 +160,7 @@ public class LauncherUIScrollTest {
 
     private Launcher loadLauncher() throws Exception {
         mModelHelper.setupDefaultLayoutProvider(mLayoutBuilder).loadModelSync();
-
-        Launcher launcher = Robolectric.buildActivity(Launcher.class).setup().get();
-        doLayout(launcher);
-        ViewOnDrawExecutor executor = ReflectionHelpers.getField(launcher, "mPendingExecutor");
-        if (executor != null) {
-            executor.runAllTasks();
-        }
-        return launcher;
-    }
-
-    private static void doLayout(Activity activity) {
-        DeviceProfile dp = InvariantDeviceProfile.INSTANCE
-                .get(RuntimeEnvironment.application).portraitProfile;
-        View view = activity.getWindow().getDecorView();
-        view.measure(makeMeasureSpec(dp.widthPx, EXACTLY), makeMeasureSpec(dp.heightPx, EXACTLY));
-        view.layout(0, 0, dp.widthPx, dp.heightPx);
-        ShadowLooper.idleMainLooper();
+        return buildAndBindLauncher();
     }
 
     private static MotionEvent createScrollEvent(int scroll) {
