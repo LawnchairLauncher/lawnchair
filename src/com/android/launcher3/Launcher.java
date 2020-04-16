@@ -1547,6 +1547,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         mOverlayManager.onActivityDestroyed(this);
         mAppTransitionManager.unregisterRemoteAnimations();
         mUserChangedCallbackCloseable.close();
+        mAllAppsController.onActivityDestroyed();
     }
 
     public LauncherAccessibilityDelegate getAccessibilityDelegate() {
