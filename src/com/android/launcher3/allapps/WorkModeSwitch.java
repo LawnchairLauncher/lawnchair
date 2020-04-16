@@ -25,6 +25,8 @@ import android.os.Process;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
+import android.view.ViewConfiguration;
 import android.widget.Switch;
 
 import com.android.launcher3.Insettable;
@@ -46,16 +48,28 @@ public class WorkModeSwitch extends Switch implements Insettable {
 
     private Rect mInsets = new Rect();
 
+    private final float[] mTouch = new float[2];
+    private int mTouchSlop;
+
     public WorkModeSwitch(Context context) {
         super(context);
+        init();
     }
 
     public WorkModeSwitch(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init();
+
     }
 
     public WorkModeSwitch(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        init();
+    }
+
+    private void init() {
+        ViewConfiguration viewConfiguration = ViewConfiguration.get(getContext());
+        mTouchSlop = viewConfiguration.getScaledTouchSlop();
     }
 
     @Override
@@ -73,7 +87,7 @@ public class WorkModeSwitch extends Switch implements Insettable {
 
     private void setCheckedInternal(boolean checked) {
         super.setChecked(checked);
-        setCompoundDrawablesWithIntrinsicBounds(
+        setCompoundDrawablesRelativeWithIntrinsicBounds(
                 checked ? R.drawable.ic_corp : R.drawable.ic_corp_off, 0, 0, 0);
     }
 
@@ -82,6 +96,25 @@ public class WorkModeSwitch extends Switch implements Insettable {
         UserCache userManager = UserCache.INSTANCE.get(getContext());
         setCheckedInternal(!userManager.isAnyProfileQuietModeEnabled());
         setEnabled(true);
+    }
+
+
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        if (ev.getActionMasked() == MotionEvent.ACTION_DOWN) {
+            mTouch[0] = ev.getX();
+            mTouch[1] = ev.getY();
+        } else if (ev.getActionMasked() == MotionEvent.ACTION_MOVE) {
+            if (Math.abs(mTouch[0] - ev.getX()) > mTouchSlop
+                    || Math.abs(mTouch[1] - ev.getY()) > mTouchSlop) {
+                int action = ev.getAction();
+                ev.setAction(MotionEvent.ACTION_CANCEL);
+                super.onTouchEvent(ev);
+                ev.setAction(action);
+                return false;
+            }
+        }
+        return super.onTouchEvent(ev);
     }
 
     @Override

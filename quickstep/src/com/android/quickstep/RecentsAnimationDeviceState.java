@@ -17,6 +17,7 @@ package com.android.quickstep;
 
 import static android.content.Intent.ACTION_USER_UNLOCKED;
 
+import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
 import static com.android.quickstep.SysUINavigationMode.Mode.THREE_BUTTONS;
 import static com.android.quickstep.SysUINavigationMode.Mode.TWO_BUTTONS;
@@ -73,6 +74,8 @@ public class RecentsAnimationDeviceState implements
         NavigationModeChangeListener,
         DefaultDisplay.DisplayInfoChangeListener {
 
+    private static final String TAG = "RecentsAnimationDeviceState";
+
     private final Context mContext;
     private final SysUINavigationMode mSysUiNavMode;
     private final DefaultDisplay mDefaultDisplay;
@@ -95,6 +98,7 @@ public class RecentsAnimationDeviceState implements
         @Override
         public void onReceive(Context context, Intent intent) {
             if (ACTION_USER_UNLOCKED.equals(intent.getAction())) {
+                Log.d(TAG, "User Unlocked Broadcast Received");
                 mIsUserUnlocked = true;
                 notifyUserUnlocked();
             }
@@ -120,7 +124,6 @@ public class RecentsAnimationDeviceState implements
     private Runnable mOnDestroyFrozenTaskRunnable;
 
     public RecentsAnimationDeviceState(Context context) {
-        final ContentResolver resolver = context.getContentResolver();
         mContext = context;
         mSysUiNavMode = SysUINavigationMode.INSTANCE.get(context);
         mDefaultDisplay = DefaultDisplay.INSTANCE.get(context);
@@ -511,8 +514,16 @@ public class RecentsAnimationDeviceState implements
         mOrientationTouchTransformer.transform(event);
     }
 
-    public void enableMultipleRegions(boolean enable) {
+    void enableMultipleRegions(boolean enable) {
         mOrientationTouchTransformer.enableMultipleRegions(enable, mDefaultDisplay.getInfo());
+        if (enable) {
+            UI_HELPER_EXECUTOR.execute(() -> {
+                int quickStepStartingRotation =
+                        mOrientationTouchTransformer.getQuickStepStartingRotation();
+                SystemUiProxy.INSTANCE.get(mContext)
+                        .onQuickSwitchToNewTask(quickStepStartingRotation);
+            });
+        }
     }
 
     public int getCurrentActiveRotation() {

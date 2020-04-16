@@ -13,6 +13,7 @@ import android.os.UserHandle;
 
 import com.android.launcher3.icons.ComponentWithLabelAndIcon;
 import com.android.launcher3.icons.IconCache;
+import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 
 /**
  * This class is a thin wrapper around the framework AppWidgetProviderInfo class. This class affords

@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
-package com.android.launcher3;
+package com.android.launcher3.model.data;
 
 import android.content.Intent;
 import android.os.Process;
 
+import com.android.launcher3.LauncherSettings;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.util.ContentWriter;
 

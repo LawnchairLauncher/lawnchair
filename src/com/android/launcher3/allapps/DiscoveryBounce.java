@@ -24,7 +24,6 @@ import static com.android.launcher3.userevent.nano.LauncherLogProto.ContainerTyp
 import android.animation.Animator;
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorListenerAdapter;
-import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.UserManager;
 import android.view.MotionEvent;
@@ -35,6 +34,7 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager.StateListener;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.util.OnboardingPrefs;
 
 /**
  * Abstract base class of floating view responsible for showing discovery bounce animation
@@ -42,13 +42,6 @@ import com.android.launcher3.Utilities;
 public class DiscoveryBounce extends AbstractFloatingView {
 
     private static final long DELAY_MS = 450;
-
-    public static final String HOME_BOUNCE_SEEN = "launcher.apps_view_shown";
-    public static final String SHELF_BOUNCE_SEEN = "launcher.shelf_bounce_seen";
-    public static final String HOME_BOUNCE_COUNT = "launcher.home_bounce_count";
-    public static final String SHELF_BOUNCE_COUNT = "launcher.shelf_bounce_count";
-
-    public static final int BOUNCE_MAX_COUNT = 3;
 
     private final Launcher mLauncher;
     private final Animator mDiscoBounceAnimation;
@@ -142,8 +135,9 @@ public class DiscoveryBounce extends AbstractFloatingView {
     }
 
     private static void showForHomeIfNeeded(Launcher launcher, boolean withDelay) {
+        OnboardingPrefs onboardingPrefs = launcher.getOnboardingPrefs();
         if (!launcher.isInState(NORMAL)
-                || launcher.getSharedPrefs().getBoolean(HOME_BOUNCE_SEEN, false)
+                || onboardingPrefs.getBoolean(OnboardingPrefs.HOME_BOUNCE_SEEN)
                 || AbstractFloatingView.getTopOpenView(launcher) != null
                 || launcher.getSystemService(UserManager.class).isDemoUser()
                 || Utilities.IS_RUNNING_IN_TEST_HARNESS) {
@@ -154,7 +148,7 @@ public class DiscoveryBounce extends AbstractFloatingView {
             new Handler().postDelayed(() -> showForHomeIfNeeded(launcher, false), DELAY_MS);
             return;
         }
-        incrementHomeBounceCount(launcher);
+        onboardingPrefs.incrementEventCount(OnboardingPrefs.HOME_BOUNCE_COUNT);
 
         new DiscoveryBounce(launcher, 0).show(HOTSEAT);
     }
@@ -164,11 +158,12 @@ public class DiscoveryBounce extends AbstractFloatingView {
     }
 
     private static void showForOverviewIfNeeded(Launcher launcher, boolean withDelay) {
+        OnboardingPrefs onboardingPrefs = launcher.getOnboardingPrefs();
         if (!launcher.isInState(OVERVIEW)
                 || !launcher.hasBeenResumed()
                 || launcher.isForceInvisible()
                 || launcher.getDeviceProfile().isVerticalBarLayout()
-                || launcher.getSharedPrefs().getBoolean(SHELF_BOUNCE_SEEN, false)
+                || onboardingPrefs.getBoolean(OnboardingPrefs.SHELF_BOUNCE_SEEN)
                 || launcher.getSystemService(UserManager.class).isDemoUser()
                 || Utilities.IS_RUNNING_IN_TEST_HARNESS) {
             return;
@@ -182,7 +177,7 @@ public class DiscoveryBounce extends AbstractFloatingView {
             // TODO: Move these checks to the top and call this method after invalidate handler.
             return;
         }
-        incrementShelfBounceCount(launcher);
+        onboardingPrefs.incrementEventCount(OnboardingPrefs.SHELF_BOUNCE_COUNT);
 
         new DiscoveryBounce(launcher, (1 - OVERVIEW.getVerticalProgress(launcher)))
                 .show(PREDICTION);
@@ -208,23 +203,5 @@ public class DiscoveryBounce extends AbstractFloatingView {
         public void setProgress(float progress) {
             mController.setProgress(progress - mDelta);
         }
-    }
-
-    private static void incrementShelfBounceCount(Launcher launcher) {
-        SharedPreferences sharedPrefs = launcher.getSharedPrefs();
-        int count = sharedPrefs.getInt(SHELF_BOUNCE_COUNT, 0);
-        if (count > BOUNCE_MAX_COUNT) {
-            return;
-        }
-        sharedPrefs.edit().putInt(SHELF_BOUNCE_COUNT, count + 1).apply();
-    }
-
-    private static void incrementHomeBounceCount(Launcher launcher) {
-        SharedPreferences sharedPrefs = launcher.getSharedPrefs();
-        int count = sharedPrefs.getInt(HOME_BOUNCE_COUNT, 0);
-        if (count > BOUNCE_MAX_COUNT) {
-            return;
-        }
-        sharedPrefs.edit().putInt(HOME_BOUNCE_COUNT, count + 1).apply();
     }
 }

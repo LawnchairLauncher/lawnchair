@@ -39,17 +39,17 @@ import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.util.LauncherModelHelper;
-import com.android.launcher3.util.LauncherRoboTestRunner;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 
 import java.util.HashSet;
 
 /** Unit tests for {@link GridSizeMigrationTaskV2} */
-@RunWith(LauncherRoboTestRunner.class)
+@RunWith(RobolectricTestRunner.class)
 public class GridSizeMigrationTaskV2Test {
 
     private LauncherModelHelper mModelHelper;

@@ -40,9 +40,9 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.icons.ComponentWithLabelAndIcon;
 import com.android.launcher3.icons.IconCache;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.PackageUserKey;
 
 import java.util.ArrayList;

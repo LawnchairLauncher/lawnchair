@@ -33,8 +33,8 @@ import android.view.View;
 
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BaseDraggingActivity;
-import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.quickstep.util.AppWindowAnimationHelper;
 import com.android.quickstep.util.MultiValueUpdateListener;

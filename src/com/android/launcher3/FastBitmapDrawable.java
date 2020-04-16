@@ -35,6 +35,7 @@ import android.util.Property;
 
 import com.android.launcher3.graphics.PlaceHolderIconDrawable;
 import com.android.launcher3.icons.BitmapInfo;
+import com.android.launcher3.model.data.ItemInfoWithIcon;
 
 
 public class FastBitmapDrawable extends Drawable {
