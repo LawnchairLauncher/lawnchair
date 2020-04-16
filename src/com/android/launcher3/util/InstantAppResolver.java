@@ -21,8 +21,8 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
-import com.android.launcher3.AppInfo;
 import com.android.launcher3.R;
+import com.android.launcher3.model.data.AppInfo;
 
 /**
  * A wrapper class to access instant app related APIs.

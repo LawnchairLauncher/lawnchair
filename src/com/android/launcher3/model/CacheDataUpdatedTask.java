@@ -18,11 +18,11 @@ package com.android.launcher3.model;
 import android.content.ComponentName;
 import android.os.UserHandle;
 
-import com.android.launcher3.WorkspaceItemInfo;
-import com.android.launcher3.icons.IconCache;
-import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
+import com.android.launcher3.icons.IconCache;
+import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
 
 import java.util.ArrayList;
 import java.util.HashSet;

@@ -19,8 +19,8 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
-import com.android.launcher3.ItemInfo;
 import com.android.launcher3.appprediction.PredictionUiStateManager;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 
 import java.util.ArrayList;

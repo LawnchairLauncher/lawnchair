@@ -15,17 +15,17 @@
  */
 package com.android.launcher3.allapps;
 
-import static com.android.launcher3.AppInfo.COMPONENT_KEY_COMPARATOR;
-import static com.android.launcher3.AppInfo.EMPTY_ARRAY;
+import static com.android.launcher3.model.data.AppInfo.COMPONENT_KEY_COMPARATOR;
+import static com.android.launcher3.model.data.AppInfo.EMPTY_ARRAY;
 
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.android.launcher3.AppInfo;
 import com.android.launcher3.BubbleTextView;
-import com.android.launcher3.ItemInfo;
-import com.android.launcher3.PromiseAppInfo;
+import com.android.launcher3.model.data.AppInfo;
+import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.PromiseAppInfo;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageUserKey;
 

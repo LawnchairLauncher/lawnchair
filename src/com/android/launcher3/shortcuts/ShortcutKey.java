@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.content.pm.ShortcutInfo;
 import android.os.UserHandle;
 
-import com.android.launcher3.ItemInfo;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.ComponentKey;
 
 /**

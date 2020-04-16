@@ -561,10 +561,11 @@ public class OverScroller {
             mStartTime = AnimationUtils.currentAnimationTimeMillis();
             mDuration = duration;
 
+            if (mSpring != null) {
+                mSpring.cancel();
+            }
+
             if (mState == SPRING) {
-                if (mSpring != null) {
-                    mSpring.cancel();
-                }
                 mSpring = new SpringAnimation(this, SPRING_PROPERTY);
 
                 ResourceProvider rp = DynamicResource.provider(mContext);
@@ -576,9 +577,9 @@ public class OverScroller {
                 mSpring.setStartVelocity(velocity);
                 mSpring.animateToFinalPosition(mFinal);
                 mSpring.addEndListener((animation, canceled, value, velocity1) -> {
+                    mSpring = null;
                     finish();
                     mState = SPLINE;
-                    mSpring = null;
                 });
             }
             // Unused
