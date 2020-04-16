@@ -21,8 +21,8 @@ import android.view.ContextThemeWrapper;
 import android.view.View.AccessibilityDelegate;
 
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.ItemInfo;
 import com.android.launcher3.dot.DotInfo;
+import com.android.launcher3.model.data.ItemInfo;
 
 /**
  * An interface to be used along with a context for various activities in Launcher. This allows a

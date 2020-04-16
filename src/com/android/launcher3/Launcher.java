@@ -110,6 +110,12 @@ import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.ModelWriter;
+import com.android.launcher3.model.data.AppInfo;
+import com.android.launcher3.model.data.FolderInfo;
+import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.LauncherAppWidgetInfo;
+import com.android.launcher3.model.data.PromiseAppInfo;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.pm.PinRequestHelper;
 import com.android.launcher3.pm.UserCache;
@@ -133,6 +139,7 @@ import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
+import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.PendingRequestArgs;
@@ -294,6 +301,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     // We only want to get the SharedPreferences once since it does an FS stat each time we get
     // it from the context.
     private SharedPreferences mSharedPrefs;
+    private OnboardingPrefs mOnboardingPrefs;
 
     // Activity result which needs to be processed after workspace has loaded.
     private ActivityResultInfo mPendingActivityResult;
@@ -360,6 +368,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         mDragController = new DragController(this);
         mAllAppsController = new AllAppsTransitionController(this);
         mStateManager = new LauncherStateManager(this);
+
+        mOnboardingPrefs = createOnboardingPrefs(mSharedPrefs, mStateManager);
 
         mAppWidgetManager = new WidgetManagerHelper(this);
         mAppWidgetHost = new LauncherAppWidgetHost(this,
@@ -450,6 +460,15 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     protected LauncherOverlayManager getDefaultOverlay() {
         return new LauncherOverlayManager() { };
+    }
+
+    protected OnboardingPrefs createOnboardingPrefs(SharedPreferences sharedPrefs,
+            LauncherStateManager stateManager) {
+        return new OnboardingPrefs<>(this, sharedPrefs, stateManager);
+    }
+
+    public OnboardingPrefs getOnboardingPrefs() {
+        return mOnboardingPrefs;
     }
 
     @Override
@@ -1443,6 +1462,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                 mLauncherCallbacks.onHomeIntent(internalStateHandled);
             }
             mOverlayManager.hideOverlay(isStarted() && !isForceInvisible());
+        } else if (Intent.ACTION_ALL_APPS.equals(intent.getAction())) {
+            getStateManager().goToState(ALL_APPS, alreadyOnHome);
         }
 
         TraceHelper.INSTANCE.endSection(traceToken);
@@ -2557,9 +2578,10 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         writer.println(prefix + "\tmRotationHelper: " + mRotationHelper);
         writer.println(prefix + "\tmAppWidgetHost.isListening: " + mAppWidgetHost.isListening());
 
-        // Extra logging for b/116853349
+        // Extra logging for general debugging
         mDragLayer.dump(prefix, writer);
         mStateManager.dump(prefix, writer);
+        mPopupDataProvider.dump(prefix, writer);
 
         try {
             FileLog.flushAll(writer);

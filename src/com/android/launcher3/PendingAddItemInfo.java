@@ -18,6 +18,8 @@ package com.android.launcher3;
 
 import android.content.ComponentName;
 
+import com.android.launcher3.model.data.ItemInfo;
+
 /**
  * Meta data that is used for deferred binding.
  * e.g., this object is used to pass information on draggable targets when they are dropped onto

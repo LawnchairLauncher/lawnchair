@@ -25,6 +25,7 @@ import android.view.ViewGroup;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderPagedView;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.FocusLogic;
 import com.android.launcher3.util.Thunk;
 
