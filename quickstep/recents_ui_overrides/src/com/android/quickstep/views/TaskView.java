@@ -64,7 +64,6 @@ import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.popup.SystemShortcut;
-import com.android.launcher3.states.RotationHelper;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.PagedOrientationHandler;
@@ -79,6 +78,7 @@ import com.android.quickstep.TaskOverlayFactory;
 import com.android.quickstep.TaskThumbnailCache;
 import com.android.quickstep.TaskUtils;
 import com.android.quickstep.util.LayoutUtils;
+import com.android.quickstep.util.RecentsOrientedState;
 import com.android.quickstep.util.TaskCornerRadius;
 import com.android.quickstep.views.RecentsView.PageCallbacks;
 import com.android.quickstep.views.RecentsView.ScrollState;
@@ -118,19 +118,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
 
     private static final List<Rect> SYSTEM_GESTURE_EXCLUSION_RECT =
             Collections.singletonList(new Rect());
-
-    public static final FloatProperty<TaskView> FULLSCREEN_PROGRESS =
-            new FloatProperty<TaskView>("fullscreenProgress") {
-                @Override
-                public void setValue(TaskView taskView, float v) {
-                    taskView.setFullscreenProgress(v);
-                }
-
-                @Override
-                public Float get(TaskView taskView) {
-                    return taskView.mFullscreenProgress;
-                }
-            };
 
     private static final FloatProperty<TaskView> FOCUS_TRANSITION =
             new FloatProperty<TaskView>("focusTransition") {
@@ -180,6 +167,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     private float mStableAlpha = 1;
 
     private boolean mShowScreenshot;
+    private boolean mRunningModalAnimation = false;
 
     // The current background requests to load the task thumbnail and icon
     private TaskThumbnailCache.ThumbnailLoadRequest mThumbnailLoadRequest;
@@ -262,17 +250,39 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     /** Updates UI based on whether the task is modal. */
     public void updateUiForModalTask() {
         boolean isOverlayModal = isTaskOverlayModal();
+        mRunningModalAnimation = true;
         if (getRecentsView() != null) {
             getRecentsView().updateUiForModalTask(this, isOverlayModal);
         }
-        // Hide footers when overlay is modal.
+
+        // Hides footers and icon when overlay is modal.
         if (isOverlayModal) {
             for (FooterWrapper footer : mFooters) {
                 if (footer != null) {
                     footer.animateHide();
                 }
             }
+            mIconView.animate().alpha(0.0f);
+        } else {
+            mIconView.animate().alpha(1.0f);
         }
+
+        // Sets animations for modal UI. We will remove the margins to zoom in the snapshot.
+        float topMargin = getResources().getDimension(R.dimen.task_thumbnail_top_margin);
+        float bottomMargin =
+                getResources().getDimension(R.dimen.task_thumbnail_bottom_margin_with_actions);
+        float newHeight = mSnapshotView.getHeight() + topMargin + bottomMargin;
+        float scale = isOverlayModal ? newHeight / mSnapshotView.getHeight() : 1.0f;
+        float centerDifference = (bottomMargin - topMargin) / 2;
+        float translationY = isOverlayModal ? centerDifference : 0;
+        this.animate().scaleX(scale).scaleY(scale).translationY(translationY)
+                .withEndAction(new Runnable() {
+                    @Override
+                    public void run() {
+                        setCurveScale(scale);
+                        mRunningModalAnimation = false;
+                    }
+                });
     }
 
     public TaskMenuView getMenuView() {
@@ -286,11 +296,11 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     /**
      * Updates this task view to the given {@param task}.
      */
-    public void bind(Task task, int recentsRotation) {
+    public void bind(Task task, RecentsOrientedState orientedState) {
         cancelPendingLoadTasks();
         mTask = task;
         mSnapshotView.bind(task);
-        setOverviewRotation(recentsRotation);
+        setOrientationState(orientedState);
     }
 
     public Task getTask() {
@@ -459,14 +469,15 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         }
     }
 
-    void setOverviewRotation(int iconRotation) {
-        PagedOrientationHandler orientationHandler = getRecentsView().getPagedOrientationHandler();
+    public void setOrientationState(RecentsOrientedState orientationState) {
+        int iconRotation = orientationState.getTouchRotation();
+        PagedOrientationHandler orientationHandler = orientationState.getOrientationHandler();
         boolean isRtl = orientationHandler.getRecentsRtlSetting(getResources());
         LayoutParams snapshotParams = (LayoutParams) mSnapshotView.getLayoutParams();
         snapshotParams.bottomMargin = LayoutUtils.thumbnailBottomMargin(getContext());
         int thumbnailPadding = (int) getResources().getDimension(R.dimen.task_thumbnail_top_margin);
         LayoutParams iconParams = (LayoutParams) mIconView.getLayoutParams();
-        int rotation = RotationHelper.getDegreesFromRotation(iconRotation);
+        int rotation = orientationState.getTouchRotationDegrees();
         switch (iconRotation) {
             case Surface.ROTATION_90:
                 iconParams.gravity = (isRtl ? END : START) | CENTER_VERTICAL;
@@ -579,11 +590,15 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
 
     @Override
     public void onPageScroll(ScrollState scrollState) {
+        // Don't do anything if it's modal.
+        if (mRunningModalAnimation || isTaskOverlayModal()) {
+            return;
+        }
+
         float curveInterpolation =
                 CURVE_INTERPOLATOR.getInterpolation(scrollState.linearInterpolation);
         float curveScaleForCurveInterpolation = getCurveScaleForCurveInterpolation(
                 curveInterpolation);
-
         mSnapshotView.setDimAlpha(curveInterpolation * MAX_PAGE_SCRIM_ALPHA);
         setCurveScale(curveScaleForCurveInterpolation);
 

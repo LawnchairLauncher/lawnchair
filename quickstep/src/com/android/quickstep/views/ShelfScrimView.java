@@ -43,6 +43,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.uioverrides.states.OverviewState;
+import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ScrimView;
 import com.android.quickstep.SysUINavigationMode;
@@ -75,6 +76,7 @@ public class ShelfScrimView extends ScrimView<BaseQuickstepLauncher>
     private final float mRadius;
     private final int mMaxScrimAlpha;
     private final Paint mPaint;
+    private final OnboardingPrefs mOnboardingPrefs;
 
     // Mid point where the alpha changes
     private int mMidAlpha;
@@ -100,6 +102,7 @@ public class ShelfScrimView extends ScrimView<BaseQuickstepLauncher>
     private boolean mRemainingScreenPathValid = false;
 
     private Mode mSysUINavigationMode;
+    private boolean mIsTwoZoneSwipeModel;
 
     public ShelfScrimView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -108,6 +111,7 @@ public class ShelfScrimView extends ScrimView<BaseQuickstepLauncher>
         mEndAlpha = Color.alpha(mEndScrim);
         mRadius = BOTTOM_CORNER_RADIUS_RATIO * Themes.getDialogCornerRadius(context);
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mOnboardingPrefs = mLauncher.getOnboardingPrefs();
 
         // Just assume the easiest UI for now, until we have the proper layout information.
         mDrawingFlatColor = true;
@@ -140,9 +144,11 @@ public class ShelfScrimView extends ScrimView<BaseQuickstepLauncher>
             // Show the shelf more quickly before reaching overview progress.
             mBeforeMidProgressColorInterpolator = ACCEL_2;
             mAfterMidProgressColorInterpolator = ACCEL;
+            mIsTwoZoneSwipeModel = FeatureFlags.ENABLE_OVERVIEW_ACTIONS.get();
         } else {
             mBeforeMidProgressColorInterpolator = ACCEL;
             mAfterMidProgressColorInterpolator = Interpolators.clampToProgress(ACCEL, 0.5f, 1f);
+            mIsTwoZoneSwipeModel = false;
         }
     }
 
@@ -236,9 +242,9 @@ public class ShelfScrimView extends ScrimView<BaseQuickstepLauncher>
 
     @Override
     protected boolean shouldDragHandleBeVisible() {
-        boolean twoZoneSwipeModel = FeatureFlags.ENABLE_OVERVIEW_ACTIONS.get()
-                && SysUINavigationMode.removeShelfFromOverview(mLauncher);
-        return twoZoneSwipeModel || super.shouldDragHandleBeVisible();
+        boolean needsAllAppsEdu = mIsTwoZoneSwipeModel
+                && !mOnboardingPrefs.hasReachedMaxCount(OnboardingPrefs.ALL_APPS_COUNT);
+        return needsAllAppsEdu || super.shouldDragHandleBeVisible();
     }
 
     @Override

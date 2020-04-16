@@ -30,12 +30,12 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import com.android.launcher3.AbstractFloatingView;
-import com.android.launcher3.AppInfo;
 import com.android.launcher3.BubbleTextView;
-import com.android.launcher3.ItemInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.allapps.AppInfoComparator;
+import com.android.launcher3.model.data.AppInfo;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.util.ComponentKey;

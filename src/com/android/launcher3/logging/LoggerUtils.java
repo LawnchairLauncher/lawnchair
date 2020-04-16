@@ -19,10 +19,10 @@ import android.util.ArrayMap;
 import android.util.SparseArray;
 import android.view.View;
 
-import com.android.launcher3.AppInfo;
 import com.android.launcher3.ButtonDropTarget;
-import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherSettings;
+import com.android.launcher3.model.data.AppInfo;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.userevent.nano.LauncherLogExtensions.TargetExtension;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ItemType;

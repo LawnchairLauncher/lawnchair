@@ -35,7 +35,7 @@ final class BackGestureTutorialEngagedController extends BackGestureTutorialCont
     @Override
     void transitToController() {
         super.transitToController();
-        mHandCoachingAnimation.maybeStartLoopedAnimation(mTutorialTypeInfo.get().getTutorialType());
+        mHandCoachingAnimation.startLoopedAnimation(mTutorialTypeInfo.get().getTutorialType());
     }
 
     @Override
