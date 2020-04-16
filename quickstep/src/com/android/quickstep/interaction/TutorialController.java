@@ -82,6 +82,8 @@ abstract class TutorialController {
 
     void onActionButtonClicked(View button) {}
 
+    void onActionTextButtonClicked(View button) {}
+
     void hideHandCoachingAnimation() {
         mHandCoachingAnimation.stop();
     }
@@ -112,7 +114,8 @@ abstract class TutorialController {
 
     private void updateActionButtons() {
         updateButton(mActionButton, getActionButtonStringId(), this::onActionButtonClicked);
-        updateButton(mActionTextButton, getActionTextButtonStringId(), this::onActionButtonClicked);
+        updateButton(
+                mActionTextButton, getActionTextButtonStringId(), this::onActionTextButtonClicked);
     }
 
     private void updateButton(Button button, @Nullable Integer stringId, OnClickListener listener) {
@@ -131,5 +134,7 @@ abstract class TutorialController {
         RIGHT_EDGE_BACK_NAVIGATION,
         LEFT_EDGE_BACK_NAVIGATION,
         BACK_NAVIGATION_COMPLETE,
+        HOME_NAVIGATION,
+        HOME_NAVIGATION_COMPLETE
     }
 }

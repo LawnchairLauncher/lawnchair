@@ -15,11 +15,12 @@
  */
 package com.android.quickstep.interaction;
 
+import static com.android.quickstep.interaction.TutorialFragment.KEY_TUTORIAL_TYPE;
+
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.Window;
@@ -44,13 +45,7 @@ public class GestureSandboxActivity extends FragmentActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.gesture_tutorial_activity);
 
-        try {
-            mFragment = TutorialFragment.newInstance(BackGestureTutorialFragment.class,
-                    TutorialType.RIGHT_EDGE_BACK_NAVIGATION);
-        } catch (InstantiationException | IllegalAccessException e) {
-            Log.wtf(LOG_TAG, "Failed to create tutorial fragment!", e);
-            mFragment = new BackGestureTutorialFragment();
-        }
+        mFragment = TutorialFragment.newInstance(getTutorialType(getIntent().getExtras()));
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.gesture_tutorial_fragment_container, mFragment)
                 .commit();
@@ -74,6 +69,19 @@ public class GestureSandboxActivity extends FragmentActivity {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
             hideSystemUI();
+        }
+    }
+
+    private TutorialType getTutorialType(Bundle extras) {
+        TutorialType defaultType = TutorialType.RIGHT_EDGE_BACK_NAVIGATION;
+
+        if (extras == null || !extras.containsKey(KEY_TUTORIAL_TYPE)) {
+            return defaultType;
+        }
+        try {
+            return TutorialType.valueOf(extras.getString(KEY_TUTORIAL_TYPE, ""));
+        } catch (IllegalArgumentException e) {
+            return defaultType;
         }
     }
 
