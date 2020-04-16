@@ -334,6 +334,7 @@ public class SystemUiProxy implements ISystemUiProxy {
         }
     }
 
+    @Override
     public void onQuickSwitchToNewTask(int rotation) {
         if (mSystemUiProxy != null) {
             try {

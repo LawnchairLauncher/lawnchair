@@ -35,14 +35,14 @@ import android.widget.Advanceable;
 import android.widget.RemoteViews;
 
 import com.android.launcher3.CheckLongPressHelper;
-import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DraggableView;
+import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.BaseDragLayer.TouchCompleteListener;
@@ -365,10 +365,9 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
 
     @Override
     public void getVisualDragBounds(Rect bounds) {
-        int x = (int) (1 - getScaleToFit()) * getMeasuredWidth() / 2;
-        int y = (int) (1 - getScaleToFit()) * getMeasuredWidth() / 2;
-        int width = (int) getScaleToFit() * getMeasuredWidth();
-        int height = (int) getScaleToFit() * getMeasuredHeight();
-        bounds.set(x, y , x + width, y + height);
+        int width = (int) (getMeasuredWidth() * mScaleToFit);
+        int height = (int) (getMeasuredHeight() * mScaleToFit);
+
+        bounds.set(0, 0 , width, height);
     }
 }

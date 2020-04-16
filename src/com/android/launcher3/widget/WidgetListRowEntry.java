@@ -15,9 +15,9 @@
  */
 package com.android.launcher3.widget;
 
-import com.android.launcher3.ItemInfo;
-import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.model.WidgetItem;
+import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.PackageItemInfo;
 
 import java.util.ArrayList;
 
