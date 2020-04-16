@@ -78,8 +78,7 @@ abstract class TutorialFragment extends Fragment {
             @NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        mRootView = inflater.inflate(R.layout.gesture_tutorial_fragment,
-                container, /* attachToRoot= */ false);
+        mRootView = inflater.inflate(R.layout.gesture_tutorial_fragment, container, false);
         mRootView.setOnApplyWindowInsetsListener((view, insets) -> {
             Insets systemInsets = insets.getInsets(WindowInsets.Type.systemBars());
             mEdgeBackGestureHandler.setInsets(systemInsets.left, systemInsets.right);

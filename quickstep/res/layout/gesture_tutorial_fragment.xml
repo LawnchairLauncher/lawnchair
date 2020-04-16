@@ -58,7 +58,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginStart="@dimen/gesture_tutorial_title_margin_start_end"
                 android:layout_marginEnd="@dimen/gesture_tutorial_title_margin_start_end"
-                style="@style/TextAppearance.BackGestureTutorial.Title"/>
+                style="@style/TextAppearance.GestureTutorial.Title"/>
 
             <TextView
                 android:id="@+id/gesture_tutorial_fragment_subtitle_view"
@@ -68,7 +68,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginStart="@dimen/gesture_tutorial_subtitle_margin_start_end"
                 android:layout_marginEnd="@dimen/gesture_tutorial_subtitle_margin_start_end"
-                style="@style/TextAppearance.BackGestureTutorial.Subtitle"/>
+                style="@style/TextAppearance.GestureTutorial.Subtitle"/>
 
         </LinearLayout>
 
@@ -99,7 +99,7 @@
                 android:stateListAnimator="@null"
                 android:background="@drawable/gesture_tutorial_action_button_background"
                 android:foreground="?android:attr/selectableItemBackgroundBorderless"
-                style="@style/TextAppearance.BackGestureTutorial.ButtonLabel"/>
+                style="@style/TextAppearance.GestureTutorial.ButtonLabel"/>
 
             <Button
                 android:id="@+id/gesture_tutorial_fragment_action_text_button"
@@ -110,7 +110,7 @@
                 android:stateListAnimator="@null"
                 android:background="@null"
                 android:foreground="?android:attr/selectableItemBackgroundBorderless"
-                style="@style/TextAppearance.BackGestureTutorial.TextButtonLabel"/>
+                style="@style/TextAppearance.GestureTutorial.TextButtonLabel"/>
 
         </RelativeLayout>
     </LinearLayout>
