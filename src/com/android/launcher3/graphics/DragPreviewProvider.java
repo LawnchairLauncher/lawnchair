@@ -92,6 +92,8 @@ public class DragPreviewProvider {
     public Bitmap createDragBitmap() {
         int width = 0;
         int height = 0;
+        // Assume scaleX == scaleY, which is always the case for workspace items.
+        float scale = mView.getScaleX();
         if (mView instanceof DraggableView) {
             ((DraggableView) mView).getVisualDragBounds(mTempRect);
             width = mTempRect.width();
@@ -102,7 +104,7 @@ public class DragPreviewProvider {
         }
 
         return BitmapRenderer.createHardwareBitmap(width + blurSizeOutline,
-                height + blurSizeOutline, (c) -> drawDragView(c, 1));
+                height + blurSizeOutline, (c) -> drawDragView(c, scale));
     }
 
     public final void generateDragOutline(Bitmap preview) {

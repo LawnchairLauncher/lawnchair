@@ -15,8 +15,8 @@
  */
 package com.android.launcher3.uioverrides.states;
 
-import static com.android.launcher3.allapps.DiscoveryBounce.HOME_BOUNCE_SEEN;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
+import static com.android.launcher3.util.OnboardingPrefs.HOME_BOUNCE_SEEN;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;

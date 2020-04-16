@@ -65,11 +65,11 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public void getCurveProperties(PagedView view, Rect mInsets, CurveProperties out) {
+    public void getCurveProperties(PagedView view, Rect insets, CurveProperties out) {
         out.scroll = view.getScrollY();
         out.halfPageSize = view.getNormalChildHeight() / 2;
         out.halfScreenSize = view.getMeasuredHeight() / 2;
-        out.screenCenter = mInsets.top + view.getPaddingTop() + out.scroll + out.halfPageSize;
+        out.screenCenter = insets.top + view.getPaddingTop() + out.scroll + out.halfPageSize;
     }
 
     @Override
@@ -157,11 +157,6 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public float getViewCenterPosition(View view) {
-        return view.getTop() + view.getTranslationY();
-    }
-
-    @Override
     public int getPrimaryScroll(View view) {
         return view.getScrollY();
     }
@@ -202,6 +197,11 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     @Override
     public int getChildStart(View view) {
         return view.getTop();
+    }
+
+    @Override
+    public float getChildStartWithTranslation(View view) {
+        return view.getTop() + view.getTranslationY();
     }
 
     @Override

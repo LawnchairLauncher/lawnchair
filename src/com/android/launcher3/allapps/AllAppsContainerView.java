@@ -42,7 +42,6 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.launcher3.AppInfo;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
@@ -50,10 +49,11 @@ import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.InsettableFrameLayout;
-import com.android.launcher3.ItemInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.keyboard.FocusedItemDecorator;
+import com.android.launcher3.model.data.AppInfo;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
@@ -645,8 +645,8 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             if (!mIsWork || recyclerView == null) return;
             boolean workDisabled = UserCache.INSTANCE.get(mLauncher).isAnyProfileQuietModeEnabled();
             if (mWorkDisabled == workDisabled) return;
-            recyclerView.setContentDescription(
-                    workDisabled ? mLauncher.getString(R.string.work_apps_paused_title) : null);
+            recyclerView.setContentDescription(workDisabled ? mLauncher.getString(
+                    R.string.work_apps_paused_content_description) : null);
             View overlayView = getOverlayView();
             recyclerView.setItemAnimator(new DefaultItemAnimator());
             if (workDisabled) {

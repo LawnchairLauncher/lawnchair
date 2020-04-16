@@ -350,7 +350,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         mWidgetView.requestLayout();
     }
 
-    static void updateWidgetSizeRanges(AppWidgetHostView widgetView, Launcher launcher,
+    public static void updateWidgetSizeRanges(AppWidgetHostView widgetView, Launcher launcher,
             int spanX, int spanY) {
         getWidgetSizeRanges(launcher, spanX, spanY, sTmpRect);
         widgetView.updateAppWidgetSize(null, sTmpRect.left, sTmpRect.top,

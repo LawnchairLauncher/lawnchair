@@ -30,8 +30,8 @@ import android.os.Parcelable;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.icons.ShortcutCachingLogic;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
 
 public class PinRequestHelper {
 
