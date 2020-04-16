@@ -32,16 +32,21 @@ import com.android.quickstep.interaction.NavBarGestureHandler.NavBarGestureAttem
 abstract class TutorialController implements BackGestureAttemptCallback,
         NavBarGestureAttemptCallback {
 
+    private static final int FEEDBACK_VISIBLE_MS = 3000;
+    private static final int FEEDBACK_ANIMATION_MS = 500;
+
     final TutorialFragment mTutorialFragment;
-    final TutorialType mTutorialType;
+    TutorialType mTutorialType;
 
     final ImageButton mCloseButton;
     final TextView mTitleTextView;
     final TextView mSubtitleTextView;
+    final TextView mFeedbackView;
     final TutorialHandAnimation mHandCoachingAnimation;
     final ImageView mHandCoachingView;
     final Button mActionTextButton;
     final Button mActionButton;
+    private final Runnable mHideFeedbackRunnable;
 
     TutorialController(TutorialFragment tutorialFragment, TutorialType tutorialType) {
         mTutorialFragment = tutorialFragment;
@@ -52,12 +57,21 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         mCloseButton.setOnClickListener(button -> mTutorialFragment.closeTutorial());
         mTitleTextView = rootView.findViewById(R.id.gesture_tutorial_fragment_title_view);
         mSubtitleTextView = rootView.findViewById(R.id.gesture_tutorial_fragment_subtitle_view);
+        mFeedbackView = rootView.findViewById(R.id.gesture_tutorial_fragment_feedback_view);
         mHandCoachingAnimation = tutorialFragment.getHandAnimation();
         mHandCoachingView = rootView.findViewById(R.id.gesture_tutorial_fragment_hand_coaching);
         mHandCoachingView.bringToFront();
         mActionTextButton =
                 rootView.findViewById(R.id.gesture_tutorial_fragment_action_text_button);
         mActionButton = rootView.findViewById(R.id.gesture_tutorial_fragment_action_button);
+
+        mHideFeedbackRunnable =
+                () -> mFeedbackView.animate().alpha(0).setDuration(FEEDBACK_ANIMATION_MS)
+                        .withEndAction(this::showHandCoachingAnimation).start();
+    }
+
+    void setTutorialType(TutorialType tutorialType) {
+        mTutorialType = tutorialType;
     }
 
     @Nullable
@@ -80,9 +94,28 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         return null;
     }
 
+    void showFeedback(int resId) {
+        hideHandCoachingAnimation();
+        mFeedbackView.setText(resId);
+        mFeedbackView.animate().alpha(1).setDuration(FEEDBACK_ANIMATION_MS).start();
+        mFeedbackView.removeCallbacks(mHideFeedbackRunnable);
+        mFeedbackView.postDelayed(mHideFeedbackRunnable, FEEDBACK_VISIBLE_MS);
+    }
+
+    void hideFeedback() {
+        mFeedbackView.setText(null);
+        mFeedbackView.removeCallbacks(mHideFeedbackRunnable);
+        mFeedbackView.clearAnimation();
+        mFeedbackView.setAlpha(0);
+    }
+
     void onActionButtonClicked(View button) {}
 
     void onActionTextButtonClicked(View button) {}
+
+    void showHandCoachingAnimation() {
+        mHandCoachingAnimation.startLoopedAnimation(mTutorialType);
+    }
 
     void hideHandCoachingAnimation() {
         mHandCoachingAnimation.stop();
@@ -91,6 +124,7 @@ abstract class TutorialController implements BackGestureAttemptCallback,
 
     @CallSuper
     void transitToController() {
+        hideFeedback();
         updateTitles();
         updateActionButtons();
     }

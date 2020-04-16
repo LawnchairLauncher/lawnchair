@@ -29,4 +29,9 @@ public class BackGestureTutorialFragment extends TutorialFragment {
     TutorialController createController(TutorialType type) {
         return new BackGestureTutorialController(this, type);
     }
+
+    @Override
+    Class<? extends TutorialController> getControllerClass() {
+        return BackGestureTutorialController.class;
+    }
 }

@@ -86,6 +86,8 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
 
     abstract TutorialController createController(TutorialType type);
 
+    abstract Class<? extends TutorialController> getControllerClass();
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -147,7 +149,11 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
     }
 
     void changeController(TutorialType tutorialType) {
-        mTutorialController = createController(tutorialType);
+        if (getControllerClass().isInstance(mTutorialController)) {
+            mTutorialController.setTutorialType(tutorialType);
+        } else {
+            mTutorialController = createController(tutorialType);
+        }
         mTutorialController.transitToController();
         mEdgeBackGestureHandler.registerBackGestureAttemptCallback(mTutorialController);
         mNavBarGestureHandler.registerNavBarGestureAttemptCallback(mTutorialController);
