@@ -43,11 +43,11 @@ import com.android.launcher3.provider.RestoreDbTask;
 import com.android.launcher3.shadows.LShadowBackupManager;
 import com.android.launcher3.shadows.LShadowUserManager;
 import com.android.launcher3.util.LauncherModelHelper;
-import com.android.launcher3.util.LauncherRoboTestRunner;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.LooperMode;
 import org.robolectric.shadow.api.Shadow;
@@ -55,7 +55,7 @@ import org.robolectric.shadow.api.Shadow;
 /**
  * Tests to verify backup and restore flow.
  */
-@RunWith(LauncherRoboTestRunner.class)
+@RunWith(RobolectricTestRunner.class)
 @LooperMode(LooperMode.Mode.PAUSED)
 public class BackupRestoreTest {
 

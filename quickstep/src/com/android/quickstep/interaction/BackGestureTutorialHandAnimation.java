@@ -38,8 +38,6 @@ final class BackGestureTutorialHandAnimation {
     private final ImageView mHandCoachingView;
     private final AnimatedVectorDrawable mGestureAnimation;
 
-    private boolean mIsAnimationPlayed = false;
-
     BackGestureTutorialHandAnimation(Context context, View rootView) {
         mHandCoachingView = rootView.findViewById(
                 R.id.back_gesture_tutorial_fragment_hand_coaching);
@@ -47,20 +45,15 @@ final class BackGestureTutorialHandAnimation {
                 R.drawable.back_gesture);
     }
 
-    boolean isRunning() {
-        return mGestureAnimation.isRunning();
-    }
-
     /**
-     * Starts animation if the playground is launched for the first time.
+     * [Re]starts animation for the given tutorial.
      */
-    void maybeStartLoopedAnimation(TutorialType tutorialType) {
-        if (isRunning() || mIsAnimationPlayed) {
-            return;
+    void startLoopedAnimation(TutorialType tutorialType) {
+        if (mGestureAnimation.isRunning()) {
+            stop();
         }
 
-        mIsAnimationPlayed = true;
-        clearAnimationCallbacks();
+        mGestureAnimation.clearAnimationCallbacks();
         mGestureAnimation.registerAnimationCallback(
                 new Animatable2.AnimationCallback() {
                     @Override
@@ -78,17 +71,11 @@ final class BackGestureTutorialHandAnimation {
         float rotationY = tutorialType == TutorialType.LEFT_EDGE_BACK_NAVIGATION ? 180f : 0f;
         mHandCoachingView.setRotationY(rotationY);
         mHandCoachingView.setImageDrawable(mGestureAnimation);
-        mHandCoachingView.postDelayed(() -> mGestureAnimation.start(),
-                ANIMATION_START_DELAY.toMillis());
-    }
-
-    private void clearAnimationCallbacks() {
-        mGestureAnimation.clearAnimationCallbacks();
+        mHandCoachingView.postDelayed(mGestureAnimation::start, ANIMATION_START_DELAY.toMillis());
     }
 
     void stop() {
-        mIsAnimationPlayed = false;
-        clearAnimationCallbacks();
+        mGestureAnimation.clearAnimationCallbacks();
         mGestureAnimation.stop();
     }
 }

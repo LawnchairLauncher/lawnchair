@@ -27,20 +27,20 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
-import com.android.launcher3.FolderInfo;
-import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetHost;
-import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherProvider;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.LauncherSettings.Settings;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.FileLog;
+import com.android.launcher3.model.data.FolderInfo;
+import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.LauncherAppWidgetInfo;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.ItemInfoMatcher;
 

@@ -91,9 +91,6 @@ public class RecentsAnimationCallbacks implements
             RemoteAnimationTargetCompat[] appTargets,
             RemoteAnimationTargetCompat[] wallpaperTargets,
             Rect homeContentInsets, Rect minimizedHomeBounds) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_START_FROM_RECENTS, "onAnimationStart");
-        }
         RecentsAnimationTargets targets = new RecentsAnimationTargets(appTargets,
                 wallpaperTargets, homeContentInsets, minimizedHomeBounds);
         mController = new RecentsAnimationController(animationController,

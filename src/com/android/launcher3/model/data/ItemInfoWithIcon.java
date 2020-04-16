@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.launcher3;
+package com.android.launcher3.model.data;
 
 import com.android.launcher3.icons.BitmapInfo;
 
@@ -60,9 +60,9 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
      */
     public static final int FLAG_DISABLED_LOCKED_USER = 1 << 5;
 
-    public static final int FLAG_DISABLED_MASK = FLAG_DISABLED_SAFEMODE |
-            FLAG_DISABLED_NOT_AVAILABLE | FLAG_DISABLED_SUSPENDED |
-            FLAG_DISABLED_QUIET_USER | FLAG_DISABLED_BY_PUBLISHER | FLAG_DISABLED_LOCKED_USER;
+    public static final int FLAG_DISABLED_MASK = FLAG_DISABLED_SAFEMODE
+            | FLAG_DISABLED_NOT_AVAILABLE | FLAG_DISABLED_SUSPENDED
+            | FLAG_DISABLED_QUIET_USER | FLAG_DISABLED_BY_PUBLISHER | FLAG_DISABLED_LOCKED_USER;
 
     /**
      * The item points to a system app.
