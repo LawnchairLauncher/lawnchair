@@ -164,6 +164,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     @Thunk final ArrayList<View> mItemsInReadingOrder = new ArrayList<View>();
 
     private AnimatorSet mCurrentAnimator;
+    private boolean mIsAnimatingClosed = false;
 
     protected final Launcher mLauncher;
     protected DragController mDragController;
@@ -729,15 +730,24 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     }
 
     private void animateClosed() {
+        if (mIsAnimatingClosed) {
+            return;
+        }
         if (mCurrentAnimator != null && mCurrentAnimator.isRunning()) {
             mCurrentAnimator.cancel();
         }
         AnimatorSet a = new FolderAnimationManager(this, false /* isOpening */).getAnimator();
         a.addListener(new AnimatorListenerAdapter() {
             @Override
+            public void onAnimationStart(Animator animation) {
+                mIsAnimatingClosed = true;
+            }
+
+            @Override
             public void onAnimationEnd(Animator animation) {
                 closeComplete(true);
                 announceAccessibilityChanges();
+                mIsAnimatingClosed = false;
             }
         });
         startAnimation(a);
