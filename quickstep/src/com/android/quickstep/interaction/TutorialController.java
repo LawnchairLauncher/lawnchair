@@ -15,6 +15,7 @@
  */
 package com.android.quickstep.interaction;
 
+import android.graphics.drawable.RippleDrawable;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -34,6 +35,7 @@ abstract class TutorialController implements BackGestureAttemptCallback,
 
     private static final int FEEDBACK_VISIBLE_MS = 3000;
     private static final int FEEDBACK_ANIMATION_MS = 500;
+    private static final int RIPPLE_VISIBLE_MS = 300;
 
     final TutorialFragment mTutorialFragment;
     TutorialType mTutorialType;
@@ -42,6 +44,8 @@ abstract class TutorialController implements BackGestureAttemptCallback,
     final TextView mTitleTextView;
     final TextView mSubtitleTextView;
     final TextView mFeedbackView;
+    final View mRippleView;
+    final RippleDrawable mRippleDrawable;
     final TutorialHandAnimation mHandCoachingAnimation;
     final ImageView mHandCoachingView;
     final Button mActionTextButton;
@@ -58,6 +62,8 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         mTitleTextView = rootView.findViewById(R.id.gesture_tutorial_fragment_title_view);
         mSubtitleTextView = rootView.findViewById(R.id.gesture_tutorial_fragment_subtitle_view);
         mFeedbackView = rootView.findViewById(R.id.gesture_tutorial_fragment_feedback_view);
+        mRippleView = rootView.findViewById(R.id.gesture_tutorial_ripple_view);
+        mRippleDrawable = (RippleDrawable) mRippleView.getBackground();
         mHandCoachingAnimation = tutorialFragment.getHandAnimation();
         mHandCoachingView = rootView.findViewById(R.id.gesture_tutorial_fragment_hand_coaching);
         mHandCoachingView.bringToFront();
@@ -107,6 +113,21 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         mFeedbackView.removeCallbacks(mHideFeedbackRunnable);
         mFeedbackView.clearAnimation();
         mFeedbackView.setAlpha(0);
+    }
+
+    void setRippleHotspot(float x, float y) {
+        mRippleDrawable.setHotspot(x, y);
+    }
+
+    void showRippleEffect(@Nullable Runnable onCompleteRunnable) {
+        mRippleDrawable.setState(
+                new int[] {android.R.attr.state_pressed, android.R.attr.state_enabled});
+        mRippleView.postDelayed(() -> {
+            mRippleDrawable.setState(new int[] {});
+            if (onCompleteRunnable != null) {
+                onCompleteRunnable.run();
+            }
+        }, RIPPLE_VISIBLE_MS);
     }
 
     void onActionButtonClicked(View button) {}

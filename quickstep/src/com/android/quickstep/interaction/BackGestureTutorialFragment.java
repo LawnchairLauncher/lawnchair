@@ -15,6 +15,9 @@
  */
 package com.android.quickstep.interaction;
 
+import android.view.MotionEvent;
+import android.view.View;
+
 import com.android.launcher3.R;
 import com.android.quickstep.interaction.TutorialController.TutorialType;
 
@@ -33,5 +36,13 @@ public class BackGestureTutorialFragment extends TutorialFragment {
     @Override
     Class<? extends TutorialController> getControllerClass() {
         return BackGestureTutorialController.class;
+    }
+
+    @Override
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN && mTutorialController != null) {
+            mTutorialController.setRippleHotspot(motionEvent.getX(), motionEvent.getY());
+        }
+        return super.onTouch(view, motionEvent);
     }
 }

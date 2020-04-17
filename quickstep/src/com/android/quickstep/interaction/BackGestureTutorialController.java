@@ -113,8 +113,10 @@ final class BackGestureTutorialController extends TutorialController {
     private void handleAttemptFromRight(BackGestureResult result) {
         switch (result) {
             case BACK_COMPLETED_FROM_RIGHT:
+                hideFeedback();
                 hideHandCoachingAnimation();
-                mTutorialFragment.changeController(LEFT_EDGE_BACK_NAVIGATION);
+                showRippleEffect(
+                        () -> mTutorialFragment.changeController(LEFT_EDGE_BACK_NAVIGATION));
                 break;
             case BACK_CANCELLED_FROM_RIGHT:
                 showFeedback(R.string.back_gesture_feedback_cancelled_right_edge);
@@ -133,8 +135,10 @@ final class BackGestureTutorialController extends TutorialController {
     private void handleAttemptFromLeft(BackGestureResult result) {
         switch (result) {
             case BACK_COMPLETED_FROM_LEFT:
+                hideFeedback();
                 hideHandCoachingAnimation();
-                mTutorialFragment.changeController(BACK_NAVIGATION_COMPLETE);
+                showRippleEffect(
+                        () -> mTutorialFragment.changeController(BACK_NAVIGATION_COMPLETE));
                 break;
             case BACK_CANCELLED_FROM_LEFT:
                 showFeedback(R.string.back_gesture_feedback_cancelled_left_edge);
