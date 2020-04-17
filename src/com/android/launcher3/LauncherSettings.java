@@ -22,6 +22,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.BaseColumns;
 
+import com.android.launcher3.model.data.ItemInfo;
+
 /**
  * Settings related utilities.
  */
@@ -151,7 +153,7 @@ public class LauncherSettings {
         public static final int CONTAINER_PREDICTION = -102;
         public static final int CONTAINER_HOTSEAT_PREDICTION = -103;
 
-        static final String containerToString(int container) {
+        public static final String containerToString(int container) {
             switch (container) {
                 case CONTAINER_DESKTOP: return "desktop";
                 case CONTAINER_HOTSEAT: return "hotseat";
@@ -160,7 +162,7 @@ public class LauncherSettings {
             }
         }
 
-        static final String itemTypeToString(int type) {
+        public static final String itemTypeToString(int type) {
             switch(type) {
                 case ITEM_TYPE_APPLICATION: return "APP";
                 case ITEM_TYPE_SHORTCUT: return "SHORTCUT";

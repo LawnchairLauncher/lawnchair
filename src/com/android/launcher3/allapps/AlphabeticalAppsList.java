@@ -18,8 +18,8 @@ package com.android.launcher3.allapps;
 
 import android.content.Context;
 
-import com.android.launcher3.AppInfo;
 import com.android.launcher3.BaseDraggingActivity;
+import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LabelComparator;

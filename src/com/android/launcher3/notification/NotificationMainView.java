@@ -34,10 +34,10 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimationSuccessListener;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.touch.BaseSwipeDetector;
 import com.android.launcher3.touch.OverScroll;
 import com.android.launcher3.touch.SingleAxisSwipeDetector;

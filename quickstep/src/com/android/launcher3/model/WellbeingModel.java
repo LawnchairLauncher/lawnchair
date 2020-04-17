@@ -45,8 +45,8 @@ import android.util.Log;
 import androidx.annotation.MainThread;
 
 import com.android.launcher3.BaseDraggingActivity;
-import com.android.launcher3.ItemInfo;
 import com.android.launcher3.R;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.popup.RemoteActionShortcut;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.util.MainThreadInitializedObject;

@@ -44,6 +44,7 @@ public class LogEventChecker {
 
     private static final String START_PREFIX = "START_READER ";
     private static final String FINISH_PREFIX = "FINISH_READER ";
+    private static final String SKIP_EVENTS_TAG = "b/153670015";
 
     private volatile CountDownLatch mFinished;
 
@@ -72,6 +73,7 @@ public class LogEventChecker {
             mFinished = null;
         }
         mEvents.clear();
+        Log.d(SKIP_EVENTS_TAG, "Cleared events");
         mExpectedEvents.clear();
         mEventsCounter.drainPermits();
         final String id = UUID.randomUUID().toString();
@@ -89,27 +91,30 @@ public class LogEventChecker {
 
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(
                     Runtime.getRuntime().exec(cmd).getInputStream()))) {
-                for (;;) {
+                for (; ; ) {
                     // Skip everything before the next start command.
-                    for (;;) {
+                    for (; ; ) {
                         final String event = reader.readLine();
                         if (event.contains(TestProtocol.TAPL_EVENTS_TAG)
                                 && event.contains(mStartCommand)) {
+                            Log.d(SKIP_EVENTS_TAG, "Read start: " + event);
                             break;
                         }
                     }
 
                     // Store all actual events until the finish command.
-                    for (;;) {
+                    for (; ; ) {
                         final String event = reader.readLine();
                         if (event.contains(TestProtocol.TAPL_EVENTS_TAG)) {
                             if (event.contains(mFinishCommand)) {
                                 mFinished.countDown();
+                                Log.d(SKIP_EVENTS_TAG, "Read finish: " + event);
                                 break;
                             } else {
                                 final Matcher matcher = EVENT_LOG_ENTRY.matcher(event);
                                 if (matcher.find()) {
                                     mEvents.add(matcher.group("sequence"), matcher.group("event"));
+                                    Log.d(SKIP_EVENTS_TAG, "Read event: " + event);
                                     mEventsCounter.release();
                                 }
                             }
@@ -154,6 +159,7 @@ public class LogEventChecker {
             String sequence = expectedEvents.getKey();
 
             List<String> actual = new ArrayList<>(mEvents.getNonNull(sequence));
+            Log.d(SKIP_EVENTS_TAG, "Verifying events");
             final int mismatchPosition = getMismatchPosition(expectedEvents.getValue(), actual);
             hasMismatches = hasMismatches || mismatchPosition != -1;
             formatSequenceWithMismatch(

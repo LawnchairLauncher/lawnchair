@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 
-package com.android.launcher3;
+package com.android.launcher3.model.data;
 
 import android.appwidget.AppWidgetHostView;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Process;
 
+import com.android.launcher3.AppWidgetResizeFrame;
+import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.logger.LauncherAtom;
-import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.util.ContentWriter;
 
 /**
@@ -154,7 +156,7 @@ public class LauncherAppWidgetInfo extends ItemInfo {
      * When we bind the widget, we should notify the widget that the size has changed if we have not
      * done so already (only really for default workspace widgets).
      */
-    void onBindAppWidget(Launcher launcher, AppWidgetHostView hostView) {
+    public void onBindAppWidget(Launcher launcher, AppWidgetHostView hostView) {
         if (!mHasNotifiedInitialWidgetSizeChanged) {
             AppWidgetResizeFrame.updateWidgetSizeRanges(hostView, launcher, spanX, spanY);
             mHasNotifiedInitialWidgetSizeChanged = true;
@@ -169,8 +171,8 @@ public class LauncherAppWidgetInfo extends ItemInfo {
     }
 
     public final boolean isWidgetIdAllocated() {
-        return (restoreStatus & FLAG_ID_NOT_VALID) == 0 ||
-                (restoreStatus & FLAG_ID_ALLOCATED) == FLAG_ID_ALLOCATED;
+        return (restoreStatus & FLAG_ID_NOT_VALID) == 0
+                || (restoreStatus & FLAG_ID_ALLOCATED) == FLAG_ID_ALLOCATED;
     }
 
     public final boolean hasRestoreFlag(int flag) {

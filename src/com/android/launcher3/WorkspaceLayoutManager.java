@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.touch.ItemLongClickListener;
 
 public interface WorkspaceLayoutManager {

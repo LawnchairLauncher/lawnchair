@@ -16,9 +16,9 @@
 package com.android.launcher3.model;
 
 import com.android.launcher3.InvariantDeviceProfile;
-import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.IntSet;
 
 import java.util.ArrayList;

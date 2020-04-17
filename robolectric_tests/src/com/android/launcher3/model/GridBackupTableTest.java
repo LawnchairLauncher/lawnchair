@@ -23,17 +23,17 @@ import android.graphics.Point;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.LauncherSettings.Settings;
 import com.android.launcher3.util.LauncherModelHelper;
-import com.android.launcher3.util.LauncherRoboTestRunner;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 
 /**
  * Unit tests for {@link GridBackupTable}
  */
-@RunWith(LauncherRoboTestRunner.class)
+@RunWith(RobolectricTestRunner.class)
 public class GridBackupTableTest {
 
     private static final int BACKUP_ITEM_COUNT = 12;
