@@ -499,7 +499,10 @@ public class TouchInteractionService extends Service implements PluginListener<O
             }
         }
 
-        ActiveGestureLog.INSTANCE.addLog("onMotionEvent", event.getActionMasked());
+        if (mUncheckedConsumer != InputConsumer.NO_OP) {
+            ActiveGestureLog.INSTANCE.addLog("onMotionEvent", event.getActionMasked());
+        }
+
         boolean cleanUpConsumer = (action == ACTION_UP || action == ACTION_CANCEL)
                 && mConsumer != null
                 && !mConsumer.getActiveConsumerInHierarchy().isConsumerDetachedFromGesture();
@@ -802,6 +805,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
             if (mGestureState != null) {
                 mGestureState.dump(pw);
             }
+            SysUINavigationMode.INSTANCE.get(this).dump(pw);
             pw.println("TouchState:");
             BaseDraggingActivity createdOverviewActivity = mOverviewComponentObserver == null ? null
                     : mOverviewComponentObserver.getActivityInterface().getCreatedActivity();
