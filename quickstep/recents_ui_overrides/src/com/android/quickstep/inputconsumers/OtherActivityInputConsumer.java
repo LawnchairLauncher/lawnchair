@@ -333,7 +333,8 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                 mTaskAnimationManager.isRecentsAnimationRunning(), isLikelyToStartNewTask);
         mInteractionHandler.setGestureEndCallback(this::onInteractionGestureFinished);
         mMotionPauseDetector.setOnMotionPauseListener(mInteractionHandler::onMotionPauseChanged);
-        mInteractionHandler.initWhenReady();
+        Intent intent = new Intent(mInteractionHandler.getLaunchIntent());
+        mInteractionHandler.initWhenReady(intent);
 
         if (mTaskAnimationManager.isRecentsAnimationRunning()) {
             mActiveCallbacks = mTaskAnimationManager.continueRecentsAnimation(mGestureState);
@@ -341,7 +342,6 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
             mTaskAnimationManager.notifyRecentsAnimationState(mInteractionHandler);
             notifyGestureStarted();
         } else {
-            Intent intent = mInteractionHandler.getLaunchIntent();
             intent.putExtra(INTENT_EXTRA_LOG_TRACE_ID, mGestureState.getGestureId());
             mActiveCallbacks = mTaskAnimationManager.startRecentsAnimation(mGestureState, intent,
                     mInteractionHandler);
