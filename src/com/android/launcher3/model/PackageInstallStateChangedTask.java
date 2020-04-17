@@ -19,13 +19,13 @@ import android.content.ComponentName;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 
-import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherModel.CallbackTask;
-import com.android.launcher3.PromiseAppInfo;
-import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.model.BgDataModel.Callbacks;
+import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.LauncherAppWidgetInfo;
+import com.android.launcher3.model.data.PromiseAppInfo;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pm.PackageInstallInfo;
 import com.android.launcher3.util.InstantAppResolver;
 

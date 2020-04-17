@@ -21,7 +21,7 @@ import android.util.Log;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.launcher3.icons.IconCache;
-import com.android.launcher3.model.PackageItemInfo;
+import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.widget.WidgetsListAdapter.WidgetListRowEntryComparator;
 
 import java.util.ArrayList;

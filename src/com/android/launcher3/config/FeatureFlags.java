@@ -92,8 +92,8 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_QUICKSTEP_LIVE_TILE = getDebugFlag(
             "ENABLE_QUICKSTEP_LIVE_TILE", false, "Enable live tile in Quickstep overview");
 
-    public static final BooleanFlag ENABLE_HINTS_IN_OVERVIEW = getDebugFlag(
-            "ENABLE_HINTS_IN_OVERVIEW", false, "Show chip hints and gleams on the overview screen");
+    public static final BooleanFlag ENABLE_SUGGESTED_ACTIONS_OVERVIEW = new DeviceFlag(
+            "ENABLE_SUGGESTED_ACTIONS_OVERVIEW", false, "Show chip hints on the overview screen");
 
     public static final BooleanFlag FOLDER_NAME_SUGGEST = new DeviceFlag(
             "FOLDER_NAME_SUGGEST", true,

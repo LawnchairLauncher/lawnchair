@@ -70,10 +70,10 @@ public interface InputConsumer {
     }
 
     /**
-     * Returns true if the given input consumer is in the hierarchy of this input consumer.
+     * Returns the active input consumer is in the hierarchy of this input consumer.
      */
-    default boolean isInConsumerHierarchy(InputConsumer candidate) {
-        return this == candidate;
+    default InputConsumer getActiveConsumerInHierarchy() {
+        return this;
     }
 
     /**
@@ -96,15 +96,15 @@ public interface InputConsumer {
     }
 
     default String getName() {
-        String name = "";
+        StringBuilder name = new StringBuilder();
         for (int i = 0; i < NAMES.length; i++) {
             if ((getType() & (1 << i)) != 0) {
                 if (name.length() > 0) {
-                    name += ":";
+                    name.append(":");
                 }
-                name += NAMES[i];
+                name.append(NAMES[i]);
             }
         }
-        return name;
+        return name.toString();
     }
 }

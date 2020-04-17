@@ -27,16 +27,16 @@ import android.view.View;
 import androidx.core.app.NotificationCompat;
 
 import com.android.launcher3.CellLayout;
-import com.android.launcher3.FolderInfo;
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.InvariantDeviceProfile;
-import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.Workspace;
-import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.model.data.FolderInfo;
+import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.ActivityTracker;
 import com.android.launcher3.util.GridOccupancy;
@@ -200,6 +200,7 @@ public class HotseatEduController {
             pageId = LauncherSettings.Settings.call(mLauncher.getContentResolver(),
                     LauncherSettings.Settings.METHOD_NEW_SCREEN_ID)
                     .getInt(LauncherSettings.Settings.EXTRA_VALUE);
+            mNewScreens = IntArray.wrap(pageId);
         }
         for (int i = 0; i < mLauncher.getDeviceProfile().inv.numHotseatIcons; i++) {
             View child = mHotseat.getChildAt(i, 0);

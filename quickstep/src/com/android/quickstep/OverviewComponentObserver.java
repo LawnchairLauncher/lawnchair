@@ -40,6 +40,7 @@ import com.android.systemui.shared.system.PackageManagerWrapper;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 /**
  * Class to keep track of the current overview component based off user preferences and app updates
@@ -57,6 +58,9 @@ public final class OverviewComponentObserver {
     private final Intent mMyHomeIntent;
     private final Intent mFallbackIntent;
     private final SparseIntArray mConfigChangesMap = new SparseIntArray();
+
+    private Consumer<Boolean> mOverviewChangeListener = b -> { };
+
     private String mUpdateRegisteredPackage;
     private BaseActivityInterface mActivityInterface;
     private Intent mOverviewIntent;
@@ -64,10 +68,10 @@ public final class OverviewComponentObserver {
     private boolean mIsDefaultHome;
     private boolean mIsHomeDisabled;
 
+
     public OverviewComponentObserver(Context context, RecentsAnimationDeviceState deviceState) {
         mContext = context;
         mDeviceState = deviceState;
-
         mCurrentHomeIntent = new Intent(Intent.ACTION_MAIN)
                 .addCategory(Intent.CATEGORY_HOME)
                 .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -93,6 +97,13 @@ public final class OverviewComponentObserver {
         mContext.registerReceiver(mUserPreferenceChangeReceiver,
                 new IntentFilter(ACTION_PREFERRED_ACTIVITY_CHANGED));
         updateOverviewTargets();
+    }
+
+    /**
+     * Sets a listener for changes in {@link #isHomeAndOverviewSame()}
+     */
+    public void setOverviewChangeListener(Consumer<Boolean> overviewChangeListener) {
+        mOverviewChangeListener = overviewChangeListener;
     }
 
     public void onSystemUiStateChanged() {
@@ -159,6 +170,7 @@ public final class OverviewComponentObserver {
                         ACTION_PACKAGE_REMOVED));
             }
         }
+        mOverviewChangeListener.accept(mIsHomeAndOverviewSame);
     }
 
     /**
