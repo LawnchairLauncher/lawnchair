@@ -25,13 +25,11 @@ public abstract class DelegateInputConsumer implements InputConsumer {
     }
 
     @Override
-    public boolean isConsumerDetachedFromGesture() {
-        return mDelegate.isConsumerDetachedFromGesture();
-    }
-
-    @Override
-    public boolean isInConsumerHierarchy(InputConsumer candidate) {
-        return this == candidate || mDelegate.isInConsumerHierarchy(candidate);
+    public InputConsumer getActiveConsumerInHierarchy() {
+        if (mState == STATE_ACTIVE) {
+            return this;
+        }
+        return mDelegate.getActiveConsumerInHierarchy();
     }
 
     @Override

@@ -38,13 +38,14 @@ import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 import androidx.annotation.WorkerThread;
 
-import com.android.launcher3.AppInfo;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.icons.IconCache;
+import com.android.launcher3.model.data.AppInfo;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.shortcuts.ShortcutRequest;
+import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.InstantAppResolver;
 
 import java.util.ArrayList;
@@ -76,7 +77,7 @@ public class DynamicItemCache {
     private final Runnable mOnUpdateCallback;
     private final IconCache mIconCache;
 
-    private final Map<ShortcutKey, WorkspaceItemInfo> mShortcuts;
+    private final Map<ComponentKey, WorkspaceItemInfo> mShortcuts;
     private final Map<String, InstantAppItemInfo> mInstantApps;
 
     public DynamicItemCache(Context context, Runnable onUpdateCallback) {
@@ -230,7 +231,7 @@ public class DynamicItemCache {
     }
 
     @MainThread
-    public WorkspaceItemInfo getShortcutInfo(ShortcutKey key) {
+    public WorkspaceItemInfo getShortcutInfo(ComponentKey key) {
         return mShortcuts.get(key);
     }
 

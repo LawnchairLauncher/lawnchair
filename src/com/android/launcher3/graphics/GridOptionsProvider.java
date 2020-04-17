@@ -20,7 +20,6 @@ import android.util.Xml;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile.GridOption;
 import com.android.launcher3.R;
-import com.android.launcher3.uioverrides.PreviewSurfaceRenderer;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -201,12 +200,11 @@ public class GridOptionsProvider extends ContentProvider {
     }
 
     @Override
-    public Bundle call(String method, String arg, Bundle extras)  {
+    public Bundle call(String method, String arg, Bundle extras) {
         if (!METHOD_GET_PREVIEW.equals(method)) {
             return null;
         }
 
-        PreviewSurfaceRenderer.render(getContext(), extras);
-        return null;
+        return new PreviewSurfaceRenderer(getContext(), extras).render();
     }
 }
