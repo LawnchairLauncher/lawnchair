@@ -65,11 +65,11 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public void getCurveProperties(PagedView view, Rect mInsets, CurveProperties out) {
+    public void getCurveProperties(PagedView view, Rect insets, CurveProperties out) {
         out.scroll = view.getScrollX();
         out.halfPageSize = view.getNormalChildWidth() / 2;
         out.halfScreenSize = view.getMeasuredWidth() / 2;
-        out.screenCenter = mInsets.left + view.getPaddingLeft() + out.scroll + out.halfPageSize;
+        out.screenCenter = insets.left + view.getPaddingLeft() + out.scroll + out.halfPageSize;
     }
 
     @Override
@@ -155,11 +155,6 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public float getViewCenterPosition(View view) {
-        return view.getLeft() + view.getTranslationX();
-    }
-
-    @Override
     public int getPrimaryScroll(View view) {
         return view.getScrollX();
     }
@@ -200,6 +195,11 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     @Override
     public int getChildStart(View view) {
         return view.getLeft();
+    }
+
+    @Override
+    public float getChildStartWithTranslation(View view) {
+        return view.getLeft() + view.getTranslationX();
     }
 
     @Override

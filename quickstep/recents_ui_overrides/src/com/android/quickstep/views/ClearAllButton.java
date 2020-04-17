@@ -78,21 +78,6 @@ public class ClearAllButton extends Button implements PageCallbacks {
         }
     }
 
-    public void onLayoutChanged() {
-        if (mParent == null) {
-            return;
-        }
-        setRotation(mParent.getPagedOrientationHandler().getDegreesRotated());
-    }
-
-    public void setRtl(boolean rtl) {
-        if (mIsRtl == rtl) {
-            return;
-        }
-        mIsRtl = rtl;
-        invalidate();
-    }
-
     public void setVisibilityAlpha(float alpha) {
         if (mVisibilityAlpha != alpha) {
             mVisibilityAlpha = alpha;

@@ -22,6 +22,8 @@ import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_POINTER_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
 
+import static com.android.quickstep.util.RecentsOrientedState.postDisplayRotation;
+
 import android.content.res.Resources;
 import android.graphics.Matrix;
 import android.graphics.Point;
@@ -33,8 +35,8 @@ import android.view.Surface;
 
 import com.android.launcher3.R;
 import com.android.launcher3.ResourceUtils;
-import com.android.launcher3.states.RotationHelper;
 import com.android.launcher3.util.DefaultDisplay;
+import com.android.quickstep.util.RecentsOrientedState.SurfaceRotation;
 
 import java.io.PrintWriter;
 
@@ -52,21 +54,37 @@ class OrientationTouchTransformer {
     private static final boolean DEBUG = false;
     private static final int MAX_ORIENTATIONS = 4;
 
+    private final Matrix mTmpMatrix = new Matrix();
+    private final float[] mTmpPoint = new float[2];
+
     private SparseArray<OrientationRectF> mSwipeTouchRegions = new SparseArray<>(MAX_ORIENTATIONS);
     private final RectF mAssistantLeftRegion = new RectF();
     private final RectF mAssistantRightRegion = new RectF();
-    private int mCurrentRotation;
+    private int mCurrentDisplayRotation;
     private boolean mEnableMultipleRegions;
     private Resources mResources;
     private OrientationRectF mLastRectTouched;
     private SysUINavigationMode.Mode mMode;
     private QuickStepContractInfo mContractInfo;
+
+    /**
+     * Represents if we're currently in a swipe "session" of sorts. If value is -1, then user
+     * has not tapped on an active nav region. Otherwise it will be the rotation of the display
+     * when the user first interacted with the active nav bar region.
+     * The "session" ends when {@link #enableMultipleRegions(boolean, DefaultDisplay.Info)} is
+     * called - usually from a timeout or if user starts interacting w/ the foreground app.
+     *
+     * This is different than {@link #mLastRectTouched} as it can get reset by the system whereas
+     * the rect is purely used for tracking touch interactions and usually this "session" will
+     * outlast the touch interaction.
+     */
     private int mQuickStepStartingRotation = -1;
 
     /** For testability */
     interface QuickStepContractInfo {
         float getWindowCornerRadius();
     }
+
 
     OrientationTouchTransformer(Resources resources, SysUINavigationMode.Mode mode,
             QuickStepContractInfo contractInfo) {
@@ -92,20 +110,21 @@ class OrientationTouchTransformer {
      * @see #enableMultipleRegions(boolean, DefaultDisplay.Info)
      */
     void createOrAddTouchRegion(DefaultDisplay.Info info) {
-        mCurrentRotation = info.rotation;
-        if (mQuickStepStartingRotation > -1 && mCurrentRotation == mQuickStepStartingRotation) {
-            // Ignore nav bars in other rotations except for the one we started out in
+        mCurrentDisplayRotation = info.rotation;
+        if (mQuickStepStartingRotation > -1
+                && mCurrentDisplayRotation == mQuickStepStartingRotation) {
+            // User already was swiping and the current screen is same rotation as the starting one
+            // Remove active nav bars in other rotations except for the one we started out in
             resetSwipeRegions(info);
             return;
         }
-
-        OrientationRectF region = mSwipeTouchRegions.get(mCurrentRotation);
+        OrientationRectF region = mSwipeTouchRegions.get(mCurrentDisplayRotation);
         if (region != null) {
             return;
         }
 
         if (mEnableMultipleRegions) {
-            mSwipeTouchRegions.put(mCurrentRotation, createRegionForDisplay(info));
+            mSwipeTouchRegions.put(mCurrentDisplayRotation, createRegionForDisplay(info));
         } else {
             resetSwipeRegions(info);
         }
@@ -123,12 +142,6 @@ class OrientationTouchTransformer {
         if (!enableMultipleRegions) {
             mQuickStepStartingRotation = -1;
             resetSwipeRegions(info);
-        } else {
-            if (mLastRectTouched != null) {
-                // mLastRectTouched can be null if gesture type is changed (ex. from settings)
-                // but nav bar hasn't been interacted with yet.
-                mQuickStepStartingRotation = mLastRectTouched.mRotation;
-            }
         }
     }
 
@@ -140,17 +153,25 @@ class OrientationTouchTransformer {
      */
     private void resetSwipeRegions(DefaultDisplay.Info region) {
         if (DEBUG) {
-            Log.d(TAG, "clearing all regions except rotation: " + mCurrentRotation);
+            Log.d(TAG, "clearing all regions except rotation: " + mCurrentDisplayRotation);
         }
 
-        mCurrentRotation = region.rotation;
+        mCurrentDisplayRotation = region.rotation;
+        OrientationRectF regionToKeep = mSwipeTouchRegions.get(mCurrentDisplayRotation);
         mSwipeTouchRegions.clear();
-        mSwipeTouchRegions.put(mCurrentRotation, createRegionForDisplay(region));
+        mSwipeTouchRegions.put(mCurrentDisplayRotation,
+                regionToKeep != null ? regionToKeep : createRegionForDisplay(region));
+    }
+
+    private void resetSwipeRegions() {
+        OrientationRectF regionToKeep = mSwipeTouchRegions.get(mCurrentDisplayRotation);
+        mSwipeTouchRegions.clear();
+        mSwipeTouchRegions.put(mCurrentDisplayRotation, regionToKeep);
     }
 
     private OrientationRectF createRegionForDisplay(DefaultDisplay.Info display) {
         if (DEBUG) {
-            Log.d(TAG, "creating rotation region for: " + mCurrentRotation);
+            Log.d(TAG, "creating rotation region for: " + mCurrentDisplayRotation);
         }
 
         Point size = display.realSize;
@@ -220,6 +241,10 @@ class OrientationTouchTransformer {
         }
     }
 
+    int getQuickStepStartingRotation() {
+        return mQuickStepStartingRotation;
+    }
+
     public void transform(MotionEvent event) {
         int eventAction = event.getActionMasked();
         switch (eventAction) {
@@ -252,6 +277,11 @@ class OrientationTouchTransformer {
                     }
                     if (rect.applyTransform(event, false)) {
                         mLastRectTouched = rect;
+                        if (mCurrentDisplayRotation == mLastRectTouched.mRotation) {
+                            // Start a touch session for the default nav region for the display
+                            mQuickStepStartingRotation = mLastRectTouched.mRotation;
+                            resetSwipeRegions();
+                        }
                         if (DEBUG) {
                             Log.d(TAG, "set active region: " + rect);
                         }
@@ -304,42 +334,46 @@ class OrientationTouchTransformer {
         }
 
         boolean applyTransform(MotionEvent event, boolean forceTransform) {
-            // TODO(b/149658423): See if we can use RotationHelper.getRotationMatrix here
-            MotionEvent tmp = MotionEvent.obtain(event);
-            Matrix outMatrix = new Matrix();
-            int delta = RotationHelper.deltaRotation(mCurrentRotation, mRotation);
-            switch (delta) {
-                case Surface.ROTATION_0:
-                    outMatrix.reset();
-                    break;
-                case Surface.ROTATION_90:
-                    outMatrix.setRotate(270);
-                    outMatrix.postTranslate(0, mHeight);
-                    break;
-                case Surface.ROTATION_180:
-                    outMatrix.setRotate(180);
-                    outMatrix.postTranslate(mHeight, mWidth);
-                    break;
-                case Surface.ROTATION_270:
-                    outMatrix.setRotate(90);
-                    outMatrix.postTranslate(mWidth, 0);
-                    break;
+            mTmpMatrix.reset();
+            postDisplayRotation(deltaRotation(mCurrentDisplayRotation, mRotation),
+                    mHeight, mWidth, mTmpMatrix);
+            if (forceTransform) {
+                if (DEBUG) {
+                    Log.d(TAG, "Transforming rotation due to forceTransform, "
+                            + "mCurrentRotation: " + mCurrentDisplayRotation
+                            + "mRotation: " + mRotation);
+                }
+                event.transform(mTmpMatrix);
+                return true;
             }
+            mTmpPoint[0] = event.getX();
+            mTmpPoint[1] = event.getY();
+            mTmpMatrix.mapPoints(mTmpPoint);
 
-            tmp.transform(outMatrix);
             if (DEBUG) {
                 Log.d(TAG, "original: " + event.getX() + ", " + event.getY()
-                                + " new: " + tmp.getX() + ", " + tmp.getY()
+                                + " new: " + mTmpPoint[0] + ", " + mTmpPoint[1]
                                 + " rect: " + this + " forceTransform: " + forceTransform
-                                + " contains: " + contains(tmp.getX(), tmp.getY()));
+                                + " contains: " + contains(mTmpPoint[0], mTmpPoint[1]));
             }
 
-            if (forceTransform || contains(tmp.getX(), tmp.getY())) {
-                event.transform(outMatrix);
-                tmp.recycle();
+            if (contains(mTmpPoint[0], mTmpPoint[1])) {
+                event.transform(mTmpMatrix);
                 return true;
             }
             return false;
         }
+    }
+
+    /**
+     * @return how many factors {@param newRotation} is rotated 90 degrees clockwise.
+     * E.g. 1->Rotated by 90 degrees clockwise, 2->Rotated 180 clockwise...
+     * A value of 0 means no rotation has been applied
+     */
+    @SurfaceRotation
+    private static int deltaRotation(int oldRotation, int newRotation) {
+        int delta = newRotation - oldRotation;
+        if (delta < 0) delta += 4;
+        return delta;
     }
 }

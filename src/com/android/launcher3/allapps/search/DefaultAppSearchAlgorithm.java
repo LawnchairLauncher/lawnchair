@@ -17,7 +17,7 @@ package com.android.launcher3.allapps.search;
 
 import android.os.Handler;
 
-import com.android.launcher3.AppInfo;
+import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.util.ComponentKey;
 
 import java.text.Collator;
