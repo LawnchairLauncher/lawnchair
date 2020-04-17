@@ -90,7 +90,6 @@ import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.InputChannelCompat.InputEventReceiver;
 import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.InputMonitorCompat;
-import com.android.systemui.shared.system.RecentsAnimationListener;
 import com.android.systemui.shared.tracing.ProtoTraceable;
 
 import java.io.FileDescriptor;
@@ -739,12 +738,14 @@ public class TouchInteractionService extends Service implements PluginListener<O
 
         final BaseActivityInterface<BaseDraggingActivity> activityInterface =
                 mOverviewComponentObserver.getActivityInterface();
+        final Intent overviewIntent = new Intent(
+                mOverviewComponentObserver.getOverviewIntentIgnoreSysUiState());
         if (activityInterface.getCreatedActivity() == null) {
             // Make sure that UI states will be initialized.
             activityInterface.createActivityInitListener((wasVisible) -> {
                 AppLaunchTracker.INSTANCE.get(TouchInteractionService.this);
                 return false;
-            }).register();
+            }).register(overviewIntent);
         } else if (fromInit) {
             // The activity has been created before the initialization of overview service. It is
             // usually happens when booting or launcher is the top activity, so we should already
@@ -752,8 +753,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
             return;
         }
 
-        mTaskAnimationManager.preloadRecentsAnimation(
-                mOverviewComponentObserver.getOverviewIntentIgnoreSysUiState());
+        mTaskAnimationManager.preloadRecentsAnimation(overviewIntent);
     }
 
     @Override
@@ -832,7 +832,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
 
     private BaseSwipeUpHandler createLauncherSwipeHandler(GestureState gestureState,
             long touchTimeMs, boolean continuingLastGesture, boolean isLikelyToStartNewTask) {
-        return  new LauncherSwipeHandler(this, mDeviceState, mTaskAnimationManager,
+        return new LauncherSwipeHandler(this, mDeviceState, mTaskAnimationManager,
                 gestureState, touchTimeMs, continuingLastGesture, mInputConsumer);
     }
 
@@ -856,11 +856,6 @@ public class TouchInteractionService extends Service implements PluginListener<O
             mDeviceState.getGestureBlockedActivityPackages().forEach(blockedPackage ->
                     sendBroadcast(new Intent(NOTIFY_ACTION_BACK).setPackage(blockedPackage)));
         }
-    }
-
-    public static void startRecentsActivityAsync(Intent intent, RecentsAnimationListener listener) {
-        UI_HELPER_EXECUTOR.execute(() -> ActivityManagerWrapper.getInstance()
-                .startRecentsActivity(intent, null, listener, null, null));
     }
 
     @Override

@@ -188,10 +188,10 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
     }
 
     @Override
-    public void initWhenReady() {
+    public void initWhenReady(Intent intent) {
         if (mInQuickSwitchMode) {
             // Only init if we are in quickswitch mode
-            super.initWhenReady();
+            super.initWhenReady(intent);
         }
     }
 
