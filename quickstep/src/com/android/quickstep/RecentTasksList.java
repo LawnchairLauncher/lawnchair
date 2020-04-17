@@ -124,6 +124,17 @@ public class RecentTasksList extends TaskStackChangeListener {
     }
 
     @Override
+    public void onRecentTaskListUpdated() {
+        // In some cases immediately after booting, the tasks in the system recent task list may be
+        // loaded, but not in the active task hierarchy in the system.  These tasks are displayed in 
+        // overview, but removing them don't result in a onTaskStackChanged() nor a onTaskRemoved()
+        // callback (those are for changes to the active tasks), but the task list is still updated,
+        // so we should also invalidate the change id to ensure we load a new list instead of 
+        // reusing a stale list.
+        mChangeId++;
+    }
+
+    @Override
     public void onTaskRemoved(int taskId) {
         mTasks = loadTasksInBackground(Integer.MAX_VALUE, false);
     }

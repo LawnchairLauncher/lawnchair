@@ -23,9 +23,9 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.ItemInfo;
 import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.model.WidgetItem;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.notification.NotificationKeyData;
 import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.util.ComponentKey;
@@ -33,6 +33,7 @@ import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.ShortcutUtil;
 import com.android.launcher3.widget.WidgetListRowEntry;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -236,6 +237,11 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
                     }
                     return false;
                 }).collect(Collectors.toList());
+    }
+
+    public void dump(String prefix, PrintWriter writer) {
+        writer.println(prefix + "PopupDataProvider:");
+        writer.println(prefix + "\tmPackageUserToDotInfos:" + mPackageUserToDotInfos);
     }
 
     public interface PopupDataChangeListener {

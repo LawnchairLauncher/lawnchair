@@ -39,6 +39,10 @@ import com.android.launcher3.util.OverScroller;
  */
 public interface PagedOrientationHandler {
 
+    PagedOrientationHandler PORTRAIT = new PortraitPagedViewHandler();
+    PagedOrientationHandler LANDSCAPE = new LandscapePagedViewHandler();
+    PagedOrientationHandler SEASCAPE = new SeascapePagedViewHandler();
+
     interface Int2DAction<T> {
         void call(T target, int x, int y);
     }
@@ -61,10 +65,10 @@ public interface PagedOrientationHandler {
     FloatProperty<View> getPrimaryViewTranslate();
     FloatProperty<View> getSecondaryViewTranslate();
     void setPrimaryAndResetSecondaryTranslate(View view, float translation);
-    float getViewCenterPosition(View view);
     int getPrimaryScroll(View view);
     float getPrimaryScale(View view);
     int getChildStart(View view);
+    float getChildStartWithTranslation(View view);
     int getCenterForPage(View view, Rect insets);
     int getScrollOffsetStart(View view, Rect insets);
     int getScrollOffsetEnd(View view, Rect insets);
@@ -83,7 +87,7 @@ public interface PagedOrientationHandler {
     void delegateScrollTo(PagedView pagedView, int primaryScroll);
     void delegateScrollBy(PagedView pagedView, int unboundedScroll, int x, int y);
     void scrollerStartScroll(OverScroller scroller, int newPosition);
-    void getCurveProperties(PagedView view, Rect mInsets, CurveProperties out);
+    void getCurveProperties(PagedView view, Rect insets, CurveProperties out);
     boolean isGoingUp(float displacement);
 
     /**
