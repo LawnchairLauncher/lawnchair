@@ -55,9 +55,9 @@
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"安裝捷徑"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"允許應用程式自動新增捷徑。"</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"讀取主螢幕的設定和捷徑"</string>
-    <string name="permdesc_read_settings" msgid="5833423719057558387">"允許應用程式讀取主螢幕中的設定和捷徑。"</string>
+    <string name="permdesc_read_settings" msgid="5833423719057558387">"允許應用程式讀取主畫面中的設定和捷徑。"</string>
     <string name="permlab_write_settings" msgid="3574213698004620587">"寫入主螢幕設定和捷徑"</string>
-    <string name="permdesc_write_settings" msgid="5440712911516509985">"允許應用程式變更主螢幕中的設定和捷徑。"</string>
+    <string name="permdesc_write_settings" msgid="5440712911516509985">"允許應用程式變更主畫面中的設定和捷徑。"</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> 無法撥打電話"</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"載入小工具時發生問題"</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"設定"</string>
@@ -133,7 +133,7 @@
     <string name="all_apps_work_tab" msgid="4884822796154055118">"公司"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"工作資料夾"</string>
     <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"在這裡尋找辦公應用程式"</string>
-    <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"每個辦公應用程式都有徽章，並由貴機構負責管理及確保其安全。請將辦公應用程式移至主螢幕以便輕鬆存取。"</string>
+    <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"每個辦公應用程式都有徽章，並由貴機構負責管理及確保其安全。請將辦公應用程式移至主畫面以便輕鬆存取。"</string>
     <string name="work_mode_on_label" msgid="4781128097185272916">"由貴機構所管理"</string>
     <string name="work_mode_off_label" msgid="3194894777601421047">"已關閉通知和應用程式"</string>
     <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"關閉"</string>
