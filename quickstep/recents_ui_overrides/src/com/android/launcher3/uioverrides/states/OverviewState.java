@@ -144,7 +144,6 @@ public class OverviewState extends LauncherState {
 
     @Override
     public void onStateTransitionEnd(Launcher launcher) {
-        launcher.getRotationHelper().setCurrentStateRequest(REQUEST_ROTATE);
         DiscoveryBounce.showForOverviewIfNeeded(launcher);
         RecentsView recentsView = launcher.getOverviewPanel();
         AccessibilityManagerCompat.sendCustomAccessibilityEvent(

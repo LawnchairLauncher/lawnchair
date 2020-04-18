@@ -26,6 +26,7 @@ import static com.android.quickstep.views.RecentsView.FULLSCREEN_PROGRESS;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.util.FloatProperty;
+import android.view.Surface;
 import android.view.View;
 import android.view.animation.Interpolator;
 
@@ -91,8 +92,9 @@ public final class RecentsViewStateController extends
                 buttonAlpha, LINEAR);
 
         View actionsView = mLauncher.getActionsView();
-        if (actionsView != null) {
-            propertySetter.setFloat(actionsView, VIEW_ALPHA, buttonAlpha, actionInterpolator);
+        int launcherRotation = mRecentsView.getPagedViewOrientedState().getLauncherRotation();
+        if (actionsView != null && launcherRotation == Surface.ROTATION_0) {
+            propertySetter.setViewAlpha(actionsView, buttonAlpha, actionInterpolator);
         }
     }
 

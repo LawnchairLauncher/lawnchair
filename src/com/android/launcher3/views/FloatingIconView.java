@@ -124,7 +124,6 @@ public class FloatingIconView extends FrameLayout implements
         super.onAttachedToWindow();
         if (!mIsOpening) {
             getViewTreeObserver().addOnGlobalLayoutListener(this);
-            mLauncher.getRotationHelper().setCurrentTransitionRequest(REQUEST_LOCK);
         }
     }
 

@@ -322,13 +322,14 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
             mAppWindowAnimationHelper.updateHomeBounds(getStackBounds(dp));
         }
         int displayRotation = 0;
-        if (mOrientedState != null) {
+        if (mOrientedState != null && !mOrientedState.areMultipleLayoutOrientationsDisabled()) {
             // TODO(b/150300347): The first recents animation after launcher is started with the
             //  foreground app not in landscape will look funky until that bug is fixed
             displayRotation = mOrientedState.getDisplayRotation();
 
             RectF tempRectF = new RectF(TEMP_RECT);
-            mOrientedState.mapRectFromNormalOrientation(tempRectF, dp.widthPx, dp.heightPx);
+            mOrientedState.mapRectFromRotation(displayRotation,
+                    tempRectF, dp.widthPx, dp.heightPx);
             tempRectF.roundOut(TEMP_RECT);
         }
         mAppWindowAnimationHelper.updateTargetRect(TEMP_RECT);
