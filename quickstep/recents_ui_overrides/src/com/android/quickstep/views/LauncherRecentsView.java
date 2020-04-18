@@ -88,10 +88,6 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher>
         }
     };
 
-    private RotationHelper.ForcedRotationChangedListener mForcedRotationChangedListener =
-            isForcedRotation -> LauncherRecentsView.this
-                    .disableMultipleLayoutRotations(!isForcedRotation);
-
     public LauncherRecentsView(Context context) {
         this(context, null);
     }
@@ -344,7 +340,6 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher>
         super.onAttachedToWindow();
         PluginManagerWrapper.INSTANCE.get(getContext()).addPluginListener(
                 mRecentsExtraCardPluginListener, RecentsExtraCard.class);
-        mActivity.getRotationHelper().addForcedRotationCallback(mForcedRotationChangedListener);
     }
 
     @Override
@@ -352,7 +347,6 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher>
         super.onDetachedFromWindow();
         PluginManagerWrapper.INSTANCE.get(getContext()).removePluginListener(
                 mRecentsExtraCardPluginListener);
-        mActivity.getRotationHelper().removeForcedRotationCallback(mForcedRotationChangedListener);
     }
 
     @Override

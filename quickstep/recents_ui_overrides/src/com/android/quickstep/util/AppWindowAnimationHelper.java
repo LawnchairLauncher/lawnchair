@@ -160,9 +160,9 @@ public class AppWindowAnimationHelper {
     }
 
     private float getSrcToTargetScale() {
-        if (mOrientedState == null ||
-            (mOrientedState.getDisplayRotation() == Surface.ROTATION_0
-                || mOrientedState.getDisplayRotation() == Surface.ROTATION_180)) {
+        if (mOrientedState == null
+                || mOrientedState.isHomeRotationAllowed()
+                || mOrientedState.isDisplayPhoneNatural()) {
             return mSourceRect.width() / mTargetRect.width();
         } else {
             return mSourceRect.height() / mTargetRect.height();
@@ -277,8 +277,9 @@ public class AppWindowAnimationHelper {
                 mCurrentRect.offset(params.mOffset, 0);
             } else {
                 int displayRotation = mOrientedState.getDisplayRotation();
+                int launcherRotation = mOrientedState.getLauncherRotation();
                 mOrientedState.getOrientationHandler().offsetTaskRect(mCurrentRect,
-                    params.mOffset, displayRotation);
+                    params.mOffset, displayRotation, launcherRotation);
             }
         }
 
