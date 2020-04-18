@@ -98,5 +98,4 @@ public final class TestProtocol {
     public static final String PERMANENT_DIAG_TAG = "TaplTarget";
 
     public static final String APP_NOT_DISABLED = "b/139891609";
-    public static final String NO_SCROLL_END_WIDGETS = "b/152354290";
 }
