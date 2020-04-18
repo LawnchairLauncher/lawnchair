@@ -51,6 +51,8 @@ import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.touch.PortraitPagedViewHandler;
 
 import java.lang.annotation.Retention;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Container to hold orientation/rotation related information for Launcher.
@@ -81,6 +83,10 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
     private @SurfaceRotation int mDisplayRotation = ROTATION_0;
     private @SurfaceRotation int mLauncherRotation = Surface.ROTATION_0;
 
+    public interface SystemRotationChangeListener {
+        void onSystemRotationChanged(boolean enabled);
+    }
+
     /**
      * If {@code true} we default to {@link PortraitPagedViewHandler} and don't support any fake
      * launcher orientations.
@@ -93,6 +99,7 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
     private final SharedPreferences mSharedPrefs;
     private final boolean mAllowConfigurationDefaultValue;
 
+    private List<SystemRotationChangeListener> mSystemRotationChangeListeners = new ArrayList<>();
 
     private final Matrix mTmpMatrix = new Matrix();
     private final Matrix mTmpInverseMatrix = new Matrix();
@@ -167,14 +174,6 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
         return true;
     }
 
-    public boolean areMultipleLayoutOrientationsDisabled() {
-        return mDisableMultipleOrientations;
-    }
-
-    public boolean canLauncherAutoRotate() {
-        return mIsHomeRotationAllowed && mIsSystemRotationAllowed;
-    }
-
     /**
      * Setting this preference renders future calls to {@link #update(int, int, int)} as a no-op.
      */
@@ -198,11 +197,24 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
         } catch (Settings.SettingNotFoundException e) {
             Log.e(TAG, "autorotate setting not found", e);
         }
+
+        for (SystemRotationChangeListener listener : mSystemRotationChangeListeners) {
+            listener.onSystemRotationChanged(mIsSystemRotationAllowed);
+        }
     }
 
     private void updateHomeRotationSetting() {
         mIsHomeRotationAllowed = mSharedPrefs.getBoolean(ALLOW_ROTATION_PREFERENCE_KEY,
                 mAllowConfigurationDefaultValue);
+    }
+
+    public void addSystemRotationChangeListener(SystemRotationChangeListener listener) {
+        mSystemRotationChangeListeners.add(listener);
+        listener.onSystemRotationChanged(mIsSystemRotationAllowed);
+    }
+
+    public void removeSystemRotationChangeListener(SystemRotationChangeListener listener) {
+        mSystemRotationChangeListeners.remove(listener);
     }
 
     public void init() {
@@ -217,6 +229,7 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
     public void destroy() {
         mSharedPrefs.unregisterOnSharedPreferenceChangeListener(this);
         mContentResolver.unregisterContentObserver(mSystemAutoRotateObserver);
+        mSystemRotationChangeListeners.clear();
     }
 
     @SurfaceRotation
@@ -229,12 +242,25 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
         return mTouchRotation;
     }
 
+    @SurfaceRotation
+    public int getLauncherRotation() {
+        return mLauncherRotation;
+    }
+
+    public boolean areMultipleLayoutOrientationsDisabled() {
+        return mDisableMultipleOrientations;
+    }
+
+    public boolean isSystemRotationAllowed() {
+        return mIsSystemRotationAllowed;
+    }
+
     public boolean isHomeRotationAllowed() {
         return mIsHomeRotationAllowed;
     }
 
-    public int getLauncherRotation() {
-        return mLauncherRotation;
+    public boolean canLauncherRotate() {
+        return isSystemRotationAllowed() && isHomeRotationAllowed();
     }
 
     public int getTouchRotationDegrees() {
