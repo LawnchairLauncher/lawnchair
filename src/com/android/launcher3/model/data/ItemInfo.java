@@ -35,6 +35,7 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.logger.LauncherAtom;
+import com.android.launcher3.logger.LauncherAtom.ContainerInfo;
 import com.android.launcher3.util.ContentWriter;
 
 import java.util.Optional;
@@ -290,18 +291,21 @@ public class ItemInfo {
                             .setGridX(fInfo.cellX).setGridY(fInfo.cellY));
                     break;
             }
-            itemBuilder.setFolder(folderBuilder);
+            itemBuilder.setContainerInfo(ContainerInfo.newBuilder().setFolder(folderBuilder));
         } else {
             switch (container) {
                 case CONTAINER_HOTSEAT:
-                    itemBuilder.setHotseat(LauncherAtom.HotseatContainer.newBuilder()
-                            .setIndex(screenId));
+                    itemBuilder.setContainerInfo(
+                            ContainerInfo.newBuilder().setHotseat(
+                                    LauncherAtom.HotseatContainer.newBuilder().setIndex(screenId)));
                     break;
                 case CONTAINER_DESKTOP:
-                    itemBuilder.setWorkspace(LauncherAtom.WorkspaceContainer.newBuilder()
-                            .setGridX(cellX)
-                            .setGridY(cellY)
-                            .setPageIndex(screenId));
+                    itemBuilder.setContainerInfo(
+                            ContainerInfo.newBuilder().setWorkspace(
+                                    LauncherAtom.WorkspaceContainer.newBuilder()
+                                            .setGridX(cellX)
+                                            .setGridY(cellY)
+                                            .setPageIndex(screenId)));
                     break;
             }
         }
