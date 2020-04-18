@@ -183,10 +183,6 @@ public abstract class BaseRecyclerView extends RecyclerView  {
     public void onScrollStateChanged(int state) {
         super.onScrollStateChanged(state);
 
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_SCROLL_END_WIDGETS, "onScrollStateChanged: " + state);
-        }
-
         if (state == SCROLL_STATE_IDLE) {
             AccessibilityManagerCompat.sendScrollFinishedEventToTest(getContext());
         }
@@ -196,10 +192,6 @@ public abstract class BaseRecyclerView extends RecyclerView  {
     public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
         super.onInitializeAccessibilityNodeInfo(info);
         if (isLayoutSuppressed()) info.setScrollable(false);
-        if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
-            Log.d(TestProtocol.NO_SCROLL_END_WIDGETS,
-                    "onInitializeAccessibilityNodeInfo, scrollable: " + info.isScrollable());
-        }
     }
 
     @Override
@@ -207,12 +199,8 @@ public abstract class BaseRecyclerView extends RecyclerView  {
         final boolean changing = frozen != isLayoutSuppressed();
         super.setLayoutFrozen(frozen);
         if (changing) {
-            if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
-                Log.d(TestProtocol.NO_SCROLL_END_WIDGETS, "setLayoutFrozen " + frozen
-                        + " @ " + Log.getStackTraceString(new Throwable()));
-                ActivityContext.lookupContext(getContext()).getDragLayer()
-                        .sendAccessibilityEvent(TYPE_WINDOW_CONTENT_CHANGED);
-            }
+            ActivityContext.lookupContext(getContext()).getDragLayer()
+                    .sendAccessibilityEvent(TYPE_WINDOW_CONTENT_CHANGED);
         }
     }
 }

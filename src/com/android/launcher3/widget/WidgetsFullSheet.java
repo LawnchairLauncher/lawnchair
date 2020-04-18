@@ -71,14 +71,6 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
     }
 
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
-            Log.d(TestProtocol.NO_SCROLL_END_WIDGETS, "WidgetsFullSheet: " + ev);
-        }
-        return super.dispatchTouchEvent(ev);
-    }
-
     public WidgetsFullSheet(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
