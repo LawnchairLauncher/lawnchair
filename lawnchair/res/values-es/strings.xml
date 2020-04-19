@@ -13,12 +13,12 @@
     <string name="action_apply">Hecho</string>
     <!-- Note: new. Replaces “OK” in dialogs. -->
     <string name="theme_dark_theme_mode_on">Habilitado</string>
-    <string name="theme_dark_theme_mode_off">Disabled</string>
+    <string name="theme_dark_theme_mode_off">Des habilitado</string>
     <!-- Section 2 -->
     <string name="theme_title">Tema</string>
-    <string name="pixel_ui_pref_summary">Icons, Colors, Blur</string>
+    <string name="pixel_ui_pref_summary">Iconos, Colores, difuminacion</string>
     <string name="pref_icon_packs">Packs de iconos</string>
-    <string name="icon_pack_default">System Icons</string>
+    <string name="icon_pack_default">Iconos de sistema</string>
     <string name="pref_icon_pack_masking">Máscara de iconos</string>
     <string name="pref_icon_pack_masking_summary">Coincidir iconos fuera del tema al paquete de iconos.</string>
     <string name="pref_legacy_treatment_title">Crear íconos adaptativos</string>
