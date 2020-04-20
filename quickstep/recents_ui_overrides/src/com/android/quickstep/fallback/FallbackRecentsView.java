@@ -30,6 +30,7 @@ import com.android.launcher3.LauncherState.ScaleAndTranslation;
 import com.android.launcher3.Utilities;
 import com.android.quickstep.RecentsActivity;
 import com.android.quickstep.util.LayoutUtils;
+import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.Task;
@@ -67,6 +68,11 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity> {
 
     public FallbackRecentsView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+    }
+
+    @Override
+    public void init(OverviewActionsView actionsView) {
+        super.init(actionsView);
         setOverviewStateEnabled(true);
         setOverlayEnabled(true);
     }

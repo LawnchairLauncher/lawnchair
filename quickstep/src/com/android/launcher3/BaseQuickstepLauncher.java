@@ -28,7 +28,6 @@ import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.CancellationSignal;
-import android.view.View;
 
 import com.android.launcher3.LauncherState.ScaleAndTranslation;
 import com.android.launcher3.LauncherStateManager.StateHandler;
@@ -52,6 +51,7 @@ import com.android.quickstep.util.QuickstepOnboardingPrefs;
 import com.android.quickstep.util.RemoteAnimationProvider;
 import com.android.quickstep.util.RemoteFadeOutAnimationListener;
 import com.android.quickstep.util.ShelfPeekAnim;
+import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
@@ -75,7 +75,7 @@ public abstract class BaseQuickstepLauncher extends Launcher
 
     private final ShelfPeekAnim mShelfPeekAnim = new ShelfPeekAnim(this);
 
-    private View mActionsView;
+    private OverviewActionsView mActionsView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -164,19 +164,17 @@ public abstract class BaseQuickstepLauncher extends Launcher
     protected void setupViews() {
         super.setupViews();
         mActionsView = findViewById(R.id.overview_actions_view);
-
+        ((RecentsView) getOverviewPanel()).init(mActionsView);
 
         if (FeatureFlags.ENABLE_OVERVIEW_ACTIONS.get() && removeShelfFromOverview(this)) {
             // Overview is above all other launcher elements, including qsb, so move it to the top.
             getOverviewPanel().bringToFront();
-            if (mActionsView != null) {
-                mActionsView.bringToFront();
-            }
+            mActionsView.bringToFront();
         }
     }
 
-    public View getActionsView() {
-        return mActionsView;
+    public <T extends OverviewActionsView> T getActionsView() {
+        return (T) mActionsView;
     }
 
     @Override
