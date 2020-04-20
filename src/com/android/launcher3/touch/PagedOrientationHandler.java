@@ -62,6 +62,7 @@ public interface PagedOrientationHandler {
     float getPrimaryVelocity(VelocityTracker velocityTracker, int pointerId);
     int getMeasuredSize(View view);
     float getPrimarySize(RectF rect);
+    int getClearAllScrollOffset(View view, boolean isRtl);
     int getSecondaryDimension(View view);
     FloatProperty<View> getPrimaryViewTranslate();
     FloatProperty<View> getSecondaryViewTranslate();

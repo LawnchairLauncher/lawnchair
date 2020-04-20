@@ -123,6 +123,11 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
+    public int getClearAllScrollOffset(View view, boolean isRtl) {
+        return (isRtl ? view.getPaddingRight() : - view.getPaddingLeft()) / 2;
+    }
+
+    @Override
     public int getSecondaryDimension(View view) {
         return view.getHeight();
     }

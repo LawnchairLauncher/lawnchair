@@ -75,4 +75,15 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
     public float getTaskMenuY(float y, View thumbnailView) {
         return y + thumbnailView.getMeasuredHeight();
     }
+
+    @Override
+    public int getClearAllScrollOffset(View view, boolean isRtl) {
+        return (isRtl ? view.getPaddingTop() : - view.getPaddingBottom()) / 2;
+    }
+
+    @Override
+    public void setPrimaryAndResetSecondaryTranslate(View view, float translation) {
+        view.setTranslationX(0);
+        view.setTranslationY(-translation);
+    }
 }
