@@ -17,6 +17,7 @@
 package com.android.launcher3;
 
 import static com.android.launcher3.Utilities.getDevicePrefs;
+import static com.android.launcher3.Utilities.getPointString;
 import static com.android.launcher3.config.FeatureFlags.APPLY_CONFIG_AT_RUNTIME;
 import static com.android.launcher3.settings.SettingsActivity.GRID_OPTIONS_PREFERENCE_KEY;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
@@ -68,6 +69,9 @@ public class InvariantDeviceProfile {
     // We do not need any synchronization for this variable as its only written on UI thread.
     public static final MainThreadInitializedObject<InvariantDeviceProfile> INSTANCE =
             new MainThreadInitializedObject<>(InvariantDeviceProfile::new);
+
+    public static final String KEY_MIGRATION_SRC_WORKSPACE_SIZE = "migration_src_workspace_size";
+    public static final String KEY_MIGRATION_SRC_HOTSEAT_COUNT = "migration_src_hotseat_count";
 
     private static final String KEY_IDP_GRID_NAME = "idp_grid_name";
 
@@ -165,6 +169,10 @@ public class InvariantDeviceProfile {
         if (!newGridName.equals(gridName)) {
             Utilities.getPrefs(context).edit().putString(KEY_IDP_GRID_NAME, newGridName).apply();
         }
+        Utilities.getPrefs(context).edit()
+                .putInt(KEY_MIGRATION_SRC_HOTSEAT_COUNT, numHotseatIcons)
+                .putString(KEY_MIGRATION_SRC_WORKSPACE_SIZE, getPointString(numColumns, numRows))
+                .apply();
 
         mConfigMonitor = new ConfigMonitor(context,
                 APPLY_CONFIG_AT_RUNTIME.get() ? this::onConfigChanged : this::killProcess);

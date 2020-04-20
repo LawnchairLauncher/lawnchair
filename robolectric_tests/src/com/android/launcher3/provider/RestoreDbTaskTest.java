@@ -95,7 +95,7 @@ public class RestoreDbTaskTest {
         private final long mProfileId;
 
         MyDatabaseHelper(long profileId) {
-            super(RuntimeEnvironment.application, null);
+            super(RuntimeEnvironment.application, null, false);
             mProfileId = profileId;
         }
 
