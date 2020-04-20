@@ -19,10 +19,13 @@ import static com.android.launcher3.accessibility.LauncherAccessibilityDelegate.
 import static com.android.launcher3.graphics.IconShape.getShape;
 
 import android.content.Context;
+import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Rect;
+import android.os.Process;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -38,6 +41,7 @@ import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.hybridhotseat.HotseatPredictionController;
 import com.android.launcher3.icons.IconNormalizer;
+import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.touch.ItemClickHandler;
@@ -50,13 +54,18 @@ import com.android.launcher3.views.DoubleShadowBubbleTextView;
 public class PredictedAppIcon extends DoubleShadowBubbleTextView implements
         LauncherAccessibilityDelegate.AccessibilityActionHandler {
 
+    private static final int RING_SHADOW_COLOR = 0x99000000;
     private static final float RING_EFFECT_RATIO = 0.11f;
 
     boolean mIsDrawingDot = false;
     private final DeviceProfile mDeviceProfile;
     private final Paint mIconRingPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Path mRingPath = new Path();
     private boolean mIsPinned = false;
-    private int mNormalizedIconRadius;
+    private final int mNormalizedIconRadius;
+    private final BlurMaskFilter mShadowFilter;
+    private int mPlateColor;
+
 
     public PredictedAppIcon(Context context) {
         this(context, null, 0);
@@ -72,13 +81,18 @@ public class PredictedAppIcon extends DoubleShadowBubbleTextView implements
         mNormalizedIconRadius = IconNormalizer.getNormalizedCircleSize(getIconSize()) / 2;
         setOnClickListener(ItemClickHandler.INSTANCE);
         setOnFocusChangeListener(Launcher.getLauncher(context).getFocusHandler());
+        int shadowSize = context.getResources().getDimensionPixelSize(
+                R.dimen.blur_size_thin_outline);
+        mShadowFilter = new BlurMaskFilter(shadowSize, BlurMaskFilter.Blur.OUTER);
     }
 
     @Override
     public void onDraw(Canvas canvas) {
         int count = canvas.save();
         if (!mIsPinned) {
-            drawEffect(canvas);
+            boolean isBadged = getTag() instanceof WorkspaceItemInfo
+                    && !Process.myUserHandle().equals(((ItemInfo) getTag()).user);
+            drawEffect(canvas, isBadged);
             canvas.translate(getWidth() * RING_EFFECT_RATIO, getHeight() * RING_EFFECT_RATIO);
             canvas.scale(1 - 2 * RING_EFFECT_RATIO, 1 - 2 * RING_EFFECT_RATIO);
         }
@@ -101,7 +115,7 @@ public class PredictedAppIcon extends DoubleShadowBubbleTextView implements
     public void applyFromWorkspaceItem(WorkspaceItemInfo info) {
         super.applyFromWorkspaceItem(info);
         int color = IconPalette.getMutedColor(info.bitmap.color, 0.54f);
-        mIconRingPaint.setColor(ColorUtils.setAlphaComponent(color, 200));
+        mPlateColor = ColorUtils.setAlphaComponent(color, 200);
         if (mIsPinned) {
             setContentDescription(info.contentDescription);
         } else {
@@ -173,9 +187,25 @@ public class PredictedAppIcon extends DoubleShadowBubbleTextView implements
         return getPaddingTop() + mDeviceProfile.folderIconOffsetYPx;
     }
 
-    private void drawEffect(Canvas canvas) {
-        getShape().drawShape(canvas, getOutlineOffsetX(), getOutlineOffsetY(),
-                mNormalizedIconRadius, mIconRingPaint);
+    private void drawEffect(Canvas canvas, boolean isBadged) {
+        mRingPath.reset();
+        getShape().addToPath(mRingPath, getOutlineOffsetX(), getOutlineOffsetY(),
+                mNormalizedIconRadius);
+        if (isBadged) {
+            float outlineSize = mNormalizedIconRadius * RING_EFFECT_RATIO * 2;
+            float iconSize = getIconSize() * (1 - 2 * RING_EFFECT_RATIO);
+            float badgeSize = LauncherIcons.getBadgeSizeForIconSize((int) iconSize) + outlineSize;
+            float badgeInset = mNormalizedIconRadius * 2 - badgeSize;
+            getShape().addToPath(mRingPath, getOutlineOffsetX() + badgeInset,
+                    getOutlineOffsetY() + badgeInset, badgeSize / 2);
+
+        }
+        mIconRingPaint.setColor(RING_SHADOW_COLOR);
+        mIconRingPaint.setMaskFilter(mShadowFilter);
+        canvas.drawPath(mRingPath, mIconRingPaint);
+        mIconRingPaint.setColor(mPlateColor);
+        mIconRingPaint.setMaskFilter(null);
+        canvas.drawPath(path, mIconRingPaint);
     }
 
     /**
