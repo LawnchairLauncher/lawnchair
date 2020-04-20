@@ -184,7 +184,9 @@ public abstract class BaseDraggingActivity extends BaseActivity
                         sourceContainer);
             }
             getUserEventDispatcher().logAppLaunch(v, intent, user);
-            getStatsLogManager().log(APP_LAUNCH_TAP, item.buildProto(null, null));
+
+            getStatsLogManager().log(APP_LAUNCH_TAP, item == null ? null
+                    : item.buildProto(null, null));
             return true;
         } catch (NullPointerException|ActivityNotFoundException|SecurityException e) {
             Toast.makeText(this, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
