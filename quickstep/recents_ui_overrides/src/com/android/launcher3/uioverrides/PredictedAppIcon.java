@@ -21,7 +21,6 @@ import static com.android.launcher3.graphics.IconShape.getShape;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
@@ -205,10 +204,8 @@ public class PredictedAppIcon extends DoubleShadowBubbleTextView implements
             mOffsetX = icon.getOutlineOffsetX();
             mOffsetY = icon.getOutlineOffsetY();
             mIconRadius = icon.mNormalizedIconRadius;
-            mOutlinePaint.setStyle(Paint.Style.STROKE);
-            mOutlinePaint.setStrokeWidth(5);
-            mOutlinePaint.setPathEffect(new DashPathEffect(new float[]{15, 15}, 0));
-            mOutlinePaint.setColor(Color.argb(100, 245, 245, 245));
+            mOutlinePaint.setStyle(Paint.Style.FILL);
+            mOutlinePaint.setColor(Color.argb(24, 245, 245, 245));
         }
 
         /**
