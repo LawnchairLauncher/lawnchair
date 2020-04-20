@@ -106,7 +106,7 @@ public class BackgroundAppState extends OverviewState {
     }
 
     @Override
-    public float getDepth(Context context) {
+    protected float getDepthUnchecked(Context context) {
         return 1f;
     }
 }
