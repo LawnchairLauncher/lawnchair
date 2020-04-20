@@ -177,7 +177,14 @@ public class DepthController implements LauncherStateManager.StateHandler {
     }
 
     private void setDepth(float depth) {
-        mDepth = depth;
+        // Round out the depth to dedupe frequent, non-perceptable updates
+        int depthI = (int) (depth * 256);
+        float depthF = depthI / 256f;
+        if (Float.compare(mDepth, depthF) == 0) {
+            return;
+        }
+
+        mDepth = depthF;
         if (mSurface == null || !mSurface.isValid()) {
             return;
         }
