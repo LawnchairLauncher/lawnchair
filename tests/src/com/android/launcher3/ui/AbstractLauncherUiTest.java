@@ -17,7 +17,6 @@ package com.android.launcher3.ui;
 
 import static androidx.test.InstrumentationRegistry.getInstrumentation;
 
-import static com.android.launcher3.WorkspaceLayoutManager.FIRST_SCREEN_ID;
 import static com.android.launcher3.ui.TaplTestsLauncher3.getAppPackageName;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
@@ -26,7 +25,6 @@ import static org.junit.Assert.assertTrue;
 
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -53,6 +51,7 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.common.WidgetUtils;
 import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.tapl.LauncherInstrumentation;
@@ -60,7 +59,6 @@ import com.android.launcher3.tapl.LauncherInstrumentation.ContainerType;
 import com.android.launcher3.tapl.TestHelpers;
 import com.android.launcher3.testcomponent.TestCommandReceiver;
 import com.android.launcher3.testing.TestProtocol;
-import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Wait;
@@ -306,26 +304,7 @@ public abstract class AbstractLauncherUiTest {
      * Adds {@param item} on the homescreen on the 0th screen
      */
     protected void addItemToScreen(ItemInfo item) {
-        ContentResolver resolver = mTargetContext.getContentResolver();
-        int screenId = FIRST_SCREEN_ID;
-        // Update the screen id counter for the provider.
-        LauncherSettings.Settings.call(resolver,
-                LauncherSettings.Settings.METHOD_NEW_SCREEN_ID);
-
-        if (screenId > FIRST_SCREEN_ID) {
-            screenId = FIRST_SCREEN_ID;
-        }
-
-        // Insert the item
-        ContentWriter writer = new ContentWriter(mTargetContext);
-        item.id = LauncherSettings.Settings.call(
-                resolver, LauncherSettings.Settings.METHOD_NEW_ITEM_ID)
-                .getInt(LauncherSettings.Settings.EXTRA_VALUE);
-        item.screenId = screenId;
-        item.onAddToDatabase(writer);
-        writer.put(LauncherSettings.Favorites._ID, item.id);
-        resolver.insert(LauncherSettings.Favorites.CONTENT_URI,
-                writer.getValues(mTargetContext));
+        WidgetUtils.addItemToScreen(item, mTargetContext);
         resetLoaderState();
 
         // Launch the home activity
