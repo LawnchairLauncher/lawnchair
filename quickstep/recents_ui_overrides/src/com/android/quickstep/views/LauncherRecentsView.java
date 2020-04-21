@@ -183,27 +183,6 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher>
         LayoutUtils.calculateLauncherTaskSize(getContext(), dp, outRect);
     }
 
-    /**
-     * @return The translationX to apply to this view so that the first task is just offscreen.
-     */
-    public float getOffscreenTranslationX(float recentsScale) {
-        LauncherState.ScaleAndTranslation overviewScaleAndTranslation =
-            NORMAL.getOverviewScaleAndTranslation(mActivity);
-        float offscreen = mOrientationHandler.getTranslationValue(overviewScaleAndTranslation);
-        // Offset since scale pushes tasks outwards.
-        getTaskSize(sTempRect);
-        int taskSize = mOrientationHandler.getPrimarySize(sTempRect);
-        offscreen += taskSize * (recentsScale - 1) / 2;
-        if (mRunningTaskTileHidden) {
-            // The first task is hidden, so offset by its width.
-            offscreen -= (taskSize + getPageSpacing()) * recentsScale;
-        }
-        if (isRtl()) {
-            offscreen = -offscreen;
-        }
-        return offscreen;
-    }
-
     @Override
     protected void onTaskLaunchAnimationUpdate(float progress, TaskView tv) {
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {

@@ -32,7 +32,6 @@ import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.LauncherState.ScaleAndTranslation;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.OverScroller;
@@ -118,11 +117,6 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public int getPrimarySize(Rect rect) {
-        return rect.width();
-    }
-
-    @Override
     public float getPrimarySize(RectF rect) {
         return rect.width();
     }
@@ -130,17 +124,6 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     @Override
     public int getSecondaryDimension(View view) {
         return view.getHeight();
-    }
-
-    @Override
-    public ScaleAndTranslation getScaleAndTranslation(DeviceProfile dp, View view) {
-        float offscreenTranslationX = dp.widthPx - view.getPaddingStart();
-        return new ScaleAndTranslation(1f, offscreenTranslationX, 0f);
-    }
-
-    @Override
-    public float getTranslationValue(ScaleAndTranslation scaleAndTranslation) {
-        return scaleAndTranslation.translationX;
     }
 
     @Override

@@ -29,7 +29,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.CancellationSignal;
 
-import com.android.launcher3.LauncherState.ScaleAndTranslation;
 import com.android.launcher3.LauncherStateManager.StateHandler;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.WellbeingModel;
@@ -38,7 +37,6 @@ import com.android.launcher3.proxy.ProxyActivityStarter;
 import com.android.launcher3.proxy.StartActivityParams;
 import com.android.launcher3.statehandlers.BackButtonAlphaHandler;
 import com.android.launcher3.statehandlers.DepthController;
-import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.uioverrides.RecentsViewStateController;
 import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.util.UiThreadHelper;
@@ -205,17 +203,6 @@ public abstract class BaseQuickstepLauncher extends Launcher
     }
 
     @Override
-    protected ScaleAndTranslation getOverviewScaleAndTranslationForNormalState() {
-        if (SysUINavigationMode.getMode(this) == Mode.NO_BUTTON) {
-            PagedOrientationHandler layoutVertical =
-                ((RecentsView)getOverviewPanel()).getPagedViewOrientedState().getOrientationHandler();
-            return layoutVertical.getScaleAndTranslation(getDeviceProfile(),
-                getOverviewPanel());
-        }
-        return super.getOverviewScaleAndTranslationForNormalState();
-    }
-
-    @Override
     public void useFadeOutAnimationForLauncherStart(CancellationSignal signal) {
         QuickstepAppTransitionManagerImpl appTransitionManager =
                 (QuickstepAppTransitionManagerImpl) getAppTransitionManager();
@@ -235,6 +222,12 @@ public abstract class BaseQuickstepLauncher extends Launcher
                 return anim;
             }
         }, signal);
+    }
+
+    @Override
+    public float[] getNormalOverviewScaleAndOffset() {
+        return SysUINavigationMode.getMode(this) == Mode.NO_BUTTON
+                ? new float[] {1, 1} : new float[] {1.1f, 0};
     }
 
     @Override

@@ -18,6 +18,7 @@ package com.android.launcher3.touch;
 
 import android.content.res.Resources;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -28,7 +29,6 @@ import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.LauncherState;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.util.OverScroller;
 
@@ -53,16 +53,15 @@ public interface PagedOrientationHandler {
     Int2DAction<View> VIEW_SCROLL_BY = View::scrollBy;
     Int2DAction<View> VIEW_SCROLL_TO = View::scrollTo;
     Float2DAction<Canvas> CANVAS_TRANSLATE = Canvas::translate;
+    Float2DAction<Matrix> MATRIX_POST_TRANSLATE = Matrix::postTranslate;
+
     <T> void set(T target, Int2DAction<T> action, int param);
     <T> void set(T target, Float2DAction<T> action, float param);
     float getPrimaryDirection(MotionEvent event, int pointerIndex);
     float getPrimaryVelocity(VelocityTracker velocityTracker, int pointerId);
     int getMeasuredSize(View view);
-    int getPrimarySize(Rect rect);
     float getPrimarySize(RectF rect);
     int getSecondaryDimension(View view);
-    LauncherState.ScaleAndTranslation getScaleAndTranslation(DeviceProfile dp, View view);
-    float getTranslationValue(LauncherState.ScaleAndTranslation scaleAndTranslation);
     FloatProperty<View> getPrimaryViewTranslate();
     FloatProperty<View> getSecondaryViewTranslate();
     void setPrimaryAndResetSecondaryTranslate(View view, float translation);
@@ -97,7 +96,6 @@ public interface PagedOrientationHandler {
      * of Launcher's (which now will always be portrait)
      */
     void adjustFloatingIconStartVelocity(PointF velocity);
-
 
     class CurveProperties {
         public int scroll;

@@ -135,8 +135,15 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
         mInputConsumer = inputConsumer;
         mAppWindowAnimationHelper = new AppWindowAnimationHelper(context);
         mPageSpacing = context.getResources().getDimensionPixelSize(R.dimen.recents_page_spacing);
+    }
+
+    /**
+     * To be called at the end of constructor of subclasses. This calls various methods which can
+     * depend on proper class initialization.
+     */
+    protected void initAfterSubclassConstructor() {
         initTransitionEndpoints(InvariantDeviceProfile.INSTANCE.get(mContext)
-            .getDeviceProfile(mContext));
+                .getDeviceProfile(mContext));
     }
 
     protected void performHapticFeedback() {
@@ -241,6 +248,10 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
         return mRecentsAnimationTargets != null && mRecentsAnimationTargets.hasTargets();
     }
 
+    protected void updateSource(Rect stackBounds, RemoteAnimationTargetCompat runningTarget) {
+        mAppWindowAnimationHelper.updateSource(stackBounds, runningTarget);
+    }
+
     @Override
     public void onRecentsAnimationStart(RecentsAnimationController recentsAnimationController,
             RecentsAnimationTargets targets) {
@@ -264,7 +275,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
         dp.updateInsets(targets.homeContentInsets);
         dp.updateIsSeascape(mContext);
         if (runningTaskTarget != null) {
-            mAppWindowAnimationHelper.updateSource(overviewStackBounds, runningTaskTarget);
+            updateSource(overviewStackBounds, runningTaskTarget);
         }
 
         mAppWindowAnimationHelper.prepareAnimation(dp, false /* isOpening */);
@@ -314,6 +325,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
 
         mTransitionDragLength = mActivityInterface.getSwipeUpDestinationAndLength(
                 dp, mContext, TEMP_RECT);
+
         if (!dp.isMultiWindowMode) {
             // When updating the target rect, also update the home bounds since the location on
             // screen of the launcher window may be stale (position is not updated until first
@@ -409,11 +421,12 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
      */
     protected void applyTransformUnchecked() {
         float shift = mCurrentShift.value;
-        float offset = mRecentsView == null ? 0 : mRecentsView.getScrollOffset();
+        float offset = mRecentsView == null ? 0 : mRecentsView.getScrollOffsetScaled();
         float taskSize = getOrientationHandler()
             .getPrimarySize(mAppWindowAnimationHelper.getTargetRect());
         float offsetScale = getTaskCurveScaleForOffset(offset, taskSize);
-        mTransformParams.setProgress(shift)
+        mTransformParams
+                .setProgress(shift)
                 .setOffset(offset)
                 .setOffsetScale(offsetScale)
                 .setTargetSet(mRecentsAnimationTargets)

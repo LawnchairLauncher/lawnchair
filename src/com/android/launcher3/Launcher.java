@@ -25,6 +25,8 @@ import static com.android.launcher3.AbstractFloatingView.TYPE_SNACKBAR;
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.LauncherState.NO_OFFSET;
+import static com.android.launcher3.LauncherState.NO_SCALE;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.OVERVIEW_PEEK;
 import static com.android.launcher3.Utilities.postAsyncCallback;
@@ -85,7 +87,6 @@ import androidx.annotation.StringRes;
 import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.DropTarget.DragObject;
-import com.android.launcher3.LauncherState.ScaleAndTranslation;
 import com.android.launcher3.LauncherStateManager.StateHandler;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.allapps.AllAppsContainerView;
@@ -2698,10 +2699,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         return new TouchController[] {getDragController(), new AllAppsSwipeController(this)};
     }
 
-    protected ScaleAndTranslation getOverviewScaleAndTranslationForNormalState() {
-        return new ScaleAndTranslation(1.1f, 0f, 0f);
-    }
-
     public void useFadeOutAnimationForLauncherStart(CancellationSignal signal) { }
 
     public void onDragLayerHierarchyChanged() { }
@@ -2724,6 +2721,14 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         return Stream.of(APP_INFO, WIDGETS, INSTALL);
     }
 
+
+    /**
+     * @see LauncherState#getOverviewScaleAndOffset(Launcher)
+     */
+    public float[] getNormalOverviewScaleAndOffset() {
+        return new float[] {NO_SCALE, NO_OFFSET};
+    }
+
     public static Launcher getLauncher(Context context) {
         return fromContext(context);
     }
@@ -2734,6 +2739,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     public static <T extends Launcher> T cast(ActivityContext activityContext) {
         return (T) activityContext;
     }
+
 
     /**
      * Callback for listening for onResume

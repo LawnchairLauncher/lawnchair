@@ -56,6 +56,7 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.android.launcher3.BaseDraggingActivity;
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
@@ -77,11 +78,11 @@ import com.android.quickstep.TaskIconCache;
 import com.android.quickstep.TaskOverlayFactory;
 import com.android.quickstep.TaskThumbnailCache;
 import com.android.quickstep.TaskUtils;
-import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.quickstep.util.TaskCornerRadius;
 import com.android.quickstep.views.RecentsView.PageCallbacks;
 import com.android.quickstep.views.RecentsView.ScrollState;
+import com.android.quickstep.views.TaskThumbnailView.PreviewPositionHelper;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
@@ -157,8 +158,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     private float mCurveScale;
     private float mFullscreenProgress;
     private final FullscreenDrawParams mCurrentFullscreenParams;
-    private final float mCornerRadius;
-    private final float mWindowCornerRadius;
     private final BaseDraggingActivity mActivity;
 
     private ObjectAnimator mIconAndDimAnimator;
@@ -211,9 +210,8 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                     TaskUtils.getLaunchComponentKeyForTask(getTask().key));
             mActivity.getStatsLogManager().log(TASK_LAUNCH_TAP, buildProto());
         });
-        mCornerRadius = TaskCornerRadius.get(context);
-        mWindowCornerRadius = QuickStepContract.getWindowCornerRadius(context.getResources());
-        mCurrentFullscreenParams = new FullscreenDrawParams(mCornerRadius);
+
+        mCurrentFullscreenParams = new FullscreenDrawParams(context);
         mDigitalWellBeingToast = new DigitalWellBeingToast(mActivity, this);
 
         mOutlineProvider = new TaskOutlineProvider(getContext(), mCurrentFullscreenParams);
@@ -236,11 +234,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         super.onFinishInflate();
         mSnapshotView = findViewById(R.id.snapshot);
         mIconView = findViewById(R.id.icon);
-        final Context context = getContext();
-
-        TaskView.LayoutParams thumbnailParams = (LayoutParams) mSnapshotView.getLayoutParams();
-        thumbnailParams.bottomMargin = LayoutUtils.thumbnailBottomMargin(context);
-        mSnapshotView.setLayoutParams(thumbnailParams);
     }
 
     public boolean isTaskOverlayModal() {
@@ -473,8 +466,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         int iconRotation = orientationState.getTouchRotation();
         PagedOrientationHandler orientationHandler = orientationState.getOrientationHandler();
         boolean isRtl = orientationHandler.getRecentsRtlSetting(getResources());
-        LayoutParams snapshotParams = (LayoutParams) mSnapshotView.getLayoutParams();
-        snapshotParams.bottomMargin = LayoutUtils.thumbnailBottomMargin(getContext());
         int thumbnailPadding = (int) getResources().getDimension(R.dimen.task_thumbnail_top_margin);
         LayoutParams iconParams = (LayoutParams) mIconView.getLayoutParams();
         int rotation = orientationState.getTouchRotationDegrees();
@@ -501,7 +492,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                     iconParams.bottomMargin = 0;
                 break;
         }
-        mSnapshotView.setLayoutParams(snapshotParams);
         mIconView.setLayoutParams(iconParams);
         mIconView.setRotation(rotation);
     }
@@ -699,19 +689,14 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         return 1 - curveInterpolation * EDGE_SCALE_DOWN_FACTOR;
     }
 
-    public void setCurveScale(float curveScale) {
+    private void setCurveScale(float curveScale) {
         mCurveScale = curveScale;
-        onScaleChanged();
+        setScaleX(mCurveScale);
+        setScaleY(mCurveScale);
     }
 
     public float getCurveScale() {
         return mCurveScale;
-    }
-
-    private void onScaleChanged() {
-        float scale = mCurveScale;
-        setScaleX(scale);
-        setScaleY(scale);
     }
 
     @Override
@@ -723,13 +708,11 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     private static final class TaskOutlineProvider extends ViewOutlineProvider {
 
         private final int mMarginTop;
-        private final int mMarginBottom;
         private FullscreenDrawParams mFullscreenParams;
 
         TaskOutlineProvider(Context context, FullscreenDrawParams fullscreenParams) {
             mMarginTop = context.getResources().getDimensionPixelSize(
                     R.dimen.task_thumbnail_top_margin);
-            mMarginBottom = LayoutUtils.thumbnailBottomMargin(context);
             mFullscreenParams = fullscreenParams;
         }
 
@@ -744,7 +727,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             outline.setRoundRect(0,
                     (int) (mMarginTop * scale),
                     (int) ((insets.left + view.getWidth() + insets.right) * scale),
-                    (int) ((insets.top + view.getHeight() + insets.bottom - mMarginBottom) * scale),
+                    (int) ((insets.top + view.getHeight() + insets.bottom) * scale),
                     mFullscreenParams.mCurrentDrawnCornerRadius);
         }
     }
@@ -917,23 +900,11 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         setClipToPadding(!isFullscreen);
 
         TaskThumbnailView thumbnail = getThumbnail();
-        boolean isMultiWindowMode = mActivity.getDeviceProfile().isMultiWindowMode;
-        RectF insets = thumbnail.getInsetsToDrawInFullscreen(isMultiWindowMode);
-        float currentInsetsLeft = insets.left * mFullscreenProgress;
-        float currentInsetsRight = insets.right * mFullscreenProgress;
-        mCurrentFullscreenParams.setInsets(currentInsetsLeft,
-                insets.top * mFullscreenProgress,
-                currentInsetsRight,
-                insets.bottom * mFullscreenProgress);
-        float fullscreenCornerRadius = isMultiWindowMode ? 0 : mWindowCornerRadius;
-        mCurrentFullscreenParams.setCornerRadius(Utilities.mapRange(mFullscreenProgress,
-                mCornerRadius, fullscreenCornerRadius) / getRecentsView().getScaleX());
-        // We scaled the thumbnail to fit the content (excluding insets) within task view width.
-        // Now that we are drawing left/right insets again, we need to scale down to fit them.
-        if (getWidth() > 0) {
-            mCurrentFullscreenParams.setScale(getWidth()
-                    / (getWidth() + currentInsetsLeft + currentInsetsRight));
-        }
+        mCurrentFullscreenParams.setProgress(
+                mFullscreenProgress,
+                getRecentsView().getScaleX(),
+                getWidth(), mActivity.getDeviceProfile(),
+                thumbnail.getPreviewPositionHelper());
 
         if (!getRecentsView().isTaskIconScaledDown(this)) {
             // Some of the items in here are dependent on the current fullscreen params, but don't
@@ -971,26 +942,51 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     /**
      * We update and subsequently draw these in {@link #setFullscreenProgress(float)}.
      */
-    static class FullscreenDrawParams {
-        RectF mCurrentDrawnInsets = new RectF();
-        float mCurrentDrawnCornerRadius;
+    public static class FullscreenDrawParams {
+
+        private final float mCornerRadius;
+        private final float mWindowCornerRadius;
+
+        public RectF mCurrentDrawnInsets = new RectF();
+        public float mCurrentDrawnCornerRadius;
         /** The current scale we apply to the thumbnail to adjust for new left/right insets. */
-        float mScale = 1;
+        public float mScale = 1;
 
-        public FullscreenDrawParams(float cornerRadius) {
-            setCornerRadius(cornerRadius);
+        public FullscreenDrawParams(Context context) {
+            mCornerRadius = TaskCornerRadius.get(context);
+            mWindowCornerRadius = QuickStepContract.getWindowCornerRadius(context.getResources());
+
+            mCurrentDrawnCornerRadius = mCornerRadius;
         }
 
-        public void setInsets(float left, float top, float right, float bottom) {
-            mCurrentDrawnInsets.set(left, top, right, bottom);
+        public FullscreenDrawParams() {
+            mCurrentDrawnCornerRadius = mWindowCornerRadius =  mCornerRadius = 0;
         }
 
-        public void setCornerRadius(float cornerRadius) {
-            mCurrentDrawnCornerRadius = cornerRadius;
+        /**
+         * Sets the progress in range [0, 1]
+         */
+        public void setProgress(float fullscreenProgress, float parentScale, int previewWidth,
+                DeviceProfile dp, PreviewPositionHelper pph) {
+            boolean isMultiWindowMode = dp.isMultiWindowMode;
+            RectF insets = pph.getInsetsToDrawInFullscreen(isMultiWindowMode);
+
+            float currentInsetsLeft = insets.left * fullscreenProgress;
+            float currentInsetsRight = insets.right * fullscreenProgress;
+            mCurrentDrawnInsets.set(currentInsetsLeft, insets.top * fullscreenProgress,
+                    currentInsetsRight, insets.bottom * fullscreenProgress);
+            float fullscreenCornerRadius = isMultiWindowMode ? 0 : mWindowCornerRadius;
+
+            mCurrentDrawnCornerRadius =
+                    Utilities.mapRange(fullscreenProgress, mCornerRadius, fullscreenCornerRadius)
+                            / parentScale;
+
+            // We scaled the thumbnail to fit the content (excluding insets) within task view width.
+            // Now that we are drawing left/right insets again, we need to scale down to fit them.
+            if (previewWidth > 0) {
+                mScale = previewWidth / (previewWidth + currentInsetsLeft + currentInsetsRight);
+            }
         }
 
-        public void setScale(float scale) {
-            mScale = scale;
-        }
     }
 }
