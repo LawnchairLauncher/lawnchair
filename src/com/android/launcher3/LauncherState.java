@@ -285,7 +285,14 @@ public abstract class LauncherState {
      *
      * 0 means completely zoomed in, without blurs. 1 is zoomed out, with blurs.
      */
-    public float getDepth(Context context) {
+    public final float getDepth(Context context) {
+        if (BaseDraggingActivity.fromContext(context).getDeviceProfile().isMultiWindowMode) {
+            return 0;
+        }
+        return getDepthUnchecked(context);
+    }
+
+    protected float getDepthUnchecked(Context context) {
         return 0f;
     }
 
