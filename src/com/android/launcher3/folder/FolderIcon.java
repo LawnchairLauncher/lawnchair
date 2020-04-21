@@ -416,6 +416,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
             mPreviewItemManager.hidePreviewItem(finalIndex, false);
             mFolder.showItem(item);
             setLabelSuggestion(nameInfos);
+            mFolder.logCurrentFolderLabelState();
             invalidate();
         }, DROP_IN_ANIMATION_DURATION);
     }
@@ -438,7 +439,6 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
         onTitleChanged(mInfo.title);
         mFolder.mFolderName.setText(mInfo.title);
         mFolder.mLauncher.getModelWriter().updateItemInDatabase(mInfo);
-        // TODO: Add logging while folder creation.
     }
 
 
