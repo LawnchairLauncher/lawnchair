@@ -205,7 +205,7 @@ public class PredictedAppIcon extends DoubleShadowBubbleTextView implements
         canvas.drawPath(mRingPath, mIconRingPaint);
         mIconRingPaint.setColor(mPlateColor);
         mIconRingPaint.setMaskFilter(null);
-        canvas.drawPath(path, mIconRingPaint);
+        canvas.drawPath(mRingPath, mIconRingPaint);
     }
 
     /**
