@@ -87,7 +87,7 @@ public class AllAppsState extends LauncherState {
     }
 
     @Override
-    public float getDepth(Context context) {
+    protected float getDepthUnchecked(Context context) {
         return 1f;
     }
 
