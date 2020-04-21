@@ -285,6 +285,9 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         }
     };
 
+    private final RecentsOrientedState.SystemRotationChangeListener mSystemRotationChangeListener =
+            enabled -> toggleOrientationEventListener();
+
     private final PinnedStackAnimationListener mIPinnedStackAnimationListener =
             new PinnedStackAnimationListener();
 
@@ -484,6 +487,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         SystemUiProxy.INSTANCE.get(getContext()).setPinnedStackAnimationListener(
                 mIPinnedStackAnimationListener);
         mOrientationState.init();
+        mOrientationState.addSystemRotationChangeListener(mSystemRotationChangeListener);
     }
 
     @Override
@@ -498,6 +502,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         mIdp.removeOnChangeListener(this);
         SystemUiProxy.INSTANCE.get(getContext()).setPinnedStackAnimationListener(null);
         mIPinnedStackAnimationListener.setActivity(null);
+        mOrientationState.removeSystemRotationChangeListener(mSystemRotationChangeListener);
         mOrientationState.destroy();
     }
 
@@ -554,13 +559,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     }
 
     public void setOverviewStateEnabled(boolean enabled) {
-        if (canEnableOverviewRotationAnimation()) {
-            if (enabled) {
-                mOrientationListener.enable();
-            } else {
-                mOrientationListener.disable();
-            }
-        }
         mOverviewStateEnabled = enabled;
         updateTaskStackListenerState();
         if (!enabled) {
@@ -568,13 +566,26 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             // its thumbnail
             mTmpRunningTask = null;
         }
+        toggleOrientationEventListener();
+    }
+
+    private void toggleOrientationEventListener() {
+        boolean canEnable = canEnableOverviewRotationAnimation() && mOverviewStateEnabled;
+        UI_HELPER_EXECUTOR.execute(() -> {
+            if (canEnable) {
+                mOrientationListener.enable();
+            } else {
+                mOrientationListener.disable();
+            }
+        });
     }
 
     private boolean canEnableOverviewRotationAnimation() {
         return supportsVerticalLandscape() // not 3P launcher
                 && !TestProtocol.sDisableSensorRotation // Ignore hardware dependency for tests..
                 && mOrientationListener.canDetectOrientation() // ..but does the hardware even work?
-                && !mOrientationState.canLauncherAutoRotate(); // launcher is going to rotate itself
+                && (mOrientationState.isSystemRotationAllowed() &&
+                    !mOrientationState.canLauncherRotate()); // launcher is going to rotate itself
     }
 
     public void onDigitalWellbeingToastShown() {
