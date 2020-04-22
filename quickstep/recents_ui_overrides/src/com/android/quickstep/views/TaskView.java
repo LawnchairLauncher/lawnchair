@@ -174,11 +174,12 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
 
     // Order in which the footers appear. Lower order appear below higher order.
     public static final int INDEX_DIGITAL_WELLBEING_TOAST = 0;
-    public static final int INDEX_PROACTIVE_SUGGEST = 1;
     private final FooterWrapper[] mFooters = new FooterWrapper[2];
     private float mFooterVerticalOffset = 0;
     private float mFooterAlpha = 1;
     private int mStackHeight;
+    private View mContextualChipWrapper;
+    private View mContextualChip;
 
     public TaskView(Context context) {
         this(context, null);
@@ -255,8 +256,14 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                     footer.animateHide();
                 }
             }
+            if (mContextualChip != null) {
+                mContextualChip.animate().scaleX(0f).scaleY(0f).setDuration(300);
+            }
             mIconView.animate().alpha(0.0f);
         } else {
+            if (mContextualChip != null) {
+                mContextualChip.animate().scaleX(1f).scaleY(1f).setDuration(300);
+            }
             mIconView.animate().alpha(1.0f);
         }
 
@@ -657,6 +664,51 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         return oldFooter;
     }
 
+    /**
+     * Sets the contextual chip.
+     *
+     * @param view Wrapper view containing contextual chip.
+     */
+    public void setContextualChip(View view) {
+        if (mContextualChipWrapper != null) {
+            removeView(mContextualChipWrapper);
+        }
+        if (view != null) {
+            mContextualChipWrapper = view;
+            LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT,
+                    LayoutParams.WRAP_CONTENT);
+            layoutParams.gravity = BOTTOM | CENTER_HORIZONTAL;
+            layoutParams.bottomMargin = (int)
+                    (((MarginLayoutParams) mSnapshotView.getLayoutParams()).bottomMargin
+                            - getExpectedViewHeight(view) + getResources().getDimension(
+                            R.dimen.chip_hint_vertical_offset));
+            mContextualChip = ((FrameLayout) mContextualChipWrapper).getChildAt(0);
+            mContextualChip.setScaleX(0f);
+            mContextualChip.setScaleY(0f);
+            addView(view, getChildCount(), layoutParams);
+            view.setAlpha(mFooterAlpha);
+            if (mContextualChip != null) {
+                mContextualChip.animate().scaleX(1f).scaleY(1f).setDuration(50);
+            }
+        }
+
+    }
+
+    /**
+     * Clears the contextual chip from TaskView.
+     *
+     * @return The contextual chip wrapper view to be recycled.
+     */
+    public View clearContextualChip() {
+        if (mContextualChipWrapper != null) {
+            removeView(mContextualChipWrapper);
+        }
+        View oldContextualChipWrapper = mContextualChipWrapper;
+        mContextualChipWrapper = null;
+        mContextualChip = null;
+        return oldContextualChipWrapper;
+    }
+
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
@@ -750,14 +802,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             mDelegate = mOldOutlineProvider == null
                     ? ViewOutlineProvider.BACKGROUND : mOldOutlineProvider;
 
-            int h = view.getLayoutParams().height;
-            if (h > 0) {
-                mExpectedHeight = h;
-            } else {
-                int m = MeasureSpec.makeMeasureSpec(MeasureSpec.EXACTLY - 1, MeasureSpec.AT_MOST);
-                view.measure(m, m);
-                mExpectedHeight = view.getMeasuredHeight();
-            }
+            mExpectedHeight = getExpectedViewHeight(view);
             mOldPaddingBottom = view.getPaddingBottom();
 
             if (mOldOutlineProvider != null) {
@@ -817,6 +862,19 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             animator.setDuration(100);
             animator.start();
         }
+    }
+
+    private int getExpectedViewHeight(View view) {
+        int expectedHeight;
+        int h = view.getLayoutParams().height;
+        if (h > 0) {
+            expectedHeight = h;
+        } else {
+            int m = MeasureSpec.makeMeasureSpec(MeasureSpec.EXACTLY - 1, MeasureSpec.AT_MOST);
+            view.measure(m, m);
+            expectedHeight = view.getMeasuredHeight();
+        }
+        return expectedHeight;
     }
 
     @Override
