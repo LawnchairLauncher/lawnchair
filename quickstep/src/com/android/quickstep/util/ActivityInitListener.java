@@ -28,7 +28,7 @@ import java.util.function.BiPredicate;
 
 public class ActivityInitListener<T extends BaseActivity> implements SchedulerCallback<T> {
 
-    private final BiPredicate<T, Boolean> mOnInitListener;
+    private BiPredicate<T, Boolean> mOnInitListener;
     private final ActivityTracker<T> mActivityTracker;
 
     private boolean mIsRegistered = false;
@@ -72,6 +72,7 @@ public class ActivityInitListener<T extends BaseActivity> implements SchedulerCa
      */
     public void unregister() {
         mIsRegistered = false;
+        mOnInitListener = null;
     }
 
     /**
