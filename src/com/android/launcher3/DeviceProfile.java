@@ -22,7 +22,6 @@ import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
-import android.util.DisplayMetrics;
 import android.view.Surface;
 
 import com.android.launcher3.CellLayout.ContainerType;
@@ -34,6 +33,7 @@ import com.android.launcher3.util.DefaultDisplay;
 public class DeviceProfile {
 
     public final InvariantDeviceProfile inv;
+    private final DefaultDisplay.Info mInfo;
 
     // Device properties
     public final boolean isTablet;
@@ -133,9 +133,9 @@ public class DeviceProfile {
     public DotRenderer mDotRendererWorkSpace;
     public DotRenderer mDotRendererAllApps;
 
-    public DeviceProfile(Context context, InvariantDeviceProfile inv,
-            Point minSize, Point maxSize,
-            int width, int height, boolean isLandscape, boolean isMultiWindowMode) {
+    public DeviceProfile(Context context, InvariantDeviceProfile inv, DefaultDisplay.Info info,
+            Point minSize, Point maxSize, int width, int height, boolean isLandscape,
+            boolean isMultiWindowMode, boolean transposeLayoutWithOrientation) {
 
         this.inv = inv;
         this.isLandscape = isLandscape;
@@ -152,8 +152,8 @@ public class DeviceProfile {
             availableHeightPx = maxSize.y;
         }
 
+        mInfo = info;
         Resources res = context.getResources();
-        DisplayMetrics dm = res.getDisplayMetrics();
 
         // Constants from resources
         isTablet = res.getBoolean(R.bool.is_tablet);
@@ -163,8 +163,7 @@ public class DeviceProfile {
         boolean isTallDevice = Float.compare(aspectRatio, TALL_DEVICE_ASPECT_RATIO_THRESHOLD) >= 0;
 
         // Some more constants
-        transposeLayoutWithOrientation =
-                res.getBoolean(R.bool.hotseat_transpose_layout_with_orientation);
+        this.transposeLayoutWithOrientation = transposeLayoutWithOrientation;
 
         context = getContext(context, isVerticalBarLayout()
                 ? Configuration.ORIENTATION_LANDSCAPE
@@ -207,13 +206,14 @@ public class DeviceProfile {
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_side_padding);
         // Add a bit of space between nav bar and hotseat in vertical bar layout.
         hotseatBarSidePaddingStartPx = isVerticalBarLayout() ? workspacePageIndicatorHeight : 0;
-        hotseatBarSizePx = ResourceUtils.pxFromDp(inv.iconSize, dm) + (isVerticalBarLayout()
+        hotseatBarSizePx = ResourceUtils.pxFromDp(inv.iconSize, mInfo.metrics)
+                + (isVerticalBarLayout()
                 ? (hotseatBarSidePaddingStartPx + hotseatBarSidePaddingEndPx)
                 : (res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_extra_vertical_size)
                         + hotseatBarTopPaddingPx + hotseatBarBottomPaddingPx));
 
         // Calculate all of the remaining variables.
-        updateAvailableDimensions(dm, res);
+        updateAvailableDimensions(res);
 
         // Now that we have all of the variables calculated, we can tune certain sizes.
         if (!isVerticalBarLayout() && isPhone && isTallDevice) {
@@ -227,7 +227,7 @@ public class DeviceProfile {
             hotseatBarBottomPaddingPx += extraSpace;
 
             // Recalculate the available dimensions using the new hotseat size.
-            updateAvailableDimensions(dm, res);
+            updateAvailableDimensions(res);
         }
         updateWorkspacePadding();
 
@@ -239,12 +239,21 @@ public class DeviceProfile {
                         IconShape.DEFAULT_PATH_SIZE);
     }
 
-    public DeviceProfile copy(Context context) {
+    public Builder toBuilder(Context context) {
         Point size = new Point(availableWidthPx, availableHeightPx);
-        return new DeviceProfile(context, inv, size, size, widthPx, heightPx, isLandscape,
-                isMultiWindowMode);
+        return new Builder(context, inv, mInfo)
+                .setSizeRange(size, size)
+                .setSize(widthPx, heightPx)
+                .setMultiWindowMode(isMultiWindowMode);
     }
 
+    public DeviceProfile copy(Context context) {
+        return toBuilder(context).build();
+    }
+
+    /**
+     * TODO: Move this to the builder as part of setMultiWindowMode
+     */
     public DeviceProfile getMultiWindowProfile(Context context, Point mwSize) {
         // We take the minimum sizes of this profile and it's multi-window variant to ensure that
         // the system decor is always excluded.
@@ -253,8 +262,11 @@ public class DeviceProfile {
         // In multi-window mode, we can have widthPx = availableWidthPx
         // and heightPx = availableHeightPx because Launcher uses the InvariantDeviceProfiles'
         // widthPx and heightPx values where it's needed.
-        DeviceProfile profile = new DeviceProfile(context, inv, mwSize, mwSize, mwSize.x, mwSize.y,
-                isLandscape, true);
+        DeviceProfile profile = toBuilder(context)
+                .setSizeRange(mwSize, mwSize)
+                .setSize(mwSize.x, mwSize.y)
+                .setMultiWindowMode(true)
+                .build();
 
         // If there isn't enough vertical cell padding with the labels displayed, hide the labels.
         float workspaceCellPaddingY = profile.getCellSize().y - profile.iconSizePx
@@ -289,27 +301,30 @@ public class DeviceProfile {
         iconTextSizePx = 0;
         iconDrawablePaddingPx = 0;
         cellHeightPx = iconSizePx;
+        autoResizeAllAppsCells();
+    }
 
-        // In normal cases, All Apps cell height should equal the Workspace cell height.
-        // Since we are removing labels from the Workspace, we need to manually compute the
-        // All Apps cell height.
+    /**
+     * Re-computes the all-apps cell size to be independent of workspace
+     */
+    public void autoResizeAllAppsCells() {
         int topBottomPadding = allAppsIconDrawablePaddingPx * (isVerticalBarLayout() ? 2 : 1);
         allAppsCellHeightPx = allAppsIconSizePx + allAppsIconDrawablePaddingPx
                 + Utilities.calculateTextHeight(allAppsIconTextSizePx)
                 + topBottomPadding * 2;
     }
 
-    private void updateAvailableDimensions(DisplayMetrics dm, Resources res) {
-        updateIconSize(1f, res, dm);
+    private void updateAvailableDimensions(Resources res) {
+        updateIconSize(1f, res);
 
         // Check to see if the icons fit within the available height.  If not, then scale down.
         float usedHeight = (cellHeightPx * inv.numRows);
         int maxHeight = (availableHeightPx - getTotalWorkspacePadding().y);
         if (usedHeight > maxHeight) {
             float scale = maxHeight / usedHeight;
-            updateIconSize(scale, res, dm);
+            updateIconSize(scale, res);
         }
-        updateAvailableFolderCellDimensions(dm, res);
+        updateAvailableFolderCellDimensions(res);
     }
 
     /**
@@ -317,12 +332,13 @@ public class DeviceProfile {
      * iconTextSizePx, iconDrawablePaddingPx, cellWidth/Height, allApps* variants,
      * hotseat sizes, workspaceSpringLoadedShrinkFactor, folderIconSizePx, and folderIconOffsetYPx.
      */
-    private void updateIconSize(float scale, Resources res, DisplayMetrics dm) {
+    private void updateIconSize(float scale, Resources res) {
         // Workspace
         final boolean isVerticalLayout = isVerticalBarLayout();
         float invIconSizeDp = isVerticalLayout ? inv.landscapeIconSize : inv.iconSize;
-        iconSizePx = Math.max(1, (int) (ResourceUtils.pxFromDp(invIconSizeDp, dm) * scale));
-        iconTextSizePx = (int) (Utilities.pxFromSp(inv.iconTextSize, dm) * scale);
+        iconSizePx = Math.max(1, (int) (ResourceUtils.pxFromDp(invIconSizeDp, mInfo.metrics)
+                * scale));
+        iconTextSizePx = (int) (Utilities.pxFromSp(inv.iconTextSize, mInfo.metrics) * scale);
         iconDrawablePaddingPx = (int) (iconDrawablePaddingOriginalPx * scale);
 
         cellHeightPx = iconSizePx + iconDrawablePaddingPx
@@ -340,8 +356,8 @@ public class DeviceProfile {
 
         // All apps
         if (allAppsHasDifferentNumColumns()) {
-            allAppsIconSizePx = ResourceUtils.pxFromDp(inv.allAppsIconSize, dm);
-            allAppsIconTextSizePx = Utilities.pxFromSp(inv.allAppsIconTextSize, dm);
+            allAppsIconSizePx = ResourceUtils.pxFromDp(inv.allAppsIconSize, mInfo.metrics);
+            allAppsIconTextSizePx = Utilities.pxFromSp(inv.allAppsIconTextSize, mInfo.metrics);
             allAppsCellHeightPx = getCellSize(inv.numAllAppsColumns, inv.numAllAppsColumns).y;
             allAppsIconDrawablePaddingPx = iconDrawablePaddingOriginalPx;
         } else {
@@ -381,12 +397,12 @@ public class DeviceProfile {
         folderIconOffsetYPx = (iconSizePx - folderIconSizePx) / 2;
     }
 
-    private void updateAvailableFolderCellDimensions(DisplayMetrics dm, Resources res) {
+    private void updateAvailableFolderCellDimensions(Resources res) {
         int folderBottomPanelSize = res.getDimensionPixelSize(R.dimen.folder_label_padding_top)
                 + res.getDimensionPixelSize(R.dimen.folder_label_padding_bottom)
                 + Utilities.calculateTextHeight(res.getDimension(R.dimen.folder_label_text_size));
 
-        updateFolderCellSize(1f, dm, res);
+        updateFolderCellSize(1f, res);
 
         // Don't let the folder get too close to the edges of the screen.
         int folderMargin = edgeMarginPx * 2;
@@ -405,12 +421,12 @@ public class DeviceProfile {
 
         float scale = Math.min(scaleX, scaleY);
         if (scale < 1f) {
-            updateFolderCellSize(scale, dm, res);
+            updateFolderCellSize(scale, res);
         }
     }
 
-    private void updateFolderCellSize(float scale, DisplayMetrics dm, Resources res) {
-        folderChildIconSizePx = (int) (ResourceUtils.pxFromDp(inv.iconSize, dm) * scale);
+    private void updateFolderCellSize(float scale, Resources res) {
+        folderChildIconSizePx = (int) (ResourceUtils.pxFromDp(inv.iconSize, mInfo.metrics) * scale);
         folderChildTextSizePx =
                 (int) (res.getDimensionPixelSize(R.dimen.folder_child_text_size) * scale);
 
@@ -627,4 +643,55 @@ public class DeviceProfile {
          */
         void onDeviceProfileChanged(DeviceProfile dp);
     }
+
+    public static class Builder {
+        private Context mContext;
+        private InvariantDeviceProfile mInv;
+        private DefaultDisplay.Info mInfo;
+
+        private Point mMinSize, mMaxSize;
+        private int mWidth, mHeight;
+
+        private boolean mIsLandscape;
+        private boolean mIsMultiWindowMode = false;
+        private boolean mTransposeLayoutWithOrientation;
+
+        public Builder(Context context, InvariantDeviceProfile inv, DefaultDisplay.Info info) {
+            mContext = context;
+            mInv = inv;
+            mInfo = info;
+            mTransposeLayoutWithOrientation = context.getResources()
+                    .getBoolean(R.bool.hotseat_transpose_layout_with_orientation);
+        }
+
+        public Builder setSizeRange(Point minSize, Point maxSize) {
+            mMinSize = minSize;
+            mMaxSize = maxSize;
+            return this;
+        }
+
+        public Builder setSize(int width, int height) {
+            mWidth = width;
+            mHeight = height;
+            mIsLandscape = mWidth > mHeight;
+            return this;
+        }
+
+        public Builder setMultiWindowMode(boolean isMultiWindowMode) {
+            mIsMultiWindowMode = isMultiWindowMode;
+            return this;
+        }
+
+        public Builder setTransposeLayoutWithOrientation(boolean transposeLayoutWithOrientation) {
+            mTransposeLayoutWithOrientation = transposeLayoutWithOrientation;
+            return this;
+        }
+
+        public DeviceProfile build() {
+            return new DeviceProfile(mContext, mInv, mInfo, mMinSize, mMaxSize,
+                    mWidth, mHeight, mIsLandscape, mIsMultiWindowMode,
+                    mTransposeLayoutWithOrientation);
+        }
+    }
+
 }

@@ -28,6 +28,7 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -159,10 +160,12 @@ public class InvariantDeviceProfile {
 
     @TargetApi(23)
     private InvariantDeviceProfile(Context context) {
-        String gridName = Utilities.getPrefs(context).getBoolean(GRID_OPTIONS_PREFERENCE_KEY, false)
-                ? Utilities.getPrefs(context).getString(KEY_IDP_GRID_NAME, null)
-                : null;
-        initGrid(context, gridName);
+        String gridName = getCurrentGridName(context);
+        String newGridName = initGrid(context, gridName);
+        if (!newGridName.equals(gridName)) {
+            Utilities.getPrefs(context).edit().putString(KEY_IDP_GRID_NAME, newGridName).apply();
+        }
+
         mConfigMonitor = new ConfigMonitor(context,
                 APPLY_CONFIG_AT_RUNTIME.get() ? this::onConfigChanged : this::killProcess);
         mOverlayMonitor = new OverlayMonitor(context);
@@ -178,17 +181,36 @@ public class InvariantDeviceProfile {
         }
     }
 
-/**
+    /**
      * This constructor should NOT have any monitors by design.
      */
     public InvariantDeviceProfile(Context context, Display display) {
-        initGrid(context, null, new Info(display));
+        // Ensure that the main device profile is initialized
+        InvariantDeviceProfile originalProfile = INSTANCE.get(context);
+        String gridName = getCurrentGridName(context);
+
+        // Get the display info based on default display and interpolate it to existing display
+        DisplayOption defaultDisplayOption = invDistWeightedInterpolate(
+                DefaultDisplay.INSTANCE.get(context).getInfo(),
+                getPredefinedDeviceProfiles(context, gridName));
+
+        Info myInfo = new Info(display);
+        DisplayOption myDisplayOption = invDistWeightedInterpolate(
+                myInfo, getPredefinedDeviceProfiles(context, gridName));
+
+        DisplayOption result = new DisplayOption(defaultDisplayOption.grid)
+                .add(myDisplayOption);
+        result.iconSize = defaultDisplayOption.iconSize;
+        result.landscapeIconSize = defaultDisplayOption.landscapeIconSize;
+        result.allAppsIconSize = Math.min(
+                defaultDisplayOption.allAppsIconSize, myDisplayOption.allAppsIconSize);
+        initGrid(context, myInfo, result);
     }
 
     public static String getCurrentGridName(Context context) {
-        return Utilities.getPrefs(context).getBoolean(GRID_OPTIONS_PREFERENCE_KEY, false)
-                ? Utilities.getPrefs(context).getString(KEY_IDP_GRID_NAME, null)
-                : null;
+        SharedPreferences prefs = Utilities.getPrefs(context);
+        return prefs.getBoolean(GRID_OPTIONS_PREFERENCE_KEY, false)
+                ? prefs.getString(KEY_IDP_GRID_NAME, null) : null;
     }
 
     /**
@@ -203,27 +225,17 @@ public class InvariantDeviceProfile {
     }
 
     private String initGrid(Context context, String gridName) {
-        return initGrid(context, gridName, DefaultDisplay.INSTANCE.get(context).getInfo());
+        DefaultDisplay.Info displayInfo = DefaultDisplay.INSTANCE.get(context).getInfo();
+        ArrayList<DisplayOption> allOptions = getPredefinedDeviceProfiles(context, gridName);
+
+        DisplayOption displayOption = invDistWeightedInterpolate(displayInfo, allOptions);
+        initGrid(context, displayInfo, displayOption);
+        return displayOption.grid.name;
     }
 
-    private String initGrid(Context context, String gridName, DefaultDisplay.Info displayInfo) {
-        Point smallestSize = new Point(displayInfo.smallestSize);
-        Point largestSize = new Point(displayInfo.largestSize);
-
-        ArrayList<DisplayOption> allOptions = getPredefinedDeviceProfiles(context, gridName);
-        // This guarantees that width < height
-        float minWidthDps = Utilities.dpiFromPx(Math.min(smallestSize.x, smallestSize.y),
-                displayInfo.metrics);
-        float minHeightDps = Utilities.dpiFromPx(Math.min(largestSize.x, largestSize.y),
-                displayInfo.metrics);
-        // Sort the profiles based on the closeness to the device size
-        Collections.sort(allOptions, (a, b) ->
-                Float.compare(dist(minWidthDps, minHeightDps, a.minWidthDps, a.minHeightDps),
-                        dist(minWidthDps, minHeightDps, b.minWidthDps, b.minHeightDps)));
-        DisplayOption interpolatedDisplayOption =
-                invDistWeightedInterpolate(minWidthDps,  minHeightDps, allOptions);
-
-        GridOption closestProfile = allOptions.get(0).grid;
+    private void initGrid(
+            Context context, DefaultDisplay.Info displayInfo, DisplayOption displayOption) {
+        GridOption closestProfile = displayOption.grid;
         numRows = closestProfile.numRows;
         numColumns = closestProfile.numColumns;
         numHotseatIcons = closestProfile.numHotseatIcons;
@@ -236,21 +248,16 @@ public class InvariantDeviceProfile {
 
         mExtraAttrs = closestProfile.extraAttrs;
 
-        if (!closestProfile.name.equals(gridName)) {
-            Utilities.getPrefs(context).edit()
-                    .putString(KEY_IDP_GRID_NAME, closestProfile.name).apply();
-        }
-
-        iconSize = interpolatedDisplayOption.iconSize;
+        iconSize = displayOption.iconSize;
         iconShapePath = getIconShapePath(context);
-        landscapeIconSize = interpolatedDisplayOption.landscapeIconSize;
+        landscapeIconSize = displayOption.landscapeIconSize;
         iconBitmapSize = ResourceUtils.pxFromDp(iconSize, displayInfo.metrics);
-        iconTextSize = interpolatedDisplayOption.iconTextSize;
+        iconTextSize = displayOption.iconTextSize;
         fillResIconDpi = getLauncherIconDensity(iconBitmapSize);
 
         if (Utilities.getPrefs(context).getBoolean(GRID_OPTIONS_PREFERENCE_KEY, false)) {
-            allAppsIconSize = interpolatedDisplayOption.allAppsIconSize;
-            allAppsIconTextSize = interpolatedDisplayOption.allAppsIconTextSize;
+            allAppsIconSize = displayOption.allAppsIconSize;
+            allAppsIconTextSize = displayOption.allAppsIconTextSize;
         } else {
             allAppsIconSize = iconSize;
             allAppsIconTextSize = iconTextSize;
@@ -266,10 +273,12 @@ public class InvariantDeviceProfile {
         int smallSide = Math.min(realSize.x, realSize.y);
         int largeSide = Math.max(realSize.x, realSize.y);
 
-        landscapeProfile = new DeviceProfile(context, this, smallestSize, largestSize,
-                largeSide, smallSide, true /* isLandscape */, false /* isMultiWindowMode */);
-        portraitProfile = new DeviceProfile(context, this, smallestSize, largestSize,
-                smallSide, largeSide, false /* isLandscape */, false /* isMultiWindowMode */);
+        DeviceProfile.Builder builder = new DeviceProfile.Builder(context, this, displayInfo)
+                .setSizeRange(new Point(displayInfo.smallestSize),
+                        new Point(displayInfo.largestSize));
+
+        landscapeProfile = builder.setSize(largeSide, smallSide).build();
+        portraitProfile = builder.setSize(smallSide, largeSide).build();
 
         // We need to ensure that there is enough extra space in the wallpaper
         // for the intended parallax effects
@@ -283,8 +292,6 @@ public class InvariantDeviceProfile {
 
         ComponentName cn = new ComponentName(context.getPackageName(), getClass().getName());
         defaultWidgetPadding = AppWidgetHostView.getDefaultPaddingForWidget(context, cn, null);
-
-        return closestProfile.name;
     }
 
     @Nullable
@@ -454,6 +461,41 @@ public class InvariantDeviceProfile {
     }
 
     @VisibleForTesting
+    static DisplayOption invDistWeightedInterpolate(
+            DefaultDisplay.Info displayInfo, ArrayList<DisplayOption> points) {
+        Point smallestSize = new Point(displayInfo.smallestSize);
+        Point largestSize = new Point(displayInfo.largestSize);
+
+        // This guarantees that width < height
+        float width = Utilities.dpiFromPx(Math.min(smallestSize.x, smallestSize.y),
+                displayInfo.metrics);
+        float height = Utilities.dpiFromPx(Math.min(largestSize.x, largestSize.y),
+                displayInfo.metrics);
+
+        // Sort the profiles based on the closeness to the device size
+        Collections.sort(points, (a, b) ->
+                Float.compare(dist(width, height, a.minWidthDps, a.minHeightDps),
+                        dist(width, height, b.minWidthDps, b.minHeightDps)));
+
+        GridOption closestOption = points.get(0).grid;
+        float weights = 0;
+
+        DisplayOption p = points.get(0);
+        if (dist(width, height, p.minWidthDps, p.minHeightDps) == 0) {
+            return p;
+        }
+
+        DisplayOption out = new DisplayOption(closestOption);
+        for (int i = 0; i < points.size() && i < KNEARESTNEIGHBOR; ++i) {
+            p = points.get(i);
+            float w = weight(width, height, p.minWidthDps, p.minHeightDps, WEIGHT_POWER);
+            weights += w;
+            out.add(new DisplayOption().add(p).multiply(w));
+        }
+        return out.multiply(1.0f / weights);
+    }
+
+    @VisibleForTesting
     static DisplayOption invDistWeightedInterpolate(float width, float height,
             ArrayList<DisplayOption> points) {
         float weights = 0;
@@ -573,7 +615,6 @@ public class InvariantDeviceProfile {
     private static final class DisplayOption {
         private final GridOption grid;
 
-        private final String name;
         private final float minWidthDps;
         private final float minHeightDps;
         private final boolean canBeDefault;
@@ -590,7 +631,6 @@ public class InvariantDeviceProfile {
             TypedArray a = context.obtainStyledAttributes(
                     attrs, R.styleable.ProfileDisplayOption);
 
-            name = a.getString(R.styleable.ProfileDisplayOption_name);
             minWidthDps = a.getFloat(R.styleable.ProfileDisplayOption_minWidthDps, 0);
             minHeightDps = a.getFloat(R.styleable.ProfileDisplayOption_minHeightDps, 0);
             canBeDefault = a.getBoolean(
@@ -609,8 +649,11 @@ public class InvariantDeviceProfile {
         }
 
         DisplayOption() {
-            grid = null;
-            name = null;
+            this(null);
+        }
+
+        DisplayOption(GridOption grid) {
+            this.grid = grid;
             minWidthDps = 0;
             minHeightDps = 0;
             canBeDefault = false;
