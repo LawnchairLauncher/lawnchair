@@ -164,6 +164,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     @Thunk final ArrayList<View> mItemsInReadingOrder = new ArrayList<View>();
 
     private AnimatorSet mCurrentAnimator;
+    private boolean mIsAnimatingClosed = false;
 
     protected final Launcher mLauncher;
     protected DragController mDragController;
@@ -331,7 +332,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
                         .map(info -> info.suggestedFolderNames)
                         .map(folderNames -> (FolderNameInfo[]) folderNames
                                 .getParcelableArrayExtra(FolderInfo.EXTRA_FOLDER_SUGGESTIONS))
-                        .ifPresent(nameInfos -> showLabelSuggestion(nameInfos, false));
+                        .ifPresent(nameInfos -> showLabelSuggestions(nameInfos));
             }
             mFolderName.setHint("");
             mIsEditingName = true;
@@ -457,24 +458,12 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         });
     }
 
-    /**
-     * Show suggested folder title in FolderEditText, push InputMethodManager suggestions and save
-     * the suggestedFolderNames.
-     */
-    public void showSuggestedTitle(FolderNameInfo[] nameInfos) {
-        if (FeatureFlags.FOLDER_NAME_SUGGEST.get()) {
-            if (isEmpty(mFolderName.getText().toString())
-                    && !mInfo.hasOption(FLAG_MANUAL_FOLDER_NAME)) {
-                showLabelSuggestion(nameInfos, true);
-            }
-        }
-    }
 
     /**
      * Show suggested folder title in FolderEditText if the first suggestion is non-empty, push
-     * InputMethodManager suggestions.
+     * rest of the suggestions to InputMethodManager.
      */
-    private void showLabelSuggestion(FolderNameInfo[] nameInfos, boolean animate) {
+    private void showLabelSuggestions(FolderNameInfo[] nameInfos) {
         if (nameInfos == null) {
             return;
         }
@@ -493,9 +482,6 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
                     mFolderName.setHint("");
                     mFolderName.setText(firstLabel);
                 }
-            }
-            if (animate) {
-                animateOpen(mInfo.contents, 0, true);
             }
             mFolderName.showKeyboard();
             mFolderName.displayCompletions(
@@ -744,15 +730,24 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     }
 
     private void animateClosed() {
+        if (mIsAnimatingClosed) {
+            return;
+        }
         if (mCurrentAnimator != null && mCurrentAnimator.isRunning()) {
             mCurrentAnimator.cancel();
         }
         AnimatorSet a = new FolderAnimationManager(this, false /* isOpening */).getAnimator();
         a.addListener(new AnimatorListenerAdapter() {
             @Override
+            public void onAnimationStart(Animator animation) {
+                mIsAnimatingClosed = true;
+            }
+
+            @Override
             public void onAnimationEnd(Animator animation) {
                 closeComplete(true);
                 announceAccessibilityChanges();
+                mIsAnimatingClosed = false;
             }
         });
         startAnimation(a);

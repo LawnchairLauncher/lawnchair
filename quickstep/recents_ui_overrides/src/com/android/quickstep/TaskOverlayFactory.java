@@ -16,7 +16,6 @@
 
 package com.android.quickstep;
 
-import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_ACTIONS;
 import static com.android.launcher3.util.MainThreadInitializedObject.forOverride;
 
 import android.content.Context;
@@ -84,16 +83,24 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
     /**
      * Overlay on each task handling Overview Action Buttons.
      */
-    public static class TaskOverlay {
+    public static class TaskOverlay<T extends OverviewActionsView> {
 
         private final Context mApplicationContext;
-        private OverviewActionsView mActionsView;
-        private final TaskThumbnailView mThumbnailView;
+        protected final TaskThumbnailView mThumbnailView;
 
+        private T mActionsView;
 
         protected TaskOverlay(TaskThumbnailView taskThumbnailView) {
             mApplicationContext = taskThumbnailView.getContext().getApplicationContext();
             mThumbnailView = taskThumbnailView;
+        }
+
+        protected T getActionsView() {
+            if (mActionsView == null) {
+                mActionsView = BaseActivity.fromContext(mThumbnailView.getContext()).findViewById(
+                        R.id.overview_actions_view);
+            }
+            return mActionsView;
         }
 
         /**
@@ -102,28 +109,20 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
         public void initOverlay(Task task, ThumbnailData thumbnail, Matrix matrix) {
             ImageActionsApi imageApi = new ImageActionsApi(
                     mApplicationContext, mThumbnailView::getThumbnail);
+            getActionsView().setCallbacks(new OverlayUICallbacks() {
+                @Override
+                public void onShare() {
+                    imageApi.startShareActivity();
+                }
 
-            if (mActionsView == null && ENABLE_OVERVIEW_ACTIONS.get()
-                    && SysUINavigationMode.removeShelfFromOverview(mApplicationContext)) {
-                mActionsView = BaseActivity.fromContext(mThumbnailView.getContext()).findViewById(
-                        R.id.overview_actions_view);
-            }
-            if (mActionsView != null) {
-                mActionsView.setListener(new OverviewActionsView.Listener() {
-                    @Override
-                    public void onShare() {
-                        imageApi.startShareActivity();
-                    }
-
-                    @Override
-                    public void onScreenshot() {
-                        imageApi.saveScreenshot(mThumbnailView.getThumbnail(),
-                                getTaskSnapshotBounds(), getTaskSnapshotInsets(), task.key.id);
-                    }
-                });
-            }
-
+                @Override
+                public void onScreenshot() {
+                    imageApi.saveScreenshot(mThumbnailView.getThumbnail(),
+                            getTaskSnapshotBounds(), getTaskSnapshotInsets(), task.key.id);
+                }
+            });
         }
+
 
         /**
          * Called when the overlay is no longer used.
@@ -160,5 +159,17 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
             // TODO: return the real insets
             return Insets.of(0, 0, 0, 0);
         }
+    }
+
+    /**
+     * Callbacks the Ui can generate. This is the only way for a Ui to call methods on the
+     * controller.
+     */
+    public interface OverlayUICallbacks {
+        /** User has indicated they want to share the current task. */
+        void onShare();
+
+        /** User has indicated they want to screenshot the current task. */
+        void onScreenshot();
     }
 }

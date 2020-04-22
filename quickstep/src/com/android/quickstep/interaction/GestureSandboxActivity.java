@@ -15,6 +15,8 @@
  */
 package com.android.quickstep.interaction;
 
+import static com.android.quickstep.interaction.TutorialFragment.KEY_TUTORIAL_TYPE;
+
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -26,26 +28,26 @@ import android.view.Window;
 import androidx.fragment.app.FragmentActivity;
 
 import com.android.launcher3.R;
-import com.android.quickstep.interaction.BackGestureTutorialFragment.TutorialStep;
-import com.android.quickstep.interaction.BackGestureTutorialFragment.TutorialType;
+import com.android.quickstep.interaction.TutorialController.TutorialType;
 
 import java.util.List;
 
 /** Shows the gesture interactive sandbox in full screen mode. */
 public class GestureSandboxActivity extends FragmentActivity {
 
-    private BackGestureTutorialFragment mFragment;
+    private static final String LOG_TAG = "GestureSandboxActivity";
+
+    private TutorialFragment mFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.back_gesture_tutorial_activity);
+        setContentView(R.layout.gesture_tutorial_activity);
 
-        mFragment = BackGestureTutorialFragment.newInstance(
-            TutorialStep.ENGAGED, TutorialType.RIGHT_EDGE_BACK_NAVIGATION);
+        mFragment = TutorialFragment.newInstance(getTutorialType(getIntent().getExtras()));
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.back_gesture_tutorial_fragment_container, mFragment)
+                .add(R.id.gesture_tutorial_fragment_container, mFragment)
                 .commit();
     }
 
@@ -67,6 +69,19 @@ public class GestureSandboxActivity extends FragmentActivity {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
             hideSystemUI();
+        }
+    }
+
+    private TutorialType getTutorialType(Bundle extras) {
+        TutorialType defaultType = TutorialType.RIGHT_EDGE_BACK_NAVIGATION;
+
+        if (extras == null || !extras.containsKey(KEY_TUTORIAL_TYPE)) {
+            return defaultType;
+        }
+        try {
+            return TutorialType.valueOf(extras.getString(KEY_TUTORIAL_TYPE, ""));
+        } catch (IllegalArgumentException e) {
+            return defaultType;
         }
     }
 

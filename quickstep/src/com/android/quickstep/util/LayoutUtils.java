@@ -63,7 +63,7 @@ public class LayoutUtils {
             if (ENABLE_OVERVIEW_ACTIONS.get() && removeShelfFromOverview(context)) {
                 //TODO: this needs to account for the swipe gesture height and accessibility
                 // UI when shown.
-                extraSpace = 0;
+                extraSpace = res.getDimensionPixelSize(R.dimen.overview_actions_height);
             } else {
                 extraSpace = getDefaultSwipeHeight(context, dp) + dp.workspacePageIndicatorHeight
                         + res.getDimensionPixelSize(
@@ -75,7 +75,14 @@ public class LayoutUtils {
     }
 
     public static void calculateFallbackTaskSize(Context context, DeviceProfile dp, Rect outRect) {
-        calculateTaskSize(context, dp, 0, MULTI_WINDOW_STRATEGY_DEVICE_PROFILE, outRect);
+        float extraSpace;
+        if (ENABLE_OVERVIEW_ACTIONS.get() && removeShelfFromOverview(context)) {
+            extraSpace = context.getResources()
+                    .getDimensionPixelSize(R.dimen.overview_actions_height);
+        } else {
+            extraSpace = 0;
+        }
+        calculateTaskSize(context, dp, extraSpace, MULTI_WINDOW_STRATEGY_DEVICE_PROFILE, outRect);
     }
 
     @AnyThread
@@ -123,8 +130,6 @@ public class LayoutUtils {
         }
 
         float topIconMargin = res.getDimension(R.dimen.task_thumbnail_top_margin);
-        float bottomMargin = thumbnailBottomMargin(context);
-
         float paddingVert = overviewActionsEnabled && removeShelfFromOverview(context)
                 ? 0 : res.getDimension(R.dimen.task_card_vert_space);
 
@@ -134,7 +139,7 @@ public class LayoutUtils {
         int launcherVisibleHeight = dp.heightPx - insets.top - insets.bottom;
 
         float availableHeight = launcherVisibleHeight
-                - topIconMargin - extraVerticalSpace - paddingVert - bottomMargin;
+                - topIconMargin - extraVerticalSpace - paddingVert;
         float availableWidth = launcherVisibleWidth - paddingHorz;
 
         float scale = Math.min(availableWidth / taskWidth, availableHeight / taskHeight);
@@ -144,7 +149,7 @@ public class LayoutUtils {
         // Center in the visible space
         float x = insets.left + (launcherVisibleWidth - outWidth) / 2;
         float y = insets.top + Math.max(topIconMargin,
-                (launcherVisibleHeight - extraVerticalSpace - outHeight - bottomMargin) / 2);
+                (launcherVisibleHeight - extraVerticalSpace - outHeight) / 2);
         outRect.set(Math.round(x), Math.round(y),
                 Math.round(x) + Math.round(outWidth), Math.round(y) + Math.round(outHeight));
     }
@@ -163,14 +168,16 @@ public class LayoutUtils {
     }
 
     /**
-     * Get the margin that the task thumbnail view should use.
-     * @return the margin in pixels.
+     * Gets the scale that should be applied to the TaskView so that it matches the target
      */
-    public static int thumbnailBottomMargin(Context context) {
-        if (ENABLE_OVERVIEW_ACTIONS.get() && removeShelfFromOverview(context)) {
-            return context.getResources().getDimensionPixelSize(R.dimen.overview_actions_height);
+    public static float getTaskScale(RecentsOrientedState orientedState,
+            float srcWidth, float srcHeight, float targetWidth, float targetHeight) {
+        if (orientedState == null
+                || orientedState.isHomeRotationAllowed()
+                || orientedState.isDisplayPhoneNatural()) {
+            return srcWidth / targetWidth;
         } else {
-            return 0;
+            return srcHeight / targetHeight;
         }
     }
 }

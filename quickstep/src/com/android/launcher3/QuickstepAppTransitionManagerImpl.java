@@ -291,6 +291,15 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                     launcherContentAnimator.second.run();
                 }
             });
+        } else {
+            anim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    mLauncher.addOnResumeCallback(() ->
+                            ObjectAnimator.ofFloat(mLauncher.getDepthController(), DEPTH,
+                            mLauncher.getStateManager().getState().getDepth(mLauncher)).start());
+                }
+            });
         }
     }
 
