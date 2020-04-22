@@ -42,7 +42,6 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.shortcuts.ShortcutRequest;
-import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.FlagOp;
 import com.android.launcher3.util.IntSparseArrayMap;
 import com.android.launcher3.util.ItemInfoMatcher;
@@ -86,10 +85,6 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
 
     @Override
     public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList appsList) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.APP_NOT_DISABLED, "PackageUpdatedTask: " + mOp + ", " +
-                    Arrays.toString(mPackages));
-        }
         final Context context = app.getContext();
         final IconCache iconCache = app.getIconCache();
 
