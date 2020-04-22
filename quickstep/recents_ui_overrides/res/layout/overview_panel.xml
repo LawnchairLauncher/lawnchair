@@ -13,12 +13,20 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.quickstep.views.LauncherRecentsView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:accessibilityPaneTitle="@string/accessibility_recent_apps"
-    android:clipChildren="false"
-    android:clipToPadding="false"
-    android:theme="@style/HomeScreenElementTheme"
-    android:visibility="invisible" />
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <com.android.quickstep.views.LauncherRecentsView
+        android:id="@+id/overview_panel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:accessibilityPaneTitle="@string/accessibility_recent_apps"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:theme="@style/HomeScreenElementTheme"
+        android:visibility="invisible" />
+
+    <include
+        android:id="@+id/overview_actions_view"
+        layout="@layout/overview_actions_container" />
+
+</merge>
