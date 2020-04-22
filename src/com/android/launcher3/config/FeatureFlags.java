@@ -159,10 +159,6 @@ public final class FeatureFlags {
             "ALWAYS_USE_HARDWARE_OPTIMIZATION_FOR_FOLDER_ANIMATIONS", false,
             "Always use hardware optimization for folder animations.");
 
-    public static final BooleanFlag ENABLE_FIXED_ROTATION_TRANSFORM = getDebugFlag(
-            FLAG_ENABLE_FIXED_ROTATION_TRANSFORM, true,
-            "Launch/close apps without rotation animation. Fix Launcher to portrait");
-
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {
             for (DebugFlag flag : sDebugFlags) {

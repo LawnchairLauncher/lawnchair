@@ -15,9 +15,13 @@
  */
 package com.android.quickstep.util;
 
+import static android.view.Surface.ROTATION_0;
+
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
+import static com.android.launcher3.states.RotationHelper.deltaRotation;
 import static com.android.launcher3.touch.PagedOrientationHandler.MATRIX_POST_TRANSLATE;
 import static com.android.quickstep.util.AppWindowAnimationHelper.applySurfaceParams;
+import static com.android.quickstep.util.RecentsOrientedState.isFixedRotationTransformEnabled;
 import static com.android.quickstep.util.RecentsOrientedState.postDisplayRotation;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING;
@@ -33,7 +37,6 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.Interpolators;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.RecentsAnimationTargets;
@@ -91,11 +94,17 @@ public class TaskViewSimulator {
     private boolean mLayoutValid = false;
     private boolean mScrollValid = false;
 
-    public TaskViewSimulator(Context context, TaskSizeProvider sizeProvider) {
+    public TaskViewSimulator(Context context, TaskSizeProvider sizeProvider,
+            boolean rotationSupportedByActivity) {
         mContext = context;
         mSizeProvider = sizeProvider;
         mPositionHelper = new PreviewPositionHelper(context);
-        mOrientationState = new RecentsOrientedState(context);
+
+        mOrientationState = new RecentsOrientedState(context, rotationSupportedByActivity,
+                i -> { });
+        // We do not need to attach listeners as the simulator is created just for the gesture
+        // duration, and any settings are unlikely to change during this
+        mOrientationState.initWithoutListeners();
 
         mCurrentFullscreenParams = new FullscreenDrawParams(context);
         mPageSpacing = context.getResources().getDimensionPixelSize(R.dimen.recents_page_spacing);
@@ -114,11 +123,15 @@ public class TaskViewSimulator {
      * @see com.android.quickstep.views.RecentsView#setLayoutRotation(int, int)
      */
     public void setLayoutRotation(int touchRotation, int displayRotation) {
-        if (!FeatureFlags.ENABLE_FIXED_ROTATION_TRANSFORM.get()) {
-            return;
+        int launcherRotation;
+        if (!mOrientationState.isMultipleOrientationSupportedByDevice()
+                || mOrientationState.isHomeRotationAllowed()) {
+            launcherRotation = displayRotation;
+        } else {
+            launcherRotation = ROTATION_0;
         }
-        mOrientationState.update(touchRotation, displayRotation,
-                mOrientationState.getLauncherRotation());
+
+        mOrientationState.update(touchRotation, displayRotation, launcherRotation);
         mLayoutValid = false;
     }
 
@@ -180,7 +193,7 @@ public class TaskViewSimulator {
             mLayoutValid = true;
 
             getFullScreenScale();
-            mThumbnailData.rotation = FeatureFlags.ENABLE_FIXED_ROTATION_TRANSFORM.get()
+            mThumbnailData.rotation = isFixedRotationTransformEnabled(mContext)
                     ? mOrientationState.getDisplayRotation() : mPositionHelper.getCurrentRotation();
 
             mPositionHelper.updateThumbnailMatrix(mThumbnailPosition, mThumbnailData,
@@ -226,7 +239,8 @@ public class TaskViewSimulator {
 
         // Apply recensView matrix
         mMatrix.postScale(recentsViewScale.value, recentsViewScale.value, mPivot.x, mPivot.y);
-        postDisplayRotation(mOrientationState.getDisplayRotation(),
+        postDisplayRotation(deltaRotation(
+                mOrientationState.getLauncherRotation(), mOrientationState.getDisplayRotation()),
                 mDp.widthPx, mDp.heightPx, mMatrix);
 
         // Crop rect is the inverse of thumbnail matrix
