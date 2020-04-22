@@ -28,9 +28,7 @@ import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.CancellationSignal;
-import android.view.View;
 
-import com.android.launcher3.LauncherState.ScaleAndTranslation;
 import com.android.launcher3.LauncherStateManager.StateHandler;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.WellbeingModel;
@@ -39,7 +37,6 @@ import com.android.launcher3.proxy.ProxyActivityStarter;
 import com.android.launcher3.proxy.StartActivityParams;
 import com.android.launcher3.statehandlers.BackButtonAlphaHandler;
 import com.android.launcher3.statehandlers.DepthController;
-import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.uioverrides.RecentsViewStateController;
 import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.util.UiThreadHelper;
@@ -52,6 +49,7 @@ import com.android.quickstep.util.QuickstepOnboardingPrefs;
 import com.android.quickstep.util.RemoteAnimationProvider;
 import com.android.quickstep.util.RemoteFadeOutAnimationListener;
 import com.android.quickstep.util.ShelfPeekAnim;
+import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
@@ -75,7 +73,7 @@ public abstract class BaseQuickstepLauncher extends Launcher
 
     private final ShelfPeekAnim mShelfPeekAnim = new ShelfPeekAnim(this);
 
-    private View mActionsView;
+    private OverviewActionsView mActionsView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -164,19 +162,17 @@ public abstract class BaseQuickstepLauncher extends Launcher
     protected void setupViews() {
         super.setupViews();
         mActionsView = findViewById(R.id.overview_actions_view);
-
+        ((RecentsView) getOverviewPanel()).init(mActionsView);
 
         if (FeatureFlags.ENABLE_OVERVIEW_ACTIONS.get() && removeShelfFromOverview(this)) {
             // Overview is above all other launcher elements, including qsb, so move it to the top.
             getOverviewPanel().bringToFront();
-            if (mActionsView != null) {
-                mActionsView.bringToFront();
-            }
+            mActionsView.bringToFront();
         }
     }
 
-    public View getActionsView() {
-        return mActionsView;
+    public <T extends OverviewActionsView> T getActionsView() {
+        return (T) mActionsView;
     }
 
     @Override
@@ -207,17 +203,6 @@ public abstract class BaseQuickstepLauncher extends Launcher
     }
 
     @Override
-    protected ScaleAndTranslation getOverviewScaleAndTranslationForNormalState() {
-        if (SysUINavigationMode.getMode(this) == Mode.NO_BUTTON) {
-            PagedOrientationHandler layoutVertical =
-                ((RecentsView)getOverviewPanel()).getPagedViewOrientedState().getOrientationHandler();
-            return layoutVertical.getScaleAndTranslation(getDeviceProfile(),
-                getOverviewPanel());
-        }
-        return super.getOverviewScaleAndTranslationForNormalState();
-    }
-
-    @Override
     public void useFadeOutAnimationForLauncherStart(CancellationSignal signal) {
         QuickstepAppTransitionManagerImpl appTransitionManager =
                 (QuickstepAppTransitionManagerImpl) getAppTransitionManager();
@@ -237,6 +222,12 @@ public abstract class BaseQuickstepLauncher extends Launcher
                 return anim;
             }
         }, signal);
+    }
+
+    @Override
+    public float[] getNormalOverviewScaleAndOffset() {
+        return SysUINavigationMode.getMode(this) == Mode.NO_BUTTON
+                ? new float[] {1, 1} : new float[] {1.1f, 0};
     }
 
     @Override

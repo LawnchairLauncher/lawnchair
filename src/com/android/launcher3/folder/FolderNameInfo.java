@@ -50,6 +50,10 @@ public final class FolderNameInfo implements Parcelable {
         return mLabel;
     }
 
+    public double getScore() {
+        return mScore;
+    }
+
     /**
      * Used to package this object into a {@link Parcel}.
      *

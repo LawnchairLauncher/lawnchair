@@ -135,8 +135,6 @@ public interface BaseActivityInterface<T extends BaseDraggingActivity> {
 
         void createActivityInterface(long transitionLength);
 
-        default void adjustActivityControllerInterpolators() { }
-
         default void onTransitionCancelled() { }
 
         default void setShelfState(ShelfPeekAnim.ShelfAnimState animState,

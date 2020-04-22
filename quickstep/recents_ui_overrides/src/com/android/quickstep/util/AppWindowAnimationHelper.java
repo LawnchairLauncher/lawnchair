@@ -30,13 +30,11 @@ import android.graphics.Matrix.ScaleToFit;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Build;
-import android.view.Surface;
 
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.Interpolators;
@@ -60,7 +58,7 @@ import com.android.systemui.shared.system.WindowManagerWrapper;
 public class AppWindowAnimationHelper {
 
     // The bounds of the source app in device coordinates
-    private final Rect mSourceStackBounds = new Rect();
+    private final RectF mSourceStackBounds = new RectF();
     // The insets of the source app
     private final Rect mSourceInsets = new Rect();
     // The source app bounds with the source insets applied, in the device coordinates
@@ -159,14 +157,10 @@ public class AppWindowAnimationHelper {
         mSourceRect.set(scaledTargetRect);
     }
 
-    private float getSrcToTargetScale() {
-        if (mOrientedState == null ||
-            (mOrientedState.getDisplayRotation() == Surface.ROTATION_0
-                || mOrientedState.getDisplayRotation() == Surface.ROTATION_180)) {
-            return mSourceRect.width() / mTargetRect.width();
-        } else {
-            return mSourceRect.height() / mTargetRect.height();
-        }
+    public float getSrcToTargetScale() {
+        return LayoutUtils.getTaskScale(mOrientedState,
+                mSourceRect.width(), mSourceRect.height(),
+                mTargetRect.width(), mTargetRect.height());
     }
 
     public void prepareAnimation(DeviceProfile dp, boolean isOpening) {
@@ -277,8 +271,9 @@ public class AppWindowAnimationHelper {
                 mCurrentRect.offset(params.mOffset, 0);
             } else {
                 int displayRotation = mOrientedState.getDisplayRotation();
+                int launcherRotation = mOrientedState.getLauncherRotation();
                 mOrientedState.getOrientationHandler().offsetTaskRect(mCurrentRect,
-                    params.mOffset, displayRotation);
+                    params.mOffset, displayRotation, launcherRotation);
             }
         }
 
@@ -375,15 +370,6 @@ public class AppWindowAnimationHelper {
         recentsView.getTaskSize(taskSize);
         updateTargetRect(taskSize);
         return this;
-    }
-
-    /**
-     * @return The source rect's scale and translation relative to the target rect.
-     */
-    public LauncherState.ScaleAndTranslation getScaleAndTranslation() {
-        float scale = getSrcToTargetScale();
-        float translationY = mSourceRect.centerY() - mSourceRect.top - mTargetRect.centerY();
-        return new LauncherState.ScaleAndTranslation(scale, 0, translationY);
     }
 
     private void updateStackBoundsToMultiWindowTaskSize(BaseDraggingActivity activity) {

@@ -30,6 +30,8 @@ import android.util.SparseArray;
 import android.widget.Toast;
 
 import com.android.launcher3.model.WidgetsModel;
+import com.android.launcher3.testing.TestLogging;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.widget.DeferredAppWidgetHostView;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import com.android.launcher3.widget.PendingAppWidgetHostView;
@@ -298,6 +300,7 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
         }
 
         try {
+            TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "start: startConfigActivity");
             startAppWidgetConfigureActivityForResult(activity, widgetId, 0, requestCode, null);
         } catch (ActivityNotFoundException | SecurityException e) {
             Toast.makeText(activity, R.string.activity_not_found, Toast.LENGTH_SHORT).show();

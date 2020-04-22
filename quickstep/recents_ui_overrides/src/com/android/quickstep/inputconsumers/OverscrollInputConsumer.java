@@ -36,17 +36,14 @@ import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.R;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.InputConsumer;
-import com.android.quickstep.views.LauncherRecentsView;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.plugins.OverscrollPlugin;
 import com.android.systemui.shared.system.InputMonitorCompat;
 
 /**
  * Input consumer for handling events to pass to an {@code OverscrollPlugin}.
- *
- * @param <T> Draggable activity subclass used by RecentsView
  */
-public class OverscrollInputConsumer<T extends BaseDraggingActivity> extends DelegateInputConsumer {
+public class OverscrollInputConsumer extends DelegateInputConsumer {
 
     private static final String TAG = "OverscrollInputConsumer";
 
@@ -61,12 +58,12 @@ public class OverscrollInputConsumer<T extends BaseDraggingActivity> extends Del
 
     private final float mSquaredSlop;
 
-    private final Context mContext;
     private final GestureState mGestureState;
     @Nullable
     private final OverscrollPlugin mPlugin;
     private final GestureDetector mGestureDetector;
 
+    @Nullable
     private RecentsView mRecentsView;
 
     public OverscrollInputConsumer(Context context, GestureState gestureState,
@@ -77,7 +74,6 @@ public class OverscrollInputConsumer<T extends BaseDraggingActivity> extends Del
                 .getInteger(R.integer.assistant_gesture_corner_deg_threshold);
         mFlingThresholdPx = context.getResources()
             .getDimension(R.dimen.gestures_overscroll_fling_threshold);
-        mContext = context;
         mGestureState = gestureState;
         mPlugin = plugin;
 
@@ -85,20 +81,11 @@ public class OverscrollInputConsumer<T extends BaseDraggingActivity> extends Del
 
         mSquaredSlop = slop * slop;
         mGestureDetector = new GestureDetector(context, new FlingGestureListener());
-
-        gestureState.getActivityInterface().createActivityInitListener(this::onActivityInit)
-                .register();
     }
 
     @Override
     public int getType() {
         return TYPE_OVERSCROLL | mDelegate.getType();
-    }
-
-    private boolean onActivityInit(Boolean alreadyOnHome) {
-        mRecentsView = mGestureState.getActivityInterface().getCreatedActivity().getOverviewPanel();
-
-        return true;
     }
 
     @Override
@@ -191,10 +178,17 @@ public class OverscrollInputConsumer<T extends BaseDraggingActivity> extends Del
     }
 
     private boolean isOverscrolled() {
+        if (mRecentsView == null) {
+            BaseDraggingActivity activity = mGestureState.getActivityInterface()
+                    .getCreatedActivity();
+            if (activity != null) {
+                mRecentsView = activity.getOverviewPanel();
+            }
+        }
+
         // Make sure there isn't an app to quick switch to on our right
         int maxIndex = 0;
-        if ((mRecentsView instanceof LauncherRecentsView)
-                && ((LauncherRecentsView) mRecentsView).hasRecentsExtraCard()) {
+        if (mRecentsView != null && mRecentsView.hasRecentsExtraCard()) {
             maxIndex = 1;
         }
 

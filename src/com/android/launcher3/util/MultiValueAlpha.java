@@ -16,7 +16,7 @@
 
 package com.android.launcher3.util;
 
-import android.util.Property;
+import android.util.FloatProperty;
 import android.view.View;
 
 import java.util.Arrays;
@@ -26,8 +26,8 @@ import java.util.Arrays;
  */
 public class MultiValueAlpha {
 
-    public static final Property<AlphaProperty, Float> VALUE =
-            new Property<AlphaProperty, Float>(Float.TYPE, "value") {
+    public static final FloatProperty<AlphaProperty> VALUE =
+            new FloatProperty<AlphaProperty>("value") {
 
                 @Override
                 public Float get(AlphaProperty alphaProperty) {
@@ -35,7 +35,7 @@ public class MultiValueAlpha {
                 }
 
                 @Override
-                public void set(AlphaProperty object, Float value) {
+                public void setValue(AlphaProperty object, float value) {
                     object.setValue(value);
                 }
             };

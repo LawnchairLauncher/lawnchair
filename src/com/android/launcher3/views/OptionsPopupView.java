@@ -40,6 +40,8 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.popup.ArrowPopup;
 import com.android.launcher3.shortcuts.DeepShortcutView;
+import com.android.launcher3.testing.TestLogging;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 import com.android.launcher3.widget.WidgetsFullSheet;
@@ -184,6 +186,7 @@ public class OptionsPopupView extends ArrowPopup
     }
 
     public static boolean startSettings(View view) {
+        TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "start: startSettings");
         Launcher launcher = Launcher.getLauncher(view.getContext());
         launcher.startActivity(new Intent(Intent.ACTION_APPLICATION_PREFERENCES)
                 .setPackage(launcher.getPackageName())

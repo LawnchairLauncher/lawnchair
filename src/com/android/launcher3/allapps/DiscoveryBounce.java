@@ -172,8 +172,7 @@ public class DiscoveryBounce extends AbstractFloatingView {
         if (withDelay) {
             new Handler().postDelayed(() -> showForOverviewIfNeeded(launcher, false), DELAY_MS);
             return;
-        } else if (Launcher.ACTIVITY_TRACKER.hasPending()
-                || AbstractFloatingView.getTopOpenView(launcher) != null) {
+        } else if (AbstractFloatingView.getTopOpenView(launcher) != null) {
             // TODO: Move these checks to the top and call this method after invalidate handler.
             return;
         }
