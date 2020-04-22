@@ -472,6 +472,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
             FloatingIconView fiv = (FloatingIconView) floatingView;
             anim.addAnimatorListener(fiv);
             fiv.setOnTargetChangeListener(anim::onTargetPositionChanged);
+            fiv.setFastFinishRunnable(anim::end);
         }
 
         AnimatorPlaybackController homeAnim = homeAnimationFactory.createActivityAnimationToHome();
