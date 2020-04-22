@@ -19,8 +19,6 @@ package com.android.launcher3.widget;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.res.Configuration;
-import android.graphics.PointF;
-import android.graphics.Rect;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.util.SparseBooleanArray;
@@ -40,7 +38,6 @@ import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.dragndrop.DragLayer;
-import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.util.Executors;
@@ -51,7 +48,7 @@ import com.android.launcher3.views.BaseDragLayer.TouchCompleteListener;
  * {@inheritDoc}
  */
 public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
-        implements TouchCompleteListener, View.OnLongClickListener, DraggableView {
+        implements TouchCompleteListener, View.OnLongClickListener {
 
     // Related to the auto-advancing of widgets
     private static final long ADVANCE_INTERVAL = 20000;
@@ -73,15 +70,7 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
     private boolean mIsAutoAdvanceRegistered;
     private Runnable mAutoAdvanceRunnable;
 
-    /**
-     * The scaleX and scaleY value such that the widget fits within its cellspans, scaleX = scaleY.
-     */
-    private float mScaleToFit = 1f;
 
-    /**
-     * The translation values to center the widget within its cellspans.
-     */
-    private final PointF mTranslationForCentering = new PointF(0, 0);
 
     public LauncherAppWidgetHostView(Context context) {
         super(context);
@@ -307,26 +296,6 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
         scheduleNextAdvance();
     }
 
-    public void setScaleToFit(float scale) {
-        mScaleToFit = scale;
-        setScaleX(scale);
-        setScaleY(scale);
-    }
-
-    public float getScaleToFit() {
-        return mScaleToFit;
-    }
-
-    public void setTranslationForCentering(float x, float y) {
-        mTranslationForCentering.set(x, y);
-        setTranslationX(x);
-        setTranslationY(y);
-    }
-
-    public PointF getTranslationForCentering() {
-        return mTranslationForCentering;
-    }
-
     @Override
     protected void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
@@ -356,18 +325,5 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
             return item.spanX == 1 && item.spanY == 1;
         }
         return false;
-    }
-
-    @Override
-    public int getViewType() {
-        return DRAGGABLE_WIDGET;
-    }
-
-    @Override
-    public void getVisualDragBounds(Rect bounds) {
-        int width = (int) (getMeasuredWidth() * mScaleToFit);
-        int height = (int) (getMeasuredHeight() * mScaleToFit);
-
-        bounds.set(0, 0 , width, height);
     }
 }

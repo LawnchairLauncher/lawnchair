@@ -87,7 +87,7 @@ public class AllAppsState extends LauncherState {
     }
 
     @Override
-    public float getDepth(Context context) {
+    protected float getDepthUnchecked(Context context) {
         return 1f;
     }
 
@@ -102,9 +102,8 @@ public class AllAppsState extends LauncherState {
     }
 
     @Override
-    public ScaleAndTranslation getOverviewScaleAndTranslation(Launcher launcher) {
-        float slightParallax = -launcher.getDeviceProfile().allAppsCellHeightPx * 0.3f;
-        return new ScaleAndTranslation(0.9f, 0f, slightParallax);
+    public float[] getOverviewScaleAndOffset(Launcher launcher) {
+        return new float[] {0.9f, 0};
     }
 
     @Override

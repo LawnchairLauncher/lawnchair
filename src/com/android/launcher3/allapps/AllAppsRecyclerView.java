@@ -53,12 +53,12 @@ import java.util.List;
 public class AllAppsRecyclerView extends BaseRecyclerView implements LogContainerProvider {
 
     private AlphabeticalAppsList mApps;
-    private AllAppsFastScrollHelper mFastScrollHelper;
     private final int mNumAppsPerRow;
 
     // The specific view heights that we use to calculate scroll
-    private SparseIntArray mViewHeights = new SparseIntArray();
-    private SparseIntArray mCachedScrollPositions = new SparseIntArray();
+    private final SparseIntArray mViewHeights = new SparseIntArray();
+    private final SparseIntArray mCachedScrollPositions = new SparseIntArray();
+    private final AllAppsFastScrollHelper mFastScrollHelper;
 
     // The empty-search result background
     private AllAppsBackgroundDrawable mEmptySearchBackground;
@@ -85,6 +85,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
         mEmptySearchBackgroundTopOffset = res.getDimensionPixelSize(
                 R.dimen.all_apps_empty_search_bg_top_offset);
         mNumAppsPerRow = LauncherAppState.getIDP(context).numColumns;
+        mFastScrollHelper = new AllAppsFastScrollHelper(this);
     }
 
     /**
@@ -92,7 +93,6 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
      */
     public void setApps(AlphabeticalAppsList apps) {
         mApps = apps;
-        mFastScrollHelper = new AllAppsFastScrollHelper(this, apps);
     }
 
     public AlphabeticalAppsList getApps() {
@@ -221,9 +221,6 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
             return "";
         }
 
-        // Stop the scroller if it is scrolling
-        stopScroll();
-
         // Find the fastscroll section that maps to this touch fraction
         List<AlphabeticalAppsList.FastScrollSectionInfo> fastScrollSections =
                 mApps.getFastScrollerSections();
@@ -236,10 +233,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
             lastInfo = info;
         }
 
-        // Update the fast scroll
-        int scrollY = getCurrentScrollY();
-        int availableScrollHeight = getAvailableScrollHeight();
-        mFastScrollHelper.smoothScrollToSection(scrollY, availableScrollHeight, lastInfo);
+        mFastScrollHelper.smoothScrollToSection(lastInfo);
         return lastInfo.sectionName;
     }
 
@@ -257,7 +251,6 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
                 mCachedScrollPositions.clear();
             }
         });
-        mFastScrollHelper.onSetAdapter((AllAppsGridAdapter) adapter);
     }
 
     @Override

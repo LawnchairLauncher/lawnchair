@@ -275,9 +275,6 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
-            Log.d(TestProtocol.NO_SCROLL_END_WIDGETS, "BaseDragLayer: " + ev);
-        }
         switch (ev.getAction()) {
             case ACTION_DOWN: {
                 mTouchDispatchState |= TOUCH_DISPATCHING_VIEW;

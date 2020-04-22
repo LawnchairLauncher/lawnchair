@@ -40,8 +40,6 @@ import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.logging.StatsLogUtils;
 import com.android.launcher3.logging.StatsLogUtils.LogStateProvider;
 import com.android.launcher3.logging.UserEventDispatcher;
-import com.android.launcher3.testing.TestLogging;
-import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.ViewCache;
@@ -332,7 +330,6 @@ public abstract class BaseActivity extends Activity implements LogStateProvider,
             return;
         }
         try {
-            TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "start: shortcut", packageName);
             getSystemService(LauncherApps.class).startShortcut(packageName, id, sourceBounds,
                     startActivityOptions, user);
         } catch (SecurityException | IllegalStateException e) {

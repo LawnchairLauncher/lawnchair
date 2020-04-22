@@ -170,16 +170,14 @@ public class AddItemActivity extends BaseActivity implements OnLongClickListener
             }
         }, null, View.DRAG_FLAG_GLOBAL);
 
-
-        Intent homeIntent = listener.addToIntent(
-                new Intent(Intent.ACTION_MAIN)
+        Intent homeIntent = new Intent(Intent.ACTION_MAIN)
                         .addCategory(Intent.CATEGORY_HOME)
                         .setPackage(getPackageName())
-                        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-
-        Launcher.ACTIVITY_TRACKER.schedule(listener);
+                        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        Launcher.ACTIVITY_TRACKER.runCallbackWhenActivityExists(listener, homeIntent);
         startActivity(homeIntent,
-                ActivityOptions.makeCustomAnimation(this, 0, android.R.anim.fade_out).toBundle());
+                ActivityOptions.makeCustomAnimation(this, 0, android.R.anim.fade_out)
+                        .toBundle());
         mFinishOnPause = true;
         return false;
     }
