@@ -62,15 +62,12 @@ public abstract class RemoteAnimationProvider {
     static void prepareTargetsForFirstFrame(RemoteAnimationTargetCompat[] targets,
             TransactionCompat t, int boostModeTargets) {
         for (RemoteAnimationTargetCompat target : targets) {
-            t.setLayer(target.leash, getLayer(target, boostModeTargets));
             t.show(target.leash);
         }
     }
 
     public static int getLayer(RemoteAnimationTargetCompat target, int boostModeTarget) {
-        return target.mode == boostModeTarget
-                ? Z_BOOST_BASE + target.prefixOrderIndex
-                : target.prefixOrderIndex;
+        return target.prefixOrderIndex;
     }
 
     /**
