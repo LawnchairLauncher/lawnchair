@@ -1098,7 +1098,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
      */
     public void showCurrentTask(int runningTaskId) {
         if (getTaskView(runningTaskId) == null) {
-            boolean wasEmpty = getTaskViewCount() == 0;
+            boolean wasEmpty = getChildCount() == 0;
             // Add an empty view for now until the task plan is loaded and applied
             final TaskView taskView = mTaskViewPool.getView();
             addView(taskView, mTaskViewStartIndex);
