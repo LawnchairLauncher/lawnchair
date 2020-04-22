@@ -16,6 +16,8 @@
 
 package com.android.launcher3.folder;
 
+import static android.text.TextUtils.isEmpty;
+
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
 import static com.android.launcher3.folder.PreviewItemManager.INITIAL_ITEM_ANIMATION_DURATION;
 
@@ -24,6 +26,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
@@ -47,6 +50,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.OnAlarmListener;
 import com.android.launcher3.R;
+import com.android.launcher3.Reorderable;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.anim.Interpolators;
@@ -77,7 +81,7 @@ import java.util.function.Predicate;
  * An icon that can appear on in the workspace representing an {@link Folder}.
  */
 public class FolderIcon extends FrameLayout implements FolderListener, IconLabelDotView,
-        DraggableView {
+        DraggableView, Reorderable {
 
     @Thunk ActivityContext mActivity;
     @Thunk Folder mFolder;
@@ -116,6 +120,9 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
     private DotRenderer.DrawParams mDotParams;
     private float mDotScale;
     private Animator mDotScaleAnim;
+
+    private final PointF mTranslationForReorder = new PointF(0, 0);
+    private float mScaleForReorder = 1f;
 
     private static final Property<FolderIcon, Float> DOT_SCALE_PROPERTY
             = new Property<FolderIcon, Float>(Float.TYPE, "dotScale") {
@@ -222,16 +229,6 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
     public void getPreviewBounds(Rect outBounds) {
         mPreviewItemManager.recomputePreviewDrawingParams();
         mBackground.getBounds(outBounds);
-    }
-
-    @Override
-    public int getViewType() {
-        return DRAGGABLE_ICON;
-    }
-
-    @Override
-    public void getVisualDragBounds(Rect bounds) {
-        getPreviewBounds(bounds);
     }
 
     public float getBackgroundStrokeWidth() {
@@ -418,10 +415,32 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
         postDelayed(() -> {
             mPreviewItemManager.hidePreviewItem(finalIndex, false);
             mFolder.showItem(item);
+            setLabelSuggestion(nameInfos);
             invalidate();
-            mFolder.showSuggestedTitle(nameInfos);
         }, DROP_IN_ANIMATION_DURATION);
     }
+
+    /**
+     * Set the suggested folder name.
+     */
+    public void setLabelSuggestion(FolderNameInfo[] nameInfos) {
+        if (!FeatureFlags.FOLDER_NAME_SUGGEST.get()) {
+            return;
+        }
+        if (!isEmpty(mFolderName.getText().toString())
+                || mInfo.hasOption(FolderInfo.FLAG_MANUAL_FOLDER_NAME)) {
+            return;
+        }
+        if (nameInfos == null || nameInfos[0] == null || isEmpty(nameInfos[0].getLabel())) {
+            return;
+        }
+        mInfo.title = nameInfos[0].getLabel();
+        onTitleChanged(mInfo.title);
+        mFolder.mFolderName.setText(mInfo.title);
+        mFolder.mLauncher.getModelWriter().updateItemInDatabase(mInfo);
+        // TODO: Add logging while folder creation.
+    }
+
 
     public void onDrop(DragObject d, boolean itemReturnedOnFailedDrop) {
         WorkspaceItemInfo item;
@@ -691,5 +710,40 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
 
     public void onFolderClose(int currentPage) {
         mPreviewItemManager.onFolderClose(currentPage);
+    }
+
+
+    public void setReorderOffset(float x, float y) {
+        mTranslationForReorder.set(x, y);
+        super.setTranslationX(x);
+        super.setTranslationY(y);
+    }
+
+    public void getReorderOffset(PointF offset) {
+        offset.set(mTranslationForReorder);
+    }
+
+    public void setReorderScale(float scale) {
+        mScaleForReorder = scale;
+        super.setScaleX(scale);
+        super.setScaleY(scale);
+    }
+
+    public float getReorderScale() {
+        return mScaleForReorder;
+    }
+
+    public View getView() {
+        return this;
+    }
+
+    @Override
+    public int getViewType() {
+        return DRAGGABLE_ICON;
+    }
+
+    @Override
+    public void getVisualDragBounds(Rect bounds) {
+        getPreviewBounds(bounds);
     }
 }

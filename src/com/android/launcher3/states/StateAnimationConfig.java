@@ -37,6 +37,7 @@ public class StateAnimationConfig {
             PLAY_ATOMIC_OVERVIEW_SCALE,
             PLAY_ATOMIC_OVERVIEW_PEEK,
             SKIP_OVERVIEW,
+            SKIP_DEPTH_CONTROLLER
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface AnimationFlags {}
@@ -44,6 +45,7 @@ public class StateAnimationConfig {
     public static final int PLAY_ATOMIC_OVERVIEW_SCALE = 1 << 1;
     public static final int PLAY_ATOMIC_OVERVIEW_PEEK = 1 << 2;
     public static final int SKIP_OVERVIEW = 1 << 3;
+    public static final int SKIP_DEPTH_CONTROLLER = 1 << 4;
 
     public long duration;
     public boolean userControlled;

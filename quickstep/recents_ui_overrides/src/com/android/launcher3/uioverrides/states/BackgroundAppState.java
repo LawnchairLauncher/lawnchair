@@ -61,13 +61,16 @@ public class BackgroundAppState extends OverviewState {
     }
 
     @Override
-    public ScaleAndTranslation getOverviewScaleAndTranslation(Launcher launcher) {
+    public float[] getOverviewScaleAndOffset(Launcher launcher) {
+        return new float[] {getOverviewScale(launcher), NO_OFFSET};
+    }
+
+    private float getOverviewScale(Launcher launcher) {
         // Initialize the recents view scale to what it would be when starting swipe up
         RecentsView recentsView = launcher.getOverviewPanel();
         int taskCount = recentsView.getTaskViewCount();
-        if (taskCount == 0) {
-            return super.getOverviewScaleAndTranslation(launcher);
-        }
+        if (taskCount == 0) return 1;
+
         TaskView dummyTask;
         if (recentsView.getCurrentPage() >= recentsView.getTaskViewStartIndex()) {
             if (recentsView.getCurrentPage() <= taskCount - 1) {
@@ -78,8 +81,8 @@ public class BackgroundAppState extends OverviewState {
         } else {
             dummyTask = recentsView.getTaskViewAt(0);
         }
-        return recentsView.getTempAppWindowAnimationHelper().updateForFullscreenOverview(dummyTask)
-                .getScaleAndTranslation();
+        return recentsView.getTempAppWindowAnimationHelper()
+                .updateForFullscreenOverview(dummyTask).getSrcToTargetScale();
     }
 
     @Override
@@ -106,7 +109,7 @@ public class BackgroundAppState extends OverviewState {
     }
 
     @Override
-    public float getDepth(Context context) {
+    protected float getDepthUnchecked(Context context) {
         return 1f;
     }
 }

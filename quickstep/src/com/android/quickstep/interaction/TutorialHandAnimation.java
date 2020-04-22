@@ -25,12 +25,12 @@ import android.widget.ImageView;
 import androidx.core.content.ContextCompat;
 
 import com.android.launcher3.R;
-import com.android.quickstep.interaction.BackGestureTutorialFragment.TutorialType;
+import com.android.quickstep.interaction.TutorialController.TutorialType;
 
 import java.time.Duration;
 
 /** Hand coaching animation. */
-final class BackGestureTutorialHandAnimation {
+final class TutorialHandAnimation {
 
     // A delay for waiting the Activity fully launches.
     private static final Duration ANIMATION_START_DELAY = Duration.ofMillis(300L);
@@ -38,16 +38,12 @@ final class BackGestureTutorialHandAnimation {
     private final ImageView mHandCoachingView;
     private final AnimatedVectorDrawable mGestureAnimation;
 
-    BackGestureTutorialHandAnimation(Context context, View rootView) {
-        mHandCoachingView = rootView.findViewById(
-                R.id.back_gesture_tutorial_fragment_hand_coaching);
-        mGestureAnimation = (AnimatedVectorDrawable) ContextCompat.getDrawable(context,
-                R.drawable.back_gesture);
+    TutorialHandAnimation(Context context, View rootView, int resId) {
+        mHandCoachingView = rootView.findViewById(R.id.gesture_tutorial_fragment_hand_coaching);
+        mGestureAnimation = (AnimatedVectorDrawable) ContextCompat.getDrawable(context, resId);
     }
 
-    /**
-     * [Re]starts animation for the given tutorial.
-     */
+    /** [Re]starts animation for the given tutorial. */
     void startLoopedAnimation(TutorialType tutorialType) {
         if (mGestureAnimation.isRunning()) {
             stop();
