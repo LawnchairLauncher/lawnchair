@@ -214,7 +214,6 @@ public class AppWindowAnimationHelper {
             float alpha;
             float cornerRadius = 0f;
             float scale = Math.max(mCurrentRect.width(), mTargetRect.width()) / crop.width();
-            int layer = RemoteAnimationProvider.getLayer(app, mBoostModeTargetLayers);
             if (app.mode == params.mTargetSet.targetMode) {
                 alpha = mTaskAlphaCallback.getAlpha(app, params.mTargetAlpha);
                 if (app.activityType != RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME) {
@@ -251,13 +250,11 @@ public class AppWindowAnimationHelper {
                 alpha = mBaseAlphaCallback.getAlpha(app, progress);
                 if (ENABLE_QUICKSTEP_LIVE_TILE.get() && params.mLauncherOnTop) {
                     crop = null;
-                    layer = Integer.MAX_VALUE;
                 }
             }
             builder.withAlpha(alpha)
                     .withMatrix(mTmpMatrix)
                     .withWindowCrop(crop)
-                    .withLayer(layer)
                     // Since radius is in Surface space, but we draw the rounded corners in screen
                     // space, we have to undo the scale
                     .withCornerRadius(cornerRadius / scale);
