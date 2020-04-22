@@ -1670,6 +1670,13 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         updateCurveProperties();
     }
 
+    /**
+     * TODO: Do not assume motion across X axis for adjacent page
+     */
+    public float getPageOffsetScale() {
+        return Math.max(getWidth(), 1);
+    }
+
     private void updateDeadZoneRects() {
         // Get the deadzone rect surrounding the clear all button to not dismiss overview to home
         mClearAllButtonDeadZoneRect.setEmpty();
