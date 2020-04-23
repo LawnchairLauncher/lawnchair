@@ -251,9 +251,6 @@ public class AppsDividerView extends View implements LauncherStateManager.StateL
     }
 
     @Override
-    public void onStateTransitionStart(LauncherState toState) { }
-
-    @Override
     public void onStateTransitionComplete(LauncherState finalState) {
         if (finalState == ALL_APPS) {
             setAllAppsVisitedCount(getAllAppsVisitedCount() + 1);
