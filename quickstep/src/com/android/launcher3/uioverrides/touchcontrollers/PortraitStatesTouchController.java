@@ -22,10 +22,12 @@ import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_ACTIONS;
 import static com.android.launcher3.config.FeatureFlags.UNSTABLE_SPRINGS;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_VERTICAL_PROGRESS;
+import static com.android.quickstep.SysUINavigationMode.removeShelfFromOverview;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_OVERVIEW_DISABLED;
 
 import android.animation.TimeInterpolator;
@@ -132,7 +134,12 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
             return TouchInteractionService.isConnected() ?
                     mLauncher.getStateManager().getLastState() : NORMAL;
         } else if (fromState == OVERVIEW) {
-            return isDragTowardPositive ? ALL_APPS : NORMAL;
+            LauncherState positiveDragTarget = ALL_APPS;
+            if (ENABLE_OVERVIEW_ACTIONS.get() && removeShelfFromOverview(mLauncher)) {
+                // Don't allow swiping up to all apps.
+                positiveDragTarget = OVERVIEW;
+            }
+            return isDragTowardPositive ? positiveDragTarget : NORMAL;
         } else if (fromState == NORMAL && isDragTowardPositive) {
             int stateFlags = SystemUiProxy.INSTANCE.get(mLauncher).getLastSystemUiStateFlags();
             return mAllowDragToOverview && TouchInteractionService.isConnected()
