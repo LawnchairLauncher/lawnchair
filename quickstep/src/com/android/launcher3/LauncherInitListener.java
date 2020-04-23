@@ -23,7 +23,6 @@ import android.os.Build;
 import android.os.CancellationSignal;
 import android.os.Handler;
 
-import com.android.launcher3.util.ActivityTracker;
 import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.RemoteAnimationProvider;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
@@ -45,7 +44,7 @@ public class LauncherInitListener extends ActivityInitListener<Launcher> {
     }
 
     @Override
-    public boolean init(Launcher launcher, boolean alreadyOnHome) {
+    public boolean handleInit(Launcher launcher, boolean alreadyOnHome) {
         if (mRemoteAnimationProvider != null) {
             QuickstepAppTransitionManagerImpl appTransitionManager =
                     (QuickstepAppTransitionManagerImpl) launcher.getAppTransitionManager();
@@ -71,7 +70,7 @@ public class LauncherInitListener extends ActivityInitListener<Launcher> {
             }, cancellationSignal);
         }
         launcher.deferOverlayCallbacksUntilNextResumeOrStop();
-        return super.init(launcher, alreadyOnHome);
+        return super.handleInit(launcher, alreadyOnHome);
     }
 
     @Override

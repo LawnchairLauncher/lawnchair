@@ -61,7 +61,7 @@
     <string name="all_apps_prediction_tip">Your predicted apps</string>
 
     <!-- Content description for a close button. [CHAR LIMIT=NONE] -->
-    <string  name="back_gesture_tutorial_close_button_content_description" translatable="false">Close</string>
+    <string  name="gesture_tutorial_close_button_content_description" translatable="false">Close</string>
 
 
     <!-- Hotseat migration notification title -->
@@ -103,15 +103,21 @@
     <!-- Subtitle shown during interactive parts of Back gesture tutorial for left edge. [CHAR LIMIT=60] -->
     <string name="back_gesture_tutorial_engaged_subtitle_swipe_inward_left_edge" translatable="false">That\'s it! Now try swiping from the left edge.</string>
 
-    <!-- Title shown on the confirmation screen after successful gesture. [CHAR LIMIT=30] -->
-    <string name="back_gesture_tutorial_confirm_title" translatable="false">All set</string>
     <!-- Subtitle shown on the confirmation screen after successful gesture. [CHAR LIMIT=60] -->
     <string name="back_gesture_tutorial_confirm_subtitle" translatable="false">To change the sensitivity of the back gesture, go to Settings</string>
 
+
+    <!-- Title shown during interactive part of Home gesture tutorial. [CHAR LIMIT=30] -->
+    <string name="home_gesture_tutorial_playground_title" translatable="false">Tutorial: Go Home</string>
+    <!-- Subtitle shown during interactive parts of Home gesture tutorial. [CHAR LIMIT=60] -->
+    <string name="home_gesture_tutorial_playground_subtitle" translatable="false">Try swiping upward from the bottom edge of the screen</string>
+
+  <!-- Title shown on the confirmation screen after successful gesture. [CHAR LIMIT=30] -->
+  <string name="gesture_tutorial_confirm_title" translatable="false">All set</string>
     <!-- Button text shown on a button on the confirm screen. [CHAR LIMIT=14] -->
-    <string name="back_gesture_tutorial_action_button_label" translatable="false">Done</string>
+    <string name="gesture_tutorial_action_button_label" translatable="false">Done</string>
     <!-- Button text shown on a text button on the confirm screen. [CHAR LIMIT=14] -->
-    <string name="back_gesture_tutorial_action_text_button_label" translatable="false">Settings</string>
+    <string name="gesture_tutorial_action_text_button_label" translatable="false">Settings</string>
 
     <!-- ******* Overview ******* -->
     <!-- Label for a button that causes the current overview app to be shared. [CHAR_LIMIT=40] -->

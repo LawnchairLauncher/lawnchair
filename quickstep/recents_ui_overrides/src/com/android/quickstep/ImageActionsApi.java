@@ -42,9 +42,10 @@ import java.util.function.Supplier;
 public class ImageActionsApi {
 
     private static final String TAG = BuildConfig.APPLICATION_ID + "ImageActionsApi";
-    private final Context mContext;
-    private final Supplier<Bitmap> mBitmapSupplier;
-    private final SystemUiProxy mSystemUiProxy;
+
+    protected final Context mContext;
+    protected final Supplier<Bitmap> mBitmapSupplier;
+    protected final SystemUiProxy mSystemUiProxy;
 
     public ImageActionsApi(Context context, Supplier<Bitmap> bitmapSupplier) {
         mContext = context;

@@ -117,6 +117,7 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> exten
         });
         if (mActivity == null) {
             Log.e(TAG, "Animation created, before activity");
+            anim.play(ValueAnimator.ofInt(0, 1).setDuration(RECENTS_LAUNCH_DURATION));
             return anim;
         }
 
@@ -135,6 +136,7 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> exten
         RemoteAnimationTargetCompat runningTaskTarget = targets.findTask(mTargetTaskId);
         if (runningTaskTarget == null) {
             Log.e(TAG, "No closing app");
+            anim.play(ValueAnimator.ofInt(0, 1).setDuration(RECENTS_LAUNCH_DURATION));
             return anim;
         }
 
@@ -181,6 +183,7 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> exten
                 transaction.apply();
             });
         }
+        anim.play(valueAnimator);
         return anim;
     }
 

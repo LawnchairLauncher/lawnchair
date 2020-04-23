@@ -29,6 +29,7 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -70,7 +71,7 @@ import java.text.NumberFormat;
  * too aggressive.
  */
 public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, OnResumeCallback,
-        IconLabelDotView, DraggableView {
+        IconLabelDotView, DraggableView, Reorderable {
 
     private static final int DISPLAY_WORKSPACE = 0;
     private static final int DISPLAY_ALL_APPS = 1;
@@ -78,6 +79,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
     private static final int[] STATE_PRESSED = new int[] {android.R.attr.state_pressed};
 
+    private final PointF mTranslationForReorder = new PointF(0, 0);
+    private float mScaleForReorder = 1f;
 
     private static final Property<BubbleTextView, Float> DOT_SCALE_PROPERTY
             = new Property<BubbleTextView, Float>(Float.TYPE, "dotScale") {
@@ -670,6 +673,30 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
     public int getIconSize() {
         return mIconSize;
+    }
+
+    public void setReorderOffset(float x, float y) {
+        mTranslationForReorder.set(x, y);
+        super.setTranslationX(x);
+        super.setTranslationY(y);
+    }
+
+    public void getReorderOffset(PointF offset) {
+        offset.set(mTranslationForReorder);
+    }
+
+    public void setReorderScale(float scale) {
+        mScaleForReorder = scale;
+        super.setScaleX(scale);
+        super.setScaleY(scale);
+    }
+
+    public float getReorderScale() {
+        return mScaleForReorder;
+    }
+
+    public View getView() {
+        return this;
     }
 
     @Override

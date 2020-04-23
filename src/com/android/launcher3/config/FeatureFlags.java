@@ -168,6 +168,7 @@ public final class FeatureFlags {
             for (DebugFlag flag : sDebugFlags) {
                 flag.initialize(context);
             }
+            sDebugFlags.sort((f1, f2) -> f1.key.compareToIgnoreCase(f2.key));
         }
     }
 
@@ -178,10 +179,20 @@ public final class FeatureFlags {
     }
 
     public static void dump(PrintWriter pw) {
-        pw.println("FeatureFlags:");
+        pw.println("DeviceFlags:");
         synchronized (sDebugFlags) {
             for (DebugFlag flag : sDebugFlags) {
-                pw.println("  " + flag.key + "=" + flag.get());
+                if (flag instanceof DeviceFlag) {
+                    pw.println("  " + flag.toString());
+                }
+            }
+        }
+        pw.println("DebugFlags:");
+        synchronized (sDebugFlags) {
+            for (DebugFlag flag : sDebugFlags) {
+                if (!(flag instanceof DeviceFlag)) {
+                    pw.println("  " + flag.toString());
+                }
             }
         }
     }
@@ -202,13 +213,11 @@ public final class FeatureFlags {
 
         @Override
         public String toString() {
-            return appendProps(new StringBuilder()
-                    .append(getClass().getSimpleName()).append('{'))
-                    .append('}').toString();
+            return appendProps(new StringBuilder()).toString();
         }
 
         protected StringBuilder appendProps(StringBuilder src) {
-            return src.append("key=").append(key).append(", defaultValue=").append(defaultValue);
+            return src.append(key).append(", defaultValue=").append(defaultValue);
         }
 
         public void addChangeListener(Context context, Runnable r) { }
@@ -240,8 +249,7 @@ public final class FeatureFlags {
 
         @Override
         protected StringBuilder appendProps(StringBuilder src) {
-            return super.appendProps(src).append(", mCurrentValue=").append(mCurrentValue)
-                    .append(", description=").append(description);
+            return super.appendProps(src).append(", mCurrentValue=").append(mCurrentValue);
         }
     }
 
