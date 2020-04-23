@@ -18,6 +18,8 @@ package com.android.quickstep.util;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_ACTIONS;
+import static com.android.quickstep.SysUINavigationMode.removeShelfFromOverview;
 
 import android.content.SharedPreferences;
 
@@ -58,7 +60,14 @@ public class QuickstepOnboardingPrefs extends OnboardingPrefs<BaseQuickstepLaunc
             });
         }
 
-        if (!getBoolean(SHELF_BOUNCE_SEEN)) {
+        boolean shelfBounceSeen = getBoolean(SHELF_BOUNCE_SEEN);
+        if (!shelfBounceSeen && ENABLE_OVERVIEW_ACTIONS.get()
+                && removeShelfFromOverview(launcher)) {
+            // There's no shelf in overview, so don't bounce it (can't get to all apps anyway).
+            shelfBounceSeen = true;
+            mSharedPrefs.edit().putBoolean(SHELF_BOUNCE_SEEN, shelfBounceSeen).apply();
+        }
+        if (!shelfBounceSeen) {
             mStateManager.addStateListener(new StateListener() {
                 @Override
                 public void onStateTransitionStart(LauncherState toState) { }

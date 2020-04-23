@@ -36,11 +36,9 @@ import android.graphics.RectF;
 import android.graphics.Shader;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
-import android.util.Log;
 import android.util.Property;
 import android.view.Surface;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.R;
@@ -50,7 +48,7 @@ import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.Themes;
 import com.android.quickstep.TaskOverlayFactory;
 import com.android.quickstep.TaskOverlayFactory.TaskOverlay;
-import com.android.quickstep.util.TaskCornerRadius;
+import com.android.quickstep.views.TaskView.FullscreenDrawParams;
 import com.android.systemui.plugins.OverviewScreenshotActions;
 import com.android.systemui.plugins.PluginListener;
 import com.android.systemui.shared.recents.model.Task;
@@ -65,6 +63,8 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
     private static final ColorMatrix COLOR_MATRIX = new ColorMatrix();
     private static final ColorMatrix SATURATION_COLOR_MATRIX = new ColorMatrix();
     private static final RectF EMPTY_RECT_F = new RectF();
+
+    private static final FullscreenDrawParams TEMP_PARAMS = new FullscreenDrawParams();
 
     public static final Property<TaskThumbnailView, Float> DIM_ALPHA =
             new FloatProperty<TaskThumbnailView>("dimAlpha") {
@@ -87,12 +87,11 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
     private final Paint mClearPaint = new Paint();
     private final Paint mDimmingPaintAfterClearing = new Paint();
 
-    private final Matrix mMatrix = new Matrix();
-
-    private float mClipBottom = -1;
     // Contains the portion of the thumbnail that is clipped when fullscreen progress = 0.
-    private RectF mClippedInsets = new RectF();
-    private TaskView.FullscreenDrawParams mFullscreenParams;
+    private final Rect mPreviewRect = new Rect();
+    private final PreviewPositionHelper mPreviewPositionHelper;
+    // Initialize with dummy value. It is overridden later by TaskView
+    private TaskView.FullscreenDrawParams mFullscreenParams = TEMP_PARAMS;
 
     private Task mTask;
     private ThumbnailData mThumbnailData;
@@ -103,7 +102,6 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
     private float mSaturation = 1f;
 
     private boolean mOverlayEnabled;
-    private boolean mIsOrientationChanged;
     private OverviewScreenshotActions mOverviewScreenshotActionsPlugin;
 
     public TaskThumbnailView(Context context) {
@@ -123,7 +121,7 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
         mDimmingPaintAfterClearing.setColor(Color.BLACK);
         mActivity = BaseActivity.fromContext(context);
         mIsDarkTextTheme = Themes.getAttrBoolean(mActivity, R.attr.isWorkspaceDarkText);
-        mFullscreenParams = new TaskView.FullscreenDrawParams(TaskCornerRadius.get(context));
+        mPreviewPositionHelper = new PreviewPositionHelper(context);
     }
 
     public void bind(Task task) {
@@ -172,8 +170,7 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
             mOverlay.reset();
         }
         if (mOverviewScreenshotActionsPlugin != null) {
-            mOverviewScreenshotActionsPlugin
-                .setupActions((ViewGroup) getTaskView(), getThumbnail(), mActivity);
+            mOverviewScreenshotActionsPlugin.setupActions(getTaskView(), getThumbnail(), mActivity);
         }
         updateThumbnailPaintFilter();
     }
@@ -270,9 +267,8 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
         PluginManagerWrapper.INSTANCE.get(getContext()).removePluginListener(this);
     }
 
-    public RectF getInsetsToDrawInFullscreen(boolean isMultiWindowMode) {
-        // Don't show insets in multi window mode.
-        return isMultiWindowMode ? EMPTY_RECT_F : mClippedInsets;
+    public PreviewPositionHelper getPreviewPositionHelper() {
+        return mPreviewPositionHelper;
     }
 
     public void setFullscreenParams(TaskView.FullscreenDrawParams fullscreenParams) {
@@ -294,16 +290,17 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
         // Draw the background in all cases, except when the thumbnail data is opaque
         final boolean drawBackgroundOnly = mTask == null || mTask.isLocked || mBitmapShader == null
                 || mThumbnailData == null;
-        if (drawBackgroundOnly || mClipBottom > 0 || mThumbnailData.isTranslucent) {
+        if (drawBackgroundOnly || mPreviewPositionHelper.mClipBottom > 0
+                || mThumbnailData.isTranslucent) {
             canvas.drawRoundRect(x, y, width, height, cornerRadius, cornerRadius, mBackgroundPaint);
             if (drawBackgroundOnly) {
                 return;
             }
         }
 
-        if (mClipBottom > 0) {
+        if (mPreviewPositionHelper.mClipBottom > 0) {
             canvas.save();
-            canvas.clipRect(x, y, width, mClipBottom);
+            canvas.clipRect(x, y, width, mPreviewPositionHelper.mClipBottom);
             canvas.drawRoundRect(x, y, width, height, cornerRadius, cornerRadius, mPaint);
             canvas.restore();
         } else {
@@ -324,8 +321,9 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
 
     private void updateOverlay() {
         // The overlay doesn't really work when the screenshot is rotated, so don't add it.
-        if (mOverlayEnabled && !mIsOrientationChanged && mBitmapShader != null && mThumbnailData != null) {
-            mOverlay.initOverlay(mTask, mThumbnailData, mMatrix);
+        if (mOverlayEnabled && !mPreviewPositionHelper.mIsOrientationChanged
+                && mBitmapShader != null && mThumbnailData != null) {
+            mOverlay.initOverlay(mTask, mThumbnailData, mPreviewPositionHelper.mMatrix);
         } else {
             mOverlay.reset();
         }
@@ -346,126 +344,22 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
     }
 
     private void updateThumbnailMatrix() {
-        boolean isRotated = false;
-        boolean isOrientationDifferent = false;
-        mClipBottom = -1;
+        mPreviewPositionHelper.mClipBottom = -1;
+        mPreviewPositionHelper.mIsOrientationChanged = false;
         if (mBitmapShader != null && mThumbnailData != null) {
-            float scale = mThumbnailData.scale;
-            Rect thumbnailInsets = mThumbnailData.insets;
-            final float thumbnailWidth = mThumbnailData.thumbnail.getWidth() -
-                    (thumbnailInsets.left + thumbnailInsets.right) * scale;
-            final float thumbnailHeight = mThumbnailData.thumbnail.getHeight() -
-                    (thumbnailInsets.top + thumbnailInsets.bottom) * scale;
+            mPreviewRect.set(0, 0, mThumbnailData.thumbnail.getWidth(),
+                    mThumbnailData.thumbnail.getHeight());
+            mPreviewPositionHelper.updateThumbnailMatrix(mPreviewRect, mThumbnailData,
+                    mActivity.isInMultiWindowMode(), getMeasuredWidth(), getMeasuredHeight());
 
-            final float thumbnailScale;
-            int thumbnailRotation = mThumbnailData.rotation;
-            int currentRotation = ConfigurationCompat.getWindowConfigurationRotation(
-                    getResources().getConfiguration());
-            int deltaRotate = getRotationDelta(currentRotation, thumbnailRotation);
-            // Landscape vs portrait change
-            boolean windowingModeSupportsRotation = !mActivity.isInMultiWindowMode()
-                    && mThumbnailData.windowingMode == WINDOWING_MODE_FULLSCREEN;
-            isOrientationDifferent = isOrientationChange(deltaRotate)
-                && windowingModeSupportsRotation;
-            if (getMeasuredWidth() == 0) {
-                // If we haven't measured , skip the thumbnail drawing and only draw the background
-                // color
-                thumbnailScale = 0f;
-            } else {
-                // Rotate the screenshot if not in multi-window mode
-                isRotated = deltaRotate > 0 && windowingModeSupportsRotation;
-                // Scale the screenshot to always fit the width of the card.
-
-                thumbnailScale = isOrientationDifferent
-                        ? getMeasuredWidth() / thumbnailHeight
-                        : getMeasuredWidth() / thumbnailWidth;
-            }
-
-            if (!isRotated) {
-                // No Rotation
-                mClippedInsets.offsetTo(thumbnailInsets.left * scale,
-                    thumbnailInsets.top * scale);
-                mMatrix.setTranslate(-mClippedInsets.left, -mClippedInsets.top);
-            } else {
-                setThumbnailRotation(deltaRotate, thumbnailInsets, scale);
-            }
-
-            final float widthWithInsets;
-            final float heightWithInsets;
-            if (isOrientationDifferent) {
-                widthWithInsets = mThumbnailData.thumbnail.getHeight() * thumbnailScale;
-                heightWithInsets = mThumbnailData.thumbnail.getWidth() * thumbnailScale;
-            } else {
-                widthWithInsets = mThumbnailData.thumbnail.getWidth() * thumbnailScale;
-                heightWithInsets = mThumbnailData.thumbnail.getHeight() * thumbnailScale;
-            }
-            mClippedInsets.left *= thumbnailScale;
-            mClippedInsets.top *= thumbnailScale;
-            mClippedInsets.right = widthWithInsets - mClippedInsets.left - getMeasuredWidth();
-            mClippedInsets.bottom = heightWithInsets - mClippedInsets.top - getMeasuredHeight();
-
-            mMatrix.postScale(thumbnailScale, thumbnailScale);
-            mBitmapShader.setLocalMatrix(mMatrix);
-
-            float bitmapHeight = Math.max((isOrientationDifferent ? thumbnailWidth : thumbnailHeight)
-                    * thumbnailScale, 0);
-            if (Math.round(bitmapHeight) < getMeasuredHeight()) {
-                mClipBottom = bitmapHeight;
-            }
+            mBitmapShader.setLocalMatrix(mPreviewPositionHelper.mMatrix);
             mPaint.setShader(mBitmapShader);
         }
-
-        mIsOrientationChanged = isOrientationDifferent;
         invalidate();
 
         // Update can be called from {@link #onSizeChanged} during layout, post handling of overlay
         // as overlay could modify the views in the overlay as a side effect of its update.
         post(this::updateOverlay);
-    }
-
-    private int getRotationDelta(int oldRotation, int newRotation) {
-        int delta = newRotation - oldRotation;
-        if (delta < 0) delta += 4;
-        return delta;
-    }
-
-    /**
-     * @param deltaRotation the number of 90 degree turns from the current orientation
-     * @return {@code true} if the change in rotation results in a shift from landscape to portrait
-     * or vice versa, {@code false} otherwise
-     */
-    private boolean isOrientationChange(int deltaRotation) {
-        return deltaRotation == Surface.ROTATION_90 || deltaRotation == Surface.ROTATION_270;
-    }
-
-    private void setThumbnailRotation(int deltaRotate, Rect thumbnailInsets, float scale) {
-        int newLeftInset = 0;
-        int newTopInset = 0;
-        int translateX = 0;
-        int translateY = 0;
-
-        mMatrix.setRotate(90 * deltaRotate);
-        switch (deltaRotate) { /* Counter-clockwise */
-            case Surface.ROTATION_90:
-                newLeftInset = thumbnailInsets.bottom;
-                newTopInset = thumbnailInsets.left;
-                translateX = mThumbnailData.thumbnail.getHeight();
-                break;
-            case Surface.ROTATION_270:
-                newLeftInset = thumbnailInsets.top;
-                newTopInset = thumbnailInsets.right;
-                translateY = mThumbnailData.thumbnail.getWidth();
-                break;
-            case Surface.ROTATION_180:
-                newLeftInset = -thumbnailInsets.top;
-                newTopInset = -thumbnailInsets.left;
-                translateX = mThumbnailData.thumbnail.getWidth();
-                translateY = mThumbnailData.thumbnail.getHeight();
-                break;
-        }
-        mClippedInsets.offsetTo(newLeftInset * scale, newTopInset * scale);
-        mMatrix.postTranslate(translateX - mClippedInsets.left,
-                translateY - mClippedInsets.top);
     }
 
     @Override
@@ -510,5 +404,159 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
             return null;
         }
         return mThumbnailData.thumbnail;
+    }
+
+    /**
+     * Utility class to position the thumbnail in the TaskView
+     */
+    public static class PreviewPositionHelper {
+
+        // Contains the portion of the thumbnail that is clipped when fullscreen progress = 0.
+        private final RectF mClippedInsets = new RectF();
+        private final Matrix mMatrix = new Matrix();
+        private float mClipBottom = -1;
+        private boolean mIsOrientationChanged;
+
+        private final Context mContext;
+
+        public PreviewPositionHelper(Context context) {
+            mContext = context;
+        }
+
+        public int getCurrentRotation() {
+            return ConfigurationCompat.getWindowConfigurationRotation(
+                    mContext.getResources().getConfiguration());
+        }
+
+        public Matrix getMatrix() {
+            return mMatrix;
+        }
+
+        /**
+         * Updates the matrix based on the provided parameters
+         */
+        public void updateThumbnailMatrix(Rect thumbnailPosition, ThumbnailData thumbnailData,
+                boolean isInMultiWindowMode, int canvasWidth, int canvasHeight) {
+            boolean isRotated = false;
+            boolean isOrientationDifferent;
+            mClipBottom = -1;
+
+            float scale = thumbnailData.scale;
+            Rect thumbnailInsets = thumbnailData.insets;
+            final float thumbnailWidth = thumbnailPosition.width()
+                    - (thumbnailInsets.left + thumbnailInsets.right) * scale;
+            final float thumbnailHeight = thumbnailPosition.height()
+                    - (thumbnailInsets.top + thumbnailInsets.bottom) * scale;
+
+            final float thumbnailScale;
+            int thumbnailRotation = thumbnailData.rotation;
+            int currentRotation = getCurrentRotation();
+            int deltaRotate = getRotationDelta(currentRotation, thumbnailRotation);
+
+            // Landscape vs portrait change
+            boolean windowingModeSupportsRotation = !isInMultiWindowMode
+                    && thumbnailData.windowingMode == WINDOWING_MODE_FULLSCREEN;
+            isOrientationDifferent = isOrientationChange(deltaRotate)
+                    && windowingModeSupportsRotation;
+            if (canvasWidth == 0) {
+                // If we haven't measured , skip the thumbnail drawing and only draw the background
+                // color
+                thumbnailScale = 0f;
+            } else {
+                // Rotate the screenshot if not in multi-window mode
+                isRotated = deltaRotate > 0 && windowingModeSupportsRotation;
+                // Scale the screenshot to always fit the width of the card.
+                thumbnailScale = isOrientationDifferent
+                        ? canvasWidth / thumbnailHeight
+                        : canvasWidth / thumbnailWidth;
+            }
+
+            if (!isRotated) {
+                // No Rotation
+                mClippedInsets.offsetTo(thumbnailInsets.left * scale,
+                        thumbnailInsets.top * scale);
+                mMatrix.setTranslate(-mClippedInsets.left, -mClippedInsets.top);
+            } else {
+                setThumbnailRotation(deltaRotate, thumbnailInsets, scale, thumbnailPosition);
+            }
+            mMatrix.postTranslate(-thumbnailPosition.left, -thumbnailPosition.top);
+
+            final float widthWithInsets;
+            final float heightWithInsets;
+            if (isOrientationDifferent) {
+                widthWithInsets = thumbnailPosition.height() * thumbnailScale;
+                heightWithInsets = thumbnailPosition.width() * thumbnailScale;
+            } else {
+                widthWithInsets = thumbnailPosition.width() * thumbnailScale;
+                heightWithInsets = thumbnailPosition.height() * thumbnailScale;
+            }
+            mClippedInsets.left *= thumbnailScale;
+            mClippedInsets.top *= thumbnailScale;
+            mClippedInsets.right = widthWithInsets - mClippedInsets.left - canvasWidth;
+            mClippedInsets.bottom = heightWithInsets - mClippedInsets.top - canvasHeight;
+
+            mMatrix.postScale(thumbnailScale, thumbnailScale);
+
+            float bitmapHeight = Math.max(0,
+                    (isOrientationDifferent ? thumbnailWidth : thumbnailHeight) * thumbnailScale);
+            if (Math.round(bitmapHeight) < canvasHeight) {
+                mClipBottom = bitmapHeight;
+            }
+            mIsOrientationChanged = isOrientationDifferent;
+        }
+
+        private int getRotationDelta(int oldRotation, int newRotation) {
+            int delta = newRotation - oldRotation;
+            if (delta < 0) delta += 4;
+            return delta;
+        }
+
+        /**
+         * @param deltaRotation the number of 90 degree turns from the current orientation
+         * @return {@code true} if the change in rotation results in a shift from landscape to
+         * portrait or vice versa, {@code false} otherwise
+         */
+        private boolean isOrientationChange(int deltaRotation) {
+            return deltaRotation == Surface.ROTATION_90 || deltaRotation == Surface.ROTATION_270;
+        }
+
+        private void setThumbnailRotation(int deltaRotate, Rect thumbnailInsets, float scale,
+                Rect thumbnailPosition) {
+            int newLeftInset = 0;
+            int newTopInset = 0;
+            int translateX = 0;
+            int translateY = 0;
+
+            mMatrix.setRotate(90 * deltaRotate);
+            switch (deltaRotate) { /* Counter-clockwise */
+                case Surface.ROTATION_90:
+                    newLeftInset = thumbnailInsets.bottom;
+                    newTopInset = thumbnailInsets.left;
+                    translateX = thumbnailPosition.height();
+                    break;
+                case Surface.ROTATION_270:
+                    newLeftInset = thumbnailInsets.top;
+                    newTopInset = thumbnailInsets.right;
+                    translateY = thumbnailPosition.width();
+                    break;
+                case Surface.ROTATION_180:
+                    newLeftInset = -thumbnailInsets.top;
+                    newTopInset = -thumbnailInsets.left;
+                    translateX = thumbnailPosition.width();
+                    translateY = thumbnailPosition.height();
+                    break;
+            }
+            mClippedInsets.offsetTo(newLeftInset * scale, newTopInset * scale);
+            mMatrix.postTranslate(translateX - mClippedInsets.left,
+                    translateY - mClippedInsets.top);
+        }
+
+        /**
+         * Insets to used for clipping the thumbnail (in case it is drawing outside its own space)
+         */
+        public RectF getInsetsToDrawInFullscreen(boolean isMultiWindowMode) {
+            // Don't show insets in multi window mode.
+            return isMultiWindowMode ? EMPTY_RECT_F : mClippedInsets;
+        }
     }
 }

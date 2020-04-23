@@ -43,6 +43,7 @@ public class OptionsPopupMenuItem {
             LauncherInstrumentation.log("OptionsPopupMenuItem before click "
                     + mObject.getVisibleCenter() + " in " + mLauncher.getVisibleBounds(mObject));
             mLauncher.clickLauncherObject(mObject);
+            mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, LauncherInstrumentation.EVENT_START);
             if (!Build.MODEL.contains("Cuttlefish") ||
                     Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q &&
                             !"R".equals(Build.VERSION.CODENAME)) {
