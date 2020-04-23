@@ -146,7 +146,8 @@ public class LauncherProvider extends ContentProvider {
      */
     protected synchronized void createDbIfNotExists() {
         if (mOpenHelper == null) {
-            mOpenHelper = DatabaseHelper.createDatabaseHelper(getContext());
+            mOpenHelper = DatabaseHelper.createDatabaseHelper(
+                    getContext(), false /* forMigration */);
 
             if (RestoreDbTask.isPending(getContext())) {
                 if (!RestoreDbTask.performRestore(getContext(), mOpenHelper,
@@ -430,7 +431,8 @@ public class LauncherProvider extends ContentProvider {
                                     InvariantDeviceProfile.INSTANCE.get(getContext()).dbFile,
                                     Favorites.TMP_TABLE,
                                     () -> mOpenHelper,
-                                    () -> DatabaseHelper.createDatabaseHelper(getContext())));
+                                    () -> DatabaseHelper.createDatabaseHelper(
+                                            getContext(), true /* forMigration */)));
                     return result;
                 }
             }
@@ -441,7 +443,8 @@ public class LauncherProvider extends ContentProvider {
                             prepForMigration(
                                     arg /* dbFile */,
                                     Favorites.PREVIEW_TABLE_NAME,
-                                    () -> DatabaseHelper.createDatabaseHelper(getContext(), arg),
+                                    () -> DatabaseHelper.createDatabaseHelper(
+                                            getContext(), arg, true /* forMigration */),
                                     () -> mOpenHelper));
                     return result;
                 }
@@ -609,20 +612,22 @@ public class LauncherProvider extends ContentProvider {
     public static class DatabaseHelper extends NoLocaleSQLiteHelper implements
             LayoutParserCallback {
         private final Context mContext;
+        private final boolean mForMigration;
         private int mMaxItemId = -1;
         private int mMaxScreenId = -1;
         private boolean mBackupTableExists;
 
-        static DatabaseHelper createDatabaseHelper(Context context) {
-            return createDatabaseHelper(context, null);
+        static DatabaseHelper createDatabaseHelper(Context context, boolean forMigration) {
+            return createDatabaseHelper(context, null, forMigration);
         }
 
-        static DatabaseHelper createDatabaseHelper(Context context, String dbName) {
+        static DatabaseHelper createDatabaseHelper(Context context, String dbName,
+                boolean forMigration) {
             if (dbName == null) {
                 dbName = MULTI_DB_GRID_MIRATION_ALGO.get() ? InvariantDeviceProfile.INSTANCE.get(
                         context).dbFile : LauncherFiles.LAUNCHER_DB;
             }
-            DatabaseHelper databaseHelper = new DatabaseHelper(context, dbName);
+            DatabaseHelper databaseHelper = new DatabaseHelper(context, dbName, forMigration);
             // Table creation sometimes fails silently, which leads to a crash loop.
             // This way, we will try to create a table every time after crash, so the device
             // would eventually be able to recover.
@@ -643,9 +648,10 @@ public class LauncherProvider extends ContentProvider {
         /**
          * Constructor used in tests and for restore.
          */
-        public DatabaseHelper(Context context, String dbName) {
+        public DatabaseHelper(Context context, String dbName, boolean forMigration) {
             super(context, dbName, SCHEMA_VERSION);
             mContext = context;
+            mForMigration = forMigration;
         }
 
         protected void initIds() {
@@ -670,7 +676,9 @@ public class LauncherProvider extends ContentProvider {
 
             // Fresh and clean launcher DB.
             mMaxItemId = initializeMaxItemId(db);
-            onEmptyDbCreated();
+            if (!mForMigration) {
+                onEmptyDbCreated();
+            }
         }
 
         protected void onAddOrDeleteOp(SQLiteDatabase db) {
