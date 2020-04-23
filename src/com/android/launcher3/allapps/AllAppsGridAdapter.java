@@ -71,11 +71,6 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     public static final int VIEW_TYPE_MASK_DIVIDER = VIEW_TYPE_ALL_APPS_DIVIDER;
     public static final int VIEW_TYPE_MASK_ICON = VIEW_TYPE_ICON;
 
-
-    public interface BindViewCallback {
-        void onBindView(ViewHolder holder);
-    }
-
     /**
      * ViewHolder for each icon.
      */
@@ -186,7 +181,6 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
 
     private int mAppsPerRow;
 
-    private BindViewCallback mBindViewCallback;
     private OnFocusChangeListener mIconFocusListener;
 
     // The text to show when there are no search results and no market search handler.
@@ -245,13 +239,6 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         Resources res = mLauncher.getResources();
         mEmptySearchMessage = res.getString(R.string.all_apps_no_search_results, query);
         mMarketSearchIntent = PackageManagerHelper.getMarketSearchIntent(mLauncher, query);
-    }
-
-    /**
-     * Sets the callback for when views are bound.
-     */
-    public void setBindViewCallback(BindViewCallback cb) {
-        mBindViewCallback = cb;
     }
 
     /**
@@ -318,9 +305,6 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
             case VIEW_TYPE_ALL_APPS_DIVIDER:
                 // nothing to do
                 break;
-        }
-        if (mBindViewCallback != null) {
-            mBindViewCallback.onBindView(holder);
         }
     }
 

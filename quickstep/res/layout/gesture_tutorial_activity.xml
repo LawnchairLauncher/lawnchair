@@ -13,8 +13,7 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle">
-    <corners android:radius="@dimen/default_dialog_corner_radius"/>
-    <solid android:color="@color/back_gesture_tutorial_primary_color"/>
-</shape>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/gesture_tutorial_fragment_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"/>

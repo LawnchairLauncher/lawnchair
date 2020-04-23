@@ -215,9 +215,6 @@ public class RecentsAnimationDeviceState implements
 
     @Override
     public void onNavigationModeChanged(SysUINavigationMode.Mode newMode) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_BACKGROUND_TO_OVERVIEW_TAG, "onNavigationModeChanged " + newMode);
-        }
         mDefaultDisplay.removeChangeListener(this);
         if (newMode.hasGestures) {
             mDefaultDisplay.addChangeListener(this);

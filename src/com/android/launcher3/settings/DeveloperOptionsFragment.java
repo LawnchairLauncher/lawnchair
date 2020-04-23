@@ -216,17 +216,27 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
         if (launchSandboxIntent.resolveActivity(context.getPackageManager()) == null) {
             return;
         }
-        PreferenceCategory sandboxCategory = newCategory("Sandbox");
-        Preference launchSandboxPreference = new Preference(context);
-        launchSandboxPreference.setKey("launchSandbox");
-        launchSandboxPreference.setTitle("Launch Gesture Navigation Sandbox");
-        launchSandboxPreference.setSummary(
-                "This provides tutorials and a place to practice navigation gestures.");
-        launchSandboxPreference.setOnPreferenceClickListener(preference -> {
-            startActivity(launchSandboxIntent);
+        PreferenceCategory sandboxCategory = newCategory("Gesture Navigation Sandbox");
+        sandboxCategory.setSummary("Learn and practice navigation gestures");
+        Preference launchBackTutorialPreference = new Preference(context);
+        launchBackTutorialPreference.setKey("launchBackTutorial");
+        launchBackTutorialPreference.setTitle("Launch Back Tutorial");
+        launchBackTutorialPreference.setSummary("Learn how to use the Back gesture");
+        launchBackTutorialPreference.setOnPreferenceClickListener(preference -> {
+            startActivity(launchSandboxIntent.putExtra(
+                    "tutorial_type", "RIGHT_EDGE_BACK_NAVIGATION"));
             return true;
         });
-        sandboxCategory.addPreference(launchSandboxPreference);
+        sandboxCategory.addPreference(launchBackTutorialPreference);
+        Preference launchHomeTutorialPreference = new Preference(context);
+        launchHomeTutorialPreference.setKey("launchHomeTutorial");
+        launchHomeTutorialPreference.setTitle("Launch Home Tutorial");
+        launchHomeTutorialPreference.setSummary("Learn how to use the Home gesture");
+        launchHomeTutorialPreference.setOnPreferenceClickListener(preference -> {
+            startActivity(launchSandboxIntent.putExtra("tutorial_type", "HOME_NAVIGATION"));
+            return true;
+        });
+        sandboxCategory.addPreference(launchHomeTutorialPreference);
     }
 
     private String toName(String action) {

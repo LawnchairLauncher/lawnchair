@@ -31,7 +31,6 @@ import java.util.regex.Pattern;
  */
 public final class AppIcon extends Launchable {
 
-    private static final Pattern START_EVENT = Pattern.compile("start:");
     private static final Pattern LONG_CLICK_EVENT = Pattern.compile("onAllAppsItemLongClick");
 
     AppIcon(LauncherInstrumentation launcher, UiObject2 icon) {
@@ -64,6 +63,6 @@ public final class AppIcon extends Launchable {
 
     @Override
     protected void expectActivityStartEvents() {
-        mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, START_EVENT);
+        mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, LauncherInstrumentation.EVENT_START);
     }
 }

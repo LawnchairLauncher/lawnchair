@@ -207,9 +207,23 @@ public class RectFSpringAnim {
                 mRectScaleAnim.skipToEnd();
             }
         }
+        mRectXAnimEnded = true;
+        mRectYAnimEnded = true;
+        mRectScaleAnimEnded = true;
+        maybeOnEnd();
+    }
+
+    private boolean isEnded() {
+        return mRectXAnimEnded && mRectYAnimEnded && mRectScaleAnimEnded;
     }
 
     private void onUpdate() {
+        if (isEnded()) {
+            // Prevent further updates from being called. This can happen between callbacks for
+            // ending the x/y/scale animations.
+            return;
+        }
+
         if (!mOnUpdateListeners.isEmpty()) {
             float currentWidth = Utilities.mapRange(mCurrentScaleProgress, mStartRect.width(),
                     mTargetRect.width());
@@ -229,7 +243,7 @@ public class RectFSpringAnim {
     }
 
     private void maybeOnEnd() {
-        if (mAnimsStarted && mRectXAnimEnded && mRectYAnimEnded && mRectScaleAnimEnded) {
+        if (mAnimsStarted && isEnded()) {
             mAnimsStarted = false;
             for (Animator.AnimatorListener animatorListener : mAnimatorListeners) {
                 animatorListener.onAnimationEnd(null);

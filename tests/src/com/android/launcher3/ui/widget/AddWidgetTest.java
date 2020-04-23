@@ -57,7 +57,7 @@ public class AddWidgetTest extends AbstractLauncherUiTest {
                 getWorkspace().
                 openAllWidgets().
                 getWidget(widgetInfo.getLabel(mTargetContext.getPackageManager())).
-                dragToWorkspace(false);
+                dragToWorkspace(false, false);
 
         assertTrue(mActivityMonitor.itemExists(
                 (info, view) -> info instanceof LauncherAppWidgetInfo &&
@@ -83,7 +83,7 @@ public class AddWidgetTest extends AbstractLauncherUiTest {
         mDevice.pressHome();
         mLauncher.getWorkspace().openAllWidgets()
                 .getWidget("com.android.launcher3.testcomponent.CustomShortcutConfigActivity")
-                .dragToWorkspace(false);
+                .dragToWorkspace(false, true);
         mLauncher.getWorkspace().getWorkspaceAppIcon("Shortcut")
                 .launch(getAppPackageName());
     }
