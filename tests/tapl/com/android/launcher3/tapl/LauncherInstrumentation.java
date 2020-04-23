@@ -99,6 +99,7 @@ public final class LauncherInstrumentation {
     private static final Pattern EVENT_PILFER_POINTERS = Pattern.compile("pilferPointers");
     static final Pattern EVENT_START_ACTIVITY = Pattern.compile("Activity\\.onStart");
     static final Pattern EVENT_STOP_ACTIVITY = Pattern.compile("Activity\\.onStop");
+    static final Pattern EVENT_START = Pattern.compile("start:");
 
     static final Pattern EVENT_TOUCH_DOWN_TIS = getTouchEventPatternTIS("ACTION_DOWN");
     static final Pattern EVENT_TOUCH_UP_TIS = getTouchEventPatternTIS("ACTION_UP");
@@ -247,8 +248,6 @@ public final class LauncherInstrumentation {
                 }
             }
         }
-
-        disableSensorRotation();
     }
 
     public void enableCheckEventsForSuccessfulGestures() {
@@ -1266,7 +1265,7 @@ public final class LauncherInstrumentation {
                 TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
-    public void disableSensorRotation() {
+    private void disableSensorRotation() {
         getTestInfo(TestProtocol.REQUEST_MOCK_SENSOR_ROTATION);
     }
 
@@ -1307,6 +1306,7 @@ public final class LauncherInstrumentation {
 
     public Closable eventsCheck() {
         Assert.assertTrue("Nested event checking", !sCheckingEvents);
+        disableSensorRotation();
         sCheckingEvents = true;
         mExpectedPid = getPid();
         if (sEventChecker == null) sEventChecker = new LogEventChecker();

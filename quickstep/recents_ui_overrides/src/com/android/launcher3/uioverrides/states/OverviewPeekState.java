@@ -24,24 +24,18 @@ import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_TR
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.states.StateAnimationConfig;
 
 public class OverviewPeekState extends OverviewState {
+    private static final float OVERVIEW_OFFSET = 0.7f;
+
     public OverviewPeekState(int id) {
         super(id);
     }
 
     @Override
-    public ScaleAndTranslation getOverviewScaleAndTranslation(Launcher launcher) {
-        ScaleAndTranslation result = super.getOverviewScaleAndTranslation(launcher);
-        result.translationX = NORMAL.getOverviewScaleAndTranslation(launcher).translationX
-                - launcher.getResources().getDimension(R.dimen.overview_peek_distance);
-        if (Utilities.isRtl(launcher.getResources())) {
-            result.translationX = -result.translationX;
-        }
-        return result;
+    public float[] getOverviewScaleAndOffset(Launcher launcher) {
+        return new float[] {NO_SCALE, OVERVIEW_OFFSET};
     }
 
     @Override

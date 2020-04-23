@@ -27,8 +27,6 @@ import java.util.regex.Pattern;
  */
 public class AppIconMenuItem extends Launchable {
 
-    private static final Pattern START_SHORTCUT_EVENT = Pattern.compile("start: shortcut:");
-
     AppIconMenuItem(LauncherInstrumentation launcher, UiObject2 shortcut) {
         super(launcher, shortcut);
     }
@@ -51,6 +49,6 @@ public class AppIconMenuItem extends Launchable {
 
     @Override
     protected void expectActivityStartEvents() {
-        mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, START_SHORTCUT_EVENT);
+        mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, LauncherInstrumentation.EVENT_START);
     }
 }
