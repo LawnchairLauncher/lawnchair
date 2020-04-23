@@ -78,7 +78,7 @@ public class SpringLoadedState extends LauncherState {
     }
 
     @Override
-    public float getDepth(Context context) {
+    protected float getDepthUnchecked(Context context) {
         return 0.5f;
     }
 

@@ -71,6 +71,7 @@ public final class RecentsActivity extends BaseRecentsActivity {
         mRecentsRootView = findViewById(R.id.drag_layer);
         mFallbackRecentsView = findViewById(R.id.overview_panel);
         mRecentsRootView.recreateControllers();
+        mFallbackRecentsView.init(findViewById(R.id.overview_actions_view));
     }
 
     @Override
