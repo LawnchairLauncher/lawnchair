@@ -98,9 +98,10 @@ public abstract class AbstractLauncherUiTest {
     public static final long DEFAULT_UI_TIMEOUT = 10000;
     private static final String TAG = "AbstractLauncherUiTest";
 
-    private static String sDetectedActivityLeak;
+    private static String sStrictmodeDetectedActivityLeak;
     private static boolean sActivityLeakReported;
     private static final String SYSTEMUI_PACKAGE = "com.android.systemui";
+    private static final ActivityLeakTracker ACTIVITY_LEAK_TRACKER = new ActivityLeakTracker();
 
     protected LooperExecutor mMainThreadExecutor = MAIN_EXECUTOR;
     protected final UiDevice mDevice = UiDevice.getInstance(getInstrumentation());
@@ -113,30 +114,51 @@ public abstract class AbstractLauncherUiTest {
         if (TestHelpers.isInLauncherProcess()) {
             StrictMode.VmPolicy.Builder builder =
                     new StrictMode.VmPolicy.Builder()
-                            .detectActivityLeaks()
+// b/154772063
+//                            .detectActivityLeaks()
                             .penaltyLog()
                             .penaltyListener(Runnable::run, violation -> {
-                                // Runs in the main thread. We can't dumpheap in the main thread,
-                                // so let's just mark the fact that the leak has happened.
-                                if (sDetectedActivityLeak == null) {
-                                    sDetectedActivityLeak = violation.toString();
-                                    try {
-                                        Debug.dumpHprofData(
-                                                getInstrumentation().getTargetContext()
-                                                        .getFilesDir().getPath()
-                                                        + "/ActivityLeakHeapDump.hprof");
-                                    } catch (Throwable e) {
-                                        Log.e(TAG, "dumpHprofData failed", e);
-                                    }
+                                if (sStrictmodeDetectedActivityLeak == null) {
+                                    sStrictmodeDetectedActivityLeak = violation.toString() + ", "
+                                            + dumpHprofData() + ".";
                                 }
                             });
             StrictMode.setVmPolicy(builder.build());
         }
     }
 
-    public static void checkDetectedLeaks() {
-        if (sDetectedActivityLeak != null && !sActivityLeakReported) {
+    public static void checkDetectedLeaks(LauncherInstrumentation launcher) {
+        if (sActivityLeakReported) return;
+
+        if (sStrictmodeDetectedActivityLeak != null) {
+            // Report from the test thread strictmode violations detected in the main thread.
             sActivityLeakReported = true;
+            Assert.fail(sStrictmodeDetectedActivityLeak);
+        }
+
+        // Check whether activity leak detector has found leaked activities.
+        Wait.atMost(AbstractLauncherUiTest::getActivityLeakErrorMessage,
+                () -> {
+                    launcher.getTotalPssKb();  // Triggers GC
+                    return MAIN_EXECUTOR.submit(
+                            () -> ACTIVITY_LEAK_TRACKER.noLeakedActivities()).get();
+                }, DEFAULT_UI_TIMEOUT, launcher);
+    }
+
+    private static String getActivityLeakErrorMessage() {
+        sActivityLeakReported = true;
+        return "Activity leak detector has found leaked activities, " + dumpHprofData() + ".";
+    }
+
+    private static String dumpHprofData() {
+        try {
+            final String fileName = getInstrumentation().getTargetContext().getFilesDir().getPath()
+                    + "/ActivityLeakHeapDump.hprof";
+            Debug.dumpHprofData(fileName);
+            return "memory dump filename: " + fileName;
+        } catch (Throwable e) {
+            Log.e(TAG, "dumpHprofData failed", e);
+            return "failed to save memory dump";
         }
     }
 
@@ -263,7 +285,7 @@ public abstract class AbstractLauncherUiTest {
         if (mLauncherPid != 0) {
             assertEquals("Launcher crashed, pid mismatch:", mLauncherPid, mLauncher.getPid());
         }
-        checkDetectedLeaks();
+        checkDetectedLeaks(mLauncher);
     }
 
     protected void clearLauncherData() throws IOException, InterruptedException {
