@@ -77,6 +77,8 @@ class ActivityLeakTracker implements Application.ActivityLifecycleCallbacks {
             }
         }
 
+        if (liveActivities > 2)  return false;
+
         // It's OK to have 1 leaked activity if no active activities exist.
         return liveActivities == 0 ? destroyedActivities <= 1 : destroyedActivities == 0;
     }
