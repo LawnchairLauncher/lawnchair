@@ -16,6 +16,8 @@
 
 package com.android.launcher3.model;
 
+import static com.android.launcher3.InvariantDeviceProfile.KEY_MIGRATION_SRC_HOTSEAT_COUNT;
+import static com.android.launcher3.InvariantDeviceProfile.KEY_MIGRATION_SRC_WORKSPACE_SIZE;
 import static com.android.launcher3.Utilities.getPointString;
 import static com.android.launcher3.provider.LauncherDbUtils.dropTable;
 
@@ -63,9 +65,6 @@ import java.util.stream.Collectors;
  */
 public class GridSizeMigrationTaskV2 {
 
-    public static final String KEY_MIGRATION_SRC_WORKSPACE_SIZE = "migration_src_workspace_size";
-    public static final String KEY_MIGRATION_SRC_HOTSEAT_COUNT = "migration_src_hotseat_count";
-
     private static final String TAG = "GridSizeMigrationTaskV2";
     private static final boolean DEBUG = true;
 
@@ -110,8 +109,7 @@ public class GridSizeMigrationTaskV2 {
         String gridSizeString = getPointString(idp.numColumns, idp.numRows);
 
         return !gridSizeString.equals(prefs.getString(KEY_MIGRATION_SRC_WORKSPACE_SIZE, ""))
-                || idp.numHotseatIcons != prefs.getInt(KEY_MIGRATION_SRC_HOTSEAT_COUNT,
-                idp.numHotseatIcons);
+                || idp.numHotseatIcons != prefs.getInt(KEY_MIGRATION_SRC_HOTSEAT_COUNT, -1);
     }
 
     /** See {@link #migrateGridIfNeeded(Context, InvariantDeviceProfile)} */
@@ -148,14 +146,6 @@ public class GridSizeMigrationTaskV2 {
 
         SharedPreferences prefs = Utilities.getPrefs(context);
         String gridSizeString = getPointString(idp.numColumns, idp.numRows);
-
-        if (gridSizeString.equals(prefs.getString(KEY_MIGRATION_SRC_WORKSPACE_SIZE, ""))
-                && idp.numHotseatIcons == prefs.getInt(KEY_MIGRATION_SRC_HOTSEAT_COUNT,
-                idp.numHotseatIcons)) {
-            // Skip if workspace and hotseat sizes have not changed.
-            return true;
-        }
-
         HashSet<String> validPackages = getValidPackages(context);
         int srcHotseatCount = prefs.getInt(KEY_MIGRATION_SRC_HOTSEAT_COUNT, idp.numHotseatIcons);
 
