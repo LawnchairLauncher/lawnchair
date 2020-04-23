@@ -24,6 +24,7 @@ import static com.android.launcher3.touch.SingleAxisSwipeDetector.DIRECTION_POSI
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.view.MotionEvent;
+import android.view.View;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
@@ -209,9 +210,11 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
             mPendingAnimation = mRecentsView.createTaskLaunchAnimation(
                     mTaskBeingDragged, maxDuration, Interpolators.ZOOM_IN);
 
-            mTempCords[1] = mTaskBeingDragged.getHeight();
-            dl.getDescendantCoordRelativeToSelf(mTaskBeingDragged, mTempCords);
-            mEndDisplacement = dl.getHeight() - mTempCords[1];
+            // Since the thumbnail is what is filling the screen, based the end displacement on it.
+            View thumbnailView = mTaskBeingDragged.getThumbnail();
+            mTempCords[1] = orientationHandler.getSecondaryDimension(thumbnailView);
+            dl.getDescendantCoordRelativeToSelf(thumbnailView, mTempCords);
+            mEndDisplacement = secondaryLayerDimension - mTempCords[1];
         }
         mEndDisplacement *= verticalFactor;
 

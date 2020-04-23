@@ -36,7 +36,7 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
     }
 
     @Override
-    public void offsetTaskRect(RectF rect, float value, int displayRotation) {
+    public void offsetTaskRect(RectF rect, float value, int displayRotation, int launcherRotation) {
         if (displayRotation == Surface.ROTATION_0) {
             rect.offset(0, value);
         } else if (displayRotation == Surface.ROTATION_90) {

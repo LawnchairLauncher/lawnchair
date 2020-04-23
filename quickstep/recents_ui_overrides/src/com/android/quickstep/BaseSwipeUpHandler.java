@@ -31,7 +31,6 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Build;
-import android.util.Log;
 import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
@@ -46,7 +45,6 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
-import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.VibratorWrapper;
 import com.android.launcher3.views.FloatingIconView;
@@ -133,13 +131,19 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
         mDeviceState = deviceState;
         mGestureState = gestureState;
         mActivityInterface = gestureState.getActivityInterface();
-        mActivityInitListener =
-                mActivityInterface.createActivityInitListener(this::onActivityInit);
+        mActivityInitListener = mActivityInterface.createActivityInitListener(this::onActivityInit);
         mInputConsumer = inputConsumer;
         mAppWindowAnimationHelper = new AppWindowAnimationHelper(context);
         mPageSpacing = context.getResources().getDimensionPixelSize(R.dimen.recents_page_spacing);
+    }
+
+    /**
+     * To be called at the end of constructor of subclasses. This calls various methods which can
+     * depend on proper class initialization.
+     */
+    protected void initAfterSubclassConstructor() {
         initTransitionEndpoints(InvariantDeviceProfile.INSTANCE.get(mContext)
-            .getDeviceProfile(mContext));
+                .getDeviceProfile(mContext));
     }
 
     protected void performHapticFeedback() {
@@ -244,6 +248,10 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
         return mRecentsAnimationTargets != null && mRecentsAnimationTargets.hasTargets();
     }
 
+    protected void updateSource(Rect stackBounds, RemoteAnimationTargetCompat runningTarget) {
+        mAppWindowAnimationHelper.updateSource(stackBounds, runningTarget);
+    }
+
     @Override
     public void onRecentsAnimationStart(RecentsAnimationController recentsAnimationController,
             RecentsAnimationTargets targets) {
@@ -267,7 +275,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
         dp.updateInsets(targets.homeContentInsets);
         dp.updateIsSeascape(mContext);
         if (runningTaskTarget != null) {
-            mAppWindowAnimationHelper.updateSource(overviewStackBounds, runningTaskTarget);
+            updateSource(overviewStackBounds, runningTaskTarget);
         }
 
         mAppWindowAnimationHelper.prepareAnimation(dp, false /* isOpening */);
@@ -317,6 +325,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
 
         mTransitionDragLength = mActivityInterface.getSwipeUpDestinationAndLength(
                 dp, mContext, TEMP_RECT);
+
         if (!dp.isMultiWindowMode) {
             // When updating the target rect, also update the home bounds since the location on
             // screen of the launcher window may be stale (position is not updated until first
@@ -325,13 +334,14 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
             mAppWindowAnimationHelper.updateHomeBounds(getStackBounds(dp));
         }
         int displayRotation = 0;
-        if (mOrientedState != null) {
+        if (mOrientedState != null && !mOrientedState.areMultipleLayoutOrientationsDisabled()) {
             // TODO(b/150300347): The first recents animation after launcher is started with the
             //  foreground app not in landscape will look funky until that bug is fixed
             displayRotation = mOrientedState.getDisplayRotation();
 
             RectF tempRectF = new RectF(TEMP_RECT);
-            mOrientedState.mapRectFromNormalOrientation(tempRectF, dp.widthPx, dp.heightPx);
+            mOrientedState.mapRectFromRotation(displayRotation,
+                    tempRectF, dp.widthPx, dp.heightPx);
             tempRectF.roundOut(TEMP_RECT);
         }
         mAppWindowAnimationHelper.updateTargetRect(TEMP_RECT);
@@ -395,11 +405,15 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
 
     public void setIsLikelyToStartNewTask(boolean isLikelyToStartNewTask) { }
 
-    public void initWhenReady() {
+    /**
+     * Registers a callback to run when the activity is ready.
+     * @param intent The intent that will be used to start the activity if it doesn't exist already.
+     */
+    public void initWhenReady(Intent intent) {
         // Preload the plan
         RecentsModel.INSTANCE.get(mContext).getTasks(null);
 
-        mActivityInitListener.register();
+        mActivityInitListener.register(intent);
     }
 
     /**
@@ -407,11 +421,12 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
      */
     protected void applyTransformUnchecked() {
         float shift = mCurrentShift.value;
-        float offset = mRecentsView == null ? 0 : mRecentsView.getScrollOffset();
+        float offset = mRecentsView == null ? 0 : mRecentsView.getScrollOffsetScaled();
         float taskSize = getOrientationHandler()
             .getPrimarySize(mAppWindowAnimationHelper.getTargetRect());
         float offsetScale = getTaskCurveScaleForOffset(offset, taskSize);
-        mTransformParams.setProgress(shift)
+        mTransformParams
+                .setProgress(shift)
                 .setOffset(offset)
                 .setOffsetScale(offsetScale)
                 .setTargetSet(mRecentsAnimationTargets)
@@ -457,6 +472,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
             FloatingIconView fiv = (FloatingIconView) floatingView;
             anim.addAnimatorListener(fiv);
             fiv.setOnTargetChangeListener(anim::onTargetPositionChanged);
+            fiv.setFastFinishRunnable(anim::end);
         }
 
         AnimatorPlaybackController homeAnim = homeAnimationFactory.createActivityAnimationToHome();

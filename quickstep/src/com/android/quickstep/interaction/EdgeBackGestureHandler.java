@@ -20,7 +20,6 @@ import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.os.SystemProperties;
-import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -46,7 +45,6 @@ public class EdgeBackGestureHandler implements OnTouchListener {
     private final Context mContext;
 
     private final Point mDisplaySize = new Point();
-    private final int mDisplayId;
 
     // The edge width where touch down is allowed
     private int mEdgeWidth;
@@ -91,8 +89,6 @@ public class EdgeBackGestureHandler implements OnTouchListener {
     EdgeBackGestureHandler(Context context) {
         final Resources res = context.getResources();
         mContext = context;
-        mDisplayId = context.getDisplay() == null
-                ? Display.DEFAULT_DISPLAY : context.getDisplay().getDisplayId();
 
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
         mLongPressTimeout = Math.min(MAX_LONG_PRESS_TIMEOUT,
@@ -124,6 +120,10 @@ public class EdgeBackGestureHandler implements OnTouchListener {
 
     void registerBackGestureAttemptCallback(BackGestureAttemptCallback callback) {
         mGestureCallback = callback;
+    }
+
+    void unregisterBackGestureAttemptCallback() {
+        mGestureCallback = null;
     }
 
     private LayoutParams createLayoutParams() {
