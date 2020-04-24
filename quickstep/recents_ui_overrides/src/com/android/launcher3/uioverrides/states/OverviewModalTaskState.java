@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.uioverrides.states;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Rect;
 
@@ -30,14 +31,14 @@ import com.android.quickstep.views.RecentsView;
 public class OverviewModalTaskState extends OverviewState {
 
     private static final int STATE_FLAGS =
-            FLAG_DISABLE_RESTORE | FLAG_OVERVIEW_UI | FLAG_DISABLE_ACCESSIBILITY;
+            FLAG_DISABLE_RESTORE | FLAG_OVERVIEW_UI | FLAG_WORKSPACE_INACCESSIBLE;
 
     public OverviewModalTaskState(int id) {
         super(id, ContainerType.OVERVIEW, STATE_FLAGS);
     }
 
     @Override
-    public int getTransitionDuration(Launcher launcher) {
+    public int getTransitionDuration(Context launcher) {
         return 300;
     }
 

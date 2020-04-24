@@ -17,6 +17,7 @@ package com.android.launcher3;
 
 import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
 import static com.android.launcher3.AbstractFloatingView.TYPE_HIDE_BACK_BUTTON;
+import static com.android.launcher3.LauncherState.FLAG_HIDE_BACK_BUTTON;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.quickstep.SysUINavigationMode.removeShelfFromOverview;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_HOME_KEY;
@@ -257,7 +258,7 @@ public abstract class BaseQuickstepLauncher extends Launcher
     private void onLauncherStateOrFocusChanged() {
         Mode mode = SysUINavigationMode.getMode(this);
         boolean shouldBackButtonBeHidden = mode.hasGestures
-                && getStateManager().getState().hideBackButton
+                && getStateManager().getState().hasFlag(FLAG_HIDE_BACK_BUTTON)
                 && hasWindowFocus()
                 && (getActivityFlags() & ACTIVITY_STATE_TRANSITION_ACTIVE) == 0;
         if (shouldBackButtonBeHidden) {

@@ -15,7 +15,8 @@
  */
 package com.android.launcher3.uioverrides.states;
 
-import com.android.launcher3.Launcher;
+import android.content.Context;
+
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 
@@ -29,7 +30,7 @@ public class OverviewState extends LauncherState {
     }
 
     @Override
-    public int getTransitionDuration(Launcher context) {
+    public int getTransitionDuration(Context context) {
         return 250;
     }
 
