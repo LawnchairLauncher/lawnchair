@@ -21,7 +21,9 @@ import android.graphics.Insets;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.WindowInsets;
 
@@ -31,13 +33,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
 import com.android.launcher3.R;
-import com.android.quickstep.interaction.EdgeBackGestureHandler.BackGestureAttemptCallback;
-import com.android.quickstep.interaction.EdgeBackGestureHandler.BackGestureResult;
 import com.android.quickstep.interaction.TutorialController.TutorialType;
 
 import java.net.URISyntaxException;
 
-abstract class TutorialFragment extends Fragment implements BackGestureAttemptCallback {
+abstract class TutorialFragment extends Fragment implements OnTouchListener {
 
     private static final String LOG_TAG = "TutorialFragment";
     private static final String SYSTEM_NAVIGATION_SETTING_INTENT =
@@ -52,6 +52,7 @@ abstract class TutorialFragment extends Fragment implements BackGestureAttemptCa
     View mRootView;
     TutorialHandAnimation mHandCoachingAnimation;
     EdgeBackGestureHandler mEdgeBackGestureHandler;
+    NavBarGestureHandler mNavBarGestureHandler;
 
     public static TutorialFragment newInstance(TutorialType tutorialType) {
         TutorialFragment fragment = getFragmentForTutorialType(tutorialType);
@@ -91,13 +92,14 @@ abstract class TutorialFragment extends Fragment implements BackGestureAttemptCa
         Bundle args = savedInstanceState != null ? savedInstanceState : getArguments();
         mTutorialType = (TutorialType) args.getSerializable(KEY_TUTORIAL_TYPE);
         mEdgeBackGestureHandler = new EdgeBackGestureHandler(getContext());
-        mEdgeBackGestureHandler.registerBackGestureAttemptCallback(this);
+        mNavBarGestureHandler = new NavBarGestureHandler(getContext());
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         mEdgeBackGestureHandler.unregisterBackGestureAttemptCallback();
+        mNavBarGestureHandler.unregisterNavBarGestureAttemptCallback();
     }
 
     @Override
@@ -111,7 +113,7 @@ abstract class TutorialFragment extends Fragment implements BackGestureAttemptCa
             mEdgeBackGestureHandler.setInsets(systemInsets.left, systemInsets.right);
             return insets;
         });
-        mRootView.setOnTouchListener(mEdgeBackGestureHandler);
+        mRootView.setOnTouchListener(this);
         mHandCoachingAnimation = new TutorialHandAnimation(getContext(), mRootView,
                 getHandAnimationResId());
         return mRootView;
@@ -129,6 +131,13 @@ abstract class TutorialFragment extends Fragment implements BackGestureAttemptCa
         mHandCoachingAnimation.stop();
     }
 
+    @Override
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+        // Note: Using logical or to ensure both functions get called.
+        return mEdgeBackGestureHandler.onTouch(view, motionEvent)
+                | mNavBarGestureHandler.onTouch(view, motionEvent);
+    }
+
     void onAttachedToWindow() {
         mEdgeBackGestureHandler.setViewGroupParent((ViewGroup) getRootView());
     }
@@ -140,6 +149,8 @@ abstract class TutorialFragment extends Fragment implements BackGestureAttemptCa
     void changeController(TutorialType tutorialType) {
         mTutorialController = createController(tutorialType);
         mTutorialController.transitToController();
+        mEdgeBackGestureHandler.registerBackGestureAttemptCallback(mTutorialController);
+        mNavBarGestureHandler.registerNavBarGestureAttemptCallback(mTutorialController);
         mTutorialType = tutorialType;
     }
 
@@ -155,13 +166,6 @@ abstract class TutorialFragment extends Fragment implements BackGestureAttemptCa
 
     TutorialHandAnimation getHandAnimation() {
         return mHandCoachingAnimation;
-    }
-
-    @Override
-    public void onBackGestureAttempted(BackGestureResult result) {
-        if (mTutorialController != null) {
-            mTutorialController.onBackGestureAttempted(result);
-        }
     }
 
     void closeTutorial() {

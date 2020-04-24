@@ -26,9 +26,11 @@ import androidx.annotation.CallSuper;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.R;
-import com.android.quickstep.interaction.EdgeBackGestureHandler.BackGestureResult;
+import com.android.quickstep.interaction.EdgeBackGestureHandler.BackGestureAttemptCallback;
+import com.android.quickstep.interaction.NavBarGestureHandler.NavBarGestureAttemptCallback;
 
-abstract class TutorialController {
+abstract class TutorialController implements BackGestureAttemptCallback,
+        NavBarGestureAttemptCallback {
 
     final TutorialFragment mTutorialFragment;
     final TutorialType mTutorialType;
@@ -58,8 +60,6 @@ abstract class TutorialController {
         mActionButton = rootView.findViewById(R.id.gesture_tutorial_fragment_action_button);
     }
 
-    abstract void onBackGestureAttempted(BackGestureResult result);
-
     @Nullable
     Integer getTitleStringId() {
         return null;
@@ -86,6 +86,7 @@ abstract class TutorialController {
 
     void hideHandCoachingAnimation() {
         mHandCoachingAnimation.stop();
+        mHandCoachingView.setVisibility(View.INVISIBLE);
     }
 
     @CallSuper
