@@ -15,6 +15,7 @@
  */
 package com.android.quickstep;
 
+import static android.content.Intent.ACTION_CHOOSER;
 import static android.view.MotionEvent.ACTION_CANCEL;
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
@@ -620,7 +621,10 @@ public class TouchInteractionService extends Service implements PluginListener<O
             return createDeviceLockedInputConsumer(gestureState);
         }
 
-        boolean forceOverviewInputConsumer = false;
+        // Use overview input consumer for sharesheets on top of home.
+        boolean forceOverviewInputConsumer = gestureState.getActivityInterface().isStarted()
+                && gestureState.getRunningTask() != null
+                && ACTION_CHOOSER.equals(gestureState.getRunningTask().baseIntent.getAction());
         if (AssistantUtilities.isExcludedAssistant(gestureState.getRunningTask())) {
             // In the case where we are in the excluded assistant state, ignore it and treat the
             // running activity as the task behind the assistant
