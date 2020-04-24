@@ -407,12 +407,8 @@ public class LauncherProvider extends ContentProvider {
                 return result;
             }
             case LauncherSettings.Settings.METHOD_REFRESH_BACKUP_TABLE: {
-                // TODO(pinyaoting): Update the behavior here.
-                if (!MULTI_DB_GRID_MIRATION_ALGO.get()) {
-                    mOpenHelper.mBackupTableExists =
-                            tableExists(mOpenHelper.getReadableDatabase(),
-                                    Favorites.BACKUP_TABLE_NAME);
-                }
+                mOpenHelper.mBackupTableExists = tableExists(mOpenHelper.getReadableDatabase(),
+                        Favorites.BACKUP_TABLE_NAME);
                 return null;
             }
             case LauncherSettings.Settings.METHOD_RESTORE_BACKUP_TABLE: {
@@ -454,11 +450,7 @@ public class LauncherProvider extends ContentProvider {
     }
 
     private void onAddOrDeleteOp(SQLiteDatabase db) {
-        if (MULTI_DB_GRID_MIRATION_ALGO.get()) {
-            // TODO(pingyaoting): Implement the behavior here.
-        } else {
-            mOpenHelper.onAddOrDeleteOp(db);
-        }
+        mOpenHelper.onAddOrDeleteOp(db);
     }
 
     /**
@@ -682,7 +674,7 @@ public class LauncherProvider extends ContentProvider {
         }
 
         protected void onAddOrDeleteOp(SQLiteDatabase db) {
-            if (!MULTI_DB_GRID_MIRATION_ALGO.get() && mBackupTableExists) {
+            if (mBackupTableExists) {
                 dropTable(db, Favorites.BACKUP_TABLE_NAME);
                 mBackupTableExists = false;
             }
