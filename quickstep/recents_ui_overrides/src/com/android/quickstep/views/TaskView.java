@@ -473,6 +473,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         int iconRotation = orientationState.getTouchRotation();
         PagedOrientationHandler orientationHandler = orientationState.getOrientationHandler();
         boolean isRtl = orientationHandler.getRecentsRtlSetting(getResources());
+        LayoutParams snapshotParams = (LayoutParams) mSnapshotView.getLayoutParams();
         int thumbnailPadding = (int) getResources().getDimension(R.dimen.task_thumbnail_top_margin);
         LayoutParams iconParams = (LayoutParams) mIconView.getLayoutParams();
         int rotation = orientationState.getTouchRotationDegrees();
@@ -480,7 +481,8 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             case Surface.ROTATION_90:
                 iconParams.gravity = (isRtl ? END : START) | CENTER_VERTICAL;
                 iconParams.rightMargin = -thumbnailPadding;
-                iconParams.leftMargin = iconParams.topMargin = iconParams.bottomMargin = 0;
+                iconParams.leftMargin = 0;
+                iconParams.topMargin = snapshotParams.topMargin / 2;
                 break;
             case Surface.ROTATION_180:
                 iconParams.gravity = BOTTOM | CENTER_HORIZONTAL;
@@ -490,17 +492,21 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             case Surface.ROTATION_270:
                 iconParams.gravity = (isRtl ? END : START) | CENTER_VERTICAL;
                 iconParams.leftMargin = -thumbnailPadding;
-                iconParams.rightMargin = iconParams.topMargin = iconParams.bottomMargin = 0;
+                iconParams.rightMargin = 0;
+                iconParams.topMargin = snapshotParams.topMargin / 2;
                 break;
             case Surface.ROTATION_0:
             default:
                 iconParams.gravity = TOP | CENTER_HORIZONTAL;
-                iconParams.leftMargin = iconParams.topMargin = iconParams.rightMargin =
-                    iconParams.bottomMargin = 0;
+                iconParams.leftMargin = iconParams.topMargin = iconParams.rightMargin = 0;
                 break;
         }
         mIconView.setLayoutParams(iconParams);
         mIconView.setRotation(rotation);
+
+        if (mMenuView != null) {
+            mMenuView.onRotationChanged();
+        }
     }
 
     private void setIconAndDimTransitionProgress(float progress, boolean invert) {
@@ -607,7 +613,10 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         }
 
         if (mMenuView != null) {
-            mMenuView.setPosition(getX() - getRecentsView().getScrollX(), getY());
+            PagedOrientationHandler pagedOrientationHandler = getPagedOrientationHandler();
+            RecentsView recentsView = getRecentsView();
+            mMenuView.setPosition(getX() - recentsView.getScrollX(),
+                    getY() - recentsView.getScrollY(), pagedOrientationHandler);
             mMenuView.setScaleX(getScaleX());
             mMenuView.setScaleY(getScaleY());
         }
@@ -930,6 +939,10 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
 
     public RecentsView getRecentsView() {
         return (RecentsView) getParent();
+    }
+
+    PagedOrientationHandler getPagedOrientationHandler() {
+        return getRecentsView().mOrientationState.getOrientationHandler();
     }
 
     public void notifyTaskLaunchFailed(String tag) {
