@@ -32,7 +32,6 @@ import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.LauncherState.ScaleAndTranslation;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.OverScroller;
@@ -78,6 +77,11 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
+    public boolean isLayoutNaturalToLauncher() {
+        return false;
+    }
+
+    @Override
     public void adjustFloatingIconStartVelocity(PointF velocity) {
         float oldX = velocity.x;
         float oldY = velocity.y;
@@ -115,11 +119,6 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public int getPrimarySize(Rect rect) {
-        return rect.height();
-    }
-
-    @Override
     public float getPrimarySize(RectF rect) {
         return rect.height();
     }
@@ -127,17 +126,6 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     @Override
     public int getSecondaryDimension(View view) {
         return view.getWidth();
-    }
-
-    @Override
-    public ScaleAndTranslation getScaleAndTranslation(DeviceProfile dp, View view) {
-        float offscreenTranslationY = dp.heightPx - view.getPaddingTop();
-        return new ScaleAndTranslation(1f, 0f, offscreenTranslationY);
-    }
-
-    @Override
-    public float getTranslationValue(ScaleAndTranslation scaleAndTranslation) {
-        return scaleAndTranslation.translationY;
     }
 
     @Override
@@ -182,7 +170,7 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public void offsetTaskRect(RectF rect, float value, int displayRotation) {
+    public void offsetTaskRect(RectF rect, float value, int displayRotation, int launcherRotation) {
         if (displayRotation == Surface.ROTATION_0) {
             rect.offset(0, value);
         } else if (displayRotation == Surface.ROTATION_90) {

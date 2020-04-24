@@ -314,7 +314,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
                 switchToAllApps();
         allApps.freeze();
         try {
-            allApps.getAppIcon(APP_NAME).dragToWorkspace(false);
+            allApps.getAppIcon(APP_NAME).dragToWorkspace(false, false);
             mLauncher.getWorkspace().getWorkspaceAppIcon(APP_NAME).launch(getAppPackageName());
         } finally {
             allApps.unfreeze();
@@ -342,7 +342,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
                     getMenuItem(0);
             final String shortcutName = menuItem.getText();
 
-            menuItem.dragToWorkspace(false);
+            menuItem.dragToWorkspace(false, false);
             mLauncher.getWorkspace().getWorkspaceAppIcon(shortcutName).launch(getAppPackageName());
         } finally {
             allApps.unfreeze();

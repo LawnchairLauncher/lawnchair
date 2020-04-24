@@ -30,6 +30,7 @@ import static com.android.launcher3.states.StateAnimationConfig.ANIM_HOTSEAT_TRA
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_VERTICAL_PROGRESS;
 import static com.android.quickstep.TaskViewUtils.findTaskViewToLaunch;
 import static com.android.quickstep.TaskViewUtils.getRecentsWindowAnimator;
+import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_OFFSET;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -37,7 +38,6 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.util.FloatProperty;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -49,7 +49,6 @@ import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.SpringAnimationBuilder;
 import com.android.launcher3.states.StateAnimationConfig;
-import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.quickstep.util.AppWindowAnimationHelper;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
@@ -199,11 +198,10 @@ public final class LauncherAppTransitionManagerImpl extends QuickstepAppTransiti
                 return ObjectAnimator.ofFloat(mLauncher.getOverviewPanel(),
                         RecentsView.CONTENT_ALPHA, values);
             case INDEX_RECENTS_TRANSLATE_X_ANIM:
-                PagedOrientationHandler orientationHandler =
-                    ((RecentsView)mLauncher.getOverviewPanel()).getPagedViewOrientedState()
-                        .getOrientationHandler();
-                FloatProperty<View> translate = orientationHandler.getPrimaryViewTranslate();
-                return new SpringAnimationBuilder<>(mLauncher.getOverviewPanel(), translate)
+                // TODO: Do not assume motion across X axis for adjacent page
+                return new SpringAnimationBuilder<>(
+                        mLauncher.getOverviewPanel(), ADJACENT_PAGE_OFFSET)
+                        .setMinimumVisibleChange(1f / mLauncher.getOverviewPanel().getWidth())
                         .setDampingRatio(0.8f)
                         .setStiffness(250)
                         .setValues(values)

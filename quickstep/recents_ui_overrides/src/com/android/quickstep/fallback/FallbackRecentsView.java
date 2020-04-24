@@ -26,10 +26,10 @@ import android.util.FloatProperty;
 import android.view.View;
 
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.LauncherState.ScaleAndTranslation;
 import com.android.launcher3.Utilities;
 import com.android.quickstep.RecentsActivity;
 import com.android.quickstep.util.LayoutUtils;
+import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.Task;
@@ -57,7 +57,6 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity> {
     private boolean mInOverviewState = true;
 
     private float mZoomScale = 1f;
-    private float mZoomTranslationY = 0f;
 
     private RunningTaskInfo mRunningTaskInfo;
 
@@ -67,6 +66,11 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity> {
 
     public FallbackRecentsView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+    }
+
+    @Override
+    public void init(OverviewActionsView actionsView) {
+        super.init(actionsView);
         setOverviewStateEnabled(true);
         setOverlayEnabled(true);
     }
@@ -139,14 +143,11 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity> {
 
         if (getTaskViewCount() == 0) {
             mZoomScale = 1f;
-            mZoomTranslationY = 0f;
         } else {
             TaskView dummyTask = getTaskViewAt(0);
-            ScaleAndTranslation sat = getTempAppWindowAnimationHelper()
+            mZoomScale = getTempAppWindowAnimationHelper()
                     .updateForFullscreenOverview(dummyTask)
-                    .getScaleAndTranslation();
-            mZoomScale = sat.scale;
-            mZoomTranslationY = sat.translationY;
+                    .getSrcToTargetScale();
         }
 
         setZoomProgress(mZoomInProgress);
@@ -155,7 +156,6 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity> {
     public void setZoomProgress(float progress) {
         mZoomInProgress = progress;
         SCALE_PROPERTY.set(this, Utilities.mapRange(mZoomInProgress, 1, mZoomScale));
-        TRANSLATION_Y.set(this, Utilities.mapRange(mZoomInProgress, 0, mZoomTranslationY));
         FULLSCREEN_PROGRESS.set(this, mZoomInProgress);
     }
 

@@ -67,7 +67,6 @@ public class RecyclerViewFastScroller extends View {
 
     private final static int MAX_TRACK_ALPHA = 30;
     private final static int SCROLL_BAR_VIS_DURATION = 150;
-    private static final float FAST_SCROLL_OVERLAY_Y_OFFSET_FACTOR = 0.75f;
 
     private static final List<Rect> SYSTEM_GESTURE_EXCLUSION_RECT =
             Collections.singletonList(new Rect());
@@ -184,7 +183,7 @@ public class RecyclerViewFastScroller extends View {
         if (mThumbOffsetY == y) {
             return;
         }
-        updatePopupY((int) y);
+        updatePopupY(y);
         mThumbOffsetY = y;
         invalidate();
     }
@@ -237,7 +236,7 @@ public class RecyclerViewFastScroller extends View {
                 } else if (mRv.supportsFastScrolling()
                         && isNearScrollBar(mDownX)) {
                     calcTouchOffsetAndPrepToFastScroll(mDownY, mLastY);
-                    updateFastScrollSectionNameAndThumbOffset(mLastY, y);
+                    updateFastScrollSectionNameAndThumbOffset(y);
                 }
                 break;
             case MotionEvent.ACTION_MOVE:
@@ -252,7 +251,7 @@ public class RecyclerViewFastScroller extends View {
                     calcTouchOffsetAndPrepToFastScroll(mDownY, mLastY);
                 }
                 if (mIsDragging) {
-                    updateFastScrollSectionNameAndThumbOffset(mLastY, y);
+                    updateFastScrollSectionNameAndThumbOffset(y);
                 }
                 break;
             case MotionEvent.ACTION_UP:
@@ -281,7 +280,7 @@ public class RecyclerViewFastScroller extends View {
         showActiveScrollbar(true);
     }
 
-    private void updateFastScrollSectionNameAndThumbOffset(int lastY, int y) {
+    private void updateFastScrollSectionNameAndThumbOffset(int y) {
         // Update the fastscroller section name at this touch position
         int bottom = mRv.getScrollbarTrackHeight() - mThumbHeight;
         float boundedY = (float) Math.max(0, Math.min(bottom, y - mTouchOffsetY));

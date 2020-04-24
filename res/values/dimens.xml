@@ -200,7 +200,7 @@
     <dimen name="system_shortcut_icon_size">24dp</dimen>
     <!-- popup_arrow_center_start - system_shortcut_icon_size / 2 -->
     <dimen name="system_shortcut_margin_start">16dp</dimen>
-    <dimen name="system_shortcut_header_height">40dp</dimen>
+    <dimen name="system_shortcut_header_height">48dp</dimen>
     <dimen name="system_shortcut_header_icon_touch_size">48dp</dimen>
     <!-- (touch_size - icon_size) / 2 -->
     <dimen name="system_shortcut_header_icon_padding">12dp</dimen>

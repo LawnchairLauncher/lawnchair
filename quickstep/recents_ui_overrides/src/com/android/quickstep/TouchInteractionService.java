@@ -90,7 +90,6 @@ import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.InputChannelCompat.InputEventReceiver;
 import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.InputMonitorCompat;
-import com.android.systemui.shared.system.RecentsAnimationListener;
 import com.android.systemui.shared.tracing.ProtoTraceable;
 
 import java.io.FileDescriptor;
@@ -299,9 +298,6 @@ public class TouchInteractionService extends Service implements PluginListener<O
         if (mInputEventReceiver != null) {
             mInputEventReceiver.dispose();
             mInputEventReceiver = null;
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.NO_BACKGROUND_TO_OVERVIEW_TAG, "disposeEventHandlers");
-            }
         }
         if (mInputMonitorCompat != null) {
             mInputMonitorCompat.dispose();
@@ -310,15 +306,9 @@ public class TouchInteractionService extends Service implements PluginListener<O
     }
 
     private void initInputMonitor() {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_BACKGROUND_TO_OVERVIEW_TAG, "initInputMonitor 1");
-        }
         disposeEventHandlers();
         if (mDeviceState.isButtonNavMode() || !SystemUiProxy.INSTANCE.get(this).isActive()) {
             return;
-        }
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_BACKGROUND_TO_OVERVIEW_TAG, "initInputMonitor 2");
         }
 
         Bundle bundle = SystemUiProxy.INSTANCE.get(this).monitorGestureInput("swipe-up",
@@ -326,9 +316,6 @@ public class TouchInteractionService extends Service implements PluginListener<O
         mInputMonitorCompat = InputMonitorCompat.fromBundle(bundle, KEY_EXTRA_INPUT_MONITOR);
         mInputEventReceiver = mInputMonitorCompat.getInputReceiver(Looper.getMainLooper(),
                 mMainChoreographer, this::onInputEvent);
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_BACKGROUND_TO_OVERVIEW_TAG, "initInputMonitor 3");
-        }
 
         mDeviceState.updateGestureTouchRegions();
     }
@@ -453,9 +440,6 @@ public class TouchInteractionService extends Service implements PluginListener<O
     }
 
     private void onInputEvent(InputEvent ev) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_BACKGROUND_TO_OVERVIEW_TAG, "onInputEvent " + ev);
-        }
         if (!(ev instanceof MotionEvent)) {
             Log.e(TAG, "Unknown event " + ev);
             return;
@@ -514,7 +498,10 @@ public class TouchInteractionService extends Service implements PluginListener<O
             }
         }
 
-        ActiveGestureLog.INSTANCE.addLog("onMotionEvent", event.getActionMasked());
+        if (mUncheckedConsumer != InputConsumer.NO_OP) {
+            ActiveGestureLog.INSTANCE.addLog("onMotionEvent", event.getActionMasked());
+        }
+
         boolean cleanUpConsumer = (action == ACTION_UP || action == ACTION_CANCEL)
                 && mConsumer != null
                 && !mConsumer.getActiveConsumerInHierarchy().isConsumerDetachedFromGesture();
@@ -754,12 +741,14 @@ public class TouchInteractionService extends Service implements PluginListener<O
 
         final BaseActivityInterface<BaseDraggingActivity> activityInterface =
                 mOverviewComponentObserver.getActivityInterface();
+        final Intent overviewIntent = new Intent(
+                mOverviewComponentObserver.getOverviewIntentIgnoreSysUiState());
         if (activityInterface.getCreatedActivity() == null) {
             // Make sure that UI states will be initialized.
             activityInterface.createActivityInitListener((wasVisible) -> {
                 AppLaunchTracker.INSTANCE.get(TouchInteractionService.this);
                 return false;
-            }).register();
+            }).register(overviewIntent);
         } else if (fromInit) {
             // The activity has been created before the initialization of overview service. It is
             // usually happens when booting or launcher is the top activity, so we should already
@@ -767,8 +756,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
             return;
         }
 
-        mTaskAnimationManager.preloadRecentsAnimation(
-                mOverviewComponentObserver.getOverviewIntentIgnoreSysUiState());
+        mTaskAnimationManager.preloadRecentsAnimation(overviewIntent);
     }
 
     @Override
@@ -817,6 +805,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
             if (mGestureState != null) {
                 mGestureState.dump(pw);
             }
+            SysUINavigationMode.INSTANCE.get(this).dump(pw);
             pw.println("TouchState:");
             BaseDraggingActivity createdOverviewActivity = mOverviewComponentObserver == null ? null
                     : mOverviewComponentObserver.getActivityInterface().getCreatedActivity();
@@ -847,7 +836,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
 
     private BaseSwipeUpHandler createLauncherSwipeHandler(GestureState gestureState,
             long touchTimeMs, boolean continuingLastGesture, boolean isLikelyToStartNewTask) {
-        return  new LauncherSwipeHandler(this, mDeviceState, mTaskAnimationManager,
+        return new LauncherSwipeHandler(this, mDeviceState, mTaskAnimationManager,
                 gestureState, touchTimeMs, continuingLastGesture, mInputConsumer);
     }
 
@@ -871,11 +860,6 @@ public class TouchInteractionService extends Service implements PluginListener<O
             mDeviceState.getGestureBlockedActivityPackages().forEach(blockedPackage ->
                     sendBroadcast(new Intent(NOTIFY_ACTION_BACK).setPackage(blockedPackage)));
         }
-    }
-
-    public static void startRecentsActivityAsync(Intent intent, RecentsAnimationListener listener) {
-        UI_HELPER_EXECUTOR.execute(() -> ActivityManagerWrapper.getInstance()
-                .startRecentsActivity(intent, null, listener, null, null));
     }
 
     @Override

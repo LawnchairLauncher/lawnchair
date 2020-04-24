@@ -18,12 +18,14 @@ package com.android.launcher3.widget;
 
 import android.appwidget.AppWidgetHostView;
 import android.content.Context;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
 
+import com.android.launcher3.Reorderable;
 import com.android.launcher3.dragndrop.DraggableView;
 
 import java.util.ArrayList;
@@ -32,7 +34,20 @@ import java.util.ArrayList;
  * Extension of AppWidgetHostView with support for controlled keyboard navigation.
  */
 public abstract class NavigableAppWidgetHostView extends AppWidgetHostView
-        implements DraggableView {
+        implements DraggableView, Reorderable {
+
+    /**
+     * The scaleX and scaleY value such that the widget fits within its cellspans, scaleX = scaleY.
+     */
+    private float mScaleToFit = 1f;
+
+    /**
+     * The translation values to center the widget within its cellspans.
+     */
+    private final PointF mTranslationForCentering = new PointF(0, 0);
+
+    private final PointF mTranslationForReorder = new PointF(0, 0);
+    private float mScaleForReorder = 1f;
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mChildrenFocused;
@@ -137,6 +152,47 @@ public abstract class NavigableAppWidgetHostView extends AppWidgetHostView
         setSelected(childIsFocused);
     }
 
+    public void setScaleToFit(float scale) {
+        mScaleToFit = scale;
+        super.setScaleX(scale * mScaleForReorder);
+        super.setScaleY(scale * mScaleForReorder);
+    }
+
+    public float getScaleToFit() {
+        return mScaleToFit;
+    }
+
+    public View getView() {
+        return this;
+    }
+
+
+    public void setTranslationForCentering(float x, float y) {
+        mTranslationForCentering.set(x, y);
+        super.setTranslationX(x + mTranslationForReorder.x);
+        super.setTranslationY(y + mTranslationForReorder.y);
+    }
+
+    public void setReorderOffset(float x, float y) {
+        mTranslationForReorder.set(x, y);
+        super.setTranslationX(mTranslationForCentering.x + x);
+        super.setTranslationY(mTranslationForCentering.y + y);
+    }
+
+    public void getReorderOffset(PointF offset) {
+        offset.set(mTranslationForReorder);
+    }
+
+    public void setReorderScale(float scale) {
+        mScaleForReorder = scale;
+        super.setScaleX(mScaleToFit * scale);
+        super.setScaleY(mScaleToFit * scale);
+    }
+
+    public float getReorderScale() {
+        return mScaleForReorder;
+    }
+
     @Override
     public int getViewType() {
         return DRAGGABLE_WIDGET;
@@ -144,6 +200,9 @@ public abstract class NavigableAppWidgetHostView extends AppWidgetHostView
 
     @Override
     public void getVisualDragBounds(Rect bounds) {
-        bounds.set(0, 0 , getMeasuredWidth(), getMeasuredHeight());
+        int width = (int) (getMeasuredWidth() * mScaleToFit);
+        int height = (int) (getMeasuredHeight() * mScaleToFit);
+
+        bounds.set(0, 0 , width, height);
     }
 }
