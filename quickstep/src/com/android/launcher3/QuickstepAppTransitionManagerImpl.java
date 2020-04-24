@@ -611,7 +611,6 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                                 .withWindowCrop(target.screenSpaceBounds)
                                 .withAlpha(1f);
                     }
-                    builder.withLayer(RemoteAnimationProvider.getLayer(target, MODE_OPENING));
                     params[i] = builder.build();
                 }
                 surfaceApplier.scheduleApply(params);
@@ -718,7 +717,6 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                     params[i] = new SurfaceParams.Builder(target.leash)
                             .withAlpha(1f)
                             .withWindowCrop(target.screenSpaceBounds)
-                            .withLayer(RemoteAnimationProvider.getLayer(target, MODE_OPENING))
                             .withCornerRadius(cornerRadius)
                             .build();
                 }
@@ -775,7 +773,6 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                     }
                     params[i] = builder
                             .withWindowCrop(target.screenSpaceBounds)
-                            .withLayer(RemoteAnimationProvider.getLayer(target, MODE_CLOSING))
                             .build();
                 }
                 surfaceApplier.scheduleApply(params);
