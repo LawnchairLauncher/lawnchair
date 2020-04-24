@@ -46,8 +46,9 @@ public abstract class NavigableAppWidgetHostView extends AppWidgetHostView
      */
     private final PointF mTranslationForCentering = new PointF(0, 0);
 
-    private final PointF mTranslationForReorder = new PointF(0, 0);
-    private float mScaleForReorder = 1f;
+    private final PointF mTranslationForReorderBounce = new PointF(0, 0);
+    private final PointF mTranslationForReorderPreview = new PointF(0, 0);
+    private float mScaleForReorderBounce = 1f;
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mChildrenFocused;
@@ -152,45 +153,63 @@ public abstract class NavigableAppWidgetHostView extends AppWidgetHostView
         setSelected(childIsFocused);
     }
 
-    public void setScaleToFit(float scale) {
-        mScaleToFit = scale;
-        super.setScaleX(scale * mScaleForReorder);
-        super.setScaleY(scale * mScaleForReorder);
-    }
-
-    public float getScaleToFit() {
-        return mScaleToFit;
-    }
-
     public View getView() {
         return this;
     }
 
+    private void updateTranslation() {
+        super.setTranslationX(mTranslationForReorderBounce.x + mTranslationForReorderPreview.x
+                + mTranslationForCentering.x);
+        super.setTranslationY(mTranslationForReorderBounce.y + mTranslationForReorderPreview.y
+                + mTranslationForCentering.y);
+    }
 
     public void setTranslationForCentering(float x, float y) {
         mTranslationForCentering.set(x, y);
-        super.setTranslationX(x + mTranslationForReorder.x);
-        super.setTranslationY(y + mTranslationForReorder.y);
+        updateTranslation();
     }
 
-    public void setReorderOffset(float x, float y) {
-        mTranslationForReorder.set(x, y);
-        super.setTranslationX(mTranslationForCentering.x + x);
-        super.setTranslationY(mTranslationForCentering.y + y);
+    public void setReorderBounceOffset(float x, float y) {
+        mTranslationForReorderBounce.set(x, y);
+        updateTranslation();
     }
 
-    public void getReorderOffset(PointF offset) {
-        offset.set(mTranslationForReorder);
+    public void getReorderBounceOffset(PointF offset) {
+        offset.set(mTranslationForReorderBounce);
     }
 
-    public void setReorderScale(float scale) {
-        mScaleForReorder = scale;
-        super.setScaleX(mScaleToFit * scale);
-        super.setScaleY(mScaleToFit * scale);
+    @Override
+    public void setReorderPreviewOffset(float x, float y) {
+        mTranslationForReorderPreview.set(x, y);
+        updateTranslation();
     }
 
-    public float getReorderScale() {
-        return mScaleForReorder;
+    @Override
+    public void getReorderPreviewOffset(PointF offset) {
+        offset.set(mTranslationForReorderPreview);
+    }
+
+    private void updateScale() {
+        super.setScaleX(mScaleToFit * mScaleForReorderBounce);
+        super.setScaleY(mScaleToFit * mScaleForReorderBounce);
+    }
+
+    public void setReorderBounceScale(float scale) {
+        mScaleForReorderBounce = scale;
+        updateScale();
+    }
+
+    public float getReorderBounceScale() {
+        return mScaleForReorderBounce;
+    }
+
+    public void setScaleToFit(float scale) {
+        mScaleToFit = scale;
+        updateScale();
+    }
+
+    public float getScaleToFit() {
+        return mScaleToFit;
     }
 
     @Override
