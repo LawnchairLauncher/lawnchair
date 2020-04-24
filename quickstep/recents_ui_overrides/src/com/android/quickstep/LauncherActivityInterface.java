@@ -16,15 +16,15 @@
 package com.android.quickstep;
 
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
-import static com.android.launcher3.LauncherAppTransitionManagerImpl.INDEX_RECENTS_FADE_ANIM;
-import static com.android.launcher3.LauncherAppTransitionManagerImpl.INDEX_RECENTS_TRANSLATE_X_ANIM;
-import static com.android.launcher3.LauncherAppTransitionManagerImpl.INDEX_SHELF_ANIM;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.anim.Interpolators.INSTANT;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.launcher3.uioverrides.states.QuickstepAtomicAnimationFactory.INDEX_RECENTS_FADE_ANIM;
+import static com.android.launcher3.uioverrides.states.QuickstepAtomicAnimationFactory.INDEX_RECENTS_TRANSLATE_X_ANIM;
+import static com.android.launcher3.uioverrides.states.QuickstepAtomicAnimationFactory.INDEX_SHELF_ANIM;
 import static com.android.quickstep.LauncherSwipeHandler.RECENTS_ATTACH_DURATION;
 import static com.android.quickstep.util.WindowSizeStrategy.LAUNCHER_ACTIVITY_SIZE_STRATEGY;
 import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_OFFSET;

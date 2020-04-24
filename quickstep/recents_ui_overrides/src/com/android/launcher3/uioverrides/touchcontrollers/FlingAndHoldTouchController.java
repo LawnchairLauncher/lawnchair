@@ -16,7 +16,6 @@
 
 package com.android.launcher3.uioverrides.touchcontrollers;
 
-import static com.android.launcher3.LauncherAppTransitionManagerImpl.INDEX_PAUSE_TO_OVERVIEW_ANIM;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
@@ -31,6 +30,7 @@ import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_S
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_TRANSLATE;
 import static com.android.launcher3.states.StateAnimationConfig.PLAY_ATOMIC_OVERVIEW_PEEK;
 import static com.android.launcher3.states.StateAnimationConfig.SKIP_OVERVIEW;
+import static com.android.launcher3.uioverrides.states.QuickstepAtomicAnimationFactory.INDEX_PAUSE_TO_OVERVIEW_ANIM;
 import static com.android.launcher3.util.VibratorWrapper.OVERVIEW_HAPTIC;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_OVERVIEW_DISABLED;
 
@@ -42,12 +42,12 @@ import android.view.View;
 import android.view.ViewConfiguration;
 
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAppTransitionManagerImpl;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.states.StateAnimationConfig.AnimationFlags;
+import com.android.launcher3.uioverrides.states.QuickstepAtomicAnimationFactory;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.util.VibratorWrapper;
 import com.android.quickstep.SystemUiProxy;
@@ -82,7 +82,7 @@ public class FlingAndHoldTouchController extends PortraitStatesTouchController {
 
     @Override
     protected long getAtomicDuration() {
-        return LauncherAppTransitionManagerImpl.ATOMIC_DURATION_FROM_PAUSED_TO_OVERVIEW;
+        return QuickstepAtomicAnimationFactory.ATOMIC_DURATION_FROM_PAUSED_TO_OVERVIEW;
     }
 
     @Override
@@ -206,8 +206,8 @@ public class FlingAndHoldTouchController extends PortraitStatesTouchController {
             mPeekAnim.cancel();
         }
 
-        Animator overviewAnim = mLauncher.getAppTransitionManager().createStateElementAnimation(
-                INDEX_PAUSE_TO_OVERVIEW_ANIM);
+        Animator overviewAnim = mLauncher.createAtomicAnimationFactory()
+                .createStateElementAnimation(INDEX_PAUSE_TO_OVERVIEW_ANIM);
         mAtomicAnim = new AnimatorSet();
         mAtomicAnim.addListener(new AnimationSuccessListener() {
             @Override

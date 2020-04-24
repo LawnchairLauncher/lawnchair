@@ -92,6 +92,7 @@ import androidx.annotation.StringRes;
 import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.DropTarget.DragObject;
+import com.android.launcher3.LauncherStateManager.AtomicAnimationFactory;
 import com.android.launcher3.LauncherStateManager.StateHandler;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.allapps.AllAppsContainerView;
@@ -2722,6 +2723,13 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     protected StateHandler[] createStateHandlers() {
         return new StateHandler[] { getAllAppsController(), getWorkspace() };
+    }
+
+    /**
+     * Creates a factory for atomic state animations
+     */
+    public AtomicAnimationFactory createAtomicAnimationFactory() {
+        return new AtomicAnimationFactory(0);
     }
 
     public TouchController[] createTouchControllers() {

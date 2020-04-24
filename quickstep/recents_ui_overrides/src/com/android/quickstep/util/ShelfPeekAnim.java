@@ -15,10 +15,10 @@
  */
 package com.android.quickstep.util;
 
-import static com.android.launcher3.LauncherAppTransitionManagerImpl.INDEX_SHELF_ANIM;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_2;
+import static com.android.launcher3.uioverrides.states.QuickstepAtomicAnimationFactory.INDEX_SHELF_ANIM;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
