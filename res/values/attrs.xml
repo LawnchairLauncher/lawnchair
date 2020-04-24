@@ -34,6 +34,7 @@
     <attr name="workspaceStatusBarScrim" format="reference" />
     <attr name="widgetsTheme" format="reference" />
     <attr name="loadingIconColor" format="color" />
+    <attr name="iconOnlyShortcutColor" format="color"/>
 
     <attr name="folderDotColor" format="color" />
     <attr name="folderFillColor" format="color" />

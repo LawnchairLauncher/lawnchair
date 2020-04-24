@@ -180,6 +180,7 @@ public final class Workspace extends Home {
                                     mLauncher.getVisibleBounds(workspace).centerY()),
                             "deep_shortcuts_container",
                             false,
+                            false,
                             () -> mLauncher.expectEvent(
                                     TestProtocol.SEQUENCE_MAIN, LONG_CLICK_EVENT));
                     verifyActiveContainer();
@@ -202,7 +203,8 @@ public final class Workspace extends Home {
 
     static void dragIconToWorkspace(
             LauncherInstrumentation launcher, Launchable launchable, Point dest,
-            String longPressIndicator, boolean startsActivity, Runnable expectLongClickEvents) {
+            String longPressIndicator, boolean startsActivity, boolean isWidgetShortcut,
+            Runnable expectLongClickEvents) {
         LauncherInstrumentation.log("dragIconToWorkspace: begin");
         final Point launchableCenter = launchable.getObject().getVisibleCenter();
         final long downTime = SystemClock.uptimeMillis();
@@ -224,6 +226,9 @@ public final class Workspace extends Home {
                         downTime, SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, dest,
                         LauncherInstrumentation.GestureScope.INSIDE),
                 NORMAL_STATE_ORDINAL);
+        if (startsActivity || isWidgetShortcut) {
+            launcher.expectEvent(TestProtocol.SEQUENCE_MAIN, LauncherInstrumentation.EVENT_START);
+        }
         if (startsActivity) {
             launcher.expectEvent(
                     TestProtocol.SEQUENCE_MAIN, LauncherInstrumentation.EVENT_STOP_ACTIVITY);

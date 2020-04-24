@@ -17,6 +17,7 @@
 package com.android.launcher3.statehandlers;
 
 import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.launcher3.states.StateAnimationConfig.SKIP_DEPTH_CONTROLLER;
 
 import android.os.IBinder;
 import android.util.FloatProperty;
@@ -163,7 +164,9 @@ public class DepthController implements LauncherStateManager.StateHandler {
     @Override
     public void setStateWithAnimation(LauncherState toState, StateAnimationConfig config,
             PendingAnimation animation) {
-        if (mSurface == null || config.onlyPlayAtomicComponent()) {
+        if (mSurface == null
+                || config.onlyPlayAtomicComponent()
+                || config.hasAnimationFlag(SKIP_DEPTH_CONTROLLER)) {
             return;
         }
 
@@ -174,7 +177,14 @@ public class DepthController implements LauncherStateManager.StateHandler {
     }
 
     private void setDepth(float depth) {
-        mDepth = depth;
+        // Round out the depth to dedupe frequent, non-perceptable updates
+        int depthI = (int) (depth * 256);
+        float depthF = depthI / 256f;
+        if (Float.compare(mDepth, depthF) == 0) {
+            return;
+        }
+
+        mDepth = depthF;
         if (mSurface == null || !mSurface.isValid()) {
             return;
         }
