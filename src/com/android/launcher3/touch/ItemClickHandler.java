@@ -52,6 +52,8 @@ import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.PromiseAppInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pm.InstallSessionHelper;
+import com.android.launcher3.testing.TestLogging;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.views.FloatingIconView;
 import com.android.launcher3.widget.PendingAppWidgetHostView;
@@ -240,6 +242,8 @@ public class ItemClickHandler {
 
     private static void startAppShortcutOrInfoActivity(View v, ItemInfo item, Launcher launcher,
             @Nullable String sourceContainer) {
+        TestLogging.recordEvent(
+                TestProtocol.SEQUENCE_MAIN, "start: startAppShortcutOrInfoActivity");
         Intent intent;
         if (item instanceof PromiseAppInfo) {
             PromiseAppInfo promiseAppInfo = (PromiseAppInfo) item;

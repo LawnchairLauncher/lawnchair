@@ -22,6 +22,7 @@ import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_POINTER_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
 
+import static com.android.launcher3.states.RotationHelper.deltaRotation;
 import static com.android.quickstep.util.RecentsOrientedState.postDisplayRotation;
 
 import android.content.res.Resources;
@@ -138,7 +139,8 @@ class OrientationTouchTransformer {
      * @param info The current displayInfo
      */
     void enableMultipleRegions(boolean enableMultipleRegions, DefaultDisplay.Info info) {
-        mEnableMultipleRegions = enableMultipleRegions;
+        mEnableMultipleRegions = enableMultipleRegions &&
+                mMode != SysUINavigationMode.Mode.TWO_BUTTONS;
         if (!enableMultipleRegions) {
             mQuickStepStartingRotation = -1;
             resetSwipeRegions(info);
@@ -363,17 +365,5 @@ class OrientationTouchTransformer {
             }
             return false;
         }
-    }
-
-    /**
-     * @return how many factors {@param newRotation} is rotated 90 degrees clockwise.
-     * E.g. 1->Rotated by 90 degrees clockwise, 2->Rotated 180 clockwise...
-     * A value of 0 means no rotation has been applied
-     */
-    @SurfaceRotation
-    private static int deltaRotation(int oldRotation, int newRotation) {
-        int delta = newRotation - oldRotation;
-        if (delta < 0) delta += 4;
-        return delta;
     }
 }

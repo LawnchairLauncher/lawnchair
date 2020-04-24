@@ -18,6 +18,7 @@ package com.android.launcher3.touch;
 
 import android.content.res.Resources;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -28,7 +29,6 @@ import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.LauncherState;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.util.OverScroller;
 
@@ -42,6 +42,7 @@ public interface PagedOrientationHandler {
     PagedOrientationHandler PORTRAIT = new PortraitPagedViewHandler();
     PagedOrientationHandler LANDSCAPE = new LandscapePagedViewHandler();
     PagedOrientationHandler SEASCAPE = new SeascapePagedViewHandler();
+    PagedOrientationHandler HOME_ROTATED = new HomeRotatedPageHandler();
 
     interface Int2DAction<T> {
         void call(T target, int x, int y);
@@ -52,16 +53,15 @@ public interface PagedOrientationHandler {
     Int2DAction<View> VIEW_SCROLL_BY = View::scrollBy;
     Int2DAction<View> VIEW_SCROLL_TO = View::scrollTo;
     Float2DAction<Canvas> CANVAS_TRANSLATE = Canvas::translate;
+    Float2DAction<Matrix> MATRIX_POST_TRANSLATE = Matrix::postTranslate;
+
     <T> void set(T target, Int2DAction<T> action, int param);
     <T> void set(T target, Float2DAction<T> action, float param);
     float getPrimaryDirection(MotionEvent event, int pointerIndex);
     float getPrimaryVelocity(VelocityTracker velocityTracker, int pointerId);
     int getMeasuredSize(View view);
-    int getPrimarySize(Rect rect);
     float getPrimarySize(RectF rect);
     int getSecondaryDimension(View view);
-    LauncherState.ScaleAndTranslation getScaleAndTranslation(DeviceProfile dp, View view);
-    float getTranslationValue(LauncherState.ScaleAndTranslation scaleAndTranslation);
     FloatProperty<View> getPrimaryViewTranslate();
     FloatProperty<View> getSecondaryViewTranslate();
     void setPrimaryAndResetSecondaryTranslate(View view, float translation);
@@ -79,7 +79,7 @@ public interface PagedOrientationHandler {
     void setMaxScroll(AccessibilityEvent event, int maxScroll);
     boolean getRecentsRtlSetting(Resources resources);
     float getDegreesRotated();
-    void offsetTaskRect(RectF rect, float value, int delta);
+    void offsetTaskRect(RectF rect, float value, int delta, int launcherRotation);
     int getPrimaryValue(int x, int y);
     int getSecondaryValue(int x, int y);
     void delegateScrollTo(PagedView pagedView, int secondaryScroll, int primaryScroll);
@@ -89,13 +89,13 @@ public interface PagedOrientationHandler {
     void scrollerStartScroll(OverScroller scroller, int newPosition);
     void getCurveProperties(PagedView view, Rect insets, CurveProperties out);
     boolean isGoingUp(float displacement);
+    boolean isLayoutNaturalToLauncher();
 
     /**
      * Maps the velocity from the coordinate plane of the foreground app to that
      * of Launcher's (which now will always be portrait)
      */
     void adjustFloatingIconStartVelocity(PointF velocity);
-
 
     class CurveProperties {
         public int scroll;
