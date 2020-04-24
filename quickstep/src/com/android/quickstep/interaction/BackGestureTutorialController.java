@@ -35,7 +35,7 @@ final class BackGestureTutorialController extends TutorialController {
     void transitToController() {
         super.transitToController();
         if (mTutorialType != BACK_NAVIGATION_COMPLETE) {
-            mHandCoachingAnimation.startLoopedAnimation(mTutorialType);
+            showHandCoachingAnimation();
         }
     }
 
@@ -96,22 +96,60 @@ final class BackGestureTutorialController extends TutorialController {
     public void onBackGestureAttempted(BackGestureResult result) {
         switch (mTutorialType) {
             case RIGHT_EDGE_BACK_NAVIGATION:
-                if (result == BackGestureResult.BACK_COMPLETED_FROM_RIGHT) {
-                    hideHandCoachingAnimation();
-                    mTutorialFragment.changeController(LEFT_EDGE_BACK_NAVIGATION);
-                }
+                handleAttemptFromRight(result);
                 break;
             case LEFT_EDGE_BACK_NAVIGATION:
-                if (result == BackGestureResult.BACK_COMPLETED_FROM_LEFT) {
-                    hideHandCoachingAnimation();
-                    mTutorialFragment.changeController(BACK_NAVIGATION_COMPLETE);
-                }
+                handleAttemptFromLeft(result);
                 break;
             case BACK_NAVIGATION_COMPLETE:
                 if (result == BackGestureResult.BACK_COMPLETED_FROM_LEFT
                         || result == BackGestureResult.BACK_COMPLETED_FROM_RIGHT) {
                     mTutorialFragment.closeTutorial();
                 }
+                break;
+        }
+    }
+
+    private void handleAttemptFromRight(BackGestureResult result) {
+        switch (result) {
+            case BACK_COMPLETED_FROM_RIGHT:
+                hideFeedback();
+                hideHandCoachingAnimation();
+                showRippleEffect(
+                        () -> mTutorialFragment.changeController(LEFT_EDGE_BACK_NAVIGATION));
+                break;
+            case BACK_CANCELLED_FROM_RIGHT:
+                showFeedback(R.string.back_gesture_feedback_cancelled_right_edge);
+                break;
+            case BACK_COMPLETED_FROM_LEFT:
+            case BACK_CANCELLED_FROM_LEFT:
+            case BACK_NOT_STARTED_TOO_FAR_FROM_EDGE:
+                showFeedback(R.string.back_gesture_feedback_swipe_too_far_from_right_edge);
+                break;
+            case BACK_NOT_STARTED_IN_NAV_BAR_REGION:
+                showFeedback(R.string.back_gesture_feedback_swipe_in_nav_bar);
+                break;
+        }
+    }
+
+    private void handleAttemptFromLeft(BackGestureResult result) {
+        switch (result) {
+            case BACK_COMPLETED_FROM_LEFT:
+                hideFeedback();
+                hideHandCoachingAnimation();
+                showRippleEffect(
+                        () -> mTutorialFragment.changeController(BACK_NAVIGATION_COMPLETE));
+                break;
+            case BACK_CANCELLED_FROM_LEFT:
+                showFeedback(R.string.back_gesture_feedback_cancelled_left_edge);
+                break;
+            case BACK_COMPLETED_FROM_RIGHT:
+            case BACK_CANCELLED_FROM_RIGHT:
+            case BACK_NOT_STARTED_TOO_FAR_FROM_EDGE:
+                showFeedback(R.string.back_gesture_feedback_swipe_too_far_from_left_edge);
+                break;
+            case BACK_NOT_STARTED_IN_NAV_BAR_REGION:
+                showFeedback(R.string.back_gesture_feedback_swipe_in_nav_bar);
                 break;
         }
     }

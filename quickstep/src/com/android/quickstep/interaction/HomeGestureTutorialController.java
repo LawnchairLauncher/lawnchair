@@ -34,7 +34,7 @@ final class HomeGestureTutorialController extends TutorialController {
     void transitToController() {
         super.transitToController();
         if (mTutorialType != HOME_NAVIGATION_COMPLETE) {
-            mHandCoachingAnimation.startLoopedAnimation(mTutorialType);
+            showHandCoachingAnimation();
         }
     }
 
@@ -88,9 +88,21 @@ final class HomeGestureTutorialController extends TutorialController {
     public void onNavBarGestureAttempted(NavBarGestureResult result) {
         switch (mTutorialType) {
             case HOME_NAVIGATION:
-                if (result == NavBarGestureResult.HOME_GESTURE_COMPLETED) {
-                    hideHandCoachingAnimation();
-                    mTutorialFragment.changeController(HOME_NAVIGATION_COMPLETE);
+                switch (result) {
+                    case HOME_GESTURE_COMPLETED:
+                        hideHandCoachingAnimation();
+                        mTutorialFragment.changeController(HOME_NAVIGATION_COMPLETE);
+                        break;
+                    case HOME_NOT_STARTED_TOO_FAR_FROM_EDGE:
+                    case OVERVIEW_NOT_STARTED_TOO_FAR_FROM_EDGE:
+                        showFeedback(R.string.home_gesture_feedback_swipe_too_far_from_edge);
+                        break;
+                    case OVERVIEW_GESTURE_COMPLETED:
+                        showFeedback(R.string.home_gesture_feedback_overview_detected);
+                        break;
+                    case HOME_OR_OVERVIEW_NOT_STARTED_WRONG_SWIPE_DIRECTION:
+                        showFeedback(R.string.home_gesture_feedback_wrong_swipe_direction);
+                        break;
                 }
                 break;
             case HOME_NAVIGATION_COMPLETE:
