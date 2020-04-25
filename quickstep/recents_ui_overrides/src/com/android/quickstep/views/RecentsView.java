@@ -70,6 +70,7 @@ import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
+import android.util.Log;
 import android.util.Property;
 import android.util.SparseBooleanArray;
 import android.view.HapticFeedbackConstants;
@@ -694,7 +695,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             final int pageIndex = requiredTaskCount - i - 1 + mTaskViewStartIndex;
             final Task task = tasks.get(i);
             final TaskView taskView = (TaskView) getChildAt(pageIndex);
-            taskView.bind(task, mOrientationState);
+            taskView.bind(task, mOrientationState, mActivity.getDeviceProfile().isMultiWindowMode);
         }
 
         if (mNextPage == INVALID_PAGE) {
@@ -1071,7 +1072,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                     new ComponentName(getContext(), getClass()), 0, 0), null, null, "", "", 0, 0,
                     false, true, false, false, new ActivityManager.TaskDescription(), 0,
                     new ComponentName("", ""), false);
-            taskView.bind(mTmpRunningTask, mOrientationState);
+            taskView.bind(mTmpRunningTask, mOrientationState,
+                    mActivity.getDeviceProfile().isMultiWindowMode);
         }
 
         boolean runningTaskTileHidden = mRunningTaskTileHidden;

@@ -295,11 +295,14 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
 
     /**
      * Updates this task view to the given {@param task}.
+     *
+     * TODO(b/142282126) Re-evaluate if we need to pass in isMultiWindowMode after
+     *   that issue is fixed
      */
-    public void bind(Task task, RecentsOrientedState orientedState) {
+    public void bind(Task task, RecentsOrientedState orientedState, boolean isMultiWindowMode) {
         cancelPendingLoadTasks();
         mTask = task;
-        mSnapshotView.bind(task);
+        mSnapshotView.bind(task, isMultiWindowMode);
         setOrientationState(orientedState);
     }
 
