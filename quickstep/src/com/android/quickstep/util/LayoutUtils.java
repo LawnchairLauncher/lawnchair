@@ -16,7 +16,8 @@
 package com.android.quickstep.util;
 
 import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_ACTIONS;
-import static com.android.quickstep.SysUINavigationMode.removeShelfFromOverview;
+import static com.android.quickstep.SysUINavigationMode.Mode.TWO_BUTTONS;
+import static com.android.quickstep.SysUINavigationMode.getMode;
 
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
@@ -60,7 +61,7 @@ public class LayoutUtils {
         } else {
             Resources res = context.getResources();
 
-            if (ENABLE_OVERVIEW_ACTIONS.get() && removeShelfFromOverview(context)) {
+            if (showOverviewActions(context)) {
                 //TODO: this needs to account for the swipe gesture height and accessibility
                 // UI when shown.
                 extraSpace = res.getDimensionPixelSize(R.dimen.overview_actions_height);
@@ -76,7 +77,7 @@ public class LayoutUtils {
 
     public static void calculateFallbackTaskSize(Context context, DeviceProfile dp, Rect outRect) {
         float extraSpace;
-        if (ENABLE_OVERVIEW_ACTIONS.get() && removeShelfFromOverview(context)) {
+        if (showOverviewActions(context)) {
             extraSpace = context.getResources()
                     .getDimensionPixelSize(R.dimen.overview_actions_height);
         } else {
@@ -91,7 +92,7 @@ public class LayoutUtils {
         float taskWidth, taskHeight, paddingHorz;
         Resources res = context.getResources();
         Rect insets = dp.getInsets();
-        final boolean overviewActionsEnabled = ENABLE_OVERVIEW_ACTIONS.get();
+        final boolean showLargeTaskSize = showOverviewActions(context);
 
         if (dp.isMultiWindowMode) {
             if (multiWindowStrategy == MULTI_WINDOW_STRATEGY_HALF_SCREEN) {
@@ -121,7 +122,7 @@ public class LayoutUtils {
             final int paddingResId;
             if (dp.isVerticalBarLayout()) {
                 paddingResId = R.dimen.landscape_task_card_horz_space;
-            } else if (overviewActionsEnabled && removeShelfFromOverview(context)) {
+            } else if (showLargeTaskSize) {
                 paddingResId = R.dimen.portrait_task_card_horz_space_big_overview;
             } else {
                 paddingResId = R.dimen.portrait_task_card_horz_space;
@@ -130,7 +131,7 @@ public class LayoutUtils {
         }
 
         float topIconMargin = res.getDimension(R.dimen.task_thumbnail_top_margin);
-        float paddingVert = overviewActionsEnabled && removeShelfFromOverview(context)
+        float paddingVert = showLargeTaskSize
                 ? 0 : res.getDimension(R.dimen.task_card_vert_space);
 
         // Note this should be same as dp.availableWidthPx and dp.availableHeightPx unless
@@ -156,7 +157,7 @@ public class LayoutUtils {
 
     public static int getShelfTrackingDistance(Context context, DeviceProfile dp) {
         // Track the bottom of the window.
-        if (ENABLE_OVERVIEW_ACTIONS.get() && removeShelfFromOverview(context)) {
+        if (showOverviewActions(context)) {
             Rect taskSize = new Rect();
             calculateLauncherTaskSize(context, dp, taskSize);
             return (dp.heightPx - taskSize.height()) / 2;
@@ -179,5 +180,9 @@ public class LayoutUtils {
         } else {
             return srcHeight / targetHeight;
         }
+    }
+
+    private static boolean showOverviewActions(Context context) {
+        return ENABLE_OVERVIEW_ACTIONS.get() && getMode(context) != TWO_BUTTONS;
     }
 }
