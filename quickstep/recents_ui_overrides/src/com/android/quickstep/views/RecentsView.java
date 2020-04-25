@@ -116,6 +116,7 @@ import com.android.quickstep.RecentsAnimationController;
 import com.android.quickstep.RecentsAnimationTargets;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.RecentsModel.TaskVisualsChangeListener;
+import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskThumbnailCache;
 import com.android.quickstep.TaskUtils;
@@ -800,11 +801,14 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     @Override
     public void setInsets(Rect insets) {
         mInsets.set(insets);
+        resetPaddingFromTaskSize();
+    }
+
+    private void resetPaddingFromTaskSize() {
         DeviceProfile dp = mActivity.getDeviceProfile();
         getTaskSize(dp, mTempRect);
         mTaskWidth = mTempRect.width();
         mTaskHeight = mTempRect.height();
-
         mTempRect.top -= mTaskTopMargin;
         setPadding(mTempRect.left - mInsets.left, mTempRect.top - mInsets.top,
                 dp.widthPx - mInsets.right - mTempRect.right,
@@ -1569,6 +1573,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             mActivity.getDragLayer().recreateControllers();
             mActionsView.updateHiddenFlags(HIDDEN_NON_ZERO_ROTATION,
                     touchRotation != 0 || launcherRotation != 0);
+            resetPaddingFromTaskSize();
             requestLayout();
         }
     }

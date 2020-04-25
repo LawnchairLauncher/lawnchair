@@ -25,6 +25,7 @@ import static android.view.Surface.ROTATION_90;
 import static com.android.launcher3.states.RotationHelper.ALLOW_ROTATION_PREFERENCE_KEY;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
+import static com.android.quickstep.SysUINavigationMode.Mode.TWO_BUTTONS;
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
 import android.content.ContentResolver;
@@ -49,6 +50,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.PagedOrientationHandler;
+import com.android.quickstep.SysUINavigationMode;
 
 import java.lang.annotation.Retention;
 import java.util.function.IntConsumer;
@@ -154,7 +156,9 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
         if (isFixedRotationTransformEnabled(context)) {
             mFlags |= FLAG_MULTIPLE_ORIENTATION_SUPPORTED_BY_FLAG;
         }
-        if (mOrientationListener.canDetectOrientation()) {
+        // TODO(b/154665738): Determine if we need animation for 2 button mode or not
+        if (mOrientationListener.canDetectOrientation()
+                && SysUINavigationMode.getMode(context) != TWO_BUTTONS) {
             mFlags |= FLAG_ROTATION_WATCHER_SUPPORTED;
         }
     }
