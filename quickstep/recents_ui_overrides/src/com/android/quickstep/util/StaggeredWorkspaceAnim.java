@@ -190,6 +190,7 @@ public class StaggeredWorkspaceAnim {
                 .setStiffness(stiffness)
                 .setDampingRatio(damping)
                 .setMinimumVisibleChange(1f)
+                .setStartValue(mSpringTransY)
                 .setEndValue(0)
                 .setStartVelocity(mVelocity)
                 .build(v, VIEW_TRANSLATE_Y);
