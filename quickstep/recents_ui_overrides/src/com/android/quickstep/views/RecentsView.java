@@ -123,6 +123,7 @@ import com.android.quickstep.TaskThumbnailCache;
 import com.android.quickstep.TaskUtils;
 import com.android.quickstep.ViewUtils;
 import com.android.quickstep.util.AppWindowAnimationHelper;
+import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.quickstep.util.WindowSizeStrategy;
 import com.android.systemui.plugins.ResourceProvider;
@@ -598,8 +599,17 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     }
 
     @Override
+    protected void onPageBeginTransition() {
+        super.onPageBeginTransition();
+        LayoutUtils.setViewEnabled(mActionsView, false);
+    }
+
+    @Override
     protected void onPageEndTransition() {
         super.onPageEndTransition();
+        if (getScrollX() == getScrollForPage(getPageNearestToCenterOfScreen())) {
+            LayoutUtils.setViewEnabled(mActionsView, true);
+        }
         if (getNextPage() > 0) {
             setSwipeDownShouldLaunchApp(true);
         }
@@ -958,6 +968,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         setCurrentPage(0);
         mDwbToastShown = false;
         mActivity.getSystemUiController().updateUiState(UI_STATE_OVERVIEW, 0);
+        LayoutUtils.setViewEnabled(mActionsView, true);
     }
 
     public @Nullable TaskView getRunningTaskView() {

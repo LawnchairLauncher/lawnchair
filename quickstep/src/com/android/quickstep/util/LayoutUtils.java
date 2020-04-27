@@ -21,6 +21,8 @@ import static com.android.quickstep.util.WindowSizeStrategy.LAUNCHER_ACTIVITY_SI
 
 import android.content.Context;
 import android.graphics.Rect;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
@@ -64,6 +66,23 @@ public class LayoutUtils {
             return srcWidth / targetWidth;
         } else {
             return srcHeight / targetHeight;
+        }
+    }
+
+    /**
+     * Recursively sets view and all children enabled/disabled.
+     * @param viewGroup Top most parent view to change.
+     * @param enabled True = enable, False = disable.
+     */
+    public static void setViewEnabled(ViewGroup viewGroup, boolean enabled) {
+        viewGroup.setEnabled(enabled);
+        for (int i = 0; i < viewGroup.getChildCount(); i++) {
+            View child = viewGroup.getChildAt(i);
+            if (child instanceof ViewGroup) {
+                setViewEnabled((ViewGroup) child, enabled);
+            } else {
+                child.setEnabled(enabled);
+            }
         }
     }
 }
