@@ -17,6 +17,7 @@ package com.android.launcher3.uioverrides;
 
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
+import static com.android.launcher3.LauncherState.OVERVIEW_MODAL_TASK;
 import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
 
 import android.content.Intent;
@@ -219,7 +220,12 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
 
         @Override
         protected boolean isRecentsInteractive() {
-            return mActivity.isInState(OVERVIEW);
+            return mActivity.isInState(OVERVIEW) || mActivity.isInState(OVERVIEW_MODAL_TASK);
+        }
+
+        @Override
+        protected boolean isRecentsModal() {
+            return mActivity.isInState(OVERVIEW_MODAL_TASK);
         }
 
         @Override

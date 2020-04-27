@@ -17,7 +17,6 @@ package com.android.launcher3.uioverrides.touchcontrollers;
 
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
-import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_3;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
@@ -99,7 +98,7 @@ public class NavBarToHomeTouchController implements TouchController,
         if (!cameFromNavBar) {
             return false;
         }
-        if (mStartState == OVERVIEW || mStartState == ALL_APPS) {
+        if (mStartState.overviewUi || mStartState == ALL_APPS) {
             return true;
         }
         if (AbstractFloatingView.getTopOpenView(mLauncher) != null) {
@@ -129,7 +128,7 @@ public class NavBarToHomeTouchController implements TouchController,
     private void initCurrentAnimation() {
         long accuracy = (long) (getShiftRange() * 2);
         final PendingAnimation builder = new PendingAnimation(accuracy);
-        if (mStartState == OVERVIEW) {
+        if (mStartState.overviewUi) {
             RecentsView recentsView = mLauncher.getOverviewPanel();
             builder.setFloat(recentsView, ADJACENT_PAGE_OFFSET,
                     -mPullbackDistance / recentsView.getPageOffsetScale(), PULLBACK_INTERPOLATOR);
