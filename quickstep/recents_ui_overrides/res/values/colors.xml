@@ -15,6 +15,7 @@
 -->
 <resources>
     <color name="chip_hint_foreground_color">#fff</color>
+    <color name="chip_scrim_start_color">#39000000</color>
 
     <color name="all_apps_label_text">#61000000</color>
     <color name="all_apps_label_text_dark">#61FFFFFF</color>
