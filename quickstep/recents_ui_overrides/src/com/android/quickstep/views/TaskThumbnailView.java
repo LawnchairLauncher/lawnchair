@@ -50,7 +50,6 @@ import com.android.launcher3.util.Themes;
 import com.android.quickstep.TaskOverlayFactory;
 import com.android.quickstep.TaskOverlayFactory.TaskOverlay;
 import com.android.quickstep.views.TaskView.FullscreenDrawParams;
-import com.android.quickstep.util.RecentsOrientedState;
 import com.android.systemui.plugins.OverviewScreenshotActions;
 import com.android.systemui.plugins.PluginListener;
 import com.android.systemui.shared.recents.model.Task;

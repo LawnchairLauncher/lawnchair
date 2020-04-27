@@ -165,7 +165,7 @@ public class ShelfScrimView extends ScrimView<BaseQuickstepLauncher>
             if ((OVERVIEW.getVisibleElements(mLauncher) & ALL_APPS_HEADER_EXTRA) == 0) {
                 mDragHandleProgress = 1;
                 if (FeatureFlags.ENABLE_OVERVIEW_ACTIONS.get()
-                        && SysUINavigationMode.removeShelfFromOverview(mLauncher)) {
+                        && SysUINavigationMode.removeShelfFromOverview(context)) {
                     // Fade in all apps background quickly to distinguish from swiping from nav bar.
                     mMidAlpha = Themes.getAttrInteger(context, R.attr.allAppsInterimScrimAlpha);
                     mMidProgress = OverviewState.getDefaultVerticalProgress(mLauncher);
