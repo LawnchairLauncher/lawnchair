@@ -24,9 +24,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.util.Log;
 
-import com.android.launcher3.Launcher;
 import com.android.launcher3.util.MainThreadInitializedObject;
-import com.android.quickstep.views.RecentsView;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -130,14 +128,10 @@ public class SysUINavigationMode {
         }
     }
 
-    public static boolean removeShelfFromOverview(Launcher launcher) {
-        // The shelf is core to the two-button mode model, so we need to continue supporting it
-        // when in portrait.
-        if (getMode(launcher) != Mode.TWO_BUTTONS) {
-            return true;
-        }
-        RecentsView recentsView = launcher.getOverviewPanel();
-        return !recentsView.getPagedOrientationHandler().isLayoutNaturalToLauncher();
+    /** @return Whether we can remove the shelf from overview. */
+    public static boolean removeShelfFromOverview(Context context) {
+        // The shelf is core to the two-button mode model, so we need to continue supporting it.
+        return getMode(context) != Mode.TWO_BUTTONS;
     }
 
     public void dump(PrintWriter pw) {
