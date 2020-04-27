@@ -17,7 +17,7 @@
 package com.android.quickstep.views;
 
 import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_ACTIONS;
-import static com.android.quickstep.SysUINavigationMode.getMode;
+import static com.android.quickstep.SysUINavigationMode.removeShelfFromOverview;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -31,7 +31,6 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.R;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
-import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.TaskOverlayFactory.OverlayUICallbacks;
 
 import java.lang.annotation.Retention;
@@ -119,8 +118,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         updateHiddenFlags(HIDDEN_DISABLED_FEATURE, !ENABLE_OVERVIEW_ACTIONS.get());
-        updateHiddenFlags(HIDDEN_UNSUPPORTED_NAVIGATION,
-                getMode(getContext()) == SysUINavigationMode.Mode.TWO_BUTTONS);
+        updateHiddenFlags(HIDDEN_UNSUPPORTED_NAVIGATION, !removeShelfFromOverview(getContext()));
     }
 
     public void updateHiddenFlags(@ActionsHiddenFlags int visibilityFlags, boolean enable) {
