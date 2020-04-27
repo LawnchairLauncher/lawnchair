@@ -57,6 +57,7 @@ public class TaskViewSimulator {
 
     private final Rect mTmpCropRect = new Rect();
     private final RectF mTempRectF = new RectF();
+    private final float[] mTempPoint = new float[2];
 
     private final RecentsOrientedState mOrientationState;
     private final Context mContext;
@@ -267,7 +268,7 @@ public class TaskViewSimulator {
                     builder.withAlpha(alpha)
                             .withMatrix(mMatrix)
                             .withWindowCrop(mTmpCropRect)
-                            .withCornerRadius(mCurrentFullscreenParams.mCurrentDrawnCornerRadius);
+                            .withCornerRadius(getCurrentCornerRadius());
                 } else if (params.getTargetSet().hasRecents) {
                     // If home has a different target then recents, reverse anim the home target.
                     builder.withAlpha(fullScreenProgress.value * params.getTargetAlpha());
@@ -282,6 +283,20 @@ public class TaskViewSimulator {
         }
 
         applySurfaceParams(params.getSyncTransactionApplier(), surfaceParams);
+    }
+
+    /**
+     * Returns the corner radius that should be applied to the target so that it matches the
+     * TaskView
+     */
+    public float getCurrentCornerRadius() {
+        float visibleRadius = mCurrentFullscreenParams.mCurrentDrawnCornerRadius;
+        mTempPoint[0] = visibleRadius;
+        mTempPoint[1] = 0;
+        mInversePositionMatrix.mapVectors(mTempPoint);
+
+        // Ideally we should use square-root. This is an optimization as one of the dimension is 0.
+        return Math.max(Math.abs(mTempPoint[0]), Math.abs(mTempPoint[1]));
     }
 
     /**
