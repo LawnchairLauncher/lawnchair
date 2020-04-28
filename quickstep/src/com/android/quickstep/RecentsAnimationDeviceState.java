@@ -511,14 +511,12 @@ public class RecentsAnimationDeviceState implements
 
     void enableMultipleRegions(boolean enable) {
         mOrientationTouchTransformer.enableMultipleRegions(enable, mDefaultDisplay.getInfo());
-        if (enable) {
-            UI_HELPER_EXECUTOR.execute(() -> {
-                int quickStepStartingRotation =
-                        mOrientationTouchTransformer.getQuickStepStartingRotation();
-                SystemUiProxy.INSTANCE.get(mContext)
-                        .onQuickSwitchToNewTask(quickStepStartingRotation);
-            });
-        }
+        UI_HELPER_EXECUTOR.execute(() -> {
+            int quickStepStartingRotation =
+                    mOrientationTouchTransformer.getQuickStepStartingRotation();
+            SystemUiProxy.INSTANCE.get(mContext)
+                    .onQuickSwitchToNewTask(quickStepStartingRotation);
+        });
     }
 
     public int getCurrentActiveRotation() {
