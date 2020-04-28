@@ -46,11 +46,11 @@ import com.android.quickstep.BaseActivityInterface.HomeAnimationFactory;
 import com.android.quickstep.GestureState.GestureEndTarget;
 import com.android.quickstep.fallback.FallbackRecentsView;
 import com.android.quickstep.util.RectFSpringAnim;
-import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.InputConsumerController;
+import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 /**
  * Handles the navigation gestures when a 3rd party launcher is the default home activity.
@@ -320,15 +320,6 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
             }
 
             if (mRecentsView != null) {
-                if (mFinishingRecentsAnimationForNewTaskId != -1) {
-                    TaskView newRunningTaskView = mRecentsView.getTaskView(
-                            mFinishingRecentsAnimationForNewTaskId);
-                    int newRunningTaskId = newRunningTaskView != null
-                            ? newRunningTaskView.getTask().key.id
-                            : -1;
-                    mRecentsView.setCurrentTask(newRunningTaskId);
-                    mGestureState.setFinishingRecentsAnimationTaskId(newRunningTaskId);
-                }
                 mRecentsView.setOnScrollChangeListener(null);
             }
         } else {
@@ -401,7 +392,7 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
                 break;
             }
             case NEW_TASK: {
-                startNewTask(STATE_HANDLER_INVALIDATED, b -> {});
+                startNewTask(success -> { });
                 break;
             }
         }
@@ -416,7 +407,7 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
             if (mRecentsView == null || !hasTargets()) {
                 mGestureState.setEndTarget(LAST_TASK);
             } else {
-                final int runningTaskIndex = mRecentsView.getRunningTaskIndex();
+                final int runningTaskIndex = getLastAppearedTaskIndex();
                 final int taskToLaunch = mRecentsView.getNextPage();
                 mGestureState.setEndTarget(
                         (runningTaskIndex >= 0 && taskToLaunch != runningTaskIndex)
@@ -492,6 +483,11 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
 
         // Defer clearing the controller and the targets until after we've updated the state
         super.onRecentsAnimationCanceled(thumbnailData);
+    }
+
+    @Override
+    protected boolean handleTaskAppeared(RemoteAnimationTargetCompat appearedTaskTarget) {
+        return true;
     }
 
     /**

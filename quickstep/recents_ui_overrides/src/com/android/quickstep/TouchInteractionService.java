@@ -30,8 +30,6 @@ import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SYS
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_TRACING_ENABLED;
 
 import android.annotation.TargetApi;
-import android.app.ActivityManager;
-import android.app.ActivityManager.RunningTaskInfo;
 import android.app.PendingIntent;
 import android.app.RemoteAction;
 import android.app.Service;
@@ -518,8 +516,12 @@ public class TouchInteractionService extends Service implements PluginListener<O
     private GestureState createGestureState() {
         GestureState gestureState = new GestureState(mOverviewComponentObserver,
                 ActiveGestureLog.INSTANCE.generateAndSetLogId());
-        gestureState.updateRunningTask(TraceHelper.whitelistIpcs("getRunningTask.0",
-                () -> mAM.getRunningTask(false /* filterOnlyVisibleRecents */)));
+        if (mTaskAnimationManager.isRecentsAnimationRunning()) {
+            gestureState.updateRunningTask(mGestureState.getRunningTask());
+        } else {
+            gestureState.updateRunningTask(TraceHelper.whitelistIpcs("getRunningTask.0",
+                    () -> mAM.getRunningTask(false /* filterOnlyVisibleRecents */)));
+        }
         return gestureState;
     }
 
@@ -637,14 +639,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
                     runningComponent != null && runningComponent.equals(homeComponent);
         }
 
-        if (previousGestureState.getFinishingRecentsAnimationTaskId() > 0) {
-            // If the finish animation was interrupted, then continue using the other activity input
-            // consumer but with the next task as the running task
-            RunningTaskInfo info = new ActivityManager.RunningTaskInfo();
-            info.id = previousGestureState.getFinishingRecentsAnimationTaskId();
-            gestureState.updateRunningTask(info);
-            return createOtherActivityInputConsumer(previousGestureState, gestureState, event);
-        } else if (gestureState.getRunningTask() == null) {
+        if (gestureState.getRunningTask() == null) {
             return mResetGestureInputConsumer;
         } else if (previousGestureState.isRunningAnimationToLauncher()
                 || gestureState.getActivityInterface().isResumed()
@@ -658,25 +653,22 @@ public class TouchInteractionService extends Service implements PluginListener<O
         } else if (mDeviceState.isGestureBlockedActivity(gestureState.getRunningTask())) {
             return mResetGestureInputConsumer;
         } else {
-            return createOtherActivityInputConsumer(previousGestureState, gestureState, event);
+            return createOtherActivityInputConsumer(gestureState, event);
         }
     }
 
-    private InputConsumer createOtherActivityInputConsumer(GestureState previousGestureState,
-            GestureState gestureState, MotionEvent event) {
+    private InputConsumer createOtherActivityInputConsumer(GestureState gestureState,
+            MotionEvent event) {
 
-        final boolean shouldDefer;
         final BaseSwipeUpHandler.Factory factory;
-
         if (!mOverviewComponentObserver.isHomeAndOverviewSame()) {
-            shouldDefer = previousGestureState.getFinishingRecentsAnimationTaskId() < 0;
             factory = mFallbackSwipeHandlerFactory;
         } else {
-            shouldDefer = gestureState.getActivityInterface().deferStartingActivity(mDeviceState,
-                    event);
             factory = mLauncherSwipeHandlerFactory;
         }
 
+        final boolean shouldDefer = !mOverviewComponentObserver.isHomeAndOverviewSame()
+                || gestureState.getActivityInterface().deferStartingActivity(mDeviceState, event);
         final boolean disableHorizontalSwipe = mDeviceState.isInExclusionRegion(event);
         return new OtherActivityInputConsumer(this, mDeviceState, mTaskAnimationManager,
                 gestureState, shouldDefer, this::onConsumerInactive,

@@ -120,7 +120,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
     protected MultiStateCallback mStateCallback;
 
     protected boolean mCanceled;
-    protected int mFinishingRecentsAnimationForNewTaskId = -1;
+    protected int mLastStartedTaskId = -1;
 
     private RecentsOrientedState mOrientedState;
 
@@ -199,7 +199,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
                         mRecentsAnimationTargets));
     }
 
-    protected void startNewTask(int successStateFlag, Consumer<Boolean> resultCallback) {
+    protected void startNewTask(Consumer<Boolean> resultCallback) {
         // Launch the task user scrolled to (mRecentsView.getNextPage()).
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             // We finish recents animation inside launchTask() when live tile is enabled.
@@ -210,18 +210,17 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
             if (!mCanceled) {
                 TaskView nextTask = mRecentsView.getTaskView(taskId);
                 if (nextTask != null) {
+                    mLastStartedTaskId = taskId;
                     nextTask.launchTask(false /* animate */, true /* freezeTaskList */,
                             success -> {
                                 resultCallback.accept(success);
                                 if (!success) {
                                     mActivityInterface.onLaunchTaskFailed();
                                     nextTask.notifyTaskLaunchFailed(TAG);
-                                } else {
-                                    mActivityInterface.onLaunchTaskSuccess();
+                                    mRecentsAnimationController.finish(true /* toRecents */, null);
                                 }
                             }, MAIN_EXECUTOR.getHandler());
                 }
-                mStateCallback.setStateOnUiThread(successStateFlag);
             }
             mCanceled = false;
         }
@@ -241,6 +240,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
     }
 
     /**
+     * TODO can we remove this now that we don't finish the controller until onTaskAppeared()?
      * @return whether the recents animation has started and there are valid app targets.
      */
     protected boolean hasTargets() {
@@ -304,6 +304,30 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
         if (mRecentsView != null) {
             mRecentsView.setRecentsAnimationTargets(null, null);
         }
+    }
+
+    @Override
+    public void onTaskAppeared(RemoteAnimationTargetCompat appearedTaskTarget) {
+        if (mRecentsAnimationController != null) {
+            if (handleTaskAppeared(appearedTaskTarget)) {
+                mRecentsAnimationController.finish(false /* toRecents */,
+                        null /* onFinishComplete */);
+                mActivityInterface.onLaunchTaskSuccess();
+            }
+        }
+    }
+
+    /** @return Whether this was the task we were waiting to appear, and thus handled it. */
+    protected abstract boolean handleTaskAppeared(RemoteAnimationTargetCompat appearedTaskTarget);
+
+    /**
+     * @return The index of the TaskView in RecentsView whose taskId matches the task that will
+     * resume if we finish the controller.
+     */
+    protected int getLastAppearedTaskIndex() {
+        return mGestureState.getLastAppearedTaskId() != -1
+                ? mRecentsView.getTaskIndexForId(mGestureState.getLastAppearedTaskId())
+                : mRecentsView.getRunningTaskIndex();
     }
 
     private Rect getStackBounds(DeviceProfile dp) {
