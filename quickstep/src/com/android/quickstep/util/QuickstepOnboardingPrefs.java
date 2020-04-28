@@ -42,9 +42,6 @@ public class QuickstepOnboardingPrefs extends OnboardingPrefs<BaseQuickstepLaunc
         if (!getBoolean(HOME_BOUNCE_SEEN)) {
             mStateManager.addStateListener(new StateListener() {
                 @Override
-                public void onStateTransitionStart(LauncherState toState) { }
-
-                @Override
                 public void onStateTransitionComplete(LauncherState finalState) {
                     boolean swipeUpEnabled = SysUINavigationMode.INSTANCE
                             .get(mLauncher).getMode().hasGestures;
@@ -70,9 +67,6 @@ public class QuickstepOnboardingPrefs extends OnboardingPrefs<BaseQuickstepLaunc
         if (!shelfBounceSeen) {
             mStateManager.addStateListener(new StateListener() {
                 @Override
-                public void onStateTransitionStart(LauncherState toState) { }
-
-                @Override
                 public void onStateTransitionComplete(LauncherState finalState) {
                     LauncherState prevState = mStateManager.getLastState();
 
@@ -87,9 +81,6 @@ public class QuickstepOnboardingPrefs extends OnboardingPrefs<BaseQuickstepLaunc
 
         if (!hasReachedMaxCount(ALL_APPS_COUNT)) {
             mStateManager.addStateListener(new StateListener() {
-                @Override
-                public void onStateTransitionStart(LauncherState toState) { }
-
                 @Override
                 public void onStateTransitionComplete(LauncherState finalState) {
                     if (finalState == ALL_APPS) {

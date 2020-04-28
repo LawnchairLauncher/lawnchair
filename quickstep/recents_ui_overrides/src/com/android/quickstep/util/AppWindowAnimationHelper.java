@@ -264,7 +264,8 @@ public class AppWindowAnimationHelper {
             mTmpRectF.set(mTargetRect);
             Utilities.scaleRectFAboutCenter(mTmpRectF, params.mOffsetScale);
             mCurrentRect.set(mRectFEvaluator.evaluate(params.mProgress, mSourceRect, mTmpRectF));
-            if (mOrientedState == null || mOrientedState.areMultipleLayoutOrientationsDisabled()) {
+            if (mOrientedState == null
+                    || !mOrientedState.isMultipleOrientationSupportedByDevice()) {
                 mCurrentRect.offset(params.mOffset, 0);
             } else {
                 int displayRotation = mOrientedState.getDisplayRotation();

@@ -125,11 +125,11 @@
     <item name="all_apps_spring_damping_ratio" type="dimen" format="float">0.75</item>
     <item name="all_apps_spring_stiffness" type="dimen" format="float">600</item>
 
-    <item name="dismiss_task_trans_y_damping_ratio" type="dimen" format="float">0.5</item>
-    <item name="dismiss_task_trans_y_stiffness" type="dimen" format="float">1500</item>
+    <item name="dismiss_task_trans_y_damping_ratio" type="dimen" format="float">0.73</item>
+    <item name="dismiss_task_trans_y_stiffness" type="dimen" format="float">800</item>
 
-    <item name="dismiss_task_trans_x_damping_ratio" type="dimen" format="float">0.5</item>
-    <item name="dismiss_task_trans_x_stiffness" type="dimen" format="float">1500</item>
+    <item name="dismiss_task_trans_x_damping_ratio" type="dimen" format="float">0.73</item>
+    <item name="dismiss_task_trans_x_stiffness" type="dimen" format="float">800</item>
 
     <item name="horizontal_spring_damping_ratio" type="dimen" format="float">0.8</item>
     <item name="horizontal_spring_stiffness" type="dimen" format="float">400</item>
