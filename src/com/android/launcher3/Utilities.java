@@ -340,6 +340,30 @@ public final class Utilities {
     }
 
     /**
+     * Bounds parameter to the range [0, 1]
+     */
+    public static float saturate(float a) {
+        return boundToRange(a, 0, 1.0f);
+    }
+
+    /**
+     * Returns the compliment (1 - a) of the parameter.
+     */
+    public static float comp(float a) {
+        return 1 - a;
+    }
+
+    /**
+     * Returns the "probabilistic or" of a and b. (a + b - ab).
+     * Useful beyond probability, can be used to combine two unit progresses for example.
+     */
+    public static float or(float a, float b) {
+        float satA = saturate(a);
+        float satB = saturate(b);
+        return satA + satB - (satA * satB);
+    }
+
+    /**
      * Trims the string, removing all whitespace at the beginning and end of the string.
      * Non-breaking whitespaces are also removed.
      */

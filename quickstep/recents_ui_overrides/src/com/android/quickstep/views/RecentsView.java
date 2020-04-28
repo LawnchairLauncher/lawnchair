@@ -70,7 +70,6 @@ import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
-import android.util.Log;
 import android.util.Property;
 import android.util.SparseBooleanArray;
 import android.view.HapticFeedbackConstants;
@@ -173,13 +172,26 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                 }
             };
 
+    public static final FloatProperty<RecentsView> TASK_MODALNESS =
+            new FloatProperty<RecentsView>("taskModalness") {
+                @Override
+                public void setValue(RecentsView recentsView, float v) {
+                    recentsView.setTaskModalness(v);
+                }
+
+                @Override
+                public Float get(RecentsView recentsView) {
+                    return recentsView.mTaskModalness;
+                }
+            };
+
     public static final FloatProperty<RecentsView> ADJACENT_PAGE_OFFSET =
             new FloatProperty<RecentsView>("adjacentPageOffset") {
                 @Override
                 public void setValue(RecentsView recentsView, float v) {
                     if (recentsView.mAdjacentPageOffset != v) {
                         recentsView.mAdjacentPageOffset = v;
-                        recentsView.updateAdjacentPageOffset();
+                        recentsView.updatePageOffsets();
                     }
                 }
 
@@ -327,6 +339,12 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     protected float mContentAlpha = 1;
     @ViewDebug.ExportedProperty(category = "launcher")
     protected float mFullscreenProgress = 0;
+    /**
+     * How modal is the current task to be displayed, 1 means the task is fully modal and no other
+     * tasks are show. 0 means the task is displays in context in the list with other tasks.
+     */
+    @ViewDebug.ExportedProperty(category = "launcher")
+    protected float mTaskModalness = 0;
 
     // Keeps track of task id whose visual state should not be reset
     private int mIgnoreResetTaskId = -1;
@@ -647,7 +665,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     @Override
     protected void determineScrollingStart(MotionEvent ev, float touchSlopScale) {
         // Enables swiping to the left or right only if the task overlay is not modal.
-        if (getCurrentPageTaskView() == null || !getCurrentPageTaskView().isTaskOverlayModal()) {
+        if (mTaskModalness == 0f) {
             super.determineScrollingStart(ev, touchSlopScale);
         }
     }
@@ -735,25 +753,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         return taskViewCount;
     }
 
-    /**
-     * Updates UI for a modal task, including hiding other tasks.
-     */
-    public void updateUiForModalTask(TaskView taskView, boolean isTaskOverlayModal) {
-        int currentIndex = indexOfChild(taskView);
-        TaskView previousTask = getTaskViewAt(currentIndex - 1);
-        TaskView nextTask = getTaskViewAt(currentIndex + 1);
-        float alpha = isTaskOverlayModal ? 0.0f : 1.0f;
-        if (previousTask != null) {
-            previousTask.animate().alpha(alpha)
-                    .translationX(isTaskOverlayModal ? previousTask.getWidth() / 2 : 0);
-        }
-        if (nextTask != null) {
-            nextTask.animate().alpha(alpha)
-                    .translationX(isTaskOverlayModal ? -nextTask.getWidth() / 2 : 0);
-
-        }
-    }
-
     protected void onTaskStackUpdated() { }
 
     public void resetTaskVisuals() {
@@ -776,6 +775,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         updateCurveProperties();
         // Update the set of visible task's data
         loadVisibleTaskData();
+        setTaskModalness(0);
     }
 
     public void setFullscreenProgress(float fullscreenProgress) {
@@ -1653,21 +1653,27 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                 mTempRect, mActivity.getDeviceProfile(), mTempPointF);
         setPivotX(mTempPointF.x);
         setPivotY(mTempPointF.y);
-        updateAdjacentPageOffset();
+        updatePageOffsets();
     }
 
-    private void updateAdjacentPageOffset() {
+    private void updatePageOffsets() {
         float offset = mAdjacentPageOffset * getWidth();
+        float modalOffset = mTaskModalness * getWidth();
         if (mIsRtl) {
             offset = -offset;
+            modalOffset = -modalOffset;
         }
         int count = getChildCount();
 
         TaskView runningTask = mRunningTaskId == -1 ? null : getTaskView(mRunningTaskId);
         int midPoint = runningTask == null ? -1 : indexOfChild(runningTask);
+        int currentPage = getCurrentPage();
 
         for (int i = 0; i < count; i++) {
-            getChildAt(i).setTranslationX(i == midPoint ? 0 : (i < midPoint ? -offset : offset));
+            float translation = i == midPoint ? 0 : (i < midPoint ? -offset : offset);
+            float modalTranslation =
+                    i == currentPage ? 0 : (i < currentPage ? -modalOffset : modalOffset);
+            getChildAt(i).setTranslationX(translation + modalTranslation);
         }
         updateCurveProperties();
     }
@@ -2110,6 +2116,18 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             ViewUtils.postDraw(taskView, onFinishRunnable);
         } else {
             onFinishRunnable.run();
+        }
+    }
+
+    /**
+     * The current task is fully modal (modalness = 1) when it is shown on its own in a modal
+     * way. Modalness 0 means the task is shown in context with all the other tasks.
+     */
+    private void setTaskModalness(float modalness) {
+        mTaskModalness = modalness;
+        updatePageOffsets();
+        if (getCurrentPageTaskView() != null) {
+            getCurrentPageTaskView().setModalness(modalness);
         }
     }
 

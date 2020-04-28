@@ -20,6 +20,7 @@ import static com.android.launcher3.LauncherState.ALL_APPS_HEADER_EXTRA;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.OVERVIEW_BUTTONS;
+import static com.android.launcher3.LauncherState.OVERVIEW_MODAL_TASK;
 import static com.android.launcher3.LauncherState.SPRING_LOADED;
 import static com.android.launcher3.QuickstepAppTransitionManagerImpl.ALL_APPS_PROGRESS_OFF_SCREEN;
 import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
@@ -284,7 +285,7 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher>
             // Clean-up logic that occurs when recents is no longer in use/visible.
             reset();
         }
-        setOverlayEnabled(finalState == OVERVIEW);
+        setOverlayEnabled(finalState == OVERVIEW || finalState == OVERVIEW_MODAL_TASK);
         setFreezeViewVisibility(false);
     }
 

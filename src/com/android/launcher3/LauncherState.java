@@ -36,6 +36,7 @@ import static com.android.launcher3.testing.TestProtocol.ALL_APPS_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.BACKGROUND_APP_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.HINT_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.NORMAL_STATE_ORDINAL;
+import static com.android.launcher3.testing.TestProtocol.OVERVIEW_MODAL_TASK_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.OVERVIEW_PEEK_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.OVERVIEW_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.QUICK_SWITCH_STATE_ORDINAL;
@@ -101,7 +102,7 @@ public abstract class LauncherState {
                 }
             };
 
-    private static final LauncherState[] sAllStates = new LauncherState[8];
+    private static final LauncherState[] sAllStates = new LauncherState[9];
 
     /**
      * TODO: Create a separate class for NORMAL state.
@@ -128,6 +129,8 @@ public abstract class LauncherState {
     public static final LauncherState OVERVIEW = new OverviewState(OVERVIEW_STATE_ORDINAL);
     public static final LauncherState OVERVIEW_PEEK =
             OverviewState.newPeekState(OVERVIEW_PEEK_STATE_ORDINAL);
+    public static final LauncherState OVERVIEW_MODAL_TASK = OverviewState.newModalTaskState(
+            OVERVIEW_MODAL_TASK_STATE_ORDINAL);
     public static final LauncherState QUICK_SWITCH =
             OverviewState.newSwitchState(QUICK_SWITCH_STATE_ORDINAL);
     public static final LauncherState BACKGROUND_APP =
@@ -276,6 +279,14 @@ public abstract class LauncherState {
     }
 
     public float getOverviewScrimAlpha(Launcher launcher) {
+        return 0;
+    }
+
+    /**
+     * For this state, how modal should over view been shown. 0 modalness means all tasks drawn,
+     * 1 modalness means the current task is show on its own.
+     */
+    public float getOverviewModalness() {
         return 0;
     }
 
