@@ -535,13 +535,14 @@ public final class LauncherInstrumentation {
                 mExpectedRotation, mDevice.getDisplayRotation());
 
         // b/148422894
+        String error = null;
         for (int i = 0; i != 600; ++i) {
-            if (getNavigationModeMismatchError() == null) break;
+            error = getNavigationModeMismatchError();
+            if (error == null) break;
             sleep(100);
         }
-
-        final String error = getNavigationModeMismatchError();
         assertTrue(error, error == null);
+
         log("verifyContainerType: " + containerType);
 
         final UiObject2 container = verifyVisibleObjects(containerType);
