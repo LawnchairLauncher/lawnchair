@@ -23,28 +23,51 @@ import static com.android.launcher3.folder.FolderIcon.DROP_IN_ANIMATION_DURATION
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.util.FloatProperty;
 import android.view.View;
 import android.widget.TextView;
 
-import com.android.launcher3.BubbleTextView;
-import com.android.launcher3.WorkspaceItemInfo;
+import androidx.annotation.NonNull;
+
+import com.android.launcher3.Launcher;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.WorkspaceItemInfo;
+import com.android.launcher3.graphics.DrawableFactory;
+import com.android.launcher3.graphics.PreloadIconDrawable;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.annotation.NonNull;
+import java.util.function.Predicate;
 
 /**
  * Manages the drawing and animations of {@link PreviewItemDrawingParams} for a {@link FolderIcon}.
  */
 public class PreviewItemManager {
 
-    private FolderIcon mIcon;
+    private static final FloatProperty<PreviewItemManager> CURRENT_PAGE_ITEMS_TRANS_X =
+            new FloatProperty<PreviewItemManager>("currentPageItemsTransX") {
+                @Override
+                public void setValue(PreviewItemManager manager, float v) {
+                    manager.mCurrentPageItemsTransX = v;
+                    manager.onParamsChanged();
+                }
+
+                @Override
+                public Float get(PreviewItemManager manager) {
+                    return manager.mCurrentPageItemsTransX;
+                }
+            };
+
+    private final Context mContext;
+    private final FolderIcon mIcon;
+    private final DrawableFactory mDrawableFactory;
+    private final int mIconSize;
 
     // These variables are all associated with the drawing of the preview; they are stored
     // as member variables for shared usage and to avoid computation on each frame
@@ -69,7 +92,10 @@ public class PreviewItemManager {
     private static final int ITEM_SLIDE_IN_OUT_DISTANCE_PX = 200;
 
     public PreviewItemManager(FolderIcon icon) {
+        mContext = icon.getContext();
         mIcon = icon;
+        mDrawableFactory = DrawableFactory.INSTANCE.get(mContext);
+        mIconSize = Launcher.getLauncher(mContext).getDeviceProfile().folderChildIconSizePx;
     }
 
     /**
@@ -200,7 +226,7 @@ public class PreviewItemManager {
     }
 
     void buildParamsForPage(int page, ArrayList<PreviewItemDrawingParams> params, boolean animate) {
-        List<BubbleTextView> items = mIcon.getPreviewItemsOnPage(page);
+        List<WorkspaceItemInfo> items = mIcon.getPreviewItemsOnPage(page);
         int prevNumItems = params.size();
 
         // We adjust the size of the list to match the number of items in the preview.
@@ -214,13 +240,7 @@ public class PreviewItemManager {
         int numItemsInFirstPagePreview = page == 0 ? items.size() : MAX_NUM_ITEMS_IN_PREVIEW;
         for (int i = 0; i < params.size(); i++) {
             PreviewItemDrawingParams p = params.get(i);
-            p.drawable = items.get(i).getCompoundDrawables()[1];
-
-            if (p.drawable != null && !mIcon.mFolder.isOpen()) {
-                // Set the callback to FolderIcon as it is responsible to drawing the icon. The
-                // callback will be released when the folder is opened.
-                p.drawable.setCallback(mIcon);
-            }
+            setDrawable(p, items.get(i));
 
             if (!animate) {
                 computePreviewItemDrawingParams(i, numItemsInFirstPagePreview, p);
@@ -253,14 +273,8 @@ public class PreviewItemManager {
             buildParamsForPage(currentPage, mCurrentPageParams, false);
             onParamsChanged();
 
-            ValueAnimator slideAnimator = ValueAnimator.ofFloat(0, ITEM_SLIDE_IN_OUT_DISTANCE_PX);
-            slideAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                    mCurrentPageItemsTransX = (float) valueAnimator.getAnimatedValue();
-                    onParamsChanged();
-                }
-            });
+            ValueAnimator slideAnimator = ObjectAnimator
+                    .ofFloat(this, CURRENT_PAGE_ITEMS_TRANS_X, 0, ITEM_SLIDE_IN_OUT_DISTANCE_PX);
             slideAnimator.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
@@ -275,6 +289,25 @@ public class PreviewItemManager {
 
     void updatePreviewItems(boolean animate) {
         buildParamsForPage(0, mFirstPageParams, animate);
+    }
+
+    void updatePreviewItems(Predicate<WorkspaceItemInfo> itemCheck) {
+        boolean modified = false;
+        for (PreviewItemDrawingParams param : mFirstPageParams) {
+            if (itemCheck.test(param.item)) {
+                setDrawable(param, param.item);
+                modified = true;
+            }
+        }
+        for (PreviewItemDrawingParams param : mCurrentPageParams) {
+            if (itemCheck.test(param.item)) {
+                setDrawable(param, param.item);
+                modified = true;
+            }
+        }
+        if (modified) {
+            mIcon.invalidate();
+        }
     }
 
     boolean verifyDrawable(@NonNull Drawable who) {
@@ -296,46 +329,46 @@ public class PreviewItemManager {
      *  - Moving into a new position
      *  - Moving out of the preview
      *
-     * @param oldParams The list of items in the old preview.
-     * @param newParams The list of items in the new preview.
+     * @param oldItems The list of items in the old preview.
+     * @param newItems The list of items in the new preview.
      * @param dropped The item that was dropped onto the FolderIcon.
      */
-    public void onDrop(List<BubbleTextView> oldParams, List<BubbleTextView> newParams,
+    public void onDrop(List<WorkspaceItemInfo> oldItems, List<WorkspaceItemInfo> newItems,
             WorkspaceItemInfo dropped) {
-        int numItems = newParams.size();
+        int numItems = newItems.size();
         final ArrayList<PreviewItemDrawingParams> params = mFirstPageParams;
         buildParamsForPage(0, params, false);
 
         // New preview items for items that are moving in (except for the dropped item).
-        List<BubbleTextView> moveIn = new ArrayList<>();
-        for (BubbleTextView btv : newParams) {
-            if (!oldParams.contains(btv) && !btv.getTag().equals(dropped)) {
-                moveIn.add(btv);
+        List<WorkspaceItemInfo> moveIn = new ArrayList<>();
+        for (WorkspaceItemInfo newItem : newItems) {
+            if (!oldItems.contains(newItem) && !newItem.equals(dropped)) {
+                moveIn.add(newItem);
             }
         }
         for (int i = 0; i < moveIn.size(); ++i) {
-            int prevIndex = newParams.indexOf(moveIn.get(i));
+            int prevIndex = newItems.indexOf(moveIn.get(i));
             PreviewItemDrawingParams p = params.get(prevIndex);
             computePreviewItemDrawingParams(prevIndex, numItems, p);
-            updateTransitionParam(p, moveIn.get(i), ENTER_INDEX, newParams.indexOf(moveIn.get(i)),
+            updateTransitionParam(p, moveIn.get(i), ENTER_INDEX, newItems.indexOf(moveIn.get(i)),
                     numItems);
         }
 
         // Items that are moving into new positions within the preview.
-        for (int newIndex = 0; newIndex < newParams.size(); ++newIndex) {
-            int oldIndex = oldParams.indexOf(newParams.get(newIndex));
+        for (int newIndex = 0; newIndex < newItems.size(); ++newIndex) {
+            int oldIndex = oldItems.indexOf(newItems.get(newIndex));
             if (oldIndex >= 0 && newIndex != oldIndex) {
                 PreviewItemDrawingParams p = params.get(newIndex);
-                updateTransitionParam(p, newParams.get(newIndex), oldIndex, newIndex, numItems);
+                updateTransitionParam(p, newItems.get(newIndex), oldIndex, newIndex, numItems);
             }
         }
 
         // Old preview items that need to be moved out.
-        List<BubbleTextView> moveOut = new ArrayList<>(oldParams);
-        moveOut.removeAll(newParams);
+        List<WorkspaceItemInfo> moveOut = new ArrayList<>(oldItems);
+        moveOut.removeAll(newItems);
         for (int i = 0; i < moveOut.size(); ++i) {
-            BubbleTextView item = moveOut.get(i);
-            int oldIndex = oldParams.indexOf(item);
+            WorkspaceItemInfo item = moveOut.get(i);
+            int oldIndex = oldItems.indexOf(item);
             PreviewItemDrawingParams p = computePreviewItemDrawingParams(oldIndex, numItems, null);
             updateTransitionParam(p, item, oldIndex, EXIT_INDEX, numItems);
             params.add(0, p); // We want these items first so that they are on drawn last.
@@ -348,14 +381,9 @@ public class PreviewItemManager {
         }
     }
 
-    private void updateTransitionParam(final PreviewItemDrawingParams p, BubbleTextView btv,
+    private void updateTransitionParam(final PreviewItemDrawingParams p, WorkspaceItemInfo item,
             int prevIndex, int newIndex, int numItems) {
-        p.drawable = btv.getCompoundDrawables()[1];
-        if (!mIcon.mFolder.isOpen()) {
-            // Set the callback to FolderIcon as it is responsible to drawing the icon. The
-            // callback will be released when the folder is opened.
-            p.drawable.setCallback(mIcon);
-        }
+        setDrawable(p, item);
 
         FolderPreviewItemAnim anim = new FolderPreviewItemAnim(this, p, prevIndex, numItems,
                 newIndex, numItems, DROP_IN_ANIMATION_DURATION, null);
@@ -363,5 +391,21 @@ public class PreviewItemManager {
             p.anim.cancel();
         }
         p.anim = anim;
+    }
+
+    private void setDrawable(PreviewItemDrawingParams p, WorkspaceItemInfo item) {
+        if (item.hasPromiseIconUi()) {
+            PreloadIconDrawable drawable = mDrawableFactory.newPendingIcon(mContext, item);
+            drawable.setLevel(item.getInstallProgress());
+            p.drawable = drawable;
+        } else {
+            p.drawable = mDrawableFactory.newIcon(mContext, item);
+        }
+        p.drawable.setBounds(0, 0, mIconSize, mIconSize);
+        p.item = item;
+
+        // Set the callback to FolderIcon as it is responsible to drawing the icon. The
+        // callback will be released when the folder is opened.
+        p.drawable.setCallback(mIcon);
     }
 }

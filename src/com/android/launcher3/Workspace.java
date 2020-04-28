@@ -67,9 +67,9 @@ import com.android.launcher3.accessibility.AccessibleDragListenerAdapter;
 import com.android.launcher3.accessibility.WorkspaceAccessibilityHelper;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.Interpolators;
-import com.android.launcher3.dot.FolderDotInfo;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.dot.FolderDotInfo;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
@@ -90,8 +90,8 @@ import com.android.launcher3.touch.WorkspaceTouchListener;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
+import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.IntArray;
-import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.IntSparseArrayMap;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.PackageUserKey;
@@ -132,9 +132,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     private static final int ADJACENT_SCREEN_DROP_DURATION = 300;
 
     private static final int DEFAULT_PAGE = 0;
-
-    public static final boolean MAP_NO_RECURSE = false;
-    public static final boolean MAP_RECURSE = true;
 
     private LayoutTransition mLayoutTransition;
     @Thunk final WallpaperManager mWallpaperManager;
@@ -1038,6 +1035,13 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     }
 
     @Override
+    protected boolean onOverscroll(int amount) {
+        // Enforce overscroll on -1 direction
+        if ((amount > 0 && !mIsRtl) || (amount < 0 && mIsRtl)) return false;
+        return super.onOverscroll(amount);
+    }
+
+    @Override
     protected boolean shouldFlingForVelocity(int velocityX) {
         // When the overlay is moving, the fling or settle transition is controlled by the overlay.
         return Float.compare(Math.abs(mOverlayTranslation), 0) == 0 &&
@@ -1161,7 +1165,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     }
 
     protected void setWallpaperDimension() {
-        Utilities.THREAD_POOL_EXECUTOR.execute(new Runnable() {
+        Executors.THREAD_POOL_EXECUTOR.execute(new Runnable() {
             @Override
             public void run() {
                 final Point size = LauncherAppState.getIDP(getContext()).defaultWallpaperSize;
@@ -1269,6 +1273,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     private boolean workspaceInModalState() {
         return !mLauncher.isInState(NORMAL);
+    }
+
+    private boolean workspaceInScrollableState() {
+        return mLauncher.isInState(SPRING_LOADED) || !workspaceInModalState();
     }
 
     /** Returns whether a drag should be allowed to be started from the current workspace state. */
@@ -1464,6 +1472,9 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     public DragView beginDragShared(View child, DragSource source, ItemInfo dragObject,
             DragPreviewProvider previewProvider, DragOptions dragOptions) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.NO_CONTEXT_MENU, "beginDragShared");
+        }
         float iconScale = 1f;
         if (child instanceof BubbleTextView) {
             Drawable icon = ((BubbleTextView) child).getIcon();
@@ -1489,7 +1500,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         Rect dragRect = null;
         if (child instanceof BubbleTextView) {
             dragRect = new Rect();
-            ((BubbleTextView) child).getIconBounds(dragRect);
+            BubbleTextView.getIconBounds(child, dragRect, grid.iconSizePx);
             dragLayerY += dragRect.top;
             // Note: The dragRect is used to calculate drag layer offsets, but the
             // dragVisualizeOffset in addition to the dragRect (the size) to position the outline.
@@ -2532,22 +2543,22 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             View view;
 
             switch (info.itemType) {
-            case ITEM_TYPE_APPLICATION:
-            case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
-            case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT:
-                if (info.container == NO_ID && info instanceof AppInfo) {
-                    // Came from all apps -- make a copy
-                    info = ((AppInfo) info).makeWorkspaceItem();
-                    d.dragInfo = info;
-                }
-                view = mLauncher.createShortcut(cellLayout, (WorkspaceItemInfo) info);
-                break;
-            case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
-                view = FolderIcon.fromXml(R.layout.folder_icon, mLauncher, cellLayout,
-                        (FolderInfo) info);
-                break;
-            default:
-                throw new IllegalStateException("Unknown item type: " + info.itemType);
+                case ITEM_TYPE_APPLICATION:
+                case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
+                case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT:
+                    if (info instanceof AppInfo) {
+                        // Came from all apps -- make a copy
+                        info = ((AppInfo) info).makeWorkspaceItem();
+                        d.dragInfo = info;
+                    }
+                    view = mLauncher.createShortcut(cellLayout, (WorkspaceItemInfo) info);
+                    break;
+                case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
+                    view = FolderIcon.fromXml(R.layout.folder_icon, mLauncher, cellLayout,
+                            (FolderInfo) info);
+                    break;
+                default:
+                    throw new IllegalStateException("Unknown item type: " + info.itemType);
             }
 
             // First we find the cell nearest to point at which the item is
@@ -2805,10 +2816,27 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     }
 
     /**
+     * Removed widget from workspace by appWidgetId
+     * @param appWidgetId
+     */
+    public void removeWidget(int appWidgetId) {
+        mapOverItems((info, view) -> {
+            if (info instanceof LauncherAppWidgetInfo) {
+                LauncherAppWidgetInfo appWidgetInfo = (LauncherAppWidgetInfo) info;
+                if (appWidgetInfo.appWidgetId == appWidgetId) {
+                    mLauncher.removeItem(view, appWidgetInfo, true);
+                    return true;
+                }
+            }
+            return false;
+        });
+    }
+
+    /**
      * Removes all folder listeners
      */
     public void removeFolderListeners() {
-        mapOverItems(false, new ItemOperator() {
+        mapOverItems(new ItemOperator() {
             @Override
             public boolean evaluate(ItemInfo info, View view) {
                 if (view instanceof FolderIcon) {
@@ -2855,7 +2883,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     @Override
     public boolean scrollLeft() {
         boolean result = false;
-        if (!workspaceInModalState() && !mIsSwitchingState) {
+        if (!mIsSwitchingState && workspaceInScrollableState()) {
             result = super.scrollLeft();
         }
         Folder openFolder = Folder.getOpen(mLauncher);
@@ -2868,7 +2896,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     @Override
     public boolean scrollRight() {
         boolean result = false;
-        if (!workspaceInModalState() && !mIsSwitchingState) {
+        if (!mIsSwitchingState && workspaceInScrollableState()) {
             result = super.scrollRight();
         }
         Folder openFolder = Folder.getOpen(mLauncher);
@@ -2960,7 +2988,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     public View getFirstMatch(final ItemOperator operator) {
         final View[] value = new View[1];
-        mapOverItems(MAP_NO_RECURSE, new ItemOperator() {
+        mapOverItems(new ItemOperator() {
             @Override
             public boolean evaluate(ItemInfo info, View v) {
                 if (operator.evaluate(info, v)) {
@@ -2983,7 +3011,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         final View[] matches = new View[operators.length];
         // For efficiency, the outer loop should be CellLayout.
         for (CellLayout cellLayout : cellLayouts) {
-            mapOverCellLayout(MAP_NO_RECURSE, cellLayout, (info, v) -> {
+            mapOverCellLayout(cellLayout, (info, v) -> {
                 for (int i = 0; i < operators.length; ++i) {
                     if (matches[i] == null && operators[i].evaluate(info, v)) {
                         matches[i] = v;
@@ -3008,7 +3036,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     }
 
     void clearDropTargets() {
-        mapOverItems(MAP_NO_RECURSE, new ItemOperator() {
+        mapOverItems(new ItemOperator() {
             @Override
             public boolean evaluate(ItemInfo info, View v) {
                 if (v instanceof DropTarget) {
@@ -3053,10 +3081,12 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                 } else if (itemToRemove.container >= 0) {
                     // The item may belong to a folder.
                     View parent = idToViewMap.get(itemToRemove.container);
-                    if (parent != null) {
+                    if (parent instanceof FolderIcon) {
                         FolderInfo folderInfo = (FolderInfo) parent.getTag();
-                        folderInfo.prepareAutoUpdate();
                         folderInfo.remove((WorkspaceItemInfo) itemToRemove, false);
+                        if (((FolderIcon) parent).getFolder().isOpen()) {
+                            ((FolderIcon) parent).getFolder().close(false /* animate */);
+                        }
                     }
                 }
             }
@@ -3080,18 +3110,17 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     /**
      * Map the operator over the shortcuts and widgets, return the first-non-null value.
      *
-     * @param recurse true: iterate over folder children. false: op get the folders themselves.
      * @param op the operator to map over the shortcuts
      */
-    public void mapOverItems(boolean recurse, ItemOperator op) {
+    public void mapOverItems(ItemOperator op) {
         for (CellLayout layout : getWorkspaceAndHotseatCellLayouts()) {
-            if (mapOverCellLayout(recurse, layout, op)) {
+            if (mapOverCellLayout(layout, op)) {
                 return;
             }
         }
     }
 
-    private boolean mapOverCellLayout(boolean recurse, CellLayout layout, ItemOperator op) {
+    private boolean mapOverCellLayout(CellLayout layout, ItemOperator op) {
         // TODO(b/128460496) Potential race condition where layout is not yet loaded
         if (layout == null) {
             return false;
@@ -3101,103 +3130,68 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         final int itemCount = container.getChildCount();
         for (int itemIdx = 0; itemIdx < itemCount; itemIdx++) {
             View item = container.getChildAt(itemIdx);
-            ItemInfo info = (ItemInfo) item.getTag();
-            if (recurse && info instanceof FolderInfo && item instanceof FolderIcon) {
-                FolderIcon folder = (FolderIcon) item;
-                ArrayList<View> folderChildren = folder.getFolder().getItemsInReadingOrder();
-                // map over all the children in the folder
-                final int childCount = folderChildren.size();
-                for (int childIdx = 0; childIdx < childCount; childIdx++) {
-                    View child = folderChildren.get(childIdx);
-                    info = (ItemInfo) child.getTag();
-                    if (op.evaluate(info, child)) {
-                        return true;
-                    }
-                }
-            } else {
-                if (op.evaluate(info, item)) {
-                    return true;
-                }
+            if (op.evaluate((ItemInfo) item.getTag(), item)) {
+                return true;
             }
         }
         return false;
     }
 
     void updateShortcuts(ArrayList<WorkspaceItemInfo> shortcuts) {
-        int total  = shortcuts.size();
-        final HashSet<WorkspaceItemInfo> updates = new HashSet<>(total);
-        final IntSet folderIds = new IntSet();
+        final HashSet<WorkspaceItemInfo> updates = new HashSet<>(shortcuts);
+        ItemOperator op = (info, v) -> {
+            if (v instanceof BubbleTextView && updates.contains(info)) {
+                WorkspaceItemInfo si = (WorkspaceItemInfo) info;
+                BubbleTextView shortcut = (BubbleTextView) v;
+                Drawable oldIcon = shortcut.getIcon();
+                boolean oldPromiseState = (oldIcon instanceof PreloadIconDrawable)
+                        && ((PreloadIconDrawable) oldIcon).hasNotCompleted();
+                shortcut.applyFromWorkspaceItem(si, si.isPromise() != oldPromiseState);
+            } else if (info instanceof FolderInfo && v instanceof FolderIcon) {
+                ((FolderIcon) v).updatePreviewItems(updates::contains);
+            }
 
-        for (int i = 0; i < total; i++) {
-            WorkspaceItemInfo s = shortcuts.get(i);
-            updates.add(s);
-            folderIds.add(s.container);
+            // Iterate all items
+            return false;
+        };
+
+        mapOverItems(op);
+        Folder openFolder = Folder.getOpen(mLauncher);
+        if (openFolder != null) {
+            openFolder.iterateOverItems(op);
         }
-
-        mapOverItems(MAP_RECURSE, new ItemOperator() {
-            @Override
-            public boolean evaluate(ItemInfo info, View v) {
-                if (info instanceof WorkspaceItemInfo && v instanceof BubbleTextView &&
-                        updates.contains(info)) {
-                    WorkspaceItemInfo si = (WorkspaceItemInfo) info;
-                    BubbleTextView shortcut = (BubbleTextView) v;
-                    Drawable oldIcon = shortcut.getIcon();
-                    boolean oldPromiseState = (oldIcon instanceof PreloadIconDrawable)
-                            && ((PreloadIconDrawable) oldIcon).hasNotCompleted();
-                    shortcut.applyFromWorkspaceItem(si, si.isPromise() != oldPromiseState);
-                }
-                // process all the shortcuts
-                return false;
-            }
-        });
-
-        // Update folder icons
-        mapOverItems(MAP_NO_RECURSE, new ItemOperator() {
-            @Override
-            public boolean evaluate(ItemInfo info, View v) {
-                if (info instanceof FolderInfo && folderIds.contains(info.id)) {
-                    ((FolderInfo) info).itemsChanged(false);
-                }
-                // process all the shortcuts
-                return false;
-            }
-        });
     }
 
     public void updateNotificationDots(Predicate<PackageUserKey> updatedDots) {
         final PackageUserKey packageUserKey = new PackageUserKey(null, null);
-        final IntSet folderIds = new IntSet();
-        mapOverItems(MAP_RECURSE, new ItemOperator() {
-            @Override
-            public boolean evaluate(ItemInfo info, View v) {
-                if (info instanceof WorkspaceItemInfo && v instanceof BubbleTextView) {
-                    if (!packageUserKey.updateFromItemInfo(info)
-                            || updatedDots.test(packageUserKey)) {
-                        ((BubbleTextView) v).applyDotState(info, true /* animate */);
-                        folderIds.add(info.container);
-                    }
-                }
-                // process all the shortcuts
-                return false;
-            }
-        });
+        Predicate<ItemInfo> matcher = info -> !packageUserKey.updateFromItemInfo(info)
+                || updatedDots.test(packageUserKey);
 
-        // Update folder icons
-        mapOverItems(MAP_NO_RECURSE, new ItemOperator() {
-            @Override
-            public boolean evaluate(ItemInfo info, View v) {
-                if (info instanceof FolderInfo && folderIds.contains(info.id)
-                        && v instanceof FolderIcon) {
+        ItemOperator op = (info, v) -> {
+            if (info instanceof WorkspaceItemInfo && v instanceof BubbleTextView) {
+                if (matcher.test(info)) {
+                    ((BubbleTextView) v).applyDotState(info, true /* animate */);
+                }
+            } else if (info instanceof FolderInfo && v instanceof FolderIcon) {
+                FolderInfo fi = (FolderInfo) info;
+                if (fi.contents.stream().anyMatch(matcher)) {
                     FolderDotInfo folderDotInfo = new FolderDotInfo();
-                    for (WorkspaceItemInfo si : ((FolderInfo) info).contents) {
+                    for (WorkspaceItemInfo si : fi.contents) {
                         folderDotInfo.addDotInfo(mLauncher.getDotInfoForItem(si));
                     }
                     ((FolderIcon) v).setDotInfo(folderDotInfo);
                 }
-                // process all the shortcuts
-                return false;
             }
-        });
+
+            // process all the shortcuts
+            return false;
+        };
+
+        mapOverItems(op);
+        Folder folder = Folder.getOpen(mLauncher);
+        if (folder != null) {
+            folder.iterateOverItems(op);
+        }
     }
 
     public void removeAbandonedPromise(String packageName, UserHandle user) {
@@ -3209,21 +3203,25 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     }
 
     public void updateRestoreItems(final HashSet<ItemInfo> updates) {
-        mapOverItems(MAP_RECURSE, new ItemOperator() {
-            @Override
-            public boolean evaluate(ItemInfo info, View v) {
-                if (info instanceof WorkspaceItemInfo && v instanceof BubbleTextView
-                        && updates.contains(info)) {
-                    ((BubbleTextView) v).applyPromiseState(false /* promiseStateChanged */);
-                } else if (v instanceof PendingAppWidgetHostView
-                        && info instanceof LauncherAppWidgetInfo
-                        && updates.contains(info)) {
-                    ((PendingAppWidgetHostView) v).applyState();
-                }
-                // process all the shortcuts
-                return false;
+        ItemOperator op = (info, v) -> {
+            if (info instanceof WorkspaceItemInfo && v instanceof BubbleTextView
+                    && updates.contains(info)) {
+                ((BubbleTextView) v).applyPromiseState(false /* promiseStateChanged */);
+            } else if (v instanceof PendingAppWidgetHostView
+                    && info instanceof LauncherAppWidgetInfo
+                    && updates.contains(info)) {
+                ((PendingAppWidgetHostView) v).applyState();
+            } else if (v instanceof FolderIcon && info instanceof FolderInfo) {
+                ((FolderIcon) v).updatePreviewItems(updates::contains);
             }
-        });
+            // process all the shortcuts
+            return false;
+        };
+        mapOverItems(op);
+        Folder folder = Folder.getOpen(mLauncher);
+        if (folder != null) {
+            folder.iterateOverItems(op);
+        }
     }
 
     public void widgetsRestored(final ArrayList<LauncherAppWidgetInfo> changedInfo) {
@@ -3247,7 +3245,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             } else {
                 // widgetRefresh will automatically run when the packages are updated.
                 // For now just update the progress bars
-                mapOverItems(MAP_NO_RECURSE, new ItemOperator() {
+                mapOverItems(new ItemOperator() {
                     @Override
                     public boolean evaluate(ItemInfo info, View view) {
                         if (view instanceof PendingAppWidgetHostView
@@ -3371,7 +3369,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             mRefreshPending = false;
 
             ArrayList<PendingAppWidgetHostView> views = new ArrayList<>(mInfos.size());
-            mapOverItems(MAP_NO_RECURSE, (info, view) -> {
+            mapOverItems((info, view) -> {
                 if (view instanceof PendingAppWidgetHostView && mInfos.contains(info)) {
                     views.add((PendingAppWidgetHostView) view);
                 }

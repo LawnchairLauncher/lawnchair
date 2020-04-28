@@ -15,10 +15,12 @@
  */
 package com.android.quickstep.util;
 
-import static com.android.quickstep.TouchInteractionService.MAIN_THREAD_EXECUTOR;
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
 import android.graphics.Rect;
 import android.util.ArraySet;
+
+import androidx.annotation.UiThread;
 
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.Preconditions;
@@ -30,8 +32,6 @@ import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.util.Set;
 import java.util.function.Consumer;
-
-import androidx.annotation.UiThread;
 
 /**
  * Wrapper around {@link RecentsAnimationListener} which delegates callbacks to multiple listeners
@@ -82,7 +82,7 @@ public class RecentsAnimationListenerSet implements RecentsAnimationListener {
         if (mCancelled) {
             targetSet.cancelAnimation();
         } else {
-            Utilities.postAsyncCallback(MAIN_THREAD_EXECUTOR.getHandler(), () -> {
+            Utilities.postAsyncCallback(MAIN_EXECUTOR.getHandler(), () -> {
                 for (SwipeAnimationListener listener : getListeners()) {
                     listener.onRecentsAnimationStart(targetSet);
                 }
@@ -92,14 +92,14 @@ public class RecentsAnimationListenerSet implements RecentsAnimationListener {
 
     @Override
     public final void onAnimationCanceled(ThumbnailData thumbnailData) {
-        Utilities.postAsyncCallback(MAIN_THREAD_EXECUTOR.getHandler(), () -> {
+        Utilities.postAsyncCallback(MAIN_EXECUTOR.getHandler(), () -> {
             for (SwipeAnimationListener listener : getListeners()) {
                 listener.onRecentsAnimationCanceled();
             }
         });
         // TODO: handle the transition better instead of simply using a transition delay.
         if (thumbnailData != null) {
-            MAIN_THREAD_EXECUTOR.getHandler().postDelayed(() -> mController.cleanupScreenshot(),
+            MAIN_EXECUTOR.getHandler().postDelayed(() -> mController.cleanupScreenshot(),
                     TRANSITION_DELAY);
         }
     }

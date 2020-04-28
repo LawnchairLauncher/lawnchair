@@ -21,11 +21,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.android.launcher3.util.ViewPool.Reusable;
-
 import androidx.annotation.AnyThread;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
+
+import com.android.launcher3.util.ViewPool.Reusable;
 
 /**
  * Utility class to maintain a pool of reusable views.
@@ -58,14 +58,18 @@ public class ViewPool<T extends View & Reusable> {
         Preconditions.assertUIThread();
         Handler handler = new Handler();
 
+        // LayoutInflater is not thread save as it maintains a global variable 'mConstructorArgs'.
+        // Create a different copy to use on the background thread.
+        LayoutInflater inflater = mInflater.cloneInContext(mInflater.getContext());
+
         // Inflate views on a non looper thread. This allows us to catch errors like calling
         // "new Handler()" in constructor easily.
         new Thread(() -> {
             for (int i = 0; i < initialSize; i++) {
-                T view = inflateNewView();
+                T view = inflateNewView(inflater);
                 handler.post(() -> addToPool(view));
             }
-        }).start();
+        }, "ViewPool-init").start();
     }
 
     @UiThread
@@ -94,12 +98,12 @@ public class ViewPool<T extends View & Reusable> {
             mCurrentSize--;
             return (T) mPool[mCurrentSize];
         }
-        return inflateNewView();
+        return inflateNewView(mInflater);
     }
 
     @AnyThread
-    private T inflateNewView() {
-        return (T) mInflater.inflate(mLayoutId, mParent, false);
+    private T inflateNewView(LayoutInflater inflater) {
+        return (T) inflater.inflate(mLayoutId, mParent, false);
     }
 
     /**

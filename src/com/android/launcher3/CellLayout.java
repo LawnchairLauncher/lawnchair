@@ -2702,6 +2702,14 @@ public class CellLayout extends ViewGroup implements Transposable {
             }
         }
 
+        /**
+         * Sets the position to the provided point
+         */
+        public void setXY(Point point) {
+            cellX = point.x;
+            cellY = point.y;
+        }
+
         public String toString() {
             return "(" + this.cellX + ", " + this.cellY + ")";
         }

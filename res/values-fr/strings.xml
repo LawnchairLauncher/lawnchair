@@ -20,7 +20,6 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name" msgid="649227358658669779">"Launcher3"</string>
-    <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="work_folder_name" msgid="3753320833950115786">"Android Work"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"L\'application n\'est pas installée."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"Application indisponible"</string>
@@ -136,7 +135,7 @@
     <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Retrouvez ici vos applications professionnelles"</string>
     <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"Les applications professionnelles sont accompagnées d\'un badge et sont sécurisées par votre organisation. Vous pouvez les déplacer vers votre écran d\'accueil pour y accéder plus facilement."</string>
     <string name="work_mode_on_label" msgid="4781128097185272916">"Géré par votre organisation"</string>
-    <string name="work_mode_off_label" msgid="3194894777601421047">"Les notifications et les applications sont désactivées"</string>
+    <string name="work_mode_off_label" msgid="3194894777601421047">"Notifications et applications désactivées"</string>
     <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"Fermer"</string>
     <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"Fermé"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Échec : <xliff:g id="WHAT">%1$s</xliff:g>"</string>

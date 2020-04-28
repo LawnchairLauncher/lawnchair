@@ -15,9 +15,9 @@ import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.icons.BitmapInfo;
+import com.android.launcher3.util.PackageManagerHelper;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -115,7 +115,7 @@ public class LoaderCursorTest {
         WorkspaceItemInfo info = mLoaderCursor.getAppShortcutInfo(
                 new Intent().setComponent(cn), false /* allowMissingTarget */, true);
         assertNotNull(info);
-        assertTrue(Utilities.isLauncherAppTarget(info.intent));
+        assertTrue(PackageManagerHelper.isLauncherAppTarget(info.intent));
     }
 
     @Test
@@ -127,7 +127,7 @@ public class LoaderCursorTest {
         WorkspaceItemInfo info = mLoaderCursor.getAppShortcutInfo(
                 new Intent().setComponent(cn), true  /* allowMissingTarget */, true);
         assertNotNull(info);
-        assertTrue(Utilities.isLauncherAppTarget(info.intent));
+        assertTrue(PackageManagerHelper.isLauncherAppTarget(info.intent));
     }
 
     @Test

@@ -176,7 +176,7 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity> {
     protected void applyLoadPlan(ArrayList<Task> tasks) {
         // When quick-switching on 3p-launcher, we add a "dummy" tile corresponding to Launcher
         // as well. This tile is never shown as we have setCurrentTaskHidden, but allows use to
-        // track the index of the next task appropriately, as it we are switching on any other app.
+        // track the index of the next task appropriately, as if we are switching on any other app.
         if (mRunningTaskInfo != null && mRunningTaskInfo.taskId == mRunningTaskId) {
             // Check if the task list has running task
             boolean found = false;

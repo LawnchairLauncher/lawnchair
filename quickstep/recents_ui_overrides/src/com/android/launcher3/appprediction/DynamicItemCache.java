@@ -17,6 +17,8 @@ package com.android.launcher3.appprediction;
 
 import static android.content.pm.PackageManager.MATCH_INSTANT;
 
+import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -30,8 +32,12 @@ import android.os.Message;
 import android.util.ArrayMap;
 import android.util.Log;
 
+import androidx.annotation.MainThread;
+import androidx.annotation.Nullable;
+import androidx.annotation.UiThread;
+import androidx.annotation.WorkerThread;
+
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherModel;
 import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.icons.LauncherIcons;
@@ -44,11 +50,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import androidx.annotation.MainThread;
-import androidx.annotation.Nullable;
-import androidx.annotation.UiThread;
-import androidx.annotation.WorkerThread;
 
 /**
  * Utility class which loads and caches predicted items like instant apps and shortcuts, before
@@ -77,7 +78,7 @@ public class DynamicItemCache {
 
     public DynamicItemCache(Context context, Runnable onUpdateCallback) {
         mContext = context;
-        mWorker = new Handler(LauncherModel.getWorkerLooper(), this::handleWorkerMessage);
+        mWorker = new Handler(MODEL_EXECUTOR.getLooper(), this::handleWorkerMessage);
         mUiHandler = new Handler(Looper.getMainLooper(), this::handleUiMessage);
         mInstantAppResolver = InstantAppResolver.newInstance(context);
         mOnUpdateCallback = onUpdateCallback;

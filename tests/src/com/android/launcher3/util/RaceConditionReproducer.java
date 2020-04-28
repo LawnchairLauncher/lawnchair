@@ -16,6 +16,7 @@
 
 package com.android.launcher3.util;
 
+import static com.android.launcher3.util.Executors.createAndStartNewLooper;
 import static com.android.launcher3.util.RaceConditionTracker.ENTER_POSTFIX;
 import static com.android.launcher3.util.RaceConditionTracker.EXIT_POSTFIX;
 
@@ -23,7 +24,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import android.os.Handler;
-import android.os.HandlerThread;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -72,9 +72,7 @@ public class RaceConditionReproducer implements RaceConditionTracker.EventProces
     private static final Handler POSTPONED_EVENT_RESUME_HANDLER = createEventResumeHandler();
 
     private static Handler createEventResumeHandler() {
-        final HandlerThread thread = new HandlerThread("RaceConditionEventResumer");
-        thread.start();
-        return new Handler(thread.getLooper());
+        return new Handler(createAndStartNewLooper("RaceConditionEventResumer"));
     }
 
     /**

@@ -17,6 +17,8 @@ package com.android.launcher3.testing;
 
 import static android.graphics.Bitmap.Config.ARGB_8888;
 
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -27,8 +29,8 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.util.ResourceBasedOverride;
@@ -82,7 +84,7 @@ public class TestInformationHandler implements ResourceBasedOverride {
             }
 
             case TestProtocol.REQUEST_IS_LAUNCHER_INITIALIZED: {
-                response.putBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD, true);
+                response.putBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD, isLauncherInitialized());
                 break;
             }
 
@@ -95,20 +97,20 @@ public class TestInformationHandler implements ResourceBasedOverride {
                 break;
 
             case TestProtocol.REQUEST_FREEZE_APP_LIST:
-                new MainThreadExecutor().execute(() ->
+                MAIN_EXECUTOR.execute(() ->
                         mLauncher.getAppsView().getAppsStore().enableDeferUpdates(
                                 AllAppsStore.DEFER_UPDATES_TEST));
                 break;
 
             case TestProtocol.REQUEST_UNFREEZE_APP_LIST:
-                new MainThreadExecutor().execute(() ->
+                MAIN_EXECUTOR.execute(() ->
                         mLauncher.getAppsView().getAppsStore().disableDeferUpdates(
                                 AllAppsStore.DEFER_UPDATES_TEST));
                 break;
 
             case TestProtocol.REQUEST_APP_LIST_FREEZE_FLAGS: {
                 try {
-                    final int deferUpdatesFlags = new MainThreadExecutor().submit(() ->
+                    final int deferUpdatesFlags = MAIN_EXECUTOR.submit(() ->
                             mLauncher.getAppsView().getAppsStore().getDeferUpdatesFlags()).get();
                     response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD,
                             deferUpdatesFlags);
@@ -149,7 +151,19 @@ public class TestInformationHandler implements ResourceBasedOverride {
                 mLeaks.add(bitmap);
                 break;
             }
+
+            case TestProtocol.REQUEST_ICON_HEIGHT: {
+                response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD,
+                        mDeviceProfile.allAppsCellHeightPx);
+                break;
+            }
         }
         return response;
     }
+
+    protected boolean isLauncherInitialized() {
+        final LauncherModel model = LauncherAppState.getInstance(mContext).getModel();
+        return model.getCallback() == null || model.isModelLoaded();
+    }
 }
+

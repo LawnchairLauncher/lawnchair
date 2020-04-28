@@ -16,13 +16,14 @@
 
 package com.android.launcher3.compat;
 
+import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
+
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInstaller;
 import android.content.pm.PackageInstaller.SessionCallback;
 import android.content.pm.PackageInstaller.SessionInfo;
 import android.content.pm.PackageManager;
-import android.os.Handler;
 import android.os.UserHandle;
 import android.text.TextUtils;
 import android.util.SparseArray;
@@ -31,7 +32,6 @@ import com.android.launcher3.SessionCommitReceiver;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherModel;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
@@ -53,7 +53,6 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
 
     @Thunk final PackageInstaller mInstaller;
     private final IconCache mCache;
-    private final Handler mWorker;
     private final Context mAppContext;
     private final HashMap<String,Boolean> mSessionVerifiedMap = new HashMap<>();
     private final LauncherAppsCompat mLauncherApps;
@@ -63,11 +62,10 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
         mAppContext = context.getApplicationContext();
         mInstaller = context.getPackageManager().getPackageInstaller();
         mCache = LauncherAppState.getInstance(context).getIconCache();
-        mWorker = new Handler(LauncherModel.getWorkerLooper());
-        mInstaller.registerSessionCallback(mCallback, mWorker);
         mLauncherApps = LauncherAppsCompat.getInstance(context);
-        mPromiseIconIds = IntSet.wrap(IntArray.wrap(Utilities.getIntArrayFromString(
-                getPrefs(context).getString(PROMISE_ICON_IDS, ""))));
+        mLauncherApps.registerSessionCallback(MODEL_EXECUTOR, mCallback);
+        mPromiseIconIds = IntSet.wrap(IntArray.fromConcatString(
+                getPrefs(context).getString(PROMISE_ICON_IDS, "")));
 
         cleanUpPromiseIconIds();
     }
@@ -127,7 +125,7 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
 
     @Override
     public void onStop() {
-        mInstaller.unregisterSessionCallback(mCallback);
+        mLauncherApps.unregisterSessionCallback(mCallback);
     }
 
     @Thunk void sendUpdate(PackageInstallInfo info) {
@@ -223,12 +221,14 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
         private SessionInfo pushSessionDisplayToLauncher(int sessionId) {
             SessionInfo session = verify(mInstaller.getSessionInfo(sessionId));
             if (session != null && session.getAppPackageName() != null) {
+                UserHandle user = getUserHandle(session);
                 mActiveSessions.put(session.getSessionId(),
-                        new PackageUserKey(session.getAppPackageName(), getUserHandle(session)));
-                addSessionInfoToCache(session, getUserHandle(session));
+                        new PackageUserKey(session.getAppPackageName(), user));
+                addSessionInfoToCache(session, user);
                 LauncherAppState app = LauncherAppState.getInstanceNoCreate();
                 if (app != null) {
-                    app.getModel().updateSessionDisplayInfo(session.getAppPackageName());
+                    app.getModel().updateSessionDisplayInfo(session.getAppPackageName(),
+                            user);
                 }
                 return session;
             }

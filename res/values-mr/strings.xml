@@ -20,7 +20,6 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name" msgid="649227358658669779">"Launcher3"</string>
-    <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="work_folder_name" msgid="3753320833950115786">"कार्य"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"अ‍ॅप इंस्टॉल केलेला नाही."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"अ‍ॅप उपलब्ध नाही"</string>
@@ -47,7 +46,7 @@
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"आवडीच्या ट्रे मध्ये आणखी जागा नाही"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"अ‍ॅप्स सूची"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"वैयक्तिक अ‍ॅप्स सूची"</string>
-    <string name="all_apps_button_work_label" msgid="7270707118948892488">"कामाच्या ठिकाणी वापरली जाणाऱ्या अॅप्सची सूची"</string>
+    <string name="all_apps_button_work_label" msgid="7270707118948892488">"कामाच्या ठिकाणी वापरली जाणाऱ्या ॲप्सची सूची"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"होम"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"काढा"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"अनइंस्टॉल करा"</string>
@@ -83,7 +82,7 @@
     <string name="styles_wallpaper_button_text" msgid="4342122323125579619">"शैली आणि वॉलपेपर"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"होम सेटिंग्‍ज"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"आपल्या प्रशासकाने अक्षम केले"</string>
-    <string name="allow_rotation_title" msgid="7728578836261442095">"मुख्यस्क्रीन फिरविण्‍यास अनुमती द्या"</string>
+    <string name="allow_rotation_title" msgid="7728578836261442095">"मुख्य स्क्रीन फिरविण्‍यास अनुमती द्या"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"फोन फिरविला जातो तेव्हा"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"सूचना बिंदू"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"सुरू"</string>
@@ -93,7 +92,7 @@
     <string name="title_change_settings" msgid="1376365968844349552">"सेटिंग्ज बदला"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"सूचना बिंदू दाखवा"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"होम स्क्रीनवर आयकन जोडा"</string>
-    <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"नवीन अॅप्ससाठी"</string>
+    <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"नवीन ॲप्ससाठी"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"अज्ञात"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"काढा"</string>
     <string name="abandoned_search" msgid="891119232568284442">"शोधा"</string>

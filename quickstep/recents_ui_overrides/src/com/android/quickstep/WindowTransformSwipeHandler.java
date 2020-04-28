@@ -26,14 +26,14 @@ import static com.android.launcher3.util.DefaultDisplay.getSingleFrameMs;
 import static com.android.launcher3.util.RaceConditionTracker.ENTER;
 import static com.android.launcher3.util.RaceConditionTracker.EXIT;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_OVERVIEW;
-import static com.android.quickstep.ActivityControlHelper.AnimationFactory.ShelfAnimState.HIDE;
-import static com.android.quickstep.ActivityControlHelper.AnimationFactory.ShelfAnimState.PEEK;
 import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
 import static com.android.quickstep.TouchInteractionService.TOUCH_INTERACTION_LOG;
 import static com.android.quickstep.WindowTransformSwipeHandler.GestureEndTarget.HOME;
 import static com.android.quickstep.WindowTransformSwipeHandler.GestureEndTarget.LAST_TASK;
 import static com.android.quickstep.WindowTransformSwipeHandler.GestureEndTarget.NEW_TASK;
 import static com.android.quickstep.WindowTransformSwipeHandler.GestureEndTarget.RECENTS;
+import static com.android.quickstep.util.ShelfPeekAnim.ShelfAnimState.HIDE;
+import static com.android.quickstep.util.ShelfPeekAnim.ShelfAnimState.PEEK;
 import static com.android.quickstep.views.RecentsView.UPDATE_SYSUI_FLAGS_THRESHOLD;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_OVERVIEW_DISABLED;
 
@@ -74,13 +74,14 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.util.RaceConditionTracker;
 import com.android.launcher3.util.TraceHelper;
 import com.android.quickstep.ActivityControlHelper.AnimationFactory;
-import com.android.quickstep.ActivityControlHelper.AnimationFactory.ShelfAnimState;
 import com.android.quickstep.ActivityControlHelper.HomeAnimationFactory;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.inputconsumers.InputConsumer;
 import com.android.quickstep.inputconsumers.OverviewInputConsumer;
 import com.android.quickstep.util.ClipAnimationHelper.TargetAlphaProvider;
 import com.android.quickstep.util.RectFSpringAnim;
+import com.android.quickstep.util.ShelfPeekAnim;
+import com.android.quickstep.util.ShelfPeekAnim.ShelfAnimState;
 import com.android.quickstep.util.SwipeAnimationTargetSet;
 import com.android.quickstep.views.LiveTileOverlay;
 import com.android.quickstep.views.RecentsView;
@@ -192,7 +193,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             Math.min(1 / MIN_PROGRESS_FOR_OVERVIEW, 1 / (1 - MIN_PROGRESS_FOR_OVERVIEW));
     private static final String SCREENSHOT_CAPTURED_EVT = "ScreenshotCaptured";
 
-    private static final long SHELF_ANIM_DURATION = 240;
     public static final long RECENTS_ATTACH_DURATION = 300;
 
     /**
@@ -206,8 +206,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     private boolean mIsShelfPeeking;
 
     private boolean mContinuingLastGesture;
-    // To avoid UI jump when gesture is started, we offset the animation by the threshold.
-    private float mShiftAtGestureStart = 0;
 
     private ThumbnailData mTaskSnapshot;
 
@@ -442,7 +440,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
 
     @Override
     public void onMotionPauseChanged(boolean isPaused) {
-        setShelfState(isPaused ? PEEK : HIDE, OVERSHOOT_1_2, SHELF_ANIM_DURATION);
+        setShelfState(isPaused ? PEEK : HIDE, ShelfPeekAnim.INTERPOLATOR, ShelfPeekAnim.DURATION);
     }
 
     public void maybeUpdateRecentsAttachedState() {
@@ -479,8 +477,8 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
             recentsAttachedToAppWindow = mIsShelfPeeking || mIsLikelyToStartNewTask;
             if (animate) {
                 // Only animate if an adjacent task view is visible on screen.
-                TaskView adjacentTask1 = mRecentsView.getTaskViewAt(runningTaskIndex + 1);
-                TaskView adjacentTask2 = mRecentsView.getTaskViewAt(runningTaskIndex - 1);
+                TaskView adjacentTask1 = mRecentsView.getNextTaskView();
+                TaskView adjacentTask2 = mRecentsView.getPreviousTaskView();
                 float prevTranslationX = mRecentsView.getTranslationX();
                 mRecentsView.setTranslationX(0);
                 animate = (adjacentTask1 != null && adjacentTask1.getGlobalVisibleRect(TEMP_RECT))
@@ -580,9 +578,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
         // Normalize the progress to 0 to 1, as the animation controller will clamp it to that
         // anyway. The controller mimics the drag length factor by applying it to its interpolators.
         float progress = mCurrentShift.value / mDragLengthFactor;
-        mLauncherTransitionController.setPlayFraction(
-                progress <= mShiftAtGestureStart || mShiftAtGestureStart >= 1
-                        ? 0 : (progress - mShiftAtGestureStart) / (1 - mShiftAtGestureStart));
+        mLauncherTransitionController.setPlayFraction(progress);
     }
 
     /**
@@ -590,8 +586,7 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
      */
     private void updateSysUiFlags(float windowProgress) {
         if (mRecentsView != null) {
-            TaskView centermostTask = mRecentsView.getTaskViewAt(mRecentsView
-                    .getPageNearestToCenterOfScreen());
+            TaskView centermostTask = mRecentsView.getTaskViewNearestToCenterOfScreen();
             int centermostTaskFlags = centermostTask == null ? 0
                     : centermostTask.getThumbnail().getSysUiStatusNavFlags();
             boolean useHomeScreenFlags = windowProgress > 1 - UPDATE_SYSUI_FLAGS_THRESHOLD;
@@ -623,7 +618,6 @@ public class WindowTransformSwipeHandler<T extends BaseDraggingActivity>
     @Override
     public void onGestureStarted() {
         notifyGestureStartedAsync();
-        mShiftAtGestureStart = mCurrentShift.value;
         setStateOnUiThread(STATE_GESTURE_STARTED);
         mGestureStarted = true;
     }

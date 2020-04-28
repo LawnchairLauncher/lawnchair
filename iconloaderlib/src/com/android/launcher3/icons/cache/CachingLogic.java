@@ -41,4 +41,11 @@ public interface CachingLogic<T> {
     default String getKeywords(T object, LocaleList localeList) {
         return null;
     }
+
+    /**
+     * Returns true the object should be added to mem cache; otherwise returns false.
+     */
+    default boolean addToMemCache() {
+        return true;
+    }
 }

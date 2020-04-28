@@ -19,7 +19,6 @@ import android.content.Context;
 import android.content.pm.ShortcutInfo;
 import android.os.UserHandle;
 
-import com.android.launcher3.AllAppsList;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
@@ -65,7 +64,7 @@ public class ShortcutsChangedTask extends BaseModelUpdateTask {
         for (ItemInfo itemInfo : dataModel.itemsIdMap) {
             if (itemInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
                 WorkspaceItemInfo si = (WorkspaceItemInfo) itemInfo;
-                if (si.getIntent().getPackage().equals(mPackageName) && si.user.equals(mUser)) {
+                if (mPackageName.equals(si.getIntent().getPackage()) && si.user.equals(mUser)) {
                     keyToShortcutInfo.addToList(ShortcutKey.fromItemInfo(si), si);
                     allIds.add(si.getDeepShortcutId());
                 }

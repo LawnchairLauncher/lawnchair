@@ -16,13 +16,14 @@
 
 package com.android.launcher3.util;
 
+import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
+
 import android.os.Process;
 import android.view.View;
 import android.view.View.OnAttachStateChangeListener;
 import android.view.ViewTreeObserver.OnDrawListener;
 
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherModel;
 
 import java.util.ArrayList;
 import java.util.concurrent.Executor;
@@ -54,7 +55,9 @@ public class ViewOnDrawExecutor implements Executor, OnDrawListener, Runnable,
             mLoadAnimationCompleted = true;
         }
 
-        attachObserver();
+        if (mAttachedView.isAttachedToWindow()) {
+            attachObserver();
+        }
     }
 
     private void attachObserver() {
@@ -66,7 +69,7 @@ public class ViewOnDrawExecutor implements Executor, OnDrawListener, Runnable,
     @Override
     public void execute(Runnable command) {
         mTasks.add(command);
-        LauncherModel.setWorkerPriority(Process.THREAD_PRIORITY_BACKGROUND);
+        MODEL_EXECUTOR.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
     }
 
     @Override
@@ -108,7 +111,7 @@ public class ViewOnDrawExecutor implements Executor, OnDrawListener, Runnable,
         if (mLauncher != null) {
             mLauncher.clearPendingExecutor(this);
         }
-        LauncherModel.setWorkerPriority(Process.THREAD_PRIORITY_DEFAULT);
+        MODEL_EXECUTOR.setThreadPriority(Process.THREAD_PRIORITY_DEFAULT);
     }
 
     protected boolean isCompleted() {

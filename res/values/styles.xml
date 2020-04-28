@@ -130,6 +130,10 @@
         <item name="widgetsTheme">@style/WidgetContainerTheme</item>
     </style>
 
+    <style name="HomeSettingsTheme" parent="@android:style/Theme.DeviceDefault.Settings">
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+
     <!--
     Theme overrides to element on homescreen, i.e., which are drawn on top on wallpaper.
     Various foreground colors are overridden to be workspaceTextColor so that they are properly

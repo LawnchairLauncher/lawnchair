@@ -2,8 +2,6 @@ package com.android.launcher3.allapps;
 
 import static com.android.launcher3.LauncherState.ALL_APPS_CONTENT;
 import static com.android.launcher3.LauncherState.ALL_APPS_HEADER_EXTRA;
-import static com.android.launcher3.LauncherState.BACKGROUND_APP;
-import static com.android.launcher3.LauncherState.HOTSEAT_ICONS;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.VERTICAL_SWIPE_INDICATOR;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_ALL_APPS_FADE;
@@ -133,15 +131,6 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
             mLauncher.getSystemUiController().updateUiState(UI_STATE_ALL_APPS, !mIsDarkTheme);
         } else {
             mLauncher.getSystemUiController().updateUiState(UI_STATE_ALL_APPS, 0);
-        }
-
-        if ((OVERVIEW.getVisibleElements(mLauncher) & HOTSEAT_ICONS) != 0) {
-            // Translate hotseat with the shelf until reaching overview.
-            float overviewProgress = OVERVIEW.getVerticalProgress(mLauncher);
-            if (progress >= overviewProgress || mLauncher.isInState(BACKGROUND_APP)) {
-                float hotseatShift = (progress - overviewProgress) * mShiftRange;
-                mLauncher.getHotseat().setTranslationY(hotseatShift);
-            }
         }
     }
 

@@ -118,6 +118,7 @@ enum ControlType {
   APP_USAGE_SETTINGS = 18;
   BACK_GESTURE = 19;
   UNDO = 20;
+  DISMISS_PREDICTION = 21;
 }
 
 enum TipType {
@@ -136,7 +137,8 @@ message Action {
     AUTOMATED = 1;
     COMMAND = 2;
     TIP = 3;
-    // SOFT_KEYBOARD, HARD_KEYBOARD, ASSIST
+    SOFT_KEYBOARD = 4;
+    // HARD_KEYBOARD, ASSIST
   }
 
   enum Touch {

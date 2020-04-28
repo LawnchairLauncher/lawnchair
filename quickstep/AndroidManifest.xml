@@ -88,6 +88,7 @@
         <activity android:name="com.android.quickstep.LockScreenRecentsActivity"
                   android:theme="@android:style/Theme.NoDisplay"
                   android:showOnLockScreen="true"
+                  android:taskAffinity="${packageName}.locktask"
                   android:directBootAware="true" />
 
     </application>

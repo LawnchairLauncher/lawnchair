@@ -43,7 +43,7 @@ import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.touch.AbstractStateChangeTouchController;
-import com.android.launcher3.touch.SwipeDetector;
+import com.android.launcher3.touch.SingleAxisSwipeDetector;
 import com.android.launcher3.uioverrides.states.OverviewState;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -79,7 +79,7 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
     private boolean mFinishFastOnSecondTouch;
 
     public PortraitStatesTouchController(Launcher l, boolean allowDragToOverview) {
-        super(l, SwipeDetector.VERTICAL);
+        super(l, SingleAxisSwipeDetector.VERTICAL);
         mOverviewPortraitStateTouchHelper = new PortraitOverviewStateTouchHelper(l);
         mAllowDragToOverview = allowDragToOverview;
     }
@@ -177,6 +177,20 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
         return builder;
     }
 
+    private AnimatorSetBuilder getNormalToAllAppsAnimation() {
+        AnimatorSetBuilder builder = new AnimatorSetBuilder();
+        builder.setInterpolator(ANIM_ALL_APPS_FADE, Interpolators.clampToProgress(ACCEL,
+                0, ALL_APPS_CONTENT_FADE_THRESHOLD));
+        return builder;
+    }
+
+    private AnimatorSetBuilder getAllAppsToNormalAnimation() {
+        AnimatorSetBuilder builder = new AnimatorSetBuilder();
+        builder.setInterpolator(ANIM_ALL_APPS_FADE, Interpolators.clampToProgress(DEACCEL,
+                1 - ALL_APPS_CONTENT_FADE_THRESHOLD, 1));
+        return builder;
+    }
+
     @Override
     protected AnimatorSetBuilder getAnimatorSetBuilderForStates(LauncherState fromState,
             LauncherState toState) {
@@ -187,6 +201,10 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
             builder = getOverviewToAllAppsAnimation();
         } else if (fromState == ALL_APPS && toState == OVERVIEW) {
             builder = getAllAppsToOverviewAnimation();
+        } else if (fromState == NORMAL && toState == ALL_APPS) {
+            builder = getNormalToAllAppsAnimation();
+        } else if (fromState == ALL_APPS && toState == NORMAL) {
+            builder = getAllAppsToNormalAnimation();
         }
         return builder;
     }

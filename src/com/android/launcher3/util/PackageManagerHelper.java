@@ -24,9 +24,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherActivityInfo;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
+import android.content.res.Resources;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
@@ -35,6 +37,7 @@ import android.os.PatternMatcher;
 import android.os.UserHandle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Pair;
 import android.widget.Toast;
 
 import com.android.launcher3.AppInfo;
@@ -219,5 +222,77 @@ public class PackageManagerHelper {
         packageFilter.addDataScheme("package");
         packageFilter.addDataSchemeSpecificPart(pkg, PatternMatcher.PATTERN_LITERAL);
         return packageFilter;
+    }
+
+    public static boolean isSystemApp(Context context, Intent intent) {
+        PackageManager pm = context.getPackageManager();
+        ComponentName cn = intent.getComponent();
+        String packageName = null;
+        if (cn == null) {
+            ResolveInfo info = pm.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
+            if ((info != null) && (info.activityInfo != null)) {
+                packageName = info.activityInfo.packageName;
+            }
+        } else {
+            packageName = cn.getPackageName();
+        }
+        if (packageName == null) {
+            packageName = intent.getPackage();
+        }
+        if (packageName != null) {
+            try {
+                PackageInfo info = pm.getPackageInfo(packageName, 0);
+                return (info != null) && (info.applicationInfo != null) &&
+                        ((info.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0);
+            } catch (NameNotFoundException e) {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Finds a system apk which had a broadcast receiver listening to a particular action.
+     * @param action intent action used to find the apk
+     * @return a pair of apk package name and the resources.
+     */
+    public static Pair<String, Resources> findSystemApk(String action, PackageManager pm) {
+        final Intent intent = new Intent(action);
+        for (ResolveInfo info : pm.queryBroadcastReceivers(intent, 0)) {
+            if (info.activityInfo != null &&
+                    (info.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
+                final String packageName = info.activityInfo.packageName;
+                try {
+                    final Resources res = pm.getResourcesForApplication(packageName);
+                    return Pair.create(packageName, res);
+                } catch (NameNotFoundException e) {
+                    Log.w(TAG, "Failed to find resources for " + packageName);
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns true if the intent is a valid launch intent for a launcher activity of an app.
+     * This is used to identify shortcuts which are different from the ones exposed by the
+     * applications' manifest file.
+     *
+     * @param launchIntent The intent that will be launched when the shortcut is clicked.
+     */
+    public static boolean isLauncherAppTarget(Intent launchIntent) {
+        if (launchIntent != null
+                && Intent.ACTION_MAIN.equals(launchIntent.getAction())
+                && launchIntent.getComponent() != null
+                && launchIntent.getCategories() != null
+                && launchIntent.getCategories().size() == 1
+                && launchIntent.hasCategory(Intent.CATEGORY_LAUNCHER)
+                && TextUtils.isEmpty(launchIntent.getDataString())) {
+            // An app target can either have no extra or have ItemInfo.EXTRA_PROFILE.
+            Bundle extras = launchIntent.getExtras();
+            return extras == null || extras.keySet().isEmpty();
+        }
+        return false;
     }
 }

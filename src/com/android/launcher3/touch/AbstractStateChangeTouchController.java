@@ -53,7 +53,7 @@ import com.android.launcher3.util.TouchController;
  * TouchController for handling state changes
  */
 public abstract class AbstractStateChangeTouchController
-        implements TouchController, SwipeDetector.Listener {
+        implements TouchController, SingleAxisSwipeDetector.Listener {
 
     // Progress after which the transition is assumed to be a success in case user does not fling
     public static final float SUCCESS_TRANSITION_PROGRESS = 0.5f;
@@ -65,8 +65,8 @@ public abstract class AbstractStateChangeTouchController
     protected final long ATOMIC_DURATION = getAtomicDuration();
 
     protected final Launcher mLauncher;
-    protected final SwipeDetector mDetector;
-    protected final SwipeDetector.Direction mSwipeDirection;
+    protected final SingleAxisSwipeDetector mDetector;
+    protected final SingleAxisSwipeDetector.Direction mSwipeDirection;
 
     private boolean mNoIntercept;
     private boolean mIsLogContainerSet;
@@ -101,9 +101,9 @@ public abstract class AbstractStateChangeTouchController
 
     private float mAtomicComponentsStartProgress;
 
-    public AbstractStateChangeTouchController(Launcher l, SwipeDetector.Direction dir) {
+    public AbstractStateChangeTouchController(Launcher l, SingleAxisSwipeDetector.Direction dir) {
         mLauncher = l;
-        mDetector = new SwipeDetector(l, this, dir);
+        mDetector = new SingleAxisSwipeDetector(l, this, dir);
         mSwipeDirection = dir;
     }
 
@@ -127,7 +127,7 @@ public abstract class AbstractStateChangeTouchController
             boolean ignoreSlopWhenSettling = false;
 
             if (mCurrentAnimation != null) {
-                directionsToDetectScroll = SwipeDetector.DIRECTION_BOTH;
+                directionsToDetectScroll = SingleAxisSwipeDetector.DIRECTION_BOTH;
                 ignoreSlopWhenSettling = true;
             } else {
                 directionsToDetectScroll = getSwipeDirection();
@@ -152,10 +152,10 @@ public abstract class AbstractStateChangeTouchController
         LauncherState fromState = mLauncher.getStateManager().getState();
         int swipeDirection = 0;
         if (getTargetState(fromState, true /* isDragTowardPositive */) != fromState) {
-            swipeDirection |= SwipeDetector.DIRECTION_POSITIVE;
+            swipeDirection |= SingleAxisSwipeDetector.DIRECTION_POSITIVE;
         }
         if (getTargetState(fromState, false /* isDragTowardPositive */) != fromState) {
-            swipeDirection |= SwipeDetector.DIRECTION_NEGATIVE;
+            swipeDirection |= SingleAxisSwipeDetector.DIRECTION_NEGATIVE;
         }
         return swipeDirection;
     }
@@ -369,7 +369,8 @@ public abstract class AbstractStateChangeTouchController
     }
 
     @Override
-    public void onDragEnd(float velocity, boolean fling) {
+    public void onDragEnd(float velocity) {
+        boolean fling = mDetector.isFling(velocity);
         final int logAction = fling ? Touch.FLING : Touch.SWIPE;
 
         boolean blockedFling = fling && mFlingBlockCheck.isBlocked();
@@ -406,16 +407,13 @@ public abstract class AbstractStateChangeTouchController
             } else {
                 startProgress = Utilities.boundToRange(progress
                         + velocity * getSingleFrameMs(mLauncher) * mProgressMultiplier, 0f, 1f);
-                duration = SwipeDetector.calculateDuration(velocity,
+                duration = BaseSwipeDetector.calculateDuration(velocity,
                         endProgress - Math.max(progress, 0)) * durationMultiplier;
             }
         } else {
             // Let the state manager know that the animation didn't go to the target state,
             // but don't cancel ourselves (we already clean up when the animation completes).
-            Runnable onCancel = mCurrentAnimation.getOnCancelRunnable();
-            mCurrentAnimation.setOnCancelRunnable(null);
-            mCurrentAnimation.dispatchOnCancel();
-            mCurrentAnimation.setOnCancelRunnable(onCancel);
+            mCurrentAnimation.dispatchOnCancelWithoutCancelRunnable();
 
             endProgress = 0;
             if (progress <= 0) {
@@ -424,7 +422,7 @@ public abstract class AbstractStateChangeTouchController
             } else {
                 startProgress = Utilities.boundToRange(progress
                         + velocity * getSingleFrameMs(mLauncher) * mProgressMultiplier, 0f, 1f);
-                duration = SwipeDetector.calculateDuration(velocity,
+                duration = BaseSwipeDetector.calculateDuration(velocity,
                         Math.min(progress, 1) - endProgress) * durationMultiplier;
             }
         }

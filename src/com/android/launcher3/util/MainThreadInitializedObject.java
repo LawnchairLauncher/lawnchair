@@ -15,12 +15,13 @@
  */
 package com.android.launcher3.util;
 
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+
 import android.content.Context;
 import android.os.Looper;
 
 import androidx.annotation.VisibleForTesting;
 
-import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.util.ResourceBasedOverride.Overrides;
 
 import java.util.concurrent.ExecutionException;
@@ -43,7 +44,7 @@ public class MainThreadInitializedObject<T> {
                 mValue = mProvider.get(context.getApplicationContext());
             } else {
                 try {
-                    return new MainThreadExecutor().submit(() -> get(context)).get();
+                    return MAIN_EXECUTOR.submit(() -> get(context)).get();
                 } catch (InterruptedException|ExecutionException e) {
                     throw new RuntimeException(e);
                 }

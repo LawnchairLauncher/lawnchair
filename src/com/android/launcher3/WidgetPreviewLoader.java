@@ -1,5 +1,8 @@
 package com.android.launcher3;
 
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
+
 import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
@@ -23,21 +26,23 @@ import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.CancellationSignal;
-import android.os.Handler;
 import android.os.Process;
 import android.os.UserHandle;
 import android.util.Log;
 import android.util.LongSparseArray;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.ShortcutConfigActivityInfo;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.icons.GraphicsUtils;
+import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.icons.ShadowGenerator;
-import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.SQLiteCacheHelper;
@@ -50,10 +55,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.WeakHashMap;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-
-import androidx.annotation.Nullable;
 
 public class WidgetPreviewLoader {
 
@@ -68,23 +70,18 @@ public class WidgetPreviewLoader {
      * Note: synchronized block used for this variable is expensive and the block should always
      * be posted to a background thread.
      */
-    @Thunk final Set<Bitmap> mUnusedBitmaps =
-            Collections.newSetFromMap(new WeakHashMap<Bitmap, Boolean>());
+    @Thunk final Set<Bitmap> mUnusedBitmaps = Collections.newSetFromMap(new WeakHashMap<>());
 
     private final Context mContext;
     private final IconCache mIconCache;
     private final UserManagerCompat mUserManager;
     private final CacheDb mDb;
 
-    private final MainThreadExecutor mMainThreadExecutor = new MainThreadExecutor();
-    @Thunk final Handler mWorkerHandler;
-
     public WidgetPreviewLoader(Context context, IconCache iconCache) {
         mContext = context;
         mIconCache = iconCache;
         mUserManager = UserManagerCompat.getInstance(context);
         mDb = new CacheDb(context);
-        mWorkerHandler = new Handler(LauncherModel.getWorkerLooper());
     }
 
     /**
@@ -99,7 +96,7 @@ public class WidgetPreviewLoader {
         WidgetCacheKey key = new WidgetCacheKey(item.componentName, item.user, size);
 
         PreviewLoadTask task = new PreviewLoadTask(key, item, previewWidth, previewHeight, caller);
-        task.executeOnExecutor(Utilities.THREAD_POOL_EXECUTOR);
+        task.executeOnExecutor(Executors.THREAD_POOL_EXECUTOR);
 
         CancellationSignal signal = new CancellationSignal();
         signal.setOnCancelListener(task);
@@ -453,7 +450,7 @@ public class WidgetPreviewLoader {
 
     private Bitmap generateShortcutPreview(BaseActivity launcher, ShortcutConfigActivityInfo info,
             int maxWidth, int maxHeight, Bitmap preview) {
-        int iconSize = launcher.getDeviceProfile().iconSizePx;
+        int iconSize = launcher.getDeviceProfile().allAppsIconSizePx;
         int padding = launcher.getResources()
                 .getDimensionPixelSize(R.dimen.widget_preview_shortcut_padding);
 
@@ -494,12 +491,7 @@ public class WidgetPreviewLoader {
 
     private Drawable mutateOnMainThread(final Drawable drawable) {
         try {
-            return mMainThreadExecutor.submit(new Callable<Drawable>() {
-                @Override
-                public Drawable call() throws Exception {
-                    return drawable.mutate();
-                }
-            }).get();
+            return MAIN_EXECUTOR.submit(drawable::mutate).get();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new RuntimeException(e);
@@ -607,7 +599,7 @@ public class WidgetPreviewLoader {
 
             // Write the generated preview to the DB in the worker thread
             if (mVersions != null) {
-                mWorkerHandler.post(new Runnable() {
+                MODEL_EXECUTOR.post(new Runnable() {
                     @Override
                     public void run() {
                         if (!isCancelled()) {
@@ -637,7 +629,7 @@ public class WidgetPreviewLoader {
             // recycled set immediately. Otherwise, it will be recycled after the preview is written
             // to disk.
             if (preview != null) {
-                mWorkerHandler.post(new Runnable() {
+                MODEL_EXECUTOR.post(new Runnable() {
                     @Override
                     public void run() {
                         synchronized (mUnusedBitmaps) {
@@ -658,7 +650,7 @@ public class WidgetPreviewLoader {
             // in the tasks's onCancelled() call, and if cancelled while the task is writing to
             // disk, it will be cancelled in the task's onPostExecute() call.
             if (mBitmapToRecycle != null) {
-                mWorkerHandler.post(new Runnable() {
+                MODEL_EXECUTOR.post(new Runnable() {
                     @Override
                     public void run() {
                         synchronized (mUnusedBitmaps) {

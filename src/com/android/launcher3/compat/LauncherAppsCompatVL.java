@@ -23,6 +23,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
 import android.content.pm.PackageInstaller;
+import android.content.pm.PackageInstaller.SessionCallback;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.pm.ShortcutInfo;
@@ -35,6 +36,7 @@ import android.util.Log;
 
 import com.android.launcher3.compat.ShortcutConfigActivityInfo.ShortcutConfigActivityInfoVL;
 import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.PackageUserKey;
 
 import java.util.ArrayList;
@@ -211,6 +213,18 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
     @Override
     public List<PackageInstaller.SessionInfo> getAllPackageInstallerSessions() {
         return mContext.getPackageManager().getPackageInstaller().getAllSessions();
+    }
+
+    @Override
+    public void registerSessionCallback(LooperExecutor executor, SessionCallback sessionCallback) {
+        mContext.getPackageManager().getPackageInstaller().registerSessionCallback(sessionCallback,
+                executor.getHandler());
+    }
+
+    @Override
+    public void unregisterSessionCallback(SessionCallback sessionCallback) {
+        mContext.getPackageManager().getPackageInstaller()
+                .unregisterSessionCallback(sessionCallback);
     }
 }
 

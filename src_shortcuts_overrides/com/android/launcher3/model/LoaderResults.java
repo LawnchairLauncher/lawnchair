@@ -16,9 +16,8 @@
 
 package com.android.launcher3.model;
 
-import com.android.launcher3.AllAppsList;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherModel.Callbacks;
+import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.widget.WidgetListRowEntry;
 

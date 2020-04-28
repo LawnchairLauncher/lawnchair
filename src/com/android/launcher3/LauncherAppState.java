@@ -37,6 +37,7 @@ import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.SecureSettingsObserver;
+import com.android.launcher3.widget.custom.CustomWidgetManager;
 
 public class LauncherAppState {
 
@@ -149,6 +150,8 @@ public class LauncherAppState {
     LauncherModel setLauncher(Launcher launcher) {
         getLocalProvider(mContext).setLauncherProviderChangeListener(launcher);
         mModel.initialize(launcher);
+        CustomWidgetManager.INSTANCE.get(launcher)
+                .setWidgetRefreshCallback(mModel::refreshAndBindWidgetsAndShortcuts);
         return mModel;
     }
 

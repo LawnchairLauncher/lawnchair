@@ -150,10 +150,10 @@ public class AppPredictionsUITests extends AbstractQuickStepTest {
             List<AppTarget> targets = new ArrayList<>(activities.length);
             for (LauncherActivityInfo info : activities) {
                 ComponentName cn = info.getComponentName();
-                AppTarget target =
-                        new AppTarget.Builder(new AppTargetId("app:" + cn), cn.getPackageName(), info.getUser())
-                            .setClassName(cn.getClassName())
-                            .build();
+                AppTarget target = new AppTarget.Builder(
+                        new AppTargetId("app:" + cn), cn.getPackageName(), info.getUser())
+                        .setClassName(cn.getClassName())
+                        .build();
                 targets.add(target);
             }
             mCallback.onTargetsAvailable(targets);

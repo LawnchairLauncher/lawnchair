@@ -20,7 +20,6 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name" msgid="649227358658669779">"ଲଞ୍ଚର୍3"</string>
-    <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="work_folder_name" msgid="3753320833950115786">"କାମ"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"ଆପ୍‌ ଇନଷ୍ଟଲ୍‌ ହୋଇନାହିଁ"</string>
     <string name="activity_not_available" msgid="7456344436509528827">"ଆପ୍‌ ଉପଲବ୍ଧ ନାହିଁ"</string>
@@ -85,8 +84,8 @@
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"ଆପଣଙ୍କ ଆଡମିନଙ୍କ ଦ୍ୱାରା ଅକ୍ଷମ କରାଯାଇଛି"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"ହୋମ୍‌ ସ୍କ୍ରୀନ୍ ବୁଲାଇବା ଅନୁମତି ଦିଅନ୍ତୁ"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"ଯେତେବେଳେ ଫୋନକୁ ବୁଲାଯାଇଥାଏ"</string>
-    <string name="notification_dots_title" msgid="9062440428204120317">"ବିଜ୍ଞପ୍ତି ବିନ୍ଦୁଗୁଡ଼ିକ"</string>
-    <string name="notification_dots_desc_on" msgid="1679848116452218908">"ଚାଲୁ କରନ୍ତୁ"</string>
+    <string name="notification_dots_title" msgid="9062440428204120317">"ବିଜ୍ଞପ୍ତି ଡଟ୍ସ"</string>
+    <string name="notification_dots_desc_on" msgid="1679848116452218908">"ଚାଲୁ"</string>
     <string name="notification_dots_desc_off" msgid="1760796511504341095">"ବନ୍ଦ କରନ୍ତୁ"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"ବିଜ୍ଞପ୍ତି ଆକ୍ସେସ୍‌ ଆବଶ୍ୟକ ଅଟେ"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"ବିଜ୍ଞପ୍ତି ବିନ୍ଦୁ ଦେଖାଇବାକୁ, <xliff:g id="NAME">%1$s</xliff:g> ପାଇଁ ଆପ୍‌ ବିଜ୍ଞପ୍ତି ଅନ୍‌ କରନ୍ତୁ"</string>

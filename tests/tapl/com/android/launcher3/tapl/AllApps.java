@@ -36,6 +36,7 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
     private static final int MAX_SCROLL_ATTEMPTS = 40;
 
     private final int mHeight;
+    private final int mIconHeight;
 
     AllApps(LauncherInstrumentation launcher) {
         super(launcher);
@@ -46,6 +47,10 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
         // Wait for the recycler to populate.
         mLauncher.waitForObjectInContainer(appListRecycler, By.clazz(TextView.class));
         verifyNotFrozen("All apps freeze flags upon opening all apps");
+        mIconHeight = mLauncher.getTestInfo(
+                TestProtocol.REQUEST_ICON_HEIGHT)
+                .getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
+
     }
 
     @Override
@@ -62,6 +67,10 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
         }
         final Rect iconBounds = icon.getVisibleBounds();
         LauncherInstrumentation.log("hasClickableIcon: icon bounds: " + iconBounds);
+        if (iconBounds.height() < mIconHeight / 2) {
+            LauncherInstrumentation.log("hasClickableIcon: icon has insufficient height");
+            return false;
+        }
         if (iconCenterInSearchBox(allAppsContainer, icon)) {
             LauncherInstrumentation.log("hasClickableIcon: icon center is under search box");
             return false;
@@ -90,6 +99,7 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
             final UiObject2 allAppsContainer = verifyActiveContainer();
             final UiObject2 appListRecycler = mLauncher.waitForObjectInContainer(allAppsContainer,
                     "apps_list_view");
+            final UiObject2 searchBox = getSearchBox(allAppsContainer);
             allAppsContainer.setGestureMargins(
                     0,
                     getSearchBox(allAppsContainer).getVisibleBounds().bottom + 1,
@@ -103,7 +113,11 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
                 int scroll = getScroll(allAppsContainer);
                 try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer("scrolled")) {
                     while (!hasClickableIcon(allAppsContainer, appListRecycler, appIconSelector)) {
-                        mLauncher.scroll(allAppsContainer, Direction.DOWN, 0.8f, null, 50);
+                        mLauncher.scrollToLastVisibleRow(
+                                allAppsContainer,
+                                mLauncher.getObjectsInContainer(allAppsContainer, "icon"),
+                                searchBox.getVisibleBounds().bottom -
+                                        allAppsContainer.getVisibleBounds().top);
                         final int newScroll = getScroll(allAppsContainer);
                         if (newScroll == scroll) break;
 
@@ -145,7 +159,7 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
                         "Exceeded max scroll attempts: " + MAX_SCROLL_ATTEMPTS,
                         ++attempts <= MAX_SCROLL_ATTEMPTS);
 
-                mLauncher.scroll(allAppsContainer, Direction.UP, 1, margins, 50);
+                mLauncher.scroll(allAppsContainer, Direction.UP, margins, 50);
             }
 
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer("scrolled up")) {
@@ -172,7 +186,7 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
             final UiObject2 allAppsContainer = verifyActiveContainer();
             // Start the gesture in the center to avoid starting at elements near the top.
             mLauncher.scroll(
-                    allAppsContainer, Direction.DOWN, 1, new Rect(0, 0, 0, mHeight / 2), 10);
+                    allAppsContainer, Direction.DOWN, new Rect(0, 0, 0, mHeight / 2), 10);
             verifyActiveContainer();
         }
     }
@@ -186,7 +200,7 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
             final UiObject2 allAppsContainer = verifyActiveContainer();
             // Start the gesture in the center, for symmetry with forward.
             mLauncher.scroll(
-                    allAppsContainer, Direction.UP, 1, new Rect(0, mHeight / 2, 0, 0), 10);
+                    allAppsContainer, Direction.UP, new Rect(0, mHeight / 2, 0, 0), 10);
             verifyActiveContainer();
         }
     }

@@ -30,16 +30,16 @@ import android.view.ActionMode;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
-import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.uioverrides.DisplayRotationListener;
 import com.android.launcher3.uioverrides.WallpaperColorInfo;
+import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Themes;
-
-import androidx.annotation.Nullable;
 
 /**
  * Extension of BaseActivity allowing support for drag-n-drop
@@ -120,6 +120,10 @@ public abstract class BaseDraggingActivity extends BaseActivity
 
     public abstract View getRootView();
 
+    public void returnToHomescreen() {
+        // no-op
+    }
+
     public Rect getViewBounds(View v) {
         int[] pos = new int[2];
         v.getLocationOnScreen(pos);
@@ -135,7 +139,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
 
     public boolean startActivitySafely(View v, Intent intent, @Nullable ItemInfo item,
             @Nullable String sourceContainer) {
-        if (mIsSafeModeEnabled && !Utilities.isSystemApp(this, intent)) {
+        if (mIsSafeModeEnabled && !PackageManagerHelper.isSystemApp(this, intent)) {
             Toast.makeText(this, R.string.safemode_shortcut_error, Toast.LENGTH_SHORT).show();
             return false;
         }
@@ -237,14 +241,14 @@ public abstract class BaseDraggingActivity extends BaseActivity
     protected void onDeviceProfileInitiated() {
         if (mDeviceProfile.isVerticalBarLayout()) {
             mRotationListener.enable();
-            mDeviceProfile.updateIsSeascape(getWindowManager());
+            mDeviceProfile.updateIsSeascape(this);
         } else {
             mRotationListener.disable();
         }
     }
 
     private void onDeviceRotationChanged() {
-        if (mDeviceProfile.updateIsSeascape(getWindowManager())) {
+        if (mDeviceProfile.updateIsSeascape(this)) {
             reapplyUi();
         }
     }

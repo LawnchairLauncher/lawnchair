@@ -26,7 +26,7 @@ import androidx.annotation.IntDef;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
-import com.android.launcher3.config.FeatureFlags;
+import com.android.quickstep.SysUINavigationMode;
 
 import java.lang.annotation.Retention;
 
@@ -39,12 +39,27 @@ public class LayoutUtils {
     @IntDef({MULTI_WINDOW_STRATEGY_HALF_SCREEN, MULTI_WINDOW_STRATEGY_DEVICE_PROFILE})
     private @interface MultiWindowStrategy {}
 
+    /**
+     * The height for the swipe up motion
+     */
+    public static float getDefaultSwipeHeight(Context context, DeviceProfile dp) {
+        float swipeHeight = dp.allAppsCellHeightPx - dp.allAppsIconTextSizePx;
+        if (SysUINavigationMode.getMode(context) == SysUINavigationMode.Mode.NO_BUTTON) {
+            swipeHeight -= dp.getInsets().bottom;
+        }
+        return swipeHeight;
+    }
+
     public static void calculateLauncherTaskSize(Context context, DeviceProfile dp, Rect outRect) {
         float extraSpace;
         if (dp.isVerticalBarLayout()) {
             extraSpace = 0;
         } else {
-            extraSpace = dp.hotseatBarSizePx + dp.verticalDragHandleSizePx;
+            Resources res = context.getResources();
+
+            extraSpace = getDefaultSwipeHeight(context, dp) + dp.verticalDragHandleSizePx
+                    + res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_extra_vertical_size)
+                    + res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_bottom_padding);
         }
         calculateTaskSize(context, dp, extraSpace, MULTI_WINDOW_STRATEGY_HALF_SCREEN, outRect);
     }

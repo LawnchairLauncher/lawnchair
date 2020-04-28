@@ -15,14 +15,15 @@
  */
 package com.android.launcher3.ui;
 
-import static androidx.test.InstrumentationRegistry.getInstrumentation;
-
 import static com.android.launcher3.tapl.LauncherInstrumentation.ContainerType;
 import static com.android.launcher3.ui.TaplTestsLauncher3.getAppPackageName;
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
 import static org.junit.Assert.assertTrue;
 
 import static java.lang.System.exit;
+
+import static androidx.test.InstrumentationRegistry.getInstrumentation;
 
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -47,7 +48,6 @@ import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager;
-import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.model.AppLaunchTracker;
@@ -55,11 +55,13 @@ import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.tapl.TestHelpers;
 import com.android.launcher3.testcomponent.TestCommandReceiver;
 import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.FailureWatcher;
 import com.android.launcher3.util.rule.LauncherActivityRule;
 import com.android.launcher3.util.rule.ShellCommandRule;
+import com.android.launcher3.util.rule.TestStabilityRule;
 
 import org.junit.After;
 import org.junit.Before;
@@ -89,10 +91,9 @@ public abstract class AbstractLauncherUiTest {
     public static final long DEFAULT_UI_TIMEOUT = 60000; // b/136278866
     private static final String TAG = "AbstractLauncherUiTest";
 
-    protected MainThreadExecutor mMainThreadExecutor = new MainThreadExecutor();
+    protected LooperExecutor mMainThreadExecutor = MAIN_EXECUTOR;
     protected final UiDevice mDevice = UiDevice.getInstance(getInstrumentation());
-    protected final LauncherInstrumentation mLauncher =
-            new LauncherInstrumentation(getInstrumentation());
+    protected final LauncherInstrumentation mLauncher = new LauncherInstrumentation();
     protected Context mTargetContext;
     protected String mTargetPackage;
 
@@ -104,8 +105,9 @@ public abstract class AbstractLauncherUiTest {
         }
         if (TestHelpers.isInLauncherProcess()) {
             Utilities.enableRunningInTestHarnessForTests();
-            mLauncher.setSystemHealthSupplier(() -> TestCommandReceiver.callCommand(
-                    TestCommandReceiver.GET_SYSTEM_HEALTH_MESSAGE).getString("result"));
+            mLauncher.setSystemHealthSupplier(startTime -> TestCommandReceiver.callCommand(
+                    TestCommandReceiver.GET_SYSTEM_HEALTH_MESSAGE, startTime.toString()).
+                    getString("result"));
             mLauncher.setOnSettledStateAction(
                     containerType -> executeOnLauncher(
                             launcher ->
@@ -155,7 +157,8 @@ public abstract class AbstractLauncherUiTest {
 
     @Rule
     public TestRule mOrderSensitiveRules = RuleChain.
-            outerRule(mActivityMonitor).
+            outerRule(new TestStabilityRule()).
+            around(mActivityMonitor).
             around(getRulesInsideActivityMonitor());
 
     public UiDevice getDevice() {
@@ -169,8 +172,6 @@ public abstract class AbstractLauncherUiTest {
 
         mTargetContext = InstrumentationRegistry.getTargetContext();
         mTargetPackage = mTargetContext.getPackageName();
-        // Unlock the phone
-        mDevice.executeShellCommand("input keyevent 82");
     }
 
     @After
@@ -347,7 +348,8 @@ public abstract class AbstractLauncherUiTest {
         startIntent(
                 getInstrumentation().getContext().getPackageManager().getLaunchIntentForPackage(
                         packageName),
-                By.pkg(packageName).depth(0));
+                By.pkg(packageName).depth(0),
+                true /* newTask */);
     }
 
     protected void startTestActivity(int activityNumber) {
@@ -356,12 +358,17 @@ public abstract class AbstractLauncherUiTest {
                 getLaunchIntentForPackage(packageName);
         intent.setComponent(new ComponentName(packageName,
                 "com.android.launcher3.tests.Activity" + activityNumber));
-        startIntent(intent, By.pkg(packageName).text("TestActivity" + activityNumber));
+        startIntent(intent, By.pkg(packageName).text("TestActivity" + activityNumber),
+                false /* newTask */);
     }
 
-    private void startIntent(Intent intent, BySelector selector) {
+    private void startIntent(Intent intent, BySelector selector, boolean newTask) {
         intent.addCategory(Intent.CATEGORY_LAUNCHER);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        if (newTask) {
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        } else {
+            intent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK | Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
+        }
         getInstrumentation().getTargetContext().startActivity(intent);
         assertTrue("App didn't start: " + selector,
                 mDevice.wait(Until.hasObject(selector), DEFAULT_UI_TIMEOUT));

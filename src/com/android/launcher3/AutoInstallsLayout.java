@@ -38,11 +38,15 @@ import android.util.Pair;
 import android.util.Patterns;
 import android.util.Xml;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.LauncherProvider.SqlArguments;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.icons.GraphicsUtils;
 import com.android.launcher3.icons.LauncherIcons;
+import com.android.launcher3.qsb.QsbContainerView;
 import com.android.launcher3.util.IntArray;
+import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Thunk;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -72,7 +76,7 @@ public class AutoInstallsLayout {
 
     static AutoInstallsLayout get(Context context, AppWidgetHost appWidgetHost,
             LayoutParserCallback callback) {
-        Pair<String, Resources> customizationApkInfo = Utilities.findSystemApk(
+        Pair<String, Resources> customizationApkInfo = PackageManagerHelper.findSystemApk(
                 ACTION_LAUNCHER_CUSTOMIZATION, context.getPackageManager());
         if (customizationApkInfo == null) {
             return null;
@@ -83,7 +87,7 @@ public class AutoInstallsLayout {
 
         // Try with grid size and hotseat count
         String layoutName = String.format(Locale.ENGLISH, FORMATTED_LAYOUT_RES_WITH_HOSTEAT,
-            grid.numColumns, grid.numRows, grid.numHotseatIcons);
+                grid.numColumns, grid.numRows, grid.numHotseatIcons);
         int layoutId = targetRes.getIdentifier(layoutName, "xml", pkg);
 
         // Try with only grid size
@@ -91,7 +95,7 @@ public class AutoInstallsLayout {
             Log.d(TAG, "Formatted layout: " + layoutName
                     + " not found. Trying layout without hosteat");
             layoutName = String.format(Locale.ENGLISH, FORMATTED_LAYOUT_RES,
-                grid.numColumns, grid.numRows);
+                    grid.numColumns, grid.numRows);
             layoutId = targetRes.getIdentifier(layoutName, "xml", pkg);
         }
 
@@ -116,6 +120,7 @@ public class AutoInstallsLayout {
     private static final String TAG_AUTO_INSTALL = "autoinstall";
     private static final String TAG_FOLDER = "folder";
     private static final String TAG_APPWIDGET = "appwidget";
+    protected static final String TAG_SEARCH_WIDGET = "searchwidget";
     private static final String TAG_SHORTCUT = "shortcut";
     private static final String TAG_EXTRA = "extra";
 
@@ -147,8 +152,10 @@ public class AutoInstallsLayout {
     private static final String HOTSEAT_CONTAINER_NAME =
             Favorites.containerToString(Favorites.CONTAINER_HOTSEAT);
 
-    @Thunk final Context mContext;
-    @Thunk final AppWidgetHost mAppWidgetHost;
+    @Thunk
+    final Context mContext;
+    @Thunk
+    final AppWidgetHost mAppWidgetHost;
     protected final LayoutParserCallback mCallback;
 
     protected final PackageManager mPackageManager;
@@ -160,7 +167,8 @@ public class AutoInstallsLayout {
     private final int mColumnCount;
 
     private final int[] mTemp = new int[2];
-    @Thunk final ContentValues mValues;
+    @Thunk
+    final ContentValues mValues;
     protected final String mRootTag;
 
     protected SQLiteDatabase mDb;
@@ -244,7 +252,7 @@ public class AutoInstallsLayout {
      */
     protected int parseAndAddNode(
             XmlPullParser parser, ArrayMap<String, TagParser> tagParserMap, IntArray screenIds)
-        throws XmlPullParserException, IOException {
+            throws XmlPullParserException, IOException {
 
         if (TAG_INCLUDE.equals(parser.getName())) {
             final int resId = getAttributeResourceValue(parser, ATTR_WORKSPACE, 0);
@@ -315,6 +323,7 @@ public class AutoInstallsLayout {
         parsers.put(TAG_AUTO_INSTALL, new AutoInstallParser());
         parsers.put(TAG_FOLDER, new FolderParser());
         parsers.put(TAG_APPWIDGET, new PendingWidgetParser());
+        parsers.put(TAG_SEARCH_WIDGET, new SearchWidgetParser());
         parsers.put(TAG_SHORTCUT, new ShortcutParser(mSourceRes));
         return parsers;
     }
@@ -347,15 +356,15 @@ public class AutoInstallsLayout {
                         info = mPackageManager.getActivityInfo(cn, 0);
                     } catch (PackageManager.NameNotFoundException nnfe) {
                         String[] packages = mPackageManager.currentToCanonicalPackageNames(
-                                new String[] { packageName });
+                                new String[]{packageName});
                         cn = new ComponentName(packages[0], className);
                         info = mPackageManager.getActivityInfo(cn, 0);
                     }
                     final Intent intent = new Intent(Intent.ACTION_MAIN, null)
-                        .addCategory(Intent.CATEGORY_LAUNCHER)
-                        .setComponent(cn)
-                        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                                Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+                            .addCategory(Intent.CATEGORY_LAUNCHER)
+                            .setComponent(cn)
+                            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                                    | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
 
                     return addShortcut(info.loadLabel(mPackageManager).toString(),
                             intent, Favorites.ITEM_TYPE_APPLICATION);
@@ -393,10 +402,10 @@ public class AutoInstallsLayout {
 
             mValues.put(Favorites.RESTORED, WorkspaceItemInfo.FLAG_AUTOINSTALL_ICON);
             final Intent intent = new Intent(Intent.ACTION_MAIN, null)
-                .addCategory(Intent.CATEGORY_LAUNCHER)
-                .setComponent(new ComponentName(packageName, className))
-                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                        Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+                    .addCategory(Intent.CATEGORY_LAUNCHER)
+                    .setComponent(new ComponentName(packageName, className))
+                    .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                            | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
             return addShortcut(mContext.getString(R.string.package_state_unknown), intent,
                     Favorites.ITEM_TYPE_APPLICATION);
         }
@@ -444,7 +453,7 @@ public class AutoInstallsLayout {
             mValues.put(Favorites.ICON_RESOURCE, mIconRes.getResourceName(iconId));
 
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                        Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+                    Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
             return addShortcut(mSourceRes.getString(titleResId),
                     intent, Favorites.ITEM_TYPE_SHORTCUT);
         }
@@ -469,12 +478,22 @@ public class AutoInstallsLayout {
      */
     protected class PendingWidgetParser implements TagParser {
 
-        @Override
-        public int parseAndAdd(XmlPullParser parser)
-                throws XmlPullParserException, IOException {
+        @Nullable
+        public ComponentName getComponentName(XmlPullParser parser) {
             final String packageName = getAttributeValue(parser, ATTR_PACKAGE_NAME);
             final String className = getAttributeValue(parser, ATTR_CLASS_NAME);
             if (TextUtils.isEmpty(packageName) || TextUtils.isEmpty(className)) {
+                return null;
+            }
+            return new ComponentName(packageName, className);
+        }
+
+
+        @Override
+        public int parseAndAdd(XmlPullParser parser)
+                throws XmlPullParserException, IOException {
+            ComponentName cn = getComponentName(parser);
+            if (cn == null) {
                 if (LOGD) Log.d(TAG, "Skipping invalid <appwidget> with no component");
                 return -1;
             }
@@ -505,16 +524,15 @@ public class AutoInstallsLayout {
                     throw new RuntimeException("Widgets can contain only extras");
                 }
             }
-
-            return verifyAndInsert(new ComponentName(packageName, className), extras);
+            return verifyAndInsert(cn, extras);
         }
 
         protected int verifyAndInsert(ComponentName cn, Bundle extras) {
             mValues.put(Favorites.APPWIDGET_PROVIDER, cn.flattenToString());
             mValues.put(Favorites.RESTORED,
-                    LauncherAppWidgetInfo.FLAG_ID_NOT_VALID |
-                            LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY |
-                            LauncherAppWidgetInfo.FLAG_DIRECT_CONFIG);
+                    LauncherAppWidgetInfo.FLAG_ID_NOT_VALID
+                            | LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY
+                            | LauncherAppWidgetInfo.FLAG_DIRECT_CONFIG);
             mValues.put(Favorites._ID, mCallback.generateNewItemId());
             if (!extras.isEmpty()) {
                 mValues.put(Favorites.INTENT, new Intent().putExtras(extras).toUri(0));
@@ -526,6 +544,23 @@ public class AutoInstallsLayout {
             } else {
                 return insertedId;
             }
+        }
+    }
+
+    protected class SearchWidgetParser extends PendingWidgetParser {
+        @Override
+        @Nullable
+        public ComponentName getComponentName(XmlPullParser parser) {
+            return QsbContainerView.getSearchComponentName(mContext);
+        }
+
+        @Override
+        protected int verifyAndInsert(ComponentName cn, Bundle extras) {
+            mValues.put(Favorites.OPTIONS, LauncherAppWidgetInfo.OPTION_SEARCH_WIDGET);
+            int flags = mValues.getAsInteger(Favorites.RESTORED)
+                    | WorkspaceItemInfo.FLAG_RESTORE_STARTED;
+            mValues.put(Favorites.RESTORED, flags);
+            return super.verifyAndInsert(cn, extras);
         }
     }
 
@@ -548,7 +583,7 @@ public class AutoInstallsLayout {
             if (titleResId != 0) {
                 title = mSourceRes.getString(titleResId);
             } else {
-                title = mContext.getResources().getString(R.string.folder_name);
+                title = "";
             }
 
             mValues.put(Favorites.TITLE, title);
@@ -680,7 +715,8 @@ public class AutoInstallsLayout {
         int insertAndCheck(SQLiteDatabase db, ContentValues values);
     }
 
-    @Thunk static void copyInteger(ContentValues from, ContentValues to, String key) {
+    @Thunk
+    static void copyInteger(ContentValues from, ContentValues to, String key) {
         to.put(key, from.getAsInteger(key));
     }
 }

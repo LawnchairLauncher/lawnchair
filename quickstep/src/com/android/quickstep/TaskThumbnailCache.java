@@ -15,12 +15,14 @@
  */
 package com.android.quickstep;
 
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Handler;
 import android.os.Looper;
-import com.android.launcher3.MainThreadExecutor;
+
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.icons.cache.HandlerRunnable;
@@ -30,13 +32,13 @@ import com.android.systemui.shared.recents.model.Task.TaskKey;
 import com.android.systemui.shared.recents.model.TaskKeyLruCache;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
+
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
 public class TaskThumbnailCache {
 
     private final Handler mBackgroundHandler;
-    private final MainThreadExecutor mMainThreadExecutor;
 
     private final int mCacheSize;
     private final ThumbnailCache mCache;
@@ -94,7 +96,6 @@ public class TaskThumbnailCache {
 
     public TaskThumbnailCache(Context context, Looper backgroundLooper) {
         mBackgroundHandler = new Handler(backgroundLooper);
-        mMainThreadExecutor = new MainThreadExecutor();
         mHighResLoadingState = new HighResLoadingState(context);
 
         Resources res = context.getResources();
@@ -168,7 +169,7 @@ public class TaskThumbnailCache {
                     // We don't call back to the provided callback in this case
                     return;
                 }
-                mMainThreadExecutor.execute(() -> {
+                MAIN_EXECUTOR.execute(() -> {
                     mCache.put(key, thumbnail);
                     callback.accept(thumbnail);
                     onEnd();

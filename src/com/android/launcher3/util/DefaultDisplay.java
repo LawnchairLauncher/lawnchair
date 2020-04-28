@@ -15,12 +15,15 @@
  */
 package com.android.launcher3.util;
 
+import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
+
 import android.content.Context;
 import android.graphics.Point;
 import android.hardware.display.DisplayManager;
 import android.hardware.display.DisplayManager.DisplayListener;
 import android.os.Handler;
 import android.os.Message;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
@@ -54,7 +57,7 @@ public class DefaultDisplay implements DisplayListener {
         mChangeHandler = new Handler(this::onChange);
 
         context.getSystemService(DisplayManager.class)
-                .registerDisplayListener(this, new Handler(UiThreadHelper.getBackgroundLooper()));
+                .registerDisplayListener(this, UI_HELPER_EXECUTOR.getHandler());
     }
 
     @Override
@@ -122,6 +125,8 @@ public class DefaultDisplay implements DisplayListener {
         public final Point smallestSize;
         public final Point largestSize;
 
+        public final DisplayMetrics metrics;
+
         private Info(Context context) {
             Display display = context.getSystemService(WindowManager.class).getDefaultDisplay();
 
@@ -136,6 +141,9 @@ public class DefaultDisplay implements DisplayListener {
             largestSize = new Point();
             display.getRealSize(realSize);
             display.getCurrentSizeRange(smallestSize, largestSize);
+
+            metrics = new DisplayMetrics();
+            display.getMetrics(metrics);
         }
 
         private boolean hasDifferentSize(Info info) {

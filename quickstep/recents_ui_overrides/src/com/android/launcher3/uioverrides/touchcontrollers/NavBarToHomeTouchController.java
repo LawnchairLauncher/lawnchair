@@ -23,6 +23,7 @@ import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_3;
 import static com.android.launcher3.touch.AbstractStateChangeTouchController.SUCCESS_TRANSITION_PROGRESS;
+import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
@@ -43,21 +44,25 @@ import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
-import com.android.launcher3.touch.SwipeDetector;
+import com.android.launcher3.config.BaseFlags;
+import com.android.launcher3.touch.SingleAxisSwipeDetector;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.util.TouchController;
+import com.android.quickstep.util.AssistantUtilities;
 import com.android.quickstep.views.RecentsView;
+import com.android.systemui.shared.system.ActivityManagerWrapper;
 
 /**
  * Handles swiping up on the nav bar to go home from launcher, e.g. overview or all apps.
  */
-public class NavBarToHomeTouchController implements TouchController, SwipeDetector.Listener {
+public class NavBarToHomeTouchController implements TouchController,
+        SingleAxisSwipeDetector.Listener {
 
     private static final Interpolator PULLBACK_INTERPOLATOR = DEACCEL_3;
 
     private final Launcher mLauncher;
-    private final SwipeDetector mSwipeDetector;
+    private final SingleAxisSwipeDetector mSwipeDetector;
     private final float mPullbackDistance;
 
     private boolean mNoIntercept;
@@ -67,7 +72,8 @@ public class NavBarToHomeTouchController implements TouchController, SwipeDetect
 
     public NavBarToHomeTouchController(Launcher launcher) {
         mLauncher = launcher;
-        mSwipeDetector = new SwipeDetector(mLauncher, this, SwipeDetector.VERTICAL);
+        mSwipeDetector = new SingleAxisSwipeDetector(mLauncher, this,
+                SingleAxisSwipeDetector.VERTICAL);
         mPullbackDistance = mLauncher.getResources().getDimension(R.dimen.home_pullback_distance);
     }
 
@@ -79,7 +85,8 @@ public class NavBarToHomeTouchController implements TouchController, SwipeDetect
             if (mNoIntercept) {
                 return false;
             }
-            mSwipeDetector.setDetectableScrollConditions(SwipeDetector.DIRECTION_POSITIVE, false);
+            mSwipeDetector.setDetectableScrollConditions(SingleAxisSwipeDetector.DIRECTION_POSITIVE,
+                    false /* ignoreSlop */);
         }
 
         if (mNoIntercept) {
@@ -99,6 +106,10 @@ public class NavBarToHomeTouchController implements TouchController, SwipeDetect
             return true;
         }
         if (AbstractFloatingView.getTopOpenView(mLauncher) != null) {
+            return true;
+        }
+        if (BaseFlags.ASSISTANT_GIVES_LAUNCHER_FOCUS.get()
+                && AssistantUtilities.isExcludedAssistantRunning()) {
             return true;
         }
         return false;
@@ -173,7 +184,8 @@ public class NavBarToHomeTouchController implements TouchController, SwipeDetect
     }
 
     @Override
-    public void onDragEnd(float velocity, boolean fling) {
+    public void onDragEnd(float velocity) {
+        boolean fling = mSwipeDetector.isFling(velocity);
         final int logAction = fling ? Touch.FLING : Touch.SWIPE;
         float progress = mCurrentAnimation.getProgressFraction();
         float interpolatedProgress = PULLBACK_INTERPOLATOR.getInterpolation(progress);
@@ -190,6 +202,8 @@ public class NavBarToHomeTouchController implements TouchController, SwipeDetect
                 AbstractFloatingView.closeAllOpenViews(mLauncher);
                 logStateChange(topOpenView.getLogContainerType(), logAction);
             }
+            ActivityManagerWrapper.getInstance()
+                .closeSystemWindows(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
         } else {
             // Quickly return to the state we came from (we didn't move far).
             ValueAnimator anim = mCurrentAnimation.getAnimationPlayer();

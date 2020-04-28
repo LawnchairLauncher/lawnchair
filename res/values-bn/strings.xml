@@ -20,7 +20,6 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name" msgid="649227358658669779">"Launcher3"</string>
-    <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="work_folder_name" msgid="3753320833950115786">"কাজ"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"অ্যাপ্লিকেশান ইনস্টল করা নেই৷"</string>
     <string name="activity_not_available" msgid="7456344436509528827">"অ্যাপ্লিকেশান অনুপলব্ধ"</string>
@@ -93,7 +92,7 @@
     <string name="title_change_settings" msgid="1376365968844349552">"সেটিংস পরিবর্তন করুন"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"বিজ্ঞপ্তির ডট দেখুন"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"হোম স্ক্রিনে আইকন যোগ করুন"</string>
-    <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"নতুন অ্যাপ্লিকেশানগুলির জন্যে"</string>
+    <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"নতুন অ্যাপের জন্য"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"অজানা"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"সরান"</string>
     <string name="abandoned_search" msgid="891119232568284442">"সার্চ"</string>

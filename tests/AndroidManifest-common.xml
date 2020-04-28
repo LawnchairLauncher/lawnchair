@@ -62,6 +62,12 @@
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
             </intent-filter>
         </activity>
+        <activity android:name="com.android.launcher3.testcomponent.CustomShortcutConfigActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.CREATE_SHORTCUT" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity
             android:name="com.android.launcher3.testcomponent.RequestPinItemActivity"
             android:icon="@drawable/test_drawable_pin_item"

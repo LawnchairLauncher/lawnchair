@@ -27,6 +27,8 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.view.ContextThemeWrapper;
 
+import androidx.annotation.IntDef;
+
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.logging.StatsLogUtils;
@@ -43,8 +45,6 @@ import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.lang.annotation.Retention;
 import java.util.ArrayList;
-
-import androidx.annotation.IntDef;
 
 public abstract class BaseActivity extends Activity
         implements UserEventDelegate, LogStateProvider, ActivityContext {
@@ -265,12 +265,13 @@ public abstract class BaseActivity extends Activity
         }
     }
 
-    protected void dumpMisc(PrintWriter writer) {
-        writer.println(" deviceProfile isTransposed=" + getDeviceProfile().isVerticalBarLayout());
-        writer.println(" orientation=" + getResources().getConfiguration().orientation);
-        writer.println(" mSystemUiController: " + mSystemUiController);
-        writer.println(" mActivityFlags: " + mActivityFlags);
-        writer.println(" mForceInvisible: " + mForceInvisible);
+    protected void dumpMisc(String prefix, PrintWriter writer) {
+        writer.println(prefix + "deviceProfile isTransposed="
+                + getDeviceProfile().isVerticalBarLayout());
+        writer.println(prefix + "orientation=" + getResources().getConfiguration().orientation);
+        writer.println(prefix + "mSystemUiController: " + mSystemUiController);
+        writer.println(prefix + "mActivityFlags: " + mActivityFlags);
+        writer.println(prefix + "mForceInvisible: " + mForceInvisible);
     }
 
     public static <T extends BaseActivity> T fromContext(Context context) {

@@ -10,7 +10,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager.AnimationComponents;
 import com.android.launcher3.touch.AbstractStateChangeTouchController;
-import com.android.launcher3.touch.SwipeDetector;
+import com.android.launcher3.touch.SingleAxisSwipeDetector;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 
 /**
@@ -21,7 +21,7 @@ public class AllAppsSwipeController extends AbstractStateChangeTouchController {
     private MotionEvent mTouchDownEvent;
 
     public AllAppsSwipeController(Launcher l) {
-        super(l, SwipeDetector.VERTICAL);
+        super(l, SingleAxisSwipeDetector.VERTICAL);
     }
 
     @Override

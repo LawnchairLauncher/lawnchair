@@ -18,29 +18,32 @@ package com.android.launcher3;
 
 import static com.android.launcher3.LauncherAppState.ACTION_FORCE_ROLOAD;
 import static com.android.launcher3.config.FeatureFlags.IS_DOGFOOD_BUILD;
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ShortcutInfo;
-import android.os.Handler;
-import android.os.HandlerThread;
-import android.os.Looper;
 import android.os.Process;
 import android.os.UserHandle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PackageInstallerCompat.PackageInstallInfo;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.icons.LauncherIcons;
+import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.AddWorkspaceItemsTask;
+import com.android.launcher3.model.AllAppsList;
 import com.android.launcher3.model.BaseModelUpdateTask;
 import com.android.launcher3.model.BgDataModel;
+import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.CacheDataUpdatedTask;
 import com.android.launcher3.model.LoaderResults;
 import com.android.launcher3.model.LoaderTask;
@@ -50,28 +53,21 @@ import com.android.launcher3.model.PackageUpdatedTask;
 import com.android.launcher3.model.ShortcutsChangedTask;
 import com.android.launcher3.model.UserLockStateChangedTask;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
-import com.android.launcher3.util.ComponentKey;
-import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSparseArrayMap;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.Thunk;
-import com.android.launcher3.util.ViewOnDrawExecutor;
-import com.android.launcher3.widget.WidgetListRowEntry;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.Executor;
 import java.util.function.Supplier;
-
-import androidx.annotation.Nullable;
 
 /**
  * Maintains in-memory state of the Launcher. It is expected that there should be only one
@@ -84,20 +80,11 @@ public class LauncherModel extends BroadcastReceiver
 
     static final String TAG = "Launcher.Model";
 
-    private final MainThreadExecutor mUiExecutor = new MainThreadExecutor();
     @Thunk final LauncherAppState mApp;
     @Thunk final Object mLock = new Object();
     @Thunk
     LoaderTask mLoaderTask;
     @Thunk boolean mIsLoaderTaskRunning;
-
-    @Thunk static final HandlerThread sWorkerThread = new HandlerThread("launcher-loader");
-    private static final Looper mWorkerLooper;
-    static {
-        sWorkerThread.start();
-        mWorkerLooper = sWorkerThread.getLooper();
-    }
-    @Thunk static final Handler sWorker = new Handler(mWorkerLooper);
 
     // Indicates whether the current model data is valid or not.
     // We start off with everything not loaded. After that, we assume that
@@ -135,33 +122,6 @@ public class LauncherModel extends BroadcastReceiver
         }
     };
 
-    public interface Callbacks {
-        public void rebindModel();
-
-        public int getCurrentWorkspaceScreen();
-        public void clearPendingBinds();
-        public void startBinding();
-        public void bindItems(List<ItemInfo> shortcuts, boolean forceAnimateIcons);
-        public void bindScreens(IntArray orderedScreenIds);
-        public void finishFirstPageBind(ViewOnDrawExecutor executor);
-        public void finishBindingItems(int pageBoundFirst);
-        public void bindAllApplications(ArrayList<AppInfo> apps);
-        public void bindAppsAddedOrUpdated(ArrayList<AppInfo> apps);
-        public void preAddApps();
-        public void bindAppsAdded(IntArray newScreens,
-                ArrayList<ItemInfo> addNotAnimated, ArrayList<ItemInfo> addAnimated);
-        public void bindPromiseAppProgressUpdated(PromiseAppInfo app);
-        public void bindWorkspaceItemsChanged(ArrayList<WorkspaceItemInfo> updated);
-        public void bindWidgetsRestored(ArrayList<LauncherAppWidgetInfo> widgets);
-        public void bindRestoreItemsChange(HashSet<ItemInfo> updates);
-        public void bindWorkspaceComponentsRemoved(ItemInfoMatcher matcher);
-        public void bindAppInfosRemoved(ArrayList<AppInfo> appInfos);
-        public void bindAllWidgets(ArrayList<WidgetListRowEntry> widgets);
-        public void onPageBoundSynchronously(int page);
-        public void executeOnNextDraw(ViewOnDrawExecutor executor);
-        public void bindDeepShortcutMap(HashMap<ComponentKey, Integer> deepShortcutMap);
-    }
-
     LauncherModel(LauncherAppState app, IconCache iconCache, AppFilter appFilter) {
         mApp = app;
         mBgAllAppsList = new AllAppsList(iconCache, appFilter);
@@ -174,11 +134,11 @@ public class LauncherModel extends BroadcastReceiver
     /**
      * Updates the icons and label of all pending icons for the provided package name.
      */
-    public void updateSessionDisplayInfo(final String packageName) {
+    public void updateSessionDisplayInfo(final String packageName, final UserHandle user) {
         HashSet<String> packages = new HashSet<>();
         packages.add(packageName);
         enqueueModelUpdateTask(new CacheDataUpdatedTask(
-                CacheDataUpdatedTask.OP_SESSION_UPDATE, Process.myUserHandle(), packages));
+                CacheDataUpdatedTask.OP_SESSION_UPDATE, user, packages));
     }
 
     /**
@@ -244,6 +204,7 @@ public class LauncherModel extends BroadcastReceiver
 
     public void onPackagesRemoved(UserHandle user, String... packages) {
         int op = PackageUpdatedTask.OP_REMOVE;
+        FileLog.d(TAG, "package removed received " + String.join("," + packages));
         enqueueModelUpdateTask(new PackageUpdatedTask(op, user, packages));
     }
 
@@ -299,7 +260,6 @@ public class LauncherModel extends BroadcastReceiver
     @Override
     public void onReceive(Context context, Intent intent) {
         if (DEBUG_RECEIVER) Log.d(TAG, "onReceive intent=" + intent);
-
         final String action = intent.getAction();
         if (Intent.ACTION_LOCALE_CHANGED.equals(action)) {
             // If we have changed locale we need to clear out the labels in all apps/workspace.
@@ -375,7 +335,7 @@ public class LauncherModel extends BroadcastReceiver
             if (mCallbacks != null && mCallbacks.get() != null) {
                 final Callbacks oldCallbacks = mCallbacks.get();
                 // Clear any pending bind-runnables from the synchronized load process.
-                mUiExecutor.execute(oldCallbacks::clearPendingBinds);
+                MAIN_EXECUTOR.execute(oldCallbacks::clearPendingBinds);
 
                 // If there is already one running, tell it to stop.
                 stopLoader();
@@ -419,7 +379,7 @@ public class LauncherModel extends BroadcastReceiver
 
             // Always post the loader task, instead of running directly (even on same thread) so
             // that we exit any nested synchronized blocks
-            sWorker.post(mLoaderTask);
+            MODEL_EXECUTOR.post(mLoaderTask);
         }
     }
 
@@ -437,16 +397,7 @@ public class LauncherModel extends BroadcastReceiver
             @Override
             public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
                 apps.addPromiseApp(app.getContext(), sessionInfo);
-                if (!apps.added.isEmpty()) {
-                    final ArrayList<AppInfo> arrayList = new ArrayList<>(apps.added);
-                    apps.added.clear();
-                    scheduleCallbackTask(new CallbackTask() {
-                        @Override
-                        public void execute(Callbacks callbacks) {
-                            callbacks.bindAppsAddedOrUpdated(arrayList);
-                        }
-                    });
-                }
+                bindApplicationsIfNeeded();
             }
         });
     }
@@ -495,8 +446,8 @@ public class LauncherModel extends BroadcastReceiver
      * use partial updates similar to {@link UserManagerCompat}
      */
     public void refreshShortcutsIfRequired() {
-        sWorker.removeCallbacks(mShortcutPermissionCheckRunnable);
-        sWorker.post(mShortcutPermissionCheckRunnable);
+        MODEL_EXECUTOR.getHandler().removeCallbacks(mShortcutPermissionCheckRunnable);
+        MODEL_EXECUTOR.post(mShortcutPermissionCheckRunnable);
     }
 
     /**
@@ -523,14 +474,8 @@ public class LauncherModel extends BroadcastReceiver
     }
 
     public void enqueueModelUpdateTask(ModelUpdateTask task) {
-        task.init(mApp, this, sBgDataModel, mBgAllAppsList, mUiExecutor);
-
-        if (sWorkerThread.getThreadId() == Process.myTid()) {
-            task.run();
-        } else {
-            // If we are not on the worker thread, then post to the worker handler
-            sWorker.post(task);
-        }
+        task.init(mApp, this, sBgDataModel, mBgAllAppsList, MAIN_EXECUTOR);
+        MODEL_EXECUTOR.execute(task);
     }
 
     /**
@@ -604,16 +549,5 @@ public class LauncherModel extends BroadcastReceiver
 
     public Callbacks getCallback() {
         return mCallbacks != null ? mCallbacks.get() : null;
-    }
-
-    /**
-     * @return the looper for the worker thread which can be used to start background tasks.
-     */
-    public static Looper getWorkerLooper() {
-        return mWorkerLooper;
-    }
-
-    public static void setWorkerPriority(final int priority) {
-        Process.setThreadPriority(sWorkerThread.getThreadId(), priority);
     }
 }

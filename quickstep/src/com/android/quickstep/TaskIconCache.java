@@ -16,6 +16,7 @@
 package com.android.quickstep;
 
 import static com.android.launcher3.uioverrides.RecentsUiFactory.GO_LOW_RAM_RECENTS_ENABLED;
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -27,26 +28,25 @@ import android.os.Looper;
 import android.util.LruCache;
 import android.view.accessibility.AccessibilityManager;
 
-import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.icons.cache.HandlerRunnable;
-import com.android.launcher3.uioverrides.RecentsUiFactory;
 import com.android.launcher3.util.Preconditions;
 import com.android.systemui.shared.recents.model.Task;
+import com.android.systemui.shared.recents.model.Task.TaskKey;
 import com.android.systemui.shared.recents.model.TaskKeyLruCache;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 
+import java.util.Map;
 import java.util.function.Consumer;
 
 /**
  * Manages the caching of task icons and related data.
- * TODO: This class should later be merged into IconCache.
+ * TODO(b/138944598): This class should later be merged into IconCache.
  */
 public class TaskIconCache {
 
     private final Handler mBackgroundHandler;
-    private final MainThreadExecutor mMainThreadExecutor;
     private final AccessibilityManager mAccessibilityManager;
 
     private final NormalizedIconLoader mIconLoader;
@@ -67,7 +67,6 @@ public class TaskIconCache {
 
     public TaskIconCache(Context context, Looper backgroundLooper) {
         mBackgroundHandler = new Handler(backgroundLooper);
-        mMainThreadExecutor = new MainThreadExecutor();
         mAccessibilityManager = context.getSystemService(AccessibilityManager.class);
 
         Resources res = context.getResources();
@@ -103,7 +102,7 @@ public class TaskIconCache {
                     // We don't call back to the provided callback in this case
                     return;
                 }
-                mMainThreadExecutor.execute(() -> {
+                MAIN_EXECUTOR.execute(() -> {
                     task.icon = icon;
                     task.titleDescription = contentDescription;
                     callback.accept(task);
@@ -147,6 +146,21 @@ public class TaskIconCache {
                 task.key.userId, task.taskDescription);
         mContentDescriptionCache.put(task.key, label);
         return label;
+    }
+
+
+    void onTaskRemoved(TaskKey taskKey) {
+        mIconCache.remove(taskKey);
+    }
+
+    void invalidatePackage(String packageName) {
+        // TODO(b/138944598): Merge this class into IconCache so we can do this at the base level
+        Map<ComponentName, ActivityInfo> activityInfoCache = mActivityInfoCache.snapshot();
+        for (ComponentName cn : activityInfoCache.keySet()) {
+            if (cn.getPackageName().equals(packageName)) {
+                mActivityInfoCache.remove(cn);
+            }
+        }
     }
 
     public static abstract class IconLoadRequest extends HandlerRunnable {

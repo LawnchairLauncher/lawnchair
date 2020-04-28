@@ -1,12 +1,12 @@
 package com.android.quickstep;
 
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+
 import android.content.Context;
 import android.os.Bundle;
 
-import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.testing.TestInformationHandler;
 import com.android.launcher3.testing.TestProtocol;
-import com.android.launcher3.uioverrides.states.OverviewState;
 import com.android.launcher3.uioverrides.touchcontrollers.PortraitStatesTouchController;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.views.RecentsView;
@@ -24,7 +24,7 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
         switch (method) {
             case TestProtocol.REQUEST_HOME_TO_OVERVIEW_SWIPE_HEIGHT: {
                 final float swipeHeight =
-                        OverviewState.getDefaultSwipeHeight(mContext, mDeviceProfile);
+                        LayoutUtils.getDefaultSwipeHeight(mContext, mDeviceProfile);
                 response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD, (int) swipeHeight);
                 return response;
             }
@@ -33,12 +33,6 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
                 final float swipeHeight =
                         LayoutUtils.getShelfTrackingDistance(mContext, mDeviceProfile);
                 response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD, (int) swipeHeight);
-                return response;
-            }
-
-            case TestProtocol.REQUEST_IS_LAUNCHER_INITIALIZED: {
-                response.putBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD,
-                        TouchInteractionService.isInitialized());
                 return response;
             }
 
@@ -52,7 +46,7 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
 
             case TestProtocol.REQUEST_OVERVIEW_LEFT_GESTURE_MARGIN: {
                 try {
-                    final int leftMargin = new MainThreadExecutor().submit(() ->
+                    final int leftMargin = MAIN_EXECUTOR.submit(() ->
                             mLauncher.<RecentsView>getOverviewPanel().getLeftGestureMargin()).get();
                     response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD, leftMargin);
                 } catch (ExecutionException e) {
@@ -65,7 +59,7 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
 
             case TestProtocol.REQUEST_OVERVIEW_RIGHT_GESTURE_MARGIN: {
                 try {
-                    final int rightMargin = new MainThreadExecutor().submit(() ->
+                    final int rightMargin = MAIN_EXECUTOR.submit(() ->
                             mLauncher.<RecentsView>getOverviewPanel().getRightGestureMargin()).
                             get();
                     response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD, rightMargin);
@@ -79,5 +73,10 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
         }
 
         return super.call(method);
+    }
+
+    @Override
+    protected boolean isLauncherInitialized() {
+        return super.isLauncherInitialized() && TouchInteractionService.isInitialized();
     }
 }

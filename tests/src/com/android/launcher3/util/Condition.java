@@ -1,8 +1,8 @@
 package com.android.launcher3.util;
 
-import androidx.test.uiautomator.UiObject2;
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
-import com.android.launcher3.MainThreadExecutor;
+import androidx.test.uiautomator.UiObject2;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -16,7 +16,7 @@ public interface Condition {
      * Converts the condition to be run on UI thread.
      */
     static Condition runOnUiThread(final Condition condition) {
-        final MainThreadExecutor executor = new MainThreadExecutor();
+        final LooperExecutor executor = MAIN_EXECUTOR;
         return () -> {
             final AtomicBoolean value = new AtomicBoolean(false);
             final Throwable[] exceptions = new Throwable[1];

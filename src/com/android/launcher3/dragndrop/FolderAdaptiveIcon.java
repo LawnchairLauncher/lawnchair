@@ -16,6 +16,8 @@
 
 package com.android.launcher3.dragndrop;
 
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+
 import android.annotation.TargetApi;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -31,7 +33,6 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.Launcher;
-import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.folder.PreviewBackground;
@@ -85,7 +86,7 @@ public class FolderAdaptiveIcon extends AdaptiveIconDrawable {
         // Create the actual drawable on the UI thread to avoid race conditions with
         // FolderIcon draw pass
         try {
-            return new MainThreadExecutor().submit(() -> {
+            return MAIN_EXECUTOR.submit(() -> {
                 FolderIcon icon = launcher.findFolderIcon(folderId);
                 return icon == null ? null : createDrawableOnUiThread(icon, badge, dragViewSize);
             }).get();

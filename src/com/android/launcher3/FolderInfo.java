@@ -50,9 +50,9 @@ public class FolderInfo extends ItemInfo {
     /**
      * The apps and shortcuts
      */
-    public ArrayList<WorkspaceItemInfo> contents = new ArrayList<WorkspaceItemInfo>();
+    public ArrayList<WorkspaceItemInfo> contents = new ArrayList<>();
 
-    ArrayList<FolderListener> listeners = new ArrayList<FolderListener>();
+    private ArrayList<FolderListener> mListeners = new ArrayList<>();
 
     public FolderInfo() {
         itemType = LauncherSettings.Favorites.ITEM_TYPE_FOLDER;
@@ -72,10 +72,10 @@ public class FolderInfo extends ItemInfo {
      * Add an app or shortcut for a specified rank.
      */
     public void add(WorkspaceItemInfo item, int rank, boolean animate) {
-        rank = Utilities.boundToRange(rank, 0, contents.size());
+        rank = Utilities.boundToRange(rank, 0, contents.size() + 1);
         contents.add(rank, item);
-        for (int i = 0; i < listeners.size(); i++) {
-            listeners.get(i).onAdd(item, rank);
+        for (int i = 0; i < mListeners.size(); i++) {
+            mListeners.get(i).onAdd(item, rank);
         }
         itemsChanged(animate);
     }
@@ -87,17 +87,10 @@ public class FolderInfo extends ItemInfo {
      */
     public void remove(WorkspaceItemInfo item, boolean animate) {
         contents.remove(item);
-        for (int i = 0; i < listeners.size(); i++) {
-            listeners.get(i).onRemove(item);
+        for (int i = 0; i < mListeners.size(); i++) {
+            mListeners.get(i).onRemove(item);
         }
         itemsChanged(animate);
-    }
-
-    public void setTitle(CharSequence title) {
-        this.title = title;
-        for (int i = 0; i < listeners.size(); i++) {
-            listeners.get(i).onTitleChanged(title);
-        }
     }
 
     @Override
@@ -105,35 +98,26 @@ public class FolderInfo extends ItemInfo {
         super.onAddToDatabase(writer);
         writer.put(LauncherSettings.Favorites.TITLE, title)
                 .put(LauncherSettings.Favorites.OPTIONS, options);
-
     }
 
     public void addListener(FolderListener listener) {
-        listeners.add(listener);
+        mListeners.add(listener);
     }
 
     public void removeListener(FolderListener listener) {
-        listeners.remove(listener);
+        mListeners.remove(listener);
     }
 
     public void itemsChanged(boolean animate) {
-        for (int i = 0; i < listeners.size(); i++) {
-            listeners.get(i).onItemsChanged(animate);
-        }
-    }
-
-    public void prepareAutoUpdate() {
-        for (int i = 0; i < listeners.size(); i++) {
-            listeners.get(i).prepareAutoUpdate();
+        for (int i = 0; i < mListeners.size(); i++) {
+            mListeners.get(i).onItemsChanged(animate);
         }
     }
 
     public interface FolderListener {
         public void onAdd(WorkspaceItemInfo item, int rank);
         public void onRemove(WorkspaceItemInfo item);
-        public void onTitleChanged(CharSequence title);
         public void onItemsChanged(boolean animate);
-        public void prepareAutoUpdate();
     }
 
     public boolean hasOption(int optionFlag) {

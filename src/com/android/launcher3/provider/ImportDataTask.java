@@ -42,7 +42,6 @@ import com.android.launcher3.LauncherProvider;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.LauncherSettings.Settings;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
@@ -50,6 +49,7 @@ import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.GridSizeMigrationTask;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSparseArrayMap;
+import com.android.launcher3.util.PackageManagerHelper;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -223,7 +223,7 @@ public class ImportDataTask {
                     case Favorites.ITEM_TYPE_SHORTCUT:
                     case Favorites.ITEM_TYPE_APPLICATION: {
                         intent = Intent.parseUri(c.getString(intentIndex), 0);
-                        if (Utilities.isLauncherAppTarget(intent)) {
+                        if (PackageManagerHelper.isLauncherAppTarget(intent)) {
                             type = Favorites.ITEM_TYPE_APPLICATION;
                         } else {
                             values.put(Favorites.ICON_PACKAGE, c.getString(iconPackageIndex));

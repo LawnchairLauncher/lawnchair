@@ -24,5 +24,7 @@
   <string name="app_launch_tracker_class" translatable="false">com.android.launcher3.appprediction.PredictionAppTracker</string>
 
   <string name="main_process_initializer_class" translatable="false">com.android.quickstep.QuickstepProcessInitializer</string>
+
+  <string name="user_event_dispatcher_class" translatable="false">com.android.quickstep.logging.UserEventDispatcherAppPredictionExtension</string>
 </resources>
 

@@ -15,6 +15,10 @@
  */
 package com.android.quickstep;
 
+import static android.os.Process.THREAD_PRIORITY_BACKGROUND;
+
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.launcher3.util.Executors.createAndStartNewLooper;
 import static com.android.quickstep.TaskUtils.checkCurrentOrManagedUserId;
 
 import android.annotation.TargetApi;
@@ -22,16 +26,20 @@ import android.app.ActivityManager;
 import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.os.Build;
-import android.os.HandlerThread;
+import android.os.Looper;
 import android.os.Process;
 import android.os.RemoteException;
+import android.os.UserHandle;
 import android.util.Log;
 
+import com.android.launcher3.compat.LauncherAppsCompat;
+import com.android.launcher3.compat.LauncherAppsCompat.OnAppsChangedCallbackCompat;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
+import com.android.systemui.shared.system.KeyguardManagerCompat;
 import com.android.systemui.shared.system.TaskStackChangeListener;
 
 import java.util.ArrayList;
@@ -61,13 +69,14 @@ public class RecentsModel extends TaskStackChangeListener {
 
     private RecentsModel(Context context) {
         mContext = context;
-        HandlerThread loaderThread = new HandlerThread("TaskThumbnailIconCache",
-                Process.THREAD_PRIORITY_BACKGROUND);
-        loaderThread.start();
-        mTaskList = new RecentTasksList(context);
-        mIconCache = new TaskIconCache(context, loaderThread.getLooper());
-        mThumbnailCache = new TaskThumbnailCache(context, loaderThread.getLooper());
+        Looper looper =
+                createAndStartNewLooper("TaskThumbnailIconCache", THREAD_PRIORITY_BACKGROUND);
+        mTaskList = new RecentTasksList(MAIN_EXECUTOR,
+                new KeyguardManagerCompat(context), ActivityManagerWrapper.getInstance());
+        mIconCache = new TaskIconCache(context, looper);
+        mThumbnailCache = new TaskThumbnailCache(context, looper);
         ActivityManagerWrapper.getInstance().registerTaskStackListener(this);
+        setupPackageListener();
     }
 
     public TaskIconCache getIconCache() {
@@ -166,6 +175,7 @@ public class RecentsModel extends TaskStackChangeListener {
     public void onTaskRemoved(int taskId) {
         Task.TaskKey dummyKey = new Task.TaskKey(taskId, 0, null, null, 0, 0);
         mThumbnailCache.remove(dummyKey);
+        mIconCache.onTaskRemoved(dummyKey);
     }
 
     public void setSystemUiProxy(ISystemUiProxy systemUiProxy) {
@@ -198,6 +208,21 @@ public class RecentsModel extends TaskStackChangeListener {
                     "Failed to notify SysUI of overview shown from " + (fromHome ? "home" : "app")
                             + ": ", e);
         }
+    }
+
+    private void setupPackageListener() {
+        LauncherAppsCompat.getInstance(mContext)
+                .addOnAppsChangedCallback(new OnAppsChangedCallbackCompat() {
+                    @Override
+                    public void onPackageRemoved(String packageName, UserHandle user) {
+                        mIconCache.invalidatePackage(packageName);
+                    }
+
+                    @Override
+                    public void onPackageChanged(String packageName, UserHandle user) {
+                        mIconCache.invalidatePackage(packageName);
+                    }
+                });
     }
 
     public void addThumbnailChangeListener(TaskThumbnailChangeListener listener) {

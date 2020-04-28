@@ -27,6 +27,8 @@ import com.android.launcher3.icons.BitmapInfo;
  */
 public abstract class ItemInfoWithIcon extends ItemInfo {
 
+    public static final String TAG = "ItemInfoDebug";
+
     /**
      * A bitmap version of the application icon.
      */
@@ -126,4 +128,8 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
         iconColor = info.color;
     }
 
+    /**
+     * @return a copy of this
+     */
+    public abstract ItemInfoWithIcon clone();
 }

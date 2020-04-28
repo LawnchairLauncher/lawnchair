@@ -30,6 +30,7 @@ import static com.android.launcher3.anim.Interpolators.INSTANT;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_OVERVIEW;
 import static com.android.quickstep.views.RecentsView.UPDATE_SYSUI_FLAGS_THRESHOLD;
+import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_OVERVIEW_DISABLED;
 
 import android.view.MotionEvent;
@@ -42,7 +43,7 @@ import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.touch.AbstractStateChangeTouchController;
-import com.android.launcher3.touch.SwipeDetector;
+import com.android.launcher3.touch.SingleAxisSwipeDetector;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.quickstep.OverviewInteractionState;
@@ -50,7 +51,7 @@ import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
-import com.android.systemui.shared.system.QuickStepContract;
+import com.android.systemui.shared.system.ActivityManagerWrapper;
 
 /**
  * Handles quick switching to a recent task from the home screen.
@@ -60,10 +61,10 @@ public class QuickSwitchTouchController extends AbstractStateChangeTouchControll
     private @Nullable TaskView mTaskToLaunch;
 
     public QuickSwitchTouchController(Launcher launcher) {
-        this(launcher, SwipeDetector.HORIZONTAL);
+        this(launcher, SingleAxisSwipeDetector.HORIZONTAL);
     }
 
-    protected QuickSwitchTouchController(Launcher l, SwipeDetector.Direction dir) {
+    protected QuickSwitchTouchController(Launcher l, SingleAxisSwipeDetector.Direction dir) {
         super(l, dir);
     }
 
@@ -95,6 +96,8 @@ public class QuickSwitchTouchController extends AbstractStateChangeTouchControll
         super.onDragStart(start);
         mStartContainerType = LauncherLogProto.ContainerType.NAVBAR;
         mTaskToLaunch = mLauncher.<RecentsView>getOverviewPanel().getTaskViewAt(0);
+        ActivityManagerWrapper.getInstance()
+            .closeSystemWindows(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
     }
 
     @Override

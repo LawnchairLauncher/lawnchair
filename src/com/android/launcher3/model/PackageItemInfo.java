@@ -17,6 +17,7 @@
 package com.android.launcher3.model;
 
 import com.android.launcher3.ItemInfoWithIcon;
+import com.android.launcher3.LauncherSettings;
 
 /**
  * Represents a {@link Package} in the widget tray section.
@@ -30,10 +31,21 @@ public class PackageItemInfo extends ItemInfoWithIcon {
 
     public PackageItemInfo(String packageName) {
         this.packageName = packageName;
+        this.itemType = LauncherSettings.Favorites.ITEM_TYPE_NON_ACTIONABLE;
+    }
+
+    public PackageItemInfo(PackageItemInfo copy) {
+        this.packageName = copy.packageName;
+        this.itemType = LauncherSettings.Favorites.ITEM_TYPE_NON_ACTIONABLE;
     }
 
     @Override
     protected String dumpProperties() {
         return super.dumpProperties() + " packageName=" + packageName;
+    }
+
+    @Override
+    public PackageItemInfo clone() {
+        return new PackageItemInfo(this);
     }
 }
