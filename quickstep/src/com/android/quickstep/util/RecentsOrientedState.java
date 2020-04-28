@@ -17,6 +17,7 @@
 package com.android.quickstep.util;
 
 import static android.util.DisplayMetrics.DENSITY_DEVICE_STABLE;
+import static android.view.OrientationEventListener.ORIENTATION_UNKNOWN;
 import static android.view.Surface.ROTATION_0;
 import static android.view.Surface.ROTATION_180;
 import static android.view.Surface.ROTATION_270;
@@ -135,7 +136,7 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
         mOrientationListener = new OrientationEventListener(context) {
             @Override
             public void onOrientationChanged(int degrees) {
-                int newRotation = getRotationForUserDegreesRotated(degrees);
+                int newRotation = getRotationForUserDegreesRotated(degrees, mPreviousRotation);
                 if (newRotation != mPreviousRotation) {
                     mPreviousRotation = newRotation;
                     rotationChangeListener.accept(newRotation);
@@ -392,17 +393,48 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
     }
 
     @SurfaceRotation
-    public static int getRotationForUserDegreesRotated(float degrees) {
-        int threshold = 70;
-        if (degrees >= (360 - threshold) || degrees < (threshold)) {
-            return ROTATION_0;
-        } else if (degrees < (90 + threshold)) {
-            return ROTATION_270;
-        } else if (degrees < 180 + threshold) {
-            return ROTATION_180;
-        } else {
-            return ROTATION_90;
+    public static int getRotationForUserDegreesRotated(float degrees, int currentRotation) {
+        if (degrees == ORIENTATION_UNKNOWN) {
+            return currentRotation;
         }
+
+        int threshold = 70;
+        switch (currentRotation) {
+            case ROTATION_0:
+                if (degrees > 180 && degrees < (360 - threshold)) {
+                    return ROTATION_90;
+                }
+                if (degrees < 180 && degrees > threshold) {
+                    return ROTATION_270;
+                }
+                break;
+            case ROTATION_270:
+                if (degrees < (90 - threshold)) {
+                    return ROTATION_0;
+                }
+                if (degrees > (90 + threshold)) {
+                    return ROTATION_180;
+                }
+                break;
+            case ROTATION_180:
+                if (degrees < (180 - threshold)) {
+                    return ROTATION_270;
+                }
+                if (degrees > (180 + threshold)) {
+                    return ROTATION_90;
+                }
+                break;
+            case ROTATION_90:
+                if (degrees < (270 - threshold)) {
+                    return ROTATION_180;
+                }
+                if (degrees > (270 + threshold)) {
+                    return ROTATION_0;
+                }
+                break;
+        }
+
+        return currentRotation;
     }
 
     public boolean isDisplayPhoneNatural() {
