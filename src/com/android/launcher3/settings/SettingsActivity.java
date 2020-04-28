@@ -71,7 +71,7 @@ public class SettingsActivity extends FragmentActivity
     private static final int DELAY_HIGHLIGHT_DURATION_MILLIS = 600;
     public static final String SAVE_HIGHLIGHTED_KEY = "android:preference_highlighted";
 
-    public static final String GRID_OPTIONS_PREFERENCE_KEY = "pref_grid_options";
+    private static final String GRID_OPTIONS_PREFERENCE_KEY = "pref_grid_options";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
