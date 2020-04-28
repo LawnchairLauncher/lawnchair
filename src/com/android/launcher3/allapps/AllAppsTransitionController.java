@@ -230,6 +230,8 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
                     hasAllAppsContent, setter, headerFade, allAppsFade);
         } else {
             setter.setViewAlpha(mPluginContent, hasAllAppsContent ? 1 : 0, allAppsFade);
+            setter.setViewAlpha(mAppsView.getContentView(), 0, allAppsFade);
+            setter.setViewAlpha(mAppsView.getScrollBar(), 0, allAppsFade);
         }
         mAppsView.getSearchUiManager().setContentVisibility(visibleElements, setter, allAppsFade);
 
