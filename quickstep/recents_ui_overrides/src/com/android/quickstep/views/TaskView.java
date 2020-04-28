@@ -274,10 +274,10 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
      * TODO(b/142282126) Re-evaluate if we need to pass in isMultiWindowMode after
      *   that issue is fixed
      */
-    public void bind(Task task, RecentsOrientedState orientedState, boolean isMultiWindowMode) {
+    public void bind(Task task, RecentsOrientedState orientedState) {
         cancelPendingLoadTasks();
         mTask = task;
-        mSnapshotView.bind(task, isMultiWindowMode);
+        mSnapshotView.bind(task);
         setOrientationState(orientedState);
     }
 
@@ -1017,14 +1017,13 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
          */
         public void setProgress(float fullscreenProgress, float parentScale, int previewWidth,
                 DeviceProfile dp, PreviewPositionHelper pph) {
-            boolean isMultiWindowMode = dp.isMultiWindowMode;
-            RectF insets = pph.getInsetsToDrawInFullscreen(isMultiWindowMode);
+            RectF insets = pph.getInsetsToDrawInFullscreen();
 
             float currentInsetsLeft = insets.left * fullscreenProgress;
             float currentInsetsRight = insets.right * fullscreenProgress;
             mCurrentDrawnInsets.set(currentInsetsLeft, insets.top * fullscreenProgress,
                     currentInsetsRight, insets.bottom * fullscreenProgress);
-            float fullscreenCornerRadius = isMultiWindowMode ? 0 : mWindowCornerRadius;
+            float fullscreenCornerRadius = dp.isMultiWindowMode ? 0 : mWindowCornerRadius;
 
             mCurrentDrawnCornerRadius =
                     Utilities.mapRange(fullscreenProgress, mCornerRadius, fullscreenCornerRadius)

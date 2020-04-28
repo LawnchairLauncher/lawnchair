@@ -61,7 +61,7 @@ public class TaskViewSimulator {
 
     private final RecentsOrientedState mOrientationState;
     private final Context mContext;
-    private final TaskSizeProvider mSizeProvider;
+    private final WindowSizeStrategy mSizeStrategy;
 
     private final Rect mTaskRect = new Rect();
     private final PointF mPivot = new PointF();
@@ -95,14 +95,12 @@ public class TaskViewSimulator {
     private boolean mLayoutValid = false;
     private boolean mScrollValid = false;
 
-    public TaskViewSimulator(Context context, TaskSizeProvider sizeProvider,
-            boolean rotationSupportedByActivity) {
+    public TaskViewSimulator(Context context, WindowSizeStrategy sizeStrategy) {
         mContext = context;
-        mSizeProvider = sizeProvider;
+        mSizeStrategy = sizeStrategy;
         mPositionHelper = new PreviewPositionHelper(context);
 
-        mOrientationState = new RecentsOrientedState(context, rotationSupportedByActivity,
-                i -> { });
+        mOrientationState = new RecentsOrientedState(context, sizeStrategy, i -> { });
         // We do not need to attach listeners as the simulator is created just for the gesture
         // duration, and any settings are unlikely to change during this
         mOrientationState.initWithoutListeners();
@@ -116,6 +114,7 @@ public class TaskViewSimulator {
      */
     public void setDp(DeviceProfile dp, boolean isOpening) {
         mDp = dp;
+        mOrientationState.setMultiWindowMode(mDp.isMultiWindowMode);
         mBoostModeTargetLayers = isOpening ? MODE_OPENING : MODE_CLOSING;
         mLayoutValid = false;
     }
@@ -143,7 +142,7 @@ public class TaskViewSimulator {
         if (mDp == null) {
             return 1;
         }
-        mSizeProvider.calculateTaskSize(mContext, mDp, mTaskRect);
+        mSizeStrategy.calculateTaskSize(mContext, mDp, mTaskRect);
         return mOrientationState.getFullScreenScaleAndPivot(mTaskRect, mDp, mPivot);
     }
 
@@ -161,8 +160,7 @@ public class TaskViewSimulator {
 
         mThumbnailPosition.set(runningTarget.screenSpaceBounds);
         // TODO: Should sourceContainerBounds already have this offset?
-        mThumbnailPosition.offsetTo(mRunningTarget.position.x, mRunningTarget.position.y);
-
+        mThumbnailPosition.offset(-mRunningTarget.position.x, -mRunningTarget.position.y);
         mLayoutValid = false;
     }
 
@@ -198,7 +196,7 @@ public class TaskViewSimulator {
                     ? mOrientationState.getDisplayRotation() : mPositionHelper.getCurrentRotation();
 
             mPositionHelper.updateThumbnailMatrix(mThumbnailPosition, mThumbnailData,
-                    mDp.isMultiWindowMode, mTaskRect.width(), mTaskRect.height());
+                    mTaskRect.width(), mTaskRect.height(), mDp);
 
             mPositionHelper.getMatrix().invert(mInversePositionMatrix);
 
@@ -208,6 +206,7 @@ public class TaskViewSimulator {
             mScrollState.halfScreenSize = poh.getPrimaryValue(mDp.widthPx, mDp.heightPx) / 2;
             mScrollValid = false;
         }
+
 
         if (!mScrollValid) {
             mScrollValid = true;
@@ -243,6 +242,8 @@ public class TaskViewSimulator {
         postDisplayRotation(deltaRotation(
                 mOrientationState.getLauncherRotation(), mOrientationState.getDisplayRotation()),
                 mDp.widthPx, mDp.heightPx, mMatrix);
+        mMatrix.postTranslate(mDp.windowX - mRunningTarget.position.x,
+                mDp.windowY - mRunningTarget.position.y);
 
         // Crop rect is the inverse of thumbnail matrix
         mTempRectF.set(-insets.left, -insets.top,
@@ -298,16 +299,4 @@ public class TaskViewSimulator {
         // Ideally we should use square-root. This is an optimization as one of the dimension is 0.
         return Math.max(Math.abs(mTempPoint[0]), Math.abs(mTempPoint[1]));
     }
-
-    /**
-     * Interface for calculating taskSize
-     */
-    public interface TaskSizeProvider {
-
-        /**
-         * Sets the outRect to the expected taskSize
-         */
-        void calculateTaskSize(Context context, DeviceProfile dp, Rect outRect);
-    }
-
 }
