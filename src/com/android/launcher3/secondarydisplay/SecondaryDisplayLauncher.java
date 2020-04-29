@@ -89,17 +89,16 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
         if (mDragLayer != null) {
             return;
         }
-        InvariantDeviceProfile mainIdp = LauncherAppState.getIDP(this);
         InvariantDeviceProfile currentDisplayIdp =
                 new InvariantDeviceProfile(this, getWindow().getDecorView().getDisplay());
 
-        // Pick the device profile with the smaller icon size so that the cached icons are
-        // shown properly
-        if (mainIdp.iconBitmapSize <= currentDisplayIdp.iconBitmapSize) {
-            mDeviceProfile = mainIdp.getDeviceProfile(this).copy(this);
-        } else {
-            mDeviceProfile = currentDisplayIdp.getDeviceProfile(this);
-        }
+        // Disable transpose layout and use multi-window mode so that the icons are scaled properly
+        mDeviceProfile = currentDisplayIdp.getDeviceProfile(this)
+                .toBuilder(this)
+                .setMultiWindowMode(true)
+                .setTransposeLayoutWithOrientation(false)
+                .build();
+        mDeviceProfile.autoResizeAllAppsCells();
 
         setContentView(R.layout.secondary_launcher);
         mDragLayer = findViewById(R.id.drag_layer);

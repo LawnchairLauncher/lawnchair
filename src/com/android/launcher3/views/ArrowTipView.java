@@ -32,7 +32,7 @@ import android.widget.TextView;
 import androidx.core.content.ContextCompat;
 
 import com.android.launcher3.AbstractFloatingView;
-import com.android.launcher3.Launcher;
+import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.dragndrop.DragLayer;
@@ -48,13 +48,13 @@ public class ArrowTipView extends AbstractFloatingView {
     private static final long SHOW_DURATION_MS = 300;
     private static final long HIDE_DURATION_MS = 100;
 
-    protected final Launcher mLauncher;
+    protected final BaseDraggingActivity mActivity;
     private final Handler mHandler = new Handler();
     private Runnable mOnClosed;
 
     public ArrowTipView(Context context) {
         super(context, null, 0);
-        mLauncher = Launcher.getLauncher(context);
+        mActivity = BaseDraggingActivity.fromContext(context);
         init(context);
     }
 
@@ -75,11 +75,11 @@ public class ArrowTipView extends AbstractFloatingView {
                         .setStartDelay(0)
                         .setDuration(HIDE_DURATION_MS)
                         .setInterpolator(Interpolators.ACCEL)
-                        .withEndAction(() -> mLauncher.getDragLayer().removeView(this))
+                        .withEndAction(() -> mActivity.getDragLayer().removeView(this))
                         .start();
             } else {
                 animate().cancel();
-                mLauncher.getDragLayer().removeView(this);
+                mActivity.getDragLayer().removeView(this);
             }
             if (mOnClosed != null) mOnClosed.run();
             mIsOpen = false;
@@ -126,12 +126,12 @@ public class ArrowTipView extends AbstractFloatingView {
      */
     public ArrowTipView show(String text, int top) {
         ((TextView) findViewById(R.id.text)).setText(text);
-        mLauncher.getDragLayer().addView(this);
+        mActivity.getDragLayer().addView(this);
 
         DragLayer.LayoutParams params = (DragLayer.LayoutParams) getLayoutParams();
         params.gravity = Gravity.CENTER_HORIZONTAL;
-        params.leftMargin = mLauncher.getDeviceProfile().workspacePadding.left;
-        params.rightMargin = mLauncher.getDeviceProfile().workspacePadding.right;
+        params.leftMargin = mActivity.getDeviceProfile().workspacePadding.left;
+        params.rightMargin = mActivity.getDeviceProfile().workspacePadding.right;
         post(() -> setY(top - getHeight()));
         setAlpha(0);
         animate()

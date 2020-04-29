@@ -852,9 +852,10 @@ public class CellLayout extends ViewGroup {
             int delay, boolean permanent, boolean adjustOccupied) {
         ShortcutAndWidgetContainer clc = getShortcutsAndWidgets();
 
-        if (clc.indexOfChild(child) != -1) {
+        if (clc.indexOfChild(child) != -1 && (child instanceof Reorderable)) {
             final LayoutParams lp = (LayoutParams) child.getLayoutParams();
             final ItemInfo info = (ItemInfo) child.getTag();
+            final Reorderable item = (Reorderable) child;
 
             // We cancel any existing animations
             if (mReorderAnimators.containsKey(lp)) {
@@ -862,13 +863,18 @@ public class CellLayout extends ViewGroup {
                 mReorderAnimators.remove(lp);
             }
 
-            final int oldX = lp.x;
-            final int oldY = lp.y;
+
             if (adjustOccupied) {
                 GridOccupancy occupied = permanent ? mOccupied : mTmpOccupied;
                 occupied.markCells(lp.cellX, lp.cellY, lp.cellHSpan, lp.cellVSpan, false);
                 occupied.markCells(cellX, cellY, lp.cellHSpan, lp.cellVSpan, true);
             }
+
+            // Compute the new x and y position based on the new cellX and cellY
+            // We leverage the actual layout logic in the layout params and hence need to modify
+            // state and revert that state.
+            final int oldX = lp.x;
+            final int oldY = lp.y;
             lp.isLockedToGrid = true;
             if (permanent) {
                 lp.cellX = info.cellX = cellX;
@@ -878,15 +884,23 @@ public class CellLayout extends ViewGroup {
                 lp.tmpCellY = cellY;
             }
             clc.setupLp(child);
-            lp.isLockedToGrid = false;
             final int newX = lp.x;
             final int newY = lp.y;
-
             lp.x = oldX;
             lp.y = oldY;
+            lp.isLockedToGrid = false;
+            // End compute new x and y
+
+            item.getReorderPreviewOffset(mTmpPointF);
+            final float initPreviewOffsetX = mTmpPointF.x;
+            final float initPreviewOffsetY = mTmpPointF.y;
+            final float finalPreviewOffsetX = newX - oldX;
+            final float finalPreviewOffsetY = newY - oldY;
+
 
             // Exit early if we're not actually moving the view
-            if (oldX == newX && oldY == newY) {
+            if (finalPreviewOffsetX == 0 && finalPreviewOffsetY == 0
+                    && initPreviewOffsetX == 0 && initPreviewOffsetY == 0) {
                 lp.isLockedToGrid = true;
                 return true;
             }
@@ -899,9 +913,9 @@ public class CellLayout extends ViewGroup {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
                     float r = (Float) animation.getAnimatedValue();
-                    lp.x = (int) ((1 - r) * oldX + r * newX);
-                    lp.y = (int) ((1 - r) * oldY + r * newY);
-                    child.requestLayout();
+                    float x = (1 - r) * initPreviewOffsetX + r * finalPreviewOffsetX;
+                    float y = (1 - r) * initPreviewOffsetY + r * finalPreviewOffsetY;
+                    item.setReorderPreviewOffset(x, y);
                 }
             });
             va.addListener(new AnimatorListenerAdapter() {
@@ -912,6 +926,7 @@ public class CellLayout extends ViewGroup {
                     // place just yet.
                     if (!cancelled) {
                         lp.isLockedToGrid = true;
+                        item.setReorderPreviewOffset(0, 0);
                         child.requestLayout();
                     }
                     if (mReorderAnimators.containsKey(lp)) {
@@ -1930,10 +1945,10 @@ public class CellLayout extends ViewGroup {
             finalDeltaX = 0;
             finalDeltaY = 0;
 
-            child.getReorderOffset(mTmpPointF);
+            child.getReorderBounceOffset(mTmpPointF);
             initDeltaX = mTmpPointF.x;
             initDeltaY = mTmpPointF.y;
-            initScale = child.getReorderScale();
+            initScale = child.getReorderBounceScale();
             finalScale = mChildScale - (CHILD_DIVIDEND / child.getView().getWidth()) * initScale;
 
             int dir = mode == MODE_HINT ? -1 : 1;
@@ -2010,9 +2025,9 @@ public class CellLayout extends ViewGroup {
             float r1 = (mode == MODE_HINT && repeating) ? 1.0f : animationProgress;
             float x = r1 * finalDeltaX + (1 - r1) * initDeltaX;
             float y = r1 * finalDeltaY + (1 - r1) * initDeltaY;
-            child.setReorderOffset(x, y);
+            child.setReorderBounceOffset(x, y);
             float s = animationProgress * finalScale + (1 - animationProgress) * initScale;
-            child.setReorderScale(s);
+            child.setReorderBounceScale(s);
         }
 
         private void cancel() {

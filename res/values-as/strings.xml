@@ -139,6 +139,7 @@
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"বুজি পালোঁ"</string>
     <string name="work_apps_paused_title" msgid="2389865654362803723">"কৰ্মস্থানৰ প্ৰ\'ফাইলটো পজ কৰা আছে"</string>
     <string name="work_apps_paused_body" msgid="5388070126389079077">"কৰ্মস্থানৰ এপ্‌সমূহে আপোনালৈ জাননীসমূহ পঠিয়াব, আপোনাৰ বেটাৰী ব্যৱহাৰ কৰিব অথবা আপোনাৰ অৱস্থান এক্সেছ কৰিব নোৱাৰে"</string>
+    <string name="work_apps_paused_content_description" msgid="7553586952985486433">"কৰ্মস্থানৰ প্ৰ\'ফাইলটো পজ কৰা আছে। কৰ্মস্থানৰ এপ্‌সমূহে আপোনালৈ জাননীসমূহ পঠিয়াব, আপোনাৰ বেটাৰী ব্যৱহাৰ কৰিব অথবা আপোনাৰ অৱস্থান এক্সেছ কৰিব নোৱাৰে"</string>
     <string name="work_switch_tip" msgid="808075064383839144">"কর্মস্থানৰ এপ্‌সমূহ আৰু জাননীসমূহ পজ কৰক"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"বিফল: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>
