@@ -202,6 +202,12 @@ public class StaggeredWorkspaceAnim {
         alpha.setInterpolator(LINEAR);
         alpha.setDuration(ALPHA_DURATION_MS);
         alpha.setStartDelay(startDelay);
+        alpha.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                v.setAlpha(1f);
+            }
+        });
         mAnimators.play(alpha);
     }
 
