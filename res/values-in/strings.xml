@@ -131,7 +131,7 @@
     <string name="accessibility_close" msgid="2277148124685870734">"Tutup"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Notifikasi ditutup"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Pribadi"</string>
-    <string name="all_apps_work_tab" msgid="4884822796154055118">"Kantor"</string>
+    <string name="all_apps_work_tab" msgid="4884822796154055118">"Kerja"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Profil kerja"</string>
     <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"Data pribadi terpisah &amp; tersembunyi dari aplikasi kerja"</string>
     <string name="work_profile_edu_work_apps" msgid="237051938268703058">"Aplikasi &amp; data kerja terlihat oleh admin IT"</string>
@@ -139,6 +139,7 @@
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"Oke"</string>
     <string name="work_apps_paused_title" msgid="2389865654362803723">"Profil kerja dijeda"</string>
     <string name="work_apps_paused_body" msgid="5388070126389079077">"Aplikasi kerja tidak dapat mengirimi Anda notifikasi, menggunakan baterai, atau mengakses lokasi Anda"</string>
+    <string name="work_apps_paused_content_description" msgid="7553586952985486433">"Profil kerja dijeda. Aplikasi kerja tidak dapat mengirimi Anda notifikasi, menggunakan baterai, atau mengakses lokasi Anda"</string>
     <string name="work_switch_tip" msgid="808075064383839144">"Jeda notifikasi dan aplikasi kerja"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Gagal: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

@@ -161,6 +161,8 @@ public abstract class BaseQuickstepLauncher extends Launcher
     @Override
     protected void setupViews() {
         super.setupViews();
+
+        SysUINavigationMode.INSTANCE.get(this).updateMode();
         mActionsView = findViewById(R.id.overview_actions_view);
         ((RecentsView) getOverviewPanel()).init(mActionsView);
 

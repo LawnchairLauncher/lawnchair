@@ -158,9 +158,6 @@ public class PredictionUiStateManager implements StateListener, ItemInfoUpdateRe
     public void reapplyItemInfo(ItemInfoWithIcon info) { }
 
     @Override
-    public void onStateTransitionStart(LauncherState toState) { }
-
-    @Override
     public void onStateTransitionComplete(LauncherState state) {
         if (mAppsView == null) {
             return;

@@ -28,6 +28,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -185,13 +186,14 @@ public class StaggeredWorkspaceAnim {
         ResourceProvider rp = DynamicResource.provider(v.getContext());
         float stiffness = rp.getFloat(R.dimen.staggered_stiffness);
         float damping = rp.getFloat(R.dimen.staggered_damping_ratio);
-        ObjectAnimator springTransY = new SpringAnimationBuilder<>(v, VIEW_TRANSLATE_Y)
+        ValueAnimator springTransY = new SpringAnimationBuilder(v.getContext())
                 .setStiffness(stiffness)
                 .setDampingRatio(damping)
                 .setMinimumVisibleChange(1f)
+                .setStartValue(mSpringTransY)
                 .setEndValue(0)
                 .setStartVelocity(mVelocity)
-                .build(v.getContext());
+                .build(v, VIEW_TRANSLATE_Y);
         springTransY.setStartDelay(startDelay);
         mAnimators.play(springTransY);
 

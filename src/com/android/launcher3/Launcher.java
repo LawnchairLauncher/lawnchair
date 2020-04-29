@@ -434,9 +434,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         mRotationHelper.initialize();
 
         mStateManager.addStateListener(new LauncherStateManager.StateListener() {
-            @Override
-            public void onStateTransitionStart(LauncherState toState) {
-            }
 
             @Override
             public void onStateTransitionComplete(LauncherState finalState) {

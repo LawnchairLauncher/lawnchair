@@ -30,6 +30,7 @@ import android.view.Surface;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
+import android.widget.LinearLayout;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.PagedView;
@@ -219,6 +220,31 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     @Override
     public int getTaskDismissDirectionFactor() {
         return -1;
+    }
+
+    @Override
+    public float getTaskMenuX(float x, View thumbnailView) {
+        return x;
+    }
+
+    @Override
+    public float getTaskMenuY(float y, View thumbnailView) {
+        return y;
+    }
+
+    @Override
+    public int getTaskMenuWidth(View view) {
+        return view.getMeasuredWidth();
+    }
+
+    @Override
+    public int getTaskMenuLayoutOrientation() {
+        return LinearLayout.VERTICAL;
+    }
+
+    @Override
+    public void setLayoutParamsForTaskMenuOptionItem(LinearLayout.LayoutParams lp) {
+        // no-op, defaults are fine
     }
 
     @Override
