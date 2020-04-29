@@ -126,6 +126,11 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
+    public int getClearAllScrollOffset(View view, boolean isRtl) {
+        return (isRtl ? view.getPaddingBottom() : - view.getPaddingTop()) / 2;
+    }
+
+    @Override
     public int getSecondaryDimension(View view) {
         return view.getWidth();
     }
