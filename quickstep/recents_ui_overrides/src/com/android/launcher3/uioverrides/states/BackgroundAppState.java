@@ -23,7 +23,6 @@ import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.views.RecentsView;
-import com.android.quickstep.views.TaskView;
 
 /**
  * State indicating that the Launcher is behind an app
@@ -66,23 +65,7 @@ public class BackgroundAppState extends OverviewState {
     }
 
     private float getOverviewScale(Launcher launcher) {
-        // Initialize the recents view scale to what it would be when starting swipe up
-        RecentsView recentsView = launcher.getOverviewPanel();
-        int taskCount = recentsView.getTaskViewCount();
-        if (taskCount == 0) return 1;
-
-        TaskView dummyTask;
-        if (recentsView.getCurrentPage() >= recentsView.getTaskViewStartIndex()) {
-            if (recentsView.getCurrentPage() <= taskCount - 1) {
-                dummyTask = recentsView.getCurrentPageTaskView();
-            } else {
-                dummyTask = recentsView.getTaskViewAt(taskCount - 1);
-            }
-        } else {
-            dummyTask = recentsView.getTaskViewAt(0);
-        }
-        return recentsView.getTempAppWindowAnimationHelper()
-                .updateForFullscreenOverview(dummyTask).getSrcToTargetScale();
+        return ((RecentsView) launcher.getOverviewPanel()).getMaxScaleForFullScreen();
     }
 
     @Override

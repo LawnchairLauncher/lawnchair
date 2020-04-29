@@ -57,7 +57,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CancellationSignal;
@@ -69,7 +68,6 @@ import android.text.TextUtils;
 import android.text.method.TextKeyListener;
 import android.util.Log;
 import android.util.SparseArray;
-import android.view.Display;
 import android.view.KeyEvent;
 import android.view.KeyboardShortcutGroup;
 import android.view.KeyboardShortcutInfo;
@@ -560,12 +558,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         // Load configuration-specific DeviceProfile
         mDeviceProfile = idp.getDeviceProfile(this);
         if (isInMultiWindowMode()) {
-            // Note: Calls to getSize() can't rely on our cached DefaultDisplay since it can return
-            // the app window size
-            Display display = getWindowManager().getDefaultDisplay();
-            Point mwSize = new Point();
-            display.getSize(mwSize);
-            mDeviceProfile = mDeviceProfile.getMultiWindowProfile(this, mwSize);
+            mDeviceProfile = mDeviceProfile.getMultiWindowProfile(
+                    this, getMultiWindowDisplaySize());
         }
 
         onDeviceProfileInitiated();
