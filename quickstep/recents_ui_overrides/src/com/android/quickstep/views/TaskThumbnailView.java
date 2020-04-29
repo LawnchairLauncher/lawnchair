@@ -36,6 +36,7 @@ import android.graphics.RectF;
 import android.graphics.Shader;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
+import android.util.Log;
 import android.util.Property;
 import android.view.Surface;
 import android.view.View;
@@ -103,6 +104,7 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
 
     private boolean mOverlayEnabled;
     private OverviewScreenshotActions mOverviewScreenshotActionsPlugin;
+    private boolean mIsMultiWindowMode;
 
     public TaskThumbnailView(Context context) {
         this(context, null);
@@ -124,7 +126,8 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
         mPreviewPositionHelper = new PreviewPositionHelper(context);
     }
 
-    public void bind(Task task) {
+    public void bind(Task task, boolean isMultiWindowMode) {
+        mIsMultiWindowMode = isMultiWindowMode;
         mOverlay.reset();
         mTask = task;
         int color = task == null ? Color.BLACK : task.colorBackground | 0xFF000000;
@@ -350,7 +353,7 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
             mPreviewRect.set(0, 0, mThumbnailData.thumbnail.getWidth(),
                     mThumbnailData.thumbnail.getHeight());
             mPreviewPositionHelper.updateThumbnailMatrix(mPreviewRect, mThumbnailData,
-                    mActivity.isInMultiWindowMode(), getMeasuredWidth(), getMeasuredHeight());
+                    mIsMultiWindowMode, getMeasuredWidth(), getMeasuredHeight());
 
             mBitmapShader.setLocalMatrix(mPreviewPositionHelper.mMatrix);
             mPaint.setShader(mBitmapShader);

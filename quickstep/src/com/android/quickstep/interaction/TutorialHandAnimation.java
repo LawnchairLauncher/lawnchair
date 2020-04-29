@@ -45,6 +45,7 @@ final class TutorialHandAnimation {
 
     /** [Re]starts animation for the given tutorial. */
     void startLoopedAnimation(TutorialType tutorialType) {
+        mHandCoachingView.setVisibility(View.VISIBLE);
         if (mGestureAnimation.isRunning()) {
             stop();
         }

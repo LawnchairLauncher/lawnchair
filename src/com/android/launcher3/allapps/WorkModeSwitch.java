@@ -18,6 +18,7 @@ package com.android.launcher3.allapps;
 import static com.android.launcher3.util.PackageManagerHelper.hasShortcutsPermission;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Rect;
 import android.os.AsyncTask;
@@ -30,7 +31,6 @@ import android.view.ViewConfiguration;
 import android.widget.Switch;
 
 import com.android.launcher3.Insettable;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.pm.UserCache;
@@ -79,9 +79,8 @@ public class WorkModeSwitch extends Switch implements Insettable {
 
     @Override
     public void toggle() {
-        Launcher launcher = Launcher.getLauncher(getContext());
         // don't show tip if user uses toggle
-        launcher.getSharedPrefs().edit().putInt(KEY_WORK_TIP_COUNTER, -1).apply();
+        Utilities.getPrefs(getContext()).edit().putInt(KEY_WORK_TIP_COUNTER, -1).apply();
         trySetQuietModeEnabledToAllProfilesAsync(isChecked());
     }
 
@@ -203,9 +202,8 @@ public class WorkModeSwitch extends Switch implements Insettable {
     }
 
     private boolean shouldShowWorkSwitch() {
-        Launcher launcher = Launcher.getLauncher(getContext());
-        return Utilities.ATLEAST_P && (hasShortcutsPermission(launcher)
-                || launcher.checkSelfPermission("android.permission.MODIFY_QUIET_MODE")
+        return Utilities.ATLEAST_P && (hasShortcutsPermission(getContext())
+                || getContext().checkSelfPermission("android.permission.MODIFY_QUIET_MODE")
                 == PackageManager.PERMISSION_GRANTED);
     }
 
@@ -213,12 +211,14 @@ public class WorkModeSwitch extends Switch implements Insettable {
      * Shows a work tip on the Nth work tab open
      */
     public void showTipifNeeded() {
-        Launcher launcher = Launcher.getLauncher(getContext());
-        int tipCounter = launcher.getSharedPrefs().getInt(KEY_WORK_TIP_COUNTER, WORK_TIP_THRESHOLD);
+        Context context = getContext();
+        SharedPreferences prefs = Utilities.getPrefs(context);
+        int tipCounter = prefs.getInt(KEY_WORK_TIP_COUNTER, WORK_TIP_THRESHOLD);
         if (tipCounter < 0) return;
         if (tipCounter == 0) {
-            new ArrowTipView(launcher).show(launcher.getString(R.string.work_switch_tip), getTop());
+            new ArrowTipView(context)
+                    .show(context.getString(R.string.work_switch_tip), getTop());
         }
-        launcher.getSharedPrefs().edit().putInt(KEY_WORK_TIP_COUNTER, tipCounter - 1).apply();
+        prefs.edit().putInt(KEY_WORK_TIP_COUNTER, tipCounter - 1).apply();
     }
 }

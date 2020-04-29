@@ -32,7 +32,7 @@
     <string name="long_accessible_way_to_add" msgid="4289502106628154155">"Double-tap &amp; hold to pick up a widget or use customised actions."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d wide by %2$d high"</string>
-    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"Touch &amp; hold to place manually"</string>
+    <string name="add_item_request_drag_hint" msgid="5899764264480397019">"Touch and hold to place manually"</string>
     <string name="place_automatically" msgid="8064208734425456485">"Add automatically"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Search apps"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Loading apps…"</string>
@@ -139,6 +139,7 @@
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"OK"</string>
     <string name="work_apps_paused_title" msgid="2389865654362803723">"Work profile is paused"</string>
     <string name="work_apps_paused_body" msgid="5388070126389079077">"Work apps cant send you notifications, use your battery or access your location"</string>
+    <string name="work_apps_paused_content_description" msgid="7553586952985486433">"Work profile is paused. Work apps can\'t send you notifications, use your battery or access your location"</string>
     <string name="work_switch_tip" msgid="808075064383839144">"Pause work apps and notifications"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Failed: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>
