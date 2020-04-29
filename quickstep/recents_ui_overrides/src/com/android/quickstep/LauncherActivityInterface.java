@@ -26,6 +26,7 @@ import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.anim.Interpolators.INSTANT;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.quickstep.LauncherSwipeHandler.RECENTS_ATTACH_DURATION;
+import static com.android.quickstep.util.WindowSizeStrategy.LAUNCHER_ACTIVITY_SIZE_STRATEGY;
 import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_OFFSET;
 
 import android.animation.Animator;
@@ -82,7 +83,7 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
 
     @Override
     public int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context, Rect outRect) {
-        LayoutUtils.calculateLauncherTaskSize(context, dp, outRect);
+        LAUNCHER_ACTIVITY_SIZE_STRATEGY.calculateTaskSize(context, dp, outRect);
         if (dp.isVerticalBarLayout() && SysUINavigationMode.getMode(context) != Mode.NO_BUTTON) {
             Rect targetInsets = dp.getInsets();
             int hotseatInset = dp.isSeascape() ? targetInsets.left : targetInsets.right;

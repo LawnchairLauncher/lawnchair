@@ -25,6 +25,7 @@ import static com.android.launcher3.LauncherState.SPRING_LOADED;
 import static com.android.launcher3.QuickstepAppTransitionManagerImpl.ALL_APPS_PROGRESS_OFF_SCREEN;
 import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PROGRESS;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
+import static com.android.quickstep.util.WindowSizeStrategy.LAUNCHER_ACTIVITY_SIZE_STRATEGY;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
@@ -39,7 +40,6 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import com.android.launcher3.BaseQuickstepLauncher;
-import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager.StateListener;
@@ -53,7 +53,6 @@ import com.android.launcher3.views.ScrimView;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.util.AppWindowAnimationHelper;
 import com.android.quickstep.util.AppWindowAnimationHelper.TransformParams;
-import com.android.quickstep.util.LayoutUtils;
 import com.android.systemui.plugins.PluginListener;
 import com.android.systemui.plugins.RecentsExtraCard;
 
@@ -96,7 +95,7 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher>
     }
 
     public LauncherRecentsView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr, true);
+        super(context, attrs, defStyleAttr, LAUNCHER_ACTIVITY_SIZE_STRATEGY);
         mActivity.getStateManager().addStateListener(this);
     }
 
@@ -176,11 +175,6 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher>
         anim.play(dragHandleAnim);
 
         return anim;
-    }
-
-    @Override
-    protected void getTaskSize(DeviceProfile dp, Rect outRect) {
-        LayoutUtils.calculateLauncherTaskSize(getContext(), dp, outRect);
     }
 
     @Override

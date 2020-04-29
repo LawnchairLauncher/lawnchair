@@ -26,7 +26,6 @@ import android.animation.Animator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -265,8 +264,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
         if (targets.minimizedHomeBounds != null && runningTaskTarget != null) {
             overviewStackBounds = mActivityInterface
                     .getOverviewWindowBounds(targets.minimizedHomeBounds, runningTaskTarget);
-            dp = dp.getMultiWindowProfile(mContext, new Point(
-                    overviewStackBounds.width(), overviewStackBounds.height()));
+            dp = dp.getMultiWindowProfile(mContext, overviewStackBounds);
         } else {
             // If we are not in multi-window mode, home insets should be same as system insets.
             dp = dp.copy(mContext);

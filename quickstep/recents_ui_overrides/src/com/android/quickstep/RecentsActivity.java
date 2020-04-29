@@ -121,7 +121,7 @@ public final class RecentsActivity extends BaseRecentsActivity {
     protected DeviceProfile createDeviceProfile() {
         DeviceProfile dp = InvariantDeviceProfile.INSTANCE.get(this).getDeviceProfile(this);
         return (mRecentsRootView != null) && isInMultiWindowMode()
-                ? dp.getMultiWindowProfile(this, mRecentsRootView.getLastKnownSize())
+                ? dp.getMultiWindowProfile(this, getMultiWindowDisplaySize())
                 : super.createDeviceProfile();
     }
 

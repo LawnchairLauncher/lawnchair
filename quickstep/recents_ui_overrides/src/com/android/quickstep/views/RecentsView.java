@@ -122,6 +122,7 @@ import com.android.quickstep.TaskUtils;
 import com.android.quickstep.ViewUtils;
 import com.android.quickstep.util.AppWindowAnimationHelper;
 import com.android.quickstep.util.RecentsOrientedState;
+import com.android.quickstep.util.WindowSizeStrategy;
 import com.android.systemui.plugins.ResourceProvider;
 import com.android.systemui.shared.recents.IPinnedStackAnimationListener;
 import com.android.systemui.shared.recents.model.Task;
@@ -202,6 +203,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             };
 
     protected final RecentsOrientedState mOrientationState;
+    protected final WindowSizeStrategy mSizeStrategy;
     protected RecentsAnimationController mRecentsAnimationController;
     protected RecentsAnimationTargets mRecentsAnimationTargets;
     protected AppWindowAnimationHelper mAppWindowAnimationHelper;
@@ -225,7 +227,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     private final ClearAllButton mClearAllButton;
     private final Rect mClearAllButtonDeadZoneRect = new Rect();
     private final Rect mTaskViewDeadZoneRect = new Rect();
-    protected final AppWindowAnimationHelper mTempAppWindowAnimationHelper;
 
     private final ScrollState mScrollState = new ScrollState();
     // Keeps track of the previously known visible tasks for purposes of loading/unloading task data
@@ -373,20 +374,19 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     };
 
     public RecentsView(Context context, AttributeSet attrs, int defStyleAttr,
-            boolean rotationSupportedByActivity) {
+            WindowSizeStrategy sizeStrategy) {
         super(context, attrs, defStyleAttr);
         setPageSpacing(getResources().getDimensionPixelSize(R.dimen.recents_page_spacing));
         setEnableFreeScroll(true);
+        mSizeStrategy = sizeStrategy;
         mOrientationState = new RecentsOrientedState(
-                context, rotationSupportedByActivity, this::animateRecentsRotationInPlace);
+                context, mSizeStrategy, this::animateRecentsRotationInPlace);
 
         mFastFlingVelocity = getResources()
                 .getDimensionPixelSize(R.dimen.recents_fast_fling_velocity);
         mActivity = BaseActivity.fromContext(context);
         mModel = RecentsModel.INSTANCE.get(context);
         mIdp = InvariantDeviceProfile.INSTANCE.get(context);
-        mTempAppWindowAnimationHelper =
-            new AppWindowAnimationHelper(getPagedViewOrientedState(), context);
 
         mClearAllButton = (ClearAllButton) LayoutInflater.from(context)
                 .inflate(R.layout.overview_clear_all_button, this, false);
@@ -712,7 +712,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             final int pageIndex = requiredTaskCount - i - 1 + mTaskViewStartIndex;
             final Task task = tasks.get(i);
             final TaskView taskView = (TaskView) getChildAt(pageIndex);
-            taskView.bind(task, mOrientationState, mActivity.getDeviceProfile().isMultiWindowMode);
+            taskView.bind(task, mOrientationState);
         }
 
         if (mNextPage == INVALID_PAGE) {
@@ -802,7 +802,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     public void setInsets(Rect insets) {
         mInsets.set(insets);
         DeviceProfile dp = mActivity.getDeviceProfile();
-        getTaskSize(dp, mTempRect);
+        mOrientationState.setMultiWindowMode(dp.isMultiWindowMode);
+        getTaskSize(mTempRect);
         mTaskWidth = mTempRect.width();
         mTaskHeight = mTempRect.height();
 
@@ -812,10 +813,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                 dp.heightPx - mInsets.bottom - mTempRect.bottom);
     }
 
-    protected abstract void getTaskSize(DeviceProfile dp, Rect outRect);
-
     public void getTaskSize(Rect outRect) {
-        getTaskSize(mActivity.getDeviceProfile(), outRect);
+        mSizeStrategy.calculateTaskSize(mActivity, mActivity.getDeviceProfile(), outRect);
     }
 
     @Override
@@ -1068,8 +1067,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                     new ComponentName(getContext(), getClass()), 0, 0), null, null, "", "", 0, 0,
                     false, true, false, false, new ActivityManager.TaskDescription(), 0,
                     new ComponentName("", ""), false);
-            taskView.bind(mTmpRunningTask, mOrientationState,
-                    mActivity.getDeviceProfile().isMultiWindowMode);
+            taskView.bind(mTmpRunningTask, mOrientationState);
         }
 
         boolean runningTaskTileHidden = mRunningTaskTileHidden;
@@ -1764,7 +1762,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         int centerTaskIndex = getCurrentPage();
         boolean launchingCenterTask = taskIndex == centerTaskIndex;
 
-        float toScale = appWindowAnimationHelper.getSrcToTargetScale();
+        float toScale = getMaxScaleForFullScreen();
         if (launchingCenterTask) {
             RecentsView recentsView = tv.getRecentsView();
             anim.play(ObjectAnimator.ofFloat(recentsView, SCALE_PROPERTY, toScale));
@@ -1784,6 +1782,15 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             }
         }
         return anim;
+    }
+
+    /**
+     * Returns the scale up required on the view, so that it coves the screen completely
+     */
+    public float getMaxScaleForFullScreen() {
+        getTaskSize(mTempRect);
+        return getPagedViewOrientedState().getFullScreenScaleAndPivot(
+                mTempRect, mActivity.getDeviceProfile(), mTempPointF);
     }
 
     public PendingAnimation createTaskLaunchAnimation(
@@ -2077,10 +2084,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
     public AppWindowAnimationHelper getClipAnimationHelper() {
         return mAppWindowAnimationHelper;
-    }
-
-    public AppWindowAnimationHelper getTempAppWindowAnimationHelper() {
-        return mTempAppWindowAnimationHelper;
     }
 
     public AppWindowAnimationHelper.TransformParams getLiveTileParams(
