@@ -91,7 +91,7 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Pour afficher les points de notification, activez les notifications d\'application pour <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Modifier les paramètres"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Afficher les points de notification"</string>
-    <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"Ajouter icônes d\'applis à l\'écran d\'accueil"</string>
+    <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"Ajouter icônes d\'applis à l\'écran d\'acc."</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Pour les nouvelles applications"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Inconnu"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Supprimer"</string>
@@ -139,6 +139,7 @@
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"OK"</string>
     <string name="work_apps_paused_title" msgid="2389865654362803723">"Le profil professionnel est interrompu"</string>
     <string name="work_apps_paused_body" msgid="5388070126389079077">"Les applications professionnelles ne peuvent pas vous envoyer de notifications, utiliser la pile ni accéder à votre position"</string>
+    <string name="work_apps_paused_content_description" msgid="7553586952985486433">"Le profil professionnel est interrompu. Les applications professionnelles ne peuvent pas vous envoyer de notifications, utiliser la pile ni accéder à votre position"</string>
     <string name="work_switch_tip" msgid="808075064383839144">"Interrompre les applications et les notifications professionnelles"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Échec : <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

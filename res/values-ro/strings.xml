@@ -140,6 +140,7 @@
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"OK"</string>
     <string name="work_apps_paused_title" msgid="2389865654362803723">"Profilul de serviciu este întrerupt"</string>
     <string name="work_apps_paused_body" msgid="5388070126389079077">"Aplicațiile pentru lucru nu pot să vă trimită notificări, să utilizeze bateria sau să vă acceseze locația"</string>
+    <string name="work_apps_paused_content_description" msgid="7553586952985486433">"Profilul de serviciu este întrerupt. Aplicațiile pentru lucru nu pot să vă trimită notificări, să folosească bateria sau să vă acceseze locația"</string>
     <string name="work_switch_tip" msgid="808075064383839144">"Întrerupeți aplicațiile pentru lucru și notificările"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Eșuare: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>
