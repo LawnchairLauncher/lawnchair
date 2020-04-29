@@ -15,6 +15,7 @@
  */
 package com.android.quickstep.interaction;
 
+import android.graphics.drawable.RippleDrawable;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -26,20 +27,30 @@ import androidx.annotation.CallSuper;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.R;
-import com.android.quickstep.interaction.EdgeBackGestureHandler.BackGestureResult;
+import com.android.quickstep.interaction.EdgeBackGestureHandler.BackGestureAttemptCallback;
+import com.android.quickstep.interaction.NavBarGestureHandler.NavBarGestureAttemptCallback;
 
-abstract class TutorialController {
+abstract class TutorialController implements BackGestureAttemptCallback,
+        NavBarGestureAttemptCallback {
+
+    private static final int FEEDBACK_VISIBLE_MS = 3000;
+    private static final int FEEDBACK_ANIMATION_MS = 500;
+    private static final int RIPPLE_VISIBLE_MS = 300;
 
     final TutorialFragment mTutorialFragment;
-    final TutorialType mTutorialType;
+    TutorialType mTutorialType;
 
     final ImageButton mCloseButton;
     final TextView mTitleTextView;
     final TextView mSubtitleTextView;
+    final TextView mFeedbackView;
+    final View mRippleView;
+    final RippleDrawable mRippleDrawable;
     final TutorialHandAnimation mHandCoachingAnimation;
     final ImageView mHandCoachingView;
     final Button mActionTextButton;
     final Button mActionButton;
+    private final Runnable mHideFeedbackRunnable;
 
     TutorialController(TutorialFragment tutorialFragment, TutorialType tutorialType) {
         mTutorialFragment = tutorialFragment;
@@ -50,15 +61,24 @@ abstract class TutorialController {
         mCloseButton.setOnClickListener(button -> mTutorialFragment.closeTutorial());
         mTitleTextView = rootView.findViewById(R.id.gesture_tutorial_fragment_title_view);
         mSubtitleTextView = rootView.findViewById(R.id.gesture_tutorial_fragment_subtitle_view);
+        mFeedbackView = rootView.findViewById(R.id.gesture_tutorial_fragment_feedback_view);
+        mRippleView = rootView.findViewById(R.id.gesture_tutorial_ripple_view);
+        mRippleDrawable = (RippleDrawable) mRippleView.getBackground();
         mHandCoachingAnimation = tutorialFragment.getHandAnimation();
         mHandCoachingView = rootView.findViewById(R.id.gesture_tutorial_fragment_hand_coaching);
         mHandCoachingView.bringToFront();
         mActionTextButton =
                 rootView.findViewById(R.id.gesture_tutorial_fragment_action_text_button);
         mActionButton = rootView.findViewById(R.id.gesture_tutorial_fragment_action_button);
+
+        mHideFeedbackRunnable =
+                () -> mFeedbackView.animate().alpha(0).setDuration(FEEDBACK_ANIMATION_MS)
+                        .withEndAction(this::showHandCoachingAnimation).start();
     }
 
-    abstract void onBackGestureAttempted(BackGestureResult result);
+    void setTutorialType(TutorialType tutorialType) {
+        mTutorialType = tutorialType;
+    }
 
     @Nullable
     Integer getTitleStringId() {
@@ -80,16 +100,52 @@ abstract class TutorialController {
         return null;
     }
 
+    void showFeedback(int resId) {
+        hideHandCoachingAnimation();
+        mFeedbackView.setText(resId);
+        mFeedbackView.animate().alpha(1).setDuration(FEEDBACK_ANIMATION_MS).start();
+        mFeedbackView.removeCallbacks(mHideFeedbackRunnable);
+        mFeedbackView.postDelayed(mHideFeedbackRunnable, FEEDBACK_VISIBLE_MS);
+    }
+
+    void hideFeedback() {
+        mFeedbackView.setText(null);
+        mFeedbackView.removeCallbacks(mHideFeedbackRunnable);
+        mFeedbackView.clearAnimation();
+        mFeedbackView.setAlpha(0);
+    }
+
+    void setRippleHotspot(float x, float y) {
+        mRippleDrawable.setHotspot(x, y);
+    }
+
+    void showRippleEffect(@Nullable Runnable onCompleteRunnable) {
+        mRippleDrawable.setState(
+                new int[] {android.R.attr.state_pressed, android.R.attr.state_enabled});
+        mRippleView.postDelayed(() -> {
+            mRippleDrawable.setState(new int[] {});
+            if (onCompleteRunnable != null) {
+                onCompleteRunnable.run();
+            }
+        }, RIPPLE_VISIBLE_MS);
+    }
+
     void onActionButtonClicked(View button) {}
 
     void onActionTextButtonClicked(View button) {}
 
+    void showHandCoachingAnimation() {
+        mHandCoachingAnimation.startLoopedAnimation(mTutorialType);
+    }
+
     void hideHandCoachingAnimation() {
         mHandCoachingAnimation.stop();
+        mHandCoachingView.setVisibility(View.INVISIBLE);
     }
 
     @CallSuper
     void transitToController() {
+        hideFeedback();
         updateTitles();
         updateActionButtons();
     }

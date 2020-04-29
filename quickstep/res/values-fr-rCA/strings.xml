@@ -41,7 +41,7 @@
     <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"Non merci"</string>
     <string name="hotseat_turn_off" msgid="7808360330229368470">"Paramètres"</string>
     <string name="hotseat_auto_enrolled" msgid="522100018967146807">"Les applications les plus utilisées s\'affichent ici et changent en fonction des habitudes"</string>
-    <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"Sortez des applications de la rangée du bas en les faisant glisser pour obtenir des applications suggérées"</string>
+    <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"Faites glisser des applications hors de la rangée du bas pour obtenir des applications suggérées"</string>
     <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"Applications suggérées ajoutées à l\'espace vide"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Application prédite : <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="action_share" msgid="2648470652637092375">"Partager"</string>

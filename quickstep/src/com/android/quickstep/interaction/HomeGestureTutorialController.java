@@ -21,6 +21,7 @@ import android.view.View;
 
 import com.android.launcher3.R;
 import com.android.quickstep.interaction.EdgeBackGestureHandler.BackGestureResult;
+import com.android.quickstep.interaction.NavBarGestureHandler.NavBarGestureResult;
 
 /** A {@link TutorialController} for the Home tutorial. */
 final class HomeGestureTutorialController extends TutorialController {
@@ -33,7 +34,7 @@ final class HomeGestureTutorialController extends TutorialController {
     void transitToController() {
         super.transitToController();
         if (mTutorialType != HOME_NAVIGATION_COMPLETE) {
-            mHandCoachingAnimation.startLoopedAnimation(mTutorialType);
+            showHandCoachingAnimation();
         }
     }
 
@@ -77,6 +78,35 @@ final class HomeGestureTutorialController extends TutorialController {
             case HOME_NAVIGATION_COMPLETE:
                 if (result == BackGestureResult.BACK_COMPLETED_FROM_LEFT
                         || result == BackGestureResult.BACK_COMPLETED_FROM_RIGHT) {
+                    mTutorialFragment.closeTutorial();
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void onNavBarGestureAttempted(NavBarGestureResult result) {
+        switch (mTutorialType) {
+            case HOME_NAVIGATION:
+                switch (result) {
+                    case HOME_GESTURE_COMPLETED:
+                        hideHandCoachingAnimation();
+                        mTutorialFragment.changeController(HOME_NAVIGATION_COMPLETE);
+                        break;
+                    case HOME_NOT_STARTED_TOO_FAR_FROM_EDGE:
+                    case OVERVIEW_NOT_STARTED_TOO_FAR_FROM_EDGE:
+                        showFeedback(R.string.home_gesture_feedback_swipe_too_far_from_edge);
+                        break;
+                    case OVERVIEW_GESTURE_COMPLETED:
+                        showFeedback(R.string.home_gesture_feedback_overview_detected);
+                        break;
+                    case HOME_OR_OVERVIEW_NOT_STARTED_WRONG_SWIPE_DIRECTION:
+                        showFeedback(R.string.home_gesture_feedback_wrong_swipe_direction);
+                        break;
+                }
+                break;
+            case HOME_NAVIGATION_COMPLETE:
+                if (result == NavBarGestureResult.HOME_GESTURE_COMPLETED) {
                     mTutorialFragment.closeTutorial();
                 }
                 break;

@@ -27,6 +27,7 @@ import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
+import android.widget.LinearLayout;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.PagedView;
@@ -90,6 +91,11 @@ public interface PagedOrientationHandler {
     void getCurveProperties(PagedView view, Rect insets, CurveProperties out);
     boolean isGoingUp(float displacement);
     boolean isLayoutNaturalToLauncher();
+    float getTaskMenuX(float x, View thumbnailView);
+    float getTaskMenuY(float y, View thumbnailView);
+    int getTaskMenuWidth(View view);
+    int getTaskMenuLayoutOrientation();
+    void setLayoutParamsForTaskMenuOptionItem(LinearLayout.LayoutParams lp);
 
     /**
      * Maps the velocity from the coordinate plane of the foreground app to that

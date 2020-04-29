@@ -35,6 +35,11 @@ public class NavBarPosition {
         mDisplayRotation = info.rotation;
     }
 
+    public NavBarPosition(SysUINavigationMode.Mode mode, int displayRotation) {
+        mMode = mode;
+        mDisplayRotation = displayRotation;
+    }
+
     public boolean isRightEdge() {
         return mMode != NO_BUTTON && mDisplayRotation == Surface.ROTATION_90;
     }
