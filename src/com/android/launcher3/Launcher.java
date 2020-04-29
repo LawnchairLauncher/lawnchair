@@ -921,8 +921,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                 }
             });
         }
-
-        TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "Activity.onStop");
     }
 
     @Override
@@ -936,7 +934,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
         mAppWidgetHost.setListenIfResumed(true);
         TraceHelper.INSTANCE.endSection(traceToken);
-        TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "Activity.onStart");
     }
 
     private void handleDeferredResume() {
