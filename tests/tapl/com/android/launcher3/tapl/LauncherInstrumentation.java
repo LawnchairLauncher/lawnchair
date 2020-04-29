@@ -168,7 +168,6 @@ public final class LauncherInstrumentation {
     private static boolean sCheckingEvents;
 
     private boolean mCheckEventsForSuccessfulGestures = false;
-    private int mExpectedPid;
     private Runnable mOnLauncherCrashed;
 
     private static Pattern getTouchEventPattern(String prefix, String action) {
@@ -360,33 +359,12 @@ public final class LauncherInstrumentation {
         return null;
     }
 
-    private String getAnomalyMessage() {
-        if (mExpectedPid != 0 && mExpectedPid != getPid()) {
-            mExpectedPid = 0;
-            if (mOnLauncherCrashed != null) mOnLauncherCrashed.run();
-            return "Launcher crashed";
-        }
-
+    public void checkForAnomaly() {
         final String systemAnomalyMessage = getSystemAnomalyMessage();
         if (systemAnomalyMessage != null) {
-            return "http://go/tapl : Tests are broken by a non-Launcher system error: "
-                    + systemAnomalyMessage;
-        }
-
-        return null;
-    }
-
-    public void checkForAnomaly() {
-        final String anomalyMessage = getAnomalyMessage();
-        if (anomalyMessage != null) {
-            if (sCheckingEvents) {
-                sCheckingEvents = false;
-                sEventChecker.finishNoWait();
-            }
-            log("Hierarchy dump for: " + anomalyMessage);
-            dumpViewHierarchy();
-
-            Assert.fail(formatSystemHealthMessage(anomalyMessage));
+            Assert.fail(formatSystemHealthMessage(closeEvents(
+                    "http://go/tapl : Tests are broken by a non-Launcher system error: "
+                            + systemAnomalyMessage, false)));
         }
     }
 
@@ -446,23 +424,29 @@ public final class LauncherInstrumentation {
         return message;
     }
 
-    private void fail(String message) {
-        checkForAnomaly();
-
-        message = "http://go/tapl : " + getContextDescription() + message
-                + " (visible state: " + getVisibleStateMessage() + ")";
+    private String closeEvents(String message, boolean checkEvents) {
+        if (sCheckingEvents) {
+            sCheckingEvents = false;
+            if (checkEvents) {
+                final String eventMismatch = sEventChecker.verify(0);
+                if (eventMismatch != null) {
+                    message = message + ", having produced " + eventMismatch;
+                }
+            } else {
+                sEventChecker.finishNoWait();
+            }
+        }
         log("Hierarchy dump for: " + message);
         dumpViewHierarchy();
 
-        if (sCheckingEvents) {
-            sCheckingEvents = false;
-            final String eventMismatch = sEventChecker.verify(0);
-            if (eventMismatch != null) {
-                message = message + ", having produced " + eventMismatch;
-            }
-        }
+        return message;
+    }
 
-        Assert.fail(formatSystemHealthMessage(message));
+    private void fail(String message) {
+        checkForAnomaly();
+        Assert.fail(formatSystemHealthMessage(closeEvents(
+                "http://go/tapl : " + getContextDescription() + message
+                        + " (visible state: " + getVisibleStateMessage() + ")", true)));
     }
 
     private String getContextDescription() {
@@ -1300,18 +1284,24 @@ public final class LauncherInstrumentation {
         Assert.assertTrue("Nested event checking", !sCheckingEvents);
         disableSensorRotation();
         sCheckingEvents = true;
-        mExpectedPid = getPid();
+        final int initialPid = getPid();
         if (sEventChecker == null) sEventChecker = new LogEventChecker();
         sEventChecker.start();
 
         return () -> {
-            checkForAnomaly();
+            if (initialPid != getPid()) {
+                if (mOnLauncherCrashed != null) mOnLauncherCrashed.run();
+                checkForAnomaly();
+                Assert.fail(
+                        formatSystemHealthMessage(closeEvents("Launcher crashed", false)));
+            }
 
             if (sCheckingEvents) {
                 sCheckingEvents = false;
                 if (mCheckEventsForSuccessfulGestures) {
                     final String message = sEventChecker.verify(WAIT_TIME_MS);
                     if (message != null) {
+                        checkForAnomaly();
                         Assert.fail(formatSystemHealthMessage(
                                 "http://go/tapl : successful gesture produced " + message));
                     }
