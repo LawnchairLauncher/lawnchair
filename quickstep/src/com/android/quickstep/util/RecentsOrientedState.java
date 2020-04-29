@@ -44,6 +44,7 @@ import android.view.OrientationEventListener;
 import android.view.Surface;
 
 import androidx.annotation.IntDef;
+import androidx.annotation.NonNull;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Utilities;
@@ -64,7 +65,7 @@ import java.util.function.IntConsumer;
 public final class RecentsOrientedState implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final String TAG = "RecentsOrientedState";
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
 
     private static final String FIXED_ROTATION_TRANSFORM_SETTING_NAME = "fixed_rotation_transform";
 
@@ -439,5 +440,20 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
     public static boolean isFixedRotationTransformEnabled(Context context) {
         return Settings.Global.getInt(
                 context.getContentResolver(), FIXED_ROTATION_TRANSFORM_SETTING_NAME, 1) == 1;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        boolean systemRotationOn = (mFlags & FLAG_SYSTEM_ROTATION_ALLOWED) != 0;
+        return "["
+                + "mDisplayRotation=" + mDisplayRotation
+                + " mTouchRotation=" + mTouchRotation
+                + " mLauncherRotation=" + mLauncherRotation
+                + " mHomeRotation=" + isHomeRotationAllowed()
+                + " mSystemRotation=" + systemRotationOn
+                + " mFlags=" + mFlags
+                + " mOrientationHandler=" + mOrientationHandler
+                + "]";
     }
 }

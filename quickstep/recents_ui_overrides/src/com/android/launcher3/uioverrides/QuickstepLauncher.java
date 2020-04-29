@@ -57,6 +57,8 @@ import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.views.RecentsView;
 
+import java.io.FileDescriptor;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.stream.Stream;
 
@@ -232,5 +234,14 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
         protected void onUserControlledAnimationCreated(AnimatorPlaybackController animController) {
             mActivity.getStateManager().setCurrentUserControlledAnimation(animController);
         }
+    }
+
+    @Override
+    public void dump(String prefix, FileDescriptor fd, PrintWriter writer, String[] args) {
+        super.dump(prefix, fd, writer, args);
+        RecentsView recentsView = getOverviewPanel();
+        writer.println("\nQuickstepLauncher:");
+        writer.println(prefix + "\tmOrientationState: " + (recentsView == null ? "recentsNull" :
+                recentsView.getPagedViewOrientedState()));
     }
 }
