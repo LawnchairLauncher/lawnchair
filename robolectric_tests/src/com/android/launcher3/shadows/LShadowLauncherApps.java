@@ -30,7 +30,6 @@ import android.content.pm.PackageInstaller;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.pm.ShortcutInfo;
-import android.os.Process;
 import android.os.UserHandle;
 import android.util.ArraySet;
 
@@ -80,14 +79,15 @@ public class LShadowLauncherApps extends ShadowLauncherApps {
     protected LauncherActivityInfo resolveActivity(Intent intent, UserHandle user) {
         ResolveInfo ri = RuntimeEnvironment.application.getPackageManager()
                 .resolveActivity(intent, 0);
-        return ri == null ? null : getLauncherActivityInfo(ri.activityInfo);
+        return ri == null ? null : getLauncherActivityInfo(ri.activityInfo, user);
     }
 
-    public LauncherActivityInfo getLauncherActivityInfo(ActivityInfo activityInfo) {
+    public LauncherActivityInfo getLauncherActivityInfo(
+            ActivityInfo activityInfo, UserHandle user) {
         return callConstructor(LauncherActivityInfo.class,
                 ClassParameter.from(Context.class, RuntimeEnvironment.application),
                 ClassParameter.from(ActivityInfo.class, activityInfo),
-                ClassParameter.from(UserHandle.class, Process.myUserHandle()));
+                ClassParameter.from(UserHandle.class, user));
     }
 
     @Implementation
@@ -104,7 +104,7 @@ public class LShadowLauncherApps extends ShadowLauncherApps {
                 .setPackage(packageName);
         return RuntimeEnvironment.application.getPackageManager().queryIntentActivities(intent, 0)
                 .stream()
-                .map(ri -> getLauncherActivityInfo(ri.activityInfo))
+                .map(ri -> getLauncherActivityInfo(ri.activityInfo, user))
                 .collect(Collectors.toList());
     }
 
@@ -130,7 +130,7 @@ public class LShadowLauncherApps extends ShadowLauncherApps {
         Intent intent = new Intent(Intent.ACTION_CREATE_SHORTCUT).setPackage(packageName);
         return RuntimeEnvironment.application.getPackageManager().queryIntentActivities(intent, 0)
                 .stream()
-                .map(ri -> getLauncherActivityInfo(ri.activityInfo))
+                .map(ri -> getLauncherActivityInfo(ri.activityInfo, user))
                 .collect(Collectors.toList());
     }
 }

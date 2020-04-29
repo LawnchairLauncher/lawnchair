@@ -15,7 +15,6 @@
  */
 package com.android.launcher3.uioverrides.touchcontrollers;
 
-import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
@@ -23,6 +22,7 @@ import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS
 import static com.android.launcher3.anim.Interpolators.DEACCEL_3;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.touch.AbstractStateChangeTouchController.SUCCESS_TRANSITION_PROGRESS;
+import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_OFFSET;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 
 import android.animation.ValueAnimator;
@@ -131,12 +131,8 @@ public class NavBarToHomeTouchController implements TouchController,
         final PendingAnimation builder = new PendingAnimation(accuracy);
         if (mStartState == OVERVIEW) {
             RecentsView recentsView = mLauncher.getOverviewPanel();
-            float pullbackDist = mPullbackDistance;
-            if (!recentsView.isRtl()) {
-                pullbackDist = -pullbackDist;
-            }
-
-            builder.setFloat(recentsView, VIEW_TRANSLATE_X, pullbackDist, PULLBACK_INTERPOLATOR);
+            builder.setFloat(recentsView, ADJACENT_PAGE_OFFSET,
+                    -mPullbackDistance / recentsView.getPageOffsetScale(), PULLBACK_INTERPOLATOR);
             if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
                 builder.addOnFrameCallback(
                         () -> recentsView.redrawLiveTile(false /* mightNeedToRefill */));

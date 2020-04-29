@@ -17,7 +17,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/drag_layer" >
+    android:id="@+id/drag_layer"
+    android:padding="@dimen/dynamic_grid_edge_margin">
 
     <GridView
         android:layout_width="match_parent"
@@ -119,8 +120,7 @@
             android:singleLine="true"
             android:textColor="?android:attr/textColorSecondary"
             android:textColorHint="@drawable/all_apps_search_hint"
-            android:textSize="16sp"
-            android:translationY="24dp" />
+            android:textSize="16sp" />
 
         <include layout="@layout/all_apps_fast_scroller" />
     </com.android.launcher3.allapps.AllAppsContainerView>

@@ -141,6 +141,7 @@
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"Nimeelewa"</string>
     <string name="work_apps_paused_title" msgid="2389865654362803723">"Wasifu wa kazini umesimamishwa"</string>
     <string name="work_apps_paused_body" msgid="5388070126389079077">"Programu za kazini haziwezi kukutumia arifa, kutumia betri yako au kufikia maelezo ya mahali ulipo"</string>
+    <string name="work_apps_paused_content_description" msgid="7553586952985486433">"Wasifu wa kazini umesimamishwa. Programu za kazini haziwezi kukutumia arifa, kutumia betri yako au kufikia maelezo ya mahali ulipo"</string>
     <string name="work_switch_tip" msgid="808075064383839144">"Simamisha arifa na programu za kazini"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Hitilafu: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

@@ -18,6 +18,12 @@
     android:layout_height="match_parent"
     android:background="@color/gesture_tutorial_background_color">
 
+    <View
+        android:id="@+id/gesture_tutorial_ripple_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/gesture_tutorial_ripple"/>
+
     <ImageView
         android:id="@+id/gesture_tutorial_fragment_hand_coaching"
         android:layout_width="match_parent"
@@ -65,6 +71,17 @@
             android:layout_marginEnd="@dimen/gesture_tutorial_subtitle_margin_start_end"
             style="@style/TextAppearance.GestureTutorial.Subtitle"/>
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/gesture_tutorial_fragment_feedback_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@id/gesture_tutorial_fragment_action_button"
+        android:layout_marginStart="@dimen/gesture_tutorial_feedback_margin_start_end"
+        android:layout_marginEnd="@dimen/gesture_tutorial_feedback_margin_start_end"
+        style="@style/TextAppearance.GestureTutorial.Feedback"/>
 
     <!-- android:stateListAnimator="@null" removes shadow and normal on click behavior (increase
          of elevation and shadow) which is replaced by ripple effect in android:foreground -->
