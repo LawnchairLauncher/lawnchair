@@ -17,18 +17,16 @@ package com.android.launcher3.ui.widget;
 
 import static androidx.test.InstrumentationRegistry.getTargetContext;
 
-import static com.android.launcher3.widget.WidgetHostViewLoader.getDefaultOptionsForWidget;
+import static com.android.launcher3.common.WidgetUtils.createWidgetInfo;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.pm.PackageInstaller;
 import android.content.pm.PackageInstaller.SessionParams;
 import android.content.pm.PackageManager;
@@ -39,7 +37,6 @@ import android.widget.RemoteViews;
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
 
-import com.android.launcher3.LauncherAppWidgetHost;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
@@ -50,7 +47,6 @@ import com.android.launcher3.tapl.Workspace;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.ui.TestViewHelpers;
 import com.android.launcher3.util.rule.ShellCommandRule;
-import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.WidgetManagerHelper;
 
 import org.junit.After;
@@ -108,7 +104,7 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
     @Test
     public void testBindNormalWidget_withConfig() {
         LauncherAppWidgetProviderInfo info = TestViewHelpers.findWidgetProvider(this, true);
-        LauncherAppWidgetInfo item = createWidgetInfo(info, true);
+        LauncherAppWidgetInfo item = createWidgetInfo(info, getTargetContext(), true);
 
         addItemToScreen(item);
         verifyWidgetPresent(info);
@@ -117,7 +113,7 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
     @Test
     public void testBindNormalWidget_withoutConfig() {
         LauncherAppWidgetProviderInfo info = TestViewHelpers.findWidgetProvider(this, false);
-        LauncherAppWidgetInfo item = createWidgetInfo(info, true);
+        LauncherAppWidgetInfo item = createWidgetInfo(info, getTargetContext(), true);
 
         addItemToScreen(item);
         verifyWidgetPresent(info);
@@ -126,7 +122,7 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
     @Test
     public void testUnboundWidget_removed() {
         LauncherAppWidgetProviderInfo info = TestViewHelpers.findWidgetProvider(this, false);
-        LauncherAppWidgetInfo item = createWidgetInfo(info, false);
+        LauncherAppWidgetInfo item = createWidgetInfo(info, getTargetContext(), false);
         item.appWidgetId = -33;
 
         addItemToScreen(item);
@@ -147,7 +143,7 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
         LauncherAppWidgetProviderInfo info = TestViewHelpers.findWidgetProvider(this, false);
 
         // Do not bind the widget
-        LauncherAppWidgetInfo item = createWidgetInfo(info, false);
+        LauncherAppWidgetInfo item = createWidgetInfo(info, getTargetContext(), false);
         item.restoreStatus = LauncherAppWidgetInfo.FLAG_ID_NOT_VALID;
 
         addItemToScreen(item);
@@ -160,7 +156,7 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
         LauncherAppWidgetProviderInfo info = TestViewHelpers.findWidgetProvider(this, true);
 
         // Do not bind the widget
-        LauncherAppWidgetInfo item = createWidgetInfo(info, false);
+        LauncherAppWidgetInfo item = createWidgetInfo(info, getTargetContext(), false);
         item.restoreStatus = LauncherAppWidgetInfo.FLAG_ID_NOT_VALID;
 
         addItemToScreen(item);
@@ -279,47 +275,6 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
         if (widget == null) mLauncher.dumpViewHierarchy(); // b/152645831
         assertTrue("Pending widget is not present",
                 widget != null);
-    }
-
-    /**
-     * Creates a LauncherAppWidgetInfo corresponding to {@param info}
-     *
-     * @param bindWidget if true the info is bound and a valid widgetId is assigned to
-     *                   the LauncherAppWidgetInfo
-     */
-    public static LauncherAppWidgetInfo createWidgetInfo(
-            LauncherAppWidgetProviderInfo info, boolean bindWidget) {
-        Context targetContext = getTargetContext();
-
-        LauncherAppWidgetInfo item = new LauncherAppWidgetInfo(
-                LauncherAppWidgetInfo.NO_ID, info.provider);
-        item.spanX = info.minSpanX;
-        item.spanY = info.minSpanY;
-        item.minSpanX = info.minSpanX;
-        item.minSpanY = info.minSpanY;
-        item.user = info.getProfile();
-        item.cellX = 0;
-        item.cellY = 1;
-        item.container = LauncherSettings.Favorites.CONTAINER_DESKTOP;
-
-        if (bindWidget) {
-            PendingAddWidgetInfo pendingInfo = new PendingAddWidgetInfo(info);
-            pendingInfo.spanX = item.spanX;
-            pendingInfo.spanY = item.spanY;
-            pendingInfo.minSpanX = item.minSpanX;
-            pendingInfo.minSpanY = item.minSpanY;
-            Bundle options = getDefaultOptionsForWidget(targetContext, pendingInfo);
-
-            AppWidgetHost host = new LauncherAppWidgetHost(targetContext);
-            int widgetId = host.allocateAppWidgetId();
-            if (!new WidgetManagerHelper(targetContext)
-                    .bindAppWidgetIdIfAllowed(widgetId, info, options)) {
-                host.deleteAppWidgetId(widgetId);
-                throw new IllegalArgumentException("Unable to bind widget id");
-            }
-            item.appWidgetId = widgetId;
-        }
-        return item;
     }
 
     /**

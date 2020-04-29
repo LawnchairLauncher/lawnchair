@@ -1,5 +1,7 @@
 package com.android.launcher3.model;
 
+import static com.android.launcher3.InvariantDeviceProfile.KEY_MIGRATION_SRC_HOTSEAT_COUNT;
+import static com.android.launcher3.InvariantDeviceProfile.KEY_MIGRATION_SRC_WORKSPACE_SIZE;
 import static com.android.launcher3.LauncherSettings.Settings.EXTRA_VALUE;
 import static com.android.launcher3.Utilities.getPointString;
 import static com.android.launcher3.Utilities.parsePoint;
@@ -52,9 +54,6 @@ public class GridSizeMigrationTask {
 
     private static final String TAG = "GridSizeMigrationTask";
     private static final boolean DEBUG = true;
-
-    private static final String KEY_MIGRATION_SRC_WORKSPACE_SIZE = "migration_src_workspace_size";
-    private static final String KEY_MIGRATION_SRC_HOTSEAT_COUNT = "migration_src_hotseat_count";
 
     // These are carefully selected weights for various item types (Math.random?), to allow for
     // the least absurd migration experience.
@@ -894,8 +893,7 @@ public class GridSizeMigrationTask {
         String gridSizeString = getPointString(idp.numColumns, idp.numRows);
 
         return !gridSizeString.equals(prefs.getString(KEY_MIGRATION_SRC_WORKSPACE_SIZE, ""))
-                || idp.numHotseatIcons != prefs.getInt(KEY_MIGRATION_SRC_HOTSEAT_COUNT,
-                idp.numHotseatIcons);
+                || idp.numHotseatIcons != prefs.getInt(KEY_MIGRATION_SRC_HOTSEAT_COUNT, -1);
     }
 
     /** See {@link #migrateGridIfNeeded(Context, InvariantDeviceProfile)} */

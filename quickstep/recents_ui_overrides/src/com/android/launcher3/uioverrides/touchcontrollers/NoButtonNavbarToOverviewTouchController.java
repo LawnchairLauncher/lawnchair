@@ -166,8 +166,8 @@ public class NoButtonNavbarToOverviewTouchController extends FlingAndHoldTouchCo
         float velocityDp = dpiFromPx(velocity);
         boolean isFling = Math.abs(velocityDp) > 1;
         LauncherStateManager stateManager = mLauncher.getStateManager();
-        if (isFling) {
-            // When flinging, go back to home instead of overview.
+        boolean goToHomeInsteadOfOverview = isFling;
+        if (goToHomeInsteadOfOverview) {
             if (velocity > 0) {
                 stateManager.goToState(NORMAL, true,
                         () -> onSwipeInteractionCompleted(NORMAL, Touch.FLING));
@@ -187,20 +187,21 @@ public class NoButtonNavbarToOverviewTouchController extends FlingAndHoldTouchCo
                         () -> onSwipeInteractionCompleted(NORMAL, Touch.SWIPE)));
                 anim.start();
             }
-        } else {
-            if (mReachedOverview) {
-                float distanceDp = dpiFromPx(Math.max(
-                        Math.abs(mRecentsView.getTranslationX()),
-                        Math.abs(mRecentsView.getTranslationY())));
-                long duration = (long) Math.max(TRANSLATION_ANIM_MIN_DURATION_MS,
-                        distanceDp / TRANSLATION_ANIM_VELOCITY_DP_PER_MS);
-                mRecentsView.animate()
-                        .translationX(0)
-                        .translationY(0)
-                        .setInterpolator(ACCEL_DEACCEL)
-                        .setDuration(duration)
-                        .withEndAction(this::maybeSwipeInteractionToOverviewComplete);
-            }
+        }
+        if (mReachedOverview) {
+            float distanceDp = dpiFromPx(Math.max(
+                    Math.abs(mRecentsView.getTranslationX()),
+                    Math.abs(mRecentsView.getTranslationY())));
+            long duration = (long) Math.max(TRANSLATION_ANIM_MIN_DURATION_MS,
+                    distanceDp / TRANSLATION_ANIM_VELOCITY_DP_PER_MS);
+            mRecentsView.animate()
+                    .translationX(0)
+                    .translationY(0)
+                    .setInterpolator(ACCEL_DEACCEL)
+                    .setDuration(duration)
+                    .withEndAction(goToHomeInsteadOfOverview
+                            ? null
+                            : this::maybeSwipeInteractionToOverviewComplete);
         }
     }
 

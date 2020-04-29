@@ -48,7 +48,8 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
             HIDDEN_NON_ZERO_ROTATION,
             HIDDEN_NO_TASKS,
             HIDDEN_GESTURE_RUNNING,
-            HIDDEN_NO_RECENTS})
+            HIDDEN_NO_RECENTS,
+            HIDDEN_FULLESCREEN_PROGRESS})
     @Retention(RetentionPolicy.SOURCE)
     public @interface ActionsHiddenFlags { }
 
@@ -58,6 +59,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     public static final int HIDDEN_NO_TASKS = 1 << 3;
     public static final int HIDDEN_GESTURE_RUNNING = 1 << 4;
     public static final int HIDDEN_NO_RECENTS = 1 << 5;
+    public static final int HIDDEN_FULLESCREEN_PROGRESS = 1 << 6;
 
     private static final int INDEX_CONTENT_ALPHA = 0;
     private static final int INDEX_VISIBILITY_ALPHA = 1;

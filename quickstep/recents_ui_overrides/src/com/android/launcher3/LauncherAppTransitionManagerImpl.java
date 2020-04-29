@@ -197,15 +197,15 @@ public final class LauncherAppTransitionManagerImpl extends QuickstepAppTransiti
             case INDEX_RECENTS_FADE_ANIM:
                 return ObjectAnimator.ofFloat(mLauncher.getOverviewPanel(),
                         RecentsView.CONTENT_ALPHA, values);
-            case INDEX_RECENTS_TRANSLATE_X_ANIM:
-                // TODO: Do not assume motion across X axis for adjacent page
-                return new SpringAnimationBuilder<>(
-                        mLauncher.getOverviewPanel(), ADJACENT_PAGE_OFFSET)
-                        .setMinimumVisibleChange(1f / mLauncher.getOverviewPanel().getWidth())
+            case INDEX_RECENTS_TRANSLATE_X_ANIM: {
+                RecentsView rv = mLauncher.getOverviewPanel();
+                return new SpringAnimationBuilder(mLauncher)
+                        .setMinimumVisibleChange(1f / rv.getPageOffsetScale())
                         .setDampingRatio(0.8f)
                         .setStiffness(250)
                         .setValues(values)
-                        .build(mLauncher);
+                        .build(rv, ADJACENT_PAGE_OFFSET);
+            }
             case INDEX_PAUSE_TO_OVERVIEW_ANIM: {
                 StateAnimationConfig config = new StateAnimationConfig();
                 config.duration = ATOMIC_DURATION_FROM_PAUSED_TO_OVERVIEW;
