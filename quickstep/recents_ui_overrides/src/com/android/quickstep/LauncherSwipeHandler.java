@@ -208,7 +208,8 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
         mTaskAnimationManager = taskAnimationManager;
         mTouchTimeMs = touchTimeMs;
         mContinuingLastGesture = continuingLastGesture;
-        mTaskViewSimulator = new TaskViewSimulator(context, LayoutUtils::calculateLauncherTaskSize);
+        mTaskViewSimulator = new TaskViewSimulator(
+                context, LayoutUtils::calculateLauncherTaskSize, true);
 
         initAfterSubclassConstructor();
         initStateCallbacks();

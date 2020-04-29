@@ -91,7 +91,7 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Për të shfaqur \"Pikat e njoftimeve\", aktivizo njoftimet e aplikacionit për <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Ndrysho cilësimet"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Shfaq pikat e njoftimeve"</string>
-    <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"Hap ikonat e aplikacioneve në ekranin bazë"</string>
+    <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"Shto ikona aplikacionesh në ekranin bazë"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Për aplikacionet e reja"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"I panjohur"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Hiq"</string>
@@ -133,12 +133,13 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Personale"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Punë"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Profili i punës"</string>
-    <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"Aplikacionet personale janë të ndara dhe të fshehura nga aplikacionet e punës"</string>
+    <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"Të dhënat personale janë të ndara dhe të fshehura nga aplikacionet e punës"</string>
     <string name="work_profile_edu_work_apps" msgid="237051938268703058">"Aplikacionet e punës dhe të dhënat janë të dukshme për administratorin e teknologjisë së informacionit."</string>
     <string name="work_profile_edu_next" msgid="8783418929296503629">"Para"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"E kuptova"</string>
     <string name="work_apps_paused_title" msgid="2389865654362803723">"Profili i punës është në pauzë"</string>
     <string name="work_apps_paused_body" msgid="5388070126389079077">"Aplikacionet e punës nuk mund të të dërgojnë njoftime, të përdorin baterinë tënde apo të kenë qasje në vendndodhjen tënde"</string>
+    <string name="work_apps_paused_content_description" msgid="7553586952985486433">"Profili i punës është në pauzë. Aplikacionet e punës nuk mund të të dërgojnë njoftime, të përdorin baterinë tënde apo të kenë qasje në vendndodhjen tënde"</string>
     <string name="work_switch_tip" msgid="808075064383839144">"Vendos në pauzë aplikacionet e punës dhe njoftimet"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Dështoi: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

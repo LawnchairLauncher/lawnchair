@@ -600,7 +600,8 @@ public class LauncherStateManager {
 
     public interface StateListener {
 
-        void onStateTransitionStart(LauncherState toState);
-        void onStateTransitionComplete(LauncherState finalState);
+        default void onStateTransitionStart(LauncherState toState) { }
+
+        default void onStateTransitionComplete(LauncherState finalState) { }
     }
 }
