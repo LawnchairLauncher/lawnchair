@@ -332,7 +332,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
                         .map(info -> info.suggestedFolderNames)
                         .map(folderNames -> (FolderNameInfo[]) folderNames
                                 .getParcelableArrayExtra(FolderInfo.EXTRA_FOLDER_SUGGESTIONS))
-                        .ifPresent(nameInfos -> showLabelSuggestions(nameInfos));
+                        .ifPresent(this::showLabelSuggestions);
             }
             mFolderName.setHint("");
             mIsEditingName = true;
@@ -1450,7 +1450,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
             if (hasFocus) {
                 startEditingFolderName();
             } else {
-                logEditFolderLabel();
+                logCurrentFolderLabelState();
                 mFolderName.dispatchBackKey();
             }
         }
@@ -1649,7 +1649,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         return mContent;
     }
 
-    private void logEditFolderLabel() {
+    protected void logCurrentFolderLabelState() {
         LauncherEvent launcherEvent = LauncherEvent.newBuilder()
                 .setAction(Action.newBuilder().setType(Action.Type.SOFT_KEYBOARD))
                 .addSrcTarget(newEditTextTargetBuilder()

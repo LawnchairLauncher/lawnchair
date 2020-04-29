@@ -17,10 +17,11 @@ package com.android.quickstep;
 
 import static androidx.test.InstrumentationRegistry.getContext;
 import static androidx.test.InstrumentationRegistry.getInstrumentation;
+import static androidx.test.InstrumentationRegistry.getTargetContext;
 
+import static com.android.launcher3.common.WidgetUtils.createWidgetInfo;
 import static com.android.launcher3.testcomponent.TestCommandReceiver.EXTRA_VALUE;
 import static com.android.launcher3.testcomponent.TestCommandReceiver.SET_LIST_VIEW_SERVICE_BINDER;
-import static com.android.launcher3.ui.widget.BindWidgetTest.createWidgetInfo;
 import static com.android.quickstep.NavigationModeSwitchRule.Mode.ZERO_BUTTON;
 
 import static org.junit.Assert.assertEquals;
@@ -187,7 +188,7 @@ public class ViewInflationDuringSwipeUp extends AbstractQuickStepTest {
             LauncherSettings.Settings.call(mResolver,
                     LauncherSettings.Settings.METHOD_CLEAR_EMPTY_DB_FLAG);
             LauncherAppWidgetProviderInfo info = TestViewHelpers.findWidgetProvider(this, false);
-            LauncherAppWidgetInfo item = createWidgetInfo(info, true);
+            LauncherAppWidgetInfo item = createWidgetInfo(info, getTargetContext(), true);
 
             addItemToScreen(item);
             assertTrue("Widget is not present",

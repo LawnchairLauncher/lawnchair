@@ -20,6 +20,7 @@
     <dimen name="chip_hint_start_padding">10dp</dimen>
     <dimen name="chip_hint_end_padding">12dp</dimen>
     <dimen name="chip_hint_horizontal_margin">20dp</dimen>
+    <dimen name="chip_hint_vertical_offset">16dp</dimen>
     <dimen name="chip_hint_elevation">2dp</dimen>
     <dimen name="chip_icon_size">16dp</dimen>
     <dimen name="chip_text_height">26dp</dimen>

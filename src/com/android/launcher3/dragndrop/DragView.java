@@ -176,9 +176,6 @@ public class DragView extends View implements LauncherStateManager.StateListener
     }
 
     @Override
-    public void onStateTransitionStart(LauncherState toState) { }
-
-    @Override
     public void onStateTransitionComplete(LauncherState finalState) {
         setVisibility((finalState == LauncherState.NORMAL
                 || finalState == LauncherState.SPRING_LOADED) ? VISIBLE : INVISIBLE);

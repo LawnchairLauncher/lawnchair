@@ -16,6 +16,7 @@
 
 package com.android.launcher3.touch;
 
+import static android.widget.ListPopupWindow.WRAP_CONTENT;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
 import static com.android.launcher3.touch.SingleAxisSwipeDetector.HORIZONTAL;
@@ -30,6 +31,7 @@ import android.view.Surface;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
+import android.widget.LinearLayout;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.PagedView;
@@ -221,6 +223,33 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     @Override
     public int getTaskDismissDirectionFactor() {
         return 1;
+    }
+
+    @Override
+    public float getTaskMenuX(float x, View thumbnailView) {
+        return thumbnailView.getMeasuredWidth() + x;
+    }
+
+    @Override
+    public float getTaskMenuY(float y, View thumbnailView) {
+        return y;
+    }
+
+    @Override
+    public int getTaskMenuWidth(View view) {
+        return view.getMeasuredHeight();
+    }
+
+    @Override
+    public int getTaskMenuLayoutOrientation() {
+        return LinearLayout.HORIZONTAL;
+    }
+
+    @Override
+    public void setLayoutParamsForTaskMenuOptionItem(LinearLayout.LayoutParams lp) {
+        lp.width = 0;
+        lp.height = WRAP_CONTENT;
+        lp.weight = 1;
     }
 
     @Override
