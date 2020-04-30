@@ -195,11 +195,6 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
         updateThumbnailPaintFilter();
     }
 
-    public void setSaturation(float saturation) {
-        mSaturation = saturation;
-        updateThumbnailPaintFilter();
-    }
-
     public TaskOverlay getTaskOverlay() {
         return mOverlay;
     }
@@ -447,8 +442,8 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
             mClipBottom = -1;
 
             float scale = thumbnailData.scale;
-            Rect thumbnailInsets = thumbnailData.insets;
-
+            Rect activityInsets = dp.getInsets();
+            Rect thumbnailInsets = getBoundedInsets(activityInsets, thumbnailData.insets);
             final float thumbnailWidth = thumbnailPosition.width()
                     - (thumbnailInsets.left + thumbnailInsets.right) * scale;
             final float thumbnailHeight = thumbnailPosition.height()
@@ -519,6 +514,13 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
                 mClipBottom = bitmapHeight;
             }
             mIsOrientationChanged = isOrientationDifferent;
+        }
+
+        private Rect getBoundedInsets(Rect activityInsets, Rect insets) {
+            return new Rect(Math.min(insets.left, activityInsets.left),
+                    Math.min(insets.top, activityInsets.top),
+                    Math.min(insets.right, activityInsets.right),
+                    Math.min(insets.bottom, activityInsets.bottom));
         }
 
         private int getRotationDelta(int oldRotation, int newRotation) {
