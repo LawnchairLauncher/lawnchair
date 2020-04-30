@@ -42,6 +42,8 @@ import android.graphics.Outline;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.InsetDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Process;
@@ -174,11 +176,12 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
 
     // Order in which the footers appear. Lower order appear below higher order.
     public static final int INDEX_DIGITAL_WELLBEING_TOAST = 0;
-    public static final int INDEX_PROACTIVE_SUGGEST = 1;
     private final FooterWrapper[] mFooters = new FooterWrapper[2];
     private float mFooterVerticalOffset = 0;
     private float mFooterAlpha = 1;
     private int mStackHeight;
+    private View mContextualChipWrapper;
+    private View mContextualChip;
 
     public TaskView(Context context) {
         this(context, null);
@@ -255,8 +258,21 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                     footer.animateHide();
                 }
             }
+            if (mContextualChipWrapper != null) {
+                mContextualChipWrapper.animate().alpha(0f).setDuration(300);
+            }
+            if (mContextualChip != null) {
+                mContextualChip.animate().scaleX(0f).scaleY(0f).setDuration(300);
+            }
+
             mIconView.animate().alpha(0.0f);
         } else {
+            if (mContextualChip != null) {
+                mContextualChip.animate().scaleX(1f).scaleY(1f).setDuration(300);
+            }
+            if (mContextualChipWrapper != null) {
+                mContextualChipWrapper.animate().alpha(1f).setDuration(300);
+            }
             mIconView.animate().alpha(1.0f);
         }
 
@@ -288,11 +304,14 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
 
     /**
      * Updates this task view to the given {@param task}.
+     *
+     * TODO(b/142282126) Re-evaluate if we need to pass in isMultiWindowMode after
+     *   that issue is fixed
      */
-    public void bind(Task task, RecentsOrientedState orientedState) {
+    public void bind(Task task, RecentsOrientedState orientedState, boolean isMultiWindowMode) {
         cancelPendingLoadTasks();
         mTask = task;
-        mSnapshotView.bind(task);
+        mSnapshotView.bind(task, isMultiWindowMode);
         setOrientationState(orientedState);
     }
 
@@ -466,6 +485,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         int iconRotation = orientationState.getTouchRotation();
         PagedOrientationHandler orientationHandler = orientationState.getOrientationHandler();
         boolean isRtl = orientationHandler.getRecentsRtlSetting(getResources());
+        LayoutParams snapshotParams = (LayoutParams) mSnapshotView.getLayoutParams();
         int thumbnailPadding = (int) getResources().getDimension(R.dimen.task_thumbnail_top_margin);
         LayoutParams iconParams = (LayoutParams) mIconView.getLayoutParams();
         int rotation = orientationState.getTouchRotationDegrees();
@@ -473,7 +493,8 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             case Surface.ROTATION_90:
                 iconParams.gravity = (isRtl ? END : START) | CENTER_VERTICAL;
                 iconParams.rightMargin = -thumbnailPadding;
-                iconParams.leftMargin = iconParams.topMargin = iconParams.bottomMargin = 0;
+                iconParams.leftMargin = 0;
+                iconParams.topMargin = snapshotParams.topMargin / 2;
                 break;
             case Surface.ROTATION_180:
                 iconParams.gravity = BOTTOM | CENTER_HORIZONTAL;
@@ -483,17 +504,21 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             case Surface.ROTATION_270:
                 iconParams.gravity = (isRtl ? END : START) | CENTER_VERTICAL;
                 iconParams.leftMargin = -thumbnailPadding;
-                iconParams.rightMargin = iconParams.topMargin = iconParams.bottomMargin = 0;
+                iconParams.rightMargin = 0;
+                iconParams.topMargin = snapshotParams.topMargin / 2;
                 break;
             case Surface.ROTATION_0:
             default:
                 iconParams.gravity = TOP | CENTER_HORIZONTAL;
-                iconParams.leftMargin = iconParams.topMargin = iconParams.rightMargin =
-                    iconParams.bottomMargin = 0;
+                iconParams.leftMargin = iconParams.topMargin = iconParams.rightMargin = 0;
                 break;
         }
         mIconView.setLayoutParams(iconParams);
         mIconView.setRotation(rotation);
+
+        if (mMenuView != null) {
+            mMenuView.onRotationChanged();
+        }
     }
 
     private void setIconAndDimTransitionProgress(float progress, boolean invert) {
@@ -600,7 +625,10 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         }
 
         if (mMenuView != null) {
-            mMenuView.setPosition(getX() - getRecentsView().getScrollX(), getY());
+            PagedOrientationHandler pagedOrientationHandler = getPagedOrientationHandler();
+            RecentsView recentsView = getRecentsView();
+            mMenuView.setPosition(getX() - recentsView.getScrollX(),
+                    getY() - recentsView.getScrollY(), pagedOrientationHandler);
             mMenuView.setScaleX(getScaleX());
             mMenuView.setScaleY(getScaleY());
         }
@@ -655,6 +683,64 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         }
 
         return oldFooter;
+    }
+
+    /**
+     * Sets the contextual chip.
+     *
+     * @param view Wrapper view containing contextual chip.
+     */
+    public void setContextualChip(View view) {
+        if (mContextualChipWrapper != null) {
+            removeView(mContextualChipWrapper);
+        }
+        if (view != null) {
+            mContextualChipWrapper = view;
+            LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT,
+                    LayoutParams.WRAP_CONTENT);
+            layoutParams.gravity = BOTTOM | CENTER_HORIZONTAL;
+            int expectedChipHeight = getExpectedViewHeight(view);
+            float chipOffset = getResources().getDimension(R.dimen.chip_hint_vertical_offset);
+            layoutParams.bottomMargin = (int)
+                    (((MarginLayoutParams) mSnapshotView.getLayoutParams()).bottomMargin
+                            - expectedChipHeight + chipOffset);
+            mContextualChip = ((FrameLayout) mContextualChipWrapper).getChildAt(0);
+            mContextualChip.setScaleX(0f);
+            mContextualChip.setScaleY(0f);
+            GradientDrawable scrimDrawable = (GradientDrawable) getResources().getDrawable(
+                    R.drawable.chip_scrim_gradient, mActivity.getTheme());
+            float cornerRadius = TaskCornerRadius.get(mActivity);
+            scrimDrawable.setCornerRadii(
+                    new float[]{0, 0, 0, 0, cornerRadius, cornerRadius, cornerRadius,
+                            cornerRadius});
+            InsetDrawable scrimDrawableInset = new InsetDrawable(scrimDrawable, 0, 0, 0,
+                    (int) (expectedChipHeight - chipOffset));
+            mContextualChipWrapper.setBackground(scrimDrawableInset);
+            mContextualChipWrapper.setPadding(0, 0, 0, 0);
+            mContextualChipWrapper.setAlpha(0f);
+            addView(view, getChildCount(), layoutParams);
+            if (mContextualChip != null) {
+                mContextualChip.animate().scaleX(1f).scaleY(1f).setDuration(50);
+            }
+            if (mContextualChipWrapper != null) {
+                mContextualChipWrapper.animate().alpha(1f).setDuration(50);
+            }
+        }
+    }
+
+    /**
+     * Clears the contextual chip from TaskView.
+     *
+     * @return The contextual chip wrapper view to be recycled.
+     */
+    public View clearContextualChip() {
+        if (mContextualChipWrapper != null) {
+            removeView(mContextualChipWrapper);
+        }
+        View oldContextualChipWrapper = mContextualChipWrapper;
+        mContextualChipWrapper = null;
+        mContextualChip = null;
+        return oldContextualChipWrapper;
     }
 
     @Override
@@ -750,14 +836,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             mDelegate = mOldOutlineProvider == null
                     ? ViewOutlineProvider.BACKGROUND : mOldOutlineProvider;
 
-            int h = view.getLayoutParams().height;
-            if (h > 0) {
-                mExpectedHeight = h;
-            } else {
-                int m = MeasureSpec.makeMeasureSpec(MeasureSpec.EXACTLY - 1, MeasureSpec.AT_MOST);
-                view.measure(m, m);
-                mExpectedHeight = view.getMeasuredHeight();
-            }
+            mExpectedHeight = getExpectedViewHeight(view);
             mOldPaddingBottom = view.getPaddingBottom();
 
             if (mOldOutlineProvider != null) {
@@ -819,6 +898,19 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         }
     }
 
+    private int getExpectedViewHeight(View view) {
+        int expectedHeight;
+        int h = view.getLayoutParams().height;
+        if (h > 0) {
+            expectedHeight = h;
+        } else {
+            int m = MeasureSpec.makeMeasureSpec(MeasureSpec.EXACTLY - 1, MeasureSpec.AT_MOST);
+            view.measure(m, m);
+            expectedHeight = view.getMeasuredHeight();
+        }
+        return expectedHeight;
+    }
+
     @Override
     public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
         super.onInitializeAccessibilityNodeInfo(info);
@@ -872,6 +964,10 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
 
     public RecentsView getRecentsView() {
         return (RecentsView) getParent();
+    }
+
+    PagedOrientationHandler getPagedOrientationHandler() {
+        return getRecentsView().mOrientationState.getOrientationHandler();
     }
 
     public void notifyTaskLaunchFailed(String tag) {

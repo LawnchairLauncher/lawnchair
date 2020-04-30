@@ -27,7 +27,6 @@ import android.animation.AnimatorSet;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.util.FloatProperty;
 
 import androidx.annotation.Nullable;
 
@@ -63,19 +62,6 @@ public class AnimatorPlaybackController implements ValueAnimator.AnimatorUpdateL
 
         return new AnimatorPlaybackController(anim, duration, childAnims);
     }
-
-    private static final FloatProperty<ValueAnimator> CURRENT_PLAY_TIME =
-            new FloatProperty<ValueAnimator>("current-play-time") {
-                @Override
-                public void setValue(ValueAnimator animator, float v) {
-                    animator.setCurrentPlayTime((long) v);
-                }
-
-                @Override
-                public Float get(ValueAnimator animator) {
-                    return (float) animator.getCurrentPlayTime();
-                }
-            };
 
     // Progress factor after which an animation is considered almost completed.
     private static final float ANIMATION_COMPLETE_THRESHOLD = 0.95f;
@@ -177,21 +163,22 @@ public class AnimatorPlaybackController implements ValueAnimator.AnimatorUpdateL
         long springDuration = animationDuration;
         for (Holder h : mChildAnimations) {
             if ((h.springProperty.flags & springFlag) != 0) {
-                SpringAnimationBuilder s = new SpringAnimationBuilder(h.anim, CURRENT_PLAY_TIME)
-                        .setStartValue(clampDuration(mCurrentFraction))
-                        .setEndValue(goingToEnd ? h.anim.getDuration() : 0)
-                        .setStartVelocity(scaledVelocity * h.anim.getDuration())
+                SpringAnimationBuilder s = new SpringAnimationBuilder(context)
+                        .setStartValue(mCurrentFraction)
+                        .setEndValue(goingToEnd ? 1 : 0)
+                        .setStartVelocity(scaledVelocity)
                         .setMinimumVisibleChange(scaleInverse)
                         .setDampingRatio(h.springProperty.mDampingRatio)
-                        .setStiffness(h.springProperty.mStiffness);
+                        .setStiffness(h.springProperty.mStiffness)
+                        .computeParams();
 
-                long expectedDurationL = s.build(context).getDuration();
+                long expectedDurationL = s.getDuration();
                 springDuration = Math.max(expectedDurationL, springDuration);
 
                 float expectedDuration = expectedDurationL;
-                h.setter = (a, l) ->
-                    s.setValue(a, mAnimationPlayer.getCurrentPlayTime() / expectedDuration);
-                h.anim.setInterpolator(LINEAR);
+                h.setter = (a, l) -> a.setCurrentFraction(
+                        mAnimationPlayer.getCurrentPlayTime() / expectedDuration);
+                h.anim.setInterpolator(s::getInterpolatedValue);
             }
         }
 

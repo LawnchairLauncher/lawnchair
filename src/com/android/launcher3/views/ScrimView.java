@@ -118,9 +118,6 @@ public class ScrimView<T extends Launcher> extends View implements Insettable, O
 
     private final StateListener mAccessibilityLauncherStateListener = new StateListener() {
         @Override
-        public void onStateTransitionStart(LauncherState toState) {}
-
-        @Override
         public void onStateTransitionComplete(LauncherState finalState) {
             setImportantForAccessibility(finalState == ALL_APPS
                     ? IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS

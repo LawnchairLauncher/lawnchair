@@ -139,6 +139,7 @@
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"OK"</string>
     <string name="work_apps_paused_title" msgid="2389865654362803723">"Profil professionnel en pause"</string>
     <string name="work_apps_paused_body" msgid="5388070126389079077">"Les applications professionnelles ne peuvent pas vous envoyer de notifications, utiliser votre batterie ni accéder à votre localisation"</string>
+    <string name="work_apps_paused_content_description" msgid="7553586952985486433">"Profil professionnel en pause. Les applications professionnelles ne peuvent pas vous envoyer de notifications, utiliser votre batterie ni accéder à votre localisation"</string>
     <string name="work_switch_tip" msgid="808075064383839144">"Mettre en pause vos applications et notifications professionnelles"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Échec : <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>
