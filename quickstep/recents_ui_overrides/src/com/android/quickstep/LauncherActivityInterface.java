@@ -408,7 +408,7 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
     }
 
     @Override
-    public boolean shouldMinimizeSplitScreen() {
+    public boolean allowMinimizeSplitScreen() {
         return true;
     }
 
