@@ -272,7 +272,14 @@ public class ItemInfo {
                                 .orElse(LauncherAtom.Shortcut.newBuilder()));
                 break;
             case ITEM_TYPE_APPWIDGET:
-                setItemBuilder(itemBuilder);
+                itemBuilder
+                        .setWidget(nullableComponent
+                                .map(component -> LauncherAtom.Widget.newBuilder()
+                                        .setComponentName(component.flattenToShortString())
+                                        .setPackageName(component.getPackageName()))
+                                .orElse(LauncherAtom.Widget.newBuilder())
+                                .setSpanX(spanX)
+                                .setSpanY(spanY));
                 break;
             default:
                 break;
