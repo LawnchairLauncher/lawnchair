@@ -74,10 +74,6 @@ public class AllAppsTipView {
             launcher.getStateManager().addStateListener(
                     new LauncherStateManager.StateListener() {
                         @Override
-                        public void onStateTransitionStart(LauncherState toState) {
-                        }
-
-                        @Override
                         public void onStateTransitionComplete(LauncherState finalState) {
                             if (finalState == ALL_APPS) {
                                 if (showAllAppsTipIfNecessary(launcher)) {

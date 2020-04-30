@@ -79,8 +79,10 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
     private static final int[] STATE_PRESSED = new int[] {android.R.attr.state_pressed};
 
-    private final PointF mTranslationForReorder = new PointF(0, 0);
-    private float mScaleForReorder = 1f;
+    private final PointF mTranslationForReorderBounce = new PointF(0, 0);
+    private final PointF mTranslationForReorderPreview = new PointF(0, 0);
+
+    private float mScaleForReorderBounce = 1f;
 
     private static final Property<BubbleTextView, Float> DOT_SCALE_PROPERTY
             = new Property<BubbleTextView, Float>(Float.TYPE, "dotScale") {
@@ -675,24 +677,39 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         return mIconSize;
     }
 
-    public void setReorderOffset(float x, float y) {
-        mTranslationForReorder.set(x, y);
-        super.setTranslationX(x);
-        super.setTranslationY(y);
+    private void updateTranslation() {
+        super.setTranslationX(mTranslationForReorderBounce.x + mTranslationForReorderPreview.x);
+        super.setTranslationY(mTranslationForReorderBounce.y + mTranslationForReorderPreview.y);
     }
 
-    public void getReorderOffset(PointF offset) {
-        offset.set(mTranslationForReorder);
+    public void setReorderBounceOffset(float x, float y) {
+        mTranslationForReorderBounce.set(x, y);
+        updateTranslation();
     }
 
-    public void setReorderScale(float scale) {
-        mScaleForReorder = scale;
+    public void getReorderBounceOffset(PointF offset) {
+        offset.set(mTranslationForReorderBounce);
+    }
+
+    @Override
+    public void setReorderPreviewOffset(float x, float y) {
+        mTranslationForReorderPreview.set(x, y);
+        updateTranslation();
+    }
+
+    @Override
+    public void getReorderPreviewOffset(PointF offset) {
+        offset.set(mTranslationForReorderPreview);
+    }
+
+    public void setReorderBounceScale(float scale) {
+        mScaleForReorderBounce = scale;
         super.setScaleX(scale);
         super.setScaleY(scale);
     }
 
-    public float getReorderScale() {
-        return mScaleForReorder;
+    public float getReorderBounceScale() {
+        return mScaleForReorderBounce;
     }
 
     public View getView() {

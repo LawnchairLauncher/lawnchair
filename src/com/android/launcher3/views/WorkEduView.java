@@ -189,11 +189,6 @@ public class WorkEduView extends AbstractSlideInView implements Insettable {
 
         LauncherStateManager.StateListener listener = new LauncherStateManager.StateListener() {
             @Override
-            public void onStateTransitionStart(LauncherState toState) {
-
-            }
-
-            @Override
             public void onStateTransitionComplete(LauncherState finalState) {
                 if (finalState != LauncherState.ALL_APPS) return;
                 LayoutInflater layoutInflater = LayoutInflater.from(launcher);

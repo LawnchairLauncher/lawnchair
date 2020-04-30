@@ -43,7 +43,6 @@ public class RotationHelper implements OnSharedPreferenceChangeListener {
 
     public static final String ALLOW_ROTATION_PREFERENCE_KEY = "pref_allowRotation";
 
-    public static final String FIXED_ROTATION_TRANSFORM_SETTING_NAME = "fixed_rotation_transform";
     private final ContentResolver mContentResolver;
     private boolean mSystemAutoRotateEnabled;
 

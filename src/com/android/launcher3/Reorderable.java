@@ -22,17 +22,24 @@ import android.view.View;
 public interface Reorderable {
 
     /**
-     * Set the offset related to reorder hint and "bounce" animations
+     * Set the offset related to reorder hint and bounce animations
      */
-    void setReorderOffset(float x, float y);
+    void setReorderBounceOffset(float x, float y);
 
-    void getReorderOffset(PointF offset);
+    void getReorderBounceOffset(PointF offset);
+
+    /**
+     * Set the offset related to previewing the new reordered position
+     */
+    void setReorderPreviewOffset(float x, float y);
+
+    void getReorderPreviewOffset(PointF offset);
 
     /**
      * Set the scale related to reorder hint and "bounce" animations
      */
-    void setReorderScale(float scale);
-    float getReorderScale();
+    void setReorderBounceScale(float scale);
+    float getReorderBounceScale();
 
     /**
      * Get the com.android.view related to this object

@@ -17,7 +17,6 @@ package com.android.launcher3.ui;
 
 import static androidx.test.InstrumentationRegistry.getInstrumentation;
 
-import static com.android.launcher3.WorkspaceLayoutManager.FIRST_SCREEN_ID;
 import static com.android.launcher3.ui.TaplTestsLauncher3.getAppPackageName;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
@@ -26,7 +25,6 @@ import static org.junit.Assert.assertTrue;
 
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -53,6 +51,7 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.common.WidgetUtils;
 import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.tapl.LauncherInstrumentation;
@@ -60,7 +59,6 @@ import com.android.launcher3.tapl.LauncherInstrumentation.ContainerType;
 import com.android.launcher3.tapl.TestHelpers;
 import com.android.launcher3.testcomponent.TestCommandReceiver;
 import com.android.launcher3.testing.TestProtocol;
-import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Wait;
@@ -100,9 +98,10 @@ public abstract class AbstractLauncherUiTest {
     public static final long DEFAULT_UI_TIMEOUT = 10000;
     private static final String TAG = "AbstractLauncherUiTest";
 
-    private static String sDetectedActivityLeak;
+    private static String sStrictmodeDetectedActivityLeak;
     private static boolean sActivityLeakReported;
     private static final String SYSTEMUI_PACKAGE = "com.android.systemui";
+    private static final ActivityLeakTracker ACTIVITY_LEAK_TRACKER = new ActivityLeakTracker();
 
     protected LooperExecutor mMainThreadExecutor = MAIN_EXECUTOR;
     protected final UiDevice mDevice = UiDevice.getInstance(getInstrumentation());
@@ -115,30 +114,51 @@ public abstract class AbstractLauncherUiTest {
         if (TestHelpers.isInLauncherProcess()) {
             StrictMode.VmPolicy.Builder builder =
                     new StrictMode.VmPolicy.Builder()
-                            .detectActivityLeaks()
+// b/154772063
+//                            .detectActivityLeaks()
                             .penaltyLog()
                             .penaltyListener(Runnable::run, violation -> {
-                                // Runs in the main thread. We can't dumpheap in the main thread,
-                                // so let's just mark the fact that the leak has happened.
-                                if (sDetectedActivityLeak == null) {
-                                    sDetectedActivityLeak = violation.toString();
-                                    try {
-                                        Debug.dumpHprofData(
-                                                getInstrumentation().getTargetContext()
-                                                        .getFilesDir().getPath()
-                                                        + "/ActivityLeakHeapDump.hprof");
-                                    } catch (Throwable e) {
-                                        Log.e(TAG, "dumpHprofData failed", e);
-                                    }
+                                if (sStrictmodeDetectedActivityLeak == null) {
+                                    sStrictmodeDetectedActivityLeak = violation.toString() + ", "
+                                            + dumpHprofData() + ".";
                                 }
                             });
             StrictMode.setVmPolicy(builder.build());
         }
     }
 
-    public static void checkDetectedLeaks() {
-        if (sDetectedActivityLeak != null && !sActivityLeakReported) {
+    public static void checkDetectedLeaks(LauncherInstrumentation launcher) {
+        if (sActivityLeakReported) return;
+
+        if (sStrictmodeDetectedActivityLeak != null) {
+            // Report from the test thread strictmode violations detected in the main thread.
             sActivityLeakReported = true;
+            Assert.fail(sStrictmodeDetectedActivityLeak);
+        }
+
+        // Check whether activity leak detector has found leaked activities.
+        Wait.atMost(AbstractLauncherUiTest::getActivityLeakErrorMessage,
+                () -> {
+                    launcher.getTotalPssKb();  // Triggers GC
+                    return MAIN_EXECUTOR.submit(
+                            () -> ACTIVITY_LEAK_TRACKER.noLeakedActivities()).get();
+                }, DEFAULT_UI_TIMEOUT, launcher);
+    }
+
+    private static String getActivityLeakErrorMessage() {
+        sActivityLeakReported = true;
+        return "Activity leak detector has found leaked activities, " + dumpHprofData() + ".";
+    }
+
+    private static String dumpHprofData() {
+        try {
+            final String fileName = getInstrumentation().getTargetContext().getFilesDir().getPath()
+                    + "/ActivityLeakHeapDump.hprof";
+            Debug.dumpHprofData(fileName);
+            return "memory dump filename: " + fileName;
+        } catch (Throwable e) {
+            Log.e(TAG, "dumpHprofData failed", e);
+            return "failed to save memory dump";
         }
     }
 
@@ -265,7 +285,7 @@ public abstract class AbstractLauncherUiTest {
         if (mLauncherPid != 0) {
             assertEquals("Launcher crashed, pid mismatch:", mLauncherPid, mLauncher.getPid());
         }
-        checkDetectedLeaks();
+        checkDetectedLeaks(mLauncher);
     }
 
     protected void clearLauncherData() throws IOException, InterruptedException {
@@ -306,26 +326,7 @@ public abstract class AbstractLauncherUiTest {
      * Adds {@param item} on the homescreen on the 0th screen
      */
     protected void addItemToScreen(ItemInfo item) {
-        ContentResolver resolver = mTargetContext.getContentResolver();
-        int screenId = FIRST_SCREEN_ID;
-        // Update the screen id counter for the provider.
-        LauncherSettings.Settings.call(resolver,
-                LauncherSettings.Settings.METHOD_NEW_SCREEN_ID);
-
-        if (screenId > FIRST_SCREEN_ID) {
-            screenId = FIRST_SCREEN_ID;
-        }
-
-        // Insert the item
-        ContentWriter writer = new ContentWriter(mTargetContext);
-        item.id = LauncherSettings.Settings.call(
-                resolver, LauncherSettings.Settings.METHOD_NEW_ITEM_ID)
-                .getInt(LauncherSettings.Settings.EXTRA_VALUE);
-        item.screenId = screenId;
-        item.onAddToDatabase(writer);
-        writer.put(LauncherSettings.Favorites._ID, item.id);
-        resolver.insert(LauncherSettings.Favorites.CONTENT_URI,
-                writer.getValues(mTargetContext));
+        WidgetUtils.addItemToScreen(item, mTargetContext);
         resetLoaderState();
 
         // Launch the home activity

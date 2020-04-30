@@ -40,6 +40,7 @@ import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
 import com.android.launcher3.popup.SystemShortcut;
+import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.quickstep.TaskOverlayFactory;
@@ -150,9 +151,26 @@ public class TaskMenuView extends AbstractFloatingView {
         return (type & TYPE_TASK_MENU) != 0;
     }
 
-    public void setPosition(float x, float y) {
-        setX(x);
-        setY(y + mThumbnailTopMargin);
+    public void setPosition(float x, float y, PagedOrientationHandler pagedOrientationHandler) {
+        float adjustedY = y + mThumbnailTopMargin;
+        // Changing pivot to make computations easier
+        // NOTE: Changing the pivots means the rotated view gets rotated about the new pivots set,
+        // which would render the X and Y position set here incorrect
+        setPivotX(0);
+        setPivotY(0);
+        setRotation(pagedOrientationHandler.getDegreesRotated());
+        setX(pagedOrientationHandler.getTaskMenuX(x, mTaskView.getThumbnail()));
+        setY(pagedOrientationHandler.getTaskMenuY(adjustedY, mTaskView.getThumbnail()));
+    }
+
+    public void onRotationChanged() {
+        if (mOpenCloseAnimator != null && mOpenCloseAnimator.isRunning()) {
+            mOpenCloseAnimator.end();
+        }
+        if (mIsOpen) {
+            mOptionLayout.removeAllViews();
+            populateAndLayoutMenu();
+        }
     }
 
     public static TaskMenuView showForTask(TaskView taskView) {
@@ -168,10 +186,14 @@ public class TaskMenuView extends AbstractFloatingView {
         }
         mActivity.getDragLayer().addView(this);
         mTaskView = taskView;
-        addMenuOptions(mTaskView);
-        orientAroundTaskView(mTaskView);
+        populateAndLayoutMenu();
         post(this::animateOpen);
         return true;
+    }
+
+    private void populateAndLayoutMenu() {
+        addMenuOptions(mTaskView);
+        orientAroundTaskView(mTaskView);
     }
 
     private void addMenuOptions(TaskView taskView) {
@@ -200,21 +222,26 @@ public class TaskMenuView extends AbstractFloatingView {
                 R.layout.task_view_menu_option, this, false);
         menuOption.setIconAndLabelFor(
                 menuOptionView.findViewById(R.id.icon), menuOptionView.findViewById(R.id.text));
+        LayoutParams lp = (LayoutParams) menuOptionView.getLayoutParams();
+        mTaskView.getPagedOrientationHandler().setLayoutParamsForTaskMenuOptionItem(lp);
         menuOptionView.setOnClickListener(menuOption);
         mOptionLayout.addView(menuOptionView);
     }
 
     private void orientAroundTaskView(TaskView taskView) {
+        PagedOrientationHandler orientationHandler = taskView.getPagedOrientationHandler();
         measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
         mActivity.getDragLayer().getDescendantRectRelativeToSelf(taskView, sTempRect);
         Rect insets = mActivity.getDragLayer().getInsets();
         BaseDragLayer.LayoutParams params = (BaseDragLayer.LayoutParams) getLayoutParams();
-        params.width = taskView.getMeasuredWidth();
+        params.width = orientationHandler.getTaskMenuWidth(taskView.getThumbnail());
         params.gravity = Gravity.START;
         setLayoutParams(params);
         setScaleX(taskView.getScaleX());
         setScaleY(taskView.getScaleY());
-        setPosition(sTempRect.left - insets.left, sTempRect.top - insets.top);
+        mOptionLayout.setOrientation(orientationHandler.getTaskMenuLayoutOrientation());
+        setPosition(sTempRect.left - insets.left, sTempRect.top - insets.top,
+            taskView.getPagedOrientationHandler());
     }
 
     private void animateOpen() {

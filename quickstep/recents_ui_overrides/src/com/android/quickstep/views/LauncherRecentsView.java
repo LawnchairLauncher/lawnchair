@@ -45,7 +45,6 @@ import com.android.launcher3.LauncherStateManager.StateListener;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.appprediction.PredictionUiStateManager;
 import com.android.launcher3.appprediction.PredictionUiStateManager.Client;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.TraceHelper;
@@ -96,7 +95,7 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher>
     }
 
     public LauncherRecentsView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
+        super(context, attrs, defStyleAttr, true);
         mActivity.getStateManager().addStateListener(this);
     }
 
@@ -262,12 +261,6 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher>
                     .setLauncherOnTop(true);
         }
         return mTransformParams;
-    }
-
-    @Override
-    protected boolean supportsVerticalLandscape() {
-        return FeatureFlags.ENABLE_FIXED_ROTATION_TRANSFORM.get()
-                && !mOrientationState.areMultipleLayoutOrientationsDisabled();
     }
 
     @Override

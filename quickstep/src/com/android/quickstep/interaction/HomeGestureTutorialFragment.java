@@ -29,4 +29,9 @@ public class HomeGestureTutorialFragment extends TutorialFragment {
     TutorialController createController(TutorialType type) {
         return new HomeGestureTutorialController(this, type);
     }
+
+    @Override
+    Class<? extends TutorialController> getControllerClass() {
+        return HomeGestureTutorialController.class;
+    }
 }
