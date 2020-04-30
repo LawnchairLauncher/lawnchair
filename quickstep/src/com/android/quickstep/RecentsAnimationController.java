@@ -49,21 +49,22 @@ public class RecentsAnimationController {
 
     private final RecentsAnimationControllerCompat mController;
     private final Consumer<RecentsAnimationController> mOnFinishedListener;
-    private final boolean mShouldMinimizeSplitScreen;
+    private final boolean mAllowMinimizeSplitScreen;
 
     private InputConsumerController mInputConsumerController;
     private Supplier<InputConsumer> mInputProxySupplier;
     private InputConsumer mInputConsumer;
-    private boolean mWindowThresholdCrossed = false;
+    private boolean mUseLauncherSysBarFlags = false;
+    private boolean mSplitScreenMinimized = false;
     private boolean mTouchInProgress;
     private boolean mFinishPending;
 
     public RecentsAnimationController(RecentsAnimationControllerCompat controller,
-            boolean shouldMinimizeSplitScreen,
+            boolean allowMinimizeSplitScreen,
             Consumer<RecentsAnimationController> onFinishedListener) {
         mController = controller;
         mOnFinishedListener = onFinishedListener;
-        mShouldMinimizeSplitScreen = shouldMinimizeSplitScreen;
+        mAllowMinimizeSplitScreen = allowMinimizeSplitScreen;
     }
 
     /**
@@ -76,16 +77,31 @@ public class RecentsAnimationController {
 
     /**
      * Indicates that the gesture has crossed the window boundary threshold and system UI can be
-     * update the represent the window behind
+     * update the system bar flags accordingly.
      */
-    public void setWindowThresholdCrossed(boolean windowThresholdCrossed) {
-        if (mWindowThresholdCrossed != windowThresholdCrossed) {
-            mWindowThresholdCrossed = windowThresholdCrossed;
+    public void setUseLauncherSystemBarFlags(boolean useLauncherSysBarFlags) {
+        if (mUseLauncherSysBarFlags != useLauncherSysBarFlags) {
+            mUseLauncherSysBarFlags = useLauncherSysBarFlags;
             UI_HELPER_EXECUTOR.execute(() -> {
-                mController.setAnimationTargetsBehindSystemBars(!windowThresholdCrossed);
+                mController.setAnimationTargetsBehindSystemBars(!useLauncherSysBarFlags);
+            });
+        }
+    }
+
+    /**
+     * Indicates that the gesture has crossed the window boundary threshold and we should minimize
+     * if we are in splitscreen.
+     */
+    public void setSplitScreenMinimized(boolean splitScreenMinimized) {
+        if (!mAllowMinimizeSplitScreen) {
+            return;
+        }
+        if (mSplitScreenMinimized != splitScreenMinimized) {
+            mSplitScreenMinimized = splitScreenMinimized;
+            UI_HELPER_EXECUTOR.execute(() -> {
                 SystemUiProxy p = SystemUiProxy.INSTANCE.getNoCreate();
-                if (p != null && mShouldMinimizeSplitScreen) {
-                    p.setSplitScreenMinimized(windowThresholdCrossed);
+                if (p != null) {
+                    p.setSplitScreenMinimized(splitScreenMinimized);
                 }
             });
         }

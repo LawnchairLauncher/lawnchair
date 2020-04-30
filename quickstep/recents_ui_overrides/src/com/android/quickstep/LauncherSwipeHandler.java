@@ -630,17 +630,21 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
      * @param windowProgress 0 == app, 1 == overview
      */
     private void updateSysUiFlags(float windowProgress) {
-        if (mRecentsView != null) {
+        if (mRecentsAnimationController != null && mRecentsView != null) {
+            TaskView runningTask = mRecentsView.getRunningTaskView();
             TaskView centermostTask = mRecentsView.getTaskViewNearestToCenterOfScreen();
             int centermostTaskFlags = centermostTask == null ? 0
                     : centermostTask.getThumbnail().getSysUiStatusNavFlags();
-            boolean useHomeScreenFlags = windowProgress > 1 - UPDATE_SYSUI_FLAGS_THRESHOLD;
+            boolean swipeUpThresholdPassed = windowProgress > 1 - UPDATE_SYSUI_FLAGS_THRESHOLD;
+            boolean quickswitchThresholdPassed = centermostTask != runningTask;
+
             // We will handle the sysui flags based on the centermost task view.
-            if (mRecentsAnimationController != null) {
-                mRecentsAnimationController.setWindowThresholdCrossed(centermostTaskFlags != 0
-                        && useHomeScreenFlags);
-            }
-            int sysuiFlags = useHomeScreenFlags ? 0 : centermostTaskFlags;
+            mRecentsAnimationController.setUseLauncherSystemBarFlags(
+                    (swipeUpThresholdPassed || quickswitchThresholdPassed)
+                            && centermostTaskFlags != 0);
+            mRecentsAnimationController.setSplitScreenMinimized(swipeUpThresholdPassed);
+
+            int sysuiFlags = swipeUpThresholdPassed ? 0 : centermostTaskFlags;
             mActivity.getSystemUiController().updateUiState(UI_STATE_OVERVIEW, sysuiFlags);
         }
     }
