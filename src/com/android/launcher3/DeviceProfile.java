@@ -32,6 +32,10 @@ import com.android.launcher3.util.DefaultDisplay;
 
 public class DeviceProfile {
 
+    private static final float TABLET_MIN_DPS = 600;
+    private static final float LARGE_TABLET_MIN_DPS = 720;
+
+
     public final InvariantDeviceProfile inv;
     private final DefaultDisplay.Info mInfo;
 
@@ -158,11 +162,12 @@ public class DeviceProfile {
         }
 
         mInfo = info;
-        Resources res = context.getResources();
 
         // Constants from resources
-        isTablet = res.getBoolean(R.bool.is_tablet);
-        isLargeTablet = res.getBoolean(R.bool.is_large_tablet);
+        float swDPs = Utilities.dpiFromPx(
+                Math.min(info.smallestSize.x, info.smallestSize.y), info.metrics);
+        isTablet = swDPs >= TABLET_MIN_DPS;
+        isLargeTablet = swDPs >= LARGE_TABLET_MIN_DPS;
         isPhone = !isTablet && !isLargeTablet;
         aspectRatio = ((float) Math.max(widthPx, heightPx)) / Math.min(widthPx, heightPx);
         boolean isTallDevice = Float.compare(aspectRatio, TALL_DEVICE_ASPECT_RATIO_THRESHOLD) >= 0;
@@ -170,10 +175,10 @@ public class DeviceProfile {
         // Some more constants
         this.transposeLayoutWithOrientation = transposeLayoutWithOrientation;
 
-        context = getContext(context, isVerticalBarLayout()
+        context = getContext(context, info, isVerticalBarLayout()
                 ? Configuration.ORIENTATION_LANDSCAPE
                 : Configuration.ORIENTATION_PORTRAIT);
-        res = context.getResources();
+        final Resources res = context.getResources();
 
         edgeMarginPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_edge_margin);
         desiredWorkspaceLeftRightMarginPx = isVerticalBarLayout() ? 0 : edgeMarginPx;
@@ -632,10 +637,11 @@ public class DeviceProfile {
         }
     }
 
-    private static Context getContext(Context c, int orientation) {
-        Configuration context = new Configuration(c.getResources().getConfiguration());
-        context.orientation = orientation;
-        return c.createConfigurationContext(context);
+    private static Context getContext(Context c, DefaultDisplay.Info info, int orientation) {
+        Configuration config = new Configuration(c.getResources().getConfiguration());
+        config.orientation = orientation;
+        config.densityDpi = info.metrics.densityDpi;
+        return c.createConfigurationContext(config);
     }
 
     /**
