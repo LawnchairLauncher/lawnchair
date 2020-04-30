@@ -99,6 +99,10 @@ class OrientationTouchTransformer {
             return;
         }
         this.mMode = newMode;
+        // Swipe touch regions are independent of nav mode, so we have to clear them explicitly
+        // here to avoid, for ex, a nav region for 2-button rotation 0 being used for 3-button mode
+        // It tries to cache and reuse swipe regions whenever possible based only on rotation
+        mSwipeTouchRegions.clear();
         resetSwipeRegions(info);
     }
 
