@@ -107,7 +107,7 @@ public abstract class BaseRecentsViewStateController<T extends RecentsView>
         setter.setFloat(
                 mRecentsView, getTaskModalnessProperty(),
                 toState.getOverviewModalness(),
-                config.getInterpolator(ANIM_OVERVIEW_MODAL, AGGRESSIVE_EASE_IN_OUT));
+                config.getInterpolator(ANIM_OVERVIEW_MODAL, LINEAR));
     }
 
     abstract FloatProperty getTaskModalnessProperty();

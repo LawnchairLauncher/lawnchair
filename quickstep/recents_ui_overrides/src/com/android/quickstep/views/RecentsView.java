@@ -214,6 +214,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     protected final Rect mTempRect = new Rect();
     protected final RectF mTempRectF = new RectF();
     private final PointF mTempPointF = new PointF();
+    private final float[] mTempFloatPoint = new float[2];
 
     private static final int DISMISS_TASK_DURATION = 300;
     private static final int ADDITION_TASK_DURATION = 200;
@@ -1651,6 +1652,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                 mTempRect, mActivity.getDeviceProfile(), mTempPointF);
         setPivotX(mTempPointF.x);
         setPivotY(mTempPointF.y);
+        setTaskModalness(mTaskModalness);
         updatePageOffsets();
     }
 
@@ -2131,6 +2133,18 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         updatePageOffsets();
         if (getCurrentPageTaskView() != null) {
             getCurrentPageTaskView().setModalness(modalness);
+            TaskView tv = getCurrentPageTaskView();
+
+            // Move the task view up as it scales...
+            // ...the icon on taskview is hidden in modal state, so consider the top of the task
+            mTempFloatPoint[0] = 0;
+            mTempFloatPoint[1] = tv.getTop() + mTaskTopMargin;
+            // ...find the top after the transformation
+            getMatrix().mapPoints(mTempFloatPoint);
+
+            // ...make it match the top inset
+            float calcOffset = (mInsets.top - mTempFloatPoint[1]) * mTaskModalness;
+            tv.setTranslationY(calcOffset);
         }
     }
 
