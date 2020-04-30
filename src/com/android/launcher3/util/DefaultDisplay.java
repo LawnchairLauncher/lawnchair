@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.util;
 
+import static android.view.Display.DEFAULT_DISPLAY;
+
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
 import android.content.Context;
@@ -26,7 +28,6 @@ import android.os.Message;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
-import android.view.WindowManager;
 
 import androidx.annotation.VisibleForTesting;
 
@@ -142,7 +143,7 @@ public class DefaultDisplay implements DisplayListener {
         }
 
         private Info(Context context) {
-            this(context.getSystemService(WindowManager.class).getDefaultDisplay());
+            this(context.getSystemService(DisplayManager.class).getDisplay(DEFAULT_DISPLAY));
         }
 
         public Info(Display display) {
