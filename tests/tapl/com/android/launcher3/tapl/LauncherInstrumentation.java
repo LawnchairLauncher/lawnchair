@@ -97,8 +97,6 @@ public final class LauncherInstrumentation {
     private static final Pattern EVENT_TOUCH_UP = getTouchEventPattern("ACTION_UP");
     private static final Pattern EVENT_TOUCH_CANCEL = getTouchEventPattern("ACTION_CANCEL");
     private static final Pattern EVENT_PILFER_POINTERS = Pattern.compile("pilferPointers");
-    static final Pattern EVENT_START_ACTIVITY = Pattern.compile("Activity\\.onStart");
-    static final Pattern EVENT_STOP_ACTIVITY = Pattern.compile("Activity\\.onStop");
     static final Pattern EVENT_START = Pattern.compile("start:");
 
     static final Pattern EVENT_TOUCH_DOWN_TIS = getTouchEventPatternTIS("ACTION_DOWN");
@@ -680,14 +678,8 @@ public final class LauncherInstrumentation {
                                         ? GestureScope.INSIDE_TO_OUTSIDE
                                         : GestureScope.OUTSIDE);
                     }
-                    if (!launcherWasVisible) {
-                        expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_START_ACTIVITY);
-                    }
                 }
             } else {
-                if (!launcherWasVisible) {
-                    expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_START_ACTIVITY);
-                }
                 log("Hierarchy before clicking home:");
                 dumpViewHierarchy();
                 log(action = "clicking home button from " + getVisibleStateMessage());
