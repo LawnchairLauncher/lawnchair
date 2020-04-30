@@ -212,7 +212,7 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
         final LauncherState startState = launcher.getStateManager().getState();
 
         LauncherState resetState = startState;
-        if (startState.disableRestore) {
+        if (startState.shouldDisableRestore()) {
             resetState = launcher.getStateManager().getRestState();
         }
         launcher.getStateManager().setRestState(resetState);

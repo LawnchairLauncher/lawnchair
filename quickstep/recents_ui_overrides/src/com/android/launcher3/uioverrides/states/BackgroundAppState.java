@@ -17,7 +17,6 @@ package com.android.launcher3.uioverrides.states;
 
 import android.content.Context;
 
-import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
@@ -29,9 +28,8 @@ import com.android.quickstep.views.RecentsView;
  */
 public class BackgroundAppState extends OverviewState {
 
-    private static final int STATE_FLAGS =
-            FLAG_DISABLE_RESTORE | FLAG_OVERVIEW_UI | FLAG_DISABLE_ACCESSIBILITY
-                    | FLAG_DISABLE_INTERACTION;
+    private static final int STATE_FLAGS = FLAG_DISABLE_RESTORE | FLAG_OVERVIEW_UI
+            | FLAG_WORKSPACE_INACCESSIBLE | FLAG_NON_INTERACTIVE | FLAG_CLOSE_POPUPS;
 
     public BackgroundAppState(int id) {
         this(id, LauncherLogProto.ContainerType.TASKSWITCHER);
@@ -39,11 +37,6 @@ public class BackgroundAppState extends OverviewState {
 
     protected BackgroundAppState(int id, int logContainer) {
         super(id, logContainer, STATE_FLAGS);
-    }
-
-    @Override
-    public void onStateEnabled(Launcher launcher) {
-        AbstractFloatingView.closeAllOpenViews(launcher, false);
     }
 
     @Override
