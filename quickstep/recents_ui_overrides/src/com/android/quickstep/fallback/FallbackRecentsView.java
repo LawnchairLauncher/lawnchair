@@ -65,7 +65,7 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity> {
     }
 
     public FallbackRecentsView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
+        super(context, attrs, defStyleAttr, false);
     }
 
     @Override
@@ -194,10 +194,5 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity> {
             }
         }
         super.applyLoadPlan(tasks);
-    }
-
-    @Override
-    protected boolean supportsVerticalLandscape() {
-        return false;
     }
 }

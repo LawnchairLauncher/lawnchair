@@ -83,5 +83,6 @@
     <!-- Tips Gesture Tutorial -->
     <dimen name="gesture_tutorial_title_margin_start_end">40dp</dimen>
     <dimen name="gesture_tutorial_subtitle_margin_start_end">16dp</dimen>
+    <dimen name="gesture_tutorial_feedback_margin_start_end">24dp</dimen>
     <dimen name="gesture_tutorial_button_margin_start_end">18dp</dimen>
 </resources>

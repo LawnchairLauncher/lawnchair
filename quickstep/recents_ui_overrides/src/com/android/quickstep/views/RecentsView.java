@@ -38,6 +38,7 @@ import static com.android.launcher3.userevent.nano.LauncherLogProto.ControlType.
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_OVERVIEW;
 import static com.android.quickstep.TaskUtils.checkCurrentOrManagedUserId;
+import static com.android.quickstep.views.OverviewActionsView.HIDDEN_FULLESCREEN_PROGRESS;
 import static com.android.quickstep.views.OverviewActionsView.HIDDEN_GESTURE_RUNNING;
 import static com.android.quickstep.views.OverviewActionsView.HIDDEN_NON_ZERO_ROTATION;
 import static com.android.quickstep.views.OverviewActionsView.HIDDEN_NO_RECENTS;
@@ -69,14 +70,13 @@ import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
+import android.util.Log;
 import android.util.Property;
 import android.util.SparseBooleanArray;
 import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
-import android.view.OrientationEventListener;
-import android.view.Surface;
 import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
@@ -103,7 +103,6 @@ import com.android.launcher3.anim.SpringProperty;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.statehandlers.DepthController;
-import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.touch.PagedOrientationHandler.CurveProperties;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
@@ -191,8 +190,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             };
 
     protected final RecentsOrientedState mOrientationState;
-    private OrientationEventListener mOrientationListener;
-    private int mPreviousRotation;
     protected RecentsAnimationController mRecentsAnimationController;
     protected RecentsAnimationTargets mRecentsAnimationTargets;
     protected AppWindowAnimationHelper mAppWindowAnimationHelper;
@@ -301,9 +298,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         }
     };
 
-    private final RecentsOrientedState.SystemRotationChangeListener mSystemRotationChangeListener =
-            enabled -> toggleOrientationEventListener();
-
     private final PinnedStackAnimationListener mIPinnedStackAnimationListener =
             new PinnedStackAnimationListener();
 
@@ -360,11 +354,13 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         }
     };
 
-    public RecentsView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public RecentsView(Context context, AttributeSet attrs, int defStyleAttr,
+            boolean rotationSupportedByActivity) {
         super(context, attrs, defStyleAttr);
         setPageSpacing(getResources().getDimensionPixelSize(R.dimen.recents_page_spacing));
         setEnableFreeScroll(true);
-        mOrientationState = new RecentsOrientedState(context);
+        mOrientationState = new RecentsOrientedState(
+                context, rotationSupportedByActivity, this::animateRecentsRotationInPlace);
 
         mFastFlingVelocity = getResources()
                 .getDimensionPixelSize(R.dimen.recents_fast_fling_velocity);
@@ -399,21 +395,10 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                 .getDimensionPixelSize(R.dimen.recents_empty_message_text_padding);
         setWillNotDraw(false);
         updateEmptyMessage();
-        disableMultipleLayoutRotations(!supportsVerticalLandscape());
+        mOrientationHandler = mOrientationState.getOrientationHandler();
 
         // Initialize quickstep specific cache params here, as this is constructed only once
         mActivity.getViewCache().setCacheSize(R.layout.digital_wellbeing_toast, 5);
-
-        mOrientationListener = new OrientationEventListener(getContext()) {
-            @Override
-            public void onOrientationChanged(int i) {
-                int rotation = RecentsOrientedState.getRotationForUserDegreesRotated(i);
-                if (mPreviousRotation != rotation) {
-                    animateRecentsRotationInPlace(rotation);
-                    mPreviousRotation = rotation;
-                }
-            }
-        };
     }
 
     public OverScroller getScroller() {
@@ -502,7 +487,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         SystemUiProxy.INSTANCE.get(getContext()).setPinnedStackAnimationListener(
                 mIPinnedStackAnimationListener);
         mOrientationState.init();
-        mOrientationState.addSystemRotationChangeListener(mSystemRotationChangeListener);
     }
 
     @Override
@@ -517,7 +501,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         mIdp.removeOnChangeListener(this);
         SystemUiProxy.INSTANCE.get(getContext()).setPinnedStackAnimationListener(null);
         mIPinnedStackAnimationListener.setActivity(null);
-        mOrientationState.removeSystemRotationChangeListener(mSystemRotationChangeListener);
         mOrientationState.destroy();
     }
 
@@ -576,31 +559,12 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     public void setOverviewStateEnabled(boolean enabled) {
         mOverviewStateEnabled = enabled;
         updateTaskStackListenerState();
+        mOrientationState.setRotationWatcherEnabled(enabled);
         if (!enabled) {
             // Reset the running task when leaving overview since it can still have a reference to
             // its thumbnail
             mTmpRunningTask = null;
         }
-        toggleOrientationEventListener();
-    }
-
-    private void toggleOrientationEventListener() {
-        boolean canEnable = canEnableOverviewRotationAnimation() && mOverviewStateEnabled;
-        UI_HELPER_EXECUTOR.execute(() -> {
-            if (canEnable) {
-                mOrientationListener.enable();
-            } else {
-                mOrientationListener.disable();
-            }
-        });
-    }
-
-    private boolean canEnableOverviewRotationAnimation() {
-        return supportsVerticalLandscape() // not 3P launcher
-                && !TestProtocol.sDisableSensorRotation // Ignore hardware dependency for tests..
-                && mOrientationListener.canDetectOrientation() // ..but does the hardware even work?
-                && (mOrientationState.isSystemRotationAllowed() &&
-                    !mOrientationState.canLauncherRotate()); // launcher is going to rotate itself
     }
 
     public void onDigitalWellbeingToastShown() {
@@ -730,7 +694,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             final int pageIndex = requiredTaskCount - i - 1 + mTaskViewStartIndex;
             final Task task = tasks.get(i);
             final TaskView taskView = (TaskView) getChildAt(pageIndex);
-            taskView.bind(task, mOrientationState);
+            taskView.bind(task, mOrientationState, mActivity.getDeviceProfile().isMultiWindowMode);
         }
 
         if (mNextPage == INVALID_PAGE) {
@@ -820,9 +784,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         for (int i = 0; i < taskCount; i++) {
             getTaskViewAt(i).setFullscreenProgress(mFullscreenProgress);
         }
-        if (mActionsView != null && mOrientationState.getLauncherRotation() == Surface.ROTATION_0) {
-            mActionsView.setVisibility(fullscreenProgress == 0 ? VISIBLE : INVISIBLE);
-        }
+        mActionsView.updateHiddenFlags(HIDDEN_FULLESCREEN_PROGRESS, fullscreenProgress > 0);
     }
 
     private void updateTaskStackListenerState() {
@@ -1039,10 +1001,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     }
 
     private void animateRecentsRotationInPlace(int newRotation) {
-        if (!supportsVerticalLandscape()) {
-            return;
-        }
-
         AnimatorSet pa = setRecentsChangedOrientation(true);
         pa.addListener(AnimationSuccessListener.forRunnable(() -> {
             setLayoutRotation(newRotation, mOrientationState.getDisplayRotation());
@@ -1067,7 +1025,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         return as;
     }
 
-    abstract protected boolean supportsVerticalLandscape();
 
     private void rotateAllChildTasks() {
         for (int i = 0; i < getTaskViewCount(); i++) {
@@ -1111,7 +1068,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                     new ComponentName(getContext(), getClass()), 0, 0), null, null, "", "", 0, 0,
                     false, true, false, false, new ActivityManager.TaskDescription(), 0,
                     new ComponentName("", ""), false);
-            taskView.bind(mTmpRunningTask, mOrientationState);
+            taskView.bind(mTmpRunningTask, mOrientationState,
+                    mActivity.getDeviceProfile().isMultiWindowMode);
         }
 
         boolean runningTaskTileHidden = mRunningTaskTileHidden;
@@ -1611,15 +1569,10 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             setLayoutDirection(mIsRtl ? View.LAYOUT_DIRECTION_RTL : View.LAYOUT_DIRECTION_LTR);
             mClearAllButton.setRotation(mOrientationHandler.getDegreesRotated());
             mActivity.getDragLayer().recreateControllers();
-            mActionsView.updateHiddenFlags(HIDDEN_NON_ZERO_ROTATION, touchRotation != 0);
+            mActionsView.updateHiddenFlags(HIDDEN_NON_ZERO_ROTATION,
+                    touchRotation != 0 || launcherRotation != 0);
             requestLayout();
         }
-    }
-
-    public void disableMultipleLayoutRotations(boolean disable) {
-        mOrientationState.disableMultipleOrientations(disable);
-        mOrientationHandler = mOrientationState.getOrientationHandler();
-        requestLayout();
     }
 
     public RecentsOrientedState getPagedViewOrientedState() {
@@ -1717,6 +1670,13 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             getChildAt(i).setTranslationX(i == midPoint ? 0 : (i < midPoint ? -offset : offset));
         }
         updateCurveProperties();
+    }
+
+    /**
+     * TODO: Do not assume motion across X axis for adjacent page
+     */
+    public float getPageOffsetScale() {
+        return Math.max(getWidth(), 1);
     }
 
     private void updateDeadZoneRects() {
@@ -2083,8 +2043,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     public Consumer<MotionEvent> getEventDispatcher(float navbarRotation) {
         float degreesRotated;
         if (navbarRotation == 0) {
-            degreesRotated = mOrientationState.areMultipleLayoutOrientationsDisabled() ? 0 :
-                    mOrientationHandler.getDegreesRotated();
+            degreesRotated = mOrientationHandler.getDegreesRotated();
         } else {
             degreesRotated = -navbarRotation;
         }
@@ -2097,7 +2056,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         // PagedOrientationHandler
         return e -> {
             if (navbarRotation != 0
-                    && !mOrientationState.areMultipleLayoutOrientationsDisabled()
+                    && mOrientationState.isMultipleOrientationSupportedByDevice()
                     && !mOrientationState.getOrientationHandler().isLayoutNaturalToLauncher()) {
                 mOrientationState.flipVertical(e);
                 super.onTouchEvent(e);

@@ -74,13 +74,18 @@ public class SysUINavigationMode {
         mContext.registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                Mode oldMode = mMode;
-                initializeMode();
-                if (mMode != oldMode) {
-                    dispatchModeChange();
-                }
+                updateMode();
             }
         }, getPackageFilter("android", ACTION_OVERLAY_CHANGED));
+    }
+
+    /** Updates navigation mode when needed. */
+    public void updateMode() {
+        Mode oldMode = mMode;
+        initializeMode();
+        if (mMode != oldMode) {
+            dispatchModeChange();
+        }
     }
 
     private void initializeMode() {
