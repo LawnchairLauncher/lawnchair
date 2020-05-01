@@ -1068,7 +1068,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     private int getSpringOverScroll(int amount) {
         if (mScroller.isSpringing()) {
             return amount < 0
-                    ? mScroller.getCurrPos()
+                    ? mScroller.getCurrPos() - mMinScroll
                     : Math.max(0, mScroller.getCurrPos() - mMaxScroll);
         } else {
             return 0;
