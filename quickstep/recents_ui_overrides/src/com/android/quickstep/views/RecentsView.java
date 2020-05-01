@@ -638,7 +638,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             case MotionEvent.ACTION_DOWN:
                 // Touch down anywhere but the deadzone around the visible clear all button and
                 // between the task views will start home on touch up
-                if (!isHandlingTouch()) {
+                if (!isHandlingTouch() && !isModal()) {
                     if (mShowEmptyMessage) {
                         mTouchDownToStartHome = true;
                     } else {
@@ -666,7 +666,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     @Override
     protected void determineScrollingStart(MotionEvent ev, float touchSlopScale) {
         // Enables swiping to the left or right only if the task overlay is not modal.
-        if (mTaskModalness == 0f) {
+        if (!isModal()) {
             super.determineScrollingStart(ev, touchSlopScale);
         }
     }
@@ -735,6 +735,10 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         resetTaskVisuals();
         onTaskStackUpdated();
         updateEnabledOverlays();
+    }
+
+    private boolean isModal() {
+        return mTaskModalness > 0;
     }
 
     private void removeTasksViewsAndClearAllButton() {
