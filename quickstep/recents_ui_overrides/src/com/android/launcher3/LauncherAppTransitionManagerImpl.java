@@ -151,6 +151,7 @@ public final class LauncherAppTransitionManagerImpl extends QuickstepAppTransiti
 
         return () -> {
             overview.setFreezeViewVisibility(false);
+            overview.setTranslationY(0);
             mLauncher.getStateManager().reapplyState();
         };
     }
