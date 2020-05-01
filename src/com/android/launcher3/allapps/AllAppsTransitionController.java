@@ -281,7 +281,7 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
                 R.layout.all_apps_content_layout, mAppsView, false);
         mAppsView.addView(mPluginContent);
         mPluginContent.setAlpha(0f);
-        mPlugin.setup((ViewGroup) mPluginContent);
+        mPlugin.setup((ViewGroup) mPluginContent, mLauncher);
     }
 
     @Override
