@@ -69,8 +69,9 @@ public class LogEventChecker {
                 mFinished.await();
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
+            } finally {
+                mFinished = null;
             }
-            mFinished = null;
         }
         mEvents.clear();
         Log.d(SKIP_EVENTS_TAG, "Cleared events");
