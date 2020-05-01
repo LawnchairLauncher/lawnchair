@@ -45,7 +45,9 @@ public class StatsLogManager implements ResourceBasedOverride {
         @LauncherUiEvent(doc = "TASK dismissed from overview using SWIPE UP")
         TASK_DISMISS_SWIPE_UP(3),
         @LauncherUiEvent(doc = "User dragged a launcher item")
-        LAUNCHER_ITEM_DRAG_STARTED(383);
+        LAUNCHER_ITEM_DRAG_STARTED(383),
+        @LauncherUiEvent(doc = "A dragged launcher item is successfully dropped")
+        LAUNCHER_ITEM_DROP_COMPLETED(385);
         // ADD MORE
 
         private final int mId;
@@ -79,6 +81,14 @@ public class StatsLogManager implements ResourceBasedOverride {
      */
     public void log(LauncherEvent event, LauncherAtom.ItemInfo itemInfo) {
         Log.d(TAG, String.format("%s\n%s", event.name(), itemInfo));
+        // Call StatsLog method
+    }
+
+    /**
+     * Logs an event and accompanying {@link ItemInfo}
+     */
+    public void log(LauncherEvent event, int instanceId, LauncherAtom.ItemInfo itemInfo) {
+        Log.d(TAG, String.format("%s(InstanceId:%s)\n%s", event.name(), instanceId, itemInfo));
         // Call StatsLog method
     }
 
