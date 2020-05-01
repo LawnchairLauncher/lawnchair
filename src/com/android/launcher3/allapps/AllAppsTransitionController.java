@@ -132,6 +132,10 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
 
         mAppsView.setTranslationY(shiftCurrent);
 
+        if (mPlugin != null) {
+            mPlugin.setProgress(progress);
+        }
+
         // Use a light system UI (dark icons) if all apps is behind at least half of the
         // status bar.
         boolean forceChange = Math.min(shiftCurrent, mScrimView.getVisualTop())
@@ -200,8 +204,8 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
             // TODO: change this from toggle event to continuous transition event.
             mPlugin.setEditText(mAppsView.getSearchUiManager().setTextSearchEnabled(true));
         } else {
-            mAppsView.getSearchUiManager().setTextSearchEnabled(false);
             mPlugin.setEditText(null);
+            mAppsView.getSearchUiManager().setTextSearchEnabled(false);
         }
 
     }
