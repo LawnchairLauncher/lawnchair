@@ -139,6 +139,7 @@
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"知道了"</string>
     <string name="work_apps_paused_title" msgid="2389865654362803723">"工作設定檔已暫停使用"</string>
     <string name="work_apps_paused_body" msgid="5388070126389079077">"工作應用程式無法向您傳送通知、使用電池或存取位置"</string>
+    <string name="work_apps_paused_content_description" msgid="7553586952985486433">"工作設定檔已暫停。工作應用程式無法向您傳送通知、使用電池或存取位置"</string>
     <string name="work_switch_tip" msgid="808075064383839144">"暫停工作應用程式和通知"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"操作失敗：<xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

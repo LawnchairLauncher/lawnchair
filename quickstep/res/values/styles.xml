@@ -47,6 +47,14 @@
         <item name="android:textSize">21sp</item>
     </style>
 
+    <style name="TextAppearance.GestureTutorial.Feedback"
+        parent="TextAppearance.GestureTutorial">
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/gesture_tutorial_feedback_color</item>
+        <item name="android:letterSpacing">0.03</item>
+        <item name="android:textSize">21sp</item>
+    </style>
+
     <style name="TextAppearance.GestureTutorial.ButtonLabel"
         parent="TextAppearance.GestureTutorial.CallToAction">
         <item name="android:gravity">center</item>

@@ -21,6 +21,7 @@ import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
 import static com.android.quickstep.SysUINavigationMode.Mode.THREE_BUTTONS;
 import static com.android.quickstep.SysUINavigationMode.Mode.TWO_BUTTONS;
+import static com.android.quickstep.util.RecentsOrientedState.isFixedRotationTransformEnabled;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_A11Y_BUTTON_CLICKABLE;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_A11Y_BUTTON_LONG_CLICKABLE;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_BUBBLES_EXPANDED;
@@ -35,7 +36,6 @@ import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_S
 import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -51,8 +51,6 @@ import androidx.annotation.BinderThread;
 
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.DefaultDisplay;
 import com.android.quickstep.SysUINavigationMode.NavigationModeChangeListener;
 import com.android.quickstep.util.NavBarPosition;
@@ -176,7 +174,7 @@ public class RecentsAnimationDeviceState implements
     }
 
     private void setupOrientationSwipeHandler() {
-        if (!FeatureFlags.ENABLE_FIXED_ROTATION_TRANSFORM.get()) {
+        if (!isFixedRotationTransformEnabled(mContext)) {
             return;
         }
 
@@ -513,14 +511,12 @@ public class RecentsAnimationDeviceState implements
 
     void enableMultipleRegions(boolean enable) {
         mOrientationTouchTransformer.enableMultipleRegions(enable, mDefaultDisplay.getInfo());
-        if (enable) {
-            UI_HELPER_EXECUTOR.execute(() -> {
-                int quickStepStartingRotation =
-                        mOrientationTouchTransformer.getQuickStepStartingRotation();
-                SystemUiProxy.INSTANCE.get(mContext)
-                        .onQuickSwitchToNewTask(quickStepStartingRotation);
-            });
-        }
+        UI_HELPER_EXECUTOR.execute(() -> {
+            int quickStepStartingRotation =
+                    mOrientationTouchTransformer.getQuickStepStartingRotation();
+            SystemUiProxy.INSTANCE.get(mContext)
+                    .onQuickSwitchToNewTask(quickStepStartingRotation);
+        });
     }
 
     public int getCurrentActiveRotation() {
