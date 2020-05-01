@@ -55,6 +55,8 @@ class OrientationTouchTransformer {
     private static final boolean DEBUG = false;
     private static final int MAX_ORIENTATIONS = 4;
 
+    private static final int QUICKSTEP_ROTATION_UNINITIALIZED = -1;
+
     private final Matrix mTmpMatrix = new Matrix();
     private final float[] mTmpPoint = new float[2];
 
@@ -69,9 +71,10 @@ class OrientationTouchTransformer {
     private QuickStepContractInfo mContractInfo;
 
     /**
-     * Represents if we're currently in a swipe "session" of sorts. If value is -1, then user
-     * has not tapped on an active nav region. Otherwise it will be the rotation of the display
-     * when the user first interacted with the active nav bar region.
+     * Represents if we're currently in a swipe "session" of sorts. If value is
+     * QUICKSTEP_ROTATION_UNINITIALIZED, then user has not tapped on an active nav region.
+     * Otherwise it will be the rotation of the display when the user first interacted with the
+     * active nav bar region.
      * The "session" ends when {@link #enableMultipleRegions(boolean, DefaultDisplay.Info)} is
      * called - usually from a timeout or if user starts interacting w/ the foreground app.
      *
@@ -79,7 +82,7 @@ class OrientationTouchTransformer {
      * the rect is purely used for tracking touch interactions and usually this "session" will
      * outlast the touch interaction.
      */
-    private int mQuickStepStartingRotation = -1;
+    private int mQuickStepStartingRotation = QUICKSTEP_ROTATION_UNINITIALIZED;
 
     /** For testability */
     interface QuickStepContractInfo {
@@ -116,7 +119,7 @@ class OrientationTouchTransformer {
      */
     void createOrAddTouchRegion(DefaultDisplay.Info info) {
         mCurrentDisplayRotation = info.rotation;
-        if (mQuickStepStartingRotation > -1
+        if (mQuickStepStartingRotation > QUICKSTEP_ROTATION_UNINITIALIZED
                 && mCurrentDisplayRotation == mQuickStepStartingRotation) {
             // User already was swiping and the current screen is same rotation as the starting one
             // Remove active nav bars in other rotations except for the one we started out in
@@ -146,7 +149,7 @@ class OrientationTouchTransformer {
         mEnableMultipleRegions = enableMultipleRegions &&
                 mMode != SysUINavigationMode.Mode.TWO_BUTTONS;
         if (!enableMultipleRegions) {
-            mQuickStepStartingRotation = -1;
+            mQuickStepStartingRotation = QUICKSTEP_ROTATION_UNINITIALIZED;
             resetSwipeRegions(info);
         }
     }
