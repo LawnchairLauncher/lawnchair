@@ -25,7 +25,7 @@ message ItemInfo {
     Application application = 1;
     Task task = 2;
     Shortcut shortcut = 3;
-    Widget widget = 4;    
+    Widget widget = 4;
   }
   // When used for launch event, stores the global predictive rank
   optional int32 rank = 5;

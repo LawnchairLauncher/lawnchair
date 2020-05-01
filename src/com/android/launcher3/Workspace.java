@@ -79,6 +79,8 @@ import com.android.launcher3.folder.PreviewBackground;
 import com.android.launcher3.graphics.DragPreviewProvider;
 import com.android.launcher3.graphics.PreloadIconDrawable;
 import com.android.launcher3.icons.BitmapRenderer;
+import com.android.launcher3.logging.StatsLogManager;
+import com.android.launcher3.logging.StatsLogManager.LauncherEvent;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.FolderInfo;
@@ -409,6 +411,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
         // Always enter the spring loaded mode
         mLauncher.getStateManager().goToState(SPRING_LOADED);
+        StatsLogManager.newInstance(getContext())
+                .log(
+                    LauncherEvent.LAUNCHER_ITEM_DRAG_STARTED,
+                    dragObject.originalDragInfo.buildProto(null));
     }
 
     public void deferRemoveExtraEmptyScreen() {
