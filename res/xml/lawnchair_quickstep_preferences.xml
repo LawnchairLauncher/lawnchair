@@ -27,6 +27,7 @@
         android:persistent="true"
         android:title="Blur background" /> <!-- TODO Move this to blur pref with toggles for other sections -->
 
+    <!-- TODO fix or remove this
     <ch.deletescape.lawnchair.preferences.SeekbarPreference
         android:key="pref_recents_radius"
         android:title="@string/radius"
@@ -37,6 +38,7 @@
         app:summaryMultiplier="1"
         app:defaultSeekbarValue="@integer/task_corner_radius"
         android:persistent="true"/>
+    -->
 
     <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory
         android:title="@string/pref_category_nav_swipe_up_gestures">
