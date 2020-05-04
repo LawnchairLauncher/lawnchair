@@ -174,6 +174,11 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
+    public int getRotation() {
+        return Surface.ROTATION_0;
+    }
+
+    @Override
     public void offsetTaskRect(RectF rect, float value, int displayRotation, int launcherRotation) {
         if (displayRotation == Surface.ROTATION_0) {
             rect.offset(value, 0);
@@ -243,7 +248,7 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public int getTaskMenuLayoutOrientation() {
+    public int getTaskMenuLayoutOrientation(LinearLayout taskMenuLayout) {
         return LinearLayout.VERTICAL;
     }
 

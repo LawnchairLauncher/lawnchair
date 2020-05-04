@@ -55,6 +55,11 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
     }
 
     @Override
+    public int getRotation() {
+        return Surface.ROTATION_270;
+    }
+
+    @Override
     public boolean isGoingUp(float displacement) {
         return displacement < 0;
     }

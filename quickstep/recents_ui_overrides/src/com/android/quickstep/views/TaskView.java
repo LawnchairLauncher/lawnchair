@@ -448,14 +448,12 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     }
 
     public void setOrientationState(RecentsOrientedState orientationState) {
-        int iconRotation = orientationState.getTouchRotation();
         PagedOrientationHandler orientationHandler = orientationState.getOrientationHandler();
         boolean isRtl = orientationHandler.getRecentsRtlSetting(getResources());
         LayoutParams snapshotParams = (LayoutParams) mSnapshotView.getLayoutParams();
         int thumbnailPadding = (int) getResources().getDimension(R.dimen.task_thumbnail_top_margin);
         LayoutParams iconParams = (LayoutParams) mIconView.getLayoutParams();
-        int rotation = orientationState.getTouchRotationDegrees();
-        switch (iconRotation) {
+        switch (orientationHandler.getRotation()) {
             case Surface.ROTATION_90:
                 iconParams.gravity = (isRtl ? END : START) | CENTER_VERTICAL;
                 iconParams.rightMargin = -thumbnailPadding;
@@ -480,7 +478,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                 break;
         }
         mIconView.setLayoutParams(iconParams);
-        mIconView.setRotation(rotation);
+        mIconView.setRotation(orientationHandler.getDegreesRotated());
 
         if (mMenuView != null) {
             mMenuView.onRotationChanged();
