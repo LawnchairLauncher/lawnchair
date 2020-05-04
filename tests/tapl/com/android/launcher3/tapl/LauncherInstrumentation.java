@@ -668,8 +668,6 @@ public final class LauncherInstrumentation {
                 dumpViewHierarchy();
                 log(action = "clicking home button from " + getVisibleStateMessage());
                 try (LauncherInstrumentation.Closable c = addContextLayer(action)) {
-                    mDevice.waitForIdle();
-
                     if (!isLauncher3() && getNavigationModel() == NavigationModel.TWO_BUTTON) {
                         expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_DOWN_TIS);
                         expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_UP_TIS);
@@ -681,7 +679,6 @@ public final class LauncherInstrumentation {
                             !hasLauncherObject(WORKSPACE_RES_ID)
                                     && (hasLauncherObject(APPS_RES_ID)
                                     || hasLauncherObject(OVERVIEW_RES_ID)));
-                    mDevice.waitForIdle();
                 }
             }
             try (LauncherInstrumentation.Closable c = addContextLayer(
