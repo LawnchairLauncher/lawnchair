@@ -651,7 +651,7 @@ public final class LauncherInstrumentation {
                 } else {
                     log("Hierarchy before swiping up to home:");
                     dumpViewHierarchy();
-                    log(action = "swiping up to home from " + getVisibleStateMessage());
+                    action = "swiping up to home";
 
                     try (LauncherInstrumentation.Closable c = addContextLayer(action)) {
                         swipeToState(
@@ -666,7 +666,7 @@ public final class LauncherInstrumentation {
             } else {
                 log("Hierarchy before clicking home:");
                 dumpViewHierarchy();
-                log(action = "clicking home button from " + getVisibleStateMessage());
+                action = "clicking home button";
                 try (LauncherInstrumentation.Closable c = addContextLayer(action)) {
                     mDevice.waitForIdle();
 
