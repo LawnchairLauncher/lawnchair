@@ -345,10 +345,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
         mAppWindowAnimationHelper.updateTargetRect(TEMP_RECT);
         if (mDeviceState.isFullyGesturalNavMode()) {
             // We can drag all the way to the top of the screen.
-            // TODO(b/149609070): Landscape apps are currently limited in
-            //   their ability to scale past the target rect.
-            float dragFactor = (float) dp.heightPx / mTransitionDragLength;
-            mDragLengthFactor = displayRotation == 0 ? dragFactor : Math.min(1.0f, dragFactor);
+            mDragLengthFactor = (float) dp.heightPx / mTransitionDragLength;
             Pair<Float, Float> dragFactorStartAndMaxProgress =
                     mActivityInterface.getSwipeUpPullbackStartAndMaxProgress();
             mDragLengthFactorStartPullback = dragFactorStartAndMaxProgress.first;
