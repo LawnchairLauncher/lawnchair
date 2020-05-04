@@ -1081,9 +1081,10 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
 
     private void continueComputingRecentsScrollIfNecessary() {
         if (!mGestureState.hasState(STATE_RECENTS_SCROLLING_FINISHED)
-                && !mStateCallback.hasStates(STATE_HANDLER_INVALIDATED)) {
+                && !mStateCallback.hasStates(STATE_HANDLER_INVALIDATED)
+                && !mCanceled) {
             computeRecentsScrollIfInvisible();
-            mRecentsView.post(this::continueComputingRecentsScrollIfNecessary);
+            mRecentsView.postOnAnimation(this::continueComputingRecentsScrollIfNecessary);
         }
     }
 
