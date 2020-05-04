@@ -669,7 +669,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             mContextualChip.setScaleY(0f);
             GradientDrawable scrimDrawable = (GradientDrawable) getResources().getDrawable(
                     R.drawable.chip_scrim_gradient, mActivity.getTheme());
-            float cornerRadius = TaskCornerRadius.get(mActivity);
+            float cornerRadius = getTaskCornerRadius();
             scrimDrawable.setCornerRadii(
                     new float[]{0, 0, 0, 0, cornerRadius, cornerRadius, cornerRadius,
                             cornerRadius});
@@ -686,6 +686,10 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                 mContextualChipWrapper.animate().alpha(1f).setDuration(50);
             }
         }
+    }
+
+    public float getTaskCornerRadius() {
+        return TaskCornerRadius.get(mActivity);
     }
 
     /**
