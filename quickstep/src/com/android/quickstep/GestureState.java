@@ -106,6 +106,10 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
     public static final int STATE_RECENTS_ANIMATION_ENDED =
             getFlagForIndex("STATE_RECENTS_ANIMATION_ENDED");
 
+    // Called when we create an overscroll window when swiping right to left on the most recent app
+    public static final int STATE_OVERSCROLL_WINDOW_CREATED =
+            getFlagForIndex("STATE_OVERSCROLL_WINDOW_CREATED");
+
     // Called when RecentsView stops scrolling and settles on a TaskView.
     public static final int STATE_RECENTS_SCROLLING_FINISHED =
             getFlagForIndex("STATE_RECENTS_SCROLLING_FINISHED");
