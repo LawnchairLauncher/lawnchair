@@ -1283,10 +1283,10 @@ public final class LauncherInstrumentation {
     public Closable eventsCheck() {
         Assert.assertTrue("Nested event checking", !sCheckingEvents);
         disableSensorRotation();
-        sCheckingEvents = true;
         final int initialPid = getPid();
         if (sEventChecker == null) sEventChecker = new LogEventChecker();
         sEventChecker.start();
+        sCheckingEvents = true;
 
         return () -> {
             if (initialPid != getPid()) {
