@@ -416,8 +416,12 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         mLauncher.getStateManager().goToState(SPRING_LOADED);
         mStatsLogManager.log(
                 LauncherEvent.LAUNCHER_ITEM_DRAG_STARTED,
-                dragObject.mLogInstanceId,
-                dragObject.originalDragInfo.buildProto(null));
+                dragObject.logInstanceId,
+                dragObject.originalDragInfo.buildProto(
+                    dragObject.dragSource instanceof Folder
+                        ? ((Folder) dragObject.dragSource).mInfo
+                        : null)
+        );
     }
 
     public void deferRemoveExtraEmptyScreen() {
@@ -1645,7 +1649,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             Rect folderLocation = new Rect();
             float scale = mLauncher.getDragLayer().getDescendantRectRelativeToSelf(v, folderLocation);
             target.removeView(v);
-
+            mStatsLogManager.log(
+                    LauncherEvent.LAUNCHER_ITEM_DROP_FOLDER_CREATED,
+                    d.logInstanceId,
+                    destInfo.buildProto(null));
             FolderIcon fi = mLauncher.addFolder(target, container, screenId, targetCell[0],
                     targetCell[1]);
             destInfo.cellX = -1;
@@ -1683,6 +1690,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         if (dropOverView instanceof FolderIcon) {
             FolderIcon fi = (FolderIcon) dropOverView;
             if (fi.acceptDrop(d.dragInfo)) {
+                mStatsLogManager.log(
+                        LauncherEvent.LAUNCHER_ITEM_DROP_COMPLETED,
+                        d.logInstanceId,
+                        fi.mInfo.buildProto(null));
                 fi.onDrop(d, false /* itemReturnedOnFailedDrop */);
 
                 // if the drag started here, we need to remove it from the workspace
@@ -1885,15 +1896,15 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
             mLauncher.getStateManager().goToState(
                     NORMAL, SPRING_LOADED_EXIT_DELAY, onCompleteRunnable);
+            mStatsLogManager.log(
+                    LauncherEvent.LAUNCHER_ITEM_DROP_COMPLETED,
+                    d.logInstanceId,
+                    d.dragInfo.buildProto(null));
         }
 
         if (d.stateAnnouncer != null && !droppedOnOriginalCell) {
             d.stateAnnouncer.completeAction(R.string.item_moved);
         }
-        mStatsLogManager.log(
-                LauncherEvent.LAUNCHER_ITEM_DROP_COMPLETED,
-                d.mLogInstanceId,
-                d.dragInfo.buildProto(null));
     }
 
     public void onNoCellFound(View dropTargetLayout) {
@@ -2515,6 +2526,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                 resetTransitionTransform();
             }
         }
+        mStatsLogManager.log(
+                LauncherEvent.LAUNCHER_ITEM_DROP_COMPLETED,
+                d.logInstanceId,
+                d.dragInfo.buildProto(null));
     }
 
     public Bitmap createWidgetBitmap(ItemInfo widgetInfo, View layout) {
