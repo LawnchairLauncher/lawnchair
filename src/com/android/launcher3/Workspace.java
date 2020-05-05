@@ -248,6 +248,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     // Handles workspace state transitions
     private final WorkspaceStateTransitionAnimation mStateTransitionAnimation;
 
+    private final StatsLogManager mStatsLogManager;
+
     /**
      * Used to inflate the Workspace from XML.
      *
@@ -280,6 +282,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         // Disable multitouch across the workspace/all apps/customize tray
         setMotionEventSplittingEnabled(true);
         setOnTouchListener(new WorkspaceTouchListener(mLauncher, this));
+        mStatsLogManager = StatsLogManager.newInstance(context);
     }
 
     @Override
@@ -359,7 +362,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     }
 
     @Override
-    public void onDragStart(DropTarget.DragObject dragObject, DragOptions options) {
+    public void onDragStart(DragObject dragObject, DragOptions options) {
         if (ENFORCE_DRAG_EVENT_ORDER) {
             enforceDragParity("onDragStart", 0, 0);
         }
@@ -411,10 +414,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
         // Always enter the spring loaded mode
         mLauncher.getStateManager().goToState(SPRING_LOADED);
-        StatsLogManager.newInstance(getContext())
-                .log(
-                    LauncherEvent.LAUNCHER_ITEM_DRAG_STARTED,
-                    dragObject.originalDragInfo.buildProto(null));
+        mStatsLogManager.log(
+                LauncherEvent.LAUNCHER_ITEM_DRAG_STARTED,
+                dragObject.originalDragInfo.id,
+                dragObject.originalDragInfo.buildProto(null));
     }
 
     public void deferRemoveExtraEmptyScreen() {
@@ -1695,6 +1698,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     @Override
     public void prepareAccessibilityDrop() { }
 
+    @Override
     public void onDrop(final DragObject d, DragOptions options) {
         mDragViewVisualCenter = d.getVisualCenter(mDragViewVisualCenter);
         CellLayout dropTargetLayout = mDropToLayout;
@@ -1886,6 +1890,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         if (d.stateAnnouncer != null && !droppedOnOriginalCell) {
             d.stateAnnouncer.completeAction(R.string.item_moved);
         }
+        mStatsLogManager.log(
+                LauncherEvent.LAUNCHER_ITEM_DROP_COMPLETED,
+                d.dragInfo.id,
+                d.dragInfo.buildProto(null));
     }
 
     public void onNoCellFound(View dropTargetLayout) {
