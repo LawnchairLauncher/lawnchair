@@ -350,7 +350,11 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
         } else {
             outPivot.set(fullWidth, fullHeight);
         }
-        final float scale = Math.min(outPivot.x / taskView.width(), outPivot.y / taskView.height());
+        float scale = Math.min(outPivot.x / taskView.width(), outPivot.y / taskView.height());
+        // We also scale the preview as part of fullScreenParams, so account for that as well.
+        if (fullWidth > 0) {
+            scale = scale * dp.widthPx / fullWidth;
+        }
 
         if (scale == 1) {
             outPivot.set(fullWidth / 2, fullHeight / 2);

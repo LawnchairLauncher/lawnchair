@@ -47,6 +47,8 @@ public class DefaultDisplay implements DisplayListener {
     public static final int CHANGE_ROTATION = 1 << 1;
     public static final int CHANGE_FRAME_DELAY = 1 << 2;
 
+    public static final int CHANGE_ALL = CHANGE_SIZE | CHANGE_ROTATION | CHANGE_FRAME_DELAY;
+
     private final Context mContext;
     private final int mId;
     private final ArrayList<DisplayInfoChangeListener> mListeners = new ArrayList<>();
