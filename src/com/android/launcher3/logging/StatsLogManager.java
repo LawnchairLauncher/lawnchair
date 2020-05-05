@@ -87,7 +87,7 @@ public class StatsLogManager implements ResourceBasedOverride {
     /**
      * Logs an event and accompanying {@link ItemInfo}
      */
-    public void log(LauncherEvent event, int instanceId, LauncherAtom.ItemInfo itemInfo) {
+    public void log(LauncherEvent event, InstanceId instanceId, LauncherAtom.ItemInfo itemInfo) {
         Log.d(TAG, String.format("%s(InstanceId:%s)\n%s", event.name(), instanceId, itemInfo));
         // Call StatsLog method
     }

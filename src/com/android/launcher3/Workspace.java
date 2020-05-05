@@ -416,7 +416,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         mLauncher.getStateManager().goToState(SPRING_LOADED);
         mStatsLogManager.log(
                 LauncherEvent.LAUNCHER_ITEM_DRAG_STARTED,
-                dragObject.originalDragInfo.id,
+                dragObject.mLogInstanceId,
                 dragObject.originalDragInfo.buildProto(null));
     }
 
@@ -1892,7 +1892,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         }
         mStatsLogManager.log(
                 LauncherEvent.LAUNCHER_ITEM_DROP_COMPLETED,
-                d.dragInfo.id,
+                d.mLogInstanceId,
                 d.dragInfo.buildProto(null));
     }
 
