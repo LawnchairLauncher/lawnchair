@@ -61,7 +61,7 @@ public class BackButtonAlphaHandler implements LauncherStateManager.StateHandler
 
         mBackAlpha.value = SystemUiProxy.INSTANCE.get(mLauncher).getLastBackButtonAlpha();
         animation.setFloat(mBackAlpha, VALUE,
-                toState.hasFlag(FLAG_HIDE_BACK_BUTTON) ? 0 : 1, LINEAR);
+                mLauncher.shouldBackButtonBeHidden(toState) ? 0 : 1, LINEAR);
     }
 
     private void updateBackAlpha() {
