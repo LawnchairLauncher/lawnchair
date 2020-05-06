@@ -56,7 +56,7 @@ public class OverviewModalTaskState extends OverviewState {
         int taskHeight = out.height();
 
         float topMargin = res.getDimension(R.dimen.task_thumbnail_top_margin);
-        float bottomMargin = res.getDimension(R.dimen.task_thumbnail_bottom_margin_with_actions);
+        float bottomMargin = res.getDimension(R.dimen.overview_actions_top_margin);
         float newHeight = taskHeight + topMargin + bottomMargin;
         float scale = newHeight / taskHeight;
 
