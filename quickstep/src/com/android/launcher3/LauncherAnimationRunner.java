@@ -26,6 +26,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.os.Handler;
+import android.util.Log;
 
 import androidx.annotation.BinderThread;
 import androidx.annotation.UiThread;
@@ -36,6 +37,8 @@ import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 @TargetApi(Build.VERSION_CODES.P)
 public abstract class LauncherAnimationRunner implements RemoteAnimationRunnerCompat,
         WrappedAnimationRunnerImpl {
+
+    private static final String TAG = "LauncherAnimationRunner";
 
     private final Handler mHandler;
     private final boolean mStartAtFrontOfQueue;
@@ -151,7 +154,16 @@ public abstract class LauncherAnimationRunner implements RemoteAnimationRunnerCo
 
                 // Because t=0 has the app icon in its original spot, we can skip the
                 // first frame and have the same movement one frame earlier.
-                mAnimator.setCurrentPlayTime(getSingleFrameMs(context));
+                int singleFrameMs = getSingleFrameMs(context);
+                long playTime = singleFrameMs;
+                // b/153821199 Add logs to debug crash but ensure release builds do not crash.
+                if (Utilities.IS_DEBUG_DEVICE) {
+                    Log.e(TAG, "Total duration=[" + mAnimator.getTotalDuration()
+                            + "], singleFrameMs=[" + singleFrameMs + "], mAnimator=" + mAnimator);
+                } else {
+                    playTime = Math.min(singleFrameMs, mAnimator.getTotalDuration());
+                }
+                mAnimator.setCurrentPlayTime(playTime);
             }
         }
     }
