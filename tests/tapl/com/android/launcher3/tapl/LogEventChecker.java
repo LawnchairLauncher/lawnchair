@@ -85,18 +85,27 @@ public class LogEventChecker {
     }
 
     private void onRun() {
+        while (true) readEvents();
+    }
+
+    private void readEvents() {
         try {
             // Note that we use Runtime.exec to start the log reading process instead of running
             // it via UIAutomation, so that we can directly access the "Process" object and
             // ensure that the instrumentation is not stuck forever.
             final String cmd = "logcat -s " + TestProtocol.TAPL_EVENTS_TAG;
 
+            final Process logcatProcess = Runtime.getRuntime().exec(cmd);
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(
-                    Runtime.getRuntime().exec(cmd).getInputStream()))) {
-                for (; ; ) {
+                    logcatProcess.getInputStream()))) {
+                while (true) {
                     // Skip everything before the next start command.
                     for (; ; ) {
                         final String event = reader.readLine();
+                        if (event == null) {
+                            Log.d(SKIP_EVENTS_TAG, "Read a null line while waiting for start");
+                            return;
+                        }
                         if (event.contains(mStartCommand)) {
                             Log.d(SKIP_EVENTS_TAG, "Read start: " + event);
                             break;
@@ -106,6 +115,12 @@ public class LogEventChecker {
                     // Store all actual events until the finish command.
                     for (; ; ) {
                         final String event = reader.readLine();
+                        if (event == null) {
+                            Log.d(SKIP_EVENTS_TAG, "Read a null line after waiting for start");
+                            mEventsCounter.drainPermits();
+                            mEvents.clear();
+                            return;
+                        }
                         if (event.contains(mFinishCommand)) {
                             mFinished.countDown();
                             Log.d(SKIP_EVENTS_TAG, "Read finish: " + event);
@@ -122,6 +137,8 @@ public class LogEventChecker {
                         }
                     }
                 }
+            } finally {
+                logcatProcess.destroyForcibly();
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
