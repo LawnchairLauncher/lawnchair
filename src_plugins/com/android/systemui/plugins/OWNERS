@@ -1,0 +1,4 @@
+# When changing interface for this plugin OR when increasing version code, please add Alex
+# Only add other owners if Alex is not available
+per-file AllAppsSearchPlugin.java, globs = set noparent
+per-file AllAppsSearchPlugin.java = alexmang@google.com, hyunyoungs@google.com, sunnygoyal@google.com, twickham@google.com
