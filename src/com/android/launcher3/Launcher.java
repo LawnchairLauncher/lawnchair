@@ -2225,6 +2225,9 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         workspace.requestLayout();
     }
 
+    @Override
+    public void bindPredictedItems(List<AppInfo> appInfos, IntArray ranks) { }
+
     /**
      * Add the views for a widget to the workspace.
      */

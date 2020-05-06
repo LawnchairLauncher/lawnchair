@@ -19,11 +19,14 @@ import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
+import java.util.stream.IntStream;
 
 /**
  * Utils class for {@link com.android.launcher3.LauncherModel}.
@@ -108,5 +111,18 @@ public class ModelUtils {
                 return Integer.compare(lhs.container, rhs.container);
             }
         });
+    }
+
+    /**
+     * Iterates though current workspace items and returns available hotseat ranks for prediction.
+     */
+    public static IntArray getMissingHotseatRanks(List<ItemInfo> items, int len) {
+        IntSet seen = new IntSet();
+        items.stream().filter(
+                info -> info.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT)
+                .forEach(i -> seen.add(i.screenId));
+        IntArray result = new IntArray(len);
+        IntStream.range(0, len).filter(i -> !seen.contains(i)).forEach(result::add);
+        return result;
     }
 }

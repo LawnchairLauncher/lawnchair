@@ -196,6 +196,9 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
     public void bindItems(List<ItemInfo> shortcuts, boolean forceAnimateIcons) { }
 
     @Override
+    public void bindPredictedItems(List<AppInfo> appInfos, IntArray ranks) { }
+
+    @Override
     public void bindScreens(IntArray orderedScreenIds) { }
 
     @Override

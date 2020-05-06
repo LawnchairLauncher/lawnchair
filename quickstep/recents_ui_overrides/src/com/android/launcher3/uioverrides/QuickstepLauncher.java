@@ -44,6 +44,7 @@ import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.hybridhotseat.HotseatPredictionController;
+import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.SystemShortcut;
@@ -58,6 +59,7 @@ import com.android.launcher3.uioverrides.touchcontrollers.QuickSwitchTouchContro
 import com.android.launcher3.uioverrides.touchcontrollers.StatusBarTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.TaskViewTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.TransposedQuickSwitchTouchController;
+import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.util.UiThreadHelper;
 import com.android.launcher3.util.UiThreadHelper.AsyncCommand;
@@ -70,6 +72,7 @@ import com.android.quickstep.views.TaskView;
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
 
 public class QuickstepLauncher extends BaseQuickstepLauncher {
@@ -174,6 +177,14 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
         super.finishBindingItems(pageBoundFirst);
         if (mHotseatPredictionController != null) {
             mHotseatPredictionController.createPredictor();
+        }
+    }
+
+    @Override
+    public void bindPredictedItems(List<AppInfo> appInfos, IntArray ranks) {
+        super.bindPredictedItems(appInfos, ranks);
+        if (mHotseatPredictionController != null) {
+            mHotseatPredictionController.showCachedItems(appInfos, ranks);
         }
     }
 
