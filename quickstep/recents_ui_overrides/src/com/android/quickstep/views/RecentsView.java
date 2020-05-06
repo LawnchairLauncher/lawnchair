@@ -22,6 +22,7 @@ import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
+import static com.android.launcher3.Utilities.mapToRange;
 import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.Utilities.squaredTouchSlop;
 import static com.android.launcher3.anim.Interpolators.ACCEL;
@@ -109,6 +110,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.DynamicResource;
+import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.OverScroller;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.ViewPool;
@@ -789,7 +791,10 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         for (int i = 0; i < taskCount; i++) {
             getTaskViewAt(i).setFullscreenProgress(mFullscreenProgress);
         }
-        mActionsView.updateHiddenFlags(HIDDEN_FULLESCREEN_PROGRESS, fullscreenProgress > 0);
+        // Fade out the actions view quickly (0.1 range)
+        mActionsView.getVisibilityAlpha().setValue(
+                mapToRange(fullscreenProgress, 0, 0.1f, 1f, 0f, LINEAR));
+        mActionsView.updateHiddenFlags(HIDDEN_FULLESCREEN_PROGRESS, fullscreenProgress == 1.0f);
     }
 
     private void updateTaskStackListenerState() {
@@ -1048,7 +1053,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         }
         setRunningTaskHidden(false);
         animateUpRunningTaskIconScale();
-        mActionsView.updateHiddenFlags(HIDDEN_GESTURE_RUNNING, false);
+        animateActionsViewIn();
     }
 
     /**
@@ -1159,6 +1164,14 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         if (firstTask != null) {
             firstTask.setIconScaleAndDim(mRunningTaskIconScaledDown ? 0 : 1);
         }
+    }
+
+    private void animateActionsViewIn() {
+        mActionsView.updateHiddenFlags(HIDDEN_GESTURE_RUNNING, false);
+        ObjectAnimator anim = ObjectAnimator.ofFloat(
+                mActionsView.getVisibilityAlpha(), MultiValueAlpha.VALUE, 1);
+        anim.setDuration(OverviewActionsView.VISIBILITY_TRANSITION_DURATION_MS);
+        anim.start();
     }
 
     public void animateUpRunningTaskIconScale() {
