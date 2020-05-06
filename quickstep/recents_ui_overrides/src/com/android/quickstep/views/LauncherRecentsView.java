@@ -32,7 +32,6 @@ import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Rect;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -62,8 +61,6 @@ import com.android.systemui.plugins.RecentsExtraCard;
 @TargetApi(Build.VERSION_CODES.O)
 public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher>
         implements StateListener {
-
-    private static final Rect sTempRect = new Rect();
 
     private final TransformParams mTransformParams = new TransformParams();
 
@@ -149,9 +146,8 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher>
      * Animates adjacent tasks and translate hotseat off screen as well.
      */
     @Override
-    public AnimatorSet createAdjacentPageAnimForTaskLaunch(TaskView tv,
-            AppWindowAnimationHelper helper) {
-        AnimatorSet anim = super.createAdjacentPageAnimForTaskLaunch(tv, helper);
+    public AnimatorSet createAdjacentPageAnimForTaskLaunch(TaskView tv) {
+        AnimatorSet anim = super.createAdjacentPageAnimForTaskLaunch(tv);
 
         if (!SysUINavigationMode.getMode(mActivity).hasGestures) {
             // Hotseat doesn't move when opening recents with the button,

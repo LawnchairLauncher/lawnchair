@@ -479,7 +479,7 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
         mRecentsAnimationController.enableInputConsumer();
 
         if (mRunningOverHome) {
-            mAppWindowAnimationHelper.prepareAnimation(mDp, true);
+            mAppWindowAnimationHelper.prepareAnimation(mDp);
         }
         applyTransformUnchecked();
 
