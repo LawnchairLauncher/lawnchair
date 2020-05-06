@@ -1760,8 +1760,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
      * If launching one of the adjacent tasks, parallax the center task and other adjacent task
      * to the right.
      */
-    public AnimatorSet createAdjacentPageAnimForTaskLaunch(
-            TaskView tv, AppWindowAnimationHelper appWindowAnimationHelper) {
+    public AnimatorSet createAdjacentPageAnimForTaskLaunch(TaskView tv) {
         AnimatorSet anim = new AnimatorSet();
 
         int taskIndex = indexOfChild(tv);
@@ -1833,11 +1832,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             }
         });
 
-        AppWindowAnimationHelper appWindowAnimationHelper = new AppWindowAnimationHelper(
-            getPagedViewOrientedState(), mActivity);
-        appWindowAnimationHelper.fromTaskThumbnailView(tv.getThumbnail(), this);
-        appWindowAnimationHelper.prepareAnimation(mActivity.getDeviceProfile(), true /* isOpening */);
-        AnimatorSet anim = createAdjacentPageAnimForTaskLaunch(tv, appWindowAnimationHelper);
+        AnimatorSet anim = createAdjacentPageAnimForTaskLaunch(tv);
 
         DepthController depthController = getDepthController();
         if (depthController != null) {
