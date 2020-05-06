@@ -530,7 +530,7 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
     @Override
     protected void initTransitionEndpoints(DeviceProfile dp) {
         super.initTransitionEndpoints(dp);
-        mTaskViewSimulator.setDp(dp, false /* isOpening */);
+        mTaskViewSimulator.setDp(dp);
         mTaskViewSimulator.setLayoutRotation(
                 mDeviceState.getCurrentActiveRotation(),
                 mDeviceState.getDisplayRotation());

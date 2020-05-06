@@ -17,14 +17,11 @@ package com.android.quickstep.util;
 
 import static android.view.Surface.ROTATION_0;
 
-import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.states.RotationHelper.deltaRotation;
 import static com.android.launcher3.touch.PagedOrientationHandler.MATRIX_POST_TRANSLATE;
 import static com.android.quickstep.util.AppWindowAnimationHelper.applySurfaceParams;
 import static com.android.quickstep.util.RecentsOrientedState.isFixedRotationTransformEnabled;
 import static com.android.quickstep.util.RecentsOrientedState.postDisplayRotation;
-import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
-import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING;
 import static com.android.systemui.shared.system.WindowManagerWrapper.WINDOWING_MODE_FULLSCREEN;
 
 import android.content.Context;
@@ -71,8 +68,6 @@ public class TaskViewSimulator {
     private RemoteAnimationTargetCompat mRunningTarget;
     private RecentsAnimationTargets mAllTargets;
 
-    // Whether to boost the opening animation target layers, or the closing
-    private int mBoostModeTargetLayers = -1;
     private TargetAlphaProvider mTaskAlphaCallback = (t, a) -> a;
 
     // Thumbnail view properties
@@ -112,10 +107,9 @@ public class TaskViewSimulator {
     /**
      * Sets the device profile for the current state
      */
-    public void setDp(DeviceProfile dp, boolean isOpening) {
+    public void setDp(DeviceProfile dp) {
         mDp = dp;
         mOrientationState.setMultiWindowMode(mDp.isMultiWindowMode);
-        mBoostModeTargetLayers = isOpening ? MODE_OPENING : MODE_CLOSING;
         mLayoutValid = false;
     }
 
@@ -254,8 +248,7 @@ public class TaskViewSimulator {
         SurfaceParams[] surfaceParams = new SurfaceParams[mAllTargets.unfilteredApps.length];
         for (int i = 0; i < mAllTargets.unfilteredApps.length; i++) {
             RemoteAnimationTargetCompat app = mAllTargets.unfilteredApps[i];
-            SurfaceParams.Builder builder = new SurfaceParams.Builder(app.leash)
-                    .withLayer(RemoteAnimationProvider.getLayer(app, mBoostModeTargetLayers));
+            SurfaceParams.Builder builder = new SurfaceParams.Builder(app.leash);
 
             if (app.mode == mAllTargets.targetMode) {
                 float alpha = mTaskAlphaCallback.getAlpha(app, params.getTargetAlpha());
@@ -276,9 +269,6 @@ public class TaskViewSimulator {
                 }
             } else {
                 builder.withAlpha(1);
-                if (ENABLE_QUICKSTEP_LIVE_TILE.get() && params.isLauncherOnTop()) {
-                    builder.withLayer(Integer.MAX_VALUE);
-                }
             }
             surfaceParams[i] = builder.build();
         }
