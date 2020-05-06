@@ -45,7 +45,7 @@
     <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"Dodirnite dvaput i držite da uzmete prečicu ili koristite prilagođene akcije."</string>
     <string name="out_of_space" msgid="4691004494942118364">"Na ovom početnom ekranu nema više prostora."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Nema više prostora u ladici Omiljeno"</string>
-    <string name="all_apps_button_label" msgid="8130441508702294465">"Spisak aplikacija"</string>
+    <string name="all_apps_button_label" msgid="8130441508702294465">"Lista aplikacija"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Lista ličnih aplikacija"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"Lista poslovnih aplikacija"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"Početna"</string>
