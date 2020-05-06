@@ -276,7 +276,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
             updateSource(overviewStackBounds, runningTaskTarget);
         }
 
-        mAppWindowAnimationHelper.prepareAnimation(dp, false /* isOpening */);
+        mAppWindowAnimationHelper.prepareAnimation(dp);
         initTransitionEndpoints(dp);
 
         // Notify when the animation starts
