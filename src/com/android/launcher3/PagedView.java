@@ -257,13 +257,6 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         forceFinishScroller(true);
     }
 
-    /**
-     * Returns left offset of a page. This is the gap between pages and prevents overlap.
-     */
-    public int scrollOffsetLeft() {
-        return mInsets.left + getPaddingLeft();
-    }
-
     private void abortScrollerAnimation(boolean resetNextPage) {
         mScroller.abortAnimation();
         // We need to clean up the next page here to avoid computeScrollHelper from
@@ -1075,7 +1068,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     private int getSpringOverScroll(int amount) {
         if (mScroller.isSpringing()) {
             return amount < 0
-                    ? mScroller.getCurrPos()
+                    ? mScroller.getCurrPos() - mMinScroll
                     : Math.max(0, mScroller.getCurrPos() - mMaxScroll);
         } else {
             return 0;

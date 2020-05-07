@@ -46,7 +46,7 @@
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Ajratilganlarda birorta ham xona yo‘q"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Ilovalar ro‘yxati"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Shaxsiy ilovalar ro‘yxati"</string>
-    <string name="all_apps_button_work_label" msgid="7270707118948892488">"Ishchi ilovalar ro‘yxati"</string>
+    <string name="all_apps_button_work_label" msgid="7270707118948892488">"Ishga oid ilovalar ro‘yxati"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"Bosh sahifa"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Olib tashlash"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"O‘chirib tashlash"</string>
@@ -131,8 +131,8 @@
     <string name="accessibility_close" msgid="2277148124685870734">"Yopish"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Bildirishnoma yopildi"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Shaxsiy"</string>
-    <string name="all_apps_work_tab" msgid="4884822796154055118">"Ishchi"</string>
-    <string name="work_profile_toggle_label" msgid="3081029915775481146">"Ishchi profil"</string>
+    <string name="all_apps_work_tab" msgid="4884822796154055118">"Ish"</string>
+    <string name="work_profile_toggle_label" msgid="3081029915775481146">"Ish profili"</string>
     <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"Shaxsiy maʼlumotlar ishga oid ilovalardan alohida va berkitilgan"</string>
     <string name="work_profile_edu_work_apps" msgid="237051938268703058">"Ishga oid ilovalar va maʼlumotlarni AT administratoringiz koʻra oladi"</string>
     <string name="work_profile_edu_next" msgid="8783418929296503629">"Keyingisi"</string>
