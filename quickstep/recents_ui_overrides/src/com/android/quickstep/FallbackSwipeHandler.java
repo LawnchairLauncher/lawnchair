@@ -24,6 +24,7 @@ import static com.android.quickstep.GestureState.GestureEndTarget.RECENTS;
 import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
 import static com.android.quickstep.RecentsActivity.EXTRA_TASK_ID;
 import static com.android.quickstep.RecentsActivity.EXTRA_THUMBNAIL;
+import static com.android.quickstep.util.WindowSizeStrategy.FALLBACK_RECENTS_SIZE_STRATEGY;
 import static com.android.quickstep.views.RecentsView.UPDATE_SYSUI_FLAGS_THRESHOLD;
 
 import android.animation.Animator;
@@ -32,7 +33,6 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PointF;
-import android.graphics.RectF;
 import android.os.Bundle;
 import android.util.ArrayMap;
 import android.view.MotionEvent;
@@ -40,9 +40,7 @@ import android.view.MotionEvent;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
-import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.ObjectWrapper;
-import com.android.quickstep.BaseActivityInterface.HomeAnimationFactory;
 import com.android.quickstep.GestureState.GestureEndTarget;
 import com.android.quickstep.fallback.FallbackRecentsView;
 import com.android.quickstep.util.RectFSpringAnim;
@@ -108,7 +106,7 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
     public FallbackSwipeHandler(Context context, RecentsAnimationDeviceState deviceState,
             GestureState gestureState, InputConsumerController inputConsumer,
             boolean isLikelyToStartNewTask, boolean continuingLastGesture) {
-        super(context, deviceState, gestureState, inputConsumer);
+        super(context, deviceState, gestureState, inputConsumer, FALLBACK_RECENTS_SIZE_STRATEGY);
 
         mInQuickSwitchMode = isLikelyToStartNewTask || continuingLastGesture;
         mContinuingLastGesture = continuingLastGesture;
@@ -156,7 +154,7 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
 
     private void onLauncherAlphaChanged() {
         if (mRecentsAnimationTargets != null && mGestureState.getEndTarget() == null) {
-            applyTransformUnchecked();
+            applyWindowTransform();
         }
     }
 
@@ -261,9 +259,7 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
             updateOverviewThresholdPassed(mCurrentShift.value >= MIN_PROGRESS_FOR_OVERVIEW);
         }
 
-        if (mRecentsAnimationTargets != null) {
-            applyTransformUnchecked();
-        }
+        applyWindowTransform();
     }
 
     @Override
@@ -468,11 +464,7 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
             RecentsAnimationTargets targets) {
         super.onRecentsAnimationStart(controller, targets);
         mRecentsAnimationController.enableInputConsumer();
-
-        if (mRunningOverHome) {
-            mAppWindowAnimationHelper.prepareAnimation(mDp);
-        }
-        applyTransformUnchecked();
+        applyWindowTransform();
 
         mStateCallback.setStateOnUiThread(STATE_APP_CONTROLLER_RECEIVED);
     }
@@ -495,18 +487,7 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
      * @param startProgress The progress of {@link #mCurrentShift} to start the window from.
      */
     private RectFSpringAnim createWindowAnimationToHome(float startProgress, long duration) {
-        HomeAnimationFactory factory = new HomeAnimationFactory() {
-            @Override
-            public RectF getWindowTargetRect() {
-                PagedOrientationHandler orientationHandler = mRecentsView != null
-                        ? mRecentsView.getPagedOrientationHandler()
-                        : (mDp.isLandscape
-                                ? PagedOrientationHandler.LANDSCAPE
-                                : PagedOrientationHandler.PORTRAIT);
-                return HomeAnimationFactory
-                    .getDefaultWindowTargetRect(orientationHandler, mDp);
-            }
-
+        HomeAnimationFactory factory = new HomeAnimationFactory(null) {
             @Override
             public AnimatorPlaybackController createActivityAnimationToHome() {
                 AnimatorSet anim = new AnimatorSet();
