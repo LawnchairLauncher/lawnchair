@@ -20,6 +20,7 @@ import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_ALL_APP
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION;
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_WIDGETS_TRAY;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
@@ -341,6 +342,11 @@ public class ItemInfo {
                 return ContainerInfo.newBuilder()
                         .setAllAppsContainer(
                                 AllAppsContainer.getDefaultInstance())
+                        .build();
+            case CONTAINER_WIDGETS_TRAY:
+                return ContainerInfo.newBuilder()
+                        .setWidgetsContainer(
+                                LauncherAtom.WidgetsContainer.getDefaultInstance())
                         .build();
         }
         return ContainerInfo.getDefaultInstance();

@@ -48,10 +48,14 @@ message ContainerInfo {
     HotseatContainer hotseat = 2;
     FolderContainer folder = 3;
     AllAppsContainer all_apps_container = 4;
+    WidgetsContainer widgets_container = 5;
   }
 }
 
 message AllAppsContainer {
+}
+
+message WidgetsContainer {
 }
 
 enum Origin {

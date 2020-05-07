@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.widget;
 
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_WIDGETS_TRAY;
+
 import com.android.launcher3.PendingAddItemInfo;
 import com.android.launcher3.pm.ShortcutConfigActivityInfo;
 
@@ -32,5 +34,6 @@ public class PendingAddShortcutInfo extends PendingAddItemInfo {
         componentName = activityInfo.getComponent();
         user = activityInfo.getUser();
         itemType = activityInfo.getItemType();
+        this.container = CONTAINER_WIDGETS_TRAY;
     }
 }
