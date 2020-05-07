@@ -15,8 +15,6 @@
  */
 package com.android.systemui.plugins;
 
-import android.view.MotionEvent;
-
 import com.android.systemui.plugins.annotations.ProvidesInterface;
 
 /**
@@ -30,7 +28,7 @@ import com.android.systemui.plugins.annotations.ProvidesInterface;
 public interface OverscrollPlugin extends Plugin {
 
     String ACTION = "com.android.systemui.action.PLUGIN_LAUNCHER_OVERSCROLL";
-    int VERSION = 4;
+    int VERSION = 3;
 
     String DEVICE_STATE_LOCKED = "Locked";
     String DEVICE_STATE_LAUNCHER = "Launcher";
@@ -43,33 +41,33 @@ public interface OverscrollPlugin extends Plugin {
     boolean isActive();
 
     /**
-     * Called when a touch has been recognized as an overscroll gesture.
-     * @param horizontalDistancePx Horizontal distance from the last finger location to the finger
-     *                               location when it first touched the screen.
-     * @param verticalDistancePx Horizontal distance from the last finger location to the finger
-     *                             location when it first touched the screen.
-     * @param thresholdPx Minimum distance for gesture.
-     * @param flingDistanceThresholdPx Minimum distance for gesture by fling.
-     * @param flingVelocityThresholdPx Minimum velocity for gesture by fling.
+     * Called when a touch is down and has been recognized as an overscroll gesture.
+     * A call of this method will always result in `onTouchUp` being called, and possibly
+     * `onFling` as well.
+     *
      * @param deviceState String representing the current device state
      * @param underlyingActivity String representing the currently active Activity
      */
-    void onTouchEvent(MotionEvent event,
-                      int horizontalDistancePx,
-                      int verticalDistancePx,
-                      int thresholdPx,
-                      int flingDistanceThresholdPx,
-                      int flingVelocityThresholdPx,
-                      String deviceState,
-                      String underlyingActivity);
+    void onTouchStart(String deviceState, String underlyingActivity);
 
     /**
-     * @return `true` if overscroll gesture handling should override all other gestures.
+     * Called when a touch that was previously recognized has moved.
+     *
+     * @param px distance between the position of touch on this update and the position of the
+     * touch when it was initially recognized.
      */
-    boolean blockOtherGestures();
+    void onTouchTraveled(int px);
 
     /**
-     * @return `true` if the overscroll gesture can pan the underlying app.
+     * Called when a touch that was previously recognized has ended.
+     *
+     * @param px distance between the position of touch on this update and the position of the
+     * touch when it was initially recognized.
      */
-    boolean allowsUnderlyingActivityOverscroll();
+    void onTouchEnd(int px);
+
+    /**
+     * Called when the user starts Compose with a fling. `onTouchUp` will also be called.
+     */
+    void onFling(float velocity);
 }
