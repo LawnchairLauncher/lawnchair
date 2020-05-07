@@ -86,7 +86,7 @@ public class LauncherStateManager {
     private final ArrayList<StateListener> mListeners = new ArrayList<>();
 
     // Animators which are run on properties also controlled by state animations.
-    private Animator[] mStateElementAnimators;
+    private final AtomicAnimationFactory mAtomicAnimationFactory;
 
     private StateHandler[] mStateHandlers;
     private LauncherState mState = NORMAL;
@@ -99,6 +99,8 @@ public class LauncherStateManager {
     public LauncherStateManager(Launcher l) {
         mUiHandler = new Handler(Looper.getMainLooper());
         mLauncher = l;
+
+        mAtomicAnimationFactory = l.createAtomicAnimationFactory();
     }
 
     public LauncherState getState() {
@@ -195,7 +197,7 @@ public class LauncherStateManager {
     public void reapplyState(boolean cancelCurrentAnimation) {
         boolean wasInAnimation = mConfig.currentAnimation != null;
         if (cancelCurrentAnimation) {
-            cancelAllStateElementAnimation();
+            mAtomicAnimationFactory.cancelAllStateElementAnimation();
             cancelAnimation();
         }
         if (mConfig.currentAnimation == null) {
@@ -233,7 +235,7 @@ public class LauncherStateManager {
         mConfig.reset();
 
         if (!animated) {
-            cancelAllStateElementAnimation();
+            mAtomicAnimationFactory.cancelAllStateElementAnimation();
             onStateTransitionStart(state);
             for (StateHandler handler : getStateHandlers()) {
                 handler.setState(state);
@@ -284,7 +286,7 @@ public class LauncherStateManager {
      */
     public void prepareForAtomicAnimation(LauncherState fromState, LauncherState toState,
             StateAnimationConfig config) {
-        toState.prepareForAtomicAnimation(mLauncher, fromState, config);
+        mAtomicAnimationFactory.prepareForAtomicAnimation(fromState, toState, config);
     }
 
     /**
@@ -447,42 +449,23 @@ public class LauncherStateManager {
         mConfig.setAnimation(anim, null);
     }
 
-    private void cancelAllStateElementAnimation() {
-        if (mStateElementAnimators == null) {
-            return;
-        }
-
-        for (Animator animator : mStateElementAnimators) {
-            if (animator != null) {
-                animator.cancel();
-            }
-        }
-    }
-
     /**
      * Cancels a currently running gesture animation
      */
     public void cancelStateElementAnimation(int index) {
-        if (mStateElementAnimators == null) {
-            return;
-        }
-        if (mStateElementAnimators[index] != null) {
-            mStateElementAnimators[index].cancel();
+        if (mAtomicAnimationFactory.mStateElementAnimators[index] != null) {
+            mAtomicAnimationFactory.mStateElementAnimators[index].cancel();
         }
     }
 
     public Animator createStateElementAnimation(int index, float... values) {
         cancelStateElementAnimation(index);
-        LauncherAppTransitionManager latm = mLauncher.getAppTransitionManager();
-        if (mStateElementAnimators == null) {
-            mStateElementAnimators = new Animator[latm.getStateElementAnimationsCount()];
-        }
-        Animator anim = latm.createStateElementAnimation(index, values);
-        mStateElementAnimators[index] = anim;
+        Animator anim = mAtomicAnimationFactory.createStateElementAnimation(index, values);
+        mAtomicAnimationFactory.mStateElementAnimators[index] = anim;
         anim.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                mStateElementAnimators[index] = null;
+                mAtomicAnimationFactory.mStateElementAnimators[index] = null;
             }
         });
         return anim;
@@ -589,5 +572,47 @@ public class LauncherStateManager {
         default void onStateTransitionStart(LauncherState toState) { }
 
         default void onStateTransitionComplete(LauncherState finalState) { }
+    }
+
+    /**
+     * Factory class to configure and create atomic animations.
+     */
+    public static class AtomicAnimationFactory {
+
+        private final Animator[] mStateElementAnimators;
+
+        /**
+         *
+         * @param sharedElementAnimCount number of animations which run on state properties
+         */
+        public AtomicAnimationFactory(int sharedElementAnimCount) {
+            mStateElementAnimators = new Animator[sharedElementAnimCount];
+        }
+
+        void cancelAllStateElementAnimation() {
+            for (Animator animator : mStateElementAnimators) {
+                if (animator != null) {
+                    animator.cancel();
+                }
+            }
+        }
+
+        /**
+         * Creates animations for elements which can be also be part of state transitions. The
+         * actual definition of the animation is up to the app to define.
+         *
+         */
+        public Animator createStateElementAnimation(int index, float... values) {
+            throw new RuntimeException("Unknown gesture animation " + index);
+        }
+
+        /**
+         * Prepares for a non-user controlled animation from fromState to this state. Preparations
+         * include:
+         * - Setting interpolators for various animations included in the state transition.
+         * - Setting some start values (e.g. scale) for views that are hidden but about to be shown.
+         */
+        public void prepareForAtomicAnimation(
+                LauncherState fromState, LauncherState toState, StateAnimationConfig config) { }
     }
 }

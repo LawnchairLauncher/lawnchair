@@ -38,6 +38,7 @@ import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.LauncherStateManager.AtomicAnimationFactory;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.AnimatorPlaybackController;
@@ -48,6 +49,7 @@ import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.SystemShortcut;
+import com.android.launcher3.uioverrides.states.QuickstepAtomicAnimationFactory;
 import com.android.launcher3.uioverrides.touchcontrollers.FlingAndHoldTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.LandscapeEdgeSwipeController;
 import com.android.launcher3.uioverrides.touchcontrollers.NavBarToHomeTouchController;
@@ -276,6 +278,11 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
 
         list.add(new LauncherTaskViewController(this));
         return list.toArray(new TouchController[list.size()]);
+    }
+
+    @Override
+    public AtomicAnimationFactory createAtomicAnimationFactory() {
+        return new QuickstepAtomicAnimationFactory(this);
     }
 
     private static final class LauncherTaskViewController extends
