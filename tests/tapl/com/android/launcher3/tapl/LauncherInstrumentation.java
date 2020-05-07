@@ -542,32 +542,32 @@ public final class LauncherInstrumentation {
                     if (mDevice.isNaturalOrientation()) {
                         waitForLauncherObject(APPS_RES_ID);
                     } else {
-                        waitUntilGone(APPS_RES_ID);
+                        waitUntilLauncherObjectGone(APPS_RES_ID);
                     }
-                    waitUntilGone(OVERVIEW_RES_ID);
-                    waitUntilGone(WIDGETS_RES_ID);
+                    waitUntilLauncherObjectGone(OVERVIEW_RES_ID);
+                    waitUntilLauncherObjectGone(WIDGETS_RES_ID);
                     return waitForLauncherObject(WORKSPACE_RES_ID);
                 }
                 case WIDGETS: {
-                    waitUntilGone(WORKSPACE_RES_ID);
-                    waitUntilGone(APPS_RES_ID);
-                    waitUntilGone(OVERVIEW_RES_ID);
+                    waitUntilLauncherObjectGone(WORKSPACE_RES_ID);
+                    waitUntilLauncherObjectGone(APPS_RES_ID);
+                    waitUntilLauncherObjectGone(OVERVIEW_RES_ID);
                     return waitForLauncherObject(WIDGETS_RES_ID);
                 }
                 case ALL_APPS: {
-                    waitUntilGone(WORKSPACE_RES_ID);
-                    waitUntilGone(OVERVIEW_RES_ID);
-                    waitUntilGone(WIDGETS_RES_ID);
+                    waitUntilLauncherObjectGone(WORKSPACE_RES_ID);
+                    waitUntilLauncherObjectGone(OVERVIEW_RES_ID);
+                    waitUntilLauncherObjectGone(WIDGETS_RES_ID);
                     return waitForLauncherObject(APPS_RES_ID);
                 }
                 case OVERVIEW: {
                     if (hasAllAppsInOverview()) {
                         waitForLauncherObject(APPS_RES_ID);
                     } else {
-                        waitUntilGone(APPS_RES_ID);
+                        waitUntilLauncherObjectGone(APPS_RES_ID);
                     }
-                    waitUntilGone(WORKSPACE_RES_ID);
-                    waitUntilGone(WIDGETS_RES_ID);
+                    waitUntilLauncherObjectGone(WORKSPACE_RES_ID);
+                    waitUntilLauncherObjectGone(WIDGETS_RES_ID);
 
                     return waitForLauncherObject(OVERVIEW_RES_ID);
                 }
@@ -575,10 +575,10 @@ public final class LauncherInstrumentation {
                     return waitForFallbackLauncherObject(OVERVIEW_RES_ID);
                 }
                 case BACKGROUND: {
-                    waitUntilGone(WORKSPACE_RES_ID);
-                    waitUntilGone(APPS_RES_ID);
-                    waitUntilGone(OVERVIEW_RES_ID);
-                    waitUntilGone(WIDGETS_RES_ID);
+                    waitUntilLauncherObjectGone(WORKSPACE_RES_ID);
+                    waitUntilLauncherObjectGone(APPS_RES_ID);
+                    waitUntilLauncherObjectGone(OVERVIEW_RES_ID);
+                    waitUntilLauncherObjectGone(WIDGETS_RES_ID);
                     return null;
                 }
                 default:
@@ -643,7 +643,7 @@ public final class LauncherInstrumentation {
                             false, GestureScope.INSIDE_TO_OUTSIDE);
                     try (LauncherInstrumentation.Closable c = addContextLayer(
                             "Swiped up from context menu to home")) {
-                        waitUntilGone(CONTEXT_MENU_RES_ID);
+                        waitUntilLauncherObjectGone(CONTEXT_MENU_RES_ID);
                     }
                 }
                 if (hasLauncherObject(WORKSPACE_RES_ID)) {
@@ -794,9 +794,17 @@ public final class LauncherInstrumentation {
         }
     }
 
-    void waitUntilGone(String resId) {
-        assertTrue("Unexpected launcher object visible: " + resId,
-                mDevice.wait(Until.gone(getLauncherObjectSelector(resId)),
+    void waitUntilLauncherObjectGone(String resId) {
+        waitUntilGoneBySelector(getLauncherObjectSelector(resId));
+    }
+
+    void waitUntilLauncherObjectGone(BySelector selector) {
+        waitUntilGoneBySelector(makeLauncherSelector(selector));
+    }
+
+    private void waitUntilGoneBySelector(BySelector launcherSelector) {
+        assertTrue("Unexpected launcher object visible: " + launcherSelector,
+                mDevice.wait(Until.gone(launcherSelector),
                         WAIT_TIME_MS));
     }
 
