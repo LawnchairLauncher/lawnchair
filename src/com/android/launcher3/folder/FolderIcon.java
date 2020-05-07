@@ -85,7 +85,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
 
     @Thunk ActivityContext mActivity;
     @Thunk Folder mFolder;
-    private FolderInfo mInfo;
+    public FolderInfo mInfo;
 
     private CheckLongPressHelper mLongPressHelper;
 

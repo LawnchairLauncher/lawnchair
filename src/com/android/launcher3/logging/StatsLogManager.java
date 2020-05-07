@@ -47,7 +47,10 @@ public class StatsLogManager implements ResourceBasedOverride {
         @LauncherUiEvent(doc = "User dragged a launcher item")
         LAUNCHER_ITEM_DRAG_STARTED(383),
         @LauncherUiEvent(doc = "A dragged launcher item is successfully dropped")
-        LAUNCHER_ITEM_DROP_COMPLETED(385);
+        LAUNCHER_ITEM_DROP_COMPLETED(385),
+        @LauncherUiEvent(doc = "A dragged launcher item is successfully dropped on another item "
+                + "resulting in new folder creation")
+        LAUNCHER_ITEM_DROP_FOLDER_CREATED(386);
         // ADD MORE
 
         private final int mId;

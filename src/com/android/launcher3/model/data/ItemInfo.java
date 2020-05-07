@@ -253,8 +253,7 @@ public class ItemInfo {
      * Creates {@link LauncherAtom.ItemInfo} with important fields and parent container info.
      */
     public LauncherAtom.ItemInfo buildProto(FolderInfo fInfo) {
-        LauncherAtom.ItemInfo.Builder itemBuilder = LauncherAtom.ItemInfo.newBuilder();
-        itemBuilder.setIsWork(user != Process.myUserHandle());
+        LauncherAtom.ItemInfo.Builder itemBuilder = getDefaultItemInfoBuilder();
         Optional<ComponentName> nullableComponent = Optional.ofNullable(getTargetComponent());
         switch (itemType) {
             case ITEM_TYPE_APPLICATION:
@@ -305,28 +304,45 @@ public class ItemInfo {
             }
             itemBuilder.setContainerInfo(ContainerInfo.newBuilder().setFolder(folderBuilder));
         } else {
-            switch (container) {
-                case CONTAINER_HOTSEAT:
-                case CONTAINER_HOTSEAT_PREDICTION:
-                    itemBuilder.setContainerInfo(
-                            ContainerInfo.newBuilder().setHotseat(
-                                    LauncherAtom.HotseatContainer.newBuilder().setIndex(screenId)));
-                    break;
-                case CONTAINER_DESKTOP:
-                    itemBuilder.setContainerInfo(
-                            ContainerInfo.newBuilder().setWorkspace(
-                                    LauncherAtom.WorkspaceContainer.newBuilder()
-                                            .setGridX(cellX)
-                                            .setGridY(cellY)
-                                            .setPageIndex(screenId)));
-                    break;
-                case CONTAINER_ALL_APPS:
-                    itemBuilder.setContainerInfo(
-                            ContainerInfo.newBuilder().setAllAppsContainer(
-                                    AllAppsContainer.getDefaultInstance()));
-                    break;
-            }
+            itemBuilder.setContainerInfo(getContainerInfo());
         }
         return itemBuilder.build();
+    }
+
+    LauncherAtom.ItemInfo.Builder getDefaultItemInfoBuilder() {
+        LauncherAtom.ItemInfo.Builder itemBuilder = LauncherAtom.ItemInfo.newBuilder();
+        itemBuilder.setIsWork(user != Process.myUserHandle());
+        return itemBuilder;
+    }
+
+    ContainerInfo getContainerInfo() {
+        switch (container) {
+            case CONTAINER_HOTSEAT:
+            case CONTAINER_HOTSEAT_PREDICTION:
+                return ContainerInfo.newBuilder()
+                    .setHotseat(LauncherAtom.HotseatContainer.newBuilder().setIndex(screenId))
+                    .build();
+            case CONTAINER_DESKTOP:
+                return ContainerInfo.newBuilder()
+                    .setWorkspace(
+                        LauncherAtom.WorkspaceContainer.newBuilder()
+                        .setGridX(cellX)
+                        .setGridY(cellY)
+                        .setPageIndex(screenId))
+                    .build();
+            case CONTAINER_ALL_APPS:
+                return ContainerInfo.newBuilder()
+                        .setAllAppsContainer(
+                                AllAppsContainer.getDefaultInstance())
+                        .build();
+        }
+        return ContainerInfo.getDefaultInstance();
+    }
+
+    /** Returns shallow copy of the object. */
+    public ItemInfo makeShallowCopy() {
+        ItemInfo itemInfo = new ItemInfo();
+        itemInfo.copyFrom(this);
+        return itemInfo;
     }
 }
