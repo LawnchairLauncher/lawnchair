@@ -71,6 +71,12 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
             @Override
             public void onRecentsAnimationStart(RecentsAnimationController controller,
                     RecentsAnimationTargets targets) {
+                if (mCallbacks == null) {
+                    // It's possible for the recents animation to have finished and be cleaned up
+                    // by the time we process the start callback, and in that case, just we can skip
+                    // handling this call entirely
+                    return;
+                }
                 mController = controller;
                 mTargets = targets;
             }
