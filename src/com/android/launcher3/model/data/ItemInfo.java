@@ -16,6 +16,7 @@
 
 package com.android.launcher3.model.data;
 
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_ALL_APPS;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION;
@@ -36,6 +37,7 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.logger.LauncherAtom;
+import com.android.launcher3.logger.LauncherAtom.AllAppsContainer;
 import com.android.launcher3.logger.LauncherAtom.ContainerInfo;
 import com.android.launcher3.util.ContentWriter;
 
@@ -317,6 +319,11 @@ public class ItemInfo {
                                             .setGridX(cellX)
                                             .setGridY(cellY)
                                             .setPageIndex(screenId)));
+                    break;
+                case CONTAINER_ALL_APPS:
+                    itemBuilder.setContainerInfo(
+                            ContainerInfo.newBuilder().setAllAppsContainer(
+                                    AllAppsContainer.getDefaultInstance()));
                     break;
             }
         }
