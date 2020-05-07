@@ -51,6 +51,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.PagedOrientationHandler;
+import com.android.launcher3.util.WindowBounds;
 
 import java.lang.annotation.Retention;
 import java.util.function.IntConsumer;
@@ -361,7 +362,8 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
         float fullHeight = dp.heightPx - insets.top - insets.bottom;
 
         if (dp.isMultiWindowMode) {
-            mSizeStrategy.getMultiWindowSize(mContext, dp, outPivot);
+            WindowBounds bounds = SplitScreenBounds.INSTANCE.getSecondaryWindowBounds(mContext);
+            outPivot.set(bounds.availableSize.x, bounds.availableSize.y);
         } else {
             outPivot.set(fullWidth, fullHeight);
         }

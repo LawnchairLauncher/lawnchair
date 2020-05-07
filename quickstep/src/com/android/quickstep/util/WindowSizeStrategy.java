@@ -20,13 +20,15 @@ import static com.android.quickstep.SysUINavigationMode.getMode;
 import static com.android.quickstep.SysUINavigationMode.removeShelfFromOverview;
 import static com.android.quickstep.util.LayoutUtils.getDefaultSwipeHeight;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.PointF;
 import android.graphics.Rect;
+import android.os.Build;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
+import com.android.launcher3.util.WindowBounds;
 import com.android.quickstep.SysUINavigationMode.Mode;
 
 /**
@@ -34,19 +36,14 @@ import com.android.quickstep.SysUINavigationMode.Mode;
  * TODO: Merge is with {@link com.android.quickstep.BaseActivityInterface} once we remove the
  * state dependent members from {@link com.android.quickstep.LauncherActivityInterface}
  */
+@TargetApi(Build.VERSION_CODES.R)
 public abstract class WindowSizeStrategy {
 
-    private final PointF mTempPoint = new PointF();
     public final boolean rotationSupportedByActivity;
 
     private WindowSizeStrategy(boolean rotationSupportedByActivity) {
         this.rotationSupportedByActivity = rotationSupportedByActivity;
     }
-
-    /**
-     * Sets the expected window size in multi-window mode
-     */
-    public abstract void getMultiWindowSize(Context context, DeviceProfile dp, PointF out);
 
     /**
      * Calculates the taskView size for the provided device configuration
@@ -65,9 +62,9 @@ public abstract class WindowSizeStrategy {
         final boolean showLargeTaskSize = showOverviewActions(context);
 
         if (dp.isMultiWindowMode) {
-            getMultiWindowSize(context, dp, mTempPoint);
-            taskWidth = mTempPoint.x;
-            taskHeight = mTempPoint.y;
+            WindowBounds bounds = SplitScreenBounds.INSTANCE.getSecondaryWindowBounds(context);
+            taskWidth = bounds.availableSize.x;
+            taskHeight = bounds.availableSize.y;
             paddingHorz = res.getDimension(R.dimen.multi_window_task_card_horz_space);
         } else {
             taskWidth = dp.availableWidthPx;
@@ -114,22 +111,6 @@ public abstract class WindowSizeStrategy {
             new WindowSizeStrategy(true) {
 
         @Override
-        public void getMultiWindowSize(Context context, DeviceProfile dp, PointF out) {
-            DeviceProfile fullDp = dp.getFullScreenProfile();
-            // Use availableWidthPx and availableHeightPx instead of widthPx and heightPx to
-            // account for system insets
-            out.set(fullDp.availableWidthPx, fullDp.availableHeightPx);
-            float halfDividerSize = context.getResources()
-                    .getDimension(R.dimen.multi_window_task_divider_size) / 2;
-
-            if (fullDp.isLandscape) {
-                out.x = out.x / 2 - halfDividerSize;
-            } else {
-                out.y = out.y / 2 - halfDividerSize;
-            }
-        }
-
-        @Override
         float getExtraSpace(Context context, DeviceProfile dp) {
             if (dp.isVerticalBarLayout()) {
                 return  0;
@@ -164,10 +145,6 @@ public abstract class WindowSizeStrategy {
 
     public static final WindowSizeStrategy FALLBACK_RECENTS_SIZE_STRATEGY =
             new WindowSizeStrategy(false) {
-        @Override
-        public void getMultiWindowSize(Context context, DeviceProfile dp, PointF out) {
-            out.set(dp.widthPx, dp.heightPx);
-        }
 
         @Override
         float getExtraSpace(Context context, DeviceProfile dp) {
