@@ -1441,6 +1441,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
         mOutlineProvider = previewProvider;
 
+        if (draggableView == null && child instanceof DraggableView) {
+            draggableView = (DraggableView) child;
+        }
+
         // The drag bitmap follows the touch point around on the screen
         final Bitmap b = previewProvider.createDragBitmap();
         int halfPadding = previewProvider.previewPadding / 2;
@@ -1451,12 +1455,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         Point dragVisualizeOffset = null;
         Rect dragRect = new Rect();
 
-        if (draggableView == null && child instanceof DraggableView) {
-            draggableView = (DraggableView) child;
-        }
-
         if (draggableView != null) {
-            draggableView.getVisualDragBounds(dragRect);
+            draggableView.getSourceVisualDragBounds(dragRect);
             dragLayerY += dragRect.top;
             dragVisualizeOffset = new Point(- halfPadding, halfPadding);
         }

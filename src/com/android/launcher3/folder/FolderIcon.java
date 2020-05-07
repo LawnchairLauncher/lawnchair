@@ -758,7 +758,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
     }
 
     @Override
-    public void getVisualDragBounds(Rect bounds) {
+    public void getWorkspaceVisualDragBounds(Rect bounds) {
         getPreviewBounds(bounds);
     }
 }
