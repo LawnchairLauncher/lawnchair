@@ -170,6 +170,7 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
         super.onDestroy();
         if (mHotseatPredictionController != null) {
             mHotseatPredictionController.destroy();
+            mHotseatPredictionController = null;
         }
     }
 
