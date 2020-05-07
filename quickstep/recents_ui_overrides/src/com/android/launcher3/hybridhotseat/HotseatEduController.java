@@ -48,6 +48,7 @@ import com.android.launcher3.views.Snackbar;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 /**
  * Controller class for managing user onboaridng flow for hybrid hotseat
@@ -110,7 +111,8 @@ public class HotseatEduController {
             ItemInfo info = (ItemInfo) view.getTag();
             if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
                 folders.add((FolderInfo) info);
-            } else if (info instanceof WorkspaceItemInfo) {
+            } else if (info instanceof WorkspaceItemInfo && info.container == LauncherSettings
+                    .Favorites.CONTAINER_HOTSEAT) {
                 putIntoFolder.add((WorkspaceItemInfo) info);
             }
         }
@@ -206,6 +208,7 @@ public class HotseatEduController {
             View child = mHotseat.getChildAt(i, 0);
             if (child == null || child.getTag() == null) continue;
             ItemInfo tag = (ItemInfo) child.getTag();
+            if (tag.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION) continue;
             mLauncher.getModelWriter().moveItemInDatabase(tag,
                     LauncherSettings.Favorites.CONTAINER_DESKTOP, pageId, i, toRow);
             mNewItems.add(tag);
@@ -300,13 +303,23 @@ public class HotseatEduController {
     }
 
     void showEdu() {
+        int childCount = mHotseat.getShortcutsAndWidgets().getChildCount();
+        CellLayout cellLayout = mLauncher.getWorkspace().getScreenWithId(Workspace.FIRST_SCREEN_ID);
         // hotseat is already empty and does not require migration. show edu tip
-        if (mHotseat.getShortcutsAndWidgets().getChildCount() == 0) {
-            new ArrowTipView(mLauncher).show(mLauncher.getString(R.string.hotseat_auto_enrolled),
+        boolean requiresMigration = IntStream.range(0, childCount).anyMatch(i -> {
+            View v = mHotseat.getShortcutsAndWidgets().getChildAt(i);
+            return v != null && v.getTag() != null && ((ItemInfo) v.getTag()).container
+                    != LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION;
+        });
+        boolean canMigrateToFirstPage = cellLayout.makeSpaceForHotseatMigration(false);
+        if (requiresMigration && canMigrateToFirstPage) {
+            showDialog();
+        } else {
+            new ArrowTipView(mLauncher).show(mLauncher.getString(
+                    requiresMigration ? R.string.hotseat_tip_no_empty_slots
+                            : R.string.hotseat_auto_enrolled),
                     mHotseat.getTop());
             finishOnboarding();
-        } else {
-            showDialog();
         }
     }
 
