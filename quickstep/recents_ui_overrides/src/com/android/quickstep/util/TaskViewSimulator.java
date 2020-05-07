@@ -19,7 +19,6 @@ import static android.view.Surface.ROTATION_0;
 
 import static com.android.launcher3.states.RotationHelper.deltaRotation;
 import static com.android.launcher3.touch.PagedOrientationHandler.MATRIX_POST_TRANSLATE;
-import static com.android.quickstep.util.AppWindowAnimationHelper.applySurfaceParams;
 import static com.android.quickstep.util.RecentsOrientedState.isFixedRotationTransformEnabled;
 import static com.android.quickstep.util.RecentsOrientedState.postDisplayRotation;
 import static com.android.systemui.shared.system.WindowManagerWrapper.WINDOWING_MODE_FULLSCREEN;
@@ -33,24 +32,21 @@ import android.graphics.RectF;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.RecentsAnimationTargets;
-import com.android.quickstep.util.AppWindowAnimationHelper.TargetAlphaProvider;
-import com.android.quickstep.util.AppWindowAnimationHelper.TransformParams;
 import com.android.quickstep.views.RecentsView.ScrollState;
 import com.android.quickstep.views.TaskThumbnailView.PreviewPositionHelper;
 import com.android.quickstep.views.TaskView;
 import com.android.quickstep.views.TaskView.FullscreenDrawParams;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
-import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams;
+import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams.Builder;
 
 /**
  * A utility class which emulates the layout behavior of TaskView and RecentsView
  */
-public class TaskViewSimulator {
+public class TaskViewSimulator implements TransformParams.BuilderProxy {
 
     private final Rect mTmpCropRect = new Rect();
     private final RectF mTempRectF = new RectF();
@@ -67,8 +63,6 @@ public class TaskViewSimulator {
     private final Matrix mMatrix = new Matrix();
     private RemoteAnimationTargetCompat mRunningTarget;
     private RecentsAnimationTargets mAllTargets;
-
-    private TargetAlphaProvider mTaskAlphaCallback = (t, a) -> a;
 
     // Thumbnail view properties
     private final Rect mThumbnailPosition = new Rect();
@@ -169,13 +163,6 @@ public class TaskViewSimulator {
     }
 
     /**
-     * Sets an alternate function which can be used to control the alpha
-     */
-    public void setTaskAlphaCallback(TargetAlphaProvider callback) {
-        mTaskAlphaCallback = callback;
-    }
-
-    /**
      * Applies the target to the previously set parameters
      */
     public void apply(TransformParams params) {
@@ -245,35 +232,18 @@ public class TaskViewSimulator {
         mInversePositionMatrix.mapRect(mTempRectF);
         mTempRectF.roundOut(mTmpCropRect);
 
-        SurfaceParams[] surfaceParams = new SurfaceParams[mAllTargets.unfilteredApps.length];
-        for (int i = 0; i < mAllTargets.unfilteredApps.length; i++) {
-            RemoteAnimationTargetCompat app = mAllTargets.unfilteredApps[i];
-            SurfaceParams.Builder builder = new SurfaceParams.Builder(app.leash);
+        params.applySurfaceParams(params.createSurfaceParams(this));
+    }
 
-            if (app.mode == mAllTargets.targetMode) {
-                float alpha = mTaskAlphaCallback.getAlpha(app, params.getTargetAlpha());
-                if (app.activityType != RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME) {
-                    // Fade out Assistant overlay.
-                    if (app.activityType == RemoteAnimationTargetCompat.ACTIVITY_TYPE_ASSISTANT
-                            && app.isNotInRecents) {
-                        alpha = Interpolators.ACCEL_2.getInterpolation(fullScreenProgress.value);
-                    }
-
-                    builder.withAlpha(alpha)
-                            .withMatrix(mMatrix)
-                            .withWindowCrop(mTmpCropRect)
-                            .withCornerRadius(getCurrentCornerRadius());
-                } else if (params.getTargetSet().hasRecents) {
-                    // If home has a different target then recents, reverse anim the home target.
-                    builder.withAlpha(fullScreenProgress.value * params.getTargetAlpha());
-                }
-            } else {
-                builder.withAlpha(1);
-            }
-            surfaceParams[i] = builder.build();
+    @Override
+    public void onBuildParams(Builder builder, RemoteAnimationTargetCompat app,
+            int targetMode, TransformParams params) {
+        if (app.mode == mAllTargets.targetMode
+                && app.activityType != RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME) {
+            builder.withMatrix(mMatrix)
+                    .withWindowCrop(mTmpCropRect)
+                    .withCornerRadius(getCurrentCornerRadius());
         }
-
-        applySurfaceParams(params.getSyncTransactionApplier(), surfaceParams);
     }
 
     /**

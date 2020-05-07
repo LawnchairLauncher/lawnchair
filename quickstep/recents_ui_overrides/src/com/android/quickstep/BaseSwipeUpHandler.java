@@ -52,9 +52,9 @@ import com.android.quickstep.RecentsAnimationCallbacks.RecentsAnimationListener;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.AppWindowAnimationHelper;
-import com.android.quickstep.util.AppWindowAnimationHelper.TransformParams;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.quickstep.util.RectFSpringAnim;
+import com.android.quickstep.util.TransformParams;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
@@ -424,8 +424,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
                 .setProgress(shift)
                 .setOffset(offset)
                 .setOffsetScale(offsetScale)
-                .setTargetSet(mRecentsAnimationTargets)
-                .setLauncherOnTop(true);
+                .setTargetSet(mRecentsAnimationTargets);
         mAppWindowAnimationHelper.applyTransform(mTransformParams);
     }
 
@@ -453,11 +452,9 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
         final RectF targetRect = homeAnimationFactory.getWindowTargetRect();
         final View floatingView = homeAnimationFactory.getFloatingView();
         final boolean isFloatingIconView = floatingView instanceof FloatingIconView;
-        final RectF startRect = new RectF(
-            mAppWindowAnimationHelper.applyTransform(
+        final RectF startRect = new RectF(mAppWindowAnimationHelper.applyTransform(
                 mTransformParams.setProgress(startProgress)
-                    .setTargetSet(mRecentsAnimationTargets)
-                    .setLauncherOnTop(false)));
+                    .setTargetSet(mRecentsAnimationTargets)));
         if (isFloatingIconView) {
             mOrientedState.mapInverseRectFromNormalOrientation(
                     startRect, mDp.widthPx, mDp.heightPx);

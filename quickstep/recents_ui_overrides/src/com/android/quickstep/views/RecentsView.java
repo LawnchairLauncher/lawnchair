@@ -124,6 +124,7 @@ import com.android.quickstep.TaskUtils;
 import com.android.quickstep.ViewUtils;
 import com.android.quickstep.util.AppWindowAnimationHelper;
 import com.android.quickstep.util.RecentsOrientedState;
+import com.android.quickstep.util.TransformParams;
 import com.android.quickstep.util.WindowSizeStrategy;
 import com.android.systemui.plugins.ResourceProvider;
 import com.android.systemui.shared.recents.IPinnedStackAnimationListener;
@@ -2100,7 +2101,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         return mAppWindowAnimationHelper;
     }
 
-    public AppWindowAnimationHelper.TransformParams getLiveTileParams(
+    public TransformParams getLiveTileParams(
             boolean mightNeedToRefill) {
         return null;
     }
