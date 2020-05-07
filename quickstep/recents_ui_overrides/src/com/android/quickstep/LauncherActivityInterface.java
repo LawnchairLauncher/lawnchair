@@ -100,7 +100,9 @@ public final class LauncherActivityInterface extends
         super.onSwipeUpToRecentsComplete();
         Launcher launcher = getCreatedActivity();
         if (launcher != null) {
-            DiscoveryBounce.showForOverviewIfNeeded(launcher);
+            RecentsView recentsView = launcher.getOverviewPanel();
+            DiscoveryBounce.showForOverviewIfNeeded(launcher,
+                    recentsView.getPagedOrientationHandler());
         }
     }
 

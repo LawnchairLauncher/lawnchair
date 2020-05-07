@@ -618,21 +618,6 @@ public class TouchInteractionService extends Service implements PluginListener<O
             return;
         }
         mDeviceState.enableMultipleRegions(baseInputConsumer instanceof OtherActivityInputConsumer);
-        BaseDraggingActivity activity =
-                mOverviewComponentObserver.getActivityInterface().getCreatedActivity();
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.PAUSE_NOT_DETECTED, "handleOrientationSetup.2");
-        }
-        if (activity == null || !(activity.getOverviewPanel() instanceof RecentsView)) {
-            return;
-        }
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.PAUSE_NOT_DETECTED, "handleOrientationSetup.3");
-        }
-        ((RecentsView) activity.getOverviewPanel())
-            .setLayoutRotation(mDeviceState.getCurrentActiveRotation(),
-                mDeviceState.getDisplayRotation());
-        activity.getDragLayer().recreateControllers();
     }
 
     private InputConsumer newBaseConsumer(GestureState previousGestureState,

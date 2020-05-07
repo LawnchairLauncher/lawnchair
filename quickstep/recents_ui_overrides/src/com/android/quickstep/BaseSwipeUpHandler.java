@@ -36,6 +36,7 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Build;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.animation.Interpolator;
 
@@ -50,12 +51,14 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.statemanager.StatefulActivity;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.VibratorWrapper;
 import com.android.launcher3.views.FloatingIconView;
 import com.android.quickstep.RecentsAnimationCallbacks.RecentsAnimationListener;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.ActivityInitListener;
+import com.android.quickstep.util.AppWindowAnimationHelper;
 import com.android.quickstep.util.RectFSpringAnim;
 import com.android.quickstep.util.TaskViewSimulator;
 import com.android.quickstep.util.TransformParams;
@@ -398,7 +401,16 @@ public abstract class BaseSwipeUpHandler<T extends StatefulActivity<?>, Q extend
 
     protected boolean onActivityInit(Boolean alreadyOnHome) {
         T createdActivity = mActivityInterface.getCreatedActivity();
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.PAUSE_NOT_DETECTED, "BaseSwipeUpHandler.1");
+        }
         if (createdActivity != null) {
+            if (TestProtocol.sDebugTracing) {
+                Log.d(TestProtocol.PAUSE_NOT_DETECTED, "BaseSwipeUpHandler.2");
+            }
+            ((RecentsView) createdActivity.getOverviewPanel())
+                    .setLayoutRotation(mDeviceState.getCurrentActiveRotation(),
+                            mDeviceState.getDisplayRotation());
             initTransitionEndpoints(InvariantDeviceProfile.INSTANCE.get(mContext)
                 .getDeviceProfile(mContext));
         }
