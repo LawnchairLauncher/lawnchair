@@ -35,8 +35,6 @@ import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_O
 
 import android.view.MotionEvent;
 
-import androidx.annotation.Nullable;
-
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Utilities;
@@ -57,7 +55,7 @@ import com.android.systemui.shared.system.ActivityManagerWrapper;
  */
 public class QuickSwitchTouchController extends AbstractStateChangeTouchController {
 
-    private @Nullable TaskView mTaskToLaunch;
+    protected final RecentsView mOverviewPanel;
 
     public QuickSwitchTouchController(Launcher launcher) {
         this(launcher, SingleAxisSwipeDetector.HORIZONTAL);
@@ -65,6 +63,7 @@ public class QuickSwitchTouchController extends AbstractStateChangeTouchControll
 
     protected QuickSwitchTouchController(Launcher l, SingleAxisSwipeDetector.Direction dir) {
         super(l, dir);
+        mOverviewPanel = l.getOverviewPanel();
     }
 
     @Override
@@ -94,7 +93,6 @@ public class QuickSwitchTouchController extends AbstractStateChangeTouchControll
     public void onDragStart(boolean start, float startDisplacement) {
         super.onDragStart(start, startDisplacement);
         mStartContainerType = LauncherLogProto.ContainerType.NAVBAR;
-        mTaskToLaunch = mLauncher.<RecentsView>getOverviewPanel().getTaskViewAt(0);
         ActivityManagerWrapper.getInstance()
                 .closeSystemWindows(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
     }
@@ -102,7 +100,6 @@ public class QuickSwitchTouchController extends AbstractStateChangeTouchControll
     @Override
     protected void onSwipeInteractionCompleted(LauncherState targetState, int logAction) {
         super.onSwipeInteractionCompleted(targetState, logAction);
-        mTaskToLaunch = null;
     }
 
     @Override
@@ -141,13 +138,15 @@ public class QuickSwitchTouchController extends AbstractStateChangeTouchControll
     }
 
     private void updateFullscreenProgress(float progress) {
-        if (mTaskToLaunch != null) {
-            mTaskToLaunch.setFullscreenProgress(progress);
-            int sysuiFlags = progress > UPDATE_SYSUI_FLAGS_THRESHOLD
-                    ? mTaskToLaunch.getThumbnail().getSysUiStatusNavFlags()
-                    : 0;
-            mLauncher.getSystemUiController().updateUiState(UI_STATE_OVERVIEW, sysuiFlags);
+        mOverviewPanel.setFullscreenProgress(progress);
+        int sysuiFlags = 0;
+        if (progress > UPDATE_SYSUI_FLAGS_THRESHOLD) {
+            TaskView tv = mOverviewPanel.getTaskViewAt(0);
+            if (tv != null) {
+                sysuiFlags = tv.getThumbnail().getSysUiStatusNavFlags();
+            }
         }
+        mLauncher.getSystemUiController().updateUiState(UI_STATE_OVERVIEW, sysuiFlags);
     }
 
     @Override

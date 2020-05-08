@@ -139,8 +139,7 @@
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"बुझेँ"</string>
     <string name="work_apps_paused_title" msgid="2389865654362803723">"कार्यालयको प्रोफाइल अस्थायी रूपमा रोक्का गरिएको छ"</string>
     <string name="work_apps_paused_body" msgid="5388070126389079077">"कामसम्बन्धी एपहरूले तपाईंलाई सूचना पठाउन, तपाईंको ब्याट्री प्रयोग गर्न वा तपाईंको स्थानसम्बन्धी जानकारीमाथि पहुँच राख्न सक्दैनन्"</string>
-    <!-- no translation found for work_apps_paused_content_description (7553586952985486433) -->
-    <skip />
+    <string name="work_apps_paused_content_description" msgid="7553586952985486433">"कार्यालयको प्रोफाइल अस्थायी रूपमा रोक्का गरिएको छ। कामसम्बन्धी एपहरूले तपाईंलाई सूचना पठाउन, तपाईंको यन्त्रको ब्याट्री प्रयोग गर्न वा तपाईंको स्थान हेर्न सक्दैनन्"</string>
     <string name="work_switch_tip" msgid="808075064383839144">"कामसम्बन्धी एप र सूचनाहरू अस्थायी रूपमा रोक्का गर्नुहोस्"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"कार्य पूरा गर्न सकिएन: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

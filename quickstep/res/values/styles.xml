@@ -69,6 +69,14 @@
         <item name="android:textColor">@color/gesture_tutorial_primary_color</item>
     </style>
 
+    <!--
+      Can be applied to views to color things like ripples and list highlights the workspace text
+      color.
+    -->
+    <style name="ThemeControlHighlightWorkspaceColor">
+        <item name="android:colorControlHighlight">?attr/workspaceTextColor</item>
+    </style>
+
     <style name="OverviewActionButton"
         parent="@android:style/Widget.DeviceDefault.Button.Borderless">
         <item name="android:textColor">?attr/workspaceTextColor</item>

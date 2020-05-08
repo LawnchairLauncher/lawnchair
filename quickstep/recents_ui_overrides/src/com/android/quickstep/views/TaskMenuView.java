@@ -239,7 +239,8 @@ public class TaskMenuView extends AbstractFloatingView {
         setLayoutParams(params);
         setScaleX(taskView.getScaleX());
         setScaleY(taskView.getScaleY());
-        mOptionLayout.setOrientation(orientationHandler.getTaskMenuLayoutOrientation());
+        mOptionLayout.setOrientation(orientationHandler
+                .getTaskMenuLayoutOrientation(mOptionLayout));
         setPosition(sTempRect.left - insets.left, sTempRect.top - insets.top,
             taskView.getPagedOrientationHandler());
     }

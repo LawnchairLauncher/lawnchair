@@ -35,6 +35,7 @@
         </Space>
         <Button
             android:id="@+id/action_screenshot"
+            android:theme="@style/ThemeControlHighlightWorkspaceColor"
             style="@style/OverviewActionButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -48,6 +49,7 @@
 
         <Button
             android:id="@+id/action_share"
+            android:theme="@style/ThemeControlHighlightWorkspaceColor"
             style="@style/OverviewActionButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

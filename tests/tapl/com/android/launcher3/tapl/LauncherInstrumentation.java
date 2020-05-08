@@ -97,8 +97,6 @@ public final class LauncherInstrumentation {
     private static final Pattern EVENT_TOUCH_UP = getTouchEventPattern("ACTION_UP");
     private static final Pattern EVENT_TOUCH_CANCEL = getTouchEventPattern("ACTION_CANCEL");
     private static final Pattern EVENT_PILFER_POINTERS = Pattern.compile("pilferPointers");
-    static final Pattern EVENT_START_ACTIVITY = Pattern.compile("Activity\\.onStart");
-    static final Pattern EVENT_STOP_ACTIVITY = Pattern.compile("Activity\\.onStop");
     static final Pattern EVENT_START = Pattern.compile("start:");
 
     static final Pattern EVENT_TOUCH_DOWN_TIS = getTouchEventPatternTIS("ACTION_DOWN");
@@ -170,7 +168,6 @@ public final class LauncherInstrumentation {
     private static boolean sCheckingEvents;
 
     private boolean mCheckEventsForSuccessfulGestures = false;
-    private int mExpectedPid;
     private Runnable mOnLauncherCrashed;
 
     private static Pattern getTouchEventPattern(String prefix, String action) {
@@ -362,33 +359,12 @@ public final class LauncherInstrumentation {
         return null;
     }
 
-    private String getAnomalyMessage() {
-        if (mExpectedPid != 0 && mExpectedPid != getPid()) {
-            mExpectedPid = 0;
-            if (mOnLauncherCrashed != null) mOnLauncherCrashed.run();
-            return "Launcher crashed";
-        }
-
+    public void checkForAnomaly() {
         final String systemAnomalyMessage = getSystemAnomalyMessage();
         if (systemAnomalyMessage != null) {
-            return "http://go/tapl : Tests are broken by a non-Launcher system error: "
-                    + systemAnomalyMessage;
-        }
-
-        return null;
-    }
-
-    public void checkForAnomaly() {
-        final String anomalyMessage = getAnomalyMessage();
-        if (anomalyMessage != null) {
-            if (sCheckingEvents) {
-                sCheckingEvents = false;
-                sEventChecker.finishNoWait();
-            }
-            log("Hierarchy dump for: " + anomalyMessage);
-            dumpViewHierarchy();
-
-            Assert.fail(formatSystemHealthMessage(anomalyMessage));
+            Assert.fail(formatSystemHealthMessage(closeEvents(
+                    "http://go/tapl : Tests are broken by a non-Launcher system error: "
+                            + systemAnomalyMessage, false)));
         }
     }
 
@@ -448,23 +424,29 @@ public final class LauncherInstrumentation {
         return message;
     }
 
-    private void fail(String message) {
-        checkForAnomaly();
-
-        message = "http://go/tapl : " + getContextDescription() + message
-                + " (visible state: " + getVisibleStateMessage() + ")";
+    private String closeEvents(String message, boolean checkEvents) {
+        if (sCheckingEvents) {
+            sCheckingEvents = false;
+            if (checkEvents) {
+                final String eventMismatch = sEventChecker.verify(0);
+                if (eventMismatch != null) {
+                    message = message + ", having produced " + eventMismatch;
+                }
+            } else {
+                sEventChecker.finishNoWait();
+            }
+        }
         log("Hierarchy dump for: " + message);
         dumpViewHierarchy();
 
-        if (sCheckingEvents) {
-            sCheckingEvents = false;
-            final String eventMismatch = sEventChecker.verify(0);
-            if (eventMismatch != null) {
-                message = message + ", having produced " + eventMismatch;
-            }
-        }
+        return message;
+    }
 
-        Assert.fail(formatSystemHealthMessage(message));
+    private void fail(String message) {
+        checkForAnomaly();
+        Assert.fail(formatSystemHealthMessage(closeEvents(
+                "http://go/tapl : " + getContextDescription() + message
+                        + " (visible state: " + getVisibleStateMessage() + ")", true)));
     }
 
     private String getContextDescription() {
@@ -535,13 +517,14 @@ public final class LauncherInstrumentation {
                 mExpectedRotation, mDevice.getDisplayRotation());
 
         // b/148422894
+        String error = null;
         for (int i = 0; i != 600; ++i) {
-            if (getNavigationModeMismatchError() == null) break;
+            error = getNavigationModeMismatchError();
+            if (error == null) break;
             sleep(100);
         }
-
-        final String error = getNavigationModeMismatchError();
         assertTrue(error, error == null);
+
         log("verifyContainerType: " + containerType);
 
         final UiObject2 container = verifyVisibleObjects(containerType);
@@ -639,6 +622,8 @@ public final class LauncherInstrumentation {
      * @return the Workspace object.
      */
     public Workspace pressHome() {
+        mInstrumentation.getUiAutomation().setOnAccessibilityEventListener(
+                e -> Log.d("b/155926212", e.toString()));
         try (LauncherInstrumentation.Closable e = eventsCheck()) {
             // Click home, then wait for any accessibility event, then wait until accessibility
             // events stop.
@@ -646,7 +631,9 @@ public final class LauncherInstrumentation {
             // otherwise waitForIdle may return immediately in case when there was a big enough
             // pause in accessibility events prior to pressing Home.
             final String action;
+            Log.d("b/155926212", "Before isLauncherVisible()");
             final boolean launcherWasVisible = isLauncherVisible();
+            Log.d("b/155926212", "After isLauncherVisible(): " + launcherWasVisible);
             if (getNavigationModel() == NavigationModel.ZERO_BUTTON) {
                 checkForAnomaly();
 
@@ -668,7 +655,7 @@ public final class LauncherInstrumentation {
                 } else {
                     log("Hierarchy before swiping up to home:");
                     dumpViewHierarchy();
-                    log(action = "swiping up to home from " + getVisibleStateMessage());
+                    action = "swiping up to home";
 
                     try (LauncherInstrumentation.Closable c = addContextLayer(action)) {
                         swipeToState(
@@ -679,20 +666,12 @@ public final class LauncherInstrumentation {
                                         ? GestureScope.INSIDE_TO_OUTSIDE
                                         : GestureScope.OUTSIDE);
                     }
-                    if (!launcherWasVisible) {
-                        expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_START_ACTIVITY);
-                    }
                 }
             } else {
-                if (!launcherWasVisible) {
-                    expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_START_ACTIVITY);
-                }
                 log("Hierarchy before clicking home:");
                 dumpViewHierarchy();
-                log(action = "clicking home button from " + getVisibleStateMessage());
+                action = "clicking home button";
                 try (LauncherInstrumentation.Closable c = addContextLayer(action)) {
-                    mDevice.waitForIdle();
-
                     if (!isLauncher3() && getNavigationModel() == NavigationModel.TWO_BUTTON) {
                         expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_DOWN_TIS);
                         expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_UP_TIS);
@@ -704,13 +683,14 @@ public final class LauncherInstrumentation {
                             !hasLauncherObject(WORKSPACE_RES_ID)
                                     && (hasLauncherObject(APPS_RES_ID)
                                     || hasLauncherObject(OVERVIEW_RES_ID)));
-                    mDevice.waitForIdle();
                 }
             }
             try (LauncherInstrumentation.Closable c = addContextLayer(
                     "performed action to switch to Home - " + action)) {
                 return getWorkspace();
             }
+        } finally {
+            mInstrumentation.getUiAutomation().setOnAccessibilityEventListener(null);
         }
     }
 
@@ -1306,19 +1286,25 @@ public final class LauncherInstrumentation {
     public Closable eventsCheck() {
         Assert.assertTrue("Nested event checking", !sCheckingEvents);
         disableSensorRotation();
-        sCheckingEvents = true;
-        mExpectedPid = getPid();
+        final int initialPid = getPid();
         if (sEventChecker == null) sEventChecker = new LogEventChecker();
         sEventChecker.start();
+        sCheckingEvents = true;
 
         return () -> {
-            checkForAnomaly();
+            if (initialPid != getPid()) {
+                if (mOnLauncherCrashed != null) mOnLauncherCrashed.run();
+                checkForAnomaly();
+                Assert.fail(
+                        formatSystemHealthMessage(closeEvents("Launcher crashed", false)));
+            }
 
             if (sCheckingEvents) {
                 sCheckingEvents = false;
                 if (mCheckEventsForSuccessfulGestures) {
                     final String message = sEventChecker.verify(WAIT_TIME_MS);
                     if (message != null) {
+                        checkForAnomaly();
                         Assert.fail(formatSystemHealthMessage(
                                 "http://go/tapl : successful gesture produced " + message));
                     }

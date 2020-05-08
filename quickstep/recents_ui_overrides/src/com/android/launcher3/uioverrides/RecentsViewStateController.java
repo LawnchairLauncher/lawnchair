@@ -19,6 +19,7 @@ import static com.android.launcher3.LauncherState.OVERVIEW_BUTTONS;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.quickstep.views.RecentsView.CONTENT_ALPHA;
 import static com.android.quickstep.views.RecentsView.FULLSCREEN_PROGRESS;
+import static com.android.quickstep.views.RecentsView.TASK_MODALNESS;
 
 import android.annotation.TargetApi;
 import android.os.Build;
@@ -85,6 +86,11 @@ public final class RecentsViewStateController extends
                 buttonAlpha, LINEAR);
         propertySetter.setFloat(mLauncher.getActionsView().getVisibilityAlpha(),
                 MultiValueAlpha.VALUE, buttonAlpha, LINEAR);
+    }
+
+    @Override
+    FloatProperty<RecentsView> getTaskModalnessProperty() {
+        return TASK_MODALNESS;
     }
 
     @Override
