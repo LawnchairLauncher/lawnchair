@@ -32,7 +32,6 @@ import static com.android.quickstep.GestureState.GestureEndTarget.NEW_TASK;
 import static com.android.quickstep.GestureState.GestureEndTarget.RECENTS;
 import static com.android.quickstep.GestureState.STATE_END_TARGET_ANIMATION_FINISHED;
 import static com.android.quickstep.GestureState.STATE_RECENTS_SCROLLING_FINISHED;
-import static com.android.quickstep.GestureState.STATE_TASK_APPEARED_DURING_SWITCH;
 import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
 import static com.android.quickstep.SysUINavigationMode.Mode.TWO_BUTTONS;
 import static com.android.quickstep.util.ShelfPeekAnim.ShelfAnimState.HIDE;
@@ -263,8 +262,6 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
         mGestureState.runOnceAtState(STATE_END_TARGET_ANIMATION_FINISHED
                         | STATE_RECENTS_SCROLLING_FINISHED,
                 this::onSettledOnEndTarget);
-
-        mGestureState.runOnceAtState(STATE_TASK_APPEARED_DURING_SWITCH, this::onTaskAppeared);
 
         mStateCallback.runOnceAtState(STATE_HANDLER_INVALIDATED, this::invalidateHandler);
         mStateCallback.runOnceAtState(STATE_LAUNCHER_PRESENT | STATE_HANDLER_INVALIDATED,
@@ -769,20 +766,16 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
         }
     }
 
-    private void onTaskAppeared() {
-        RemoteAnimationTargetCompat app = mGestureState.getAnimationTarget();
-        if (mRecentsAnimationController != null && app != null) {
-
-            // TODO(b/152480470): Update Task target animation after onTaskAppeared holistically.
-            /* android.util.Log.d("LauncherSwipeHandler", "onTaskAppeared");
-
-            final boolean result = mRecentsAnimationController.removeTaskTarget(app);
-            mGestureState.setAnimationTarget(null);
-            android.util.Log.d("LauncherSwipeHandler", "removeTask, result=" + result); */
-
-            mRecentsAnimationController.finish(false /* toRecents */,
-                    null /* onFinishComplete */);
+    @Override
+    protected boolean handleTaskAppeared(RemoteAnimationTargetCompat appearedTaskTarget) {
+        if (mStateCallback.hasStates(STATE_HANDLER_INVALIDATED)) {
+            return false;
         }
+        if (appearedTaskTarget.taskId == mLastStartedTaskId) {
+            reset();
+            return true;
+        }
+        return false;
     }
 
     private GestureEndTarget calculateEndTarget(PointF velocity, float endVelocity, boolean isFling,
@@ -1029,12 +1022,22 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
                         // skip doing any future work here for the current gesture.
                         return;
                     }
-                    if (target == NEW_TASK && mRecentsView != null
-                            && mRecentsView.getNextPage() == mRecentsView.getRunningTaskIndex()) {
-                        // We are about to launch the current running task, so use LAST_TASK state
-                        // instead of NEW_TASK. This could happen, for example, if our scroll is
-                        // aborted after we determined the target to be NEW_TASK.
-                        mGestureState.setEndTarget(LAST_TASK);
+                    if (mRecentsView != null) {
+                        int taskToLaunch = mRecentsView.getNextPage();
+                        int runningTask = getLastAppearedTaskIndex();
+                        if (target == NEW_TASK && taskToLaunch == runningTask) {
+                            // We are about to launch the current running task, so use LAST_TASK
+                            // state instead of NEW_TASK. This could happen, for example, if our
+                            // scroll is aborted after we determined the target to be NEW_TASK.
+                            mGestureState.setEndTarget(LAST_TASK);
+                        } else if (target == LAST_TASK && taskToLaunch != runningTask) {
+                            // We are about to re-launch the previously running task, but we can't
+                            // just finish the controller like we normally would because that would
+                            // instead resume the last task that appeared. As a workaround, launch
+                            // the task as if it were a new task.
+                            // TODO: is this expected?
+                            mGestureState.setEndTarget(NEW_TASK);
+                        }
                     }
                     mGestureState.setState(STATE_END_TARGET_ANIMATION_FINISHED);
                 }
@@ -1158,8 +1161,9 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
 
     @UiThread
     private void startNewTaskInternal() {
-        startNewTask(STATE_HANDLER_INVALIDATED, success -> {
+        startNewTask(success -> {
             if (!success) {
+                reset();
                 // We couldn't launch the task, so take user to overview so they can
                 // decide what to do instead of staying in this broken state.
                 endLauncherTransitionController();
@@ -1183,19 +1187,6 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
         if (mLauncherTransitionController != null && mLauncherTransitionController
                 .getAnimationPlayer().isStarted()) {
             mLauncherTransitionController.getAnimationPlayer().cancel();
-        }
-
-        if (mFinishingRecentsAnimationForNewTaskId != -1) {
-            // If we are canceling mid-starting a new task, switch to the screenshot since the
-            // recents animation has finished
-            switchToScreenshot();
-            TaskView newRunningTaskView = mRecentsView.getTaskView(
-                    mFinishingRecentsAnimationForNewTaskId);
-            int newRunningTaskId = newRunningTaskView != null
-                    ? newRunningTaskView.getTask().key.id
-                    : -1;
-            mRecentsView.setCurrentTask(newRunningTaskId);
-            mGestureState.setFinishingRecentsAnimationTaskId(newRunningTaskId);
         }
     }
 
