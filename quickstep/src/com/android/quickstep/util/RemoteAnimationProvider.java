@@ -25,12 +25,10 @@ import com.android.launcher3.WrappedLauncherAnimationRunner;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.RemoteAnimationAdapterCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
-import com.android.systemui.shared.system.TransactionCompat;
 
 public abstract class RemoteAnimationProvider {
 
     LauncherAnimationRunner mAnimationRunner;
-    static final int Z_BOOST_BASE = 800570000;
 
     public abstract AnimatorSet createWindowAnimation(RemoteAnimationTargetCompat[] appTargets,
             RemoteAnimationTargetCompat[] wallpaperTargets);
@@ -53,24 +51,6 @@ public abstract class RemoteAnimationProvider {
     }
 
     /**
-     * Prepares the given {@param targets} for a remote animation, and should be called with the
-     * transaction from the first frame of animation.
-     *
-     * @param boostModeTargets The mode indicating which targets to boost in z-order above other
-     *                         targets.
-     */
-    static void prepareTargetsForFirstFrame(RemoteAnimationTargetCompat[] targets,
-            TransactionCompat t, int boostModeTargets) {
-        for (RemoteAnimationTargetCompat target : targets) {
-            t.show(target.leash);
-        }
-    }
-
-    public static int getLayer(RemoteAnimationTargetCompat target, int boostModeTarget) {
-        return target.prefixOrderIndex;
-    }
-
-    /**
      * @return the target with the lowest opaque layer for a certain app animation, or null.
      */
     public static RemoteAnimationTargetCompat findLowestOpaqueLayerTarget(
@@ -80,7 +60,7 @@ public abstract class RemoteAnimationProvider {
         for (int i = appTargets.length - 1; i >= 0; i--) {
             RemoteAnimationTargetCompat target = appTargets[i];
             if (target.mode == mode && !target.isTranslucent) {
-                int layer = getLayer(target, mode);
+                int layer = target.prefixOrderIndex;
                 if (layer < lowestLayer) {
                     lowestLayer = layer;
                     lowestLayerIndex = i;

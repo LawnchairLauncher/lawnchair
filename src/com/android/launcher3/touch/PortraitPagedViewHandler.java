@@ -123,6 +123,11 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
+    public int getClearAllScrollOffset(View view, boolean isRtl) {
+        return (isRtl ? view.getPaddingRight() : - view.getPaddingLeft()) / 2;
+    }
+
+    @Override
     public int getSecondaryDimension(View view) {
         return view.getHeight();
     }
@@ -166,6 +171,11 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     @Override
     public float getDegreesRotated() {
         return 0;
+    }
+
+    @Override
+    public int getRotation() {
+        return Surface.ROTATION_0;
     }
 
     @Override
@@ -238,7 +248,7 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public int getTaskMenuLayoutOrientation() {
+    public int getTaskMenuLayoutOrientation(LinearLayout taskMenuLayout) {
         return LinearLayout.VERTICAL;
     }
 

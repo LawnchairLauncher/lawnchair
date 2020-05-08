@@ -96,6 +96,9 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
 
     protected abstract boolean isRecentsInteractive();
 
+    /** Is recents view showing a single task in a modal way. */
+    protected abstract boolean isRecentsModal();
+
     protected void onUserControlledAnimationCreated(AnimatorPlaybackController animController) {
     }
 
@@ -134,7 +137,7 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
                     if (mRecentsView.isTaskViewVisible(view) && mActivity.getDragLayer()
                             .isEventOverView(view, ev)) {
                         // Disable swiping up and down if the task overlay is modal.
-                        if (view.isTaskOverlayModal()) {
+                        if (isRecentsModal()) {
                             mTaskBeingDragged = null;
                             break;
                         }

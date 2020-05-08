@@ -17,6 +17,7 @@
 package com.android.launcher3.model;
 
 import static com.android.launcher3.model.ModelUtils.filterCurrentWorkspaceItems;
+import static com.android.launcher3.model.ModelUtils.getMissingHotseatRanks;
 import static com.android.launcher3.model.ModelUtils.sortWorkspaceItemsSpatially;
 
 import android.util.Log;
@@ -196,6 +197,10 @@ public abstract class BaseLoaderResults {
             // Load items on the current page.
             bindWorkspaceItems(currentWorkspaceItems, mainExecutor);
             bindAppWidgets(currentAppWidgets, mainExecutor);
+
+            // Locate available spots for prediction using currentWorkspaceItems
+            IntArray gaps = getMissingHotseatRanks(currentWorkspaceItems, idp.numHotseatIcons);
+            bindPredictedItems(gaps, mainExecutor);
             // In case of validFirstPage, only bind the first screen, and defer binding the
             // remaining screens after first onDraw (and an optional the fade animation whichever
             // happens later).
@@ -245,6 +250,11 @@ public abstract class BaseLoaderResults {
                 executeCallbacksTask(
                         c -> c.bindItems(Collections.singletonList(widget), false), executor);
             }
+        }
+
+        private void bindPredictedItems(IntArray ranks, final Executor executor) {
+            executeCallbacksTask(
+                    c -> c.bindPredictedItems(mBgDataModel.cachedPredictedItems, ranks), executor);
         }
 
         protected void executeCallbacksTask(CallbackTask task, Executor executor) {

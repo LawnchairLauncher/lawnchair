@@ -133,13 +133,13 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"个人"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"工作"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"工作资料"</string>
-    <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"个人数据与工作应用相互独立，两者不会同时显示"</string>
+    <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"工作应用与个人数据相互独立，它们无法获取此类数据"</string>
     <string name="work_profile_edu_work_apps" msgid="237051938268703058">"您的 IT 管理员可以查看工作应用和工作数据"</string>
     <string name="work_profile_edu_next" msgid="8783418929296503629">"继续"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"知道了"</string>
-    <string name="work_apps_paused_title" msgid="2389865654362803723">"工作资料已暂停使用"</string>
-    <string name="work_apps_paused_body" msgid="5388070126389079077">"工作应用无法向您发送通知、使用电池电量，也无法获取您的位置信息"</string>
-    <string name="work_apps_paused_content_description" msgid="7553586952985486433">"工作资料已暂停使用。工作应用无法向您发送通知、不能使用电池电量，也无法获取您的位置信息"</string>
+    <string name="work_apps_paused_title" msgid="2389865654362803723">"工作资料已被暂停"</string>
+    <string name="work_apps_paused_body" msgid="5388070126389079077">"现在，工作应用无法向您发送通知、不能耗用电池电量，也无法获取您的位置信息"</string>
+    <string name="work_apps_paused_content_description" msgid="7553586952985486433">"工作资料已被暂停。现在，工作应用无法向您发送通知、不能耗用电池电量，也无法获取您的位置信息"</string>
     <string name="work_switch_tip" msgid="808075064383839144">"暂停工作应用和工作通知"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"失败：<xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

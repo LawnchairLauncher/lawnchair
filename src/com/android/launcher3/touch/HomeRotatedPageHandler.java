@@ -18,6 +18,7 @@ package com.android.launcher3.touch;
 
 import android.graphics.RectF;
 import android.view.Surface;
+import android.widget.LinearLayout;
 
 public class HomeRotatedPageHandler extends PortraitPagedViewHandler {
     @Override
@@ -45,5 +46,10 @@ public class HomeRotatedPageHandler extends PortraitPagedViewHandler {
                 rect.offset(value, 0);
             }
         } // TODO (b/149609488) handle 180 case as well
+    }
+
+    @Override
+    public int getTaskMenuLayoutOrientation(LinearLayout taskMenuLayout) {
+        return taskMenuLayout.getOrientation();
     }
 }

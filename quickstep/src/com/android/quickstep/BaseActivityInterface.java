@@ -105,7 +105,7 @@ public interface BaseActivityInterface<T extends BaseDraggingActivity> {
 
     Rect getOverviewWindowBounds(Rect homeBounds, RemoteAnimationTargetCompat target);
 
-    boolean shouldMinimizeSplitScreen();
+    boolean allowMinimizeSplitScreen();
 
     default boolean deferStartingActivity(RecentsAnimationDeviceState deviceState, MotionEvent ev) {
         return true;
