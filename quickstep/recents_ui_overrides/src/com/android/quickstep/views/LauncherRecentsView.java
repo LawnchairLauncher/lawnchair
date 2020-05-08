@@ -371,4 +371,16 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher>
     protected DepthController getDepthController() {
         return mActivity.getDepthController();
     }
+
+    @Override
+    public void setModalStateEnabled(boolean isModalState) {
+        super.setModalStateEnabled(isModalState);
+        if (isModalState) {
+            mActivity.getStateManager().goToState(LauncherState.OVERVIEW_MODAL_TASK);
+        } else {
+            if (mActivity.isInState(LauncherState.OVERVIEW_MODAL_TASK)) {
+                mActivity.getStateManager().goToState(LauncherState.OVERVIEW);
+            }
+        }
+    }
 }
