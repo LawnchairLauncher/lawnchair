@@ -19,7 +19,6 @@ import static android.view.Surface.ROTATION_0;
 
 import static com.android.launcher3.states.RotationHelper.deltaRotation;
 import static com.android.launcher3.touch.PagedOrientationHandler.MATRIX_POST_TRANSLATE;
-import static com.android.quickstep.util.RecentsOrientedState.isFixedRotationTransformEnabled;
 import static com.android.quickstep.util.RecentsOrientedState.postDisplayRotation;
 import static com.android.systemui.shared.system.WindowManagerWrapper.WINDOWING_MODE_FULLSCREEN;
 
@@ -67,7 +66,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
     // Thumbnail view properties
     private final Rect mThumbnailPosition = new Rect();
     private final ThumbnailData mThumbnailData = new ThumbnailData();
-    private final PreviewPositionHelper mPositionHelper;
+    private final PreviewPositionHelper mPositionHelper = new PreviewPositionHelper();
     private final Matrix mInversePositionMatrix = new Matrix();
 
     // TaskView properties
@@ -87,7 +86,6 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
     public TaskViewSimulator(Context context, WindowSizeStrategy sizeStrategy) {
         mContext = context;
         mSizeStrategy = sizeStrategy;
-        mPositionHelper = new PreviewPositionHelper(context);
 
         mOrientationState = new RecentsOrientedState(context, sizeStrategy, i -> { });
         // We do not need to attach listeners as the simulator is created just for the gesture
@@ -173,12 +171,12 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
             mLayoutValid = true;
 
             getFullScreenScale();
-            mThumbnailData.rotation = isFixedRotationTransformEnabled(mContext)
-                    ? mOrientationState.getDisplayRotation() : mPositionHelper.getCurrentRotation();
+            mThumbnailData.rotation = mOrientationState.getDisplayRotation();
 
-            mPositionHelper.updateThumbnailMatrix(mThumbnailPosition, mThumbnailData,
-                    mTaskRect.width(), mTaskRect.height(), mDp);
-
+            mPositionHelper.updateThumbnailMatrix(
+                    mThumbnailPosition, mThumbnailData,
+                    mTaskRect.width(), mTaskRect.height(),
+                    mDp, mOrientationState.getLauncherRotation());
             mPositionHelper.getMatrix().invert(mInversePositionMatrix);
 
             PagedOrientationHandler poh = mOrientationState.getOrientationHandler();
@@ -187,7 +185,6 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
             mScrollState.halfScreenSize = poh.getPrimaryValue(mDp.widthPx, mDp.heightPx) / 2;
             mScrollValid = false;
         }
-
 
         if (!mScrollValid) {
             mScrollValid = true;
