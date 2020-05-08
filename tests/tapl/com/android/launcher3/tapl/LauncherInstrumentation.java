@@ -625,6 +625,7 @@ public final class LauncherInstrumentation {
         mInstrumentation.getUiAutomation().setOnAccessibilityEventListener(
                 e -> Log.d("b/155926212", e.toString()));
         try (LauncherInstrumentation.Closable e = eventsCheck()) {
+            waitForLauncherInitialized();
             // Click home, then wait for any accessibility event, then wait until accessibility
             // events stop.
             // We need waiting for any accessibility event generated after pressing Home because
