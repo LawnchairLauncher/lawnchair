@@ -297,6 +297,7 @@ public abstract class AbstractLauncherUiTest {
             clearPackageData(mDevice.getLauncherPackageName());
             mLauncher.enableDebugTracing();
             mLauncherPid = mLauncher.getPid();
+            mLauncher.waitForLauncherInitialized();
         }
     }
 
