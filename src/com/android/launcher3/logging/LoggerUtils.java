@@ -41,6 +41,7 @@ public class LoggerUtils {
     private static final ArrayMap<Class, SparseArray<String>> sNameCache = new ArrayMap<>();
     private static final String UNKNOWN = "UNKNOWN";
     private static final int DEFAULT_PREDICTED_RANK = 10000;
+    private static final String DELIMITER_DOT = "\\.";
 
     public static String getFieldName(int value, Class c) {
         SparseArray<String> cache;
@@ -172,5 +173,18 @@ public class LoggerUtils {
         Target[] targetsArray = new Target[targets.size()];
         targets.toArray(targetsArray);
         return newLauncherEvent(action, targetsArray);
+    }
+
+    /**
+     * String conversion for only the helpful parts of {@link Object#toString()} method
+     * @param stringToExtract "foo.bar.baz.MyObject@1234"
+     * @return "MyObject@1234"
+     */
+    public static String extractObjectNameAndAddress(String stringToExtract) {
+        String[] superStringParts = stringToExtract.split(DELIMITER_DOT);
+        if (superStringParts.length == 0) {
+            return "";
+        }
+        return superStringParts[superStringParts.length - 1];
     }
 }
