@@ -40,6 +40,7 @@ import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.animation.Interpolator;
 
+import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
@@ -128,7 +129,6 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
     protected MultiStateCallback mStateCallback;
 
     protected boolean mCanceled;
-    protected int mLastStartedTaskId = -1;
 
     private boolean mRecentsViewScrollLinked = false;
 
@@ -218,11 +218,16 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
             if (!mCanceled) {
                 TaskView nextTask = mRecentsView.getTaskView(taskId);
                 if (nextTask != null) {
-                    mLastStartedTaskId = taskId;
+                    mGestureState.updateLastStartedTaskId(taskId);
                     nextTask.launchTask(false /* animate */, true /* freezeTaskList */,
                             success -> {
                                 resultCallback.accept(success);
-                                if (!success) {
+                                if (success) {
+                                    if (mRecentsView.indexOfChild(nextTask)
+                                            == getLastAppearedTaskIndex()) {
+                                        onRestartLastAppearedTask();
+                                    }
+                                } else {
                                     mActivityInterface.onLaunchTaskFailed();
                                     nextTask.notifyTaskLaunchFailed(TAG);
                                     mRecentsAnimationController.finish(true /* toRecents */, null);
@@ -233,6 +238,19 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
             mCanceled = false;
         }
         ActiveGestureLog.INSTANCE.addLog("finishRecentsAnimation", true);
+    }
+
+    /**
+     * Called when we successfully startNewTask() on the task that was previously running. Normally
+     * we call resumeLastTask() when returning to the previously running task, but this handles a
+     * specific edge case: if we switch from A to B, and back to A before B appears, we need to
+     * start A again to ensure it stays on top.
+     */
+    @CallSuper
+    protected void onRestartLastAppearedTask() {
+        // Finish the controller here, since we won't get onTaskAppeared() for a task that already
+        // appeared.
+        mRecentsAnimationController.finish(false, null);
     }
 
     /**
@@ -329,6 +347,14 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
         return mGestureState.getLastAppearedTaskId() != -1
                 ? mRecentsView.getTaskIndexForId(mGestureState.getLastAppearedTaskId())
                 : mRecentsView.getRunningTaskIndex();
+    }
+
+    /**
+     * @return Whether we are continuing a gesture that already landed on a new task,
+     * but before that task appeared.
+     */
+    protected boolean hasStartedNewTask() {
+        return mGestureState.getLastStartedTaskId() != -1;
     }
 
     protected void initTransitionEndpoints(DeviceProfile dp) {
