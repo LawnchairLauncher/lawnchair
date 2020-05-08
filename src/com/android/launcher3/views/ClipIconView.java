@@ -101,7 +101,6 @@ public class ClipIconView extends View implements ClipPathView {
     private @Nullable Drawable mForeground;
     private @Nullable Drawable mBackground;
 
-    private boolean mIsVerticalBarLayout = false;
     private boolean mIsAdaptiveIcon = false;
 
     private ValueAnimator mRevealAnimator;
@@ -145,7 +144,8 @@ public class ClipIconView extends View implements ClipPathView {
     }
 
     void update(RectF rect, float progress, float shapeProgressStart, float cornerRadius,
-            boolean isOpening, float scale, float minSize, LayoutParams parentLp) {
+            boolean isOpening, float scale, float minSize, LayoutParams parentLp,
+            boolean isVerticalBarLayout) {
         DeviceProfile dp = mLauncher.getDeviceProfile();
         float dX = mIsRtl
                 ? rect.left - (dp.widthPx - parentLp.getMarginStart() - parentLp.width)
@@ -158,7 +158,7 @@ public class ClipIconView extends View implements ClipPathView {
                 Math.max(shapeProgressStart, progress), shapeProgressStart, 1f, 0, toMax,
                 LINEAR), 0, 1);
 
-        if (mIsVerticalBarLayout) {
+        if (isVerticalBarLayout) {
             mOutline.right = (int) (rect.width() / scale);
         } else {
             mOutline.bottom = (int) (rect.height() / scale);
@@ -183,16 +183,16 @@ public class ClipIconView extends View implements ClipPathView {
                 mRevealAnimator.setCurrentFraction(shapeRevealProgress);
             }
 
-            float drawableScale = (mIsVerticalBarLayout ? mOutline.width() : mOutline.height())
+            float drawableScale = (isVerticalBarLayout ? mOutline.width() : mOutline.height())
                     / minSize;
-            setBackgroundDrawableBounds(drawableScale);
+            setBackgroundDrawableBounds(drawableScale, isVerticalBarLayout);
             if (isOpening) {
                 // Center align foreground
                 int height = mFinalDrawableBounds.height();
                 int width = mFinalDrawableBounds.width();
-                int diffY = mIsVerticalBarLayout ? 0
+                int diffY = isVerticalBarLayout ? 0
                         : (int) (((height * drawableScale) - height) / 2);
-                int diffX = mIsVerticalBarLayout ? (int) (((width * drawableScale) - width) / 2)
+                int diffX = isVerticalBarLayout ? (int) (((width * drawableScale) - width) / 2)
                         : 0;
                 sTmpRect.set(mFinalDrawableBounds);
                 sTmpRect.offset(diffX, diffY);
@@ -210,11 +210,11 @@ public class ClipIconView extends View implements ClipPathView {
         invalidateOutline();
     }
 
-    private void setBackgroundDrawableBounds(float scale) {
+    private void setBackgroundDrawableBounds(float scale, boolean isVerticalBarLayout) {
         sTmpRect.set(mFinalDrawableBounds);
         Utilities.scaleRectAboutCenter(sTmpRect, scale);
         // Since the drawable is at the top of the view, we need to offset to keep it centered.
-        if (mIsVerticalBarLayout) {
+        if (isVerticalBarLayout) {
             sTmpRect.offsetTo((int) (mFinalDrawableBounds.left * scale), sTmpRect.top);
         } else {
             sTmpRect.offsetTo(sTmpRect.left, (int) (mFinalDrawableBounds.top * scale));
@@ -228,7 +228,8 @@ public class ClipIconView extends View implements ClipPathView {
         }
     }
 
-    void setIcon(@Nullable Drawable drawable, int iconOffset, LayoutParams lp, boolean isOpening) {
+    void setIcon(@Nullable Drawable drawable, int iconOffset, LayoutParams lp, boolean isOpening,
+            boolean isVerticalBarLayout) {
         mIsAdaptiveIcon = drawable instanceof AdaptiveIconDrawable;
         if (mIsAdaptiveIcon) {
             boolean isFolderIcon = drawable instanceof FolderAdaptiveIcon;
@@ -264,7 +265,7 @@ public class ClipIconView extends View implements ClipPathView {
             }
 
             float aspectRatio = mLauncher.getDeviceProfile().aspectRatio;
-            if (mIsVerticalBarLayout) {
+            if (isVerticalBarLayout) {
                 lp.width = (int) Math.max(lp.width, lp.height * aspectRatio);
             } else {
                 lp.height = (int) Math.max(lp.height, lp.width * aspectRatio);
@@ -285,7 +286,7 @@ public class ClipIconView extends View implements ClipPathView {
                 bgDrawableStartScale = scale;
                 mOutline.set(0, 0, lp.width, lp.height);
             }
-            setBackgroundDrawableBounds(bgDrawableStartScale);
+            setBackgroundDrawableBounds(bgDrawableStartScale, isVerticalBarLayout);
             mEndRevealRect.set(0, 0, lp.width, lp.height);
             setOutlineProvider(new ViewOutlineProvider() {
                 @Override

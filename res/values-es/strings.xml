@@ -133,13 +133,13 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Personal"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Trabajo"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Perfil de trabajo"</string>
-    <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"Los datos personales están separados y ocultos de las aplicaciones de trabajo, que no pueden acceder a ellos"</string>
+    <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"Los datos personales están separados y ocultos de las aplicaciones de trabajo"</string>
     <string name="work_profile_edu_work_apps" msgid="237051938268703058">"Tu administrador de TI puede ver tus aplicaciones y datos de trabajo"</string>
     <string name="work_profile_edu_next" msgid="8783418929296503629">"Siguiente"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"Listo"</string>
     <string name="work_apps_paused_title" msgid="2389865654362803723">"El perfil de trabajo está en pausa"</string>
-    <string name="work_apps_paused_body" msgid="5388070126389079077">"Las aplicaciones de trabajo no pueden enviarte notificaciones, gastar tu batería ni acceder a tu ubicación"</string>
+    <string name="work_apps_paused_body" msgid="5388070126389079077">"Las aplicaciones de trabajo no pueden enviarte notificaciones, gastar batería ni acceder a tu ubicación"</string>
     <string name="work_apps_paused_content_description" msgid="7553586952985486433">"El perfil de trabajo está en pausa. Las aplicaciones de trabajo no pueden enviarte notificaciones, consumir tu batería ni acceder a tu ubicación"</string>
-    <string name="work_switch_tip" msgid="808075064383839144">"Pausar notificaciones y aplicaciones de trabajo"</string>
+    <string name="work_switch_tip" msgid="808075064383839144">"Pausa apps y notificaciones de trabajo"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Se ha producido un error: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

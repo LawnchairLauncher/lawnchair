@@ -26,7 +26,6 @@ import android.animation.Animator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -265,8 +264,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
         if (targets.minimizedHomeBounds != null && runningTaskTarget != null) {
             overviewStackBounds = mActivityInterface
                     .getOverviewWindowBounds(targets.minimizedHomeBounds, runningTaskTarget);
-            dp = dp.getMultiWindowProfile(mContext, new Point(
-                    overviewStackBounds.width(), overviewStackBounds.height()));
+            dp = dp.getMultiWindowProfile(mContext, overviewStackBounds);
         } else {
             // If we are not in multi-window mode, home insets should be same as system insets.
             dp = dp.copy(mContext);
@@ -278,7 +276,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
             updateSource(overviewStackBounds, runningTaskTarget);
         }
 
-        mAppWindowAnimationHelper.prepareAnimation(dp, false /* isOpening */);
+        mAppWindowAnimationHelper.prepareAnimation(dp);
         initTransitionEndpoints(dp);
 
         // Notify when the animation starts
@@ -347,10 +345,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
         mAppWindowAnimationHelper.updateTargetRect(TEMP_RECT);
         if (mDeviceState.isFullyGesturalNavMode()) {
             // We can drag all the way to the top of the screen.
-            // TODO(b/149609070): Landscape apps are currently limited in
-            //   their ability to scale past the target rect.
-            float dragFactor = (float) dp.heightPx / mTransitionDragLength;
-            mDragLengthFactor = displayRotation == 0 ? dragFactor : Math.min(1.0f, dragFactor);
+            mDragLengthFactor = (float) dp.heightPx / mTransitionDragLength;
             Pair<Float, Float> dragFactorStartAndMaxProgress =
                     mActivityInterface.getSwipeUpPullbackStartAndMaxProgress();
             mDragLengthFactorStartPullback = dragFactorStartAndMaxProgress.first;

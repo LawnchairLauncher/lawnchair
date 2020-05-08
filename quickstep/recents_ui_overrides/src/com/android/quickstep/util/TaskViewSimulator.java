@@ -17,14 +17,11 @@ package com.android.quickstep.util;
 
 import static android.view.Surface.ROTATION_0;
 
-import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.states.RotationHelper.deltaRotation;
 import static com.android.launcher3.touch.PagedOrientationHandler.MATRIX_POST_TRANSLATE;
 import static com.android.quickstep.util.AppWindowAnimationHelper.applySurfaceParams;
 import static com.android.quickstep.util.RecentsOrientedState.isFixedRotationTransformEnabled;
 import static com.android.quickstep.util.RecentsOrientedState.postDisplayRotation;
-import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
-import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING;
 import static com.android.systemui.shared.system.WindowManagerWrapper.WINDOWING_MODE_FULLSCREEN;
 
 import android.content.Context;
@@ -61,7 +58,7 @@ public class TaskViewSimulator {
 
     private final RecentsOrientedState mOrientationState;
     private final Context mContext;
-    private final TaskSizeProvider mSizeProvider;
+    private final WindowSizeStrategy mSizeStrategy;
 
     private final Rect mTaskRect = new Rect();
     private final PointF mPivot = new PointF();
@@ -71,8 +68,6 @@ public class TaskViewSimulator {
     private RemoteAnimationTargetCompat mRunningTarget;
     private RecentsAnimationTargets mAllTargets;
 
-    // Whether to boost the opening animation target layers, or the closing
-    private int mBoostModeTargetLayers = -1;
     private TargetAlphaProvider mTaskAlphaCallback = (t, a) -> a;
 
     // Thumbnail view properties
@@ -95,14 +90,12 @@ public class TaskViewSimulator {
     private boolean mLayoutValid = false;
     private boolean mScrollValid = false;
 
-    public TaskViewSimulator(Context context, TaskSizeProvider sizeProvider,
-            boolean rotationSupportedByActivity) {
+    public TaskViewSimulator(Context context, WindowSizeStrategy sizeStrategy) {
         mContext = context;
-        mSizeProvider = sizeProvider;
+        mSizeStrategy = sizeStrategy;
         mPositionHelper = new PreviewPositionHelper(context);
 
-        mOrientationState = new RecentsOrientedState(context, rotationSupportedByActivity,
-                i -> { });
+        mOrientationState = new RecentsOrientedState(context, sizeStrategy, i -> { });
         // We do not need to attach listeners as the simulator is created just for the gesture
         // duration, and any settings are unlikely to change during this
         mOrientationState.initWithoutListeners();
@@ -114,9 +107,9 @@ public class TaskViewSimulator {
     /**
      * Sets the device profile for the current state
      */
-    public void setDp(DeviceProfile dp, boolean isOpening) {
+    public void setDp(DeviceProfile dp) {
         mDp = dp;
-        mBoostModeTargetLayers = isOpening ? MODE_OPENING : MODE_CLOSING;
+        mOrientationState.setMultiWindowMode(mDp.isMultiWindowMode);
         mLayoutValid = false;
     }
 
@@ -143,7 +136,7 @@ public class TaskViewSimulator {
         if (mDp == null) {
             return 1;
         }
-        mSizeProvider.calculateTaskSize(mContext, mDp, mTaskRect);
+        mSizeStrategy.calculateTaskSize(mContext, mDp, mTaskRect);
         return mOrientationState.getFullScreenScaleAndPivot(mTaskRect, mDp, mPivot);
     }
 
@@ -161,8 +154,7 @@ public class TaskViewSimulator {
 
         mThumbnailPosition.set(runningTarget.screenSpaceBounds);
         // TODO: Should sourceContainerBounds already have this offset?
-        mThumbnailPosition.offsetTo(mRunningTarget.position.x, mRunningTarget.position.y);
-
+        mThumbnailPosition.offset(-mRunningTarget.position.x, -mRunningTarget.position.y);
         mLayoutValid = false;
     }
 
@@ -198,7 +190,7 @@ public class TaskViewSimulator {
                     ? mOrientationState.getDisplayRotation() : mPositionHelper.getCurrentRotation();
 
             mPositionHelper.updateThumbnailMatrix(mThumbnailPosition, mThumbnailData,
-                    mDp.isMultiWindowMode, mTaskRect.width(), mTaskRect.height());
+                    mTaskRect.width(), mTaskRect.height(), mDp);
 
             mPositionHelper.getMatrix().invert(mInversePositionMatrix);
 
@@ -208,6 +200,7 @@ public class TaskViewSimulator {
             mScrollState.halfScreenSize = poh.getPrimaryValue(mDp.widthPx, mDp.heightPx) / 2;
             mScrollValid = false;
         }
+
 
         if (!mScrollValid) {
             mScrollValid = true;
@@ -243,6 +236,8 @@ public class TaskViewSimulator {
         postDisplayRotation(deltaRotation(
                 mOrientationState.getLauncherRotation(), mOrientationState.getDisplayRotation()),
                 mDp.widthPx, mDp.heightPx, mMatrix);
+        mMatrix.postTranslate(mDp.windowX - mRunningTarget.position.x,
+                mDp.windowY - mRunningTarget.position.y);
 
         // Crop rect is the inverse of thumbnail matrix
         mTempRectF.set(-insets.left, -insets.top,
@@ -253,8 +248,7 @@ public class TaskViewSimulator {
         SurfaceParams[] surfaceParams = new SurfaceParams[mAllTargets.unfilteredApps.length];
         for (int i = 0; i < mAllTargets.unfilteredApps.length; i++) {
             RemoteAnimationTargetCompat app = mAllTargets.unfilteredApps[i];
-            SurfaceParams.Builder builder = new SurfaceParams.Builder(app.leash)
-                    .withLayer(RemoteAnimationProvider.getLayer(app, mBoostModeTargetLayers));
+            SurfaceParams.Builder builder = new SurfaceParams.Builder(app.leash);
 
             if (app.mode == mAllTargets.targetMode) {
                 float alpha = mTaskAlphaCallback.getAlpha(app, params.getTargetAlpha());
@@ -275,9 +269,6 @@ public class TaskViewSimulator {
                 }
             } else {
                 builder.withAlpha(1);
-                if (ENABLE_QUICKSTEP_LIVE_TILE.get() && params.isLauncherOnTop()) {
-                    builder.withLayer(Integer.MAX_VALUE);
-                }
             }
             surfaceParams[i] = builder.build();
         }
@@ -298,16 +289,4 @@ public class TaskViewSimulator {
         // Ideally we should use square-root. This is an optimization as one of the dimension is 0.
         return Math.max(Math.abs(mTempPoint[0]), Math.abs(mTempPoint[1]));
     }
-
-    /**
-     * Interface for calculating taskSize
-     */
-    public interface TaskSizeProvider {
-
-        /**
-         * Sets the outRect to the expected taskSize
-         */
-        void calculateTaskSize(Context context, DeviceProfile dp, Rect outRect);
-    }
-
 }

@@ -49,7 +49,6 @@ import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.SpringAnimationBuilder;
 import com.android.launcher3.states.StateAnimationConfig;
-import com.android.quickstep.util.AppWindowAnimationHelper;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
@@ -86,11 +85,8 @@ public final class LauncherAppTransitionManagerImpl extends QuickstepAppTransiti
         boolean skipLauncherChanges = !launcherClosing;
 
         TaskView taskView = findTaskViewToLaunch(mLauncher, v, appTargets);
-
-        AppWindowAnimationHelper helper =
-            new AppWindowAnimationHelper(recentsView.getPagedViewOrientedState(), mLauncher);
         Animator recentsAnimator = getRecentsWindowAnimator(taskView, skipLauncherChanges,
-                appTargets, wallpaperTargets, mLauncher.getDepthController(), helper);
+                appTargets, wallpaperTargets, mLauncher.getDepthController());
         anim.play(recentsAnimator.setDuration(RECENTS_LAUNCH_DURATION));
 
         Animator childStateAnimation = null;
@@ -98,7 +94,7 @@ public final class LauncherAppTransitionManagerImpl extends QuickstepAppTransiti
         Animator launcherAnim;
         final AnimatorListenerAdapter windowAnimEndListener;
         if (launcherClosing) {
-            launcherAnim = recentsView.createAdjacentPageAnimForTaskLaunch(taskView, helper);
+            launcherAnim = recentsView.createAdjacentPageAnimForTaskLaunch(taskView);
             launcherAnim.setInterpolator(Interpolators.TOUCH_RESPONSE_INTERPOLATOR);
             launcherAnim.setDuration(RECENTS_LAUNCH_DURATION);
 
@@ -151,6 +147,7 @@ public final class LauncherAppTransitionManagerImpl extends QuickstepAppTransiti
 
         return () -> {
             overview.setFreezeViewVisibility(false);
+            overview.setTranslationY(0);
             mLauncher.getStateManager().reapplyState();
         };
     }
