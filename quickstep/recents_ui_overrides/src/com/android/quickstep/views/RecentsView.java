@@ -2186,6 +2186,12 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     }
 
     /**
+     * Enables or disables modal state for RecentsView
+     * @param isModalState
+     */
+    public void setModalStateEnabled(boolean isModalState) { }
+
+    /**
      * Used to register callbacks for when our empty message state changes.
      *
      * @see #setOnEmptyMessageUpdatedListener(OnEmptyMessageUpdatedListener)
