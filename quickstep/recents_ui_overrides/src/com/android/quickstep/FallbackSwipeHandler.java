@@ -118,9 +118,9 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
         // Keep the home launcher invisible until we decide to land there.
         mLauncherAlpha.value = mRunningOverHome ? 1 : 0;
         if (mSwipeUpOverHome) {
-            mAppWindowAnimationHelper.setBaseAlphaCallback((t, a) -> 1 - mLauncherAlpha.value);
+            mTransformParams.setBaseAlphaCallback((t, a) -> 1 - mLauncherAlpha.value);
         } else {
-            mAppWindowAnimationHelper.setBaseAlphaCallback((t, a) -> mLauncherAlpha.value);
+            mTransformParams.setBaseAlphaCallback((t, a) -> mLauncherAlpha.value);
         }
 
         // Going home has an extra long progress to ensure that it animates into the screen

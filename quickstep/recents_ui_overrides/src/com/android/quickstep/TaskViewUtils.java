@@ -38,6 +38,7 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.quickstep.util.AppWindowAnimationHelper;
 import com.android.quickstep.util.MultiValueUpdateListener;
+import com.android.quickstep.util.TransformParams;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.Task;
@@ -132,11 +133,10 @@ public final class TaskViewUtils {
         final RemoteAnimationTargets targets =
                 new RemoteAnimationTargets(appTargets, wallpaperTargets, MODE_OPENING);
         targets.addDependentTransactionApplier(applier);
-        AppWindowAnimationHelper.TransformParams params =
-                new AppWindowAnimationHelper.TransformParams()
+        TransformParams params =
+                new TransformParams()
                     .setSyncTransactionApplier(applier)
-                    .setTargetSet(targets)
-                    .setLauncherOnTop(true);
+                    .setTargetSet(targets);
 
         AnimatorSet animatorSet = new AnimatorSet();
         final RecentsView recentsView = v.getRecentsView();
@@ -150,7 +150,7 @@ public final class TaskViewUtils {
             final RectF mThumbnailRect;
 
             {
-                inOutHelper.setTaskAlphaCallback((t, alpha) -> mTaskAlpha.value);
+                params.setTaskAlphaCallback((t, alpha) -> mTaskAlpha.value);
                 inOutHelper.prepareAnimation(
                         BaseActivity.fromContext(v.getContext()).getDeviceProfile());
                 inOutHelper.fromTaskThumbnailView(v.getThumbnail(), (RecentsView) v.getParent(),
@@ -175,7 +175,7 @@ public final class TaskViewUtils {
                             v.getRecentsView().getClipAnimationHelper();
                     if (liveTileAnimationHelper != null) {
                         // Append the surface transform params for the live tile app.
-                        AppWindowAnimationHelper.TransformParams liveTileParams =
+                        TransformParams liveTileParams =
                                 v.getRecentsView().getLiveTileParams(true /* mightNeedToRefill */);
                         if (liveTileParams != null) {
                             SurfaceParams[] liveTileSurfaceParams =
@@ -186,7 +186,7 @@ public final class TaskViewUtils {
                         }
                     }
                     // Apply surface transform using the surface params list.
-                    AppWindowAnimationHelper.applySurfaceParams(params.getSyncTransactionApplier(),
+                    params.applySurfaceParams(
                             surfaceParamsList.toArray(new SurfaceParams[surfaceParamsList.size()]));
                     // Get the task bounds for the app that's being opened after surface transform
                     // update.
