@@ -164,6 +164,9 @@ public abstract class AbstractStateChangeTouchController
 
     @Override
     public final boolean onControllerTouchEvent(MotionEvent ev) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.PAUSE_NOT_DETECTED, "onControllerTouchEvent");
+        }
         return mDetector.onTouchEvent(ev);
     }
 
