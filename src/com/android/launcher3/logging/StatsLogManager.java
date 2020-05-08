@@ -16,6 +16,7 @@
 package com.android.launcher3.logging;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.android.launcher3.R;
 import com.android.launcher3.logger.LauncherAtom;
@@ -27,6 +28,8 @@ import com.android.launcher3.util.ResourceBasedOverride;
  * Handles the user event logging in R+.
  */
 public class StatsLogManager implements ResourceBasedOverride {
+
+    private static final String TAG = "StatsLogManager";
 
     interface EventEnum {
         int getId();
@@ -40,7 +43,11 @@ public class StatsLogManager implements ResourceBasedOverride {
         @LauncherUiEvent(doc = "Task launched from overview using SWIPE DOWN")
         TASK_LAUNCH_SWIPE_DOWN(2),
         @LauncherUiEvent(doc = "TASK dismissed from overview using SWIPE UP")
-        TASK_DISMISS_SWIPE_UP(3);
+        TASK_DISMISS_SWIPE_UP(3),
+        @LauncherUiEvent(doc = "User dragged a launcher item")
+        LAUNCHER_ITEM_DRAG_STARTED(383),
+        @LauncherUiEvent(doc = "A dragged launcher item is successfully dropped")
+        LAUNCHER_ITEM_DROP_COMPLETED(385);
         // ADD MORE
 
         private final int mId;
@@ -54,6 +61,13 @@ public class StatsLogManager implements ResourceBasedOverride {
 
     protected LogStateProvider mStateProvider;
 
+    /**
+     * Creates a new instance of {@link StatsLogManager} based on provided context.
+     */
+    public static StatsLogManager newInstance(Context context) {
+        return newInstance(context, null);
+    }
+
     public static StatsLogManager newInstance(Context context, LogStateProvider stateProvider) {
         StatsLogManager mgr = Overrides.getObject(StatsLogManager.class,
                 context.getApplicationContext(), R.string.stats_log_manager_class);
@@ -65,7 +79,18 @@ public class StatsLogManager implements ResourceBasedOverride {
     /**
      * Logs an event and accompanying {@link ItemInfo}
      */
-    public void log(LauncherEvent eventId, LauncherAtom.ItemInfo itemInfo) { }
+    public void log(LauncherEvent event, LauncherAtom.ItemInfo itemInfo) {
+        Log.d(TAG, String.format("%s\n%s", event.name(), itemInfo));
+        // Call StatsLog method
+    }
+
+    /**
+     * Logs an event and accompanying {@link ItemInfo}
+     */
+    public void log(LauncherEvent event, InstanceId instanceId, LauncherAtom.ItemInfo itemInfo) {
+        Log.d(TAG, String.format("%s(InstanceId:%s)\n%s", event.name(), instanceId, itemInfo));
+        // Call StatsLog method
+    }
 
     /**
      * Logs snapshot, or impression of the current workspace.

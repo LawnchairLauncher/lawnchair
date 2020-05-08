@@ -133,14 +133,14 @@
     <string name="notification_dismissed" msgid="6002233469409822874">"Обавештење је одбачено"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Личне"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Пословне"</string>
-    <string name="work_profile_toggle_label" msgid="3081029915775481146">"Профил за Work"</string>
+    <string name="work_profile_toggle_label" msgid="3081029915775481146">"Пословни профил"</string>
     <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"Лични подаци су одвојени и сакривени од апликација за посао"</string>
-    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"ИТ администратор види апликације за посао и податке"</string>
+    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"ИТ администратор види пословне апликације и податке"</string>
     <string name="work_profile_edu_next" msgid="8783418929296503629">"Даље"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"Важи"</string>
-    <string name="work_apps_paused_title" msgid="2389865654362803723">"Профил за Work је паузиран"</string>
-    <string name="work_apps_paused_body" msgid="5388070126389079077">"Апликације за посао не могу да вам шаљу обавештења, користе батерију ни приступају локацији"</string>
-    <string name="work_apps_paused_content_description" msgid="7553586952985486433">"Профил за Work је паузиран. Апликације за посао не могу да вам шаљу обавештења, користе батерију нити приступају локацији"</string>
-    <string name="work_switch_tip" msgid="808075064383839144">"Паузирајте апликације за посао и обавештења"</string>
+    <string name="work_apps_paused_title" msgid="2389865654362803723">"Пословни профил је паузиран"</string>
+    <string name="work_apps_paused_body" msgid="5388070126389079077">"Пословне апликације не могу да вам шаљу обавештења, користе батерију ни приступају локацији"</string>
+    <string name="work_apps_paused_content_description" msgid="7553586952985486433">"Пословни профил је паузиран. Пословне апликације не могу да вам шаљу обавештења, користе батерију нити приступају локацији"</string>
+    <string name="work_switch_tip" msgid="808075064383839144">"Паузирајте пословне апликације и обавештења"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Није успело: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

@@ -131,13 +131,6 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
         }
 
         /**
-         * Whether the overlay is modal, which means only tapping is enabled, but no swiping.
-         */
-        public boolean isOverlayModal() {
-            return false;
-        }
-
-        /**
          * Gets the task snapshot as it is displayed on the screen.
          *
          * @return the bounds of the snapshot in screen coordinates.
