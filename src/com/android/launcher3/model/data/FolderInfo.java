@@ -16,16 +16,31 @@
 
 package com.android.launcher3.model.data;
 
+import static android.text.TextUtils.isEmpty;
+
+import static androidx.core.util.Preconditions.checkNotNull;
+
+import static java.util.Arrays.stream;
+import static java.util.Optional.ofNullable;
+
 import android.content.Intent;
 import android.os.Process;
+import android.text.TextUtils;
 
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.folder.FolderNameInfo;
 import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.util.ContentWriter;
 
 import java.util.ArrayList;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.OptionalInt;
+import java.util.stream.IntStream;
+
 
 /**
  * Represents a folder containing shortcuts or apps.
@@ -56,6 +71,10 @@ public class FolderInfo extends ItemInfo {
     public int options;
 
     public Intent suggestedFolderNames;
+
+    // When title changes, previous title is stored.
+    // Primarily used for logging purpose.
+    public CharSequence previousTitle;
 
     /**
      * The apps and shortcuts
@@ -171,5 +190,126 @@ public class FolderInfo extends ItemInfo {
         folderInfo.copyFrom(this);
         folderInfo.contents = this.contents;
         return folderInfo;
+    }
+
+    /**
+     * Returns {@link LauncherAtom.FolderIcon} wrapped as {@link LauncherAtom.ItemInfo} for logging
+     * into Westworld.
+     *
+     */
+    public LauncherAtom.ItemInfo getFolderIconAtom() {
+        LauncherAtom.ToState toFolderLabelState = getToFolderLabelState();
+        LauncherAtom.FolderIcon.Builder folderIconBuilder = LauncherAtom.FolderIcon.newBuilder()
+                .setCardinality(contents.size())
+                .setFromState(getFromFolderLabelState())
+                .setToState(toFolderLabelState);
+        if (toFolderLabelState.toString().startsWith("TO_SUGGESTION")) {
+            folderIconBuilder.setLabel(title.toString());
+        }
+        return getDefaultItemInfoBuilder()
+                .setFolderIcon(folderIconBuilder)
+                .setContainerInfo(getContainerInfo())
+                .build();
+    }
+
+    /**
+     * Returns index of the accepted suggestion.
+     */
+    public OptionalInt getAcceptedSuggestionIndex() {
+        String newLabel = checkNotNull(title,
+                "Expected valid folder label, but found null").toString();
+        return getSuggestedLabels()
+                .map(suggestionsArray ->
+                        IntStream.range(0, suggestionsArray.length)
+                                .filter(
+                                        index -> !isEmpty(suggestionsArray[index])
+                                                && newLabel.equalsIgnoreCase(
+                                                suggestionsArray[index]))
+                                .sequential()
+                                .findFirst()
+                ).orElse(OptionalInt.empty());
+
+    }
+
+    private LauncherAtom.ToState getToFolderLabelState() {
+        if (title == null) {
+            return LauncherAtom.ToState.TO_STATE_UNSPECIFIED;
+        }
+
+        if (title.equals(previousTitle)) {
+            return LauncherAtom.ToState.UNCHANGED;
+        }
+
+        if (!FeatureFlags.FOLDER_NAME_SUGGEST.get()) {
+            return title.length() > 0
+                    ? LauncherAtom.ToState.TO_CUSTOM_WITH_SUGGESTIONS_DISABLED
+                    : LauncherAtom.ToState.TO_EMPTY_WITH_SUGGESTIONS_DISABLED;
+        }
+
+        Optional<String[]> suggestedLabels = getSuggestedLabels();
+        boolean isEmptySuggestions = suggestedLabels
+                .map(labels -> stream(labels).allMatch(TextUtils::isEmpty))
+                .orElse(true);
+        if (isEmptySuggestions) {
+            return title.length() > 0
+                    ? LauncherAtom.ToState.TO_CUSTOM_WITH_EMPTY_SUGGESTIONS
+                    : LauncherAtom.ToState.TO_EMPTY_WITH_EMPTY_SUGGESTIONS;
+        }
+
+        boolean hasValidPrimary = suggestedLabels
+                .map(labels -> !isEmpty(labels[0]))
+                .orElse(false);
+        if (title.length() == 0) {
+            return hasValidPrimary ? LauncherAtom.ToState.TO_EMPTY_WITH_VALID_PRIMARY
+                    : LauncherAtom.ToState.TO_EMPTY_WITH_VALID_SUGGESTIONS_AND_EMPTY_PRIMARY;
+        }
+
+        OptionalInt accepted_suggestion_index = getAcceptedSuggestionIndex();
+        if (!accepted_suggestion_index.isPresent()) {
+            return hasValidPrimary ? LauncherAtom.ToState.TO_CUSTOM_WITH_VALID_PRIMARY
+                    : LauncherAtom.ToState.TO_CUSTOM_WITH_VALID_SUGGESTIONS_AND_EMPTY_PRIMARY;
+        }
+
+        switch (accepted_suggestion_index.getAsInt()) {
+            case 0:
+                return LauncherAtom.ToState.TO_SUGGESTION0;
+            case 1:
+                return hasValidPrimary ? LauncherAtom.ToState.TO_SUGGESTION1_WITH_VALID_PRIMARY
+                        : LauncherAtom.ToState.TO_SUGGESTION1_WITH_EMPTY_PRIMARY;
+            case 2:
+                return hasValidPrimary ? LauncherAtom.ToState.TO_SUGGESTION2_WITH_VALID_PRIMARY
+                        : LauncherAtom.ToState.TO_SUGGESTION2_WITH_EMPTY_PRIMARY;
+            case 3:
+                return hasValidPrimary ? LauncherAtom.ToState.TO_SUGGESTION3_WITH_VALID_PRIMARY
+                        : LauncherAtom.ToState.TO_SUGGESTION3_WITH_EMPTY_PRIMARY;
+            default:
+                // fall through
+        }
+        return LauncherAtom.ToState.TO_STATE_UNSPECIFIED;
+
+    }
+
+    private LauncherAtom.FromState getFromFolderLabelState() {
+        return previousTitle == null
+                ? LauncherAtom.FromState.FROM_STATE_UNSPECIFIED
+                : previousTitle.toString().isEmpty()
+                ? LauncherAtom.FromState.FROM_EMPTY
+                : hasOption(FLAG_MANUAL_FOLDER_NAME)
+                ? LauncherAtom.FromState.FROM_CUSTOM
+                : LauncherAtom.FromState.FROM_SUGGESTED;
+    }
+
+    private Optional<String[]> getSuggestedLabels() {
+        return ofNullable(suggestedFolderNames)
+                .map(folderNames ->
+                        (FolderNameInfo[])
+                                folderNames.getParcelableArrayExtra(EXTRA_FOLDER_SUGGESTIONS))
+                .map(folderNameInfoArray ->
+                        stream(folderNameInfoArray)
+                                .filter(Objects::nonNull)
+                                .map(FolderNameInfo::getLabel)
+                                .filter(Objects::nonNull)
+                                .map(CharSequence::toString)
+                                .toArray(String[]::new));
     }
 }
