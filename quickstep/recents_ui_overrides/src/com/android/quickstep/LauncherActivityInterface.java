@@ -36,6 +36,7 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.UserHandle;
+import android.util.Log;
 import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
@@ -55,6 +56,7 @@ import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.appprediction.PredictionUiStateManager;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statehandlers.DepthController.ClampedDepthProperty;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.views.FloatingIconView;
 import com.android.quickstep.SysUINavigationMode.Mode;
@@ -383,6 +385,9 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
 
     @Override
     public boolean switchToRecentsIfVisible(Runnable onCompleteCallback) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.OVERIEW_NOT_ALLAPPS, "switchToRecentsIfVisible");
+        }
         Launcher launcher = getVisibleLauncher();
         if (launcher == null) {
             return false;
