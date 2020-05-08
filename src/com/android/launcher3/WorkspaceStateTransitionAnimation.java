@@ -21,6 +21,8 @@ import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
+import static com.android.launcher3.LauncherState.FLAG_HAS_SYS_UI_SCRIM;
+import static com.android.launcher3.LauncherState.FLAG_WORKSPACE_HAS_BACKGROUNDS;
 import static com.android.launcher3.LauncherState.HOTSEAT_ICONS;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.ZOOM_OUT;
@@ -161,7 +163,8 @@ public class WorkspaceStateTransitionAnimation {
         WorkspaceAndHotseatScrim scrim = mLauncher.getDragLayer().getScrim();
         propertySetter.setFloat(scrim, SCRIM_PROGRESS, state.getWorkspaceScrimAlpha(mLauncher),
                 LINEAR);
-        propertySetter.setFloat(scrim, SYSUI_PROGRESS, state.hasSysUiScrim ? 1 : 0, LINEAR);
+        propertySetter.setFloat(scrim, SYSUI_PROGRESS,
+                state.hasFlag(FLAG_HAS_SYS_UI_SCRIM) ? 1 : 0, LINEAR);
     }
 
     public void applyChildState(LauncherState state, CellLayout cl, int childIndex) {
@@ -173,7 +176,8 @@ public class WorkspaceStateTransitionAnimation {
             PageAlphaProvider pageAlphaProvider, PropertySetter propertySetter,
             StateAnimationConfig config) {
         float pageAlpha = pageAlphaProvider.getPageAlpha(childIndex);
-        int drawableAlpha = Math.round(pageAlpha * (state.hasWorkspacePageBackground ? 255 : 0));
+        int drawableAlpha = state.hasFlag(FLAG_WORKSPACE_HAS_BACKGROUNDS)
+                ? Math.round(pageAlpha * 255) : 0;
 
         if (!config.onlyPlayAtomicComponent()) {
             // Don't update the scrim during the atomic animation.

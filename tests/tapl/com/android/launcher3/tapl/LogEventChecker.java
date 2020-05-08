@@ -69,8 +69,9 @@ public class LogEventChecker {
                 mFinished.await();
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
+            } finally {
+                mFinished = null;
             }
-            mFinished = null;
         }
         mEvents.clear();
         Log.d(SKIP_EVENTS_TAG, "Cleared events");
@@ -79,6 +80,7 @@ public class LogEventChecker {
         final String id = UUID.randomUUID().toString();
         mStartCommand = START_PREFIX + id;
         mFinishCommand = FINISH_PREFIX + id;
+        Log.d(SKIP_EVENTS_TAG, "Expected finish command: " + mFinishCommand);
         Log.d(TestProtocol.TAPL_EVENTS_TAG, mStartCommand);
     }
 
@@ -95,8 +97,7 @@ public class LogEventChecker {
                     // Skip everything before the next start command.
                     for (; ; ) {
                         final String event = reader.readLine();
-                        if (event.contains(TestProtocol.TAPL_EVENTS_TAG)
-                                && event.contains(mStartCommand)) {
+                        if (event.contains(mStartCommand)) {
                             Log.d(SKIP_EVENTS_TAG, "Read start: " + event);
                             break;
                         }
@@ -105,18 +106,18 @@ public class LogEventChecker {
                     // Store all actual events until the finish command.
                     for (; ; ) {
                         final String event = reader.readLine();
-                        if (event.contains(TestProtocol.TAPL_EVENTS_TAG)) {
-                            if (event.contains(mFinishCommand)) {
-                                mFinished.countDown();
-                                Log.d(SKIP_EVENTS_TAG, "Read finish: " + event);
-                                break;
+                        if (event.contains(mFinishCommand)) {
+                            mFinished.countDown();
+                            Log.d(SKIP_EVENTS_TAG, "Read finish: " + event);
+                            break;
+                        } else {
+                            final Matcher matcher = EVENT_LOG_ENTRY.matcher(event);
+                            if (matcher.find()) {
+                                mEvents.add(matcher.group("sequence"), matcher.group("event"));
+                                Log.d(SKIP_EVENTS_TAG, "Read event: " + event);
+                                mEventsCounter.release();
                             } else {
-                                final Matcher matcher = EVENT_LOG_ENTRY.matcher(event);
-                                if (matcher.find()) {
-                                    mEvents.add(matcher.group("sequence"), matcher.group("event"));
-                                    Log.d(SKIP_EVENTS_TAG, "Read event: " + event);
-                                    mEventsCounter.release();
-                                }
+                                Log.d(SKIP_EVENTS_TAG, "Read something unexpected: " + event);
                             }
                         }
                     }

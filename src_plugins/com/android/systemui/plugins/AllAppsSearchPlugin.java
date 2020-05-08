@@ -16,9 +16,9 @@
 
 package com.android.systemui.plugins;
 
+import android.app.Activity;
 import android.view.ViewGroup;
 import android.widget.EditText;
-
 import com.android.systemui.plugins.annotations.ProvidesInterface;
 
 /**
@@ -27,8 +27,9 @@ import com.android.systemui.plugins.annotations.ProvidesInterface;
 @ProvidesInterface(action = AllAppsSearchPlugin.ACTION, version = AllAppsSearchPlugin.VERSION)
 public interface AllAppsSearchPlugin extends Plugin {
     String ACTION = "com.android.systemui.action.PLUGIN_ALL_APPS_SEARCH_ACTIONS";
-    int VERSION = 1;
+    int VERSION = 2;
 
-    void setup(ViewGroup parent);
+    void setup(ViewGroup parent, Activity activity);
     void setEditText(EditText editText);
+    void setProgress(float progress);
 }

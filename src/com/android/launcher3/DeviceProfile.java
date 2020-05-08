@@ -32,6 +32,10 @@ import com.android.launcher3.util.DefaultDisplay;
 
 public class DeviceProfile {
 
+    private static final float TABLET_MIN_DPS = 600;
+    private static final float LARGE_TABLET_MIN_DPS = 720;
+
+
     public final InvariantDeviceProfile inv;
     private final DefaultDisplay.Info mInfo;
 
@@ -45,6 +49,8 @@ public class DeviceProfile {
     public final boolean isLandscape;
     public final boolean isMultiWindowMode;
 
+    public final int windowX;
+    public final int windowY;
     public final int widthPx;
     public final int heightPx;
     public final int availableWidthPx;
@@ -133,13 +139,16 @@ public class DeviceProfile {
     public DotRenderer mDotRendererWorkSpace;
     public DotRenderer mDotRendererAllApps;
 
-    public DeviceProfile(Context context, InvariantDeviceProfile inv, DefaultDisplay.Info info,
+    DeviceProfile(Context context, InvariantDeviceProfile inv, DefaultDisplay.Info info,
             Point minSize, Point maxSize, int width, int height, boolean isLandscape,
-            boolean isMultiWindowMode, boolean transposeLayoutWithOrientation) {
+            boolean isMultiWindowMode, boolean transposeLayoutWithOrientation,
+            Point windowPosition) {
 
         this.inv = inv;
         this.isLandscape = isLandscape;
         this.isMultiWindowMode = isMultiWindowMode;
+        windowX = windowPosition.x;
+        windowY = windowPosition.y;
 
         // Determine sizes.
         widthPx = width;
@@ -153,11 +162,12 @@ public class DeviceProfile {
         }
 
         mInfo = info;
-        Resources res = context.getResources();
 
         // Constants from resources
-        isTablet = res.getBoolean(R.bool.is_tablet);
-        isLargeTablet = res.getBoolean(R.bool.is_large_tablet);
+        float swDPs = Utilities.dpiFromPx(
+                Math.min(info.smallestSize.x, info.smallestSize.y), info.metrics);
+        isTablet = swDPs >= TABLET_MIN_DPS;
+        isLargeTablet = swDPs >= LARGE_TABLET_MIN_DPS;
         isPhone = !isTablet && !isLargeTablet;
         aspectRatio = ((float) Math.max(widthPx, heightPx)) / Math.min(widthPx, heightPx);
         boolean isTallDevice = Float.compare(aspectRatio, TALL_DEVICE_ASPECT_RATIO_THRESHOLD) >= 0;
@@ -165,10 +175,10 @@ public class DeviceProfile {
         // Some more constants
         this.transposeLayoutWithOrientation = transposeLayoutWithOrientation;
 
-        context = getContext(context, isVerticalBarLayout()
+        context = getContext(context, info, isVerticalBarLayout()
                 ? Configuration.ORIENTATION_LANDSCAPE
                 : Configuration.ORIENTATION_PORTRAIT);
-        res = context.getResources();
+        final Resources res = context.getResources();
 
         edgeMarginPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_edge_margin);
         desiredWorkspaceLeftRightMarginPx = isVerticalBarLayout() ? 0 : edgeMarginPx;
@@ -244,6 +254,7 @@ public class DeviceProfile {
         return new Builder(context, inv, mInfo)
                 .setSizeRange(size, size)
                 .setSize(widthPx, heightPx)
+                .setWindowPosition(windowX, windowY)
                 .setMultiWindowMode(isMultiWindowMode);
     }
 
@@ -254,10 +265,11 @@ public class DeviceProfile {
     /**
      * TODO: Move this to the builder as part of setMultiWindowMode
      */
-    public DeviceProfile getMultiWindowProfile(Context context, Point mwSize) {
+    public DeviceProfile getMultiWindowProfile(Context context, Rect windowPosition) {
         // We take the minimum sizes of this profile and it's multi-window variant to ensure that
         // the system decor is always excluded.
-        mwSize.set(Math.min(availableWidthPx, mwSize.x), Math.min(availableHeightPx, mwSize.y));
+        Point mwSize = new Point(Math.min(availableWidthPx, windowPosition.width()),
+                Math.min(availableHeightPx, windowPosition.height()));
 
         // In multi-window mode, we can have widthPx = availableWidthPx
         // and heightPx = availableHeightPx because Launcher uses the InvariantDeviceProfiles'
@@ -265,6 +277,7 @@ public class DeviceProfile {
         DeviceProfile profile = toBuilder(context)
                 .setSizeRange(mwSize, mwSize)
                 .setSize(mwSize.x, mwSize.y)
+                .setWindowPosition(windowPosition.left, windowPosition.top)
                 .setMultiWindowMode(true)
                 .build();
 
@@ -286,7 +299,7 @@ public class DeviceProfile {
     }
 
     /**
-     * Inverse of {@link #getMultiWindowProfile(Context, Point)}
+     * Inverse of {@link #getMultiWindowProfile(Context, Rect)}
      * @return device profile corresponding to the current orientation in non multi-window mode.
      */
     public DeviceProfile getFullScreenProfile() {
@@ -624,10 +637,11 @@ public class DeviceProfile {
         }
     }
 
-    private static Context getContext(Context c, int orientation) {
-        Configuration context = new Configuration(c.getResources().getConfiguration());
-        context.orientation = orientation;
-        return c.createConfigurationContext(context);
+    private static Context getContext(Context c, DefaultDisplay.Info info, int orientation) {
+        Configuration config = new Configuration(c.getResources().getConfiguration());
+        config.orientation = orientation;
+        config.densityDpi = info.metrics.densityDpi;
+        return c.createConfigurationContext(config);
     }
 
     /**
@@ -649,6 +663,7 @@ public class DeviceProfile {
         private InvariantDeviceProfile mInv;
         private DefaultDisplay.Info mInfo;
 
+        private final Point mWindowPosition = new Point();
         private Point mMinSize, mMaxSize;
         private int mWidth, mHeight;
 
@@ -682,6 +697,14 @@ public class DeviceProfile {
             return this;
         }
 
+        /**
+         * Sets the window position if not full-screen
+         */
+        public Builder setWindowPosition(int x, int y) {
+            mWindowPosition.set(x, y);
+            return this;
+        }
+
         public Builder setTransposeLayoutWithOrientation(boolean transposeLayoutWithOrientation) {
             mTransposeLayoutWithOrientation = transposeLayoutWithOrientation;
             return this;
@@ -690,7 +713,7 @@ public class DeviceProfile {
         public DeviceProfile build() {
             return new DeviceProfile(mContext, mInv, mInfo, mMinSize, mMaxSize,
                     mWidth, mHeight, mIsLandscape, mIsMultiWindowMode,
-                    mTransposeLayoutWithOrientation);
+                    mTransposeLayoutWithOrientation, mWindowPosition);
         }
     }
 

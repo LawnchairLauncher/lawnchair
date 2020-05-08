@@ -18,6 +18,7 @@ package com.android.quickstep;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
 import static com.android.quickstep.fallback.FallbackRecentsView.ZOOM_PROGRESS;
+import static com.android.quickstep.util.WindowSizeStrategy.FALLBACK_RECENTS_SIZE_STRATEGY;
 import static com.android.quickstep.views.RecentsView.CONTENT_ALPHA;
 
 import android.animation.Animator;
@@ -36,7 +37,6 @@ import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.quickstep.fallback.FallbackRecentsView;
 import com.android.quickstep.util.ActivityInitListener;
-import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
@@ -60,7 +60,7 @@ public final class FallbackActivityInterface implements
 
     @Override
     public int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context, Rect outRect) {
-        LayoutUtils.calculateFallbackTaskSize(context, dp, outRect);
+        FALLBACK_RECENTS_SIZE_STRATEGY.calculateTaskSize(context, dp, outRect);
         if (dp.isVerticalBarLayout()
                 && SysUINavigationMode.INSTANCE.get(context).getMode() != NO_BUTTON) {
             Rect targetInsets = dp.getInsets();
@@ -215,7 +215,7 @@ public final class FallbackActivityInterface implements
     }
 
     @Override
-    public boolean shouldMinimizeSplitScreen() {
+    public boolean allowMinimizeSplitScreen() {
         // TODO: Remove this once b/77875376 is fixed
         return false;
     }

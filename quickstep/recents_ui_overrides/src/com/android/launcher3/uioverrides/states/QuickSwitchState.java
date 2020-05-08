@@ -15,23 +15,15 @@
  */
 package com.android.launcher3.uioverrides.states;
 
-import android.os.Handler;
-import android.os.Looper;
-
 import com.android.launcher3.Launcher;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
-import com.android.quickstep.GestureState;
-import com.android.quickstep.views.RecentsView;
-import com.android.quickstep.views.TaskView;
 
 /**
  * State to indicate we are about to launch a recent task. Note that this state is only used when
  * quick switching from launcher; quick switching from an app uses LauncherSwipeHandler.
- * @see GestureState.GestureEndTarget#NEW_TASK
+ * @see com.android.quickstep.GestureState.GestureEndTarget#NEW_TASK
  */
 public class QuickSwitchState extends BackgroundAppState {
-
-    private static final String TAG = "QuickSwitchState";
 
     public QuickSwitchState(int id) {
         super(id, LauncherLogProto.ContainerType.APP);
@@ -48,22 +40,5 @@ public class QuickSwitchState extends BackgroundAppState {
     @Override
     public int getVisibleElements(Launcher launcher) {
         return NONE;
-    }
-
-    @Override
-    public void onStateTransitionEnd(Launcher launcher) {
-        TaskView tasktolaunch = launcher.<RecentsView>getOverviewPanel().getTaskViewAt(0);
-        if (tasktolaunch != null) {
-            tasktolaunch.launchTask(false, success -> {
-                if (!success) {
-                    launcher.getStateManager().goToState(OVERVIEW);
-                    tasktolaunch.notifyTaskLaunchFailed(TAG);
-                } else {
-                    launcher.getStateManager().moveToRestState();
-                }
-            }, new Handler(Looper.getMainLooper()));
-        } else {
-            launcher.getStateManager().goToState(NORMAL);
-        }
     }
 }

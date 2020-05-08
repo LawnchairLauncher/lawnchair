@@ -92,6 +92,7 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_QUICKSTEP_LIVE_TILE = getDebugFlag(
             "ENABLE_QUICKSTEP_LIVE_TILE", false, "Enable live tile in Quickstep overview");
 
+    // Keep as DeviceFlag to allow remote disable in emergency.
     public static final BooleanFlag ENABLE_SUGGESTED_ACTIONS_OVERVIEW = new DeviceFlag(
             "ENABLE_SUGGESTED_ACTIONS_OVERVIEW", false, "Show chip hints on the overview screen");
 
@@ -139,8 +140,9 @@ public final class FeatureFlags {
             "ENABLE_OVERVIEW_ACTIONS", true, "Show app actions instead of the shelf in Overview."
             + " As part of this decoupling, also distinguish swipe up from nav bar vs above it.");
 
-    public static final BooleanFlag ENABLE_SELECT_MODE = getDebugFlag(
-            "ENABLE_SELECT_MODE", true, "Show Select Mode button in Overview Actions");
+    // Keep as DeviceFlag for remote disable in emergency.
+    public static final BooleanFlag ENABLE_OVERVIEW_SELECTIONS = new DeviceFlag(
+            "ENABLE_OVERVIEW_SELECTIONS", true, "Show Select Mode button in Overview Actions");
 
     public static final BooleanFlag ENABLE_DATABASE_RESTORE = getDebugFlag(
             "ENABLE_DATABASE_RESTORE", true,

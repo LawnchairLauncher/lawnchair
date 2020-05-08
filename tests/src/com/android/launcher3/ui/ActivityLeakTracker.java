@@ -26,8 +26,10 @@ import com.android.launcher3.tapl.TestHelpers;
 
 import java.util.WeakHashMap;
 
-class ActivityLeakTracker implements Application.ActivityLifecycleCallbacks {
+public class ActivityLeakTracker implements Application.ActivityLifecycleCallbacks {
     private final WeakHashMap<Activity, Boolean> mActivities = new WeakHashMap<>();
+
+    private int mActivitiesCreated;
 
     ActivityLeakTracker() {
         if (!TestHelpers.isInLauncherProcess()) return;
@@ -36,9 +38,14 @@ class ActivityLeakTracker implements Application.ActivityLifecycleCallbacks {
         app.registerActivityLifecycleCallbacks(this);
     }
 
+    public int getActivitiesCreated() {
+        return mActivitiesCreated;
+    }
+
     @Override
     public void onActivityCreated(Activity activity, Bundle bundle) {
         mActivities.put(activity, true);
+        ++mActivitiesCreated;
     }
 
     @Override
@@ -77,7 +84,7 @@ class ActivityLeakTracker implements Application.ActivityLifecycleCallbacks {
             }
         }
 
-        if (liveActivities > 2)  return false;
+        if (liveActivities > 2) return false;
 
         // It's OK to have 1 leaked activity if no active activities exist.
         return liveActivities == 0 ? destroyedActivities <= 1 : destroyedActivities == 0;

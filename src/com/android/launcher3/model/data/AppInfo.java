@@ -16,6 +16,8 @@
 
 package com.android.launcher3.model.data;
 
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_ALL_APPS;
+
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -74,7 +76,7 @@ public class AppInfo extends ItemInfoWithIcon {
 
     public AppInfo(LauncherActivityInfo info, UserHandle user, boolean quietModeEnabled) {
         this.componentName = info.getComponentName();
-        this.container = ItemInfo.NO_ID;
+        this.container = CONTAINER_ALL_APPS;
         this.user = user;
         intent = makeLaunchIntent(info);
 

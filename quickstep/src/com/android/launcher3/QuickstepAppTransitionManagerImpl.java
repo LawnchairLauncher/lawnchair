@@ -493,7 +493,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                 : APP_LAUNCH_ALPHA_DOWN_DURATION;
 
         RectF targetBounds = new RectF(windowTargetBounds);
-        RectF currentBounds = new RectF();
+        RectF iconBounds = new RectF();
         RectF temp = new RectF();
         Point tmpPos = new Point();
 
@@ -531,7 +531,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
         appAnimator.addUpdateListener(new MultiValueUpdateListener() {
             FloatProp mDx = new FloatProp(0, dX, 0, xDuration, AGGRESSIVE_EASE);
             FloatProp mDy = new FloatProp(0, dY, 0, yDuration, AGGRESSIVE_EASE);
-            FloatProp mIconScale = new FloatProp(initialStartScale, scale, 0, APP_LAUNCH_DURATION,
+            FloatProp mScale = new FloatProp(initialStartScale, scale, 0, APP_LAUNCH_DURATION,
                     EXAGGERATED_EASE);
             FloatProp mIconAlpha = new FloatProp(1f, 0f, APP_LAUNCH_ALPHA_START_DELAY,
                     alphaDuration, LINEAR);
@@ -542,40 +542,48 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
 
             @Override
             public void onUpdate(float percent) {
-                // Calculate app icon size.
-                float iconWidth = bounds.width() * mIconScale.value;
-                float iconHeight = bounds.height() * mIconScale.value;
+                // Calculate the size.
+                float width = bounds.width() * mScale.value;
+                float height = bounds.height() * mScale.value;
 
-                // Animate the window crop so that it starts off as a square.
-                final int windowWidth;
-                final int windowHeight;
+                // Animate the crop so that it starts off as a square.
+                final int cropWidth;
+                final int cropHeight;
                 if (mDeviceProfile.isVerticalBarLayout()) {
-                    windowWidth = (int) mCroppedSize.value;
-                    windowHeight = windowTargetBounds.height();
+                    cropWidth = (int) mCroppedSize.value;
+                    cropHeight = windowTargetBounds.height();
                 } else {
-                    windowWidth = windowTargetBounds.width();
-                    windowHeight = (int) mCroppedSize.value;
+                    cropWidth = windowTargetBounds.width();
+                    cropHeight = (int) mCroppedSize.value;
                 }
-                crop.set(0, 0, windowWidth, windowHeight);
+                crop.set(0, 0, cropWidth, cropHeight);
 
-                // Scale the app window to match the icon size.
-                float scaleX = iconWidth / windowWidth;
-                float scaleY = iconHeight / windowHeight;
+                // Scale the size to match the crop.
+                float scaleX = width / cropWidth;
+                float scaleY = height / cropHeight;
                 float scale = Math.min(1f, Math.max(scaleX, scaleY));
 
-                float scaledWindowWidth = windowWidth * scale;
-                float scaledWindowHeight = windowHeight * scale;
+                float scaledCropWidth = cropWidth * scale;
+                float scaledCropHeight = cropHeight * scale;
+                float offsetX  = (scaledCropWidth - width) / 2;
+                float offsetY = (scaledCropHeight - height) / 2;
 
-                float offsetX = (scaledWindowWidth - iconWidth) / 2;
-                float offsetY = (scaledWindowHeight - iconHeight) / 2;
-
-                // Calculate the window position
+                // Calculate the window position.
                 temp.set(bounds);
                 temp.offset(dragLayerBounds[0], dragLayerBounds[1]);
                 temp.offset(mDx.value, mDy.value);
-                Utilities.scaleRectFAboutCenter(temp, mIconScale.value);
-                float transX0 = temp.left - offsetX;
-                float transY0 = temp.top - offsetY;
+                Utilities.scaleRectFAboutCenter(temp, mScale.value);
+                float windowTransX0 = temp.left - offsetX;
+                float windowTransY0 = temp.top - offsetY;
+
+                // Calculate the icon position.
+                iconBounds.set(bounds);
+                iconBounds.offset(mDx.value, mDy.value);
+                Utilities.scaleRectFAboutCenter(iconBounds, mScale.value);
+                iconBounds.left -= offsetX;
+                iconBounds.top -= offsetY;
+                iconBounds.right += offsetX;
+                iconBounds.bottom += offsetY;
 
                 float croppedHeight = (windowTargetBounds.height() - crop.height()) * scale;
                 float croppedWidth = (windowTargetBounds.width() - crop.width()) * scale;
@@ -584,28 +592,23 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                     RemoteAnimationTargetCompat target = appTargets[i];
                     SurfaceParams.Builder builder = new SurfaceParams.Builder(target.leash);
 
-                    tmpPos.set(target.position.x, target.position.y);
-                    if (target.localBounds != null) {
-                        final Rect localBounds = target.localBounds;
-                        tmpPos.set(target.localBounds.left, target.localBounds.top);
-                    }
-
                     if (target.mode == MODE_OPENING) {
                         matrix.setScale(scale, scale);
-                        matrix.postTranslate(transX0, transY0);
-                        matrix.mapRect(currentBounds, targetBounds);
-                        if (mDeviceProfile.isVerticalBarLayout()) {
-                            currentBounds.right -= croppedWidth;
-                        } else {
-                            currentBounds.bottom -= croppedHeight;
-                        }
-                        floatingView.update(currentBounds, mIconAlpha.value, percent, 0f,
+                        matrix.postTranslate(windowTransX0, windowTransY0);
+
+                        floatingView.update(iconBounds, mIconAlpha.value, percent, 0f,
                                 mWindowRadius.value * scale, true /* isOpening */);
                         builder.withMatrix(matrix)
                                 .withWindowCrop(crop)
                                 .withAlpha(1f - mIconAlpha.value)
                                 .withCornerRadius(mWindowRadius.value);
                     } else {
+                        tmpPos.set(target.position.x, target.position.y);
+                        if (target.localBounds != null) {
+                            final Rect localBounds = target.localBounds;
+                            tmpPos.set(target.localBounds.left, target.localBounds.top);
+                        }
+
                         matrix.setTranslate(tmpPos.x, tmpPos.y);
                         builder.withMatrix(matrix)
                                 .withWindowCrop(target.screenSpaceBounds)

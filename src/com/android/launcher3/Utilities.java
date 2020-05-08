@@ -24,10 +24,13 @@ import android.app.ActivityManager;
 import android.app.Person;
 import android.app.WallpaperManager;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.pm.ShortcutInfo;
 import android.content.res.Resources;
@@ -60,8 +63,11 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.animation.Interpolator;
 
+import androidx.core.os.BuildCompat;
+
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.FolderAdaptiveIcon;
+import com.android.launcher3.graphics.GridOptionsProvider;
 import com.android.launcher3.graphics.TintedDrawableSpan;
 import com.android.launcher3.icons.IconProvider;
 import com.android.launcher3.icons.LauncherIcons;
@@ -76,6 +82,7 @@ import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -98,6 +105,8 @@ public final class Utilities {
 
     public static final String[] EMPTY_STRING_ARRAY = new String[0];
     public static final Person[] EMPTY_PERSON_ARRAY = new Person[0];
+
+    public static final boolean ATLEAST_R = BuildCompat.isAtLeastR();
 
     public static final boolean ATLEAST_Q = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
 
@@ -340,6 +349,30 @@ public final class Utilities {
     }
 
     /**
+     * Bounds parameter to the range [0, 1]
+     */
+    public static float saturate(float a) {
+        return boundToRange(a, 0, 1.0f);
+    }
+
+    /**
+     * Returns the compliment (1 - a) of the parameter.
+     */
+    public static float comp(float a) {
+        return 1 - a;
+    }
+
+    /**
+     * Returns the "probabilistic or" of a and b. (a + b - ab).
+     * Useful beyond probability, can be used to combine two unit progresses for example.
+     */
+    public static float or(float a, float b) {
+        float satA = saturate(a);
+        float satB = saturate(b);
+        return satA + satB - (satA * satB);
+    }
+
+    /**
      * Trims the string, removing all whitespace at the beginning and end of the string.
      * Non-breaking whitespaces are also removed.
      */
@@ -483,6 +516,42 @@ public final class Utilities {
     public static boolean isBinderSizeError(Exception e) {
         return e.getCause() instanceof TransactionTooLargeException
                 || e.getCause() instanceof DeadObjectException;
+    }
+
+    public static boolean isGridOptionsEnabled(Context context) {
+        return isComponentEnabled(context.getPackageManager(),
+                context.getPackageName(),
+                GridOptionsProvider.class.getName());
+    }
+
+    private static boolean isComponentEnabled(PackageManager pm, String pkgName, String clsName) {
+        ComponentName componentName = new ComponentName(pkgName, clsName);
+        int componentEnabledSetting = pm.getComponentEnabledSetting(componentName);
+
+        switch (componentEnabledSetting) {
+            case PackageManager.COMPONENT_ENABLED_STATE_DISABLED:
+                return false;
+            case PackageManager.COMPONENT_ENABLED_STATE_ENABLED:
+                return true;
+            case PackageManager.COMPONENT_ENABLED_STATE_DEFAULT:
+            default:
+                // We need to get the application info to get the component's default state
+                try {
+                    PackageInfo packageInfo = pm.getPackageInfo(pkgName,
+                            PackageManager.GET_PROVIDERS | PackageManager.GET_DISABLED_COMPONENTS);
+
+                    if (packageInfo.providers != null) {
+                        return Arrays.stream(packageInfo.providers).anyMatch(
+                                pi -> pi.name.equals(clsName) && pi.isEnabled());
+                    }
+
+                    // the component is not declared in the AndroidManifest
+                    return false;
+                } catch (PackageManager.NameNotFoundException e) {
+                    // the package isn't installed on the device
+                    return false;
+                }
+        }
     }
 
     /**
