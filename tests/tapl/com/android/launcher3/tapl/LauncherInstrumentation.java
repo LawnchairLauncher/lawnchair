@@ -937,9 +937,9 @@ public final class LauncherInstrumentation {
         executeAndWaitForEvent(
                 command,
                 event -> isSwitchToStateEvent(event, expectedState, actualEvents),
-                () -> "Failed to receive an event for the state change: expected "
+                () -> "Failed to receive an event for the state change: expected ["
                         + TestProtocol.stateOrdinalToString(expectedState)
-                        + ", actual: " + eventListToString(actualEvents));
+                        + "], actual: " + eventListToString(actualEvents));
     }
 
     private boolean isSwitchToStateEvent(
