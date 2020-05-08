@@ -132,12 +132,12 @@
     <string name="notification_dismissed" msgid="6002233469409822874">"સૂચના છોડી દીધી"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"મનગમતી ઍપ"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"કાર્યાલયની ઍપ"</string>
-    <string name="work_profile_toggle_label" msgid="3081029915775481146">"કાર્યાલયની પ્રોફાઇલ"</string>
+    <string name="work_profile_toggle_label" msgid="3081029915775481146">"ઑફિસની પ્રોફાઇલ"</string>
     <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"વ્યક્તિગત ડેટા ઑફિસ માટેની ઍપથી અલગ અને છુપાવીને રાખેલો છે"</string>
     <string name="work_profile_edu_work_apps" msgid="237051938268703058">"ઑફિસ માટેની ઍપ અને ડેટા તમારા IT વ્યવસ્થાપકને દેખાય છે"</string>
     <string name="work_profile_edu_next" msgid="8783418929296503629">"આગળ"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"સમજાઈ ગયું"</string>
-    <string name="work_apps_paused_title" msgid="2389865654362803723">"કાર્યાલયની પ્રોફાઇલ થોભાવી છે"</string>
+    <string name="work_apps_paused_title" msgid="2389865654362803723">"ઑફિસની પ્રોફાઇલ થોભાવી છે"</string>
     <string name="work_apps_paused_body" msgid="5388070126389079077">"ઑફિસ માટેની ઍપ તમને નોટિફિકેશન મોકલી શકતી નથી, તમારી બૅટરી વાપરી શકતી નથી કે તમારું સ્થાન ઍક્સેસ કરી શકતી નથી"</string>
     <string name="work_apps_paused_content_description" msgid="7553586952985486433">"કાર્યાલયની પ્રોફાઇલ થોભાવી છે. ઑફિસ માટેની ઍપ તમને નોટિફિકેશન મોકલી શકતી નથી, તમારી બૅટરી વાપરી શકતી નથી કે તમારું સ્થાન ઍક્સેસ કરી શકતી નથી"</string>
     <string name="work_switch_tip" msgid="808075064383839144">"ઑફિસ માટેની ઍપ અને નોટિફિકેશન થોભાવો"</string>

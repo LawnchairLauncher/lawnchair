@@ -101,7 +101,7 @@ public abstract class AbstractLauncherUiTest {
     private static String sStrictmodeDetectedActivityLeak;
     private static boolean sActivityLeakReported;
     private static final String SYSTEMUI_PACKAGE = "com.android.systemui";
-    private static final ActivityLeakTracker ACTIVITY_LEAK_TRACKER = new ActivityLeakTracker();
+    protected static final ActivityLeakTracker ACTIVITY_LEAK_TRACKER = new ActivityLeakTracker();
 
     protected LooperExecutor mMainThreadExecutor = MAIN_EXECUTOR;
     protected final UiDevice mDevice = UiDevice.getInstance(getInstrumentation());

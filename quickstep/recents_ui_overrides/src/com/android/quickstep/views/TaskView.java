@@ -25,6 +25,7 @@ import static android.view.Gravity.TOP;
 import static android.widget.Toast.LENGTH_SHORT;
 
 import static com.android.launcher3.QuickstepAppTransitionManagerImpl.RECENTS_LAUNCH_DURATION;
+import static com.android.launcher3.Utilities.comp;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.TOUCH_RESPONSE_INTERPOLATOR;
@@ -165,10 +166,10 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     private ObjectAnimator mIconAndDimAnimator;
     private float mIconScaleAnimStartProgress = 0;
     private float mFocusTransitionProgress = 1;
+    private float mModalness = 0;
     private float mStableAlpha = 1;
 
     private boolean mShowScreenshot;
-    private boolean mRunningModalAnimation = false;
 
     // The current background requests to load the task thumbnail and icon
     private TaskThumbnailCache.ThumbnailLoadRequest mThumbnailLoadRequest;
@@ -239,59 +240,24 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         mIconView = findViewById(R.id.icon);
     }
 
-    public boolean isTaskOverlayModal() {
-        return mSnapshotView.getTaskOverlay().isOverlayModal();
-    }
-
-    /** Updates UI based on whether the task is modal. */
-    public void updateUiForModalTask() {
-        boolean isOverlayModal = isTaskOverlayModal();
-        mRunningModalAnimation = true;
-        if (getRecentsView() != null) {
-            getRecentsView().updateUiForModalTask(this, isOverlayModal);
+    /**
+     * The modalness of this view is how it should be displayed when it is shown on its own in the
+     * modal state of overview.
+     *
+     * @param modalness [0, 1] 0 being in context with other tasks, 1 being shown on its own.
+     */
+    public void setModalness(float modalness) {
+        mModalness = modalness;
+        mIconView.setAlpha(comp(modalness));
+        if (mContextualChip != null) {
+            mContextualChip.setScaleX(comp(modalness));
+            mContextualChip.setScaleY(comp(modalness));
+        }
+        if (mContextualChipWrapper != null) {
+            mContextualChipWrapper.setAlpha(comp(modalness));
         }
 
-        // Hides footers and icon when overlay is modal.
-        if (isOverlayModal) {
-            for (FooterWrapper footer : mFooters) {
-                if (footer != null) {
-                    footer.animateHide();
-                }
-            }
-            if (mContextualChipWrapper != null) {
-                mContextualChipWrapper.animate().alpha(0f).setDuration(300);
-            }
-            if (mContextualChip != null) {
-                mContextualChip.animate().scaleX(0f).scaleY(0f).setDuration(300);
-            }
-
-            mIconView.animate().alpha(0.0f);
-        } else {
-            if (mContextualChip != null) {
-                mContextualChip.animate().scaleX(1f).scaleY(1f).setDuration(300);
-            }
-            if (mContextualChipWrapper != null) {
-                mContextualChipWrapper.animate().alpha(1f).setDuration(300);
-            }
-            mIconView.animate().alpha(1.0f);
-        }
-
-        // Sets animations for modal UI. We will remove the margins to zoom in the snapshot.
-        float topMargin = getResources().getDimension(R.dimen.task_thumbnail_top_margin);
-        float bottomMargin =
-                getResources().getDimension(R.dimen.task_thumbnail_bottom_margin_with_actions);
-        float newHeight = mSnapshotView.getHeight() + topMargin + bottomMargin;
-        float scale = isOverlayModal ? newHeight / mSnapshotView.getHeight() : 1.0f;
-        float centerDifference = (bottomMargin - topMargin) / 2;
-        float translationY = isOverlayModal ? centerDifference : 0;
-        this.animate().scaleX(scale).scaleY(scale).translationY(translationY)
-                .withEndAction(new Runnable() {
-                    @Override
-                    public void run() {
-                        setCurveScale(scale);
-                        mRunningModalAnimation = false;
-                    }
-                });
+        updateFooterVerticalOffset(mFooterVerticalOffset);
     }
 
     public TaskMenuView getMenuView() {
@@ -308,10 +274,10 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
      * TODO(b/142282126) Re-evaluate if we need to pass in isMultiWindowMode after
      *   that issue is fixed
      */
-    public void bind(Task task, RecentsOrientedState orientedState, boolean isMultiWindowMode) {
+    public void bind(Task task, RecentsOrientedState orientedState) {
         cancelPendingLoadTasks();
         mTask = task;
-        mSnapshotView.bind(task, isMultiWindowMode);
+        mSnapshotView.bind(task);
         setOrientationState(orientedState);
     }
 
@@ -482,14 +448,12 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     }
 
     public void setOrientationState(RecentsOrientedState orientationState) {
-        int iconRotation = orientationState.getTouchRotation();
         PagedOrientationHandler orientationHandler = orientationState.getOrientationHandler();
         boolean isRtl = orientationHandler.getRecentsRtlSetting(getResources());
         LayoutParams snapshotParams = (LayoutParams) mSnapshotView.getLayoutParams();
         int thumbnailPadding = (int) getResources().getDimension(R.dimen.task_thumbnail_top_margin);
         LayoutParams iconParams = (LayoutParams) mIconView.getLayoutParams();
-        int rotation = orientationState.getTouchRotationDegrees();
-        switch (iconRotation) {
+        switch (orientationHandler.getRotation()) {
             case Surface.ROTATION_90:
                 iconParams.gravity = (isRtl ? END : START) | CENTER_VERTICAL;
                 iconParams.rightMargin = -thumbnailPadding;
@@ -514,7 +478,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                 break;
         }
         mIconView.setLayoutParams(iconParams);
-        mIconView.setRotation(rotation);
+        mIconView.setRotation(orientationHandler.getDegreesRotated());
 
         if (mMenuView != null) {
             mMenuView.onRotationChanged();
@@ -535,12 +499,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         mIconView.setScaleX(scale);
         mIconView.setScaleY(scale);
 
-        mFooterVerticalOffset = 1.0f - scale;
-        for (FooterWrapper footer : mFooters) {
-            if (footer != null) {
-                footer.updateFooterOffset();
-            }
-        }
+        updateFooterVerticalOffset(1.0f - scale);
     }
 
     public void setIconScaleAnimStartProgress(float startProgress) {
@@ -586,6 +545,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     public void resetVisualProperties() {
         resetViewTransforms();
         setFullscreenProgress(0);
+        setModalness(0);
     }
 
     public void setStableAlpha(float parentAlpha) {
@@ -606,7 +566,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     @Override
     public void onPageScroll(ScrollState scrollState) {
         // Don't do anything if it's modal.
-        if (mRunningModalAnimation || isTaskOverlayModal()) {
+        if (mModalness > 0) {
             return;
         }
 
@@ -709,7 +669,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             mContextualChip.setScaleY(0f);
             GradientDrawable scrimDrawable = (GradientDrawable) getResources().getDrawable(
                     R.drawable.chip_scrim_gradient, mActivity.getTheme());
-            float cornerRadius = TaskCornerRadius.get(mActivity);
+            float cornerRadius = getTaskCornerRadius();
             scrimDrawable.setCornerRadii(
                     new float[]{0, 0, 0, 0, cornerRadius, cornerRadius, cornerRadius,
                             cornerRadius});
@@ -726,6 +686,10 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                 mContextualChipWrapper.animate().alpha(1f).setDuration(50);
             }
         }
+    }
+
+    public float getTaskCornerRadius() {
+        return TaskCornerRadius.get(mActivity);
     }
 
     /**
@@ -759,6 +723,12 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                 mStackHeight += footer.mView.getHeight();
             }
         }
+        updateFooterVerticalOffset(0);
+    }
+
+    private void updateFooterVerticalOffset(float offset) {
+        mFooterVerticalOffset = offset;
+
         for (FooterWrapper footer : mFooters) {
             if (footer != null) {
                 footer.updateFooterOffset();
@@ -857,7 +827,8 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         }
 
         void updateFooterOffset() {
-            mAnimationOffset = Math.round(mStackHeight * mFooterVerticalOffset);
+            float offset = Utilities.or(mFooterVerticalOffset, mModalness);
+            mAnimationOffset = Math.round(mStackHeight * offset);
             mView.setTranslationY(mAnimationOffset + mEntryAnimationOffset
                     + mCurrentFullscreenParams.mCurrentDrawnInsets.bottom
                     + mCurrentFullscreenParams.mCurrentDrawnInsets.top);
@@ -876,22 +847,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                int totalShift = mExpectedHeight + mView.getPaddingBottom() - mOldPaddingBottom;
                 mEntryAnimationOffset = Math.round(factor * totalShift);
                 updateFooterOffset();
-            });
-            animator.setDuration(100);
-            animator.start();
-        }
-
-        void animateHide() {
-            ValueAnimator animator = ValueAnimator.ofFloat(0.0f, 1.0f);
-            animator.addUpdateListener(anim -> {
-                mFooterVerticalOffset = anim.getAnimatedFraction();
-                updateFooterOffset();
-            });
-            animator.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    removeView(mView);
-                }
             });
             animator.setDuration(100);
             animator.start();
@@ -1064,14 +1019,13 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
          */
         public void setProgress(float fullscreenProgress, float parentScale, int previewWidth,
                 DeviceProfile dp, PreviewPositionHelper pph) {
-            boolean isMultiWindowMode = dp.isMultiWindowMode;
-            RectF insets = pph.getInsetsToDrawInFullscreen(isMultiWindowMode);
+            RectF insets = pph.getInsetsToDrawInFullscreen();
 
             float currentInsetsLeft = insets.left * fullscreenProgress;
             float currentInsetsRight = insets.right * fullscreenProgress;
             mCurrentDrawnInsets.set(currentInsetsLeft, insets.top * fullscreenProgress,
                     currentInsetsRight, insets.bottom * fullscreenProgress);
-            float fullscreenCornerRadius = isMultiWindowMode ? 0 : mWindowCornerRadius;
+            float fullscreenCornerRadius = dp.isMultiWindowMode ? 0 : mWindowCornerRadius;
 
             mCurrentDrawnCornerRadius =
                     Utilities.mapRange(fullscreenProgress, mCornerRadius, fullscreenCornerRadius)

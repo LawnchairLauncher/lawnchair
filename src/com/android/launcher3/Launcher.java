@@ -18,23 +18,30 @@ package com.android.launcher3;
 
 import static android.content.pm.ActivityInfo.CONFIG_ORIENTATION;
 import static android.content.pm.ActivityInfo.CONFIG_SCREEN_SIZE;
+import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
 
 import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
 import static com.android.launcher3.AbstractFloatingView.TYPE_REBIND_SAFE;
 import static com.android.launcher3.AbstractFloatingView.TYPE_SNACKBAR;
+import static com.android.launcher3.InstallShortcutReceiver.FLAG_DRAG_AND_DROP;
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
 import static com.android.launcher3.LauncherState.ALL_APPS;
+import static com.android.launcher3.LauncherState.FLAG_CLOSE_POPUPS;
+import static com.android.launcher3.LauncherState.FLAG_MULTI_PAGE;
+import static com.android.launcher3.LauncherState.FLAG_NON_INTERACTIVE;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.NO_OFFSET;
 import static com.android.launcher3.LauncherState.NO_SCALE;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.OVERVIEW_PEEK;
+import static com.android.launcher3.LauncherState.SPRING_LOADED;
 import static com.android.launcher3.Utilities.postAsyncCallback;
 import static com.android.launcher3.dragndrop.DragLayer.ALPHA_INDEX_LAUNCHER_LOAD;
 import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
 import static com.android.launcher3.popup.SystemShortcut.APP_INFO;
 import static com.android.launcher3.popup.SystemShortcut.INSTALL;
 import static com.android.launcher3.popup.SystemShortcut.WIDGETS;
+import static com.android.launcher3.states.RotationHelper.REQUEST_LOCK;
 import static com.android.launcher3.states.RotationHelper.REQUEST_NONE;
 
 import android.animation.Animator;
@@ -57,7 +64,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CancellationSignal;
@@ -69,7 +75,6 @@ import android.text.TextUtils;
 import android.text.method.TextKeyListener;
 import android.util.Log;
 import android.util.SparseArray;
-import android.view.Display;
 import android.view.KeyEvent;
 import android.view.KeyboardShortcutGroup;
 import android.view.KeyboardShortcutInfo;
@@ -94,6 +99,7 @@ import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.PropertyListBuilder;
+import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.dragndrop.DragController;
@@ -560,12 +566,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         // Load configuration-specific DeviceProfile
         mDeviceProfile = idp.getDeviceProfile(this);
         if (isInMultiWindowMode()) {
-            // Note: Calls to getSize() can't rely on our cached DefaultDisplay since it can return
-            // the app window size
-            Display display = getWindowManager().getDefaultDisplay();
-            Point mwSize = new Point();
-            display.getSize(mwSize);
-            mDeviceProfile = mDeviceProfile.getMultiWindowProfile(this, mwSize);
+            mDeviceProfile = mDeviceProfile.getMultiWindowProfile(
+                    this, getMultiWindowDisplaySize());
         }
 
         onDeviceProfileInitiated();
@@ -921,8 +923,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                 }
             });
         }
-
-        TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "Activity.onStop");
     }
 
     @Override
@@ -936,11 +936,10 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
         mAppWidgetHost.setListenIfResumed(true);
         TraceHelper.INSTANCE.endSection(traceToken);
-        TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "Activity.onStart");
     }
 
     private void handleDeferredResume() {
-        if (hasBeenResumed() && !mStateManager.getState().disableInteraction) {
+        if (hasBeenResumed() && !mStateManager.getState().hasFlag(FLAG_NON_INTERACTIVE)) {
             logStopAndResume(Action.Command.RESUME);
             getUserEventDispatcher().startSession();
 
@@ -988,7 +987,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         if (!mDeferOverlayCallbacks) {
             return;
         }
-        if (isStarted() && (!hasBeenResumed() || mStateManager.getState().disableInteraction)) {
+        if (isStarted() && (!hasBeenResumed()
+                || mStateManager.getState().hasFlag(FLAG_NON_INTERACTIVE))) {
             return;
         }
         mDeferOverlayCallbacks = false;
@@ -1023,13 +1023,42 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             scheduleDeferredCheck();
         }
         addActivityFlags(ACTIVITY_STATE_TRANSITION_ACTIVE);
+
+        if (state.hasFlag(FLAG_CLOSE_POPUPS)) {
+            AbstractFloatingView.closeAllOpenViews(this, !state.hasFlag(FLAG_NON_INTERACTIVE));
+        }
+
+        if (state == SPRING_LOADED) {
+            // Prevent any Un/InstallShortcutReceivers from updating the db while we are
+            // not on homescreen
+            InstallShortcutReceiver.enableInstallQueue(FLAG_DRAG_AND_DROP);
+            getRotationHelper().setCurrentStateRequest(REQUEST_LOCK);
+
+            mWorkspace.showPageIndicatorAtCurrentScroll();
+            mWorkspace.setClipChildren(false);
+        }
+        // When multiple pages are visible, show persistent page indicator
+        mWorkspace.getPageIndicator().setShouldAutoHide(!state.hasFlag(FLAG_MULTI_PAGE));
     }
 
     public void onStateSetEnd(LauncherState state) {
         getAppWidgetHost().setResumed(state == LauncherState.NORMAL);
-        getWorkspace().setClipChildren(!state.disablePageClipping);
+        getWorkspace().setClipChildren(!state.hasFlag(FLAG_MULTI_PAGE));
+
         finishAutoCancelActionMode();
         removeActivityFlags(ACTIVITY_STATE_TRANSITION_ACTIVE);
+
+        // dispatch window state changed
+        getWindow().getDecorView().sendAccessibilityEvent(TYPE_WINDOW_STATE_CHANGED);
+        AccessibilityManagerCompat.sendStateEventToTest(this, state.ordinal);
+
+        if (state == NORMAL) {
+            // Re-enable any Un/InstallShortcutReceiver and now process any queued items
+            InstallShortcutReceiver.disableAndFlushInstallQueue(FLAG_DRAG_AND_DROP, this);
+
+            // Clear any rotation locks when going to normal state
+            getRotationHelper().setCurrentStateRequest(REQUEST_NONE);
+        }
     }
 
     @Override
@@ -1100,7 +1129,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         int stateOrdinal = savedState.getInt(RUNTIME_STATE, NORMAL.ordinal);
         LauncherState[] stateValues = LauncherState.values();
         LauncherState state = stateValues[stateOrdinal];
-        if (!state.disableRestore) {
+        if (!state.shouldDisableRestore()) {
             mStateManager.goToState(state, false /* animated */);
         }
 
@@ -2195,6 +2224,9 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         }
         workspace.requestLayout();
     }
+
+    @Override
+    public void bindPredictedItems(List<AppInfo> appInfos, IntArray ranks) { }
 
     /**
      * Add the views for a widget to the workspace.

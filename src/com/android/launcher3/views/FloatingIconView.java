@@ -161,7 +161,7 @@ public class FloatingIconView extends FrameLayout implements
         float scale = Math.max(1f, Math.min(scaleX, scaleY));
 
         mClipIconView.update(rect, progress, shapeProgressStart, cornerRadius, isOpening, scale,
-                minSize, lp);
+                minSize, lp, mIsVerticalBarLayout);
 
         setPivotX(0);
         setPivotY(0);
@@ -335,7 +335,7 @@ public class FloatingIconView extends FrameLayout implements
         final InsettableFrameLayout.LayoutParams lp =
                 (InsettableFrameLayout.LayoutParams) getLayoutParams();
         mBadge = badge;
-        mClipIconView.setIcon(drawable, iconOffset, lp, mIsOpening);
+        mClipIconView.setIcon(drawable, iconOffset, lp, mIsOpening, mIsVerticalBarLayout);
         if (drawable instanceof AdaptiveIconDrawable) {
             final int originalHeight = lp.height;
             final int originalWidth = lp.width;

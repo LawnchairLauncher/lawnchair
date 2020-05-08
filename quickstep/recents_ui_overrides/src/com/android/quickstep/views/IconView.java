@@ -21,11 +21,11 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+
 import com.android.launcher3.FastBitmapDrawable;
 
 import java.util.ArrayList;
-
-import androidx.annotation.NonNull;
 
 /**
  * A view which draws a drawable stretched to fit its size. Unlike ImageView, it avoids relayout
@@ -128,6 +128,16 @@ public class IconView extends View {
     public void removeUpdateScaleListener(OnScaleUpdateListener listener) {
         if (mScaleListeners != null) {
             mScaleListeners.remove(listener);
+        }
+    }
+
+    @Override
+    public void setAlpha(float alpha) {
+        super.setAlpha(alpha);
+        if (alpha > 0) {
+            setVisibility(VISIBLE);
+        } else {
+            setVisibility(INVISIBLE);
         }
     }
 }

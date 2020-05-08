@@ -24,6 +24,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.LauncherApps;
 import android.content.res.Configuration;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Process;
@@ -31,6 +32,7 @@ import android.os.StrictMode;
 import android.os.UserHandle;
 import android.util.Log;
 import android.view.ActionMode;
+import android.view.Display;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
@@ -183,7 +185,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
             getUserEventDispatcher().logAppLaunch(v, intent, user);
 
             getStatsLogManager().log(APP_LAUNCH_TAP, item == null ? null
-                    : item.buildProto(null, null));
+                    : item.buildProto(null));
             return true;
         } catch (NullPointerException|ActivityNotFoundException|SecurityException e) {
             Toast.makeText(this, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
@@ -270,4 +272,16 @@ public abstract class BaseDraggingActivity extends BaseActivity
     }
 
     protected abstract void reapplyUi();
+
+    protected Rect getMultiWindowDisplaySize() {
+        if (Utilities.ATLEAST_R) {
+            return new Rect(getWindowManager().getCurrentWindowMetrics().getBounds());
+        }
+        // Note: Calls to getSize() can't rely on our cached DefaultDisplay since it can return
+        // the app window size
+        Display display = getWindowManager().getDefaultDisplay();
+        Point mwSize = new Point();
+        display.getSize(mwSize);
+        return new Rect(0, 0, mwSize.x, mwSize.y);
+    }
 }

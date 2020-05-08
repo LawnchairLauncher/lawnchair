@@ -18,7 +18,6 @@ package com.android.launcher3.allapps;
 import static com.android.launcher3.model.data.AppInfo.COMPONENT_KEY_COMPARATOR;
 import static com.android.launcher3.model.data.AppInfo.EMPTY_ARRAY;
 
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -32,6 +31,7 @@ import com.android.launcher3.util.PackageUserKey;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -50,13 +50,11 @@ public class AllAppsStore {
 
     private AppInfo[] mApps = EMPTY_ARRAY;
 
-    private final List<OnUpdateListener> mUpdateListeners = new ArrayList<>();
+    private final List<OnUpdateListener> mUpdateListeners = new CopyOnWriteArrayList<>();
     private final ArrayList<ViewGroup> mIconContainers = new ArrayList<>();
 
     private int mDeferUpdatesFlags = 0;
     private boolean mUpdatePending = false;
-
-    private boolean mListenerUpdateInProgress = false;
 
     public AppInfo[] getApps() {
         return mApps;
@@ -102,12 +100,9 @@ public class AllAppsStore {
             mUpdatePending = true;
             return;
         }
-        mListenerUpdateInProgress = true;
-        int count = mUpdateListeners.size();
-        for (int i = 0; i < count; i++) {
-            mUpdateListeners.get(i).onAppsUpdated();
+        for (OnUpdateListener listener : mUpdateListeners) {
+            listener.onAppsUpdated();
         }
-        mListenerUpdateInProgress = false;
     }
 
     public void addUpdateListener(OnUpdateListener listener) {
@@ -115,9 +110,6 @@ public class AllAppsStore {
     }
 
     public void removeUpdateListener(OnUpdateListener listener) {
-        if (mListenerUpdateInProgress) {
-            Log.e("AllAppsStore", "Trying to remove listener during update", new Exception());
-        }
         mUpdateListeners.remove(listener);
     }
 

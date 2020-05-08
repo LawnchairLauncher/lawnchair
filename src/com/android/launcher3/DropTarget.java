@@ -25,6 +25,8 @@ import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.folder.FolderNameProvider;
+import com.android.launcher3.logging.InstanceId;
+import com.android.launcher3.logging.InstanceIdSequence;
 import com.android.launcher3.model.data.ItemInfo;
 
 /**
@@ -74,6 +76,11 @@ public interface DropTarget {
         /** The source view (ie. icon, widget etc.) that is being dragged and which the
          * DragView represents. May be an actual View class or a virtual stand-in */
         public DraggableView originalView = null;
+
+        /** Used for matching DROP event with its corresponding DRAG event on the server side. */
+        final InstanceId mLogInstanceId =
+                new InstanceIdSequence(1 << 20 /*InstanceId.INSTANCE_ID_MAX*/)
+                    .newInstanceId();
 
         public DragObject(Context context) {
             if (FeatureFlags.FOLDER_NAME_SUGGEST.get()) {
