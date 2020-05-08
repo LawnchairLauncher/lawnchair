@@ -16,9 +16,6 @@
 package com.android.launcher3.hybridhotseat;
 
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
-import static com.android.launcher3.logging.LoggerUtils.newAction;
-import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
-import static com.android.launcher3.logging.LoggerUtils.newLauncherEvent;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
@@ -32,7 +29,6 @@ import android.app.prediction.AppTargetId;
 import android.content.ComponentName;
 import android.os.Bundle;
 import android.os.Process;
-import android.provider.DeviceConfig;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,7 +56,6 @@ import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.logging.FileLog;
-import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
@@ -70,12 +65,12 @@ import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.touch.ItemLongClickListener;
-import com.android.launcher3.uioverrides.DeviceFlag;
 import com.android.launcher3.uioverrides.PredictedAppIcon;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.ComponentKey;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -155,9 +150,9 @@ public class HotseatPredictionController implements DragController.DragListener,
     }
 
     /**
-     * Returns whether or not the prediction controller is ready to show predictions
+     * Returns whether or not user has seen hybrid hotseat education
      */
-    public boolean isReady() {
+    public boolean isEduSeen() {
         return mLauncher.getSharedPrefs().getBoolean(HotseatEduController.KEY_HOTSEAT_EDU_SEEN,
                 false);
     }
@@ -186,7 +181,7 @@ public class HotseatPredictionController implements DragController.DragListener,
     }
 
     private void fillGapsWithPrediction(boolean animate, Runnable callback) {
-        if (!isReady() || mUIUpdatePaused || mDragObject != null) {
+        if (mUIUpdatePaused || mDragObject != null) {
             return;
         }
         List<WorkspaceItemInfo> predictedApps = mapToWorkspaceItemInfo(mComponentKeyMappers);
@@ -262,6 +257,10 @@ public class HotseatPredictionController implements DragController.DragListener,
         if (mAppPredictor != null) {
             mAppPredictor.destroy();
         }
+        if (mHotseatEduController != null) {
+            mHotseatEduController.destroy();
+            mHotseatEduController = null;
+        }
     }
 
     /**
@@ -291,11 +290,16 @@ public class HotseatPredictionController implements DragController.DragListener,
                         .setPredictedTargetCount(mHotSeatItemsCount)
                         .setExtras(getAppPredictionContextExtra())
                         .build());
-        mAppPredictor.registerPredictionUpdates(mLauncher.getMainExecutor(),
-                this::setPredictedApps);
+        WeakReference<HotseatPredictionController> controllerRef = new WeakReference<>(this);
+        mAppPredictor.registerPredictionUpdates(mLauncher.getApplicationContext().getMainExecutor(),
+                list -> {
+                    if (controllerRef.get() != null) {
+                        controllerRef.get().setPredictedApps(list);
+                    }
+                });
+
         setPauseUIUpdate(false);
-        performBetaCheck();
-        if (!isReady()) {
+        if (!isEduSeen()) {
             mHotseatEduController = new HotseatEduController(mLauncher, this::createPredictor);
         }
         mAppPredictor.requestPredictionUpdate();
@@ -386,9 +390,8 @@ public class HotseatPredictionController implements DragController.DragListener,
         predictionLog.append("]");
         if (Utilities.IS_DEBUG_DEVICE) FileLog.d(TAG, predictionLog.toString());
         updateDependencies();
-        if (isReady()) {
             fillGapsWithPrediction();
-        } else if (mHotseatEduController != null) {
+        if (!isEduSeen() && mHotseatEduController != null) {
             mHotseatEduController.setPredictedApps(mapToWorkspaceItemInfo(mComponentKeyMappers));
         }
         // should invalidate cache if AiAi sends empty list of AppTargets
@@ -679,42 +682,6 @@ public class HotseatPredictionController implements DragController.DragListener,
         public void onClick(View view) {
             dismissTaskMenuView(mTarget);
             pinPrediction(mItemInfo);
-        }
-    }
-
-    private void performBetaCheck() {
-        if (isReady()) return;
-        int hotseatItemsCount = mHotseat.getShortcutsAndWidgets().getChildCount();
-
-        int maxItems = DeviceConfig.getInt(
-                DeviceFlag.NAMESPACE_LAUNCHER, "max_homepage_items_for_migration", 5);
-
-        // -1 to exclude smart space
-        int workspaceItemCount = mLauncher.getWorkspace().getScreenWithId(
-                Workspace.FIRST_SCREEN_ID).getShortcutsAndWidgets().getChildCount() - 1;
-
-        // opt user into the feature without onboarding tip or migration if they don't have any
-        // open spots in their hotseat and have more than maxItems in their hotseat + workspace
-
-        if (hotseatItemsCount == mHotSeatItemsCount && workspaceItemCount + hotseatItemsCount
-                > maxItems) {
-            mLauncher.getSharedPrefs().edit().putBoolean(HotseatEduController.KEY_HOTSEAT_EDU_SEEN,
-                    true).apply();
-
-            LauncherLogProto.Action action = newAction(LauncherLogProto.Action.Type.TOUCH);
-            LauncherLogProto.Target target = newContainerTarget(LauncherLogProto.ContainerType.TIP);
-            action.touch = LauncherLogProto.Action.Touch.TAP;
-            target.tipType = LauncherLogProto.TipType.HYBRID_HOTSEAT;
-            target.controlType = LauncherLogProto.ControlType.HYBRID_HOTSEAT_CANCELED;
-
-            // temporarily encode details in log target (go/hotseat_migration)
-            target.rank = 2;
-            target.cardinality = (workspaceItemCount * 1000) + hotseatItemsCount;
-            target.pageIndex = maxItems;
-            LauncherLogProto.LauncherEvent event = newLauncherEvent(action, target);
-            UserEventDispatcher.newInstance(mLauncher).dispatchUserEvent(event, null);
-
-
         }
     }
 
