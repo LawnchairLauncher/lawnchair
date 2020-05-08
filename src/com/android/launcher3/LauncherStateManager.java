@@ -29,7 +29,6 @@ import android.os.Looper;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
-import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.states.StateAnimationConfig.AnimationFlags;
 
@@ -355,17 +354,8 @@ public class LauncherStateManager {
     }
 
     private void onStateTransitionStart(LauncherState state) {
-        if (mState != state) {
-            mState.onStateDisabled(mLauncher);
-        }
         mState = state;
-        mState.onStateEnabled(mLauncher);
         mLauncher.onStateSetStart(mState);
-
-        if (state.disablePageClipping) {
-            // Only disable clipping if needed, otherwise leave it as previous value.
-            mLauncher.getWorkspace().setClipChildren(false);
-        }
 
         for (int i = mListeners.size() - 1; i >= 0; i--) {
             mListeners.get(i).onStateTransitionStart(state);
@@ -379,9 +369,7 @@ public class LauncherStateManager {
             mCurrentStableState = state;
         }
 
-        state.onStateTransitionEnd(mLauncher);
         mLauncher.onStateSetEnd(state);
-
         if (state == NORMAL) {
             setRestState(null);
         }
@@ -389,8 +377,6 @@ public class LauncherStateManager {
         for (int i = mListeners.size() - 1; i >= 0; i--) {
             mListeners.get(i).onStateTransitionComplete(state);
         }
-
-        AccessibilityManagerCompat.sendStateEventToTest(mLauncher, state.ordinal);
     }
 
     public LauncherState getLastState() {
@@ -402,7 +388,7 @@ public class LauncherStateManager {
             // The user is doing something. Lets not mess it up
             return;
         }
-        if (mState.disableRestore) {
+        if (mState.shouldDisableRestore()) {
             goToState(getRestState());
             // Reset history
             mLastStableState = NORMAL;

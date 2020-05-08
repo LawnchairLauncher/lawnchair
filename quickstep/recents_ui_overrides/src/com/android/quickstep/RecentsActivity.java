@@ -44,7 +44,6 @@ import com.android.launcher3.util.ObjectWrapper;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.quickstep.fallback.FallbackRecentsView;
 import com.android.quickstep.fallback.RecentsRootView;
-import com.android.quickstep.util.AppWindowAnimationHelper;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
@@ -121,7 +120,7 @@ public final class RecentsActivity extends BaseRecentsActivity {
     protected DeviceProfile createDeviceProfile() {
         DeviceProfile dp = InvariantDeviceProfile.INSTANCE.get(this).getDeviceProfile(this);
         return (mRecentsRootView != null) && isInMultiWindowMode()
-                ? dp.getMultiWindowProfile(this, mRecentsRootView.getLastKnownSize())
+                ? dp.getMultiWindowProfile(this, getMultiWindowDisplaySize())
                 : super.createDeviceProfile();
     }
 
@@ -184,17 +183,14 @@ public final class RecentsActivity extends BaseRecentsActivity {
             RemoteAnimationTargetCompat[] wallpaperTargets) {
         AnimatorSet target = new AnimatorSet();
         boolean activityClosing = taskIsATargetWithMode(appTargets, getTaskId(), MODE_CLOSING);
-        AppWindowAnimationHelper helper = new AppWindowAnimationHelper(
-            mFallbackRecentsView.getPagedViewOrientedState(), this);
         Animator recentsAnimator = getRecentsWindowAnimator(taskView, !activityClosing, appTargets,
-                wallpaperTargets, null /* depthController */,
-                helper);
+                wallpaperTargets, null /* depthController */);
         target.play(recentsAnimator.setDuration(RECENTS_LAUNCH_DURATION));
 
         // Found a visible recents task that matches the opening app, lets launch the app from there
         if (activityClosing) {
             Animator adjacentAnimation = mFallbackRecentsView
-                    .createAdjacentPageAnimForTaskLaunch(taskView, helper);
+                    .createAdjacentPageAnimForTaskLaunch(taskView);
             adjacentAnimation.setInterpolator(Interpolators.TOUCH_RESPONSE_INTERPOLATOR);
             adjacentAnimation.setDuration(RECENTS_LAUNCH_DURATION);
             adjacentAnimation.addListener(new AnimatorListenerAdapter() {

@@ -156,7 +156,7 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> exten
         mActivityInterface.getSwipeUpDestinationAndLength(mActivity.getDeviceProfile(), mActivity,
                 targetRect);
         clipHelper.updateTargetRect(targetRect);
-        clipHelper.prepareAnimation(mActivity.getDeviceProfile(), false /* isOpening */);
+        clipHelper.prepareAnimation(mActivity.getDeviceProfile());
 
         TransformParams params = new TransformParams()
                 .setSyncTransactionApplier(new SyncRtSurfaceTransactionApplierCompat(rootView));

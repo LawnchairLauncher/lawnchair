@@ -62,6 +62,7 @@ public interface PagedOrientationHandler {
     float getPrimaryVelocity(VelocityTracker velocityTracker, int pointerId);
     int getMeasuredSize(View view);
     float getPrimarySize(RectF rect);
+    int getClearAllScrollOffset(View view, boolean isRtl);
     int getSecondaryDimension(View view);
     FloatProperty<View> getPrimaryViewTranslate();
     FloatProperty<View> getSecondaryViewTranslate();
@@ -80,6 +81,7 @@ public interface PagedOrientationHandler {
     void setMaxScroll(AccessibilityEvent event, int maxScroll);
     boolean getRecentsRtlSetting(Resources resources);
     float getDegreesRotated();
+    int getRotation();
     void offsetTaskRect(RectF rect, float value, int delta, int launcherRotation);
     int getPrimaryValue(int x, int y);
     int getSecondaryValue(int x, int y);
@@ -94,7 +96,7 @@ public interface PagedOrientationHandler {
     float getTaskMenuX(float x, View thumbnailView);
     float getTaskMenuY(float y, View thumbnailView);
     int getTaskMenuWidth(View view);
-    int getTaskMenuLayoutOrientation();
+    int getTaskMenuLayoutOrientation(LinearLayout taskMenuLayout);
     void setLayoutParamsForTaskMenuOptionItem(LinearLayout.LayoutParams lp);
 
     /**

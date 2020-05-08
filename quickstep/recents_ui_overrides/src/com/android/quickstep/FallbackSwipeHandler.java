@@ -250,8 +250,11 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
     public void updateFinalShift() {
         mTransformParams.setProgress(mCurrentShift.value);
         if (mRecentsAnimationController != null) {
-            mRecentsAnimationController.setWindowThresholdCrossed(!mInQuickSwitchMode
-                    && (mCurrentShift.value > 1 - UPDATE_SYSUI_FLAGS_THRESHOLD));
+            boolean swipeUpThresholdPassed = mCurrentShift.value > 1 - UPDATE_SYSUI_FLAGS_THRESHOLD;
+            mRecentsAnimationController.setUseLauncherSystemBarFlags(mInQuickSwitchMode
+                    || swipeUpThresholdPassed);
+            mRecentsAnimationController.setSplitScreenMinimized(!mInQuickSwitchMode
+                    && swipeUpThresholdPassed);
         }
 
         if (!mInQuickSwitchMode && !mDeviceState.isFullyGesturalNavMode()) {
@@ -476,7 +479,7 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
         mRecentsAnimationController.enableInputConsumer();
 
         if (mRunningOverHome) {
-            mAppWindowAnimationHelper.prepareAnimation(mDp, true);
+            mAppWindowAnimationHelper.prepareAnimation(mDp);
         }
         applyTransformUnchecked();
 
