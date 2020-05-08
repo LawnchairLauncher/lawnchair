@@ -977,7 +977,15 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     }
 
     public int getRunningTaskIndex() {
-        TaskView tv = getRunningTaskView();
+        return getTaskIndexForId(mRunningTaskId);
+    }
+
+    /**
+     * Get the index of the task view whose id matches {@param taskId}.
+     * @return -1 if there is no task view for the task id, else the index of the task view.
+     */
+    public int getTaskIndexForId(int taskId) {
+        TaskView tv = getTaskView(taskId);
         return tv == null ? -1 : indexOfChild(tv);
     }
 
