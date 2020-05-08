@@ -37,6 +37,7 @@ import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_O
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -47,6 +48,7 @@ import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.states.StateAnimationConfig.AnimationFlags;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.uioverrides.states.QuickstepAtomicAnimationFactory;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.util.VibratorWrapper;
@@ -178,6 +180,9 @@ public class FlingAndHoldTouchController extends PortraitStatesTouchController {
 
     @Override
     public boolean onDrag(float displacement, MotionEvent event) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.PAUSE_NOT_DETECTED, "FlingAndHoldTouchController");
+        }
         float upDisplacement = -displacement;
         mMotionPauseDetector.setDisallowPause(!handlingOverviewAnim()
                 || upDisplacement < mMotionPauseMinDisplacement
