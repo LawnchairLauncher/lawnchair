@@ -80,11 +80,11 @@ import com.android.quickstep.BaseActivityInterface.HomeAnimationFactory;
 import com.android.quickstep.GestureState.GestureEndTarget;
 import com.android.quickstep.inputconsumers.OverviewInputConsumer;
 import com.android.quickstep.util.ActiveGestureLog;
-import com.android.quickstep.util.AppWindowAnimationHelper.TargetAlphaProvider;
 import com.android.quickstep.util.RectFSpringAnim;
 import com.android.quickstep.util.ShelfPeekAnim;
 import com.android.quickstep.util.ShelfPeekAnim.ShelfAnimState;
 import com.android.quickstep.util.TaskViewSimulator;
+import com.android.quickstep.util.TransformParams.TargetAlphaProvider;
 import com.android.quickstep.views.LiveTileOverlay;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
@@ -605,9 +605,7 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
         if (mWindowTransitionController != null) {
             float progress = mCurrentShift.value / mDragLengthFactor;
             mWindowTransitionController.setPlayFraction(progress);
-            mTransformParams
-                    .setTargetSet(mRecentsAnimationTargets)
-                    .setLauncherOnTop(true);
+            mTransformParams.setTargetSet(mRecentsAnimationTargets);
 
             mTaskViewSimulator.setScroll(mRecentsView == null ? 0 : mRecentsView.getScrollOffset());
             mTaskViewSimulator.apply(mTransformParams);
@@ -1337,8 +1335,7 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
     }
 
     private void setTargetAlphaProvider(TargetAlphaProvider provider) {
-        mAppWindowAnimationHelper.setTaskAlphaCallback(provider);
-        mTaskViewSimulator.setTaskAlphaCallback(provider);
+        mTransformParams.setTaskAlphaCallback(provider);
         updateFinalShift();
     }
 

@@ -50,8 +50,7 @@ import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.TraceHelper;
 import com.android.launcher3.views.ScrimView;
 import com.android.quickstep.SysUINavigationMode;
-import com.android.quickstep.util.AppWindowAnimationHelper;
-import com.android.quickstep.util.AppWindowAnimationHelper.TransformParams;
+import com.android.quickstep.util.TransformParams;
 import com.android.systemui.plugins.PluginListener;
 import com.android.systemui.plugins.RecentsExtraCard;
 
@@ -213,14 +212,14 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher>
 
     @Override
     public void redrawLiveTile(boolean mightNeedToRefill) {
-        AppWindowAnimationHelper.TransformParams transformParams = getLiveTileParams(mightNeedToRefill);
+        TransformParams transformParams = getLiveTileParams(mightNeedToRefill);
         if (transformParams != null) {
             mAppWindowAnimationHelper.applyTransform(transformParams);
         }
     }
 
     @Override
-    public AppWindowAnimationHelper.TransformParams getLiveTileParams(
+    public TransformParams getLiveTileParams(
             boolean mightNeedToRefill) {
         if (!mEnableDrawingLiveTile || mRecentsAnimationController == null
                 || mRecentsAnimationTargets == null || mAppWindowAnimationHelper == null) {
@@ -248,8 +247,7 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher>
                     .setCurrentRect(mTempRectF)
                     .setTargetAlpha(taskView.getAlpha())
                     .setSyncTransactionApplier(mSyncTransactionApplier)
-                    .setTargetSet(mRecentsAnimationTargets)
-                    .setLauncherOnTop(true);
+                    .setTargetSet(mRecentsAnimationTargets);
         }
         return mTransformParams;
     }

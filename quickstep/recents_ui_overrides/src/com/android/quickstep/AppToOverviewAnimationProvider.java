@@ -36,8 +36,8 @@ import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.quickstep.util.AppWindowAnimationHelper;
-import com.android.quickstep.util.AppWindowAnimationHelper.TransformParams;
 import com.android.quickstep.util.RemoteAnimationProvider;
+import com.android.quickstep.util.TransformParams;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
@@ -164,9 +164,7 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> exten
         valueAnimator.setDuration(RECENTS_LAUNCH_DURATION);
         valueAnimator.setInterpolator(TOUCH_RESPONSE_INTERPOLATOR);
         valueAnimator.addUpdateListener((v) -> {
-            params.setProgress((float) v.getAnimatedValue())
-                    .setTargetSet(targets)
-                    .setLauncherOnTop(true);
+            params.setProgress((float) v.getAnimatedValue()).setTargetSet(targets);
             clipHelper.applyTransform(params);
         });
 
