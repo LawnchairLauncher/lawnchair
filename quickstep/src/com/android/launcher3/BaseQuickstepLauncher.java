@@ -17,6 +17,7 @@ package com.android.launcher3;
 
 import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
 import static com.android.launcher3.AbstractFloatingView.TYPE_HIDE_BACK_BUTTON;
+import static com.android.launcher3.LauncherState.FLAG_HIDE_BACK_BUTTON;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.quickstep.SysUINavigationMode.removeShelfFromOverview;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_HOME_KEY;
@@ -251,13 +252,10 @@ public abstract class BaseQuickstepLauncher extends Launcher
         super.onActivityFlagsChanged(changeBits);
     }
 
-    /**
-     * Sets the back button visibility based on the current state/window focus.
-     */
-    private void onLauncherStateOrFocusChanged() {
+    public boolean shouldBackButtonBeHidden(LauncherState toState) {
         Mode mode = SysUINavigationMode.getMode(this);
         boolean shouldBackButtonBeHidden = mode.hasGestures
-                && getStateManager().getState().hideBackButton
+                && toState.hasFlag(FLAG_HIDE_BACK_BUTTON)
                 && hasWindowFocus()
                 && (getActivityFlags() & ACTIVITY_STATE_TRANSITION_ACTIVE) == 0;
         if (shouldBackButtonBeHidden) {
@@ -265,6 +263,14 @@ public abstract class BaseQuickstepLauncher extends Launcher
             shouldBackButtonBeHidden = AbstractFloatingView.getTopOpenViewWithType(this,
                     TYPE_ALL & ~TYPE_HIDE_BACK_BUTTON) == null;
         }
+        return shouldBackButtonBeHidden;
+    }
+
+    /**
+     * Sets the back button visibility based on the current state/window focus.
+     */
+    private void onLauncherStateOrFocusChanged() {
+        boolean shouldBackButtonBeHidden = shouldBackButtonBeHidden(getStateManager().getState());
         UiThreadHelper.setBackButtonAlphaAsync(this, SET_BACK_BUTTON_ALPHA,
                 shouldBackButtonBeHidden ? 0f : 1f, true /* animate */);
         if (getDragLayer() != null) {

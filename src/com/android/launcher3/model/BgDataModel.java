@@ -93,6 +93,11 @@ public class BgDataModel {
     public final Map<ShortcutKey, MutableInt> pinnedShortcutCounts = new HashMap<>();
 
     /**
+     * List of all cached predicted items visible on home screen
+     */
+    public final ArrayList<AppInfo> cachedPredictedItems = new ArrayList<>();
+
+    /**
      * True if the launcher has permission to access deep shortcuts.
      */
     public boolean hasShortcutHostPermission;
@@ -366,5 +371,10 @@ public class BgDataModel {
         void bindDeepShortcutMap(HashMap<ComponentKey, Integer> deepShortcutMap);
 
         void bindAllApplications(AppInfo[] apps);
+
+        /**
+         * Binds predicted appInfos at at available prediction slots.
+         */
+        void bindPredictedItems(List<AppInfo> appInfos, IntArray ranks);
     }
 }

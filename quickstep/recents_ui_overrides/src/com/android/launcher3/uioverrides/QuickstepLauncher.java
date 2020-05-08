@@ -15,8 +15,16 @@
  */
 package com.android.launcher3.uioverrides;
 
+import static android.view.accessibility.AccessibilityEvent.TYPE_VIEW_FOCUSED;
+
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
+import static com.android.launcher3.LauncherState.OVERVIEW_MODAL_TASK;
+import static com.android.launcher3.compat.AccessibilityManagerCompat.sendCustomAccessibilityEvent;
+import static com.android.launcher3.testing.TestProtocol.HINT_STATE_ORDINAL;
+import static com.android.launcher3.testing.TestProtocol.OVERVIEW_STATE_ORDINAL;
+import static com.android.launcher3.testing.TestProtocol.QUICK_SWITCH_STATE_ORDINAL;
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
 
 import android.content.Intent;
@@ -30,10 +38,13 @@ import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.Workspace;
+import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.hybridhotseat.HotseatPredictionController;
+import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.SystemShortcut;
@@ -48,6 +59,7 @@ import com.android.launcher3.uioverrides.touchcontrollers.QuickSwitchTouchContro
 import com.android.launcher3.uioverrides.touchcontrollers.StatusBarTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.TaskViewTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.TransposedQuickSwitchTouchController;
+import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.util.UiThreadHelper;
 import com.android.launcher3.util.UiThreadHelper.AsyncCommand;
@@ -56,8 +68,12 @@ import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.views.RecentsView;
+import com.android.quickstep.views.TaskView;
 
+import java.io.FileDescriptor;
+import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
 
 public class QuickstepLauncher extends BaseQuickstepLauncher {
@@ -166,11 +182,62 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
     }
 
     @Override
+    public void bindPredictedItems(List<AppInfo> appInfos, IntArray ranks) {
+        super.bindPredictedItems(appInfos, ranks);
+        if (mHotseatPredictionController != null) {
+            mHotseatPredictionController.showCachedItems(appInfos, ranks);
+        }
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         if (mHotseatPredictionController != null) {
             mHotseatPredictionController.destroy();
             mHotseatPredictionController = null;
+        }
+    }
+
+    @Override
+    public void onStateSetEnd(LauncherState state) {
+        super.onStateSetEnd(state);
+
+        switch (state.ordinal) {
+            case HINT_STATE_ORDINAL: {
+                Workspace workspace = getWorkspace();
+                boolean willMoveScreens = workspace.getNextPage() != Workspace.DEFAULT_PAGE;
+                getStateManager().goToState(NORMAL, true,
+                        willMoveScreens ? null : getScrimView()::startDragHandleEducationAnim);
+                if (willMoveScreens) {
+                    workspace.post(workspace::moveToDefaultScreen);
+                }
+                break;
+            }
+            case OVERVIEW_STATE_ORDINAL: {
+                DiscoveryBounce.showForOverviewIfNeeded(this);
+                RecentsView rv = getOverviewPanel();
+                sendCustomAccessibilityEvent(
+                        rv.getPageAt(rv.getCurrentPage()), TYPE_VIEW_FOCUSED, null);
+                break;
+            }
+            case QUICK_SWITCH_STATE_ORDINAL: {
+                RecentsView rv = getOverviewPanel();
+                TaskView tasktolaunch = rv.getTaskViewAt(0);
+                if (tasktolaunch != null) {
+                    tasktolaunch.launchTask(false, success -> {
+                        if (!success) {
+                            getStateManager().goToState(OVERVIEW);
+                            tasktolaunch.notifyTaskLaunchFailed(TAG);
+                        } else {
+                            getStateManager().moveToRestState();
+                        }
+                    }, MAIN_EXECUTOR.getHandler());
+                } else {
+                    getStateManager().goToState(NORMAL);
+                }
+                break;
+            }
+
         }
     }
 
@@ -221,12 +288,26 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
 
         @Override
         protected boolean isRecentsInteractive() {
-            return mActivity.isInState(OVERVIEW);
+            return mActivity.isInState(OVERVIEW) || mActivity.isInState(OVERVIEW_MODAL_TASK);
+        }
+
+        @Override
+        protected boolean isRecentsModal() {
+            return mActivity.isInState(OVERVIEW_MODAL_TASK);
         }
 
         @Override
         protected void onUserControlledAnimationCreated(AnimatorPlaybackController animController) {
             mActivity.getStateManager().setCurrentUserControlledAnimation(animController);
         }
+    }
+
+    @Override
+    public void dump(String prefix, FileDescriptor fd, PrintWriter writer, String[] args) {
+        super.dump(prefix, fd, writer, args);
+        RecentsView recentsView = getOverviewPanel();
+        writer.println("\nQuickstepLauncher:");
+        writer.println(prefix + "\tmOrientationState: " + (recentsView == null ? "recentsNull" :
+                recentsView.getPagedViewOrientedState()));
     }
 }

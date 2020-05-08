@@ -134,11 +134,11 @@
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Cơ quan"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Hồ sơ công việc"</string>
     <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"Dữ liệu cá nhân được lưu trữ riêng biệt và ẩn khỏi các ứng dụng công việc"</string>
-    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"Quản trị viên CNTT của bạn có thể xem ứng dụng công việc và dữ liệu"</string>
+    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"Quản trị viên CNTT của bạn có thể xem dữ liệu và các ứng dụng công việc"</string>
     <string name="work_profile_edu_next" msgid="8783418929296503629">"Tiếp theo"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"OK"</string>
     <string name="work_apps_paused_title" msgid="2389865654362803723">"Hồ sơ công việc của bạn đã bị tạm dừng"</string>
-    <string name="work_apps_paused_body" msgid="5388070126389079077">"Ứng dụng công việc không thể gửi thông báo cho bạn, sử dụng pin hoặc xem dữ liệu vị trí"</string>
+    <string name="work_apps_paused_body" msgid="5388070126389079077">"Các ứng dụng công việc không thể gửi thông báo cho bạn, sử dụng pin hoặc truy cập thông tin vị trí của bạn"</string>
     <string name="work_apps_paused_content_description" msgid="7553586952985486433">"Hồ sơ công việc của bạn đã bị tạm dừng. Các ứng dụng công việc không thể: gửi thông báo cho bạn, sử dụng pin hoặc xem dữ liệu vị trí"</string>
     <string name="work_switch_tip" msgid="808075064383839144">"Tạm dừng các ứng dụng và thông báo liên quan tới công việc"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Không thực hiện được thao tác: <xliff:g id="WHAT">%1$s</xliff:g>"</string>

@@ -15,7 +15,8 @@
  */
 package com.android.launcher3.uioverrides.states;
 
-import com.android.launcher3.Launcher;
+import android.content.Context;
+
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 
@@ -29,7 +30,7 @@ public class OverviewState extends LauncherState {
     }
 
     @Override
-    public int getTransitionDuration(Launcher context) {
+    public int getTransitionDuration(Context context) {
         return 250;
     }
 
@@ -42,6 +43,13 @@ public class OverviewState extends LauncherState {
     }
 
     public static OverviewState newSwitchState(int id) {
+        return new OverviewState(id);
+    }
+
+    /**
+     *  New Overview substate that represents the overview in modal mode (one task shown on its own)
+     */
+    public static OverviewState newModalTaskState(int id) {
         return new OverviewState(id);
     }
 }
