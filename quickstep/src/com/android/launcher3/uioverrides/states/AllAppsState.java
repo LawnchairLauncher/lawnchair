@@ -21,7 +21,6 @@ import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
 
 import android.content.Context;
 
-import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.allapps.AllAppsContainerView;
@@ -33,7 +32,7 @@ import com.android.quickstep.SysUINavigationMode;
  */
 public class AllAppsState extends LauncherState {
 
-    private static final int STATE_FLAGS = FLAG_DISABLE_ACCESSIBILITY;
+    private static final int STATE_FLAGS = FLAG_WORKSPACE_INACCESSIBLE | FLAG_CLOSE_POPUPS;
 
     private static final PageAlphaProvider PAGE_ALPHA_PROVIDER = new PageAlphaProvider(DEACCEL_2) {
         @Override
@@ -47,20 +46,8 @@ public class AllAppsState extends LauncherState {
     }
 
     @Override
-    public int getTransitionDuration(Launcher launcher) {
+    public int getTransitionDuration(Context context) {
         return 320;
-    }
-
-    @Override
-    public void onStateEnabled(Launcher launcher) {
-        AbstractFloatingView.closeAllOpenViews(launcher);
-        dispatchWindowStateChanged(launcher);
-    }
-
-    @Override
-    public void onStateDisabled(Launcher launcher) {
-        super.onStateDisabled(launcher);
-        AbstractFloatingView.closeAllOpenViews(launcher);
     }
 
     @Override

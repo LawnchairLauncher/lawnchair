@@ -37,6 +37,7 @@ import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
 import static com.android.quickstep.SysUINavigationMode.Mode.TWO_BUTTONS;
 import static com.android.quickstep.util.ShelfPeekAnim.ShelfAnimState.HIDE;
 import static com.android.quickstep.util.ShelfPeekAnim.ShelfAnimState.PEEK;
+import static com.android.quickstep.util.WindowSizeStrategy.LAUNCHER_ACTIVITY_SIZE_STRATEGY;
 import static com.android.quickstep.views.RecentsView.UPDATE_SYSUI_FLAGS_THRESHOLD;
 
 import android.animation.Animator;
@@ -80,7 +81,6 @@ import com.android.quickstep.GestureState.GestureEndTarget;
 import com.android.quickstep.inputconsumers.OverviewInputConsumer;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.AppWindowAnimationHelper.TargetAlphaProvider;
-import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.util.RectFSpringAnim;
 import com.android.quickstep.util.ShelfPeekAnim;
 import com.android.quickstep.util.ShelfPeekAnim.ShelfAnimState;
@@ -208,8 +208,7 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
         mTaskAnimationManager = taskAnimationManager;
         mTouchTimeMs = touchTimeMs;
         mContinuingLastGesture = continuingLastGesture;
-        mTaskViewSimulator = new TaskViewSimulator(
-                context, LayoutUtils::calculateLauncherTaskSize, true);
+        mTaskViewSimulator = new TaskViewSimulator(context, LAUNCHER_ACTIVITY_SIZE_STRATEGY);
 
         initAfterSubclassConstructor();
         initStateCallbacks();
@@ -531,7 +530,7 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
     @Override
     protected void initTransitionEndpoints(DeviceProfile dp) {
         super.initTransitionEndpoints(dp);
-        mTaskViewSimulator.setDp(dp, false /* isOpening */);
+        mTaskViewSimulator.setDp(dp);
         mTaskViewSimulator.setLayoutRotation(
                 mDeviceState.getCurrentActiveRotation(),
                 mDeviceState.getDisplayRotation());
@@ -631,17 +630,21 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
      * @param windowProgress 0 == app, 1 == overview
      */
     private void updateSysUiFlags(float windowProgress) {
-        if (mRecentsView != null) {
+        if (mRecentsAnimationController != null && mRecentsView != null) {
+            TaskView runningTask = mRecentsView.getRunningTaskView();
             TaskView centermostTask = mRecentsView.getTaskViewNearestToCenterOfScreen();
             int centermostTaskFlags = centermostTask == null ? 0
                     : centermostTask.getThumbnail().getSysUiStatusNavFlags();
-            boolean useHomeScreenFlags = windowProgress > 1 - UPDATE_SYSUI_FLAGS_THRESHOLD;
+            boolean swipeUpThresholdPassed = windowProgress > 1 - UPDATE_SYSUI_FLAGS_THRESHOLD;
+            boolean quickswitchThresholdPassed = centermostTask != runningTask;
+
             // We will handle the sysui flags based on the centermost task view.
-            if (mRecentsAnimationController != null) {
-                mRecentsAnimationController.setWindowThresholdCrossed(centermostTaskFlags != 0
-                        && useHomeScreenFlags);
-            }
-            int sysuiFlags = useHomeScreenFlags ? 0 : centermostTaskFlags;
+            mRecentsAnimationController.setUseLauncherSystemBarFlags(
+                    (swipeUpThresholdPassed || quickswitchThresholdPassed)
+                            && centermostTaskFlags != 0);
+            mRecentsAnimationController.setSplitScreenMinimized(swipeUpThresholdPassed);
+
+            int sysuiFlags = swipeUpThresholdPassed ? 0 : centermostTaskFlags;
             mActivity.getSystemUiController().updateUiState(UI_STATE_OVERVIEW, sysuiFlags);
         }
     }

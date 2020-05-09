@@ -16,8 +16,10 @@
 
 package com.android.launcher3.model.data;
 
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_ALL_APPS;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT;
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
@@ -35,6 +37,8 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.logger.LauncherAtom;
+import com.android.launcher3.logger.LauncherAtom.AllAppsContainer;
+import com.android.launcher3.logger.LauncherAtom.ContainerInfo;
 import com.android.launcher3.util.ContentWriter;
 
 import java.util.Optional;
@@ -122,6 +126,12 @@ public class ItemInfo {
      */
     public CharSequence contentDescription;
 
+    /**
+     * When the instance is created using {@link #copyFrom}, this field is used to keep track of
+     * original {@link ComponentName}.
+     */
+    private ComponentName mComponentName;
+
     public UserHandle user;
 
     public ItemInfo() {
@@ -144,6 +154,7 @@ public class ItemInfo {
         container = info.container;
         user = info.user;
         contentDescription = info.contentDescription;
+        mComponentName = info.getTargetComponent();
     }
 
     public Intent getIntent() {
@@ -152,12 +163,7 @@ public class ItemInfo {
 
     @Nullable
     public ComponentName getTargetComponent() {
-        Intent intent = getIntent();
-        if (intent != null) {
-            return intent.getComponent();
-        } else {
-            return null;
-        }
+        return Optional.ofNullable(getIntent()).map(Intent::getComponent).orElse(mComponentName);
     }
 
     public void writeToValues(ContentWriter writer) {
@@ -246,8 +252,7 @@ public class ItemInfo {
     /**
      * Creates {@link LauncherAtom.ItemInfo} with important fields and parent container info.
      */
-    public LauncherAtom.ItemInfo buildProto(Intent intent, FolderInfo fInfo) {
-
+    public LauncherAtom.ItemInfo buildProto(FolderInfo fInfo) {
         LauncherAtom.ItemInfo.Builder itemBuilder = LauncherAtom.ItemInfo.newBuilder();
         itemBuilder.setIsWork(user != Process.myUserHandle());
         Optional<ComponentName> nullableComponent = Optional.ofNullable(getTargetComponent());
@@ -269,7 +274,14 @@ public class ItemInfo {
                                 .orElse(LauncherAtom.Shortcut.newBuilder()));
                 break;
             case ITEM_TYPE_APPWIDGET:
-                setItemBuilder(itemBuilder);
+                itemBuilder
+                        .setWidget(nullableComponent
+                                .map(component -> LauncherAtom.Widget.newBuilder()
+                                        .setComponentName(component.flattenToShortString())
+                                        .setPackageName(component.getPackageName()))
+                                .orElse(LauncherAtom.Widget.newBuilder())
+                                .setSpanX(spanX)
+                                .setSpanY(spanY));
                 break;
             default:
                 break;
@@ -281,6 +293,7 @@ public class ItemInfo {
 
             switch (fInfo.container) {
                 case CONTAINER_HOTSEAT:
+                case CONTAINER_HOTSEAT_PREDICTION:
                     folderBuilder.setHotseat(LauncherAtom.HotseatContainer.newBuilder()
                             .setIndex(fInfo.screenId));
                     break;
@@ -290,18 +303,27 @@ public class ItemInfo {
                             .setGridX(fInfo.cellX).setGridY(fInfo.cellY));
                     break;
             }
-            itemBuilder.setFolder(folderBuilder);
+            itemBuilder.setContainerInfo(ContainerInfo.newBuilder().setFolder(folderBuilder));
         } else {
             switch (container) {
                 case CONTAINER_HOTSEAT:
-                    itemBuilder.setHotseat(LauncherAtom.HotseatContainer.newBuilder()
-                            .setIndex(screenId));
+                case CONTAINER_HOTSEAT_PREDICTION:
+                    itemBuilder.setContainerInfo(
+                            ContainerInfo.newBuilder().setHotseat(
+                                    LauncherAtom.HotseatContainer.newBuilder().setIndex(screenId)));
                     break;
                 case CONTAINER_DESKTOP:
-                    itemBuilder.setWorkspace(LauncherAtom.WorkspaceContainer.newBuilder()
-                            .setGridX(cellX)
-                            .setGridY(cellY)
-                            .setPageIndex(screenId));
+                    itemBuilder.setContainerInfo(
+                            ContainerInfo.newBuilder().setWorkspace(
+                                    LauncherAtom.WorkspaceContainer.newBuilder()
+                                            .setGridX(cellX)
+                                            .setGridY(cellY)
+                                            .setPageIndex(screenId)));
+                    break;
+                case CONTAINER_ALL_APPS:
+                    itemBuilder.setContainerInfo(
+                            ContainerInfo.newBuilder().setAllAppsContainer(
+                                    AllAppsContainer.getDefaultInstance()));
                     break;
             }
         }

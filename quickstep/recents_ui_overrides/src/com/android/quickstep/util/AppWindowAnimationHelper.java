@@ -20,7 +20,6 @@ import static com.android.systemui.shared.system.QuickStepContract.getWindowCorn
 import static com.android.systemui.shared.system.QuickStepContract.supportsRoundedCornersOnWindows;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
-import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -43,7 +42,6 @@ import com.android.quickstep.RemoteAnimationTargets;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskThumbnailView;
-import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.utilities.RectFEvaluator;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
@@ -95,9 +93,6 @@ public class AppWindowAnimationHelper {
 
     // Corner radius currently applied to transformed window.
     private float mCurrentCornerRadius;
-
-    // Whether to boost the opening animation target layers, or the closing
-    private int mBoostModeTargetLayers = -1;
 
     private TargetAlphaProvider mTaskAlphaCallback = (t, a) -> a;
     private TargetAlphaProvider mBaseAlphaCallback = (t, a) -> 1;
@@ -163,8 +158,7 @@ public class AppWindowAnimationHelper {
                 mTargetRect.width(), mTargetRect.height());
     }
 
-    public void prepareAnimation(DeviceProfile dp, boolean isOpening) {
-        mBoostModeTargetLayers = isOpening ? MODE_OPENING : MODE_CLOSING;
+    public void prepareAnimation(DeviceProfile dp) {
         mUseRoundedCornersOnWindows = mSupportsRoundedCornersOnWindows && !dp.isMultiWindowMode;
     }
 
@@ -317,10 +311,6 @@ public class AppWindowAnimationHelper {
         mBaseAlphaCallback = callback;
     }
 
-    public void fromTaskThumbnailView(TaskThumbnailView ttv, RecentsView rv) {
-        fromTaskThumbnailView(ttv, rv, null);
-    }
-
     public void fromTaskThumbnailView(TaskThumbnailView ttv, RecentsView rv,
             @Nullable RemoteAnimationTargetCompat target) {
         BaseDraggingActivity activity = BaseDraggingActivity.fromContext(ttv.getContext());
@@ -355,19 +345,6 @@ public class AppWindowAnimationHelper {
             mSourceWindowClipInsets.right = mSourceWindowClipInsets.right * scale;
             mSourceWindowClipInsets.bottom = mSourceWindowClipInsets.bottom * scale;
         }
-    }
-
-    /**
-     * Compute scale and translation y such that the specified task view fills the screen.
-     */
-    public AppWindowAnimationHelper updateForFullscreenOverview(TaskView v) {
-        TaskThumbnailView thumbnailView = v.getThumbnail();
-        RecentsView recentsView = v.getRecentsView();
-        fromTaskThumbnailView(thumbnailView, recentsView);
-        Rect taskSize = new Rect();
-        recentsView.getTaskSize(taskSize);
-        updateTargetRect(taskSize);
-        return this;
     }
 
     private void updateStackBoundsToMultiWindowTaskSize(BaseDraggingActivity activity) {

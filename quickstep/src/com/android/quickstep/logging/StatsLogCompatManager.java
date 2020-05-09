@@ -57,11 +57,6 @@ public class StatsLogCompatManager extends StatsLogManager {
     }
 
     @Override
-    public void log(LauncherEvent eventId, LauncherAtom.ItemInfo item) {
-        // Call StatsLog method
-    }
-
-    @Override
     public void verify() {
         if (!(StatsLogUtils.LAUNCHER_STATE_ALLAPPS == ALLAPPS
                 && StatsLogUtils.LAUNCHER_STATE_BACKGROUND == BACKGROUND
@@ -88,17 +83,17 @@ public class StatsLogCompatManager extends StatsLogManager {
             ArrayList<LauncherAppWidgetInfo> appWidgets = (ArrayList) dataModel.appWidgets.clone();
 
             for (ItemInfo info : workspaceItems) {
-                LauncherAtom.ItemInfo atomInfo = info.buildProto(null, null);
+                LauncherAtom.ItemInfo atomInfo = info.buildProto(null);
                 // call StatsLog method
             }
             for (FolderInfo fInfo : folders) {
                 for (ItemInfo info : fInfo.contents) {
-                    LauncherAtom.ItemInfo atomInfo = info.buildProto(null, fInfo);
+                    LauncherAtom.ItemInfo atomInfo = info.buildProto(fInfo);
                     // call StatsLog method
                 }
             }
             for (ItemInfo info : appWidgets) {
-                LauncherAtom.ItemInfo atomInfo = info.buildProto(null, null);
+                LauncherAtom.ItemInfo atomInfo = info.buildProto(null);
                 // call StatsLog method
             }
         }

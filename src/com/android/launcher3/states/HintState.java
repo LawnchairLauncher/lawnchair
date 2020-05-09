@@ -15,10 +15,10 @@
  */
 package com.android.launcher3.states;
 
+import android.content.Context;
+
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.LauncherStateManager;
-import com.android.launcher3.Workspace;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 
 /**
@@ -26,7 +26,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
  */
 public class HintState extends LauncherState {
 
-    private static final int STATE_FLAGS = FLAG_DISABLE_ACCESSIBILITY | FLAG_DISABLE_RESTORE
+    private static final int STATE_FLAGS = FLAG_WORKSPACE_INACCESSIBLE | FLAG_DISABLE_RESTORE
             | FLAG_HAS_SYS_UI_SCRIM;
 
     public HintState(int id) {
@@ -34,7 +34,7 @@ public class HintState extends LauncherState {
     }
 
     @Override
-    public int getTransitionDuration(Launcher launcher) {
+    public int getTransitionDuration(Context context) {
         return 80;
     }
 
@@ -47,17 +47,5 @@ public class HintState extends LauncherState {
     public ScaleAndTranslation getQsbScaleAndTranslation(Launcher launcher) {
         // Treat the QSB as part of the hotseat so they move together.
         return getHotseatScaleAndTranslation(launcher);
-    }
-
-    @Override
-    public void onStateTransitionEnd(Launcher launcher) {
-        LauncherStateManager stateManager = launcher.getStateManager();
-        Workspace workspace = launcher.getWorkspace();
-        boolean willMoveScreens = workspace.getNextPage() != Workspace.DEFAULT_PAGE;
-        stateManager.goToState(NORMAL, true, willMoveScreens ? null
-                : launcher.getScrimView()::startDragHandleEducationAnim);
-        if (willMoveScreens) {
-            workspace.post(workspace::moveToDefaultScreen);
-        }
     }
 }
