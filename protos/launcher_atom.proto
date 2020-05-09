@@ -99,13 +99,14 @@ message FolderIcon {
   optional int32 cardinality = 1;
 
   // State of the folder label before the event.
-  optional FromState from_state = 2;
+  optional FromState from_label_state = 2;
 
   // State of the folder label after the event.
-  optional ToState to_state = 3;
+  optional ToState to_label_state = 3;
 
-  // Populated only when folder label was suggested.
-  optional string label = 4;
+  // Details about actual folder label.
+  // Populated when folder label is not a PII.
+  optional string label_info = 4;
 }
 
 //////////////////////////////////////////////
@@ -131,70 +132,77 @@ message FolderContainer {
   }
 }
 
-// Represents state of FolderLabel before editing.
+// Represents state of EditText field before update.
 enum FromState {
   // Default value.
+  // Used when a FromState is not applicable, for example, during folder creation.
   FROM_STATE_UNSPECIFIED = 0;
 
-  // FolderLabel was empty.
+  // EditText was empty.
+  // Eg: When a folder label is updated from empty string.
   FROM_EMPTY = 1;
 
-  // FolderLabel was non-empty and manually entered by the user.
+  // EditText was non-empty and manually entered by the user.
+  // Eg: When a folder label is updated from a user-entered value.
   FROM_CUSTOM = 2;
 
-  // FolderLabel was non-empty and one of the suggestions.
+  // EditText was non-empty and one of the suggestions.
+  // Eg: When a folder label is updated from a suggested value.
   FROM_SUGGESTED = 3;
 }
 
-// Represents state of FolderLabel after editing.
+// Represents state of EditText field after update.
 enum ToState {
   // Default value.
+  // Used when ToState is not applicable, for example, when folder label is updated to a different
+  // value when folder label suggestion feature is disabled.
   TO_STATE_UNSPECIFIED = 0;
-  // User attempted to change the folder label, but was not changed.
+
+  // User attempted to change the EditText, but was not changed.
   UNCHANGED = 1;
 
   // New label matches with primary(aka top) suggestion.
   TO_SUGGESTION0 = 2;
 
-  // New label matches with second top suggestion even though the top suggestion was non-empty.
+  // New value matches with second top suggestion even though the top suggestion was non-empty.
   TO_SUGGESTION1_WITH_VALID_PRIMARY = 3;
 
-  // New label matches with second top suggestion given that top suggestion was empty.
+  // New value matches with second top suggestion given that top suggestion was empty.
   TO_SUGGESTION1_WITH_EMPTY_PRIMARY = 4;
 
-  // New label matches with third top suggestion even though the top suggestion was non-empty.
+  // New value matches with third top suggestion even though the top suggestion was non-empty.
   TO_SUGGESTION2_WITH_VALID_PRIMARY = 5;
 
-  // New label matches with third top suggestion given that top suggestion was empty.
+  // New value matches with third top suggestion given that top suggestion was empty.
   TO_SUGGESTION2_WITH_EMPTY_PRIMARY = 6;
 
-  // New label matches with 4th top suggestion even though the top suggestion was non-empty.
+  // New value matches with 4th top suggestion even though the top suggestion was non-empty.
   TO_SUGGESTION3_WITH_VALID_PRIMARY = 7;
 
-  // New label matches with 4th top suggestion given that top suggestion was empty.
+  // New value matches with 4th top suggestion given that top suggestion was empty.
   TO_SUGGESTION3_WITH_EMPTY_PRIMARY = 8;
 
-  // New label is empty even though the top suggestion was non-empty.
+  // New value is empty even though the top suggestion was non-empty.
   TO_EMPTY_WITH_VALID_PRIMARY = 9;
 
-  // New label is empty given that top suggestion was empty.
+  // New value is empty given that top suggestion was empty.
   TO_EMPTY_WITH_VALID_SUGGESTIONS_AND_EMPTY_PRIMARY = 10;
 
-  // New label is empty given that no suggestions were provided.
+  // New value is empty given that no suggestions were provided.
   TO_EMPTY_WITH_EMPTY_SUGGESTIONS = 11;
 
-  // New label is empty given that suggestions feature was disabled.
+  // New value is empty given that suggestions feature was disabled.
   TO_EMPTY_WITH_SUGGESTIONS_DISABLED = 12;
 
-  // New label is non-empty and does not match with any of the suggestions even though the top suggestion was non-empty.
+  // New value is non-empty and does not match with any of the suggestions even though the top suggestion was non-empty.
   TO_CUSTOM_WITH_VALID_PRIMARY = 13;
 
-  // New label is non-empty and not match with any suggestions given that top suggestion was empty.
+  // New value is non-empty and not match with any suggestions given that top suggestion was empty.
   TO_CUSTOM_WITH_VALID_SUGGESTIONS_AND_EMPTY_PRIMARY = 14;
 
-  // New label is non-empty and also no suggestions were provided.
+  // New value is non-empty and also no suggestions were provided.
   TO_CUSTOM_WITH_EMPTY_SUGGESTIONS = 15;
 
-  // New label is non-empty and also suggestions feature was disable.
+  // New value is non-empty and also suggestions feature was disable.
   TO_CUSTOM_WITH_SUGGESTIONS_DISABLED = 16;
 }

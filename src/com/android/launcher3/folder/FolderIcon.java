@@ -20,7 +20,7 @@ import static android.text.TextUtils.isEmpty;
 
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
 import static com.android.launcher3.folder.PreviewItemManager.INITIAL_ITEM_ANIMATION_DURATION;
-import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_FOLDER_LABEL_CHANGED;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_FOLDER_LABEL_UPDATED;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -429,6 +429,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
             mPreviewItemManager.hidePreviewItem(finalIndex, false);
             mFolder.showItem(item);
             setLabelSuggestion(nameInfos, instanceId);
+            mFolder.logFolderLabelState();
             invalidate();
         }, DROP_IN_ANIMATION_DURATION);
     }
@@ -447,10 +448,9 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
         if (nameInfos == null || nameInfos[0] == null || isEmpty(nameInfos[0].getLabel())) {
             return;
         }
-        mInfo.previousTitle = mInfo.title;
-        mInfo.title = nameInfos[0].getLabel();
+        mInfo.setTitle(nameInfos[0].getLabel());
         StatsLogManager.newInstance(getContext())
-                .log(LAUNCHER_FOLDER_LABEL_CHANGED, instanceId, mInfo.getFolderIconAtom());
+                .log(LAUNCHER_FOLDER_LABEL_UPDATED, instanceId, mInfo.buildProto());
         onTitleChanged(mInfo.title);
         mFolder.mFolderName.setText(mInfo.title);
         mFolder.mLauncher.getModelWriter().updateItemInDatabase(mInfo);
