@@ -134,12 +134,12 @@
     <string name="all_apps_work_tab" msgid="4884822796154055118">"অফিস"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"অফিসের প্রোফাইল"</string>
     <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"অফিসের অ্যাপের থেকে ব্যক্তিগত ডেটা আলাদা করে লুকিয়ে রাখা হয়"</string>
-    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"অফিসের অ্যাপ এবং ডেটা আপনার আইটি অ্যাডমিন দেখতে পাবেন"</string>
+    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"আপনার আইটি অ্যাডমিন অফিস অ্যাপ এবং ডেটা দেখতে পাবেন"</string>
     <string name="work_profile_edu_next" msgid="8783418929296503629">"পরের"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"বুঝেছি"</string>
     <string name="work_apps_paused_title" msgid="2389865654362803723">"অফিস প্রোফাইল বন্ধ করা আছে"</string>
-    <string name="work_apps_paused_body" msgid="5388070126389079077">"অফিসের অ্যাপ আপনাকে বিজ্ঞপ্তি পাঠাতে, আপনার ব্যাটারি ব্যবহার করতে বা লোকেশন অ্যাক্সেস করতে পারে না"</string>
+    <string name="work_apps_paused_body" msgid="5388070126389079077">"অফিস অ্যাপ আপনাকে বিজ্ঞপ্তি পাঠাতে, আপনার ব্যাটারি ব্যবহার করতে বা লোকেশন অ্যাক্সেস করতে পারে না"</string>
     <string name="work_apps_paused_content_description" msgid="7553586952985486433">"অফিসের প্রোফাইল পজ করা আছে। অফিসের অ্যাপ আপনাকে বিজ্ঞপ্তি পাঠাতে, ব্যাটারি ব্যবহার করতে বা লোকেশন অ্যাক্সেস করতে পারবে না"</string>
-    <string name="work_switch_tip" msgid="808075064383839144">"অফিসের অ্যাপ এবং বিজ্ঞপ্তি বন্ধ করুন"</string>
+    <string name="work_switch_tip" msgid="808075064383839144">"অফিস অ্যাপ এবং বিজ্ঞপ্তি বন্ধ করুন"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"কাজটি করা যায়নি: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>
