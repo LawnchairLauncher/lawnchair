@@ -133,7 +133,7 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Personali"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Lavoro"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Profilo di lavoro"</string>
-    <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"I dati personali sono separati e sono nascosti alle app di lavoro"</string>
+    <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"I dati personali sono separati e non sono visibili nelle app di lavoro"</string>
     <string name="work_profile_edu_work_apps" msgid="237051938268703058">"I dati e le app di lavoro sono visibili all\'amministratore IT"</string>
     <string name="work_profile_edu_next" msgid="8783418929296503629">"Avanti"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"OK"</string>

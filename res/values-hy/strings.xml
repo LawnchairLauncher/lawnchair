@@ -133,13 +133,13 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Անձնական"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Աշխատանքային"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Աշխատանքային պրոֆիլ"</string>
-    <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"Անձնական հավելվածները առանձնացված են և թաքցված աշխատանքային հավելվածներից։"</string>
+    <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"Անձնական հավելվածները թաքցված են և առանձնացված աշխատանքային հավելվածներից։"</string>
     <string name="work_profile_edu_work_apps" msgid="237051938268703058">"Աշխատանքային հավելվածներն ու դրանց տվյալները տեսանելի են ձեր ադմինիստրատորին"</string>
     <string name="work_profile_edu_next" msgid="8783418929296503629">"Առաջ"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"Եղավ"</string>
     <string name="work_apps_paused_title" msgid="2389865654362803723">"Աշխատանքային պրոֆիլը դադարեցված է"</string>
-    <string name="work_apps_paused_body" msgid="5388070126389079077">"Աշխատանքային հավելվածները չեն կարող օգտագործել ձեր մարտկոցը, գտնվելու վայրի մասին տվյալները և ուղարկել ձեզ ծանուցումներ։"</string>
-    <string name="work_apps_paused_content_description" msgid="7553586952985486433">"Աշխատանքային պրոֆիլը դադարեցված է։ Աշխատանքային հավելվածները չեն կարող օգտագործել ձեր մարտկոցը, գտնվելու վայրի մասին տվյալները և ուղարկել ձեզ ծանուցումներ։"</string>
+    <string name="work_apps_paused_body" msgid="5388070126389079077">"Աշխատանքային հավելվածները չեն կարող ձեզ ծանուցումներ ուղարկել և օգտագործել ձեր մարտկոցն ու տեղադրության տվյալները։"</string>
+    <string name="work_apps_paused_content_description" msgid="7553586952985486433">"Աշխատանքային պրոֆիլը դադարեցված է։ Աշխատանքային հավելվածները չեն կարող ձեզ ծանուցումներ ուղարկել և օգտագործել ձեր մարտկոցն ու տեղադրության տվյալները։"</string>
     <string name="work_switch_tip" msgid="808075064383839144">"Դադարեցնել աշխատանքային հավելվածներն ու ծանուցումները"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Չհաջողվեց կատարել գործողությունը (<xliff:g id="WHAT">%1$s</xliff:g>)"</string>
 </resources>

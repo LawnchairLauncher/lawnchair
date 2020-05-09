@@ -123,8 +123,10 @@ public final class TaskViewUtils {
     public static Animator getRecentsWindowAnimator(TaskView v, boolean skipViewChanges,
             RemoteAnimationTargetCompat[] appTargets,
             RemoteAnimationTargetCompat[] wallpaperTargets,
-            DepthController depthController,
-            final AppWindowAnimationHelper inOutHelper) {
+            DepthController depthController) {
+        AppWindowAnimationHelper inOutHelper = new AppWindowAnimationHelper(
+                v.getRecentsView().getPagedViewOrientedState(), v.getContext());
+
         SyncRtSurfaceTransactionApplierCompat applier =
                 new SyncRtSurfaceTransactionApplierCompat(v);
         final RemoteAnimationTargets targets =
@@ -149,10 +151,8 @@ public final class TaskViewUtils {
 
             {
                 inOutHelper.setTaskAlphaCallback((t, alpha) -> mTaskAlpha.value);
-
                 inOutHelper.prepareAnimation(
-                        BaseActivity.fromContext(v.getContext()).getDeviceProfile(),
-                        true /* isOpening */);
+                        BaseActivity.fromContext(v.getContext()).getDeviceProfile());
                 inOutHelper.fromTaskThumbnailView(v.getThumbnail(), (RecentsView) v.getParent(),
                         targets.apps.length == 0 ? null : targets.apps[0]);
 

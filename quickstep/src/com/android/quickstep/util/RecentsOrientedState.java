@@ -17,6 +17,7 @@
 package com.android.quickstep.util;
 
 import static android.util.DisplayMetrics.DENSITY_DEVICE_STABLE;
+import static android.view.OrientationEventListener.ORIENTATION_UNKNOWN;
 import static android.view.Surface.ROTATION_0;
 import static android.view.Surface.ROTATION_180;
 import static android.view.Surface.ROTATION_270;
@@ -44,6 +45,7 @@ import android.view.OrientationEventListener;
 import android.view.Surface;
 
 import androidx.annotation.IntDef;
+import androidx.annotation.NonNull;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Utilities;
@@ -64,7 +66,7 @@ import java.util.function.IntConsumer;
 public final class RecentsOrientedState implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final String TAG = "RecentsOrientedState";
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
 
     private static final String FIXED_ROTATION_TRANSFORM_SETTING_NAME = "fixed_rotation_transform";
 
@@ -94,28 +96,29 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
     private static final int FLAG_HOME_ROTATION_ALLOWED_IN_PREFS = 1 << 3;
     // If the user has enabled system rotation
     private static final int FLAG_SYSTEM_ROTATION_ALLOWED = 1 << 4;
+    // Multiple orientation is not supported in multiwindow mode
+    private static final int FLAG_MULTIWINDOW_ROTATION_ALLOWED = 1 << 5;
     // Whether to rotation sensor is supported on the device
-    private static final int FLAG_ROTATION_WATCHER_SUPPORTED = 1 << 5;
+    private static final int FLAG_ROTATION_WATCHER_SUPPORTED = 1 << 6;
     // Whether to enable rotation watcher when multi-rotation is supported
-    private static final int FLAG_ROTATION_WATCHER_ENABLED = 1 << 6;
+    private static final int FLAG_ROTATION_WATCHER_ENABLED = 1 << 7;
 
     private static final int MASK_MULTIPLE_ORIENTATION_SUPPORTED_BY_DEVICE =
             FLAG_MULTIPLE_ORIENTATION_SUPPORTED_BY_ACTIVITY
             | FLAG_MULTIPLE_ORIENTATION_SUPPORTED_BY_DENSITY
             | FLAG_MULTIPLE_ORIENTATION_SUPPORTED_BY_FLAG;
 
-    private static final int MASK_ACTIVITY_ROTATING =
-            FLAG_HOME_ROTATION_ALLOWED_IN_PREFS | FLAG_SYSTEM_ROTATION_ALLOWED;
-
-    // State for which rotation watcher will be enabled.
-    // We skip it when home rotation is enabled as in that case, activity itself rotates
+    // State for which rotation watcher will be enabled. We skip it when home rotation or
+    // multi-window is enabled as in that case, activity itself rotates.
     private static final int VALUE_ROTATION_WATCHER_ENABLED =
             MASK_MULTIPLE_ORIENTATION_SUPPORTED_BY_DEVICE | FLAG_SYSTEM_ROTATION_ALLOWED
                     | FLAG_ROTATION_WATCHER_SUPPORTED | FLAG_ROTATION_WATCHER_ENABLED;
 
+    private final Context mContext;
     private final ContentResolver mContentResolver;
     private final SharedPreferences mSharedPrefs;
     private final OrientationEventListener mOrientationListener;
+    private final WindowSizeStrategy mSizeStrategy;
 
     private final Matrix mTmpMatrix = new Matrix();
     private final Matrix mTmpInverseMatrix = new Matrix();
@@ -128,14 +131,16 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
      *                              is enabled
      * @see #setRotationWatcherEnabled(boolean)
      */
-    public RecentsOrientedState(Context context, boolean rotationSupportedByActivity,
+    public RecentsOrientedState(Context context, WindowSizeStrategy sizeStrategy,
             IntConsumer rotationChangeListener) {
+        mContext = context;
         mContentResolver = context.getContentResolver();
         mSharedPrefs = Utilities.getPrefs(context);
+        mSizeStrategy = sizeStrategy;
         mOrientationListener = new OrientationEventListener(context) {
             @Override
             public void onOrientationChanged(int degrees) {
-                int newRotation = getRotationForUserDegreesRotated(degrees);
+                int newRotation = getRotationForUserDegreesRotated(degrees, mPreviousRotation);
                 if (newRotation != mPreviousRotation) {
                     mPreviousRotation = newRotation;
                     rotationChangeListener.accept(newRotation);
@@ -143,7 +148,8 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
             }
         };
 
-        mFlags = rotationSupportedByActivity ? FLAG_MULTIPLE_ORIENTATION_SUPPORTED_BY_ACTIVITY : 0;
+        mFlags = sizeStrategy.rotationSupportedByActivity
+                ? FLAG_MULTIPLE_ORIENTATION_SUPPORTED_BY_ACTIVITY : 0;
 
         Resources res = context.getResources();
         int originalSmallestWidth = res.getConfiguration().smallestScreenWidthDp
@@ -157,6 +163,13 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
         if (mOrientationListener.canDetectOrientation()) {
             mFlags |= FLAG_ROTATION_WATCHER_SUPPORTED;
         }
+    }
+
+    /**
+     * Sets if the host is in multi-window mode
+     */
+    public void setMultiWindowMode(boolean isMultiWindow) {
+        setFlag(FLAG_MULTIWINDOW_ROTATION_ALLOWED, isMultiWindow);
     }
 
     /**
@@ -296,11 +309,12 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
     }
 
     public boolean isHomeRotationAllowed() {
-        return (mFlags & FLAG_HOME_ROTATION_ALLOWED_IN_PREFS) != 0;
+        return (mFlags & (FLAG_HOME_ROTATION_ALLOWED_IN_PREFS | FLAG_MULTIWINDOW_ROTATION_ALLOWED))
+                != 0;
     }
 
     public boolean canLauncherRotate() {
-        return (mFlags & MASK_ACTIVITY_ROTATING) == MASK_ACTIVITY_ROTATING;
+        return (mFlags & FLAG_SYSTEM_ROTATION_ALLOWED) != 0 && isHomeRotationAllowed();
     }
 
     /**
@@ -331,11 +345,26 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
         Rect insets = dp.getInsets();
         float fullWidth = dp.widthPx - insets.left - insets.right;
         float fullHeight = dp.heightPx - insets.top - insets.bottom;
-        final float scale = LayoutUtils.getTaskScale(this,
-                fullWidth, fullHeight, taskView.width(), taskView.height());
+
+        if (dp.isMultiWindowMode) {
+            mSizeStrategy.getMultiWindowSize(mContext, dp, outPivot);
+        } else {
+            outPivot.set(fullWidth, fullHeight);
+        }
+        float scale = Math.min(outPivot.x / taskView.width(), outPivot.y / taskView.height());
+        // We also scale the preview as part of fullScreenParams, so account for that as well.
+        if (fullWidth > 0) {
+            scale = scale * dp.widthPx / fullWidth;
+        }
 
         if (scale == 1) {
             outPivot.set(fullWidth / 2, fullHeight / 2);
+        } else if (dp.isMultiWindowMode) {
+            float denominator = 1 / (scale - 1);
+            // Ensure that the task aligns to right bottom for the root view
+            float y = (scale * taskView.bottom - fullHeight) * denominator;
+            float x = (scale * taskView.right - fullWidth) * denominator;
+            outPivot.set(x, y);
         } else {
             float factor = scale / (scale - 1);
             outPivot.set(taskView.left * factor, taskView.top * factor);
@@ -392,17 +421,48 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
     }
 
     @SurfaceRotation
-    public static int getRotationForUserDegreesRotated(float degrees) {
-        int threshold = 70;
-        if (degrees >= (360 - threshold) || degrees < (threshold)) {
-            return ROTATION_0;
-        } else if (degrees < (90 + threshold)) {
-            return ROTATION_270;
-        } else if (degrees < 180 + threshold) {
-            return ROTATION_180;
-        } else {
-            return ROTATION_90;
+    public static int getRotationForUserDegreesRotated(float degrees, int currentRotation) {
+        if (degrees == ORIENTATION_UNKNOWN) {
+            return currentRotation;
         }
+
+        int threshold = 70;
+        switch (currentRotation) {
+            case ROTATION_0:
+                if (degrees > 180 && degrees < (360 - threshold)) {
+                    return ROTATION_90;
+                }
+                if (degrees < 180 && degrees > threshold) {
+                    return ROTATION_270;
+                }
+                break;
+            case ROTATION_270:
+                if (degrees < (90 - threshold)) {
+                    return ROTATION_0;
+                }
+                if (degrees > (90 + threshold)) {
+                    return ROTATION_180;
+                }
+                break;
+            case ROTATION_180:
+                if (degrees < (180 - threshold)) {
+                    return ROTATION_270;
+                }
+                if (degrees > (180 + threshold)) {
+                    return ROTATION_90;
+                }
+                break;
+            case ROTATION_90:
+                if (degrees < (270 - threshold)) {
+                    return ROTATION_180;
+                }
+                if (degrees > (270 + threshold)) {
+                    return ROTATION_0;
+                }
+                break;
+        }
+
+        return currentRotation;
     }
 
     public boolean isDisplayPhoneNatural() {
@@ -439,5 +499,20 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
     public static boolean isFixedRotationTransformEnabled(Context context) {
         return Settings.Global.getInt(
                 context.getContentResolver(), FIXED_ROTATION_TRANSFORM_SETTING_NAME, 1) == 1;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        boolean systemRotationOn = (mFlags & FLAG_SYSTEM_ROTATION_ALLOWED) != 0;
+        return "["
+                + "mDisplayRotation=" + mDisplayRotation
+                + " mTouchRotation=" + mTouchRotation
+                + " mLauncherRotation=" + mLauncherRotation
+                + " mHomeRotation=" + isHomeRotationAllowed()
+                + " mSystemRotation=" + systemRotationOn
+                + " mFlags=" + mFlags
+                + " mOrientationHandler=" + mOrientationHandler
+                + "]";
     }
 }

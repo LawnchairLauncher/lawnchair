@@ -1,8 +1,6 @@
 <resources>
     <!-- Miscellaneous -->
     <bool name="config_largeHeap">false</bool>
-    <bool name="is_tablet">false</bool>
-    <bool name="is_large_tablet">false</bool>
     <bool name="allow_rotation">false</bool>
 
     <integer name="extracted_color_gradient_alpha">153</integer>
@@ -132,7 +130,7 @@
     <item name="dismiss_task_trans_x_stiffness" type="dimen" format="float">800</item>
 
     <item name="horizontal_spring_damping_ratio" type="dimen" format="float">0.8</item>
-    <item name="horizontal_spring_stiffness" type="dimen" format="float">400</item>
+    <item name="horizontal_spring_stiffness" type="dimen" format="float">250</item>
 
     <item name="swipe_up_rect_scale_damping_ratio" type="dimen" format="float">0.75</item>
     <item name="swipe_up_rect_scale_stiffness" type="dimen" format="float">200</item>

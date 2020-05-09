@@ -33,6 +33,7 @@ import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager;
+import com.android.launcher3.LauncherStateManager.StateListener;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsPagedView;
@@ -43,7 +44,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto;
 /**
  * On boarding flow for users right after setting up work profile
  */
-public class WorkEduView extends AbstractSlideInView implements Insettable {
+public class WorkEduView extends AbstractSlideInView implements Insettable, StateListener {
 
     private static final int DEFAULT_CLOSE_DURATION = 200;
     public static final String KEY_WORK_EDU_STEP = "showed_work_profile_edu";
@@ -79,6 +80,12 @@ public class WorkEduView extends AbstractSlideInView implements Insettable {
     protected void handleClose(boolean animate) {
         mLauncher.getSharedPrefs().edit().putInt(KEY_WORK_EDU_STEP, mNextWorkEduStep).apply();
         handleClose(true, DEFAULT_CLOSE_DURATION);
+    }
+
+    @Override
+    protected void onCloseComplete() {
+        super.onCloseComplete();
+        mLauncher.getStateManager().removeStateListener(this);
     }
 
     @Override
@@ -150,6 +157,7 @@ public class WorkEduView extends AbstractSlideInView implements Insettable {
     private void show() {
         attachToContainer();
         animateOpen();
+        mLauncher.getStateManager().addStateListener(this);
     }
 
     @Override
@@ -221,5 +229,10 @@ public class WorkEduView extends AbstractSlideInView implements Insettable {
 
     private static boolean hasSeenLegacyEdu(Launcher launcher) {
         return launcher.getSharedPrefs().getBoolean(KEY_LEGACY_WORK_EDU_SEEN, false);
+    }
+
+    @Override
+    public void onStateTransitionComplete(LauncherState finalState) {
+        close(false);
     }
 }

@@ -26,7 +26,6 @@ import androidx.annotation.UiThread;
 
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.testing.TestProtocol;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 
@@ -67,11 +66,17 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
 
         final BaseActivityInterface activityInterface = gestureState.getActivityInterface();
         mLastGestureState = gestureState;
-        mCallbacks = new RecentsAnimationCallbacks(activityInterface.shouldMinimizeSplitScreen());
+        mCallbacks = new RecentsAnimationCallbacks(activityInterface.allowMinimizeSplitScreen());
         mCallbacks.addListener(new RecentsAnimationCallbacks.RecentsAnimationListener() {
             @Override
             public void onRecentsAnimationStart(RecentsAnimationController controller,
                     RecentsAnimationTargets targets) {
+                if (mCallbacks == null) {
+                    // It's possible for the recents animation to have finished and be cleaned up
+                    // by the time we process the start callback, and in that case, just we can skip
+                    // handling this call entirely
+                    return;
+                }
                 mController = controller;
                 mTargets = targets;
             }

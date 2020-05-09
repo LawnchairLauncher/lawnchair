@@ -133,14 +133,14 @@
     <string name="notification_dismissed" msgid="6002233469409822874">"Obaveštenje je odbačeno"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Lične"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Poslovne"</string>
-    <string name="work_profile_toggle_label" msgid="3081029915775481146">"Profil za Work"</string>
+    <string name="work_profile_toggle_label" msgid="3081029915775481146">"Poslovni profil"</string>
     <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"Lični podaci su odvojeni i sakriveni od aplikacija za posao"</string>
-    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"IT administrator vidi aplikacije za posao i podatke"</string>
+    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"IT administrator vidi poslovne aplikacije i podatke"</string>
     <string name="work_profile_edu_next" msgid="8783418929296503629">"Dalje"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"Važi"</string>
-    <string name="work_apps_paused_title" msgid="2389865654362803723">"Profil za Work je pauziran"</string>
-    <string name="work_apps_paused_body" msgid="5388070126389079077">"Aplikacije za posao ne mogu da vam šalju obaveštenja, koriste bateriju ni pristupaju lokaciji"</string>
-    <string name="work_apps_paused_content_description" msgid="7553586952985486433">"Profil za Work je pauziran. Aplikacije za posao ne mogu da vam šalju obaveštenja, koriste bateriju niti pristupaju lokaciji"</string>
-    <string name="work_switch_tip" msgid="808075064383839144">"Pauzirajte aplikacije za posao i obaveštenja"</string>
+    <string name="work_apps_paused_title" msgid="2389865654362803723">"Poslovni profil je pauziran"</string>
+    <string name="work_apps_paused_body" msgid="5388070126389079077">"Poslovne aplikacije ne mogu da vam šalju obaveštenja, koriste bateriju ni pristupaju lokaciji"</string>
+    <string name="work_apps_paused_content_description" msgid="7553586952985486433">"Poslovni profil je pauziran. Poslovne aplikacije ne mogu da vam šalju obaveštenja, koriste bateriju niti pristupaju lokaciji"</string>
+    <string name="work_switch_tip" msgid="808075064383839144">"Pauzirajte poslovne aplikacije i obaveštenja"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Nije uspelo: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

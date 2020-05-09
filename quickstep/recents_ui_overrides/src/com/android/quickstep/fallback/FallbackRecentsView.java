@@ -16,22 +16,19 @@
 package com.android.quickstep.fallback;
 
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
+import static com.android.quickstep.util.WindowSizeStrategy.FALLBACK_RECENTS_SIZE_STRATEGY;
 
 import android.app.ActivityManager.RunningTaskInfo;
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.view.View;
 
-import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Utilities;
 import com.android.quickstep.RecentsActivity;
-import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.RecentsView;
-import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.Task.TaskKey;
 
@@ -65,7 +62,7 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity> {
     }
 
     public FallbackRecentsView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr, false);
+        super(context, attrs, defStyleAttr, FALLBACK_RECENTS_SIZE_STRATEGY);
     }
 
     @Override
@@ -105,11 +102,6 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity> {
     }
 
     @Override
-    protected void getTaskSize(DeviceProfile dp, Rect outRect) {
-        LayoutUtils.calculateFallbackTaskSize(getContext(), dp, outRect);
-    }
-
-    @Override
     public boolean shouldUseMultiWindowTaskSizeStrategy() {
         // Just use the activity task size for multi-window as well.
         return false;
@@ -140,16 +132,7 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity> {
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-
-        if (getTaskViewCount() == 0) {
-            mZoomScale = 1f;
-        } else {
-            TaskView dummyTask = getTaskViewAt(0);
-            mZoomScale = getTempAppWindowAnimationHelper()
-                    .updateForFullscreenOverview(dummyTask)
-                    .getSrcToTargetScale();
-        }
-
+        mZoomScale = getMaxScaleForFullScreen();
         setZoomProgress(mZoomInProgress);
     }
 
