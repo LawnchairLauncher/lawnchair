@@ -126,6 +126,11 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
+    public int getClearAllScrollOffset(View view, boolean isRtl) {
+        return (isRtl ? view.getPaddingBottom() : - view.getPaddingTop()) / 2;
+    }
+
+    @Override
     public int getSecondaryDimension(View view) {
         return view.getWidth();
     }
@@ -169,6 +174,11 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     @Override
     public float getDegreesRotated() {
         return 90;
+    }
+
+    @Override
+    public int getRotation() {
+        return Surface.ROTATION_90;
     }
 
     @Override
@@ -241,7 +251,7 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public int getTaskMenuLayoutOrientation() {
+    public int getTaskMenuLayoutOrientation(LinearLayout taskMenuLayout) {
         return LinearLayout.HORIZONTAL;
     }
 
