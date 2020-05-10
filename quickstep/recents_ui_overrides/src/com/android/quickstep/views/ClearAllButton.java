@@ -56,7 +56,8 @@ public class ClearAllButton extends Button implements PageCallbacks {
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-        mScrollOffset = mIsRtl ? mParent.getPaddingRight() / 2 : - mParent.getPaddingLeft() / 2;
+        PagedOrientationHandler orientationHandler = mParent.getPagedOrientationHandler();
+        mScrollOffset = orientationHandler.getClearAllScrollOffset(mParent, mIsRtl);
     }
 
     @Override

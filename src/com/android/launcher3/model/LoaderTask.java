@@ -179,6 +179,7 @@ public class LoaderTask implements Runnable {
         try (LauncherModel.LoaderTransaction transaction = mApp.getModel().beginLoader(this)) {
             List<ShortcutInfo> allShortcuts = new ArrayList<>();
             loadWorkspace(allShortcuts);
+            loadCachedPredictions();
             logger.addSplit("loadWorkspace");
 
             verifyNotStopped();
@@ -849,6 +850,23 @@ public class LoaderTask implements Runnable {
         }
     }
 
+    private List<AppInfo> loadCachedPredictions() {
+        List<ComponentKey> componentKeys = mApp.getPredictionModel().getPredictionComponentKeys();
+        List<AppInfo> results = new ArrayList<>();
+        if (componentKeys == null) return results;
+        List<LauncherActivityInfo> l;
+        mBgDataModel.cachedPredictedItems.clear();
+        for (ComponentKey key : componentKeys) {
+            l = mLauncherApps.getActivityList(key.componentName.getPackageName(), key.user);
+            if (l.size() == 0) continue;
+            boolean quietMode = mUserManager.isQuietModeEnabled(key.user);
+            AppInfo info = new AppInfo(l.get(0), key.user, quietMode);
+            mBgDataModel.cachedPredictedItems.add(info);
+            mIconCache.getTitleAndIcon(info, false);
+        }
+        return results;
+    }
+
     private List<LauncherActivityInfo> loadAllApps() {
         final List<UserHandle> profiles = mUserCache.getUserProfiles();
         List<LauncherActivityInfo> allActivityList = new ArrayList<>();
@@ -878,6 +896,14 @@ public class LoaderTask implements Runnable {
                     mSessionHelper.getAllVerifiedSessions()) {
                 mBgAllAppsList.addPromiseApp(mApp.getContext(),
                         PackageInstallInfo.fromInstallingState(info));
+            }
+        }
+        for (AppInfo item : mBgDataModel.cachedPredictedItems) {
+            List<LauncherActivityInfo> l = mLauncherApps.getActivityList(
+                    item.componentName.getPackageName(), item.user);
+            for (LauncherActivityInfo info : l) {
+                boolean quietMode = mUserManager.isQuietModeEnabled(item.user);
+                mBgAllAppsList.add(new AppInfo(info, item.user, quietMode), info);
             }
         }
 

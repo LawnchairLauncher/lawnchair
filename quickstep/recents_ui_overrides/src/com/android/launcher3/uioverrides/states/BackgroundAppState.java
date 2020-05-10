@@ -17,22 +17,19 @@ package com.android.launcher3.uioverrides.states;
 
 import android.content.Context;
 
-import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.views.RecentsView;
-import com.android.quickstep.views.TaskView;
 
 /**
  * State indicating that the Launcher is behind an app
  */
 public class BackgroundAppState extends OverviewState {
 
-    private static final int STATE_FLAGS =
-            FLAG_DISABLE_RESTORE | FLAG_OVERVIEW_UI | FLAG_DISABLE_ACCESSIBILITY
-                    | FLAG_DISABLE_INTERACTION;
+    private static final int STATE_FLAGS = FLAG_DISABLE_RESTORE | FLAG_OVERVIEW_UI
+            | FLAG_WORKSPACE_INACCESSIBLE | FLAG_NON_INTERACTIVE | FLAG_CLOSE_POPUPS;
 
     public BackgroundAppState(int id) {
         this(id, LauncherLogProto.ContainerType.TASKSWITCHER);
@@ -40,11 +37,6 @@ public class BackgroundAppState extends OverviewState {
 
     protected BackgroundAppState(int id, int logContainer) {
         super(id, logContainer, STATE_FLAGS);
-    }
-
-    @Override
-    public void onStateEnabled(Launcher launcher) {
-        AbstractFloatingView.closeAllOpenViews(launcher, false);
     }
 
     @Override
@@ -66,23 +58,7 @@ public class BackgroundAppState extends OverviewState {
     }
 
     private float getOverviewScale(Launcher launcher) {
-        // Initialize the recents view scale to what it would be when starting swipe up
-        RecentsView recentsView = launcher.getOverviewPanel();
-        int taskCount = recentsView.getTaskViewCount();
-        if (taskCount == 0) return 1;
-
-        TaskView dummyTask;
-        if (recentsView.getCurrentPage() >= recentsView.getTaskViewStartIndex()) {
-            if (recentsView.getCurrentPage() <= taskCount - 1) {
-                dummyTask = recentsView.getCurrentPageTaskView();
-            } else {
-                dummyTask = recentsView.getTaskViewAt(taskCount - 1);
-            }
-        } else {
-            dummyTask = recentsView.getTaskViewAt(0);
-        }
-        return recentsView.getTempAppWindowAnimationHelper()
-                .updateForFullscreenOverview(dummyTask).getSrcToTargetScale();
+        return ((RecentsView) launcher.getOverviewPanel()).getMaxScaleForFullScreen();
     }
 
     @Override

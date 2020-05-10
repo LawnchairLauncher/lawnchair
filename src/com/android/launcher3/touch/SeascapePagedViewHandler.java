@@ -55,6 +55,11 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
     }
 
     @Override
+    public int getRotation() {
+        return Surface.ROTATION_270;
+    }
+
+    @Override
     public boolean isGoingUp(float displacement) {
         return displacement < 0;
     }
@@ -74,5 +79,16 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
     @Override
     public float getTaskMenuY(float y, View thumbnailView) {
         return y + thumbnailView.getMeasuredHeight();
+    }
+
+    @Override
+    public int getClearAllScrollOffset(View view, boolean isRtl) {
+        return (isRtl ? view.getPaddingTop() : - view.getPaddingBottom()) / 2;
+    }
+
+    @Override
+    public void setPrimaryAndResetSecondaryTranslate(View view, float translation) {
+        view.setTranslationX(0);
+        view.setTranslationY(-translation);
     }
 }

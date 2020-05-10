@@ -19,7 +19,6 @@ package com.android.launcher3;
 import static com.android.launcher3.Utilities.getDevicePrefs;
 import static com.android.launcher3.Utilities.getPointString;
 import static com.android.launcher3.config.FeatureFlags.APPLY_CONFIG_AT_RUNTIME;
-import static com.android.launcher3.settings.SettingsActivity.GRID_OPTIONS_PREFERENCE_KEY;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.PackageManagerHelper.getPackageFilter;
 
@@ -29,7 +28,6 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -216,9 +214,8 @@ public class InvariantDeviceProfile {
     }
 
     public static String getCurrentGridName(Context context) {
-        SharedPreferences prefs = Utilities.getPrefs(context);
-        return prefs.getBoolean(GRID_OPTIONS_PREFERENCE_KEY, false)
-                ? prefs.getString(KEY_IDP_GRID_NAME, null) : null;
+        return Utilities.isGridOptionsEnabled(context)
+                ? Utilities.getPrefs(context).getString(KEY_IDP_GRID_NAME, null) : null;
     }
 
     /**
@@ -263,7 +260,7 @@ public class InvariantDeviceProfile {
         iconTextSize = displayOption.iconTextSize;
         fillResIconDpi = getLauncherIconDensity(iconBitmapSize);
 
-        if (Utilities.getPrefs(context).getBoolean(GRID_OPTIONS_PREFERENCE_KEY, false)) {
+        if (Utilities.isGridOptionsEnabled(context)) {
             allAppsIconSize = displayOption.allAppsIconSize;
             allAppsIconTextSize = displayOption.allAppsIconTextSize;
         } else {
@@ -344,9 +341,7 @@ public class InvariantDeviceProfile {
         InvariantDeviceProfile oldProfile = new InvariantDeviceProfile(this);
 
         // Re-init grid
-        String gridName = Utilities.getPrefs(context).getBoolean(GRID_OPTIONS_PREFERENCE_KEY, false)
-                ? Utilities.getPrefs(context).getString(KEY_IDP_GRID_NAME, null)
-                : null;
+        String gridName = getCurrentGridName(context);
         initGrid(context, gridName);
 
         int changeFlags = 0;

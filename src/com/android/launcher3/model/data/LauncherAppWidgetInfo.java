@@ -21,6 +21,8 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Process;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.AppWidgetResizeFrame;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings;
@@ -140,6 +142,12 @@ public class LauncherAppWidgetInfo extends ItemInfo {
 
     public boolean isCustomWidget() {
         return appWidgetId <= CUSTOM_WIDGET_ID;
+    }
+
+    @Nullable
+    @Override
+    public ComponentName getTargetComponent() {
+        return providerName;
     }
 
     @Override

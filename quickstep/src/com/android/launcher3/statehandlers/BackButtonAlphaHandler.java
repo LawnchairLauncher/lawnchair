@@ -16,6 +16,7 @@
 
 package com.android.launcher3.statehandlers;
 
+import static com.android.launcher3.LauncherState.FLAG_HIDE_BACK_BUTTON;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.quickstep.AnimatedFloat.VALUE;
 
@@ -59,7 +60,8 @@ public class BackButtonAlphaHandler implements LauncherStateManager.StateHandler
         }
 
         mBackAlpha.value = SystemUiProxy.INSTANCE.get(mLauncher).getLastBackButtonAlpha();
-        animation.setFloat(mBackAlpha, VALUE, toState.hideBackButton ? 0 : 1, LINEAR);
+        animation.setFloat(mBackAlpha, VALUE,
+                mLauncher.shouldBackButtonBeHidden(toState) ? 0 : 1, LINEAR);
     }
 
     private void updateBackAlpha() {

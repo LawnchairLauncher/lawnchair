@@ -37,17 +37,13 @@ import static com.android.quickstep.SysUINavigationMode.removeShelfFromOverview;
 import android.content.Context;
 import android.graphics.Rect;
 import android.view.View;
-import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.Interpolator;
 
-import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.Workspace;
-import com.android.launcher3.allapps.DiscoveryBounce;
-import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -67,7 +63,8 @@ public class OverviewState extends LauncherState {
     protected static final Rect sTempRect = new Rect();
 
     private static final int STATE_FLAGS = FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED
-            | FLAG_DISABLE_RESTORE | FLAG_OVERVIEW_UI | FLAG_DISABLE_ACCESSIBILITY;
+            | FLAG_DISABLE_RESTORE | FLAG_OVERVIEW_UI | FLAG_WORKSPACE_INACCESSIBLE
+            | FLAG_CLOSE_POPUPS;
 
     public OverviewState(int id) {
         this(id, STATE_FLAGS);
@@ -82,9 +79,9 @@ public class OverviewState extends LauncherState {
     }
 
     @Override
-    public int getTransitionDuration(Launcher launcher) {
+    public int getTransitionDuration(Context context) {
         // In no-button mode, overview comes in all the way from the left, so give it more time.
-        boolean isNoButtonMode = SysUINavigationMode.INSTANCE.get(launcher).getMode() == NO_BUTTON;
+        boolean isNoButtonMode = SysUINavigationMode.INSTANCE.get(context).getMode() == NO_BUTTON;
         return isNoButtonMode && ENABLE_OVERVIEW_ACTIONS.get() ? 380 : 250;
     }
 
@@ -134,20 +131,6 @@ public class OverviewState extends LauncherState {
             return getHotseatScaleAndTranslation(launcher);
         }
         return super.getQsbScaleAndTranslation(launcher);
-    }
-
-    @Override
-    public void onStateEnabled(Launcher launcher) {
-        AbstractFloatingView.closeAllOpenViews(launcher);
-    }
-
-    @Override
-    public void onStateTransitionEnd(Launcher launcher) {
-        DiscoveryBounce.showForOverviewIfNeeded(launcher);
-        RecentsView recentsView = launcher.getOverviewPanel();
-        AccessibilityManagerCompat.sendCustomAccessibilityEvent(
-                recentsView.getPageAt(recentsView.getCurrentPage()),
-                AccessibilityEvent.TYPE_VIEW_FOCUSED, null);
     }
 
     @Override
@@ -258,5 +241,12 @@ public class OverviewState extends LauncherState {
 
     public static OverviewState newSwitchState(int id) {
         return new QuickSwitchState(id);
+    }
+
+    /**
+     *  New Overview substate that represents the overview in modal mode (one task shown on its own)
+     */
+    public static OverviewState newModalTaskState(int id) {
+        return new OverviewModalTaskState(id);
     }
 }

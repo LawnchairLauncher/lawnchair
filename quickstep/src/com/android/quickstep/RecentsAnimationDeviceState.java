@@ -17,6 +17,7 @@ package com.android.quickstep;
 
 import static android.content.Intent.ACTION_USER_UNLOCKED;
 
+import static com.android.launcher3.util.DefaultDisplay.CHANGE_ALL;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
 import static com.android.quickstep.SysUINavigationMode.Mode.THREE_BUTTONS;
@@ -216,6 +217,7 @@ public class RecentsAnimationDeviceState implements
         mDefaultDisplay.removeChangeListener(this);
         if (newMode.hasGestures) {
             mDefaultDisplay.addChangeListener(this);
+            onDisplayInfoChanged(mDefaultDisplay.getInfo(), CHANGE_ALL);
         }
 
         if (newMode == NO_BUTTON) {

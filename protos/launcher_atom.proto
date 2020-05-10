@@ -23,7 +23,7 @@ option java_outer_classname = "LauncherAtom";
 message ItemInfo {
   oneof Item {
     Application application = 1;
-    Task task= 2;
+    Task task = 2;
     Shortcut shortcut = 3;
     Widget widget = 4;
   }
@@ -34,13 +34,23 @@ message ItemInfo {
   optional bool is_work = 6;
 
   // Item can be child node to parent container or parent containers (nested)
-  oneof Container {
-    WorkspaceContainer workspace = 7;
-    HotseatContainer hotseat = 8;
-    FolderContainer folder = 9;
-  }
+  optional ContainerInfo container_info = 7;
+
   // Stores the origin of the Item
-  optional Origin source = 10;
+  optional Origin source = 8;
+}
+
+// Represents various launcher surface where items are placed.
+message ContainerInfo {
+  oneof Container {
+    WorkspaceContainer workspace = 1;
+    HotseatContainer hotseat = 2;
+    FolderContainer folder = 3;
+    AllAppsContainer all_apps_container = 4;
+  }
+}
+
+message AllAppsContainer {
 }
 
 enum Origin {
@@ -68,8 +78,8 @@ message Shortcut {
 
 // AppWidgets handled by AppWidgetManager
 message Widget {
-  optional int32 span_x = 1;
-  optional int32 span_y = 2;
+  optional int32 span_x = 1 [default = 1];
+  optional int32 span_y = 2 [default = 1];
   optional int32 app_widget_id = 3;
   optional string package_name = 4; // only populated during snapshot if from workspace
   optional string component_name = 5; // only populated during snapshot if from workspace
@@ -86,9 +96,9 @@ message Task {
 // Containers
 
 message WorkspaceContainer {
-  optional int32 page_index = 1; // range [-1, l], 0 is the index of the main homescreen
-  optional int32 grid_x = 2;     // [0, m], m varies based on the display density and resolution
-  optional int32 grid_y = 3;     // [0, n], n varies based on the display density and resolution
+  optional int32 page_index = 1 [default = -2]; // range [-1, l], 0 is the index of the main homescreen
+  optional int32 grid_x = 2 [default = -1]; // [0, m], m varies based on the display density and resolution
+  optional int32 grid_y = 3 [default = -1]; // [0, n], n varies based on the display density and resolution
 }
 
 message HotseatContainer {
@@ -96,13 +106,11 @@ message HotseatContainer {
 }
 
 message FolderContainer {
-  optional int32 page_index = 1;
-  optional int32 grid_x = 2;
-  optional int32 grid_y = 3;
-  oneof Container {
+  optional int32 page_index = 1 [default = -1];
+  optional int32 grid_x = 2 [default = -1];
+  optional int32 grid_y = 3 [default = -1];
+  oneof ParentContainer {
     WorkspaceContainer workspace = 4;
     HotseatContainer hotseat = 5;
   }
 }
-
-
