@@ -722,9 +722,25 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     }
 
     @Override
-    public void getVisualDragBounds(Rect bounds) {
+    public void getWorkspaceVisualDragBounds(Rect bounds) {
         DeviceProfile grid = mActivity.getDeviceProfile();
         BubbleTextView.getIconBounds(this, bounds, grid.iconSizePx);
+    }
+
+    private int getIconSizeForDisplay(int display) {
+        DeviceProfile grid = mActivity.getDeviceProfile();
+        switch (display) {
+            case DISPLAY_ALL_APPS:
+                return grid.allAppsIconSizePx;
+            case DISPLAY_WORKSPACE:
+            case DISPLAY_FOLDER:
+            default:
+                return grid.iconSizePx;
+        }
+    }
+
+    public void getSourceVisualDragBounds(Rect bounds) {
+        BubbleTextView.getIconBounds(this, bounds, getIconSizeForDisplay(mDisplay));
     }
 
     @Override
