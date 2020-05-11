@@ -105,6 +105,11 @@ public class SingleAxisSwipeDetector extends BaseSwipeDetector {
         super(config, isRtl);
         mListener = l;
         mDir = dir;
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.PAUSE_NOT_DETECTED, "SingleAxisSwipeDetector.ctor "
+                    + l.getClass().getSimpleName()
+                    + " @ " + android.util.Log.getStackTraceString(new Throwable()));
+        }
     }
 
     public void setDetectableScrollConditions(int scrollDirectionFlags, boolean ignoreSlop) {
