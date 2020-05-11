@@ -92,6 +92,9 @@ public abstract class BaseQuickstepLauncher extends Launcher
     @Override
     public void onNavigationModeChanged(Mode newMode) {
         getDragLayer().recreateControllers();
+        if (mActionsView != null && isOverviewActionsEnabled()) {
+            mActionsView.updateVerticalMarginForNavModeChange(newMode);
+        }
     }
 
     @Override
@@ -167,11 +170,16 @@ public abstract class BaseQuickstepLauncher extends Launcher
         mActionsView = findViewById(R.id.overview_actions_view);
         ((RecentsView) getOverviewPanel()).init(mActionsView);
 
-        if (FeatureFlags.ENABLE_OVERVIEW_ACTIONS.get() && removeShelfFromOverview(this)) {
+        if (isOverviewActionsEnabled()) {
             // Overview is above all other launcher elements, including qsb, so move it to the top.
             getOverviewPanel().bringToFront();
             mActionsView.bringToFront();
+            mActionsView.updateVerticalMarginForNavModeChange(SysUINavigationMode.getMode(this));
         }
+    }
+
+    private boolean isOverviewActionsEnabled() {
+        return FeatureFlags.ENABLE_OVERVIEW_ACTIONS.get() && removeShelfFromOverview(this);
     }
 
     public <T extends OverviewActionsView> T getActionsView() {
