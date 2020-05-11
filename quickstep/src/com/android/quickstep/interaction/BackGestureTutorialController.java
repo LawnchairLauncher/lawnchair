@@ -75,9 +75,6 @@ final class BackGestureTutorialController extends TutorialController {
 
     @Override
     Integer getActionTextButtonStringId() {
-        if (mTutorialType == BACK_NAVIGATION_COMPLETE) {
-            return R.string.gesture_tutorial_action_text_button_label;
-        }
         return null;
     }
 
