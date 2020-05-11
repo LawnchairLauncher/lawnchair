@@ -222,18 +222,8 @@ public class AppWindowAnimationHelper implements TransformParams.BuilderProxy {
             mCurrentRect.set(params.getCurrentRect());
         } else {
             mTmpRectF.set(mTargetRect);
-            Utilities.scaleRectFAboutCenter(mTmpRectF, params.getOffsetScale());
             mCurrentRect.set(mRectFEvaluator.evaluate(
                     params.getProgress(), mSourceRect, mTmpRectF));
-            if (mOrientedState == null
-                    || !mOrientedState.isMultipleOrientationSupportedByDevice()) {
-                mCurrentRect.offset(params.getOffset(), 0);
-            } else {
-                int displayRotation = mOrientedState.getDisplayRotation();
-                int launcherRotation = mOrientedState.getLauncherRotation();
-                mOrientedState.getOrientationHandler().offsetTaskRect(
-                        mCurrentRect, params.getOffset(), displayRotation, launcherRotation);
-            }
         }
 
         updateClipRect(params);

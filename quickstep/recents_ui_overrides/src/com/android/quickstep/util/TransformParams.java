@@ -30,8 +30,6 @@ import com.android.systemui.shared.system.TransactionCompat;
 public class TransformParams {
 
     private float mProgress;
-    private float mOffset;
-    private float mOffsetScale;
     private @Nullable RectF mCurrentRect;
     private float mTargetAlpha;
     private float mCornerRadius;
@@ -43,8 +41,6 @@ public class TransformParams {
 
     public TransformParams() {
         mProgress = 0;
-        mOffset = 0;
-        mOffsetScale = 1;
         mCurrentRect = null;
         mTargetAlpha = 1;
         mCornerRadius = -1;
@@ -86,26 +82,6 @@ public class TransformParams {
      */
     public TransformParams setTargetAlpha(float targetAlpha) {
         mTargetAlpha = targetAlpha;
-        return this;
-    }
-
-    /**
-     * If {@link #mCurrentRect} is null (i.e. {@link #setCurrentRect(RectF)} hasn't overridden
-     * the default), then offset the current rect by this amount after computing the rect based
-     * on {@link #mProgress}.
-     */
-    public TransformParams setOffset(float offset) {
-        mOffset = offset;
-        return this;
-    }
-
-    /**
-     * If {@link #mCurrentRect} is null (i.e. {@link #setCurrentRect(RectF)} hasn't overridden
-     * the default), then scale the current rect by this amount after computing the rect based
-     * on {@link #mProgress}.
-     */
-    public TransformParams setOffsetScale(float offsetScale) {
-        mOffsetScale = offsetScale;
         return this;
     }
 
@@ -181,14 +157,6 @@ public class TransformParams {
 
     public float getProgress() {
         return mProgress;
-    }
-
-    public float getOffset() {
-        return mOffset;
-    }
-
-    public float getOffsetScale() {
-        return mOffsetScale;
     }
 
     @Nullable

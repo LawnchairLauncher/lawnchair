@@ -33,7 +33,6 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.quickstep.AnimatedFloat;
-import com.android.quickstep.RecentsAnimationTargets;
 import com.android.quickstep.views.RecentsView.ScrollState;
 import com.android.quickstep.views.TaskThumbnailView.PreviewPositionHelper;
 import com.android.quickstep.views.TaskView;
@@ -61,7 +60,6 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
 
     private final Matrix mMatrix = new Matrix();
     private RemoteAnimationTargetCompat mRunningTarget;
-    private RecentsAnimationTargets mAllTargets;
 
     // Thumbnail view properties
     private final Rect mThumbnailPosition = new Rect();
@@ -124,10 +122,8 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
     /**
      * Sets the targets which the simulator will control
      */
-    public void setPreview(
-            RemoteAnimationTargetCompat runningTarget, RecentsAnimationTargets allTargets) {
+    public void setPreview(RemoteAnimationTargetCompat runningTarget) {
         mRunningTarget = runningTarget;
-        mAllTargets = allTargets;
 
         mThumbnailData.insets.set(mRunningTarget.contentInsets);
         // TODO: What is this?
@@ -146,6 +142,43 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
         if (mScrollState.scroll != scroll) {
             mScrollState.scroll = scroll;
             mScrollValid = false;
+        }
+    }
+
+    /**
+     * Returns the current clipped/visible window bounds in the window coordinate space
+     */
+    public RectF getCurrentCropRect() {
+        // Crop rect is the inverse of thumbnail matrix
+        RectF insets = mCurrentFullscreenParams.mCurrentDrawnInsets;
+        mTempRectF.set(-insets.left, -insets.top,
+                mTaskRect.width() + insets.right, mTaskRect.height() + insets.bottom);
+        mInversePositionMatrix.mapRect(mTempRectF);
+        return mTempRectF;
+    }
+
+    public RecentsOrientedState getOrientationState() {
+        return mOrientationState;
+    }
+
+    /**
+     * Returns the current transform applied to the window
+     */
+    public Matrix getCurrentMatrix() {
+        return mMatrix;
+    }
+
+    /**
+     * Applies the rotation on the matrix to so that it maps from launcher coordinate space to
+     * window coordinate space.
+     */
+    public void applyWindowToHomeRotation(Matrix matrix) {
+        mMatrix.postTranslate(mDp.windowX, mDp.windowY);
+        postDisplayRotation(deltaRotation(
+                mOrientationState.getLauncherRotation(), mOrientationState.getDisplayRotation()),
+                mDp.widthPx, mDp.heightPx, matrix);
+        if (mRunningTarget != null) {
+            matrix.postTranslate(-mRunningTarget.position.x, -mRunningTarget.position.y);
         }
     }
 
@@ -206,11 +239,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
 
         // Apply recensView matrix
         mMatrix.postScale(recentsViewScale.value, recentsViewScale.value, mPivot.x, mPivot.y);
-        postDisplayRotation(deltaRotation(
-                mOrientationState.getLauncherRotation(), mOrientationState.getDisplayRotation()),
-                mDp.widthPx, mDp.heightPx, mMatrix);
-        mMatrix.postTranslate(mDp.windowX - mRunningTarget.position.x,
-                mDp.windowY - mRunningTarget.position.y);
+        applyWindowToHomeRotation(mMatrix);
 
         // Crop rect is the inverse of thumbnail matrix
         mTempRectF.set(-insets.left, -insets.top,
@@ -224,7 +253,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
     @Override
     public void onBuildParams(Builder builder, RemoteAnimationTargetCompat app,
             int targetMode, TransformParams params) {
-        if (app.mode == mAllTargets.targetMode
+        if (app.mode == targetMode
                 && app.activityType != RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME) {
             builder.withMatrix(mMatrix)
                     .withWindowCrop(mTmpCropRect)
