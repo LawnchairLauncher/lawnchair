@@ -86,8 +86,8 @@ public final class FallbackActivityInterface implements
     }
 
     @Override
-    public AnimationFactory prepareRecentsUI(boolean activityVisible,
-            boolean animateActivity, Consumer<AnimatorPlaybackController> callback) {
+    public AnimationFactory prepareRecentsUI(
+            boolean activityVisible, Consumer<AnimatorPlaybackController> callback) {
         RecentsActivity activity = getCreatedActivity();
         if (activityVisible) {
             return (transitionLength) -> { };
@@ -97,9 +97,7 @@ public final class FallbackActivityInterface implements
         rv.setContentAlpha(0);
         rv.getClearAllButton().setVisibilityAlpha(0);
         rv.setDisallowScrollToClearAll(true);
-
-        boolean fromState = !animateActivity;
-        rv.setInOverviewState(fromState);
+        rv.setInOverviewState(false);
 
         return new AnimationFactory() {
 
@@ -132,12 +130,8 @@ public final class FallbackActivityInterface implements
                         AnimatorPlaybackController.wrap(animatorSet, transitionLength);
 
                 // Since we are changing the start position of the UI, reapply the state, at the end
-                controller.setEndAction(() -> {
-                    boolean endState = true;
-                    rv.setInOverviewState(controller.getInterpolatedProgress() > 0.5 ?
-                                    endState : fromState);
-                });
-
+                controller.setEndAction(() ->
+                        rv.setInOverviewState(controller.getInterpolatedProgress() > 0.5));
                 callback.accept(controller);
             }
         };
