@@ -36,7 +36,6 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Build;
-import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Interpolator;
@@ -347,20 +346,23 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
 
         mTransitionDragLength = mActivityInterface.getSwipeUpDestinationAndLength(
                 dp, mContext, TEMP_RECT);
-
-        if (mDeviceState.isFullyGesturalNavMode()) {
-            // We can drag all the way to the top of the screen.
-            mDragLengthFactor = (float) dp.heightPx / mTransitionDragLength;
-            Pair<Float, Float> dragFactorStartAndMaxProgress =
-                    mActivityInterface.getSwipeUpPullbackStartAndMaxProgress();
-            mDragLengthFactorStartPullback = dragFactorStartAndMaxProgress.first;
-            mDragLengthFactorMaxPullback = dragFactorStartAndMaxProgress.second;
-        }
-
         mTaskViewSimulator.setDp(dp);
         mTaskViewSimulator.setLayoutRotation(
                 mDeviceState.getCurrentActiveRotation(),
                 mDeviceState.getDisplayRotation());
+
+        if (mDeviceState.isFullyGesturalNavMode()) {
+            // We can drag all the way to the top of the screen.
+            mDragLengthFactor = (float) dp.heightPx / mTransitionDragLength;
+
+            float startScale = mTaskViewSimulator.getFullScreenScale();
+            // Start pulling back when RecentsView scale is 0.75f, and let it go down to 0.5f.
+            mDragLengthFactorStartPullback = (0.75f - startScale) / (1 - startScale);
+            mDragLengthFactorMaxPullback = (0.5f - startScale) / (1 - startScale);
+        } else {
+            mDragLengthFactor = 1;
+            mDragLengthFactorStartPullback = mDragLengthFactorMaxPullback = 1;
+        }
 
         AnimatorSet anim = new AnimatorSet();
         anim.setDuration(mTransitionDragLength * 2);
