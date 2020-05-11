@@ -141,4 +141,6 @@
     <string name="action_share">Share</string>
     <!-- Label for a button that causes a screen shot of the current app to be taken. [CHAR_LIMIT=40] -->
     <string name="action_screenshot">Screenshot</string>
+    <!-- Message shown when an action is blocked by a policy enforced by the app or the organization managing the device. [CHAR_LIMIT=NONE] -->
+    <string name="blocked_by_policy">This action isn\'t allowed by the app or your organization</string>
 </resources>
