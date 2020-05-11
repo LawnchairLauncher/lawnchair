@@ -17,8 +17,7 @@ package com.android.quickstep;
 
 import static com.android.launcher3.BaseActivity.INVISIBLE_BY_STATE_HANDLER;
 import static com.android.launcher3.BaseActivity.STATE_HANDLER_INVISIBILITY_FLAGS;
-import static com.android.launcher3.LauncherState.BACKGROUND_APP;
-import static com.android.launcher3.LauncherState.OVERVIEW;
+import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_2;
@@ -41,17 +40,16 @@ import static com.android.quickstep.views.RecentsView.UPDATE_SYSUI_FLAGS_THRESHO
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PointF;
-import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Build;
 import android.os.SystemClock;
+import android.os.UserHandle;
 import android.view.View;
 import android.view.View.OnApplyWindowInsetsListener;
 import android.view.ViewTreeObserver.OnDrawListener;
@@ -64,6 +62,7 @@ import androidx.annotation.UiThread;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
@@ -74,15 +73,15 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.util.TraceHelper;
+import com.android.launcher3.views.FloatingIconView;
 import com.android.quickstep.BaseActivityInterface.AnimationFactory;
-import com.android.quickstep.BaseActivityInterface.HomeAnimationFactory;
 import com.android.quickstep.GestureState.GestureEndTarget;
 import com.android.quickstep.inputconsumers.OverviewInputConsumer;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.RectFSpringAnim;
 import com.android.quickstep.util.ShelfPeekAnim;
 import com.android.quickstep.util.ShelfPeekAnim.ShelfAnimState;
-import com.android.quickstep.util.TaskViewSimulator;
+import com.android.quickstep.util.StaggeredWorkspaceAnim;
 import com.android.quickstep.util.TransformParams.TargetAlphaProvider;
 import com.android.quickstep.views.LiveTileOverlay;
 import com.android.quickstep.views.RecentsView;
@@ -96,8 +95,8 @@ import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
  * Handles the navigation gestures when Launcher is the default home activity.
  */
 @TargetApi(Build.VERSION_CODES.O)
-public class LauncherSwipeHandler<T extends BaseDraggingActivity>
-        extends BaseSwipeUpHandler<T, RecentsView> implements OnApplyWindowInsetsListener {
+public class LauncherSwipeHandler extends BaseSwipeUpHandler<Launcher, RecentsView>
+        implements OnApplyWindowInsetsListener {
     private static final String TAG = LauncherSwipeHandler.class.getSimpleName();
 
     private static final String[] STATE_NAMES = DEBUG_STATES ? new String[16] : null;
@@ -151,7 +150,6 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
             STATE_LAUNCHER_PRESENT | STATE_LAUNCHER_DRAWN | STATE_LAUNCHER_STARTED;
 
     public static final long MAX_SWIPE_DURATION = 350;
-    public static final long MIN_SWIPE_DURATION = 80;
     public static final long MIN_OVERSHOOT_DURATION = 120;
 
     public static final float MIN_PROGRESS_FOR_OVERVIEW = 0.7f;
@@ -180,9 +178,6 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
     private AnimatorPlaybackController mLauncherTransitionController;
     private boolean mHasLauncherTransitionControllerStarted;
 
-    private final TaskViewSimulator mTaskViewSimulator;
-    private AnimatorPlaybackController mWindowTransitionController;
-
     private AnimationFactory mAnimationFactory = (t) -> { };
 
     private boolean mWasLauncherAlreadyVisible;
@@ -203,11 +198,10 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
             TaskAnimationManager taskAnimationManager, GestureState gestureState,
             long touchTimeMs, boolean continuingLastGesture,
             InputConsumerController inputConsumer) {
-        super(context, deviceState, gestureState, inputConsumer);
+        super(context, deviceState, gestureState, inputConsumer, LAUNCHER_ACTIVITY_SIZE_STRATEGY);
         mTaskAnimationManager = taskAnimationManager;
         mTouchTimeMs = touchTimeMs;
         mContinuingLastGesture = continuingLastGesture;
-        mTaskViewSimulator = new TaskViewSimulator(context, LAUNCHER_ACTIVITY_SIZE_STRATEGY);
 
         initAfterSubclassConstructor();
         initStateCallbacks();
@@ -279,7 +273,7 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
     @Override
     protected boolean onActivityInit(Boolean alreadyOnHome) {
         super.onActivityInit(alreadyOnHome);
-        final T activity = mActivityInterface.getCreatedActivity();
+        final Launcher activity = mActivityInterface.getCreatedActivity();
         if (mActivity == activity) {
             return true;
         }
@@ -327,7 +321,7 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
     }
 
     private void onLauncherStart() {
-        final T activity = mActivityInterface.getCreatedActivity();
+        final Launcher activity = mActivityInterface.getCreatedActivity();
         if (mActivity != activity) {
             return;
         }
@@ -518,34 +512,6 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
         mAnimationFactory.createActivityInterface(mTransitionDragLength);
     }
 
-    @Override
-    protected void updateSource(Rect stackBounds, RemoteAnimationTargetCompat runningTarget) {
-        super.updateSource(stackBounds, runningTarget);
-        mTaskViewSimulator.setPreview(runningTarget, mRecentsAnimationTargets);
-    }
-
-    @Override
-    protected void initTransitionEndpoints(DeviceProfile dp) {
-        super.initTransitionEndpoints(dp);
-        mTaskViewSimulator.setDp(dp);
-        mTaskViewSimulator.setLayoutRotation(
-                mDeviceState.getCurrentActiveRotation(),
-                mDeviceState.getDisplayRotation());
-
-        AnimatorSet anim = new AnimatorSet();
-        anim.setDuration(mTransitionDragLength * 2);
-        anim.setInterpolator(t -> t * mDragLengthFactor);
-        anim.play(ObjectAnimator.ofFloat(mTaskViewSimulator.recentsViewScale,
-                AnimatedFloat.VALUE,
-                mTaskViewSimulator.getFullScreenScale(), 1));
-        anim.play(ObjectAnimator.ofFloat(mTaskViewSimulator.fullScreenProgress,
-                AnimatedFloat.VALUE,
-                BACKGROUND_APP.getOverviewFullscreenProgress(),
-                OVERVIEW.getOverviewFullscreenProgress()));
-        mWindowTransitionController =
-                AnimatorPlaybackController.wrap(anim, mTransitionDragLength * 2);
-    }
-
     /**
      * We don't want to change mLauncherTransitionController if mGestureState.getEndTarget() == HOME
      * (it has its own animation) or if we're already animating the current controller.
@@ -576,18 +542,11 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
 
     @Override
     public void updateFinalShift() {
-        if (mRecentsAnimationTargets != null) {
-            // Base class expects applyTransformUnchecked to be called here.
-            // TODO: Remove this dependency for swipe-up animation.
-            // applyTransformUnchecked();
-            updateSysUiFlags(mCurrentShift.value);
-        }
-
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             if (mRecentsAnimationTargets != null) {
                 LiveTileOverlay.INSTANCE.update(
-                        mAppWindowAnimationHelper.getCurrentRectWithInsets(),
-                        mAppWindowAnimationHelper.getCurrentCornerRadius());
+                        mTaskViewSimulator.getCurrentCropRect(),
+                        mTaskViewSimulator.getCurrentCornerRadius());
             }
         }
 
@@ -599,14 +558,8 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
             }
         }
 
-        if (mWindowTransitionController != null) {
-            float progress = mCurrentShift.value / mDragLengthFactor;
-            mWindowTransitionController.setPlayFraction(progress);
-            mTransformParams.setTargetSet(mRecentsAnimationTargets);
-
-            mTaskViewSimulator.setScroll(mRecentsView == null ? 0 : mRecentsView.getScrollOffset());
-            mTaskViewSimulator.apply(mTransformParams);
-        }
+        updateSysUiFlags(mCurrentShift.value);
+        applyWindowTransform();
         updateLauncherTransitionProgress();
     }
 
@@ -680,7 +633,7 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
      */
     @UiThread
     private void notifyGestureStartedAsync() {
-        final T curActivity = mActivity;
+        final Launcher curActivity = mActivity;
         if (curActivity != null) {
             // Once the gesture starts, we can no longer transition home through the button, so
             // reset the force override of the activity visibility
@@ -962,24 +915,61 @@ public class LauncherSwipeHandler<T extends BaseDraggingActivity>
             Interpolator interpolator, GestureEndTarget target, PointF velocityPxPerMs) {
         // Set the state, but don't notify until the animation completes
         mGestureState.setEndTarget(target, false /* isAtomic */);
-
         maybeUpdateRecentsAttachedState();
 
         if (mGestureState.getEndTarget() == HOME) {
             HomeAnimationFactory homeAnimFactory;
             if (mActivity != null) {
-                homeAnimFactory = mActivityInterface.prepareHomeUI();
-            } else {
-                homeAnimFactory = new HomeAnimationFactory() {
-                    @NonNull
+                final TaskView runningTaskView = mRecentsView.getRunningTaskView();
+                final View workspaceView;
+                if (runningTaskView != null
+                        && runningTaskView.getTask().key.getComponent() != null) {
+                    workspaceView = mActivity.getWorkspace().getFirstMatchForAppClose(
+                            runningTaskView.getTask().key.getComponent().getPackageName(),
+                            UserHandle.of(runningTaskView.getTask().key.userId));
+                } else {
+                    workspaceView = null;
+                }
+                final RectF iconLocation = new RectF();
+                boolean canUseWorkspaceView =
+                        workspaceView != null && workspaceView.isAttachedToWindow();
+                FloatingIconView floatingIconView = canUseWorkspaceView
+                        ? FloatingIconView.getFloatingIconView(mActivity, workspaceView,
+                        true /* hideOriginal */, iconLocation, false /* isOpening */)
+                        : null;
+
+                mActivity.getRootView().setForceHideBackArrow(true);
+
+                homeAnimFactory = new HomeAnimationFactory(floatingIconView) {
+
                     @Override
                     public RectF getWindowTargetRect() {
-                        RectF fallbackTarget = new RectF(mAppWindowAnimationHelper.getTargetRect());
-                        Utilities.scaleRectFAboutCenter(fallbackTarget, 0.25f);
-                        return fallbackTarget;
+                        if (canUseWorkspaceView) {
+                            return iconLocation;
+                        } else {
+                            return super.getWindowTargetRect();
+                        }
                     }
 
                     @NonNull
+                    @Override
+                    public AnimatorPlaybackController createActivityAnimationToHome() {
+                        // Return an empty APC here since we have an non-user controlled animation
+                        // to home.
+                        long accuracy = 2 * Math.max(mDp.widthPx, mDp.heightPx);
+                        return mActivity.getStateManager().createAnimationToNewWorkspace(
+                                NORMAL, accuracy, 0 /* animComponents */);
+                    }
+
+                    @Override
+                    public void playAtomicAnimation(float velocity) {
+                        new StaggeredWorkspaceAnim(mActivity, velocity,
+                                true /* animateOverviewScrim */).start();
+                    }
+                };
+
+            } else {
+                homeAnimFactory = new HomeAnimationFactory(null) {
                     @Override
                     public AnimatorPlaybackController createActivityAnimationToHome() {
                         return AnimatorPlaybackController.wrap(new AnimatorSet(), duration);

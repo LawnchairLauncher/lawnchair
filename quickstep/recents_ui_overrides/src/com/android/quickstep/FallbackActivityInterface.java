@@ -21,18 +21,14 @@ import static com.android.quickstep.fallback.FallbackRecentsView.ZOOM_PROGRESS;
 import static com.android.quickstep.util.WindowSizeStrategy.FALLBACK_RECENTS_SIZE_STRATEGY;
 import static com.android.quickstep.views.RecentsView.CONTENT_ALPHA;
 
-import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Rect;
-import android.graphics.RectF;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.quickstep.fallback.FallbackRecentsView;
@@ -87,39 +83,6 @@ public final class FallbackActivityInterface implements
         // This class becomes active when the screen is locked.
         // Rather than having it handle assistant visibility changes, the assistant visibility is
         // set to zero prior to this class becoming active.
-    }
-
-    @NonNull
-    @Override
-    public HomeAnimationFactory prepareHomeUI() {
-        RecentsActivity activity = getCreatedActivity();
-        RecentsView recentsView = activity.getOverviewPanel();
-
-        return new HomeAnimationFactory() {
-            @NonNull
-            @Override
-            public RectF getWindowTargetRect() {
-                float centerX = recentsView.getPivotX();
-                float centerY = recentsView.getPivotY();
-                return new RectF(centerX, centerY, centerX, centerY);
-            }
-
-            @NonNull
-            @Override
-            public AnimatorPlaybackController createActivityAnimationToHome() {
-                Animator anim = ObjectAnimator.ofFloat(recentsView, CONTENT_ALPHA, 0);
-                anim.addListener(new AnimationSuccessListener() {
-                    @Override
-                    public void onAnimationSuccess(Animator animator) {
-                        recentsView.startHome();
-                    }
-                });
-                AnimatorSet animatorSet = new AnimatorSet();
-                animatorSet.play(anim);
-                long accuracy = 2 * Math.max(recentsView.getWidth(), recentsView.getHeight());
-                return AnimatorPlaybackController.wrap(animatorSet, accuracy);
-            }
-        };
     }
 
     @Override

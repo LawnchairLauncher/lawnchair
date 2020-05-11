@@ -17,7 +17,6 @@ package com.android.quickstep;
 
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
-import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.anim.Interpolators.INSTANT;
@@ -34,15 +33,11 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Rect;
-import android.graphics.RectF;
-import android.os.UserHandle;
 import android.util.Log;
 import android.util.Pair;
 import android.view.MotionEvent;
-import android.view.View;
 import android.view.animation.Interpolator;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
@@ -58,16 +53,13 @@ import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statehandlers.DepthController.ClampedDepthProperty;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
-import com.android.launcher3.views.FloatingIconView;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.util.ShelfPeekAnim;
 import com.android.quickstep.util.ShelfPeekAnim.ShelfAnimState;
-import com.android.quickstep.util.StaggeredWorkspaceAnim;
 import com.android.quickstep.views.LauncherRecentsView;
 import com.android.quickstep.views.RecentsView;
-import com.android.quickstep.views.TaskView;
 import com.android.systemui.plugins.shared.LauncherOverlayManager;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
@@ -148,63 +140,6 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
             return;
         }
         launcher.onAssistantVisibilityChanged(visibility);
-    }
-
-    @NonNull
-    @Override
-    public HomeAnimationFactory prepareHomeUI() {
-        Launcher launcher = getCreatedActivity();
-        final DeviceProfile dp = launcher.getDeviceProfile();
-        final RecentsView recentsView = launcher.getOverviewPanel();
-        final TaskView runningTaskView = recentsView.getRunningTaskView();
-        final View workspaceView;
-        if (runningTaskView != null && runningTaskView.getTask().key.getComponent() != null) {
-            workspaceView = launcher.getWorkspace().getFirstMatchForAppClose(
-                    runningTaskView.getTask().key.getComponent().getPackageName(),
-                    UserHandle.of(runningTaskView.getTask().key.userId));
-        } else {
-            workspaceView = null;
-        }
-        final RectF iconLocation = new RectF();
-        boolean canUseWorkspaceView = workspaceView != null && workspaceView.isAttachedToWindow();
-        FloatingIconView floatingIconView = canUseWorkspaceView
-                ? FloatingIconView.getFloatingIconView(launcher, workspaceView,
-                        true /* hideOriginal */, iconLocation, false /* isOpening */)
-                : null;
-        setLauncherHideBackArrow(true);
-        return new HomeAnimationFactory() {
-            @Nullable
-            @Override
-            public View getFloatingView() {
-                return floatingIconView;
-            }
-
-            @NonNull
-            @Override
-            public RectF getWindowTargetRect() {
-                if (canUseWorkspaceView) {
-                    return iconLocation;
-                } else {
-                    return HomeAnimationFactory
-                        .getDefaultWindowTargetRect(recentsView.getPagedOrientationHandler(), dp);
-                }
-            }
-
-            @NonNull
-            @Override
-            public AnimatorPlaybackController createActivityAnimationToHome() {
-                // Return an empty APC here since we have an non-user controlled animation to home.
-                long accuracy = 2 * Math.max(dp.widthPx, dp.heightPx);
-                return launcher.getStateManager().createAnimationToNewWorkspace(NORMAL, accuracy,
-                        0 /* animComponents */);
-            }
-
-            @Override
-            public void playAtomicAnimation(float velocity) {
-                new StaggeredWorkspaceAnim(launcher, velocity, true /* animateOverviewScrim */)
-                        .start();
-            }
-        };
     }
 
     @Override

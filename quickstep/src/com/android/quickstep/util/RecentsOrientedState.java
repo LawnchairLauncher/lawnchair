@@ -37,7 +37,6 @@ import android.database.ContentObserver;
 import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.Rect;
-import android.graphics.RectF;
 import android.os.Handler;
 import android.provider.Settings;
 import android.util.Log;
@@ -124,7 +123,6 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
     private final WindowSizeStrategy mSizeStrategy;
 
     private final Matrix mTmpMatrix = new Matrix();
-    private final Matrix mTmpInverseMatrix = new Matrix();
 
     private int mFlags;
     private int mPreviousRotation = ROTATION_0;
@@ -417,23 +415,6 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
             transform.postScale(scale, 1 / scale);
         }
         */
-    }
-
-    public void mapRectFromNormalOrientation(RectF src, int screenWidth, int screenHeight) {
-        mapRectFromRotation(mDisplayRotation, src, screenWidth, screenHeight);
-    }
-
-    public void mapRectFromRotation(int rotation, RectF src, int screenWidth, int screenHeight) {
-        mTmpMatrix.reset();
-        postDisplayRotation(rotation, screenWidth, screenHeight, mTmpMatrix);
-        mTmpMatrix.mapRect(src);
-    }
-
-    public void mapInverseRectFromNormalOrientation(RectF src, int screenWidth, int screenHeight) {
-        mTmpMatrix.reset();
-        postDisplayRotation(mDisplayRotation, screenWidth, screenHeight, mTmpMatrix);
-        mTmpMatrix.invert(mTmpInverseMatrix);
-        mTmpInverseMatrix.mapRect(src);
     }
 
     @SurfaceRotation
