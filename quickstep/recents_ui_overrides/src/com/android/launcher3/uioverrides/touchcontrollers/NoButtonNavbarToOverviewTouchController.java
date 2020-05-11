@@ -65,6 +65,9 @@ public class NoButtonNavbarToOverviewTouchController extends FlingAndHoldTouchCo
     public NoButtonNavbarToOverviewTouchController(Launcher l) {
         super(l);
         mRecentsView = l.getOverviewPanel();
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.PAUSE_NOT_DETECTED, "NoButtonNavbarToOverviewTouchController.ctor");
+        }
     }
 
     @Override

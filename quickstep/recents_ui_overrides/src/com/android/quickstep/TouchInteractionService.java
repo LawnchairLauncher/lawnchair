@@ -601,14 +601,23 @@ public class TouchInteractionService extends Service implements PluginListener<O
     }
 
     private void handleOrientationSetup(InputConsumer baseInputConsumer) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.PAUSE_NOT_DETECTED, "handleOrientationSetup.1");
+        }
         if (!isFixedRotationTransformEnabled(this)) {
             return;
         }
         mDeviceState.enableMultipleRegions(baseInputConsumer instanceof OtherActivityInputConsumer);
         BaseDraggingActivity activity =
                 mOverviewComponentObserver.getActivityInterface().getCreatedActivity();
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.PAUSE_NOT_DETECTED, "handleOrientationSetup.2");
+        }
         if (activity == null || !(activity.getOverviewPanel() instanceof RecentsView)) {
             return;
+        }
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.PAUSE_NOT_DETECTED, "handleOrientationSetup.3");
         }
         ((RecentsView) activity.getOverviewPanel())
             .setLayoutRotation(mDeviceState.getCurrentActiveRotation(),

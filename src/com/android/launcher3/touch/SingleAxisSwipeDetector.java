@@ -157,7 +157,8 @@ public class SingleAxisSwipeDetector extends BaseSwipeDetector {
     @Override
     protected void reportDraggingInternal(PointF displacement, MotionEvent event) {
         if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.PAUSE_NOT_DETECTED, "SingleAxisSwipeDetector");
+            Log.d(TestProtocol.PAUSE_NOT_DETECTED, "SingleAxisSwipeDetector "
+                    + mListener.getClass().getSimpleName());
         }
         mListener.onDrag(mDir.extractDirection(displacement),
                 mDir.extractOrthogonalDirection(displacement), event);

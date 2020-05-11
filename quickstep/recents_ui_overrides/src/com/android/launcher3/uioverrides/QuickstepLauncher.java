@@ -30,6 +30,7 @@ import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.Nullable;
@@ -49,6 +50,7 @@ import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.SystemShortcut;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.uioverrides.states.QuickstepAtomicAnimationFactory;
 import com.android.launcher3.uioverrides.touchcontrollers.FlingAndHoldTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.LandscapeEdgeSwipeController;
@@ -244,6 +246,9 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
 
     @Override
     public TouchController[] createTouchControllers() {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.PAUSE_NOT_DETECTED, "createTouchControllers.1");
+        }
         Mode mode = SysUINavigationMode.getMode(this);
 
         ArrayList<TouchController> list = new ArrayList<>();
@@ -251,7 +256,13 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
         if (mode == NO_BUTTON) {
             list.add(new NoButtonQuickSwitchTouchController(this));
             list.add(new NavBarToHomeTouchController(this));
+            if (TestProtocol.sDebugTracing) {
+                Log.d(TestProtocol.PAUSE_NOT_DETECTED, "createTouchControllers.2");
+            }
             if (FeatureFlags.ENABLE_OVERVIEW_ACTIONS.get()) {
+                if (TestProtocol.sDebugTracing) {
+                    Log.d(TestProtocol.PAUSE_NOT_DETECTED, "createTouchControllers.3");
+                }
                 list.add(new NoButtonNavbarToOverviewTouchController(this));
             } else {
                 list.add(new FlingAndHoldTouchController(this));
