@@ -303,7 +303,7 @@ public class ItemInfo {
                     break;
             }
             itemBuilder.setContainerInfo(ContainerInfo.newBuilder().setFolder(folderBuilder));
-        } else {
+        } else if (getContainerInfo().getContainerCase().getNumber() > 0) {
             itemBuilder.setContainerInfo(getContainerInfo());
         }
         return itemBuilder.build();
