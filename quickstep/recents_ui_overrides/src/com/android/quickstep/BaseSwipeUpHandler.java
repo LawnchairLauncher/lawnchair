@@ -38,7 +38,6 @@ import android.graphics.RectF;
 import android.os.Build;
 import android.util.Pair;
 import android.view.MotionEvent;
-import android.view.View;
 import android.view.animation.Interpolator;
 
 import androidx.annotation.NonNull;
@@ -131,6 +130,8 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
     protected boolean mCanceled;
     protected int mLastStartedTaskId = -1;
 
+    private boolean mRecentsViewScrollLinked = false;
+
     protected BaseSwipeUpHandler(Context context, RecentsAnimationDeviceState deviceState,
             GestureState gestureState, InputConsumerController inputConsumer,
             WindowSizeStrategy windowSizeStrategy) {
@@ -203,6 +204,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
         runOnRecentsAnimationStart(() ->
                 mRecentsView.setRecentsAnimationTargets(mRecentsAnimationController,
                         mRecentsAnimationTargets));
+        mRecentsViewScrollLinked = true;
     }
 
     protected void startNewTask(Consumer<Boolean> resultCallback) {
@@ -329,19 +331,6 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
                 : mRecentsView.getRunningTaskIndex();
     }
 
-    private Rect getStackBounds(DeviceProfile dp) {
-        if (mActivity != null) {
-            int loc[] = new int[2];
-            View rootView = mActivity.getRootView();
-            rootView.getLocationOnScreen(loc);
-            return new Rect(loc[0], loc[1], loc[0] + rootView.getWidth(),
-                    loc[1] + rootView.getHeight());
-        } else {
-            return new Rect(dp.windowX, dp.windowY,
-                    dp.windowX + dp.widthPx, dp.windowY + dp.heightPx);
-        }
-    }
-
     protected void initTransitionEndpoints(DeviceProfile dp) {
         mDp = dp;
 
@@ -440,7 +429,9 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
             mWindowTransitionController.setPlayFraction(progress);
             mTransformParams.setTargetSet(mRecentsAnimationTargets);
 
-            mTaskViewSimulator.setScroll(mRecentsView == null ? 0 : mRecentsView.getScrollOffset());
+            if (mRecentsViewScrollLinked) {
+                mTaskViewSimulator.setScroll(mRecentsView.getScrollOffset());
+            }
             mTaskViewSimulator.apply(mTransformParams);
         }
     }
