@@ -37,6 +37,8 @@ import android.os.Debug;
 import android.os.Process;
 import android.os.RemoteException;
 import android.os.StrictMode;
+import android.os.UserHandle;
+import android.os.UserManager;
 import android.util.Log;
 
 import androidx.test.InstrumentationRegistry;
@@ -276,6 +278,15 @@ public abstract class AbstractLauncherUiTest {
         mTargetContext = InstrumentationRegistry.getTargetContext();
         mTargetPackage = mTargetContext.getPackageName();
         mLauncherPid = mLauncher.getPid();
+
+        UserManager userManager = mTargetContext.getSystemService(UserManager.class);
+        if (userManager != null) {
+            for (UserHandle userHandle : userManager.getUserProfiles()) {
+                if (!userHandle.isSystem()) {
+                    mDevice.executeShellCommand("pm remove-user " + userHandle.getIdentifier());
+                }
+            }
+        }
     }
 
     @After
