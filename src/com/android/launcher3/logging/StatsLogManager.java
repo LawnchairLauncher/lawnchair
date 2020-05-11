@@ -16,20 +16,19 @@
 package com.android.launcher3.logging;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.android.launcher3.R;
 import com.android.launcher3.logger.LauncherAtom;
-import com.android.launcher3.logger.LauncherAtom.ItemInfo;
 import com.android.launcher3.logging.StatsLogUtils.LogStateProvider;
 import com.android.launcher3.util.ResourceBasedOverride;
 
 /**
  * Handles the user event logging in R+.
+ * All of the event id is defined here.
+ * Most of the methods are dummy methods for Launcher3
+ * Actual call happens only for Launcher variant that implements QuickStep.
  */
 public class StatsLogManager implements ResourceBasedOverride {
-
-    private static final String TAG = "StatsLogManager";
 
     interface EventEnum {
         int getId();
@@ -37,13 +36,13 @@ public class StatsLogManager implements ResourceBasedOverride {
 
     public enum LauncherEvent implements EventEnum {
         @LauncherUiEvent(doc = "App launched from workspace, hotseat or folder in launcher")
-        APP_LAUNCH_TAP(1),
+        LAUNCHER_APP_LAUNCH_TAP(338),
         @LauncherUiEvent(doc = "Task launched from overview using TAP")
-        TASK_LAUNCH_TAP(2),
+        LAUNCHER_TASK_LAUNCH_TAP(339),
         @LauncherUiEvent(doc = "Task launched from overview using SWIPE DOWN")
-        TASK_LAUNCH_SWIPE_DOWN(2),
+        LAUNCHER_TASK_LAUNCH_SWIPE_DOWN(340),
         @LauncherUiEvent(doc = "TASK dismissed from overview using SWIPE UP")
-        TASK_DISMISS_SWIPE_UP(3),
+        LAUNCHER_TASK_DISMISS_SWIPE_UP(341),
         @LauncherUiEvent(doc = "User dragged a launcher item")
         LAUNCHER_ITEM_DRAG_STARTED(383),
         @LauncherUiEvent(doc = "A dragged launcher item is successfully dropped")
@@ -75,30 +74,18 @@ public class StatsLogManager implements ResourceBasedOverride {
         StatsLogManager mgr = Overrides.getObject(StatsLogManager.class,
                 context.getApplicationContext(), R.string.stats_log_manager_class);
         mgr.mStateProvider = stateProvider;
-        mgr.verify();
         return mgr;
     }
 
     /**
-     * Logs an event and accompanying {@link ItemInfo}
+     * Logs an event and accompanying {@link LauncherAtom.ItemInfo}
      */
-    public void log(LauncherEvent event, LauncherAtom.ItemInfo itemInfo) {
-        Log.d(TAG, String.format("%s\n%s", event.name(), itemInfo));
-        // Call StatsLog method
-    }
+    public void log(LauncherEvent event, InstanceId instanceId, LauncherAtom.ItemInfo itemInfo) { }
+    public void log(LauncherEvent event, LauncherAtom.ItemInfo itemInfo) { }
 
-    /**
-     * Logs an event and accompanying {@link ItemInfo}
-     */
-    public void log(LauncherEvent event, InstanceId instanceId, LauncherAtom.ItemInfo itemInfo) {
-        Log.d(TAG, String.format("%s(InstanceId:%s)\n%s", event.name(), instanceId, itemInfo));
-        // Call StatsLog method
-    }
 
     /**
      * Logs snapshot, or impression of the current workspace.
      */
     public void logSnapshot() { }
-
-    public void verify() {}     // TODO: should move into robo tests
 }
