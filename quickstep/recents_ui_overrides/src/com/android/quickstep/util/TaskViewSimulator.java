@@ -88,9 +88,6 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
         mSizeStrategy = sizeStrategy;
 
         mOrientationState = new RecentsOrientedState(context, sizeStrategy, i -> { });
-        // We do not need to attach listeners as the simulator is created just for the gesture
-        // duration, and any settings are unlikely to change during this
-        mOrientationState.initWithoutListeners();
 
         mCurrentFullscreenParams = new FullscreenDrawParams(context);
         mPageSpacing = context.getResources().getDimensionPixelSize(R.dimen.recents_page_spacing);
@@ -109,15 +106,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
      * @see com.android.quickstep.views.RecentsView#setLayoutRotation(int, int)
      */
     public void setLayoutRotation(int touchRotation, int displayRotation) {
-        int launcherRotation;
-        if (!mOrientationState.isMultipleOrientationSupportedByDevice()
-                || mOrientationState.isHomeRotationAllowed()) {
-            launcherRotation = displayRotation;
-        } else {
-            launcherRotation = ROTATION_0;
-        }
-
-        mOrientationState.update(touchRotation, displayRotation, launcherRotation);
+        mOrientationState.update(touchRotation, displayRotation);
         mLayoutValid = false;
     }
 
