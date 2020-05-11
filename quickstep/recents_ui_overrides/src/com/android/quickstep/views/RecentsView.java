@@ -17,6 +17,7 @@
 package com.android.quickstep.views;
 
 import static android.view.Surface.ROTATION_0;
+
 import static com.android.launcher3.BaseActivity.STATE_HANDLER_INVISIBILITY_FLAGS;
 import static com.android.launcher3.InvariantDeviceProfile.CHANGE_FLAG_ICON_PARAMS;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
@@ -132,7 +133,6 @@ import com.android.systemui.shared.recents.IPinnedStackAnimationListener;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
-import com.android.systemui.shared.system.ConfigurationCompat;
 import com.android.systemui.shared.system.LauncherEventUtil;
 import com.android.systemui.shared.system.PackageManagerWrapper;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
@@ -1689,7 +1689,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         }
         int count = getChildCount();
 
-        TaskView runningTask = mRunningTaskId == -1 ? null : getTaskView(mRunningTaskId);
+        TaskView runningTask = mRunningTaskId == -1 || !mRunningTaskTileHidden
+                ? null : getTaskView(mRunningTaskId);
         int midPoint = runningTask == null ? -1 : indexOfChild(runningTask);
         int currentPage = getCurrentPage();
 
@@ -2064,14 +2065,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             return 0;
         }
         return getScrollForPage(getRunningTaskIndex()) - mOrientationHandler.getPrimaryScroll(this);
-    }
-
-    /**
-     * @return How many pixels the running task is offset on the x-axis due to the current scrollX
-     * and parent scale.
-     */
-    public float getScrollOffsetScaled() {
-        return getScrollOffset() * mOrientationHandler.getPrimaryScale(this);
     }
 
     public Consumer<MotionEvent> getEventDispatcher(float navbarRotation) {

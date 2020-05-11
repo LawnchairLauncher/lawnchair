@@ -295,7 +295,6 @@ public class LauncherSwipeHandler extends BaseSwipeUpHandler<Launcher, RecentsVi
 
         mRecentsView = activity.getOverviewPanel();
         mRecentsView.setOnPageTransitionEndCallback(null);
-        linkRecentsViewScroll();
         addLiveTileOverlay();
 
         mStateCallback.setState(STATE_LAUNCHER_PRESENT);
@@ -312,6 +311,8 @@ public class LauncherSwipeHandler extends BaseSwipeUpHandler<Launcher, RecentsVi
             // so we need to kick off switching to the overview predictions as soon as possible
             mActivityInterface.updateOverviewPredictionState();
         }
+        linkRecentsViewScroll();
+
         return true;
     }
 
