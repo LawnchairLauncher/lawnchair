@@ -16,6 +16,7 @@
 
 package com.android.quickstep.views;
 
+import static android.view.Surface.ROTATION_0;
 import static com.android.launcher3.BaseActivity.STATE_HANDLER_INVISIBILITY_FLAGS;
 import static com.android.launcher3.InvariantDeviceProfile.CHANGE_FLAG_ICON_PARAMS;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
@@ -55,7 +56,6 @@ import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.PointF;
@@ -509,7 +509,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         mIPinnedStackAnimationListener.setActivity(mActivity);
         SystemUiProxy.INSTANCE.get(getContext()).setPinnedStackAnimationListener(
                 mIPinnedStackAnimationListener);
-        mOrientationState.init();
+        mOrientationState.initListeners();
     }
 
     @Override
@@ -524,7 +524,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         mIdp.removeOnChangeListener(this);
         SystemUiProxy.INSTANCE.get(getContext()).setPinnedStackAnimationListener(null);
         mIPinnedStackAnimationListener.setActivity(null);
-        mOrientationState.destroy();
+        mOrientationState.destroyListeners();
     }
 
     @Override
@@ -614,15 +614,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         if (getNextPage() > 0) {
             setSwipeDownShouldLaunchApp(true);
         }
-    }
-
-    @Override
-    protected void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        int windowConfigurationRotation = ConfigurationCompat
-                .getWindowConfigurationRotation(getResources().getConfiguration());
-        setLayoutInternal(mOrientationState.getTouchRotation(),
-                mOrientationState.getDisplayRotation(), windowConfigurationRotation);
     }
 
     @Override
@@ -1595,19 +1586,14 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     }
 
     public void setLayoutRotation(int touchRotation, int displayRotation) {
-        int launcherRotation = mOrientationState.getLauncherRotation();
-        setLayoutInternal(touchRotation, displayRotation, launcherRotation);
-    }
-
-    private void setLayoutInternal(int touchRotation, int displayRotation, int launcherRotation) {
-        if (mOrientationState.update(touchRotation, displayRotation, launcherRotation)) {
+        if (mOrientationState.update(touchRotation, displayRotation)) {
             mOrientationHandler = mOrientationState.getOrientationHandler();
             mIsRtl = mOrientationHandler.getRecentsRtlSetting(getResources());
             setLayoutDirection(mIsRtl ? View.LAYOUT_DIRECTION_RTL : View.LAYOUT_DIRECTION_LTR);
             mClearAllButton.setRotation(mOrientationHandler.getDegreesRotated());
             mActivity.getDragLayer().recreateControllers();
             mActionsView.updateHiddenFlags(HIDDEN_NON_ZERO_ROTATION,
-                    touchRotation != 0 || launcherRotation != 0);
+                    touchRotation != 0 || mOrientationState.getLauncherRotation() != ROTATION_0);
             requestLayout();
         }
     }
