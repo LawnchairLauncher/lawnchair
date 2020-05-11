@@ -168,7 +168,7 @@ public class LogEventChecker {
         Log.d(TestProtocol.TAPL_EVENTS_TAG, mFinishCommand);
     }
 
-    String verify(long waitForExpectedCountMs) {
+    String verify(long waitForExpectedCountMs, boolean successfulGesture) {
         finishSync(waitForExpectedCountMs);
 
         final StringBuilder sb = new StringBuilder();
@@ -179,7 +179,8 @@ public class LogEventChecker {
             List<String> actual = new ArrayList<>(mEvents.getNonNull(sequence));
             Log.d(SKIP_EVENTS_TAG, "Verifying events");
             final int mismatchPosition = getMismatchPosition(expectedEvents.getValue(), actual);
-            hasMismatches = hasMismatches || mismatchPosition != -1;
+            hasMismatches = hasMismatches
+                    || mismatchPosition != -1 && !ignoreMistatch(successfulGesture, sequence);
             formatSequenceWithMismatch(
                     sb,
                     sequence,
@@ -190,7 +191,8 @@ public class LogEventChecker {
         // Check for unexpected event sequences in the actual data.
         for (String actualNamedSequence : mEvents.keySet()) {
             if (!mExpectedEvents.containsKey(actualNamedSequence)) {
-                hasMismatches = true;
+                hasMismatches = hasMismatches
+                        || !ignoreMistatch(successfulGesture, actualNamedSequence);
                 formatSequenceWithMismatch(
                         sb,
                         actualNamedSequence,
@@ -201,6 +203,11 @@ public class LogEventChecker {
         }
 
         return hasMismatches ? "mismatching events: " + sb.toString() : null;
+    }
+
+    // Workaround for b/154157191
+    private static boolean ignoreMistatch(boolean successfulGesture, String sequence) {
+        return TestProtocol.SEQUENCE_TIS.equals(sequence) && successfulGesture;
     }
 
     // If the list of actual events matches the list of expected events, returns -1, otherwise

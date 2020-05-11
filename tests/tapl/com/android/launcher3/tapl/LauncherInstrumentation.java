@@ -428,7 +428,7 @@ public final class LauncherInstrumentation {
         if (sCheckingEvents) {
             sCheckingEvents = false;
             if (checkEvents) {
-                final String eventMismatch = sEventChecker.verify(0);
+                final String eventMismatch = sEventChecker.verify(0, false);
                 if (eventMismatch != null) {
                     message = message + ", having produced " + eventMismatch;
                 }
@@ -1311,7 +1311,7 @@ public final class LauncherInstrumentation {
             if (sCheckingEvents) {
                 sCheckingEvents = false;
                 if (mCheckEventsForSuccessfulGestures) {
-                    final String message = sEventChecker.verify(WAIT_TIME_MS);
+                    final String message = sEventChecker.verify(WAIT_TIME_MS, true);
                     if (message != null) {
                         checkForAnomaly();
                         Assert.fail(formatSystemHealthMessage(
