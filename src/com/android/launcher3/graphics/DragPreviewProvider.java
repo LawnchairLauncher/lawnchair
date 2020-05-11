@@ -77,7 +77,7 @@ public class DragPreviewProvider {
         if (mView instanceof DraggableView) {
             DraggableView dv = (DraggableView) mView;
             dv.prepareDrawDragView();
-            dv.getVisualDragBounds(mTempRect);
+            dv.getSourceVisualDragBounds(mTempRect);
             destCanvas.translate(blurSizeOutline / 2 - mTempRect.left,
                     blurSizeOutline / 2 - mTempRect.top);
             mView.draw(destCanvas);
@@ -95,7 +95,7 @@ public class DragPreviewProvider {
         // Assume scaleX == scaleY, which is always the case for workspace items.
         float scale = mView.getScaleX();
         if (mView instanceof DraggableView) {
-            ((DraggableView) mView).getVisualDragBounds(mTempRect);
+            ((DraggableView) mView).getSourceVisualDragBounds(mTempRect);
             width = mTempRect.width();
             height = mTempRect.height();
         } else {

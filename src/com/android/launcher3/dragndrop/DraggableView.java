@@ -53,5 +53,14 @@ public interface DraggableView {
      *
      * @param bounds Visual bounds in the views coordinates will be written here.
      */
-    default void getVisualDragBounds(Rect bounds) { }
+    default void getWorkspaceVisualDragBounds(Rect bounds) { }
+
+    /**
+     * Same as above, but accounts for differing icon sizes between source and destination
+     *
+     * @param bounds Visual bounds in the views coordinates will be written here.
+     */
+    default void getSourceVisualDragBounds(Rect bounds) {
+        getWorkspaceVisualDragBounds(bounds);
+    }
 }
