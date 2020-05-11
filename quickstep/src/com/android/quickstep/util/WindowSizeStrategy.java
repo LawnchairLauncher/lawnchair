@@ -16,6 +16,7 @@
 package com.android.quickstep.util;
 
 import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_ACTIONS;
+import static com.android.quickstep.SysUINavigationMode.getMode;
 import static com.android.quickstep.SysUINavigationMode.removeShelfFromOverview;
 import static com.android.quickstep.util.LayoutUtils.getDefaultSwipeHeight;
 
@@ -26,6 +27,7 @@ import android.graphics.Rect;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
+import com.android.quickstep.SysUINavigationMode.Mode;
 
 /**
  * Utility class to wrap different layout behavior for Launcher and RecentsView
@@ -136,7 +138,19 @@ public abstract class WindowSizeStrategy {
                 if (showOverviewActions(context)) {
                     //TODO: this needs to account for the swipe gesture height and accessibility
                     // UI when shown.
-                    return res.getDimensionPixelSize(R.dimen.overview_actions_height);
+                    float actionsBottomMargin = 0;
+                    if (getMode(context) == Mode.THREE_BUTTONS) {
+                        actionsBottomMargin = res.getDimensionPixelSize(
+                                R.dimen.overview_actions_bottom_margin_three_button);
+                    } else {
+                        actionsBottomMargin = res.getDimensionPixelSize(
+                                R.dimen.overview_actions_bottom_margin_gesture);
+                    }
+                    float actionsTopMargin = res.getDimensionPixelSize(
+                            R.dimen.overview_actions_top_margin);
+                    float actionsHeight = actionsTopMargin + actionsBottomMargin
+                            + res.getDimensionPixelSize(R.dimen.overview_actions_height);
+                    return actionsHeight;
                 } else {
                     return getDefaultSwipeHeight(context, dp) + dp.workspacePageIndicatorHeight
                             + res.getDimensionPixelSize(

@@ -17,14 +17,16 @@
 <resources>
 
     <dimen name="task_thumbnail_top_margin">24dp</dimen>
-    <dimen name="task_thumbnail_bottom_margin_with_actions">44dp</dimen>
     <dimen name="task_thumbnail_half_top_margin">12dp</dimen>
     <dimen name="task_thumbnail_icon_size">48dp</dimen>
     <!-- For screens without rounded corners -->
     <dimen name="task_corner_radius_small">2dp</dimen>
 
     <!-- Overrideable in overlay that provides the Overview Actions. -->
-    <dimen name="overview_actions_height">110dp</dimen>
+    <dimen name="overview_actions_height">66dp</dimen>
+    <dimen name="overview_actions_top_margin">44dp</dimen>
+    <dimen name="overview_actions_bottom_margin_gesture">16dp</dimen>
+    <dimen name="overview_actions_bottom_margin_three_button">8dp</dimen>
     <dimen name="overview_actions_horizontal_margin">16dp</dimen>
 
     <dimen name="recents_page_spacing">10dp</dimen>
