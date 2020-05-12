@@ -53,8 +53,8 @@ public interface BaseActivityInterface<T extends BaseDraggingActivity> {
     default void onSwipeUpToHomeComplete() { }
     void onAssistantVisibilityChanged(float visibility);
 
-    AnimationFactory prepareRecentsUI(boolean activityVisible, boolean animateActivity,
-            Consumer<AnimatorPlaybackController> callback);
+    AnimationFactory prepareRecentsUI(
+            boolean activityVisible, Consumer<AnimatorPlaybackController> callback);
 
     ActivityInitListener createActivityInitListener(Predicate<Boolean> onInitListener);
 

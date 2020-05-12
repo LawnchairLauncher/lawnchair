@@ -335,8 +335,7 @@ public class LauncherSwipeHandler extends BaseSwipeUpHandler<Launcher, RecentsVi
         if (mGestureState.getEndTarget() != HOME) {
             Runnable initAnimFactory = () -> {
                 mAnimationFactory = mActivityInterface.prepareRecentsUI(
-                        mWasLauncherAlreadyVisible, true,
-                        this::onAnimatorPlaybackControllerCreated);
+                        mWasLauncherAlreadyVisible, this::onAnimatorPlaybackControllerCreated);
                 maybeUpdateRecentsAttachedState(false /* animate */);
             };
             if (mWasLauncherAlreadyVisible) {
