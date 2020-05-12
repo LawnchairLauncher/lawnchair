@@ -16,10 +16,8 @@
 package com.android.launcher3.logging;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.android.launcher3.R;
-import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.logger.LauncherAtom.ItemInfo;
 import com.android.launcher3.logging.StatsLogUtils.LogStateProvider;
 import com.android.launcher3.util.ResourceBasedOverride;
@@ -31,8 +29,6 @@ import com.android.launcher3.util.ResourceBasedOverride;
  * Actual call happens only for Launcher variant that implements QuickStep.
  */
 public class StatsLogManager implements ResourceBasedOverride {
-
-    private static final String TAG = "StatsLogManager";
 
     interface EventEnum {
         int getId();
@@ -84,9 +80,11 @@ public class StatsLogManager implements ResourceBasedOverride {
         // ADD MORE
 
         private final int mId;
+
         LauncherEvent(int id) {
             mId = id;
         }
+
         public int getId() {
             return mId;
         }
@@ -109,22 +107,32 @@ public class StatsLogManager implements ResourceBasedOverride {
     }
 
     /**
-     * Logs an event and accompanying {@link ItemInfo}
+     * Logs a {@link LauncherEvent}.
      */
-    public void log(LauncherEvent event, InstanceId instanceId) {
-        Log.d(TAG, String.format("%s(InstanceId:%s)", event.name(), instanceId));
-        // Call StatsLog method
+    public void log(LauncherEvent event) {
     }
 
     /**
-     * Logs an event and accompanying {@link LauncherAtom.ItemInfo}
+     * Logs an event and accompanying {@link InstanceId}.
      */
-    public void log(LauncherEvent event, InstanceId instanceId, LauncherAtom.ItemInfo itemInfo) { }
-    public void log(LauncherEvent event, LauncherAtom.ItemInfo itemInfo) { }
+    public void log(LauncherEvent event, InstanceId instanceId) {
+    }
 
+    /**
+     * Logs an event and accompanying {@link ItemInfo}.
+     */
+    public void log(LauncherEvent event, ItemInfo itemInfo) {
+    }
+
+    /**
+     * Logs an event and accompanying {@link InstanceId} and {@link ItemInfo}.
+     */
+    public void log(LauncherEvent event, InstanceId instanceId, ItemInfo itemInfo) {
+    }
 
     /**
      * Logs snapshot, or impression of the current workspace.
      */
-    public void logSnapshot() { }
+    public void logSnapshot() {
+    }
 }
