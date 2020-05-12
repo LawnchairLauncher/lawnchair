@@ -19,6 +19,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Rect;
 
+import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -49,22 +50,25 @@ public class OverviewModalTaskState extends OverviewState {
 
     @Override
     public float[] getOverviewScaleAndOffset(Launcher launcher) {
-        Resources res = launcher.getBaseContext().getResources();
-
-        Rect out = new Rect();
-        launcher.<RecentsView>getOverviewPanel().getTaskSize(out);
-        int taskHeight = out.height();
-
-        float topMargin = res.getDimension(R.dimen.task_thumbnail_top_margin);
-        float bottomMargin = res.getDimension(R.dimen.overview_actions_top_margin);
-        float newHeight = taskHeight + topMargin + bottomMargin;
-        float scale = newHeight / taskHeight;
-
-        return new float[] {scale, 0};
+        return getOverviewScaleAndOffsetForModalState(launcher);
     }
 
     @Override
     public float getOverviewModalness() {
         return 1.0f;
+    }
+
+    public static float[] getOverviewScaleAndOffsetForModalState(BaseDraggingActivity activity) {
+        Resources res = activity.getResources();
+
+        Rect out = new Rect();
+        activity.<RecentsView>getOverviewPanel().getTaskSize(out);
+        int taskHeight = out.height();
+        float topMargin = res.getDimension(R.dimen.task_thumbnail_top_margin);
+        float bottomMargin = res.getDimension(R.dimen.overview_actions_top_margin);
+        float newHeight = taskHeight + topMargin + bottomMargin;
+        float scale = newHeight / taskHeight;
+
+        return new float[] {scale, NO_OFFSET};
     }
 }

@@ -31,11 +31,9 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.graphics.Canvas;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.view.View;
 import android.widget.FrameLayout;
 
 import com.android.launcher3.BaseQuickstepLauncher;
@@ -121,24 +119,6 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher>
                 redrawLiveTile(false);
             }
         }
-    }
-
-    @Override
-    public void draw(Canvas canvas) {
-        maybeDrawEmptyMessage(canvas);
-        super.draw(canvas);
-    }
-
-    @Override
-    public void onViewAdded(View child) {
-        super.onViewAdded(child);
-        updateEmptyMessage();
-    }
-
-    @Override
-    protected void onTaskStackUpdated() {
-        // Lazily update the empty message only when the task stack is reapplied
-        updateEmptyMessage();
     }
 
     /**
