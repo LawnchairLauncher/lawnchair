@@ -64,7 +64,13 @@ public class ClearAllButton extends Button implements PageCallbacks {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         mParent = (RecentsView) getParent();
-        mIsRtl = !mParent.getPagedOrientationHandler().getRecentsRtlSetting(getResources());
+        mIsRtl = getLayoutDirection() == LAYOUT_DIRECTION_RTL;
+    }
+
+    @Override
+    public void onRtlPropertiesChanged(int layoutDirection) {
+        super.onRtlPropertiesChanged(layoutDirection);
+        mIsRtl = getLayoutDirection() == LAYOUT_DIRECTION_RTL;
     }
 
     @Override
