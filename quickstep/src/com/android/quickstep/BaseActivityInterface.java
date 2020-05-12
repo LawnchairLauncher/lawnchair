@@ -19,7 +19,6 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Build;
-import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Interpolator;
@@ -48,15 +47,6 @@ public interface BaseActivityInterface<T extends BaseDraggingActivity> {
     void onTransitionCancelled(boolean activityVisible);
 
     int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context, Rect outRect);
-
-    /**
-     * @return The progress of the swipe where we start resisting the user, where 0 is fullscreen
-     * and 1 is recents. These values should probably be greater than 1 to let the user swipe past
-     * recents before we start resisting them.
-     */
-    default Pair<Float, Float> getSwipeUpPullbackStartAndMaxProgress() {
-        return new Pair<>(1.4f, 1.8f);
-    }
 
     void onSwipeUpToRecentsComplete();
 
