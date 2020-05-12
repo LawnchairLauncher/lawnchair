@@ -68,7 +68,7 @@ public class RemoteAnimationTargets {
     }
 
     public boolean isAnimatingHome() {
-        for (RemoteAnimationTargetCompat target : apps) {
+        for (RemoteAnimationTargetCompat target : unfilteredApps) {
             if (target.activityType == RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME) {
                 return true;
             }

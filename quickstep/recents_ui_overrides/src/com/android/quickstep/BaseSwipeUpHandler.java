@@ -15,8 +15,6 @@
  */
 package com.android.quickstep;
 
-import static com.android.launcher3.LauncherState.BACKGROUND_APP;
-import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.anim.Interpolators.ACCEL_1_5;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
@@ -25,8 +23,6 @@ import static com.android.launcher3.util.VibratorWrapper.OVERVIEW_HAPTIC;
 import static com.android.launcher3.views.FloatingIconView.SHAPE_PROGRESS_DURATION;
 
 import android.animation.Animator;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
@@ -49,6 +45,7 @@ import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
+import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.VibratorWrapper;
@@ -377,18 +374,9 @@ public abstract class BaseSwipeUpHandler<T extends StatefulActivity<?>, Q extend
             mDragLengthFactorStartPullback = mDragLengthFactorMaxPullback = 1;
         }
 
-        AnimatorSet anim = new AnimatorSet();
-        anim.setDuration(mTransitionDragLength * 2);
-        anim.setInterpolator(t -> t * mDragLengthFactor);
-        anim.play(ObjectAnimator.ofFloat(mTaskViewSimulator.recentsViewScale,
-                AnimatedFloat.VALUE,
-                mTaskViewSimulator.getFullScreenScale(), 1));
-        anim.play(ObjectAnimator.ofFloat(mTaskViewSimulator.fullScreenProgress,
-                AnimatedFloat.VALUE,
-                BACKGROUND_APP.getOverviewFullscreenProgress(),
-                OVERVIEW.getOverviewFullscreenProgress()));
-        mWindowTransitionController =
-                AnimatorPlaybackController.wrap(anim, mTransitionDragLength * 2);
+        PendingAnimation pa = new PendingAnimation(mTransitionDragLength * 2);
+        mTaskViewSimulator.addAppToOverviewAnim(pa, t -> t * mDragLengthFactor);
+        mWindowTransitionController = pa.createPlaybackController();
     }
 
     /**
@@ -651,14 +639,11 @@ public abstract class BaseSwipeUpHandler<T extends StatefulActivity<?>, Q extend
         }
 
         @Override
-        public void onBuildParams(Builder builder, RemoteAnimationTargetCompat app, int targetMode,
-                TransformParams params) {
-            if (app.mode == targetMode
-                    && app.activityType != RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME) {
-                builder.withMatrix(mMatrix)
-                        .withWindowCrop(mCropRect)
-                        .withCornerRadius(params.getCornerRadius());
-            }
+        public void onBuildTargetParams(
+                Builder builder, RemoteAnimationTargetCompat app, TransformParams params) {
+            builder.withMatrix(mMatrix)
+                    .withWindowCrop(mCropRect)
+                    .withCornerRadius(params.getCornerRadius());
         }
 
         @Override

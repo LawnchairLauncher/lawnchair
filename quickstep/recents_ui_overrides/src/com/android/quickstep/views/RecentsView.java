@@ -2190,6 +2190,10 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
      */
     public void setModalStateEnabled(boolean isModalState) { }
 
+    public BaseActivityInterface getSizeStrategy() {
+        return mSizeStrategy;
+    }
+
     /**
      * Used to register callbacks for when our empty message state changes.
      *
