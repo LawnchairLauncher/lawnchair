@@ -32,9 +32,9 @@ import android.view.MotionEvent;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
+import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
@@ -173,7 +173,7 @@ public class NoButtonNavbarToOverviewTouchController extends FlingAndHoldTouchCo
     protected void goToOverviewOnDragEnd(float velocity) {
         float velocityDp = dpiFromPx(velocity);
         boolean isFling = Math.abs(velocityDp) > 1;
-        LauncherStateManager stateManager = mLauncher.getStateManager();
+        StateManager<LauncherState> stateManager = mLauncher.getStateManager();
         boolean goToHomeInsteadOfOverview = isFling;
         if (goToHomeInsteadOfOverview) {
             if (velocity > 0) {

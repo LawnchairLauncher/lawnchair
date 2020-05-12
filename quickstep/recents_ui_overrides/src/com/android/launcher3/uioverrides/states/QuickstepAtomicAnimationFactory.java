@@ -62,12 +62,12 @@ import com.android.launcher3.CellLayout;
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherState.ScaleAndTranslation;
-import com.android.launcher3.LauncherStateManager;
-import com.android.launcher3.LauncherStateManager.AtomicAnimationFactory;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.anim.SpringAnimationBuilder;
+import com.android.launcher3.statemanager.StateManager;
+import com.android.launcher3.statemanager.StateManager.AtomicAnimationFactory;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.quickstep.SysUINavigationMode;
@@ -76,7 +76,7 @@ import com.android.quickstep.views.RecentsView;
 /**
  * Animation factory for quickstep specific transitions
  */
-public class QuickstepAtomicAnimationFactory extends AtomicAnimationFactory {
+public class QuickstepAtomicAnimationFactory extends AtomicAnimationFactory<LauncherState> {
 
     // Scale recents takes before animating in
     private static final float RECENTS_PREPARE_SCALE = 1.33f;
@@ -153,7 +153,7 @@ public class QuickstepAtomicAnimationFactory extends AtomicAnimationFactory {
                     config.setInterpolator(ANIM_HOTSEAT_TRANSLATE, OVERSHOOT_1_2);
                 }
 
-                LauncherStateManager stateManager = mLauncher.getStateManager();
+                StateManager<LauncherState> stateManager = mLauncher.getStateManager();
                 return stateManager.createAtomicAnimation(
                         stateManager.getCurrentStableState(), OVERVIEW, config);
             }

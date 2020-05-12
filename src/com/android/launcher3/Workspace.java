@@ -89,6 +89,7 @@ import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pageindicators.WorkspacePageIndicator;
 import com.android.launcher3.popup.PopupContainerWithArrow;
+import com.android.launcher3.statemanager.StateManager.StateHandler;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.touch.WorkspaceTouchListener;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
@@ -119,7 +120,7 @@ import java.util.function.Predicate;
  */
 public class Workspace extends PagedView<WorkspacePageIndicator>
         implements DropTarget, DragSource, View.OnTouchListener,
-        DragController.DragListener, Insettable, LauncherStateManager.StateHandler,
+        DragController.DragListener, Insettable, StateHandler<LauncherState>,
         WorkspaceLayoutManager {
 
     /** The value that {@link #mTransitionProgress} must be greater than for
