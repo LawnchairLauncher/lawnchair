@@ -41,11 +41,11 @@ import android.widget.FrameLayout;
 import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.LauncherStateManager.StateListener;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.appprediction.PredictionUiStateManager;
 import com.android.launcher3.appprediction.PredictionUiStateManager.Client;
 import com.android.launcher3.statehandlers.DepthController;
+import com.android.launcher3.statemanager.StateManager.StateListener;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.TraceHelper;
 import com.android.launcher3.views.ScrimView;
@@ -59,7 +59,7 @@ import com.android.systemui.plugins.RecentsExtraCard;
  */
 @TargetApi(Build.VERSION_CODES.O)
 public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher>
-        implements StateListener {
+        implements StateListener<LauncherState> {
 
     private final TransformParams mTransformParams = new TransformParams();
 

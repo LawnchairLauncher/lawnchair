@@ -29,6 +29,8 @@ import static com.android.launcher3.testing.TestProtocol.SPRING_LOADED_STATE_ORD
 import android.content.Context;
 import android.view.animation.Interpolator;
 
+import com.android.launcher3.statemanager.BaseState;
+import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.states.HintState;
 import com.android.launcher3.states.SpringLoadedState;
 import com.android.launcher3.uioverrides.states.AllAppsState;
@@ -40,7 +42,7 @@ import java.util.Arrays;
 /**
  * Base state for various states used for the Launcher
  */
-public abstract class LauncherState {
+public abstract class LauncherState implements BaseState<LauncherState> {
 
     /**
      * Set of elements indicating various workspace elements which change visibility across states
@@ -60,25 +62,22 @@ public abstract class LauncherState {
             HOTSEAT_SEARCH_BOX | ALL_APPS_HEADER | ALL_APPS_HEADER_EXTRA | ALL_APPS_CONTENT;
 
     // Flag indicating workspace has multiple pages visible.
-    public static final int FLAG_MULTI_PAGE = 1 << 0;
+    public static final int FLAG_MULTI_PAGE = BaseState.getFlag(0);
     // Flag indicating that workspace and its contents are not accessible
-    public static final int FLAG_WORKSPACE_INACCESSIBLE = 1 << 1;
+    public static final int FLAG_WORKSPACE_INACCESSIBLE = BaseState.getFlag(1);
 
-    public static final int FLAG_DISABLE_RESTORE = 1 << 2;
     // Flag indicating the state allows workspace icons to be dragged.
-    public static final int FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED = 1 << 3;
+    public static final int FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED = BaseState.getFlag(2);
     // Flag to indicate that workspace should draw page background
-    public static final int FLAG_WORKSPACE_HAS_BACKGROUNDS = 1 << 4;
-    // Flag to indicate that Launcher is non-interactive in this state
-    public static final int FLAG_NON_INTERACTIVE = 1 << 5;
+    public static final int FLAG_WORKSPACE_HAS_BACKGROUNDS = BaseState.getFlag(3);
     // True if the back button should be hidden when in this state (assuming no floating views are
     // open, launcher has window focus, etc).
-    public static final int FLAG_HIDE_BACK_BUTTON = 1 << 6;
+    public static final int FLAG_HIDE_BACK_BUTTON = BaseState.getFlag(4);
     // Flag to indicate if the state would have scrim over sysui region: statu sbar and nav bar
-    public static final int FLAG_HAS_SYS_UI_SCRIM = 1 << 7;
+    public static final int FLAG_HAS_SYS_UI_SCRIM = BaseState.getFlag(5);
     // Flag to inticate that all popups should be closed when this state is enabled.
-    public static final int FLAG_CLOSE_POPUPS = 1 << 8;
-    public static final int FLAG_OVERVIEW_UI = 1 << 9;
+    public static final int FLAG_CLOSE_POPUPS = BaseState.getFlag(6);
+    public static final int FLAG_OVERVIEW_UI = BaseState.getFlag(7);
 
 
     public static final float NO_OFFSET = 0;
@@ -151,25 +150,14 @@ public abstract class LauncherState {
     /**
      * Returns if the state has the provided flag
      */
+    @Override
     public final boolean hasFlag(int mask) {
         return (mFlags & mask) != 0;
-    }
-
-    /**
-     * @return true if the state can be persisted across activity restarts.
-     */
-    public final boolean shouldDisableRestore() {
-        return hasFlag(FLAG_DISABLE_RESTORE);
     }
 
     public static LauncherState[] values() {
         return Arrays.copyOf(sAllStates, sAllStates.length);
     }
-
-    /**
-     * @return How long the animation to this state should take (or from this state to NORMAL).
-     */
-    public abstract int getTransitionDuration(Context context);
 
     public ScaleAndTranslation getWorkspaceScaleAndTranslation(Launcher launcher) {
         return new ScaleAndTranslation(NO_SCALE, NO_OFFSET, NO_OFFSET);
@@ -264,14 +252,20 @@ public abstract class LauncherState {
         };
     }
 
+    @Override
     public LauncherState getHistoryForState(LauncherState previousState) {
         // No history is supported
         return NORMAL;
     }
 
+    @Override
+    public String toString() {
+        return "Ordinal-" + ordinal;
+    }
+
     public void onBackPressed(Launcher launcher) {
         if (this != NORMAL) {
-            LauncherStateManager lsm = launcher.getStateManager();
+            StateManager<LauncherState> lsm = launcher.getStateManager();
             LauncherState lastState = lsm.getLastState();
             lsm.goToState(lastState);
         }

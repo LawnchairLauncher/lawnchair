@@ -32,19 +32,19 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.LauncherStateManager;
-import com.android.launcher3.LauncherStateManager.StateListener;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsPagedView;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.Interpolators;
+import com.android.launcher3.statemanager.StateManager.StateListener;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 
 /**
  * On boarding flow for users right after setting up work profile
  */
-public class WorkEduView extends AbstractSlideInView implements Insettable, StateListener {
+public class WorkEduView extends AbstractSlideInView
+        implements Insettable, StateListener<LauncherState> {
 
     private static final int DEFAULT_CLOSE_DURATION = 200;
     public static final String KEY_WORK_EDU_STEP = "showed_work_profile_edu";
@@ -185,8 +185,8 @@ public class WorkEduView extends AbstractSlideInView implements Insettable, Stat
     /**
      * Checks if user has not seen onboarding UI yet and shows it when user navigates to all apps
      */
-    public static LauncherStateManager.StateListener showEduFlowIfNeeded(Launcher launcher,
-            @Nullable LauncherStateManager.StateListener oldListener) {
+    public static StateListener<LauncherState> showEduFlowIfNeeded(Launcher launcher,
+            @Nullable StateListener<LauncherState> oldListener) {
         if (oldListener != null) {
             launcher.getStateManager().removeStateListener(oldListener);
         }
@@ -195,7 +195,7 @@ public class WorkEduView extends AbstractSlideInView implements Insettable, Stat
             return null;
         }
 
-        LauncherStateManager.StateListener listener = new LauncherStateManager.StateListener() {
+        StateListener<LauncherState> listener = new StateListener<LauncherState>() {
             @Override
             public void onStateTransitionComplete(LauncherState finalState) {
                 if (finalState != LauncherState.ALL_APPS) return;
