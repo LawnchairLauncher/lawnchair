@@ -725,7 +725,8 @@ public class LauncherSwipeHandler extends BaseSwipeUpHandler<Launcher, RecentsVi
         if (mStateCallback.hasStates(STATE_HANDLER_INVALIDATED)) {
             return false;
         }
-        if (appearedTaskTarget.taskId == mLastStartedTaskId) {
+        if (mGestureState.getEndTarget() == NEW_TASK
+                && appearedTaskTarget.taskId == mGestureState.getLastStartedTaskId()) {
             reset();
             return true;
         }
@@ -1016,17 +1017,19 @@ public class LauncherSwipeHandler extends BaseSwipeUpHandler<Launcher, RecentsVi
                     if (mRecentsView != null) {
                         int taskToLaunch = mRecentsView.getNextPage();
                         int runningTask = getLastAppearedTaskIndex();
-                        if (target == NEW_TASK && taskToLaunch == runningTask) {
+                        boolean hasStartedNewTask = hasStartedNewTask();
+                        if (target == NEW_TASK && taskToLaunch == runningTask
+                                && !hasStartedNewTask) {
                             // We are about to launch the current running task, so use LAST_TASK
                             // state instead of NEW_TASK. This could happen, for example, if our
                             // scroll is aborted after we determined the target to be NEW_TASK.
                             mGestureState.setEndTarget(LAST_TASK);
-                        } else if (target == LAST_TASK && taskToLaunch != runningTask) {
+                        } else if (target == LAST_TASK && hasStartedNewTask) {
                             // We are about to re-launch the previously running task, but we can't
                             // just finish the controller like we normally would because that would
-                            // instead resume the last task that appeared. As a workaround, launch
-                            // the task as if it were a new task.
-                            // TODO: is this expected?
+                            // instead resume the last task that appeared, and not ensure that this
+                            // task is restored to the top. To address this, re-launch the task as
+                            // if it were a new task.
                             mGestureState.setEndTarget(NEW_TASK);
                         }
                     }
@@ -1162,6 +1165,12 @@ public class LauncherSwipeHandler extends BaseSwipeUpHandler<Launcher, RecentsVi
             }
             doLogGesture(NEW_TASK);
         });
+    }
+
+    @Override
+    protected void onRestartLastAppearedTask() {
+        super.onRestartLastAppearedTask();
+        reset();
     }
 
     private void reset() {
