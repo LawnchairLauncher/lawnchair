@@ -34,7 +34,6 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.Log;
-import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.animation.Interpolator;
 
@@ -72,9 +71,6 @@ import java.util.function.Predicate;
  */
 public final class LauncherActivityInterface implements BaseActivityInterface<Launcher> {
 
-    private Pair<Float, Float> mSwipeUpPullbackStartAndMaxProgress =
-            BaseActivityInterface.super.getSwipeUpPullbackStartAndMaxProgress();
-
     @Override
     public int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context, Rect outRect) {
         LAUNCHER_ACTIVITY_SIZE_STRATEGY.calculateTaskSize(context, dp, outRect);
@@ -85,11 +81,6 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
         } else {
             return LayoutUtils.getShelfTrackingDistance(context, dp);
         }
-    }
-
-    @Override
-    public Pair<Float, Float> getSwipeUpPullbackStartAndMaxProgress() {
-        return mSwipeUpPullbackStartAndMaxProgress;
     }
 
     @Override
@@ -282,12 +273,6 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
         Animator applyFullscreenProgress = ObjectAnimator.ofFloat(recentsView,
                 RecentsView.FULLSCREEN_PROGRESS, fromFullscreenProgress, endFullscreenProgress);
         anim.playTogether(scale, applyFullscreenProgress);
-
-        // Start pulling back when RecentsView scale is 0.75f, and let it go down to 0.5f.
-        float pullbackStartProgress = (0.75f - fromScale) / (endScale - fromScale);
-        float pullbackMaxProgress = (0.5f - fromScale) / (endScale - fromScale);
-        mSwipeUpPullbackStartAndMaxProgress = new Pair<>(
-                pullbackStartProgress, pullbackMaxProgress);
     }
 
     @Override
