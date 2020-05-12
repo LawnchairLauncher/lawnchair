@@ -17,7 +17,6 @@ package com.android.quickstep;
 
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.OVERVIEW;
-import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.TOUCH_RESPONSE_INTERPOLATOR;
 import static com.android.launcher3.statehandlers.DepthController.DEPTH;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
@@ -75,14 +74,10 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> exten
     boolean onActivityReady(T activity, Boolean wasVisible) {
         activity.<RecentsView>getOverviewPanel().showCurrentTask(mTargetTaskId);
         AbstractFloatingView.closeAllOpenViews(activity, wasVisible);
-        BaseActivityInterface.AnimationFactory factory =
-                mActivityInterface.prepareRecentsUI(wasVisible,
-                false /* animate activity */, (controller) -> {
+        BaseActivityInterface.AnimationFactory factory = mActivityInterface.prepareRecentsUI(
+                wasVisible, (controller) -> {
                     controller.dispatchOnStart();
-                    ValueAnimator anim = controller.getAnimationPlayer()
-                            .setDuration(RECENTS_LAUNCH_DURATION);
-                    anim.setInterpolator(FAST_OUT_SLOW_IN);
-                    anim.start();
+                    controller.getAnimationPlayer().end();
                 });
         factory.onRemoteAnimationReceived(null);
         factory.createActivityInterface(RECENTS_LAUNCH_DURATION);
