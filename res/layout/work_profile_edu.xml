@@ -23,13 +23,13 @@
         android:layout_width="match_parent"
         android:layout_height="32dp"
         android:background="@drawable/bottom_sheet_top_border"
-        android:backgroundTint="?android:attr/colorAccent" />
+        android:backgroundTint="?attr/eduHalfSheetBGColor" />
 
     <LinearLayout
         android:id="@+id/view_wrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?android:attr/colorAccent"
+        android:background="?attr/eduHalfSheetBGColor"
         android:orientation="vertical"
         android:paddingLeft="@dimen/bottom_sheet_edu_padding"
         android:paddingRight="@dimen/bottom_sheet_edu_padding">
