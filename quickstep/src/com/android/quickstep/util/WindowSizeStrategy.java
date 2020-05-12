@@ -146,9 +146,7 @@ public abstract class WindowSizeStrategy {
                         actionsBottomMargin = res.getDimensionPixelSize(
                                 R.dimen.overview_actions_bottom_margin_gesture);
                     }
-                    float actionsTopMargin = res.getDimensionPixelSize(
-                            R.dimen.overview_actions_top_margin);
-                    float actionsHeight = actionsTopMargin + actionsBottomMargin
+                    float actionsHeight = actionsBottomMargin
                             + res.getDimensionPixelSize(R.dimen.overview_actions_height);
                     return actionsHeight;
                 } else {
