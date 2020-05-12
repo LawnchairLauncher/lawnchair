@@ -15,7 +15,6 @@
  */
 package com.android.quickstep;
 
-import static com.android.quickstep.GestureState.GestureEndTarget.NEW_TASK;
 import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
 
 import android.app.ActivityManager;
@@ -121,6 +120,7 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
     private ActivityManager.RunningTaskInfo mRunningTask;
     private GestureEndTarget mEndTarget;
     private RemoteAnimationTargetCompat mLastAppearedTaskTarget;
+    private int mLastStartedTaskId = -1;
 
     public GestureState(OverviewComponentObserver componentObserver, int gestureId) {
         mHomeIntent = componentObserver.getHomeIntent();
@@ -139,6 +139,7 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
         mRunningTask = other.mRunningTask;
         mEndTarget = other.mEndTarget;
         mLastAppearedTaskTarget = other.mLastAppearedTaskTarget;
+        mLastStartedTaskId = other.mLastStartedTaskId;
     }
 
     public GestureState() {
@@ -235,6 +236,21 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
     }
 
     /**
+     * Updates the last task that we started via startActivityFromRecents() during this gesture.
+     */
+    public void updateLastStartedTaskId(int lastStartedTaskId) {
+        mLastStartedTaskId = lastStartedTaskId;
+    }
+
+    /**
+     * @return The id of the task that was most recently started during this gesture, or -1 if
+     * no task has been started yet (i.e. we haven't settled on a new task).
+     */
+    public int getLastStartedTaskId() {
+        return mLastStartedTaskId;
+    }
+
+    /**
      * @return the end target for this gesture (if known).
      */
     public GestureEndTarget getEndTarget() {
@@ -300,6 +316,7 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
         pw.println("  runningTask=" + mRunningTask);
         pw.println("  endTarget=" + mEndTarget);
         pw.println("  lastAppearedTaskTarget=" + mLastAppearedTaskTarget);
+        pw.println("  lastStartedTaskId=" + mLastStartedTaskId);
         pw.println("  isRecentsAnimationRunning=" + isRecentsAnimationRunning());
     }
 }
