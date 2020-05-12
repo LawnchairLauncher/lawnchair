@@ -145,8 +145,6 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
 
     /** Updates vertical margins for different navigation mode. */
     public void updateVerticalMarginForNavModeChange(Mode mode) {
-        int topMargin = getResources()
-                .getDimensionPixelSize(R.dimen.overview_actions_top_margin);
         int bottomMargin = 0;
         if (mode == Mode.THREE_BUTTONS) {
             bottomMargin = getResources()
@@ -157,6 +155,6 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         }
         LayoutParams params = (LayoutParams) getLayoutParams();
         params.setMargins(
-                params.leftMargin, topMargin, params.rightMargin, bottomMargin);
+                params.leftMargin, params.topMargin, params.rightMargin, bottomMargin);
     }
 }

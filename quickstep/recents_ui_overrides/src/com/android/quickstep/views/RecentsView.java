@@ -839,6 +839,11 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         mSizeStrategy.calculateTaskSize(mActivity, mActivity.getDeviceProfile(), outRect);
     }
 
+    /** Gets the task size for modal state. */
+    public void getModalTaskSize(Rect outRect) {
+        mSizeStrategy.calculateModalTaskSize(mActivity, mActivity.getDeviceProfile(), outRect);
+    }
+
     @Override
     protected boolean computeScrollHelper() {
         boolean scrolling = super.computeScrollHelper();
@@ -2155,18 +2160,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         updatePageOffsets();
         if (getCurrentPageTaskView() != null) {
             getCurrentPageTaskView().setModalness(modalness);
-            TaskView tv = getCurrentPageTaskView();
-
-            // Move the task view up as it scales...
-            // ...the icon on taskview is hidden in modal state, so consider the top of the task
-            mTempFloatPoint[0] = 0;
-            mTempFloatPoint[1] = tv.getTop() + mTaskTopMargin;
-            // ...find the top after the transformation
-            getMatrix().mapPoints(mTempFloatPoint);
-
-            // ...make it match the top inset
-            float calcOffset = (mInsets.top - mTempFloatPoint[1]) * mTaskModalness;
-            tv.setTranslationY(calcOffset);
         }
     }
 
