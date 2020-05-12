@@ -253,8 +253,8 @@ public abstract class BaseLoaderResults {
         }
 
         private void bindPredictedItems(IntArray ranks, final Executor executor) {
-            executeCallbacksTask(
-                    c -> c.bindPredictedItems(mBgDataModel.cachedPredictedItems, ranks), executor);
+            ArrayList<AppInfo> items = new ArrayList<>(mBgDataModel.cachedPredictedItems);
+            executeCallbacksTask(c -> c.bindPredictedItems(items, ranks), executor);
         }
 
         protected void executeCallbacksTask(CallbackTask task, Executor executor) {
