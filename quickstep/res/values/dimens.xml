@@ -63,7 +63,7 @@
     <dimen name="task_card_menu_shadow_height">3dp</dimen>
     <dimen name="task_card_menu_horizontal_padding">0dp</dimen>
     <dimen name="portrait_task_card_horz_space">136dp</dimen>
-    <dimen name="portrait_task_card_horz_space_big_overview">24dp</dimen>
+    <dimen name="portrait_task_card_horz_space_big_overview">96dp</dimen>
     <dimen name="landscape_task_card_horz_space">200dp</dimen>
     <dimen name="multi_window_task_card_horz_space">100dp</dimen>
     <!-- Copied from framework resource:
