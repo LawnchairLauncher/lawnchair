@@ -724,7 +724,7 @@ public class LauncherSwipeHandler extends BaseSwipeUpHandler<Launcher, RecentsVi
         if (mStateCallback.hasStates(STATE_HANDLER_INVALIDATED)) {
             return false;
         }
-        if (mGestureState.getEndTarget() == NEW_TASK
+        if (mStateCallback.hasStates(STATE_START_NEW_TASK)
                 && appearedTaskTarget.taskId == mGestureState.getLastStartedTaskId()) {
             reset();
             return true;
