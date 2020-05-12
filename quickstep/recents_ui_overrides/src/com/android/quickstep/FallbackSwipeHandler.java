@@ -37,10 +37,12 @@ import android.os.Bundle;
 import android.util.ArrayMap;
 import android.view.MotionEvent;
 
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.util.ObjectWrapper;
+import com.android.quickstep.BaseActivityInterface.AnimationFactory;
 import com.android.quickstep.GestureState.GestureEndTarget;
 import com.android.quickstep.fallback.FallbackRecentsView;
 import com.android.quickstep.util.RectFSpringAnim;
@@ -102,6 +104,12 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
 
     private final PointF mEndVelocityPxPerMs = new PointF(0, 0.5f);
     private RunningWindowAnim mFinishAnimation;
+
+    // Used to control Recents components throughout the swipe gesture.
+    private AnimatorPlaybackController mLauncherTransitionController;
+    private boolean mHasLauncherTransitionControllerStarted;
+
+    private AnimationFactory mAnimationFactory = (t) -> { };
 
     public FallbackSwipeHandler(Context context, RecentsAnimationDeviceState deviceState,
             GestureState gestureState, InputConsumerController inputConsumer,
@@ -165,10 +173,6 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
         mRecentsView = mActivity.getOverviewPanel();
         mRecentsView.setOnPageTransitionEndCallback(null);
         linkRecentsViewScroll();
-        mRecentsView.setDisallowScrollToClearAll(true);
-        mRecentsView.getClearAllButton().setVisibilityAlpha(0);
-        mRecentsView.setZoomProgress(1);
-
         if (!mContinuingLastGesture) {
             if (mRunningOverHome) {
                 mRecentsView.onGestureAnimationStart(mGestureState.getRunningTask());
@@ -178,7 +182,46 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
         }
         mStateCallback.setStateOnUiThread(STATE_RECENTS_PRESENT);
         mDeviceState.enableMultipleRegions(false);
+
+        mAnimationFactory = mActivityInterface.prepareRecentsUI(alreadyOnHome,
+                this::onAnimatorPlaybackControllerCreated);
+        mAnimationFactory.createActivityInterface(mTransitionDragLength);
         return true;
+    }
+
+    @Override
+    protected void initTransitionEndpoints(DeviceProfile dp) {
+        super.initTransitionEndpoints(dp);
+        if (canCreateNewOrUpdateExistingLauncherTransitionController()) {
+            mAnimationFactory.createActivityInterface(mTransitionDragLength);
+        }
+    }
+
+    private void onAnimatorPlaybackControllerCreated(AnimatorPlaybackController anim) {
+        mLauncherTransitionController = anim;
+        mLauncherTransitionController.dispatchSetInterpolator(t -> t * mDragLengthFactor);
+        mLauncherTransitionController.dispatchOnStart();
+        updateLauncherTransitionProgress();
+    }
+
+    private void updateLauncherTransitionProgress() {
+        if (mLauncherTransitionController == null
+                || !canCreateNewOrUpdateExistingLauncherTransitionController()) {
+            return;
+        }
+        // Normalize the progress to 0 to 1, as the animation controller will clamp it to that
+        // anyway. The controller mimics the drag length factor by applying it to its interpolators.
+        float progress = mCurrentShift.value / mDragLengthFactor;
+        mLauncherTransitionController.setPlayFraction(progress);
+    }
+
+    /**
+     * We don't want to change mLauncherTransitionController if mGestureState.getEndTarget() == HOME
+     * (it has its own animation) or if we're already animating the current controller.
+     * @return Whether we can create the launcher controller or update its progress.
+     */
+    private boolean canCreateNewOrUpdateExistingLauncherTransitionController() {
+        return mGestureState.getEndTarget() != HOME && !mHasLauncherTransitionControllerStarted;
     }
 
     @Override
@@ -260,6 +303,7 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
         }
 
         applyWindowTransform();
+        updateLauncherTransitionProgress();
     }
 
     @Override

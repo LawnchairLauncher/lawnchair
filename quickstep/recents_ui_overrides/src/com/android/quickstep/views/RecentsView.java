@@ -550,6 +550,13 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         child.setLayoutDirection(mIsRtl ? View.LAYOUT_DIRECTION_LTR : View.LAYOUT_DIRECTION_RTL);
         updateTaskStartIndex(child);
         mActionsView.updateHiddenFlags(HIDDEN_NO_TASKS, false);
+        updateEmptyMessage();
+    }
+
+    @Override
+    public void draw(Canvas canvas) {
+        maybeDrawEmptyMessage(canvas);
+        super.draw(canvas);
     }
 
     private void updateTaskStartIndex(View affectingView) {
@@ -762,7 +769,10 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         return taskViewCount;
     }
 
-    protected void onTaskStackUpdated() { }
+    protected void onTaskStackUpdated() {
+        // Lazily update the empty message only when the task stack is reapplied
+        updateEmptyMessage();
+    }
 
     public void resetTaskVisuals() {
         for (int i = getTaskViewCount() - 1; i >= 0; i--) {

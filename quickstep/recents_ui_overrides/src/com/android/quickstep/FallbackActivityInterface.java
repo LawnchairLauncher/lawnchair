@@ -15,14 +15,15 @@
  */
 package com.android.quickstep;
 
+import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
-import static com.android.quickstep.fallback.FallbackRecentsView.ZOOM_PROGRESS;
+import static com.android.quickstep.fallback.RecentsState.BACKGROUND_APP;
+import static com.android.quickstep.fallback.RecentsState.DEFAULT;
 import static com.android.quickstep.util.WindowSizeStrategy.FALLBACK_RECENTS_SIZE_STRATEGY;
 import static com.android.quickstep.views.RecentsView.CONTENT_ALPHA;
+import static com.android.quickstep.views.RecentsView.FULLSCREEN_PROGRESS;
 
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Rect;
 
@@ -30,6 +31,7 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.anim.AnimatorPlaybackController;
+import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.quickstep.fallback.FallbackRecentsView;
 import com.android.quickstep.util.ActivityInitListener;
@@ -89,15 +91,13 @@ public final class FallbackActivityInterface implements
     public AnimationFactory prepareRecentsUI(
             boolean activityVisible, Consumer<AnimatorPlaybackController> callback) {
         RecentsActivity activity = getCreatedActivity();
-        if (activityVisible) {
+        if (activity == null) {
             return (transitionLength) -> { };
         }
 
+        activity.getStateManager().goToState(BACKGROUND_APP);
         FallbackRecentsView rv = activity.getOverviewPanel();
         rv.setContentAlpha(0);
-        rv.getClearAllButton().setVisibilityAlpha(0);
-        rv.setDisallowScrollToClearAll(true);
-        rv.setInOverviewState(false);
 
         return new AnimationFactory() {
 
@@ -115,23 +115,19 @@ public final class FallbackActivityInterface implements
 
             @Override
             public void createActivityInterface(long transitionLength) {
-                AnimatorSet animatorSet = new AnimatorSet();
+                PendingAnimation pa = new PendingAnimation(transitionLength * 2);
+
                 if (isAnimatingToRecents) {
-                    ObjectAnimator anim = ObjectAnimator.ofFloat(rv, CONTENT_ALPHA, 0, 1);
-                    anim.setDuration(transitionLength).setInterpolator(LINEAR);
-                    animatorSet.play(anim);
+                    pa.addFloat(rv, CONTENT_ALPHA, 0, 1, LINEAR);
                 }
 
-                ObjectAnimator anim = ObjectAnimator.ofFloat(rv, ZOOM_PROGRESS, 1, 0);
-                anim.setDuration(transitionLength).setInterpolator(LINEAR);
-                animatorSet.play(anim);
-
-                AnimatorPlaybackController controller =
-                        AnimatorPlaybackController.wrap(animatorSet, transitionLength);
+                pa.addFloat(rv, SCALE_PROPERTY, rv.getMaxScaleForFullScreen(), 1, LINEAR);
+                pa.addFloat(rv, FULLSCREEN_PROGRESS, 1, 0, LINEAR);
+                AnimatorPlaybackController controller = pa.createPlaybackController();
 
                 // Since we are changing the start position of the UI, reapply the state, at the end
-                controller.setEndAction(() ->
-                        rv.setInOverviewState(controller.getInterpolatedProgress() > 0.5));
+                controller.setEndAction(() -> activity.getStateManager().goToState(
+                        controller.getInterpolatedProgress() > 0.5 ? DEFAULT : BACKGROUND_APP));
                 callback.accept(controller);
             }
         };
@@ -147,7 +143,7 @@ public final class FallbackActivityInterface implements
     @Nullable
     @Override
     public RecentsActivity getCreatedActivity() {
-        return BaseRecentsActivity.ACTIVITY_TRACKER.getCreatedActivity();
+        return RecentsActivity.ACTIVITY_TRACKER.getCreatedActivity();
     }
 
     @Nullable
