@@ -449,13 +449,13 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
 
     public void setOrientationState(RecentsOrientedState orientationState) {
         PagedOrientationHandler orientationHandler = orientationState.getOrientationHandler();
-        boolean isRtl = orientationHandler.getRecentsRtlSetting(getResources());
+        boolean isRtl = getLayoutDirection() == LAYOUT_DIRECTION_RTL;
         LayoutParams snapshotParams = (LayoutParams) mSnapshotView.getLayoutParams();
         int thumbnailPadding = (int) getResources().getDimension(R.dimen.task_thumbnail_top_margin);
         LayoutParams iconParams = (LayoutParams) mIconView.getLayoutParams();
         switch (orientationHandler.getRotation()) {
             case Surface.ROTATION_90:
-                iconParams.gravity = (isRtl ? END : START) | CENTER_VERTICAL;
+                iconParams.gravity = (isRtl ? START : END) | CENTER_VERTICAL;
                 iconParams.rightMargin = -thumbnailPadding;
                 iconParams.leftMargin = 0;
                 iconParams.topMargin = snapshotParams.topMargin / 2;
