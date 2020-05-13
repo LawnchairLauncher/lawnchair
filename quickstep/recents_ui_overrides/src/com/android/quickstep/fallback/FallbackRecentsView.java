@@ -15,17 +15,17 @@
  */
 package com.android.quickstep.fallback;
 
-import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
+import static com.android.quickstep.fallback.RecentsState.DEFAULT;
+import static com.android.quickstep.fallback.RecentsState.MODAL_TASK;
 import static com.android.quickstep.util.WindowSizeStrategy.FALLBACK_RECENTS_SIZE_STRATEGY;
 
+import android.annotation.TargetApi;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.content.Context;
-import android.graphics.Canvas;
+import android.os.Build;
 import android.util.AttributeSet;
-import android.util.FloatProperty;
-import android.view.View;
 
-import com.android.launcher3.Utilities;
+import com.android.launcher3.statemanager.StateManager.StateListener;
 import com.android.quickstep.RecentsActivity;
 import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.RecentsView;
@@ -34,26 +34,9 @@ import com.android.systemui.shared.recents.model.Task.TaskKey;
 
 import java.util.ArrayList;
 
-public class FallbackRecentsView extends RecentsView<RecentsActivity> {
-
-    public static final FloatProperty<FallbackRecentsView> ZOOM_PROGRESS =
-            new FloatProperty<FallbackRecentsView> ("zoomInProgress") {
-
-                @Override
-                public void setValue(FallbackRecentsView view, float value) {
-                    view.setZoomProgress(value);
-                }
-
-                @Override
-                public Float get(FallbackRecentsView view) {
-                    return view.mZoomInProgress;
-                }
-            };
-
-    private float mZoomInProgress = 0;
-    private boolean mInOverviewState = true;
-
-    private float mZoomScale = 1f;
+@TargetApi(Build.VERSION_CODES.R)
+public class FallbackRecentsView extends RecentsView<RecentsActivity>
+        implements StateListener<RecentsState> {
 
     private RunningTaskInfo mRunningTaskInfo;
 
@@ -63,6 +46,7 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity> {
 
     public FallbackRecentsView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr, FALLBACK_RECENTS_SIZE_STRATEGY);
+        mActivity.getStateManager().addStateListener(this);
     }
 
     @Override
@@ -78,68 +62,9 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity> {
     }
 
     @Override
-    public void onViewAdded(View child) {
-        super.onViewAdded(child);
-        updateEmptyMessage();
-    }
-
-    @Override
-    public void onViewRemoved(View child) {
-        super.onViewRemoved(child);
-        updateEmptyMessage();
-    }
-
-    @Override
-    public void draw(Canvas canvas) {
-        maybeDrawEmptyMessage(canvas);
-        super.draw(canvas);
-    }
-
-    @Override
-    public void reset() {
-        super.reset();
-        resetViewUI();
-    }
-
-    @Override
     public boolean shouldUseMultiWindowTaskSizeStrategy() {
         // Just use the activity task size for multi-window as well.
         return false;
-    }
-
-    public void resetViewUI() {
-        setZoomProgress(0);
-        resetTaskVisuals();
-    }
-
-    public void setInOverviewState(boolean inOverviewState) {
-        if (mInOverviewState != inOverviewState) {
-            mInOverviewState = inOverviewState;
-            if (mInOverviewState) {
-                resetTaskVisuals();
-            } else {
-                setZoomProgress(1);
-            }
-        }
-    }
-
-    @Override
-    public void resetTaskVisuals() {
-        super.resetTaskVisuals();
-        setFullscreenProgress(mFullscreenProgress);
-    }
-
-    @Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        super.onLayout(changed, left, top, right, bottom);
-        mZoomScale = getMaxScaleForFullScreen();
-        setZoomProgress(mZoomInProgress);
-    }
-
-    public void setZoomProgress(float progress) {
-        mZoomInProgress = progress;
-        SCALE_PROPERTY.set(this, Utilities.mapRange(mZoomInProgress, 1, mZoomScale));
-        FULLSCREEN_PROGRESS.set(this, mZoomInProgress);
     }
 
     public void onGestureAnimationStart(RunningTaskInfo runningTaskInfo) {
@@ -177,5 +102,38 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity> {
             }
         }
         super.applyLoadPlan(tasks);
+    }
+
+    @Override
+    public void setModalStateEnabled(boolean isModalState) {
+        super.setModalStateEnabled(isModalState);
+        if (isModalState) {
+            mActivity.getStateManager().goToState(RecentsState.MODAL_TASK);
+        } else {
+            if (mActivity.isInState(RecentsState.MODAL_TASK)) {
+                mActivity.getStateManager().goToState(DEFAULT);
+            }
+        }
+    }
+
+    @Override
+    public void onStateTransitionStart(RecentsState toState) {
+        setOverviewStateEnabled(true);
+        setFreezeViewVisibility(true);
+    }
+
+    @Override
+    public void onStateTransitionComplete(RecentsState finalState) {
+        setOverlayEnabled(finalState == DEFAULT || finalState == MODAL_TASK);
+        setFreezeViewVisibility(false);
+    }
+
+    @Override
+    public void setOverviewStateEnabled(boolean enabled) {
+        super.setOverviewStateEnabled(enabled);
+        if (enabled) {
+            RecentsState state = mActivity.getStateManager().getState();
+            setDisallowScrollToClearAll(!state.hasButtons());
+        }
     }
 }
