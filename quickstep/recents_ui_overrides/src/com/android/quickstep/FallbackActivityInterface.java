@@ -20,20 +20,22 @@ import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
 import static com.android.quickstep.fallback.RecentsState.BACKGROUND_APP;
 import static com.android.quickstep.fallback.RecentsState.DEFAULT;
-import static com.android.quickstep.util.WindowSizeStrategy.FALLBACK_RECENTS_SIZE_STRATEGY;
 import static com.android.quickstep.views.RecentsView.CONTENT_ALPHA;
 import static com.android.quickstep.views.RecentsView.FULLSCREEN_PROGRESS;
 
 import android.content.Context;
+import android.graphics.PointF;
 import android.graphics.Rect;
 
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.quickstep.fallback.FallbackRecentsView;
+import com.android.quickstep.fallback.RecentsState;
 import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
@@ -46,19 +48,18 @@ import java.util.function.Predicate;
  * currently running one and apps should interact with the {@link RecentsActivity} as opposed
  * to the in-launcher one.
  */
-public final class FallbackActivityInterface implements
-        BaseActivityInterface<RecentsActivity> {
+public final class FallbackActivityInterface extends
+        BaseActivityInterface<RecentsState, RecentsActivity> {
 
-    public FallbackActivityInterface() { }
+    public static final FallbackActivityInterface INSTANCE = new FallbackActivityInterface();
 
-    @Override
-    public void onTransitionCancelled(boolean activityVisible) {
-        // TODO:
+    private FallbackActivityInterface() {
+        super(false);
     }
 
     @Override
     public int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context, Rect outRect) {
-        FALLBACK_RECENTS_SIZE_STRATEGY.calculateTaskSize(context, dp, outRect);
+        calculateTaskSize(context, dp, outRect);
         if (dp.isVerticalBarLayout()
                 && SysUINavigationMode.INSTANCE.get(context).getMode() != NO_BUTTON) {
             Rect targetInsets = dp.getInsets();
@@ -67,17 +68,6 @@ public final class FallbackActivityInterface implements
         } else {
             return dp.heightPx - outRect.bottom;
         }
-    }
-
-    @Override
-    public void onSwipeUpToRecentsComplete() {
-        RecentsActivity activity = getCreatedActivity();
-        if (activity == null) {
-            return;
-        }
-        RecentsView recentsView = activity.getOverviewPanel();
-        recentsView.getClearAllButton().setVisibilityAlpha(1);
-        recentsView.setDisallowScrollToClearAll(false);
     }
 
     @Override
@@ -198,11 +188,14 @@ public final class FallbackActivityInterface implements
     }
 
     @Override
-    public void onLaunchTaskSuccess() {
-        RecentsActivity activity = getCreatedActivity();
-        if (activity == null) {
-            return;
-        }
-        activity.onTaskLaunched();
+    public void getMultiWindowSize(Context context, DeviceProfile dp, PointF out) {
+        out.set(dp.widthPx, dp.heightPx);
+    }
+
+    @Override
+    protected float getExtraSpace(Context context, DeviceProfile dp) {
+        return showOverviewActions(context)
+                ? context.getResources().getDimensionPixelSize(R.dimen.overview_actions_height)
+                : 0;
     }
 }

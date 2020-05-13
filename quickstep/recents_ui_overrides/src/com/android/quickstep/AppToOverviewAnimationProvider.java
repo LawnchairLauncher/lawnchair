@@ -31,9 +31,9 @@ import android.util.Log;
 import android.view.View;
 
 import com.android.launcher3.AbstractFloatingView;
-import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.statehandlers.DepthController;
+import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.quickstep.util.AppWindowAnimationHelper;
 import com.android.quickstep.util.RemoteAnimationProvider;
 import com.android.quickstep.util.TransformParams;
@@ -47,20 +47,21 @@ import com.android.systemui.shared.system.TransactionCompat;
  *
  * @param <T> activity that contains the overview
  */
-final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> extends
+final class AppToOverviewAnimationProvider<T extends StatefulActivity<?>> extends
         RemoteAnimationProvider {
 
     private static final long RECENTS_LAUNCH_DURATION = 250;
     private static final String TAG = "AppToOverviewAnimationProvider";
 
-    private final BaseActivityInterface<T> mActivityInterface;
+    private final BaseActivityInterface<?, T> mActivityInterface;
     // The id of the currently running task that is transitioning to overview.
     private final int mTargetTaskId;
 
     private T mActivity;
     private RecentsView mRecentsView;
 
-    AppToOverviewAnimationProvider(BaseActivityInterface<T> activityInterface, int targetTaskId) {
+    AppToOverviewAnimationProvider(
+            BaseActivityInterface<?, T> activityInterface, int targetTaskId) {
         mActivityInterface = activityInterface;
         mTargetTaskId = targetTaskId;
     }

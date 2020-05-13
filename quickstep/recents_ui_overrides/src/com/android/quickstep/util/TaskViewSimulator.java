@@ -15,8 +15,6 @@
  */
 package com.android.quickstep.util;
 
-import static android.view.Surface.ROTATION_0;
-
 import static com.android.launcher3.states.RotationHelper.deltaRotation;
 import static com.android.launcher3.touch.PagedOrientationHandler.MATRIX_POST_TRANSLATE;
 import static com.android.quickstep.util.RecentsOrientedState.postDisplayRotation;
@@ -33,6 +31,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.quickstep.AnimatedFloat;
+import com.android.quickstep.BaseActivityInterface;
 import com.android.quickstep.views.RecentsView.ScrollState;
 import com.android.quickstep.views.TaskThumbnailView.PreviewPositionHelper;
 import com.android.quickstep.views.TaskView;
@@ -52,7 +51,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
 
     private final RecentsOrientedState mOrientationState;
     private final Context mContext;
-    private final WindowSizeStrategy mSizeStrategy;
+    private final BaseActivityInterface mSizeStrategy;
 
     private final Rect mTaskRect = new Rect();
     private final PointF mPivot = new PointF();
@@ -81,7 +80,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
     private boolean mLayoutValid = false;
     private boolean mScrollValid = false;
 
-    public TaskViewSimulator(Context context, WindowSizeStrategy sizeStrategy) {
+    public TaskViewSimulator(Context context, BaseActivityInterface sizeStrategy) {
         mContext = context;
         mSizeStrategy = sizeStrategy;
 

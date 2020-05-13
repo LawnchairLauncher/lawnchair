@@ -63,6 +63,7 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.provider.RestoreDbTask;
+import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.tracing.nano.LauncherTraceProto;
@@ -705,7 +706,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
     public InputConsumer createOverviewInputConsumer(GestureState previousGestureState,
             GestureState gestureState, MotionEvent event,
             boolean forceOverviewInputConsumer) {
-        BaseDraggingActivity activity = gestureState.getActivityInterface().getCreatedActivity();
+        StatefulActivity activity = gestureState.getActivityInterface().getCreatedActivity();
         if (activity == null) {
             return mResetGestureInputConsumer;
         }
@@ -754,7 +755,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
             return;
         }
 
-        final BaseActivityInterface<BaseDraggingActivity> activityInterface =
+        final BaseActivityInterface activityInterface =
                 mOverviewComponentObserver.getActivityInterface();
         final Intent overviewIntent = new Intent(
                 mOverviewComponentObserver.getOverviewIntentIgnoreSysUiState());
