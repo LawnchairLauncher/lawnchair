@@ -207,7 +207,9 @@ public class LogEventChecker {
 
     // Workaround for b/154157191
     private static boolean ignoreMistatch(boolean successfulGesture, String sequence) {
-        return TestProtocol.SEQUENCE_TIS.equals(sequence) && successfulGesture;
+        // b/156287114
+        return false;
+//        return TestProtocol.SEQUENCE_TIS.equals(sequence) && successfulGesture;
     }
 
     // If the list of actual events matches the list of expected events, returns -1, otherwise
