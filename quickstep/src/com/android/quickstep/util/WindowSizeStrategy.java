@@ -56,34 +56,40 @@ public abstract class WindowSizeStrategy {
 
     private void calculateTaskSize(
             Context context, DeviceProfile dp, float extraVerticalSpace, Rect outRect) {
-        float taskWidth, taskHeight, paddingHorz;
         Resources res = context.getResources();
-        Rect insets = dp.getInsets();
         final boolean showLargeTaskSize = showOverviewActions(context);
 
+        final int paddingResId;
+        if (dp.isMultiWindowMode) {
+            paddingResId = R.dimen.multi_window_task_card_horz_space;
+        } else if (dp.isVerticalBarLayout()) {
+            paddingResId = R.dimen.landscape_task_card_horz_space;
+        } else if (showLargeTaskSize) {
+            paddingResId = R.dimen.portrait_task_card_horz_space_big_overview;
+        } else {
+            paddingResId = R.dimen.portrait_task_card_horz_space;
+        }
+        float paddingHorz = res.getDimension(paddingResId);
+        float paddingVert = showLargeTaskSize
+                ? 0 : res.getDimension(R.dimen.task_card_vert_space);
+
+        calculateTaskSizeInternal(context, dp, extraVerticalSpace, paddingHorz, paddingVert,
+                res.getDimension(R.dimen.task_thumbnail_top_margin), outRect);
+    }
+
+    private void calculateTaskSizeInternal(Context context, DeviceProfile dp,
+            float extraVerticalSpace, float paddingHorz, float paddingVert, float topIconMargin,
+            Rect outRect) {
+        float taskWidth, taskHeight;
+        Rect insets = dp.getInsets();
         if (dp.isMultiWindowMode) {
             WindowBounds bounds = SplitScreenBounds.INSTANCE.getSecondaryWindowBounds(context);
             taskWidth = bounds.availableSize.x;
             taskHeight = bounds.availableSize.y;
-            paddingHorz = res.getDimension(R.dimen.multi_window_task_card_horz_space);
         } else {
             taskWidth = dp.availableWidthPx;
             taskHeight = dp.availableHeightPx;
-
-            final int paddingResId;
-            if (dp.isVerticalBarLayout()) {
-                paddingResId = R.dimen.landscape_task_card_horz_space;
-            } else if (showLargeTaskSize) {
-                paddingResId = R.dimen.portrait_task_card_horz_space_big_overview;
-            } else {
-                paddingResId = R.dimen.portrait_task_card_horz_space;
-            }
-            paddingHorz = res.getDimension(paddingResId);
         }
-
-        float topIconMargin = res.getDimension(R.dimen.task_thumbnail_top_margin);
-        float paddingVert = showLargeTaskSize
-                ? 0 : res.getDimension(R.dimen.task_card_vert_space);
 
         // Note this should be same as dp.availableWidthPx and dp.availableHeightPx unless
         // we override the insets ourselves.
@@ -110,47 +116,16 @@ public abstract class WindowSizeStrategy {
      * Calculates the modal taskView size for the provided device configuration
      */
     public void calculateModalTaskSize(Context context, DeviceProfile dp, Rect outRect) {
-        float taskWidth, taskHeight, paddingHorz;
-        Resources res = context.getResources();
-        Rect insets = dp.getInsets();
-
-        if (dp.isMultiWindowMode) {
-            getMultiWindowSize(context, dp, mTempPoint);
-            taskWidth = mTempPoint.x;
-            taskHeight = mTempPoint.y;
-            paddingHorz = res.getDimension(R.dimen.multi_window_task_card_horz_space);
-        } else {
-            taskWidth = dp.availableWidthPx;
-            taskHeight = dp.availableHeightPx;
-
-            final int paddingResId;
-            if (dp.isVerticalBarLayout()) {
-                paddingResId = R.dimen.landscape_task_card_horz_space;
-            } else {
-                paddingResId = R.dimen.portrait_modal_task_card_horz_space;
-            }
-            paddingHorz = res.getDimension(paddingResId);
-        }
-
-        // Note this should be same as dp.availableWidthPx and dp.availableHeightPx unless
-        // we override the insets ourselves.
-        int launcherVisibleWidth = dp.widthPx - insets.left - insets.right;
-        int launcherVisibleHeight = dp.heightPx - insets.top - insets.bottom;
-
-        // Calculate for the overview height.
-        float overviewActionsHeight = getOverviewActionsHeight(context);
-        float availableHeight = launcherVisibleHeight - overviewActionsHeight;
-        float availableWidth = launcherVisibleWidth - paddingHorz;
-
-        float scale = Math.min(availableWidth / taskWidth, availableHeight / taskHeight);
-        float outWidth = scale * taskWidth;
-        float outHeight = scale * taskHeight;
-
-        // Center in the visible space
-        float x = insets.left + (launcherVisibleWidth - outWidth) / 2;
-        float y = insets.top + (launcherVisibleHeight - overviewActionsHeight - outHeight) / 2;
-        outRect.set(Math.round(x), Math.round(y),
-                Math.round(x) + Math.round(outWidth), Math.round(y) + Math.round(outHeight));
+        float paddingHorz = context.getResources().getDimension(dp.isMultiWindowMode
+                ? R.dimen.multi_window_task_card_horz_space
+                : dp.isVerticalBarLayout()
+                        ? R.dimen.landscape_task_card_horz_space
+                        : R.dimen.portrait_modal_task_card_horz_space);
+        float extraVerticalSpace = getOverviewActionsHeight(context);
+        float paddingVert = 0;
+        float topIconMargin = 0;
+        calculateTaskSizeInternal(context, dp, extraVerticalSpace, paddingHorz, paddingVert,
+                topIconMargin, outRect);
     }
 
     /** Gets the space that the overview actions will take, including margins. */
