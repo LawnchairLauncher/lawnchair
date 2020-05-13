@@ -1608,7 +1608,12 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         if (mOrientationState.update(touchRotation, displayRotation)) {
             mOrientationHandler = mOrientationState.getOrientationHandler();
             mIsRtl = mOrientationHandler.getRecentsRtlSetting(getResources());
-            setLayoutDirection(mIsRtl ? View.LAYOUT_DIRECTION_RTL : View.LAYOUT_DIRECTION_LTR);
+            setLayoutDirection(mIsRtl
+                    ? View.LAYOUT_DIRECTION_RTL
+                    : View.LAYOUT_DIRECTION_LTR);
+            mClearAllButton.setLayoutDirection(mIsRtl
+                    ? View.LAYOUT_DIRECTION_LTR
+                    : View.LAYOUT_DIRECTION_RTL);
             mClearAllButton.setRotation(mOrientationHandler.getDegreesRotated());
             mActivity.getDragLayer().recreateControllers();
             mActionsView.updateHiddenFlags(HIDDEN_NON_ZERO_ROTATION,
