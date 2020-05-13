@@ -68,13 +68,16 @@ final class BackGestureTutorialController extends TutorialController {
     @Override
     Integer getActionButtonStringId() {
         if (mTutorialType == BACK_NAVIGATION_COMPLETE) {
-            return R.string.gesture_tutorial_action_button_label;
+            return R.string.gesture_tutorial_action_button_label_done;
         }
         return null;
     }
 
     @Override
     Integer getActionTextButtonStringId() {
+        if (mTutorialType == BACK_NAVIGATION_COMPLETE) {
+            return R.string.gesture_tutorial_action_button_label_settings;
+        }
         return null;
     }
 
@@ -86,7 +89,6 @@ final class BackGestureTutorialController extends TutorialController {
     @Override
     void onActionTextButtonClicked(View button) {
         mTutorialFragment.startSystemNavigationSetting();
-        mTutorialFragment.closeTutorial();
     }
 
     @Override
