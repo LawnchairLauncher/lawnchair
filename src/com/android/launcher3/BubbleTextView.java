@@ -60,6 +60,7 @@ import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.model.data.PromiseAppInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.IconLabelDotView;
 
@@ -744,11 +745,12 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     }
 
     @Override
-    public void prepareDrawDragView() {
+    public SafeCloseable prepareDrawDragView() {
         if (getIcon() instanceof FastBitmapDrawable) {
             FastBitmapDrawable icon = (FastBitmapDrawable) getIcon();
             icon.setScale(1f);
         }
         setForceHideDot(true);
+        return () -> { };
     }
 }
