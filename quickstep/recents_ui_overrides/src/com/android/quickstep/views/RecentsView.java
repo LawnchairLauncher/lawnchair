@@ -126,6 +126,7 @@ import com.android.quickstep.ViewUtils;
 import com.android.quickstep.util.AppWindowAnimationHelper;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.util.RecentsOrientedState;
+import com.android.quickstep.util.SplitScreenBounds;
 import com.android.quickstep.util.TransformParams;
 import com.android.quickstep.util.WindowSizeStrategy;
 import com.android.systemui.plugins.ResourceProvider;
@@ -147,7 +148,8 @@ import java.util.function.Consumer;
 @TargetApi(Build.VERSION_CODES.P)
 public abstract class RecentsView<T extends BaseActivity> extends PagedView implements Insettable,
         TaskThumbnailCache.HighResLoadingState.HighResLoadingStateChangedCallback,
-        InvariantDeviceProfile.OnIDPChangeListener, TaskVisualsChangeListener {
+        InvariantDeviceProfile.OnIDPChangeListener, TaskVisualsChangeListener,
+        SplitScreenBounds.OnChangeListener {
 
     private static final String TAG = RecentsView.class.getSimpleName();
 
@@ -510,6 +512,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         SystemUiProxy.INSTANCE.get(getContext()).setPinnedStackAnimationListener(
                 mIPinnedStackAnimationListener);
         mOrientationState.initListeners();
+        SplitScreenBounds.INSTANCE.addOnChangeListener(this);
     }
 
     @Override
@@ -523,6 +526,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         RecentsModel.INSTANCE.get(getContext()).removeThumbnailChangeListener(this);
         mIdp.removeOnChangeListener(this);
         SystemUiProxy.INSTANCE.get(getContext()).setPinnedStackAnimationListener(null);
+        SplitScreenBounds.INSTANCE.removeOnChangeListener(this);
         mIPinnedStackAnimationListener.setActivity(null);
         mOrientationState.destroyListeners();
     }
@@ -2166,6 +2170,13 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     @Nullable
     protected DepthController getDepthController() {
         return null;
+    }
+
+    @Override
+    public void onSecondaryWindowBoundsChanged() {
+        // Invalidate the task view size
+        setInsets(mInsets);
+        requestLayout();
     }
 
     /**
