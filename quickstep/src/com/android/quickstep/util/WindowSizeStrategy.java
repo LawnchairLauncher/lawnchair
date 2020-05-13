@@ -109,6 +109,68 @@ public abstract class WindowSizeStrategy {
                 Math.round(x) + Math.round(outWidth), Math.round(y) + Math.round(outHeight));
     }
 
+    /**
+     * Calculates the modal taskView size for the provided device configuration
+     */
+    public void calculateModalTaskSize(Context context, DeviceProfile dp, Rect outRect) {
+        float taskWidth, taskHeight, paddingHorz;
+        Resources res = context.getResources();
+        Rect insets = dp.getInsets();
+
+        if (dp.isMultiWindowMode) {
+            getMultiWindowSize(context, dp, mTempPoint);
+            taskWidth = mTempPoint.x;
+            taskHeight = mTempPoint.y;
+            paddingHorz = res.getDimension(R.dimen.multi_window_task_card_horz_space);
+        } else {
+            taskWidth = dp.availableWidthPx;
+            taskHeight = dp.availableHeightPx;
+
+            final int paddingResId;
+            if (dp.isVerticalBarLayout()) {
+                paddingResId = R.dimen.landscape_task_card_horz_space;
+            } else {
+                paddingResId = R.dimen.portrait_modal_task_card_horz_space;
+            }
+            paddingHorz = res.getDimension(paddingResId);
+        }
+
+        // Note this should be same as dp.availableWidthPx and dp.availableHeightPx unless
+        // we override the insets ourselves.
+        int launcherVisibleWidth = dp.widthPx - insets.left - insets.right;
+        int launcherVisibleHeight = dp.heightPx - insets.top - insets.bottom;
+
+        // Calculate for the overview height.
+        float overviewActionsHeight = getOverviewActionsHeight(context);
+        float availableHeight = launcherVisibleHeight - overviewActionsHeight;
+        float availableWidth = launcherVisibleWidth - paddingHorz;
+
+        float scale = Math.min(availableWidth / taskWidth, availableHeight / taskHeight);
+        float outWidth = scale * taskWidth;
+        float outHeight = scale * taskHeight;
+
+        // Center in the visible space
+        float x = insets.left + (launcherVisibleWidth - outWidth) / 2;
+        float y = insets.top + (launcherVisibleHeight - overviewActionsHeight - outHeight) / 2;
+        outRect.set(Math.round(x), Math.round(y),
+                Math.round(x) + Math.round(outWidth), Math.round(y) + Math.round(outHeight));
+    }
+
+    /** Gets the space that the overview actions will take, including margins. */
+    public float getOverviewActionsHeight(Context context) {
+        Resources res = context.getResources();
+        float actionsBottomMargin = 0;
+        if (getMode(context) == Mode.THREE_BUTTONS) {
+            actionsBottomMargin = res.getDimensionPixelSize(
+                R.dimen.overview_actions_bottom_margin_three_button);
+        } else {
+            actionsBottomMargin = res.getDimensionPixelSize(
+                R.dimen.overview_actions_bottom_margin_gesture);
+        }
+        float overviewActionsHeight = actionsBottomMargin
+                + res.getDimensionPixelSize(R.dimen.overview_actions_height);
+        return overviewActionsHeight;
+    }
 
     public static final WindowSizeStrategy LAUNCHER_ACTIVITY_SIZE_STRATEGY =
             new WindowSizeStrategy(true) {
@@ -138,17 +200,7 @@ public abstract class WindowSizeStrategy {
                 if (showOverviewActions(context)) {
                     //TODO: this needs to account for the swipe gesture height and accessibility
                     // UI when shown.
-                    float actionsBottomMargin = 0;
-                    if (getMode(context) == Mode.THREE_BUTTONS) {
-                        actionsBottomMargin = res.getDimensionPixelSize(
-                                R.dimen.overview_actions_bottom_margin_three_button);
-                    } else {
-                        actionsBottomMargin = res.getDimensionPixelSize(
-                                R.dimen.overview_actions_bottom_margin_gesture);
-                    }
-                    float actionsHeight = actionsBottomMargin
-                            + res.getDimensionPixelSize(R.dimen.overview_actions_height);
-                    return actionsHeight;
+                    return getOverviewActionsHeight(context);
                 } else {
                     return getDefaultSwipeHeight(context, dp) + dp.workspacePageIndicatorHeight
                             + res.getDimensionPixelSize(

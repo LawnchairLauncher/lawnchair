@@ -21,7 +21,6 @@ import android.graphics.Rect;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.R;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.quickstep.views.RecentsView;
 
@@ -64,10 +63,10 @@ public class OverviewModalTaskState extends OverviewState {
         Rect out = new Rect();
         activity.<RecentsView>getOverviewPanel().getTaskSize(out);
         int taskHeight = out.height();
-        float topMargin = res.getDimension(R.dimen.task_thumbnail_top_margin);
-        float bottomMargin = res.getDimension(R.dimen.overview_actions_top_margin);
-        float newHeight = taskHeight + topMargin + bottomMargin;
-        float scale = newHeight / taskHeight;
+        activity.<RecentsView>getOverviewPanel().getModalTaskSize(out);
+        int newHeight = out.height();
+
+        float scale = (float) newHeight / taskHeight;
 
         return new float[] {scale, NO_OFFSET};
     }
