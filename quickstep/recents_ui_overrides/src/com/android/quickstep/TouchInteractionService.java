@@ -38,6 +38,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.graphics.Rect;
 import android.graphics.Region;
 import android.graphics.drawable.Icon;
 import android.os.Build;
@@ -69,6 +70,7 @@ import com.android.launcher3.tracing.nano.TouchInteractionServiceProto;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.util.TraceHelper;
+import com.android.launcher3.util.WindowBounds;
 import com.android.quickstep.inputconsumers.AccessibilityInputConsumer;
 import com.android.quickstep.inputconsumers.AssistantInputConsumer;
 import com.android.quickstep.inputconsumers.DeviceLockedInputConsumer;
@@ -81,6 +83,7 @@ import com.android.quickstep.inputconsumers.ScreenPinnedInputConsumer;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.AssistantUtilities;
 import com.android.quickstep.util.ProtoTracer;
+import com.android.quickstep.util.SplitScreenBounds;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.plugins.OverscrollPlugin;
 import com.android.systemui.plugins.PluginListener;
@@ -118,7 +121,7 @@ class ArgList extends LinkedList<String> {
 /**
  * Service connected by system-UI for handling touch interaction.
  */
-@TargetApi(Build.VERSION_CODES.Q)
+@TargetApi(Build.VERSION_CODES.R)
 public class TouchInteractionService extends Service implements PluginListener<OverscrollPlugin>,
         ProtoTraceable<LauncherTraceProto> {
 
@@ -227,6 +230,11 @@ public class TouchInteractionService extends Service implements PluginListener<O
         @BinderThread
         public void onActiveNavBarRegionChanges(Region region) {
             MAIN_EXECUTOR.execute(() -> mDeviceState.setDeferredGestureRegion(region));
+        }
+
+        public void onSplitScreenSecondaryBoundsChanged(Rect bounds, Rect insets)  {
+            WindowBounds wb = new WindowBounds(bounds, insets);
+            MAIN_EXECUTOR.execute(() -> SplitScreenBounds.INSTANCE.setSecondaryWindowBounds(wb));
         }
 
         /** Deprecated methods **/
