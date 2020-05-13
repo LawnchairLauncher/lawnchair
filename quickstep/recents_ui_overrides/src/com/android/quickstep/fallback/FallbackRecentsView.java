@@ -24,11 +24,13 @@ import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
 
+import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.statemanager.StateManager.StateListener;
 import com.android.quickstep.FallbackActivityInterface;
 import com.android.quickstep.RecentsActivity;
 import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.RecentsView;
+import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.Task.TaskKey;
 
@@ -38,7 +40,7 @@ import java.util.ArrayList;
 public class FallbackRecentsView extends RecentsView<RecentsActivity>
         implements StateListener<RecentsState> {
 
-    private RunningTaskInfo mRunningTaskInfo;
+    private RunningTaskInfo mHomeTaskInfo;
 
     public FallbackRecentsView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -67,16 +69,40 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity>
         return false;
     }
 
-    public void onGestureAnimationStart(RunningTaskInfo runningTaskInfo) {
-        mRunningTaskInfo = runningTaskInfo;
-        onGestureAnimationStart(runningTaskInfo == null ? -1 : runningTaskInfo.taskId);
+    /**
+     * When starting gesture interaction from home, we add a temporary invisible tile corresponding
+     * to the home task. This allows us to handle quick-switch similarly to a quick-switching
+     * from a foreground task.
+     */
+    public void onGestureAnimationStartOnHome(RunningTaskInfo homeTaskInfo) {
+        mHomeTaskInfo = homeTaskInfo;
+        onGestureAnimationStart(homeTaskInfo == null ? -1 : homeTaskInfo.taskId);
+    }
+
+    /**
+     * When the gesture ends and recents view become interactive, we also remove the temporary
+     * invisible tile added for the home task. This also pushes the remaining tiles back
+     * to the center.
+     */
+    @Override
+    public void onGestureAnimationEnd() {
+        super.onGestureAnimationEnd();
+        if (mHomeTaskInfo != null) {
+            TaskView tv = getTaskView(mHomeTaskInfo.taskId);
+            if (tv != null) {
+                PendingAnimation pa = createTaskDismissAnimation(tv, true, false, 150);
+                pa.addEndListener(e -> setCurrentTask(-1));
+                runDismissAnimation(pa);
+            }
+        }
     }
 
     @Override
     public void setCurrentTask(int runningTaskId) {
         super.setCurrentTask(runningTaskId);
-        if (mRunningTaskInfo != null && mRunningTaskInfo.taskId != runningTaskId) {
-            mRunningTaskInfo = null;
+        if (mHomeTaskInfo != null && mHomeTaskInfo.taskId != runningTaskId) {
+            mHomeTaskInfo = null;
+            setRunningTaskHidden(false);
         }
     }
 
@@ -85,7 +111,7 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity>
         // When quick-switching on 3p-launcher, we add a "dummy" tile corresponding to Launcher
         // as well. This tile is never shown as we have setCurrentTaskHidden, but allows use to
         // track the index of the next task appropriately, as if we are switching on any other app.
-        if (mRunningTaskInfo != null && mRunningTaskInfo.taskId == mRunningTaskId) {
+        if (mHomeTaskInfo != null && mHomeTaskInfo.taskId == mRunningTaskId) {
             // Check if the task list has running task
             boolean found = false;
             for (Task t : tasks) {
@@ -97,11 +123,20 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity>
             if (!found) {
                 ArrayList<Task> newList = new ArrayList<>(tasks.size() + 1);
                 newList.addAll(tasks);
-                newList.add(Task.from(new TaskKey(mRunningTaskInfo), mRunningTaskInfo, false));
+                newList.add(Task.from(new TaskKey(mHomeTaskInfo), mHomeTaskInfo, false));
                 tasks = newList;
             }
         }
         super.applyLoadPlan(tasks);
+    }
+
+    @Override
+    public void setRunningTaskHidden(boolean isHidden) {
+        if (mHomeTaskInfo != null) {
+            // Always keep the home task hidden
+            isHidden = true;
+        }
+        super.setRunningTaskHidden(isHidden);
     }
 
     @Override

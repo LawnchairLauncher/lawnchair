@@ -77,7 +77,6 @@ final class AppToOverviewAnimationProvider<T extends StatefulActivity<?>> extend
                     controller.dispatchOnStart();
                     controller.getAnimationPlayer().end();
                 });
-        factory.onRemoteAnimationReceived(null);
         factory.createActivityInterface(RECENTS_LAUNCH_DURATION);
         factory.setRecentsAttachedToAppWindow(true, false);
         mActivity = activity;

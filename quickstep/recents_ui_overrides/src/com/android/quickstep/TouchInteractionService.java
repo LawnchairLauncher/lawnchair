@@ -85,7 +85,6 @@ import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.AssistantUtilities;
 import com.android.quickstep.util.ProtoTracer;
 import com.android.quickstep.util.SplitScreenBounds;
-import com.android.quickstep.views.RecentsView;
 import com.android.systemui.plugins.OverscrollPlugin;
 import com.android.systemui.plugins.PluginListener;
 import com.android.systemui.shared.recents.IOverviewProxy;
@@ -833,16 +832,16 @@ public class TouchInteractionService extends Service implements PluginListener<O
         }
     }
 
-    private BaseSwipeUpHandler createLauncherSwipeHandler(GestureState gestureState,
-            long touchTimeMs, boolean continuingLastGesture, boolean isLikelyToStartNewTask) {
-        return new LauncherSwipeHandler(this, mDeviceState, mTaskAnimationManager,
+    private BaseSwipeUpHandler createLauncherSwipeHandler(
+            GestureState gestureState, long touchTimeMs, boolean continuingLastGesture) {
+        return new LauncherSwipeHandlerV2(this, mDeviceState, mTaskAnimationManager,
                 gestureState, touchTimeMs, continuingLastGesture, mInputConsumer);
     }
 
-    private BaseSwipeUpHandler createFallbackSwipeHandler(GestureState gestureState,
-            long touchTimeMs, boolean continuingLastGesture, boolean isLikelyToStartNewTask) {
-        return new FallbackSwipeHandler(this, mDeviceState, gestureState,
-                mInputConsumer, isLikelyToStartNewTask, continuingLastGesture);
+    private BaseSwipeUpHandler createFallbackSwipeHandler(
+            GestureState gestureState, long touchTimeMs, boolean continuingLastGesture) {
+        return new FallbackSwipeHandler(this, mDeviceState, mTaskAnimationManager,
+                gestureState, touchTimeMs, continuingLastGesture, mInputConsumer);
     }
 
     protected boolean shouldNotifyBackGesture() {
