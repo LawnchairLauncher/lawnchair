@@ -436,6 +436,13 @@ public final class LauncherInstrumentation {
                 sEventChecker.finishNoWait();
             }
         }
+        // b/156287114
+        try {
+            log("Input: " + mDevice.executeShellCommand("dumpsys input"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         log("Hierarchy dump for: " + message);
         dumpViewHierarchy();
 
