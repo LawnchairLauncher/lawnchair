@@ -18,14 +18,15 @@ package com.android.quickstep.inputconsumers;
 import static android.view.MotionEvent.ACTION_CANCEL;
 import static android.view.MotionEvent.ACTION_POINTER_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
-
 import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.Utilities.squaredTouchSlop;
 import static com.android.quickstep.LauncherSwipeHandler.MIN_PROGRESS_FOR_OVERVIEW;
 import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
 import static com.android.quickstep.util.ActiveGestureLog.INTENT_EXTRA_LOG_TRACE_ID;
 
-import android.content.ComponentName;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
@@ -34,15 +35,14 @@ import android.graphics.Rect;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
-
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.DefaultDisplay;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.InputConsumer;
-import com.android.quickstep.LockScreenRecentsActivity;
 import com.android.quickstep.MultiStateCallback;
 import com.android.quickstep.RecentsAnimationCallbacks;
 import com.android.quickstep.RecentsAnimationController;
@@ -52,6 +52,7 @@ import com.android.quickstep.TaskAnimationManager;
 import com.android.quickstep.util.AppWindowAnimationHelper;
 import com.android.quickstep.util.TransformParams;
 import com.android.systemui.shared.recents.model.ThumbnailData;
+import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.InputMonitorCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
@@ -60,8 +61,6 @@ import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
  */
 public class DeviceLockedInputConsumer implements InputConsumer,
         RecentsAnimationCallbacks.RecentsAnimationListener {
-
-    private static final float SCALE_DOWN = 0.75f;
 
     private static final String[] STATE_NAMES = DEBUG_STATES ? new String[2] : null;
     private static int getFlagForIndex(int index, String name) {
@@ -93,6 +92,7 @@ public class DeviceLockedInputConsumer implements InputConsumer,
     private float mProgress;
 
     private boolean mThresholdCrossed = false;
+    private boolean mHomeLaunched = false;
 
     private RecentsAnimationController mRecentsAnimationController;
     private RecentsAnimationTargets mRecentsAnimationTargets;
@@ -176,7 +176,6 @@ public class DeviceLockedInputConsumer implements InputConsumer,
      * the animation can still be running.
      */
     private void finishTouchTracking(MotionEvent ev) {
-        mStateCallback.setState(STATE_HANDLER_INVALIDATED);
         if (mThresholdCrossed && ev.getAction() == ACTION_UP) {
             mVelocityTracker.computeCurrentVelocity(1000,
                     ViewConfiguration.get(mContext).getScaledMaximumFlingVelocity());
@@ -192,12 +191,34 @@ public class DeviceLockedInputConsumer implements InputConsumer,
             } else {
                 dismissTask = mProgress >= (1 - MIN_PROGRESS_FOR_OVERVIEW);
             }
-            if (dismissTask) {
-                // For now, just start the home intent so user is prompted to unlock the device.
-                mContext.startActivity(new Intent(Intent.ACTION_MAIN)
-                        .addCategory(Intent.CATEGORY_HOME)
-                        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-            }
+
+            // Animate back to fullscreen before finishing
+            ValueAnimator animator = ValueAnimator.ofFloat(mTransformParams.getProgress(), 0f);
+            animator.setDuration(100);
+            animator.setInterpolator(Interpolators.ACCEL);
+            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                    mTransformParams.setProgress((float) valueAnimator.getAnimatedValue());
+                    mAppWindowAnimationHelper.applyTransform(mTransformParams);
+                }
+            });
+            animator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    if (dismissTask) {
+                        // For now, just start the home intent so user is prompted to unlock the device.
+                        mContext.startActivity(new Intent(Intent.ACTION_MAIN)
+                                .addCategory(Intent.CATEGORY_HOME)
+                                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                        mHomeLaunched = true;
+                    }
+                    mStateCallback.setState(STATE_HANDLER_INVALIDATED);
+                }
+            });
+            animator.start();
+        } else {
+            mStateCallback.setState(STATE_HANDLER_INVALIDATED);
         }
         mVelocityTracker.recycle();
         mVelocityTracker = null;
@@ -205,13 +226,11 @@ public class DeviceLockedInputConsumer implements InputConsumer,
 
     private void startRecentsTransition() {
         mThresholdCrossed = true;
+        mHomeLaunched = false;
         TestLogging.recordEvent(TestProtocol.SEQUENCE_PILFER, "pilferPointers");
         mInputMonitorCompat.pilferPointers();
 
-        Intent intent = new Intent(Intent.ACTION_MAIN)
-                .addCategory(Intent.CATEGORY_DEFAULT)
-                .setComponent(new ComponentName(mContext, LockScreenRecentsActivity.class))
-                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        Intent intent = mGestureState.getHomeIntent()
                 .putExtra(INTENT_EXTRA_LOG_TRACE_ID, mGestureState.getGestureId());
         mTaskAnimationManager.startRecentsAnimation(mGestureState, intent, this);
     }
@@ -229,8 +248,9 @@ public class DeviceLockedInputConsumer implements InputConsumer,
             mAppWindowAnimationHelper.updateSource(displaySize, targetCompat);
         }
 
-        Utilities.scaleRectAboutCenter(displaySize, SCALE_DOWN);
-        displaySize.offsetTo(displaySize.left, 0);
+        // Offset the surface slightly
+        displaySize.offset(0, mContext.getResources().getDimensionPixelSize(
+                R.dimen.device_locked_y_offset));
         mTransformParams.setTargetSet(mRecentsAnimationTargets);
         mAppWindowAnimationHelper.updateTargetRect(displaySize);
         mAppWindowAnimationHelper.applyTransform(mTransformParams);
@@ -245,7 +265,9 @@ public class DeviceLockedInputConsumer implements InputConsumer,
     }
 
     private void endRemoteAnimation() {
-        if (mRecentsAnimationController != null) {
+        if (mHomeLaunched) {
+            ActivityManagerWrapper.getInstance().cancelRecentsAnimation(false);
+        } else if (mRecentsAnimationController != null) {
             mRecentsAnimationController.finishController(
                     false /* toRecents */, null /* callback */, false /* sendUserLeaveHint */);
         }
