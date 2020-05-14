@@ -587,9 +587,8 @@ public class LauncherSwipeHandler extends BaseSwipeUpHandler<Launcher, RecentsVi
             boolean quickswitchThresholdPassed = centermostTask != runningTask;
 
             // We will handle the sysui flags based on the centermost task view.
-            mRecentsAnimationController.setUseLauncherSystemBarFlags(
-                    (swipeUpThresholdPassed || quickswitchThresholdPassed)
-                            && centermostTaskFlags != 0);
+            mRecentsAnimationController.setUseLauncherSystemBarFlags(swipeUpThresholdPassed
+                    ||  (quickswitchThresholdPassed && centermostTaskFlags != 0));
             mRecentsAnimationController.setSplitScreenMinimized(swipeUpThresholdPassed);
 
             int sysuiFlags = swipeUpThresholdPassed ? 0 : centermostTaskFlags;
