@@ -291,6 +291,11 @@ public final class LauncherActivityInterface extends
     }
 
     @Override
+    public void setHintUserWillBeActive() {
+        getCreatedActivity().setHintUserWillBeActive();
+    }
+
+    @Override
     public boolean deferStartingActivity(RecentsAnimationDeviceState deviceState, MotionEvent ev) {
         return deviceState.isInDeferredGestureRegion(ev);
     }
