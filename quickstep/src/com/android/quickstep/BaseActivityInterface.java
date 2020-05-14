@@ -174,6 +174,8 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
         recentsView.switchToScreenshot(thumbnailData, runnable);
     }
 
+    public void setHintUserWillBeActive() {}
+
     /**
      * Sets the expected window size in multi-window mode
      */

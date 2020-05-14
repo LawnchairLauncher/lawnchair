@@ -939,6 +939,7 @@ public class LauncherSwipeHandler extends BaseSwipeUpHandler<Launcher, RecentsVi
                         : null;
 
                 mActivity.getRootView().setForceHideBackArrow(true);
+                mActivityInterface.setHintUserWillBeActive();
 
                 homeAnimFactory = new HomeAnimationFactory(floatingIconView) {
 
