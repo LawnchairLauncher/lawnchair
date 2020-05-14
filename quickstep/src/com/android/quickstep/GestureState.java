@@ -17,10 +17,12 @@ package com.android.quickstep;
 
 import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
 
+import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.content.Intent;
+import android.os.Build;
 
-import com.android.launcher3.BaseDraggingActivity;
+import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
@@ -32,6 +34,7 @@ import java.util.ArrayList;
  * Manages the state for an active system gesture, listens for events from the system and Launcher,
  * and fires events when the states change.
  */
+@TargetApi(Build.VERSION_CODES.R)
 public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationListener {
 
     /**
@@ -189,7 +192,7 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
     /**
      * @return the interface to the activity handing the UI updates for this gesture.
      */
-    public <T extends BaseDraggingActivity> BaseActivityInterface<T> getActivityInterface() {
+    public <T extends StatefulActivity<?>> BaseActivityInterface<?, T> getActivityInterface() {
         return mActivityInterface;
     }
 

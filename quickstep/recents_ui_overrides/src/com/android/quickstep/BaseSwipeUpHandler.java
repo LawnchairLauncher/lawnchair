@@ -44,12 +44,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
-import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
+import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.VibratorWrapper;
 import com.android.launcher3.views.FloatingIconView;
@@ -60,7 +60,6 @@ import com.android.quickstep.util.RectFSpringAnim;
 import com.android.quickstep.util.TaskViewSimulator;
 import com.android.quickstep.util.TransformParams;
 import com.android.quickstep.util.TransformParams.BuilderProxy;
-import com.android.quickstep.util.WindowSizeStrategy;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
@@ -76,7 +75,7 @@ import java.util.function.Consumer;
  * Base class for swipe up handler with some utility methods
  */
 @TargetApi(Build.VERSION_CODES.Q)
-public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q extends RecentsView>
+public abstract class BaseSwipeUpHandler<T extends StatefulActivity<?>, Q extends RecentsView>
         implements RecentsAnimationListener {
 
     private static final String TAG = "BaseSwipeUpHandler";
@@ -97,7 +96,7 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
     protected final Context mContext;
     protected final RecentsAnimationDeviceState mDeviceState;
     protected final GestureState mGestureState;
-    protected final BaseActivityInterface<T> mActivityInterface;
+    protected final BaseActivityInterface<?, T> mActivityInterface;
     protected final InputConsumerController mInputConsumer;
 
     protected final TaskViewSimulator mTaskViewSimulator;
@@ -132,15 +131,14 @@ public abstract class BaseSwipeUpHandler<T extends BaseDraggingActivity, Q exten
     private boolean mRecentsViewScrollLinked = false;
 
     protected BaseSwipeUpHandler(Context context, RecentsAnimationDeviceState deviceState,
-            GestureState gestureState, InputConsumerController inputConsumer,
-            WindowSizeStrategy windowSizeStrategy) {
+            GestureState gestureState, InputConsumerController inputConsumer) {
         mContext = context;
         mDeviceState = deviceState;
         mGestureState = gestureState;
         mActivityInterface = gestureState.getActivityInterface();
         mActivityInitListener = mActivityInterface.createActivityInitListener(this::onActivityInit);
         mInputConsumer = inputConsumer;
-        mTaskViewSimulator = new TaskViewSimulator(context, windowSizeStrategy);
+        mTaskViewSimulator = new TaskViewSimulator(context, gestureState.getActivityInterface());
     }
 
     /**

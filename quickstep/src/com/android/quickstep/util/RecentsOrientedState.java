@@ -52,6 +52,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.WindowBounds;
+import com.android.quickstep.BaseActivityInterface;
 
 import java.lang.annotation.Retention;
 import java.util.function.IntConsumer;
@@ -121,7 +122,7 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
     private final ContentResolver mContentResolver;
     private final SharedPreferences mSharedPrefs;
     private final OrientationEventListener mOrientationListener;
-    private final WindowSizeStrategy mSizeStrategy;
+    private final BaseActivityInterface mSizeStrategy;
 
     private final Matrix mTmpMatrix = new Matrix();
 
@@ -133,7 +134,7 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
      *                              is enabled
      * @see #setRotationWatcherEnabled(boolean)
      */
-    public RecentsOrientedState(Context context, WindowSizeStrategy sizeStrategy,
+    public RecentsOrientedState(Context context, BaseActivityInterface sizeStrategy,
             IntConsumer rotationChangeListener) {
         mContext = context;
         mContentResolver = context.getContentResolver();
