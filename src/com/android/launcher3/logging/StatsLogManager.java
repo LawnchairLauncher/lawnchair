@@ -57,9 +57,9 @@ public class StatsLogManager implements ResourceBasedOverride {
                 + "resulting in a new folder creation")
         LAUNCHER_ITEM_DROP_FOLDER_CREATED(386),
 
-        @LauncherUiEvent(doc = "A dragged launcher item is successfully dropped on another item "
-                + "resulting in new folder creation")
-        LAUNCHER_FOLDER_LABEL_CHANGED(460),
+        @LauncherUiEvent(doc = "User action resulted in or manually updated the folder label to "
+                + "new/same value.")
+        LAUNCHER_FOLDER_LABEL_UPDATED(460),
 
         @LauncherUiEvent(doc = "A dragged item is dropped on 'Remove' button in the target bar")
         LAUNCHER_ITEM_DROPPED_ON_REMOVE(465),

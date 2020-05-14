@@ -24,6 +24,8 @@ import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.compat.AccessibilityManagerCompat.sendCustomAccessibilityEvent;
 import static com.android.launcher3.config.FeatureFlags.ALWAYS_USE_HARDWARE_OPTIMIZATION_FOR_FOLDER_ANIMATIONS;
 import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_FOLDER_LABEL_UPDATED;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ITEM_DROP_COMPLETED;
 import static com.android.launcher3.model.data.FolderInfo.FLAG_MANUAL_FOLDER_NAME;
 
 import static java.util.Arrays.asList;
@@ -196,6 +198,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     @Thunk int mScrollHintDir = SCROLL_NONE;
     @Thunk int mCurrentScrollDir = SCROLL_NONE;
 
+    private StatsLogManager mStatsLogManager;
 
     /**
      * Used to inflate the Workspace from XML.
@@ -208,10 +211,12 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         setAlwaysDrawnWithCacheEnabled(false);
 
         mLauncher = Launcher.getLauncher(context);
+        mStatsLogManager = StatsLogManager.newInstance(context);
         // We need this view to be focusable in touch mode so that when text editing of the folder
         // name is complete, we have something to focus on, thus hiding the cursor and giving
         // reliable behavior when clicking the text field (since it will always gain focus on click).
         setFocusableInTouchMode(true);
+
     }
 
     @Override
@@ -329,8 +334,8 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         if (DEBUG) {
             Log.d(TAG, "onBackKey newTitle=" + newTitle);
         }
-        mInfo.previousTitle = mInfo.title;
-        mInfo.title = newTitle;
+        mInfo.setTitle(newTitle);
+        mInfo.fromCustom = mInfo.hasOption(FLAG_MANUAL_FOLDER_NAME);
         mInfo.setOption(FLAG_MANUAL_FOLDER_NAME, !mInfo.getAcceptedSuggestionIndex().isPresent(),
                 mLauncher.getModelWriter());
         mFolderIcon.onTitleChanged(newTitle);
@@ -1326,10 +1331,8 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         if (d.stateAnnouncer != null) {
             d.stateAnnouncer.completeAction(R.string.item_moved);
         }
-        StatsLogManager.newInstance(getContext())
-                .log(StatsLogManager.LauncherEvent.LAUNCHER_ITEM_DROP_COMPLETED,
-                    d.logInstanceId,
-                    d.dragInfo.buildProto(mInfo));
+        mStatsLogManager
+                .log(LAUNCHER_ITEM_DROP_COMPLETED, d.logInstanceId, d.dragInfo.buildProto(mInfo));
     }
 
     // This is used so the item doesn't immediately appear in the folder when added. In one case
@@ -1434,6 +1437,8 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
             if (hasFocus) {
                 startEditingFolderName();
             } else {
+                mStatsLogManager.log(LAUNCHER_FOLDER_LABEL_UPDATED, mInfo.buildProto());
+                logFolderLabelState();
                 mFolderName.dispatchBackKey();
             }
         }
@@ -1630,5 +1635,16 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
 
     public FolderPagedView getContent() {
         return mContent;
+    }
+
+    /**
+     * Logs current folder label info.
+     *
+     * @deprecated This method is only used for log validation and soon will be removed.
+     */
+    @Deprecated
+    public void logFolderLabelState() {
+        mLauncher.getUserEventDispatcher()
+                .logLauncherEvent(mInfo.getFolderLabelStateLauncherEvent());
     }
 }

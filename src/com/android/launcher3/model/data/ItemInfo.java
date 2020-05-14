@@ -252,6 +252,13 @@ public class ItemInfo {
     /**
      * Creates {@link LauncherAtom.ItemInfo} with important fields and parent container info.
      */
+    public LauncherAtom.ItemInfo buildProto() {
+        return buildProto(null);
+    }
+
+    /**
+     * Creates {@link LauncherAtom.ItemInfo} with important fields and parent container info.
+     */
     public LauncherAtom.ItemInfo buildProto(FolderInfo fInfo) {
         LauncherAtom.ItemInfo.Builder itemBuilder = getDefaultItemInfoBuilder();
         Optional<ComponentName> nullableComponent = Optional.ofNullable(getTargetComponent());
@@ -344,5 +351,9 @@ public class ItemInfo {
         ItemInfo itemInfo = new ItemInfo();
         itemInfo.copyFrom(this);
         return itemInfo;
+    }
+
+    public void setTitle(CharSequence title) {
+        this.title = title;
     }
 }
