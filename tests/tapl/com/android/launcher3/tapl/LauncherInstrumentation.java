@@ -1323,6 +1323,16 @@ public final class LauncherInstrumentation {
                 if (mCheckEventsForSuccessfulGestures) {
                     final String message = sEventChecker.verify(WAIT_TIME_MS, true);
                     if (message != null) {
+                        try {
+                            Log.e("b/156287114", "Input:");
+                            for (String line : mDevice.executeShellCommand("dumpsys input").split(
+                                    "\\n")) {
+                                Log.d("b/156287114", line);
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
                         checkForAnomaly();
                         Assert.fail(formatSystemHealthMessage(
                                 "http://go/tapl : successful gesture produced " + message));
