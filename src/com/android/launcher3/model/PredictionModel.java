@@ -14,60 +14,86 @@
  * limitations under the License.
  */
 package com.android.launcher3.model;
+import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.UserHandle;
 
+import androidx.annotation.AnyThread;
+import androidx.annotation.WorkerThread;
+
+import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.model.data.AppInfo;
+import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.Preconditions;
+import com.android.launcher3.util.ResourceBasedOverride;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
- * Model helper for app predictions in workspace
+ * Model Helper for app predictions
  */
-public class PredictionModel {
+public class PredictionModel implements ResourceBasedOverride {
+
     private static final String CACHED_ITEMS_KEY = "predicted_item_keys";
     private static final int MAX_CACHE_ITEMS = 5;
 
-    private final Context mContext;
-    private final SharedPreferences mDevicePrefs;
+    protected Context mContext;
     private ArrayList<ComponentKey> mCachedComponentKeys;
+    private SharedPreferences mDevicePrefs;
+    private UserCache mUserCache;
 
-    public PredictionModel(Context context) {
-        mContext = context;
-        mDevicePrefs = Utilities.getDevicePrefs(mContext);
+
+    /**
+     * Retrieve instance of this object that can be overridden in runtime based on the build
+     * variant of the application.
+     */
+    public static PredictionModel newInstance(Context context) {
+        PredictionModel model = Overrides.getObject(PredictionModel.class, context,
+                R.string.prediction_model_class);
+        model.init(context);
+        return model;
     }
 
+    protected void init(Context context) {
+        mContext = context;
+        mDevicePrefs = Utilities.getDevicePrefs(mContext);
+        mUserCache = UserCache.INSTANCE.get(mContext);
+
+    }
     /**
      * Formats and stores a list of component key in device preferences.
      */
+    @AnyThread
     public void cachePredictionComponentKeys(List<ComponentKey> componentKeys) {
-        StringBuilder builder = new StringBuilder();
-        int count = Math.min(componentKeys.size(), MAX_CACHE_ITEMS);
-        for (int i = 0; i < count; i++) {
-            builder.append(componentKeys.get(i));
-            builder.append("\n");
-        }
-        mDevicePrefs.edit().putString(CACHED_ITEMS_KEY, builder.toString()).apply();
-        mCachedComponentKeys = null;
+        MODEL_EXECUTOR.execute(() -> {
+            StringBuilder builder = new StringBuilder();
+            int count = Math.min(componentKeys.size(), MAX_CACHE_ITEMS);
+            for (int i = 0; i < count; i++) {
+                builder.append(serializeComponentKeyToString(componentKeys.get(i)));
+                builder.append("\n");
+            }
+            mDevicePrefs.edit().putString(CACHED_ITEMS_KEY, builder.toString()).apply();
+            mCachedComponentKeys = null;
+        });
     }
 
     /**
      * parses and returns ComponentKeys saved by
      * {@link PredictionModel#cachePredictionComponentKeys(List)}
      */
+    @WorkerThread
     public List<ComponentKey> getPredictionComponentKeys() {
+        Preconditions.assertWorkerThread();
         if (mCachedComponentKeys == null) {
             mCachedComponentKeys = new ArrayList<>();
-
             String cachedBlob = mDevicePrefs.getString(CACHED_ITEMS_KEY, "");
             for (String line : cachedBlob.split("\n")) {
-                ComponentKey key = ComponentKey.fromString(line);
+                ComponentKey key = getComponentKeyFromSerializedString(line);
                 if (key != null) {
                     mCachedComponentKeys.add(key);
                 }
@@ -76,18 +102,26 @@ public class PredictionModel {
         return mCachedComponentKeys;
     }
 
-    /**
-     * Remove uninstalled applications from model
-     */
-    public void removePackage(String pkgName, UserHandle user, ArrayList<AppInfo> ids) {
-        for (int i = ids.size() - 1; i >= 0; i--) {
-            AppInfo info = ids.get(i);
-            if (info.user.equals(user) && pkgName.equals(info.componentName.getPackageName())) {
-                ids.remove(i);
-            }
+    private String serializeComponentKeyToString(ComponentKey componentKey) {
+        long userSerialNumber = mUserCache.getSerialNumberForUser(componentKey.user);
+        return componentKey.componentName.flattenToString() + "#" + userSerialNumber;
+    }
+
+    private ComponentKey getComponentKeyFromSerializedString(String str) {
+        int sep = str.indexOf('#');
+        if (sep < 0 || (sep + 1) >= str.length()) {
+            return null;
         }
-        cachePredictionComponentKeys(getPredictionComponentKeys().stream()
-                .filter(cn -> !(cn.user.equals(user) && cn.componentName.getPackageName().equals(
-                        pkgName))).collect(Collectors.toList()));
+        ComponentName componentName = ComponentName.unflattenFromString(str.substring(0, sep));
+        if (componentName == null) {
+            return null;
+        }
+        try {
+            long serialNumber = Long.parseLong(str.substring(sep + 1));
+            UserHandle userHandle = mUserCache.getUserForSerialNumber(serialNumber);
+            return userHandle != null ? new ComponentKey(componentName, userHandle) : null;
+        } catch (NumberFormatException ex) {
+            return null;
+        }
     }
 }
