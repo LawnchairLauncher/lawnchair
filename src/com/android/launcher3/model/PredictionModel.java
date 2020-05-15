@@ -43,7 +43,6 @@ public class PredictionModel implements ResourceBasedOverride {
     private static final int MAX_CACHE_ITEMS = 5;
 
     protected Context mContext;
-    private ArrayList<ComponentKey> mCachedComponentKeys;
     private SharedPreferences mDevicePrefs;
     private UserCache mUserCache;
 
@@ -78,7 +77,6 @@ public class PredictionModel implements ResourceBasedOverride {
                 builder.append("\n");
             }
             mDevicePrefs.edit().putString(CACHED_ITEMS_KEY, builder.toString()).apply();
-            mCachedComponentKeys = null;
         });
     }
 
@@ -89,17 +87,16 @@ public class PredictionModel implements ResourceBasedOverride {
     @WorkerThread
     public List<ComponentKey> getPredictionComponentKeys() {
         Preconditions.assertWorkerThread();
-        if (mCachedComponentKeys == null) {
-            mCachedComponentKeys = new ArrayList<>();
-            String cachedBlob = mDevicePrefs.getString(CACHED_ITEMS_KEY, "");
-            for (String line : cachedBlob.split("\n")) {
-                ComponentKey key = getComponentKeyFromSerializedString(line);
-                if (key != null) {
-                    mCachedComponentKeys.add(key);
-                }
+        ArrayList<ComponentKey> items = new ArrayList<>();
+        String cachedBlob = mDevicePrefs.getString(CACHED_ITEMS_KEY, "");
+        for (String line : cachedBlob.split("\n")) {
+            ComponentKey key = getComponentKeyFromSerializedString(line);
+            if (key != null) {
+                items.add(key);
             }
+
         }
-        return mCachedComponentKeys;
+        return items;
     }
 
     private String serializeComponentKeyToString(ComponentKey componentKey) {
