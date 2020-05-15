@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.android.launcher3.logging;
 
 import static java.lang.annotation.ElementType.FIELD;
@@ -23,8 +24,11 @@ import java.lang.annotation.Target;
 
 @Retention(SOURCE)
 @Target(FIELD)
-public @interface LauncherUiEvent {
-    /** An explanation, suitable for Android analysts, of the UI event that this log represents. */
+//  Copy of frameworks/base/core/java/com/android/internal/logging/UiEvent.java
+public @interface UiEvent {
+
+    /**
+     * An explanation, suitable for Android analysts, of the UI event that this log represents.
+     */
     String doc();
 }
-
