@@ -540,8 +540,6 @@ public class TouchInteractionService extends Service implements PluginListener<O
         boolean canStartSystemGesture = mDeviceState.canStartSystemGesture();
 
         if (!mDeviceState.isUserUnlocked()) {
-            Log.d(TAG, "User locked. Can start system gesture? " + canStartSystemGesture
-                + " sysUiFlags: " + mDeviceState.getSystemUiStateFlags());
             if (canStartSystemGesture) {
                 // This handles apps launched in direct boot mode (e.g. dialer) as well as apps
                 // launched while device is locked even after exiting direct boot mode (e.g. camera).
