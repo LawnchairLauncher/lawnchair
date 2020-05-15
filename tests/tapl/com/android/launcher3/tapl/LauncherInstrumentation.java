@@ -436,9 +436,12 @@ public final class LauncherInstrumentation {
                 sEventChecker.finishNoWait();
             }
         }
-        // b/156287114
+
         try {
-            log("Input: " + mDevice.executeShellCommand("dumpsys input"));
+            Log.e("b/156287114", "Input:");
+            for (String line : mDevice.executeShellCommand("dumpsys input").split("\\n")) {
+                Log.d("b/156287114", line);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
