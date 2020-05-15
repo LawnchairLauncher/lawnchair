@@ -357,12 +357,13 @@ public abstract class BaseSwipeUpHandler<T extends StatefulActivity<?>, Q extend
     protected void initTransitionEndpoints(DeviceProfile dp) {
         mDp = dp;
 
-        mTransitionDragLength = mActivityInterface.getSwipeUpDestinationAndLength(
-                dp, mContext, TEMP_RECT);
         mTaskViewSimulator.setDp(dp);
         mTaskViewSimulator.setLayoutRotation(
                 mDeviceState.getCurrentActiveRotation(),
                 mDeviceState.getDisplayRotation());
+        mTransitionDragLength = mActivityInterface.getSwipeUpDestinationAndLength(
+                dp, mContext, TEMP_RECT,
+                mTaskViewSimulator.getOrientationState().getOrientationHandler());
 
         if (mDeviceState.isFullyGesturalNavMode()) {
             // We can drag all the way to the top of the screen.
