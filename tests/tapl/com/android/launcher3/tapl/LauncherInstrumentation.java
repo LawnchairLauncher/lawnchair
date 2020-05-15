@@ -362,7 +362,7 @@ public final class LauncherInstrumentation {
     public void checkForAnomaly() {
         final String systemAnomalyMessage = getSystemAnomalyMessage();
         if (systemAnomalyMessage != null) {
-            Assert.fail(formatSystemHealthMessage(closeEvents(
+            Assert.fail(formatSystemHealthMessage(formatErrorWithEvents(
                     "http://go/tapl : Tests are broken by a non-Launcher system error: "
                             + systemAnomalyMessage, false)));
         }
@@ -424,7 +424,7 @@ public final class LauncherInstrumentation {
         return message;
     }
 
-    private String closeEvents(String message, boolean checkEvents) {
+    private String formatErrorWithEvents(String message, boolean checkEvents) {
         if (sCheckingEvents) {
             sCheckingEvents = false;
             if (checkEvents) {
@@ -454,7 +454,7 @@ public final class LauncherInstrumentation {
 
     private void fail(String message) {
         checkForAnomaly();
-        Assert.fail(formatSystemHealthMessage(closeEvents(
+        Assert.fail(formatSystemHealthMessage(formatErrorWithEvents(
                 "http://go/tapl : " + getContextDescription() + message
                         + " (visible state: " + getVisibleStateMessage() + ")", true)));
     }
@@ -1315,7 +1315,8 @@ public final class LauncherInstrumentation {
                 if (mOnLauncherCrashed != null) mOnLauncherCrashed.run();
                 checkForAnomaly();
                 Assert.fail(
-                        formatSystemHealthMessage(closeEvents("Launcher crashed", false)));
+                        formatSystemHealthMessage(
+                                formatErrorWithEvents("Launcher crashed", false)));
             }
 
             if (sCheckingEvents) {
