@@ -322,7 +322,7 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
         pw.println("  gestureID=" + mGestureId);
         pw.println("  runningTask=" + mRunningTask);
         pw.println("  endTarget=" + mEndTarget);
-        pw.println("  lastAppearedTaskTarget=" + mLastAppearedTaskTarget);
+        pw.println("  lastAppearedTaskTargetId=" + getLastAppearedTaskId());
         pw.println("  lastStartedTaskId=" + mLastStartedTaskId);
         pw.println("  isRecentsAnimationRunning=" + isRecentsAnimationRunning());
     }
