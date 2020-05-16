@@ -15,11 +15,10 @@
  */
 package com.android.quickstep.util;
 
-import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
+import static com.android.launcher3.Utilities.boundToRange;
+import static com.android.launcher3.Utilities.mapRange;
 import static com.android.systemui.shared.system.QuickStepContract.getWindowCornerRadius;
 import static com.android.systemui.shared.system.QuickStepContract.supportsRoundedCornersOnWindows;
-import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME;
-import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -36,9 +35,7 @@ import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.views.BaseDragLayer;
-import com.android.quickstep.RemoteAnimationTargets;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskThumbnailView;
@@ -46,14 +43,14 @@ import com.android.systemui.shared.recents.utilities.RectFEvaluator;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams;
-import com.android.systemui.shared.system.TransactionCompat;
+import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams.Builder;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
 /**
  * Utility class to handle window clip animation
  */
 @TargetApi(Build.VERSION_CODES.P)
-public class AppWindowAnimationHelper {
+public class AppWindowAnimationHelper implements TransformParams.BuilderProxy {
 
     // The bounds of the source app in device coordinates
     private final RectF mSourceStackBounds = new RectF();
@@ -93,9 +90,6 @@ public class AppWindowAnimationHelper {
 
     // Corner radius currently applied to transformed window.
     private float mCurrentCornerRadius;
-
-    private TargetAlphaProvider mTaskAlphaCallback = (t, a) -> a;
-    private TargetAlphaProvider mBaseAlphaCallback = (t, a) -> 1;
 
     public AppWindowAnimationHelper(RecentsOrientedState orientedState, Context context) {
         Resources res = context.getResources();
@@ -167,7 +161,7 @@ public class AppWindowAnimationHelper {
         if (surfaceParams == null) {
             return null;
         }
-        applySurfaceParams(params.mSyncTransactionApplier, surfaceParams);
+        params.applySurfaceParams(surfaceParams);
         return mCurrentRect;
     }
 
@@ -176,97 +170,60 @@ public class AppWindowAnimationHelper {
      * the SurfaceParams to apply via {@link SyncRtSurfaceTransactionApplierCompat#applyParams}.
      */
     public SurfaceParams[] computeSurfaceParams(TransformParams params) {
-        if (params.mTargetSet == null) {
+        if (params.getTargetSet() == null) {
             return null;
         }
 
-        float progress = Utilities.boundToRange(params.mProgress, 0, 1);
         updateCurrentRect(params);
+        return params.createSurfaceParams(this);
+    }
 
-        SurfaceParams[] surfaceParams = new SurfaceParams[params.mTargetSet.unfilteredApps.length];
-        for (int i = 0; i < params.mTargetSet.unfilteredApps.length; i++) {
-            RemoteAnimationTargetCompat app = params.mTargetSet.unfilteredApps[i];
-            SurfaceParams.Builder builder = new SurfaceParams.Builder(app.leash);
+    @Override
+    public void onBuildParams(Builder builder, RemoteAnimationTargetCompat app,
+            int targetMode, TransformParams params) {
+        Rect crop = mTmpRect;
+        crop.set(app.screenSpaceBounds);
+        crop.offsetTo(0, 0);
+        float cornerRadius = 0f;
+        float scale = Math.max(mCurrentRect.width(), mTargetRect.width()) / crop.width();
+        if (app.mode == targetMode
+                && app.activityType != RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME) {
+            mTmpMatrix.setRectToRect(mSourceRect, mCurrentRect, ScaleToFit.FILL);
             if (app.localBounds != null) {
-                mTmpMatrix.setTranslate(0, 0);
-                if (app.activityType == ACTIVITY_TYPE_HOME && app.mode == MODE_CLOSING) {
-                    mTmpMatrix.setTranslate(app.localBounds.left, app.localBounds.top);
-                }
+                mTmpMatrix.postTranslate(app.localBounds.left, app.localBounds.top);
             } else {
-                mTmpMatrix.setTranslate(app.position.x, app.position.y);
+                mTmpMatrix.postTranslate(app.position.x, app.position.y);
+            }
+            mCurrentClipRectF.roundOut(crop);
+            if (mSupportsRoundedCornersOnWindows) {
+                if (params.getCornerRadius() > -1) {
+                    cornerRadius = params.getCornerRadius();
+                    scale = mCurrentRect.width() / crop.width();
+                } else {
+                    float windowCornerRadius = mUseRoundedCornersOnWindows
+                            ? mWindowCornerRadius : 0;
+                    cornerRadius = mapRange(boundToRange(params.getProgress(), 0, 1),
+                            windowCornerRadius, mTaskCornerRadius);
+                }
+                mCurrentCornerRadius = cornerRadius;
             }
 
-            Rect crop = mTmpRect;
-            crop.set(app.screenSpaceBounds);
-            crop.offsetTo(0, 0);
-            float alpha;
-            float cornerRadius = 0f;
-            float scale = Math.max(mCurrentRect.width(), mTargetRect.width()) / crop.width();
-            if (app.mode == params.mTargetSet.targetMode) {
-                alpha = mTaskAlphaCallback.getAlpha(app, params.mTargetAlpha);
-                if (app.activityType != RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME) {
-                    mTmpMatrix.setRectToRect(mSourceRect, mCurrentRect, ScaleToFit.FILL);
-                    if (app.localBounds != null) {
-                        mTmpMatrix.postTranslate(app.localBounds.left, app.localBounds.top);
-                    } else {
-                        mTmpMatrix.postTranslate(app.position.x, app.position.y);
-                    }
-                    mCurrentClipRectF.roundOut(crop);
-                    if (mSupportsRoundedCornersOnWindows) {
-                        if (params.mCornerRadius > -1) {
-                            cornerRadius = params.mCornerRadius;
-                            scale = mCurrentRect.width() / crop.width();
-                        } else {
-                            float windowCornerRadius = mUseRoundedCornersOnWindows
-                                    ? mWindowCornerRadius : 0;
-                            cornerRadius = Utilities.mapRange(progress, windowCornerRadius,
-                                    mTaskCornerRadius);
-                        }
-                        mCurrentCornerRadius = cornerRadius;
-                    }
-                    // Fade out Assistant overlay.
-                    if (app.activityType == RemoteAnimationTargetCompat.ACTIVITY_TYPE_ASSISTANT
-                            && app.isNotInRecents) {
-                        alpha = 1 - Interpolators.DEACCEL_2_5.getInterpolation(progress);
-                    }
-                } else if (params.mTargetSet.hasRecents) {
-                    // If home has a different target then recents, reverse anim the
-                    // home target.
-                    alpha = 1 - (progress * params.mTargetAlpha);
-                }
-            } else {
-                alpha = mBaseAlphaCallback.getAlpha(app, progress);
-                if (ENABLE_QUICKSTEP_LIVE_TILE.get() && params.mLauncherOnTop) {
-                    crop = null;
-                }
-            }
-            builder.withAlpha(alpha)
-                    .withMatrix(mTmpMatrix)
+            builder.withMatrix(mTmpMatrix)
                     .withWindowCrop(crop)
                     // Since radius is in Surface space, but we draw the rounded corners in screen
                     // space, we have to undo the scale
                     .withCornerRadius(cornerRadius / scale);
-            surfaceParams[i] = builder.build();
+
         }
-        return surfaceParams;
     }
 
     public RectF updateCurrentRect(TransformParams params) {
-        if (params.mCurrentRect != null) {
-            mCurrentRect.set(params.mCurrentRect);
+        if (params.getCurrentRect() != null) {
+            mCurrentRect.set(params.getCurrentRect());
         } else {
             mTmpRectF.set(mTargetRect);
-            Utilities.scaleRectFAboutCenter(mTmpRectF, params.mOffsetScale);
-            mCurrentRect.set(mRectFEvaluator.evaluate(params.mProgress, mSourceRect, mTmpRectF));
-            if (mOrientedState == null
-                    || !mOrientedState.isMultipleOrientationSupportedByDevice()) {
-                mCurrentRect.offset(params.mOffset, 0);
-            } else {
-                int displayRotation = mOrientedState.getDisplayRotation();
-                int launcherRotation = mOrientedState.getLauncherRotation();
-                mOrientedState.getOrientationHandler().offsetTaskRect(mCurrentRect,
-                    params.mOffset, displayRotation, launcherRotation);
-            }
+            mCurrentRect.set(mRectFEvaluator.evaluate(
+                    params.getProgress(), mSourceRect, mTmpRectF));
         }
 
         updateClipRect(params);
@@ -275,7 +232,7 @@ public class AppWindowAnimationHelper {
 
     private void updateClipRect(TransformParams params) {
         // Don't clip past progress > 1.
-        float progress = Math.min(1, params.mProgress);
+        float progress = Math.min(1, params.getProgress());
         mCurrentClipRectF.left = mSourceWindowClipInsets.left * progress;
         mCurrentClipRectF.top = mSourceWindowClipInsets.top * progress;
         mCurrentClipRectF.right =
@@ -287,28 +244,6 @@ public class AppWindowAnimationHelper {
     public RectF getCurrentRectWithInsets() {
         mTmpMatrix.mapRect(mCurrentRectWithInsets, mCurrentClipRectF);
         return mCurrentRectWithInsets;
-    }
-
-    public static void applySurfaceParams(@Nullable SyncRtSurfaceTransactionApplierCompat
-            syncTransactionApplier, SurfaceParams[] params) {
-        if (syncTransactionApplier != null) {
-            syncTransactionApplier.scheduleApply(params);
-        } else {
-            TransactionCompat t = new TransactionCompat();
-            for (SurfaceParams param : params) {
-                SyncRtSurfaceTransactionApplierCompat.applyParams(t, param);
-            }
-            t.setEarlyWakeup();
-            t.apply();
-        }
-    }
-
-    public void setTaskAlphaCallback(TargetAlphaProvider callback) {
-        mTaskAlphaCallback = callback;
-    }
-
-    public void setBaseAlphaCallback(TargetAlphaProvider callback) {
-        mBaseAlphaCallback = callback;
     }
 
     public void fromTaskThumbnailView(TaskThumbnailView ttv, RecentsView rv,
@@ -386,157 +321,4 @@ public class AppWindowAnimationHelper {
         return mCurrentCornerRadius;
     }
 
-    public interface TargetAlphaProvider {
-        float getAlpha(RemoteAnimationTargetCompat target, float expectedAlpha);
-    }
-
-    public static class TransformParams {
-        private float mProgress;
-        private float mOffset;
-        private float mOffsetScale;
-        private @Nullable RectF mCurrentRect;
-        private float mTargetAlpha;
-        private float mCornerRadius;
-        private boolean mLauncherOnTop;
-        private RemoteAnimationTargets mTargetSet;
-        private SyncRtSurfaceTransactionApplierCompat mSyncTransactionApplier;
-
-        public TransformParams() {
-            mProgress = 0;
-            mOffset = 0;
-            mOffsetScale = 1;
-            mCurrentRect = null;
-            mTargetAlpha = 1;
-            mCornerRadius = -1;
-            mLauncherOnTop = false;
-        }
-
-        /**
-         * Sets the progress of the transformation, where 0 is the source and 1 is the target. We
-         * automatically adjust properties such as currentRect and cornerRadius based on this
-         * progress, unless they are manually overridden by setting them on this TransformParams.
-         */
-        public TransformParams setProgress(float progress) {
-            mProgress = progress;
-            return this;
-        }
-
-        /**
-         * Sets the corner radius of the transformed window, in pixels. If unspecified (-1), we
-         * simply interpolate between the window's corner radius to the task view's corner radius,
-         * based on {@link #mProgress}.
-         */
-        public TransformParams setCornerRadius(float cornerRadius) {
-            mCornerRadius = cornerRadius;
-            return this;
-        }
-
-        /**
-         * Sets the current rect to show the transformed window, in device coordinates. This gives
-         * the caller manual control of where to show the window. If unspecified (null), we
-         * interpolate between {@link AppWindowAnimationHelper#mSourceRect} and
-         * {@link AppWindowAnimationHelper#mTargetRect}, based on {@link #mProgress}.
-         */
-        public TransformParams setCurrentRect(RectF currentRect) {
-            mCurrentRect = currentRect;
-            return this;
-        }
-
-        /**
-         * Specifies the alpha of the transformed window. Default is 1.
-         */
-        public TransformParams setTargetAlpha(float targetAlpha) {
-            mTargetAlpha = targetAlpha;
-            return this;
-        }
-
-        /**
-         * If {@link #mCurrentRect} is null (i.e. {@link #setCurrentRect(RectF)} hasn't overridden
-         * the default), then offset the current rect by this amount after computing the rect based
-         * on {@link #mProgress}.
-         */
-        public TransformParams setOffset(float offset) {
-            mOffset = offset;
-            return this;
-        }
-
-        /**
-         * If {@link #mCurrentRect} is null (i.e. {@link #setCurrentRect(RectF)} hasn't overridden
-         * the default), then scale the current rect by this amount after computing the rect based
-         * on {@link #mProgress}.
-         */
-        public TransformParams setOffsetScale(float offsetScale) {
-            mOffsetScale = offsetScale;
-            return this;
-        }
-
-        /**
-         * If true, sets the crop = null and layer = Integer.MAX_VALUE for targets that don't match
-         * {@link #mTargetSet}.targetMode. (Currently only does this when live tiles are enabled.)
-         */
-        public TransformParams setLauncherOnTop(boolean launcherOnTop) {
-            mLauncherOnTop = launcherOnTop;
-            return this;
-        }
-
-        /**
-         * Specifies the set of RemoteAnimationTargetCompats that are included in the transformation
-         * that these TransformParams help compute. These TransformParams generally only apply to
-         * the targetSet.apps which match the targetSet.targetMode (e.g. the MODE_CLOSING app when
-         * swiping to home).
-         */
-        public TransformParams setTargetSet(RemoteAnimationTargets targetSet) {
-            mTargetSet = targetSet;
-            return this;
-        }
-
-        /**
-         * Sets the SyncRtSurfaceTransactionApplierCompat that will apply the SurfaceParams that
-         * are computed based on these TransformParams.
-         */
-        public TransformParams setSyncTransactionApplier(
-                SyncRtSurfaceTransactionApplierCompat applier) {
-            mSyncTransactionApplier = applier;
-            return this;
-        }
-
-        // Pubic getters so outside packages can read the values.
-
-        public float getProgress() {
-            return mProgress;
-        }
-
-        public float getOffset() {
-            return mOffset;
-        }
-
-        public float getOffsetScale() {
-            return mOffsetScale;
-        }
-
-        @Nullable
-        public RectF getCurrentRect() {
-            return mCurrentRect;
-        }
-
-        public float getTargetAlpha() {
-            return mTargetAlpha;
-        }
-
-        public float getCornerRadius() {
-            return mCornerRadius;
-        }
-
-        public boolean isLauncherOnTop() {
-            return mLauncherOnTop;
-        }
-
-        public RemoteAnimationTargets getTargetSet() {
-            return mTargetSet;
-        }
-
-        public SyncRtSurfaceTransactionApplierCompat getSyncTransactionApplier() {
-            return mSyncTransactionApplier;
-        }
-    }
 }

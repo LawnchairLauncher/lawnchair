@@ -167,8 +167,8 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
 
     @Override
     public void onLongPress(MotionEvent event) {
-        TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "Workspace.longPress");
         if (mLongPressState == STATE_REQUESTED) {
+            TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "Workspace.longPress");
             if (canHandleLongPress()) {
                 mLongPressState = STATE_PENDING_PARENT_INFORM;
                 mWorkspace.getParent().requestDisallowInterceptTouchEvent(true);

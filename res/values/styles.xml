@@ -53,6 +53,7 @@
         <item name="loadingIconColor">#CCFFFFFF</item>
         <item name="iconOnlyShortcutColor">?android:attr/textColorSecondary</item>
         <item name="workProfileOverlayTextColor">#FF212121</item>
+        <item name="eduHalfSheetBGColor">?android:attr/colorAccent</item>
 
         <item name="android:windowTranslucentStatus">false</item>
         <item name="android:windowTranslucentNavigation">false</item>
@@ -90,7 +91,7 @@
         <item name="android:textColorHint">#A0FFFFFF</item>
         <item name="android:colorControlHighlight">#A0FFFFFF</item>
         <item name="android:colorPrimary">#FF212121</item>
-        <item name="allAppsScrimColor">#FF212121</item>
+        <item name="allAppsScrimColor">#FF000000</item>
         <item name="allAppsInterimScrimAlpha">102</item>
         <item name="allAppsNavBarScrimColor">#80000000</item>
         <item name="popupColorPrimary">#3C4043</item> <!-- Gray 800 -->
@@ -106,6 +107,7 @@
         <item name="loadingIconColor">#99FFFFFF</item>
         <item name="iconOnlyShortcutColor">#B3FFFFFF</item>
         <item name="workProfileOverlayTextColor">@android:color/white</item>
+        <item name="eduHalfSheetBGColor">#DD000000</item>
     </style>
 
     <style name="LauncherTheme.Dark.DarkMainColor" parent="@style/LauncherTheme.Dark">
@@ -229,9 +231,7 @@
 
     <style name="TextHeadline" parent="@android:style/TextAppearance.DeviceDefault.DialogWindowTitle" />
     <style name="PrimaryMediumText" parent="@android:style/TextAppearance.DeviceDefault.Medium"/>
-    <style name="PrimaryHeadline" parent="@android:style/TextAppearance.DeviceDefault.DialogWindowTitle">
-        <item name="android:textStyle">bold</item>
-    </style>
+    <style name="PrimaryHeadline" parent="@android:style/TextAppearance.DeviceDefault.DialogWindowTitle"/>
 
     <style name="TextTitle" parent="@android:style/TextAppearance.DeviceDefault" />
 

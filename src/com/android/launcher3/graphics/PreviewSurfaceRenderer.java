@@ -29,6 +29,7 @@ import android.os.Messenger;
 import android.view.Display;
 import android.view.SurfaceControlViewHost;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
 
 import com.android.launcher3.InvariantDeviceProfile;
 
@@ -36,6 +37,8 @@ import java.util.concurrent.TimeUnit;
 
 /** Render preview using surface view. */
 public class PreviewSurfaceRenderer implements IBinder.DeathRecipient {
+
+    private static final int FADE_IN_ANIMATION_DURATION = 200;
 
     private static final String KEY_HOST_TOKEN = "host_token";
     private static final String KEY_VIEW_WIDTH = "width";
@@ -99,6 +102,11 @@ public class PreviewSurfaceRenderer implements IBinder.DeathRecipient {
             view.setPivotY(0);
             view.setTranslationX((mWidth - scale * view.getWidth()) / 2);
             view.setTranslationY((mHeight - scale * view.getHeight()) / 2);
+            view.setAlpha(0);
+            view.animate().alpha(1)
+                    .setInterpolator(new AccelerateDecelerateInterpolator())
+                    .setDuration(FADE_IN_ANIMATION_DURATION)
+                    .start();
             mSurfaceControlViewHost.setView(view, view.getMeasuredWidth(),
                     view.getMeasuredHeight());
         });

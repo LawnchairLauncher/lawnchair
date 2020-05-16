@@ -21,6 +21,7 @@ import android.os.Process;
 
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.util.ContentWriter;
 
@@ -154,5 +155,21 @@ public class FolderInfo extends ItemInfo {
     protected String dumpProperties() {
         return super.dumpProperties()
                 + " manuallyTypedTitle=" + hasOption(FLAG_MANUAL_FOLDER_NAME);
+    }
+
+    @Override
+    public LauncherAtom.ItemInfo buildProto(FolderInfo fInfo) {
+        return getDefaultItemInfoBuilder()
+            .setFolderIcon(LauncherAtom.FolderIcon.newBuilder().setCardinality(contents.size()))
+            .setContainerInfo(getContainerInfo())
+            .build();
+    }
+
+    @Override
+    public ItemInfo makeShallowCopy() {
+        FolderInfo folderInfo = new FolderInfo();
+        folderInfo.copyFrom(this);
+        folderInfo.contents = this.contents;
+        return folderInfo;
     }
 }

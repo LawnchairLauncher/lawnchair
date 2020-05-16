@@ -186,8 +186,7 @@ public class DragController implements DragDriver.EventListener, TouchController
 
         mDragObject.dragSource = source;
         mDragObject.dragInfo = dragInfo;
-        mDragObject.originalDragInfo = new ItemInfo();
-        mDragObject.originalDragInfo.copyFrom(dragInfo);
+        mDragObject.originalDragInfo = mDragObject.dragInfo.makeShallowCopy();
 
         if (dragOffset != null) {
             dragView.setDragVisualizeOffset(new Point(dragOffset));

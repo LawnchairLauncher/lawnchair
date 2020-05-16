@@ -21,8 +21,8 @@ import static android.view.MotionEvent.ACTION_UP;
 
 import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.Utilities.squaredTouchSlop;
-import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
 import static com.android.quickstep.LauncherSwipeHandler.MIN_PROGRESS_FOR_OVERVIEW;
+import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
 import static com.android.quickstep.util.ActiveGestureLog.INTENT_EXTRA_LOG_TRACE_ID;
 
 import android.content.ComponentName;
@@ -44,12 +44,13 @@ import com.android.quickstep.GestureState;
 import com.android.quickstep.InputConsumer;
 import com.android.quickstep.LockScreenRecentsActivity;
 import com.android.quickstep.MultiStateCallback;
+import com.android.quickstep.RecentsAnimationCallbacks;
 import com.android.quickstep.RecentsAnimationController;
 import com.android.quickstep.RecentsAnimationDeviceState;
-import com.android.quickstep.RecentsAnimationCallbacks;
 import com.android.quickstep.RecentsAnimationTargets;
 import com.android.quickstep.TaskAnimationManager;
 import com.android.quickstep.util.AppWindowAnimationHelper;
+import com.android.quickstep.util.TransformParams;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.InputMonitorCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
@@ -84,7 +85,7 @@ public class DeviceLockedInputConsumer implements InputConsumer,
 
     private final PointF mTouchDown = new PointF();
     private final AppWindowAnimationHelper mAppWindowAnimationHelper;
-    private final AppWindowAnimationHelper.TransformParams mTransformParams;
+    private final TransformParams mTransformParams;
     private final Point mDisplaySize;
     private final MultiStateCallback mStateCallback;
 
@@ -105,7 +106,7 @@ public class DeviceLockedInputConsumer implements InputConsumer,
         mGestureState = gestureState;
         mTouchSlopSquared = squaredTouchSlop(context);
         mAppWindowAnimationHelper = new AppWindowAnimationHelper(context);
-        mTransformParams = new AppWindowAnimationHelper.TransformParams();
+        mTransformParams = new TransformParams();
         mInputMonitorCompat = inputMonitorCompat;
 
         // Do not use DeviceProfile as the user data might be locked
@@ -230,8 +231,7 @@ public class DeviceLockedInputConsumer implements InputConsumer,
 
         Utilities.scaleRectAboutCenter(displaySize, SCALE_DOWN);
         displaySize.offsetTo(displaySize.left, 0);
-        mTransformParams.setTargetSet(mRecentsAnimationTargets)
-                .setLauncherOnTop(true);
+        mTransformParams.setTargetSet(mRecentsAnimationTargets);
         mAppWindowAnimationHelper.updateTargetRect(displaySize);
         mAppWindowAnimationHelper.applyTransform(mTransformParams);
 

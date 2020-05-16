@@ -85,18 +85,27 @@ public class LogEventChecker {
     }
 
     private void onRun() {
+        while (true) readEvents();
+    }
+
+    private void readEvents() {
         try {
             // Note that we use Runtime.exec to start the log reading process instead of running
             // it via UIAutomation, so that we can directly access the "Process" object and
             // ensure that the instrumentation is not stuck forever.
             final String cmd = "logcat -s " + TestProtocol.TAPL_EVENTS_TAG;
 
+            final Process logcatProcess = Runtime.getRuntime().exec(cmd);
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(
-                    Runtime.getRuntime().exec(cmd).getInputStream()))) {
-                for (; ; ) {
+                    logcatProcess.getInputStream()))) {
+                while (true) {
                     // Skip everything before the next start command.
                     for (; ; ) {
                         final String event = reader.readLine();
+                        if (event == null) {
+                            Log.d(SKIP_EVENTS_TAG, "Read a null line while waiting for start");
+                            return;
+                        }
                         if (event.contains(mStartCommand)) {
                             Log.d(SKIP_EVENTS_TAG, "Read start: " + event);
                             break;
@@ -106,6 +115,12 @@ public class LogEventChecker {
                     // Store all actual events until the finish command.
                     for (; ; ) {
                         final String event = reader.readLine();
+                        if (event == null) {
+                            Log.d(SKIP_EVENTS_TAG, "Read a null line after waiting for start");
+                            mEventsCounter.drainPermits();
+                            mEvents.clear();
+                            return;
+                        }
                         if (event.contains(mFinishCommand)) {
                             mFinished.countDown();
                             Log.d(SKIP_EVENTS_TAG, "Read finish: " + event);
@@ -122,6 +137,8 @@ public class LogEventChecker {
                         }
                     }
                 }
+            } finally {
+                logcatProcess.destroyForcibly();
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -151,7 +168,7 @@ public class LogEventChecker {
         Log.d(TestProtocol.TAPL_EVENTS_TAG, mFinishCommand);
     }
 
-    String verify(long waitForExpectedCountMs) {
+    String verify(long waitForExpectedCountMs, boolean successfulGesture) {
         finishSync(waitForExpectedCountMs);
 
         final StringBuilder sb = new StringBuilder();
@@ -162,7 +179,8 @@ public class LogEventChecker {
             List<String> actual = new ArrayList<>(mEvents.getNonNull(sequence));
             Log.d(SKIP_EVENTS_TAG, "Verifying events");
             final int mismatchPosition = getMismatchPosition(expectedEvents.getValue(), actual);
-            hasMismatches = hasMismatches || mismatchPosition != -1;
+            hasMismatches = hasMismatches
+                    || mismatchPosition != -1 && !ignoreMistatch(successfulGesture, sequence);
             formatSequenceWithMismatch(
                     sb,
                     sequence,
@@ -173,7 +191,8 @@ public class LogEventChecker {
         // Check for unexpected event sequences in the actual data.
         for (String actualNamedSequence : mEvents.keySet()) {
             if (!mExpectedEvents.containsKey(actualNamedSequence)) {
-                hasMismatches = true;
+                hasMismatches = hasMismatches
+                        || !ignoreMistatch(successfulGesture, actualNamedSequence);
                 formatSequenceWithMismatch(
                         sb,
                         actualNamedSequence,
@@ -184,6 +203,13 @@ public class LogEventChecker {
         }
 
         return hasMismatches ? "mismatching events: " + sb.toString() : null;
+    }
+
+    // Workaround for b/154157191
+    private static boolean ignoreMistatch(boolean successfulGesture, String sequence) {
+        // b/156287114
+        return false;
+//        return TestProtocol.SEQUENCE_TIS.equals(sequence) && successfulGesture;
     }
 
     // If the list of actual events matches the list of expected events, returns -1, otherwise

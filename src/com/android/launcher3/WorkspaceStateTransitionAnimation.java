@@ -66,7 +66,7 @@ public class WorkspaceStateTransitionAnimation {
     }
 
     /**
-     * @see com.android.launcher3.LauncherStateManager.StateHandler#setStateWithAnimation
+     * @see com.android.launcher3.statemanager.StateManager.StateHandler#setStateWithAnimation
      */
     public void setStateWithAnimation(
             LauncherState toState, StateAnimationConfig config, PendingAnimation animation) {
