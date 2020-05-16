@@ -20,7 +20,6 @@ import static com.android.launcher3.config.FeatureFlags.MULTI_DB_GRID_MIRATION_A
 import static com.android.launcher3.provider.LauncherDbUtils.copyTable;
 import static com.android.launcher3.provider.LauncherDbUtils.dropTable;
 import static com.android.launcher3.provider.LauncherDbUtils.tableExists;
-import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
 import android.annotation.TargetApi;
 import android.app.backup.BackupManager;
@@ -48,7 +47,6 @@ import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Process;
 import android.os.UserHandle;
 import android.os.UserManager;
@@ -85,6 +83,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 public class LauncherProvider extends ContentProvider {
@@ -92,8 +91,7 @@ public class LauncherProvider extends ContentProvider {
     private static final boolean LOGD = false;
 
     private static final String DOWNGRADE_SCHEMA_FILE = "downgrade_schema.json";
-    private static final String TOKEN_RESTORE_BACKUP_TABLE = "restore_backup_table";
-    private static final long RESTORE_BACKUP_TABLE_DELAY = 60000;
+    private static final long RESTORE_BACKUP_TABLE_DELAY = TimeUnit.SECONDS.toMillis(30);
 
     /**
      * Represents the schema of the database. Changes in scheme need not be backwards compatible.
@@ -106,6 +104,8 @@ public class LauncherProvider extends ContentProvider {
     static final String EMPTY_DATABASE_CREATED = "EMPTY_DATABASE_CREATED";
 
     protected DatabaseHelper mOpenHelper;
+
+    private long mLastRestoreTimestamp = 0L;
 
     /**
      * $ adb shell dumpsys activity provider com.android.launcher3
@@ -412,11 +412,12 @@ public class LauncherProvider extends ContentProvider {
                 return null;
             }
             case LauncherSettings.Settings.METHOD_RESTORE_BACKUP_TABLE: {
-                final Handler handler = MODEL_EXECUTOR.getHandler();
-                handler.removeCallbacksAndMessages(TOKEN_RESTORE_BACKUP_TABLE);
-                handler.postDelayed(() -> RestoreDbTask.restoreIfPossible(
-                        getContext(), mOpenHelper, new BackupManager(getContext())),
-                        TOKEN_RESTORE_BACKUP_TABLE, RESTORE_BACKUP_TABLE_DELAY);
+                final long ts = System.currentTimeMillis();
+                if (ts - mLastRestoreTimestamp > RESTORE_BACKUP_TABLE_DELAY) {
+                    mLastRestoreTimestamp = ts;
+                    RestoreDbTask.restoreIfPossible(
+                            getContext(), mOpenHelper, new BackupManager(getContext()));
+                }
                 return null;
             }
             case LauncherSettings.Settings.METHOD_UPDATE_CURRENT_OPEN_HELPER: {

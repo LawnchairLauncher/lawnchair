@@ -230,7 +230,7 @@ public final class Workspace extends Home {
             launcher.expectEvent(TestProtocol.SEQUENCE_MAIN, LauncherInstrumentation.EVENT_START);
         }
         LauncherInstrumentation.log("dragIconToWorkspace: end");
-        launcher.waitUntilGone("drop_target_bar");
+        launcher.waitUntilLauncherObjectGone("drop_target_bar");
     }
 
     /**

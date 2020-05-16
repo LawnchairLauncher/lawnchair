@@ -16,39 +16,24 @@
 
 package com.android.launcher3;
 
-import static com.android.launcher3.LauncherState.BACKGROUND_APP;
-import static com.android.launcher3.LauncherState.HOTSEAT_ICONS;
 import static com.android.launcher3.LauncherState.NORMAL;
-import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.anim.Interpolators.AGGRESSIVE_EASE;
-import static com.android.launcher3.anim.Interpolators.DEACCEL_3;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_2;
-import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_FADE;
-import static com.android.launcher3.states.StateAnimationConfig.ANIM_HOTSEAT_SCALE;
-import static com.android.launcher3.states.StateAnimationConfig.ANIM_HOTSEAT_TRANSLATE;
-import static com.android.launcher3.states.StateAnimationConfig.ANIM_VERTICAL_PROGRESS;
 import static com.android.quickstep.TaskViewUtils.findTaskViewToLaunch;
 import static com.android.quickstep.TaskViewUtils.getRecentsWindowAnimator;
-import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_OFFSET;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.LauncherState.ScaleAndTranslation;
-import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
-import com.android.launcher3.anim.SpringAnimationBuilder;
-import com.android.launcher3.states.StateAnimationConfig;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
@@ -58,13 +43,6 @@ import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
  * {@link RecentsView}.
  */
 public final class LauncherAppTransitionManagerImpl extends QuickstepAppTransitionManagerImpl {
-
-    public static final int INDEX_SHELF_ANIM = 0;
-    public static final int INDEX_RECENTS_FADE_ANIM = 1;
-    public static final int INDEX_RECENTS_TRANSLATE_X_ANIM = 2;
-    public static final int INDEX_PAUSE_TO_OVERVIEW_ANIM = 3;
-
-    public static final long ATOMIC_DURATION_FROM_PAUSED_TO_OVERVIEW = 300;
 
     public LauncherAppTransitionManagerImpl(Context context) {
         super(context);
@@ -150,78 +128,5 @@ public final class LauncherAppTransitionManagerImpl extends QuickstepAppTransiti
             overview.setTranslationY(0);
             mLauncher.getStateManager().reapplyState();
         };
-    }
-
-    @Override
-    public int getStateElementAnimationsCount() {
-        return 4;
-    }
-
-    @Override
-    public Animator createStateElementAnimation(int index, float... values) {
-        switch (index) {
-            case INDEX_SHELF_ANIM: {
-                AllAppsTransitionController aatc = mLauncher.getAllAppsController();
-                Animator springAnim = aatc.createSpringAnimation(values);
-
-                if ((OVERVIEW.getVisibleElements(mLauncher) & HOTSEAT_ICONS) != 0) {
-                    // Translate hotseat with the shelf until reaching overview.
-                    float overviewProgress = OVERVIEW.getVerticalProgress(mLauncher);
-                    ScaleAndTranslation sat = OVERVIEW.getHotseatScaleAndTranslation(mLauncher);
-                    float shiftRange = aatc.getShiftRange();
-                    if (values.length == 1) {
-                        values = new float[] {aatc.getProgress(), values[0]};
-                    }
-                    ValueAnimator hotseatAnim = ValueAnimator.ofFloat(values);
-                    hotseatAnim.addUpdateListener(anim -> {
-                        float progress = (Float) anim.getAnimatedValue();
-                        if (progress >= overviewProgress || mLauncher.isInState(BACKGROUND_APP)) {
-                            float hotseatShift = (progress - overviewProgress) * shiftRange;
-                            mLauncher.getHotseat().setTranslationY(hotseatShift + sat.translationY);
-                        }
-                    });
-                    hotseatAnim.setInterpolator(LINEAR);
-                    hotseatAnim.setDuration(springAnim.getDuration());
-
-                    AnimatorSet anim = new AnimatorSet();
-                    anim.play(hotseatAnim);
-                    anim.play(springAnim);
-                    return anim;
-                }
-
-                return springAnim;
-            }
-            case INDEX_RECENTS_FADE_ANIM:
-                return ObjectAnimator.ofFloat(mLauncher.getOverviewPanel(),
-                        RecentsView.CONTENT_ALPHA, values);
-            case INDEX_RECENTS_TRANSLATE_X_ANIM: {
-                RecentsView rv = mLauncher.getOverviewPanel();
-                return new SpringAnimationBuilder(mLauncher)
-                        .setMinimumVisibleChange(1f / rv.getPageOffsetScale())
-                        .setDampingRatio(0.8f)
-                        .setStiffness(250)
-                        .setValues(values)
-                        .build(rv, ADJACENT_PAGE_OFFSET);
-            }
-            case INDEX_PAUSE_TO_OVERVIEW_ANIM: {
-                StateAnimationConfig config = new StateAnimationConfig();
-                config.duration = ATOMIC_DURATION_FROM_PAUSED_TO_OVERVIEW;
-
-                config.setInterpolator(ANIM_VERTICAL_PROGRESS, OVERSHOOT_1_2);
-                config.setInterpolator(ANIM_ALL_APPS_FADE, DEACCEL_3);
-                if ((OVERVIEW.getVisibleElements(mLauncher) & HOTSEAT_ICONS) != 0) {
-                    config.setInterpolator(ANIM_HOTSEAT_SCALE, OVERSHOOT_1_2);
-                    config.setInterpolator(ANIM_HOTSEAT_TRANSLATE, OVERSHOOT_1_2);
-                }
-
-
-                LauncherStateManager stateManager = mLauncher.getStateManager();
-                return stateManager.createAtomicAnimation(
-                        stateManager.getCurrentStableState(), OVERVIEW, config);
-            }
-
-            default:
-                return super.createStateElementAnimation(index, values);
-        }
     }
 }

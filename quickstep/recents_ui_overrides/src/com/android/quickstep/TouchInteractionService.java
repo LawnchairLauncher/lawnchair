@@ -30,8 +30,6 @@ import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SYS
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_TRACING_ENABLED;
 
 import android.annotation.TargetApi;
-import android.app.ActivityManager;
-import android.app.ActivityManager.RunningTaskInfo;
 import android.app.PendingIntent;
 import android.app.RemoteAction;
 import android.app.Service;
@@ -40,6 +38,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.graphics.Rect;
 import android.graphics.Region;
 import android.graphics.drawable.Icon;
 import android.os.Build;
@@ -71,6 +70,7 @@ import com.android.launcher3.tracing.nano.TouchInteractionServiceProto;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.util.TraceHelper;
+import com.android.launcher3.util.WindowBounds;
 import com.android.quickstep.inputconsumers.AccessibilityInputConsumer;
 import com.android.quickstep.inputconsumers.AssistantInputConsumer;
 import com.android.quickstep.inputconsumers.DeviceLockedInputConsumer;
@@ -83,6 +83,7 @@ import com.android.quickstep.inputconsumers.ScreenPinnedInputConsumer;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.AssistantUtilities;
 import com.android.quickstep.util.ProtoTracer;
+import com.android.quickstep.util.SplitScreenBounds;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.plugins.OverscrollPlugin;
 import com.android.systemui.plugins.PluginListener;
@@ -120,7 +121,7 @@ class ArgList extends LinkedList<String> {
 /**
  * Service connected by system-UI for handling touch interaction.
  */
-@TargetApi(Build.VERSION_CODES.Q)
+@TargetApi(Build.VERSION_CODES.R)
 public class TouchInteractionService extends Service implements PluginListener<OverscrollPlugin>,
         ProtoTraceable<LauncherTraceProto> {
 
@@ -229,6 +230,11 @@ public class TouchInteractionService extends Service implements PluginListener<O
         @BinderThread
         public void onActiveNavBarRegionChanges(Region region) {
             MAIN_EXECUTOR.execute(() -> mDeviceState.setDeferredGestureRegion(region));
+        }
+
+        public void onSplitScreenSecondaryBoundsChanged(Rect bounds, Rect insets)  {
+            WindowBounds wb = new WindowBounds(bounds, insets);
+            MAIN_EXECUTOR.execute(() -> SplitScreenBounds.INSTANCE.setSecondaryWindowBounds(wb));
         }
 
         /** Deprecated methods **/
@@ -518,8 +524,13 @@ public class TouchInteractionService extends Service implements PluginListener<O
     private GestureState createGestureState() {
         GestureState gestureState = new GestureState(mOverviewComponentObserver,
                 ActiveGestureLog.INSTANCE.generateAndSetLogId());
-        gestureState.updateRunningTask(TraceHelper.whitelistIpcs("getRunningTask.0",
-                () -> mAM.getRunningTask(false /* filterOnlyVisibleRecents */)));
+        if (mTaskAnimationManager.isRecentsAnimationRunning()) {
+            gestureState.updateRunningTask(mGestureState.getRunningTask());
+            gestureState.updateLastStartedTaskId(mGestureState.getLastStartedTaskId());
+        } else {
+            gestureState.updateRunningTask(TraceHelper.whitelistIpcs("getRunningTask.0",
+                    () -> mAM.getRunningTask(false /* filterOnlyVisibleRecents */)));
+        }
         return gestureState;
     }
 
@@ -599,14 +610,23 @@ public class TouchInteractionService extends Service implements PluginListener<O
     }
 
     private void handleOrientationSetup(InputConsumer baseInputConsumer) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.PAUSE_NOT_DETECTED, "handleOrientationSetup.1");
+        }
         if (!isFixedRotationTransformEnabled(this)) {
             return;
         }
         mDeviceState.enableMultipleRegions(baseInputConsumer instanceof OtherActivityInputConsumer);
         BaseDraggingActivity activity =
                 mOverviewComponentObserver.getActivityInterface().getCreatedActivity();
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.PAUSE_NOT_DETECTED, "handleOrientationSetup.2");
+        }
         if (activity == null || !(activity.getOverviewPanel() instanceof RecentsView)) {
             return;
+        }
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.PAUSE_NOT_DETECTED, "handleOrientationSetup.3");
         }
         ((RecentsView) activity.getOverviewPanel())
             .setLayoutRotation(mDeviceState.getCurrentActiveRotation(),
@@ -637,14 +657,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
                     runningComponent != null && runningComponent.equals(homeComponent);
         }
 
-        if (previousGestureState.getFinishingRecentsAnimationTaskId() > 0) {
-            // If the finish animation was interrupted, then continue using the other activity input
-            // consumer but with the next task as the running task
-            RunningTaskInfo info = new ActivityManager.RunningTaskInfo();
-            info.id = previousGestureState.getFinishingRecentsAnimationTaskId();
-            gestureState.updateRunningTask(info);
-            return createOtherActivityInputConsumer(previousGestureState, gestureState, event);
-        } else if (gestureState.getRunningTask() == null) {
+        if (gestureState.getRunningTask() == null) {
             return mResetGestureInputConsumer;
         } else if (previousGestureState.isRunningAnimationToLauncher()
                 || gestureState.getActivityInterface().isResumed()
@@ -658,25 +671,22 @@ public class TouchInteractionService extends Service implements PluginListener<O
         } else if (mDeviceState.isGestureBlockedActivity(gestureState.getRunningTask())) {
             return mResetGestureInputConsumer;
         } else {
-            return createOtherActivityInputConsumer(previousGestureState, gestureState, event);
+            return createOtherActivityInputConsumer(gestureState, event);
         }
     }
 
-    private InputConsumer createOtherActivityInputConsumer(GestureState previousGestureState,
-            GestureState gestureState, MotionEvent event) {
+    private InputConsumer createOtherActivityInputConsumer(GestureState gestureState,
+            MotionEvent event) {
 
-        final boolean shouldDefer;
         final BaseSwipeUpHandler.Factory factory;
-
         if (!mOverviewComponentObserver.isHomeAndOverviewSame()) {
-            shouldDefer = previousGestureState.getFinishingRecentsAnimationTaskId() < 0;
             factory = mFallbackSwipeHandlerFactory;
         } else {
-            shouldDefer = gestureState.getActivityInterface().deferStartingActivity(mDeviceState,
-                    event);
             factory = mLauncherSwipeHandlerFactory;
         }
 
+        final boolean shouldDefer = !mOverviewComponentObserver.isHomeAndOverviewSame()
+                || gestureState.getActivityInterface().deferStartingActivity(mDeviceState, event);
         final boolean disableHorizontalSwipe = mDeviceState.isInExclusionRegion(event);
         return new OtherActivityInputConsumer(this, mDeviceState, mTaskAnimationManager,
                 gestureState, shouldDefer, this::onConsumerInactive,

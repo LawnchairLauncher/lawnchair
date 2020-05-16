@@ -17,7 +17,6 @@ package com.android.quickstep;
 
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.OVERVIEW;
-import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.TOUCH_RESPONSE_INTERPOLATOR;
 import static com.android.launcher3.statehandlers.DepthController.DEPTH;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
@@ -36,8 +35,8 @@ import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.quickstep.util.AppWindowAnimationHelper;
-import com.android.quickstep.util.AppWindowAnimationHelper.TransformParams;
 import com.android.quickstep.util.RemoteAnimationProvider;
+import com.android.quickstep.util.TransformParams;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
@@ -75,14 +74,10 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> exten
     boolean onActivityReady(T activity, Boolean wasVisible) {
         activity.<RecentsView>getOverviewPanel().showCurrentTask(mTargetTaskId);
         AbstractFloatingView.closeAllOpenViews(activity, wasVisible);
-        BaseActivityInterface.AnimationFactory factory =
-                mActivityInterface.prepareRecentsUI(wasVisible,
-                false /* animate activity */, (controller) -> {
+        BaseActivityInterface.AnimationFactory factory = mActivityInterface.prepareRecentsUI(
+                wasVisible, (controller) -> {
                     controller.dispatchOnStart();
-                    ValueAnimator anim = controller.getAnimationPlayer()
-                            .setDuration(RECENTS_LAUNCH_DURATION);
-                    anim.setInterpolator(FAST_OUT_SLOW_IN);
-                    anim.start();
+                    controller.getAnimationPlayer().end();
                 });
         factory.onRemoteAnimationReceived(null);
         factory.createActivityInterface(RECENTS_LAUNCH_DURATION);
@@ -164,9 +159,7 @@ final class AppToOverviewAnimationProvider<T extends BaseDraggingActivity> exten
         valueAnimator.setDuration(RECENTS_LAUNCH_DURATION);
         valueAnimator.setInterpolator(TOUCH_RESPONSE_INTERPOLATOR);
         valueAnimator.addUpdateListener((v) -> {
-            params.setProgress((float) v.getAnimatedValue())
-                    .setTargetSet(targets)
-                    .setLauncherOnTop(true);
+            params.setProgress((float) v.getAnimatedValue()).setTargetSet(targets);
             clipHelper.applyTransform(params);
         });
 

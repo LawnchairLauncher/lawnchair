@@ -16,7 +16,6 @@
 package com.android.launcher3.uioverrides.touchcontrollers;
 
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
-import static com.android.launcher3.LauncherAppTransitionManagerImpl.INDEX_PAUSE_TO_OVERVIEW_ANIM;
 import static com.android.launcher3.LauncherState.HOTSEAT_ICONS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
@@ -35,6 +34,7 @@ import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_T
 import static com.android.launcher3.states.StateAnimationConfig.SKIP_OVERVIEW;
 import static com.android.launcher3.touch.BothAxesSwipeDetector.DIRECTION_RIGHT;
 import static com.android.launcher3.touch.BothAxesSwipeDetector.DIRECTION_UP;
+import static com.android.launcher3.uioverrides.states.QuickstepAtomicAnimationFactory.INDEX_PAUSE_TO_OVERVIEW_ANIM;
 import static com.android.launcher3.util.DefaultDisplay.getSingleFrameMs;
 import static com.android.launcher3.util.VibratorWrapper.OVERVIEW_HAPTIC;
 import static com.android.quickstep.util.ShelfPeekAnim.ShelfAnimState.CANCEL;
@@ -312,8 +312,8 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         if (mMotionPauseDetector.isPaused() && noFling) {
             cancelAnimations();
 
-            Animator overviewAnim = mLauncher.getAppTransitionManager().createStateElementAnimation(
-                    INDEX_PAUSE_TO_OVERVIEW_ANIM);
+            Animator overviewAnim = mLauncher.createAtomicAnimationFactory()
+                    .createStateElementAnimation(INDEX_PAUSE_TO_OVERVIEW_ANIM);
             overviewAnim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
