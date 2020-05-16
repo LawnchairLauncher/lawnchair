@@ -131,7 +131,7 @@
     <string name="accessibility_close" msgid="2277148124685870734">"بستن"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"اعلان رد شد"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"شخصی"</string>
-    <string name="all_apps_work_tab" msgid="4884822796154055118">"محل کار"</string>
+    <string name="all_apps_work_tab" msgid="4884822796154055118">"کاری"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"نمایه کاری"</string>
     <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"داده‌های شخصی از برنامه‌های کاری جدا است و از آن پنهان است"</string>
     <string name="work_profile_edu_work_apps" msgid="237051938268703058">"برنامه‌های کاری و داده‌ها برای سرپرست فناوری اطلاعات نمایان هستند"</string>
