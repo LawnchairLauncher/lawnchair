@@ -20,7 +20,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name" msgid="649227358658669779">"ଲଞ୍ଚର୍3"</string>
-    <string name="work_folder_name" msgid="3753320833950115786">"କାମ"</string>
+    <string name="work_folder_name" msgid="3753320833950115786">"ୱାର୍କ"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"ଆପ୍‌ ଇନଷ୍ଟଲ୍‌ ହୋଇନାହିଁ"</string>
     <string name="activity_not_available" msgid="7456344436509528827">"ଆପ୍‌ ଉପଲବ୍ଧ ନାହିଁ"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"ନିରାପଦ ମୋଡରେ ଡାଉନଲୋଡ୍‌ ହେଇଥିବା ଆପ୍‌ ଅକ୍ଷମ କରାଗଲା"</string>
@@ -131,7 +131,7 @@
     <string name="accessibility_close" msgid="2277148124685870734">"ବନ୍ଦ କରନ୍ତୁ"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"ବିଜ୍ଞପ୍ତି ଖାରଜ କରାଗଲା"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"ବ୍ୟକ୍ତିଗତ"</string>
-    <string name="all_apps_work_tab" msgid="4884822796154055118">"କାମ"</string>
+    <string name="all_apps_work_tab" msgid="4884822796154055118">"ୱାର୍କ"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"ୱର୍କ ପ୍ରୋଫାଇଲ୍‌"</string>
     <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"ବ୍ୟକ୍ତିଗତ ଡାଟା କାର୍ଯ୍ୟସ୍ଥଳୀ ଆପଗୁଡ଼ିକ ଠାରୁ ପୃଥକ୍ ଓ ଲୁକ୍କାୟିତ ଅଟେ"</string>
     <string name="work_profile_edu_work_apps" msgid="237051938268703058">"କାର୍ଯ୍ୟସ୍ଥଳୀ ଆପଗୁଡ଼ିକ ଓ ଡାଟା ଆପଣଙ୍କ IT ଆଡମିନଙ୍କୁ ଦେଖାଯାଏ"</string>

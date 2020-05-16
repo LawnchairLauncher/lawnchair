@@ -24,13 +24,13 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="32dp"
-        android:backgroundTint="?android:attr/colorAccent"
+        android:backgroundTint="?attr/eduHalfSheetBGColor"
         android:background="@drawable/bottom_sheet_top_border" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?android:attr/colorAccent"
+        android:background="?attr/eduHalfSheetBGColor"
         android:orientation="vertical">
 
         <TextView

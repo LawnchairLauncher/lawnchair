@@ -26,10 +26,10 @@ import android.view.ViewTreeObserver;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PendingAnimation;
+import com.android.launcher3.statemanager.StateManager.StateHandler;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.SurfaceControlCompat;
@@ -39,7 +39,7 @@ import com.android.systemui.shared.system.WallpaperManagerCompat;
 /**
  * Controls blur and wallpaper zoom, for the Launcher surface only.
  */
-public class DepthController implements LauncherStateManager.StateHandler {
+public class DepthController implements StateHandler<LauncherState> {
 
     public static final FloatProperty<DepthController> DEPTH =
             new FloatProperty<DepthController>("depth") {

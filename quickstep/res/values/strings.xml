@@ -128,16 +128,18 @@
     <!-- Feedback shown during interactive parts of Home gesture tutorial when the gesture is horizontal instead of vertical. [CHAR LIMIT=100] -->
     <string name="home_gesture_feedback_wrong_swipe_direction" translatable="false">Make sure you swipe straight up</string>
 
-  <!-- Title shown on the confirmation screen after successful gesture. [CHAR LIMIT=30] -->
-  <string name="gesture_tutorial_confirm_title" translatable="false">All set</string>
-    <!-- Button text shown on a button on the confirm screen. [CHAR LIMIT=14] -->
-    <string name="gesture_tutorial_action_button_label" translatable="false">Done</string>
-    <!-- Button text shown on a text button on the confirm screen. [CHAR LIMIT=14] -->
-    <string name="gesture_tutorial_action_text_button_label" translatable="false">Settings</string>
+    <!-- Title shown on the confirmation screen after successful gesture. [CHAR LIMIT=30] -->
+    <string name="gesture_tutorial_confirm_title" translatable="false">All set</string>
+    <!-- Button text shown on a button on the confirm screen to leave the tutorial. [CHAR LIMIT=14] -->
+    <string name="gesture_tutorial_action_button_label_done" translatable="false">Done</string>
+    <!-- Button text shown on a button to go to Settings. [CHAR LIMIT=14] -->
+    <string name="gesture_tutorial_action_button_label_settings" translatable="false">Settings</string>
 
     <!-- ******* Overview ******* -->
     <!-- Label for a button that causes the current overview app to be shared. [CHAR_LIMIT=40] -->
     <string name="action_share">Share</string>
     <!-- Label for a button that causes a screen shot of the current app to be taken. [CHAR_LIMIT=40] -->
     <string name="action_screenshot">Screenshot</string>
+    <!-- Message shown when an action is blocked by a policy enforced by the app or the organization managing the device. [CHAR_LIMIT=NONE] -->
+    <string name="blocked_by_policy">This action isn\'t allowed by the app or your organization</string>
 </resources>

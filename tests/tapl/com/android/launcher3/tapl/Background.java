@@ -86,6 +86,11 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
                         zeroButtonToOverviewGestureStartsInLauncher()
                                 ? LauncherInstrumentation.GestureScope.INSIDE_TO_OUTSIDE
                                 : LauncherInstrumentation.GestureScope.OUTSIDE;
+
+                // b/156044202
+                mLauncher.log("Hierarchy before swiping up to overview:");
+                mLauncher.dumpViewHierarchy();
+
                 mLauncher.sendPointer(
                         downTime, downTime, MotionEvent.ACTION_DOWN, start, gestureScope);
                 mLauncher.executeAndWaitForEvent(

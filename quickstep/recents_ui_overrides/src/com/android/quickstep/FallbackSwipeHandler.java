@@ -24,6 +24,7 @@ import static com.android.quickstep.GestureState.GestureEndTarget.RECENTS;
 import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
 import static com.android.quickstep.RecentsActivity.EXTRA_TASK_ID;
 import static com.android.quickstep.RecentsActivity.EXTRA_THUMBNAIL;
+import static com.android.quickstep.util.WindowSizeStrategy.FALLBACK_RECENTS_SIZE_STRATEGY;
 import static com.android.quickstep.views.RecentsView.UPDATE_SYSUI_FLAGS_THRESHOLD;
 
 import android.animation.Animator;
@@ -32,25 +33,24 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PointF;
-import android.graphics.RectF;
 import android.os.Bundle;
 import android.util.ArrayMap;
 import android.view.MotionEvent;
 
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
-import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.ObjectWrapper;
-import com.android.quickstep.BaseActivityInterface.HomeAnimationFactory;
+import com.android.quickstep.BaseActivityInterface.AnimationFactory;
 import com.android.quickstep.GestureState.GestureEndTarget;
 import com.android.quickstep.fallback.FallbackRecentsView;
 import com.android.quickstep.util.RectFSpringAnim;
-import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.InputConsumerController;
+import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 /**
  * Handles the navigation gestures when a 3rd party launcher is the default home activity.
@@ -105,10 +105,16 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
     private final PointF mEndVelocityPxPerMs = new PointF(0, 0.5f);
     private RunningWindowAnim mFinishAnimation;
 
+    // Used to control Recents components throughout the swipe gesture.
+    private AnimatorPlaybackController mLauncherTransitionController;
+    private boolean mHasLauncherTransitionControllerStarted;
+
+    private AnimationFactory mAnimationFactory = (t) -> { };
+
     public FallbackSwipeHandler(Context context, RecentsAnimationDeviceState deviceState,
             GestureState gestureState, InputConsumerController inputConsumer,
             boolean isLikelyToStartNewTask, boolean continuingLastGesture) {
-        super(context, deviceState, gestureState, inputConsumer);
+        super(context, deviceState, gestureState, inputConsumer, FALLBACK_RECENTS_SIZE_STRATEGY);
 
         mInQuickSwitchMode = isLikelyToStartNewTask || continuingLastGesture;
         mContinuingLastGesture = continuingLastGesture;
@@ -118,9 +124,9 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
         // Keep the home launcher invisible until we decide to land there.
         mLauncherAlpha.value = mRunningOverHome ? 1 : 0;
         if (mSwipeUpOverHome) {
-            mAppWindowAnimationHelper.setBaseAlphaCallback((t, a) -> 1 - mLauncherAlpha.value);
+            mTransformParams.setBaseAlphaCallback((t, a) -> 1 - mLauncherAlpha.value);
         } else {
-            mAppWindowAnimationHelper.setBaseAlphaCallback((t, a) -> mLauncherAlpha.value);
+            mTransformParams.setBaseAlphaCallback((t, a) -> mLauncherAlpha.value);
         }
 
         // Going home has an extra long progress to ensure that it animates into the screen
@@ -156,7 +162,7 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
 
     private void onLauncherAlphaChanged() {
         if (mRecentsAnimationTargets != null && mGestureState.getEndTarget() == null) {
-            applyTransformUnchecked();
+            applyWindowTransform();
         }
     }
 
@@ -167,10 +173,6 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
         mRecentsView = mActivity.getOverviewPanel();
         mRecentsView.setOnPageTransitionEndCallback(null);
         linkRecentsViewScroll();
-        mRecentsView.setDisallowScrollToClearAll(true);
-        mRecentsView.getClearAllButton().setVisibilityAlpha(0);
-        mRecentsView.setZoomProgress(1);
-
         if (!mContinuingLastGesture) {
             if (mRunningOverHome) {
                 mRecentsView.onGestureAnimationStart(mGestureState.getRunningTask());
@@ -180,7 +182,46 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
         }
         mStateCallback.setStateOnUiThread(STATE_RECENTS_PRESENT);
         mDeviceState.enableMultipleRegions(false);
+
+        mAnimationFactory = mActivityInterface.prepareRecentsUI(alreadyOnHome,
+                this::onAnimatorPlaybackControllerCreated);
+        mAnimationFactory.createActivityInterface(mTransitionDragLength);
         return true;
+    }
+
+    @Override
+    protected void initTransitionEndpoints(DeviceProfile dp) {
+        super.initTransitionEndpoints(dp);
+        if (canCreateNewOrUpdateExistingLauncherTransitionController()) {
+            mAnimationFactory.createActivityInterface(mTransitionDragLength);
+        }
+    }
+
+    private void onAnimatorPlaybackControllerCreated(AnimatorPlaybackController anim) {
+        mLauncherTransitionController = anim;
+        mLauncherTransitionController.dispatchSetInterpolator(t -> t * mDragLengthFactor);
+        mLauncherTransitionController.dispatchOnStart();
+        updateLauncherTransitionProgress();
+    }
+
+    private void updateLauncherTransitionProgress() {
+        if (mLauncherTransitionController == null
+                || !canCreateNewOrUpdateExistingLauncherTransitionController()) {
+            return;
+        }
+        // Normalize the progress to 0 to 1, as the animation controller will clamp it to that
+        // anyway. The controller mimics the drag length factor by applying it to its interpolators.
+        float progress = mCurrentShift.value / mDragLengthFactor;
+        mLauncherTransitionController.setPlayFraction(progress);
+    }
+
+    /**
+     * We don't want to change mLauncherTransitionController if mGestureState.getEndTarget() == HOME
+     * (it has its own animation) or if we're already animating the current controller.
+     * @return Whether we can create the launcher controller or update its progress.
+     */
+    private boolean canCreateNewOrUpdateExistingLauncherTransitionController() {
+        return mGestureState.getEndTarget() != HOME && !mHasLauncherTransitionControllerStarted;
     }
 
     @Override
@@ -261,9 +302,8 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
             updateOverviewThresholdPassed(mCurrentShift.value >= MIN_PROGRESS_FOR_OVERVIEW);
         }
 
-        if (mRecentsAnimationTargets != null) {
-            applyTransformUnchecked();
-        }
+        applyWindowTransform();
+        updateLauncherTransitionProgress();
     }
 
     @Override
@@ -320,15 +360,6 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
             }
 
             if (mRecentsView != null) {
-                if (mFinishingRecentsAnimationForNewTaskId != -1) {
-                    TaskView newRunningTaskView = mRecentsView.getTaskView(
-                            mFinishingRecentsAnimationForNewTaskId);
-                    int newRunningTaskId = newRunningTaskView != null
-                            ? newRunningTaskView.getTask().key.id
-                            : -1;
-                    mRecentsView.setCurrentTask(newRunningTaskId);
-                    mGestureState.setFinishingRecentsAnimationTaskId(newRunningTaskId);
-                }
                 mRecentsView.setOnScrollChangeListener(null);
             }
         } else {
@@ -401,7 +432,7 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
                 break;
             }
             case NEW_TASK: {
-                startNewTask(STATE_HANDLER_INVALIDATED, b -> {});
+                startNewTask(success -> { });
                 break;
             }
         }
@@ -416,7 +447,7 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
             if (mRecentsView == null || !hasTargets()) {
                 mGestureState.setEndTarget(LAST_TASK);
             } else {
-                final int runningTaskIndex = mRecentsView.getRunningTaskIndex();
+                final int runningTaskIndex = getLastAppearedTaskIndex();
                 final int taskToLaunch = mRecentsView.getNextPage();
                 mGestureState.setEndTarget(
                         (runningTaskIndex >= 0 && taskToLaunch != runningTaskIndex)
@@ -477,11 +508,7 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
             RecentsAnimationTargets targets) {
         super.onRecentsAnimationStart(controller, targets);
         mRecentsAnimationController.enableInputConsumer();
-
-        if (mRunningOverHome) {
-            mAppWindowAnimationHelper.prepareAnimation(mDp);
-        }
-        applyTransformUnchecked();
+        applyWindowTransform();
 
         mStateCallback.setStateOnUiThread(STATE_APP_CONTROLLER_RECEIVED);
     }
@@ -494,23 +521,17 @@ public class FallbackSwipeHandler extends BaseSwipeUpHandler<RecentsActivity, Fa
         super.onRecentsAnimationCanceled(thumbnailData);
     }
 
+    @Override
+    protected boolean handleTaskAppeared(RemoteAnimationTargetCompat appearedTaskTarget) {
+        return true;
+    }
+
     /**
      * Creates an animation that transforms the current app window into the home app.
      * @param startProgress The progress of {@link #mCurrentShift} to start the window from.
      */
     private RectFSpringAnim createWindowAnimationToHome(float startProgress, long duration) {
-        HomeAnimationFactory factory = new HomeAnimationFactory() {
-            @Override
-            public RectF getWindowTargetRect() {
-                PagedOrientationHandler orientationHandler = mRecentsView != null
-                        ? mRecentsView.getPagedOrientationHandler()
-                        : (mDp.isLandscape
-                                ? PagedOrientationHandler.LANDSCAPE
-                                : PagedOrientationHandler.PORTRAIT);
-                return HomeAnimationFactory
-                    .getDefaultWindowTargetRect(orientationHandler, mDp);
-            }
-
+        HomeAnimationFactory factory = new HomeAnimationFactory(null) {
             @Override
             public AnimatorPlaybackController createActivityAnimationToHome() {
                 AnimatorSet anim = new AnimatorSet();
