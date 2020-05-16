@@ -159,6 +159,6 @@ public class RecentsAnimationCallbacks implements
         /**
          * Callback made when a task started from the recents is ready for an app transition.
          */
-        default void onTaskAppeared(RemoteAnimationTargetCompat app) {}
+        default void onTaskAppeared(RemoteAnimationTargetCompat appearedTaskTarget) {}
     }
 }

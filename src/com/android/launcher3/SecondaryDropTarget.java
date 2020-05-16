@@ -7,6 +7,10 @@ import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP
 import static com.android.launcher3.accessibility.LauncherAccessibilityDelegate.DISMISS_PREDICTION;
 import static com.android.launcher3.accessibility.LauncherAccessibilityDelegate.RECONFIGURE;
 import static com.android.launcher3.accessibility.LauncherAccessibilityDelegate.UNINSTALL;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ITEM_DROPPED_ON_DONT_SUGGEST;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ITEM_DROPPED_ON_UNINSTALL;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ITEM_UNINSTALL_CANCELLED;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ITEM_UNINSTALL_COMPLETED;
 import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_SYSTEM_MASK;
 import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_SYSTEM_NO;
 
@@ -34,6 +38,7 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.logging.LoggerUtils;
+import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
@@ -58,7 +63,7 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
 
     private static final long CACHE_EXPIRE_TIMEOUT = 5000;
     private final ArrayMap<UserHandle, Boolean> mUninstallDisabledCache = new ArrayMap<>(1);
-
+    private final StatsLogManager mStatsLogManager;
     private final Alarm mCacheExpireAlarm;
     private boolean mHadPendingAlarm;
 
@@ -69,8 +74,8 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
 
     public SecondaryDropTarget(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-
         mCacheExpireAlarm = new Alarm();
+        mStatsLogManager = StatsLogManager.newInstance(context);
     }
 
     @Override
@@ -214,6 +219,11 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
         // Defer onComplete
         d.dragSource = new DeferredOnComplete(d.dragSource, getContext());
         super.onDrop(d, options);
+        if (mCurrentAccessibilityAction == UNINSTALL) {
+            mStatsLogManager.log(LAUNCHER_ITEM_DROPPED_ON_UNINSTALL, d.logInstanceId);
+        } else if (mCurrentAccessibilityAction == DISMISS_PREDICTION) {
+            mStatsLogManager.log(LAUNCHER_ITEM_DROPPED_ON_DONT_SUGGEST, d.logInstanceId);
+        }
     }
 
     @Override
@@ -338,8 +348,10 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
                     mDragObject.dragInfo.user, PackageManager.MATCH_UNINSTALLED_PACKAGES) == null) {
                 mDragObject.dragSource = mOriginal;
                 mOriginal.onDropCompleted(SecondaryDropTarget.this, mDragObject, true);
+                mStatsLogManager.log(LAUNCHER_ITEM_UNINSTALL_COMPLETED, mDragObject.logInstanceId);
             } else {
                 sendFailure();
+                mStatsLogManager.log(LAUNCHER_ITEM_UNINSTALL_CANCELLED, mDragObject.logInstanceId);
             }
         }
 

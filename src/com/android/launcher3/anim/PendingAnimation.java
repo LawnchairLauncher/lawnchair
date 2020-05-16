@@ -105,6 +105,13 @@ public class PendingAnimation implements PropertySetter {
         add(anim);
     }
 
+    public <T> void addFloat(T target, FloatProperty<T> property, float from, float to,
+            TimeInterpolator interpolator) {
+        Animator anim = ObjectAnimator.ofFloat(target, property, from, to);
+        anim.setDuration(mDuration).setInterpolator(interpolator);
+        add(anim);
+    }
+
     @Override
     public <T> void setInt(T target, IntProperty<T> property, int value,
             TimeInterpolator interpolator) {

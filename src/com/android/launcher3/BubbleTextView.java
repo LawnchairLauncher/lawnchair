@@ -60,6 +60,7 @@ import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.model.data.PromiseAppInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.IconLabelDotView;
 
@@ -722,17 +723,34 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     }
 
     @Override
-    public void getVisualDragBounds(Rect bounds) {
+    public void getWorkspaceVisualDragBounds(Rect bounds) {
         DeviceProfile grid = mActivity.getDeviceProfile();
         BubbleTextView.getIconBounds(this, bounds, grid.iconSizePx);
     }
 
+    private int getIconSizeForDisplay(int display) {
+        DeviceProfile grid = mActivity.getDeviceProfile();
+        switch (display) {
+            case DISPLAY_ALL_APPS:
+                return grid.allAppsIconSizePx;
+            case DISPLAY_WORKSPACE:
+            case DISPLAY_FOLDER:
+            default:
+                return grid.iconSizePx;
+        }
+    }
+
+    public void getSourceVisualDragBounds(Rect bounds) {
+        BubbleTextView.getIconBounds(this, bounds, getIconSizeForDisplay(mDisplay));
+    }
+
     @Override
-    public void prepareDrawDragView() {
+    public SafeCloseable prepareDrawDragView() {
         if (getIcon() instanceof FastBitmapDrawable) {
             FastBitmapDrawable icon = (FastBitmapDrawable) getIcon();
             icon.setScale(1f);
         }
         setForceHideDot(true);
+        return () -> { };
     }
 }

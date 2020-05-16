@@ -16,35 +16,34 @@
 package com.android.quickstep.util;
 
 import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_ACTIONS;
+import static com.android.quickstep.SysUINavigationMode.getMode;
 import static com.android.quickstep.SysUINavigationMode.removeShelfFromOverview;
 import static com.android.quickstep.util.LayoutUtils.getDefaultSwipeHeight;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.PointF;
 import android.graphics.Rect;
+import android.os.Build;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
+import com.android.launcher3.util.WindowBounds;
+import com.android.quickstep.SysUINavigationMode.Mode;
 
 /**
  * Utility class to wrap different layout behavior for Launcher and RecentsView
  * TODO: Merge is with {@link com.android.quickstep.BaseActivityInterface} once we remove the
  * state dependent members from {@link com.android.quickstep.LauncherActivityInterface}
  */
+@TargetApi(Build.VERSION_CODES.R)
 public abstract class WindowSizeStrategy {
 
-    private final PointF mTempPoint = new PointF();
     public final boolean rotationSupportedByActivity;
 
     private WindowSizeStrategy(boolean rotationSupportedByActivity) {
         this.rotationSupportedByActivity = rotationSupportedByActivity;
     }
-
-    /**
-     * Sets the expected window size in multi-window mode
-     */
-    public abstract void getMultiWindowSize(Context context, DeviceProfile dp, PointF out);
 
     /**
      * Calculates the taskView size for the provided device configuration
@@ -57,34 +56,40 @@ public abstract class WindowSizeStrategy {
 
     private void calculateTaskSize(
             Context context, DeviceProfile dp, float extraVerticalSpace, Rect outRect) {
-        float taskWidth, taskHeight, paddingHorz;
         Resources res = context.getResources();
-        Rect insets = dp.getInsets();
         final boolean showLargeTaskSize = showOverviewActions(context);
 
+        final int paddingResId;
         if (dp.isMultiWindowMode) {
-            getMultiWindowSize(context, dp, mTempPoint);
-            taskWidth = mTempPoint.x;
-            taskHeight = mTempPoint.y;
-            paddingHorz = res.getDimension(R.dimen.multi_window_task_card_horz_space);
+            paddingResId = R.dimen.multi_window_task_card_horz_space;
+        } else if (dp.isVerticalBarLayout()) {
+            paddingResId = R.dimen.landscape_task_card_horz_space;
+        } else if (showLargeTaskSize) {
+            paddingResId = R.dimen.portrait_task_card_horz_space_big_overview;
+        } else {
+            paddingResId = R.dimen.portrait_task_card_horz_space;
+        }
+        float paddingHorz = res.getDimension(paddingResId);
+        float paddingVert = showLargeTaskSize
+                ? 0 : res.getDimension(R.dimen.task_card_vert_space);
+
+        calculateTaskSizeInternal(context, dp, extraVerticalSpace, paddingHorz, paddingVert,
+                res.getDimension(R.dimen.task_thumbnail_top_margin), outRect);
+    }
+
+    private void calculateTaskSizeInternal(Context context, DeviceProfile dp,
+            float extraVerticalSpace, float paddingHorz, float paddingVert, float topIconMargin,
+            Rect outRect) {
+        float taskWidth, taskHeight;
+        Rect insets = dp.getInsets();
+        if (dp.isMultiWindowMode) {
+            WindowBounds bounds = SplitScreenBounds.INSTANCE.getSecondaryWindowBounds(context);
+            taskWidth = bounds.availableSize.x;
+            taskHeight = bounds.availableSize.y;
         } else {
             taskWidth = dp.availableWidthPx;
             taskHeight = dp.availableHeightPx;
-
-            final int paddingResId;
-            if (dp.isVerticalBarLayout()) {
-                paddingResId = R.dimen.landscape_task_card_horz_space;
-            } else if (showLargeTaskSize) {
-                paddingResId = R.dimen.portrait_task_card_horz_space_big_overview;
-            } else {
-                paddingResId = R.dimen.portrait_task_card_horz_space;
-            }
-            paddingHorz = res.getDimension(paddingResId);
         }
-
-        float topIconMargin = res.getDimension(R.dimen.task_thumbnail_top_margin);
-        float paddingVert = showLargeTaskSize
-                ? 0 : res.getDimension(R.dimen.task_card_vert_space);
 
         // Note this should be same as dp.availableWidthPx and dp.availableHeightPx unless
         // we override the insets ourselves.
@@ -107,25 +112,40 @@ public abstract class WindowSizeStrategy {
                 Math.round(x) + Math.round(outWidth), Math.round(y) + Math.round(outHeight));
     }
 
+    /**
+     * Calculates the modal taskView size for the provided device configuration
+     */
+    public void calculateModalTaskSize(Context context, DeviceProfile dp, Rect outRect) {
+        float paddingHorz = context.getResources().getDimension(dp.isMultiWindowMode
+                ? R.dimen.multi_window_task_card_horz_space
+                : dp.isVerticalBarLayout()
+                        ? R.dimen.landscape_task_card_horz_space
+                        : R.dimen.portrait_modal_task_card_horz_space);
+        float extraVerticalSpace = getOverviewActionsHeight(context);
+        float paddingVert = 0;
+        float topIconMargin = 0;
+        calculateTaskSizeInternal(context, dp, extraVerticalSpace, paddingHorz, paddingVert,
+                topIconMargin, outRect);
+    }
+
+    /** Gets the space that the overview actions will take, including margins. */
+    public float getOverviewActionsHeight(Context context) {
+        Resources res = context.getResources();
+        float actionsBottomMargin = 0;
+        if (getMode(context) == Mode.THREE_BUTTONS) {
+            actionsBottomMargin = res.getDimensionPixelSize(
+                R.dimen.overview_actions_bottom_margin_three_button);
+        } else {
+            actionsBottomMargin = res.getDimensionPixelSize(
+                R.dimen.overview_actions_bottom_margin_gesture);
+        }
+        float overviewActionsHeight = actionsBottomMargin
+                + res.getDimensionPixelSize(R.dimen.overview_actions_height);
+        return overviewActionsHeight;
+    }
 
     public static final WindowSizeStrategy LAUNCHER_ACTIVITY_SIZE_STRATEGY =
             new WindowSizeStrategy(true) {
-
-        @Override
-        public void getMultiWindowSize(Context context, DeviceProfile dp, PointF out) {
-            DeviceProfile fullDp = dp.getFullScreenProfile();
-            // Use availableWidthPx and availableHeightPx instead of widthPx and heightPx to
-            // account for system insets
-            out.set(fullDp.availableWidthPx, fullDp.availableHeightPx);
-            float halfDividerSize = context.getResources()
-                    .getDimension(R.dimen.multi_window_task_divider_size) / 2;
-
-            if (fullDp.isLandscape) {
-                out.x = out.x / 2 - halfDividerSize;
-            } else {
-                out.y = out.y / 2 - halfDividerSize;
-            }
-        }
 
         @Override
         float getExtraSpace(Context context, DeviceProfile dp) {
@@ -136,7 +156,7 @@ public abstract class WindowSizeStrategy {
                 if (showOverviewActions(context)) {
                     //TODO: this needs to account for the swipe gesture height and accessibility
                     // UI when shown.
-                    return res.getDimensionPixelSize(R.dimen.overview_actions_height);
+                    return getOverviewActionsHeight(context);
                 } else {
                     return getDefaultSwipeHeight(context, dp) + dp.workspacePageIndicatorHeight
                             + res.getDimensionPixelSize(
@@ -150,10 +170,6 @@ public abstract class WindowSizeStrategy {
 
     public static final WindowSizeStrategy FALLBACK_RECENTS_SIZE_STRATEGY =
             new WindowSizeStrategy(false) {
-        @Override
-        public void getMultiWindowSize(Context context, DeviceProfile dp, PointF out) {
-            out.set(dp.widthPx, dp.heightPx);
-        }
 
         @Override
         float getExtraSpace(Context context, DeviceProfile dp) {

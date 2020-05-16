@@ -19,6 +19,7 @@ package com.android.launcher3.tapl;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 
 import androidx.test.uiautomator.By;
+import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.UiObject2;
 
 import com.android.launcher3.testing.TestProtocol;
@@ -33,9 +34,12 @@ public class AddToHomeScreenPrompt {
 
     AddToHomeScreenPrompt(LauncherInstrumentation launcher) {
         mLauncher = launcher;
-        mWidgetCell = launcher.waitForLauncherObject(By.clazz(
-                "com.android.launcher3.widget.WidgetCell"));
+        mWidgetCell = launcher.waitForLauncherObject(getSelector());
         mLauncher.assertNotNull("Can't find widget cell object", mWidgetCell);
+    }
+
+    private static BySelector getSelector() {
+        return By.clazz("com.android.launcher3.widget.WidgetCell");
     }
 
     public void addAutomatically() {
@@ -53,6 +57,7 @@ public class AddToHomeScreenPrompt {
             mLauncher.waitForObjectInContainer(
                     mWidgetCell.getParent().getParent().getParent().getParent(),
                     By.text(ADD_AUTOMATICALLY)).click();
+            mLauncher.waitUntilLauncherObjectGone(getSelector());
         }
     }
 }
