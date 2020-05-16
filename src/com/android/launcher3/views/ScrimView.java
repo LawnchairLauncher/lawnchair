@@ -62,10 +62,10 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.LauncherStateManager;
-import com.android.launcher3.LauncherStateManager.StateListener;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.statemanager.StateManager;
+import com.android.launcher3.statemanager.StateManager.StateListener;
 import com.android.launcher3.uioverrides.WallpaperColorInfo;
 import com.android.launcher3.uioverrides.WallpaperColorInfo.OnChangeListener;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
@@ -116,7 +116,8 @@ public class ScrimView<T extends Launcher> extends View implements Insettable, O
     private final AccessibilityManager mAM;
     protected final int mEndScrim;
 
-    private final StateListener mAccessibilityLauncherStateListener = new StateListener() {
+    private final StateListener<LauncherState> mAccessibilityLauncherStateListener =
+            new StateListener<LauncherState>() {
         @Override
         public void onStateTransitionComplete(LauncherState finalState) {
             setImportantForAccessibility(finalState == ALL_APPS
@@ -383,7 +384,7 @@ public class ScrimView<T extends Launcher> extends View implements Insettable, O
 
     @Override
     public void onAccessibilityStateChanged(boolean enabled) {
-        LauncherStateManager stateManager = mLauncher.getStateManager();
+        StateManager<LauncherState> stateManager = mLauncher.getStateManager();
         stateManager.removeStateListener(mAccessibilityLauncherStateListener);
 
         if (enabled) {
