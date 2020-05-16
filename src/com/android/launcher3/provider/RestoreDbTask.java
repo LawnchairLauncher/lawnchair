@@ -16,7 +16,6 @@
 
 package com.android.launcher3.provider;
 
-import static com.android.launcher3.pm.InstallSessionHelper.KEY_INSTALL_SESSION_CREATED_TIMESTAMP;
 import static com.android.launcher3.provider.LauncherDbUtils.dropTable;
 
 import android.app.backup.BackupManager;
@@ -87,13 +86,10 @@ public class RestoreDbTask {
      */
     public static boolean restoreIfPossible(@NonNull Context context,
             @NonNull DatabaseHelper helper, @NonNull BackupManager backupManager) {
-        Utilities.getDevicePrefs(context).edit().putLong(
-                KEY_INSTALL_SESSION_CREATED_TIMESTAMP, System.currentTimeMillis()).apply();
         final SQLiteDatabase db = helper.getWritableDatabase();
         try (SQLiteTransaction t = new SQLiteTransaction(db)) {
             RestoreDbTask task = new RestoreDbTask();
             task.restoreWorkspace(context, db, helper, backupManager);
-            task.restoreAppWidgetIdsIfExists(context);
             t.commit();
             return true;
         } catch (Exception e) {
@@ -107,7 +103,6 @@ public class RestoreDbTask {
      */
     private void backupWorkspace(Context context, SQLiteDatabase db) throws Exception {
         InvariantDeviceProfile idp = LauncherAppState.getIDP(context);
-        // TODO(pinyaoting): Support backing up workspace with multiple grid options.
         new GridBackupTable(context, db, idp.numHotseatIcons, idp.numColumns, idp.numRows)
                 .doBackup(getDefaultProfileId(db), GridBackupTable.OPTION_REQUIRES_SANITIZATION);
     }
@@ -115,13 +110,17 @@ public class RestoreDbTask {
     private void restoreWorkspace(@NonNull Context context, @NonNull SQLiteDatabase db,
             @NonNull DatabaseHelper helper, @NonNull BackupManager backupManager)
             throws Exception {
-        // TODO(pinyaoting): Support restoring workspace with multiple grid options.
         final InvariantDeviceProfile idp = LauncherAppState.getIDP(context);
         GridBackupTable backupTable = new GridBackupTable(context, db, idp.numHotseatIcons,
                 idp.numColumns, idp.numRows);
         if (backupTable.restoreFromRawBackupIfAvailable(getDefaultProfileId(db))) {
-            sanitizeDB(helper, db, backupManager);
+            int itemsDeleted = sanitizeDB(helper, db, backupManager);
             LauncherAppState.getInstance(context).getModel().forceReload();
+            restoreAppWidgetIdsIfExists(context);
+            if (itemsDeleted == 0) {
+                // all the items are restored, we no longer need the backup table
+                dropTable(db, Favorites.BACKUP_TABLE_NAME);
+            }
         }
     }
 
@@ -132,8 +131,10 @@ public class RestoreDbTask {
      *      the restored apps get installed.
      *   3. If the user serial for any restored profile is different than that of the previous
      *      device, update the entries to the new profile id.
+     *
+     * @return number of items deleted.
      */
-    private void sanitizeDB(DatabaseHelper helper, SQLiteDatabase db, BackupManager backupManager)
+    private int sanitizeDB(DatabaseHelper helper, SQLiteDatabase db, BackupManager backupManager)
             throws Exception {
         // Primary user ids
         long myProfileId = helper.getDefaultUserSerial();
@@ -210,6 +211,7 @@ public class RestoreDbTask {
         if (myProfileId != oldProfileId) {
             changeDefaultColumn(db, myProfileId);
         }
+        return itemsDeleted;
     }
 
     /**

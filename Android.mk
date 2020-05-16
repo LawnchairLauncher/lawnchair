@@ -129,6 +129,7 @@ LOCAL_AAPT2_ONLY := true
 LOCAL_MODULE_TAGS := optional
 
 LOCAL_STATIC_JAVA_LIBRARIES := \
+    SystemUI-statsd \
     SystemUISharedLib \
     launcherprotosnano \
     launcher_log_protos_lite
@@ -201,6 +202,7 @@ LOCAL_USE_AAPT2 := true
 LOCAL_MODULE_TAGS := optional
 
 LOCAL_STATIC_JAVA_LIBRARIES := \
+    SystemUI-statsd \
     SystemUISharedLib \
     launcherprotosnano \
     launcher_log_protos_lite

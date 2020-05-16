@@ -26,10 +26,10 @@ import android.os.UserManager;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.FloatingHeaderView;
+import com.android.launcher3.statemanager.StateManager.StateListener;
 import com.android.launcher3.views.ArrowTipView;
 import com.android.systemui.shared.system.LauncherEventUtil;
 
@@ -71,17 +71,16 @@ public class AllAppsTipView {
 
     public static void scheduleShowIfNeeded(Launcher launcher) {
         if (!hasSeenAllAppsTip(launcher)) {
-            launcher.getStateManager().addStateListener(
-                    new LauncherStateManager.StateListener() {
-                        @Override
-                        public void onStateTransitionComplete(LauncherState finalState) {
-                            if (finalState == ALL_APPS) {
-                                if (showAllAppsTipIfNecessary(launcher)) {
-                                    launcher.getStateManager().removeStateListener(this);
-                                }
-                            }
+            launcher.getStateManager().addStateListener(new StateListener<LauncherState>() {
+                @Override
+                public void onStateTransitionComplete(LauncherState finalState) {
+                    if (finalState == ALL_APPS) {
+                        if (showAllAppsTipIfNecessary(launcher)) {
+                            launcher.getStateManager().removeStateListener(this);
                         }
-                    });
+                    }
+                }
+            });
         }
     }
 }

@@ -49,18 +49,18 @@ import com.android.launcher3.FirstFrameAnimatorHelper;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.statemanager.StateManager.StateListener;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
 
 import java.util.Arrays;
 
-public class DragView extends View implements LauncherStateManager.StateListener {
+public class DragView extends View implements StateListener<LauncherState> {
     private static final ColorMatrix sTempMatrix1 = new ColorMatrix();
     private static final ColorMatrix sTempMatrix2 = new ColorMatrix();
 

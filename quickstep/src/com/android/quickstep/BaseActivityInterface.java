@@ -18,14 +18,11 @@ package com.android.quickstep;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Rect;
-import android.graphics.RectF;
 import android.os.Build;
-import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Interpolator;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
@@ -33,7 +30,6 @@ import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.statehandlers.DepthController;
-import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.ShelfPeekAnim;
 import com.android.systemui.shared.recents.model.ThumbnailData;
@@ -52,24 +48,13 @@ public interface BaseActivityInterface<T extends BaseDraggingActivity> {
 
     int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context, Rect outRect);
 
-    /**
-     * @return The progress of the swipe where we start resisting the user, where 0 is fullscreen
-     * and 1 is recents. These values should probably be greater than 1 to let the user swipe past
-     * recents before we start resisting them.
-     */
-    default Pair<Float, Float> getSwipeUpPullbackStartAndMaxProgress() {
-        return new Pair<>(1.4f, 1.8f);
-    }
-
     void onSwipeUpToRecentsComplete();
 
     default void onSwipeUpToHomeComplete() { }
     void onAssistantVisibilityChanged(float visibility);
 
-    @NonNull HomeAnimationFactory prepareHomeUI();
-
-    AnimationFactory prepareRecentsUI(boolean activityVisible, boolean animateActivity,
-            Consumer<AnimatorPlaybackController> callback);
+    AnimationFactory prepareRecentsUI(
+            boolean activityVisible, Consumer<AnimatorPlaybackController> callback);
 
     ActivityInitListener createActivityInitListener(Predicate<Boolean> onInitListener);
 
@@ -151,36 +136,5 @@ public interface BaseActivityInterface<T extends BaseDraggingActivity> {
          * @param animate Whether to animate recents to/from its new attached state.
          */
         default void setRecentsAttachedToAppWindow(boolean attached, boolean animate) { }
-    }
-
-    interface HomeAnimationFactory {
-
-        /** Return the floating view that will animate in sync with the closing window. */
-        default @Nullable View getFloatingView() {
-            return null;
-        }
-
-        @NonNull RectF getWindowTargetRect();
-
-        @NonNull AnimatorPlaybackController createActivityAnimationToHome();
-
-        default void playAtomicAnimation(float velocity) {
-            // No-op
-        }
-
-        static RectF getDefaultWindowTargetRect(PagedOrientationHandler orientationHandler,
-            DeviceProfile dp) {
-            final int halfIconSize = dp.iconSizePx / 2;
-            float primaryDimension = orientationHandler
-                .getPrimaryValue(dp.availableWidthPx, dp.availableHeightPx);
-            float secondaryDimension = orientationHandler
-                .getSecondaryValue(dp.availableWidthPx, dp.availableHeightPx);
-            final float targetX =  primaryDimension / 2f;
-            final float targetY = secondaryDimension - dp.hotseatBarSizePx;
-            // Fallback to animate to center of screen.
-            return new RectF(targetX - halfIconSize, targetY - halfIconSize,
-                    targetX + halfIconSize, targetY + halfIconSize);
-        }
-
     }
 }

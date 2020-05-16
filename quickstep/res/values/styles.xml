@@ -79,8 +79,8 @@
 
     <style name="OverviewActionButton"
         parent="@android:style/Widget.DeviceDefault.Button.Borderless">
-        <item name="android:textColor">?attr/workspaceTextColor</item>
-        <item name="android:drawableTint">?attr/workspaceTextColor</item>
+        <item name="android:textColor">@color/overview_button</item>
+        <item name="android:drawableTint">@color/overview_button</item>
         <item name="android:tint">?attr/workspaceTextColor</item>
         <item name="android:drawablePadding">4dp</item>
         <item name="android:textAllCaps">false</item>

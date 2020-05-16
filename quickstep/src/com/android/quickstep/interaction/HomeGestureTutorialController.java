@@ -60,7 +60,7 @@ final class HomeGestureTutorialController extends TutorialController {
     @Override
     Integer getActionButtonStringId() {
         if (mTutorialType == HOME_NAVIGATION_COMPLETE) {
-            return R.string.gesture_tutorial_action_button_label;
+            return R.string.gesture_tutorial_action_button_label_done;
         }
         return null;
     }

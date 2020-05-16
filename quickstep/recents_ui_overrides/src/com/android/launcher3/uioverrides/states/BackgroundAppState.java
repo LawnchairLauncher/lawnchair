@@ -17,6 +17,7 @@ package com.android.launcher3.uioverrides.states;
 
 import android.content.Context;
 
+import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
@@ -54,11 +55,7 @@ public class BackgroundAppState extends OverviewState {
 
     @Override
     public float[] getOverviewScaleAndOffset(Launcher launcher) {
-        return new float[] {getOverviewScale(launcher), NO_OFFSET};
-    }
-
-    private float getOverviewScale(Launcher launcher) {
-        return ((RecentsView) launcher.getOverviewPanel()).getMaxScaleForFullScreen();
+        return getOverviewScaleAndOffsetForBackgroundState(launcher);
     }
 
     @Override
@@ -87,5 +84,12 @@ public class BackgroundAppState extends OverviewState {
     @Override
     protected float getDepthUnchecked(Context context) {
         return 1f;
+    }
+
+    public static float[] getOverviewScaleAndOffsetForBackgroundState(
+            BaseDraggingActivity activity) {
+        return new float[] {
+                ((RecentsView) activity.getOverviewPanel()).getMaxScaleForFullScreen(),
+                NO_OFFSET};
     }
 }

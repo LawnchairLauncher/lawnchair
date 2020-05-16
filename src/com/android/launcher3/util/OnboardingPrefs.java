@@ -21,7 +21,6 @@ import android.util.ArrayMap;
 import androidx.annotation.StringDef;
 
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherStateManager;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -71,13 +70,10 @@ public class OnboardingPrefs<T extends Launcher> {
 
     protected final T mLauncher;
     protected final SharedPreferences mSharedPrefs;
-    protected final LauncherStateManager mStateManager;
 
-    public OnboardingPrefs(T launcher, SharedPreferences sharedPrefs,
-            LauncherStateManager stateManager) {
+    public OnboardingPrefs(T launcher, SharedPreferences sharedPrefs) {
         mLauncher = launcher;
         mSharedPrefs = sharedPrefs;
-        mStateManager = stateManager;
     }
 
     /** @return The number of times we have seen the given event. */
