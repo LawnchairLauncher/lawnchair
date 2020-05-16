@@ -15,19 +15,7 @@
  */
 package com.android.launcher3;
 
-import static android.view.View.VISIBLE;
-
-import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
-import static com.android.launcher3.anim.Interpolators.DEACCEL;
-import static com.android.launcher3.anim.Interpolators.DEACCEL_1_7;
-import static com.android.launcher3.anim.Interpolators.clampToProgress;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_ACTIONS;
-import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_FADE;
-import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_SCALE;
-import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_TRANSLATE_X;
-import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_FADE;
-import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_SCALE;
 import static com.android.launcher3.testing.TestProtocol.ALL_APPS_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.BACKGROUND_APP_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.HINT_STATE_ORDINAL;
@@ -39,24 +27,22 @@ import static com.android.launcher3.testing.TestProtocol.QUICK_SWITCH_STATE_ORDI
 import static com.android.launcher3.testing.TestProtocol.SPRING_LOADED_STATE_ORDINAL;
 
 import android.content.Context;
-import android.view.View;
 import android.view.animation.Interpolator;
 
-import com.android.launcher3.allapps.AllAppsContainerView;
+import com.android.launcher3.statemanager.BaseState;
+import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.states.HintState;
 import com.android.launcher3.states.SpringLoadedState;
-import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.uioverrides.states.AllAppsState;
 import com.android.launcher3.uioverrides.states.OverviewState;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 
 import java.util.Arrays;
 
-
 /**
  * Base state for various states used for the Launcher
  */
-public abstract class LauncherState {
+public abstract class LauncherState implements BaseState<LauncherState> {
 
     /**
      * Set of elements indicating various workspace elements which change visibility across states
@@ -76,25 +62,22 @@ public abstract class LauncherState {
             HOTSEAT_SEARCH_BOX | ALL_APPS_HEADER | ALL_APPS_HEADER_EXTRA | ALL_APPS_CONTENT;
 
     // Flag indicating workspace has multiple pages visible.
-    public static final int FLAG_MULTI_PAGE = 1 << 0;
+    public static final int FLAG_MULTI_PAGE = BaseState.getFlag(0);
     // Flag indicating that workspace and its contents are not accessible
-    public static final int FLAG_WORKSPACE_INACCESSIBLE = 1 << 1;
+    public static final int FLAG_WORKSPACE_INACCESSIBLE = BaseState.getFlag(1);
 
-    public static final int FLAG_DISABLE_RESTORE = 1 << 2;
     // Flag indicating the state allows workspace icons to be dragged.
-    public static final int FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED = 1 << 3;
+    public static final int FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED = BaseState.getFlag(2);
     // Flag to indicate that workspace should draw page background
-    public static final int FLAG_WORKSPACE_HAS_BACKGROUNDS = 1 << 4;
-    // Flag to indicate that Launcher is non-interactive in this state
-    public static final int FLAG_NON_INTERACTIVE = 1 << 5;
+    public static final int FLAG_WORKSPACE_HAS_BACKGROUNDS = BaseState.getFlag(3);
     // True if the back button should be hidden when in this state (assuming no floating views are
     // open, launcher has window focus, etc).
-    public static final int FLAG_HIDE_BACK_BUTTON = 1 << 6;
+    public static final int FLAG_HIDE_BACK_BUTTON = BaseState.getFlag(4);
     // Flag to indicate if the state would have scrim over sysui region: statu sbar and nav bar
-    public static final int FLAG_HAS_SYS_UI_SCRIM = 1 << 7;
+    public static final int FLAG_HAS_SYS_UI_SCRIM = BaseState.getFlag(5);
     // Flag to inticate that all popups should be closed when this state is enabled.
-    public static final int FLAG_CLOSE_POPUPS = 1 << 8;
-    public static final int FLAG_OVERVIEW_UI = 1 << 9;
+    public static final int FLAG_CLOSE_POPUPS = BaseState.getFlag(6);
+    public static final int FLAG_OVERVIEW_UI = BaseState.getFlag(7);
 
 
     public static final float NO_OFFSET = 0;
@@ -167,25 +150,14 @@ public abstract class LauncherState {
     /**
      * Returns if the state has the provided flag
      */
+    @Override
     public final boolean hasFlag(int mask) {
         return (mFlags & mask) != 0;
-    }
-
-    /**
-     * @return true if the state can be persisted across activity restarts.
-     */
-    public final boolean shouldDisableRestore() {
-        return hasFlag(FLAG_DISABLE_RESTORE);
     }
 
     public static LauncherState[] values() {
         return Arrays.copyOf(sAllStates, sAllStates.length);
     }
-
-    /**
-     * @return How long the animation to this state should take (or from this state to NORMAL).
-     */
-    public abstract int getTransitionDuration(Context context);
 
     public ScaleAndTranslation getWorkspaceScaleAndTranslation(Launcher launcher) {
         return new ScaleAndTranslation(NO_SCALE, NO_OFFSET, NO_OFFSET);
@@ -280,65 +252,22 @@ public abstract class LauncherState {
         };
     }
 
+    @Override
     public LauncherState getHistoryForState(LauncherState previousState) {
         // No history is supported
         return NORMAL;
     }
 
-    public void onBackPressed(Launcher launcher) {
-        if (this != NORMAL) {
-            LauncherStateManager lsm = launcher.getStateManager();
-            LauncherState lastState = lsm.getLastState();
-            lsm.goToState(lastState);
-        }
+    @Override
+    public String toString() {
+        return "Ordinal-" + ordinal;
     }
 
-    /**
-     * Prepares for a non-user controlled animation from fromState to this state. Preparations
-     * include:
-     * - Setting interpolators for various animations included in the state transition.
-     * - Setting some start values (e.g. scale) for views that are hidden but about to be shown.
-     */
-    public void prepareForAtomicAnimation(Launcher launcher, LauncherState fromState,
-            StateAnimationConfig config) {
-        if (this == NORMAL && fromState == OVERVIEW) {
-            config.setInterpolator(ANIM_WORKSPACE_SCALE, DEACCEL);
-            config.setInterpolator(ANIM_WORKSPACE_FADE, ACCEL);
-            config.setInterpolator(ANIM_OVERVIEW_SCALE, clampToProgress(ACCEL, 0, 0.9f));
-            config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X, ACCEL);
-            config.setInterpolator(ANIM_OVERVIEW_FADE, DEACCEL_1_7);
-            Workspace workspace = launcher.getWorkspace();
-
-            // Start from a higher workspace scale, but only if we're invisible so we don't jump.
-            boolean isWorkspaceVisible = workspace.getVisibility() == VISIBLE;
-            if (isWorkspaceVisible) {
-                CellLayout currentChild = (CellLayout) workspace.getChildAt(
-                        workspace.getCurrentPage());
-                isWorkspaceVisible = currentChild.getVisibility() == VISIBLE
-                        && currentChild.getShortcutsAndWidgets().getAlpha() > 0;
-            }
-            if (!isWorkspaceVisible) {
-                workspace.setScaleX(0.92f);
-                workspace.setScaleY(0.92f);
-            }
-            Hotseat hotseat = launcher.getHotseat();
-            boolean isHotseatVisible = hotseat.getVisibility() == VISIBLE && hotseat.getAlpha() > 0;
-            if (!isHotseatVisible) {
-                hotseat.setScaleX(0.92f);
-                hotseat.setScaleY(0.92f);
-                if (ENABLE_OVERVIEW_ACTIONS.get()) {
-                    AllAppsContainerView qsbContainer = launcher.getAppsView();
-                    View qsb = qsbContainer.getSearchView();
-                    boolean qsbVisible = qsb.getVisibility() == VISIBLE && qsb.getAlpha() > 0;
-                    if (!qsbVisible) {
-                        qsbContainer.setScaleX(0.92f);
-                        qsbContainer.setScaleY(0.92f);
-                    }
-                }
-            }
-        } else if (this == NORMAL && fromState == OVERVIEW_PEEK) {
-            // Keep fully visible until the very end (when overview is offscreen) to make invisible.
-            config.setInterpolator(ANIM_OVERVIEW_FADE, t -> t < 1 ? 0 : 1);
+    public void onBackPressed(Launcher launcher) {
+        if (this != NORMAL) {
+            StateManager<LauncherState> lsm = launcher.getStateManager();
+            LauncherState lastState = lsm.getLastState();
+            lsm.goToState(lastState);
         }
     }
 

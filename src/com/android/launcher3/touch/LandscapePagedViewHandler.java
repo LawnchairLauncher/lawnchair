@@ -33,7 +33,6 @@ import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.LinearLayout;
 
-import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.OverScroller;
@@ -74,8 +73,8 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public boolean isGoingUp(float displacement) {
-        return displacement > 0;
+    public boolean isGoingUp(float displacement, boolean isRtl) {
+        return isRtl ? displacement < 0 : displacement > 0;
     }
 
     @Override
@@ -226,13 +225,13 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public int getShortEdgeLength(DeviceProfile dp) {
-        return dp.heightPx;
+    public int getTaskDismissDirectionFactor() {
+        return 1;
     }
 
     @Override
-    public int getTaskDismissDirectionFactor() {
-        return 1;
+    public int getTaskDragDisplacementFactor(boolean isRtl) {
+        return isRtl ? 1 : -1;
     }
 
     @Override

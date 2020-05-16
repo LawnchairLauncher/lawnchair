@@ -29,7 +29,7 @@ import android.view.MotionEvent;
 import android.widget.TextView;
 
 import com.android.launcher3.AbstractFloatingView;
-import com.android.launcher3.Launcher;
+import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
@@ -44,7 +44,7 @@ public class Snackbar extends AbstractFloatingView {
     private static final long HIDE_DURATION_MS = 180;
     private static final int TIMEOUT_DURATION_MS = 4000;
 
-    private final Launcher mLauncher;
+    private final BaseDraggingActivity mActivity;
     private Runnable mOnDismissed;
 
     public Snackbar(Context context, AttributeSet attrs) {
@@ -53,25 +53,25 @@ public class Snackbar extends AbstractFloatingView {
 
     public Snackbar(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mLauncher = Launcher.getLauncher(context);
+        mActivity = BaseDraggingActivity.fromContext(context);
         inflate(context, R.layout.snackbar, this);
     }
 
-    public static void show(Launcher launcher, int labelStringResId, int actionStringResId,
-            Runnable onDismissed, Runnable onActionClicked) {
-        closeOpenViews(launcher, true, TYPE_SNACKBAR);
-        Snackbar snackbar = new Snackbar(launcher, null);
+    public static void show(BaseDraggingActivity activity, int labelStringResId,
+            int actionStringResId, Runnable onDismissed, Runnable onActionClicked) {
+        closeOpenViews(activity, true, TYPE_SNACKBAR);
+        Snackbar snackbar = new Snackbar(activity, null);
         // Set some properties here since inflated xml only contains the children.
         snackbar.setOrientation(HORIZONTAL);
         snackbar.setGravity(Gravity.CENTER_VERTICAL);
-        Resources res = launcher.getResources();
+        Resources res = activity.getResources();
         snackbar.setElevation(res.getDimension(R.dimen.snackbar_elevation));
         int padding = res.getDimensionPixelSize(R.dimen.snackbar_padding);
         snackbar.setPadding(padding, padding, padding, padding);
         snackbar.setBackgroundResource(R.drawable.round_rect_primary);
 
         snackbar.mIsOpen = true;
-        DragLayer dragLayer = launcher.getDragLayer();
+        BaseDragLayer dragLayer = activity.getDragLayer();
         dragLayer.addView(snackbar);
 
         DragLayer.LayoutParams params = (DragLayer.LayoutParams) snackbar.getLayoutParams();
@@ -80,7 +80,7 @@ public class Snackbar extends AbstractFloatingView {
         int maxMarginLeftRight = res.getDimensionPixelSize(R.dimen.snackbar_max_margin_left_right);
         int minMarginLeftRight = res.getDimensionPixelSize(R.dimen.snackbar_min_margin_left_right);
         int marginBottom = res.getDimensionPixelSize(R.dimen.snackbar_margin_bottom);
-        Rect insets = launcher.getDeviceProfile().getInsets();
+        Rect insets = activity.getDeviceProfile().getInsets();
         int maxWidth = dragLayer.getWidth() - minMarginLeftRight * 2 - insets.left - insets.right;
         int minWidth = dragLayer.getWidth() - maxMarginLeftRight * 2 - insets.left - insets.right;
         params.width = minWidth;
@@ -135,7 +135,7 @@ public class Snackbar extends AbstractFloatingView {
                 .setDuration(SHOW_DURATION_MS)
                 .setInterpolator(Interpolators.ACCEL_DEACCEL)
                 .start();
-        int timeout = AccessibilityManagerCompat.getRecommendedTimeoutMillis(launcher,
+        int timeout = AccessibilityManagerCompat.getRecommendedTimeoutMillis(activity,
                 TIMEOUT_DURATION_MS, FLAG_CONTENT_TEXT | FLAG_CONTENT_CONTROLS);
         snackbar.postDelayed(() -> snackbar.close(true), timeout);
     }
@@ -160,7 +160,7 @@ public class Snackbar extends AbstractFloatingView {
     }
 
     private void onClosed() {
-        mLauncher.getDragLayer().removeView(this);
+        mActivity.getDragLayer().removeView(this);
         if (mOnDismissed != null) {
             mOnDismissed.run();
         }
@@ -179,7 +179,7 @@ public class Snackbar extends AbstractFloatingView {
     @Override
     public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            DragLayer dl = mLauncher.getDragLayer();
+            BaseDragLayer dl = mActivity.getDragLayer();
             if (!dl.isEventOverView(this, ev)) {
                 close(true);
             }

@@ -31,27 +31,24 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.graphics.Canvas;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.view.View;
 import android.widget.FrameLayout;
 
 import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.LauncherStateManager.StateListener;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.appprediction.PredictionUiStateManager;
 import com.android.launcher3.appprediction.PredictionUiStateManager.Client;
 import com.android.launcher3.statehandlers.DepthController;
+import com.android.launcher3.statemanager.StateManager.StateListener;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.TraceHelper;
 import com.android.launcher3.views.ScrimView;
 import com.android.quickstep.SysUINavigationMode;
-import com.android.quickstep.util.AppWindowAnimationHelper;
-import com.android.quickstep.util.AppWindowAnimationHelper.TransformParams;
+import com.android.quickstep.util.TransformParams;
 import com.android.systemui.plugins.PluginListener;
 import com.android.systemui.plugins.RecentsExtraCard;
 
@@ -60,7 +57,7 @@ import com.android.systemui.plugins.RecentsExtraCard;
  */
 @TargetApi(Build.VERSION_CODES.O)
 public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher>
-        implements StateListener {
+        implements StateListener<LauncherState> {
 
     private final TransformParams mTransformParams = new TransformParams();
 
@@ -122,24 +119,6 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher>
                 redrawLiveTile(false);
             }
         }
-    }
-
-    @Override
-    public void draw(Canvas canvas) {
-        maybeDrawEmptyMessage(canvas);
-        super.draw(canvas);
-    }
-
-    @Override
-    public void onViewAdded(View child) {
-        super.onViewAdded(child);
-        updateEmptyMessage();
-    }
-
-    @Override
-    protected void onTaskStackUpdated() {
-        // Lazily update the empty message only when the task stack is reapplied
-        updateEmptyMessage();
     }
 
     /**
@@ -213,14 +192,14 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher>
 
     @Override
     public void redrawLiveTile(boolean mightNeedToRefill) {
-        AppWindowAnimationHelper.TransformParams transformParams = getLiveTileParams(mightNeedToRefill);
+        TransformParams transformParams = getLiveTileParams(mightNeedToRefill);
         if (transformParams != null) {
             mAppWindowAnimationHelper.applyTransform(transformParams);
         }
     }
 
     @Override
-    public AppWindowAnimationHelper.TransformParams getLiveTileParams(
+    public TransformParams getLiveTileParams(
             boolean mightNeedToRefill) {
         if (!mEnableDrawingLiveTile || mRecentsAnimationController == null
                 || mRecentsAnimationTargets == null || mAppWindowAnimationHelper == null) {
@@ -248,8 +227,7 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher>
                     .setCurrentRect(mTempRectF)
                     .setTargetAlpha(taskView.getAlpha())
                     .setSyncTransactionApplier(mSyncTransactionApplier)
-                    .setTargetSet(mRecentsAnimationTargets)
-                    .setLauncherOnTop(true);
+                    .setTargetSet(mRecentsAnimationTargets);
         }
         return mTransformParams;
     }
@@ -372,5 +350,17 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher>
     @Override
     protected DepthController getDepthController() {
         return mActivity.getDepthController();
+    }
+
+    @Override
+    public void setModalStateEnabled(boolean isModalState) {
+        super.setModalStateEnabled(isModalState);
+        if (isModalState) {
+            mActivity.getStateManager().goToState(LauncherState.OVERVIEW_MODAL_TASK);
+        } else {
+            if (mActivity.isInState(LauncherState.OVERVIEW_MODAL_TASK)) {
+                mActivity.getStateManager().goToState(LauncherState.OVERVIEW);
+            }
+        }
     }
 }
