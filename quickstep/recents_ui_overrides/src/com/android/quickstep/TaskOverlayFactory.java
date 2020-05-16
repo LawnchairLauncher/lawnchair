@@ -22,6 +22,7 @@ import android.content.Context;
 import android.graphics.Insets;
 import android.graphics.Matrix;
 import android.graphics.Rect;
+import android.widget.Toast;
 
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BaseDraggingActivity;
@@ -109,16 +110,26 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
         public void initOverlay(Task task, ThumbnailData thumbnail, Matrix matrix) {
             ImageActionsApi imageApi = new ImageActionsApi(
                     mApplicationContext, mThumbnailView::getThumbnail);
+            final boolean isAllowedByPolicy = thumbnail.isRealSnapshot;
+
             getActionsView().setCallbacks(new OverlayUICallbacks() {
                 @Override
                 public void onShare() {
-                    imageApi.startShareActivity();
+                    if (isAllowedByPolicy) {
+                        imageApi.startShareActivity();
+                    } else {
+                        showBlockedByPolicyMessage();
+                    }
                 }
 
                 @Override
                 public void onScreenshot() {
-                    imageApi.saveScreenshot(mThumbnailView.getThumbnail(),
-                            getTaskSnapshotBounds(), getTaskSnapshotInsets(), task.key.id);
+                    if (isAllowedByPolicy) {
+                        imageApi.saveScreenshot(mThumbnailView.getThumbnail(),
+                                getTaskSnapshotBounds(), getTaskSnapshotInsets(), task.key.id);
+                    } else {
+                        showBlockedByPolicyMessage();
+                    }
                 }
             });
         }
@@ -151,6 +162,13 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
         public Insets getTaskSnapshotInsets() {
             // TODO: return the real insets
             return Insets.of(0, 0, 0, 0);
+        }
+
+        private void showBlockedByPolicyMessage() {
+            Toast.makeText(
+                    mThumbnailView.getContext(),
+                    R.string.blocked_by_policy,
+                    Toast.LENGTH_LONG).show();
         }
     }
 

@@ -16,32 +16,26 @@
 package com.android.quickstep;
 
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
-import static com.android.launcher3.LauncherAppTransitionManagerImpl.INDEX_RECENTS_FADE_ANIM;
-import static com.android.launcher3.LauncherAppTransitionManagerImpl.INDEX_RECENTS_TRANSLATE_X_ANIM;
-import static com.android.launcher3.LauncherAppTransitionManagerImpl.INDEX_SHELF_ANIM;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
-import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.anim.Interpolators.INSTANT;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.launcher3.uioverrides.states.QuickstepAtomicAnimationFactory.INDEX_RECENTS_FADE_ANIM;
+import static com.android.launcher3.uioverrides.states.QuickstepAtomicAnimationFactory.INDEX_RECENTS_TRANSLATE_X_ANIM;
+import static com.android.launcher3.uioverrides.states.QuickstepAtomicAnimationFactory.INDEX_SHELF_ANIM;
 import static com.android.quickstep.LauncherSwipeHandler.RECENTS_ATTACH_DURATION;
 import static com.android.quickstep.util.WindowSizeStrategy.LAUNCHER_ACTIVITY_SIZE_STRATEGY;
 import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_OFFSET;
+import static com.android.quickstep.views.RecentsView.FULLSCREEN_PROGRESS;
 
 import android.animation.Animator;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Rect;
-import android.graphics.RectF;
-import android.os.UserHandle;
-import android.util.Pair;
+import android.util.Log;
 import android.view.MotionEvent;
-import android.view.View;
 import android.view.animation.Interpolator;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
@@ -52,20 +46,19 @@ import com.android.launcher3.LauncherInitListener;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.AnimatorPlaybackController;
+import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.appprediction.PredictionUiStateManager;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statehandlers.DepthController.ClampedDepthProperty;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
-import com.android.launcher3.views.FloatingIconView;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.util.ShelfPeekAnim;
 import com.android.quickstep.util.ShelfPeekAnim.ShelfAnimState;
-import com.android.quickstep.util.StaggeredWorkspaceAnim;
 import com.android.quickstep.views.LauncherRecentsView;
 import com.android.quickstep.views.RecentsView;
-import com.android.quickstep.views.TaskView;
 import com.android.systemui.plugins.shared.LauncherOverlayManager;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
@@ -78,9 +71,6 @@ import java.util.function.Predicate;
  */
 public final class LauncherActivityInterface implements BaseActivityInterface<Launcher> {
 
-    private Pair<Float, Float> mSwipeUpPullbackStartAndMaxProgress =
-            BaseActivityInterface.super.getSwipeUpPullbackStartAndMaxProgress();
-
     @Override
     public int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context, Rect outRect) {
         LAUNCHER_ACTIVITY_SIZE_STRATEGY.calculateTaskSize(context, dp, outRect);
@@ -91,11 +81,6 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
         } else {
             return LayoutUtils.getShelfTrackingDistance(context, dp);
         }
-    }
-
-    @Override
-    public Pair<Float, Float> getSwipeUpPullbackStartAndMaxProgress() {
-        return mSwipeUpPullbackStartAndMaxProgress;
     }
 
     @Override
@@ -148,66 +133,9 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
         launcher.onAssistantVisibilityChanged(visibility);
     }
 
-    @NonNull
     @Override
-    public HomeAnimationFactory prepareHomeUI() {
-        Launcher launcher = getCreatedActivity();
-        final DeviceProfile dp = launcher.getDeviceProfile();
-        final RecentsView recentsView = launcher.getOverviewPanel();
-        final TaskView runningTaskView = recentsView.getRunningTaskView();
-        final View workspaceView;
-        if (runningTaskView != null && runningTaskView.getTask().key.getComponent() != null) {
-            workspaceView = launcher.getWorkspace().getFirstMatchForAppClose(
-                    runningTaskView.getTask().key.getComponent().getPackageName(),
-                    UserHandle.of(runningTaskView.getTask().key.userId));
-        } else {
-            workspaceView = null;
-        }
-        final RectF iconLocation = new RectF();
-        boolean canUseWorkspaceView = workspaceView != null && workspaceView.isAttachedToWindow();
-        FloatingIconView floatingIconView = canUseWorkspaceView
-                ? FloatingIconView.getFloatingIconView(launcher, workspaceView,
-                        true /* hideOriginal */, iconLocation, false /* isOpening */)
-                : null;
-        setLauncherHideBackArrow(true);
-        return new HomeAnimationFactory() {
-            @Nullable
-            @Override
-            public View getFloatingView() {
-                return floatingIconView;
-            }
-
-            @NonNull
-            @Override
-            public RectF getWindowTargetRect() {
-                if (canUseWorkspaceView) {
-                    return iconLocation;
-                } else {
-                    return HomeAnimationFactory
-                        .getDefaultWindowTargetRect(recentsView.getPagedOrientationHandler(), dp);
-                }
-            }
-
-            @NonNull
-            @Override
-            public AnimatorPlaybackController createActivityAnimationToHome() {
-                // Return an empty APC here since we have an non-user controlled animation to home.
-                long accuracy = 2 * Math.max(dp.widthPx, dp.heightPx);
-                return launcher.getStateManager().createAnimationToNewWorkspace(NORMAL, accuracy,
-                        0 /* animComponents */);
-            }
-
-            @Override
-            public void playAtomicAnimation(float velocity) {
-                new StaggeredWorkspaceAnim(launcher, velocity, true /* animateOverviewScrim */)
-                        .start();
-            }
-        };
-    }
-
-    @Override
-    public AnimationFactory prepareRecentsUI(boolean activityVisible,
-            boolean animateActivity, Consumer<AnimatorPlaybackController> callback) {
+    public AnimationFactory prepareRecentsUI(
+            boolean activityVisible, Consumer<AnimatorPlaybackController> callback) {
         BaseQuickstepLauncher launcher = getCreatedActivity();
         final LauncherState startState = launcher.getStateManager().getState();
 
@@ -217,8 +145,7 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
         }
         launcher.getStateManager().setRestState(resetState);
 
-        final LauncherState fromState = animateActivity ? BACKGROUND_APP : OVERVIEW;
-        launcher.getStateManager().goToState(fromState, false);
+        launcher.getStateManager().goToState(BACKGROUND_APP, false);
         // Since all apps is not visible, we can safely reset the scroll position.
         // This ensures then the next swipe up to all-apps starts from scroll 0.
         launcher.getAppsView().reset(false /* animate */);
@@ -229,7 +156,7 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
 
             @Override
             public void createActivityInterface(long transitionLength) {
-                createActivityInterfaceInternal(launcher, fromState, transitionLength, callback);
+                callback.accept(createBackgroundToOverviewAnim(launcher, transitionLength));
                 // Creating the activity controller animation sometimes reapplies the launcher state
                 // (because we set the animation as the current state animation), so we reapply the
                 // attached state here as well to ensure recents is shown/hidden appropriately.
@@ -283,74 +210,45 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
         };
     }
 
-    private void createActivityInterfaceInternal(Launcher activity, LauncherState fromState,
-            long transitionLength, Consumer<AnimatorPlaybackController> callback) {
-        LauncherState endState = OVERVIEW;
-        if (fromState == endState) {
-            return;
-        }
+    private AnimatorPlaybackController createBackgroundToOverviewAnim(
+            Launcher activity, long transitionLength) {
 
-        AnimatorSet anim = new AnimatorSet();
+        PendingAnimation pa = new PendingAnimation(transitionLength * 2);
+
         if (!activity.getDeviceProfile().isVerticalBarLayout()
                 && SysUINavigationMode.getMode(activity) != Mode.NO_BUTTON) {
             // Don't animate the shelf when the mode is NO_BUTTON, because we update it atomically.
-            anim.play(activity.getStateManager().createStateElementAnimation(
+            pa.add(activity.getStateManager().createStateElementAnimation(
                     INDEX_SHELF_ANIM,
-                    fromState.getVerticalProgress(activity),
-                    endState.getVerticalProgress(activity)));
+                    BACKGROUND_APP.getVerticalProgress(activity),
+                    OVERVIEW.getVerticalProgress(activity)));
         }
 
         // Animate the blur and wallpaper zoom
-        DepthController depthController = getDepthController();
-        float fromDepthRatio = fromState.getDepth(activity);
-        float toDepthRatio = endState.getDepth(activity);
-        Animator depthAnimator = ObjectAnimator.ofFloat(depthController,
-                new ClampedDepthProperty(fromDepthRatio, toDepthRatio),
-                fromDepthRatio, toDepthRatio);
-        anim.play(depthAnimator);
+        float fromDepthRatio = BACKGROUND_APP.getDepth(activity);
+        float toDepthRatio = OVERVIEW.getDepth(activity);
+        pa.addFloat(getDepthController(), new ClampedDepthProperty(fromDepthRatio, toDepthRatio),
+                fromDepthRatio, toDepthRatio, LINEAR);
 
-        playScaleDownAnim(anim, activity, fromState, endState);
 
-        anim.setDuration(transitionLength * 2);
-        anim.setInterpolator(LINEAR);
-        AnimatorPlaybackController controller =
-                AnimatorPlaybackController.wrap(anim, transitionLength * 2);
+        //  Scale down recents from being full screen to being in overview.
+        RecentsView recentsView = activity.getOverviewPanel();
+        pa.addFloat(recentsView, SCALE_PROPERTY,
+                BACKGROUND_APP.getOverviewScaleAndOffset(activity)[0],
+                OVERVIEW.getOverviewScaleAndOffset(activity)[0],
+                LINEAR);
+        pa.addFloat(recentsView, FULLSCREEN_PROGRESS,
+                BACKGROUND_APP.getOverviewFullscreenProgress(),
+                OVERVIEW.getOverviewFullscreenProgress(),
+                LINEAR);
+
+        AnimatorPlaybackController controller = pa.createPlaybackController();
         activity.getStateManager().setCurrentUserControlledAnimation(controller);
 
         // Since we are changing the start position of the UI, reapply the state, at the end
-        controller.setEndAction(() -> {
-            activity.getStateManager().goToState(
-                    controller.getInterpolatedProgress() > 0.5 ? endState : fromState, false);
-        });
-        callback.accept(controller);
-    }
-
-    /**
-     * Scale down recents from the center task being full screen to being in overview.
-     */
-    private void playScaleDownAnim(AnimatorSet anim, Launcher launcher, LauncherState fromState,
-            LauncherState endState) {
-        RecentsView recentsView = launcher.getOverviewPanel();
-        if (recentsView.getCurrentPageTaskView() == null) {
-            return;
-        }
-
-        float fromFullscreenProgress = fromState.getOverviewFullscreenProgress();
-        float endFullscreenProgress = endState.getOverviewFullscreenProgress();
-
-        float fromScale = fromState.getOverviewScaleAndOffset(launcher)[0];
-        float endScale = endState.getOverviewScaleAndOffset(launcher)[0];
-
-        Animator scale = ObjectAnimator.ofFloat(recentsView, SCALE_PROPERTY, fromScale, endScale);
-        Animator applyFullscreenProgress = ObjectAnimator.ofFloat(recentsView,
-                RecentsView.FULLSCREEN_PROGRESS, fromFullscreenProgress, endFullscreenProgress);
-        anim.playTogether(scale, applyFullscreenProgress);
-
-        // Start pulling back when RecentsView scale is 0.75f, and let it go down to 0.5f.
-        float pullbackStartProgress = (0.75f - fromScale) / (endScale - fromScale);
-        float pullbackMaxProgress = (0.5f - fromScale) / (endScale - fromScale);
-        mSwipeUpPullbackStartAndMaxProgress = new Pair<>(
-                pullbackStartProgress, pullbackMaxProgress);
+        controller.setEndAction(() -> activity.getStateManager().goToState(
+                controller.getInterpolatedProgress() > 0.5 ? OVERVIEW : BACKGROUND_APP, false));
+        return controller;
     }
 
     @Override
@@ -383,6 +281,9 @@ public final class LauncherActivityInterface implements BaseActivityInterface<La
 
     @Override
     public boolean switchToRecentsIfVisible(Runnable onCompleteCallback) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.OVERIEW_NOT_ALLAPPS, "switchToRecentsIfVisible");
+        }
         Launcher launcher = getVisibleLauncher();
         if (launcher == null) {
             return false;

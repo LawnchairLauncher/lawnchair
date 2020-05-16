@@ -42,6 +42,7 @@ import com.android.launcher3.ui.TaplTestsLauncher3;
 import com.android.quickstep.NavigationModeSwitchRule.NavigationModeSwitch;
 import com.android.quickstep.views.RecentsView;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,6 +54,18 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     public void setUp() throws Exception {
         super.setUp();
         TaplTestsLauncher3.initialize(this);
+        executeOnLauncher(launcher -> {
+            RecentsView recentsView = launcher.getOverviewPanel();
+            recentsView.getPagedViewOrientedState().forceAllowRotationForTesting(true);
+        });
+    }
+
+    @After
+    public void tearDown() {
+        executeOnLauncher(launcher -> {
+            RecentsView recentsView = launcher.getOverviewPanel();
+            recentsView.getPagedViewOrientedState().forceAllowRotationForTesting(false);
+        });
     }
 
     private void startTestApps() throws Exception {

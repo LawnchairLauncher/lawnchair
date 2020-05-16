@@ -154,8 +154,7 @@ public class RecentTasksList extends TaskStackChangeListener {
      * Loads and creates a list of all the recent tasks.
      */
     @VisibleForTesting
-    ArrayList<Task> loadTasksInBackground(int numTasks,
-            boolean loadKeysOnly) {
+    ArrayList<Task> loadTasksInBackground(int numTasks, boolean loadKeysOnly) {
         int currentUserId = Process.myUserHandle().getIdentifier();
         ArrayList<Task> allTasks = new ArrayList<>();
         List<ActivityManager.RecentTaskInfo> rawTasks =
@@ -174,9 +173,7 @@ public class RecentTasksList extends TaskStackChangeListener {
             }
         };
 
-        int taskCount = rawTasks.size();
-        for (int i = 0; i < taskCount; i++) {
-            ActivityManager.RecentTaskInfo rawTask = rawTasks.get(i);
+        for (ActivityManager.RecentTaskInfo rawTask : rawTasks) {
             Task.TaskKey taskKey = new Task.TaskKey(rawTask);
             Task task;
             if (!loadKeysOnly) {

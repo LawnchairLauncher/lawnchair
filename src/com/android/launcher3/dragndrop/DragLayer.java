@@ -274,19 +274,29 @@ public class DragLayer extends BaseDragLayer<Launcher> {
         scale *= childScale;
         int toX = Math.round(coord[0]);
         int toY = Math.round(coord[1]);
+
         float toScale = scale;
 
         if (child instanceof DraggableView) {
+            // This code is fairly subtle. Please verify drag and drop is pixel-perfect in a number
+            // of scenarios before modifying (from all apps, from workspace, different grid-sizes,
+            // shortcuts from in and out of Launcher etc).
             DraggableView d = (DraggableView) child;
-            d.getVisualDragBounds(dragViewBounds);
+            Rect destRect = new Rect();
+            d.getWorkspaceVisualDragBounds(destRect);
+
+            // In most cases this additional scale factor should be a no-op (1). It mainly accounts
+            // for alternate grids where the source and destination icon sizes are different
+            toScale *= ((1f * destRect.width())
+                    / (dragView.getMeasuredWidth() - dragView.getBlurSizeOutline()));
 
             // This accounts for the offset of the DragView created by scaling it about its
             // center as it animates into place.
-            float scaleShiftX = dragView.getMeasuredWidth() * (1 - scale) / 2;
-            float scaleShiftY = dragView.getMeasuredHeight() * (1 - scale) / 2;
+            float scaleShiftX = dragView.getMeasuredWidth() * (1 - toScale) / 2;
+            float scaleShiftY = dragView.getMeasuredHeight() * (1 - toScale) / 2;
 
-            toX += scale * (dragViewBounds.left - dragView.getBlurSizeOutline() / 2) - scaleShiftX;
-            toY += scale * (dragViewBounds.top - dragView.getBlurSizeOutline() / 2) - scaleShiftY;
+            toX += scale * destRect.left - toScale * dragView.getBlurSizeOutline() / 2 - scaleShiftX;
+            toY += scale * destRect.top - toScale * dragView.getBlurSizeOutline() / 2 - scaleShiftY;
         }
 
         child.setVisibility(INVISIBLE);

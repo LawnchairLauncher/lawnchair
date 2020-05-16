@@ -87,6 +87,7 @@ import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragController.DragListener;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
+import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.FolderInfo.FolderListener;
@@ -1346,6 +1347,10 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         if (d.stateAnnouncer != null) {
             d.stateAnnouncer.completeAction(R.string.item_moved);
         }
+        StatsLogManager.newInstance(getContext())
+                .log(StatsLogManager.LauncherEvent.LAUNCHER_ITEM_DROP_COMPLETED,
+                    d.logInstanceId,
+                    d.dragInfo.buildProto(mInfo));
     }
 
     // This is used so the item doesn't immediately appear in the folder when added. In one case

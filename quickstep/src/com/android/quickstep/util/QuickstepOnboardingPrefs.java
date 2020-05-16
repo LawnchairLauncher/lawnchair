@@ -25,8 +25,8 @@ import android.content.SharedPreferences;
 
 import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.LauncherStateManager;
-import com.android.launcher3.LauncherStateManager.StateListener;
+import com.android.launcher3.statemanager.StateManager;
+import com.android.launcher3.statemanager.StateManager.StateListener;
 import com.android.launcher3.util.OnboardingPrefs;
 import com.android.quickstep.SysUINavigationMode;
 
@@ -35,23 +35,23 @@ import com.android.quickstep.SysUINavigationMode;
  */
 public class QuickstepOnboardingPrefs extends OnboardingPrefs<BaseQuickstepLauncher> {
 
-    public QuickstepOnboardingPrefs(BaseQuickstepLauncher launcher, SharedPreferences sharedPrefs,
-            LauncherStateManager stateManager) {
-        super(launcher, sharedPrefs, stateManager);
+    public QuickstepOnboardingPrefs(BaseQuickstepLauncher launcher, SharedPreferences sharedPrefs) {
+        super(launcher, sharedPrefs);
 
+        StateManager<LauncherState> stateManager = launcher.getStateManager();
         if (!getBoolean(HOME_BOUNCE_SEEN)) {
-            mStateManager.addStateListener(new StateListener() {
+            stateManager.addStateListener(new StateListener<LauncherState>() {
                 @Override
                 public void onStateTransitionComplete(LauncherState finalState) {
                     boolean swipeUpEnabled = SysUINavigationMode.INSTANCE
                             .get(mLauncher).getMode().hasGestures;
-                    LauncherState prevState = mStateManager.getLastState();
+                    LauncherState prevState = stateManager.getLastState();
 
                     if (((swipeUpEnabled && finalState == OVERVIEW) || (!swipeUpEnabled
                             && finalState == ALL_APPS && prevState == NORMAL) ||
                             hasReachedMaxCount(HOME_BOUNCE_COUNT))) {
                         mSharedPrefs.edit().putBoolean(HOME_BOUNCE_SEEN, true).apply();
-                        mStateManager.removeStateListener(this);
+                        stateManager.removeStateListener(this);
                     }
                 }
             });
@@ -65,27 +65,27 @@ public class QuickstepOnboardingPrefs extends OnboardingPrefs<BaseQuickstepLaunc
             mSharedPrefs.edit().putBoolean(SHELF_BOUNCE_SEEN, shelfBounceSeen).apply();
         }
         if (!shelfBounceSeen) {
-            mStateManager.addStateListener(new StateListener() {
+            stateManager.addStateListener(new StateListener<LauncherState>() {
                 @Override
                 public void onStateTransitionComplete(LauncherState finalState) {
-                    LauncherState prevState = mStateManager.getLastState();
+                    LauncherState prevState = stateManager.getLastState();
 
                     if ((finalState == ALL_APPS && prevState == OVERVIEW) ||
                             hasReachedMaxCount(SHELF_BOUNCE_COUNT)) {
                         mSharedPrefs.edit().putBoolean(SHELF_BOUNCE_SEEN, true).apply();
-                        mStateManager.removeStateListener(this);
+                        stateManager.removeStateListener(this);
                     }
                 }
             });
         }
 
         if (!hasReachedMaxCount(ALL_APPS_COUNT)) {
-            mStateManager.addStateListener(new StateListener() {
+            stateManager.addStateListener(new StateListener<LauncherState>() {
                 @Override
                 public void onStateTransitionComplete(LauncherState finalState) {
                     if (finalState == ALL_APPS) {
                         if (incrementEventCount(ALL_APPS_COUNT)) {
-                            mStateManager.removeStateListener(this);
+                            stateManager.removeStateListener(this);
                             mLauncher.getScrimView().updateDragHandleVisibility();
                         }
                     }
