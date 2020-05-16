@@ -19,8 +19,6 @@ import static android.view.Surface.ROTATION_0;
 
 import static com.android.launcher3.states.RotationHelper.deltaRotation;
 import static com.android.launcher3.touch.PagedOrientationHandler.MATRIX_POST_TRANSLATE;
-import static com.android.quickstep.util.AppWindowAnimationHelper.applySurfaceParams;
-import static com.android.quickstep.util.RecentsOrientedState.isFixedRotationTransformEnabled;
 import static com.android.quickstep.util.RecentsOrientedState.postDisplayRotation;
 import static com.android.systemui.shared.system.WindowManagerWrapper.WINDOWING_MODE_FULLSCREEN;
 
@@ -33,24 +31,20 @@ import android.graphics.RectF;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.quickstep.AnimatedFloat;
-import com.android.quickstep.RecentsAnimationTargets;
-import com.android.quickstep.util.AppWindowAnimationHelper.TargetAlphaProvider;
-import com.android.quickstep.util.AppWindowAnimationHelper.TransformParams;
 import com.android.quickstep.views.RecentsView.ScrollState;
 import com.android.quickstep.views.TaskThumbnailView.PreviewPositionHelper;
 import com.android.quickstep.views.TaskView;
 import com.android.quickstep.views.TaskView.FullscreenDrawParams;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
-import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams;
+import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams.Builder;
 
 /**
  * A utility class which emulates the layout behavior of TaskView and RecentsView
  */
-public class TaskViewSimulator {
+public class TaskViewSimulator implements TransformParams.BuilderProxy {
 
     private final Rect mTmpCropRect = new Rect();
     private final RectF mTempRectF = new RectF();
@@ -66,14 +60,11 @@ public class TaskViewSimulator {
 
     private final Matrix mMatrix = new Matrix();
     private RemoteAnimationTargetCompat mRunningTarget;
-    private RecentsAnimationTargets mAllTargets;
-
-    private TargetAlphaProvider mTaskAlphaCallback = (t, a) -> a;
 
     // Thumbnail view properties
     private final Rect mThumbnailPosition = new Rect();
     private final ThumbnailData mThumbnailData = new ThumbnailData();
-    private final PreviewPositionHelper mPositionHelper;
+    private final PreviewPositionHelper mPositionHelper = new PreviewPositionHelper();
     private final Matrix mInversePositionMatrix = new Matrix();
 
     // TaskView properties
@@ -93,12 +84,8 @@ public class TaskViewSimulator {
     public TaskViewSimulator(Context context, WindowSizeStrategy sizeStrategy) {
         mContext = context;
         mSizeStrategy = sizeStrategy;
-        mPositionHelper = new PreviewPositionHelper(context);
 
         mOrientationState = new RecentsOrientedState(context, sizeStrategy, i -> { });
-        // We do not need to attach listeners as the simulator is created just for the gesture
-        // duration, and any settings are unlikely to change during this
-        mOrientationState.initWithoutListeners();
 
         mCurrentFullscreenParams = new FullscreenDrawParams(context);
         mPageSpacing = context.getResources().getDimensionPixelSize(R.dimen.recents_page_spacing);
@@ -117,15 +104,7 @@ public class TaskViewSimulator {
      * @see com.android.quickstep.views.RecentsView#setLayoutRotation(int, int)
      */
     public void setLayoutRotation(int touchRotation, int displayRotation) {
-        int launcherRotation;
-        if (!mOrientationState.isMultipleOrientationSupportedByDevice()
-                || mOrientationState.isHomeRotationAllowed()) {
-            launcherRotation = displayRotation;
-        } else {
-            launcherRotation = ROTATION_0;
-        }
-
-        mOrientationState.update(touchRotation, displayRotation, launcherRotation);
+        mOrientationState.update(touchRotation, displayRotation);
         mLayoutValid = false;
     }
 
@@ -143,10 +122,8 @@ public class TaskViewSimulator {
     /**
      * Sets the targets which the simulator will control
      */
-    public void setPreview(
-            RemoteAnimationTargetCompat runningTarget, RecentsAnimationTargets allTargets) {
+    public void setPreview(RemoteAnimationTargetCompat runningTarget) {
         mRunningTarget = runningTarget;
-        mAllTargets = allTargets;
 
         mThumbnailData.insets.set(mRunningTarget.contentInsets);
         // TODO: What is this?
@@ -169,10 +146,40 @@ public class TaskViewSimulator {
     }
 
     /**
-     * Sets an alternate function which can be used to control the alpha
+     * Returns the current clipped/visible window bounds in the window coordinate space
      */
-    public void setTaskAlphaCallback(TargetAlphaProvider callback) {
-        mTaskAlphaCallback = callback;
+    public RectF getCurrentCropRect() {
+        // Crop rect is the inverse of thumbnail matrix
+        RectF insets = mCurrentFullscreenParams.mCurrentDrawnInsets;
+        mTempRectF.set(-insets.left, -insets.top,
+                mTaskRect.width() + insets.right, mTaskRect.height() + insets.bottom);
+        mInversePositionMatrix.mapRect(mTempRectF);
+        return mTempRectF;
+    }
+
+    public RecentsOrientedState getOrientationState() {
+        return mOrientationState;
+    }
+
+    /**
+     * Returns the current transform applied to the window
+     */
+    public Matrix getCurrentMatrix() {
+        return mMatrix;
+    }
+
+    /**
+     * Applies the rotation on the matrix to so that it maps from launcher coordinate space to
+     * window coordinate space.
+     */
+    public void applyWindowToHomeRotation(Matrix matrix) {
+        mMatrix.postTranslate(mDp.windowX, mDp.windowY);
+        postDisplayRotation(deltaRotation(
+                mOrientationState.getLauncherRotation(), mOrientationState.getDisplayRotation()),
+                mDp.widthPx, mDp.heightPx, matrix);
+        if (mRunningTarget != null) {
+            matrix.postTranslate(-mRunningTarget.position.x, -mRunningTarget.position.y);
+        }
     }
 
     /**
@@ -186,12 +193,12 @@ public class TaskViewSimulator {
             mLayoutValid = true;
 
             getFullScreenScale();
-            mThumbnailData.rotation = isFixedRotationTransformEnabled(mContext)
-                    ? mOrientationState.getDisplayRotation() : mPositionHelper.getCurrentRotation();
+            mThumbnailData.rotation = mOrientationState.getDisplayRotation();
 
-            mPositionHelper.updateThumbnailMatrix(mThumbnailPosition, mThumbnailData,
-                    mTaskRect.width(), mTaskRect.height(), mDp);
-
+            mPositionHelper.updateThumbnailMatrix(
+                    mThumbnailPosition, mThumbnailData,
+                    mTaskRect.width(), mTaskRect.height(),
+                    mDp, mOrientationState.getLauncherRotation());
             mPositionHelper.getMatrix().invert(mInversePositionMatrix);
 
             PagedOrientationHandler poh = mOrientationState.getOrientationHandler();
@@ -200,7 +207,6 @@ public class TaskViewSimulator {
             mScrollState.halfScreenSize = poh.getPrimaryValue(mDp.widthPx, mDp.heightPx) / 2;
             mScrollValid = false;
         }
-
 
         if (!mScrollValid) {
             mScrollValid = true;
@@ -233,11 +239,7 @@ public class TaskViewSimulator {
 
         // Apply recensView matrix
         mMatrix.postScale(recentsViewScale.value, recentsViewScale.value, mPivot.x, mPivot.y);
-        postDisplayRotation(deltaRotation(
-                mOrientationState.getLauncherRotation(), mOrientationState.getDisplayRotation()),
-                mDp.widthPx, mDp.heightPx, mMatrix);
-        mMatrix.postTranslate(mDp.windowX - mRunningTarget.position.x,
-                mDp.windowY - mRunningTarget.position.y);
+        applyWindowToHomeRotation(mMatrix);
 
         // Crop rect is the inverse of thumbnail matrix
         mTempRectF.set(-insets.left, -insets.top,
@@ -245,35 +247,18 @@ public class TaskViewSimulator {
         mInversePositionMatrix.mapRect(mTempRectF);
         mTempRectF.roundOut(mTmpCropRect);
 
-        SurfaceParams[] surfaceParams = new SurfaceParams[mAllTargets.unfilteredApps.length];
-        for (int i = 0; i < mAllTargets.unfilteredApps.length; i++) {
-            RemoteAnimationTargetCompat app = mAllTargets.unfilteredApps[i];
-            SurfaceParams.Builder builder = new SurfaceParams.Builder(app.leash);
+        params.applySurfaceParams(params.createSurfaceParams(this));
+    }
 
-            if (app.mode == mAllTargets.targetMode) {
-                float alpha = mTaskAlphaCallback.getAlpha(app, params.getTargetAlpha());
-                if (app.activityType != RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME) {
-                    // Fade out Assistant overlay.
-                    if (app.activityType == RemoteAnimationTargetCompat.ACTIVITY_TYPE_ASSISTANT
-                            && app.isNotInRecents) {
-                        alpha = Interpolators.ACCEL_2.getInterpolation(fullScreenProgress.value);
-                    }
-
-                    builder.withAlpha(alpha)
-                            .withMatrix(mMatrix)
-                            .withWindowCrop(mTmpCropRect)
-                            .withCornerRadius(getCurrentCornerRadius());
-                } else if (params.getTargetSet().hasRecents) {
-                    // If home has a different target then recents, reverse anim the home target.
-                    builder.withAlpha(fullScreenProgress.value * params.getTargetAlpha());
-                }
-            } else {
-                builder.withAlpha(1);
-            }
-            surfaceParams[i] = builder.build();
+    @Override
+    public void onBuildParams(Builder builder, RemoteAnimationTargetCompat app,
+            int targetMode, TransformParams params) {
+        if (app.mode == targetMode
+                && app.activityType != RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME) {
+            builder.withMatrix(mMatrix)
+                    .withWindowCrop(mTmpCropRect)
+                    .withCornerRadius(getCurrentCornerRadius());
         }
-
-        applySurfaceParams(params.getSyncTransactionApplier(), surfaceParams);
     }
 
     /**

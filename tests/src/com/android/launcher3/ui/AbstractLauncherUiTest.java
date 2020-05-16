@@ -37,6 +37,8 @@ import android.os.Debug;
 import android.os.Process;
 import android.os.RemoteException;
 import android.os.StrictMode;
+import android.os.UserHandle;
+import android.os.UserManager;
 import android.util.Log;
 
 import androidx.test.InstrumentationRegistry;
@@ -49,11 +51,11 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.common.WidgetUtils;
 import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.tapl.LauncherInstrumentation.ContainerType;
 import com.android.launcher3.tapl.TestHelpers;
@@ -276,6 +278,15 @@ public abstract class AbstractLauncherUiTest {
         mTargetContext = InstrumentationRegistry.getTargetContext();
         mTargetPackage = mTargetContext.getPackageName();
         mLauncherPid = mLauncher.getPid();
+
+        UserManager userManager = mTargetContext.getSystemService(UserManager.class);
+        if (userManager != null) {
+            for (UserHandle userHandle : userManager.getUserProfiles()) {
+                if (!userHandle.isSystem()) {
+                    mDevice.executeShellCommand("pm remove-user " + userHandle.getIdentifier());
+                }
+            }
+        }
     }
 
     @After
@@ -297,6 +308,7 @@ public abstract class AbstractLauncherUiTest {
             clearPackageData(mDevice.getLauncherPackageName());
             mLauncher.enableDebugTracing();
             mLauncherPid = mLauncher.getPid();
+            mLauncher.waitForLauncherInitialized();
         }
     }
 
@@ -525,7 +537,7 @@ public abstract class AbstractLauncherUiTest {
     private static void checkLauncherIntegrity(
             Launcher launcher, ContainerType expectedContainerType) {
         if (launcher != null) {
-            final LauncherStateManager stateManager = launcher.getStateManager();
+            final StateManager<LauncherState> stateManager = launcher.getStateManager();
             final LauncherState stableState = stateManager.getCurrentStableState();
 
             assertTrue("Stable state != state: " + stableState.getClass().getSimpleName() + ", "

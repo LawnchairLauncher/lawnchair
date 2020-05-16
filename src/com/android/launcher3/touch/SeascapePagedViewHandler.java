@@ -32,6 +32,11 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
     }
 
     @Override
+    public int getTaskDragDisplacementFactor(boolean isRtl) {
+        return isRtl ? -1 : 1;
+    }
+
+    @Override
     public boolean getRecentsRtlSetting(Resources resources) {
         return Utilities.isRtl(resources);
     }
@@ -60,8 +65,8 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
     }
 
     @Override
-    public boolean isGoingUp(float displacement) {
-        return displacement < 0;
+    public boolean isGoingUp(float displacement, boolean isRtl) {
+        return isRtl ? displacement > 0 : displacement < 0;
     }
 
     @Override
@@ -82,13 +87,8 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
     }
 
     @Override
-    public int getClearAllScrollOffset(View view, boolean isRtl) {
-        return (isRtl ? view.getPaddingTop() : - view.getPaddingBottom()) / 2;
-    }
-
-    @Override
     public void setPrimaryAndResetSecondaryTranslate(View view, float translation) {
         view.setTranslationX(0);
-        view.setTranslationY(-translation);
+        view.setTranslationY(translation);
     }
 }

@@ -12,6 +12,8 @@ package com.android.launcher3.util;
 public class LogConfig {
     // These are list of strings that can be used to replace TAGNAME.
 
+    public static final String STATSLOG = "StatsLog";
+
     /**
      * After this tag is turned on, whenever there is n user event, debug information is
      * printed out to logcat.
