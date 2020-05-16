@@ -31,6 +31,7 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.R;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
+import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.TaskOverlayFactory.OverlayUICallbacks;
 
 import java.lang.annotation.Retention;
@@ -140,5 +141,20 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
 
     public AlphaProperty getVisibilityAlpha() {
         return mMultiValueAlpha.getProperty(INDEX_VISIBILITY_ALPHA);
+    }
+
+    /** Updates vertical margins for different navigation mode. */
+    public void updateVerticalMarginForNavModeChange(Mode mode) {
+        int bottomMargin = 0;
+        if (mode == Mode.THREE_BUTTONS) {
+            bottomMargin = getResources()
+                    .getDimensionPixelSize(R.dimen.overview_actions_bottom_margin_three_button);
+        } else {
+            bottomMargin = getResources()
+                    .getDimensionPixelSize(R.dimen.overview_actions_bottom_margin_gesture);
+        }
+        LayoutParams params = (LayoutParams) getLayoutParams();
+        params.setMargins(
+                params.leftMargin, params.topMargin, params.rightMargin, bottomMargin);
     }
 }

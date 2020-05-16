@@ -428,7 +428,7 @@ public final class LauncherInstrumentation {
         if (sCheckingEvents) {
             sCheckingEvents = false;
             if (checkEvents) {
-                final String eventMismatch = sEventChecker.verify(0);
+                final String eventMismatch = sEventChecker.verify(0, false);
                 if (eventMismatch != null) {
                     message = message + ", having produced " + eventMismatch;
                 }
@@ -436,6 +436,13 @@ public final class LauncherInstrumentation {
                 sEventChecker.finishNoWait();
             }
         }
+        // b/156287114
+        try {
+            log("Input: " + mDevice.executeShellCommand("dumpsys input"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         log("Hierarchy dump for: " + message);
         dumpViewHierarchy();
 
@@ -542,32 +549,32 @@ public final class LauncherInstrumentation {
                     if (mDevice.isNaturalOrientation()) {
                         waitForLauncherObject(APPS_RES_ID);
                     } else {
-                        waitUntilGone(APPS_RES_ID);
+                        waitUntilLauncherObjectGone(APPS_RES_ID);
                     }
-                    waitUntilGone(OVERVIEW_RES_ID);
-                    waitUntilGone(WIDGETS_RES_ID);
+                    waitUntilLauncherObjectGone(OVERVIEW_RES_ID);
+                    waitUntilLauncherObjectGone(WIDGETS_RES_ID);
                     return waitForLauncherObject(WORKSPACE_RES_ID);
                 }
                 case WIDGETS: {
-                    waitUntilGone(WORKSPACE_RES_ID);
-                    waitUntilGone(APPS_RES_ID);
-                    waitUntilGone(OVERVIEW_RES_ID);
+                    waitUntilLauncherObjectGone(WORKSPACE_RES_ID);
+                    waitUntilLauncherObjectGone(APPS_RES_ID);
+                    waitUntilLauncherObjectGone(OVERVIEW_RES_ID);
                     return waitForLauncherObject(WIDGETS_RES_ID);
                 }
                 case ALL_APPS: {
-                    waitUntilGone(WORKSPACE_RES_ID);
-                    waitUntilGone(OVERVIEW_RES_ID);
-                    waitUntilGone(WIDGETS_RES_ID);
+                    waitUntilLauncherObjectGone(WORKSPACE_RES_ID);
+                    waitUntilLauncherObjectGone(OVERVIEW_RES_ID);
+                    waitUntilLauncherObjectGone(WIDGETS_RES_ID);
                     return waitForLauncherObject(APPS_RES_ID);
                 }
                 case OVERVIEW: {
                     if (hasAllAppsInOverview()) {
                         waitForLauncherObject(APPS_RES_ID);
                     } else {
-                        waitUntilGone(APPS_RES_ID);
+                        waitUntilLauncherObjectGone(APPS_RES_ID);
                     }
-                    waitUntilGone(WORKSPACE_RES_ID);
-                    waitUntilGone(WIDGETS_RES_ID);
+                    waitUntilLauncherObjectGone(WORKSPACE_RES_ID);
+                    waitUntilLauncherObjectGone(WIDGETS_RES_ID);
 
                     return waitForLauncherObject(OVERVIEW_RES_ID);
                 }
@@ -575,10 +582,10 @@ public final class LauncherInstrumentation {
                     return waitForFallbackLauncherObject(OVERVIEW_RES_ID);
                 }
                 case BACKGROUND: {
-                    waitUntilGone(WORKSPACE_RES_ID);
-                    waitUntilGone(APPS_RES_ID);
-                    waitUntilGone(OVERVIEW_RES_ID);
-                    waitUntilGone(WIDGETS_RES_ID);
+                    waitUntilLauncherObjectGone(WORKSPACE_RES_ID);
+                    waitUntilLauncherObjectGone(APPS_RES_ID);
+                    waitUntilLauncherObjectGone(OVERVIEW_RES_ID);
+                    waitUntilLauncherObjectGone(WIDGETS_RES_ID);
                     return null;
                 }
                 default:
@@ -625,6 +632,7 @@ public final class LauncherInstrumentation {
         mInstrumentation.getUiAutomation().setOnAccessibilityEventListener(
                 e -> Log.d("b/155926212", e.toString()));
         try (LauncherInstrumentation.Closable e = eventsCheck()) {
+            waitForLauncherInitialized();
             // Click home, then wait for any accessibility event, then wait until accessibility
             // events stop.
             // We need waiting for any accessibility event generated after pressing Home because
@@ -647,7 +655,7 @@ public final class LauncherInstrumentation {
                             false, GestureScope.INSIDE_TO_OUTSIDE);
                     try (LauncherInstrumentation.Closable c = addContextLayer(
                             "Swiped up from context menu to home")) {
-                        waitUntilGone(CONTEXT_MENU_RES_ID);
+                        waitUntilLauncherObjectGone(CONTEXT_MENU_RES_ID);
                     }
                 }
                 if (hasLauncherObject(WORKSPACE_RES_ID)) {
@@ -800,9 +808,17 @@ public final class LauncherInstrumentation {
         }
     }
 
-    void waitUntilGone(String resId) {
-        assertTrue("Unexpected launcher object visible: " + resId,
-                mDevice.wait(Until.gone(getLauncherObjectSelector(resId)),
+    void waitUntilLauncherObjectGone(String resId) {
+        waitUntilGoneBySelector(getLauncherObjectSelector(resId));
+    }
+
+    void waitUntilLauncherObjectGone(BySelector selector) {
+        waitUntilGoneBySelector(makeLauncherSelector(selector));
+    }
+
+    private void waitUntilGoneBySelector(BySelector launcherSelector) {
+        assertTrue("Unexpected launcher object visible: " + launcherSelector,
+                mDevice.wait(Until.gone(launcherSelector),
                         WAIT_TIME_MS));
     }
 
@@ -929,9 +945,9 @@ public final class LauncherInstrumentation {
         executeAndWaitForEvent(
                 command,
                 event -> isSwitchToStateEvent(event, expectedState, actualEvents),
-                () -> "Failed to receive an event for the state change: expected "
+                () -> "Failed to receive an event for the state change: expected ["
                         + TestProtocol.stateOrdinalToString(expectedState)
-                        + ", actual: " + eventListToString(actualEvents));
+                        + "], actual: " + eventListToString(actualEvents));
     }
 
     private boolean isSwitchToStateEvent(
@@ -1302,7 +1318,7 @@ public final class LauncherInstrumentation {
             if (sCheckingEvents) {
                 sCheckingEvents = false;
                 if (mCheckEventsForSuccessfulGestures) {
-                    final String message = sEventChecker.verify(WAIT_TIME_MS);
+                    final String message = sEventChecker.verify(WAIT_TIME_MS, true);
                     if (message != null) {
                         checkForAnomaly();
                         Assert.fail(formatSystemHealthMessage(

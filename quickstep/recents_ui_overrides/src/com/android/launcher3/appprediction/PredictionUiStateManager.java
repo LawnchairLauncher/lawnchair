@@ -32,7 +32,6 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.LauncherStateManager.StateListener;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsStore.OnUpdateListener;
@@ -41,6 +40,7 @@ import com.android.launcher3.icons.IconCache.ItemInfoUpdateReceiver;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.shortcuts.ShortcutKey;
+import com.android.launcher3.statemanager.StateManager.StateListener;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.MainThreadInitializedObject;
@@ -63,8 +63,8 @@ import java.util.stream.IntStream;
  * 4) Maintains the current active client id (for the predictions) and all updates are performed on
  * that client id.
  */
-public class PredictionUiStateManager implements StateListener, ItemInfoUpdateReceiver,
-        OnIDPChangeListener, OnUpdateListener {
+public class PredictionUiStateManager implements StateListener<LauncherState>,
+        ItemInfoUpdateReceiver, OnIDPChangeListener, OnUpdateListener {
 
     public static final String LAST_PREDICTION_ENABLED_STATE = "last_prediction_enabled_state";
 
