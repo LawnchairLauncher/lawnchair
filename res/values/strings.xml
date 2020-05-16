@@ -103,9 +103,9 @@
     <!-- Label for install drop target. [CHAR_LIMIT=20] -->
     <string name="install_drop_target_label">Install</string>
     <!-- Label for install dismiss prediction. -->
-    <string translatable="false" name="dismiss_prediction_label">Don\'t suggest app</string>
+    <string name="dismiss_prediction_label">Don\'t suggest app</string>
     <!-- Label for pinning predicted app. -->
-    <string name="pin_prediction" translatable="false">Pin Prediction</string>
+    <string name="pin_prediction">Pin Prediction</string>
 
 
     <!-- Permissions: -->
@@ -342,7 +342,7 @@
     <!--- heading shown when user opens work apps tab while work apps are paused -->
     <string name="work_apps_paused_title">Work profile is paused</string>
     <!--- body shown when user opens work apps tab while work apps are paused -->
-    <string name="work_apps_paused_body">Work apps can\’t send you notifications, use your battery, or access your location</string>
+    <string name="work_apps_paused_body">Work apps can\'t send you notifications, use your battery, or access your location</string>
     <!-- content description for paused work apps list -->
     <string name="work_apps_paused_content_description">Work profile is paused. Work apps can\’t send you notifications, use your battery, or access your location</string>
 

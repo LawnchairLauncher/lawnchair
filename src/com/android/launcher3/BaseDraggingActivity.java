@@ -16,7 +16,7 @@
 
 package com.android.launcher3;
 
-import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.APP_LAUNCH_TAP;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_APP_LAUNCH_TAP;
 import static com.android.launcher3.util.DefaultDisplay.CHANGE_ROTATION;
 
 import android.app.ActivityOptions;
@@ -183,8 +183,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
                         sourceContainer);
             }
             getUserEventDispatcher().logAppLaunch(v, intent, user);
-
-            getStatsLogManager().log(APP_LAUNCH_TAP, item == null ? null
+            getStatsLogManager().log(LAUNCHER_APP_LAUNCH_TAP, item == null ? null
                     : item.buildProto(null));
             return true;
         } catch (NullPointerException|ActivityNotFoundException|SecurityException e) {

@@ -218,7 +218,7 @@ public abstract class NavigableAppWidgetHostView extends AppWidgetHostView
     }
 
     @Override
-    public void getVisualDragBounds(Rect bounds) {
+    public void getWorkspaceVisualDragBounds(Rect bounds) {
         int width = (int) (getMeasuredWidth() * mScaleToFit);
         int height = (int) (getMeasuredHeight() * mScaleToFit);
 
