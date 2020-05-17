@@ -276,6 +276,8 @@ public class LauncherSwipeHandler extends BaseSwipeUpHandler<Launcher, RecentsVi
         if (mActivity == activity) {
             return true;
         }
+        mTaskViewSimulator.setLayoutRotation(mDeviceState.getCurrentActiveRotation(),
+                mDeviceState.getDisplayRotation());
         if (mActivity != null) {
             // The launcher may have been recreated as a result of device rotation.
             int oldState = mStateCallback.getState() & ~LAUNCHER_UI_STATES;
