@@ -27,14 +27,16 @@ import static com.android.launcher3.util.VibratorWrapper.OVERVIEW_HAPTIC;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.graphics.PointF;
+import android.util.Log;
 import android.view.MotionEvent;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
+import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.states.StateAnimationConfig;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.util.VibratorWrapper;
 import com.android.quickstep.util.StaggeredWorkspaceAnim;
@@ -63,6 +65,9 @@ public class NoButtonNavbarToOverviewTouchController extends FlingAndHoldTouchCo
     public NoButtonNavbarToOverviewTouchController(Launcher l) {
         super(l);
         mRecentsView = l.getOverviewPanel();
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.PAUSE_NOT_DETECTED, "NoButtonNavbarToOverviewTouchController.ctor");
+        }
     }
 
     @Override
@@ -146,6 +151,9 @@ public class NoButtonNavbarToOverviewTouchController extends FlingAndHoldTouchCo
 
     @Override
     public boolean onDrag(float yDisplacement, float xDisplacement, MotionEvent event) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.PAUSE_NOT_DETECTED, "NoButtonNavbarToOverviewTouchController");
+        }
         if (mMotionPauseDetector.isPaused()) {
             if (!mReachedOverview) {
                 mStartDisplacement.set(xDisplacement, yDisplacement);
@@ -165,7 +173,7 @@ public class NoButtonNavbarToOverviewTouchController extends FlingAndHoldTouchCo
     protected void goToOverviewOnDragEnd(float velocity) {
         float velocityDp = dpiFromPx(velocity);
         boolean isFling = Math.abs(velocityDp) > 1;
-        LauncherStateManager stateManager = mLauncher.getStateManager();
+        StateManager<LauncherState> stateManager = mLauncher.getStateManager();
         boolean goToHomeInsteadOfOverview = isFling;
         if (goToHomeInsteadOfOverview) {
             if (velocity > 0) {
