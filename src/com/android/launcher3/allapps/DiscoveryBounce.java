@@ -31,9 +31,9 @@ import android.view.MotionEvent;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.LauncherStateManager.StateListener;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.statemanager.StateManager.StateListener;
 import com.android.launcher3.util.OnboardingPrefs;
 
 /**
@@ -46,7 +46,7 @@ public class DiscoveryBounce extends AbstractFloatingView {
     private final Launcher mLauncher;
     private final Animator mDiscoBounceAnimation;
 
-    private final StateListener mStateListener = new StateListener() {
+    private final StateListener<LauncherState> mStateListener = new StateListener<LauncherState>() {
         @Override
         public void onStateTransitionStart(LauncherState toState) {
             handleClose(false);

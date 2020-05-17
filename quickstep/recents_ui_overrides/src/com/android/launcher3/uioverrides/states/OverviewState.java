@@ -15,36 +15,21 @@
  */
 package com.android.launcher3.uioverrides.states;
 
-import static android.view.View.VISIBLE;
-
-import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
-import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
-import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_2;
-import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_7;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_ACTIONS;
 import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
-import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_FADE;
-import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_SCALE;
-import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_TRANSLATE_X;
-import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_TRANSLATE_Y;
-import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_FADE;
-import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_SCALE;
-import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_TRANSLATE;
 import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
 import static com.android.quickstep.SysUINavigationMode.removeShelfFromOverview;
 
 import android.content.Context;
 import android.graphics.Rect;
 import android.view.View;
-import android.view.animation.Interpolator;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.Workspace;
-import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.quickstep.SysUINavigationMode;
@@ -56,9 +41,6 @@ import com.android.quickstep.views.TaskView;
  * Definition for overview state
  */
 public class OverviewState extends LauncherState {
-
-    // Scale recents takes before animating in
-    private static final float RECENTS_PREPARE_SCALE = 1.33f;
 
     protected static final Rect sTempRect = new Rect();
 
@@ -199,35 +181,6 @@ public class OverviewState extends LauncherState {
             taskView.launchTask(true);
         } else {
             super.onBackPressed(launcher);
-        }
-    }
-
-    @Override
-    public void prepareForAtomicAnimation(Launcher launcher, LauncherState fromState,
-            StateAnimationConfig config) {
-        if ((fromState == NORMAL || fromState == HINT_STATE) && this == OVERVIEW) {
-            if (SysUINavigationMode.getMode(launcher) == NO_BUTTON) {
-                config.setInterpolator(ANIM_WORKSPACE_SCALE,
-                        fromState == NORMAL ? ACCEL : OVERSHOOT_1_2);
-                config.setInterpolator(ANIM_WORKSPACE_TRANSLATE, ACCEL);
-            } else {
-                config.setInterpolator(ANIM_WORKSPACE_SCALE, OVERSHOOT_1_2);
-
-                // Scale up the recents, if it is not coming from the side
-                RecentsView overview = launcher.getOverviewPanel();
-                if (overview.getVisibility() != VISIBLE || overview.getContentAlpha() == 0) {
-                    SCALE_PROPERTY.set(overview, RECENTS_PREPARE_SCALE);
-                }
-            }
-            config.setInterpolator(ANIM_WORKSPACE_FADE, OVERSHOOT_1_2);
-            config.setInterpolator(ANIM_OVERVIEW_SCALE, OVERSHOOT_1_2);
-            Interpolator translationInterpolator = ENABLE_OVERVIEW_ACTIONS.get()
-                    && removeShelfFromOverview(launcher)
-                    ? OVERSHOOT_1_2
-                    : OVERSHOOT_1_7;
-            config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X, translationInterpolator);
-            config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_Y, translationInterpolator);
-            config.setInterpolator(ANIM_OVERVIEW_FADE, OVERSHOOT_1_2);
         }
     }
 

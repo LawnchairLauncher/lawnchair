@@ -30,7 +30,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.CancellationSignal;
 
-import com.android.launcher3.LauncherStateManager.StateHandler;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.WellbeingModel;
 import com.android.launcher3.popup.SystemShortcut;
@@ -38,6 +37,7 @@ import com.android.launcher3.proxy.ProxyActivityStarter;
 import com.android.launcher3.proxy.StartActivityParams;
 import com.android.launcher3.statehandlers.BackButtonAlphaHandler;
 import com.android.launcher3.statehandlers.DepthController;
+import com.android.launcher3.statemanager.StateManager.StateHandler;
 import com.android.launcher3.uioverrides.RecentsViewStateController;
 import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.util.UiThreadHelper;
@@ -92,6 +92,9 @@ public abstract class BaseQuickstepLauncher extends Launcher
     @Override
     public void onNavigationModeChanged(Mode newMode) {
         getDragLayer().recreateControllers();
+        if (mActionsView != null && isOverviewActionsEnabled()) {
+            mActionsView.updateVerticalMarginForNavModeChange(newMode);
+        }
     }
 
     @Override
@@ -150,6 +153,7 @@ public abstract class BaseQuickstepLauncher extends Launcher
 
     @Override
     protected void onDeferredResumed() {
+        super.onDeferredResumed();
         if (mPendingActivityRequestCode != -1 && isInState(NORMAL)) {
             // Remove any active ProxyActivityStarter task and send RESULT_CANCELED to Launcher.
             onActivityResult(mPendingActivityRequestCode, RESULT_CANCELED, null);
@@ -167,11 +171,16 @@ public abstract class BaseQuickstepLauncher extends Launcher
         mActionsView = findViewById(R.id.overview_actions_view);
         ((RecentsView) getOverviewPanel()).init(mActionsView);
 
-        if (FeatureFlags.ENABLE_OVERVIEW_ACTIONS.get() && removeShelfFromOverview(this)) {
+        if (isOverviewActionsEnabled()) {
             // Overview is above all other launcher elements, including qsb, so move it to the top.
             getOverviewPanel().bringToFront();
             mActionsView.bringToFront();
+            mActionsView.updateVerticalMarginForNavModeChange(SysUINavigationMode.getMode(this));
         }
+    }
+
+    private boolean isOverviewActionsEnabled() {
+        return FeatureFlags.ENABLE_OVERVIEW_ACTIONS.get() && removeShelfFromOverview(this);
     }
 
     public <T extends OverviewActionsView> T getActionsView() {
@@ -186,7 +195,7 @@ public abstract class BaseQuickstepLauncher extends Launcher
     }
 
     @Override
-    protected StateHandler[] createStateHandlers() {
+    protected StateHandler<LauncherState>[] createStateHandlers() {
         return new StateHandler[] {
                 getAllAppsController(),
                 getWorkspace(),
@@ -200,9 +209,8 @@ public abstract class BaseQuickstepLauncher extends Launcher
     }
 
     @Override
-    protected OnboardingPrefs createOnboardingPrefs(SharedPreferences sharedPrefs,
-            LauncherStateManager stateManager) {
-        return new QuickstepOnboardingPrefs(this, sharedPrefs, stateManager);
+    protected OnboardingPrefs createOnboardingPrefs(SharedPreferences sharedPrefs) {
+        return new QuickstepOnboardingPrefs(this, sharedPrefs);
     }
 
     @Override

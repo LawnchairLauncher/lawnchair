@@ -46,6 +46,7 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.touch.ItemLongClickListener;
+import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.views.DoubleShadowBubbleTextView;
 
 /**
@@ -65,6 +66,7 @@ public class PredictedAppIcon extends DoubleShadowBubbleTextView implements
     private final int mNormalizedIconRadius;
     private final BlurMaskFilter mShadowFilter;
     private int mPlateColor;
+    boolean mDrawForDrag = false;
 
 
     public PredictedAppIcon(Context context) {
@@ -188,6 +190,10 @@ public class PredictedAppIcon extends DoubleShadowBubbleTextView implements
     }
 
     private void drawEffect(Canvas canvas, boolean isBadged) {
+        // Don't draw ring effect if item is about to be dragged.
+        if (mDrawForDrag) {
+            return;
+        }
         mRingPath.reset();
         getShape().addToPath(mRingPath, getOutlineOffsetX(), getOutlineOffsetY(),
                 mNormalizedIconRadius);
@@ -206,6 +212,26 @@ public class PredictedAppIcon extends DoubleShadowBubbleTextView implements
         mIconRingPaint.setColor(mPlateColor);
         mIconRingPaint.setMaskFilter(null);
         canvas.drawPath(mRingPath, mIconRingPaint);
+    }
+
+    @Override
+    public void getSourceVisualDragBounds(Rect bounds) {
+        super.getSourceVisualDragBounds(bounds);
+        if (!mIsPinned) {
+            int internalSize = (int) (bounds.width() * RING_EFFECT_RATIO);
+            bounds.inset(internalSize, internalSize);
+        }
+    }
+
+    @Override
+    public SafeCloseable prepareDrawDragView() {
+        mDrawForDrag = true;
+        invalidate();
+        SafeCloseable r = super.prepareDrawDragView();
+        return () -> {
+            r.close();
+            mDrawForDrag = false;
+        };
     }
 
     /**

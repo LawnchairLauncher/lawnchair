@@ -22,7 +22,7 @@ import android.view.MotionEvent;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.LauncherStateManager;
+import com.android.launcher3.statemanager.StateManager.StateListener;
 import com.android.launcher3.views.WorkEduView;
 
 /**
@@ -32,7 +32,7 @@ public class LauncherAllAppsContainerView extends AllAppsContainerView {
 
     private final Launcher mLauncher;
 
-    private LauncherStateManager.StateListener mWorkTabListener;
+    private StateListener<LauncherState> mWorkTabListener;
 
     public LauncherAllAppsContainerView(Context context) {
         this(context, null);

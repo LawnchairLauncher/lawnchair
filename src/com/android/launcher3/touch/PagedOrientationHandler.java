@@ -75,8 +75,8 @@ public interface PagedOrientationHandler {
     int getScrollOffsetStart(View view, Rect insets);
     int getScrollOffsetEnd(View view, Rect insets);
     SingleAxisSwipeDetector.Direction getOppositeSwipeDirection();
-    int getShortEdgeLength(DeviceProfile dp);
     int getTaskDismissDirectionFactor();
+    int getTaskDragDisplacementFactor(boolean isRtl);
     ChildBounds getChildBounds(View child, int childStart, int pageCenter, boolean layoutChild);
     void setMaxScroll(AccessibilityEvent event, int maxScroll);
     boolean getRecentsRtlSetting(Resources resources);
@@ -91,7 +91,7 @@ public interface PagedOrientationHandler {
     void delegateScrollBy(PagedView pagedView, int unboundedScroll, int x, int y);
     void scrollerStartScroll(OverScroller scroller, int newPosition);
     void getCurveProperties(PagedView view, Rect insets, CurveProperties out);
-    boolean isGoingUp(float displacement);
+    boolean isGoingUp(float displacement, boolean isRtl);
     boolean isLayoutNaturalToLauncher();
     float getTaskMenuX(float x, View thumbnailView);
     float getTaskMenuY(float y, View thumbnailView);

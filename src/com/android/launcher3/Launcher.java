@@ -67,7 +67,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CancellationSignal;
-import android.os.Handler;
 import android.os.Parcelable;
 import android.os.Process;
 import android.os.StrictMode;
@@ -87,12 +86,12 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.OvershootInterpolator;
 import android.widget.Toast;
 
+import androidx.annotation.CallSuper;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.DropTarget.DragObject;
-import com.android.launcher3.LauncherStateManager.StateHandler;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsStore;
@@ -130,6 +129,10 @@ import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.qsb.QsbContainerView;
+import com.android.launcher3.statemanager.StateManager;
+import com.android.launcher3.statemanager.StateManager.StateHandler;
+import com.android.launcher3.statemanager.StateManager.StateListener;
+import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.states.RotationHelper;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.TestProtocol;
@@ -193,7 +196,7 @@ import java.util.stream.Stream;
 /**
  * Default launcher application.
  */
-public class Launcher extends BaseDraggingActivity implements LauncherExterns,
+public class Launcher extends StatefulActivity<LauncherState> implements LauncherExterns,
         Callbacks, InvariantDeviceProfile.OnIDPChangeListener, PluginListener<OverlayPlugin> {
     public static final String TAG = "Launcher";
 
@@ -240,7 +243,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     public static final String ON_RESUME_EVT = "Launcher.onResume";
     public static final String ON_NEW_INTENT_EVT = "Launcher.onNewIntent";
 
-    private LauncherStateManager mStateManager;
+    private StateManager<LauncherState> mStateManager;
 
     private static final int ON_ACTIVITY_RESULT_ANIMATION_DELAY = 500;
 
@@ -324,10 +327,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     private RotationHelper mRotationHelper;
 
-    final Handler mHandler = new Handler();
-    private final Runnable mHandleDeferredResume = this::handleDeferredResume;
-    private boolean mDeferredResumePending;
-
     private float mCurrentAssistantVisibility = 0f;
 
     protected LauncherOverlayManager mOverlayManager;
@@ -374,9 +373,9 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
         mDragController = new DragController(this);
         mAllAppsController = new AllAppsTransitionController(this);
-        mStateManager = new LauncherStateManager(this);
+        mStateManager = new StateManager<>(this, NORMAL);
 
-        mOnboardingPrefs = createOnboardingPrefs(mSharedPrefs, mStateManager);
+        mOnboardingPrefs = createOnboardingPrefs(mSharedPrefs);
 
         mAppWidgetManager = new WidgetManagerHelper(this);
         mAppWidgetHost = new LauncherAppWidgetHost(this,
@@ -439,7 +438,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
         mRotationHelper.initialize();
 
-        mStateManager.addStateListener(new LauncherStateManager.StateListener() {
+        mStateManager.addStateListener(new StateListener<LauncherState>() {
 
             @Override
             public void onStateTransitionComplete(LauncherState finalState) {
@@ -466,9 +465,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         return new LauncherOverlayManager() { };
     }
 
-    protected OnboardingPrefs createOnboardingPrefs(SharedPreferences sharedPrefs,
-            LauncherStateManager stateManager) {
-        return new OnboardingPrefs<>(this, sharedPrefs, stateManager);
+    protected OnboardingPrefs createOnboardingPrefs(SharedPreferences sharedPrefs) {
+        return new OnboardingPrefs<>(this, sharedPrefs);
     }
 
     public OnboardingPrefs getOnboardingPrefs() {
@@ -522,13 +520,9 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     }
 
     @Override
-    public void reapplyUi() {
-        reapplyUi(true /* cancelCurrentAnimation */);
-    }
-
     public void reapplyUi(boolean cancelCurrentAnimation) {
         getRootView().dispatchInsets();
-        getStateManager().reapplyState(cancelCurrentAnimation);
+        super.reapplyUi(cancelCurrentAnimation);
     }
 
     @Override
@@ -582,7 +576,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         return mFocusHandler;
     }
 
-    public LauncherStateManager getStateManager() {
+    @Override
+    public StateManager<LauncherState> getStateManager() {
         return mStateManager;
     }
 
@@ -889,11 +884,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     @Override
     protected void onStop() {
-        final boolean wasActive = isUserActive();
-        final LauncherState origState = getStateManager().getState();
-        final int origDragLayerChildCount = mDragLayer.getChildCount();
         super.onStop();
-
         if (mDeferOverlayCallbacks) {
             checkIfOverlayStillDeferred();
         } else {
@@ -901,28 +892,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         }
 
         logStopAndResume(Action.Command.STOP);
-
         mAppWidgetHost.setListenIfResumed(false);
-
         NotificationListener.removeNotificationsChangedListener();
-        getStateManager().moveToRestState();
-
-        // Workaround for b/78520668, explicitly trim memory once UI is hidden
-        onTrimMemory(TRIM_MEMORY_UI_HIDDEN);
-
-        if (wasActive) {
-            // The expected condition is that this activity is stopped because the device goes to
-            // sleep and the UI may have noticeable changes.
-            mDragLayer.post(() -> {
-                if ((!getStateManager().isInStableState(origState)
-                        // The drag layer may be animating (e.g. dismissing QSB).
-                        || mDragLayer.getAlpha() < 1
-                        // Maybe an ArrowPopup is closed.
-                        || mDragLayer.getChildCount() != origDragLayerChildCount)) {
-                    onUiChangedWhileSleeping();
-                }
-            });
-        }
     }
 
     @Override
@@ -938,35 +909,27 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         TraceHelper.INSTANCE.endSection(traceToken);
     }
 
-    private void handleDeferredResume() {
-        if (hasBeenResumed() && !mStateManager.getState().hasFlag(FLAG_NON_INTERACTIVE)) {
-            logStopAndResume(Action.Command.RESUME);
-            getUserEventDispatcher().startSession();
+    @Override
+    @CallSuper
+    protected void onDeferredResumed() {
+        logStopAndResume(Action.Command.RESUME);
+        getUserEventDispatcher().startSession();
 
-            AppLaunchTracker.INSTANCE.get(this).onReturnedToHome();
+        AppLaunchTracker.INSTANCE.get(this).onReturnedToHome();
 
-            // Process any items that were added while Launcher was away.
-            InstallShortcutReceiver.disableAndFlushInstallQueue(
-                    InstallShortcutReceiver.FLAG_ACTIVITY_PAUSED, this);
+        // Process any items that were added while Launcher was away.
+        InstallShortcutReceiver.disableAndFlushInstallQueue(
+                InstallShortcutReceiver.FLAG_ACTIVITY_PAUSED, this);
 
-            // Refresh shortcuts if the permission changed.
-            mModel.refreshShortcutsIfRequired();
+        // Refresh shortcuts if the permission changed.
+        mModel.refreshShortcutsIfRequired();
 
-            // Set the notification listener and fetch updated notifications when we resume
-            NotificationListener.setNotificationsChangedListener(mPopupDataProvider);
+        // Set the notification listener and fetch updated notifications when we resume
+        NotificationListener.setNotificationsChangedListener(mPopupDataProvider);
 
-            DiscoveryBounce.showForHomeIfNeeded(this);
-
-            onDeferredResumed();
-            addActivityFlags(ACTIVITY_STATE_DEFERRED_RESUMED);
-
-            mDeferredResumePending = false;
-        } else {
-            mDeferredResumePending = true;
-        }
+        DiscoveryBounce.showForHomeIfNeeded(this);
     }
 
-    protected void onDeferredResumed() { }
 
     private void logStopAndResume(int command) {
         int containerType = mStateManager.getState().containerType;
@@ -1015,10 +978,9 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         return mOverlayManager;
     }
 
+    @Override
     public void onStateSetStart(LauncherState state) {
-        if (mDeferredResumePending) {
-            handleDeferredResume();
-        }
+        super.onStateSetStart(state);
         if (mDeferOverlayCallbacks) {
             scheduleDeferredCheck();
         }
@@ -1041,7 +1003,9 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         mWorkspace.getPageIndicator().setShouldAutoHide(!state.hasFlag(FLAG_MULTI_PAGE));
     }
 
+    @Override
     public void onStateSetEnd(LauncherState state) {
+        super.onStateSetStart(state);
         getAppWidgetHost().setResumed(state == LauncherState.NORMAL);
         getWorkspace().setClipChildren(!state.hasFlag(FLAG_MULTI_PAGE));
 
@@ -1066,9 +1030,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         Object traceToken = TraceHelper.INSTANCE.beginSection(ON_RESUME_EVT,
                 TraceHelper.FLAG_UI_EVENT);
         super.onResume();
-
-        mHandler.removeCallbacks(mHandleDeferredResume);
-        Utilities.postAsyncCallback(mHandler, mHandleDeferredResume);
 
         if (!mOnResumeCallbacks.isEmpty()) {
             final ArrayList<OnResumeCallback> resumeCallbacks = new ArrayList<>(mOnResumeCallbacks);
@@ -1110,10 +1071,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                 mWorkspace.onOverlayScrollChanged(progress);
             }
         }
-    }
-
-    public boolean isInState(LauncherState state) {
-        return mStateManager.getState() == state;
     }
 
     /**
@@ -1353,8 +1310,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             }
         }
     };
-
-    protected void onUiChangedWhileSleeping() { }
 
     private void updateNotificationDots(Predicate<PackageUserKey> updatedDots) {
         mWorkspace.updateNotificationDots(updatedDots);
@@ -2720,7 +2675,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         return super.onKeyUp(keyCode, event);
     }
 
-    protected StateHandler[] createStateHandlers() {
+    protected StateHandler<LauncherState>[] createStateHandlers() {
         return new StateHandler[] { getAllAppsController(), getWorkspace() };
     }
 

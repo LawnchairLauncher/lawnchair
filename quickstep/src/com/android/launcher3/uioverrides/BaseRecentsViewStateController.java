@@ -36,9 +36,9 @@ import androidx.annotation.NonNull;
 
 import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.LauncherStateManager.StateHandler;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.graphics.OverviewScrim;
+import com.android.launcher3.statemanager.StateManager.StateHandler;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.quickstep.views.RecentsView;
 
@@ -49,7 +49,7 @@ import com.android.quickstep.views.RecentsView;
  * @param <T> the recents view
  */
 public abstract class BaseRecentsViewStateController<T extends RecentsView>
-        implements StateHandler {
+        implements StateHandler<LauncherState> {
     protected final T mRecentsView;
     protected final BaseQuickstepLauncher mLauncher;
 
