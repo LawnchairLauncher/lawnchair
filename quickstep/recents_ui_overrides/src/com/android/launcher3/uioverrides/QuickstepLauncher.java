@@ -217,7 +217,9 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
                 break;
             }
             case OVERVIEW_STATE_ORDINAL: {
-                DiscoveryBounce.showForOverviewIfNeeded(this);
+                RecentsView recentsView = getOverviewPanel();
+                DiscoveryBounce.showForOverviewIfNeeded(this,
+                        recentsView.getPagedOrientationHandler());
                 RecentsView rv = getOverviewPanel();
                 sendCustomAccessibilityEvent(
                         rv.getPageAt(rv.getCurrentPage()), TYPE_VIEW_FOCUSED, null);
