@@ -18,6 +18,7 @@ package com.android.quickstep.inputconsumers;
 import static android.view.MotionEvent.ACTION_CANCEL;
 import static android.view.MotionEvent.ACTION_POINTER_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
+
 import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.Utilities.squaredTouchSlop;
 import static com.android.quickstep.LauncherSwipeHandler.MIN_PROGRESS_FOR_OVERVIEW;
@@ -26,21 +27,22 @@ import static com.android.quickstep.util.ActiveGestureLog.INTENT_EXTRA_LOG_TRACE
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.ValueAnimator;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.PointF;
-import android.graphics.Rect;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
+
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.DefaultDisplay;
+import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.InputConsumer;
 import com.android.quickstep.MultiStateCallback;
@@ -49,18 +51,19 @@ import com.android.quickstep.RecentsAnimationController;
 import com.android.quickstep.RecentsAnimationDeviceState;
 import com.android.quickstep.RecentsAnimationTargets;
 import com.android.quickstep.TaskAnimationManager;
-import com.android.quickstep.util.AppWindowAnimationHelper;
 import com.android.quickstep.util.TransformParams;
+import com.android.quickstep.util.TransformParams.BuilderProxy;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.InputMonitorCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
+import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams.Builder;
 
 /**
  * A dummy input consumer used when the device is still locked, e.g. from secure camera.
  */
 public class DeviceLockedInputConsumer implements InputConsumer,
-        RecentsAnimationCallbacks.RecentsAnimationListener {
+        RecentsAnimationCallbacks.RecentsAnimationListener, BuilderProxy {
 
     private static final String[] STATE_NAMES = DEBUG_STATES ? new String[2] : null;
     private static int getFlagForIndex(int index, String name) {
@@ -83,19 +86,20 @@ public class DeviceLockedInputConsumer implements InputConsumer,
     private final InputMonitorCompat mInputMonitorCompat;
 
     private final PointF mTouchDown = new PointF();
-    private final AppWindowAnimationHelper mAppWindowAnimationHelper;
     private final TransformParams mTransformParams;
-    private final Point mDisplaySize;
     private final MultiStateCallback mStateCallback;
 
+    private final Point mDisplaySize;
+    private final Matrix mMatrix = new Matrix();
+    private final float mMaxTranslationY;
+
     private VelocityTracker mVelocityTracker;
-    private float mProgress;
+    private final AnimatedFloat mProgress = new AnimatedFloat(this::applyTransform);
 
     private boolean mThresholdCrossed = false;
     private boolean mHomeLaunched = false;
 
     private RecentsAnimationController mRecentsAnimationController;
-    private RecentsAnimationTargets mRecentsAnimationTargets;
 
     public DeviceLockedInputConsumer(Context context, RecentsAnimationDeviceState deviceState,
             TaskAnimationManager taskAnimationManager, GestureState gestureState,
@@ -105,9 +109,10 @@ public class DeviceLockedInputConsumer implements InputConsumer,
         mTaskAnimationManager = taskAnimationManager;
         mGestureState = gestureState;
         mTouchSlopSquared = squaredTouchSlop(context);
-        mAppWindowAnimationHelper = new AppWindowAnimationHelper(context);
         mTransformParams = new TransformParams();
         mInputMonitorCompat = inputMonitorCompat;
+        mMaxTranslationY = context.getResources().getDimensionPixelSize(
+                R.dimen.device_locked_y_offset);
 
         // Do not use DeviceProfile as the user data might be locked
         mDisplaySize = DefaultDisplay.INSTANCE.get(context).getInfo().realSize;
@@ -158,9 +163,7 @@ public class DeviceLockedInputConsumer implements InputConsumer,
                     }
                 } else {
                     float dy = Math.max(mTouchDown.y - y, 0);
-                    mProgress = dy / mDisplaySize.y;
-                    mTransformParams.setProgress(mProgress);
-                    mAppWindowAnimationHelper.applyTransform(mTransformParams);
+                    mProgress.updateValue(dy / mDisplaySize.y);
                 }
                 break;
             }
@@ -189,20 +192,13 @@ public class DeviceLockedInputConsumer implements InputConsumer,
                 // Is fling
                 dismissTask = velocityY < 0;
             } else {
-                dismissTask = mProgress >= (1 - MIN_PROGRESS_FOR_OVERVIEW);
+                dismissTask = mProgress.value >= (1 - MIN_PROGRESS_FOR_OVERVIEW);
             }
 
             // Animate back to fullscreen before finishing
-            ValueAnimator animator = ValueAnimator.ofFloat(mTransformParams.getProgress(), 0f);
+            ObjectAnimator animator = mProgress.animateToValue(mProgress.value, 0);
             animator.setDuration(100);
             animator.setInterpolator(Interpolators.ACCEL);
-            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                    mTransformParams.setProgress((float) valueAnimator.getAnimatedValue());
-                    mAppWindowAnimationHelper.applyTransform(mTransformParams);
-                }
-            });
             animator.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
@@ -239,29 +235,15 @@ public class DeviceLockedInputConsumer implements InputConsumer,
     public void onRecentsAnimationStart(RecentsAnimationController controller,
             RecentsAnimationTargets targets) {
         mRecentsAnimationController = controller;
-        mRecentsAnimationTargets = targets;
-
-        Rect displaySize = new Rect(0, 0, mDisplaySize.x, mDisplaySize.y);
-        RemoteAnimationTargetCompat targetCompat = targets.findTask(
-                mGestureState.getRunningTaskId());
-        if (targetCompat != null) {
-            mAppWindowAnimationHelper.updateSource(displaySize, targetCompat);
-        }
-
-        // Offset the surface slightly
-        displaySize.offset(0, mContext.getResources().getDimensionPixelSize(
-                R.dimen.device_locked_y_offset));
-        mTransformParams.setTargetSet(mRecentsAnimationTargets);
-        mAppWindowAnimationHelper.updateTargetRect(displaySize);
-        mAppWindowAnimationHelper.applyTransform(mTransformParams);
-
+        mTransformParams.setTargetSet(targets);
+        applyTransform();
         mStateCallback.setState(STATE_TARGET_RECEIVED);
     }
 
     @Override
     public void onRecentsAnimationCanceled(ThumbnailData thumbnailData) {
         mRecentsAnimationController = null;
-        mRecentsAnimationTargets = null;
+        mTransformParams.setTargetSet(null);
     }
 
     private void endRemoteAnimation() {
@@ -271,6 +253,20 @@ public class DeviceLockedInputConsumer implements InputConsumer,
             mRecentsAnimationController.finishController(
                     false /* toRecents */, null /* callback */, false /* sendUserLeaveHint */);
         }
+    }
+
+    private void applyTransform() {
+        mTransformParams.setProgress(mProgress.value);
+        if (mTransformParams.getTargetSet() != null) {
+            mTransformParams.applySurfaceParams(mTransformParams.createSurfaceParams(this));
+        }
+    }
+
+    @Override
+    public void onBuildTargetParams(
+            Builder builder, RemoteAnimationTargetCompat app, TransformParams params) {
+        mMatrix.setTranslate(0, mProgress.value * mMaxTranslationY);
+        builder.withMatrix(mMatrix);
     }
 
     @Override
