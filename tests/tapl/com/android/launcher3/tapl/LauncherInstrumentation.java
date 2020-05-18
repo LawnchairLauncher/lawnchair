@@ -632,8 +632,6 @@ public final class LauncherInstrumentation {
      * @return the Workspace object.
      */
     public Workspace pressHome() {
-        mInstrumentation.getUiAutomation().setOnAccessibilityEventListener(
-                e -> Log.d("b/155926212", e.toString()));
         try (LauncherInstrumentation.Closable e = eventsCheck()) {
             waitForLauncherInitialized();
             // Click home, then wait for any accessibility event, then wait until accessibility
@@ -642,9 +640,7 @@ public final class LauncherInstrumentation {
             // otherwise waitForIdle may return immediately in case when there was a big enough
             // pause in accessibility events prior to pressing Home.
             final String action;
-            Log.d("b/155926212", "Before isLauncherVisible()");
             final boolean launcherWasVisible = isLauncherVisible();
-            Log.d("b/155926212", "After isLauncherVisible(): " + launcherWasVisible);
             if (getNavigationModel() == NavigationModel.ZERO_BUTTON) {
                 checkForAnomaly();
 
@@ -700,8 +696,6 @@ public final class LauncherInstrumentation {
                     "performed action to switch to Home - " + action)) {
                 return getWorkspace();
             }
-        } finally {
-            mInstrumentation.getUiAutomation().setOnAccessibilityEventListener(null);
         }
     }
 
