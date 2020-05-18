@@ -20,6 +20,7 @@ import static com.android.launcher3.touch.PagedOrientationHandler.MATRIX_POST_TR
 import static com.android.quickstep.util.RecentsOrientedState.postDisplayRotation;
 import static com.android.systemui.shared.system.WindowManagerWrapper.WINDOWING_MODE_FULLSCREEN;
 
+import android.animation.TimeInterpolator;
 import android.content.Context;
 import android.graphics.Matrix;
 import android.graphics.PointF;
@@ -29,6 +30,7 @@ import android.graphics.RectF;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.BaseActivityInterface;
@@ -145,6 +147,14 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
     }
 
     /**
+     * Adds animation for all the components corresponding to transition from an app to overview
+     */
+    public void addAppToOverviewAnim(PendingAnimation pa, TimeInterpolator interpolator) {
+        pa.addFloat(fullScreenProgress, AnimatedFloat.VALUE, 1, 0, interpolator);
+        pa.addFloat(recentsViewScale, AnimatedFloat.VALUE, getFullScreenScale(), 1, interpolator);
+    }
+
+    /**
      * Returns the current clipped/visible window bounds in the window coordinate space
      */
     public RectF getCurrentCropRect() {
@@ -250,14 +260,11 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
     }
 
     @Override
-    public void onBuildParams(Builder builder, RemoteAnimationTargetCompat app,
-            int targetMode, TransformParams params) {
-        if (app.mode == targetMode
-                && app.activityType != RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME) {
-            builder.withMatrix(mMatrix)
-                    .withWindowCrop(mTmpCropRect)
-                    .withCornerRadius(getCurrentCornerRadius());
-        }
+    public void onBuildTargetParams(
+            Builder builder, RemoteAnimationTargetCompat app, TransformParams params) {
+        builder.withMatrix(mMatrix)
+                .withWindowCrop(mTmpCropRect)
+                .withCornerRadius(getCurrentCornerRadius());
     }
 
     /**
