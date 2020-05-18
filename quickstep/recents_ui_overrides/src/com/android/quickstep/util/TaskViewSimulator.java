@@ -131,8 +131,6 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
         mThumbnailData.windowingMode = WINDOWING_MODE_FULLSCREEN;
 
         mThumbnailPosition.set(runningTarget.screenSpaceBounds);
-        // TODO: Should sourceContainerBounds already have this offset?
-        mThumbnailPosition.offset(-mRunningTarget.position.x, -mRunningTarget.position.y);
         mLayoutValid = false;
     }
 
