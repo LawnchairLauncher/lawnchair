@@ -23,7 +23,7 @@ import static com.android.launcher3.QuickstepAppTransitionManagerImpl.STATUS_BAR
 import static com.android.launcher3.QuickstepAppTransitionManagerImpl.STATUS_BAR_TRANSITION_PRE_DELAY;
 import static com.android.launcher3.testing.TestProtocol.OVERVIEW_STATE_ORDINAL;
 import static com.android.quickstep.TaskUtils.taskIsATargetWithMode;
-import static com.android.quickstep.TaskViewUtils.getRecentsWindowAnimator;
+import static com.android.quickstep.TaskViewUtils.createRecentsWindowAnimator;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
 
 import android.animation.Animator;
@@ -44,6 +44,7 @@ import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAnimationRunner;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.Interpolators;
+import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.statemanager.StateManager.AtomicAnimationFactory;
@@ -225,9 +226,10 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
             RemoteAnimationTargetCompat[] wallpaperTargets) {
         AnimatorSet target = new AnimatorSet();
         boolean activityClosing = taskIsATargetWithMode(appTargets, getTaskId(), MODE_CLOSING);
-        Animator recentsAnimator = getRecentsWindowAnimator(taskView, !activityClosing, appTargets,
-                wallpaperTargets, null /* depthController */);
-        target.play(recentsAnimator.setDuration(RECENTS_LAUNCH_DURATION));
+        PendingAnimation pa = new PendingAnimation(RECENTS_LAUNCH_DURATION);
+        createRecentsWindowAnimator(taskView, !activityClosing, appTargets,
+                wallpaperTargets, null /* depthController */, pa);
+        target.play(pa.buildAnim());
 
         // Found a visible recents task that matches the opening app, lets launch the app from there
         if (activityClosing) {
