@@ -116,7 +116,8 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
         if (mDp == null) {
             return 1;
         }
-        mSizeStrategy.calculateTaskSize(mContext, mDp, mTaskRect);
+        mSizeStrategy.calculateTaskSize(mContext, mDp, mTaskRect,
+                mOrientationState.getOrientationHandler());
         return mOrientationState.getFullScreenScaleAndPivot(mTaskRect, mDp, mPivot);
     }
 

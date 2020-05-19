@@ -33,6 +33,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
+import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.quickstep.fallback.FallbackRecentsView;
 import com.android.quickstep.fallback.RecentsState;
@@ -58,8 +59,9 @@ public final class FallbackActivityInterface extends
     }
 
     @Override
-    public int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context, Rect outRect) {
-        calculateTaskSize(context, dp, outRect);
+    public int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context, Rect outRect,
+            PagedOrientationHandler orientationHandler) {
+        calculateTaskSize(context, dp, outRect, orientationHandler);
         if (dp.isVerticalBarLayout()
                 && SysUINavigationMode.INSTANCE.get(context).getMode() != NO_BUTTON) {
             Rect targetInsets = dp.getInsets();
@@ -100,7 +102,8 @@ public final class FallbackActivityInterface extends
                     rv.setContentAlpha(1);
                 }
                 createActivityInterface(getSwipeUpDestinationAndLength(
-                        activity.getDeviceProfile(), activity, new Rect()));
+                        activity.getDeviceProfile(), activity, new Rect(),
+                        rv.getPagedOrientationHandler()));
             }
 
             @Override
@@ -193,7 +196,8 @@ public final class FallbackActivityInterface extends
     }
 
     @Override
-    protected float getExtraSpace(Context context, DeviceProfile dp) {
+    protected float getExtraSpace(Context context, DeviceProfile dp,
+            PagedOrientationHandler orientationHandler) {
         return showOverviewActions(context)
                 ? context.getResources().getDimensionPixelSize(R.dimen.overview_actions_height)
                 : 0;

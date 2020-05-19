@@ -17,6 +17,7 @@ package com.android.quickstep;
 
 import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_ACTIONS;
 import static com.android.quickstep.SysUINavigationMode.getMode;
+import static com.android.quickstep.SysUINavigationMode.hideShelfInTwoButtonLandscape;
 import static com.android.quickstep.SysUINavigationMode.removeShelfFromOverview;
 
 import android.annotation.TargetApi;
@@ -37,6 +38,7 @@ import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.statemanager.StatefulActivity;
+import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.WindowBounds;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.util.ActivityInitListener;
@@ -73,7 +75,8 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
     }
 
     public abstract int getSwipeUpDestinationAndLength(
-            DeviceProfile dp, Context context, Rect outRect);
+            DeviceProfile dp, Context context, Rect outRect,
+            PagedOrientationHandler orientationHandler);
 
     public void onSwipeUpToRecentsComplete() {
         // Re apply state in case we did something funky during the transition.
@@ -184,16 +187,21 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
     /**
      * Calculates the taskView size for the provided device configuration
      */
-    public final void calculateTaskSize(Context context, DeviceProfile dp, Rect outRect) {
-        calculateTaskSize(context, dp, getExtraSpace(context, dp), outRect);
+    public final void calculateTaskSize(Context context, DeviceProfile dp, Rect outRect,
+            PagedOrientationHandler orientedState) {
+        calculateTaskSize(context, dp, getExtraSpace(context, dp, orientedState),
+                outRect, orientedState);
     }
 
-    protected abstract float getExtraSpace(Context context, DeviceProfile dp);
+    protected abstract float getExtraSpace(Context context, DeviceProfile dp,
+            PagedOrientationHandler orientedState);
 
     private void calculateTaskSize(
-            Context context, DeviceProfile dp, float extraVerticalSpace, Rect outRect) {
+            Context context, DeviceProfile dp, float extraVerticalSpace, Rect outRect,
+            PagedOrientationHandler orientationHandler) {
         Resources res = context.getResources();
-        final boolean showLargeTaskSize = showOverviewActions(context);
+        final boolean showLargeTaskSize = showOverviewActions(context) ||
+                hideShelfInTwoButtonLandscape(context, orientationHandler);
 
         final int paddingResId;
         if (dp.isMultiWindowMode) {

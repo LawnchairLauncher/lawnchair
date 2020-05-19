@@ -51,6 +51,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TouchInteractionService;
 import com.android.quickstep.util.LayoutUtils;
+import com.android.quickstep.views.RecentsView;
 
 /**
  * Touch controller for handling various state transitions in portrait UI.
@@ -244,8 +245,9 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
             mCurrentAnimation = mPendingAnimation.createPlaybackController()
                     .setOnCancelRunnable(onCancelRunnable);
             mLauncher.getStateManager().setCurrentUserControlledAnimation(mCurrentAnimation);
+            RecentsView recentsView = mLauncher.getOverviewPanel();
             totalShift = LayoutUtils.getShelfTrackingDistance(mLauncher,
-                    mLauncher.getDeviceProfile());
+                    mLauncher.getDeviceProfile(), recentsView.getPagedOrientationHandler());
         } else {
             mCurrentAnimation = mLauncher.getStateManager()
                     .createAnimationToNewWorkspace(mToState, config)

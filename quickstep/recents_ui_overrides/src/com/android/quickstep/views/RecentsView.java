@@ -827,6 +827,10 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     @Override
     public void setInsets(Rect insets) {
         mInsets.set(insets);
+        resetPaddingFromTaskSize();
+    }
+
+    private void resetPaddingFromTaskSize() {
         DeviceProfile dp = mActivity.getDeviceProfile();
         mOrientationState.setMultiWindowMode(dp.isMultiWindowMode);
         getTaskSize(mTempRect);
@@ -840,7 +844,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     }
 
     public void getTaskSize(Rect outRect) {
-        mSizeStrategy.calculateTaskSize(mActivity, mActivity.getDeviceProfile(), outRect);
+        mSizeStrategy.calculateTaskSize(mActivity, mActivity.getDeviceProfile(), outRect,
+                mOrientationHandler);
     }
 
     /** Gets the task size for modal state. */
@@ -1618,6 +1623,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             mActivity.getDragLayer().recreateControllers();
             mActionsView.updateHiddenFlags(HIDDEN_NON_ZERO_ROTATION,
                     touchRotation != 0 || mOrientationState.getLauncherRotation() != ROTATION_0);
+            resetPaddingFromTaskSize();
             requestLayout();
         }
     }
