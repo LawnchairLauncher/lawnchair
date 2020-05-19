@@ -201,7 +201,7 @@ public abstract class AbstractStateChangeTouchController
         mToState = newToState;
         if (TestProtocol.sDebugTracing) {
             Log.d(TestProtocol.OVERIEW_NOT_ALLAPPS, "reinitCurrentAnimation: "
-                    + newToState.ordinal);
+                    + newToState.ordinal + " " + getClass().getSimpleName());
         }
 
         mStartProgress = 0;
