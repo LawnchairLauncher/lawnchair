@@ -44,6 +44,7 @@ import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.appprediction.PredictionUiStateManager;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statehandlers.DepthController.ClampedDepthProperty;
+import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
@@ -223,6 +224,27 @@ public final class LauncherActivityInterface extends
         return true;
     }
 
+
+    @Override
+    public void onExitOverview(RecentsAnimationDeviceState deviceState, Runnable exitRunnable) {
+        final StateManager<LauncherState> stateManager = getCreatedActivity().getStateManager();
+        stateManager.addStateListener(
+                new StateManager.StateListener<LauncherState>() {
+                    @Override
+                    public void onStateTransitionComplete(LauncherState toState) {
+                        // Are we going from Recents to Workspace?
+                        if (toState == LauncherState.NORMAL) {
+                            exitRunnable.run();
+
+                            // reset layout on swipe to home
+                            RecentsView recentsView = getCreatedActivity().getOverviewPanel();
+                            recentsView.setLayoutRotation(deviceState.getCurrentActiveRotation(),
+                                    deviceState.getDisplayRotation());
+                            stateManager.removeStateListener(this);
+                        }
+                    }
+                });
+    }
 
     @Override
     public Rect getOverviewWindowBounds(Rect homeBounds, RemoteAnimationTargetCompat target) {

@@ -779,12 +779,6 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
             }
         }
 
-        if (endTarget == RECENTS || endTarget == HOME) {
-            // Since we're now done quickStepping, we want to only listen for touch events
-            // for the main orientation's nav bar, instead of multiple
-            mDeviceState.enableMultipleRegions(false);
-        }
-
         if (mDeviceState.isOverviewDisabled() && (endTarget == RECENTS || endTarget == LAST_TASK)) {
             return LAST_TASK;
         }
@@ -1242,6 +1236,7 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
         }
         ActiveGestureLog.INSTANCE.addLog("finishRecentsAnimation", true);
         doLogGesture(HOME);
+        mDeviceState.enableMultipleRegions(false);
     }
 
     protected abstract void finishRecentsControllerToHome(Runnable callback);
@@ -1257,6 +1252,7 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
 
         SystemUiProxy.INSTANCE.get(mContext).onOverviewShown(false, TAG);
         doLogGesture(RECENTS);
+        mDeviceState.onSwipeUpToOverview(mActivityInterface);
         reset();
     }
 
