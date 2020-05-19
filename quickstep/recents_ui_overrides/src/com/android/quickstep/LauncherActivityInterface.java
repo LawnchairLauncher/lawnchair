@@ -21,13 +21,12 @@ import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.anim.Interpolators.INSTANT;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_ACTIONS;
 import static com.android.launcher3.uioverrides.states.QuickstepAtomicAnimationFactory.INDEX_RECENTS_FADE_ANIM;
 import static com.android.launcher3.uioverrides.states.QuickstepAtomicAnimationFactory.INDEX_RECENTS_TRANSLATE_X_ANIM;
 import static com.android.launcher3.uioverrides.states.QuickstepAtomicAnimationFactory.INDEX_SHELF_ANIM;
 import static com.android.quickstep.LauncherSwipeHandler.RECENTS_ATTACH_DURATION;
 import static com.android.quickstep.SysUINavigationMode.getMode;
-import static com.android.quickstep.SysUINavigationMode.removeShelfFromOverview;
+import static com.android.quickstep.SysUINavigationMode.hideShelfInTwoButtonLandscape;
 import static com.android.quickstep.util.LayoutUtils.getDefaultSwipeHeight;
 import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_OFFSET;
 import static com.android.quickstep.views.RecentsView.FULLSCREEN_PROGRESS;
@@ -57,6 +56,7 @@ import com.android.launcher3.appprediction.PredictionUiStateManager;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statehandlers.DepthController.ClampedDepthProperty;
 import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.util.ActivityInitListener;
@@ -84,14 +84,15 @@ public final class LauncherActivityInterface extends
     }
 
     @Override
-    public int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context, Rect outRect) {
-        calculateTaskSize(context, dp, outRect);
+    public int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context, Rect outRect,
+            PagedOrientationHandler orientationHandler) {
+        calculateTaskSize(context, dp, outRect, orientationHandler);
         if (dp.isVerticalBarLayout() && SysUINavigationMode.getMode(context) != Mode.NO_BUTTON) {
             Rect targetInsets = dp.getInsets();
             int hotseatInset = dp.isSeascape() ? targetInsets.left : targetInsets.right;
             return dp.hotseatBarSizePx + hotseatInset;
         } else {
-            return LayoutUtils.getShelfTrackingDistance(context, dp);
+            return LayoutUtils.getShelfTrackingDistance(context, dp, orientationHandler);
         }
     }
 
@@ -395,9 +396,11 @@ public final class LauncherActivityInterface extends
     }
 
     @Override
-    protected float getExtraSpace(Context context, DeviceProfile dp) {
-        if (dp.isVerticalBarLayout()) {
-            return  0;
+    protected float getExtraSpace(Context context, DeviceProfile dp,
+            PagedOrientationHandler orientationHandler) {
+        if (dp.isVerticalBarLayout() ||
+                hideShelfInTwoButtonLandscape(context, orientationHandler)) {
+            return 0;
         } else {
             Resources res = context.getResources();
             if (showOverviewActions(context)) {
