@@ -164,6 +164,10 @@ public final class FeatureFlags {
             "ALWAYS_USE_HARDWARE_OPTIMIZATION_FOR_FOLDER_ANIMATIONS", false,
             "Always use hardware optimization for folder animations.");
 
+    public static final BooleanFlag ENABLE_ALL_APPS_EDU = getDebugFlag(
+            "ENABLE_ALL_APPS_EDU", true,
+            "Shows user a tutorial on how to get to All Apps after X amount of attempts.");
+
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {
             for (DebugFlag flag : sDebugFlags) {
