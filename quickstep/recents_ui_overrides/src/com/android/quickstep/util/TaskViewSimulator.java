@@ -15,8 +15,6 @@
  */
 package com.android.quickstep.util;
 
-import static android.view.Surface.ROTATION_0;
-
 import static com.android.launcher3.states.RotationHelper.deltaRotation;
 import static com.android.launcher3.touch.PagedOrientationHandler.MATRIX_POST_TRANSLATE;
 import static com.android.quickstep.util.RecentsOrientedState.postDisplayRotation;
@@ -130,8 +128,6 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
         mThumbnailData.windowingMode = WINDOWING_MODE_FULLSCREEN;
 
         mThumbnailPosition.set(runningTarget.screenSpaceBounds);
-        // TODO: Should sourceContainerBounds already have this offset?
-        mThumbnailPosition.offset(-mRunningTarget.position.x, -mRunningTarget.position.y);
         mLayoutValid = false;
     }
 
