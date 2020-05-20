@@ -362,7 +362,7 @@ public final class LauncherInstrumentation {
     public void checkForAnomaly() {
         final String systemAnomalyMessage = getSystemAnomalyMessage();
         if (systemAnomalyMessage != null) {
-            Assert.fail(formatSystemHealthMessage(closeEvents(
+            Assert.fail(formatSystemHealthMessage(formatErrorWithEvents(
                     "http://go/tapl : Tests are broken by a non-Launcher system error: "
                             + systemAnomalyMessage, false)));
         }
@@ -424,7 +424,7 @@ public final class LauncherInstrumentation {
         return message;
     }
 
-    private String closeEvents(String message, boolean checkEvents) {
+    private String formatErrorWithEvents(String message, boolean checkEvents) {
         if (sCheckingEvents) {
             sCheckingEvents = false;
             if (checkEvents) {
@@ -436,9 +436,12 @@ public final class LauncherInstrumentation {
                 sEventChecker.finishNoWait();
             }
         }
-        // b/156287114
+
         try {
-            log("Input: " + mDevice.executeShellCommand("dumpsys input"));
+            Log.e("b/156287114", "Input:");
+            for (String line : mDevice.executeShellCommand("dumpsys input").split("\\n")) {
+                Log.d("b/156287114", line);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -451,7 +454,7 @@ public final class LauncherInstrumentation {
 
     private void fail(String message) {
         checkForAnomaly();
-        Assert.fail(formatSystemHealthMessage(closeEvents(
+        Assert.fail(formatSystemHealthMessage(formatErrorWithEvents(
                 "http://go/tapl : " + getContextDescription() + message
                         + " (visible state: " + getVisibleStateMessage() + ")", true)));
     }
@@ -629,8 +632,6 @@ public final class LauncherInstrumentation {
      * @return the Workspace object.
      */
     public Workspace pressHome() {
-        mInstrumentation.getUiAutomation().setOnAccessibilityEventListener(
-                e -> Log.d("b/155926212", e.toString()));
         try (LauncherInstrumentation.Closable e = eventsCheck()) {
             waitForLauncherInitialized();
             // Click home, then wait for any accessibility event, then wait until accessibility
@@ -639,9 +640,7 @@ public final class LauncherInstrumentation {
             // otherwise waitForIdle may return immediately in case when there was a big enough
             // pause in accessibility events prior to pressing Home.
             final String action;
-            Log.d("b/155926212", "Before isLauncherVisible()");
             final boolean launcherWasVisible = isLauncherVisible();
-            Log.d("b/155926212", "After isLauncherVisible(): " + launcherWasVisible);
             if (getNavigationModel() == NavigationModel.ZERO_BUTTON) {
                 checkForAnomaly();
 
@@ -697,8 +696,6 @@ public final class LauncherInstrumentation {
                     "performed action to switch to Home - " + action)) {
                 return getWorkspace();
             }
-        } finally {
-            mInstrumentation.getUiAutomation().setOnAccessibilityEventListener(null);
         }
     }
 
@@ -1312,7 +1309,8 @@ public final class LauncherInstrumentation {
                 if (mOnLauncherCrashed != null) mOnLauncherCrashed.run();
                 checkForAnomaly();
                 Assert.fail(
-                        formatSystemHealthMessage(closeEvents("Launcher crashed", false)));
+                        formatSystemHealthMessage(
+                                formatErrorWithEvents("Launcher crashed", false)));
             }
 
             if (sCheckingEvents) {
@@ -1320,6 +1318,16 @@ public final class LauncherInstrumentation {
                 if (mCheckEventsForSuccessfulGestures) {
                     final String message = sEventChecker.verify(WAIT_TIME_MS, true);
                     if (message != null) {
+                        try {
+                            Log.e("b/156287114", "Input:");
+                            for (String line : mDevice.executeShellCommand("dumpsys input").split(
+                                    "\\n")) {
+                                Log.d("b/156287114", line);
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
                         checkForAnomaly();
                         Assert.fail(formatSystemHealthMessage(
                                 "http://go/tapl : successful gesture produced " + message));

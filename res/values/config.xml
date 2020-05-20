@@ -69,6 +69,7 @@
     <string name="app_launch_tracker_class" translatable="false"></string>
     <string name="test_information_handler_class" translatable="false"></string>
     <string name="launcher_activity_logic_class" translatable="false"></string>
+    <string name="prediction_model_class" translatable="false"></string>
 
     <!-- View ID to use for QSB widget -->
     <item type="id" name="qsb_widget" />
