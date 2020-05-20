@@ -472,7 +472,6 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
             } else {
                 setThumbnailRotation(deltaRotate, thumbnailInsets, scale, thumbnailPosition);
             }
-            mMatrix.postTranslate(-thumbnailPosition.left, -thumbnailPosition.top);
 
             final float widthWithInsets;
             final float heightWithInsets;
