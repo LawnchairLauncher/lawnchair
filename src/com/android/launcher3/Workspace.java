@@ -2438,6 +2438,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                     // widgets/shortcuts/folders in a slightly different way
                     mLauncher.addPendingItem(pendingInfo, container, screenId, mTargetCell,
                             item.spanX, item.spanY);
+                    mStatsLogManager.log(
+                            LauncherEvent.LAUNCHER_ITEM_DROP_COMPLETED,
+                            d.logInstanceId,
+                            d.dragInfo.buildProto(null));
                 }
             };
             boolean isWidget = pendingInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET
@@ -2526,11 +2530,12 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                 mLauncher.getDragLayer().animateViewIntoPosition(d.dragView, view, this);
                 resetTransitionTransform();
             }
+            mStatsLogManager.log(
+                    LauncherEvent.LAUNCHER_ITEM_DROP_COMPLETED,
+                    d.logInstanceId,
+                    d.dragInfo.buildProto(null));
         }
-        mStatsLogManager.log(
-                LauncherEvent.LAUNCHER_ITEM_DROP_COMPLETED,
-                d.logInstanceId,
-                d.dragInfo.buildProto(null));
+
     }
 
     public Bitmap createWidgetBitmap(ItemInfo widgetInfo, View layout) {

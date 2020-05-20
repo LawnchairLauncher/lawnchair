@@ -18,12 +18,15 @@ package com.android.launcher3;
 
 import android.content.ComponentName;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.model.data.ItemInfo;
 
+import java.util.Optional;
+
 /**
- * Meta data that is used for deferred binding.
- * e.g., this object is used to pass information on draggable targets when they are dropped onto
- * the workspace from another container.
+ * Meta data that is used for deferred binding. e.g., this object is used to pass information on
+ * draggable targets when they are dropped onto the workspace from another container.
  */
 public class PendingAddItemInfo extends ItemInfo {
 
@@ -36,4 +39,22 @@ public class PendingAddItemInfo extends ItemInfo {
     protected String dumpProperties() {
         return super.dumpProperties() + " componentName=" + componentName;
     }
+
+    /**
+     * Returns shallow copy of the object.
+     */
+    @Override
+    public ItemInfo makeShallowCopy() {
+        PendingAddItemInfo itemInfo = new PendingAddItemInfo();
+        itemInfo.copyFrom(this);
+        itemInfo.componentName = this.componentName;
+        return itemInfo;
+    }
+
+    @Nullable
+    @Override
+    public ComponentName getTargetComponent() {
+        return Optional.ofNullable(super.getTargetComponent()).orElse(componentName);
+    }
+
 }

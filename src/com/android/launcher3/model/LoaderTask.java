@@ -45,6 +45,8 @@ import android.util.LongSparseArray;
 import android.util.MutableInt;
 import android.util.TimingLogger;
 
+import androidx.annotation.WorkerThread;
+
 import com.android.launcher3.InstallShortcutReceiver;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
@@ -850,12 +852,11 @@ public class LoaderTask implements Runnable {
         }
     }
 
-    private List<AppInfo> loadCachedPredictions() {
+    @WorkerThread
+    private void loadCachedPredictions() {
         synchronized (mBgDataModel) {
             List<ComponentKey> componentKeys =
                     mApp.getPredictionModel().getPredictionComponentKeys();
-            List<AppInfo> results = new ArrayList<>();
-            if (componentKeys == null) return results;
             List<LauncherActivityInfo> l;
             mBgDataModel.cachedPredictedItems.clear();
             for (ComponentKey key : componentKeys) {
@@ -866,7 +867,6 @@ public class LoaderTask implements Runnable {
                 mBgDataModel.cachedPredictedItems.add(info);
                 mIconCache.getTitleAndIcon(info, false);
             }
-            return results;
         }
     }
 
