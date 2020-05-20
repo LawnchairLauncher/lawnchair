@@ -38,6 +38,8 @@ public class Hotseat extends CellLayout implements LogContainerProvider, Insetta
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mHasVerticalHotseat;
+    private Workspace mWorkspace;
+    private boolean mSendTouchToWorkspace;
 
     public Hotseat(Context context) {
         this(context, null);
@@ -112,8 +114,35 @@ public class Hotseat extends CellLayout implements LogContainerProvider, Insetta
         InsettableFrameLayout.dispatchInsets(this, insets);
     }
 
+    public void setWorkspace(Workspace w) {
+        mWorkspace = w;
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        // We allow horizontal workspace scrolling from within the Hotseat. We do this by delegating
+        // touch intercept the Workspace, and if it intercepts, delegating touch to the Workspace
+        // for the remainder of the this input stream.
+        int yThreshold = getMeasuredHeight() - getPaddingBottom();
+        if (mWorkspace != null && ev.getY() <= yThreshold) {
+            mSendTouchToWorkspace = mWorkspace.onInterceptTouchEvent(ev);
+            return mSendTouchToWorkspace;
+        }
+        return false;
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        // See comment in #onInterceptTouchEvent
+        if (mSendTouchToWorkspace) {
+            final int action = event.getAction();
+            switch (action & MotionEvent.ACTION_MASK) {
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    mSendTouchToWorkspace = false;
+            }
+            return mWorkspace.onTouchEvent(event);
+        }
         return event.getY() > getCellHeight();
     }
 }
