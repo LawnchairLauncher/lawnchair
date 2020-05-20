@@ -17,7 +17,6 @@ package com.android.quickstep.fallback;
 
 import static com.android.quickstep.fallback.RecentsState.DEFAULT;
 import static com.android.quickstep.fallback.RecentsState.MODAL_TASK;
-import static com.android.quickstep.util.WindowSizeStrategy.FALLBACK_RECENTS_SIZE_STRATEGY;
 
 import android.annotation.TargetApi;
 import android.app.ActivityManager.RunningTaskInfo;
@@ -26,6 +25,7 @@ import android.os.Build;
 import android.util.AttributeSet;
 
 import com.android.launcher3.statemanager.StateManager.StateListener;
+import com.android.quickstep.FallbackActivityInterface;
 import com.android.quickstep.RecentsActivity;
 import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.RecentsView;
@@ -45,7 +45,7 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity>
     }
 
     public FallbackRecentsView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr, FALLBACK_RECENTS_SIZE_STRATEGY);
+        super(context, attrs, defStyleAttr, FallbackActivityInterface.INSTANCE);
         mActivity.getStateManager().addStateListener(this);
     }
 

@@ -212,12 +212,13 @@ public class StaggeredWorkspaceAnim {
     }
 
     private void addScrimAnimationForState(Launcher launcher, LauncherState state, long duration) {
-        PendingAnimation builder = new PendingAnimation(duration, mAnimators);
+        PendingAnimation builder = new PendingAnimation(duration);
         launcher.getWorkspace().getStateTransitionAnimation().setScrim(builder, state);
         builder.setFloat(
                 launcher.getDragLayer().getOverviewScrim(),
                 OverviewScrim.SCRIM_PROGRESS,
                 state.getOverviewScrimAlpha(launcher),
                 ACCEL_DEACCEL);
+        mAnimators.play(builder.buildAnim());
     }
 }

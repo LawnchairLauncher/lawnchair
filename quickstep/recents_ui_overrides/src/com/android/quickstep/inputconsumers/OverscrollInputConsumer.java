@@ -24,12 +24,15 @@ import static android.view.MotionEvent.ACTION_UP;
 
 import static com.android.launcher3.Utilities.squaredHypot;
 
+import static java.lang.Math.abs;
+
 import android.content.Context;
 import android.graphics.PointF;
-import android.view.GestureDetector;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.BaseDraggingActivity;
@@ -44,24 +47,36 @@ import com.android.systemui.shared.system.InputMonitorCompat;
  * Input consumer for handling events to pass to an {@code OverscrollPlugin}.
  */
 public class OverscrollInputConsumer extends DelegateInputConsumer {
-
     private static final String TAG = "OverscrollInputConsumer";
+    private static final boolean DEBUG_LOGS_ENABLED = false;
+    private static void debugPrint(String log) {
+        if (DEBUG_LOGS_ENABLED) {
+            Log.v(TAG, log);
+        }
+    }
 
     private final PointF mDownPos = new PointF();
     private final PointF mLastPos = new PointF();
     private final PointF mStartDragPos = new PointF();
     private final int mAngleThreshold;
 
-    private final float mFlingThresholdPx;
+    private final int mFlingDistanceThresholdPx;
+    private final int mFlingVelocityThresholdPx;
     private int mActivePointerId = -1;
     private boolean mPassedSlop = false;
-
+    // True if we set ourselves as active, meaning we no longer pass events to the delegate.
+    private boolean mPassedActiveThreshold = false;
+    // When a gesture crosses this length, this recognizer will attempt to interpret touch events.
     private final float mSquaredSlop;
+    // When a gesture crosses this length, this recognizer will become the sole active recognizer.
+    private final float mSquaredActiveThreshold;
+    // When a gesture crosses this length, the overscroll view should be shown.
+    private final float mSquaredFinishThreshold;
+    private boolean mThisDownIsIgnored = false;
 
     private final GestureState mGestureState;
     @Nullable
     private final OverscrollPlugin mPlugin;
-    private final GestureDetector mGestureDetector;
 
     @Nullable
     private RecentsView mRecentsView;
@@ -72,15 +87,24 @@ public class OverscrollInputConsumer extends DelegateInputConsumer {
 
         mAngleThreshold = context.getResources()
                 .getInteger(R.integer.assistant_gesture_corner_deg_threshold);
-        mFlingThresholdPx = context.getResources()
-            .getDimension(R.dimen.gestures_overscroll_fling_threshold);
+        mFlingDistanceThresholdPx = (int) context.getResources()
+                .getDimension(R.dimen.gestures_overscroll_fling_threshold);
+        mFlingVelocityThresholdPx = ViewConfiguration.get(context).getScaledMinimumFlingVelocity();
         mGestureState = gestureState;
         mPlugin = plugin;
 
         float slop = ViewConfiguration.get(context).getScaledTouchSlop();
 
         mSquaredSlop = slop * slop;
-        mGestureDetector = new GestureDetector(context, new FlingGestureListener());
+
+
+        float finishGestureThreshold = (int) context.getResources()
+                .getDimension(R.dimen.gestures_overscroll_finish_threshold);
+        mSquaredFinishThreshold = finishGestureThreshold * finishGestureThreshold;
+
+        float activeThreshold = (int) context.getResources()
+                .getDimension(R.dimen.gestures_overscroll_active_threshold);
+        mSquaredActiveThreshold = activeThreshold * activeThreshold;
     }
 
     @Override
@@ -90,12 +114,26 @@ public class OverscrollInputConsumer extends DelegateInputConsumer {
 
     @Override
     public void onMotionEvent(MotionEvent ev) {
+        if (mPlugin == null) {
+            return;
+        }
+
+        debugPrint("got event, underlying activity is " + getUnderlyingActivity());
         switch (ev.getActionMasked()) {
             case ACTION_DOWN: {
+                debugPrint("ACTION_DOWN");
                 mActivePointerId = ev.getPointerId(0);
                 mDownPos.set(ev.getX(), ev.getY());
                 mLastPos.set(mDownPos);
-
+                if (mPlugin.blockOtherGestures()) {
+                    debugPrint("mPlugin.blockOtherGestures(), becoming active on ACTION_DOWN");
+                    // Otherwise, if an appear gesture is performed when the Activity is visible,
+                    // the Activity will dismiss its keyboard.
+                    mPassedActiveThreshold = true;
+                    mPassedSlop = true;
+                    mStartDragPos.set(mLastPos.x, mLastPos.y);
+                    setActive(ev);
+                }
                 break;
             }
             case ACTION_POINTER_DOWN: {
@@ -121,55 +159,59 @@ public class OverscrollInputConsumer extends DelegateInputConsumer {
                 if (mState == STATE_DELEGATE_ACTIVE) {
                     break;
                 }
+
                 if (!mDelegate.allowInterceptByParent()) {
                     mState = STATE_DELEGATE_ACTIVE;
                     break;
                 }
+
+                // Update last touch position.
                 int pointerIndex = ev.findPointerIndex(mActivePointerId);
                 if (pointerIndex == -1) {
                     break;
                 }
                 mLastPos.set(ev.getX(pointerIndex), ev.getY(pointerIndex));
 
-                if (!mPassedSlop) {
-                    // Normal gesture, ensure we pass the slop before we start tracking the gesture
-                    if (squaredHypot(mLastPos.x - mDownPos.x, mLastPos.y - mDownPos.y)
-                            > mSquaredSlop) {
-
-                        mPassedSlop = true;
-                        mStartDragPos.set(mLastPos.x, mLastPos.y);
-                        if (isOverscrolled()) {
-                            setActive(ev);
-
-                            if (mPlugin != null) {
-                                mPlugin.onTouchStart(getDeviceState(), getUnderlyingActivity());
-                            }
-                        } else {
-                            mState = STATE_DELEGATE_ACTIVE;
-                        }
-                    }
+                float squaredDist = squaredHypot(mLastPos.x - mDownPos.x, mLastPos.y - mDownPos.y);
+                if ((!mPassedSlop) && (squaredDist > mSquaredSlop)) {
+                    mPassedSlop = true;
+                    mStartDragPos.set(mLastPos.x, mLastPos.y);
+                    mGestureState.setState(GestureState.STATE_OVERSCROLL_WINDOW_CREATED);
                 }
 
-                if (mPassedSlop && mState != STATE_DELEGATE_ACTIVE && isOverscrolled()
-                        && mPlugin != null) {
-                    mPlugin.onTouchTraveled(getDistancePx());
+                boolean becomeActive = mPassedSlop && !mPassedActiveThreshold && isOverscrolled()
+                        && (squaredDist > mSquaredActiveThreshold);
+                if (becomeActive) {
+                    debugPrint("Past slop and past threshold, set active");
+                    mPassedActiveThreshold = true;
+                    setActive(ev);
+                }
+
+                if (mPassedActiveThreshold) {
+                    debugPrint("ACTION_MOVE Relaying touch event");
+                    mPlugin.onTouchEvent(ev, getHorizontalDistancePx(), getVerticalDistancePx(),
+                            (int) Math.sqrt(mSquaredFinishThreshold), mFlingDistanceThresholdPx,
+                            mFlingVelocityThresholdPx, getDeviceState(), getUnderlyingActivity());
                 }
 
                 break;
             }
             case ACTION_CANCEL:
             case ACTION_UP:
-                if (mState != STATE_DELEGATE_ACTIVE && mPassedSlop && mPlugin != null) {
-                    mPlugin.onTouchEnd(getDistancePx());
+                debugPrint("ACTION_UP");
+                if (mPassedActiveThreshold) {
+                    debugPrint("ACTION_UP Relaying touch event");
+
+                    mPlugin.onTouchEvent(ev, getHorizontalDistancePx(), getVerticalDistancePx(),
+                            (int) Math.sqrt(mSquaredFinishThreshold), mFlingDistanceThresholdPx,
+                            mFlingVelocityThresholdPx, getDeviceState(), getUnderlyingActivity());
                 }
 
+
                 mPassedSlop = false;
+                mPassedActiveThreshold = false;
                 mState = STATE_INACTIVE;
                 break;
-        }
-
-        if (mState != STATE_DELEGATE_ACTIVE) {
-            mGestureDetector.onTouchEvent(ev);
         }
 
         if (mState != STATE_ACTIVE) {
@@ -192,15 +234,20 @@ public class OverscrollInputConsumer extends DelegateInputConsumer {
             maxIndex = 1;
         }
 
-        boolean atRightMostApp = (mRecentsView == null
-                || mRecentsView.getRunningTaskIndex() <= maxIndex);
+        boolean atRightMostApp = mRecentsView == null
+                || (mRecentsView.getRunningTaskIndex() <= maxIndex);
 
         // Check if the gesture is within our angle threshold of horizontal
-        float deltaY = Math.abs(mLastPos.y - mDownPos.y);
-        float deltaX = mDownPos.x - mLastPos.x; // Positive if this is a gesture to the left
-        boolean angleInBounds = Math.toDegrees(Math.atan2(deltaY, deltaX)) < mAngleThreshold;
+        float deltaY = abs(mLastPos.y - mDownPos.y);
+        float deltaX = mLastPos.x - mDownPos.x;
 
-        return atRightMostApp && angleInBounds;
+        boolean angleInBounds = (Math.toDegrees(Math.atan2(deltaY, abs(deltaX))) < mAngleThreshold);
+
+        boolean overscrollVisible = mPlugin.blockOtherGestures();
+        boolean overscrollInvisibleAndLeftSwipe = !overscrollVisible && deltaX < 0;
+        boolean gestureDirectionMatchesVisibility = overscrollVisible
+                || overscrollInvisibleAndLeftSwipe;
+        return atRightMostApp && angleInBounds && gestureDirectionMatchesVisibility;
     }
 
     private String getDeviceState() {
@@ -219,35 +266,22 @@ public class OverscrollInputConsumer extends DelegateInputConsumer {
         return deviceState;
     }
 
-    private int getDistancePx() {
-        return (int) Math.hypot(mLastPos.x - mDownPos.x, mLastPos.y - mDownPos.y);
+    private int getHorizontalDistancePx() {
+        return (int) (mLastPos.x - mDownPos.x);
     }
 
-    private String getUnderlyingActivity() {
+    private int getVerticalDistancePx() {
+        return (int) (mLastPos.y - mDownPos.y);
+    }
+
+    private @NonNull String getUnderlyingActivity() {
+        // Overly defensive, got guidance on code review that something in the chain of
+        // `mGestureState.getRunningTask().topActivity` can be null and thus cause a null pointer
+        // exception to be thrown, but we aren't sure which part can be null.
+        if ((mGestureState == null) || (mGestureState.getRunningTask() == null)
+                || (mGestureState.getRunningTask().topActivity == null)) {
+            return "";
+        }
         return mGestureState.getRunningTask().topActivity.flattenToString();
-    }
-
-    private class FlingGestureListener extends GestureDetector.SimpleOnGestureListener {
-        @Override
-        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            if (isValidAngle(velocityX, -velocityY)
-                    && getDistancePx() >= mFlingThresholdPx
-                    && mState != STATE_DELEGATE_ACTIVE) {
-
-                if (mPlugin != null) {
-                    mPlugin.onFling(-velocityX);
-                }
-            }
-            return true;
-        }
-
-        private boolean isValidAngle(float deltaX, float deltaY) {
-            float angle = (float) Math.toDegrees(Math.atan2(deltaY, deltaX));
-            // normalize so that angle is measured clockwise from horizontal in the bottom right
-            // corner and counterclockwise from horizontal in the bottom left corner
-
-            angle = angle > 90 ? 180 - angle : angle;
-            return (angle < mAngleThreshold);
-        }
     }
 }
