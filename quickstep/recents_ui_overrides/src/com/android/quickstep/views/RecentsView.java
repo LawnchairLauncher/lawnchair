@@ -17,6 +17,8 @@
 package com.android.quickstep.views;
 
 import static android.view.Surface.ROTATION_0;
+import static android.view.View.MeasureSpec.EXACTLY;
+import static android.view.View.MeasureSpec.makeMeasureSpec;
 
 import static com.android.launcher3.BaseActivity.STATE_HANDLER_INVISIBILITY_FLAGS;
 import static com.android.launcher3.InvariantDeviceProfile.CHANGE_FLAG_ICON_PARAMS;
@@ -1080,9 +1082,9 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
      * Called when a gesture from an app has finished.
      */
     public void onGestureAnimationEnd() {
+        setOnScrollChangeListener(null);
         setEnableFreeScroll(true);
         setEnableDrawingLiveTile(true);
-        setOnScrollChangeListener(null);
         if (!ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             setRunningTaskViewShowScreenshot(true);
         }
@@ -1113,6 +1115,12 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                     false, true, false, false, new ActivityManager.TaskDescription(), 0,
                     new ComponentName("", ""), false);
             taskView.bind(mTmpRunningTask, mOrientationState);
+
+            // Measure and layout immediately so that the scroll values is updated instantly
+            // as the user might be quick-switching
+            measure(makeMeasureSpec(getMeasuredWidth(), EXACTLY),
+                    makeMeasureSpec(getMeasuredHeight(), EXACTLY));
+            layout(getLeft(), getTop(), getRight(), getBottom());
         }
 
         boolean runningTaskTileHidden = mRunningTaskTileHidden;
@@ -1489,7 +1497,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         return true;
     }
 
-    private void runDismissAnimation(PendingAnimation pendingAnim) {
+    protected void runDismissAnimation(PendingAnimation pendingAnim) {
         AnimatorPlaybackController controller = pendingAnim.createPlaybackController();
         controller.dispatchOnStart();
         controller.setEndAction(() -> pendingAnim.finish(true, Touch.SWIPE));

@@ -207,7 +207,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                 // Start the window animation on down to give more time for launcher to draw if the
                 // user didn't start the gesture over the back button
                 if (!mIsDeferredDownTarget) {
-                    startTouchTrackingForWindowAnimation(ev.getEventTime(), false);
+                    startTouchTrackingForWindowAnimation(ev.getEventTime());
                 }
 
                 TraceHelper.INSTANCE.endSection(traceToken);
@@ -275,8 +275,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                         if (mIsDeferredDownTarget) {
                             // Deferred gesture, start the animation and gesture tracking once
                             // we pass the actual touch slop
-                            startTouchTrackingForWindowAnimation(
-                                    ev.getEventTime(), isLikelyToStartNewTask);
+                            startTouchTrackingForWindowAnimation(ev.getEventTime());
                         }
                         if (!mPassedWindowMoveSlop) {
                             mPassedWindowMoveSlop = true;
@@ -326,12 +325,11 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         mInteractionHandler.onGestureStarted();
     }
 
-    private void startTouchTrackingForWindowAnimation(
-            long touchTimeMs, boolean isLikelyToStartNewTask) {
+    private void startTouchTrackingForWindowAnimation(long touchTimeMs) {
         ActiveGestureLog.INSTANCE.addLog("startRecentsAnimation");
 
         mInteractionHandler = mHandlerFactory.newHandler(mGestureState, touchTimeMs,
-                mTaskAnimationManager.isRecentsAnimationRunning(), isLikelyToStartNewTask);
+                mTaskAnimationManager.isRecentsAnimationRunning());
         mInteractionHandler.setGestureEndCallback(this::onInteractionGestureFinished);
         mMotionPauseDetector.setOnMotionPauseListener(mInteractionHandler::onMotionPauseChanged);
         Intent intent = new Intent(mInteractionHandler.getLaunchIntent());
