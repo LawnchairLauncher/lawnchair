@@ -121,7 +121,7 @@ public class HotseatEduController {
         if (!putIntoFolder.isEmpty()) {
             ItemInfo firstItem = putIntoFolder.get(0);
             FolderInfo folderInfo = new FolderInfo();
-            folderInfo.title = "";
+            folderInfo.setTitle("");
             mLauncher.getModelWriter().addItemToDatabase(folderInfo, firstItem.container,
                     firstItem.screenId, firstItem.cellX, firstItem.cellY);
             folderInfo.contents.addAll(putIntoFolder);

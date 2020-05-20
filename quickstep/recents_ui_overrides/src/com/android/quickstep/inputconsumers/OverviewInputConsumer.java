@@ -24,8 +24,8 @@ import android.view.MotionEvent;
 
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.views.BaseDragLayer;
@@ -41,11 +41,11 @@ import java.util.function.Predicate;
 /**
  * Input consumer for handling touch on the recents/Launcher activity.
  */
-public class OverviewInputConsumer<T extends BaseDraggingActivity>
+public class OverviewInputConsumer<T extends StatefulActivity<?>>
         implements InputConsumer {
 
     private final T mActivity;
-    private final BaseActivityInterface<T> mActivityInterface;
+    private final BaseActivityInterface<?, T> mActivityInterface;
     private final BaseDragLayer mTarget;
     private final InputMonitorCompat mInputMonitor;
 
