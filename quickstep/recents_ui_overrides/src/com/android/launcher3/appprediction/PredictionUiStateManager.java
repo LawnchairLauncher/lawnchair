@@ -211,8 +211,11 @@ public class PredictionUiStateManager implements StateListener<LauncherState>,
     }
 
     private void dispatchOnChange(boolean changed) {
-        PredictionState newState = changed ? parseLastState() :
-                (mPendingState == null ? mCurrentState : mPendingState);
+        PredictionState newState = changed
+                ? parseLastState()
+                : mPendingState != null && canApplyPredictions(mPendingState)
+                        ? mPendingState
+                        : mCurrentState;
         if (changed && mAppsView != null && !canApplyPredictions(newState)) {
             scheduleApplyPredictedApps(newState);
         } else {

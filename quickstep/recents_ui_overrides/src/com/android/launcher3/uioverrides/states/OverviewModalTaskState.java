@@ -16,7 +16,6 @@
 package com.android.launcher3.uioverrides.states;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Rect;
 
 import com.android.launcher3.BaseDraggingActivity;
@@ -58,8 +57,6 @@ public class OverviewModalTaskState extends OverviewState {
     }
 
     public static float[] getOverviewScaleAndOffsetForModalState(BaseDraggingActivity activity) {
-        Resources res = activity.getResources();
-
         Rect out = new Rect();
         activity.<RecentsView>getOverviewPanel().getTaskSize(out);
         int taskHeight = out.height();

@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.widget;
 
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_WIDGETS_TRAY;
+
 import android.appwidget.AppWidgetHostView;
 import android.os.Bundle;
 
@@ -50,6 +52,7 @@ public class PendingAddWidgetInfo extends PendingAddItemInfo {
         spanY = i.spanY;
         minSpanX = i.minSpanX;
         minSpanY = i.minSpanY;
+        this.container = CONTAINER_WIDGETS_TRAY;
     }
 
     public WidgetAddFlowHandler getHandler() {

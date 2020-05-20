@@ -35,7 +35,6 @@ import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
 import static com.android.quickstep.SysUINavigationMode.Mode.TWO_BUTTONS;
 import static com.android.quickstep.util.ShelfPeekAnim.ShelfAnimState.HIDE;
 import static com.android.quickstep.util.ShelfPeekAnim.ShelfAnimState.PEEK;
-import static com.android.quickstep.util.WindowSizeStrategy.LAUNCHER_ACTIVITY_SIZE_STRATEGY;
 import static com.android.quickstep.views.RecentsView.UPDATE_SYSUI_FLAGS_THRESHOLD;
 
 import android.animation.Animator;
@@ -60,7 +59,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.UiThread;
 
 import com.android.launcher3.AbstractFloatingView;
-import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
@@ -69,6 +67,7 @@ import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.logging.UserEventDispatcher;
+import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -198,7 +197,7 @@ public class LauncherSwipeHandler extends BaseSwipeUpHandler<Launcher, RecentsVi
             TaskAnimationManager taskAnimationManager, GestureState gestureState,
             long touchTimeMs, boolean continuingLastGesture,
             InputConsumerController inputConsumer) {
-        super(context, deviceState, gestureState, inputConsumer, LAUNCHER_ACTIVITY_SIZE_STRATEGY);
+        super(context, deviceState, gestureState, inputConsumer);
         mTaskAnimationManager = taskAnimationManager;
         mTouchTimeMs = touchTimeMs;
         mContinuingLastGesture = continuingLastGesture;
@@ -277,6 +276,8 @@ public class LauncherSwipeHandler extends BaseSwipeUpHandler<Launcher, RecentsVi
         if (mActivity == activity) {
             return true;
         }
+        mTaskViewSimulator.setLayoutRotation(mDeviceState.getCurrentActiveRotation(),
+                mDeviceState.getDisplayRotation());
         if (mActivity != null) {
             // The launcher may have been recreated as a result of device rotation.
             int oldState = mStateCallback.getState() & ~LAUNCHER_UI_STATES;
@@ -587,9 +588,8 @@ public class LauncherSwipeHandler extends BaseSwipeUpHandler<Launcher, RecentsVi
             boolean quickswitchThresholdPassed = centermostTask != runningTask;
 
             // We will handle the sysui flags based on the centermost task view.
-            mRecentsAnimationController.setUseLauncherSystemBarFlags(
-                    (swipeUpThresholdPassed || quickswitchThresholdPassed)
-                            && centermostTaskFlags != 0);
+            mRecentsAnimationController.setUseLauncherSystemBarFlags(swipeUpThresholdPassed
+                    ||  (quickswitchThresholdPassed && centermostTaskFlags != 0));
             mRecentsAnimationController.setSplitScreenMinimized(swipeUpThresholdPassed);
 
             int sysuiFlags = swipeUpThresholdPassed ? 0 : centermostTaskFlags;
@@ -684,7 +684,7 @@ public class LauncherSwipeHandler extends BaseSwipeUpHandler<Launcher, RecentsVi
             setTargetAlphaProvider(LauncherSwipeHandler::getHiddenTargetAlpha);
         }
 
-        BaseDraggingActivity activity = mActivityInterface.getCreatedActivity();
+        StatefulActivity activity = mActivityInterface.getCreatedActivity();
         return activity == null ? InputConsumer.NO_OP
                 : new OverviewInputConsumer(mGestureState, activity, null, true);
     }
@@ -940,6 +940,7 @@ public class LauncherSwipeHandler extends BaseSwipeUpHandler<Launcher, RecentsVi
                         : null;
 
                 mActivity.getRootView().setForceHideBackArrow(true);
+                mActivityInterface.setHintUserWillBeActive();
 
                 homeAnimFactory = new HomeAnimationFactory(floatingIconView) {
 
