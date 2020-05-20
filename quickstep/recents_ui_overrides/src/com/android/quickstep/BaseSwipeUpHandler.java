@@ -233,7 +233,6 @@ public abstract class BaseSwipeUpHandler<T extends StatefulActivity<?>, Q extend
             }
             mCanceled = false;
         }
-        ActiveGestureLog.INSTANCE.addLog("finishRecentsAnimation", true);
     }
 
     /**
@@ -328,6 +327,7 @@ public abstract class BaseSwipeUpHandler<T extends StatefulActivity<?>, Q extend
                 mRecentsAnimationController.finish(false /* toRecents */,
                         null /* onFinishComplete */);
                 mActivityInterface.onLaunchTaskSuccess();
+                ActiveGestureLog.INSTANCE.addLog("finishRecentsAnimation", false);
             }
         }
     }
