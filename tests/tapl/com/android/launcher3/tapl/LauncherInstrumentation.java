@@ -833,27 +833,42 @@ public final class LauncherInstrumentation {
 
     @NonNull
     List<UiObject2> getObjectsInContainer(UiObject2 container, String resName) {
-        return container.findObjects(getLauncherObjectSelector(resName));
+        try {
+            return container.findObjects(getLauncherObjectSelector(resName));
+        } catch (StaleObjectException e) {
+            fail("The container disappeared from screen");
+            return null;
+        }
     }
 
     @NonNull
     UiObject2 waitForObjectInContainer(UiObject2 container, String resName) {
-        final UiObject2 object = container.wait(
-                Until.findObject(getLauncherObjectSelector(resName)),
-                WAIT_TIME_MS);
-        assertNotNull("Can't find a view in Launcher, id: " + resName + " in container: "
-                + container.getResourceName(), object);
-        return object;
+        try {
+            final UiObject2 object = container.wait(
+                    Until.findObject(getLauncherObjectSelector(resName)),
+                    WAIT_TIME_MS);
+            assertNotNull("Can't find a view in Launcher, id: " + resName + " in container: "
+                    + container.getResourceName(), object);
+            return object;
+        } catch (StaleObjectException e) {
+            fail("The container disappeared from screen");
+            return null;
+        }
     }
 
     @NonNull
     UiObject2 waitForObjectInContainer(UiObject2 container, BySelector selector) {
-        final UiObject2 object = container.wait(
-                Until.findObject(selector),
-                WAIT_TIME_MS);
-        assertNotNull("Can't find a view in Launcher, id: " + selector + " in container: "
-                + container.getResourceName(), object);
-        return object;
+        try {
+            final UiObject2 object = container.wait(
+                    Until.findObject(selector),
+                    WAIT_TIME_MS);
+            assertNotNull("Can't find a view in Launcher, id: " + selector + " in container: "
+                    + container.getResourceName(), object);
+            return object;
+        } catch (StaleObjectException e) {
+            fail("The container disappeared from screen");
+            return null;
+        }
     }
 
     private boolean hasLauncherObject(String resId) {
