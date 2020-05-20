@@ -55,7 +55,6 @@ import com.android.launcher3.views.FloatingIconView;
 import com.android.quickstep.RecentsAnimationCallbacks.RecentsAnimationListener;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.ActivityInitListener;
-import com.android.quickstep.util.AppWindowAnimationHelper;
 import com.android.quickstep.util.RectFSpringAnim;
 import com.android.quickstep.util.TaskViewSimulator;
 import com.android.quickstep.util.TransformParams;
@@ -511,8 +510,8 @@ public abstract class BaseSwipeUpHandler<T extends StatefulActivity<?>, Q extend
 
     public interface Factory {
 
-        BaseSwipeUpHandler newHandler(GestureState gestureState, long touchTimeMs,
-                boolean continuingLastGesture, boolean isLikelyToStartNewTask);
+        BaseSwipeUpHandler newHandler(
+                GestureState gestureState, long touchTimeMs, boolean continuingLastGesture);
     }
 
     protected interface RunningWindowAnim {

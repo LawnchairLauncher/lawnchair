@@ -46,6 +46,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.statemanager.StateManager;
+import com.android.launcher3.statemanager.StateManager.AtomicAnimationFactory;
 import com.android.launcher3.statemanager.StateManager.StateHandler;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.util.ActivityTracker;
@@ -57,6 +58,7 @@ import com.android.quickstep.fallback.FallbackRecentsStateController;
 import com.android.quickstep.fallback.FallbackRecentsView;
 import com.android.quickstep.fallback.RecentsRootView;
 import com.android.quickstep.fallback.RecentsState;
+import com.android.quickstep.util.RecentsAtomicAnimationFactory;
 import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
@@ -343,6 +345,11 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
         super.dump(prefix, fd, writer, args);
         writer.println(prefix + "Misc:");
         dumpMisc(prefix + "\t", writer);
+    }
+
+    @Override
+    public AtomicAnimationFactory<RecentsState> createAtomicAnimationFactory() {
+        return new RecentsAtomicAnimationFactory<>(this, 0);
     }
 
     private AnimatorListenerAdapter resetStateListener() {
