@@ -261,10 +261,6 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
         AccessibilityManagerCompat.sendStateEventToTest(getBaseContext(), OVERVIEW_STATE_ORDINAL);
     }
 
-    public void onTaskLaunched() {
-        mFallbackRecentsView.resetTaskVisuals();
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

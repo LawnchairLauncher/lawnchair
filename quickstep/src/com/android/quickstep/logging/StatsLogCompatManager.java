@@ -64,24 +64,46 @@ public class StatsLogCompatManager extends StatsLogManager {
     }
 
     /**
-     * Logs an event and accompanying {@link ItemInfo}
+     * Logs a {@link LauncherEvent}.
      */
+    @Override
+    public void log(LauncherEvent event) {
+        log(event, DEFAULT_INSTANCE_ID, LauncherAtom.ItemInfo.getDefaultInstance());
+    }
+
+    /**
+     * Logs an event and accompanying {@link InstanceId}.
+     */
+    @Override
+    public void log(LauncherEvent event, InstanceId instanceId) {
+        log(event, instanceId, LauncherAtom.ItemInfo.getDefaultInstance());
+    }
+
+    /**
+     * Logs an event and accompanying {@link ItemInfo}.
+     */
+    @Override
     public void log(LauncherEvent event, LauncherAtom.ItemInfo itemInfo) {
         log(event, DEFAULT_INSTANCE_ID, itemInfo);
     }
 
     /**
-     * Logs an event and accompanying {@link LauncherAtom.ItemInfo}
+     * Logs an event and accompanying {@link InstanceId} and {@link LauncherAtom.ItemInfo}.
      */
     @Override
     public void log(LauncherEvent event, InstanceId instanceId, LauncherAtom.ItemInfo itemInfo) {
         if (IS_VERBOSE) {
-            Log.d(TAG, String.format("\n%s\n%s", event.name(), itemInfo));
+            Log.d(TAG, instanceId == DEFAULT_INSTANCE_ID
+                    ? String.format("\n%s\n%s", event.name(), itemInfo)
+                    : String.format("%s(InstanceId:%s)\n%s", event.name(), instanceId, itemInfo));
         }
+
         if (!Utilities.ATLEAST_R) {
             return;
         }
-        SysUiStatsLog.write(SysUiStatsLog.LAUNCHER_EVENT,
+
+        SysUiStatsLog.write(
+                SysUiStatsLog.LAUNCHER_EVENT,
                 SysUiStatsLog.LAUNCHER_UICHANGED__ACTION__DEFAULT_ACTION /* deprecated */,
                 SysUiStatsLog.LAUNCHER_UICHANGED__DST_STATE__HOME /* TODO */,
                 SysUiStatsLog.LAUNCHER_UICHANGED__DST_STATE__BACKGROUND /* TODO */,
@@ -118,6 +140,7 @@ public class StatsLogCompatManager extends StatsLogManager {
     }
 
     private class SnapshotWorker extends BaseModelUpdateTask {
+
         @Override
         public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
             IntSparseArrayMap<FolderInfo> folders = dataModel.folders.clone();
@@ -140,6 +163,7 @@ public class StatsLogCompatManager extends StatsLogManager {
             }
         }
     }
+
     private static void writeSnapshot(LauncherAtom.ItemInfo itemInfo) {
         if (IS_VERBOSE) {
             Log.d(TAG, "\nwriteSnapshot:" + itemInfo);
