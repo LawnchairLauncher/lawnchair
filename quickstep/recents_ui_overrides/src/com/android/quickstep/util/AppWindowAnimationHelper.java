@@ -99,9 +99,6 @@ public class AppWindowAnimationHelper implements TransformParams.BuilderProxy {
     private void updateSourceStack(RemoteAnimationTargetCompat target) {
         mSourceInsets.set(target.contentInsets);
         mSourceStackBounds.set(target.screenSpaceBounds);
-
-        // TODO: Should sourceContainerBounds already have this offset?
-        mSourceStackBounds.offsetTo(target.position.x, target.position.y);
     }
 
     public void updateTargetRect(Rect targetRect) {
@@ -169,14 +166,14 @@ public class AppWindowAnimationHelper implements TransformParams.BuilderProxy {
         crop.offsetTo(0, 0);
         float cornerRadius = 0f;
         float scale = Math.max(mCurrentRect.width(), mTargetRect.width()) / crop.width();
+        mTmpMatrix.setTranslate(0, 0);
+        if (app.activityType == RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME) {
+            mTmpMatrix.setTranslate(app.localBounds.left, app.localBounds.top);
+        }
         if (app.mode == targetMode
                 && app.activityType != RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME) {
             mTmpMatrix.setRectToRect(mSourceRect, mCurrentRect, ScaleToFit.FILL);
-            if (app.localBounds != null) {
-                mTmpMatrix.postTranslate(app.localBounds.left, app.localBounds.top);
-            } else {
-                mTmpMatrix.postTranslate(app.position.x, app.position.y);
-            }
+            mTmpMatrix.postTranslate(app.localBounds.left, app.localBounds.top);
             mCurrentClipRectF.roundOut(crop);
             if (mSupportsRoundedCornersOnWindows) {
                 if (params.getCornerRadius() > -1) {
