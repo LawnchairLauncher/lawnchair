@@ -20,6 +20,7 @@ import static android.text.TextUtils.isEmpty;
 
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
 import static com.android.launcher3.folder.PreviewItemManager.INITIAL_ITEM_ANIMATION_DURATION;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_FOLDER_LABEL_UPDATED;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -62,6 +63,8 @@ import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.icons.DotRenderer;
+import com.android.launcher3.logging.InstanceId;
+import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.FolderInfo.FolderListener;
@@ -410,10 +413,10 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
                 Executors.UI_HELPER_EXECUTOR.post(() -> {
                     d.folderNameProvider.getSuggestedFolderName(
                             getContext(), mInfo.contents, nameInfos);
-                    showFinalView(finalIndex, item, nameInfos);
+                    showFinalView(finalIndex, item, nameInfos, d.logInstanceId);
                 });
             } else {
-                showFinalView(finalIndex, item, nameInfos);
+                showFinalView(finalIndex, item, nameInfos, d.logInstanceId);
             }
         } else {
             addItem(item);
@@ -421,12 +424,12 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
     }
 
     private void showFinalView(int finalIndex, final WorkspaceItemInfo item,
-            FolderNameInfo[] nameInfos) {
+            FolderNameInfo[] nameInfos, InstanceId instanceId) {
         postDelayed(() -> {
             mPreviewItemManager.hidePreviewItem(finalIndex, false);
             mFolder.showItem(item);
-            setLabelSuggestion(nameInfos);
-            mFolder.logCurrentFolderLabelState();
+            setLabelSuggestion(nameInfos, instanceId);
+            mFolder.logFolderLabelState();
             invalidate();
         }, DROP_IN_ANIMATION_DURATION);
     }
@@ -434,7 +437,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
     /**
      * Set the suggested folder name.
      */
-    public void setLabelSuggestion(FolderNameInfo[] nameInfos) {
+    public void setLabelSuggestion(FolderNameInfo[] nameInfos, InstanceId instanceId) {
         if (!FeatureFlags.FOLDER_NAME_SUGGEST.get()) {
             return;
         }
@@ -445,7 +448,9 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
         if (nameInfos == null || nameInfos[0] == null || isEmpty(nameInfos[0].getLabel())) {
             return;
         }
-        mInfo.title = nameInfos[0].getLabel();
+        mInfo.setTitle(nameInfos[0].getLabel());
+        StatsLogManager.newInstance(getContext())
+                .log(LAUNCHER_FOLDER_LABEL_UPDATED, instanceId, mInfo.buildProto());
         onTitleChanged(mInfo.title);
         mFolder.mFolderName.setText(mInfo.title);
         mFolder.mLauncher.getModelWriter().updateItemInDatabase(mInfo);

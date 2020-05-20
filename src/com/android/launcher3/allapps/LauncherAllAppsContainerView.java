@@ -60,6 +60,14 @@ public class LauncherAllAppsContainerView extends AllAppsContainerView {
     }
 
     @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        if (!mLauncher.isInState(LauncherState.ALL_APPS)) {
+            return false;
+        }
+        return super.onTouchEvent(ev);
+    }
+
+    @Override
     public void setInsets(Rect insets) {
         super.setInsets(insets);
         mLauncher.getAllAppsController()

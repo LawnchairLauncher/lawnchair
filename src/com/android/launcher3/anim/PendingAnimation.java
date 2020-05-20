@@ -18,6 +18,7 @@ package com.android.launcher3.anim;
 import static com.android.launcher3.anim.AnimatorPlaybackController.addAnimationHoldersRecur;
 
 import android.animation.Animator;
+import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
@@ -51,12 +52,8 @@ public class PendingAnimation implements PropertySetter {
     private ValueAnimator mProgressAnimator;
 
     public PendingAnimation(long  duration) {
-        this(duration, new AnimatorSet());
-    }
-
-    public PendingAnimation(long  duration, AnimatorSet targetSet) {
         mDuration = duration;
-        mAnim = targetSet;
+        mAnim = new AnimatorSet();
     }
 
     /**
@@ -129,13 +126,32 @@ public class PendingAnimation implements PropertySetter {
     public void addOnFrameCallback(Runnable runnable) {
         if (mProgressAnimator == null) {
             mProgressAnimator = ValueAnimator.ofFloat(0, 1).setDuration(mDuration);
-            add(mProgressAnimator);
         }
 
         mProgressAnimator.addUpdateListener(anim -> runnable.run());
     }
 
-    public AnimatorSet getAnim() {
+    /**
+     * @see AnimatorSet#addListener(AnimatorListener)
+     */
+    public void addListener(Animator.AnimatorListener listener) {
+        mAnim.addListener(listener);
+    }
+
+    /**
+     * Creates and returns the underlying AnimatorSet
+     */
+    public AnimatorSet buildAnim() {
+        // Add progress animation to the end, so that frame callback is called after all the other
+        // animation update.
+        if (mProgressAnimator != null) {
+            add(mProgressAnimator);
+            mProgressAnimator = null;
+        }
+        if (mAnimHolders.isEmpty()) {
+            // Add a dummy animation to that the duration is respected
+            add(ValueAnimator.ofFloat(0, 1));
+        }
         return mAnim;
     }
 
@@ -143,7 +159,7 @@ public class PendingAnimation implements PropertySetter {
      * Creates a controller for this animation
      */
     public AnimatorPlaybackController createPlaybackController() {
-        return new AnimatorPlaybackController(mAnim, mDuration, mAnimHolders);
+        return new AnimatorPlaybackController(buildAnim(), mDuration, mAnimHolders);
     }
 
     /**
