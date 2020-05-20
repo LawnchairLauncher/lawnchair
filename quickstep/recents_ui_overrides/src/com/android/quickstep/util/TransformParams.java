@@ -16,6 +16,7 @@
 package com.android.quickstep.util;
 
 import android.graphics.RectF;
+import android.util.FloatProperty;
 
 import androidx.annotation.Nullable;
 
@@ -28,6 +29,19 @@ import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.
 import com.android.systemui.shared.system.TransactionCompat;
 
 public class TransformParams {
+
+    public static FloatProperty<TransformParams> PROGRESS =
+            new FloatProperty<TransformParams>("progress") {
+        @Override
+        public void setValue(TransformParams params, float v) {
+            params.setProgress(v);
+        }
+
+        @Override
+        public Float get(TransformParams params) {
+            return params.getProgress();
+        }
+    };
 
     private float mProgress;
     private @Nullable RectF mCurrentRect;
@@ -176,10 +190,6 @@ public class TransformParams {
         return mTargetSet;
     }
 
-    public SyncRtSurfaceTransactionApplierCompat getSyncTransactionApplier() {
-        return mSyncTransactionApplier;
-    }
-
     public void applySurfaceParams(SurfaceParams[] params) {
         if (mSyncTransactionApplier != null) {
             mSyncTransactionApplier.scheduleApply(params);
@@ -199,7 +209,15 @@ public class TransformParams {
 
     public interface BuilderProxy {
 
-        void onBuildParams(SurfaceParams.Builder builder,
-                RemoteAnimationTargetCompat app, int targetMode, TransformParams params);
+        default void onBuildParams(SurfaceParams.Builder builder,
+                RemoteAnimationTargetCompat app, int targetMode, TransformParams params) {
+            if (app.mode == targetMode
+                    && app.activityType != RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME) {
+                onBuildTargetParams(builder, app, params);
+            }
+        }
+
+        default void onBuildTargetParams(SurfaceParams.Builder builder,
+                RemoteAnimationTargetCompat app, TransformParams params) { }
     }
 }

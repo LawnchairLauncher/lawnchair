@@ -20,6 +20,7 @@ import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_ALL_APP
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION;
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_WIDGETS_TRAY;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
@@ -252,6 +253,13 @@ public class ItemInfo {
     /**
      * Creates {@link LauncherAtom.ItemInfo} with important fields and parent container info.
      */
+    public LauncherAtom.ItemInfo buildProto() {
+        return buildProto(null);
+    }
+
+    /**
+     * Creates {@link LauncherAtom.ItemInfo} with important fields and parent container info.
+     */
     public LauncherAtom.ItemInfo buildProto(FolderInfo fInfo) {
         LauncherAtom.ItemInfo.Builder itemBuilder = getDefaultItemInfoBuilder();
         Optional<ComponentName> nullableComponent = Optional.ofNullable(getTargetComponent());
@@ -335,6 +343,11 @@ public class ItemInfo {
                         .setAllAppsContainer(
                                 AllAppsContainer.getDefaultInstance())
                         .build();
+            case CONTAINER_WIDGETS_TRAY:
+                return ContainerInfo.newBuilder()
+                        .setWidgetsContainer(
+                                LauncherAtom.WidgetsContainer.getDefaultInstance())
+                        .build();
         }
         return ContainerInfo.getDefaultInstance();
     }
@@ -344,5 +357,9 @@ public class ItemInfo {
         ItemInfo itemInfo = new ItemInfo();
         itemInfo.copyFrom(this);
         return itemInfo;
+    }
+
+    public void setTitle(CharSequence title) {
+        this.title = title;
     }
 }
