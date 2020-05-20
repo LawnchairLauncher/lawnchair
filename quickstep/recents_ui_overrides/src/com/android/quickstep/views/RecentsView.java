@@ -115,6 +115,7 @@ import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.OverScroller;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.ViewPool;
+import com.android.quickstep.BaseActivityInterface;
 import com.android.quickstep.RecentsAnimationController;
 import com.android.quickstep.RecentsAnimationTargets;
 import com.android.quickstep.RecentsModel;
@@ -128,7 +129,6 @@ import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.quickstep.util.SplitScreenBounds;
 import com.android.quickstep.util.TransformParams;
-import com.android.quickstep.util.WindowSizeStrategy;
 import com.android.systemui.plugins.ResourceProvider;
 import com.android.systemui.shared.recents.IPinnedStackAnimationListener;
 import com.android.systemui.shared.recents.model.Task;
@@ -209,7 +209,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             };
 
     protected final RecentsOrientedState mOrientationState;
-    protected final WindowSizeStrategy mSizeStrategy;
+    protected final BaseActivityInterface mSizeStrategy;
     protected RecentsAnimationController mRecentsAnimationController;
     protected RecentsAnimationTargets mRecentsAnimationTargets;
     protected AppWindowAnimationHelper mAppWindowAnimationHelper;
@@ -381,7 +381,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     };
 
     public RecentsView(Context context, AttributeSet attrs, int defStyleAttr,
-            WindowSizeStrategy sizeStrategy) {
+            BaseActivityInterface sizeStrategy) {
         super(context, attrs, defStyleAttr);
         setPageSpacing(getResources().getDimensionPixelSize(R.dimen.recents_page_spacing));
         setEnableFreeScroll(true);
@@ -2189,6 +2189,10 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
      * @param isModalState
      */
     public void setModalStateEnabled(boolean isModalState) { }
+
+    public BaseActivityInterface getSizeStrategy() {
+        return mSizeStrategy;
+    }
 
     /**
      * Used to register callbacks for when our empty message state changes.
