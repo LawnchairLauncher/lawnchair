@@ -140,7 +140,7 @@ public final class OverviewComponentObserver {
 
         if (!mDeviceState.isHomeDisabled() && (defaultHome == null || mIsDefaultHome)) {
             // User default home is same as out home app. Use Overview integrated in Launcher.
-            mActivityInterface = new LauncherActivityInterface();
+            mActivityInterface = LauncherActivityInterface.INSTANCE;
             mIsHomeAndOverviewSame = true;
             mOverviewIntent = mMyHomeIntent;
             mCurrentHomeIntent.setComponent(mMyHomeIntent.getComponent());
@@ -150,7 +150,7 @@ public final class OverviewComponentObserver {
         } else {
             // The default home app is a different launcher. Use the fallback Overview instead.
 
-            mActivityInterface = new FallbackActivityInterface();
+            mActivityInterface = FallbackActivityInterface.INSTANCE;
             mIsHomeAndOverviewSame = false;
             mOverviewIntent = mFallbackIntent;
             mCurrentHomeIntent.setComponent(defaultHome);
