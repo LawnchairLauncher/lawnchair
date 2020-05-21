@@ -110,6 +110,9 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_QUICK_CAPTURE_GESTURE = getDebugFlag(
             "ENABLE_QUICK_CAPTURE_GESTURE", true, "Swipe from right to left to quick capture");
 
+    public static final BooleanFlag ENABLE_QUICK_CAPTURE_WINDOW = getDebugFlag(
+            "ENABLE_QUICK_CAPTURE_WINDOW", false, "Use window to host quick capture");
+
     public static final BooleanFlag FORCE_LOCAL_OVERSCROLL_PLUGIN = getDebugFlag(
             "FORCE_LOCAL_OVERSCROLL_PLUGIN", false,
             "Use a launcher-provided OverscrollPlugin if available");

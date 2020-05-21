@@ -317,13 +317,6 @@ class OrientationTouchTransformer {
 
     private class OrientationRectF extends RectF {
 
-        /**
-         * Delta to subtract width and height by because if we report the translated touch
-         * bounds as the width and height, calling {@link RectF#contains(float, float)} will
-         * be false
-         */
-        private float maxDelta = 0.001f;
-
         private int mRotation;
         private float mHeight;
         private float mWidth;
@@ -331,8 +324,8 @@ class OrientationTouchTransformer {
         OrientationRectF(float left, float top, float right, float bottom, int rotation) {
             super(left, top, right, bottom);
             this.mRotation = rotation;
-            mHeight = bottom - maxDelta;
-            mWidth = right - maxDelta;
+            mHeight = bottom;
+            mWidth = right;
         }
 
         @Override
@@ -340,6 +333,13 @@ class OrientationTouchTransformer {
             String s = super.toString();
             s += " rotation: " + mRotation;
             return s;
+        }
+
+        @Override
+        public boolean contains(float x, float y) {
+            // Mark bottom right as included in the Rect (copied from Rect src, added "=" in "<=")
+            return left < right && top < bottom  // check for empty first
+                    && x >= left && x <= right && y >= top && y <= bottom;
         }
 
         boolean applyTransform(MotionEvent event, boolean forceTransform) {
