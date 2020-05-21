@@ -136,10 +136,13 @@ final class AppToOverviewAnimationProvider<T extends StatefulActivity<?>> extend
                         new SyncRtSurfaceTransactionApplierCompat(mActivity.getRootView()));
 
         AnimatedFloat recentsAlpha = new AnimatedFloat(() -> { });
-        params.setBaseAlphaCallback((t, a) -> recentsAlpha.value);
+        params.setBaseBuilderProxy((builder, app, p)
+                -> builder.withAlpha(recentsAlpha.value));
 
         Interpolator taskInterpolator;
         if (targets.isAnimatingHome()) {
+            params.setHomeBuilderProxy((builder, app, p) -> builder.withAlpha(1 - p.getProgress()));
+
             taskInterpolator = TOUCH_RESPONSE_INTERPOLATOR;
             pa.addFloat(recentsAlpha, AnimatedFloat.VALUE, 0, 1, TOUCH_RESPONSE_INTERPOLATOR);
         } else {
