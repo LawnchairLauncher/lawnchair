@@ -1159,7 +1159,8 @@ public final class LauncherInstrumentation {
         }
 
         final MotionEvent event = getMotionEvent(downTime, currentTime, action, point.x, point.y);
-        mInstrumentation.getUiAutomation().injectInputEvent(event, true);
+        assertTrue("injectInputEvent failed",
+                mInstrumentation.getUiAutomation().injectInputEvent(event, true));
         event.recycle();
     }
 
