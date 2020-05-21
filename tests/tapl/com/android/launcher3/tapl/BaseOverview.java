@@ -106,21 +106,33 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
      */
     @NonNull
     public OverviewTask getCurrentTask() {
+        final List<UiObject2> taskViews = getTasks();
+        mLauncher.assertNotEquals("Unable to find a task", 0, taskViews.size());
+
+        // taskViews contains up to 3 task views: the 'main' (having the widest visible part) one
+        // in the center, and parts of its right and left siblings. Find the main task view by
+        // its width.
+        final UiObject2 widestTask = Collections.max(taskViews,
+                (t1, t2) -> Integer.compare(mLauncher.getVisibleBounds(t1).width(),
+                        mLauncher.getVisibleBounds(t2).width()));
+
+        return new OverviewTask(mLauncher, widestTask, this);
+    }
+
+    @NonNull
+    private List<UiObject2> getTasks() {
         try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
-                "want to get current task")) {
+                "want to get overview tasks")) {
             verifyActiveContainer();
-            final List<UiObject2> taskViews = mLauncher.getDevice().findObjects(
+            return mLauncher.getDevice().findObjects(
                     mLauncher.getOverviewObjectSelector("snapshot"));
-            mLauncher.assertNotEquals("Unable to find a task", 0, taskViews.size());
-
-            // taskViews contains up to 3 task views: the 'main' (having the widest visible
-            // part) one in the center, and parts of its right and left siblings. Find the
-            // main task view by its width.
-            final UiObject2 widestTask = Collections.max(taskViews,
-                    (t1, t2) -> Integer.compare(mLauncher.getVisibleBounds(t1).width(),
-                            mLauncher.getVisibleBounds(t2).width()));
-
-            return new OverviewTask(mLauncher, widestTask, this);
         }
+    }
+
+    /**
+     * Returns whether Overview has tasks.
+     */
+    public boolean hasTasks() {
+        return getTasks().size() > 0;
     }
 }
