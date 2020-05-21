@@ -77,7 +77,6 @@ public class AppWindowAnimationHelper implements TransformParams.BuilderProxy {
     private final Matrix mTmpMatrix = new Matrix();
     private final Rect mTmpRect = new Rect();
     private final RectF mTmpRectF = new RectF();
-    private final RectF mCurrentRectWithInsets = new RectF();
     private RecentsOrientedState mOrientedState;
     // Corner radius of windows, in pixels
     private final float mWindowCornerRadius;
@@ -88,9 +87,6 @@ public class AppWindowAnimationHelper implements TransformParams.BuilderProxy {
     // Whether or not to actually use the rounded cornders on windows
     private boolean mUseRoundedCornersOnWindows;
 
-    // Corner radius currently applied to transformed window.
-    private float mCurrentCornerRadius;
-
     public AppWindowAnimationHelper(RecentsOrientedState orientedState, Context context) {
         Resources res = context.getResources();
         mOrientedState = orientedState;
@@ -100,25 +96,9 @@ public class AppWindowAnimationHelper implements TransformParams.BuilderProxy {
         mUseRoundedCornersOnWindows = mSupportsRoundedCornersOnWindows;
     }
 
-    public AppWindowAnimationHelper(Context context) {
-        this(null, context);
-    }
-
     private void updateSourceStack(RemoteAnimationTargetCompat target) {
         mSourceInsets.set(target.contentInsets);
         mSourceStackBounds.set(target.screenSpaceBounds);
-
-        // TODO: Should sourceContainerBounds already have this offset?
-        mSourceStackBounds.offsetTo(target.position.x, target.position.y);
-    }
-
-    public void updateSource(Rect homeStackBounds, RemoteAnimationTargetCompat target) {
-        updateSourceStack(target);
-        updateHomeBounds(homeStackBounds);
-    }
-
-    public void updateHomeBounds(Rect homeStackBounds) {
-        mHomeStackBounds.set(homeStackBounds);
     }
 
     public void updateTargetRect(Rect targetRect) {
@@ -186,14 +166,14 @@ public class AppWindowAnimationHelper implements TransformParams.BuilderProxy {
         crop.offsetTo(0, 0);
         float cornerRadius = 0f;
         float scale = Math.max(mCurrentRect.width(), mTargetRect.width()) / crop.width();
+        mTmpMatrix.setTranslate(0, 0);
+        if (app.activityType == RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME) {
+            mTmpMatrix.setTranslate(app.localBounds.left, app.localBounds.top);
+        }
         if (app.mode == targetMode
                 && app.activityType != RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME) {
             mTmpMatrix.setRectToRect(mSourceRect, mCurrentRect, ScaleToFit.FILL);
-            if (app.localBounds != null) {
-                mTmpMatrix.postTranslate(app.localBounds.left, app.localBounds.top);
-            } else {
-                mTmpMatrix.postTranslate(app.position.x, app.position.y);
-            }
+            mTmpMatrix.postTranslate(app.localBounds.left, app.localBounds.top);
             mCurrentClipRectF.roundOut(crop);
             if (mSupportsRoundedCornersOnWindows) {
                 if (params.getCornerRadius() > -1) {
@@ -205,7 +185,6 @@ public class AppWindowAnimationHelper implements TransformParams.BuilderProxy {
                     cornerRadius = mapRange(boundToRange(params.getProgress(), 0, 1),
                             windowCornerRadius, mTaskCornerRadius);
                 }
-                mCurrentCornerRadius = cornerRadius;
             }
 
             builder.withMatrix(mTmpMatrix)
@@ -239,11 +218,6 @@ public class AppWindowAnimationHelper implements TransformParams.BuilderProxy {
                 mSourceStackBounds.width() - (mSourceWindowClipInsets.right * progress);
         mCurrentClipRectF.bottom =
                 mSourceStackBounds.height() - (mSourceWindowClipInsets.bottom * progress);
-    }
-
-    public RectF getCurrentRectWithInsets() {
-        mTmpMatrix.mapRect(mCurrentRectWithInsets, mCurrentClipRectF);
-        return mCurrentRectWithInsets;
     }
 
     public void fromTaskThumbnailView(TaskThumbnailView ttv, RecentsView rv,
@@ -315,10 +289,6 @@ public class AppWindowAnimationHelper implements TransformParams.BuilderProxy {
 
     public RectF getTargetRect() {
         return mTargetRect;
-    }
-
-    public float getCurrentCornerRadius() {
-        return mCurrentCornerRadius;
     }
 
 }

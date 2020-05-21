@@ -110,6 +110,18 @@ public interface DropTarget {
 
             return res;
         }
+
+
+        /**
+         * This is used to determine if an object is dropped at a different location than it was
+         * dragged from
+         */
+        public boolean isMoved() {
+            return dragInfo.cellX != originalDragInfo.cellX
+                    || dragInfo.cellY != originalDragInfo.cellY
+                    || dragInfo.screenId != originalDragInfo.screenId
+                    || dragInfo.container != originalDragInfo.container;
+        }
     }
 
     /**
