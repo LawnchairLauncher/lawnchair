@@ -150,6 +150,9 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
         return deviceState.isInDeferredGestureRegion(ev);
     }
 
+    public abstract void onExitOverview(RecentsAnimationDeviceState deviceState,
+            Runnable exitRunnable);
+
     /**
      * Updates the prediction state to the overview state.
      */
