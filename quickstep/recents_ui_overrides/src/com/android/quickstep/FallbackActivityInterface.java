@@ -140,6 +140,11 @@ public final class FallbackActivityInterface extends
     }
 
     @Override
+    public void onExitOverview(RecentsAnimationDeviceState deviceState, Runnable exitRunnable) {
+        // no-op, fake landscape not supported for 3P
+    }
+
+    @Override
     public int getContainerType() {
         RecentsActivity activity = getCreatedActivity();
         boolean visible = activity != null && activity.isStarted() && activity.hasWindowFocus();

@@ -554,7 +554,6 @@ public class TouchInteractionService extends Service implements PluginListener<O
                 || previousGestureState.isRecentsAnimationRunning()
                         ? newBaseConsumer(previousGestureState, newGestureState, event)
                         : mResetGestureInputConsumer;
-        // TODO(b/149880412): 2 button landscape mode is wrecked. Fixit!
         if (mDeviceState.isGesturalNavMode()) {
             handleOrientationSetup(base);
         }
