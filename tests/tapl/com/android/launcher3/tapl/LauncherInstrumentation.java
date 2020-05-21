@@ -440,6 +440,7 @@ public final class LauncherInstrumentation {
         try {
             Log.e("b/156287114", "Input:");
             for (String line : mDevice.executeShellCommand("dumpsys input").split("\\n")) {
+                SystemClock.sleep(10);
                 Log.d("b/156287114", line);
             }
         } catch (IOException e) {
@@ -1338,6 +1339,7 @@ public final class LauncherInstrumentation {
                             Log.e("b/156287114", "Input:");
                             for (String line : mDevice.executeShellCommand("dumpsys input").split(
                                     "\\n")) {
+                                SystemClock.sleep(10);
                                 Log.d("b/156287114", line);
                             }
                         } catch (IOException e) {
