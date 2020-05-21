@@ -71,7 +71,7 @@ public final class RecentsViewStateController extends
             builder.addOnFrameCallback(mRecentsView::loadVisibleTaskData);
             mRecentsView.updateEmptyMessage();
         } else {
-            builder.getAnim().addListener(
+            builder.addListener(
                     AnimationSuccessListener.forRunnable(mRecentsView::resetTaskVisuals));
         }
 

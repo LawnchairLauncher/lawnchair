@@ -304,4 +304,8 @@ public abstract class BaseQuickstepLauncher extends Launcher
     public ShelfPeekAnim getShelfPeekAnim() {
         return mShelfPeekAnim;
     }
+
+    public void setHintUserWillBeActive() {
+        addActivityFlags(ACTIVITY_STATE_USER_WILL_BE_ACTIVE);
+    }
 }
