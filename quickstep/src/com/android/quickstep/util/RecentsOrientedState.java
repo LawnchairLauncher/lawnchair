@@ -203,7 +203,7 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
         mDisplayRotation = displayRotation;
         mTouchRotation = touchRotation;
 
-        if (mLauncherRotation == mTouchRotation) {
+        if (mLauncherRotation == mTouchRotation || canLauncherRotate()) {
             mOrientationHandler = PagedOrientationHandler.HOME_ROTATED;
             if (DEBUG) {
                 Log.d(TAG, "current RecentsOrientedState: " + this);
@@ -235,7 +235,7 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
 
     private void setFlag(int mask, boolean enabled) {
         boolean wasRotationEnabled = !TestProtocol.sDisableSensorRotation
-                && mFlags == VALUE_ROTATION_WATCHER_ENABLED;
+                && (mFlags & VALUE_ROTATION_WATCHER_ENABLED) == VALUE_ROTATION_WATCHER_ENABLED;
         if (enabled) {
             mFlags |= mask;
         } else {
@@ -243,7 +243,7 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
         }
 
         boolean isRotationEnabled = !TestProtocol.sDisableSensorRotation
-                && mFlags == VALUE_ROTATION_WATCHER_ENABLED;
+                && (mFlags & VALUE_ROTATION_WATCHER_ENABLED) == VALUE_ROTATION_WATCHER_ENABLED;
         if (wasRotationEnabled != isRotationEnabled) {
             UI_HELPER_EXECUTOR.execute(() -> {
                 if (isRotationEnabled) {
