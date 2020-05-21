@@ -108,9 +108,14 @@ public abstract class BaseActivity extends Activity implements LogStateProvider,
     public static final int ACTIVITY_STATE_USER_ACTIVE = 1 << 4;
 
     /**
+     * State flag indicating if the user will be active shortly.
+     */
+    public static final int ACTIVITY_STATE_USER_WILL_BE_ACTIVE = 1 << 5;
+
+    /**
      * State flag indicating that a state transition is in progress
      */
-    public static final int ACTIVITY_STATE_TRANSITION_ACTIVE = 1 << 5;
+    public static final int ACTIVITY_STATE_TRANSITION_ACTIVE = 1 << 6;
 
     @Retention(SOURCE)
     @IntDef(
@@ -180,6 +185,7 @@ public abstract class BaseActivity extends Activity implements LogStateProvider,
     @Override
     protected void onResume() {
         addActivityFlags(ACTIVITY_STATE_RESUMED | ACTIVITY_STATE_USER_ACTIVE);
+        removeActivityFlags(ACTIVITY_STATE_USER_WILL_BE_ACTIVE);
         super.onResume();
     }
 

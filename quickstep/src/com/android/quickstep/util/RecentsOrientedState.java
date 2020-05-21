@@ -27,6 +27,7 @@ import static com.android.launcher3.logging.LoggerUtils.extractObjectNameAndAddr
 import static com.android.launcher3.states.RotationHelper.ALLOW_ROTATION_PREFERENCE_KEY;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
+import static com.android.quickstep.SysUINavigationMode.Mode.TWO_BUTTONS;
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
 import android.content.ContentResolver;
@@ -52,6 +53,8 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.WindowBounds;
+import com.android.quickstep.BaseActivityInterface;
+import com.android.quickstep.SysUINavigationMode;
 
 import java.lang.annotation.Retention;
 import java.util.function.IntConsumer;
@@ -117,11 +120,14 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
             MASK_MULTIPLE_ORIENTATION_SUPPORTED_BY_DEVICE | FLAG_SYSTEM_ROTATION_ALLOWED
                     | FLAG_ROTATION_WATCHER_SUPPORTED | FLAG_ROTATION_WATCHER_ENABLED;
 
+    private SysUINavigationMode.NavigationModeChangeListener mNavModeChangeListener =
+            newMode -> setFlag(FLAG_ROTATION_WATCHER_SUPPORTED, newMode != TWO_BUTTONS);
+
     private final Context mContext;
     private final ContentResolver mContentResolver;
     private final SharedPreferences mSharedPrefs;
     private final OrientationEventListener mOrientationListener;
-    private final WindowSizeStrategy mSizeStrategy;
+    private final BaseActivityInterface mSizeStrategy;
 
     private final Matrix mTmpMatrix = new Matrix();
 
@@ -133,7 +139,7 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
      *                              is enabled
      * @see #setRotationWatcherEnabled(boolean)
      */
-    public RecentsOrientedState(Context context, WindowSizeStrategy sizeStrategy,
+    public RecentsOrientedState(Context context, BaseActivityInterface sizeStrategy,
             IntConsumer rotationChangeListener) {
         mContext = context;
         mContentResolver = context.getContentResolver();
@@ -162,13 +168,7 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
         if (isFixedRotationTransformEnabled(context)) {
             mFlags |= FLAG_MULTIPLE_ORIENTATION_SUPPORTED_BY_FLAG;
         }
-        if (mOrientationListener.canDetectOrientation()) {
-            mFlags |= FLAG_ROTATION_WATCHER_SUPPORTED;
-        }
-
-        // initialize external flags
-        updateAutoRotateSetting();
-        updateHomeRotationSetting();
+        initFlags();
     }
 
     /**
@@ -272,6 +272,18 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
                 mSharedPrefs.getBoolean(ALLOW_ROTATION_PREFERENCE_KEY, false));
     }
 
+    private void initFlags() {
+        SysUINavigationMode.Mode currentMode = SysUINavigationMode.getMode(mContext);
+        if (mOrientationListener.canDetectOrientation() &&
+                currentMode != TWO_BUTTONS) {
+            mFlags |= FLAG_ROTATION_WATCHER_SUPPORTED;
+        }
+
+        // initialize external flags
+        updateAutoRotateSetting();
+        updateHomeRotationSetting();
+    }
+
     /**
      * Initializes any system values and registers corresponding change listeners. It must be
      * paired with {@link #destroyListeners()} call
@@ -282,9 +294,11 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
             mContentResolver.registerContentObserver(
                     Settings.System.getUriFor(Settings.System.ACCELEROMETER_ROTATION),
                     false, mSystemAutoRotateObserver);
+            SysUINavigationMode.Mode currentMode =
+                    SysUINavigationMode.INSTANCE.get(mContext)
+                            .addModeChangeListener(mNavModeChangeListener);
         }
-        updateAutoRotateSetting();
-        updateHomeRotationSetting();
+        initFlags();
     }
 
     /**
@@ -294,6 +308,8 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
         if (isMultipleOrientationSupportedByDevice()) {
             mSharedPrefs.unregisterOnSharedPreferenceChangeListener(this);
             mContentResolver.unregisterContentObserver(mSystemAutoRotateObserver);
+            SysUINavigationMode.INSTANCE.get(mContext)
+                    .removeModeChangeListener(mNavModeChangeListener);
         }
         setRotationWatcherEnabled(false);
     }
