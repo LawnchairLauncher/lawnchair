@@ -24,6 +24,7 @@ import android.os.Build;
 
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
+import com.android.quickstep.util.ActiveGestureLog;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
@@ -278,6 +279,7 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
     public void setEndTarget(GestureEndTarget target, boolean isAtomic) {
         mEndTarget = target;
         mStateCallback.setState(STATE_END_TARGET_SET);
+        ActiveGestureLog.INSTANCE.addLog("setEndTarget " + mEndTarget);
         if (isAtomic) {
             mStateCallback.setState(STATE_END_TARGET_ANIMATION_FINISHED);
         }

@@ -709,6 +709,7 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
                 mStateCallback.setState(STATE_RESUME_LAST_TASK);
                 break;
         }
+        ActiveGestureLog.INSTANCE.addLog("onSettledOnEndTarget " + mGestureState.getEndTarget());
     }
 
     @Override
