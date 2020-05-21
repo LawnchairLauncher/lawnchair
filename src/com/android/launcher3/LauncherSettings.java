@@ -153,12 +153,16 @@ public class LauncherSettings {
         public static final int CONTAINER_PREDICTION = -102;
         public static final int CONTAINER_HOTSEAT_PREDICTION = -103;
         public static final int CONTAINER_ALL_APPS = -104;
+        public static final int CONTAINER_WIDGETS_TRAY = -105;
+
 
         public static final String containerToString(int container) {
             switch (container) {
                 case CONTAINER_DESKTOP: return "desktop";
                 case CONTAINER_HOTSEAT: return "hotseat";
                 case CONTAINER_PREDICTION: return "prediction";
+                case CONTAINER_ALL_APPS: return "all_apps";
+                case CONTAINER_WIDGETS_TRAY: return "widgets_tray";
                 default: return String.valueOf(container);
             }
         }

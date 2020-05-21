@@ -79,8 +79,13 @@
     <!-- Distance to move elements when swiping up to go home from launcher -->
     <dimen name="home_pullback_distance">28dp</dimen>
 
+    <!-- Distance to move the tasks when swiping up while the device is locked -->
+    <dimen name="device_locked_y_offset">-80dp</dimen>
+
     <!-- Overscroll Gesture -->
     <dimen name="gestures_overscroll_fling_threshold">40dp</dimen>
+    <dimen name="gestures_overscroll_active_threshold">80dp</dimen>
+    <dimen name="gestures_overscroll_finish_threshold">136dp</dimen>
 
     <!-- Tips Gesture Tutorial -->
     <dimen name="gesture_tutorial_title_margin_start_end">40dp</dimen>

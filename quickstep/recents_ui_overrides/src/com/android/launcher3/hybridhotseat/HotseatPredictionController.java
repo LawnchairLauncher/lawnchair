@@ -274,6 +274,7 @@ public class HotseatPredictionController implements DragController.DragListener,
         }
         if (mAppPredictor != null) {
             mAppPredictor.destroy();
+            mAppPredictor = null;
         }
         WeakReference<HotseatPredictionController> controllerRef = new WeakReference<>(this);
 

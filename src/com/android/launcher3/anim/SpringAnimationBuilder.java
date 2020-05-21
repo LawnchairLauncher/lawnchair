@@ -18,7 +18,6 @@ package com.android.launcher3.anim;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 
 import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.util.FloatProperty;
@@ -197,9 +196,9 @@ public class SpringAnimationBuilder {
         animator.setDuration(getDuration()).setInterpolator(LINEAR);
         animator.addUpdateListener(anim ->
                 property.set(target, getInterpolatedValue(anim.getAnimatedFraction())));
-        animator.addListener(new AnimatorListenerAdapter() {
+        animator.addListener(new AnimationSuccessListener() {
             @Override
-            public void onAnimationEnd(Animator animation) {
+            public void onAnimationSuccess(Animator animation) {
                 property.set(target, mEndValue);
             }
         });
