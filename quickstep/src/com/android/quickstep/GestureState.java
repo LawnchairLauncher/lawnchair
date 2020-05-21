@@ -47,7 +47,7 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
 
         NEW_TASK(false, ContainerType.APP, true),
 
-        LAST_TASK(false, ContainerType.APP, false);
+        LAST_TASK(false, ContainerType.APP, true);
 
         GestureEndTarget(boolean isLauncher, int containerType,
                 boolean recentsAttachedToAppWindow) {
