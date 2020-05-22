@@ -34,16 +34,17 @@
     <string name="all_apps_prediction_tip" msgid="2672336544844936186">"Applications prévues pour vous"</string>
     <string name="hotseat_edu_prompt_title" msgid="5595771595144175752">"Accédez facilement à vos applications les plus utilisées"</string>
     <string name="hotseat_edu_prompt_content" msgid="5709176001504149521">"Pixel prédit les applications dont vous pourriez avoir besoin par la suite et les affiche sur votre écran d\'accueil. Appuyez ici pour configurer ce paramètre."</string>
-    <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"Retrouvez vos applications suggérées dans la rangée du bas de votre écran d\'accueil"</string>
-    <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"Accédez facilement aux applications dont vous vous servez le plus, directement depuis l\'écran d\'accueil. Ces suggestions peuvent varier en fonction de vos habitudes d\'utilisation. Les applications de la rangée du bas seront transférées sur votre écran d\'accueil."</string>
-    <string name="hotseat_edu_message_migrate_alt" msgid="3042360119039646356">"Accédez facilement aux applications dont vous vous servez le plus, directement depuis l\'écran d\'accueil. Ces suggestions peuvent varier en fonction de vos habitudes d\'utilisation. Les applications de la rangée du bas seront transférées dans un nouveau dossier."</string>
-    <string name="hotseat_edu_accept" msgid="1611544083278999837">"Activer les applications suggérées"</string>
+    <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"Retrouvez vos applications favorites au bas de votre écran d\'accueil"</string>
+    <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"Les suggestions d\'applications permettent d\'afficher vos applications favorites au bas de votre écran d\'accueil. Elles s\'adaptent à vos habitudes d\'utilisation. Les icônes auparavant affichées au bas de l\'écran seront déplacées vers le haut."</string>
+    <string name="hotseat_edu_message_migrate_alt" msgid="3042360119039646356">"Les suggestions d\'applications permettent d\'afficher vos applications favorites au bas de votre écran d\'accueil. Elles s\'adaptent à vos habitudes d\'utilisation. Les icônes auparavant affichées au bas de l\'écran seront placées dans un nouveau dossier."</string>
+    <string name="hotseat_edu_accept" msgid="1611544083278999837">"Activer les suggestions"</string>
     <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"Non, merci"</string>
     <string name="hotseat_turn_off" msgid="7808360330229368470">"Paramètres"</string>
     <string name="hotseat_auto_enrolled" msgid="522100018967146807">"Les applications dont vous vous servez le plus s\'affichent ici (ces suggestions peuvent varier en fonction de vos habitudes d\'utilisation)"</string>
-    <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"Faites glisser des applications hors de la rangée du bas pour obtenir des applications suggérées"</string>
-    <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"Vos applications suggérées ont été ajoutées là où il y avait de la place"</string>
+    <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"Faites glisser des applications hors de la rangée du bas pour obtenir des suggestions d\'applications"</string>
+    <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"Des suggestions d\'applications ont été ajoutées à un emplacement vide"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Application prédite : <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="action_share" msgid="2648470652637092375">"Partager"</string>
-    <string name="action_screenshot" msgid="8171125848358142917">"Faire une capture d\'écran"</string>
+    <string name="action_screenshot" msgid="8171125848358142917">"Capture d\'écran"</string>
+    <string name="blocked_by_policy" msgid="2071401072261365546">"Cette action n\'est pas autorisée par l\'application ou par votre organisation"</string>
 </resources>
