@@ -52,6 +52,8 @@
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"إلغاء التثبيت"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"معلومات عن التطبيق"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"تثبيت"</string>
+    <string name="dismiss_prediction_label" msgid="3357562989568808658">"عدم اقتراح التطبيق"</string>
+    <string name="pin_prediction" msgid="4196423321649756498">"تثبيت التطبيق المتوقّع"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"تثبيت اختصارات"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"للسماح لتطبيق ما بإضافة اختصارات بدون تدخل المستخدم."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"قراءة إعدادات واختصارات الشاشة الرئيسية"</string>
@@ -142,7 +144,7 @@
     <string name="work_profile_edu_next" msgid="8783418929296503629">"التالي"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"حسنًا"</string>
     <string name="work_apps_paused_title" msgid="2389865654362803723">"تم إيقاف الملف الشخصي للعمل مؤقتًا"</string>
-    <string name="work_apps_paused_body" msgid="5388070126389079077">"لا يمكن لتطبيقات العمل إرسال إشعارات أو استخدام بطاريتك أو الوصول إلى موقعك الجغرافي."</string>
+    <string name="work_apps_paused_body" msgid="2197210494568696054">"لا يمكن لتطبيقات العمل إرسال إشعارات إليك أو استخدام بطاريتك أو الوصول إلى موقعك الجغرافي."</string>
     <string name="work_apps_paused_content_description" msgid="7553586952985486433">"تم إيقاف الملف الشخصي للعمل مؤقتًا. لا يمكن لتطبيقات العمل إرسال إشعارات إليك أو استخدام بطاريتك أو الوصول إلى موقعك الجغرافي."</string>
     <string name="work_switch_tip" msgid="808075064383839144">"إيقاف تطبيقات العمل وإشعاراتها مؤقتًا"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"تعذَّر <xliff:g id="WHAT">%1$s</xliff:g>."</string>

@@ -52,6 +52,8 @@
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"अनइंस्टॉल करा"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"अ‍ॅप माहिती"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"इंस्टॉल करा"</string>
+    <string name="dismiss_prediction_label" msgid="3357562989568808658">"ॲप सुचवू नका"</string>
+    <string name="pin_prediction" msgid="4196423321649756498">"पूर्वानुमान पिन करा"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"शॉर्टकट स्‍थापित करा"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"वापरकर्ता हस्तक्षेपाशिवाय शॉर्टकट जोडण्यास अ‍ॅप ला अनुमती देते."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"होम सेटिंग्ज आणि शॉर्टकट वाचा"</string>
@@ -88,7 +90,7 @@
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"सुरू"</string>
     <string name="notification_dots_desc_off" msgid="1760796511504341095">"बंद"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"सूचनांच्या अ‍ॅक्सेसची आवश्यकता आहे"</string>
-    <string name="msg_missing_notification_access" msgid="281113995110910548">"सूचना बिंदू दाखवण्यासाठी, <xliff:g id="NAME">%1$s</xliff:g> साठी अ‍ॅप सूचना चालू करा"</string>
+    <string name="msg_missing_notification_access" msgid="281113995110910548">"सूचना बिंदू दाखवण्यासाठी, <xliff:g id="NAME">%1$s</xliff:g> साठी अ‍ॅप सूचना सुरू करा"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"सेटिंग्ज बदला"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"सूचना बिंदू दाखवा"</string>
     <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"होम स्क्रीनवर ॲप आयकन जोडा"</string>
@@ -138,7 +140,7 @@
     <string name="work_profile_edu_next" msgid="8783418929296503629">"पुढील"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"समजले"</string>
     <string name="work_apps_paused_title" msgid="2389865654362803723">"ऑफिस प्रोफाइल थांबवली आहे"</string>
-    <string name="work_apps_paused_body" msgid="5388070126389079077">"ऑफिस अ‍ॅप्स तुम्हाला सूचना पाठवू शकत नाहीत, तुमची बॅटरी वापरू शकत नाहीत किंवा तुमचे स्थान अ‍ॅक्सेस करू शकत नाहीत"</string>
+    <string name="work_apps_paused_body" msgid="2197210494568696054">"कामासंबंधित अ‍ॅप्स तुम्हाला सूचना पाठवू शकत नाहीत, तुमची बॅटरी वापरू शकत नाहीत किंवा तुमचे स्थान अ‍ॅक्सेस करू शकत नाहीत"</string>
     <string name="work_apps_paused_content_description" msgid="7553586952985486433">"ऑफिस प्रोफाइल थांबवली आहे. ऑफिस अ‍ॅप्स तुम्हाला सूचना पाठवू शकत नाहीत, तुमची बॅटरी वापरू शकत नाहीत किंवा तुमचे स्थान अ‍ॅक्सेस करू शकत नाहीत"</string>
     <string name="work_switch_tip" msgid="808075064383839144">"ऑफिस अ‍ॅप्स आणि सूचना थांबवा"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"हे करता आले नाही: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
