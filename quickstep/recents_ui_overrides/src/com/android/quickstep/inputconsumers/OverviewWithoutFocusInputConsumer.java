@@ -17,6 +17,7 @@ package com.android.quickstep.inputconsumers;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.PointF;
 import android.view.MotionEvent;
 
 import com.android.launcher3.BaseActivity;
@@ -33,7 +34,8 @@ import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.TriggerSwipeUpTouchTracker;
 import com.android.systemui.shared.system.InputMonitorCompat;
 
-public class OverviewWithoutFocusInputConsumer implements InputConsumer {
+public class OverviewWithoutFocusInputConsumer implements InputConsumer,
+        TriggerSwipeUpTouchTracker.OnSwipeUpListener {
 
     private final Context mContext;
     private final InputMonitorCompat mInputMonitor;
@@ -45,7 +47,7 @@ public class OverviewWithoutFocusInputConsumer implements InputConsumer {
         mContext = context;
         mInputMonitor = inputMonitor;
         mTriggerSwipeUpTracker = new TriggerSwipeUpTouchTracker(context, disableHorizontalSwipe,
-                deviceState.getNavBarPosition(), this::onInterceptTouch, this::onSwipeUp);
+                deviceState.getNavBarPosition(), this::onInterceptTouch, this);
     }
 
     @Override
@@ -70,7 +72,8 @@ public class OverviewWithoutFocusInputConsumer implements InputConsumer {
         }
     }
 
-    private void onSwipeUp(boolean wasFling) {
+    @Override
+    public void onSwipeUp(boolean wasFling, PointF finalVelocity) {
         mContext.startActivity(new Intent(Intent.ACTION_MAIN)
                 .addCategory(Intent.CATEGORY_HOME)
                 .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
@@ -83,4 +86,7 @@ public class OverviewWithoutFocusInputConsumer implements InputConsumer {
                 wasFling ? Touch.FLING : Touch.SWIPE, Direction.UP, containerType, pageIndex);
         activity.getUserEventDispatcher().setPreviousHomeGesture(true);
     }
+
+    @Override
+    public void onSwipeUpCancelled() {}
 }

@@ -23,6 +23,7 @@ import static com.android.systemui.shared.system.WindowManagerWrapper.WINDOWING_
 import android.animation.TimeInterpolator;
 import android.content.Context;
 import android.graphics.Matrix;
+import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -74,7 +75,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
     private DeviceProfile mDp;
 
     private final Matrix mMatrix = new Matrix();
-    private RemoteAnimationTargetCompat mRunningTarget;
+    private final Point mRunningTargetWindowPosition = new Point();
 
     // Thumbnail view properties
     private final Rect mThumbnailPosition = new Rect();
@@ -139,13 +140,19 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
      * Sets the targets which the simulator will control
      */
     public void setPreview(RemoteAnimationTargetCompat runningTarget) {
-        mRunningTarget = runningTarget;
+        setPreviewBounds(runningTarget.screenSpaceBounds, runningTarget.contentInsets);
+        mRunningTargetWindowPosition.set(runningTarget.position.x, runningTarget.position.y);
+    }
 
-        mThumbnailData.insets.set(mRunningTarget.contentInsets);
+    /**
+     * Sets the targets which the simulator will control
+     */
+    public void setPreviewBounds(Rect bounds, Rect insets) {
+        mThumbnailData.insets.set(insets);
         // TODO: What is this?
         mThumbnailData.windowingMode = WINDOWING_MODE_FULLSCREEN;
 
-        mThumbnailPosition.set(runningTarget.screenSpaceBounds);
+        mThumbnailPosition.set(bounds);
         mLayoutValid = false;
     }
 
@@ -199,16 +206,14 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
         postDisplayRotation(deltaRotation(
                 mOrientationState.getLauncherRotation(), mOrientationState.getDisplayRotation()),
                 mDp.widthPx, mDp.heightPx, matrix);
-        if (mRunningTarget != null) {
-            matrix.postTranslate(-mRunningTarget.position.x, -mRunningTarget.position.y);
-        }
+        matrix.postTranslate(-mRunningTargetWindowPosition.x, -mRunningTargetWindowPosition.y);
     }
 
     /**
      * Applies the target to the previously set parameters
      */
     public void apply(TransformParams params) {
-        if (mDp == null || mRunningTarget == null) {
+        if (mDp == null || mThumbnailPosition.isEmpty()) {
             return;
         }
         if (!mLayoutValid) {
