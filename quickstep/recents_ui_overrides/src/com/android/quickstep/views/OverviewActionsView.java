@@ -17,6 +17,7 @@
 package com.android.quickstep.views;
 
 import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_ACTIONS;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_SHARE;
 import static com.android.quickstep.SysUINavigationMode.removeShelfFromOverview;
 
 import android.content.Context;
@@ -91,8 +92,13 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        findViewById(R.id.action_share).setOnClickListener(this);
+        View share = findViewById(R.id.action_share);
+        share.setOnClickListener(this);
         findViewById(R.id.action_screenshot).setOnClickListener(this);
+        if (ENABLE_OVERVIEW_SHARE.get()) {
+            share.setVisibility(VISIBLE);
+            findViewById(R.id.share_space).setVisibility(VISIBLE);
+        }
     }
 
     /**
