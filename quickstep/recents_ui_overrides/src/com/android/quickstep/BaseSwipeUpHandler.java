@@ -246,7 +246,9 @@ public abstract class BaseSwipeUpHandler<T extends StatefulActivity<?>, Q extend
     protected void onRestartLastAppearedTask() {
         // Finish the controller here, since we won't get onTaskAppeared() for a task that already
         // appeared.
-        mRecentsAnimationController.finish(false, null);
+        if (mRecentsAnimationController != null) {
+            mRecentsAnimationController.finish(false, null);
+        }
     }
 
     /**
