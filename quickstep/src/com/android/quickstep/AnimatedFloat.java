@@ -38,10 +38,16 @@ public class AnimatedFloat {
                 }
             };
 
+    private static final Runnable NO_OP = () -> { };
+
     private final Runnable mUpdateCallback;
     private ObjectAnimator mValueAnimator;
 
     public float value;
+
+    public AnimatedFloat() {
+        this(NO_OP);
+    }
 
     public AnimatedFloat(Runnable updateCallback) {
         mUpdateCallback = updateCallback;

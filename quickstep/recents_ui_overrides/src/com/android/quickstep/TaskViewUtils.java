@@ -143,9 +143,6 @@ public final class TaskViewUtils {
         boolean parallaxCenterAndAdjacentTask = taskIndex != recentsView.getCurrentPage();
         int startScroll = recentsView.getScrollOffset(taskIndex);
 
-        params.setProgress(1);
-        out.setFloat(params, TransformParams.PROGRESS, 0, TOUCH_RESPONSE_INTERPOLATOR);
-
         Context context = v.getContext();
         DeviceProfile dp = BaseActivity.fromContext(context).getDeviceProfile();
         // RecentsView never updates the display rotation until swipe-up so the value may be stale.
@@ -173,9 +170,7 @@ public final class TaskViewUtils {
         }
 
         // Fade in the task during the initial 20% of the animation
-        AnimatedFloat taskAlpha = new AnimatedFloat(() -> { });
-        params.setTaskAlphaCallback((t, alpha) -> taskAlpha.value);
-        out.addFloat(taskAlpha, AnimatedFloat.VALUE, 0, 1, clampToProgress(LINEAR, 0, 0.2f));
+        out.addFloat(params, TransformParams.TARGET_ALPHA, 0, 1, clampToProgress(LINEAR, 0, 0.2f));
 
         if (!skipViewChanges && parallaxCenterAndAdjacentTask && topMostSimulator != null) {
             out.addFloat(v, VIEW_ALPHA, 1, 0, clampToProgress(LINEAR, 0.2f, 0.4f));

@@ -15,23 +15,29 @@
  */
 package com.android.quickstep;
 
-import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME;
 
+import android.animation.ObjectAnimator;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Matrix;
 
 import androidx.annotation.NonNull;
 
+import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
+import com.android.launcher3.anim.SpringAnimationBuilder;
 import com.android.quickstep.fallback.FallbackRecentsView;
 import com.android.quickstep.util.TransformParams;
+import com.android.quickstep.util.TransformParams.BuilderProxy;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
-import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams.Builder;
+import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams;
 
 /**
  * Handles the navigation gestures when a 3rd party launcher is the default home activity.
@@ -42,6 +48,9 @@ public class FallbackSwipeHandler extends
     private FallbackHomeAnimationFactory mActiveAnimationFactory;
     private final boolean mRunningOverHome;
 
+    private final Matrix mTmpMatrix = new Matrix();
+    private float mMaxLauncherScale = 1;
+
     public FallbackSwipeHandler(Context context, RecentsAnimationDeviceState deviceState,
             TaskAnimationManager taskAnimationManager, GestureState gestureState, long touchTimeMs,
             boolean continuingLastGesture, InputConsumerController inputConsumer) {
@@ -49,6 +58,31 @@ public class FallbackSwipeHandler extends
                 continuingLastGesture, inputConsumer);
 
         mRunningOverHome = ActivityManagerWrapper.isHomeTask(mGestureState.getRunningTask());
+        if (mRunningOverHome) {
+            mTransformParams.setHomeBuilderProxy(this::updateHomeActivityTransformDuringSwipeUp);
+        }
+    }
+
+    @Override
+    protected void initTransitionEndpoints(DeviceProfile dp) {
+        super.initTransitionEndpoints(dp);
+        if (mRunningOverHome) {
+            mMaxLauncherScale = 1 / mTaskViewSimulator.getFullScreenScale();
+        }
+    }
+
+    private void updateHomeActivityTransformDuringSwipeUp(SurfaceParams.Builder builder,
+            RemoteAnimationTargetCompat app, TransformParams params) {
+        setHomeScaleAndAlpha(builder, app, mCurrentShift.value,
+                Utilities.boundToRange(1 - mCurrentShift.value, 0, 1));
+    }
+
+    private void setHomeScaleAndAlpha(SurfaceParams.Builder builder,
+            RemoteAnimationTargetCompat app, float verticalShift, float alpha) {
+        float scale = Utilities.mapRange(verticalShift, 1, mMaxLauncherScale);
+        mTmpMatrix.setScale(scale, scale,
+                app.localBounds.exactCenterX(), app.localBounds.exactCenterY());
+        builder.withMatrix(mTmpMatrix).withAlpha(alpha);
     }
 
     @Override
@@ -85,30 +119,61 @@ public class FallbackSwipeHandler extends
         }
     }
 
-    private class FallbackHomeAnimationFactory extends HomeAnimationFactory
-            implements TransformParams.BuilderProxy {
+    private class FallbackHomeAnimationFactory extends HomeAnimationFactory {
 
         private final TransformParams mHomeAlphaParams = new TransformParams();
-        private final AnimatedFloat mHomeAlpha = new AnimatedFloat(this::updateHomeAlpha);
+        private final AnimatedFloat mHomeAlpha;
+
+        private final AnimatedFloat mVerticalShiftForScale = new AnimatedFloat();
+
+        private final AnimatedFloat mRecentsAlpha = new AnimatedFloat();
 
         private final long mDuration;
         FallbackHomeAnimationFactory(long duration) {
             super(null);
             mDuration = duration;
+
+            if (mRunningOverHome) {
+                mHomeAlpha = new AnimatedFloat();
+                mHomeAlpha.value = Utilities.boundToRange(1 - mCurrentShift.value, 0, 1);
+                mVerticalShiftForScale.value = mCurrentShift.value;
+                mTransformParams.setHomeBuilderProxy(
+                        this::updateHomeActivityTransformDuringHomeAnim);
+            } else {
+                mHomeAlpha = new AnimatedFloat(this::updateHomeAlpha);
+                mHomeAlpha.value = 0;
+
+                mHomeAlphaParams.setHomeBuilderProxy(
+                        this::updateHomeActivityTransformDuringHomeAnim);
+            }
+
+            mRecentsAlpha.value = 1;
+            mTransformParams.setBaseBuilderProxy(
+                    this::updateRecentsActivityTransformDuringHomeAnim);
+        }
+
+        private void updateRecentsActivityTransformDuringHomeAnim(SurfaceParams.Builder builder,
+                RemoteAnimationTargetCompat app, TransformParams params) {
+            builder.withAlpha(mRecentsAlpha.value);
+        }
+
+        private void updateHomeActivityTransformDuringHomeAnim(SurfaceParams.Builder builder,
+                RemoteAnimationTargetCompat app, TransformParams params) {
+            setHomeScaleAndAlpha(builder, app, mVerticalShiftForScale.value, mHomeAlpha.value);
         }
 
         @NonNull
         @Override
         public AnimatorPlaybackController createActivityAnimationToHome() {
             PendingAnimation pa = new PendingAnimation(mDuration);
-            pa.setFloat(mHomeAlpha, AnimatedFloat.VALUE, 1, LINEAR);
+            pa.setFloat(mRecentsAlpha, AnimatedFloat.VALUE, 0, ACCEL);
             return pa.createPlaybackController();
         }
 
         private void updateHomeAlpha() {
-            mHomeAlphaParams.setProgress(mHomeAlpha.value);
             if (mHomeAlphaParams.getTargetSet() != null) {
-                mHomeAlphaParams.applySurfaceParams(mHomeAlphaParams.createSurfaceParams(this));
+                mHomeAlphaParams.applySurfaceParams(
+                        mHomeAlphaParams.createSurfaceParams(BuilderProxy.NO_OP));
             }
         }
 
@@ -125,7 +190,23 @@ public class FallbackSwipeHandler extends
         }
 
         @Override
-        public void onBuildParams(Builder builder, RemoteAnimationTargetCompat app, int targetMode,
-                TransformParams params) { }
+        public void playAtomicAnimation(float velocity) {
+            ObjectAnimator alphaAnim = mHomeAlpha.animateToValue(mHomeAlpha.value, 1);
+            alphaAnim.setDuration(mDuration).setInterpolator(ACCEL);
+            alphaAnim.start();
+
+            if (mRunningOverHome) {
+                // Spring back launcher scale
+                new SpringAnimationBuilder(mContext)
+                        .setStartValue(mVerticalShiftForScale.value)
+                        .setEndValue(0)
+                        .setStartVelocity(-velocity / mTransitionDragLength)
+                        .setMinimumVisibleChange(1f / mDp.heightPx)
+                        .setDampingRatio(0.6f)
+                        .setStiffness(800)
+                        .build(mVerticalShiftForScale, AnimatedFloat.VALUE)
+                        .start();
+            }
+        }
     }
 }

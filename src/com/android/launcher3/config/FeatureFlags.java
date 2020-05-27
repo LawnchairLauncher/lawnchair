@@ -36,8 +36,6 @@ public final class FeatureFlags {
     private static final List<DebugFlag> sDebugFlags = new ArrayList<>();
 
     public static final String FLAGS_PREF_NAME = "featureFlags";
-    public static final String FLAG_ENABLE_FIXED_ROTATION_TRANSFORM =
-            "ENABLE_FIXED_ROTATION_TRANSFORM";
 
     private FeatureFlags() { }
 
@@ -167,6 +165,10 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_ALL_APPS_EDU = getDebugFlag(
             "ENABLE_ALL_APPS_EDU", true,
             "Shows user a tutorial on how to get to All Apps after X amount of attempts.");
+
+    public static final BooleanFlag SEPARATE_RECENTS_ACTIVITY = getDebugFlag(
+            "SEPARATE_RECENTS_ACTIVITY", false,
+            "Uses a separate recents activity instead of using the integrated recents+Launcher UI");
 
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {

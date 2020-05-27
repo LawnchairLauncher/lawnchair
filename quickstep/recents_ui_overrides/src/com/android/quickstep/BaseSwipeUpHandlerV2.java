@@ -73,7 +73,6 @@ import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.RectFSpringAnim;
 import com.android.quickstep.util.ShelfPeekAnim;
 import com.android.quickstep.util.ShelfPeekAnim.ShelfAnimState;
-import com.android.quickstep.util.TransformParams.TargetAlphaProvider;
 import com.android.quickstep.views.LiveTileOverlay;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
@@ -671,10 +670,6 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
     protected InputConsumer createNewInputProxyHandler() {
         endRunningWindowAnim(mGestureState.getEndTarget() == HOME /* cancel */);
         endLauncherTransitionController();
-        if (!ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-            // Hide the task view, if not already hidden
-            setTargetAlphaProvider(BaseSwipeUpHandlerV2::getHiddenTargetAlpha);
-        }
 
         StatefulActivity activity = mActivityInterface.getCreatedActivity();
         return activity == null ? InputConsumer.NO_OP
@@ -1257,11 +1252,6 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
         reset();
     }
 
-    private void setTargetAlphaProvider(TargetAlphaProvider provider) {
-        mTransformParams.setTaskAlphaCallback(provider);
-        updateFinalShift();
-    }
-
     private void addLiveTileOverlay() {
         if (LiveTileOverlay.INSTANCE.attach(mActivity.getRootView().getOverlay())) {
             mRecentsView.setLiveTileOverlayAttached(true);
@@ -1271,13 +1261,6 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
     private void removeLiveTileOverlay() {
         LiveTileOverlay.INSTANCE.detach(mActivity.getRootView().getOverlay());
         mRecentsView.setLiveTileOverlayAttached(false);
-    }
-
-    public static float getHiddenTargetAlpha(RemoteAnimationTargetCompat app, float expectedAlpha) {
-        if (!isNotInRecents(app)) {
-            return 0;
-        }
-        return expectedAlpha;
     }
 
     private static boolean isNotInRecents(RemoteAnimationTargetCompat app) {

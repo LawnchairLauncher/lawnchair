@@ -87,8 +87,8 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
     private float mCurveScale = 1;
 
     // RecentsView properties
-    public final AnimatedFloat recentsViewScale = new AnimatedFloat(() -> { });
-    public final AnimatedFloat fullScreenProgress = new AnimatedFloat(() -> { });
+    public final AnimatedFloat recentsViewScale = new AnimatedFloat();
+    public final AnimatedFloat fullScreenProgress = new AnimatedFloat();
     private final ScrollState mScrollState = new ScrollState();
     private final int mPageSpacing;
 
