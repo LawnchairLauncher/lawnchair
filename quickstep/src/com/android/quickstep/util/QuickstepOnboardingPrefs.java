@@ -15,20 +15,27 @@
  */
 package com.android.quickstep.util;
 
+import static com.android.launcher3.AbstractFloatingView.TYPE_ALL_APPS_EDU;
+import static com.android.launcher3.AbstractFloatingView.getOpenView;
 import static com.android.launcher3.LauncherState.ALL_APPS;
+import static com.android.launcher3.LauncherState.HINT_STATE;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_ACTIONS;
+import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
 import static com.android.quickstep.SysUINavigationMode.removeShelfFromOverview;
 
 import android.content.SharedPreferences;
 
 import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.Workspace;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.statemanager.StateManager.StateListener;
 import com.android.launcher3.util.OnboardingPrefs;
 import com.android.quickstep.SysUINavigationMode;
+import com.android.quickstep.views.AllAppsEduView;
 
 /**
  * Extends {@link OnboardingPrefs} for quickstep-specific onboarding data.
@@ -87,6 +94,52 @@ public class QuickstepOnboardingPrefs extends OnboardingPrefs<BaseQuickstepLaunc
                         if (incrementEventCount(ALL_APPS_COUNT)) {
                             stateManager.removeStateListener(this);
                             mLauncher.getScrimView().updateDragHandleVisibility();
+                        }
+                    }
+                }
+            });
+        }
+
+        if (SysUINavigationMode.getMode(launcher) == NO_BUTTON
+                && FeatureFlags.ENABLE_ALL_APPS_EDU.get()) {
+            stateManager.addStateListener(new StateListener<LauncherState>() {
+                private static final int MAX_NUM_SWIPES_TO_TRIGGER_EDU = 3;
+
+                // Counts the number of consecutive swipes on nav bar without moving screens.
+                private int mCount = 0;
+                private boolean mShouldIncreaseCount;
+
+                @Override
+                public void onStateTransitionStart(LauncherState toState) {
+                    if (toState == NORMAL) {
+                        return;
+                    }
+                    mShouldIncreaseCount = toState == HINT_STATE
+                            && launcher.getWorkspace().getNextPage() == Workspace.DEFAULT_PAGE;
+                }
+
+                @Override
+                public void onStateTransitionComplete(LauncherState finalState) {
+                    if (finalState == NORMAL) {
+                        if (mCount == MAX_NUM_SWIPES_TO_TRIGGER_EDU) {
+                            if (getOpenView(mLauncher, TYPE_ALL_APPS_EDU) == null) {
+                                AllAppsEduView.show(launcher);
+                            }
+                            mCount = 0;
+                        }
+                        return;
+                    }
+
+                    if (mShouldIncreaseCount && finalState == HINT_STATE) {
+                        mCount++;
+                    } else {
+                        mCount = 0;
+                    }
+
+                    if (finalState == ALL_APPS) {
+                        AllAppsEduView view = getOpenView(mLauncher, TYPE_ALL_APPS_EDU);
+                        if (view != null) {
+                            view.close(false);
                         }
                     }
                 }
