@@ -49,6 +49,7 @@ import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.Themes;
 import com.android.quickstep.TaskOverlayFactory;
 import com.android.quickstep.TaskOverlayFactory.TaskOverlay;
+import com.android.quickstep.util.SplitScreenBounds;
 import com.android.quickstep.views.TaskView.FullscreenDrawParams;
 import com.android.systemui.plugins.OverviewScreenshotActions;
 import com.android.systemui.plugins.PluginListener;
@@ -90,7 +91,7 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
 
     // Contains the portion of the thumbnail that is clipped when fullscreen progress = 0.
     private final Rect mPreviewRect = new Rect();
-    private final PreviewPositionHelper mPreviewPositionHelper = new PreviewPositionHelper();
+    private final PreviewPositionHelper mPreviewPositionHelper;
     // Initialize with dummy value. It is overridden later by TaskView
     private TaskView.FullscreenDrawParams mFullscreenParams = TEMP_PARAMS;
 
@@ -122,6 +123,7 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
         mDimmingPaintAfterClearing.setColor(Color.BLACK);
         mActivity = BaseActivity.fromContext(context);
         mIsDarkTextTheme = Themes.getAttrBoolean(mActivity, R.attr.isWorkspaceDarkText);
+        mPreviewPositionHelper = new PreviewPositionHelper(context);
     }
 
     /**
@@ -413,11 +415,16 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
      */
     public static class PreviewPositionHelper {
 
+        private final Context mContext;
         // Contains the portion of the thumbnail that is clipped when fullscreen progress = 0.
         private final RectF mClippedInsets = new RectF();
         private final Matrix mMatrix = new Matrix();
         private float mClipBottom = -1;
         private boolean mIsOrientationChanged;
+
+        public PreviewPositionHelper(Context context) {
+            mContext = context;
+        }
 
         public Matrix getMatrix() {
             return mMatrix;
@@ -444,7 +451,6 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
             int thumbnailRotation = thumbnailData.rotation;
             int deltaRotate = getRotationDelta(currentRotation, thumbnailRotation);
 
-            Rect deviceInsets = dp.getInsets();
             // Landscape vs portrait change
             boolean windowingModeSupportsRotation = !dp.isMultiWindowMode
                     && thumbnailData.windowingMode == WINDOWING_MODE_FULLSCREEN;
@@ -463,9 +469,17 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
                         : canvasWidth / thumbnailWidth;
             }
 
+            Rect splitScreenInsets = SplitScreenBounds.INSTANCE.getSecondaryWindowBounds(mContext)
+                    .insets;
             if (!isRotated) {
                 // No Rotation
-                mClippedInsets.offsetTo(deviceInsets.left * scale, deviceInsets.top * scale);
+                if (dp.isMultiWindowMode) {
+                    mClippedInsets.offsetTo(splitScreenInsets.left * scale,
+                            splitScreenInsets.top * scale);
+                } else {
+                    mClippedInsets.offsetTo(thumbnailInsets.left * scale,
+                            thumbnailInsets.top * scale);
+                }
                 mMatrix.setTranslate(
                         -thumbnailInsets.left * scale,
                         -thumbnailInsets.top * scale);
@@ -486,8 +500,8 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
             mClippedInsets.top *= thumbnailScale;
 
             if (dp.isMultiWindowMode) {
-                mClippedInsets.right = deviceInsets.right * scale * thumbnailScale;
-                mClippedInsets.bottom = deviceInsets.bottom * scale * thumbnailScale;
+                mClippedInsets.right = splitScreenInsets.right * scale * thumbnailScale;
+                mClippedInsets.bottom = splitScreenInsets.bottom * scale * thumbnailScale;
             } else {
                 mClippedInsets.right = Math.max(0,
                         widthWithInsets - mClippedInsets.left - canvasWidth);
