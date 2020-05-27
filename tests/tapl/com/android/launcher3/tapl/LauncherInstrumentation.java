@@ -332,26 +332,31 @@ public final class LauncherInstrumentation {
 
     private String getSystemAnomalyMessage() {
         try {
-            final StringBuilder sb = new StringBuilder();
+            {
+                final StringBuilder sb = new StringBuilder();
 
-            UiObject2 object = mDevice.findObject(By.res("android", "alertTitle"));
-            if (object != null) {
-                sb.append("TITLE: ").append(object.getText());
-            }
+                UiObject2 object = mDevice.findObject(By.res("android", "alertTitle"));
+                if (object != null) {
+                    sb.append("TITLE: ").append(object.getText());
+                }
 
-            object = mDevice.findObject(By.res("android", "message"));
-            if (object != null) {
-                sb.append(" PACKAGE: ").append(object.getApplicationPackage())
-                        .append(" MESSAGE: ").append(object.getText());
-            }
+                object = mDevice.findObject(By.res("android", "message"));
+                if (object != null) {
+                    sb.append(" PACKAGE: ").append(object.getApplicationPackage())
+                            .append(" MESSAGE: ").append(object.getText());
+                }
 
-            if (sb.length() != 0) {
-                return "System alert popup is visible: " + sb;
+                if (sb.length() != 0) {
+                    return "System alert popup is visible: " + sb;
+                }
             }
 
             if (hasSystemUiObject("keyguard_status_view")) return "Phone is locked";
 
             if (!mDevice.hasObject(By.textStartsWith(""))) return "Screen is empty";
+
+            final String navigationModeError = getNavigationModeMismatchError();
+            if (navigationModeError != null) return navigationModeError;
         } catch (Throwable e) {
             Log.w(TAG, "getSystemAnomalyMessage failed", e);
         }
