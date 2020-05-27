@@ -178,7 +178,7 @@ public class RecentsAnimationDeviceState implements
     }
 
     private void setupOrientationSwipeHandler() {
-        if (!isFixedRotationTransformEnabled(mContext)) {
+        if (!isFixedRotationTransformEnabled()) {
             return;
         }
 
