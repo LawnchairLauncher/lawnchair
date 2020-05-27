@@ -63,7 +63,6 @@ import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
-import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -126,7 +125,6 @@ import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskThumbnailCache;
 import com.android.quickstep.TaskUtils;
 import com.android.quickstep.ViewUtils;
-import com.android.quickstep.util.AppWindowAnimationHelper;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.quickstep.util.SplitScreenBounds;
@@ -214,15 +212,12 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     protected final BaseActivityInterface mSizeStrategy;
     protected RecentsAnimationController mRecentsAnimationController;
     protected RecentsAnimationTargets mRecentsAnimationTargets;
-    protected AppWindowAnimationHelper mAppWindowAnimationHelper;
     protected SyncRtSurfaceTransactionApplierCompat mSyncTransactionApplier;
     protected int mTaskWidth;
     protected int mTaskHeight;
     protected boolean mEnableDrawingLiveTile = false;
     protected final Rect mTempRect = new Rect();
-    protected final RectF mTempRectF = new RectF();
     private final PointF mTempPointF = new PointF();
-    private final float[] mTempFloatPoint = new float[2];
 
     private static final int DISMISS_TASK_DURATION = 300;
     private static final int ADDITION_TASK_DURATION = 200;
@@ -980,7 +975,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
         mRecentsAnimationController = null;
         mRecentsAnimationTargets = null;
-        mAppWindowAnimationHelper = null;
 
         unloadVisibleTaskData();
         setCurrentPage(0);
@@ -2009,11 +2003,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         mRecentsAnimationTargets = recentsAnimationTargets;
     }
 
-    // TODO: To be removed in a follow up CL
-    public void setAppWindowAnimationHelper(AppWindowAnimationHelper appWindowAnimationHelper) {
-        mAppWindowAnimationHelper = appWindowAnimationHelper;
-    }
-
     public void setLiveTileOverlayAttached(boolean liveTileOverlayAttached) {
         mLiveTileOverlayAttached = liveTileOverlayAttached;
     }
@@ -2096,13 +2085,20 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
 
     /**
-     * @return How many pixels the running task is offset on the x-axis due to the current scrollX.
+     * @return How many pixels the running task is offset on the currently laid out dominant axis.
      */
     public int getScrollOffset() {
-        if (getRunningTaskIndex() == -1) {
+        return getScrollOffset(getRunningTaskIndex());
+    }
+
+    /**
+     * @return How many pixels the page is offset on the currently laid out dominant axis.
+     */
+    public int getScrollOffset(int pageIndex) {
+        if (pageIndex == -1) {
             return 0;
         }
-        return getScrollForPage(getRunningTaskIndex()) - mOrientationHandler.getPrimaryScroll(this);
+        return getScrollForPage(pageIndex) - mOrientationHandler.getPrimaryScroll(this);
     }
 
     public Consumer<MotionEvent> getEventDispatcher(float navbarRotation) {
@@ -2132,10 +2128,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             super.onTouchEvent(e);
             mOrientationState.transformEvent(-degreesRotated, e, false);
         };
-    }
-
-    public AppWindowAnimationHelper getClipAnimationHelper() {
-        return mAppWindowAnimationHelper;
     }
 
     public TransformParams getLiveTileParams(

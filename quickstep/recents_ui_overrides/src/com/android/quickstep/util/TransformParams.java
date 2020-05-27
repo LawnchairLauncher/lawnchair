@@ -15,10 +15,7 @@
  */
 package com.android.quickstep.util;
 
-import android.graphics.RectF;
 import android.util.FloatProperty;
-
-import androidx.annotation.Nullable;
 
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.Interpolators;
@@ -44,7 +41,6 @@ public class TransformParams {
     };
 
     private float mProgress;
-    private @Nullable RectF mCurrentRect;
     private float mTargetAlpha;
     private float mCornerRadius;
     private RemoteAnimationTargets mTargetSet;
@@ -55,7 +51,6 @@ public class TransformParams {
 
     public TransformParams() {
         mProgress = 0;
-        mCurrentRect = null;
         mTargetAlpha = 1;
         mCornerRadius = -1;
     }
@@ -77,17 +72,6 @@ public class TransformParams {
      */
     public TransformParams setCornerRadius(float cornerRadius) {
         mCornerRadius = cornerRadius;
-        return this;
-    }
-
-    /**
-     * Sets the current rect to show the transformed window, in device coordinates. This gives
-     * the caller manual control of where to show the window. If unspecified (null), we
-     * interpolate between {@link AppWindowAnimationHelper#mSourceRect} and
-     * {@link AppWindowAnimationHelper#mTargetRect}, based on {@link #mProgress}.
-     */
-    public TransformParams setCurrentRect(RectF currentRect) {
-        mCurrentRect = currentRect;
         return this;
     }
 
@@ -171,11 +155,6 @@ public class TransformParams {
 
     public float getProgress() {
         return mProgress;
-    }
-
-    @Nullable
-    public RectF getCurrentRect() {
-        return mCurrentRect;
     }
 
     public float getTargetAlpha() {
