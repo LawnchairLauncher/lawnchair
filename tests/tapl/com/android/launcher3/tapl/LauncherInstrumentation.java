@@ -437,20 +437,30 @@ public final class LauncherInstrumentation {
             }
         }
 
-        try {
-            Log.e("b/156287114", "Input:");
-            for (String line : mDevice.executeShellCommand("dumpsys input").split("\\n")) {
-                SystemClock.sleep(10);
-                Log.d("b/156287114", line);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        dumpDiagnostics();
 
         log("Hierarchy dump for: " + message);
         dumpViewHierarchy();
 
         return message;
+    }
+
+    private void dumpDiagnostics() {
+        Log.e("b/156287114", "Input:");
+        logShellCommand("dumpsys input");
+        Log.e("b/156287114", "TIS:");
+        logShellCommand("dumpsys activity service TouchInteractionService");
+    }
+
+    private void logShellCommand(String command) {
+        try {
+            for (String line : mDevice.executeShellCommand(command).split("\\n")) {
+                SystemClock.sleep(10);
+                Log.d("b/156287114", line);
+            }
+        } catch (IOException e) {
+            Log.d("b/156287114", "Failed to execute " + command);
+        }
     }
 
     private void fail(String message) {
@@ -1335,17 +1345,7 @@ public final class LauncherInstrumentation {
                 if (mCheckEventsForSuccessfulGestures) {
                     final String message = sEventChecker.verify(WAIT_TIME_MS, true);
                     if (message != null) {
-                        try {
-                            Log.e("b/156287114", "Input:");
-                            for (String line : mDevice.executeShellCommand("dumpsys input").split(
-                                    "\\n")) {
-                                SystemClock.sleep(10);
-                                Log.d("b/156287114", line);
-                            }
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-
+                        dumpDiagnostics();
                         checkForAnomaly();
                         Assert.fail(formatSystemHealthMessage(
                                 "http://go/tapl : successful gesture produced " + message));
