@@ -59,6 +59,7 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
             TYPE_DISCOVERY_BOUNCE,
             TYPE_SNACKBAR,
             TYPE_LISTENER,
+            TYPE_ALL_APPS_EDU,
 
             TYPE_TASK_MENU,
             TYPE_OPTIONS_POPUP
@@ -74,25 +75,28 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
     public static final int TYPE_DISCOVERY_BOUNCE = 1 << 6;
     public static final int TYPE_SNACKBAR = 1 << 7;
     public static final int TYPE_LISTENER = 1 << 8;
+    public static final int TYPE_ALL_APPS_EDU = 1 << 9;
 
     // Popups related to quickstep UI
-    public static final int TYPE_TASK_MENU = 1 << 9;
-    public static final int TYPE_OPTIONS_POPUP = 1 << 10;
+    public static final int TYPE_TASK_MENU = 1 << 10;
+    public static final int TYPE_OPTIONS_POPUP = 1 << 11;
 
     public static final int TYPE_ALL = TYPE_FOLDER | TYPE_ACTION_POPUP
             | TYPE_WIDGETS_BOTTOM_SHEET | TYPE_WIDGET_RESIZE_FRAME | TYPE_WIDGETS_FULL_SHEET
             | TYPE_ON_BOARD_POPUP | TYPE_DISCOVERY_BOUNCE | TYPE_TASK_MENU
-            | TYPE_OPTIONS_POPUP | TYPE_SNACKBAR | TYPE_LISTENER;
+            | TYPE_OPTIONS_POPUP | TYPE_SNACKBAR | TYPE_LISTENER | TYPE_ALL_APPS_EDU;
 
     // Type of popups which should be kept open during launcher rebind
     public static final int TYPE_REBIND_SAFE = TYPE_WIDGETS_FULL_SHEET
-            | TYPE_WIDGETS_BOTTOM_SHEET | TYPE_ON_BOARD_POPUP | TYPE_DISCOVERY_BOUNCE;
+            | TYPE_WIDGETS_BOTTOM_SHEET | TYPE_ON_BOARD_POPUP | TYPE_DISCOVERY_BOUNCE
+            | TYPE_ALL_APPS_EDU;
 
     // Usually we show the back button when a floating view is open. Instead, hide for these types.
     public static final int TYPE_HIDE_BACK_BUTTON = TYPE_ON_BOARD_POPUP | TYPE_DISCOVERY_BOUNCE
             | TYPE_SNACKBAR | TYPE_WIDGET_RESIZE_FRAME | TYPE_LISTENER;
 
-    public static final int TYPE_ACCESSIBLE = TYPE_ALL & ~TYPE_DISCOVERY_BOUNCE & ~TYPE_LISTENER;
+    public static final int TYPE_ACCESSIBLE = TYPE_ALL & ~TYPE_DISCOVERY_BOUNCE & ~TYPE_LISTENER
+            & ~TYPE_ALL_APPS_EDU;
 
     // These view all have particular operation associated with swipe down interaction.
     public static final int TYPE_STATUS_BAR_SWIPE_DOWN_DISALLOW = TYPE_WIDGETS_BOTTOM_SHEET |
