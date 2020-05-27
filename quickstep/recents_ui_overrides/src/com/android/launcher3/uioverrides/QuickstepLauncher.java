@@ -67,7 +67,6 @@ import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.util.UiThreadHelper;
 import com.android.launcher3.util.UiThreadHelper.AsyncCommand;
-import com.android.quickstep.RecentsModel;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.SystemUiProxy;
@@ -169,7 +168,8 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
         boolean willUserBeActive = (getActivityFlags() & ACTIVITY_STATE_USER_WILL_BE_ACTIVE) != 0;
         boolean visible = (state == NORMAL || state == OVERVIEW)
                 && (willUserBeActive || isUserActive())
-                && !profile.isVerticalBarLayout();
+                && !profile.isVerticalBarLayout()
+                && profile.isPhone && !profile.isLandscape;
         UiThreadHelper.runAsyncCommand(this, SET_SHELF_HEIGHT, visible ? 1 : 0,
                 profile.hotseatBarSizePx);
         if (state == NORMAL && !inTransition) {
