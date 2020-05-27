@@ -105,7 +105,7 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
 
     public abstract void onAssistantVisibilityChanged(float visibility);
 
-    public abstract AnimationFactory prepareRecentsUI(
+    public abstract AnimationFactory prepareRecentsUI(RecentsAnimationDeviceState deviceState,
             boolean activityVisible, Consumer<AnimatorPlaybackController> callback);
 
     public abstract ActivityInitListener createActivityInitListener(

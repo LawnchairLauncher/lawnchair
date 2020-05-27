@@ -53,14 +53,17 @@ final class AppToOverviewAnimationProvider<T extends StatefulActivity<?>> extend
     private final BaseActivityInterface<?, T> mActivityInterface;
     // The id of the currently running task that is transitioning to overview.
     private final int mTargetTaskId;
+    private final RecentsAnimationDeviceState mDeviceState;
 
     private T mActivity;
     private RecentsView mRecentsView;
 
     AppToOverviewAnimationProvider(
-            BaseActivityInterface<?, T> activityInterface, int targetTaskId) {
+            BaseActivityInterface<?, T> activityInterface, int targetTaskId,
+            RecentsAnimationDeviceState deviceState) {
         mActivityInterface = activityInterface;
         mTargetTaskId = targetTaskId;
+        mDeviceState = deviceState;
     }
 
     /**
@@ -73,6 +76,7 @@ final class AppToOverviewAnimationProvider<T extends StatefulActivity<?>> extend
         activity.<RecentsView>getOverviewPanel().showCurrentTask(mTargetTaskId);
         AbstractFloatingView.closeAllOpenViews(activity, wasVisible);
         BaseActivityInterface.AnimationFactory factory = mActivityInterface.prepareRecentsUI(
+                mDeviceState,
                 wasVisible, (controller) -> {
                     controller.dispatchOnStart();
                     controller.getAnimationPlayer().end();

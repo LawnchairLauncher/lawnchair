@@ -33,6 +33,7 @@ import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.Surface;
 import android.widget.FrameLayout;
 
 import com.android.launcher3.BaseQuickstepLauncher;
@@ -225,6 +226,7 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher>
     public void reset() {
         super.reset();
 
+        setLayoutRotation(Surface.ROTATION_0, Surface.ROTATION_0);
         // We are moving to home or some other UI with no recents. Switch back to the home client,
         // the home predictions should have been updated when the activity was resumed.
         PredictionUiStateManager.INSTANCE.get(getContext()).switchClient(Client.HOME);
