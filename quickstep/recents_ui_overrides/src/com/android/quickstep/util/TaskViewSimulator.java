@@ -65,7 +65,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
     // Thumbnail view properties
     private final Rect mThumbnailPosition = new Rect();
     private final ThumbnailData mThumbnailData = new ThumbnailData();
-    private final PreviewPositionHelper mPositionHelper;
+    private final PreviewPositionHelper mPositionHelper = new PreviewPositionHelper();
     private final Matrix mInversePositionMatrix = new Matrix();
 
     // TaskView properties
@@ -87,7 +87,6 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
         mSizeStrategy = sizeStrategy;
 
         mOrientationState = new RecentsOrientedState(context, sizeStrategy, i -> { });
-        mPositionHelper = new PreviewPositionHelper(mContext);
 
         mCurrentFullscreenParams = new FullscreenDrawParams(context);
         mPageSpacing = context.getResources().getDimensionPixelSize(R.dimen.recents_page_spacing);
