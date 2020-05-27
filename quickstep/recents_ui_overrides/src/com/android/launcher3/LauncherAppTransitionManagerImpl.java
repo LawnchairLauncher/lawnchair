@@ -19,8 +19,8 @@ package com.android.launcher3;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.anim.Interpolators.AGGRESSIVE_EASE;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.quickstep.TaskViewUtils.createRecentsWindowAnimator;
 import static com.android.quickstep.TaskViewUtils.findTaskViewToLaunch;
-import static com.android.quickstep.TaskViewUtils.getRecentsWindowAnimator;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -34,6 +34,7 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
+import com.android.launcher3.anim.PendingAnimation;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
@@ -63,9 +64,10 @@ public final class LauncherAppTransitionManagerImpl extends QuickstepAppTransiti
         boolean skipLauncherChanges = !launcherClosing;
 
         TaskView taskView = findTaskViewToLaunch(mLauncher, v, appTargets);
-        Animator recentsAnimator = getRecentsWindowAnimator(taskView, skipLauncherChanges,
-                appTargets, wallpaperTargets, mLauncher.getDepthController());
-        anim.play(recentsAnimator.setDuration(RECENTS_LAUNCH_DURATION));
+        PendingAnimation pa = new PendingAnimation(RECENTS_LAUNCH_DURATION);
+        createRecentsWindowAnimator(taskView, skipLauncherChanges, appTargets, wallpaperTargets,
+                mLauncher.getDepthController(), pa);
+        anim.play(pa.buildAnim());
 
         Animator childStateAnimation = null;
         // Found a visible recents task that matches the opening app, lets launch the app from there
