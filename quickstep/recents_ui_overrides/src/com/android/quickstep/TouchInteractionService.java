@@ -610,7 +610,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
         if (TestProtocol.sDebugTracing) {
             Log.d(TestProtocol.PAUSE_NOT_DETECTED, "handleOrientationSetup.1");
         }
-        if (!isFixedRotationTransformEnabled(this)) {
+        if (!isFixedRotationTransformEnabled()) {
             return;
         }
         mDeviceState.enableMultipleRegions(baseInputConsumer instanceof OtherActivityInputConsumer);
