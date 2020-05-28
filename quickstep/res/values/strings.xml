@@ -63,12 +63,6 @@
     <!-- Content description for a close button. [CHAR LIMIT=NONE] -->
     <string  name="gesture_tutorial_close_button_content_description" translatable="false">Close</string>
 
-
-    <!-- Hotseat migration notification title -->
-    <string name="hotseat_edu_prompt_title">Easily access your most-used apps</string>
-    <!-- Hotseat migration notification content -->
-    <string name="hotseat_edu_prompt_content">Pixel predicts apps you\’ll need next, right on your Home screen. Tap to set up.</string>
-
     <!-- Hotseat educational strings for users who don't qualify for migration -->
     <string name="hotseat_edu_title_migrate">Get app suggestions on the bottom row of your Home screen</string>
 
