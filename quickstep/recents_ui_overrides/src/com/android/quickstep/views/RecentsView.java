@@ -2182,6 +2182,11 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         if (getCurrentPageTaskView() != null) {
             getCurrentPageTaskView().setModalness(modalness);
         }
+        // Only show actions view when it's modal for in-place landscape mode.
+        boolean inPlaceLandscape = !mOrientationState.canLauncherRotate()
+                && mOrientationState.getTouchRotation() != ROTATION_0;
+        mActionsView.updateHiddenFlags(HIDDEN_NON_ZERO_ROTATION, modalness < 1 && inPlaceLandscape);
+        LayoutUtils.setViewEnabled(mActionsView, true);
     }
 
     @Nullable
