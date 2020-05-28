@@ -123,6 +123,9 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
     private SysUINavigationMode.NavigationModeChangeListener mNavModeChangeListener =
             newMode -> setFlag(FLAG_ROTATION_WATCHER_SUPPORTED, newMode != TWO_BUTTONS);
 
+    /** TODO: Remove once R ships. This is unlikely to change across different swipe gestures. */
+    private static boolean sFixedRotationEnabled;
+
     private final Context mContext;
     private final ContentResolver mContentResolver;
     private final SharedPreferences mSharedPrefs;
@@ -165,7 +168,9 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
         if (originalSmallestWidth < 600) {
             mFlags |= FLAG_MULTIPLE_ORIENTATION_SUPPORTED_BY_DENSITY;
         }
-        if (isFixedRotationTransformEnabled(context)) {
+        sFixedRotationEnabled = Settings.Global.getInt(
+                context.getContentResolver(), FIXED_ROTATION_TRANSFORM_SETTING_NAME, 1) == 1;
+        if (sFixedRotationEnabled) {
             mFlags |= FLAG_MULTIPLE_ORIENTATION_SUPPORTED_BY_FLAG;
         }
         initFlags();
@@ -519,9 +524,8 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
      * Returns true if system can keep Launcher fixed to portrait layout even if the
      * foreground app is rotated
      */
-    public static boolean isFixedRotationTransformEnabled(Context context) {
-        return Settings.Global.getInt(
-                context.getContentResolver(), FIXED_ROTATION_TRANSFORM_SETTING_NAME, 1) == 1;
+    public static boolean isFixedRotationTransformEnabled() {
+        return sFixedRotationEnabled;
     }
 
     @NonNull
