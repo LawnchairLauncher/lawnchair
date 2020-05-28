@@ -52,6 +52,8 @@
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"நிறுவல் நீக்கு"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"ஆப்ஸ் தகவல்"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"நிறுவு"</string>
+    <string name="dismiss_prediction_label" msgid="3357562989568808658">"ஆப்ஸைப் பரிந்துரைக்க வேண்டாம்"</string>
+    <string name="pin_prediction" msgid="4196423321649756498">"கணிக்கப்பட்ட ஆப்ஸைப் பின் செய்தல்"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"குறுக்குவழிகளை நிறுவுதல்"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"பயனரின் அனுமதி இல்லாமல் குறுக்குவழிகளைச் சேர்க்கப் ஆப்ஸை அனுமதிக்கிறது."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"முகப்பின் அமைப்பு மற்றும் குறுக்குவழிகளைப் படித்தல்"</string>
@@ -138,7 +140,7 @@
     <string name="work_profile_edu_next" msgid="8783418929296503629">"அடுத்து"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"முடிந்தது"</string>
     <string name="work_apps_paused_title" msgid="2389865654362803723">"பணிக் கணக்கு இடைநிறுத்தப்பட்டது"</string>
-    <string name="work_apps_paused_body" msgid="5388070126389079077">"பணி ஆப்ஸால் அறிவிப்புகளை அனுப்பவோ பேட்டரியைப் பயன்படுத்தவோ இருப்பிடத்தை அணுகவோ முடியாது"</string>
+    <string name="work_apps_paused_body" msgid="2197210494568696054">"பணி ஆப்ஸால் அறிவிப்புகளை அனுப்பவோ பேட்டரியைப் பயன்படுத்தவோ இருப்பிடத்தை அணுகவோ முடியாது"</string>
     <string name="work_apps_paused_content_description" msgid="7553586952985486433">"பணிக் கணக்கு இடைநிறுத்தப்பட்டது. பணி ஆப்ஸால் அறிவிப்புகளை அனுப்பவோ பேட்டரியைப் பயன்படுத்தவோ இருப்பிடத்தை அணுகவோ முடியாது"</string>
     <string name="work_switch_tip" msgid="808075064383839144">"பணி தொடர்பான ஆப்ஸையும் அறிவிப்புகளையும் இடைநிறுத்தும்"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"தோல்வி: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
