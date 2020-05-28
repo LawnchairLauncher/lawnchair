@@ -17,6 +17,7 @@ package com.android.launcher3.hybridhotseat;
 
 import static com.android.launcher3.InvariantDeviceProfile.CHANGE_FLAG_GRID;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
+import static com.android.launcher3.hybridhotseat.HotseatEduController.SETTINGS_ACTION;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
@@ -27,6 +28,7 @@ import android.app.prediction.AppPredictor;
 import android.app.prediction.AppTarget;
 import android.app.prediction.AppTargetEvent;
 import android.content.ComponentName;
+import android.content.Intent;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,6 +66,8 @@ import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IntArray;
+import com.android.launcher3.views.ArrowTipView;
+import com.android.launcher3.views.Snackbar;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -107,8 +111,6 @@ public class HotseatPredictionController implements DragController.DragListener,
     private boolean mIsCacheEmpty;
     private boolean mIsDestroyed = false;
 
-    private HotseatEduController mHotseatEduController;
-
 
     private List<PredictedAppIcon.PredictedIconOutlineDrawing> mOutlineDrawings = new ArrayList<>();
 
@@ -146,11 +148,48 @@ public class HotseatPredictionController implements DragController.DragListener,
     }
 
     /**
-     * Transitions to NORMAL workspace mode and shows edu
+     * Shows appropriate hotseat education based on prediction enabled and migration states.
      */
     public void showEdu() {
-        if (mHotseatEduController == null) return;
-        mHotseatEduController.showEdu();
+        if (mComponentKeyMappers.isEmpty()) {
+            // launcher has empty predictions set
+            Snackbar.show(mLauncher, R.string.hotsaet_tip_prediction_disabled,
+                    R.string.hotseat_prediction_settings, null,
+                    () -> mLauncher.startActivity(
+                            new Intent(SETTINGS_ACTION)));
+        } else if (isEduSeen()) {
+            // user has already went through education
+            new ArrowTipView(mLauncher).show(
+                    mLauncher.getString(R.string.hotsaet_tip_prediction_enabled),
+                    mHotseat.getTop());
+        } else {
+            HotseatEduController eduController = new HotseatEduController(mLauncher, mRestoreHelper,
+                    this::createPredictor);
+            eduController.setPredictedApps(mapToWorkspaceItemInfo(mComponentKeyMappers));
+            eduController.showEdu();
+        }
+    }
+
+    /**
+     * Shows educational tip for hotseat if user does not go through Tips app.
+     */
+    public void showDiscoveryTip() {
+        if (getPredictedIcons().size() == mHotSeatItemsCount) {
+            new ArrowTipView(mLauncher).show(
+                    mLauncher.getString(R.string.hotseat_tip_no_empty_slots), mHotseat.getTop());
+        } else {
+            Snackbar.show(mLauncher, R.string.hotseat_tip_gaps_filled,
+                    R.string.hotseat_prediction_settings, null,
+                    () -> mLauncher.startActivity(new Intent(SETTINGS_ACTION)));
+        }
+    }
+
+    /**
+     * Returns if hotseat client has predictions
+     * @return
+     */
+    public boolean hasPredictions() {
+        return !mComponentKeyMappers.isEmpty();
     }
 
     @Override
@@ -250,10 +289,6 @@ public class HotseatPredictionController implements DragController.DragListener,
         if (mAppPredictor != null) {
             mAppPredictor.destroy();
         }
-        if (mHotseatEduController != null) {
-            mHotseatEduController.destroy();
-            mHotseatEduController = null;
-        }
     }
 
     /**
@@ -299,10 +334,6 @@ public class HotseatPredictionController implements DragController.DragListener,
             mAppPredictor.requestPredictionUpdate();
         });
         setPauseUIUpdate(false);
-        if (!isEduSeen()) {
-            mHotseatEduController = new HotseatEduController(mLauncher, mRestoreHelper,
-                    this::createPredictor);
-        }
     }
 
     /**
@@ -350,9 +381,6 @@ public class HotseatPredictionController implements DragController.DragListener,
         if (Utilities.IS_DEBUG_DEVICE) FileLog.d(TAG, predictionLog.toString());
         updateDependencies();
         fillGapsWithPrediction();
-        if (!isEduSeen() && mHotseatEduController != null) {
-            mHotseatEduController.setPredictedApps(mapToWorkspaceItemInfo(mComponentKeyMappers));
-        }
         cachePredictionComponentKeysIfNecessary(componentKeys);
     }
 
