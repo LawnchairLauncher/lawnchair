@@ -17,7 +17,8 @@
 package com.android.quickstep.logging;
 
 import static com.android.launcher3.logger.LauncherAtom.ContainerInfo.ContainerCase.FOLDER;
-import static com.android.launcher3.logger.LauncherAtom.ItemInfo.ItemCase.WIDGET;
+import static com.android.systemui.shared.system.SysUiStatsLog.LAUNCHER_UICHANGED__DST_STATE__BACKGROUND;
+import static com.android.systemui.shared.system.SysUiStatsLog.LAUNCHER_UICHANGED__DST_STATE__HOME;
 
 import android.content.Context;
 import android.util.Log;
@@ -84,17 +85,27 @@ public class StatsLogCompatManager extends StatsLogManager {
      */
     @Override
     public void log(LauncherEvent event, @Nullable LauncherAtom.ItemInfo info) {
-        logInternal(event, DEFAULT_INSTANCE_ID, info != null ? info
-                : LauncherAtom.ItemInfo.getDefaultInstance(),
-                SysUiStatsLog.LAUNCHER_UICHANGED__DST_STATE__HOME,
-                SysUiStatsLog.LAUNCHER_UICHANGED__DST_STATE__BACKGROUND);
+        log(event, DEFAULT_INSTANCE_ID, info);
+    }
+
+    /**
+     * Logs an event and accompanying {@link InstanceId} and {@link LauncherAtom.ItemInfo}.
+     */
+    @Override
+    public void log(LauncherEvent event, InstanceId instanceId,
+            @Nullable LauncherAtom.ItemInfo info) {
+        logInternal(event, instanceId, info,
+                LAUNCHER_UICHANGED__DST_STATE__HOME,
+                LAUNCHER_UICHANGED__DST_STATE__BACKGROUND);
     }
 
     /**
      * Logs an event and accompanying {@link InstanceId} and {@link LauncherAtom.ItemInfo}.
      */
     private void logInternal(LauncherEvent event, InstanceId instanceId,
-            LauncherAtom.ItemInfo info, int startState, int endState) {
+            @Nullable LauncherAtom.ItemInfo info, int startState, int endState) {
+        info = info == null ? LauncherAtom.ItemInfo.getDefaultInstance() : info;
+
         if (IS_VERBOSE) {
             Log.d(TAG, instanceId == DEFAULT_INSTANCE_ID
                     ? String.format("\n%s\n%s", event.name(), info)
