@@ -29,6 +29,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
 import com.android.launcher3.util.Preconditions;
@@ -58,6 +59,7 @@ public class RecentsAnimationController {
     private boolean mSplitScreenMinimized = false;
     private boolean mTouchInProgress;
     private boolean mFinishPending;
+    private @Nullable Runnable mFinishPendingCallback;
 
     public RecentsAnimationController(RecentsAnimationControllerCompat controller,
             boolean allowMinimizeSplitScreen,
@@ -165,10 +167,7 @@ public class RecentsAnimationController {
         } else {
             if (mTouchInProgress) {
                 mFinishPending = true;
-                // Execute the callback
-                if (onFinishComplete != null) {
-                    onFinishComplete.run();
-                }
+                mFinishPendingCallback = onFinishComplete;
             } else {
                 finishAndClear(true, onFinishComplete, sendUserLeaveHint);
             }
@@ -265,7 +264,9 @@ public class RecentsAnimationController {
             mTouchInProgress = false;
             if (mFinishPending) {
                 mFinishPending = false;
-                finishAndClear(true /* toRecents */, null, false /* sendUserLeaveHint */);
+                finishAndClear(true /* toRecents */, mFinishPendingCallback,
+                        false /* sendUserLeaveHint */);
+                mFinishPendingCallback = null;
             }
         }
         if (mInputConsumer != null) {
