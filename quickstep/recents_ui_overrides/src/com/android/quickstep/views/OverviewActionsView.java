@@ -21,6 +21,7 @@ import static com.android.quickstep.SysUINavigationMode.removeShelfFromOverview;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.FrameLayout;
@@ -107,6 +108,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     @Override
     public void onClick(View view) {
         if (mCallbacks == null) {
+            Log.d("OverviewActionsView", "Callbacks null onClick");
             return;
         }
         int id = view.getId();
