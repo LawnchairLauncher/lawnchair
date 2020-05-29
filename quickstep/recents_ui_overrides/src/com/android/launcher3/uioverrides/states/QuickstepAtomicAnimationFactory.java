@@ -29,6 +29,7 @@ import static com.android.launcher3.anim.Interpolators.DEACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_1_7;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_3;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
+import static com.android.launcher3.anim.Interpolators.FINAL_FRAME;
 import static com.android.launcher3.anim.Interpolators.INSTANT;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_2;
@@ -188,7 +189,7 @@ public class QuickstepAtomicAnimationFactory extends
             }
         } else if (toState == NORMAL && fromState == OVERVIEW_PEEK) {
             // Keep fully visible until the very end (when overview is offscreen) to make invisible.
-            config.setInterpolator(ANIM_OVERVIEW_FADE, t -> t < 1 ? 0 : 1);
+            config.setInterpolator(ANIM_OVERVIEW_FADE, FINAL_FRAME);
         } else if (toState == OVERVIEW_PEEK && fromState == NORMAL) {
             config.setInterpolator(ANIM_OVERVIEW_FADE, INSTANT);
             config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X, OVERSHOOT_1_7);
