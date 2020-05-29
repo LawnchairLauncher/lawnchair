@@ -82,7 +82,7 @@
         <item name="android:textColor">@color/overview_button</item>
         <item name="android:drawableTint">@color/overview_button</item>
         <item name="android:tint">?attr/workspaceTextColor</item>
-        <item name="android:drawablePadding">4dp</item>
+        <item name="android:drawablePadding">8dp</item>
         <item name="android:textAllCaps">false</item>
     </style>
 </resources>
