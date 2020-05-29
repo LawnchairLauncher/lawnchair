@@ -61,6 +61,11 @@ public class Interpolators {
     public static final Interpolator EXAGGERATED_EASE;
 
     public static final Interpolator INSTANT = t -> 1;
+    /**
+     * All values of t map to 0 until t == 1. This is primarily useful for setting view visibility,
+     * which should only happen at the very end of the animation (when it's already hidden).
+     */
+    public static final Interpolator FINAL_FRAME = t -> t < 1 ? 0 : 1;
 
     private static final int MIN_SETTLE_DURATION = 200;
     private static final float OVERSHOOT_FACTOR = 0.9f;
