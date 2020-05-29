@@ -444,7 +444,6 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
             int thumbnailRotation = thumbnailData.rotation;
             int deltaRotate = getRotationDelta(currentRotation, thumbnailRotation);
 
-            Rect deviceInsets = dp.getInsets();
             // Landscape vs portrait change
             boolean windowingModeSupportsRotation = !dp.isMultiWindowMode
                     && thumbnailData.windowingMode == WINDOWING_MODE_FULLSCREEN;
@@ -463,9 +462,16 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
                         : canvasWidth / thumbnailWidth;
             }
 
+            Rect splitScreenInsets = dp.getInsets();
             if (!isRotated) {
                 // No Rotation
-                mClippedInsets.offsetTo(deviceInsets.left * scale, deviceInsets.top * scale);
+                if (dp.isMultiWindowMode) {
+                    mClippedInsets.offsetTo(splitScreenInsets.left * scale,
+                            splitScreenInsets.top * scale);
+                } else {
+                    mClippedInsets.offsetTo(thumbnailInsets.left * scale,
+                            thumbnailInsets.top * scale);
+                }
                 mMatrix.setTranslate(
                         -thumbnailInsets.left * scale,
                         -thumbnailInsets.top * scale);
@@ -486,8 +492,8 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
             mClippedInsets.top *= thumbnailScale;
 
             if (dp.isMultiWindowMode) {
-                mClippedInsets.right = deviceInsets.right * scale * thumbnailScale;
-                mClippedInsets.bottom = deviceInsets.bottom * scale * thumbnailScale;
+                mClippedInsets.right = splitScreenInsets.right * scale * thumbnailScale;
+                mClippedInsets.bottom = splitScreenInsets.bottom * scale * thumbnailScale;
             } else {
                 mClippedInsets.right = Math.max(0,
                         widthWithInsets - mClippedInsets.left - canvasWidth);

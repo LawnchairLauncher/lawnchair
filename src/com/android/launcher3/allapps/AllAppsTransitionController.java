@@ -1,6 +1,5 @@
 package com.android.launcher3.allapps;
 
-import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.ALL_APPS_CONTENT;
 import static com.android.launcher3.LauncherState.ALL_APPS_HEADER_EXTRA;
 import static com.android.launcher3.LauncherState.APPS_VIEW_ITEM_MASK;
@@ -23,6 +22,7 @@ import android.util.FloatProperty;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Interpolator;
+import android.widget.EditText;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
@@ -87,6 +87,7 @@ public class AllAppsTransitionController implements StateHandler<LauncherState>,
 
     private float mScrollRangeDelta = 0;
 
+    // plugin related variables
     private AllAppsSearchPlugin mPlugin;
     private View mPluginContent;
 
@@ -131,7 +132,6 @@ public class AllAppsTransitionController implements StateHandler<LauncherState>,
         float shiftCurrent = progress * mShiftRange;
 
         mAppsView.setTranslationY(shiftCurrent);
-
         if (mPlugin != null) {
             mPlugin.setProgress(progress);
         }
@@ -160,7 +160,6 @@ public class AllAppsTransitionController implements StateHandler<LauncherState>,
         setProgress(state.getVerticalProgress(mLauncher));
         setAlphas(state, new StateAnimationConfig(), NO_ANIM_PROPERTY_SETTER);
         onProgressAnimationEnd();
-        updatePlugin(state);
     }
 
     /**
@@ -194,20 +193,6 @@ public class AllAppsTransitionController implements StateHandler<LauncherState>,
         builder.add(anim);
 
         setAlphas(toState, config, builder);
-
-        updatePlugin(toState);
-    }
-
-    private void updatePlugin(LauncherState toState) {
-        if (mPlugin == null) return;
-        if (toState == ALL_APPS) {
-            // TODO: change this from toggle event to continuous transition event.
-            mPlugin.setEditText(mAppsView.getSearchUiManager().setTextSearchEnabled(true));
-        } else {
-            mPlugin.setEditText(null);
-            mAppsView.getSearchUiManager().setTextSearchEnabled(false);
-        }
-
     }
 
     public Animator createSpringAnimation(float... progressValues) {
@@ -276,6 +261,7 @@ public class AllAppsTransitionController implements StateHandler<LauncherState>,
         if (Float.compare(mProgress, 1f) == 0) {
             mAppsView.reset(false /* animate */);
         }
+        updatePluginAnimationEnd();
     }
 
     @Override
@@ -285,7 +271,7 @@ public class AllAppsTransitionController implements StateHandler<LauncherState>,
                 R.layout.all_apps_content_layout, mAppsView, false);
         mAppsView.addView(mPluginContent);
         mPluginContent.setAlpha(0f);
-        mPlugin.setup((ViewGroup) mPluginContent, mLauncher);
+        mPlugin.setup((ViewGroup) mPluginContent, mLauncher, mShiftRange);
     }
 
     @Override
@@ -296,5 +282,26 @@ public class AllAppsTransitionController implements StateHandler<LauncherState>,
 
     public void onActivityDestroyed() {
         PluginManagerWrapper.INSTANCE.get(mLauncher).removePluginListener(this);
+    }
+
+    /** Used for the plugin to signal when drag starts happens
+     * @param toAllApps*/
+    public void onDragStart(boolean toAllApps) {
+        if (mPlugin == null) return;
+
+        if (toAllApps) {
+            EditText editText = mAppsView.getSearchUiManager().setTextSearchEnabled(true);
+            mPlugin.setEditText(editText);
+        }
+        mPlugin.onDragStart(toAllApps ? 1f : 0f);
+    }
+
+    private void updatePluginAnimationEnd() {
+        if (mPlugin == null) return;
+        mPlugin.onAnimationEnd(mProgress);
+        if (Float.compare(mProgress, 1f) == 0) {
+            mAppsView.getSearchUiManager().setTextSearchEnabled(false);
+            mPlugin.setEditText(null);
+        }
     }
 }
