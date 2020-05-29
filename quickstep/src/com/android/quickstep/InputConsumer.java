@@ -70,6 +70,11 @@ public interface InputConsumer {
     }
 
     /**
+     * Handle and specific setup necessary based on the orientation of the device
+     */
+    default void notifyOrientationSetup() {}
+
+    /**
      * Returns the active input consumer is in the hierarchy of this input consumer.
      */
     default InputConsumer getActiveConsumerInHierarchy() {
