@@ -32,6 +32,7 @@ import static com.android.launcher3.anim.Interpolators.DEACCEL_1_7;
 import static com.android.launcher3.anim.Interpolators.EXAGGERATED_EASE;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.config.FeatureFlags.KEYGUARD_ANIMATION;
+import static com.android.launcher3.config.FeatureFlags.SEPARATE_RECENTS_ACTIVITY;
 import static com.android.launcher3.dragndrop.DragLayer.ALPHA_INDEX_TRANSITIONS;
 import static com.android.launcher3.statehandlers.DepthController.DEPTH;
 import static com.android.launcher3.views.FloatingIconView.SHAPE_PROGRESS_DURATION;
@@ -647,6 +648,9 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
      */
     @Override
     public void registerRemoteAnimations() {
+        if (SEPARATE_RECENTS_ACTIVITY.get()) {
+            return;
+        }
         if (hasControlRemoteAppTransitionPermission()) {
             mWallpaperOpenRunner = createWallpaperOpenRunner(false /* fromUnlock */);
 
@@ -677,6 +681,9 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
      */
     @Override
     public void unregisterRemoteAnimations() {
+        if (SEPARATE_RECENTS_ACTIVITY.get()) {
+            return;
+        }
         if (hasControlRemoteAppTransitionPermission()) {
             new ActivityCompat(mLauncher).unregisterRemoteAnimations();
 

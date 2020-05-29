@@ -201,7 +201,7 @@ public abstract class AbstractStateChangeTouchController
         mToState = newToState;
         if (TestProtocol.sDebugTracing) {
             Log.d(TestProtocol.OVERIEW_NOT_ALLAPPS, "reinitCurrentAnimation: "
-                    + newToState.ordinal);
+                    + newToState.ordinal + " " + getClass().getSimpleName());
         }
 
         mStartProgress = 0;
@@ -242,6 +242,7 @@ public abstract class AbstractStateChangeTouchController
     public void onDragStart(boolean start, float startDisplacement) {
         mStartState = mLauncher.getStateManager().getState();
         mIsLogContainerSet = false;
+
         if (mCurrentAnimation == null) {
             mFromState = mStartState;
             mToState = null;
@@ -259,6 +260,10 @@ public abstract class AbstractStateChangeTouchController
         }
         mCanBlockFling = mFromState == NORMAL;
         mFlingBlockCheck.unblockFling();
+        // Must be called after all the animation controllers have been paused
+        if (mToState == ALL_APPS || mToState == NORMAL) {
+            mLauncher.getAllAppsController().onDragStart(mToState == ALL_APPS);
+        }
     }
 
     @Override

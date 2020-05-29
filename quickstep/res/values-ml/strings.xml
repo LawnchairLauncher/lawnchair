@@ -46,4 +46,5 @@
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"പ്രവചിച്ച ആപ്പ്: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="action_share" msgid="2648470652637092375">"പങ്കിടുക"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"സ്ക്രീൻഷോട്ട്"</string>
+    <string name="blocked_by_policy" msgid="2071401072261365546">"ഈ നടപടി എടുക്കുന്നത് ആപ്പോ നിങ്ങളുടെ സ്ഥാപനമോ അനുവദിക്കുന്നില്ല"</string>
 </resources>
