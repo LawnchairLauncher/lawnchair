@@ -94,6 +94,7 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
         super.onCreate(savedInstanceState);
         if (FeatureFlags.ENABLE_HYBRID_HOTSEAT.get()) {
             mHotseatPredictionController = new HotseatPredictionController(this);
+            mHotseatPredictionController.createPredictor();
         }
     }
 
@@ -174,14 +175,6 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
                 profile.hotseatBarSizePx);
         if (state == NORMAL && !inTransition) {
             ((RecentsView) getOverviewPanel()).setSwipeDownShouldLaunchApp(false);
-        }
-    }
-
-    @Override
-    public void finishBindingItems(int pageBoundFirst) {
-        super.finishBindingItems(pageBoundFirst);
-        if (mHotseatPredictionController != null) {
-            mHotseatPredictionController.createPredictor();
         }
     }
 

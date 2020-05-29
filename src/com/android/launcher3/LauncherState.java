@@ -33,6 +33,7 @@ import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.states.HintState;
 import com.android.launcher3.states.SpringLoadedState;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.uioverrides.states.AllAppsState;
 import com.android.launcher3.uioverrides.states.OverviewState;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -260,7 +261,7 @@ public abstract class LauncherState implements BaseState<LauncherState> {
 
     @Override
     public String toString() {
-        return "Ordinal-" + ordinal;
+        return TestProtocol.stateOrdinalToString(ordinal);
     }
 
     public void onBackPressed(Launcher launcher) {

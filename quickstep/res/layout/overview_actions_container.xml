@@ -14,13 +14,12 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.quickstep.views.OverviewActionsView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.android.quickstep.views.OverviewActionsView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/overview_actions_height"
     android:layout_gravity="center_horizontal|bottom"
     android:layout_marginLeft="@dimen/overview_actions_horizontal_margin"
-    android:layout_marginRight="@dimen/overview_actions_horizontal_margin" >
+    android:layout_marginRight="@dimen/overview_actions_horizontal_margin">
 
     <LinearLayout
         android:id="@+id/action_buttons"
@@ -28,38 +27,42 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:orientation="horizontal">
+
         <Space
             android:layout_width="0dp"
             android:layout_height="1dp"
-            android:layout_weight="1" >
-        </Space>
+            android:layout_weight="1" />
+
         <Button
             android:id="@+id/action_screenshot"
-            android:theme="@style/ThemeControlHighlightWorkspaceColor"
             style="@style/OverviewActionButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableTop="@drawable/ic_screenshot"
-            android:text="@string/action_screenshot" />
+            android:text="@string/action_screenshot"
+            android:theme="@style/ThemeControlHighlightWorkspaceColor" />
+
         <Space
             android:layout_width="0dp"
             android:layout_height="1dp"
-            android:layout_weight="1" >
-        </Space>
+            android:layout_weight="1" />
 
         <Button
             android:id="@+id/action_share"
-            android:theme="@style/ThemeControlHighlightWorkspaceColor"
             style="@style/OverviewActionButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableTop="@drawable/ic_share"
-            android:text="@string/action_share" />
+            android:text="@string/action_share"
+            android:theme="@style/ThemeControlHighlightWorkspaceColor"
+            android:visibility="gone" />
+
         <Space
+            android:id="@+id/share_space"
             android:layout_width="0dp"
             android:layout_height="1dp"
-            android:layout_weight="1" >
-        </Space>
+            android:layout_weight="1"
+            android:visibility="gone" />
     </LinearLayout>
 
 </com.android.quickstep.views.OverviewActionsView>
