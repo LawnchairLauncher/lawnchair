@@ -52,6 +52,8 @@
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"আনইনষ্টল কৰক"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"এপ সম্পৰ্কীয় তথ্য"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"ইনষ্টল কৰক"</string>
+    <string name="dismiss_prediction_label" msgid="3357562989568808658">"এপৰ পৰামৰ্শ নিদিব"</string>
+    <string name="pin_prediction" msgid="4196423321649756498">"পূৰ্বানুমান কৰা এপ্‌টো পিন কৰক"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"শ্বৰ্টকাট ইনষ্টল কৰিব পাৰে"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"ব্য়ৱহাৰকাৰীৰ হস্তক্ষেপ অবিহনেই কোনো এপক শ্বৰ্টকাটবোৰ যোগ কৰাৰ অনুমতি দিয়ে।"</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"গৃহ ছেটিং আৰু শ্বৰ্টকাটবোৰ পঢ়িব পাৰে"</string>
@@ -138,7 +140,7 @@
     <string name="work_profile_edu_next" msgid="8783418929296503629">"পৰৱৰ্তী"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"বুজি পালোঁ"</string>
     <string name="work_apps_paused_title" msgid="2389865654362803723">"কৰ্মস্থানৰ প্ৰ\'ফাইলটো পজ কৰা আছে"</string>
-    <string name="work_apps_paused_body" msgid="5388070126389079077">"কৰ্মস্থানৰ এপ্‌সমূহে আপোনালৈ জাননীসমূহ পঠিয়াব, আপোনাৰ বেটাৰী ব্যৱহাৰ কৰিব অথবা আপোনাৰ অৱস্থান এক্সেছ কৰিব নোৱাৰে"</string>
+    <string name="work_apps_paused_body" msgid="2197210494568696054">"কৰ্মস্থানৰ এপ্‌সমূহে আপোনালৈ জাননীসমূহ পঠিয়াব, আপোনাৰ বেটাৰী ব্যৱহাৰ কৰিব অথবা আপোনাৰ অৱস্থান এক্সেছ কৰিব নোৱাৰে"</string>
     <string name="work_apps_paused_content_description" msgid="7553586952985486433">"কৰ্মস্থানৰ প্ৰ\'ফাইলটো পজ কৰা আছে। কৰ্মস্থানৰ এপ্‌সমূহে আপোনালৈ জাননীসমূহ পঠিয়াব, আপোনাৰ বেটাৰী ব্যৱহাৰ কৰিব অথবা আপোনাৰ অৱস্থান এক্সেছ কৰিব নোৱাৰে"</string>
     <string name="work_switch_tip" msgid="808075064383839144">"কর্মস্থানৰ এপ্‌সমূহ আৰু জাননীসমূহ পজ কৰক"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"বিফল: <xliff:g id="WHAT">%1$s</xliff:g>"</string>

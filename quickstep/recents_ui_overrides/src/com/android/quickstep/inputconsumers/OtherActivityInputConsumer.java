@@ -112,6 +112,9 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     private boolean mPassedWindowMoveSlop;
     // Slop used to determine when we say that the gesture has started.
     private boolean mPassedPilferInputSlop;
+    // Same as mPassedPilferInputSlop, except when continuing a gesture mPassedPilferInputSlop is
+    // initially true while this one is false.
+    private boolean mPassedSlopOnThisGesture;
 
     // Might be displacement in X or Y, depending on the direction we are swiping from the nav bar.
     private float mStartDisplacement;
@@ -207,7 +210,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                 // Start the window animation on down to give more time for launcher to draw if the
                 // user didn't start the gesture over the back button
                 if (!mIsDeferredDownTarget) {
-                    startTouchTrackingForWindowAnimation(ev.getEventTime(), false);
+                    startTouchTrackingForWindowAnimation(ev.getEventTime());
                 }
 
                 TraceHelper.INSTANCE.endSection(traceToken);
@@ -244,6 +247,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                 mLastPos.set(ev.getX(pointerIndex), ev.getY(pointerIndex));
                 float displacement = getDisplacement(ev);
                 float displacementX = mLastPos.x - mDownPos.x;
+                float displacementY = mLastPos.y - mDownPos.y;
 
                 if (!mPassedWindowMoveSlop) {
                     if (!mIsDeferredDownTarget) {
@@ -258,11 +262,18 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
 
                 float horizontalDist = Math.abs(displacementX);
                 float upDist = -displacement;
-                boolean isLikelyToStartNewTask = horizontalDist > upDist;
+                boolean passedSlop = squaredHypot(displacementX, displacementY)
+                        >= mSquaredTouchSlop;
+                if (!mPassedSlopOnThisGesture && passedSlop) {
+                    mPassedSlopOnThisGesture = true;
+                }
+                // Until passing slop, we don't know what direction we're going, so assume we might
+                // be quick switching to avoid translating recents away when continuing the gesture.
+                boolean isLikelyToStartNewTask = !mPassedSlopOnThisGesture
+                        || horizontalDist > upDist;
 
                 if (!mPassedPilferInputSlop) {
-                    float displacementY = mLastPos.y - mDownPos.y;
-                    if (squaredHypot(displacementX, displacementY) >= mSquaredTouchSlop) {
+                    if (passedSlop) {
                         if (mDisableHorizontalSwipe
                                 && Math.abs(displacementX) > Math.abs(displacementY)) {
                             // Horizontal gesture is not allowed in this region
@@ -275,8 +286,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                         if (mIsDeferredDownTarget) {
                             // Deferred gesture, start the animation and gesture tracking once
                             // we pass the actual touch slop
-                            startTouchTrackingForWindowAnimation(
-                                    ev.getEventTime(), isLikelyToStartNewTask);
+                            startTouchTrackingForWindowAnimation(ev.getEventTime());
                         }
                         if (!mPassedWindowMoveSlop) {
                             mPassedWindowMoveSlop = true;
@@ -326,12 +336,11 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         mInteractionHandler.onGestureStarted();
     }
 
-    private void startTouchTrackingForWindowAnimation(
-            long touchTimeMs, boolean isLikelyToStartNewTask) {
+    private void startTouchTrackingForWindowAnimation(long touchTimeMs) {
         ActiveGestureLog.INSTANCE.addLog("startRecentsAnimation");
 
         mInteractionHandler = mHandlerFactory.newHandler(mGestureState, touchTimeMs,
-                mTaskAnimationManager.isRecentsAnimationRunning(), isLikelyToStartNewTask);
+                mTaskAnimationManager.isRecentsAnimationRunning());
         mInteractionHandler.setGestureEndCallback(this::onInteractionGestureFinished);
         mMotionPauseDetector.setOnMotionPauseListener(mInteractionHandler::onMotionPauseChanged);
         Intent intent = new Intent(mInteractionHandler.getLaunchIntent());
@@ -341,6 +350,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
             mActiveCallbacks = mTaskAnimationManager.continueRecentsAnimation(mGestureState);
             mActiveCallbacks.addListener(mInteractionHandler);
             mTaskAnimationManager.notifyRecentsAnimationState(mInteractionHandler);
+            mInteractionHandler.setIsLikelyToStartNewTask(true);
             notifyGestureStarted();
         } else {
             intent.putExtra(INTENT_EXTRA_LOG_TRACE_ID, mGestureState.getGestureId());

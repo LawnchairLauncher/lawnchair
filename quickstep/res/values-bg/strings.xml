@@ -32,7 +32,7 @@
     <string name="title_app_suggestions" msgid="4185902664111965088">"Предложения за приложения"</string>
     <string name="all_apps_label" msgid="8542784161730910663">"Всички приложения"</string>
     <string name="all_apps_prediction_tip" msgid="2672336544844936186">"Предвидени приложения"</string>
-    <string name="hotseat_edu_prompt_title" msgid="5595771595144175752">"Лесен достъп до най-използваните от вас приложения"</string>
+    <string name="hotseat_edu_prompt_title" msgid="5595771595144175752">"Лесен достъп до най-използваните прилож."</string>
     <string name="hotseat_edu_prompt_content" msgid="5709176001504149521">"Pixel предвижда кои приложения ще са ви нужни в следващия момент и ви ги показва директно на началния екран. Докоснете, за да настроите."</string>
     <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"Получавайте предложения за приложения на най-долния ред на началния си екран"</string>
     <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"Осъществявайте лесен достъп до най-използваните от вас приложения директно от началния екран. Предложенията ще се променят въз основа на поредиците ви. Приложенията на най-долния ред ще се преместят на началния ви екран."</string>
@@ -46,4 +46,5 @@
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Предвидено приложение: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="action_share" msgid="2648470652637092375">"Споделяне"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Екранна снимка"</string>
+    <string name="blocked_by_policy" msgid="2071401072261365546">"Това действие не е разрешено от приложението или организацията ви"</string>
 </resources>

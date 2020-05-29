@@ -32,7 +32,7 @@
     <string name="title_app_suggestions" msgid="4185902664111965088">"Sugestie aplikacji"</string>
     <string name="all_apps_label" msgid="8542784161730910663">"Wszystkie aplikacje"</string>
     <string name="all_apps_prediction_tip" msgid="2672336544844936186">"Przewidywane aplikacje"</string>
-    <string name="hotseat_edu_prompt_title" msgid="5595771595144175752">"Korzystaj z najczęściej używanych przez siebie aplikacji w łatwy sposób"</string>
+    <string name="hotseat_edu_prompt_title" msgid="5595771595144175752">"Łatwy dostęp do najczęstszych aplikacji"</string>
     <string name="hotseat_edu_prompt_content" msgid="5709176001504149521">"Pixel przewiduje, których aplikacji będziesz potrzebować w następnej kolejności, bezpośrednio na ekranie głównym. Kliknij, by skonfigurować."</string>
     <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"Otrzymuj sugestie aplikacji w dolnym wierszu ekranu głównego"</string>
     <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"Korzystaj z najczęściej używanych aplikacji na ekranie głównym w łatwy sposób. Sugestie będą się zmieniać na podstawie Twojej rutyny. Aplikacje z dolnych wierszy będą się przenosić w górę do ekranu głównego."</string>
@@ -46,4 +46,5 @@
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Przewidywana aplikacja: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="action_share" msgid="2648470652637092375">"Udostępnij"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Zrzut ekranu"</string>
+    <string name="blocked_by_policy" msgid="2071401072261365546">"Nie możesz wykonać tego działania, bo nie zezwala na to aplikacja lub Twoja organizacja"</string>
 </resources>

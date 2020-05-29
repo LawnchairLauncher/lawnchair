@@ -52,6 +52,8 @@
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"លុបការដំឡើង"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"ព័ត៌មាន​កម្មវិធី"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"ដំឡើង"</string>
+    <string name="dismiss_prediction_label" msgid="3357562989568808658">"កុំណែនាំកម្មវិធី"</string>
+    <string name="pin_prediction" msgid="4196423321649756498">"ខ្ទាស់ការ​ព្យាករ"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"ដំឡើង​ផ្លូវកាត់"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"អនុញ្ញាត​ឲ្យ​កម្មវិធី​បន្ថែម​ផ្លូវកាត់​ ដោយ​មិន​ចាំបាច់​​អំពើ​ពី​អ្នក​ប្រើ។"</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"អាន​ការ​កំណត់​ និង​ផ្លូវកាត់​​អេក្រង់​ដើម"</string>
@@ -127,7 +129,7 @@
     <string name="widget_resized" msgid="9130327887929620">"ធាតុក្រាហ្វិកដែលបានប្តូរទំហំទៅទទឹងប្រវែង <xliff:g id="NUMBER_0">%1$s</xliff:g> កម្ពស់ប្រវែង <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"ផ្លូវកាត់"</string>
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"ផ្លូវកាត់ និង​ការជូនដំណឹង"</string>
-    <string name="action_dismiss_notification" msgid="5909461085055959187">"បដិសេធ"</string>
+    <string name="action_dismiss_notification" msgid="5909461085055959187">"ច្រានចោល"</string>
     <string name="accessibility_close" msgid="2277148124685870734">"បិទ"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"បាន​បដិសេធ​ការជូនដំណឹង"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"ផ្ទាល់ខ្លួន"</string>
@@ -138,7 +140,7 @@
     <string name="work_profile_edu_next" msgid="8783418929296503629">"បន្ទាប់"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"យល់ហើយ"</string>
     <string name="work_apps_paused_title" msgid="2389865654362803723">"កម្រងព័ត៌មានការងារត្រូវបាន​ផ្អាក"</string>
-    <string name="work_apps_paused_body" msgid="5388070126389079077">"កម្មវិធី​ការងារ​មិនអាចផ្ញើ​ការជូនដំណឹង​ទៅអ្នក ប្រើប្រាស់ថ្ម​របស់អ្នក ឬ​ចូលប្រើ​ទីតាំង​របស់អ្នក​បានទេ"</string>
+    <string name="work_apps_paused_body" msgid="2197210494568696054">"កម្មវិធី​ការងារ​មិនអាចផ្ញើ​ការជូនដំណឹង​ទៅអ្នក ប្រើប្រាស់ថ្ម​របស់អ្នក ឬ​ចូលប្រើ​ទីតាំង​របស់អ្នក​បានទេ"</string>
     <string name="work_apps_paused_content_description" msgid="7553586952985486433">"កម្រងព័ត៌មាន​ការងារ​ត្រូវបាន​ផ្អាក។ កម្មវិធី​ការងារ​មិនអាច​ផ្ញើ​ការជូនដំណឹងទៅអ្នក ប្រើប្រាស់ថ្មរបស់អ្នក ឬចូលប្រើទីតាំង​របស់អ្នកបានទេ"</string>
     <string name="work_switch_tip" msgid="808075064383839144">"ផ្អាក​ការជូនដំណឹង និង​កម្មវិធី​ការងារ"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"បានបរាជ័យ៖ <xliff:g id="WHAT">%1$s</xliff:g>"</string>

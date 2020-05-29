@@ -17,6 +17,8 @@ package com.android.launcher3.logging;
 
 import android.content.Context;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.R;
 import com.android.launcher3.logger.LauncherAtom.ItemInfo;
 import com.android.launcher3.logging.StatsLogUtils.LogStateProvider;
@@ -125,13 +127,13 @@ public class StatsLogManager implements ResourceBasedOverride {
     /**
      * Logs an event and accompanying {@link ItemInfo}.
      */
-    public void log(LauncherEvent event, ItemInfo itemInfo) {
+    public void log(LauncherEvent event, @Nullable ItemInfo info) {
     }
 
     /**
      * Logs an event and accompanying {@link InstanceId} and {@link ItemInfo}.
      */
-    public void log(LauncherEvent event, InstanceId instanceId, ItemInfo itemInfo) {
+    public void log(LauncherEvent event, InstanceId instanceId, @Nullable ItemInfo info) {
     }
 
     /**

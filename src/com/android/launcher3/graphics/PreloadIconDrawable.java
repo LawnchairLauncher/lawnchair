@@ -31,6 +31,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PathMeasure;
 import android.graphics.Rect;
+import android.util.Pair;
 import android.util.Property;
 import android.util.SparseArray;
 
@@ -73,7 +74,8 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
 
     private static final float SMALL_SCALE = 0.6f;
 
-    private static final SparseArray<WeakReference<Bitmap>> sShadowCache = new SparseArray<>();
+    private static final SparseArray<WeakReference<Pair<Path, Bitmap>>> sShadowCache =
+            new SparseArray<>();
 
     private final Matrix mTmpMatrix = new Matrix();
     private final PathMeasure mPathMeasure = new PathMeasure();
@@ -81,7 +83,7 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
     private final ItemInfoWithIcon mItem;
 
     // Path in [0, 100] bounds.
-    private final Path mProgressPath;
+    private final Path mShapePath;
 
     private final Path mScaledTrackPath;
     private final Path mScaledProgressPath;
@@ -105,7 +107,7 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
     public PreloadIconDrawable(ItemInfoWithIcon info, Context context) {
         super(info.bitmap);
         mItem = info;
-        mProgressPath = getShapePath();
+        mShapePath = getShapePath();
         mScaledTrackPath = new Path();
         mScaledProgressPath = new Path();
 
@@ -127,7 +129,7 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
                 bounds.left + PROGRESS_WIDTH + PROGRESS_GAP,
                 bounds.top + PROGRESS_WIDTH + PROGRESS_GAP);
 
-        mProgressPath.transform(mTmpMatrix, mScaledTrackPath);
+        mShapePath.transform(mTmpMatrix, mScaledTrackPath);
         float scale = bounds.width() / DEFAULT_PATH_SIZE;
         mProgressPaint.setStrokeWidth(PROGRESS_WIDTH * scale);
 
@@ -141,8 +143,9 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
 
     private Bitmap getShadowBitmap(int width, int height, float shadowRadius) {
         int key = (width << 16) | height;
-        WeakReference<Bitmap> shadowRef = sShadowCache.get(key);
-        Bitmap shadow = shadowRef != null ? shadowRef.get() : null;
+        WeakReference<Pair<Path, Bitmap>> shadowRef = sShadowCache.get(key);
+        Pair<Path, Bitmap> cache = shadowRef != null ? shadowRef.get() : null;
+        Bitmap shadow = cache != null && cache.first.equals(mShapePath) ? cache.second : null;
         if (shadow != null) {
             return shadow;
         }
@@ -155,7 +158,7 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
         mProgressPaint.clearShadowLayer();
         c.setBitmap(null);
 
-        sShadowCache.put(key, new WeakReference<>(shadow));
+        sShadowCache.put(key, new WeakReference<>(Pair.create(mShapePath, shadow)));
         return shadow;
     }
 

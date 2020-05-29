@@ -44,14 +44,16 @@
     <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"कुनै सर्टकट छनौट गर्न वा रोजेका कारबाहीहरू प्रयोग गर्न डबल ट्याप गरेर छोइराख्नुहोस्।"</string>
     <string name="out_of_space" msgid="4691004494942118364">"यो गृह स्क्रिनमा कुनै थप ठाउँ छैन।"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"मन पर्ने ट्रे अब कुनै ठाँउ छैन"</string>
-    <string name="all_apps_button_label" msgid="8130441508702294465">"अनुप्रयोगको सूची"</string>
+    <string name="all_apps_button_label" msgid="8130441508702294465">"एपको सूची"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"व्यक्तिगत अनुप्रयोगहरूको सूची"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"कार्यसम्बन्धी अनुप्रयोगहरूको सूची"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"गृह"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"हटाउनुहोस्"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"विस्थापित गर्नुहोस्"</string>
-    <string name="app_info_drop_target_label" msgid="692894985365717661">"अनुप्रयोगको जानकारी"</string>
+    <string name="app_info_drop_target_label" msgid="692894985365717661">"एपको जानकारी"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"स्थापना गर्नुहोस्"</string>
+    <string name="dismiss_prediction_label" msgid="3357562989568808658">"यो एप सिफारिस नगरियोस्"</string>
+    <string name="pin_prediction" msgid="4196423321649756498">"सिफारिस गरिएको एप पिन गर्नुहोस्"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"सर्टकट स्थापना गर्नेहोस्"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"प्रयोगकर्ताको हस्तक्षेप बिना एउटा एपलाई सर्टकटमा थप्नको लागि अनुमति दिनुहोस्।"</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"गृह सेटिङहरू र सर्टकटहरू पढ्नुहोस्"</string>
@@ -138,7 +140,7 @@
     <string name="work_profile_edu_next" msgid="8783418929296503629">"अर्को"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"बुझेँ"</string>
     <string name="work_apps_paused_title" msgid="2389865654362803723">"कार्यालयको प्रोफाइल अस्थायी रूपमा रोक्का गरिएको छ"</string>
-    <string name="work_apps_paused_body" msgid="5388070126389079077">"कामसम्बन्धी एपहरूले तपाईंलाई सूचना पठाउन, तपाईंको ब्याट्री प्रयोग गर्न वा तपाईंको स्थानसम्बन्धी जानकारीमाथि पहुँच राख्न सक्दैनन्"</string>
+    <string name="work_apps_paused_body" msgid="2197210494568696054">"कामसम्बन्धी एपहरूले तपाईंलाई सूचना पठाउन, तपाईंको यन्त्रको ब्याट्री प्रयोग गर्न वा तपाईंको स्थान हेर्न सक्दैनन्"</string>
     <string name="work_apps_paused_content_description" msgid="7553586952985486433">"कार्यालयको प्रोफाइल अस्थायी रूपमा रोक्का गरिएको छ। कामसम्बन्धी एपहरूले तपाईंलाई सूचना पठाउन, तपाईंको यन्त्रको ब्याट्री प्रयोग गर्न वा तपाईंको स्थान हेर्न सक्दैनन्"</string>
     <string name="work_switch_tip" msgid="808075064383839144">"कामसम्बन्धी एप र सूचनाहरू अस्थायी रूपमा रोक्का गर्नुहोस्"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"कार्य पूरा गर्न सकिएन: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
