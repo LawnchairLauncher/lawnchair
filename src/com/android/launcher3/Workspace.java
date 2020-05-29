@@ -418,10 +418,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         mStatsLogManager.log(
                 LauncherEvent.LAUNCHER_ITEM_DRAG_STARTED,
                 dragObject.logInstanceId,
-                dragObject.originalDragInfo.buildProto(
-                    dragObject.dragSource instanceof Folder
-                        ? ((Folder) dragObject.dragSource).mInfo
-                        : null)
+                dragObject.dragSource instanceof Folder
+                        ? dragObject.originalDragInfo
+                                .buildProto(((Folder) dragObject.dragSource).mInfo)
+                        : dragObject.originalDragInfo.buildProto()
         );
     }
 

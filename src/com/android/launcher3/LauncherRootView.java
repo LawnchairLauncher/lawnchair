@@ -1,5 +1,6 @@
 package com.android.launcher3;
 
+import static com.android.launcher3.config.FeatureFlags.SEPARATE_RECENTS_ACTIVITY;
 import static com.android.launcher3.util.SystemUiController.FLAG_DARK_NAV;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_ROOT_VIEW;
 
@@ -177,7 +178,7 @@ public class LauncherRootView extends InsettableFrameLayout {
 
     @TargetApi(Build.VERSION_CODES.Q)
     public void setDisallowBackGesture(boolean disallowBackGesture) {
-        if (!Utilities.ATLEAST_Q) {
+        if (!Utilities.ATLEAST_Q || SEPARATE_RECENTS_ACTIVITY.get()) {
             return;
         }
         mDisallowBackGesture = disallowBackGesture;

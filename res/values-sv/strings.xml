@@ -52,6 +52,8 @@
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Avinstallera"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"Info om appen"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"Installera"</string>
+    <string name="dismiss_prediction_label" msgid="3357562989568808658">"Föreslå inte app"</string>
+    <string name="pin_prediction" msgid="4196423321649756498">"Fäst förslag"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"installera genvägar"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Tillåter att en app lägger till genvägar utan åtgärd från användaren."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"läsa inställningar och genvägar för startsidan"</string>
@@ -134,11 +136,11 @@
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Arbete"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Jobbprofil"</string>
     <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"Privat data lagras för sig och är inte synlig för jobbapparna"</string>
-    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"Jobbappar och jobbdata är synlig för IT-administratören"</string>
+    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"Jobbappar och jobbdata är synliga för IT-administratören"</string>
     <string name="work_profile_edu_next" msgid="8783418929296503629">"Nästa"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"OK"</string>
     <string name="work_apps_paused_title" msgid="2389865654362803723">"Jobbprofilen är pausad"</string>
-    <string name="work_apps_paused_body" msgid="5388070126389079077">"Jobbappar kan inte skicka aviseringar, använda batteriet eller komma åt din plats"</string>
+    <string name="work_apps_paused_body" msgid="2197210494568696054">"Jobbappar kan inte skicka aviseringar, använda batteriet eller komma åt din plats"</string>
     <string name="work_apps_paused_content_description" msgid="7553586952985486433">"Jobbprofilen är pausad. Jobbappar kan inte skicka aviseringar, använda batteriet eller komma åt din plats"</string>
     <string name="work_switch_tip" msgid="808075064383839144">"Pausa jobbappar och jobbaviseringar"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Misslyckades: <xliff:g id="WHAT">%1$s</xliff:g>"</string>

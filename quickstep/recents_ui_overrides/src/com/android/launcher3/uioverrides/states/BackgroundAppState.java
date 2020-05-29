@@ -45,8 +45,10 @@ public class BackgroundAppState extends OverviewState {
         if (launcher.getDeviceProfile().isVerticalBarLayout()) {
             return super.getVerticalProgress(launcher);
         }
+        RecentsView recentsView = launcher.getOverviewPanel();
         int transitionLength = LayoutUtils.getShelfTrackingDistance(launcher,
-                launcher.getDeviceProfile());
+                launcher.getDeviceProfile(),
+                recentsView.getPagedOrientationHandler());
         AllAppsTransitionController controller = launcher.getAllAppsController();
         float scrollRange = Math.max(controller.getShiftRange(), 1);
         float progressDelta = (transitionLength / scrollRange);
@@ -73,9 +75,11 @@ public class BackgroundAppState extends OverviewState {
     public ScaleAndTranslation getHotseatScaleAndTranslation(Launcher launcher) {
         if ((getVisibleElements(launcher) & HOTSEAT_ICONS) != 0) {
             // Translate hotseat offscreen if we show it in overview.
+            RecentsView recentsView = launcher.getOverviewPanel();
             ScaleAndTranslation scaleAndTranslation = super.getHotseatScaleAndTranslation(launcher);
             scaleAndTranslation.translationY += LayoutUtils.getShelfTrackingDistance(launcher,
-                    launcher.getDeviceProfile());
+                    launcher.getDeviceProfile(),
+                    recentsView.getPagedOrientationHandler());
             return scaleAndTranslation;
         }
         return super.getHotseatScaleAndTranslation(launcher);
