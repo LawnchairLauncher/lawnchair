@@ -55,7 +55,6 @@ import com.android.launcher3.views.FloatingIconView;
 import com.android.quickstep.RecentsAnimationCallbacks.RecentsAnimationListener;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.ActivityInitListener;
-import com.android.quickstep.util.AppWindowAnimationHelper;
 import com.android.quickstep.util.RectFSpringAnim;
 import com.android.quickstep.util.TaskViewSimulator;
 import com.android.quickstep.util.TransformParams;
@@ -234,7 +233,6 @@ public abstract class BaseSwipeUpHandler<T extends StatefulActivity<?>, Q extend
             }
             mCanceled = false;
         }
-        ActiveGestureLog.INSTANCE.addLog("finishRecentsAnimation", true);
     }
 
     /**
@@ -247,7 +245,9 @@ public abstract class BaseSwipeUpHandler<T extends StatefulActivity<?>, Q extend
     protected void onRestartLastAppearedTask() {
         // Finish the controller here, since we won't get onTaskAppeared() for a task that already
         // appeared.
-        mRecentsAnimationController.finish(false, null);
+        if (mRecentsAnimationController != null) {
+            mRecentsAnimationController.finish(false, null);
+        }
     }
 
     /**
@@ -329,6 +329,7 @@ public abstract class BaseSwipeUpHandler<T extends StatefulActivity<?>, Q extend
                 mRecentsAnimationController.finish(false /* toRecents */,
                         null /* onFinishComplete */);
                 mActivityInterface.onLaunchTaskSuccess();
+                ActiveGestureLog.INSTANCE.addLog("finishRecentsAnimation", false);
             }
         }
     }
@@ -357,12 +358,13 @@ public abstract class BaseSwipeUpHandler<T extends StatefulActivity<?>, Q extend
     protected void initTransitionEndpoints(DeviceProfile dp) {
         mDp = dp;
 
-        mTransitionDragLength = mActivityInterface.getSwipeUpDestinationAndLength(
-                dp, mContext, TEMP_RECT);
         mTaskViewSimulator.setDp(dp);
         mTaskViewSimulator.setLayoutRotation(
                 mDeviceState.getCurrentActiveRotation(),
                 mDeviceState.getDisplayRotation());
+        mTransitionDragLength = mActivityInterface.getSwipeUpDestinationAndLength(
+                dp, mContext, TEMP_RECT,
+                mTaskViewSimulator.getOrientationState().getOrientationHandler());
 
         if (mDeviceState.isFullyGesturalNavMode()) {
             // We can drag all the way to the top of the screen.
@@ -510,8 +512,8 @@ public abstract class BaseSwipeUpHandler<T extends StatefulActivity<?>, Q extend
 
     public interface Factory {
 
-        BaseSwipeUpHandler newHandler(GestureState gestureState, long touchTimeMs,
-                boolean continuingLastGesture, boolean isLikelyToStartNewTask);
+        BaseSwipeUpHandler newHandler(
+                GestureState gestureState, long touchTimeMs, boolean continuingLastGesture);
     }
 
     protected interface RunningWindowAnim {

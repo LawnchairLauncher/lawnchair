@@ -24,6 +24,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.util.Log;
 
+import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.MainThreadInitializedObject;
 
 import java.io.PrintWriter;
@@ -132,6 +133,12 @@ public class SysUINavigationMode {
     public static boolean removeShelfFromOverview(Context context) {
         // The shelf is core to the two-button mode model, so we need to continue supporting it.
         return getMode(context) != Mode.TWO_BUTTONS;
+    }
+
+    public static boolean hideShelfInTwoButtonLandscape(Context context,
+            PagedOrientationHandler pagedOrientationHandler) {
+        return  getMode(context) == Mode.TWO_BUTTONS &&
+                !pagedOrientationHandler.isLayoutNaturalToLauncher();
     }
 
     public void dump(PrintWriter pw) {
