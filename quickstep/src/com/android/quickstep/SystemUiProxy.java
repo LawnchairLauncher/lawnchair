@@ -344,4 +344,26 @@ public class SystemUiProxy implements ISystemUiProxy {
             }
         }
     }
+
+    @Override
+    public void startOneHandedMode() {
+        if (mSystemUiProxy != null) {
+            try {
+                mSystemUiProxy.startOneHandedMode();
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call startOneHandedMode", e);
+            }
+        }
+    }
+
+    @Override
+    public void stopOneHandedMode() {
+        if (mSystemUiProxy != null) {
+            try {
+                mSystemUiProxy.stopOneHandedMode();
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call stopOneHandedMode", e);
+            }
+        }
+    }
 }
