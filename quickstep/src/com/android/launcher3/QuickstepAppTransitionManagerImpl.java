@@ -610,8 +610,10 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                         }
 
                         matrix.setTranslate(tmpPos.x, tmpPos.y);
+                        final Rect crop = new Rect(target.screenSpaceBounds);
+                        crop.offsetTo(0, 0);
                         builder.withMatrix(matrix)
-                                .withWindowCrop(target.screenSpaceBounds)
+                                .withWindowCrop(crop)
                                 .withAlpha(1f);
                     }
                     params[i] = builder.build();
@@ -774,8 +776,10 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
                         builder.withMatrix(matrix)
                                 .withAlpha(1f);
                     }
+                    final Rect crop = new Rect(target.screenSpaceBounds);
+                    crop.offsetTo(0, 0);
                     params[i] = builder
-                            .withWindowCrop(target.screenSpaceBounds)
+                            .withWindowCrop(crop)
                             .build();
                 }
                 surfaceApplier.scheduleApply(params);
