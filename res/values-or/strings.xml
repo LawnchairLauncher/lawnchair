@@ -52,6 +52,8 @@
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"ଅନଇନଷ୍ଟଲ୍‌ କରନ୍ତୁ"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"ଆପ୍‌ ସୂଚନା"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"ଇନଷ୍ଟଲ୍‌ କରନ୍ତୁ"</string>
+    <string name="dismiss_prediction_label" msgid="3357562989568808658">"ଆପ୍ ସୁପାରିଶ କରନ୍ତୁ ନାହିଁ"</string>
+    <string name="pin_prediction" msgid="4196423321649756498">"ପୂର୍ବାନୁମାନକୁ ପିନ୍ କରନ୍ତୁ"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"ଶର୍ଟକଟ୍‍ ଇନଷ୍ଟଲ୍‌ କରନ୍ତୁ"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"ୟୁଜରଙ୍କ ବିନା ହସ୍ତକ୍ଷେପରେ ଶର୍ଟକଟ୍‌ ଯୋଡ଼ିବାକୁ ଆପକୁ ଅନୁମତି ଦିଏ।"</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"ହୋମ୍‌ ସେଟିଙ୍ଗ ଏବଂ ଶର୍ଟକଟ୍‌ ପଢ଼ନ୍ତୁ"</string>
@@ -138,7 +140,7 @@
     <string name="work_profile_edu_next" msgid="8783418929296503629">"ପରବର୍ତ୍ତୀ"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"ବୁଝିଗଲି"</string>
     <string name="work_apps_paused_title" msgid="2389865654362803723">"ୱାର୍କ ପ୍ରୋଫାଇଲକୁ ବିରତ କରାଯାଇଛି"</string>
-    <string name="work_apps_paused_body" msgid="5388070126389079077">"କାର୍ଯ୍ୟସ୍ଥଳୀ ଆପ୍ ଆପଣଙ୍କୁ ବିଜ୍ଞପ୍ତିଗୁଡ଼ିକ ପଠାଇପାରିବ ନାହିଁ, ଆପଣଙ୍କ ବ୍ୟାଟେରୀକୁ ବ୍ୟବହାର କରିପାରିବ ନାହିଁ କିମ୍ବା ଆପଣଙ୍କ ଲୋକେସନକୁ ଆକ୍ସେସ୍ କରିପାରିବ ନାହିଁ"</string>
+    <string name="work_apps_paused_body" msgid="2197210494568696054">"କାର୍ଯ୍ୟସ୍ଥଳୀ ଆପଗୁଡ଼ିକ ଆପଣଙ୍କୁ ବିଜ୍ଞପ୍ତିଗୁଡ଼ିକ ପଠାଇପାରିବ ନାହିଁ, ଆପଣଙ୍କ ବ୍ୟାଟେରୀ ବ୍ୟବହାର କରନ୍ତୁ କିମ୍ବା ଆପଣଙ୍କ ଲୋକେସନ୍ ଆକ୍ସେସ୍ କରନ୍ତୁ"</string>
     <string name="work_apps_paused_content_description" msgid="7553586952985486433">"ୱାର୍କ ପ୍ରୋଫାଇଲ୍ ବିରତ କରାଯାଇଛି। କାର୍ଯ୍ୟସ୍ଥଳୀ ଆପ୍ ଆପଣଙ୍କୁ ବିଜ୍ଞପ୍ତିଗୁଡ଼ିକ ପଠାଇପାରିବ ନାହିଁ, ଆପଣଙ୍କ ବ୍ୟାଟେରୀ ବ୍ୟବହାର କରନ୍ତୁ କିମ୍ବା ଆପଣଙ୍କ ଲୋକେସନ୍ ଆକ୍ସେସ୍ କରନ୍ତୁ"</string>
     <string name="work_switch_tip" msgid="808075064383839144">"କାର୍ଯ୍ୟସ୍ଥଳୀ ଆପ୍ ଏବଂ ବିଜ୍ଞପ୍ତିଗୁଡ଼ିକୁ ବିରତ କରନ୍ତୁ"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"ବିଫଳ ହୋଇଛି: <xliff:g id="WHAT">%1$s</xliff:g>"</string>

@@ -49,13 +49,24 @@ message ContainerInfo {
     FolderContainer folder = 3;
     AllAppsContainer all_apps_container = 4;
     WidgetsContainer widgets_container = 5;
+    PredictionContainer prediction_container = 6;
+    SearchResultContainer search_result_container = 7;
   }
 }
 
+// Represents the apps list sorted alphabetically inside the all-apps view.
 message AllAppsContainer {
 }
 
 message WidgetsContainer {
+}
+
+// Represents the predicted apps row(top row) in the all-apps view.
+message PredictionContainer {
+}
+
+// Represents the apps container within search results.
+message SearchResultContainer {
 }
 
 enum Origin {
