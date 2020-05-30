@@ -25,6 +25,7 @@ import android.view.ViewGroup;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
+import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.quickstep.LauncherActivityInterface;
 import com.android.quickstep.SysUINavigationMode;
 
@@ -41,11 +42,13 @@ public class LayoutUtils {
         return swipeHeight;
     }
 
-    public static int getShelfTrackingDistance(Context context, DeviceProfile dp) {
+    public static int getShelfTrackingDistance(Context context, DeviceProfile dp,
+            PagedOrientationHandler orientationHandler) {
         // Track the bottom of the window.
         if (ENABLE_OVERVIEW_ACTIONS.get() && removeShelfFromOverview(context)) {
             Rect taskSize = new Rect();
-            LauncherActivityInterface.INSTANCE.calculateTaskSize(context, dp, taskSize);
+            LauncherActivityInterface.INSTANCE.calculateTaskSize(context, dp, taskSize,
+                    orientationHandler);
             return (dp.heightPx - taskSize.height()) / 2;
         }
         int shelfHeight = dp.hotseatBarSizePx + dp.getInsets().bottom;
