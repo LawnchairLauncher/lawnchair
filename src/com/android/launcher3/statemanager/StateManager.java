@@ -554,6 +554,8 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
      */
     public static class AtomicAnimationFactory<STATE_TYPE> {
 
+        protected static final int NEXT_INDEX = 0;
+
         private final Animator[] mStateElementAnimators;
 
         /**

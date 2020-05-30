@@ -5,11 +5,13 @@ import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
+import android.content.pm.PackageManager;
 import android.content.res.XmlResourceParser;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Binder;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
 import android.os.ParcelFileDescriptor.AutoCloseOutputStream;
@@ -65,8 +67,6 @@ public class GridOptionsProvider extends ContentProvider {
 
     private static final String METHOD_GET_PREVIEW = "get_preview";
     private static final String METADATA_KEY_PREVIEW_VERSION = "preview_version";
-
-
 
     public static final PipeDataWriter<Future<Bitmap>> BITMAP_WRITER =
             new PipeDataWriter<Future<Bitmap>>() {
@@ -201,6 +201,12 @@ public class GridOptionsProvider extends ContentProvider {
 
     @Override
     public Bundle call(String method, String arg, Bundle extras) {
+        if (getContext().checkPermission("android.permission.BIND_WALLPAPER",
+                Binder.getCallingPid(), Binder.getCallingUid())
+                != PackageManager.PERMISSION_GRANTED) {
+            return null;
+        }
+
         if (!METHOD_GET_PREVIEW.equals(method)) {
             return null;
         }
