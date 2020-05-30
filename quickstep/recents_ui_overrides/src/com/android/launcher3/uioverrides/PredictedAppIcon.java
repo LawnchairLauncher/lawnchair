@@ -47,6 +47,7 @@ import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.util.SafeCloseable;
+import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.DoubleShadowBubbleTextView;
 
 /**
@@ -68,7 +69,6 @@ public class PredictedAppIcon extends DoubleShadowBubbleTextView implements
     private int mPlateColor;
     boolean mDrawForDrag = false;
 
-
     public PredictedAppIcon(Context context) {
         this(context, null, 0);
     }
@@ -79,10 +79,8 @@ public class PredictedAppIcon extends DoubleShadowBubbleTextView implements
 
     public PredictedAppIcon(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        mDeviceProfile = Launcher.getLauncher(context).getDeviceProfile();
+        mDeviceProfile = ActivityContext.lookupContext(context).getDeviceProfile();
         mNormalizedIconRadius = IconNormalizer.getNormalizedCircleSize(getIconSize()) / 2;
-        setOnClickListener(ItemClickHandler.INSTANCE);
-        setOnFocusChangeListener(Launcher.getLauncher(context).getFocusHandler());
         int shadowSize = context.getResources().getDimensionPixelSize(
                 R.dimen.blur_size_thin_outline);
         mShadowFilter = new BlurMaskFilter(shadowSize, BlurMaskFilter.Blur.OUTER);
@@ -241,6 +239,8 @@ public class PredictedAppIcon extends DoubleShadowBubbleTextView implements
         PredictedAppIcon icon = (PredictedAppIcon) LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.predicted_app_icon, parent, false);
         icon.applyFromWorkspaceItem(info);
+        icon.setOnClickListener(ItemClickHandler.INSTANCE);
+        icon.setOnFocusChangeListener(Launcher.getLauncher(parent.getContext()).getFocusHandler());
         return icon;
     }
 
