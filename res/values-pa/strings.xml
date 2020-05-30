@@ -52,6 +52,8 @@
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"ਅਣਸਥਾਪਤ ਕਰੋ"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"ਐਪ ਜਾਣਕਾਰੀ"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"ਸਥਾਪਤ ਕਰੋ"</string>
+    <string name="dismiss_prediction_label" msgid="3357562989568808658">"ਐਪ ਦਾ ਸੁਝਾਅ ਨਾ ਦਿਓ"</string>
+    <string name="pin_prediction" msgid="4196423321649756498">"ਪਿੰਨ ਦਾ ਪੂਰਵ-ਅਨੁਮਾਨ"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"ਸ਼ਾਰਟਕੱਟ ਸਥਾਪਤ ਕਰੋ"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"ਇੱਕ ਐਪ ਨੂੰ ਵਰਤੋਂਕਾਰ ਦੇ ਦਖ਼ਲ ਤੋਂ ਬਿਨਾਂ ਸ਼ਾਰਟਕੱਟ ਸ਼ਾਮਲ ਕਰਨ ਦੀ ਆਗਿਆ ਦਿੰਦਾ ਹੈ।"</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"ਹੋਮ ਸੈਟਿੰਗਾਂ ਅਤੇ ਸ਼ਾਰਟਕੱਟ ਪੜ੍ਹੋ"</string>
@@ -138,7 +140,7 @@
     <string name="work_profile_edu_next" msgid="8783418929296503629">"ਅੱਗੇ"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"ਸਮਝ ਲਿਆ"</string>
     <string name="work_apps_paused_title" msgid="2389865654362803723">"ਕਾਰਜ ਪ੍ਰੋਫਾਈਲ ਨੂੰ ਰੋਕਿਆ ਗਿਆ ਹੈ"</string>
-    <string name="work_apps_paused_body" msgid="5388070126389079077">"ਕੰਮ ਸੰਬੰਧੀ ਐਪਾਂ ਤੁਹਾਨੂੰ ਸੂਚਨਾਵਾਂ ਨਹੀਂ ਭੇਜ ਸਕਦੀਆਂ, ਤੁਹਾਡੀ ਬੈਟਰੀ ਨਹੀਂ ਵਰਤ ਸਕਦੀਆਂ ਜਾਂ ਤੁਹਾਡੇ ਟਿਕਾਣੇ ਤੱਕ ਪਹੁੰਚ ਨਹੀਂ ਕਰ ਸਕਦੀਆਂ"</string>
+    <string name="work_apps_paused_body" msgid="2197210494568696054">"ਕੰਮ ਸੰਬੰਧੀ ਐਪਾਂ ਤੁਹਾਨੂੰ ਸੂਚਨਾਵਾਂ ਨਹੀਂ ਭੇਜ ਸਕਦੀਆਂ, ਤੁਹਾਡੀ ਬੈਟਰੀ ਨਹੀਂ ਵਰਤ ਸਕਦੀਆਂ ਜਾਂ ਤੁਹਾਡੇ ਟਿਕਾਣੇ ਤੱਕ ਪਹੁੰਚ ਨਹੀਂ ਕਰ ਸਕਦੀਆਂ"</string>
     <string name="work_apps_paused_content_description" msgid="7553586952985486433">"ਕਾਰਜ ਪ੍ਰੋਫਾਈਲ ਨੂੰ ਰੋਕਿਆ ਗਿਆ ਹੈ। ਕੰਮ ਸੰਬੰਧੀ ਐਪਾਂ ਤੁਹਾਨੂੰ ਸੂਚਨਾਵਾਂ ਨਹੀਂ ਭੇਜ ਸਕਦੀਆਂ, ਤੁਹਾਡੀ ਬੈਟਰੀ ਨਹੀਂ ਵਰਤ ਸਕਦੀਆਂ ਜਾਂ ਤੁਹਾਡੇ ਟਿਕਾਣੇ ਤੱਕ ਪਹੁੰਚ ਨਹੀਂ ਕਰ ਸਕਦੀਆਂ"</string>
     <string name="work_switch_tip" msgid="808075064383839144">"ਕੰਮ ਸੰਬੰਧੀ ਐਪਾਂ ਅਤੇ ਸੂਚਨਾਵਾਂ ਨੂੰ ਰੋਕੋ"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"ਇਹ ਕਾਰਵਾਈ ਅਸਫਲ ਹੋਈ: <xliff:g id="WHAT">%1$s</xliff:g>"</string>

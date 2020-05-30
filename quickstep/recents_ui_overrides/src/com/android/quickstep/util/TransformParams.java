@@ -15,10 +15,7 @@
  */
 package com.android.quickstep.util;
 
-import android.graphics.RectF;
 import android.util.FloatProperty;
-
-import androidx.annotation.Nullable;
 
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.Interpolators;
@@ -43,19 +40,30 @@ public class TransformParams {
         }
     };
 
+    public static FloatProperty<TransformParams> TARGET_ALPHA =
+            new FloatProperty<TransformParams>("targetAlpha") {
+        @Override
+        public void setValue(TransformParams params, float v) {
+            params.setTargetAlpha(v);
+        }
+
+        @Override
+        public Float get(TransformParams params) {
+            return params.getTargetAlpha();
+        }
+    };
+
     private float mProgress;
-    private @Nullable RectF mCurrentRect;
     private float mTargetAlpha;
     private float mCornerRadius;
     private RemoteAnimationTargets mTargetSet;
     private SyncRtSurfaceTransactionApplierCompat mSyncTransactionApplier;
 
-    private TargetAlphaProvider mTaskAlphaCallback = (t, a) -> a;
-    private TargetAlphaProvider mBaseAlphaCallback = (t, a) -> 1;
+    private BuilderProxy mHomeBuilderProxy = BuilderProxy.ALWAYS_VISIBLE;
+    private BuilderProxy mBaseBuilderProxy = BuilderProxy.ALWAYS_VISIBLE;
 
     public TransformParams() {
         mProgress = 0;
-        mCurrentRect = null;
         mTargetAlpha = 1;
         mCornerRadius = -1;
     }
@@ -77,17 +85,6 @@ public class TransformParams {
      */
     public TransformParams setCornerRadius(float cornerRadius) {
         mCornerRadius = cornerRadius;
-        return this;
-    }
-
-    /**
-     * Sets the current rect to show the transformed window, in device coordinates. This gives
-     * the caller manual control of where to show the window. If unspecified (null), we
-     * interpolate between {@link AppWindowAnimationHelper#mSourceRect} and
-     * {@link AppWindowAnimationHelper#mTargetRect}, based on {@link #mProgress}.
-     */
-    public TransformParams setCurrentRect(RectF currentRect) {
-        mCurrentRect = currentRect;
         return this;
     }
 
@@ -121,18 +118,20 @@ public class TransformParams {
     }
 
     /**
-     * Sets an alternate function which can be used to control the alpha of target app
+     * Sets an alternate function to control transform for non-target apps. The default
+     * implementation keeps the targets visible with alpha=1
      */
-    public TransformParams setTaskAlphaCallback(TargetAlphaProvider callback) {
-        mTaskAlphaCallback = callback;
+    public TransformParams setBaseBuilderProxy(BuilderProxy proxy) {
+        mBaseBuilderProxy = proxy;
         return this;
     }
 
     /**
-     * Sets an alternate function which can be used to control the alpha of non-target app
+     * Sets an alternate function to control transform for home target. The default
+     * implementation keeps the targets visible with alpha=1
      */
-    public TransformParams setBaseAlphaCallback(TargetAlphaProvider callback) {
-        mBaseAlphaCallback = callback;
+    public TransformParams setHomeBuilderProxy(BuilderProxy proxy) {
+        mHomeBuilderProxy = proxy;
         return this;
     }
 
@@ -143,25 +142,24 @@ public class TransformParams {
             RemoteAnimationTargetCompat app = targets.unfilteredApps[i];
             SurfaceParams.Builder builder = new SurfaceParams.Builder(app.leash);
 
-            float progress = Utilities.boundToRange(getProgress(), 0, 1);
-            float alpha;
             if (app.mode == targets.targetMode) {
-                alpha = mTaskAlphaCallback.getAlpha(app, getTargetAlpha());
-                if (app.activityType != RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME) {
+                if (app.activityType == RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME) {
+                    mHomeBuilderProxy.onBuildTargetParams(builder, app, this);
+                } else {
                     // Fade out Assistant overlay.
                     if (app.activityType == RemoteAnimationTargetCompat.ACTIVITY_TYPE_ASSISTANT
                             && app.isNotInRecents) {
-                        alpha = 1 - Interpolators.DEACCEL_2_5.getInterpolation(progress);
+                        float progress = Utilities.boundToRange(getProgress(), 0, 1);
+                        builder.withAlpha(1 - Interpolators.DEACCEL_2_5.getInterpolation(progress));
+                    } else {
+                        builder.withAlpha(getTargetAlpha());
                     }
-                } else if (targets.hasRecents) {
-                    // If home has a different target then recents, reverse anim the
-                    // home target.
-                    alpha = 1 - (progress * getTargetAlpha());
+
+                    proxy.onBuildTargetParams(builder, app, this);
                 }
             } else {
-                alpha = mBaseAlphaCallback.getAlpha(app, progress);
+                mBaseBuilderProxy.onBuildTargetParams(builder, app, this);
             }
-            proxy.onBuildParams(builder.withAlpha(alpha), app, targets.targetMode, this);
             surfaceParams[i] = builder.build();
         }
         return surfaceParams;
@@ -171,11 +169,6 @@ public class TransformParams {
 
     public float getProgress() {
         return mProgress;
-    }
-
-    @Nullable
-    public RectF getCurrentRect() {
-        return mCurrentRect;
     }
 
     public float getTargetAlpha() {
@@ -203,21 +196,13 @@ public class TransformParams {
         }
     }
 
-    public interface TargetAlphaProvider {
-        float getAlpha(RemoteAnimationTargetCompat target, float expectedAlpha);
-    }
-
+    @FunctionalInterface
     public interface BuilderProxy {
 
-        default void onBuildParams(SurfaceParams.Builder builder,
-                RemoteAnimationTargetCompat app, int targetMode, TransformParams params) {
-            if (app.mode == targetMode
-                    && app.activityType != RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME) {
-                onBuildTargetParams(builder, app, params);
-            }
-        }
+        BuilderProxy NO_OP = (builder, app, params) -> { };
+        BuilderProxy ALWAYS_VISIBLE = (builder, app, params) ->builder.withAlpha(1);
 
-        default void onBuildTargetParams(SurfaceParams.Builder builder,
-                RemoteAnimationTargetCompat app, TransformParams params) { }
+        void onBuildTargetParams(SurfaceParams.Builder builder,
+                RemoteAnimationTargetCompat app, TransformParams params);
     }
 }
