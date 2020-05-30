@@ -52,6 +52,8 @@
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Desinstalar"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"Info. da app"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"Instalar"</string>
+    <string name="dismiss_prediction_label" msgid="3357562989568808658">"Não sugerir app"</string>
+    <string name="pin_prediction" msgid="4196423321649756498">"Fixar previsão"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"instalar atalhos"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Permite a uma app adicionar atalhos sem a intervenção do utilizador."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"ler definições e atalhos do Ecrã Principal"</string>
@@ -138,7 +140,7 @@
     <string name="work_profile_edu_next" msgid="8783418929296503629">"Seguinte"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"OK"</string>
     <string name="work_apps_paused_title" msgid="2389865654362803723">"Perfil de trabalho em pausa"</string>
-    <string name="work_apps_paused_body" msgid="5388070126389079077">"As apps de trabalho não podem enviar-lhe notificações, utilizar a sua bateria ou aceder à sua localização."</string>
+    <string name="work_apps_paused_body" msgid="2197210494568696054">"As apps de trabalho não podem enviar-lhe notificações, utilizar a sua bateria ou aceder à sua localização."</string>
     <string name="work_apps_paused_content_description" msgid="7553586952985486433">"O perfil de trabalho está em pausa. As apps de trabalho não podem enviar-lhe notificações, utilizar a sua bateria ou aceder à sua localização."</string>
     <string name="work_switch_tip" msgid="808075064383839144">"Coloque as apps de trabalho e as notificações em pausa."</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Falhou: <xliff:g id="WHAT">%1$s</xliff:g>"</string>

@@ -52,6 +52,8 @@
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Çinstalo"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"Informacion mbi aplikacionin"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"Instalo"</string>
+    <string name="dismiss_prediction_label" msgid="3357562989568808658">"Mos sugjero aplikacion"</string>
+    <string name="pin_prediction" msgid="4196423321649756498">"Gozhdo aplikacionin e parashikuar"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"instalo shkurtore"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Lejon një aplikacion të shtojë shkurtore pa ndërhyrjen e përdoruesit."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"lexo cilësimet dhe shkurtoret e ekranit bazë"</string>
@@ -138,7 +140,7 @@
     <string name="work_profile_edu_next" msgid="8783418929296503629">"Para"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"E kuptova"</string>
     <string name="work_apps_paused_title" msgid="2389865654362803723">"Profili i punës është në pauzë"</string>
-    <string name="work_apps_paused_body" msgid="5388070126389079077">"Aplikacionet e punës nuk mund të të dërgojnë njoftime, të përdorin baterinë tënde apo të kenë qasje në vendndodhjen tënde"</string>
+    <string name="work_apps_paused_body" msgid="2197210494568696054">"Aplikacionet e punës nuk mund të të dërgojnë njoftime, të përdorin baterinë tënde apo të kenë qasje në vendndodhjen tënde"</string>
     <string name="work_apps_paused_content_description" msgid="7553586952985486433">"Profili i punës është në pauzë. Aplikacionet e punës nuk mund të të dërgojnë njoftime, të përdorin baterinë tënde apo të kenë qasje në vendndodhjen tënde"</string>
     <string name="work_switch_tip" msgid="808075064383839144">"Vendos në pauzë aplikacionet e punës dhe njoftimet"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Dështoi: <xliff:g id="WHAT">%1$s</xliff:g>"</string>

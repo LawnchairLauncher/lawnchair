@@ -23,7 +23,7 @@ import static com.android.launcher3.QuickstepAppTransitionManagerImpl.STATUS_BAR
 import static com.android.launcher3.QuickstepAppTransitionManagerImpl.STATUS_BAR_TRANSITION_PRE_DELAY;
 import static com.android.launcher3.testing.TestProtocol.OVERVIEW_STATE_ORDINAL;
 import static com.android.quickstep.TaskUtils.taskIsATargetWithMode;
-import static com.android.quickstep.TaskViewUtils.getRecentsWindowAnimator;
+import static com.android.quickstep.TaskViewUtils.createRecentsWindowAnimator;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
 
 import android.animation.Animator;
@@ -34,7 +34,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Looper;
 import android.view.View;
 
@@ -44,12 +43,13 @@ import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAnimationRunner;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.Interpolators;
+import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.statemanager.StateManager;
+import com.android.launcher3.statemanager.StateManager.AtomicAnimationFactory;
 import com.android.launcher3.statemanager.StateManager.StateHandler;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.util.ActivityTracker;
-import com.android.launcher3.util.ObjectWrapper;
 import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.BaseDragLayer;
@@ -57,9 +57,9 @@ import com.android.quickstep.fallback.FallbackRecentsStateController;
 import com.android.quickstep.fallback.FallbackRecentsView;
 import com.android.quickstep.fallback.RecentsRootView;
 import com.android.quickstep.fallback.RecentsState;
+import com.android.quickstep.util.RecentsAtomicAnimationFactory;
 import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.TaskView;
-import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.RemoteAnimationAdapterCompat;
 import com.android.systemui.shared.system.RemoteAnimationRunnerCompat;
@@ -74,8 +74,6 @@ import java.io.PrintWriter;
  */
 public final class RecentsActivity extends StatefulActivity<RecentsState> {
 
-    public static final String EXTRA_THUMBNAIL = "thumbnailData";
-    public static final String EXTRA_TASK_ID = "taskID";
     public static final ActivityTracker<RecentsActivity> ACTIVITY_TRACKER =
             new ActivityTracker<>();
 
@@ -115,21 +113,6 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
 
     @Override
     protected void onNewIntent(Intent intent) {
-        if (intent.getExtras() != null) {
-            int taskID = intent.getIntExtra(EXTRA_TASK_ID, 0);
-            IBinder thumbnail = intent.getExtras().getBinder(EXTRA_THUMBNAIL);
-            if (taskID != 0 && thumbnail instanceof ObjectWrapper) {
-                ObjectWrapper<ThumbnailData> obj = (ObjectWrapper<ThumbnailData>) thumbnail;
-                ThumbnailData thumbnailData = obj.get();
-                mFallbackRecentsView.showCurrentTask(taskID);
-                mFallbackRecentsView.updateThumbnail(taskID, thumbnailData);
-                // Clear the ref since any reference to the extras on the system side will still
-                // hold a reference to the wrapper
-                obj.clear();
-            }
-        }
-        intent.removeExtra(EXTRA_TASK_ID);
-        intent.removeExtra(EXTRA_THUMBNAIL);
         super.onNewIntent(intent);
         ACTIVITY_TRACKER.handleNewIntent(this, intent);
     }
@@ -223,9 +206,10 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
             RemoteAnimationTargetCompat[] wallpaperTargets) {
         AnimatorSet target = new AnimatorSet();
         boolean activityClosing = taskIsATargetWithMode(appTargets, getTaskId(), MODE_CLOSING);
-        Animator recentsAnimator = getRecentsWindowAnimator(taskView, !activityClosing, appTargets,
-                wallpaperTargets, null /* depthController */);
-        target.play(recentsAnimator.setDuration(RECENTS_LAUNCH_DURATION));
+        PendingAnimation pa = new PendingAnimation(RECENTS_LAUNCH_DURATION);
+        createRecentsWindowAnimator(taskView, !activityClosing, appTargets,
+                wallpaperTargets, null /* depthController */, pa);
+        target.play(pa.buildAnim());
 
         // Found a visible recents task that matches the opening app, lets launch the app from there
         if (activityClosing) {
@@ -343,6 +327,11 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
         super.dump(prefix, fd, writer, args);
         writer.println(prefix + "Misc:");
         dumpMisc(prefix + "\t", writer);
+    }
+
+    @Override
+    public AtomicAnimationFactory<RecentsState> createAtomicAnimationFactory() {
+        return new RecentsAtomicAnimationFactory<>(this, 0);
     }
 
     private AnimatorListenerAdapter resetStateListener() {

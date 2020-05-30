@@ -20,6 +20,7 @@ import static android.content.Intent.ACTION_PACKAGE_ADDED;
 import static android.content.Intent.ACTION_PACKAGE_CHANGED;
 import static android.content.Intent.ACTION_PACKAGE_REMOVED;
 
+import static com.android.launcher3.config.FeatureFlags.SEPARATE_RECENTS_ACTIVITY;
 import static com.android.launcher3.util.PackageManagerHelper.getPackageFilter;
 import static com.android.systemui.shared.system.PackageManagerWrapper.ACTION_PREFERRED_ACTIVITY_CHANGED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_ASSIST_GESTURE_CONSTRAINED;
@@ -136,6 +137,13 @@ public final class OverviewComponentObserver {
         // becomes active.
         if (mActivityInterface != null) {
             mActivityInterface.onAssistantVisibilityChanged(0.f);
+        }
+
+        if (SEPARATE_RECENTS_ACTIVITY.get()) {
+            mIsDefaultHome = false;
+            if (defaultHome == null) {
+                defaultHome = mMyHomeIntent.getComponent();
+            }
         }
 
         if (!mDeviceState.isHomeDisabled() && (defaultHome == null || mIsDefaultHome)) {

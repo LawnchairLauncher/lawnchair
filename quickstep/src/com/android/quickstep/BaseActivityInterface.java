@@ -15,14 +15,24 @@
  */
 package com.android.quickstep;
 
+import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
+import static com.android.launcher3.anim.Interpolators.ACCEL_2;
+import static com.android.launcher3.anim.Interpolators.INSTANT;
+import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_ACTIONS;
+import static com.android.quickstep.BaseSwipeUpHandlerV2.RECENTS_ATTACH_DURATION;
 import static com.android.quickstep.SysUINavigationMode.getMode;
+import static com.android.quickstep.SysUINavigationMode.hideShelfInTwoButtonLandscape;
 import static com.android.quickstep.SysUINavigationMode.removeShelfFromOverview;
+import static com.android.quickstep.util.RecentsAtomicAnimationFactory.INDEX_RECENTS_FADE_ANIM;
+import static com.android.quickstep.util.RecentsAtomicAnimationFactory.INDEX_RECENTS_TRANSLATE_X_ANIM;
+import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_OFFSET;
+import static com.android.quickstep.views.RecentsView.FULLSCREEN_PROGRESS;
 
+import android.animation.Animator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.Build;
 import android.view.MotionEvent;
@@ -34,9 +44,11 @@ import androidx.annotation.UiThread;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimatorPlaybackController;
+import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.statemanager.StatefulActivity;
+import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.WindowBounds;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.util.ActivityInitListener;
@@ -56,11 +68,15 @@ import java.util.function.Predicate;
 public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_TYPE>,
         ACTIVITY_TYPE extends StatefulActivity<STATE_TYPE>> {
 
-    private final PointF mTempPoint = new PointF();
     public final boolean rotationSupportedByActivity;
 
-    protected BaseActivityInterface(boolean rotationSupportedByActivity) {
+    private final STATE_TYPE mOverviewState, mBackgroundState;
+
+    protected BaseActivityInterface(boolean rotationSupportedByActivity,
+            STATE_TYPE overviewState, STATE_TYPE backgroundState) {
         this.rotationSupportedByActivity = rotationSupportedByActivity;
+        mOverviewState = overviewState;
+        mBackgroundState = backgroundState;
     }
 
     public void onTransitionCancelled(boolean activityVisible) {
@@ -73,7 +89,8 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
     }
 
     public abstract int getSwipeUpDestinationAndLength(
-            DeviceProfile dp, Context context, Rect outRect);
+            DeviceProfile dp, Context context, Rect outRect,
+            PagedOrientationHandler orientationHandler);
 
     public void onSwipeUpToRecentsComplete() {
         // Re apply state in case we did something funky during the transition.
@@ -84,7 +101,7 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
         activity.getStateManager().reapplyState();
     }
 
-    public void onSwipeUpToHomeComplete() { }
+    public abstract void onSwipeUpToHomeComplete();
 
     public abstract void onAssistantVisibilityChanged(float visibility);
 
@@ -130,8 +147,11 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
     public abstract boolean allowMinimizeSplitScreen();
 
     public boolean deferStartingActivity(RecentsAnimationDeviceState deviceState, MotionEvent ev) {
-        return true;
+        return deviceState.isInDeferredGestureRegion(ev);
     }
+
+    public abstract void onExitOverview(RecentsAnimationDeviceState deviceState,
+            Runnable exitRunnable);
 
     /**
      * Updates the prediction state to the overview state.
@@ -174,26 +194,24 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
         recentsView.switchToScreenshot(thumbnailData, runnable);
     }
 
-    public void setHintUserWillBeActive() {}
-
-    /**
-     * Sets the expected window size in multi-window mode
-     */
-    public abstract void getMultiWindowSize(Context context, DeviceProfile dp, PointF out);
-
     /**
      * Calculates the taskView size for the provided device configuration
      */
-    public final void calculateTaskSize(Context context, DeviceProfile dp, Rect outRect) {
-        calculateTaskSize(context, dp, getExtraSpace(context, dp), outRect);
+    public final void calculateTaskSize(Context context, DeviceProfile dp, Rect outRect,
+            PagedOrientationHandler orientedState) {
+        calculateTaskSize(context, dp, getExtraSpace(context, dp, orientedState),
+                outRect, orientedState);
     }
 
-    protected abstract float getExtraSpace(Context context, DeviceProfile dp);
+    protected abstract float getExtraSpace(Context context, DeviceProfile dp,
+            PagedOrientationHandler orientedState);
 
     private void calculateTaskSize(
-            Context context, DeviceProfile dp, float extraVerticalSpace, Rect outRect) {
+            Context context, DeviceProfile dp, float extraVerticalSpace, Rect outRect,
+            PagedOrientationHandler orientationHandler) {
         Resources res = context.getResources();
-        final boolean showLargeTaskSize = showOverviewActions(context);
+        final boolean showLargeTaskSize = showOverviewActions(context) ||
+                hideShelfInTwoButtonLandscape(context, orientationHandler);
 
         final int paddingResId;
         if (dp.isMultiWindowMode) {
@@ -251,7 +269,7 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
     /**
      * Calculates the modal taskView size for the provided device configuration
      */
-    public void calculateModalTaskSize(Context context, DeviceProfile dp, Rect outRect) {
+    public final void calculateModalTaskSize(Context context, DeviceProfile dp, Rect outRect) {
         float paddingHorz = context.getResources().getDimension(dp.isMultiWindowMode
                 ? R.dimen.multi_window_task_card_horz_space
                 : dp.isVerticalBarLayout()
@@ -265,7 +283,7 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
     }
 
     /** Gets the space that the overview actions will take, including margins. */
-    public float getOverviewActionsHeight(Context context) {
+    public final float getOverviewActionsHeight(Context context) {
         Resources res = context.getResources();
         float actionsBottomMargin = 0;
         if (getMode(context) == Mode.THREE_BUTTONS) {
@@ -282,8 +300,6 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
 
     public interface AnimationFactory {
 
-        default void onRemoteAnimationReceived(RemoteAnimationTargets targets) { }
-
         void createActivityInterface(long transitionLength);
 
         default void onTransitionCancelled() { }
@@ -297,6 +313,97 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
          * @param animate Whether to animate recents to/from its new attached state.
          */
         default void setRecentsAttachedToAppWindow(boolean attached, boolean animate) { }
+    }
+
+    class DefaultAnimationFactory implements AnimationFactory {
+
+        protected final ACTIVITY_TYPE mActivity;
+        private final STATE_TYPE mStartState;
+        private final Consumer<AnimatorPlaybackController> mCallback;
+
+        private boolean mIsAttachedToWindow;
+
+        DefaultAnimationFactory(Consumer<AnimatorPlaybackController> callback) {
+            mCallback = callback;
+
+            mActivity = getCreatedActivity();
+            mStartState = mActivity.getStateManager().getState();
+        }
+
+        protected ACTIVITY_TYPE initUI() {
+            STATE_TYPE resetState = mStartState;
+            if (mStartState.shouldDisableRestore()) {
+                resetState = mActivity.getStateManager().getRestState();
+            }
+            mActivity.getStateManager().setRestState(resetState);
+            mActivity.getStateManager().goToState(mBackgroundState, false);
+            return mActivity;
+        }
+
+        @Override
+        public void createActivityInterface(long transitionLength) {
+            PendingAnimation pa = new PendingAnimation(transitionLength * 2);
+            createBackgroundToOverviewAnim(mActivity, pa);
+            AnimatorPlaybackController controller = pa.createPlaybackController();
+            mActivity.getStateManager().setCurrentUserControlledAnimation(controller);
+
+            // Since we are changing the start position of the UI, reapply the state, at the end
+            controller.setEndAction(() -> mActivity.getStateManager().goToState(
+                    controller.getInterpolatedProgress() > 0.5 ? mOverviewState : mBackgroundState,
+                    false));
+            mCallback.accept(controller);
+
+            // Creating the activity controller animation sometimes reapplies the launcher state
+            // (because we set the animation as the current state animation), so we reapply the
+            // attached state here as well to ensure recents is shown/hidden appropriately.
+            if (SysUINavigationMode.getMode(mActivity) == Mode.NO_BUTTON) {
+                setRecentsAttachedToAppWindow(mIsAttachedToWindow, false);
+            }
+        }
+
+        @Override
+        public void onTransitionCancelled() {
+            mActivity.getStateManager().goToState(mStartState, false /* animate */);
+        }
+
+        @Override
+        public void setRecentsAttachedToAppWindow(boolean attached, boolean animate) {
+            if (mIsAttachedToWindow == attached && animate) {
+                return;
+            }
+            mIsAttachedToWindow = attached;
+            RecentsView recentsView = mActivity.getOverviewPanel();
+            Animator fadeAnim = mActivity.getStateManager()
+                    .createStateElementAnimation(INDEX_RECENTS_FADE_ANIM, attached ? 1 : 0);
+
+            float fromTranslation = attached ? 1 : 0;
+            float toTranslation = attached ? 0 : 1;
+            mActivity.getStateManager()
+                    .cancelStateElementAnimation(INDEX_RECENTS_TRANSLATE_X_ANIM);
+            if (!recentsView.isShown() && animate) {
+                ADJACENT_PAGE_OFFSET.set(recentsView, fromTranslation);
+            } else {
+                fromTranslation = ADJACENT_PAGE_OFFSET.get(recentsView);
+            }
+            if (!animate) {
+                ADJACENT_PAGE_OFFSET.set(recentsView, toTranslation);
+            } else {
+                mActivity.getStateManager().createStateElementAnimation(
+                        INDEX_RECENTS_TRANSLATE_X_ANIM,
+                        fromTranslation, toTranslation).start();
+            }
+
+            fadeAnim.setInterpolator(attached ? INSTANT : ACCEL_2);
+            fadeAnim.setDuration(animate ? RECENTS_ATTACH_DURATION : 0).start();
+        }
+
+        protected void createBackgroundToOverviewAnim(ACTIVITY_TYPE activity, PendingAnimation pa) {
+            //  Scale down recents from being full screen to being in overview.
+            RecentsView recentsView = activity.getOverviewPanel();
+            pa.addFloat(recentsView, SCALE_PROPERTY,
+                    recentsView.getMaxScaleForFullScreen(), 1, LINEAR);
+            pa.addFloat(recentsView, FULLSCREEN_PROGRESS, 1, 0, LINEAR);
+        }
     }
 
     protected static boolean showOverviewActions(Context context) {

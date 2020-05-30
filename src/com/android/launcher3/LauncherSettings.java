@@ -155,6 +155,8 @@ public class LauncherSettings {
         public static final int CONTAINER_ALL_APPS = -104;
         public static final int CONTAINER_WIDGETS_TRAY = -105;
 
+        // Represents search results view.
+        public static final int CONTAINER_SEARCH_RESULTS = -106;
 
         public static final String containerToString(int container) {
             switch (container) {
@@ -163,6 +165,7 @@ public class LauncherSettings {
                 case CONTAINER_PREDICTION: return "prediction";
                 case CONTAINER_ALL_APPS: return "all_apps";
                 case CONTAINER_WIDGETS_TRAY: return "widgets_tray";
+                case CONTAINER_SEARCH_RESULTS: return "search_result";
                 default: return String.valueOf(container);
             }
         }
