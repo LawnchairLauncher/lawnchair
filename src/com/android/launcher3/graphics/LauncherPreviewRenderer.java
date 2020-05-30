@@ -22,6 +22,7 @@ import static android.view.View.VISIBLE;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_LAUNCHER_PREVIEW_IN_GRID_PICKER;
 import static com.android.launcher3.config.FeatureFlags.MULTI_DB_GRID_MIRATION_ALGO;
 import static com.android.launcher3.model.ModelUtils.filterCurrentWorkspaceItems;
+import static com.android.launcher3.model.ModelUtils.getMissingHotseatRanks;
 import static com.android.launcher3.model.ModelUtils.sortWorkspaceItemsSpatially;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
@@ -80,13 +81,16 @@ import com.android.launcher3.model.LoaderResults;
 import com.android.launcher3.model.LoaderTask;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.model.WidgetsModel;
+import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pm.InstallSessionHelper;
 import com.android.launcher3.pm.UserCache;
+import com.android.launcher3.uioverrides.PredictedAppIconInflater;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
+import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.BaseDragLayer;
@@ -376,6 +380,13 @@ public class LauncherPreviewRenderer implements Callable<Bitmap> {
             addInScreenFromBind(view, info);
         }
 
+        private void inflateAndAddPredictedIcon(WorkspaceItemInfo info) {
+            View view = PredictedAppIconInflater.inflate(mHomeElementInflater, mWorkspace, info);
+            if (view != null) {
+                addInScreenFromBind(view, info);
+            }
+        }
+
         private void dispatchVisibilityAggregated(View view, boolean isVisible) {
             // Similar to View.dispatchVisibilityAggregated implementation.
             final boolean thisVisible = view.getVisibility() == VISIBLE;
@@ -467,6 +478,21 @@ public class LauncherPreviewRenderer implements Callable<Bitmap> {
                         default:
                             break;
                     }
+                }
+
+                IntArray ranks = getMissingHotseatRanks(currentWorkspaceItems,
+                        mIdp.numHotseatIcons);
+                int count = Math.min(ranks.size(), workspaceResult.mCachedPredictedItems.size());
+                for (int i = 0; i < count; i++) {
+                    AppInfo appInfo = workspaceResult.mCachedPredictedItems.get(i);
+                    int rank = ranks.get(i);
+                    WorkspaceItemInfo itemInfo = new WorkspaceItemInfo(appInfo);
+                    itemInfo.container = LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION;
+                    itemInfo.rank = rank;
+                    itemInfo.cellX = mHotseat.getCellXFromOrder(rank);
+                    itemInfo.cellY = mHotseat.getCellYFromOrder(rank);
+                    itemInfo.screenId = rank;
+                    inflateAndAddPredictedIcon(itemInfo);
                 }
             } else {
                 // Add hotseat icons
@@ -561,7 +587,7 @@ public class LauncherPreviewRenderer implements Callable<Bitmap> {
             }
 
             return new WorkspaceResult(mBgDataModel.workspaceItems, mBgDataModel.appWidgets,
-                    mBgDataModel.widgetsModel);
+                    mBgDataModel.cachedPredictedItems, mBgDataModel.widgetsModel);
         }
     }
 
@@ -590,7 +616,7 @@ public class LauncherPreviewRenderer implements Callable<Bitmap> {
             loadWorkspace(allShortcuts, LauncherSettings.Favorites.PREVIEW_CONTENT_URI);
             mBgDataModel.widgetsModel.update(mApp, null);
             return new WorkspaceResult(mBgDataModel.workspaceItems, mBgDataModel.appWidgets,
-                    mBgDataModel.widgetsModel);
+                    mBgDataModel.cachedPredictedItems, mBgDataModel.widgetsModel);
         }
     }
 
@@ -610,12 +636,15 @@ public class LauncherPreviewRenderer implements Callable<Bitmap> {
     private static class WorkspaceResult {
         private final ArrayList<ItemInfo> mWorkspaceItems;
         private final ArrayList<LauncherAppWidgetInfo> mAppWidgets;
+        private final ArrayList<AppInfo> mCachedPredictedItems;
         private final WidgetsModel mWidgetsModel;
 
         private WorkspaceResult(ArrayList<ItemInfo> workspaceItems,
-                ArrayList<LauncherAppWidgetInfo> appWidgets, WidgetsModel widgetsModel) {
+                ArrayList<LauncherAppWidgetInfo> appWidgets,
+                ArrayList<AppInfo> cachedPredictedItems, WidgetsModel widgetsModel) {
             mWorkspaceItems = workspaceItems;
             mAppWidgets = appWidgets;
+            mCachedPredictedItems = cachedPredictedItems;
             mWidgetsModel = widgetsModel;
         }
     }
