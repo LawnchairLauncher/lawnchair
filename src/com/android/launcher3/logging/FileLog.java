@@ -235,6 +235,9 @@ public final class FileLog {
      * Gets files used for FileLog
      */
     public static File[] getLogFiles() {
+        try {
+            flushAll(null);
+        } catch (InterruptedException e) { }
         File[] files = new File[LOG_DAYS];
         for (int i = 0; i < LOG_DAYS; i++) {
             files[i] = new File(sLogsDirectory, FILE_NAME_PREFIX + i);

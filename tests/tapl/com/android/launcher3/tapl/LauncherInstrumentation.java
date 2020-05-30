@@ -28,6 +28,7 @@ import android.app.ActivityManager;
 import android.app.Instrumentation;
 import android.app.UiAutomation;
 import android.content.ComponentName;
+import android.content.ContentProviderClient;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -39,6 +40,7 @@ import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.os.RemoteException;
 import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Log;
@@ -260,7 +262,12 @@ public final class LauncherInstrumentation {
     }
 
     Bundle getTestInfo(String request) {
-        return getContext().getContentResolver().call(mTestProviderUri, request, null, null);
+        try (ContentProviderClient client = getContext().getContentResolver()
+                .acquireContentProviderClient(mTestProviderUri)) {
+            return client.call(request, null, null);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     Insets getTargetInsets() {

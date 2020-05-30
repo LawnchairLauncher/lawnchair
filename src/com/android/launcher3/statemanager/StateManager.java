@@ -306,8 +306,10 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
                     + state);
         }
         PendingAnimation builder = new PendingAnimation(mConfig.duration);
-        for (StateHandler handler : getStateHandlers()) {
-            handler.setStateWithAnimation(state, mConfig, builder);
+        if (mConfig.getAnimComponents() != 0) {
+            for (StateHandler handler : getStateHandlers()) {
+                handler.setStateWithAnimation(state, mConfig, builder);
+            }
         }
         builder.addListener(new AnimationSuccessListener() {
 
