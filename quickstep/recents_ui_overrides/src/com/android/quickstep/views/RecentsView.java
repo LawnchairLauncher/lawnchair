@@ -43,7 +43,6 @@ import static com.android.launcher3.userevent.nano.LauncherLogProto.ControlType.
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_OVERVIEW;
 import static com.android.quickstep.TaskUtils.checkCurrentOrManagedUserId;
-import static com.android.quickstep.views.OverviewActionsView.HIDDEN_FULLESCREEN_PROGRESS;
 import static com.android.quickstep.views.OverviewActionsView.HIDDEN_GESTURE_RUNNING;
 import static com.android.quickstep.views.OverviewActionsView.HIDDEN_NON_ZERO_ROTATION;
 import static com.android.quickstep.views.OverviewActionsView.HIDDEN_NO_RECENTS;
@@ -805,9 +804,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             getTaskViewAt(i).setFullscreenProgress(mFullscreenProgress);
         }
         // Fade out the actions view quickly (0.1 range)
-        mActionsView.getVisibilityAlpha().setValue(
+        mActionsView.getFullscreenAlpha().setValue(
                 mapToRange(fullscreenProgress, 0, 0.1f, 1f, 0f, LINEAR));
-        mActionsView.updateHiddenFlags(HIDDEN_FULLESCREEN_PROGRESS, fullscreenProgress == 1.0f);
     }
 
     private void updateTaskStackListenerState() {
@@ -1206,8 +1204,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     private void animateActionsViewIn() {
         mActionsView.updateHiddenFlags(HIDDEN_GESTURE_RUNNING, false);
         ObjectAnimator anim = ObjectAnimator.ofFloat(
-                mActionsView.getVisibilityAlpha(), MultiValueAlpha.VALUE, 1);
-        anim.setDuration(OverviewActionsView.VISIBILITY_TRANSITION_DURATION_MS);
+                mActionsView.getVisibilityAlpha(), MultiValueAlpha.VALUE, 0, 1);
+        anim.setDuration(TaskView.SCALE_ICON_DURATION);
         anim.start();
     }
 
