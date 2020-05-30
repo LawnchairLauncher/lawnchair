@@ -561,7 +561,6 @@ public class TouchInteractionService extends Service implements PluginListener<O
                 || previousGestureState.isRecentsAnimationRunning()
                         ? newBaseConsumer(previousGestureState, newGestureState, event)
                         : mResetGestureInputConsumer;
-        // TODO(b/149880412): 2 button landscape mode is wrecked. Fixit!
         if (mDeviceState.isGesturalNavMode()) {
             handleOrientationSetup(base);
         }
@@ -628,7 +627,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
         if (TestProtocol.sDebugTracing) {
             Log.d(TestProtocol.PAUSE_NOT_DETECTED, "handleOrientationSetup.1");
         }
-        if (!isFixedRotationTransformEnabled(this)) {
+        if (!isFixedRotationTransformEnabled()) {
             return;
         }
         mDeviceState.enableMultipleRegions(baseInputConsumer instanceof OtherActivityInputConsumer);
@@ -849,16 +848,16 @@ public class TouchInteractionService extends Service implements PluginListener<O
         }
     }
 
-    private BaseSwipeUpHandler createLauncherSwipeHandler(GestureState gestureState,
-            long touchTimeMs, boolean continuingLastGesture, boolean isLikelyToStartNewTask) {
-        return new LauncherSwipeHandler(this, mDeviceState, mTaskAnimationManager,
+    private BaseSwipeUpHandler createLauncherSwipeHandler(
+            GestureState gestureState, long touchTimeMs, boolean continuingLastGesture) {
+        return new LauncherSwipeHandlerV2(this, mDeviceState, mTaskAnimationManager,
                 gestureState, touchTimeMs, continuingLastGesture, mInputConsumer);
     }
 
-    private BaseSwipeUpHandler createFallbackSwipeHandler(GestureState gestureState,
-            long touchTimeMs, boolean continuingLastGesture, boolean isLikelyToStartNewTask) {
-        return new FallbackSwipeHandler(this, mDeviceState, gestureState,
-                mInputConsumer, isLikelyToStartNewTask, continuingLastGesture);
+    private BaseSwipeUpHandler createFallbackSwipeHandler(
+            GestureState gestureState, long touchTimeMs, boolean continuingLastGesture) {
+        return new FallbackSwipeHandler(this, mDeviceState, mTaskAnimationManager,
+                gestureState, touchTimeMs, continuingLastGesture, mInputConsumer);
     }
 
     protected boolean shouldNotifyBackGesture() {

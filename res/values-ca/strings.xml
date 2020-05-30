@@ -52,6 +52,8 @@
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Desinstal·la"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"Informació de l\'aplicació"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"Instal·la"</string>
+    <string name="dismiss_prediction_label" msgid="3357562989568808658">"No suggereixis l\'aplicació"</string>
+    <string name="pin_prediction" msgid="4196423321649756498">"Fixa la predicció"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"instal·la dreceres"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Permet que una aplicació afegeixi dreceres sense la intervenció de l\'usuari."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"llegeix la configuració i les dreceres de la pantalla d\'inici"</string>
@@ -138,7 +140,7 @@
     <string name="work_profile_edu_next" msgid="8783418929296503629">"Següent"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"Entesos"</string>
     <string name="work_apps_paused_title" msgid="2389865654362803723">"El perfil de treball està en pausa"</string>
-    <string name="work_apps_paused_body" msgid="5388070126389079077">"Les aplicacions de treball no poden enviar-te notificacions, consumir bateria ni accedir a la teva ubicació"</string>
+    <string name="work_apps_paused_body" msgid="2197210494568696054">"Les aplicacions de treball no poden enviar-te notificacions, consumir bateria ni accedir a la teva ubicació"</string>
     <string name="work_apps_paused_content_description" msgid="7553586952985486433">"El perfil de treball està en pausa. Les aplicacions de treball no poden enviar-te notificacions, consumir bateria ni accedir a la teva ubicació"</string>
     <string name="work_switch_tip" msgid="808075064383839144">"Posa en pausa les notificacions i les aplicacions de treball"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Error: <xliff:g id="WHAT">%1$s</xliff:g>"</string>

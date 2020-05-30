@@ -114,7 +114,7 @@ public class RecentsAnimationDeviceState implements
             if (frozen) {
                 return;
             }
-            mOrientationTouchTransformer.enableMultipleRegions(false, mDefaultDisplay.getInfo());
+            enableMultipleRegions(false);
         }
     };
 
@@ -125,6 +125,13 @@ public class RecentsAnimationDeviceState implements
 
     private final List<ComponentName> mGestureBlockedActivities;
     private Runnable mOnDestroyFrozenTaskRunnable;
+    /**
+     * Set to true when user swipes to recents. In recents, we ignore the state of the recents
+     * task list being frozen or not to allow the user to keep interacting with nav bar rotation
+     * they went into recents with as opposed to defaulting to the default display rotation.
+     * TODO: (b/156984037) For when user rotates after entering overview
+     */
+    private boolean mInOverview;
 
     public RecentsAnimationDeviceState(Context context) {
         mContext = context;
@@ -186,7 +193,7 @@ public class RecentsAnimationDeviceState implements
     }
 
     private void setupOrientationSwipeHandler() {
-        if (!isFixedRotationTransformEnabled(mContext)) {
+        if (!isFixedRotationTransformEnabled()) {
             return;
         }
 
@@ -551,7 +558,18 @@ public class RecentsAnimationDeviceState implements
         mOrientationTouchTransformer.transform(event);
     }
 
+    void onSwipeUpToOverview(BaseActivityInterface activityInterface) {
+        mInOverview = true;
+        activityInterface.onExitOverview(this, () -> {
+            mInOverview = false;
+            enableMultipleRegions(false);
+        });
+    }
+
     void enableMultipleRegions(boolean enable) {
+        if (mInOverview) {
+            return;
+        }
         mOrientationTouchTransformer.enableMultipleRegions(enable, mDefaultDisplay.getInfo());
         UI_HELPER_EXECUTOR.execute(() -> {
             int quickStepStartingRotation =

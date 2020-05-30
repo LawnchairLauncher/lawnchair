@@ -49,7 +49,7 @@ public final class TestProtocol {
             case OVERVIEW_PEEK_STATE_ORDINAL:
                 return "OverviewPeek";
             case OVERVIEW_MODAL_TASK_STATE_ORDINAL:
-                return "OverviewModalState";
+                return "OverviewModal";
             case QUICK_SWITCH_STATE_ORDINAL:
                 return "QuickSwitch";
             case ALL_APPS_STATE_ORDINAL:
@@ -59,7 +59,7 @@ public final class TestProtocol {
             case HINT_STATE_ORDINAL:
                 return "Hint";
             default:
-                return null;
+                return "Unknown";
         }
     }
 

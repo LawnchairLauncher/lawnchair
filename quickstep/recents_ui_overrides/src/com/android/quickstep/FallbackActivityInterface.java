@@ -15,26 +15,21 @@
  */
 package com.android.quickstep;
 
-import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
-import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
 import static com.android.quickstep.fallback.RecentsState.BACKGROUND_APP;
 import static com.android.quickstep.fallback.RecentsState.DEFAULT;
-import static com.android.quickstep.views.RecentsView.CONTENT_ALPHA;
-import static com.android.quickstep.views.RecentsView.FULLSCREEN_PROGRESS;
 
 import android.content.Context;
-import android.graphics.PointF;
 import android.graphics.Rect;
+import android.view.MotionEvent;
 
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimatorPlaybackController;
-import com.android.launcher3.anim.PendingAnimation;
+import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
-import com.android.quickstep.fallback.FallbackRecentsView;
 import com.android.quickstep.fallback.RecentsState;
 import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.views.RecentsView;
@@ -54,12 +49,14 @@ public final class FallbackActivityInterface extends
     public static final FallbackActivityInterface INSTANCE = new FallbackActivityInterface();
 
     private FallbackActivityInterface() {
-        super(false);
+        super(false, DEFAULT, BACKGROUND_APP);
     }
 
+    /** 2 */
     @Override
-    public int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context, Rect outRect) {
-        calculateTaskSize(context, dp, outRect);
+    public int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context, Rect outRect,
+            PagedOrientationHandler orientationHandler) {
+        calculateTaskSize(context, dp, outRect, orientationHandler);
         if (dp.isVerticalBarLayout()
                 && SysUINavigationMode.INSTANCE.get(context).getMode() != NO_BUTTON) {
             Rect targetInsets = dp.getInsets();
@@ -70,6 +67,13 @@ public final class FallbackActivityInterface extends
         }
     }
 
+    /** 4 */
+    @Override
+    public void onSwipeUpToHomeComplete() {
+        onSwipeUpToRecentsComplete();
+    }
+
+    /** 5 */
     @Override
     public void onAssistantVisibilityChanged(float visibility) {
         // This class becomes active when the screen is locked.
@@ -77,50 +81,13 @@ public final class FallbackActivityInterface extends
         // set to zero prior to this class becoming active.
     }
 
+    /** 6 */
     @Override
     public AnimationFactory prepareRecentsUI(
             boolean activityVisible, Consumer<AnimatorPlaybackController> callback) {
-        RecentsActivity activity = getCreatedActivity();
-        if (activity == null) {
-            return (transitionLength) -> { };
-        }
-
-        activity.getStateManager().goToState(BACKGROUND_APP);
-        FallbackRecentsView rv = activity.getOverviewPanel();
-        rv.setContentAlpha(0);
-
-        return new AnimationFactory() {
-
-            boolean isAnimatingToRecents = false;
-
-            @Override
-            public void onRemoteAnimationReceived(RemoteAnimationTargets targets) {
-                isAnimatingToRecents = targets != null && targets.isAnimatingHome();
-                if (!isAnimatingToRecents) {
-                    rv.setContentAlpha(1);
-                }
-                createActivityInterface(getSwipeUpDestinationAndLength(
-                        activity.getDeviceProfile(), activity, new Rect()));
-            }
-
-            @Override
-            public void createActivityInterface(long transitionLength) {
-                PendingAnimation pa = new PendingAnimation(transitionLength * 2);
-
-                if (isAnimatingToRecents) {
-                    pa.addFloat(rv, CONTENT_ALPHA, 0, 1, LINEAR);
-                }
-
-                pa.addFloat(rv, SCALE_PROPERTY, rv.getMaxScaleForFullScreen(), 1, LINEAR);
-                pa.addFloat(rv, FULLSCREEN_PROGRESS, 1, 0, LINEAR);
-                AnimatorPlaybackController controller = pa.createPlaybackController();
-
-                // Since we are changing the start position of the UI, reapply the state, at the end
-                controller.setEndAction(() -> activity.getStateManager().goToState(
-                        controller.getInterpolatedProgress() > 0.5 ? DEFAULT : BACKGROUND_APP));
-                callback.accept(controller);
-            }
-        };
+        DefaultAnimationFactory factory = new DefaultAnimationFactory(callback);
+        factory.initUI();
+        return factory;
     }
 
     @Override
@@ -164,6 +131,20 @@ public final class FallbackActivityInterface extends
     }
 
     @Override
+    public boolean deferStartingActivity(RecentsAnimationDeviceState deviceState, MotionEvent ev) {
+        // In non-gesture mode, user might be clicking on the home button which would directly
+        // start the home activity instead of going through recents. In that case, defer starting
+        // recents until we are sure it is a gesture.
+        return !deviceState.isFullyGesturalNavMode()
+                || super.deferStartingActivity(deviceState, ev);
+    }
+
+    @Override
+    public void onExitOverview(RecentsAnimationDeviceState deviceState, Runnable exitRunnable) {
+        // no-op, fake landscape not supported for 3P
+    }
+
+    @Override
     public int getContainerType() {
         RecentsActivity activity = getCreatedActivity();
         boolean visible = activity != null && activity.isStarted() && activity.hasWindowFocus();
@@ -188,12 +169,8 @@ public final class FallbackActivityInterface extends
     }
 
     @Override
-    public void getMultiWindowSize(Context context, DeviceProfile dp, PointF out) {
-        out.set(dp.widthPx, dp.heightPx);
-    }
-
-    @Override
-    protected float getExtraSpace(Context context, DeviceProfile dp) {
+    protected float getExtraSpace(Context context, DeviceProfile dp,
+            PagedOrientationHandler orientationHandler) {
         return showOverviewActions(context)
                 ? context.getResources().getDimensionPixelSize(R.dimen.overview_actions_height)
                 : 0;
