@@ -52,6 +52,8 @@
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"ຖອນ​ການ​ຕິດ​ຕັ້ງ"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"ຂໍ້ມູນແອັບ"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"ຕິດຕັ້ງ"</string>
+    <string name="dismiss_prediction_label" msgid="3357562989568808658">"ຢ່າແນະນຳແອັບ"</string>
+    <string name="pin_prediction" msgid="4196423321649756498">"ປັກໝຸດການຄາດເດົາ"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"ຕິດຕັ້ງທາງລັດ"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"ອະນຸຍາດໃຫ້ແອັບຯ ເພີ່ມທາງລັດໂດຍບໍ່ຕ້ອງຮັບການຢືນຢັນຈາກຜູ່ໃຊ້."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"ອ່ານການຕັ້ງຄ່າໜ້າຫຼັກ ແລະທາງລັດ"</string>
@@ -138,7 +140,7 @@
     <string name="work_profile_edu_next" msgid="8783418929296503629">"ຕໍ່ໄປ"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"ເຂົ້າໃຈແລ້ວ"</string>
     <string name="work_apps_paused_title" msgid="2389865654362803723">"ຢຸດໂປຣໄຟລ໌ວຽກໄວ້ຊົ່ວຄາວແລ້ວ"</string>
-    <string name="work_apps_paused_body" msgid="5388070126389079077">"ແອັບວຽກບໍ່ສາມາດສົ່ງການແຈ້ງເຕືອນໃຫ້ທ່ານ, ໃຊ້ແບັດເຕີຣີຂອງທ່ານ ຫຼື ເຂົ້າເຖິງສະຖານທີ່ຂອງທ່ານໄດ້"</string>
+    <string name="work_apps_paused_body" msgid="2197210494568696054">"ແອັບວຽກບໍ່ສາມາດສົ່ງການແຈ້ງເຕືອນໃຫ້ທ່ານ, ໃຊ້ແບັດເຕີຣີຂອງທ່ານ ຫຼື ເຂົ້າເຖິງສະຖານທີ່ຂອງທ່ານໄດ້"</string>
     <string name="work_apps_paused_content_description" msgid="7553586952985486433">"ຢຸດໂປຣໄຟລ໌ບ່ອນເຮັດວຽກໄວ້ຊົ່ວຄາວແລ້ວ. ແອັບວຽກຈະບໍ່ສາມາດສົ່ງການແຈ້ງເຕືອນໃຫ້ທ່ານ, ໃຊ້ແບັດເຕີຣີຂອງທ່ານ ຫຼື ເຂົ້າເຖິງສະຖານທີ່ຂອງທ່ານໄດ້"</string>
     <string name="work_switch_tip" msgid="808075064383839144">"ຢຸດແອັບວຽກ ແລະ ການແຈ້ງເຕືອນໄວ້ຊົ່ວຄາວ"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"ບໍ່ສຳເລັດ: <xliff:g id="WHAT">%1$s</xliff:g>"</string>

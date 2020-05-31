@@ -17,10 +17,12 @@
 package com.android.quickstep.views;
 
 import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_ACTIONS;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_SHARE;
 import static com.android.quickstep.SysUINavigationMode.removeShelfFromOverview;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.FrameLayout;
@@ -51,8 +53,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
             HIDDEN_NON_ZERO_ROTATION,
             HIDDEN_NO_TASKS,
             HIDDEN_GESTURE_RUNNING,
-            HIDDEN_NO_RECENTS,
-            HIDDEN_FULLESCREEN_PROGRESS})
+            HIDDEN_NO_RECENTS})
     @Retention(RetentionPolicy.SOURCE)
     public @interface ActionsHiddenFlags { }
 
@@ -62,11 +63,11 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     public static final int HIDDEN_NO_TASKS = 1 << 3;
     public static final int HIDDEN_GESTURE_RUNNING = 1 << 4;
     public static final int HIDDEN_NO_RECENTS = 1 << 5;
-    public static final int HIDDEN_FULLESCREEN_PROGRESS = 1 << 6;
 
     private static final int INDEX_CONTENT_ALPHA = 0;
     private static final int INDEX_VISIBILITY_ALPHA = 1;
-    private static final int INDEX_HIDDEN_FLAGS_ALPHA = 2;
+    private static final int INDEX_FULLSCREEN_ALPHA = 2;
+    private static final int INDEX_HIDDEN_FLAGS_ALPHA = 3;
 
     private final MultiValueAlpha mMultiValueAlpha;
 
@@ -85,14 +86,19 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
 
     public OverviewActionsView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr, 0);
-        mMultiValueAlpha = new MultiValueAlpha(this, 3);
+        mMultiValueAlpha = new MultiValueAlpha(this, 4);
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        findViewById(R.id.action_share).setOnClickListener(this);
+        View share = findViewById(R.id.action_share);
+        share.setOnClickListener(this);
         findViewById(R.id.action_screenshot).setOnClickListener(this);
+        if (ENABLE_OVERVIEW_SHARE.get()) {
+            share.setVisibility(VISIBLE);
+            findViewById(R.id.share_space).setVisibility(VISIBLE);
+        }
     }
 
     /**
@@ -107,6 +113,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     @Override
     public void onClick(View view) {
         if (mCallbacks == null) {
+            Log.d("OverviewActionsView", "Callbacks null onClick");
             return;
         }
         int id = view.getId();
@@ -141,6 +148,10 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
 
     public AlphaProperty getVisibilityAlpha() {
         return mMultiValueAlpha.getProperty(INDEX_VISIBILITY_ALPHA);
+    }
+
+    public AlphaProperty getFullscreenAlpha() {
+        return mMultiValueAlpha.getProperty(INDEX_FULLSCREEN_ALPHA);
     }
 
     /** Updates vertical margins for different navigation mode. */

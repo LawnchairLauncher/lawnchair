@@ -28,6 +28,7 @@ import android.app.ActivityManager;
 import android.app.Instrumentation;
 import android.app.UiAutomation;
 import android.content.ComponentName;
+import android.content.ContentProviderClient;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -39,6 +40,7 @@ import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.os.RemoteException;
 import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Log;
@@ -260,7 +262,12 @@ public final class LauncherInstrumentation {
     }
 
     Bundle getTestInfo(String request) {
-        return getContext().getContentResolver().call(mTestProviderUri, request, null, null);
+        try (ContentProviderClient client = getContext().getContentResolver()
+                .acquireContentProviderClient(mTestProviderUri)) {
+            return client.call(request, null, null);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     Insets getTargetInsets() {
@@ -332,26 +339,31 @@ public final class LauncherInstrumentation {
 
     private String getSystemAnomalyMessage() {
         try {
-            final StringBuilder sb = new StringBuilder();
+            {
+                final StringBuilder sb = new StringBuilder();
 
-            UiObject2 object = mDevice.findObject(By.res("android", "alertTitle"));
-            if (object != null) {
-                sb.append("TITLE: ").append(object.getText());
-            }
+                UiObject2 object = mDevice.findObject(By.res("android", "alertTitle"));
+                if (object != null) {
+                    sb.append("TITLE: ").append(object.getText());
+                }
 
-            object = mDevice.findObject(By.res("android", "message"));
-            if (object != null) {
-                sb.append(" PACKAGE: ").append(object.getApplicationPackage())
-                        .append(" MESSAGE: ").append(object.getText());
-            }
+                object = mDevice.findObject(By.res("android", "message"));
+                if (object != null) {
+                    sb.append(" PACKAGE: ").append(object.getApplicationPackage())
+                            .append(" MESSAGE: ").append(object.getText());
+                }
 
-            if (sb.length() != 0) {
-                return "System alert popup is visible: " + sb;
+                if (sb.length() != 0) {
+                    return "System alert popup is visible: " + sb;
+                }
             }
 
             if (hasSystemUiObject("keyguard_status_view")) return "Phone is locked";
 
             if (!mDevice.hasObject(By.textStartsWith(""))) return "Screen is empty";
+
+            final String navigationModeError = getNavigationModeMismatchError();
+            if (navigationModeError != null) return navigationModeError;
         } catch (Throwable e) {
             Log.w(TAG, "getSystemAnomalyMessage failed", e);
         }
@@ -437,19 +449,30 @@ public final class LauncherInstrumentation {
             }
         }
 
-        try {
-            Log.e("b/156287114", "Input:");
-            for (String line : mDevice.executeShellCommand("dumpsys input").split("\\n")) {
-                Log.d("b/156287114", line);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        dumpDiagnostics();
 
         log("Hierarchy dump for: " + message);
         dumpViewHierarchy();
 
         return message;
+    }
+
+    private void dumpDiagnostics() {
+        Log.e("b/156287114", "Input:");
+        logShellCommand("dumpsys input");
+        Log.e("b/156287114", "TIS:");
+        logShellCommand("dumpsys activity service TouchInteractionService");
+    }
+
+    private void logShellCommand(String command) {
+        try {
+            for (String line : mDevice.executeShellCommand(command).split("\\n")) {
+                SystemClock.sleep(10);
+                Log.d("b/156287114", line);
+            }
+        } catch (IOException e) {
+            Log.d("b/156287114", "Failed to execute " + command);
+        }
     }
 
     private void fail(String message) {
@@ -833,27 +856,42 @@ public final class LauncherInstrumentation {
 
     @NonNull
     List<UiObject2> getObjectsInContainer(UiObject2 container, String resName) {
-        return container.findObjects(getLauncherObjectSelector(resName));
+        try {
+            return container.findObjects(getLauncherObjectSelector(resName));
+        } catch (StaleObjectException e) {
+            fail("The container disappeared from screen");
+            return null;
+        }
     }
 
     @NonNull
     UiObject2 waitForObjectInContainer(UiObject2 container, String resName) {
-        final UiObject2 object = container.wait(
-                Until.findObject(getLauncherObjectSelector(resName)),
-                WAIT_TIME_MS);
-        assertNotNull("Can't find a view in Launcher, id: " + resName + " in container: "
-                + container.getResourceName(), object);
-        return object;
+        try {
+            final UiObject2 object = container.wait(
+                    Until.findObject(getLauncherObjectSelector(resName)),
+                    WAIT_TIME_MS);
+            assertNotNull("Can't find a view in Launcher, id: " + resName + " in container: "
+                    + container.getResourceName(), object);
+            return object;
+        } catch (StaleObjectException e) {
+            fail("The container disappeared from screen");
+            return null;
+        }
     }
 
     @NonNull
     UiObject2 waitForObjectInContainer(UiObject2 container, BySelector selector) {
-        final UiObject2 object = container.wait(
-                Until.findObject(selector),
-                WAIT_TIME_MS);
-        assertNotNull("Can't find a view in Launcher, id: " + selector + " in container: "
-                + container.getResourceName(), object);
-        return object;
+        try {
+            final UiObject2 object = container.wait(
+                    Until.findObject(selector),
+                    WAIT_TIME_MS);
+            assertNotNull("Can't find a view in Launcher, id: " + selector + " in container: "
+                    + container.getResourceName(), object);
+            return object;
+        } catch (StaleObjectException e) {
+            fail("The container disappeared from screen");
+            return null;
+        }
     }
 
     private boolean hasLauncherObject(String resId) {
@@ -1144,7 +1182,8 @@ public final class LauncherInstrumentation {
         }
 
         final MotionEvent event = getMotionEvent(downTime, currentTime, action, point.x, point.y);
-        mInstrumentation.getUiAutomation().injectInputEvent(event, true);
+        assertTrue("injectInputEvent failed",
+                mInstrumentation.getUiAutomation().injectInputEvent(event, true));
         event.recycle();
     }
 
@@ -1318,16 +1357,7 @@ public final class LauncherInstrumentation {
                 if (mCheckEventsForSuccessfulGestures) {
                     final String message = sEventChecker.verify(WAIT_TIME_MS, true);
                     if (message != null) {
-                        try {
-                            Log.e("b/156287114", "Input:");
-                            for (String line : mDevice.executeShellCommand("dumpsys input").split(
-                                    "\\n")) {
-                                Log.d("b/156287114", line);
-                            }
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-
+                        dumpDiagnostics();
                         checkForAnomaly();
                         Assert.fail(formatSystemHealthMessage(
                                 "http://go/tapl : successful gesture produced " + message));

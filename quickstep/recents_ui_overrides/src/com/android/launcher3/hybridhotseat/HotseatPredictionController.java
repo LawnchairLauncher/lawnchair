@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.hybridhotseat;
 
+import static com.android.launcher3.InvariantDeviceProfile.CHANGE_FLAG_GRID;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 
 import android.animation.Animator;
@@ -571,8 +572,10 @@ public class HotseatPredictionController implements DragController.DragListener,
 
     @Override
     public void onIdpChanged(int changeFlags, InvariantDeviceProfile profile) {
-        this.mHotSeatItemsCount = profile.numHotseatIcons;
-        createPredictor();
+        if ((changeFlags & CHANGE_FLAG_GRID) != 0) {
+            this.mHotSeatItemsCount = profile.numHotseatIcons;
+            createPredictor();
+        }
     }
 
     @Override

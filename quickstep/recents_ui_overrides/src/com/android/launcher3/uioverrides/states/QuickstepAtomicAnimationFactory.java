@@ -49,64 +49,62 @@ import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_S
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_TRANSLATE;
 import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
 import static com.android.quickstep.SysUINavigationMode.removeShelfFromOverview;
-import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_OFFSET;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.view.View;
 import android.view.animation.Interpolator;
 
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.Hotseat;
+import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherState.ScaleAndTranslation;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsTransitionController;
-import com.android.launcher3.anim.SpringAnimationBuilder;
 import com.android.launcher3.statemanager.StateManager;
-import com.android.launcher3.statemanager.StateManager.AtomicAnimationFactory;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.quickstep.SysUINavigationMode;
+import com.android.quickstep.util.RecentsAtomicAnimationFactory;
 import com.android.quickstep.views.RecentsView;
 
 /**
  * Animation factory for quickstep specific transitions
  */
-public class QuickstepAtomicAnimationFactory extends AtomicAnimationFactory<LauncherState> {
+public class QuickstepAtomicAnimationFactory extends
+        RecentsAtomicAnimationFactory<Launcher, LauncherState> {
 
     // Scale recents takes before animating in
     private static final float RECENTS_PREPARE_SCALE = 1.33f;
 
-    public static final int INDEX_SHELF_ANIM = 0;
-    public static final int INDEX_RECENTS_FADE_ANIM = 1;
-    public static final int INDEX_RECENTS_TRANSLATE_X_ANIM = 2;
-    public static final int INDEX_PAUSE_TO_OVERVIEW_ANIM = 3;
-    private static final int ANIM_COUNT = 4;
+    public static final int INDEX_SHELF_ANIM = RecentsAtomicAnimationFactory.NEXT_INDEX + 0;
+    public static final int INDEX_PAUSE_TO_OVERVIEW_ANIM =
+            RecentsAtomicAnimationFactory.NEXT_INDEX + 1;
+
+    private static final int MY_ANIM_COUNT = 2;
+    protected static final int NEXT_INDEX = RecentsAtomicAnimationFactory.NEXT_INDEX
+            + MY_ANIM_COUNT;
 
     public static final long ATOMIC_DURATION_FROM_PAUSED_TO_OVERVIEW = 300;
 
-    private final QuickstepLauncher mLauncher;
-
-    public QuickstepAtomicAnimationFactory(QuickstepLauncher launcher) {
-        super(ANIM_COUNT);
-        mLauncher = launcher;
+    public QuickstepAtomicAnimationFactory(QuickstepLauncher activity) {
+        super(activity, MY_ANIM_COUNT);
     }
 
     @Override
     public Animator createStateElementAnimation(int index, float... values) {
         switch (index) {
             case INDEX_SHELF_ANIM: {
-                AllAppsTransitionController aatc = mLauncher.getAllAppsController();
+                AllAppsTransitionController aatc = mActivity.getAllAppsController();
                 Animator springAnim = aatc.createSpringAnimation(values);
 
-                if ((OVERVIEW.getVisibleElements(mLauncher) & HOTSEAT_ICONS) != 0) {
+                if ((OVERVIEW.getVisibleElements(mActivity) & HOTSEAT_ICONS) != 0) {
                     // Translate hotseat with the shelf until reaching overview.
-                    float overviewProgress = OVERVIEW.getVerticalProgress(mLauncher);
-                    ScaleAndTranslation sat = OVERVIEW.getHotseatScaleAndTranslation(mLauncher);
+                    float overviewProgress = OVERVIEW.getVerticalProgress(mActivity);
+                    ScaleAndTranslation sat = OVERVIEW.getHotseatScaleAndTranslation(mActivity);
                     float shiftRange = aatc.getShiftRange();
                     if (values.length == 1) {
                         values = new float[] {aatc.getProgress(), values[0]};
@@ -114,9 +112,9 @@ public class QuickstepAtomicAnimationFactory extends AtomicAnimationFactory<Laun
                     ValueAnimator hotseatAnim = ValueAnimator.ofFloat(values);
                     hotseatAnim.addUpdateListener(anim -> {
                         float progress = (Float) anim.getAnimatedValue();
-                        if (progress >= overviewProgress || mLauncher.isInState(BACKGROUND_APP)) {
+                        if (progress >= overviewProgress || mActivity.isInState(BACKGROUND_APP)) {
                             float hotseatShift = (progress - overviewProgress) * shiftRange;
-                            mLauncher.getHotseat().setTranslationY(hotseatShift + sat.translationY);
+                            mActivity.getHotseat().setTranslationY(hotseatShift + sat.translationY);
                         }
                     });
                     hotseatAnim.setInterpolator(LINEAR);
@@ -130,34 +128,21 @@ public class QuickstepAtomicAnimationFactory extends AtomicAnimationFactory<Laun
 
                 return springAnim;
             }
-            case INDEX_RECENTS_FADE_ANIM:
-                return ObjectAnimator.ofFloat(mLauncher.getOverviewPanel(),
-                        RecentsView.CONTENT_ALPHA, values);
-            case INDEX_RECENTS_TRANSLATE_X_ANIM: {
-                RecentsView rv = mLauncher.getOverviewPanel();
-                return new SpringAnimationBuilder(mLauncher)
-                        .setMinimumVisibleChange(1f / rv.getPageOffsetScale())
-                        .setDampingRatio(0.8f)
-                        .setStiffness(250)
-                        .setValues(values)
-                        .build(rv, ADJACENT_PAGE_OFFSET);
-            }
             case INDEX_PAUSE_TO_OVERVIEW_ANIM: {
                 StateAnimationConfig config = new StateAnimationConfig();
                 config.duration = ATOMIC_DURATION_FROM_PAUSED_TO_OVERVIEW;
 
                 config.setInterpolator(ANIM_VERTICAL_PROGRESS, OVERSHOOT_1_2);
                 config.setInterpolator(ANIM_ALL_APPS_FADE, DEACCEL_3);
-                if ((OVERVIEW.getVisibleElements(mLauncher) & HOTSEAT_ICONS) != 0) {
+                if ((OVERVIEW.getVisibleElements(mActivity) & HOTSEAT_ICONS) != 0) {
                     config.setInterpolator(ANIM_HOTSEAT_SCALE, OVERSHOOT_1_2);
                     config.setInterpolator(ANIM_HOTSEAT_TRANSLATE, OVERSHOOT_1_2);
                 }
 
-                StateManager<LauncherState> stateManager = mLauncher.getStateManager();
+                StateManager<LauncherState> stateManager = mActivity.getStateManager();
                 return stateManager.createAtomicAnimation(
                         stateManager.getCurrentStableState(), OVERVIEW, config);
             }
-
             default:
                 return super.createStateElementAnimation(index, values);
         }
@@ -172,7 +157,7 @@ public class QuickstepAtomicAnimationFactory extends AtomicAnimationFactory<Laun
             config.setInterpolator(ANIM_OVERVIEW_SCALE, clampToProgress(ACCEL, 0, 0.9f));
             config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X, ACCEL);
             config.setInterpolator(ANIM_OVERVIEW_FADE, DEACCEL_1_7);
-            Workspace workspace = mLauncher.getWorkspace();
+            Workspace workspace = mActivity.getWorkspace();
 
             // Start from a higher workspace scale, but only if we're invisible so we don't jump.
             boolean isWorkspaceVisible = workspace.getVisibility() == VISIBLE;
@@ -186,13 +171,13 @@ public class QuickstepAtomicAnimationFactory extends AtomicAnimationFactory<Laun
                 workspace.setScaleX(0.92f);
                 workspace.setScaleY(0.92f);
             }
-            Hotseat hotseat = mLauncher.getHotseat();
+            Hotseat hotseat = mActivity.getHotseat();
             boolean isHotseatVisible = hotseat.getVisibility() == VISIBLE && hotseat.getAlpha() > 0;
             if (!isHotseatVisible) {
                 hotseat.setScaleX(0.92f);
                 hotseat.setScaleY(0.92f);
                 if (ENABLE_OVERVIEW_ACTIONS.get()) {
-                    AllAppsContainerView qsbContainer = mLauncher.getAppsView();
+                    AllAppsContainerView qsbContainer = mActivity.getAppsView();
                     View qsb = qsbContainer.getSearchView();
                     boolean qsbVisible = qsb.getVisibility() == VISIBLE && qsb.getAlpha() > 0;
                     if (!qsbVisible) {
@@ -209,7 +194,7 @@ public class QuickstepAtomicAnimationFactory extends AtomicAnimationFactory<Laun
             config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X, OVERSHOOT_1_7);
             config.setInterpolator(ANIM_OVERVIEW_SCRIM_FADE, FAST_OUT_SLOW_IN);
         } else if ((fromState == NORMAL || fromState == HINT_STATE) && toState == OVERVIEW) {
-            if (SysUINavigationMode.getMode(mLauncher) == NO_BUTTON) {
+            if (SysUINavigationMode.getMode(mActivity) == NO_BUTTON) {
                 config.setInterpolator(ANIM_WORKSPACE_SCALE,
                         fromState == NORMAL ? ACCEL : OVERSHOOT_1_2);
                 config.setInterpolator(ANIM_WORKSPACE_TRANSLATE, ACCEL);
@@ -217,7 +202,7 @@ public class QuickstepAtomicAnimationFactory extends AtomicAnimationFactory<Laun
                 config.setInterpolator(ANIM_WORKSPACE_SCALE, OVERSHOOT_1_2);
 
                 // Scale up the recents, if it is not coming from the side
-                RecentsView overview = mLauncher.getOverviewPanel();
+                RecentsView overview = mActivity.getOverviewPanel();
                 if (overview.getVisibility() != VISIBLE || overview.getContentAlpha() == 0) {
                     SCALE_PROPERTY.set(overview, RECENTS_PREPARE_SCALE);
                 }
@@ -225,7 +210,7 @@ public class QuickstepAtomicAnimationFactory extends AtomicAnimationFactory<Laun
             config.setInterpolator(ANIM_WORKSPACE_FADE, OVERSHOOT_1_2);
             config.setInterpolator(ANIM_OVERVIEW_SCALE, OVERSHOOT_1_2);
             Interpolator translationInterpolator = ENABLE_OVERVIEW_ACTIONS.get()
-                    && removeShelfFromOverview(mLauncher)
+                    && removeShelfFromOverview(mActivity)
                     ? OVERSHOOT_1_2
                     : OVERSHOOT_1_7;
             config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X, translationInterpolator);
