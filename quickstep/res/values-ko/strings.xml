@@ -46,4 +46,5 @@
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"예상 앱: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="action_share" msgid="2648470652637092375">"공유"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"스크린샷"</string>
+    <string name="blocked_by_policy" msgid="2071401072261365546">"이 작업은 앱 또는 조직에서 허용되지 않습니다."</string>
 </resources>

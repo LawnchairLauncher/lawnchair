@@ -29,6 +29,7 @@ import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_B
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_HOME_DISABLED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NAV_BAR_HIDDEN;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_ONE_HANDED_ACTIVE;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_OVERVIEW_DISABLED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_SCREEN_PINNING;
@@ -43,16 +44,19 @@ import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.graphics.Region;
 import android.os.Process;
+import android.os.SystemProperties;
 import android.os.UserManager;
 import android.text.TextUtils;
-import android.util.Log;
+import android.util.DisplayMetrics;
 import android.view.MotionEvent;
+import android.view.Surface;
 
 import androidx.annotation.BinderThread;
 
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.DefaultDisplay;
+import com.android.launcher3.util.SecureSettingsObserver;
 import com.android.quickstep.SysUINavigationMode.NavigationModeChangeListener;
 import com.android.quickstep.util.NavBarPosition;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
@@ -73,6 +77,8 @@ public class RecentsAnimationDeviceState implements
         NavigationModeChangeListener,
         DefaultDisplay.DisplayInfoChangeListener {
 
+    private static boolean sIsOneHandedEnabled;
+
     private final Context mContext;
     private final SysUINavigationMode mSysUiNavMode;
     private final DefaultDisplay mDefaultDisplay;
@@ -84,6 +90,7 @@ public class RecentsAnimationDeviceState implements
     private @SystemUiStateFlags int mSystemUiStateFlags;
     private SysUINavigationMode.Mode mMode = THREE_BUTTONS;
     private NavBarPosition mNavBarPosition;
+    private SecureSettingsObserver mOneHandedEnabledObserver;
 
     private final Region mDeferredGestureRegion = new Region();
     private boolean mAssistantAvailable;
@@ -107,7 +114,7 @@ public class RecentsAnimationDeviceState implements
             if (frozen) {
                 return;
             }
-            mOrientationTouchTransformer.enableMultipleRegions(false, mDefaultDisplay.getInfo());
+            enableMultipleRegions(false);
         }
     };
 
@@ -118,6 +125,13 @@ public class RecentsAnimationDeviceState implements
 
     private final List<ComponentName> mGestureBlockedActivities;
     private Runnable mOnDestroyFrozenTaskRunnable;
+    /**
+     * Set to true when user swipes to recents. In recents, we ignore the state of the recents
+     * task list being frozen or not to allow the user to keep interacting with nav bar rotation
+     * they went into recents with as opposed to defaulting to the default display rotation.
+     * TODO: (b/156984037) For when user rotates after entering overview
+     */
+    private boolean mInOverview;
 
     public RecentsAnimationDeviceState(Context context) {
         mContext = context;
@@ -169,10 +183,17 @@ public class RecentsAnimationDeviceState implements
                         ComponentName.unflattenFromString(blockingActivity));
             }
         }
+
+        if (SystemProperties.getBoolean("ro.support_one_handed_mode", false)) {
+            mOneHandedEnabledObserver = SecureSettingsObserver.newOneHandedSettingsObserver(
+                    mContext, this::onOneHandedEnabledSettingsChanged);
+            mOneHandedEnabledObserver.register();
+            mOneHandedEnabledObserver.dispatchOnChange();
+        }
     }
 
     private void setupOrientationSwipeHandler() {
-        if (!isFixedRotationTransformEnabled(mContext)) {
+        if (!isFixedRotationTransformEnabled()) {
             return;
         }
 
@@ -437,6 +458,13 @@ public class RecentsAnimationDeviceState implements
     }
 
     /**
+     * @return whether screen pinning is enabled and active
+     */
+    public boolean isOneHandedModeActive() {
+        return (mSystemUiStateFlags & SYSUI_STATE_ONE_HANDED_ACTIVE) != 0;
+    }
+
+    /**
      * Sets the region in screen space where the gestures should be deferred (ie. due to specific
      * nav bar ui).
      */
@@ -497,6 +525,28 @@ public class RecentsAnimationDeviceState implements
     }
 
     /**
+     * One handed gestural in quickstep only active on NO_BUTTON, TWO_BUTTONS, and portrait mode
+     *
+     * @param ev The touch screen motion event.
+     * @return whether the given motion event can trigger the one handed mode.
+     */
+    public boolean canTriggerOneHandedAction(MotionEvent ev) {
+        if (!sIsOneHandedEnabled) {
+            return false;
+        }
+
+        final DefaultDisplay.Info displayInfo = mDefaultDisplay.getInfo();
+        return (mOrientationTouchTransformer.touchInOneHandedModeRegion(ev)
+                && displayInfo.rotation != Surface.ROTATION_90
+                && displayInfo.rotation != Surface.ROTATION_270
+                && displayInfo.metrics.densityDpi < DisplayMetrics.DENSITY_600);
+    }
+
+    private void onOneHandedEnabledSettingsChanged(boolean isOneHandedEnabled) {
+        sIsOneHandedEnabled = isOneHandedEnabled;
+    }
+
+    /**
      * *May* apply a transform on the motion event if it lies in the nav bar region for another
      * orientation that is currently being tracked as a part of quickstep
      */
@@ -508,7 +558,18 @@ public class RecentsAnimationDeviceState implements
         mOrientationTouchTransformer.transform(event);
     }
 
+    void onSwipeUpToOverview(BaseActivityInterface activityInterface) {
+        mInOverview = true;
+        activityInterface.onExitOverview(this, () -> {
+            mInOverview = false;
+            enableMultipleRegions(false);
+        });
+    }
+
     void enableMultipleRegions(boolean enable) {
+        if (mInOverview) {
+            return;
+        }
         mOrientationTouchTransformer.enableMultipleRegions(enable, mDefaultDisplay.getInfo());
         UI_HELPER_EXECUTOR.execute(() -> {
             int quickStepStartingRotation =

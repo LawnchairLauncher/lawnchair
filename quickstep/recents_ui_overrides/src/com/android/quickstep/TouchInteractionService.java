@@ -75,6 +75,7 @@ import com.android.launcher3.util.WindowBounds;
 import com.android.quickstep.inputconsumers.AccessibilityInputConsumer;
 import com.android.quickstep.inputconsumers.AssistantInputConsumer;
 import com.android.quickstep.inputconsumers.DeviceLockedInputConsumer;
+import com.android.quickstep.inputconsumers.OneHandedModeInputConsumer;
 import com.android.quickstep.inputconsumers.OtherActivityInputConsumer;
 import com.android.quickstep.inputconsumers.OverscrollInputConsumer;
 import com.android.quickstep.inputconsumers.OverviewInputConsumer;
@@ -85,7 +86,6 @@ import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.AssistantUtilities;
 import com.android.quickstep.util.ProtoTracer;
 import com.android.quickstep.util.SplitScreenBounds;
-import com.android.quickstep.views.RecentsView;
 import com.android.systemui.plugins.OverscrollPlugin;
 import com.android.systemui.plugins.PluginListener;
 import com.android.systemui.shared.recents.IOverviewProxy;
@@ -492,6 +492,12 @@ public class TouchInteractionService extends Service implements PluginListener<O
                     newGestureState,
                     InputConsumer.NO_OP, mInputMonitorCompat,
                     mOverviewComponentObserver.assistantGestureIsConstrained());
+            } else if (mDeviceState.canTriggerOneHandedAction(event)
+                    && !mDeviceState.isOneHandedModeActive()) {
+                // Consume gesture event for triggering one handed feature.
+                mUncheckedConsumer = new OneHandedModeInputConsumer(this, mDeviceState,
+                        InputConsumer.NO_OP, mInputMonitorCompat);
+                newGestureState = DEFAULT_STATE;
             } else {
                 newGestureState = DEFAULT_STATE;
                 mUncheckedConsumer = InputConsumer.NO_OP;
@@ -555,7 +561,6 @@ public class TouchInteractionService extends Service implements PluginListener<O
                 || previousGestureState.isRecentsAnimationRunning()
                         ? newBaseConsumer(previousGestureState, newGestureState, event)
                         : mResetGestureInputConsumer;
-        // TODO(b/149880412): 2 button landscape mode is wrecked. Fixit!
         if (mDeviceState.isGesturalNavMode()) {
             handleOrientationSetup(base);
         }
@@ -596,6 +601,11 @@ public class TouchInteractionService extends Service implements PluginListener<O
                 base = new ScreenPinnedInputConsumer(this, newGestureState);
             }
 
+            if (mDeviceState.canTriggerOneHandedAction(event)) {
+                base = new OneHandedModeInputConsumer(this, mDeviceState, base,
+                        mInputMonitorCompat);
+            }
+
             if (mDeviceState.isAccessibilityMenuAvailable()) {
                 base = new AccessibilityInputConsumer(this, mDeviceState, base,
                         mInputMonitorCompat);
@@ -603,6 +613,11 @@ public class TouchInteractionService extends Service implements PluginListener<O
         } else {
             if (mDeviceState.isScreenPinningActive()) {
                 base = mResetGestureInputConsumer;
+            }
+
+            if (mDeviceState.canTriggerOneHandedAction(event)) {
+                base = new OneHandedModeInputConsumer(this, mDeviceState, base,
+                        mInputMonitorCompat);
             }
         }
         return base;
@@ -612,7 +627,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
         if (TestProtocol.sDebugTracing) {
             Log.d(TestProtocol.PAUSE_NOT_DETECTED, "handleOrientationSetup.1");
         }
-        if (!isFixedRotationTransformEnabled(this)) {
+        if (!isFixedRotationTransformEnabled()) {
             return;
         }
         mDeviceState.enableMultipleRegions(baseInputConsumer instanceof OtherActivityInputConsumer);
@@ -833,16 +848,16 @@ public class TouchInteractionService extends Service implements PluginListener<O
         }
     }
 
-    private BaseSwipeUpHandler createLauncherSwipeHandler(GestureState gestureState,
-            long touchTimeMs, boolean continuingLastGesture, boolean isLikelyToStartNewTask) {
-        return new LauncherSwipeHandler(this, mDeviceState, mTaskAnimationManager,
+    private BaseSwipeUpHandler createLauncherSwipeHandler(
+            GestureState gestureState, long touchTimeMs, boolean continuingLastGesture) {
+        return new LauncherSwipeHandlerV2(this, mDeviceState, mTaskAnimationManager,
                 gestureState, touchTimeMs, continuingLastGesture, mInputConsumer);
     }
 
-    private BaseSwipeUpHandler createFallbackSwipeHandler(GestureState gestureState,
-            long touchTimeMs, boolean continuingLastGesture, boolean isLikelyToStartNewTask) {
-        return new FallbackSwipeHandler(this, mDeviceState, gestureState,
-                mInputConsumer, isLikelyToStartNewTask, continuingLastGesture);
+    private BaseSwipeUpHandler createFallbackSwipeHandler(
+            GestureState gestureState, long touchTimeMs, boolean continuingLastGesture) {
+        return new FallbackSwipeHandler(this, mDeviceState, mTaskAnimationManager,
+                gestureState, touchTimeMs, continuingLastGesture, mInputConsumer);
     }
 
     protected boolean shouldNotifyBackGesture() {

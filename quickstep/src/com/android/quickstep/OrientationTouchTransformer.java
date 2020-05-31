@@ -37,7 +37,6 @@ import android.view.Surface;
 import com.android.launcher3.R;
 import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.util.DefaultDisplay;
-import com.android.quickstep.util.RecentsOrientedState.SurfaceRotation;
 
 import java.io.PrintWriter;
 
@@ -63,6 +62,7 @@ class OrientationTouchTransformer {
     private SparseArray<OrientationRectF> mSwipeTouchRegions = new SparseArray<>(MAX_ORIENTATIONS);
     private final RectF mAssistantLeftRegion = new RectF();
     private final RectF mAssistantRightRegion = new RectF();
+    private final RectF mOneHandedModeRegion = new RectF();
     private int mCurrentDisplayRotation;
     private boolean mEnableMultipleRegions;
     private Resources mResources;
@@ -185,10 +185,10 @@ class OrientationTouchTransformer {
 
         Point size = display.realSize;
         int rotation = display.rotation;
+        int touchHeight = getNavbarSize(ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE);
         OrientationRectF orientationRectF =
                 new OrientationRectF(0, 0, size.x, size.y, rotation);
         if (mMode == SysUINavigationMode.Mode.NO_BUTTON) {
-            int touchHeight = getNavbarSize(ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE);
             orientationRectF.top = orientationRectF.bottom - touchHeight;
 
             final int assistantWidth = mResources
@@ -217,10 +217,11 @@ class OrientationTouchTransformer {
                             + getNavbarSize(ResourceUtils.NAVBAR_LANDSCAPE_LEFT_RIGHT_SIZE);
                     break;
                 default:
-                    orientationRectF.top = orientationRectF.bottom
-                            - getNavbarSize(ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE);
+                    orientationRectF.top = orientationRectF.bottom - touchHeight;
             }
         }
+        // One handed gestural only active on portrait mode
+        mOneHandedModeRegion.set(0, orientationRectF.bottom - touchHeight, size.x, size.y);
 
         return orientationRectF;
     }
@@ -229,6 +230,10 @@ class OrientationTouchTransformer {
         return mAssistantLeftRegion.contains(ev.getX(), ev.getY())
                 || mAssistantRightRegion.contains(ev.getX(), ev.getY());
 
+    }
+
+    boolean touchInOneHandedModeRegion(MotionEvent ev) {
+        return mOneHandedModeRegion.contains(ev.getX(), ev.getY());
     }
 
     private int getNavbarSize(String resName) {
@@ -313,6 +318,7 @@ class OrientationTouchTransformer {
             regions.append(rectF.mRotation).append(" ");
         }
         pw.println(regions.toString());
+        pw.println("  mOneHandedModeRegion=" + mOneHandedModeRegion);
     }
 
     private class OrientationRectF extends RectF {

@@ -34,7 +34,7 @@ public class ShortcutUtil {
      * Returns true when we should show depp shortcuts in shortcut menu for the item.
      */
     public static boolean supportsDeepShortcuts(ItemInfo info) {
-        return isActive(info) && isApp(info);
+        return isActive(info) && isApp(info) && !WidgetsModel.GO_DISABLE_WIDGETS;
     }
 
     /**
@@ -64,7 +64,7 @@ public class ShortcutUtil {
     private static boolean isActive(ItemInfo info) {
         boolean isLoading = info instanceof WorkspaceItemInfo
                 && ((WorkspaceItemInfo) info).hasPromiseIconUi();
-        return !isLoading && !info.isDisabled() && !WidgetsModel.GO_DISABLE_WIDGETS;
+        return !isLoading && !info.isDisabled();
     }
 
     private static boolean isApp(ItemInfo info) {

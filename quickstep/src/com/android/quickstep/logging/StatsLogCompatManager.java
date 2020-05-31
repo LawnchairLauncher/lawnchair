@@ -17,10 +17,13 @@
 package com.android.quickstep.logging;
 
 import static com.android.launcher3.logger.LauncherAtom.ContainerInfo.ContainerCase.FOLDER;
-import static com.android.launcher3.logger.LauncherAtom.ItemInfo.ItemCase.WIDGET;
+import static com.android.systemui.shared.system.SysUiStatsLog.LAUNCHER_UICHANGED__DST_STATE__BACKGROUND;
+import static com.android.systemui.shared.system.SysUiStatsLog.LAUNCHER_UICHANGED__DST_STATE__HOME;
 
 import android.content.Context;
 import android.util.Log;
+
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.Utilities;
@@ -43,9 +46,9 @@ import java.util.ArrayList;
  * This class calls StatsLog compile time generated methods.
  *
  * To see if the logs are properly sent to statsd, execute following command.
- * $ adb root && adb shell statsd
- * $ adb shell cmd stats print-logs
- * $ adb logcat | grep statsd  OR $ adb logcat -b stats
+ * $ wwdebug (to turn on the logcat printout)
+ * $ wwlogcat (see logcat with grep filter on)
+ * $ statsd_testdrive (see how ww is writing the proto to statsd buffer)
  */
 public class StatsLogCompatManager extends StatsLogManager {
 
@@ -54,10 +57,8 @@ public class StatsLogCompatManager extends StatsLogManager {
 
     private static Context sContext;
 
-    private static final int DEFAULT_WIDGET_SPAN_XY = 1;
-    private static final int DEFAULT_WORKSPACE_GRID_XY = -1;
-    private static final int DEFAULT_PAGE_INDEX = -2;
     private static final InstanceId DEFAULT_INSTANCE_ID = InstanceId.fakeInstanceId(0);
+    private static final int FOLDER_HIERARCHY_OFFSET = 100;
 
     public StatsLogCompatManager(Context context) {
         sContext = context;
@@ -83,19 +84,32 @@ public class StatsLogCompatManager extends StatsLogManager {
      * Logs an event and accompanying {@link ItemInfo}.
      */
     @Override
-    public void log(LauncherEvent event, LauncherAtom.ItemInfo itemInfo) {
-        log(event, DEFAULT_INSTANCE_ID, itemInfo);
+    public void log(LauncherEvent event, @Nullable LauncherAtom.ItemInfo info) {
+        log(event, DEFAULT_INSTANCE_ID, info);
     }
 
     /**
      * Logs an event and accompanying {@link InstanceId} and {@link LauncherAtom.ItemInfo}.
      */
     @Override
-    public void log(LauncherEvent event, InstanceId instanceId, LauncherAtom.ItemInfo itemInfo) {
+    public void log(LauncherEvent event, InstanceId instanceId,
+            @Nullable LauncherAtom.ItemInfo info) {
+        logInternal(event, instanceId, info,
+                LAUNCHER_UICHANGED__DST_STATE__HOME,
+                LAUNCHER_UICHANGED__DST_STATE__BACKGROUND);
+    }
+
+    /**
+     * Logs an event and accompanying {@link InstanceId} and {@link LauncherAtom.ItemInfo}.
+     */
+    private void logInternal(LauncherEvent event, InstanceId instanceId,
+            @Nullable LauncherAtom.ItemInfo info, int startState, int endState) {
+        info = info == null ? LauncherAtom.ItemInfo.getDefaultInstance() : info;
+
         if (IS_VERBOSE) {
             Log.d(TAG, instanceId == DEFAULT_INSTANCE_ID
-                    ? String.format("\n%s\n%s", event.name(), itemInfo)
-                    : String.format("%s(InstanceId:%s)\n%s", event.name(), instanceId, itemInfo));
+                    ? String.format("\n%s\n%s", event.name(), info)
+                    : String.format("%s(InstanceId:%s)\n%s", event.name(), instanceId, info));
         }
 
         if (!Utilities.ATLEAST_R) {
@@ -105,25 +119,25 @@ public class StatsLogCompatManager extends StatsLogManager {
         SysUiStatsLog.write(
                 SysUiStatsLog.LAUNCHER_EVENT,
                 SysUiStatsLog.LAUNCHER_UICHANGED__ACTION__DEFAULT_ACTION /* deprecated */,
-                SysUiStatsLog.LAUNCHER_UICHANGED__DST_STATE__HOME /* TODO */,
-                SysUiStatsLog.LAUNCHER_UICHANGED__DST_STATE__BACKGROUND /* TODO */,
+                startState,
+                endState,
                 null /* launcher extensions, deprecated */,
                 false /* quickstep_enabled, deprecated */,
                 event.getId() /* event_id */,
-                itemInfo.getItemCase().getNumber() /* target_id */,
+                info.getItemCase().getNumber() /* target_id */,
                 instanceId.getId() /* instance_id TODO */,
                 0 /* uid TODO */,
-                getPackageName(itemInfo) /* package_name */,
-                getComponentName(itemInfo) /* component_name */,
-                getGridX(itemInfo, false) /* grid_x */,
-                getGridY(itemInfo, false) /* grid_y */,
-                getPageId(itemInfo, false) /* page_id */,
-                getGridX(itemInfo, true) /* grid_x_parent */,
-                getGridY(itemInfo, true) /* grid_y_parent */,
-                getPageId(itemInfo, true) /* page_id_parent */,
-                getHierarchy(itemInfo) /* hierarchy */,
-                itemInfo.getIsWork() /* is_work_profile */,
-                itemInfo.getRank() /* rank */,
+                getPackageName(info) /* package_name */,
+                getComponentName(info) /* component_name */,
+                getGridX(info, false) /* grid_x */,
+                getGridY(info, false) /* grid_y */,
+                getPageId(info, false) /* page_id */,
+                getGridX(info, true) /* grid_x_parent */,
+                getGridY(info, true) /* grid_y_parent */,
+                getPageId(info, true) /* page_id_parent */,
+                getHierarchy(info) /* hierarchy */,
+                info.getIsWork() /* is_work_profile */,
+                info.getRank() /* rank */,
                 0 /* fromState */,
                 0 /* toState */,
                 null /* edittext */,
@@ -164,144 +178,104 @@ public class StatsLogCompatManager extends StatsLogManager {
         }
     }
 
-    private static void writeSnapshot(LauncherAtom.ItemInfo itemInfo) {
+    private static void writeSnapshot(LauncherAtom.ItemInfo info) {
         if (IS_VERBOSE) {
-            Log.d(TAG, "\nwriteSnapshot:" + itemInfo);
+            Log.d(TAG, "\nwriteSnapshot:" + info);
         }
         if (!Utilities.ATLEAST_R) {
             return;
         }
         SysUiStatsLog.write(SysUiStatsLog.LAUNCHER_SNAPSHOT,
                 0 /* event_id */,
-                itemInfo.getItemCase().getNumber() /* target_id */,
+                info.getItemCase().getNumber() /* target_id */,
                 0 /* instance_id */,
                 0 /* uid */,
-                getPackageName(itemInfo) /* package_name */,
-                getComponentName(itemInfo) /* component_name */,
-                getGridX(itemInfo, false) /* grid_x */,
-                getGridY(itemInfo, false) /* grid_y */,
-                getPageId(itemInfo, false) /* page_id */,
-                getGridX(itemInfo, true) /* grid_x_parent */,
-                getGridY(itemInfo, true) /* grid_y_parent */,
-                getPageId(itemInfo, true) /* page_id_parent */,
-                getHierarchy(itemInfo) /* hierarchy */,
-                itemInfo.getIsWork() /* is_work_profile */,
+                getPackageName(info) /* package_name */,
+                getComponentName(info) /* component_name */,
+                getGridX(info, false) /* grid_x */,
+                getGridY(info, false) /* grid_y */,
+                getPageId(info, false) /* page_id */,
+                getGridX(info, true) /* grid_x_parent */,
+                getGridY(info, true) /* grid_y_parent */,
+                getPageId(info, true) /* page_id_parent */,
+                getHierarchy(info) /* hierarchy */,
+                info.getIsWork() /* is_work_profile */,
                 0 /* origin TODO */,
                 0 /* cardinality */,
-                getSpanX(itemInfo),
-                getSpanY(itemInfo));
+                info.getWidget().getSpanX(),
+                info.getWidget().getSpanY());
     }
 
-    private static int getSpanX(LauncherAtom.ItemInfo atomInfo) {
-        if (atomInfo.getItemCase() != WIDGET) {
-            return DEFAULT_WIDGET_SPAN_XY;
-        }
-        return atomInfo.getWidget().getSpanX();
-    }
-
-    private static int getSpanY(LauncherAtom.ItemInfo atomInfo) {
-        if (atomInfo.getItemCase() != WIDGET) {
-            return DEFAULT_WIDGET_SPAN_XY;
-        }
-        return atomInfo.getWidget().getSpanY();
-    }
-
-    private static String getPackageName(LauncherAtom.ItemInfo atomInfo) {
-        switch (atomInfo.getItemCase()) {
+    private static String getPackageName(LauncherAtom.ItemInfo info) {
+        switch (info.getItemCase()) {
             case APPLICATION:
-                return atomInfo.getApplication().getPackageName();
+                return info.getApplication().getPackageName();
             case SHORTCUT:
-                return atomInfo.getShortcut().getShortcutName();
+                return info.getShortcut().getShortcutName();
             case WIDGET:
-                return atomInfo.getWidget().getPackageName();
+                return info.getWidget().getPackageName();
             case TASK:
-                return atomInfo.getTask().getPackageName();
+                return info.getTask().getPackageName();
             default:
                 return null;
         }
     }
 
-    private static String getComponentName(LauncherAtom.ItemInfo atomInfo) {
-        switch (atomInfo.getItemCase()) {
+    private static String getComponentName(LauncherAtom.ItemInfo info) {
+        switch (info.getItemCase()) {
             case APPLICATION:
-                return atomInfo.getApplication().getComponentName();
+                return info.getApplication().getComponentName();
             case SHORTCUT:
-                return atomInfo.getShortcut().getShortcutName();
+                return info.getShortcut().getShortcutName();
             case WIDGET:
-                return atomInfo.getWidget().getComponentName();
+                return info.getWidget().getComponentName();
             case TASK:
-                return atomInfo.getTask().getComponentName();
+                return info.getTask().getComponentName();
             default:
                 return null;
         }
     }
 
     private static int getGridX(LauncherAtom.ItemInfo info, boolean parent) {
-        switch (info.getContainerInfo().getContainerCase()) {
-            case WORKSPACE:
-                if (parent) {
-                    return DEFAULT_WORKSPACE_GRID_XY;
-                } else {
-                    return info.getContainerInfo().getWorkspace().getGridX();
-                }
-            case FOLDER:
-                if (parent) {
-                    switch (info.getContainerInfo().getFolder().getParentContainerCase()) {
-                        case WORKSPACE:
-                            return info.getContainerInfo().getFolder().getWorkspace().getGridX();
-                        default:
-                            return DEFAULT_WORKSPACE_GRID_XY;
-                    }
-                } else {
-                    return info.getContainerInfo().getFolder().getGridX();
-                }
-            default:
-                return DEFAULT_WORKSPACE_GRID_XY;
+        if (info.getContainerInfo().getContainerCase() == FOLDER) {
+            if (parent) {
+                return info.getContainerInfo().getFolder().getWorkspace().getGridX();
+            } else {
+                return info.getContainerInfo().getFolder().getGridX();
+            }
+        } else {
+            return info.getContainerInfo().getWorkspace().getGridX();
         }
     }
 
     private static int getGridY(LauncherAtom.ItemInfo info, boolean parent) {
-        switch (info.getContainerInfo().getContainerCase()) {
-            case WORKSPACE:
-                if (parent) {
-                    return DEFAULT_WORKSPACE_GRID_XY;
-                } else {
-                    return info.getContainerInfo().getWorkspace().getGridY();
-                }
-            case FOLDER:
-                if (parent) {
-                    switch (info.getContainerInfo().getFolder().getParentContainerCase()) {
-                        case WORKSPACE:
-                            return info.getContainerInfo().getFolder().getWorkspace().getGridY();
-                        default:
-                            return DEFAULT_WORKSPACE_GRID_XY;
-                    }
-                } else {
-                    return info.getContainerInfo().getFolder().getGridY();
-                }
-            default:
-                return DEFAULT_WORKSPACE_GRID_XY;
+        if (info.getContainerInfo().getContainerCase() == FOLDER) {
+            if (parent) {
+                return info.getContainerInfo().getFolder().getWorkspace().getGridY();
+            } else {
+                return info.getContainerInfo().getFolder().getGridY();
+            }
+        } else {
+            return info.getContainerInfo().getWorkspace().getGridY();
         }
     }
 
     private static int getPageId(LauncherAtom.ItemInfo info, boolean parent) {
-        switch (info.getContainerInfo().getContainerCase()) {
-            case HOTSEAT:
-                return info.getContainerInfo().getHotseat().getIndex();
-            case WORKSPACE:
-                return info.getContainerInfo().getWorkspace().getPageIndex();
-            default:
-                return DEFAULT_PAGE_INDEX;
+        if (info.getContainerInfo().getContainerCase() == FOLDER) {
+            if (parent) {
+                return info.getContainerInfo().getFolder().getWorkspace().getPageIndex();
+            } else {
+                return info.getContainerInfo().getFolder().getPageIndex();
+            }
+        } else {
+            return info.getContainerInfo().getWorkspace().getPageIndex();
         }
     }
 
-    /**
-     *
-     */
     private static int getHierarchy(LauncherAtom.ItemInfo info) {
-        // TODO
         if (info.getContainerInfo().getContainerCase() == FOLDER) {
-            return info.getContainerInfo().getFolder().getParentContainerCase().getNumber() + 100;
+            return info.getContainerInfo().getFolder().getParentContainerCase().getNumber()
+                    + FOLDER_HIERARCHY_OFFSET;
         } else {
             return info.getContainerInfo().getContainerCase().getNumber();
         }
