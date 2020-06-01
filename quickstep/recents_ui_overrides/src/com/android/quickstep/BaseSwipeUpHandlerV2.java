@@ -1035,7 +1035,7 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
                 }
                 // Make sure recents is in its final state
                 maybeUpdateRecentsAttachedState(false);
-                mActivityInterface.onSwipeUpToHomeComplete();
+                mActivityInterface.onSwipeUpToHomeComplete(mDeviceState);
             }
         });
         return anim;

@@ -96,7 +96,7 @@ public final class LauncherActivityInterface extends
     }
 
     @Override
-    public void onSwipeUpToHomeComplete() {
+    public void onSwipeUpToHomeComplete(RecentsAnimationDeviceState deviceState) {
         Launcher launcher = getCreatedActivity();
         if (launcher == null) {
             return;
@@ -105,6 +105,7 @@ public final class LauncherActivityInterface extends
         // recents, we assume the first task is invisible, making translation off by one task.
         launcher.getStateManager().reapplyState();
         launcher.getRootView().setForceHideBackArrow(false);
+        notifyRecentsOfOrientation(deviceState);
     }
 
     @Override
@@ -235,15 +236,18 @@ public final class LauncherActivityInterface extends
                         // Are we going from Recents to Workspace?
                         if (toState == LauncherState.NORMAL) {
                             exitRunnable.run();
-
-                            // reset layout on swipe to home
-                            RecentsView recentsView = getCreatedActivity().getOverviewPanel();
-                            recentsView.setLayoutRotation(deviceState.getCurrentActiveRotation(),
-                                    deviceState.getDisplayRotation());
+                            notifyRecentsOfOrientation(deviceState);
                             stateManager.removeStateListener(this);
                         }
                     }
                 });
+    }
+
+    private void notifyRecentsOfOrientation(RecentsAnimationDeviceState deviceState) {
+        // reset layout on swipe to home
+        RecentsView recentsView = getCreatedActivity().getOverviewPanel();
+        recentsView.setLayoutRotation(deviceState.getCurrentActiveRotation(),
+                deviceState.getDisplayRotation());
     }
 
     @Override
