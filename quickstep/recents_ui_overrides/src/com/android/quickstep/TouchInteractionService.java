@@ -30,6 +30,7 @@ import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SYS
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_TRACING_ENABLED;
 
 import android.annotation.TargetApi;
+import android.app.ActivityManager;
 import android.app.PendingIntent;
 import android.app.RemoteAction;
 import android.app.Service;
@@ -487,18 +488,22 @@ public class TouchInteractionService extends Service implements PluginListener<O
 
                 ActiveGestureLog.INSTANCE.addLog("setInputConsumer: " + mConsumer.getName());
                 mUncheckedConsumer = mConsumer;
-            } else if (mDeviceState.isUserUnlocked()
-                    && mDeviceState.isFullyGesturalNavMode()
-                    && mDeviceState.canTriggerAssistantAction(event)) {
+            } else if (mDeviceState.isUserUnlocked() && mDeviceState.isFullyGesturalNavMode()) {
                 newGestureState = createGestureState();
-                // Do not change mConsumer as if there is an ongoing QuickSwitch gesture, we should
-                // not interrupt it. QuickSwitch assumes that interruption can only happen if the
-                // next gesture is also quick switch.
-                mUncheckedConsumer = new AssistantInputConsumer(
-                    this,
-                    newGestureState,
-                    InputConsumer.NO_OP, mInputMonitorCompat,
-                    mOverviewComponentObserver.assistantGestureIsConstrained());
+                ActivityManager.RunningTaskInfo runningTask = newGestureState.getRunningTask();
+                if (mDeviceState.canTriggerAssistantAction(event, runningTask)) {
+                    // Do not change mConsumer as if there is an ongoing QuickSwitch gesture, we
+                    // should not interrupt it. QuickSwitch assumes that interruption can only
+                    // happen if the next gesture is also quick switch.
+                    mUncheckedConsumer = new AssistantInputConsumer(
+                            this,
+                            newGestureState,
+                            InputConsumer.NO_OP, mInputMonitorCompat,
+                            mOverviewComponentObserver.assistantGestureIsConstrained());
+                } else {
+                    newGestureState = DEFAULT_STATE;
+                    mUncheckedConsumer = InputConsumer.NO_OP;
+                }
             } else {
                 newGestureState = DEFAULT_STATE;
                 mUncheckedConsumer = InputConsumer.NO_OP;
@@ -572,7 +577,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
             handleOrientationSetup(base);
         }
         if (mDeviceState.isFullyGesturalNavMode()) {
-            if (mDeviceState.canTriggerAssistantAction(event)) {
+            if (mDeviceState.canTriggerAssistantAction(event, newGestureState.getRunningTask())) {
                 base = new AssistantInputConsumer(
                     this,
                     newGestureState,
