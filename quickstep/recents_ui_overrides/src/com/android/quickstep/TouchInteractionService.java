@@ -613,7 +613,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
         if (!isFixedRotationTransformEnabled()) {
             return;
         }
-        mDeviceState.enableMultipleRegions(baseInputConsumer instanceof OtherActivityInputConsumer);
+        baseInputConsumer.notifyOrientationSetup();
     }
 
     private InputConsumer newBaseConsumer(GestureState previousGestureState,
