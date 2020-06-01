@@ -725,12 +725,13 @@ public class TouchInteractionService extends Service implements PluginListener<O
         if (!mDeviceState.isUserUnlocked()) {
             return;
         }
+
         if (mDeviceState.isButtonNavMode() && !mOverviewComponentObserver.isHomeAndOverviewSame()) {
             // Prevent the overview from being started before the real home on first boot.
             return;
         }
 
-        if (RestoreDbTask.isPending(this)) {
+        if (RestoreDbTask.isPending(this) || !mDeviceState.isUserSetupComplete()) {
             // Preloading while a restore is pending may cause launcher to start the restore
             // too early.
             return;

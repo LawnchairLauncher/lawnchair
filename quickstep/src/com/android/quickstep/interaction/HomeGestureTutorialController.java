@@ -78,6 +78,7 @@ final class HomeGestureTutorialController extends TutorialController {
         mViewSwipeUpAnimation = new ViewSwipeUpAnimation(mContext, deviceState,
                 new GestureState(observer, -1));
         observer.onDestroy();
+        deviceState.destroy();
 
         DeviceProfile dp = InvariantDeviceProfile.INSTANCE.get(mContext)
                 .getDeviceProfile(mContext)
