@@ -94,7 +94,15 @@ public class StatsLogManager implements ResourceBasedOverride {
 
         @UiEvent(doc = "User cancelled uninstalling the package after dropping on "
                 + "the icon onto 'Uninstall' button in the target bar")
-        LAUNCHER_ITEM_UNINSTALL_CANCELLED(470);
+        LAUNCHER_ITEM_UNINSTALL_CANCELLED(470),
+
+        @UiEvent(doc = "User opened package specific widgets list by tapping on widgets system "
+                + "shortcut within longpress popup window.")
+        LAUNCHER_SYSTEM_SHORTCUT_WIDGETS_TAP(514),
+
+        @UiEvent(doc = "User opened app info of the package by tapping on appinfo system shortcut "
+                + "within longpress popup window.")
+        LAUNCHER_SYSTEM_SHORTCUT_APP_INFO_TAP(515);
         // ADD MORE
 
         private final int mId;
