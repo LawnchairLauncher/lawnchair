@@ -87,7 +87,6 @@
     <!-- content description for hotseat items -->
     <string name="hotseat_prediction_content_description">Predicted app: <xliff:g id="title" example="Chrome">%1$s</xliff:g></string>
 
-
     <!-- Title shown during interactive part of Back gesture tutorial for right edge. [CHAR LIMIT=30] -->
     <string name="back_gesture_tutorial_playground_title_swipe_inward_right_edge" translatable="false">Try the back gesture</string>
     <!-- Subtitle shown during interactive parts of Back gesture tutorial for right edge. [CHAR LIMIT=60] -->
@@ -111,7 +110,6 @@
     <!-- Subtitle shown on the confirmation screen after successful gesture. [CHAR LIMIT=60] -->
     <string name="back_gesture_tutorial_confirm_subtitle" translatable="false">To change the sensitivity of the back gesture, go to Settings</string>
 
-
     <!-- Title shown during interactive part of Home gesture tutorial. [CHAR LIMIT=30] -->
     <string name="home_gesture_tutorial_playground_title" translatable="false">Tutorial: Go Home</string>
     <!-- Subtitle shown during interactive parts of Home gesture tutorial. [CHAR LIMIT=60] -->
@@ -122,6 +120,17 @@
     <string name="home_gesture_feedback_overview_detected" translatable="false">Make sure you don\'t pause before letting go</string>
     <!-- Feedback shown during interactive parts of Home gesture tutorial when the gesture is horizontal instead of vertical. [CHAR LIMIT=100] -->
     <string name="home_gesture_feedback_wrong_swipe_direction" translatable="false">Make sure you swipe straight up</string>
+
+    <!-- Title shown during interactive part of Overview gesture tutorial. [CHAR LIMIT=30] -->
+    <string name="overview_gesture_tutorial_playground_title" translatable="false">Tutorial: Switch Apps</string>
+    <!-- Subtitle shown during interactive parts of Overview gesture tutorial. [CHAR LIMIT=60] -->
+    <string name="overview_gesture_tutorial_playground_subtitle" translatable="false">Swipe up from the bottom of the screen and hold</string>
+    <!-- Feedback shown during interactive parts of Overview gesture tutorial when the gesture is started too far from the edge. [CHAR LIMIT=100] -->
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" translatable="false">Make sure you swipe from the bottom edge of the screen</string>
+    <!-- Feedback shown during interactive parts of Overview gesture tutorial when the Home gesture is detected. [CHAR LIMIT=100] -->
+    <string name="overview_gesture_feedback_home_detected" translatable="false">Try holding the window for longer before releasing</string>
+    <!-- Feedback shown during interactive parts of Overview gesture tutorial when the gesture is horizontal instead of vertical. [CHAR LIMIT=100] -->
+    <string name="overview_gesture_feedback_wrong_swipe_direction" translatable="false">Make sure you swipe straight up and pause</string>
 
     <!-- Title shown on the confirmation screen after successful gesture. [CHAR LIMIT=30] -->
     <string name="gesture_tutorial_confirm_title" translatable="false">All set</string>
