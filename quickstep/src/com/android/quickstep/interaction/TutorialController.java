@@ -15,6 +15,7 @@
  */
 package com.android.quickstep.interaction;
 
+import android.content.Context;
 import android.graphics.drawable.RippleDrawable;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -39,11 +40,13 @@ abstract class TutorialController implements BackGestureAttemptCallback,
 
     final TutorialFragment mTutorialFragment;
     TutorialType mTutorialType;
+    final Context mContext;
 
     final ImageButton mCloseButton;
     final TextView mTitleTextView;
     final TextView mSubtitleTextView;
     final TextView mFeedbackView;
+    final View mFakeTaskView;
     final View mRippleView;
     final RippleDrawable mRippleDrawable;
     final TutorialHandAnimation mHandCoachingAnimation;
@@ -55,6 +58,7 @@ abstract class TutorialController implements BackGestureAttemptCallback,
     TutorialController(TutorialFragment tutorialFragment, TutorialType tutorialType) {
         mTutorialFragment = tutorialFragment;
         mTutorialType = tutorialType;
+        mContext = mTutorialFragment.getContext();
 
         View rootView = tutorialFragment.getRootView();
         mCloseButton = rootView.findViewById(R.id.gesture_tutorial_fragment_close_button);
@@ -62,6 +66,7 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         mTitleTextView = rootView.findViewById(R.id.gesture_tutorial_fragment_title_view);
         mSubtitleTextView = rootView.findViewById(R.id.gesture_tutorial_fragment_subtitle_view);
         mFeedbackView = rootView.findViewById(R.id.gesture_tutorial_fragment_feedback_view);
+        mFakeTaskView = rootView.findViewById(R.id.gesture_tutorial_fake_task_view);
         mRippleView = rootView.findViewById(R.id.gesture_tutorial_ripple_view);
         mRippleDrawable = (RippleDrawable) mRippleView.getBackground();
         mHandCoachingAnimation = tutorialFragment.getHandAnimation();

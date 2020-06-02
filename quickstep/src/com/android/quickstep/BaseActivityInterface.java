@@ -101,7 +101,7 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
         activity.getStateManager().reapplyState();
     }
 
-    public abstract void onSwipeUpToHomeComplete();
+    public abstract void onSwipeUpToHomeComplete(RecentsAnimationDeviceState deviceState);
 
     public abstract void onAssistantVisibilityChanged(float visibility);
 
