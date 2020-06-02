@@ -386,7 +386,6 @@ public class RecentsAnimationDeviceState implements
         return (mSystemUiStateFlags & SYSUI_STATE_NAV_BAR_HIDDEN) == 0
                 && (mSystemUiStateFlags & SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED) == 0
                 && (mSystemUiStateFlags & SYSUI_STATE_QUICK_SETTINGS_EXPANDED) == 0
-                && (mSystemUiStateFlags & SYSUI_STATE_BUBBLES_EXPANDED) == 0
                 && ((mSystemUiStateFlags & SYSUI_STATE_HOME_DISABLED) == 0
                         || (mSystemUiStateFlags & SYSUI_STATE_OVERVIEW_DISABLED) == 0);
     }
@@ -404,6 +403,13 @@ public class RecentsAnimationDeviceState implements
      */
     public boolean isScreenPinningActive() {
         return (mSystemUiStateFlags & SYSUI_STATE_SCREEN_PINNING) != 0;
+    }
+
+    /**
+     * @return whether the bubble stack is expanded
+     */
+    public boolean isBubblesExpanded() {
+        return (mSystemUiStateFlags & SYSUI_STATE_BUBBLES_EXPANDED) != 0;
     }
 
     /**
