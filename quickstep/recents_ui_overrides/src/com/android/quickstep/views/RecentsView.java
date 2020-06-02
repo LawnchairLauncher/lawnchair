@@ -492,6 +492,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
     public void init(OverviewActionsView actionsView) {
         mActionsView = actionsView;
+        mActionsView.updateHiddenFlags(HIDDEN_NO_TASKS, getTaskViewCount() == 0);
     }
 
     @Override
