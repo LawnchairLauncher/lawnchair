@@ -70,7 +70,7 @@ public class PendingAnimation implements PropertySetter {
 
     public void add(Animator a, SpringProperty springProperty) {
         mAnim.play(a);
-        addAnimationHoldersRecur(a, springProperty, mAnimHolders);
+        addAnimationHoldersRecur(a, mDuration, springProperty, mAnimHolders);
     }
 
     public void finish(boolean isSuccess, int logAction) {
@@ -150,7 +150,7 @@ public class PendingAnimation implements PropertySetter {
         }
         if (mAnimHolders.isEmpty()) {
             // Add a dummy animation to that the duration is respected
-            add(ValueAnimator.ofFloat(0, 1));
+            add(ValueAnimator.ofFloat(0, 1).setDuration(mDuration));
         }
         return mAnim;
     }
