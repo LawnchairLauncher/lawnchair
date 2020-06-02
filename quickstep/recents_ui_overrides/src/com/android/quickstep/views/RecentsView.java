@@ -622,14 +622,14 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     @Override
     protected void onPageBeginTransition() {
         super.onPageBeginTransition();
-        LayoutUtils.setViewEnabled(mActionsView, false);
+        mActionsView.updateDisabledFlags(OverviewActionsView.DISABLED_SCROLLING, true);
     }
 
     @Override
     protected void onPageEndTransition() {
         super.onPageEndTransition();
         if (isClearAllHidden()) {
-            LayoutUtils.setViewEnabled(mActionsView, true);
+            mActionsView.updateDisabledFlags(OverviewActionsView.DISABLED_SCROLLING, false);
         }
         if (getNextPage() > 0) {
             setSwipeDownShouldLaunchApp(true);
@@ -2216,7 +2216,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         boolean inPlaceLandscape = !mOrientationState.canLauncherRotate()
                 && mOrientationState.getTouchRotation() != ROTATION_0;
         mActionsView.updateHiddenFlags(HIDDEN_NON_ZERO_ROTATION, modalness < 1 && inPlaceLandscape);
-        LayoutUtils.setViewEnabled(mActionsView, true);
     }
 
     @Nullable
