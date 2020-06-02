@@ -157,8 +157,9 @@ class OrientationTouchTransformer {
                 mMode != SysUINavigationMode.Mode.TWO_BUTTONS;
         if (mEnableMultipleRegions) {
             mQuickStepStartingRotation = info.rotation;
-        } else if (!enableMultipleRegions) {
-            mLastRectRotation = mQuickStepStartingRotation = QUICKSTEP_ROTATION_UNINITIALIZED;
+        } else {
+            mLastRectRotation = 0;
+            mQuickStepStartingRotation = QUICKSTEP_ROTATION_UNINITIALIZED;
         }
         resetSwipeRegions(info);
     }
@@ -293,6 +294,7 @@ class OrientationTouchTransformer {
                         mLastRectTouched = rect;
                         mLastRectRotation = rect.mRotation;
                         if (mEnableMultipleRegions && mCurrentDisplayRotation == mLastRectRotation) {
+                            // TODO(b/154580671) might make this block unnecessary
                             // Start a touch session for the default nav region for the display
                             mQuickStepStartingRotation = mLastRectTouched.mRotation;
                             resetSwipeRegions();
