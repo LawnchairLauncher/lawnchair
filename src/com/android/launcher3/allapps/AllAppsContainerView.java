@@ -349,15 +349,15 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         }
 
         ViewGroup.MarginLayoutParams mlp = (MarginLayoutParams) getLayoutParams();
+        mlp.leftMargin = insets.left;
+        mlp.rightMargin = insets.right;
+        setLayoutParams(mlp);
+
         if (grid.isVerticalBarLayout()) {
-            mlp.leftMargin = insets.left;
-            mlp.rightMargin = insets.right;
             setPadding(grid.workspacePadding.left, 0, grid.workspacePadding.right, 0);
         } else {
-            mlp.leftMargin = mlp.rightMargin = 0;
             setPadding(0, 0, 0, 0);
         }
-        setLayoutParams(mlp);
 
         InsettableFrameLayout.dispatchInsets(this, insets);
     }
