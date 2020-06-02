@@ -43,6 +43,9 @@ public class StatsLogManager implements ResourceBasedOverride {
         @UiEvent(doc = "Task launched from overview using TAP")
         LAUNCHER_TASK_LAUNCH_TAP(339),
 
+        @UiEvent(doc = "User tapped on notification inside popup context menu.")
+        LAUNCHER_NOTIFICATION_LAUNCH_TAP(516),
+
         @UiEvent(doc = "Task launched from overview using SWIPE DOWN")
         LAUNCHER_TASK_LAUNCH_SWIPE_DOWN(340),
 
@@ -101,7 +104,7 @@ public class StatsLogManager implements ResourceBasedOverride {
         LAUNCHER_TASK_ICON_TAP_OR_LONGPRESS(517),
 
         @UiEvent(doc = "User opened package specific widgets list by tapping on widgets system "
-                + "shortcut within longpress popup window.")
+                + "shortcut inside popup context menu.")
         LAUNCHER_SYSTEM_SHORTCUT_WIDGETS_TAP(514),
 
         @UiEvent(doc = "User tapped on app info system shortcut.")
