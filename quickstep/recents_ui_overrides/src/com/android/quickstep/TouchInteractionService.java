@@ -134,10 +134,10 @@ public class TouchInteractionService extends Service implements PluginListener<O
     private static final int MAX_BACK_NOTIFICATION_COUNT = 3;
 
     /**
-     * System Action ID to show all apps.  This ID should follow the ones in
-     * com.android.systemui.accessibility.SystemActions.
+     * System Action ID to show all apps.
+     * TODO: Use AccessibilityService's corresponding global action constant in S
      */
-    private static final int SYSTEM_ACTION_ID_ALL_APPS = 100;
+    private static final int SYSTEM_ACTION_ID_ALL_APPS = 14;
 
     private int mBackGestureNotificationCounter = -1;
     @Nullable
