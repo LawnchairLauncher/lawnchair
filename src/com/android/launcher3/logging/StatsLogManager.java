@@ -102,7 +102,11 @@ public class StatsLogManager implements ResourceBasedOverride {
 
         @UiEvent(doc = "User opened app info of the package by tapping on appinfo system shortcut "
                 + "within longpress popup window.")
-        LAUNCHER_SYSTEM_SHORTCUT_APP_INFO_TAP(515);
+        LAUNCHER_SYSTEM_SHORTCUT_APP_INFO_TAP(515),
+
+        @UiEvent(doc = "User tapped or long pressed on the task icon(aka package icon) "
+                + "from overview to open task menu.")
+        LAUNCHER_TASK_ICON_TAP_OR_LONGPRESS(517);
         // ADD MORE
 
         private final int mId;
