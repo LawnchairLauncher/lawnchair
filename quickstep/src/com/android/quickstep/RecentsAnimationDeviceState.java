@@ -45,6 +45,7 @@ import android.content.res.Resources;
 import android.graphics.Region;
 import android.os.Process;
 import android.os.UserManager;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.MotionEvent;
 
@@ -53,6 +54,7 @@ import androidx.annotation.BinderThread;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.DefaultDisplay;
+import com.android.launcher3.util.SecureSettingsObserver;
 import com.android.quickstep.SysUINavigationMode.NavigationModeChangeListener;
 import com.android.quickstep.util.NavBarPosition;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
@@ -128,6 +130,8 @@ public class RecentsAnimationDeviceState implements
     private boolean mInOverview;
     private boolean mTaskListFrozen;
 
+    private boolean mIsUserSetupComplete;
+
     public RecentsAnimationDeviceState(Context context) {
         mContext = context;
         mSysUiNavMode = SysUINavigationMode.INSTANCE.get(context);
@@ -177,6 +181,17 @@ public class RecentsAnimationDeviceState implements
                 mGestureBlockedActivities.add(
                         ComponentName.unflattenFromString(blockingActivity));
             }
+        }
+
+        SecureSettingsObserver userSetupObserver = new SecureSettingsObserver(
+                context.getContentResolver(),
+                e -> mIsUserSetupComplete = e,
+                Settings.Secure.USER_SETUP_COMPLETE,
+                0);
+        mIsUserSetupComplete = userSetupObserver.getValue();
+        if (!mIsUserSetupComplete) {
+            userSetupObserver.register();
+            runOnDestroy(userSetupObserver::unregister);
         }
     }
 
@@ -316,6 +331,13 @@ public class RecentsAnimationDeviceState implements
      */
     public boolean isUserUnlocked() {
         return mIsUserUnlocked;
+    }
+
+    /**
+     * @return whether the user has completed setup wizard
+     */
+    public boolean isUserSetupComplete() {
+        return mIsUserSetupComplete;
     }
 
     private void notifyUserUnlocked() {
