@@ -467,10 +467,17 @@ public class TouchInteractionService extends Service implements PluginListener<O
 
         final int action = event.getAction();
         if (action == ACTION_DOWN) {
+            if (TestProtocol.sDebugTracing) {
+                Log.d(TestProtocol.NO_SWIPE_TO_HOME, "TouchInteractionService.onInputEvent:DOWN");
+            }
             mDeviceState.setOrientationTransformIfNeeded(event);
             GestureState newGestureState;
 
             if (mDeviceState.isInSwipeUpTouchRegion(event)) {
+                if (TestProtocol.sDebugTracing) {
+                    Log.d(TestProtocol.NO_SWIPE_TO_HOME,
+                            "TouchInteractionService.onInputEvent:isInSwipeUpTouchRegion");
+                }
                 // Clone the previous gesture state since onConsumerAboutToBeSwitched might trigger
                 // onConsumerInactive and wipe the previous gesture state
                 GestureState prevGestureState = new GestureState(mGestureState);
@@ -537,6 +544,9 @@ public class TouchInteractionService extends Service implements PluginListener<O
 
     private InputConsumer newConsumer(GestureState previousGestureState,
             GestureState newGestureState, MotionEvent event) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.NO_SWIPE_TO_HOME, "newConsumer");
+        }
         boolean canStartSystemGesture = mDeviceState.canStartSystemGesture();
 
         if (!mDeviceState.isUserUnlocked()) {
@@ -547,6 +557,9 @@ public class TouchInteractionService extends Service implements PluginListener<O
             } else {
                 return mResetGestureInputConsumer;
             }
+        }
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.NO_SWIPE_TO_HOME, "newConsumer:user is unlocked");
         }
 
         // When there is an existing recents animation running, bypass systemState check as this is
