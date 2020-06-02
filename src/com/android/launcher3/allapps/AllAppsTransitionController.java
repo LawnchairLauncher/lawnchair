@@ -6,6 +6,8 @@ import static com.android.launcher3.LauncherState.APPS_VIEW_ITEM_MASK;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.VERTICAL_SWIPE_INDICATOR;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
+import static com.android.launcher3.anim.Interpolators.FINAL_FRAME;
+import static com.android.launcher3.anim.Interpolators.INSTANT;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_FADE;
@@ -227,7 +229,9 @@ public class AllAppsTransitionController implements StateHandler<LauncherState>,
         setter.setInt(mScrimView, ScrimView.DRAG_HANDLE_ALPHA,
                 (visibleElements & VERTICAL_SWIPE_INDICATOR) != 0 ? 255 : 0, allAppsFade);
 
-        setter.setViewAlpha(mAppsView, hasAnyVisibleItem ? 1 : 0, allAppsFade);
+        // Set visibility of the container at the very beginning or end of the transition.
+        setter.setViewAlpha(mAppsView, hasAnyVisibleItem ? 1 : 0,
+                hasAnyVisibleItem ? INSTANT : FINAL_FRAME);
     }
 
     public AnimatorListenerAdapter getProgressAnimatorListener() {
