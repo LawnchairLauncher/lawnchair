@@ -140,6 +140,9 @@ abstract class TutorialController implements BackGestureAttemptCallback,
     void onActionTextButtonClicked(View button) {}
 
     void showHandCoachingAnimation() {
+        if (isComplete()) {
+            return;
+        }
         mHandCoachingAnimation.startLoopedAnimation(mTutorialType);
     }
 
@@ -153,6 +156,12 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         hideFeedback();
         updateTitles();
         updateActionButtons();
+
+        if (isComplete()) {
+            hideHandCoachingAnimation();
+        } else {
+            showHandCoachingAnimation();
+        }
     }
 
     private void updateTitles() {
@@ -190,12 +199,20 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         button.setOnClickListener(listener);
     }
 
+    private boolean isComplete() {
+        return mTutorialType == TutorialType.BACK_NAVIGATION_COMPLETE
+                || mTutorialType == TutorialType.HOME_NAVIGATION_COMPLETE
+                || mTutorialType == TutorialType.OVERVIEW_NAVIGATION_COMPLETE;
+    }
+
     /** Denotes the type of the tutorial. */
     enum TutorialType {
         RIGHT_EDGE_BACK_NAVIGATION,
         LEFT_EDGE_BACK_NAVIGATION,
         BACK_NAVIGATION_COMPLETE,
         HOME_NAVIGATION,
-        HOME_NAVIGATION_COMPLETE
+        HOME_NAVIGATION_COMPLETE,
+        OVERVIEW_NAVIGATION,
+        OVERVIEW_NAVIGATION_COMPLETE
     }
 }
