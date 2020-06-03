@@ -145,10 +145,11 @@ public class DefaultDisplay implements DisplayListener {
         }
 
         private Info(Context context) {
-            this(context.getSystemService(DisplayManager.class).getDisplay(DEFAULT_DISPLAY));
+            this(context, context.getSystemService(DisplayManager.class)
+                    .getDisplay(DEFAULT_DISPLAY));
         }
 
-        public Info(Display display) {
+        public Info(Context context, Display display) {
             id = display.getDisplayId();
             rotation = display.getRotation();
 
@@ -161,8 +162,8 @@ public class DefaultDisplay implements DisplayListener {
             display.getRealSize(realSize);
             display.getCurrentSizeRange(smallestSize, largestSize);
 
-            metrics = new DisplayMetrics();
-            display.getMetrics(metrics);
+            Context defaultDisplayContext = context.createDisplayContext(display);
+            metrics = defaultDisplayContext.getResources().getDisplayMetrics();
         }
 
         private boolean hasDifferentSize(Info info) {

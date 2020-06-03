@@ -29,6 +29,7 @@ import com.android.launcher3.graphics.IconShape;
 import com.android.launcher3.icons.DotRenderer;
 import com.android.launcher3.icons.IconNormalizer;
 import com.android.launcher3.util.DefaultDisplay;
+import com.android.launcher3.util.WindowBounds;
 
 public class DeviceProfile {
 
@@ -265,19 +266,16 @@ public class DeviceProfile {
     /**
      * TODO: Move this to the builder as part of setMultiWindowMode
      */
-    public DeviceProfile getMultiWindowProfile(Context context, Rect windowPosition) {
+    public DeviceProfile getMultiWindowProfile(Context context, WindowBounds windowBounds) {
         // We take the minimum sizes of this profile and it's multi-window variant to ensure that
         // the system decor is always excluded.
-        Point mwSize = new Point(Math.min(availableWidthPx, windowPosition.width()),
-                Math.min(availableHeightPx, windowPosition.height()));
+        Point mwSize = new Point(Math.min(availableWidthPx, windowBounds.availableSize.x),
+                Math.min(availableHeightPx, windowBounds.availableSize.y));
 
-        // In multi-window mode, we can have widthPx = availableWidthPx
-        // and heightPx = availableHeightPx because Launcher uses the InvariantDeviceProfiles'
-        // widthPx and heightPx values where it's needed.
         DeviceProfile profile = toBuilder(context)
                 .setSizeRange(mwSize, mwSize)
-                .setSize(mwSize.x, mwSize.y)
-                .setWindowPosition(windowPosition.left, windowPosition.top)
+                .setSize(windowBounds.bounds.width(), windowBounds.bounds.height())
+                .setWindowPosition(windowBounds.bounds.left, windowBounds.bounds.top)
                 .setMultiWindowMode(true)
                 .build();
 
@@ -299,7 +297,7 @@ public class DeviceProfile {
     }
 
     /**
-     * Inverse of {@link #getMultiWindowProfile(Context, Rect)}
+     * Inverse of {@link #getMultiWindowProfile(Context, WindowBounds)}
      * @return device profile corresponding to the current orientation in non multi-window mode.
      */
     public DeviceProfile getFullScreenProfile() {

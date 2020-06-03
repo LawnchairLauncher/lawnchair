@@ -404,6 +404,11 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     }
 
     @Override
+    public void notifyOrientationSetup() {
+        mDeviceState.onStartGesture();
+    }
+
+    @Override
     public void onConsumerAboutToBeSwitched() {
         Preconditions.assertUIThread();
         mMainThreadHandler.removeCallbacks(mCancelRecentsAnimationRunnable);
