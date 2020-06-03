@@ -227,8 +227,8 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
     protected void onDraw(Canvas canvas) {
         RectF currentDrawnInsets = mFullscreenParams.mCurrentDrawnInsets;
         canvas.save();
-        canvas.translate(currentDrawnInsets.left, currentDrawnInsets.top);
         canvas.scale(mFullscreenParams.mScale, mFullscreenParams.mScale);
+        canvas.translate(currentDrawnInsets.left, currentDrawnInsets.top);
         // Draw the insets if we're being drawn fullscreen (we do this for quick switch).
         drawOnCanvas(canvas,
                 -currentDrawnInsets.left,
