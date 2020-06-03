@@ -21,6 +21,7 @@ import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_SHARE;
 import static com.android.quickstep.SysUINavigationMode.removeShelfFromOverview;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -33,6 +34,7 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.R;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
+import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.TaskOverlayFactory.OverlayUICallbacks;
 
@@ -129,6 +131,12 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         updateHiddenFlags(HIDDEN_UNSUPPORTED_NAVIGATION, !removeShelfFromOverview(getContext()));
     }
 
+    @Override
+    protected void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        updateVerticalMargin(SysUINavigationMode.getMode(getContext()));
+    }
+
     public void updateHiddenFlags(@ActionsHiddenFlags int visibilityFlags, boolean enable) {
         if (enable) {
             mHiddenFlags |= visibilityFlags;
@@ -152,10 +160,13 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         return mMultiValueAlpha.getProperty(INDEX_FULLSCREEN_ALPHA);
     }
 
-    /** Updates vertical margins for different navigation mode. */
-    public void updateVerticalMarginForNavModeChange(Mode mode) {
-        int bottomMargin = 0;
-        if (mode == Mode.THREE_BUTTONS) {
+    /** Updates vertical margins for different navigation mode or configuration changes. */
+    public void updateVerticalMargin(Mode mode) {
+        int bottomMargin;
+        int orientation = getResources().getConfiguration().orientation;
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            bottomMargin = 0;
+        } else if (mode == Mode.THREE_BUTTONS) {
             bottomMargin = getResources()
                     .getDimensionPixelSize(R.dimen.overview_actions_bottom_margin_three_button);
         } else {
