@@ -127,6 +127,7 @@ import com.android.quickstep.ViewUtils;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.quickstep.util.SplitScreenBounds;
+import com.android.quickstep.util.SurfaceTransactionApplier;
 import com.android.quickstep.util.TransformParams;
 import com.android.systemui.plugins.ResourceProvider;
 import com.android.systemui.shared.recents.IPinnedStackAnimationListener;
@@ -135,7 +136,6 @@ import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.LauncherEventUtil;
 import com.android.systemui.shared.system.PackageManagerWrapper;
-import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
 import com.android.systemui.shared.system.TaskStackChangeListener;
 
 import java.util.ArrayList;
@@ -211,7 +211,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     protected final BaseActivityInterface mSizeStrategy;
     protected RecentsAnimationController mRecentsAnimationController;
     protected RecentsAnimationTargets mRecentsAnimationTargets;
-    protected SyncRtSurfaceTransactionApplierCompat mSyncTransactionApplier;
+    protected SurfaceTransactionApplier mSyncTransactionApplier;
     protected int mTaskWidth;
     protected int mTaskHeight;
     protected boolean mEnableDrawingLiveTile = false;
@@ -502,7 +502,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         mModel.getThumbnailCache().getHighResLoadingState().addCallback(this);
         mActivity.addMultiWindowModeChangedListener(mMultiWindowModeChangedListener);
         ActivityManagerWrapper.getInstance().registerTaskStackListener(mTaskStackListener);
-        mSyncTransactionApplier = new SyncRtSurfaceTransactionApplierCompat(this);
+        mSyncTransactionApplier = new SurfaceTransactionApplier(this);
         RecentsModel.INSTANCE.get(getContext()).addThumbnailChangeListener(this);
         mIdp.addOnChangeListener(this);
         mIPinnedStackAnimationListener.setActivity(mActivity);
