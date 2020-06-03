@@ -24,6 +24,13 @@
         android:layout_height="match_parent"
         android:background="@drawable/gesture_tutorial_ripple"/>
 
+    <View
+        android:id="@+id/gesture_tutorial_fake_task_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/gesture_tutorial_fake_task_view_color"
+        android:visibility="invisible" />
+
     <ImageView
         android:id="@+id/gesture_tutorial_fragment_hand_coaching"
         android:layout_width="match_parent"

@@ -79,12 +79,13 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
 
     @Override
     protected Activity getCurrentActivity() {
-        OverviewComponentObserver observer = new OverviewComponentObserver(mContext,
-                new RecentsAnimationDeviceState(mContext));
+        RecentsAnimationDeviceState rads = new RecentsAnimationDeviceState(mContext);
+        OverviewComponentObserver observer = new OverviewComponentObserver(mContext, rads);
         try {
             return observer.getActivityInterface().getCreatedActivity();
         } finally {
             observer.onDestroy();
+            rads.destroy();
         }
     }
 

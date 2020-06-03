@@ -81,6 +81,7 @@ import com.android.quickstep.inputconsumers.OverviewInputConsumer;
 import com.android.quickstep.inputconsumers.OverviewWithoutFocusInputConsumer;
 import com.android.quickstep.inputconsumers.ResetGestureInputConsumer;
 import com.android.quickstep.inputconsumers.ScreenPinnedInputConsumer;
+import com.android.quickstep.inputconsumers.SysUiOverlayInputConsumer;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.AssistantUtilities;
 import com.android.quickstep.util.ProtoTracer;
@@ -588,6 +589,13 @@ public class TouchInteractionService extends Service implements PluginListener<O
                 }
             }
 
+            // If Bubbles is expanded, use the overlay input consumer, which will close Bubbles
+            // instead of going all the way home when a swipe up is detected.
+            if (mDeviceState.isBubblesExpanded()) {
+                base = new SysUiOverlayInputConsumer(
+                        getBaseContext(), mDeviceState, mInputMonitorCompat);
+            }
+
             if (mDeviceState.isScreenPinningActive()) {
                 // Note: we only allow accessibility to wrap this, and it replaces the previous
                 // base input consumer (which should be NO_OP anyway since topTaskLocked == true).
@@ -613,7 +621,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
         if (!isFixedRotationTransformEnabled()) {
             return;
         }
-        mDeviceState.enableMultipleRegions(baseInputConsumer instanceof OtherActivityInputConsumer);
+        baseInputConsumer.notifyOrientationSetup();
     }
 
     private InputConsumer newBaseConsumer(GestureState previousGestureState,
@@ -725,12 +733,13 @@ public class TouchInteractionService extends Service implements PluginListener<O
         if (!mDeviceState.isUserUnlocked()) {
             return;
         }
+
         if (mDeviceState.isButtonNavMode() && !mOverviewComponentObserver.isHomeAndOverviewSame()) {
             // Prevent the overview from being started before the real home on first boot.
             return;
         }
 
-        if (RestoreDbTask.isPending(this)) {
+        if (RestoreDbTask.isPending(this) || !mDeviceState.isUserSetupComplete()) {
             // Preloading while a restore is pending may cause launcher to start the restore
             // too early.
             return;
