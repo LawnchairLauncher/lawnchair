@@ -17,6 +17,7 @@ package com.android.quickstep.interaction;
 
 import static com.android.quickstep.interaction.NavBarGestureHandler.NavBarGestureResult.HOME_GESTURE_COMPLETED;
 import static com.android.quickstep.interaction.NavBarGestureHandler.NavBarGestureResult.HOME_NOT_STARTED_TOO_FAR_FROM_EDGE;
+import static com.android.quickstep.interaction.NavBarGestureHandler.NavBarGestureResult.HOME_OR_OVERVIEW_CANCELLED;
 import static com.android.quickstep.interaction.NavBarGestureHandler.NavBarGestureResult.HOME_OR_OVERVIEW_NOT_STARTED_WRONG_SWIPE_DIRECTION;
 import static com.android.quickstep.interaction.NavBarGestureHandler.NavBarGestureResult.OVERVIEW_GESTURE_COMPLETED;
 import static com.android.quickstep.interaction.NavBarGestureHandler.NavBarGestureResult.OVERVIEW_NOT_STARTED_TOO_FAR_FROM_EDGE;
@@ -24,11 +25,14 @@ import static com.android.quickstep.interaction.NavBarGestureHandler.NavBarGestu
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Point;
+import android.graphics.PointF;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.View;
 import android.view.View.OnTouchListener;
+
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.ResourceUtils;
 import com.android.quickstep.SysUINavigationMode.Mode;
@@ -36,7 +40,8 @@ import com.android.quickstep.util.NavBarPosition;
 import com.android.quickstep.util.TriggerSwipeUpTouchTracker;
 
 /** Utility class to handle home gestures. */
-public class NavBarGestureHandler implements OnTouchListener {
+public class NavBarGestureHandler implements OnTouchListener,
+        TriggerSwipeUpTouchTracker.OnSwipeUpListener {
 
     private static final String LOG_TAG = "NavBarGestureHandler";
 
@@ -44,6 +49,7 @@ public class NavBarGestureHandler implements OnTouchListener {
     private final TriggerSwipeUpTouchTracker mSwipeUpTouchTracker;
     private int mBottomGestureHeight;
     private boolean mTouchCameFromNavBar;
+    private float mDownY;
     private NavBarGestureAttemptCallback mGestureCallback;
 
     NavBarGestureHandler(Context context) {
@@ -55,10 +61,11 @@ public class NavBarGestureHandler implements OnTouchListener {
             displayRotation = display.getRotation();
             display.getRealSize(mDisplaySize);
         }
+        mDownY = mDisplaySize.y;
         mSwipeUpTouchTracker =
                 new TriggerSwipeUpTouchTracker(context, true /*disableHorizontalSwipe*/,
                         new NavBarPosition(Mode.NO_BUTTON, displayRotation),
-                        null /*onInterceptTouch*/, this::onSwipeUp);
+                        null /*onInterceptTouch*/, this);
 
         final Resources resources = context.getResources();
         mBottomGestureHeight =
@@ -73,16 +80,26 @@ public class NavBarGestureHandler implements OnTouchListener {
         mGestureCallback = null;
     }
 
-    private void onSwipeUp(boolean wasFling) {
+    @Override
+    public void onSwipeUp(boolean wasFling, PointF finalVelocity) {
         if (mGestureCallback == null) {
             return;
         }
+        finalVelocity.set(finalVelocity.x / 1000, finalVelocity.y / 1000);
         if (mTouchCameFromNavBar) {
             mGestureCallback.onNavBarGestureAttempted(wasFling
-                    ? HOME_GESTURE_COMPLETED : OVERVIEW_GESTURE_COMPLETED);
+                    ? HOME_GESTURE_COMPLETED : OVERVIEW_GESTURE_COMPLETED, finalVelocity);
         } else {
             mGestureCallback.onNavBarGestureAttempted(wasFling
-                    ? HOME_NOT_STARTED_TOO_FAR_FROM_EDGE : OVERVIEW_NOT_STARTED_TOO_FAR_FROM_EDGE);
+                    ? HOME_NOT_STARTED_TOO_FAR_FROM_EDGE : OVERVIEW_NOT_STARTED_TOO_FAR_FROM_EDGE,
+                    finalVelocity);
+        }
+    }
+
+    @Override
+    public void onSwipeUpCancelled() {
+        if (mGestureCallback != null) {
+            mGestureCallback.onNavBarGestureAttempted(HOME_OR_OVERVIEW_CANCELLED, new PointF());
         }
     }
 
@@ -91,14 +108,21 @@ public class NavBarGestureHandler implements OnTouchListener {
         int action = motionEvent.getAction();
         boolean intercepted = mSwipeUpTouchTracker.interceptedTouch();
         if (action == MotionEvent.ACTION_DOWN) {
-            mTouchCameFromNavBar = motionEvent.getRawY() >= mDisplaySize.y - mBottomGestureHeight;
+            mDownY = motionEvent.getY();
+            mTouchCameFromNavBar = mDownY >= mDisplaySize.y - mBottomGestureHeight;
+            if (!mTouchCameFromNavBar) {
+                mGestureCallback.setNavBarGestureProgress(null);
+            }
             mSwipeUpTouchTracker.init();
         } else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
             if (mGestureCallback != null && !intercepted && mTouchCameFromNavBar) {
                 mGestureCallback.onNavBarGestureAttempted(
-                        HOME_OR_OVERVIEW_NOT_STARTED_WRONG_SWIPE_DIRECTION);
+                        HOME_OR_OVERVIEW_NOT_STARTED_WRONG_SWIPE_DIRECTION, new PointF());
                 intercepted = true;
             }
+        }
+        if (mTouchCameFromNavBar && mGestureCallback != null) {
+            mGestureCallback.setNavBarGestureProgress(motionEvent.getY() - mDownY);
         }
         mSwipeUpTouchTracker.onMotionEvent(motionEvent);
         return intercepted;
@@ -110,12 +134,16 @@ public class NavBarGestureHandler implements OnTouchListener {
         OVERVIEW_GESTURE_COMPLETED,
         HOME_NOT_STARTED_TOO_FAR_FROM_EDGE,
         OVERVIEW_NOT_STARTED_TOO_FAR_FROM_EDGE,
-        HOME_OR_OVERVIEW_NOT_STARTED_WRONG_SWIPE_DIRECTION  // Side swipe on nav bar.
+        HOME_OR_OVERVIEW_NOT_STARTED_WRONG_SWIPE_DIRECTION,  // Side swipe on nav bar.
+        HOME_OR_OVERVIEW_CANCELLED
     }
 
     /** Callback to let the UI react to attempted nav bar gestures. */
     interface NavBarGestureAttemptCallback {
         /** Called whenever any touch is completed. */
-        void onNavBarGestureAttempted(NavBarGestureResult result);
+        void onNavBarGestureAttempted(NavBarGestureResult result, PointF finalVelocity);
+
+        /** Indicates how far a touch originating in the nav bar has moved from the nav bar. */
+        void setNavBarGestureProgress(@Nullable Float displacement);
     }
 }

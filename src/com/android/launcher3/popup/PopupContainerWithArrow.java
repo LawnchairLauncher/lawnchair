@@ -16,6 +16,7 @@
 
 package com.android.launcher3.popup;
 
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_SHORTCUTS;
 import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.Utilities.squaredTouchSlop;
 import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
@@ -61,6 +62,7 @@ import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.notification.NotificationInfo;
 import com.android.launcher3.notification.NotificationItemView;
 import com.android.launcher3.notification.NotificationKeyData;
@@ -675,8 +677,10 @@ public class PopupContainerWithArrow<T extends BaseDraggingActivity> extends Arr
             iconShift.y = mIconLastTouchPos.y - mLauncher.getDeviceProfile().iconSizePx;
 
             DraggableView draggableView = DraggableView.ofType(DraggableView.DRAGGABLE_ICON);
+            WorkspaceItemInfo itemInfo = sv.getFinalInfo();
+            itemInfo.container = CONTAINER_SHORTCUTS;
             DragView dv = mLauncher.getWorkspace().beginDragShared(sv.getIconView(), draggableView,
-                    mContainer, sv.getFinalInfo(),
+                    mContainer, itemInfo,
                     new ShortcutDragPreviewProvider(sv.getIconView(), iconShift),
                     new DragOptions());
             dv.animateShift(-iconShift.x, -iconShift.y);

@@ -45,8 +45,6 @@ import java.lang.annotation.RetentionPolicy;
 public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayout
         implements OnClickListener {
 
-    public static final long VISIBILITY_TRANSITION_DURATION_MS = 80;
-
     @IntDef(flag = true, value = {
             HIDDEN_UNSUPPORTED_NAVIGATION,
             HIDDEN_DISABLED_FEATURE,
