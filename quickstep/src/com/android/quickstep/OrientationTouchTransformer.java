@@ -292,10 +292,16 @@ class OrientationTouchTransformer {
 
                 for (int i = 0; i < MAX_ORIENTATIONS; i++) {
                     OrientationRectF rect = mSwipeTouchRegions.get(i);
+                    if (TestProtocol.sDebugTracing) {
+                        Log.d(TestProtocol.NO_SWIPE_TO_HOME, "transform:DOWN, rect=" + rect);
+                    }
                     if (rect == null) {
                         continue;
                     }
                     if (rect.applyTransform(event, false)) {
+                        if (TestProtocol.sDebugTracing) {
+                            Log.d(TestProtocol.NO_SWIPE_TO_HOME, "setting mLastRectTouched");
+                        }
                         mLastRectTouched = rect;
                         mLastRectRotation = rect.mRotation;
                         if (mEnableMultipleRegions && mCurrentDisplayRotation == mLastRectRotation) {
