@@ -52,6 +52,7 @@ public class HotseatEduController {
 
     private final Launcher mLauncher;
     private final Hotseat mHotseat;
+    private final HotseatRestoreHelper mRestoreHelper;
     private List<WorkspaceItemInfo> mPredictedApps;
     private HotseatEduDialog mActiveDialog;
 
@@ -59,9 +60,10 @@ public class HotseatEduController {
     private IntArray mNewScreens = null;
     private Runnable mOnOnboardingComplete;
 
-    HotseatEduController(Launcher launcher, Runnable runnable) {
+    HotseatEduController(Launcher launcher, HotseatRestoreHelper restoreHelper, Runnable runnable) {
         mLauncher = launcher;
         mHotseat = launcher.getHotseat();
+        mRestoreHelper = restoreHelper;
         mOnOnboardingComplete = runnable;
     }
 
@@ -69,11 +71,14 @@ public class HotseatEduController {
      * Checks what type of migration should be used and migrates hotseat
      */
     void migrate() {
+        mRestoreHelper.createBackup();
         if (FeatureFlags.HOTSEAT_MIGRATE_TO_FOLDER.get()) {
             migrateToFolder();
         } else {
             migrateHotseatWhole();
         }
+        Snackbar.show(mLauncher, R.string.hotsaet_tip_prediction_enabled, R.string.hotseat_turn_off,
+                null, () -> mLauncher.startActivity(new Intent(SETTINGS_ACTION)));
     }
 
     /**
@@ -84,7 +89,6 @@ public class HotseatEduController {
      */
     private int migrateToFolder() {
         ArrayDeque<FolderInfo> folders = new ArrayDeque<>();
-
         ArrayList<WorkspaceItemInfo> putIntoFolder = new ArrayList<>();
 
         //separate folders and items that can get in folders
