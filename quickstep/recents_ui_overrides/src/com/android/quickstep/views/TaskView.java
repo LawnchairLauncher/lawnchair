@@ -30,6 +30,7 @@ import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.TOUCH_RESPONSE_INTERPOLATOR;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_ICON_TAP_OR_LONGPRESS;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_LAUNCH_TAP;
 
 import android.animation.Animator;
@@ -424,6 +425,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     private boolean showTaskMenu(int action) {
         getRecentsView().snapToPage(getRecentsView().indexOfChild(this));
         mMenuView = TaskMenuView.showForTask(this);
+        mActivity.getStatsLogManager().log(LAUNCHER_TASK_ICON_TAP_OR_LONGPRESS, buildProto());
         UserEventDispatcher.newInstance(getContext()).logActionOnItem(action, Direction.NONE,
                 LauncherLogProto.ItemType.TASK_ICON);
         if (mMenuView != null) {
