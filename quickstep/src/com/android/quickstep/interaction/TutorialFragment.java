@@ -37,11 +37,6 @@ import com.android.quickstep.interaction.TutorialController.TutorialType;
 abstract class TutorialFragment extends Fragment implements OnTouchListener {
 
     private static final String LOG_TAG = "TutorialFragment";
-    private static final String SYSTEM_NAVIGATION_SETTING_INTENT =
-            "#Intent;action=com.android.settings.SEARCH_RESULT_TRAMPOLINE;S"
-                    + ".:settings:fragment_args_key=gesture_system_navigation_input_summary;S"
-                    + ".:settings:show_fragment=com.android.settings.gestures"
-                    + ".SystemNavigationGestureSettings;end";
     static final String KEY_TUTORIAL_TYPE = "tutorial_type";
 
     TutorialType mTutorialType;
