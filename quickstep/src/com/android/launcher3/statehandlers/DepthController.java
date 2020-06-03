@@ -102,11 +102,30 @@ public class DepthController implements StateHandler<LauncherState> {
      */
     private float mDepth;
 
+    private View.OnAttachStateChangeListener mOnAttachListener;
+
     public DepthController(Launcher l) {
         mLauncher = l;
     }
 
     private void ensureDependencies() {
+        if (mLauncher.getRootView() != null && mOnAttachListener == null) {
+            mOnAttachListener = new View.OnAttachStateChangeListener() {
+                @Override
+                public void onViewAttachedToWindow(View view) {
+                    // To handle the case where window token is invalid during last setDepth call.
+                    IBinder windowToken = mLauncher.getRootView().getWindowToken();
+                    if (windowToken != null) {
+                        mWallpaperManager.setWallpaperZoomOut(windowToken, mDepth);
+                    }
+                }
+
+                @Override
+                public void onViewDetachedFromWindow(View view) {
+                }
+            };
+            mLauncher.getRootView().addOnAttachStateChangeListener(mOnAttachListener);
+        }
         if (mWallpaperManager != null) {
             return;
         }
@@ -184,10 +203,10 @@ public class DepthController implements StateHandler<LauncherState> {
             return;
         }
 
-        mDepth = depthF;
         if (mSurface == null || !mSurface.isValid()) {
             return;
         }
+        mDepth = depthF;
         ensureDependencies();
         IBinder windowToken = mLauncher.getRootView().getWindowToken();
         if (windowToken != null) {

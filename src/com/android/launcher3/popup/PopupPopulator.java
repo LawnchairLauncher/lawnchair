@@ -16,6 +16,8 @@
 
 package com.android.launcher3.popup;
 
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_SHORTCUTS;
+
 import android.content.ComponentName;
 import android.content.pm.ShortcutInfo;
 import android.os.Handler;
@@ -160,6 +162,7 @@ public class PopupPopulator {
                 final WorkspaceItemInfo si = new WorkspaceItemInfo(shortcut, launcher);
                 cache.getUnbadgedShortcutIcon(si, shortcut);
                 si.rank = i;
+                si.container = CONTAINER_SHORTCUTS;
 
                 final DeepShortcutView view = shortcutViews.get(i);
                 uiHandler.post(() -> view.applyShortcutInfo(si, shortcut, container));

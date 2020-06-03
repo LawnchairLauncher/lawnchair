@@ -65,10 +65,10 @@ public class StatsLogCompatManager extends StatsLogManager {
     }
 
     /**
-     * Logs a {@link LauncherEvent}.
+     * Logs a {@link EventEnum}.
      */
     @Override
-    public void log(LauncherEvent event) {
+    public void log(EventEnum event) {
         log(event, DEFAULT_INSTANCE_ID, LauncherAtom.ItemInfo.getDefaultInstance());
     }
 
@@ -76,7 +76,7 @@ public class StatsLogCompatManager extends StatsLogManager {
      * Logs an event and accompanying {@link InstanceId}.
      */
     @Override
-    public void log(LauncherEvent event, InstanceId instanceId) {
+    public void log(EventEnum event, InstanceId instanceId) {
         log(event, instanceId, LauncherAtom.ItemInfo.getDefaultInstance());
     }
 
@@ -84,7 +84,7 @@ public class StatsLogCompatManager extends StatsLogManager {
      * Logs an event and accompanying {@link ItemInfo}.
      */
     @Override
-    public void log(LauncherEvent event, @Nullable LauncherAtom.ItemInfo info) {
+    public void log(EventEnum event, @Nullable LauncherAtom.ItemInfo info) {
         log(event, DEFAULT_INSTANCE_ID, info);
     }
 
@@ -92,7 +92,7 @@ public class StatsLogCompatManager extends StatsLogManager {
      * Logs an event and accompanying {@link InstanceId} and {@link LauncherAtom.ItemInfo}.
      */
     @Override
-    public void log(LauncherEvent event, InstanceId instanceId,
+    public void log(EventEnum event, InstanceId instanceId,
             @Nullable LauncherAtom.ItemInfo info) {
         logInternal(event, instanceId, info,
                 LAUNCHER_UICHANGED__DST_STATE__HOME,
@@ -102,14 +102,17 @@ public class StatsLogCompatManager extends StatsLogManager {
     /**
      * Logs an event and accompanying {@link InstanceId} and {@link LauncherAtom.ItemInfo}.
      */
-    private void logInternal(LauncherEvent event, InstanceId instanceId,
+    private void logInternal(EventEnum event, InstanceId instanceId,
             @Nullable LauncherAtom.ItemInfo info, int startState, int endState) {
         info = info == null ? LauncherAtom.ItemInfo.getDefaultInstance() : info;
 
         if (IS_VERBOSE) {
+            String name = (event instanceof LauncherEvent) ? ((LauncherEvent) event).name() :
+                    event.getId() + "";
+
             Log.d(TAG, instanceId == DEFAULT_INSTANCE_ID
-                    ? String.format("\n%s\n%s", event.name(), info)
-                    : String.format("%s(InstanceId:%s)\n%s", event.name(), instanceId, info));
+                    ? String.format("\n%s\n%s", name, info)
+                    : String.format("%s(InstanceId:%s)\n%s", name, instanceId, info));
         }
 
         if (!Utilities.ATLEAST_R) {
