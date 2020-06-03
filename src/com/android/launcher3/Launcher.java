@@ -1397,6 +1397,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             if (!internalStateHandled) {
                 // In all these cases, only animate if we're already on home
                 AbstractFloatingView.closeAllOpenViews(this, isStarted());
+                UiFactory.closeSystemWindows();
 
                 if (!isInState(NORMAL)) {
                     // Only change state, if not already the same. This prevents cancelling any

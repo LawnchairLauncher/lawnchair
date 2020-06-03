@@ -28,6 +28,7 @@ import static com.android.launcher3.allapps.DiscoveryBounce.HOME_BOUNCE_COUNT;
 import static com.android.launcher3.allapps.DiscoveryBounce.HOME_BOUNCE_SEEN;
 import static com.android.launcher3.allapps.DiscoveryBounce.SHELF_BOUNCE_COUNT;
 import static com.android.launcher3.allapps.DiscoveryBounce.SHELF_BOUNCE_SEEN;
+import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
@@ -58,6 +59,7 @@ import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.SysUINavigationMode.NavigationModeChangeListener;
 import com.android.quickstep.util.RemoteFadeOutAnimationListener;
 import com.android.systemui.shared.system.ActivityCompat;
+import com.android.systemui.shared.system.ActivityManagerWrapper;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
@@ -250,5 +252,11 @@ public class UiFactory extends RecentsUiFactory {
     public static Person[] getPersons(ShortcutInfo si) {
         Person[] persons = si.getPersons();
         return persons == null ? Utilities.EMPTY_PERSON_ARRAY : persons;
+    }
+
+    /** Closes system windows. */
+    public static void closeSystemWindows() {
+        ActivityManagerWrapper.getInstance()
+            .closeSystemWindows(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
     }
 }
