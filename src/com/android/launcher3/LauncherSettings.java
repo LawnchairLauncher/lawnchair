@@ -100,6 +100,11 @@ public class LauncherSettings {
         public static final String BACKUP_TABLE_NAME = "favorites_bakup";
 
         /**
+         * Backup table created when user hotseat is moved to workspace for hybrid hotseat
+         */
+        public static final String HYBRID_HOTSEAT_BACKUP_TABLE = "hotseat_restore_backup";
+
+        /**
          * Temporary table used specifically for grid migrations during wallpaper preview
          */
         public static final String PREVIEW_TABLE_NAME = "favorites_preview";
@@ -332,6 +337,8 @@ public class LauncherSettings {
         public static final String METHOD_NEW_TRANSACTION = "new_db_transaction";
 
         public static final String METHOD_REFRESH_BACKUP_TABLE = "refresh_backup_table";
+
+        public static final String METHOD_REFRESH_HOTSEAT_RESTORE_TABLE = "restore_hotseat_table";
 
         public static final String METHOD_RESTORE_BACKUP_TABLE = "restore_backup_table";
 

@@ -128,6 +128,32 @@ public class GridBackupTable {
     }
 
     /**
+     * Creates a new table and populates with copy of Favorites.TABLE_NAME
+     */
+    public void createCustomBackupTable(String tableName) {
+        long profileId = UserCache.INSTANCE.get(mContext).getSerialNumberForUser(
+                Process.myUserHandle());
+        copyTable(mDb, Favorites.TABLE_NAME, tableName, profileId);
+        encodeDBProperties(0);
+    }
+
+    /**
+     *
+     * Restores the contents of a custom table to Favorites.TABLE_NAME
+     */
+
+    public void restoreFromCustomBackupTable(String tableName, boolean dropAfterUse) {
+        if (!tableExists(mDb, tableName)) {
+            return;
+        }
+        long userSerial = UserCache.INSTANCE.get(mContext).getSerialNumberForUser(
+                Process.myUserHandle());
+        copyTable(mDb, tableName, Favorites.TABLE_NAME, userSerial);
+        if (dropAfterUse) {
+            dropTable(mDb, tableName);
+        }
+    }
+    /**
      * Copy valid grid entries from one table to another.
      */
     private static void copyTable(SQLiteDatabase db, String from, String to, long userSerial) {

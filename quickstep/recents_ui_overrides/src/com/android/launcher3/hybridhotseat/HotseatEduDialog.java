@@ -16,7 +16,8 @@
 package com.android.launcher3.hybridhotseat;
 
 import static com.android.launcher3.logging.LoggerUtils.newLauncherEvent;
-import static com.android.launcher3.userevent.nano.LauncherLogProto.ControlType.HYBRID_HOTSEAT_CANCELED;
+import static com.android.launcher3.userevent.nano.LauncherLogProto.ControlType
+        .HYBRID_HOTSEAT_CANCELED;
 
 import android.animation.PropertyValuesHolder;
 import android.content.Context;
