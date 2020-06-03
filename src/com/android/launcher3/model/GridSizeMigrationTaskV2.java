@@ -33,6 +33,7 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Point;
 import android.text.TextUtils;
+import android.util.ArrayMap;
 import android.util.Log;
 
 import androidx.annotation.VisibleForTesting;
@@ -55,6 +56,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -226,9 +228,8 @@ public class GridSizeMigrationTaskV2 {
             if (DEBUG) {
                 Log.d(TAG, "Migrating " + screenId);
             }
-            List<DbEntry> entries = mDestReader.loadWorkspaceEntries(screenId);
             GridPlacementSolution workspaceSolution = new GridPlacementSolution(mDb, mSrcReader,
-                    mDestReader, mContext, entries, screenId, mTrgX, mTrgY, mWorkspaceDiff);
+                    mDestReader, mContext, screenId, mTrgX, mTrgY, mWorkspaceDiff);
             workspaceSolution.find();
             if (mWorkspaceDiff.isEmpty()) {
                 break;
@@ -238,8 +239,7 @@ public class GridSizeMigrationTaskV2 {
         int screenId = mDestReader.mLastScreenId + 1;
         while (!mWorkspaceDiff.isEmpty()) {
             GridPlacementSolution workspaceSolution = new GridPlacementSolution(mDb, mSrcReader,
-                    mDestReader, mContext, new ArrayList<>(), screenId, mTrgX, mTrgY,
-                    mWorkspaceDiff);
+                    mDestReader, mContext, screenId, mTrgX, mTrgY, mWorkspaceDiff);
             workspaceSolution.find();
             screenId++;
         }
@@ -352,8 +352,7 @@ public class GridSizeMigrationTaskV2 {
         private int mNextStartY;
 
         GridPlacementSolution(SQLiteDatabase db, DbReader srcReader, DbReader destReader,
-                Context context, List<DbEntry> placedWorkspaceItems, int screenId, int trgX,
-                int trgY, List<DbEntry> itemsToPlace) {
+                Context context, int screenId, int trgX, int trgY, List<DbEntry> itemsToPlace) {
             mDb = db;
             mSrcReader = srcReader;
             mDestReader = destReader;
@@ -364,8 +363,11 @@ public class GridSizeMigrationTaskV2 {
             mTrgY = trgY;
             mNextStartX = 0;
             mNextStartY = mTrgY - 1;
-            for (DbEntry entry : placedWorkspaceItems) {
-                mOccupied.markCells(entry, true);
+            List<DbEntry> existedEntries = mDestReader.mWorkspaceEntriesByScreenId.get(screenId);
+            if (existedEntries != null) {
+                for (DbEntry entry : existedEntries) {
+                    mOccupied.markCells(entry, true);
+                }
             }
             mItemsToPlace = itemsToPlace;
         }
@@ -386,6 +388,11 @@ public class GridSizeMigrationTaskV2 {
             }
         }
 
+        /**
+         * Search for the next possible placement of an icon. (mNextStartX, mNextStartY) serves as
+         * a memoization of last placement, we can start our search for next placement from there
+         * to speed up the search.
+         */
         private boolean findPlacement(DbEntry entry) {
             for (int y = mNextStartY; y >= 0; y--) {
                 for (int x = mNextStartX; x < mTrgX; x++) {
@@ -406,6 +413,7 @@ public class GridSizeMigrationTaskV2 {
                         return true;
                     }
                 }
+                mNextStartX = 0;
             }
             return false;
         }
@@ -475,6 +483,8 @@ public class GridSizeMigrationTaskV2 {
 
         private final ArrayList<DbEntry> mHotseatEntries = new ArrayList<>();
         private final ArrayList<DbEntry> mWorkspaceEntries = new ArrayList<>();
+        private final Map<Integer, ArrayList<DbEntry>> mWorkspaceEntriesByScreenId =
+                new ArrayMap<>();
 
         DbReader(SQLiteDatabase db, String tableName, Context context,
                 HashSet<String> validPackages, int hotseatSize) {
@@ -564,25 +574,6 @@ public class GridSizeMigrationTaskV2 {
             return loadWorkspaceEntries(c);
         }
 
-        protected ArrayList<DbEntry> loadWorkspaceEntries(int screen) {
-            Cursor c = queryWorkspace(
-                    new String[]{
-                            LauncherSettings.Favorites._ID,                  // 0
-                            LauncherSettings.Favorites.ITEM_TYPE,            // 1
-                            LauncherSettings.Favorites.SCREEN,               // 2
-                            LauncherSettings.Favorites.CELLX,                // 3
-                            LauncherSettings.Favorites.CELLY,                // 4
-                            LauncherSettings.Favorites.SPANX,                // 5
-                            LauncherSettings.Favorites.SPANY,                // 6
-                            LauncherSettings.Favorites.INTENT,               // 7
-                            LauncherSettings.Favorites.APPWIDGET_PROVIDER,   // 8
-                            LauncherSettings.Favorites.APPWIDGET_ID},        // 9
-                    LauncherSettings.Favorites.CONTAINER + " = "
-                            + LauncherSettings.Favorites.CONTAINER_DESKTOP
-                            + " AND " + LauncherSettings.Favorites.SCREEN + " = " + screen);
-            return loadWorkspaceEntries(c);
-        }
-
         private ArrayList<DbEntry> loadWorkspaceEntries(Cursor c) {
             final int indexId = c.getColumnIndexOrThrow(LauncherSettings.Favorites._ID);
             final int indexItemType = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ITEM_TYPE);
@@ -660,6 +651,10 @@ public class GridSizeMigrationTaskV2 {
                     continue;
                 }
                 mWorkspaceEntries.add(entry);
+                if (!mWorkspaceEntriesByScreenId.containsKey(entry.screenId)) {
+                    mWorkspaceEntriesByScreenId.put(entry.screenId, new ArrayList<>());
+                }
+                mWorkspaceEntriesByScreenId.get(entry.screenId).add(entry);
             }
             removeEntryFromDb(mDb, mTableName, entriesToRemove);
             c.close();
