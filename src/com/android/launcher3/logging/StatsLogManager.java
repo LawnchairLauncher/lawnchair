@@ -32,7 +32,7 @@ import com.android.launcher3.util.ResourceBasedOverride;
  */
 public class StatsLogManager implements ResourceBasedOverride {
 
-    interface EventEnum {
+    public interface EventEnum {
         int getId();
     }
 
@@ -63,6 +63,18 @@ public class StatsLogManager implements ResourceBasedOverride {
                 + "new/same value.")
         LAUNCHER_FOLDER_LABEL_UPDATED(460),
 
+        @UiEvent(doc = "User long pressed on the workspace empty space.")
+        LAUNCHER_WORKSPACE_LONGPRESS(461),
+
+        @UiEvent(doc = "User tapped or long pressed on a wallpaper icon inside launcher settings.")
+        LAUNCHER_WALLPAPER_BUTTON_TAP_OR_LONGPRESS(462),
+
+        @UiEvent(doc = "User tapped or long pressed on settings icon inside launcher settings.")
+        LAUNCHER_SETTINGS_BUTTON_TAP_OR_LONGPRESS(463),
+
+        @UiEvent(doc = "User tapped or long pressed on widget tray icon inside launcher settings.")
+        LAUNCHER_WIDGETSTRAY_BUTTON_TAP_OR_LONGPRESS(464),
+
         @UiEvent(doc = "A dragged item is dropped on 'Remove' button in the target bar")
         LAUNCHER_ITEM_DROPPED_ON_REMOVE(465),
 
@@ -82,7 +94,15 @@ public class StatsLogManager implements ResourceBasedOverride {
 
         @UiEvent(doc = "User cancelled uninstalling the package after dropping on "
                 + "the icon onto 'Uninstall' button in the target bar")
-        LAUNCHER_ITEM_UNINSTALL_CANCELLED(470);
+        LAUNCHER_ITEM_UNINSTALL_CANCELLED(470),
+
+        @UiEvent(doc = "User opened package specific widgets list by tapping on widgets system "
+                + "shortcut within longpress popup window.")
+        LAUNCHER_SYSTEM_SHORTCUT_WIDGETS_TAP(514),
+
+        @UiEvent(doc = "User opened app info of the package by tapping on appinfo system shortcut "
+                + "within longpress popup window.")
+        LAUNCHER_SYSTEM_SHORTCUT_APP_INFO_TAP(515);
         // ADD MORE
 
         private final int mId;
@@ -113,27 +133,27 @@ public class StatsLogManager implements ResourceBasedOverride {
     }
 
     /**
-     * Logs a {@link LauncherEvent}.
+     * Logs a {@link EventEnum}.
      */
-    public void log(LauncherEvent event) {
+    public void log(EventEnum event) {
     }
 
     /**
      * Logs an event and accompanying {@link InstanceId}.
      */
-    public void log(LauncherEvent event, InstanceId instanceId) {
+    public void log(EventEnum event, InstanceId instanceId) {
     }
 
     /**
      * Logs an event and accompanying {@link ItemInfo}.
      */
-    public void log(LauncherEvent event, @Nullable ItemInfo info) {
+    public void log(EventEnum event, @Nullable ItemInfo itemInfo) {
     }
 
     /**
      * Logs an event and accompanying {@link InstanceId} and {@link ItemInfo}.
      */
-    public void log(LauncherEvent event, InstanceId instanceId, @Nullable ItemInfo info) {
+    public void log(EventEnum event, InstanceId instanceId, @Nullable ItemInfo itemInfo) {
     }
 
     /**
