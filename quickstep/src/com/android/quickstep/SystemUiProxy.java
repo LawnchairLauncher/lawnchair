@@ -31,6 +31,7 @@ import android.view.MotionEvent;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.systemui.shared.recents.IPinnedStackAnimationListener;
 import com.android.systemui.shared.recents.ISystemUiProxy;
+import com.android.systemui.shared.recents.model.Task;
 
 /**
  * Holds the reference to SystemUI.
@@ -365,5 +366,9 @@ public class SystemUiProxy implements ISystemUiProxy {
                 Log.w(TAG, "Failed call stopOneHandedMode", e);
             }
         }
+    }
+  
+    public void handleImageBundleAsScreenshot(Bundle screenImageBundle, Rect locationInScreen,
+            Insets visibleInsets, Task.TaskKey task) {
     }
 }

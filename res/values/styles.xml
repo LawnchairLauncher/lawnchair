@@ -81,7 +81,6 @@
         <item name="folderFillColor">#CDFFFFFF</item>
         <item name="folderIconBorderColor">#FF80868B</item>
         <item name="folderTextColor">?attr/workspaceTextColor</item>
-
     </style>
 
     <style name="LauncherTheme.Dark" parent="@style/LauncherTheme">
