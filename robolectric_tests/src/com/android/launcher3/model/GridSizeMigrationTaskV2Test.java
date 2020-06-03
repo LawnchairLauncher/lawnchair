@@ -59,6 +59,17 @@ public class GridSizeMigrationTaskV2Test {
     private HashSet<String> mValidPackages;
     private InvariantDeviceProfile mIdp;
 
+    private final String testPackage1 = "com.android.launcher3.validpackage1";
+    private final String testPackage2 = "com.android.launcher3.validpackage2";
+    private final String testPackage3 = "com.android.launcher3.validpackage3";
+    private final String testPackage4 = "com.android.launcher3.validpackage4";
+    private final String testPackage5 = "com.android.launcher3.validpackage5";
+    private final String testPackage6 = "com.android.launcher3.validpackage6";
+    private final String testPackage7 = "com.android.launcher3.validpackage7";
+    private final String testPackage8 = "com.android.launcher3.validpackage8";
+    private final String testPackage9 = "com.android.launcher3.validpackage9";
+    private final String testPackage10 = "com.android.launcher3.validpackage10";
+
     @Before
     public void setUp() {
         mModelHelper = new LauncherModelHelper();
@@ -67,6 +78,17 @@ public class GridSizeMigrationTaskV2Test {
 
         mValidPackages = new HashSet<>();
         mValidPackages.add(TEST_PACKAGE);
+        mValidPackages.add(testPackage1);
+        mValidPackages.add(testPackage2);
+        mValidPackages.add(testPackage3);
+        mValidPackages.add(testPackage4);
+        mValidPackages.add(testPackage5);
+        mValidPackages.add(testPackage6);
+        mValidPackages.add(testPackage7);
+        mValidPackages.add(testPackage8);
+        mValidPackages.add(testPackage9);
+        mValidPackages.add(testPackage10);
+
         mIdp = InvariantDeviceProfile.INSTANCE.get(mContext);
 
         long userSerial = UserCache.INSTANCE.get(mContext).getSerialNumberForUser(
@@ -78,20 +100,6 @@ public class GridSizeMigrationTaskV2Test {
 
     @Test
     public void testMigration() {
-        final String testPackage1 = "com.android.launcher3.validpackage1";
-        final String testPackage2 = "com.android.launcher3.validpackage2";
-        final String testPackage3 = "com.android.launcher3.validpackage3";
-        final String testPackage4 = "com.android.launcher3.validpackage4";
-        final String testPackage5 = "com.android.launcher3.validpackage5";
-        final String testPackage7 = "com.android.launcher3.validpackage7";
-
-        mValidPackages.add(testPackage1);
-        mValidPackages.add(testPackage2);
-        mValidPackages.add(testPackage3);
-        mValidPackages.add(testPackage4);
-        mValidPackages.add(testPackage5);
-        mValidPackages.add(testPackage7);
-
         int[] srcHotseatItems = {
                 mModelHelper.addItem(APP_ICON, 0, HOTSEAT, 0, 0, testPackage1, 1, TMP_CONTENT_URI),
                 mModelHelper.addItem(SHORTCUT, 1, HOTSEAT, 0, 0, testPackage2, 2, TMP_CONTENT_URI),
@@ -100,6 +108,10 @@ public class GridSizeMigrationTaskV2Test {
                 mModelHelper.addItem(APP_ICON, 4, HOTSEAT, 0, 0, testPackage4, 4, TMP_CONTENT_URI),
         };
         mModelHelper.addItem(APP_ICON, 0, DESKTOP, 2, 2, testPackage5, 5, TMP_CONTENT_URI);
+        mModelHelper.addItem(APP_ICON, 0, DESKTOP, 2, 3, testPackage6, 6, TMP_CONTENT_URI);
+        mModelHelper.addItem(APP_ICON, 0, DESKTOP, 4, 1, testPackage8, 8, TMP_CONTENT_URI);
+        mModelHelper.addItem(APP_ICON, 0, DESKTOP, 4, 2, testPackage9, 9, TMP_CONTENT_URI);
+        mModelHelper.addItem(APP_ICON, 0, DESKTOP, 4, 3, testPackage10, 10, TMP_CONTENT_URI);
 
         int[] destHotseatItems = {
                 -1,
@@ -108,21 +120,24 @@ public class GridSizeMigrationTaskV2Test {
         };
         mModelHelper.addItem(APP_ICON, 0, DESKTOP, 2, 2, testPackage7);
 
-        mIdp.numHotseatIcons = 3;
-        mIdp.numColumns = 3;
-        mIdp.numRows = 3;
+        mIdp.numHotseatIcons = 4;
+        mIdp.numColumns = 4;
+        mIdp.numRows = 4;
         GridSizeMigrationTaskV2.DbReader srcReader = new GridSizeMigrationTaskV2.DbReader(mDb,
-                LauncherSettings.Favorites.TMP_TABLE, mContext, mValidPackages, 5);
+                LauncherSettings.Favorites.TMP_TABLE, mContext, mValidPackages,
+                srcHotseatItems.length);
         GridSizeMigrationTaskV2.DbReader destReader = new GridSizeMigrationTaskV2.DbReader(mDb,
-                LauncherSettings.Favorites.TABLE_NAME, mContext, mValidPackages, 3);
+                LauncherSettings.Favorites.TABLE_NAME, mContext, mValidPackages,
+                mIdp.numHotseatIcons);
         GridSizeMigrationTaskV2 task = new GridSizeMigrationTaskV2(mContext, mDb, srcReader,
-                destReader, 3, new Point(mIdp.numColumns, mIdp.numRows));
+                destReader, mIdp.numHotseatIcons, new Point(mIdp.numColumns, mIdp.numRows));
         task.migrate();
 
+        // Check hotseat items
         Cursor c = mContext.getContentResolver().query(LauncherSettings.Favorites.CONTENT_URI,
                 new String[]{LauncherSettings.Favorites.SCREEN, LauncherSettings.Favorites.INTENT},
                 "container=" + CONTAINER_HOTSEAT, null, null, null);
-        assertEquals(c.getCount(), 3);
+        assertEquals(c.getCount(), mIdp.numHotseatIcons);
         int screenIndex = c.getColumnIndex(LauncherSettings.Favorites.SCREEN);
         int intentIndex = c.getColumnIndex(LauncherSettings.Favorites.INTENT);
         c.moveToNext();
@@ -134,13 +149,17 @@ public class GridSizeMigrationTaskV2Test {
         c.moveToNext();
         assertEquals(c.getInt(screenIndex), 2);
         assertTrue(c.getString(intentIndex).contains(testPackage3));
+        c.moveToNext();
+        assertEquals(c.getInt(screenIndex), 3);
+        assertTrue(c.getString(intentIndex).contains(testPackage4));
         c.close();
 
+        // Check workspace items
         c = mContext.getContentResolver().query(LauncherSettings.Favorites.CONTENT_URI,
                 new String[]{LauncherSettings.Favorites.CELLX, LauncherSettings.Favorites.CELLY,
                         LauncherSettings.Favorites.INTENT},
                 "container=" + CONTAINER_DESKTOP, null, null, null);
-        assertEquals(c.getCount(), 2);
+        assertEquals(c.getCount(), 6);
         intentIndex = c.getColumnIndex(LauncherSettings.Favorites.INTENT);
         int cellXIndex = c.getColumnIndex(LauncherSettings.Favorites.CELLX);
         int cellYIndex = c.getColumnIndex(LauncherSettings.Favorites.CELLY);
@@ -148,7 +167,23 @@ public class GridSizeMigrationTaskV2Test {
         c.moveToNext();
         assertTrue(c.getString(intentIndex).contains(testPackage7));
         c.moveToNext();
+        assertTrue(c.getString(intentIndex).contains(testPackage6));
+        assertEquals(c.getInt(cellXIndex), 0);
+        assertEquals(c.getInt(cellYIndex), 3);
+        c.moveToNext();
+        assertTrue(c.getString(intentIndex).contains(testPackage10));
+        assertEquals(c.getInt(cellXIndex), 1);
+        assertEquals(c.getInt(cellYIndex), 3);
+        c.moveToNext();
         assertTrue(c.getString(intentIndex).contains(testPackage5));
+        assertEquals(c.getInt(cellXIndex), 2);
+        assertEquals(c.getInt(cellYIndex), 3);
+        c.moveToNext();
+        assertTrue(c.getString(intentIndex).contains(testPackage9));
+        assertEquals(c.getInt(cellXIndex), 3);
+        assertEquals(c.getInt(cellYIndex), 3);
+        c.moveToNext();
+        assertTrue(c.getString(intentIndex).contains(testPackage8));
         assertEquals(c.getInt(cellXIndex), 0);
         assertEquals(c.getInt(cellYIndex), 2);
     }
