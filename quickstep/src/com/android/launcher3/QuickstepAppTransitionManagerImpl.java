@@ -82,6 +82,7 @@ import com.android.quickstep.RemoteAnimationTargets;
 import com.android.quickstep.util.MultiValueUpdateListener;
 import com.android.quickstep.util.RemoteAnimationProvider;
 import com.android.quickstep.util.StaggeredWorkspaceAnim;
+import com.android.quickstep.util.SurfaceTransactionApplier;
 import com.android.systemui.shared.system.ActivityCompat;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.QuickStepContract;
@@ -89,7 +90,6 @@ import com.android.systemui.shared.system.RemoteAnimationAdapterCompat;
 import com.android.systemui.shared.system.RemoteAnimationDefinitionCompat;
 import com.android.systemui.shared.system.RemoteAnimationRunnerCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
-import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
@@ -455,9 +455,9 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
 
         RemoteAnimationTargets openingTargets = new RemoteAnimationTargets(appTargets,
                 wallpaperTargets, MODE_OPENING);
-        SyncRtSurfaceTransactionApplierCompat surfaceApplier =
-                new SyncRtSurfaceTransactionApplierCompat(floatingView);
-        openingTargets.addDependentTransactionApplier(surfaceApplier);
+        SurfaceTransactionApplier surfaceApplier =
+                new SurfaceTransactionApplier(floatingView);
+        openingTargets.addReleaseCheck(surfaceApplier);
 
         // Scale the app icon to take up the entire screen. This simplifies the math when
         // animating the app window position / scale.
@@ -714,8 +714,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
      */
     private Animator getUnlockWindowAnimator(RemoteAnimationTargetCompat[] appTargets,
             RemoteAnimationTargetCompat[] wallpaperTargets) {
-        SyncRtSurfaceTransactionApplierCompat surfaceApplier =
-                new SyncRtSurfaceTransactionApplierCompat(mDragLayer);
+        SurfaceTransactionApplier surfaceApplier = new SurfaceTransactionApplier(mDragLayer);
         ValueAnimator unlockAnimator = ValueAnimator.ofFloat(0, 1);
         unlockAnimator.setDuration(CLOSING_TRANSITION_DURATION_MS);
         float cornerRadius = mDeviceProfile.isMultiWindowMode ? 0 :
@@ -743,8 +742,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
      */
     private Animator getClosingWindowAnimators(RemoteAnimationTargetCompat[] appTargets,
             RemoteAnimationTargetCompat[] wallpaperTargets) {
-        SyncRtSurfaceTransactionApplierCompat surfaceApplier =
-                new SyncRtSurfaceTransactionApplierCompat(mDragLayer);
+        SurfaceTransactionApplier surfaceApplier = new SurfaceTransactionApplier(mDragLayer);
         Matrix matrix = new Matrix();
         Point tmpPos = new Point();
         ValueAnimator closingAnimator = ValueAnimator.ofFloat(0, 1);

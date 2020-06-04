@@ -96,13 +96,23 @@ public class StatsLogManager implements ResourceBasedOverride {
                 + "the icon onto 'Uninstall' button in the target bar")
         LAUNCHER_ITEM_UNINSTALL_CANCELLED(470),
 
+        @UiEvent(doc = "User tapped or long pressed on the task icon(aka package icon) "
+                + "from overview to open task menu.")
+        LAUNCHER_TASK_ICON_TAP_OR_LONGPRESS(517),
+
         @UiEvent(doc = "User opened package specific widgets list by tapping on widgets system "
                 + "shortcut within longpress popup window.")
         LAUNCHER_SYSTEM_SHORTCUT_WIDGETS_TAP(514),
 
         @UiEvent(doc = "User opened app info of the package by tapping on appinfo system shortcut "
                 + "within longpress popup window.")
-        LAUNCHER_SYSTEM_SHORTCUT_APP_INFO_TAP(515);
+        LAUNCHER_SYSTEM_SHORTCUT_APP_INFO_TAP(515),
+
+        @UiEvent(doc = "User tapped on split screen icon on a task menu.")
+        LAUNCHER_SYSTEM_SHORTCUT_SPLIT_SCREEN_TAP(518),
+
+        @UiEvent(doc = "User tapped on free form icon on a task menu.")
+        LAUNCHER_SYSTEM_SHORTCUT_FREE_FORM_TAP(519);
         // ADD MORE
 
         private final int mId;
