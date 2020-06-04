@@ -344,4 +344,20 @@ public class SystemUiProxy implements ISystemUiProxy {
             }
         }
     }
+<<<<<<< HEAD   (e557ba Merging from ub-launcher3-rvc-dev @ build 6552182)
+=======
+
+    @Override
+    public void handleImageBundleAsScreenshot(Bundle screenImageBundle, Rect locationInScreen,
+            Insets visibleInsets, Task.TaskKey task) {
+        if (mSystemUiProxy != null) {
+            try {
+                mSystemUiProxy.handleImageBundleAsScreenshot(screenImageBundle, locationInScreen,
+                        visibleInsets, task);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call handleImageBundleAsScreenshot");
+            }
+        }
+    }
+>>>>>>> CHANGE (03e456 Screenshots - move to new api that uses image bundle.)
 }
