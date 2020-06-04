@@ -19,6 +19,7 @@ import android.content.Context;
 
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.logger.LauncherAtom.ItemInfo;
 import com.android.launcher3.logging.StatsLogUtils.LogStateProvider;
@@ -154,6 +155,13 @@ public class StatsLogManager implements ResourceBasedOverride {
      * Logs an event and accompanying {@link InstanceId} and {@link ItemInfo}.
      */
     public void log(EventEnum event, InstanceId instanceId, @Nullable ItemInfo itemInfo) {
+    }
+
+    /**
+     * Logs an event and accompanying {@link LauncherState}s. If either of the state refers
+     * to workspace state, then use pageIndex to pass in index of workspace.
+     */
+    public void log(EventEnum event, int srcState, int dstState, int pageIndex) {
     }
 
     /**
