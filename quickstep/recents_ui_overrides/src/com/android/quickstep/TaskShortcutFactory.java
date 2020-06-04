@@ -320,6 +320,8 @@ public interface TaskShortcutFactory {
             };
             mTaskView.launchTask(true, resultCallback, Executors.MAIN_EXECUTOR.getHandler());
             dismissTaskMenuView(mTarget);
+            mTarget.getStatsLogManager().log(LauncherEvent.LAUNCHER_SYSTEM_SHORTCUT_PIN_TAP,
+                    mTaskView.buildProto());
         }
     }
 
