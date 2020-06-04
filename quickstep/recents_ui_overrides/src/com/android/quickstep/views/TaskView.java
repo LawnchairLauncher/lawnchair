@@ -223,7 +223,9 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         setOutlineProvider(mOutlineProvider);
     }
 
-    /** Builds proto for logging */
+    /**
+     * Builds proto for logging
+     */
     public LauncherAtom.ItemInfo buildProto() {
         ComponentKey componentKey = TaskUtils.getLaunchComponentKeyForTask(getTask().key);
         LauncherAtom.ItemInfo.Builder itemBuilder = LauncherAtom.ItemInfo.newBuilder();
