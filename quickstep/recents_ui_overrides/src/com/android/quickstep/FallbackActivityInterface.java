@@ -69,7 +69,7 @@ public final class FallbackActivityInterface extends
 
     /** 4 */
     @Override
-    public void onSwipeUpToHomeComplete() {
+    public void onSwipeUpToHomeComplete(RecentsAnimationDeviceState deviceState) {
         onSwipeUpToRecentsComplete();
     }
 

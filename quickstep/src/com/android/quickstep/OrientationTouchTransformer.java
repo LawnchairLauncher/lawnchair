@@ -36,8 +36,8 @@ import android.view.Surface;
 
 import com.android.launcher3.R;
 import com.android.launcher3.ResourceUtils;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.DefaultDisplay;
-import com.android.quickstep.util.RecentsOrientedState.SurfaceRotation;
 
 import java.io.PrintWriter;
 
@@ -67,6 +67,14 @@ class OrientationTouchTransformer {
     private boolean mEnableMultipleRegions;
     private Resources mResources;
     private OrientationRectF mLastRectTouched;
+    /**
+     * The rotation of the last touched nav bar. Derived from {@link #mLastRectTouched}, but has a
+     * longer lifetime than the rect. Note this is different than {@link #mQuickStepStartingRotation}
+     * as it always updates its value on every touch whereas mQuickstepStartingRotation only
+     * updates when device rotation matches touch rotation. Maybe this will be only one necessary
+     * after TODO(b/154580671) is in. TBD.
+     */
+    private int mLastRectRotation;
     private SysUINavigationMode.Mode mMode;
     private QuickStepContractInfo mContractInfo;
 
@@ -143,15 +151,18 @@ class OrientationTouchTransformer {
      * ALSO, you BETTER call this with {@param enableMultipleRegions} set to false once you're done.
      *
      * @param enableMultipleRegions Set to true to start tracking multiple nav bar regions
-     * @param info The current displayInfo
+     * @param info The current displayInfo which will be the start of the quickswitch gesture
      */
     void enableMultipleRegions(boolean enableMultipleRegions, DefaultDisplay.Info info) {
         mEnableMultipleRegions = enableMultipleRegions &&
                 mMode != SysUINavigationMode.Mode.TWO_BUTTONS;
-        if (!enableMultipleRegions) {
+        if (mEnableMultipleRegions) {
+            mQuickStepStartingRotation = info.rotation;
+        } else {
+            mLastRectRotation = 0;
             mQuickStepStartingRotation = QUICKSTEP_ROTATION_UNINITIALIZED;
-            resetSwipeRegions(info);
         }
+        resetSwipeRegions(info);
     }
 
     /**
@@ -236,6 +247,10 @@ class OrientationTouchTransformer {
     }
 
     boolean touchInValidSwipeRegions(float x, float y) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.NO_SWIPE_TO_HOME, "touchInValidSwipeRegions " + x + "," + y + " in "
+                    + mLastRectTouched);
+        }
         if (mLastRectTouched != null) {
             return mLastRectTouched.contains(x, y);
         }
@@ -243,11 +258,7 @@ class OrientationTouchTransformer {
     }
 
     int getCurrentActiveRotation() {
-        if (mLastRectTouched == null) {
-            return 0;
-        } else {
-            return mLastRectTouched.mRotation;
-        }
+        return mLastRectRotation;
     }
 
     int getQuickStepStartingRotation() {
@@ -281,12 +292,20 @@ class OrientationTouchTransformer {
 
                 for (int i = 0; i < MAX_ORIENTATIONS; i++) {
                     OrientationRectF rect = mSwipeTouchRegions.get(i);
+                    if (TestProtocol.sDebugTracing) {
+                        Log.d(TestProtocol.NO_SWIPE_TO_HOME, "transform:DOWN, rect=" + rect);
+                    }
                     if (rect == null) {
                         continue;
                     }
                     if (rect.applyTransform(event, false)) {
+                        if (TestProtocol.sDebugTracing) {
+                            Log.d(TestProtocol.NO_SWIPE_TO_HOME, "setting mLastRectTouched");
+                        }
                         mLastRectTouched = rect;
-                        if (mCurrentDisplayRotation == mLastRectTouched.mRotation) {
+                        mLastRectRotation = rect.mRotation;
+                        if (mEnableMultipleRegions && mCurrentDisplayRotation == mLastRectRotation) {
+                            // TODO(b/154580671) might make this block unnecessary
                             // Start a touch session for the default nav region for the display
                             mQuickStepStartingRotation = mLastRectTouched.mRotation;
                             resetSwipeRegions();

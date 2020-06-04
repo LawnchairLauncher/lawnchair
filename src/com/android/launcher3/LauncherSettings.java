@@ -100,6 +100,11 @@ public class LauncherSettings {
         public static final String BACKUP_TABLE_NAME = "favorites_bakup";
 
         /**
+         * Backup table created when user hotseat is moved to workspace for hybrid hotseat
+         */
+        public static final String HYBRID_HOTSEAT_BACKUP_TABLE = "hotseat_restore_backup";
+
+        /**
          * Temporary table used specifically for grid migrations during wallpaper preview
          */
         public static final String PREVIEW_TABLE_NAME = "favorites_preview";
@@ -154,9 +159,9 @@ public class LauncherSettings {
         public static final int CONTAINER_HOTSEAT_PREDICTION = -103;
         public static final int CONTAINER_ALL_APPS = -104;
         public static final int CONTAINER_WIDGETS_TRAY = -105;
-
         // Represents search results view.
         public static final int CONTAINER_SEARCH_RESULTS = -106;
+        public static final int CONTAINER_SHORTCUTS = -107;
 
         public static final String containerToString(int container) {
             switch (container) {
@@ -166,6 +171,7 @@ public class LauncherSettings {
                 case CONTAINER_ALL_APPS: return "all_apps";
                 case CONTAINER_WIDGETS_TRAY: return "widgets_tray";
                 case CONTAINER_SEARCH_RESULTS: return "search_result";
+                case CONTAINER_SHORTCUTS: return "shortcuts";
                 default: return String.valueOf(container);
             }
         }
@@ -331,6 +337,8 @@ public class LauncherSettings {
         public static final String METHOD_NEW_TRANSACTION = "new_db_transaction";
 
         public static final String METHOD_REFRESH_BACKUP_TABLE = "refresh_backup_table";
+
+        public static final String METHOD_REFRESH_HOTSEAT_RESTORE_TABLE = "restore_hotseat_table";
 
         public static final String METHOD_RESTORE_BACKUP_TABLE = "restore_backup_table";
 

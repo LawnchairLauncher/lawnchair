@@ -41,7 +41,6 @@ import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsStore;
@@ -93,6 +92,8 @@ public class HotseatPredictionController implements DragController.DragListener,
     private Launcher mLauncher;
     private final Hotseat mHotseat;
 
+    private final HotseatRestoreHelper mRestoreHelper;
+
     private List<ComponentKeyMapper> mComponentKeyMappers = new ArrayList<>();
 
     private DynamicItemCache mDynamicItemCache;
@@ -130,6 +131,7 @@ public class HotseatPredictionController implements DragController.DragListener,
         mHotSeatItemsCount = mLauncher.getDeviceProfile().inv.numHotseatIcons;
         launcher.getDeviceProfile().inv.addOnChangeListener(this);
         mHotseat.addOnAttachStateChangeListener(this);
+        mRestoreHelper = new HotseatRestoreHelper(mLauncher);
         if (mHotseat.isAttachedToWindow()) {
             onViewAttachedToWindow(mHotseat);
         }
@@ -148,8 +150,7 @@ public class HotseatPredictionController implements DragController.DragListener,
      */
     public void showEdu() {
         if (mHotseatEduController == null) return;
-        mLauncher.getStateManager().goToState(LauncherState.NORMAL, true,
-                () -> mHotseatEduController.showEdu());
+        mHotseatEduController.showEdu();
     }
 
     @Override
@@ -299,7 +300,8 @@ public class HotseatPredictionController implements DragController.DragListener,
         });
         setPauseUIUpdate(false);
         if (!isEduSeen()) {
-            mHotseatEduController = new HotseatEduController(mLauncher, this::createPredictor);
+            mHotseatEduController = new HotseatEduController(mLauncher, mRestoreHelper,
+                    this::createPredictor);
         }
     }
 
@@ -322,9 +324,11 @@ public class HotseatPredictionController implements DragController.DragListener,
         updateDependencies();
         bindItems(items, false, null);
     }
-
     private void setPredictedApps(List<AppTarget> appTargets) {
         mComponentKeyMappers.clear();
+        if (appTargets.isEmpty() && mRestoreHelper.shouldRestoreToBackup()) {
+            mRestoreHelper.restoreBackup();
+        }
         StringBuilder predictionLog = new StringBuilder("predictedApps: [\n");
         ArrayList<ComponentKey> componentKeys = new ArrayList<>();
         for (AppTarget appTarget : appTargets) {

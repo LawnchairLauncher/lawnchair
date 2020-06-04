@@ -30,6 +30,7 @@ import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SYS
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_TRACING_ENABLED;
 
 import android.annotation.TargetApi;
+import android.app.ActivityManager;
 import android.app.PendingIntent;
 import android.app.RemoteAction;
 import android.app.Service;
@@ -81,6 +82,7 @@ import com.android.quickstep.inputconsumers.OverviewInputConsumer;
 import com.android.quickstep.inputconsumers.OverviewWithoutFocusInputConsumer;
 import com.android.quickstep.inputconsumers.ResetGestureInputConsumer;
 import com.android.quickstep.inputconsumers.ScreenPinnedInputConsumer;
+import com.android.quickstep.inputconsumers.SysUiOverlayInputConsumer;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.AssistantUtilities;
 import com.android.quickstep.util.ProtoTracer;
@@ -133,10 +135,10 @@ public class TouchInteractionService extends Service implements PluginListener<O
     private static final int MAX_BACK_NOTIFICATION_COUNT = 3;
 
     /**
-     * System Action ID to show all apps.  This ID should follow the ones in
-     * com.android.systemui.accessibility.SystemActions.
+     * System Action ID to show all apps.
+     * TODO: Use AccessibilityService's corresponding global action constant in S
      */
-    private static final int SYSTEM_ACTION_ID_ALL_APPS = 100;
+    private static final int SYSTEM_ACTION_ID_ALL_APPS = 14;
 
     private int mBackGestureNotificationCounter = -1;
     @Nullable
@@ -466,10 +468,17 @@ public class TouchInteractionService extends Service implements PluginListener<O
 
         final int action = event.getAction();
         if (action == ACTION_DOWN) {
+            if (TestProtocol.sDebugTracing) {
+                Log.d(TestProtocol.NO_SWIPE_TO_HOME, "TouchInteractionService.onInputEvent:DOWN");
+            }
             mDeviceState.setOrientationTransformIfNeeded(event);
             GestureState newGestureState;
 
             if (mDeviceState.isInSwipeUpTouchRegion(event)) {
+                if (TestProtocol.sDebugTracing) {
+                    Log.d(TestProtocol.NO_SWIPE_TO_HOME,
+                            "TouchInteractionService.onInputEvent:isInSwipeUpTouchRegion");
+                }
                 // Clone the previous gesture state since onConsumerAboutToBeSwitched might trigger
                 // onConsumerInactive and wipe the previous gesture state
                 GestureState prevGestureState = new GestureState(mGestureState);
@@ -479,18 +488,22 @@ public class TouchInteractionService extends Service implements PluginListener<O
 
                 ActiveGestureLog.INSTANCE.addLog("setInputConsumer: " + mConsumer.getName());
                 mUncheckedConsumer = mConsumer;
-            } else if (mDeviceState.isUserUnlocked()
-                    && mDeviceState.isFullyGesturalNavMode()
-                    && mDeviceState.canTriggerAssistantAction(event)) {
+            } else if (mDeviceState.isUserUnlocked() && mDeviceState.isFullyGesturalNavMode()) {
                 newGestureState = createGestureState();
-                // Do not change mConsumer as if there is an ongoing QuickSwitch gesture, we should
-                // not interrupt it. QuickSwitch assumes that interruption can only happen if the
-                // next gesture is also quick switch.
-                mUncheckedConsumer = new AssistantInputConsumer(
-                    this,
-                    newGestureState,
-                    InputConsumer.NO_OP, mInputMonitorCompat,
-                    mOverviewComponentObserver.assistantGestureIsConstrained());
+                ActivityManager.RunningTaskInfo runningTask = newGestureState.getRunningTask();
+                if (mDeviceState.canTriggerAssistantAction(event, runningTask)) {
+                    // Do not change mConsumer as if there is an ongoing QuickSwitch gesture, we
+                    // should not interrupt it. QuickSwitch assumes that interruption can only
+                    // happen if the next gesture is also quick switch.
+                    mUncheckedConsumer = new AssistantInputConsumer(
+                            this,
+                            newGestureState,
+                            InputConsumer.NO_OP, mInputMonitorCompat,
+                            mOverviewComponentObserver.assistantGestureIsConstrained());
+                } else {
+                    newGestureState = DEFAULT_STATE;
+                    mUncheckedConsumer = InputConsumer.NO_OP;
+                }
             } else {
                 newGestureState = DEFAULT_STATE;
                 mUncheckedConsumer = InputConsumer.NO_OP;
@@ -536,6 +549,9 @@ public class TouchInteractionService extends Service implements PluginListener<O
 
     private InputConsumer newConsumer(GestureState previousGestureState,
             GestureState newGestureState, MotionEvent event) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.NO_SWIPE_TO_HOME, "newConsumer");
+        }
         boolean canStartSystemGesture = mDeviceState.canStartSystemGesture();
 
         if (!mDeviceState.isUserUnlocked()) {
@@ -546,6 +562,9 @@ public class TouchInteractionService extends Service implements PluginListener<O
             } else {
                 return mResetGestureInputConsumer;
             }
+        }
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.NO_SWIPE_TO_HOME, "newConsumer:user is unlocked");
         }
 
         // When there is an existing recents animation running, bypass systemState check as this is
@@ -558,7 +577,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
             handleOrientationSetup(base);
         }
         if (mDeviceState.isFullyGesturalNavMode()) {
-            if (mDeviceState.canTriggerAssistantAction(event)) {
+            if (mDeviceState.canTriggerAssistantAction(event, newGestureState.getRunningTask())) {
                 base = new AssistantInputConsumer(
                     this,
                     newGestureState,
@@ -588,6 +607,13 @@ public class TouchInteractionService extends Service implements PluginListener<O
                 }
             }
 
+            // If Bubbles is expanded, use the overlay input consumer, which will close Bubbles
+            // instead of going all the way home when a swipe up is detected.
+            if (mDeviceState.isBubblesExpanded()) {
+                base = new SysUiOverlayInputConsumer(
+                        getBaseContext(), mDeviceState, mInputMonitorCompat);
+            }
+
             if (mDeviceState.isScreenPinningActive()) {
                 // Note: we only allow accessibility to wrap this, and it replaces the previous
                 // base input consumer (which should be NO_OP anyway since topTaskLocked == true).
@@ -613,7 +639,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
         if (!isFixedRotationTransformEnabled()) {
             return;
         }
-        mDeviceState.enableMultipleRegions(baseInputConsumer instanceof OtherActivityInputConsumer);
+        baseInputConsumer.notifyOrientationSetup();
     }
 
     private InputConsumer newBaseConsumer(GestureState previousGestureState,
@@ -725,12 +751,13 @@ public class TouchInteractionService extends Service implements PluginListener<O
         if (!mDeviceState.isUserUnlocked()) {
             return;
         }
+
         if (mDeviceState.isButtonNavMode() && !mOverviewComponentObserver.isHomeAndOverviewSame()) {
             // Prevent the overview from being started before the real home on first boot.
             return;
         }
 
-        if (RestoreDbTask.isPending(this)) {
+        if (RestoreDbTask.isPending(this) || !mDeviceState.isUserSetupComplete()) {
             // Preloading while a restore is pending may cause launcher to start the restore
             // too early.
             return;

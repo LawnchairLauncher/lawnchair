@@ -96,7 +96,7 @@ public final class LauncherActivityInterface extends
     }
 
     @Override
-    public void onSwipeUpToHomeComplete() {
+    public void onSwipeUpToHomeComplete(RecentsAnimationDeviceState deviceState) {
         Launcher launcher = getCreatedActivity();
         if (launcher == null) {
             return;
@@ -105,6 +105,7 @@ public final class LauncherActivityInterface extends
         // recents, we assume the first task is invisible, making translation off by one task.
         launcher.getStateManager().reapplyState();
         launcher.getRootView().setForceHideBackArrow(false);
+        notifyRecentsOfOrientation(deviceState);
     }
 
     @Override
@@ -235,15 +236,18 @@ public final class LauncherActivityInterface extends
                         // Are we going from Recents to Workspace?
                         if (toState == LauncherState.NORMAL) {
                             exitRunnable.run();
-
-                            // reset layout on swipe to home
-                            RecentsView recentsView = getCreatedActivity().getOverviewPanel();
-                            recentsView.setLayoutRotation(deviceState.getCurrentActiveRotation(),
-                                    deviceState.getDisplayRotation());
+                            notifyRecentsOfOrientation(deviceState);
                             stateManager.removeStateListener(this);
                         }
                     }
                 });
+    }
+
+    private void notifyRecentsOfOrientation(RecentsAnimationDeviceState deviceState) {
+        // reset layout on swipe to home
+        RecentsView recentsView = getCreatedActivity().getOverviewPanel();
+        recentsView.setLayoutRotation(deviceState.getCurrentActiveRotation(),
+                deviceState.getDisplayRotation());
     }
 
     @Override
@@ -306,8 +310,8 @@ public final class LauncherActivityInterface extends
     @Override
     protected float getExtraSpace(Context context, DeviceProfile dp,
             PagedOrientationHandler orientationHandler) {
-        if (dp.isVerticalBarLayout() ||
-                hideShelfInTwoButtonLandscape(context, orientationHandler)) {
+        if ((dp.isVerticalBarLayout() && !showOverviewActions(context))
+                || hideShelfInTwoButtonLandscape(context, orientationHandler)) {
             return 0;
         } else {
             Resources res = context.getResources();
@@ -315,12 +319,14 @@ public final class LauncherActivityInterface extends
                 //TODO: this needs to account for the swipe gesture height and accessibility
                 // UI when shown.
                 float actionsBottomMargin = 0;
-                if (getMode(context) == Mode.THREE_BUTTONS) {
-                    actionsBottomMargin = res.getDimensionPixelSize(
+                if (!dp.isVerticalBarLayout()) {
+                    if (getMode(context) == Mode.THREE_BUTTONS) {
+                        actionsBottomMargin = res.getDimensionPixelSize(
                             R.dimen.overview_actions_bottom_margin_three_button);
-                } else {
-                    actionsBottomMargin = res.getDimensionPixelSize(
+                    } else {
+                        actionsBottomMargin = res.getDimensionPixelSize(
                             R.dimen.overview_actions_bottom_margin_gesture);
+                    }
                 }
                 float actionsHeight = actionsBottomMargin
                         + res.getDimensionPixelSize(R.dimen.overview_actions_height);

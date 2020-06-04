@@ -116,8 +116,7 @@ public class NavBarToHomeTouchController implements TouchController,
             if (TestProtocol.sDebugTracing) {
                 Log.d(TestProtocol.PAUSE_NOT_DETECTED,
                         "NavBarToHomeTouchController.canInterceptTouch true 2 "
-                                + AbstractFloatingView.getTopOpenView(mLauncher).getClass()
-                                .getSimpleName());
+                                + AbstractFloatingView.getTopOpenView(mLauncher), new Exception());
             }
             return true;
         }

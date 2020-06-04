@@ -103,7 +103,7 @@ public final class FeatureFlags {
             "Adds localized title and keyword search and ranking");
 
     public static final BooleanFlag ENABLE_PREDICTION_DISMISS = getDebugFlag(
-            "ENABLE_PREDICTION_DISMISS", false, "Allow option to dimiss apps from predicted list");
+            "ENABLE_PREDICTION_DISMISS", true, "Allow option to dimiss apps from predicted list");
 
     public static final BooleanFlag ENABLE_QUICK_CAPTURE_GESTURE = getDebugFlag(
             "ENABLE_QUICK_CAPTURE_GESTURE", true, "Swipe from right to left to quick capture");
