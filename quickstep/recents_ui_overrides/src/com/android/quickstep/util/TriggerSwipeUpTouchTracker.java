@@ -149,8 +149,12 @@ public class TriggerSwipeUpTouchTracker {
             isSwipeUp = squaredHypot(displacementX, displacementY) >= mSquaredTouchSlop;
         }
 
-        if (isSwipeUp && mOnSwipeUp != null) {
-            mOnSwipeUp.onSwipeUp(wasFling);
+        if (mOnSwipeUp != null) {
+            if (isSwipeUp) {
+                mOnSwipeUp.onSwipeUp(wasFling, new PointF(velocityX, velocityY));
+            } else {
+                mOnSwipeUp.onSwipeUpCancelled();
+            }
         }
     }
 
@@ -161,7 +165,11 @@ public class TriggerSwipeUpTouchTracker {
         /**
          * Called on touch up if a swipe up was detected.
          * @param wasFling Whether the swipe was a fling, or just passed touch slop at low velocity.
+         * @param finalVelocity The final velocity of the swipe.
          */
-        void onSwipeUp(boolean wasFling);
+        void onSwipeUp(boolean wasFling, PointF finalVelocity);
+
+        /** Called on touch up if a swipe up was not detected. */
+        void onSwipeUpCancelled();
     }
 }

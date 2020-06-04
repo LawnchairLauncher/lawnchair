@@ -51,6 +51,7 @@ message ContainerInfo {
     WidgetsContainer widgets_container = 5;
     PredictionContainer prediction_container = 6;
     SearchResultContainer search_result_container = 7;
+    ShortcutsContainer shortcuts_container = 8;
   }
 }
 
@@ -67,6 +68,11 @@ message PredictionContainer {
 
 // Represents the apps container within search results.
 message SearchResultContainer {
+}
+
+// Container for package specific shortcuts to deep links and notifications.
+// Typically shown as popup window by longpressing on an icon.
+message ShortcutsContainer {
 }
 
 enum Origin {
