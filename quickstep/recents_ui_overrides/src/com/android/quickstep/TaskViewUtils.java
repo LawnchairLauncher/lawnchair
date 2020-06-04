@@ -42,6 +42,7 @@ import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.util.DefaultDisplay;
+import com.android.quickstep.util.SurfaceTransactionApplier;
 import com.android.quickstep.util.TaskViewSimulator;
 import com.android.quickstep.util.TransformParams;
 import com.android.quickstep.views.RecentsView;
@@ -49,7 +50,6 @@ import com.android.quickstep.views.TaskThumbnailView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
-import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
 
 /**
  * Utility class for helpful methods related to {@link TaskView} objects and their tasks.
@@ -128,11 +128,10 @@ public final class TaskViewUtils {
             RemoteAnimationTargetCompat[] wallpaperTargets, DepthController depthController,
             PendingAnimation out) {
 
-        SyncRtSurfaceTransactionApplierCompat applier =
-                new SyncRtSurfaceTransactionApplierCompat(v);
+        SurfaceTransactionApplier applier = new SurfaceTransactionApplier(v);
         final RemoteAnimationTargets targets =
                 new RemoteAnimationTargets(appTargets, wallpaperTargets, MODE_OPENING);
-        targets.addDependentTransactionApplier(applier);
+        targets.addReleaseCheck(applier);
 
         TransformParams params = new TransformParams()
                     .setSyncTransactionApplier(applier)

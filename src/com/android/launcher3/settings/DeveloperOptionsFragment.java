@@ -237,6 +237,15 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
             return true;
         });
         sandboxCategory.addPreference(launchHomeTutorialPreference);
+        Preference launchOverviewTutorialPreference = new Preference(context);
+        launchOverviewTutorialPreference.setKey("launchOverviewTutorial");
+        launchOverviewTutorialPreference.setTitle("Launch Overview Tutorial");
+        launchOverviewTutorialPreference.setSummary("Learn how to use the Overview gesture");
+        launchOverviewTutorialPreference.setOnPreferenceClickListener(preference -> {
+            startActivity(launchSandboxIntent.putExtra("tutorial_type", "OVERVIEW_NAVIGATION"));
+            return true;
+        });
+        sandboxCategory.addPreference(launchOverviewTutorialPreference);
     }
 
     private String toName(String action) {
