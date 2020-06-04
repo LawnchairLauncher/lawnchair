@@ -18,6 +18,7 @@ package com.android.quickstep;
 import static android.content.Intent.ACTION_USER_UNLOCKED;
 
 import static com.android.launcher3.util.DefaultDisplay.CHANGE_ALL;
+import static com.android.launcher3.util.DefaultDisplay.CHANGE_FRAME_DELAY;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
 import static com.android.quickstep.SysUINavigationMode.Mode.THREE_BUTTONS;
@@ -46,6 +47,7 @@ import android.graphics.Region;
 import android.os.Process;
 import android.os.SystemProperties;
 import android.os.UserManager;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
@@ -111,7 +113,8 @@ public class RecentsAnimationDeviceState implements
     private TaskStackChangeListener mFrozenTaskListener = new TaskStackChangeListener() {
         @Override
         public void onRecentTaskListFrozenChanged(boolean frozen) {
-            if (frozen) {
+            mTaskListFrozen = frozen;
+            if (frozen || mInOverview) {
                 return;
             }
             enableMultipleRegions(false);
@@ -132,6 +135,9 @@ public class RecentsAnimationDeviceState implements
      * TODO: (b/156984037) For when user rotates after entering overview
      */
     private boolean mInOverview;
+    private boolean mTaskListFrozen;
+
+    private boolean mIsUserSetupComplete;
 
     public RecentsAnimationDeviceState(Context context) {
         mContext = context;
@@ -189,6 +195,17 @@ public class RecentsAnimationDeviceState implements
                     mContext, this::onOneHandedEnabledSettingsChanged);
             mOneHandedEnabledObserver.register();
             mOneHandedEnabledObserver.dispatchOnChange();
+        }
+
+        SecureSettingsObserver userSetupObserver = new SecureSettingsObserver(
+                context.getContentResolver(),
+                e -> mIsUserSetupComplete = e,
+                Settings.Secure.USER_SETUP_COMPLETE,
+                0);
+        mIsUserSetupComplete = userSetupObserver.getValue();
+        if (!mIsUserSetupComplete) {
+            userSetupObserver.register();
+            runOnDestroy(userSetupObserver::unregister);
         }
     }
 
@@ -258,7 +275,8 @@ public class RecentsAnimationDeviceState implements
 
     @Override
     public void onDisplayInfoChanged(DefaultDisplay.Info info, int flags) {
-        if (info.id != getDisplayId()) {
+        if (info.id != getDisplayId() || (flags & CHANGE_FRAME_DELAY) == CHANGE_FRAME_DELAY) {
+            // ignore displays that aren't running launcher and frame refresh rate changes
             return;
         }
 
@@ -329,6 +347,13 @@ public class RecentsAnimationDeviceState implements
         return mIsUserUnlocked;
     }
 
+    /**
+     * @return whether the user has completed setup wizard
+     */
+    public boolean isUserSetupComplete() {
+        return mIsUserSetupComplete;
+    }
+
     private void notifyUserUnlocked() {
         for (Runnable action : mUserUnlockedActions) {
             action.run();
@@ -375,7 +400,6 @@ public class RecentsAnimationDeviceState implements
         return (mSystemUiStateFlags & SYSUI_STATE_NAV_BAR_HIDDEN) == 0
                 && (mSystemUiStateFlags & SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED) == 0
                 && (mSystemUiStateFlags & SYSUI_STATE_QUICK_SETTINGS_EXPANDED) == 0
-                && (mSystemUiStateFlags & SYSUI_STATE_BUBBLES_EXPANDED) == 0
                 && ((mSystemUiStateFlags & SYSUI_STATE_HOME_DISABLED) == 0
                         || (mSystemUiStateFlags & SYSUI_STATE_OVERVIEW_DISABLED) == 0);
     }
@@ -393,6 +417,13 @@ public class RecentsAnimationDeviceState implements
      */
     public boolean isScreenPinningActive() {
         return (mSystemUiStateFlags & SYSUI_STATE_SCREEN_PINNING) != 0;
+    }
+
+    /**
+     * @return whether the bubble stack is expanded
+     */
+    public boolean isBubblesExpanded() {
+        return (mSystemUiStateFlags & SYSUI_STATE_BUBBLES_EXPANDED) != 0;
     }
 
     /**
@@ -550,7 +581,7 @@ public class RecentsAnimationDeviceState implements
      * *May* apply a transform on the motion event if it lies in the nav bar region for another
      * orientation that is currently being tracked as a part of quickstep
      */
-    public void setOrientationTransformIfNeeded(MotionEvent event) {
+    void setOrientationTransformIfNeeded(MotionEvent event) {
         // negative coordinates bug b/143901881
         if (event.getX() < 0 || event.getY() < 0) {
             event.setLocation(Math.max(0, event.getX()), Math.max(0, event.getY()));
@@ -558,25 +589,54 @@ public class RecentsAnimationDeviceState implements
         mOrientationTouchTransformer.transform(event);
     }
 
-    void onSwipeUpToOverview(BaseActivityInterface activityInterface) {
-        mInOverview = true;
-        activityInterface.onExitOverview(this, () -> {
-            mInOverview = false;
-            enableMultipleRegions(false);
-        });
+    void enableMultipleRegions(boolean enable) {
+        mOrientationTouchTransformer.enableMultipleRegions(enable, mDefaultDisplay.getInfo());
+        notifySysuiForRotation(mOrientationTouchTransformer.getQuickStepStartingRotation());
     }
 
-    void enableMultipleRegions(boolean enable) {
-        if (mInOverview) {
-            return;
+    private void notifySysuiForRotation(int rotation) {
+        UI_HELPER_EXECUTOR.execute(() ->
+                SystemUiProxy.INSTANCE.get(mContext).onQuickSwitchToNewTask(rotation));
+    }
+
+    public void onStartGesture() {
+        if (mTaskListFrozen) {
+            // Prioritize whatever nav bar user touches once in quickstep
+            // This case is specifically when user changes what nav bar they are using mid
+            // quickswitch session before tasks list is unfrozen
+            notifySysuiForRotation(mOrientationTouchTransformer.getCurrentActiveRotation());
         }
-        mOrientationTouchTransformer.enableMultipleRegions(enable, mDefaultDisplay.getInfo());
-        UI_HELPER_EXECUTOR.execute(() -> {
-            int quickStepStartingRotation =
-                    mOrientationTouchTransformer.getQuickStepStartingRotation();
-            SystemUiProxy.INSTANCE.get(mContext)
-                    .onQuickSwitchToNewTask(quickStepStartingRotation);
-        });
+    }
+
+
+    void onEndTargetCalculated(GestureState.GestureEndTarget endTarget,
+            BaseActivityInterface activityInterface) {
+        if (endTarget == GestureState.GestureEndTarget.RECENTS) {
+            mInOverview = true;
+            if (!mTaskListFrozen) {
+                // If we're in landscape w/o ever quickswitching, show the navbar in landscape
+                enableMultipleRegions(true);
+            }
+            activityInterface.onExitOverview(this, () -> {
+                mInOverview = false;
+                enableMultipleRegions(false);
+            });
+        } else if (endTarget == GestureState.GestureEndTarget.HOME) {
+            enableMultipleRegions(false);
+        } else if (endTarget == GestureState.GestureEndTarget.NEW_TASK) {
+            if (mOrientationTouchTransformer.getQuickStepStartingRotation() == -1) {
+                // First gesture to start quickswitch
+                enableMultipleRegions(true);
+            } else {
+                notifySysuiForRotation(mOrientationTouchTransformer.getCurrentActiveRotation());
+            }
+        } else if (endTarget == GestureState.GestureEndTarget.LAST_TASK) {
+            if (!mTaskListFrozen) {
+                // touched nav bar but didn't go anywhere and not quickswitching, do nothing
+                return;
+            }
+            notifySysuiForRotation(mOrientationTouchTransformer.getCurrentActiveRotation());
+        }
     }
 
     public int getCurrentActiveRotation() {
