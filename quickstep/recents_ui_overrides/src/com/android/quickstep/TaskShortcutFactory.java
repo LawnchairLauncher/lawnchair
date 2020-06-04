@@ -18,6 +18,8 @@ package com.android.quickstep;
 
 import static android.view.Display.DEFAULT_DISPLAY;
 
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SYSTEM_SHORTCUT_FREE_FORM_TAP;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SYSTEM_SHORTCUT_SPLIT_SCREEN_TAP;
 import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch.TAP;
 
 import android.app.Activity;
@@ -35,6 +37,7 @@ import android.view.View;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
+import com.android.launcher3.logging.StatsLogManager.LauncherEvent;
 import com.android.launcher3.model.WellbeingModel;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.SystemShortcut;
@@ -83,10 +86,12 @@ public interface TaskShortcutFactory {
 
         private final int mIconRes;
         private final int mTextRes;
+        private final LauncherEvent mLauncherEvent;
 
-        MultiWindowFactory(int iconRes, int textRes) {
+        MultiWindowFactory(int iconRes, int textRes, LauncherEvent launcherEvent) {
             mIconRes = iconRes;
             mTextRes = textRes;
+            mLauncherEvent = launcherEvent;
         }
 
         protected abstract boolean isAvailable(BaseDraggingActivity activity, int displayId);
@@ -102,7 +107,8 @@ public interface TaskShortcutFactory {
             if (!isAvailable(activity, task.key.displayId)) {
                 return null;
             }
-            return new MultiWindowSystemShortcut(mIconRes, mTextRes, activity, taskView, this);
+            return new MultiWindowSystemShortcut(mIconRes, mTextRes, activity, taskView, this,
+                    mLauncherEvent);
         }
     }
 
@@ -114,11 +120,12 @@ public interface TaskShortcutFactory {
         private final TaskThumbnailView mThumbnailView;
         private final TaskView mTaskView;
         private final MultiWindowFactory mFactory;
+        private final LauncherEvent mLauncherEvent;
 
-        public MultiWindowSystemShortcut(int iconRes, int textRes,
-                BaseDraggingActivity activity, TaskView taskView, MultiWindowFactory factory) {
+        public MultiWindowSystemShortcut(int iconRes, int textRes, BaseDraggingActivity activity,
+                TaskView taskView, MultiWindowFactory factory, LauncherEvent launcherEvent) {
             super(iconRes, textRes, activity, dummyInfo(taskView));
-
+            mLauncherEvent = launcherEvent;
             mHandler = new Handler(Looper.getMainLooper());
             mTaskView = taskView;
             mRecentsView = activity.getOverviewPanel();
@@ -203,12 +210,13 @@ public interface TaskShortcutFactory {
                 WindowManagerWrapper.getInstance().overridePendingAppTransitionMultiThumbFuture(
                         future, animStartedListener, mHandler, true /* scaleUp */,
                         taskKey.displayId);
+                mTarget.getStatsLogManager().log(mLauncherEvent, mTaskView.buildProto());
             }
         }
     }
 
-    TaskShortcutFactory SPLIT_SCREEN = new MultiWindowFactory(
-            R.drawable.ic_split_screen, R.string.recent_task_option_split_screen) {
+    TaskShortcutFactory SPLIT_SCREEN = new MultiWindowFactory(R.drawable.ic_split_screen,
+            R.string.recent_task_option_split_screen, LAUNCHER_SYSTEM_SHORTCUT_SPLIT_SCREEN_TAP) {
 
         @Override
         protected boolean isAvailable(BaseDraggingActivity activity, int displayId) {
@@ -241,8 +249,8 @@ public interface TaskShortcutFactory {
         }
     };
 
-    TaskShortcutFactory FREE_FORM = new MultiWindowFactory(
-            R.drawable.ic_split_screen, R.string.recent_task_option_freeform) {
+    TaskShortcutFactory FREE_FORM = new MultiWindowFactory(R.drawable.ic_split_screen,
+            R.string.recent_task_option_freeform, LAUNCHER_SYSTEM_SHORTCUT_FREE_FORM_TAP) {
 
         @Override
         protected boolean isAvailable(BaseDraggingActivity activity, int displayId) {

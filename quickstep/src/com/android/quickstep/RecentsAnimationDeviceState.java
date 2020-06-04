@@ -525,13 +525,15 @@ public class RecentsAnimationDeviceState implements
 
     /**
      * @param ev An ACTION_DOWN motion event
-     * @return whether the given motion event can trigger the assistant.
+     * @param task Info for the currently running task
+     * @return whether the given motion event can trigger the assistant over the current task.
      */
-    public boolean canTriggerAssistantAction(MotionEvent ev) {
+    public boolean canTriggerAssistantAction(MotionEvent ev, ActivityManager.RunningTaskInfo task) {
         return mAssistantAvailable
                 && !QuickStepContract.isAssistantGestureDisabled(mSystemUiStateFlags)
                 && mOrientationTouchTransformer.touchInAssistantRegion(ev)
-                && !isLockToAppActive();
+                && !isLockToAppActive()
+                && !isGestureBlockedActivity(task);
     }
 
     /**
