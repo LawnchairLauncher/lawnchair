@@ -31,6 +31,7 @@ import android.view.MotionEvent;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.systemui.shared.recents.IPinnedStackAnimationListener;
 import com.android.systemui.shared.recents.ISystemUiProxy;
+import com.android.systemui.shared.recents.model.Task;
 
 /**
  * Holds the reference to SystemUI.
@@ -344,8 +345,6 @@ public class SystemUiProxy implements ISystemUiProxy {
             }
         }
     }
-<<<<<<< HEAD   (e557ba Merging from ub-launcher3-rvc-dev @ build 6552182)
-=======
 
     @Override
     public void handleImageBundleAsScreenshot(Bundle screenImageBundle, Rect locationInScreen,
@@ -359,5 +358,4 @@ public class SystemUiProxy implements ISystemUiProxy {
             }
         }
     }
->>>>>>> CHANGE (03e456 Screenshots - move to new api that uses image bundle.)
 }
