@@ -37,6 +37,7 @@ import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_7;
 import static com.android.launcher3.anim.Interpolators.clampToProgress;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_ACTIONS;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_FADE;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_DEPTH;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_HOTSEAT_SCALE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_HOTSEAT_TRANSLATE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_FADE;
@@ -210,6 +211,7 @@ public class QuickstepAtomicAnimationFactory extends
             }
             config.setInterpolator(ANIM_WORKSPACE_FADE, OVERSHOOT_1_2);
             config.setInterpolator(ANIM_OVERVIEW_SCALE, OVERSHOOT_1_2);
+            config.setInterpolator(ANIM_DEPTH, OVERSHOOT_1_2);
             Interpolator translationInterpolator = ENABLE_OVERVIEW_ACTIONS.get()
                     && removeShelfFromOverview(mActivity)
                     ? OVERSHOOT_1_2

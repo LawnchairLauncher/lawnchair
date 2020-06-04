@@ -14,5 +14,6 @@
      limitations under the License.
 -->
 <resources>
+    <color name="back_arrow_color_light">#FFFFFFFF</color>
     <color name="back_arrow_color_dark">#99000000</color>
 </resources>

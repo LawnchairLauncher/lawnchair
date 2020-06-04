@@ -16,7 +16,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gesture_tutorial_background_color">
+    android:background="?android:attr/colorBackground">
 
     <View
         android:id="@+id/gesture_tutorial_ripple_view"
@@ -49,6 +49,7 @@
         android:background="@android:color/transparent"
         android:accessibilityTraversalAfter="@id/gesture_tutorial_fragment_titles_container"
         android:contentDescription="@string/gesture_tutorial_close_button_content_description"
+        android:tint="?android:attr/textColorPrimary"
         android:src="@drawable/gesture_tutorial_close_button"/>
 
     <LinearLayout

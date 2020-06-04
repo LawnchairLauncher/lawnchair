@@ -38,14 +38,8 @@
     <color name="all_apps_bg_hand_fill">#E5E5E5</color>
     <color name="all_apps_bg_hand_fill_dark">#9AA0A6</color>
 
-    <color name="gesture_tutorial_background_color">#FFFFFFFF</color>
-    <color name="gesture_tutorial_title_color">#FF000000</color>
-    <color name="gesture_tutorial_subtitle_color">#99000000</color> <!-- 60% black -->
-    <color name="gesture_tutorial_feedback_color">#FF000000</color>
     <color name="gesture_tutorial_ripple_color">#A0C2F9</color> <!-- Light Blue -->
     <color name="gesture_tutorial_fake_task_view_color">#6DA1FF</color> <!-- Light Blue -->
     <color name="gesture_tutorial_action_button_label_color">#FFFFFFFF</color>
     <color name="gesture_tutorial_primary_color">#1A73E8</color> <!-- Blue -->
-
-
 </resources>
