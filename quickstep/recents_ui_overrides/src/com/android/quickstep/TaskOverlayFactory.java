@@ -126,7 +126,7 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
                 public void onScreenshot() {
                     if (isAllowedByPolicy) {
                         imageApi.saveScreenshot(mThumbnailView.getThumbnail(),
-                                getTaskSnapshotBounds(), getTaskSnapshotInsets(), task.key.id);
+                                getTaskSnapshotBounds(), getTaskSnapshotInsets(), task.key);
                     } else {
                         showBlockedByPolicyMessage();
                     }
