@@ -15,6 +15,7 @@
  */
 package com.android.quickstep.fallback;
 
+import android.graphics.PointF;
 import android.view.MotionEvent;
 
 import androidx.annotation.Nullable;
@@ -30,7 +31,8 @@ import com.android.quickstep.util.TriggerSwipeUpTouchTracker;
 /**
  * In 0-button mode, intercepts swipe up from the nav bar on FallbackRecentsView to go home.
  */
-public class FallbackNavBarTouchController implements TouchController {
+public class FallbackNavBarTouchController implements TouchController,
+        TriggerSwipeUpTouchTracker.OnSwipeUpListener {
 
     private final RecentsActivity mActivity;
     @Nullable
@@ -44,7 +46,7 @@ public class FallbackNavBarTouchController implements TouchController {
                     DefaultDisplay.INSTANCE.get(mActivity).getInfo());
             mTriggerSwipeUpTracker = new TriggerSwipeUpTouchTracker(mActivity,
                     true /* disableHorizontalSwipe */, navBarPosition,
-                    null /* onInterceptTouch */, this::onSwipeUp);
+                    null /* onInterceptTouch */, this);
         } else {
             mTriggerSwipeUpTracker = null;
         }
@@ -72,7 +74,11 @@ public class FallbackNavBarTouchController implements TouchController {
         return false;
     }
 
-    private void onSwipeUp(boolean wasFling) {
+    @Override
+    public void onSwipeUp(boolean wasFling, PointF finalVelocity) {
         mActivity.<FallbackRecentsView>getOverviewPanel().startHome();
     }
+
+    @Override
+    public void onSwipeUpCancelled() {}
 }

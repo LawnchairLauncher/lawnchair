@@ -41,7 +41,6 @@ import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsStore;
@@ -148,8 +147,7 @@ public class HotseatPredictionController implements DragController.DragListener,
      */
     public void showEdu() {
         if (mHotseatEduController == null) return;
-        mLauncher.getStateManager().goToState(LauncherState.NORMAL, true,
-                () -> mHotseatEduController.showEdu());
+        mHotseatEduController.showEdu();
     }
 
     @Override
