@@ -411,6 +411,11 @@ public class LauncherProvider extends ContentProvider {
                         Favorites.BACKUP_TABLE_NAME);
                 return null;
             }
+            case LauncherSettings.Settings.METHOD_REFRESH_HOTSEAT_RESTORE_TABLE: {
+                mOpenHelper.mHotseatRestoreTableExists = tableExists(
+                        mOpenHelper.getReadableDatabase(), Favorites.HYBRID_HOTSEAT_BACKUP_TABLE);
+                return null;
+            }
             case LauncherSettings.Settings.METHOD_RESTORE_BACKUP_TABLE: {
                 final long ts = System.currentTimeMillis();
                 if (ts - mLastRestoreTimestamp > RESTORE_BACKUP_TABLE_DELAY) {
@@ -609,6 +614,7 @@ public class LauncherProvider extends ContentProvider {
         private int mMaxItemId = -1;
         private int mMaxScreenId = -1;
         private boolean mBackupTableExists;
+        private boolean mHotseatRestoreTableExists;
 
         static DatabaseHelper createDatabaseHelper(Context context, boolean forMigration) {
             return createDatabaseHelper(context, null, forMigration);
@@ -633,6 +639,8 @@ public class LauncherProvider extends ContentProvider {
                 databaseHelper.mBackupTableExists = tableExists(
                         databaseHelper.getReadableDatabase(), Favorites.BACKUP_TABLE_NAME);
             }
+            databaseHelper.mHotseatRestoreTableExists = tableExists(
+                    databaseHelper.getReadableDatabase(), Favorites.HYBRID_HOTSEAT_BACKUP_TABLE);
 
             databaseHelper.initIds();
             return databaseHelper;
@@ -678,6 +686,10 @@ public class LauncherProvider extends ContentProvider {
             if (mBackupTableExists) {
                 dropTable(db, Favorites.BACKUP_TABLE_NAME);
                 mBackupTableExists = false;
+            }
+            if (mHotseatRestoreTableExists) {
+                dropTable(db, Favorites.HYBRID_HOTSEAT_BACKUP_TABLE);
+                mHotseatRestoreTableExists = false;
             }
         }
 
