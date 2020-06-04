@@ -104,15 +104,17 @@ public class StatsLogManager implements ResourceBasedOverride {
                 + "shortcut within longpress popup window.")
         LAUNCHER_SYSTEM_SHORTCUT_WIDGETS_TAP(514),
 
-        @UiEvent(doc = "User opened app info of the package by tapping on appinfo system shortcut "
-                + "within longpress popup window.")
+        @UiEvent(doc = "User tapped on app info system shortcut.")
         LAUNCHER_SYSTEM_SHORTCUT_APP_INFO_TAP(515),
 
         @UiEvent(doc = "User tapped on split screen icon on a task menu.")
         LAUNCHER_SYSTEM_SHORTCUT_SPLIT_SCREEN_TAP(518),
 
         @UiEvent(doc = "User tapped on free form icon on a task menu.")
-        LAUNCHER_SYSTEM_SHORTCUT_FREE_FORM_TAP(519);
+        LAUNCHER_SYSTEM_SHORTCUT_FREE_FORM_TAP(519),
+
+        @UiEvent(doc = "User tapped on pause app system shortcut.")
+        LAUNCHER_SYSTEM_SHORTCUT_PAUSE_TAP(519);
         // ADD MORE
 
         private final int mId;
