@@ -71,9 +71,7 @@
       <item quantity="one"><xliff:g id="APP_NAME_0">%1$s</xliff:g>, ina arifa <xliff:g id="NOTIFICATION_COUNT_1">%2$d</xliff:g></item>
     </plurals>
     <string name="default_scroll_format" msgid="7475544710230993317">"Ukurasa%1$d wa %2$d"</string>
-    <!-- String.format failed for translation -->
-    <!-- no translation found for workspace_scroll_format (8458889198184077399) -->
-    <skip />
+    <string name="workspace_scroll_format" msgid="8458889198184077399">"Skrini ya mwanzo %1$d ya %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"Ukurasa mpya wa skrini ya kwanza"</string>
     <string name="folder_opened" msgid="94695026776264709">"Folda imefunguliwa, <xliff:g id="WIDTH">%1$d</xliff:g> kwa <xliff:g id="HEIGHT">%2$d</xliff:g>"</string>
     <string name="folder_tap_to_close" msgid="4625795376335528256">"Gusa ili ufunge folda"</string>
