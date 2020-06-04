@@ -141,10 +141,10 @@ public class StatsLogCompatManager extends StatsLogManager {
                 getHierarchy(info) /* hierarchy */,
                 info.getIsWork() /* is_work_profile */,
                 info.getRank() /* rank */,
-                0 /* fromState */,
-                0 /* toState */,
-                null /* edittext */,
-                0 /* cardinality */);
+                info.getFolderIcon().getFromLabelState().getNumber() /* fromState */,
+                info.getFolderIcon().getToLabelState().getNumber() /* toState */,
+                info.getFolderIcon().getLabelInfo() /* edittext */,
+                info.getFolderIcon().getCardinality() /* cardinality */);
     }
 
     /**
