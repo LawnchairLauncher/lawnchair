@@ -357,6 +357,7 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
             mBitmapShader.setLocalMatrix(mPreviewPositionHelper.mMatrix);
             mPaint.setShader(mBitmapShader);
         }
+        getTaskView().updateCurrentFullscreenParams(mPreviewPositionHelper);
         invalidate();
 
         // Update can be called from {@link #onSizeChanged} during layout, post handling of overlay

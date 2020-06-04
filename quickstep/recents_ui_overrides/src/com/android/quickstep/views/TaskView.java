@@ -955,11 +955,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         setClipToPadding(!isFullscreen);
 
         TaskThumbnailView thumbnail = getThumbnail();
-        mCurrentFullscreenParams.setProgress(
-                mFullscreenProgress,
-                getRecentsView().getScaleX(),
-                getWidth(), mActivity.getDeviceProfile(),
-                thumbnail.getPreviewPositionHelper());
+        updateCurrentFullscreenParams(thumbnail.getPreviewPositionHelper());
 
         if (!getRecentsView().isTaskIconScaledDown(this)) {
             // Some of the items in here are dependent on the current fullscreen params, but don't
@@ -970,6 +966,14 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         thumbnail.setFullscreenParams(mCurrentFullscreenParams);
         mOutlineProvider.setFullscreenParams(mCurrentFullscreenParams);
         invalidateOutline();
+    }
+
+    void updateCurrentFullscreenParams(PreviewPositionHelper previewPositionHelper) {
+        mCurrentFullscreenParams.setProgress(
+                mFullscreenProgress,
+                getRecentsView().getScaleX(),
+                getWidth(), mActivity.getDeviceProfile(),
+                previewPositionHelper);
     }
 
     public boolean isRunningTask() {
