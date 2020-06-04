@@ -32,10 +32,8 @@
     <string name="title_app_suggestions" msgid="4185902664111965088">"Sugerencias de aplicaciones"</string>
     <string name="all_apps_label" msgid="8542784161730910663">"Todas las apps"</string>
     <string name="all_apps_prediction_tip" msgid="2672336544844936186">"Predicción de tus apps"</string>
-    <string name="hotseat_edu_prompt_title" msgid="5595771595144175752">"Accede fácilmente a las apps que más usas"</string>
-    <string name="hotseat_edu_prompt_content" msgid="5709176001504149521">"Pixel predice las apps que usarás la próxima vez en la pantalla principal. Presiona para configurar esta opción."</string>
     <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"Obtén sugerencias de aplicaciones en la fila inferior de la pantalla principal"</string>
-    <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"Accede fácilmente en la pantalla principal a las apps que más usas. Las sugerencias cambiarán según tus rutinas. Las apps de la fila inferior se moverán hacia arriba en la pantalla principal."</string>
+    <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"Accede fácilmente en la pantalla principal a las apps que más usas. Las sugerencias cambiarán según tus rutinas. Las apps de la fila inferior se desplazarán hacia arriba en la pantalla principal."</string>
     <string name="hotseat_edu_message_migrate_alt" msgid="3042360119039646356">"Accede fácilmente a las apps que más usas en la pantalla principal. Las sugerencias cambiarán según tus rutinas. Las apps de la fila inferior se moverán a una nueva carpeta."</string>
     <string name="hotseat_edu_accept" msgid="1611544083278999837">"Obtén sugerencias de aplicaciones"</string>
     <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"No, gracias"</string>
@@ -43,6 +41,8 @@
     <string name="hotseat_auto_enrolled" msgid="522100018967146807">"Las apps que más se usan se muestran aquí y cambian según las rutinas"</string>
     <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"Arrastra apps fuera de la fila inferior para obtener sugerencias"</string>
     <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"Se agregaron sugerencias de aplicaciones a un espacio vacío"</string>
+    <!-- no translation found for hotsaet_tip_prediction_enabled (4589474727906410667) -->
+    <skip />
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Predicción de app: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="action_share" msgid="2648470652637092375">"Compartir"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Captura de pantalla"</string>
