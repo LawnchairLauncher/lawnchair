@@ -16,25 +16,24 @@
 package com.android.quickstep;
 
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
-import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Queue;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Holds a collection of RemoteAnimationTargets, filtered by different properties.
  */
 public class RemoteAnimationTargets {
 
-    private final Queue<SyncRtSurfaceTransactionApplierCompat> mDependentTransactionAppliers =
-            new ArrayDeque<>(1);
+    private final CopyOnWriteArrayList<ReleaseCheck> mReleaseChecks = new CopyOnWriteArrayList<>();
 
     public final RemoteAnimationTargetCompat[] unfilteredApps;
     public final RemoteAnimationTargetCompat[] apps;
     public final RemoteAnimationTargetCompat[] wallpapers;
     public final int targetMode;
     public final boolean hasRecents;
+
+    private boolean mReleased = false;
 
     public RemoteAnimationTargets(RemoteAnimationTargetCompat[] apps,
             RemoteAnimationTargetCompat[] wallpapers, int targetMode) {
@@ -76,21 +75,65 @@ public class RemoteAnimationTargets {
         return false;
     }
 
-    public void addDependentTransactionApplier(SyncRtSurfaceTransactionApplierCompat delay) {
-        mDependentTransactionAppliers.add(delay);
+    public void addReleaseCheck(ReleaseCheck check) {
+        mReleaseChecks.add(check);
     }
 
     public void release() {
-        SyncRtSurfaceTransactionApplierCompat applier = mDependentTransactionAppliers.poll();
-        if (applier == null) {
-            for (RemoteAnimationTargetCompat target : unfilteredApps) {
-                target.release();
+        if (mReleased) {
+            return;
+        }
+        for (ReleaseCheck check : mReleaseChecks) {
+            if (!check.mCanRelease) {
+                check.addOnSafeToReleaseCallback(this::release);
+                return;
             }
-            for (RemoteAnimationTargetCompat target : wallpapers) {
-                target.release();
+        }
+        mReleaseChecks.clear();
+        mReleased = true;
+
+        for (RemoteAnimationTargetCompat target : unfilteredApps) {
+            target.release();
+        }
+        for (RemoteAnimationTargetCompat target : wallpapers) {
+            target.release();
+        }
+    }
+
+    /**
+     * Interface for intercepting surface release method
+     */
+    public static class ReleaseCheck {
+
+        boolean mCanRelease = false;
+        private Runnable mAfterApplyCallback;
+
+        protected void setCanRelease(boolean canRelease) {
+            mCanRelease = canRelease;
+            if (mCanRelease && mAfterApplyCallback != null) {
+                Runnable r = mAfterApplyCallback;
+                mAfterApplyCallback = null;
+                r.run();
             }
-        } else {
-            applier.addAfterApplyCallback(this::release);
+        }
+
+        /**
+         * Adds a callback to notify when the surface can safely be released
+         */
+        void addOnSafeToReleaseCallback(Runnable callback) {
+            if (mCanRelease) {
+                callback.run();
+            } else {
+                if (mAfterApplyCallback == null) {
+                    mAfterApplyCallback = callback;
+                } else {
+                    final Runnable oldCallback = mAfterApplyCallback;
+                    mAfterApplyCallback = () -> {
+                        callback.run();
+                        oldCallback.run();
+                    };
+                }
+            }
         }
     }
 }

@@ -121,8 +121,11 @@ public class StaggeredWorkspaceAnim {
                 addStaggeredAnimationForView(child, grid.inv.numRows + 1, totalRows);
             }
 
-            View qsb = launcher.findViewById(R.id.search_container_all_apps);
-            addStaggeredAnimationForView(qsb, grid.inv.numRows + 2, totalRows);
+            if (launcher.getAppsView().getSearchUiManager()
+                    .isQsbVisible(NORMAL.getVisibleElements(launcher))) {
+                addStaggeredAnimationForView(launcher.getAppsView().getSearchView(),
+                        grid.inv.numRows + 2, totalRows);
+            }
         }
 
         if (animateOverviewScrim) {

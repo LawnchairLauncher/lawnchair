@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.allapps;
 
+import static com.android.launcher3.LauncherState.ALL_APPS_HEADER;
+
 import android.graphics.Rect;
 import android.view.KeyEvent;
 import android.view.animation.Interpolator;
@@ -55,6 +57,13 @@ public interface SearchUiManager {
      */
     void setContentVisibility(int visibleElements, PropertySetter setter,
             Interpolator interpolator);
+
+    /**
+     * Returns true if the QSB should be visible for the given set of visible elements
+     */
+    default boolean isQsbVisible(int visibleElements) {
+        return (visibleElements & ALL_APPS_HEADER) != 0;
+    }
 
     /**
      * Called to control how the search UI result should be handled.

@@ -36,6 +36,7 @@ import android.view.Surface;
 
 import com.android.launcher3.R;
 import com.android.launcher3.ResourceUtils;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.DefaultDisplay;
 
 import java.io.PrintWriter;
@@ -246,6 +247,10 @@ class OrientationTouchTransformer {
     }
 
     boolean touchInValidSwipeRegions(float x, float y) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.NO_SWIPE_TO_HOME, "touchInValidSwipeRegions " + x + "," + y + " in "
+                    + mLastRectTouched);
+        }
         if (mLastRectTouched != null) {
             return mLastRectTouched.contains(x, y);
         }
@@ -287,10 +292,16 @@ class OrientationTouchTransformer {
 
                 for (int i = 0; i < MAX_ORIENTATIONS; i++) {
                     OrientationRectF rect = mSwipeTouchRegions.get(i);
+                    if (TestProtocol.sDebugTracing) {
+                        Log.d(TestProtocol.NO_SWIPE_TO_HOME, "transform:DOWN, rect=" + rect);
+                    }
                     if (rect == null) {
                         continue;
                     }
                     if (rect.applyTransform(event, false)) {
+                        if (TestProtocol.sDebugTracing) {
+                            Log.d(TestProtocol.NO_SWIPE_TO_HOME, "setting mLastRectTouched");
+                        }
                         mLastRectTouched = rect;
                         mLastRectRotation = rect.mRotation;
                         if (mEnableMultipleRegions && mCurrentDisplayRotation == mLastRectRotation) {
