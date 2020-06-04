@@ -19,7 +19,6 @@ import static android.view.View.MeasureSpec.EXACTLY;
 import static android.view.View.MeasureSpec.getSize;
 import static android.view.View.MeasureSpec.makeMeasureSpec;
 
-import static com.android.launcher3.LauncherState.ALL_APPS_HEADER;
 import static com.android.launcher3.Utilities.prefixTextWithIcon;
 import static com.android.launcher3.icons.IconNormalizer.ICON_VISIBLE_AREA_FACTOR;
 
@@ -213,7 +212,7 @@ public class AppsSearchContainerLayout extends ExtendedEditText
     @Override
     public void setContentVisibility(int visibleElements, PropertySetter setter,
             Interpolator interpolator) {
-        setter.setViewAlpha(this, (visibleElements & ALL_APPS_HEADER) != 0 ? 1 : 0, interpolator);
+        setter.setViewAlpha(this, isQsbVisible(visibleElements) ? 1 : 0, interpolator);
     }
 
     @Override

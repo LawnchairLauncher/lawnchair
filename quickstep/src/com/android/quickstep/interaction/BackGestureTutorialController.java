@@ -35,14 +35,6 @@ final class BackGestureTutorialController extends TutorialController {
     }
 
     @Override
-    void transitToController() {
-        super.transitToController();
-        if (mTutorialType != BACK_NAVIGATION_COMPLETE) {
-            showHandCoachingAnimation();
-        }
-    }
-
-    @Override
     Integer getTitleStringId() {
         switch (mTutorialType) {
             case RIGHT_EDGE_BACK_NAVIGATION:

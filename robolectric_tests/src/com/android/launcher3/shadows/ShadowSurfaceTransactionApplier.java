@@ -26,11 +26,11 @@ import org.robolectric.annotation.Implements;
 import org.robolectric.annotation.RealObject;
 
 /**
- * Shadow for SyncRtSurfaceTransactionApplierCompat to override default functionality
+ * Shadow for SurfaceTransactionApplier to override default functionality
  */
-@Implements(className = "com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat",
+@Implements(className = "com.android.quickstep.util.SurfaceTransactionApplier",
         isInAndroidSdk = false)
-public class ShadowSyncRtSurfaceTransactionApplierCompat {
+public class ShadowSurfaceTransactionApplier {
 
     @RealObject
     private Object mRealObject;
