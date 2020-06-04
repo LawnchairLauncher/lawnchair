@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.anim;
 
+import static com.android.launcher3.Utilities.boundToRange;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.clampToProgress;
 import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelocity;
@@ -29,8 +30,6 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 
 import androidx.annotation.Nullable;
-
-import com.android.launcher3.Utilities;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -54,11 +53,8 @@ public class AnimatorPlaybackController implements ValueAnimator.AnimatorUpdateL
      * to float (animation-fraction * total duration) to int conversion.
      */
     public static AnimatorPlaybackController wrap(AnimatorSet anim, long duration) {
-        /**
-         * TODO: use {@link AnimatorSet#setCurrentPlayTime(long)} once b/68382377 is fixed.
-         */
         ArrayList<Holder> childAnims = new ArrayList<>();
-        addAnimationHoldersRecur(anim, SpringProperty.DEFAULT, childAnims);
+        addAnimationHoldersRecur(anim, duration, SpringProperty.DEFAULT, childAnims);
 
         return new AnimatorPlaybackController(anim, duration, childAnims);
     }
@@ -152,7 +148,7 @@ public class AnimatorPlaybackController implements ValueAnimator.AnimatorUpdateL
         float scaleInverse = 1 / Math.abs(scale);
         float scaledVelocity = velocity * scaleInverse;
 
-        float nextFrameProgress = Utilities.boundToRange(getProgressFraction()
+        float nextFrameProgress = boundToRange(getProgressFraction()
                 + scaledVelocity * getSingleFrameMs(context), 0f, 1f);
 
         // Update setters for spring
@@ -176,8 +172,8 @@ public class AnimatorPlaybackController implements ValueAnimator.AnimatorUpdateL
                 springDuration = Math.max(expectedDurationL, springDuration);
 
                 float expectedDuration = expectedDurationL;
-                h.setter = (a, l) -> a.setCurrentFraction(
-                        mAnimationPlayer.getCurrentPlayTime() / expectedDuration);
+                h.mapper = (progress, globalEndProgress) ->
+                        mAnimationPlayer.getCurrentPlayTime() / expectedDuration;
                 h.anim.setInterpolator(s::getInterpolatedValue);
             }
         }
@@ -237,9 +233,9 @@ public class AnimatorPlaybackController implements ValueAnimator.AnimatorUpdateL
         if (mTargetCancelled) {
             return;
         }
-        long playPos = clampDuration(fraction);
+        float progress = boundToRange(fraction, 0, 1);
         for (Holder holder : mChildAnimations) {
-            holder.setter.set(holder.anim, playPos);
+            holder.setProgress(progress);
         }
     }
 
@@ -361,14 +357,14 @@ public class AnimatorPlaybackController implements ValueAnimator.AnimatorUpdateL
     }
 
     /**
-     * Interface for setting position of value animator
+     * Interface for mapping progress to animation progress
      */
-    private interface PositionSetter {
+    private interface ProgressMapper {
 
-        PositionSetter DEFAULT = (anim, playPos) ->
-                anim.setCurrentPlayTime(Math.min(playPos, anim.getDuration()));
+        ProgressMapper DEFAULT = (progress, globalEndProgress) ->
+                progress > globalEndProgress ? 1 : (progress / globalEndProgress);
 
-        void set(ValueAnimator anim, long position);
+        float getProgress(float progress, float globalProgress);
     }
 
     /**
@@ -382,27 +378,34 @@ public class AnimatorPlaybackController implements ValueAnimator.AnimatorUpdateL
 
         public final TimeInterpolator interpolator;
 
-        public PositionSetter setter;
+        public final float globalEndProgress;
 
-        Holder(Animator anim, SpringProperty springProperty) {
+        public ProgressMapper mapper;
+
+        Holder(Animator anim, float globalDuration, SpringProperty springProperty) {
             this.anim = (ValueAnimator) anim;
             this.springProperty = springProperty;
             this.interpolator = this.anim.getInterpolator();
-            this.setter = PositionSetter.DEFAULT;
+            this.globalEndProgress = anim.getDuration() / globalDuration;
+            this.mapper = ProgressMapper.DEFAULT;
+        }
+
+        public void setProgress(float progress) {
+            anim.setCurrentFraction(mapper.getProgress(progress, globalEndProgress));
         }
 
         public void reset() {
             anim.setInterpolator(interpolator);
-            setter = PositionSetter.DEFAULT;
+            mapper = ProgressMapper.DEFAULT;
         }
     }
 
-    static void addAnimationHoldersRecur(
-            Animator anim, SpringProperty springProperty, ArrayList<Holder> out) {
+    static void addAnimationHoldersRecur(Animator anim, long globalDuration,
+            SpringProperty springProperty, ArrayList<Holder> out) {
         long forceDuration = anim.getDuration();
         TimeInterpolator forceInterpolator = anim.getInterpolator();
         if (anim instanceof ValueAnimator) {
-            out.add(new Holder(anim, springProperty));
+            out.add(new Holder(anim, globalDuration, springProperty));
         } else if (anim instanceof AnimatorSet) {
             for (Animator child : ((AnimatorSet) anim).getChildAnimations()) {
                 if (forceDuration > 0) {
@@ -411,7 +414,7 @@ public class AnimatorPlaybackController implements ValueAnimator.AnimatorUpdateL
                 if (forceInterpolator != null) {
                     child.setInterpolator(forceInterpolator);
                 }
-                addAnimationHoldersRecur(child, springProperty, out);
+                addAnimationHoldersRecur(child, globalDuration, springProperty, out);
             }
         } else {
             throw new RuntimeException("Unknown animation type " + anim);
