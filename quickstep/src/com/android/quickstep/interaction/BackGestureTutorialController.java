@@ -21,8 +21,6 @@ import static com.android.quickstep.interaction.TutorialController.TutorialType.
 import android.graphics.PointF;
 import android.view.View;
 
-import androidx.annotation.Nullable;
-
 import com.android.launcher3.R;
 import com.android.quickstep.interaction.EdgeBackGestureHandler.BackGestureResult;
 import com.android.quickstep.interaction.NavBarGestureHandler.NavBarGestureResult;
@@ -156,7 +154,4 @@ final class BackGestureTutorialController extends TutorialController {
             }
         }
     }
-
-    @Override
-    public void setNavBarGestureProgress(@Nullable Float displacement) {}
 }
