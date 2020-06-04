@@ -32,8 +32,6 @@
     <string name="title_app_suggestions" msgid="4185902664111965088">"Applications suggérées"</string>
     <string name="all_apps_label" msgid="8542784161730910663">"Toutes les applications"</string>
     <string name="all_apps_prediction_tip" msgid="2672336544844936186">"Applications prévues pour vous"</string>
-    <string name="hotseat_edu_prompt_title" msgid="5595771595144175752">"Accédez facilement à vos applications les plus utilisées"</string>
-    <string name="hotseat_edu_prompt_content" msgid="5709176001504149521">"Pixel prédit les applications dont vous pourriez avoir besoin par la suite et les affiche sur votre écran d\'accueil. Appuyez ici pour configurer ce paramètre."</string>
     <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"Retrouvez vos applications favorites au bas de votre écran d\'accueil"</string>
     <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"Les suggestions d\'applications permettent d\'afficher vos applications favorites au bas de votre écran d\'accueil. Elles s\'adaptent à vos habitudes d\'utilisation. Les icônes auparavant affichées au bas de l\'écran seront déplacées vers le haut."</string>
     <string name="hotseat_edu_message_migrate_alt" msgid="3042360119039646356">"Les suggestions d\'applications permettent d\'afficher vos applications favorites au bas de votre écran d\'accueil. Elles s\'adaptent à vos habitudes d\'utilisation. Les icônes auparavant affichées au bas de l\'écran seront placées dans un nouveau dossier."</string>
@@ -43,6 +41,8 @@
     <string name="hotseat_auto_enrolled" msgid="522100018967146807">"Les applications dont vous vous servez le plus s\'affichent ici (ces suggestions peuvent varier en fonction de vos habitudes d\'utilisation)"</string>
     <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"Faites glisser des applications hors de la rangée du bas pour obtenir des suggestions d\'applications"</string>
     <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"Des suggestions d\'applications ont été ajoutées à un emplacement vide"</string>
+    <!-- no translation found for hotsaet_tip_prediction_enabled (4589474727906410667) -->
+    <skip />
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Application prédite : <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="action_share" msgid="2648470652637092375">"Partager"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Capture d\'écran"</string>

@@ -32,9 +32,7 @@
     <string name="title_app_suggestions" msgid="4185902664111965088">"Санал болгож буй аппууд"</string>
     <string name="all_apps_label" msgid="8542784161730910663">"Бүх апп"</string>
     <string name="all_apps_prediction_tip" msgid="2672336544844936186">"Таны таамагласан аппууд"</string>
-    <string name="hotseat_edu_prompt_title" msgid="5595771595144175752">"Хамгийн их ашигладаг аппууддаа хялбархан хандаарай"</string>
-    <string name="hotseat_edu_prompt_content" msgid="5709176001504149521">"Pixel утас танд дараагийн удаа хэрэг болох аппуудыг таамаглаж, таны Үндсэн нүүрэнд харуулна. Тохируулахын тулд товшино уу."</string>
-    <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"Үндсэн нүүрнийхээ доод мөр дээр санал болгож буй аппуудыг аваарай"</string>
+    <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"Үндсэн нүүрнийхээ доод мөрөнд санал болгож буй аппуудыг аваарай"</string>
     <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"Хамгийн их ашигладаг аппууддаа Үндсэн нүүрээс хялбархан хандаарай. Санал болгож буй аппуудыг таны хэвшлээс хамаарч өөрчилнө. Доод мөр дэх аппуудыг таны Үндсэн нүүр лүү дээш зөөнө."</string>
     <string name="hotseat_edu_message_migrate_alt" msgid="3042360119039646356">"Хамгийн их ашигладаг аппууддаа Үндсэн нүүрээс хялбархан хандаарай. Санал болгож буй аппуудыг таны хэвшлээс хамаарч өөрчилнө. Доод мөр дэх аппуудыг шинэ фолдер луу зөөнө."</string>
     <string name="hotseat_edu_accept" msgid="1611544083278999837">"Санал болгож буй аппуудыг авах"</string>
@@ -43,6 +41,8 @@
     <string name="hotseat_auto_enrolled" msgid="522100018967146807">"Хамгийн их ашигладаг аппуудыг энд харуулах бөгөөд хэвшлээс хамаарч өөрчилдөг"</string>
     <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"Санал болгож буй аппуудыг авахын тулд доод мөрөөс аппуудыг чирж гаргаарай"</string>
     <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"Санал болгож буй аппуудыг хоосон зайд нэмсэн"</string>
+    <!-- no translation found for hotsaet_tip_prediction_enabled (4589474727906410667) -->
+    <skip />
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Таамаглаж буй апп: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="action_share" msgid="2648470652637092375">"Хуваалцах"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Дэлгэцийн агшин дарах"</string>
