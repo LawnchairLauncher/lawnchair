@@ -39,6 +39,8 @@ import androidx.core.content.FileProvider;
 
 import com.android.launcher3.BuildConfig;
 import com.android.quickstep.SystemUiProxy;
+import com.android.systemui.shared.recents.model.Task;
+import com.android.systemui.shared.recents.utilities.BitmapUtil;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -59,8 +61,9 @@ public class ImageActionUtils {
      */
     public static void saveScreenshot(SystemUiProxy systemUiProxy, Bitmap screenshot,
             Rect screenshotBounds,
-            Insets visibleInsets, int taskId) {
-        systemUiProxy.handleImageAsScreenshot(screenshot, screenshotBounds, visibleInsets, taskId);
+            Insets visibleInsets, Task.TaskKey task) {
+        systemUiProxy.handleImageBundleAsScreenshot(BitmapUtil.hardwareBitmapToBundle(screenshot),
+                screenshotBounds, visibleInsets, task);
     }
 
     /**
