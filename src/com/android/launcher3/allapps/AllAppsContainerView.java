@@ -277,6 +277,10 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         }
     }
 
+    public LayoutInflater getLayoutInflater() {
+        return LayoutInflater.from(getContext());
+    }
+
     /**
      * Resets the state of AllApps.
      */
@@ -444,7 +448,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         int index = indexOfChild(oldView);
         removeView(oldView);
         int layout = showTabs ? R.layout.all_apps_tabs : R.layout.all_apps_rv_layout;
-        View newView = LayoutInflater.from(getContext()).inflate(layout, this, false);
+        View newView = getLayoutInflater().inflate(layout, this, false);
         addView(newView, index);
         if (showTabs) {
             mViewPager = (AllAppsPagedView) newView;
@@ -617,7 +621,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         AdapterHolder(boolean isWork) {
             mIsWork = isWork;
             appsList = new AlphabeticalAppsList(mLauncher, mAllAppsStore, isWork);
-            adapter = new AllAppsGridAdapter(mLauncher, appsList);
+            adapter = new AllAppsGridAdapter(mLauncher, getLayoutInflater(), appsList);
             appsList.setAdapter(adapter);
             layoutManager = adapter.getLayoutManager();
         }
