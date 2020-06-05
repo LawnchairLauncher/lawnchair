@@ -40,13 +40,14 @@ import com.android.launcher3.util.WindowBounds;
 import com.android.quickstep.RecentsAnimationCallbacks.RecentsAnimationListener;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.ActivityInitListener;
+import com.android.quickstep.util.RectFSpringAnim;
+import com.android.quickstep.util.SurfaceTransactionApplier;
 import com.android.quickstep.util.TransformParams;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
-import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat;
 
 import java.util.ArrayList;
 import java.util.function.Consumer;
@@ -114,10 +115,10 @@ public abstract class BaseSwipeUpHandler<T extends StatefulActivity<?>, Q extend
     public abstract Intent getLaunchIntent();
 
     protected void linkRecentsViewScroll() {
-        SyncRtSurfaceTransactionApplierCompat.create(mRecentsView, applier -> {
+        SurfaceTransactionApplier.create(mRecentsView, applier -> {
             mTransformParams.setSyncTransactionApplier(applier);
             runOnRecentsAnimationStart(() ->
-                    mRecentsAnimationTargets.addDependentTransactionApplier(applier));
+                    mRecentsAnimationTargets.addReleaseCheck(applier));
         });
 
         mRecentsView.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
@@ -356,12 +357,24 @@ public abstract class BaseSwipeUpHandler<T extends StatefulActivity<?>, Q extend
         if (mWindowTransitionController != null) {
             float progress = mCurrentShift.value / mDragLengthFactor;
             mWindowTransitionController.setPlayFraction(progress);
-
+        }
+        if (mRecentsAnimationTargets != null) {
             if (mRecentsViewScrollLinked) {
                 mTaskViewSimulator.setScroll(mRecentsView.getScrollOffset());
             }
             mTaskViewSimulator.apply(mTransformParams);
         }
+    }
+
+    @Override
+    protected RectFSpringAnim createWindowAnimationToHome(float startProgress,
+            HomeAnimationFactory homeAnimationFactory) {
+        RectFSpringAnim anim =
+                super.createWindowAnimationToHome(startProgress, homeAnimationFactory);
+        if (mRecentsAnimationTargets != null) {
+            mRecentsAnimationTargets.addReleaseCheck(anim);
+        }
+        return anim;
     }
 
     public interface Factory {
