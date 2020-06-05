@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 The Android Open Source Project
+ * Copyright (C) 2020 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,39 +20,40 @@ import android.content.Intent;
 import android.graphics.PointF;
 import android.view.MotionEvent;
 
-import com.android.launcher3.BaseActivity;
-import com.android.launcher3.BaseDraggingActivity;
-import com.android.launcher3.logging.StatsLogUtils;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.TestProtocol;
-import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
-import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
-import com.android.quickstep.GestureState;
 import com.android.quickstep.InputConsumer;
 import com.android.quickstep.RecentsAnimationDeviceState;
-import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.TriggerSwipeUpTouchTracker;
 import com.android.systemui.shared.system.InputMonitorCompat;
 
-public class OverviewWithoutFocusInputConsumer implements InputConsumer,
+/**
+ * Input consumer used when a fullscreen System UI overlay is showing (such as the expanded Bubbles
+ * UI).
+ *
+ * This responds to swipes up by sending a closeSystemDialogs broadcast (causing overlays to close)
+ * rather than closing the app behind the overlay and sending the user all the way home.
+ */
+public class SysUiOverlayInputConsumer implements InputConsumer,
         TriggerSwipeUpTouchTracker.OnSwipeUpListener {
 
     private final Context mContext;
     private final InputMonitorCompat mInputMonitor;
     private final TriggerSwipeUpTouchTracker mTriggerSwipeUpTracker;
 
-    public OverviewWithoutFocusInputConsumer(Context context,
-            RecentsAnimationDeviceState deviceState, GestureState gestureState,
-            InputMonitorCompat inputMonitor, boolean disableHorizontalSwipe) {
+    public SysUiOverlayInputConsumer(
+            Context context,
+            RecentsAnimationDeviceState deviceState,
+            InputMonitorCompat inputMonitor) {
         mContext = context;
         mInputMonitor = inputMonitor;
-        mTriggerSwipeUpTracker = new TriggerSwipeUpTouchTracker(context, disableHorizontalSwipe,
+        mTriggerSwipeUpTracker = new TriggerSwipeUpTouchTracker(context, true,
                 deviceState.getNavBarPosition(), this::onInterceptTouch, this);
     }
 
     @Override
     public int getType() {
-        return TYPE_OVERVIEW_WITHOUT_FOCUS;
+        return TYPE_SYSUI_OVERLAY;
     }
 
     @Override
@@ -74,19 +75,12 @@ public class OverviewWithoutFocusInputConsumer implements InputConsumer,
 
     @Override
     public void onSwipeUp(boolean wasFling, PointF finalVelocity) {
-        mContext.startActivity(new Intent(Intent.ACTION_MAIN)
-                .addCategory(Intent.CATEGORY_HOME)
-                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-        ActiveGestureLog.INSTANCE.addLog("startQuickstep");
-        BaseActivity activity = BaseDraggingActivity.fromContext(mContext);
-        int pageIndex = -1; // This number doesn't reflect workspace page index.
-                            // It only indicates that launcher client screen was shown.
-        int containerType = StatsLogUtils.getContainerTypeFromState(activity.getCurrentState());
-        activity.getUserEventDispatcher().logActionOnContainer(
-                wasFling ? Touch.FLING : Touch.SWIPE, Direction.UP, containerType, pageIndex);
-        activity.getUserEventDispatcher().setPreviousHomeGesture(true);
+        // Close system dialogs when a swipe up is detected.
+        mContext.sendBroadcast(new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS));
     }
 
     @Override
-    public void onSwipeUpCancelled() {}
+    public void onSwipeUpCancelled() {
+
+    }
 }

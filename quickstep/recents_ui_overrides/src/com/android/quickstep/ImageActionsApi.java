@@ -33,6 +33,7 @@ import androidx.annotation.UiThread;
 
 import com.android.launcher3.BuildConfig;
 import com.android.quickstep.util.ImageActionUtils;
+import com.android.systemui.shared.recents.model.Task;
 
 import java.util.function.Supplier;
 
@@ -85,11 +86,11 @@ public class ImageActionsApi {
      * @param screenshotBounds the location of where the bitmap was laid out on the screen in
      *                         screen coordinates.
      * @param visibleInsets    that are used to draw the screenshot within the bounds.
-     * @param taskId           of the task that the screenshot was taken of.
+     * @param task             of the task that the screenshot was taken of.
      */
     public void saveScreenshot(Bitmap screenshot, Rect screenshotBounds,
-            Insets visibleInsets, int taskId) {
+            Insets visibleInsets, Task.TaskKey task) {
         ImageActionUtils.saveScreenshot(mSystemUiProxy, screenshot, screenshotBounds, visibleInsets,
-                taskId);
+                task);
     }
 }

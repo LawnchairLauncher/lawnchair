@@ -17,6 +17,7 @@
 package com.android.launcher3.statehandlers;
 
 import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_DEPTH;
 import static com.android.launcher3.states.StateAnimationConfig.SKIP_DEPTH_CONTROLLER;
 
 import android.os.IBinder;
@@ -102,11 +103,30 @@ public class DepthController implements StateHandler<LauncherState> {
      */
     private float mDepth;
 
+    private View.OnAttachStateChangeListener mOnAttachListener;
+
     public DepthController(Launcher l) {
         mLauncher = l;
     }
 
     private void ensureDependencies() {
+        if (mLauncher.getRootView() != null && mOnAttachListener == null) {
+            mOnAttachListener = new View.OnAttachStateChangeListener() {
+                @Override
+                public void onViewAttachedToWindow(View view) {
+                    // To handle the case where window token is invalid during last setDepth call.
+                    IBinder windowToken = mLauncher.getRootView().getWindowToken();
+                    if (windowToken != null) {
+                        mWallpaperManager.setWallpaperZoomOut(windowToken, mDepth);
+                    }
+                }
+
+                @Override
+                public void onViewDetachedFromWindow(View view) {
+                }
+            };
+            mLauncher.getRootView().addOnAttachStateChangeListener(mOnAttachListener);
+        }
         if (mWallpaperManager != null) {
             return;
         }
@@ -172,11 +192,12 @@ public class DepthController implements StateHandler<LauncherState> {
 
         float toDepth = toState.getDepth(mLauncher);
         if (Float.compare(mDepth, toDepth) != 0) {
-            animation.setFloat(this, DEPTH, toDepth, LINEAR);
+            animation.setFloat(this, DEPTH, toDepth, config.getInterpolator(ANIM_DEPTH, LINEAR));
         }
     }
 
     private void setDepth(float depth) {
+        depth = Utilities.boundToRange(depth, 0, 1);
         // Round out the depth to dedupe frequent, non-perceptable updates
         int depthI = (int) (depth * 256);
         float depthF = depthI / 256f;
@@ -184,10 +205,10 @@ public class DepthController implements StateHandler<LauncherState> {
             return;
         }
 
-        mDepth = depthF;
         if (mSurface == null || !mSurface.isValid()) {
             return;
         }
+        mDepth = depthF;
         ensureDependencies();
         IBinder windowToken = mLauncher.getRootView().getWindowToken();
         if (windowToken != null) {
