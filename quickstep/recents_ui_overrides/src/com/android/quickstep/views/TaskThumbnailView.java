@@ -45,6 +45,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
+import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.Themes;
 import com.android.quickstep.TaskOverlayFactory;
@@ -63,9 +64,9 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
 
     private static final ColorMatrix COLOR_MATRIX = new ColorMatrix();
     private static final ColorMatrix SATURATION_COLOR_MATRIX = new ColorMatrix();
-    private static final RectF EMPTY_RECT_F = new RectF();
 
-    private static final FullscreenDrawParams TEMP_PARAMS = new FullscreenDrawParams();
+    private static final MainThreadInitializedObject<FullscreenDrawParams> TEMP_PARAMS =
+            new MainThreadInitializedObject<>(FullscreenDrawParams::new);
 
     public static final Property<TaskThumbnailView, Float> DIM_ALPHA =
             new FloatProperty<TaskThumbnailView>("dimAlpha") {
@@ -91,8 +92,7 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
     // Contains the portion of the thumbnail that is clipped when fullscreen progress = 0.
     private final Rect mPreviewRect = new Rect();
     private final PreviewPositionHelper mPreviewPositionHelper = new PreviewPositionHelper();
-    // Initialize with dummy value. It is overridden later by TaskView
-    private TaskView.FullscreenDrawParams mFullscreenParams = TEMP_PARAMS;
+    private TaskView.FullscreenDrawParams mFullscreenParams;
 
     private Task mTask;
     private ThumbnailData mThumbnailData;
@@ -122,6 +122,8 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
         mDimmingPaintAfterClearing.setColor(Color.BLACK);
         mActivity = BaseActivity.fromContext(context);
         mIsDarkTextTheme = Themes.getAttrBoolean(mActivity, R.attr.isWorkspaceDarkText);
+        // Initialize with dummy value. It is overridden later by TaskView
+        mFullscreenParams = TEMP_PARAMS.get(context);
     }
 
     /**

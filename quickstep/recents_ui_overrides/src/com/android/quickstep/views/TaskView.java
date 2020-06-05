@@ -1018,10 +1018,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             mCurrentDrawnCornerRadius = mCornerRadius;
         }
 
-        public FullscreenDrawParams() {
-            mCurrentDrawnCornerRadius = mWindowCornerRadius =  mCornerRadius = 0;
-        }
-
         /**
          * Sets the progress in range [0, 1]
          */
