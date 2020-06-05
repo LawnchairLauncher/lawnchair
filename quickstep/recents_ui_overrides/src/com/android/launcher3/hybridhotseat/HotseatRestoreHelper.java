@@ -17,6 +17,7 @@ package com.android.launcher3.hybridhotseat;
 
 import static com.android.launcher3.LauncherSettings.Favorites.HYBRID_HOTSEAT_BACKUP_TABLE;
 import static com.android.launcher3.provider.LauncherDbUtils.tableExists;
+import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.Launcher;
@@ -29,72 +30,57 @@ import com.android.launcher3.provider.LauncherDbUtils;
  */
 public class HotseatRestoreHelper {
     private final Launcher mLauncher;
-    private boolean mBackupExists;
+    private boolean mBackupRestored = false;
 
     HotseatRestoreHelper(Launcher context) {
         mLauncher = context;
-        setupBackupTable();
     }
 
     /**
      * Creates a snapshot backup of Favorite table for future restoration use.
      */
-    public synchronized void createBackup() {
-        try (LauncherDbUtils.SQLiteTransaction transaction = (LauncherDbUtils.SQLiteTransaction)
-                LauncherSettings.Settings.call(
-                        mLauncher.getContentResolver(),
-                        LauncherSettings.Settings.METHOD_NEW_TRANSACTION)
-                        .getBinder(LauncherSettings.Settings.EXTRA_VALUE)) {
-            InvariantDeviceProfile idp = mLauncher.getDeviceProfile().inv;
-            GridBackupTable backupTable = new GridBackupTable(mLauncher,
-                    transaction.getDb(), idp.numHotseatIcons, idp.numColumns,
-                    idp.numRows);
-            backupTable.createCustomBackupTable(HYBRID_HOTSEAT_BACKUP_TABLE);
-            transaction.commit();
-            LauncherSettings.Settings.call(mLauncher.getContentResolver(),
-                    LauncherSettings.Settings.METHOD_REFRESH_HOTSEAT_RESTORE_TABLE);
-            mBackupExists = true;
-        }
+    public void createBackup() {
+        MODEL_EXECUTOR.execute(() -> {
+            try (LauncherDbUtils.SQLiteTransaction transaction = (LauncherDbUtils.SQLiteTransaction)
+                    LauncherSettings.Settings.call(
+                            mLauncher.getContentResolver(),
+                            LauncherSettings.Settings.METHOD_NEW_TRANSACTION)
+                            .getBinder(LauncherSettings.Settings.EXTRA_VALUE)) {
+                InvariantDeviceProfile idp = mLauncher.getDeviceProfile().inv;
+                GridBackupTable backupTable = new GridBackupTable(mLauncher,
+                        transaction.getDb(), idp.numHotseatIcons, idp.numColumns,
+                        idp.numRows);
+                backupTable.createCustomBackupTable(HYBRID_HOTSEAT_BACKUP_TABLE);
+                transaction.commit();
+                LauncherSettings.Settings.call(mLauncher.getContentResolver(),
+                        LauncherSettings.Settings.METHOD_REFRESH_HOTSEAT_RESTORE_TABLE);
+            }
+        });
     }
 
     /**
      * Finds and restores a previously saved snapshow of Favorites table
      */
     public void restoreBackup() {
-        try (LauncherDbUtils.SQLiteTransaction transaction = (LauncherDbUtils.SQLiteTransaction)
-                LauncherSettings.Settings.call(
-                        mLauncher.getContentResolver(),
-                        LauncherSettings.Settings.METHOD_NEW_TRANSACTION)
-                        .getBinder(LauncherSettings.Settings.EXTRA_VALUE)) {
-            if (!tableExists(transaction.getDb(), HYBRID_HOTSEAT_BACKUP_TABLE)) {
-                mBackupExists = false;
-                return;
+        if (mBackupRestored) return;
+        MODEL_EXECUTOR.execute(() -> {
+            try (LauncherDbUtils.SQLiteTransaction transaction = (LauncherDbUtils.SQLiteTransaction)
+                    LauncherSettings.Settings.call(
+                            mLauncher.getContentResolver(),
+                            LauncherSettings.Settings.METHOD_NEW_TRANSACTION)
+                            .getBinder(LauncherSettings.Settings.EXTRA_VALUE)) {
+                if (!tableExists(transaction.getDb(), HYBRID_HOTSEAT_BACKUP_TABLE)) {
+                    return;
+                }
+                InvariantDeviceProfile idp = mLauncher.getDeviceProfile().inv;
+                GridBackupTable backupTable = new GridBackupTable(mLauncher,
+                        transaction.getDb(), idp.numHotseatIcons, idp.numColumns,
+                        idp.numRows);
+                backupTable.restoreFromCustomBackupTable(HYBRID_HOTSEAT_BACKUP_TABLE, true);
+                transaction.commit();
+                mBackupRestored = true;
+                mLauncher.getModel().forceReload();
             }
-            InvariantDeviceProfile idp = mLauncher.getDeviceProfile().inv;
-            GridBackupTable backupTable = new GridBackupTable(mLauncher,
-                    transaction.getDb(), idp.numHotseatIcons, idp.numColumns,
-                    idp.numRows);
-            backupTable.restoreFromCustomBackupTable(HYBRID_HOTSEAT_BACKUP_TABLE, true);
-            transaction.commit();
-            mBackupExists = false;
-            mLauncher.getModel().forceReload();
-        }
-    }
-
-    /**
-     * Returns if prediction controller should attempt restoring a backup
-     */
-    public synchronized boolean shouldRestoreToBackup() {
-        return mBackupExists;
-    }
-
-    private synchronized void setupBackupTable() {
-        try (LauncherDbUtils.SQLiteTransaction transaction = (LauncherDbUtils.SQLiteTransaction)
-                LauncherSettings.Settings.call(
-                        mLauncher.getContentResolver(),
-                        LauncherSettings.Settings.METHOD_NEW_TRANSACTION)
-                        .getBinder(LauncherSettings.Settings.EXTRA_VALUE)) {
-            mBackupExists = tableExists(transaction.getDb(), HYBRID_HOTSEAT_BACKUP_TABLE);
-        }
+        });
     }
 }
