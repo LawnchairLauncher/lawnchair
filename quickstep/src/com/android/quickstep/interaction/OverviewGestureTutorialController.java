@@ -15,7 +15,7 @@
  */
 package com.android.quickstep.interaction;
 
-import static com.android.quickstep.interaction.TutorialController.TutorialType.HOME_NAVIGATION_COMPLETE;
+import static com.android.quickstep.interaction.TutorialController.TutorialType.OVERVIEW_NAVIGATION_COMPLETE;
 
 import android.annotation.TargetApi;
 import android.graphics.PointF;
@@ -26,20 +26,21 @@ import com.android.launcher3.R;
 import com.android.quickstep.interaction.EdgeBackGestureHandler.BackGestureResult;
 import com.android.quickstep.interaction.NavBarGestureHandler.NavBarGestureResult;
 
-/** A {@link TutorialController} for the Home tutorial. */
+/** A {@link TutorialController} for the Overview tutorial. */
 @TargetApi(Build.VERSION_CODES.R)
-final class HomeGestureTutorialController extends SwipeUpGestureTutorialController {
+final class OverviewGestureTutorialController extends SwipeUpGestureTutorialController {
 
-    HomeGestureTutorialController(HomeGestureTutorialFragment fragment, TutorialType tutorialType) {
+    OverviewGestureTutorialController(OverviewGestureTutorialFragment fragment,
+            TutorialType tutorialType) {
         super(fragment, tutorialType);
     }
 
     @Override
     Integer getTitleStringId() {
         switch (mTutorialType) {
-            case HOME_NAVIGATION:
-                return R.string.home_gesture_tutorial_playground_title;
-            case HOME_NAVIGATION_COMPLETE:
+            case OVERVIEW_NAVIGATION:
+                return R.string.overview_gesture_tutorial_playground_title;
+            case OVERVIEW_NAVIGATION_COMPLETE:
                 return R.string.gesture_tutorial_confirm_title;
         }
         return null;
@@ -47,15 +48,15 @@ final class HomeGestureTutorialController extends SwipeUpGestureTutorialControll
 
     @Override
     Integer getSubtitleStringId() {
-        if (mTutorialType == TutorialType.HOME_NAVIGATION) {
-            return R.string.home_gesture_tutorial_playground_subtitle;
+        if (mTutorialType == TutorialType.OVERVIEW_NAVIGATION) {
+            return R.string.overview_gesture_tutorial_playground_subtitle;
         }
         return null;
     }
 
     @Override
     Integer getActionButtonStringId() {
-        if (mTutorialType == HOME_NAVIGATION_COMPLETE) {
+        if (mTutorialType == OVERVIEW_NAVIGATION_COMPLETE) {
             return R.string.gesture_tutorial_action_button_label_done;
         }
         return null;
@@ -69,17 +70,17 @@ final class HomeGestureTutorialController extends SwipeUpGestureTutorialControll
     @Override
     public void onBackGestureAttempted(BackGestureResult result) {
         switch (mTutorialType) {
-            case HOME_NAVIGATION:
+            case OVERVIEW_NAVIGATION:
                 switch (result) {
                     case BACK_COMPLETED_FROM_LEFT:
                     case BACK_COMPLETED_FROM_RIGHT:
                     case BACK_CANCELLED_FROM_LEFT:
                     case BACK_CANCELLED_FROM_RIGHT:
-                        showFeedback(R.string.home_gesture_feedback_swipe_too_far_from_edge);
+                        showFeedback(R.string.overview_gesture_feedback_swipe_too_far_from_edge);
                         break;
                 }
                 break;
-            case HOME_NAVIGATION_COMPLETE:
+            case OVERVIEW_NAVIGATION_COMPLETE:
                 if (result == BackGestureResult.BACK_COMPLETED_FROM_LEFT
                         || result == BackGestureResult.BACK_COMPLETED_FROM_RIGHT) {
                     mTutorialFragment.closeTutorial();
@@ -91,34 +92,33 @@ final class HomeGestureTutorialController extends SwipeUpGestureTutorialControll
     @Override
     public void onNavBarGestureAttempted(NavBarGestureResult result, PointF finalVelocity) {
         switch (mTutorialType) {
-            case HOME_NAVIGATION:
+            case OVERVIEW_NAVIGATION:
                 switch (result) {
                     case HOME_GESTURE_COMPLETED: {
                         animateFakeTaskViewHome(finalVelocity, () ->
-                                mTutorialFragment.changeController(HOME_NAVIGATION_COMPLETE));
+                                showFeedback(R.string.overview_gesture_feedback_home_detected));
                         break;
                     }
                     case HOME_NOT_STARTED_TOO_FAR_FROM_EDGE:
                     case OVERVIEW_NOT_STARTED_TOO_FAR_FROM_EDGE:
-                        showFeedback(R.string.home_gesture_feedback_swipe_too_far_from_edge);
+                        showFeedback(R.string.overview_gesture_feedback_swipe_too_far_from_edge);
                         break;
                     case OVERVIEW_GESTURE_COMPLETED:
                         fadeOutFakeTaskView(true, () ->
-                                showFeedback(R.string.home_gesture_feedback_overview_detected));
+                                mTutorialFragment.changeController(OVERVIEW_NAVIGATION_COMPLETE));
                         break;
                     case HOME_OR_OVERVIEW_NOT_STARTED_WRONG_SWIPE_DIRECTION:
                     case HOME_OR_OVERVIEW_CANCELLED:
                         fadeOutFakeTaskView(false, null);
-                        showFeedback(R.string.home_gesture_feedback_wrong_swipe_direction);
+                        showFeedback(R.string.overview_gesture_feedback_wrong_swipe_direction);
                         break;
                 }
                 break;
-            case HOME_NAVIGATION_COMPLETE:
+            case OVERVIEW_NAVIGATION_COMPLETE:
                 if (result == NavBarGestureResult.HOME_GESTURE_COMPLETED) {
                     mTutorialFragment.closeTutorial();
                 }
                 break;
         }
     }
-
 }
