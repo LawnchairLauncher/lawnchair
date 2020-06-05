@@ -202,6 +202,12 @@ public class StaggeredWorkspaceAnim {
                 .setStartVelocity(mVelocity)
                 .build(v, VIEW_TRANSLATE_Y);
         springTransY.setStartDelay(startDelay);
+        springTransY.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                v.setTranslationY(0f);
+            }
+        });
         mAnimators.play(springTransY);
 
         v.setAlpha(0);
