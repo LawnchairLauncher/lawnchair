@@ -17,8 +17,11 @@
 package com.android.quickstep.logging;
 
 import static com.android.launcher3.logger.LauncherAtom.ContainerInfo.ContainerCase.FOLDER;
+import static com.android.systemui.shared.system.SysUiStatsLog.LAUNCHER_UICHANGED__DST_STATE__ALLAPPS;
 import static com.android.systemui.shared.system.SysUiStatsLog.LAUNCHER_UICHANGED__DST_STATE__BACKGROUND;
 import static com.android.systemui.shared.system.SysUiStatsLog.LAUNCHER_UICHANGED__DST_STATE__HOME;
+import static com.android.systemui.shared.system.SysUiStatsLog.LAUNCHER_UICHANGED__DST_STATE__OVERVIEW;
+import static com.android.systemui.shared.system.SysUiStatsLog.LAUNCHER_UICHANGED__SRC_STATE__HOME;
 
 import android.content.Context;
 import android.util.Log;
@@ -26,6 +29,7 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherState;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.logging.InstanceId;
@@ -100,10 +104,27 @@ public class StatsLogCompatManager extends StatsLogManager {
     }
 
     /**
+     * Logs an event and accompanying {@link LauncherState}s. If either of the state refers
+     * to workspace state, then use pageIndex to pass in index of workspace.
+     */
+    @Override
+    public void log(EventEnum event, int srcState, int dstState, int pageIndex) {
+        LauncherAtom.ItemInfo info = LauncherAtom.ItemInfo.getDefaultInstance();
+        if (srcState == LAUNCHER_UICHANGED__DST_STATE__HOME
+                || dstState == LAUNCHER_UICHANGED__SRC_STATE__HOME) {
+            info = LauncherAtom.ItemInfo.newBuilder().setContainerInfo(
+                    LauncherAtom.ContainerInfo.newBuilder().setWorkspace(
+                            LauncherAtom.WorkspaceContainer.newBuilder().setPageIndex(pageIndex)
+                    )).build();
+        }
+        logInternal(event, DEFAULT_INSTANCE_ID, info, srcState, dstState);
+    }
+
+    /**
      * Logs an event and accompanying {@link InstanceId} and {@link LauncherAtom.ItemInfo}.
      */
     private void logInternal(EventEnum event, InstanceId instanceId,
-            @Nullable LauncherAtom.ItemInfo info, int startState, int endState) {
+            @Nullable LauncherAtom.ItemInfo info, int srcState, int dstState) {
         info = info == null ? LauncherAtom.ItemInfo.getDefaultInstance() : info;
 
         if (IS_VERBOSE) {
@@ -111,8 +132,10 @@ public class StatsLogCompatManager extends StatsLogManager {
                     event.getId() + "";
 
             Log.d(TAG, instanceId == DEFAULT_INSTANCE_ID
-                    ? String.format("\n%s\n%s", name, info)
-                    : String.format("%s(InstanceId:%s)\n%s", name, instanceId, info));
+                    ? String.format("\n%s (State:%s->%s) \n%s", name, getStateString(srcState),
+                            getStateString(dstState), info)
+                    : String.format("\n%s (State:%s->%s) (InstanceId:%s)\n%s", name, instanceId,
+                            getStateString(srcState), getStateString(dstState), info));
         }
 
         if (!Utilities.ATLEAST_R) {
@@ -122,8 +145,8 @@ public class StatsLogCompatManager extends StatsLogManager {
         SysUiStatsLog.write(
                 SysUiStatsLog.LAUNCHER_EVENT,
                 SysUiStatsLog.LAUNCHER_UICHANGED__ACTION__DEFAULT_ACTION /* deprecated */,
-                startState,
-                endState,
+                srcState,
+                dstState,
                 null /* launcher extensions, deprecated */,
                 false /* quickstep_enabled, deprecated */,
                 event.getId() /* event_id */,
@@ -281,6 +304,22 @@ public class StatsLogCompatManager extends StatsLogManager {
                     + FOLDER_HIERARCHY_OFFSET;
         } else {
             return info.getContainerInfo().getContainerCase().getNumber();
+        }
+    }
+
+    private static String getStateString(int state) {
+        switch(state) {
+            case LAUNCHER_UICHANGED__DST_STATE__BACKGROUND:
+                return "BACKGROUND";
+            case LAUNCHER_UICHANGED__DST_STATE__HOME:
+                return "HOME";
+            case LAUNCHER_UICHANGED__DST_STATE__OVERVIEW:
+                return "OVERVIEW";
+            case LAUNCHER_UICHANGED__DST_STATE__ALLAPPS:
+                return "ALLAPPS";
+            default:
+                return "INVALID";
+
         }
     }
 }
