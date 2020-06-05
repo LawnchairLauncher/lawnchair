@@ -79,8 +79,6 @@ public class RecentsAnimationDeviceState implements
         NavigationModeChangeListener,
         DefaultDisplay.DisplayInfoChangeListener {
 
-    private static boolean sIsOneHandedEnabled;
-
     private final Context mContext;
     private final SysUINavigationMode mSysUiNavMode;
     private final DefaultDisplay mDefaultDisplay;
@@ -97,6 +95,7 @@ public class RecentsAnimationDeviceState implements
     private final Region mDeferredGestureRegion = new Region();
     private boolean mAssistantAvailable;
     private float mAssistantVisibility;
+    private boolean mIsOneHandedModeEnabled;
 
     private boolean mIsUserUnlocked;
     private final ArrayList<Runnable> mUserUnlockedActions = new ArrayList<>();
@@ -564,10 +563,6 @@ public class RecentsAnimationDeviceState implements
      * @return whether the given motion event can trigger the one handed mode.
      */
     public boolean canTriggerOneHandedAction(MotionEvent ev) {
-        if (!sIsOneHandedEnabled) {
-            return false;
-        }
-
         final DefaultDisplay.Info displayInfo = mDefaultDisplay.getInfo();
         return (mOrientationTouchTransformer.touchInOneHandedModeRegion(ev)
                 && displayInfo.rotation != Surface.ROTATION_90
@@ -575,8 +570,12 @@ public class RecentsAnimationDeviceState implements
                 && displayInfo.metrics.densityDpi < DisplayMetrics.DENSITY_600);
     }
 
+    public boolean isOneHandedModeEnabled() {
+        return mIsOneHandedModeEnabled;
+    }
+
     private void onOneHandedEnabledSettingsChanged(boolean isOneHandedEnabled) {
-        sIsOneHandedEnabled = isOneHandedEnabled;
+        mIsOneHandedModeEnabled = isOneHandedEnabled;
     }
 
     /**
