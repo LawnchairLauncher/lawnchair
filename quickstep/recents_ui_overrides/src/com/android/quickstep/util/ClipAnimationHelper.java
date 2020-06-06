@@ -402,6 +402,10 @@ public class ClipAnimationHelper {
             return this;
         }
 
+        public float getProgress() {
+            return progress;
+        }
+
         public TransformParams setCornerRadius(float cornerRadius) {
             this.cornerRadius = cornerRadius;
             return this;

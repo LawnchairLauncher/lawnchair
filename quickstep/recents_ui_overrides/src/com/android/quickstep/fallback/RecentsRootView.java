@@ -80,7 +80,8 @@ public class RecentsRootView extends BaseDragLayer<RecentsActivity> {
         if (!insets.equals(mInsets)) {
             super.setInsets(insets);
         }
-        setBackground(insets.top == 0 ? null
+        setBackground(insets.top == 0  || !mAllowSysuiScrims
+                ? null
                 : Themes.getAttrDrawable(getContext(), R.attr.workspaceStatusBarScrim));
     }
 

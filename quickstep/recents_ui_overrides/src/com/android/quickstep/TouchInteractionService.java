@@ -563,9 +563,13 @@ public class TouchInteractionService extends Service implements
                 // not interrupt it. QuickSwitch assumes that interruption can only happen if the
                 // next gesture is also quick switch.
                 mUncheckedConsumer =
-                        new AssistantTouchConsumer(this, mISystemUiProxy,
+                        new AssistantTouchConsumer(
+                                this,
+                                mISystemUiProxy,
                                 mOverviewComponentObserver.getActivityControlHelper(),
-                                InputConsumer.NO_OP, mInputMonitorCompat);
+                                InputConsumer.NO_OP,
+                                mInputMonitorCompat,
+                                mOverviewComponentObserver.assistantGestureIsConstrained());
             } else {
                 mUncheckedConsumer = InputConsumer.NO_OP;
             }
@@ -612,8 +616,13 @@ public class TouchInteractionService extends Service implements
             final ActivityControlHelper activityControl =
                     mOverviewComponentObserver.getActivityControlHelper();
             if (canTriggerAssistantAction(event)) {
-                base = new AssistantTouchConsumer(this, mISystemUiProxy, activityControl, base,
-                        mInputMonitorCompat);
+                base = new AssistantTouchConsumer(
+                        this,
+                        mISystemUiProxy,
+                        activityControl,
+                        base,
+                        mInputMonitorCompat,
+                        mOverviewComponentObserver.assistantGestureIsConstrained());
             }
 
             if ((mSystemUiStateFlags & SYSUI_STATE_SCREEN_PINNING) != 0) {

@@ -113,7 +113,7 @@ public abstract class BaseFlags {
             "Suggests folder names instead of blank text.");
 
     public static final TogglableFlag APP_SEARCH_IMPROVEMENTS = new TogglableFlag(
-            "APP_SEARCH_IMPROVEMENTS", false,
+            "APP_SEARCH_IMPROVEMENTS", true,
             "Adds localized title and keyword search and ranking");
 
     public static final TogglableFlag ENABLE_PREDICTION_DISMISS = new TogglableFlag(
@@ -132,6 +132,7 @@ public abstract class BaseFlags {
                 }
             }
         }
+        APP_SEARCH_IMPROVEMENTS.initialize(context);
     }
 
     static List<TogglableFlag> getTogglableFlags() {

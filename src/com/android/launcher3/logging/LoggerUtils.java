@@ -109,7 +109,7 @@ public class LoggerUtils {
                         t.containerType == NAVBAR) {
                     str += " id=" + t.pageIndex;
                 } else if (t.containerType == ContainerType.FOLDER) {
-                    str += " grid(" + t.gridX + "," + t.gridY + ")";
+                    str += "[PageIndex=" + t.pageIndex + ", grid(" + t.gridX + "," + t.gridY + ")]";
                 }
                 break;
             default:
