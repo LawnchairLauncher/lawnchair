@@ -52,6 +52,7 @@ message ContainerInfo {
     PredictionContainer prediction_container = 6;
     SearchResultContainer search_result_container = 7;
     ShortcutsContainer shortcuts_container = 8;
+    SettingsContainer settings_container = 9;
   }
 }
 
@@ -73,6 +74,11 @@ message SearchResultContainer {
 // Container for package specific shortcuts to deep links and notifications.
 // Typically shown as popup window by longpressing on an icon.
 message ShortcutsContainer {
+}
+
+// Container for generic system shortcuts for launcher specific settings.
+// Typically shown up as popup window by longpressing on empty space on workspace.
+message SettingsContainer {
 }
 
 enum Origin {

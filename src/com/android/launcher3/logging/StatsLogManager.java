@@ -38,6 +38,9 @@ public class StatsLogManager implements ResourceBasedOverride {
     }
 
     public enum LauncherEvent implements EventEnum {
+        /* Used to prevent double logging. */
+        IGNORE(-1),
+
         @UiEvent(doc = "App launched from workspace, hotseat or folder in launcher")
         LAUNCHER_APP_LAUNCH_TAP(338),
 
