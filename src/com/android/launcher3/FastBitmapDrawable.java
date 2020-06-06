@@ -36,6 +36,7 @@ import android.util.Property;
 import com.android.launcher3.graphics.PlaceHolderIconDrawable;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
+import com.android.launcher3.util.Themes;
 
 
 public class FastBitmapDrawable extends Drawable {
@@ -44,7 +45,6 @@ public class FastBitmapDrawable extends Drawable {
 
     private static final float DISABLED_DESATURATION = 1f;
     private static final float DISABLED_BRIGHTNESS = 0.5f;
-    private static final float DISABLED_ALPHA = 0.54f;
 
     public static final int CLICK_FEEDBACK_DURATION = 200;
 
@@ -56,6 +56,7 @@ public class FastBitmapDrawable extends Drawable {
 
     private boolean mIsPressed;
     private boolean mIsDisabled;
+    private float mDisabledAlpha = 1f;
 
     // Animator and properties for the fast bitmap drawable's scale
     private static final Property<FastBitmapDrawable, Float> SCALE
@@ -253,7 +254,7 @@ public class FastBitmapDrawable extends Drawable {
             mat[4] = brightnessI;
             mat[9] = brightnessI;
             mat[14] = brightnessI;
-            mat[18] = DISABLED_ALPHA;
+            mat[18] = mDisabledAlpha;
             tempFilterMatrix.preConcat(tempBrightnessMatrix);
             sDisabledFColorFilter = new ColorMatrixColorFilter(tempFilterMatrix);
         }
@@ -319,12 +320,15 @@ public class FastBitmapDrawable extends Drawable {
      * Creates a drawable for the provided BitmapInfo
      */
     public static FastBitmapDrawable newIcon(Context context, BitmapInfo info) {
+        final FastBitmapDrawable drawable;
         if (info instanceof Factory) {
-            return ((Factory) info).newDrawable();
+            drawable = ((Factory) info).newDrawable();
         } else if (info.isLowRes()) {
-            return new PlaceHolderIconDrawable(info, context);
+            drawable = new PlaceHolderIconDrawable(info, context);
         } else {
-            return new FastBitmapDrawable(info);
+            drawable = new FastBitmapDrawable(info);
         }
+        drawable.mDisabledAlpha = Themes.getFloat(context, R.attr.disabledIconAlpha, 1f);
+        return drawable;
     }
 }
