@@ -32,6 +32,7 @@ import android.view.animation.Interpolator;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
+import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
@@ -118,8 +119,11 @@ public final class LauncherActivityInterface extends
     }
 
     @Override
-    public AnimationFactory prepareRecentsUI(
+    public AnimationFactory prepareRecentsUI(RecentsAnimationDeviceState deviceState,
             boolean activityVisible, Consumer<AnimatorPlaybackController> callback) {
+        ((RecentsView) getCreatedActivity().getOverviewPanel())
+                .setLayoutRotation(deviceState.getCurrentActiveRotation(),
+                        deviceState.getDisplayRotation());
         DefaultAnimationFactory factory = new DefaultAnimationFactory(callback) {
             @Override
             public void setShelfState(ShelfAnimState shelfState, Interpolator interpolator,
