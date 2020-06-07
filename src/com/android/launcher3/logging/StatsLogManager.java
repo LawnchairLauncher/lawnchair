@@ -121,7 +121,10 @@ public class StatsLogManager implements ResourceBasedOverride {
         LAUNCHER_SYSTEM_SHORTCUT_PAUSE_TAP(521),
 
         @UiEvent(doc = "User tapped on pin system shortcut.")
-        LAUNCHER_SYSTEM_SHORTCUT_PIN_TAP(522);
+        LAUNCHER_SYSTEM_SHORTCUT_PIN_TAP(522),
+
+        @UiEvent(doc = "User is shown All Apps education view.")
+        LAUNCHER_ALL_APPS_EDU_SHOWN(523);
         // ADD MORE
 
         private final int mId;
