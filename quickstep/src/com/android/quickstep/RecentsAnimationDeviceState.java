@@ -237,10 +237,8 @@ public class RecentsAnimationDeviceState implements
     @Override
     public void onNavigationModeChanged(SysUINavigationMode.Mode newMode) {
         mDefaultDisplay.removeChangeListener(this);
-        if (newMode.hasGestures) {
-            mDefaultDisplay.addChangeListener(this);
-            onDisplayInfoChanged(mDefaultDisplay.getInfo(), CHANGE_ALL);
-        }
+        mDefaultDisplay.addChangeListener(this);
+        onDisplayInfoChanged(mDefaultDisplay.getInfo(), CHANGE_ALL);
 
         if (newMode == NO_BUTTON) {
             mExclusionListener.register();
@@ -268,6 +266,10 @@ public class RecentsAnimationDeviceState implements
         }
 
         mDisplayRotation = info.rotation;
+
+        if (!mMode.hasGestures) {
+            return;
+        }
         mNavBarPosition = new NavBarPosition(mMode, info);
         updateGestureTouchRegions();
         mOrientationTouchTransformer.createOrAddTouchRegion(info);
@@ -606,7 +608,11 @@ public class RecentsAnimationDeviceState implements
         }
     }
 
-    public int getCurrentActiveRotation() {
+    int getCurrentActiveRotation() {
+        if (!mMode.hasGestures) {
+            // touch rotation should always match that of display for 3 button
+            return mDisplayRotation;
+        }
         return mOrientationTouchTransformer.getCurrentActiveRotation();
     }
 
