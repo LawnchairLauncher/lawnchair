@@ -32,7 +32,6 @@ import android.view.animation.Interpolator;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
-import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
@@ -314,8 +313,8 @@ public final class LauncherActivityInterface extends
     @Override
     protected float getExtraSpace(Context context, DeviceProfile dp,
             PagedOrientationHandler orientationHandler) {
-        if (dp.isVerticalBarLayout() ||
-                hideShelfInTwoButtonLandscape(context, orientationHandler)) {
+        if ((dp.isVerticalBarLayout() && !showOverviewActions(context))
+                || hideShelfInTwoButtonLandscape(context, orientationHandler)) {
             return 0;
         } else {
             Resources res = context.getResources();
@@ -323,12 +322,14 @@ public final class LauncherActivityInterface extends
                 //TODO: this needs to account for the swipe gesture height and accessibility
                 // UI when shown.
                 float actionsBottomMargin = 0;
-                if (getMode(context) == Mode.THREE_BUTTONS) {
-                    actionsBottomMargin = res.getDimensionPixelSize(
+                if (!dp.isVerticalBarLayout()) {
+                    if (getMode(context) == Mode.THREE_BUTTONS) {
+                        actionsBottomMargin = res.getDimensionPixelSize(
                             R.dimen.overview_actions_bottom_margin_three_button);
-                } else {
-                    actionsBottomMargin = res.getDimensionPixelSize(
+                    } else {
+                        actionsBottomMargin = res.getDimensionPixelSize(
                             R.dimen.overview_actions_bottom_margin_gesture);
+                    }
                 }
                 float actionsHeight = actionsBottomMargin
                         + res.getDimensionPixelSize(R.dimen.overview_actions_height);
