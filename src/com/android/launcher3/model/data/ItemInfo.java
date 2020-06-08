@@ -22,6 +22,7 @@ import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_PREDICTION;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_SEARCH_RESULTS;
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_SETTINGS;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_SHORTCUTS;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_WIDGETS_TRAY;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
@@ -46,6 +47,7 @@ import com.android.launcher3.logger.LauncherAtom.AllAppsContainer;
 import com.android.launcher3.logger.LauncherAtom.ContainerInfo;
 import com.android.launcher3.logger.LauncherAtom.PredictionContainer;
 import com.android.launcher3.logger.LauncherAtom.SearchResultContainer;
+import com.android.launcher3.logger.LauncherAtom.SettingsContainer;
 import com.android.launcher3.logger.LauncherAtom.ShortcutsContainer;
 import com.android.launcher3.util.ContentWriter;
 
@@ -368,6 +370,10 @@ public class ItemInfo {
             case CONTAINER_SHORTCUTS:
                 return ContainerInfo.newBuilder()
                         .setShortcutsContainer(ShortcutsContainer.getDefaultInstance())
+                        .build();
+            case CONTAINER_SETTINGS:
+                return ContainerInfo.newBuilder()
+                        .setSettingsContainer(SettingsContainer.getDefaultInstance())
                         .build();
         }
         return ContainerInfo.getDefaultInstance();
