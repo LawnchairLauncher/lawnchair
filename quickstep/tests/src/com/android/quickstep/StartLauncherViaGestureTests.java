@@ -25,7 +25,6 @@ import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
 
 import com.android.launcher3.Launcher;
-import com.android.launcher3.tapl.TestHelpers;
 import com.android.launcher3.util.RaceConditionReproducer;
 import com.android.quickstep.NavigationModeSwitchRule.Mode;
 import com.android.quickstep.NavigationModeSwitchRule.NavigationModeSwitch;
@@ -99,5 +98,7 @@ public class StartLauncherViaGestureTests extends AbstractQuickStepTest {
             // The test action.
             mLauncher.getBackground().switchToOverview();
         }
+        // Workaround for b/157099707
+        mLauncher.pressHome();
     }
 }
