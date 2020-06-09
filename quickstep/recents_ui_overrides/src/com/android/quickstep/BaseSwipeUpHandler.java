@@ -144,13 +144,14 @@ public abstract class BaseSwipeUpHandler<T extends StatefulActivity<?>, Q extend
                 TaskView nextTask = mRecentsView.getTaskView(taskId);
                 if (nextTask != null) {
                     mGestureState.updateLastStartedTaskId(taskId);
+                    boolean hasTaskPreviouslyAppeared = mGestureState.getPreviouslyAppearedTaskIds()
+                            .contains(taskId);
                     nextTask.launchTask(false /* animate */, true /* freezeTaskList */,
                             success -> {
                                 resultCallback.accept(success);
                                 if (success) {
-                                    if (mRecentsView.indexOfChild(nextTask)
-                                            == getLastAppearedTaskIndex()) {
-                                        onRestartLastAppearedTask();
+                                    if (hasTaskPreviouslyAppeared) {
+                                        onRestartPreviouslyAppearedTask();
                                     }
                                 } else {
                                     mActivityInterface.onLaunchTaskFailed();
@@ -171,7 +172,7 @@ public abstract class BaseSwipeUpHandler<T extends StatefulActivity<?>, Q extend
      * start A again to ensure it stays on top.
      */
     @CallSuper
-    protected void onRestartLastAppearedTask() {
+    protected void onRestartPreviouslyAppearedTask() {
         // Finish the controller here, since we won't get onTaskAppeared() for a task that already
         // appeared.
         if (mRecentsAnimationController != null) {
