@@ -18,11 +18,15 @@ package com.android.quickstep;
 
 import static com.android.launcher3.util.MainThreadInitializedObject.forOverride;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Insets;
 import android.graphics.Matrix;
 import android.graphics.Rect;
+import android.os.Build;
 import android.widget.Toast;
+
+import androidx.annotation.RequiresApi;
 
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BaseDraggingActivity;
@@ -122,6 +126,7 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
                     }
                 }
 
+                @SuppressLint("NewApi")
                 @Override
                 public void onScreenshot() {
                     if (isAllowedByPolicy) {
@@ -159,9 +164,9 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
          *
          * @return the insets in screen coordinates.
          */
+        @RequiresApi(api = Build.VERSION_CODES.Q)
         public Insets getTaskSnapshotInsets() {
-            // TODO: return the real insets
-            return Insets.of(0, 0, 0, 0);
+            return mThumbnailView.getScaledInsets();
         }
 
         private void showBlockedByPolicyMessage() {
