@@ -32,7 +32,6 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Point;
-import android.text.TextUtils;
 import android.util.ArrayMap;
 import android.util.Log;
 
@@ -53,6 +52,7 @@ import com.android.launcher3.widget.WidgetManagerHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -259,64 +259,54 @@ public class GridSizeMigrationTaskV2 {
         return diff;
     }
 
-    private static void insertEntryInDb(SQLiteDatabase db, Context context,
-            ArrayList<DbEntry> entriesFromSrcDb, DbEntry entry, String srcTableName,
-            String destTableName) {
-        int id = -1;
-        switch (entry.itemType) {
-            case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
-            case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT:
-            case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION: {
-                for (DbEntry e : entriesFromSrcDb) {
-                    if (TextUtils.equals(e.mIntent, entry.mIntent)) {
-                        id = e.id;
-                    }
-                }
+    private static void insertEntryInDb(SQLiteDatabase db, Context context, DbEntry entry,
+            String srcTableName, String destTableName) {
+        int id = copyEntryAndUpdate(db, context, entry, srcTableName, destTableName);
 
-                break;
+        if (entry.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
+            for (int itemId : entry.mFolderItems.values()) {
+                copyEntryAndUpdate(db, context, itemId, id, srcTableName, destTableName);
             }
-            case LauncherSettings.Favorites.ITEM_TYPE_FOLDER: {
-                for (DbEntry e : entriesFromSrcDb) {
-                    if (e.mFolderItems.size() == entry.mFolderItems.size()
-                            && e.mFolderItems.containsAll(entry.mFolderItems)) {
-                        id = e.id;
-                    }
-                }
-                break;
-            }
-            case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
-            case LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET: {
-                for (DbEntry e : entriesFromSrcDb) {
-                    if (TextUtils.equals(e.mProvider, entry.mProvider)) {
-                        id = e.id;
-                        break;
-                    }
-                }
-                break;
-            }
-            default:
-                return;
         }
+    }
 
-        Cursor c = db.query(srcTableName, null, LauncherSettings.Favorites._ID + " = '" + id + "'",
+    private static int copyEntryAndUpdate(SQLiteDatabase db, Context context,
+            DbEntry entry, String srcTableName, String destTableName) {
+        return copyEntryAndUpdate(db, context, entry, -1, -1, srcTableName, destTableName);
+    }
+
+    private static int copyEntryAndUpdate(SQLiteDatabase db, Context context,
+            int id, int folderId, String srcTableName, String destTableName) {
+        return copyEntryAndUpdate(db, context, null, id, folderId, srcTableName, destTableName);
+    }
+
+    private static int copyEntryAndUpdate(SQLiteDatabase db, Context context,
+            DbEntry entry, int id, int folderId, String srcTableName, String destTableName) {
+        int newId = -1;
+        Cursor c = db.query(srcTableName, null,
+                LauncherSettings.Favorites._ID + " = '" + (entry != null ? entry.id : id) + "'",
                 null, null, null, null);
-
         while (c.moveToNext()) {
             ContentValues values = new ContentValues();
             DatabaseUtils.cursorRowToContentValues(c, values);
-            entry.updateContentValues(values);
-            values.put(LauncherSettings.Favorites._ID,
-                    LauncherSettings.Settings.call(context.getContentResolver(),
-                            LauncherSettings.Settings.METHOD_NEW_ITEM_ID).getInt(
-                            LauncherSettings.Settings.EXTRA_VALUE));
+            if (entry != null) {
+                entry.updateContentValues(values);
+            } else {
+                values.put(LauncherSettings.Favorites.CONTAINER, folderId);
+            }
+            newId = LauncherSettings.Settings.call(context.getContentResolver(),
+                    LauncherSettings.Settings.METHOD_NEW_ITEM_ID).getInt(
+                    LauncherSettings.Settings.EXTRA_VALUE);
+            values.put(LauncherSettings.Favorites._ID, newId);
             db.insert(destTableName, null, values);
         }
         c.close();
+        return newId;
     }
 
-    private static void removeEntryFromDb(SQLiteDatabase db, String tableName, IntArray entryId) {
+    private static void removeEntryFromDb(SQLiteDatabase db, String tableName, IntArray entryIds) {
         db.delete(tableName,
-                Utilities.createDbSelectionQuery(LauncherSettings.Favorites._ID, entryId), null);
+                Utilities.createDbSelectionQuery(LauncherSettings.Favorites._ID, entryIds), null);
     }
 
     private static HashSet<String> getValidPackages(Context context) {
@@ -381,8 +371,8 @@ public class GridSizeMigrationTaskV2 {
                     continue;
                 }
                 if (findPlacement(entry)) {
-                    insertEntryInDb(mDb, mContext, mSrcReader.mWorkspaceEntries, entry,
-                            mSrcReader.mTableName, mDestReader.mTableName);
+                    insertEntryInDb(mDb, mContext, entry, mSrcReader.mTableName,
+                            mDestReader.mTableName);
                     iterator.remove();
                 }
             }
@@ -451,8 +441,8 @@ public class GridSizeMigrationTaskV2 {
                     // to something other than -1.
                     entry.cellX = i;
                     entry.cellY = 0;
-                    insertEntryInDb(mDb, mContext, mSrcReader.mHotseatEntries, entry,
-                            mSrcReader.mTableName, mDestReader.mTableName);
+                    insertEntryInDb(mDb, mContext, entry, mSrcReader.mTableName,
+                            mDestReader.mTableName);
                     mOccupied.markCells(entry, true);
                 }
             }
@@ -669,10 +659,11 @@ public class GridSizeMigrationTaskV2 {
             int total = 0;
             while (c.moveToNext()) {
                 try {
+                    int id = c.getInt(0);
                     String intent = c.getString(1);
                     verifyIntent(intent);
                     total++;
-                    entry.mFolderItems.add(intent);
+                    entry.mFolderItems.put(intent, id);
                 } catch (Exception e) {
                     removeEntryFromDb(mDb, mTableName, IntArray.wrap(c.getInt(0)));
                 }
@@ -711,7 +702,7 @@ public class GridSizeMigrationTaskV2 {
 
         private String mIntent;
         private String mProvider;
-        private Set<String> mFolderItems = new HashSet<>();
+        private Map<String, Integer> mFolderItems = new HashMap<>();
 
         /** Comparator according to the reading order */
         @Override
