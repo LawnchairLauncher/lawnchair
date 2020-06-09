@@ -98,6 +98,10 @@ public final class FeatureFlags {
             "FOLDER_NAME_SUGGEST", true,
             "Suggests folder names instead of blank text.");
 
+    public static final BooleanFlag FOLDER_NAME_MAJORITY_RANKING = getDebugFlag(
+            "FOLDER_NAME_MAJORITY_RANKING", true,
+            "Suggests folder names based on majority based ranking.");
+
     public static final BooleanFlag APP_SEARCH_IMPROVEMENTS = new DeviceFlag(
             "APP_SEARCH_IMPROVEMENTS", true,
             "Adds localized title and keyword search and ranking");
