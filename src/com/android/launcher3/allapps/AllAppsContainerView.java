@@ -22,6 +22,8 @@ import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_QUIET_MODE_
 
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
@@ -441,6 +443,15 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         }
     }
 
+    @Override
+    protected void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        View overlay = mAH[AdapterHolder.WORK].getOverlayView();
+        int v = newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE ? GONE : VISIBLE;
+        overlay.findViewById(R.id.work_apps_paused_title).setVisibility(v);
+        overlay.findViewById(R.id.work_apps_paused_content).setVisibility(v);
+    }
+
     private void replaceRVContainer(boolean showTabs) {
         for (int i = 0; i < mAH.length; i++) {
             if (mAH[i].recyclerView != null) {
@@ -653,10 +664,12 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             recyclerView.setItemAnimator(new DefaultItemAnimator());
             if (workDisabled) {
                 overlayView.setAlpha(0);
-                appsList.updateItemFilter((info, cn) -> false);
                 recyclerView.addAutoSizedOverlay(overlayView);
                 overlayView.animate().alpha(1).withEndAction(
-                        () -> recyclerView.setItemAnimator(null)).start();
+                        () -> {
+                            appsList.updateItemFilter((info, cn) -> false);
+                            recyclerView.setItemAnimator(null);
+                        }).start();
             } else if (mInfoMatcher != null) {
                 appsList.updateItemFilter(mInfoMatcher);
                 overlayView.animate().alpha(0).withEndAction(() -> {
@@ -669,8 +682,12 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
         void applyPadding() {
             if (recyclerView != null) {
-                int bottomOffset =
-                        mWorkModeSwitch != null && mIsWork ? mWorkModeSwitch.getHeight() : 0;
+                Resources res = getResources();
+                int switchH = res.getDimensionPixelSize(R.dimen.work_profile_footer_padding) * 2
+                        + mInsets.bottom + Utilities.calculateTextHeight(
+                        res.getDimension(R.dimen.work_profile_footer_text_size));
+
+                int bottomOffset = mWorkModeSwitch != null && mIsWork ? switchH : 0;
                 recyclerView.setPadding(padding.left, padding.top, padding.right,
                         padding.bottom + bottomOffset);
             }
