@@ -17,6 +17,9 @@
 package com.android.launcher3.model;
 
 import static com.android.launcher3.config.FeatureFlags.MULTI_DB_GRID_MIRATION_ALGO;
+import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_HAS_SHORTCUT_PERMISSION;
+import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_QUIET_MODE_CHANGE_PERMISSION;
+import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_QUIET_MODE_ENABLED;
 import static com.android.launcher3.model.ModelUtils.filterCurrentWorkspaceItems;
 import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_DISABLED_LOCKED_USER;
 import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_DISABLED_SAFEMODE;
@@ -35,6 +38,7 @@ import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
 import android.content.pm.PackageInstaller;
 import android.content.pm.PackageInstaller.SessionInfo;
+import android.content.pm.PackageManager;
 import android.content.pm.ShortcutInfo;
 import android.net.Uri;
 import android.os.UserHandle;
@@ -119,6 +123,8 @@ public class LoaderTask implements Runnable {
 
     private final InstallSessionHelper mSessionHelper;
     private final IconCache mIconCache;
+
+    private final UserManagerState mUserManagerState = new UserManagerState();
 
     private boolean mStopped;
 
@@ -333,7 +339,8 @@ public class LoaderTask implements Runnable {
 
             Map<ShortcutKey, ShortcutInfo> shortcutKeyToPinnedShortcuts = new HashMap<>();
             final LoaderCursor c = new LoaderCursor(
-                    contentResolver.query(contentUri, null, null, null, null), contentUri, mApp);
+                    contentResolver.query(contentUri, null, null, null, null), contentUri, mApp,
+                    mUserManagerState);
 
             Map<ComponentKey, AppWidgetProviderInfo> widgetProvidersMap = null;
 
@@ -352,12 +359,13 @@ public class LoaderTask implements Runnable {
                         LauncherSettings.Favorites.OPTIONS);
 
                 final LongSparseArray<UserHandle> allUsers = c.allUsers;
-                final LongSparseArray<Boolean> quietMode = new LongSparseArray<>();
                 final LongSparseArray<Boolean> unlockedUsers = new LongSparseArray<>();
+
+                mUserManagerState.init(mUserCache, mUserManager);
+
                 for (UserHandle user : mUserCache.getUserProfiles()) {
                     long serialNo = mUserCache.getSerialNumberForUser(user);
                     allUsers.put(serialNo, user);
-                    quietMode.put(serialNo, mUserManager.isQuietModeEnabled(user));
 
                     boolean userUnlocked = mUserManager.isUserUnlocked(user);
 
@@ -404,8 +412,8 @@ public class LoaderTask implements Runnable {
                                 continue;
                             }
 
-                            int disabledState = quietMode.get(c.serialNumber) ?
-                                    WorkspaceItemInfo.FLAG_DISABLED_QUIET_USER : 0;
+                            int disabledState = mUserManagerState.isUserQuiet(c.serialNumber)
+                                    ? WorkspaceItemInfo.FLAG_DISABLED_QUIET_USER : 0;
                             ComponentName cn = intent.getComponent();
                             targetPkg = cn == null ? intent.getPackage() : cn.getPackageName();
 
@@ -862,8 +870,8 @@ public class LoaderTask implements Runnable {
             for (ComponentKey key : componentKeys) {
                 l = mLauncherApps.getActivityList(key.componentName.getPackageName(), key.user);
                 if (l.size() == 0) continue;
-                boolean quietMode = mUserManager.isQuietModeEnabled(key.user);
-                AppInfo info = new AppInfo(l.get(0), key.user, quietMode);
+                AppInfo info = new AppInfo(l.get(0), key.user,
+                        mUserManagerState.isUserQuiet(key.user));
                 mBgDataModel.cachedPredictedItems.add(info);
                 mIconCache.getTitleAndIcon(info, false);
             }
@@ -883,7 +891,7 @@ public class LoaderTask implements Runnable {
             if (apps == null || apps.isEmpty()) {
                 return allActivityList;
             }
-            boolean quietMode = mUserManager.isQuietModeEnabled(user);
+            boolean quietMode = mUserManagerState.isUserQuiet(user);
             // Create the ApplicationInfos
             for (int i = 0; i < apps.size(); i++) {
                 LauncherActivityInfo app = apps.get(i);
@@ -905,10 +913,18 @@ public class LoaderTask implements Runnable {
             List<LauncherActivityInfo> l = mLauncherApps.getActivityList(
                     item.componentName.getPackageName(), item.user);
             for (LauncherActivityInfo info : l) {
-                boolean quietMode = mUserManager.isQuietModeEnabled(item.user);
+                boolean quietMode = mUserManagerState.isUserQuiet(item.user);
                 mBgAllAppsList.add(new AppInfo(info, item.user, quietMode), info);
             }
         }
+
+        mBgAllAppsList.setFlags(FLAG_QUIET_MODE_ENABLED,
+                mUserManagerState.isAnyProfileQuietModeEnabled());
+        mBgAllAppsList.setFlags(FLAG_HAS_SHORTCUT_PERMISSION,
+                hasShortcutsPermission(mApp.getContext()));
+        mBgAllAppsList.setFlags(FLAG_QUIET_MODE_CHANGE_PERMISSION,
+                mApp.getContext().checkSelfPermission("android.permission.MODIFY_QUIET_MODE")
+                        == PackageManager.PERMISSION_GRANTED);
 
         mBgAllAppsList.getAndResetChangeFlag();
         return allActivityList;
@@ -917,8 +933,8 @@ public class LoaderTask implements Runnable {
     private List<ShortcutInfo> loadDeepShortcuts() {
         List<ShortcutInfo> allShortcuts = new ArrayList<>();
         mBgDataModel.deepShortcutMap.clear();
-        mBgDataModel.hasShortcutHostPermission = hasShortcutsPermission(mApp.getContext());
-        if (mBgDataModel.hasShortcutHostPermission) {
+
+        if (mBgAllAppsList.hasShortcutHostPermission()) {
             for (UserHandle user : mUserCache.getUserProfiles()) {
                 if (mUserManager.isUserUnlocked(user)) {
                     List<ShortcutInfo> shortcuts = new ShortcutRequest(mApp.getContext(), user)
