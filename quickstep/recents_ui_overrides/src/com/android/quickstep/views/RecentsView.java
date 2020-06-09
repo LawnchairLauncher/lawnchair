@@ -607,10 +607,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         }
     }
 
-    public boolean isCenterPageTask() {
-        return getScrollX() == getScrollForPage(getPageNearestToCenterOfScreen());
-    }
-
     @Override
     protected void onPageBeginTransition() {
         super.onPageBeginTransition();
@@ -620,7 +616,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     @Override
     protected void onPageEndTransition() {
         super.onPageEndTransition();
-        if (isCenterPageTask()) {
+        if (getScrollX() == getScrollForPage(getPageNearestToCenterOfScreen())) {
             LayoutUtils.setViewEnabled(mActionsView, true);
         }
         if (getNextPage() > 0) {
