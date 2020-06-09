@@ -33,6 +33,7 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.logging.InstanceId;
+import com.android.launcher3.logging.InstanceIdSequence;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.AllAppsList;
 import com.android.launcher3.model.BaseModelUpdateTask;
@@ -180,33 +181,37 @@ public class StatsLogCompatManager extends StatsLogManager {
     }
 
     private class SnapshotWorker extends BaseModelUpdateTask {
+        private final InstanceId mInstanceId;
+        SnapshotWorker() {
+            mInstanceId = new InstanceIdSequence(
+                    1 << 20 /*InstanceId.INSTANCE_ID_MAX*/).newInstanceId();
+        }
 
         @Override
         public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
             IntSparseArrayMap<FolderInfo> folders = dataModel.folders.clone();
             ArrayList<ItemInfo> workspaceItems = (ArrayList) dataModel.workspaceItems.clone();
             ArrayList<LauncherAppWidgetInfo> appWidgets = (ArrayList) dataModel.appWidgets.clone();
-
             for (ItemInfo info : workspaceItems) {
                 LauncherAtom.ItemInfo atomInfo = info.buildProto(null);
-                writeSnapshot(atomInfo);
+                writeSnapshot(atomInfo, mInstanceId);
             }
             for (FolderInfo fInfo : folders) {
                 for (ItemInfo info : fInfo.contents) {
                     LauncherAtom.ItemInfo atomInfo = info.buildProto(fInfo);
-                    writeSnapshot(atomInfo);
+                    writeSnapshot(atomInfo, mInstanceId);
                 }
             }
             for (ItemInfo info : appWidgets) {
                 LauncherAtom.ItemInfo atomInfo = info.buildProto(null);
-                writeSnapshot(atomInfo);
+                writeSnapshot(atomInfo, mInstanceId);
             }
         }
     }
 
-    private static void writeSnapshot(LauncherAtom.ItemInfo info) {
+    private static void writeSnapshot(LauncherAtom.ItemInfo info, InstanceId instanceId) {
         if (IS_VERBOSE) {
-            Log.d(TAG, "\nwriteSnapshot:" + info);
+            Log.d(TAG, String.format("\nwriteSnapshot(%d):\n%s", instanceId.getId(), info));
         }
         if (!Utilities.ATLEAST_R) {
             return;
@@ -214,7 +219,7 @@ public class StatsLogCompatManager extends StatsLogManager {
         SysUiStatsLog.write(SysUiStatsLog.LAUNCHER_SNAPSHOT,
                 0 /* event_id */,
                 info.getItemCase().getNumber() /* target_id */,
-                0 /* instance_id */,
+                instanceId.getId() /* instance_id */,
                 0 /* uid */,
                 getPackageName(info) /* package_name */,
                 getComponentName(info) /* component_name */,
@@ -226,8 +231,8 @@ public class StatsLogCompatManager extends StatsLogManager {
                 getPageId(info, true) /* page_id_parent */,
                 getHierarchy(info) /* hierarchy */,
                 info.getIsWork() /* is_work_profile */,
-                0 /* origin TODO */,
-                0 /* cardinality */,
+                info.getAttribute().getNumber() /* origin */,
+                info.getFolderIcon().getCardinality() /* cardinality */,
                 info.getWidget().getSpanX(),
                 info.getWidget().getSpanY());
     }
