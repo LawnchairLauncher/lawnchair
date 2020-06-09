@@ -90,6 +90,22 @@ public class DefaultLayoutProviderTest {
     }
 
     @Test
+    public void testCustomProfileLoaded_with_folder_custom_title() throws Exception {
+        writeLayoutAndLoad(new LauncherLayoutBuilder().atHotseat(0).putFolder("CustomFolder")
+                .addApp(TEST_PACKAGE, TEST_PACKAGE)
+                .addApp(TEST_PACKAGE, TEST_PACKAGE)
+                .addApp(TEST_PACKAGE, TEST_PACKAGE)
+                .build());
+
+        // Verify folder
+        assertEquals(1, mModelHelper.getBgDataModel().workspaceItems.size());
+        ItemInfo info = mModelHelper.getBgDataModel().workspaceItems.get(0);
+        assertEquals(LauncherSettings.Favorites.ITEM_TYPE_FOLDER, info.itemType);
+        assertEquals(3, ((FolderInfo) info).contents.size());
+        assertEquals("CustomFolder", info.title.toString());
+    }
+
+    @Test
     public void testCustomProfileLoaded_with_widget() throws Exception {
         String pendingAppPkg = "com.test.pending";
 
