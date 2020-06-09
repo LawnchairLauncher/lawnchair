@@ -127,7 +127,10 @@ public class StatsLogManager implements ResourceBasedOverride {
         LAUNCHER_SYSTEM_SHORTCUT_PIN_TAP(522),
 
         @UiEvent(doc = "User is shown All Apps education view.")
-        LAUNCHER_ALL_APPS_EDU_SHOWN(523);
+        LAUNCHER_ALL_APPS_EDU_SHOWN(523),
+
+        @UiEvent(doc = "User opened a folder.")
+        LAUNCHER_FOLDER_OPEN(551);
         // ADD MORE
 
         private final int mId;
@@ -192,6 +195,13 @@ public class StatsLogManager implements ResourceBasedOverride {
      * Logs an event and accompanying {@link ItemInfo}.
      */
     public void log(EventEnum event, @Nullable ItemInfo itemInfo) {
+    }
+
+    /**
+     * Logs an event and accompanying {@link com.android.launcher3.model.data.ItemInfo}.
+     */
+    public void log(EventEnum event,
+            com.android.launcher3.model.data.ItemInfo itemInfo) {
     }
 
     /**
