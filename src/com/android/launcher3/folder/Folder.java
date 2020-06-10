@@ -745,6 +745,11 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
                 : getContext().getString(R.string.folder_closed));
     }
 
+    @Override
+    protected View getAccessibilityInitialFocusView() {
+        return mContent.getFirstItem();
+    }
+
     private void closeComplete(boolean wasAnimated) {
         // TODO: Clear all active animations.
         DragLayer parent = (DragLayer) getParent();
