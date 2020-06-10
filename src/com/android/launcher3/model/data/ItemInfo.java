@@ -337,9 +337,12 @@ public class ItemInfo {
     ContainerInfo getContainerInfo() {
         switch (container) {
             case CONTAINER_HOTSEAT:
-            case CONTAINER_HOTSEAT_PREDICTION:
                 return ContainerInfo.newBuilder()
                         .setHotseat(LauncherAtom.HotseatContainer.newBuilder().setIndex(screenId))
+                        .build();
+            case CONTAINER_HOTSEAT_PREDICTION:
+                return ContainerInfo.newBuilder().setPredictedHotseatContainer(
+                        LauncherAtom.PredictedHotseatContainer.newBuilder().setIndex(screenId))
                         .build();
             case CONTAINER_DESKTOP:
                 return ContainerInfo.newBuilder()

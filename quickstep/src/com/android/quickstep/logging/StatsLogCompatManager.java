@@ -17,6 +17,7 @@
 package com.android.quickstep.logging;
 
 import static com.android.launcher3.logger.LauncherAtom.ContainerInfo.ContainerCase.FOLDER;
+import static com.android.launcher3.logger.LauncherAtom.ContainerInfo.ContainerCase.PREDICTED_HOTSEAT_CONTAINER;
 import static com.android.systemui.shared.system.SysUiStatsLog.LAUNCHER_UICHANGED__DST_STATE__ALLAPPS;
 import static com.android.systemui.shared.system.SysUiStatsLog.LAUNCHER_UICHANGED__DST_STATE__BACKGROUND;
 import static com.android.systemui.shared.system.SysUiStatsLog.LAUNCHER_UICHANGED__DST_STATE__HOME;
@@ -181,7 +182,7 @@ public class StatsLogCompatManager extends StatsLogManager {
                 info.getFolderIcon().getFromLabelState().getNumber() /* fromState */,
                 info.getFolderIcon().getToLabelState().getNumber() /* toState */,
                 info.getFolderIcon().getLabelInfo() /* edittext */,
-                info.getFolderIcon().getCardinality() /* cardinality */);
+                getCardinality(info) /* cardinality */);
     }
 
     /**
@@ -245,9 +246,15 @@ public class StatsLogCompatManager extends StatsLogManager {
                 getHierarchy(info) /* hierarchy */,
                 info.getIsWork() /* is_work_profile */,
                 info.getAttribute().getNumber() /* origin */,
-                info.getFolderIcon().getCardinality() /* cardinality */,
+                getCardinality(info) /* cardinality */,
                 info.getWidget().getSpanX(),
                 info.getWidget().getSpanY());
+    }
+
+    private static int getCardinality(LauncherAtom.ItemInfo info) {
+        return info.getContainerInfo().getContainerCase().equals(PREDICTED_HOTSEAT_CONTAINER)
+                ? info.getContainerInfo().getPredictedHotseatContainer().getCardinality()
+                : info.getFolderIcon().getCardinality();
     }
 
     private static String getPackageName(LauncherAtom.ItemInfo info) {
