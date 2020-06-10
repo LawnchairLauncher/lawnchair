@@ -261,7 +261,7 @@ public class RecentsAnimationDeviceState implements
 
     @Override
     public void onDisplayInfoChanged(DefaultDisplay.Info info, int flags) {
-        if (info.id != getDisplayId() || (flags & CHANGE_FRAME_DELAY) == CHANGE_FRAME_DELAY) {
+        if (info.id != getDisplayId() || flags == CHANGE_FRAME_DELAY) {
             // ignore displays that aren't running launcher and frame refresh rate changes
             return;
         }
