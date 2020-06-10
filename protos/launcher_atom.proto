@@ -53,6 +53,7 @@ message ContainerInfo {
     SearchResultContainer search_result_container = 7;
     ShortcutsContainer shortcuts_container = 8;
     SettingsContainer settings_container = 9;
+    PredictedHotseatContainer predicted_hotseat_container = 10;
   }
 }
 
@@ -149,6 +150,14 @@ message WorkspaceContainer {
 
 message HotseatContainer {
   optional int32 index = 1;
+}
+
+// Represents hotseat container with prediction feature enabled.
+message PredictedHotseatContainer {
+  optional int32 index = 1;
+
+  // No of hotseat positions filled with predicted items.
+  optional int32 cardinality = 2;
 }
 
 message FolderContainer {
