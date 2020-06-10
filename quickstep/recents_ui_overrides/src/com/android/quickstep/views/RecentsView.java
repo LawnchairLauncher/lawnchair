@@ -607,6 +607,17 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         }
     }
 
+    /**
+     * Whether the Clear All button is hidden or fully visible. Used to determine if center
+     * displayed page is a task or the Clear All button.
+     *
+     * @return True = Clear All button not fully visible, center page is a task. False = Clear All
+     * button fully visible, center page is Clear All button.
+     */
+    public boolean isClearAllHidden() {
+        return mClearAllButton.getAlpha() != 1f;
+    }
+
     @Override
     protected void onPageBeginTransition() {
         super.onPageBeginTransition();
@@ -616,7 +627,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     @Override
     protected void onPageEndTransition() {
         super.onPageEndTransition();
-        if (getScrollX() == getScrollForPage(getPageNearestToCenterOfScreen())) {
+        if (isClearAllHidden()) {
             LayoutUtils.setViewEnabled(mActionsView, true);
         }
         if (getNextPage() > 0) {
