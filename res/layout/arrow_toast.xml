@@ -60,6 +60,5 @@
         android:elevation="2dp"
         android:layout_width="10dp"
         android:layout_height="8dp"
-        android:layout_marginTop="-2dp"
-        android:layout_gravity="center_horizontal"/>
+        android:layout_marginTop="-2dp"/>
 </merge>
