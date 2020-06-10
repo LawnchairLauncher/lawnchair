@@ -15,6 +15,9 @@
  */
 package com.android.launcher3.hybridhotseat;
 
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent
+        .LAUNCHER_HOTSEAT_EDU_ONLY_TIP;
+
 import android.content.Intent;
 import android.view.View;
 
@@ -262,6 +265,7 @@ public class HotseatEduController {
                     requiresMigration ? R.string.hotseat_tip_no_empty_slots
                             : R.string.hotseat_auto_enrolled),
                     mHotseat.getTop());
+            mLauncher.getStatsLogManager().log(LAUNCHER_HOTSEAT_EDU_ONLY_TIP);
             finishOnboarding();
         }
     }

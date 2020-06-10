@@ -187,8 +187,7 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
     @Override
     public void bindPredictedItems(List<AppInfo> appInfos, IntArray ranks) {
         super.bindPredictedItems(appInfos, ranks);
-        if (mHotseatPredictionController != null
-                && !mHotseatPredictionController.hasPredictions()) {
+        if (mHotseatPredictionController != null) {
             mHotseatPredictionController.showCachedItems(appInfos, ranks);
         }
     }
