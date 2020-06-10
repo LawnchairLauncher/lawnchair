@@ -141,6 +141,25 @@ public class StatsLogManager implements ResourceBasedOverride {
         }
     }
 
+    /**
+     * Launcher specific ranking related events.
+     */
+    public enum LauncherRankingEvent implements EventEnum {
+
+        UNKNOWN(0);
+        // ADD MORE
+
+        private final int mId;
+
+        LauncherRankingEvent(int id) {
+            mId = id;
+        }
+
+        public int getId() {
+            return mId;
+        }
+    }
+
     protected LogStateProvider mStateProvider;
 
     /**
@@ -179,6 +198,19 @@ public class StatsLogManager implements ResourceBasedOverride {
      * Logs an event and accompanying {@link InstanceId} and {@link ItemInfo}.
      */
     public void log(EventEnum event, InstanceId instanceId, @Nullable ItemInfo itemInfo) {
+    }
+
+    /**
+     * Log an event with ranked-choice information along with package. Does nothing if event.getId()
+     * <= 0.
+     *
+     * @param rankingEvent an enum implementing UiEventEnum interface.
+     * @param instanceId An identifier obtained from an InstanceIdSequence.
+     * @param packageName the package name of the relevant app, if known (null otherwise).
+     * @param position the position picked.
+     */
+    public void log(EventEnum rankingEvent, InstanceId instanceId, @Nullable String packageName,
+            int position) {
     }
 
     /**
