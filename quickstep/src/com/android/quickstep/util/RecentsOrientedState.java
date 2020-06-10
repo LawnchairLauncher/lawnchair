@@ -72,8 +72,6 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
     private static final String TAG = "RecentsOrientedState";
     private static final boolean DEBUG = true;
 
-    private static final String FIXED_ROTATION_TRANSFORM_SETTING_NAME = "fixed_rotation_transform";
-
     private ContentObserver mSystemAutoRotateObserver = new ContentObserver(new Handler()) {
         @Override
         public void onChange(boolean selfChange) {
@@ -94,25 +92,22 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
     private static final int FLAG_MULTIPLE_ORIENTATION_SUPPORTED_BY_ACTIVITY = 1 << 0;
     // Multiple orientation is only supported if density is < 600
     private static final int FLAG_MULTIPLE_ORIENTATION_SUPPORTED_BY_DENSITY = 1 << 1;
-    // Feature flag controlling the multi-orientation feature
-    private static final int FLAG_MULTIPLE_ORIENTATION_SUPPORTED_BY_FLAG = 1 << 2;
     // Shared prefs for rotation, only if activity supports it
-    private static final int FLAG_HOME_ROTATION_ALLOWED_IN_PREFS = 1 << 3;
+    private static final int FLAG_HOME_ROTATION_ALLOWED_IN_PREFS = 1 << 2;
     // If the user has enabled system rotation
-    private static final int FLAG_SYSTEM_ROTATION_ALLOWED = 1 << 4;
+    private static final int FLAG_SYSTEM_ROTATION_ALLOWED = 1 << 3;
     // Multiple orientation is not supported in multiwindow mode
-    private static final int FLAG_MULTIWINDOW_ROTATION_ALLOWED = 1 << 5;
+    private static final int FLAG_MULTIWINDOW_ROTATION_ALLOWED = 1 << 4;
     // Whether to rotation sensor is supported on the device
-    private static final int FLAG_ROTATION_WATCHER_SUPPORTED = 1 << 6;
+    private static final int FLAG_ROTATION_WATCHER_SUPPORTED = 1 << 5;
     // Whether to enable rotation watcher when multi-rotation is supported
-    private static final int FLAG_ROTATION_WATCHER_ENABLED = 1 << 7;
+    private static final int FLAG_ROTATION_WATCHER_ENABLED = 1 << 6;
     // Enable home rotation for UI tests, ignoring home rotation value from prefs
-    private static final int FLAG_HOME_ROTATION_FORCE_ENABLED_FOR_TESTING = 1 << 8;
+    private static final int FLAG_HOME_ROTATION_FORCE_ENABLED_FOR_TESTING = 1 << 7;
 
     private static final int MASK_MULTIPLE_ORIENTATION_SUPPORTED_BY_DEVICE =
             FLAG_MULTIPLE_ORIENTATION_SUPPORTED_BY_ACTIVITY
-            | FLAG_MULTIPLE_ORIENTATION_SUPPORTED_BY_DENSITY
-            | FLAG_MULTIPLE_ORIENTATION_SUPPORTED_BY_FLAG;
+            | FLAG_MULTIPLE_ORIENTATION_SUPPORTED_BY_DENSITY;
 
     // State for which rotation watcher will be enabled. We skip it when home rotation or
     // multi-window is enabled as in that case, activity itself rotates.
@@ -122,9 +117,6 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
 
     private SysUINavigationMode.NavigationModeChangeListener mNavModeChangeListener =
             newMode -> setFlag(FLAG_ROTATION_WATCHER_SUPPORTED, newMode != TWO_BUTTONS);
-
-    /** TODO: Remove once R ships. This is unlikely to change across different swipe gestures. */
-    private static boolean sFixedRotationEnabled;
 
     private final Context mContext;
     private final ContentResolver mContentResolver;
@@ -167,11 +159,6 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
                 * res.getDisplayMetrics().densityDpi / DENSITY_DEVICE_STABLE;
         if (originalSmallestWidth < 600) {
             mFlags |= FLAG_MULTIPLE_ORIENTATION_SUPPORTED_BY_DENSITY;
-        }
-        sFixedRotationEnabled = Settings.Global.getInt(
-                context.getContentResolver(), FIXED_ROTATION_TRANSFORM_SETTING_NAME, 1) == 1;
-        if (sFixedRotationEnabled) {
-            mFlags |= FLAG_MULTIPLE_ORIENTATION_SUPPORTED_BY_FLAG;
         }
         initFlags();
     }
@@ -518,14 +505,6 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
                 out.postTranslate(screenHeight, 0);
                 break;
         }
-    }
-
-    /**
-     * Returns true if system can keep Launcher fixed to portrait layout even if the
-     * foreground app is rotated
-     */
-    public static boolean isFixedRotationTransformEnabled() {
-        return sFixedRotationEnabled;
     }
 
     @NonNull
