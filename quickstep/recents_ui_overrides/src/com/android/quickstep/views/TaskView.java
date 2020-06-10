@@ -425,16 +425,13 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     }
 
     private boolean showTaskMenu(int action) {
-        if (!getRecentsView().isCenterPageTask()) {
-            getRecentsView().snapToPage(getRecentsView().indexOfChild(this));
-        } else {
-            mMenuView = TaskMenuView.showForTask(this);
-            mActivity.getStatsLogManager().log(LAUNCHER_TASK_ICON_TAP_OR_LONGPRESS, buildProto());
-            UserEventDispatcher.newInstance(getContext()).logActionOnItem(action, Direction.NONE,
-                    LauncherLogProto.ItemType.TASK_ICON);
-            if (mMenuView != null) {
-                mMenuView.addOnAttachStateChangeListener(mTaskMenuStateListener);
-            }
+        getRecentsView().snapToPage(getRecentsView().indexOfChild(this));
+        mMenuView = TaskMenuView.showForTask(this);
+        mActivity.getStatsLogManager().log(LAUNCHER_TASK_ICON_TAP_OR_LONGPRESS, buildProto());
+        UserEventDispatcher.newInstance(getContext()).logActionOnItem(action, Direction.NONE,
+                LauncherLogProto.ItemType.TASK_ICON);
+        if (mMenuView != null) {
+            mMenuView.addOnAttachStateChangeListener(mTaskMenuStateListener);
         }
         return mMenuView != null;
     }
