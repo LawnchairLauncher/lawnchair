@@ -26,6 +26,7 @@ import static com.android.quickstep.SysUINavigationMode.Mode.TWO_BUTTONS;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_A11Y_BUTTON_CLICKABLE;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_A11Y_BUTTON_LONG_CLICKABLE;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_BUBBLES_EXPANDED;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_GLOBAL_ACTIONS_SHOWING;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_HOME_DISABLED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NAV_BAR_HIDDEN;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED;
@@ -231,10 +232,8 @@ public class RecentsAnimationDeviceState implements
     @Override
     public void onNavigationModeChanged(SysUINavigationMode.Mode newMode) {
         mDefaultDisplay.removeChangeListener(this);
-        if (newMode.hasGestures) {
-            mDefaultDisplay.addChangeListener(this);
-            onDisplayInfoChanged(mDefaultDisplay.getInfo(), CHANGE_ALL);
-        }
+        mDefaultDisplay.addChangeListener(this);
+        onDisplayInfoChanged(mDefaultDisplay.getInfo(), CHANGE_ALL);
 
         if (newMode == NO_BUTTON) {
             mExclusionListener.register();
@@ -262,6 +261,10 @@ public class RecentsAnimationDeviceState implements
         }
 
         mDisplayRotation = info.rotation;
+
+        if (!mMode.hasGestures) {
+            return;
+        }
         mNavBarPosition = new NavBarPosition(mMode, info);
         updateGestureTouchRegions();
         mOrientationTouchTransformer.createOrAddTouchRegion(info);
@@ -405,6 +408,13 @@ public class RecentsAnimationDeviceState implements
      */
     public boolean isBubblesExpanded() {
         return (mSystemUiStateFlags & SYSUI_STATE_BUBBLES_EXPANDED) != 0;
+    }
+
+    /**
+     * @return whether the global actions dialog is showing
+     */
+    public boolean isGlobalActionsShowing() {
+        return (mSystemUiStateFlags & SYSUI_STATE_GLOBAL_ACTIONS_SHOWING) != 0;
     }
 
     /**
@@ -593,7 +603,11 @@ public class RecentsAnimationDeviceState implements
         }
     }
 
-    public int getCurrentActiveRotation() {
+    int getCurrentActiveRotation() {
+        if (!mMode.hasGestures) {
+            // touch rotation should always match that of display for 3 button
+            return mDisplayRotation;
+        }
         return mOrientationTouchTransformer.getCurrentActiveRotation();
     }
 

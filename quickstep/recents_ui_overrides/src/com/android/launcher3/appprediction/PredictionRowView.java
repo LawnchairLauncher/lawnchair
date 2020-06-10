@@ -31,6 +31,7 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.util.IntProperty;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Interpolator;
 import android.widget.LinearLayout;
@@ -241,8 +242,9 @@ public class PredictionRowView extends LinearLayout implements
             while (getChildCount() > mNumPredictedAppsPerRow) {
                 removeViewAt(0);
             }
+            LayoutInflater inflater = mLauncher.getAppsView().getLayoutInflater();
             while (getChildCount() < mNumPredictedAppsPerRow) {
-                BubbleTextView icon = (BubbleTextView) mLauncher.getLayoutInflater().inflate(
+                BubbleTextView icon = (BubbleTextView) inflater.inflate(
                         R.layout.all_apps_icon, this, false);
                 icon.setOnClickListener(PREDICTION_CLICK_LISTENER);
                 icon.setOnLongClickListener(ItemLongClickListener.INSTANCE_ALL_APPS);

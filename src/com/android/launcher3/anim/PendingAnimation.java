@@ -69,8 +69,8 @@ public class PendingAnimation implements PropertySetter {
     }
 
     public void add(Animator a, SpringProperty springProperty) {
-        mAnim.play(a);
-        addAnimationHoldersRecur(a, springProperty, mAnimHolders);
+        mAnim.play(a.setDuration(mDuration));
+        addAnimationHoldersRecur(a, mDuration, springProperty, mAnimHolders);
     }
 
     public void finish(boolean isSuccess, int logAction) {
@@ -87,7 +87,7 @@ public class PendingAnimation implements PropertySetter {
         }
         ObjectAnimator anim = ObjectAnimator.ofFloat(view, View.ALPHA, alpha);
         anim.addListener(new AlphaUpdateListener(view));
-        anim.setDuration(mDuration).setInterpolator(interpolator);
+        anim.setInterpolator(interpolator);
         add(anim);
     }
 
@@ -105,7 +105,7 @@ public class PendingAnimation implements PropertySetter {
     public <T> void addFloat(T target, FloatProperty<T> property, float from, float to,
             TimeInterpolator interpolator) {
         Animator anim = ObjectAnimator.ofFloat(target, property, from, to);
-        anim.setDuration(mDuration).setInterpolator(interpolator);
+        anim.setInterpolator(interpolator);
         add(anim);
     }
 
@@ -116,7 +116,7 @@ public class PendingAnimation implements PropertySetter {
             return;
         }
         Animator anim = ObjectAnimator.ofInt(target, property, value);
-        anim.setDuration(mDuration).setInterpolator(interpolator);
+        anim.setInterpolator(interpolator);
         add(anim);
     }
 
@@ -125,7 +125,7 @@ public class PendingAnimation implements PropertySetter {
      */
     public void addOnFrameCallback(Runnable runnable) {
         if (mProgressAnimator == null) {
-            mProgressAnimator = ValueAnimator.ofFloat(0, 1).setDuration(mDuration);
+            mProgressAnimator = ValueAnimator.ofFloat(0, 1);
         }
 
         mProgressAnimator.addUpdateListener(anim -> runnable.run());
@@ -150,7 +150,7 @@ public class PendingAnimation implements PropertySetter {
         }
         if (mAnimHolders.isEmpty()) {
             // Add a dummy animation to that the duration is respected
-            add(ValueAnimator.ofFloat(0, 1));
+            add(ValueAnimator.ofFloat(0, 1).setDuration(mDuration));
         }
         return mAnim;
     }
