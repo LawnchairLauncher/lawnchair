@@ -105,6 +105,19 @@ public class StatsLogCompatManager extends StatsLogManager {
     }
 
     /**
+     * Logs a ranking event and accompanying {@link InstanceId} and package name.
+     */
+    @Override
+    public void log(EventEnum rankingEvent, InstanceId instanceId, @Nullable String packageName,
+            int position) {
+        SysUiStatsLog.write(SysUiStatsLog.RANKING_SELECTED,
+                rankingEvent.getId() /* event_id = 1; */,
+                packageName /* package_name = 2; */,
+                instanceId.getId() /* instance_id = 3; */,
+                position /* position_picked = 4; */);
+    }
+
+    /**
      * Logs an event and accompanying {@link LauncherState}s. If either of the state refers
      * to workspace state, then use pageIndex to pass in index of workspace.
      */
