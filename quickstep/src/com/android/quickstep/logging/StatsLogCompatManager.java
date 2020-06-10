@@ -94,6 +94,11 @@ public class StatsLogCompatManager extends StatsLogManager {
         log(event, DEFAULT_INSTANCE_ID, info);
     }
 
+    @Override
+    public void log(EventEnum event, ItemInfo itemInfo) {
+        logInternal(event, DEFAULT_INSTANCE_ID, itemInfo);
+    }
+
     /**
      * Logs an event and accompanying {@link InstanceId} and {@link LauncherAtom.ItemInfo}.
      */
@@ -135,6 +140,27 @@ public class StatsLogCompatManager extends StatsLogManager {
         logInternal(event, DEFAULT_INSTANCE_ID, info, srcState, dstState);
     }
 
+    private void logInternal(EventEnum event, InstanceId instanceId, @Nullable ItemInfo info) {
+        LauncherAppState.getInstance(sContext).getModel().enqueueModelUpdateTask(
+                new BaseModelUpdateTask() {
+                    @Override
+                    public void execute(LauncherAppState app, BgDataModel dataModel,
+                            AllAppsList apps) {
+                        LauncherAtom.ItemInfo atomInfo = LauncherAtom.ItemInfo.getDefaultInstance();
+                        if (info != null) {
+                            if (info.container >= 0) {
+                                atomInfo = info.buildProto(dataModel.folders.get(info.container));
+                            } else {
+                                atomInfo = info.buildProto();
+                            }
+                        }
+                        logInternal(event, instanceId, atomInfo,
+                                LAUNCHER_UICHANGED__DST_STATE__HOME,
+                                LAUNCHER_UICHANGED__DST_STATE__BACKGROUND);
+                    }
+                });
+    }
+
     /**
      * Logs an event and accompanying {@link InstanceId} and {@link LauncherAtom.ItemInfo}.
      */
@@ -143,14 +169,14 @@ public class StatsLogCompatManager extends StatsLogManager {
         info = info == null ? LauncherAtom.ItemInfo.getDefaultInstance() : info;
 
         if (IS_VERBOSE) {
-            String name = (event instanceof LauncherEvent) ? ((LauncherEvent) event).name() :
+            String name = (event instanceof Enum) ? ((Enum) event).name() :
                     event.getId() + "";
 
             Log.d(TAG, instanceId == DEFAULT_INSTANCE_ID
                     ? String.format("\n%s (State:%s->%s) \n%s", name, getStateString(srcState),
-                            getStateString(dstState), info)
-                    : String.format("\n%s (State:%s->%s) (InstanceId:%s)\n%s", name, instanceId,
-                            getStateString(srcState), getStateString(dstState), info));
+                    getStateString(dstState), info)
+                    : String.format("\n%s (State:%s->%s) (InstanceId:%s)\n%s", name,
+                            getStateString(srcState), getStateString(dstState), instanceId, info));
         }
 
         if (!Utilities.ATLEAST_R) {
@@ -333,7 +359,7 @@ public class StatsLogCompatManager extends StatsLogManager {
     }
 
     private static String getStateString(int state) {
-        switch(state) {
+        switch (state) {
             case LAUNCHER_UICHANGED__DST_STATE__BACKGROUND:
                 return "BACKGROUND";
             case LAUNCHER_UICHANGED__DST_STATE__HOME:
