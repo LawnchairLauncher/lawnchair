@@ -57,7 +57,7 @@ public class PredictedAppIcon extends DoubleShadowBubbleTextView implements
         LauncherAccessibilityDelegate.AccessibilityActionHandler {
 
     private static final int RING_SHADOW_COLOR = 0x99000000;
-    private static final float RING_EFFECT_RATIO = 0.11f;
+    private static final float RING_EFFECT_RATIO = 0.08f;
 
     boolean mIsDrawingDot = false;
     private final DeviceProfile mDeviceProfile;
