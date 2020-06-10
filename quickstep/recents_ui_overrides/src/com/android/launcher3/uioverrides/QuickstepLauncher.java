@@ -88,7 +88,6 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
      */
     public static final AsyncCommand SET_SHELF_HEIGHT = (context, arg1, arg2) ->
             SystemUiProxy.INSTANCE.get(context).setShelfHeight(arg1 != 0, arg2);
-    private HotseatPredictionController mHotseatPredictionController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -169,13 +168,6 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
     }
 
     /**
-     * Returns Prediction controller for hybrid hotseat
-     */
-    public HotseatPredictionController getHotseatPredictionController() {
-        return mHotseatPredictionController;
-    }
-
-    /**
      * Recents logic that triggers when launcher state changes or launcher activity stops/resumes.
      */
     private void onStateOrResumeChanging(boolean inTransition) {
@@ -195,7 +187,8 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
     @Override
     public void bindPredictedItems(List<AppInfo> appInfos, IntArray ranks) {
         super.bindPredictedItems(appInfos, ranks);
-        if (mHotseatPredictionController != null) {
+        if (mHotseatPredictionController != null
+                && !mHotseatPredictionController.hasPredictions()) {
             mHotseatPredictionController.showCachedItems(appInfos, ranks);
         }
     }

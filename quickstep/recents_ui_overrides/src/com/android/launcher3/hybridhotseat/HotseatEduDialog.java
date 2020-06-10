@@ -29,6 +29,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
@@ -245,6 +246,7 @@ public class HotseatEduDialog extends AbstractSlideInView implements Insettable 
                 || mHotseatEduController == null) {
             return;
         }
+        AbstractFloatingView.closeAllOpenViews(mLauncher);
         attachToContainer();
         logOnBoardingSeen();
         animateOpen();
