@@ -19,6 +19,7 @@ import android.content.Context;
 
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.logger.LauncherAtom.ItemInfo;
 import com.android.launcher3.logging.StatsLogUtils.LogStateProvider;
@@ -37,11 +38,17 @@ public class StatsLogManager implements ResourceBasedOverride {
     }
 
     public enum LauncherEvent implements EventEnum {
+        /* Used to prevent double logging. */
+        IGNORE(-1),
+
         @UiEvent(doc = "App launched from workspace, hotseat or folder in launcher")
         LAUNCHER_APP_LAUNCH_TAP(338),
 
         @UiEvent(doc = "Task launched from overview using TAP")
         LAUNCHER_TASK_LAUNCH_TAP(339),
+
+        @UiEvent(doc = "User tapped on notification inside popup context menu.")
+        LAUNCHER_NOTIFICATION_LAUNCH_TAP(516),
 
         @UiEvent(doc = "Task launched from overview using SWIPE DOWN")
         LAUNCHER_TASK_LAUNCH_SWIPE_DOWN(340),
@@ -101,23 +108,50 @@ public class StatsLogManager implements ResourceBasedOverride {
         LAUNCHER_TASK_ICON_TAP_OR_LONGPRESS(517),
 
         @UiEvent(doc = "User opened package specific widgets list by tapping on widgets system "
-                + "shortcut within longpress popup window.")
+                + "shortcut inside popup context menu.")
         LAUNCHER_SYSTEM_SHORTCUT_WIDGETS_TAP(514),
 
-        @UiEvent(doc = "User opened app info of the package by tapping on appinfo system shortcut "
-                + "within longpress popup window.")
+        @UiEvent(doc = "User tapped on app info system shortcut.")
         LAUNCHER_SYSTEM_SHORTCUT_APP_INFO_TAP(515),
 
         @UiEvent(doc = "User tapped on split screen icon on a task menu.")
         LAUNCHER_SYSTEM_SHORTCUT_SPLIT_SCREEN_TAP(518),
 
         @UiEvent(doc = "User tapped on free form icon on a task menu.")
-        LAUNCHER_SYSTEM_SHORTCUT_FREE_FORM_TAP(519);
+        LAUNCHER_SYSTEM_SHORTCUT_FREE_FORM_TAP(519),
+
+        @UiEvent(doc = "User tapped on pause app system shortcut.")
+        LAUNCHER_SYSTEM_SHORTCUT_PAUSE_TAP(521),
+
+        @UiEvent(doc = "User tapped on pin system shortcut.")
+        LAUNCHER_SYSTEM_SHORTCUT_PIN_TAP(522),
+
+        @UiEvent(doc = "User is shown All Apps education view.")
+        LAUNCHER_ALL_APPS_EDU_SHOWN(523);
         // ADD MORE
 
         private final int mId;
 
         LauncherEvent(int id) {
+            mId = id;
+        }
+
+        public int getId() {
+            return mId;
+        }
+    }
+
+    /**
+     * Launcher specific ranking related events.
+     */
+    public enum LauncherRankingEvent implements EventEnum {
+
+        UNKNOWN(0);
+        // ADD MORE
+
+        private final int mId;
+
+        LauncherRankingEvent(int id) {
             mId = id;
         }
 
@@ -164,6 +198,26 @@ public class StatsLogManager implements ResourceBasedOverride {
      * Logs an event and accompanying {@link InstanceId} and {@link ItemInfo}.
      */
     public void log(EventEnum event, InstanceId instanceId, @Nullable ItemInfo itemInfo) {
+    }
+
+    /**
+     * Log an event with ranked-choice information along with package. Does nothing if event.getId()
+     * <= 0.
+     *
+     * @param rankingEvent an enum implementing UiEventEnum interface.
+     * @param instanceId An identifier obtained from an InstanceIdSequence.
+     * @param packageName the package name of the relevant app, if known (null otherwise).
+     * @param position the position picked.
+     */
+    public void log(EventEnum rankingEvent, InstanceId instanceId, @Nullable String packageName,
+            int position) {
+    }
+
+    /**
+     * Logs an event and accompanying {@link LauncherState}s. If either of the state refers
+     * to workspace state, then use pageIndex to pass in index of workspace.
+     */
+    public void log(EventEnum event, int srcState, int dstState, int pageIndex) {
     }
 
     /**

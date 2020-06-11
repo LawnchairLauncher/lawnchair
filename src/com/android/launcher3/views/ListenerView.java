@@ -106,4 +106,9 @@ public class ListenerView extends AbstractFloatingView {
         // We want other views to be able to intercept the touch so we return false here.
         return false;
     }
+
+    @Override
+    public boolean canInterceptEventsInSystemGestureRegion() {
+        return true;
+    }
 }

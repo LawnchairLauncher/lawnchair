@@ -65,7 +65,7 @@ public class LoaderCursor extends CursorWrapper {
 
     private static final String TAG = "LoaderCursor";
 
-    public final LongSparseArray<UserHandle> allUsers = new LongSparseArray<>();
+    public final LongSparseArray<UserHandle> allUsers;
 
     private final Uri mContentUri;
     private final Context mContext;
@@ -100,9 +100,11 @@ public class LoaderCursor extends CursorWrapper {
     public int itemType;
     public int restoreFlag;
 
-    public LoaderCursor(Cursor cursor, Uri contentUri, LauncherAppState app) {
+    public LoaderCursor(Cursor cursor, Uri contentUri, LauncherAppState app,
+            UserManagerState userManagerState) {
         super(cursor);
 
+        allUsers = userManagerState.allUsers;
         mContentUri = contentUri;
         mContext = app.getContext();
         mIconCache = app.getIconCache();

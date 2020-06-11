@@ -188,7 +188,8 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     // The intent to send off to the market app, updated each time the search query changes.
     private Intent mMarketSearchIntent;
 
-    public AllAppsGridAdapter(BaseDraggingActivity launcher, AlphabeticalAppsList apps) {
+    public AllAppsGridAdapter(BaseDraggingActivity launcher, LayoutInflater inflater,
+            AlphabeticalAppsList apps) {
         Resources res = launcher.getResources();
         mLauncher = launcher;
         mApps = apps;
@@ -196,7 +197,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         mGridSizer = new GridSpanSizer();
         mGridLayoutMgr = new AppsGridLayoutManager(launcher);
         mGridLayoutMgr.setSpanSizeLookup(mGridSizer);
-        mLayoutInflater = LayoutInflater.from(launcher);
+        mLayoutInflater = inflater;
 
         mOnIconClickListener = launcher.getItemOnClickListener();
 

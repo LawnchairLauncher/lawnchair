@@ -22,7 +22,9 @@
     <string name="recent_task_option_split_screen" msgid="5353188922202653570">"Sadalīt ekrānu"</string>
     <string name="recent_task_option_pin" msgid="7929860679018978258">"Piespraust"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Brīva forma"</string>
+    <string name="accessibility_desc_recent_apps" msgid="1444379410873162882">"Pārskats"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"Nav nesenu vienumu."</string>
+    <string name="accessibility_close_task" msgid="5354563209433803643">"Aizvērt"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Lietotņu izmantošanas iestatījumi"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"Notīrīt visu"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"Pēdējās izmantotās lietotnes"</string>
@@ -32,19 +34,4 @@
     <string name="title_app_suggestions" msgid="4185902664111965088">"Ieteicamās lietotnes"</string>
     <string name="all_apps_label" msgid="8542784161730910663">"Visas lietotnes"</string>
     <string name="all_apps_prediction_tip" msgid="2672336544844936186">"Jūsu prognozētās lietotnes"</string>
-    <string name="hotseat_edu_prompt_title" msgid="5595771595144175752">"Ērta piekļuve visbiežāk izmantotajām lietotnēm"</string>
-    <string name="hotseat_edu_prompt_content" msgid="5709176001504149521">"Pixel tālruņa sākuma ekrānā tiek prognozēts, kuras lietotnes jūs izmantosiet nākamās. Pieskarieties, lai to iestatītu."</string>
-    <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"Sākuma ekrāna apakšējā rindā tiks rādītas ieteicamās lietotnes"</string>
-    <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"Varat sākuma ekrānā ērti piekļūt savām visbiežāk izmantotajām lietotnēm. Ieteikumi mainīsies atkarībā no jūsu paradumiem. Apakšējā rindā esošās lietotnes tiks pārvietotas uz augšu — uz sākuma ekrānu."</string>
-    <string name="hotseat_edu_message_migrate_alt" msgid="3042360119039646356">"Varat sākuma ekrānā ērti piekļūt savām visbiežāk izmantotajām lietotnēm. Ieteikumi mainīsies atkarībā no jūsu paradumiem. Apakšējā rindā esošās lietotnes tiks pārvietotas uz jaunu mapi."</string>
-    <string name="hotseat_edu_accept" msgid="1611544083278999837">"Rādīt ieteicamās lietotnes"</string>
-    <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"Nē, paldies"</string>
-    <string name="hotseat_turn_off" msgid="7808360330229368470">"Iestatījumi"</string>
-    <string name="hotseat_auto_enrolled" msgid="522100018967146807">"Šeit tiek rādītas visbiežāk izmantotās lietotnes, un tās mainās atkarībā no jūsu paradumiem"</string>
-    <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"Lai skatītu ieteicamās lietotnes, velciet lietotnes prom no apakšējās rindas"</string>
-    <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"Ieteicamās lietotnes tika pievienotas tukšajā vietā"</string>
-    <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Prognozētā lietotne: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="action_share" msgid="2648470652637092375">"Kopīgot"</string>
-    <string name="action_screenshot" msgid="8171125848358142917">"Izveidot ekrānuzņēmumu"</string>
-    <string name="blocked_by_policy" msgid="2071401072261365546">"Lietotne vai jūsu organizācija neatļauj veikt šo darbību."</string>
 </resources>
