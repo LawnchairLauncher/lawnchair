@@ -52,7 +52,6 @@ import com.android.launcher3.appprediction.DynamicItemCache;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.icons.IconCache;
-import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
@@ -382,7 +381,9 @@ public class HotseatPredictionController implements DragController.DragListener,
             mComponentKeyMappers.add(new ComponentKeyMapper(key, mDynamicItemCache));
         }
         predictionLog.append("]");
-        if (Utilities.IS_DEBUG_DEVICE) FileLog.d(TAG, predictionLog.toString());
+        if (Utilities.IS_DEBUG_DEVICE) {
+            HotseatFileLog.INSTANCE.get(mLauncher).log(TAG, predictionLog.toString());
+        }
         updateDependencies();
         fillGapsWithPrediction();
         cachePredictionComponentKeysIfNecessary(componentKeys);
