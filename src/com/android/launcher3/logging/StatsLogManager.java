@@ -130,9 +130,20 @@ public class StatsLogManager implements ResourceBasedOverride {
         LAUNCHER_ALL_APPS_EDU_SHOWN(523),
 
         @UiEvent(doc = "User opened a folder.")
-        LAUNCHER_FOLDER_OPEN(551);
-        // ADD MORE
+        LAUNCHER_FOLDER_OPEN(551),
 
+        @UiEvent(doc = "Hotseat education half sheet seen")
+        LAUNCHER_HOTSEAT_EDU_SEEN(479),
+
+        @UiEvent(doc = "Hotseat migration accepted")
+        LAUNCHER_HOTSEAT_EDU_ACCEPT(480),
+
+        @UiEvent(doc = "Hotseat migration denied")
+        LAUNCHER_HOTSEAT_EDU_DENY(481),
+
+        @UiEvent(doc = "Hotseat education tip shown")
+        LAUNCHER_HOTSEAT_EDU_ONLY_TIP(482);
+        // ADD MORE
         private final int mId;
 
         LauncherEvent(int id) {

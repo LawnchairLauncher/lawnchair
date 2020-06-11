@@ -339,11 +339,15 @@ public class HotseatPredictionController implements DragController.DragListener,
     /**
      * Create WorkspaceItemInfo objects and binds PredictedAppIcon views for cached predicted items.
      */
-    public void showCachedItems(List<AppInfo> apps,  IntArray ranks) {
+    public void showCachedItems(List<AppInfo> apps, IntArray ranks) {
+        if (hasPredictions() && mAppPredictor != null) {
+            mAppPredictor.requestPredictionUpdate();
+            fillGapsWithPrediction();
+            return;
+        }
         mIsCacheEmpty = apps.isEmpty();
         int count = Math.min(ranks.size(), apps.size());
         List<WorkspaceItemInfo> items = new ArrayList<>(count);
-        mComponentKeyMappers.clear();
         for (int i = 0; i < count; i++) {
             WorkspaceItemInfo item = new WorkspaceItemInfo(apps.get(i));
             ComponentKey componentKey = new ComponentKey(item.getTargetComponent(), item.user);
