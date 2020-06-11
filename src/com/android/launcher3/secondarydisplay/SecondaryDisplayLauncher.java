@@ -296,8 +296,8 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
     }
 
     @Override
-    public void bindAllApplications(AppInfo[] apps) {
-        mAppsView.getAppsStore().setApps(apps);
+    public void bindAllApplications(AppInfo[] apps, int flags) {
+        mAppsView.getAppsStore().setApps(apps, flags);
     }
 
     public PopupDataProvider getPopupDataProvider() {

@@ -117,7 +117,7 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
         @Override
         public void run() {
             if (mModelLoaded && hasShortcutsPermission(mApp.getContext())
-                    != mBgDataModel.hasShortcutHostPermission) {
+                    != mBgAllAppsList.hasShortcutHostPermission()) {
                 forceReload();
             }
         }

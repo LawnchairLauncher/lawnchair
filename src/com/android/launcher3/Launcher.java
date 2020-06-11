@@ -2455,8 +2455,9 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
      *
      * Implementation of the method from LauncherModel.Callbacks.
      */
-    public void bindAllApplications(AppInfo[] apps) {
-        mAppsView.getAppsStore().setApps(apps);
+    @Override
+    public void bindAllApplications(AppInfo[] apps, int flags) {
+        mAppsView.getAppsStore().setApps(apps, flags);
     }
 
     /**

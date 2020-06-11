@@ -22,7 +22,9 @@
     <string name="recent_task_option_split_screen" msgid="5353188922202653570">"Pantalla dividida"</string>
     <string name="recent_task_option_pin" msgid="7929860679018978258">"Fixar"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Forma libre"</string>
+    <string name="accessibility_desc_recent_apps" msgid="1444379410873162882">"Visión xeral"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"Non hai elementos recentes"</string>
+    <string name="accessibility_close_task" msgid="5354563209433803643">"Pecha a aplicación"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Configuración do uso de aplicacións"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"Borrar todo"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"Apps recentes"</string>
@@ -32,19 +34,4 @@
     <string name="title_app_suggestions" msgid="4185902664111965088">"Suxestións de aplicacións"</string>
     <string name="all_apps_label" msgid="8542784161730910663">"Todas as aplicacións"</string>
     <string name="all_apps_prediction_tip" msgid="2672336544844936186">"As túas aplicacións preditas"</string>
-    <string name="hotseat_edu_prompt_title" msgid="5595771595144175752">"Accede facilmente ás aplicacións que máis utilizas"</string>
-    <string name="hotseat_edu_prompt_content" msgid="5709176001504149521">"O Pixel predí as aplicacións que utilizarás a continuación e móstraas na pantalla de inicio. Toca para configurar."</string>
-    <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"Recibe suxestións de aplicacións na fila inferior da pantalla de inicio"</string>
-    <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"Accede facilmente desde a pantalla de inicio ás aplicacións que máis usas. As suxestións irán cambiando en función das túas rutinas. As aplicacións da fila inferior pasarán á pantalla de inicio."</string>
-    <string name="hotseat_edu_message_migrate_alt" msgid="3042360119039646356">"Accede facilmente desde a pantalla de inicio ás aplicacións que máis usas. As suxestións irán cambiando en función das túas rutinas. As aplicacións da fila inferior pasarán a un cartafol novo."</string>
-    <string name="hotseat_edu_accept" msgid="1611544083278999837">"Recibir suxestións de aplicacións"</string>
-    <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"Non, grazas"</string>
-    <string name="hotseat_turn_off" msgid="7808360330229368470">"Configuración"</string>
-    <string name="hotseat_auto_enrolled" msgid="522100018967146807">"As aplicacións máis usadas aparecen aquí e van cambiando en función das túas rutinas"</string>
-    <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"Arrastra aplicacións desde a fila inferior para recibir suxestións de aplicacións"</string>
-    <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"Engadíronse suxestións de aplicacións ao espazo baleiro"</string>
-    <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Aplicación predita: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="action_share" msgid="2648470652637092375">"Compartir"</string>
-    <string name="action_screenshot" msgid="8171125848358142917">"Facer captura"</string>
-    <string name="blocked_by_policy" msgid="2071401072261365546">"A aplicación ou a túa organización non permite realizar esta acción"</string>
 </resources>

@@ -293,8 +293,8 @@ public abstract class ArrowPopup<T extends BaseDraggingActivity> extends Abstrac
             // gravity to CENTER_HORIZONTAL, but continue below to update y.
         } else {
             boolean canBeLeftAligned = x + width + insets.left
-                    < dragLayer.getRight() - insets.right;
-            boolean canBeRightAligned = x > dragLayer.getLeft() + insets.left;
+                    < dragLayer.getWidth() - insets.right;
+            boolean canBeRightAligned = x > insets.left;
             boolean alignmentStillValid = mIsLeftAligned && canBeLeftAligned
                     || !mIsLeftAligned && canBeRightAligned;
             if (!alignmentStillValid) {
@@ -367,8 +367,10 @@ public abstract class ArrowPopup<T extends BaseDraggingActivity> extends Abstrac
         super.onLayout(changed, l, t, r, b);
 
         // enforce contained is within screen
-        ViewGroup dragLayer = getPopupContainer();
-        if (getTranslationX() + l < 0 || getTranslationX() + r > dragLayer.getWidth()) {
+        BaseDragLayer dragLayer = getPopupContainer();
+        Rect insets = dragLayer.getInsets();
+        if (getTranslationX() + l < insets.left
+                || getTranslationX() + r > dragLayer.getWidth() - insets.right) {
             // If we are still off screen, center horizontally too.
             mGravity |= Gravity.CENTER_HORIZONTAL;
         }

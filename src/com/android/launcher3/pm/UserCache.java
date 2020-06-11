@@ -18,7 +18,6 @@ package com.android.launcher3.pm;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Process;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.util.ArrayMap;
@@ -107,22 +106,6 @@ public class UserCache {
     }
 
     /**
-     * Returns true if any user profile has quiet mode enabled.
-     */
-    public boolean isAnyProfileQuietModeEnabled() {
-        List<UserHandle> userProfiles = getUserProfiles();
-        for (UserHandle userProfile : userProfiles) {
-            if (Process.myUserHandle().equals(userProfile)) {
-                continue;
-            }
-            if (mUserManager.isQuietModeEnabled(userProfile)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
      * @see UserManager#getSerialNumberForUser(UserHandle)
      */
     public long getSerialNumberForUser(UserHandle user) {
@@ -159,17 +142,5 @@ public class UserCache {
 
         List<UserHandle> users = mUserManager.getUserProfiles();
         return users == null ? Collections.emptyList() : users;
-    }
-
-    /**
-     * Returns true is there is at least one user profile enabled
-     */
-    public boolean hasWorkProfile() {
-        synchronized (this) {
-            if (mUsers != null) {
-                return mUsers.size() > 1;
-            }
-        }
-        return getUserProfiles().size() > 1;
     }
 }
