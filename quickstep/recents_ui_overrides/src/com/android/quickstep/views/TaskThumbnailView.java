@@ -27,6 +27,7 @@ import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Insets;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
@@ -34,17 +35,21 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Shader;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.util.Property;
 import android.view.Surface;
 import android.view.View;
 
+import androidx.annotation.RequiresApi;
+
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
+import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.Themes;
 import com.android.quickstep.TaskOverlayFactory;
@@ -63,9 +68,9 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
 
     private static final ColorMatrix COLOR_MATRIX = new ColorMatrix();
     private static final ColorMatrix SATURATION_COLOR_MATRIX = new ColorMatrix();
-    private static final RectF EMPTY_RECT_F = new RectF();
 
-    private static final FullscreenDrawParams TEMP_PARAMS = new FullscreenDrawParams();
+    private static final MainThreadInitializedObject<FullscreenDrawParams> TEMP_PARAMS =
+            new MainThreadInitializedObject<>(FullscreenDrawParams::new);
 
     public static final Property<TaskThumbnailView, Float> DIM_ALPHA =
             new FloatProperty<TaskThumbnailView>("dimAlpha") {
@@ -91,8 +96,7 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
     // Contains the portion of the thumbnail that is clipped when fullscreen progress = 0.
     private final Rect mPreviewRect = new Rect();
     private final PreviewPositionHelper mPreviewPositionHelper = new PreviewPositionHelper();
-    // Initialize with dummy value. It is overridden later by TaskView
-    private TaskView.FullscreenDrawParams mFullscreenParams = TEMP_PARAMS;
+    private TaskView.FullscreenDrawParams mFullscreenParams;
 
     private Task mTask;
     private ThumbnailData mThumbnailData;
@@ -122,6 +126,8 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
         mDimmingPaintAfterClearing.setColor(Color.BLACK);
         mActivity = BaseActivity.fromContext(context);
         mIsDarkTextTheme = Themes.getAttrBoolean(mActivity, R.attr.isWorkspaceDarkText);
+        // Initialize with dummy value. It is overridden later by TaskView
+        mFullscreenParams = TEMP_PARAMS.get(context);
     }
 
     /**
@@ -209,6 +215,38 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
         return fallback;
     }
 
+    /**
+     * Get the scaled insets that are being used to draw the task view. This is a subsection of
+     * the full snapshot.
+     * @return the insets in snapshot bitmap coordinates.
+     */
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    public Insets getScaledInsets() {
+        if (mThumbnailData == null) {
+            return Insets.NONE;
+        }
+
+        RectF bitmapRect = new RectF(
+                0, 0,
+                mThumbnailData.thumbnail.getWidth(), mThumbnailData.thumbnail.getHeight());
+        RectF viewRect = new RectF(0, 0, getMeasuredWidth(), getMeasuredHeight());
+
+        // The position helper matrix tells us how to transform the bitmap to fit the view, the
+        // inverse tells us where the view would be in the bitmaps coordinates. The insets are the
+        // difference between the bitmap bounds and the projected view bounds.
+        Matrix boundsToBitmapSpace = new Matrix();
+        mPreviewPositionHelper.getMatrix().invert(boundsToBitmapSpace);
+        RectF boundsInBitmapSpace = new RectF();
+        boundsToBitmapSpace.mapRect(boundsInBitmapSpace, viewRect);
+
+        return Insets.of(
+            Math.round(boundsInBitmapSpace.left),
+            Math.round(boundsInBitmapSpace.top),
+            Math.round(bitmapRect.right - boundsInBitmapSpace.right),
+            Math.round(bitmapRect.bottom - boundsInBitmapSpace.bottom));
+    }
+
+
     public int getSysUiStatusNavFlags() {
         if (mThumbnailData != null) {
             int flags = 0;
@@ -227,8 +265,8 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
     protected void onDraw(Canvas canvas) {
         RectF currentDrawnInsets = mFullscreenParams.mCurrentDrawnInsets;
         canvas.save();
-        canvas.translate(currentDrawnInsets.left, currentDrawnInsets.top);
         canvas.scale(mFullscreenParams.mScale, mFullscreenParams.mScale);
+        canvas.translate(currentDrawnInsets.left, currentDrawnInsets.top);
         // Draw the insets if we're being drawn fullscreen (we do this for quick switch).
         drawOnCanvas(canvas,
                 -currentDrawnInsets.left,
@@ -357,6 +395,7 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
             mBitmapShader.setLocalMatrix(mPreviewPositionHelper.mMatrix);
             mPaint.setShader(mBitmapShader);
         }
+        getTaskView().updateCurrentFullscreenParams(mPreviewPositionHelper);
         invalidate();
 
         // Update can be called from {@link #onSizeChanged} during layout, post handling of overlay

@@ -162,6 +162,7 @@ public class LauncherSettings {
         // Represents search results view.
         public static final int CONTAINER_SEARCH_RESULTS = -106;
         public static final int CONTAINER_SHORTCUTS = -107;
+        public static final int CONTAINER_SETTINGS = -108;
 
         public static final String containerToString(int container) {
             switch (container) {

@@ -20,6 +20,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name" msgid="649227358658669779">"Launcher3"</string>
+    <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="work_folder_name" msgid="3753320833950115786">"কৰ্মস্থান"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"এপটো ইনষ্টল কৰা নহ\'ল।"</string>
     <string name="activity_not_available" msgid="7456344436509528827">"এপটো নাই"</string>
@@ -52,8 +53,6 @@
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"আনইনষ্টল কৰক"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"এপ সম্পৰ্কীয় তথ্য"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"ইনষ্টল কৰক"</string>
-    <string name="dismiss_prediction_label" msgid="3357562989568808658">"এপৰ পৰামৰ্শ নিদিব"</string>
-    <string name="pin_prediction" msgid="4196423321649756498">"পূৰ্বানুমান কৰা এপ্‌টো পিন কৰক"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"শ্বৰ্টকাট ইনষ্টল কৰিব পাৰে"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"ব্য়ৱহাৰকাৰীৰ হস্তক্ষেপ অবিহনেই কোনো এপক শ্বৰ্টকাটবোৰ যোগ কৰাৰ অনুমতি দিয়ে।"</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"গৃহ ছেটিং আৰু শ্বৰ্টকাটবোৰ পঢ়িব পাৰে"</string>
@@ -64,7 +63,7 @@
     <string name="gadget_error_text" msgid="6081085226050792095">"ৱিজেট ল\'ড কৰাত সমস্য়া"</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"ছেটআপ কৰক"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"এইটো এটা ছিষ্টেম এপ আৰু ইয়াক আনইনষ্টল কৰিব নোৱৰি"</string>
-    <string name="folder_hint_text" msgid="5174843001373488816">"নাম সম্পাদনা কৰক"</string>
+    <string name="folder_hint_text" msgid="6617836969016293992">"নামবিহীন ফ\'ল্ডাৰ"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> অক্ষম কৰা হ’ল"</string>
     <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
       <item quantity="one"><xliff:g id="APP_NAME_2">%1$s</xliff:g>ৰ <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g>টা জাননী আছে</item>
@@ -93,7 +92,7 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"জাননী সম্পৰ্কীয় বিন্দুবোৰ দেখুৱাবলৈ <xliff:g id="NAME">%1$s</xliff:g>ৰ বাবে এপৰ জাননীসমূহ অন কৰক"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"ছেটিংসমূহ সলনি কৰক"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"জাননী বিন্দু দেখুৱাওক"</string>
-    <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"গৃহ স্ক্ৰীনত এপ্ চিহ্নসমূহ যোগ দিয়ক"</string>
+    <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"গৃহ স্ক্ৰীণত আইকনটো যোগ কৰক"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"নতুন এপসমূহৰ বাবে"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"অজ্ঞাত"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"আঁতৰাওক"</string>
@@ -130,18 +129,15 @@
     <string name="action_deep_shortcut" msgid="2864038805849372848">"শ্বৰ্টকাটসমূহ"</string>
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"শ্বৰ্টকাট আৰু জাননীসমূহ"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"অগ্ৰাহ্য কৰক"</string>
-    <string name="accessibility_close" msgid="2277148124685870734">"বন্ধ কৰক"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"জাননী অগ্ৰাহ্য কৰা হৈছে"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"ব্যক্তিগত"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"কৰ্মস্থান"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"কৰ্মস্থানৰ প্ৰ\'ফাইল"</string>
-    <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"ব্যক্তিগত ডেটাখিনি পৃথক হয় আৰু সেইখিনি কর্মস্থানৰ এপ্‌সমূহৰ পৰা লুকুওৱা আছে"</string>
-    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"আপোনাৰ আইটি প্ৰশাসকে কর্মস্থানৰ এপ্‌সমূহ আৰু ডেটা দেখা পায়"</string>
-    <string name="work_profile_edu_next" msgid="8783418929296503629">"পৰৱৰ্তী"</string>
-    <string name="work_profile_edu_accept" msgid="6069788082535149071">"বুজি পালোঁ"</string>
-    <string name="work_apps_paused_title" msgid="2389865654362803723">"কৰ্মস্থানৰ প্ৰ\'ফাইলটো পজ কৰা আছে"</string>
-    <string name="work_apps_paused_body" msgid="2197210494568696054">"কৰ্মস্থানৰ এপ্‌সমূহে আপোনালৈ জাননীসমূহ পঠিয়াব, আপোনাৰ বেটাৰী ব্যৱহাৰ কৰিব অথবা আপোনাৰ অৱস্থান এক্সেছ কৰিব নোৱাৰে"</string>
-    <string name="work_apps_paused_content_description" msgid="7553586952985486433">"কৰ্মস্থানৰ প্ৰ\'ফাইলটো পজ কৰা আছে। কৰ্মস্থানৰ এপ্‌সমূহে আপোনালৈ জাননীসমূহ পঠিয়াব, আপোনাৰ বেটাৰী ব্যৱহাৰ কৰিব অথবা আপোনাৰ অৱস্থান এক্সেছ কৰিব নোৱাৰে"</string>
-    <string name="work_switch_tip" msgid="808075064383839144">"কর্মস্থানৰ এপ্‌সমূহ আৰু জাননীসমূহ পজ কৰক"</string>
+    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"ইয়াত কৰ্মস্থানৰ এপ্ বিচাৰি পাওক"</string>
+    <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"কৰ্মস্থানৰ প্ৰতিটো এপৰে একোটা প্ৰতীক আছে আৰু তাক আপোনাৰ প্ৰতিষ্ঠানে সুৰক্ষিত কৰি ৰাখে। ব্যৱহাৰ কৰাত সুবিধা হ\'বলৈ এপসমূহ আপোনাৰ গৃহ স্ক্ৰীণলৈ স্থানান্তৰ কৰক।"</string>
+    <string name="work_mode_on_label" msgid="4781128097185272916">"আপোনাৰ প্ৰতিষ্ঠানৰ দ্বাৰা পৰিচালিত"</string>
+    <string name="work_mode_off_label" msgid="3194894777601421047">"জাননী আৰু এপসমূহ অফ হৈ আছে"</string>
+    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"বন্ধ কৰক"</string>
+    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"বন্ধ"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"বিফল: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>
