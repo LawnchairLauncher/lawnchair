@@ -34,6 +34,7 @@
         <item name="allAppsScrimColor">#FFFFFFFF</item>
         <item name="allAppsInterimScrimAlpha">46</item>
         <item name="allAppsNavBarScrimColor">#66FFFFFF</item>
+        <item name="allAppsTheme">@style/AllAppsTheme</item>
         <item name="popupColorPrimary">#FFF</item>
         <item name="popupColorSecondary">#F1F3F4</item>
         <item name="popupColorTertiary">#E0E0E0</item> <!-- Gray 300 -->
@@ -54,6 +55,7 @@
         <item name="iconOnlyShortcutColor">?android:attr/textColorSecondary</item>
         <item name="workProfileOverlayTextColor">#FF212121</item>
         <item name="eduHalfSheetBGColor">?android:attr/colorAccent</item>
+        <item name="disabledIconAlpha">.36</item>
 
         <item name="android:windowTranslucentStatus">false</item>
         <item name="android:windowTranslucentNavigation">false</item>
@@ -67,6 +69,8 @@
     <style name="LauncherTheme.DarkMainColor" parent="@style/LauncherTheme">
         <item name="folderFillColor">#FF3C4043</item> <!-- 100% GM2 800 -->
         <item name="folderTextColor">?attr/workspaceTextColor</item>
+        <item name="disabledIconAlpha">.24</item>
+
     </style>
 
     <style name="LauncherTheme.DarkText" parent="@style/LauncherTheme">
@@ -93,6 +97,7 @@
         <item name="allAppsScrimColor">#FF000000</item>
         <item name="allAppsInterimScrimAlpha">102</item>
         <item name="allAppsNavBarScrimColor">#80000000</item>
+        <item name="allAppsTheme">@style/AllAppsTheme.Dark</item>
         <item name="popupColorPrimary">#3C4043</item> <!-- Gray 800 -->
         <item name="popupColorSecondary">#202124</item>
         <item name="popupColorTertiary">#757575</item> <!-- Gray 600 -->
@@ -112,6 +117,7 @@
     <style name="LauncherTheme.Dark.DarkMainColor" parent="@style/LauncherTheme.Dark">
         <item name="folderFillColor">#FF3C4043</item> <!-- 100% GM2 800 -->
         <item name="folderTextColor">@android:color/white</item>
+        <item name="disabledIconAlpha">.24</item>
     </style>
 
     <style name="LauncherTheme.Dark.DarkText" parent="@style/LauncherTheme.Dark">
@@ -178,6 +184,14 @@
         <item name="android:textColor">@android:color/white</item>
         <item name="android:includeFontPadding">false</item>
         <item name="android:importantForAccessibility">no</item>
+    </style>
+
+    <style name="AllAppsTheme">
+        <item name="disabledIconAlpha">.24</item>
+    </style>
+
+    <style name="AllAppsTheme.Dark">
+        <item name="disabledIconAlpha">.28</item>
     </style>
 
     <!-- Base theme for BubbleTextView and sub classes -->

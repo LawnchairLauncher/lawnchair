@@ -22,29 +22,16 @@
     <string name="recent_task_option_split_screen" msgid="5353188922202653570">"Экранды бөлүү"</string>
     <string name="recent_task_option_pin" msgid="7929860679018978258">"Кадап коюу"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Эркин форма режими"</string>
+    <string name="accessibility_desc_recent_apps" msgid="1444379410873162882">"Сереп салуу"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"Акыркы колдонмолор жок"</string>
+    <string name="accessibility_close_task" msgid="5354563209433803643">"Жабуу"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Колдонмону пайдалануу жөндөөлөрү"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"Баарын тазалоо"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"Акыркы колдонмолор"</string>
     <string name="task_contents_description_with_remaining_time" msgid="4479688746574672685">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>, <xliff:g id="REMAINING_TIME">%2$s</xliff:g>"</string>
     <string name="shorter_duration_less_than_one_minute" msgid="4722015666335015336">"&lt; 1 мүнөт"</string>
     <string name="time_left_for_app" msgid="3111996412933644358">"Бүгүн <xliff:g id="TIME">%1$s</xliff:g> мүнөт калды"</string>
-    <string name="title_app_suggestions" msgid="4185902664111965088">"Сунушталган колдонмолор"</string>
+    <string name="title_app_suggestions" msgid="4185902664111965088">"Колдонмо сунуштары"</string>
     <string name="all_apps_label" msgid="8542784161730910663">"Бардык колдонмолор"</string>
     <string name="all_apps_prediction_tip" msgid="2672336544844936186">"Божомолдонгон колдонмолоруңуз"</string>
-    <string name="hotseat_edu_prompt_title" msgid="5595771595144175752">"Көп колдонулган колдонмолорго оңой кириңиз"</string>
-    <string name="hotseat_edu_prompt_content" msgid="5709176001504149521">"Pixel жакын арада кайсы колдонмолорду колдоно турганыңызды божомолдоп, Башкы экраныңызда сунуштап турат. Жөндөө үчүн, таптап коюңуз."</string>
-    <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"Сунушталган колдонмолорду Башкы экрандын ылдый жагында жайгашкан тилкесинде көрүңүз"</string>
-    <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"Көп колдонулган колдонмолорго Башкы экрандан оңой кириңиз. Сунуштар тартиптин негизинде өзгөрөт. Төмөндө жайгашкан тилкедеги колдонмолор Башкы экраныңызга көтөрүлөт."</string>
-    <string name="hotseat_edu_message_migrate_alt" msgid="3042360119039646356">"Көп колдонулган колдонмолорго Башкы экрандан оңой кириңиз. Сунуштар тартиптин негизинде өзгөрөт. Ылдый жакта жайгашкан тилкедеги колдонмолор жаңы папкага жылдырылат."</string>
-    <string name="hotseat_edu_accept" msgid="1611544083278999837">"Сунушталган колдонолорду алуу"</string>
-    <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"Жок, рахмат"</string>
-    <string name="hotseat_turn_off" msgid="7808360330229368470">"Жөндөөлөр"</string>
-    <string name="hotseat_auto_enrolled" msgid="522100018967146807">"Көп иштетилген колдонмолор ушул жерде көрүнүп, тартиптин негизинде өзгөрөт"</string>
-    <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"Сунушталган колдонмолорду көрүү үчүн ылдый жакта жайгашкан тилкедеги колдонмолорду сүрүп салыңыз"</string>
-    <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"Сунушталган колдонмолор бош жерге кошулат"</string>
-    <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Божомолдонгон колдонмо: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="action_share" msgid="2648470652637092375">"Бөлүшүү"</string>
-    <string name="action_screenshot" msgid="8171125848358142917">"Скриншот"</string>
-    <string name="blocked_by_policy" msgid="2071401072261365546">"Бул аракетти аткарууга колдонмо же ишканаңыз тыюу салган"</string>
 </resources>

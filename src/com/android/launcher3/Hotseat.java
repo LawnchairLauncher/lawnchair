@@ -91,7 +91,6 @@ public class Hotseat extends CellLayout implements LogContainerProvider, Insetta
     public void setInsets(Rect insets) {
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) getLayoutParams();
         DeviceProfile grid = mActivity.getDeviceProfile();
-        insets = grid.getInsets();
 
         if (grid.isVerticalBarLayout()) {
             lp.height = ViewGroup.LayoutParams.MATCH_PARENT;

@@ -20,6 +20,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name" msgid="649227358658669779">"Launcher3"</string>
+    <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="work_folder_name" msgid="3753320833950115786">"العمل"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"لم يتم تثبيت التطبيق."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"التطبيق ليس متاحًا"</string>
@@ -52,8 +53,6 @@
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"إلغاء التثبيت"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"معلومات عن التطبيق"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"تثبيت"</string>
-    <string name="dismiss_prediction_label" msgid="3357562989568808658">"عدم اقتراح التطبيق"</string>
-    <string name="pin_prediction" msgid="4196423321649756498">"تثبيت التطبيق المتوقّع"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"تثبيت اختصارات"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"للسماح لتطبيق ما بإضافة اختصارات بدون تدخل المستخدم."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"قراءة إعدادات واختصارات الشاشة الرئيسية"</string>
@@ -64,7 +63,7 @@
     <string name="gadget_error_text" msgid="6081085226050792095">"حدثت مشكلة أثناء تحميل الأداة"</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"الإعداد"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"هذا تطبيق نظام وتتعذر إزالته."</string>
-    <string name="folder_hint_text" msgid="5174843001373488816">"تعديل الاسم"</string>
+    <string name="folder_hint_text" msgid="6617836969016293992">"مجلد بدون اسم"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"تم إيقاف <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
     <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
       <item quantity="zero">يتضمن تطبيق <xliff:g id="APP_NAME_2">%1$s</xliff:g> <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> إشعار.​</item>
@@ -93,11 +92,11 @@
     <string name="notification_dots_title" msgid="9062440428204120317">"نقاط الإشعارات"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"مفعّل"</string>
     <string name="notification_dots_desc_off" msgid="1760796511504341095">"غير مفعّل"</string>
-    <string name="title_missing_notification_access" msgid="7503287056163941064">"يلزم تمكين الوصول إلى الإشعارات"</string>
-    <string name="msg_missing_notification_access" msgid="281113995110910548">"لعرض نقاط الإشعارات، يجب تفعيل إشعارات التطبيق في <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="title_missing_notification_access" msgid="7503287056163941064">"يلزم تفعيل الوصول إلى الإشعارات"</string>
+    <string name="msg_missing_notification_access" msgid="281113995110910548">"لعرض نقاط الإشعارات، يجب تشغيل إشعارات التطبيق في <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"تغيير الإعدادات"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"عرض نقاط الإشعارات"</string>
-    <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"إضافة رموز التطبيقات إلى الشاشة الرئيسية"</string>
+    <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"إضافة رمز إلى الشاشة الرئيسية"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"للتطبيقات الجديدة"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"غير معروفة"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"إزالة"</string>
@@ -134,18 +133,15 @@
     <string name="action_deep_shortcut" msgid="2864038805849372848">"الاختصارات"</string>
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"الاختصارات والإشعارات"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"تجاهل"</string>
-    <string name="accessibility_close" msgid="2277148124685870734">"إغلاق"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"تم تجاهل الإشعار"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"شخصية"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"للعمل"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"الملف الشخصي للعمل"</string>
-    <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"إن البيانات الشخصية منفصلة عن تطبيقات العمل ومخفية عنها"</string>
-    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"إن بيانات وتطبيقات العمل مرئية لمشرف تكنولوجيا المعلومات في مؤسستك"</string>
-    <string name="work_profile_edu_next" msgid="8783418929296503629">"التالي"</string>
-    <string name="work_profile_edu_accept" msgid="6069788082535149071">"حسنًا"</string>
-    <string name="work_apps_paused_title" msgid="2389865654362803723">"تم إيقاف الملف الشخصي للعمل مؤقتًا"</string>
-    <string name="work_apps_paused_body" msgid="2197210494568696054">"لا يمكن لتطبيقات العمل إرسال إشعارات إليك أو استخدام بطاريتك أو الوصول إلى موقعك الجغرافي."</string>
-    <string name="work_apps_paused_content_description" msgid="7553586952985486433">"تم إيقاف الملف الشخصي للعمل مؤقتًا. لا يمكن لتطبيقات العمل إرسال إشعارات إليك أو استخدام بطاريتك أو الوصول إلى موقعك الجغرافي."</string>
-    <string name="work_switch_tip" msgid="808075064383839144">"إيقاف تطبيقات العمل وإشعاراتها مؤقتًا"</string>
+    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"البحث عن تطبيقات العمل هنا"</string>
+    <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"يحتوي كل تطبيق للعمل على شارة ويظل تحت حماية مؤسستك. يمكنك نقل التطبيقات إلى شاشتك الرئيسية لتسهيل الوصول إليها."</string>
+    <string name="work_mode_on_label" msgid="4781128097185272916">"ملف شخصي للعمل تديره مؤسستك"</string>
+    <string name="work_mode_off_label" msgid="3194894777601421047">"الإشعارات والتطبيقات متوقفة."</string>
+    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"إغلاق"</string>
+    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"تمّ الإغلاق"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"تعذَّر <xliff:g id="WHAT">%1$s</xliff:g>."</string>
 </resources>
