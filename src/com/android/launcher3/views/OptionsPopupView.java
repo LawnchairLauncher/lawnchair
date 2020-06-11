@@ -17,8 +17,8 @@ package com.android.launcher3.views;
 
 import static com.android.launcher3.Utilities.EXTRA_WALLPAPER_FLAVOR;
 import static com.android.launcher3.Utilities.EXTRA_WALLPAPER_OFFSET;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.IGNORE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SETTINGS_BUTTON_TAP_OR_LONGPRESS;
-import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WALLPAPER_BUTTON_TAP_OR_LONGPRESS;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WIDGETSTRAY_BUTTON_TAP_OR_LONGPRESS;
 
 import android.content.Context;
@@ -38,10 +38,12 @@ import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.logging.StatsLogManager.EventEnum;
 import com.android.launcher3.model.WidgetsModel;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.ArrowPopup;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.testing.TestLogging;
@@ -157,7 +159,7 @@ public class OptionsPopupView extends ArrowPopup
         int resDrawable = Utilities.existsStyleWallpapers(launcher) ?
                 R.drawable.ic_palette : R.drawable.ic_wallpaper;
         options.add(new OptionItem(resString, resDrawable,
-                LAUNCHER_WALLPAPER_BUTTON_TAP_OR_LONGPRESS,
+                IGNORE,
                 OptionsPopupView::startWallpaperPicker));
         if (!WidgetsModel.GO_DISABLE_WIDGETS) {
             options.add(new OptionItem(R.string.widget_button_text, R.drawable.ic_widget,
@@ -218,7 +220,15 @@ public class OptionsPopupView extends ArrowPopup
         if (!TextUtils.isEmpty(pickerPackage)) {
             intent.setPackage(pickerPackage);
         }
-        return launcher.startActivitySafely(v, intent, null, null);
+        return launcher.startActivitySafely(v, intent, dummyInfo(intent), null);
+    }
+
+    static WorkspaceItemInfo dummyInfo(Intent intent) {
+        WorkspaceItemInfo dummyInfo = new WorkspaceItemInfo();
+        dummyInfo.intent = intent;
+        dummyInfo.itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
+        dummyInfo.container = LauncherSettings.Favorites.CONTAINER_SETTINGS;
+        return dummyInfo;
     }
 
     public static class OptionItem {

@@ -98,9 +98,11 @@ public class BgDataModel {
     public final ArrayList<AppInfo> cachedPredictedItems = new ArrayList<>();
 
     /**
-     * True if the launcher has permission to access deep shortcuts.
+     * @see Callbacks#FLAG_HAS_SHORTCUT_PERMISSION
+     * @see Callbacks#FLAG_QUIET_MODE_ENABLED
+     * @see Callbacks#FLAG_QUIET_MODE_CHANGE_PERMISSION
      */
-    public boolean hasShortcutHostPermission;
+    public int flags;
 
     /**
      * Maps all launcher activities to counts of their shortcuts.
@@ -347,6 +349,13 @@ public class BgDataModel {
     }
 
     public interface Callbacks {
+        // If the launcher has permission to access deep shortcuts.
+        int FLAG_HAS_SHORTCUT_PERMISSION = 1 << 0;
+        // If quiet mode is enabled for any user
+        int FLAG_QUIET_MODE_ENABLED = 1 << 1;
+        // If launcher can change quiet mode
+        int FLAG_QUIET_MODE_CHANGE_PERMISSION = 1 << 2;
+
         /**
          * Returns the page number to bind first, synchronously if possible or -1
          */
@@ -370,7 +379,7 @@ public class BgDataModel {
         void executeOnNextDraw(ViewOnDrawExecutor executor);
         void bindDeepShortcutMap(HashMap<ComponentKey, Integer> deepShortcutMap);
 
-        void bindAllApplications(AppInfo[] apps);
+        void bindAllApplications(AppInfo[] apps, int flags);
 
         /**
          * Binds predicted appInfos at at available prediction slots.

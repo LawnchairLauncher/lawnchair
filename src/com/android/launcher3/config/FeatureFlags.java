@@ -98,6 +98,10 @@ public final class FeatureFlags {
             "FOLDER_NAME_SUGGEST", true,
             "Suggests folder names instead of blank text.");
 
+    public static final BooleanFlag FOLDER_NAME_MAJORITY_RANKING = getDebugFlag(
+            "FOLDER_NAME_MAJORITY_RANKING", true,
+            "Suggests folder names based on majority based ranking.");
+
     public static final BooleanFlag APP_SEARCH_IMPROVEMENTS = new DeviceFlag(
             "APP_SEARCH_IMPROVEMENTS", true,
             "Adds localized title and keyword search and ranking");
@@ -172,6 +176,9 @@ public final class FeatureFlags {
     public static final BooleanFlag SEPARATE_RECENTS_ACTIVITY = getDebugFlag(
             "SEPARATE_RECENTS_ACTIVITY", false,
             "Uses a separate recents activity instead of using the integrated recents+Launcher UI");
+
+    public static final BooleanFlag USER_EVENT_DISPATCHER = new DeviceFlag(
+            "USER_EVENT_DISPATCHER", true, "User event dispatcher collects logs.");
 
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {

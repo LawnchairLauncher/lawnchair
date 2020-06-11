@@ -165,7 +165,7 @@ public class OverviewCommandHelper {
             mActivityInterface = mOverviewComponentObserver.getActivityInterface();
             mCreateTime = SystemClock.elapsedRealtime();
             mAnimationProvider = new AppToOverviewAnimationProvider<>(mActivityInterface,
-                    RecentsModel.getRunningTaskId());
+                    RecentsModel.getRunningTaskId(), mDeviceState);
 
             // Preload the plan
             mRecentsModel.getTasks(null);

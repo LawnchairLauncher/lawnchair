@@ -96,7 +96,6 @@
     <!-- The size of corner radius of the arrow in the arrow toast. -->
     <dimen name="arrow_toast_corner_radius">2dp</dimen>
 
-    <dimen name="all_apps_work_profile_tab_footer_padding">20dp</dimen>
 
 <!-- Search bar in All Apps -->
     <dimen name="all_apps_header_max_elevation">3dp</dimen>
@@ -104,6 +103,9 @@
     <dimen name="all_apps_header_shadow_height">6dp</dimen>
 
     <dimen name="all_apps_divider_margin_vertical">8dp</dimen>
+
+    <dimen name="work_profile_footer_padding">20dp</dimen>
+    <dimen name="work_profile_footer_text_size">16sp</dimen>
 
 <!-- Widget tray -->
     <dimen name="widget_preview_label_vertical_padding">8dp</dimen>

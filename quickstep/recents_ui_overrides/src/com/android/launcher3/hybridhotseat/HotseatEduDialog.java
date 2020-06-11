@@ -144,11 +144,23 @@ public class HotseatEduDialog extends AbstractSlideInView implements Insettable 
         int rightInset = insets.right - mInsets.right;
         int bottomInset = insets.bottom - mInsets.bottom;
         mInsets.set(insets);
-        setPadding(leftInset, getPaddingTop(), rightInset, 0);
-        mHotseatWrapper.setPadding(mHotseatWrapper.getPaddingLeft(), getPaddingTop(),
-                mHotseatWrapper.getPaddingRight(), bottomInset);
-        mHotseatWrapper.getLayoutParams().height =
-                mLauncher.getDeviceProfile().hotseatBarSizePx + insets.bottom;
+        if (mLauncher.getOrientation() == Configuration.ORIENTATION_PORTRAIT) {
+            setPadding(leftInset, getPaddingTop(), rightInset, 0);
+            mHotseatWrapper.setPadding(mHotseatWrapper.getPaddingLeft(), getPaddingTop(),
+                    mHotseatWrapper.getPaddingRight(), bottomInset);
+            mHotseatWrapper.getLayoutParams().height =
+                    mLauncher.getDeviceProfile().hotseatBarSizePx + insets.bottom;
+
+        } else {
+            setPadding(0, getPaddingTop(), 0, 0);
+            mHotseatWrapper.setPadding(mHotseatWrapper.getPaddingLeft(), getPaddingTop(),
+                    mHotseatWrapper.getPaddingRight(),
+                    (int) getResources().getDimension(R.dimen.bottom_sheet_edu_padding));
+            ((TextView) findViewById(R.id.hotseat_edu_heading)).setText(
+                    R.string.hotseat_edu_title_migrate_landscape);
+            ((TextView) findViewById(R.id.hotseat_edu_content)).setText(
+                    R.string.hotseat_edu_message_migrate_landscape);
+        }
     }
 
     private void logUserAction(boolean migrated, int pageIndex) {

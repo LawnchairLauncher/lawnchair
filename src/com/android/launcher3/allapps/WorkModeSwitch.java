@@ -15,11 +15,8 @@
  */
 package com.android.launcher3.allapps;
 
-import static com.android.launcher3.util.PackageManagerHelper.hasShortcutsPermission;
-
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Process;
@@ -59,7 +56,6 @@ public class WorkModeSwitch extends Switch implements Insettable {
     public WorkModeSwitch(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
-
     }
 
     public WorkModeSwitch(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -73,9 +69,7 @@ public class WorkModeSwitch extends Switch implements Insettable {
     }
 
     @Override
-    public void setChecked(boolean checked) {
-
-    }
+    public void setChecked(boolean checked) { }
 
     @Override
     public void toggle() {
@@ -84,19 +78,16 @@ public class WorkModeSwitch extends Switch implements Insettable {
         trySetQuietModeEnabledToAllProfilesAsync(isChecked());
     }
 
-    private void setCheckedInternal(boolean checked) {
-        super.setChecked(checked);
+    /**
+     * Sets the enabled or disabled state of the button
+     * @param isChecked
+     */
+    public void update(boolean isChecked) {
+        super.setChecked(isChecked);
         setCompoundDrawablesRelativeWithIntrinsicBounds(
-                checked ? R.drawable.ic_corp : R.drawable.ic_corp_off, 0, 0, 0);
-    }
-
-    public void refresh() {
-        if (!shouldShowWorkSwitch()) return;
-        UserCache userManager = UserCache.INSTANCE.get(getContext());
-        setCheckedInternal(!userManager.isAnyProfileQuietModeEnabled());
+                isChecked ? R.drawable.ic_corp : R.drawable.ic_corp_off, 0, 0, 0);
         setEnabled(true);
     }
-
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
@@ -116,12 +107,6 @@ public class WorkModeSwitch extends Switch implements Insettable {
         return super.onTouchEvent(ev);
     }
 
-    @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        super.onLayout(changed, l, t, r, b);
-        this.setVisibility(shouldShowWorkSwitch() ? VISIBLE : GONE);
-    }
-
     private void trySetQuietModeEnabledToAllProfilesAsync(boolean enabled) {
         new SetQuietModeEnabledAsyncTask(enabled, new WeakReference<>(this)).execute();
     }
@@ -138,13 +123,12 @@ public class WorkModeSwitch extends Switch implements Insettable {
      * Animates in/out work profile toggle panel based on the tab user is on
      */
     public void setWorkTabVisible(boolean workTabVisible) {
-        if (!shouldShowWorkSwitch()) return;
         clearAnimation();
         if (workTabVisible) {
             setVisibility(VISIBLE);
             setAlpha(0);
             animate().alpha(1).start();
-            showTipifNeeded();
+            showTipIfNeeded();
         } else {
             animate().alpha(0).withEndAction(() -> this.setVisibility(GONE)).start();
         }
@@ -201,16 +185,10 @@ public class WorkModeSwitch extends Switch implements Insettable {
         }
     }
 
-    private boolean shouldShowWorkSwitch() {
-        return Utilities.ATLEAST_P && (hasShortcutsPermission(getContext())
-                || getContext().checkSelfPermission("android.permission.MODIFY_QUIET_MODE")
-                == PackageManager.PERMISSION_GRANTED);
-    }
-
     /**
      * Shows a work tip on the Nth work tab open
      */
-    public void showTipifNeeded() {
+    public void showTipIfNeeded() {
         Context context = getContext();
         SharedPreferences prefs = Utilities.getPrefs(context);
         int tipCounter = prefs.getInt(KEY_WORK_TIP_COUNTER, WORK_TIP_THRESHOLD);

@@ -37,6 +37,7 @@ import android.view.View;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
+import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.logging.StatsLogManager.LauncherEvent;
 import com.android.launcher3.model.WellbeingModel;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
@@ -71,7 +72,16 @@ public interface TaskShortcutFactory {
     static WorkspaceItemInfo dummyInfo(TaskView view) {
         Task task = view.getTask();
 
-        WorkspaceItemInfo dummyInfo = new WorkspaceItemInfo();
+        WorkspaceItemInfo dummyInfo = new WorkspaceItemInfo(){
+            /**
+             * Helps to log events as {@link LauncherAtom.Task}
+             * instead of {@link LauncherAtom.ItemInfo}.
+             */
+            @Override
+            public LauncherAtom.ItemInfo buildProto() {
+                return view.buildProto();
+            }
+        };
         dummyInfo.intent = new Intent();
         ComponentName component = task.getTopComponent();
         dummyInfo.getIntent().setComponent(component);
@@ -310,6 +320,8 @@ public interface TaskShortcutFactory {
             };
             mTaskView.launchTask(true, resultCallback, Executors.MAIN_EXECUTOR.getHandler());
             dismissTaskMenuView(mTarget);
+            mTarget.getStatsLogManager().log(LauncherEvent.LAUNCHER_SYSTEM_SHORTCUT_PIN_TAP,
+                    mTaskView.buildProto());
         }
     }
 
