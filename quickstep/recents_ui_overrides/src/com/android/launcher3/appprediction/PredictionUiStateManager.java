@@ -23,6 +23,7 @@ import android.app.prediction.AppPredictor;
 import android.app.prediction.AppTarget;
 import android.content.ComponentName;
 import android.content.Context;
+import android.os.Process;
 
 import androidx.annotation.NonNull;
 
@@ -35,6 +36,7 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsStore.OnUpdateListener;
+import com.android.launcher3.hybridhotseat.HotseatFileLog;
 import com.android.launcher3.hybridhotseat.HotseatPredictionController;
 import com.android.launcher3.icons.IconCache.ItemInfoUpdateReceiver;
 import com.android.launcher3.model.data.ItemInfo;
@@ -310,6 +312,18 @@ public class PredictionUiStateManager implements StateListener<LauncherState>,
      */
     public static void fillInPredictedRank(
             @NonNull ItemInfo itemInfo, @NonNull LauncherLogProto.Target target) {
+
+        HotseatFileLog hotseatFileLog = HotseatFileLog.INSTANCE.getNoCreate();
+
+        if (hotseatFileLog != null && itemInfo != null && Utilities.IS_DEBUG_DEVICE) {
+            final String pkg = itemInfo.getTargetComponent() != null
+                    ? itemInfo.getTargetComponent().getPackageName() : "unknown";
+            hotseatFileLog.log("UserEvent",
+                    "appLaunch: packageName:" + pkg + ",isWorkApp:" + (itemInfo.user != null
+                            && !Process.myUserHandle().equals(itemInfo.user))
+                            + ",launchLocation:" + itemInfo.container);
+        }
+
         final PredictionUiStateManager manager = PredictionUiStateManager.INSTANCE.getNoCreate();
         if (manager == null || itemInfo.getTargetComponent() == null || itemInfo.user == null
                 || (itemInfo.itemType != LauncherSettings.Favorites.ITEM_TYPE_APPLICATION
