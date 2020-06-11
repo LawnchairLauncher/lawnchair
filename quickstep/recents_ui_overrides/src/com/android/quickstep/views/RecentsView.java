@@ -1759,6 +1759,16 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         return Math.max(getWidth(), 1);
     }
 
+    /**
+     * Resets the visuals when exit modal state.
+     */
+    public void resetModalVisuals() {
+        TaskView taskView = getCurrentPageTaskView();
+        if (taskView != null) {
+            taskView.getThumbnail().getTaskOverlay().resetModalVisuals();
+        }
+    }
+
     private void updateDeadZoneRects() {
         // Get the deadzone rect surrounding the clear all button to not dismiss overview to home
         mClearAllButtonDeadZoneRect.setEmpty();
