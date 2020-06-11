@@ -20,6 +20,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name" msgid="649227358658669779">"Launcher3"</string>
+    <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="work_folder_name" msgid="3753320833950115786">"कार्य"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"अ‍ॅप इंस्टॉल केलेला नाही."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"अ‍ॅप उपलब्ध नाही"</string>
@@ -46,14 +47,12 @@
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"आवडीच्या ट्रे मध्ये आणखी जागा नाही"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"अ‍ॅप्स सूची"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"वैयक्तिक अ‍ॅप्स सूची"</string>
-    <string name="all_apps_button_work_label" msgid="7270707118948892488">"कामाच्या ठिकाणी वापरली जाणाऱ्या ॲप्सची सूची"</string>
+    <string name="all_apps_button_work_label" msgid="7270707118948892488">"कामाच्या ठिकाणी वापरली जाणाऱ्या अॅप्सची सूची"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"होम"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"काढा"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"अनइंस्टॉल करा"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"अ‍ॅप माहिती"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"इंस्टॉल करा"</string>
-    <string name="dismiss_prediction_label" msgid="3357562989568808658">"ॲप सुचवू नका"</string>
-    <string name="pin_prediction" msgid="4196423321649756498">"पूर्वानुमान पिन करा"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"शॉर्टकट स्‍थापित करा"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"वापरकर्ता हस्तक्षेपाशिवाय शॉर्टकट जोडण्यास अ‍ॅप ला अनुमती देते."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"होम सेटिंग्ज आणि शॉर्टकट वाचा"</string>
@@ -64,7 +63,7 @@
     <string name="gadget_error_text" msgid="6081085226050792095">"विजेट लोड करण्यात समस्या"</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"सेटअप"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"हा सिस्टम अ‍ॅप आहे आणि अनइंस्टॉल केला जाऊ शकत नाही."</string>
-    <string name="folder_hint_text" msgid="5174843001373488816">"नाव संपादित करा"</string>
+    <string name="folder_hint_text" msgid="6617836969016293992">"अनामित फोल्डर"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> अक्षम केला आहे"</string>
     <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
       <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g>साठी <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> सूचना आहेत</item>
@@ -84,17 +83,17 @@
     <string name="styles_wallpaper_button_text" msgid="4342122323125579619">"शैली आणि वॉलपेपर"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"होम सेटिंग्‍ज"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"आपल्या प्रशासकाने अक्षम केले"</string>
-    <string name="allow_rotation_title" msgid="7728578836261442095">"मुख्य स्क्रीन फिरविण्‍यास अनुमती द्या"</string>
+    <string name="allow_rotation_title" msgid="7728578836261442095">"मुख्यस्क्रीन फिरविण्‍यास अनुमती द्या"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"फोन फिरविला जातो तेव्हा"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"सूचना बिंदू"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"सुरू"</string>
     <string name="notification_dots_desc_off" msgid="1760796511504341095">"बंद"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"सूचनांच्या अ‍ॅक्सेसची आवश्यकता आहे"</string>
-    <string name="msg_missing_notification_access" msgid="281113995110910548">"सूचना बिंदू दाखवण्यासाठी, <xliff:g id="NAME">%1$s</xliff:g> साठी अ‍ॅप सूचना सुरू करा"</string>
+    <string name="msg_missing_notification_access" msgid="281113995110910548">"सूचना बिंदू दाखवण्यासाठी, <xliff:g id="NAME">%1$s</xliff:g> साठी अ‍ॅप सूचना चालू करा"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"सेटिंग्ज बदला"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"सूचना बिंदू दाखवा"</string>
-    <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"होम स्क्रीनवर ॲप आयकन जोडा"</string>
-    <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"नवीन ॲप्ससाठी"</string>
+    <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"होम स्क्रीनवर आयकन जोडा"</string>
+    <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"नवीन अॅप्ससाठी"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"अज्ञात"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"काढा"</string>
     <string name="abandoned_search" msgid="891119232568284442">"शोधा"</string>
@@ -130,18 +129,15 @@
     <string name="action_deep_shortcut" msgid="2864038805849372848">"शॉर्टकट"</string>
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"शॉर्टकट आणि सूचना"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"डिसमिस करा"</string>
-    <string name="accessibility_close" msgid="2277148124685870734">"बंद करा"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"सूचना डिसमिस केली"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"वैयक्तिक"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"कार्यालय"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"कार्य प्रोफाइल"</string>
-    <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"वैयक्तिक डेटा वेगळा असतो आणि तो ऑफिस अ‍ॅप्सपासून लपवलेला असतो"</string>
-    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"ऑफिस अ‍ॅप्स आणि डेटा तुमच्या अ‍ॅडमिनला दृश्यमान असतो"</string>
-    <string name="work_profile_edu_next" msgid="8783418929296503629">"पुढील"</string>
-    <string name="work_profile_edu_accept" msgid="6069788082535149071">"समजले"</string>
-    <string name="work_apps_paused_title" msgid="2389865654362803723">"ऑफिस प्रोफाइल थांबवली आहे"</string>
-    <string name="work_apps_paused_body" msgid="2197210494568696054">"कामासंबंधित अ‍ॅप्स तुम्हाला सूचना पाठवू शकत नाहीत, तुमची बॅटरी वापरू शकत नाहीत किंवा तुमचे स्थान अ‍ॅक्सेस करू शकत नाहीत"</string>
-    <string name="work_apps_paused_content_description" msgid="7553586952985486433">"ऑफिस प्रोफाइल थांबवली आहे. ऑफिस अ‍ॅप्स तुम्हाला सूचना पाठवू शकत नाहीत, तुमची बॅटरी वापरू शकत नाहीत किंवा तुमचे स्थान अ‍ॅक्सेस करू शकत नाहीत"</string>
-    <string name="work_switch_tip" msgid="808075064383839144">"ऑफिस अ‍ॅप्स आणि सूचना थांबवा"</string>
+    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"कामाची अ‍ॅप्स येथे मिळवा"</string>
+    <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"प्रत्येक कार्य अ‍ॅपला एक बॅज असतो आणि तो तुमच्या संस्थेकडून सुरक्षित ठेवला जातो. अधिक सहज अ‍ॅक्सेससाठी अ‍ॅप्स तुमच्या होम स्क्रीनवर हलवा."</string>
+    <string name="work_mode_on_label" msgid="4781128097185272916">"तुमच्या संस्थेकडून व्यवस्थापित"</string>
+    <string name="work_mode_off_label" msgid="3194894777601421047">"सूचना आणि अ‍ॅप्स बंद आहेत"</string>
+    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"बंद करा"</string>
+    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"बंद केले"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"हे करता आले नाही: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

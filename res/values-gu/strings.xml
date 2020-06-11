@@ -20,7 +20,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name" msgid="649227358658669779">"Launcher3"</string>
-    <string name="work_folder_name" msgid="3753320833950115786">"ઑફિસ"</string>
+    <string name="work_folder_name" msgid="3753320833950115786">"કાર્યાલય"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"ઍપ્લિકેશન ઇન્સ્ટોલ થઈ નથી."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"ઍપ્લિકેશન ઉપલબ્ધ નથી"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"સુરક્ષિત મોડમાં ડાઉનલોડ કરેલ ઍપ્લિકેશન અક્ષમ કરી"</string>
@@ -52,8 +52,6 @@
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"અનઇન્સ્ટોલ કરો"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"ઍપ્લિકેશન માહિતી"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"ઇન્સ્ટૉલ કરો"</string>
-    <string name="dismiss_prediction_label" msgid="3357562989568808658">"ઍપ સૂચવશો નહીં"</string>
-    <string name="pin_prediction" msgid="4196423321649756498">"પૂર્વાનુમાનને પિન કરો"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"શોર્ટકટ્સ ઇન્સ્ટોલ કરો"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"એપ્લિકેશનને વપરાશકર્તા હસ્તક્ષેપ વગર શોર્ટકટ્સ ઉમેરવાની મંજૂરી આપે છે."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"હોમ સેટિંગ્સ અને શોર્ટકટ્સ વાંચો"</string>
@@ -64,7 +62,7 @@
     <string name="gadget_error_text" msgid="6081085226050792095">"વિજેટ લોડ કરવામાં સમસ્યા"</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"સેટઅપ"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"આ એક સિસ્ટમ ઍપ્લિકેશન છે અને અનઇન્સ્ટોલ કરી શકાતી નથી."</string>
-    <string name="folder_hint_text" msgid="5174843001373488816">"નામમાં ફેરફાર કરો"</string>
+    <string name="folder_hint_text" msgid="6617836969016293992">"અનામી ફોલ્ડર"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> અક્ષમ કરી"</string>
     <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
       <item quantity="one"><xliff:g id="APP_NAME_2">%1$s</xliff:g>ના <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> નોટિફિકેશન છે</item>
@@ -82,7 +80,7 @@
     <string name="widget_button_text" msgid="2880537293434387943">"વિજેટ્સ"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"વૉલપેપર્સ"</string>
     <string name="styles_wallpaper_button_text" msgid="4342122323125579619">"શૈલીઓ અને વૉલપેપર"</string>
-    <string name="settings_button_text" msgid="8873672322605444408">"હોમ સેટિંગ"</string>
+    <string name="settings_button_text" msgid="8873672322605444408">"હોમ સેટિંગ્સ"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"તમારા વ્યવસ્થાપક દ્વારા અક્ષમ કરેલ"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"હોમ સ્ક્રીનને ફેરવવાની મંજૂરી આપો"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"જ્યારે ફોન ફેરવવામાં આવે ત્યારે"</string>
@@ -93,7 +91,7 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"નોટિફિકેશન માટેનું ચિહ્ન બતાવવા હેતુ, <xliff:g id="NAME">%1$s</xliff:g> માટેની ઍપ્લિકેશન નોટિફિકેશન ચાલુ કરો"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"સેટિંગ્સ બદલો"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"નોટિફિકેશન માટેના ચિહ્ન બતાવો"</string>
-    <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"ઍપના આઇકન હોમ સ્ક્રીન પર ઉમેરો"</string>
+    <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"હોમ સ્ક્રીન પર આઇકન ઉમેરો"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"નવી ઍપ્લિકેશનો માટે"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"અજાણ્યો"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"દૂર કરો"</string>
@@ -130,18 +128,15 @@
     <string name="action_deep_shortcut" msgid="2864038805849372848">"શૉર્ટકટ્સ"</string>
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"શૉર્ટકટ અને નોટિફિકેશનો"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"છોડી દો"</string>
-    <string name="accessibility_close" msgid="2277148124685870734">"બંધ કરો"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"સૂચના છોડી દીધી"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"મનગમતી ઍપ"</string>
-    <string name="all_apps_work_tab" msgid="4884822796154055118">"ઑફિસની ઍપ"</string>
-    <string name="work_profile_toggle_label" msgid="3081029915775481146">"ઑફિસની પ્રોફાઇલ"</string>
-    <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"વ્યક્તિગત ડેટા ઑફિસ માટેની ઍપથી અલગ અને છુપાવીને રાખેલો છે"</string>
-    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"ઑફિસ માટેની ઍપ અને ડેટા તમારા IT વ્યવસ્થાપકને દેખાય છે"</string>
-    <string name="work_profile_edu_next" msgid="8783418929296503629">"આગળ"</string>
-    <string name="work_profile_edu_accept" msgid="6069788082535149071">"સમજાઈ ગયું"</string>
-    <string name="work_apps_paused_title" msgid="2389865654362803723">"ઑફિસની પ્રોફાઇલ થોભાવી છે"</string>
-    <string name="work_apps_paused_body" msgid="2197210494568696054">"ઑફિસ માટેની ઍપ તમને નોટિફિકેશન મોકલી શકતી નથી, તમારી બૅટરી વાપરી શકતી નથી કે તમારું સ્થાન ઍક્સેસ કરી શકતી નથી"</string>
-    <string name="work_apps_paused_content_description" msgid="7553586952985486433">"કાર્યાલયની પ્રોફાઇલ થોભાવી છે. ઑફિસ માટેની ઍપ તમને નોટિફિકેશન મોકલી શકતી નથી, તમારી બૅટરી વાપરી શકતી નથી કે તમારું સ્થાન ઍક્સેસ કરી શકતી નથી"</string>
-    <string name="work_switch_tip" msgid="808075064383839144">"ઑફિસ માટેની ઍપ અને નોટિફિકેશન થોભાવો"</string>
+    <string name="all_apps_work_tab" msgid="4884822796154055118">"કાર્યાલયની ઍપ"</string>
+    <string name="work_profile_toggle_label" msgid="3081029915775481146">"કાર્યાલયની પ્રોફાઇલ"</string>
+    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"કાર્ય ઍપને અહીંથી મેળવો"</string>
+    <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"દરેક કાર્ય ઍપ પાસે એક બૅજ હોય છે અને તમારી સંસ્થા દ્વારા તેને સુરક્ષિત રાખવામાં આવે છે. વધુ સરળ ઍક્સેસ માટે ઍપને તમારી હોમ સ્ક્રીન પર ખસેડો."</string>
+    <string name="work_mode_on_label" msgid="4781128097185272916">"તમારી સંસ્થા દ્વારા મેનેજ કરેલ"</string>
+    <string name="work_mode_off_label" msgid="3194894777601421047">"નોટિફિકેશન અને ઍપ બંધ છે"</string>
+    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"બંધ કરો"</string>
+    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"બંધ"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"નિષ્ફળ: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

@@ -52,8 +52,6 @@
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Деинсталирај"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"Инф. за апликација"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"Инсталирај"</string>
-    <string name="dismiss_prediction_label" msgid="3357562989568808658">"Не предлагај апликација"</string>
-    <string name="pin_prediction" msgid="4196423321649756498">"Закачи го предвидувањето"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"инсталирај кратенки"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Овозможува апликацијата да додава кратенки без интервенција на корисникот."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"чита поставки и кратенки на почетна страница"</string>
@@ -64,7 +62,7 @@
     <string name="gadget_error_text" msgid="6081085226050792095">"Проблем при вчитувањето на виџетот"</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"Поставување"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Ова е системска апликација и не може да се деинсталира."</string>
-    <string name="folder_hint_text" msgid="5174843001373488816">"Изменете го името"</string>
+    <string name="folder_hint_text" msgid="6617836969016293992">"Неименувана папка"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> е оневозможена"</string>
     <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
       <item quantity="one"><xliff:g id="APP_NAME_2">%1$s</xliff:g> има <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> известување</item>
@@ -82,9 +80,9 @@
     <string name="widget_button_text" msgid="2880537293434387943">"Виџети"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Тапети"</string>
     <string name="styles_wallpaper_button_text" msgid="4342122323125579619">"Стилови и тапети"</string>
-    <string name="settings_button_text" msgid="8873672322605444408">"Поставки за почетен екран"</string>
+    <string name="settings_button_text" msgid="8873672322605444408">"Поставки за Home"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Оневозможено од администраторот"</string>
-    <string name="allow_rotation_title" msgid="7728578836261442095">"Дозволете ротација на почетниот екран"</string>
+    <string name="allow_rotation_title" msgid="7728578836261442095">"Дозволете ротација на Почетниот екран"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Кога телефонот се ротира"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"Точки за известување"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"Вклучено"</string>
@@ -93,7 +91,7 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"За да се прикажуваат „Точки за известување“, вклучете ги известувањата за апликацијата <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Промени ги поставките"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Прикажувај точки за известување"</string>
-    <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"Додај икони за апликации на почетен екран"</string>
+    <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Додај икона на почетниот екран"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"За нови апликации"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Непознато"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Отстрани"</string>
@@ -130,18 +128,15 @@
     <string name="action_deep_shortcut" msgid="2864038805849372848">"Кратенки"</string>
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"Кратенки и известувања"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Отфрли"</string>
-    <string name="accessibility_close" msgid="2277148124685870734">"Затвори"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Известувањето е отфрлено"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Лично"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"За работа"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Работен профил"</string>
-    <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"Личните податоци се одделни и сокриени од работните апликации"</string>
-    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"Работните апликации и податоци се видливи за IT-администраторот"</string>
-    <string name="work_profile_edu_next" msgid="8783418929296503629">"Следно"</string>
-    <string name="work_profile_edu_accept" msgid="6069788082535149071">"Сфатив"</string>
-    <string name="work_apps_paused_title" msgid="2389865654362803723">"Работниот профил е паузиран"</string>
-    <string name="work_apps_paused_body" msgid="2197210494568696054">"Работните апликации не можат да ви испраќаат известувања, да ја користат батеријата или да пристапуваат до вашата локација"</string>
-    <string name="work_apps_paused_content_description" msgid="7553586952985486433">"Работниот профил е паузиран. Работните апликации не можат да ви испраќаат известувања, да ја користат батеријата или да пристапуваат до вашата локација"</string>
-    <string name="work_switch_tip" msgid="808075064383839144">"Паузирајте работни апликации и известувања"</string>
+    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Најдете апликации за работа тука"</string>
+    <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"Секоја апликација за работа има значка, а организацијата се грижи за нејзината безбедност. За полесен пристап, преместете ги апликациите на почетниот екран."</string>
+    <string name="work_mode_on_label" msgid="4781128097185272916">"Управувано од вашата организација"</string>
+    <string name="work_mode_off_label" msgid="3194894777601421047">"Известувањата и апликациите се исклучени"</string>
+    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"Затвори"</string>
+    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"Затворено"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Не успеа: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>
