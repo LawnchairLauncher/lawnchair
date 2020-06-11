@@ -258,9 +258,9 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
         mMatrix.postScale(scale, scale);
         mMatrix.postTranslate(insets.left, insets.top);
 
-        // Apply TaskView matrix: scale, translate, scroll
-        mMatrix.postScale(mCurveScale, mCurveScale, taskWidth / 2, taskHeight / 2);
+        // Apply TaskView matrix: translate, scale, scroll
         mMatrix.postTranslate(mTaskRect.left, mTaskRect.top);
+        mMatrix.postScale(mCurveScale, mCurveScale, taskWidth / 2, taskHeight / 2);
         mOrientationState.getOrientationHandler().set(
                 mMatrix, MATRIX_POST_TRANSLATE, mScrollState.scroll);
 

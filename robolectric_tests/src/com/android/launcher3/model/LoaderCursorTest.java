@@ -92,7 +92,8 @@ public class LoaderCursorTest {
                 SCREEN, CELLX, CELLY, RESTORED, INTENT
         });
 
-        mLoaderCursor = new LoaderCursor(mCursor, LauncherSettings.Favorites.CONTENT_URI, mApp);
+        mLoaderCursor = new LoaderCursor(mCursor, LauncherSettings.Favorites.CONTENT_URI, mApp,
+                new UserManagerState());
         mLoaderCursor.allUsers.put(0, Process.myUserHandle());
     }
 

@@ -144,7 +144,7 @@ public class PopupPopulator {
                     infos = Collections.emptyList();
                 } else {
                     infos = notificationListener.getNotificationsForKeys(notificationKeys).stream()
-                            .map(sbn -> new NotificationInfo(launcher, sbn))
+                            .map(sbn -> new NotificationInfo(launcher, sbn, originalInfo))
                             .collect(Collectors.toList());
                 }
                 uiHandler.post(() -> container.applyNotificationInfos(infos));

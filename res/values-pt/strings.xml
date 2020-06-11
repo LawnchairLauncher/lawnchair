@@ -52,8 +52,6 @@
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Desinstalar"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"Informações do app"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"Instalar"</string>
-    <string name="dismiss_prediction_label" msgid="3357562989568808658">"Não sugerir esse app"</string>
-    <string name="pin_prediction" msgid="4196423321649756498">"Fixar previsão"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"instalar atalhos"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Permite que um app adicione atalhos sem intervenção do usuário."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"ler configurações e atalhos da tela inicial"</string>
@@ -64,7 +62,7 @@
     <string name="gadget_error_text" msgid="6081085226050792095">"Problema ao carregar o widget"</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"Configuração"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Este é um app do sistema e não pode ser desinstalado."</string>
-    <string name="folder_hint_text" msgid="5174843001373488816">"Editar nome"</string>
+    <string name="folder_hint_text" msgid="6617836969016293992">"Pasta sem nome"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> desativado"</string>
     <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
       <item quantity="one">O app <xliff:g id="APP_NAME_2">%1$s</xliff:g>tem <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> notificação</item>
@@ -93,7 +91,7 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Para mostrar pontos de notificação, ative as notificações de app para <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Alterar configurações"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Mostrar pontos de notificação"</string>
-    <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"Adicionar ícones de apps à tela inicial"</string>
+    <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Adicionar ícone à tela inicial"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Para novos apps"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Desconhecido"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Remover"</string>
@@ -130,18 +128,15 @@
     <string name="action_deep_shortcut" msgid="2864038805849372848">"Atalhos"</string>
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"Atalhos e notificações"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Dispensar"</string>
-    <string name="accessibility_close" msgid="2277148124685870734">"Fechar"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Notificação dispensada"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Pessoais"</string>
-    <string name="all_apps_work_tab" msgid="4884822796154055118">"Trabalho"</string>
+    <string name="all_apps_work_tab" msgid="4884822796154055118">"Comerciais"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Perfil de trabalho"</string>
-    <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"Os dados pessoais ficam separados e ocultos dos apps de trabalho"</string>
-    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"Os dados de apps de trabalho ficam visíveis para seu administrador de TI"</string>
-    <string name="work_profile_edu_next" msgid="8783418929296503629">"Próxima"</string>
-    <string name="work_profile_edu_accept" msgid="6069788082535149071">"Ok"</string>
-    <string name="work_apps_paused_title" msgid="2389865654362803723">"O perfil de trabalho está pausado"</string>
-    <string name="work_apps_paused_body" msgid="2197210494568696054">"Apps de trabalho não podem enviar notificações, usar a bateria nem acessar o local"</string>
-    <string name="work_apps_paused_content_description" msgid="7553586952985486433">"O perfil de trabalho está pausado. Apps de trabalho não podem enviar notificações, usar a bateria nem acessar seu local"</string>
-    <string name="work_switch_tip" msgid="808075064383839144">"Pausar apps e notificações de trabalho"</string>
+    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Localizar apps de trabalho aqui"</string>
+    <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"Cada app de trabalho tem um selo e é mantido em segurança pela sua organização. Mova os apps para sua tela inicial para facilitar o acesso."</string>
+    <string name="work_mode_on_label" msgid="4781128097185272916">"Gerenciados pela sua organização"</string>
+    <string name="work_mode_off_label" msgid="3194894777601421047">"As notificações e os apps estão desativados"</string>
+    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"Fechar"</string>
+    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"Fechado"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Falha: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

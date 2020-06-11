@@ -20,6 +20,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name" msgid="649227358658669779">"Launcher3"</string>
+    <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="work_folder_name" msgid="3753320833950115786">"Жұмыс"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"Қолданба орнатылмаған."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"Қолданба қол жетімді емес"</string>
@@ -52,8 +53,6 @@
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Жою"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"Қолданба ақпараты"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"Орнату"</string>
-    <string name="dismiss_prediction_label" msgid="3357562989568808658">"Қолданбаны ұсынбау"</string>
-    <string name="pin_prediction" msgid="4196423321649756498">"Болжанған қолданбаны бекіту"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"төте пернелерді орнату"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Қолданбаға пайдаланушының қатысуынсыз төте пернелерді қосу мүмкіндігін береді."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"Негізгі экрандағы параметрлер мен төте пернелерді оқу"</string>
@@ -64,7 +63,7 @@
     <string name="gadget_error_text" msgid="6081085226050792095">"Виджетті жүктеу барысында мәселе орын алды"</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"Орнату"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Бұл жүйе қолданбасы, сондықтан оны алу мүмкін емес."</string>
-    <string name="folder_hint_text" msgid="5174843001373488816">"Атын өңдеу"</string>
+    <string name="folder_hint_text" msgid="6617836969016293992">"Атауы жоқ қалта"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> өшірілді"</string>
     <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
       <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g> қолданбасында <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> хабарландыру бар</item>
@@ -93,7 +92,7 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Хабарландыру белгілерін көрсету үшін <xliff:g id="NAME">%1$s</xliff:g> қолданбасының қолданба хабарландыруларын қосыңыз"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Параметрлерді өзгерту"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Хабарландыру белгілерін көрсету"</string>
-    <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"Қолданба белгішесін негізгі экранға қосу"</string>
+    <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Негізгі экранға белгіше енгізу"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Жаңа қолданбаларға арналған"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Белгісіз"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Алып тастау"</string>
@@ -130,18 +129,15 @@
     <string name="action_deep_shortcut" msgid="2864038805849372848">"Таңбашалар"</string>
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"Таңбашалар мен хабарландырулар"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Бас тарту"</string>
-    <string name="accessibility_close" msgid="2277148124685870734">"Жабу"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Хабарландырудан бас тартылды"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Жеке"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Жұмыс"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Жұмыс профилі"</string>
-    <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"Жеке деректер бөлек орналасқан және жұмыс қолданбаларынан жасырылған"</string>
-    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"Әкімшіңіз жұмыс қолданбалары мен деректерді көре алады"</string>
-    <string name="work_profile_edu_next" msgid="8783418929296503629">"Келесі"</string>
-    <string name="work_profile_edu_accept" msgid="6069788082535149071">"Түсінікті"</string>
-    <string name="work_apps_paused_title" msgid="2389865654362803723">"Жұмыс профилі кідіртілді"</string>
-    <string name="work_apps_paused_body" msgid="2197210494568696054">"Жұмыс қолданбалары сізге хабарландырулар жібермейді, батареяңызды немесе геодерегіңізді пайдаланбайды."</string>
-    <string name="work_apps_paused_content_description" msgid="7553586952985486433">"Жұмыс профилі уақытша тоқтатылды. Жұмыс қолданбалары сізге хабарландырулар жібермейді, батареяңызды немесе геодерегіңізді пайдаланбайды."</string>
-    <string name="work_switch_tip" msgid="808075064383839144">"Жұмыс қолданбалары мен хабарландыруларды кідірту"</string>
+    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Жұмыс қолданбалары осы жерде берілген"</string>
+    <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"Әрбір жұмыс қолданбасында танымбелгі бар. Ол оның қауіпсіздігі ұйым арқылы қамтамасыз етілетінін білдіреді. Жұмыс қолданбаларына оңай кіру үшін, оларды Негізгі экранға жылжытуға болады."</string>
+    <string name="work_mode_on_label" msgid="4781128097185272916">"Ұйым арқылы басқарылады"</string>
+    <string name="work_mode_off_label" msgid="3194894777601421047">"Хабарландырулар мен қолданбалар өшірулі"</string>
+    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"Жабу"</string>
+    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"Жабық"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Қате шықты: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

@@ -35,6 +35,7 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.AppFilter;
 import com.android.launcher3.compat.AlphabeticIndexCompat;
 import com.android.launcher3.icons.IconCache;
+import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.PromiseAppInfo;
 import com.android.launcher3.pm.PackageInstallInfo;
@@ -73,6 +74,13 @@ public class AllAppsList {
     private AlphabeticIndexCompat mIndex;
 
     /**
+     * @see Callbacks#FLAG_HAS_SHORTCUT_PERMISSION
+     * @see Callbacks#FLAG_QUIET_MODE_ENABLED
+     * @see Callbacks#FLAG_QUIET_MODE_CHANGE_PERMISSION
+     */
+    private int mFlags;
+
+    /**
      * Boring constructor.
      */
     public AllAppsList(IconCache iconCache, AppFilter appFilter) {
@@ -89,6 +97,33 @@ public class AllAppsList {
         mDataChanged = false;
         return result;
     }
+
+    /**
+     * Helper to checking {@link Callbacks#FLAG_HAS_SHORTCUT_PERMISSION}
+     */
+    public boolean hasShortcutHostPermission() {
+        return (mFlags & Callbacks.FLAG_HAS_SHORTCUT_PERMISSION) != 0;
+    }
+
+    /**
+     * Sets or clears the provided flag
+     */
+    public void setFlags(int flagMask, boolean enabled) {
+        if (enabled) {
+            mFlags |= flagMask;
+        } else {
+            mFlags &= ~flagMask;
+        }
+        mDataChanged = true;
+    }
+
+    /**
+     * Returns the model flags
+     */
+    public int getFlags() {
+        return mFlags;
+    }
+
 
     /**
      * Add the supplied ApplicationInfo objects to the list, and enqueue it into the

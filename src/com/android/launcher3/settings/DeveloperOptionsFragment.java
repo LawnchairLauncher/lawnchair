@@ -246,6 +246,15 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
             return true;
         });
         sandboxCategory.addPreference(launchOverviewTutorialPreference);
+        Preference launchAssistantTutorialPreference = new Preference(context);
+        launchAssistantTutorialPreference.setKey("launchAssistantTutorial");
+        launchAssistantTutorialPreference.setTitle("Launch Assistant Tutorial");
+        launchAssistantTutorialPreference.setSummary("Learn how to use the Assistant gesture");
+        launchAssistantTutorialPreference.setOnPreferenceClickListener(preference -> {
+            startActivity(launchSandboxIntent.putExtra("tutorial_type", "ASSISTANT"));
+            return true;
+        });
+        sandboxCategory.addPreference(launchAssistantTutorialPreference);
     }
 
     private String toName(String action) {

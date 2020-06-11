@@ -52,8 +52,6 @@
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Desinstalar"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"Info. da aplicación"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"Instalar"</string>
-    <string name="dismiss_prediction_label" msgid="3357562989568808658">"Non suxerir aplicación"</string>
-    <string name="pin_prediction" msgid="4196423321649756498">"Fixar predición"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"instalar atallos"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Permite a unha aplicación engadir atallos sen intervención do usuario."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"ler a configuración e os atallos da pantalla de inicio"</string>
@@ -64,7 +62,7 @@
     <string name="gadget_error_text" msgid="6081085226050792095">"Produciuse un problema ao cargar o widget"</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"Configuración"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Esta aplicación é do sistema e non se pode desinstalar."</string>
-    <string name="folder_hint_text" msgid="5174843001373488816">"Edita o nome"</string>
+    <string name="folder_hint_text" msgid="6617836969016293992">"Cartafol sen nome"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"Desactivouse <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
     <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
       <item quantity="other">A aplicación <xliff:g id="APP_NAME_2">%1$s</xliff:g> ten <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> notificacións</item>
@@ -93,7 +91,7 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Para que se mostren os puntos de notificacións, activa as notificacións da aplicación <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Cambiar configuración"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Mostrar puntos de notificacións"</string>
-    <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"Engade aplicacións á pantalla de inicio"</string>
+    <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Engadir icona á pantalla de inicio"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Para novas aplicacións"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Descoñecido"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Eliminar"</string>
@@ -130,18 +128,15 @@
     <string name="action_deep_shortcut" msgid="2864038805849372848">"Atallos"</string>
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"Atallos e notificacións"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Ignorar"</string>
-    <string name="accessibility_close" msgid="2277148124685870734">"Pechar"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Ignorouse a notificación"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Persoal"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Traballo"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Perfil de traballo"</string>
-    <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"Os datos persoais sepáranse e ocúltanse das aplicacións do traballo"</string>
-    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"O teu administrador de TI pode ver as aplicacións e os datos do traballo"</string>
-    <string name="work_profile_edu_next" msgid="8783418929296503629">"Seguinte"</string>
-    <string name="work_profile_edu_accept" msgid="6069788082535149071">"De acordo"</string>
-    <string name="work_apps_paused_title" msgid="2389865654362803723">"O perfil de traballo está en pausa"</string>
-    <string name="work_apps_paused_body" msgid="2197210494568696054">"As aplicacións do traballo non poden enviarche notificacións, utilizar a batería nin acceder á túa localización"</string>
-    <string name="work_apps_paused_content_description" msgid="7553586952985486433">"O perfil de traballo está en pausa. As aplicacións do traballo non poden enviarche notificacións, utilizar a batería nin acceder á túa localización"</string>
-    <string name="work_switch_tip" msgid="808075064383839144">"Pon en pausa as aplicacións e as notificacións do traballo"</string>
+    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Buscar aplicacións do traballo aquí"</string>
+    <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"As aplicacións do traballo teñen unha insignia e están protexidas pola túa organización. Traslada as aplicacións á pantalla de inicio para acceder a elas de forma máis fácil."</string>
+    <string name="work_mode_on_label" msgid="4781128097185272916">"Perfil xestionado pola túa organización"</string>
+    <string name="work_mode_off_label" msgid="3194894777601421047">"As notificacións e as aplicacións están desactivadas"</string>
+    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"Pechar"</string>
+    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"Pechada"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Erro: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>
