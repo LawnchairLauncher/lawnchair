@@ -1342,7 +1342,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
         ValueAnimator stepAnimator = ValueAnimator.ofFloat(0, 1);
         stepAnimator.addUpdateListener(listener);
-        stepAnimator.setDuration(config.duration);
         stepAnimator.addListener(listener);
         animation.add(stepAnimator);
     }

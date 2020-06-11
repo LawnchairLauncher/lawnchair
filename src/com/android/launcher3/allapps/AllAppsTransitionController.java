@@ -189,7 +189,6 @@ public class AllAppsTransitionController implements StateHandler<LauncherState>,
                 : FAST_OUT_SLOW_IN;
 
         Animator anim = createSpringAnimation(mProgress, targetProgress);
-        anim.setDuration(config.duration);
         anim.setInterpolator(config.getInterpolator(ANIM_VERTICAL_PROGRESS, interpolator));
         anim.addListener(getProgressAnimatorListener());
         builder.add(anim);

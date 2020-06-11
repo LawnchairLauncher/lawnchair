@@ -1900,7 +1900,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             anim.play(depthAnimator);
         }
         anim.play(progressAnim);
-        anim.setDuration(duration).setInterpolator(interpolator);
+        anim.setInterpolator(interpolator);
 
         mPendingAnimation = new PendingAnimation(duration);
         mPendingAnimation.add(anim);
