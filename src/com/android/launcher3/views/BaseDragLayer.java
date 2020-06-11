@@ -186,11 +186,12 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
                     + ", isEventInLauncher=" + isEventInLauncher(ev)
                     + ", topOpenView=" + AbstractFloatingView.getTopOpenView(mActivity));
         }
-        if (isEventInLauncher(ev)) {
-            AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(mActivity);
-            if (topView != null && topView.onControllerInterceptTouchEvent(ev)) {
-                return topView;
-            }
+
+        AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(mActivity);
+        if (topView != null
+                && (isEventInLauncher(ev) || topView.canInterceptEventsInSystemGestureRegion())
+                && topView.onControllerInterceptTouchEvent(ev)) {
+            return topView;
         }
 
         for (TouchController controller : mControllers) {

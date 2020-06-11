@@ -52,8 +52,6 @@
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"ဖြုတ်ရန်"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"အက်ပ်အချက်အလက်များ"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"ထည့်သွင်းရန်"</string>
-    <string name="dismiss_prediction_label" msgid="3357562989568808658">"အက်ပ်ကို အကြံမပြုပါနှင့်"</string>
-    <string name="pin_prediction" msgid="4196423321649756498">"ခန့်မှန်းချက်ကို ပင်ထိုးရန်"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"အတိုကောက်မှတ်သားမှုများအား ထည့်သွင်းခြင်း"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"အသုံးပြုသူ လုပ်ဆောင်မှုမရှိပဲ အပ်ပလီကေးရှင်းကို အတိုကောက်မှတ်သားမှုများ ပြုလုပ်ခွင့် ပေးခြင်း"</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"ပင်မမျက်နှာစာ အပြင်အဆင် နှင့် အတိုကောက်မှတ်သားမှုများအား ဖတ်ခြင်း"</string>
@@ -64,7 +62,7 @@
     <string name="gadget_error_text" msgid="6081085226050792095">"ဝဒ်ဂျက် တင်ရာတွင် ပြသနာ ရှိပါသည်"</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"စဖွင့်သတ်မှတ်ရန်"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"ဤအပ်ပလီကေးရှင်းမှာ စစ်စတန်ပိုင်းဆိုင်ရာ အပ်ပလီကေးရှင်းဖြစ်ပါသည်။ ထုတ်ပစ်၍ မရပါ"</string>
-    <string name="folder_hint_text" msgid="5174843001373488816">"အမည်ကို တည်းဖြတ်ပါ"</string>
+    <string name="folder_hint_text" msgid="6617836969016293992">"အမည်မရှိအကန့်"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> ကို ပိတ်ထားသည်"</string>
     <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
       <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g> တွင် သတိပေးချက် <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> ခု ရှိသည်</item>
@@ -93,7 +91,7 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"အကြောင်းကြားချက် အစက်များကို ပြသရန် <xliff:g id="NAME">%1$s</xliff:g> အတွက် အက်ပ်အကြောင်းကြားချက်များကို ဖွင့်ပါ"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"ဆက်တင်များ ပြောင်းရန်"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"သတိပေးချက် အစက်များ ပြရန်"</string>
-    <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"\'ပင်မစာမျက်နှာ\' တွင် အက်ပ်သင်္ကေတထည့်ရန်"</string>
+    <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"ပင်မစာမျက်နှာသို့ သင်္ကေတပုံ ထည့်ရန်"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"အက်ပ်အသစ်များအတွက်"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"မသိ"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"ဖယ်ရှားရန်"</string>
@@ -130,18 +128,15 @@
     <string name="action_deep_shortcut" msgid="2864038805849372848">"ဖြတ်လမ်းများ"</string>
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"ဖြတ်လမ်းလင့်ခ်နှင့် အကြောင်းကြားချက်များ"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"ပယ်ရန်"</string>
-    <string name="accessibility_close" msgid="2277148124685870734">"ပိတ်ရန်"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"အသိပေးချက်ကို ဖယ်ထုတ်ပြီးပါပြီ"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"ကိုယ်ပိုင်"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"အလုပ်"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"အလုပ်ပရိုဖိုင်"</string>
-    <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"ကိုယ်ပိုင်ဒေတာများသည် သီးသန့်ဖြစ်ပြီး အလုပ်အက်ပ်များမှ ဖျောက်ထားသည်"</string>
-    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"အလုပ်သုံးအက်ပ်နှင့် ဒေတာများကို သင်၏ IT စီမံခန့်ခွဲသူက မြင်ရပါသည်"</string>
-    <string name="work_profile_edu_next" msgid="8783418929296503629">"ရှေ့သို့"</string>
-    <string name="work_profile_edu_accept" msgid="6069788082535149071">"Ok"</string>
-    <string name="work_apps_paused_title" msgid="2389865654362803723">"အလုပ်ပရိုဖိုင် ခဏရပ်ထားသည်"</string>
-    <string name="work_apps_paused_body" msgid="2197210494568696054">"အလုပ်သုံးအက်ပ်များက အကြောင်းကြားချက်များ ပို့ခြင်း၊ သင့်ဘက်ထရီ သုံးခြင်း (သို့) သင့်တည်နေရာ သုံးခြင်းတို့ မပြုလုပ်နိုင်ပါ"</string>
-    <string name="work_apps_paused_content_description" msgid="7553586952985486433">"အလုပ်ပရိုဖိုင် ခဏရပ်ထားသည်။ အလုပ်သုံးအက်ပ်များက အကြောင်းကြားချက်များ ပို့ခြင်း၊ သင့်ဘက်ထရီ သုံးခြင်း (သို့) သင့်တည်နေရာ သုံးခြင်းတို့ မပြုလုပ်နိုင်ပါ"</string>
-    <string name="work_switch_tip" msgid="808075064383839144">"အလုပ်သုံးအက်ပ်နှင့် အကြောင်းကြားချက်များ ခဏရပ်ရန်"</string>
+    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"အလုပ်အက်ပ်များကို ဤနေရာတွင်ရှာဖွေပါ"</string>
+    <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"အလုပ်အက်ပ်တိုင်းတွင် တံဆိပ် တစ်ခုစီရှိပြီး သင်၏ အဖွဲ့အစည်းက လုံခြုံအောင် ထားရှိပါသည်။ အသုံးပြုရ ပိုမိုလွယ်ကူစေရန် အက်ပ်များကို သင်၏ ပင်မမျက်နှာပြင်သို့ ရွှေ့ပါ။"</string>
+    <string name="work_mode_on_label" msgid="4781128097185272916">"သင်၏ အဖွဲ့အစည်းက စီမံခန့်ခွဲထားပါသည်"</string>
+    <string name="work_mode_off_label" msgid="3194894777601421047">"အကြောင်းကြားချက်များနှင့် အက်ပ်များကို ပိတ်ထားသည်"</string>
+    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"ပိတ်ရန်"</string>
+    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"ပိတ်ထားသည်"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"မအောင်မြင်ပါ− <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

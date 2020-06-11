@@ -223,7 +223,9 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         setOutlineProvider(mOutlineProvider);
     }
 
-    /** Builds proto for logging */
+    /**
+     * Builds proto for logging
+     */
     public LauncherAtom.ItemInfo buildProto() {
         ComponentKey componentKey = TaskUtils.getLaunchComponentKeyForTask(getTask().key);
         LauncherAtom.ItemInfo.Builder itemBuilder = LauncherAtom.ItemInfo.newBuilder();
@@ -953,11 +955,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         setClipToPadding(!isFullscreen);
 
         TaskThumbnailView thumbnail = getThumbnail();
-        mCurrentFullscreenParams.setProgress(
-                mFullscreenProgress,
-                getRecentsView().getScaleX(),
-                getWidth(), mActivity.getDeviceProfile(),
-                thumbnail.getPreviewPositionHelper());
+        updateCurrentFullscreenParams(thumbnail.getPreviewPositionHelper());
 
         if (!getRecentsView().isTaskIconScaledDown(this)) {
             // Some of the items in here are dependent on the current fullscreen params, but don't
@@ -968,6 +966,14 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         thumbnail.setFullscreenParams(mCurrentFullscreenParams);
         mOutlineProvider.setFullscreenParams(mCurrentFullscreenParams);
         invalidateOutline();
+    }
+
+    void updateCurrentFullscreenParams(PreviewPositionHelper previewPositionHelper) {
+        mCurrentFullscreenParams.setProgress(
+                mFullscreenProgress,
+                getRecentsView().getScaleX(),
+                getWidth(), mActivity.getDeviceProfile(),
+                previewPositionHelper);
     }
 
     public boolean isRunningTask() {
@@ -1010,10 +1016,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             mWindowCornerRadius = QuickStepContract.getWindowCornerRadius(context.getResources());
 
             mCurrentDrawnCornerRadius = mCornerRadius;
-        }
-
-        public FullscreenDrawParams() {
-            mCurrentDrawnCornerRadius = mWindowCornerRadius =  mCornerRadius = 0;
         }
 
         /**
