@@ -30,6 +30,7 @@ import static com.android.launcher3.Utilities.mapToRange;
 import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.Utilities.squaredTouchSlop;
 import static com.android.launcher3.anim.Interpolators.ACCEL;
+import static com.android.launcher3.anim.Interpolators.ACCEL_0_75;
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
@@ -1731,7 +1732,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
     private void updatePageOffsets() {
         float offset = mAdjacentPageOffset * getWidth();
-        float modalOffset = mTaskModalness * getWidth();
+        float modalOffset = ACCEL_0_75.getInterpolation(mTaskModalness) * getWidth();
         if (mIsRtl) {
             offset = -offset;
             modalOffset = -modalOffset;
