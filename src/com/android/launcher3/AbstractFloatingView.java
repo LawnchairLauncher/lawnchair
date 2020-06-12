@@ -257,4 +257,8 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
             @FloatingViewType int type) {
         return getOpenView(activity, type);
     }
+
+    public boolean canInterceptEventsInSystemGestureRegion() {
+        return false;
+    }
 }

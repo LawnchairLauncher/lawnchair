@@ -265,14 +265,12 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
 
     private void verifyWidgetPresent(LauncherAppWidgetProviderInfo info) {
         final Widget widget = mLauncher.getWorkspace().tryGetWidget(info.label, DEFAULT_UI_TIMEOUT);
-        if (widget == null) mLauncher.dumpViewHierarchy(); // b/152645831
         assertTrue("Widget is not present",
                 widget != null);
     }
 
     private void verifyPendingWidgetPresent() {
         final Widget widget = mLauncher.getWorkspace().tryGetPendingWidget(DEFAULT_UI_TIMEOUT);
-        if (widget == null) mLauncher.dumpViewHierarchy(); // b/152645831
         assertTrue("Pending widget is not present",
                 widget != null);
     }

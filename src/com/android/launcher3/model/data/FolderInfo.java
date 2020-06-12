@@ -22,6 +22,8 @@ import static androidx.core.util.Preconditions.checkNotNull;
 
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT;
+import static com.android.launcher3.logger.LauncherAtom.Attribute.MANUAL_LABEL;
+import static com.android.launcher3.logger.LauncherAtom.Attribute.SUGGESTED_LABEL;
 import static com.android.launcher3.userevent.LauncherLogProto.Target.FromFolderLabelState.FROM_CUSTOM;
 import static com.android.launcher3.userevent.LauncherLogProto.Target.FromFolderLabelState.FROM_EMPTY;
 import static com.android.launcher3.userevent.LauncherLogProto.Target.FromFolderLabelState.FROM_FOLDER_LABEL_STATE_UNSPECIFIED;
@@ -205,6 +207,7 @@ public class FolderInfo extends ItemInfo {
         return getDefaultItemInfoBuilder()
                 .setFolderIcon(LauncherAtom.FolderIcon.newBuilder().setCardinality(contents.size()))
                 .setRank(rank)
+                .setAttribute(fromCustom ? MANUAL_LABEL : SUGGESTED_LABEL)
                 .setContainerInfo(getContainerInfo())
                 .build();
     }

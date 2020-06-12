@@ -20,6 +20,7 @@ import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_7;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALL_APPS_EDU_SHOWN;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_FADE;
 
 import android.animation.Animator;
@@ -231,6 +232,8 @@ public class AllAppsEduView extends AbstractFloatingView {
                 launcher, parent);
         view.init(launcher);
         launcher.getDragLayer().addView(view);
+        launcher.getStatsLogManager().log(LAUNCHER_ALL_APPS_EDU_SHOWN);
+
         view.requestLayout();
         view.playAnimation();
     }

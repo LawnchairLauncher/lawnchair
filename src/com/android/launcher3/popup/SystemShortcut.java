@@ -29,6 +29,7 @@ import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.widget.WidgetsBottomSheet;
 
 import java.util.List;
+
 /**
  * Represents a system shortcut for a given app. The shortcut should have a label and icon, and an
  * onClickListener that depends on the item that the shortcut services.
@@ -142,8 +143,8 @@ public abstract class SystemShortcut<T extends BaseDraggingActivity> extends Ite
             mTarget.getUserEventDispatcher().logActionOnControl(Action.Touch.TAP,
                     ControlType.APPINFO_TARGET, view);
             // TODO(thiruram): Fix missing container info when item is inside folder.
-            mTarget.getStatsLogManager().log(LAUNCHER_SYSTEM_SHORTCUT_APP_INFO_TAP,
-                    mItemInfo.buildProto());
+            mTarget.getStatsLogManager()
+                    .log(LAUNCHER_SYSTEM_SHORTCUT_APP_INFO_TAP, mItemInfo.buildProto());
         }
     }
 

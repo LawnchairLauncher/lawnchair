@@ -16,6 +16,7 @@
 
 package com.android.launcher3.popup;
 
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SYSTEM_SHORTCUT_PAUSE_TAP;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
 import android.annotation.TargetApi;
@@ -76,6 +77,8 @@ public class RemoteActionShortcut extends SystemShortcut<BaseDraggingActivity> {
     @Override
     public void onClick(View view) {
         AbstractFloatingView.closeAllOpenViews(mTarget);
+        mTarget.getStatsLogManager()
+                .log(LAUNCHER_SYSTEM_SHORTCUT_PAUSE_TAP, mItemInfo.buildProto());
 
         final String actionIdentity = mAction.getTitle() + ", "
                 + mItemInfo.getTargetComponent().getPackageName();

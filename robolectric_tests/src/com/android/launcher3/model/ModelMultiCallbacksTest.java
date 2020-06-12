@@ -199,7 +199,7 @@ public class ModelMultiCallbacksTest {
         }
 
         @Override
-        public void bindAllApplications(AppInfo[] apps) {
+        public void bindAllApplications(AppInfo[] apps, int flags) {
             mAppInfos = apps;
         }
 

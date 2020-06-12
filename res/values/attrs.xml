@@ -22,6 +22,7 @@
     <attr name="allAppsScrimColor" format="color" />
     <attr name="allAppsInterimScrimAlpha" format="integer" />
     <attr name="allAppsNavBarScrimColor" format="color" />
+    <attr name="allAppsTheme" format="reference" />
     <attr name="popupColorPrimary" format="color" />
     <attr name="popupColorSecondary" format="color" />
     <attr name="popupColorTertiary" format="color" />
@@ -44,6 +45,7 @@
     <attr name="folderTextColor" format="color" />
     <attr name="folderHintColor" format="color" />
     <attr name="workProfileOverlayTextColor" format="color" />
+    <attr name="disabledIconAlpha" format="float" />
 
     <!-- BubbleTextView specific attributes. -->
     <declare-styleable name="BubbleTextView">

@@ -52,6 +52,7 @@ public class AllAppsStore {
 
     private final List<OnUpdateListener> mUpdateListeners = new CopyOnWriteArrayList<>();
     private final ArrayList<ViewGroup> mIconContainers = new ArrayList<>();
+    private int mModelFlags;
 
     private int mDeferUpdatesFlags = 0;
     private boolean mUpdatePending = false;
@@ -63,9 +64,19 @@ public class AllAppsStore {
     /**
      * Sets the current set of apps.
      */
-    public void setApps(AppInfo[] apps) {
+    public void setApps(AppInfo[] apps, int flags) {
         mApps = apps;
+        mModelFlags = flags;
         notifyUpdate();
+    }
+
+    /**
+     * @see com.android.launcher3.model.BgDataModel.Callbacks#FLAG_QUIET_MODE_ENABLED
+     * @see com.android.launcher3.model.BgDataModel.Callbacks#FLAG_HAS_SHORTCUT_PERMISSION
+     * @see com.android.launcher3.model.BgDataModel.Callbacks#FLAG_QUIET_MODE_CHANGE_PERMISSION
+     */
+    public boolean hasModelFlag(int mask) {
+        return (mModelFlags & mask) != 0;
     }
 
     public AppInfo getApp(ComponentKey key) {

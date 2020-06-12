@@ -52,8 +52,6 @@
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Sakinua"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"Maelezo ya programu"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"Sakinisha"</string>
-    <string name="dismiss_prediction_label" msgid="3357562989568808658">"Usipendekeze programu"</string>
-    <string name="pin_prediction" msgid="4196423321649756498">"Bandika Utabiri"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"kuweka njia za mkato"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Huruhusu programu kuongeza njia za mkato bila mtumiaji kuingilia kati."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"soma mipangilio ya Mwanzo na njia za mkato"</string>
@@ -64,7 +62,7 @@
     <string name="gadget_error_text" msgid="6081085226050792095">"Tatizo la kupakia wijeti"</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"Sanidi"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Hii ni programu ya mfumo na haiwezi kuondolewa."</string>
-    <string name="folder_hint_text" msgid="5174843001373488816">"Badilisha Jina"</string>
+    <string name="folder_hint_text" msgid="6617836969016293992">"Folda isiyo na jina"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> imezimwa"</string>
     <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
       <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g>, ina arifa <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g></item>
@@ -95,7 +93,7 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Ili kuonyesha Vitone vya Arifa, washa kipengele cha arifa za programu katika <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Badilisha mipangilio"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Onyesha vitone vya arifa"</string>
-    <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"Weka aikoni za programu kwenye Skrini ya kwanza"</string>
+    <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Ongeza aikoni kwenye Skrini ya kwanza"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Kwa ajili ya programu mpya"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Yasiyojulikana"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Ondoa"</string>
@@ -132,18 +130,15 @@
     <string name="action_deep_shortcut" msgid="2864038805849372848">"Njia za mkato"</string>
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"Arifa na njia za mkato"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Ondoa"</string>
-    <string name="accessibility_close" msgid="2277148124685870734">"Funga"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Arifa imeondolewa"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Binafsi"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Kazini"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Wasifu wa kazini"</string>
-    <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"Data binafsi iko kando na haionyeshwi kwenye programu za kazini"</string>
-    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"Programu na data ya kazini huonekana kwa msimamizi wako wa TEHAMA"</string>
-    <string name="work_profile_edu_next" msgid="8783418929296503629">"Endelea"</string>
-    <string name="work_profile_edu_accept" msgid="6069788082535149071">"Nimeelewa"</string>
-    <string name="work_apps_paused_title" msgid="2389865654362803723">"Wasifu wa kazini umesimamishwa"</string>
-    <string name="work_apps_paused_body" msgid="2197210494568696054">"Programu za kazini haziwezi kukutumia arifa, kutumia betri yako au kufikia maelezo ya mahali ulipo"</string>
-    <string name="work_apps_paused_content_description" msgid="7553586952985486433">"Wasifu wa kazini umesimamishwa. Programu za kazini haziwezi kukutumia arifa, kutumia betri yako au kufikia maelezo ya mahali ulipo"</string>
-    <string name="work_switch_tip" msgid="808075064383839144">"Simamisha arifa na programu za kazini"</string>
+    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Pata programu za kazi hapa"</string>
+    <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"Kila programu ya kazi ina beji na hulindwa na shirika lako. Hamishia programu kwenye skrini yako ya kwanza ili uzifikie kwa urahisi."</string>
+    <string name="work_mode_on_label" msgid="4781128097185272916">"Inasimamiwa na shirika lako"</string>
+    <string name="work_mode_off_label" msgid="3194894777601421047">"Vipenge vya arifa na programu vimezimwa"</string>
+    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"Funga"</string>
+    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"Imefungwa"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Hitilafu: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

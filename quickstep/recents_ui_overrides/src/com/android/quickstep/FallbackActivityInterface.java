@@ -83,7 +83,7 @@ public final class FallbackActivityInterface extends
 
     /** 6 */
     @Override
-    public AnimationFactory prepareRecentsUI(
+    public AnimationFactory prepareRecentsUI(RecentsAnimationDeviceState deviceState,
             boolean activityVisible, Consumer<AnimatorPlaybackController> callback) {
         DefaultAnimationFactory factory = new DefaultAnimationFactory(callback);
         factory.initUI();
