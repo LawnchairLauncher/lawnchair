@@ -1347,7 +1347,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             mActivity.getUserEventDispatcher().logTaskLaunchOrDismiss(
                     endState.logAction, Direction.UP, index, compKey);
             mActivity.getStatsLogManager().log(
-                    LAUNCHER_TASK_DISMISS_SWIPE_UP, taskView.buildProto());
+                    LAUNCHER_TASK_DISMISS_SWIPE_UP, taskView.getItemInfo());
         }
     }
 
@@ -1930,7 +1930,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                             endState.logAction, Direction.DOWN, indexOfChild(tv),
                             TaskUtils.getLaunchComponentKeyForTask(task.key));
                     mActivity.getStatsLogManager().log(
-                            LAUNCHER_TASK_LAUNCH_SWIPE_DOWN, tv.buildProto());
+                            LAUNCHER_TASK_LAUNCH_SWIPE_DOWN, tv.getItemInfo());
                 }
             } else {
                 onTaskLaunched(false);
