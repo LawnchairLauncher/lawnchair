@@ -32,7 +32,6 @@ import androidx.annotation.CallSuper;
 import androidx.annotation.UiThread;
 
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.VibratorWrapper;
@@ -96,8 +95,8 @@ public abstract class BaseSwipeUpHandler<T extends StatefulActivity<?>, Q extend
      * depend on proper class initialization.
      */
     protected void initAfterSubclassConstructor() {
-        initTransitionEndpoints(InvariantDeviceProfile.INSTANCE.get(mContext)
-                .getDeviceProfile(mContext));
+        initTransitionEndpoints(
+                mTaskViewSimulator.getOrientationState().getLauncherDeviceProfile());
     }
 
     protected void performHapticFeedback() {
@@ -206,7 +205,7 @@ public abstract class BaseSwipeUpHandler<T extends StatefulActivity<?>, Q extend
         mRecentsAnimationController = recentsAnimationController;
         mRecentsAnimationTargets = targets;
         mTransformParams.setTargetSet(mRecentsAnimationTargets);
-        DeviceProfile dp = InvariantDeviceProfile.INSTANCE.get(mContext).getDeviceProfile(mContext);
+        DeviceProfile dp = mTaskViewSimulator.getOrientationState().getLauncherDeviceProfile();
         RemoteAnimationTargetCompat runningTaskTarget = targets.findTask(
                 mGestureState.getRunningTaskId());
 
@@ -301,8 +300,7 @@ public abstract class BaseSwipeUpHandler<T extends StatefulActivity<?>, Q extend
             if (TestProtocol.sDebugTracing) {
                 Log.d(TestProtocol.PAUSE_NOT_DETECTED, "BaseSwipeUpHandler.2");
             }
-            initTransitionEndpoints(InvariantDeviceProfile.INSTANCE.get(mContext)
-                .getDeviceProfile(mContext));
+            initTransitionEndpoints(createdActivity.getDeviceProfile());
         }
         return true;
     }
