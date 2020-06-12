@@ -24,7 +24,6 @@ import android.animation.PropertyValuesHolder;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -39,10 +38,8 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetHost.ProviderChangedListener;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
-import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.views.RecyclerViewFastScroller;
 import com.android.launcher3.views.TopRoundedCornerView;
 
@@ -135,7 +132,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int widthUsed;
         if (mInsets.bottom > 0) {
-            widthUsed = 0;
+            widthUsed = mInsets.left + mInsets.right;
         } else {
             Rect padding = mLauncher.getDeviceProfile().workspacePadding;
             widthUsed = Math.max(padding.left + padding.right,
@@ -156,7 +153,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
         // Content is laid out as center bottom aligned
         int contentWidth = mContent.getMeasuredWidth();
-        int contentLeft = (width - contentWidth) / 2;
+        int contentLeft = (width - contentWidth - mInsets.left - mInsets.right) / 2 + mInsets.left;
         mContent.layout(contentLeft, height - mContent.getMeasuredHeight(),
                 contentLeft + contentWidth, height);
 

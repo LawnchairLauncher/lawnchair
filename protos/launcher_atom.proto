@@ -38,7 +38,7 @@ message ItemInfo {
   optional ContainerInfo container_info = 7;
 
   // Stores the origin of the Item
-  optional Origin source = 8;
+  optional Attribute attribute = 8;
 }
 
 // Represents various launcher surface where items are placed.
@@ -52,6 +52,8 @@ message ContainerInfo {
     PredictionContainer prediction_container = 6;
     SearchResultContainer search_result_container = 7;
     ShortcutsContainer shortcuts_container = 8;
+    SettingsContainer settings_container = 9;
+    PredictedHotseatContainer predicted_hotseat_container = 10;
   }
 }
 
@@ -75,7 +77,12 @@ message SearchResultContainer {
 message ShortcutsContainer {
 }
 
-enum Origin {
+// Container for generic system shortcuts for launcher specific settings.
+// Typically shown up as popup window by longpressing on empty space on workspace.
+message SettingsContainer {
+}
+
+enum Attribute {
   UNKNOWN = 0;
   DEFAULT_LAYOUT = 1;       // icon automatically placed in workspace, folder, hotseat
   BACKUP_RESTORE = 2;       // icon layout restored from backup
@@ -85,6 +92,8 @@ enum Origin {
   ADD_TO_HOMESCREEN = 6;    // play install + launcher home setting
   ALLAPPS_PREDICTION = 7;   // from prediction bar in all apps container
   HOTSEAT_PREDICTION = 8;   // from prediction bar in hotseat container
+  SUGGESTED_LABEL = 9;      // folder icon's label was suggested
+  MANUAL_LABEL = 10;        // folder icon's label was manually edited
 }
 
 // Main app icons
@@ -141,6 +150,14 @@ message WorkspaceContainer {
 
 message HotseatContainer {
   optional int32 index = 1;
+}
+
+// Represents hotseat container with prediction feature enabled.
+message PredictedHotseatContainer {
+  optional int32 index = 1;
+
+  // No of hotseat positions filled with predicted items.
+  optional int32 cardinality = 2;
 }
 
 message FolderContainer {

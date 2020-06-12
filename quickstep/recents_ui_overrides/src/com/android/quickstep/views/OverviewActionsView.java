@@ -22,6 +22,7 @@ import static com.android.quickstep.SysUINavigationMode.removeShelfFromOverview;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -31,6 +32,7 @@ import android.widget.FrameLayout;
 import androidx.annotation.IntDef;
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
@@ -45,7 +47,9 @@ import java.lang.annotation.RetentionPolicy;
  * View for showing action buttons in Overview
  */
 public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayout
-        implements OnClickListener {
+        implements OnClickListener, Insettable {
+
+    private final Rect mInsets = new Rect();
 
     @IntDef(flag = true, value = {
             HIDDEN_UNSUPPORTED_NAVIGATION,
@@ -137,6 +141,12 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         updateVerticalMargin(SysUINavigationMode.getMode(getContext()));
     }
 
+    @Override
+    public void setInsets(Rect insets) {
+        mInsets.set(insets);
+        updateVerticalMargin(SysUINavigationMode.getMode(getContext()));
+    }
+
     public void updateHiddenFlags(@ActionsHiddenFlags int visibilityFlags, boolean enable) {
         if (enable) {
             mHiddenFlags |= visibilityFlags;
@@ -173,6 +183,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
             bottomMargin = getResources()
                     .getDimensionPixelSize(R.dimen.overview_actions_bottom_margin_gesture);
         }
+        bottomMargin += mInsets.bottom;
         LayoutParams params = (LayoutParams) getLayoutParams();
         params.setMargins(
                 params.leftMargin, params.topMargin, params.rightMargin, bottomMargin);
