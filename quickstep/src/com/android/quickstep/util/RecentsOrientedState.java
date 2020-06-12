@@ -445,7 +445,8 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
                 }
                 break;
             case ROTATION_270:
-                if (degrees < (90 - threshold)) {
+                if (degrees < (90 - threshold) ||
+                        (degrees > (270 + threshold) && degrees < 360)) {
                     return ROTATION_0;
                 }
                 if (degrees > (90 + threshold) && degrees < 180) {
@@ -468,7 +469,8 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
                 if (degrees < (270 - threshold) && degrees > 90) {
                     return ROTATION_180;
                 }
-                if (degrees > (270 + threshold) && degrees < 360) {
+                if (degrees > (270 + threshold) && degrees < 360
+                        || (degrees >= 0 && degrees < threshold)) {
                     return ROTATION_0;
                 }
                 // flip from landscape to seascape
