@@ -20,6 +20,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name" msgid="649227358658669779">"Launcher3"</string>
+    <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="work_folder_name" msgid="3753320833950115786">"ວຽກ"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"ແອັບຯບໍ່ໄດ້ຖືກຕິດຕັ້ງ."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"ແອັບຯ​ໃຊ້​ບໍ່​ໄດ້"</string>
@@ -52,8 +53,6 @@
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"ຖອນ​ການ​ຕິດ​ຕັ້ງ"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"ຂໍ້ມູນແອັບ"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"ຕິດຕັ້ງ"</string>
-    <string name="dismiss_prediction_label" msgid="3357562989568808658">"ຢ່າແນະນຳແອັບ"</string>
-    <string name="pin_prediction" msgid="4196423321649756498">"ປັກໝຸດການຄາດເດົາ"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"ຕິດຕັ້ງທາງລັດ"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"ອະນຸຍາດໃຫ້ແອັບຯ ເພີ່ມທາງລັດໂດຍບໍ່ຕ້ອງຮັບການຢືນຢັນຈາກຜູ່ໃຊ້."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"ອ່ານການຕັ້ງຄ່າໜ້າຫຼັກ ແລະທາງລັດ"</string>
@@ -64,7 +63,7 @@
     <string name="gadget_error_text" msgid="6081085226050792095">"ມີບັນຫາໃນການໂຫລດວິດເຈັດ"</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"ຕິດຕັ້ງ"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"ນີ້ແມ່ນແອັບຯຂອງລະບົບ ແລະບໍ່ສາມາດຖອນການຕິດຕັ້ງອອກໄດ້."</string>
-    <string name="folder_hint_text" msgid="5174843001373488816">"ແກ້ໄຂຊື່"</string>
+    <string name="folder_hint_text" msgid="6617836969016293992">"ໂຟນເດີຍັງບໍ່ຖືກຕັ້ງຊື່"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"ປິດການນຳໃຊ້ <xliff:g id="APP_NAME">%1$s</xliff:g> ແລ້ວ"</string>
     <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
       <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g>, ມີ <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> ການແຈ້ງເຕືອນ</item>
@@ -93,7 +92,7 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"ເພື່ອສະແດງຈຸດການແຈ້ງເຕືອນ, ໃຫ້ເປີດການແຈ້ງເຕືອນສຳລັບ <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"ບັນທຶກການຕັ້ງຄ່າ"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"ສະແດງຈຸດການແຈ້ງເຕືອນ"</string>
-    <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"ເພີ່ມໄອຄອນແອັບໄປໃສ່ໜ້າຈໍຫຼັກ"</string>
+    <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"ເພີ່ມໄອຄອນໃສ່ໜ້າຈໍຫຼັກ"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"ສຳລັບແອັບໃໝ່"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"​ບໍ່​ຮູ້​ຈັກ"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"ລຶບ​"</string>
@@ -130,18 +129,15 @@
     <string name="action_deep_shortcut" msgid="2864038805849372848">"ທາງລັດ"</string>
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"ປຸ່ມລັດ ແລະ ການແຈ້ງເຕືອນ"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"ປິດໄວ້"</string>
-    <string name="accessibility_close" msgid="2277148124685870734">"ປິດ"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"ປິດການແຈ້ງເຕືອນແລ້ວ"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"ສ່ວນຕົວ"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"ວຽກ"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"ໂປຣໄຟລ໌ບ່ອນເຮັດວຽກ"</string>
-    <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"ຂໍ້ມູນສ່ວນຕົວຈະຖືກແຍກອອກ ແລະ ເຊື່ອງໄວ້ຈາກແອັບວຽກ"</string>
-    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"ແອັບ ແລະ ຂໍ້ມູນວຽກຈະສະແດງໃຫ້ຜູ້ເບິ່ງແຍງໄອທີຂອງທ່ານເຫັນ"</string>
-    <string name="work_profile_edu_next" msgid="8783418929296503629">"ຕໍ່ໄປ"</string>
-    <string name="work_profile_edu_accept" msgid="6069788082535149071">"ເຂົ້າໃຈແລ້ວ"</string>
-    <string name="work_apps_paused_title" msgid="2389865654362803723">"ຢຸດໂປຣໄຟລ໌ວຽກໄວ້ຊົ່ວຄາວແລ້ວ"</string>
-    <string name="work_apps_paused_body" msgid="2197210494568696054">"ແອັບວຽກບໍ່ສາມາດສົ່ງການແຈ້ງເຕືອນໃຫ້ທ່ານ, ໃຊ້ແບັດເຕີຣີຂອງທ່ານ ຫຼື ເຂົ້າເຖິງສະຖານທີ່ຂອງທ່ານໄດ້"</string>
-    <string name="work_apps_paused_content_description" msgid="7553586952985486433">"ຢຸດໂປຣໄຟລ໌ບ່ອນເຮັດວຽກໄວ້ຊົ່ວຄາວແລ້ວ. ແອັບວຽກຈະບໍ່ສາມາດສົ່ງການແຈ້ງເຕືອນໃຫ້ທ່ານ, ໃຊ້ແບັດເຕີຣີຂອງທ່ານ ຫຼື ເຂົ້າເຖິງສະຖານທີ່ຂອງທ່ານໄດ້"</string>
-    <string name="work_switch_tip" msgid="808075064383839144">"ຢຸດແອັບວຽກ ແລະ ການແຈ້ງເຕືອນໄວ້ຊົ່ວຄາວ"</string>
+    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"ຊອກຫາແອັບວຽກຢູ່ບ່ອນນີ້"</string>
+    <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"ແຕ່ລະແອັບວຽກຈະມີປ້າຍ ແລະ ຖືກຈັດເກັບໄວ້ຢ່າງປອດໄພໂດຍອົງກອນຂອງທ່ານ. ທ່ານສາມາດຍ້າຍແອັບໄປໃສ່ໜ້າຈໍຫຼັກເພື່ອໃຫ້ເຂົ້າໃຊ້ງ່າຍຂຶ້ນໄດ້."</string>
+    <string name="work_mode_on_label" msgid="4781128097185272916">"ຈັດການໂດຍອົງກອນຂອງທ່ານ"</string>
+    <string name="work_mode_off_label" msgid="3194894777601421047">"ການແຈ້ງເຕືອນ ແລະ ແອັບຖືກປິດໄວ້"</string>
+    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"ປິດ"</string>
+    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"ປິດແລ້ວ"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"ບໍ່ສຳເລັດ: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

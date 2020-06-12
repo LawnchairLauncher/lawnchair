@@ -65,8 +65,10 @@
 
     <!-- Hotseat educational strings for users who don't qualify for migration -->
     <string name="hotseat_edu_title_migrate">Get app suggestions on the bottom row of your Home screen</string>
+    <string name="hotseat_edu_title_migrate_landscape">Get app suggestions on favorites row of your Home screen</string>
 
     <string name="hotseat_edu_message_migrate">Easily access your most-used apps right on the Home screen. Suggestions will change based on your routines. Apps on the bottom row will move up to your Home screen. </string>
+    <string name="hotseat_edu_message_migrate_landscape">Easily access your most-used apps right on the Home screen. Suggestions will change based on your routines. Apps in favorites row will move to your Home screen. </string>
     <string name="hotseat_edu_message_migrate_alt">Easily access your most-used apps, right on the Home screen. Suggestions will change based on your routines. Apps on the bottom row will move to a new folder.</string>
 
     <!-- Button text to opt in for fully predicted hotseat -->
@@ -133,6 +135,17 @@
     <string name="overview_gesture_feedback_home_detected" translatable="false">Try holding the window for longer before releasing</string>
     <!-- Feedback shown during interactive parts of Overview gesture tutorial when the gesture is horizontal instead of vertical. [CHAR LIMIT=100] -->
     <string name="overview_gesture_feedback_wrong_swipe_direction" translatable="false">Make sure you swipe straight up and pause</string>
+
+    <!-- Title shown during interactive part of Assistant gesture tutorial. [CHAR LIMIT=30] -->
+    <string name="assistant_gesture_tutorial_playground_title" translatable="false">Tutorial: Assistant</string>
+    <!-- Subtitle shown during interactive parts of Assistant gesture tutorial. [CHAR LIMIT=60] -->
+    <string name="assistant_gesture_tutorial_playground_subtitle" translatable="false">Try swiping diagonally from a bottom corner of the screen</string>
+    <!-- Feedback shown during interactive parts of Assistant gesture tutorial when the gesture is started too far from the corner. [CHAR LIMIT=100] -->
+    <string name="assistant_gesture_feedback_swipe_too_far_from_corner" translatable="false">Make sure you swipe from a bottom corner of the screen</string>
+    <!-- Feedback shown during interactive parts of Assistant gesture tutorial when the gesture doesn't go diagonally enough. [CHAR LIMIT=100] -->
+    <string name="assistant_gesture_feedback_swipe_not_diagonal" translatable="false">Make sure you swipe diagonally</string>
+    <!-- Feedback shown during interactive parts of Assistant gesture tutorial when the gesture doesn't go far enough. [CHAR LIMIT=100] -->
+    <string name="assistant_gesture_feedback_swipe_not_long_enough" translatable="false">Try swiping further</string>
 
     <!-- Title shown on the confirmation screen after successful gesture. [CHAR LIMIT=30] -->
     <string name="gesture_tutorial_confirm_title" translatable="false">All set</string>

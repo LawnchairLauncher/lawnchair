@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.model;
 
+import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_QUIET_MODE_ENABLED;
 import static com.android.launcher3.model.data.WorkspaceItemInfo.FLAG_AUTOINSTALL_ICON;
 import static com.android.launcher3.model.data.WorkspaceItemInfo.FLAG_RESTORED_ICON;
 
@@ -41,6 +42,7 @@ import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.shortcuts.ShortcutRequest;
 import com.android.launcher3.util.FlagOp;
 import com.android.launcher3.util.IntSparseArrayMap;
@@ -149,14 +151,21 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                 if (DEBUG) Log.d(TAG, "mAllAppsList.(un)suspend " + N);
                 appsList.updateDisabledFlags(matcher, flagOp);
                 break;
-            case OP_USER_AVAILABILITY_CHANGE:
-                flagOp = context.getSystemService(UserManager.class).isQuietModeEnabled(mUser)
+            case OP_USER_AVAILABILITY_CHANGE: {
+                UserManagerState ums = new UserManagerState();
+                ums.init(UserCache.INSTANCE.get(context),
+                        context.getSystemService(UserManager.class));
+                flagOp = ums.isUserQuiet(mUser)
                         ? FlagOp.addFlag(WorkspaceItemInfo.FLAG_DISABLED_QUIET_USER)
                         : FlagOp.removeFlag(WorkspaceItemInfo.FLAG_DISABLED_QUIET_USER);
                 // We want to update all packages for this user.
                 matcher = ItemInfoMatcher.ofUser(mUser);
                 appsList.updateDisabledFlags(matcher, flagOp);
+
+                // We are not synchronizing here, as int operations are atomic
+                appsList.setFlags(FLAG_QUIET_MODE_ENABLED, ums.isAnyProfileQuietModeEnabled());
                 break;
+            }
         }
 
         bindApplicationsIfNeeded();

@@ -22,7 +22,9 @@
     <string name="recent_task_option_split_screen" msgid="5353188922202653570">"分割画面"</string>
     <string name="recent_task_option_pin" msgid="7929860679018978258">"固定"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"フリーフォーム"</string>
+    <string name="accessibility_desc_recent_apps" msgid="1444379410873162882">"概要"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"最近のアイテムはありません"</string>
+    <string name="accessibility_close_task" msgid="5354563209433803643">"閉じる"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"アプリの使用状況の設定"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"すべてクリア"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"最近使ったアプリ"</string>
@@ -32,19 +34,4 @@
     <string name="title_app_suggestions" msgid="4185902664111965088">"アプリの候補"</string>
     <string name="all_apps_label" msgid="8542784161730910663">"すべてのアプリ"</string>
     <string name="all_apps_prediction_tip" msgid="2672336544844936186">"予測されたアプリ"</string>
-    <string name="hotseat_edu_prompt_title" msgid="5595771595144175752">"使用頻度の高いアプリに簡単にアクセス"</string>
-    <string name="hotseat_edu_prompt_content" msgid="5709176001504149521">"Pixel によって、次に必要なアプリが予測され、ホーム画面にすぐに表示されます。タップしてセットアップします。"</string>
-    <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"ホーム画面の一番下の行でアプリの候補を入手できます"</string>
-    <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"使用頻度の高いアプリが、ホーム画面にすぐに表示され、簡単にアクセスできるようになります。アプリの候補はルーティンに応じて変わります。ホーム画面で一番下の行にあるアプリが上に移動します。"</string>
-    <string name="hotseat_edu_message_migrate_alt" msgid="3042360119039646356">"使用頻度の高いアプリが、ホーム画面にすぐに表示され、簡単にアクセスできるようになります。アプリの候補はルーティンに応じて変わります。一番下の行にあるアプリが新しいフォルダに移動します。"</string>
-    <string name="hotseat_edu_accept" msgid="1611544083278999837">"アプリの候補を入手"</string>
-    <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"使用しない"</string>
-    <string name="hotseat_turn_off" msgid="7808360330229368470">"設定"</string>
-    <string name="hotseat_auto_enrolled" msgid="522100018967146807">"使用頻度の高いアプリがここに表示されます（ルーティンに応じて変わります）"</string>
-    <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"一番下の行からアプリをドラッグしてアプリの候補を入手します"</string>
-    <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"空いたスペースにアプリの候補が追加されます"</string>
-    <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"予測されたアプリ: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="action_share" msgid="2648470652637092375">"共有"</string>
-    <string name="action_screenshot" msgid="8171125848358142917">"スクリーンショット"</string>
-    <string name="blocked_by_policy" msgid="2071401072261365546">"この操作はアプリまたは組織で許可されていません"</string>
 </resources>
