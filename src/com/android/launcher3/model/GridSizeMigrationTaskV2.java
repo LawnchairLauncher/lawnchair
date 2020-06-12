@@ -32,7 +32,7 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Point;
-import android.text.TextUtils;
+import android.util.ArrayMap;
 import android.util.Log;
 
 import androidx.annotation.VisibleForTesting;
@@ -52,9 +52,11 @@ import com.android.launcher3.widget.WidgetManagerHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -226,9 +228,8 @@ public class GridSizeMigrationTaskV2 {
             if (DEBUG) {
                 Log.d(TAG, "Migrating " + screenId);
             }
-            List<DbEntry> entries = mDestReader.loadWorkspaceEntries(screenId);
             GridPlacementSolution workspaceSolution = new GridPlacementSolution(mDb, mSrcReader,
-                    mDestReader, mContext, entries, screenId, mTrgX, mTrgY, mWorkspaceDiff);
+                    mDestReader, mContext, screenId, mTrgX, mTrgY, mWorkspaceDiff);
             workspaceSolution.find();
             if (mWorkspaceDiff.isEmpty()) {
                 break;
@@ -238,8 +239,7 @@ public class GridSizeMigrationTaskV2 {
         int screenId = mDestReader.mLastScreenId + 1;
         while (!mWorkspaceDiff.isEmpty()) {
             GridPlacementSolution workspaceSolution = new GridPlacementSolution(mDb, mSrcReader,
-                    mDestReader, mContext, new ArrayList<>(), screenId, mTrgX, mTrgY,
-                    mWorkspaceDiff);
+                    mDestReader, mContext, screenId, mTrgX, mTrgY, mWorkspaceDiff);
             workspaceSolution.find();
             screenId++;
         }
@@ -259,64 +259,54 @@ public class GridSizeMigrationTaskV2 {
         return diff;
     }
 
-    private static void insertEntryInDb(SQLiteDatabase db, Context context,
-            ArrayList<DbEntry> entriesFromSrcDb, DbEntry entry, String srcTableName,
-            String destTableName) {
-        int id = -1;
-        switch (entry.itemType) {
-            case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
-            case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT:
-            case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION: {
-                for (DbEntry e : entriesFromSrcDb) {
-                    if (TextUtils.equals(e.mIntent, entry.mIntent)) {
-                        id = e.id;
-                    }
-                }
+    private static void insertEntryInDb(SQLiteDatabase db, Context context, DbEntry entry,
+            String srcTableName, String destTableName) {
+        int id = copyEntryAndUpdate(db, context, entry, srcTableName, destTableName);
 
-                break;
+        if (entry.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
+            for (int itemId : entry.mFolderItems.values()) {
+                copyEntryAndUpdate(db, context, itemId, id, srcTableName, destTableName);
             }
-            case LauncherSettings.Favorites.ITEM_TYPE_FOLDER: {
-                for (DbEntry e : entriesFromSrcDb) {
-                    if (e.mFolderItems.size() == entry.mFolderItems.size()
-                            && e.mFolderItems.containsAll(entry.mFolderItems)) {
-                        id = e.id;
-                    }
-                }
-                break;
-            }
-            case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
-            case LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET: {
-                for (DbEntry e : entriesFromSrcDb) {
-                    if (TextUtils.equals(e.mProvider, entry.mProvider)) {
-                        id = e.id;
-                        break;
-                    }
-                }
-                break;
-            }
-            default:
-                return;
         }
+    }
 
-        Cursor c = db.query(srcTableName, null, LauncherSettings.Favorites._ID + " = '" + id + "'",
+    private static int copyEntryAndUpdate(SQLiteDatabase db, Context context,
+            DbEntry entry, String srcTableName, String destTableName) {
+        return copyEntryAndUpdate(db, context, entry, -1, -1, srcTableName, destTableName);
+    }
+
+    private static int copyEntryAndUpdate(SQLiteDatabase db, Context context,
+            int id, int folderId, String srcTableName, String destTableName) {
+        return copyEntryAndUpdate(db, context, null, id, folderId, srcTableName, destTableName);
+    }
+
+    private static int copyEntryAndUpdate(SQLiteDatabase db, Context context,
+            DbEntry entry, int id, int folderId, String srcTableName, String destTableName) {
+        int newId = -1;
+        Cursor c = db.query(srcTableName, null,
+                LauncherSettings.Favorites._ID + " = '" + (entry != null ? entry.id : id) + "'",
                 null, null, null, null);
-
         while (c.moveToNext()) {
             ContentValues values = new ContentValues();
             DatabaseUtils.cursorRowToContentValues(c, values);
-            entry.updateContentValues(values);
-            values.put(LauncherSettings.Favorites._ID,
-                    LauncherSettings.Settings.call(context.getContentResolver(),
-                            LauncherSettings.Settings.METHOD_NEW_ITEM_ID).getInt(
-                            LauncherSettings.Settings.EXTRA_VALUE));
+            if (entry != null) {
+                entry.updateContentValues(values);
+            } else {
+                values.put(LauncherSettings.Favorites.CONTAINER, folderId);
+            }
+            newId = LauncherSettings.Settings.call(context.getContentResolver(),
+                    LauncherSettings.Settings.METHOD_NEW_ITEM_ID).getInt(
+                    LauncherSettings.Settings.EXTRA_VALUE);
+            values.put(LauncherSettings.Favorites._ID, newId);
             db.insert(destTableName, null, values);
         }
         c.close();
+        return newId;
     }
 
-    private static void removeEntryFromDb(SQLiteDatabase db, String tableName, IntArray entryId) {
+    private static void removeEntryFromDb(SQLiteDatabase db, String tableName, IntArray entryIds) {
         db.delete(tableName,
-                Utilities.createDbSelectionQuery(LauncherSettings.Favorites._ID, entryId), null);
+                Utilities.createDbSelectionQuery(LauncherSettings.Favorites._ID, entryIds), null);
     }
 
     private static HashSet<String> getValidPackages(Context context) {
@@ -352,8 +342,7 @@ public class GridSizeMigrationTaskV2 {
         private int mNextStartY;
 
         GridPlacementSolution(SQLiteDatabase db, DbReader srcReader, DbReader destReader,
-                Context context, List<DbEntry> placedWorkspaceItems, int screenId, int trgX,
-                int trgY, List<DbEntry> itemsToPlace) {
+                Context context, int screenId, int trgX, int trgY, List<DbEntry> itemsToPlace) {
             mDb = db;
             mSrcReader = srcReader;
             mDestReader = destReader;
@@ -364,8 +353,11 @@ public class GridSizeMigrationTaskV2 {
             mTrgY = trgY;
             mNextStartX = 0;
             mNextStartY = mTrgY - 1;
-            for (DbEntry entry : placedWorkspaceItems) {
-                mOccupied.markCells(entry, true);
+            List<DbEntry> existedEntries = mDestReader.mWorkspaceEntriesByScreenId.get(screenId);
+            if (existedEntries != null) {
+                for (DbEntry entry : existedEntries) {
+                    mOccupied.markCells(entry, true);
+                }
             }
             mItemsToPlace = itemsToPlace;
         }
@@ -379,15 +371,20 @@ public class GridSizeMigrationTaskV2 {
                     continue;
                 }
                 if (findPlacement(entry)) {
-                    insertEntryInDb(mDb, mContext, mSrcReader.mWorkspaceEntries, entry,
-                            mSrcReader.mTableName, mDestReader.mTableName);
+                    insertEntryInDb(mDb, mContext, entry, mSrcReader.mTableName,
+                            mDestReader.mTableName);
                     iterator.remove();
                 }
             }
         }
 
+        /**
+         * Search for the next possible placement of an icon. (mNextStartX, mNextStartY) serves as
+         * a memoization of last placement, we can start our search for next placement from there
+         * to speed up the search.
+         */
         private boolean findPlacement(DbEntry entry) {
-            for (int y = mNextStartY; y >= 0; y--) {
+            for (int y = mNextStartY; y > 0; y--) {
                 for (int x = mNextStartX; x < mTrgX; x++) {
                     boolean fits = mOccupied.isRegionVacant(x, y, entry.spanX, entry.spanY);
                     boolean minFits = mOccupied.isRegionVacant(x, y, entry.minSpanX,
@@ -406,6 +403,7 @@ public class GridSizeMigrationTaskV2 {
                         return true;
                     }
                 }
+                mNextStartX = 0;
             }
             return false;
         }
@@ -443,8 +441,8 @@ public class GridSizeMigrationTaskV2 {
                     // to something other than -1.
                     entry.cellX = i;
                     entry.cellY = 0;
-                    insertEntryInDb(mDb, mContext, mSrcReader.mHotseatEntries, entry,
-                            mSrcReader.mTableName, mDestReader.mTableName);
+                    insertEntryInDb(mDb, mContext, entry, mSrcReader.mTableName,
+                            mDestReader.mTableName);
                     mOccupied.markCells(entry, true);
                 }
             }
@@ -475,6 +473,8 @@ public class GridSizeMigrationTaskV2 {
 
         private final ArrayList<DbEntry> mHotseatEntries = new ArrayList<>();
         private final ArrayList<DbEntry> mWorkspaceEntries = new ArrayList<>();
+        private final Map<Integer, ArrayList<DbEntry>> mWorkspaceEntriesByScreenId =
+                new ArrayMap<>();
 
         DbReader(SQLiteDatabase db, String tableName, Context context,
                 HashSet<String> validPackages, int hotseatSize) {
@@ -564,25 +564,6 @@ public class GridSizeMigrationTaskV2 {
             return loadWorkspaceEntries(c);
         }
 
-        protected ArrayList<DbEntry> loadWorkspaceEntries(int screen) {
-            Cursor c = queryWorkspace(
-                    new String[]{
-                            LauncherSettings.Favorites._ID,                  // 0
-                            LauncherSettings.Favorites.ITEM_TYPE,            // 1
-                            LauncherSettings.Favorites.SCREEN,               // 2
-                            LauncherSettings.Favorites.CELLX,                // 3
-                            LauncherSettings.Favorites.CELLY,                // 4
-                            LauncherSettings.Favorites.SPANX,                // 5
-                            LauncherSettings.Favorites.SPANY,                // 6
-                            LauncherSettings.Favorites.INTENT,               // 7
-                            LauncherSettings.Favorites.APPWIDGET_PROVIDER,   // 8
-                            LauncherSettings.Favorites.APPWIDGET_ID},        // 9
-                    LauncherSettings.Favorites.CONTAINER + " = "
-                            + LauncherSettings.Favorites.CONTAINER_DESKTOP
-                            + " AND " + LauncherSettings.Favorites.SCREEN + " = " + screen);
-            return loadWorkspaceEntries(c);
-        }
-
         private ArrayList<DbEntry> loadWorkspaceEntries(Cursor c) {
             final int indexId = c.getColumnIndexOrThrow(LauncherSettings.Favorites._ID);
             final int indexItemType = c.getColumnIndexOrThrow(LauncherSettings.Favorites.ITEM_TYPE);
@@ -660,6 +641,10 @@ public class GridSizeMigrationTaskV2 {
                     continue;
                 }
                 mWorkspaceEntries.add(entry);
+                if (!mWorkspaceEntriesByScreenId.containsKey(entry.screenId)) {
+                    mWorkspaceEntriesByScreenId.put(entry.screenId, new ArrayList<>());
+                }
+                mWorkspaceEntriesByScreenId.get(entry.screenId).add(entry);
             }
             removeEntryFromDb(mDb, mTableName, entriesToRemove);
             c.close();
@@ -674,10 +659,11 @@ public class GridSizeMigrationTaskV2 {
             int total = 0;
             while (c.moveToNext()) {
                 try {
+                    int id = c.getInt(0);
                     String intent = c.getString(1);
                     verifyIntent(intent);
                     total++;
-                    entry.mFolderItems.add(intent);
+                    entry.mFolderItems.put(intent, id);
                 } catch (Exception e) {
                     removeEntryFromDb(mDb, mTableName, IntArray.wrap(c.getInt(0)));
                 }
@@ -716,7 +702,7 @@ public class GridSizeMigrationTaskV2 {
 
         private String mIntent;
         private String mProvider;
-        private Set<String> mFolderItems = new HashSet<>();
+        private Map<String, Integer> mFolderItems = new HashMap<>();
 
         /** Comparator according to the reading order */
         @Override

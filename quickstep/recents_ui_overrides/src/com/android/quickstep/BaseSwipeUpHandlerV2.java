@@ -41,6 +41,7 @@ import android.animation.Animator;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PointF;
@@ -78,9 +79,11 @@ import com.android.quickstep.views.LiveTileOverlay;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
+import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.LatencyTrackerCompat;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
+import com.android.systemui.shared.system.TaskStackChangeListener;
 
 /**
  * Handles the navigation gestures when Launcher is the default home activity.
@@ -331,7 +334,7 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
         // as that will set the state as BACKGROUND_APP, overriding the animation to NORMAL.
         if (mGestureState.getEndTarget() != HOME) {
             Runnable initAnimFactory = () -> {
-                mAnimationFactory = mActivityInterface.prepareRecentsUI(
+                mAnimationFactory = mActivityInterface.prepareRecentsUI(mDeviceState,
                         mWasLauncherAlreadyVisible, this::onAnimatorPlaybackControllerCreated);
                 maybeUpdateRecentsAttachedState(false /* animate */);
             };
@@ -900,12 +903,34 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
 
     protected abstract HomeAnimationFactory createHomeAnimationFactory(long duration);
 
+    private TaskStackChangeListener mActivityRestartListener = new TaskStackChangeListener() {
+        @Override
+        public void onActivityRestartAttempt(ActivityManager.RunningTaskInfo task,
+                boolean homeTaskVisible, boolean clearedTask, boolean wasVisible) {
+            if (task.taskId == mGestureState.getRunningTaskId()) {
+                // Since this is an edge case, just cancel and relaunch with default activity
+                // options (since we don't know if there's an associated app icon to launch from)
+                endRunningWindowAnim(true /* cancel */);
+                ActivityManagerWrapper.getInstance().unregisterTaskStackListener(
+                        mActivityRestartListener);
+                ActivityManagerWrapper.getInstance().startActivityFromRecents(task.taskId, null);
+            }
+        }
+    };
+
     @UiThread
     private void animateToProgressInternal(float start, float end, long duration,
             Interpolator interpolator, GestureEndTarget target, PointF velocityPxPerMs) {
         // Set the state, but don't notify until the animation completes
         mGestureState.setEndTarget(target, false /* isAtomic */);
         maybeUpdateRecentsAttachedState();
+
+        // If we are transitioning to launcher, then listen for the activity to be restarted while
+        // the transition is in progress
+        if (mGestureState.getEndTarget().isLauncher) {
+            ActivityManagerWrapper.getInstance().registerTaskStackListener(
+                    mActivityRestartListener);
+        }
 
         if (mGestureState.getEndTarget() == HOME) {
             HomeAnimationFactory homeAnimFactory = createHomeAnimationFactory(duration);
@@ -1127,6 +1152,7 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
         }
 
         mActivityInitListener.unregister();
+        ActivityManagerWrapper.getInstance().unregisterTaskStackListener(mActivityRestartListener);
         mTaskSnapshot = null;
     }
 

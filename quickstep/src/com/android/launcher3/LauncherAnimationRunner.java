@@ -26,7 +26,6 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.os.Handler;
-import android.util.Log;
 
 import androidx.annotation.BinderThread;
 import androidx.annotation.UiThread;
@@ -154,16 +153,8 @@ public abstract class LauncherAnimationRunner implements RemoteAnimationRunnerCo
 
                 // Because t=0 has the app icon in its original spot, we can skip the
                 // first frame and have the same movement one frame earlier.
-                int singleFrameMs = getSingleFrameMs(context);
-                long playTime = singleFrameMs;
-                // b/153821199 Add logs to debug crash but ensure release builds do not crash.
-                if (Utilities.IS_DEBUG_DEVICE) {
-                    Log.e(TAG, "Total duration=[" + mAnimator.getTotalDuration()
-                            + "], singleFrameMs=[" + singleFrameMs + "], mAnimator=" + mAnimator);
-                } else {
-                    playTime = Math.min(singleFrameMs, mAnimator.getTotalDuration());
-                }
-                mAnimator.setCurrentPlayTime(playTime);
+                mAnimator.setCurrentPlayTime(
+                        Math.min(getSingleFrameMs(context), mAnimator.getTotalDuration()));
             }
         }
     }

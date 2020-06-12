@@ -52,8 +52,6 @@
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Απεγκατάσταση"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"Πληροφορίες εφαρμογής"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"Εγκατάσταση"</string>
-    <string name="dismiss_prediction_label" msgid="3357562989568808658">"Να μην προτείνεται η εφαρμογή"</string>
-    <string name="pin_prediction" msgid="4196423321649756498">"Καρφίτσωμα πρόβλεψης"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"εγκατάσταση συντομεύσεων"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Επιτρέπει σε μια εφαρμογή την προσθήκη συντομεύσεων χωρίς την παρέμβαση του χρήστη."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"ανάγνωση ρυθμίσεων και συντομεύσεων αρχικής οθόνης"</string>
@@ -64,7 +62,7 @@
     <string name="gadget_error_text" msgid="6081085226050792095">"Παρουσιάστηκε πρόβλημα στη φόρτωση του γραφικού στοιχείου"</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"Ρύθμιση"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Αυτή είναι μια εφαρμογή συστήματος και δεν είναι δυνατή η κατάργηση της εγκατάστασής της."</string>
-    <string name="folder_hint_text" msgid="5174843001373488816">"Επεξεργασία ονόματος"</string>
+    <string name="folder_hint_text" msgid="6617836969016293992">"Φάκελος χωρίς όνομα"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"Η εφαρμογή <xliff:g id="APP_NAME">%1$s</xliff:g> είναι απενεργοποιημένη"</string>
     <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
       <item quantity="other">Η εφαρμογή <xliff:g id="APP_NAME_2">%1$s</xliff:g>, έχει <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> ειδοποιήσεις</item>
@@ -93,7 +91,7 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Για να εμφανιστούν οι Κουκκίδες ειδοποίησης, ενεργοποιήστε τις κουκκίδες εφαρμογής για την εφαρμογή <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Αλλαγή ρυθμίσεων"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Εμφάνιση κουκκίδων ειδοποιήσεων"</string>
-    <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"Προσθ. εικονιδίων εφαρμ. σε αρχική οθόνη"</string>
+    <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Προσθήκη εικονιδίου στην Αρχική οθόνη"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Για νέες εφαρμογές"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Άγνωστο"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Κατάργηση"</string>
@@ -130,18 +128,15 @@
     <string name="action_deep_shortcut" msgid="2864038805849372848">"Συντομεύσεις"</string>
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"Συντομεύσεις και ειδοποιήσεις"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Παράβλεψη"</string>
-    <string name="accessibility_close" msgid="2277148124685870734">"Κλείσιμο"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Η ειδοποίηση παραβλέφθηκε"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Προσωπικές"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Εργασίας"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Προφίλ εργασίας"</string>
-    <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"Τα προσωπικά δεδομένα βρίσκονται σε ξεχωριστή θέση και δεν είναι ορατά από τις εφαρμογές εργασίας"</string>
-    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"Οι εφαρμογές εργασίας και τα δεδομένα τους είναι ορατά στον διαχειριστή IT"</string>
-    <string name="work_profile_edu_next" msgid="8783418929296503629">"Επόμενο"</string>
-    <string name="work_profile_edu_accept" msgid="6069788082535149071">"Το κατάλαβα"</string>
-    <string name="work_apps_paused_title" msgid="2389865654362803723">"Το προφίλ εργασίας έχει τεθεί σε παύση"</string>
-    <string name="work_apps_paused_body" msgid="2197210494568696054">"Οι εφαρμογές εργασίας δεν μπορούν να σας στέλνουν ειδοποιήσεις, να χρησιμοποιούν την μπαταρία ή να έχουν πρόσβαση στην τοποθεσία σας."</string>
-    <string name="work_apps_paused_content_description" msgid="7553586952985486433">"Το προφίλ εργασίας έχει τεθεί σε παύση. Οι εφαρμογές εργασιών δεν μπορούν να σας στέλνουν ειδοποιήσεις, να χρησιμοποιούν την μπαταρία ή να έχουν πρόσβαση στην τοποθεσία σας."</string>
-    <string name="work_switch_tip" msgid="808075064383839144">"Παύση εφαρμογών εργασίας και ειδοποιήσεων"</string>
+    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Βρείτε όλες τις εφαρμογές εργασίας εδώ"</string>
+    <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"Κάθε εφαρμογή εργασίας φέρει ένα σήμα και διατηρείται ασφαλής από τον οργανισμό σας. Μετακινήστε τις εφαρμογές εργασίας στην Αρχική οθόνη, για να έχετε πιο εύκολη πρόσβαση."</string>
+    <string name="work_mode_on_label" msgid="4781128097185272916">"Διαχειριζόμενο από τον οργανισμό σας"</string>
+    <string name="work_mode_off_label" msgid="3194894777601421047">"Οι ειδοποιήσεις και οι εφαρμογές είναι απενεργοποιημένες"</string>
+    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"Κλείσιμο"</string>
+    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"Κλειστή"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Αποτυχία: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

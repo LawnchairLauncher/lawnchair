@@ -202,7 +202,8 @@ abstract class TutorialController implements BackGestureAttemptCallback,
     private boolean isComplete() {
         return mTutorialType == TutorialType.BACK_NAVIGATION_COMPLETE
                 || mTutorialType == TutorialType.HOME_NAVIGATION_COMPLETE
-                || mTutorialType == TutorialType.OVERVIEW_NAVIGATION_COMPLETE;
+                || mTutorialType == TutorialType.OVERVIEW_NAVIGATION_COMPLETE
+                || mTutorialType == TutorialType.ASSISTANT_COMPLETE;
     }
 
     /** Denotes the type of the tutorial. */
@@ -213,6 +214,8 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         HOME_NAVIGATION,
         HOME_NAVIGATION_COMPLETE,
         OVERVIEW_NAVIGATION,
-        OVERVIEW_NAVIGATION_COMPLETE
+        OVERVIEW_NAVIGATION_COMPLETE,
+        ASSISTANT,
+        ASSISTANT_COMPLETE
     }
 }

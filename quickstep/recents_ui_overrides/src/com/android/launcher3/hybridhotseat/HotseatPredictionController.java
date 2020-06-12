@@ -326,7 +326,7 @@ public class HotseatPredictionController implements DragController.DragListener,
     }
     private void setPredictedApps(List<AppTarget> appTargets) {
         mComponentKeyMappers.clear();
-        if (appTargets.isEmpty() && mRestoreHelper.shouldRestoreToBackup()) {
+        if (appTargets.isEmpty()) {
             mRestoreHelper.restoreBackup();
         }
         StringBuilder predictionLog = new StringBuilder("predictedApps: [\n");
