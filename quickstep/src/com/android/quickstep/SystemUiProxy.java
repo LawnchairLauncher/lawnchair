@@ -380,4 +380,15 @@ public class SystemUiProxy implements ISystemUiProxy {
             }
         }
     }
+
+    @Override
+    public void expandNotificationPanel() {
+        if (mSystemUiProxy != null) {
+            try {
+                mSystemUiProxy.expandNotificationPanel();
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call expandNotificationPanel", e);
+            }
+        }
+    }
 }
