@@ -194,6 +194,7 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
         mLauncherRotation = launcherRotation;
         mDisplayRotation = displayRotation;
         mTouchRotation = touchRotation;
+        mPreviousRotation = touchRotation;
 
         if (mLauncherRotation == mTouchRotation || canLauncherRotate()) {
             mOrientationHandler = PagedOrientationHandler.HOME_ROTATED;

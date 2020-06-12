@@ -300,9 +300,6 @@ public abstract class BaseSwipeUpHandler<T extends StatefulActivity<?>, Q extend
             if (TestProtocol.sDebugTracing) {
                 Log.d(TestProtocol.PAUSE_NOT_DETECTED, "BaseSwipeUpHandler.2");
             }
-            ((RecentsView) createdActivity.getOverviewPanel())
-                    .setLayoutRotation(mDeviceState.getCurrentActiveRotation(),
-                            mDeviceState.getDisplayRotation());
             initTransitionEndpoints(InvariantDeviceProfile.INSTANCE.get(mContext)
                 .getDeviceProfile(mContext));
         }

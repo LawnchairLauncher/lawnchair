@@ -96,7 +96,8 @@ public abstract class BaseLoaderResults {
     public void bindAllApps() {
         // shallow copy
         AppInfo[] apps = mBgAllAppsList.copyData();
-        executeCallbacksTask(c -> c.bindAllApplications(apps), mUiExecutor);
+        int flags = mBgAllAppsList.getFlags();
+        executeCallbacksTask(c -> c.bindAllApplications(apps, flags), mUiExecutor);
     }
 
     public abstract void bindWidgets();
