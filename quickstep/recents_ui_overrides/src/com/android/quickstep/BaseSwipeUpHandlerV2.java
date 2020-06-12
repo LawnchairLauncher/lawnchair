@@ -131,7 +131,7 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
 
     private static final int STATE_CAPTURE_SCREENSHOT =
             getFlagForIndex(10, "STATE_CAPTURE_SCREENSHOT");
-    private static final int STATE_SCREENSHOT_CAPTURED =
+    protected static final int STATE_SCREENSHOT_CAPTURED =
             getFlagForIndex(11, "STATE_SCREENSHOT_CAPTURED");
     private static final int STATE_SCREENSHOT_VIEW_SHOWN =
             getFlagForIndex(12, "STATE_SCREENSHOT_VIEW_SHOWN");
@@ -1192,7 +1192,7 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
         mActivity.clearForceInvisibleFlag(INVISIBLE_BY_STATE_HANDLER);
     }
 
-    private void switchToScreenshot() {
+    protected void switchToScreenshot() {
         final int runningTaskId = mGestureState.getRunningTaskId();
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             if (mRecentsAnimationController != null) {
