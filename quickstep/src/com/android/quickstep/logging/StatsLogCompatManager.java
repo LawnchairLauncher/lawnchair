@@ -98,6 +98,22 @@ public class StatsLogCompatManager extends StatsLogManager {
     }
 
     /**
+     * Logs an event.
+     *
+     * @param event an enum implementing EventEnum interface.
+     * @param atomItemInfo item typically containing app or task launch related information.
+     */
+    @Override
+    public void log(EventEnum event, @Nullable LauncherAtom.ItemInfo atomItemInfo, int srcState,
+            int dstState) {
+        write(event, DEFAULT_INSTANCE_ID,
+                atomItemInfo == null ? LauncherAtom.ItemInfo.getDefaultInstance() : atomItemInfo,
+                null,
+                srcState,
+                dstState);
+    }
+
+    /**
      * Logs an event and accompanying {@link InstanceId} and {@link LauncherAtom.ItemInfo}.
      */
     @Override
@@ -171,7 +187,13 @@ public class StatsLogCompatManager extends StatsLogManager {
                         )).build();
             }
         }
+        write(event, instanceId, atomInfo, info, srcState, dstState);
+    }
 
+    private static void write(EventEnum event, InstanceId instanceId,
+            LauncherAtom.ItemInfo atomInfo,
+            @Nullable ItemInfo info,
+            int srcState, int dstState) {
         if (IS_VERBOSE) {
             String name = (event instanceof Enum) ? ((Enum) event).name() :
                     event.getId() + "";
