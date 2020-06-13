@@ -106,18 +106,16 @@ public class OneHandedModeInputConsumer extends DelegateInputConsumer {
                 } else {
                     float distance = (float) Math.hypot(mLastPos.x - mStartDragPos.x,
                             mLastPos.y - mStartDragPos.y);
-                    if (distance > mDragDistThreshold && mPassedSlop
-                            && mDeviceState.isOneHandedModeActive()) {
-                        SystemUiProxy.INSTANCE.get(mContext).stopOneHandedMode();
+                    if (distance > mDragDistThreshold && mPassedSlop) {
+                        onStopGestureDetected();
                     }
                 }
                 break;
             }
             case ACTION_UP:
             case ACTION_CANCEL: {
-                if (mLastPos.y >= mStartDragPos.y && mPassedSlop
-                        && !mDeviceState.isOneHandedModeActive()) {
-                    SystemUiProxy.INSTANCE.get(mContext).startOneHandedMode();
+                if (mLastPos.y >= mStartDragPos.y && mPassedSlop) {
+                    onStartGestureDetected();
                 }
 
                 mPassedSlop = false;
@@ -129,6 +127,28 @@ public class OneHandedModeInputConsumer extends DelegateInputConsumer {
         if (mState != STATE_ACTIVE) {
             mDelegate.onMotionEvent(ev);
         }
+    }
+
+    private void onStartGestureDetected() {
+        if (mDeviceState.isOneHandedModeActive()) {
+            return;
+        }
+
+        if (mDeviceState.isOneHandedModeEnabled()) {
+            SystemUiProxy.INSTANCE.get(mContext).startOneHandedMode();
+            return;
+        }
+
+        // Hook one-handed gesture to expand notification panel by default
+        SystemUiProxy.INSTANCE.get(mContext).expandNotificationPanel();
+    }
+
+    private void onStopGestureDetected() {
+        if (!mDeviceState.isOneHandedModeEnabled() || !mDeviceState.isOneHandedModeActive()) {
+            return;
+        }
+
+        SystemUiProxy.INSTANCE.get(mContext).stopOneHandedMode();
     }
 
     private boolean isValidStartAngle(float deltaX, float deltaY) {
