@@ -111,6 +111,16 @@ public class FallbackSwipeHandler extends
     }
 
     @Override
+    protected void switchToScreenshot() {
+        if (mRunningOverHome) {
+            // When the current task is home, then we don't need to capture anything
+            mStateCallback.setStateOnUiThread(STATE_SCREENSHOT_CAPTURED);
+        } else {
+            super.switchToScreenshot();
+        }
+    }
+
+    @Override
     protected void notifyGestureAnimationStartToRecents() {
         if (mRunningOverHome) {
             mRecentsView.onGestureAnimationStartOnHome(mGestureState.getRunningTask());
