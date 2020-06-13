@@ -179,6 +179,12 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
         }
 
         /**
+         * Called when the system wants to reset the modal visuals.
+         */
+        public void resetModalVisuals() {
+        }
+
+        /**
          * Gets the modal state system shortcut.
          */
         public SystemShortcut getModalStateSystemShortcut(WorkspaceItemInfo itemInfo) {
