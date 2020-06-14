@@ -21,6 +21,7 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
+import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.logging.StatsLogUtils.LogStateProvider;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.ResourceBasedOverride;
@@ -214,6 +215,16 @@ public class StatsLogManager implements ResourceBasedOverride {
      * @param itemInfo item typically containing app or task launch related information.
      */
     public void log(EventEnum event, @Nullable ItemInfo itemInfo) {
+    }
+
+    /**
+     * Logs an event and accompanying {@link LauncherState}s.
+     *
+     * @param event an enum implementing EventEnum interface.
+     * @param launcherAtomItemInfo item typically containing app or task launch related information.
+     */
+    public void log(EventEnum event, @Nullable LauncherAtom.ItemInfo launcherAtomItemInfo,
+            int srcState, int dstState) {
     }
 
     /**
