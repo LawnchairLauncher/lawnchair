@@ -975,6 +975,9 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     }
 
     void updateCurrentFullscreenParams(PreviewPositionHelper previewPositionHelper) {
+        if (getRecentsView() == null) {
+            return;
+        }
         mCurrentFullscreenParams.setProgress(
                 mFullscreenProgress,
                 getRecentsView().getScaleX(),
