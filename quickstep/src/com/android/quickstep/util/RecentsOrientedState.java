@@ -123,7 +123,6 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
     private final ContentResolver mContentResolver;
     private final SharedPreferences mSharedPrefs;
     private final OrientationEventListener mOrientationListener;
-    private final BaseActivityInterface mSizeStrategy;
 
     private final Matrix mTmpMatrix = new Matrix();
 
@@ -140,7 +139,6 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
         mContext = context;
         mContentResolver = context.getContentResolver();
         mSharedPrefs = Utilities.getPrefs(context);
-        mSizeStrategy = sizeStrategy;
         mOrientationListener = new OrientationEventListener(context) {
             @Override
             public void onOrientationChanged(int degrees) {
