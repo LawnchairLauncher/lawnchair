@@ -487,7 +487,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             return;
         }
         mModel.getIconCache().clear();
-        reset();
+        unloadVisibleTaskData();
+        loadVisibleTaskData();
     }
 
     public void init(OverviewActionsView actionsView) {
