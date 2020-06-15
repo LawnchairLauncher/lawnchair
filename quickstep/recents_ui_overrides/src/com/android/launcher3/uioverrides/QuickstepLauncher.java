@@ -29,7 +29,6 @@ import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
 
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
@@ -90,8 +89,8 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
             SystemUiProxy.INSTANCE.get(context).setShelfHeight(arg1 != 0, arg2);
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void setupViews() {
+        super.setupViews();
         if (FeatureFlags.ENABLE_HYBRID_HOTSEAT.get()) {
             mHotseatPredictionController = new HotseatPredictionController(this);
             mHotseatPredictionController.createPredictor();
