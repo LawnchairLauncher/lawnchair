@@ -2111,6 +2111,12 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         return mClearAllButton;
     }
 
+    @Override
+    protected boolean onOverscroll(int amount) {
+        // overscroll should only be accepted on -1 direction (for clear all button)
+        if ((amount > 0 && !mIsRtl) || (amount < 0 && mIsRtl)) return false;
+        return super.onOverscroll(amount);
+    }
 
     /**
      * @return How many pixels the running task is offset on the currently laid out dominant axis.
