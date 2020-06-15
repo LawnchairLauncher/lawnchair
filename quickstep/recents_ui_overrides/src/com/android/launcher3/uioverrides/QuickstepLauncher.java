@@ -42,10 +42,12 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.AnimatorPlaybackController;
+import com.android.launcher3.appprediction.PredictionUiStateManager;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.hybridhotseat.HotseatEduController;
 import com.android.launcher3.hybridhotseat.HotseatPredictionController;
+import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
@@ -110,6 +112,15 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
                 mHotseatPredictionController.showEdu();
             });
         }
+    }
+
+    @Override
+    protected void logAppLaunch(ItemInfo info, InstanceId instanceId) {
+        super.logAppLaunch(info, instanceId);
+        if (mHotseatPredictionController != null) {
+            mHotseatPredictionController.logLaunchedAppRankingInfo(info, instanceId);
+        }
+        PredictionUiStateManager.INSTANCE.get(this).logLaunchedAppRankingInfo(info, instanceId);
     }
 
     @Override

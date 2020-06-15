@@ -45,6 +45,13 @@ public class InstanceIdSequence {
     }
 
     /**
+     * Constructs a sequence with identifiers [1, InstanceId.INSTANCE_ID_MAX].
+     */
+    public InstanceIdSequence() {
+        this(InstanceId.INSTANCE_ID_MAX);
+    }
+
+    /**
      * Gets the next instance from the sequence.  Safe for concurrent use.
      * @return new InstanceId
      */
