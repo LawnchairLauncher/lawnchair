@@ -24,6 +24,7 @@ import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
 import static com.android.launcher3.states.StateAnimationConfig.PLAY_ATOMIC_OVERVIEW_PEEK;
 import static com.android.launcher3.util.VibratorWrapper.OVERVIEW_HAPTIC;
 
+import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.graphics.PointF;
@@ -59,6 +60,8 @@ public class NoButtonNavbarToOverviewTouchController extends FlingAndHoldTouchCo
 
     private boolean mDidTouchStartInNavBar;
     private boolean mReachedOverview;
+    private boolean mIsOverviewRehidden;
+    private boolean mIsHomeStaggeredAnimFinished;
     // The last recorded displacement before we reached overview.
     private PointF mStartDisplacement = new PointF();
 
@@ -144,6 +147,13 @@ public class NoButtonNavbarToOverviewTouchController extends FlingAndHoldTouchCo
         }
     }
 
+    // Used if flinging back to home after reaching overview
+    private void maybeSwipeInteractionToHomeComplete() {
+        if (mIsHomeStaggeredAnimFinished && mIsOverviewRehidden) {
+            onSwipeInteractionCompleted(NORMAL, Touch.FLING);
+        }
+    }
+
     @Override
     protected boolean handlingOverviewAnim() {
         return mDidTouchStartInNavBar && super.handlingOverviewAnim();
@@ -180,9 +190,17 @@ public class NoButtonNavbarToOverviewTouchController extends FlingAndHoldTouchCo
                 stateManager.goToState(NORMAL, true,
                         () -> onSwipeInteractionCompleted(NORMAL, Touch.FLING));
             } else {
+                mIsHomeStaggeredAnimFinished = mIsOverviewRehidden = false;
+
                 StaggeredWorkspaceAnim staggeredWorkspaceAnim = new StaggeredWorkspaceAnim(
                         mLauncher, velocity, false /* animateOverviewScrim */);
-                staggeredWorkspaceAnim.start();
+                staggeredWorkspaceAnim.addAnimatorListener(new AnimationSuccessListener() {
+                    @Override
+                    public void onAnimationSuccess(Animator animator) {
+                        mIsHomeStaggeredAnimFinished = true;
+                        maybeSwipeInteractionToHomeComplete();
+                    }
+                }).start();
 
                 // StaggeredWorkspaceAnim doesn't animate overview, so we handle it here.
                 stateManager.cancelAnimation();
@@ -191,8 +209,10 @@ public class NoButtonNavbarToOverviewTouchController extends FlingAndHoldTouchCo
                 config.animFlags = PLAY_ATOMIC_OVERVIEW_PEEK;
                 AnimatorSet anim = stateManager.createAtomicAnimation(
                         stateManager.getState(), NORMAL, config);
-                anim.addListener(AnimationSuccessListener.forRunnable(
-                        () -> onSwipeInteractionCompleted(NORMAL, Touch.SWIPE)));
+                anim.addListener(AnimationSuccessListener.forRunnable(() -> {
+                    mIsOverviewRehidden = true;
+                    maybeSwipeInteractionToHomeComplete();
+                }));
                 anim.start();
             }
         }
