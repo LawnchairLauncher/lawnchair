@@ -21,8 +21,9 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
-import com.android.launcher3.logger.LauncherAtom.ItemInfo;
+import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.logging.StatsLogUtils.LogStateProvider;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.ResourceBasedOverride;
 
 /**
@@ -127,9 +128,29 @@ public class StatsLogManager implements ResourceBasedOverride {
         LAUNCHER_SYSTEM_SHORTCUT_PIN_TAP(522),
 
         @UiEvent(doc = "User is shown All Apps education view.")
-        LAUNCHER_ALL_APPS_EDU_SHOWN(523);
-        // ADD MORE
+        LAUNCHER_ALL_APPS_EDU_SHOWN(523),
 
+        @UiEvent(doc = "User opened a folder.")
+        LAUNCHER_FOLDER_OPEN(551),
+
+        @UiEvent(doc = "Hotseat education half sheet seen")
+        LAUNCHER_HOTSEAT_EDU_SEEN(479),
+
+        @UiEvent(doc = "Hotseat migration accepted")
+        LAUNCHER_HOTSEAT_EDU_ACCEPT(480),
+
+        @UiEvent(doc = "Hotseat migration denied")
+        LAUNCHER_HOTSEAT_EDU_DENY(481),
+
+        @UiEvent(doc = "Hotseat education tip shown")
+        LAUNCHER_HOTSEAT_EDU_ONLY_TIP(482),
+
+        @UiEvent(doc = "App launch ranking logged for all apps predictions")
+        LAUNCHER_ALL_APPS_RANKED(552),
+
+        @UiEvent(doc = "App launch ranking logged for hotseat predictions)")
+        LAUNCHER_HOTSEAT_RANKED(553);
+        // ADD MORE
         private final int mId;
 
         LauncherEvent(int id) {
@@ -177,25 +198,56 @@ public class StatsLogManager implements ResourceBasedOverride {
     }
 
     /**
-     * Logs a {@link EventEnum}.
+     * Logs an event.
+     *
+     * @param event an enum implementing EventEnum interface.
      */
     public void log(EventEnum event) {
     }
 
     /**
-     * Logs an event and accompanying {@link InstanceId}.
+     * Logs an event.
+     *
+     * @param event an enum implementing EventEnum interface.
+     * @param instanceId an identifier obtained from an InstanceIdSequence.
      */
     public void log(EventEnum event, InstanceId instanceId) {
     }
 
     /**
-     * Logs an event and accompanying {@link ItemInfo}.
+     * Logs an event.
+     *
+     * @param event an enum implementing EventEnum interface.
+     * @param itemInfo item typically containing app or task launch related information.
      */
     public void log(EventEnum event, @Nullable ItemInfo itemInfo) {
     }
 
     /**
-     * Logs an event and accompanying {@link InstanceId} and {@link ItemInfo}.
+     * Logs an event.
+     *
+     * @param event an enum implementing EventEnum interface.
+     * @param atomInfo item typically containing app or task launch related information.
+     */
+    public void log(EventEnum event, InstanceId instanceId, LauncherAtom.ItemInfo atomInfo) {
+    }
+
+    /**
+     * Logs an event and accompanying {@link LauncherState}s.
+     *
+     * @param event an enum implementing EventEnum interface.
+     * @param launcherAtomItemInfo item typically containing app or task launch related information.
+     */
+    public void log(EventEnum event, @Nullable LauncherAtom.ItemInfo launcherAtomItemInfo,
+            int srcState, int dstState) {
+    }
+
+    /**
+     * Logs an event.
+     *
+     * @param event an enum implementing EventEnum interface.
+     * @param instanceId an identifier obtained from an InstanceIdSequence.
+     * @param itemInfo item typically containing app or task launch related information.
      */
     public void log(EventEnum event, InstanceId instanceId, @Nullable ItemInfo itemInfo) {
     }
@@ -204,7 +256,7 @@ public class StatsLogManager implements ResourceBasedOverride {
      * Log an event with ranked-choice information along with package. Does nothing if event.getId()
      * <= 0.
      *
-     * @param rankingEvent an enum implementing UiEventEnum interface.
+     * @param rankingEvent an enum implementing EventEnum interface.
      * @param instanceId An identifier obtained from an InstanceIdSequence.
      * @param packageName the package name of the relevant app, if known (null otherwise).
      * @param position the position picked.

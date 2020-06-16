@@ -418,10 +418,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         mStatsLogManager.log(
                 LauncherEvent.LAUNCHER_ITEM_DRAG_STARTED,
                 dragObject.logInstanceId,
-                dragObject.dragSource instanceof Folder
-                        ? dragObject.originalDragInfo
-                                .buildProto(((Folder) dragObject.dragSource).mInfo)
-                        : dragObject.originalDragInfo.buildProto()
+                dragObject.originalDragInfo
         );
     }
 
@@ -1652,7 +1649,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             mStatsLogManager.log(
                     LauncherEvent.LAUNCHER_ITEM_DROP_FOLDER_CREATED,
                     d.logInstanceId,
-                    destInfo.buildProto(null));
+                    destInfo);
             FolderIcon fi = mLauncher.addFolder(target, container, screenId, targetCell[0],
                     targetCell[1]);
             destInfo.cellX = -1;
@@ -1693,7 +1690,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                 mStatsLogManager.log(
                         LauncherEvent.LAUNCHER_ITEM_DROP_COMPLETED,
                         d.logInstanceId,
-                        fi.mInfo.buildProto(null));
+                        fi.mInfo);
                 fi.onDrop(d, false /* itemReturnedOnFailedDrop */);
 
                 // if the drag started here, we need to remove it from the workspace
@@ -1899,7 +1896,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             mStatsLogManager.log(
                     LauncherEvent.LAUNCHER_ITEM_DROP_COMPLETED,
                     d.logInstanceId,
-                    d.dragInfo.buildProto(null));
+                    d.dragInfo);
         }
 
         if (d.stateAnnouncer != null && !droppedOnOriginalCell) {
@@ -2440,7 +2437,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                     mStatsLogManager.log(
                             LauncherEvent.LAUNCHER_ITEM_DROP_COMPLETED,
                             d.logInstanceId,
-                            d.dragInfo.buildProto(null));
+                            d.dragInfo);
                 }
             };
             boolean isWidget = pendingInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET
@@ -2532,7 +2529,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             mStatsLogManager.log(
                     LauncherEvent.LAUNCHER_ITEM_DROP_COMPLETED,
                     d.logInstanceId,
-                    d.dragInfo.buildProto(null));
+                    d.dragInfo);
         }
 
     }

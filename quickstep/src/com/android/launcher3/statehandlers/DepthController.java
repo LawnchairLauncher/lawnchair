@@ -32,6 +32,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.statemanager.StateManager.StateHandler;
 import com.android.launcher3.states.StateAnimationConfig;
+import com.android.systemui.shared.system.BlurUtils;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.SurfaceControlCompat;
 import com.android.systemui.shared.system.TransactionCompat;
@@ -110,6 +111,10 @@ public class DepthController implements StateHandler<LauncherState> {
     }
 
     private void ensureDependencies() {
+        if (mWallpaperManager == null) {
+            mMaxBlurRadius = mLauncher.getResources().getInteger(R.integer.max_depth_blur_radius);
+            mWallpaperManager = new WallpaperManagerCompat(mLauncher);
+        }
         if (mLauncher.getRootView() != null && mOnAttachListener == null) {
             mOnAttachListener = new View.OnAttachStateChangeListener() {
                 @Override
@@ -127,11 +132,6 @@ public class DepthController implements StateHandler<LauncherState> {
             };
             mLauncher.getRootView().addOnAttachStateChangeListener(mOnAttachListener);
         }
-        if (mWallpaperManager != null) {
-            return;
-        }
-        mMaxBlurRadius = mLauncher.getResources().getInteger(R.integer.max_depth_blur_radius);
-        mWallpaperManager = new WallpaperManagerCompat(mLauncher);
     }
 
     /**
@@ -205,7 +205,8 @@ public class DepthController implements StateHandler<LauncherState> {
             return;
         }
 
-        if (mSurface == null || !mSurface.isValid()) {
+        boolean supportsBlur = BlurUtils.supportsBlursOnWindows();
+        if (supportsBlur && (mSurface == null || !mSurface.isValid())) {
             return;
         }
         mDepth = depthF;
@@ -214,17 +215,20 @@ public class DepthController implements StateHandler<LauncherState> {
         if (windowToken != null) {
             mWallpaperManager.setWallpaperZoomOut(windowToken, mDepth);
         }
-        final int blur;
-        if (mLauncher.isInState(LauncherState.ALL_APPS) && mDepth == 1) {
-            // All apps has a solid background. We don't need to draw blurs after it's fully
-            // visible. This will take us out of GPU composition, saving battery and increasing
-            // performance.
-            blur = 0;
-        } else {
-            blur = (int) (mDepth * mMaxBlurRadius);
+
+        if (supportsBlur) {
+            final int blur;
+            if (mLauncher.isInState(LauncherState.ALL_APPS) && mDepth == 1) {
+                // All apps has a solid background. We don't need to draw blurs after it's fully
+                // visible. This will take us out of GPU composition, saving battery and increasing
+                // performance.
+                blur = 0;
+            } else {
+                blur = (int) (mDepth * mMaxBlurRadius);
+            }
+            new TransactionCompat()
+                    .setBackgroundBlurRadius(mSurface, blur)
+                    .apply();
         }
-        new TransactionCompat()
-                .setBackgroundBlurRadius(mSurface, blur)
-                .apply();
     }
 }

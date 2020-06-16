@@ -119,9 +119,7 @@ public abstract class SystemShortcut<T extends BaseDraggingActivity> extends Ite
             widgetsBottomSheet.populateAndShow(mItemInfo);
             mTarget.getUserEventDispatcher().logActionOnControl(Action.Touch.TAP,
                     ControlType.WIDGETS_BUTTON, view);
-            // TODO(thiruram): Fix missing container info when item is inside folder.
-            mTarget.getStatsLogManager().log(LAUNCHER_SYSTEM_SHORTCUT_WIDGETS_TAP,
-                    mItemInfo.buildProto());
+            mTarget.getStatsLogManager().log(LAUNCHER_SYSTEM_SHORTCUT_WIDGETS_TAP, mItemInfo);
         }
     }
 
@@ -142,9 +140,8 @@ public abstract class SystemShortcut<T extends BaseDraggingActivity> extends Ite
                     mItemInfo, sourceBounds, ActivityOptions.makeBasic().toBundle());
             mTarget.getUserEventDispatcher().logActionOnControl(Action.Touch.TAP,
                     ControlType.APPINFO_TARGET, view);
-            // TODO(thiruram): Fix missing container info when item is inside folder.
             mTarget.getStatsLogManager()
-                    .log(LAUNCHER_SYSTEM_SHORTCUT_APP_INFO_TAP, mItemInfo.buildProto());
+                    .log(LAUNCHER_SYSTEM_SHORTCUT_APP_INFO_TAP, mItemInfo);
         }
     }
 

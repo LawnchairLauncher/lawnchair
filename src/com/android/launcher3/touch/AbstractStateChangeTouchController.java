@@ -310,6 +310,9 @@ public abstract class AbstractStateChangeTouchController
     }
 
     protected void updateProgress(float fraction) {
+        if (mCurrentAnimation == null) {
+            return;
+        }
         mCurrentAnimation.setPlayFraction(fraction);
         if (mAtomicComponentsController != null) {
             // Make sure we don't divide by 0, and have at least a small runway.
