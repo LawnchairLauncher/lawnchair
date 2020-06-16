@@ -90,13 +90,23 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
                 }
             };
 
-    // Touch is being dispatched through the normal view dispatch system
-    private static final int TOUCH_DISPATCHING_VIEW = 1 << 0;
+    // Touch coming from normal view system is being dispatched.
+    private static final int TOUCH_DISPATCHING_FROM_VIEW = 1 << 0;
     // Touch is being dispatched through the normal view dispatch system, and started at the
-    // system gesture region
-    private static final int TOUCH_DISPATCHING_GESTURE = 1 << 1;
-    // Touch is being dispatched through a proxy from InputMonitor
-    private static final int TOUCH_DISPATCHING_PROXY = 1 << 2;
+    // system gesture region. In this case we prevent internal gesture handling and only allow
+    // normal view event handling.
+    private static final int TOUCH_DISPATCHING_FROM_VIEW_GESTURE_REGION = 1 << 1;
+    // Touch coming from InputMonitor proxy is being dispatched 'only to gestures'. Note that both
+    // this and view-system can be active at the same time where view-system would go to the views,
+    // and this would go to the gestures.
+    // Note that this is not set when events are coming from proxy, but going through full dispatch
+    // process (both views and gestures) to allow view-system to easily take over in case it
+    // comes later.
+    private static final int TOUCH_DISPATCHING_FROM_PROXY = 1 << 2;
+    // ACTION_DOWN has been dispatched to child views and ACTION_UP or ACTION_CANCEL is pending.
+    // Note that the event source can either be view-dispatching or proxy-dispatching based on if
+    // TOUCH_DISPATCHING_VIEW is present or not.
+    private static final int TOUCH_DISPATCHING_TO_VIEW_IN_PROGRESS = 1 << 3;
 
     protected final float[] mTmpXY = new float[2];
     protected final float[] mTmpRectPoints = new float[4];
@@ -204,7 +214,8 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
 
     protected boolean findActiveController(MotionEvent ev) {
         mActiveController = null;
-        if ((mTouchDispatchState & (TOUCH_DISPATCHING_GESTURE | TOUCH_DISPATCHING_PROXY)) == 0) {
+        if ((mTouchDispatchState & (TOUCH_DISPATCHING_FROM_VIEW_GESTURE_REGION
+                | TOUCH_DISPATCHING_FROM_PROXY)) == 0) {
             // Only look for controllers if we are not dispatching from gesture area and proxy is
             // not active
             mActiveController = findControllerToHandleTouch(ev);
@@ -283,19 +294,28 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
     public boolean dispatchTouchEvent(MotionEvent ev) {
         switch (ev.getAction()) {
             case ACTION_DOWN: {
-                mTouchDispatchState |= TOUCH_DISPATCHING_VIEW;
+                if ((mTouchDispatchState & TOUCH_DISPATCHING_TO_VIEW_IN_PROGRESS) != 0) {
+                    // Cancel the previous touch
+                    int action = ev.getAction();
+                    ev.setAction(ACTION_CANCEL);
+                    super.dispatchTouchEvent(ev);
+                    ev.setAction(action);
+                }
+                mTouchDispatchState |= TOUCH_DISPATCHING_FROM_VIEW
+                        | TOUCH_DISPATCHING_TO_VIEW_IN_PROGRESS;
 
                 if (isEventInLauncher(ev)) {
-                    mTouchDispatchState &= ~TOUCH_DISPATCHING_GESTURE;
+                    mTouchDispatchState &= ~TOUCH_DISPATCHING_FROM_VIEW_GESTURE_REGION;
                 } else {
-                    mTouchDispatchState |= TOUCH_DISPATCHING_GESTURE;
+                    mTouchDispatchState |= TOUCH_DISPATCHING_FROM_VIEW_GESTURE_REGION;
                 }
                 break;
             }
             case ACTION_CANCEL:
             case ACTION_UP:
-                mTouchDispatchState &= ~TOUCH_DISPATCHING_GESTURE;
-                mTouchDispatchState &= ~TOUCH_DISPATCHING_VIEW;
+                mTouchDispatchState &= ~TOUCH_DISPATCHING_FROM_VIEW_GESTURE_REGION;
+                mTouchDispatchState &= ~TOUCH_DISPATCHING_FROM_VIEW;
+                mTouchDispatchState &= ~TOUCH_DISPATCHING_TO_VIEW_IN_PROGRESS;
                 break;
         }
         super.dispatchTouchEvent(ev);
@@ -305,43 +325,53 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
     }
 
     /**
-     * Called before we are about to receive proxy events.
-     *
-     * @return false if we can't handle proxy at this time
-     */
-    public boolean prepareProxyEventStarting() {
-        mProxyTouchController = null;
-        if ((mTouchDispatchState & TOUCH_DISPATCHING_VIEW) != 0 && mActiveController != null) {
-            // We are already dispatching using view system and have an active controller, we can't
-            // handle another controller.
-
-            // This flag was already cleared in proxy ACTION_UP or ACTION_CANCEL. Added here just
-            // to be safe
-            mTouchDispatchState &= ~TOUCH_DISPATCHING_PROXY;
-            return false;
-        }
-
-        mTouchDispatchState |= TOUCH_DISPATCHING_PROXY;
-        return true;
-    }
-
-    /**
      * Proxies the touch events to the gesture handlers
      */
-    public boolean proxyTouchEvent(MotionEvent ev) {
-        boolean handled;
-        if (mProxyTouchController != null) {
-            handled = mProxyTouchController.onControllerTouchEvent(ev);
+    public boolean proxyTouchEvent(MotionEvent ev, boolean allowViewDispatch) {
+        int actionMasked = ev.getActionMasked();
+        boolean isViewDispatching = (mTouchDispatchState & TOUCH_DISPATCHING_FROM_VIEW) != 0;
+
+        // Only do view dispatch if another view-dispatching is not running, or we already started
+        // proxy-dispatching before. Note that view-dispatching can always take over the proxy
+        // dispatching at anytime, but not vice-versa.
+        allowViewDispatch = allowViewDispatch && !isViewDispatching
+                && (actionMasked == ACTION_DOWN
+                    || ((mTouchDispatchState & TOUCH_DISPATCHING_TO_VIEW_IN_PROGRESS) != 0));
+
+        if (allowViewDispatch) {
+            mTouchDispatchState |= TOUCH_DISPATCHING_TO_VIEW_IN_PROGRESS;
+            super.dispatchTouchEvent(ev);
+
+            if (actionMasked == ACTION_UP || actionMasked == ACTION_CANCEL) {
+                mTouchDispatchState &= ~TOUCH_DISPATCHING_TO_VIEW_IN_PROGRESS;
+                mTouchDispatchState &= ~TOUCH_DISPATCHING_FROM_PROXY;
+            }
+            return true;
         } else {
-            mProxyTouchController = findControllerToHandleTouch(ev);
-            handled = mProxyTouchController != null;
+            boolean handled;
+            if (mProxyTouchController != null) {
+                handled = mProxyTouchController.onControllerTouchEvent(ev);
+            } else {
+                if (actionMasked == ACTION_DOWN) {
+                    if (isViewDispatching && mActiveController != null) {
+                        // A controller is already active, we can't initiate our own controller
+                        mTouchDispatchState &= ~TOUCH_DISPATCHING_FROM_PROXY;
+                    } else {
+                        // We will control the handler via proxy
+                        mTouchDispatchState |= TOUCH_DISPATCHING_FROM_PROXY;
+                    }
+                }
+                if ((mTouchDispatchState & TOUCH_DISPATCHING_FROM_PROXY) != 0) {
+                    mProxyTouchController = findControllerToHandleTouch(ev);
+                }
+                handled = mProxyTouchController != null;
+            }
+            if (actionMasked == ACTION_UP || actionMasked == ACTION_CANCEL) {
+                mProxyTouchController = null;
+                mTouchDispatchState &= ~TOUCH_DISPATCHING_FROM_PROXY;
+            }
+            return handled;
         }
-        int action = ev.getAction();
-        if (action == ACTION_UP || action == ACTION_CANCEL) {
-            mProxyTouchController = null;
-            mTouchDispatchState &= ~TOUCH_DISPATCHING_PROXY;
-        }
-        return handled;
     }
 
     /**

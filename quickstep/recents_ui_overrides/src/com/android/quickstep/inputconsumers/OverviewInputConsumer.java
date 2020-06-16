@@ -36,8 +36,6 @@ import com.android.quickstep.util.ActiveGestureLog;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.InputMonitorCompat;
 
-import java.util.function.Predicate;
-
 /**
  * Input consumer for handling touch on the recents/Launcher activity.
  */
@@ -50,8 +48,6 @@ public class OverviewInputConsumer<T extends StatefulActivity<?>>
     private final InputMonitorCompat mInputMonitor;
 
     private final int[] mLocationOnScreen = new int[2];
-    private final boolean mProxyTouch;
-    private final Predicate<MotionEvent> mEventReceiver;
 
     private final boolean mStartingInActivityBounds;
     private boolean mTargetHandledTouch;
@@ -64,15 +60,7 @@ public class OverviewInputConsumer<T extends StatefulActivity<?>>
         mActivityInterface = gestureState.getActivityInterface();
 
         mTarget = activity.getDragLayer();
-        if (startingInActivityBounds) {
-            mEventReceiver = mTarget::dispatchTouchEvent;
-            mProxyTouch = true;
-        } else {
-            // Only proxy touches to controllers if we are starting touch from nav bar.
-            mEventReceiver = mTarget::proxyTouchEvent;
-            mTarget.getLocationOnScreen(mLocationOnScreen);
-            mProxyTouch = mTarget.prepareProxyEventStarting();
-        }
+        mTarget.getLocationOnScreen(mLocationOnScreen);
     }
 
     @Override
@@ -87,10 +75,6 @@ public class OverviewInputConsumer<T extends StatefulActivity<?>>
 
     @Override
     public void onMotionEvent(MotionEvent ev) {
-        if (!mProxyTouch) {
-            return;
-        }
-
         int flags = ev.getEdgeFlags();
         if (!mStartingInActivityBounds) {
             ev.setEdgeFlags(flags | Utilities.EDGE_NAV_BAR);
@@ -99,7 +83,7 @@ public class OverviewInputConsumer<T extends StatefulActivity<?>>
         if (TestProtocol.sDebugTracing) {
             Log.d(TestProtocol.PAUSE_NOT_DETECTED, "OverviewInputConsumer");
         }
-        boolean handled = mEventReceiver.test(ev);
+        boolean handled = mTarget.proxyTouchEvent(ev, mStartingInActivityBounds);
         ev.offsetLocation(mLocationOnScreen[0], mLocationOnScreen[1]);
         ev.setEdgeFlags(flags);
 
