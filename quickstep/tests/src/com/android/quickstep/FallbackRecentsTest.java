@@ -120,6 +120,8 @@ public class FallbackRecentsTest {
                     TestCommandReceiver.callCommand(TestCommandReceiver.DISABLE_TEST_LAUNCHER);
                     UiDevice.getInstance(getInstrumentation()).executeShellCommand(
                             getLauncherCommand(getLauncherInMyProcess()));
+                    // b/143488140
+                    mLauncher.pressHome();
                 }
             }
         };
