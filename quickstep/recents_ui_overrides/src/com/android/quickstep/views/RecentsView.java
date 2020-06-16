@@ -1728,6 +1728,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         setPivotY(mTempPointF.y);
         setTaskModalness(mTaskModalness);
         updatePageOffsets();
+        setImportantForAccessibility(isModal() ? IMPORTANT_FOR_ACCESSIBILITY_NO
+                : IMPORTANT_FOR_ACCESSIBILITY_AUTO);
     }
 
     private void updatePageOffsets() {
