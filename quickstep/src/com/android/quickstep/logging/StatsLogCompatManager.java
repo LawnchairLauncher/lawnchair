@@ -78,7 +78,7 @@ public class StatsLogCompatManager extends StatsLogManager {
      */
     @Override
     public void log(EventEnum event) {
-        log(event, DEFAULT_INSTANCE_ID, null);
+        log(event, DEFAULT_INSTANCE_ID, (ItemInfo) null);
     }
 
     /**
@@ -86,7 +86,7 @@ public class StatsLogCompatManager extends StatsLogManager {
      */
     @Override
     public void log(EventEnum event, InstanceId instanceId) {
-        log(event, instanceId, null);
+        log(event, instanceId, (ItemInfo) null);
     }
 
     /**
@@ -95,6 +95,25 @@ public class StatsLogCompatManager extends StatsLogManager {
     @Override
     public void log(EventEnum event, @Nullable ItemInfo info) {
         log(event, DEFAULT_INSTANCE_ID, info);
+    }
+
+    /**
+     * Logs an event.
+     *
+     * @param event an enum implementing EventEnum interface.
+     * @param atomInfo item typically containing app or task launch related information.
+     */
+    public void log(EventEnum event, InstanceId instanceId, LauncherAtom.ItemInfo atomInfo) {
+        LauncherAppState.getInstance(sContext).getModel().enqueueModelUpdateTask(
+                new BaseModelUpdateTask() {
+                    @Override
+                    public void execute(LauncherAppState app, BgDataModel dataModel,
+                            AllAppsList apps) {
+                        write(event, instanceId, atomInfo, null,
+                                LAUNCHER_UICHANGED__DST_STATE__HOME,
+                                LAUNCHER_UICHANGED__DST_STATE__BACKGROUND);
+                    }
+                });
     }
 
     /**
