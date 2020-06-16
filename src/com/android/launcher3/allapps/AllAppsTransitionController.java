@@ -159,7 +159,9 @@ public class AllAppsTransitionController implements StateHandler<LauncherState>,
             StateAnimationConfig config, PendingAnimation builder) {
         float targetProgress = toState.getVerticalProgress(mLauncher);
         if (Float.compare(mProgress, targetProgress) == 0) {
-            setAlphas(toState, config, builder);
+            if (!config.onlyPlayAtomicComponent()) {
+                setAlphas(toState, config, builder);
+            }
             // Fail fast
             onProgressAnimationEnd();
             return;

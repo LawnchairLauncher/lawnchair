@@ -175,6 +175,11 @@ public class StaggeredWorkspaceAnim {
         return mAnimators;
     }
 
+    public StaggeredWorkspaceAnim addAnimatorListener(Animator.AnimatorListener listener) {
+        mAnimators.addListener(listener);
+        return this;
+    }
+
     /**
      * Starts the animation.
      */
