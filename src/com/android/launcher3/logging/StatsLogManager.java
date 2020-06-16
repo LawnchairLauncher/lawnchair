@@ -143,7 +143,13 @@ public class StatsLogManager implements ResourceBasedOverride {
         LAUNCHER_HOTSEAT_EDU_DENY(481),
 
         @UiEvent(doc = "Hotseat education tip shown")
-        LAUNCHER_HOTSEAT_EDU_ONLY_TIP(482);
+        LAUNCHER_HOTSEAT_EDU_ONLY_TIP(482),
+
+        @UiEvent(doc = "App launch ranking logged for all apps predictions")
+        LAUNCHER_ALL_APPS_RANKED(552),
+
+        @UiEvent(doc = "App launch ranking logged for hotseat predictions)")
+        LAUNCHER_HOTSEAT_RANKED(553);
         // ADD MORE
         private final int mId;
 
@@ -215,6 +221,15 @@ public class StatsLogManager implements ResourceBasedOverride {
      * @param itemInfo item typically containing app or task launch related information.
      */
     public void log(EventEnum event, @Nullable ItemInfo itemInfo) {
+    }
+
+    /**
+     * Logs an event.
+     *
+     * @param event an enum implementing EventEnum interface.
+     * @param atomInfo item typically containing app or task launch related information.
+     */
+    public void log(EventEnum event, InstanceId instanceId, LauncherAtom.ItemInfo atomInfo) {
     }
 
     /**

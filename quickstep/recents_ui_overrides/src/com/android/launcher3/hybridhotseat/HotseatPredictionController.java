@@ -18,6 +18,7 @@ package com.android.launcher3.hybridhotseat;
 import static com.android.launcher3.InvariantDeviceProfile.CHANGE_FLAG_GRID;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.hybridhotseat.HotseatEduController.SETTINGS_ACTION;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOTSEAT_RANKED;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
@@ -29,6 +30,7 @@ import android.app.prediction.AppTarget;
 import android.app.prediction.AppTargetEvent;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.os.Process;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,6 +54,8 @@ import com.android.launcher3.appprediction.DynamicItemCache;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.icons.IconCache;
+import com.android.launcher3.logger.LauncherAtom;
+import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
@@ -185,7 +189,6 @@ public class HotseatPredictionController implements DragController.DragListener,
 
     /**
      * Returns if hotseat client has predictions
-     * @return
      */
     public boolean hasPredictions() {
         return !mComponentKeyMappers.isEmpty();
@@ -358,6 +361,7 @@ public class HotseatPredictionController implements DragController.DragListener,
         updateDependencies();
         bindItems(items, false, null);
     }
+
     private void setPredictedApps(List<AppTarget> appTargets) {
         mComponentKeyMappers.clear();
         if (appTargets.isEmpty()) {
@@ -633,6 +637,48 @@ public class HotseatPredictionController implements DragController.DragListener,
     public void fillInLogContainerData(ItemInfo childInfo, LauncherLogProto.Target child,
             ArrayList<LauncherLogProto.Target> parents) {
         mHotseat.fillInLogContainerData(childInfo, child, parents);
+    }
+
+    /**
+     * Logs rank info based on current list of predicted items
+     */
+    public void logLaunchedAppRankingInfo(@NonNull ItemInfo itemInfo, InstanceId instanceId) {
+        if (Utilities.IS_DEBUG_DEVICE) {
+            final String pkg = itemInfo.getTargetComponent() != null
+                    ? itemInfo.getTargetComponent().getPackageName() : "unknown";
+            HotseatFileLog.INSTANCE.get(mLauncher).log("UserEvent",
+                    "appLaunch: packageName:" + pkg + ",isWorkApp:" + (itemInfo.user != null
+                            && !Process.myUserHandle().equals(itemInfo.user))
+                            + ",launchLocation:" + itemInfo.container);
+        }
+
+        final ComponentKey k = new ComponentKey(itemInfo.getTargetComponent(), itemInfo.user);
+
+        final List<ComponentKeyMapper> predictedApps = new ArrayList<>(mComponentKeyMappers);
+        OptionalInt rank = IntStream.range(0, predictedApps.size())
+                .filter((i) -> k.equals(predictedApps.get(i).getComponentKey()))
+                .findFirst();
+        if (!rank.isPresent()) {
+            return;
+        }
+        LauncherAtom.PredictedHotseatContainer.Builder containerBuilder =
+                LauncherAtom.PredictedHotseatContainer.newBuilder();
+        LauncherAtom.ItemInfo.Builder atomBuilder = LauncherAtom.ItemInfo.newBuilder();
+        int cardinality = 0;
+        for (PredictedAppIcon icon : getPredictedIcons()) {
+            ItemInfo info = (ItemInfo) icon.getTag();
+            cardinality |= 1 << info.screenId;
+        }
+        containerBuilder.setCardinality(cardinality);
+        atomBuilder.setRank(rank.getAsInt());
+        if (itemInfo.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION) {
+            containerBuilder.setIndex(rank.getAsInt());
+        }
+        atomBuilder.setContainerInfo(
+                LauncherAtom.ContainerInfo.newBuilder().setPredictedHotseatContainer(
+                        containerBuilder).build());
+        mLauncher.getStatsLogManager().log(LAUNCHER_HOTSEAT_RANKED, instanceId,
+                atomBuilder.build());
     }
 
     private class PinPrediction extends SystemShortcut<QuickstepLauncher> {
