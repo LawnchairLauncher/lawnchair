@@ -125,11 +125,35 @@ public class ArrowTipView extends AbstractFloatingView {
      * Show Tip with specified string and Y location
      */
     public ArrowTipView show(String text, int top) {
+        return show(text, Gravity.CENTER_HORIZONTAL, 0, top);
+    }
+
+    /**
+     * Show the ArrowTipView (tooltip) center, start, or end aligned.
+     *
+     * @param text The text to be shown in the tooltip.
+     * @param gravity The gravity aligns the tooltip center, start, or end.
+     * @param arrowMarginStart The margin from start to place arrow (ignored if center)
+     * @param top  The Y coordinate of the bottom of tooltip.
+     * @return The tooltip.
+     */
+    public ArrowTipView show(String text, int gravity, int arrowMarginStart, int top) {
         ((TextView) findViewById(R.id.text)).setText(text);
-        mActivity.getDragLayer().addView(this);
+        ViewGroup parent = mActivity.getDragLayer();
+        parent.addView(this);
 
         DragLayer.LayoutParams params = (DragLayer.LayoutParams) getLayoutParams();
-        params.gravity = Gravity.CENTER_HORIZONTAL;
+        params.gravity = gravity;
+        LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) findViewById(
+                R.id.arrow).getLayoutParams();
+        lp.gravity = gravity;
+        if (gravity == Gravity.END) {
+            lp.setMarginEnd(parent.getMeasuredWidth() - arrowMarginStart);
+        } else if (gravity == Gravity.START) {
+            lp.setMarginStart(arrowMarginStart);
+        }
+        requestLayout();
+
         params.leftMargin = mActivity.getDeviceProfile().workspacePadding.left;
         params.rightMargin = mActivity.getDeviceProfile().workspacePadding.right;
         post(() -> setY(top - getHeight()));

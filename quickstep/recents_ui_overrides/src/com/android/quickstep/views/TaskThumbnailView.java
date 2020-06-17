@@ -448,6 +448,16 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
     }
 
     /**
+     * Returns whether the snapshot is real.
+     */
+    public boolean isRealSnapshot() {
+        if (mThumbnailData == null) {
+            return false;
+        }
+        return mThumbnailData.isRealSnapshot;
+    }
+
+    /**
      * Utility class to position the thumbnail in the TaskView
      */
     public static class PreviewPositionHelper {
