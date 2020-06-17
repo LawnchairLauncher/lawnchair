@@ -26,8 +26,8 @@ import static android.view.Surface.ROTATION_90;
 import static com.android.launcher3.logging.LoggerUtils.extractObjectNameAndAddress;
 import static com.android.launcher3.states.RotationHelper.ALLOW_ROTATION_PREFERENCE_KEY;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
-
 import static com.android.quickstep.SysUINavigationMode.Mode.TWO_BUTTONS;
+
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
 import android.content.ContentResolver;
@@ -49,6 +49,7 @@ import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.PagedOrientationHandler;
@@ -197,7 +198,7 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
         mPreviousRotation = touchRotation;
 
         if (mLauncherRotation == mTouchRotation || canLauncherRotate()) {
-            mOrientationHandler = PagedOrientationHandler.HOME_ROTATED;
+            mOrientationHandler = PagedOrientationHandler.PORTRAIT;
             if (DEBUG) {
                 Log.d(TAG, "current RecentsOrientedState: " + this);
             }
@@ -525,5 +526,16 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
                 + " mSystemRotation=" + systemRotationOn
                 + " mFlags=" + mFlags
                 + "]";
+    }
+
+    /**
+     * Returns the device profile based on expected launcher rotation
+     */
+    public DeviceProfile getLauncherDeviceProfile() {
+        InvariantDeviceProfile idp = InvariantDeviceProfile.INSTANCE.get(mContext);
+        // TODO also check the natural orientation is landscape or portrait
+        return  (mLauncherRotation == ROTATION_90 || mLauncherRotation == ROTATION_270)
+                ? idp.landscapeProfile
+                : idp.portraitProfile;
     }
 }

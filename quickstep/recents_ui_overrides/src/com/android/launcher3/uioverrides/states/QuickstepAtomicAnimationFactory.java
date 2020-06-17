@@ -156,6 +156,7 @@ public class QuickstepAtomicAnimationFactory extends
         if (toState == NORMAL && fromState == OVERVIEW) {
             config.setInterpolator(ANIM_WORKSPACE_SCALE, DEACCEL);
             config.setInterpolator(ANIM_WORKSPACE_FADE, ACCEL);
+            config.setInterpolator(ANIM_ALL_APPS_FADE, ACCEL);
             config.setInterpolator(ANIM_OVERVIEW_SCALE, clampToProgress(ACCEL, 0, 0.9f));
             config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X, ACCEL);
             config.setInterpolator(ANIM_OVERVIEW_FADE, DEACCEL_1_7);
@@ -210,6 +211,7 @@ public class QuickstepAtomicAnimationFactory extends
                 }
             }
             config.setInterpolator(ANIM_WORKSPACE_FADE, OVERSHOOT_1_2);
+            config.setInterpolator(ANIM_ALL_APPS_FADE, OVERSHOOT_1_2);
             config.setInterpolator(ANIM_OVERVIEW_SCALE, OVERSHOOT_1_2);
             config.setInterpolator(ANIM_DEPTH, OVERSHOOT_1_2);
             Interpolator translationInterpolator = ENABLE_OVERVIEW_ACTIONS.get()

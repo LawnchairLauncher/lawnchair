@@ -606,6 +606,7 @@ public final class Utilities {
                 outObj[0] = activityInfo;
                 return activityInfo.getFullResIcon(appState.getIconCache());
             }
+            if (info.getIntent() == null || info.getIntent().getPackage() == null) return null;
             List<ShortcutInfo> si = ShortcutKey.fromItemInfo(info)
                     .buildRequest(launcher)
                     .query(ShortcutRequest.ALL);

@@ -23,6 +23,7 @@ import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
+import static com.android.launcher3.util.SystemUiController.UI_STATE_SCRIM_VIEW;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -187,6 +188,7 @@ public class ShelfScrimView extends ScrimView<BaseQuickstepLauncher>
             mShelfTopAtThreshold = mShiftRange * SCRIM_CATCHUP_THRESHOLD + mTopOffset;
         }
         updateColors();
+        updateSysUiColors();
         updateDragHandleAlpha();
         invalidate();
     }
@@ -237,6 +239,18 @@ public class ShelfScrimView extends ScrimView<BaseQuickstepLauncher>
                     Utilities.mapToRange(mProgress, (float) 0, mMidProgress, mMaxScrimAlpha,
                             (float) 0, LINEAR));
             mRemainingScreenColor = setColorAlphaBound(mScrimColor, remainingScrimAlpha);
+        }
+    }
+
+    @Override
+    protected void updateSysUiColors() {
+        // Use a light system UI (dark icons) if all apps is behind at least half of the
+        // status bar.
+        boolean forceChange = mShelfTop <= mLauncher.getDeviceProfile().getInsets().top / 2f;
+        if (forceChange) {
+            mLauncher.getSystemUiController().updateUiState(UI_STATE_SCRIM_VIEW, !mIsScrimDark);
+        } else {
+            mLauncher.getSystemUiController().updateUiState(UI_STATE_SCRIM_VIEW, 0);
         }
     }
 

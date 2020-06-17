@@ -83,15 +83,15 @@ public abstract class SwipeUpAnimationLogic {
         mGestureState = gestureState;
         mTaskViewSimulator = new TaskViewSimulator(context, gestureState.getActivityInterface());
         mTransformParams = transformParams;
+
+        mTaskViewSimulator.setLayoutRotation(
+                mDeviceState.getCurrentActiveRotation(), mDeviceState.getDisplayRotation());
     }
 
     protected void initTransitionEndpoints(DeviceProfile dp) {
         mDp = dp;
 
         mTaskViewSimulator.setDp(dp);
-        mTaskViewSimulator.setLayoutRotation(
-                mDeviceState.getCurrentActiveRotation(),
-                mDeviceState.getDisplayRotation());
         mTransitionDragLength = mGestureState.getActivityInterface().getSwipeUpDestinationAndLength(
                 dp, mContext, TEMP_RECT,
                 mTaskViewSimulator.getOrientationState().getOrientationHandler());

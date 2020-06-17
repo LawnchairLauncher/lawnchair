@@ -47,6 +47,7 @@ public class LauncherLayoutBuilder {
     private static final String ATTR_PACKAGE_NAME = "packageName";
     private static final String ATTR_CLASS_NAME = "className";
     private static final String ATTR_TITLE = "title";
+    private static final String ATTR_TITLE_TEXT = "titleText";
     private static final String ATTR_SCREEN = "screen";
 
     // x and y can be specified as negative integers, in which case -1 represents the
@@ -145,8 +146,17 @@ public class LauncherLayoutBuilder {
         }
 
         public FolderBuilder putFolder(int titleResId) {
-            FolderBuilder folderBuilder = new FolderBuilder();
             items.put(ATTR_TITLE, Integer.toString(titleResId));
+            return putFolder();
+        }
+
+        public FolderBuilder putFolder(String title) {
+            items.put(ATTR_TITLE_TEXT, title);
+            return putFolder();
+        }
+
+        private FolderBuilder putFolder() {
+            FolderBuilder folderBuilder = new FolderBuilder();
             items.put(ATTR_CHILDREN, folderBuilder.mChildren);
             mNodes.add(Pair.create(TAG_FOLDER, items));
             return folderBuilder;
