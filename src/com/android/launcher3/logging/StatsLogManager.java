@@ -181,6 +181,62 @@ public class StatsLogManager implements ResourceBasedOverride {
         }
     }
 
+    /**
+     * Helps to construct and write the log message.
+     */
+    public interface StatsLogger {
+
+        /**
+         * Sets log fields from provided {@link ItemInfo}.
+         */
+        default StatsLogger withItemInfo(ItemInfo itemInfo) {
+            return this;
+        }
+
+
+        /**
+         * Sets {@link InstanceId} of log message.
+         */
+        default StatsLogger withInstanceId(InstanceId instanceId) {
+            return this;
+        }
+
+        /**
+         * Sets rank field of log message.
+         */
+        default StatsLogger withRank(int rank) {
+            return this;
+        }
+
+        /**
+         * Sets source launcher state field of log message.
+         */
+        default StatsLogger withSrcState(int srcState) {
+            return this;
+        }
+
+        /**
+         * Sets destination launcher state field of log message.
+         */
+        default StatsLogger withDstState(int dstState) {
+            return this;
+        }
+
+        /**
+         * Builds the final message and logs it as {@link EventEnum}.
+         */
+        default void log(EventEnum event) {
+        }
+    }
+
+    /**
+     * Returns new logger object.
+     */
+    public StatsLogger logger() {
+        return new StatsLogger() {
+        };
+    }
+
     protected LogStateProvider mStateProvider;
 
     /**
