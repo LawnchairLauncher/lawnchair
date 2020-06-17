@@ -43,7 +43,6 @@ public interface PagedOrientationHandler {
     PagedOrientationHandler PORTRAIT = new PortraitPagedViewHandler();
     PagedOrientationHandler LANDSCAPE = new LandscapePagedViewHandler();
     PagedOrientationHandler SEASCAPE = new SeascapePagedViewHandler();
-    PagedOrientationHandler HOME_ROTATED = new HomeRotatedPageHandler();
 
     interface Int2DAction<T> {
         void call(T target, int x, int y);
@@ -82,7 +81,6 @@ public interface PagedOrientationHandler {
     boolean getRecentsRtlSetting(Resources resources);
     float getDegreesRotated();
     int getRotation();
-    void offsetTaskRect(RectF rect, float value, int delta, int launcherRotation);
     int getPrimaryValue(int x, int y);
     int getSecondaryValue(int x, int y);
     void delegateScrollTo(PagedView pagedView, int secondaryScroll, int primaryScroll);

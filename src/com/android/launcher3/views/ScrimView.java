@@ -27,6 +27,7 @@ import static com.android.launcher3.anim.Interpolators.DEACCEL;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.clampToProgress;
 import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
+import static com.android.launcher3.util.SystemUiController.UI_STATE_SCRIM_VIEW;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -53,6 +54,7 @@ import android.view.accessibility.AccessibilityManager.AccessibilityStateChangeL
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.graphics.ColorUtils;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat;
@@ -76,7 +78,6 @@ import com.android.launcher3.util.Themes;
 import com.android.launcher3.widget.WidgetsFullSheet;
 
 import java.util.List;
-
 
 /**
  * Simple scrim which draws a flat color
@@ -115,6 +116,7 @@ public class ScrimView<T extends Launcher> extends View implements Insettable, O
     private final WallpaperColorInfo mWallpaperColorInfo;
     private final AccessibilityManager mAM;
     protected final int mEndScrim;
+    protected final boolean mIsScrimDark;
 
     private final StateListener<LauncherState> mAccessibilityLauncherStateListener =
             new StateListener<LauncherState>() {
@@ -156,6 +158,7 @@ public class ScrimView<T extends Launcher> extends View implements Insettable, O
         mLauncher = Launcher.cast(Launcher.getLauncher(context));
         mWallpaperColorInfo = WallpaperColorInfo.INSTANCE.get(context);
         mEndScrim = Themes.getAttrColor(context, R.attr.allAppsScrimColor);
+        mIsScrimDark = ColorUtils.calculateLuminance(mEndScrim) < 0.5f;
 
         mMaxScrimAlpha = 0.7f;
 
@@ -233,6 +236,7 @@ public class ScrimView<T extends Launcher> extends View implements Insettable, O
             mProgress = progress;
             stopDragHandleEducationAnim();
             updateColors();
+            updateSysUiColors();
             updateDragHandleAlpha();
             invalidate();
         }
@@ -243,6 +247,17 @@ public class ScrimView<T extends Launcher> extends View implements Insettable, O
     protected void updateColors() {
         mCurrentFlatColor = mProgress >= 1 ? 0 : setColorAlphaBound(
                 mEndFlatColor, Math.round((1 - mProgress) * mEndFlatColorAlpha));
+    }
+
+    protected void updateSysUiColors() {
+        // Use a light system UI (dark icons) if all apps is behind at least half of the
+        // status bar.
+        boolean forceChange = mProgress <= 0.1f;
+        if (forceChange) {
+            mLauncher.getSystemUiController().updateUiState(UI_STATE_SCRIM_VIEW, !mIsScrimDark);
+        } else {
+            mLauncher.getSystemUiController().updateUiState(UI_STATE_SCRIM_VIEW, 0);
+        }
     }
 
     protected void updateDragHandleAlpha() {

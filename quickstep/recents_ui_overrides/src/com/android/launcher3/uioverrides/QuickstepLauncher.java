@@ -29,7 +29,6 @@ import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
 
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
@@ -42,10 +41,12 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.AnimatorPlaybackController;
+import com.android.launcher3.appprediction.PredictionUiStateManager;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.hybridhotseat.HotseatEduController;
 import com.android.launcher3.hybridhotseat.HotseatPredictionController;
+import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
@@ -88,11 +89,10 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
      */
     public static final AsyncCommand SET_SHELF_HEIGHT = (context, arg1, arg2) ->
             SystemUiProxy.INSTANCE.get(context).setShelfHeight(arg1 != 0, arg2);
-    private HotseatPredictionController mHotseatPredictionController;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void setupViews() {
+        super.setupViews();
         if (FeatureFlags.ENABLE_HYBRID_HOTSEAT.get()) {
             mHotseatPredictionController = new HotseatPredictionController(this);
             mHotseatPredictionController.createPredictor();
@@ -111,6 +111,15 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
                 mHotseatPredictionController.showEdu();
             });
         }
+    }
+
+    @Override
+    protected void logAppLaunch(ItemInfo info, InstanceId instanceId) {
+        super.logAppLaunch(info, instanceId);
+        if (mHotseatPredictionController != null) {
+            mHotseatPredictionController.logLaunchedAppRankingInfo(info, instanceId);
+        }
+        PredictionUiStateManager.INSTANCE.get(this).logLaunchedAppRankingInfo(info, instanceId);
     }
 
     @Override
@@ -166,13 +175,6 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
         } else {
             return super.getSupportedShortcuts();
         }
-    }
-
-    /**
-     * Returns Prediction controller for hybrid hotseat
-     */
-    public HotseatPredictionController getHotseatPredictionController() {
-        return mHotseatPredictionController;
     }
 
     /**
