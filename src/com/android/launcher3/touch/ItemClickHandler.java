@@ -113,7 +113,8 @@ public class ItemClickHandler {
         if (!folder.isOpen() && !folder.isDestroyed()) {
             // Open the requested folder
             folder.animateOpen();
-            StatsLogManager.newInstance(v.getContext()).log(LAUNCHER_FOLDER_OPEN, folder.mInfo);
+            StatsLogManager.newInstance(v.getContext()).logger().withItemInfo(folder.mInfo)
+                    .log(LAUNCHER_FOLDER_OPEN);
         }
     }
 

@@ -30,7 +30,6 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherState;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.logging.InstanceId;
@@ -80,30 +79,6 @@ public class StatsLogCompatManager extends StatsLogManager {
     }
 
     /**
-     * Logs a {@link EventEnum}.
-     */
-    @Override
-    public void log(EventEnum event) {
-        logger().log(event);
-    }
-
-    /**
-     * Logs an event and accompanying {@link InstanceId}.
-     */
-    @Override
-    public void log(EventEnum event, InstanceId instanceId) {
-        logger().withInstanceId(instanceId).log(event);
-    }
-
-    /**
-     * Logs an event and accompanying {@link ItemInfo}.
-     */
-    @Override
-    public void log(EventEnum event, @Nullable ItemInfo info) {
-        logger().withItemInfo(info).log(event);
-    }
-
-    /**
      * Logs an event.
      *
      * @param event an enum implementing EventEnum interface.
@@ -136,15 +111,6 @@ public class StatsLogCompatManager extends StatsLogManager {
     }
 
     /**
-     * Logs an event and accompanying {@link InstanceId} and {@link LauncherAtom.ItemInfo}.
-     */
-    @Override
-    public void log(EventEnum event, InstanceId instanceId,
-            @Nullable ItemInfo info) {
-        logger().withItemInfo(info).withInstanceId(instanceId).log(event);
-    }
-
-    /**
      * Logs a ranking event and accompanying {@link InstanceId} and package name.
      */
     @Override
@@ -155,15 +121,6 @@ public class StatsLogCompatManager extends StatsLogManager {
                 packageName /* package_name = 2; */,
                 instanceId.getId() /* instance_id = 3; */,
                 position /* position_picked = 4; */);
-    }
-
-    /**
-     * Logs an event and accompanying {@link LauncherState}s. If either of the state refers
-     * to workspace state, then use pageIndex to pass in index of workspace.
-     */
-    @Override
-    public void log(EventEnum event, int srcState, int dstState, int pageIndex) {
-        logger().withSrcState(srcState).withDstState(dstState).log(event);
     }
 
     private  void write(EventEnum event, InstanceId instanceId,
