@@ -33,6 +33,7 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.logger.LauncherAtom;
+import com.android.launcher3.logger.LauncherAtom.ContainerInfo;
 import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.logging.InstanceIdSequence;
 import com.android.launcher3.logging.StatsLogManager;
@@ -48,6 +49,7 @@ import com.android.launcher3.util.LogConfig;
 import com.android.systemui.shared.system.SysUiStatsLog;
 
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.OptionalInt;
 
 /**
@@ -81,38 +83,6 @@ public class StatsLogCompatManager extends StatsLogManager {
     }
 
     /**
-     * Logs an event.
-     *
-     * @param event an enum implementing EventEnum interface.
-     * @param atomInfo item typically containing app or task launch related information.
-     */
-    public void log(EventEnum event, InstanceId instanceId, LauncherAtom.ItemInfo atomInfo) {
-        LauncherAppState.getInstance(sContext).getModel().enqueueModelUpdateTask(
-                new BaseModelUpdateTask() {
-                    @Override
-                    public void execute(LauncherAppState app, BgDataModel dataModel,
-                            AllAppsList apps) {
-                        write(event, instanceId, atomInfo, LAUNCHER_UICHANGED__DST_STATE__HOME,
-                                LAUNCHER_UICHANGED__DST_STATE__BACKGROUND, OptionalInt.empty());
-                    }
-                });
-    }
-
-    /**
-     * Logs an event.
-     *
-     * @param event an enum implementing EventEnum interface.
-     * @param atomItemInfo item typically containing app or task launch related information.
-     */
-    @Override
-    public void log(EventEnum event, @Nullable LauncherAtom.ItemInfo atomItemInfo, int srcState,
-            int dstState) {
-        write(event, DEFAULT_INSTANCE_ID,
-                atomItemInfo == null ? LauncherAtom.ItemInfo.getDefaultInstance() : atomItemInfo,
-                srcState, dstState, OptionalInt.empty());
-    }
-
-    /**
      * Logs a ranking event and accompanying {@link InstanceId} and package name.
      */
     @Override
@@ -123,49 +93,6 @@ public class StatsLogCompatManager extends StatsLogManager {
                 packageName /* package_name = 2; */,
                 instanceId.getId() /* instance_id = 3; */,
                 position /* position_picked = 4; */);
-    }
-
-    private  void write(EventEnum event, InstanceId instanceId,
-            LauncherAtom.ItemInfo atomInfo,
-            int srcState, int dstState, OptionalInt mRank) {
-        if (IS_VERBOSE) {
-            String name = (event instanceof Enum) ? ((Enum) event).name() :
-                    event.getId() + "";
-
-            Log.d(TAG, instanceId == DEFAULT_INSTANCE_ID
-                    ? String.format("\n%s (State:%s->%s)\n%s", name, getStateString(srcState),
-                    getStateString(dstState),  atomInfo)
-                    : String.format("\n%s (State:%s->%s) (InstanceId:%s)\n%s", name,
-                            getStateString(srcState), getStateString(dstState), instanceId,
-                            atomInfo));
-        }
-
-        SysUiStatsLog.write(
-                SysUiStatsLog.LAUNCHER_EVENT,
-                SysUiStatsLog.LAUNCHER_UICHANGED__ACTION__DEFAULT_ACTION /* deprecated */,
-                srcState,
-                dstState,
-                null /* launcher extensions, deprecated */,
-                false /* quickstep_enabled, deprecated */,
-                event.getId() /* event_id */,
-                atomInfo.getItemCase().getNumber() /* target_id */,
-                instanceId.getId() /* instance_id TODO */,
-                0 /* uid TODO */,
-                getPackageName(atomInfo) /* package_name */,
-                getComponentName(atomInfo) /* component_name */,
-                getGridX(atomInfo, false) /* grid_x */,
-                getGridY(atomInfo, false) /* grid_y */,
-                getPageId(atomInfo, false) /* page_id */,
-                getGridX(atomInfo, true) /* grid_x_parent */,
-                getGridY(atomInfo, true) /* grid_y_parent */,
-                getPageId(atomInfo, true) /* page_id_parent */,
-                getHierarchy(atomInfo) /* hierarchy */,
-                atomInfo.getIsWork() /* is_work_profile */,
-                mRank.orElse(atomInfo.getRank()) /* rank */,
-                atomInfo.getFolderIcon().getFromLabelState().getNumber() /* fromState */,
-                atomInfo.getFolderIcon().getToLabelState().getNumber() /* toState */,
-                atomInfo.getFolderIcon().getLabelInfo() /* edittext */,
-                getCardinality(atomInfo) /* cardinality */);
     }
 
     /**
@@ -238,15 +165,22 @@ public class StatsLogCompatManager extends StatsLogManager {
     /**
      * Helps to construct and write statsd compatible log message.
      */
-    private class StatsCompatLogger implements StatsLogger {
-        private ItemInfo mItemInfo = new ItemInfo();
+    private static class StatsCompatLogger implements StatsLogger {
+
+        private static final ItemInfo DEFAULT_ITEM_INFO = new ItemInfo();
+        private ItemInfo mItemInfo = DEFAULT_ITEM_INFO;
         private InstanceId mInstanceId = DEFAULT_INSTANCE_ID;
         private OptionalInt mRank = OptionalInt.empty();
+        private Optional<ContainerInfo> mContainerInfo = Optional.empty();
         private int mSrcState = LAUNCHER_UICHANGED__SRC_STATE__HOME;
         private int mDstState = LAUNCHER_UICHANGED__DST_STATE__BACKGROUND;
 
         @Override
         public StatsLogger withItemInfo(ItemInfo itemInfo) {
+            if (mContainerInfo.isPresent()) {
+                throw new IllegalArgumentException(
+                        "ItemInfo and ContainerInfo are mutual exclusive; cannot log both.");
+            }
             this.mItemInfo = itemInfo;
             return this;
         }
@@ -276,14 +210,35 @@ public class StatsLogCompatManager extends StatsLogManager {
         }
 
         @Override
+        public StatsLogger withContainerInfo(ContainerInfo containerInfo) {
+            if (mItemInfo != DEFAULT_ITEM_INFO) {
+                throw new IllegalArgumentException(
+                        "ItemInfo and ContainerInfo are mutual exclusive; cannot log both.");
+            }
+            this.mContainerInfo = Optional.of(containerInfo);
+            return this;
+        }
+
+        @Override
         public void log(EventEnum event) {
             if (!Utilities.ATLEAST_R) {
                 return;
             }
 
+            LauncherAtom.ItemInfo.Builder itemInfoBuilder =
+                    (LauncherAtom.ItemInfo.Builder) mItemInfo.buildProto().toBuilder();
+            mRank.ifPresent(itemInfoBuilder::setRank);
+            if (mContainerInfo.isPresent()) {
+                // User already provided container info;
+                // default container info from item info will be ignored.
+                itemInfoBuilder.setContainerInfo(mContainerInfo.get());
+                write(event, mInstanceId, itemInfoBuilder.build(), mSrcState, mDstState);
+                return;
+            }
+
             if (mItemInfo.container < 0) {
                 // Item is not within a folder. Write to StatsLog in same thread.
-                write(event, mInstanceId, mItemInfo.buildProto(), mSrcState, mDstState, mRank);
+                write(event, mInstanceId, itemInfoBuilder.build(), mSrcState, mDstState);
             } else {
                 // Item is inside the folder, fetch folder info in a BG thread
                 // and then write to StatsLog.
@@ -293,11 +248,57 @@ public class StatsLogCompatManager extends StatsLogManager {
                             public void execute(LauncherAppState app, BgDataModel dataModel,
                                     AllAppsList apps) {
                                 FolderInfo folderInfo = dataModel.folders.get(mItemInfo.container);
-                                write(event, mInstanceId, mItemInfo.buildProto(folderInfo),
-                                        mSrcState, mDstState, mRank);
+                                LauncherAtom.ItemInfo.Builder atomInfoBuilder =
+                                        (LauncherAtom.ItemInfo.Builder) mItemInfo
+                                                .buildProto(folderInfo).toBuilder();
+                                mRank.ifPresent(atomInfoBuilder::setRank);
+                                write(event, mInstanceId, atomInfoBuilder.build(), mSrcState,
+                                        mDstState);
                             }
                         });
             }
+        }
+
+        private void write(EventEnum event, InstanceId instanceId, LauncherAtom.ItemInfo atomInfo,
+                int srcState, int dstState) {
+            if (IS_VERBOSE) {
+                String name = (event instanceof Enum) ? ((Enum) event).name() :
+                        event.getId() + "";
+
+                Log.d(TAG, instanceId == DEFAULT_INSTANCE_ID
+                        ? String.format("\n%s (State:%s->%s)\n%s", name, getStateString(srcState),
+                        getStateString(dstState), atomInfo)
+                        : String.format("\n%s (State:%s->%s) (InstanceId:%s)\n%s", name,
+                                getStateString(srcState), getStateString(dstState), instanceId,
+                                atomInfo));
+            }
+
+            SysUiStatsLog.write(
+                    SysUiStatsLog.LAUNCHER_EVENT,
+                    SysUiStatsLog.LAUNCHER_UICHANGED__ACTION__DEFAULT_ACTION /* deprecated */,
+                    srcState,
+                    dstState,
+                    null /* launcher extensions, deprecated */,
+                    false /* quickstep_enabled, deprecated */,
+                    event.getId() /* event_id */,
+                    atomInfo.getItemCase().getNumber() /* target_id */,
+                    instanceId.getId() /* instance_id TODO */,
+                    0 /* uid TODO */,
+                    getPackageName(atomInfo) /* package_name */,
+                    getComponentName(atomInfo) /* component_name */,
+                    getGridX(atomInfo, false) /* grid_x */,
+                    getGridY(atomInfo, false) /* grid_y */,
+                    getPageId(atomInfo, false) /* page_id */,
+                    getGridX(atomInfo, true) /* grid_x_parent */,
+                    getGridY(atomInfo, true) /* grid_y_parent */,
+                    getPageId(atomInfo, true) /* page_id_parent */,
+                    getHierarchy(atomInfo) /* hierarchy */,
+                    atomInfo.getIsWork() /* is_work_profile */,
+                    atomInfo.getRank() /* rank */,
+                    atomInfo.getFolderIcon().getFromLabelState().getNumber() /* fromState */,
+                    atomInfo.getFolderIcon().getToLabelState().getNumber() /* toState */,
+                    atomInfo.getFolderIcon().getLabelInfo() /* edittext */,
+                    getCardinality(atomInfo) /* cardinality */);
         }
     }
 
