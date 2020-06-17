@@ -151,6 +151,9 @@ public class StatsLogManager implements ResourceBasedOverride {
         @UiEvent(doc = "App launch ranking logged for hotseat predictions)")
         LAUNCHER_HOTSEAT_RANKED(553),
 
+        @UiEvent(doc = "User's workspace layout information is snapshot in the background.")
+        LAUNCHER_WORKSPACE_SNAPSHOT(579),
+
         @UiEvent(doc = "User tapped on the screenshot button on overview)")
         LAUNCHER_OVERVIEW_ACTIONS_SCREENSHOT(580),
 
@@ -165,6 +168,7 @@ public class StatsLogManager implements ResourceBasedOverride {
 
         @UiEvent(doc = "User tapped on the highlight items in select mode")
         LAUNCHER_SELECT_MODE_ITEM(584);
+
         // ADD MORE
         private final int mId;
 
