@@ -18,7 +18,6 @@ package com.android.launcher3.touch;
 
 import android.content.res.Resources;
 import android.graphics.PointF;
-import android.graphics.RectF;
 import android.view.Surface;
 import android.view.View;
 
@@ -39,19 +38,6 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
     @Override
     public boolean getRecentsRtlSetting(Resources resources) {
         return Utilities.isRtl(resources);
-    }
-
-    @Override
-    public void offsetTaskRect(RectF rect, float value, int displayRotation, int launcherRotation) {
-        if (displayRotation == Surface.ROTATION_0) {
-            rect.offset(0, value);
-        } else if (displayRotation == Surface.ROTATION_90) {
-            rect.offset(value, 0);
-        } else if (displayRotation == Surface.ROTATION_180) {
-            rect.offset(0, -value);
-        } else {
-            rect.offset(-value, 0);
-        }
     }
 
     @Override

@@ -181,19 +181,6 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public void offsetTaskRect(RectF rect, float value, int displayRotation, int launcherRotation) {
-        if (displayRotation == Surface.ROTATION_0) {
-            rect.offset(0, value);
-        } else if (displayRotation == Surface.ROTATION_90) {
-            rect.offset(value, 0);
-        } else if (displayRotation == Surface.ROTATION_180) {
-            rect.offset(0, -value);
-        } else {
-            rect.offset(-value, 0);
-        }
-    }
-
-    @Override
     public int getChildStart(View view) {
         return view.getTop();
     }
