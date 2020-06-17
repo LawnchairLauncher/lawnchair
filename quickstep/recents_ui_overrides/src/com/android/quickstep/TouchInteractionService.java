@@ -58,7 +58,6 @@ import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.R;
-import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.UserEventDispatcher;
@@ -299,7 +298,6 @@ public class TouchInteractionService extends Service implements PluginListener<O
         mAM = ActivityManagerWrapper.getInstance();
         mDeviceState = new RecentsAnimationDeviceState(this);
         mDeviceState.addNavigationModeChangedCallback(this::onNavigationModeChanged);
-        mDeviceState.addOneHandedModeChangedCallback(this::onOneHandedModeOverlayChanged);
         mDeviceState.runOnUserUnlocked(this::onUserUnlocked);
         ProtoTracer.INSTANCE.get(this).add(this);
 
@@ -338,13 +336,6 @@ public class TouchInteractionService extends Service implements PluginListener<O
     private void onNavigationModeChanged(SysUINavigationMode.Mode mode) {
         initInputMonitor();
         resetHomeBounceSeenOnQuickstepEnabledFirstTime();
-    }
-
-    /**
-     * Called when the one handed mode overlay package changes, to recreate touch region.
-     */
-    private void onOneHandedModeOverlayChanged(int newGesturalHeight) {
-        initInputMonitor();
     }
 
     @UiThread
@@ -820,13 +811,6 @@ public class TouchInteractionService extends Service implements PluginListener<O
         }
         if (mOverviewComponentObserver.canHandleConfigChanges(activity.getComponentName(),
                 activity.getResources().getConfiguration().diff(newConfig))) {
-            // Since navBar gestural height are different between portrait and landscape,
-            // can handle orientation changes and refresh navigation gestural region through
-            // onOneHandedModeChanged()
-            int newGesturalHeight = ResourceUtils.getNavbarSize(
-                    ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE,
-                    getApplicationContext().getResources());
-            mDeviceState.onOneHandedModeChanged(newGesturalHeight);
             return;
         }
 

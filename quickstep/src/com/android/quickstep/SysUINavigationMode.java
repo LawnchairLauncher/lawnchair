@@ -24,7 +24,6 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.util.Log;
 
-import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.MainThreadInitializedObject;
 
@@ -63,20 +62,11 @@ public class SysUINavigationMode {
     private static final String ACTION_OVERLAY_CHANGED = "android.intent.action.OVERLAY_CHANGED";
     private static final String NAV_BAR_INTERACTION_MODE_RES_NAME =
             "config_navBarInteractionMode";
-    private static final String NAV_BAR_INTERACTION_MODE_OVERLAY_PACKAGE_PREFIX =
-            "com.android.internal.systemui.navbar";
-    private static final String ONE_HANDED_MODE_OVERLAY_PACKAGE_PREFIX =
-            "com.android.internal.systemui.onehanded";
-    private static final int INVALID_RESOURCE_HANDLE = -1;
 
     private final Context mContext;
     private Mode mMode;
 
-    private int mNavBarGesturalHeight;
-
     private final List<NavigationModeChangeListener> mChangeListeners = new ArrayList<>();
-    private final List<OneHandedModeChangeListener> mOneHandedOverlayChangeListeners =
-            new ArrayList<>();
 
     public SysUINavigationMode(Context context) {
         mContext = context;
@@ -87,15 +77,7 @@ public class SysUINavigationMode {
             public void onReceive(Context context, Intent intent) {
                 updateMode();
             }
-        }, getPackageFilter(NAV_BAR_INTERACTION_MODE_OVERLAY_PACKAGE_PREFIX,
-                ACTION_OVERLAY_CHANGED));
-
-        mContext.registerReceiver(new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                updateGesturalHeight();
-            }
-        }, getPackageFilter(ONE_HANDED_MODE_OVERLAY_PACKAGE_PREFIX, ACTION_OVERLAY_CHANGED));
+        }, getPackageFilter("android", ACTION_OVERLAY_CHANGED));
     }
 
     /** Updates navigation mode when needed. */
@@ -107,24 +89,8 @@ public class SysUINavigationMode {
         }
     }
 
-    private void updateGesturalHeight() {
-        int newGesturalHeight = getSystemIntegerRes(mContext,
-                ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE);
-
-        if (newGesturalHeight == INVALID_RESOURCE_HANDLE) {
-            return;
-        }
-
-        if (mNavBarGesturalHeight != newGesturalHeight) {
-            mNavBarGesturalHeight = newGesturalHeight;
-            dispatchOneHandedOverlayChange();
-        }
-    }
-
     private void initializeMode() {
         int modeInt = getSystemIntegerRes(mContext, NAV_BAR_INTERACTION_MODE_RES_NAME);
-        mNavBarGesturalHeight = getSystemIntegerRes(mContext,
-                ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE);
         for(Mode m : Mode.values()) {
             if (m.resValue == modeInt) {
                 mMode = m;
@@ -138,12 +104,6 @@ public class SysUINavigationMode {
         }
     }
 
-    private void dispatchOneHandedOverlayChange() {
-        for (OneHandedModeChangeListener listener : mOneHandedOverlayChangeListeners) {
-            listener.onOneHandedModeChanged(mNavBarGesturalHeight);
-        }
-    }
-
     public Mode addModeChangeListener(NavigationModeChangeListener listener) {
         mChangeListeners.add(listener);
         return mMode;
@@ -151,15 +111,6 @@ public class SysUINavigationMode {
 
     public void removeModeChangeListener(NavigationModeChangeListener listener) {
         mChangeListeners.remove(listener);
-    }
-
-    public int addOneHandedOverlayChangeListener(OneHandedModeChangeListener listener) {
-        mOneHandedOverlayChangeListeners.add(listener);
-        return mNavBarGesturalHeight;
-    }
-
-    public void removeOneHandedOverlayChangeListener(OneHandedModeChangeListener listener) {
-        mOneHandedOverlayChangeListeners.remove(listener);
     }
 
     public Mode getMode() {
@@ -174,7 +125,7 @@ public class SysUINavigationMode {
             return res.getInteger(resId);
         } else {
             Log.e(TAG, "Failed to get system resource ID. Incompatible framework version?");
-            return INVALID_RESOURCE_HANDLE;
+            return -1;
         }
     }
 
@@ -198,10 +149,5 @@ public class SysUINavigationMode {
     public interface NavigationModeChangeListener {
 
         void onNavigationModeChanged(Mode newMode);
-    }
-
-    public interface OneHandedModeChangeListener {
-
-        void onOneHandedModeChanged(int newGesturalHeight);
     }
 }

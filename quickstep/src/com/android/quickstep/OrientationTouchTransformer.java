@@ -65,7 +65,6 @@ class OrientationTouchTransformer {
     private final RectF mAssistantRightRegion = new RectF();
     private final RectF mOneHandedModeRegion = new RectF();
     private int mCurrentDisplayRotation;
-    private int mNavBarGesturalHeight;
     private boolean mEnableMultipleRegions;
     private Resources mResources;
     private OrientationRectF mLastRectTouched;
@@ -105,33 +104,18 @@ class OrientationTouchTransformer {
         mResources = resources;
         mMode = mode;
         mContractInfo = contractInfo;
-        mNavBarGesturalHeight = getNavbarSize(ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE);
     }
 
-    private void refreshTouchRegion(DefaultDisplay.Info info, Resources newRes) {
-        // Swipe touch regions are independent of nav mode, so we have to clear them explicitly
-        // here to avoid, for ex, a nav region for 2-button rotation 0 being used for 3-button mode
-        // It tries to cache and reuse swipe regions whenever possible based only on rotation
-        mResources = newRes;
-        mSwipeTouchRegions.clear();
-        resetSwipeRegions(info);
-    }
-
-    void setNavigationMode(SysUINavigationMode.Mode newMode, DefaultDisplay.Info info,
-            Resources newRes) {
+    void setNavigationMode(SysUINavigationMode.Mode newMode, DefaultDisplay.Info info) {
         if (mMode == newMode) {
             return;
         }
         this.mMode = newMode;
-        refreshTouchRegion(info, newRes);
-    }
-
-    void setGesturalHeight(int newGesturalHeight, DefaultDisplay.Info info, Resources newRes) {
-        if (mNavBarGesturalHeight == newGesturalHeight) {
-            return;
-        }
-        mNavBarGesturalHeight = newGesturalHeight;
-        refreshTouchRegion(info, newRes);
+        // Swipe touch regions are independent of nav mode, so we have to clear them explicitly
+        // here to avoid, for ex, a nav region for 2-button rotation 0 being used for 3-button mode
+        // It tries to cache and reuse swipe regions whenever possible based only on rotation
+        mSwipeTouchRegions.clear();
+        resetSwipeRegions(info);
     }
 
     /**
@@ -213,7 +197,7 @@ class OrientationTouchTransformer {
 
         Point size = display.realSize;
         int rotation = display.rotation;
-        int touchHeight = mNavBarGesturalHeight;
+        int touchHeight = getNavbarSize(ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE);
         OrientationRectF orientationRectF =
                 new OrientationRectF(0, 0, size.x, size.y, rotation);
         if (mMode == SysUINavigationMode.Mode.NO_BUTTON) {
@@ -354,7 +338,6 @@ class OrientationTouchTransformer {
             regions.append(rectF.mRotation).append(" ");
         }
         pw.println(regions.toString());
-        pw.println("  mNavBarGesturalHeight=" + mNavBarGesturalHeight);
         pw.println("  mOneHandedModeRegion=" + mOneHandedModeRegion);
     }
 
