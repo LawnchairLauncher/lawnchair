@@ -257,32 +257,6 @@ public class StatsLogManager implements ResourceBasedOverride {
      * Logs an event.
      *
      * @param event an enum implementing EventEnum interface.
-     */
-    public void log(EventEnum event) {
-    }
-
-    /**
-     * Logs an event.
-     *
-     * @param event an enum implementing EventEnum interface.
-     * @param instanceId an identifier obtained from an InstanceIdSequence.
-     */
-    public void log(EventEnum event, InstanceId instanceId) {
-    }
-
-    /**
-     * Logs an event.
-     *
-     * @param event an enum implementing EventEnum interface.
-     * @param itemInfo item typically containing app or task launch related information.
-     */
-    public void log(EventEnum event, @Nullable ItemInfo itemInfo) {
-    }
-
-    /**
-     * Logs an event.
-     *
-     * @param event an enum implementing EventEnum interface.
      * @param atomInfo item typically containing app or task launch related information.
      */
     public void log(EventEnum event, InstanceId instanceId, LauncherAtom.ItemInfo atomInfo) {
@@ -299,16 +273,6 @@ public class StatsLogManager implements ResourceBasedOverride {
     }
 
     /**
-     * Logs an event.
-     *
-     * @param event an enum implementing EventEnum interface.
-     * @param instanceId an identifier obtained from an InstanceIdSequence.
-     * @param itemInfo item typically containing app or task launch related information.
-     */
-    public void log(EventEnum event, InstanceId instanceId, @Nullable ItemInfo itemInfo) {
-    }
-
-    /**
      * Log an event with ranked-choice information along with package. Does nothing if event.getId()
      * <= 0.
      *
@@ -319,13 +283,6 @@ public class StatsLogManager implements ResourceBasedOverride {
      */
     public void log(EventEnum rankingEvent, InstanceId instanceId, @Nullable String packageName,
             int position) {
-    }
-
-    /**
-     * Logs an event and accompanying {@link LauncherState}s. If either of the state refers
-     * to workspace state, then use pageIndex to pass in index of workspace.
-     */
-    public void log(EventEnum event, int srcState, int dstState, int pageIndex) {
     }
 
     /**

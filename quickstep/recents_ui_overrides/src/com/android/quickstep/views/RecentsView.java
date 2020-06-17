@@ -1347,8 +1347,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             ComponentKey compKey = TaskUtils.getLaunchComponentKeyForTask(taskView.getTask().key);
             mActivity.getUserEventDispatcher().logTaskLaunchOrDismiss(
                     endState.logAction, Direction.UP, index, compKey);
-            mActivity.getStatsLogManager().log(
-                    LAUNCHER_TASK_DISMISS_SWIPE_UP, taskView.getItemInfo());
+            mActivity.getStatsLogManager().logger().withItemInfo(taskView.getItemInfo())
+                    .log(LAUNCHER_TASK_DISMISS_SWIPE_UP);
         }
     }
 
@@ -1942,8 +1942,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                     mActivity.getUserEventDispatcher().logTaskLaunchOrDismiss(
                             endState.logAction, Direction.DOWN, indexOfChild(tv),
                             TaskUtils.getLaunchComponentKeyForTask(task.key));
-                    mActivity.getStatsLogManager().log(
-                            LAUNCHER_TASK_LAUNCH_SWIPE_DOWN, tv.getItemInfo());
+                    mActivity.getStatsLogManager().logger().withItemInfo(tv.getItemInfo())
+                            .log(LAUNCHER_TASK_LAUNCH_SWIPE_DOWN);
                 }
             } else {
                 onTaskLaunched(false);

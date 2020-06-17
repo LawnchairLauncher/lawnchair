@@ -415,11 +415,9 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
         // Always enter the spring loaded mode
         mLauncher.getStateManager().goToState(SPRING_LOADED);
-        mStatsLogManager.log(
-                LauncherEvent.LAUNCHER_ITEM_DRAG_STARTED,
-                dragObject.logInstanceId,
-                dragObject.originalDragInfo
-        );
+        mStatsLogManager.logger().withItemInfo(dragObject.originalDragInfo)
+                .withInstanceId(dragObject.logInstanceId)
+                .log(LauncherEvent.LAUNCHER_ITEM_DRAG_STARTED);
     }
 
     public void deferRemoveExtraEmptyScreen() {
@@ -1646,10 +1644,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             Rect folderLocation = new Rect();
             float scale = mLauncher.getDragLayer().getDescendantRectRelativeToSelf(v, folderLocation);
             target.removeView(v);
-            mStatsLogManager.log(
-                    LauncherEvent.LAUNCHER_ITEM_DROP_FOLDER_CREATED,
-                    d.logInstanceId,
-                    destInfo);
+            mStatsLogManager.logger().withItemInfo(destInfo).withInstanceId(d.logInstanceId)
+                    .log(LauncherEvent.LAUNCHER_ITEM_DROP_FOLDER_CREATED);
             FolderIcon fi = mLauncher.addFolder(target, container, screenId, targetCell[0],
                     targetCell[1]);
             destInfo.cellX = -1;
@@ -1687,10 +1683,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         if (dropOverView instanceof FolderIcon) {
             FolderIcon fi = (FolderIcon) dropOverView;
             if (fi.acceptDrop(d.dragInfo)) {
-                mStatsLogManager.log(
-                        LauncherEvent.LAUNCHER_ITEM_DROP_COMPLETED,
-                        d.logInstanceId,
-                        fi.mInfo);
+                mStatsLogManager.logger().withItemInfo(fi.mInfo).withInstanceId(d.logInstanceId)
+                        .log(LauncherEvent.LAUNCHER_ITEM_DROP_COMPLETED);
                 fi.onDrop(d, false /* itemReturnedOnFailedDrop */);
 
                 // if the drag started here, we need to remove it from the workspace
@@ -1893,10 +1887,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
             mLauncher.getStateManager().goToState(
                     NORMAL, SPRING_LOADED_EXIT_DELAY, onCompleteRunnable);
-            mStatsLogManager.log(
-                    LauncherEvent.LAUNCHER_ITEM_DROP_COMPLETED,
-                    d.logInstanceId,
-                    d.dragInfo);
+            mStatsLogManager.logger().withItemInfo(d.dragInfo).withInstanceId(d.logInstanceId)
+                    .log(LauncherEvent.LAUNCHER_ITEM_DROP_COMPLETED);
         }
 
         if (d.stateAnnouncer != null && !droppedOnOriginalCell) {
@@ -2434,10 +2426,9 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                     // widgets/shortcuts/folders in a slightly different way
                     mLauncher.addPendingItem(pendingInfo, container, screenId, mTargetCell,
                             item.spanX, item.spanY);
-                    mStatsLogManager.log(
-                            LauncherEvent.LAUNCHER_ITEM_DROP_COMPLETED,
-                            d.logInstanceId,
-                            d.dragInfo);
+                    mStatsLogManager.logger().withItemInfo(d.dragInfo)
+                            .withInstanceId(d.logInstanceId)
+                            .log(LauncherEvent.LAUNCHER_ITEM_DROP_COMPLETED);
                 }
             };
             boolean isWidget = pendingInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET
@@ -2526,10 +2517,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                 mLauncher.getDragLayer().animateViewIntoPosition(d.dragView, view, this);
                 resetTransitionTransform();
             }
-            mStatsLogManager.log(
-                    LauncherEvent.LAUNCHER_ITEM_DROP_COMPLETED,
-                    d.logInstanceId,
-                    d.dragInfo);
+            mStatsLogManager.logger().withItemInfo(d.dragInfo).withInstanceId(d.logInstanceId)
+                    .log(LauncherEvent.LAUNCHER_ITEM_DROP_COMPLETED);
         }
 
     }

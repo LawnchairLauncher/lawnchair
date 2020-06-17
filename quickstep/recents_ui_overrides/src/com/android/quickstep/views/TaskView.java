@@ -214,7 +214,8 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             mActivity.getUserEventDispatcher().logTaskLaunchOrDismiss(
                     Touch.TAP, Direction.NONE, getRecentsView().indexOfChild(this),
                     TaskUtils.getLaunchComponentKeyForTask(getTask().key));
-            mActivity.getStatsLogManager().log(LAUNCHER_TASK_LAUNCH_TAP, getItemInfo());
+            mActivity.getStatsLogManager().logger().withItemInfo(getItemInfo())
+                    .log(LAUNCHER_TASK_LAUNCH_TAP);
         });
 
         mCurrentFullscreenParams = new FullscreenDrawParams(context);
@@ -432,7 +433,8 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             getRecentsView().snapToPage(getRecentsView().indexOfChild(this));
         } else {
             mMenuView = TaskMenuView.showForTask(this);
-            mActivity.getStatsLogManager().log(LAUNCHER_TASK_ICON_TAP_OR_LONGPRESS, getItemInfo());
+            mActivity.getStatsLogManager().logger().withItemInfo(getItemInfo())
+                    .log(LAUNCHER_TASK_ICON_TAP_OR_LONGPRESS);
             UserEventDispatcher.newInstance(getContext()).logActionOnItem(action, Direction.NONE,
                     LauncherLogProto.ItemType.TASK_ICON);
             if (mMenuView != null) {
