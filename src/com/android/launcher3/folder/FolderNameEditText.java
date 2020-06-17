@@ -70,8 +70,11 @@ public class FolderNameEditText extends ExtendedEditText {
         for (int i = 0; i < cnt; i++) {
             cInfo[i] = new CompletionInfo(i, i, suggestList.get(i));
         }
-        post(() -> getContext().getSystemService(InputMethodManager.class)
-                .displayCompletions(this, cInfo));
+        // post it to future frame so that onSelectionChanged, onFocusChanged, all other
+        // TextView flag change and IME animation has settled. Ideally, there should be IMM
+        // callback to notify when the IME animation and state handling is finished.
+        postDelayed(() -> getContext().getSystemService(InputMethodManager.class)
+                .displayCompletions(this, cInfo), 40 /* 2~3 frame delay */);
     }
 
     /**

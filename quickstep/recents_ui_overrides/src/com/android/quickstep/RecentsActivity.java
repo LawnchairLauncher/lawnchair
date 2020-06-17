@@ -139,13 +139,12 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
      */
     protected DeviceProfile createDeviceProfile() {
         DeviceProfile dp = InvariantDeviceProfile.INSTANCE.get(this).getDeviceProfile(this);
-        DeviceProfile dp1 = InvariantDeviceProfile.INSTANCE.get(this).getDeviceProfile(this);
 
         // In case we are reusing IDP, create a copy so that we don't conflict with Launcher
         // activity.
         return (mRecentsRootView != null) && isInMultiWindowMode()
                 ? dp.getMultiWindowProfile(this, getMultiWindowDisplaySize())
-                : dp1.copy(this);
+                : dp.copy(this);
     }
 
     @Override

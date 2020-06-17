@@ -24,11 +24,13 @@ import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_PREDICT
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_SEARCH_RESULTS;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_SETTINGS;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_SHORTCUTS;
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_TASKSWITCHER;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_WIDGETS_TRAY;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
+import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_TASK;
 import static com.android.launcher3.logger.LauncherAtom.ContainerInfo.ContainerCase.CONTAINER_NOT_SET;
 
 import android.content.ComponentName;
@@ -49,6 +51,7 @@ import com.android.launcher3.logger.LauncherAtom.PredictionContainer;
 import com.android.launcher3.logger.LauncherAtom.SearchResultContainer;
 import com.android.launcher3.logger.LauncherAtom.SettingsContainer;
 import com.android.launcher3.logger.LauncherAtom.ShortcutsContainer;
+import com.android.launcher3.logger.LauncherAtom.TaskSwitcherContainer;
 import com.android.launcher3.util.ContentWriter;
 
 import java.util.Optional;
@@ -298,6 +301,12 @@ public class ItemInfo {
                                 .setSpanX(spanX)
                                 .setSpanY(spanY));
                 break;
+            case ITEM_TYPE_TASK:
+                itemBuilder
+                        .setTask(LauncherAtom.Task.newBuilder()
+                                .setComponentName(getTargetComponent().flattenToShortString())
+                                .setIndex(screenId));
+                break;
             default:
                 break;
         }
@@ -378,6 +387,11 @@ public class ItemInfo {
                 return ContainerInfo.newBuilder()
                         .setSettingsContainer(SettingsContainer.getDefaultInstance())
                         .build();
+            case CONTAINER_TASKSWITCHER:
+                return ContainerInfo.newBuilder()
+                        .setTaskSwitcherContainer(TaskSwitcherContainer.getDefaultInstance())
+                        .build();
+
         }
         return ContainerInfo.getDefaultInstance();
     }
