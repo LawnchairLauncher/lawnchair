@@ -1053,8 +1053,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
     private void animateRecentsRotationInPlace(int newRotation) {
         if (mOrientationState.canLauncherRotate()) {
-            // Update the rotation but let system take care of the rotation animation
-            setLayoutRotation(newRotation, mOrientationState.getDisplayRotation());
+            // Let system take care of the rotation
             return;
         }
         AnimatorSet pa = setRecentsChangedOrientation(true);

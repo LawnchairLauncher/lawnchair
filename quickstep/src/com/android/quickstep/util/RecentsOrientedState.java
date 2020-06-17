@@ -116,9 +116,6 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
             MASK_MULTIPLE_ORIENTATION_SUPPORTED_BY_DEVICE | FLAG_SYSTEM_ROTATION_ALLOWED
                     | FLAG_ROTATION_WATCHER_SUPPORTED | FLAG_ROTATION_WATCHER_ENABLED;
 
-    private SysUINavigationMode.NavigationModeChangeListener mNavModeChangeListener =
-            newMode -> setFlag(FLAG_ROTATION_WATCHER_SUPPORTED, newMode != TWO_BUTTONS);
-
     private final Context mContext;
     private final ContentResolver mContentResolver;
     private final SharedPreferences mSharedPrefs;
@@ -268,10 +265,9 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
 
     private void initFlags() {
         SysUINavigationMode.Mode currentMode = SysUINavigationMode.getMode(mContext);
-        if (mOrientationListener.canDetectOrientation() &&
-                currentMode != TWO_BUTTONS) {
-            mFlags |= FLAG_ROTATION_WATCHER_SUPPORTED;
-        }
+        boolean rotationWatcherSupported = mOrientationListener.canDetectOrientation() &&
+                currentMode != TWO_BUTTONS;
+        setFlag(FLAG_ROTATION_WATCHER_SUPPORTED, rotationWatcherSupported);
 
         // initialize external flags
         updateAutoRotateSetting();
@@ -288,9 +284,6 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
             mContentResolver.registerContentObserver(
                     Settings.System.getUriFor(Settings.System.ACCELEROMETER_ROTATION),
                     false, mSystemAutoRotateObserver);
-            SysUINavigationMode.Mode currentMode =
-                    SysUINavigationMode.INSTANCE.get(mContext)
-                            .addModeChangeListener(mNavModeChangeListener);
         }
         initFlags();
     }
@@ -302,8 +295,6 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
         if (isMultipleOrientationSupportedByDevice()) {
             mSharedPrefs.unregisterOnSharedPreferenceChangeListener(this);
             mContentResolver.unregisterContentObserver(mSystemAutoRotateObserver);
-            SysUINavigationMode.INSTANCE.get(mContext)
-                    .removeModeChangeListener(mNavModeChangeListener);
         }
         setRotationWatcherEnabled(false);
     }
@@ -347,20 +338,6 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
      */
     public void setRotationWatcherEnabled(boolean isEnabled) {
         setFlag(FLAG_ROTATION_WATCHER_ENABLED, isEnabled);
-    }
-
-    public int getTouchRotationDegrees() {
-        switch (mTouchRotation) {
-            case ROTATION_90:
-                return 90;
-            case ROTATION_180:
-                return 180;
-            case ROTATION_270:
-                return 270;
-            case ROTATION_0:
-            default:
-                return 0;
-        }
     }
 
     /**
