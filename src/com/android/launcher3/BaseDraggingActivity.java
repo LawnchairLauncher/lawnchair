@@ -43,6 +43,8 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.LauncherSettings.Favorites;
+import com.android.launcher3.logging.InstanceId;
+import com.android.launcher3.logging.InstanceIdSequence;
 import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
@@ -188,7 +190,8 @@ public abstract class BaseDraggingActivity extends BaseActivity
             }
             getUserEventDispatcher().logAppLaunch(v, intent, user);
             if (item != null) {
-                getStatsLogManager().log(LAUNCHER_APP_LAUNCH_TAP, item.buildProto());
+                InstanceId instanceId = new InstanceIdSequence().newInstanceId();
+                logAppLaunch(item, instanceId);
             }
             return true;
         } catch (NullPointerException|ActivityNotFoundException|SecurityException e) {
@@ -196,6 +199,10 @@ public abstract class BaseDraggingActivity extends BaseActivity
             Log.e(TAG, "Unable to launch. tag=" + item + " intent=" + intent, e);
         }
         return false;
+    }
+
+    protected void logAppLaunch(ItemInfo info, InstanceId instanceId) {
+        getStatsLogManager().log(LAUNCHER_APP_LAUNCH_TAP, instanceId, info);
     }
 
     private void startShortcutIntentSafely(Intent intent, Bundle optsBundle, ItemInfo info,

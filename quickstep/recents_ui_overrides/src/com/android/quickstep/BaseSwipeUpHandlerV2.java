@@ -1122,8 +1122,8 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
     }
 
     @Override
-    protected void onRestartLastAppearedTask() {
-        super.onRestartLastAppearedTask();
+    protected void onRestartPreviouslyAppearedTask() {
+        super.onRestartPreviouslyAppearedTask();
         reset();
     }
 
