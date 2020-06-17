@@ -448,8 +448,8 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
             return;
         }
         mInfo.setTitle(nameInfos[0].getLabel());
-        StatsLogManager.newInstance(getContext())
-                .log(LAUNCHER_FOLDER_LABEL_UPDATED, instanceId, mInfo);
+        StatsLogManager.newInstance(getContext()).logger().withItemInfo(mInfo)
+                .withInstanceId(instanceId).log(LAUNCHER_FOLDER_LABEL_UPDATED);
         onTitleChanged(mInfo.title);
         mFolder.mFolderName.setText(mInfo.title);
         mFolder.mLauncher.getModelWriter().updateItemInDatabase(mInfo);

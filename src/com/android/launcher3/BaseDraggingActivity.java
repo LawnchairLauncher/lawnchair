@@ -202,7 +202,8 @@ public abstract class BaseDraggingActivity extends BaseActivity
     }
 
     protected void logAppLaunch(ItemInfo info, InstanceId instanceId) {
-        getStatsLogManager().log(LAUNCHER_APP_LAUNCH_TAP, instanceId, info);
+        getStatsLogManager().logger().withItemInfo(info).withInstanceId(instanceId)
+                .log(LAUNCHER_APP_LAUNCH_TAP);
     }
 
     private void startShortcutIntentSafely(Intent intent, Bundle optsBundle, ItemInfo info,

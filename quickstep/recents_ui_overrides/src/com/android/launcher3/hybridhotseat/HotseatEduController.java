@@ -265,7 +265,7 @@ public class HotseatEduController {
                     requiresMigration ? R.string.hotseat_tip_no_empty_slots
                             : R.string.hotseat_auto_enrolled),
                     mHotseat.getTop());
-            mLauncher.getStatsLogManager().log(LAUNCHER_HOTSEAT_EDU_ONLY_TIP);
+            mLauncher.getStatsLogManager().logger().log(LAUNCHER_HOTSEAT_EDU_ONLY_TIP);
             finishOnboarding();
         }
     }

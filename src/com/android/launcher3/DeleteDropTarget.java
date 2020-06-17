@@ -126,11 +126,9 @@ public class DeleteDropTarget extends ButtonDropTarget {
             d.dragInfo.container = NO_ID;
         }
         super.onDrop(d, options);
-        mStatsLogManager.log(
-                mControlType == ControlType.REMOVE_TARGET
-                        ? LAUNCHER_ITEM_DROPPED_ON_REMOVE
-                        : LAUNCHER_ITEM_DROPPED_ON_CANCEL,
-                d.logInstanceId);
+        mStatsLogManager.logger().withInstanceId(d.logInstanceId)
+                .log(mControlType == ControlType.REMOVE_TARGET ? LAUNCHER_ITEM_DROPPED_ON_REMOVE
+                        : LAUNCHER_ITEM_DROPPED_ON_CANCEL);
     }
 
     @Override
