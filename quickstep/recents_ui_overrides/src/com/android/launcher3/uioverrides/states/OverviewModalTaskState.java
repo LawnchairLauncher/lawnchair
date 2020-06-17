@@ -20,6 +20,7 @@ import android.graphics.Rect;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherState;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.quickstep.views.RecentsView;
 
@@ -54,6 +55,17 @@ public class OverviewModalTaskState extends OverviewState {
     @Override
     public float getOverviewModalness() {
         return 1.0f;
+    }
+
+    @Override
+    public void onBackPressed(Launcher launcher) {
+        launcher.getStateManager().goToState(LauncherState.OVERVIEW);
+        RecentsView recentsView = launcher.<RecentsView>getOverviewPanel();
+        if (recentsView != null) {
+            recentsView.resetModalVisuals();
+        } else {
+            super.onBackPressed(launcher);
+        }
     }
 
     public static float[] getOverviewScaleAndOffsetForModalState(BaseDraggingActivity activity) {

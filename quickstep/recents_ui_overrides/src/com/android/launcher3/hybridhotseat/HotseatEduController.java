@@ -15,6 +15,9 @@
  */
 package com.android.launcher3.hybridhotseat;
 
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent
+        .LAUNCHER_HOTSEAT_EDU_ONLY_TIP;
+
 import android.content.Intent;
 import android.view.View;
 
@@ -47,12 +50,12 @@ public class HotseatEduController {
     public static final String KEY_HOTSEAT_EDU_SEEN = "hotseat_edu_seen";
     public static final String HOTSEAT_EDU_ACTION =
             "com.android.launcher3.action.SHOW_HYBRID_HOTSEAT_EDU";
-    private static final String SETTINGS_ACTION =
+    public static final String SETTINGS_ACTION =
             "android.settings.ACTION_CONTENT_SUGGESTIONS_SETTINGS";
 
     private final Launcher mLauncher;
     private final Hotseat mHotseat;
-    private final HotseatRestoreHelper mRestoreHelper;
+    private HotseatRestoreHelper mRestoreHelper;
     private List<WorkspaceItemInfo> mPredictedApps;
     private HotseatEduDialog mActiveDialog;
 
@@ -71,14 +74,17 @@ public class HotseatEduController {
      * Checks what type of migration should be used and migrates hotseat
      */
     void migrate() {
-        mRestoreHelper.createBackup();
+        if (mRestoreHelper != null) {
+            mRestoreHelper.createBackup();
+        }
         if (FeatureFlags.HOTSEAT_MIGRATE_TO_FOLDER.get()) {
             migrateToFolder();
         } else {
             migrateHotseatWhole();
         }
-        Snackbar.show(mLauncher, R.string.hotsaet_tip_prediction_enabled, R.string.hotseat_turn_off,
-                null, () -> mLauncher.startActivity(new Intent(SETTINGS_ACTION)));
+        Snackbar.show(mLauncher, R.string.hotsaet_tip_prediction_enabled,
+                R.string.hotseat_prediction_settings, null,
+                () -> mLauncher.startActivity(new Intent(SETTINGS_ACTION)));
     }
 
     /**
@@ -223,15 +229,15 @@ public class HotseatEduController {
 
     void finishOnboarding() {
         mOnOnboardingComplete.run();
-        destroy();
         mLauncher.getSharedPrefs().edit().putBoolean(KEY_HOTSEAT_EDU_SEEN, true).apply();
     }
 
     void showDimissTip() {
         if (mHotseat.getShortcutsAndWidgets().getChildCount()
                 < mLauncher.getDeviceProfile().inv.numHotseatIcons) {
-            Snackbar.show(mLauncher, R.string.hotseat_tip_gaps_filled, R.string.hotseat_turn_off,
-                    null, () -> mLauncher.startActivity(new Intent(SETTINGS_ACTION)));
+            Snackbar.show(mLauncher, R.string.hotseat_tip_gaps_filled,
+                    R.string.hotseat_prediction_settings, null,
+                    () -> mLauncher.startActivity(new Intent(SETTINGS_ACTION)));
         } else {
             new ArrowTipView(mLauncher).show(
                     mLauncher.getString(R.string.hotseat_tip_no_empty_slots), mHotseat.getTop());
@@ -240,12 +246,6 @@ public class HotseatEduController {
 
     void setPredictedApps(List<WorkspaceItemInfo> predictedApps) {
         mPredictedApps = predictedApps;
-    }
-
-    void destroy() {
-        if (mActiveDialog != null) {
-            mActiveDialog.setHotseatEduController(null);
-        }
     }
 
     void showEdu() {
@@ -265,6 +265,7 @@ public class HotseatEduController {
                     requiresMigration ? R.string.hotseat_tip_no_empty_slots
                             : R.string.hotseat_auto_enrolled),
                     mHotseat.getTop());
+            mLauncher.getStatsLogManager().log(LAUNCHER_HOTSEAT_EDU_ONLY_TIP);
             finishOnboarding();
         }
     }

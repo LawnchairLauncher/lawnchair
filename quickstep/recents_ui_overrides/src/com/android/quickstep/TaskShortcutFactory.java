@@ -18,29 +18,26 @@ package com.android.quickstep;
 
 import static android.view.Display.DEFAULT_DISPLAY;
 
+import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_ACTIONS;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_SELECTIONS;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SYSTEM_SHORTCUT_FREE_FORM_TAP;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SYSTEM_SHORTCUT_SPLIT_SCREEN_TAP;
 import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch.TAP;
 
 import android.app.Activity;
 import android.app.ActivityOptions;
-import android.content.ComponentName;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.UserHandle;
 import android.view.View;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
-import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.logging.StatsLogManager.LauncherEvent;
 import com.android.launcher3.model.WellbeingModel;
-import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.popup.SystemShortcut.AppInfo;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
@@ -69,28 +66,7 @@ public interface TaskShortcutFactory {
 
     SystemShortcut getShortcut(BaseDraggingActivity activity, TaskView view);
 
-    static WorkspaceItemInfo dummyInfo(TaskView view) {
-        Task task = view.getTask();
-
-        WorkspaceItemInfo dummyInfo = new WorkspaceItemInfo(){
-            /**
-             * Helps to log events as {@link LauncherAtom.Task}
-             * instead of {@link LauncherAtom.ItemInfo}.
-             */
-            @Override
-            public LauncherAtom.ItemInfo buildProto() {
-                return view.buildProto();
-            }
-        };
-        dummyInfo.intent = new Intent();
-        ComponentName component = task.getTopComponent();
-        dummyInfo.getIntent().setComponent(component);
-        dummyInfo.user = UserHandle.of(task.key.userId);
-        dummyInfo.title = TaskUtils.getTitle(view.getContext(), task);
-        return dummyInfo;
-    }
-
-    TaskShortcutFactory APP_INFO = (activity, view) -> new AppInfo(activity, dummyInfo(view));
+    TaskShortcutFactory APP_INFO = (activity, view) -> new AppInfo(activity, view.getItemInfo());
 
     abstract class MultiWindowFactory implements TaskShortcutFactory {
 
@@ -134,7 +110,7 @@ public interface TaskShortcutFactory {
 
         public MultiWindowSystemShortcut(int iconRes, int textRes, BaseDraggingActivity activity,
                 TaskView taskView, MultiWindowFactory factory, LauncherEvent launcherEvent) {
-            super(iconRes, textRes, activity, dummyInfo(taskView));
+            super(iconRes, textRes, activity, taskView.getItemInfo());
             mLauncherEvent = launcherEvent;
             mHandler = new Handler(Looper.getMainLooper());
             mTaskView = taskView;
@@ -220,7 +196,7 @@ public interface TaskShortcutFactory {
                 WindowManagerWrapper.getInstance().overridePendingAppTransitionMultiThumbFuture(
                         future, animStartedListener, mHandler, true /* scaleUp */,
                         taskKey.displayId);
-                mTarget.getStatsLogManager().log(mLauncherEvent, mTaskView.buildProto());
+                mTarget.getStatsLogManager().log(mLauncherEvent, mTaskView.getItemInfo());
             }
         }
     }
@@ -304,7 +280,7 @@ public interface TaskShortcutFactory {
         private final TaskView mTaskView;
 
         public PinSystemShortcut(BaseDraggingActivity target, TaskView tv) {
-            super(R.drawable.ic_pin, R.string.recent_task_option_pin, target, dummyInfo(tv));
+            super(R.drawable.ic_pin, R.string.recent_task_option_pin, target, tv.getItemInfo());
             mTaskView = tv;
         }
 
@@ -321,15 +297,30 @@ public interface TaskShortcutFactory {
             mTaskView.launchTask(true, resultCallback, Executors.MAIN_EXECUTOR.getHandler());
             dismissTaskMenuView(mTarget);
             mTarget.getStatsLogManager().log(LauncherEvent.LAUNCHER_SYSTEM_SHORTCUT_PIN_TAP,
-                    mTaskView.buildProto());
+                    mTaskView.getItemInfo());
         }
     }
 
     TaskShortcutFactory INSTALL = (activity, view) ->
             InstantAppResolver.newInstance(activity).isInstantApp(activity,
                  view.getTask().getTopComponent().getPackageName())
-                    ? new SystemShortcut.Install(activity, dummyInfo(view)) : null;
+                    ? new SystemShortcut.Install(activity, view.getItemInfo()) : null;
 
     TaskShortcutFactory WELLBEING = (activity, view) ->
-            WellbeingModel.SHORTCUT_FACTORY.getShortcut(activity, dummyInfo(view));
+            WellbeingModel.SHORTCUT_FACTORY.getShortcut(activity, view.getItemInfo());
+
+    TaskShortcutFactory SCREENSHOT = (activity, tv) -> {
+        if (ENABLE_OVERVIEW_ACTIONS.get()) {
+            return tv.getThumbnail().getTaskOverlay()
+                .getScreenshotShortcut(activity, tv.getItemInfo());
+        }
+        return null;
+    };
+
+    TaskShortcutFactory MODAL = (activity, tv) -> {
+        if (ENABLE_OVERVIEW_ACTIONS.get() && ENABLE_OVERVIEW_SELECTIONS.get()) {
+            return tv.getThumbnail().getTaskOverlay().getModalStateSystemShortcut(tv.getItemInfo());
+        }
+        return null;
+    };
 }
