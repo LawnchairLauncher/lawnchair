@@ -47,6 +47,7 @@ import com.android.launcher3.util.LogConfig;
 import com.android.systemui.shared.system.SysUiStatsLog;
 
 import java.util.ArrayList;
+import java.util.OptionalInt;
 
 /**
  * This class calls StatsLog compile time generated methods.
@@ -73,12 +74,17 @@ public class StatsLogCompatManager extends StatsLogManager {
         sContext = context;
     }
 
+    @Override
+    public StatsLogger logger() {
+        return new StatsCompatLogger();
+    }
+
     /**
      * Logs a {@link EventEnum}.
      */
     @Override
     public void log(EventEnum event) {
-        log(event, DEFAULT_INSTANCE_ID, (ItemInfo) null);
+        logger().log(event);
     }
 
     /**
@@ -86,7 +92,7 @@ public class StatsLogCompatManager extends StatsLogManager {
      */
     @Override
     public void log(EventEnum event, InstanceId instanceId) {
-        log(event, instanceId, (ItemInfo) null);
+        logger().withInstanceId(instanceId).log(event);
     }
 
     /**
@@ -94,7 +100,7 @@ public class StatsLogCompatManager extends StatsLogManager {
      */
     @Override
     public void log(EventEnum event, @Nullable ItemInfo info) {
-        log(event, DEFAULT_INSTANCE_ID, info);
+        logger().withItemInfo(info).log(event);
     }
 
     /**
@@ -109,9 +115,8 @@ public class StatsLogCompatManager extends StatsLogManager {
                     @Override
                     public void execute(LauncherAppState app, BgDataModel dataModel,
                             AllAppsList apps) {
-                        write(event, instanceId, atomInfo, null,
-                                LAUNCHER_UICHANGED__DST_STATE__HOME,
-                                LAUNCHER_UICHANGED__DST_STATE__BACKGROUND);
+                        write(event, instanceId, atomInfo, LAUNCHER_UICHANGED__DST_STATE__HOME,
+                                LAUNCHER_UICHANGED__DST_STATE__BACKGROUND, OptionalInt.empty());
                     }
                 });
     }
@@ -127,9 +132,7 @@ public class StatsLogCompatManager extends StatsLogManager {
             int dstState) {
         write(event, DEFAULT_INSTANCE_ID,
                 atomItemInfo == null ? LauncherAtom.ItemInfo.getDefaultInstance() : atomItemInfo,
-                null,
-                srcState,
-                dstState);
+                srcState, dstState, OptionalInt.empty());
     }
 
     /**
@@ -138,10 +141,7 @@ public class StatsLogCompatManager extends StatsLogManager {
     @Override
     public void log(EventEnum event, InstanceId instanceId,
             @Nullable ItemInfo info) {
-        logInternal(event, instanceId, info,
-                LAUNCHER_UICHANGED__DST_STATE__HOME,
-                LAUNCHER_UICHANGED__DST_STATE__BACKGROUND,
-                DEFAULT_PAGE_INDEX);
+        logger().withItemInfo(info).withInstanceId(instanceId).log(event);
     }
 
     /**
@@ -163,65 +163,21 @@ public class StatsLogCompatManager extends StatsLogManager {
      */
     @Override
     public void log(EventEnum event, int srcState, int dstState, int pageIndex) {
-        logInternal(event, DEFAULT_INSTANCE_ID, null, srcState, dstState, pageIndex);
+        logger().withSrcState(srcState).withDstState(dstState).log(event);
     }
 
-    /**
-     * Logs an event and accompanying {@link InstanceId} and {@link ItemInfo}.
-     */
-    private void logInternal(EventEnum event, InstanceId instanceId,
-            @Nullable ItemInfo info, int srcState, int dstState, int pageIndex) {
-
-        LauncherAppState.getInstance(sContext).getModel().enqueueModelUpdateTask(
-                new BaseModelUpdateTask() {
-                    @Override
-                    public void execute(LauncherAppState app, BgDataModel dataModel,
-                            AllAppsList apps) {
-                        writeEvent(event, instanceId, info, srcState, dstState, pageIndex,
-                                dataModel.folders);
-                    }
-                });
-    }
-
-    private static void writeEvent(EventEnum event, InstanceId instanceId,
-            @Nullable ItemInfo info, int srcState, int dstState, int pageIndex,
-            IntSparseArrayMap<FolderInfo> folders) {
-
-        if (!Utilities.ATLEAST_R) {
-            return;
-        }
-        LauncherAtom.ItemInfo atomInfo = LauncherAtom.ItemInfo.getDefaultInstance();
-        if (info != null) {
-            if (info.container >= 0) {
-                atomInfo = info.buildProto(folders.get(info.container));
-            } else {
-                atomInfo = info.buildProto();
-            }
-        } else {
-            if (srcState == LAUNCHER_UICHANGED__DST_STATE__HOME
-                    || dstState == LAUNCHER_UICHANGED__SRC_STATE__HOME) {
-                atomInfo = LauncherAtom.ItemInfo.newBuilder().setContainerInfo(
-                        LauncherAtom.ContainerInfo.newBuilder().setWorkspace(
-                                LauncherAtom.WorkspaceContainer.newBuilder().setPageIndex(pageIndex)
-                        )).build();
-            }
-        }
-        write(event, instanceId, atomInfo, info, srcState, dstState);
-    }
-
-    private static void write(EventEnum event, InstanceId instanceId,
+    private  void write(EventEnum event, InstanceId instanceId,
             LauncherAtom.ItemInfo atomInfo,
-            @Nullable ItemInfo info,
-            int srcState, int dstState) {
+            int srcState, int dstState, OptionalInt mRank) {
         if (IS_VERBOSE) {
             String name = (event instanceof Enum) ? ((Enum) event).name() :
                     event.getId() + "";
 
             Log.d(TAG, instanceId == DEFAULT_INSTANCE_ID
-                    ? String.format("\n%s (State:%s->%s) \n%s\n%s", name, getStateString(srcState),
-                            getStateString(dstState), info, atomInfo)
-                    : String.format("\n%s (State:%s->%s) (InstanceId:%s)\n%s\n%s", name,
-                            getStateString(srcState), getStateString(dstState), instanceId, info,
+                    ? String.format("\n%s (State:%s->%s)\n%s", name, getStateString(srcState),
+                    getStateString(dstState),  atomInfo)
+                    : String.format("\n%s (State:%s->%s) (InstanceId:%s)\n%s", name,
+                            getStateString(srcState), getStateString(dstState), instanceId,
                             atomInfo));
         }
 
@@ -246,7 +202,7 @@ public class StatsLogCompatManager extends StatsLogManager {
                 getPageId(atomInfo, true) /* page_id_parent */,
                 getHierarchy(atomInfo) /* hierarchy */,
                 atomInfo.getIsWork() /* is_work_profile */,
-                atomInfo.getRank() /* rank */,
+                mRank.orElse(atomInfo.getRank()) /* rank */,
                 atomInfo.getFolderIcon().getFromLabelState().getNumber() /* fromState */,
                 atomInfo.getFolderIcon().getToLabelState().getNumber() /* toState */,
                 atomInfo.getFolderIcon().getLabelInfo() /* edittext */,
@@ -317,6 +273,72 @@ public class StatsLogCompatManager extends StatsLogManager {
                 getCardinality(info) /* cardinality */,
                 info.getWidget().getSpanX(),
                 info.getWidget().getSpanY());
+    }
+
+    /**
+     * Helps to construct and write statsd compatible log message.
+     */
+    private class StatsCompatLogger implements StatsLogger {
+        private ItemInfo mItemInfo = new ItemInfo();
+        private InstanceId mInstanceId = DEFAULT_INSTANCE_ID;
+        private OptionalInt mRank = OptionalInt.empty();
+        private int mSrcState = LAUNCHER_UICHANGED__SRC_STATE__HOME;
+        private int mDstState = LAUNCHER_UICHANGED__DST_STATE__BACKGROUND;
+
+        @Override
+        public StatsLogger withItemInfo(ItemInfo itemInfo) {
+            this.mItemInfo = itemInfo;
+            return this;
+        }
+
+        @Override
+        public StatsLogger withInstanceId(InstanceId instanceId) {
+            this.mInstanceId = instanceId;
+            return this;
+        }
+
+        @Override
+        public StatsLogger withRank(int rank) {
+            this.mRank = OptionalInt.of(rank);
+            return this;
+        }
+
+        @Override
+        public StatsLogger withSrcState(int srcState) {
+            this.mSrcState = srcState;
+            return this;
+        }
+
+        @Override
+        public StatsLogger withDstState(int dstState) {
+            this.mDstState = dstState;
+            return this;
+        }
+
+        @Override
+        public void log(EventEnum event) {
+            if (!Utilities.ATLEAST_R) {
+                return;
+            }
+
+            if (mItemInfo.container < 0) {
+                // Item is not within a folder. Write to StatsLog in same thread.
+                write(event, mInstanceId, mItemInfo.buildProto(), mSrcState, mDstState, mRank);
+            } else {
+                // Item is inside the folder, fetch folder info in a BG thread
+                // and then write to StatsLog.
+                LauncherAppState.getInstance(sContext).getModel().enqueueModelUpdateTask(
+                        new BaseModelUpdateTask() {
+                            @Override
+                            public void execute(LauncherAppState app, BgDataModel dataModel,
+                                    AllAppsList apps) {
+                                FolderInfo folderInfo = dataModel.folders.get(mItemInfo.container);
+                                write(event, mInstanceId, mItemInfo.buildProto(folderInfo),
+                                        mSrcState, mDstState, mRank);
+                            }
+                        });
+            }
+        }
     }
 
     private static int getCardinality(LauncherAtom.ItemInfo info) {
