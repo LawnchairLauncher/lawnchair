@@ -45,6 +45,8 @@ public class StartLauncherViaGestureTests extends AbstractQuickStepTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
+        // b/143488140
+        mLauncher.pressHome();
         // Start an activity where the gestures start.
         startAppFast(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
     }
@@ -98,7 +100,6 @@ public class StartLauncherViaGestureTests extends AbstractQuickStepTest {
             // The test action.
             mLauncher.getBackground().switchToOverview();
         }
-        // Workaround for b/157099707
         mLauncher.pressHome();
     }
 }

@@ -16,6 +16,8 @@
 
 package com.android.quickstep;
 
+import static android.view.Surface.ROTATION_0;
+
 import static com.android.launcher3.util.MainThreadInitializedObject.forOverride;
 
 import android.annotation.SuppressLint;
@@ -24,6 +26,7 @@ import android.graphics.Insets;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.os.Build;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
@@ -31,9 +34,12 @@ import androidx.annotation.RequiresApi;
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.R;
+import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.ResourceBasedOverride;
+import com.android.quickstep.util.RecentsOrientedState;
 import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.TaskThumbnailView;
 import com.android.quickstep.views.TaskView;
@@ -56,6 +62,19 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
             SystemShortcut shortcut = menuOption.getShortcut(activity, taskView);
             if (shortcut != null) {
                 shortcuts.add(shortcut);
+            }
+        }
+        RecentsOrientedState orientedState = taskView.getRecentsView().getPagedViewOrientedState();
+        boolean canLauncherRotate = orientedState.canLauncherRotate();
+        boolean isInLandscape = orientedState.getTouchRotation() != ROTATION_0;
+
+        // Add overview actions to the menu when in in-place rotate landscape mode.
+        if (!canLauncherRotate && isInLandscape) {
+            for (TaskShortcutFactory actionMenuOption : ACTION_MENU_OPTIONS) {
+                SystemShortcut shortcut = actionMenuOption.getShortcut(activity, taskView);
+                if (shortcut != null) {
+                    shortcuts.add(shortcut);
+                }
             }
         }
         return shortcuts;
@@ -85,6 +104,11 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
             TaskShortcutFactory.WELLBEING
     };
 
+    private static final TaskShortcutFactory[] ACTION_MENU_OPTIONS = new TaskShortcutFactory[]{
+        TaskShortcutFactory.SCREENSHOT,
+        TaskShortcutFactory.MODAL
+    };
+
     /**
      * Overlay on each task handling Overview Action Buttons.
      */
@@ -94,10 +118,14 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
         protected final TaskThumbnailView mThumbnailView;
 
         private T mActionsView;
+        private ImageActionsApi mImageApi;
+        private boolean mIsAllowedByPolicy;
 
         protected TaskOverlay(TaskThumbnailView taskThumbnailView) {
             mApplicationContext = taskThumbnailView.getContext().getApplicationContext();
             mThumbnailView = taskThumbnailView;
+            mImageApi = new ImageActionsApi(
+                mApplicationContext, mThumbnailView::getThumbnail);
         }
 
         protected T getActionsView() {
@@ -112,15 +140,12 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
          * Called when the current task is interactive for the user
          */
         public void initOverlay(Task task, ThumbnailData thumbnail, Matrix matrix) {
-            ImageActionsApi imageApi = new ImageActionsApi(
-                    mApplicationContext, mThumbnailView::getThumbnail);
             final boolean isAllowedByPolicy = thumbnail.isRealSnapshot;
-
             getActionsView().setCallbacks(new OverlayUICallbacks() {
                 @Override
                 public void onShare() {
                     if (isAllowedByPolicy) {
-                        imageApi.startShareActivity();
+                        mImageApi.startShareActivity();
                     } else {
                         showBlockedByPolicyMessage();
                     }
@@ -129,16 +154,23 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
                 @SuppressLint("NewApi")
                 @Override
                 public void onScreenshot() {
-                    if (isAllowedByPolicy) {
-                        imageApi.saveScreenshot(mThumbnailView.getThumbnail(),
-                                getTaskSnapshotBounds(), getTaskSnapshotInsets(), task.key);
-                    } else {
-                        showBlockedByPolicyMessage();
-                    }
+                    saveScreenshot(task);
                 }
             });
         }
 
+        /**
+         * Called to save screenshot of the task thumbnail.
+         */
+        @SuppressLint("NewApi")
+        private void saveScreenshot(Task task) {
+            if (mThumbnailView.isRealSnapshot()) {
+                mImageApi.saveScreenshot(mThumbnailView.getThumbnail(),
+                        getTaskSnapshotBounds(), getTaskSnapshotInsets(), task.key);
+            } else {
+                showBlockedByPolicyMessage();
+            }
+        }
 
         /**
          * Called when the overlay is no longer used.
@@ -146,6 +178,26 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
         public void reset() {
         }
 
+        /**
+         * Called when the system wants to reset the modal visuals.
+         */
+        public void resetModalVisuals() {
+        }
+
+        /**
+         * Gets the modal state system shortcut.
+         */
+        public SystemShortcut getModalStateSystemShortcut(WorkspaceItemInfo itemInfo) {
+            return null;
+        }
+
+        /**
+         * Gets the system shortcut for the screenshot that will be added to the task menu.
+         */
+        public SystemShortcut getScreenshotShortcut(BaseDraggingActivity activity,
+                ItemInfo iteminfo) {
+            return new ScreenshotSystemShortcut(activity, iteminfo);
+        }
         /**
          * Gets the task snapshot as it is displayed on the screen.
          *
@@ -174,6 +226,22 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
                     mThumbnailView.getContext(),
                     R.string.blocked_by_policy,
                     Toast.LENGTH_LONG).show();
+        }
+
+        private class ScreenshotSystemShortcut extends SystemShortcut {
+
+            private final BaseDraggingActivity mActivity;
+
+            ScreenshotSystemShortcut(BaseDraggingActivity activity, ItemInfo itemInfo) {
+                super(R.drawable.ic_screenshot, R.string.action_screenshot, activity, itemInfo);
+                mActivity = activity;
+            }
+
+            @Override
+            public void onClick(View view) {
+                saveScreenshot(mThumbnailView.getTaskView().getTask());
+                dismissTaskMenuView(mActivity);
+            }
         }
     }
 

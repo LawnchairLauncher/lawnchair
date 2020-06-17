@@ -267,10 +267,6 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                 if (!mPassedSlopOnThisGesture && passedSlop) {
                     mPassedSlopOnThisGesture = true;
                 }
-                // Until passing slop, we don't know what direction we're going, so assume we might
-                // be quick switching to avoid translating recents away when continuing the gesture.
-                boolean isLikelyToStartNewTask = !mPassedSlopOnThisGesture
-                        || horizontalDist > upDist;
 
                 if (!mPassedPilferInputSlop) {
                     if (passedSlop) {
@@ -304,6 +300,13 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                     }
 
                     if (mDeviceState.isFullyGesturalNavMode()) {
+                        // Until passing slop, we don't know what direction we're going, so assume
+                        // we're quick switching to avoid translating recents away when continuing
+                        // the gesture.
+                        boolean haveNotPassedSlopOnContinuedGesture =
+                                !mPassedSlopOnThisGesture && mPassedPilferInputSlop;
+                        boolean isLikelyToStartNewTask = haveNotPassedSlopOnContinuedGesture
+                                || horizontalDist > upDist;
                         mMotionPauseDetector.setDisallowPause(upDist < mMotionPauseMinDisplacement
                                 || isLikelyToStartNewTask);
                         mMotionPauseDetector.addPosition(ev);
