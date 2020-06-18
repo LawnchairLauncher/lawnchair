@@ -149,7 +149,22 @@ public class StatsLogManager implements ResourceBasedOverride {
         LAUNCHER_ALL_APPS_RANKED(552),
 
         @UiEvent(doc = "App launch ranking logged for hotseat predictions)")
-        LAUNCHER_HOTSEAT_RANKED(553);
+        LAUNCHER_HOTSEAT_RANKED(553),
+
+        @UiEvent(doc = "User tapped on the screenshot button on overview)")
+        LAUNCHER_OVERVIEW_ACTIONS_SCREENSHOT(580),
+
+        @UiEvent(doc = "User tapped on the select button on overview)")
+        LAUNCHER_OVERVIEW_ACTIONS_SELECT(581),
+
+        @UiEvent(doc = "User tapped on the share button on overview")
+        LAUNCHER_OVERVIEW_ACTIONS_SHARE(582),
+
+        @UiEvent(doc = "User tapped on the close button in select mode")
+        LAUNCHER_SELECT_MODE_CLOSE(583),
+
+        @UiEvent(doc = "User tapped on the highlight items in select mode")
+        LAUNCHER_SELECT_MODE_ITEM(584);
         // ADD MORE
         private final int mId;
 
