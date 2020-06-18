@@ -30,6 +30,7 @@ import static com.android.launcher3.Utilities.mapToRange;
 import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.Utilities.squaredTouchSlop;
 import static com.android.launcher3.anim.Interpolators.ACCEL;
+import static com.android.launcher3.anim.Interpolators.ACCEL_0_75;
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
@@ -607,6 +608,17 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         }
     }
 
+    /**
+     * Whether the Clear All button is hidden or fully visible. Used to determine if center
+     * displayed page is a task or the Clear All button.
+     *
+     * @return True = Clear All button not fully visible, center page is a task. False = Clear All
+     * button fully visible, center page is Clear All button.
+     */
+    public boolean isClearAllHidden() {
+        return mClearAllButton.getAlpha() != 1f;
+    }
+
     @Override
     protected void onPageBeginTransition() {
         super.onPageBeginTransition();
@@ -616,7 +628,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     @Override
     protected void onPageEndTransition() {
         super.onPageEndTransition();
-        if (getScrollX() == getScrollForPage(getPageNearestToCenterOfScreen())) {
+        if (isClearAllHidden()) {
             LayoutUtils.setViewEnabled(mActionsView, true);
         }
         if (getNextPage() > 0) {
@@ -1336,7 +1348,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
             mActivity.getUserEventDispatcher().logTaskLaunchOrDismiss(
                     endState.logAction, Direction.UP, index, compKey);
             mActivity.getStatsLogManager().log(
-                    LAUNCHER_TASK_DISMISS_SWIPE_UP, taskView.buildProto());
+                    LAUNCHER_TASK_DISMISS_SWIPE_UP, taskView.getItemInfo());
         }
     }
 
@@ -1720,7 +1732,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
     private void updatePageOffsets() {
         float offset = mAdjacentPageOffset * getWidth();
-        float modalOffset = mTaskModalness * getWidth();
+        float modalOffset = ACCEL_0_75.getInterpolation(mTaskModalness) * getWidth();
         if (mIsRtl) {
             offset = -offset;
             modalOffset = -modalOffset;
@@ -1746,6 +1758,16 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
      */
     public float getPageOffsetScale() {
         return Math.max(getWidth(), 1);
+    }
+
+    /**
+     * Resets the visuals when exit modal state.
+     */
+    public void resetModalVisuals() {
+        TaskView taskView = getCurrentPageTaskView();
+        if (taskView != null) {
+            taskView.getThumbnail().getTaskOverlay().resetModalVisuals();
+        }
     }
 
     private void updateDeadZoneRects() {
@@ -1919,7 +1941,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                             endState.logAction, Direction.DOWN, indexOfChild(tv),
                             TaskUtils.getLaunchComponentKeyForTask(task.key));
                     mActivity.getStatsLogManager().log(
-                            LAUNCHER_TASK_LAUNCH_SWIPE_DOWN, tv.buildProto());
+                            LAUNCHER_TASK_LAUNCH_SWIPE_DOWN, tv.getItemInfo());
                 }
             } else {
                 onTaskLaunched(false);
@@ -2089,6 +2111,12 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         return mClearAllButton;
     }
 
+    @Override
+    protected boolean onOverscroll(int amount) {
+        // overscroll should only be accepted on -1 direction (for clear all button)
+        if ((amount > 0 && !mIsRtl) || (amount < 0 && mIsRtl)) return false;
+        return super.onOverscroll(amount);
+    }
 
     /**
      * @return How many pixels the running task is offset on the currently laid out dominant axis.
@@ -2182,6 +2210,11 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         if (getCurrentPageTaskView() != null) {
             getCurrentPageTaskView().setModalness(modalness);
         }
+        // Only show actions view when it's modal for in-place landscape mode.
+        boolean inPlaceLandscape = !mOrientationState.canLauncherRotate()
+                && mOrientationState.getTouchRotation() != ROTATION_0;
+        mActionsView.updateHiddenFlags(HIDDEN_NON_ZERO_ROTATION, modalness < 1 && inPlaceLandscape);
+        LayoutUtils.setViewEnabled(mActionsView, true);
     }
 
     @Nullable

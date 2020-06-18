@@ -18,6 +18,7 @@ package com.android.launcher3.appprediction;
 
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.OVERVIEW;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALL_APPS_RANKED;
 
 import android.app.prediction.AppPredictor;
 import android.app.prediction.AppTarget;
@@ -37,6 +38,8 @@ import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsStore.OnUpdateListener;
 import com.android.launcher3.hybridhotseat.HotseatPredictionController;
 import com.android.launcher3.icons.IconCache.ItemInfoUpdateReceiver;
+import com.android.launcher3.logger.LauncherAtom;
+import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.shortcuts.ShortcutKey;
@@ -48,6 +51,7 @@ import com.android.launcher3.util.MainThreadInitializedObject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.OptionalInt;
 import java.util.stream.IntStream;
 
 /**
@@ -302,6 +306,41 @@ public class PredictionUiStateManager implements StateListener<LauncherState>,
     }
 
     /**
+     * Logs ranking info for launched app within all apps prediction.
+     * Only applicable when {@link ItemInfo#itemType} is one of the followings:
+     * {@link LauncherSettings.Favorites#ITEM_TYPE_APPLICATION},
+     * {@link LauncherSettings.Favorites#ITEM_TYPE_SHORTCUT},
+     * {@link LauncherSettings.Favorites#ITEM_TYPE_DEEP_SHORTCUT}
+     */
+    public void logLaunchedAppRankingInfo(@NonNull ItemInfo itemInfo, InstanceId instanceId) {
+        if (itemInfo.getTargetComponent() == null || itemInfo.user == null
+                || (itemInfo.itemType != LauncherSettings.Favorites.ITEM_TYPE_APPLICATION
+                && itemInfo.itemType != LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT
+                && itemInfo.itemType != LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT)) {
+            return;
+        }
+
+        Launcher launcher = Launcher.getLauncher(mAppsView.getContext());
+        final ComponentKey k = new ComponentKey(itemInfo.getTargetComponent(), itemInfo.user);
+        final List<ComponentKeyMapper> predictedApps = getCurrentState().apps;
+        OptionalInt rank = IntStream.range(0, predictedApps.size())
+                .filter((i) -> k.equals(predictedApps.get(i).getComponentKey()))
+                .findFirst();
+        if (!rank.isPresent()) {
+            return;
+        }
+
+        LauncherAtom.ItemInfo.Builder atomBuilder = LauncherAtom.ItemInfo.newBuilder();
+        atomBuilder.setRank(rank.getAsInt());
+        atomBuilder.setContainerInfo(
+                LauncherAtom.ContainerInfo.newBuilder().setPredictionContainer(
+                        LauncherAtom.PredictionContainer.newBuilder().build()).build());
+        launcher.getStatsLogManager().log(LAUNCHER_ALL_APPS_RANKED, instanceId,
+                atomBuilder.build());
+    }
+
+
+    /**
      * Fill in predicted_rank field based on app prediction.
      * Only applicable when {@link ItemInfo#itemType} is one of the followings:
      * {@link LauncherSettings.Favorites#ITEM_TYPE_APPLICATION},
@@ -310,6 +349,7 @@ public class PredictionUiStateManager implements StateListener<LauncherState>,
      */
     public static void fillInPredictedRank(
             @NonNull ItemInfo itemInfo, @NonNull LauncherLogProto.Target target) {
+
         final PredictionUiStateManager manager = PredictionUiStateManager.INSTANCE.getNoCreate();
         if (manager == null || itemInfo.getTargetComponent() == null || itemInfo.user == null
                 || (itemInfo.itemType != LauncherSettings.Favorites.ITEM_TYPE_APPLICATION

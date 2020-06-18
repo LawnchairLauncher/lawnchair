@@ -35,6 +35,7 @@ public class FlingSpringAnim {
 
     private final FlingAnimation mFlingAnim;
     private SpringAnimation mSpringAnim;
+    private final boolean mSkipFlingAnim;
 
     private float mTargetPosition;
 
@@ -56,6 +57,10 @@ public class FlingSpringAnim {
                 .setMinValue(minValue)
                 .setMaxValue(maxValue);
         mTargetPosition = targetPosition;
+
+        // We are already past the fling target, so skip it to avoid losing a frame of the spring.
+        mSkipFlingAnim = startPosition <= minValue && startVelocity < 0
+                || startPosition >= maxValue && startVelocity > 0;
 
         mFlingAnim.addEndListener(((animation, canceled, value, velocity) -> {
             mSpringAnim = new SpringAnimation(object, property)
@@ -84,6 +89,9 @@ public class FlingSpringAnim {
 
     public void start() {
         mFlingAnim.start();
+        if (mSkipFlingAnim) {
+            mFlingAnim.cancel();
+        }
     }
 
     public void end() {
