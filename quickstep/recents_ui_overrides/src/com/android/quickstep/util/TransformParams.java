@@ -191,7 +191,6 @@ public class TransformParams {
             for (SurfaceParams param : params) {
                 SyncRtSurfaceTransactionApplierCompat.applyParams(t, param);
             }
-            t.setEarlyWakeup();
             t.apply();
         }
     }
