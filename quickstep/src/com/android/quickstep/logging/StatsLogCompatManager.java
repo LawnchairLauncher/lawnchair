@@ -41,6 +41,7 @@ import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.IntSparseArrayMap;
 import com.android.launcher3.util.LogConfig;
 import com.android.systemui.shared.system.SysUiStatsLog;
@@ -192,7 +193,8 @@ public class StatsLogCompatManager extends StatsLogManager {
                 writeSnapshot(atomInfo, mInstanceId);
             }
             for (FolderInfo fInfo : folders) {
-                for (ItemInfo info : fInfo.contents) {
+                ArrayList<WorkspaceItemInfo> folderContents = (ArrayList) fInfo.contents.clone();
+                for (ItemInfo info : folderContents) {
                     LauncherAtom.ItemInfo atomInfo = info.buildProto(fInfo);
                     writeSnapshot(atomInfo, mInstanceId);
                 }
