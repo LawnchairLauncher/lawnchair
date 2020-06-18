@@ -163,6 +163,7 @@ public class LauncherSettings {
         public static final int CONTAINER_SEARCH_RESULTS = -106;
         public static final int CONTAINER_SHORTCUTS = -107;
         public static final int CONTAINER_SETTINGS = -108;
+        public static final int CONTAINER_TASKSWITCHER = -109;
 
         public static final String containerToString(int container) {
             switch (container) {
@@ -248,6 +249,12 @@ public class LauncherSettings {
          * The gesture is an application created deep shortcut
          */
         public static final int ITEM_TYPE_DEEP_SHORTCUT = 6;
+
+        /**
+         * Type of the item is recents task.
+         * TODO(hyunyoungs): move constants not related to Favorites DB to a better location.
+         */
+        public static final int ITEM_TYPE_TASK = 7;
 
         /**
          * The appWidgetId of the widget

@@ -76,8 +76,8 @@
     <!-- Button text to dismiss opt in for fully predicted hotseat -->
     <string name="hotseat_edu_dismiss">No thanks</string>
 
-    <!-- action shown to turn off predictions after onboarding -->
-    <string name="hotseat_turn_off">Settings</string>
+    <!-- action shown to toggle predictions after onboarding -->
+    <string name="hotseat_prediction_settings">Settings</string>
 
     <!-- tip shown if user has no items in hotseat to migrate -->
     <string name="hotseat_auto_enrolled">Most-used apps appear here, and change based on routines</string>
@@ -86,7 +86,9 @@
     <!-- tip shown if user declines migration and has some open spots for prediction -->
     <string name="hotseat_tip_gaps_filled">App suggestions added to empty space</string>
     <!-- tip shown when user migrates and predictions are enabled in hotseat -->
-    <string name="hotsaet_tip_prediction_enabled">App suggestions Enabled</string>
+    <string name="hotsaet_tip_prediction_enabled">App suggestions enabled</string>
+    <!-- tip shown when hotseat edu is requested while predicions are disabled -->
+    <string name="hotsaet_tip_prediction_disabled">App suggestions are disabled</string>
 
     <!-- content description for hotseat items -->
     <string name="hotseat_prediction_content_description">Predicted app: <xliff:g id="title" example="Chrome">%1$s</xliff:g></string>

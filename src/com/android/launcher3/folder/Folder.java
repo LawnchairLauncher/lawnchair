@@ -745,6 +745,11 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
                 : getContext().getString(R.string.folder_closed));
     }
 
+    @Override
+    protected View getAccessibilityInitialFocusView() {
+        return mContent.getFirstItem();
+    }
+
     private void closeComplete(boolean wasAnimated) {
         // TODO: Clear all active animations.
         DragLayer parent = (DragLayer) getParent();
@@ -1333,7 +1338,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
             d.stateAnnouncer.completeAction(R.string.item_moved);
         }
         mStatsLogManager
-                .log(LAUNCHER_ITEM_DROP_COMPLETED, d.logInstanceId, d.dragInfo.buildProto(mInfo));
+                .log(LAUNCHER_ITEM_DROP_COMPLETED, d.logInstanceId, d.dragInfo);
     }
 
     // This is used so the item doesn't immediately appear in the folder when added. In one case
@@ -1438,7 +1443,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
             if (hasFocus) {
                 startEditingFolderName();
             } else {
-                mStatsLogManager.log(LAUNCHER_FOLDER_LABEL_UPDATED, mInfo.buildProto());
+                mStatsLogManager.log(LAUNCHER_FOLDER_LABEL_UPDATED, mInfo);
                 logFolderLabelState();
                 mFolderName.dispatchBackKey();
             }

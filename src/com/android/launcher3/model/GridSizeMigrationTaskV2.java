@@ -59,7 +59,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * This class takes care of shrinking the workspace (by maximum of one row and one column), as a
@@ -248,12 +247,25 @@ public class GridSizeMigrationTaskV2 {
 
     /** Return what's in the src but not in the dest */
     private static List<DbEntry> calcDiff(List<DbEntry> src, List<DbEntry> dest) {
-        Set<String> destSet = dest.parallelStream().map(DbEntry::getIntentStr).collect(
-                Collectors.toSet());
+        Set<String> destIntentSet = new HashSet<>();
+        Set<Set<String>> destFolderIntentSet = new HashSet<>();
+        for (DbEntry entry : dest) {
+            if (entry.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
+                destFolderIntentSet.add(entry.mFolderItems.keySet());
+            } else {
+                destIntentSet.add(entry.mIntent);
+            }
+        }
         List<DbEntry> diff = new ArrayList<>();
         for (DbEntry entry : src) {
-            if (!destSet.contains(entry.mIntent)) {
-                diff.add(entry);
+            if (entry.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
+                if (!destFolderIntentSet.contains(entry.mFolderItems.keySet())) {
+                    diff.add(entry);
+                }
+            } else {
+                if (!destIntentSet.contains(entry.mIntent)) {
+                    diff.add(entry);
+                }
             }
         }
         return diff;
