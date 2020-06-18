@@ -17,5 +17,7 @@
 -->
 
 <resources>
+    <bool name="notification_dots_enabled">false</bool>
     <bool name="notification_badging_enabled">false</bool>
 </resources>
+
