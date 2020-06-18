@@ -31,6 +31,7 @@ import android.app.prediction.AppTargetEvent;
 import android.content.ComponentName;
 import android.os.Process;
 import android.util.Log;
+import android.view.HapticFeedbackConstants;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -69,6 +70,7 @@ import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IntArray;
+import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.views.ArrowTipView;
 import com.android.launcher3.views.Snackbar;
 
@@ -120,6 +122,17 @@ public class HotseatPredictionController implements DragController.DragListener,
     private final View.OnLongClickListener mPredictionLongClickListener = v -> {
         if (!ItemLongClickListener.canStartDrag(mLauncher)) return false;
         if (mLauncher.getWorkspace().isSwitchingState()) return false;
+        if (!mLauncher.getOnboardingPrefs().getBoolean(
+                OnboardingPrefs.HOTSEAT_LONGPRESS_TIP_SEEN)) {
+            Intent intent = new Intent(SETTINGS_ACTION);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            Snackbar.show(mLauncher, R.string.hotseat_tip_gaps_filled,
+                    R.string.hotseat_prediction_settings, null,
+                    () -> mLauncher.startActivity(intent));
+            mLauncher.getOnboardingPrefs().markChecked(OnboardingPrefs.HOTSEAT_LONGPRESS_TIP_SEEN);
+            mLauncher.getDragLayer().performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+            return true;
+        }
         // Start the drag
         mLauncher.getWorkspace().beginDragShared(v, this, new DragOptions());
         return true;

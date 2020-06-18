@@ -38,6 +38,7 @@ public class OnboardingPrefs<T extends Launcher> {
     public static final String SHELF_BOUNCE_COUNT = "launcher.shelf_bounce_count";
     public static final String ALL_APPS_COUNT = "launcher.all_apps_count";
     public static final String HOTSEAT_DISCOVERY_TIP_COUNT = "launcher.hotseat_discovery_tip_count";
+    public static final String HOTSEAT_LONGPRESS_TIP_SEEN = "launcher.hotseat_longpress_tip_seen";
 
     /**
      * Events that either have happened or have not (booleans).
@@ -110,5 +111,12 @@ public class OnboardingPrefs<T extends Launcher> {
         count++;
         mSharedPrefs.edit().putInt(eventKey, count).apply();
         return hasReachedMaxCount(count, eventKey);
+    }
+
+    /**
+     * Marks on-boarding preference boolean at true
+     */
+    public void markChecked(String flag) {
+        mSharedPrefs.edit().putBoolean(flag, true).apply();
     }
 }
