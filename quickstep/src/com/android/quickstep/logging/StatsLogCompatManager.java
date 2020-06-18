@@ -34,6 +34,9 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.logger.LauncherAtom.ContainerInfo;
+import com.android.launcher3.logger.LauncherAtom.FolderIcon;
+import com.android.launcher3.logger.LauncherAtom.FromState;
+import com.android.launcher3.logger.LauncherAtom.ToState;
 import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.logging.InstanceIdSequence;
 import com.android.launcher3.logging.StatsLogManager;
@@ -174,6 +177,9 @@ public class StatsLogCompatManager extends StatsLogManager {
         private Optional<ContainerInfo> mContainerInfo = Optional.empty();
         private int mSrcState = LAUNCHER_UICHANGED__SRC_STATE__HOME;
         private int mDstState = LAUNCHER_UICHANGED__DST_STATE__BACKGROUND;
+        private Optional<FromState> mFromState = Optional.empty();
+        private Optional<ToState> mToState = Optional.empty();
+        private Optional<String> mEditText = Optional.empty();
 
         @Override
         public StatsLogger withItemInfo(ItemInfo itemInfo) {
@@ -220,25 +226,33 @@ public class StatsLogCompatManager extends StatsLogManager {
         }
 
         @Override
+        public StatsLogger withFromState(FromState fromState) {
+            this.mFromState = Optional.of(fromState);
+            return this;
+        }
+
+        @Override
+        public StatsLogger withToState(ToState toState) {
+            this.mToState = Optional.of(toState);
+            return this;
+        }
+
+        @Override
+        public StatsLogger withEditText(String editText) {
+            this.mEditText = Optional.of(editText);
+            return this;
+        }
+
+        @Override
         public void log(EventEnum event) {
             if (!Utilities.ATLEAST_R) {
                 return;
             }
 
-            LauncherAtom.ItemInfo.Builder itemInfoBuilder =
-                    (LauncherAtom.ItemInfo.Builder) mItemInfo.buildProto().toBuilder();
-            mRank.ifPresent(itemInfoBuilder::setRank);
-            if (mContainerInfo.isPresent()) {
-                // User already provided container info;
-                // default container info from item info will be ignored.
-                itemInfoBuilder.setContainerInfo(mContainerInfo.get());
-                write(event, mInstanceId, itemInfoBuilder.build(), mSrcState, mDstState);
-                return;
-            }
-
             if (mItemInfo.container < 0) {
                 // Item is not within a folder. Write to StatsLog in same thread.
-                write(event, mInstanceId, itemInfoBuilder.build(), mSrcState, mDstState);
+                write(event, mInstanceId, applyOverwrites(mItemInfo.buildProto()), mSrcState,
+                        mDstState);
             } else {
                 // Item is inside the folder, fetch folder info in a BG thread
                 // and then write to StatsLog.
@@ -248,15 +262,31 @@ public class StatsLogCompatManager extends StatsLogManager {
                             public void execute(LauncherAppState app, BgDataModel dataModel,
                                     AllAppsList apps) {
                                 FolderInfo folderInfo = dataModel.folders.get(mItemInfo.container);
-                                LauncherAtom.ItemInfo.Builder atomInfoBuilder =
-                                        (LauncherAtom.ItemInfo.Builder) mItemInfo
-                                                .buildProto(folderInfo).toBuilder();
-                                mRank.ifPresent(atomInfoBuilder::setRank);
-                                write(event, mInstanceId, atomInfoBuilder.build(), mSrcState,
-                                        mDstState);
+                                write(event, mInstanceId,
+                                        applyOverwrites(mItemInfo.buildProto(folderInfo)),
+                                        mSrcState, mDstState);
                             }
                         });
             }
+        }
+
+        private LauncherAtom.ItemInfo applyOverwrites(LauncherAtom.ItemInfo atomInfo) {
+            LauncherAtom.ItemInfo.Builder itemInfoBuilder =
+                    (LauncherAtom.ItemInfo.Builder) atomInfo.toBuilder();
+
+            mRank.ifPresent(itemInfoBuilder::setRank);
+            mContainerInfo.ifPresent(itemInfoBuilder::setContainerInfo);
+
+            if (mFromState.isPresent() || mToState.isPresent() || mEditText.isPresent()) {
+                FolderIcon.Builder folderIconBuilder = (FolderIcon.Builder) itemInfoBuilder
+                        .getFolderIcon()
+                        .toBuilder();
+                mFromState.ifPresent(folderIconBuilder::setFromLabelState);
+                mToState.ifPresent(folderIconBuilder::setToLabelState);
+                mEditText.ifPresent(folderIconBuilder::setLabelInfo);
+                itemInfoBuilder.setFolderIcon(folderIconBuilder);
+            }
+            return itemInfoBuilder.build();
         }
 
         private void write(EventEnum event, InstanceId instanceId, LauncherAtom.ItemInfo atomInfo,

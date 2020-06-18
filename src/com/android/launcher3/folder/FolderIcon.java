@@ -20,7 +20,7 @@ import static android.text.TextUtils.isEmpty;
 
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
 import static com.android.launcher3.folder.PreviewItemManager.INITIAL_ITEM_ANIMATION_DURATION;
-import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_FOLDER_LABEL_UPDATED;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_FOLDER_AUTO_LABELED;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -63,6 +63,8 @@ import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.icons.DotRenderer;
+import com.android.launcher3.logger.LauncherAtom.FromState;
+import com.android.launcher3.logger.LauncherAtom.ToState;
 import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.data.AppInfo;
@@ -428,7 +430,6 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
             mPreviewItemManager.hidePreviewItem(finalIndex, false);
             mFolder.showItem(item);
             setLabelSuggestion(nameInfos, instanceId);
-            mFolder.logFolderLabelState();
             invalidate();
         }, DROP_IN_ANIMATION_DURATION);
     }
@@ -447,12 +448,25 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
         if (nameInfos == null || nameInfos[0] == null || isEmpty(nameInfos[0].getLabel())) {
             return;
         }
-        mInfo.setTitle(nameInfos[0].getLabel());
-        StatsLogManager.newInstance(getContext()).logger().withItemInfo(mInfo)
-                .withInstanceId(instanceId).log(LAUNCHER_FOLDER_LABEL_UPDATED);
+        CharSequence newTitle = nameInfos[0].getLabel();
+        FromState fromState = mInfo.getFromLabelState();
+
+        mInfo.setTitle(newTitle);
         onTitleChanged(mInfo.title);
         mFolder.mFolderName.setText(mInfo.title);
         mFolder.mLauncher.getModelWriter().updateItemInDatabase(mInfo);
+
+        // Logging for folder creation flow
+        StatsLogManager.newInstance(getContext()).logger()
+                .withInstanceId(instanceId)
+                .withItemInfo(mInfo)
+                .withFromState(fromState)
+                .withToState(ToState.TO_SUGGESTION0)
+                // When LAUNCHER_FOLDER_LABEL_UPDATED event.edit_text does not have delimiter,
+                // event is assumed to be folder creation on the server side.
+                .withEditText(newTitle.toString())
+                .log(LAUNCHER_FOLDER_AUTO_LABELED);
+        mFolder.logFolderLabelState(fromState, ToState.TO_SUGGESTION0);
     }
 
 
