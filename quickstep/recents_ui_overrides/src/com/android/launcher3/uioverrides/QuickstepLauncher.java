@@ -45,7 +45,6 @@ import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.appprediction.PredictionUiStateManager;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.Folder;
-import com.android.launcher3.hybridhotseat.HotseatEduController;
 import com.android.launcher3.hybridhotseat.HotseatPredictionController;
 import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.model.data.AppInfo;
@@ -104,20 +103,6 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
         super.setupViews();
         if (FeatureFlags.ENABLE_HYBRID_HOTSEAT.get()) {
             mHotseatPredictionController = new HotseatPredictionController(this);
-        }
-    }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        if (HotseatEduController.HOTSEAT_EDU_ACTION.equals(intent.getAction())
-                && mHotseatPredictionController != null) {
-            boolean alreadyOnHome = hasWindowFocus() && ((intent.getFlags()
-                    & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
-                    != Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
-            getStateManager().goToState(NORMAL, alreadyOnHome, () -> {
-                mHotseatPredictionController.showEdu();
-            });
         }
     }
 
