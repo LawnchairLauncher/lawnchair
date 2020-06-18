@@ -208,7 +208,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                 }
             };
 
-    protected final RecentsOrientedState mOrientationState;
+    protected RecentsOrientedState mOrientationState;
     protected final BaseActivityInterface mSizeStrategy;
     protected RecentsAnimationController mRecentsAnimationController;
     protected RecentsAnimationTargets mRecentsAnimationTargets;
@@ -371,11 +371,17 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
     private BaseActivity.MultiWindowModeChangedListener mMultiWindowModeChangedListener =
             (inMultiWindowMode) -> {
-        if (!inMultiWindowMode && mOverviewStateEnabled) {
-            // TODO: Re-enable layout transitions for addition of the unpinned task
-            reloadIfNeeded();
-        }
-    };
+                if (mOrientationState != null) {
+                    mOrientationState.setMultiWindowMode(inMultiWindowMode);
+                    setLayoutRotation(mOrientationState.getTouchRotation(),
+                            mOrientationState.getDisplayRotation());
+                    rotateAllChildTasks();
+                }
+                if (!inMultiWindowMode && mOverviewStateEnabled) {
+                    // TODO: Re-enable layout transitions for addition of the unpinned task
+                    reloadIfNeeded();
+                }
+            };
 
     public RecentsView(Context context, AttributeSet attrs, int defStyleAttr,
             BaseActivityInterface sizeStrategy) {
@@ -841,7 +847,6 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
     private void resetPaddingFromTaskSize() {
         DeviceProfile dp = mActivity.getDeviceProfile();
-        mOrientationState.setMultiWindowMode(dp.isMultiWindowMode);
         getTaskSize(mTempRect);
         mTaskWidth = mTempRect.width();
         mTaskHeight = mTempRect.height();
@@ -1640,7 +1645,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                     : View.LAYOUT_DIRECTION_RTL);
             mClearAllButton.setRotation(mOrientationHandler.getDegreesRotated());
             mActivity.getDragLayer().recreateControllers();
-            boolean isInLandscape = touchRotation != 0
+            boolean isInLandscape = mOrientationState.getTouchRotation() != 0
                     || mOrientationState.getLauncherRotation() != ROTATION_0;
             mActionsView.updateHiddenFlags(HIDDEN_NON_ZERO_ROTATION,
                     !mOrientationState.canLauncherRotate() && isInLandscape);
