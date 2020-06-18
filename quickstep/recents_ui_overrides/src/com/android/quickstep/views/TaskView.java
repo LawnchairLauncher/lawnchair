@@ -40,6 +40,7 @@ import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.app.ActivityOptions;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Outline;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -48,7 +49,6 @@ import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.InsetDrawable;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Process;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.util.Log;
@@ -61,13 +61,14 @@ import android.widget.Toast;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PendingAnimation;
-import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.logging.UserEventDispatcher;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.TestProtocol;
@@ -213,7 +214,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             mActivity.getUserEventDispatcher().logTaskLaunchOrDismiss(
                     Touch.TAP, Direction.NONE, getRecentsView().indexOfChild(this),
                     TaskUtils.getLaunchComponentKeyForTask(getTask().key));
-            mActivity.getStatsLogManager().log(LAUNCHER_TASK_LAUNCH_TAP, buildProto());
+            mActivity.getStatsLogManager().log(LAUNCHER_TASK_LAUNCH_TAP, getItemInfo());
         });
 
         mCurrentFullscreenParams = new FullscreenDrawParams(context);
@@ -226,14 +227,16 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     /**
      * Builds proto for logging
      */
-    public LauncherAtom.ItemInfo buildProto() {
+    public WorkspaceItemInfo getItemInfo() {
         ComponentKey componentKey = TaskUtils.getLaunchComponentKeyForTask(getTask().key);
-        LauncherAtom.ItemInfo.Builder itemBuilder = LauncherAtom.ItemInfo.newBuilder();
-        itemBuilder.setIsWork(componentKey.user != Process.myUserHandle());
-        itemBuilder.setTask(LauncherAtom.Task.newBuilder()
-                .setComponentName(componentKey.componentName.flattenToShortString())
-                .setIndex(getRecentsView().indexOfChild(this)));
-        return itemBuilder.build();
+        WorkspaceItemInfo dummyInfo = new WorkspaceItemInfo();
+        dummyInfo.itemType = LauncherSettings.Favorites.ITEM_TYPE_TASK;
+        dummyInfo.container = LauncherSettings.Favorites.CONTAINER_TASKSWITCHER;
+        dummyInfo.user = componentKey.user;
+        dummyInfo.intent = new Intent().setComponent(componentKey.componentName);
+        dummyInfo.title = TaskUtils.getTitle(getContext(), getTask());
+        dummyInfo.screenId = getRecentsView().indexOfChild(this);
+        return dummyInfo;
     }
 
     @Override
@@ -425,13 +428,16 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     }
 
     private boolean showTaskMenu(int action) {
-        getRecentsView().snapToPage(getRecentsView().indexOfChild(this));
-        mMenuView = TaskMenuView.showForTask(this);
-        mActivity.getStatsLogManager().log(LAUNCHER_TASK_ICON_TAP_OR_LONGPRESS, buildProto());
-        UserEventDispatcher.newInstance(getContext()).logActionOnItem(action, Direction.NONE,
-                LauncherLogProto.ItemType.TASK_ICON);
-        if (mMenuView != null) {
-            mMenuView.addOnAttachStateChangeListener(mTaskMenuStateListener);
+        if (!getRecentsView().isClearAllHidden()) {
+            getRecentsView().snapToPage(getRecentsView().indexOfChild(this));
+        } else {
+            mMenuView = TaskMenuView.showForTask(this);
+            mActivity.getStatsLogManager().log(LAUNCHER_TASK_ICON_TAP_OR_LONGPRESS, getItemInfo());
+            UserEventDispatcher.newInstance(getContext()).logActionOnItem(action, Direction.NONE,
+                    LauncherLogProto.ItemType.TASK_ICON);
+            if (mMenuView != null) {
+                mMenuView.addOnAttachStateChangeListener(mTaskMenuStateListener);
+            }
         }
         return mMenuView != null;
     }
@@ -969,6 +975,9 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     }
 
     void updateCurrentFullscreenParams(PreviewPositionHelper previewPositionHelper) {
+        if (getRecentsView() == null) {
+            return;
+        }
         mCurrentFullscreenParams.setProgress(
                 mFullscreenProgress,
                 getRecentsView().getScaleX(),

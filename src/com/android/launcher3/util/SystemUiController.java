@@ -30,7 +30,7 @@ public class SystemUiController {
 
     // Various UI states in increasing order of priority
     public static final int UI_STATE_BASE_WINDOW = 0;
-    public static final int UI_STATE_ALL_APPS = 1;
+    public static final int UI_STATE_SCRIM_VIEW = 1;
     public static final int UI_STATE_WIDGET_BOTTOM_SHEET = 2;
     public static final int UI_STATE_OVERVIEW = 3;
 
@@ -61,23 +61,36 @@ public class SystemUiController {
         // Apply the state flags in priority order
         int newFlags = oldFlags;
         for (int stateFlag : mStates) {
-            if (Utilities.ATLEAST_OREO) {
-                if ((stateFlag & FLAG_LIGHT_NAV) != 0) {
-                    newFlags |= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
-                } else if ((stateFlag & FLAG_DARK_NAV) != 0) {
-                    newFlags &= ~(View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
-                }
-            }
-
-            if ((stateFlag & FLAG_LIGHT_STATUS) != 0) {
-                newFlags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-            } else if ((stateFlag & FLAG_DARK_STATUS) != 0) {
-                newFlags &= ~(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-            }
+            newFlags = getSysUiVisibilityFlags(stateFlag, newFlags);
         }
         if (newFlags != oldFlags) {
             mWindow.getDecorView().setSystemUiVisibility(newFlags);
         }
+    }
+
+    /**
+     * Returns the sysui visibility for the base layer
+     */
+    public int getBaseSysuiVisibility() {
+        return getSysUiVisibilityFlags(
+                mStates[UI_STATE_BASE_WINDOW], mWindow.getDecorView().getSystemUiVisibility());
+    }
+
+    private int getSysUiVisibilityFlags(int stateFlag, int currentVisibility) {
+        if (Utilities.ATLEAST_OREO) {
+            if ((stateFlag & FLAG_LIGHT_NAV) != 0) {
+                currentVisibility |= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+            } else if ((stateFlag & FLAG_DARK_NAV) != 0) {
+                currentVisibility &= ~(View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
+            }
+        }
+
+        if ((stateFlag & FLAG_LIGHT_STATUS) != 0) {
+            currentVisibility |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+        } else if ((stateFlag & FLAG_DARK_STATUS) != 0) {
+            currentVisibility &= ~(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        }
+        return currentVisibility;
     }
 
     @Override

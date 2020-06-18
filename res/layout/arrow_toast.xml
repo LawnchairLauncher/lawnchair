@@ -34,6 +34,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
             android:gravity="center"
             android:layout_gravity="center_vertical"
             android:textColor="@android:color/white"
@@ -58,6 +60,5 @@
         android:elevation="2dp"
         android:layout_width="10dp"
         android:layout_height="8dp"
-        android:layout_marginTop="-2dp"
-        android:layout_gravity="center_horizontal"/>
+        android:layout_marginTop="-2dp"/>
 </merge>

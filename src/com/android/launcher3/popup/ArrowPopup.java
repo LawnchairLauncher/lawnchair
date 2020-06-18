@@ -389,6 +389,11 @@ public abstract class ArrowPopup<T extends BaseDraggingActivity> extends Abstrac
         return Pair.create(this, "");
     }
 
+    @Override
+    protected View getAccessibilityInitialFocusView() {
+        return getChildCount() > 0 ? getChildAt(0) : this;
+    }
+
     private void animateOpen() {
         setVisibility(View.VISIBLE);
 

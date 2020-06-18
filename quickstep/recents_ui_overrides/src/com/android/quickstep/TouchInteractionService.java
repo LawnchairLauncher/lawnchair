@@ -539,6 +539,8 @@ public class TouchInteractionService extends Service implements PluginListener<O
         if (mTaskAnimationManager.isRecentsAnimationRunning()) {
             gestureState.updateRunningTask(mGestureState.getRunningTask());
             gestureState.updateLastStartedTaskId(mGestureState.getLastStartedTaskId());
+            gestureState.updatePreviouslyAppearedTaskIds(
+                    mGestureState.getPreviouslyAppearedTaskIds());
         } else {
             gestureState.updateRunningTask(TraceHelper.whitelistIpcs("getRunningTask.0",
                     () -> mAM.getRunningTask(false /* filterOnlyVisibleRecents */)));
