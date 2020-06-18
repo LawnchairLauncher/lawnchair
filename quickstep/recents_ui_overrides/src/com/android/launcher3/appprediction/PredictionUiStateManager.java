@@ -16,9 +16,11 @@
 
 package com.android.launcher3.appprediction;
 
+import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
+import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
+import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.OVERVIEW;
-import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALL_APPS_RANKED;
 
 import android.app.prediction.AppPredictor;
 import android.app.prediction.AppTarget;
@@ -26,6 +28,7 @@ import android.content.ComponentName;
 import android.content.Context;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile.OnIDPChangeListener;
@@ -38,8 +41,6 @@ import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsStore.OnUpdateListener;
 import com.android.launcher3.hybridhotseat.HotseatPredictionController;
 import com.android.launcher3.icons.IconCache.ItemInfoUpdateReceiver;
-import com.android.launcher3.logger.LauncherAtom;
-import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.shortcuts.ShortcutKey;
@@ -51,6 +52,7 @@ import com.android.launcher3.util.MainThreadInitializedObject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.stream.IntStream;
 
@@ -306,39 +308,24 @@ public class PredictionUiStateManager implements StateListener<LauncherState>,
     }
 
     /**
-     * Logs ranking info for launched app within all apps prediction.
+     * Returns ranking info for the app within all apps prediction.
      * Only applicable when {@link ItemInfo#itemType} is one of the followings:
      * {@link LauncherSettings.Favorites#ITEM_TYPE_APPLICATION},
      * {@link LauncherSettings.Favorites#ITEM_TYPE_SHORTCUT},
      * {@link LauncherSettings.Favorites#ITEM_TYPE_DEEP_SHORTCUT}
      */
-    public void logLaunchedAppRankingInfo(@NonNull ItemInfo itemInfo, InstanceId instanceId) {
-        if (itemInfo.getTargetComponent() == null || itemInfo.user == null
-                || (itemInfo.itemType != LauncherSettings.Favorites.ITEM_TYPE_APPLICATION
-                && itemInfo.itemType != LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT
-                && itemInfo.itemType != LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT)) {
-            return;
-        }
+    public OptionalInt getAllAppsRank(@Nullable ItemInfo itemInfo) {
+        Optional<ComponentKey> componentKey = Optional.ofNullable(itemInfo)
+                .filter(item -> item.itemType == ITEM_TYPE_APPLICATION
+                        || item.itemType == ITEM_TYPE_SHORTCUT
+                        || item.itemType == ITEM_TYPE_DEEP_SHORTCUT)
+                .map(ItemInfo::getTargetComponent)
+                .map(componentName -> new ComponentKey(componentName, itemInfo.user));
 
-        Launcher launcher = Launcher.getLauncher(mAppsView.getContext());
-        final ComponentKey k = new ComponentKey(itemInfo.getTargetComponent(), itemInfo.user);
-        final List<ComponentKeyMapper> predictedApps = getCurrentState().apps;
-        OptionalInt rank = IntStream.range(0, predictedApps.size())
-                .filter((i) -> k.equals(predictedApps.get(i).getComponentKey()))
-                .findFirst();
-        if (!rank.isPresent()) {
-            return;
-        }
-
-        LauncherAtom.ItemInfo.Builder atomBuilder = LauncherAtom.ItemInfo.newBuilder();
-        atomBuilder.setRank(rank.getAsInt());
-        atomBuilder.setContainerInfo(
-                LauncherAtom.ContainerInfo.newBuilder().setPredictionContainer(
-                        LauncherAtom.PredictionContainer.newBuilder().build()).build());
-        launcher.getStatsLogManager().log(LAUNCHER_ALL_APPS_RANKED, instanceId,
-                atomBuilder.build());
+        return componentKey.map(key -> IntStream.range(0, getCurrentState().apps.size())
+                .filter(index -> key.equals(getCurrentState().apps.get(index).getComponentKey()))
+                .findFirst()).orElseGet(OptionalInt::empty);
     }
-
 
     /**
      * Fill in predicted_rank field based on app prediction.

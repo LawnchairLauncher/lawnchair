@@ -19,9 +19,8 @@ import android.content.Context;
 
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
-import com.android.launcher3.logger.LauncherAtom;
+import com.android.launcher3.logger.LauncherAtom.ContainerInfo;
 import com.android.launcher3.logging.StatsLogUtils.LogStateProvider;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.ResourceBasedOverride;
@@ -145,6 +144,11 @@ public class StatsLogManager implements ResourceBasedOverride {
         @UiEvent(doc = "Hotseat education tip shown")
         LAUNCHER_HOTSEAT_EDU_ONLY_TIP(482),
 
+        /**
+         * @deprecated LauncherUiChanged.rank field is repurposed to store all apps rank, so no
+         * separate event is required.
+         */
+        @Deprecated
         @UiEvent(doc = "App launch ranking logged for all apps predictions")
         LAUNCHER_ALL_APPS_RANKED(552),
 
@@ -242,6 +246,16 @@ public class StatsLogManager implements ResourceBasedOverride {
         }
 
         /**
+         * Sets the final value for container related fields of log message.
+         *
+         * By default container related fields are derived from {@link ItemInfo}, this method would
+         * override those values.
+         */
+        default StatsLogger withContainerInfo(ContainerInfo containerInfo) {
+            return this;
+        }
+
+        /**
          * Builds the final message and logs it as {@link EventEnum}.
          */
         default void log(EventEnum event) {
@@ -270,25 +284,6 @@ public class StatsLogManager implements ResourceBasedOverride {
                 context.getApplicationContext(), R.string.stats_log_manager_class);
         mgr.mStateProvider = stateProvider;
         return mgr;
-    }
-
-    /**
-     * Logs an event.
-     *
-     * @param event an enum implementing EventEnum interface.
-     * @param atomInfo item typically containing app or task launch related information.
-     */
-    public void log(EventEnum event, InstanceId instanceId, LauncherAtom.ItemInfo atomInfo) {
-    }
-
-    /**
-     * Logs an event and accompanying {@link LauncherState}s.
-     *
-     * @param event an enum implementing EventEnum interface.
-     * @param launcherAtomItemInfo item typically containing app or task launch related information.
-     */
-    public void log(EventEnum event, @Nullable LauncherAtom.ItemInfo launcherAtomItemInfo,
-            int srcState, int dstState) {
     }
 
     /**
