@@ -21,6 +21,7 @@ import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.OVERVIEW_MODAL_TASK;
 import static com.android.launcher3.compat.AccessibilityManagerCompat.sendCustomAccessibilityEvent;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_APP_LAUNCH_TAP;
 import static com.android.launcher3.testing.TestProtocol.HINT_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.OVERVIEW_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.QUICK_SWITCH_STATE_ORDINAL;
@@ -48,6 +49,7 @@ import com.android.launcher3.folder.Folder;
 import com.android.launcher3.hybridhotseat.HotseatEduController;
 import com.android.launcher3.hybridhotseat.HotseatPredictionController;
 import com.android.launcher3.logging.InstanceId;
+import com.android.launcher3.logging.StatsLogManager.StatsLogger;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
@@ -80,6 +82,7 @@ import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.OptionalInt;
 import java.util.stream.Stream;
 
 public class QuickstepLauncher extends BaseQuickstepLauncher {
@@ -123,11 +126,15 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
 
     @Override
     protected void logAppLaunch(ItemInfo info, InstanceId instanceId) {
-        super.logAppLaunch(info, instanceId);
+        StatsLogger logger = getStatsLogManager()
+                .logger().withItemInfo(info).withInstanceId(instanceId);
+        OptionalInt allAppsRank = PredictionUiStateManager.INSTANCE.get(this).getAllAppsRank(info);
+        allAppsRank.ifPresent(logger::withRank);
+        logger.log(LAUNCHER_APP_LAUNCH_TAP);
+
         if (mHotseatPredictionController != null) {
             mHotseatPredictionController.logLaunchedAppRankingInfo(info, instanceId);
         }
-        PredictionUiStateManager.INSTANCE.get(this).logLaunchedAppRankingInfo(info, instanceId);
     }
 
     @Override
