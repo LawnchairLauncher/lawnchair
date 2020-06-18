@@ -122,7 +122,7 @@ public class HotseatPredictionController implements DragController.DragListener,
         if (mLauncher.getWorkspace().isSwitchingState()) return false;
         // Start the drag
         mLauncher.getWorkspace().beginDragShared(v, this, new DragOptions());
-        return false;
+        return true;
     };
 
     public HotseatPredictionController(Launcher launcher) {
