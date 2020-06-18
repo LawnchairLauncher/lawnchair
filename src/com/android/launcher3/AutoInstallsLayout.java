@@ -132,6 +132,7 @@ public class AutoInstallsLayout {
     private static final String ATTR_PACKAGE_NAME = "packageName";
     private static final String ATTR_CLASS_NAME = "className";
     private static final String ATTR_TITLE = "title";
+    private static final String ATTR_TITLE_TEXT = "titleText";
     private static final String ATTR_SCREEN = "screen";
 
     // x and y can be specified as negative integers, in which case -1 represents the
@@ -585,7 +586,8 @@ public class AutoInstallsLayout {
             if (titleResId != 0) {
                 title = mSourceRes.getString(titleResId);
             } else {
-                title = "";
+                String titleText = getAttributeValue(parser, ATTR_TITLE_TEXT);
+                title = TextUtils.isEmpty(titleText) ? "" : titleText;
             }
 
             mValues.put(Favorites.TITLE, title);

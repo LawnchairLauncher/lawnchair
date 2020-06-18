@@ -201,8 +201,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
         icon.mActivity = activity;
         icon.mDotRenderer = grid.mDotRendererWorkSpace;
 
-        icon.setContentDescription(
-                group.getContext().getString(R.string.folder_name_format, folderInfo.title));
+        icon.setContentDescription(icon.getAccessiblityTitle(folderInfo.title));
 
         // Keep the notification dot up to date with the sum of all the content's dots.
         FolderDotInfo folderDotInfo = new FolderDotInfo();
@@ -450,7 +449,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
         }
         mInfo.setTitle(nameInfos[0].getLabel());
         StatsLogManager.newInstance(getContext())
-                .log(LAUNCHER_FOLDER_LABEL_UPDATED, instanceId, mInfo.buildProto());
+                .log(LAUNCHER_FOLDER_LABEL_UPDATED, instanceId, mInfo);
         onTitleChanged(mInfo.title);
         mFolder.mFolderName.setText(mInfo.title);
         mFolder.mLauncher.getModelWriter().updateItemInDatabase(mInfo);
@@ -665,6 +664,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
         mDotInfo.addDotInfo(mActivity.getDotInfoForItem(item));
         boolean isDotted = mDotInfo.hasDot();
         updateDotScale(wasDotted, isDotted);
+        setContentDescription(getAccessiblityTitle(mInfo.title));
         invalidate();
         requestLayout();
     }
@@ -675,13 +675,14 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
         mDotInfo.subtractDotInfo(mActivity.getDotInfoForItem(item));
         boolean isDotted = mDotInfo.hasDot();
         updateDotScale(wasDotted, isDotted);
+        setContentDescription(getAccessiblityTitle(mInfo.title));
         invalidate();
         requestLayout();
     }
 
     public void onTitleChanged(CharSequence title) {
         mFolderName.setText(title);
-        setContentDescription(getContext().getString(R.string.folder_name_format, title));
+        setContentDescription(getAccessiblityTitle(title));
     }
 
     @Override
@@ -774,5 +775,18 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
     @Override
     public void getWorkspaceVisualDragBounds(Rect bounds) {
         getPreviewBounds(bounds);
+    }
+
+    /**
+     * Returns a formatted accessibility title for folder
+     */
+    public String getAccessiblityTitle(CharSequence title) {
+        int size = mInfo.contents.size();
+        if (size < MAX_NUM_ITEMS_IN_PREVIEW) {
+            return getContext().getString(R.string.folder_name_format_exact, title, size);
+        } else {
+            return getContext().getString(R.string.folder_name_format_overflow, title,
+                    MAX_NUM_ITEMS_IN_PREVIEW);
+        }
     }
 }
