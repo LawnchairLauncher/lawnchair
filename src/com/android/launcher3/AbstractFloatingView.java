@@ -174,7 +174,8 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
                 targetInfo.first, TYPE_WINDOW_STATE_CHANGED, targetInfo.second);
 
         if (mIsOpen) {
-            performAccessibilityAction(AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS, null);
+            getAccessibilityInitialFocusView().performAccessibilityAction(
+                    AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS, null);
         }
         ActivityContext.lookupContext(getContext()).getDragLayer()
                 .sendAccessibilityEvent(TYPE_WINDOW_CONTENT_CHANGED);
@@ -182,6 +183,11 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
 
     protected Pair<View, String> getAccessibilityTarget() {
         return null;
+    }
+
+    /** Returns the View that Accessibility services should focus on first. */
+    protected View getAccessibilityInitialFocusView() {
+        return this;
     }
 
     /**

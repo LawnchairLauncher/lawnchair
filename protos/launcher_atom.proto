@@ -54,6 +54,7 @@ message ContainerInfo {
     ShortcutsContainer shortcuts_container = 8;
     SettingsContainer settings_container = 9;
     PredictedHotseatContainer predicted_hotseat_container = 10;
+    TaskSwitcherContainer task_switcher_container = 11;
   }
 }
 
@@ -80,6 +81,9 @@ message ShortcutsContainer {
 // Container for generic system shortcuts for launcher specific settings.
 // Typically shown up as popup window by longpressing on empty space on workspace.
 message SettingsContainer {
+}
+
+message TaskSwitcherContainer {
 }
 
 enum Attribute {

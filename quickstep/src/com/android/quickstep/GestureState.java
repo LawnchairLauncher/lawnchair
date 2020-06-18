@@ -30,6 +30,8 @@ import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Manages the state for an active system gesture, listens for events from the system and Launcher,
@@ -128,6 +130,7 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
     private ActivityManager.RunningTaskInfo mRunningTask;
     private GestureEndTarget mEndTarget;
     private RemoteAnimationTargetCompat mLastAppearedTaskTarget;
+    private Set<Integer> mPreviouslyAppearedTaskIds = new HashSet<>();
     private int mLastStartedTaskId = -1;
 
     public GestureState(OverviewComponentObserver componentObserver, int gestureId) {
@@ -147,6 +150,7 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
         mRunningTask = other.mRunningTask;
         mEndTarget = other.mEndTarget;
         mLastAppearedTaskTarget = other.mLastAppearedTaskTarget;
+        mPreviouslyAppearedTaskIds = other.mPreviouslyAppearedTaskIds;
         mLastStartedTaskId = other.mLastStartedTaskId;
     }
 
@@ -234,6 +238,9 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
      */
     public void updateLastAppearedTaskTarget(RemoteAnimationTargetCompat lastAppearedTaskTarget) {
         mLastAppearedTaskTarget = lastAppearedTaskTarget;
+        if (lastAppearedTaskTarget != null) {
+            mPreviouslyAppearedTaskIds.add(lastAppearedTaskTarget.taskId);
+        }
     }
 
     /**
@@ -241,6 +248,14 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
      */
     public int getLastAppearedTaskId() {
         return mLastAppearedTaskTarget != null ? mLastAppearedTaskTarget.taskId : -1;
+    }
+
+    public void updatePreviouslyAppearedTaskIds(Set<Integer> previouslyAppearedTaskIds) {
+        mPreviouslyAppearedTaskIds = previouslyAppearedTaskIds;
+    }
+
+    public Set<Integer> getPreviouslyAppearedTaskIds() {
+        return mPreviouslyAppearedTaskIds;
     }
 
     /**

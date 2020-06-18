@@ -31,6 +31,7 @@ import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.hybridhotseat.HotseatPredictionController;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.statemanager.StateManager.StateListener;
 import com.android.launcher3.util.OnboardingPrefs;
@@ -94,6 +95,28 @@ public class QuickstepOnboardingPrefs extends OnboardingPrefs<BaseQuickstepLaunc
                         if (incrementEventCount(ALL_APPS_COUNT)) {
                             stateManager.removeStateListener(this);
                             mLauncher.getScrimView().updateDragHandleVisibility();
+                        }
+                    }
+                }
+            });
+        }
+
+        if (!hasReachedMaxCount(HOTSEAT_DISCOVERY_TIP_COUNT)) {
+            stateManager.addStateListener(new StateListener<LauncherState>() {
+                boolean mFromAllApps = false;
+
+                @Override
+                public void onStateTransitionStart(LauncherState toState) {
+                    mFromAllApps = mLauncher.getStateManager().getCurrentStableState() == ALL_APPS;
+                }
+
+                @Override
+                public void onStateTransitionComplete(LauncherState finalState) {
+                    HotseatPredictionController client = mLauncher.getHotseatPredictionController();
+                    if (mFromAllApps && finalState == NORMAL && client.hasPredictions()) {
+                        if (incrementEventCount(HOTSEAT_DISCOVERY_TIP_COUNT)) {
+                            client.showDiscoveryTip();
+                            stateManager.removeStateListener(this);
                         }
                     }
                 }
