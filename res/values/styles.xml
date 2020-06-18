@@ -194,19 +194,22 @@
         <item name="disabledIconAlpha">.28</item>
     </style>
 
-    <!-- Base theme for BubbleTextView and sub classes -->
-    <style name="BaseIcon" parent="@android:style/TextAppearance.DeviceDefault">
+
+    <style name="BaseIconUnBounded" parent="@android:style/TextAppearance.DeviceDefault">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_gravity">center</item>
         <item name="android:focusable">true</item>
         <item name="android:gravity">center_horizontal</item>
-        <item name="android:lines">1</item>
         <item name="android:textColor">?android:attr/textColorSecondary</item>
         <item name="android:defaultFocusHighlightEnabled">false</item>
-
         <!-- No shadows in the base theme -->
         <item name="android:shadowRadius">0</item>
+    </style>
+
+    <!-- Base theme for BubbleTextView and sub classes -->
+    <style name="BaseIcon" parent="BaseIconUnBounded">
+        <item name="android:lines">1</item>
     </style>
 
     <!-- Icon displayed on the workspace -->
