@@ -88,8 +88,14 @@ public class ImageActionUtils {
     @WorkerThread
     public static void persistBitmapAndStartActivity(Context context, Bitmap bitmap, Rect crop,
             Intent intent, BiFunction<Uri, Intent, Intent[]> uriToIntentMap, String tag) {
-        context.startActivities(
-                uriToIntentMap.apply(getImageUri(bitmap, crop, context, tag), intent));
+        Intent[] intents = uriToIntentMap.apply(getImageUri(bitmap, crop, context, tag), intent);
+
+        // Work around b/159412574
+        if (intents.length == 1) {
+            context.startActivity(intents[0]);
+        } else {
+            context.startActivities(intents);
+        }
     }
 
     /**
@@ -158,13 +164,13 @@ public class ImageActionUtils {
             intent = new Intent();
         }
         ClipData clipdata = new ClipData(new ClipDescription("content",
-                new String[]{ClipDescription.MIMETYPE_TEXT_PLAIN}),
+                new String[]{"image/png"}),
                 new ClipData.Item(uri));
         intent.setAction(Intent.ACTION_SEND)
                 .setComponent(null)
-                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                .addFlags(FLAG_GRANT_READ_URI_PERMISSION)
                 .setType("image/png")
-                .setFlags(FLAG_GRANT_READ_URI_PERMISSION)
                 .putExtra(Intent.EXTRA_STREAM, uri)
                 .setClipData(clipdata);
         return new Intent[]{Intent.createChooser(intent, null).addFlags(FLAG_ACTIVITY_NEW_TASK)};
