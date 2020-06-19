@@ -16,7 +16,6 @@
 package com.android.quickstep.util;
 
 import static com.android.systemui.shared.system.TransactionCompat.deferTransactionUntil;
-import static com.android.systemui.shared.system.TransactionCompat.setEarlyWakeup;
 
 import android.annotation.TargetApi;
 import android.os.Build;
@@ -95,7 +94,6 @@ public class SurfaceTransactionApplier extends ReleaseCheck {
                     surfaceParams.applyTo(t);
                 }
             }
-            setEarlyWakeup(t);
             t.apply();
             Message.obtain(mApplyHandler, MSG_UPDATE_SEQUENCE_NUMBER, toApplySeqNo, 0)
                     .sendToTarget();
