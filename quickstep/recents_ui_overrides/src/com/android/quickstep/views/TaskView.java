@@ -545,19 +545,13 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         setIconAndDimTransitionProgress(iconScale, invert);
     }
 
-    private void resetViewTransforms() {
+    protected void resetViewTransforms() {
         setCurveScale(1);
         setTranslationX(0f);
         setTranslationY(0f);
         setTranslationZ(0);
         setAlpha(mStableAlpha);
         setIconScaleAndDim(1);
-    }
-
-    public void resetVisualProperties() {
-        resetViewTransforms();
-        setFullscreenProgress(0);
-        setModalness(0);
     }
 
     public void setStableAlpha(float parentAlpha) {
