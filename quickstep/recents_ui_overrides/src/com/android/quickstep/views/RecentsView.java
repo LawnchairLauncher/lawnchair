@@ -798,8 +798,10 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         for (int i = getTaskViewCount() - 1; i >= 0; i--) {
             TaskView taskView = getTaskViewAt(i);
             if (mIgnoreResetTaskId != taskView.getTask().key.id) {
-                taskView.resetVisualProperties();
+                taskView.resetViewTransforms();
                 taskView.setStableAlpha(mContentAlpha);
+                taskView.setFullscreenProgress(mFullscreenProgress);
+                taskView.setModalness(mTaskModalness);
             }
         }
         if (mRunningTaskTileHidden) {
