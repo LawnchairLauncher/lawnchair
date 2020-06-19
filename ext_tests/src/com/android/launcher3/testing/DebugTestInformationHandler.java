@@ -28,6 +28,8 @@ import android.view.View;
 
 import androidx.annotation.Keep;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -37,6 +39,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class DebugTestInformationHandler extends TestInformationHandler {
     private static LinkedList sLeaks;
+    private static Collection<String> sEvents;
 
     public DebugTestInformationHandler(Context context) {
         init(context);
@@ -131,6 +134,34 @@ public class DebugTestInformationHandler extends TestInformationHandler {
             case TestProtocol.REQUEST_VIEW_LEAK: {
                 if (sLeaks == null) sLeaks = new LinkedList();
                 sLeaks.add(new View(mContext));
+                return response;
+            }
+
+            case TestProtocol.REQUEST_START_EVENT_LOGGING: {
+                sEvents = new ArrayList<>();
+                TestLogging.setEventConsumer(
+                        (sequence, event) -> {
+                            final Collection<String> events = sEvents;
+                            if (events != null) {
+                                synchronized (events) {
+                                    events.add(sequence + '/' + event);
+                                }
+                            }
+                        });
+                return response;
+            }
+
+            case TestProtocol.REQUEST_STOP_EVENT_LOGGING: {
+                TestLogging.setEventConsumer(null);
+                sEvents = null;
+                return response;
+            }
+
+            case TestProtocol.REQUEST_GET_TEST_EVENTS: {
+                synchronized (sEvents) {
+                    response.putStringArrayList(
+                            TestProtocol.TEST_INFO_RESPONSE_FIELD, new ArrayList<>(sEvents));
+                }
                 return response;
             }
 

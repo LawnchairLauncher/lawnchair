@@ -165,9 +165,7 @@ public final class LauncherInstrumentation {
 
     private Consumer<ContainerType> mOnSettledStateAction;
 
-    private static LogEventChecker sEventChecker;
-    // True if there is an gesture in progress that needs event verification.
-    private static boolean sCheckingEvents;
+    private LogEventChecker mEventChecker;
 
     private boolean mCheckEventsForSuccessfulGestures = false;
     private Runnable mOnLauncherCrashed;
@@ -437,15 +435,16 @@ public final class LauncherInstrumentation {
     }
 
     private String formatErrorWithEvents(String message, boolean checkEvents) {
-        if (sCheckingEvents) {
-            sCheckingEvents = false;
+        if (mEventChecker != null) {
+            final LogEventChecker eventChecker = mEventChecker;
+            mEventChecker = null;
             if (checkEvents) {
-                final String eventMismatch = sEventChecker.verify(0, false);
+                final String eventMismatch = eventChecker.verify(0, false);
                 if (eventMismatch != null) {
                     message = message + ", having produced " + eventMismatch;
                 }
             } else {
-                sEventChecker.finishNoWait();
+                eventChecker.finishNoWait();
             }
         }
 
@@ -1337,12 +1336,11 @@ public final class LauncherInstrumentation {
     }
 
     public Closable eventsCheck() {
-        Assert.assertTrue("Nested event checking", !sCheckingEvents);
+        Assert.assertTrue("Nested event checking", mEventChecker == null);
         disableSensorRotation();
         final Integer initialPid = getPid();
-        if (sEventChecker == null) sEventChecker = new LogEventChecker();
-        sEventChecker.start();
-        sCheckingEvents = true;
+        final LogEventChecker eventChecker = new LogEventChecker(this);
+        if (eventChecker.start()) mEventChecker = eventChecker;
 
         return () -> {
             if (initialPid != null && initialPid.intValue() != getPid()) {
@@ -1353,10 +1351,10 @@ public final class LauncherInstrumentation {
                                 formatErrorWithEvents("Launcher crashed", false)));
             }
 
-            if (sCheckingEvents) {
-                sCheckingEvents = false;
+            if (mEventChecker != null) {
+                mEventChecker = null;
                 if (mCheckEventsForSuccessfulGestures) {
-                    final String message = sEventChecker.verify(WAIT_TIME_MS, true);
+                    final String message = eventChecker.verify(WAIT_TIME_MS, true);
                     if (message != null) {
                         dumpDiagnostics();
                         checkForAnomaly();
@@ -1364,7 +1362,7 @@ public final class LauncherInstrumentation {
                                 "http://go/tapl : successful gesture produced " + message));
                     }
                 } else {
-                    sEventChecker.finishNoWait();
+                    eventChecker.finishNoWait();
                 }
             }
         };
@@ -1375,7 +1373,11 @@ public final class LauncherInstrumentation {
     }
 
     void expectEvent(String sequence, Pattern expected) {
-        if (sCheckingEvents) sEventChecker.expectPattern(sequence, expected);
+        if (mEventChecker != null) {
+            mEventChecker.expectPattern(sequence, expected);
+        } else {
+            Log.d(TAG, "Expecting: " + sequence + " / " + expected);
+        }
     }
 
     Rect getVisibleBounds(UiObject2 object) {
