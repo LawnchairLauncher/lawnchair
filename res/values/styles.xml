@@ -243,7 +243,6 @@
     <style name="DropTargetButton" parent="DropTargetButtonBase" />
 
     <style name="TextHeadline" parent="@android:style/TextAppearance.DeviceDefault.DialogWindowTitle" />
-    <style name="PrimaryMediumText" parent="@android:style/TextAppearance.DeviceDefault.Medium"/>
     <style name="PrimaryHeadline" parent="@android:style/TextAppearance.DeviceDefault.DialogWindowTitle"/>
 
     <style name="TextTitle" parent="@android:style/TextAppearance.DeviceDefault" />
