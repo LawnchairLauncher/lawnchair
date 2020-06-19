@@ -947,9 +947,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
      */
     public void setFullscreenProgress(float progress) {
         progress = Utilities.boundToRange(progress, 0, 1);
-        if (progress == mFullscreenProgress) {
-            return;
-        }
         mFullscreenProgress = progress;
         boolean isFullscreen = mFullscreenProgress > 0;
         mIconView.setVisibility(progress < 1 ? VISIBLE : INVISIBLE);
