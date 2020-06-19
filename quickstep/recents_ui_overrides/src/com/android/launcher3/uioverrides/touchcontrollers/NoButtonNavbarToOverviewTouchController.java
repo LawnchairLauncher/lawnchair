@@ -26,6 +26,7 @@ import static com.android.launcher3.util.VibratorWrapper.OVERVIEW_HAPTIC;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.graphics.PointF;
 import android.util.Log;
@@ -35,6 +36,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
+import com.android.launcher3.graphics.OverviewScrim;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.testing.TestProtocol;
@@ -64,6 +66,9 @@ public class NoButtonNavbarToOverviewTouchController extends FlingAndHoldTouchCo
     private boolean mIsHomeStaggeredAnimFinished;
     // The last recorded displacement before we reached overview.
     private PointF mStartDisplacement = new PointF();
+
+    // Normal to Hint animation has flag SKIP_OVERVIEW, so we update this scrim with this animator.
+    private ObjectAnimator mNormalToHintOverviewScrimAnimator;
 
     public NoButtonNavbarToOverviewTouchController(Launcher l) {
         super(l);
@@ -110,8 +115,28 @@ public class NoButtonNavbarToOverviewTouchController extends FlingAndHoldTouchCo
     @Override
     public void onDragStart(boolean start, float startDisplacement) {
         super.onDragStart(start, startDisplacement);
-
+        if (mFromState == NORMAL && mToState == HINT_STATE) {
+            mNormalToHintOverviewScrimAnimator = ObjectAnimator.ofFloat(
+                    mLauncher.getDragLayer().getOverviewScrim(),
+                    OverviewScrim.SCRIM_PROGRESS,
+                    mFromState.getOverviewScrimAlpha(mLauncher),
+                    mToState.getOverviewScrimAlpha(mLauncher));
+        }
         mReachedOverview = false;
+    }
+
+    @Override
+    protected void updateProgress(float fraction) {
+        super.updateProgress(fraction);
+        if (mNormalToHintOverviewScrimAnimator != null) {
+            mNormalToHintOverviewScrimAnimator.setCurrentFraction(fraction);
+        }
+    }
+
+    @Override
+    public void onDragEnd(float velocity) {
+        super.onDragEnd(velocity);
+        mNormalToHintOverviewScrimAnimator = null;
     }
 
     @Override
@@ -132,6 +157,7 @@ public class NoButtonNavbarToOverviewTouchController extends FlingAndHoldTouchCo
         if (mCurrentAnimation == null) {
             return;
         }
+        mNormalToHintOverviewScrimAnimator = null;
         mCurrentAnimation.dispatchOnCancelWithoutCancelRunnable(() -> {
             mLauncher.getStateManager().goToState(OVERVIEW, true, () -> {
                 mReachedOverview = true;
