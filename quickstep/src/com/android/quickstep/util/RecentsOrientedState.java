@@ -105,6 +105,9 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
     private static final int FLAG_ROTATION_WATCHER_ENABLED = 1 << 6;
     // Enable home rotation for UI tests, ignoring home rotation value from prefs
     private static final int FLAG_HOME_ROTATION_FORCE_ENABLED_FOR_TESTING = 1 << 7;
+    // Whether the swipe gesture is running, so the recents would stay locked in the
+    // current orientation
+    private static final int FLAG_SWIPE_UP_NOT_RUNNING = 1 << 8;
 
     private static final int MASK_MULTIPLE_ORIENTATION_SUPPORTED_BY_DEVICE =
             FLAG_MULTIPLE_ORIENTATION_SUPPORTED_BY_ACTIVITY
@@ -114,7 +117,8 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
     // multi-window is enabled as in that case, activity itself rotates.
     private static final int VALUE_ROTATION_WATCHER_ENABLED =
             MASK_MULTIPLE_ORIENTATION_SUPPORTED_BY_DEVICE | FLAG_SYSTEM_ROTATION_ALLOWED
-                    | FLAG_ROTATION_WATCHER_SUPPORTED | FLAG_ROTATION_WATCHER_ENABLED;
+                    | FLAG_ROTATION_WATCHER_SUPPORTED | FLAG_ROTATION_WATCHER_ENABLED
+                    | FLAG_SWIPE_UP_NOT_RUNNING;
 
     private final Context mContext;
     private final ContentResolver mContentResolver;
@@ -156,6 +160,7 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
         if (originalSmallestWidth < 600) {
             mFlags |= FLAG_MULTIPLE_ORIENTATION_SUPPORTED_BY_DENSITY;
         }
+        mFlags |= FLAG_SWIPE_UP_NOT_RUNNING;
         initFlags();
     }
 
@@ -164,6 +169,13 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
      */
     public void setMultiWindowMode(boolean isMultiWindow) {
         setFlag(FLAG_MULTIWINDOW_ROTATION_ALLOWED, isMultiWindow);
+    }
+
+    /**
+     * Sets if the swipe up gesture is currently running or not
+     */
+    public void setGestureActive(boolean isGestureActive) {
+        setFlag(FLAG_SWIPE_UP_NOT_RUNNING, !isGestureActive);
     }
 
     /**
