@@ -55,7 +55,7 @@
         <item name="iconOnlyShortcutColor">?android:attr/textColorSecondary</item>
         <item name="workProfileOverlayTextColor">#FF212121</item>
         <item name="eduHalfSheetBGColor">?android:attr/colorAccent</item>
-        <item name="disabledIconAlpha">.36</item>
+        <item name="disabledIconAlpha">.54</item>
 
         <item name="android:windowTranslucentStatus">false</item>
         <item name="android:windowTranslucentNavigation">false</item>
@@ -69,7 +69,7 @@
     <style name="LauncherTheme.DarkMainColor" parent="@style/LauncherTheme">
         <item name="folderFillColor">#FF3C4043</item> <!-- 100% GM2 800 -->
         <item name="folderTextColor">?attr/workspaceTextColor</item>
-        <item name="disabledIconAlpha">.24</item>
+        <item name="disabledIconAlpha">.254</item>
 
     </style>
 
@@ -117,7 +117,7 @@
     <style name="LauncherTheme.Dark.DarkMainColor" parent="@style/LauncherTheme.Dark">
         <item name="folderFillColor">#FF3C4043</item> <!-- 100% GM2 800 -->
         <item name="folderTextColor">@android:color/white</item>
-        <item name="disabledIconAlpha">.24</item>
+        <item name="disabledIconAlpha">.54</item>
     </style>
 
     <style name="LauncherTheme.Dark.DarkText" parent="@style/LauncherTheme.Dark">
@@ -187,11 +187,11 @@
     </style>
 
     <style name="AllAppsTheme">
-        <item name="disabledIconAlpha">.24</item>
+        <item name="disabledIconAlpha">.54</item>
     </style>
 
     <style name="AllAppsTheme.Dark">
-        <item name="disabledIconAlpha">.28</item>
+        <item name="disabledIconAlpha">.54</item>
     </style>
 
     <!-- Base theme for BubbleTextView and sub classes -->
