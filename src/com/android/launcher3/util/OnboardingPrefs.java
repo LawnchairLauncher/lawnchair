@@ -100,6 +100,13 @@ public class OnboardingPrefs<T extends Launcher> {
     }
 
     /**
+     * Marks on-boarding preference boolean at true
+     */
+    public void markChecked(String flag) {
+        mSharedPrefs.edit().putBoolean(flag, true).apply();
+    }
+
+    /**
      * Add 1 to the given event count, if we haven't already reached the max count.
      * @return Whether we have now reached the max count.
      */
@@ -111,12 +118,5 @@ public class OnboardingPrefs<T extends Launcher> {
         count++;
         mSharedPrefs.edit().putInt(eventKey, count).apply();
         return hasReachedMaxCount(count, eventKey);
-    }
-
-    /**
-     * Marks on-boarding preference boolean at true
-     */
-    public void markChecked(String flag) {
-        mSharedPrefs.edit().putBoolean(flag, true).apply();
     }
 }
