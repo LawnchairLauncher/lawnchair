@@ -17,6 +17,7 @@ package com.android.launcher3.hybridhotseat;
 
 import static com.android.launcher3.InvariantDeviceProfile.CHANGE_FLAG_GRID;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
+import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.hybridhotseat.HotseatEduController.getSettingsIntent;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOTSEAT_RANKED;
 
@@ -167,35 +168,35 @@ public class HotseatPredictionController implements DragController.DragListener,
      * Shows appropriate hotseat education based on prediction enabled and migration states.
      */
     public void showEdu() {
-        if (mComponentKeyMappers.isEmpty()) {
-            // launcher has empty predictions set
-            Snackbar.show(mLauncher, R.string.hotsaet_tip_prediction_disabled,
-                    R.string.hotseat_prediction_settings, null,
-                    () -> mLauncher.startActivity(getSettingsIntent()));
-        } else if (isEduSeen()) {
-            // user has already went through education
-            new ArrowTipView(mLauncher).show(
-                    mLauncher.getString(R.string.hotsaet_tip_prediction_enabled),
-                    mHotseat.getTop());
-        } else {
-            HotseatEduController eduController = new HotseatEduController(mLauncher, mRestoreHelper,
-                    this::createPredictor);
-            eduController.setPredictedApps(mapToWorkspaceItemInfo(mComponentKeyMappers));
-            eduController.showEdu();
-        }
+        mLauncher.getStateManager().goToState(NORMAL, true, () -> {
+            if (mComponentKeyMappers.isEmpty()) {
+                // launcher has empty predictions set
+                Snackbar.show(mLauncher, R.string.hotsaet_tip_prediction_disabled,
+                        R.string.hotseat_prediction_settings, null,
+                        () -> mLauncher.startActivity(getSettingsIntent()));
+            } else if (isEduSeen() || getPredictedIcons().size() >= (mHotSeatItemsCount + 1) / 2) {
+                showDiscoveryTip();
+            } else {
+                HotseatEduController eduController = new HotseatEduController(mLauncher,
+                        mRestoreHelper,
+                        this::createPredictor);
+                eduController.setPredictedApps(mapToWorkspaceItemInfo(mComponentKeyMappers));
+                eduController.showEdu();
+            }
+        });
     }
 
     /**
      * Shows educational tip for hotseat if user does not go through Tips app.
      */
-    public void showDiscoveryTip() {
-        if (getPredictedIcons().size() == mHotSeatItemsCount) {
+    private void showDiscoveryTip() {
+        if (getPredictedIcons().isEmpty()) {
             new ArrowTipView(mLauncher).show(
                     mLauncher.getString(R.string.hotseat_tip_no_empty_slots), mHotseat.getTop());
         } else {
             Snackbar.show(mLauncher, R.string.hotseat_tip_gaps_filled,
                     R.string.hotseat_prediction_settings, null,
-                    () -> mLauncher.startActivity(HotseatEduController.getSettingsIntent()));
+                    () -> mLauncher.startActivity(getSettingsIntent()));
         }
     }
 
