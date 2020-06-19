@@ -1656,6 +1656,8 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                     !mOrientationState.canLauncherRotate() && isInLandscape);
             resetPaddingFromTaskSize();
             requestLayout();
+            // Reapply the current page to update page scrolls.
+            setCurrentPage(mCurrentPage);
         }
     }
 
