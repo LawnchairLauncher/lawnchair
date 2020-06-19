@@ -409,7 +409,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
             FolderNameInfo[] nameInfos =
                     new FolderNameInfo[FolderNameProvider.SUGGEST_MAX];
             if (FeatureFlags.FOLDER_NAME_SUGGEST.get()) {
-                Executors.UI_HELPER_EXECUTOR.post(() -> {
+                Executors.MODEL_EXECUTOR.post(() -> {
                     d.folderNameProvider.getSuggestedFolderName(
                             getContext(), mInfo.contents, nameInfos);
                     showFinalView(finalIndex, item, nameInfos, d.logInstanceId);

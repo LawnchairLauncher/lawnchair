@@ -1005,7 +1005,8 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         if (!items.isEmpty()) {
             mLauncher.getModelWriter().moveItemsInDatabase(items, mInfo.id, 0);
         }
-        if (FeatureFlags.FOLDER_NAME_SUGGEST.get() && !isBind) {
+        if (FeatureFlags.FOLDER_NAME_SUGGEST.get() && !isBind
+                && total > 1 /* no need to update if there's one icon */) {
             Executors.MODEL_EXECUTOR.post(() -> {
                 FolderNameInfo[] nameInfos =
                         new FolderNameInfo[FolderNameProvider.SUGGEST_MAX];
