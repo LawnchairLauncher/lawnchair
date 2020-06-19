@@ -19,6 +19,7 @@ package com.android.quickstep.util;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 
+import static com.android.launcher3.util.Executors.THREAD_POOL_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
 import android.content.ClipData;
@@ -55,6 +56,9 @@ import java.util.function.Supplier;
 public class ImageActionUtils {
 
     private static final String AUTHORITY = BuildConfig.APPLICATION_ID + ".overview.fileprovider";
+    private static final long FILE_LIFE = 1000L /*ms*/ * 60L /*s*/ * 60L /*m*/ * 24L /*h*/;
+    private static final String SUB_FOLDER = "Overview";
+    private static final String BASE_NAME = "overview_image_";
 
     /**
      * Saves screenshot to location determine by SystemUiProxy
@@ -104,10 +108,13 @@ public class ImageActionUtils {
      */
     @WorkerThread
     public static Uri getImageUri(Bitmap bitmap, Rect crop, Context context, String tag) {
+        clearOldCacheFiles(context);
         Bitmap croppedBitmap = cropBitmap(bitmap, crop);
         int cropHash = crop == null ? 0 : crop.hashCode();
-        String baseName = "image_" + bitmap.hashCode() + "_" + cropHash + ".png";
-        File file = new File(context.getCacheDir(), baseName);
+        String baseName = BASE_NAME + bitmap.hashCode() + "_" + cropHash + ".png";
+        File parent = new File(context.getCacheDir(), SUB_FOLDER);
+        parent.mkdir();
+        File file = new File(parent, baseName);
 
         try (FileOutputStream fos = new FileOutputStream(file)) {
             croppedBitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
@@ -168,5 +175,20 @@ public class ImageActionUtils {
                 .putExtra(Intent.EXTRA_STREAM, uri)
                 .setClipData(clipdata);
         return new Intent[]{Intent.createChooser(intent, null).addFlags(FLAG_ACTIVITY_NEW_TASK)};
+    }
+
+    private static void clearOldCacheFiles(Context context) {
+        THREAD_POOL_EXECUTOR.execute(() -> {
+            File parent = new File(context.getCacheDir(), SUB_FOLDER);
+            File[] files = parent.listFiles((File f, String s) -> s.startsWith(BASE_NAME));
+            if (files != null) {
+                for (File file: files) {
+                    if (file.lastModified() + FILE_LIFE < System.currentTimeMillis()) {
+                        file.delete();
+                    }
+                }
+            }
+        });
+
     }
 }
