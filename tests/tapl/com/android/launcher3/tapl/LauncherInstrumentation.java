@@ -1309,8 +1309,9 @@ public final class LauncherInstrumentation {
                 getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
-    public int getPid() {
-        return getTestInfo(TestProtocol.REQUEST_PID).getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
+    public Integer getPid() {
+        final Bundle testInfo = getTestInfo(TestProtocol.REQUEST_PID);
+        return testInfo != null ? testInfo.getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD) : null;
     }
 
     public void produceJavaLeak() {
@@ -1338,13 +1339,13 @@ public final class LauncherInstrumentation {
     public Closable eventsCheck() {
         Assert.assertTrue("Nested event checking", !sCheckingEvents);
         disableSensorRotation();
-        final int initialPid = getPid();
+        final Integer initialPid = getPid();
         if (sEventChecker == null) sEventChecker = new LogEventChecker();
         sEventChecker.start();
         sCheckingEvents = true;
 
         return () -> {
-            if (initialPid != getPid()) {
+            if (initialPid != null && initialPid.intValue() != getPid()) {
                 if (mOnLauncherCrashed != null) mOnLauncherCrashed.run();
                 checkForAnomaly();
                 Assert.fail(
