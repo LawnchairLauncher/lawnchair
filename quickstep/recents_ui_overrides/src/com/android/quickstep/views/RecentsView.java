@@ -105,6 +105,7 @@ import com.android.launcher3.anim.SpringProperty;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.statehandlers.DepthController;
+import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.touch.PagedOrientationHandler.CurveProperties;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
@@ -146,8 +147,8 @@ import java.util.function.Consumer;
  * A list of recent tasks.
  */
 @TargetApi(Build.VERSION_CODES.P)
-public abstract class RecentsView<T extends BaseActivity> extends PagedView implements Insettable,
-        TaskThumbnailCache.HighResLoadingState.HighResLoadingStateChangedCallback,
+public abstract class RecentsView<T extends StatefulActivity> extends PagedView implements
+        Insettable, TaskThumbnailCache.HighResLoadingState.HighResLoadingStateChangedCallback,
         InvariantDeviceProfile.OnIDPChangeListener, TaskVisualsChangeListener,
         SplitScreenBounds.OnChangeListener {
 
@@ -389,12 +390,12 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         setPageSpacing(getResources().getDimensionPixelSize(R.dimen.recents_page_spacing));
         setEnableFreeScroll(true);
         mSizeStrategy = sizeStrategy;
+        mActivity = BaseActivity.fromContext(context);
         mOrientationState = new RecentsOrientedState(
                 context, mSizeStrategy, this::animateRecentsRotationInPlace);
 
         mFastFlingVelocity = getResources()
                 .getDimensionPixelSize(R.dimen.recents_fast_fling_velocity);
-        mActivity = BaseActivity.fromContext(context);
         mModel = RecentsModel.INSTANCE.get(context);
         mIdp = InvariantDeviceProfile.INSTANCE.get(context);
 
@@ -1115,13 +1116,20 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
     }
 
     /**
+     * Returns true if we should add a dummy taskView for the running task id
+     */
+    protected boolean shouldAddDummyTaskView(int runningTaskId) {
+        return getTaskView(runningTaskId) == null;
+    }
+
+    /**
      * Creates a task view (if necessary) to represent the task with the {@param runningTaskId}.
      *
      * All subsequent calls to reload will keep the task as the first item until {@link #reset()}
      * is called.  Also scrolls the view to this task.
      */
     public void showCurrentTask(int runningTaskId) {
-        if (getTaskView(runningTaskId) == null) {
+        if (shouldAddDummyTaskView(runningTaskId)) {
             boolean wasEmpty = getChildCount() == 0;
             // Add an empty view for now until the task plan is loaded and applied
             final TaskView taskView = mTaskViewPool.getView();

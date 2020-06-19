@@ -55,7 +55,7 @@ import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.quickstep.fallback.FallbackRecentsStateController;
 import com.android.quickstep.fallback.FallbackRecentsView;
-import com.android.quickstep.fallback.RecentsRootView;
+import com.android.quickstep.fallback.RecentsDragLayer;
 import com.android.quickstep.fallback.RecentsState;
 import com.android.quickstep.util.RecentsAtomicAnimationFactory;
 import com.android.quickstep.views.OverviewActionsView;
@@ -78,7 +78,8 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
             new ActivityTracker<>();
 
     private Handler mUiHandler = new Handler(Looper.getMainLooper());
-    private RecentsRootView mRecentsRootView;
+
+    private RecentsDragLayer mDragLayer;
     private FallbackRecentsView mFallbackRecentsView;
     private OverviewActionsView mActionsView;
 
@@ -89,13 +90,14 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
     /**
      * Init drag layer and overview panel views.
      */
-    protected void initViews() {
-        setContentView(R.layout.fallback_recents_activity);
-        mRecentsRootView = findViewById(R.id.drag_layer);
+    protected void setupViews() {
+        inflateRootView(R.layout.fallback_recents_activity);
+        setContentView(getRootView());
+        mDragLayer = findViewById(R.id.drag_layer);
         mFallbackRecentsView = findViewById(R.id.overview_panel);
         mActionsView = findViewById(R.id.overview_actions_view);
 
-        mRecentsRootView.recreateControllers();
+        mDragLayer.recreateControllers();
         mFallbackRecentsView.init(mActionsView);
     }
 
@@ -103,12 +105,6 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
     public void onMultiWindowModeChanged(boolean isInMultiWindowMode, Configuration newConfig) {
         onHandleConfigChanged();
         super.onMultiWindowModeChanged(isInMultiWindowMode, newConfig);
-    }
-
-    public void onRootViewSizeChanged() {
-        if (isInMultiWindowMode()) {
-            onHandleConfigChanged();
-        }
     }
 
     @Override
@@ -130,7 +126,7 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
         dispatchDeviceProfileChanged();
 
         reapplyUi();
-        mRecentsRootView.recreateControllers();
+        mDragLayer.recreateControllers();
     }
 
     /**
@@ -142,19 +138,14 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
 
         // In case we are reusing IDP, create a copy so that we don't conflict with Launcher
         // activity.
-        return (mRecentsRootView != null) && isInMultiWindowMode()
+        return (mDragLayer != null) && isInMultiWindowMode()
                 ? dp.getMultiWindowProfile(this, getMultiWindowDisplaySize())
                 : dp.copy(this);
     }
 
     @Override
     public BaseDragLayer getDragLayer() {
-        return mRecentsRootView;
-    }
-
-    @Override
-    public View getRootView() {
-        return mRecentsRootView;
+        return mDragLayer;
     }
 
     @Override
@@ -252,7 +243,7 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
 
         mOldConfig = new Configuration(getResources().getConfiguration());
         initDeviceProfile();
-        initViews();
+        setupViews();
 
         getSystemUiController().updateUiState(SystemUiController.UI_STATE_BASE_WINDOW,
                 Themes.getAttrBoolean(this, R.attr.isWorkspaceDarkText));
