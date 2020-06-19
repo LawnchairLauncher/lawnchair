@@ -58,21 +58,6 @@ public class LayoutUtils {
     }
 
     /**
-     * Gets the scale that should be applied to the TaskView so that it matches the target
-     * TODO: Remove this method
-     */
-    public static float getTaskScale(RecentsOrientedState orientedState,
-            float srcWidth, float srcHeight, float targetWidth, float targetHeight) {
-        if (orientedState == null
-                || orientedState.isHomeRotationAllowed()
-                || orientedState.isDisplayPhoneNatural()) {
-            return srcWidth / targetWidth;
-        } else {
-            return srcHeight / targetHeight;
-        }
-    }
-
-    /**
      * Recursively sets view and all children enabled/disabled.
      * @param view Top most parent view to change.
      * @param enabled True = enable, False = disable.

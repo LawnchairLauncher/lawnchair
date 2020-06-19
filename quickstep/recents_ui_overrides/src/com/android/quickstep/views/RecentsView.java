@@ -59,6 +59,7 @@ import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.PointF;
@@ -393,6 +394,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         mActivity = BaseActivity.fromContext(context);
         mOrientationState = new RecentsOrientedState(
                 context, mSizeStrategy, this::animateRecentsRotationInPlace);
+        mOrientationState.setActivityConfiguration(context.getResources().getConfiguration());
 
         mFastFlingVelocity = getResources()
                 .getDimensionPixelSize(R.dimen.recents_fast_fling_velocity);
@@ -1063,7 +1065,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     }
 
     private void animateRecentsRotationInPlace(int newRotation) {
-        if (mOrientationState.canLauncherRotate()) {
+        if (mOrientationState.canRecentsActivityRotate()) {
             // Let system take care of the rotation
             return;
         }
@@ -1646,27 +1648,39 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         }
     }
 
+    @Override
+    protected void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (mOrientationState.setActivityConfiguration(newConfig)) {
+            updateOrientationHandler();
+        }
+    }
+
     public void setLayoutRotation(int touchRotation, int displayRotation) {
         if (mOrientationState.update(touchRotation, displayRotation)) {
-            mOrientationHandler = mOrientationState.getOrientationHandler();
-            mIsRtl = mOrientationHandler.getRecentsRtlSetting(getResources());
-            setLayoutDirection(mIsRtl
-                    ? View.LAYOUT_DIRECTION_RTL
-                    : View.LAYOUT_DIRECTION_LTR);
-            mClearAllButton.setLayoutDirection(mIsRtl
-                    ? View.LAYOUT_DIRECTION_LTR
-                    : View.LAYOUT_DIRECTION_RTL);
-            mClearAllButton.setRotation(mOrientationHandler.getDegreesRotated());
-            mActivity.getDragLayer().recreateControllers();
-            boolean isInLandscape = mOrientationState.getTouchRotation() != 0
-                    || mOrientationState.getLauncherRotation() != ROTATION_0;
-            mActionsView.updateHiddenFlags(HIDDEN_NON_ZERO_ROTATION,
-                    !mOrientationState.canLauncherRotate() && isInLandscape);
-            resetPaddingFromTaskSize();
-            requestLayout();
-            // Reapply the current page to update page scrolls.
-            setCurrentPage(mCurrentPage);
+            updateOrientationHandler();
         }
+    }
+
+    private void updateOrientationHandler() {
+        mOrientationHandler = mOrientationState.getOrientationHandler();
+        mIsRtl = mOrientationHandler.getRecentsRtlSetting(getResources());
+        setLayoutDirection(mIsRtl
+                ? View.LAYOUT_DIRECTION_RTL
+                : View.LAYOUT_DIRECTION_LTR);
+        mClearAllButton.setLayoutDirection(mIsRtl
+                ? View.LAYOUT_DIRECTION_LTR
+                : View.LAYOUT_DIRECTION_RTL);
+        mClearAllButton.setRotation(mOrientationHandler.getDegreesRotated());
+        mActivity.getDragLayer().recreateControllers();
+        boolean isInLandscape = mOrientationState.getTouchRotation() != 0
+                || mOrientationState.getRecentsActivityRotation() != ROTATION_0;
+        mActionsView.updateHiddenFlags(HIDDEN_NON_ZERO_ROTATION,
+                !mOrientationState.canRecentsActivityRotate() && isInLandscape);
+        resetPaddingFromTaskSize();
+        requestLayout();
+        // Reapply the current page to update page scrolls.
+        setCurrentPage(mCurrentPage);
     }
 
     public RecentsOrientedState getPagedViewOrientedState() {
@@ -2234,7 +2248,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
             getCurrentPageTaskView().setModalness(modalness);
         }
         // Only show actions view when it's modal for in-place landscape mode.
-        boolean inPlaceLandscape = !mOrientationState.canLauncherRotate()
+        boolean inPlaceLandscape = !mOrientationState.canRecentsActivityRotate()
                 && mOrientationState.getTouchRotation() != ROTATION_0;
         mActionsView.updateHiddenFlags(HIDDEN_NON_ZERO_ROTATION, modalness < 1 && inPlaceLandscape);
     }
