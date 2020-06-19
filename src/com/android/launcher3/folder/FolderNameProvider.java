@@ -31,6 +31,7 @@ import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.IntSparseArrayMap;
+import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.ResourceBasedOverride;
 
 import java.util.ArrayList;
@@ -64,6 +65,7 @@ public class FolderNameProvider implements ResourceBasedOverride {
     public static FolderNameProvider newInstance(Context context) {
         FolderNameProvider fnp = Overrides.getObject(FolderNameProvider.class,
                 context.getApplicationContext(), R.string.folder_name_provider_class);
+        Preconditions.assertWorkerThread();
         fnp.load(context);
 
         return fnp;
@@ -71,6 +73,7 @@ public class FolderNameProvider implements ResourceBasedOverride {
 
     public static FolderNameProvider newInstance(Context context, List<AppInfo> appInfos,
             IntSparseArrayMap<FolderInfo> folderInfos) {
+        Preconditions.assertWorkerThread();
         FolderNameProvider fnp = Overrides.getObject(FolderNameProvider.class,
                 context.getApplicationContext(), R.string.folder_name_provider_class);
         fnp.load(appInfos, folderInfos);
@@ -94,7 +97,7 @@ public class FolderNameProvider implements ResourceBasedOverride {
     public void getSuggestedFolderName(Context context,
             ArrayList<WorkspaceItemInfo> workspaceItemInfos,
             FolderNameInfo[] nameInfos) {
-
+        Preconditions.assertWorkerThread();
         if (DEBUG) {
             Log.d(TAG, "getSuggestedFolderName:" + Arrays.toString(nameInfos));
         }
