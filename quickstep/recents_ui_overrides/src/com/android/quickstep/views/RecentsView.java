@@ -1936,7 +1936,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
         mPendingAnimation.addEndListener((endState) -> {
             if (endState.isSuccess) {
                 Consumer<Boolean> onLaunchResult = (result) -> {
-                    onTaskLaunched(result);
+                    onTaskLaunchAnimationEnd(result);
                     if (!result) {
                         tv.notifyTaskLaunchFailed(TAG);
                     }
@@ -1951,7 +1951,7 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
                             .log(LAUNCHER_TASK_LAUNCH_SWIPE_DOWN);
                 }
             } else {
-                onTaskLaunched(false);
+                onTaskLaunchAnimationEnd(false);
             }
             mPendingAnimation = null;
         });
@@ -1963,11 +1963,16 @@ public abstract class RecentsView<T extends BaseActivity> extends PagedView impl
 
     public abstract boolean shouldUseMultiWindowTaskSizeStrategy();
 
-    protected void onTaskLaunched(boolean success) {
+    protected void onTaskLaunchAnimationEnd(boolean success) {
         if (success) {
             resetTaskVisuals();
         }
     }
+
+    /**
+     * Called when task activity is launched
+     */
+    public void onTaskLaunched(Task task){ }
 
     @Override
     protected void notifyPageSwitchListener(int prevPage) {

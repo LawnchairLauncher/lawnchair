@@ -30,7 +30,8 @@ import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.TOUCH_RESPONSE_INTERPOLATOR;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
-import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_ICON_TAP_OR_LONGPRESS;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent
+        .LAUNCHER_TASK_ICON_TAP_OR_LONGPRESS;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_LAUNCH_TAP;
 
 import android.animation.Animator;
@@ -384,6 +385,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                             }
                         }, resultCallbackHandler);
             }
+            getRecentsView().onTaskLaunched(mTask);
         }
     }
 
