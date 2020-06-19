@@ -22,6 +22,7 @@ import android.util.TypedValue;
 
 public class ResourceUtils {
     public static final int DEFAULT_NAVBAR_VALUE = 48;
+    public static final int INVALID_RESOURCE_HANDLE = -1;
     public static final String NAVBAR_LANDSCAPE_LEFT_RIGHT_SIZE = "navigation_bar_width";
     public static final String NAVBAR_BOTTOM_GESTURE_SIZE = "navigation_bar_gesture_height";
 
@@ -51,7 +52,13 @@ public class ResourceUtils {
         return val;
     }
 
+    public static int getIntegerByName(String resName, Resources res, int defaultValue) {
+        int resId = res.getIdentifier(resName, "integer", "android");
+        return resId != 0 ? res.getInteger(resId) : defaultValue;
+    }
+
     public static int pxFromDp(float size, DisplayMetrics metrics) {
-        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, size, metrics));
+        return size < 0 ? INVALID_RESOURCE_HANDLE : Math.round(
+                TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, size, metrics));
     }
 }

@@ -52,8 +52,8 @@ import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
-import android.view.Surface;
 import android.view.OrientationEventListener;
+import android.view.Surface;
 
 import androidx.annotation.BinderThread;
 
@@ -63,6 +63,7 @@ import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.DefaultDisplay;
 import com.android.launcher3.util.SecureSettingsObserver;
 import com.android.quickstep.SysUINavigationMode.NavigationModeChangeListener;
+import com.android.quickstep.SysUINavigationMode.OneHandedModeChangeListener;
 import com.android.quickstep.util.NavBarPosition;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
@@ -81,7 +82,8 @@ import java.util.stream.Collectors;
  */
 public class RecentsAnimationDeviceState implements
         NavigationModeChangeListener,
-        DefaultDisplay.DisplayInfoChangeListener {
+        DefaultDisplay.DisplayInfoChangeListener,
+        OneHandedModeChangeListener {
 
     private final Context mContext;
     private final SysUINavigationMode mSysUiNavMode;
@@ -310,6 +312,15 @@ public class RecentsAnimationDeviceState implements
         runOnDestroy(() -> mSysUiNavMode.removeModeChangeListener(listener));
     }
 
+    /**
+     * Adds a listener for the one handed mode change,
+     * guaranteed to be called after the device state's mode has changed.
+     */
+    public void addOneHandedModeChangedCallback(OneHandedModeChangeListener listener) {
+        listener.onOneHandedModeChanged(mSysUiNavMode.addOneHandedOverlayChangeListener(listener));
+        runOnDestroy(() -> mSysUiNavMode.removeOneHandedOverlayChangeListener(listener));
+    }
+
     @Override
     public void onNavigationModeChanged(SysUINavigationMode.Mode newMode) {
         mDefaultDisplay.removeChangeListener(this);
@@ -324,7 +335,8 @@ public class RecentsAnimationDeviceState implements
 
         mNavBarPosition = new NavBarPosition(newMode, mDefaultDisplay.getInfo());
 
-        mOrientationTouchTransformer.setNavigationMode(newMode, mDefaultDisplay.getInfo());
+        mOrientationTouchTransformer.setNavigationMode(newMode, mDefaultDisplay.getInfo(),
+                mContext.getApplicationContext().getResources());
         if (!mMode.hasGestures && newMode.hasGestures) {
             setupOrientationSwipeHandler();
         } else if (mMode.hasGestures && !newMode.hasGestures){
@@ -361,6 +373,12 @@ public class RecentsAnimationDeviceState implements
                 && !mInOverview) {
             toggleSecondaryNavBarsForRotation(false);
         }
+    }
+
+    @Override
+    public void onOneHandedModeChanged(int newGesturalHeight) {
+        mOrientationTouchTransformer.setGesturalHeight(newGesturalHeight, mDefaultDisplay.getInfo(),
+                mContext.getApplicationContext().getResources());
     }
 
     /**
