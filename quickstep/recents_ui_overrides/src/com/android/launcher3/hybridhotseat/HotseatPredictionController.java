@@ -125,11 +125,9 @@ public class HotseatPredictionController implements DragController.DragListener,
         if (mLauncher.getWorkspace().isSwitchingState()) return false;
         if (!mLauncher.getOnboardingPrefs().getBoolean(
                 OnboardingPrefs.HOTSEAT_LONGPRESS_TIP_SEEN)) {
-            Intent intent = new Intent(SETTINGS_ACTION);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             Snackbar.show(mLauncher, R.string.hotseat_tip_gaps_filled,
                     R.string.hotseat_prediction_settings, null,
-                    () -> mLauncher.startActivity(intent));
+                    () -> mLauncher.startActivity(getSettingsIntent()));
             mLauncher.getOnboardingPrefs().markChecked(OnboardingPrefs.HOTSEAT_LONGPRESS_TIP_SEEN);
             mLauncher.getDragLayer().performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
             return true;
