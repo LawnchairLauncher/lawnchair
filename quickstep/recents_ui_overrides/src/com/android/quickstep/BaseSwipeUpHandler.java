@@ -121,10 +121,6 @@ public abstract class BaseSwipeUpHandler<T extends StatefulActivity<?>, Q extend
         });
 
         mRecentsView.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-            // Wait until the first scroll event before applying scroll to taskViewSimulator.
-            // Since, by default the current/running task already centered, this ensures that we
-            // do not move the running task, in case RecentsView has not yet laid out completely.
-            mRecentsViewScrollLinked = true;
             if (moveWindowWithRecentsScroll()) {
                 updateFinalShift();
             }
@@ -132,6 +128,7 @@ public abstract class BaseSwipeUpHandler<T extends StatefulActivity<?>, Q extend
         runOnRecentsAnimationStart(() ->
                 mRecentsView.setRecentsAnimationTargets(mRecentsAnimationController,
                         mRecentsAnimationTargets));
+        mRecentsViewScrollLinked = true;
     }
 
     protected void startNewTask(Consumer<Boolean> resultCallback) {
