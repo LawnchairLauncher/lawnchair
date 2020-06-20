@@ -71,6 +71,12 @@ public class StatsLogManager implements ResourceBasedOverride {
         @UiEvent(doc = "Folder's label is automatically assigned.")
         LAUNCHER_FOLDER_AUTO_LABELED(591),
 
+        @UiEvent(doc = "Could not auto-label a folder because primary suggestion is null or empty.")
+        LAUNCHER_FOLDER_AUTO_LABELING_SKIPPED_EMPTY_PRIMARY(592),
+
+        @UiEvent(doc = "Could not auto-label a folder because no suggestions exist.")
+        LAUNCHER_FOLDER_AUTO_LABELING_SKIPPED_EMPTY_SUGGESTIONS(593),
+
         @UiEvent(doc = "User manually updated the folder label.")
         LAUNCHER_FOLDER_LABEL_UPDATED(460),
 

@@ -21,6 +21,8 @@ import static android.text.TextUtils.isEmpty;
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
 import static com.android.launcher3.folder.PreviewItemManager.INITIAL_ITEM_ANIMATION_DURATION;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_FOLDER_AUTO_LABELED;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_FOLDER_AUTO_LABELING_SKIPPED_EMPTY_PRIMARY;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_FOLDER_AUTO_LABELING_SKIPPED_EMPTY_SUGGESTIONS;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -82,6 +84,7 @@ import com.android.launcher3.widget.PendingAddShortcutInfo;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 /**
  * An icon that can appear on in the workspace representing an {@link Folder}.
@@ -445,7 +448,19 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
                 || mInfo.hasOption(FolderInfo.FLAG_MANUAL_FOLDER_NAME)) {
             return;
         }
-        if (nameInfos == null || nameInfos[0] == null || isEmpty(nameInfos[0].getLabel())) {
+        if (nameInfos == null || Stream.of(nameInfos)
+                .allMatch(nameInfo -> nameInfo == null || isEmpty(nameInfo.getLabel()))) {
+            StatsLogManager.newInstance(getContext()).logger()
+                    .withInstanceId(instanceId)
+                    .withItemInfo(mInfo)
+                    .log(LAUNCHER_FOLDER_AUTO_LABELING_SKIPPED_EMPTY_SUGGESTIONS);
+            return;
+        }
+        if (nameInfos[0] == null || isEmpty(nameInfos[0].getLabel())) {
+            StatsLogManager.newInstance(getContext()).logger()
+                    .withInstanceId(instanceId)
+                    .withItemInfo(mInfo)
+                    .log(LAUNCHER_FOLDER_AUTO_LABELING_SKIPPED_EMPTY_PRIMARY);
             return;
         }
         CharSequence newTitle = nameInfos[0].getLabel();
