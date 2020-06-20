@@ -36,6 +36,7 @@ import androidx.core.graphics.ColorUtils;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.graphics.IconPalette;
@@ -90,8 +91,9 @@ public class PredictedAppIcon extends DoubleShadowBubbleTextView implements
     public void onDraw(Canvas canvas) {
         int count = canvas.save();
         if (!mIsPinned) {
-            boolean isBadged = getTag() instanceof WorkspaceItemInfo
-                    && !Process.myUserHandle().equals(((ItemInfo) getTag()).user);
+            ItemInfo info = (ItemInfo) getTag();
+            boolean isBadged = info != null && (!Process.myUserHandle().equals(info.user)
+                    || info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT);
             drawEffect(canvas, isBadged);
             canvas.translate(getWidth() * RING_EFFECT_RATIO, getHeight() * RING_EFFECT_RATIO);
             canvas.scale(1 - 2 * RING_EFFECT_RATIO, 1 - 2 * RING_EFFECT_RATIO);

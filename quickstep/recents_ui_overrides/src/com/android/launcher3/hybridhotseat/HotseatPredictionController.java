@@ -30,8 +30,10 @@ import android.app.prediction.AppPredictor;
 import android.app.prediction.AppTarget;
 import android.app.prediction.AppTargetEvent;
 import android.content.ComponentName;
+import android.content.pm.ShortcutInfo;
 import android.os.Process;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,6 +67,7 @@ import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.shortcuts.ShortcutKey;
+import com.android.launcher3.shortcuts.ShortcutRequest;
 import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.uioverrides.PredictedAppIcon;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
@@ -379,16 +382,24 @@ public class HotseatPredictionController implements DragController.DragListener,
             mRestoreHelper.restoreBackup();
         }
         StringBuilder predictionLog = new StringBuilder("predictedApps: [\n");
-        ArrayList<ComponentKey> componentKeys = new ArrayList<>();
+        ArrayList<ComponentKey> componentKeysToBeCached = new ArrayList<>();
+        SparseArray<ShortcutRequest> requests = new SparseArray<>();
         for (AppTarget appTarget : appTargets) {
             ComponentKey key;
-            if (appTarget.getShortcutInfo() != null) {
-                key = ShortcutKey.fromInfo(appTarget.getShortcutInfo());
+            ShortcutRequest request = requests.get(appTarget.getUser().getIdentifier());
+            if (request == null) {
+                request = new ShortcutRequest(mLauncher, appTarget.getUser());
+                requests.put(appTarget.getUser().getIdentifier(), request);
+            }
+            List<ShortcutInfo> shortcutInfos = request.forPackage(appTarget.getPackageName(),
+                    appTarget.getClassName()).query(ShortcutRequest.ALL);
+            if (!shortcutInfos.isEmpty()) {
+                key = ShortcutKey.fromInfo(shortcutInfos.get(0));
             } else {
                 key = new ComponentKey(new ComponentName(appTarget.getPackageName(),
                         appTarget.getClassName()), appTarget.getUser());
+                componentKeysToBeCached.add(key);
             }
-            componentKeys.add(key);
             predictionLog.append(key.toString());
             predictionLog.append(",rank:");
             predictionLog.append(appTarget.getRank());
@@ -401,7 +412,7 @@ public class HotseatPredictionController implements DragController.DragListener,
         }
         updateDependencies();
         fillGapsWithPrediction();
-        cachePredictionComponentKeysIfNecessary(componentKeys);
+        cachePredictionComponentKeysIfNecessary(componentKeysToBeCached);
     }
 
     private void cachePredictionComponentKeysIfNecessary(ArrayList<ComponentKey> componentKeys) {
