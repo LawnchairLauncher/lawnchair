@@ -16,8 +16,6 @@
 
 package com.android.launcher3.folder;
 
-import static android.text.TextUtils.isEmpty;
-
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
 import static com.android.launcher3.folder.PreviewItemManager.INITIAL_ITEM_ANIMATION_DURATION;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_FOLDER_AUTO_LABELED;
@@ -72,6 +70,7 @@ import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.FolderInfo.FolderListener;
+import com.android.launcher3.model.data.FolderInfo.LabelState;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.touch.ItemClickHandler;
@@ -443,8 +442,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
         if (!FeatureFlags.FOLDER_NAME_SUGGEST.get()) {
             return;
         }
-        if (!isEmpty(mFolderName.getText().toString())
-                || mInfo.hasOption(FolderInfo.FLAG_MANUAL_FOLDER_NAME)) {
+        if (!mInfo.getLabelState().equals(LabelState.UNLABELED)) {
             return;
         }
         if (nameInfos == null || !nameInfos.hasSuggestions()) {
@@ -464,10 +462,9 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
         CharSequence newTitle = nameInfos.getLabels()[0];
         FromState fromState = mInfo.getFromLabelState();
 
-        mInfo.setTitle(newTitle);
+        mInfo.setTitle(newTitle, mFolder.mLauncher.getModelWriter());
         onTitleChanged(mInfo.title);
         mFolder.mFolderName.setText(mInfo.title);
-        mFolder.mLauncher.getModelWriter().updateItemInDatabase(mInfo);
 
         // Logging for folder creation flow
         StatsLogManager.newInstance(getContext()).logger()
