@@ -54,7 +54,6 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
-import java.util.StringJoiner;
 import java.util.stream.IntStream;
 
 
@@ -87,20 +86,6 @@ public class FolderInfo extends ItemInfo {
     public int options;
 
     public Intent suggestedFolderNames;
-
-    // Represents the title before current.
-    // Primarily used for logging purpose.
-    private CharSequence mPreviousTitle;
-
-    // True if the title before was manually entered, suggested otherwise.
-    // Primarily used for logging purpose.
-    public boolean fromCustom;
-
-    /**
-     * Used for separating {@link #mPreviousTitle} and {@link #title} when concatenating them
-     * for logging.
-     */
-    private static final CharSequence FOLDER_LABEL_DELIMITER = "=>";
 
     /**
      * The apps and shortcuts
@@ -207,19 +192,14 @@ public class FolderInfo extends ItemInfo {
         return getDefaultItemInfoBuilder()
                 .setFolderIcon(LauncherAtom.FolderIcon.newBuilder().setCardinality(contents.size()))
                 .setRank(rank)
-                .setAttribute(fromCustom ? MANUAL_LABEL : SUGGESTED_LABEL)
+                .setAttribute(hasOption(FLAG_MANUAL_FOLDER_NAME) ? MANUAL_LABEL : SUGGESTED_LABEL)
                 .setContainerInfo(getContainerInfo())
                 .build();
     }
 
     @Override
     public void setTitle(CharSequence title) {
-        mPreviousTitle = this.title;
         this.title = title;
-    }
-
-    public CharSequence getPreviousTitle() {
-        return mPreviousTitle;
     }
 
     @Override
@@ -235,30 +215,7 @@ public class FolderInfo extends ItemInfo {
      */
     @Override
     public LauncherAtom.ItemInfo buildProto() {
-        FromState fromFolderLabelState = getFromFolderLabelState();
-        ToState toFolderLabelState = getToFolderLabelState();
-        LauncherAtom.FolderIcon.Builder folderIconBuilder = LauncherAtom.FolderIcon.newBuilder()
-                .setCardinality(contents.size())
-                .setFromLabelState(fromFolderLabelState)
-                .setToLabelState(toFolderLabelState);
-
-        // If the folder label is suggested, it is logged to improve prediction model.
-        // When both old and new labels are logged together delimiter is used.
-        StringJoiner labelInfoBuilder = new StringJoiner(FOLDER_LABEL_DELIMITER);
-        if (fromFolderLabelState.equals(FromState.FROM_SUGGESTED)) {
-            labelInfoBuilder.add(mPreviousTitle);
-        }
-        if (toFolderLabelState.toString().startsWith("TO_SUGGESTION")) {
-            labelInfoBuilder.add(title);
-        }
-        if (labelInfoBuilder.length() > 0) {
-            folderIconBuilder.setLabelInfo(labelInfoBuilder.toString());
-        }
-
-        return getDefaultItemInfoBuilder()
-                .setFolderIcon(folderIconBuilder)
-                .setContainerInfo(getContainerInfo())
-                .build();
+        return buildProto(null);
     }
 
     /**
@@ -280,13 +237,25 @@ public class FolderInfo extends ItemInfo {
 
     }
 
-    private LauncherAtom.ToState getToFolderLabelState() {
+    /**
+     * Returns {@link FromState} based on current {@link #title}.
+     */
+    public LauncherAtom.FromState getFromLabelState() {
+        return title == null
+                ? LauncherAtom.FromState.FROM_STATE_UNSPECIFIED
+                : title.length() == 0
+                        ? LauncherAtom.FromState.FROM_EMPTY
+                        : hasOption(FLAG_MANUAL_FOLDER_NAME)
+                                ? LauncherAtom.FromState.FROM_CUSTOM
+                                : LauncherAtom.FromState.FROM_SUGGESTED;
+    }
+
+    /**
+     * Returns {@link ToState} based on current {@link #title}.
+     */
+    public LauncherAtom.ToState getToLabelState() {
         if (title == null) {
             return LauncherAtom.ToState.TO_STATE_UNSPECIFIED;
-        }
-
-        if (title.equals(mPreviousTitle)) {
-            return LauncherAtom.ToState.UNCHANGED;
         }
 
         if (!FeatureFlags.FOLDER_NAME_SUGGEST.get()) {
@@ -335,17 +304,6 @@ public class FolderInfo extends ItemInfo {
                 // fall through
         }
         return LauncherAtom.ToState.TO_STATE_UNSPECIFIED;
-
-    }
-
-    private LauncherAtom.FromState getFromFolderLabelState() {
-        return mPreviousTitle == null
-                ? LauncherAtom.FromState.FROM_STATE_UNSPECIFIED
-                : mPreviousTitle.length() == 0
-                        ? LauncherAtom.FromState.FROM_EMPTY
-                        : fromCustom
-                                ? LauncherAtom.FromState.FROM_CUSTOM
-                                : LauncherAtom.FromState.FROM_SUGGESTED;
     }
 
     private Optional<String[]> getSuggestedLabels() {
@@ -368,7 +326,8 @@ public class FolderInfo extends ItemInfo {
      * @deprecated This method is used only for validation purpose and soon will be removed.
      */
     @Deprecated
-    public LauncherLogProto.LauncherEvent getFolderLabelStateLauncherEvent() {
+    public LauncherLogProto.LauncherEvent getFolderLabelStateLauncherEvent(FromState fromState,
+            ToState toState) {
         return LauncherLogProto.LauncherEvent.newBuilder()
                 .setAction(LauncherLogProto.Action
                         .newBuilder()
@@ -377,8 +336,8 @@ public class FolderInfo extends ItemInfo {
                         .newBuilder()
                         .setType(Target.Type.ITEM)
                         .setItemType(LauncherLogProto.ItemType.EDITTEXT)
-                        .setFromFolderLabelState(convertFolderLabelState(getFromFolderLabelState()))
-                        .setToFolderLabelState(convertFolderLabelState(getToFolderLabelState())))
+                        .setFromFolderLabelState(convertFolderLabelState(fromState))
+                        .setToFolderLabelState(convertFolderLabelState(toState)))
                 .addSrcTarget(Target.newBuilder()
                         .setType(Target.Type.CONTAINER)
                         .setContainerType(LauncherLogProto.ContainerType.FOLDER)

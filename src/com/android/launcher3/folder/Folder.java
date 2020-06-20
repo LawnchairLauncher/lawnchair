@@ -81,7 +81,10 @@ import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragController.DragListener;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
+import com.android.launcher3.logger.LauncherAtom.FromState;
+import com.android.launcher3.logger.LauncherAtom.ToState;
 import com.android.launcher3.logging.StatsLogManager;
+import com.android.launcher3.logging.StatsLogManager.StatsLogger;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.FolderInfo.FolderListener;
@@ -99,6 +102,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 /**
@@ -109,6 +113,12 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         View.OnFocusChangeListener, DragListener, ExtendedEditText.OnBackKeyListener {
     private static final String TAG = "Launcher.Folder";
     private static final boolean DEBUG = false;
+
+    /**
+     * Used for separating folder title when logging together.
+     */
+    private static final CharSequence FOLDER_LABEL_DELIMITER = "~";
+
     /**
      * We avoid measuring {@link #mContent} with a 0 width or height, as this
      * results in CellLayout being measured as UNSPECIFIED, which it does not support.
@@ -155,6 +165,8 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     protected final Launcher mLauncher;
     protected DragController mDragController;
     public FolderInfo mInfo;
+    private CharSequence mFromTitle;
+    private FromState mFromLabelState;
 
     @Thunk FolderIcon mFolderIcon;
 
@@ -335,7 +347,6 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
             Log.d(TAG, "onBackKey newTitle=" + newTitle);
         }
         mInfo.setTitle(newTitle);
-        mInfo.fromCustom = mInfo.hasOption(FLAG_MANUAL_FOLDER_NAME);
         mInfo.setOption(FLAG_MANUAL_FOLDER_NAME, !mInfo.getAcceptedSuggestionIndex().isPresent(),
                 mLauncher.getModelWriter());
         mFolderIcon.onTitleChanged(newTitle);
@@ -415,6 +426,8 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
 
     void bind(FolderInfo info) {
         mInfo = info;
+        mFromTitle = info.title;
+        mFromLabelState = info.getFromLabelState();
         ArrayList<WorkspaceItemInfo> children = info.contents;
         Collections.sort(children, ITEM_POS_COMPARATOR);
         updateItemLocationsInDatabaseBatch(true);
@@ -1442,10 +1455,38 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     public void onFocusChange(View v, boolean hasFocus) {
         if (v == mFolderName) {
             if (hasFocus) {
+                mFromLabelState = mInfo.getFromLabelState();
+                mFromTitle = mInfo.title;
                 startEditingFolderName();
             } else {
-                mStatsLogManager.logger().withItemInfo(mInfo).log(LAUNCHER_FOLDER_LABEL_UPDATED);
-                logFolderLabelState();
+                StatsLogger statsLogger = mStatsLogManager.logger()
+                        .withItemInfo(mInfo)
+                        .withFromState(mFromLabelState);
+
+                // If the folder label is suggested, it is logged to improve prediction model.
+                // When both old and new labels are logged together delimiter is used.
+                StringJoiner labelInfoBuilder = new StringJoiner(FOLDER_LABEL_DELIMITER);
+                if (mFromLabelState.equals(FromState.FROM_SUGGESTED)) {
+                    labelInfoBuilder.add(mFromTitle);
+                }
+
+                ToState toLabelState;
+                if (mFromTitle != null && mFromTitle.equals(mInfo.title)) {
+                    toLabelState = ToState.UNCHANGED;
+                } else {
+                    toLabelState = mInfo.getToLabelState();
+                    if (toLabelState.toString().startsWith("TO_SUGGESTION")) {
+                        labelInfoBuilder.add(mInfo.title);
+                    }
+                }
+                statsLogger.withToState(toLabelState);
+
+                if (labelInfoBuilder.length() > 0) {
+                    statsLogger.withEditText(labelInfoBuilder.toString());
+                }
+
+                statsLogger.log(LAUNCHER_FOLDER_LABEL_UPDATED);
+                logFolderLabelState(mFromLabelState, toLabelState);
                 mFolderName.dispatchBackKey();
             }
         }
@@ -1650,8 +1691,8 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
      * @deprecated This method is only used for log validation and soon will be removed.
      */
     @Deprecated
-    public void logFolderLabelState() {
+    public void logFolderLabelState(FromState fromState, ToState toState) {
         mLauncher.getUserEventDispatcher()
-                .logLauncherEvent(mInfo.getFolderLabelStateLauncherEvent());
+                .logLauncherEvent(mInfo.getFolderLabelStateLauncherEvent(fromState, toState));
     }
 }

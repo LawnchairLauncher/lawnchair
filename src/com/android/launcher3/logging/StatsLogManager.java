@@ -21,6 +21,8 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.R;
 import com.android.launcher3.logger.LauncherAtom.ContainerInfo;
+import com.android.launcher3.logger.LauncherAtom.FromState;
+import com.android.launcher3.logger.LauncherAtom.ToState;
 import com.android.launcher3.logging.StatsLogUtils.LogStateProvider;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.ResourceBasedOverride;
@@ -66,8 +68,10 @@ public class StatsLogManager implements ResourceBasedOverride {
                 + "resulting in a new folder creation")
         LAUNCHER_ITEM_DROP_FOLDER_CREATED(386),
 
-        @UiEvent(doc = "User action resulted in or manually updated the folder label to "
-                + "new/same value.")
+        @UiEvent(doc = "Folder's label is automatically assigned.")
+        LAUNCHER_FOLDER_AUTO_LABELED(591),
+
+        @UiEvent(doc = "User manually updated the folder label.")
         LAUNCHER_FOLDER_LABEL_UPDATED(460),
 
         @UiEvent(doc = "User long pressed on the workspace empty space.")
@@ -242,6 +246,27 @@ public class StatsLogManager implements ResourceBasedOverride {
          * Sets destination launcher state field of log message.
          */
         default StatsLogger withDstState(int dstState) {
+            return this;
+        }
+
+        /**
+         * Sets FromState field of log message.
+         */
+        default StatsLogger withFromState(FromState fromState) {
+            return this;
+        }
+
+        /**
+         * Sets ToState field of log message.
+         */
+        default StatsLogger withToState(ToState toState) {
+            return this;
+        }
+
+        /**
+         * Sets editText field of log message.
+         */
+        default StatsLogger withEditText(String editText) {
             return this;
         }
 

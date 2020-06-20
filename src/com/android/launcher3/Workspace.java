@@ -415,7 +415,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
         // Always enter the spring loaded mode
         mLauncher.getStateManager().goToState(SPRING_LOADED);
-        mStatsLogManager.logger().withItemInfo(dragObject.originalDragInfo)
+        mStatsLogManager.logger().withItemInfo(dragObject.dragInfo)
                 .withInstanceId(dragObject.logInstanceId)
                 .log(LauncherEvent.LAUNCHER_ITEM_DRAG_STARTED);
     }
