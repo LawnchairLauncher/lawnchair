@@ -84,7 +84,7 @@ import com.android.launcher3.widget.PendingAddShortcutInfo;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
+
 
 /**
  * An icon that can appear on in the workspace representing an {@link Folder}.
@@ -411,8 +411,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
             if (!itemAdded) mPreviewItemManager.hidePreviewItem(index, true);
             final int finalIndex = index;
 
-            FolderNameInfo[] nameInfos =
-                    new FolderNameInfo[FolderNameProvider.SUGGEST_MAX];
+            FolderNameInfos nameInfos = new FolderNameInfos();
             if (FeatureFlags.FOLDER_NAME_SUGGEST.get()) {
                 Executors.MODEL_EXECUTOR.post(() -> {
                     d.folderNameProvider.getSuggestedFolderName(
@@ -428,7 +427,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
     }
 
     private void showFinalView(int finalIndex, final WorkspaceItemInfo item,
-            FolderNameInfo[] nameInfos, InstanceId instanceId) {
+            FolderNameInfos nameInfos, InstanceId instanceId) {
         postDelayed(() -> {
             mPreviewItemManager.hidePreviewItem(finalIndex, false);
             mFolder.showItem(item);
@@ -440,7 +439,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
     /**
      * Set the suggested folder name.
      */
-    public void setLabelSuggestion(FolderNameInfo[] nameInfos, InstanceId instanceId) {
+    public void setLabelSuggestion(FolderNameInfos nameInfos, InstanceId instanceId) {
         if (!FeatureFlags.FOLDER_NAME_SUGGEST.get()) {
             return;
         }
@@ -448,22 +447,21 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
                 || mInfo.hasOption(FolderInfo.FLAG_MANUAL_FOLDER_NAME)) {
             return;
         }
-        if (nameInfos == null || Stream.of(nameInfos)
-                .allMatch(nameInfo -> nameInfo == null || isEmpty(nameInfo.getLabel()))) {
+        if (nameInfos == null || !nameInfos.hasSuggestions()) {
             StatsLogManager.newInstance(getContext()).logger()
                     .withInstanceId(instanceId)
                     .withItemInfo(mInfo)
                     .log(LAUNCHER_FOLDER_AUTO_LABELING_SKIPPED_EMPTY_SUGGESTIONS);
             return;
         }
-        if (nameInfos[0] == null || isEmpty(nameInfos[0].getLabel())) {
+        if (!nameInfos.hasPrimary()) {
             StatsLogManager.newInstance(getContext()).logger()
                     .withInstanceId(instanceId)
                     .withItemInfo(mInfo)
                     .log(LAUNCHER_FOLDER_AUTO_LABELING_SKIPPED_EMPTY_PRIMARY);
             return;
         }
-        CharSequence newTitle = nameInfos[0].getLabel();
+        CharSequence newTitle = nameInfos.getLabels()[0];
         FromState fromState = mInfo.getFromLabelState();
 
         mInfo.setTitle(newTitle);

@@ -29,17 +29,12 @@ import static com.android.launcher3.userevent.LauncherLogProto.Target.FromFolder
 import static com.android.launcher3.userevent.LauncherLogProto.Target.FromFolderLabelState.FROM_FOLDER_LABEL_STATE_UNSPECIFIED;
 import static com.android.launcher3.userevent.LauncherLogProto.Target.FromFolderLabelState.FROM_SUGGESTED;
 
-import static java.util.Arrays.stream;
-import static java.util.Optional.ofNullable;
-
-import android.content.Intent;
 import android.os.Process;
-import android.text.TextUtils;
 
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.folder.FolderNameInfo;
+import com.android.launcher3.folder.FolderNameInfos;
 import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.logger.LauncherAtom.FromState;
 import com.android.launcher3.logger.LauncherAtom.ToState;
@@ -51,8 +46,6 @@ import com.android.launcher3.userevent.LauncherLogProto.Target.ToFolderLabelStat
 import com.android.launcher3.util.ContentWriter;
 
 import java.util.ArrayList;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.stream.IntStream;
 
@@ -85,7 +78,7 @@ public class FolderInfo extends ItemInfo {
 
     public int options;
 
-    public Intent suggestedFolderNames;
+    public FolderNameInfos suggestedFolderNames;
 
     /**
      * The apps and shortcuts
@@ -224,17 +217,16 @@ public class FolderInfo extends ItemInfo {
     public OptionalInt getAcceptedSuggestionIndex() {
         String newLabel = checkNotNull(title,
                 "Expected valid folder label, but found null").toString();
-        return getSuggestedLabels()
-                .map(suggestionsArray ->
-                        IntStream.range(0, suggestionsArray.length)
-                                .filter(
-                                        index -> !isEmpty(suggestionsArray[index])
-                                                && newLabel.equalsIgnoreCase(
-                                                suggestionsArray[index]))
-                                .sequential()
-                                .findFirst()
-                ).orElse(OptionalInt.empty());
-
+        if (suggestedFolderNames == null || !suggestedFolderNames.hasSuggestions()) {
+            return OptionalInt.empty();
+        }
+        CharSequence[] labels = suggestedFolderNames.getLabels();
+        return IntStream.range(0, labels.length)
+                .filter(index -> !isEmpty(labels[index])
+                        && newLabel.equalsIgnoreCase(
+                        labels[index].toString()))
+                .sequential()
+                .findFirst();
     }
 
     /**
@@ -264,19 +256,15 @@ public class FolderInfo extends ItemInfo {
                     : LauncherAtom.ToState.TO_EMPTY_WITH_SUGGESTIONS_DISABLED;
         }
 
-        Optional<String[]> suggestedLabels = getSuggestedLabels();
-        boolean isEmptySuggestions = suggestedLabels
-                .map(labels -> stream(labels).allMatch(TextUtils::isEmpty))
-                .orElse(true);
-        if (isEmptySuggestions) {
+        // TODO: if suggestedFolderNames is null then it infrastructure issue, not
+        // ranking issue. We should log these appropriately.
+        if (suggestedFolderNames == null || !suggestedFolderNames.hasSuggestions()) {
             return title.length() > 0
                     ? LauncherAtom.ToState.TO_CUSTOM_WITH_EMPTY_SUGGESTIONS
                     : LauncherAtom.ToState.TO_EMPTY_WITH_EMPTY_SUGGESTIONS;
         }
 
-        boolean hasValidPrimary = suggestedLabels
-                .map(labels -> !isEmpty(labels[0]))
-                .orElse(false);
+        boolean hasValidPrimary = suggestedFolderNames != null && suggestedFolderNames.hasPrimary();
         if (title.length() == 0) {
             return hasValidPrimary ? LauncherAtom.ToState.TO_EMPTY_WITH_VALID_PRIMARY
                     : LauncherAtom.ToState.TO_EMPTY_WITH_VALID_SUGGESTIONS_AND_EMPTY_PRIMARY;
@@ -304,20 +292,6 @@ public class FolderInfo extends ItemInfo {
                 // fall through
         }
         return LauncherAtom.ToState.TO_STATE_UNSPECIFIED;
-    }
-
-    private Optional<String[]> getSuggestedLabels() {
-        return ofNullable(suggestedFolderNames)
-                .map(folderNames ->
-                        (FolderNameInfo[])
-                                folderNames.getParcelableArrayExtra(EXTRA_FOLDER_SUGGESTIONS))
-                .map(folderNameInfoArray ->
-                        stream(folderNameInfoArray)
-                                .filter(Objects::nonNull)
-                                .map(FolderNameInfo::getLabel)
-                                .filter(Objects::nonNull)
-                                .map(CharSequence::toString)
-                                .toArray(String[]::new));
     }
 
     /**
