@@ -519,7 +519,17 @@ public class TouchInteractionService extends Service implements PluginListener<O
         }
 
         if (mUncheckedConsumer != InputConsumer.NO_OP) {
-            ActiveGestureLog.INSTANCE.addLog("onMotionEvent", event.getActionMasked());
+            switch (event.getActionMasked()) {
+                case ACTION_DOWN:
+                case ACTION_UP:
+                    ActiveGestureLog.INSTANCE.addLog("onMotionEvent("
+                            + (int) event.getRawX() + ", " + (int) event.getRawY() + ")",
+                            event.getActionMasked());
+                    break;
+                default:
+                    ActiveGestureLog.INSTANCE.addLog("onMotionEvent", event.getActionMasked());
+                    break;
+            }
         }
 
         boolean cleanUpConsumer = (action == ACTION_UP || action == ACTION_CANCEL)
