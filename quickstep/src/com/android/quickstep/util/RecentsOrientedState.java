@@ -348,8 +348,10 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
     }
 
     public boolean isRecentsActivityRotationAllowed() {
+        // Activity rotation is allowed if the multi-simulated-rotation is not supported
+        // (fallback recents or tablets) or activity rotation is enabled by various settings.
         return ((mFlags & MASK_MULTIPLE_ORIENTATION_SUPPORTED_BY_DEVICE)
-                == MASK_MULTIPLE_ORIENTATION_SUPPORTED_BY_DEVICE)
+                != MASK_MULTIPLE_ORIENTATION_SUPPORTED_BY_DEVICE)
                 || (mFlags & (FLAG_HOME_ROTATION_ALLOWED_IN_PREFS
                         | FLAG_MULTIWINDOW_ROTATION_ALLOWED
                         | FLAG_HOME_ROTATION_FORCE_ENABLED_FOR_TESTING)) != 0;
