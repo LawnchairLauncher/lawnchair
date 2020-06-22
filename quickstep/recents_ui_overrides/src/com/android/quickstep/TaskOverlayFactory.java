@@ -66,7 +66,7 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
             }
         }
         RecentsOrientedState orientedState = taskView.getRecentsView().getPagedViewOrientedState();
-        boolean canLauncherRotate = orientedState.canLauncherRotate();
+        boolean canLauncherRotate = orientedState.canRecentsActivityRotate();
         boolean isInLandscape = orientedState.getTouchRotation() != ROTATION_0;
 
         // Add overview actions to the menu when in in-place rotate landscape mode.
