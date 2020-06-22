@@ -22,6 +22,7 @@ import static androidx.core.util.Preconditions.checkNotNull;
 
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT;
+import static com.android.launcher3.logger.LauncherAtom.Attribute.EMPTY_LABEL;
 import static com.android.launcher3.logger.LauncherAtom.Attribute.MANUAL_LABEL;
 import static com.android.launcher3.logger.LauncherAtom.Attribute.SUGGESTED_LABEL;
 import static com.android.launcher3.userevent.LauncherLogProto.Target.FromFolderLabelState.FROM_CUSTOM;
@@ -31,11 +32,14 @@ import static com.android.launcher3.userevent.LauncherLogProto.Target.FromFolder
 
 import android.os.Process;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.FolderNameInfos;
 import com.android.launcher3.logger.LauncherAtom;
+import com.android.launcher3.logger.LauncherAtom.Attribute;
 import com.android.launcher3.logger.LauncherAtom.FromState;
 import com.android.launcher3.logger.LauncherAtom.ToState;
 import com.android.launcher3.model.ModelWriter;
@@ -73,6 +77,30 @@ public class FolderInfo extends ItemInfo {
     public static final int FLAG_MULTI_PAGE_ANIMATION = 0x00000004;
 
     public static final int FLAG_MANUAL_FOLDER_NAME = 0x00000008;
+
+    /**
+     * Different states of folder label.
+     */
+    public enum LabelState {
+        // Folder's label is not yet assigned( i.e., title == null). Eligible for auto-labeling.
+        UNLABELED(Attribute.UNLABELED),
+
+        // Folder's label is empty(i.e., title == ""). Not eligible for auto-labeling.
+        EMPTY(EMPTY_LABEL),
+
+        // Folder's label is one of the non-empty suggested values.
+        SUGGESTED(SUGGESTED_LABEL),
+
+        // Folder's label is non-empty, manually entered by the user
+        // and different from any of suggested values.
+        MANUAL(MANUAL_LABEL);
+
+        private final LauncherAtom.Attribute mLogAttribute;
+
+        LabelState(Attribute logAttribute) {
+            this.mLogAttribute = logAttribute;
+        }
+    }
 
     public static final String EXTRA_FOLDER_SUGGESTIONS = "suggest";
 
@@ -176,8 +204,7 @@ public class FolderInfo extends ItemInfo {
 
     @Override
     protected String dumpProperties() {
-        return super.dumpProperties()
-                + " manuallyTypedTitle=" + hasOption(FLAG_MANUAL_FOLDER_NAME);
+        return String.format("%s; labelState=%s", super.dumpProperties(), getLabelState());
     }
 
     @Override
@@ -185,14 +212,41 @@ public class FolderInfo extends ItemInfo {
         return getDefaultItemInfoBuilder()
                 .setFolderIcon(LauncherAtom.FolderIcon.newBuilder().setCardinality(contents.size()))
                 .setRank(rank)
-                .setAttribute(hasOption(FLAG_MANUAL_FOLDER_NAME) ? MANUAL_LABEL : SUGGESTED_LABEL)
+                .setAttribute(getLabelState().mLogAttribute)
                 .setContainerInfo(getContainerInfo())
                 .build();
     }
 
     @Override
-    public void setTitle(CharSequence title) {
+    public void setTitle(@Nullable CharSequence title, ModelWriter modelWriter) {
+        // Updating label from null to empty is considered as false touch.
+        // Retaining null title(ie., UNLABELED state) allows auto-labeling when new items added.
+        if (isEmpty(title) && this.title == null) {
+            return;
+        }
+
+        // Updating title to same value does not change any states.
+        if (title != null && title == this.title) {
+            return;
+        }
+
         this.title = title;
+        LabelState newLabelState =
+                title == null ? LabelState.UNLABELED
+                        : title.length() == 0 ? LabelState.EMPTY :
+                                getAcceptedSuggestionIndex().isPresent() ? LabelState.SUGGESTED
+                                        : LabelState.MANUAL;
+        setOption(FLAG_MANUAL_FOLDER_NAME, newLabelState.equals(LabelState.MANUAL), modelWriter);
+    }
+
+    /**
+     * Returns current state of the current folder label.
+     */
+    public LabelState getLabelState() {
+        return title == null ? LabelState.UNLABELED
+                : title.length() == 0 ? LabelState.EMPTY :
+                        hasOption(FLAG_MANUAL_FOLDER_NAME) ? LabelState.MANUAL
+                                : LabelState.SUGGESTED;
     }
 
     @Override
@@ -233,13 +287,17 @@ public class FolderInfo extends ItemInfo {
      * Returns {@link FromState} based on current {@link #title}.
      */
     public LauncherAtom.FromState getFromLabelState() {
-        return title == null
-                ? LauncherAtom.FromState.FROM_STATE_UNSPECIFIED
-                : title.length() == 0
-                        ? LauncherAtom.FromState.FROM_EMPTY
-                        : hasOption(FLAG_MANUAL_FOLDER_NAME)
-                                ? LauncherAtom.FromState.FROM_CUSTOM
-                                : LauncherAtom.FromState.FROM_SUGGESTED;
+        switch (getLabelState()){
+            case EMPTY:
+                return LauncherAtom.FromState.FROM_EMPTY;
+            case MANUAL:
+                return LauncherAtom.FromState.FROM_CUSTOM;
+            case SUGGESTED:
+                return LauncherAtom.FromState.FROM_SUGGESTED;
+            case UNLABELED:
+            default:
+                return LauncherAtom.FromState.FROM_STATE_UNSPECIFIED;
+        }
     }
 
     /**
