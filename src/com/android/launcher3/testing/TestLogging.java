@@ -21,9 +21,17 @@ import android.view.MotionEvent;
 
 import com.android.launcher3.Utilities;
 
+import java.util.function.BiConsumer;
+
 public final class TestLogging {
+    private static BiConsumer<String, String> sEventConsumer;
+
     private static void recordEventSlow(String sequence, String event) {
         Log.d(TestProtocol.TAPL_EVENTS_TAG, sequence + " / " + event);
+        final BiConsumer<String, String> eventConsumer = sEventConsumer;
+        if (eventConsumer != null) {
+            eventConsumer.accept(sequence, event);
+        }
     }
 
     public static void recordEvent(String sequence, String event) {
@@ -42,5 +50,9 @@ public final class TestLogging {
         if (Utilities.IS_RUNNING_IN_TEST_HARNESS && event.getAction() != MotionEvent.ACTION_MOVE) {
             recordEventSlow(sequence, message + ": " + event);
         }
+    }
+
+    static void setEventConsumer(BiConsumer<String, String> consumer) {
+        sEventConsumer = consumer;
     }
 }
