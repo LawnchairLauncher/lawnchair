@@ -38,6 +38,10 @@ import static com.android.launcher3.LauncherState.SPRING_LOADED;
 import static com.android.launcher3.Utilities.postAsyncCallback;
 import static com.android.launcher3.dragndrop.DragLayer.ALPHA_INDEX_LAUNCHER_LOAD;
 import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
+import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_BACKGROUND;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ONRESUME;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ONSTOP;
+import static com.android.launcher3.logging.StatsLogManager.containerTypeToAtomState;
 import static com.android.launcher3.popup.SystemShortcut.APP_INFO;
 import static com.android.launcher3.popup.SystemShortcut.INSTALL;
 import static com.android.launcher3.popup.SystemShortcut.WIDGETS;
@@ -110,8 +114,9 @@ import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.keyboard.CustomActionsPopup;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
+import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.logging.FileLog;
-import com.android.launcher3.logging.StatsLogUtils;
+import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.model.BgDataModel.Callbacks;
@@ -920,13 +925,32 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
 
     private void logStopAndResume(int command) {
+        int pageIndex = mWorkspace.isOverlayShown() ? -1 : mWorkspace.getCurrentPage();
         int containerType = mStateManager.getState().containerType;
+
+        StatsLogManager.EventEnum event;
+        StatsLogManager.StatsLogger logger = getStatsLogManager().logger();
+        if (command == Action.Command.RESUME) {
+            logger.withSrcState(LAUNCHER_STATE_BACKGROUND)
+                .withDstState(containerTypeToAtomState(mStateManager.getState().containerType));
+            event = LAUNCHER_ONRESUME;
+        } else { /* command == Action.Command.STOP */
+            logger.withSrcState(containerTypeToAtomState(mStateManager.getState().containerType))
+                    .withDstState(LAUNCHER_STATE_BACKGROUND);
+            event = LAUNCHER_ONSTOP;
+        }
+
         if (containerType == ContainerType.WORKSPACE && mWorkspace != null) {
             getUserEventDispatcher().logActionCommand(command,
-                    containerType, -1, mWorkspace.isOverlayShown() ? -1 : 0);
+                    containerType, -1, pageIndex);
+            logger.withContainerInfo(LauncherAtom.ContainerInfo.newBuilder()
+                    .setWorkspace(
+                            LauncherAtom.WorkspaceContainer.newBuilder()
+                                    .setPageIndex(pageIndex)).build());
         } else {
             getUserEventDispatcher().logActionCommand(command, containerType, -1);
         }
+        logger.log(event);
     }
 
     private void scheduleDeferredCheck() {
@@ -1833,16 +1857,6 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         } else {
             return false;
         }
-    }
-
-    @Override
-    public int getCurrentState() {
-        if (mStateManager.getState() == LauncherState.ALL_APPS) {
-            return StatsLogUtils.LAUNCHER_STATE_ALLAPPS;
-        } else if (mStateManager.getState() == OVERVIEW) {
-            return StatsLogUtils.LAUNCHER_STATE_OVERVIEW;
-        }
-        return StatsLogUtils.LAUNCHER_STATE_HOME;
     }
 
     @Override
