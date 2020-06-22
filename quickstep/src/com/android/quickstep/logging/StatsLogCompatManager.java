@@ -23,7 +23,6 @@ import static com.android.systemui.shared.system.SysUiStatsLog.LAUNCHER_UICHANGE
 import static com.android.systemui.shared.system.SysUiStatsLog.LAUNCHER_UICHANGED__DST_STATE__BACKGROUND;
 import static com.android.systemui.shared.system.SysUiStatsLog.LAUNCHER_UICHANGED__DST_STATE__HOME;
 import static com.android.systemui.shared.system.SysUiStatsLog.LAUNCHER_UICHANGED__DST_STATE__OVERVIEW;
-import static com.android.systemui.shared.system.SysUiStatsLog.LAUNCHER_UICHANGED__SRC_STATE__HOME;
 
 import android.content.Context;
 import android.util.Log;
@@ -179,8 +178,8 @@ public class StatsLogCompatManager extends StatsLogManager {
         private InstanceId mInstanceId = DEFAULT_INSTANCE_ID;
         private OptionalInt mRank = OptionalInt.empty();
         private Optional<ContainerInfo> mContainerInfo = Optional.empty();
-        private int mSrcState = LAUNCHER_UICHANGED__SRC_STATE__HOME;
-        private int mDstState = LAUNCHER_UICHANGED__DST_STATE__BACKGROUND;
+        private int mSrcState = LAUNCHER_STATE_UNSPECIFIED;
+        private int mDstState = LAUNCHER_STATE_UNSPECIFIED;
         private Optional<FromState> mFromState = Optional.empty();
         private Optional<ToState> mToState = Optional.empty();
         private Optional<String> mEditText = Optional.empty();

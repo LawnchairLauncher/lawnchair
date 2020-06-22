@@ -23,6 +23,7 @@ import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS
 import static com.android.launcher3.anim.Interpolators.DEACCEL_3;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_ALL_APPS_EDU;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOME_GESTURE;
 import static com.android.launcher3.touch.AbstractStateChangeTouchController.SUCCESS_TRANSITION_PROGRESS;
 import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_OFFSET;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
@@ -44,6 +45,7 @@ import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.SingleAxisSwipeDetector;
@@ -246,5 +248,9 @@ public class NavBarToHomeTouchController implements TouchController,
                 startContainerType,
                 mEndState.containerType,
                 mLauncher.getWorkspace().getCurrentPage());
+        mLauncher.getStatsLogManager().logger()
+                .withSrcState(StatsLogManager.containerTypeToAtomState(mStartState.containerType))
+                .withDstState(StatsLogManager.containerTypeToAtomState(mEndState.containerType))
+                .log(LAUNCHER_HOME_GESTURE);
     }
 }
