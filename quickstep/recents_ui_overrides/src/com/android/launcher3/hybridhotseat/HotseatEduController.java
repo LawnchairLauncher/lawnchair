@@ -84,7 +84,7 @@ public class HotseatEduController {
         }
         Snackbar.show(mLauncher, R.string.hotsaet_tip_prediction_enabled,
                 R.string.hotseat_prediction_settings, null,
-                () -> mLauncher.startActivity(new Intent(SETTINGS_ACTION)));
+                () -> mLauncher.startActivity(getSettingsIntent()));
     }
 
     /**
@@ -114,9 +114,9 @@ public class HotseatEduController {
         if (!putIntoFolder.isEmpty()) {
             ItemInfo firstItem = putIntoFolder.get(0);
             FolderInfo folderInfo = new FolderInfo();
-            folderInfo.setTitle("");
             mLauncher.getModelWriter().addItemToDatabase(folderInfo, firstItem.container,
                     firstItem.screenId, firstItem.cellX, firstItem.cellY);
+            folderInfo.setTitle("", mLauncher.getModelWriter());
             folderInfo.contents.addAll(putIntoFolder);
             for (int i = 0; i < folderInfo.contents.size(); i++) {
                 ItemInfo item = folderInfo.contents.get(i);
@@ -237,7 +237,7 @@ public class HotseatEduController {
                 < mLauncher.getDeviceProfile().inv.numHotseatIcons) {
             Snackbar.show(mLauncher, R.string.hotseat_tip_gaps_filled,
                     R.string.hotseat_prediction_settings, null,
-                    () -> mLauncher.startActivity(new Intent(SETTINGS_ACTION)));
+                    () -> mLauncher.startActivity(getSettingsIntent()));
         } else {
             new ArrowTipView(mLauncher).show(
                     mLauncher.getString(R.string.hotseat_tip_no_empty_slots), mHotseat.getTop());
@@ -265,7 +265,7 @@ public class HotseatEduController {
                     requiresMigration ? R.string.hotseat_tip_no_empty_slots
                             : R.string.hotseat_auto_enrolled),
                     mHotseat.getTop());
-            mLauncher.getStatsLogManager().log(LAUNCHER_HOTSEAT_EDU_ONLY_TIP);
+            mLauncher.getStatsLogManager().logger().log(LAUNCHER_HOTSEAT_EDU_ONLY_TIP);
             finishOnboarding();
         }
     }
@@ -280,6 +280,10 @@ public class HotseatEduController {
         mActiveDialog = HotseatEduDialog.getDialog(mLauncher);
         mActiveDialog.setHotseatEduController(this);
         mActiveDialog.show(mPredictedApps);
+    }
+
+    static Intent getSettingsIntent() {
+        return new Intent(SETTINGS_ACTION).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     }
 }
 

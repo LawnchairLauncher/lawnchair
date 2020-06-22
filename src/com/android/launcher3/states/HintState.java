@@ -39,8 +39,18 @@ public class HintState extends LauncherState {
     }
 
     @Override
+    protected float getDepthUnchecked(Context context) {
+        return 0.15f;
+    }
+
+    @Override
+    public float getOverviewScrimAlpha(Launcher launcher) {
+        return 0.4f;
+    }
+
+    @Override
     public ScaleAndTranslation getWorkspaceScaleAndTranslation(Launcher launcher) {
-        return new ScaleAndTranslation(0.9f, 0, 0);
+        return new ScaleAndTranslation(0.92f, 0, 0);
     }
 
     @Override
