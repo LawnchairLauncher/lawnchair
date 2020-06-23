@@ -64,7 +64,7 @@ public class OnboardingPrefs<T extends Launcher> {
 
     private static final Map<String, Integer> MAX_COUNTS;
     static {
-        Map<String, Integer> maxCounts = new ArrayMap<>(3);
+        Map<String, Integer> maxCounts = new ArrayMap<>(4);
         maxCounts.put(HOME_BOUNCE_COUNT, 3);
         maxCounts.put(SHELF_BOUNCE_COUNT, 3);
         maxCounts.put(ALL_APPS_COUNT, 5);
