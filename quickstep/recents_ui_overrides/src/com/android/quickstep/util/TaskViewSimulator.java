@@ -22,6 +22,7 @@ import static com.android.systemui.shared.system.WindowManagerWrapper.WINDOWING_
 
 import android.animation.TimeInterpolator;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.PointF;
@@ -125,6 +126,14 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
     }
 
     /**
+     * @see com.android.quickstep.views.RecentsView#onConfigurationChanged(Configuration)
+     */
+    public void setRecentsConfiguration(Configuration configuration) {
+        mOrientationState.setActivityConfiguration(configuration);
+        mLayoutValid = false;
+    }
+
+    /**
      * @see com.android.quickstep.views.RecentsView#FULLSCREEN_PROGRESS
      */
     public float getFullScreenScale() {
@@ -141,7 +150,8 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
      */
     public void setPreview(RemoteAnimationTargetCompat runningTarget) {
         setPreviewBounds(runningTarget.screenSpaceBounds, runningTarget.contentInsets);
-        mRunningTargetWindowPosition.set(runningTarget.position.x, runningTarget.position.y);
+        mRunningTargetWindowPosition.set(runningTarget.screenSpaceBounds.left,
+                runningTarget.screenSpaceBounds.top);
     }
 
     /**
@@ -204,7 +214,8 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
     public void applyWindowToHomeRotation(Matrix matrix) {
         mMatrix.postTranslate(mDp.windowX, mDp.windowY);
         postDisplayRotation(deltaRotation(
-                mOrientationState.getLauncherRotation(), mOrientationState.getDisplayRotation()),
+                mOrientationState.getRecentsActivityRotation(),
+                mOrientationState.getDisplayRotation()),
                 mDp.widthPx, mDp.heightPx, matrix);
         matrix.postTranslate(-mRunningTargetWindowPosition.x, -mRunningTargetWindowPosition.y);
     }
@@ -225,7 +236,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
             mPositionHelper.updateThumbnailMatrix(
                     mThumbnailPosition, mThumbnailData,
                     mTaskRect.width(), mTaskRect.height(),
-                    mDp, mOrientationState.getLauncherRotation());
+                    mDp, mOrientationState.getRecentsActivityRotation());
             mPositionHelper.getMatrix().invert(mInversePositionMatrix);
 
             PagedOrientationHandler poh = mOrientationState.getOrientationHandler();
@@ -255,8 +266,8 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
         float taskHeight = mTaskRect.height();
 
         mMatrix.set(mPositionHelper.getMatrix());
-        mMatrix.postScale(scale, scale);
         mMatrix.postTranslate(insets.left, insets.top);
+        mMatrix.postScale(scale, scale);
 
         // Apply TaskView matrix: translate, scale, scroll
         mMatrix.postTranslate(mTaskRect.left, mTaskRect.top);

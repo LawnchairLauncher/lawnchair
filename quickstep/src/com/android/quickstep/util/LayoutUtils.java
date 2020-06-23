@@ -58,33 +58,15 @@ public class LayoutUtils {
     }
 
     /**
-     * Gets the scale that should be applied to the TaskView so that it matches the target
-     * TODO: Remove this method
-     */
-    public static float getTaskScale(RecentsOrientedState orientedState,
-            float srcWidth, float srcHeight, float targetWidth, float targetHeight) {
-        if (orientedState == null
-                || orientedState.isHomeRotationAllowed()
-                || orientedState.isDisplayPhoneNatural()) {
-            return srcWidth / targetWidth;
-        } else {
-            return srcHeight / targetHeight;
-        }
-    }
-
-    /**
      * Recursively sets view and all children enabled/disabled.
-     * @param viewGroup Top most parent view to change.
+     * @param view Top most parent view to change.
      * @param enabled True = enable, False = disable.
      */
-    public static void setViewEnabled(ViewGroup viewGroup, boolean enabled) {
-        viewGroup.setEnabled(enabled);
-        for (int i = 0; i < viewGroup.getChildCount(); i++) {
-            View child = viewGroup.getChildAt(i);
-            if (child instanceof ViewGroup) {
-                setViewEnabled((ViewGroup) child, enabled);
-            } else {
-                child.setEnabled(enabled);
+    public static void setViewEnabled(View view, boolean enabled) {
+        view.setEnabled(enabled);
+        if (view instanceof ViewGroup) {
+            for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
+                setViewEnabled(((ViewGroup) view).getChildAt(i), enabled);
             }
         }
     }

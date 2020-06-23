@@ -126,7 +126,7 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_HYBRID_HOTSEAT = getDebugFlag(
             "ENABLE_HYBRID_HOTSEAT", true, "Fill gaps in hotseat with predicted apps");
 
-    public static final BooleanFlag HOTSEAT_MIGRATE_TO_FOLDER = new DeviceFlag(
+    public static final BooleanFlag HOTSEAT_MIGRATE_TO_FOLDER = getDebugFlag(
             "HOTSEAT_MIGRATE_TO_FOLDER", false, "Should move hotseat items into a folder");
 
     public static final BooleanFlag ENABLE_DEEP_SHORTCUT_ICON_CACHE = getDebugFlag(
