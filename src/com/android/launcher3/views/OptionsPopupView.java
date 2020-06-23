@@ -86,7 +86,7 @@ public class OptionsPopupView extends ArrowPopup
             return false;
         }
         if (item.mEventId.getId() > 0) {
-            mLauncher.getStatsLogManager().log(item.mEventId);
+            mLauncher.getStatsLogManager().logger().log(item.mEventId);
         }
         if (item.mClickListener.onLongClick(view)) {
             close(true);

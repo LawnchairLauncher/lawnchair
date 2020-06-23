@@ -294,7 +294,8 @@ public abstract class AbstractLauncherUiTest {
         // Limits UI tests affecting tests running after them.
         mLauncher.waitForLauncherInitialized();
         if (mLauncherPid != 0) {
-            assertEquals("Launcher crashed, pid mismatch:", mLauncherPid, mLauncher.getPid());
+            assertEquals("Launcher crashed, pid mismatch:",
+                    mLauncherPid, mLauncher.getPid().intValue());
         }
         checkDetectedLeaks(mLauncher);
     }

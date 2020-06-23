@@ -18,6 +18,7 @@ package com.android.launcher3.tapl;
 
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.os.Bundle;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -244,8 +245,8 @@ public class AllApps extends LauncherInstrumentation.VisibleContainer {
     }
 
     private void verifyNotFrozen(String message) {
-        mLauncher.assertEquals(message, 0, mLauncher.getTestInfo(
-                TestProtocol.REQUEST_APP_LIST_FREEZE_FLAGS).
-                getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD));
+        final Bundle testInfo = mLauncher.getTestInfo(TestProtocol.REQUEST_APP_LIST_FREEZE_FLAGS);
+        if (testInfo == null) return;
+        mLauncher.assertEquals(message, 0, testInfo.getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD));
     }
 }

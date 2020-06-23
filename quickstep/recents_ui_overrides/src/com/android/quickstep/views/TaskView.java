@@ -30,7 +30,8 @@ import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.TOUCH_RESPONSE_INTERPOLATOR;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
-import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_ICON_TAP_OR_LONGPRESS;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent
+        .LAUNCHER_TASK_ICON_TAP_OR_LONGPRESS;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_LAUNCH_TAP;
 
 import android.animation.Animator;
@@ -214,7 +215,8 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             mActivity.getUserEventDispatcher().logTaskLaunchOrDismiss(
                     Touch.TAP, Direction.NONE, getRecentsView().indexOfChild(this),
                     TaskUtils.getLaunchComponentKeyForTask(getTask().key));
-            mActivity.getStatsLogManager().log(LAUNCHER_TASK_LAUNCH_TAP, getItemInfo());
+            mActivity.getStatsLogManager().logger().withItemInfo(getItemInfo())
+                    .log(LAUNCHER_TASK_LAUNCH_TAP);
         });
 
         mCurrentFullscreenParams = new FullscreenDrawParams(context);
@@ -383,6 +385,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                             }
                         }, resultCallbackHandler);
             }
+            getRecentsView().onTaskLaunched(mTask);
         }
     }
 
@@ -432,7 +435,8 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
             getRecentsView().snapToPage(getRecentsView().indexOfChild(this));
         } else {
             mMenuView = TaskMenuView.showForTask(this);
-            mActivity.getStatsLogManager().log(LAUNCHER_TASK_ICON_TAP_OR_LONGPRESS, getItemInfo());
+            mActivity.getStatsLogManager().logger().withItemInfo(getItemInfo())
+                    .log(LAUNCHER_TASK_ICON_TAP_OR_LONGPRESS);
             UserEventDispatcher.newInstance(getContext()).logActionOnItem(action, Direction.NONE,
                     LauncherLogProto.ItemType.TASK_ICON);
             if (mMenuView != null) {
@@ -543,19 +547,13 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         setIconAndDimTransitionProgress(iconScale, invert);
     }
 
-    private void resetViewTransforms() {
+    protected void resetViewTransforms() {
         setCurveScale(1);
         setTranslationX(0f);
         setTranslationY(0f);
         setTranslationZ(0);
         setAlpha(mStableAlpha);
         setIconScaleAndDim(1);
-    }
-
-    public void resetVisualProperties() {
-        resetViewTransforms();
-        setFullscreenProgress(0);
-        setModalness(0);
     }
 
     public void setStableAlpha(float parentAlpha) {
@@ -951,9 +949,6 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
      */
     public void setFullscreenProgress(float progress) {
         progress = Utilities.boundToRange(progress, 0, 1);
-        if (progress == mFullscreenProgress) {
-            return;
-        }
         mFullscreenProgress = progress;
         boolean isFullscreen = mFullscreenProgress > 0;
         mIconView.setVisibility(progress < 1 ? VISIBLE : INVISIBLE);

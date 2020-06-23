@@ -17,7 +17,8 @@ package com.android.launcher3.hybridhotseat;
 
 import static com.android.launcher3.InvariantDeviceProfile.CHANGE_FLAG_GRID;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
-import static com.android.launcher3.hybridhotseat.HotseatEduController.SETTINGS_ACTION;
+import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.hybridhotseat.HotseatEduController.getSettingsIntent;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOTSEAT_RANKED;
 
 import android.animation.Animator;
@@ -29,9 +30,9 @@ import android.app.prediction.AppPredictor;
 import android.app.prediction.AppTarget;
 import android.app.prediction.AppTargetEvent;
 import android.content.ComponentName;
-import android.content.Intent;
 import android.os.Process;
 import android.util.Log;
+import android.view.HapticFeedbackConstants;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -54,7 +55,8 @@ import com.android.launcher3.appprediction.DynamicItemCache;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.icons.IconCache;
-import com.android.launcher3.logger.LauncherAtom;
+import com.android.launcher3.logger.LauncherAtom.ContainerInfo;
+import com.android.launcher3.logger.LauncherAtom.PredictedHotseatContainer;
 import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.FolderInfo;
@@ -69,6 +71,7 @@ import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IntArray;
+import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.views.ArrowTipView;
 import com.android.launcher3.views.Snackbar;
 
@@ -120,9 +123,18 @@ public class HotseatPredictionController implements DragController.DragListener,
     private final View.OnLongClickListener mPredictionLongClickListener = v -> {
         if (!ItemLongClickListener.canStartDrag(mLauncher)) return false;
         if (mLauncher.getWorkspace().isSwitchingState()) return false;
+        if (!mLauncher.getOnboardingPrefs().getBoolean(
+                OnboardingPrefs.HOTSEAT_LONGPRESS_TIP_SEEN)) {
+            Snackbar.show(mLauncher, R.string.hotseat_tip_gaps_filled,
+                    R.string.hotseat_prediction_settings, null,
+                    () -> mLauncher.startActivity(getSettingsIntent()));
+            mLauncher.getOnboardingPrefs().markChecked(OnboardingPrefs.HOTSEAT_LONGPRESS_TIP_SEEN);
+            mLauncher.getDragLayer().performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+            return true;
+        }
         // Start the drag
         mLauncher.getWorkspace().beginDragShared(v, this, new DragOptions());
-        return false;
+        return true;
     };
 
     public HotseatPredictionController(Launcher launcher) {
@@ -154,36 +166,35 @@ public class HotseatPredictionController implements DragController.DragListener,
      * Shows appropriate hotseat education based on prediction enabled and migration states.
      */
     public void showEdu() {
-        if (mComponentKeyMappers.isEmpty()) {
-            // launcher has empty predictions set
-            Snackbar.show(mLauncher, R.string.hotsaet_tip_prediction_disabled,
-                    R.string.hotseat_prediction_settings, null,
-                    () -> mLauncher.startActivity(
-                            new Intent(SETTINGS_ACTION)));
-        } else if (isEduSeen()) {
-            // user has already went through education
-            new ArrowTipView(mLauncher).show(
-                    mLauncher.getString(R.string.hotsaet_tip_prediction_enabled),
-                    mHotseat.getTop());
-        } else {
-            HotseatEduController eduController = new HotseatEduController(mLauncher, mRestoreHelper,
-                    this::createPredictor);
-            eduController.setPredictedApps(mapToWorkspaceItemInfo(mComponentKeyMappers));
-            eduController.showEdu();
-        }
+        mLauncher.getStateManager().goToState(NORMAL, true, () -> {
+            if (mComponentKeyMappers.isEmpty()) {
+                // launcher has empty predictions set
+                Snackbar.show(mLauncher, R.string.hotsaet_tip_prediction_disabled,
+                        R.string.hotseat_prediction_settings, null,
+                        () -> mLauncher.startActivity(getSettingsIntent()));
+            } else if (isEduSeen() || getPredictedIcons().size() >= (mHotSeatItemsCount + 1) / 2) {
+                showDiscoveryTip();
+            } else {
+                HotseatEduController eduController = new HotseatEduController(mLauncher,
+                        mRestoreHelper,
+                        this::createPredictor);
+                eduController.setPredictedApps(mapToWorkspaceItemInfo(mComponentKeyMappers));
+                eduController.showEdu();
+            }
+        });
     }
 
     /**
      * Shows educational tip for hotseat if user does not go through Tips app.
      */
-    public void showDiscoveryTip() {
-        if (getPredictedIcons().size() == mHotSeatItemsCount) {
+    private void showDiscoveryTip() {
+        if (getPredictedIcons().isEmpty()) {
             new ArrowTipView(mLauncher).show(
                     mLauncher.getString(R.string.hotseat_tip_no_empty_slots), mHotseat.getTop());
         } else {
             Snackbar.show(mLauncher, R.string.hotseat_tip_gaps_filled,
                     R.string.hotseat_prediction_settings, null,
-                    () -> mLauncher.startActivity(new Intent(SETTINGS_ACTION)));
+                    () -> mLauncher.startActivity(getSettingsIntent()));
         }
     }
 
@@ -661,24 +672,25 @@ public class HotseatPredictionController implements DragController.DragListener,
         if (!rank.isPresent()) {
             return;
         }
-        LauncherAtom.PredictedHotseatContainer.Builder containerBuilder =
-                LauncherAtom.PredictedHotseatContainer.newBuilder();
-        LauncherAtom.ItemInfo.Builder atomBuilder = LauncherAtom.ItemInfo.newBuilder();
+
         int cardinality = 0;
         for (PredictedAppIcon icon : getPredictedIcons()) {
             ItemInfo info = (ItemInfo) icon.getTag();
             cardinality |= 1 << info.screenId;
         }
+
+        PredictedHotseatContainer.Builder containerBuilder = PredictedHotseatContainer.newBuilder();
         containerBuilder.setCardinality(cardinality);
-        atomBuilder.setRank(rank.getAsInt());
         if (itemInfo.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION) {
             containerBuilder.setIndex(rank.getAsInt());
         }
-        atomBuilder.setContainerInfo(
-                LauncherAtom.ContainerInfo.newBuilder().setPredictedHotseatContainer(
-                        containerBuilder).build());
-        mLauncher.getStatsLogManager().log(LAUNCHER_HOTSEAT_RANKED, instanceId,
-                atomBuilder.build());
+        mLauncher.getStatsLogManager().logger()
+                .withInstanceId(instanceId)
+                .withRank(rank.getAsInt())
+                .withContainerInfo(ContainerInfo.newBuilder()
+                        .setPredictedHotseatContainer(containerBuilder)
+                        .build())
+                .log(LAUNCHER_HOTSEAT_RANKED);
     }
 
     private class PinPrediction extends SystemShortcut<QuickstepLauncher> {

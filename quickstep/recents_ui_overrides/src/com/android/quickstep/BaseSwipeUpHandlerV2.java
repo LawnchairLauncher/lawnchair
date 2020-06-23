@@ -22,6 +22,12 @@ import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_2;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.config.FeatureFlags.UNSTABLE_SPRINGS;
+import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_BACKGROUND;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.IGNORE;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOME_GESTURE;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_OVERVIEW_GESTURE;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_QUICKSWITCH_LEFT;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_QUICKSWITCH_RIGHT;
 import static com.android.launcher3.util.DefaultDisplay.getSingleFrameMs;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_OVERVIEW;
 import static com.android.quickstep.GestureState.GestureEndTarget.HOME;
@@ -62,6 +68,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
+import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
@@ -275,8 +282,7 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
         if (mActivity == activity) {
             return true;
         }
-        mTaskViewSimulator.setLayoutRotation(mDeviceState.getCurrentActiveRotation(),
-                mDeviceState.getDisplayRotation());
+
         if (mActivity != null) {
             // The launcher may have been recreated as a result of device rotation.
             int oldState = mStateCallback.getState() & ~LAUNCHER_UI_STATES;
@@ -329,6 +335,7 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
         if (mStateCallback.hasStates(STATE_HANDLER_INVALIDATED)) {
             return;
         }
+        mTaskViewSimulator.setRecentsConfiguration(mActivity.getResources().getConfiguration());
 
         // If we've already ended the gesture and are going home, don't prepare recents UI,
         // as that will set the state as BACKGROUND_APP, overriding the animation to NORMAL.
@@ -891,6 +898,27 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
                 ContainerType.NAVBAR, ContainerType.APP,
                 endTarget.containerType,
                 pageIndex);
+        StatsLogManager.EventEnum event;
+        switch (endTarget) {
+            case HOME:
+                event = LAUNCHER_HOME_GESTURE;
+                break;
+            case RECENTS:
+                event = LAUNCHER_OVERVIEW_GESTURE;
+                break;
+            case LAST_TASK:
+            case NEW_TASK:
+                event = (mLogDirection == Direction.LEFT)
+                        ? LAUNCHER_QUICKSWITCH_LEFT
+                        : LAUNCHER_QUICKSWITCH_RIGHT;
+                break;
+            default:
+                event = IGNORE;
+        }
+        StatsLogManager.newInstance(mContext).logger()
+                .withSrcState(LAUNCHER_STATE_BACKGROUND)
+                .withDstState(StatsLogManager.containerTypeToAtomState(endTarget.containerType))
+                .log(event);
     }
 
     /** Animates to the given progress, where 0 is the current app and 1 is overview. */
