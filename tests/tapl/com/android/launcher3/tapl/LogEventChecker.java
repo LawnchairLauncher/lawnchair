@@ -15,169 +15,81 @@
  */
 package com.android.launcher3.tapl;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-
-import android.util.Log;
+import android.os.SystemClock;
 
 import com.android.launcher3.testing.TestProtocol;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Semaphore;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Utility class to read log on a background thread.
+ * Utility class to verify expected events.
  */
 public class LogEventChecker {
 
-    private static final Pattern EVENT_LOG_ENTRY = Pattern.compile(
-            ".*" + TestProtocol.TAPL_EVENTS_TAG + ": (?<sequence>[a-zA-Z]+) / (?<event>.*)");
-
-    private static final String START_PREFIX = "START_READER ";
-    private static final String FINISH_PREFIX = "FINISH_READER ";
-    private static final String SKIP_EVENTS_TAG = "b/153670015";
-
-    private volatile CountDownLatch mFinished;
+    private final LauncherInstrumentation mLauncher;
 
     // Map from an event sequence name to an ordered list of expected events in that sequence.
     private final ListMap<Pattern> mExpectedEvents = new ListMap<>();
 
-    private final ListMap<String> mEvents = new ListMap<>();
-    private final Semaphore mEventsCounter = new Semaphore(0);
-
-    private volatile String mStartCommand;
-    private volatile String mFinishCommand;
-
-    LogEventChecker() {
-        final Thread thread = new Thread(this::onRun, "log-reader-thread");
-        thread.setPriority(Thread.NORM_PRIORITY);
-        thread.start();
+    LogEventChecker(LauncherInstrumentation launcher) {
+        mLauncher = launcher;
     }
 
-    void start() {
-        if (mFinished != null) {
-            try {
-                mFinished.await();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            } finally {
-                mFinished = null;
-            }
-        }
-        mEvents.clear();
-        Log.d(SKIP_EVENTS_TAG, "Cleared events");
+    boolean start() {
         mExpectedEvents.clear();
-        mEventsCounter.drainPermits();
-        final String id = UUID.randomUUID().toString();
-        mStartCommand = START_PREFIX + id;
-        mFinishCommand = FINISH_PREFIX + id;
-        Log.d(SKIP_EVENTS_TAG, "Expected finish command: " + mFinishCommand);
-        Log.d(TestProtocol.TAPL_EVENTS_TAG, mStartCommand);
-    }
-
-    private void onRun() {
-        while (true) readEvents();
-    }
-
-    private void readEvents() {
-        try {
-            // Note that we use Runtime.exec to start the log reading process instead of running
-            // it via UIAutomation, so that we can directly access the "Process" object and
-            // ensure that the instrumentation is not stuck forever.
-            final String cmd = "logcat -s " + TestProtocol.TAPL_EVENTS_TAG;
-
-            final Process logcatProcess = Runtime.getRuntime().exec(cmd);
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(
-                    logcatProcess.getInputStream()))) {
-                while (true) {
-                    // Skip everything before the next start command.
-                    for (; ; ) {
-                        final String event = reader.readLine();
-                        if (event == null) {
-                            Log.d(SKIP_EVENTS_TAG, "Read a null line while waiting for start");
-                            return;
-                        }
-                        if (event.contains(mStartCommand)) {
-                            Log.d(SKIP_EVENTS_TAG, "Read start: " + event);
-                            break;
-                        }
-                    }
-
-                    // Store all actual events until the finish command.
-                    for (; ; ) {
-                        final String event = reader.readLine();
-                        if (event == null) {
-                            Log.d(SKIP_EVENTS_TAG, "Read a null line after waiting for start");
-                            mEventsCounter.drainPermits();
-                            mEvents.clear();
-                            return;
-                        }
-                        if (event.contains(mFinishCommand)) {
-                            mFinished.countDown();
-                            Log.d(SKIP_EVENTS_TAG, "Read finish: " + event);
-                            break;
-                        } else {
-                            final Matcher matcher = EVENT_LOG_ENTRY.matcher(event);
-                            if (matcher.find()) {
-                                mEvents.add(matcher.group("sequence"), matcher.group("event"));
-                                Log.d(SKIP_EVENTS_TAG, "Read event: " + event);
-                                mEventsCounter.release();
-                            } else {
-                                Log.d(SKIP_EVENTS_TAG, "Read something unexpected: " + event);
-                            }
-                        }
-                    }
-                }
-            } finally {
-                logcatProcess.destroyForcibly();
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return mLauncher.getTestInfo(TestProtocol.REQUEST_START_EVENT_LOGGING) != null;
     }
 
     void expectPattern(String sequence, Pattern pattern) {
         mExpectedEvents.add(sequence, pattern);
     }
 
-    private void finishSync(long waitForExpectedCountMs) {
-        try {
-            // Wait until Launcher generates the expected number of events.
-            int expectedCount = mExpectedEvents.entrySet()
+    // Waits for the expected number of events and returns them.
+    private ListMap<String> finishSync(long waitForExpectedCountMs) {
+        final long startTime = SystemClock.uptimeMillis();
+        // Event strings with '/' separating the sequence and the event.
+        ArrayList<String> rawEvents;
+
+        while (true) {
+            rawEvents = mLauncher.getTestInfo(TestProtocol.REQUEST_GET_TEST_EVENTS)
+                    .getStringArrayList(TestProtocol.TEST_INFO_RESPONSE_FIELD);
+            final int expectedCount = mExpectedEvents.entrySet()
                     .stream().mapToInt(e -> e.getValue().size()).sum();
-            mEventsCounter.tryAcquire(expectedCount, waitForExpectedCountMs, MILLISECONDS);
-            finishNoWait();
-            mFinished.await();
-            mFinished = null;
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            if (rawEvents.size() >= expectedCount
+                    || SystemClock.uptimeMillis() > startTime + waitForExpectedCountMs) {
+                break;
+            }
+            SystemClock.sleep(100);
         }
+
+        finishNoWait();
+
+        // Parse raw events into a map.
+        final ListMap<String> eventSequences = new ListMap<>();
+        for (String rawEvent : rawEvents) {
+            final String[] split = rawEvent.split("/");
+            eventSequences.add(split[0], split[1]);
+        }
+        return eventSequences;
     }
 
     void finishNoWait() {
-        mFinished = new CountDownLatch(1);
-        Log.d(TestProtocol.TAPL_EVENTS_TAG, mFinishCommand);
+        mLauncher.getTestInfo(TestProtocol.REQUEST_STOP_EVENT_LOGGING);
     }
 
     String verify(long waitForExpectedCountMs, boolean successfulGesture) {
-        finishSync(waitForExpectedCountMs);
+        final ListMap<String> actualEvents = finishSync(waitForExpectedCountMs);
 
         final StringBuilder sb = new StringBuilder();
         boolean hasMismatches = false;
         for (Map.Entry<String, List<Pattern>> expectedEvents : mExpectedEvents.entrySet()) {
             String sequence = expectedEvents.getKey();
 
-            List<String> actual = new ArrayList<>(mEvents.getNonNull(sequence));
-            Log.d(SKIP_EVENTS_TAG, "Verifying events");
+            List<String> actual = new ArrayList<>(actualEvents.getNonNull(sequence));
             final int mismatchPosition = getMismatchPosition(expectedEvents.getValue(), actual);
             hasMismatches = hasMismatches
                     || mismatchPosition != -1 && !ignoreMistatch(successfulGesture, sequence);
@@ -189,7 +101,7 @@ public class LogEventChecker {
                     mismatchPosition);
         }
         // Check for unexpected event sequences in the actual data.
-        for (String actualNamedSequence : mEvents.keySet()) {
+        for (String actualNamedSequence : actualEvents.keySet()) {
             if (!mExpectedEvents.containsKey(actualNamedSequence)) {
                 hasMismatches = hasMismatches
                         || !ignoreMistatch(successfulGesture, actualNamedSequence);
@@ -197,7 +109,7 @@ public class LogEventChecker {
                         sb,
                         actualNamedSequence,
                         new ArrayList<>(),
-                        mEvents.get(actualNamedSequence),
+                        actualEvents.get(actualNamedSequence),
                         0);
             }
         }

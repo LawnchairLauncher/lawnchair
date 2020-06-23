@@ -13,25 +13,30 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.quickstep.fallback.RecentsRootView
+<com.android.launcher3.LauncherRootView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/drag_layer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clipChildren="false"
     android:fitsSystemWindows="true">
 
-    <com.android.quickstep.fallback.FallbackRecentsView
-        android:id="@id/overview_panel"
+    <com.android.quickstep.fallback.RecentsDragLayer
+        android:id="@+id/drag_layer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:outlineProvider="none"
-        android:theme="@style/HomeScreenElementTheme" />
+        android:clipChildren="false">
 
-    <include
-        android:id="@+id/overview_actions_view"
-        layout="@layout/overview_actions_container" />
+        <com.android.quickstep.fallback.FallbackRecentsView
+            android:id="@id/overview_panel"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:outlineProvider="none"
+            android:theme="@style/HomeScreenElementTheme" />
 
-</com.android.quickstep.fallback.RecentsRootView>
+        <include
+            android:id="@+id/overview_actions_view"
+            layout="@layout/overview_actions_container" />
+
+    </com.android.quickstep.fallback.RecentsDragLayer>
+</com.android.launcher3.LauncherRootView>

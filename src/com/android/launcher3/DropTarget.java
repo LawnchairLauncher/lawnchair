@@ -28,6 +28,7 @@ import com.android.launcher3.folder.FolderNameProvider;
 import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.logging.InstanceIdSequence;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.util.Executors;
 
 /**
  * Interface defining an object that can receive a drag.
@@ -84,7 +85,9 @@ public interface DropTarget {
 
         public DragObject(Context context) {
             if (FeatureFlags.FOLDER_NAME_SUGGEST.get()) {
-                folderNameProvider = FolderNameProvider.newInstance(context);
+                Executors.MODEL_EXECUTOR.post(() -> {
+                    folderNameProvider = FolderNameProvider.newInstance(context);
+                });
             }
         }
 

@@ -40,6 +40,7 @@ public class AppLaunchTracker implements ResourceBasedOverride {
     public static final String CONTAINER_ALL_APPS = Integer.toString(ContainerType.ALLAPPS);
     public static final String CONTAINER_PREDICTIONS = Integer.toString(ContainerType.PREDICTION);
     public static final String CONTAINER_SEARCH = Integer.toString(ContainerType.SEARCHRESULT);
+    public static final String CONTAINER_OVERVIEW = Integer.toString(ContainerType.OVERVIEW);
 
 
     public static final MainThreadInitializedObject<AppLaunchTracker> INSTANCE =

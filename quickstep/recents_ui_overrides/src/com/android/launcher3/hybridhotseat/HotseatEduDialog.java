@@ -111,13 +111,13 @@ public class HotseatEduDialog extends AbstractSlideInView implements Insettable 
 
         mHotseatEduController.moveHotseatItems();
         mHotseatEduController.finishOnboarding();
-        mLauncher.getStatsLogManager().log(LAUNCHER_HOTSEAT_EDU_ACCEPT);
+        mLauncher.getStatsLogManager().logger().log(LAUNCHER_HOTSEAT_EDU_ACCEPT);
     }
 
     private void onDismiss(View v) {
         mHotseatEduController.showDimissTip();
         mHotseatEduController.finishOnboarding();
-        mLauncher.getStatsLogManager().log(LAUNCHER_HOTSEAT_EDU_DENY);
+        mLauncher.getStatsLogManager().logger().log(LAUNCHER_HOTSEAT_EDU_DENY);
         handleClose(true);
     }
 
@@ -211,7 +211,7 @@ public class HotseatEduDialog extends AbstractSlideInView implements Insettable 
         }
         AbstractFloatingView.closeAllOpenViews(mLauncher);
         attachToContainer();
-        mLauncher.getStatsLogManager().log(LAUNCHER_HOTSEAT_EDU_SEEN);
+        mLauncher.getStatsLogManager().logger().log(LAUNCHER_HOTSEAT_EDU_SEEN);
         animateOpen();
         populatePreview(predictions);
     }
