@@ -480,8 +480,9 @@ public class TouchInteractionService extends Service implements PluginListener<O
                 // Clone the previous gesture state since onConsumerAboutToBeSwitched might trigger
                 // onConsumerInactive and wipe the previous gesture state
                 GestureState prevGestureState = new GestureState(mGestureState);
-                mGestureState = createGestureState(mGestureState);
+                GestureState newGestureState = createGestureState(mGestureState);
                 mConsumer.onConsumerAboutToBeSwitched();
+                mGestureState = newGestureState;
                 mConsumer = newConsumer(prevGestureState, mGestureState, event);
 
                 ActiveGestureLog.INSTANCE.addLog("setInputConsumer: " + mConsumer.getName());
