@@ -115,7 +115,7 @@ public class QuickstepOnboardingPrefs extends OnboardingPrefs<BaseQuickstepLaunc
                     HotseatPredictionController client = mLauncher.getHotseatPredictionController();
                     if (mFromAllApps && finalState == NORMAL && client.hasPredictions()) {
                         if (incrementEventCount(HOTSEAT_DISCOVERY_TIP_COUNT)) {
-                            client.showDiscoveryTip();
+                            client.showEdu();
                             stateManager.removeStateListener(this);
                         }
                     }
@@ -144,7 +144,7 @@ public class QuickstepOnboardingPrefs extends OnboardingPrefs<BaseQuickstepLaunc
                 @Override
                 public void onStateTransitionComplete(LauncherState finalState) {
                     if (finalState == NORMAL) {
-                        if (mCount == MAX_NUM_SWIPES_TO_TRIGGER_EDU) {
+                        if (mCount >= MAX_NUM_SWIPES_TO_TRIGGER_EDU) {
                             if (getOpenView(mLauncher, TYPE_ALL_APPS_EDU) == null) {
                                 AllAppsEduView.show(launcher);
                             }

@@ -17,7 +17,9 @@
     <string name="task_overlay_factory_class" translatable="false"/>
 
     <!-- Activities which block home gesture -->
-    <string-array name="gesture_blocking_activities" translatable="false"/>
+    <string-array name="gesture_blocking_activities" translatable="false">
+        <item>com.android.launcher3/com.android.quickstep.interaction.GestureSandboxActivity</item>
+    </string-array>
 
     <string name="stats_log_manager_class" translatable="false">com.android.quickstep.logging.StatsLogCompatManager</string>
 

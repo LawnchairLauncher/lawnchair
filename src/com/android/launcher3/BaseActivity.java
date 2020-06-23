@@ -37,8 +37,6 @@ import androidx.annotation.IntDef;
 
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.logging.StatsLogManager;
-import com.android.launcher3.logging.StatsLogUtils;
-import com.android.launcher3.logging.StatsLogUtils.LogStateProvider;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.SystemUiController;
@@ -52,7 +50,7 @@ import java.util.ArrayList;
 /**
  * Launcher BaseActivity
  */
-public abstract class BaseActivity extends Activity implements LogStateProvider, ActivityContext {
+public abstract class BaseActivity extends Activity implements ActivityContext {
 
     private static final String TAG = "BaseActivity";
 
@@ -146,13 +144,11 @@ public abstract class BaseActivity extends Activity implements LogStateProvider,
         return mDeviceProfile;
     }
 
-    public int getCurrentState() { return StatsLogUtils.LAUNCHER_STATE_BACKGROUND; }
-
     public void modifyUserEvent(LauncherLogProto.LauncherEvent event) {}
 
     public final StatsLogManager getStatsLogManager() {
         if (mStatsLogManager == null) {
-            mStatsLogManager = StatsLogManager.newInstance(this, this);
+            mStatsLogManager = StatsLogManager.newInstance(this);
         }
         return mStatsLogManager;
     }

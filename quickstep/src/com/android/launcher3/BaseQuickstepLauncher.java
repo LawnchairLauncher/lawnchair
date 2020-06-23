@@ -83,6 +83,7 @@ public abstract class BaseQuickstepLauncher extends Launcher
         super.onCreate(savedInstanceState);
 
         SysUINavigationMode.INSTANCE.get(this).addModeChangeListener(this);
+        addMultiWindowModeChangedListener(mDepthController);
     }
 
     @Override
