@@ -15,6 +15,9 @@
  */
 package com.android.quickstep.inputconsumers;
 
+import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOME_GESTURE;
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PointF;
@@ -22,9 +25,10 @@ import android.view.MotionEvent;
 
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BaseDraggingActivity;
-import com.android.launcher3.logging.StatsLogUtils;
+import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.quickstep.GestureState;
@@ -40,11 +44,13 @@ public class OverviewWithoutFocusInputConsumer implements InputConsumer,
     private final Context mContext;
     private final InputMonitorCompat mInputMonitor;
     private final TriggerSwipeUpTouchTracker mTriggerSwipeUpTracker;
+    private final GestureState mGestureState;
 
     public OverviewWithoutFocusInputConsumer(Context context,
             RecentsAnimationDeviceState deviceState, GestureState gestureState,
             InputMonitorCompat inputMonitor, boolean disableHorizontalSwipe) {
         mContext = context;
+        mGestureState = gestureState;
         mInputMonitor = inputMonitor;
         mTriggerSwipeUpTracker = new TriggerSwipeUpTouchTracker(context, disableHorizontalSwipe,
                 deviceState.getNavBarPosition(), this::onInterceptTouch, this);
@@ -81,10 +87,21 @@ public class OverviewWithoutFocusInputConsumer implements InputConsumer,
         BaseActivity activity = BaseDraggingActivity.fromContext(mContext);
         int pageIndex = -1; // This number doesn't reflect workspace page index.
                             // It only indicates that launcher client screen was shown.
-        int containerType = StatsLogUtils.getContainerTypeFromState(activity.getCurrentState());
+        int containerType = (mGestureState != null && mGestureState.getEndTarget() != null)
+                ? mGestureState.getEndTarget().containerType
+                : LauncherLogProto.ContainerType.WORKSPACE;
         activity.getUserEventDispatcher().logActionOnContainer(
                 wasFling ? Touch.FLING : Touch.SWIPE, Direction.UP, containerType, pageIndex);
         activity.getUserEventDispatcher().setPreviousHomeGesture(true);
+        activity.getStatsLogManager().logger()
+                .withSrcState(LAUNCHER_STATE_HOME)
+                .withDstState(LAUNCHER_STATE_HOME)
+                .withContainerInfo(LauncherAtom.ContainerInfo.newBuilder()
+                        .setWorkspace(
+                                LauncherAtom.WorkspaceContainer.newBuilder()
+                                        .setPageIndex(-1))
+                        .build())
+                .log(LAUNCHER_HOME_GESTURE);
     }
 
     @Override

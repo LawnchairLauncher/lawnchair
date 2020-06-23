@@ -77,8 +77,8 @@ public class RemoteActionShortcut extends SystemShortcut<BaseDraggingActivity> {
     @Override
     public void onClick(View view) {
         AbstractFloatingView.closeAllOpenViews(mTarget);
-        mTarget.getStatsLogManager()
-                .log(LAUNCHER_SYSTEM_SHORTCUT_PAUSE_TAP, mItemInfo);
+        mTarget.getStatsLogManager().logger().withItemInfo(mItemInfo)
+                .log(LAUNCHER_SYSTEM_SHORTCUT_PAUSE_TAP);
 
         final String actionIdentity = mAction.getTitle() + ", "
                 + mItemInfo.getTargetComponent().getPackageName();

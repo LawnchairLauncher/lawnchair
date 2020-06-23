@@ -88,6 +88,9 @@ public final class TestProtocol {
     public static final String REQUEST_NATIVE_LEAK = "native-leak";
     public static final String REQUEST_VIEW_LEAK = "view-leak";
     public static final String REQUEST_RECENT_TASKS_LIST = "recent-tasks-list";
+    public static final String REQUEST_START_EVENT_LOGGING = "start-event-logging";
+    public static final String REQUEST_GET_TEST_EVENTS = "get-test-events";
+    public static final String REQUEST_STOP_EVENT_LOGGING = "stop-event-logging";
 
     public static boolean sDebugTracing = false;
     public static final String REQUEST_ENABLE_DEBUG_TRACING = "enable-debug-tracing";
