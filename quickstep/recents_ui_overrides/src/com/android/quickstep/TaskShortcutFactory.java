@@ -196,7 +196,8 @@ public interface TaskShortcutFactory {
                 WindowManagerWrapper.getInstance().overridePendingAppTransitionMultiThumbFuture(
                         future, animStartedListener, mHandler, true /* scaleUp */,
                         taskKey.displayId);
-                mTarget.getStatsLogManager().log(mLauncherEvent, mTaskView.getItemInfo());
+                mTarget.getStatsLogManager().logger().withItemInfo(mTaskView.getItemInfo())
+                        .log(mLauncherEvent);
             }
         }
     }
@@ -296,8 +297,8 @@ public interface TaskShortcutFactory {
             };
             mTaskView.launchTask(true, resultCallback, Executors.MAIN_EXECUTOR.getHandler());
             dismissTaskMenuView(mTarget);
-            mTarget.getStatsLogManager().log(LauncherEvent.LAUNCHER_SYSTEM_SHORTCUT_PIN_TAP,
-                    mTaskView.getItemInfo());
+            mTarget.getStatsLogManager().logger().withItemInfo(mTaskView.getItemInfo())
+                    .log(LauncherEvent.LAUNCHER_SYSTEM_SHORTCUT_PIN_TAP);
         }
     }
 

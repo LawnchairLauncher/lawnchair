@@ -31,6 +31,7 @@ import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.IntSparseArrayMap;
+import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.ResourceBasedOverride;
 
 import java.util.ArrayList;
@@ -64,6 +65,7 @@ public class FolderNameProvider implements ResourceBasedOverride {
     public static FolderNameProvider newInstance(Context context) {
         FolderNameProvider fnp = Overrides.getObject(FolderNameProvider.class,
                 context.getApplicationContext(), R.string.folder_name_provider_class);
+        Preconditions.assertWorkerThread();
         fnp.load(context);
 
         return fnp;
@@ -71,6 +73,7 @@ public class FolderNameProvider implements ResourceBasedOverride {
 
     public static FolderNameProvider newInstance(Context context, List<AppInfo> appInfos,
             IntSparseArrayMap<FolderInfo> folderInfos) {
+        Preconditions.assertWorkerThread();
         FolderNameProvider fnp = Overrides.getObject(FolderNameProvider.class,
                 context.getApplicationContext(), R.string.folder_name_provider_class);
         fnp.load(appInfos, folderInfos);
@@ -93,10 +96,10 @@ public class FolderNameProvider implements ResourceBasedOverride {
      */
     public void getSuggestedFolderName(Context context,
             ArrayList<WorkspaceItemInfo> workspaceItemInfos,
-            FolderNameInfo[] nameInfos) {
-
+            FolderNameInfos nameInfos) {
+        Preconditions.assertWorkerThread();
         if (DEBUG) {
-            Log.d(TAG, "getSuggestedFolderName:" + Arrays.toString(nameInfos));
+            Log.d(TAG, "getSuggestedFolderName:" + nameInfos.toString());
         }
         // If all the icons are from work profile,
         // Then, suggest "Work" as the folder name
@@ -121,7 +124,7 @@ public class FolderNameProvider implements ResourceBasedOverride {
             info.ifPresent(i -> setAsFirstSuggestion(nameInfos, i.title.toString()));
         }
         if (DEBUG) {
-            Log.d(TAG, "getSuggestedFolderName:" + Arrays.toString(nameInfos));
+            Log.d(TAG, "getSuggestedFolderName:" + nameInfos.toString());
         }
     }
 
@@ -135,39 +138,37 @@ public class FolderNameProvider implements ResourceBasedOverride {
                 .findAny();
     }
 
-    private void setAsFirstSuggestion(FolderNameInfo[] nameInfos, CharSequence label) {
-        if (nameInfos.length == 0 || contains(nameInfos, label)) {
+    private void setAsFirstSuggestion(FolderNameInfos nameInfos, CharSequence label) {
+        if (nameInfos == null || nameInfos.contains(label)) {
             return;
         }
-        for (int i = nameInfos.length - 1; i > 0; i--) {
-            if (nameInfos[i - 1] != null && !TextUtils.isEmpty(nameInfos[i - 1].getLabel())) {
-                nameInfos[i] = nameInfos[i - 1];
+        nameInfos.setStatus(FolderNameInfos.HAS_PRIMARY);
+        nameInfos.setStatus(FolderNameInfos.HAS_SUGGESTIONS);
+        CharSequence[] labels = nameInfos.getLabels();
+        Float[] scores = nameInfos.getScores();
+        for (int i = labels.length - 1; i > 0; i--) {
+            if (labels[i - 1] != null && !TextUtils.isEmpty(labels[i - 1])) {
+                nameInfos.setLabel(i, labels[i - 1], scores[i - 1]);
             }
         }
-        nameInfos[0] = new FolderNameInfo(label, 1.0);
+        nameInfos.setLabel(0, label, 1.0f);
     }
 
-    private void setAsLastSuggestion(FolderNameInfo[] nameInfos, CharSequence label) {
-        if (nameInfos.length == 0 || contains(nameInfos, label)) {
+    private void setAsLastSuggestion(FolderNameInfos nameInfos, CharSequence label) {
+        if (nameInfos == null || nameInfos.contains(label)) {
             return;
         }
-
-        for (int i = 0; i < nameInfos.length; i++) {
-            if (nameInfos[i] == null || TextUtils.isEmpty(nameInfos[i].getLabel())) {
-                nameInfos[i] = new FolderNameInfo(label, 1.0);
+        nameInfos.setStatus(FolderNameInfos.HAS_PRIMARY);
+        nameInfos.setStatus(FolderNameInfos.HAS_SUGGESTIONS);
+        CharSequence[] labels = nameInfos.getLabels();
+        for (int i = 0; i < labels.length; i++) {
+            if (labels[i] == null || TextUtils.isEmpty(labels[i])) {
+                nameInfos.setLabel(i, label, 1.0f);
                 return;
             }
         }
         // Overwrite the last suggestion.
-        int lastIndex = nameInfos.length - 1;
-        nameInfos[lastIndex] = new FolderNameInfo(label, 1.0);
-    }
-
-    private boolean contains(FolderNameInfo[] nameInfos, CharSequence label) {
-        return Arrays.stream(nameInfos)
-                .filter(Objects::nonNull)
-                .anyMatch(nameInfo -> nameInfo.getLabel().toString().equalsIgnoreCase(
-                        label.toString()));
+        nameInfos.setLabel(labels.length - 1, label, 1.0f);
     }
 
     private class FolderNameWorker extends BaseModelUpdateTask {
