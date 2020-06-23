@@ -144,6 +144,10 @@
     <item name="staggered_stiffness" type="dimen" format="float">150</item>
     <dimen name="unlock_staggered_velocity_dp_per_s">3dp</dimen>
 
+    <item name="hint_scale_damping_ratio" type="dimen" format="float">0.7</item>
+    <item name="hint_scale_stiffness" type="dimen" format="float">200</item>
+    <dimen name="hint_scale_velocity_dp_per_s">0.3dp</dimen>
+
     <!-- Swipe up to home related -->
     <dimen name="swipe_up_fling_min_visible_change">18dp</dimen>
     <dimen name="swipe_up_y_overshoot">10dp</dimen>
@@ -175,6 +179,10 @@
 
         <item>@dimen/swipe_up_fling_min_visible_change</item>
         <item>@dimen/swipe_up_y_overshoot</item>
+
+        <item>@dimen/hint_scale_damping_ratio</item>
+        <item>@dimen/hint_scale_stiffness</item>
+        <item>@dimen/hint_scale_velocity_dp_per_s</item>
     </array>
 
     <string-array name="live_wallpapers_remove_sysui_scrims">

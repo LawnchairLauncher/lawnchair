@@ -96,8 +96,21 @@ enum Attribute {
   ADD_TO_HOMESCREEN = 6;    // play install + launcher home setting
   ALLAPPS_PREDICTION = 7;   // from prediction bar in all apps container
   HOTSEAT_PREDICTION = 8;   // from prediction bar in hotseat container
-  SUGGESTED_LABEL = 9;      // folder icon's label was suggested
-  MANUAL_LABEL = 10;        // folder icon's label was manually edited
+
+  // Folder's label is one of the non-empty suggested values.
+  SUGGESTED_LABEL = 9;
+
+  // Folder's label is non-empty, manually entered by the user
+  // and different from any of suggested values.
+  MANUAL_LABEL = 10;
+
+  // Folder's label is not yet assigned( i.e., title == null).
+  // Eligible for auto-labeling.
+  UNLABELED = 11;
+
+  // Folder's label is empty(i.e., title == "").
+  // Not eligible for auto-labeling.
+  EMPTY_LABEL = 12;
 }
 
 // Main app icons
