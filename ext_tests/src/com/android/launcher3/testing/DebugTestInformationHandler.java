@@ -23,6 +23,7 @@ import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.os.Binder;
 import android.os.Bundle;
 import android.os.Debug;
 import android.system.Os;
@@ -171,11 +172,16 @@ public class DebugTestInformationHandler extends TestInformationHandler {
             }
 
             case TestProtocol.REQUEST_CLEAR_DATA: {
-                LauncherSettings.Settings.call(mContext.getContentResolver(),
-                        LauncherSettings.Settings.METHOD_CREATE_EMPTY_DB);
-                MAIN_EXECUTOR.submit(() ->
-                        LauncherAppState.getInstance(mContext).getModel().forceReload());
-                return response;
+                final long identity = Binder.clearCallingIdentity();
+                try {
+                    LauncherSettings.Settings.call(mContext.getContentResolver(),
+                            LauncherSettings.Settings.METHOD_CREATE_EMPTY_DB);
+                    MAIN_EXECUTOR.submit(() ->
+                            LauncherAppState.getInstance(mContext).getModel().forceReload());
+                    return response;
+                } finally {
+                    Binder.restoreCallingIdentity(identity);
+                }
             }
 
             default:
