@@ -21,6 +21,8 @@ import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelocity;
 import static com.android.launcher3.config.FeatureFlags.UNSTABLE_SPRINGS;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_UNKNOWN_SWIPEDOWN;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_UNKNOWN_SWIPEUP;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_COMPONENTS;
 import static com.android.launcher3.states.StateAnimationConfig.PLAY_ATOMIC_OVERVIEW_SCALE;
 import static com.android.launcher3.states.StateAnimationConfig.PLAY_NON_ATOMIC;
@@ -42,12 +44,14 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
+import com.android.launcher3.logger.LauncherAtom;
+import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.states.StateAnimationConfig.AnimationFlags;
 import com.android.launcher3.testing.TestProtocol;
-import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
+import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.util.FlingBlockCheck;
 import com.android.launcher3.util.TouchController;
 
@@ -298,11 +302,11 @@ public abstract class AbstractStateChangeTouchController
     public boolean onDrag(float displacement, MotionEvent ev) {
         if (!mIsLogContainerSet) {
             if (mStartState == ALL_APPS) {
-                mStartContainerType = LauncherLogProto.ContainerType.ALLAPPS;
+                mStartContainerType = ContainerType.ALLAPPS;
             } else if (mStartState == NORMAL) {
                 mStartContainerType = getLogContainerTypeForNormalState(ev);
             } else if (mStartState == OVERVIEW) {
-                mStartContainerType = LauncherLogProto.ContainerType.TASKSWITCHER;
+                mStartContainerType = ContainerType.TASKSWITCHER;
             }
             mIsLogContainerSet = true;
         }
@@ -559,10 +563,22 @@ public abstract class AbstractStateChangeTouchController
         // Transition complete. log the action
         mLauncher.getUserEventDispatcher().logStateChangeAction(logAction,
                 getDirectionForLog(), mDetector.getDownX(), mDetector.getDownY(),
-                mStartContainerType,
-                mStartState.containerType,
+                mStartContainerType /* e.g., hotseat */,
+                mStartState.containerType /* e.g., workspace */,
                 targetState.containerType,
                 mLauncher.getWorkspace().getCurrentPage());
+        mLauncher.getStatsLogManager().logger()
+                .withSrcState(StatsLogManager.containerTypeToAtomState(mStartState.containerType))
+                .withDstState(StatsLogManager.containerTypeToAtomState(targetState.containerType))
+                .withContainerInfo(LauncherAtom.ContainerInfo.newBuilder()
+                        .setWorkspace(
+                                LauncherAtom.WorkspaceContainer.newBuilder()
+                                        .setPageIndex(mLauncher.getWorkspace().getCurrentPage()))
+                        .build())
+                .log(StatsLogManager.getLauncherAtomEvent(mStartState.containerType,
+                            targetState.containerType, mToState.ordinal > mFromState.ordinal
+                                    ? LAUNCHER_UNKNOWN_SWIPEUP
+                                    : LAUNCHER_UNKNOWN_SWIPEDOWN));
     }
 
     protected void clearState() {

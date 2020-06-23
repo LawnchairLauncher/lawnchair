@@ -52,6 +52,7 @@ import com.android.launcher3.logger.LauncherAtom.SearchResultContainer;
 import com.android.launcher3.logger.LauncherAtom.SettingsContainer;
 import com.android.launcher3.logger.LauncherAtom.ShortcutsContainer;
 import com.android.launcher3.logger.LauncherAtom.TaskSwitcherContainer;
+import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.util.ContentWriter;
 
 import java.util.Optional;
@@ -405,7 +406,10 @@ public class ItemInfo {
         return itemInfo;
     }
 
-    public void setTitle(CharSequence title) {
+    /**
+     * Sets the title of the item and writes to DB model if needed.
+     */
+    public void setTitle(CharSequence title, ModelWriter modelWriter) {
         this.title = title;
     }
 }

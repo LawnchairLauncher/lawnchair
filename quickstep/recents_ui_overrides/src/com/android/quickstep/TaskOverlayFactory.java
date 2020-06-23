@@ -19,6 +19,7 @@ package com.android.quickstep;
 import static android.view.Surface.ROTATION_0;
 
 import static com.android.launcher3.util.MainThreadInitializedObject.forOverride;
+import static com.android.quickstep.views.OverviewActionsView.DISABLED_ROTATED;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -65,15 +66,24 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
             }
         }
         RecentsOrientedState orientedState = taskView.getRecentsView().getPagedViewOrientedState();
-        boolean canLauncherRotate = orientedState.canLauncherRotate();
+        boolean canLauncherRotate = orientedState.canRecentsActivityRotate();
         boolean isInLandscape = orientedState.getTouchRotation() != ROTATION_0;
 
         // Add overview actions to the menu when in in-place rotate landscape mode.
         if (!canLauncherRotate && isInLandscape) {
-            for (TaskShortcutFactory actionMenuOption : ACTION_MENU_OPTIONS) {
-                SystemShortcut shortcut = actionMenuOption.getShortcut(activity, taskView);
-                if (shortcut != null) {
-                    shortcuts.add(shortcut);
+            // Add screenshot action to task menu.
+            SystemShortcut screenshotShortcut = TaskShortcutFactory.SCREENSHOT
+                    .getShortcut(activity, taskView);
+            if (screenshotShortcut != null) {
+                shortcuts.add(screenshotShortcut);
+            }
+
+            // Add modal action only if display orientation is the same as the device orientation.
+            if (orientedState.getDisplayRotation() == ROTATION_0) {
+                SystemShortcut modalShortcut = TaskShortcutFactory.MODAL
+                        .getShortcut(activity, taskView);
+                if (modalShortcut != null) {
+                    shortcuts.add(modalShortcut);
                 }
             }
         }
@@ -102,11 +112,6 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
             TaskShortcutFactory.INSTALL,
             TaskShortcutFactory.FREE_FORM,
             TaskShortcutFactory.WELLBEING
-    };
-
-    private static final TaskShortcutFactory[] ACTION_MENU_OPTIONS = new TaskShortcutFactory[]{
-        TaskShortcutFactory.SCREENSHOT,
-        TaskShortcutFactory.MODAL
     };
 
     /**
@@ -139,8 +144,12 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
         /**
          * Called when the current task is interactive for the user
          */
-        public void initOverlay(Task task, ThumbnailData thumbnail, Matrix matrix) {
+        public void initOverlay(Task task, ThumbnailData thumbnail, Matrix matrix,
+                boolean rotated) {
             final boolean isAllowedByPolicy = thumbnail.isRealSnapshot;
+
+            mActionsView.updateDisabledFlags(DISABLED_ROTATED, rotated);
+
             getActionsView().setCallbacks(new OverlayUICallbacks() {
                 @Override
                 public void onShare() {

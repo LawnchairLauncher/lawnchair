@@ -6,27 +6,12 @@ import android.view.ViewParent;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.model.data.ItemInfo;
-import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 
 import java.util.ArrayList;
 
-import static com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType.DEFAULT_CONTAINERTYPE;
-
 public class StatsLogUtils {
-
-    // Defined in android.stats.launcher.nano
-    // As they cannot be linked in this file, defining again.
-    public final static int LAUNCHER_STATE_BACKGROUND = 0;
-    public final static int LAUNCHER_STATE_HOME = 1;
-    public final static int LAUNCHER_STATE_OVERVIEW = 2;
-    public final static int LAUNCHER_STATE_ALLAPPS = 3;
-
     private final static int MAXIMUM_VIEW_HIERARCHY_LEVEL = 5;
-
-    public interface LogStateProvider {
-        int getCurrentState();
-    }
 
     /**
      * Implemented by containers to provide a container source for a given child.
@@ -60,21 +45,5 @@ public class StatsLogUtils {
             }
         }
         return null;
-    }
-
-    public static int getContainerTypeFromState(int state) {
-        int containerType = DEFAULT_CONTAINERTYPE;
-        switch (state) {
-            case StatsLogUtils.LAUNCHER_STATE_ALLAPPS:
-                containerType = ContainerType.ALLAPPS;
-                break;
-            case StatsLogUtils.LAUNCHER_STATE_HOME:
-                containerType = ContainerType.WORKSPACE;
-                break;
-            case StatsLogUtils.LAUNCHER_STATE_OVERVIEW:
-                containerType = ContainerType.OVERVIEW;
-                break;
-        }
-        return containerType;
     }
 }

@@ -205,26 +205,30 @@ public abstract class BaseSwipeUpHandler<T extends StatefulActivity<?>, Q extend
         mRecentsAnimationController = recentsAnimationController;
         mRecentsAnimationTargets = targets;
         mTransformParams.setTargetSet(mRecentsAnimationTargets);
-        DeviceProfile dp = mTaskViewSimulator.getOrientationState().getLauncherDeviceProfile();
         RemoteAnimationTargetCompat runningTaskTarget = targets.findTask(
                 mGestureState.getRunningTaskId());
 
-        if (targets.minimizedHomeBounds != null && runningTaskTarget != null) {
-            Rect overviewStackBounds = mActivityInterface
-                    .getOverviewWindowBounds(targets.minimizedHomeBounds, runningTaskTarget);
-            dp = dp.getMultiWindowProfile(mContext,
-                    new WindowBounds(overviewStackBounds, targets.homeContentInsets));
-        } else {
-            // If we are not in multi-window mode, home insets should be same as system insets.
-            dp = dp.copy(mContext);
-        }
-        dp.updateInsets(targets.homeContentInsets);
-        dp.updateIsSeascape(mContext);
         if (runningTaskTarget != null) {
             mTaskViewSimulator.setPreview(runningTaskTarget);
         }
 
-        initTransitionEndpoints(dp);
+        // Only initialize the device profile, if it has not been initialized before, as in some
+        // configurations targets.homeContentInsets may not be correct.
+        if (mActivity == null) {
+            DeviceProfile dp = mTaskViewSimulator.getOrientationState().getLauncherDeviceProfile();
+            if (targets.minimizedHomeBounds != null && runningTaskTarget != null) {
+                Rect overviewStackBounds = mActivityInterface
+                        .getOverviewWindowBounds(targets.minimizedHomeBounds, runningTaskTarget);
+                dp = dp.getMultiWindowProfile(mContext,
+                        new WindowBounds(overviewStackBounds, targets.homeContentInsets));
+            } else {
+                // If we are not in multi-window mode, home insets should be same as system insets.
+                dp = dp.copy(mContext);
+            }
+            dp.updateInsets(targets.homeContentInsets);
+            dp.updateIsSeascape(mContext);
+            initTransitionEndpoints(dp);
+        }
 
         // Notify when the animation starts
         if (!mRecentsAnimationStartCallbacks.isEmpty()) {

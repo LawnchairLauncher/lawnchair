@@ -120,9 +120,7 @@ public final class LauncherActivityInterface extends
     @Override
     public AnimationFactory prepareRecentsUI(RecentsAnimationDeviceState deviceState,
             boolean activityVisible, Consumer<AnimatorPlaybackController> callback) {
-        ((RecentsView) getCreatedActivity().getOverviewPanel())
-                .setLayoutRotation(deviceState.getCurrentActiveRotation(),
-                        deviceState.getDisplayRotation());
+        notifyRecentsOfOrientation(deviceState);
         DefaultAnimationFactory factory = new DefaultAnimationFactory(callback) {
             @Override
             public void setShelfState(ShelfAnimState shelfState, Interpolator interpolator,

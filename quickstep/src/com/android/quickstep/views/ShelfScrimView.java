@@ -244,13 +244,17 @@ public class ShelfScrimView extends ScrimView<BaseQuickstepLauncher>
 
     @Override
     protected void updateSysUiColors() {
-        // Use a light system UI (dark icons) if all apps is behind at least half of the
-        // status bar.
-        boolean forceChange = mShelfTop <= mLauncher.getDeviceProfile().getInsets().top / 2f;
-        if (forceChange) {
-            mLauncher.getSystemUiController().updateUiState(UI_STATE_SCRIM_VIEW, !mIsScrimDark);
+        if (mDrawingFlatColor) {
+            super.updateSysUiColors();
         } else {
-            mLauncher.getSystemUiController().updateUiState(UI_STATE_SCRIM_VIEW, 0);
+            // Use a light system UI (dark icons) if all apps is behind at least half of the
+            // status bar.
+            boolean forceChange = mShelfTop <= mLauncher.getDeviceProfile().getInsets().top / 2f;
+            if (forceChange) {
+                mLauncher.getSystemUiController().updateUiState(UI_STATE_SCRIM_VIEW, !mIsScrimDark);
+            } else {
+                mLauncher.getSystemUiController().updateUiState(UI_STATE_SCRIM_VIEW, 0);
+            }
         }
     }
 
