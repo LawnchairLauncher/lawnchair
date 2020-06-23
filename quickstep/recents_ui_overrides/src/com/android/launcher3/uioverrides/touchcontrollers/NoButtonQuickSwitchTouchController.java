@@ -28,6 +28,10 @@ import static com.android.launcher3.anim.Interpolators.DEACCEL_5;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelocity;
 import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
+import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_UNKNOWN_SWIPEDOWN;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_UNKNOWN_SWIPEUP;
+import static com.android.launcher3.logging.StatsLogManager.getLauncherAtomEvent;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_VERTICAL_PROGRESS;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_FADE;
@@ -61,6 +65,7 @@ import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.OverviewScrim;
+import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.touch.BaseSwipeDetector;
 import com.android.launcher3.touch.BothAxesSwipeDetector;
@@ -429,6 +434,13 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
                 mStartState.containerType,
                 targetState.containerType,
                 mLauncher.getWorkspace().getCurrentPage());
+        mLauncher.getStatsLogManager().logger()
+                .withSrcState(LAUNCHER_STATE_HOME)
+                .withDstState(StatsLogManager.containerTypeToAtomState(targetState.containerType))
+                .log(getLauncherAtomEvent(mStartState.containerType, targetState.containerType,
+                        targetState.ordinal > mStartState.ordinal
+                                ? LAUNCHER_UNKNOWN_SWIPEUP
+                                : LAUNCHER_UNKNOWN_SWIPEDOWN));
         mLauncher.getStateManager().goToState(targetState, false, this::clearState);
     }
 

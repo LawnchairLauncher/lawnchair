@@ -107,11 +107,22 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity>
     }
 
     @Override
+    protected boolean shouldAddDummyTaskView(int runningTaskId) {
+        if (mHomeTaskInfo != null && mHomeTaskInfo.taskId == runningTaskId
+                && getTaskViewCount() == 0) {
+            // Do not add a dummy task if we are running over home with empty recents, so that we
+            // show the empty recents message instead of showing a dummy task and later removing it.
+            return false;
+        }
+        return super.shouldAddDummyTaskView(runningTaskId);
+    }
+
+    @Override
     protected void applyLoadPlan(ArrayList<Task> tasks) {
         // When quick-switching on 3p-launcher, we add a "dummy" tile corresponding to Launcher
         // as well. This tile is never shown as we have setCurrentTaskHidden, but allows use to
         // track the index of the next task appropriately, as if we are switching on any other app.
-        if (mHomeTaskInfo != null && mHomeTaskInfo.taskId == mRunningTaskId) {
+        if (mHomeTaskInfo != null && mHomeTaskInfo.taskId == mRunningTaskId && !tasks.isEmpty()) {
             // Check if the task list has running task
             boolean found = false;
             for (Task t : tasks) {

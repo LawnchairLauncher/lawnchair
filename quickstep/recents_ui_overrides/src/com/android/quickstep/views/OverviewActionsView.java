@@ -24,7 +24,6 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.FrameLayout;
@@ -39,6 +38,7 @@ import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.TaskOverlayFactory.OverlayUICallbacks;
+import com.android.quickstep.util.LayoutUtils;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -68,6 +68,15 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     public static final int HIDDEN_GESTURE_RUNNING = 1 << 4;
     public static final int HIDDEN_NO_RECENTS = 1 << 5;
 
+    @IntDef(flag = true, value = {
+            DISABLED_SCROLLING,
+            DISABLED_ROTATED})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface ActionsDisabledFlags { }
+
+    public static final int DISABLED_SCROLLING = 1 << 0;
+    public static final int DISABLED_ROTATED = 1 << 1;
+
     private static final int INDEX_CONTENT_ALPHA = 0;
     private static final int INDEX_VISIBILITY_ALPHA = 1;
     private static final int INDEX_FULLSCREEN_ALPHA = 2;
@@ -77,6 +86,9 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
 
     @ActionsHiddenFlags
     private int mHiddenFlags;
+
+    @ActionsDisabledFlags
+    protected int mDisabledFlags;
 
     protected T mCallbacks;
 
@@ -117,7 +129,6 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     @Override
     public void onClick(View view) {
         if (mCallbacks == null) {
-            Log.d("OverviewActionsView", "Callbacks null onClick");
             return;
         }
         int id = view.getId();
@@ -156,6 +167,25 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         boolean isHidden = mHiddenFlags != 0;
         mMultiValueAlpha.getProperty(INDEX_HIDDEN_FLAGS_ALPHA).setValue(isHidden ? 0 : 1);
         setVisibility(isHidden ? INVISIBLE : VISIBLE);
+    }
+
+    /**
+     * Updates the proper disabled flag to indicate whether OverviewActionsView should be enabled.
+     * Ignores DISABLED_ROTATED flag for determining enabled. Flag is used to enable/disable
+     * buttons individually, currently done for select button in subclass.
+     *
+     * @param disabledFlags The flag to update.
+     * @param enable        Whether to enable the disable flag: True will cause view to be disabled.
+     */
+    public void updateDisabledFlags(@ActionsDisabledFlags int disabledFlags, boolean enable) {
+        if (enable) {
+            mDisabledFlags |= disabledFlags;
+        } else {
+            mDisabledFlags &= ~disabledFlags;
+        }
+        //
+        boolean isEnabled = (mDisabledFlags & ~DISABLED_ROTATED) == 0;
+        LayoutUtils.setViewEnabled(this, isEnabled);
     }
 
     public AlphaProperty getContentAlpha() {

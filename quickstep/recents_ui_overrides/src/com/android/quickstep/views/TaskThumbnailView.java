@@ -357,10 +357,9 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
     }
 
     private void updateOverlay() {
-        // The overlay doesn't really work when the screenshot is rotated, so don't add it.
-        if (mOverlayEnabled && !mPreviewPositionHelper.mIsOrientationChanged
-                && mBitmapShader != null && mThumbnailData != null) {
-            mOverlay.initOverlay(mTask, mThumbnailData, mPreviewPositionHelper.mMatrix);
+        if (mOverlayEnabled && mBitmapShader != null && mThumbnailData != null) {
+            mOverlay.initOverlay(mTask, mThumbnailData, mPreviewPositionHelper.mMatrix,
+                    mPreviewPositionHelper.mIsOrientationChanged);
         } else {
             mOverlay.reset();
         }
