@@ -110,7 +110,8 @@
             android:noHistory="true"
             android:launchMode="singleTask"
             android:clearTaskOnLaunch="true"
-            android:permission="${packageName}.permission.HOTSEAT_EDU">
+            android:permission="${packageName}.permission.HOTSEAT_EDU"
+            android:exported="true">
             <intent-filter>
                 <action android:name="com.android.launcher3.action.SHOW_HYBRID_HOTSEAT_EDU"/>
                 <category android:name="android.intent.category.DEFAULT" />
