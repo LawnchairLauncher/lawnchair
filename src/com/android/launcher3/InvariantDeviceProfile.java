@@ -148,6 +148,7 @@ public class InvariantDeviceProfile {
         iconSize = p.iconSize;
         iconShapePath = p.iconShapePath;
         landscapeIconSize = p.landscapeIconSize;
+        iconBitmapSize = p.iconBitmapSize;
         iconTextSize = p.iconTextSize;
         numHotseatIcons = p.numHotseatIcons;
         numAllAppsColumns = p.numAllAppsColumns;

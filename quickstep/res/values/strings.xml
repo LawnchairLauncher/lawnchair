@@ -87,7 +87,7 @@
     <string name="hotseat_tip_gaps_filled">App suggestions added to empty space</string>
     <!-- tip shown when user migrates and predictions are enabled in hotseat -->
     <string name="hotsaet_tip_prediction_enabled">App suggestions enabled</string>
-    <!-- tip shown when hotseat edu is requested while predicions are disabled -->
+    <!-- tip shown when hotseat edu is requested while predictions are disabled -->
     <string name="hotsaet_tip_prediction_disabled">App suggestions are disabled</string>
 
     <!-- content description for hotseat items -->
