@@ -96,12 +96,12 @@ public class RecentsAnimationDeviceState implements
     private @SystemUiStateFlags int mSystemUiStateFlags;
     private SysUINavigationMode.Mode mMode = THREE_BUTTONS;
     private NavBarPosition mNavBarPosition;
-    private SecureSettingsObserver mOneHandedEnabledObserver;
 
     private final Region mDeferredGestureRegion = new Region();
     private boolean mAssistantAvailable;
     private float mAssistantVisibility;
     private boolean mIsOneHandedModeEnabled;
+    private boolean mIsSwipeToNotificationEnabled;
 
     private boolean mIsUserUnlocked;
     private final ArrayList<Runnable> mUserUnlockedActions = new ArrayList<>();
@@ -240,11 +240,20 @@ public class RecentsAnimationDeviceState implements
         }
 
         if (SystemProperties.getBoolean("ro.support_one_handed_mode", false)) {
-            mOneHandedEnabledObserver = SecureSettingsObserver.newOneHandedSettingsObserver(
-                    mContext, this::onOneHandedEnabledSettingsChanged);
-            mOneHandedEnabledObserver.register();
-            mOneHandedEnabledObserver.dispatchOnChange();
+            SecureSettingsObserver oneHandedEnabledObserver =
+                    SecureSettingsObserver.newOneHandedSettingsObserver(
+                            mContext, enabled -> mIsOneHandedModeEnabled = enabled);
+            oneHandedEnabledObserver.register();
+            oneHandedEnabledObserver.dispatchOnChange();
+            runOnDestroy(oneHandedEnabledObserver::unregister);
         }
+
+        SecureSettingsObserver swipeBottomEnabledObserver =
+                SecureSettingsObserver.newSwipeToNotificationSettingsObserver(
+                        mContext, enabled -> mIsSwipeToNotificationEnabled = enabled);
+        swipeBottomEnabledObserver.register();
+        swipeBottomEnabledObserver.dispatchOnChange();
+        runOnDestroy(swipeBottomEnabledObserver::unregister);
 
         SecureSettingsObserver userSetupObserver = new SecureSettingsObserver(
                 context.getContentResolver(),
@@ -666,6 +675,10 @@ public class RecentsAnimationDeviceState implements
      * @return whether the given motion event can trigger the one handed mode.
      */
     public boolean canTriggerOneHandedAction(MotionEvent ev) {
+        if (!mIsOneHandedModeEnabled && !mIsSwipeToNotificationEnabled) {
+            return false;
+        }
+
         final DefaultDisplay.Info displayInfo = mDefaultDisplay.getInfo();
         return (mOrientationTouchTransformer.touchInOneHandedModeRegion(ev)
                 && displayInfo.rotation != Surface.ROTATION_90
@@ -677,8 +690,8 @@ public class RecentsAnimationDeviceState implements
         return mIsOneHandedModeEnabled;
     }
 
-    private void onOneHandedEnabledSettingsChanged(boolean isOneHandedEnabled) {
-        mIsOneHandedModeEnabled = isOneHandedEnabled;
+    public boolean isSwipeToNotificationEnabled() {
+        return mIsSwipeToNotificationEnabled;
     }
 
     /**
@@ -790,6 +803,8 @@ public class RecentsAnimationDeviceState implements
         pw.println("  currentActiveRotation=" + getCurrentActiveRotation());
         pw.println("  displayRotation=" + getDisplayRotation());
         pw.println("  isUserUnlocked=" + mIsUserUnlocked);
+        pw.println("  isOneHandedModeEnabled=" + mIsOneHandedModeEnabled);
+        pw.println("  isSwipeToNotificationEnabled=" + mIsSwipeToNotificationEnabled);
         mOrientationTouchTransformer.dump(pw);
     }
 }
