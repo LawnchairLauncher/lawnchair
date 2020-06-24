@@ -22,7 +22,7 @@
     android:theme="@style/PopupItem" >
 
     <com.android.launcher3.BubbleTextView
-        style="@style/BaseIcon"
+        style="@style/BaseIconUnBounded"
         android:id="@+id/bubble_text"
         android:background="?android:attr/selectableItemBackground"
         android:gravity="start|center_vertical"
@@ -30,6 +30,7 @@
         android:paddingStart="@dimen/deep_shortcuts_text_padding_start"
         android:paddingEnd="@dimen/popup_padding_end"
         android:textSize="14sp"
+        android:maxLines="2"
         android:textColor="?android:attr/textColorPrimary"
         launcher:iconDisplay="shortcut_popup"
         launcher:layoutHorizontal="true"
