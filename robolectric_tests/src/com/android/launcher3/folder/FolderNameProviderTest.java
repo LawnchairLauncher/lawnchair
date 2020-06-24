@@ -16,6 +16,7 @@
 package com.android.launcher3.folder;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -61,16 +62,16 @@ public final class FolderNameProviderTest {
         ArrayList<WorkspaceItemInfo> list = new ArrayList<>();
         list.add(mItem1);
         list.add(mItem2);
-        FolderNameInfo[] nameInfos =
-                new FolderNameInfo[FolderNameProvider.SUGGEST_MAX];
+        FolderNameInfos nameInfos = new FolderNameInfos();
         new FolderNameProvider().getSuggestedFolderName(mContext, list, nameInfos);
-        assertEquals("Work", nameInfos[0].getLabel());
+        assertEquals("Work", nameInfos.getLabels()[0]);
 
-        nameInfos[0] = new FolderNameInfo("candidate1", 0.9);
-        nameInfos[1] = new FolderNameInfo("candidate2", 0.8);
-        nameInfos[2] = new FolderNameInfo("candidate3", 0.7);
+        nameInfos.setLabel(0, "candidate1", 1.0f);
+        nameInfos.setLabel(1, "candidate2", 1.0f);
+        nameInfos.setLabel(2, "candidate3", 1.0f);
         new FolderNameProvider().getSuggestedFolderName(mContext, list, nameInfos);
-        assertEquals("Work", nameInfos[3].getLabel());
-
+        assertEquals("Work", nameInfos.getLabels()[3]);
+        assertTrue(nameInfos.hasSuggestions());
+        assertTrue(nameInfos.hasPrimary());
     }
 }

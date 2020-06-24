@@ -22,6 +22,7 @@ import static androidx.core.util.Preconditions.checkNotNull;
 
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT;
+import static com.android.launcher3.logger.LauncherAtom.Attribute.EMPTY_LABEL;
 import static com.android.launcher3.logger.LauncherAtom.Attribute.MANUAL_LABEL;
 import static com.android.launcher3.logger.LauncherAtom.Attribute.SUGGESTED_LABEL;
 import static com.android.launcher3.userevent.LauncherLogProto.Target.FromFolderLabelState.FROM_CUSTOM;
@@ -29,18 +30,16 @@ import static com.android.launcher3.userevent.LauncherLogProto.Target.FromFolder
 import static com.android.launcher3.userevent.LauncherLogProto.Target.FromFolderLabelState.FROM_FOLDER_LABEL_STATE_UNSPECIFIED;
 import static com.android.launcher3.userevent.LauncherLogProto.Target.FromFolderLabelState.FROM_SUGGESTED;
 
-import static java.util.Arrays.stream;
-import static java.util.Optional.ofNullable;
-
-import android.content.Intent;
 import android.os.Process;
-import android.text.TextUtils;
+
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.folder.FolderNameInfo;
+import com.android.launcher3.folder.FolderNameInfos;
 import com.android.launcher3.logger.LauncherAtom;
+import com.android.launcher3.logger.LauncherAtom.Attribute;
 import com.android.launcher3.logger.LauncherAtom.FromState;
 import com.android.launcher3.logger.LauncherAtom.ToState;
 import com.android.launcher3.model.ModelWriter;
@@ -51,10 +50,7 @@ import com.android.launcher3.userevent.LauncherLogProto.Target.ToFolderLabelStat
 import com.android.launcher3.util.ContentWriter;
 
 import java.util.ArrayList;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.OptionalInt;
-import java.util.StringJoiner;
 import java.util.stream.IntStream;
 
 
@@ -82,25 +78,35 @@ public class FolderInfo extends ItemInfo {
 
     public static final int FLAG_MANUAL_FOLDER_NAME = 0x00000008;
 
+    /**
+     * Different states of folder label.
+     */
+    public enum LabelState {
+        // Folder's label is not yet assigned( i.e., title == null). Eligible for auto-labeling.
+        UNLABELED(Attribute.UNLABELED),
+
+        // Folder's label is empty(i.e., title == ""). Not eligible for auto-labeling.
+        EMPTY(EMPTY_LABEL),
+
+        // Folder's label is one of the non-empty suggested values.
+        SUGGESTED(SUGGESTED_LABEL),
+
+        // Folder's label is non-empty, manually entered by the user
+        // and different from any of suggested values.
+        MANUAL(MANUAL_LABEL);
+
+        private final LauncherAtom.Attribute mLogAttribute;
+
+        LabelState(Attribute logAttribute) {
+            this.mLogAttribute = logAttribute;
+        }
+    }
+
     public static final String EXTRA_FOLDER_SUGGESTIONS = "suggest";
 
     public int options;
 
-    public Intent suggestedFolderNames;
-
-    // Represents the title before current.
-    // Primarily used for logging purpose.
-    private CharSequence mPreviousTitle;
-
-    // True if the title before was manually entered, suggested otherwise.
-    // Primarily used for logging purpose.
-    public boolean fromCustom;
-
-    /**
-     * Used for separating {@link #mPreviousTitle} and {@link #title} when concatenating them
-     * for logging.
-     */
-    private static final CharSequence FOLDER_LABEL_DELIMITER = "=>";
+    public FolderNameInfos suggestedFolderNames;
 
     /**
      * The apps and shortcuts
@@ -198,8 +204,7 @@ public class FolderInfo extends ItemInfo {
 
     @Override
     protected String dumpProperties() {
-        return super.dumpProperties()
-                + " manuallyTypedTitle=" + hasOption(FLAG_MANUAL_FOLDER_NAME);
+        return String.format("%s; labelState=%s", super.dumpProperties(), getLabelState());
     }
 
     @Override
@@ -207,19 +212,41 @@ public class FolderInfo extends ItemInfo {
         return getDefaultItemInfoBuilder()
                 .setFolderIcon(LauncherAtom.FolderIcon.newBuilder().setCardinality(contents.size()))
                 .setRank(rank)
-                .setAttribute(fromCustom ? MANUAL_LABEL : SUGGESTED_LABEL)
+                .setAttribute(getLabelState().mLogAttribute)
                 .setContainerInfo(getContainerInfo())
                 .build();
     }
 
     @Override
-    public void setTitle(CharSequence title) {
-        mPreviousTitle = this.title;
+    public void setTitle(@Nullable CharSequence title, ModelWriter modelWriter) {
+        // Updating label from null to empty is considered as false touch.
+        // Retaining null title(ie., UNLABELED state) allows auto-labeling when new items added.
+        if (isEmpty(title) && this.title == null) {
+            return;
+        }
+
+        // Updating title to same value does not change any states.
+        if (title != null && title == this.title) {
+            return;
+        }
+
         this.title = title;
+        LabelState newLabelState =
+                title == null ? LabelState.UNLABELED
+                        : title.length() == 0 ? LabelState.EMPTY :
+                                getAcceptedSuggestionIndex().isPresent() ? LabelState.SUGGESTED
+                                        : LabelState.MANUAL;
+        setOption(FLAG_MANUAL_FOLDER_NAME, newLabelState.equals(LabelState.MANUAL), modelWriter);
     }
 
-    public CharSequence getPreviousTitle() {
-        return mPreviousTitle;
+    /**
+     * Returns current state of the current folder label.
+     */
+    public LabelState getLabelState() {
+        return title == null ? LabelState.UNLABELED
+                : title.length() == 0 ? LabelState.EMPTY :
+                        hasOption(FLAG_MANUAL_FOLDER_NAME) ? LabelState.MANUAL
+                                : LabelState.SUGGESTED;
     }
 
     @Override
@@ -235,30 +262,7 @@ public class FolderInfo extends ItemInfo {
      */
     @Override
     public LauncherAtom.ItemInfo buildProto() {
-        FromState fromFolderLabelState = getFromFolderLabelState();
-        ToState toFolderLabelState = getToFolderLabelState();
-        LauncherAtom.FolderIcon.Builder folderIconBuilder = LauncherAtom.FolderIcon.newBuilder()
-                .setCardinality(contents.size())
-                .setFromLabelState(fromFolderLabelState)
-                .setToLabelState(toFolderLabelState);
-
-        // If the folder label is suggested, it is logged to improve prediction model.
-        // When both old and new labels are logged together delimiter is used.
-        StringJoiner labelInfoBuilder = new StringJoiner(FOLDER_LABEL_DELIMITER);
-        if (fromFolderLabelState.equals(FromState.FROM_SUGGESTED)) {
-            labelInfoBuilder.add(mPreviousTitle);
-        }
-        if (toFolderLabelState.toString().startsWith("TO_SUGGESTION")) {
-            labelInfoBuilder.add(title);
-        }
-        if (labelInfoBuilder.length() > 0) {
-            folderIconBuilder.setLabelInfo(labelInfoBuilder.toString());
-        }
-
-        return getDefaultItemInfoBuilder()
-                .setFolderIcon(folderIconBuilder)
-                .setContainerInfo(getContainerInfo())
-                .build();
+        return buildProto(null);
     }
 
     /**
@@ -267,26 +271,41 @@ public class FolderInfo extends ItemInfo {
     public OptionalInt getAcceptedSuggestionIndex() {
         String newLabel = checkNotNull(title,
                 "Expected valid folder label, but found null").toString();
-        return getSuggestedLabels()
-                .map(suggestionsArray ->
-                        IntStream.range(0, suggestionsArray.length)
-                                .filter(
-                                        index -> !isEmpty(suggestionsArray[index])
-                                                && newLabel.equalsIgnoreCase(
-                                                suggestionsArray[index]))
-                                .sequential()
-                                .findFirst()
-                ).orElse(OptionalInt.empty());
-
+        if (suggestedFolderNames == null || !suggestedFolderNames.hasSuggestions()) {
+            return OptionalInt.empty();
+        }
+        CharSequence[] labels = suggestedFolderNames.getLabels();
+        return IntStream.range(0, labels.length)
+                .filter(index -> !isEmpty(labels[index])
+                        && newLabel.equalsIgnoreCase(
+                        labels[index].toString()))
+                .sequential()
+                .findFirst();
     }
 
-    private LauncherAtom.ToState getToFolderLabelState() {
+    /**
+     * Returns {@link FromState} based on current {@link #title}.
+     */
+    public LauncherAtom.FromState getFromLabelState() {
+        switch (getLabelState()){
+            case EMPTY:
+                return LauncherAtom.FromState.FROM_EMPTY;
+            case MANUAL:
+                return LauncherAtom.FromState.FROM_CUSTOM;
+            case SUGGESTED:
+                return LauncherAtom.FromState.FROM_SUGGESTED;
+            case UNLABELED:
+            default:
+                return LauncherAtom.FromState.FROM_STATE_UNSPECIFIED;
+        }
+    }
+
+    /**
+     * Returns {@link ToState} based on current {@link #title}.
+     */
+    public LauncherAtom.ToState getToLabelState() {
         if (title == null) {
             return LauncherAtom.ToState.TO_STATE_UNSPECIFIED;
-        }
-
-        if (title.equals(mPreviousTitle)) {
-            return LauncherAtom.ToState.UNCHANGED;
         }
 
         if (!FeatureFlags.FOLDER_NAME_SUGGEST.get()) {
@@ -295,19 +314,15 @@ public class FolderInfo extends ItemInfo {
                     : LauncherAtom.ToState.TO_EMPTY_WITH_SUGGESTIONS_DISABLED;
         }
 
-        Optional<String[]> suggestedLabels = getSuggestedLabels();
-        boolean isEmptySuggestions = suggestedLabels
-                .map(labels -> stream(labels).allMatch(TextUtils::isEmpty))
-                .orElse(true);
-        if (isEmptySuggestions) {
+        // TODO: if suggestedFolderNames is null then it infrastructure issue, not
+        // ranking issue. We should log these appropriately.
+        if (suggestedFolderNames == null || !suggestedFolderNames.hasSuggestions()) {
             return title.length() > 0
                     ? LauncherAtom.ToState.TO_CUSTOM_WITH_EMPTY_SUGGESTIONS
                     : LauncherAtom.ToState.TO_EMPTY_WITH_EMPTY_SUGGESTIONS;
         }
 
-        boolean hasValidPrimary = suggestedLabels
-                .map(labels -> !isEmpty(labels[0]))
-                .orElse(false);
+        boolean hasValidPrimary = suggestedFolderNames != null && suggestedFolderNames.hasPrimary();
         if (title.length() == 0) {
             return hasValidPrimary ? LauncherAtom.ToState.TO_EMPTY_WITH_VALID_PRIMARY
                     : LauncherAtom.ToState.TO_EMPTY_WITH_VALID_SUGGESTIONS_AND_EMPTY_PRIMARY;
@@ -335,31 +350,6 @@ public class FolderInfo extends ItemInfo {
                 // fall through
         }
         return LauncherAtom.ToState.TO_STATE_UNSPECIFIED;
-
-    }
-
-    private LauncherAtom.FromState getFromFolderLabelState() {
-        return mPreviousTitle == null
-                ? LauncherAtom.FromState.FROM_STATE_UNSPECIFIED
-                : mPreviousTitle.length() == 0
-                        ? LauncherAtom.FromState.FROM_EMPTY
-                        : fromCustom
-                                ? LauncherAtom.FromState.FROM_CUSTOM
-                                : LauncherAtom.FromState.FROM_SUGGESTED;
-    }
-
-    private Optional<String[]> getSuggestedLabels() {
-        return ofNullable(suggestedFolderNames)
-                .map(folderNames ->
-                        (FolderNameInfo[])
-                                folderNames.getParcelableArrayExtra(EXTRA_FOLDER_SUGGESTIONS))
-                .map(folderNameInfoArray ->
-                        stream(folderNameInfoArray)
-                                .filter(Objects::nonNull)
-                                .map(FolderNameInfo::getLabel)
-                                .filter(Objects::nonNull)
-                                .map(CharSequence::toString)
-                                .toArray(String[]::new));
     }
 
     /**
@@ -368,7 +358,8 @@ public class FolderInfo extends ItemInfo {
      * @deprecated This method is used only for validation purpose and soon will be removed.
      */
     @Deprecated
-    public LauncherLogProto.LauncherEvent getFolderLabelStateLauncherEvent() {
+    public LauncherLogProto.LauncherEvent getFolderLabelStateLauncherEvent(FromState fromState,
+            ToState toState) {
         return LauncherLogProto.LauncherEvent.newBuilder()
                 .setAction(LauncherLogProto.Action
                         .newBuilder()
@@ -377,8 +368,8 @@ public class FolderInfo extends ItemInfo {
                         .newBuilder()
                         .setType(Target.Type.ITEM)
                         .setItemType(LauncherLogProto.ItemType.EDITTEXT)
-                        .setFromFolderLabelState(convertFolderLabelState(getFromFolderLabelState()))
-                        .setToFolderLabelState(convertFolderLabelState(getToFolderLabelState())))
+                        .setFromFolderLabelState(convertFolderLabelState(fromState))
+                        .setToFolderLabelState(convertFolderLabelState(toState)))
                 .addSrcTarget(Target.newBuilder()
                         .setType(Target.Type.CONTAINER)
                         .setContainerType(LauncherLogProto.ContainerType.FOLDER)

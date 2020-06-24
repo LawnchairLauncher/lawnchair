@@ -59,7 +59,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderGridOrganizer;
-import com.android.launcher3.folder.FolderNameInfo;
+import com.android.launcher3.folder.FolderNameInfos;
 import com.android.launcher3.folder.FolderNameProvider;
 import com.android.launcher3.icons.ComponentWithLabelAndIcon;
 import com.android.launcher3.icons.ComponentWithLabelAndIcon.ComponentWithIconCachingLogic;
@@ -953,13 +953,12 @@ public class LoaderTask implements Runnable {
 
         synchronized (mBgDataModel) {
             for (int i = 0; i < mBgDataModel.folders.size(); i++) {
-                FolderNameInfo[] suggestionInfos =
-                        new FolderNameInfo[FolderNameProvider.SUGGEST_MAX];
+                FolderNameInfos suggestionInfos = new FolderNameInfos();
                 FolderInfo info = mBgDataModel.folders.valueAt(i);
                 if (info.suggestedFolderNames == null) {
                     provider.getSuggestedFolderName(mApp.getContext(), info.contents,
                             suggestionInfos);
-                    info.suggestedFolderNames = new Intent().putExtra("suggest", suggestionInfos);
+                    info.suggestedFolderNames = suggestionInfos;
                 }
             }
         }
