@@ -220,9 +220,11 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
         d.dragSource = new DeferredOnComplete(d.dragSource, getContext());
         super.onDrop(d, options);
         if (mCurrentAccessibilityAction == UNINSTALL) {
-            mStatsLogManager.log(LAUNCHER_ITEM_DROPPED_ON_UNINSTALL, d.logInstanceId);
+            mStatsLogManager.logger().withInstanceId(d.logInstanceId)
+                    .log(LAUNCHER_ITEM_DROPPED_ON_UNINSTALL);
         } else if (mCurrentAccessibilityAction == DISMISS_PREDICTION) {
-            mStatsLogManager.log(LAUNCHER_ITEM_DROPPED_ON_DONT_SUGGEST, d.logInstanceId);
+            mStatsLogManager.logger().withInstanceId(d.logInstanceId)
+                    .log(LAUNCHER_ITEM_DROPPED_ON_DONT_SUGGEST);
         }
     }
 
@@ -348,10 +350,12 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
                     mDragObject.dragInfo.user, PackageManager.MATCH_UNINSTALLED_PACKAGES) == null) {
                 mDragObject.dragSource = mOriginal;
                 mOriginal.onDropCompleted(SecondaryDropTarget.this, mDragObject, true);
-                mStatsLogManager.log(LAUNCHER_ITEM_UNINSTALL_COMPLETED, mDragObject.logInstanceId);
+                mStatsLogManager.logger().withInstanceId(mDragObject.logInstanceId)
+                        .log(LAUNCHER_ITEM_UNINSTALL_COMPLETED);
             } else {
                 sendFailure();
-                mStatsLogManager.log(LAUNCHER_ITEM_UNINSTALL_CANCELLED, mDragObject.logInstanceId);
+                mStatsLogManager.logger().withInstanceId(mDragObject.logInstanceId)
+                        .log(LAUNCHER_ITEM_UNINSTALL_CANCELLED);
             }
         }
 

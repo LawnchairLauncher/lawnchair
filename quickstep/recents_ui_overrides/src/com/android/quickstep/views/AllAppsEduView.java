@@ -232,7 +232,7 @@ public class AllAppsEduView extends AbstractFloatingView {
                 launcher, parent);
         view.init(launcher);
         launcher.getDragLayer().addView(view);
-        launcher.getStatsLogManager().log(LAUNCHER_ALL_APPS_EDU_SHOWN);
+        launcher.getStatsLogManager().logger().log(LAUNCHER_ALL_APPS_EDU_SHOWN);
 
         view.requestLayout();
         view.playAnimation();

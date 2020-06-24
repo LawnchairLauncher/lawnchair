@@ -226,7 +226,16 @@ public abstract class LauncherState implements BaseState<LauncherState> {
      * 0 means completely zoomed in, without blurs. 1 is zoomed out, with blurs.
      */
     public final float getDepth(Context context) {
-        if (BaseDraggingActivity.fromContext(context).getDeviceProfile().isMultiWindowMode) {
+        return getDepth(context,
+                BaseDraggingActivity.fromContext(context).getDeviceProfile().isMultiWindowMode);
+    }
+
+    /**
+     * Returns the amount of blur and wallpaper zoom for this state with {@param isMultiWindowMode}.
+     * @see #getDepth(Context).
+     */
+    public final float getDepth(Context context, boolean isMultiWindowMode) {
+        if (isMultiWindowMode) {
             return 0;
         }
         return getDepthUnchecked(context);
