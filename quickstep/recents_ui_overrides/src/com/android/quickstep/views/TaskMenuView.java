@@ -235,7 +235,8 @@ public class TaskMenuView extends AbstractFloatingView {
         Rect insets = mActivity.getDragLayer().getInsets();
         BaseDragLayer.LayoutParams params = (BaseDragLayer.LayoutParams) getLayoutParams();
         params.width = orientationHandler.getTaskMenuWidth(taskView.getThumbnail());
-        params.gravity = Gravity.START;
+        // Gravity set to Left instead of Start as sTempRect.left measures Left distance not Start
+        params.gravity = Gravity.LEFT;
         setLayoutParams(params);
         setScaleX(taskView.getScaleX());
         setScaleY(taskView.getScaleY());
