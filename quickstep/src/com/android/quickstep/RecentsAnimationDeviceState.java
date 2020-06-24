@@ -151,7 +151,7 @@ public class RecentsAnimationDeviceState implements
      * sysui to adjust the navbar.
      */
     private OrientationEventListener mOrientationListener;
-    private int mPreviousRotation = ROTATION_0;
+    private int mSensorRotation = ROTATION_0;
     /**
      * This is the configuration of the foreground app or the app that will be in the foreground
      * once a quickstep gesture finishes.
@@ -246,18 +246,18 @@ public class RecentsAnimationDeviceState implements
             @Override
             public void onOrientationChanged(int degrees) {
                 int newRotation = RecentsOrientedState.getRotationForUserDegreesRotated(degrees,
-                        mPreviousRotation);
-                if (newRotation == mPreviousRotation) {
+                        mSensorRotation);
+                if (newRotation == mSensorRotation) {
                     return;
                 }
 
-                mPreviousRotation = newRotation;
+                mSensorRotation = newRotation;
                 mPrioritizeDeviceRotation = true;
 
                 if (newRotation == mCurrentAppRotation) {
                     // When user rotates device to the orientation of the foreground app after
                     // quickstepping
-                    toggleSecondaryNavBarsForRotation(false);
+                    toggleSecondaryNavBarsForRotation();
                 }
             }
         };
@@ -339,14 +339,16 @@ public class RecentsAnimationDeviceState implements
         mCurrentAppRotation = mDisplayRotation;
 
         /* Update nav bars on the following:
-         * a) if we're not expecting quickswitch, this is coming from an activity rotation
-         * b) we launch an app in the orientation that user is already in
-         * c) We're not in overview, since overview will always be portrait (w/o home rotation)
+         * a) if this is coming from an activity rotation OR
+         *   aa) we launch an app in the orientation that user is already in
+         * b) We're not in overview, since overview will always be portrait (w/o home rotation)
+         * c) We're actively in quickswitch mode
          */
         if ((mPrioritizeDeviceRotation
-                || mCurrentAppRotation == mPreviousRotation) // switch to an app of orientation user is in
-                && !mInOverview) {
-            toggleSecondaryNavBarsForRotation(false);
+                || mCurrentAppRotation == mSensorRotation) // switch to an app of orientation user is in
+                && !mInOverview
+                && mTaskListFrozen) {
+            toggleSecondaryNavBarsForRotation();
         }
     }
 
@@ -461,7 +463,9 @@ public class RecentsAnimationDeviceState implements
      * @return whether SystemUI is in a state where we can start a system gesture.
      */
     public boolean canStartSystemGesture() {
-        return (mSystemUiStateFlags & SYSUI_STATE_NAV_BAR_HIDDEN) == 0
+        boolean canStartWithNavHidden = (mSystemUiStateFlags & SYSUI_STATE_NAV_BAR_HIDDEN) == 0
+                || mTaskListFrozen;
+        return canStartWithNavHidden
                 && (mSystemUiStateFlags & SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED) == 0
                 && (mSystemUiStateFlags & SYSUI_STATE_QUICK_SETTINGS_EXPANDED) == 0
                 && ((mSystemUiStateFlags & SYSUI_STATE_HOME_DISABLED) == 0
@@ -634,17 +638,15 @@ public class RecentsAnimationDeviceState implements
     }
 
     private void enableMultipleRegions(boolean enable) {
-        toggleSecondaryNavBarsForRotation(enable);
-        if (enable && !TestProtocol.sDisableSensorRotation) {
+        mOrientationTouchTransformer.enableMultipleRegions(enable, mDefaultDisplay.getInfo());
+        notifySysuiOfCurrentRotation(mOrientationTouchTransformer.getQuickStepStartingRotation());
+        if (enable && !mInOverview && !TestProtocol.sDisableSensorRotation) {
+            // Clear any previous state from sensor manager
+            mSensorRotation = mCurrentAppRotation;
             mOrientationListener.enable();
         } else {
             mOrientationListener.disable();
         }
-    }
-
-    private void notifySysuiForRotation(int rotation) {
-        UI_HELPER_EXECUTOR.execute(() ->
-                SystemUiProxy.INSTANCE.get(mContext).onQuickSwitchToNewTask(rotation));
     }
 
     public void onStartGesture() {
@@ -652,10 +654,9 @@ public class RecentsAnimationDeviceState implements
             // Prioritize whatever nav bar user touches once in quickstep
             // This case is specifically when user changes what nav bar they are using mid
             // quickswitch session before tasks list is unfrozen
-            notifySysuiForRotation(mOrientationTouchTransformer.getCurrentActiveRotation());
+            notifySysuiOfCurrentRotation(mOrientationTouchTransformer.getCurrentActiveRotation());
         }
     }
-
 
     void onEndTargetCalculated(GestureState.GestureEndTarget endTarget,
             BaseActivityInterface activityInterface) {
@@ -673,7 +674,8 @@ public class RecentsAnimationDeviceState implements
                 // First gesture to start quickswitch
                 enableMultipleRegions(true);
             } else {
-                notifySysuiForRotation(mOrientationTouchTransformer.getCurrentActiveRotation());
+                notifySysuiOfCurrentRotation(
+                        mOrientationTouchTransformer.getCurrentActiveRotation());
             }
 
             // A new gesture is starting, reset the current device rotation
@@ -685,7 +687,7 @@ public class RecentsAnimationDeviceState implements
                 // touched nav bar but didn't go anywhere and not quickswitching, do nothing
                 return;
             }
-            notifySysuiForRotation(mOrientationTouchTransformer.getCurrentActiveRotation());
+            notifySysuiOfCurrentRotation(mOrientationTouchTransformer.getCurrentActiveRotation());
         }
     }
 
@@ -697,13 +699,10 @@ public class RecentsAnimationDeviceState implements
     /**
      * Disables/Enables multiple nav bars on {@link OrientationTouchTransformer} and then
      * notifies system UI of the primary rotation the user is interacting with
-     *
-     * @param enable if {@code true}, this will report to sysUI the navbar of the region the gesture
-     *               started in (during ACTION_DOWN), otherwise will report {@param displayRotation}
      */
-    private void toggleSecondaryNavBarsForRotation(boolean enable) {
-        mOrientationTouchTransformer.enableMultipleRegions(enable, mDefaultDisplay.getInfo());
-        notifySysuiOfCurrentRotation(mOrientationTouchTransformer.getQuickStepStartingRotation());
+    private void toggleSecondaryNavBarsForRotation() {
+        mOrientationTouchTransformer.setSingleActiveRegion(mDefaultDisplay.getInfo());
+        notifySysuiOfCurrentRotation(mOrientationTouchTransformer.getCurrentActiveRotation());
     }
 
     public int getCurrentActiveRotation() {
