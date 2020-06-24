@@ -71,6 +71,15 @@ message PredictionContainer {
 
 // Represents the apps container within search results.
 message SearchResultContainer {
+
+  // Length of search term.
+  optional int32 query_length = 1;
+
+  // Container from where search was invoked.
+  oneof ParentContainer {
+    WorkspaceContainer workspace = 2;
+    AllAppsContainer all_apps_container = 3;
+  }
 }
 
 // Container for package specific shortcuts to deep links and notifications.

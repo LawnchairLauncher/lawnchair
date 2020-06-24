@@ -18,15 +18,21 @@ package com.android.launcher3.testing;
 
 import static android.graphics.Bitmap.Config.ARGB_8888;
 
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.os.Binder;
 import android.os.Bundle;
 import android.os.Debug;
 import android.system.Os;
 import android.view.View;
 
 import androidx.annotation.Keep;
+
+import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherSettings;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -163,6 +169,19 @@ public class DebugTestInformationHandler extends TestInformationHandler {
                             TestProtocol.TEST_INFO_RESPONSE_FIELD, new ArrayList<>(sEvents));
                 }
                 return response;
+            }
+
+            case TestProtocol.REQUEST_CLEAR_DATA: {
+                final long identity = Binder.clearCallingIdentity();
+                try {
+                    LauncherSettings.Settings.call(mContext.getContentResolver(),
+                            LauncherSettings.Settings.METHOD_CREATE_EMPTY_DB);
+                    MAIN_EXECUTOR.submit(() ->
+                            LauncherAppState.getInstance(mContext).getModel().forceReload());
+                    return response;
+                } finally {
+                    Binder.restoreCallingIdentity(identity);
+                }
             }
 
             default:
