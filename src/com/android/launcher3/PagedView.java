@@ -71,7 +71,9 @@ import java.util.ArrayList;
 public abstract class PagedView<T extends View & PageIndicator> extends ViewGroup {
     private static final String TAG = "PagedView";
     private static final boolean DEBUG = false;
+    public static final boolean DEBUG_FAILED_QUICKSWITCH = false;
 
+    public static final int ACTION_MOVE_ALLOW_EASY_FLING = MotionEvent.ACTION_MASK - 1;
     public static final int INVALID_PAGE = -1;
     protected static final ComputePageScrollsLogic SIMPLE_SCROLL_LOGIC = (v) -> v.getVisibility() != GONE;
 
@@ -89,14 +91,16 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     // The following constants need to be scaled based on density. The scaled versions will be
     // assigned to the corresponding member variables below.
     private static final int FLING_THRESHOLD_VELOCITY = 500;
+    private static final int EASY_FLING_THRESHOLD_VELOCITY = 400;
     private static final int MIN_SNAP_VELOCITY = 1500;
     private static final int MIN_FLING_VELOCITY = 250;
 
     private boolean mFreeScroll = false;
 
-    protected int mFlingThresholdVelocity;
-    protected int mMinFlingVelocity;
-    protected int mMinSnapVelocity;
+    protected final int mFlingThresholdVelocity;
+    protected final int mEasyFlingThresholdVelocity;
+    protected final int mMinFlingVelocity;
+    protected final int mMinSnapVelocity;
 
     protected boolean mFirstLayout = true;
 
@@ -118,12 +122,17 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     private float mLastMotion;
     private float mLastMotionRemainder;
     private float mTotalMotion;
+    // Used in special cases where the fling checks can be relaxed for an intentional gesture
+    private boolean mAllowEasyFling;
     protected PagedOrientationHandler mOrientationHandler = PagedOrientationHandler.PORTRAIT;
 
     protected int[] mPageScrolls;
     private boolean mIsBeingDragged;
 
+    // The amount of movement to begin scrolling
     protected int mTouchSlop;
+    // The amount of movement to begin paging
+    protected int mPageSlop;
     private int mMaximumVelocity;
     protected boolean mAllowOverScroll = true;
 
@@ -170,24 +179,19 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
         setHapticFeedbackEnabled(false);
         mIsRtl = Utilities.isRtl(getResources());
-        init();
-    }
 
-    /**
-     * Initializes various states for this workspace.
-     */
-    protected void init() {
-        Context context = getContext();
         mScroller = new OverScroller(context);
         setDefaultInterpolator(Interpolators.SCROLL);
         mCurrentPage = 0;
 
         final ViewConfiguration configuration = ViewConfiguration.get(context);
-        mTouchSlop = configuration.getScaledPagingTouchSlop();
+        mTouchSlop = configuration.getScaledTouchSlop();
+        mPageSlop = configuration.getScaledPagingTouchSlop();
         mMaximumVelocity = configuration.getScaledMaximumFlingVelocity();
 
         float density = getResources().getDisplayMetrics().density;
         mFlingThresholdVelocity = (int) (FLING_THRESHOLD_VELOCITY * density);
+        mEasyFlingThresholdVelocity = (int) (EASY_FLING_THRESHOLD_VELOCITY * density);
         mMinFlingVelocity = (int) (MIN_FLING_VELOCITY * density);
         mMinSnapVelocity = (int) (MIN_SNAP_VELOCITY * density);
 
@@ -913,6 +917,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                 mDownMotionPrimary = mLastMotion = mOrientationHandler.getPrimaryDirection(ev, 0);
                 mLastMotionRemainder = 0;
                 mTotalMotion = 0;
+                mAllowEasyFling = false;
                 mActivePointerId = ev.getPointerId(0);
 
                 updateIsBeingDraggedOnTouchDown();
@@ -944,7 +949,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     private void updateIsBeingDraggedOnTouchDown() {
         // mScroller.isFinished should be false when being flinged.
         final int xDist = Math.abs(mScroller.getFinalPos() - mScroller.getCurrPos());
-        final boolean finishedScrolling = (mScroller.isFinished() || xDist < mTouchSlop / 3);
+        final boolean finishedScrolling = (mScroller.isFinished() || xDist < mPageSlop / 3);
 
         if (finishedScrolling) {
             mIsBeingDragged = false;
@@ -977,7 +982,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         final float primaryDirection = mOrientationHandler.getPrimaryDirection(ev, pointerIndex);
         final int diff = (int) Math.abs(primaryDirection - mLastMotion);
         final int touchSlop = Math.round(touchSlopScale * mTouchSlop);
-        boolean moved = diff > touchSlop;
+        boolean moved = diff > touchSlop || ev.getAction() == ACTION_MOVE_ALLOW_EASY_FLING;
 
         if (moved) {
             // Scroll if the user moved far enough along the X axis
@@ -1160,6 +1165,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
             mDownMotionPrimary = mLastMotion = mOrientationHandler.getPrimaryDirection(ev, 0);
             mLastMotionRemainder = 0;
             mTotalMotion = 0;
+            mAllowEasyFling = false;
             mActivePointerId = ev.getPointerId(0);
             if (mIsBeingDragged) {
                 onScrollInteractionBegin();
@@ -1167,8 +1173,14 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
             }
             break;
 
-            case MotionEvent.ACTION_MOVE:
-                if (mIsBeingDragged) {
+        case ACTION_MOVE_ALLOW_EASY_FLING:
+            // Start scrolling immediately
+            determineScrollingStart(ev);
+            mAllowEasyFling = true;
+            break;
+
+        case MotionEvent.ACTION_MOVE:
+            if (mIsBeingDragged) {
                 // Scroll to follow the motion event
                 final int pointerIndex = ev.findPointerIndex(mActivePointerId);
 
@@ -1214,9 +1226,14 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                     SIGNIFICANT_MOVE_THRESHOLD;
 
                 mTotalMotion += Math.abs(mLastMotion + mLastMotionRemainder - primaryDirection);
-                boolean isFling = mTotalMotion > mTouchSlop && shouldFlingForVelocity(velocity);
+                boolean passedSlop = mAllowEasyFling || mTotalMotion > mPageSlop;
+                boolean isFling = passedSlop && shouldFlingForVelocity(velocity);
                 boolean isDeltaLeft = mIsRtl ? delta > 0 : delta < 0;
                 boolean isVelocityLeft = mIsRtl ? velocity > 0 : velocity < 0;
+                if (DEBUG_FAILED_QUICKSWITCH && !isFling && mAllowEasyFling) {
+                    Log.d("Quickswitch", "isFling=false vel=" + velocity
+                            + " threshold=" + mEasyFlingThresholdVelocity);
+                }
 
                 if (!mFreeScroll) {
                     // In the case that the page is moved far to one direction and then is flung
@@ -1316,7 +1333,8 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     }
 
     protected boolean shouldFlingForVelocity(int velocity) {
-        return Math.abs(velocity) > mFlingThresholdVelocity;
+        float threshold = mAllowEasyFling ? mEasyFlingThresholdVelocity : mFlingThresholdVelocity;
+        return Math.abs(velocity) > threshold;
     }
 
     private void resetTouchState() {
@@ -1393,8 +1411,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     }
 
     private void onSecondaryPointerUp(MotionEvent ev) {
-        final int pointerIndex = (ev.getAction() & MotionEvent.ACTION_POINTER_INDEX_MASK) >>
-                MotionEvent.ACTION_POINTER_INDEX_SHIFT;
+        final int pointerIndex = ev.getActionIndex();
         final int pointerId = ev.getPointerId(pointerIndex);
         if (pointerId == mActivePointerId) {
             // This was our active pointer going up. Choose a new

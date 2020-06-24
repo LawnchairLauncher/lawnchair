@@ -10,6 +10,8 @@ import android.util.AttributeSet;
 import android.view.ViewDebug;
 import android.view.WindowInsets;
 
+import com.android.launcher3.statemanager.StatefulActivity;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -17,7 +19,7 @@ public class LauncherRootView extends InsettableFrameLayout {
 
     private final Rect mTempRect = new Rect();
 
-    private final Launcher mLauncher;
+    private final StatefulActivity mActivity;
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private static final List<Rect> SYSTEM_GESTURE_EXCLUSION_RECT =
@@ -31,17 +33,17 @@ public class LauncherRootView extends InsettableFrameLayout {
 
     public LauncherRootView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mLauncher = Launcher.getLauncher(context);
+        mActivity = StatefulActivity.fromContext(context);
     }
 
     private void handleSystemWindowInsets(Rect insets) {
         // Update device profile before notifying th children.
-        mLauncher.getDeviceProfile().updateInsets(insets);
+        mActivity.getDeviceProfile().updateInsets(insets);
         boolean resetState = !insets.equals(mInsets);
         setInsets(insets);
 
         if (resetState) {
-            mLauncher.getStateManager().reapplyState(true /* cancelCurrentAnimation */);
+            mActivity.getStateManager().reapplyState(true /* cancelCurrentAnimation */);
         }
     }
 
@@ -63,7 +65,7 @@ public class LauncherRootView extends InsettableFrameLayout {
     }
 
     public void dispatchInsets() {
-        mLauncher.getDeviceProfile().updateInsets(mInsets);
+        mActivity.getDeviceProfile().updateInsets(mInsets);
         super.setInsets(mInsets);
     }
 
