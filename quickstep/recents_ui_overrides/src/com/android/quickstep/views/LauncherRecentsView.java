@@ -31,6 +31,7 @@ import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
+import android.os.UserHandle;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.Surface;
@@ -42,6 +43,7 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.appprediction.PredictionUiStateManager;
 import com.android.launcher3.appprediction.PredictionUiStateManager.Client;
+import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.StateManager.StateListener;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
@@ -52,6 +54,7 @@ import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.util.TransformParams;
 import com.android.systemui.plugins.PluginListener;
 import com.android.systemui.plugins.RecentsExtraCard;
+import com.android.systemui.shared.recents.model.Task;
 
 /**
  * {@link RecentsView} used in Launcher activity
@@ -167,14 +170,21 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher>
     }
 
     @Override
-    protected void onTaskLaunched(boolean success) {
+    protected void onTaskLaunchAnimationEnd(boolean success) {
         if (success) {
             mActivity.getStateManager().goToState(NORMAL, false /* animate */);
         } else {
             LauncherState state = mActivity.getStateManager().getState();
             mActivity.getAllAppsController().setState(state);
         }
-        super.onTaskLaunched(success);
+        super.onTaskLaunchAnimationEnd(success);
+    }
+
+    @Override
+    public void onTaskLaunched(Task task) {
+        UserHandle user =  UserHandle.of(task.key.userId);
+        AppLaunchTracker.INSTANCE.get(getContext()).onStartApp(task.getTopComponent(), user,
+                AppLaunchTracker.CONTAINER_OVERVIEW);
     }
 
     @Override

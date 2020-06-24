@@ -174,7 +174,7 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
 
                 mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
                         HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
-                mLauncher.getStatsLogManager().log(LAUNCHER_WORKSPACE_LONGPRESS);
+                mLauncher.getStatsLogManager().logger().log(LAUNCHER_WORKSPACE_LONGPRESS);
                 OptionsPopupView.showDefaultOptions(mLauncher, mTouchDownPoint.x, mTouchDownPoint.y);
             } else {
                 cancelLongPress();

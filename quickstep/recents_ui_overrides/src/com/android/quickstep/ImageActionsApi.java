@@ -17,6 +17,7 @@
 package com.android.quickstep;
 
 import static android.content.Intent.EXTRA_STREAM;
+import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.quickstep.util.ImageActionUtils.persistBitmapAndStartActivity;
@@ -67,7 +68,9 @@ public class ImageActionsApi {
 
         UI_HELPER_EXECUTOR.execute(() -> persistBitmapAndStartActivity(mContext,
                 mBitmapSupplier.get(), crop, intent, (uri, intentForUri) -> {
-                    intentForUri.putExtra(EXTRA_STREAM, uri);
+                    intentForUri
+                            .addFlags(FLAG_GRANT_READ_URI_PERMISSION)
+                            .putExtra(EXTRA_STREAM, uri);
                     return new Intent[]{intentForUri};
                 }, TAG));
 

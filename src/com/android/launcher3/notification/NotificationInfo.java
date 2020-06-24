@@ -107,8 +107,8 @@ public class NotificationInfo implements View.OnClickListener {
         try {
             intent.send(null, 0, null, null, null, null, activityOptions);
             launcher.getUserEventDispatcher().logNotificationLaunch(view, intent);
-            launcher.getStatsLogManager()
-                    .log(LAUNCHER_NOTIFICATION_LAUNCH_TAP, mItemInfo);
+            launcher.getStatsLogManager().logger().withItemInfo(mItemInfo)
+                    .log(LAUNCHER_NOTIFICATION_LAUNCH_TAP);
         } catch (PendingIntent.CanceledException e) {
             e.printStackTrace();
         }

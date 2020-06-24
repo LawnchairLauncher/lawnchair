@@ -120,6 +120,9 @@ public class FallbackRecentsTest {
                     TestCommandReceiver.callCommand(TestCommandReceiver.DISABLE_TEST_LAUNCHER);
                     UiDevice.getInstance(getInstrumentation()).executeShellCommand(
                             getLauncherCommand(getLauncherInMyProcess()));
+                    // b/143488140
+                    mDevice.pressHome();
+                    mDevice.waitForIdle();
                 }
             }
         };
@@ -128,6 +131,10 @@ public class FallbackRecentsTest {
                     TestCommandReceiver.GET_SYSTEM_HEALTH_MESSAGE, startTime.toString()).
                     getString("result"));
         }
+        // b/143488140
+        mDevice.pressHome();
+        mDevice.waitForIdle();
+        startAppFast(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
     }
 
     // b/143488140

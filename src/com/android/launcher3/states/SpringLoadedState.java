@@ -35,7 +35,7 @@ public class SpringLoadedState extends LauncherState {
             | FLAG_HIDE_BACK_BUTTON;
 
     public SpringLoadedState(int id) {
-        super(id, ContainerType.OVERVIEW, STATE_FLAGS);
+        super(id, ContainerType.WORKSPACE, STATE_FLAGS);
     }
 
     @Override
