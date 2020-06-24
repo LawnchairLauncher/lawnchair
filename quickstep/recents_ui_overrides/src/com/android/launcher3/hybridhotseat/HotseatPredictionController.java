@@ -155,14 +155,6 @@ public class HotseatPredictionController implements DragController.DragListener,
     }
 
     /**
-     * Returns whether or not user has seen hybrid hotseat education
-     */
-    public boolean isEduSeen() {
-        return mLauncher.getSharedPrefs().getBoolean(HotseatEduController.KEY_HOTSEAT_EDU_SEEN,
-                false);
-    }
-
-    /**
      * Shows appropriate hotseat education based on prediction enabled and migration states.
      */
     public void showEdu() {
@@ -172,7 +164,7 @@ public class HotseatPredictionController implements DragController.DragListener,
                 Snackbar.show(mLauncher, R.string.hotsaet_tip_prediction_disabled,
                         R.string.hotseat_prediction_settings, null,
                         () -> mLauncher.startActivity(getSettingsIntent()));
-            } else if (isEduSeen() || getPredictedIcons().size() >= (mHotSeatItemsCount + 1) / 2) {
+            } else if (getPredictedIcons().size() >= (mHotSeatItemsCount + 1) / 2) {
                 showDiscoveryTip();
             } else {
                 HotseatEduController eduController = new HotseatEduController(mLauncher,
