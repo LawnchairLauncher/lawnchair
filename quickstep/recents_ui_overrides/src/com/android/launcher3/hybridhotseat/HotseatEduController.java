@@ -47,7 +47,6 @@ import java.util.stream.IntStream;
  */
 public class HotseatEduController {
 
-    public static final String KEY_HOTSEAT_EDU_SEEN = "hotseat_edu_seen";
     public static final String HOTSEAT_EDU_ACTION =
             "com.android.launcher3.action.SHOW_HYBRID_HOTSEAT_EDU";
     public static final String SETTINGS_ACTION =
@@ -229,7 +228,6 @@ public class HotseatEduController {
 
     void finishOnboarding() {
         mOnOnboardingComplete.run();
-        mLauncher.getSharedPrefs().edit().putBoolean(KEY_HOTSEAT_EDU_SEEN, true).apply();
     }
 
     void showDimissTip() {
