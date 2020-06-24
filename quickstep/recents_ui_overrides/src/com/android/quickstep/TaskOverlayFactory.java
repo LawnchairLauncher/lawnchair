@@ -148,7 +148,7 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
                 boolean rotated) {
             final boolean isAllowedByPolicy = thumbnail.isRealSnapshot;
 
-            mActionsView.updateDisabledFlags(DISABLED_ROTATED, rotated);
+            getActionsView().updateDisabledFlags(DISABLED_ROTATED, rotated);
 
             getActionsView().setCallbacks(new OverlayUICallbacks() {
                 @Override
