@@ -90,6 +90,7 @@
                         android:layout_height="wrap_content"
                         android:background="?android:attr/selectableItemBackground"
                         android:text="@string/hotseat_edu_dismiss"
+                        android:layout_gravity="start|center_vertical"
                         android:textColor="@android:color/white"/>
                 </FrameLayout>
                 <FrameLayout
@@ -102,7 +103,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="?android:attr/selectableItemBackground"
-                        android:gravity="end"
+                        android:layout_gravity="end|center_vertical"
                         android:text="@string/hotseat_edu_accept"
                         android:textColor="@android:color/white"/>
                 </FrameLayout>

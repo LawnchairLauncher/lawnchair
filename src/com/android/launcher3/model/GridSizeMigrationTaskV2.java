@@ -248,10 +248,10 @@ public class GridSizeMigrationTaskV2 {
     /** Return what's in the src but not in the dest */
     private static List<DbEntry> calcDiff(List<DbEntry> src, List<DbEntry> dest) {
         Set<String> destIntentSet = new HashSet<>();
-        Set<Set<String>> destFolderIntentSet = new HashSet<>();
+        Set<Map<String, Integer>> destFolderIntentSet = new HashSet<>();
         for (DbEntry entry : dest) {
             if (entry.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
-                destFolderIntentSet.add(entry.mFolderItems.keySet());
+                destFolderIntentSet.add(getFolderIntents(entry));
             } else {
                 destIntentSet.add(entry.mIntent);
             }
@@ -259,7 +259,7 @@ public class GridSizeMigrationTaskV2 {
         List<DbEntry> diff = new ArrayList<>();
         for (DbEntry entry : src) {
             if (entry.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
-                if (!destFolderIntentSet.contains(entry.mFolderItems.keySet())) {
+                if (!destFolderIntentSet.contains(getFolderIntents(entry))) {
                     diff.add(entry);
                 }
             } else {
@@ -271,13 +271,23 @@ public class GridSizeMigrationTaskV2 {
         return diff;
     }
 
+    private static Map<String, Integer> getFolderIntents(DbEntry entry) {
+        Map<String, Integer> folder = new HashMap<>();
+        for (String intent : entry.mFolderItems.keySet()) {
+            folder.put(intent, entry.mFolderItems.get(intent).size());
+        }
+        return folder;
+    }
+
     private static void insertEntryInDb(SQLiteDatabase db, Context context, DbEntry entry,
             String srcTableName, String destTableName) {
         int id = copyEntryAndUpdate(db, context, entry, srcTableName, destTableName);
 
         if (entry.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
-            for (int itemId : entry.mFolderItems.values()) {
-                copyEntryAndUpdate(db, context, itemId, id, srcTableName, destTableName);
+            for (Set<Integer> itemIds : entry.mFolderItems.values()) {
+                for (int itemId : itemIds) {
+                    copyEntryAndUpdate(db, context, itemId, id, srcTableName, destTableName);
+                }
             }
         }
     }
@@ -675,7 +685,10 @@ public class GridSizeMigrationTaskV2 {
                     String intent = c.getString(1);
                     verifyIntent(intent);
                     total++;
-                    entry.mFolderItems.put(intent, id);
+                    if (!entry.mFolderItems.containsKey(intent)) {
+                        entry.mFolderItems.put(intent, new HashSet<>());
+                    }
+                    entry.mFolderItems.get(intent).add(id);
                 } catch (Exception e) {
                     removeEntryFromDb(mDb, mTableName, IntArray.wrap(c.getInt(0)));
                 }
@@ -714,7 +727,7 @@ public class GridSizeMigrationTaskV2 {
 
         private String mIntent;
         private String mProvider;
-        private Map<String, Integer> mFolderItems = new HashMap<>();
+        private Map<String, Set<Integer>> mFolderItems = new HashMap<>();
 
         /** Comparator according to the reading order */
         @Override
@@ -747,10 +760,6 @@ public class GridSizeMigrationTaskV2 {
             values.put(LauncherSettings.Favorites.CELLY, cellY);
             values.put(LauncherSettings.Favorites.SPANX, spanX);
             values.put(LauncherSettings.Favorites.SPANY, spanY);
-        }
-
-        public String getIntentStr() {
-            return mIntent;
         }
     }
 }
