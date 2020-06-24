@@ -344,7 +344,7 @@ public class ItemInfo {
         return itemBuilder;
     }
 
-    ContainerInfo getContainerInfo() {
+    protected ContainerInfo getContainerInfo() {
         switch (container) {
             case CONTAINER_HOTSEAT:
                 return ContainerInfo.newBuilder()
