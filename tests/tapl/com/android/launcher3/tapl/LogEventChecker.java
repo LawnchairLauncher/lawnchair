@@ -57,6 +57,8 @@ public class LogEventChecker {
         while (true) {
             rawEvents = mLauncher.getTestInfo(TestProtocol.REQUEST_GET_TEST_EVENTS)
                     .getStringArrayList(TestProtocol.TEST_INFO_RESPONSE_FIELD);
+            if (rawEvents == null) return null;
+
             final int expectedCount = mExpectedEvents.entrySet()
                     .stream().mapToInt(e -> e.getValue().size()).sum();
             if (rawEvents.size() >= expectedCount
@@ -83,6 +85,7 @@ public class LogEventChecker {
 
     String verify(long waitForExpectedCountMs, boolean successfulGesture) {
         final ListMap<String> actualEvents = finishSync(waitForExpectedCountMs);
+        if (actualEvents == null) return "null event sequences because launcher likely died";
 
         final StringBuilder sb = new StringBuilder();
         boolean hasMismatches = false;
