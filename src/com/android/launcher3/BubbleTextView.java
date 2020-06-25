@@ -614,6 +614,9 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     @Override
     public void setIconVisible(boolean visible) {
         mIsIconVisible = visible;
+        if (!mIsIconVisible) {
+            resetIconScale();
+        }
         Drawable icon = visible ? mIcon : new ColorDrawable(Color.TRANSPARENT);
         applyCompoundDrawables(icon);
     }
@@ -753,11 +756,14 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
     @Override
     public SafeCloseable prepareDrawDragView() {
-        if (getIcon() instanceof FastBitmapDrawable) {
-            FastBitmapDrawable icon = (FastBitmapDrawable) getIcon();
-            icon.setScale(1f);
-        }
+        resetIconScale();
         setForceHideDot(true);
         return () -> { };
+    }
+
+    private void resetIconScale() {
+        if (mIcon instanceof FastBitmapDrawable) {
+            ((FastBitmapDrawable) mIcon).setScale(1f);
+        }
     }
 }
