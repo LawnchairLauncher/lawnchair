@@ -1335,6 +1335,10 @@ public final class LauncherInstrumentation {
         return tasks;
     }
 
+    public void clearLauncherData() {
+        getTestInfo(TestProtocol.REQUEST_CLEAR_DATA);
+    }
+
     public Closable eventsCheck() {
         Assert.assertTrue("Nested event checking", mEventChecker == null);
         disableSensorRotation();
