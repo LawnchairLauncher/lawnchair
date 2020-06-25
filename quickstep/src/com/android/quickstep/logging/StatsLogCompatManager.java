@@ -17,7 +17,7 @@
 package com.android.quickstep.logging;
 
 import static com.android.launcher3.logger.LauncherAtom.ContainerInfo.ContainerCase.FOLDER;
-import static com.android.launcher3.logger.LauncherAtom.ContainerInfo.ContainerCase.PREDICTED_HOTSEAT_CONTAINER;
+import static com.android.launcher3.logger.LauncherAtom.ContainerInfo.ContainerCase.SEARCH_RESULT_CONTAINER;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WORKSPACE_SNAPSHOT;
 import static com.android.systemui.shared.system.SysUiStatsLog.LAUNCHER_UICHANGED__DST_STATE__ALLAPPS;
 import static com.android.systemui.shared.system.SysUiStatsLog.LAUNCHER_UICHANGED__DST_STATE__BACKGROUND;
@@ -75,6 +75,7 @@ public class StatsLogCompatManager extends StatsLogManager {
     // from nano to lite, bake constant to prevent robo test failure.
     private static final int DEFAULT_PAGE_INDEX = -2;
     private static final int FOLDER_HIERARCHY_OFFSET = 100;
+    private static final int SEARCH_RESULT_HIERARCHY_OFFSET = 200;
 
     public StatsLogCompatManager(Context context) {
         sContext = context;
@@ -156,10 +157,10 @@ public class StatsLogCompatManager extends StatsLogManager {
                 getComponentName(info) /* component_name */,
                 getGridX(info, false) /* grid_x */,
                 getGridY(info, false) /* grid_y */,
-                getPageId(info, false) /* page_id */,
+                getPageId(info) /* page_id */,
                 getGridX(info, true) /* grid_x_parent */,
                 getGridY(info, true) /* grid_y_parent */,
-                getPageId(info, true) /* page_id_parent */,
+                getParentPageId(info) /* page_id_parent */,
                 getHierarchy(info) /* hierarchy */,
                 info.getIsWork() /* is_work_profile */,
                 info.getAttribute().getNumber() /* origin */,
@@ -321,10 +322,10 @@ public class StatsLogCompatManager extends StatsLogManager {
                     getComponentName(atomInfo) /* component_name */,
                     getGridX(atomInfo, false) /* grid_x */,
                     getGridY(atomInfo, false) /* grid_y */,
-                    getPageId(atomInfo, false) /* page_id */,
+                    getPageId(atomInfo) /* page_id */,
                     getGridX(atomInfo, true) /* grid_x_parent */,
                     getGridY(atomInfo, true) /* grid_y_parent */,
-                    getPageId(atomInfo, true) /* page_id_parent */,
+                    getParentPageId(atomInfo) /* page_id_parent */,
                     getHierarchy(atomInfo) /* hierarchy */,
                     atomInfo.getIsWork() /* is_work_profile */,
                     atomInfo.getRank() /* rank */,
@@ -336,9 +337,14 @@ public class StatsLogCompatManager extends StatsLogManager {
     }
 
     private static int getCardinality(LauncherAtom.ItemInfo info) {
-        return info.getContainerInfo().getContainerCase().equals(PREDICTED_HOTSEAT_CONTAINER)
-                ? info.getContainerInfo().getPredictedHotseatContainer().getCardinality()
-                : info.getFolderIcon().getCardinality();
+        switch (info.getContainerInfo().getContainerCase()){
+            case PREDICTED_HOTSEAT_CONTAINER:
+                return info.getContainerInfo().getPredictedHotseatContainer().getCardinality();
+            case SEARCH_RESULT_CONTAINER:
+                return info.getContainerInfo().getSearchResultContainer().getQueryLength();
+            default:
+                return info.getFolderIcon().getCardinality();
+        }
     }
 
     private static String getPackageName(LauncherAtom.ItemInfo info) {
@@ -395,15 +401,24 @@ public class StatsLogCompatManager extends StatsLogManager {
         }
     }
 
-    private static int getPageId(LauncherAtom.ItemInfo info, boolean parent) {
-        if (info.getContainerInfo().getContainerCase() == FOLDER) {
-            if (parent) {
-                return info.getContainerInfo().getFolder().getWorkspace().getPageIndex();
-            } else {
+    private static int getPageId(LauncherAtom.ItemInfo info) {
+        switch (info.getContainerInfo().getContainerCase()) {
+            case FOLDER:
                 return info.getContainerInfo().getFolder().getPageIndex();
-            }
-        } else {
-            return info.getContainerInfo().getWorkspace().getPageIndex();
+            default:
+                return info.getContainerInfo().getWorkspace().getPageIndex();
+        }
+    }
+
+    private static int getParentPageId(LauncherAtom.ItemInfo info) {
+        switch (info.getContainerInfo().getContainerCase()) {
+            case FOLDER:
+                return info.getContainerInfo().getFolder().getWorkspace().getPageIndex();
+            case SEARCH_RESULT_CONTAINER:
+                return info.getContainerInfo().getSearchResultContainer().getWorkspace()
+                        .getPageIndex();
+            default:
+                return info.getContainerInfo().getWorkspace().getPageIndex();
         }
     }
 
@@ -411,6 +426,9 @@ public class StatsLogCompatManager extends StatsLogManager {
         if (info.getContainerInfo().getContainerCase() == FOLDER) {
             return info.getContainerInfo().getFolder().getParentContainerCase().getNumber()
                     + FOLDER_HIERARCHY_OFFSET;
+        } else if (info.getContainerInfo().getContainerCase() == SEARCH_RESULT_CONTAINER) {
+            return info.getContainerInfo().getSearchResultContainer().getParentContainerCase()
+                    .getNumber() + SEARCH_RESULT_HIERARCHY_OFFSET;
         } else {
             return info.getContainerInfo().getContainerCase().getNumber();
         }
