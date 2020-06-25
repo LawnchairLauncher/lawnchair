@@ -184,8 +184,7 @@ abstract class SwipeUpGestureTutorialController extends TutorialController {
 
         @Override
         public void updateFinalShift() {
-            float progress = mCurrentShift.value / mDragLengthFactor;
-            mWindowTransitionController.setPlayFraction(progress);
+            mWindowTransitionController.setProgress(mCurrentShift.value, mDragLengthFactor);
             mTaskViewSimulator.apply(mTransformParams);
         }
 
