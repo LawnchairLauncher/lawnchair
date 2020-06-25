@@ -492,9 +492,13 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
 
     @Override
     public void setIsLikelyToStartNewTask(boolean isLikelyToStartNewTask) {
+        setIsLikelyToStartNewTask(isLikelyToStartNewTask, true /* animate */);
+    }
+
+    private void setIsLikelyToStartNewTask(boolean isLikelyToStartNewTask, boolean animate) {
         if (mIsLikelyToStartNewTask != isLikelyToStartNewTask) {
             mIsLikelyToStartNewTask = isLikelyToStartNewTask;
-            maybeUpdateRecentsAttachedState();
+            maybeUpdateRecentsAttachedState(animate);
         }
     }
 
@@ -628,8 +632,9 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
     }
 
     @Override
-    public void onGestureStarted() {
+    public void onGestureStarted(boolean isLikelyToStartNewTask) {
         notifyGestureStartedAsync();
+        setIsLikelyToStartNewTask(isLikelyToStartNewTask, false /* animate */);
         mStateCallback.setStateOnUiThread(STATE_GESTURE_STARTED);
         mGestureStarted = true;
     }

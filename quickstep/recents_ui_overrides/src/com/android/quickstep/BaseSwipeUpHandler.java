@@ -327,7 +327,7 @@ public abstract class BaseSwipeUpHandler<T extends StatefulActivity<?>, Q extend
     public abstract void onMotionPauseChanged(boolean isPaused);
 
     @UiThread
-    public void onGestureStarted() { }
+    public void onGestureStarted(boolean isLikelyToStartNewTask) { }
 
     @UiThread
     public abstract void onGestureCancelled();
