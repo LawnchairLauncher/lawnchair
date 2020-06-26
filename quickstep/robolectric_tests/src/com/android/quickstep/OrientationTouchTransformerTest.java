@@ -59,6 +59,7 @@ public class OrientationTouchTransformerTest {
         mResources = mock(Resources.class);
         when(mResources.getBoolean(anyInt())).thenReturn(true);
         when(mResources.getDimension(anyInt())).thenReturn(10.0f);
+        when(mResources.getDimensionPixelSize(anyInt())).thenReturn(10);
         DisplayMetrics mockDisplayMetrics = new DisplayMetrics();
         mockDisplayMetrics.density = DENSITY_DISPLAY_METRICS;
         when(mResources.getDisplayMetrics()).thenReturn(mockDisplayMetrics);
@@ -67,53 +68,114 @@ public class OrientationTouchTransformerTest {
     }
 
     @Test
-    public void disabledMultipeRegions_shouldOverrideFirstRegion() {
-        mTouchTransformer.createOrAddTouchRegion(mInfo);
-        DefaultDisplay.Info info2 = createDisplayInfo(Surface.ROTATION_90);
-        mTouchTransformer.createOrAddTouchRegion(info2);
+    public void disabledMultipleRegions_shouldOverrideFirstRegion() {
+        float portraitRegionY = generateTouchRegionHeight(Surface.ROTATION_0) + 1;
+        float landscapeRegionY = generateTouchRegionHeight(Surface.ROTATION_90) + 1;
 
-        float y = generateTouchRegionHeight(Surface.ROTATION_0) + 1;
-        MotionEvent inOldRegion = generateMotionEvent(MotionEvent.ACTION_DOWN, 100, y);
-        mTouchTransformer.transform(inOldRegion);
-        assertFalse(mTouchTransformer.touchInValidSwipeRegions(inOldRegion.getX(), inOldRegion.getY()));
+        mTouchTransformer.createOrAddTouchRegion(mInfo);
+        tapAndAssertTrue(100, portraitRegionY,
+                event -> mTouchTransformer.touchInValidSwipeRegions(event.getX(), event.getY()));
+        tapAndAssertFalse(100, landscapeRegionY,
+                event -> mTouchTransformer.touchInValidSwipeRegions(event.getX(), event.getY()));
+        tapAndAssertTrue(0, portraitRegionY,
+                event -> mTouchTransformer.touchInAssistantRegion(event));
+        tapAndAssertFalse(0, landscapeRegionY,
+                event -> mTouchTransformer.touchInAssistantRegion(event));
 
         // Override region
+        mTouchTransformer.createOrAddTouchRegion(createDisplayInfo(Surface.ROTATION_90));
+        tapAndAssertFalse(100, portraitRegionY,
+                event -> mTouchTransformer.touchInValidSwipeRegions(event.getX(), event.getY()));
+        tapAndAssertTrue(100, landscapeRegionY,
+                event -> mTouchTransformer.touchInValidSwipeRegions(event.getX(), event.getY()));
+        tapAndAssertFalse(0, portraitRegionY,
+                event -> mTouchTransformer.touchInAssistantRegion(event));
+        tapAndAssertTrue(0, landscapeRegionY,
+                event -> mTouchTransformer.touchInAssistantRegion(event));
+
+        // Override region again
         mTouchTransformer.createOrAddTouchRegion(mInfo);
-        inOldRegion = generateMotionEvent(MotionEvent.ACTION_DOWN, 100, y);
-        mTouchTransformer.transform(inOldRegion);
-        assertTrue(mTouchTransformer.touchInValidSwipeRegions(inOldRegion.getX(), inOldRegion.getY()));
+        tapAndAssertTrue(100, portraitRegionY,
+                event -> mTouchTransformer.touchInValidSwipeRegions(event.getX(), event.getY()));
+        tapAndAssertFalse(100, landscapeRegionY,
+                event -> mTouchTransformer.touchInValidSwipeRegions(event.getX(), event.getY()));
+        tapAndAssertTrue(0, portraitRegionY,
+                event -> mTouchTransformer.touchInAssistantRegion(event));
+        tapAndAssertFalse(0, landscapeRegionY,
+                event -> mTouchTransformer.touchInAssistantRegion(event));
     }
 
     @Test
-    public void allowMultipeRegions_shouldOverrideFirstRegion() {
-        DefaultDisplay.Info info2 = createDisplayInfo(Surface.ROTATION_90);
-        mTouchTransformer.createOrAddTouchRegion(info2);
+    public void enableMultipleRegions_shouldOverrideFirstRegion() {
+        float portraitRegionY = generateTouchRegionHeight(Surface.ROTATION_0) + 1;
+        float landscapeRegionY = generateTouchRegionHeight(Surface.ROTATION_90) + 1;
+
+        mTouchTransformer.createOrAddTouchRegion(createDisplayInfo(Surface.ROTATION_90));
+        tapAndAssertFalse(100, portraitRegionY,
+                event -> mTouchTransformer.touchInValidSwipeRegions(event.getX(), event.getY()));
+        tapAndAssertTrue(100, landscapeRegionY,
+                event -> mTouchTransformer.touchInValidSwipeRegions(event.getX(), event.getY()));
+        tapAndAssertFalse(0, portraitRegionY,
+                event -> mTouchTransformer.touchInAssistantRegion(event));
+        tapAndAssertTrue(0, landscapeRegionY,
+                event -> mTouchTransformer.touchInAssistantRegion(event));
         // We have to add 0 rotation second so that gets set as the current rotation, otherwise
         // matrix transform will fail (tests only work in Portrait at the moment)
         mTouchTransformer.enableMultipleRegions(true, mInfo);
         mTouchTransformer.createOrAddTouchRegion(mInfo);
 
-        float y = generateTouchRegionHeight(Surface.ROTATION_0) + 1;
-        MotionEvent inNewRegion = generateMotionEvent(MotionEvent.ACTION_DOWN, 100, y);
-        mTouchTransformer.transform(inNewRegion);
-        assertTrue(mTouchTransformer.touchInValidSwipeRegions(inNewRegion.getX(), inNewRegion.getY()));
+        tapAndAssertTrue(100, portraitRegionY,
+                event -> mTouchTransformer.touchInValidSwipeRegions(event.getX(), event.getY()));
+        tapAndAssertFalse(100, landscapeRegionY,
+                event -> mTouchTransformer.touchInValidSwipeRegions(event.getX(), event.getY()));
+        tapAndAssertTrue(0, portraitRegionY,
+                event -> mTouchTransformer.touchInAssistantRegion(event));
+        tapAndAssertFalse(0, landscapeRegionY,
+                event -> mTouchTransformer.touchInAssistantRegion(event));
+    }
+
+    @Test
+    public void enableMultipleRegions_assistantTriggersInMostRecent() {
+        float portraitRegionY = generateTouchRegionHeight(Surface.ROTATION_0) + 1;
+        float landscapeRegionY = generateTouchRegionHeight(Surface.ROTATION_90) + 1;
+
+        mTouchTransformer.enableMultipleRegions(true, mInfo);
+        mTouchTransformer.createOrAddTouchRegion(createDisplayInfo(Surface.ROTATION_90));
+        mTouchTransformer.createOrAddTouchRegion(mInfo);
+        tapAndAssertTrue(0, portraitRegionY,
+                event -> mTouchTransformer.touchInAssistantRegion(event));
+        tapAndAssertFalse(0, landscapeRegionY,
+                event -> mTouchTransformer.touchInAssistantRegion(event));
+    }
+
+    @Test
+    public void enableMultipleRegions_assistantTriggersInCurrentOrientationAfterDisable() {
+        float portraitRegionY = generateTouchRegionHeight(Surface.ROTATION_0) + 1;
+        float landscapeRegionY = generateTouchRegionHeight(Surface.ROTATION_90) + 1;
+
+        mTouchTransformer.enableMultipleRegions(true, mInfo);
+        mTouchTransformer.createOrAddTouchRegion(mInfo);
+        mTouchTransformer.createOrAddTouchRegion(createDisplayInfo(Surface.ROTATION_90));
+        mTouchTransformer.enableMultipleRegions(false, mInfo);
+        tapAndAssertTrue(0, portraitRegionY,
+                event -> mTouchTransformer.touchInAssistantRegion(event));
+        tapAndAssertFalse(0, landscapeRegionY,
+                event -> mTouchTransformer.touchInAssistantRegion(event));
     }
 
     @Test
     public void applyTransform_taskNotFrozen_notInRegion() {
         mTouchTransformer.createOrAddTouchRegion(mInfo);
-        MotionEvent outOfRegion = generateMotionEvent(MotionEvent.ACTION_DOWN, 100, 100);
-        mTouchTransformer.transform(outOfRegion);
-        assertFalse(mTouchTransformer.touchInValidSwipeRegions(outOfRegion.getX(), outOfRegion.getY()));
+        tapAndAssertFalse(100, 100,
+                event -> mTouchTransformer.touchInValidSwipeRegions(event.getX(), event.getY()));
     }
 
     @Test
     public void applyTransform_taskFrozen_noRotate_outOfRegion() {
         mTouchTransformer.createOrAddTouchRegion(mInfo);
         mTouchTransformer.enableMultipleRegions(true, mInfo);
-        MotionEvent outOfRegion = generateMotionEvent(MotionEvent.ACTION_DOWN, 100, 100);
-        mTouchTransformer.transform(outOfRegion);
-        assertFalse(mTouchTransformer.touchInValidSwipeRegions(outOfRegion.getX(), outOfRegion.getY()));
+        tapAndAssertFalse(100, 100,
+                event -> mTouchTransformer.touchInValidSwipeRegions(event.getX(), event.getY()));
     }
 
     @Test
@@ -121,27 +183,24 @@ public class OrientationTouchTransformerTest {
         mTouchTransformer.createOrAddTouchRegion(mInfo);
         mTouchTransformer.enableMultipleRegions(true, mInfo);
         float y = generateTouchRegionHeight(Surface.ROTATION_0) + 1;
-        MotionEvent inRegion = generateMotionEvent(MotionEvent.ACTION_DOWN, 100, y);
-        mTouchTransformer.transform(inRegion);
-        assertTrue(mTouchTransformer.touchInValidSwipeRegions(inRegion.getX(), inRegion.getY()));
+        tapAndAssertTrue(100, y,
+                event -> mTouchTransformer.touchInValidSwipeRegions(event.getX(), event.getY()));
     }
 
     @Test
     public void applyTransform_taskNotFrozen_noRotate_inDefaultRegion() {
         mTouchTransformer.createOrAddTouchRegion(mInfo);
         float y = generateTouchRegionHeight(Surface.ROTATION_0) + 1;
-        MotionEvent inRegion = generateMotionEvent(MotionEvent.ACTION_DOWN, 100, y);
-        mTouchTransformer.transform(inRegion);
-        assertTrue(mTouchTransformer.touchInValidSwipeRegions(inRegion.getX(), inRegion.getY()));
+        tapAndAssertTrue(100, y,
+                event -> mTouchTransformer.touchInValidSwipeRegions(event.getX(), event.getY()));
     }
 
     @Test
     public void applyTransform_taskNotFrozen_90Rotate_inRegion() {
         mTouchTransformer.createOrAddTouchRegion(createDisplayInfo(Surface.ROTATION_90));
         float y = generateTouchRegionHeight(Surface.ROTATION_90) + 1;
-        MotionEvent inRegion = generateMotionEvent(MotionEvent.ACTION_DOWN, 100, y);
-        mTouchTransformer.transform(inRegion);
-        assertTrue(mTouchTransformer.touchInValidSwipeRegions(inRegion.getX(), inRegion.getY()));
+        tapAndAssertTrue(100, y,
+                event -> mTouchTransformer.touchInValidSwipeRegions(event.getX(), event.getY()));
     }
 
     @Test
@@ -160,15 +219,15 @@ public class OrientationTouchTransformerTest {
         MotionEvent inRegion2 = generateMotionEvent(MotionEvent.ACTION_DOWN, 10, 10);
         mTouchTransformer.transform(inRegion1_down);
         mTouchTransformer.transform(inRegion2);
-        assertTrue(mTouchTransformer.touchInValidSwipeRegions(inRegion1_down.getX(), inRegion1_down.getY()));
+        assertTrue(mTouchTransformer.touchInValidSwipeRegions(
+                inRegion1_down.getX(), inRegion1_down.getY()));
         // We only process one gesture region until we see a MotionEvent.ACTION_UP
         assertFalse(mTouchTransformer.touchInValidSwipeRegions(inRegion2.getX(), inRegion2.getY()));
 
         mTouchTransformer.transform(inRegion1_up);
 
         // Set the new region with this MotionEvent.ACTION_DOWN
-        inRegion2 = generateMotionEvent(MotionEvent.ACTION_DOWN, 10, 370);
-        mTouchTransformer.transform(inRegion2);
+        inRegion2 = generateAndTransformMotionEvent(MotionEvent.ACTION_DOWN, 10, 370);
         assertTrue(mTouchTransformer.touchInValidSwipeRegions(inRegion2.getX(), inRegion2.getY()));
     }
 
@@ -190,5 +249,27 @@ public class OrientationTouchTransformerTest {
 
     private MotionEvent generateMotionEvent(int motionAction, float x, float y) {
         return MotionEvent.obtain(0, 0, motionAction, x, y, 0);
+    }
+
+    private MotionEvent generateAndTransformMotionEvent(int motionAction, float x, float y) {
+        MotionEvent motionEvent = generateMotionEvent(motionAction, x, y);
+        mTouchTransformer.transform(motionEvent);
+        return motionEvent;
+    }
+
+    private void tapAndAssertTrue(float x, float y, MotionEventAssertion assertion) {
+        MotionEvent motionEvent = generateAndTransformMotionEvent(MotionEvent.ACTION_DOWN, x, y);
+        assertTrue(assertion.getCondition(motionEvent));
+        generateAndTransformMotionEvent(MotionEvent.ACTION_UP, x, y);
+    }
+
+    private void tapAndAssertFalse(float x, float y, MotionEventAssertion assertion) {
+        MotionEvent motionEvent = generateAndTransformMotionEvent(MotionEvent.ACTION_DOWN, x, y);
+        assertFalse(assertion.getCondition(motionEvent));
+        generateAndTransformMotionEvent(MotionEvent.ACTION_UP, x, y);
+    }
+
+    private interface MotionEventAssertion {
+        boolean getCondition(MotionEvent motionEvent);
     }
 }
