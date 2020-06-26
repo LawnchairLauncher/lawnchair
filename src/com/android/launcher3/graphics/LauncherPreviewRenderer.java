@@ -20,7 +20,6 @@ import static android.view.View.MeasureSpec.makeMeasureSpec;
 import static android.view.View.VISIBLE;
 
 import static com.android.launcher3.config.FeatureFlags.ENABLE_LAUNCHER_PREVIEW_IN_GRID_PICKER;
-import static com.android.launcher3.config.FeatureFlags.MULTI_DB_GRID_MIRATION_ALGO;
 import static com.android.launcher3.model.ModelUtils.filterCurrentWorkspaceItems;
 import static com.android.launcher3.model.ModelUtils.getMissingHotseatRanks;
 import static com.android.launcher3.model.ModelUtils.sortWorkspaceItemsSpatially;
@@ -34,8 +33,6 @@ import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.pm.ShortcutInfo;
 import android.content.res.TypedArray;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.AdaptiveIconDrawable;
@@ -63,20 +60,16 @@ import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.WorkspaceLayoutManager;
 import com.android.launcher3.allapps.SearchUiManager;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.icons.BaseIconFactory;
 import com.android.launcher3.icons.BitmapInfo;
-import com.android.launcher3.icons.BitmapRenderer;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.model.AllAppsList;
 import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.model.BgDataModel.Callbacks;
-import com.android.launcher3.model.GridSizeMigrationTask;
-import com.android.launcher3.model.GridSizeMigrationTaskV2;
 import com.android.launcher3.model.LoaderResults;
 import com.android.launcher3.model.LoaderTask;
 import com.android.launcher3.model.WidgetItem;
@@ -105,7 +98,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.FutureTask;
@@ -121,7 +113,7 @@ import java.util.concurrent.TimeoutException;
  *   4) Measure and draw the view on a canvas
  */
 @TargetApi(Build.VERSION_CODES.O)
-public class LauncherPreviewRenderer implements Callable<Bitmap> {
+public class LauncherPreviewRenderer {
 
     private static final String TAG = "LauncherPreviewRenderer";
 
@@ -213,15 +205,17 @@ public class LauncherPreviewRenderer implements Callable<Bitmap> {
     private final Context mContext;
     private final InvariantDeviceProfile mIdp;
     private final DeviceProfile mDp;
+    private final boolean mMigrated;
     private final Rect mInsets;
 
     private final WorkspaceItemInfo mWorkspaceItemInfo;
 
-    public LauncherPreviewRenderer(Context context, InvariantDeviceProfile idp) {
+    public LauncherPreviewRenderer(Context context, InvariantDeviceProfile idp, boolean migrated) {
         mUiHandler = new Handler(Looper.getMainLooper());
         mContext = context;
         mIdp = idp;
         mDp = idp.portraitProfile.copy(context);
+        mMigrated = migrated;
 
         // TODO: get correct insets once display cutout API is available.
         mInsets = new Rect();
@@ -241,28 +235,6 @@ public class LauncherPreviewRenderer implements Callable<Bitmap> {
         mWorkspaceItemInfo.intent = new Intent();
         mWorkspaceItemInfo.contentDescription = mWorkspaceItemInfo.title =
                 context.getString(R.string.label_application);
-    }
-
-    @Override
-    public Bitmap call() {
-        return BitmapRenderer.createHardwareBitmap(mDp.widthPx, mDp.heightPx, c -> {
-
-            if (Looper.myLooper() == Looper.getMainLooper()) {
-                new MainThreadRenderer(mContext).renderScreenShot(c);
-            } else {
-                CountDownLatch latch = new CountDownLatch(1);
-                Utilities.postAsyncCallback(mUiHandler, () -> {
-                    new MainThreadRenderer(mContext).renderScreenShot(c);
-                    latch.countDown();
-                });
-
-                try {
-                    latch.await();
-                } catch (Exception e) {
-                    Log.e(TAG, "Error drawing on main thread", e);
-                }
-            }
-        });
     }
 
     /** Populate preview and render it. */
@@ -407,20 +379,9 @@ public class LauncherPreviewRenderer implements Callable<Bitmap> {
 
         private void populate() {
             if (ENABLE_LAUNCHER_PREVIEW_IN_GRID_PICKER.get()) {
-                boolean needsToMigrate =
-                        MULTI_DB_GRID_MIRATION_ALGO.get()
-                                ? GridSizeMigrationTaskV2.needsToMigrate(mContext, mIdp)
-                                : GridSizeMigrationTask.needsToMigrate(mContext, mIdp);
-                boolean success = false;
-                if (needsToMigrate) {
-                    success = MULTI_DB_GRID_MIRATION_ALGO.get()
-                            ? GridSizeMigrationTaskV2.migrateGridIfNeeded(mContext, mIdp)
-                            : GridSizeMigrationTask.migrateGridIfNeeded(mContext, mIdp);
-                }
-
                 WorkspaceFetcher fetcher;
                 PreviewContext previewContext = null;
-                if (needsToMigrate && success) {
+                if (mMigrated) {
                     previewContext = new PreviewContext(mContext, mIdp);
                     LauncherAppState appForPreview = new LauncherAppState(
                             previewContext, null /* iconCacheFileName */);
@@ -534,12 +495,6 @@ public class LauncherPreviewRenderer implements Callable<Bitmap> {
             measureView(mRootView, mDp.widthPx, mDp.heightPx);
             // Additional measure for views which use auto text size API
             measureView(mRootView, mDp.widthPx, mDp.heightPx);
-        }
-
-        private void renderScreenShot(Canvas canvas) {
-            populate();
-            mRootView.draw(canvas);
-            dispatchVisibilityAggregated(mRootView, false);
         }
     }
 
