@@ -182,7 +182,7 @@ public class CellLayout extends ViewGroup {
     private static final Paint sPaint = new Paint();
 
     // Related to accessible drag and drop
-    private boolean mUseTouchHelper = false;
+    DragAndDropAccessibilityDelegate mTouchHelper;
 
     public CellLayout(Context context) {
         this(context, null);
@@ -290,17 +290,15 @@ public class CellLayout extends ViewGroup {
         addView(mShortcutsAndWidgets);
     }
 
-
     /**
      * Sets or clears a delegate used for accessible drag and drop
      */
     public void setDragAndDropAccessibilityDelegate(DragAndDropAccessibilityDelegate delegate) {
         setOnClickListener(delegate);
-        setOnHoverListener(delegate);
         ViewCompat.setAccessibilityDelegate(this, delegate);
 
-        mUseTouchHelper = delegate != null;
-        int accessibilityFlag = mUseTouchHelper
+        mTouchHelper = delegate;
+        int accessibilityFlag = mTouchHelper != null
                 ? IMPORTANT_FOR_ACCESSIBILITY_YES : IMPORTANT_FOR_ACCESSIBILITY_NO;
         setImportantForAccessibility(accessibilityFlag);
         getShortcutsAndWidgets().setImportantForAccessibility(accessibilityFlag);
@@ -313,9 +311,18 @@ public class CellLayout extends ViewGroup {
     }
 
     @Override
+    public boolean dispatchHoverEvent(MotionEvent event) {
+        // Always attempt to dispatch hover events to accessibility first.
+        if (mTouchHelper != null && mTouchHelper.dispatchHoverEvent(event)) {
+            return true;
+        }
+        return super.dispatchHoverEvent(event);
+    }
+
+    @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        if (mUseTouchHelper ||
-                (mInterceptTouchListener != null && mInterceptTouchListener.onTouch(this, ev))) {
+        if (mTouchHelper != null
+                || (mInterceptTouchListener != null && mInterceptTouchListener.onTouch(this, ev))) {
             return true;
         }
         return false;
