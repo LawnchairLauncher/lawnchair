@@ -16,7 +16,9 @@
 
 package com.android.launcher3.graphics;
 
+import static com.android.launcher3.config.FeatureFlags.MULTI_DB_GRID_MIRATION_ALGO;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
 import android.content.Context;
 import android.hardware.display.DisplayManager;
@@ -32,6 +34,8 @@ import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 
 import com.android.launcher3.InvariantDeviceProfile;
+import com.android.launcher3.model.GridSizeMigrationTask;
+import com.android.launcher3.model.GridSizeMigrationTaskV2;
 
 import java.util.concurrent.TimeUnit;
 
@@ -93,32 +97,35 @@ public class PreviewSurfaceRenderer implements IBinder.DeathRecipient {
             return null;
         }
 
-        MAIN_EXECUTOR.execute(() -> {
-            // If mSurfaceControlViewHost is null due to any reason (e.g. binder died,
-            // happening when user leaves the preview screen before preview rendering finishes),
-            // we should return here.
-            SurfaceControlViewHost host = mSurfaceControlViewHost;
-            if (host == null) {
-                return;
-            }
+        MODEL_EXECUTOR.post(() -> {
+            final boolean success = doGridMigrationIfNecessary();
 
-            View view = new LauncherPreviewRenderer(mContext, mIdp).getRenderedView();
-            // This aspect scales the view to fit in the surface and centers it
-            final float scale = Math.min(mWidth / (float) view.getMeasuredWidth(),
-                    mHeight / (float) view.getMeasuredHeight());
-            view.setScaleX(scale);
-            view.setScaleY(scale);
-            view.setPivotX(0);
-            view.setPivotY(0);
-            view.setTranslationX((mWidth - scale * view.getWidth()) / 2);
-            view.setTranslationY((mHeight - scale * view.getHeight()) / 2);
-            view.setAlpha(0);
-            view.animate().alpha(1)
-                    .setInterpolator(new AccelerateDecelerateInterpolator())
-                    .setDuration(FADE_IN_ANIMATION_DURATION)
-                    .start();
-            host.setView(view, view.getMeasuredWidth(),
-                    view.getMeasuredHeight());
+            MAIN_EXECUTOR.post(() -> {
+                // If mSurfaceControlViewHost is null due to any reason (e.g. binder died,
+                // happening when user leaves the preview screen before preview rendering finishes),
+                // we should return here.
+                SurfaceControlViewHost host = mSurfaceControlViewHost;
+                if (host == null) {
+                    return;
+                }
+
+                View view = new LauncherPreviewRenderer(mContext, mIdp, success).getRenderedView();
+                // This aspect scales the view to fit in the surface and centers it
+                final float scale = Math.min(mWidth / (float) view.getMeasuredWidth(),
+                        mHeight / (float) view.getMeasuredHeight());
+                view.setScaleX(scale);
+                view.setScaleY(scale);
+                view.setPivotX(0);
+                view.setPivotY(0);
+                view.setTranslationX((mWidth - scale * view.getWidth()) / 2);
+                view.setTranslationY((mHeight - scale * view.getHeight()) / 2);
+                view.setAlpha(0);
+                view.animate().alpha(1)
+                        .setInterpolator(new AccelerateDecelerateInterpolator())
+                        .setDuration(FADE_IN_ANIMATION_DURATION)
+                        .start();
+                host.setView(view, view.getMeasuredWidth(), view.getMeasuredHeight());
+            });
         });
 
         Bundle result = new Bundle();
@@ -144,5 +151,18 @@ public class PreviewSurfaceRenderer implements IBinder.DeathRecipient {
             });
         }
         mHostToken.unlinkToDeath(this, 0);
+    }
+
+    private boolean doGridMigrationIfNecessary() {
+        boolean needsToMigrate =
+                MULTI_DB_GRID_MIRATION_ALGO.get()
+                        ? GridSizeMigrationTaskV2.needsToMigrate(mContext, mIdp)
+                        : GridSizeMigrationTask.needsToMigrate(mContext, mIdp);
+        if (!needsToMigrate) {
+            return false;
+        }
+        return MULTI_DB_GRID_MIRATION_ALGO.get()
+                ? GridSizeMigrationTaskV2.migrateGridIfNeeded(mContext, mIdp)
+                : GridSizeMigrationTask.migrateGridIfNeeded(mContext, mIdp);
     }
 }
