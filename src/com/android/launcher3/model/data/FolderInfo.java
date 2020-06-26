@@ -226,7 +226,7 @@ public class FolderInfo extends ItemInfo {
         }
 
         // Updating title to same value does not change any states.
-        if (title != null && title == this.title) {
+        if (title != null && title.equals(this.title)) {
             return;
         }
 
@@ -236,7 +236,15 @@ public class FolderInfo extends ItemInfo {
                         : title.length() == 0 ? LabelState.EMPTY :
                                 getAcceptedSuggestionIndex().isPresent() ? LabelState.SUGGESTED
                                         : LabelState.MANUAL;
-        setOption(FLAG_MANUAL_FOLDER_NAME, newLabelState.equals(LabelState.MANUAL), modelWriter);
+
+        if (newLabelState.equals(LabelState.MANUAL)) {
+            options |= FLAG_MANUAL_FOLDER_NAME;
+        } else {
+            options &= ~FLAG_MANUAL_FOLDER_NAME;
+        }
+        if (modelWriter != null) {
+            modelWriter.updateItemInDatabase(this);
+        }
     }
 
     /**
