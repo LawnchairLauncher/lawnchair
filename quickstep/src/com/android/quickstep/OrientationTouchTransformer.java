@@ -192,15 +192,21 @@ class OrientationTouchTransformer {
 
         mCurrentDisplayRotation = region.rotation;
         OrientationRectF regionToKeep = mSwipeTouchRegions.get(mCurrentDisplayRotation);
+        if (regionToKeep == null) {
+            regionToKeep = createRegionForDisplay(region);
+        }
         mSwipeTouchRegions.clear();
-        mSwipeTouchRegions.put(mCurrentDisplayRotation,
-                regionToKeep != null ? regionToKeep : createRegionForDisplay(region));
+        mSwipeTouchRegions.put(mCurrentDisplayRotation, regionToKeep);
+        updateAssistantRegions(regionToKeep);
     }
 
     private void resetSwipeRegions() {
         OrientationRectF regionToKeep = mSwipeTouchRegions.get(mCurrentDisplayRotation);
         mSwipeTouchRegions.clear();
-        mSwipeTouchRegions.put(mCurrentDisplayRotation, regionToKeep);
+        if (regionToKeep != null) {
+            mSwipeTouchRegions.put(mCurrentDisplayRotation, regionToKeep);
+            updateAssistantRegions(regionToKeep);
+        }
     }
 
     private OrientationRectF createRegionForDisplay(DefaultDisplay.Info display) {
@@ -215,20 +221,7 @@ class OrientationTouchTransformer {
         if (mMode == SysUINavigationMode.Mode.NO_BUTTON) {
             int touchHeight = getNavbarSize(ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE);
             orientationRectF.top = orientationRectF.bottom - touchHeight;
-
-            final int assistantWidth = mResources
-                    .getDimensionPixelSize(R.dimen.gestures_assistant_width);
-            final float assistantHeight = Math.max(touchHeight,
-                    mContractInfo.getWindowCornerRadius());
-            mAssistantLeftRegion.bottom = mAssistantRightRegion.bottom = orientationRectF.bottom;
-            mAssistantLeftRegion.top = mAssistantRightRegion.top =
-                    orientationRectF.bottom - assistantHeight;
-
-            mAssistantLeftRegion.left = 0;
-            mAssistantLeftRegion.right = assistantWidth;
-
-            mAssistantRightRegion.right = orientationRectF.right;
-            mAssistantRightRegion.left = orientationRectF.right - assistantWidth;
+            updateAssistantRegions(orientationRectF);
         } else {
             mAssistantLeftRegion.setEmpty();
             mAssistantRightRegion.setEmpty();
@@ -248,6 +241,21 @@ class OrientationTouchTransformer {
         }
 
         return orientationRectF;
+    }
+
+    private void updateAssistantRegions(OrientationRectF orientationRectF) {
+        int navbarHeight = getNavbarSize(ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE);
+        int assistantWidth = mResources.getDimensionPixelSize(R.dimen.gestures_assistant_width);
+        float assistantHeight = Math.max(navbarHeight, mContractInfo.getWindowCornerRadius());
+        mAssistantLeftRegion.bottom = mAssistantRightRegion.bottom = orientationRectF.bottom;
+        mAssistantLeftRegion.top = mAssistantRightRegion.top =
+                orientationRectF.bottom - assistantHeight;
+
+        mAssistantLeftRegion.left = 0;
+        mAssistantLeftRegion.right = assistantWidth;
+
+        mAssistantRightRegion.right = orientationRectF.right;
+        mAssistantRightRegion.left = orientationRectF.right - assistantWidth;
     }
 
     boolean touchInAssistantRegion(MotionEvent ev) {
