@@ -101,7 +101,8 @@ public class QuickstepOnboardingPrefs extends OnboardingPrefs<BaseQuickstepLaunc
             });
         }
 
-        if (!hasReachedMaxCount(HOTSEAT_DISCOVERY_TIP_COUNT)) {
+        if (FeatureFlags.ENABLE_HYBRID_HOTSEAT.get() && !hasReachedMaxCount(
+                HOTSEAT_DISCOVERY_TIP_COUNT)) {
             stateManager.addStateListener(new StateListener<LauncherState>() {
                 boolean mFromAllApps = false;
 
