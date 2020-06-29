@@ -56,6 +56,7 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
+import android.app.ActivityManager.RunningTaskInfo;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -135,6 +136,7 @@ import com.android.quickstep.util.TransformParams;
 import com.android.systemui.plugins.ResourceProvider;
 import com.android.systemui.shared.recents.IPinnedStackAnimationListener;
 import com.android.systemui.shared.recents.model.Task;
+import com.android.systemui.shared.recents.model.Task.TaskKey;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.LauncherEventUtil;
@@ -147,7 +149,7 @@ import java.util.function.Consumer;
 /**
  * A list of recent tasks.
  */
-@TargetApi(Build.VERSION_CODES.P)
+@TargetApi(Build.VERSION_CODES.R)
 public abstract class RecentsView<T extends StatefulActivity> extends PagedView implements
         Insettable, TaskThumbnailCache.HighResLoadingState.HighResLoadingStateChangedCallback,
         InvariantDeviceProfile.OnIDPChangeListener, TaskVisualsChangeListener,
@@ -1039,10 +1041,10 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     /**
      * Called when a gesture from an app is starting.
      */
-    public void onGestureAnimationStart(int runningTaskId) {
+    public void onGestureAnimationStart(RunningTaskInfo runningTaskInfo) {
         // This needs to be called before the other states are set since it can create the task view
         mOrientationState.setGestureActive(true);
-        showCurrentTask(runningTaskId);
+        showCurrentTask(runningTaskInfo);
         setEnableFreeScroll(false);
         setEnableDrawingLiveTile(false);
         setRunningTaskHidden(true);
@@ -1120,8 +1122,8 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     /**
      * Returns true if we should add a dummy taskView for the running task id
      */
-    protected boolean shouldAddDummyTaskView(int runningTaskId) {
-        return getTaskView(runningTaskId) == null;
+    protected boolean shouldAddDummyTaskView(RunningTaskInfo runningTaskInfo) {
+        return runningTaskInfo != null && getTaskView(runningTaskInfo.taskId) == null;
     }
 
     /**
@@ -1130,8 +1132,8 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
      * All subsequent calls to reload will keep the task as the first item until {@link #reset()}
      * is called.  Also scrolls the view to this task.
      */
-    public void showCurrentTask(int runningTaskId) {
-        if (shouldAddDummyTaskView(runningTaskId)) {
+    public void showCurrentTask(RunningTaskInfo runningTaskInfo) {
+        if (shouldAddDummyTaskView(runningTaskInfo)) {
             boolean wasEmpty = getChildCount() == 0;
             // Add an empty view for now until the task plan is loaded and applied
             final TaskView taskView = mTaskViewPool.getView();
@@ -1141,10 +1143,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
             }
             // The temporary running task is only used for the duration between the start of the
             // gesture and the task list is loaded and applied
-            mTmpRunningTask = new Task(new Task.TaskKey(runningTaskId, 0, new Intent(),
-                    new ComponentName(getContext(), getClass()), 0, 0), null, null, "", "", 0, 0,
-                    false, true, false, false, new ActivityManager.TaskDescription(), 0,
-                    new ComponentName("", ""), false);
+            mTmpRunningTask = Task.from(new TaskKey(runningTaskInfo), runningTaskInfo, false);
             taskView.bind(mTmpRunningTask, mOrientationState);
 
             // Measure and layout immediately so that the scroll values is updated instantly
@@ -1155,7 +1154,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         }
 
         boolean runningTaskTileHidden = mRunningTaskTileHidden;
-        setCurrentTask(runningTaskId);
+        setCurrentTask(runningTaskInfo == null ? -1 : runningTaskInfo.taskId);
         setCurrentPage(getRunningTaskIndex());
         setRunningTaskViewShowScreenshot(false);
         setRunningTaskHidden(runningTaskTileHidden);
@@ -1673,7 +1672,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
                 : View.LAYOUT_DIRECTION_RTL);
         mClearAllButton.setRotation(mOrientationHandler.getDegreesRotated());
         mActivity.getDragLayer().recreateControllers();
-        boolean isInLandscape = mOrientationState.getTouchRotation() != 0
+        boolean isInLandscape = mOrientationState.getTouchRotation() != ROTATION_0
                 || mOrientationState.getRecentsActivityRotation() != ROTATION_0;
         mActionsView.updateHiddenFlags(HIDDEN_NON_ZERO_ROTATION,
                 !mOrientationState.canRecentsActivityRotate() && isInLandscape);
