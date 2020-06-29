@@ -52,7 +52,6 @@ import com.android.launcher3.util.MainThreadInitializedObject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.stream.IntStream;
 
@@ -315,16 +314,22 @@ public class PredictionUiStateManager implements StateListener<LauncherState>,
      * {@link LauncherSettings.Favorites#ITEM_TYPE_DEEP_SHORTCUT}
      */
     public OptionalInt getAllAppsRank(@Nullable ItemInfo itemInfo) {
-        Optional<ComponentKey> componentKey = Optional.ofNullable(itemInfo)
-                .filter(item -> item.itemType == ITEM_TYPE_APPLICATION
-                        || item.itemType == ITEM_TYPE_SHORTCUT
-                        || item.itemType == ITEM_TYPE_DEEP_SHORTCUT)
-                .map(ItemInfo::getTargetComponent)
-                .map(componentName -> new ComponentKey(componentName, itemInfo.user));
+        if (itemInfo == null || itemInfo.getTargetComponent() == null || itemInfo.user == null) {
+            return OptionalInt.empty();
+        }
 
-        return componentKey.map(key -> IntStream.range(0, getCurrentState().apps.size())
-                .filter(index -> key.equals(getCurrentState().apps.get(index).getComponentKey()))
-                .findFirst()).orElseGet(OptionalInt::empty);
+        if (itemInfo.itemType == ITEM_TYPE_APPLICATION
+                || itemInfo.itemType == ITEM_TYPE_SHORTCUT
+                || itemInfo.itemType == ITEM_TYPE_DEEP_SHORTCUT) {
+            ComponentKey key = new ComponentKey(itemInfo.getTargetComponent(),
+                    itemInfo.user);
+            final List<ComponentKeyMapper> apps = getCurrentState().apps;
+            return IntStream.range(0, apps.size())
+                    .filter(index -> key.equals(apps.get(index).getComponentKey()))
+                    .findFirst();
+        }
+
+        return OptionalInt.empty();
     }
 
     /**
