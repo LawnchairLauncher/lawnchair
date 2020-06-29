@@ -55,11 +55,8 @@ import android.animation.LayoutTransition.TransitionListener;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
-import android.app.ActivityManager;
 import android.app.ActivityManager.RunningTaskInfo;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.graphics.Point;
@@ -1644,6 +1641,9 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         super.setVisibility(visibility);
         if (mActionsView != null) {
             mActionsView.updateHiddenFlags(HIDDEN_NO_RECENTS, visibility != VISIBLE);
+            if (visibility != VISIBLE) {
+                mActionsView.updateDisabledFlags(OverviewActionsView.DISABLED_SCROLLING, false);
+            }
         }
     }
 
