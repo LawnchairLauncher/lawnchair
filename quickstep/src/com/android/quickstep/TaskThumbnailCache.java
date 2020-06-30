@@ -166,11 +166,13 @@ public class TaskThumbnailCache {
             public void run() {
                 ThumbnailData thumbnail = ActivityManagerWrapper.getInstance().getTaskThumbnail(
                         key.id, lowResolution);
-                if (isCanceled()) {
-                    // We don't call back to the provided callback in this case
-                    return;
-                }
+
                 MAIN_EXECUTOR.execute(() -> {
+                    if (isCanceled()) {
+                        // We don't call back to the provided callback in this case
+                        return;
+                    }
+
                     mCache.put(key, thumbnail);
                     callback.accept(thumbnail);
                     onEnd();
