@@ -188,8 +188,9 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
     /**
      * Sets if the swipe up gesture is currently running or not
      */
-    public void setGestureActive(boolean isGestureActive) {
+    public boolean setGestureActive(boolean isGestureActive) {
         setFlag(FLAG_SWIPE_UP_NOT_RUNNING, !isGestureActive);
+        return update(mTouchRotation, mDisplayRotation);
     }
 
     /**
@@ -202,27 +203,19 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
      */
     public boolean update(
             @SurfaceRotation int touchRotation, @SurfaceRotation int displayRotation) {
-        int recentsActivityRotation = inferRecentsActivityRotation(displayRotation);
-        if (mDisplayRotation == displayRotation
-                && mTouchRotation == touchRotation
-                && mRecentsActivityRotation == recentsActivityRotation) {
-            return false;
-        }
-
-        mRecentsActivityRotation = recentsActivityRotation;
+        mRecentsActivityRotation = inferRecentsActivityRotation(displayRotation);
         mDisplayRotation = displayRotation;
         mTouchRotation = touchRotation;
         mPreviousRotation = touchRotation;
 
-        if (mRecentsActivityRotation == mTouchRotation || canRecentsActivityRotate()) {
+        PagedOrientationHandler oldHandler = mOrientationHandler;
+        if (mRecentsActivityRotation == mTouchRotation
+                || (canRecentsActivityRotate() && (mFlags & FLAG_SWIPE_UP_NOT_RUNNING) != 0)) {
             mOrientationHandler = PagedOrientationHandler.PORTRAIT;
             if (DEBUG) {
                 Log.d(TAG, "current RecentsOrientedState: " + this);
             }
-            return true;
-        }
-
-        if (mTouchRotation == ROTATION_90) {
+        } else if (mTouchRotation == ROTATION_90) {
             mOrientationHandler = PagedOrientationHandler.LANDSCAPE;
         } else if (mTouchRotation == ROTATION_270) {
             mOrientationHandler = PagedOrientationHandler.SEASCAPE;
@@ -232,7 +225,7 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
         if (DEBUG) {
             Log.d(TAG, "current RecentsOrientedState: " + this);
         }
-        return true;
+        return oldHandler != mOrientationHandler;
     }
 
     @SurfaceRotation
