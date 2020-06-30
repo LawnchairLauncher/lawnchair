@@ -655,15 +655,11 @@ public class HotseatPredictionController implements DragController.DragListener,
                             + ",launchLocation:" + itemInfo.container);
         }
 
-        if (itemInfo.getTargetComponent() == null || itemInfo.user == null) {
-            return;
-        }
-
-        final ComponentKey key = new ComponentKey(itemInfo.getTargetComponent(), itemInfo.user);
+        final ComponentKey k = new ComponentKey(itemInfo.getTargetComponent(), itemInfo.user);
 
         final List<ComponentKeyMapper> predictedApps = new ArrayList<>(mComponentKeyMappers);
         OptionalInt rank = IntStream.range(0, predictedApps.size())
-                .filter(index -> key.equals(predictedApps.get(index).getComponentKey()))
+                .filter((i) -> k.equals(predictedApps.get(i).getComponentKey()))
                 .findFirst();
         if (!rank.isPresent()) {
             return;
