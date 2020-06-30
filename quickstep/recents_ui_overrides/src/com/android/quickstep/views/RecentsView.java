@@ -1005,7 +1005,9 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         mDwbToastShown = false;
         mActivity.getSystemUiController().updateUiState(UI_STATE_OVERVIEW, 0);
         LayoutUtils.setViewEnabled(mActionsView, true);
-        mOrientationState.setGestureActive(false);
+        if (mOrientationState.setGestureActive(false)) {
+            updateOrientationHandler();
+        }
     }
 
     public @Nullable TaskView getRunningTaskView() {
@@ -1043,7 +1045,10 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
      */
     public void onGestureAnimationStart(RunningTaskInfo runningTaskInfo) {
         // This needs to be called before the other states are set since it can create the task view
-        mOrientationState.setGestureActive(true);
+        if (mOrientationState.setGestureActive(true)) {
+            updateOrientationHandler();
+        }
+
         showCurrentTask(runningTaskInfo);
         setEnableFreeScroll(false);
         setEnableDrawingLiveTile(false);
@@ -1106,7 +1111,9 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
      * Called when a gesture from an app has finished.
      */
     public void onGestureAnimationEnd() {
-        mOrientationState.setGestureActive(false);
+        if (mOrientationState.setGestureActive(false)) {
+            updateOrientationHandler();
+        }
 
         setOnScrollChangeListener(null);
         setEnableFreeScroll(true);
