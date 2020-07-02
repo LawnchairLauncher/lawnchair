@@ -16,6 +16,7 @@
 package com.android.quickstep.util;
 
 import android.util.FloatProperty;
+import android.view.SurfaceControl;
 
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.Interpolators;
@@ -58,6 +59,7 @@ public class TransformParams {
     private float mCornerRadius;
     private RemoteAnimationTargets mTargetSet;
     private SurfaceTransactionApplier mSyncTransactionApplier;
+    private SurfaceControl mRecentsSurface;
 
     private BuilderProxy mHomeBuilderProxy = BuilderProxy.ALWAYS_VISIBLE;
     private BuilderProxy mBaseBuilderProxy = BuilderProxy.ALWAYS_VISIBLE;
@@ -138,6 +140,8 @@ public class TransformParams {
     public SurfaceParams[] createSurfaceParams(BuilderProxy proxy) {
         RemoteAnimationTargets targets = mTargetSet;
         SurfaceParams[] surfaceParams = new SurfaceParams[targets.unfilteredApps.length];
+        mRecentsSurface = getRecentsSurface(targets);
+
         for (int i = 0; i < targets.unfilteredApps.length; i++) {
             RemoteAnimationTargetCompat app = targets.unfilteredApps[i];
             SurfaceParams.Builder builder = new SurfaceParams.Builder(app.leash);
@@ -165,6 +169,20 @@ public class TransformParams {
         return surfaceParams;
     }
 
+    private static SurfaceControl getRecentsSurface(RemoteAnimationTargets targets) {
+        for (int i = 0; i < targets.unfilteredApps.length; i++) {
+            RemoteAnimationTargetCompat app = targets.unfilteredApps[i];
+            if (app.mode == targets.targetMode) {
+                if (app.activityType == RemoteAnimationTargetCompat.ACTIVITY_TYPE_RECENTS) {
+                    return app.leash.getSurfaceControl();
+                }
+            } else {
+                return app.leash.getSurfaceControl();
+            }
+        }
+        return null;
+    }
+
     // Pubic getters so outside packages can read the values.
 
     public float getProgress() {
@@ -177,6 +195,10 @@ public class TransformParams {
 
     public float getCornerRadius() {
         return mCornerRadius;
+    }
+
+    public SurfaceControl getRecentsSurface() {
+        return mRecentsSurface;
     }
 
     public RemoteAnimationTargets getTargetSet() {
