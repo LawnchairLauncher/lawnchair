@@ -113,8 +113,6 @@ public class HotseatPredictionController implements DragController.DragListener,
     private AllAppsStore mAllAppsStore;
     private AnimatorSet mIconRemoveAnimators;
     private boolean mUIUpdatePaused = false;
-    private boolean mRequiresCacheUpdate = true;
-    private boolean mIsCacheEmpty;
     private boolean mIsDestroyed = false;
 
 
@@ -350,7 +348,6 @@ public class HotseatPredictionController implements DragController.DragListener,
             fillGapsWithPrediction();
             return;
         }
-        mIsCacheEmpty = apps.isEmpty();
         int count = Math.min(ranks.size(), apps.size());
         List<WorkspaceItemInfo> items = new ArrayList<>(count);
         for (int i = 0; i < count; i++) {
@@ -393,14 +390,7 @@ public class HotseatPredictionController implements DragController.DragListener,
         }
         updateDependencies();
         fillGapsWithPrediction();
-        cachePredictionComponentKeysIfNecessary(componentKeys);
-    }
-
-    private void cachePredictionComponentKeysIfNecessary(ArrayList<ComponentKey> componentKeys) {
-        if (!mRequiresCacheUpdate && componentKeys.isEmpty() == mIsCacheEmpty) return;
         mPredictionModel.cachePredictionComponentKeys(componentKeys);
-        mIsCacheEmpty = componentKeys.isEmpty();
-        mRequiresCacheUpdate = false;
     }
 
     private void updateDependencies() {
@@ -429,7 +419,6 @@ public class HotseatPredictionController implements DragController.DragListener,
             notifyItemAction(mPredictionModel.wrapAppTargetWithLocation(appTarget,
                     AppTargetEvent.ACTION_PIN, workspaceItemInfo));
         }
-        mRequiresCacheUpdate = true;
     }
 
     private List<WorkspaceItemInfo> mapToWorkspaceItemInfo(
@@ -583,7 +572,6 @@ public class HotseatPredictionController implements DragController.DragListener,
         }
         mDragObject = null;
         fillGapsWithPrediction(true, this::removeOutlineDrawings);
-        mRequiresCacheUpdate = true;
     }
 
 
