@@ -97,6 +97,9 @@ public class AccessibilityManagerCompat {
                 AccessibilityEvent.TYPE_ANNOUNCEMENT);
         e.setClassName(eventTag);
         e.setParcelableData(data);
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.NO_SCROLL_END_WIDGETS, "sendEventToTest " + e);
+        }
         accessibilityManager.sendAccessibilityEvent(e);
     }
 
