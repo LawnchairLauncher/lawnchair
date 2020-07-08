@@ -69,7 +69,6 @@ public class PredictionAppTracker extends AppLaunchTracker
 
     // Accessed only on worker thread
     private AppPredictor mHomeAppPredictor;
-    private AppPredictor mRecentsOverviewPredictor;
 
     public PredictionAppTracker(Context context) {
         mContext = context;
@@ -96,10 +95,6 @@ public class PredictionAppTracker extends AppLaunchTracker
         if (mHomeAppPredictor != null) {
             mHomeAppPredictor.destroy();
             mHomeAppPredictor = null;
-        }
-        if (mRecentsOverviewPredictor != null) {
-            mRecentsOverviewPredictor.destroy();
-            mRecentsOverviewPredictor = null;
         }
     }
 
@@ -142,7 +137,6 @@ public class PredictionAppTracker extends AppLaunchTracker
                 // Initialize the clients
                 int count = InvariantDeviceProfile.INSTANCE.get(mContext).numAllAppsColumns;
                 mHomeAppPredictor = createPredictor(Client.HOME, count);
-                mRecentsOverviewPredictor = createPredictor(Client.OVERVIEW, count);
                 return true;
             }
             case MSG_DESTROY: {
@@ -157,12 +151,7 @@ public class PredictionAppTracker extends AppLaunchTracker
             }
             case MSG_PREDICT: {
                 if (mHomeAppPredictor != null) {
-                    String client = (String) msg.obj;
-                    if (Client.HOME.id.equals(client)) {
-                        mHomeAppPredictor.requestPredictionUpdate();
-                    } else {
-                        mRecentsOverviewPredictor.requestPredictionUpdate();
-                    }
+                    mHomeAppPredictor.requestPredictionUpdate();
                 }
                 return true;
             }
