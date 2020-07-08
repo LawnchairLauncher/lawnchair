@@ -130,17 +130,13 @@ public class OneHandedModeInputConsumer extends DelegateInputConsumer {
     }
 
     private void onStartGestureDetected() {
-        if (mDeviceState.isOneHandedModeActive()) {
-            return;
-        }
-
         if (mDeviceState.isOneHandedModeEnabled()) {
-            SystemUiProxy.INSTANCE.get(mContext).startOneHandedMode();
-            return;
+            if (!mDeviceState.isOneHandedModeActive()) {
+                SystemUiProxy.INSTANCE.get(mContext).startOneHandedMode();
+            }
+        } else if (mDeviceState.isSwipeToNotificationEnabled()) {
+            SystemUiProxy.INSTANCE.get(mContext).expandNotificationPanel();
         }
-
-        // Hook one-handed gesture to expand notification panel by default
-        SystemUiProxy.INSTANCE.get(mContext).expandNotificationPanel();
     }
 
     private void onStopGestureDetected() {

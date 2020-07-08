@@ -24,6 +24,7 @@
         launcher:numFolderRows="4"
         launcher:numFolderColumns="4"
         launcher:numHotseatIcons="4"
+        launcher:dbFile="launcher.db"
         launcher:defaultLayoutId="@xml/default_workspace_4x4" >
 
         <display-option
