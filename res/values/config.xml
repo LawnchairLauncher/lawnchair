@@ -118,4 +118,7 @@
 
 <!-- Recents -->
     <item type="id" name="overview_panel"/>
+
+    <string-array name="live_wallpapers_remove_sysui_scrims">
+    </string-array>
 </resources>
