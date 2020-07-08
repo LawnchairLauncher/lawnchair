@@ -15,7 +15,6 @@
  */
 package com.android.launcher3.uioverrides.touchcontrollers;
 
-import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherState.HOTSEAT_ICONS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
@@ -47,6 +46,7 @@ import static com.android.quickstep.util.ShelfPeekAnim.ShelfAnimState.HIDE;
 import static com.android.quickstep.util.ShelfPeekAnim.ShelfAnimState.PEEK;
 import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_OFFSET;
 import static com.android.quickstep.views.RecentsView.FULLSCREEN_PROGRESS;
+import static com.android.quickstep.views.RecentsView.RECENTS_SCALE_PROPERTY;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_OVERVIEW_DISABLED;
 
 import android.animation.Animator;
@@ -244,7 +244,7 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         final LauncherState toState = OVERVIEW;
 
         // Set RecentView's initial properties.
-        SCALE_PROPERTY.set(mRecentsView, fromState.getOverviewScaleAndOffset(mLauncher)[0]);
+        RECENTS_SCALE_PROPERTY.set(mRecentsView, fromState.getOverviewScaleAndOffset(mLauncher)[0]);
         ADJACENT_PAGE_OFFSET.set(mRecentsView, 1f);
         mRecentsView.setContentAlpha(1);
         mRecentsView.setFullscreenProgress(fromState.getOverviewFullscreenProgress());
@@ -266,7 +266,8 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         //   - RecentsView scale
         //   - RecentsView fullscreenProgress
         PendingAnimation yAnim = new PendingAnimation((long) (mYRange * 2));
-        yAnim.setFloat(mRecentsView, SCALE_PROPERTY, scaleAndOffset[0], SCALE_DOWN_INTERPOLATOR);
+        yAnim.setFloat(mRecentsView, RECENTS_SCALE_PROPERTY, scaleAndOffset[0],
+                SCALE_DOWN_INTERPOLATOR);
         yAnim.setFloat(mRecentsView, FULLSCREEN_PROGRESS,
                 toState.getOverviewFullscreenProgress(), SCALE_DOWN_INTERPOLATOR);
         mYOverviewAnim = yAnim.createPlaybackController();
