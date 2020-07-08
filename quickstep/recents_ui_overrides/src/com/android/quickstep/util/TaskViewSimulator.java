@@ -32,7 +32,6 @@ import android.graphics.RectF;
 import android.util.IntProperty;
 
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.touch.PagedOrientationHandler;
@@ -94,7 +93,6 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
     public final AnimatedFloat recentsViewScale = new AnimatedFloat();
     public final AnimatedFloat fullScreenProgress = new AnimatedFloat();
     private final ScrollState mScrollState = new ScrollState();
-    private final int mPageSpacing;
 
     // Cached calculations
     private boolean mLayoutValid = false;
@@ -108,7 +106,6 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
         mOrientationState.setGestureActive(true);
 
         mCurrentFullscreenParams = new FullscreenDrawParams(context);
-        mPageSpacing = context.getResources().getDimensionPixelSize(R.dimen.recents_page_spacing);
     }
 
     /**
@@ -275,7 +272,8 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
             int start = mOrientationState.getOrientationHandler()
                     .getPrimaryValue(mTaskRect.left, mTaskRect.top);
             mScrollState.screenCenter = start + mScrollState.scroll + mScrollState.halfPageSize;
-            mScrollState.updateInterpolation(start, mPageSpacing);
+            mScrollState.pageParentScale = recentsViewScale.value;
+            mScrollState.updateInterpolation(start);
             mCurveScale = TaskView.getCurveScaleForInterpolation(mScrollState.linearInterpolation);
         }
 
