@@ -17,6 +17,8 @@
 package com.android.launcher3.folder;
 
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP;
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.compat.AccessibilityManagerCompat.sendCustomAccessibilityEvent;
 
@@ -74,6 +76,7 @@ import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.logging.LoggerUtils;
 import com.android.launcher3.pageindicators.PageIndicatorDots;
+import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -442,9 +445,6 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     }
 
     private void startAnimation(final AnimatorSet a) {
-        if (mCurrentAnimator != null && mCurrentAnimator.isRunning()) {
-            mCurrentAnimator.cancel();
-        }
         final Workspace workspace = mLauncher.getWorkspace();
         final CellLayout currentCellLayout =
                 (CellLayout) workspace.getChildAt(workspace.getCurrentPage());
@@ -550,6 +550,9 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         // dropping. One resulting issue is that replaceFolderWithFinalItem() can be called twice.
         mDeleteFolderOnDropCompleted = false;
 
+        if (mCurrentAnimator != null && mCurrentAnimator.isRunning()) {
+            mCurrentAnimator.cancel();
+        }
         AnimatorSet anim = new FolderAnimationManager(this, true /* isOpening */).getAnimator();
         anim.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -650,6 +653,9 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     }
 
     private void animateClosed() {
+        if (mCurrentAnimator != null && mCurrentAnimator.isRunning()) {
+            mCurrentAnimator.cancel();
+        }
         AnimatorSet a = new FolderAnimationManager(this, false /* isOpening */).getAnimator();
         a.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -1340,6 +1346,9 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
             if (hasFocus) {
                 startEditingFolderName();
             } else {
+                if (isEditingName()) {
+                    logEditFolderLabel();
+                }
                 mFolderName.dispatchBackKey();
             }
         }
@@ -1516,5 +1525,40 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         } else {
             super.draw(canvas);
         }
+    }
+
+    private void logEditFolderLabel() {
+        LauncherLogProto.LauncherEvent ev = new LauncherLogProto.LauncherEvent();
+        LauncherLogProto.Action action = new LauncherLogProto.Action();
+        action.type = LauncherLogProto.Action.Type.SOFT_KEYBOARD;
+        ev.action = action;
+
+        LauncherLogProto.Target edittext_target = new LauncherLogProto.Target();
+        edittext_target.type = LauncherLogProto.Target.Type.ITEM;
+        edittext_target.itemType = LauncherLogProto.ItemType.EDITTEXT;
+
+        LauncherLogProto.Target folder_target = new LauncherLogProto.Target();
+        folder_target.type = LauncherLogProto.Target.Type.CONTAINER;
+        folder_target.containerType = LauncherLogProto.ContainerType.FOLDER;
+        folder_target.pageIndex = mInfo.screenId;
+        folder_target.gridX = mInfo.cellX;
+        folder_target.gridY = mInfo.cellY;
+        folder_target.cardinality = mInfo.contents.size();
+
+        LauncherLogProto.Target parent_target = new LauncherLogProto.Target();
+        parent_target.type = LauncherLogProto.Target.Type.CONTAINER;
+        switch (mInfo.container) {
+            case CONTAINER_HOTSEAT:
+                parent_target.containerType = LauncherLogProto.ContainerType.HOTSEAT;
+                break;
+            case CONTAINER_DESKTOP:
+                parent_target.containerType = LauncherLogProto.ContainerType.WORKSPACE;
+                break;
+            default:
+                Log.e(TAG, String.format("Expected container to be either %s or %s but found %s.",
+                        CONTAINER_HOTSEAT, CONTAINER_DESKTOP, mInfo.container));
+        }
+        ev.srcTarget = new LauncherLogProto.Target[]{edittext_target, folder_target, parent_target};
+        mLauncher.getUserEventDispatcher().dispatchUserEvent(ev, null);
     }
 }
