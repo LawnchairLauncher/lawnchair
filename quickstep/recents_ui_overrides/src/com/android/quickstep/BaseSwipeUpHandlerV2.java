@@ -553,14 +553,6 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
 
     @Override
     public void updateFinalShift() {
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-            if (mRecentsAnimationTargets != null) {
-                LiveTileOverlay.INSTANCE.update(
-                        mTaskViewSimulator.getCurrentCropRect(),
-                        mTaskViewSimulator.getCurrentCornerRadius());
-            }
-        }
-
         final boolean passed = mCurrentShift.value >= MIN_PROGRESS_FOR_OVERVIEW;
         if (passed != mPassedOverviewThreshold) {
             mPassedOverviewThreshold = passed;
@@ -571,6 +563,14 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
 
         updateSysUiFlags(mCurrentShift.value);
         applyWindowTransform();
+        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+            if (mRecentsAnimationTargets != null) {
+                LiveTileOverlay.INSTANCE.update(
+                        mTaskViewSimulator.getCurrentRect(),
+                        mTaskViewSimulator.getCurrentCornerRadius());
+            }
+        }
+
         updateLauncherTransitionProgress();
     }
 
