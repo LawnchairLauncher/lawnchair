@@ -546,7 +546,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
             gestureState.updatePreviouslyAppearedTaskIds(
                     previousGestureState.getPreviouslyAppearedTaskIds());
         } else {
-            gestureState.updateRunningTask(TraceHelper.whitelistIpcs("getRunningTask.0",
+            gestureState.updateRunningTask(TraceHelper.allowIpcs("getRunningTask.0",
                     () -> mAM.getRunningTask(false /* filterOnlyVisibleRecents */)));
         }
         return gestureState;
@@ -659,7 +659,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
         if (AssistantUtilities.isExcludedAssistant(gestureState.getRunningTask())) {
             // In the case where we are in the excluded assistant state, ignore it and treat the
             // running activity as the task behind the assistant
-            gestureState.updateRunningTask(TraceHelper.whitelistIpcs("getRunningTask.assistant",
+            gestureState.updateRunningTask(TraceHelper.allowIpcs("getRunningTask.assistant",
                     () -> mAM.getRunningTask(true /* filterOnlyVisibleRecents */)));
             ComponentName homeComponent = mOverviewComponentObserver.getHomeIntent().getComponent();
             ComponentName runningComponent =
