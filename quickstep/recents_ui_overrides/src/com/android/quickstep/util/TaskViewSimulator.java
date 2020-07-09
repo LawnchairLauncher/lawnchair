@@ -103,6 +103,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
         mSizeStrategy = sizeStrategy;
 
         mOrientationState = new RecentsOrientedState(context, sizeStrategy, i -> { });
+        mOrientationState.setGestureActive(true);
 
         mCurrentFullscreenParams = new FullscreenDrawParams(context);
         mPageSpacing = context.getResources().getDimensionPixelSize(R.dimen.recents_page_spacing);
