@@ -38,7 +38,6 @@ import static com.android.quickstep.GestureState.STATE_END_TARGET_ANIMATION_FINI
 import static com.android.quickstep.GestureState.STATE_END_TARGET_SET;
 import static com.android.quickstep.GestureState.STATE_RECENTS_SCROLLING_FINISHED;
 import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
-import static com.android.quickstep.SysUINavigationMode.Mode.TWO_BUTTONS;
 import static com.android.quickstep.util.ShelfPeekAnim.ShelfAnimState.HIDE;
 import static com.android.quickstep.util.ShelfPeekAnim.ShelfAnimState.PEEK;
 import static com.android.quickstep.views.RecentsView.UPDATE_SYSUI_FLAGS_THRESHOLD;
@@ -311,12 +310,6 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
         }
 
         setupRecentsViewUi();
-
-        if (mDeviceState.getNavMode() == TWO_BUTTONS) {
-            // If the device is in two button mode, swiping up will show overview with predictions
-            // so we need to kick off switching to the overview predictions as soon as possible
-            mActivityInterface.updateOverviewPredictionState();
-        }
         linkRecentsViewScroll();
 
         return true;
@@ -449,12 +442,6 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
     @Override
     public void onMotionPauseChanged(boolean isPaused) {
         setShelfState(isPaused ? PEEK : HIDE, ShelfPeekAnim.INTERPOLATOR, ShelfPeekAnim.DURATION);
-
-        if (mDeviceState.isFullyGesturalNavMode() && isPaused) {
-            // In fully gestural nav mode, switch to overview predictions once the user has paused
-            // (this is a no-op if the predictions are already in that state)
-            mActivityInterface.updateOverviewPredictionState();
-        }
     }
 
     public void maybeUpdateRecentsAttachedState() {
