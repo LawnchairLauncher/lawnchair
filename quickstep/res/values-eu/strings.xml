@@ -32,17 +32,19 @@
     <string name="title_app_suggestions" msgid="4185902664111965088">"Aplikazioen iradokizunak"</string>
     <string name="all_apps_label" msgid="8542784161730910663">"Aplikazio guztiak"</string>
     <string name="all_apps_prediction_tip" msgid="2672336544844936186">"Lagungarri izan dakizkizukeen aplikazioak"</string>
-    <string name="hotseat_edu_prompt_title" msgid="5595771595144175752">"Atzitu erraz aplikazio erabilienak"</string>
-    <string name="hotseat_edu_prompt_content" msgid="5709176001504149521">"Hurrena zer beharko duzun iragartzen du Pixel-ek, hasierako pantailan bertan. Sakatu konfiguratzeko."</string>
     <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"Jaso aplikazioen iradokizunak hasierako pantailaren beheko errenkadan"</string>
+    <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"Jaso aplikazioen iradokizunak hasierako pantailako gogokoen errenkadan"</string>
     <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"Atzitu erraz aplikazio erabilienak hasierako pantailatik bertatik. Ohituren arabera aldatuko dira iradokizunak. Hasierako pantailara eramango dira beheko errenkadan dauden aplikazioak."</string>
+    <string name="hotseat_edu_message_migrate_landscape" msgid="4248943380443387697">"Atzitu erraz aplikazio erabilienak hasierako pantailatik bertatik. Ohituren arabera aldatuko dira iradokizunak. Gogokoen errenkadako aplikazioak hasierako pantailara eramango ditugu."</string>
     <string name="hotseat_edu_message_migrate_alt" msgid="3042360119039646356">"Atzitu erraz aplikazio erabilienak hasierako pantailatik bertatik. Ohituren arabera aldatuko dira iradokizunak. Karpeta berri batera eramango dira beheko errenkadan dauden aplikazioak."</string>
     <string name="hotseat_edu_accept" msgid="1611544083278999837">"Jaso aplikazioen iradokizunak"</string>
     <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"Ez"</string>
-    <string name="hotseat_turn_off" msgid="7808360330229368470">"Ezarpenak"</string>
+    <string name="hotseat_prediction_settings" msgid="6246554993566070818">"Ezarpenak"</string>
     <string name="hotseat_auto_enrolled" msgid="522100018967146807">"Hemen agertzen dira aplikazio erabilienak, eta ohituren arabera aldatzen dira"</string>
     <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"Arrastatu aplikazioak beheko errenkadatik aplikazioen iradokizunak jasotzeko"</string>
     <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"Aplikazioen iradokizunak eremu huts batean gehitu dira"</string>
+    <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Gaituta daude aplikazioen iradokizunak"</string>
+    <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Desgaituta daude aplikazioen iradokizunak"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Iragarritako aplikazioa: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="action_share" msgid="2648470652637092375">"Partekatu"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Atera pantaila-argazki bat"</string>
