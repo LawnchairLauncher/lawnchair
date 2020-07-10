@@ -197,6 +197,15 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
         return mTempRectF;
     }
 
+    /**
+     * Returns the current task bounds in the Launcher coordinate space.
+     */
+    public RectF getCurrentRect() {
+        RectF result = getCurrentCropRect();
+        mMatrix.mapRect(result);
+        return result;
+    }
+
     public RecentsOrientedState getOrientationState() {
         return mOrientationState;
     }
