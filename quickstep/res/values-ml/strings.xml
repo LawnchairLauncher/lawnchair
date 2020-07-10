@@ -32,17 +32,19 @@
     <string name="title_app_suggestions" msgid="4185902664111965088">"ആപ്പ് നിർദ്ദേശങ്ങൾ"</string>
     <string name="all_apps_label" msgid="8542784161730910663">"എല്ലാ ആപ്പുകളും"</string>
     <string name="all_apps_prediction_tip" msgid="2672336544844936186">"നിങ്ങളുടെ പ്രവചിക്കപ്പെട്ട ആപ്പുകൾ"</string>
-    <string name="hotseat_edu_prompt_title" msgid="5595771595144175752">"നിങ്ങൾ ഏറ്റവുമധികം ഉപയോഗിച്ച ആപ്പുകൾ എളുപ്പത്തിൽ ആക്‌സസ് ചെയ്യുക"</string>
-    <string name="hotseat_edu_prompt_content" msgid="5709176001504149521">"അടുത്തതായി നിങ്ങൾക്ക് ആവശ്യമുള്ള ആപ്പുകൾ, ഹോം സ്‌ക്രീനിൽ തന്നെ Pixel പ്രവചിക്കുന്നു. സജ്ജീകരിക്കാൻ ടാപ്പ് ചെയ്യുക."</string>
     <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"നിങ്ങളുടെ ഹോം സ്‌ക്രീനിന്റെ താഴത്തെ നിരയിൽ ആപ്പ് നിർദ്ദേശങ്ങൾ നേടുക"</string>
+    <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"നിങ്ങളുടെ ഹോം സ്‌ക്രീനിന്റെ \'പ്രിയപ്പെട്ടവ\' വരിയിൽ ആപ്പ് നിർദ്ദേശങ്ങൾ നേടുക"</string>
     <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"നിങ്ങൾ ഏറ്റവും കൂടുതൽ ഉപയോഗിച്ച ആപ്പുകൾ ഹോം സ്ക്രീനിൽ നിന്ന് തന്നെ എളുപ്പത്തിൽ ആക്‌സസ് ചെയ്യൂ. നിങ്ങളുടെ ദിനചര്യകളുടെ അടിസ്ഥാനത്തിൽ നിർദ്ദേശങ്ങൾ മാറും. താഴത്തെ നിരയിലുള്ള ആപ്പുകൾ നിങ്ങളുടെ ഹോം സ്‌ക്രീനിലേക്ക് നീങ്ങും."</string>
+    <string name="hotseat_edu_message_migrate_landscape" msgid="4248943380443387697">"നിങ്ങൾ ഏറ്റവും കൂടുതൽ ഉപയോഗിച്ച ആപ്പുകൾ ഹോം സ്ക്രീനിൽ നിന്ന് തന്നെ എളുപ്പത്തിൽ ആക്‌സസ് ചെയ്യൂ. നിങ്ങളുടെ ദിനചര്യകളുടെ അടിസ്ഥാനത്തിൽ നിർദ്ദേശങ്ങൾ മാറും. \'പ്രിയപ്പെട്ടവ\' വരിയിലുള്ള ആപ്പുകൾ നിങ്ങളുടെ ഹോം സ്‌ക്രീനിലേക്ക് നീങ്ങും."</string>
     <string name="hotseat_edu_message_migrate_alt" msgid="3042360119039646356">"നിങ്ങൾ ഏറ്റവും കൂടുതൽ ഉപയോഗിച്ച ആപ്പുകൾ ഹോം സ്ക്രീനിൽ നിന്ന് തന്നെ എളുപ്പത്തിൽ ആക്‌സസ് ചെയ്യൂ. നിങ്ങളുടെ ദിനചര്യകളുടെ അടിസ്ഥാനത്തിൽ നിർദ്ദേശങ്ങൾ മാറും. താഴത്തെ നിരയിലുള്ള ആപ്പുകൾ പുതിയൊരു ഫോൾഡറിലേക്ക് നീങ്ങും."</string>
     <string name="hotseat_edu_accept" msgid="1611544083278999837">"ആപ്പ് നിർദ്ദേശങ്ങൾ നേടുക"</string>
     <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"വേണ്ട"</string>
-    <string name="hotseat_turn_off" msgid="7808360330229368470">"ക്രമീകരണം"</string>
+    <string name="hotseat_prediction_settings" msgid="6246554993566070818">"ക്രമീകരണം"</string>
     <string name="hotseat_auto_enrolled" msgid="522100018967146807">"ഏറ്റവുമധികം ഉപയോഗിക്കുന്ന ആപ്പുകൾ ഇവിടെ ദൃശ്യമാകും, ദിനചര്യയ്ക്ക് അനുസരിച്ച് അത് മാറുകയും ചെയ്യും"</string>
     <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"ആപ്പ് നിർദ്ദേശങ്ങൾ നേടാൻ താഴത്തെ നിരയിലെ ആപ്പുകൾ വലിച്ചിടുക"</string>
     <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"ആപ്പ് നിർദ്ദേശങ്ങൾ ഒഴിഞ്ഞ സ്ഥലത്തേക്ക് ചേർത്തു"</string>
+    <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"ആപ്പ് നിർദ്ദേശങ്ങൾ പ്രവർത്തനക്ഷമമാക്കി"</string>
+    <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"ആപ്പ് നിർദ്ദേശങ്ങൾ പ്രവർത്തനരഹിതമാക്കി"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"പ്രവചിച്ച ആപ്പ്: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="action_share" msgid="2648470652637092375">"പങ്കിടുക"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"സ്ക്രീൻഷോട്ട്"</string>
