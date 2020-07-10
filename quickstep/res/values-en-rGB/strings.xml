@@ -32,17 +32,19 @@
     <string name="title_app_suggestions" msgid="4185902664111965088">"App suggestions"</string>
     <string name="all_apps_label" msgid="8542784161730910663">"All apps"</string>
     <string name="all_apps_prediction_tip" msgid="2672336544844936186">"Your predicted apps"</string>
-    <string name="hotseat_edu_prompt_title" msgid="5595771595144175752">"Easily access your most-used apps"</string>
-    <string name="hotseat_edu_prompt_content" msgid="5709176001504149521">"Pixel predicts apps you\'ll need next, right on your Home screen. Tap to set up."</string>
     <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"Get app suggestions on the bottom row of your home screen"</string>
+    <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"Get app suggestions on the favourites row of your home screen"</string>
     <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"Easily access your most-used apps directly from the home screen. Suggestions will change based on your routines. Apps on the bottom row will move up to your home screen."</string>
+    <string name="hotseat_edu_message_migrate_landscape" msgid="4248943380443387697">"Easily access your most-used apps directly from the home screen. Suggestions will change based on your routines. Apps in the favourites row will move to your home screen."</string>
     <string name="hotseat_edu_message_migrate_alt" msgid="3042360119039646356">"Easily access your most-used apps directly from the home screen. Suggestions will change based on your routines. Apps on the bottom row will be moved to a new folder."</string>
     <string name="hotseat_edu_accept" msgid="1611544083278999837">"Get app suggestions"</string>
     <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"No, thanks"</string>
-    <string name="hotseat_turn_off" msgid="7808360330229368470">"Settings"</string>
+    <string name="hotseat_prediction_settings" msgid="6246554993566070818">"Settings"</string>
     <string name="hotseat_auto_enrolled" msgid="522100018967146807">"Most-used apps appear here, and change based on routines"</string>
     <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"Drag apps off the bottom row to get app suggestions"</string>
     <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"App suggestions added to empty space"</string>
+    <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"App suggestions enabled"</string>
+    <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"App suggestions are disabled"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Predicted app: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="action_share" msgid="2648470652637092375">"Share"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Screenshot"</string>
