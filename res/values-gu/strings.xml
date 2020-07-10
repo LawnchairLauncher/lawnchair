@@ -20,7 +20,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name" msgid="649227358658669779">"Launcher3"</string>
-    <string name="work_folder_name" msgid="3753320833950115786">"કાર્યાલય"</string>
+    <string name="work_folder_name" msgid="3753320833950115786">"ઑફિસ"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"ઍપ્લિકેશન ઇન્સ્ટોલ થઈ નથી."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"ઍપ્લિકેશન ઉપલબ્ધ નથી"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"સુરક્ષિત મોડમાં ડાઉનલોડ કરેલ ઍપ્લિકેશન અક્ષમ કરી"</string>
@@ -130,7 +130,7 @@
     <string name="action_dismiss_notification" msgid="5909461085055959187">"છોડી દો"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"સૂચના છોડી દીધી"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"મનગમતી ઍપ"</string>
-    <string name="all_apps_work_tab" msgid="4884822796154055118">"કાર્યાલયની ઍપ"</string>
+    <string name="all_apps_work_tab" msgid="4884822796154055118">"ઑફિસની ઍપ"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"ઑફિસની પ્રોફાઇલ"</string>
     <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"કાર્ય ઍપને અહીંથી મેળવો"</string>
     <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"દરેક કાર્ય ઍપ પાસે એક બૅજ હોય છે અને તમારી સંસ્થા દ્વારા તેને સુરક્ષિત રાખવામાં આવે છે. વધુ સરળ ઍક્સેસ માટે ઍપને તમારી હોમ સ્ક્રીન પર ખસેડો."</string>

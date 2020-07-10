@@ -80,7 +80,7 @@
     <string name="widget_button_text" msgid="2880537293434387943">"Widgets"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Fondos de pantalla"</string>
     <string name="styles_wallpaper_button_text" msgid="4342122323125579619">"Estilos y fondos de pantalla"</string>
-    <string name="settings_button_text" msgid="8873672322605444408">"Configuración de página principal"</string>
+    <string name="settings_button_text" msgid="8873672322605444408">"Configuración de pantalla principal"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"El administrador inhabilitó esta función"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"Permitir la rotación de la pantalla principal"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Al girar el teléfono"</string>
@@ -130,7 +130,7 @@
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Descartar"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Se descartó la notificación"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Personales"</string>
-    <string name="all_apps_work_tab" msgid="4884822796154055118">"Laborales"</string>
+    <string name="all_apps_work_tab" msgid="4884822796154055118">"De trabajo"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Perfil de trabajo"</string>
     <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Apps de trabajo"</string>
     <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"Cada app de trabajo tiene una insignia y está protegida por tu organización. Transfiere las apps a la pantalla principal para acceder a ellas con mayor facilidad."</string>
