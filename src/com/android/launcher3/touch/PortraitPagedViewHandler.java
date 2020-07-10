@@ -236,8 +236,9 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public int getTaskMenuLayoutOrientation(LinearLayout taskMenuLayout) {
-        return taskMenuLayout.getOrientation();
+    public int getTaskMenuLayoutOrientation(boolean canRecentsActivityRotate,
+        LinearLayout taskMenuLayout) {
+        return canRecentsActivityRotate ? taskMenuLayout.getOrientation() : LinearLayout.VERTICAL;
     }
 
     @Override

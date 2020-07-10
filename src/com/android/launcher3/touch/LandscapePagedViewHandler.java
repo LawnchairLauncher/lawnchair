@@ -237,7 +237,8 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public int getTaskMenuLayoutOrientation(LinearLayout taskMenuLayout) {
+    public int getTaskMenuLayoutOrientation(boolean canRecentsActivityRotate,
+        LinearLayout taskMenuLayout) {
         return LinearLayout.HORIZONTAL;
     }
 
