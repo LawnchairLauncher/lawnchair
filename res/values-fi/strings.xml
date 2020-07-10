@@ -81,13 +81,13 @@
     <string name="widget_button_text" msgid="2880537293434387943">"Widgetit"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Taustakuvat"</string>
     <string name="styles_wallpaper_button_text" msgid="4342122323125579619">"Tyylit ja taustakuvat"</string>
-    <string name="settings_button_text" msgid="8873672322605444408">"Kotiasetukset"</string>
+    <string name="settings_button_text" msgid="8873672322605444408">"Aloitusnäyttö"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Järjestelmänvalvoja on poistanut toiminnon käytöstä."</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"Salli aloitusnäytön kiertäminen"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Kun puhelinta kierretään"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"Pistemerkit"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"Käytössä"</string>
-    <string name="notification_dots_desc_off" msgid="1760796511504341095">"Ei käytössä"</string>
+    <string name="notification_dots_desc_off" msgid="1760796511504341095">"Ei päällä"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"Ilmoituksien käyttöoikeus tarvitaan"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"<xliff:g id="NAME">%1$s</xliff:g> tarvitsee ilmoitusten käyttöoikeuden, jotta pistemerkkejä voidaan näyttää."</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Muuta asetuksia"</string>

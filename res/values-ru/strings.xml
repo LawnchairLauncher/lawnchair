@@ -86,7 +86,7 @@
     <string name="settings_button_text" msgid="8873672322605444408">"Главный экран"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Функция отключена администратором"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"Разрешить поворачивать главный экран"</string>
-    <string name="allow_rotation_desc" msgid="8662546029078692509">"Когда телефон повернут"</string>
+    <string name="allow_rotation_desc" msgid="8662546029078692509">"При повороте телефона"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"Значки уведомлений"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"Включены"</string>
     <string name="notification_dots_desc_off" msgid="1760796511504341095">"Отключены"</string>

@@ -89,7 +89,7 @@
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"सुरू"</string>
     <string name="notification_dots_desc_off" msgid="1760796511504341095">"बंद"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"सूचनांच्या अ‍ॅक्सेसची आवश्यकता आहे"</string>
-    <string name="msg_missing_notification_access" msgid="281113995110910548">"सूचना बिंदू दाखवण्यासाठी, <xliff:g id="NAME">%1$s</xliff:g> साठी अ‍ॅप सूचना चालू करा"</string>
+    <string name="msg_missing_notification_access" msgid="281113995110910548">"सूचना बिंदू दाखवण्यासाठी, <xliff:g id="NAME">%1$s</xliff:g> साठी अ‍ॅप सूचना सुरू करा"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"सेटिंग्ज बदला"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"सूचना बिंदू दाखवा"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"होम स्क्रीनवर आयकन जोडा"</string>
