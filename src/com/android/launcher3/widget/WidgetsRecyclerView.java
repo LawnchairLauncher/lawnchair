@@ -120,6 +120,9 @@ public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouch
     public int getCurrentScrollY() {
         // Skip early if widgets are not bound.
         if (isModelNotReady() || getChildCount() == 0) {
+            if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+                Log.d(TestProtocol.NO_SCROLL_END_WIDGETS, "getCurrentScrollY: -1");
+            }
             return -1;
         }
 
@@ -128,6 +131,10 @@ public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouch
         int y = (child.getMeasuredHeight() * rowIndex);
         int offset = getLayoutManager().getDecoratedTop(child);
 
+        if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+            Log.d(TestProtocol.NO_SCROLL_END_WIDGETS,
+                    "getCurrentScrollY: " + (getPaddingTop() + y - offset));
+        }
         return getPaddingTop() + y - offset;
     }
 
