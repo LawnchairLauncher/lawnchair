@@ -82,7 +82,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
         super.onCreate(savedInstanceState);
 
 
-        mIsSafeModeEnabled = TraceHelper.whitelistIpcs("isSafeMode",
+        mIsSafeModeEnabled = TraceHelper.allowIpcs("isSafeMode",
                 () -> getPackageManager().isSafeMode());
         DefaultDisplay.INSTANCE.get(this).addChangeListener(this);
 
