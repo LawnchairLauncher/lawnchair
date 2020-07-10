@@ -78,13 +78,14 @@
     <string name="folder_tap_to_rename" msgid="4017685068016979677">"Допрете за да го зачувате преименувањето"</string>
     <string name="folder_closed" msgid="4100806530910930934">"Папката е затворена"</string>
     <string name="folder_renamed" msgid="1794088362165669656">"Папката е преименувана во <xliff:g id="NAME">%1$s</xliff:g>"</string>
-    <string name="folder_name_format" msgid="6629239338071103179">"Папка: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_name_format_exact" msgid="8626242716117004803">"Папка: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> ставки"</string>
+    <string name="folder_name_format_overflow" msgid="4270108890534995199">"Папка: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> или повеќе ставки"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"Виџети"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Тапети"</string>
     <string name="styles_wallpaper_button_text" msgid="4342122323125579619">"Стилови и тапети"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Поставки за почетен екран"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Оневозможено од администраторот"</string>
-    <string name="allow_rotation_title" msgid="7728578836261442095">"Дозволете ротација на почетниот екран"</string>
+    <string name="allow_rotation_title" msgid="7728578836261442095">"Дозволи ротација на почетниот екран"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Кога телефонот се ротира"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"Точки за известување"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"Вклучено"</string>
@@ -93,7 +94,7 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"За да се прикажуваат „Точки за известување“, вклучете ги известувањата за апликацијата <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Промени ги поставките"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Прикажувај точки за известување"</string>
-    <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"Додај икони за апликации на почетен екран"</string>
+    <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"Додавај икони за апликации на почетен екран"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"За нови апликации"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Непознато"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Отстрани"</string>

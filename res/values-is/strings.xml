@@ -52,7 +52,7 @@
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Fjarlægja"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"Forritsupplýsingar"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"Setja upp"</string>
-    <string name="dismiss_prediction_label" msgid="3357562989568808658">"Ekki stinga upp á forriti"</string>
+    <string name="dismiss_prediction_label" msgid="3357562989568808658">"Ekki fá tillögu að forriti"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"Festa tillögu"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"setja upp flýtileiðir"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Leyfir forriti að bæta við flýtileiðum án íhlutunar notanda."</string>
@@ -78,7 +78,8 @@
     <string name="folder_tap_to_rename" msgid="4017685068016979677">"Ýttu til að vista breytt heiti"</string>
     <string name="folder_closed" msgid="4100806530910930934">"Möppu lokað"</string>
     <string name="folder_renamed" msgid="1794088362165669656">"Heiti möppu breytt í <xliff:g id="NAME">%1$s</xliff:g>"</string>
-    <string name="folder_name_format" msgid="6629239338071103179">"Mappa: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_name_format_exact" msgid="8626242716117004803">"Mappa: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> atriði"</string>
+    <string name="folder_name_format_overflow" msgid="4270108890534995199">"Mappa: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> eða fleiri atriði"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"Græjur"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Veggfóður"</string>
     <string name="styles_wallpaper_button_text" msgid="4342122323125579619">"Stílar og veggfóður"</string>
