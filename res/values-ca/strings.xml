@@ -20,7 +20,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name" msgid="649227358658669779">"Launcher3"</string>
-    <string name="work_folder_name" msgid="3753320833950115786">"Feina"</string>
+    <string name="work_folder_name" msgid="3753320833950115786">"Treball"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"L\'aplicació no s\'ha instal·lat."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"L\'aplicació no està disponible."</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"L\'aplicació que has baixat està desactivada al mode segur."</string>
@@ -46,12 +46,14 @@
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"No hi ha més espai a la safata Preferits."</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Llista d\'aplicacions"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Llista d\'aplicacions personals"</string>
-    <string name="all_apps_button_work_label" msgid="7270707118948892488">"Llista d\'aplicacions per a la feina"</string>
+    <string name="all_apps_button_work_label" msgid="7270707118948892488">"Llista d\'aplicacions de treball"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"Inici"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Suprimeix"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Desinstal·la"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"Informació de l\'aplicació"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"Instal·la"</string>
+    <string name="dismiss_prediction_label" msgid="3357562989568808658">"No suggereixis l\'aplicació"</string>
+    <string name="pin_prediction" msgid="4196423321649756498">"Fixa la predicció"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"instal·la dreceres"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Permet que una aplicació afegeixi dreceres sense la intervenció de l\'usuari."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"llegeix la configuració i les dreceres de la pantalla d\'inici"</string>
@@ -62,7 +64,7 @@
     <string name="gadget_error_text" msgid="6081085226050792095">"S\'ha produït un problema en carregar el widget"</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"Configuració"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Aquesta aplicació és una aplicació del sistema i no es pot desinstal·lar."</string>
-    <string name="folder_hint_text" msgid="6617836969016293992">"Carpeta sense nom"</string>
+    <string name="folder_hint_text" msgid="5174843001373488816">"Edita el nom"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"S\'ha desactivat <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
     <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
       <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g>​ té <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> notificacions</item>
@@ -91,7 +93,7 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Per veure els punts de notificació, activa les notificacions de l\'aplicació <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Canvia la configuració"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Mostra els punts de notificació"</string>
-    <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Afegeix icona a la pantalla d\'inici"</string>
+    <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"Afegeix icones a la pantalla d\'inici"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Per a les aplicacions noves"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Desconegut"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Suprimeix"</string>
@@ -128,15 +130,18 @@
     <string name="action_deep_shortcut" msgid="2864038805849372848">"Dreceres"</string>
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"Dreceres i notificacions"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Ignora"</string>
+    <string name="accessibility_close" msgid="2277148124685870734">"Tanca"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"S\'ha ignorat la notificació"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Personal"</string>
-    <string name="all_apps_work_tab" msgid="4884822796154055118">"Feina"</string>
-    <string name="work_profile_toggle_label" msgid="3081029915775481146">"Perfil professional"</string>
-    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Cerca aplicacions per a la feina aquí"</string>
-    <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"Totes les aplicacions per a la feina tenen una insígnia que indica que estan protegides per la teva organització. Mou les aplicacions a la pantalla d\'inici per poder-hi accedir més fàcilment."</string>
-    <string name="work_mode_on_label" msgid="4781128097185272916">"Gestionat per la teva organització"</string>
-    <string name="work_mode_off_label" msgid="3194894777601421047">"Les notificacions i les aplicacions estan desactivades"</string>
-    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"Tanca"</string>
-    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"S\'ha tancat"</string>
+    <string name="all_apps_work_tab" msgid="4884822796154055118">"Treball"</string>
+    <string name="work_profile_toggle_label" msgid="3081029915775481146">"Perfil de treball"</string>
+    <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"Les dades personals s\'oculten i se separen de les aplicacions de treball"</string>
+    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"L\'administrador de TI pot veure les dades i les aplicacions de treball"</string>
+    <string name="work_profile_edu_next" msgid="8783418929296503629">"Següent"</string>
+    <string name="work_profile_edu_accept" msgid="6069788082535149071">"Entesos"</string>
+    <string name="work_apps_paused_title" msgid="2389865654362803723">"El perfil de treball està en pausa"</string>
+    <string name="work_apps_paused_body" msgid="2197210494568696054">"Les aplicacions de treball no poden enviar-te notificacions, consumir bateria ni accedir a la teva ubicació"</string>
+    <string name="work_apps_paused_content_description" msgid="7553586952985486433">"El perfil de treball està en pausa. Les aplicacions de treball no poden enviar-te notificacions, consumir bateria ni accedir a la teva ubicació"</string>
+    <string name="work_switch_tip" msgid="808075064383839144">"Posa en pausa les notificacions i les aplicacions de treball"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Error: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

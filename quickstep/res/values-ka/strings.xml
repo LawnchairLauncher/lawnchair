@@ -22,16 +22,29 @@
     <string name="recent_task_option_split_screen" msgid="5353188922202653570">"ეკრანის გაყოფა"</string>
     <string name="recent_task_option_pin" msgid="7929860679018978258">"ჩამაგრება"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"თავისუფალი ფორმა"</string>
-    <string name="accessibility_desc_recent_apps" msgid="1444379410873162882">"მიმოხილვა"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"ბოლოს გამოყენებული ერთეულები არ არის"</string>
-    <string name="accessibility_close_task" msgid="5354563209433803643">"დახურვა"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"აპების გამოყენების პარამეტრები"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"ყველას გასუფთავება"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"ბოლოდროინდელი აპები"</string>
     <string name="task_contents_description_with_remaining_time" msgid="4479688746574672685">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>, <xliff:g id="REMAINING_TIME">%2$s</xliff:g>"</string>
     <string name="shorter_duration_less_than_one_minute" msgid="4722015666335015336">"&lt; 1 წუთი"</string>
     <string name="time_left_for_app" msgid="3111996412933644358">"დღეს დარჩენილია <xliff:g id="TIME">%1$s</xliff:g>"</string>
-    <string name="title_app_suggestions" msgid="4185902664111965088">"აპების შემოთავაზებები"</string>
+    <string name="title_app_suggestions" msgid="4185902664111965088">"აპის შემოთავაზებები"</string>
     <string name="all_apps_label" msgid="8542784161730910663">"ყველა აპი"</string>
     <string name="all_apps_prediction_tip" msgid="2672336544844936186">"თქვენი პროგნოზირებული აპები"</string>
+    <string name="hotseat_edu_prompt_title" msgid="5595771595144175752">"მარტივად იქონიეთ წვდომა ყველაზე ხშირად გამოყენებულ აპებზე"</string>
+    <string name="hotseat_edu_prompt_content" msgid="5709176001504149521">"Pixel წინასწარმეტყველებს, თუ რომელი აპის გამოყენება დაგჭირდებათ შემდეგ ჯერზე, პირდაპირ მთავარი ეკრანიდან. შეეხეთ დასაყენებლად."</string>
+    <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"მიიღეთ აპის შეთავაზებები მთავარი ეკრანის ქვედა რიგში"</string>
+    <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"მარტივად იქონიეთ ყველაზე ხშირად გამოყენებულ აპებზე წვდომა მთავარი ეკრანიდან. შეთავაზებები შეიცვლება თქვენი რუტინების მიხედვით. მოხდება ქვედა რიგში არსებული აპების მთავარ ეკრანზე გადატანა."</string>
+    <string name="hotseat_edu_message_migrate_alt" msgid="3042360119039646356">"მარტივად იქონიეთ ყველაზე ხშირად გამოყენებულ აპებზე წვდომა მთავარი ეკრანიდან. შეთავაზებები შეიცვლება თქვენი რუტინების მიხედვით. მოხდება ქვედა რიგში არსებული აპების ახალ საქაღალდეში გადატანა."</string>
+    <string name="hotseat_edu_accept" msgid="1611544083278999837">"აპის შეთავაზებების მიღება"</string>
+    <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"არა, გმადლობთ"</string>
+    <string name="hotseat_turn_off" msgid="7808360330229368470">"პარამეტრები"</string>
+    <string name="hotseat_auto_enrolled" msgid="522100018967146807">"ყველაზე ხშირად გამოყენებული აპები აქ ჩანს და ცვალებადობს რუტინების მიხედვით"</string>
+    <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"გადაიტანეთ აპები ეკრანის ქვედა რიგში, რათა აპის შეთავაზებები მიიღოთ"</string>
+    <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"აპის შეთავაზებები დამატებულია ცარიელ სივრცეში"</string>
+    <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"ნაწინასწარმეტყველები აპი: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
+    <string name="action_share" msgid="2648470652637092375">"გაზიარება"</string>
+    <string name="action_screenshot" msgid="8171125848358142917">"ეკრანის ანაბეჭდი"</string>
+    <string name="blocked_by_policy" msgid="2071401072261365546">"ეს მოქმედება არ არის დაშვებული აპის ან თქვენი ორგანიზაციის მიერ"</string>
 </resources>

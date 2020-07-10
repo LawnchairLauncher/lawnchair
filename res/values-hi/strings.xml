@@ -20,7 +20,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name" msgid="649227358658669779">"Launcher3"</string>
-    <string name="work_folder_name" msgid="3753320833950115786">"कार्यस्‍थल"</string>
+    <string name="work_folder_name" msgid="3753320833950115786">"दफ़्तर"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"ऐप्‍लिकेशन इंस्‍टॉल नहीं है."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"ऐप्लिकेशन उपलब्ध नहीं है"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"डाउनलोड किए गए ऐप्लिकेशन सुरक्षित मोड में अक्षम है"</string>
@@ -52,6 +52,8 @@
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"अनइंस्टॉल करें"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"ऐप्लिकेशन की जानकारी"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"इंस्‍टॉल करें"</string>
+    <string name="dismiss_prediction_label" msgid="3357562989568808658">"ऐप्लिकेशन का सुझाव न दें"</string>
+    <string name="pin_prediction" msgid="4196423321649756498">"सुझाए गए ऐप्लिकेशन को पिन करें"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"शॉर्टकट इंस्‍टॉल करें"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"ऐप को उपयोगकर्ता के हस्‍तक्षेप के बिना शॉर्टकट जोड़ने देती है."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"होम पेज की सेटिंग और शॉर्टकट पढ़ें"</string>
@@ -62,7 +64,7 @@
     <string name="gadget_error_text" msgid="6081085226050792095">"विजेट लोड करने में समस्‍या"</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"सेटअप"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"यह एक सिस्टम ऐप्लिकेशन है और इसे अनइंस्टॉल नहीं किया जा सकता."</string>
-    <string name="folder_hint_text" msgid="6617836969016293992">"अनामित फ़ोल्डर"</string>
+    <string name="folder_hint_text" msgid="5174843001373488816">"नाम में बदलाव करें"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> अक्षम है"</string>
     <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
       <item quantity="one"><xliff:g id="APP_NAME_2">%1$s</xliff:g> की <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> सूचना है</item>
@@ -91,7 +93,7 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"सूचना बिंदु दिखाने के लिए, <xliff:g id="NAME">%1$s</xliff:g> के ऐप्लिकेशन सूचना चालू करें"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"सेटिंग बदलें"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"नई सूचनाएं बताने वाला गोल निशान दिखाएं"</string>
-    <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"होम स्क्रीन में आइकॉन जोड़ें"</string>
+    <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"होम स्क्रीन पर ऐप्लिकेशन के आइकॉन जोड़ें"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"नए ऐप्लिकेशन के लिए"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"अज्ञात"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"निकालें"</string>
@@ -128,15 +130,18 @@
     <string name="action_deep_shortcut" msgid="2864038805849372848">"शॉर्टकट"</string>
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"शॉर्टकट और सूचनाएं"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"खारिज करें"</string>
+    <string name="accessibility_close" msgid="2277148124685870734">"बंद करें"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"सूचना को खारिज किया गया"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"निजी ऐप"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"काम से जुड़े ऐप"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"वर्क प्रोफ़ाइल"</string>
-    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"काम से जुड़े सभी ऐप्लिकेशन यहां पाएं"</string>
-    <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"काम से जुड़े हर ऐप्लिकेशन पर एक बैज (निशान) होता है और इन ऐप्लिकेशन की सुरक्षा आपका संगठन करता है. आसानी से इस्तेमाल करने के लिए ऐप्लिकेशन को अपनी होम स्क्रीन पर ले जाएं."</string>
-    <string name="work_mode_on_label" msgid="4781128097185272916">"आपका संगठन प्रबंधित कर रहा है"</string>
-    <string name="work_mode_off_label" msgid="3194894777601421047">"सूचनाएं और ऐप्लिकेशन बंद हैं"</string>
-    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"बंद करें"</string>
-    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"बंद कर दिया गया"</string>
+    <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"निजी डेटा को अलग रखा जाता है. साथ ही, ऑफ़िस के काम से जुड़े ऐप्लिकेशन से छिपा कर रखा जाता है"</string>
+    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"ऑफ़िस के काम से जुड़े ऐप्लिकेशन और डेटा, आपके आईटी एडमिन को दिखते हैं"</string>
+    <string name="work_profile_edu_next" msgid="8783418929296503629">"आगे बढ़ें"</string>
+    <string name="work_profile_edu_accept" msgid="6069788082535149071">"ठीक है"</string>
+    <string name="work_apps_paused_title" msgid="2389865654362803723">"वर्क प्रोफ़ाइल रोक दी गई है"</string>
+    <string name="work_apps_paused_body" msgid="2197210494568696054">"ऑफ़िस के काम से जुड़े ऐप्लिकेशन आपको सूचनाएं नहीं भेज सकते. साथ ही, आपकी बैटरी का इस्तेमाल या आपकी जगह की जानकारी को ऐक्सेस नहीं कर सकते"</string>
+    <string name="work_apps_paused_content_description" msgid="7553586952985486433">"वर्क प्रोफ़ाइल रोक दी गई है. ऑफ़िस के काम से जुड़े ऐप्लिकेशन आपको सूचनाएं नहीं भेज सकते. साथ ही, आपके डिवाइस की बैटरी का इस्तेमाल या आपकी जगह की जानकारी को ऐक्सेस नहीं कर सकते"</string>
+    <string name="work_switch_tip" msgid="808075064383839144">"ऑफ़िस के काम से जुड़े ऐप्लिकेशन और सूचनाएं रोकें"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"पूरा नहीं हुआ: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>
