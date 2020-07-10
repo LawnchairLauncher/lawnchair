@@ -78,14 +78,15 @@
     <string name="folder_tap_to_rename" msgid="4017685068016979677">"Izen berria gordetzeko, sakatu hau"</string>
     <string name="folder_closed" msgid="4100806530910930934">"Karpeta itxi da"</string>
     <string name="folder_renamed" msgid="1794088362165669656">"Karpetari <xliff:g id="NAME">%1$s</xliff:g> izena eman zaio"</string>
-    <string name="folder_name_format" msgid="6629239338071103179">"Karpeta: <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="folder_name_format_exact" msgid="8626242716117004803">"<xliff:g id="NAME">%1$s</xliff:g> karpeta (<xliff:g id="SIZE">%2$d</xliff:g> elementu)"</string>
+    <string name="folder_name_format_overflow" msgid="4270108890534995199">"<xliff:g id="NAME">%1$s</xliff:g> karpeta (<xliff:g id="SIZE">%2$d</xliff:g> elementu edo gehiago)"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"Widgetak"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Horma-paperak"</string>
     <string name="styles_wallpaper_button_text" msgid="4342122323125579619">"Estiloak eta horma-paperak"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Hasierako pantailaren ezarpenak"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Administratzaileak desgaitu du"</string>
     <string name="allow_rotation_title" msgid="7728578836261442095">"Eman hasierako pantaila biratzeko baimena"</string>
-    <string name="allow_rotation_desc" msgid="8662546029078692509">"Telefonoa biratzen denean"</string>
+    <string name="allow_rotation_desc" msgid="8662546029078692509">"Telefonoa biratzean"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"Jakinarazpen-biribiltxoak"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"Aktibatuta"</string>
     <string name="notification_dots_desc_off" msgid="1760796511504341095">"Desaktibatuta"</string>
