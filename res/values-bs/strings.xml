@@ -44,7 +44,7 @@
     <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"Dodirnite dvaput i držite da uzmete prečicu ili koristite prilagođene akcije."</string>
     <string name="out_of_space" msgid="4691004494942118364">"Na ovom početnom ekranu nema više prostora."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Nema više prostora u ladici Omiljeno"</string>
-    <string name="all_apps_button_label" msgid="8130441508702294465">"Spisak aplikacija"</string>
+    <string name="all_apps_button_label" msgid="8130441508702294465">"Lista aplikacija"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Lista ličnih aplikacija"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"Lista poslovnih aplikacija"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"Početna"</string>
@@ -52,6 +52,8 @@
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Deinstaliraj"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"Informacije o aplikaciji"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"Instaliraj"</string>
+    <string name="dismiss_prediction_label" msgid="3357562989568808658">"Nemojte preporučiti aplikaciju"</string>
+    <string name="pin_prediction" msgid="4196423321649756498">"Predviđanje PIN-a"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"instaliraj prečice"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Dopušta aplikaciji dodavanje prečica bez posredovanja korisnika."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"čitaj postavke na početnom ekranu i prečice"</string>
@@ -62,7 +64,7 @@
     <string name="gadget_error_text" msgid="6081085226050792095">"Problem pri učitavanju dodatka"</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"Postavljanje"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Ovo je sistemska aplikacija i ne može se deinstalirati."</string>
-    <string name="folder_hint_text" msgid="6617836969016293992">"Neimenovani folder"</string>
+    <string name="folder_hint_text" msgid="5174843001373488816">"Uređivanje naziva"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"Aplikacija <xliff:g id="APP_NAME">%1$s</xliff:g> je onemogućena"</string>
     <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
       <item quantity="one">Aplikacija <xliff:g id="APP_NAME_2">%1$s</xliff:g> ima<xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> obavještenje​</item>
@@ -92,7 +94,7 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Za prikaz tačaka za obavještenja, uključite obavještenja za aplikacije za aplikaciju <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Promijeni postavke"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Prikaži tačke za obavještenja"</string>
-    <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Dodaj ikonu na početni ekran"</string>
+    <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"Dodaj ikone aplikacija na početni ekran"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Za nove aplikacije"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Nepoznato"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Ukloni"</string>
@@ -129,15 +131,18 @@
     <string name="action_deep_shortcut" msgid="2864038805849372848">"Prečice"</string>
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"Prečice i obavještenja"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Odbaci"</string>
+    <string name="accessibility_close" msgid="2277148124685870734">"Zatvaranje"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Obavještenje je odbačeno"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Lične"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Poslovne"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Radni profil"</string>
-    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Pronađite poslovne aplikacije ovdje"</string>
-    <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"Svaka poslovna aplikacija ima značku i osigurava je vaša organizacija. Premjestite aplikacije na Početni ekran, radi lakšeg pristupa."</string>
-    <string name="work_mode_on_label" msgid="4781128097185272916">"Upravlja vaša organizacija"</string>
-    <string name="work_mode_off_label" msgid="3194894777601421047">"Notifikacije i aplikacije su isključene"</string>
-    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"Zatvori"</string>
-    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"Zatvoreno"</string>
+    <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"Lični podaci su odvojeni i sakriveni od poslovnih aplikacija"</string>
+    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"Vaš IT administrator može vidjeti poslovne aplikacije i podatke"</string>
+    <string name="work_profile_edu_next" msgid="8783418929296503629">"Sljedeće"</string>
+    <string name="work_profile_edu_accept" msgid="6069788082535149071">"Razumijem"</string>
+    <string name="work_apps_paused_title" msgid="2389865654362803723">"Radni profil je pauziran"</string>
+    <string name="work_apps_paused_body" msgid="2197210494568696054">"Poslovne aplikacije vam ne mogu slati obavještenja, koristiti bateriju ili pristupiti vašoj lokaciji"</string>
+    <string name="work_apps_paused_content_description" msgid="7553586952985486433">"Radni profil je pauziran. Poslovne aplikacije vam ne mogu slati obavještenja, koristiti bateriju ili pristupiti vašoj lokaciji"</string>
+    <string name="work_switch_tip" msgid="808075064383839144">"Pauzirajte poslovne aplikacije i obavještenja"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Nije uspjelo: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

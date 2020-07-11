@@ -22,16 +22,29 @@
     <string name="recent_task_option_split_screen" msgid="5353188922202653570">"Экранды бөлу"</string>
     <string name="recent_task_option_pin" msgid="7929860679018978258">"Бекіту"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Еркін форма"</string>
-    <string name="accessibility_desc_recent_apps" msgid="1444379410873162882">"Шолу"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"Соңғы элементтер жоқ"</string>
-    <string name="accessibility_close_task" msgid="5354563209433803643">"Жабу"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Қолданбаны пайдалану параметрлері"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"Барлығын өшіру"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"Соңғы пайдаланылған қолданбалар"</string>
     <string name="task_contents_description_with_remaining_time" msgid="4479688746574672685">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>, <xliff:g id="REMAINING_TIME">%2$s</xliff:g>"</string>
     <string name="shorter_duration_less_than_one_minute" msgid="4722015666335015336">"&lt; 1 мин"</string>
     <string name="time_left_for_app" msgid="3111996412933644358">"Бүгін <xliff:g id="TIME">%1$s</xliff:g> қалды"</string>
-    <string name="title_app_suggestions" msgid="4185902664111965088">"Қолданба ұсыныстары"</string>
+    <string name="title_app_suggestions" msgid="4185902664111965088">"Ұсынылған қолданбалар"</string>
     <string name="all_apps_label" msgid="8542784161730910663">"Барлық қолданбалар"</string>
     <string name="all_apps_prediction_tip" msgid="2672336544844936186">"Ұсынылатын қолданбалар"</string>
+    <string name="hotseat_edu_prompt_title" msgid="5595771595144175752">"Жиі пайдаланылатын қолданбаларға оңай кіру"</string>
+    <string name="hotseat_edu_prompt_content" msgid="5709176001504149521">"Pixel сізге қажет болуы мүмкін қолданбаларды болжап, оларды негізгі экранда көрсетеді. Реттеу үшін түртіңіз."</string>
+    <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"Негізгі экранның төменгі жолында ұсынылған қолданбаларды алу"</string>
+    <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"Жиі пайдаланылатын қолданбаларға негізгі экраннан оңай кіріңіз. Ұсыныстар әрекеттер тізімі негізінде өзгереді. Төменгі жолдағы қолданбалар негізгі экраныңызға қарай жоғары жылжиды."</string>
+    <string name="hotseat_edu_message_migrate_alt" msgid="3042360119039646356">"Жиі пайдаланылатын қолданбаларға негізгі экраннан оңай кіріңіз. Ұсыныстар әрекеттер тізімі негізінде өзгереді. Төмендегі қолданбалар жаңа қалтаға жылжиды."</string>
+    <string name="hotseat_edu_accept" msgid="1611544083278999837">"Ұсынылған қолданбаларды көру"</string>
+    <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"Жоқ, рақмет"</string>
+    <string name="hotseat_turn_off" msgid="7808360330229368470">"Параметрлер"</string>
+    <string name="hotseat_auto_enrolled" msgid="522100018967146807">"Жиі пайдаланылатын қолданбалар осы жерде көрсетіледі және әрекеттер тізімі негізінде өзгереді."</string>
+    <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"Ұсынылған қолданбаларды алу үшін қолданбаларды төменгі жолдан жылжытыңыз."</string>
+    <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"Ұсынылған қолданбалар бос орынға қосылды."</string>
+    <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Болжалды қолданба: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
+    <string name="action_share" msgid="2648470652637092375">"Бөлісу"</string>
+    <string name="action_screenshot" msgid="8171125848358142917">"Скриншот"</string>
+    <string name="blocked_by_policy" msgid="2071401072261365546">"Бұл әрекетке қолданба не ұйым рұқсат етпейді."</string>
 </resources>

@@ -20,7 +20,6 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name" msgid="649227358658669779">"Launcher3"</string>
-    <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="work_folder_name" msgid="3753320833950115786">"Lavoro"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"App non installata."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"App non disponibile"</string>
@@ -53,6 +52,8 @@
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Disinstalla"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"Informazioni app"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"Installa"</string>
+    <string name="dismiss_prediction_label" msgid="3357562989568808658">"Non suggerire app"</string>
+    <string name="pin_prediction" msgid="4196423321649756498">"Blocca previsione"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"aggiunta di scorciatoie"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Consente a un\'app di aggiungere scorciatoie automaticamente."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"lettura di impostazioni e scorciatoie in Home"</string>
@@ -63,7 +64,7 @@
     <string name="gadget_error_text" msgid="6081085226050792095">"Errore durante il caricamento del widget"</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"Configurazione"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Questa è un\'app di sistema e non può essere disinstallata."</string>
-    <string name="folder_hint_text" msgid="6617836969016293992">"Cartella senza nome"</string>
+    <string name="folder_hint_text" msgid="5174843001373488816">"Modifica nome"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"App <xliff:g id="APP_NAME">%1$s</xliff:g> disattivata"</string>
     <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
       <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g>, ha <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> notifiche</item>
@@ -92,7 +93,7 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Per mostrare gli indicatori di notifica, attiva le notifiche per l\'app <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Modifica impostazioni"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Mostra indicatori di notifica"</string>
-    <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Aggiungi icone alla schermata Home"</string>
+    <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"Aggiungi icone app a schermata Home"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Per le nuove app"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Sconosciuto"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Rimuovi"</string>
@@ -129,15 +130,18 @@
     <string name="action_deep_shortcut" msgid="2864038805849372848">"Scorciatoie"</string>
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"Scorciatoie e notifiche"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Ignora"</string>
+    <string name="accessibility_close" msgid="2277148124685870734">"Esci"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Notifica ignorata"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Personali"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Lavoro"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Profilo di lavoro"</string>
-    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Qui puoi trovare le tue app di lavoro"</string>
-    <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"Ogni app di lavoro è contrassegnata da un badge e viene tenuta al sicuro dalla tua organizzazione. Sposta le app nella schermata Home per accedervi più facilmente."</string>
-    <string name="work_mode_on_label" msgid="4781128097185272916">"Gestito dalla tua organizzazione"</string>
-    <string name="work_mode_off_label" msgid="3194894777601421047">"Le notifiche e le app non sono attive"</string>
-    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"Chiudi"</string>
-    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"Chiusa"</string>
+    <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"I dati personali sono separati e non sono visibili nelle app di lavoro"</string>
+    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"I dati e le app di lavoro sono visibili all\'amministratore IT"</string>
+    <string name="work_profile_edu_next" msgid="8783418929296503629">"Avanti"</string>
+    <string name="work_profile_edu_accept" msgid="6069788082535149071">"OK"</string>
+    <string name="work_apps_paused_title" msgid="2389865654362803723">"Profilo di lavoro in pausa"</string>
+    <string name="work_apps_paused_body" msgid="2197210494568696054">"Le app di lavoro non possono inviarti notifiche, usare la tua batteria o accedere alla tua posizione"</string>
+    <string name="work_apps_paused_content_description" msgid="7553586952985486433">"Profilo di lavoro in pausa. Le app di lavoro non possono inviarti notifiche, usare la tua batteria o accedere alla tua posizione"</string>
+    <string name="work_switch_tip" msgid="808075064383839144">"Metti in pausa le app di lavoro e le relative notifiche"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Operazione non riuscita: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

@@ -20,8 +20,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name" msgid="649227358658669779">"Launcher3"</string>
-    <string name="folder_name" msgid="7371454440695724752"></string>
-    <string name="work_folder_name" msgid="3753320833950115786">"ਦਫ਼ਤਰ"</string>
+    <string name="work_folder_name" msgid="3753320833950115786">"ਕਾਰਜ-ਸਥਾਨ"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"ਐਪ ਇੰਸਟੌਲ ਨਹੀਂ ਕੀਤਾ ਹੋਇਆ ਹੈ।"</string>
     <string name="activity_not_available" msgid="7456344436509528827">"ਐਪ ਉਪਲਬਧ ਨਹੀਂ ਹੈ"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"ਡਾਊਨਲੋਡ ਕੀਤਾ ਐਪ ਸੁਰੱਖਿਅਤ ਮੋਡ ਵਿੱਚ ਅਸਮਰਥਿਤ"</string>
@@ -53,6 +52,8 @@
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"ਅਣਸਥਾਪਤ ਕਰੋ"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"ਐਪ ਜਾਣਕਾਰੀ"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"ਸਥਾਪਤ ਕਰੋ"</string>
+    <string name="dismiss_prediction_label" msgid="3357562989568808658">"ਐਪ ਦਾ ਸੁਝਾਅ ਨਾ ਦਿਓ"</string>
+    <string name="pin_prediction" msgid="4196423321649756498">"ਪਿੰਨ ਦਾ ਪੂਰਵ-ਅਨੁਮਾਨ"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"ਸ਼ਾਰਟਕੱਟ ਸਥਾਪਤ ਕਰੋ"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"ਇੱਕ ਐਪ ਨੂੰ ਵਰਤੋਂਕਾਰ ਦੇ ਦਖ਼ਲ ਤੋਂ ਬਿਨਾਂ ਸ਼ਾਰਟਕੱਟ ਸ਼ਾਮਲ ਕਰਨ ਦੀ ਆਗਿਆ ਦਿੰਦਾ ਹੈ।"</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"ਹੋਮ ਸੈਟਿੰਗਾਂ ਅਤੇ ਸ਼ਾਰਟਕੱਟ ਪੜ੍ਹੋ"</string>
@@ -63,7 +64,7 @@
     <string name="gadget_error_text" msgid="6081085226050792095">"ਵਿਜੇਟ ਲੋਡ ਕਰਨ ਵਿੱਚ ਸਮੱਸਿਆ"</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"ਸਥਾਪਤ ਕਰੋ"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"ਇਹ ਇੱਕ ਸਿਸਟਮ ਐਪ ਹੈ ਅਤੇ ਇਸਨੂੰ ਅਣਇੰਸਟੌਲ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ।"</string>
-    <string name="folder_hint_text" msgid="6617836969016293992">"ਬਿਨਾਂ ਨਾਮ ਦਿੱਤਾ ਫੋਲਡਰ"</string>
+    <string name="folder_hint_text" msgid="5174843001373488816">"ਨਾਮ ਦਾ ਸੰਪਾਦਨ ਕਰੋ"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> ਨੂੰ ਅਯੋਗ ਬਣਾਇਆ ਗਿਆ"</string>
     <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
       <item quantity="one"><xliff:g id="APP_NAME_2">%1$s</xliff:g> ਦੀ <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> ਸੂਚਨਾ</item>
@@ -92,7 +93,7 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"ਸੂਚਨਾ ਬਿੰਦੂਆਂ ਦਿਖਾਉਣ ਲਈ, <xliff:g id="NAME">%1$s</xliff:g> ਲਈ ਐਪ ਸੂਚਨਾਵਾਂ ਚਾਲੂ ਕਰੋ"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"ਸੈਟਿੰਗਾਂ ਬਦਲੋ"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"ਸੂਚਨਾ ਬਿੰਦੂ ਦਿਖਾਓ"</string>
-    <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"ਹੋਮ ਸਕ੍ਰੀਨ \'ਤੇ ਪ੍ਰਤੀਕ ਸ਼ਾਮਲ ਕਰੋ"</string>
+    <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"ਹੋਮ ਸਕ੍ਰੀਨ \'ਤੇ ਐਪ ਪ੍ਰਤੀਕਾਂ ਨੂੰ ਸ਼ਾਮਲ ਕਰੋ"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"ਨਵੀਆਂ ਐਪਾਂ ਲਈ"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"ਅਗਿਆਤ"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"ਹਟਾਓ"</string>
@@ -129,15 +130,18 @@
     <string name="action_deep_shortcut" msgid="2864038805849372848">"ਸ਼ਾਰਟਕੱਟ"</string>
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"ਸ਼ਾਰਟਕੱਟ ਅਤੇ ਸੂਚਨਾਵਾਂ"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"ਖਾਰਜ ਕਰੋ"</string>
+    <string name="accessibility_close" msgid="2277148124685870734">"ਬੰਦ ਕਰੋ"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"ਸੂਚਨਾ ਖਾਰਜ ਕੀਤੀ ਗਈ"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"ਨਿੱਜੀ"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"ਕਾਰਜ-ਸਥਾਨ"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"ਕਾਰਜ ਪ੍ਰੋਫਾਈਲ"</string>
-    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"ਕਾਰਜ-ਸਥਾਨ ਐਪਾਂ ਇੱਥੇ ਲੱਭੋ"</string>
-    <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"ਹਰੇਕ ਕਾਰਜ-ਸਥਾਨ ਐਪ ਦਾ ਇੱਕ ਬੈਜ ਹੁੰਦਾ ਹੈ ਅਤੇ ਉਸਨੂੰ ਤੁਹਾਡੀ ਸੰਸਥਾ ਵੱਲੋਂ ਸੁਰੱਖਿਅਤ ਰੱਖਿਆ ਜਾਂਦਾ ਹੈ। ਵਧੇਰੇ ਆਸਾਨ ਪਹੁੰਚ ਲਈ ਐਪਾਂ ਨੂੰ ਹੋਮ ਸਕ੍ਰੀਨ \'ਤੇ ਲਿਜਾਓ।"</string>
-    <string name="work_mode_on_label" msgid="4781128097185272916">"ਤੁਹਾਡੀ ਸੰਸਥਾ ਵੱਲੋਂ ਪ੍ਰਬੰਧਿਤ ਕੀਤਾ ਜਾਂਦਾ ਹੈ"</string>
-    <string name="work_mode_off_label" msgid="3194894777601421047">"ਸੂਚਨਾਵਾਂ ਅਤੇ ਐਪਾਂ ਬੰਦ ਹਨ"</string>
-    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"ਬੰਦ ਕਰੋ"</string>
-    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"ਬੰਦ ਕੀਤਾ ਗਿਆ"</string>
+    <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"ਨਿੱਜੀ ਡਾਟਾ ਕੰਮ ਸੰਬੰਧੀ ਐਪਾਂ ਤੋਂ ਵੱਖ ਅਤੇ ਲੁਕਾਇਆ ਹੋਇਆ ਹੈ"</string>
+    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"ਕੰਮ ਸੰਬੰਧੀ ਐਪਾਂ ਅਤੇ ਡਾਟਾ ਤੁਹਾਡੇ ਆਈ.ਟੀ. ਪ੍ਰਸ਼ਾਸਕ ਨੂੰ ਦਿਖਣਯੋਗ ਹੈ"</string>
+    <string name="work_profile_edu_next" msgid="8783418929296503629">"ਅੱਗੇ"</string>
+    <string name="work_profile_edu_accept" msgid="6069788082535149071">"ਸਮਝ ਲਿਆ"</string>
+    <string name="work_apps_paused_title" msgid="2389865654362803723">"ਕਾਰਜ ਪ੍ਰੋਫਾਈਲ ਨੂੰ ਰੋਕਿਆ ਗਿਆ ਹੈ"</string>
+    <string name="work_apps_paused_body" msgid="2197210494568696054">"ਕੰਮ ਸੰਬੰਧੀ ਐਪਾਂ ਤੁਹਾਨੂੰ ਸੂਚਨਾਵਾਂ ਨਹੀਂ ਭੇਜ ਸਕਦੀਆਂ, ਤੁਹਾਡੀ ਬੈਟਰੀ ਨਹੀਂ ਵਰਤ ਸਕਦੀਆਂ ਜਾਂ ਤੁਹਾਡੇ ਟਿਕਾਣੇ ਤੱਕ ਪਹੁੰਚ ਨਹੀਂ ਕਰ ਸਕਦੀਆਂ"</string>
+    <string name="work_apps_paused_content_description" msgid="7553586952985486433">"ਕਾਰਜ ਪ੍ਰੋਫਾਈਲ ਨੂੰ ਰੋਕਿਆ ਗਿਆ ਹੈ। ਕੰਮ ਸੰਬੰਧੀ ਐਪਾਂ ਤੁਹਾਨੂੰ ਸੂਚਨਾਵਾਂ ਨਹੀਂ ਭੇਜ ਸਕਦੀਆਂ, ਤੁਹਾਡੀ ਬੈਟਰੀ ਨਹੀਂ ਵਰਤ ਸਕਦੀਆਂ ਜਾਂ ਤੁਹਾਡੇ ਟਿਕਾਣੇ ਤੱਕ ਪਹੁੰਚ ਨਹੀਂ ਕਰ ਸਕਦੀਆਂ"</string>
+    <string name="work_switch_tip" msgid="808075064383839144">"ਕੰਮ ਸੰਬੰਧੀ ਐਪਾਂ ਅਤੇ ਸੂਚਨਾਵਾਂ ਨੂੰ ਰੋਕੋ"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"ਇਹ ਕਾਰਵਾਈ ਅਸਫਲ ਹੋਈ: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>
