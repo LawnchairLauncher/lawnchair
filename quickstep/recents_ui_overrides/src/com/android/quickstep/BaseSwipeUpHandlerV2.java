@@ -421,7 +421,7 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
     }
 
     protected void notifyGestureAnimationStartToRecents() {
-        mRecentsView.onGestureAnimationStart(mGestureState.getRunningTaskId());
+        mRecentsView.onGestureAnimationStart(mGestureState.getRunningTask());
     }
 
     private void launcherFrameDrawn() {
