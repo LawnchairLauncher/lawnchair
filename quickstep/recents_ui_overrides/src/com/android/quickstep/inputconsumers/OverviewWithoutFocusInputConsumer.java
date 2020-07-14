@@ -19,7 +19,6 @@ import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOME_GESTURE;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.PointF;
 import android.view.MotionEvent;
 
@@ -80,9 +79,7 @@ public class OverviewWithoutFocusInputConsumer implements InputConsumer,
 
     @Override
     public void onSwipeUp(boolean wasFling, PointF finalVelocity) {
-        mContext.startActivity(new Intent(Intent.ACTION_MAIN)
-                .addCategory(Intent.CATEGORY_HOME)
-                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+        mContext.startActivity(mGestureState.getHomeIntent());
         ActiveGestureLog.INSTANCE.addLog("startQuickstep");
         BaseActivity activity = BaseDraggingActivity.fromContext(mContext);
         int pageIndex = -1; // This number doesn't reflect workspace page index.
