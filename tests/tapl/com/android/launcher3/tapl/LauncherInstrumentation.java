@@ -152,6 +152,7 @@ public final class LauncherInstrumentation {
     private static final String WIDGETS_RES_ID = "widgets_list_view";
     private static final String CONTEXT_MENU_RES_ID = "deep_shortcuts_container";
     public static final int WAIT_TIME_MS = 10000;
+    public static final int LONG_WAIT_TIME_MS = 60000;
     private static final String SYSTEMUI_PACKAGE = "com.android.systemui";
 
     private static WeakReference<VisibleContainer> sActiveContainer = new WeakReference<>(null);
@@ -638,7 +639,7 @@ public final class LauncherInstrumentation {
             Log.d(TestProtocol.NO_SCROLL_END_WIDGETS, "executeAndWaitForEvent: before");
             final AccessibilityEvent event =
                     mInstrumentation.getUiAutomation().executeAndWaitForEvent(
-                            command, eventFilter, WAIT_TIME_MS);
+                            command, eventFilter, LONG_WAIT_TIME_MS);
             Log.d(TestProtocol.NO_SCROLL_END_WIDGETS, "executeAndWaitForEvent: after");
             assertNotNull("executeAndWaitForEvent returned null (this can't happen)", event);
             final Parcelable parcelableData = event.getParcelableData();
