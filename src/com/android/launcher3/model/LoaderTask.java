@@ -126,6 +126,8 @@ public class LoaderTask implements Runnable {
 
     private final UserManagerState mUserManagerState = new UserManagerState();
 
+    protected Map<ComponentKey, AppWidgetProviderInfo> mWidgetProvidersMap;
+
     private boolean mStopped;
 
     public LoaderTask(LauncherAppState app, AllAppsList bgAllAppsList, BgDataModel dataModel,
@@ -341,8 +343,6 @@ public class LoaderTask implements Runnable {
             final LoaderCursor c = new LoaderCursor(
                     contentResolver.query(contentUri, null, null, null, null), contentUri, mApp,
                     mUserManagerState);
-
-            Map<ComponentKey, AppWidgetProviderInfo> widgetProvidersMap = null;
 
             try {
                 final int appWidgetIdIndex = c.getColumnIndexOrThrow(
@@ -650,10 +650,11 @@ public class LoaderTask implements Runnable {
                             final boolean wasProviderReady = !c.hasRestoreFlag(
                                     LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY);
 
-                            if (widgetProvidersMap == null) {
-                                widgetProvidersMap = WidgetManagerHelper.getAllProvidersMap(context);
+                            if (mWidgetProvidersMap == null) {
+                                mWidgetProvidersMap = WidgetManagerHelper.getAllProvidersMap(
+                                        context);
                             }
-                            final AppWidgetProviderInfo provider = widgetProvidersMap.get(
+                            final AppWidgetProviderInfo provider = mWidgetProvidersMap.get(
                                     new ComponentKey(component, c.user));
 
                             final boolean isProviderReady = isValidProvider(provider);
