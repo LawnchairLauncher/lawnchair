@@ -96,6 +96,7 @@ public interface PagedOrientationHandler {
     int getTaskMenuWidth(View view);
     int getTaskMenuLayoutOrientation(LinearLayout taskMenuLayout);
     void setLayoutParamsForTaskMenuOptionItem(LinearLayout.LayoutParams lp);
+    int getDistanceToBottomOfRect(DeviceProfile dp, Rect rect);
 
     /**
      * Maps the velocity from the coordinate plane of the foreground app to that

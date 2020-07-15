@@ -53,8 +53,8 @@
             android:resizeableActivity="true"
             android:resumeWhilePausing="true"
             android:taskAffinity=""
-            android:enabled="true"
-            android:exported="true">
+            android:exported="true"
+            android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.HOME" />

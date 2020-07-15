@@ -23,7 +23,6 @@ import android.os.UserHandle;
 
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.shortcuts.ShortcutRequest;
@@ -73,27 +72,27 @@ public class UserLockStateChangedTask extends BaseModelUpdateTask {
         ArrayList<WorkspaceItemInfo> updatedWorkspaceItemInfos = new ArrayList<>();
         HashSet<ShortcutKey> removedKeys = new HashSet<>();
 
-        for (ItemInfo itemInfo : dataModel.itemsIdMap) {
-            if (itemInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT
-                    && mUser.equals(itemInfo.user)) {
-                WorkspaceItemInfo si = (WorkspaceItemInfo) itemInfo;
-                if (mIsUserUnlocked) {
-                    ShortcutKey key = ShortcutKey.fromItemInfo(si);
-                    ShortcutInfo shortcut = pinnedShortcuts.get(key);
-                    // We couldn't verify the shortcut during loader. If its no longer available
-                    // (probably due to clear data), delete the workspace item as well
-                    if (shortcut == null) {
-                        removedKeys.add(key);
-                        continue;
+        synchronized (dataModel) {
+            dataModel.forAllWorkspaceItemInfos(mUser, si -> {
+                if (si.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
+                    if (mIsUserUnlocked) {
+                        ShortcutKey key = ShortcutKey.fromItemInfo(si);
+                        ShortcutInfo shortcut = pinnedShortcuts.get(key);
+                        // We couldn't verify the shortcut during loader. If its no longer available
+                        // (probably due to clear data), delete the workspace item as well
+                        if (shortcut == null) {
+                            removedKeys.add(key);
+                            return;
+                        }
+                        si.runtimeStatusFlags &= ~FLAG_DISABLED_LOCKED_USER;
+                        si.updateFromDeepShortcutInfo(shortcut, context);
+                        app.getIconCache().getShortcutIcon(si, shortcut);
+                    } else {
+                        si.runtimeStatusFlags |= FLAG_DISABLED_LOCKED_USER;
                     }
-                    si.runtimeStatusFlags &= ~FLAG_DISABLED_LOCKED_USER;
-                    si.updateFromDeepShortcutInfo(shortcut, context);
-                    app.getIconCache().getShortcutIcon(si, shortcut);
-                } else {
-                    si.runtimeStatusFlags |= FLAG_DISABLED_LOCKED_USER;
+                    updatedWorkspaceItemInfos.add(si);
                 }
-                updatedWorkspaceItemInfos.add(si);
-            }
+            });
         }
         bindUpdatedWorkspaceItems(updatedWorkspaceItemInfos);
         if (!removedKeys.isEmpty()) {

@@ -58,7 +58,7 @@ import com.android.launcher3.pm.InstallSessionTracker;
 import com.android.launcher3.pm.PackageInstallInfo;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.shortcuts.ShortcutRequest;
-import com.android.launcher3.util.IntSparseArrayMap;
+import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.PackageUserKey;
@@ -410,7 +410,7 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
         enqueueModelUpdateTask(new BaseModelUpdateTask() {
             @Override
             public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
-                final IntSparseArrayMap<Boolean> removedIds = new IntSparseArrayMap<>();
+                final IntSet removedIds = new IntSet();
                 synchronized (dataModel) {
                     for (ItemInfo info : dataModel.itemsIdMap) {
                         if (info instanceof WorkspaceItemInfo
@@ -418,13 +418,13 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
                                 && user.equals(info.user)
                                 && info.getIntent() != null
                                 && TextUtils.equals(packageName, info.getIntent().getPackage())) {
-                            removedIds.put(info.id, true /* remove */);
+                            removedIds.add(info.id);
                         }
                     }
                 }
 
                 if (!removedIds.isEmpty()) {
-                    deleteAndBindComponentsRemoved(ItemInfoMatcher.ofItemIds(removedIds, false));
+                    deleteAndBindComponentsRemoved(ItemInfoMatcher.ofItemIds(removedIds));
                 }
             }
         });
