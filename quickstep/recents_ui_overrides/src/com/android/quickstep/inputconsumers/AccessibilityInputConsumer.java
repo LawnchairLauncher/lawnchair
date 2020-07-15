@@ -99,7 +99,8 @@ public class AccessibilityInputConsumer extends DelegateInputConsumer {
             case ACTION_POINTER_DOWN: {
                 if (mState == STATE_INACTIVE) {
                     int pointerIndex = ev.getActionIndex();
-                    if (mDeviceState.isInSwipeUpTouchRegion(ev, pointerIndex)
+                    if (mDeviceState.getRotationTouchHelper()
+                            .isInSwipeUpTouchRegion(ev, pointerIndex)
                             && mDelegate.allowInterceptByParent()) {
                         setActive(ev);
 

@@ -140,7 +140,7 @@ public final class FallbackActivityInterface extends
     }
 
     @Override
-    public void onExitOverview(RecentsAnimationDeviceState deviceState, Runnable exitRunnable) {
+    public void onExitOverview(RotationTouchHelper deviceState, Runnable exitRunnable) {
         // no-op, fake landscape not supported for 3P
     }
 

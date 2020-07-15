@@ -150,7 +150,7 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
         return deviceState.isInDeferredGestureRegion(ev);
     }
 
-    public abstract void onExitOverview(RecentsAnimationDeviceState deviceState,
+    public abstract void onExitOverview(RotationTouchHelper deviceState,
             Runnable exitRunnable);
 
     /**
