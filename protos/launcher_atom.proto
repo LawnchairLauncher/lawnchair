@@ -131,6 +131,7 @@ message Application {
 // Legacy shortcuts and shortcuts handled by ShortcutManager
 message Shortcut {
   optional string shortcut_name = 1;
+  optional string shortcut_id = 2;
 }
 
 // AppWidgets handled by AppWidgetManager

@@ -59,6 +59,7 @@ import android.view.ViewTreeObserver.OnDrawListener;
 import android.view.WindowInsets;
 import android.view.animation.Interpolator;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
 import com.android.launcher3.AbstractFloatingView;
@@ -69,6 +70,7 @@ import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.logging.StatsLogManager;
+import com.android.launcher3.logging.StatsLogManager.StatsLogger;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
@@ -876,22 +878,7 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
         animateToProgress(startShift, endShift, duration, interpolator, endTarget, velocityPxPerMs);
     }
 
-    private void doLogGesture(GestureEndTarget endTarget) {
-        DeviceProfile dp = mDp;
-        if (dp == null || mDownPos == null) {
-            // We probably never received an animation controller, skip logging.
-            return;
-        }
-
-        int pageIndex = endTarget == LAST_TASK
-                ? LOG_NO_OP_PAGE_INDEX
-                : mRecentsView.getNextPage();
-        UserEventDispatcher.newInstance(mContext).logStateChangeAction(
-                mLogAction, mLogDirection,
-                (int) mDownPos.x, (int) mDownPos.y,
-                ContainerType.NAVBAR, ContainerType.APP,
-                endTarget.containerType,
-                pageIndex);
+    private void doLogGesture(GestureEndTarget endTarget, @Nullable TaskView targetTask) {
         StatsLogManager.EventEnum event;
         switch (endTarget) {
             case HOME:
@@ -909,10 +896,29 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
             default:
                 event = IGNORE;
         }
-        StatsLogManager.newInstance(mContext).logger()
+        StatsLogger logger = StatsLogManager.newInstance(mContext).logger()
                 .withSrcState(LAUNCHER_STATE_BACKGROUND)
-                .withDstState(StatsLogManager.containerTypeToAtomState(endTarget.containerType))
-                .log(event);
+                .withDstState(StatsLogManager.containerTypeToAtomState(endTarget.containerType));
+        if (targetTask != null) {
+            logger.withItemInfo(targetTask.getItemInfo());
+        }
+        logger.log(event);
+
+
+        DeviceProfile dp = mDp;
+        if (dp == null || mDownPos == null) {
+            // We probably never received an animation controller, skip logging.
+            return;
+        }
+        int pageIndex = endTarget == LAST_TASK
+                ? LOG_NO_OP_PAGE_INDEX
+                : mRecentsView.getNextPage();
+        UserEventDispatcher.newInstance(mContext).logStateChangeAction(
+                mLogAction, mLogDirection,
+                (int) mDownPos.x, (int) mDownPos.y,
+                ContainerType.NAVBAR, ContainerType.APP,
+                endTarget.containerType,
+                pageIndex);
     }
 
     /** Animates to the given progress, where 0 is the current app and 1 is overview. */
@@ -1117,7 +1123,7 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
     private void resumeLastTask() {
         mRecentsAnimationController.finish(false /* toRecents */, null);
         ActiveGestureLog.INSTANCE.addLog("finishRecentsAnimation", false);
-        doLogGesture(LAST_TASK);
+        doLogGesture(LAST_TASK, null);
         reset();
     }
 
@@ -1132,6 +1138,7 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
 
     @UiThread
     private void startNewTaskInternal() {
+        TaskView taskToLaunch = mRecentsView == null ? null : mRecentsView.getNextPageTaskView();
         startNewTask(success -> {
             if (!success) {
                 reset();
@@ -1140,7 +1147,7 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
                 endLauncherTransitionController();
                 updateSysUiFlags(1 /* windowProgress == overview */);
             }
-            doLogGesture(NEW_TASK);
+            doLogGesture(NEW_TASK, taskToLaunch);
         });
     }
 
@@ -1285,7 +1292,7 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
                     () -> mStateCallback.setStateOnUiThread(STATE_CURRENT_TASK_FINISHED));
         }
         ActiveGestureLog.INSTANCE.addLog("finishRecentsAnimation", true);
-        doLogGesture(HOME);
+        doLogGesture(HOME, mRecentsView == null ? null : mRecentsView.getCurrentPageTaskView());
     }
 
     protected abstract void finishRecentsControllerToHome(Runnable callback);
@@ -1300,7 +1307,7 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
         mRecentsView.onSwipeUpAnimationSuccess();
 
         SystemUiProxy.INSTANCE.get(mContext).onOverviewShown(false, TAG);
-        doLogGesture(RECENTS);
+        doLogGesture(RECENTS, mRecentsView.getCurrentPageTaskView());
         reset();
     }
 
