@@ -20,11 +20,10 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name" msgid="649227358658669779">"Launcher3"</string>
-    <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="work_folder_name" msgid="3753320833950115786">"कार्य"</string>
-    <string name="activity_not_found" msgid="8071924732094499514">"अनुप्रयोग स्थापित छैन।"</string>
-    <string name="activity_not_available" msgid="7456344436509528827">"अनुप्रयोग उपलब्ध छैन"</string>
-    <string name="safemode_shortcut_error" msgid="9160126848219158407">"सुरक्षित मोडमा डाउनलोड गरेको अनुप्रयोग अक्षम गरिएको छ"</string>
+    <string name="activity_not_found" msgid="8071924732094499514">"एप स्थापित छैन।"</string>
+    <string name="activity_not_available" msgid="7456344436509528827">"एप उपलब्ध छैन"</string>
+    <string name="safemode_shortcut_error" msgid="9160126848219158407">"सुरक्षित मोडमा डाउनलोड गरेको एप अक्षम गरिएको छ"</string>
     <string name="safemode_widget_error" msgid="4863470563535682004">"सुरक्षित मोडमा विगेटहरू अक्षम गरियो"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"सर्टकट उपलब्ध छैन"</string>
     <string name="home_screen" msgid="806512411299847073">"गृह स्क्रिन"</string>
@@ -35,35 +34,37 @@
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d चौडाइ गुणा %2$d उचाइ"</string>
     <string name="add_item_request_drag_hint" msgid="5899764264480397019">"म्यानुअल तरिकाले थप्न छुनुहोस् र थिची राख्नुहोस्‌"</string>
     <string name="place_automatically" msgid="8064208734425456485">"स्वतः थप्नुहोस्"</string>
-    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"खोजसम्बन्धी अनुप्रयोगहरू"</string>
-    <string name="all_apps_loading_message" msgid="5813968043155271636">"अनुप्रयोगहरू लोड गर्दै…"</string>
-    <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" सँग मिल्दो कुनै अनुप्रयोग भेटिएन"</string>
-    <string name="all_apps_search_market_message" msgid="1366263386197059176">"थप अनुप्रयोगहरू खोज्नुहोस्"</string>
-    <string name="label_application" msgid="8531721983832654978">"अनुप्रयोग"</string>
+    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"खोजसम्बन्धी एपहरू"</string>
+    <string name="all_apps_loading_message" msgid="5813968043155271636">"एपहरू लोड गर्दै…"</string>
+    <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" सँग मिल्दो कुनै एप भेटिएन"</string>
+    <string name="all_apps_search_market_message" msgid="1366263386197059176">"थप एपहरू खोज्नुहोस्"</string>
+    <string name="label_application" msgid="8531721983832654978">"एप"</string>
     <string name="notifications_header" msgid="1404149926117359025">"सूचनाहरू"</string>
     <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"कुनै सर्टकट छनौट गर्न छोइराख्नुहोस्।"</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"कुनै सर्टकट छनौट गर्न वा रोजेका कारबाहीहरू प्रयोग गर्न डबल ट्याप गरेर छोइराख्नुहोस्।"</string>
     <string name="out_of_space" msgid="4691004494942118364">"यो गृह स्क्रिनमा कुनै थप ठाउँ छैन।"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"मन पर्ने ट्रे अब कुनै ठाँउ छैन"</string>
-    <string name="all_apps_button_label" msgid="8130441508702294465">"अनुप्रयोगको सूची"</string>
+    <string name="all_apps_button_label" msgid="8130441508702294465">"एपको सूची"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"व्यक्तिगत अनुप्रयोगहरूको सूची"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"कार्यसम्बन्धी अनुप्रयोगहरूको सूची"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"गृह"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"हटाउनुहोस्"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"विस्थापित गर्नुहोस्"</string>
-    <string name="app_info_drop_target_label" msgid="692894985365717661">"अनुप्रयोग जानकारी"</string>
+    <string name="app_info_drop_target_label" msgid="692894985365717661">"एपको जानकारी"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"स्थापना गर्नुहोस्"</string>
+    <string name="dismiss_prediction_label" msgid="3357562989568808658">"यो एप सिफारिस नगरियोस्"</string>
+    <string name="pin_prediction" msgid="4196423321649756498">"सिफारिस गरिएको एप पिन गर्नुहोस्"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"सर्टकट स्थापना गर्नेहोस्"</string>
-    <string name="permdesc_install_shortcut" msgid="923466509822011139">"प्रयोगकर्ताको हस्तक्षेप बिना एउटा अनुप्रयोगलाई सर्टकटमा थप्नको लागि अनुमति दिनुहोस्।"</string>
+    <string name="permdesc_install_shortcut" msgid="923466509822011139">"प्रयोगकर्ताको हस्तक्षेप बिना एउटा एपलाई सर्टकटमा थप्नको लागि अनुमति दिनुहोस्।"</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"गृह सेटिङहरू र सर्टकटहरू पढ्नुहोस्"</string>
-    <string name="permdesc_read_settings" msgid="5833423719057558387">"गृहमा एउटा अनुप्रयोगलाई सेटिङहरू र सर्टकटहरू पढ्न अनुमति दिनुहोस्।"</string>
+    <string name="permdesc_read_settings" msgid="5833423719057558387">"गृहमा एउटा एपलाई सेटिङहरू र सर्टकटहरू पढ्न अनुमति दिनुहोस्।"</string>
     <string name="permlab_write_settings" msgid="3574213698004620587">"गृह सेटिङहरू र सर्टकटहरू लेख्नुहोस्"</string>
-    <string name="permdesc_write_settings" msgid="5440712911516509985">"गृहमा एउटा अनुप्रयोगलाई सेटिङ र सर्टकट बदल्न अनुमति दिनुहोस्।"</string>
+    <string name="permdesc_write_settings" msgid="5440712911516509985">"गृहमा एउटा एपलाई सेटिङ र सर्टकट बदल्न अनुमति दिनुहोस्।"</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> ले फोन कलहरू गर्न अनुमति छैन"</string>
     <string name="gadget_error_text" msgid="6081085226050792095">"समस्या लोडिङ गर्ने विजेट"</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"सेटअप"</string>
-    <string name="uninstall_system_app_text" msgid="4172046090762920660">"यो प्रणाली अनुप्रयोग हो र यसलाई स्थापना रद्द गर्न सकिँदैन।"</string>
-    <string name="folder_hint_text" msgid="6617836969016293992">"बेनाम फोल्डर"</string>
+    <string name="uninstall_system_app_text" msgid="4172046090762920660">"यो प्रणाली एप हो र यसलाई स्थापना रद्द गर्न सकिँदैन।"</string>
+    <string name="folder_hint_text" msgid="5174843001373488816">"नाम सम्पादन गर्नुहोस्"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"असक्षम पारिएको <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
     <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
       <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g>, का <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> सूचनाहरू छन्</item>
@@ -92,13 +93,13 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"सूचनाको प्रतीक जनाउने थोप्लाहरू देखाउन <xliff:g id="NAME">%1$s</xliff:g> को अनुप्रयोगसम्बन्धी सूचनाहरूलाई सक्रिय गर्नुहोस्"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"सेटिङहरू बदल्नुहोस्"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"सूचनाको प्रतीक जनाउने थोप्लाहरू देखाउनुहोस्"</string>
-    <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"गृह स्क्रिनमा आइकन थप्नुहोस्"</string>
+    <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"गृह स्क्रिनमा एपका आइकनहरू थप्नुहोस्"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"नयाँ अनुप्रयोगका लागि"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"अज्ञात"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"हटाउनुहोस्"</string>
     <string name="abandoned_search" msgid="891119232568284442">"खोजी गर्नुहोस्"</string>
-    <string name="abandoned_promises_title" msgid="7096178467971716750">"यो अनुप्रयोग स्थापित छैन"</string>
-    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"यो प्रतिमाका लागि अनुप्रयोगलाई स्थापना गरिएको छैन। तपाईं यसलाई हटाउन, वा अनुप्रयोग खोजी र स्वयं यो स्थापित गर्न सक्नुहुन्छ।"</string>
+    <string name="abandoned_promises_title" msgid="7096178467971716750">"यो एप स्थापित छैन"</string>
+    <string name="abandoned_promise_explanation" msgid="3990027586878167529">"यो प्रतिमाका लागि एपलाई स्थापना गरिएको छैन। तपाईं यसलाई हटाउन, वा एप खोजी र स्वयं यो स्थापित गर्न सक्नुहुन्छ।"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> डाउनलोड गर्दै, <xliff:g id="PROGRESS">%2$s</xliff:g> सम्पन्‍न"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> स्थापना गर्न प्रतीक्षा गर्दै"</string>
     <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"<xliff:g id="NAME">%1$s</xliff:g> विजेटहरू"</string>
@@ -129,15 +130,18 @@
     <string name="action_deep_shortcut" msgid="2864038805849372848">"सर्टकटहरू"</string>
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"सर्टकट तथा सूचनाहरू"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"खारेज गर्नुहोस्"</string>
+    <string name="accessibility_close" msgid="2277148124685870734">"बन्द गर्नुहोस्"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"सूचना खारेज गरियो"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"व्यक्तिगत"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"कार्यसम्बन्धी"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"कार्य प्रोफाइल"</string>
-    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"कार्यसम्बन्धी अनुप्रयोगहरू यहाँ प्राप्त गर्नुहोस्"</string>
-    <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"कार्यसम्बन्धी प्रत्येक अनुप्रयोगमा एउटा ब्याज छ र तपाईंको संगठनले यसलाई सुरक्षित राखेको छ । अझ सजिलो गरी पहुँच राख्नका लागि अनुप्रयोगहरूलाई आफ्नो गृहस्क्रिनमा सार्नुहोस्‌।"</string>
-    <string name="work_mode_on_label" msgid="4781128097185272916">"तपाईंको सङ्गठनले व्यवस्थापन गरेको"</string>
-    <string name="work_mode_off_label" msgid="3194894777601421047">"सूचना र अनुप्रयोगहरू निष्क्रिय छन्‌"</string>
-    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"बन्द गर्नुहोस्"</string>
-    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"बन्द गरियो"</string>
+    <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"व्यक्तिगत डेटा कामसम्बन्धी एपहरूबाट लुकाएर छुट्टै राखिन्छ"</string>
+    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"तपाईंका IT एड्मिनले कामसम्पबन्धी एपहरू र डेटा हेर्न सक्छन्"</string>
+    <string name="work_profile_edu_next" msgid="8783418929296503629">"अर्को"</string>
+    <string name="work_profile_edu_accept" msgid="6069788082535149071">"बुझेँ"</string>
+    <string name="work_apps_paused_title" msgid="2389865654362803723">"कार्यालयको प्रोफाइल अस्थायी रूपमा रोक्का गरिएको छ"</string>
+    <string name="work_apps_paused_body" msgid="2197210494568696054">"कामसम्बन्धी एपहरूले तपाईंलाई सूचना पठाउन, तपाईंको यन्त्रको ब्याट्री प्रयोग गर्न वा तपाईंको स्थान हेर्न सक्दैनन्"</string>
+    <string name="work_apps_paused_content_description" msgid="7553586952985486433">"कार्यालयको प्रोफाइल अस्थायी रूपमा रोक्का गरिएको छ। कामसम्बन्धी एपहरूले तपाईंलाई सूचना पठाउन, तपाईंको यन्त्रको ब्याट्री प्रयोग गर्न वा तपाईंको स्थान हेर्न सक्दैनन्"</string>
+    <string name="work_switch_tip" msgid="808075064383839144">"कामसम्बन्धी एप र सूचनाहरू अस्थायी रूपमा रोक्का गर्नुहोस्"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"कार्य पूरा गर्न सकिएन: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

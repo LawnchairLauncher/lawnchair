@@ -22,9 +22,7 @@
     <string name="recent_task_option_split_screen" msgid="5353188922202653570">"विभाजित स्क्रीन"</string>
     <string name="recent_task_option_pin" msgid="7929860679018978258">"पिन करा"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"फ्रीफॉर्म"</string>
-    <string name="accessibility_desc_recent_apps" msgid="1444379410873162882">"अवलोकन"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"कोणतेही अलीकडील आयटम नाहीत"</string>
-    <string name="accessibility_close_task" msgid="5354563209433803643">"बंद"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"अ‍ॅप वापर सेटिंग्ज"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"सर्व साफ करा"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"अलीकडील अ‍ॅप्स"</string>
@@ -34,4 +32,19 @@
     <string name="title_app_suggestions" msgid="4185902664111965088">"अ‍ॅप सूचना"</string>
     <string name="all_apps_label" msgid="8542784161730910663">"सर्व अ‍ॅप्स"</string>
     <string name="all_apps_prediction_tip" msgid="2672336544844936186">"तुमची पूर्वानुमानीत अ‍ॅप्स"</string>
+    <string name="hotseat_edu_prompt_title" msgid="5595771595144175752">"तुमची सर्वाधिक वापरली जाणारी अ‍ॅप्स सहजपणे अ‍ॅक्सेस करा"</string>
+    <string name="hotseat_edu_prompt_content" msgid="5709176001504149521">"तुमच्या होम स्क्रीनवरच, Pixel तुम्हाला पुढे लागणार असलेल्या अ‍ॅप्सचे पूर्वानुमान करते. सेट करण्यासाठी टॅप करा."</string>
+    <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"तुमच्या होम स्क्रीनच्या तळाच्या पंक्तीवर अ‍ॅप सूचना मिळवा"</string>
+    <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"तुमची सर्वाधिक वापरली जाणारी अ‍ॅप्स होम स्क्रीनवरच सहजपणे अ‍ॅक्सेस करा. सूचना तुमच्या दिनक्रमांच्या आधारावर बदलतील. तळाच्या पंक्तीवरील अ‍ॅप्स तुमच्या होम स्क्रीनवर जातील."</string>
+    <string name="hotseat_edu_message_migrate_alt" msgid="3042360119039646356">"तुमची सर्वाधिक वापरली जाणारी अ‍ॅप्स होम स्क्रीनवरच सहजपणे अ‍ॅक्सेस करा. सूचना तुमच्या दिनक्रमांच्या आधारावर बदलतील. तळाच्या पंक्तीवरील अ‍ॅप्स नवीन फोल्डरवर जातील."</string>
+    <string name="hotseat_edu_accept" msgid="1611544083278999837">"अ‍ॅप सूचना मिळवा"</string>
+    <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"नाही, नको"</string>
+    <string name="hotseat_turn_off" msgid="7808360330229368470">"सेटिंग्ज"</string>
+    <string name="hotseat_auto_enrolled" msgid="522100018967146807">"सर्वाधिक वापरली जाणारी अ‍ॅप्स येथे दिसतात आणि दिनक्रमांच्या आधारावर बदलतात"</string>
+    <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"अ‍ॅप सूचना मिळवण्यासाठी तळाच्या पंक्तीवरून अ‍ॅप्स ड्रॅग करा"</string>
+    <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"रिकाम्या जागेवर जोडलेल्या अ‍ॅप सूचना"</string>
+    <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"पूर्वानुमान केलेले अ‍ॅप: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
+    <string name="action_share" msgid="2648470652637092375">"शेअर करा"</string>
+    <string name="action_screenshot" msgid="8171125848358142917">"स्क्रीनशॉट"</string>
+    <string name="blocked_by_policy" msgid="2071401072261365546">"अ‍ॅप किंवा तुमच्या संस्थेद्वारे ही क्रिया करण्याची अनुमती नाही"</string>
 </resources>

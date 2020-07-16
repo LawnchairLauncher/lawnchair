@@ -20,7 +20,6 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name" msgid="649227358658669779">"Lanceur3"</string>
-    <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="work_folder_name" msgid="3753320833950115786">"Travail"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"L\'application n\'est pas installée."</string>
     <string name="activity_not_available" msgid="7456344436509528827">"Application indisponible"</string>
@@ -53,6 +52,8 @@
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Désinstaller"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"Détails de l\'application"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"Installer"</string>
+    <string name="dismiss_prediction_label" msgid="3357562989568808658">"Ne pas suggérer d\'application"</string>
+    <string name="pin_prediction" msgid="4196423321649756498">"Prédiction d\'épinglage"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"installer des raccourcis"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Permet à une application d\'ajouter des raccourcis sans l\'intervention de l\'utilisateur."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"lire les paramètres et les raccourcis de la page d\'accueil"</string>
@@ -63,7 +64,7 @@
     <string name="gadget_error_text" msgid="6081085226050792095">"Problème lors du chargement du widget"</string>
     <string name="gadget_setup_text" msgid="8274003207686040488">"Configuration"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Impossible de désinstaller cette application, car il s\'agit d\'une application système."</string>
-    <string name="folder_hint_text" msgid="6617836969016293992">"Dossier sans nom"</string>
+    <string name="folder_hint_text" msgid="5174843001373488816">"Modifier le nom"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"L\'application <xliff:g id="APP_NAME">%1$s</xliff:g> est désactivée"</string>
     <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
       <item quantity="one"><xliff:g id="APP_NAME_2">%1$s</xliff:g> a <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> notification</item>
@@ -92,7 +93,7 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Pour afficher les points de notification, activez les notifications d\'application pour <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Modifier les paramètres"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Afficher les points de notification"</string>
-    <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Ajouter l\'icône à l\'écran d\'accueil"</string>
+    <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"Ajouter icônes d\'applis à l\'écran d\'acc."</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Pour les nouvelles applications"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Inconnu"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Supprimer"</string>
@@ -129,15 +130,18 @@
     <string name="action_deep_shortcut" msgid="2864038805849372848">"Raccourcis"</string>
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"Raccourcis et notifications"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Ignorer"</string>
+    <string name="accessibility_close" msgid="2277148124685870734">"Fermer"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Notification ignorée"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Personnel"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Travail"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Profil professionnel"</string>
-    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Trouvez ici des applications professionnelles"</string>
-    <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"Chaque application professionnelle comporte un badge, ce qui signifie qu\'elle est sécurisée par votre organisation. Vous pouvez déplacer vos applications vers l\'écran d\'accueil afin d\'y accéder plus facilement."</string>
-    <string name="work_mode_on_label" msgid="4781128097185272916">"Géré par votre organisation"</string>
-    <string name="work_mode_off_label" msgid="3194894777601421047">"Les notifications et les applications sont désactivées"</string>
-    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"Fermer"</string>
-    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"Fermé"</string>
+    <string name="work_profile_edu_personal_apps" msgid="4155536355149317441">"Les données personnelles sont distinctes et masquées des applications professionnelles"</string>
+    <string name="work_profile_edu_work_apps" msgid="237051938268703058">"Les applications et les données professionnelles sont visibles pour votre administrateur informatique"</string>
+    <string name="work_profile_edu_next" msgid="8783418929296503629">"Suivant"</string>
+    <string name="work_profile_edu_accept" msgid="6069788082535149071">"OK"</string>
+    <string name="work_apps_paused_title" msgid="2389865654362803723">"Le profil professionnel est interrompu"</string>
+    <string name="work_apps_paused_body" msgid="2197210494568696054">"Les applications professionnelles ne peuvent pas vous envoyer de notifications, utiliser la pile ni accéder à votre position"</string>
+    <string name="work_apps_paused_content_description" msgid="7553586952985486433">"Le profil professionnel est interrompu. Les applications professionnelles ne peuvent pas vous envoyer de notifications, utiliser la pile ni accéder à votre position"</string>
+    <string name="work_switch_tip" msgid="808075064383839144">"Interrompre les applications et les notifications professionnelles"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Échec : <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>
