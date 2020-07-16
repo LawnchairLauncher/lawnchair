@@ -28,7 +28,6 @@ import android.widget.TextView.OnEditorActionListener;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.ExtendedEditText;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageManagerHelper;
 
@@ -112,8 +111,8 @@ public class AllAppsSearchBarController
             return false;
         }
         return mLauncher.startActivitySafely(v,
-                PackageManagerHelper.getMarketSearchIntent(mLauncher, query), null,
-                AppLaunchTracker.CONTAINER_SEARCH);
+                PackageManagerHelper.getMarketSearchIntent(mLauncher, query), null
+        );
     }
 
     @Override
