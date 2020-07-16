@@ -397,7 +397,8 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
                 mOnDeferredActivityLaunch);
 
         mGestureState.runOnceAtState(STATE_END_TARGET_SET,
-                () -> mDeviceState.onEndTargetCalculated(mGestureState.getEndTarget(),
+                () -> mDeviceState.getRotationTouchHelper().
+                        onEndTargetCalculated(mGestureState.getEndTarget(),
                         mActivityInterface));
 
         notifyGestureStartedAsync();
