@@ -258,6 +258,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
 
     private static boolean sConnected = false;
     private static boolean sIsInitialized = false;
+    private RotationTouchHelper mRotationTouchHelper;
 
     public static boolean isConnected() {
         return sConnected;
@@ -298,6 +299,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
         mDeviceState = new RecentsAnimationDeviceState(this);
         mDeviceState.addNavigationModeChangedCallback(this::onNavigationModeChanged);
         mDeviceState.runOnUserUnlocked(this::onUserUnlocked);
+        mRotationTouchHelper = mDeviceState.getRotationTouchHelper();
         ProtoTracer.INSTANCE.get(this).add(this);
 
         sConnected = true;
@@ -326,7 +328,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
         mInputEventReceiver = mInputMonitorCompat.getInputReceiver(Looper.getMainLooper(),
                 mMainChoreographer, this::onInputEvent);
 
-        mDeviceState.updateGestureTouchRegions();
+        mRotationTouchHelper.updateGestureTouchRegions();
     }
 
     /**
@@ -470,9 +472,9 @@ public class TouchInteractionService extends Service implements PluginListener<O
             if (TestProtocol.sDebugTracing) {
                 Log.d(TestProtocol.NO_SWIPE_TO_HOME, "TouchInteractionService.onInputEvent:DOWN");
             }
-            mDeviceState.setOrientationTransformIfNeeded(event);
+            mRotationTouchHelper.setOrientationTransformIfNeeded(event);
 
-            if (mDeviceState.isInSwipeUpTouchRegion(event)) {
+            if (mRotationTouchHelper.isInSwipeUpTouchRegion(event)) {
                 if (TestProtocol.sDebugTracing) {
                     Log.d(TestProtocol.NO_SWIPE_TO_HOME,
                             "TouchInteractionService.onInputEvent:isInSwipeUpTouchRegion");
@@ -509,7 +511,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
             // Other events
             if (mUncheckedConsumer != InputConsumer.NO_OP) {
                 // Only transform the event if we are handling it in a proper consumer
-                mDeviceState.setOrientationTransformIfNeeded(event);
+                mRotationTouchHelper.setOrientationTransformIfNeeded(event);
             }
         }
 
