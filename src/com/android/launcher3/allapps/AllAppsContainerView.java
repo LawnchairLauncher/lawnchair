@@ -83,7 +83,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     protected final BaseDraggingActivity mLauncher;
     protected final AdapterHolder[] mAH;
     private final ItemInfoMatcher mPersonalMatcher = ItemInfoMatcher.ofUser(Process.myUserHandle());
-    private final ItemInfoMatcher mWorkMatcher = ItemInfoMatcher.not(mPersonalMatcher);
+    private final ItemInfoMatcher mWorkMatcher = mPersonalMatcher.negate();
     private final AllAppsStore mAllAppsStore = new AllAppsStore();
 
     private final Paint mNavBarScrimPaint;
