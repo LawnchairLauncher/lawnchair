@@ -282,6 +282,7 @@ public class TaskMenuView extends AbstractFloatingView {
         mOpenCloseAnimator.addListener(new AnimationSuccessListener() {
             @Override
             public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
                 setVisibility(VISIBLE);
             }
 
