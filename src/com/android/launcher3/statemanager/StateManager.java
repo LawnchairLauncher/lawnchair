@@ -28,6 +28,9 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
+
+import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
@@ -37,6 +40,7 @@ import com.android.launcher3.testing.TestProtocol;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.function.Consumer;
 
 /**
  * Class to manage transitions between different states for a StatefulActivity based on different
@@ -262,8 +266,22 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
      */
     public AnimatorSet createAtomicAnimation(
             STATE_TYPE fromState, STATE_TYPE toState, StateAnimationConfig config) {
+        return createAtomicAnimation(fromState, toState, config, null);
+    }
+
+    /**
+     * @see #createAtomicAnimation(BaseState, BaseState, StateAnimationConfig)
+     * @param overrideConfig Optional callback to override some config params that were populated
+     *                       by {{@link #prepareForAtomicAnimation}} before creating the animation.
+     */
+    public AnimatorSet createAtomicAnimation(STATE_TYPE fromState, STATE_TYPE toState,
+            StateAnimationConfig config, @Nullable Consumer<StateAnimationConfig> overrideConfig) {
         PendingAnimation builder = new PendingAnimation(config.duration);
         prepareForAtomicAnimation(fromState, toState, config);
+
+        if (overrideConfig != null) {
+            overrideConfig.accept(config);
+        }
 
         for (StateHandler handler : mActivity.getStateManager().getStateHandlers()) {
             handler.setStateWithAnimation(toState, config, builder);

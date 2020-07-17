@@ -33,6 +33,7 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
+import com.android.launcher3.anim.AlphaUpdateListener;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.quickstep.SysUINavigationMode;
@@ -142,6 +143,13 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     }
 
     @Override
+    public void setAlpha(float alpha) {
+        super.setAlpha(alpha);
+        // Ensure actions don't consume clicks when alpha is 0.
+        AlphaUpdateListener.updateVisibility(this);
+    }
+
+    @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         updateHiddenFlags(HIDDEN_DISABLED_FEATURE, !ENABLE_OVERVIEW_ACTIONS.get());
@@ -168,7 +176,6 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         }
         boolean isHidden = mHiddenFlags != 0;
         mMultiValueAlpha.getProperty(INDEX_HIDDEN_FLAGS_ALPHA).setValue(isHidden ? 0 : 1);
-        setVisibility(isHidden ? INVISIBLE : VISIBLE);
     }
 
     /**
