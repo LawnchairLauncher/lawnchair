@@ -16,6 +16,7 @@
 package com.android.quickstep.views;
 
 import static com.android.launcher3.LauncherState.ALL_APPS;
+import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
@@ -42,8 +43,10 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
+import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.util.Themes;
@@ -139,7 +142,12 @@ public class AllAppsEduView extends AbstractFloatingView {
         config.userControlled = false;
         AnimatorPlaybackController stateAnimationController =
                 mLauncher.getStateManager().createAnimationToNewWorkspace(ALL_APPS, config);
-        float maxAllAppsProgress = 0.15f;
+        float maxAllAppsProgress = mLauncher.getDeviceProfile().isLandscape ? 0.35f : 0.15f;
+
+        AllAppsTransitionController allAppsController = mLauncher.getAllAppsController();
+        PendingAnimation allAppsAlpha = new PendingAnimation(config.duration);
+        allAppsController.setAlphas(ALL_APPS, config, allAppsAlpha);
+        mAnimation.play(allAppsAlpha.buildAnim());
 
         ValueAnimator intro = ValueAnimator.ofFloat(0, 1f);
         intro.setInterpolator(LINEAR);
@@ -191,7 +199,8 @@ public class AllAppsEduView extends AbstractFloatingView {
             @Override
             public void onAnimationEnd(Animator animation) {
                 mAnimation = null;
-                stateAnimationController.dispatchOnCancel();
+                // Handles cancelling the animation used to hint towards All Apps.
+                mLauncher.getStateManager().goToState(NORMAL, false);
                 handleClose(false);
             }
         });

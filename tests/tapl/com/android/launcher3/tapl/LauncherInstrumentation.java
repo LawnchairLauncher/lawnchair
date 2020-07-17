@@ -635,9 +635,11 @@ public final class LauncherInstrumentation {
     Parcelable executeAndWaitForEvent(Runnable command,
             UiAutomation.AccessibilityEventFilter eventFilter, Supplier<String> message) {
         try {
+            Log.d(TestProtocol.NO_SCROLL_END_WIDGETS, "executeAndWaitForEvent: before");
             final AccessibilityEvent event =
                     mInstrumentation.getUiAutomation().executeAndWaitForEvent(
                             command, eventFilter, WAIT_TIME_MS);
+            Log.d(TestProtocol.NO_SCROLL_END_WIDGETS, "executeAndWaitForEvent: after");
             assertNotNull("executeAndWaitForEvent returned null (this can't happen)", event);
             final Parcelable parcelableData = event.getParcelableData();
             event.recycle();
@@ -1094,7 +1096,10 @@ public final class LauncherInstrumentation {
         executeAndWaitForEvent(
                 () -> linearGesture(
                         startX, startY, endX, endY, steps, slowDown, GestureScope.INSIDE),
-                event -> TestProtocol.SCROLL_FINISHED_MESSAGE.equals(event.getClassName()),
+                event -> {
+                    Log.d(TestProtocol.NO_SCROLL_END_WIDGETS, "scroll: received event: " + event);
+                    return TestProtocol.SCROLL_FINISHED_MESSAGE.equals(event.getClassName());
+                },
                 () -> "Didn't receive a scroll end message: " + startX + ", " + startY
                         + ", " + endX + ", " + endY);
     }

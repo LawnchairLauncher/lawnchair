@@ -154,13 +154,6 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
             Runnable exitRunnable);
 
     /**
-     * Updates the prediction state to the overview state.
-     */
-    public void updateOverviewPredictionState() {
-        // By public overview predictions are not supported
-    }
-
-    /**
      * Used for containerType in {@link com.android.launcher3.logging.UserEventDispatcher}
      */
     public abstract int getContainerType();
