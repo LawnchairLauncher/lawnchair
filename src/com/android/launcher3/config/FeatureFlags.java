@@ -94,6 +94,10 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_SUGGESTED_ACTIONS_OVERVIEW = new DeviceFlag(
             "ENABLE_SUGGESTED_ACTIONS_OVERVIEW", false, "Show chip hints on the overview screen");
 
+
+    public static final BooleanFlag ENABLE_DEVICE_SEARCH = getDebugFlag(
+            "ENABLE_DEVICE_SEARCH", false, "Allows on device search in all apps");
+
     public static final BooleanFlag FOLDER_NAME_SUGGEST = new DeviceFlag(
             "FOLDER_NAME_SUGGEST", true,
             "Suggests folder names instead of blank text.");
