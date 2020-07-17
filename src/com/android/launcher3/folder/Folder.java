@@ -741,7 +741,8 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
 
     @Override
     protected View getAccessibilityInitialFocusView() {
-        return mContent.getFirstItem();
+        View firstItem = mContent.getFirstItem();
+        return firstItem != null ? firstItem : super.getAccessibilityInitialFocusView();
     }
 
     private void closeComplete(boolean wasAnimated) {
