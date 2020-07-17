@@ -1648,6 +1648,9 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         super.setVisibility(visibility);
         if (mActionsView != null) {
             mActionsView.updateHiddenFlags(HIDDEN_NO_RECENTS, visibility != VISIBLE);
+            if (visibility != VISIBLE) {
+                mActionsView.updateDisabledFlags(OverviewActionsView.DISABLED_SCROLLING, false);
+            }
         }
     }
 
