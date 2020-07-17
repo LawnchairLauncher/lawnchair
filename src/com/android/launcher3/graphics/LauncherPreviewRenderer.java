@@ -28,6 +28,7 @@ import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 import android.annotation.TargetApi;
 import android.app.Fragment;
 import android.appwidget.AppWidgetHostView;
+import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
@@ -56,6 +57,7 @@ import com.android.launcher3.Hotseat;
 import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
@@ -83,6 +85,7 @@ import com.android.launcher3.pm.InstallSessionHelper;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.uioverrides.PredictedAppIconInflater;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
+import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.views.ActivityContext;
@@ -339,14 +342,33 @@ public class LauncherPreviewRenderer {
             addInScreenFromBind(folderIcon, info);
         }
 
+        private void inflateAndAddWidgets(LauncherAppWidgetInfo info,
+                Map<ComponentKey, AppWidgetProviderInfo> widgetProviderInfoMap) {
+            if (widgetProviderInfoMap == null) {
+                return;
+            }
+            AppWidgetProviderInfo providerInfo = widgetProviderInfoMap.get(
+                    new ComponentKey(info.providerName, info.user));
+            if (providerInfo == null) {
+                return;
+            }
+            inflateAndAddWidgets(info, LauncherAppWidgetProviderInfo.fromProviderInfo(
+                    getApplicationContext(), providerInfo));
+        }
+
         private void inflateAndAddWidgets(LauncherAppWidgetInfo info, WidgetsModel widgetsModel) {
             WidgetItem widgetItem = widgetsModel.getWidgetProviderInfoByProviderName(
                     info.providerName);
             if (widgetItem == null) {
                 return;
             }
+            inflateAndAddWidgets(info, widgetItem.widgetInfo);
+        }
+
+        private void inflateAndAddWidgets(LauncherAppWidgetInfo info,
+                LauncherAppWidgetProviderInfo providerInfo) {
             AppWidgetHostView view = new AppWidgetHostView(mContext);
-            view.setAppWidget(-1, widgetItem.widgetInfo);
+            view.setAppWidget(-1, providerInfo);
             view.updateAppWidget(null);
             view.setTag(info);
             addInScreenFromBind(view, info);
@@ -433,8 +455,13 @@ public class LauncherPreviewRenderer {
                     switch (itemInfo.itemType) {
                         case Favorites.ITEM_TYPE_APPWIDGET:
                         case Favorites.ITEM_TYPE_CUSTOM_APPWIDGET:
-                            inflateAndAddWidgets((LauncherAppWidgetInfo) itemInfo,
-                                    workspaceResult.mWidgetsModel);
+                            if (mMigrated) {
+                                inflateAndAddWidgets((LauncherAppWidgetInfo) itemInfo,
+                                        workspaceResult.mWidgetProvidersMap);
+                            } else {
+                                inflateAndAddWidgets((LauncherAppWidgetInfo) itemInfo,
+                                        workspaceResult.mWidgetsModel);
+                            }
                             break;
                         default:
                             break;
@@ -542,7 +569,7 @@ public class LauncherPreviewRenderer {
             }
 
             return new WorkspaceResult(mBgDataModel.workspaceItems, mBgDataModel.appWidgets,
-                    mBgDataModel.cachedPredictedItems, mBgDataModel.widgetsModel);
+                    mBgDataModel.cachedPredictedItems, mBgDataModel.widgetsModel, null);
         }
     }
 
@@ -569,9 +596,8 @@ public class LauncherPreviewRenderer {
         public WorkspaceResult call() throws Exception {
             List<ShortcutInfo> allShortcuts = new ArrayList<>();
             loadWorkspace(allShortcuts, LauncherSettings.Favorites.PREVIEW_CONTENT_URI);
-            mBgDataModel.widgetsModel.update(mApp, null);
             return new WorkspaceResult(mBgDataModel.workspaceItems, mBgDataModel.appWidgets,
-                    mBgDataModel.cachedPredictedItems, mBgDataModel.widgetsModel);
+                    mBgDataModel.cachedPredictedItems, null, mWidgetProvidersMap);
         }
     }
 
@@ -593,14 +619,17 @@ public class LauncherPreviewRenderer {
         private final ArrayList<LauncherAppWidgetInfo> mAppWidgets;
         private final ArrayList<AppInfo> mCachedPredictedItems;
         private final WidgetsModel mWidgetsModel;
+        private final Map<ComponentKey, AppWidgetProviderInfo> mWidgetProvidersMap;
 
         private WorkspaceResult(ArrayList<ItemInfo> workspaceItems,
                 ArrayList<LauncherAppWidgetInfo> appWidgets,
-                ArrayList<AppInfo> cachedPredictedItems, WidgetsModel widgetsModel) {
+                ArrayList<AppInfo> cachedPredictedItems, WidgetsModel widgetsModel,
+                Map<ComponentKey, AppWidgetProviderInfo> widgetProviderInfoMap) {
             mWorkspaceItems = workspaceItems;
             mAppWidgets = appWidgets;
             mCachedPredictedItems = cachedPredictedItems;
             mWidgetsModel = widgetsModel;
+            mWidgetProvidersMap = widgetProviderInfoMap;
         }
     }
 }
