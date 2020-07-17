@@ -267,10 +267,6 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
         mStateCallback.runOnceAtState(STATE_HANDLER_INVALIDATED | STATE_RESUME_LAST_TASK,
                 this::notifyTransitionCancelled);
 
-        mGestureState.runOnceAtState(STATE_END_TARGET_SET,
-                () -> mDeviceState.onEndTargetCalculated(mGestureState.getEndTarget(),
-                        mActivityInterface));
-
         if (!ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             mStateCallback.addChangeListener(STATE_APP_CONTROLLER_RECEIVED | STATE_LAUNCHER_PRESENT
                             | STATE_SCREENSHOT_VIEW_SHOWN | STATE_CAPTURE_SCREENSHOT,
@@ -394,6 +390,10 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
         // activity is not yet resumed, finish the animation to ensure we get resumed
         mGestureState.getActivityInterface().setOnDeferredActivityLaunchCallback(
                 mOnDeferredActivityLaunch);
+
+        mGestureState.runOnceAtState(STATE_END_TARGET_SET,
+                () -> mDeviceState.onEndTargetCalculated(mGestureState.getEndTarget(),
+                        mActivityInterface));
 
         notifyGestureStartedAsync();
     }
