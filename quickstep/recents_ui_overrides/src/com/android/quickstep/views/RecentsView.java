@@ -376,7 +376,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
                     mOrientationState.setMultiWindowMode(inMultiWindowMode);
                     setLayoutRotation(mOrientationState.getTouchRotation(),
                             mOrientationState.getDisplayRotation());
-                    rotateAllChildTasks();
+                    updateChildTaskOrientations();
                 }
                 if (!inMultiWindowMode && mOverviewStateEnabled) {
                     // TODO: Re-enable layout transitions for addition of the unpinned task
@@ -1077,7 +1077,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         pa.addListener(AnimationSuccessListener.forRunnable(() -> {
             setLayoutRotation(newRotation, mOrientationState.getDisplayRotation());
             mActivity.getDragLayer().recreateControllers();
-            rotateAllChildTasks();
+            updateChildTaskOrientations();
             setRecentsChangedOrientation(false).start();
         }));
         pa.start();
@@ -1098,7 +1098,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     }
 
 
-    private void rotateAllChildTasks() {
+    private void updateChildTaskOrientations() {
         for (int i = 0; i < getTaskViewCount(); i++) {
             getTaskViewAt(i).setOrientationState(mOrientationState);
         }
@@ -1683,6 +1683,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
                 || mOrientationState.getRecentsActivityRotation() != ROTATION_0;
         mActionsView.updateHiddenFlags(HIDDEN_NON_ZERO_ROTATION,
                 !mOrientationState.canRecentsActivityRotate() && isInLandscape);
+        updateChildTaskOrientations();
         resetPaddingFromTaskSize();
         requestLayout();
         // Reapply the current page to update page scrolls.
