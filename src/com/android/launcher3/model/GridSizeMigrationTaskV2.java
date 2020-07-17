@@ -406,7 +406,7 @@ public class GridSizeMigrationTaskV2 {
          * to speed up the search.
          */
         private boolean findPlacement(DbEntry entry) {
-            for (int y = mNextStartY; y > 0; y--) {
+            for (int y = mNextStartY; y >= (mScreenId == 0 ? 1 /* smartspace */ : 0); y--) {
                 for (int x = mNextStartX; x < mTrgX; x++) {
                     boolean fits = mOccupied.isRegionVacant(x, y, entry.spanX, entry.spanY);
                     boolean minFits = mOccupied.isRegionVacant(x, y, entry.minSpanX,
