@@ -59,6 +59,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.util.DefaultDisplay;
 import com.android.launcher3.util.SecureSettingsObserver;
 import com.android.quickstep.SysUINavigationMode.NavigationModeChangeListener;
+import com.android.quickstep.SysUINavigationMode.OneHandedModeChangeListener;
 import com.android.quickstep.util.NavBarPosition;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.QuickStepContract;
@@ -75,7 +76,8 @@ import java.util.stream.Collectors;
  */
 public class RecentsAnimationDeviceState implements
         NavigationModeChangeListener,
-        DefaultDisplay.DisplayInfoChangeListener {
+        DefaultDisplay.DisplayInfoChangeListener,
+        OneHandedModeChangeListener {
 
     private final Context mContext;
     private final SysUINavigationMode mSysUiNavMode;
@@ -204,6 +206,15 @@ public class RecentsAnimationDeviceState implements
         runOnDestroy(() -> mSysUiNavMode.removeModeChangeListener(listener));
     }
 
+    /**
+     * Adds a listener for the one handed mode change,
+     * guaranteed to be called after the device state's mode has changed.
+     */
+    public void addOneHandedModeChangedCallback(OneHandedModeChangeListener listener) {
+        listener.onOneHandedModeChanged(mSysUiNavMode.addOneHandedOverlayChangeListener(listener));
+        runOnDestroy(() -> mSysUiNavMode.removeOneHandedOverlayChangeListener(listener));
+    }
+
     @Override
     public void onNavigationModeChanged(SysUINavigationMode.Mode newMode) {
         mDefaultDisplay.removeChangeListener(this);
@@ -217,7 +228,6 @@ public class RecentsAnimationDeviceState implements
         }
 
         mNavBarPosition = new NavBarPosition(newMode, mDefaultDisplay.getInfo());
-
         mMode = newMode;
     }
 
@@ -232,6 +242,11 @@ public class RecentsAnimationDeviceState implements
             return;
         }
         mNavBarPosition = new NavBarPosition(mMode, info);
+    }
+
+    @Override
+    public void onOneHandedModeChanged(int newGesturalHeight) {
+        mRotationTouchHelper.setGesturalHeight(newGesturalHeight);
     }
 
     /**
