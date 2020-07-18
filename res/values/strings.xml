@@ -348,7 +348,8 @@
     <!-- content description for paused work apps list -->
     <string name="work_apps_paused_content_description">Work profile is paused. Work apps can\’t send you notifications, use your battery, or access your location</string>
 
-
+    <!-- A hint shown in launcher settings develop options filter box -->
+    <string name="developer_options_filter_hint">Filter</string>
 
     <!-- A tip shown pointing at work toggle -->
     <string name="work_switch_tip">Pause work apps and notifications</string>
