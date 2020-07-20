@@ -43,7 +43,7 @@
     <string name="hotseat_auto_enrolled" msgid="522100018967146807">"Aplikacionet më të përdorura shfaqen këtu dhe ndryshojnë bazuar në rutinat"</string>
     <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"Zvarrit aplikacionet jashtë rreshtit të poshtëm për të marrë aplikacione të sugjeruara"</string>
     <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"Aplikacionet e sugjeruara u shtuan në hapësirën bosh"</string>
-    <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Sugjerimet e aplikacioneve janë aktivizuar"</string>
+    <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Aplikacionet e sugjeruara janë aktivizuar"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Sugjerimet e aplikacioneve janë çaktivizuar"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Aplikacioni i parashikuar: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="action_share" msgid="2648470652637092375">"Ndaj"</string>

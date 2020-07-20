@@ -41,7 +41,7 @@
     <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"不用了，謝謝"</string>
     <string name="hotseat_prediction_settings" msgid="6246554993566070818">"設定"</string>
     <string name="hotseat_auto_enrolled" msgid="522100018967146807">"最常使用的應用程式會顯示在這裡，顯示的項目會根據日常安排有所不同"</string>
-    <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"將應用程式從底部列向外拖曳即可取得應用程式建議"</string>
+    <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"將應用程式從底部列向外拖曳，即可取得應用程式建議"</string>
     <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"應用程式建議已新增到空白位置"</string>
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"應用程式建議功能已啟用"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"應用程式建議功能已停用"</string>

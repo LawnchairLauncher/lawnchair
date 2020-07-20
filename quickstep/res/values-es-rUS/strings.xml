@@ -43,7 +43,7 @@
     <string name="hotseat_auto_enrolled" msgid="522100018967146807">"Las apps que más se usan se muestran aquí y cambian según las rutinas"</string>
     <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"Arrastra apps fuera de la fila inferior para obtener sugerencias"</string>
     <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"Se agregaron sugerencias de aplicaciones a un espacio vacío"</string>
-    <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Las sugerencias de aplicaciones están habilitadas"</string>
+    <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Sugerencias de apps habilitadas"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Las sugerencias de aplicaciones están inhabilitadas"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Predicción de app: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="action_share" msgid="2648470652637092375">"Compartir"</string>
