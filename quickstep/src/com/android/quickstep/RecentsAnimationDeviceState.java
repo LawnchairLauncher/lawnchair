@@ -114,7 +114,7 @@ public class RecentsAnimationDeviceState implements
         mDefaultDisplay = DefaultDisplay.INSTANCE.get(context);
         mDisplayId = mDefaultDisplay.getInfo().id;
         runOnDestroy(() -> mDefaultDisplay.removeChangeListener(this));
-        mRotationTouchHelper = RotationTouchHelper.INSTANCE.get(context);
+        mRotationTouchHelper = new RotationTouchHelper(context);
         runOnDestroy(mRotationTouchHelper::destroy);
 
         // Register for user unlocked if necessary
