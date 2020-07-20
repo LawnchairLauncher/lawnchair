@@ -41,8 +41,6 @@ import java.util.ArrayList;
 public class RotationTouchHelper implements
         SysUINavigationMode.NavigationModeChangeListener,
         DefaultDisplay.DisplayInfoChangeListener {
-    public static final MainThreadInitializedObject<RotationTouchHelper> INSTANCE =
-            new MainThreadInitializedObject<>(RotationTouchHelper::new);
 
     private final OrientationTouchTransformer mOrientationTouchTransformer;
     private final DefaultDisplay mDefaultDisplay;
@@ -122,7 +120,7 @@ public class RotationTouchHelper implements
 
     private final Context mContext;
 
-    private RotationTouchHelper(Context context) {
+    public RotationTouchHelper(Context context) {
         mContext = context;
         Resources resources = mContext.getResources();
         mSysUiNavMode = SysUINavigationMode.INSTANCE.get(context);
