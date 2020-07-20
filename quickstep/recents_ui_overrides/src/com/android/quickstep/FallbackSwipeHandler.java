@@ -140,7 +140,6 @@ public class FallbackSwipeHandler extends
 
         private final long mDuration;
         FallbackHomeAnimationFactory(long duration) {
-            super(null);
             mDuration = duration;
 
             if (mRunningOverHome) {
