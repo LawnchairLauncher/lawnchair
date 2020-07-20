@@ -335,6 +335,7 @@ public class AnimatorPlaybackController implements ValueAnimator.AnimatorUpdateL
 
         @Override
         public void onAnimationStart(Animator animation) {
+            super.onAnimationStart(animation);
             mCancelled = false;
             mDispatched = false;
         }

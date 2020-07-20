@@ -1090,6 +1090,7 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
         anim.addAnimatorListener(new AnimationSuccessListener() {
             @Override
             public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
                 if (mActivity != null) {
                     removeLiveTileOverlay();
                 }
