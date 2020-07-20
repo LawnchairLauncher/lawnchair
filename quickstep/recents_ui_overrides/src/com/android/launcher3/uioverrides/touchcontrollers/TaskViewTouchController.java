@@ -263,8 +263,10 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
                 totalDisplacement * mProgressMultiplier, 0, 1));
 
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-            if (mRecentsView.getCurrentPage() != 0 || isGoingUp) {
-                mRecentsView.redrawLiveTile(true);
+            if (mRecentsView.getCurrentPage() == 0) {
+                mRecentsView.getLiveTileTaskViewSimulator().setOffsetY(
+                        isGoingUp ? totalDisplacement : 0);
+                mRecentsView.redrawLiveTile();
             }
         }
         return true;
@@ -300,7 +302,7 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             mCurrentAnimation.getAnimationPlayer().addUpdateListener(valueAnimator -> {
                 if (mRecentsView.getCurrentPage() != 0 || mCurrentAnimationIsGoingUp) {
-                    mRecentsView.redrawLiveTile(true);
+                    mRecentsView.redrawLiveTile();
                 }
             });
         }

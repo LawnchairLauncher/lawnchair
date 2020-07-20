@@ -73,6 +73,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
     private final BaseActivityInterface mSizeStrategy;
 
     private final Rect mTaskRect = new Rect();
+    private float mOffsetY;
     private final PointF mPivot = new PointF();
     private DeviceProfile mDp;
 
@@ -178,6 +179,10 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
         }
     }
 
+    public void setOffsetY(float offsetY) {
+        mOffsetY = offsetY;
+    }
+
     /**
      * Adds animation for all the components corresponding to transition from an app to overview
      */
@@ -281,7 +286,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
         mMatrix.postScale(scale, scale);
 
         // Apply TaskView matrix: translate, scale, scroll
-        mMatrix.postTranslate(mTaskRect.left, mTaskRect.top);
+        mMatrix.postTranslate(mTaskRect.left, mTaskRect.top + mOffsetY);
         mMatrix.postScale(mCurveScale, mCurveScale, taskWidth / 2, taskHeight / 2);
         mOrientationState.getOrientationHandler().set(
                 mMatrix, MATRIX_POST_TRANSLATE, mScrollState.scroll);
@@ -307,7 +312,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
                 .withCornerRadius(getCurrentCornerRadius());
 
         if (ENABLE_QUICKSTEP_LIVE_TILE.get() && params.getRecentsSurface() != null) {
-            builder.withRelativeLayerTo(params.getRecentsSurface(), Integer.MAX_VALUE);
+            builder.withRelativeLayerTo(params.getRecentsSurface(), Integer.MIN_VALUE);
         }
     }
 

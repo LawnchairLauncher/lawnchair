@@ -130,6 +130,7 @@ import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.quickstep.util.SplitScreenBounds;
 import com.android.quickstep.util.SurfaceTransactionApplier;
+import com.android.quickstep.util.TaskViewSimulator;
 import com.android.quickstep.util.TransformParams;
 import com.android.systemui.plugins.ResourceProvider;
 import com.android.systemui.shared.recents.IPinnedStackAnimationListener;
@@ -213,10 +214,11 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     protected RecentsOrientedState mOrientationState;
     protected final BaseActivityInterface mSizeStrategy;
     protected RecentsAnimationController mRecentsAnimationController;
-    protected RecentsAnimationTargets mRecentsAnimationTargets;
     protected SurfaceTransactionApplier mSyncTransactionApplier;
     protected int mTaskWidth;
     protected int mTaskHeight;
+    protected final TransformParams mLiveTileParams = new TransformParams();
+    protected final TaskViewSimulator mLiveTileTaskViewSimulator;
     protected boolean mEnableDrawingLiveTile = false;
     protected final Rect mTempRect = new Rect();
     private final PointF mTempPointF = new PointF();
@@ -394,7 +396,8 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         mActivity = BaseActivity.fromContext(context);
         mOrientationState = new RecentsOrientedState(
                 context, mSizeStrategy, this::animateRecentsRotationInPlace);
-        mOrientationState.setRecentsRotation(mActivity.getDisplay().getRotation());
+        final int rotation = mActivity.getDisplay().getRotation();
+        mOrientationState.setRecentsRotation(rotation);
 
         mFastFlingVelocity = getResources()
                 .getDimensionPixelSize(R.dimen.recents_fast_fling_velocity);
@@ -430,6 +433,12 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
 
         // Initialize quickstep specific cache params here, as this is constructed only once
         mActivity.getViewCache().setCacheSize(R.layout.digital_wellbeing_toast, 5);
+
+        mLiveTileTaskViewSimulator = new TaskViewSimulator(getContext(), getSizeStrategy());
+        mLiveTileTaskViewSimulator.recentsViewScale.value = 1;
+        mLiveTileTaskViewSimulator.setLayoutRotation(getPagedViewOrientedState().getTouchRotation(),
+                getPagedViewOrientedState().getDisplayRotation());
+        mLiveTileTaskViewSimulator.setRecentsRotation(rotation);
     }
 
     public OverScroller getScroller() {
@@ -514,6 +523,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         mActivity.addMultiWindowModeChangedListener(mMultiWindowModeChangedListener);
         ActivityManagerWrapper.getInstance().registerTaskStackListener(mTaskStackListener);
         mSyncTransactionApplier = new SurfaceTransactionApplier(this);
+        mLiveTileParams.setSyncTransactionApplier(mSyncTransactionApplier);
         RecentsModel.INSTANCE.get(getContext()).addThumbnailChangeListener(this);
         mIdp.addOnChangeListener(this);
         mIPinnedStackAnimationListener.setActivity(mActivity);
@@ -531,6 +541,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         mActivity.removeMultiWindowModeChangedListener(mMultiWindowModeChangedListener);
         ActivityManagerWrapper.getInstance().unregisterTaskStackListener(mTaskStackListener);
         mSyncTransactionApplier = null;
+        mLiveTileParams.setSyncTransactionApplier(null);
         RecentsModel.INSTANCE.get(getContext()).removeThumbnailChangeListener(this);
         mIdp.removeOnChangeListener(this);
         SystemUiProxy.INSTANCE.get(getContext()).setPinnedStackAnimationListener(null);
@@ -858,6 +869,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     public void setInsets(Rect insets) {
         mInsets.set(insets);
         resetPaddingFromTaskSize();
+        mLiveTileTaskViewSimulator.setDp(mActivity.getDeviceProfile());
     }
 
     private void resetPaddingFromTaskSize() {
@@ -899,6 +911,12 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
 
         // Update the high res thumbnail loader state
         mModel.getThumbnailCache().getHighResLoadingState().setFlingingFast(isFlingingFast);
+
+        mLiveTileTaskViewSimulator.setScroll(getScrollOffset());
+        if (ENABLE_QUICKSTEP_LIVE_TILE.get() && mEnableDrawingLiveTile
+                && mLiveTileParams.getTargetSet() != null) {
+            redrawLiveTile();
+        }
         return scrolling;
     }
 
@@ -1006,7 +1024,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         mTaskListChangeId = -1;
 
         mRecentsAnimationController = null;
-        mRecentsAnimationTargets = null;
+        mLiveTileParams.setTargetSet(null);
 
         unloadVisibleTaskData();
         setCurrentPage(0);
@@ -1668,9 +1686,11 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     @Override
     protected void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        if (mOrientationState.setRecentsRotation(mActivity.getDisplay().getRotation())) {
+        final int rotation = mActivity.getDisplay().getRotation();
+        if (mOrientationState.setRecentsRotation(rotation)) {
             updateOrientationHandler();
         }
+        mLiveTileTaskViewSimulator.setRecentsRotation(rotation);
     }
 
     public void setLayoutRotation(int touchRotation, int displayRotation) {
@@ -1699,6 +1719,8 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         requestLayout();
         // Reapply the current page to update page scrolls.
         setCurrentPage(mCurrentPage);
+        mLiveTileTaskViewSimulator.setLayoutRotation(getPagedViewOrientedState().getTouchRotation(),
+                getPagedViewOrientedState().getDisplayRotation());
     }
 
     public RecentsOrientedState getPagedViewOrientedState() {
@@ -2075,13 +2097,23 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         mEnableDrawingLiveTile = enableDrawingLiveTile;
     }
 
-    public void redrawLiveTile(boolean mightNeedToRefill) { }
+    public void redrawLiveTile() {
+        mLiveTileTaskViewSimulator.apply(mLiveTileParams);
+    }
+
+    public TaskViewSimulator getLiveTileTaskViewSimulator() {
+        return mLiveTileTaskViewSimulator;
+    }
 
     // TODO: To be removed in a follow up CL
     public void setRecentsAnimationTargets(RecentsAnimationController recentsAnimationController,
             RecentsAnimationTargets recentsAnimationTargets) {
         mRecentsAnimationController = recentsAnimationController;
-        mRecentsAnimationTargets = recentsAnimationTargets;
+        if (recentsAnimationTargets != null) {
+            mLiveTileTaskViewSimulator.setPreview(
+                    recentsAnimationTargets.apps[recentsAnimationTargets.apps.length - 1]);
+            mLiveTileParams.setTargetSet(recentsAnimationTargets);
+        }
     }
 
     public void setLiveTileOverlayAttached(boolean liveTileOverlayAttached) {
@@ -2215,11 +2247,6 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
             super.onTouchEvent(e);
             mOrientationState.transformEvent(-degreesRotated, e, false);
         };
-    }
-
-    public TransformParams getLiveTileParams(
-            boolean mightNeedToRefill) {
-        return null;
     }
 
     private void updateEnabledOverlays() {
