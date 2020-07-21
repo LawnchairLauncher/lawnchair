@@ -33,6 +33,7 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.logger.LauncherAtom.ContainerInfo;
+import com.android.launcher3.logger.LauncherAtom.FolderContainer.ParentContainerCase;
 import com.android.launcher3.logger.LauncherAtom.FolderIcon;
 import com.android.launcher3.logger.LauncherAtom.FromState;
 import com.android.launcher3.logger.LauncherAtom.ToState;
@@ -60,9 +61,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * This class calls StatsLog compile time generated methods.
  *
  * To see if the logs are properly sent to statsd, execute following command.
+ * <ul>
  * $ wwdebug (to turn on the logcat printout)
  * $ wwlogcat (see logcat with grep filter on)
  * $ statsd_testdrive (see how ww is writing the proto to statsd buffer)
+ * </ul>
  */
 public class StatsLogCompatManager extends StatsLogManager {
 
@@ -100,7 +103,9 @@ public class StatsLogCompatManager extends StatsLogManager {
     }
 
     private class SnapshotWorker extends BaseModelUpdateTask {
+
         private final InstanceId mInstanceId;
+
         SnapshotWorker() {
             mInstanceId = new InstanceIdSequence(
                     1 << 20 /*InstanceId.INSTANCE_ID_MAX*/).newInstanceId();
@@ -123,7 +128,8 @@ public class StatsLogCompatManager extends StatsLogManager {
                         LauncherAtom.ItemInfo atomInfo = info.buildProto(fInfo);
                         writeSnapshot(atomInfo, mInstanceId);
                     }
-                } catch (Exception e) { }
+                } catch (Exception e) {
+                }
             }
             for (ItemInfo info : appWidgets) {
                 LauncherAtom.ItemInfo atomInfo = info.buildProto(null);
@@ -335,7 +341,7 @@ public class StatsLogCompatManager extends StatsLogManager {
     }
 
     private static int getCardinality(LauncherAtom.ItemInfo info) {
-        switch (info.getContainerInfo().getContainerCase()){
+        switch (info.getContainerInfo().getContainerCase()) {
             case PREDICTED_HOTSEAT_CONTAINER:
                 return info.getContainerInfo().getPredictedHotseatContainer().getCardinality();
             case SEARCH_RESULT_CONTAINER:
@@ -400,9 +406,16 @@ public class StatsLogCompatManager extends StatsLogManager {
     }
 
     private static int getPageId(LauncherAtom.ItemInfo info) {
+        if (info.hasTask()) {
+            return info.getTask().getIndex();
+        }
         switch (info.getContainerInfo().getContainerCase()) {
             case FOLDER:
                 return info.getContainerInfo().getFolder().getPageIndex();
+            case HOTSEAT:
+                return info.getContainerInfo().getHotseat().getIndex();
+            case PREDICTED_HOTSEAT_CONTAINER:
+                return info.getContainerInfo().getPredictedHotseatContainer().getIndex();
             default:
                 return info.getContainerInfo().getWorkspace().getPageIndex();
         }
@@ -411,6 +424,10 @@ public class StatsLogCompatManager extends StatsLogManager {
     private static int getParentPageId(LauncherAtom.ItemInfo info) {
         switch (info.getContainerInfo().getContainerCase()) {
             case FOLDER:
+                if (info.getContainerInfo().getFolder().getParentContainerCase()
+                        == ParentContainerCase.HOTSEAT) {
+                    return info.getContainerInfo().getFolder().getHotseat().getIndex();
+                }
                 return info.getContainerInfo().getFolder().getWorkspace().getPageIndex();
             case SEARCH_RESULT_CONTAINER:
                 return info.getContainerInfo().getSearchResultContainer().getWorkspace()
