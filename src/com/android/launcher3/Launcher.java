@@ -2495,7 +2495,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
      * @param updated list of shortcuts which have changed.
      */
     @Override
-    public void bindWorkspaceItemsChanged(ArrayList<WorkspaceItemInfo> updated) {
+    public void bindWorkspaceItemsChanged(List<WorkspaceItemInfo> updated) {
         if (!updated.isEmpty()) {
             mWorkspace.updateShortcuts(updated);
         }

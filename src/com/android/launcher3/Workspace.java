@@ -115,6 +115,7 @@ import com.android.systemui.plugins.shared.LauncherOverlayManager.LauncherOverla
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.function.Predicate;
 
 /**
@@ -3087,7 +3088,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         return false;
     }
 
-    void updateShortcuts(ArrayList<WorkspaceItemInfo> shortcuts) {
+    void updateShortcuts(List<WorkspaceItemInfo> shortcuts) {
         final HashSet<WorkspaceItemInfo> updates = new HashSet<>(shortcuts);
         ItemOperator op = (info, v) -> {
             if (v instanceof BubbleTextView && updates.contains(info)) {
