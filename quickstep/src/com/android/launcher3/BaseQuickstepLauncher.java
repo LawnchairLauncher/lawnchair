@@ -111,6 +111,13 @@ public abstract class BaseQuickstepLauncher extends Launcher
     }
 
     @Override
+    protected void handleGestureContract(Intent intent) {
+        if (FeatureFlags.SEPARATE_RECENTS_ACTIVITY.get()) {
+            super.handleGestureContract(intent);
+        }
+    }
+
+    @Override
     public void onTrimMemory(int level) {
         super.onTrimMemory(level);
         RecentsModel.INSTANCE.get(this).onTrimMemory(level);
