@@ -1135,6 +1135,9 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
      * Rearranges the children based on their rank.
      */
     public void rearrangeChildren() {
+        if (!mContent.areViewsBound()) {
+            return;
+        }
         mContent.arrangeChildren(getIconsInReadingOrder());
         mItemsInvalidated = true;
     }
