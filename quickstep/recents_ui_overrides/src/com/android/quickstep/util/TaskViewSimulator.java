@@ -129,8 +129,8 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
     /**
      * @see com.android.quickstep.views.RecentsView#onConfigurationChanged(Configuration)
      */
-    public void setRecentsConfiguration(Configuration configuration) {
-        mOrientationState.setActivityConfiguration(configuration);
+    public void setRecentsRotation(int recentsRotation) {
+        mOrientationState.setRecentsRotation(recentsRotation);
         mLayoutValid = false;
     }
 

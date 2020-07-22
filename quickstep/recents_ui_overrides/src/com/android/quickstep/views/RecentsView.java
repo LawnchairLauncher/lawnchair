@@ -393,7 +393,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         mActivity = BaseActivity.fromContext(context);
         mOrientationState = new RecentsOrientedState(
                 context, mSizeStrategy, this::animateRecentsRotationInPlace);
-        mOrientationState.setActivityConfiguration(context.getResources().getConfiguration());
+        mOrientationState.setRecentsRotation(mActivity.getDisplay().getRotation());
 
         mFastFlingVelocity = getResources()
                 .getDimensionPixelSize(R.dimen.recents_fast_fling_velocity);
@@ -1657,7 +1657,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     @Override
     protected void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        if (mOrientationState.setActivityConfiguration(newConfig)) {
+        if (mOrientationState.setRecentsRotation(mActivity.getDisplay().getRotation())) {
             updateOrientationHandler();
         }
     }
