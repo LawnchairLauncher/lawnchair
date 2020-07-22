@@ -16,6 +16,10 @@
 
 package com.android.quickstep.logging;
 
+import static android.text.format.DateUtils.DAY_IN_MILLIS;
+import static android.text.format.DateUtils.formatElapsedTime;
+
+import static com.android.launcher3.Utilities.getDevicePrefs;
 import static com.android.launcher3.logger.LauncherAtom.ContainerInfo.ContainerCase.FOLDER;
 import static com.android.launcher3.logger.LauncherAtom.ContainerInfo.ContainerCase.SEARCH_RESULT_CONTAINER;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WORKSPACE_SNAPSHOT;
@@ -23,6 +27,8 @@ import static com.android.systemui.shared.system.SysUiStatsLog.LAUNCHER_UICHANGE
 import static com.android.systemui.shared.system.SysUiStatsLog.LAUNCHER_UICHANGED__DST_STATE__BACKGROUND;
 import static com.android.systemui.shared.system.SysUiStatsLog.LAUNCHER_UICHANGED__DST_STATE__HOME;
 import static com.android.systemui.shared.system.SysUiStatsLog.LAUNCHER_UICHANGED__DST_STATE__OVERVIEW;
+
+import static java.lang.System.currentTimeMillis;
 
 import android.content.Context;
 import android.util.Log;
@@ -71,7 +77,7 @@ public class StatsLogCompatManager extends StatsLogManager {
 
     private static final String TAG = "StatsLog";
     private static final boolean IS_VERBOSE = Utilities.isPropertyEnabled(LogConfig.STATSLOG);
-
+    private static final String LAST_SNAPSHOT_TIME_MILLIS = "LAST_SNAPSHOT_TIME_MILLIS";
     private static final InstanceId DEFAULT_INSTANCE_ID = InstanceId.fakeInstanceId(0);
     // LauncherAtom.ItemInfo.getDefaultInstance() should be used but until launcher proto migrates
     // from nano to lite, bake constant to prevent robo test failure.
@@ -113,6 +119,20 @@ public class StatsLogCompatManager extends StatsLogManager {
 
         @Override
         public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
+            long lastSnapshotTimeMillis = getDevicePrefs(mContext)
+                    .getLong(LAST_SNAPSHOT_TIME_MILLIS, 0);
+            // Log snapshot only if previous snapshot was older than a day
+            if (currentTimeMillis() - lastSnapshotTimeMillis < DAY_IN_MILLIS) {
+                if (IS_VERBOSE) {
+                    String elapsedTime = formatElapsedTime(
+                            (currentTimeMillis() - lastSnapshotTimeMillis) / 1000);
+                    Log.d(TAG, String.format(
+                            "Skipped snapshot logging since previous snapshot was %s old.",
+                            elapsedTime));
+                }
+                return;
+            }
+
             IntSparseArrayMap<FolderInfo> folders = dataModel.folders.clone();
             ArrayList<ItemInfo> workspaceItems = (ArrayList) dataModel.workspaceItems.clone();
             ArrayList<LauncherAppWidgetInfo> appWidgets = (ArrayList) dataModel.appWidgets.clone();
@@ -135,10 +155,12 @@ public class StatsLogCompatManager extends StatsLogManager {
                 LauncherAtom.ItemInfo atomInfo = info.buildProto(null);
                 writeSnapshot(atomInfo, mInstanceId);
             }
+            getDevicePrefs(mContext).edit()
+                    .putLong(LAST_SNAPSHOT_TIME_MILLIS, currentTimeMillis()).apply();
         }
     }
 
-    private static void writeSnapshot(LauncherAtom.ItemInfo info, InstanceId instanceId) {
+    private void writeSnapshot(LauncherAtom.ItemInfo info, InstanceId instanceId) {
         if (IS_VERBOSE) {
             Log.d(TAG, String.format("\nwriteSnapshot(%d):\n%s", instanceId.getId(), info));
         }
