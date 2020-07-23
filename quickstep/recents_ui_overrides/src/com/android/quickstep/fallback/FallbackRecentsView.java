@@ -63,12 +63,6 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity>
         mActivity.startHome();
     }
 
-    @Override
-    public boolean shouldUseMultiWindowTaskSizeStrategy() {
-        // Just use the activity task size for multi-window as well.
-        return false;
-    }
-
     /**
      * When starting gesture interaction from home, we add a temporary invisible tile corresponding
      * to the home task. This allows us to handle quick-switch similarly to a quick-switching
@@ -76,7 +70,7 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity>
      */
     public void onGestureAnimationStartOnHome(RunningTaskInfo homeTaskInfo) {
         mHomeTaskInfo = homeTaskInfo;
-        onGestureAnimationStart(homeTaskInfo == null ? -1 : homeTaskInfo.taskId);
+        onGestureAnimationStart(homeTaskInfo);
     }
 
     /**
@@ -107,14 +101,15 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity>
     }
 
     @Override
-    protected boolean shouldAddDummyTaskView(int runningTaskId) {
-        if (mHomeTaskInfo != null && mHomeTaskInfo.taskId == runningTaskId
+    protected boolean shouldAddDummyTaskView(RunningTaskInfo runningTaskInfo) {
+        if (mHomeTaskInfo != null && runningTaskInfo != null &&
+                mHomeTaskInfo.taskId == runningTaskInfo.taskId
                 && getTaskViewCount() == 0) {
             // Do not add a dummy task if we are running over home with empty recents, so that we
             // show the empty recents message instead of showing a dummy task and later removing it.
             return false;
         }
-        return super.shouldAddDummyTaskView(runningTaskId);
+        return super.shouldAddDummyTaskView(runningTaskInfo);
     }
 
     @Override

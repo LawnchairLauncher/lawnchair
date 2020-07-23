@@ -16,6 +16,12 @@
 package com.android.launcher3.appprediction;
 
 import static com.android.launcher3.InvariantDeviceProfile.CHANGE_FLAG_GRID;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_APP_LAUNCH_TAP;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ITEM_DROPPED_ON_DONT_SUGGEST;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_QUICKSWITCH_LEFT;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_QUICKSWITCH_RIGHT;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_LAUNCH_SWIPE_DOWN;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_LAUNCH_TAP;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
 import android.annotation.TargetApi;
@@ -31,29 +37,38 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Process;
+import android.os.SystemClock;
 import android.os.UserHandle;
+import android.text.TextUtils;
 import android.util.Log;
 
+import androidx.annotation.AnyThread;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.appprediction.PredictionUiStateManager.Client;
+import com.android.launcher3.logger.LauncherAtom;
+import com.android.launcher3.logger.LauncherAtom.ContainerInfo;
+import com.android.launcher3.logger.LauncherAtom.FolderContainer;
+import com.android.launcher3.logger.LauncherAtom.HotseatContainer;
+import com.android.launcher3.logger.LauncherAtom.WorkspaceContainer;
+import com.android.launcher3.logging.StatsLogManager.EventEnum;
 import com.android.launcher3.model.AppLaunchTracker;
-import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
-import com.android.systemui.plugins.AppLaunchEventsPlugin;
-import com.android.systemui.plugins.PluginListener;
+import com.android.launcher3.pm.UserCache;
+import com.android.quickstep.logging.StatsLogCompatManager;
+import com.android.quickstep.logging.StatsLogCompatManager.StatsLogConsumer;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Locale;
+import java.util.function.Predicate;
 
 /**
  * Subclass of app tracker which publishes the data to the prediction engine and gets back results.
  */
 @TargetApi(Build.VERSION_CODES.Q)
-public class PredictionAppTracker extends AppLaunchTracker
-        implements PluginListener<AppLaunchEventsPlugin> {
+public class PredictionAppTracker extends AppLaunchTracker implements StatsLogConsumer {
 
     private static final String TAG = "PredictionAppTracker";
     private static final boolean DBG = false;
@@ -65,11 +80,9 @@ public class PredictionAppTracker extends AppLaunchTracker
 
     protected final Context mContext;
     private final Handler mMessageHandler;
-    private final List<AppLaunchEventsPlugin> mAppLaunchEventsPluginsList;
 
     // Accessed only on worker thread
     private AppPredictor mHomeAppPredictor;
-    private AppPredictor mRecentsOverviewPredictor;
 
     public PredictionAppTracker(Context context) {
         mContext = context;
@@ -77,10 +90,6 @@ public class PredictionAppTracker extends AppLaunchTracker
         InvariantDeviceProfile.INSTANCE.get(mContext).addOnChangeListener(this::onIdpChanged);
 
         mMessageHandler.sendEmptyMessage(MSG_INIT);
-
-        mAppLaunchEventsPluginsList = new ArrayList<>();
-        PluginManagerWrapper.INSTANCE.get(context)
-                .addPluginListener(this, AppLaunchEventsPlugin.class, true);
     }
 
     @UiThread
@@ -97,10 +106,7 @@ public class PredictionAppTracker extends AppLaunchTracker
             mHomeAppPredictor.destroy();
             mHomeAppPredictor = null;
         }
-        if (mRecentsOverviewPredictor != null) {
-            mRecentsOverviewPredictor.destroy();
-            mRecentsOverviewPredictor = null;
-        }
+        StatsLogCompatManager.LOGS_CONSUMER.remove(this);
     }
 
     @WorkerThread
@@ -142,7 +148,7 @@ public class PredictionAppTracker extends AppLaunchTracker
                 // Initialize the clients
                 int count = InvariantDeviceProfile.INSTANCE.get(mContext).numAllAppsColumns;
                 mHomeAppPredictor = createPredictor(Client.HOME, count);
-                mRecentsOverviewPredictor = createPredictor(Client.OVERVIEW, count);
+                StatsLogCompatManager.LOGS_CONSUMER.add(this);
                 return true;
             }
             case MSG_DESTROY: {
@@ -157,12 +163,7 @@ public class PredictionAppTracker extends AppLaunchTracker
             }
             case MSG_PREDICT: {
                 if (mHomeAppPredictor != null) {
-                    String client = (String) msg.obj;
-                    if (Client.HOME.id.equals(client)) {
-                        mHomeAppPredictor.requestPredictionUpdate();
-                    } else {
-                        mRecentsOverviewPredictor.requestPredictionUpdate();
-                    }
+                    mHomeAppPredictor.requestPredictionUpdate();
                 }
                 return true;
             }
@@ -179,98 +180,142 @@ public class PredictionAppTracker extends AppLaunchTracker
         if (DBG) {
             Log.d(TAG, String.format("Sent immediate message to update %s", client));
         }
-
-        // Relay onReturnedToHome to every plugin.
-        mAppLaunchEventsPluginsList.forEach(AppLaunchEventsPlugin::onReturnedToHome);
     }
 
-    @Override
-    @UiThread
-    public void onStartShortcut(String packageName, String shortcutId, UserHandle user,
-                                String container) {
-        // TODO: Use the full shortcut info
-        AppTarget target = new AppTarget.Builder(
-                new AppTargetId("shortcut:" + shortcutId), packageName, user)
-                .setClassName(shortcutId)
-                .build();
-
-        sendLaunch(target, container);
-
-        // Relay onStartShortcut info to every connected plugin.
-        mAppLaunchEventsPluginsList
-                .forEach(plugin -> plugin.onStartShortcut(
-                        packageName,
-                        shortcutId,
-                        user,
-                        container != null ? container : CONTAINER_DEFAULT)
-        );
-
-    }
-
-    @Override
-    @UiThread
-    public void onStartApp(ComponentName cn, UserHandle user, String container) {
-        if (cn != null) {
-            AppTarget target = new AppTarget.Builder(
-                    new AppTargetId("app:" + cn), cn.getPackageName(), user)
-                    .setClassName(cn.getClassName())
+    @AnyThread
+    private void sendEvent(LauncherAtom.ItemInfo atomInfo, int eventId) {
+        AppTarget target = toAppTarget(atomInfo);
+        if (target != null) {
+            AppTargetEvent event = new AppTargetEvent.Builder(target, eventId)
+                    .setLaunchLocation(getContainer(atomInfo))
                     .build();
-            sendLaunch(target, container);
-
-            // Relay onStartApp to every connected plugin.
-            mAppLaunchEventsPluginsList
-                    .forEach(plugin -> plugin.onStartApp(
-                            cn,
-                            user,
-                            container != null ? container : CONTAINER_DEFAULT)
-            );
+            Message.obtain(mMessageHandler, MSG_LAUNCH, event).sendToTarget();
         }
     }
 
     @Override
-    @UiThread
-    public void onDismissApp(ComponentName cn, UserHandle user, String container) {
-        if (cn == null) return;
-        AppTarget target = new AppTarget.Builder(
-                new AppTargetId("app: " + cn), cn.getPackageName(), user)
-                .setClassName(cn.getClassName())
-                .build();
-        sendDismiss(target, container);
-
-        // Relay onDismissApp to every connected plugin.
-        mAppLaunchEventsPluginsList
-                .forEach(plugin -> plugin.onDismissApp(
-                        cn,
-                        user,
-                        container != null ? container : CONTAINER_DEFAULT)
-        );
+    public void consume(EventEnum event, LauncherAtom.ItemInfo atomInfo) {
+        if (event == LAUNCHER_APP_LAUNCH_TAP
+                || event == LAUNCHER_TASK_LAUNCH_SWIPE_DOWN
+                || event == LAUNCHER_TASK_LAUNCH_TAP
+                || event == LAUNCHER_QUICKSWITCH_RIGHT
+                || event == LAUNCHER_QUICKSWITCH_LEFT) {
+            sendEvent(atomInfo, AppTargetEvent.ACTION_LAUNCH);
+        } else if (event == LAUNCHER_ITEM_DROPPED_ON_DONT_SUGGEST) {
+            sendEvent(atomInfo, AppTargetEvent.ACTION_DISMISS);
+        }
     }
 
-    @UiThread
-    private void sendEvent(AppTarget target, String container, int eventId) {
-        AppTargetEvent event = new AppTargetEvent.Builder(target, eventId)
-                .setLaunchLocation(container == null ? CONTAINER_DEFAULT : container)
-                .build();
-        Message.obtain(mMessageHandler, MSG_LAUNCH, event).sendToTarget();
+    @Nullable
+    private AppTarget toAppTarget(LauncherAtom.ItemInfo info) {
+        UserHandle userHandle = Process.myUserHandle();
+        if (info.getIsWork()) {
+            userHandle = UserCache.INSTANCE.get(mContext).getUserProfiles().stream()
+                    .filter(((Predicate<UserHandle>) userHandle::equals).negate())
+                    .findAny()
+                    .orElse(null);
+        }
+        if (userHandle == null) {
+            return null;
+        }
+        ComponentName cn = null;
+        String id = null;
+
+        switch (info.getItemCase()) {
+            case APPLICATION: {
+                LauncherAtom.Application app = info.getApplication();
+                if ((cn = parseNullable(app.getComponentName())) != null) {
+                    id = "app:" + cn.getPackageName();
+                }
+                break;
+            }
+            case SHORTCUT: {
+                LauncherAtom.Shortcut si = info.getShortcut();
+                if (!TextUtils.isEmpty(si.getShortcutId())
+                        && (cn = parseNullable(si.getShortcutName())) != null) {
+                    id = "shortcut:" + si.getShortcutId();
+                }
+                break;
+            }
+            case WIDGET: {
+                LauncherAtom.Widget widget = info.getWidget();
+                if ((cn = parseNullable(widget.getComponentName())) != null) {
+                    id = "widget:" + cn.getPackageName();
+                }
+                break;
+            }
+            case TASK: {
+                LauncherAtom.Task task = info.getTask();
+                if ((cn = parseNullable(task.getComponentName())) != null) {
+                    id = "app:" + cn.getPackageName();
+                }
+                break;
+            }
+            case FOLDER_ICON: {
+                id = "folder:" + SystemClock.uptimeMillis();
+                cn = new ComponentName(mContext.getPackageName(), "#folder");
+            }
+        }
+        if (id != null && cn != null) {
+            return new AppTarget.Builder(new AppTargetId(id), cn.getPackageName(), userHandle)
+                    .setClassName(cn.getClassName())
+                    .build();
+        }
+        return null;
     }
 
-    @UiThread
-    private void sendLaunch(AppTarget target, String container) {
-        sendEvent(target, container, AppTargetEvent.ACTION_LAUNCH);
+    private String getContainer(LauncherAtom.ItemInfo info) {
+        ContainerInfo ci = info.getContainerInfo();
+        switch (ci.getContainerCase()) {
+            case WORKSPACE: {
+                // In case the item type is not widgets, the spaceX and spanY default to 1.
+                int spanX = info.getWidget().getSpanX();
+                int spanY = info.getWidget().getSpanY();
+                return getWorkspaceContainerString(ci.getWorkspace(), spanX, spanY);
+            }
+            case HOTSEAT: {
+                return getHotseatContainerString(ci.getHotseat());
+            }
+            case TASK_SWITCHER_CONTAINER: {
+                return "task-switcher";
+            }
+            case ALL_APPS_CONTAINER: {
+                return "all-apps";
+            }
+            case SEARCH_RESULT_CONTAINER: {
+                return "search-results";
+            }
+            case PREDICTED_HOTSEAT_CONTAINER: {
+                return "predictions/hotseat";
+            }
+            case PREDICTION_CONTAINER: {
+                return "predictions";
+            }
+            case FOLDER: {
+                FolderContainer fc = ci.getFolder();
+                switch (fc.getParentContainerCase()) {
+                    case WORKSPACE:
+                        return "folder/" + getWorkspaceContainerString(fc.getWorkspace(), 1, 1);
+                    case HOTSEAT:
+                        return "folder/" + getHotseatContainerString(fc.getHotseat());
+                }
+                return "folder";
+            }
+        }
+        return "";
     }
 
-    @UiThread
-    private void sendDismiss(AppTarget target, String container) {
-        sendEvent(target, container, AppTargetEvent.ACTION_DISMISS);
+    private static String getWorkspaceContainerString(WorkspaceContainer wc, int spanX, int spanY) {
+        return String.format(Locale.ENGLISH, "workspace/%d/[%d,%d]/[%d,%d]",
+                wc.getPageIndex(), wc.getGridX(), wc.getGridY(), spanX, spanY);
     }
 
-    @Override
-    public void onPluginConnected(AppLaunchEventsPlugin appLaunchEventsPlugin, Context context) {
-        mAppLaunchEventsPluginsList.add(appLaunchEventsPlugin);
+    private static String getHotseatContainerString(HotseatContainer hc) {
+        return String.format(Locale.ENGLISH, "hotseat/%d", hc.getIndex());
     }
 
-    @Override
-    public void onPluginDisconnected(AppLaunchEventsPlugin appLaunchEventsPlugin) {
-        mAppLaunchEventsPluginsList.remove(appLaunchEventsPlugin);
+    private static ComponentName parseNullable(String componentNameString) {
+        return TextUtils.isEmpty(componentNameString)
+                ? null : ComponentName.unflattenFromString(componentNameString);
     }
 }
