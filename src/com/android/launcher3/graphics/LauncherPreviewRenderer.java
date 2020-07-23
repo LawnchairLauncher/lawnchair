@@ -126,7 +126,7 @@ public class LauncherPreviewRenderer {
      */
     public static class PreviewContext extends ContextWrapper {
 
-        private static final Set<MainThreadInitializedObject> WHITELIST = new HashSet<>(
+        private final Set<MainThreadInitializedObject> mAllowedObjects = new HashSet<>(
                 Arrays.asList(UserCache.INSTANCE, InstallSessionHelper.INSTANCE,
                         LauncherAppState.INSTANCE, InvariantDeviceProfile.INSTANCE,
                         CustomWidgetManager.INSTANCE, PluginManagerWrapper.INSTANCE));
@@ -160,7 +160,7 @@ public class LauncherPreviewRenderer {
          */
         public <T> T getObject(MainThreadInitializedObject<T> mainThreadInitializedObject,
                 MainThreadInitializedObject.ObjectProvider<T> provider) {
-            if (!WHITELIST.contains(mainThreadInitializedObject)) {
+            if (!mAllowedObjects.contains(mainThreadInitializedObject)) {
                 throw new IllegalStateException("Leaking unknown objects");
             }
             if (mainThreadInitializedObject == LauncherAppState.INSTANCE) {

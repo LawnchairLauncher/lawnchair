@@ -150,15 +150,8 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
         return deviceState.isInDeferredGestureRegion(ev);
     }
 
-    public abstract void onExitOverview(RecentsAnimationDeviceState deviceState,
+    public abstract void onExitOverview(RotationTouchHelper deviceState,
             Runnable exitRunnable);
-
-    /**
-     * Updates the prediction state to the overview state.
-     */
-    public void updateOverviewPredictionState() {
-        // By public overview predictions are not supported
-    }
 
     /**
      * Used for containerType in {@link com.android.launcher3.logging.UserEventDispatcher}

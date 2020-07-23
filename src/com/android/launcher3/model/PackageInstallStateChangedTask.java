@@ -20,8 +20,6 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherModel.CallbackTask;
-import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.PromiseAppInfo;
@@ -70,21 +68,18 @@ public class PackageInstallStateChangedTask extends BaseModelUpdateTask {
 
         synchronized (dataModel) {
             final HashSet<ItemInfo> updates = new HashSet<>();
-            for (ItemInfo info : dataModel.itemsIdMap) {
-                if (info instanceof WorkspaceItemInfo) {
-                    WorkspaceItemInfo si = (WorkspaceItemInfo) info;
-                    ComponentName cn = si.getTargetComponent();
-                    if (si.hasPromiseIconUi() && (cn != null)
-                            && mInstallInfo.packageName.equals(cn.getPackageName())) {
-                        si.setInstallProgress(mInstallInfo.progress);
-                        if (mInstallInfo.state == PackageInstallInfo.STATUS_FAILED) {
-                            // Mark this info as broken.
-                            si.status &= ~WorkspaceItemInfo.FLAG_INSTALL_SESSION_ACTIVE;
-                        }
-                        updates.add(si);
+            dataModel.forAllWorkspaceItemInfos(mInstallInfo.user, si -> {
+                ComponentName cn = si.getTargetComponent();
+                if (si.hasPromiseIconUi() && (cn != null)
+                        && mInstallInfo.packageName.equals(cn.getPackageName())) {
+                    si.setInstallProgress(mInstallInfo.progress);
+                    if (mInstallInfo.state == PackageInstallInfo.STATUS_FAILED) {
+                        // Mark this info as broken.
+                        si.status &= ~WorkspaceItemInfo.FLAG_INSTALL_SESSION_ACTIVE;
                     }
+                    updates.add(si);
                 }
-            }
+            });
 
             for (LauncherAppWidgetInfo widget : dataModel.appWidgets) {
                 if (widget.providerName.getPackageName().equals(mInstallInfo.packageName)) {
@@ -94,12 +89,7 @@ public class PackageInstallStateChangedTask extends BaseModelUpdateTask {
             }
 
             if (!updates.isEmpty()) {
-                scheduleCallbackTask(new CallbackTask() {
-                    @Override
-                    public void execute(Callbacks callbacks) {
-                        callbacks.bindRestoreItemsChange(updates);
-                    }
-                });
+                scheduleCallbackTask(callbacks -> callbacks.bindRestoreItemsChange(updates));
             }
         }
     }
