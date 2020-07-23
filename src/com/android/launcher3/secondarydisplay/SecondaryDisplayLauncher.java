@@ -222,7 +222,7 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
     }
 
     @Override
-    public void bindWorkspaceItemsChanged(ArrayList<WorkspaceItemInfo> updated) { }
+    public void bindWorkspaceItemsChanged(List<WorkspaceItemInfo> updated) { }
 
     @Override
     public void bindWidgetsRestored(ArrayList<LauncherAppWidgetInfo> widgets) { }
