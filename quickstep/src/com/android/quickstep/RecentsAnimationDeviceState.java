@@ -29,6 +29,7 @@ import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_G
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_HOME_DISABLED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NAV_BAR_HIDDEN;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_ONE_HANDED_ACTIVE;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_OVERVIEW_DISABLED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_SCREEN_PINNING;
@@ -43,10 +44,13 @@ import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.graphics.Region;
 import android.os.Process;
+import android.os.SystemProperties;
 import android.os.UserManager;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.view.MotionEvent;
+import android.view.Surface;
 
 import androidx.annotation.BinderThread;
 
@@ -55,6 +59,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.util.DefaultDisplay;
 import com.android.launcher3.util.SecureSettingsObserver;
 import com.android.quickstep.SysUINavigationMode.NavigationModeChangeListener;
+import com.android.quickstep.SysUINavigationMode.OneHandedModeChangeListener;
 import com.android.quickstep.util.NavBarPosition;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.QuickStepContract;
@@ -71,7 +76,8 @@ import java.util.stream.Collectors;
  */
 public class RecentsAnimationDeviceState implements
         NavigationModeChangeListener,
-        DefaultDisplay.DisplayInfoChangeListener {
+        DefaultDisplay.DisplayInfoChangeListener,
+        OneHandedModeChangeListener {
 
     private final Context mContext;
     private final SysUINavigationMode mSysUiNavMode;
@@ -88,6 +94,8 @@ public class RecentsAnimationDeviceState implements
     private final Region mDeferredGestureRegion = new Region();
     private boolean mAssistantAvailable;
     private float mAssistantVisibility;
+    private boolean mIsOneHandedModeEnabled;
+    private boolean mIsSwipeToNotificationEnabled;
 
     private boolean mIsUserUnlocked;
     private final ArrayList<Runnable> mUserUnlockedActions = new ArrayList<>();
@@ -157,6 +165,22 @@ public class RecentsAnimationDeviceState implements
             }
         }
 
+        if (SystemProperties.getBoolean("ro.support_one_handed_mode", false)) {
+            SecureSettingsObserver oneHandedEnabledObserver =
+                    SecureSettingsObserver.newOneHandedSettingsObserver(
+                            mContext, enabled -> mIsOneHandedModeEnabled = enabled);
+            oneHandedEnabledObserver.register();
+            oneHandedEnabledObserver.dispatchOnChange();
+            runOnDestroy(oneHandedEnabledObserver::unregister);
+        }
+
+        SecureSettingsObserver swipeBottomEnabledObserver =
+                SecureSettingsObserver.newSwipeToNotificationSettingsObserver(
+                        mContext, enabled -> mIsSwipeToNotificationEnabled = enabled);
+        swipeBottomEnabledObserver.register();
+        swipeBottomEnabledObserver.dispatchOnChange();
+        runOnDestroy(swipeBottomEnabledObserver::unregister);
+
         SecureSettingsObserver userSetupObserver = new SecureSettingsObserver(
                 context.getContentResolver(),
                 e -> mIsUserSetupComplete = e,
@@ -191,6 +215,15 @@ public class RecentsAnimationDeviceState implements
         runOnDestroy(() -> mSysUiNavMode.removeModeChangeListener(listener));
     }
 
+    /**
+     * Adds a listener for the one handed mode change,
+     * guaranteed to be called after the device state's mode has changed.
+     */
+    public void addOneHandedModeChangedCallback(OneHandedModeChangeListener listener) {
+        listener.onOneHandedModeChanged(mSysUiNavMode.addOneHandedOverlayChangeListener(listener));
+        runOnDestroy(() -> mSysUiNavMode.removeOneHandedOverlayChangeListener(listener));
+    }
+
     @Override
     public void onNavigationModeChanged(SysUINavigationMode.Mode newMode) {
         mDefaultDisplay.removeChangeListener(this);
@@ -204,7 +237,6 @@ public class RecentsAnimationDeviceState implements
         }
 
         mNavBarPosition = new NavBarPosition(newMode, mDefaultDisplay.getInfo());
-
         mMode = newMode;
     }
 
@@ -219,6 +251,11 @@ public class RecentsAnimationDeviceState implements
             return;
         }
         mNavBarPosition = new NavBarPosition(mMode, info);
+    }
+
+    @Override
+    public void onOneHandedModeChanged(int newGesturalHeight) {
+        mRotationTouchHelper.setGesturalHeight(newGesturalHeight);
     }
 
     /**
@@ -406,6 +443,13 @@ public class RecentsAnimationDeviceState implements
     }
 
     /**
+     * @return whether screen pinning is enabled and active
+     */
+    public boolean isOneHandedModeActive() {
+        return (mSystemUiStateFlags & SYSUI_STATE_ONE_HANDED_ACTIVE) != 0;
+    }
+
+    /**
      * Sets the region in screen space where the gestures should be deferred (ie. due to specific
      * nav bar ui).
      */
@@ -467,6 +511,32 @@ public class RecentsAnimationDeviceState implements
                 && !isGestureBlockedActivity(task);
     }
 
+    /**
+     * One handed gestural in quickstep only active on NO_BUTTON, TWO_BUTTONS, and portrait mode
+     *
+     * @param ev The touch screen motion event.
+     * @return whether the given motion event can trigger the one handed mode.
+     */
+    public boolean canTriggerOneHandedAction(MotionEvent ev) {
+        if (!mIsOneHandedModeEnabled && !mIsSwipeToNotificationEnabled) {
+            return false;
+        }
+
+        final DefaultDisplay.Info displayInfo = mDefaultDisplay.getInfo();
+        return (mRotationTouchHelper.touchInOneHandedModeRegion(ev)
+            && displayInfo.rotation != Surface.ROTATION_90
+            && displayInfo.rotation != Surface.ROTATION_270
+            && displayInfo.metrics.densityDpi < DisplayMetrics.DENSITY_600);
+    }
+
+    public boolean isOneHandedModeEnabled() {
+        return mIsOneHandedModeEnabled;
+    }
+
+    public boolean isSwipeToNotificationEnabled() {
+        return mIsSwipeToNotificationEnabled;
+    }
+
     public RotationTouchHelper getRotationTouchHelper() {
         return mRotationTouchHelper;
     }
@@ -481,6 +551,8 @@ public class RecentsAnimationDeviceState implements
         pw.println("  assistantDisabled="
                 + QuickStepContract.isAssistantGestureDisabled(mSystemUiStateFlags));
         pw.println("  isUserUnlocked=" + mIsUserUnlocked);
+        pw.println("  isOneHandedModeEnabled=" + mIsOneHandedModeEnabled);
+        pw.println("  isSwipeToNotificationEnabled=" + mIsSwipeToNotificationEnabled);
         mRotationTouchHelper.dump(pw);
     }
 }

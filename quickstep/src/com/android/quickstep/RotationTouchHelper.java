@@ -188,6 +188,10 @@ public class RotationTouchHelper implements
         return mOrientationTouchTransformer.touchInAssistantRegion(ev);
     }
 
+    public boolean touchInOneHandedModeRegion(MotionEvent ev) {
+        return mOrientationTouchTransformer.touchInOneHandedModeRegion(ev);
+    }
+
     /**
      * Updates the regions for detecting the swipe up/quickswitch and assistant gestures.
      */
@@ -222,7 +226,8 @@ public class RotationTouchHelper implements
         mDefaultDisplay.addChangeListener(this);
         onDisplayInfoChanged(mDefaultDisplay.getInfo(), CHANGE_ALL);
 
-        mOrientationTouchTransformer.setNavigationMode(newMode, mDefaultDisplay.getInfo());
+        mOrientationTouchTransformer.setNavigationMode(newMode, mDefaultDisplay.getInfo(),
+            mContext.getResources());
         if (!mMode.hasGestures && newMode.hasGestures) {
             setupOrientationSwipeHandler();
         } else if (mMode.hasGestures && !newMode.hasGestures){
@@ -264,6 +269,14 @@ public class RotationTouchHelper implements
                 && mTaskListFrozen) {
             toggleSecondaryNavBarsForRotation();
         }
+    }
+
+    /**
+     * Sets the gestural height.
+     */
+    void setGesturalHeight(int newGesturalHeight) {
+        mOrientationTouchTransformer.setGesturalHeight(newGesturalHeight, mDefaultDisplay.getInfo(),
+            mContext.getResources());
     }
 
     /**

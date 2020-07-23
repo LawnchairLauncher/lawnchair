@@ -63,7 +63,9 @@ class OrientationTouchTransformer {
     private SparseArray<OrientationRectF> mSwipeTouchRegions = new SparseArray<>(MAX_ORIENTATIONS);
     private final RectF mAssistantLeftRegion = new RectF();
     private final RectF mAssistantRightRegion = new RectF();
+    private final RectF mOneHandedModeRegion = new RectF();
     private int mCurrentDisplayRotation;
+    private int mNavBarGesturalHeight;
     private boolean mEnableMultipleRegions;
     private Resources mResources;
     private OrientationRectF mLastRectTouched;
@@ -103,18 +105,33 @@ class OrientationTouchTransformer {
         mResources = resources;
         mMode = mode;
         mContractInfo = contractInfo;
+        mNavBarGesturalHeight = getNavbarSize(ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE);
     }
 
-    void setNavigationMode(SysUINavigationMode.Mode newMode, DefaultDisplay.Info info) {
+    private void refreshTouchRegion(DefaultDisplay.Info info, Resources newRes) {
+        // Swipe touch regions are independent of nav mode, so we have to clear them explicitly
+        // here to avoid, for ex, a nav region for 2-button rotation 0 being used for 3-button mode
+        // It tries to cache and reuse swipe regions whenever possible based only on rotation
+        mResources = newRes;
+        mSwipeTouchRegions.clear();
+        resetSwipeRegions(info);
+    }
+
+    void setNavigationMode(SysUINavigationMode.Mode newMode, DefaultDisplay.Info info,
+            Resources newRes) {
         if (mMode == newMode) {
             return;
         }
         this.mMode = newMode;
-        // Swipe touch regions are independent of nav mode, so we have to clear them explicitly
-        // here to avoid, for ex, a nav region for 2-button rotation 0 being used for 3-button mode
-        // It tries to cache and reuse swipe regions whenever possible based only on rotation
-        mSwipeTouchRegions.clear();
-        resetSwipeRegions(info);
+        refreshTouchRegion(info, newRes);
+    }
+
+    void setGesturalHeight(int newGesturalHeight, DefaultDisplay.Info info, Resources newRes) {
+        if (mNavBarGesturalHeight == newGesturalHeight) {
+            return;
+        }
+        mNavBarGesturalHeight = newGesturalHeight;
+        refreshTouchRegion(info, newRes);
     }
 
     /**
@@ -216,10 +233,10 @@ class OrientationTouchTransformer {
 
         Point size = display.realSize;
         int rotation = display.rotation;
+        int touchHeight = mNavBarGesturalHeight;
         OrientationRectF orientationRectF =
                 new OrientationRectF(0, 0, size.x, size.y, rotation);
         if (mMode == SysUINavigationMode.Mode.NO_BUTTON) {
-            int touchHeight = getNavbarSize(ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE);
             orientationRectF.top = orientationRectF.bottom - touchHeight;
             updateAssistantRegions(orientationRectF);
         } else {
@@ -235,10 +252,11 @@ class OrientationTouchTransformer {
                             + getNavbarSize(ResourceUtils.NAVBAR_LANDSCAPE_LEFT_RIGHT_SIZE);
                     break;
                 default:
-                    orientationRectF.top = orientationRectF.bottom
-                            - getNavbarSize(ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE);
+                    orientationRectF.top = orientationRectF.bottom - touchHeight;
             }
         }
+        // One handed gestural only active on portrait mode
+        mOneHandedModeRegion.set(0, orientationRectF.bottom - touchHeight, size.x, size.y);
 
         return orientationRectF;
     }
@@ -262,6 +280,10 @@ class OrientationTouchTransformer {
         return mAssistantLeftRegion.contains(ev.getX(), ev.getY())
                 || mAssistantRightRegion.contains(ev.getX(), ev.getY());
 
+    }
+
+    boolean touchInOneHandedModeRegion(MotionEvent ev) {
+        return mOneHandedModeRegion.contains(ev.getX(), ev.getY());
     }
 
     private int getNavbarSize(String resName) {
@@ -355,6 +377,8 @@ class OrientationTouchTransformer {
             regions.append(rectF.mRotation).append(" ");
         }
         pw.println(regions.toString());
+        pw.println("  mNavBarGesturalHeight=" + mNavBarGesturalHeight);
+        pw.println("  mOneHandedModeRegion=" + mOneHandedModeRegion);
     }
 
     private class OrientationRectF extends RectF {

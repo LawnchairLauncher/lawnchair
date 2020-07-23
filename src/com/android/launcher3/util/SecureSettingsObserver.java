@@ -29,6 +29,11 @@ public class SecureSettingsObserver extends ContentObserver {
 
     /** Hidden field Settings.Secure.NOTIFICATION_BADGING */
     public static final String NOTIFICATION_BADGING = "notification_badging";
+    /** Hidden field Settings.Secure.ONE_HANDED_MODE_ENABLED */
+    public static final String ONE_HANDED_ENABLED = "one_handed_mode_enabled";
+    /** Hidden field Settings.Secure.SWIPE_BOTTOM_TO_NOTIFICATION_ENABLED */
+    public static final String ONE_HANDED_SWIPE_BOTTOM_TO_NOTIFICATION_ENABLED =
+            "swipe_bottom_to_notification_enabled";
 
     private final ContentResolver mResolver;
     private final String mKeySetting;
@@ -78,5 +83,22 @@ public class SecureSettingsObserver extends ContentObserver {
             OnChangeListener listener) {
         return new SecureSettingsObserver(
                 context.getContentResolver(), listener, NOTIFICATION_BADGING, 1);
+    }
+
+    public static SecureSettingsObserver newOneHandedSettingsObserver(Context context,
+            OnChangeListener listener) {
+        return new SecureSettingsObserver(
+                context.getContentResolver(), listener, ONE_HANDED_ENABLED, 1);
+    }
+
+    /**
+     * Constructs settings observer for {@link #ONE_HANDED_SWIPE_BOTTOM_TO_NOTIFICATION_ENABLED}
+     * preference.
+     */
+    public static SecureSettingsObserver newSwipeToNotificationSettingsObserver(Context context,
+            OnChangeListener listener) {
+        return new SecureSettingsObserver(
+                context.getContentResolver(), listener,
+                ONE_HANDED_SWIPE_BOTTOM_TO_NOTIFICATION_ENABLED, 1);
     }
 }
