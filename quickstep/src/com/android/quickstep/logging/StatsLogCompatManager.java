@@ -59,6 +59,7 @@ import com.android.launcher3.util.LogConfig;
 import com.android.systemui.shared.system.SysUiStatsLog;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -100,21 +101,22 @@ public class StatsLogCompatManager extends StatsLogManager {
     }
 
     /**
-     * Logs the workspace layout information on the model thread.
+     * Logs impression of the current workspace with additional launcher events.
      */
     @Override
-    public void logSnapshot() {
+    public void logSnapshot(List<EventEnum> extraEvents) {
         LauncherAppState.getInstance(mContext).getModel().enqueueModelUpdateTask(
-                new SnapshotWorker());
+                new SnapshotWorker(extraEvents));
     }
 
     private class SnapshotWorker extends BaseModelUpdateTask {
-
         private final InstanceId mInstanceId;
+        private final List<EventEnum> mExtraEvents;
 
-        SnapshotWorker() {
-            mInstanceId = new InstanceIdSequence(
-                    1 << 20 /*InstanceId.INSTANCE_ID_MAX*/).newInstanceId();
+        SnapshotWorker(List<EventEnum> extraEvents) {
+            mInstanceId = new InstanceIdSequence(1 << 20 /*InstanceId.INSTANCE_ID_MAX*/)
+                    .newInstanceId();
+            this.mExtraEvents = extraEvents;
         }
 
         @Override
@@ -155,6 +157,9 @@ public class StatsLogCompatManager extends StatsLogManager {
                 LauncherAtom.ItemInfo atomInfo = info.buildProto(null);
                 writeSnapshot(atomInfo, mInstanceId);
             }
+            mExtraEvents
+                    .forEach(eventName -> logger().withInstanceId(mInstanceId).log(eventName));
+
             getDevicePrefs(mContext).edit()
                     .putLong(LAST_SNAPSHOT_TIME_MILLIS, currentTimeMillis()).apply();
         }
