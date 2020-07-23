@@ -29,7 +29,6 @@ import android.view.ViewConfiguration;
 
 import androidx.annotation.BinderThread;
 
-import com.android.launcher3.appprediction.PredictionUiStateManager;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
@@ -165,7 +164,7 @@ public class OverviewCommandHelper {
             mActivityInterface = mOverviewComponentObserver.getActivityInterface();
             mCreateTime = SystemClock.elapsedRealtime();
             mAnimationProvider = new AppToOverviewAnimationProvider<>(mActivityInterface,
-                    RecentsModel.getRunningTaskId(), mDeviceState);
+                    ActivityManagerWrapper.getInstance().getRunningTask(), mDeviceState);
 
             // Preload the plan
             mRecentsModel.getTasks(null);
@@ -227,10 +226,6 @@ public class OverviewCommandHelper {
                         LauncherLogProto.ContainerType.TASKSWITCHER);
                 mUserEventLogged = true;
             }
-
-            // Switch prediction client to overview
-            PredictionUiStateManager.INSTANCE.get(activity).switchClient(
-                    PredictionUiStateManager.Client.OVERVIEW);
             return mAnimationProvider.onActivityReady(activity, wasVisible);
         }
 

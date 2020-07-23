@@ -20,8 +20,10 @@ import android.util.Log;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.launcher3.Utilities;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.model.data.PackageItemInfo;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.widget.WidgetsListAdapter.WidgetListRowEntryComparator;
 
 import java.util.ArrayList;
@@ -32,8 +34,8 @@ import java.util.Iterator;
  * methods accordingly.
  */
 public class WidgetsDiffReporter {
-    private static final boolean DEBUG = false;
-    private static final String TAG = "WidgetsDiffReporter";
+    private static final boolean DEBUG = Utilities.IS_RUNNING_IN_TEST_HARNESS; // b/160238801
+    private static final String TAG = TestProtocol.NO_SCROLL_END_WIDGETS;
 
     private final IconCache mIconCache;
     private final RecyclerView.Adapter mListener;

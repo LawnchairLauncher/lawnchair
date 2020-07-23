@@ -15,10 +15,24 @@
  */
 package com.android.launcher3.views;
 
+import android.view.View;
+
 /**
  * A view that has an icon, label, and notification dot.
  */
 public interface IconLabelDotView {
     void setIconVisible(boolean visible);
     void setForceHideDot(boolean hide);
+
+    /**
+     * Sets the visibility of icon and dot of the view
+     */
+    static void setIconAndDotVisible(View view, boolean visible) {
+        if (view instanceof IconLabelDotView) {
+            ((IconLabelDotView) view).setIconVisible(visible);
+            ((IconLabelDotView) view).setForceHideDot(!visible);
+        } else {
+            view.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
+        }
+    }
 }
