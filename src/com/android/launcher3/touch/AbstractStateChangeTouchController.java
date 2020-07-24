@@ -37,6 +37,8 @@ import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 
+import androidx.core.os.BuildCompat;
+
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.LauncherState;
@@ -44,6 +46,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.states.StateAnimationConfig;
@@ -265,8 +268,10 @@ public abstract class AbstractStateChangeTouchController
         mCanBlockFling = mFromState == NORMAL;
         mFlingBlockCheck.unblockFling();
         // Must be called after all the animation controllers have been paused
-        if (mToState == ALL_APPS || mToState == NORMAL) {
-            mLauncher.getAllAppsController().onDragStart(mToState == ALL_APPS);
+        if (FeatureFlags.ENABLE_DEVICE_SEARCH.get() && BuildCompat.isAtLeastR()
+                && (mToState == ALL_APPS || mToState == NORMAL)) {
+            mLauncher.getAllAppsController().getInsetController().onDragStart(
+                    mToState == ALL_APPS ? 0 : 1);
         }
     }
 
