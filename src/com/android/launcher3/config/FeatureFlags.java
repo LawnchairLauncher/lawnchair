@@ -177,6 +177,10 @@ public final class FeatureFlags {
     public static final BooleanFlag USER_EVENT_DISPATCHER = new DeviceFlag(
             "USER_EVENT_DISPATCHER", true, "User event dispatcher collects logs.");
 
+    public static final BooleanFlag ENABLE_MINIMAL_DEVICE = new DeviceFlag(
+            "ENABLE_MINIMAL_DEVICE", false,
+            "Allow user to toggle minimal device mode in launcher.");
+
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {
             for (DebugFlag flag : sDebugFlags) {
