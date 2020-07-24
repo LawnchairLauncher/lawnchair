@@ -69,14 +69,16 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     }
 
     private void startTestApps() throws Exception {
-        startAppFast(getAppPackageName());
-        startAppFast(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
-        startTestActivity(2);
+        if (mLauncher.getRecentTasks().size() < 3) {
+            startAppFast(getAppPackageName());
+            startAppFast(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
+            startTestActivity(2);
 
-        executeOnLauncher(launcher -> assertTrue(
-                "Launcher activity is the top activity; expecting another activity to be the top "
-                        + "one",
-                isInBackground(launcher)));
+            executeOnLauncher(launcher -> assertTrue(
+                    "Launcher activity is the top activity; expecting another activity to be the "
+                            + "top one",
+                    isInBackground(launcher)));
+        }
     }
 
     @Test
