@@ -357,7 +357,7 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
     }
 
     private void updateOverlay() {
-        if (mOverlayEnabled) {
+        if (mOverlayEnabled && mBitmapShader != null && mThumbnailData != null) {
             mOverlay.initOverlay(mTask, mThumbnailData, mPreviewPositionHelper.mMatrix,
                     mPreviewPositionHelper.mIsOrientationChanged);
         } else {

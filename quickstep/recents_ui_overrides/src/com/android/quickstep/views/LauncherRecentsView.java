@@ -31,6 +31,7 @@ import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
+import android.os.UserHandle;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.Surface;
@@ -40,15 +41,20 @@ import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.anim.Interpolators;
+import com.android.launcher3.appprediction.PredictionUiStateManager;
+import com.android.launcher3.appprediction.PredictionUiStateManager.Client;
+import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.StateManager.StateListener;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
+import com.android.launcher3.util.TraceHelper;
 import com.android.launcher3.views.ScrimView;
 import com.android.quickstep.LauncherActivityInterface;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.util.TransformParams;
 import com.android.systemui.plugins.PluginListener;
 import com.android.systemui.plugins.RecentsExtraCard;
+import com.android.systemui.shared.recents.model.Task;
 
 /**
  * {@link RecentsView} used in Launcher activity
@@ -175,6 +181,18 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher>
     }
 
     @Override
+    public void onTaskLaunched(Task task) {
+        UserHandle user =  UserHandle.of(task.key.userId);
+        AppLaunchTracker.INSTANCE.get(getContext()).onStartApp(task.getTopComponent(), user,
+                AppLaunchTracker.CONTAINER_OVERVIEW);
+    }
+
+    @Override
+    public boolean shouldUseMultiWindowTaskSizeStrategy() {
+        return TraceHelper.whitelistIpcs("isInMultiWindowMode", mActivity::isInMultiWindowMode);
+    }
+
+    @Override
     public void scrollTo(int x, int y) {
         super.scrollTo(x, y);
         if (ENABLE_QUICKSTEP_LIVE_TILE.get() && mEnableDrawingLiveTile) {
@@ -219,6 +237,9 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher>
         super.reset();
 
         setLayoutRotation(Surface.ROTATION_0, Surface.ROTATION_0);
+        // We are moving to home or some other UI with no recents. Switch back to the home client,
+        // the home predictions should have been updated when the activity was resumed.
+        PredictionUiStateManager.INSTANCE.get(getContext()).switchClient(Client.HOME);
     }
 
     @Override

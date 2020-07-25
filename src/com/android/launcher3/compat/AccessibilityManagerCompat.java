@@ -75,9 +75,6 @@ public class AccessibilityManagerCompat {
     }
 
     public static void sendScrollFinishedEventToTest(Context context) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_SCROLL_END_WIDGETS, "sendScrollFinishedEventToTest");
-        }
         final AccessibilityManager accessibilityManager = getAccessibilityManagerForTest(context);
         if (accessibilityManager == null) return;
 
@@ -97,9 +94,6 @@ public class AccessibilityManagerCompat {
                 AccessibilityEvent.TYPE_ANNOUNCEMENT);
         e.setClassName(eventTag);
         e.setParcelableData(data);
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_SCROLL_END_WIDGETS, "sendEventToTest " + e);
-        }
         accessibilityManager.sendAccessibilityEvent(e);
     }
 

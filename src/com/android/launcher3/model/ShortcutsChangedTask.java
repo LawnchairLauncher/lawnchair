@@ -21,6 +21,7 @@ import android.os.UserHandle;
 
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.shortcuts.ShortcutRequest;
@@ -57,14 +58,14 @@ public class ShortcutsChangedTask extends BaseModelUpdateTask {
         MultiHashMap<ShortcutKey, WorkspaceItemInfo> keyToShortcutInfo = new MultiHashMap<>();
         HashSet<String> allIds = new HashSet<>();
 
-        synchronized (dataModel) {
-            dataModel.forAllWorkspaceItemInfos(mUser, si -> {
-                if ((si.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT)
-                        && mPackageName.equals(si.getIntent().getPackage())) {
+        for (ItemInfo itemInfo : dataModel.itemsIdMap) {
+            if (itemInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
+                WorkspaceItemInfo si = (WorkspaceItemInfo) itemInfo;
+                if (mPackageName.equals(si.getIntent().getPackage()) && si.user.equals(mUser)) {
                     keyToShortcutInfo.addToList(ShortcutKey.fromItemInfo(si), si);
                     allIds.add(si.getDeepShortcutId());
                 }
-            });
+            }
         }
 
         final ArrayList<WorkspaceItemInfo> updatedWorkspaceItemInfos = new ArrayList<>();

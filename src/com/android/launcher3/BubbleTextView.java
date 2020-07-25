@@ -331,7 +331,10 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     public boolean onTouchEvent(MotionEvent event) {
         // ignore events if they happen in padding area
         if (event.getAction() == MotionEvent.ACTION_DOWN
-                && shouldIgnoreTouchDown(event.getX(), event.getY())) {
+                && (event.getY() < getPaddingTop()
+                || event.getX() < getPaddingLeft()
+                || event.getY() > getHeight() - getPaddingBottom()
+                || event.getX() > getWidth() - getPaddingRight())) {
             return false;
         }
         if (isLongClickable()) {
@@ -342,16 +345,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         } else {
             return super.onTouchEvent(event);
         }
-    }
-
-    /**
-     * Returns true if the touch down at the provided position be ignored
-     */
-    protected boolean shouldIgnoreTouchDown(float x, float y) {
-        return y < getPaddingTop()
-                || x < getPaddingLeft()
-                || y > getHeight() - getPaddingBottom()
-                || x > getWidth() - getPaddingRight();
     }
 
     void setStayPressed(boolean stayPressed) {
