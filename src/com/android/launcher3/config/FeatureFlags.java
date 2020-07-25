@@ -185,6 +185,10 @@ public final class FeatureFlags {
             "ENABLE_MINIMAL_DEVICE", true,
             "Allow user to toggle minimal device mode in launcher.");
 
+    public static final BooleanFlag EXPANDED_SMARTSPACE = new DeviceFlag(
+            "EXPANDED_SMARTSPACE", false, "Expands smartspace height to two rows. "
+              + "Any apps occupying the first row will be removed from workspace.");
+
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {
             for (DebugFlag flag : sDebugFlags) {
