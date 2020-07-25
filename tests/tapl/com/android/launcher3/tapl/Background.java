@@ -93,7 +93,7 @@ public class Background extends LauncherInstrumentation.VisibleContainer {
 
                 mLauncher.sendPointer(
                         downTime, downTime, MotionEvent.ACTION_DOWN, start, gestureScope);
-                mLauncher.executeAndWaitForEvent(
+                mLauncher.executeAndWaitForLauncherEvent(
                         () -> mLauncher.movePointer(
                                 downTime,
                                 downTime,

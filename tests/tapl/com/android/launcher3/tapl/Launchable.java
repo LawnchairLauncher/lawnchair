@@ -56,15 +56,18 @@ abstract class Launchable {
     private Background launch(BySelector selector) {
         LauncherInstrumentation.log("Launchable.launch before click " +
                 mObject.getVisibleCenter() + " in " + mLauncher.getVisibleBounds(mObject));
+        final String label = mObject.getText();
 
         mLauncher.executeAndWaitForEvent(
-                () -> mLauncher.clickLauncherObject(mObject),
+                () -> {
+                    mLauncher.clickLauncherObject(mObject);
+                    expectActivityStartEvents();
+                },
                 event -> event.getEventType() == TYPE_WINDOW_STATE_CHANGED,
-                () -> "Launching an app didn't open a new window: " + mObject.getText());
-        expectActivityStartEvents();
+                () -> "Launching an app didn't open a new window: " + label);
 
         mLauncher.assertTrue(
-                "App didn't start: " + selector,
+                "App didn't start: " + label,
                 mLauncher.getDevice().wait(Until.hasObject(selector),
                         LauncherInstrumentation.WAIT_TIME_MS));
         return new Background(mLauncher);

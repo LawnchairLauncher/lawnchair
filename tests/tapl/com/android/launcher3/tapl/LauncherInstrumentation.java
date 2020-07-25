@@ -103,6 +103,7 @@ public final class LauncherInstrumentation {
 
     static final Pattern EVENT_TOUCH_DOWN_TIS = getTouchEventPatternTIS("ACTION_DOWN");
     static final Pattern EVENT_TOUCH_UP_TIS = getTouchEventPatternTIS("ACTION_UP");
+    private final String mLauncherPackage;
 
     // Types for launcher containers that the user is interacting with. "Background" is a
     // pseudo-container corresponding to inactive launcher covered by another app.
@@ -216,11 +217,11 @@ public final class LauncherInstrumentation {
         // Launcher package. As during inproc tests the tested launcher may not be selected as the
         // current launcher, choosing target package for inproc. For out-of-proc, use the installed
         // launcher package.
-        final String authorityPackage = testPackage.equals(targetPackage) ?
-                getLauncherPackageName() :
-                targetPackage;
+        mLauncherPackage = testPackage.equals(targetPackage)
+                ? getLauncherPackageName()
+                : targetPackage;
 
-        String testProviderAuthority = authorityPackage + ".TestInfo";
+        String testProviderAuthority = mLauncherPackage + ".TestInfo";
         mTestProviderUri = new Uri.Builder()
                 .scheme(ContentResolver.SCHEME_CONTENT)
                 .authority(testProviderAuthority)
@@ -628,6 +629,14 @@ public final class LauncherInstrumentation {
         fail("Launcher didn't initialize");
     }
 
+    Parcelable executeAndWaitForLauncherEvent(Runnable command,
+            UiAutomation.AccessibilityEventFilter eventFilter, Supplier<String> message) {
+        return executeAndWaitForEvent(
+                command,
+                e -> mLauncherPackage.equals(e.getPackageName()) && eventFilter.accept(e),
+                message);
+    }
+
     Parcelable executeAndWaitForEvent(Runnable command,
             UiAutomation.AccessibilityEventFilter eventFilter, Supplier<String> message) {
         try {
@@ -972,7 +981,7 @@ public final class LauncherInstrumentation {
 
     void runToState(Runnable command, int expectedState) {
         final List<Integer> actualEvents = new ArrayList<>();
-        executeAndWaitForEvent(
+        executeAndWaitForLauncherEvent(
                 command,
                 event -> isSwitchToStateEvent(event, expectedState, actualEvents),
                 () -> "Failed to receive an event for the state change: expected ["
@@ -1087,7 +1096,7 @@ public final class LauncherInstrumentation {
                 return;
         }
 
-        executeAndWaitForEvent(
+        executeAndWaitForLauncherEvent(
                 () -> linearGesture(
                         startX, startY, endX, endY, steps, slowDown, GestureScope.INSIDE),
                 event -> TestProtocol.SCROLL_FINISHED_MESSAGE.equals(event.getClassName()),
