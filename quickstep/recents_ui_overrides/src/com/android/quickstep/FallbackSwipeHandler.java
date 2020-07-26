@@ -71,7 +71,7 @@ import java.util.function.Consumer;
  */
 @TargetApi(Build.VERSION_CODES.R)
 public class FallbackSwipeHandler extends
-        BaseSwipeUpHandlerV2<RecentsActivity, FallbackRecentsView> {
+        AbsSwipeUpHandler<RecentsActivity, FallbackRecentsView> {
 
     /**
      * Message used for receiving gesture nav contract information. We use a static messenger to

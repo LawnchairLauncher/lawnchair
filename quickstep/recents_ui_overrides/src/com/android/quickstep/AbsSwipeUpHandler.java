@@ -99,10 +99,10 @@ import com.android.systemui.shared.system.TaskStackChangeListener;
  * Handles the navigation gestures when Launcher is the default home activity.
  * TODO: Merge this with BaseSwipeUpHandler
  */
-@TargetApi(Build.VERSION_CODES.O)
-public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q extends RecentsView>
+@TargetApi(Build.VERSION_CODES.R)
+public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends RecentsView>
         extends BaseSwipeUpHandler<T, Q> implements OnApplyWindowInsetsListener {
-    private static final String TAG = BaseSwipeUpHandlerV2.class.getSimpleName();
+    private static final String TAG = "AbsSwipeUpHandler";
 
     private static final String[] STATE_NAMES = DEBUG_STATES ? new String[16] : null;
 
@@ -201,7 +201,7 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
 
     private final Runnable mOnDeferredActivityLaunch = this::onDeferredActivityLaunch;
 
-    public BaseSwipeUpHandlerV2(Context context, RecentsAnimationDeviceState deviceState,
+    public AbsSwipeUpHandler(Context context, RecentsAnimationDeviceState deviceState,
             TaskAnimationManager taskAnimationManager, GestureState gestureState,
             long touchTimeMs, boolean continuingLastGesture,
             InputConsumerController inputConsumer) {
