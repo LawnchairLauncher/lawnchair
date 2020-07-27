@@ -60,10 +60,10 @@ import java.util.function.Consumer;
  * Base class for swipe up handler with some utility methods
  */
 @TargetApi(Build.VERSION_CODES.Q)
-public abstract class BaseSwipeUpHandler<T extends StatefulActivity<?>, Q extends RecentsView>
+public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends RecentsView>
         extends SwipeUpAnimationLogic implements RecentsAnimationListener {
 
-    private static final String TAG = "BaseSwipeUpHandler";
+    private static final String TAG = "AbsSwipeUpHandler";
 
     protected final BaseActivityInterface<?, T> mActivityInterface;
     protected final InputConsumerProxy mInputConsumerProxy;
@@ -87,7 +87,7 @@ public abstract class BaseSwipeUpHandler<T extends StatefulActivity<?>, Q extend
 
     private boolean mRecentsViewScrollLinked = false;
 
-    protected BaseSwipeUpHandler(Context context, RecentsAnimationDeviceState deviceState,
+    protected AbsSwipeUpHandler(Context context, RecentsAnimationDeviceState deviceState,
             GestureState gestureState, InputConsumerController inputConsumer) {
         super(context, deviceState, gestureState, new TransformParams());
         mActivityInterface = gestureState.getActivityInterface();
@@ -389,7 +389,7 @@ public abstract class BaseSwipeUpHandler<T extends StatefulActivity<?>, Q extend
 
     public interface Factory {
 
-        BaseSwipeUpHandler newHandler(
+        AbsSwipeUpHandler newHandler(
                 GestureState gestureState, long touchTimeMs, boolean continuingLastGesture);
     }
 }

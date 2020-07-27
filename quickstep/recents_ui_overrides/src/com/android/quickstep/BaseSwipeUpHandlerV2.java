@@ -101,7 +101,7 @@ import com.android.systemui.shared.system.TaskStackChangeListener;
  */
 @TargetApi(Build.VERSION_CODES.O)
 public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q extends RecentsView>
-        extends BaseSwipeUpHandler<T, Q> implements OnApplyWindowInsetsListener {
+        extends AbsSwipeUpHandler<T, Q> implements OnApplyWindowInsetsListener {
     private static final String TAG = BaseSwipeUpHandlerV2.class.getSimpleName();
 
     private static final String[] STATE_NAMES = DEBUG_STATES ? new String[16] : null;
