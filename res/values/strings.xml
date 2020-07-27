@@ -67,6 +67,10 @@
     <!-- Label for an icon representing any generic app. [CHAR_LIMIT=50] -->
     <string name="label_application">App</string>
 
+    <!--All apps Search-->
+    <!-- Section title for apps [CHAR_LIMIT=50] -->
+    <string name="search_corpus_apps">Apps</string>
+
     <!-- Popup items -->
     <!-- Text to display as the header above notifications. [CHAR_LIMIT=30] -->
     <string name="notifications_header">Notifications</string>

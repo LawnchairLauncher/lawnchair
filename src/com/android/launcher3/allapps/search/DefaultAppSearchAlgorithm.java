@@ -17,24 +17,22 @@ package com.android.launcher3.allapps.search;
 
 import android.os.Handler;
 
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.model.data.AppInfo;
-import com.android.launcher3.util.ComponentKey;
 
 import java.text.Collator;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * The default search implementation.
  */
 public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
 
-    private final List<AppInfo> mApps;
     protected final Handler mResultHandler;
+    private final AppsSearchPipeline mAppsSearchPipeline;
 
-    public DefaultAppSearchAlgorithm(List<AppInfo> apps) {
-        mApps = apps;
+    public DefaultAppSearchAlgorithm(LauncherAppState launcherAppState) {
         mResultHandler = new Handler();
+        mAppsSearchPipeline = new AppsSearchPipeline(launcherAppState);
     }
 
     @Override
@@ -47,28 +45,8 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
     @Override
     public void doSearch(final String query,
             final AllAppsSearchBarController.Callbacks callback) {
-        final ArrayList<ComponentKey> result = getTitleMatchResult(query);
-        mResultHandler.post(new Runnable() {
-
-            @Override
-            public void run() {
-                callback.onSearchResult(query, result);
-            }
-        });
-    }
-
-    private ArrayList<ComponentKey> getTitleMatchResult(String query) {
-        // Do an intersection of the words in the query and each title, and filter out all the
-        // apps that don't match all of the words in the query.
-        final String queryTextLower = query.toLowerCase();
-        final ArrayList<ComponentKey> result = new ArrayList<>();
-        StringMatcher matcher = StringMatcher.getInstance();
-        for (AppInfo info : mApps) {
-            if (matches(info, queryTextLower, matcher)) {
-                result.add(info.toComponentKey());
-            }
-        }
-        return result;
+        mAppsSearchPipeline.performSearch(query,
+                results -> mResultHandler.post(() -> callback.onSearchResult(query, results)));
     }
 
     public static boolean matches(AppInfo info, String query, StringMatcher matcher) {
