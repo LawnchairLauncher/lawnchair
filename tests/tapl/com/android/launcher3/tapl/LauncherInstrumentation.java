@@ -450,7 +450,7 @@ public final class LauncherInstrumentation {
             }
         }
 
-        dumpDiagnostics();
+        dumpDiagnostics(message);
 
         log("Hierarchy dump for: " + message);
         dumpViewHierarchy();
@@ -458,10 +458,11 @@ public final class LauncherInstrumentation {
         return message;
     }
 
-    private void dumpDiagnostics() {
-        Log.e("b/156287114", "Input:");
+    private void dumpDiagnostics(String message) {
+        log("Diagnostics for failure: " + message);
+        log("Input:");
         logShellCommand("dumpsys input");
-        Log.e("b/156287114", "TIS:");
+        log("TIS:");
         logShellCommand("dumpsys activity service TouchInteractionService");
     }
 
@@ -469,10 +470,10 @@ public final class LauncherInstrumentation {
         try {
             for (String line : mDevice.executeShellCommand(command).split("\\n")) {
                 SystemClock.sleep(10);
-                Log.d("b/156287114", line);
+                log(line);
             }
         } catch (IOException e) {
-            Log.d("b/156287114", "Failed to execute " + command);
+            log("Failed to execute " + command);
         }
     }
 
@@ -1362,7 +1363,7 @@ public final class LauncherInstrumentation {
                 if (mCheckEventsForSuccessfulGestures) {
                     final String message = eventChecker.verify(WAIT_TIME_MS, true);
                     if (message != null) {
-                        dumpDiagnostics();
+                        dumpDiagnostics(message);
                         checkForAnomaly();
                         Assert.fail(formatSystemHealthMessage(
                                 "http://go/tapl : successful gesture produced " + message));
