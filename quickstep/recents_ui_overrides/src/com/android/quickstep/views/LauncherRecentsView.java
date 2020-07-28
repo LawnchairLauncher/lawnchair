@@ -136,19 +136,6 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher>
     }
 
     @Override
-    protected void onTaskLaunchAnimationUpdate(float progress, TaskView tv) {
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-            if (tv.isRunningTask()) {
-                mLiveTileParams.setProgress(1 - progress)
-                        .setSyncTransactionApplier(mSyncTransactionApplier);
-                // TODO: Revisit live tiles
-            } else {
-                redrawLiveTile();
-            }
-        }
-    }
-
-    @Override
     protected void onTaskLaunchAnimationEnd(boolean success) {
         if (success) {
             mActivity.getStateManager().goToState(NORMAL, false /* animate */);

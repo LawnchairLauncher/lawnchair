@@ -1978,8 +1978,6 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
                             ? targetSysUiFlags
                             : 0);
 
-            onTaskLaunchAnimationUpdate(animator.getAnimatedFraction(), tv);
-
             // Passing the threshold from taskview to fullscreen app will vibrate
             final boolean passed = animator.getAnimatedFraction() >=
                     SUCCESS_TRANSITION_PROGRESS;
@@ -2003,6 +2001,10 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
 
         mPendingAnimation = new PendingAnimation(duration);
         mPendingAnimation.add(anim);
+        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+            mLiveTileTaskViewSimulator.addOverviewToAppAnim(mPendingAnimation, interpolator);
+            mPendingAnimation.addOnFrameCallback(this::redrawLiveTile);
+        }
         mPendingAnimation.addEndListener((endState) -> {
             if (endState.isSuccess) {
                 Consumer<Boolean> onLaunchResult = (result) -> {
@@ -2026,9 +2028,6 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
             mPendingAnimation = null;
         });
         return mPendingAnimation;
-    }
-
-    protected void onTaskLaunchAnimationUpdate(float progress, TaskView tv) {
     }
 
     protected void onTaskLaunchAnimationEnd(boolean success) {

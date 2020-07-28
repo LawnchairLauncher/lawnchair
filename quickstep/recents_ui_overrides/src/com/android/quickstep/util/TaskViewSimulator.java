@@ -184,11 +184,19 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
     }
 
     /**
-     * Adds animation for all the components corresponding to transition from an app to overview
+     * Adds animation for all the components corresponding to transition from an app to overview.
      */
     public void addAppToOverviewAnim(PendingAnimation pa, TimeInterpolator interpolator) {
         pa.addFloat(fullScreenProgress, AnimatedFloat.VALUE, 1, 0, interpolator);
         pa.addFloat(recentsViewScale, AnimatedFloat.VALUE, getFullScreenScale(), 1, interpolator);
+    }
+
+    /**
+     * Adds animation for all the components corresponding to transition from overview to the app.
+     */
+    public void addOverviewToAppAnim(PendingAnimation pa, TimeInterpolator interpolator) {
+        pa.addFloat(fullScreenProgress, AnimatedFloat.VALUE, 0, 1, interpolator);
+        pa.addFloat(recentsViewScale, AnimatedFloat.VALUE, 1, getFullScreenScale(), interpolator);
     }
 
     /**
