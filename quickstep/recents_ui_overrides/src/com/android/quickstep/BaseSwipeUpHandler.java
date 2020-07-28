@@ -39,6 +39,7 @@ import com.android.launcher3.util.WindowBounds;
 import com.android.quickstep.RecentsAnimationCallbacks.RecentsAnimationListener;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.ActivityInitListener;
+import com.android.quickstep.util.InputConsumerProxy;
 import com.android.quickstep.util.RectFSpringAnim;
 import com.android.quickstep.util.SurfaceTransactionApplier;
 import com.android.quickstep.util.TransformParams;
@@ -61,7 +62,7 @@ public abstract class BaseSwipeUpHandler<T extends StatefulActivity<?>, Q extend
     private static final String TAG = "BaseSwipeUpHandler";
 
     protected final BaseActivityInterface<?, T> mActivityInterface;
-    protected final InputConsumerController mInputConsumer;
+    protected final InputConsumerProxy mInputConsumerProxy;
 
     protected final ActivityInitListener mActivityInitListener;
 
@@ -87,7 +88,8 @@ public abstract class BaseSwipeUpHandler<T extends StatefulActivity<?>, Q extend
         super(context, deviceState, gestureState, new TransformParams());
         mActivityInterface = gestureState.getActivityInterface();
         mActivityInitListener = mActivityInterface.createActivityInitListener(this::onActivityInit);
-        mInputConsumer = inputConsumer;
+        mInputConsumerProxy =
+                new InputConsumerProxy(inputConsumer, this::createNewInputProxyHandler);
     }
 
     /**
