@@ -109,6 +109,7 @@ public class LoaderTask implements Runnable {
     protected final LauncherAppState mApp;
     private final AllAppsList mBgAllAppsList;
     protected final BgDataModel mBgDataModel;
+    private final ModelDelegate mModelDelegate;
 
     private FirstScreenBroadcast mFirstScreenBroadcast;
 
@@ -128,10 +129,11 @@ public class LoaderTask implements Runnable {
     private boolean mStopped;
 
     public LoaderTask(LauncherAppState app, AllAppsList bgAllAppsList, BgDataModel dataModel,
-            LoaderResults results) {
+            ModelDelegate modelDelegate, LoaderResults results) {
         mApp = app;
         mBgAllAppsList = bgAllAppsList;
         mBgDataModel = dataModel;
+        mModelDelegate = modelDelegate;
         mResults = results;
 
         mLauncherApps = mApp.getContext().getSystemService(LauncherApps.class);
@@ -766,6 +768,9 @@ public class LoaderTask implements Runnable {
             } finally {
                 IOUtils.closeSilently(c);
             }
+
+            // Load delegate items
+            mModelDelegate.loadItems();
 
             // Break early if we've stopped loading
             if (mStopped) {

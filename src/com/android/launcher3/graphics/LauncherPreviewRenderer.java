@@ -74,6 +74,7 @@ import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.LoaderResults;
 import com.android.launcher3.model.LoaderTask;
+import com.android.launcher3.model.ModelDelegate;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.model.data.AppInfo;
@@ -579,7 +580,7 @@ public class LauncherPreviewRenderer {
         private final FutureTask<WorkspaceResult> mTask = new FutureTask<>(this);
 
         WorkspaceItemsInfoFromPreviewFetcher(LauncherAppState app) {
-            super(app, null, new BgDataModel(), null);
+            super(app, null, new BgDataModel(), new ModelDelegate(), null);
         }
 
         @Override

@@ -17,6 +17,9 @@ package com.android.launcher3.uioverrides;
 
 import static android.view.accessibility.AccessibilityEvent.TYPE_VIEW_FOCUSED;
 
+import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
+import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
+import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.OVERVIEW_MODAL_TASK;
@@ -37,16 +40,18 @@ import android.view.View;
 import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.AnimatorPlaybackController;
-import com.android.launcher3.appprediction.PredictionUiStateManager;
+import com.android.launcher3.appprediction.PredictionRowView;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.hybridhotseat.HotseatPredictionController;
 import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.logging.StatsLogManager.StatsLogger;
+import com.android.launcher3.model.BgDataModel.FixedContainerItems;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
@@ -79,7 +84,7 @@ import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.OptionalInt;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 public class QuickstepLauncher extends BaseQuickstepLauncher {
@@ -90,6 +95,8 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
      */
     public static final AsyncCommand SET_SHELF_HEIGHT = (context, arg1, arg2) ->
             SystemUiProxy.INSTANCE.get(context).setShelfHeight(arg1 != 0, arg2);
+
+    private FixedContainerItems mAllAppsPredictions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,8 +118,23 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
     protected void logAppLaunch(ItemInfo info, InstanceId instanceId) {
         StatsLogger logger = getStatsLogManager()
                 .logger().withItemInfo(info).withInstanceId(instanceId);
-        OptionalInt allAppsRank = PredictionUiStateManager.INSTANCE.get(this).getAllAppsRank(info);
-        allAppsRank.ifPresent(logger::withRank);
+
+        if (mAllAppsPredictions != null
+                && (info.itemType == ITEM_TYPE_APPLICATION
+                || info.itemType == ITEM_TYPE_SHORTCUT
+                || info.itemType == ITEM_TYPE_DEEP_SHORTCUT)) {
+            int count = mAllAppsPredictions.items.size();
+            for (int i = 0; i < count; i++) {
+                ItemInfo targetInfo = mAllAppsPredictions.items.get(i);
+                if (targetInfo.itemType == info.itemType
+                        && targetInfo.user.equals(info.user)
+                        && Objects.equals(targetInfo.getIntent(), info.getIntent())) {
+                    logger.withRank(i);
+                    break;
+                }
+
+            }
+        }
         logger.log(LAUNCHER_APP_LAUNCH_TAP);
 
         if (mHotseatPredictionController != null) {
@@ -196,6 +218,15 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
         super.bindPredictedItems(appInfos, ranks);
         if (mHotseatPredictionController != null) {
             mHotseatPredictionController.showCachedItems(appInfos, ranks);
+        }
+    }
+
+    @Override
+    public void bindExtraContainerItems(FixedContainerItems item) {
+        if (item.containerId == Favorites.CONTAINER_PREDICTION) {
+            mAllAppsPredictions = item;
+            getAppsView().getFloatingHeaderView().findFixedRowByType(PredictionRowView.class)
+                    .setPredictedApps(item.items);
         }
     }
 

@@ -53,7 +53,6 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.common.WidgetUtils;
-import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.tapl.LauncherInstrumentation;
@@ -272,8 +271,6 @@ public abstract class AbstractLauncherUiTest {
         }
 
         mLauncherPid = 0;
-        // Disable app tracker
-        AppLaunchTracker.INSTANCE.initializeForTesting(new AppLaunchTracker());
 
         mTargetContext = InstrumentationRegistry.getTargetContext();
         mTargetPackage = mTargetContext.getPackageName();

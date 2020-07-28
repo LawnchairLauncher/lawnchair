@@ -109,13 +109,6 @@ public class BgDataModel {
     public final ArrayList<AppInfo> cachedPredictedItems = new ArrayList<>();
 
     /**
-     * @see Callbacks#FLAG_HAS_SHORTCUT_PERMISSION
-     * @see Callbacks#FLAG_QUIET_MODE_ENABLED
-     * @see Callbacks#FLAG_QUIET_MODE_CHANGE_PERMISSION
-     */
-    public int flags;
-
-    /**
      * Maps all launcher activities to counts of their shortcuts.
      */
     public final HashMap<ComponentKey, Integer> deepShortcutMap = new HashMap<>();

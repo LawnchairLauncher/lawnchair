@@ -20,7 +20,6 @@ import static com.android.launcher3.LauncherAppState.ACTION_FORCE_ROLOAD;
 import static com.android.launcher3.config.FeatureFlags.IS_STUDIO_BUILD;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
-import static com.android.launcher3.util.PackageManagerHelper.hasShortcutsPermission;
 
 import android.content.Context;
 import android.content.Intent;
@@ -46,6 +45,7 @@ import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.CacheDataUpdatedTask;
 import com.android.launcher3.model.LoaderResults;
 import com.android.launcher3.model.LoaderTask;
+import com.android.launcher3.model.ModelDelegate;
 import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.model.PackageInstallStateChangedTask;
 import com.android.launcher3.model.PackageUpdatedTask;
@@ -112,20 +112,22 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
      */
     private final BgDataModel mBgDataModel = new BgDataModel();
 
+    private final ModelDelegate mModelDelegate;
+
     // Runnable to check if the shortcuts permission has changed.
-    private final Runnable mShortcutPermissionCheckRunnable = new Runnable() {
+    private final Runnable mDataValidationCheck = new Runnable() {
         @Override
         public void run() {
-            if (mModelLoaded && hasShortcutsPermission(mApp.getContext())
-                    != mBgAllAppsList.hasShortcutHostPermission()) {
-                forceReload();
+            if (mModelLoaded) {
+                mModelDelegate.validateData();
             }
         }
     };
 
-    LauncherModel(LauncherAppState app, IconCache iconCache, AppFilter appFilter) {
+    LauncherModel(Context context, LauncherAppState app, IconCache iconCache, AppFilter appFilter) {
         mApp = app;
         mBgAllAppsList = new AllAppsList(iconCache, appFilter);
+        mModelDelegate = ModelDelegate.newInstance(context, app, mBgAllAppsList, mBgDataModel);
     }
 
     /**
@@ -215,6 +217,13 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
             enqueueModelUpdateTask(new ShortcutsChangedTask(packageName, pinnedShortcuts, user,
                     false));
         }
+    }
+
+    /**
+     * Called when the model is destroyed
+     */
+    public void destroy() {
+        MODEL_EXECUTOR.execute(mModelDelegate::destroy);
     }
 
     public void onBroadcastIntent(Intent intent) {
@@ -372,7 +381,8 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
     public void startLoaderForResults(LoaderResults results) {
         synchronized (mLock) {
             stopLoader();
-            mLoaderTask = new LoaderTask(mApp, mBgAllAppsList, mBgDataModel, results);
+            mLoaderTask = new LoaderTask(
+                    mApp, mBgAllAppsList, mBgDataModel, mModelDelegate, results);
 
             // Always post the loader task, instead of running directly (even on same thread) so
             // that we exit any nested synchronized blocks
@@ -491,9 +501,9 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
      * Current implementation simply reloads the workspace, but it can be optimized to
      * use partial updates similar to {@link UserCache}
      */
-    public void refreshShortcutsIfRequired() {
-        MODEL_EXECUTOR.getHandler().removeCallbacks(mShortcutPermissionCheckRunnable);
-        MODEL_EXECUTOR.post(mShortcutPermissionCheckRunnable);
+    public void validateModelDataOnResume() {
+        MODEL_EXECUTOR.getHandler().removeCallbacks(mDataValidationCheck);
+        MODEL_EXECUTOR.post(mDataValidationCheck);
     }
 
     /**

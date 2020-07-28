@@ -41,7 +41,6 @@ import com.android.launcher3.R;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
-import com.android.launcher3.appprediction.PredictionUiStateManager;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statehandlers.DepthController.ClampedDepthProperty;
 import com.android.launcher3.statemanager.StateManager;
