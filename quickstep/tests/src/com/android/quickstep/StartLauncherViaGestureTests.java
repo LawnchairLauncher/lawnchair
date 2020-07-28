@@ -48,7 +48,9 @@ public class StartLauncherViaGestureTests extends AbstractQuickStepTest {
         // b/143488140
         mLauncher.pressHome();
         // Start an activity where the gestures start.
-        startAppFast(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
+        if (mLauncher.getRecentTasks().isEmpty()) {
+            startAppFast(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
+        }
     }
 
     private void runTest(String... eventSequence) {
