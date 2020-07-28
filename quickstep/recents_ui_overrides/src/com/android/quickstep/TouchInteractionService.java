@@ -269,9 +269,9 @@ public class TouchInteractionService extends Service implements PluginListener<O
         return sIsInitialized;
     }
 
-    private final BaseSwipeUpHandler.Factory mLauncherSwipeHandlerFactory =
+    private final AbsSwipeUpHandler.Factory mLauncherSwipeHandlerFactory =
             this::createLauncherSwipeHandler;
-    private final BaseSwipeUpHandler.Factory mFallbackSwipeHandlerFactory =
+    private final AbsSwipeUpHandler.Factory mFallbackSwipeHandlerFactory =
             this::createFallbackSwipeHandler;
 
     private ActivityManagerWrapper mAM;
@@ -716,7 +716,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
     private InputConsumer createOtherActivityInputConsumer(GestureState gestureState,
             MotionEvent event) {
 
-        final BaseSwipeUpHandler.Factory factory;
+        final AbsSwipeUpHandler.Factory factory;
         if (!mOverviewComponentObserver.isHomeAndOverviewSame()) {
             factory = mFallbackSwipeHandlerFactory;
         } else {
@@ -889,13 +889,13 @@ public class TouchInteractionService extends Service implements PluginListener<O
         }
     }
 
-    private BaseSwipeUpHandler createLauncherSwipeHandler(
+    private AbsSwipeUpHandler createLauncherSwipeHandler(
             GestureState gestureState, long touchTimeMs, boolean continuingLastGesture) {
         return new LauncherSwipeHandlerV2(this, mDeviceState, mTaskAnimationManager,
                 gestureState, touchTimeMs, continuingLastGesture, mInputConsumer);
     }
 
-    private BaseSwipeUpHandler createFallbackSwipeHandler(
+    private AbsSwipeUpHandler createFallbackSwipeHandler(
             GestureState gestureState, long touchTimeMs, boolean continuingLastGesture) {
         return new FallbackSwipeHandler(this, mDeviceState, mTaskAnimationManager,
                 gestureState, touchTimeMs, continuingLastGesture, mInputConsumer);

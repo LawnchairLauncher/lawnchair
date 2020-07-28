@@ -53,8 +53,8 @@ import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.TraceHelper;
 import com.android.quickstep.BaseActivityInterface;
-import com.android.quickstep.BaseSwipeUpHandler;
-import com.android.quickstep.BaseSwipeUpHandler.Factory;
+import com.android.quickstep.AbsSwipeUpHandler;
+import com.android.quickstep.AbsSwipeUpHandler.Factory;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.InputConsumer;
 import com.android.quickstep.RecentsAnimationCallbacks;
@@ -93,7 +93,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     private final InputMonitorCompat mInputMonitorCompat;
     private final BaseActivityInterface mActivityInterface;
 
-    private final BaseSwipeUpHandler.Factory mHandlerFactory;
+    private final AbsSwipeUpHandler.Factory mHandlerFactory;
 
     private final Consumer<OtherActivityInputConsumer> mOnCompleteCallback;
     private final MotionPauseDetector mMotionPauseDetector;
@@ -101,7 +101,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
 
     private VelocityTracker mVelocityTracker;
 
-    private BaseSwipeUpHandler mInteractionHandler;
+    private AbsSwipeUpHandler mInteractionHandler;
 
     private final boolean mIsDeferredDownTarget;
     private final PointF mDownPos = new PointF();

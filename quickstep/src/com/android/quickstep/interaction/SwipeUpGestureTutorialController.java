@@ -18,7 +18,7 @@ package com.android.quickstep.interaction;
 import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.util.DefaultDisplay.getSingleFrameMs;
 import static com.android.launcher3.views.FloatingIconView.SHAPE_PROGRESS_DURATION;
-import static com.android.quickstep.BaseSwipeUpHandlerV2.MAX_SWIPE_DURATION;
+import static com.android.quickstep.AbsSwipeUpHandler.MAX_SWIPE_DURATION;
 import static com.android.quickstep.interaction.TutorialController.TutorialType.HOME_NAVIGATION_COMPLETE;
 import static com.android.quickstep.interaction.TutorialController.TutorialType.OVERVIEW_NAVIGATION_COMPLETE;
 

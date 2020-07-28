@@ -39,7 +39,7 @@ import com.android.systemui.shared.system.InputConsumerController;
  * Temporary class to allow easier refactoring
  */
 public class LauncherSwipeHandlerV2 extends
-        BaseSwipeUpHandlerV2<BaseQuickstepLauncher, RecentsView> {
+        AbsSwipeUpHandler<BaseQuickstepLauncher, RecentsView> {
 
     public LauncherSwipeHandlerV2(Context context, RecentsAnimationDeviceState deviceState,
             TaskAnimationManager taskAnimationManager, GestureState gestureState, long touchTimeMs,
