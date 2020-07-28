@@ -81,10 +81,11 @@ public interface ItemInfoMatcher {
     }
 
     /**
-     * Returns a new matcher with returns the opposite value of this.
+     * Returns a new matcher which returns the opposite boolean value of the provided
+     * {@param matcher}.
      */
-    default ItemInfoMatcher negate() {
-        return (info, cn) -> !matches(info, cn);
+    static ItemInfoMatcher not(ItemInfoMatcher matcher) {
+        return (info, cn) -> !matcher.matches(info, cn);
     }
 
     static ItemInfoMatcher ofUser(UserHandle user) {
@@ -104,10 +105,7 @@ public interface ItemInfoMatcher {
                         keys.contains(ShortcutKey.fromItemInfo(info));
     }
 
-    /**
-     * Returns a matcher for items with provided ids
-     */
-    static ItemInfoMatcher ofItemIds(IntSet ids) {
-        return (info, cn) -> ids.contains(info.id);
+    static ItemInfoMatcher ofItemIds(IntSparseArrayMap<Boolean> ids, Boolean matchDefault) {
+        return (info, cn) -> ids.get(info.id, matchDefault);
     }
 }

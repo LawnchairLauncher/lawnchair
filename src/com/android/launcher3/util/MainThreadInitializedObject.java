@@ -46,7 +46,7 @@ public class MainThreadInitializedObject<T> {
 
         if (mValue == null) {
             if (Looper.myLooper() == Looper.getMainLooper()) {
-                mValue = TraceHelper.allowIpcs("main.thread.object",
+                mValue = TraceHelper.whitelistIpcs("main.thread.object",
                         () -> mProvider.get(context.getApplicationContext()));
             } else {
                 try {

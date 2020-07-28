@@ -49,7 +49,7 @@ public class LayoutUtils {
             Rect taskSize = new Rect();
             LauncherActivityInterface.INSTANCE.calculateTaskSize(context, dp, taskSize,
                     orientationHandler);
-            return orientationHandler.getDistanceToBottomOfRect(dp, taskSize);
+            return (dp.heightPx - taskSize.height()) / 2;
         }
         int shelfHeight = dp.hotseatBarSizePx + dp.getInsets().bottom;
         int spaceBetweenShelfAndRecents = (int) context.getResources().getDimension(

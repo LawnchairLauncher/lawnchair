@@ -164,12 +164,6 @@ public class DebugTestInformationHandler extends TestInformationHandler {
             }
 
             case TestProtocol.REQUEST_GET_TEST_EVENTS: {
-                if (sEvents == null) {
-                    // sEvents can be null if Launcher died and restarted after
-                    // REQUEST_START_EVENT_LOGGING.
-                    return response;
-                }
-
                 synchronized (sEvents) {
                     response.putStringArrayList(
                             TestProtocol.TEST_INFO_RESPONSE_FIELD, new ArrayList<>(sEvents));

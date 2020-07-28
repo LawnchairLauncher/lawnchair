@@ -169,9 +169,7 @@ public class TaskMenuView extends AbstractFloatingView {
         }
         if (mIsOpen) {
             mOptionLayout.removeAllViews();
-            if (!populateAndLayoutMenu()) {
-                close(false);
-            }
+            populateAndLayoutMenu();
         }
     }
 
@@ -188,22 +186,14 @@ public class TaskMenuView extends AbstractFloatingView {
         }
         mActivity.getDragLayer().addView(this);
         mTaskView = taskView;
-        if (!populateAndLayoutMenu()) {
-            return false;
-        }
+        populateAndLayoutMenu();
         post(this::animateOpen);
         return true;
     }
 
-    /** @return true if successfully able to populate task view menu, false otherwise */
-    private boolean populateAndLayoutMenu() {
-        if (mTaskView.getTask().icon == null) {
-            // Icon may not be loaded
-            return false;
-        }
+    private void populateAndLayoutMenu() {
         addMenuOptions(mTaskView);
         orientAroundTaskView(mTaskView);
-        return true;
     }
 
     private void addMenuOptions(TaskView taskView) {
@@ -250,10 +240,8 @@ public class TaskMenuView extends AbstractFloatingView {
         setLayoutParams(params);
         setScaleX(taskView.getScaleX());
         setScaleY(taskView.getScaleY());
-        boolean canActivityRotate = taskView.getRecentsView()
-            .mOrientationState.canRecentsActivityRotate();
         mOptionLayout.setOrientation(orientationHandler
-                .getTaskMenuLayoutOrientation(canActivityRotate, mOptionLayout));
+                .getTaskMenuLayoutOrientation(mOptionLayout));
         setPosition(sTempRect.left - insets.left, sTempRect.top - insets.top,
             taskView.getPagedOrientationHandler());
     }

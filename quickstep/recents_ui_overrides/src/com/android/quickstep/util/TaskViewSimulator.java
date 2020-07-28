@@ -15,7 +15,6 @@
  */
 package com.android.quickstep.util;
 
-import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.states.RotationHelper.deltaRotation;
 import static com.android.launcher3.touch.PagedOrientationHandler.MATRIX_POST_TRANSLATE;
 import static com.android.quickstep.util.RecentsOrientedState.postDisplayRotation;
@@ -198,15 +197,6 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
         return mTempRectF;
     }
 
-    /**
-     * Returns the current task bounds in the Launcher coordinate space.
-     */
-    public RectF getCurrentRect() {
-        RectF result = getCurrentCropRect();
-        mMatrix.mapRect(result);
-        return result;
-    }
-
     public RecentsOrientedState getOrientationState() {
         return mOrientationState;
     }
@@ -305,10 +295,6 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
         builder.withMatrix(mMatrix)
                 .withWindowCrop(mTmpCropRect)
                 .withCornerRadius(getCurrentCornerRadius());
-
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get() && params.getRecentsSurface() != null) {
-            builder.withRelativeLayerTo(params.getRecentsSurface(), Integer.MAX_VALUE);
-        }
     }
 
     /**

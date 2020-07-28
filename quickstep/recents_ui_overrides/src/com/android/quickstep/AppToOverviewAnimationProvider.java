@@ -24,7 +24,6 @@ import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MOD
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
-import android.app.ActivityManager.RunningTaskInfo;
 import android.util.Log;
 import android.view.animation.Interpolator;
 
@@ -53,17 +52,17 @@ final class AppToOverviewAnimationProvider<T extends StatefulActivity<?>> extend
 
     private final BaseActivityInterface<?, T> mActivityInterface;
     // The id of the currently running task that is transitioning to overview.
-    private final RunningTaskInfo mTargetTask;
+    private final int mTargetTaskId;
     private final RecentsAnimationDeviceState mDeviceState;
 
     private T mActivity;
     private RecentsView mRecentsView;
 
     AppToOverviewAnimationProvider(
-            BaseActivityInterface<?, T> activityInterface, RunningTaskInfo targetTask,
+            BaseActivityInterface<?, T> activityInterface, int targetTaskId,
             RecentsAnimationDeviceState deviceState) {
         mActivityInterface = activityInterface;
-        mTargetTask = targetTask;
+        mTargetTaskId = targetTaskId;
         mDeviceState = deviceState;
     }
 
@@ -74,7 +73,7 @@ final class AppToOverviewAnimationProvider<T extends StatefulActivity<?>> extend
      * @param wasVisible true if it was visible before
      */
     boolean onActivityReady(T activity, Boolean wasVisible) {
-        activity.<RecentsView>getOverviewPanel().showCurrentTask(mTargetTask);
+        activity.<RecentsView>getOverviewPanel().showCurrentTask(mTargetTaskId);
         AbstractFloatingView.closeAllOpenViews(activity, wasVisible);
         BaseActivityInterface.AnimationFactory factory = mActivityInterface.prepareRecentsUI(
                 mDeviceState,
@@ -123,8 +122,7 @@ final class AppToOverviewAnimationProvider<T extends StatefulActivity<?>> extend
                 wallpaperTargets, MODE_CLOSING);
 
         // Use the top closing app to determine the insets for the animation
-        RemoteAnimationTargetCompat runningTaskTarget = mTargetTask == null ? null
-                : targets.findTask(mTargetTask.taskId);
+        RemoteAnimationTargetCompat runningTaskTarget = targets.findTask(mTargetTaskId);
         if (runningTaskTarget == null) {
             Log.e(TAG, "No closing app");
             return pa.buildAnim();

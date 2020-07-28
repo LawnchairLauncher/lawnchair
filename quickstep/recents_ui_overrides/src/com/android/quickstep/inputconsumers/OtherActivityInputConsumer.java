@@ -59,7 +59,6 @@ import com.android.quickstep.GestureState;
 import com.android.quickstep.InputConsumer;
 import com.android.quickstep.RecentsAnimationCallbacks;
 import com.android.quickstep.RecentsAnimationDeviceState;
-import com.android.quickstep.RotationTouchHelper;
 import com.android.quickstep.TaskAnimationManager;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.CachedEventDispatcher;
@@ -87,7 +86,6 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     private final NavBarPosition mNavBarPosition;
     private final TaskAnimationManager mTaskAnimationManager;
     private final GestureState mGestureState;
-    private final RotationTouchHelper mRotationTouchHelper;
     private RecentsAnimationCallbacks mActiveCallbacks;
     private final CachedEventDispatcher mRecentsViewDispatcher = new CachedEventDispatcher();
     private final InputMonitorCompat mInputMonitorCompat;
@@ -165,7 +163,6 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
 
         mPassedPilferInputSlop = mPassedWindowMoveSlop = continuingPreviousGesture;
         mDisableHorizontalSwipe = !mPassedPilferInputSlop && disableHorizontalSwipe;
-        mRotationTouchHelper = mDeviceState.getRotationTouchHelper();
     }
 
     @Override
@@ -233,7 +230,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                 if (!mPassedPilferInputSlop) {
                     // Cancel interaction in case of multi-touch interaction
                     int ptrIdx = ev.getActionIndex();
-                    if (!mRotationTouchHelper.isInSwipeUpTouchRegion(ev, ptrIdx)) {
+                    if (!mDeviceState.isInSwipeUpTouchRegion(ev, ptrIdx)) {
                         forceCancelGesture(ev);
                     }
                 }
@@ -427,7 +424,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
 
     @Override
     public void notifyOrientationSetup() {
-        mRotationTouchHelper.onStartGesture();
+        mDeviceState.onStartGesture();
     }
 
     @Override

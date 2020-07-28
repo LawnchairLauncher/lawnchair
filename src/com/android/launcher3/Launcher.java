@@ -814,7 +814,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                startActivitySafely(v, intent, null);
+                startActivitySafely(v, intent, null, null);
             } else {
                 // TODO: Show a snack bar with link to settings
                 Toast.makeText(this, getString(R.string.msg_no_phone_permission,
@@ -923,7 +923,6 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         DiscoveryBounce.showForHomeIfNeeded(this);
     }
 
-    protected void handlePendingActivityRequest() { }
 
     private void logStopAndResume(int command) {
         int pageIndex = mWorkspace.isOverlayShown() ? -1 : mWorkspace.getCurrentPage();
@@ -1424,8 +1423,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
                 if (!isInState(NORMAL)) {
                     // Only change state, if not already the same. This prevents cancelling any
                     // animations running as part of resume
-                    mStateManager.goToState(NORMAL, mStateManager.shouldAnimateStateChange(),
-                            this::handlePendingActivityRequest);
+                    mStateManager.goToState(NORMAL);
                 }
 
                 // Reset the apps view
@@ -1862,12 +1860,13 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     }
 
     @Override
-    public boolean startActivitySafely(View v, Intent intent, ItemInfo item) {
+    public boolean startActivitySafely(View v, Intent intent, ItemInfo item,
+            @Nullable String sourceContainer) {
         if (!hasBeenResumed()) {
             // Workaround an issue where the WM launch animation is clobbered when finishing the
             // recents animation into launcher. Defer launching the activity until Launcher is
             // next resumed.
-            addOnResumeCallback(() -> startActivitySafely(v, intent, item));
+            addOnResumeCallback(() -> startActivitySafely(v, intent, item, sourceContainer));
             if (mOnDeferredActivityLaunchCallback != null) {
                 mOnDeferredActivityLaunchCallback.run();
                 mOnDeferredActivityLaunchCallback = null;
@@ -1875,7 +1874,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
             return true;
         }
 
-        boolean success = super.startActivitySafely(v, intent, item);
+        boolean success = super.startActivitySafely(v, intent, item, sourceContainer);
         if (success && v instanceof BubbleTextView) {
             // This is set to the view that launched the activity that navigated the user away
             // from launcher. Since there is no callback for when the activity has finished
