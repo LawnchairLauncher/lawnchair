@@ -39,7 +39,7 @@ import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.logging.LoggerUtils;
 import com.android.launcher3.logging.StatsLogManager;
-import com.android.launcher3.logging.StatsLogManager.StatsLogger;
+import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
@@ -218,16 +218,13 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
     public void onDrop(DragObject d, DragOptions options) {
         // Defer onComplete
         d.dragSource = new DeferredOnComplete(d.dragSource, getContext());
-
         super.onDrop(d, options);
-        StatsLogger logger = mStatsLogManager.logger().withInstanceId(d.logInstanceId);
-        if (d.originalDragInfo != null) {
-            logger.withItemInfo(d.originalDragInfo);
-        }
         if (mCurrentAccessibilityAction == UNINSTALL) {
-            logger.log(LAUNCHER_ITEM_DROPPED_ON_UNINSTALL);
+            mStatsLogManager.logger().withInstanceId(d.logInstanceId)
+                    .log(LAUNCHER_ITEM_DROPPED_ON_UNINSTALL);
         } else if (mCurrentAccessibilityAction == DISMISS_PREDICTION) {
-            logger.log(LAUNCHER_ITEM_DROPPED_ON_DONT_SUGGEST);
+            mStatsLogManager.logger().withInstanceId(d.logInstanceId)
+                    .log(LAUNCHER_ITEM_DROPPED_ON_DONT_SUGGEST);
         }
     }
 
@@ -286,7 +283,8 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
             return null;
         }
         if (mCurrentAccessibilityAction == DISMISS_PREDICTION) {
-            // We sent the log event, nothing else left to do
+            AppLaunchTracker.INSTANCE.get(getContext()).onDismissApp(info.getTargetComponent(),
+                    info.user, AppLaunchTracker.CONTAINER_PREDICTIONS);
             return null;
         }
         // else: mCurrentAccessibilityAction == UNINSTALL

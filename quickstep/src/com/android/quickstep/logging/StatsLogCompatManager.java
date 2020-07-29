@@ -27,7 +27,7 @@ import static com.android.systemui.shared.system.SysUiStatsLog.LAUNCHER_UICHANGE
 import android.content.Context;
 import android.util.Log;
 
-import androidx.annotation.WorkerThread;
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.Utilities;
@@ -54,7 +54,6 @@ import com.android.systemui.shared.system.SysUiStatsLog;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.OptionalInt;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * This class calls StatsLog compile time generated methods.
@@ -69,6 +68,8 @@ public class StatsLogCompatManager extends StatsLogManager {
     private static final String TAG = "StatsLog";
     private static final boolean IS_VERBOSE = Utilities.isPropertyEnabled(LogConfig.STATSLOG);
 
+    private static Context sContext;
+
     private static final InstanceId DEFAULT_INSTANCE_ID = InstanceId.fakeInstanceId(0);
     // LauncherAtom.ItemInfo.getDefaultInstance() should be used but until launcher proto migrates
     // from nano to lite, bake constant to prevent robo test failure.
@@ -76,13 +77,8 @@ public class StatsLogCompatManager extends StatsLogManager {
     private static final int FOLDER_HIERARCHY_OFFSET = 100;
     private static final int SEARCH_RESULT_HIERARCHY_OFFSET = 200;
 
-    public static final CopyOnWriteArrayList<StatsLogConsumer> LOGS_CONSUMER =
-            new CopyOnWriteArrayList<>();
-
-    private final Context mContext;
-
     public StatsLogCompatManager(Context context) {
-        mContext = context;
+        sContext = context;
     }
 
     @Override
@@ -91,11 +87,24 @@ public class StatsLogCompatManager extends StatsLogManager {
     }
 
     /**
+     * Logs a ranking event and accompanying {@link InstanceId} and package name.
+     */
+    @Override
+    public void log(EventEnum rankingEvent, InstanceId instanceId, @Nullable String packageName,
+            int position) {
+        SysUiStatsLog.write(SysUiStatsLog.RANKING_SELECTED,
+                rankingEvent.getId() /* event_id = 1; */,
+                packageName /* package_name = 2; */,
+                instanceId.getId() /* instance_id = 3; */,
+                position /* position_picked = 4; */);
+    }
+
+    /**
      * Logs the workspace layout information on the model thread.
      */
     @Override
     public void logSnapshot() {
-        LauncherAppState.getInstance(mContext).getModel().enqueueModelUpdateTask(
+        LauncherAppState.getInstance(sContext).getModel().enqueueModelUpdateTask(
                 new SnapshotWorker());
     }
 
@@ -166,7 +175,6 @@ public class StatsLogCompatManager extends StatsLogManager {
     private static class StatsCompatLogger implements StatsLogger {
 
         private static final ItemInfo DEFAULT_ITEM_INFO = new ItemInfo();
-
         private ItemInfo mItemInfo = DEFAULT_ITEM_INFO;
         private InstanceId mInstanceId = DEFAULT_INSTANCE_ID;
         private OptionalInt mRank = OptionalInt.empty();
@@ -245,35 +253,36 @@ public class StatsLogCompatManager extends StatsLogManager {
                 return;
             }
 
-            LauncherAppState appState = LauncherAppState.getInstanceNoCreate();
-            if (mItemInfo.container < 0 || appState == null) {
-                // Write log on the model thread so that logs do not go out of order
-                // (for eg: drop comes after drag)
-                Executors.MODEL_EXECUTOR.execute(
-                        () -> write(event, applyOverwrites(mItemInfo.buildProto())));
+            if (mItemInfo.container < 0) {
+                // Item is not within a folder. Write to StatsLog in same thread.
+                write(event, mInstanceId, applyOverwrites(mItemInfo.buildProto()), mSrcState,
+                        mDstState);
             } else {
                 // Item is inside the folder, fetch folder info in a BG thread
                 // and then write to StatsLog.
-                appState.getModel().enqueueModelUpdateTask(
+                LauncherAppState.getInstance(sContext).getModel().enqueueModelUpdateTask(
                         new BaseModelUpdateTask() {
                             @Override
                             public void execute(LauncherAppState app, BgDataModel dataModel,
                                     AllAppsList apps) {
                                 FolderInfo folderInfo = dataModel.folders.get(mItemInfo.container);
-                                write(event, applyOverwrites(mItemInfo.buildProto(folderInfo)));
+                                write(event, mInstanceId,
+                                        applyOverwrites(mItemInfo.buildProto(folderInfo)),
+                                        mSrcState, mDstState);
                             }
                         });
             }
         }
 
         private LauncherAtom.ItemInfo applyOverwrites(LauncherAtom.ItemInfo atomInfo) {
-            LauncherAtom.ItemInfo.Builder itemInfoBuilder = atomInfo.toBuilder();
+            LauncherAtom.ItemInfo.Builder itemInfoBuilder =
+                    (LauncherAtom.ItemInfo.Builder) atomInfo.toBuilder();
 
             mRank.ifPresent(itemInfoBuilder::setRank);
             mContainerInfo.ifPresent(itemInfoBuilder::setContainerInfo);
 
             if (mFromState.isPresent() || mToState.isPresent() || mEditText.isPresent()) {
-                FolderIcon.Builder folderIconBuilder = itemInfoBuilder
+                FolderIcon.Builder folderIconBuilder = (FolderIcon.Builder) itemInfoBuilder
                         .getFolderIcon()
                         .toBuilder();
                 mFromState.ifPresent(folderIconBuilder::setFromLabelState);
@@ -284,11 +293,8 @@ public class StatsLogCompatManager extends StatsLogManager {
             return itemInfoBuilder.build();
         }
 
-        @WorkerThread
-        private void write(EventEnum event, LauncherAtom.ItemInfo atomInfo) {
-            InstanceId instanceId = mInstanceId;
-            int srcState = mSrcState;
-            int dstState = mDstState;
+        private void write(EventEnum event, InstanceId instanceId, LauncherAtom.ItemInfo atomInfo,
+                int srcState, int dstState) {
             if (IS_VERBOSE) {
                 String name = (event instanceof Enum) ? ((Enum) event).name() :
                         event.getId() + "";
@@ -299,10 +305,6 @@ public class StatsLogCompatManager extends StatsLogManager {
                         : String.format("\n%s (State:%s->%s) (InstanceId:%s)\n%s", name,
                                 getStateString(srcState), getStateString(dstState), instanceId,
                                 atomInfo));
-            }
-
-            for (StatsLogConsumer consumer : LOGS_CONSUMER) {
-                consumer.consume(event, atomInfo);
             }
 
             SysUiStatsLog.write(
@@ -444,16 +446,7 @@ public class StatsLogCompatManager extends StatsLogManager {
                 return "ALLAPPS";
             default:
                 return "INVALID";
+
         }
-    }
-
-
-    /**
-     * Interface to get stats log while it is dispatched to the system
-     */
-    public interface StatsLogConsumer {
-
-        @WorkerThread
-        void consume(EventEnum event, LauncherAtom.ItemInfo atomInfo);
     }
 }

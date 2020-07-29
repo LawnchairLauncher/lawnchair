@@ -18,6 +18,7 @@ package com.android.launcher3.touch;
 import static com.android.launcher3.Launcher.REQUEST_BIND_PENDING_APPWIDGET;
 import static com.android.launcher3.Launcher.REQUEST_RECONFIGURE_APPWIDGET;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_FOLDER_OPEN;
+import static com.android.launcher3.model.AppLaunchTracker.CONTAINER_ALL_APPS;
 import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_DISABLED_BY_PUBLISHER;
 import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_DISABLED_LOCKED_USER;
 import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_DISABLED_QUIET_USER;
@@ -35,6 +36,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.Launcher;
@@ -69,9 +72,13 @@ public class ItemClickHandler {
     /**
      * Instance used for click handling on items
      */
-    public static final OnClickListener INSTANCE = ItemClickHandler::onClick;
+    public static final OnClickListener INSTANCE = getInstance(null);
 
-    private static void onClick(View v) {
+    public static final OnClickListener getInstance(String sourceContainer) {
+        return v -> onClick(v, sourceContainer);
+    }
+
+    private static void onClick(View v, String sourceContainer) {
         // Make sure that rogue clicks don't get through while allapps is launching, or after the
         // view has detached (it's possible for this to happen if the view is removed mid touch).
         if (v.getWindowToken() == null) return;
@@ -81,14 +88,14 @@ public class ItemClickHandler {
 
         Object tag = v.getTag();
         if (tag instanceof WorkspaceItemInfo) {
-            onClickAppShortcut(v, (WorkspaceItemInfo) tag, launcher);
+            onClickAppShortcut(v, (WorkspaceItemInfo) tag, launcher, sourceContainer);
         } else if (tag instanceof FolderInfo) {
             if (v instanceof FolderIcon) {
                 onClickFolderIcon(v);
             }
         } else if (tag instanceof AppInfo) {
-            startAppShortcutOrInfoActivity(v, (AppInfo) tag, launcher
-            );
+            startAppShortcutOrInfoActivity(v, (AppInfo) tag, launcher,
+                    sourceContainer == null ? CONTAINER_ALL_APPS: sourceContainer);
         } else if (tag instanceof LauncherAppWidgetInfo) {
             if (v instanceof PendingAppWidgetHostView) {
                 onClickPendingWidget((PendingAppWidgetHostView) v, launcher);
@@ -184,7 +191,7 @@ public class ItemClickHandler {
 
         // Fallback to using custom market intent.
         Intent intent = new PackageManagerHelper(launcher).getMarketIntent(packageName);
-        launcher.startActivitySafely(v, intent, item);
+        launcher.startActivitySafely(v, intent, item, null);
     }
 
     /**
@@ -192,7 +199,8 @@ public class ItemClickHandler {
      *
      * @param v The view that was clicked. Must be a tagged with a {@link WorkspaceItemInfo}.
      */
-    public static void onClickAppShortcut(View v, WorkspaceItemInfo shortcut, Launcher launcher) {
+    public static void onClickAppShortcut(View v, WorkspaceItemInfo shortcut, Launcher launcher,
+            @Nullable String sourceContainer) {
         if (shortcut.isDisabled()) {
             final int disabledFlags = shortcut.runtimeStatusFlags
                     & WorkspaceItemInfo.FLAG_DISABLED_MASK;
@@ -233,10 +241,11 @@ public class ItemClickHandler {
         }
 
         // Start activities
-        startAppShortcutOrInfoActivity(v, shortcut, launcher);
+        startAppShortcutOrInfoActivity(v, shortcut, launcher, sourceContainer);
     }
 
-    private static void startAppShortcutOrInfoActivity(View v, ItemInfo item, Launcher launcher) {
+    private static void startAppShortcutOrInfoActivity(View v, ItemInfo item, Launcher launcher,
+            @Nullable String sourceContainer) {
         TestLogging.recordEvent(
                 TestProtocol.SEQUENCE_MAIN, "start: startAppShortcutOrInfoActivity");
         Intent intent;
@@ -265,6 +274,6 @@ public class ItemClickHandler {
             // Preload the icon to reduce latency b/w swapping the floating view with the original.
             FloatingIconView.fetchIcon(launcher, v, item, true /* isOpening */);
         }
-        launcher.startActivitySafely(v, intent, item);
+        launcher.startActivitySafely(v, intent, item, sourceContainer);
     }
 }

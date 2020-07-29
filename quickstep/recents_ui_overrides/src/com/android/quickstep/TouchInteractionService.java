@@ -61,6 +61,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.UserEventDispatcher;
+import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.provider.RestoreDbTask;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.testing.TestLogging;
@@ -257,7 +258,6 @@ public class TouchInteractionService extends Service implements PluginListener<O
 
     private static boolean sConnected = false;
     private static boolean sIsInitialized = false;
-    private RotationTouchHelper mRotationTouchHelper;
 
     public static boolean isConnected() {
         return sConnected;
@@ -298,7 +298,6 @@ public class TouchInteractionService extends Service implements PluginListener<O
         mDeviceState = new RecentsAnimationDeviceState(this);
         mDeviceState.addNavigationModeChangedCallback(this::onNavigationModeChanged);
         mDeviceState.runOnUserUnlocked(this::onUserUnlocked);
-        mRotationTouchHelper = mDeviceState.getRotationTouchHelper();
         ProtoTracer.INSTANCE.get(this).add(this);
 
         sConnected = true;
@@ -327,7 +326,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
         mInputEventReceiver = mInputMonitorCompat.getInputReceiver(Looper.getMainLooper(),
                 mMainChoreographer, this::onInputEvent);
 
-        mRotationTouchHelper.updateGestureTouchRegions();
+        mDeviceState.updateGestureTouchRegions();
     }
 
     /**
@@ -471,9 +470,9 @@ public class TouchInteractionService extends Service implements PluginListener<O
             if (TestProtocol.sDebugTracing) {
                 Log.d(TestProtocol.NO_SWIPE_TO_HOME, "TouchInteractionService.onInputEvent:DOWN");
             }
-            mRotationTouchHelper.setOrientationTransformIfNeeded(event);
+            mDeviceState.setOrientationTransformIfNeeded(event);
 
-            if (mRotationTouchHelper.isInSwipeUpTouchRegion(event)) {
+            if (mDeviceState.isInSwipeUpTouchRegion(event)) {
                 if (TestProtocol.sDebugTracing) {
                     Log.d(TestProtocol.NO_SWIPE_TO_HOME,
                             "TouchInteractionService.onInputEvent:isInSwipeUpTouchRegion");
@@ -510,7 +509,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
             // Other events
             if (mUncheckedConsumer != InputConsumer.NO_OP) {
                 // Only transform the event if we are handling it in a proper consumer
-                mRotationTouchHelper.setOrientationTransformIfNeeded(event);
+                mDeviceState.setOrientationTransformIfNeeded(event);
             }
         }
 
@@ -548,7 +547,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
             gestureState.updatePreviouslyAppearedTaskIds(
                     previousGestureState.getPreviouslyAppearedTaskIds());
         } else {
-            gestureState.updateRunningTask(TraceHelper.allowIpcs("getRunningTask.0",
+            gestureState.updateRunningTask(TraceHelper.whitelistIpcs("getRunningTask.0",
                     () -> mAM.getRunningTask(false /* filterOnlyVisibleRecents */)));
         }
         return gestureState;
@@ -661,7 +660,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
         if (AssistantUtilities.isExcludedAssistant(gestureState.getRunningTask())) {
             // In the case where we are in the excluded assistant state, ignore it and treat the
             // running activity as the task behind the assistant
-            gestureState.updateRunningTask(TraceHelper.allowIpcs("getRunningTask.assistant",
+            gestureState.updateRunningTask(TraceHelper.whitelistIpcs("getRunningTask.assistant",
                     () -> mAM.getRunningTask(true /* filterOnlyVisibleRecents */)));
             ComponentName homeComponent = mOverviewComponentObserver.getHomeIntent().getComponent();
             ComponentName runningComponent =
@@ -772,7 +771,13 @@ public class TouchInteractionService extends Service implements PluginListener<O
                 mOverviewComponentObserver.getActivityInterface();
         final Intent overviewIntent = new Intent(
                 mOverviewComponentObserver.getOverviewIntentIgnoreSysUiState());
-        if (activityInterface.getCreatedActivity() != null && fromInit) {
+        if (activityInterface.getCreatedActivity() == null) {
+            // Make sure that UI states will be initialized.
+            activityInterface.createActivityInitListener((wasVisible) -> {
+                AppLaunchTracker.INSTANCE.get(TouchInteractionService.this);
+                return false;
+            }).register(overviewIntent);
+        } else if (fromInit) {
             // The activity has been created before the initialization of overview service. It is
             // usually happens when booting or launcher is the top activity, so we should already
             // have the latest state.

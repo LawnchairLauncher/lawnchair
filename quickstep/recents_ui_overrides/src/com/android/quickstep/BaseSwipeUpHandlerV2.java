@@ -38,6 +38,7 @@ import static com.android.quickstep.GestureState.STATE_END_TARGET_ANIMATION_FINI
 import static com.android.quickstep.GestureState.STATE_END_TARGET_SET;
 import static com.android.quickstep.GestureState.STATE_RECENTS_SCROLLING_FINISHED;
 import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
+import static com.android.quickstep.SysUINavigationMode.Mode.TWO_BUTTONS;
 import static com.android.quickstep.util.ShelfPeekAnim.ShelfAnimState.HIDE;
 import static com.android.quickstep.util.ShelfPeekAnim.ShelfAnimState.PEEK;
 import static com.android.quickstep.views.RecentsView.UPDATE_SYSUI_FLAGS_THRESHOLD;
@@ -59,7 +60,6 @@ import android.view.ViewTreeObserver.OnDrawListener;
 import android.view.WindowInsets;
 import android.view.animation.Interpolator;
 
-import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
 import com.android.launcher3.AbstractFloatingView;
@@ -70,7 +70,6 @@ import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.logging.StatsLogManager;
-import com.android.launcher3.logging.StatsLogManager.StatsLogger;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
@@ -267,6 +266,10 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
         mStateCallback.runOnceAtState(STATE_HANDLER_INVALIDATED | STATE_RESUME_LAST_TASK,
                 this::notifyTransitionCancelled);
 
+        mGestureState.runOnceAtState(STATE_END_TARGET_SET,
+                () -> mDeviceState.onEndTargetCalculated(mGestureState.getEndTarget(),
+                        mActivityInterface));
+
         if (!ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             mStateCallback.addChangeListener(STATE_APP_CONTROLLER_RECEIVED | STATE_LAUNCHER_PRESENT
                             | STATE_SCREENSHOT_VIEW_SHOWN | STATE_CAPTURE_SCREENSHOT,
@@ -310,6 +313,12 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
         }
 
         setupRecentsViewUi();
+
+        if (mDeviceState.getNavMode() == TWO_BUTTONS) {
+            // If the device is in two button mode, swiping up will show overview with predictions
+            // so we need to kick off switching to the overview predictions as soon as possible
+            mActivityInterface.updateOverviewPredictionState();
+        }
         linkRecentsViewScroll();
 
         return true;
@@ -391,11 +400,6 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
         mGestureState.getActivityInterface().setOnDeferredActivityLaunchCallback(
                 mOnDeferredActivityLaunch);
 
-        mGestureState.runOnceAtState(STATE_END_TARGET_SET,
-                () -> mDeviceState.getRotationTouchHelper().
-                        onEndTargetCalculated(mGestureState.getEndTarget(),
-                        mActivityInterface));
-
         notifyGestureStartedAsync();
     }
 
@@ -419,7 +423,7 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
     }
 
     protected void notifyGestureAnimationStartToRecents() {
-        mRecentsView.onGestureAnimationStart(mGestureState.getRunningTask());
+        mRecentsView.onGestureAnimationStart(mGestureState.getRunningTaskId());
     }
 
     private void launcherFrameDrawn() {
@@ -447,6 +451,12 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
     @Override
     public void onMotionPauseChanged(boolean isPaused) {
         setShelfState(isPaused ? PEEK : HIDE, ShelfPeekAnim.INTERPOLATOR, ShelfPeekAnim.DURATION);
+
+        if (mDeviceState.isFullyGesturalNavMode() && isPaused) {
+            // In fully gestural nav mode, switch to overview predictions once the user has paused
+            // (this is a no-op if the predictions are already in that state)
+            mActivityInterface.updateOverviewPredictionState();
+        }
     }
 
     public void maybeUpdateRecentsAttachedState() {
@@ -545,6 +555,14 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
 
     @Override
     public void updateFinalShift() {
+        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+            if (mRecentsAnimationTargets != null) {
+                LiveTileOverlay.INSTANCE.update(
+                        mTaskViewSimulator.getCurrentCropRect(),
+                        mTaskViewSimulator.getCurrentCornerRadius());
+            }
+        }
+
         final boolean passed = mCurrentShift.value >= MIN_PROGRESS_FOR_OVERVIEW;
         if (passed != mPassedOverviewThreshold) {
             mPassedOverviewThreshold = passed;
@@ -555,14 +573,6 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
 
         updateSysUiFlags(mCurrentShift.value);
         applyWindowTransform();
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-            if (mRecentsAnimationTargets != null) {
-                LiveTileOverlay.INSTANCE.update(
-                        mTaskViewSimulator.getCurrentRect(),
-                        mTaskViewSimulator.getCurrentCornerRadius());
-            }
-        }
-
         updateLauncherTransitionProgress();
     }
 
@@ -877,7 +887,22 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
         animateToProgress(startShift, endShift, duration, interpolator, endTarget, velocityPxPerMs);
     }
 
-    private void doLogGesture(GestureEndTarget endTarget, @Nullable TaskView targetTask) {
+    private void doLogGesture(GestureEndTarget endTarget) {
+        DeviceProfile dp = mDp;
+        if (dp == null || mDownPos == null) {
+            // We probably never received an animation controller, skip logging.
+            return;
+        }
+
+        int pageIndex = endTarget == LAST_TASK
+                ? LOG_NO_OP_PAGE_INDEX
+                : mRecentsView.getNextPage();
+        UserEventDispatcher.newInstance(mContext).logStateChangeAction(
+                mLogAction, mLogDirection,
+                (int) mDownPos.x, (int) mDownPos.y,
+                ContainerType.NAVBAR, ContainerType.APP,
+                endTarget.containerType,
+                pageIndex);
         StatsLogManager.EventEnum event;
         switch (endTarget) {
             case HOME:
@@ -895,29 +920,10 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
             default:
                 event = IGNORE;
         }
-        StatsLogger logger = StatsLogManager.newInstance(mContext).logger()
+        StatsLogManager.newInstance(mContext).logger()
                 .withSrcState(LAUNCHER_STATE_BACKGROUND)
-                .withDstState(StatsLogManager.containerTypeToAtomState(endTarget.containerType));
-        if (targetTask != null) {
-            logger.withItemInfo(targetTask.getItemInfo());
-        }
-        logger.log(event);
-
-
-        DeviceProfile dp = mDp;
-        if (dp == null || mDownPos == null) {
-            // We probably never received an animation controller, skip logging.
-            return;
-        }
-        int pageIndex = endTarget == LAST_TASK
-                ? LOG_NO_OP_PAGE_INDEX
-                : mRecentsView.getNextPage();
-        UserEventDispatcher.newInstance(mContext).logStateChangeAction(
-                mLogAction, mLogDirection,
-                (int) mDownPos.x, (int) mDownPos.y,
-                ContainerType.NAVBAR, ContainerType.APP,
-                endTarget.containerType,
-                pageIndex);
+                .withDstState(StatsLogManager.containerTypeToAtomState(endTarget.containerType))
+                .log(event);
     }
 
     /** Animates to the given progress, where 0 is the current app and 1 is overview. */
@@ -1122,7 +1128,7 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
     private void resumeLastTask() {
         mRecentsAnimationController.finish(false /* toRecents */, null);
         ActiveGestureLog.INSTANCE.addLog("finishRecentsAnimation", false);
-        doLogGesture(LAST_TASK, null);
+        doLogGesture(LAST_TASK);
         reset();
     }
 
@@ -1137,7 +1143,6 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
 
     @UiThread
     private void startNewTaskInternal() {
-        TaskView taskToLaunch = mRecentsView == null ? null : mRecentsView.getNextPageTaskView();
         startNewTask(success -> {
             if (!success) {
                 reset();
@@ -1146,7 +1151,7 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
                 endLauncherTransitionController();
                 updateSysUiFlags(1 /* windowProgress == overview */);
             }
-            doLogGesture(NEW_TASK, taskToLaunch);
+            doLogGesture(NEW_TASK);
         });
     }
 
@@ -1292,7 +1297,7 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
                     () -> mStateCallback.setStateOnUiThread(STATE_CURRENT_TASK_FINISHED));
         }
         ActiveGestureLog.INSTANCE.addLog("finishRecentsAnimation", true);
-        doLogGesture(HOME, mRecentsView == null ? null : mRecentsView.getCurrentPageTaskView());
+        doLogGesture(HOME);
     }
 
     protected abstract void finishRecentsControllerToHome(Runnable callback);
@@ -1307,7 +1312,7 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
         mRecentsView.onSwipeUpAnimationSuccess();
 
         SystemUiProxy.INSTANCE.get(mContext).onOverviewShown(false, TAG);
-        doLogGesture(RECENTS, mRecentsView.getCurrentPageTaskView());
+        doLogGesture(RECENTS);
         reset();
     }
 

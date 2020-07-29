@@ -250,8 +250,7 @@ public abstract class LauncherState implements BaseState<LauncherState> {
     }
 
     public PageAlphaProvider getWorkspacePageAlphaProvider(Launcher launcher) {
-        if ((this != NORMAL && this != HINT_STATE)
-                || !launcher.getDeviceProfile().shouldFadeAdjacentWorkspaceScreens()) {
+        if (this != NORMAL || !launcher.getDeviceProfile().shouldFadeAdjacentWorkspaceScreens()) {
             return DEFAULT_ALPHA_PROVIDER;
         }
         final int centerPage = launcher.getWorkspace().getNextPage();

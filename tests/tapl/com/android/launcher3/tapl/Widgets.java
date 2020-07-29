@@ -28,7 +28,6 @@ import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.Until;
 
 import com.android.launcher3.tapl.LauncherInstrumentation.GestureScope;
-import com.android.launcher3.testing.TestProtocol;
 
 import java.util.Collection;
 
@@ -91,12 +90,6 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
         return LauncherInstrumentation.ContainerType.WIDGETS;
     }
 
-    private int getWidgetsScroll() {
-        return mLauncher.getTestInfo(
-                TestProtocol.REQUEST_WIDGETS_SCROLL_Y)
-                .getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
-    }
-
     public Widget getWidget(String labelText) {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
              LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
@@ -143,13 +136,7 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
                 }
 
                 mLauncher.assertTrue("Too many attempts", ++i <= 40);
-                final int scroll = getWidgetsScroll();
                 mLauncher.scrollToLastVisibleRow(widgetsContainer, cells, 0);
-                final int newScroll = getWidgetsScroll();
-                mLauncher.assertTrue(
-                        "Scrolled in a wrong direction in Widgets: from " + scroll + " to "
-                                + newScroll, newScroll >= scroll);
-                mLauncher.assertTrue("Unable to scroll to the widget", newScroll != scroll);
             }
         }
     }
