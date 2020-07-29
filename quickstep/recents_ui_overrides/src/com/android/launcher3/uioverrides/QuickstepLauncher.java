@@ -34,6 +34,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
@@ -127,11 +129,12 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
     }
 
     @Override
-    public boolean startActivitySafely(View v, Intent intent, ItemInfo item) {
+    public boolean startActivitySafely(View v, Intent intent, ItemInfo item,
+            @Nullable String sourceContainer) {
         if (mHotseatPredictionController != null) {
             mHotseatPredictionController.setPauseUIUpdate(true);
         }
-        return super.startActivitySafely(v, intent, item);
+        return super.startActivitySafely(v, intent, item, sourceContainer);
     }
 
     @Override

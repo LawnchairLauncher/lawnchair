@@ -152,7 +152,6 @@ public final class LauncherInstrumentation {
     private static final String WIDGETS_RES_ID = "widgets_list_view";
     private static final String CONTEXT_MENU_RES_ID = "deep_shortcuts_container";
     public static final int WAIT_TIME_MS = 10000;
-    public static final int LONG_WAIT_TIME_MS = 60000;
     private static final String SYSTEMUI_PACKAGE = "com.android.systemui";
 
     private static WeakReference<VisibleContainer> sActiveContainer = new WeakReference<>(null);
@@ -636,11 +635,9 @@ public final class LauncherInstrumentation {
     Parcelable executeAndWaitForEvent(Runnable command,
             UiAutomation.AccessibilityEventFilter eventFilter, Supplier<String> message) {
         try {
-            Log.d(TestProtocol.NO_SCROLL_END_WIDGETS, "executeAndWaitForEvent: before");
             final AccessibilityEvent event =
                     mInstrumentation.getUiAutomation().executeAndWaitForEvent(
-                            command, eventFilter, LONG_WAIT_TIME_MS);
-            Log.d(TestProtocol.NO_SCROLL_END_WIDGETS, "executeAndWaitForEvent: after");
+                            command, eventFilter, WAIT_TIME_MS);
             assertNotNull("executeAndWaitForEvent returned null (this can't happen)", event);
             final Parcelable parcelableData = event.getParcelableData();
             event.recycle();
@@ -1097,10 +1094,7 @@ public final class LauncherInstrumentation {
         executeAndWaitForEvent(
                 () -> linearGesture(
                         startX, startY, endX, endY, steps, slowDown, GestureScope.INSIDE),
-                event -> {
-                    Log.d(TestProtocol.NO_SCROLL_END_WIDGETS, "scroll: received event: " + event);
-                    return TestProtocol.SCROLL_FINISHED_MESSAGE.equals(event.getClassName());
-                },
+                event -> TestProtocol.SCROLL_FINISHED_MESSAGE.equals(event.getClassName()),
                 () -> "Didn't receive a scroll end message: " + startX + ", " + startY
                         + ", " + endX + ", " + endY);
     }

@@ -16,7 +16,6 @@
 package com.android.quickstep.views;
 
 import static com.android.launcher3.LauncherState.ALL_APPS;
-import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
@@ -43,10 +42,8 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.Interpolators;
-import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.util.Themes;
@@ -54,7 +51,6 @@ import com.android.quickstep.util.MultiValueUpdateListener;
 
 /**
  * View used to educate the user on how to access All Apps when in No Nav Button navigation mode.
- * Consumes all touches until after the animation is completed and the view is removed.
  */
 public class AllAppsEduView extends AbstractFloatingView {
 
@@ -115,18 +111,8 @@ public class AllAppsEduView extends AbstractFloatingView {
     }
 
     @Override
-    public boolean onBackPressed() {
-        return true;
-    }
-
-    @Override
-    public boolean canInterceptEventsInSystemGestureRegion() {
-        return true;
-    }
-
-    @Override
     public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
-        return true;
+        return mAnimation != null && mAnimation.isRunning();
     }
 
     private void playAnimation() {
@@ -153,12 +139,7 @@ public class AllAppsEduView extends AbstractFloatingView {
         config.userControlled = false;
         AnimatorPlaybackController stateAnimationController =
                 mLauncher.getStateManager().createAnimationToNewWorkspace(ALL_APPS, config);
-        float maxAllAppsProgress = mLauncher.getDeviceProfile().isLandscape ? 0.35f : 0.15f;
-
-        AllAppsTransitionController allAppsController = mLauncher.getAllAppsController();
-        PendingAnimation allAppsAlpha = new PendingAnimation(config.duration);
-        allAppsController.setAlphas(ALL_APPS, config, allAppsAlpha);
-        mAnimation.play(allAppsAlpha.buildAnim());
+        float maxAllAppsProgress = 0.15f;
 
         ValueAnimator intro = ValueAnimator.ofFloat(0, 1f);
         intro.setInterpolator(LINEAR);
@@ -210,8 +191,7 @@ public class AllAppsEduView extends AbstractFloatingView {
             @Override
             public void onAnimationEnd(Animator animation) {
                 mAnimation = null;
-                // Handles cancelling the animation used to hint towards All Apps.
-                mLauncher.getStateManager().goToState(NORMAL, false);
+                stateAnimationController.dispatchOnCancel();
                 handleClose(false);
             }
         });

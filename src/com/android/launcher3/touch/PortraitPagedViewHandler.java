@@ -32,7 +32,6 @@ import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.LinearLayout;
 
-import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.OverScroller;
@@ -237,9 +236,8 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public int getTaskMenuLayoutOrientation(boolean canRecentsActivityRotate,
-        LinearLayout taskMenuLayout) {
-        return canRecentsActivityRotate ? taskMenuLayout.getOrientation() : LinearLayout.VERTICAL;
+    public int getTaskMenuLayoutOrientation(LinearLayout taskMenuLayout) {
+        return taskMenuLayout.getOrientation();
     }
 
     @Override
@@ -258,10 +256,5 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
             child.layout(childStart, childTop, childRight, childTop + childHeight);
         }
         return new ChildBounds(childWidth, childHeight, childRight, childTop);
-    }
-
-    @Override
-    public int getDistanceToBottomOfRect(DeviceProfile dp, Rect rect) {
-        return dp.heightPx - rect.bottom;
     }
 }

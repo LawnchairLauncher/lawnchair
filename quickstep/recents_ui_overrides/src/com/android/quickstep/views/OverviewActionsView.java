@@ -70,14 +70,12 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
 
     @IntDef(flag = true, value = {
             DISABLED_SCROLLING,
-            DISABLED_ROTATED,
-            DISABLED_NO_THUMBNAIL})
+            DISABLED_ROTATED})
     @Retention(RetentionPolicy.SOURCE)
     public @interface ActionsDisabledFlags { }
 
     public static final int DISABLED_SCROLLING = 1 << 0;
     public static final int DISABLED_ROTATED = 1 << 1;
-    public static final int DISABLED_NO_THUMBNAIL = 1 << 2;
 
     private static final int INDEX_CONTENT_ALPHA = 0;
     private static final int INDEX_VISIBILITY_ALPHA = 1;

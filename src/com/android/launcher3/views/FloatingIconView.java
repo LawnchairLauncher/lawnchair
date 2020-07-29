@@ -20,7 +20,6 @@ import static com.android.launcher3.Utilities.getBadge;
 import static com.android.launcher3.Utilities.getFullDrawable;
 import static com.android.launcher3.config.FeatureFlags.ADAPTIVE_ICON_WINDOW_ANIM;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
-import static com.android.launcher3.views.IconLabelDotView.setIconAndDotVisible;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -48,6 +47,7 @@ import androidx.annotation.UiThread;
 import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.BubbleTextView;
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
@@ -144,8 +144,32 @@ public class FloatingIconView extends FrameLayout implements
     public void update(RectF rect, float alpha, float progress, float shapeProgressStart,
             float cornerRadius, boolean isOpening) {
         setAlpha(alpha);
-        mClipIconView.update(rect, progress, shapeProgressStart, cornerRadius, isOpening,
-                this, mLauncher.getDeviceProfile(), mIsVerticalBarLayout);
+
+        InsettableFrameLayout.LayoutParams lp =
+                (InsettableFrameLayout.LayoutParams) getLayoutParams();
+
+        DeviceProfile dp = mLauncher.getDeviceProfile();
+        float dX = mIsRtl
+                ? rect.left - (dp.widthPx - lp.getMarginStart() - lp.width)
+                : rect.left - lp.getMarginStart();
+        float dY = rect.top - lp.topMargin;
+        setTranslationX(dX);
+        setTranslationY(dY);
+
+        float minSize = Math.min(lp.width, lp.height);
+        float scaleX = rect.width() / minSize;
+        float scaleY = rect.height() / minSize;
+        float scale = Math.max(1f, Math.min(scaleX, scaleY));
+
+        mClipIconView.update(rect, progress, shapeProgressStart, cornerRadius, isOpening, scale,
+                minSize, lp, mIsVerticalBarLayout);
+
+        setPivotX(0);
+        setPivotY(0);
+        setScaleX(scale);
+        setScaleY(scale);
+
+        invalidate();
     }
 
     @Override
@@ -312,8 +336,7 @@ public class FloatingIconView extends FrameLayout implements
         final InsettableFrameLayout.LayoutParams lp =
                 (InsettableFrameLayout.LayoutParams) getLayoutParams();
         mBadge = badge;
-        mClipIconView.setIcon(drawable, iconOffset, lp, mIsOpening, mIsVerticalBarLayout,
-                mLauncher.getDeviceProfile());
+        mClipIconView.setIcon(drawable, iconOffset, lp, mIsOpening, mIsVerticalBarLayout);
         if (drawable instanceof AdaptiveIconDrawable) {
             final int originalHeight = lp.height;
             final int originalWidth = lp.width;
@@ -358,7 +381,7 @@ public class FloatingIconView extends FrameLayout implements
             if (mIconLoadResult.isIconLoaded) {
                 setIcon(mIconLoadResult.drawable, mIconLoadResult.badge,
                         mIconLoadResult.iconOffset);
-                setIconAndDotVisible(originalView, false);
+                hideOriginalView(originalView);
             } else {
                 mIconLoadResult.onIconLoaded = () -> {
                     if (cancellationSignal.isCanceled()) {
@@ -369,10 +392,19 @@ public class FloatingIconView extends FrameLayout implements
                             mIconLoadResult.iconOffset);
 
                     setVisibility(VISIBLE);
-                    setIconAndDotVisible(originalView, false);
+                    hideOriginalView(originalView);
                 };
                 mLoadIconSignal = cancellationSignal;
             }
+        }
+    }
+
+    private void hideOriginalView(View originalView) {
+        if (originalView instanceof IconLabelDotView) {
+            ((IconLabelDotView) originalView).setIconVisible(false);
+            ((IconLabelDotView) originalView).setForceHideDot(true);
+        } else {
+            originalView.setVisibility(INVISIBLE);
         }
     }
 
@@ -445,7 +477,7 @@ public class FloatingIconView extends FrameLayout implements
         }
         if (!mIsOpening) {
             // When closing an app, we want the item on the workspace to be invisible immediately
-            setIconAndDotVisible(mOriginalIcon, false);
+            hideOriginalView(mOriginalIcon);
         }
     }
 
@@ -541,7 +573,12 @@ public class FloatingIconView extends FrameLayout implements
 
             if (hideOriginal) {
                 if (isOpening) {
-                    setIconAndDotVisible(originalView, true);
+                    if (originalView instanceof BubbleTextView) {
+                        ((BubbleTextView) originalView).setIconVisible(true);
+                        ((BubbleTextView) originalView).setForceHideDot(false);
+                    } else {
+                        originalView.setVisibility(VISIBLE);
+                    }
                     view.finish(dragLayer);
                 } else {
                     view.mFadeAnimatorSet = view.createFadeAnimation(originalView, dragLayer);
@@ -578,10 +615,12 @@ public class FloatingIconView extends FrameLayout implements
         });
 
         if (originalView instanceof IconLabelDotView) {
+            IconLabelDotView view = (IconLabelDotView) originalView;
             fade.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    setIconAndDotVisible(originalView, true);
+                    view.setIconVisible(true);
+                    view.setForceHideDot(false);
                 }
             });
         }

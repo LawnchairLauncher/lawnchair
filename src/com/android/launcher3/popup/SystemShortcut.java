@@ -174,7 +174,7 @@ public abstract class SystemShortcut<T extends BaseDraggingActivity> extends Ite
         public void onClick(View view) {
             Intent intent = new PackageManagerHelper(view.getContext()).getMarketIntent(
                     mItemInfo.getTargetComponent().getPackageName());
-            mTarget.startActivitySafely(view, intent, mItemInfo);
+            mTarget.startActivitySafely(view, intent, mItemInfo, null);
             AbstractFloatingView.closeAllOpenViews(mTarget);
         }
     }

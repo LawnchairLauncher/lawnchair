@@ -105,7 +105,7 @@ public final class LauncherActivityInterface extends
         // recents, we assume the first task is invisible, making translation off by one task.
         launcher.getStateManager().reapplyState();
         launcher.getRootView().setForceHideBackArrow(false);
-        notifyRecentsOfOrientation(deviceState.getRotationTouchHelper());
+        notifyRecentsOfOrientation(deviceState);
     }
 
     @Override
@@ -120,7 +120,7 @@ public final class LauncherActivityInterface extends
     @Override
     public AnimationFactory prepareRecentsUI(RecentsAnimationDeviceState deviceState,
             boolean activityVisible, Consumer<AnimatorPlaybackController> callback) {
-        notifyRecentsOfOrientation(deviceState.getRotationTouchHelper());
+        notifyRecentsOfOrientation(deviceState);
         DefaultAnimationFactory factory = new DefaultAnimationFactory(callback) {
             @Override
             public void setShelfState(ShelfAnimState shelfState, Interpolator interpolator,
@@ -228,7 +228,7 @@ public final class LauncherActivityInterface extends
 
 
     @Override
-    public void onExitOverview(RotationTouchHelper deviceState, Runnable exitRunnable) {
+    public void onExitOverview(RecentsAnimationDeviceState deviceState, Runnable exitRunnable) {
         final StateManager<LauncherState> stateManager = getCreatedActivity().getStateManager();
         stateManager.addStateListener(
                 new StateManager.StateListener<LauncherState>() {
@@ -244,11 +244,11 @@ public final class LauncherActivityInterface extends
                 });
     }
 
-    private void notifyRecentsOfOrientation(RotationTouchHelper rotationTouchHelper) {
+    private void notifyRecentsOfOrientation(RecentsAnimationDeviceState deviceState) {
         // reset layout on swipe to home
         RecentsView recentsView = getCreatedActivity().getOverviewPanel();
-        recentsView.setLayoutRotation(rotationTouchHelper.getCurrentActiveRotation(),
-                rotationTouchHelper.getDisplayRotation());
+        recentsView.setLayoutRotation(deviceState.getCurrentActiveRotation(),
+                deviceState.getDisplayRotation());
     }
 
     @Override
@@ -259,6 +259,16 @@ public final class LauncherActivityInterface extends
     @Override
     public boolean allowMinimizeSplitScreen() {
         return true;
+    }
+
+    @Override
+    public void updateOverviewPredictionState() {
+        Launcher launcher = getCreatedActivity();
+        if (launcher == null) {
+            return;
+        }
+        PredictionUiStateManager.INSTANCE.get(launcher).switchClient(
+                PredictionUiStateManager.Client.OVERVIEW);
     }
 
     @Override
