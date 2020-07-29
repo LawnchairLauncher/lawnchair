@@ -287,7 +287,6 @@ public abstract class SwipeUpAnimationLogic {
 
         @Override
         public void onAnimationStart(Animator animation) {
-            super.onAnimationStart(animation);
             mHomeAnim.dispatchOnStart();
         }
 
