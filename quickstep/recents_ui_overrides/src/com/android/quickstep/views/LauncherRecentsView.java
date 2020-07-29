@@ -38,11 +38,9 @@ import android.widget.FrameLayout;
 import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.StateManager.StateListener;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
-import com.android.launcher3.views.ScrimView;
 import com.android.quickstep.LauncherActivityInterface;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.systemui.plugins.PluginListener;
@@ -126,12 +124,6 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher>
         }
         anim.play(ObjectAnimator.ofFloat(
                 mActivity.getAllAppsController(), ALL_APPS_PROGRESS, allAppsProgressOffscreen));
-
-        ObjectAnimator dragHandleAnim = ObjectAnimator.ofInt(
-                mActivity.getScrimView(), ScrimView.DRAG_HANDLE_ALPHA, 0);
-        dragHandleAnim.setInterpolator(Interpolators.ACCEL_2);
-        anim.play(dragHandleAnim);
-
         return anim;
     }
 

@@ -453,10 +453,10 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
                     mAppsView.getAlphaProperty(APPS_VIEW_ALPHA_CHANNEL_INDEX).setValue(alpha);
                 } else if (finalState == OVERVIEW || finalState == OVERVIEW_PEEK) {
                     mAppsView.getAlphaProperty(APPS_VIEW_ALPHA_CHANNEL_INDEX).setValue(alpha);
-                    mScrimView.getAlphaProperty(SCRIM_VIEW_ALPHA_CHANNEL_INDEX).setValue(alpha);
+                    mScrimView.setAlpha(alpha);
                 } else {
                     mAppsView.getAlphaProperty(APPS_VIEW_ALPHA_CHANNEL_INDEX).setValue(1f);
-                    mScrimView.getAlphaProperty(SCRIM_VIEW_ALPHA_CHANNEL_INDEX).setValue(1f);
+                    mScrimView.setAlpha(1f);
                 }
             }
         });
@@ -553,7 +553,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
             mAppsView.getAlphaProperty(APPS_VIEW_ALPHA_CHANNEL_INDEX).setValue(alpha);
         } else if (state == OVERVIEW || state == OVERVIEW_PEEK) {
             mAppsView.getAlphaProperty(APPS_VIEW_ALPHA_CHANNEL_INDEX).setValue(alpha);
-            mScrimView.getAlphaProperty(SCRIM_VIEW_ALPHA_CHANNEL_INDEX).setValue(alpha);
+            mScrimView.setAlpha(alpha);
         }
     }
 
@@ -1936,7 +1936,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         // Populate event with a fake title based on the current state.
         // TODO: When can workspace be null?
         text.add(mWorkspace == null
-                ? getString(R.string.all_apps_home_button_label)
+                ? getString(R.string.home_screen)
                 : mStateManager.getState().getDescription(this));
         return result;
     }

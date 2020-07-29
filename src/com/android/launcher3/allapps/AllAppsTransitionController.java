@@ -19,7 +19,6 @@ import static com.android.launcher3.LauncherState.ALL_APPS_CONTENT;
 import static com.android.launcher3.LauncherState.ALL_APPS_HEADER_EXTRA;
 import static com.android.launcher3.LauncherState.APPS_VIEW_ITEM_MASK;
 import static com.android.launcher3.LauncherState.OVERVIEW;
-import static com.android.launcher3.LauncherState.VERTICAL_SWIPE_INDICATOR;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.FINAL_FRAME;
 import static com.android.launcher3.anim.Interpolators.INSTANT;
@@ -222,9 +221,6 @@ public class AllAppsTransitionController implements StateHandler<LauncherState>,
                 hasAllAppsContent, setter, headerFade, allAppsFade);
 
         mAppsView.getSearchUiManager().setContentVisibility(visibleElements, setter, allAppsFade);
-
-        setter.setInt(mScrimView, ScrimView.DRAG_HANDLE_ALPHA,
-                (visibleElements & VERTICAL_SWIPE_INDICATOR) != 0 ? 255 : 0, allAppsFade);
 
         // Set visibility of the container at the very beginning or end of the transition.
         setter.setViewAlpha(mAppsView, hasAnyVisibleItem ? 1 : 0,

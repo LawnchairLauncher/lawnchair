@@ -215,10 +215,8 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
         switch (state.ordinal) {
             case HINT_STATE_ORDINAL: {
                 Workspace workspace = getWorkspace();
-                boolean willMoveScreens = workspace.getNextPage() != Workspace.DEFAULT_PAGE;
-                getStateManager().goToState(NORMAL, true,
-                        willMoveScreens ? null : getScrimView()::startDragHandleEducationAnim);
-                if (willMoveScreens) {
+                getStateManager().goToState(NORMAL);
+                if (workspace.getNextPage() != Workspace.DEFAULT_PAGE) {
                     workspace.post(workspace::moveToDefaultScreen);
                 }
                 break;
