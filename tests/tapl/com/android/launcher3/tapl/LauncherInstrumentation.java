@@ -64,6 +64,7 @@ import androidx.test.uiautomator.Until;
 
 import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.testing.TestProtocol;
+import com.android.systemui.shared.system.ContextUtils;
 import com.android.systemui.shared.system.QuickStepContract;
 
 import org.junit.Assert;
@@ -238,11 +239,12 @@ public final class LauncherInstrumentation {
 
         if (pm.getComponentEnabledSetting(cn) != COMPONENT_ENABLED_STATE_ENABLED) {
             if (TestHelpers.isInLauncherProcess()) {
-                getContext().getPackageManager().setComponentEnabledSetting(
-                        cn, COMPONENT_ENABLED_STATE_ENABLED, DONT_KILL_APP);
+                pm.setComponentEnabledSetting(cn, COMPONENT_ENABLED_STATE_ENABLED, DONT_KILL_APP);
             } else {
                 try {
-                    mDevice.executeShellCommand("pm enable " + cn.flattenToString());
+                    final int userId = ContextUtils.getUserId(getContext());
+                    mDevice.executeShellCommand(
+                            "pm enable --user " + userId + " " + cn.flattenToString());
                 } catch (IOException e) {
                     fail(e.toString());
                 }
