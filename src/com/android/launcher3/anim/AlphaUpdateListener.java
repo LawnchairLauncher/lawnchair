@@ -46,8 +46,7 @@ public class AlphaUpdateListener extends AnimationSuccessListener
     }
 
     @Override
-    public void onAnimationStart(Animator animation) {
-        super.onAnimationStart(animation);
+    public void onAnimationStart(Animator arg0) {
         // We want the views to be visible for animation, so fade-in/out is visible
         mView.setVisibility(View.VISIBLE);
     }

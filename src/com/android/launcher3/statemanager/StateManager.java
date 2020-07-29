@@ -315,7 +315,6 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
 
             @Override
             public void onAnimationStart(Animator animation) {
-                super.onAnimationStart(animation);
                 // Change the internal state only when the transition actually starts
                 onStateTransitionStart(state);
             }
