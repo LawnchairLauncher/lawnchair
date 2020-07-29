@@ -17,7 +17,6 @@ package com.android.launcher3.uioverrides.states;
 
 import static android.view.View.VISIBLE;
 
-import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.HINT_STATE;
 import static com.android.launcher3.LauncherState.HOTSEAT_ICONS;
@@ -52,6 +51,7 @@ import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_S
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_TRANSLATE;
 import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
 import static com.android.quickstep.SysUINavigationMode.removeShelfFromOverview;
+import static com.android.quickstep.views.RecentsView.RECENTS_SCALE_PROPERTY;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
@@ -212,7 +212,7 @@ public class QuickstepAtomicAnimationFactory extends
                 // Scale up the recents, if it is not coming from the side
                 RecentsView overview = mActivity.getOverviewPanel();
                 if (overview.getVisibility() != VISIBLE || overview.getContentAlpha() == 0) {
-                    SCALE_PROPERTY.set(overview, RECENTS_PREPARE_SCALE);
+                    RECENTS_SCALE_PROPERTY.set(overview, RECENTS_PREPARE_SCALE);
                 }
             }
             config.setInterpolator(ANIM_WORKSPACE_FADE, OVERSHOOT_1_2);
