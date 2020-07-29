@@ -26,7 +26,6 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.AppWidgetResizeFrame;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.util.ContentWriter;
 
 /**
@@ -194,14 +193,5 @@ public class LauncherAppWidgetInfo extends ItemInfo {
      */
     public final boolean hasOptionFlag(int option) {
         return (options & option) != 0;
-    }
-
-    @Override
-    public void setItemBuilder(LauncherAtom.ItemInfo.Builder builder) {
-        builder.setWidget(LauncherAtom.Widget.newBuilder()
-                .setSpanX(spanX)
-                .setSpanY(spanY)
-                .setComponentName(providerName.toString())
-                .setPackageName(providerName.getPackageName()));
     }
 }

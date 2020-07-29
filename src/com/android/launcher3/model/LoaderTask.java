@@ -360,15 +360,12 @@ public class LoaderTask implements Runnable {
                 final int optionsIndex = c.getColumnIndexOrThrow(
                         LauncherSettings.Favorites.OPTIONS);
 
-                final LongSparseArray<UserHandle> allUsers = c.allUsers;
                 final LongSparseArray<Boolean> unlockedUsers = new LongSparseArray<>();
 
                 mUserManagerState.init(mUserCache, mUserManager);
 
                 for (UserHandle user : mUserCache.getUserProfiles()) {
                     long serialNo = mUserCache.getSerialNumberForUser(user);
-                    allUsers.put(serialNo, user);
-
                     boolean userUnlocked = mUserManager.isUserUnlocked(user);
 
                     // We can only query for shortcuts when the user is unlocked.
@@ -419,16 +416,6 @@ public class LoaderTask implements Runnable {
                             ComponentName cn = intent.getComponent();
                             targetPkg = cn == null ? intent.getPackage() : cn.getPackageName();
 
-                            if (allUsers.indexOfValue(c.user) < 0) {
-                                if (c.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) {
-                                    c.markDeleted("Legacy shortcuts are only allowed for current users");
-                                    continue;
-                                } else if (c.restoreFlag != 0) {
-                                    // Don't restore items for other profiles.
-                                    c.markDeleted("Restore from other profiles not supported");
-                                    continue;
-                                }
-                            }
                             if (TextUtils.isEmpty(targetPkg) &&
                                     c.itemType != LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) {
                                 c.markDeleted("Only legacy shortcuts can have null package");
@@ -773,7 +760,7 @@ public class LoaderTask implements Runnable {
             }
 
             // Load delegate items
-            mModelDelegate.loadItems();
+            mModelDelegate.loadItems(mUserManagerState, shortcutKeyToPinnedShortcuts);
 
             // Break early if we've stopped loading
             if (mStopped) {

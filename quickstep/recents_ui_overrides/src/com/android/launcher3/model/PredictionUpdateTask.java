@@ -21,6 +21,7 @@ import static com.android.quickstep.InstantAppResolverImpl.COMPONENT_CLASS_MARKE
 
 import android.app.prediction.AppTarget;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
 import android.content.pm.ShortcutInfo;
@@ -29,6 +30,7 @@ import android.os.UserHandle;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.model.BgDataModel.FixedContainerItems;
+import com.android.launcher3.model.QuickstepModelDelegate.PredictorState;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 
@@ -43,27 +45,22 @@ import java.util.stream.Collectors;
 public class PredictionUpdateTask extends BaseModelUpdateTask {
 
     private final List<AppTarget> mTargets;
-    private final int mContainerId;
+    private final PredictorState mPredictorState;
 
-    PredictionUpdateTask(int containerId, List<AppTarget> targets) {
-        mContainerId = containerId;
+    PredictionUpdateTask(PredictorState predictorState, List<AppTarget> targets) {
+        mPredictorState = predictorState;
         mTargets = targets;
     }
 
     @Override
     public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
-        // TODO: persist the whole list
-        Utilities.getDevicePrefs(app.getContext()).edit()
+        Context context = app.getContext();
+
+        // TODO: remove this
+        Utilities.getDevicePrefs(context).edit()
                 .putBoolean(LAST_PREDICTION_ENABLED_STATE, !mTargets.isEmpty()).apply();
 
-        FixedContainerItems fci;
-        synchronized (dataModel) {
-            fci = dataModel.extraItems.get(mContainerId);
-            if (fci == null) {
-                return;
-            }
-        }
-
+        FixedContainerItems fci = mPredictorState.items;
         Set<UserHandle> usersForChangedShortcuts = new HashSet<>(fci.items.stream()
                 .filter(info -> info.itemType == ITEM_TYPE_DEEP_SHORTCUT)
                 .map(info -> info.user)
@@ -75,7 +72,7 @@ public class PredictionUpdateTask extends BaseModelUpdateTask {
             ShortcutInfo si = target.getShortcutInfo();
             if (si != null) {
                 usersForChangedShortcuts.add(si.getUserHandle());
-                itemInfo = new WorkspaceItemInfo(si, app.getContext());
+                itemInfo = new WorkspaceItemInfo(si, context);
                 app.getIconCache().getShortcutIcon(itemInfo, si);
             } else {
                 String className = target.getClassName();
@@ -87,16 +84,18 @@ public class PredictionUpdateTask extends BaseModelUpdateTask {
                 UserHandle user = target.getUser();
                 itemInfo = apps.data.stream()
                         .filter(info -> user.equals(info.user) && cn.equals(info.componentName))
-                        .map(AppInfo::makeWorkspaceItem)
+                        .map(ai -> {
+                            app.getIconCache().getTitleAndIcon(ai, false);
+                            return ai.makeWorkspaceItem();
+                        })
                         .findAny()
                         .orElseGet(() -> {
-                            LauncherActivityInfo lai = app.getContext()
-                                    .getSystemService(LauncherApps.class)
+                            LauncherActivityInfo lai = context.getSystemService(LauncherApps.class)
                                     .resolveActivity(AppInfo.makeLaunchIntent(cn), user);
                             if (lai == null) {
                                 return null;
                             }
-                            AppInfo ai = new AppInfo(app.getContext(), lai, user);
+                            AppInfo ai = new AppInfo(context, lai, user);
                             app.getIconCache().getTitleAndIcon(ai, lai, false);
                             return ai.makeWorkspaceItem();
                         });
@@ -106,12 +105,15 @@ public class PredictionUpdateTask extends BaseModelUpdateTask {
                 }
             }
 
-            itemInfo.container = mContainerId;
+            itemInfo.container = fci.containerId;
             fci.items.add(itemInfo);
         }
 
         bindExtraContainerItems(fci);
         usersForChangedShortcuts.forEach(
                 u -> dataModel.updateShortcutPinnedState(app.getContext(), u));
+
+        // Save to disk
+        mPredictorState.storage.write(context, fci.items);
     }
 }

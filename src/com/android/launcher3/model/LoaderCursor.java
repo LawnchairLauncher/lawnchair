@@ -65,7 +65,7 @@ public class LoaderCursor extends CursorWrapper {
 
     private static final String TAG = "LoaderCursor";
 
-    public final LongSparseArray<UserHandle> allUsers;
+    private final LongSparseArray<UserHandle> allUsers;
 
     private final Uri mContentUri;
     private final Context mContext;
