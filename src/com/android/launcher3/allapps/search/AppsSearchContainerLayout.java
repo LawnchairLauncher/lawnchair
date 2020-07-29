@@ -38,13 +38,13 @@ import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.ExtendedEditText;
 import com.android.launcher3.Insettable;
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.allapps.AlphabeticalAppsList;
 import com.android.launcher3.allapps.SearchUiManager;
 import com.android.launcher3.anim.PropertySetter;
-import com.android.launcher3.util.ComponentKey;
 
 import java.util.ArrayList;
 
@@ -135,7 +135,8 @@ public class AppsSearchContainerLayout extends ExtendedEditText
         mApps = appsView.getApps();
         mAppsView = appsView;
         mSearchBarController.initialize(
-                new DefaultAppSearchAlgorithm(mApps.getApps()), this, mLauncher, this);
+                new DefaultAppSearchAlgorithm(LauncherAppState.getInstance(mLauncher)), this,
+                mLauncher, this);
     }
 
     @Override
@@ -168,9 +169,9 @@ public class AppsSearchContainerLayout extends ExtendedEditText
     }
 
     @Override
-    public void onSearchResult(String query, ArrayList<ComponentKey> apps) {
-        if (apps != null) {
-            mApps.setOrderedFilter(apps);
+    public void onSearchResult(String query, ArrayList<AlphabeticalAppsList.AdapterItem> items) {
+        if (items != null) {
+            mApps.setSearchResults(items);
             notifyResultChanged();
             mAppsView.setLastSearchQuery(query);
         }
@@ -178,7 +179,7 @@ public class AppsSearchContainerLayout extends ExtendedEditText
 
     @Override
     public void clearSearchResult() {
-        if (mApps.setOrderedFilter(null)) {
+        if (mApps.setSearchResults(null)) {
             notifyResultChanged();
         }
 

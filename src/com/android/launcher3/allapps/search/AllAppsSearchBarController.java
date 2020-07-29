@@ -28,7 +28,7 @@ import android.widget.TextView.OnEditorActionListener;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.ExtendedEditText;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.allapps.AlphabeticalAppsList;
 import com.android.launcher3.util.PackageManagerHelper;
 
 import java.util.ArrayList;
@@ -50,6 +50,7 @@ public class AllAppsSearchBarController
     public void setVisibility(int visibility) {
         mInput.setVisibility(visibility);
     }
+
     /**
      * Sets the references to the apps model and the search result callback.
      */
@@ -164,9 +165,9 @@ public class AllAppsSearchBarController
         /**
          * Called when the search is complete.
          *
-         * @param apps sorted list of matching components or null if in case of failure.
+         * @param items sorted list of search result adapter items.
          */
-        void onSearchResult(String query, ArrayList<ComponentKey> apps);
+        void onSearchResult(String query, ArrayList<AlphabeticalAppsList.AdapterItem> items);
 
         /**
          * Called when the search results should be cleared.
