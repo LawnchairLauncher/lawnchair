@@ -1196,11 +1196,8 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         int[] cellXY = mTmpAddItemCellCoordinates;
         CellLayout layout = getCellLayout(container, screenId);
 
-        WorkspaceItemInfo info = null;
-        if (Utilities.ATLEAST_OREO) {
-            info = PinRequestHelper.createWorkspaceItemFromPinItemRequest(
+        WorkspaceItemInfo info = PinRequestHelper.createWorkspaceItemFromPinItemRequest(
                     this, PinRequestHelper.getPinItemRequest(data), 0);
-        }
 
         if (info == null) {
             // Legacy shortcuts are only supported for primary profile.

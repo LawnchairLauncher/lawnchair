@@ -16,6 +16,8 @@
 
 package com.android.launcher3.statemanager;
 
+import static android.animation.ValueAnimator.areAnimatorsEnabled;
+
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_COMPONENTS;
 
 import android.animation.Animator;
@@ -26,7 +28,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
-import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
@@ -179,7 +180,7 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
 
     private void goToState(STATE_TYPE state, boolean animated, long delay,
             final Runnable onCompleteRunnable) {
-        animated &= Utilities.areAnimationsEnabled(mActivity);
+        animated &= areAnimatorsEnabled();
         if (mActivity.isInState(state)) {
             if (mConfig.currentAnimation == null) {
                 // Run any queued runnable
