@@ -58,6 +58,17 @@ public class AllAppsInsetTransitionController {
         mApps = appsView;
     }
 
+    public void hide() {
+        if (!BuildCompat.isAtLeastR()) return;
+
+        WindowInsets insets = mApps.getRootWindowInsets();
+        if (insets == null) return;
+
+        if (insets.isVisible(WindowInsets.Type.ime())) {
+            mApps.getWindowInsetsController().hide(WindowInsets.Type.ime());
+        }
+    }
+
     /**
      * Initializes member variables and requests for the {@link WindowInsetsAnimationController}
      * object.

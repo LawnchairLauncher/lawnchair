@@ -37,6 +37,7 @@ import android.animation.ObjectAnimator;
 import android.util.FloatProperty;
 import android.view.View;
 import android.view.animation.Interpolator;
+import android.widget.EditText;
 
 import androidx.core.os.BuildCompat;
 
@@ -267,8 +268,16 @@ public class AllAppsTransitionController implements StateHandler<LauncherState>,
         }
         if (FeatureFlags.ENABLE_DEVICE_SEARCH.get() && BuildCompat.isAtLeastR()) {
             mInsetController.onAnimationEnd(mProgress);
+            if (Float.compare(mProgress, 0f) == 0) {
+                EditText editText = mAppsView.getSearchUiManager().getEditText();
+                if (editText != null) {
+                    editText.requestFocus();
+                }
+            }
             if (Float.compare(mProgress, 1f) == 0) {
-                mAppsView.getSearchUiManager().setTextSearchEnabled(true).requestFocus();
+                // Called when home gesture closes all apps container.
+                // TODO: should make the controller hide synchronously
+                mInsetController.hide();
             }
         }
     }

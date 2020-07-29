@@ -216,7 +216,7 @@ public class AppsSearchContainerLayout extends ExtendedEditText
     }
 
     @Override
-    public EditText setTextSearchEnabled(boolean isEnabled) {
+    public EditText getEditText() {
         return this;
     }
 }
