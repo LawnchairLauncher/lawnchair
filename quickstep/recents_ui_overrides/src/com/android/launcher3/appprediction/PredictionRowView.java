@@ -30,7 +30,6 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.util.IntProperty;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Interpolator;
@@ -44,19 +43,15 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
-import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.allapps.FloatingHeaderRow;
 import com.android.launcher3.allapps.FloatingHeaderView;
 import com.android.launcher3.anim.AlphaUpdateListener;
 import com.android.launcher3.anim.PropertySetter;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.keyboard.FocusIndicatorHelper;
 import com.android.launcher3.keyboard.FocusIndicatorHelper.SimpleFocusIndicatorHelper;
 import com.android.launcher3.logging.StatsLogUtils.LogContainerProvider;
-import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
@@ -67,14 +62,11 @@ import com.android.launcher3.util.Themes;
 import com.android.quickstep.AnimatedFloat;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @TargetApi(Build.VERSION_CODES.P)
 public class PredictionRowView extends LinearLayout implements
         LogContainerProvider, OnDeviceProfileChangeListener, FloatingHeaderRow {
-
-    private static final String TAG = "PredictionRowView";
 
     private static final IntProperty<PredictionRowView> TEXT_ALPHA =
             new IntProperty<PredictionRowView>("textAlpha") {
@@ -93,15 +85,13 @@ public class PredictionRowView extends LinearLayout implements
             (t) -> (t < 0.8f) ? 0 : (t - 0.8f) / 0.2f;
 
     private final Launcher mLauncher;
-    private final PredictionUiStateManager mPredictionUiStateManager;
     private int mNumPredictedAppsPerRow;
 
-    // The set of predicted app component names
-    private final List<ComponentKeyMapper> mPredictedAppComponents = new ArrayList<>();
-    // The set of predicted apps resolved from the component names and the current set of apps
-    private final ArrayList<ItemInfoWithIcon> mPredictedApps = new ArrayList<>();
     // Helper to drawing the focus indicator.
     private final FocusIndicatorHelper mFocusHelper;
+
+    // The set of predicted apps resolved from the component names and the current set of apps
+    private final List<WorkspaceItemInfo> mPredictedApps = new ArrayList<>();
 
     private final int mIconTextColor;
     private final int mIconFullTextAlpha;
@@ -134,8 +124,6 @@ public class PredictionRowView extends LinearLayout implements
         mLauncher = Launcher.getLauncher(context);
         mLauncher.addOnDeviceProfileChangeListener(this);
 
-        mPredictionUiStateManager = PredictionUiStateManager.INSTANCE.get(context);
-
         mIconTextColor = Themes.getAttrColor(context, android.R.attr.textColorSecondary);
         mIconFullTextAlpha = Color.alpha(mIconTextColor);
         mIconCurrentTextAlpha = mIconFullTextAlpha;
@@ -146,22 +134,7 @@ public class PredictionRowView extends LinearLayout implements
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-
-        mPredictionUiStateManager.setTargetAppsView(mLauncher.getAppsView());
-        getAppsStore().registerIconContainer(this);
         AllAppsTipView.scheduleShowIfNeeded(mLauncher);
-    }
-
-    private AllAppsStore getAppsStore() {
-        return mLauncher.getAppsView().getAppsStore();
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-
-        mPredictionUiStateManager.setTargetAppsView(null);
-        getAppsStore().unregisterIconContainer(this);
     }
 
     public void setup(FloatingHeaderView parent, FloatingHeaderRow[] rows, boolean tabsHidden) {
@@ -205,7 +178,7 @@ public class PredictionRowView extends LinearLayout implements
      * Returns the predicted apps.
      */
     public List<ItemInfoWithIcon> getPredictedApps() {
-        return mPredictedApps;
+        return new ArrayList<>(mPredictedApps);
     }
 
     /**
@@ -217,12 +190,12 @@ public class PredictionRowView extends LinearLayout implements
      * If the number of predicted apps is the same as the previous list of predicted apps,
      * we can optimize by swapping them in place.
      */
-    public void setPredictedApps(List<ComponentKeyMapper> apps) {
-        mPredictedAppComponents.clear();
-        mPredictedAppComponents.addAll(apps);
-
+    public void setPredictedApps(List<ItemInfo> items) {
         mPredictedApps.clear();
-        mPredictedApps.addAll(processPredictedAppComponents(mPredictedAppComponents));
+        items.stream()
+                .filter(itemInfo -> itemInfo instanceof WorkspaceItemInfo)
+                .map(itemInfo -> (WorkspaceItemInfo) itemInfo)
+                .forEach(mPredictedApps::add);
         applyPredictionApps();
     }
 
@@ -264,11 +237,7 @@ public class PredictionRowView extends LinearLayout implements
             icon.reset();
             if (predictionCount > i) {
                 icon.setVisibility(View.VISIBLE);
-                if (mPredictedApps.get(i) instanceof AppInfo) {
-                    icon.applyFromApplicationInfo((AppInfo) mPredictedApps.get(i));
-                } else if (mPredictedApps.get(i) instanceof WorkspaceItemInfo) {
-                    icon.applyFromWorkspaceItem((WorkspaceItemInfo) mPredictedApps.get(i));
-                }
+                icon.applyFromWorkspaceItem(mPredictedApps.get(i));
                 icon.setTextColor(iconColor);
             } else {
                 icon.setVisibility(predictionCount == 0 ? GONE : INVISIBLE);
@@ -282,33 +251,6 @@ public class PredictionRowView extends LinearLayout implements
             updateVisibility();
         }
         mParent.onHeightUpdated();
-    }
-
-    private List<ItemInfoWithIcon> processPredictedAppComponents(
-            List<ComponentKeyMapper> components) {
-        if (getAppsStore().getApps().length == 0) {
-            // Apps have not been bound yet.
-            return Collections.emptyList();
-        }
-
-        List<ItemInfoWithIcon> predictedApps = new ArrayList<>();
-        for (ComponentKeyMapper mapper : components) {
-            ItemInfoWithIcon info = mapper.getApp(getAppsStore());
-            if (info != null) {
-                ItemInfoWithIcon predictedApp = info.clone();
-                predictedApp.container = LauncherSettings.Favorites.CONTAINER_PREDICTION;
-                predictedApps.add(predictedApp);
-            } else {
-                if (FeatureFlags.IS_STUDIO_BUILD) {
-                    Log.e(TAG, "Predicted app not found: " + mapper);
-                }
-            }
-            // Stop at the number of predicted apps
-            if (predictedApps.size() == mNumPredictedAppsPerRow) {
-                break;
-            }
-        }
-        return predictedApps;
     }
 
     @Override

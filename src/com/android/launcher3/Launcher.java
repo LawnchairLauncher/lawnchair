@@ -119,7 +119,6 @@ import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.logging.UserEventDispatcher;
-import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.model.data.AppInfo;
@@ -911,14 +910,12 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         logStopAndResume(Action.Command.RESUME);
         getUserEventDispatcher().startSession();
 
-        AppLaunchTracker.INSTANCE.get(this).onReturnedToHome();
-
         // Process any items that were added while Launcher was away.
         InstallShortcutReceiver.disableAndFlushInstallQueue(
                 InstallShortcutReceiver.FLAG_ACTIVITY_PAUSED, this);
 
         // Refresh shortcuts if the permission changed.
-        mModel.refreshShortcutsIfRequired();
+        mModel.validateModelDataOnResume();
 
         // Set the notification listener and fetch updated notifications when we resume
         NotificationListener.setNotificationsChangedListener(mPopupDataProvider);
