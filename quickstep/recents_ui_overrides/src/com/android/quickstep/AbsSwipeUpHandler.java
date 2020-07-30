@@ -1221,15 +1221,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
 
     @UiThread
     private void startNewTask() {
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-            mRecentsAnimationController.finish(true /* toRecents */, this::startNewTaskInternal);
-        } else {
-            startNewTaskInternal();
-        }
-    }
-
-    @UiThread
-    private void startNewTaskInternal() {
         TaskView taskToLaunch = mRecentsView == null ? null : mRecentsView.getNextPageTaskView();
         startNewTask(success -> {
             if (!success) {
