@@ -55,6 +55,7 @@ import com.android.launcher3.Insettable;
 import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.keyboard.FocusedItemDecorator;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
@@ -486,7 +487,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         if (mWorkModeSwitch != null) {
             mWorkModeSwitch.setWorkTabVisible(pos == AdapterHolder.WORK
                     && mAllAppsStore.hasModelFlag(
-                            FLAG_HAS_SHORTCUT_PERMISSION | FLAG_QUIET_MODE_CHANGE_PERMISSION));
+                    FLAG_HAS_SHORTCUT_PERMISSION | FLAG_QUIET_MODE_CHANGE_PERMISSION));
         }
     }
 
@@ -538,6 +539,10 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         int padding = mHeader.getMaxTranslation();
         for (int i = 0; i < mAH.length; i++) {
             mAH[i].padding.top = padding;
+            if (FeatureFlags.ENABLE_DEVICE_SEARCH.get() && mUsingTabs) {
+                //add extra space between tabs and recycler view
+                mAH[i].padding.top += mLauncher.getDeviceProfile().edgeMarginPx;
+            }
             mAH[i].applyPadding();
         }
     }
@@ -652,6 +657,9 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             applyVerticalFadingEdgeEnabled(verticalFadingEdge);
             applyPadding();
             setupOverlay();
+            if (FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
+                recyclerView.addItemDecoration(new AllAppsSectionDecorator(getApps()));
+            }
         }
 
         void setupOverlay() {

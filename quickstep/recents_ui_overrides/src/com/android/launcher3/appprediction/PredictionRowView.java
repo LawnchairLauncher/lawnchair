@@ -45,10 +45,12 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
+import com.android.launcher3.allapps.AllAppsSectionDecorator;
 import com.android.launcher3.allapps.FloatingHeaderRow;
 import com.android.launcher3.allapps.FloatingHeaderView;
 import com.android.launcher3.anim.AlphaUpdateListener;
 import com.android.launcher3.anim.PropertySetter;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.keyboard.FocusIndicatorHelper;
 import com.android.launcher3.keyboard.FocusIndicatorHelper.SimpleFocusIndicatorHelper;
 import com.android.launcher3.logging.StatsLogUtils.LogContainerProvider;
@@ -110,6 +112,8 @@ public class PredictionRowView extends LinearLayout implements
 
     private boolean mPredictionsEnabled = false;
 
+    AllAppsSectionDecorator.SectionDecorationHandler mDecorationHandler;
+
     public PredictionRowView(@NonNull Context context) {
         this(context, null);
     }
@@ -127,6 +131,11 @@ public class PredictionRowView extends LinearLayout implements
         mIconTextColor = Themes.getAttrColor(context, android.R.attr.textColorSecondary);
         mIconFullTextAlpha = Color.alpha(mIconTextColor);
         mIconCurrentTextAlpha = mIconFullTextAlpha;
+
+        if (FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
+            mDecorationHandler = new AllAppsSectionDecorator.SectionDecorationHandler(getContext(),
+                    false);
+        }
 
         updateVisibility();
     }
@@ -153,6 +162,14 @@ public class PredictionRowView extends LinearLayout implements
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
+        if (mDecorationHandler != null) {
+            mDecorationHandler.reset();
+            int childrenCount = getChildCount();
+            for (int i = 0; i < childrenCount; i++) {
+                mDecorationHandler.extendBounds(getChildAt(i));
+            }
+            mDecorationHandler.onDraw(canvas);
+        }
         mFocusHelper.draw(canvas);
         super.dispatchDraw(canvas);
     }

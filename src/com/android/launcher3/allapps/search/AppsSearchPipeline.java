@@ -19,6 +19,7 @@ import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
+import com.android.launcher3.allapps.AllAppsSectionDecorator.SectionDecorationHandler;
 import com.android.launcher3.allapps.AlphabeticalAppsList.AdapterItem;
 import com.android.launcher3.model.AllAppsList;
 import com.android.launcher3.model.BaseModelUpdateTask;
@@ -36,12 +37,21 @@ public class AppsSearchPipeline implements SearchPipeline {
 
     private static final int MAX_RESULTS_COUNT = 5;
 
-    private final SearchSectionInfo mSearchSectionInfo;
+    private static final int SECTION_TYPE_HEADER = 0;
+    private static final int SECTION_TYPE_APPS = 1;
+
+    private final SearchSectionInfo[] mSearchSectionInfos;
     private final LauncherAppState mLauncherAppState;
+
 
     public AppsSearchPipeline(LauncherAppState launcherAppState) {
         mLauncherAppState = launcherAppState;
-        mSearchSectionInfo = new SearchSectionInfo(R.string.search_corpus_apps);
+        mSearchSectionInfos = new SearchSectionInfo[]{
+                new SearchSectionInfo(R.string.search_corpus_apps),
+                new SearchSectionInfo()
+        };
+        mSearchSectionInfos[SECTION_TYPE_APPS].setDecorationHandler(
+                new SectionDecorationHandler(launcherAppState.getContext(), true));
     }
 
     @Override
@@ -78,12 +88,12 @@ public class AppsSearchPipeline implements SearchPipeline {
         if (matchingApps.isEmpty()) {
             return items;
         }
-        items.add(AdapterItem.asSearchTitle(mSearchSectionInfo, 0));
+        items.add(AdapterItem.asSearchTitle(mSearchSectionInfos[SECTION_TYPE_HEADER], 0));
         int existingItems = items.size();
         int searchResultsCount = Math.min(matchingApps.size(), MAX_RESULTS_COUNT);
         for (int i = 0; i < searchResultsCount; i++) {
             AdapterItem appItem = AdapterItem.asApp(i + existingItems, "", matchingApps.get(i), i);
-            appItem.searchSectionInfo = mSearchSectionInfo;
+            appItem.searchSectionInfo = mSearchSectionInfos[SECTION_TYPE_APPS];
             items.add(appItem);
         }
 

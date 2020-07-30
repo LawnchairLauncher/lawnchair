@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.stream.Collectors;
 
 /**
  * The alphabetically sorted list of applications.
@@ -311,9 +310,15 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
         mFastScrollerSections.clear();
         mAdapterItems.clear();
 
+        SearchSectionInfo appSection = new SearchSectionInfo();
+        appSection.setDecorationHandler(
+                new AllAppsSectionDecorator.SectionDecorationHandler(mLauncher, true));
+
         // Recreate the filtered and sectioned apps (for convenience for the grid layout) from the
         // ordered set of sections
+
         if (!hasFilter()) {
+            appSection.setPosStart(position);
             for (AppInfo info : mApps) {
                 String sectionName = info.sectionName;
 
@@ -329,14 +334,31 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
                 if (lastFastScrollerSectionInfo.fastScrollToItem == null) {
                     lastFastScrollerSectionInfo.fastScrollToItem = appItem;
                 }
+                if (FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
+                    appItem.searchSectionInfo = appSection;
+                }
                 mAdapterItems.add(appItem);
                 mFilteredApps.add(info);
             }
+            appSection.setPosEnd(mApps.isEmpty() ? appSection.getPosStart() : position - 1);
         } else {
-            mAdapterItems.addAll(mSearchResults);
-            List<AppInfo> appInfos = mSearchResults.stream().filter(
-                    i -> AllAppsGridAdapter.isIconViewType(i.viewType)).map(i -> i.appInfo).collect(
-                    Collectors.toList());
+            List<AppInfo> appInfos = new ArrayList<>();
+            SearchSectionInfo lastSection = null;
+            for (int i = 0; i < mSearchResults.size(); i++) {
+                AdapterItem adapterItem = mSearchResults.get(i);
+                adapterItem.position = i;
+                mAdapterItems.add(adapterItem);
+                if (adapterItem.searchSectionInfo != lastSection) {
+                    adapterItem.searchSectionInfo.setPosStart(i);
+                    if (lastSection != null) {
+                        lastSection.setPosEnd(i - 1);
+                    }
+                    lastSection = adapterItem.searchSectionInfo;
+                }
+                if (AllAppsGridAdapter.isIconViewType(adapterItem.viewType)) {
+                    appInfos.add(adapterItem.appInfo);
+                }
+            }
             mFilteredApps.addAll(appInfos);
             if (!FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
                 // Append the search market item
