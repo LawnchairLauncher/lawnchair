@@ -22,16 +22,31 @@
     <string name="recent_task_option_split_screen" msgid="5353188922202653570">"تقسیم صفحه"</string>
     <string name="recent_task_option_pin" msgid="7929860679018978258">"پین"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Freeform"</string>
-    <string name="accessibility_desc_recent_apps" msgid="1444379410873162882">"نمای کلی"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"بدون موارد اخیر"</string>
-    <string name="accessibility_close_task" msgid="5354563209433803643">"بستن"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"تنظیمات استفاده از برنامه"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"پاک کردن همه"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"برنامه‌های اخیر"</string>
     <string name="task_contents_description_with_remaining_time" msgid="4479688746574672685">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>، <xliff:g id="REMAINING_TIME">%2$s</xliff:g>"</string>
     <string name="shorter_duration_less_than_one_minute" msgid="4722015666335015336">"&lt; ۱ دقیقه"</string>
     <string name="time_left_for_app" msgid="3111996412933644358">"<xliff:g id="TIME">%1$s</xliff:g> باقی‌مانده برای امروز"</string>
-    <string name="title_app_suggestions" msgid="4185902664111965088">"برنامه‌های پیشنهادی"</string>
+    <string name="title_app_suggestions" msgid="4185902664111965088">"پیشنهادهای برنامه"</string>
     <string name="all_apps_label" msgid="8542784161730910663">"همه برنامه‌ها"</string>
     <string name="all_apps_prediction_tip" msgid="2672336544844936186">"برنامه‌های پیش‌بینی‌شده"</string>
+    <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"دریافت پیشنهادهای برنامه در ردیف پایین صفحه اصلی"</string>
+    <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"دریافت «پیشنهاد برنامه» در ردیف موارد دلخواه صفحه اصلی"</string>
+    <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"به‌راحتی در صفحه اصلی به پرکاربردترین برنامه‌ها دسترسی داشته باشید. پیشنهادها براساس روال‌هایتان تغییر خواهد کرد. برنامه‌های ردیف پایین در صفحه اصلی به بالا منتقل خواهند شد."</string>
+    <string name="hotseat_edu_message_migrate_landscape" msgid="4248943380443387697">"به‌راحتی در صفحه اصلی به پرکاربردترین برنامه‌ها دسترسی داشته باشید. پیشنهادها براساس روال‌هایتان تغییر خواهد کرد. برنامه‌های موجود در ردیف موارد دلخواه به صفحه اصلی منتقل می‌شوند."</string>
+    <string name="hotseat_edu_message_migrate_alt" msgid="3042360119039646356">"به‌راحتی در صفحه اصلی به پرکاربردترین برنامه‌ها دسترسی داشته باشید. پیشنهادها براساس روال‌هایتان تغییر خواهد کرد. برنامه‌های ردیف پایین به پوشه جدیدی منتقل خواهند شد."</string>
+    <string name="hotseat_edu_accept" msgid="1611544083278999837">"دریافت پیشنهادهای برنامه"</string>
+    <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"نه متشکرم"</string>
+    <string name="hotseat_prediction_settings" msgid="6246554993566070818">"تنظیمات"</string>
+    <string name="hotseat_auto_enrolled" msgid="522100018967146807">"پرکاربردترین برنامه‌ها اینجا ظاهر می‌شوند و براساس روال‌ها تغییر می‌کنند"</string>
+    <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"برای دریافت پیشنهادهای برنامه، برنامه‌ها را به بیرون از ردیف پایین بکشید"</string>
+    <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"«پیشنهاد برنامه» به فضای خالی اضافه شد"</string>
+    <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"«پیشنهاد برنامه» فعال است"</string>
+    <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"«پیشنهاد برنامه» غیرفعال است"</string>
+    <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"برنامه پیش‌بینی‌شده: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
+    <string name="action_share" msgid="2648470652637092375">"هم‌رسانی"</string>
+    <string name="action_screenshot" msgid="8171125848358142917">"نماگرفت"</string>
+    <string name="blocked_by_policy" msgid="2071401072261365546">"برنامه یا سازمان شما اجازه نمی‌دهد این کنش انجام شود."</string>
 </resources>

@@ -17,6 +17,7 @@
 package com.android.launcher3.touch;
 
 import static android.widget.ListPopupWindow.WRAP_CONTENT;
+
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
 import static com.android.launcher3.touch.SingleAxisSwipeDetector.HORIZONTAL;
@@ -33,6 +34,7 @@ import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.LinearLayout;
 
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.OverScroller;
@@ -70,6 +72,7 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
         out.halfPageSize = view.getNormalChildHeight() / 2;
         out.halfScreenSize = view.getMeasuredHeight() / 2;
         out.screenCenter = insets.top + view.getPaddingTop() + out.scroll + out.halfPageSize;
+        out.pageParentScale = view.getScaleY();
     }
 
     @Override
@@ -237,7 +240,8 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public int getTaskMenuLayoutOrientation(LinearLayout taskMenuLayout) {
+    public int getTaskMenuLayoutOrientation(boolean canRecentsActivityRotate,
+        LinearLayout taskMenuLayout) {
         return LinearLayout.HORIZONTAL;
     }
 
@@ -259,5 +263,11 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
             child.layout(childLeft, childStart, childLeft + childWidth, childBottom);
         }
         return new ChildBounds(childHeight, childWidth, childBottom, childLeft);
+    }
+
+    @SuppressWarnings("SuspiciousNameCombination")
+    @Override
+    public int getDistanceToBottomOfRect(DeviceProfile dp, Rect rect) {
+        return rect.left;
     }
 }
