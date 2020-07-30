@@ -17,7 +17,6 @@ package com.android.quickstep;
 
 import static com.android.launcher3.anim.Interpolators.ACCEL_1_5;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
-import static com.android.launcher3.views.FloatingIconView.SHAPE_PROGRESS_DURATION;
 
 import android.animation.Animator;
 import android.content.Context;
@@ -28,7 +27,6 @@ import android.graphics.RectF;
 import android.view.animation.Interpolator;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
 import com.android.launcher3.DeviceProfile;
@@ -37,7 +35,6 @@ import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.touch.PagedOrientationHandler;
-import com.android.launcher3.views.FloatingIconView;
 import com.android.quickstep.util.RectFSpringAnim;
 import com.android.quickstep.util.TaskViewSimulator;
 import com.android.quickstep.util.TransformParams;
@@ -85,7 +82,8 @@ public abstract class SwipeUpAnimationLogic {
         mTransformParams = transformParams;
 
         mTaskViewSimulator.setLayoutRotation(
-                mDeviceState.getCurrentActiveRotation(), mDeviceState.getDisplayRotation());
+                mDeviceState.getRotationTouchHelper().getCurrentActiveRotation(),
+                mDeviceState.getRotationTouchHelper().getDisplayRotation());
     }
 
     protected void initTransitionEndpoints(DeviceProfile dp) {
@@ -148,12 +146,6 @@ public abstract class SwipeUpAnimationLogic {
 
     protected abstract class HomeAnimationFactory {
 
-        public FloatingIconView mIconView;
-
-        public HomeAnimationFactory(@Nullable FloatingIconView iconView) {
-            mIconView = iconView;
-        }
-
         public @NonNull RectF getWindowTargetRect() {
             PagedOrientationHandler orientationHandler = getOrientationHandler();
             DeviceProfile dp = mDp;
@@ -174,6 +166,12 @@ public abstract class SwipeUpAnimationLogic {
         public void playAtomicAnimation(float velocity) {
             // No-op
         }
+
+        public void setAnimation(RectFSpringAnim anim) { }
+
+        public void update(RectF currentRect, float progress, float radius) { }
+
+        public void onCancel() { }
     }
 
     /**
@@ -184,8 +182,6 @@ public abstract class SwipeUpAnimationLogic {
     protected RectFSpringAnim createWindowAnimationToHome(float startProgress,
             HomeAnimationFactory homeAnimationFactory) {
         final RectF targetRect = homeAnimationFactory.getWindowTargetRect();
-        final FloatingIconView fiv = homeAnimationFactory.mIconView;
-        final boolean isFloatingIconView = fiv != null;
 
         mWindowTransitionController.setPlayFraction(startProgress / mDragLengthFactor);
         mTaskViewSimulator.apply(mTransformParams.setProgress(startProgress));
@@ -203,11 +199,7 @@ public abstract class SwipeUpAnimationLogic {
         windowToHomePositionMap.mapRect(startRect);
 
         RectFSpringAnim anim = new RectFSpringAnim(startRect, targetRect, mContext);
-        if (isFloatingIconView) {
-            anim.addAnimatorListener(fiv);
-            fiv.setOnTargetChangeListener(anim::onTargetPositionChanged);
-            fiv.setFastFinishRunnable(anim::end);
-        }
+        homeAnimationFactory.setAnimation(anim);
 
         SpringAnimationRunner runner = new SpringAnimationRunner(
                 homeAnimationFactory, cropRectF, homeToWindowPositionMap);
@@ -242,32 +234,27 @@ public abstract class SwipeUpAnimationLogic {
 
         final RectF mWindowCurrentRect = new RectF();
         final Matrix mHomeToWindowPositionMap;
+        final HomeAnimationFactory mAnimationFactory;
 
-        final FloatingIconView mFIV;
         final AnimatorPlaybackController mHomeAnim;
         final RectF mCropRectF;
 
         final float mStartRadius;
         final float mEndRadius;
-        final float mWindowAlphaThreshold;
 
         SpringAnimationRunner(HomeAnimationFactory factory, RectF cropRectF,
                 Matrix homeToWindowPositionMap) {
+            mAnimationFactory = factory;
             mHomeAnim = factory.createActivityAnimationToHome();
             mCropRectF = cropRectF;
             mHomeToWindowPositionMap = homeToWindowPositionMap;
 
             cropRectF.roundOut(mCropRect);
-            mFIV = factory.mIconView;
 
             // End on a "round-enough" radius so that the shape reveal doesn't have to do too much
             // rounding at the end of the animation.
             mStartRadius = mTaskViewSimulator.getCurrentCornerRadius();
             mEndRadius = cropRectF.width() / 2f;
-
-            // We want the window alpha to be 0 once this threshold is met, so that the
-            // FolderIconView can be seen morphing into the icon shape.
-            mWindowAlphaThreshold = mFIV != null ? 1f - SHAPE_PROGRESS_DURATION : 1f;
         }
 
         @Override
@@ -282,10 +269,7 @@ public abstract class SwipeUpAnimationLogic {
                     .setCornerRadius(cornerRadius);
 
             mTransformParams.applySurfaceParams(mTransformParams.createSurfaceParams(this));
-            if (mFIV != null) {
-                mFIV.update(currentRect, 1f, progress,
-                        mWindowAlphaThreshold, mMatrix.mapRadius(cornerRadius), false);
-            }
+            mAnimationFactory.update(currentRect, progress, mMatrix.mapRadius(cornerRadius));
         }
 
         @Override
@@ -298,9 +282,7 @@ public abstract class SwipeUpAnimationLogic {
 
         @Override
         public void onCancel() {
-            if (mFIV != null) {
-                mFIV.fastFinish();
-            }
+            mAnimationFactory.onCancel();
         }
 
         @Override

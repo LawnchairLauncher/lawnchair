@@ -266,10 +266,6 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
         mStateCallback.runOnceAtState(STATE_HANDLER_INVALIDATED | STATE_RESUME_LAST_TASK,
                 this::notifyTransitionCancelled);
 
-        mGestureState.runOnceAtState(STATE_END_TARGET_SET,
-                () -> mDeviceState.onEndTargetCalculated(mGestureState.getEndTarget(),
-                        mActivityInterface));
-
         if (!ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             mStateCallback.addChangeListener(STATE_APP_CONTROLLER_RECEIVED | STATE_LAUNCHER_PRESENT
                             | STATE_SCREENSHOT_VIEW_SHOWN | STATE_CAPTURE_SCREENSHOT,
@@ -337,7 +333,7 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
         if (mStateCallback.hasStates(STATE_HANDLER_INVALIDATED)) {
             return;
         }
-        mTaskViewSimulator.setRecentsConfiguration(mActivity.getResources().getConfiguration());
+        mTaskViewSimulator.setRecentsRotation(mActivity.getDisplay().getRotation());
 
         // If we've already ended the gesture and are going home, don't prepare recents UI,
         // as that will set the state as BACKGROUND_APP, overriding the animation to NORMAL.
@@ -400,6 +396,11 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
         mGestureState.getActivityInterface().setOnDeferredActivityLaunchCallback(
                 mOnDeferredActivityLaunch);
 
+        mGestureState.runOnceAtState(STATE_END_TARGET_SET,
+                () -> mDeviceState.getRotationTouchHelper().
+                        onEndTargetCalculated(mGestureState.getEndTarget(),
+                        mActivityInterface));
+
         notifyGestureStartedAsync();
     }
 
@@ -423,7 +424,7 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
     }
 
     protected void notifyGestureAnimationStartToRecents() {
-        mRecentsView.onGestureAnimationStart(mGestureState.getRunningTaskId());
+        mRecentsView.onGestureAnimationStart(mGestureState.getRunningTask());
     }
 
     private void launcherFrameDrawn() {

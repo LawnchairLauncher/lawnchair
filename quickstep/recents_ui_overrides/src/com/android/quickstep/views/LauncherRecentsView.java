@@ -189,7 +189,7 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher>
 
     @Override
     public boolean shouldUseMultiWindowTaskSizeStrategy() {
-        return TraceHelper.whitelistIpcs("isInMultiWindowMode", mActivity::isInMultiWindowMode);
+        return TraceHelper.allowIpcs("isInMultiWindowMode", mActivity::isInMultiWindowMode);
     }
 
     @Override
