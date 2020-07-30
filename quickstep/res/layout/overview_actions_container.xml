@@ -17,9 +17,7 @@
 <com.android.quickstep.views.OverviewActionsView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/overview_actions_height"
-    android:layout_gravity="center_horizontal|bottom"
-    android:layout_marginLeft="@dimen/overview_actions_horizontal_margin"
-    android:layout_marginRight="@dimen/overview_actions_horizontal_margin">
+    android:layout_gravity="center_horizontal|bottom">
 
     <LinearLayout
         android:id="@+id/action_buttons"

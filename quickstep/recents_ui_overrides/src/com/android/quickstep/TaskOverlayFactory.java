@@ -19,6 +19,7 @@ package com.android.quickstep;
 import static android.view.Surface.ROTATION_0;
 
 import static com.android.launcher3.util.MainThreadInitializedObject.forOverride;
+import static com.android.quickstep.views.OverviewActionsView.DISABLED_NO_THUMBNAIL;
 import static com.android.quickstep.views.OverviewActionsView.DISABLED_ROTATED;
 
 import android.annotation.SuppressLint;
@@ -146,26 +147,29 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
          */
         public void initOverlay(Task task, ThumbnailData thumbnail, Matrix matrix,
                 boolean rotated) {
-            final boolean isAllowedByPolicy = thumbnail.isRealSnapshot;
+            getActionsView().updateDisabledFlags(DISABLED_NO_THUMBNAIL, thumbnail == null);
 
-            getActionsView().updateDisabledFlags(DISABLED_ROTATED, rotated);
+            if (thumbnail != null) {
+                getActionsView().updateDisabledFlags(DISABLED_ROTATED, rotated);
+                final boolean isAllowedByPolicy = thumbnail.isRealSnapshot;
 
-            getActionsView().setCallbacks(new OverlayUICallbacks() {
-                @Override
-                public void onShare() {
-                    if (isAllowedByPolicy) {
-                        mImageApi.startShareActivity();
-                    } else {
-                        showBlockedByPolicyMessage();
+                getActionsView().setCallbacks(new OverlayUICallbacks() {
+                    @Override
+                    public void onShare() {
+                        if (isAllowedByPolicy) {
+                            mImageApi.startShareActivity();
+                        } else {
+                            showBlockedByPolicyMessage();
+                        }
                     }
-                }
 
-                @SuppressLint("NewApi")
-                @Override
-                public void onScreenshot() {
-                    saveScreenshot(task);
-                }
-            });
+                    @SuppressLint("NewApi")
+                    @Override
+                    public void onScreenshot() {
+                        saveScreenshot(task);
+                    }
+                });
+            }
         }
 
         /**

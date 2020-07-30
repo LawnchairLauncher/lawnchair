@@ -33,7 +33,6 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.graphics.Matrix;
@@ -48,7 +47,6 @@ import android.view.Surface;
 
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
@@ -58,7 +56,6 @@ import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.WindowBounds;
 import com.android.quickstep.BaseActivityInterface;
 import com.android.quickstep.SysUINavigationMode;
-import com.android.systemui.shared.system.ConfigurationCompat;
 
 import java.lang.annotation.Retention;
 import java.util.function.IntConsumer;
@@ -91,6 +88,7 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
     private @SurfaceRotation int mTouchRotation = ROTATION_0;
     private @SurfaceRotation int mDisplayRotation = ROTATION_0;
     private @SurfaceRotation int mRecentsActivityRotation = ROTATION_0;
+    private @SurfaceRotation int mRecentsRotation = ROTATION_0 - 1;
 
     // Launcher activity supports multiple orientation, but fallback activity does not
     private static final int FLAG_MULTIPLE_ORIENTATION_SUPPORTED_BY_ACTIVITY = 1 << 0;
@@ -133,8 +131,6 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
     private int mFlags;
     private int mPreviousRotation = ROTATION_0;
 
-    @Nullable private Configuration mActivityConfiguration;
-
     /**
      * @param rotationChangeListener Callback for receiving rotation events when rotation watcher
      *                              is enabled
@@ -170,11 +166,11 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
     }
 
     /**
-     * Sets the configuration for the recents activity, which could affect the activity's rotation
+     * Sets the rotation for the recents activity, which could affect the appearance of task view.
      * @see #update(int, int)
      */
-    public boolean setActivityConfiguration(Configuration activityConfiguration) {
-        mActivityConfiguration = activityConfiguration;
+    public boolean setRecentsRotation(@SurfaceRotation int recentsRotation) {
+        mRecentsRotation = recentsRotation;
         return update(mTouchRotation, mDisplayRotation);
     }
 
@@ -231,9 +227,7 @@ public final class RecentsOrientedState implements SharedPreferences.OnSharedPre
     @SurfaceRotation
     private int inferRecentsActivityRotation(@SurfaceRotation int displayRotation) {
         if (isRecentsActivityRotationAllowed()) {
-            return mActivityConfiguration == null
-                    ? displayRotation
-                    : ConfigurationCompat.getWindowConfigurationRotation(mActivityConfiguration);
+            return mRecentsRotation < ROTATION_0 ? displayRotation : mRecentsRotation;
         } else {
             return ROTATION_0;
         }
