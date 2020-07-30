@@ -16,7 +16,6 @@
 package com.android.launcher3.uioverrides.touchcontrollers;
 
 import static com.android.launcher3.AbstractFloatingView.TYPE_ACCESSIBLE;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.touch.SingleAxisSwipeDetector.DIRECTION_BOTH;
 import static com.android.launcher3.touch.SingleAxisSwipeDetector.DIRECTION_NEGATIVE;
 import static com.android.launcher3.touch.SingleAxisSwipeDetector.DIRECTION_POSITIVE;
@@ -262,13 +261,6 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
         mCurrentAnimation.setPlayFraction(Utilities.boundToRange(
                 totalDisplacement * mProgressMultiplier, 0, 1));
 
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-            if (mRecentsView.getCurrentPage() == 0) {
-                mRecentsView.getLiveTileTaskViewSimulator().setOffsetY(
-                        isGoingUp ? totalDisplacement : 0);
-                mRecentsView.redrawLiveTile();
-            }
-        }
         return true;
     }
 
@@ -299,13 +291,6 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
         }
 
         mCurrentAnimation.setEndAction(() -> onCurrentAnimationEnd(goingToEnd, logAction));
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-            mCurrentAnimation.getAnimationPlayer().addUpdateListener(valueAnimator -> {
-                if (mRecentsView.getCurrentPage() != 0 || mCurrentAnimationIsGoingUp) {
-                    mRecentsView.redrawLiveTile();
-                }
-            });
-        }
         mCurrentAnimation.startWithVelocity(mActivity, goingToEnd,
                 velocity, mEndDisplacement, animationDuration);
     }

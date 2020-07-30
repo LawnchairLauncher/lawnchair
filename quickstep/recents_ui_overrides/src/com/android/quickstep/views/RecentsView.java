@@ -1501,6 +1501,13 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
             anim.addOnFrameCallback(this::updateCurveProperties);
         }
 
+        if (ENABLE_QUICKSTEP_LIVE_TILE.get() && getRunningTaskView() == taskView) {
+            anim.addOnFrameCallback(() -> {
+                mLiveTileTaskViewSimulator.setOffsetY(taskView.getTranslationY());
+                redrawLiveTile();
+            });
+        }
+
         // Add a tiny bit of translation Z, so that it draws on top of other views
         if (animateTaskView) {
             taskView.setTranslationZ(0.1f);
