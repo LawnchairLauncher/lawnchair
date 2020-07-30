@@ -422,7 +422,7 @@ public class BgDataModel {
 
         @Override
         public FixedContainerItems clone() {
-            return new FixedContainerItems(containerId, Collections.unmodifiableList(items));
+            return new FixedContainerItems(containerId, new ArrayList<>(items));
         }
     }
 
