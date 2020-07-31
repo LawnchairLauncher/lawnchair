@@ -849,6 +849,14 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
                 taskView.setModalness(mTaskModalness);
             }
         }
+        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+            // Since we reuse the same mLiveTileTaskViewSimulator in the RecentsView, we need
+            // to reset the params after it settles in Overview from swipe up so that we don't
+            // render with obsolete param values.
+            mLiveTileTaskViewSimulator.fullScreenProgress.value = 0;
+            mLiveTileTaskViewSimulator.recentsViewScale.value = 1;
+            mLiveTileTaskViewSimulator.setOffsetY(0);
+        }
         if (mRunningTaskTileHidden) {
             setRunningTaskHidden(mRunningTaskTileHidden);
         }
