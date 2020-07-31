@@ -99,6 +99,7 @@ public final class TestProtocol {
     public static final String REQUEST_DISABLE_DEBUG_TRACING = "disable-debug-tracing";
 
     public static final String REQUEST_OVERVIEW_ACTIONS_ENABLED = "overview-actions-enabled";
+    public static final String REQUEST_OVERVIEW_SHARE_ENABLED = "overview-share-enabled";
 
     public static boolean sDisableSensorRotation;
     public static final String REQUEST_MOCK_SENSOR_ROTATION = "mock-sensor-rotation";

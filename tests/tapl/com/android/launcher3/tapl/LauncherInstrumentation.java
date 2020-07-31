@@ -156,6 +156,7 @@ public final class LauncherInstrumentation {
     public static final int WAIT_TIME_MS = 10000;
     public static final int LONG_WAIT_TIME_MS = 60000;
     private static final String SYSTEMUI_PACKAGE = "com.android.systemui";
+    private static final String ANDROID_PACKAGE = "android";
 
     private static WeakReference<VisibleContainer> sActiveContainer = new WeakReference<>(null);
 
@@ -931,6 +932,14 @@ public final class LauncherInstrumentation {
         return waitForObjectBySelector(getOverviewObjectSelector(resName));
     }
 
+    @NonNull
+    UiObject2 waitForAndroidObject(String resId) {
+        final UiObject2 object = mDevice.wait(
+                Until.findObject(By.res(ANDROID_PACKAGE, resId)), WAIT_TIME_MS);
+        assertNotNull("Can't find a android object with id: " + resId, object);
+        return object;
+    }
+
     private UiObject2 waitForObjectBySelector(BySelector selector) {
         final UiObject2 object = mDevice.wait(Until.findObject(selector), WAIT_TIME_MS);
         assertNotNull("Can't find a view in Launcher, selector: " + selector, object);
@@ -1304,6 +1313,11 @@ public final class LauncherInstrumentation {
 
     private boolean overviewActionsEnabled() {
         return getTestInfo(TestProtocol.REQUEST_OVERVIEW_ACTIONS_ENABLED).getBoolean(
+                TestProtocol.TEST_INFO_RESPONSE_FIELD);
+    }
+
+    boolean overviewShareEnabled() {
+        return getTestInfo(TestProtocol.REQUEST_OVERVIEW_SHARE_ENABLED).getBoolean(
                 TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
