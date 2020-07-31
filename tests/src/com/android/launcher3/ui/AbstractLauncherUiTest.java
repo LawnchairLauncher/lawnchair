@@ -116,8 +116,7 @@ public abstract class AbstractLauncherUiTest {
         if (TestHelpers.isInLauncherProcess()) {
             StrictMode.VmPolicy.Builder builder =
                     new StrictMode.VmPolicy.Builder()
-// b/154772063
-//                            .detectActivityLeaks()
+                            .detectActivityLeaks()
                             .penaltyLog()
                             .penaltyListener(Runnable::run, violation -> {
                                 if (sStrictmodeDetectedActivityLeak == null) {
