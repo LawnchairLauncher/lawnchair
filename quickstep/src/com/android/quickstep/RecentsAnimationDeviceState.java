@@ -79,6 +79,8 @@ public class RecentsAnimationDeviceState implements
         DefaultDisplay.DisplayInfoChangeListener,
         OneHandedModeChangeListener {
 
+    static final String SUPPORT_ONE_HANDED_MODE = "ro.support_one_handed_mode";
+
     private final Context mContext;
     private final SysUINavigationMode mSysUiNavMode;
     private final DefaultDisplay mDefaultDisplay;
@@ -165,13 +167,15 @@ public class RecentsAnimationDeviceState implements
             }
         }
 
-        if (SystemProperties.getBoolean("ro.support_one_handed_mode", false)) {
+        if (SystemProperties.getBoolean(SUPPORT_ONE_HANDED_MODE, false)) {
             SecureSettingsObserver oneHandedEnabledObserver =
                     SecureSettingsObserver.newOneHandedSettingsObserver(
                             mContext, enabled -> mIsOneHandedModeEnabled = enabled);
             oneHandedEnabledObserver.register();
             oneHandedEnabledObserver.dispatchOnChange();
             runOnDestroy(oneHandedEnabledObserver::unregister);
+        } else {
+            mIsOneHandedModeEnabled = false;
         }
 
         SecureSettingsObserver swipeBottomEnabledObserver =
@@ -443,7 +447,7 @@ public class RecentsAnimationDeviceState implements
     }
 
     /**
-     * @return whether screen pinning is enabled and active
+     * @return whether one-handed mode is enabled and active
      */
     public boolean isOneHandedModeActive() {
         return (mSystemUiStateFlags & SYSUI_STATE_ONE_HANDED_ACTIVE) != 0;
@@ -518,6 +522,10 @@ public class RecentsAnimationDeviceState implements
      * @return whether the given motion event can trigger the one handed mode.
      */
     public boolean canTriggerOneHandedAction(MotionEvent ev) {
+        if (!SystemProperties.getBoolean(SUPPORT_ONE_HANDED_MODE, false)) {
+            return false;
+        }
+
         if (!mIsOneHandedModeEnabled && !mIsSwipeToNotificationEnabled) {
             return false;
         }
