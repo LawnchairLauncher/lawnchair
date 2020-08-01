@@ -18,6 +18,7 @@ package com.android.quickstep;
 
 import static android.view.Surface.ROTATION_0;
 
+import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.quickstep.views.OverviewActionsView.DISABLED_NO_THUMBNAIL;
 import static com.android.quickstep.views.OverviewActionsView.DISABLED_ROTATED;
 
@@ -41,6 +42,7 @@ import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.util.ResourceBasedOverride;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.quickstep.views.OverviewActionsView;
+import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskThumbnailView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.Task;
@@ -155,6 +157,7 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
                 getActionsView().setCallbacks(new OverlayUICallbacks() {
                     @Override
                     public void onShare() {
+                        endLiveTileMode(isAllowedByPolicy);
                         if (isAllowedByPolicy) {
                             mImageApi.startShareActivity();
                         } else {
@@ -165,9 +168,27 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
                     @SuppressLint("NewApi")
                     @Override
                     public void onScreenshot() {
+                        endLiveTileMode(isAllowedByPolicy);
                         saveScreenshot(task);
                     }
                 });
+            }
+        }
+
+        /**
+         * End rendering live tile in Overview.
+         *
+         * @param showScreenshot if it's true, we take a screenshot and switch to it.
+         */
+        public void endLiveTileMode(boolean showScreenshot) {
+            if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
+                RecentsView recentsView = mThumbnailView.getTaskView().getRecentsView();
+                if (showScreenshot) {
+                    recentsView.switchToScreenshot(
+                            () -> recentsView.finishRecentsAnimation(true /* toRecents */, null));
+                } else {
+                    recentsView.finishRecentsAnimation(true /* toRecents */, null);
+                }
             }
         }
 

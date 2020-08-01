@@ -2294,13 +2294,13 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         mRecentsAnimationController.finish(toRecents, () -> {
             if (onFinishComplete != null) {
                 onFinishComplete.run();
-                // After we finish the recents animation, the current task id should be correctly
-                // reset so that when the task is launched from Overview later, it goes through the
-                // flow of starting a new task instead of finishing recents animation to app. A
-                // typical example of this is (1) user swipes up from app to Overview (2) user
-                // taps on QSB (3) user goes back to Overview and launch the most recent task.
-                setCurrentTask(-1);
             }
+            // After we finish the recents animation, the current task id should be correctly
+            // reset so that when the task is launched from Overview later, it goes through the
+            // flow of starting a new task instead of finishing recents animation to app. A
+            // typical example of this is (1) user swipes up from app to Overview (2) user
+            // taps on QSB (3) user goes back to Overview and launch the most recent task.
+            setCurrentTask(-1);
         });
     }
 
@@ -2428,7 +2428,19 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         }
     }
 
-    /** If it's in the live tile mode, switch the running task into screenshot mode. */
+    /**
+     * Switch the current running task view to static snapshot mode,
+     * capturing the snapshot at the same time.
+     */
+    public void switchToScreenshot(Runnable onFinishRunnable) {
+        switchToScreenshot(mRunningTaskId == -1 ? null
+                : mRecentsAnimationController.screenshotTask(mRunningTaskId), onFinishRunnable);
+    }
+
+    /**
+     * Switch the current running task view to static snapshot mode, using the
+     * provided thumbnail data as the snapshot.
+     */
     public void switchToScreenshot(ThumbnailData thumbnailData, Runnable onFinishRunnable) {
         TaskView taskView = getRunningTaskView();
         if (taskView != null) {
