@@ -79,8 +79,8 @@ final class AppToOverviewAnimationProvider<T extends StatefulActivity<?>> extend
         BaseActivityInterface.AnimationFactory factory = mActivityInterface.prepareRecentsUI(
                 mDeviceState,
                 wasVisible, (controller) -> {
-                    controller.dispatchOnStart();
-                    controller.getAnimationPlayer().end();
+                    controller.getNormalController().dispatchOnStart();
+                    controller.getNormalController().getAnimationPlayer().end();
                 });
         factory.createActivityInterface(RECENTS_LAUNCH_DURATION);
         factory.setRecentsAttachedToAppWindow(true, false);

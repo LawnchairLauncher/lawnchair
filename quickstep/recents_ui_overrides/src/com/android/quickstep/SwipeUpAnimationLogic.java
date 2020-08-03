@@ -16,7 +16,7 @@
 package com.android.quickstep;
 
 import static com.android.launcher3.anim.Interpolators.ACCEL_1_5;
-import static com.android.launcher3.anim.Interpolators.DEACCEL;
+import static com.android.launcher3.anim.Interpolators.LINEAR;
 
 import android.animation.Animator;
 import android.content.Context;
@@ -24,7 +24,6 @@ import android.graphics.Matrix;
 import android.graphics.Matrix.ScaleToFit;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.view.animation.Interpolator;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.UiThread;
@@ -35,6 +34,7 @@ import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.touch.PagedOrientationHandler;
+import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.util.RectFSpringAnim;
 import com.android.quickstep.util.TaskViewSimulator;
 import com.android.quickstep.util.TransformParams;
@@ -45,7 +45,6 @@ import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.
 public abstract class SwipeUpAnimationLogic {
 
     protected static final Rect TEMP_RECT = new Rect();
-    private static final Interpolator PULLBACK_INTERPOLATOR = DEACCEL;
 
     protected DeviceProfile mDp;
 
@@ -66,12 +65,8 @@ public abstract class SwipeUpAnimationLogic {
     protected int mTransitionDragLength;
     // How much further we can drag past recents, as a factor of mTransitionDragLength.
     protected float mDragLengthFactor = 1;
-    // Start resisting when swiping past this factor of mTransitionDragLength.
-    private float mDragLengthFactorStartPullback = 1f;
-    // This is how far down we can scale down, where 0f is full screen and 1f is recents.
-    private float mDragLengthFactorMaxPullback = 1f;
 
-    protected AnimatorPlaybackController mWindowTransitionController;
+    protected AnimatorControllerWithResistance mWindowTransitionController;
 
     public SwipeUpAnimationLogic(Context context, RecentsAnimationDeviceState deviceState,
             GestureState gestureState, TransformParams transformParams) {
@@ -97,19 +92,16 @@ public abstract class SwipeUpAnimationLogic {
         if (mDeviceState.isFullyGesturalNavMode()) {
             // We can drag all the way to the top of the screen.
             mDragLengthFactor = (float) dp.heightPx / mTransitionDragLength;
-
-            float startScale = mTaskViewSimulator.getFullScreenScale();
-            // Start pulling back when RecentsView scale is 0.75f, and let it go down to 0.5f.
-            mDragLengthFactorStartPullback = (0.75f - startScale) / (1 - startScale);
-            mDragLengthFactorMaxPullback = (0.5f - startScale) / (1 - startScale);
         } else {
-            mDragLengthFactor = 1;
-            mDragLengthFactorStartPullback = mDragLengthFactorMaxPullback = 1;
+            mDragLengthFactor = 1 + AnimatorControllerWithResistance.TWO_BUTTON_EXTRA_DRAG_FACTOR;
         }
 
         PendingAnimation pa = new PendingAnimation(mTransitionDragLength * 2);
-        mTaskViewSimulator.addAppToOverviewAnim(pa, t -> t * mDragLengthFactor);
-        mWindowTransitionController = pa.createPlaybackController();
+        mTaskViewSimulator.addAppToOverviewAnim(pa, LINEAR);
+        AnimatorPlaybackController normalController = pa.createPlaybackController();
+        mWindowTransitionController = AnimatorControllerWithResistance.createForRecents(
+                normalController, mContext, mTaskViewSimulator.getOrientationState(),
+                mDp, mTaskViewSimulator.recentsViewScale, AnimatedFloat.VALUE);
     }
 
     @UiThread
@@ -122,13 +114,6 @@ public abstract class SwipeUpAnimationLogic {
         } else {
             float translation = Math.max(displacement, 0);
             shift = mTransitionDragLength == 0 ? 0 : translation / mTransitionDragLength;
-            if (shift > mDragLengthFactorStartPullback) {
-                float pullbackProgress = Utilities.getProgress(shift,
-                        mDragLengthFactorStartPullback, mDragLengthFactor);
-                pullbackProgress = PULLBACK_INTERPOLATOR.getInterpolation(pullbackProgress);
-                shift = mDragLengthFactorStartPullback + pullbackProgress
-                        * (mDragLengthFactorMaxPullback - mDragLengthFactorStartPullback);
-            }
         }
 
         mCurrentShift.updateValue(shift);
@@ -183,7 +168,7 @@ public abstract class SwipeUpAnimationLogic {
             HomeAnimationFactory homeAnimationFactory) {
         final RectF targetRect = homeAnimationFactory.getWindowTargetRect();
 
-        mWindowTransitionController.setPlayFraction(startProgress / mDragLengthFactor);
+        mCurrentShift.updateValue(startProgress);
         mTaskViewSimulator.apply(mTransformParams.setProgress(startProgress));
         RectF cropRectF = new RectF(mTaskViewSimulator.getCurrentCropRect());
 

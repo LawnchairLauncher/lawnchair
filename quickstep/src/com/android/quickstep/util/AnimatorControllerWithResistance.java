@@ -1,0 +1,157 @@
+/*
+ * Copyright (C) 2020 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.android.quickstep.util;
+
+import static com.android.launcher3.anim.Interpolators.DEACCEL;
+import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.quickstep.SysUINavigationMode.Mode.TWO_BUTTONS;
+
+import android.animation.TimeInterpolator;
+import android.content.Context;
+import android.graphics.PointF;
+import android.graphics.Rect;
+import android.util.FloatProperty;
+
+import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.Utilities;
+import com.android.launcher3.anim.AnimatorPlaybackController;
+import com.android.launcher3.anim.PendingAnimation;
+import com.android.quickstep.LauncherActivityInterface;
+import com.android.quickstep.SysUINavigationMode;
+
+/**
+ * Controls an animation that can go beyond progress = 1, at which point resistance should be
+ * applied. Internally, this is a wrapper around 2 {@link AnimatorPlaybackController}s, one that
+ * runs from progress 0 to 1 like normal, then one that seamlessly continues that animation but
+ * starts applying resistance as well.
+ */
+public class AnimatorControllerWithResistance {
+
+    /**
+     * How much farther we can drag past overview in 2-button mode, as a factor of the distance
+     * it takes to drag from an app to overview.
+     */
+    public static final float TWO_BUTTON_EXTRA_DRAG_FACTOR = 0.25f;
+
+    /**
+     * Start slowing down the rate of scaling down when recents view is smaller than this scale.
+     */
+    private static final float RECENTS_SCALE_START_RESIST = 0.75f;
+
+    /**
+     * Recents view will reach this scale at the very end of the drag.
+     */
+    private static final float RECENTS_SCALE_MAX_RESIST = 0.5f;
+
+    private static final TimeInterpolator RECENTS_SCALE_RESIST_INTERPOLATOR = DEACCEL;
+
+    private final AnimatorPlaybackController mNormalController;
+    private final AnimatorPlaybackController mResistanceController;
+
+    // Initialize to -1 so the first 0 gets applied.
+    private float mLastNormalProgress = -1;
+    private float mLastResistProgress;
+
+    public AnimatorControllerWithResistance(AnimatorPlaybackController normalController,
+            AnimatorPlaybackController resistanceController) {
+        mNormalController = normalController;
+        mResistanceController = resistanceController;
+    }
+
+    public AnimatorPlaybackController getNormalController() {
+        return mNormalController;
+    }
+
+    /**
+     * Applies the current progress of the animation.
+     * @param progress From 0 to maxProgress, where 1 is the target we are animating towards.
+     * @param maxProgress > 1, this is where the resistance will be applied.
+     */
+    public void setProgress(float progress, float maxProgress) {
+        float normalProgress = Utilities.boundToRange(progress, 0, 1);
+        if (normalProgress != mLastNormalProgress) {
+            mLastNormalProgress = normalProgress;
+            mNormalController.setPlayFraction(normalProgress);
+        }
+        if (maxProgress <= 1) {
+            return;
+        }
+        float resistProgress = progress <= 1 ? 0 : Utilities.getProgress(progress, 1, maxProgress);
+        if (resistProgress != mLastResistProgress) {
+            mLastResistProgress = resistProgress;
+            mResistanceController.setPlayFraction(resistProgress);
+        }
+    }
+
+    /**
+     * Applies resistance to recents when swiping up past its target position.
+     * @param normalController The controller to run from 0 to 1 before this resistance applies.
+     * @param context Used to compute start and end values.
+     * @param recentsOrientedState Used to compute start and end values.
+     * @param dp Used to compute start and end values.
+     * @param scaleTarget The target for the scaleProperty.
+     * @param scaleProperty Animate the value to change the scale of the window/recents view.
+     */
+    public static <SCALE> AnimatorControllerWithResistance createForRecents(
+            AnimatorPlaybackController normalController, Context context,
+            RecentsOrientedState recentsOrientedState, DeviceProfile dp, SCALE scaleTarget,
+            FloatProperty<SCALE> scaleProperty) {
+        Rect startRect = new Rect();
+        LauncherActivityInterface.INSTANCE.calculateTaskSize(context, dp, startRect,
+                recentsOrientedState.getOrientationHandler());
+        long distanceToCover = startRect.bottom;
+        boolean isTwoButtonMode = SysUINavigationMode.getMode(context) == TWO_BUTTONS;
+        if (isTwoButtonMode) {
+            // We can only drag a small distance past overview, not to the top of the screen.
+            distanceToCover = (long)
+                    ((dp.heightPx - startRect.bottom) * TWO_BUTTON_EXTRA_DRAG_FACTOR);
+        }
+        PendingAnimation resistAnim = new PendingAnimation(distanceToCover * 2);
+
+        PointF pivot = new PointF();
+        float fullscreenScale = recentsOrientedState.getFullScreenScaleAndPivot(
+                startRect, dp, pivot);
+        float startScale = 1;
+        float prevScaleRate = (fullscreenScale - startScale) / (dp.heightPx - startRect.bottom);
+        // This is what the scale would be at the end of the drag if we didn't apply resistance.
+        float endScale = startScale - prevScaleRate * distanceToCover;
+        final TimeInterpolator scaleInterpolator;
+        if (isTwoButtonMode) {
+            // We are bounded by the distance of the drag, so we don't need to apply resistance.
+            scaleInterpolator = LINEAR;
+        } else {
+            // Create an interpolator that resists the scale so the scale doesn't get smaller than
+            // RECENTS_SCALE_MAX_RESIST.
+            float startResist = Utilities.getProgress(RECENTS_SCALE_START_RESIST, startScale,
+                    endScale);
+            float maxResist = Utilities.getProgress(RECENTS_SCALE_MAX_RESIST, startScale, endScale);
+            scaleInterpolator = t -> {
+                if (t < startResist) {
+                    return t;
+                }
+                float resistProgress = Utilities.getProgress(t, startResist, 1);
+                resistProgress = RECENTS_SCALE_RESIST_INTERPOLATOR.getInterpolation(resistProgress);
+                return startResist + resistProgress * (maxResist - startResist);
+            };
+        }
+        resistAnim.addFloat(scaleTarget, scaleProperty, startScale, endScale,
+                scaleInterpolator);
+
+        AnimatorPlaybackController resistanceController = resistAnim.createPlaybackController();
+        return new AnimatorControllerWithResistance(normalController, resistanceController);
+    }
+
+}

@@ -52,6 +52,7 @@ import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.WindowBounds;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.util.ActivityInitListener;
+import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.util.ShelfPeekAnim;
 import com.android.quickstep.util.SplitScreenBounds;
 import com.android.quickstep.views.RecentsView;
@@ -106,7 +107,7 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
     public abstract void onAssistantVisibilityChanged(float visibility);
 
     public abstract AnimationFactory prepareRecentsUI(RecentsAnimationDeviceState deviceState,
-            boolean activityVisible, Consumer<AnimatorPlaybackController> callback);
+            boolean activityVisible, Consumer<AnimatorControllerWithResistance> callback);
 
     public abstract ActivityInitListener createActivityInitListener(
             Predicate<Boolean> onInitListener);
@@ -319,11 +320,11 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
 
         protected final ACTIVITY_TYPE mActivity;
         private final STATE_TYPE mStartState;
-        private final Consumer<AnimatorPlaybackController> mCallback;
+        private final Consumer<AnimatorControllerWithResistance> mCallback;
 
         private boolean mIsAttachedToWindow;
 
-        DefaultAnimationFactory(Consumer<AnimatorPlaybackController> callback) {
+        DefaultAnimationFactory(Consumer<AnimatorControllerWithResistance> callback) {
             mCallback = callback;
 
             mActivity = getCreatedActivity();
@@ -351,7 +352,13 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
             controller.setEndAction(() -> mActivity.getStateManager().goToState(
                     controller.getInterpolatedProgress() > 0.5 ? mOverviewState : mBackgroundState,
                     false));
-            mCallback.accept(controller);
+
+            RecentsView recentsView = mActivity.getOverviewPanel();
+            AnimatorControllerWithResistance controllerWithResistance =
+                    AnimatorControllerWithResistance.createForRecents(controller, mActivity,
+                            recentsView.getPagedViewOrientedState(), mActivity.getDeviceProfile(),
+                            recentsView, RECENTS_SCALE_PROPERTY);
+            mCallback.accept(controllerWithResistance);
 
             // Creating the activity controller animation sometimes reapplies the launcher state
             // (because we set the animation as the current state animation), so we reapply the
