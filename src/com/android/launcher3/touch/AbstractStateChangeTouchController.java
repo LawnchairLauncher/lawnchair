@@ -513,15 +513,7 @@ public abstract class AbstractStateChangeTouchController
         if (mAtomicAnim == null) {
             return 0;
         }
-        if (Utilities.ATLEAST_OREO) {
-            return mAtomicAnim.getTotalDuration() - mAtomicAnim.getCurrentPlayTime();
-        } else {
-            long remainingDuration = 0;
-            for (Animator anim : mAtomicAnim.getChildAnimations()) {
-                remainingDuration = Math.max(remainingDuration, anim.getDuration());
-            }
-            return remainingDuration;
-        }
+        return mAtomicAnim.getTotalDuration() - mAtomicAnim.getCurrentPlayTime();
     }
 
     protected void updateSwipeCompleteAnimation(ValueAnimator animator, long expectedDuration,

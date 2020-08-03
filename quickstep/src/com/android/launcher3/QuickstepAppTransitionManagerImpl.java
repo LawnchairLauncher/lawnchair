@@ -45,7 +45,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
-import android.annotation.TargetApi;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -55,7 +54,6 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.CancellationSignal;
 import android.os.Handler;
 import android.os.Looper;
@@ -94,7 +92,6 @@ import com.android.systemui.shared.system.WindowManagerWrapper;
  * {@link LauncherAppTransitionManager} with Quickstep-specific app transitions for launching from
  * home and/or all-apps.  Not used for 3p launchers.
  */
-@TargetApi(Build.VERSION_CODES.O)
 @SuppressWarnings("unused")
 public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTransitionManager
         implements OnDeviceProfileChangeListener {

@@ -256,7 +256,6 @@ public class FloatingIconView extends FrameLayout implements
         Drawable drawable = null;
         Drawable badge = null;
         boolean supportsAdaptiveIcons = ADAPTIVE_ICON_WINDOW_ANIM.get()
-                && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
                 && !info.isDisabled(); // Use original icon for disabled icons.
         Drawable btvIcon = originalView instanceof BubbleTextView
                 ? ((BubbleTextView) originalView).getIcon() : null;
@@ -383,8 +382,7 @@ public class FloatingIconView extends FrameLayout implements
     @WorkerThread
     @SuppressWarnings("WrongThread")
     private static int getOffsetForIconBounds(Launcher l, Drawable drawable, RectF position) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O
-                || !(drawable instanceof AdaptiveIconDrawable)
+        if (!(drawable instanceof AdaptiveIconDrawable)
                 || (drawable instanceof FolderAdaptiveIcon)) {
             return 0;
         }

@@ -23,13 +23,11 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Process;
 import android.os.UserHandle;
 
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.pm.UserCache;
@@ -84,22 +82,8 @@ public class WidgetManagerHelper {
             return allWidgetsSteam(mContext).collect(Collectors.toList());
         }
 
-        if (Utilities.ATLEAST_OREO) {
-            return mAppWidgetManager.getInstalledProvidersForPackage(
-                    packageUser.mPackageName, packageUser.mUser);
-        }
-
-        String pkg = packageUser.mPackageName;
-        return Stream.concat(
-                // Only get providers for the given package/user.
-                mAppWidgetManager.getInstalledProvidersForProfile(packageUser.mUser)
-                        .stream()
-                        .filter(w -> w.provider.equals(pkg)),
-                Process.myUserHandle().equals(packageUser.mUser)
-                        && mContext.getPackageName().equals(pkg)
-                        ? CustomWidgetManager.INSTANCE.get(mContext).stream()
-                        : Stream.empty())
-                .collect(Collectors.toList());
+        return mAppWidgetManager.getInstalledProvidersForPackage(
+                packageUser.mPackageName, packageUser.mUser);
     }
 
     /**

@@ -143,7 +143,7 @@
     <style name="AppTheme.Dark.DarkMainColor" parent="@style/LauncherTheme.Dark.DarkMainColor" />
     <style name="AppTheme.Dark.DarkText" parent="@style/LauncherTheme.Dark.DarkText" />
 
-    <style name="AppItemActivityTheme" parent="@android:style/Theme.Material.Light.Dialog.Alert">
+    <style name="AppItemActivityTheme" parent="@android:style/Theme.DeviceDefault.Light.Dialog.Alert">
         <item name="widgetsTheme">@style/WidgetContainerTheme</item>
     </style>
 
@@ -171,14 +171,16 @@
         <item name="android:textColorSecondary">?attr/workspaceTextColor</item>
     </style>
 
-    <!-- Theme for the widget container. Overridden on API 26. -->
+    <!-- Theme for the widget container. -->
     <style name="WidgetContainerTheme" parent="@android:style/Theme.DeviceDefault.Settings">
-        <item name="android:colorEdgeEffect">?android:attr/textColorSecondaryInverse</item>
-        <item name="android:textColorPrimary">?android:attr/textColorPrimaryInverse</item>
-        <item name="android:textColorSecondary">?android:attr/textColorSecondaryInverse</item>
+        <item name="android:colorPrimaryDark">#E8EAED</item>
+        <item name="android:textColorSecondary">?android:attr/textColorPrimary</item>
+        <item name="android:colorEdgeEffect">?android:attr/textColorSecondary</item>
     </style>
-
-    <style name="WidgetContainerTheme.Dark" />
+    <style name="WidgetContainerTheme.Dark" parent="AppTheme.Dark">
+        <item name="android:colorEdgeEffect">?android:attr/textColorSecondary</item>
+        <item name="android:colorPrimaryDark">#616161</item> <!-- Gray 700 -->
+    </style>
 
     <style name="FastScrollerPopup" parent="@android:style/TextAppearance.DeviceDefault.DialogWindowTitle">
         <item name="android:layout_width">wrap_content</item>
