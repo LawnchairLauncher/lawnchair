@@ -56,7 +56,6 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.keyboard.FocusIndicatorHelper;
 import com.android.launcher3.keyboard.FocusIndicatorHelper.SimpleFocusIndicatorHelper;
 import com.android.launcher3.logging.StatsLogUtils.LogContainerProvider;
-import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
@@ -92,9 +91,6 @@ public class PredictionRowView extends LinearLayout implements
 
     private static final Interpolator ALPHA_FACTOR_INTERPOLATOR =
             (t) -> (t < 0.8f) ? 0 : (t - 0.8f) / 0.2f;
-
-    private static final OnClickListener PREDICTION_CLICK_LISTENER =
-            ItemClickHandler.getInstance(AppLaunchTracker.CONTAINER_PREDICTIONS);
 
     private final Launcher mLauncher;
     private final PredictionUiStateManager mPredictionUiStateManager;
@@ -246,7 +242,7 @@ public class PredictionRowView extends LinearLayout implements
             while (getChildCount() < mNumPredictedAppsPerRow) {
                 BubbleTextView icon = (BubbleTextView) inflater.inflate(
                         R.layout.all_apps_icon, this, false);
-                icon.setOnClickListener(PREDICTION_CLICK_LISTENER);
+                icon.setOnClickListener(ItemClickHandler.INSTANCE);
                 icon.setOnLongClickListener(ItemLongClickListener.INSTANCE_ALL_APPS);
                 icon.setLongPressTimeoutFactor(1f);
                 icon.setOnFocusChangeListener(mFocusHelper);

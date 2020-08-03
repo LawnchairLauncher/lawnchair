@@ -15,8 +15,6 @@
  */
 package com.android.launcher3.secondarydisplay;
 
-import static com.android.launcher3.model.AppLaunchTracker.CONTAINER_ALL_APPS;
-
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.ActivityOptions;
@@ -330,7 +328,7 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
             if (intent == null) {
                 throw new IllegalArgumentException("Input must have a valid intent");
             }
-            startActivitySafely(v, intent, item, CONTAINER_ALL_APPS);
+            startActivitySafely(v, intent, item);
         }
     }
 }
