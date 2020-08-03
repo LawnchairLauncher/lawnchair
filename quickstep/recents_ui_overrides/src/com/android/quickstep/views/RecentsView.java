@@ -55,11 +55,8 @@ import android.animation.LayoutTransition.TransitionListener;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
-import android.app.ActivityManager;
 import android.app.ActivityManager.RunningTaskInfo;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.graphics.Point;
@@ -1997,18 +1994,11 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     protected void onTaskLaunchAnimationUpdate(float progress, TaskView tv) {
     }
 
-    public abstract boolean shouldUseMultiWindowTaskSizeStrategy();
-
     protected void onTaskLaunchAnimationEnd(boolean success) {
         if (success) {
             resetTaskVisuals();
         }
     }
-
-    /**
-     * Called when task activity is launched
-     */
-    public void onTaskLaunched(Task task){ }
 
     @Override
     protected void notifyPageSwitchListener(int prevPage) {
