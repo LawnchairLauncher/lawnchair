@@ -595,7 +595,10 @@ public class LauncherPreviewRenderer {
         @Override
         public WorkspaceResult call() throws Exception {
             List<ShortcutInfo> allShortcuts = new ArrayList<>();
-            loadWorkspace(allShortcuts, LauncherSettings.Favorites.PREVIEW_CONTENT_URI);
+            loadWorkspace(allShortcuts, LauncherSettings.Favorites.PREVIEW_CONTENT_URI,
+                    LauncherSettings.Favorites.SCREEN + " = 0 or "
+                    + LauncherSettings.Favorites.CONTAINER + " = "
+                    + LauncherSettings.Favorites.CONTAINER_HOTSEAT);
             return new WorkspaceResult(mBgDataModel.workspaceItems, mBgDataModel.appWidgets,
                     mBgDataModel.cachedPredictedItems, null, mWidgetProvidersMap);
         }
