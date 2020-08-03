@@ -1183,9 +1183,9 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     }
 
     /**
-     * Returns true if we should add a dummy taskView for the running task id
+     * Returns true if we should add a stub taskView for the running task id
      */
-    protected boolean shouldAddDummyTaskView(RunningTaskInfo runningTaskInfo) {
+    protected boolean shouldAddStubTaskView(RunningTaskInfo runningTaskInfo) {
         return runningTaskInfo != null && getTaskView(runningTaskInfo.taskId) == null;
     }
 
@@ -1196,7 +1196,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
      * is called.  Also scrolls the view to this task.
      */
     public void showCurrentTask(RunningTaskInfo runningTaskInfo) {
-        if (shouldAddDummyTaskView(runningTaskInfo)) {
+        if (shouldAddStubTaskView(runningTaskInfo)) {
             boolean wasEmpty = getChildCount() == 0;
             // Add an empty view for now until the task plan is loaded and applied
             final TaskView taskView = mTaskViewPool.getView();

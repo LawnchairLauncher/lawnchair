@@ -216,7 +216,7 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
         if (cn == null && (itemType == Favorites.ITEM_TYPE_SHORTCUT || hasStatusFlag(
                 FLAG_SUPPORTS_WEB_UI | FLAG_AUTOINSTALL_ICON | FLAG_RESTORED_ICON))) {
             // Legacy shortcuts and promise icons with web UI may not have a componentName but just
-            // a packageName. In that case create a dummy componentName instead of adding additional
+            // a packageName. In that case create a empty componentName instead of adding additional
             // check everywhere.
             String pkg = intent.getPackage();
             return pkg == null ? null : new ComponentName(pkg, IconCache.EMPTY_CLASS_NAME);

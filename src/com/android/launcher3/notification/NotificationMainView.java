@@ -137,7 +137,7 @@ public class NotificationMainView extends FrameLayout implements SingleAxisSwipe
             setOnClickListener(mNotificationInfo);
         }
         setContentTranslation(0);
-        // Add a dummy ItemInfo so that logging populates the correct container and item types
+        // Add a stub ItemInfo so that logging populates the correct container and item types
         // instead of DEFAULT_CONTAINERTYPE and DEFAULT_ITEMTYPE, respectively.
         setTag(NOTIFICATION_ITEM_INFO);
         if (animate) {

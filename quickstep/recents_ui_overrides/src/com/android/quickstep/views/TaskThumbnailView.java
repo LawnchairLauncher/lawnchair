@@ -125,7 +125,7 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
         mDimmingPaintAfterClearing.setColor(Color.BLACK);
         mActivity = BaseActivity.fromContext(context);
         mIsDarkTextTheme = Themes.getAttrBoolean(mActivity, R.attr.isWorkspaceDarkText);
-        // Initialize with dummy value. It is overridden later by TaskView
+        // Initialize with placeholder value. It is overridden later by TaskView
         mFullscreenParams = TEMP_PARAMS.get(context);
     }
 

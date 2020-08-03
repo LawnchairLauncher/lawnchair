@@ -175,8 +175,7 @@ public final class LauncherInstrumentation {
     private Runnable mOnLauncherCrashed;
 
     private static Pattern getTouchEventPattern(String prefix, String action) {
-        // The pattern includes sanity checks that we don't get a multi-touch events or other
-        // surprises.
+        // The pattern includes checks that we don't get a multi-touch events or other surprises.
         return Pattern.compile(
                 prefix + ": MotionEvent.*?action=" + action + ".*?id\\[0\\]=0"
                         + ".*?toolType\\[0\\]=TOOL_TYPE_FINGER.*?buttonState=0.*?pointerCount=1");

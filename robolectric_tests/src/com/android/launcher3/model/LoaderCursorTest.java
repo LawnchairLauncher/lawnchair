@@ -110,7 +110,7 @@ public class LoaderCursorTest {
     public void getAppShortcutInfo_dontAllowMissing_invalidComponent() {
         initCursor(ITEM_TYPE_APPLICATION, "");
         assertTrue(mLoaderCursor.moveToNext());
-        ComponentName cn = new ComponentName(mContext.getPackageName(), "dummy-do");
+        ComponentName cn = new ComponentName(mContext.getPackageName(), "placeholder-do");
         assertNull(mLoaderCursor.getAppShortcutInfo(
                 new Intent().setComponent(cn), false /* allowMissingTarget */, true));
     }
@@ -136,7 +136,7 @@ public class LoaderCursorTest {
         initCursor(ITEM_TYPE_APPLICATION, "");
         assertTrue(mLoaderCursor.moveToNext());
 
-        ComponentName cn = new ComponentName(mContext.getPackageName(), "dummy-do");
+        ComponentName cn = new ComponentName(mContext.getPackageName(), "placeholder-do");
         WorkspaceItemInfo info = Executors.MODEL_EXECUTOR.submit(() ->
                 mLoaderCursor.getAppShortcutInfo(
                         new Intent().setComponent(cn), true  /* allowMissingTarget */, true))

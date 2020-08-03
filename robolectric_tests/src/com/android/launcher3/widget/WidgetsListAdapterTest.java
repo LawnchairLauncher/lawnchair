@@ -129,7 +129,7 @@ public class WidgetsListAdapterTest {
         ShadowPackageManager spm = shadowOf(mContext.getPackageManager());
 
         for (int i = 0; i < num; i++) {
-            ComponentName cn = new ComponentName("com.dummy.apk" + i, "DummyWidet");
+            ComponentName cn = new ComponentName("com.placeholder.apk" + i, "PlaceholderWidet");
 
             AppWidgetProviderInfo widgetInfo = new AppWidgetProviderInfo();
             widgetInfo.provider = cn;

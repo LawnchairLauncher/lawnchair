@@ -60,9 +60,9 @@ public class RecentsActivityTest {
 
         FallbackRecentsView frv = activity.getOverviewPanel();
 
-        RunningTaskInfo dummyTask = new RunningTaskInfo();
-        dummyTask.taskId = 22;
-        frv.showCurrentTask(dummyTask);
+        RunningTaskInfo placeholderTask = new RunningTaskInfo();
+        placeholderTask.taskId = 22;
+        frv.showCurrentTask(placeholderTask);
         doLayout(activity);
 
         ThumbnailData thumbnailData = new ThumbnailData();

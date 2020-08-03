@@ -71,7 +71,7 @@ import java.util.function.IntConsumer;
 
 /**
  * Test to verify view inflation does not happen during swipe up.
- * To verify view inflation, we setup a dummy ViewConfiguration and check if any call to that class
+ * To verify view inflation, we setup a stub ViewConfiguration and check if any call to that class
  * does from a View.init method or not.
  *
  * Alternative approaches considered:
@@ -138,13 +138,13 @@ public class ViewInflationDuringSwipeUp extends AbstractQuickStepTest {
     @Test
     @NavigationModeSwitch(mode = ZERO_BUTTON)
     public void testSwipeUpFromApp_widget_update() {
-        String dummyText = "Some random dummy text";
+        String stubText = "Some random stub text";
 
         executeSwipeUpTestWithWidget(
                 widgetId -> { },
                 widgetId -> AppWidgetManager.getInstance(getContext())
-                        .updateAppWidget(widgetId, createMainWidgetViews(dummyText)),
-                dummyText);
+                        .updateAppWidget(widgetId, createMainWidgetViews(stubText)),
+                stubText);
     }
 
     @Test

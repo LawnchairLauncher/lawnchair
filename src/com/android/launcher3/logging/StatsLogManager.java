@@ -37,7 +37,7 @@ import java.util.List;
  *
  * <pre>
  * All of the event ids are defined here.
- * Most of the methods are dummy methods for Launcher3
+ * Most of the methods are placeholder methods for Launcher3
  * Actual call happens only for Launcher variant that implements QuickStep.
  * </pre>
  */

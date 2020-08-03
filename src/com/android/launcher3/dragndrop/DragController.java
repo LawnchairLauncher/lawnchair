@@ -463,10 +463,10 @@ public class DragController implements DragDriver.EventListener, TouchController
     }
 
     public void forceTouchMove() {
-        int[] dummyCoordinates = mCoordinatesTemp;
-        DropTarget dropTarget = findDropTarget(mLastTouch.x, mLastTouch.y, dummyCoordinates);
-        mDragObject.x = dummyCoordinates[0];
-        mDragObject.y = dummyCoordinates[1];
+        int[] placeholderCoordinates = mCoordinatesTemp;
+        DropTarget dropTarget = findDropTarget(mLastTouch.x, mLastTouch.y, placeholderCoordinates);
+        mDragObject.x = placeholderCoordinates[0];
+        mDragObject.y = placeholderCoordinates[1];
         checkTouchMove(dropTarget);
     }
 
