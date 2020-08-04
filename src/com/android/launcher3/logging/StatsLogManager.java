@@ -15,15 +15,12 @@
  */
 package com.android.launcher3.logging;
 
-import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.IGNORE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_CLOSE_DOWN;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_OPEN_UP;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOME_GESTURE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_OVERVIEW_GESTURE;
 
 import android.content.Context;
-
-import androidx.annotation.Nullable;
 
 import com.android.launcher3.R;
 import com.android.launcher3.logger.LauncherAtom.ContainerInfo;
@@ -401,19 +398,6 @@ public class StatsLogManager implements ResourceBasedOverride {
         StatsLogManager mgr = Overrides.getObject(StatsLogManager.class,
                 context.getApplicationContext(), R.string.stats_log_manager_class);
         return mgr;
-    }
-
-    /**
-     * Log an event with ranked-choice information along with package. Does nothing if event.getId()
-     * <= 0.
-     *
-     * @param rankingEvent an enum implementing EventEnum interface.
-     * @param instanceId An identifier obtained from an InstanceIdSequence.
-     * @param packageName the package name of the relevant app, if known (null otherwise).
-     * @param position the position picked.
-     */
-    public void log(EventEnum rankingEvent, InstanceId instanceId, @Nullable String packageName,
-            int position) {
     }
 
     /**

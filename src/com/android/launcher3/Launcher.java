@@ -814,7 +814,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                startActivitySafely(v, intent, null, null);
+                startActivitySafely(v, intent, null);
             } else {
                 // TODO: Show a snack bar with link to settings
                 Toast.makeText(this, getString(R.string.msg_no_phone_permission,
@@ -1862,13 +1862,12 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     }
 
     @Override
-    public boolean startActivitySafely(View v, Intent intent, ItemInfo item,
-            @Nullable String sourceContainer) {
+    public boolean startActivitySafely(View v, Intent intent, ItemInfo item) {
         if (!hasBeenResumed()) {
             // Workaround an issue where the WM launch animation is clobbered when finishing the
             // recents animation into launcher. Defer launching the activity until Launcher is
             // next resumed.
-            addOnResumeCallback(() -> startActivitySafely(v, intent, item, sourceContainer));
+            addOnResumeCallback(() -> startActivitySafely(v, intent, item));
             if (mOnDeferredActivityLaunchCallback != null) {
                 mOnDeferredActivityLaunchCallback.run();
                 mOnDeferredActivityLaunchCallback = null;
@@ -1876,7 +1875,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
             return true;
         }
 
-        boolean success = super.startActivitySafely(v, intent, item, sourceContainer);
+        boolean success = super.startActivitySafely(v, intent, item);
         if (success && v instanceof BubbleTextView) {
             // This is set to the view that launched the activity that navigated the user away
             // from launcher. Since there is no callback for when the activity has finished

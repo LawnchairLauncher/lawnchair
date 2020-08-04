@@ -45,7 +45,6 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.logging.InstanceIdSequence;
-import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.touch.ItemClickHandler;
@@ -154,8 +153,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
 
     public abstract ActivityOptions getActivityLaunchOptions(View v);
 
-    public boolean startActivitySafely(View v, Intent intent, @Nullable ItemInfo item,
-            @Nullable String sourceContainer) {
+    public boolean startActivitySafely(View v, Intent intent, @Nullable ItemInfo item) {
         if (mIsSafeModeEnabled && !PackageManagerHelper.isSystemApp(this, intent)) {
             Toast.makeText(this, R.string.safemode_shortcut_error, Toast.LENGTH_SHORT).show();
             return false;
@@ -176,17 +174,13 @@ public abstract class BaseDraggingActivity extends BaseActivity
                     && !((WorkspaceItemInfo) item).isPromise();
             if (isShortcut) {
                 // Shortcuts need some special checks due to legacy reasons.
-                startShortcutIntentSafely(intent, optsBundle, item, sourceContainer);
+                startShortcutIntentSafely(intent, optsBundle, item);
             } else if (user == null || user.equals(Process.myUserHandle())) {
                 // Could be launching some bookkeeping activity
                 startActivity(intent, optsBundle);
-                AppLaunchTracker.INSTANCE.get(this).onStartApp(intent.getComponent(),
-                        Process.myUserHandle(), sourceContainer);
             } else {
                 getSystemService(LauncherApps.class).startMainActivity(
                         intent.getComponent(), user, intent.getSourceBounds(), optsBundle);
-                AppLaunchTracker.INSTANCE.get(this).onStartApp(intent.getComponent(), user,
-                        sourceContainer);
             }
             getUserEventDispatcher().logAppLaunch(v, intent, user);
             if (item != null) {
@@ -206,8 +200,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
                 .log(LAUNCHER_APP_LAUNCH_TAP);
     }
 
-    private void startShortcutIntentSafely(Intent intent, Bundle optsBundle, ItemInfo info,
-            @Nullable String sourceContainer) {
+    private void startShortcutIntentSafely(Intent intent, Bundle optsBundle, ItemInfo info) {
         try {
             StrictMode.VmPolicy oldPolicy = StrictMode.getVmPolicy();
             try {
@@ -221,8 +214,6 @@ public abstract class BaseDraggingActivity extends BaseActivity
                     String id = ((WorkspaceItemInfo) info).getDeepShortcutId();
                     String packageName = intent.getPackage();
                     startShortcut(packageName, id, intent.getSourceBounds(), optsBundle, info.user);
-                    AppLaunchTracker.INSTANCE.get(this).onStartShortcut(packageName, id, info.user,
-                            sourceContainer);
                 } else {
                     // Could be launching some bookkeeping activity
                     startActivity(intent, optsBundle);
