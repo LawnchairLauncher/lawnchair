@@ -32,7 +32,6 @@ import android.graphics.RectF;
 import android.util.IntProperty;
 
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.touch.PagedOrientationHandler;
@@ -73,6 +72,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
     private final BaseActivityInterface mSizeStrategy;
 
     private final Rect mTaskRect = new Rect();
+    private float mOffsetY;
     private final PointF mPivot = new PointF();
     private DeviceProfile mDp;
 
@@ -93,7 +93,6 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
     public final AnimatedFloat recentsViewScale = new AnimatedFloat();
     public final AnimatedFloat fullScreenProgress = new AnimatedFloat();
     private final ScrollState mScrollState = new ScrollState();
-    private final int mPageSpacing;
 
     // Cached calculations
     private boolean mLayoutValid = false;
@@ -107,7 +106,6 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
         mOrientationState.setGestureActive(true);
 
         mCurrentFullscreenParams = new FullscreenDrawParams(context);
-        mPageSpacing = context.getResources().getDimensionPixelSize(R.dimen.recents_page_spacing);
     }
 
     /**
@@ -130,8 +128,8 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
     /**
      * @see com.android.quickstep.views.RecentsView#onConfigurationChanged(Configuration)
      */
-    public void setRecentsConfiguration(Configuration configuration) {
-        mOrientationState.setActivityConfiguration(configuration);
+    public void setRecentsRotation(int recentsRotation) {
+        mOrientationState.setRecentsRotation(recentsRotation);
         mLayoutValid = false;
     }
 
@@ -178,12 +176,24 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
         }
     }
 
+    public void setOffsetY(float offsetY) {
+        mOffsetY = offsetY;
+    }
+
     /**
-     * Adds animation for all the components corresponding to transition from an app to overview
+     * Adds animation for all the components corresponding to transition from an app to overview.
      */
     public void addAppToOverviewAnim(PendingAnimation pa, TimeInterpolator interpolator) {
         pa.addFloat(fullScreenProgress, AnimatedFloat.VALUE, 1, 0, interpolator);
         pa.addFloat(recentsViewScale, AnimatedFloat.VALUE, getFullScreenScale(), 1, interpolator);
+    }
+
+    /**
+     * Adds animation for all the components corresponding to transition from overview to the app.
+     */
+    public void addOverviewToAppAnim(PendingAnimation pa, TimeInterpolator interpolator) {
+        pa.addFloat(fullScreenProgress, AnimatedFloat.VALUE, 0, 1, interpolator);
+        pa.addFloat(recentsViewScale, AnimatedFloat.VALUE, 1, getFullScreenScale(), interpolator);
     }
 
     /**
@@ -262,7 +272,8 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
             int start = mOrientationState.getOrientationHandler()
                     .getPrimaryValue(mTaskRect.left, mTaskRect.top);
             mScrollState.screenCenter = start + mScrollState.scroll + mScrollState.halfPageSize;
-            mScrollState.updateInterpolation(start, mPageSpacing);
+            mScrollState.pageParentScale = recentsViewScale.value;
+            mScrollState.updateInterpolation(start);
             mCurveScale = TaskView.getCurveScaleForInterpolation(mScrollState.linearInterpolation);
         }
 
@@ -281,7 +292,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
         mMatrix.postScale(scale, scale);
 
         // Apply TaskView matrix: translate, scale, scroll
-        mMatrix.postTranslate(mTaskRect.left, mTaskRect.top);
+        mMatrix.postTranslate(mTaskRect.left, mTaskRect.top + mOffsetY);
         mMatrix.postScale(mCurveScale, mCurveScale, taskWidth / 2, taskHeight / 2);
         mOrientationState.getOrientationHandler().set(
                 mMatrix, MATRIX_POST_TRANSLATE, mScrollState.scroll);
@@ -307,7 +318,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
                 .withCornerRadius(getCurrentCornerRadius());
 
         if (ENABLE_QUICKSTEP_LIVE_TILE.get() && params.getRecentsSurface() != null) {
-            builder.withRelativeLayerTo(params.getRecentsSurface(), Integer.MAX_VALUE);
+            builder.withRelativeLayerTo(params.getRecentsSurface(), Integer.MIN_VALUE);
         }
     }
 

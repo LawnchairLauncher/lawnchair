@@ -358,18 +358,23 @@ public class MotionPauseDetector {
 
             if (count < 3) {
                 // Too few samples
-                if (count == 2) {
-                    int endPos = pointPos - 1;
-                    if (endPos < 0) {
-                        endPos += HISTORY_SIZE;
+                switch (count) {
+                    case 2: {
+                        int endPos = pointPos - 1;
+                        if (endPos < 0) {
+                            endPos += HISTORY_SIZE;
+                        }
+                        float denominator = eventTime - mHistoricTimes[endPos];
+                        if (denominator != 0) {
+                            return (mHistoricPos[pointPos] - mHistoricPos[endPos]) / denominator;
+                        }
                     }
-                    float denominator = eventTime - mHistoricTimes[endPos];
-                    if (denominator != 0) {
-                        return (eventTime - mHistoricPos[endPos]) / denominator;
-
-                    }
+                    // fall through
+                    case 1:
+                        return 0f;
+                    default:
+                        return null;
                 }
-                return null;
             }
 
             float Sxx = sxi2 - sxi * sxi / count;

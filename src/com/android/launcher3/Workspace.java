@@ -115,6 +115,7 @@ import com.android.systemui.plugins.shared.LauncherOverlayManager.LauncherOverla
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.function.Predicate;
 
 /**
@@ -309,7 +310,9 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             // In portrait, we want the pages spaced such that there is no
             // overhang of the previous / next page into the current page viewport.
             // We assume symmetrical padding in portrait mode.
-            setPageSpacing(Math.max(grid.edgeMarginPx, padding.left + 1));
+            int maxInsets = Math.max(insets.left, insets.right);
+            int maxPadding = Math.max(grid.edgeMarginPx, padding.left + 1);
+            setPageSpacing(Math.max(maxInsets, maxPadding));
         }
 
 
@@ -3085,7 +3088,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         return false;
     }
 
-    void updateShortcuts(ArrayList<WorkspaceItemInfo> shortcuts) {
+    void updateShortcuts(List<WorkspaceItemInfo> shortcuts) {
         final HashSet<WorkspaceItemInfo> updates = new HashSet<>(shortcuts);
         ItemOperator op = (info, v) -> {
             if (v instanceof BubbleTextView && updates.contains(info)) {
@@ -3260,7 +3263,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         }
         if (nScreens == 0) {
             // When the workspace is not loaded, we do not know how many screen will be bound.
-            return getContext().getString(R.string.all_apps_home_button_label);
+            return getContext().getString(R.string.home_screen);
         }
         return getContext().getString(R.string.workspace_scroll_format, page + 1, nScreens);
     }

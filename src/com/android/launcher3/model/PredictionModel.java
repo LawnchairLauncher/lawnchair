@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package com.android.launcher3.model;
+
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
 import android.content.ComponentName;
@@ -24,6 +25,7 @@ import android.os.UserHandle;
 import androidx.annotation.AnyThread;
 import androidx.annotation.WorkerThread;
 
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.pm.UserCache;
@@ -64,17 +66,27 @@ public class PredictionModel implements ResourceBasedOverride {
         mUserCache = UserCache.INSTANCE.get(mContext);
 
     }
+
     /**
      * Formats and stores a list of component key in device preferences.
      */
     @AnyThread
     public void cachePredictionComponentKeys(List<ComponentKey> componentKeys) {
         MODEL_EXECUTOR.execute(() -> {
+            LauncherAppState appState = LauncherAppState.getInstance(mContext);
             StringBuilder builder = new StringBuilder();
             int count = Math.min(componentKeys.size(), MAX_CACHE_ITEMS);
             for (int i = 0; i < count; i++) {
                 builder.append(serializeComponentKeyToString(componentKeys.get(i)));
                 builder.append("\n");
+            }
+            if (componentKeys.isEmpty() /* should invalidate loader items */) {
+                appState.getModel().enqueueModelUpdateTask(new BaseModelUpdateTask() {
+                    @Override
+                    public void execute(LauncherAppState app, BgDataModel model, AllAppsList apps) {
+                        model.cachedPredictedItems.clear();
+                    }
+                });
             }
             mDevicePrefs.edit().putString(CACHED_ITEMS_KEY, builder.toString()).apply();
         });

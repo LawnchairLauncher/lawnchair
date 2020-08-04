@@ -70,36 +70,33 @@ public class AccessibilityManagerCompat {
         final Bundle parcel = new Bundle();
         parcel.putInt(TestProtocol.STATE_FIELD, stateOrdinal);
 
-        sendEventToTest(accessibilityManager, TestProtocol.SWITCHED_TO_STATE_MESSAGE, parcel);
+        sendEventToTest(
+                accessibilityManager, context, TestProtocol.SWITCHED_TO_STATE_MESSAGE, parcel);
         Log.d(TestProtocol.PERMANENT_DIAG_TAG, "sendStateEventToTest: " + stateOrdinal);
     }
 
     public static void sendScrollFinishedEventToTest(Context context) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_SCROLL_END_WIDGETS, "sendScrollFinishedEventToTest");
-        }
         final AccessibilityManager accessibilityManager = getAccessibilityManagerForTest(context);
         if (accessibilityManager == null) return;
 
-        sendEventToTest(accessibilityManager, TestProtocol.SCROLL_FINISHED_MESSAGE, null);
+        sendEventToTest(accessibilityManager, context, TestProtocol.SCROLL_FINISHED_MESSAGE, null);
     }
 
     public static void sendPauseDetectedEventToTest(Context context) {
         final AccessibilityManager accessibilityManager = getAccessibilityManagerForTest(context);
         if (accessibilityManager == null) return;
 
-        sendEventToTest(accessibilityManager, TestProtocol.PAUSE_DETECTED_MESSAGE, null);
+        sendEventToTest(accessibilityManager, context, TestProtocol.PAUSE_DETECTED_MESSAGE, null);
     }
 
     private static void sendEventToTest(
-            AccessibilityManager accessibilityManager, String eventTag, Bundle data) {
+            AccessibilityManager accessibilityManager,
+            Context context, String eventTag, Bundle data) {
         final AccessibilityEvent e = AccessibilityEvent.obtain(
                 AccessibilityEvent.TYPE_ANNOUNCEMENT);
         e.setClassName(eventTag);
         e.setParcelableData(data);
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_SCROLL_END_WIDGETS, "sendEventToTest " + e);
-        }
+        e.setPackageName(context.getApplicationContext().getPackageName());
         accessibilityManager.sendAccessibilityEvent(e);
     }
 

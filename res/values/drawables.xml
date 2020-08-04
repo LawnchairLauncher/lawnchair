@@ -18,5 +18,4 @@
     <drawable name="ic_remove_shadow">@drawable/ic_remove_no_shadow</drawable>
     <drawable name="ic_uninstall_shadow">@drawable/ic_uninstall_no_shadow</drawable>
     <drawable name="ic_block_shadow">@drawable/ic_block_no_shadow</drawable>
-    <drawable name="all_apps_arrow_shadow">@drawable/drag_handle_indicator_no_shadow</drawable>
 </resources>
