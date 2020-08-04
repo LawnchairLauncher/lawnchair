@@ -1,8 +1,11 @@
 package com.android.launcher3.provider;
 
+import static org.junit.Assert.assertEquals;
+
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+
 import androidx.test.InstrumentationRegistry;
 import androidx.test.filters.MediumTest;
 import androidx.test.runner.AndroidJUnit4;
@@ -12,8 +15,6 @@ import com.android.launcher3.LauncherSettings.Favorites;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * Tests for {@link RestoreDbTask}
@@ -31,7 +32,7 @@ public class RestoreDbTaskTest {
     @Test
     public void testMigrateProfileId() throws Exception {
         SQLiteDatabase db = new MyDatabaseHelper(42).getWritableDatabase();
-        // Add some dummy data
+        // Add some mock data
         for (int i = 0; i < 5; i++) {
             ContentValues values = new ContentValues();
             values.put(Favorites._ID, i);
@@ -51,7 +52,7 @@ public class RestoreDbTaskTest {
     @Test
     public void testChangeDefaultColumn() throws Exception {
         SQLiteDatabase db = new MyDatabaseHelper(42).getWritableDatabase();
-        // Add some dummy data
+        // Add some mock data
         for (int i = 0; i < 5; i++) {
             ContentValues values = new ContentValues();
             values.put(Favorites._ID, i);

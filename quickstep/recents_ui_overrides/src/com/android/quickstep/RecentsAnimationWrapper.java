@@ -161,9 +161,9 @@ public class RecentsAnimationWrapper {
     private void disableInputProxy() {
         if (mInputConsumer != null && mTouchInProgress) {
             long now = SystemClock.uptimeMillis();
-            MotionEvent dummyCancel = MotionEvent.obtain(now,  now, ACTION_CANCEL, 0, 0, 0);
-            mInputConsumer.onMotionEvent(dummyCancel);
-            dummyCancel.recycle();
+            MotionEvent tempCancel = MotionEvent.obtain(now,  now, ACTION_CANCEL, 0, 0, 0);
+            mInputConsumer.onMotionEvent(tempCancel);
+            tempCancel.recycle();
         }
         mInputConsumerController.setInputListener(null);
     }
