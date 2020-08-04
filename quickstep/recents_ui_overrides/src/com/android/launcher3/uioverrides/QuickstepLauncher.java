@@ -27,6 +27,7 @@ import static com.android.launcher3.testing.TestProtocol.OVERVIEW_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.QUICK_SWITCH_STATE_ORDINAL;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
+import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_HOME_KEY;
 
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -75,6 +76,7 @@ import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 
+import com.android.systemui.shared.system.ActivityManagerWrapper;
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -146,6 +148,13 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
                 || (changeBits & getActivityFlags() & ACTIVITY_STATE_DEFERRED_RESUMED) != 0)) {
             mHotseatPredictionController.setPauseUIUpdate(false);
         }
+    }
+
+    @Override
+    protected void showAllAppsFromIntent(boolean alreadyOnHome) {
+        ActivityManagerWrapper.getInstance().closeSystemWindows(
+            CLOSE_SYSTEM_WINDOWS_REASON_HOME_KEY);
+        super.showAllAppsFromIntent(alreadyOnHome);
     }
 
     @Override
