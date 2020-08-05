@@ -128,6 +128,8 @@ public class LoaderTask implements Runnable {
 
     private boolean mStopped;
 
+    private boolean mItemsDeleted = false;
+
     public LoaderTask(LauncherAppState app, AllAppsList bgAllAppsList, BgDataModel dataModel,
             ModelDelegate modelDelegate, LoaderResults results) {
         mApp = app;
@@ -271,6 +273,7 @@ public class LoaderTask implements Runnable {
             if (FeatureFlags.FOLDER_NAME_SUGGEST.get()) {
                 loadFolderNames();
             }
+            sanitizeData();
 
             verifyNotStopped();
             updateHandler.finish();
@@ -791,13 +794,8 @@ public class LoaderTask implements Runnable {
                     mBgDataModel.itemsIdMap.remove(folderId);
                 }
 
-                // Remove any ghost widgets
-                LauncherSettings.Settings.call(contentResolver,
-                        LauncherSettings.Settings.METHOD_REMOVE_GHOST_WIDGETS);
+                mItemsDeleted = true;
             }
-
-            // Update pinned state of model shortcuts
-            mBgDataModel.updateShortcutPinnedState(context);
 
             // Sort the folder items, update ranks, and make sure all preview items are high res.
             FolderGridOrganizer verifier =
@@ -870,6 +868,18 @@ public class LoaderTask implements Runnable {
                 mIconCache.getTitleAndIcon(info, false);
             }
         }
+    }
+
+    private void sanitizeData() {
+        Context context = mApp.getContext();
+        if (mItemsDeleted) {
+            // Remove any ghost widgets
+            LauncherSettings.Settings.call(context.getContentResolver(),
+                    LauncherSettings.Settings.METHOD_REMOVE_GHOST_WIDGETS);
+        }
+
+        // Update pinned state of model shortcuts
+        mBgDataModel.updateShortcutPinnedState(context);
     }
 
     private List<LauncherActivityInfo> loadAllApps() {
