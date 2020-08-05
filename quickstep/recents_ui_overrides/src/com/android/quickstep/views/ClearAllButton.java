@@ -45,12 +45,15 @@ public class ClearAllButton extends Button implements PageCallbacks {
     private float mVisibilityAlpha = 1;
 
     private boolean mIsRtl;
+    private final float mOriginalTranslationX, mOriginalTranslationY;
 
     private int mScrollOffset;
 
     public ClearAllButton(Context context, AttributeSet attrs) {
         super(context, attrs);
         mIsRtl = getLayoutDirection() == LAYOUT_DIRECTION_RTL;
+        mOriginalTranslationX = getTranslationX();
+        mOriginalTranslationY = getTranslationY();
     }
 
     @Override
@@ -99,7 +102,8 @@ public class ClearAllButton extends Button implements PageCallbacks {
 
         float shift = Math.min(scrollState.scrollFromEdge, orientationSize);
         float translation = mIsRtl ? (mScrollOffset - shift) : (mScrollOffset + shift);
-        orientationHandler.setPrimaryAndResetSecondaryTranslate(this, translation);
+        orientationHandler.setPrimaryAndResetSecondaryTranslate(
+                this, translation, mOriginalTranslationX, mOriginalTranslationY);
         mScrollAlpha = 1 - shift / orientationSize;
         updateAlpha();
     }

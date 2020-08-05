@@ -75,12 +75,6 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
     }
 
     @Override
-    public void setPrimaryAndResetSecondaryTranslate(View view, float translation) {
-        view.setTranslationX(0);
-        view.setTranslationY(translation);
-    }
-
-    @Override
     public int getDistanceToBottomOfRect(DeviceProfile dp, Rect rect) {
         return dp.widthPx - rect.right;
     }

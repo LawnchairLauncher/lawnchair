@@ -65,7 +65,8 @@ public interface PagedOrientationHandler {
     int getSecondaryDimension(View view);
     FloatProperty<View> getPrimaryViewTranslate();
     FloatProperty<View> getSecondaryViewTranslate();
-    void setPrimaryAndResetSecondaryTranslate(View view, float translation);
+    void setPrimaryAndResetSecondaryTranslate(
+            View view, float translation, float defaultTranslationX, float defaultTranslationY);
     int getPrimaryScroll(View view);
     float getPrimaryScale(View view);
     int getChildStart(View view);
