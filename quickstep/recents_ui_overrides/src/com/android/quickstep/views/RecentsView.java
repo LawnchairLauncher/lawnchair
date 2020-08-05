@@ -2290,7 +2290,14 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         if (pageIndex == -1) {
             return 0;
         }
-        return getScrollForPage(pageIndex) - mOrientationHandler.getPrimaryScroll(this);
+        // Unbound the scroll (due to overscroll) if the adjacent tasks are offset away from it.
+        // This allows the page to move freely, given there's no visual indication why it shouldn't.
+        int boundedScroll = mOrientationHandler.getPrimaryScroll(this);
+        int unboundedScroll = getUnboundedScroll();
+        float unboundedProgress = mAdjacentPageOffset;
+        int scroll = Math.round(unboundedScroll * unboundedProgress
+                + boundedScroll * (1 - unboundedProgress));
+        return getScrollForPage(pageIndex) - scroll;
     }
 
     public Consumer<MotionEvent> getEventDispatcher(float navbarRotation) {
