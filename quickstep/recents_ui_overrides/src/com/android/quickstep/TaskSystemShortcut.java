@@ -17,6 +17,7 @@
 package com.android.quickstep;
 
 import static android.view.Display.DEFAULT_DISPLAY;
+
 import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch.TAP;
 
 import android.app.Activity;
@@ -85,19 +86,19 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
     public View.OnClickListener getOnClickListener(BaseDraggingActivity activity, TaskView view) {
         Task task = view.getTask();
 
-        WorkspaceItemInfo dummyInfo = new WorkspaceItemInfo();
-        dummyInfo.intent = new Intent();
+        WorkspaceItemInfo stubItemInfo = new WorkspaceItemInfo();
+        stubItemInfo.intent = new Intent();
         ComponentName component = task.getTopComponent();
-        dummyInfo.intent.setComponent(component);
-        dummyInfo.user = UserHandle.of(task.key.userId);
-        dummyInfo.title = TaskUtils.getTitle(activity, task);
+        stubItemInfo.intent.setComponent(component);
+        stubItemInfo.user = UserHandle.of(task.key.userId);
+        stubItemInfo.title = TaskUtils.getTitle(activity, task);
 
-        return getOnClickListenerForTask(activity, task, dummyInfo);
+        return getOnClickListenerForTask(activity, task, stubItemInfo);
     }
 
     protected View.OnClickListener getOnClickListenerForTask(
-            BaseDraggingActivity activity, Task task, ItemInfo dummyInfo) {
-        return mSystemShortcut.getOnClickListener(activity, dummyInfo);
+            BaseDraggingActivity activity, Task task, ItemInfo stubItemInfo) {
+        return mSystemShortcut.getOnClickListener(activity, stubItemInfo);
     }
 
     public static class AppInfo extends TaskSystemShortcut<SystemShortcut.AppInfo> {
