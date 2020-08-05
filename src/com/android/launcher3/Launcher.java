@@ -1449,10 +1449,15 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
             mOverlayManager.hideOverlay(isStarted() && !isForceInvisible());
             handleGestureContract(intent);
         } else if (Intent.ACTION_ALL_APPS.equals(intent.getAction())) {
-            getStateManager().goToState(ALL_APPS, alreadyOnHome);
+            showAllAppsFromIntent(alreadyOnHome);
         }
 
         TraceHelper.INSTANCE.endSection(traceToken);
+    }
+
+    protected void showAllAppsFromIntent(boolean alreadyOnHome) {
+        AbstractFloatingView.closeAllOpenViews(this);
+        getStateManager().goToState(ALL_APPS, alreadyOnHome);
     }
 
     /**
