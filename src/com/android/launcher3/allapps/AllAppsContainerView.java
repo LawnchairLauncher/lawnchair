@@ -527,6 +527,22 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         return mViewPager == null ? getActiveRecyclerView() : mViewPager;
     }
 
+    /**
+     * Returns the ItemInfo of a view that is in focus, ready to be launched by an IME.
+     */
+    public ItemInfo getHighlightedItemInfo() {
+        View view = getFloatingHeaderView().getFocusedChild();
+        if (view != null && view.getTag() instanceof ItemInfo) {
+            return ((ItemInfo) view.getTag());
+        }
+        if (getActiveRecyclerView().getApps().getFocusedChild() != null) {
+            // TODO: when new pipelines are included, getSearchResults
+            // should be supported at recycler view level and not apps list level.
+            return getActiveRecyclerView().getApps().getFocusedChild().appInfo;
+        }
+        return null;
+    }
+
     public RecyclerViewFastScroller getScrollBar() {
         AllAppsRecyclerView rv = getActiveRecyclerView();
         return rv == null ? null : rv.getScrollbar();
@@ -658,7 +674,8 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             applyPadding();
             setupOverlay();
             if (FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
-                recyclerView.addItemDecoration(new AllAppsSectionDecorator(getApps()));
+                recyclerView.addItemDecoration(new AllAppsSectionDecorator(
+                        AllAppsContainerView.this));
             }
         }
 

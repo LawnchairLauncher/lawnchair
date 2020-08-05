@@ -83,4 +83,9 @@ public class PluginHeaderRow implements FloatingHeaderRow {
     public Class<PluginHeaderRow> getTypeClass() {
         return PluginHeaderRow.class;
     }
+
+    @Override
+    public View getFocusedChild() {
+        return null;
+    }
 }

@@ -224,6 +224,25 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
     }
 
     /**
+     * Returns the child adapter item with IME launch focus.
+     */
+    public AdapterItem getFocusedChild() {
+        return mAdapterItems.get(getFocusedChildIndex());
+    }
+
+    /**
+     * Returns the index of the child with IME launch focus.
+     */
+    public int getFocusedChildIndex() {
+        for (AdapterItem item : mAdapterItems) {
+            if (item.isCountedForAccessibility()) {
+                return mAdapterItems.indexOf(item);
+            }
+        }
+        return -1;
+    }
+
+    /**
      * Returns the number of rows of applications
      */
     public int getNumAppRows() {

@@ -38,6 +38,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.PropertySetter;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.systemui.plugins.AllAppsRow;
 import com.android.systemui.plugins.AllAppsRow.OnHeightUpdatedListener;
@@ -192,6 +193,19 @@ public class FloatingHeaderView extends LinearLayout implements
         mPluginRows.remove(plugin);
         recreateAllRowsArray();
         onHeightUpdated();
+    }
+
+    @Override
+    public View getFocusedChild() {
+        if (FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
+            for (FloatingHeaderRow row : mAllRows) {
+                if (row.hasVisibleContent() && row.shouldDraw()) {
+                    return row.getFocusedChild();
+                }
+            }
+            return null;
+        }
+        return super.getFocusedChild();
     }
 
     public void setup(AllAppsContainerView.AdapterHolder[] mAH, boolean tabsHidden) {

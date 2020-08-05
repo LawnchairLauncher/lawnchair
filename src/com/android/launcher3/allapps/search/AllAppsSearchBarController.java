@@ -27,8 +27,11 @@ import android.widget.TextView.OnEditorActionListener;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.ExtendedEditText;
+import com.android.launcher3.Launcher;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AlphabeticalAppsList;
+import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.PackageManagerHelper;
 
 import java.util.ArrayList;
@@ -101,6 +104,16 @@ public class AllAppsSearchBarController
 
     @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+        if (FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                ItemInfo info = Launcher.getLauncher(mLauncher).getAppsView()
+                        .getHighlightedItemInfo();
+                if (info != null) {
+                    return mLauncher.startActivitySafely(v, info.getIntent(), info);
+                }
+            }
+        }
+
         // Skip if it's not the right action
         if (actionId != EditorInfo.IME_ACTION_SEARCH) {
             return false;
