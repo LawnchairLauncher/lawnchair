@@ -98,6 +98,7 @@ public class RecentsAnimationDeviceState implements
     private float mAssistantVisibility;
     private boolean mIsOneHandedModeEnabled;
     private boolean mIsSwipeToNotificationEnabled;
+    private final boolean mIsOneHandedModeSupported;
 
     private boolean mIsUserUnlocked;
     private final ArrayList<Runnable> mUserUnlockedActions = new ArrayList<>();
@@ -123,6 +124,7 @@ public class RecentsAnimationDeviceState implements
         mSysUiNavMode = SysUINavigationMode.INSTANCE.get(context);
         mDefaultDisplay = DefaultDisplay.INSTANCE.get(context);
         mDisplayId = mDefaultDisplay.getInfo().id;
+        mIsOneHandedModeSupported = SystemProperties.getBoolean(SUPPORT_ONE_HANDED_MODE, false);
         runOnDestroy(() -> mDefaultDisplay.removeChangeListener(this));
         mRotationTouchHelper = new RotationTouchHelper(context);
         runOnDestroy(mRotationTouchHelper::destroy);
@@ -167,7 +169,7 @@ public class RecentsAnimationDeviceState implements
             }
         }
 
-        if (SystemProperties.getBoolean(SUPPORT_ONE_HANDED_MODE, false)) {
+        if (mIsOneHandedModeSupported) {
             SecureSettingsObserver oneHandedEnabledObserver =
                     SecureSettingsObserver.newOneHandedSettingsObserver(
                             mContext, enabled -> mIsOneHandedModeEnabled = enabled);
@@ -522,19 +524,18 @@ public class RecentsAnimationDeviceState implements
      * @return whether the given motion event can trigger the one handed mode.
      */
     public boolean canTriggerOneHandedAction(MotionEvent ev) {
-        if (!SystemProperties.getBoolean(SUPPORT_ONE_HANDED_MODE, false)) {
+        if (!mIsOneHandedModeSupported) {
             return false;
         }
 
-        if (!mIsOneHandedModeEnabled && !mIsSwipeToNotificationEnabled) {
-            return false;
+        if (mIsOneHandedModeEnabled || mIsSwipeToNotificationEnabled) {
+            final DefaultDisplay.Info displayInfo = mDefaultDisplay.getInfo();
+            return (mRotationTouchHelper.touchInOneHandedModeRegion(ev)
+                && displayInfo.rotation != Surface.ROTATION_90
+                && displayInfo.rotation != Surface.ROTATION_270
+                && displayInfo.metrics.densityDpi < DisplayMetrics.DENSITY_600);
         }
-
-        final DefaultDisplay.Info displayInfo = mDefaultDisplay.getInfo();
-        return (mRotationTouchHelper.touchInOneHandedModeRegion(ev)
-            && displayInfo.rotation != Surface.ROTATION_90
-            && displayInfo.rotation != Surface.ROTATION_270
-            && displayInfo.metrics.densityDpi < DisplayMetrics.DENSITY_600);
+        return false;
     }
 
     public boolean isOneHandedModeEnabled() {
