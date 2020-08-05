@@ -42,7 +42,7 @@ public abstract class BaseGridChangesTestCase {
     }
 
     /**
-     * Adds a dummy item in the DB.
+     * Adds a mock item in the DB.
      * @param type {@link #APP_ICON} or {@link #SHORTCUT} or >= 2 for
      *             folder (where the type represents the number of items in the folder).
      */
@@ -82,7 +82,7 @@ public abstract class BaseGridChangesTestCase {
     }
 
     /**
-     * Initializes the DB with dummy elements to represent the provided grid structure.
+     * Initializes the DB with mock elements to represent the provided grid structure.
      * @param typeArray A 3d array of item types. {@see #addItem(int, long, long, int, int)} for
      *                  type definitions. The first dimension represents the screens and the next
      *                  two represent the workspace grid.

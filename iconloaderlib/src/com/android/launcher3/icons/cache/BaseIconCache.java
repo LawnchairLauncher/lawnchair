@@ -104,7 +104,7 @@ public abstract class BaseIconCache {
         if (inMemoryCache) {
             mCache = new HashMap<>(INITIAL_ICON_CACHE_CAPACITY);
         } else {
-            // Use a dummy cache
+            // Use a placeholder cache
             mCache = new AbstractMap<ComponentKey, CacheEntry>() {
                 @Override
                 public Set<Entry<ComponentKey, CacheEntry>> entrySet() {
