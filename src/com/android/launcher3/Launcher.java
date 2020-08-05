@@ -1940,6 +1940,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         return result;
     }
 
+    @Override
     public void addOnResumeCallback(OnResumeCallback callback) {
         mOnResumeCallbacks.add(callback);
     }
