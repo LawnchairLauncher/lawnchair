@@ -569,6 +569,7 @@ public class RecentsAnimationDeviceState implements
         pw.println("  isUserUnlocked=" + mIsUserUnlocked);
         pw.println("  isOneHandedModeEnabled=" + mIsOneHandedModeEnabled);
         pw.println("  isSwipeToNotificationEnabled=" + mIsSwipeToNotificationEnabled);
+        pw.println("  deferredGestureRegion=" + mDeferredGestureRegion);
         mRotationTouchHelper.dump(pw);
     }
 }
