@@ -145,9 +145,10 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public void setPrimaryAndResetSecondaryTranslate(View view, float translation) {
+    public void setPrimaryAndResetSecondaryTranslate(
+            View view, float translation, float defaultTranslationX, float defaultTranslationY) {
         view.setTranslationX(translation);
-        view.setTranslationY(0);
+        view.setTranslationY(defaultTranslationY);
     }
 
     @Override
