@@ -81,7 +81,6 @@ public final class TestProtocol {
     public static final String REQUEST_UNFREEZE_APP_LIST = "unfreeze-app-list";
     public static final String REQUEST_APP_LIST_FREEZE_FLAGS = "app-list-freeze-flags";
     public static final String REQUEST_APPS_LIST_SCROLL_Y = "apps-list-scroll-y";
-    public static final String REQUEST_WIDGETS_SCROLL_Y = "widgets-scroll-y";
     public static final String REQUEST_WINDOW_INSETS = "window-insets";
     public static final String REQUEST_PID = "pid";
     public static final String REQUEST_TOTAL_PSS_KB = "total_pss";
@@ -107,5 +106,5 @@ public final class TestProtocol {
     public static final String PAUSE_NOT_DETECTED = "b/139891609";
     public static final String OVERIEW_NOT_ALLAPPS = "b/156095088";
     public static final String NO_SWIPE_TO_HOME = "b/158017601";
-    public static final String NO_SCROLL_END_WIDGETS = "b/160238801";
+    public static final String WORK_PROFILE_REMOVED = "b/159671700";
 }

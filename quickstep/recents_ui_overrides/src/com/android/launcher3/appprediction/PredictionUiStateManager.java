@@ -75,7 +75,8 @@ public class PredictionUiStateManager implements StateListener<LauncherState>,
 
     // TODO (b/129421797): Update the client constants
     public enum Client {
-        HOME("home");
+        HOME("home"),
+        OVERVIEW("overview");
 
         public final String id;
 
@@ -90,9 +91,10 @@ public class PredictionUiStateManager implements StateListener<LauncherState>,
     private final Context mContext;
 
     private final DynamicItemCache mDynamicItemCache;
-    private List mPredictionServicePredictions = Collections.emptyList();
+    private final List[] mPredictionServicePredictions;
 
     private int mMaxIconsPerRow;
+    private Client mActiveClient;
 
     private AllAppsContainerView mAppsView;
 
@@ -106,10 +108,16 @@ public class PredictionUiStateManager implements StateListener<LauncherState>,
 
         mDynamicItemCache = new DynamicItemCache(context, this::onAppsUpdated);
 
+        mActiveClient = Client.HOME;
+
         InvariantDeviceProfile idp = LauncherAppState.getIDP(context);
         mMaxIconsPerRow = idp.numColumns;
 
         idp.addOnChangeListener(this);
+        mPredictionServicePredictions = new List[Client.values().length];
+        for (int i = 0; i < mPredictionServicePredictions.length; i++) {
+            mPredictionServicePredictions[i] = Collections.emptyList();
+        }
         mGettingValidPredictionResults = Utilities.getDevicePrefs(context)
                 .getBoolean(LAST_PREDICTION_ENABLED_STATE, true);
 
@@ -120,6 +128,18 @@ public class PredictionUiStateManager implements StateListener<LauncherState>,
     @Override
     public void onIdpChanged(int changeFlags, InvariantDeviceProfile profile) {
         mMaxIconsPerRow = profile.numColumns;
+    }
+
+    public Client getClient() {
+        return mActiveClient;
+    }
+
+    public void switchClient(Client client) {
+        if (client == mActiveClient) {
+            return;
+        }
+        mActiveClient = client;
+        dispatchOnChange(true);
     }
 
     public void setTargetAppsView(AllAppsContainerView appsView) {
@@ -175,8 +195,10 @@ public class PredictionUiStateManager implements StateListener<LauncherState>,
     }
 
     private void updatePredictionStateAfterCallback() {
-        boolean validResults = mPredictionServicePredictions != null
-                && !mPredictionServicePredictions.isEmpty();
+        boolean validResults = false;
+        for (List l : mPredictionServicePredictions) {
+            validResults |= l != null && !l.isEmpty();
+        }
         if (validResults != mGettingValidPredictionResults) {
             mGettingValidPredictionResults = validResults;
             Utilities.getDevicePrefs(mContext).edit()
@@ -188,7 +210,7 @@ public class PredictionUiStateManager implements StateListener<LauncherState>,
 
     public AppPredictor.Callback appPredictorCallback(Client client) {
         return targets -> {
-            mPredictionServicePredictions = targets;
+            mPredictionServicePredictions[client.ordinal()] = targets;
             updatePredictionStateAfterCallback();
         };
     }
@@ -216,7 +238,7 @@ public class PredictionUiStateManager implements StateListener<LauncherState>,
 
         state.apps = new ArrayList<>();
 
-        List<AppTarget> appTargets = mPredictionServicePredictions;
+        List<AppTarget> appTargets = mPredictionServicePredictions[mActiveClient.ordinal()];
         if (!appTargets.isEmpty()) {
             for (AppTarget appTarget : appTargets) {
                 ComponentKey key;

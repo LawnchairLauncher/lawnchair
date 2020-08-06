@@ -73,12 +73,20 @@ public class ActivityLeakTracker implements Application.ActivityLifecycleCallbac
     }
 
     public boolean noLeakedActivities() {
+        int liveActivities = 0;
+        int destroyedActivities = 0;
+
         for (Activity activity : mActivities.keySet()) {
             if (activity.isDestroyed()) {
-                return false;
+                ++destroyedActivities;
+            } else {
+                ++liveActivities;
             }
         }
 
-        return mActivities.size() <= 2;
+        if (liveActivities > 2) return false;
+
+        // It's OK to have 1 leaked activity if no active activities exist.
+        return liveActivities == 0 ? destroyedActivities <= 1 : destroyedActivities == 0;
     }
 }

@@ -56,7 +56,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -345,19 +344,6 @@ public class BgDataModel {
 
                 Integer previousCount = deepShortcutMap.get(targetComponent);
                 deepShortcutMap.put(targetComponent, previousCount == null ? 1 : previousCount + 1);
-            }
-        }
-    }
-
-    /**
-     * Calls the provided {@code op} for all workspaceItems in the in-memory model (both persisted
-     * items and dynamic/predicted items for the provided {@code userHandle}.
-     * Note the call is not synchronized over the model, that should be handled by the called.
-     */
-    public void forAllWorkspaceItemInfos(UserHandle userHandle, Consumer<WorkspaceItemInfo> op) {
-        for (ItemInfo info : itemsIdMap) {
-            if (info instanceof WorkspaceItemInfo && userHandle.equals(info.user)) {
-                op.accept((WorkspaceItemInfo) info);
             }
         }
     }

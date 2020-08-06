@@ -112,9 +112,10 @@ public final class LauncherInstrumentation {
 
     public enum NavigationModel {ZERO_BUTTON, TWO_BUTTON, THREE_BUTTON}
 
-    // Where the gesture happens: outside of Launcher, inside or from inside to outside.
+    // Where the gesture happens: outside of Launcher, inside or from inside to outside and
+    // whether the gesture recognition triggers pilfer.
     public enum GestureScope {
-        OUTSIDE, INSIDE, INSIDE_TO_OUTSIDE
+        OUTSIDE_WITHOUT_PILFER, OUTSIDE_WITH_PILFER, INSIDE, INSIDE_TO_OUTSIDE
     }
 
     ;
@@ -152,7 +153,6 @@ public final class LauncherInstrumentation {
     private static final String WIDGETS_RES_ID = "widgets_list_view";
     private static final String CONTEXT_MENU_RES_ID = "deep_shortcuts_container";
     public static final int WAIT_TIME_MS = 10000;
-    public static final int LONG_WAIT_TIME_MS = 60000;
     private static final String SYSTEMUI_PACKAGE = "com.android.systemui";
 
     private static WeakReference<VisibleContainer> sActiveContainer = new WeakReference<>(null);
@@ -636,11 +636,9 @@ public final class LauncherInstrumentation {
     Parcelable executeAndWaitForEvent(Runnable command,
             UiAutomation.AccessibilityEventFilter eventFilter, Supplier<String> message) {
         try {
-            Log.d(TestProtocol.NO_SCROLL_END_WIDGETS, "executeAndWaitForEvent: before");
             final AccessibilityEvent event =
                     mInstrumentation.getUiAutomation().executeAndWaitForEvent(
-                            command, eventFilter, LONG_WAIT_TIME_MS);
-            Log.d(TestProtocol.NO_SCROLL_END_WIDGETS, "executeAndWaitForEvent: after");
+                            command, eventFilter, WAIT_TIME_MS);
             assertNotNull("executeAndWaitForEvent returned null (this can't happen)", event);
             final Parcelable parcelableData = event.getParcelableData();
             event.recycle();
@@ -696,7 +694,7 @@ public final class LauncherInstrumentation {
                                 ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME, NORMAL_STATE_ORDINAL,
                                 launcherWasVisible
                                         ? GestureScope.INSIDE_TO_OUTSIDE
-                                        : GestureScope.OUTSIDE);
+                                        : GestureScope.OUTSIDE_WITH_PILFER);
                     }
                 }
             } else {
@@ -1097,10 +1095,7 @@ public final class LauncherInstrumentation {
         executeAndWaitForEvent(
                 () -> linearGesture(
                         startX, startY, endX, endY, steps, slowDown, GestureScope.INSIDE),
-                event -> {
-                    Log.d(TestProtocol.NO_SCROLL_END_WIDGETS, "scroll: received event: " + event);
-                    return TestProtocol.SCROLL_FINISHED_MESSAGE.equals(event.getClassName());
-                },
+                event -> TestProtocol.SCROLL_FINISHED_MESSAGE.equals(event.getClassName()),
                 () -> "Didn't receive a scroll end message: " + startX + ", " + startY
                         + ", " + endX + ", " + endY);
     }
@@ -1165,7 +1160,8 @@ public final class LauncherInstrumentation {
         final boolean notLauncher3 = !isLauncher3();
         switch (action) {
             case MotionEvent.ACTION_DOWN:
-                if (gestureScope != GestureScope.OUTSIDE) {
+                if (gestureScope != GestureScope.OUTSIDE_WITH_PILFER
+                        && gestureScope != GestureScope.OUTSIDE_WITHOUT_PILFER) {
                     expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_TOUCH_DOWN);
                 }
                 if (notLauncher3 && getNavigationModel() != NavigationModel.THREE_BUTTON) {
@@ -1173,12 +1169,17 @@ public final class LauncherInstrumentation {
                 }
                 break;
             case MotionEvent.ACTION_UP:
-                if (notLauncher3 && gestureScope != GestureScope.INSIDE) {
+                if (notLauncher3 && gestureScope != GestureScope.INSIDE
+                        && (gestureScope == GestureScope.OUTSIDE_WITH_PILFER
+                        || gestureScope == GestureScope.INSIDE_TO_OUTSIDE)) {
                     expectEvent(TestProtocol.SEQUENCE_PILFER, EVENT_PILFER_POINTERS);
                 }
-                if (gestureScope != GestureScope.OUTSIDE) {
-                    expectEvent(TestProtocol.SEQUENCE_MAIN, gestureScope == GestureScope.INSIDE
-                            ? EVENT_TOUCH_UP : EVENT_TOUCH_CANCEL);
+                if (gestureScope != GestureScope.OUTSIDE_WITH_PILFER
+                        && gestureScope != GestureScope.OUTSIDE_WITHOUT_PILFER) {
+                    expectEvent(TestProtocol.SEQUENCE_MAIN,
+                            gestureScope == GestureScope.INSIDE
+                                    || gestureScope == GestureScope.OUTSIDE_WITHOUT_PILFER
+                                    ? EVENT_TOUCH_UP : EVENT_TOUCH_CANCEL);
                 }
                 if (notLauncher3 && getNavigationModel() != NavigationModel.THREE_BUTTON) {
                     expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_UP_TIS);

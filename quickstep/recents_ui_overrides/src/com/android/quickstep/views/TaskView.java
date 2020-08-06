@@ -22,10 +22,14 @@ import static android.view.Gravity.CENTER_VERTICAL;
 import static android.view.Gravity.END;
 import static android.view.Gravity.START;
 import static android.view.Gravity.TOP;
+import static android.view.Surface.ROTATION_180;
+import static android.view.Surface.ROTATION_270;
+import static android.view.Surface.ROTATION_90;
 import static android.widget.Toast.LENGTH_SHORT;
 
 import static com.android.launcher3.QuickstepAppTransitionManagerImpl.RECENTS_LAUNCH_DURATION;
 import static com.android.launcher3.Utilities.comp;
+import static com.android.launcher3.Utilities.getDescendantCoordRelativeToAncestor;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.TOUCH_RESPONSE_INTERPOLATOR;
@@ -52,7 +56,9 @@ import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.Surface;
+import android.view.TouchDelegate;
 import android.view.View;
 import android.view.ViewOutlineProvider;
 import android.view.accessibility.AccessibilityNodeInfo;
@@ -77,6 +83,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Direction;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.TransformingTouchDelegate;
 import com.android.launcher3.util.ViewPool.Reusable;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.TaskIconCache;
@@ -121,6 +128,13 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
 
     public static final long SCALE_ICON_DURATION = 120;
     private static final long DIM_ANIM_DURATION = 700;
+    /**
+     * This technically can be a vanilla {@link TouchDelegate} class, however that class requires
+     * setting the touch bounds at construction, so we'd repeatedly be created many instances
+     * unnecessarily as scrolling occurs, whereas {@link TransformingTouchDelegate} allows touch
+     * delegated bounds only to be updated.
+     */
+    private TransformingTouchDelegate mIconTouchDelegate;
 
     private static final List<Rect> SYSTEM_GESTURE_EXCLUSION_RECT =
             Collections.singletonList(new Rect());
@@ -185,6 +199,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
     private int mStackHeight;
     private View mContextualChipWrapper;
     private View mContextualChip;
+    private final float[] mIconCenterCoords = new float[2];
 
     public TaskView(Context context) {
         this(context, null);
@@ -245,6 +260,26 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         super.onFinishInflate();
         mSnapshotView = findViewById(R.id.snapshot);
         mIconView = findViewById(R.id.icon);
+        mIconTouchDelegate = new TransformingTouchDelegate(mIconView);
+    }
+
+    public TouchDelegate getIconTouchDelegate(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            computeAndSetIconTouchDelegate();
+        }
+        return mIconTouchDelegate;
+    }
+
+    private void computeAndSetIconTouchDelegate() {
+        float iconHalfSize = mIconView.getWidth() / 2f;
+        mIconCenterCoords[0] = mIconCenterCoords[1] = iconHalfSize;
+        getDescendantCoordRelativeToAncestor(mIconView, mActivity.getDragLayer(), mIconCenterCoords,
+                false);
+        mIconTouchDelegate.setBounds(
+                (int) (mIconCenterCoords[0] - iconHalfSize),
+                (int) (mIconCenterCoords[1] - iconHalfSize),
+                (int) (mIconCenterCoords[0] + iconHalfSize),
+                (int) (mIconCenterCoords[1] + iconHalfSize));
     }
 
     /**
@@ -384,6 +419,7 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
                             }
                         }, resultCallbackHandler);
             }
+            getRecentsView().onTaskLaunched(mTask);
         }
     }
 
@@ -466,18 +502,18 @@ public class TaskView extends FrameLayout implements PageCallbacks, Reusable {
         int thumbnailPadding = (int) getResources().getDimension(R.dimen.task_thumbnail_top_margin);
         LayoutParams iconParams = (LayoutParams) mIconView.getLayoutParams();
         switch (orientationHandler.getRotation()) {
-            case Surface.ROTATION_90:
+            case ROTATION_90:
                 iconParams.gravity = (isRtl ? START : END) | CENTER_VERTICAL;
                 iconParams.rightMargin = -thumbnailPadding;
                 iconParams.leftMargin = 0;
                 iconParams.topMargin = snapshotParams.topMargin / 2;
                 break;
-            case Surface.ROTATION_180:
+            case ROTATION_180:
                 iconParams.gravity = BOTTOM | CENTER_HORIZONTAL;
                 iconParams.bottomMargin = -thumbnailPadding;
                 iconParams.leftMargin = iconParams.topMargin = iconParams.rightMargin = 0;
                 break;
-            case Surface.ROTATION_270:
+            case ROTATION_270:
                 iconParams.gravity = (isRtl ? END : START) | CENTER_VERTICAL;
                 iconParams.leftMargin = -thumbnailPadding;
                 iconParams.rightMargin = 0;

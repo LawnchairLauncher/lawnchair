@@ -196,13 +196,18 @@ public class FloatingIconView extends FrameLayout implements
         layout(left, lp.topMargin, left + lp.width, lp.topMargin + lp.height);
     }
 
+    private static void getLocationBoundsForView(Launcher launcher, View v, boolean isOpening,
+            RectF outRect) {
+        getLocationBoundsForView(launcher, v, isOpening, outRect, new Rect());
+    }
+
     /**
      * Gets the location bounds of a view and returns the overall rotation.
      * - For DeepShortcutView, we return the bounds of the icon view.
      * - For BubbleTextView, we return the icon bounds.
      */
-    private static void getLocationBoundsForView(Launcher launcher, View v, boolean isOpening,
-            RectF outRect) {
+    public static void getLocationBoundsForView(Launcher launcher, View v, boolean isOpening,
+            RectF outRect, Rect outViewBounds) {
         boolean ignoreTransform = !isOpening;
         if (v instanceof DeepShortcutView) {
             v = ((DeepShortcutView) v).getBubbleText();
@@ -215,17 +220,16 @@ public class FloatingIconView extends FrameLayout implements
             return;
         }
 
-        Rect iconBounds = new Rect();
         if (v instanceof BubbleTextView) {
-            ((BubbleTextView) v).getIconBounds(iconBounds);
+            ((BubbleTextView) v).getIconBounds(outViewBounds);
         } else if (v instanceof FolderIcon) {
-            ((FolderIcon) v).getPreviewBounds(iconBounds);
+            ((FolderIcon) v).getPreviewBounds(outViewBounds);
         } else {
-            iconBounds.set(0, 0, v.getWidth(), v.getHeight());
+            outViewBounds.set(0, 0, v.getWidth(), v.getHeight());
         }
 
-        float[] points = new float[] {iconBounds.left, iconBounds.top, iconBounds.right,
-                iconBounds.bottom};
+        float[] points = new float[] {outViewBounds.left, outViewBounds.top, outViewBounds.right,
+                outViewBounds.bottom};
         Utilities.getDescendantCoordRelativeToAncestor(v, launcher.getDragLayer(), points,
                 false, ignoreTransform);
         outRect.set(

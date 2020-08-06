@@ -262,6 +262,16 @@ public final class LauncherActivityInterface extends
     }
 
     @Override
+    public void updateOverviewPredictionState() {
+        Launcher launcher = getCreatedActivity();
+        if (launcher == null) {
+            return;
+        }
+        PredictionUiStateManager.INSTANCE.get(launcher).switchClient(
+                PredictionUiStateManager.Client.OVERVIEW);
+    }
+
+    @Override
     public int getContainerType() {
         final Launcher launcher = getVisibleLauncher();
         return launcher != null ? launcher.getStateManager().getState().containerType

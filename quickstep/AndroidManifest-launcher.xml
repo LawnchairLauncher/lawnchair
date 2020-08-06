@@ -49,11 +49,10 @@
             android:stateNotNeeded="true"
             android:windowSoftInputMode="adjustPan"
             android:screenOrientation="unspecified"
-            android:configChanges="keyboard|keyboardHidden|mcc|mnc|navigation|orientation|screenSize|screenLayout|smallestScreenSize"
+            android:configChanges="keyboard|keyboardHidden|mcc|mnc|navigation|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
             android:resizeableActivity="true"
             android:resumeWhilePausing="true"
             android:taskAffinity=""
-            android:exported="true"
             android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

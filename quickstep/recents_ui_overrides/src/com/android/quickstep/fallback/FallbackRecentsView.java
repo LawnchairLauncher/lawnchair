@@ -63,6 +63,12 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity>
         mActivity.startHome();
     }
 
+    @Override
+    public boolean shouldUseMultiWindowTaskSizeStrategy() {
+        // Just use the activity task size for multi-window as well.
+        return false;
+    }
+
     /**
      * When starting gesture interaction from home, we add a temporary invisible tile corresponding
      * to the home task. This allows us to handle quick-switch similarly to a quick-switching
