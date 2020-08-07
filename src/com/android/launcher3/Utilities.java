@@ -25,6 +25,7 @@ import android.app.WallpaperManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
@@ -637,6 +638,14 @@ public final class Utilities {
             return launcher.getPackageManager()
                     .getUserBadgedIcon(new FixedSizeEmptyDrawable(iconSize), info.user);
         }
+    }
+
+    /**
+     * @return true is the extra is either null or is of type {@param type}
+     */
+    public static boolean isValidExtraType(Intent intent, String key, Class type) {
+        Object extra = intent.getParcelableExtra(key);
+        return extra == null || type.isInstance(extra);
     }
 
     public static float squaredHypot(float x, float y) {

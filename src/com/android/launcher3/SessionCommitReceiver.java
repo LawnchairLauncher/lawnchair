@@ -19,8 +19,6 @@ package com.android.launcher3;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.LauncherActivityInfo;
-import android.content.pm.LauncherApps;
 import android.content.pm.PackageInstaller;
 import android.content.pm.PackageInstaller.SessionInfo;
 import android.content.pm.PackageManager;
@@ -28,8 +26,6 @@ import android.os.UserHandle;
 import android.text.TextUtils;
 
 import com.android.launcher3.pm.InstallSessionHelper;
-
-import java.util.List;
 
 /**
  * BroadcastReceiver to handle session commit intent.
@@ -63,18 +59,7 @@ public class SessionCommitReceiver extends BroadcastReceiver {
             return;
         }
 
-        queueAppIconAddition(context, info.getAppPackageName(), user);
-    }
-
-    public static void queueAppIconAddition(Context context, String packageName, UserHandle user) {
-        List<LauncherActivityInfo> activities = context.getSystemService(LauncherApps.class)
-                .getActivityList(packageName, user);
-        if (activities.isEmpty()) {
-            // no activity found
-            return;
-        }
-
-        InstallShortcutReceiver.queueApplication(activities.get(0), context);
+        InstallShortcutReceiver.queueApplication(info.getAppPackageName(), user, context);
     }
 
     public static boolean isEnabled(Context context) {

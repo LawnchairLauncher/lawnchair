@@ -260,14 +260,6 @@ public class IconCache extends BaseIconCache {
     }
 
     /**
-     * Fill in info with the icon and label for deep shortcut.
-     */
-    public synchronized CacheEntry getDeepShortcutTitleAndIcon(ShortcutInfo info) {
-        return cacheLocked(ShortcutKey.fromInfo(info).componentName, info.getUserHandle(),
-                () -> info, mShortcutCachingLogic, false, false);
-    }
-
-    /**
      * Fill in {@param info} with the icon and label. If the
      * corresponding activity is not found, it reverts to the package icon.
      */
@@ -295,7 +287,7 @@ public class IconCache extends BaseIconCache {
     /**
      * Fill in {@param mWorkspaceItemInfo} with the icon and label for {@param info}
      */
-    private synchronized void getTitleAndIcon(
+    public synchronized void getTitleAndIcon(
             @NonNull ItemInfoWithIcon infoInOut,
             @NonNull Supplier<LauncherActivityInfo> activityInfoProvider,
             boolean usePkgIcon, boolean useLowResIcon) {

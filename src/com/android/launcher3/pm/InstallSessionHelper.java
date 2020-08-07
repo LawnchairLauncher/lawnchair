@@ -18,9 +18,7 @@ package com.android.launcher3.pm;
 
 import static com.android.launcher3.Utilities.getPrefs;
 
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherApps;
 import android.content.pm.PackageInstaller;
@@ -215,20 +213,8 @@ public class InstallSessionHelper {
                 && !mPromiseIconIds.contains(sessionInfo.getSessionId())
                 && new PackageManagerHelper(mAppContext).getApplicationInfo(
                         sessionInfo.getAppPackageName(), getUserHandle(sessionInfo), 0) == null) {
-
-            String packageName = sessionInfo.getAppPackageName();
-            if (mAppContext.getSystemService(LauncherApps.class)
-                    .getActivityList(packageName, getUserHandle(sessionInfo)).isEmpty()) {
-                // Ensure application isn't already installed.
-                Intent data = new Intent();
-                data.putExtra(Intent.EXTRA_SHORTCUT_INTENT, new Intent().setComponent(
-                        new ComponentName(packageName, "")).setPackage(packageName));
-                data.putExtra(Intent.EXTRA_SHORTCUT_NAME, sessionInfo.getAppLabel());
-                data.putExtra(Intent.EXTRA_SHORTCUT_ICON, sessionInfo.getAppIcon());
-
-                InstallShortcutReceiver.queueApplication(data, getUserHandle(sessionInfo),
-                        mAppContext);
-            }
+            InstallShortcutReceiver.queueApplication(
+                    sessionInfo.getAppPackageName(), getUserHandle(sessionInfo), mAppContext);
 
             mPromiseIconIds.add(sessionInfo.getSessionId());
             updatePromiseIconPrefs();
