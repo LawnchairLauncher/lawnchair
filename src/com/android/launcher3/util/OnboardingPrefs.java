@@ -36,7 +36,6 @@ public class OnboardingPrefs<T extends Launcher> {
     public static final String SHELF_BOUNCE_SEEN = "launcher.shelf_bounce_seen";
     public static final String HOME_BOUNCE_COUNT = "launcher.home_bounce_count";
     public static final String SHELF_BOUNCE_COUNT = "launcher.shelf_bounce_count";
-    public static final String ALL_APPS_COUNT = "launcher.all_apps_count";
     public static final String HOTSEAT_DISCOVERY_TIP_COUNT = "launcher.hotseat_discovery_tip_count";
     public static final String HOTSEAT_LONGPRESS_TIP_SEEN = "launcher.hotseat_longpress_tip_seen";
 
@@ -56,7 +55,6 @@ public class OnboardingPrefs<T extends Launcher> {
     @StringDef(value = {
             HOME_BOUNCE_COUNT,
             SHELF_BOUNCE_COUNT,
-            ALL_APPS_COUNT,
             HOTSEAT_DISCOVERY_TIP_COUNT
     })
     @Retention(RetentionPolicy.SOURCE)
@@ -67,7 +65,6 @@ public class OnboardingPrefs<T extends Launcher> {
         Map<String, Integer> maxCounts = new ArrayMap<>(4);
         maxCounts.put(HOME_BOUNCE_COUNT, 3);
         maxCounts.put(SHELF_BOUNCE_COUNT, 3);
-        maxCounts.put(ALL_APPS_COUNT, 5);
         maxCounts.put(HOTSEAT_DISCOVERY_TIP_COUNT, 5);
         MAX_COUNTS = Collections.unmodifiableMap(maxCounts);
     }

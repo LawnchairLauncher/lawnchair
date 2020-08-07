@@ -41,6 +41,7 @@ import com.android.launcher3.widget.WidgetsFullSheet;
 import com.android.launcher3.widget.WidgetsRecyclerView;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -101,7 +102,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         mLauncher.pressHome();
     }
 
-    @Test
+    @Ignore
     public void testOpenHomeSettingsFromWorkspace() {
         mDevice.pressMenu();
         mDevice.waitForIdle();

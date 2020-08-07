@@ -71,10 +71,9 @@ public class HotseatFileLog {
     }
 
     private PrintWriter getWriter() {
-        String fName = FILE_NAME_PREFIX + (LOG_DAYS % 10);
-        if (fName.equals(mFileName)) return mCurrentWriter;
-
         Calendar cal = Calendar.getInstance();
+        String fName = FILE_NAME_PREFIX + (cal.get(Calendar.DAY_OF_YEAR) % 10);
+        if (fName.equals(mFileName)) return mCurrentWriter;
 
         boolean append = false;
         File logFile = new File(mLogsDir, fName);

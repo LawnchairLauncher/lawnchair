@@ -66,6 +66,8 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     // A divider that separates the apps list and the search market button
     public static final int VIEW_TYPE_ALL_APPS_DIVIDER = 1 << 4;
 
+    public static final int VIEW_TYPE_SEARCH_CORPUS_TITLE =  1 << 5;
+
     // Common view type masks
     public static final int VIEW_TYPE_MASK_DIVIDER = VIEW_TYPE_ALL_APPS_DIVIDER;
     public static final int VIEW_TYPE_MASK_ICON = VIEW_TYPE_ICON;
@@ -274,6 +276,9 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
             case VIEW_TYPE_ALL_APPS_DIVIDER:
                 return new ViewHolder(mLayoutInflater.inflate(
                         R.layout.all_apps_divider, parent, false));
+            case VIEW_TYPE_SEARCH_CORPUS_TITLE:
+                return new ViewHolder(
+                        mLayoutInflater.inflate(R.layout.search_section_title, parent, false));
             default:
                 throw new RuntimeException("Unexpected view type");
         }
@@ -302,6 +307,10 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                     searchView.setVisibility(View.GONE);
                 }
                 break;
+            case VIEW_TYPE_SEARCH_CORPUS_TITLE:
+                TextView titleView = (TextView) holder.itemView;
+                titleView.setText(mApps.getAdapterItems().get(position).searchSectionInfo.getTitle(
+                        titleView.getContext()));
             case VIEW_TYPE_ALL_APPS_DIVIDER:
                 // nothing to do
                 break;

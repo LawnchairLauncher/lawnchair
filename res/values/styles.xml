@@ -149,6 +149,15 @@
 
     <style name="HomeSettingsTheme" parent="@android:style/Theme.DeviceDefault.Settings">
         <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="preferenceTheme">@style/HomeSettingsPreferenceTheme</item>
+    </style>
+
+    <style name="HomeSettingsPreferenceTheme" parent="@style/PreferenceThemeOverlay.v14.Material">
+        <item name="preferenceFragmentCompatStyle">@style/HomeSettingsFragmentCompatStyle</item>
+    </style>
+
+    <style name="HomeSettingsFragmentCompatStyle" parent="@style/PreferenceFragment.Material">
+        <item name="android:layout">@layout/home_settings</item>
     </style>
 
     <!--

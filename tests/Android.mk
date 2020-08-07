@@ -23,6 +23,7 @@ LOCAL_STATIC_JAVA_LIBRARIES := \
 	androidx.annotation_annotation \
 	androidx.test.runner \
 	androidx.test.rules \
+	androidx.preference_preference \
 	androidx.test.uiautomator_uiautomator
 
 ifneq (,$(wildcard frameworks/base))

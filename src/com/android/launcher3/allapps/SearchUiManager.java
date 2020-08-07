@@ -66,12 +66,8 @@ public interface SearchUiManager {
     }
 
     /**
-     * Called to control how the search UI result should be handled.
-     *
-     * @param isEnabled when {@code true}, the search is all handled inside AOSP
-     *                  and is not overlayable.
-     * @return the searchbox edit text object
+     * @return the edit text object
      */
     @Nullable
-    EditText setTextSearchEnabled(boolean isEnabled);
+    EditText getEditText();
 }

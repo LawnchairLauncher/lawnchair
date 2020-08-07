@@ -62,7 +62,8 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
             TYPE_ALL_APPS_EDU,
 
             TYPE_TASK_MENU,
-            TYPE_OPTIONS_POPUP
+            TYPE_OPTIONS_POPUP,
+            TYPE_ICON_SURFACE
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface FloatingViewType {}
@@ -80,16 +81,18 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
     // Popups related to quickstep UI
     public static final int TYPE_TASK_MENU = 1 << 10;
     public static final int TYPE_OPTIONS_POPUP = 1 << 11;
+    public static final int TYPE_ICON_SURFACE = 1 << 12;
 
     public static final int TYPE_ALL = TYPE_FOLDER | TYPE_ACTION_POPUP
             | TYPE_WIDGETS_BOTTOM_SHEET | TYPE_WIDGET_RESIZE_FRAME | TYPE_WIDGETS_FULL_SHEET
             | TYPE_ON_BOARD_POPUP | TYPE_DISCOVERY_BOUNCE | TYPE_TASK_MENU
-            | TYPE_OPTIONS_POPUP | TYPE_SNACKBAR | TYPE_LISTENER | TYPE_ALL_APPS_EDU;
+            | TYPE_OPTIONS_POPUP | TYPE_SNACKBAR | TYPE_LISTENER | TYPE_ALL_APPS_EDU
+            | TYPE_ICON_SURFACE;
 
     // Type of popups which should be kept open during launcher rebind
     public static final int TYPE_REBIND_SAFE = TYPE_WIDGETS_FULL_SHEET
             | TYPE_WIDGETS_BOTTOM_SHEET | TYPE_ON_BOARD_POPUP | TYPE_DISCOVERY_BOUNCE
-            | TYPE_ALL_APPS_EDU;
+            | TYPE_ALL_APPS_EDU | TYPE_ICON_SURFACE;
 
     // Usually we show the back button when a floating view is open. Instead, hide for these types.
     public static final int TYPE_HIDE_BACK_BUTTON = TYPE_ON_BOARD_POPUP | TYPE_DISCOVERY_BOUNCE
