@@ -28,6 +28,7 @@ import static com.android.quickstep.util.RecentsAtomicAnimationFactory.INDEX_REC
 import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_OFFSET;
 import static com.android.quickstep.views.RecentsView.FULLSCREEN_PROGRESS;
 import static com.android.quickstep.views.RecentsView.RECENTS_SCALE_PROPERTY;
+import static com.android.quickstep.views.RecentsView.TASK_SECONDARY_TRANSLATION;
 
 import android.animation.Animator;
 import android.annotation.TargetApi;
@@ -350,7 +351,8 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
             AnimatorControllerWithResistance controllerWithResistance =
                     AnimatorControllerWithResistance.createForRecents(controller, mActivity,
                             recentsView.getPagedViewOrientedState(), mActivity.getDeviceProfile(),
-                            recentsView, RECENTS_SCALE_PROPERTY);
+                            recentsView, RECENTS_SCALE_PROPERTY, recentsView,
+                            TASK_SECONDARY_TRANSLATION);
             mCallback.accept(controllerWithResistance);
 
             // Creating the activity controller animation sometimes reapplies the launcher state

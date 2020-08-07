@@ -21,8 +21,10 @@ import static com.android.quickstep.SysUINavigationMode.Mode.TWO_BUTTONS;
 
 import android.animation.TimeInterpolator;
 import android.content.Context;
+import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.util.FloatProperty;
 
 import com.android.launcher3.DeviceProfile;
@@ -57,6 +59,7 @@ public class AnimatorControllerWithResistance {
     private static final float RECENTS_SCALE_MAX_RESIST = 0.5f;
 
     private static final TimeInterpolator RECENTS_SCALE_RESIST_INTERPOLATOR = DEACCEL;
+    private static final TimeInterpolator RECENTS_TRANSLATE_RESIST_INTERPOLATOR = LINEAR;
 
     private final AnimatorPlaybackController mNormalController;
     private final AnimatorPlaybackController mResistanceController;
@@ -104,11 +107,14 @@ public class AnimatorControllerWithResistance {
      * @param dp Used to compute start and end values.
      * @param scaleTarget The target for the scaleProperty.
      * @param scaleProperty Animate the value to change the scale of the window/recents view.
+     * @param translationTarget The target for the translationProperty.
+     * @param translationProperty Animate the value to change the translation of the recents view.
      */
-    public static <SCALE> AnimatorControllerWithResistance createForRecents(
+    public static <SCALE, TRANSLATION> AnimatorControllerWithResistance createForRecents(
             AnimatorPlaybackController normalController, Context context,
             RecentsOrientedState recentsOrientedState, DeviceProfile dp, SCALE scaleTarget,
-            FloatProperty<SCALE> scaleProperty) {
+            FloatProperty<SCALE> scaleProperty, TRANSLATION translationTarget,
+            FloatProperty<TRANSLATION> translationProperty) {
         Rect startRect = new Rect();
         LauncherActivityInterface.INSTANCE.calculateTaskSize(context, dp, startRect,
                 recentsOrientedState.getOrientationHandler());
@@ -149,6 +155,19 @@ public class AnimatorControllerWithResistance {
         }
         resistAnim.addFloat(scaleTarget, scaleProperty, startScale, endScale,
                 scaleInterpolator);
+
+        if (!isTwoButtonMode) {
+            // Compute where the task view would be based on the end scale, if we didn't translate.
+            RectF endRectF = new RectF(startRect);
+            Matrix temp = new Matrix();
+            temp.setScale(RECENTS_SCALE_MAX_RESIST, RECENTS_SCALE_MAX_RESIST, pivot.x, pivot.y);
+            temp.mapRect(endRectF);
+            // Translate such that the task view touches the top of the screen when drag does.
+            float endTranslation = endRectF.top * recentsOrientedState.getOrientationHandler()
+                    .getSecondaryTranslationDirectionFactor();
+            resistAnim.addFloat(translationTarget, translationProperty, 0, endTranslation,
+                    RECENTS_TRANSLATE_RESIST_INTERPOLATOR);
+        }
 
         AnimatorPlaybackController resistanceController = resistAnim.createPlaybackController();
         return new AnimatorControllerWithResistance(normalController, resistanceController);

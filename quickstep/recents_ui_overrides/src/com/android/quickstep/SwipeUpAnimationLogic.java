@@ -101,7 +101,8 @@ public abstract class SwipeUpAnimationLogic {
         AnimatorPlaybackController normalController = pa.createPlaybackController();
         mWindowTransitionController = AnimatorControllerWithResistance.createForRecents(
                 normalController, mContext, mTaskViewSimulator.getOrientationState(),
-                mDp, mTaskViewSimulator.recentsViewScale, AnimatedFloat.VALUE);
+                mDp, mTaskViewSimulator.recentsViewScale, AnimatedFloat.VALUE,
+                mTaskViewSimulator.recentsViewSecondaryTranslation, AnimatedFloat.VALUE);
     }
 
     @UiThread

@@ -211,6 +211,19 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
                 }
             };
 
+    public static final FloatProperty<RecentsView> TASK_SECONDARY_TRANSLATION =
+            new FloatProperty<RecentsView>("taskSecondaryTranslation") {
+                @Override
+                public void setValue(RecentsView recentsView, float v) {
+                    recentsView.setTaskViewsSecondaryTranslation(v);
+                }
+
+                @Override
+                public Float get(RecentsView recentsView) {
+                    return recentsView.mTaskViewsSecondaryTranslation;
+                }
+            };
+
     /** Same as normal SCALE_PROPERTY, but also updates page offsets that depend on this scale. */
     public static final FloatProperty<RecentsView> RECENTS_SCALE_PROPERTY =
             new FloatProperty<RecentsView>("recentsScale") {
@@ -220,6 +233,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
                     view.setScaleY(scale);
                     view.mLastComputedTaskPushOutDistance = null;
                     view.updatePageOffsets();
+                    view.setTaskViewsSecondaryTranslation(view.mTaskViewsSecondaryTranslation);
                 }
 
                 @Override
@@ -271,6 +285,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     protected boolean mFreezeViewVisibility;
 
     private float mAdjacentPageOffset = 0;
+    private float mTaskViewsSecondaryTranslation = 0;
 
     /**
      * TODO: Call reloadIdNeeded in onTaskStackChanged.
@@ -1417,7 +1432,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         FloatProperty<View> secondaryViewTranslate =
             mOrientationHandler.getSecondaryViewTranslate();
         int secondaryTaskDimension = mOrientationHandler.getSecondaryDimension(taskView);
-        int verticalFactor = mOrientationHandler.getTaskDismissDirectionFactor();
+        int verticalFactor = mOrientationHandler.getSecondaryTranslationDirectionFactor();
 
         ResourceProvider rp = DynamicResource.provider(mActivity);
         SpringProperty sp = new SpringProperty(SpringProperty.FLAG_CAN_SPRING_ON_START)
@@ -1943,6 +1958,14 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         }
         distanceToOffscreen -= mLastComputedTaskPushOutDistance;
         return distanceToOffscreen * offsetProgress;
+    }
+
+    private void setTaskViewsSecondaryTranslation(float translation) {
+        mTaskViewsSecondaryTranslation = translation;
+        for (int i = 0; i < getTaskViewCount(); i++) {
+            TaskView task = getTaskViewAt(i);
+            mOrientationHandler.getSecondaryViewTranslate().set(task, translation / getScaleY());
+        }
     }
 
     /**
