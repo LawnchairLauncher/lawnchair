@@ -159,8 +159,7 @@ public class NavBarToHomeTouchController implements TouchController,
             builder.setFloat(recentsView, ADJACENT_PAGE_OFFSET,
                     -mPullbackDistance / recentsView.getPageOffsetScale(), PULLBACK_INTERPOLATOR);
             if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-                builder.addOnFrameCallback(
-                        () -> recentsView.redrawLiveTile(false /* mightNeedToRefill */));
+                builder.addOnFrameCallback(recentsView::redrawLiveTile);
             }
         } else if (mStartState == ALL_APPS) {
             AllAppsTransitionController allAppsController = mLauncher.getAllAppsController();

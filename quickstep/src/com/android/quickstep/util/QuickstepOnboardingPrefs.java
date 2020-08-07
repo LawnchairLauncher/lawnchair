@@ -87,20 +87,6 @@ public class QuickstepOnboardingPrefs extends OnboardingPrefs<BaseQuickstepLaunc
             });
         }
 
-        if (!hasReachedMaxCount(ALL_APPS_COUNT)) {
-            stateManager.addStateListener(new StateListener<LauncherState>() {
-                @Override
-                public void onStateTransitionComplete(LauncherState finalState) {
-                    if (finalState == ALL_APPS) {
-                        if (incrementEventCount(ALL_APPS_COUNT)) {
-                            stateManager.removeStateListener(this);
-                            mLauncher.getScrimView().updateDragHandleVisibility();
-                        }
-                    }
-                }
-            });
-        }
-
         if (FeatureFlags.ENABLE_HYBRID_HOTSEAT.get() && !hasReachedMaxCount(
                 HOTSEAT_DISCOVERY_TIP_COUNT)) {
             stateManager.addStateListener(new StateListener<LauncherState>() {

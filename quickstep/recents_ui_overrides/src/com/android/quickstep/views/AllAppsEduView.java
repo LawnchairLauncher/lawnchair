@@ -54,6 +54,7 @@ import com.android.quickstep.util.MultiValueUpdateListener;
 
 /**
  * View used to educate the user on how to access All Apps when in No Nav Button navigation mode.
+ * Consumes all touches until after the animation is completed and the view is removed.
  */
 public class AllAppsEduView extends AbstractFloatingView {
 
@@ -114,8 +115,18 @@ public class AllAppsEduView extends AbstractFloatingView {
     }
 
     @Override
+    public boolean onBackPressed() {
+        return true;
+    }
+
+    @Override
+    public boolean canInterceptEventsInSystemGestureRegion() {
+        return true;
+    }
+
+    @Override
     public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
-        return mAnimation != null && mAnimation.isRunning();
+        return true;
     }
 
     private void playAnimation() {

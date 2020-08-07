@@ -36,7 +36,7 @@
     <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
     <string name="shortcut_not_available">Shortcut isn\'t available</string>
     <!-- User visible name for the launcher/home screen. [CHAR_LIMIT=30] -->
-    <string name="home_screen">Home screen</string>
+    <string name="home_screen">Home</string>
     <!-- Label for showing custom action list of a shortcut or widget. [CHAR_LIMIT=30] -->
     <string name="custom_actions">Custom actions</string>
 
@@ -67,6 +67,10 @@
     <!-- Label for an icon representing any generic app. [CHAR_LIMIT=50] -->
     <string name="label_application">App</string>
 
+    <!--All apps Search-->
+    <!-- Section title for apps [CHAR_LIMIT=50] -->
+    <string name="search_corpus_apps">Apps</string>
+
     <!-- Popup items -->
     <!-- Text to display as the header above notifications. [CHAR_LIMIT=30] -->
     <string name="notifications_header">Notifications</string>
@@ -87,10 +91,6 @@
     <string name="all_apps_button_label">Apps list</string>
     <string name="all_apps_button_personal_label">Personal apps list</string>
     <string name="all_apps_button_work_label">Work apps list</string>
-
-    <!-- Label for button in all applications label to go back home (to the workspace / desktop)
-         for accessibilty (spoken when the button gets focus). -->
-    <string name="all_apps_home_button_label">Home</string>
 
     <!-- Label for remove drop target (from the homescreen only).
          May appear next to uninstall_drop_target_label [CHAR_LIMIT=20] -->
@@ -348,7 +348,8 @@
     <!-- content description for paused work apps list -->
     <string name="work_apps_paused_content_description">Work profile is paused. Work apps can\’t send you notifications, use your battery, or access your location</string>
 
-
+    <!-- A hint shown in launcher settings develop options filter box -->
+    <string name="developer_options_filter_hint">Filter</string>
 
     <!-- A tip shown pointing at work toggle -->
     <string name="work_switch_tip">Pause work apps and notifications</string>

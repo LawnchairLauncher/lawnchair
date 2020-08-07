@@ -59,7 +59,6 @@ import com.android.systemui.plugins.OverviewScreenshotActions;
 import com.android.systemui.plugins.PluginListener;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
-import com.android.systemui.shared.system.ConfigurationCompat;
 
 /**
  * A task in the Recents view.
@@ -357,7 +356,7 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
     }
 
     private void updateOverlay() {
-        if (mOverlayEnabled && mBitmapShader != null && mThumbnailData != null) {
+        if (mOverlayEnabled) {
             mOverlay.initOverlay(mTask, mThumbnailData, mPreviewPositionHelper.mMatrix,
                     mPreviewPositionHelper.mIsOrientationChanged);
         } else {
@@ -385,8 +384,8 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
         if (mBitmapShader != null && mThumbnailData != null) {
             mPreviewRect.set(0, 0, mThumbnailData.thumbnail.getWidth(),
                     mThumbnailData.thumbnail.getHeight());
-            int currentRotation = ConfigurationCompat.getWindowConfigurationRotation(
-                    mActivity.getResources().getConfiguration());
+            int currentRotation = getTaskView().getRecentsView().getPagedViewOrientedState()
+                    .getRecentsActivityRotation();
             mPreviewPositionHelper.updateThumbnailMatrix(mPreviewRect, mThumbnailData,
                     getMeasuredWidth(), getMeasuredHeight(), mActivity.getDeviceProfile(),
                     currentRotation);

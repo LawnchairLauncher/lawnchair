@@ -15,19 +15,25 @@
  */
 package com.android.launcher3.model;
 
+import static android.content.pm.LauncherApps.ShortcutQuery.FLAG_GET_KEY_FIELDS_ONLY;
+
 import static com.android.launcher3.model.WidgetsModel.GO_DISABLE_WIDGETS;
 import static com.android.launcher3.shortcuts.ShortcutRequest.PINNED;
+
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.mapping;
 
 import android.content.Context;
 import android.content.pm.LauncherApps;
 import android.content.pm.ShortcutInfo;
 import android.os.UserHandle;
 import android.text.TextUtils;
+import android.util.ArraySet;
 import android.util.Log;
-import android.util.MutableInt;
 
 import com.android.launcher3.InstallShortcutReceiver;
 import com.android.launcher3.LauncherSettings;
+import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.AppInfo;
@@ -36,8 +42,10 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.PromiseAppInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.shortcuts.ShortcutRequest;
+import com.android.launcher3.shortcuts.ShortcutRequest.QueryResult;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
@@ -50,14 +58,16 @@ import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiConsumer;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * All the data stored in-memory and managed by the LauncherModel
@@ -89,21 +99,14 @@ public class BgDataModel {
     public final IntSparseArrayMap<FolderInfo> folders = new IntSparseArrayMap<>();
 
     /**
-     * Map of ShortcutKey to the number of times it is pinned.
+     * Extra container based items
      */
-    public final Map<ShortcutKey, MutableInt> pinnedShortcutCounts = new HashMap<>();
+    public final IntSparseArrayMap<FixedContainerItems> extraItems = new IntSparseArrayMap<>();
 
     /**
      * List of all cached predicted items visible on home screen
      */
     public final ArrayList<AppInfo> cachedPredictedItems = new ArrayList<>();
-
-    /**
-     * @see Callbacks#FLAG_HAS_SHORTCUT_PERMISSION
-     * @see Callbacks#FLAG_QUIET_MODE_ENABLED
-     * @see Callbacks#FLAG_QUIET_MODE_CHANGE_PERMISSION
-     */
-    public int flags;
 
     /**
      * Maps all launcher activities to counts of their shortcuts.
@@ -128,8 +131,8 @@ public class BgDataModel {
         appWidgets.clear();
         folders.clear();
         itemsIdMap.clear();
-        pinnedShortcutCounts.clear();
         deepShortcutMap.clear();
+        extraItems.clear();
     }
 
     /**
@@ -182,6 +185,7 @@ public class BgDataModel {
     }
 
     public synchronized void removeItem(Context context, Iterable<? extends ItemInfo> items) {
+        ArraySet<UserHandle> updatedDeepShortcuts = new ArraySet<>();
         for (ItemInfo item : items) {
             switch (item.itemType) {
                 case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
@@ -200,14 +204,7 @@ public class BgDataModel {
                     workspaceItems.remove(item);
                     break;
                 case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT: {
-                    // Decrement pinned shortcut count
-                    ShortcutKey pinnedShortcut = ShortcutKey.fromItemInfo(item);
-                    MutableInt count = pinnedShortcutCounts.get(pinnedShortcut);
-                    if ((count == null || --count.value == 0)
-                            && !InstallShortcutReceiver.getPendingShortcuts(context)
-                                .contains(pinnedShortcut)) {
-                        unpinShortcut(context, pinnedShortcut);
-                    }
+                    updatedDeepShortcuts.add(item.user);
                     // Fall through.
                 }
                 case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
@@ -221,6 +218,7 @@ public class BgDataModel {
             }
             itemsIdMap.remove(item.id);
         }
+        updatedDeepShortcuts.forEach(user -> updateShortcutPinnedState(context, user));
     }
 
     public synchronized void addItem(Context context, ItemInfo item, boolean newItem) {
@@ -230,23 +228,7 @@ public class BgDataModel {
                 folders.put(item.id, (FolderInfo) item);
                 workspaceItems.add(item);
                 break;
-            case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT: {
-                // Increment the count for the given shortcut
-                ShortcutKey pinnedShortcut = ShortcutKey.fromItemInfo(item);
-                MutableInt count = pinnedShortcutCounts.get(pinnedShortcut);
-                if (count == null) {
-                    count = new MutableInt(1);
-                    pinnedShortcutCounts.put(pinnedShortcut, count);
-                } else {
-                    count.value++;
-                }
-
-                // Since this is a new item, pin the shortcut in the system server.
-                if (newItem && count.value == 1) {
-                    updatePinnedShortcuts(context, pinnedShortcut, List::add);
-                }
-                // Fall through
-            }
+            case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT:
             case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
             case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
                 if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP ||
@@ -271,36 +253,87 @@ public class BgDataModel {
                 appWidgets.add((LauncherAppWidgetInfo) item);
                 break;
         }
+        if (newItem && item.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
+            updateShortcutPinnedState(context, item.user);
+        }
     }
 
     /**
-     * Removes the given shortcut from the current list of pinned shortcuts.
-     * (Runs on background thread)
+     * Updates the deep shortucts state in system to match out internal model, pinning any missing
+     * shortcuts and unpinning any extra shortcuts.
      */
-    public void unpinShortcut(Context context, ShortcutKey key) {
-        updatePinnedShortcuts(context, key, List::remove);
+    public void updateShortcutPinnedState(Context context) {
+        for (UserHandle user : UserCache.INSTANCE.get(context).getUserProfiles()) {
+            updateShortcutPinnedState(context, user);
+        }
     }
 
-    private void updatePinnedShortcuts(Context context, ShortcutKey key,
-            BiConsumer<List<String>, String> idOp) {
+    /**
+     * Updates the deep shortucts state in system to match out internal model, pinning any missing
+     * shortcuts and unpinning any extra shortcuts.
+     */
+    public synchronized void updateShortcutPinnedState(Context context, UserHandle user) {
         if (GO_DISABLE_WIDGETS) {
             return;
         }
-        String packageName = key.componentName.getPackageName();
-        String id = key.getId();
-        UserHandle user = key.user;
-        List<String> pinnedIds = new ShortcutRequest(context, user)
-                .forPackage(packageName)
-                .query(PINNED)
-                .stream()
-                .map(ShortcutInfo::getId)
-                .collect(Collectors.toCollection(ArrayList::new));
-        idOp.accept(pinnedIds, id);
-        try {
-            context.getSystemService(LauncherApps.class).pinShortcuts(packageName, pinnedIds, user);
-        } catch (SecurityException | IllegalStateException e) {
-            Log.w(TAG, "Failed to pin shortcut", e);
+
+        // Collect all system shortcuts
+        QueryResult result = new ShortcutRequest(context, user)
+                .query(PINNED | FLAG_GET_KEY_FIELDS_ONLY);
+        if (!result.wasSuccess()) {
+            return;
         }
+        // Map of packageName to shortcutIds that are currently in the system
+        Map<String, Set<String>> systemMap = result.stream()
+                .collect(groupingBy(ShortcutInfo::getPackage,
+                        mapping(ShortcutInfo::getId, Collectors.toSet())));
+
+        // Collect all model shortcuts
+        Stream.Builder<WorkspaceItemInfo> itemStream = Stream.builder();
+        forAllWorkspaceItemInfos(user, itemStream::accept);
+        // Map of packageName to shortcutIds that are currently in our model
+        Map<String, Set<String>> modelMap = Stream.concat(
+                    // Model shortcuts
+                    itemStream.build()
+                        .filter(wi -> wi.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT)
+                        .map(ShortcutKey::fromItemInfo),
+                    // Pending shortcuts
+                    InstallShortcutReceiver.getPendingShortcuts(context)
+                        .stream().filter(si -> si.user.equals(user)))
+                .collect(groupingBy(ShortcutKey::getPackageName,
+                        mapping(ShortcutKey::getId, Collectors.toSet())));
+
+        // Check for diff
+        for (Map.Entry<String, Set<String>> entry : modelMap.entrySet()) {
+            Set<String> modelShortcuts = entry.getValue();
+            Set<String> systemShortcuts = systemMap.remove(entry.getKey());
+            if (systemShortcuts == null) {
+                systemShortcuts = Collections.emptySet();
+            }
+
+            // Do not use .equals as it can vary based on the type of set
+            if (systemShortcuts.size() != modelShortcuts.size()
+                    || !systemShortcuts.containsAll(modelShortcuts)) {
+                // Update system state for this package
+                try {
+                    context.getSystemService(LauncherApps.class).pinShortcuts(
+                            entry.getKey(), new ArrayList<>(modelShortcuts), user);
+                } catch (SecurityException | IllegalStateException e) {
+                    Log.w(TAG, "Failed to pin shortcut", e);
+                }
+            }
+        }
+
+        // If there are any extra pinned shortcuts, remove them
+        systemMap.keySet().forEach(packageName -> {
+            // Update system state
+            try {
+                context.getSystemService(LauncherApps.class).pinShortcuts(
+                        packageName, Collections.emptyList(), user);
+            } catch (SecurityException | IllegalStateException e) {
+                Log.w(TAG, "Failed to unpin shortcut", e);
+            }
+        });
     }
 
     /**
@@ -360,7 +393,39 @@ public class BgDataModel {
                 op.accept((WorkspaceItemInfo) info);
             }
         }
+
+        for (int i = extraItems.size() - 1; i >= 0; i--) {
+            for (ItemInfo info : extraItems.valueAt(i).items) {
+                if (info instanceof WorkspaceItemInfo && userHandle.equals(info.user)) {
+                    op.accept((WorkspaceItemInfo) info);
+                }
+            }
+        }
     }
+
+    /**
+     * An object containing items corresponding to a fixed container
+     */
+    public static class FixedContainerItems {
+
+        public final int containerId;
+        public final List<ItemInfo> items;
+
+        public FixedContainerItems(int containerId) {
+            this(containerId, new ArrayList<>());
+        }
+
+        public FixedContainerItems(int containerId, List<ItemInfo> items) {
+            this.containerId = containerId;
+            this.items = items;
+        }
+
+        @Override
+        public FixedContainerItems clone() {
+            return new FixedContainerItems(containerId, new ArrayList<>(items));
+        }
+    }
+
 
     public interface Callbacks {
         // If the launcher has permission to access deep shortcuts.
@@ -384,7 +449,7 @@ public class BgDataModel {
         void bindAppsAdded(IntArray newScreens,
                 ArrayList<ItemInfo> addNotAnimated, ArrayList<ItemInfo> addAnimated);
         void bindPromiseAppProgressUpdated(PromiseAppInfo app);
-        void bindWorkspaceItemsChanged(ArrayList<WorkspaceItemInfo> updated);
+        void bindWorkspaceItemsChanged(List<WorkspaceItemInfo> updated);
         void bindWidgetsRestored(ArrayList<LauncherAppWidgetInfo> widgets);
         void bindRestoreItemsChange(HashSet<ItemInfo> updates);
         void bindWorkspaceComponentsRemoved(ItemInfoMatcher matcher);
@@ -392,6 +457,11 @@ public class BgDataModel {
         void onPageBoundSynchronously(int page);
         void executeOnNextDraw(ViewOnDrawExecutor executor);
         void bindDeepShortcutMap(HashMap<ComponentKey, Integer> deepShortcutMap);
+
+        /**
+         * Binds extra item provided any external source
+         */
+        default void bindExtraContainerItems(FixedContainerItems item) { }
 
         void bindAllApplications(AppInfo[] apps, int flags);
 
