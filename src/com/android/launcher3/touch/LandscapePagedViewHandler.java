@@ -216,6 +216,11 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
+    public int getPrimaryTranslationDirectionFactor() {
+        return -1;
+    }
+
+    @Override
     public int getTaskDismissDirectionFactor() {
         return 1;
     }

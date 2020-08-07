@@ -75,6 +75,7 @@ public interface PagedOrientationHandler {
     int getScrollOffsetStart(View view, Rect insets);
     int getScrollOffsetEnd(View view, Rect insets);
     SingleAxisSwipeDetector.Direction getOppositeSwipeDirection();
+    int getPrimaryTranslationDirectionFactor();
     int getTaskDismissDirectionFactor();
     int getTaskDragDisplacementFactor(boolean isRtl);
     ChildBounds getChildBounds(View child, int childStart, int pageCenter, boolean layoutChild);

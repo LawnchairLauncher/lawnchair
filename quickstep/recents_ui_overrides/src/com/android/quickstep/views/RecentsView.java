@@ -1890,7 +1890,9 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
                     : i < modalMidpoint
                             ? modalLeftOffsetSize
                             : modalRightOffsetSize;
-            getChildAt(i).setTranslationX(translation + modalTranslation);
+            float totalTranslation = translation + modalTranslation;
+            mOrientationHandler.getPrimaryViewTranslate().set(getChildAt(i),
+                    totalTranslation * mOrientationHandler.getPrimaryTranslationDirectionFactor());
         }
         updateCurveProperties();
     }
