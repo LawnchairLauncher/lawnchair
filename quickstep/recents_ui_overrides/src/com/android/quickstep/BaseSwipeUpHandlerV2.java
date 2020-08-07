@@ -488,6 +488,16 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
             recentsAttachedToAppWindow = mIsShelfPeeking || mIsLikelyToStartNewTask;
         }
         mAnimationFactory.setRecentsAttachedToAppWindow(recentsAttachedToAppWindow, animate);
+
+        // Reapply window transform throughout the attach animation, as the animation affects how
+        // much the window is bound by overscroll (vs moving freely).
+        if (animate) {
+            ValueAnimator reapplyWindowTransformAnim = ValueAnimator.ofFloat(0, 1);
+            reapplyWindowTransformAnim.addUpdateListener(anim -> applyWindowTransform());
+            reapplyWindowTransformAnim.setDuration(RECENTS_ATTACH_DURATION).start();
+        } else {
+            applyWindowTransform();
+        }
     }
 
     @Override
