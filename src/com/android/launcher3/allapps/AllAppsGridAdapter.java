@@ -43,6 +43,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.allapps.AlphabeticalAppsList.AdapterItem;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.util.PackageManagerHelper;
+import com.android.launcher3.views.HeroSearchResultView;
 
 import java.util.List;
 
@@ -66,7 +67,9 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     // A divider that separates the apps list and the search market button
     public static final int VIEW_TYPE_ALL_APPS_DIVIDER = 1 << 4;
 
-    public static final int VIEW_TYPE_SEARCH_CORPUS_TITLE =  1 << 5;
+    public static final int VIEW_TYPE_SEARCH_CORPUS_TITLE = 1 << 5;
+
+    public static final int VIEW_TYPE_SEARCH_HERO_APP = 1 << 6;
 
     // Common view type masks
     public static final int VIEW_TYPE_MASK_DIVIDER = VIEW_TYPE_ALL_APPS_DIVIDER;
@@ -279,6 +282,10 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
             case VIEW_TYPE_SEARCH_CORPUS_TITLE:
                 return new ViewHolder(
                         mLayoutInflater.inflate(R.layout.search_section_title, parent, false));
+
+            case VIEW_TYPE_SEARCH_HERO_APP:
+                return new ViewHolder(mLayoutInflater.inflate(
+                        R.layout.search_result_hero_app, parent, false));
             default:
                 throw new RuntimeException("Unexpected view type");
         }
@@ -311,6 +318,13 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 TextView titleView = (TextView) holder.itemView;
                 titleView.setText(mApps.getAdapterItems().get(position).searchSectionInfo.getTitle(
                         titleView.getContext()));
+                break;
+            case VIEW_TYPE_SEARCH_HERO_APP:
+                HeroSearchResultView heroView = (HeroSearchResultView) holder.itemView;
+                heroView.prepareUsingAdapterItem(
+                        (AlphabeticalAppsList.HeroAppAdapterItem) mApps.getAdapterItems().get(
+                                position));
+                break;
             case VIEW_TYPE_ALL_APPS_DIVIDER:
                 // nothing to do
                 break;

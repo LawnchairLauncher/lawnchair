@@ -32,7 +32,7 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
 
     public DefaultAppSearchAlgorithm(LauncherAppState launcherAppState) {
         mResultHandler = new Handler();
-        mAppsSearchPipeline = new AppsSearchPipeline(launcherAppState);
+        mAppsSearchPipeline = new AppsSearchPipeline(launcherAppState, false);
     }
 
     @Override

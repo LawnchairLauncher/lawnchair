@@ -22,6 +22,7 @@ import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.allapps.search.SearchSectionInfo;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.AppInfo;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LabelComparator;
 
@@ -130,9 +131,32 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
         }
 
         boolean isCountedForAccessibility() {
-            return viewType == AllAppsGridAdapter.VIEW_TYPE_ICON;
+            return viewType == AllAppsGridAdapter.VIEW_TYPE_ICON
+                    || viewType == AllAppsGridAdapter.VIEW_TYPE_SEARCH_HERO_APP;
         }
     }
+
+    /**
+     * Extension of AdapterItem that contains shortcut workspace items
+     */
+    public static class HeroAppAdapterItem extends AdapterItem {
+        private ArrayList<WorkspaceItemInfo> mShortcutInfos;
+
+        public HeroAppAdapterItem(AppInfo info, ArrayList<WorkspaceItemInfo> shortcutInfos) {
+            viewType = AllAppsGridAdapter.VIEW_TYPE_SEARCH_HERO_APP;
+            mShortcutInfos = shortcutInfos;
+            appInfo = info;
+        }
+
+        /**
+         * Returns list of shortcuts for appInfo
+         */
+        public ArrayList<WorkspaceItemInfo> getShortcutInfos() {
+            return mShortcutInfos;
+        }
+
+    }
+
 
     private final BaseDraggingActivity mLauncher;
 
