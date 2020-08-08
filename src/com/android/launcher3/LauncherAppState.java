@@ -128,7 +128,7 @@ public class LauncherAppState {
         mInvariantDeviceProfile = InvariantDeviceProfile.INSTANCE.get(context);
         mIconCache = new IconCache(mContext, mInvariantDeviceProfile, iconCacheFileName);
         mWidgetCache = new WidgetPreviewLoader(mContext, mIconCache);
-        mModel = new LauncherModel(this, mIconCache, AppFilter.newInstance(mContext));
+        mModel = new LauncherModel(context, this, mIconCache, AppFilter.newInstance(mContext));
         mPredictionModel = PredictionModel.newInstance(mContext);
     }
 
@@ -157,6 +157,7 @@ public class LauncherAppState {
      * Call from Application.onTerminate(), which is not guaranteed to ever be called.
      */
     public void onTerminate() {
+        mModel.destroy();
         if (mModelChangeReceiver != null) {
             mContext.unregisterReceiver(mModelChangeReceiver);
         }

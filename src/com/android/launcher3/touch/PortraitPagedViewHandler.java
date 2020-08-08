@@ -70,6 +70,7 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
         out.halfPageSize = view.getNormalChildWidth() / 2;
         out.halfScreenSize = view.getMeasuredWidth() / 2;
         out.screenCenter = insets.left + view.getPaddingLeft() + out.scroll + out.halfPageSize;
+        out.pageParentScale = view.getScaleX();
     }
 
     @Override
@@ -237,8 +238,9 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public int getTaskMenuLayoutOrientation(LinearLayout taskMenuLayout) {
-        return taskMenuLayout.getOrientation();
+    public int getTaskMenuLayoutOrientation(boolean canRecentsActivityRotate,
+        LinearLayout taskMenuLayout) {
+        return canRecentsActivityRotate ? taskMenuLayout.getOrientation() : LinearLayout.VERTICAL;
     }
 
     @Override

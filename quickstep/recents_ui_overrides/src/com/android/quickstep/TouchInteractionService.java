@@ -259,6 +259,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
 
     private static boolean sConnected = false;
     private static boolean sIsInitialized = false;
+    private RotationTouchHelper mRotationTouchHelper;
 
     public static boolean isConnected() {
         return sConnected;
@@ -268,9 +269,9 @@ public class TouchInteractionService extends Service implements PluginListener<O
         return sIsInitialized;
     }
 
-    private final BaseSwipeUpHandler.Factory mLauncherSwipeHandlerFactory =
+    private final AbsSwipeUpHandler.Factory mLauncherSwipeHandlerFactory =
             this::createLauncherSwipeHandler;
-    private final BaseSwipeUpHandler.Factory mFallbackSwipeHandlerFactory =
+    private final AbsSwipeUpHandler.Factory mFallbackSwipeHandlerFactory =
             this::createFallbackSwipeHandler;
 
     private ActivityManagerWrapper mAM;
@@ -300,6 +301,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
         mDeviceState.addNavigationModeChangedCallback(this::onNavigationModeChanged);
         mDeviceState.addOneHandedModeChangedCallback(this::onOneHandedModeOverlayChanged);
         mDeviceState.runOnUserUnlocked(this::onUserUnlocked);
+        mRotationTouchHelper = mDeviceState.getRotationTouchHelper();
         ProtoTracer.INSTANCE.get(this).add(this);
 
         sConnected = true;
@@ -328,7 +330,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
         mInputEventReceiver = mInputMonitorCompat.getInputReceiver(Looper.getMainLooper(),
                 mMainChoreographer, this::onInputEvent);
 
-        mDeviceState.updateGestureTouchRegions();
+        mRotationTouchHelper.updateGestureTouchRegions();
     }
 
     /**
@@ -479,9 +481,9 @@ public class TouchInteractionService extends Service implements PluginListener<O
             if (TestProtocol.sDebugTracing) {
                 Log.d(TestProtocol.NO_SWIPE_TO_HOME, "TouchInteractionService.onInputEvent:DOWN");
             }
-            mDeviceState.setOrientationTransformIfNeeded(event);
+            mRotationTouchHelper.setOrientationTransformIfNeeded(event);
 
-            if (mDeviceState.isInSwipeUpTouchRegion(event)) {
+            if (mRotationTouchHelper.isInSwipeUpTouchRegion(event)) {
                 if (TestProtocol.sDebugTracing) {
                     Log.d(TestProtocol.NO_SWIPE_TO_HOME,
                             "TouchInteractionService.onInputEvent:isInSwipeUpTouchRegion");
@@ -508,6 +510,11 @@ public class TouchInteractionService extends Service implements PluginListener<O
                             mGestureState,
                             InputConsumer.NO_OP, mInputMonitorCompat,
                             mOverviewComponentObserver.assistantGestureIsConstrained());
+                } else if (mDeviceState.canTriggerOneHandedAction(event)
+                    && !mDeviceState.isOneHandedModeActive()) {
+                    // Consume gesture event for triggering one handed feature.
+                    mUncheckedConsumer = new OneHandedModeInputConsumer(this, mDeviceState,
+                        InputConsumer.NO_OP, mInputMonitorCompat);
                 } else {
                     mUncheckedConsumer = InputConsumer.NO_OP;
                 }
@@ -523,7 +530,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
             // Other events
             if (mUncheckedConsumer != InputConsumer.NO_OP) {
                 // Only transform the event if we are handling it in a proper consumer
-                mDeviceState.setOrientationTransformIfNeeded(event);
+                mRotationTouchHelper.setOrientationTransformIfNeeded(event);
             }
         }
 
@@ -561,7 +568,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
             gestureState.updatePreviouslyAppearedTaskIds(
                     previousGestureState.getPreviouslyAppearedTaskIds());
         } else {
-            gestureState.updateRunningTask(TraceHelper.whitelistIpcs("getRunningTask.0",
+            gestureState.updateRunningTask(TraceHelper.allowIpcs("getRunningTask.0",
                     () -> mAM.getRunningTask(false /* filterOnlyVisibleRecents */)));
         }
         return gestureState;
@@ -684,7 +691,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
         if (AssistantUtilities.isExcludedAssistant(gestureState.getRunningTask())) {
             // In the case where we are in the excluded assistant state, ignore it and treat the
             // running activity as the task behind the assistant
-            gestureState.updateRunningTask(TraceHelper.whitelistIpcs("getRunningTask.assistant",
+            gestureState.updateRunningTask(TraceHelper.allowIpcs("getRunningTask.assistant",
                     () -> mAM.getRunningTask(true /* filterOnlyVisibleRecents */)));
             ComponentName homeComponent = mOverviewComponentObserver.getHomeIntent().getComponent();
             ComponentName runningComponent =
@@ -714,7 +721,7 @@ public class TouchInteractionService extends Service implements PluginListener<O
     private InputConsumer createOtherActivityInputConsumer(GestureState gestureState,
             MotionEvent event) {
 
-        final BaseSwipeUpHandler.Factory factory;
+        final AbsSwipeUpHandler.Factory factory;
         if (!mOverviewComponentObserver.isHomeAndOverviewSame()) {
             factory = mFallbackSwipeHandlerFactory;
         } else {
@@ -887,13 +894,13 @@ public class TouchInteractionService extends Service implements PluginListener<O
         }
     }
 
-    private BaseSwipeUpHandler createLauncherSwipeHandler(
+    private AbsSwipeUpHandler createLauncherSwipeHandler(
             GestureState gestureState, long touchTimeMs, boolean continuingLastGesture) {
         return new LauncherSwipeHandlerV2(this, mDeviceState, mTaskAnimationManager,
                 gestureState, touchTimeMs, continuingLastGesture, mInputConsumer);
     }
 
-    private BaseSwipeUpHandler createFallbackSwipeHandler(
+    private AbsSwipeUpHandler createFallbackSwipeHandler(
             GestureState gestureState, long touchTimeMs, boolean continuingLastGesture) {
         return new FallbackSwipeHandler(this, mDeviceState, mTaskAnimationManager,
                 gestureState, touchTimeMs, continuingLastGesture, mInputConsumer);

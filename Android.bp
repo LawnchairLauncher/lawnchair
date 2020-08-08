@@ -19,6 +19,7 @@ android_library {
         "androidx.test.runner",
         "androidx.test.rules",
         "androidx.test.uiautomator_uiautomator",
+        "androidx.preference_preference",
         "SystemUISharedLib",
     ],
     srcs: [

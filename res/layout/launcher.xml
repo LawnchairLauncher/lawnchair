@@ -28,6 +28,12 @@
         android:clipToPadding="false"
         android:importantForAccessibility="no">
 
+        <com.android.launcher3.views.AccessibilityActionsView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/home_screen"
+            />
+
         <!-- The workspace contains 5 screens of cells -->
         <!-- DO NOT CHANGE THE ID -->
         <com.android.launcher3.Workspace

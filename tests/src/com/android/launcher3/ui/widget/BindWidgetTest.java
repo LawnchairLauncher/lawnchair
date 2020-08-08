@@ -192,7 +192,7 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
                         WidgetManagerHelper.WIDGET_OPTION_RESTORE_COMPLETED));
         executeOnLauncher(l -> l.getAppWidgetHost().startListening());
         verifyWidgetPresent(info);
-        assertNull(mLauncher.getWorkspace().tryGetPendingWidget(DEFAULT_UI_TIMEOUT));
+        assertNull(mLauncher.getWorkspace().tryGetPendingWidget(100));
     }
 
     @Test

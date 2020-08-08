@@ -15,12 +15,11 @@
  */
 package com.android.quickstep;
 
-import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.anim.Interpolators.INSTANT;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_ACTIONS;
-import static com.android.quickstep.BaseSwipeUpHandlerV2.RECENTS_ATTACH_DURATION;
+import static com.android.quickstep.AbsSwipeUpHandler.RECENTS_ATTACH_DURATION;
 import static com.android.quickstep.SysUINavigationMode.getMode;
 import static com.android.quickstep.SysUINavigationMode.hideShelfInTwoButtonLandscape;
 import static com.android.quickstep.SysUINavigationMode.removeShelfFromOverview;
@@ -28,6 +27,7 @@ import static com.android.quickstep.util.RecentsAtomicAnimationFactory.INDEX_REC
 import static com.android.quickstep.util.RecentsAtomicAnimationFactory.INDEX_RECENTS_TRANSLATE_X_ANIM;
 import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_OFFSET;
 import static com.android.quickstep.views.RecentsView.FULLSCREEN_PROGRESS;
+import static com.android.quickstep.views.RecentsView.RECENTS_SCALE_PROPERTY;
 
 import android.animation.Animator;
 import android.annotation.TargetApi;
@@ -150,7 +150,7 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
         return deviceState.isInDeferredGestureRegion(ev);
     }
 
-    public abstract void onExitOverview(RecentsAnimationDeviceState deviceState,
+    public abstract void onExitOverview(RotationTouchHelper deviceState,
             Runnable exitRunnable);
 
     /**
@@ -393,7 +393,7 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
         protected void createBackgroundToOverviewAnim(ACTIVITY_TYPE activity, PendingAnimation pa) {
             //  Scale down recents from being full screen to being in overview.
             RecentsView recentsView = activity.getOverviewPanel();
-            pa.addFloat(recentsView, SCALE_PROPERTY,
+            pa.addFloat(recentsView, RECENTS_SCALE_PROPERTY,
                     recentsView.getMaxScaleForFullScreen(), 1, LINEAR);
             pa.addFloat(recentsView, FULLSCREEN_PROGRESS, 1, 0, LINEAR);
         }

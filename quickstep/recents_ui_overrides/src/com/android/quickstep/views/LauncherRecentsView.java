@@ -15,7 +15,6 @@
  */
 package com.android.quickstep.views;
 
-import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.ALL_APPS_HEADER_EXTRA;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
@@ -39,14 +38,11 @@ import android.widget.FrameLayout;
 import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.StateManager.StateListener;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
-import com.android.launcher3.views.ScrimView;
 import com.android.quickstep.LauncherActivityInterface;
 import com.android.quickstep.SysUINavigationMode;
-import com.android.quickstep.util.TransformParams;
 import com.android.systemui.plugins.PluginListener;
 import com.android.systemui.plugins.RecentsExtraCard;
 
@@ -56,8 +52,6 @@ import com.android.systemui.plugins.RecentsExtraCard;
 @TargetApi(Build.VERSION_CODES.O)
 public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher>
         implements StateListener<LauncherState> {
-
-    private final TransformParams mTransformParams = new TransformParams();
 
     private RecentsExtraCard mRecentsExtraCardPlugin;
     private RecentsExtraViewContainer mRecentsExtraViewContainer;
@@ -108,17 +102,6 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher>
         }
     }
 
-    @Override
-    public void setTranslationY(float translationY) {
-        super.setTranslationY(translationY);
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-            LauncherState state = mActivity.getStateManager().getState();
-            if (state == OVERVIEW || state == ALL_APPS) {
-                redrawLiveTile(false);
-            }
-        }
-    }
-
     /**
      * Animates adjacent tasks and translate hotseat off screen as well.
      */
@@ -141,26 +124,7 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher>
         }
         anim.play(ObjectAnimator.ofFloat(
                 mActivity.getAllAppsController(), ALL_APPS_PROGRESS, allAppsProgressOffscreen));
-
-        ObjectAnimator dragHandleAnim = ObjectAnimator.ofInt(
-                mActivity.getScrimView(), ScrimView.DRAG_HANDLE_ALPHA, 0);
-        dragHandleAnim.setInterpolator(Interpolators.ACCEL_2);
-        anim.play(dragHandleAnim);
-
         return anim;
-    }
-
-    @Override
-    protected void onTaskLaunchAnimationUpdate(float progress, TaskView tv) {
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-            if (tv.isRunningTask()) {
-                mTransformParams.setProgress(1 - progress)
-                        .setSyncTransactionApplier(mSyncTransactionApplier);
-                // TODO: Revisit live tiles
-            } else {
-                redrawLiveTile(true);
-            }
-        }
     }
 
     @Override
@@ -172,46 +136,6 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher>
             mActivity.getAllAppsController().setState(state);
         }
         super.onTaskLaunchAnimationEnd(success);
-    }
-
-    @Override
-    public void scrollTo(int x, int y) {
-        super.scrollTo(x, y);
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get() && mEnableDrawingLiveTile) {
-            redrawLiveTile(true);
-        }
-    }
-
-    @Override
-    public TransformParams getLiveTileParams(
-            boolean mightNeedToRefill) {
-        if (!mEnableDrawingLiveTile || mRecentsAnimationController == null
-                || mRecentsAnimationTargets == null) {
-            return null;
-        }
-        TaskView taskView = getRunningTaskView();
-        if (taskView != null) {
-            taskView.getThumbnail().getGlobalVisibleRect(mTempRect);
-            int offsetX = (int) (mTaskWidth * taskView.getScaleX() * getScaleX()
-                    - mTempRect.width());
-            int offsetY = (int) (mTaskHeight * taskView.getScaleY() * getScaleY()
-                    - mTempRect.height());
-            if (((mCurrentPage != 0) || mightNeedToRefill) && offsetX > 0) {
-                if (mTempRect.left - offsetX < 0) {
-                    mTempRect.left -= offsetX;
-                } else {
-                    mTempRect.right += offsetX;
-                }
-            }
-            if (mightNeedToRefill && offsetY > 0) {
-                mTempRect.top -= offsetY;
-            }
-            mTransformParams.setProgress(1f)
-                    .setTargetAlpha(taskView.getAlpha())
-                    .setSyncTransactionApplier(mSyncTransactionApplier)
-                    .setTargetSet(mRecentsAnimationTargets);
-        }
-        return mTransformParams;
     }
 
     @Override

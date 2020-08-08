@@ -34,17 +34,23 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.ArrayMap;
 import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceDataStore;
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceGroup;
 import androidx.preference.PreferenceScreen;
 import androidx.preference.PreferenceViewHolder;
 import androidx.preference.SwitchPreference;
@@ -81,6 +87,7 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
     private PreferenceCategory mPluginsCategory;
     private FlagTogglerPrefUi mFlagTogglerPrefUi;
 
+
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         IntentFilter filter = new IntentFilter(Intent.ACTION_PACKAGE_ADDED);
@@ -97,6 +104,50 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
         initFlags();
         loadPluginPrefs();
         maybeAddSandboxCategory();
+    }
+
+    private void filterPreferences(String query, PreferenceGroup pg) {
+        int count = pg.getPreferenceCount();
+        int hidden = 0;
+        for (int i = 0; i < count; i++) {
+            Preference preference = pg.getPreference(i);
+            if (preference instanceof PreferenceGroup) {
+                filterPreferences(query, (PreferenceGroup) preference);
+            } else {
+                String title = preference.getTitle().toString().toLowerCase().replace("_", " ");
+                if (query.isEmpty() || title.contains(query)) {
+                    preference.setVisible(true);
+                } else {
+                    preference.setVisible(false);
+                    hidden++;
+                }
+            }
+        }
+        pg.setVisible(hidden != count);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        EditText filterBox = view.findViewById(R.id.filter_box);
+        filterBox.setVisibility(View.VISIBLE);
+        filterBox.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String query = editable.toString().toLowerCase().replace("_", " ");
+                filterPreferences(query, mPreferenceScreen);
+            }
+        });
     }
 
     @Override
