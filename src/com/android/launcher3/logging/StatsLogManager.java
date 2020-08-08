@@ -316,7 +316,10 @@ public class StatsLogManager implements ResourceBasedOverride {
         LAUNCHER_NAVIGATION_MODE_2_BUTTON(624),
 
         @UiEvent(doc = "System navigation mode is 0 button mode/gesture navigation mode .")
-        LAUNCHER_NAVIGATION_MODE_GESTURE_BUTTON(625);
+        LAUNCHER_NAVIGATION_MODE_GESTURE_BUTTON(625),
+
+        @UiEvent(doc = "User tapped on image content in Overview Select mode.")
+        LAUNCHER_SELECT_MODE_IMAGE(627);
 
         // ADD MORE
 
