@@ -103,6 +103,7 @@ public final class LauncherInstrumentation {
 
     static final Pattern EVENT_TOUCH_DOWN_TIS = getTouchEventPatternTIS("ACTION_DOWN");
     static final Pattern EVENT_TOUCH_UP_TIS = getTouchEventPatternTIS("ACTION_UP");
+    private final String mLauncherPackage;
 
     // Types for launcher containers that the user is interacting with. "Background" is a
     // pseudo-container corresponding to inactive launcher covered by another app.
@@ -112,9 +113,10 @@ public final class LauncherInstrumentation {
 
     public enum NavigationModel {ZERO_BUTTON, TWO_BUTTON, THREE_BUTTON}
 
-    // Where the gesture happens: outside of Launcher, inside or from inside to outside.
+    // Where the gesture happens: outside of Launcher, inside or from inside to outside and
+    // whether the gesture recognition triggers pilfer.
     public enum GestureScope {
-        OUTSIDE, INSIDE, INSIDE_TO_OUTSIDE
+        OUTSIDE_WITHOUT_PILFER, OUTSIDE_WITH_PILFER, INSIDE, INSIDE_TO_OUTSIDE
     }
 
     ;
@@ -154,6 +156,7 @@ public final class LauncherInstrumentation {
     public static final int WAIT_TIME_MS = 10000;
     public static final int LONG_WAIT_TIME_MS = 60000;
     private static final String SYSTEMUI_PACKAGE = "com.android.systemui";
+    private static final String ANDROID_PACKAGE = "android";
 
     private static WeakReference<VisibleContainer> sActiveContainer = new WeakReference<>(null);
 
@@ -215,11 +218,11 @@ public final class LauncherInstrumentation {
         // Launcher package. As during inproc tests the tested launcher may not be selected as the
         // current launcher, choosing target package for inproc. For out-of-proc, use the installed
         // launcher package.
-        final String authorityPackage = testPackage.equals(targetPackage) ?
-                getLauncherPackageName() :
-                targetPackage;
+        mLauncherPackage = testPackage.equals(targetPackage)
+                ? getLauncherPackageName()
+                : targetPackage;
 
-        String testProviderAuthority = authorityPackage + ".TestInfo";
+        String testProviderAuthority = mLauncherPackage + ".TestInfo";
         mTestProviderUri = new Uri.Builder()
                 .scheme(ContentResolver.SCHEME_CONTENT)
                 .authority(testProviderAuthority)
@@ -449,7 +452,7 @@ public final class LauncherInstrumentation {
             }
         }
 
-        dumpDiagnostics();
+        dumpDiagnostics(message);
 
         log("Hierarchy dump for: " + message);
         dumpViewHierarchy();
@@ -457,10 +460,11 @@ public final class LauncherInstrumentation {
         return message;
     }
 
-    private void dumpDiagnostics() {
-        Log.e("b/156287114", "Input:");
+    private void dumpDiagnostics(String message) {
+        log("Diagnostics for failure: " + message);
+        log("Input:");
         logShellCommand("dumpsys input");
-        Log.e("b/156287114", "TIS:");
+        log("TIS:");
         logShellCommand("dumpsys activity service TouchInteractionService");
     }
 
@@ -468,10 +472,10 @@ public final class LauncherInstrumentation {
         try {
             for (String line : mDevice.executeShellCommand(command).split("\\n")) {
                 SystemClock.sleep(10);
-                Log.d("b/156287114", line);
+                log(line);
             }
         } catch (IOException e) {
-            Log.d("b/156287114", "Failed to execute " + command);
+            log("Failed to execute " + command);
         }
     }
 
@@ -549,13 +553,7 @@ public final class LauncherInstrumentation {
         assertEquals("Unexpected display rotation",
                 mExpectedRotation, mDevice.getDisplayRotation());
 
-        // b/148422894
-        String error = null;
-        for (int i = 0; i != 600; ++i) {
-            error = getNavigationModeMismatchError();
-            if (error == null) break;
-            sleep(100);
-        }
+        final String error = getNavigationModeMismatchError();
         assertTrue(error, error == null);
 
         log("verifyContainerType: " + containerType);
@@ -633,14 +631,20 @@ public final class LauncherInstrumentation {
         fail("Launcher didn't initialize");
     }
 
+    Parcelable executeAndWaitForLauncherEvent(Runnable command,
+            UiAutomation.AccessibilityEventFilter eventFilter, Supplier<String> message) {
+        return executeAndWaitForEvent(
+                command,
+                e -> mLauncherPackage.equals(e.getPackageName()) && eventFilter.accept(e),
+                message);
+    }
+
     Parcelable executeAndWaitForEvent(Runnable command,
             UiAutomation.AccessibilityEventFilter eventFilter, Supplier<String> message) {
         try {
-            Log.d(TestProtocol.NO_SCROLL_END_WIDGETS, "executeAndWaitForEvent: before");
             final AccessibilityEvent event =
                     mInstrumentation.getUiAutomation().executeAndWaitForEvent(
                             command, eventFilter, LONG_WAIT_TIME_MS);
-            Log.d(TestProtocol.NO_SCROLL_END_WIDGETS, "executeAndWaitForEvent: after");
             assertNotNull("executeAndWaitForEvent returned null (this can't happen)", event);
             final Parcelable parcelableData = event.getParcelableData();
             event.recycle();
@@ -696,7 +700,7 @@ public final class LauncherInstrumentation {
                                 ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME, NORMAL_STATE_ORDINAL,
                                 launcherWasVisible
                                         ? GestureScope.INSIDE_TO_OUTSIDE
-                                        : GestureScope.OUTSIDE);
+                                        : GestureScope.OUTSIDE_WITH_PILFER);
                     }
                 }
             } else {
@@ -928,6 +932,14 @@ public final class LauncherInstrumentation {
         return waitForObjectBySelector(getOverviewObjectSelector(resName));
     }
 
+    @NonNull
+    UiObject2 waitForAndroidObject(String resId) {
+        final UiObject2 object = mDevice.wait(
+                Until.findObject(By.res(ANDROID_PACKAGE, resId)), WAIT_TIME_MS);
+        assertNotNull("Can't find a android object with id: " + resId, object);
+        return object;
+    }
+
     private UiObject2 waitForObjectBySelector(BySelector selector) {
         final UiObject2 object = mDevice.wait(Until.findObject(selector), WAIT_TIME_MS);
         assertNotNull("Can't find a view in Launcher, selector: " + selector, object);
@@ -979,7 +991,7 @@ public final class LauncherInstrumentation {
 
     void runToState(Runnable command, int expectedState) {
         final List<Integer> actualEvents = new ArrayList<>();
-        executeAndWaitForEvent(
+        executeAndWaitForLauncherEvent(
                 command,
                 event -> isSwitchToStateEvent(event, expectedState, actualEvents),
                 () -> "Failed to receive an event for the state change: expected ["
@@ -1094,13 +1106,10 @@ public final class LauncherInstrumentation {
                 return;
         }
 
-        executeAndWaitForEvent(
+        executeAndWaitForLauncherEvent(
                 () -> linearGesture(
                         startX, startY, endX, endY, steps, slowDown, GestureScope.INSIDE),
-                event -> {
-                    Log.d(TestProtocol.NO_SCROLL_END_WIDGETS, "scroll: received event: " + event);
-                    return TestProtocol.SCROLL_FINISHED_MESSAGE.equals(event.getClassName());
-                },
+                event -> TestProtocol.SCROLL_FINISHED_MESSAGE.equals(event.getClassName()),
                 () -> "Didn't receive a scroll end message: " + startX + ", " + startY
                         + ", " + endX + ", " + endY);
     }
@@ -1165,7 +1174,8 @@ public final class LauncherInstrumentation {
         final boolean notLauncher3 = !isLauncher3();
         switch (action) {
             case MotionEvent.ACTION_DOWN:
-                if (gestureScope != GestureScope.OUTSIDE) {
+                if (gestureScope != GestureScope.OUTSIDE_WITH_PILFER
+                        && gestureScope != GestureScope.OUTSIDE_WITHOUT_PILFER) {
                     expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_TOUCH_DOWN);
                 }
                 if (notLauncher3 && getNavigationModel() != NavigationModel.THREE_BUTTON) {
@@ -1173,12 +1183,17 @@ public final class LauncherInstrumentation {
                 }
                 break;
             case MotionEvent.ACTION_UP:
-                if (notLauncher3 && gestureScope != GestureScope.INSIDE) {
+                if (notLauncher3 && gestureScope != GestureScope.INSIDE
+                        && (gestureScope == GestureScope.OUTSIDE_WITH_PILFER
+                        || gestureScope == GestureScope.INSIDE_TO_OUTSIDE)) {
                     expectEvent(TestProtocol.SEQUENCE_PILFER, EVENT_PILFER_POINTERS);
                 }
-                if (gestureScope != GestureScope.OUTSIDE) {
-                    expectEvent(TestProtocol.SEQUENCE_MAIN, gestureScope == GestureScope.INSIDE
-                            ? EVENT_TOUCH_UP : EVENT_TOUCH_CANCEL);
+                if (gestureScope != GestureScope.OUTSIDE_WITH_PILFER
+                        && gestureScope != GestureScope.OUTSIDE_WITHOUT_PILFER) {
+                    expectEvent(TestProtocol.SEQUENCE_MAIN,
+                            gestureScope == GestureScope.INSIDE
+                                    || gestureScope == GestureScope.OUTSIDE_WITHOUT_PILFER
+                                    ? EVENT_TOUCH_UP : EVENT_TOUCH_CANCEL);
                 }
                 if (notLauncher3 && getNavigationModel() != NavigationModel.THREE_BUTTON) {
                     expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_UP_TIS);
@@ -1301,6 +1316,11 @@ public final class LauncherInstrumentation {
                 TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
+    boolean overviewShareEnabled() {
+        return getTestInfo(TestProtocol.REQUEST_OVERVIEW_SHARE_ENABLED).getBoolean(
+                TestProtocol.TEST_INFO_RESPONSE_FIELD);
+    }
+
     private void disableSensorRotation() {
         getTestInfo(TestProtocol.REQUEST_MOCK_SENSOR_ROTATION);
     }
@@ -1366,7 +1386,7 @@ public final class LauncherInstrumentation {
                 if (mCheckEventsForSuccessfulGestures) {
                     final String message = eventChecker.verify(WAIT_TIME_MS, true);
                     if (message != null) {
-                        dumpDiagnostics();
+                        dumpDiagnostics(message);
                         checkForAnomaly();
                         Assert.fail(formatSystemHealthMessage(
                                 "http://go/tapl : successful gesture produced " + message));

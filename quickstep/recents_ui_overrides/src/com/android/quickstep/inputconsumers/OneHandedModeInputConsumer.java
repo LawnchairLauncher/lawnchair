@@ -52,7 +52,6 @@ public class OneHandedModeInputConsumer extends DelegateInputConsumer {
 
     private final PointF mDownPos = new PointF();
     private final PointF mLastPos = new PointF();
-    private final PointF mStartDragPos = new PointF();
 
     private boolean mPassedSlop;
 
@@ -92,7 +91,6 @@ public class OneHandedModeInputConsumer extends DelegateInputConsumer {
                 if (!mPassedSlop) {
                     if (squaredHypot(mLastPos.x - mDownPos.x, mLastPos.y - mDownPos.y)
                             > mSquaredSlop) {
-                        mStartDragPos.set(mLastPos.x, mLastPos.y);
                         if ((!mDeviceState.isOneHandedModeActive() && isValidStartAngle(
                                 mDownPos.x - mLastPos.x, mDownPos.y - mLastPos.y))
                                 || (mDeviceState.isOneHandedModeActive() && isValidExitAngle(
@@ -104,17 +102,16 @@ public class OneHandedModeInputConsumer extends DelegateInputConsumer {
                         }
                     }
                 } else {
-                    float distance = (float) Math.hypot(mLastPos.x - mStartDragPos.x,
-                            mLastPos.y - mStartDragPos.y);
+                    float distance = (float) Math.hypot(mLastPos.x - mDownPos.x,
+                            mLastPos.y - mDownPos.y);
                     if (distance > mDragDistThreshold && mPassedSlop) {
                         onStopGestureDetected();
                     }
                 }
                 break;
             }
-            case ACTION_UP:
-            case ACTION_CANCEL: {
-                if (mLastPos.y >= mStartDragPos.y && mPassedSlop) {
+            case ACTION_UP: {
+                if (mLastPos.y >= mDownPos.y && mPassedSlop) {
                     onStartGestureDetected();
                 }
 
@@ -122,6 +119,10 @@ public class OneHandedModeInputConsumer extends DelegateInputConsumer {
                 mState = STATE_INACTIVE;
                 break;
             }
+            case ACTION_CANCEL:
+                mPassedSlop = false;
+                mState = STATE_INACTIVE;
+                break;
         }
 
         if (mState != STATE_ACTIVE) {

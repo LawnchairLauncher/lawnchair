@@ -19,8 +19,9 @@ package com.android.launcher3.allapps;
 import android.content.Context;
 
 import com.android.launcher3.BaseDraggingActivity;
+import com.android.launcher3.allapps.search.SearchSectionInfo;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.AppInfo;
-import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LabelComparator;
 
@@ -30,6 +31,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 /**
  * The alphabetically sorted list of applications.
@@ -82,6 +84,8 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
         public AppInfo appInfo = null;
         // The index of this app not including sections
         public int appIndex = -1;
+        // Search section associated to result
+        public SearchSectionInfo searchSectionInfo = null;
 
         public static AdapterItem asApp(int pos, String sectionName, AppInfo appInfo,
                 int appIndex) {
@@ -114,6 +118,17 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
             item.position = pos;
             return item;
         }
+
+        /**
+         * Factory method for search section title AdapterItem
+         */
+        public static AdapterItem asSearchTitle(SearchSectionInfo sectionInfo, int pos) {
+            AdapterItem item = new AdapterItem();
+            item.viewType = AllAppsGridAdapter.VIEW_TYPE_SEARCH_CORPUS_TITLE;
+            item.position = pos;
+            item.searchSectionInfo = sectionInfo;
+            return item;
+        }
     }
 
     private final BaseDraggingActivity mLauncher;
@@ -132,7 +147,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
     private final boolean mIsWork;
 
     // The of ordered component names as a result of a search query
-    private ArrayList<ComponentKey> mSearchResults;
+    private ArrayList<AdapterItem> mSearchResults;
     private AllAppsGridAdapter mAdapter;
     private AppInfoComparator mAppNameComparator;
     private final int mNumAppsPerRow;
@@ -210,10 +225,10 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
     }
 
     /**
-     * Sets the sorted list of filtered components.
+     * Sets results list for search
      */
-    public boolean setOrderedFilter(ArrayList<ComponentKey> f) {
-        if (mSearchResults != f) {
+    public boolean setSearchResults(ArrayList<AdapterItem> f) {
+        if (f == null || mSearchResults != f) {
             boolean same = mSearchResults != null && mSearchResults.equals(f);
             mSearchResults = f;
             onAppsUpdated();
@@ -298,35 +313,42 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
 
         // Recreate the filtered and sectioned apps (for convenience for the grid layout) from the
         // ordered set of sections
-        for (AppInfo info : getFiltersAppInfos()) {
-            String sectionName = info.sectionName;
+        if (!hasFilter()) {
+            for (AppInfo info : mApps) {
+                String sectionName = info.sectionName;
 
-            // Create a new section if the section names do not match
-            if (!sectionName.equals(lastSectionName)) {
-                lastSectionName = sectionName;
-                lastFastScrollerSectionInfo = new FastScrollSectionInfo(sectionName);
-                mFastScrollerSections.add(lastFastScrollerSectionInfo);
-            }
+                // Create a new section if the section names do not match
+                if (!sectionName.equals(lastSectionName)) {
+                    lastSectionName = sectionName;
+                    lastFastScrollerSectionInfo = new FastScrollSectionInfo(sectionName);
+                    mFastScrollerSections.add(lastFastScrollerSectionInfo);
+                }
 
-            // Create an app item
-            AdapterItem appItem = AdapterItem.asApp(position++, sectionName, info, appIndex++);
-            if (lastFastScrollerSectionInfo.fastScrollToItem == null) {
-                lastFastScrollerSectionInfo.fastScrollToItem = appItem;
+                // Create an app item
+                AdapterItem appItem = AdapterItem.asApp(position++, sectionName, info, appIndex++);
+                if (lastFastScrollerSectionInfo.fastScrollToItem == null) {
+                    lastFastScrollerSectionInfo.fastScrollToItem = appItem;
+                }
+                mAdapterItems.add(appItem);
+                mFilteredApps.add(info);
             }
-            mAdapterItems.add(appItem);
-            mFilteredApps.add(info);
+        } else {
+            mAdapterItems.addAll(mSearchResults);
+            List<AppInfo> appInfos = mSearchResults.stream().filter(
+                    i -> AllAppsGridAdapter.isIconViewType(i.viewType)).map(i -> i.appInfo).collect(
+                    Collectors.toList());
+            mFilteredApps.addAll(appInfos);
+            if (!FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
+                // Append the search market item
+                if (hasNoFilteredResults()) {
+                    mAdapterItems.add(AdapterItem.asEmptySearch(position++));
+                } else {
+                    mAdapterItems.add(AdapterItem.asAllAppsDivider(position++));
+                }
+                mAdapterItems.add(AdapterItem.asMarketSearch(position++));
+
+            }
         }
-
-        if (hasFilter()) {
-            // Append the search market item
-            if (hasNoFilteredResults()) {
-                mAdapterItems.add(AdapterItem.asEmptySearch(position++));
-            } else {
-                mAdapterItems.add(AdapterItem.asAllAppsDivider(position++));
-            }
-            mAdapterItems.add(AdapterItem.asMarketSearch(position++));
-        }
-
         if (mNumAppsPerRow != 0) {
             // Update the number of rows in the adapter after we do all the merging (otherwise, we
             // would have to shift the values again)
@@ -380,19 +402,5 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
                     break;
             }
         }
-    }
-
-    private List<AppInfo> getFiltersAppInfos() {
-        if (mSearchResults == null) {
-            return mApps;
-        }
-        ArrayList<AppInfo> result = new ArrayList<>();
-        for (ComponentKey key : mSearchResults) {
-            AppInfo match = mAllAppsStore.getApp(key);
-            if (match != null) {
-                result.add(match);
-            }
-        }
-        return result;
     }
 }

@@ -13,173 +13,74 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.appprediction;
+package com.android.launcher3.model;
 
-import static com.android.launcher3.InvariantDeviceProfile.CHANGE_FLAG_GRID;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_APP_LAUNCH_TAP;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ITEM_DROPPED_ON_DONT_SUGGEST;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_QUICKSWITCH_LEFT;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_QUICKSWITCH_RIGHT;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_LAUNCH_SWIPE_DOWN;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_LAUNCH_TAP;
-import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
+import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
 import android.annotation.TargetApi;
-import android.app.prediction.AppPredictionContext;
-import android.app.prediction.AppPredictionManager;
-import android.app.prediction.AppPredictor;
 import android.app.prediction.AppTarget;
 import android.app.prediction.AppTargetEvent;
 import android.app.prediction.AppTargetId;
 import android.content.ComponentName;
 import android.content.Context;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Process;
 import android.os.SystemClock;
 import android.os.UserHandle;
 import android.text.TextUtils;
-import android.util.Log;
 
 import androidx.annotation.AnyThread;
 import androidx.annotation.Nullable;
-import androidx.annotation.UiThread;
 import androidx.annotation.WorkerThread;
 
-import com.android.launcher3.InvariantDeviceProfile;
-import com.android.launcher3.appprediction.PredictionUiStateManager.Client;
 import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.logger.LauncherAtom.ContainerInfo;
 import com.android.launcher3.logger.LauncherAtom.FolderContainer;
 import com.android.launcher3.logger.LauncherAtom.HotseatContainer;
 import com.android.launcher3.logger.LauncherAtom.WorkspaceContainer;
 import com.android.launcher3.logging.StatsLogManager.EventEnum;
-import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.pm.UserCache;
-import com.android.quickstep.logging.StatsLogCompatManager;
 import com.android.quickstep.logging.StatsLogCompatManager.StatsLogConsumer;
 
 import java.util.Locale;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 /**
- * Subclass of app tracker which publishes the data to the prediction engine and gets back results.
+ * Utility class to track stats log and emit corresponding app events
  */
-@TargetApi(Build.VERSION_CODES.Q)
-public class PredictionAppTracker extends AppLaunchTracker implements StatsLogConsumer {
+@TargetApi(Build.VERSION_CODES.R)
+public class AppEventProducer implements StatsLogConsumer {
 
-    private static final String TAG = "PredictionAppTracker";
-    private static final boolean DBG = false;
+    private static final int MSG_LAUNCH = 0;
 
-    private static final int MSG_INIT = 0;
-    private static final int MSG_DESTROY = 1;
-    private static final int MSG_LAUNCH = 2;
-    private static final int MSG_PREDICT = 3;
-
-    protected final Context mContext;
+    private final Context mContext;
     private final Handler mMessageHandler;
+    private final Consumer<AppTargetEvent> mCallback;
 
-    // Accessed only on worker thread
-    private AppPredictor mHomeAppPredictor;
-
-    public PredictionAppTracker(Context context) {
+    public AppEventProducer(Context context, Consumer<AppTargetEvent> callback) {
         mContext = context;
-        mMessageHandler = new Handler(UI_HELPER_EXECUTOR.getLooper(), this::handleMessage);
-        InvariantDeviceProfile.INSTANCE.get(mContext).addOnChangeListener(this::onIdpChanged);
-
-        mMessageHandler.sendEmptyMessage(MSG_INIT);
-    }
-
-    @UiThread
-    private void onIdpChanged(int changeFlags, InvariantDeviceProfile profile) {
-        if ((changeFlags & CHANGE_FLAG_GRID) != 0) {
-            // Reinitialize everything
-            mMessageHandler.sendEmptyMessage(MSG_INIT);
-        }
-    }
-
-    @WorkerThread
-    private void destroy() {
-        if (mHomeAppPredictor != null) {
-            mHomeAppPredictor.destroy();
-            mHomeAppPredictor = null;
-        }
-        StatsLogCompatManager.LOGS_CONSUMER.remove(this);
-    }
-
-    @WorkerThread
-    private AppPredictor createPredictor(Client client, int count) {
-        AppPredictionManager apm = mContext.getSystemService(AppPredictionManager.class);
-
-        if (apm == null) {
-            return null;
-        }
-
-        AppPredictor predictor = apm.createAppPredictionSession(
-                new AppPredictionContext.Builder(mContext)
-                        .setUiSurface(client.id)
-                        .setPredictedTargetCount(count)
-                        .setExtras(getAppPredictionContextExtras(client))
-                        .build());
-        predictor.registerPredictionUpdates(mContext.getMainExecutor(),
-                PredictionUiStateManager.INSTANCE.get(mContext).appPredictorCallback(client));
-        predictor.requestPredictionUpdate();
-        return predictor;
-    }
-
-    /**
-     * Override to add custom extras.
-     */
-    @WorkerThread
-    @Nullable
-    public Bundle getAppPredictionContextExtras(Client client) {
-        return null;
+        mMessageHandler = new Handler(MODEL_EXECUTOR.getLooper(), this::handleMessage);
+        mCallback = callback;
     }
 
     @WorkerThread
     private boolean handleMessage(Message msg) {
         switch (msg.what) {
-            case MSG_INIT: {
-                // Destroy any existing clients
-                destroy();
-
-                // Initialize the clients
-                int count = InvariantDeviceProfile.INSTANCE.get(mContext).numAllAppsColumns;
-                mHomeAppPredictor = createPredictor(Client.HOME, count);
-                StatsLogCompatManager.LOGS_CONSUMER.add(this);
-                return true;
-            }
-            case MSG_DESTROY: {
-                destroy();
-                return true;
-            }
             case MSG_LAUNCH: {
-                if (mHomeAppPredictor != null) {
-                    mHomeAppPredictor.notifyAppTargetEvent((AppTargetEvent) msg.obj);
-                }
-                return true;
-            }
-            case MSG_PREDICT: {
-                if (mHomeAppPredictor != null) {
-                    mHomeAppPredictor.requestPredictionUpdate();
-                }
+                mCallback.accept((AppTargetEvent) msg.obj);
                 return true;
             }
         }
         return false;
-    }
-
-    @Override
-    @UiThread
-    public void onReturnedToHome() {
-        String client = Client.HOME.id;
-        mMessageHandler.removeMessages(MSG_PREDICT, client);
-        Message.obtain(mMessageHandler, MSG_PREDICT, client).sendToTarget();
-        if (DBG) {
-            Log.d(TAG, String.format("Sent immediate message to update %s", client));
-        }
     }
 
     @AnyThread

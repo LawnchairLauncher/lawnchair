@@ -43,9 +43,11 @@ import android.util.ArrayMap;
 import android.util.Log;
 
 import androidx.annotation.MainThread;
+import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.R;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.popup.RemoteActionShortcut;
 import com.android.launcher3.popup.SystemShortcut;
@@ -57,6 +59,7 @@ import com.android.launcher3.util.SimpleBroadcastReceiver;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * Data model for digital wellbeing status of apps.
@@ -72,6 +75,9 @@ public final class WellbeingModel {
     private static final int MSG_FULL_REFRESH = 3;
 
     // Welbeing contract
+    private static final String PATH_ACTIONS = "actions";
+    private static final String PATH_MINIMAL_DEVICE = "minimal_device";
+    private static final String METHOD_GET_MINIMAL_DEVICE_CONFIG = "get_minimal_device_config";
     private static final String METHOD_GET_ACTIONS = "get_actions";
     private static final String EXTRA_ACTIONS = "actions";
     private static final String EXTRA_ACTION = "action";
@@ -104,15 +110,22 @@ public final class WellbeingModel {
         mContentObserver = new ContentObserver(MAIN_EXECUTOR.getHandler()) {
             @Override
             public void onChange(boolean selfChange, Uri uri) {
-                // Wellbeing reports that app actions have changed.
                 if (DEBUG || mIsInTest) {
-                    Log.d(TAG, "ContentObserver.onChange() called with: selfChange = [" + selfChange
-                            + "], uri = [" + uri + "]");
+                    Log.d(TAG, "ContentObserver.onChange() called with: selfChange = ["
+                            + selfChange + "], uri = [" + uri + "]");
                 }
                 Preconditions.assertUIThread();
-                updateWellbeingData();
+
+                if (uri.getPath().contains(PATH_ACTIONS)) {
+                    // Wellbeing reports that app actions have changed.
+                    updateWellbeingData();
+                } else if (uri.getPath().contains(PATH_MINIMAL_DEVICE)) {
+                    // Wellbeing reports that minimal device state or config is changed.
+                    updateLauncherModel();
+                }
             }
         };
+        FeatureFlags.ENABLE_MINIMAL_DEVICE.addChangeListener(mContext, this::updateLauncherModel);
 
         if (!TextUtils.isEmpty(mWellbeingProviderPkg)) {
             context.registerReceiver(
@@ -146,14 +159,18 @@ public final class WellbeingModel {
     private void restartObserver() {
         final ContentResolver resolver = mContext.getContentResolver();
         resolver.unregisterContentObserver(mContentObserver);
-        Uri actionsUri = apiBuilder().path("actions").build();
+        Uri actionsUri = apiBuilder().path(PATH_ACTIONS).build();
+        Uri minimalDeviceUri = apiBuilder().path(PATH_MINIMAL_DEVICE).build();
         try {
             resolver.registerContentObserver(
                     actionsUri, true /* notifyForDescendants */, mContentObserver);
+            resolver.registerContentObserver(
+                    minimalDeviceUri, true /* notifyForDescendants */, mContentObserver);
         } catch (Exception e) {
             Log.e(TAG, "Failed to register content observer for " + actionsUri + ": " + e);
             if (mIsInTest) throw new RuntimeException(e);
         }
+
         updateWellbeingData();
     }
 
@@ -191,10 +208,40 @@ public final class WellbeingModel {
         mWorkerHandler.sendEmptyMessage(MSG_FULL_REFRESH);
     }
 
+    private void updateLauncherModel() {
+        if (!FeatureFlags.ENABLE_MINIMAL_DEVICE.get()) return;
+
+        // TODO: init Launcher in minimal device / normal mode
+    }
+
     private Uri.Builder apiBuilder() {
         return new Uri.Builder()
                 .scheme(SCHEME_CONTENT)
                 .authority(mWellbeingProviderPkg + ".api");
+    }
+
+    /**
+     * Fetch most up-to-date minimal device config.
+     */
+    @WorkerThread
+    private void runWithMinimalDeviceConfigs(Consumer<Bundle> consumer) {
+        if (DEBUG || mIsInTest) {
+            Log.d(TAG, "runWithMinimalDeviceConfigs() called");
+        }
+        Preconditions.assertNonUiThread();
+
+        final Uri contentUri = apiBuilder().build();
+        final Bundle remoteBundle;
+        try (ContentProviderClient client = mContext.getContentResolver()
+                .acquireUnstableContentProviderClient(contentUri)) {
+            remoteBundle = client.call(
+                    METHOD_GET_MINIMAL_DEVICE_CONFIG, null /* args */, null /* extras */);
+            consumer.accept(remoteBundle);
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to retrieve data from " + contentUri + ": " + e);
+            if (mIsInTest) throw new RuntimeException(e);
+        }
+        if (DEBUG || mIsInTest) Log.i(TAG, "runWithMinimalDeviceConfigs(): finished");
     }
 
     private boolean updateActions(String... packageNames) {

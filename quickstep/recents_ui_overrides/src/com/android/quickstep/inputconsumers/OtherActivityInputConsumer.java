@@ -53,12 +53,13 @@ import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.TraceHelper;
 import com.android.quickstep.BaseActivityInterface;
-import com.android.quickstep.BaseSwipeUpHandler;
-import com.android.quickstep.BaseSwipeUpHandler.Factory;
+import com.android.quickstep.AbsSwipeUpHandler;
+import com.android.quickstep.AbsSwipeUpHandler.Factory;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.InputConsumer;
 import com.android.quickstep.RecentsAnimationCallbacks;
 import com.android.quickstep.RecentsAnimationDeviceState;
+import com.android.quickstep.RotationTouchHelper;
 import com.android.quickstep.TaskAnimationManager;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.CachedEventDispatcher;
@@ -86,12 +87,13 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     private final NavBarPosition mNavBarPosition;
     private final TaskAnimationManager mTaskAnimationManager;
     private final GestureState mGestureState;
+    private final RotationTouchHelper mRotationTouchHelper;
     private RecentsAnimationCallbacks mActiveCallbacks;
     private final CachedEventDispatcher mRecentsViewDispatcher = new CachedEventDispatcher();
     private final InputMonitorCompat mInputMonitorCompat;
     private final BaseActivityInterface mActivityInterface;
 
-    private final BaseSwipeUpHandler.Factory mHandlerFactory;
+    private final AbsSwipeUpHandler.Factory mHandlerFactory;
 
     private final Consumer<OtherActivityInputConsumer> mOnCompleteCallback;
     private final MotionPauseDetector mMotionPauseDetector;
@@ -99,7 +101,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
 
     private VelocityTracker mVelocityTracker;
 
-    private BaseSwipeUpHandler mInteractionHandler;
+    private AbsSwipeUpHandler mInteractionHandler;
 
     private final boolean mIsDeferredDownTarget;
     private final PointF mDownPos = new PointF();
@@ -163,6 +165,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
 
         mPassedPilferInputSlop = mPassedWindowMoveSlop = continuingPreviousGesture;
         mDisableHorizontalSwipe = !mPassedPilferInputSlop && disableHorizontalSwipe;
+        mRotationTouchHelper = mDeviceState.getRotationTouchHelper();
     }
 
     @Override
@@ -230,7 +233,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                 if (!mPassedPilferInputSlop) {
                     // Cancel interaction in case of multi-touch interaction
                     int ptrIdx = ev.getActionIndex();
-                    if (!mDeviceState.isInSwipeUpTouchRegion(ev, ptrIdx)) {
+                    if (!mRotationTouchHelper.isInSwipeUpTouchRegion(ev, ptrIdx)) {
                         forceCancelGesture(ev);
                     }
                 }
@@ -424,7 +427,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
 
     @Override
     public void notifyOrientationSetup() {
-        mDeviceState.onStartGesture();
+        mRotationTouchHelper.onStartGesture();
     }
 
     @Override

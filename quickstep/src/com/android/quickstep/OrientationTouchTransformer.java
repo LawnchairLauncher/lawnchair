@@ -374,7 +374,7 @@ class OrientationTouchTransformer {
         StringBuilder regions = new StringBuilder("  currentTouchableRotations=");
         for(int i = 0; i < mSwipeTouchRegions.size(); i++) {
             OrientationRectF rectF = mSwipeTouchRegions.get(mSwipeTouchRegions.keyAt(i));
-            regions.append(rectF.mRotation).append(" ");
+            regions.append(rectF).append(" ");
         }
         pw.println(regions.toString());
         pw.println("  mNavBarGesturalHeight=" + mNavBarGesturalHeight);

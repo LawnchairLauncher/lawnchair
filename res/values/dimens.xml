@@ -40,14 +40,6 @@
     <dimen name="workspace_page_indicator_line_height">1dp</dimen>
     <dimen name="workspace_page_indicator_overlap_workspace">0dp</dimen>
 
-    <!-- Hotseat/all-apps scrim -->
-    <dimen name="all_apps_scrim_blur">4dp</dimen>
-    <dimen name="vertical_drag_handle_width">18dp</dimen>
-    <dimen name="vertical_drag_handle_height">6dp</dimen>
-    <dimen name="vertical_drag_handle_elevation">1dp</dimen>
-    <dimen name="vertical_drag_handle_touch_size">48dp</dimen>
-    <dimen name="vertical_drag_handle_padding_in_vertical_bar_layout">16dp</dimen>
-
 <!-- Drop target bar -->
     <dimen name="dynamic_grid_drop_target_size">48dp</dimen>
     <dimen name="drop_target_vertical_gap">20dp</dimen>
@@ -246,6 +238,9 @@
     <dimen name="snackbar_elevation">3dp</dimen>
     <dimen name="snackbar_min_text_size">12sp</dimen>
     <dimen name="snackbar_max_text_size">14sp</dimen>
+
+<!-- Developer Options -->
+    <dimen name="developer_options_filter_margins">10dp</dimen>
 
 <!-- Theming related -->
     <dimen name="default_dialog_corner_radius">8dp</dimen>

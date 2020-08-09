@@ -17,6 +17,9 @@
 package com.android.quickstep;
 
 import static com.android.launcher3.ResourceUtils.INVALID_RESOURCE_HANDLE;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_NAVIGATION_MODE_2_BUTTON;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_NAVIGATION_MODE_3_BUTTON;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_NAVIGATION_MODE_GESTURE_BUTTON;
 import static com.android.launcher3.util.PackageManagerHelper.getPackageFilter;
 
 import android.content.BroadcastReceiver;
@@ -25,6 +28,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.android.launcher3.ResourceUtils;
+import com.android.launcher3.logging.StatsLogManager.LauncherEvent;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.MainThreadInitializedObject;
 
@@ -38,16 +42,18 @@ import java.util.List;
 public class SysUINavigationMode {
 
     public enum Mode {
-        THREE_BUTTONS(false, 0),
-        TWO_BUTTONS(true, 1),
-        NO_BUTTON(true, 2);
+        THREE_BUTTONS(false, 0, LAUNCHER_NAVIGATION_MODE_3_BUTTON),
+        TWO_BUTTONS(true, 1, LAUNCHER_NAVIGATION_MODE_2_BUTTON),
+        NO_BUTTON(true, 2, LAUNCHER_NAVIGATION_MODE_GESTURE_BUTTON);
 
         public final boolean hasGestures;
         public final int resValue;
+        public final LauncherEvent launcherEvent;
 
-        Mode(boolean hasGestures, int resValue) {
+        Mode(boolean hasGestures, int resValue, LauncherEvent launcherEvent) {
             this.hasGestures = hasGestures;
             this.resValue = resValue;
+            this.launcherEvent = launcherEvent;
         }
     }
 
@@ -183,12 +189,10 @@ public class SysUINavigationMode {
     }
 
     public interface NavigationModeChangeListener {
-
         void onNavigationModeChanged(Mode newMode);
     }
 
     public interface OneHandedModeChangeListener {
-
         void onOneHandedModeChanged(int newGesturalHeight);
     }
 }
