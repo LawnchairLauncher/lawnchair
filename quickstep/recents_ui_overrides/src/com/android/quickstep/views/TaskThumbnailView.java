@@ -326,22 +326,14 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
         // Draw the background in all cases, except when the thumbnail data is opaque
         final boolean drawBackgroundOnly = mTask == null || mTask.isLocked || mBitmapShader == null
                 || mThumbnailData == null;
-        if (drawBackgroundOnly || mPreviewPositionHelper.mClipBottom > 0
-                || mThumbnailData.isTranslucent) {
+        if (drawBackgroundOnly || mThumbnailData.isTranslucent) {
             canvas.drawRoundRect(x, y, width, height, cornerRadius, cornerRadius, mBackgroundPaint);
             if (drawBackgroundOnly) {
                 return;
             }
         }
 
-        if (mPreviewPositionHelper.mClipBottom > 0) {
-            canvas.save();
-            canvas.clipRect(x, y, width, mPreviewPositionHelper.mClipBottom);
-            canvas.drawRoundRect(x, y, width, height, cornerRadius, cornerRadius, mPaint);
-            canvas.restore();
-        } else {
-            canvas.drawRoundRect(x, y, width, height, cornerRadius, cornerRadius, mPaint);
-        }
+        canvas.drawRoundRect(x, y, width, height, cornerRadius, cornerRadius, mPaint);
     }
 
     public TaskView getTaskView() {
@@ -379,7 +371,6 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
     }
 
     private void updateThumbnailMatrix() {
-        mPreviewPositionHelper.mClipBottom = -1;
         mPreviewPositionHelper.mIsOrientationChanged = false;
         if (mBitmapShader != null && mThumbnailData != null) {
             mPreviewRect.set(0, 0, mThumbnailData.thumbnail.getWidth(),
@@ -473,23 +464,16 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
         /**
          * Updates the matrix based on the provided parameters
          */
-        public void updateThumbnailMatrix(Rect thumbnailPosition, ThumbnailData thumbnailData,
+        public void updateThumbnailMatrix(Rect thumbnailBounds, ThumbnailData thumbnailData,
                 int canvasWidth, int canvasHeight, DeviceProfile dp, int currentRotation) {
             boolean isRotated = false;
             boolean isOrientationDifferent;
-            mClipBottom = -1;
 
             int thumbnailRotation = thumbnailData.rotation;
             int deltaRotate = getRotationDelta(currentRotation, thumbnailRotation);
-            Rect thumbnailInsets = getBoundedInsets(
-                    dp.getInsets(), thumbnailData.insets, deltaRotate);
+            RectF thumbnailClipHint = new RectF(thumbnailData.insets);
 
             float scale = thumbnailData.scale;
-            final float thumbnailWidth = thumbnailPosition.width()
-                    - (thumbnailInsets.left + thumbnailInsets.right) * scale;
-            final float thumbnailHeight = thumbnailPosition.height()
-                    - (thumbnailInsets.top + thumbnailInsets.bottom) * scale;
-
             final float thumbnailScale;
 
             // Landscape vs portrait change
@@ -497,17 +481,80 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
                     && thumbnailData.windowingMode == WINDOWING_MODE_FULLSCREEN;
             isOrientationDifferent = isOrientationChange(deltaRotate)
                     && windowingModeSupportsRotation;
-            if (canvasWidth == 0) {
+            if (canvasWidth == 0 || canvasHeight == 0 || scale == 0) {
                 // If we haven't measured , skip the thumbnail drawing and only draw the background
                 // color
                 thumbnailScale = 0f;
             } else {
                 // Rotate the screenshot if not in multi-window mode
                 isRotated = deltaRotate > 0 && windowingModeSupportsRotation;
-                // Scale the screenshot to always fit the width of the card.
-                thumbnailScale = isOrientationDifferent
-                        ? canvasWidth / thumbnailHeight
-                        : canvasWidth / thumbnailWidth;
+
+                float surfaceWidth = thumbnailBounds.width() / scale;
+                float surfaceHeight = thumbnailBounds.height() / scale;
+                float availableWidth = surfaceWidth
+                        - (thumbnailClipHint.left + thumbnailClipHint.right);
+                float availableHeight = surfaceHeight
+                        - (thumbnailClipHint.top + thumbnailClipHint.bottom);
+
+                final float targetW, targetH;
+                if (isOrientationDifferent) {
+                    targetW = canvasHeight;
+                    targetH = canvasWidth;
+                } else {
+                    targetW = canvasWidth;
+                    targetH = canvasHeight;
+                }
+                float canvasAspect = targetW / targetH;
+
+                // Update the clipHint such that
+                //   > the final clipped position has same aspect ratio as requested by canvas
+                //   > the clipped region is within the task insets if possible
+                //   > the clipped region is not scaled up when drawing. If that is not possible
+                //     while staying within the taskInsets, move outside the insets.
+                float croppedWidth = availableWidth;
+                if (croppedWidth < targetW) {
+                    croppedWidth = Math.min(targetW, surfaceWidth);
+                }
+
+                float croppedHeight = croppedWidth / canvasAspect;
+                if (croppedHeight > availableHeight) {
+                    croppedHeight = availableHeight;
+                    if (croppedHeight < targetH) {
+                        croppedHeight = Math.min(targetH, surfaceHeight);
+                    }
+                    croppedWidth = croppedHeight * canvasAspect;
+
+                    // One last check in case the task aspect radio messed up something
+                    if (croppedWidth > surfaceWidth) {
+                        croppedWidth = surfaceWidth;
+                        croppedHeight = croppedWidth / canvasAspect;
+                    }
+                }
+
+                // Update the clip hints
+                float halfExtraW = (availableWidth - croppedWidth) / 2;
+                thumbnailClipHint.left += halfExtraW;
+                thumbnailClipHint.right += halfExtraW;
+                if (thumbnailClipHint.left < 0) {
+                    thumbnailClipHint.right += thumbnailClipHint.left;
+                    thumbnailClipHint.left = 0;
+                } else if (thumbnailClipHint.right < 0) {
+                    thumbnailClipHint.left += thumbnailClipHint.right;
+                    thumbnailClipHint.right = 0;
+                }
+
+                float halfExtraH = (availableHeight - croppedHeight) / 2;
+                thumbnailClipHint.top += halfExtraH;
+                thumbnailClipHint.bottom += halfExtraH;
+                if (thumbnailClipHint.top < 0) {
+                    thumbnailClipHint.bottom += thumbnailClipHint.top;
+                    thumbnailClipHint.top = 0;
+                } else if (thumbnailClipHint.bottom < 0) {
+                    thumbnailClipHint.top += thumbnailClipHint.bottom;
+                    thumbnailClipHint.bottom = 0;
+                }
+
+                thumbnailScale = targetW / (croppedWidth * scale);
             }
 
             Rect splitScreenInsets = dp.getInsets();
@@ -517,24 +564,24 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
                     mClippedInsets.offsetTo(splitScreenInsets.left * scale,
                             splitScreenInsets.top * scale);
                 } else {
-                    mClippedInsets.offsetTo(thumbnailInsets.left * scale,
-                            thumbnailInsets.top * scale);
+                    mClippedInsets.offsetTo(thumbnailClipHint.left * scale,
+                            thumbnailClipHint.top * scale);
                 }
                 mMatrix.setTranslate(
-                        -thumbnailInsets.left * scale,
-                        -thumbnailInsets.top * scale);
+                        -thumbnailClipHint.left * scale,
+                        -thumbnailClipHint.top * scale);
             } else {
-                setThumbnailRotation(deltaRotate, thumbnailInsets, scale, thumbnailPosition);
+                setThumbnailRotation(deltaRotate, thumbnailClipHint, scale, thumbnailBounds);
             }
 
             final float widthWithInsets;
             final float heightWithInsets;
             if (isOrientationDifferent) {
-                widthWithInsets = thumbnailPosition.height() * thumbnailScale;
-                heightWithInsets = thumbnailPosition.width() * thumbnailScale;
+                widthWithInsets = thumbnailBounds.height() * thumbnailScale;
+                heightWithInsets = thumbnailBounds.width() * thumbnailScale;
             } else {
-                widthWithInsets = thumbnailPosition.width() * thumbnailScale;
-                heightWithInsets = thumbnailPosition.height() * thumbnailScale;
+                widthWithInsets = thumbnailBounds.width() * thumbnailScale;
+                heightWithInsets = thumbnailBounds.height() * thumbnailScale;
             }
             mClippedInsets.left *= thumbnailScale;
             mClippedInsets.top *= thumbnailScale;
@@ -550,23 +597,7 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
             }
 
             mMatrix.postScale(thumbnailScale, thumbnailScale);
-
-            float bitmapHeight = Math.max(0,
-                    (isOrientationDifferent ? thumbnailWidth : thumbnailHeight) * thumbnailScale);
-            if (Math.round(bitmapHeight) < canvasHeight) {
-                mClipBottom = bitmapHeight;
-            }
             mIsOrientationChanged = isOrientationDifferent;
-        }
-
-        private Rect getBoundedInsets(Rect activityInsets, Rect insets, int deltaRotation) {
-            if (deltaRotation != 0) {
-                return insets;
-            }
-            return new Rect(Math.min(insets.left, activityInsets.left),
-                    Math.min(insets.top, activityInsets.top),
-                    Math.min(insets.right, activityInsets.right),
-                    Math.min(insets.bottom, activityInsets.bottom));
         }
 
         private int getRotationDelta(int oldRotation, int newRotation) {
@@ -584,12 +615,12 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
             return deltaRotation == Surface.ROTATION_90 || deltaRotation == Surface.ROTATION_270;
         }
 
-        private void setThumbnailRotation(int deltaRotate, Rect thumbnailInsets, float scale,
+        private void setThumbnailRotation(int deltaRotate, RectF thumbnailInsets, float scale,
                 Rect thumbnailPosition) {
-            int newLeftInset = 0;
-            int newTopInset = 0;
-            int translateX = 0;
-            int translateY = 0;
+            float newLeftInset = 0;
+            float newTopInset = 0;
+            float translateX = 0;
+            float translateY = 0;
 
             mMatrix.setRotate(90 * deltaRotate);
             switch (deltaRotate) { /* Counter-clockwise */
