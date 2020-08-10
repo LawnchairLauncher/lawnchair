@@ -47,6 +47,7 @@ abstract class TutorialController implements BackGestureAttemptCallback,
     final TextView mTitleTextView;
     final TextView mSubtitleTextView;
     final TextView mFeedbackView;
+    final View mLauncherView;
     final ClipIconView mFakeIconView;
     final View mFakeTaskView;
     final View mRippleView;
@@ -68,6 +69,7 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         mTitleTextView = rootView.findViewById(R.id.gesture_tutorial_fragment_title_view);
         mSubtitleTextView = rootView.findViewById(R.id.gesture_tutorial_fragment_subtitle_view);
         mFeedbackView = rootView.findViewById(R.id.gesture_tutorial_fragment_feedback_view);
+        mLauncherView = tutorialFragment.getLauncherView();
         mFakeIconView = rootView.findViewById(R.id.gesture_tutorial_fake_icon_view);
         mFakeTaskView = rootView.findViewById(R.id.gesture_tutorial_fake_task_view);
         mRippleView = rootView.findViewById(R.id.gesture_tutorial_ripple_view);
@@ -162,8 +164,10 @@ abstract class TutorialController implements BackGestureAttemptCallback,
 
         if (isComplete()) {
             hideHandCoachingAnimation();
+            mLauncherView.setVisibility(View.INVISIBLE);
         } else {
             showHandCoachingAnimation();
+            mLauncherView.setVisibility(View.VISIBLE);
         }
     }
 

@@ -250,6 +250,12 @@ public class NavBarGestureHandler implements OnTouchListener,
         return intercepted;
     }
 
+    boolean onInterceptTouch(MotionEvent event) {
+        return mAssistantLeftRegion.contains(event.getX(), event.getY())
+                || mAssistantRightRegion.contains(event.getX(), event.getY())
+                || event.getY() >= mDisplaySize.y - mBottomGestureHeight;
+    }
+
     protected void onMotionPauseDetected() {
         VibratorWrapper.INSTANCE.get(mContext).vibrate(OVERVIEW_HAPTIC);
     }
