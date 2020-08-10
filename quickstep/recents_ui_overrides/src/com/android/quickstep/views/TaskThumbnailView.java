@@ -479,17 +479,18 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
             boolean isOrientationDifferent;
             mClipBottom = -1;
 
+            int thumbnailRotation = thumbnailData.rotation;
+            int deltaRotate = getRotationDelta(currentRotation, thumbnailRotation);
+            Rect thumbnailInsets = getBoundedInsets(
+                    dp.getInsets(), thumbnailData.insets, deltaRotate);
+
             float scale = thumbnailData.scale;
-            Rect activityInsets = dp.getInsets();
-            Rect thumbnailInsets = getBoundedInsets(activityInsets, thumbnailData.insets);
             final float thumbnailWidth = thumbnailPosition.width()
                     - (thumbnailInsets.left + thumbnailInsets.right) * scale;
             final float thumbnailHeight = thumbnailPosition.height()
                     - (thumbnailInsets.top + thumbnailInsets.bottom) * scale;
 
             final float thumbnailScale;
-            int thumbnailRotation = thumbnailData.rotation;
-            int deltaRotate = getRotationDelta(currentRotation, thumbnailRotation);
 
             // Landscape vs portrait change
             boolean windowingModeSupportsRotation = !dp.isMultiWindowMode
@@ -558,7 +559,10 @@ public class TaskThumbnailView extends View implements PluginListener<OverviewSc
             mIsOrientationChanged = isOrientationDifferent;
         }
 
-        private Rect getBoundedInsets(Rect activityInsets, Rect insets) {
+        private Rect getBoundedInsets(Rect activityInsets, Rect insets, int deltaRotation) {
+            if (deltaRotation != 0) {
+                return insets;
+            }
             return new Rect(Math.min(insets.left, activityInsets.left),
                     Math.min(insets.top, activityInsets.top),
                     Math.min(insets.right, activityInsets.right),
