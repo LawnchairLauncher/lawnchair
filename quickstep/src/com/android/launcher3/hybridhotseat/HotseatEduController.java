@@ -284,4 +284,3 @@ public class HotseatEduController {
         return new Intent(SETTINGS_ACTION).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     }
 }
-

@@ -37,4 +37,6 @@
     <integer name="assistant_gesture_corner_deg_threshold">20</integer>
 
     <string name="wellbeing_provider_pkg" translatable="false"/>
+
+    <integer name="max_depth_blur_radius">150</integer>
 </resources>

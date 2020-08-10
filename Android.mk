@@ -149,12 +149,9 @@ LOCAL_STATIC_ANDROID_LIBRARIES := Launcher3CommonDepsLib
 LOCAL_SRC_FILES := \
     $(call all-java-files-under, src) \
     $(call all-java-files-under, quickstep/src) \
-    $(call all-java-files-under, quickstep/recents_ui_overrides/src) \
     $(call all-java-files-under, src_shortcuts_overrides)
 
-LOCAL_RESOURCE_DIR := \
-    $(LOCAL_PATH)/quickstep/res \
-    $(LOCAL_PATH)/quickstep/recents_ui_overrides/res
+LOCAL_RESOURCE_DIR := $(LOCAL_PATH)/quickstep/res
 LOCAL_PROGUARD_ENABLED := disabled
 
 
@@ -183,9 +180,7 @@ LOCAL_SYSTEM_EXT_MODULE := true
 LOCAL_OVERRIDES_PACKAGES := Home Launcher2 Launcher3
 LOCAL_REQUIRED_MODULES := privapp_whitelist_com.android.launcher3
 
-LOCAL_RESOURCE_DIR := \
-    $(LOCAL_PATH)/quickstep/res \
-    $(LOCAL_PATH)/quickstep/recents_ui_overrides/res
+LOCAL_RESOURCE_DIR := $(LOCAL_PATH)/quickstep/res
 
 LOCAL_FULL_LIBS_MANIFEST_FILES := \
     $(LOCAL_PATH)/quickstep/AndroidManifest-launcher.xml \
@@ -220,12 +215,10 @@ LOCAL_STATIC_ANDROID_LIBRARIES := Launcher3CommonDepsLib
 LOCAL_SRC_FILES := \
     $(call all-java-files-under, src) \
     $(call all-java-files-under, quickstep/src) \
-    $(call all-java-files-under, quickstep/recents_ui_overrides/src) \
     $(call all-java-files-under, go/src)
 
 LOCAL_RESOURCE_DIR := \
     $(LOCAL_PATH)/quickstep/res \
-    $(LOCAL_PATH)/quickstep/recents_ui_overrides/res \
     $(LOCAL_PATH)/go/res
 
 LOCAL_PROGUARD_FLAG_FILES := proguard.flags
