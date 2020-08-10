@@ -18,8 +18,6 @@ package com.android.quickstep.util;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.quickstep.SysUINavigationMode.Mode.TWO_BUTTONS;
-import static com.android.quickstep.views.RecentsView.RECENTS_SCALE_PROPERTY;
-import static com.android.quickstep.views.RecentsView.TASK_SECONDARY_TRANSLATION;
 
 import android.animation.TimeInterpolator;
 import android.content.Context;
@@ -29,16 +27,12 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.FloatProperty;
 
-import androidx.annotation.Nullable;
-
-import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.quickstep.LauncherActivityInterface;
 import com.android.quickstep.SysUINavigationMode;
-import com.android.quickstep.views.RecentsView;
 
 /**
  * Controls an animation that can go beyond progress = 1, at which point resistance should be
@@ -54,32 +48,15 @@ public class AnimatorControllerWithResistance {
      */
     public static final float TWO_BUTTON_EXTRA_DRAG_FACTOR = 0.25f;
 
-    private enum RecentsParams {
-        FROM_APP(0.75f, 0.5f, 1f),
-        FROM_OVERVIEW(1f, 0.75f, 0.5f);
+    /**
+     * Start slowing down the rate of scaling down when recents view is smaller than this scale.
+     */
+    private static final float RECENTS_SCALE_START_RESIST = 0.75f;
 
-        RecentsParams(float scaleStartResist, float scaleMaxResist, float translationFactor) {
-            this.scaleStartResist = scaleStartResist;
-            this.scaleMaxResist = scaleMaxResist;
-            this.translationFactor = translationFactor;
-        }
-
-        /**
-         * Start slowing down the rate of scaling down when recents view is smaller than this scale.
-         */
-        public final float scaleStartResist;
-
-        /**
-         * Recents view will reach this scale at the very end of the drag.
-         */
-        public final float scaleMaxResist;
-
-        /**
-         * How much translation to apply to RecentsView when the drag reaches the top of the screen,
-         * where 0 will keep it centered and 1 will have it barely touch the top of the screen.
-         */
-        public final float translationFactor;
-    }
+    /**
+     * Recents view will reach this scale at the very end of the drag.
+     */
+    private static final float RECENTS_SCALE_MAX_RESIST = 0.5f;
 
     private static final TimeInterpolator RECENTS_SCALE_RESIST_INTERPOLATOR = DEACCEL;
     private static final TimeInterpolator RECENTS_TRANSLATE_RESIST_INTERPOLATOR = LINEAR;
@@ -138,24 +115,6 @@ public class AnimatorControllerWithResistance {
             RecentsOrientedState recentsOrientedState, DeviceProfile dp, SCALE scaleTarget,
             FloatProperty<SCALE> scaleProperty, TRANSLATION translationTarget,
             FloatProperty<TRANSLATION> translationProperty) {
-
-        PendingAnimation resistAnim = createRecentsResistanceAnim(null, context,
-                recentsOrientedState, dp, scaleTarget, scaleProperty, translationTarget,
-                translationProperty, RecentsParams.FROM_APP);
-
-        AnimatorPlaybackController resistanceController = resistAnim.createPlaybackController();
-        return new AnimatorControllerWithResistance(normalController, resistanceController);
-    }
-
-    /**
-     * Creates the resistance animation for {@link #createForRecents}, or can be used separately
-     * when starting from recents, i.e. {@link #createRecentsResistanceFromOverviewAnim}.
-     */
-    public static <SCALE, TRANSLATION> PendingAnimation createRecentsResistanceAnim(
-            @Nullable PendingAnimation resistAnim, Context context,
-            RecentsOrientedState recentsOrientedState, DeviceProfile dp, SCALE scaleTarget,
-            FloatProperty<SCALE> scaleProperty, TRANSLATION translationTarget,
-            FloatProperty<TRANSLATION> translationProperty, RecentsParams params) {
         Rect startRect = new Rect();
         LauncherActivityInterface.INSTANCE.calculateTaskSize(context, dp, startRect,
                 recentsOrientedState.getOrientationHandler());
@@ -166,9 +125,7 @@ public class AnimatorControllerWithResistance {
             distanceToCover = (long)
                     ((dp.heightPx - startRect.bottom) * TWO_BUTTON_EXTRA_DRAG_FACTOR);
         }
-        if (resistAnim == null) {
-            resistAnim = new PendingAnimation(distanceToCover * 2);
-        }
+        PendingAnimation resistAnim = new PendingAnimation(distanceToCover * 2);
 
         PointF pivot = new PointF();
         float fullscreenScale = recentsOrientedState.getFullScreenScaleAndPivot(
@@ -184,9 +141,9 @@ public class AnimatorControllerWithResistance {
         } else {
             // Create an interpolator that resists the scale so the scale doesn't get smaller than
             // RECENTS_SCALE_MAX_RESIST.
-            float startResist = Utilities.getProgress(params.scaleStartResist , startScale,
+            float startResist = Utilities.getProgress(RECENTS_SCALE_START_RESIST, startScale,
                     endScale);
-            float maxResist = Utilities.getProgress(params.scaleMaxResist, startScale, endScale);
+            float maxResist = Utilities.getProgress(RECENTS_SCALE_MAX_RESIST, startScale, endScale);
             scaleInterpolator = t -> {
                 if (t < startResist) {
                     return t;
@@ -203,28 +160,17 @@ public class AnimatorControllerWithResistance {
             // Compute where the task view would be based on the end scale, if we didn't translate.
             RectF endRectF = new RectF(startRect);
             Matrix temp = new Matrix();
-            temp.setScale(params.scaleMaxResist, params.scaleMaxResist, pivot.x, pivot.y);
+            temp.setScale(RECENTS_SCALE_MAX_RESIST, RECENTS_SCALE_MAX_RESIST, pivot.x, pivot.y);
             temp.mapRect(endRectF);
             // Translate such that the task view touches the top of the screen when drag does.
             float endTranslation = endRectF.top * recentsOrientedState.getOrientationHandler()
-                    .getSecondaryTranslationDirectionFactor() * params.translationFactor;
+                    .getSecondaryTranslationDirectionFactor();
             resistAnim.addFloat(translationTarget, translationProperty, 0, endTranslation,
                     RECENTS_TRANSLATE_RESIST_INTERPOLATOR);
         }
 
-        return resistAnim;
+        AnimatorPlaybackController resistanceController = resistAnim.createPlaybackController();
+        return new AnimatorControllerWithResistance(normalController, resistanceController);
     }
 
-    /**
-     * Helper method to update or create a PendingAnimation suitable for animating
-     * a RecentsView interaction that started from the overview state.
-     */
-    public static PendingAnimation createRecentsResistanceFromOverviewAnim(
-            BaseDraggingActivity activity, @Nullable PendingAnimation resistanceAnim) {
-        RecentsView recentsView = activity.getOverviewPanel();
-        return createRecentsResistanceAnim(resistanceAnim, activity,
-                recentsView.getPagedViewOrientedState(), activity.getDeviceProfile(),
-                recentsView, RECENTS_SCALE_PROPERTY, recentsView, TASK_SECONDARY_TRANSLATION,
-                RecentsParams.FROM_OVERVIEW);
-    }
 }
