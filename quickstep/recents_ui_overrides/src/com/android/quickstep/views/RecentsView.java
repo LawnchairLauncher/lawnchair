@@ -24,6 +24,7 @@ import static com.android.launcher3.BaseActivity.STATE_HANDLER_INVISIBILITY_FLAG
 import static com.android.launcher3.InvariantDeviceProfile.CHANGE_FLAG_ICON_PARAMS;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
+import static com.android.launcher3.LauncherState.OVERVIEW_MODAL_TASK;
 import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
 import static com.android.launcher3.Utilities.mapToRange;
 import static com.android.launcher3.Utilities.squaredHypot;
@@ -93,6 +94,7 @@ import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.InvariantDeviceProfile;
+import com.android.launcher3.LauncherState;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -1748,6 +1750,11 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
             updateOrientationHandler();
         }
         mLiveTileTaskViewSimulator.setRecentsRotation(rotation);
+        // If overview is in modal state when rotate, reset it to overview state without running
+        // animation.
+        if (mActivity.isInState(OVERVIEW_MODAL_TASK)) {
+            mActivity.getStateManager().goToState(LauncherState.OVERVIEW, false);
+        }
     }
 
     public void setLayoutRotation(int touchRotation, int displayRotation) {
