@@ -530,7 +530,11 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
         // much the window is bound by overscroll (vs moving freely).
         if (animate) {
             ValueAnimator reapplyWindowTransformAnim = ValueAnimator.ofFloat(0, 1);
-            reapplyWindowTransformAnim.addUpdateListener(anim -> applyWindowTransform());
+            reapplyWindowTransformAnim.addUpdateListener(anim -> {
+                if (mRunningWindowAnim == null) {
+                    applyWindowTransform();
+                }
+            });
             reapplyWindowTransformAnim.setDuration(RECENTS_ATTACH_DURATION).start();
         } else {
             applyWindowTransform();
