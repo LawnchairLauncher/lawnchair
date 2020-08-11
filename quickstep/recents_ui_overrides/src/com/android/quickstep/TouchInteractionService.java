@@ -101,24 +101,6 @@ import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.LinkedList;
-import java.util.List;
-
-/**
- * Wrapper around a list for processing arguments.
- */
-class ArgList extends LinkedList<String> {
-    public ArgList(List<String> l) {
-        super(l);
-    }
-
-    public String peekArg() {
-        return peekFirst();
-    }
-
-    public String nextArg() {
-        return pollFirst().toLowerCase();
-    }
-}
 
 /**
  * Service connected by system-UI for handling touch interaction.
@@ -238,23 +220,6 @@ public class TouchInteractionService extends Service implements PluginListener<O
             WindowBounds wb = new WindowBounds(bounds, insets);
             MAIN_EXECUTOR.execute(() -> SplitScreenBounds.INSTANCE.setSecondaryWindowBounds(wb));
         }
-
-        /** Deprecated methods **/
-        public void onQuickStep(MotionEvent motionEvent) { }
-
-        public void onQuickScrubEnd() { }
-
-        public void onQuickScrubProgress(float progress) { }
-
-        public void onQuickScrubStart() { }
-
-        public void onPreMotionEvent(int downHitTarget) { }
-
-        public void onMotionEvent(MotionEvent ev) {
-            ev.recycle();
-        }
-
-        public void onBind(ISystemUiProxy iSystemUiProxy) { }
     };
 
     private static boolean sConnected = false;
@@ -837,10 +802,10 @@ public class TouchInteractionService extends Service implements PluginListener<O
     @Override
     protected void dump(FileDescriptor fd, PrintWriter pw, String[] rawArgs) {
         if (rawArgs.length > 0 && Utilities.IS_DEBUG_DEVICE) {
-            ArgList args = new ArgList(Arrays.asList(rawArgs));
-            switch (args.nextArg()) {
+            LinkedList<String> args = new LinkedList(Arrays.asList(rawArgs));
+            switch (args.pollFirst()) {
                 case "cmd":
-                    if (args.peekArg() == null) {
+                    if (args.peekFirst() == null) {
                         printAvailableCommands(pw);
                     } else {
                         onCommand(pw, args);
@@ -881,8 +846,8 @@ public class TouchInteractionService extends Service implements PluginListener<O
         pw.println("  clear-touch-log: Clears the touch interaction log");
     }
 
-    private void onCommand(PrintWriter pw, ArgList args) {
-        switch (args.nextArg()) {
+    private void onCommand(PrintWriter pw, LinkedList<String> args) {
+        switch (args.pollFirst()) {
             case "clear-touch-log":
                 ActiveGestureLog.INSTANCE.clear();
                 break;
