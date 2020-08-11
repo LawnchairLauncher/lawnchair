@@ -310,4 +310,9 @@ public class AppsDividerView extends View implements StateListener<LauncherState
     public Class<AppsDividerView> getTypeClass() {
         return AppsDividerView.class;
     }
+
+    @Override
+    public View getFocusedChild() {
+        return null;
+    }
 }

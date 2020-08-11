@@ -21,6 +21,7 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.view.View;
 
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.launcher3.R;
@@ -34,19 +35,19 @@ import java.util.List;
  */
 public class AllAppsSectionDecorator extends RecyclerView.ItemDecoration {
 
-    private final AlphabeticalAppsList mApps;
+    private final AllAppsContainerView mAppsView;
 
-    AllAppsSectionDecorator(AlphabeticalAppsList appsList) {
-        mApps = appsList;
+    AllAppsSectionDecorator(AllAppsContainerView appsContainerView) {
+        mAppsView = appsContainerView;
     }
 
     @Override
     public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
         // Iterate through views in recylerview and draw bounds around views in the same section.
         // Since views in the same section will follow each other, we can skip to a last view in
-        // a section to get the bounds of the section without having to iterate on evert item.
+        // a section to get the bounds of the section without having to iterate on every item.
         int itemCount = parent.getChildCount();
-        List<AlphabeticalAppsList.AdapterItem> adapterItems = mApps.getAdapterItems();
+        List<AlphabeticalAppsList.AdapterItem> adapterItems = mAppsView.getApps().getAdapterItems();
         SectionDecorationHandler lastDecorationHandler = null;
         int i = 0;
         while (i < itemCount) {
@@ -69,7 +70,6 @@ public class AllAppsSectionDecorator extends RecyclerView.ItemDecoration {
                     i = endIndex;
                     continue;
                 }
-
             }
             i++;
         }
@@ -78,13 +78,21 @@ public class AllAppsSectionDecorator extends RecyclerView.ItemDecoration {
         }
     }
 
-    private void drawDecoration(Canvas c, SectionDecorationHandler decorationHandler, View parent) {
+    private void drawDecoration(Canvas c, SectionDecorationHandler decorationHandler,
+            RecyclerView parent) {
         if (decorationHandler == null) return;
         if (decorationHandler.mIsFullWidth) {
             decorationHandler.mBounds.left = parent.getPaddingLeft();
             decorationHandler.mBounds.right = parent.getWidth() - parent.getPaddingRight();
         }
         decorationHandler.onDraw(c);
+        if (mAppsView.getFloatingHeaderView().getFocusedChild() == null
+                && mAppsView.getApps().getFocusedChild() != null) {
+            int index = mAppsView.getApps().getFocusedChildIndex();
+            if (index >= 0 && index < parent.getChildCount()) {
+                decorationHandler.onFocusDraw(c, parent.getChildAt(index));
+            }
+        }
         decorationHandler.reset();
     }
 
@@ -95,18 +103,21 @@ public class AllAppsSectionDecorator extends RecyclerView.ItemDecoration {
         protected RectF mBounds = new RectF();
         private final boolean mIsFullWidth;
         private final float mRadius;
+
+        private final int mFocusColor;
         private final int mFillcolor;
-        Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        private final Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
 
         public SectionDecorationHandler(Context context, boolean isFullWidth) {
             mIsFullWidth = isFullWidth;
             mFillcolor = context.getColor(R.color.all_apps_section_fill);
+            mFocusColor = context.getColor(R.color.all_apps_section_focused_item);
             mRadius = Themes.getDialogCornerRadius(context);
         }
 
         /**
-         * Extends current bounds to include view
+         * Extends current bounds to include the view.
          */
         public void extendBounds(View view) {
             if (mBounds.isEmpty()) {
@@ -122,7 +133,7 @@ public class AllAppsSectionDecorator extends RecyclerView.ItemDecoration {
         }
 
         /**
-         * Draw bounds onto canvas
+         * Draw bounds onto canvas.
          */
         public void onDraw(Canvas canvas) {
             mPaint.setColor(mFillcolor);
@@ -130,7 +141,19 @@ public class AllAppsSectionDecorator extends RecyclerView.ItemDecoration {
         }
 
         /**
-         * Reset view bounds to empty
+         * Draw the bound of the view to the canvas.
+         */
+        public void onFocusDraw(Canvas canvas, @Nullable View view) {
+            if (view == null) {
+                return;
+            }
+            mPaint.setColor(mFocusColor);
+            canvas.drawRoundRect(view.getLeft(), view.getTop(),
+                    view.getRight(), view.getBottom(), mRadius, mRadius, mPaint);
+        }
+
+        /**
+         * Reset view bounds to empty.
          */
         public void reset() {
             mBounds.setEmpty();

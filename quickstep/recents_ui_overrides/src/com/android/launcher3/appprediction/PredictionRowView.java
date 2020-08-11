@@ -169,6 +169,7 @@ public class PredictionRowView extends LinearLayout implements
                 mDecorationHandler.extendBounds(getChildAt(i));
             }
             mDecorationHandler.onDraw(canvas);
+            mDecorationHandler.onFocusDraw(canvas, getFocusedChild());
         }
         mFocusHelper.draw(canvas);
         super.dispatchDraw(canvas);
@@ -183,7 +184,7 @@ public class PredictionRowView extends LinearLayout implements
 
     @Override
     public boolean shouldDraw() {
-        return getVisibility() != GONE;
+        return getVisibility() == VISIBLE;
     }
 
     @Override
@@ -363,5 +364,10 @@ public class PredictionRowView extends LinearLayout implements
     @Override
     public Class<PredictionRowView> getTypeClass() {
         return PredictionRowView.class;
+    }
+
+    @Override
+    public View getFocusedChild() {
+        return getChildAt(0);
     }
 }
