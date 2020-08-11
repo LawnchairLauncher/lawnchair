@@ -17,7 +17,7 @@
 package com.android.launcher3;
 
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_APP_LAUNCH_TAP;
-import static com.android.launcher3.util.DefaultDisplay.CHANGE_ROTATION;
+import static com.android.launcher3.util.DisplayController.DisplayHolder.CHANGE_ROTATION;
 
 import android.app.ActivityOptions;
 import android.content.ActivityNotFoundException;
@@ -50,9 +50,9 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.uioverrides.WallpaperColorInfo;
-import com.android.launcher3.util.DefaultDisplay;
-import com.android.launcher3.util.DefaultDisplay.DisplayInfoChangeListener;
-import com.android.launcher3.util.DefaultDisplay.Info;
+import com.android.launcher3.util.DisplayController;
+import com.android.launcher3.util.DisplayController.DisplayInfoChangeListener;
+import com.android.launcher3.util.DisplayController.Info;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.TraceHelper;
@@ -84,7 +84,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
 
         mIsSafeModeEnabled = TraceHelper.allowIpcs("isSafeMode",
                 () -> getPackageManager().isSafeMode());
-        DefaultDisplay.INSTANCE.get(this).addChangeListener(this);
+        DisplayController.getDefaultDisplay(this).addChangeListener(this);
 
         // Update theme
         WallpaperColorInfo.INSTANCE.get(this).addOnChangeListener(this);
@@ -257,7 +257,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
     protected void onDestroy() {
         super.onDestroy();
         WallpaperColorInfo.INSTANCE.get(this).removeOnChangeListener(this);
-        DefaultDisplay.INSTANCE.get(this).removeChangeListener(this);
+        DisplayController.getDefaultDisplay(this).removeChangeListener(this);
     }
 
     public void runOnceOnStart(Runnable action) {

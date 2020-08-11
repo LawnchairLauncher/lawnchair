@@ -26,7 +26,7 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_COMPONENTS;
 import static com.android.launcher3.states.StateAnimationConfig.PLAY_ATOMIC_OVERVIEW_SCALE;
 import static com.android.launcher3.states.StateAnimationConfig.PLAY_NON_ATOMIC;
-import static com.android.launcher3.util.DefaultDisplay.getSingleFrameMs;
+import static com.android.launcher3.util.DisplayController.getSingleFrameMs;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;

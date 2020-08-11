@@ -41,7 +41,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.statehandlers.DepthController;
-import com.android.launcher3.util.DefaultDisplay;
+import com.android.launcher3.util.DisplayController;
 import com.android.quickstep.util.SurfaceTransactionApplier;
 import com.android.quickstep.util.TaskViewSimulator;
 import com.android.quickstep.util.TransformParams;
@@ -146,7 +146,7 @@ public final class TaskViewUtils {
         DeviceProfile dp = BaseActivity.fromContext(context).getDeviceProfile();
         // RecentsView never updates the display rotation until swipe-up so the value may be stale.
         // Use the display value instead.
-        int displayRotation = DefaultDisplay.INSTANCE.get(context).getInfo().rotation;
+        int displayRotation = DisplayController.getDefaultDisplay(context).getInfo().rotation;
 
         TaskViewSimulator topMostSimulator = null;
         if (targets.apps.length > 0) {

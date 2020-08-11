@@ -16,7 +16,7 @@
 
 package com.android.launcher3.anim;
 
-import static com.android.launcher3.util.DefaultDisplay.getSingleFrameMs;
+import static com.android.launcher3.util.DisplayController.getSingleFrameMs;
 
 import android.content.Context;
 import android.graphics.Path;

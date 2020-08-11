@@ -38,7 +38,7 @@ import static com.android.launcher3.states.StateAnimationConfig.SKIP_OVERVIEW;
 import static com.android.launcher3.touch.BothAxesSwipeDetector.DIRECTION_RIGHT;
 import static com.android.launcher3.touch.BothAxesSwipeDetector.DIRECTION_UP;
 import static com.android.launcher3.uioverrides.states.QuickstepAtomicAnimationFactory.INDEX_PAUSE_TO_OVERVIEW_ANIM;
-import static com.android.launcher3.util.DefaultDisplay.getSingleFrameMs;
+import static com.android.launcher3.util.DisplayController.getSingleFrameMs;
 import static com.android.launcher3.util.VibratorWrapper.OVERVIEW_HAPTIC;
 import static com.android.quickstep.util.ShelfPeekAnim.ShelfAnimState.CANCEL;
 import static com.android.quickstep.util.ShelfPeekAnim.ShelfAnimState.HIDE;
