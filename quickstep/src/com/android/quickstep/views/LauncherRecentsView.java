@@ -43,6 +43,7 @@ import com.android.launcher3.statemanager.StateManager.StateListener;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.quickstep.LauncherActivityInterface;
 import com.android.quickstep.SysUINavigationMode;
+import com.android.quickstep.util.OverviewToHomeAnim;
 import com.android.systemui.plugins.PluginListener;
 import com.android.systemui.plugins.RecentsExtraCard;
 
@@ -93,12 +94,14 @@ public class LauncherRecentsView extends RecentsView<BaseQuickstepLauncher>
 
     @Override
     public void startHome() {
+        Runnable onReachedHome = () -> mActivity.getStateManager().goToState(NORMAL, false);
+        OverviewToHomeAnim overviewToHomeAnim = new OverviewToHomeAnim(mActivity, onReachedHome);
         if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
             switchToScreenshot(null,
                     () -> finishRecentsAnimation(true /* toRecents */,
-                            () -> mActivity.getStateManager().goToState(NORMAL)));
+                            () -> overviewToHomeAnim.animateWithVelocity(0)));
         } else {
-            mActivity.getStateManager().goToState(NORMAL);
+            overviewToHomeAnim.animateWithVelocity(0);
         }
     }
 
