@@ -76,6 +76,7 @@ public class OverviewToHomeAnim {
         if (startState != OVERVIEW) {
             Log.e(TAG, "animateFromOverviewToHome: unexpected start state " + startState);
         }
+        AnimatorSet anim = new AnimatorSet();
 
         boolean playStaggeredWorkspaceAnim = velocity < 0;
         if (playStaggeredWorkspaceAnim) {
@@ -87,7 +88,8 @@ public class OverviewToHomeAnim {
                     mIsHomeStaggeredAnimFinished = true;
                     maybeOverviewToHomeAnimComplete();
                 }
-            }).start();
+            });
+            anim.play(staggeredWorkspaceAnim.getAnimators());
         } else {
             mIsHomeStaggeredAnimFinished = true;
         }
@@ -108,16 +110,17 @@ public class OverviewToHomeAnim {
         config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_Y, FINAL_FRAME);
         config.setInterpolator(ANIM_OVERVIEW_SCALE, FINAL_FRAME);
         config.setInterpolator(ANIM_OVERVIEW_ACTIONS_FADE, INSTANT);
-        AnimatorSet anim = stateManager.createAtomicAnimation(
+        AnimatorSet stateAnim = stateManager.createAtomicAnimation(
                 startState, NORMAL, config);
-        anim.addListener(new AnimationSuccessListener() {
+        stateAnim.addListener(new AnimationSuccessListener() {
             @Override
             public void onAnimationSuccess(Animator animator) {
                 mIsOverviewHidden = true;
                 maybeOverviewToHomeAnimComplete();
             }
         });
-        stateManager.cancelAnimation();
+        anim.play(stateAnim);
+        stateManager.setCurrentAnimation(anim, NORMAL);
         anim.start();
         recentsView.snapToPage(DEFAULT_PAGE, duration);
     }
