@@ -493,7 +493,11 @@ public abstract class BaseSwipeUpHandlerV2<T extends StatefulActivity<?>, Q exte
         // much the window is bound by overscroll (vs moving freely).
         if (animate) {
             ValueAnimator reapplyWindowTransformAnim = ValueAnimator.ofFloat(0, 1);
-            reapplyWindowTransformAnim.addUpdateListener(anim -> applyWindowTransform());
+            reapplyWindowTransformAnim.addUpdateListener(anim -> {
+                if (mRunningWindowAnim == null) {
+                    applyWindowTransform();
+                }
+            });
             reapplyWindowTransformAnim.setDuration(RECENTS_ATTACH_DURATION).start();
         } else {
             applyWindowTransform();
