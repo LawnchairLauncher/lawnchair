@@ -33,7 +33,6 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.icons.IconProvider;
 import com.android.launcher3.icons.LauncherIcons;
-import com.android.launcher3.model.PredictionModel;
 import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.pm.InstallSessionHelper;
 import com.android.launcher3.pm.InstallSessionTracker;
@@ -58,7 +57,6 @@ public class LauncherAppState {
     private final IconCache mIconCache;
     private final WidgetPreviewLoader mWidgetCache;
     private final InvariantDeviceProfile mInvariantDeviceProfile;
-    private final PredictionModel mPredictionModel;
 
     private SecureSettingsObserver mNotificationDotsObserver;
     private InstallSessionTracker mInstallSessionTracker;
@@ -125,7 +123,6 @@ public class LauncherAppState {
         mIconCache = new IconCache(mContext, mInvariantDeviceProfile, iconCacheFileName);
         mWidgetCache = new WidgetPreviewLoader(mContext, mIconCache);
         mModel = new LauncherModel(context, this, mIconCache, AppFilter.newInstance(mContext));
-        mPredictionModel = PredictionModel.newInstance(mContext);
     }
 
     protected void onNotificationSettingsChanged(boolean areNotificationDotsEnabled) {
@@ -180,10 +177,6 @@ public class LauncherAppState {
 
     public LauncherModel getModel() {
         return mModel;
-    }
-
-    public PredictionModel getPredictionModel() {
-        return mPredictionModel;
     }
 
     public WidgetPreviewLoader getWidgetCache() {
