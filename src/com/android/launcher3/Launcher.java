@@ -24,7 +24,6 @@ import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
 import static com.android.launcher3.AbstractFloatingView.TYPE_ICON_SURFACE;
 import static com.android.launcher3.AbstractFloatingView.TYPE_REBIND_SAFE;
 import static com.android.launcher3.AbstractFloatingView.TYPE_SNACKBAR;
-import static com.android.launcher3.InstallShortcutReceiver.FLAG_DRAG_AND_DROP;
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.FLAG_CLOSE_POPUPS;
@@ -43,6 +42,9 @@ import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_BACKG
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ONRESUME;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ONSTOP;
 import static com.android.launcher3.logging.StatsLogManager.containerTypeToAtomState;
+import static com.android.launcher3.model.ItemInstallQueue.FLAG_ACTIVITY_PAUSED;
+import static com.android.launcher3.model.ItemInstallQueue.FLAG_DRAG_AND_DROP;
+import static com.android.launcher3.model.ItemInstallQueue.FLAG_LOADER_RUNNING;
 import static com.android.launcher3.popup.SystemShortcut.APP_INFO;
 import static com.android.launcher3.popup.SystemShortcut.INSTALL;
 import static com.android.launcher3.popup.SystemShortcut.WIDGETS;
@@ -120,6 +122,7 @@ import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.model.BgDataModel.Callbacks;
+import com.android.launcher3.model.ItemInstallQueue;
 import com.android.launcher3.model.ModelUtils;
 import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.model.data.AppInfo;
@@ -912,8 +915,8 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         getUserEventDispatcher().startSession();
 
         // Process any items that were added while Launcher was away.
-        InstallShortcutReceiver.disableAndFlushInstallQueue(
-                InstallShortcutReceiver.FLAG_ACTIVITY_PAUSED, this);
+        ItemInstallQueue.INSTANCE.get(this)
+                .resumeModelPush(FLAG_ACTIVITY_PAUSED);
 
         // Refresh shortcuts if the permission changed.
         mModel.validateModelDataOnResume();
@@ -1007,7 +1010,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         if (state == SPRING_LOADED) {
             // Prevent any Un/InstallShortcutReceivers from updating the db while we are
             // not on homescreen
-            InstallShortcutReceiver.enableInstallQueue(FLAG_DRAG_AND_DROP);
+            ItemInstallQueue.INSTANCE.get(this).pauseModelPush(FLAG_DRAG_AND_DROP);
             getRotationHelper().setCurrentStateRequest(REQUEST_LOCK);
 
             mWorkspace.showPageIndicatorAtCurrentScroll();
@@ -1032,7 +1035,8 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
         if (state == NORMAL) {
             // Re-enable any Un/InstallShortcutReceiver and now process any queued items
-            InstallShortcutReceiver.disableAndFlushInstallQueue(FLAG_DRAG_AND_DROP, this);
+            ItemInstallQueue.INSTANCE.get(this)
+                    .resumeModelPush(FLAG_DRAG_AND_DROP);
 
             // Clear any rotation locks when going to normal state
             getRotationHelper().setCurrentStateRequest(REQUEST_NONE);
@@ -1066,7 +1070,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
     @Override
     protected void onPause() {
         // Ensure that items added to Launcher are queued until Launcher returns
-        InstallShortcutReceiver.enableInstallQueue(InstallShortcutReceiver.FLAG_ACTIVITY_PAUSED);
+        ItemInstallQueue.INSTANCE.get(this).pauseModelPush(FLAG_ACTIVITY_PAUSED);
 
         super.onPause();
         mDragController.cancelDrag();
@@ -2421,8 +2425,8 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
             mPendingActivityResult = null;
         }
 
-        InstallShortcutReceiver.disableAndFlushInstallQueue(
-                InstallShortcutReceiver.FLAG_LOADER_RUNNING, this);
+        ItemInstallQueue.INSTANCE.get(this)
+                .resumeModelPush(FLAG_LOADER_RUNNING);
 
         // When undoing the removal of the last item on a page, return to that page.
         // Since we are just resetting the current page without user interaction,
@@ -2449,8 +2453,8 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
 
     private ValueAnimator createNewAppBounceAnimation(View v, int i) {
         ValueAnimator bounceAnim = new PropertyListBuilder().alpha(1).scale(1).build(v)
-                .setDuration(InstallShortcutReceiver.NEW_SHORTCUT_BOUNCE_DURATION);
-        bounceAnim.setStartDelay(i * InstallShortcutReceiver.NEW_SHORTCUT_STAGGER_DELAY);
+                .setDuration(ItemInstallQueue.NEW_SHORTCUT_BOUNCE_DURATION);
+        bounceAnim.setStartDelay(i * ItemInstallQueue.NEW_SHORTCUT_STAGGER_DELAY);
         bounceAnim.setInterpolator(new OvershootInterpolator(BOUNCE_ANIMATION_TENSION));
         return bounceAnim;
     }

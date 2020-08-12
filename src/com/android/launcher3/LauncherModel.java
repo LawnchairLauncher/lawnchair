@@ -43,6 +43,7 @@ import com.android.launcher3.model.BaseModelUpdateTask;
 import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.CacheDataUpdatedTask;
+import com.android.launcher3.model.ItemInstallQueue;
 import com.android.launcher3.model.LoaderResults;
 import com.android.launcher3.model.LoaderTask;
 import com.android.launcher3.model.ModelDelegate;
@@ -330,7 +331,8 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
      */
     public boolean startLoader() {
         // Enable queue before starting loader. It will get disabled in Launcher#finishBindingItems
-        InstallShortcutReceiver.enableInstallQueue(InstallShortcutReceiver.FLAG_LOADER_RUNNING);
+        ItemInstallQueue.INSTANCE.get(mApp.getContext())
+                .pauseModelPush(ItemInstallQueue.FLAG_LOADER_RUNNING);
         synchronized (mLock) {
             // Don't bother to start the thread if we know it's not going to do anything
             final Callbacks[] callbacksList = getCallbacks();
