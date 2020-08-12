@@ -73,6 +73,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
 
     private final Rect mTaskRect = new Rect();
     private float mOffsetY;
+    private boolean mDrawsBelowRecents;
     private final PointF mPivot = new PointF();
     private DeviceProfile mDp;
 
@@ -179,6 +180,10 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
 
     public void setOffsetY(float offsetY) {
         mOffsetY = offsetY;
+    }
+
+    public void setDrawsBelowRecents(boolean drawsBelowRecents) {
+        mDrawsBelowRecents = drawsBelowRecents;
     }
 
     /**
@@ -320,7 +325,8 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
                 .withWindowCrop(mTmpCropRect)
                 .withCornerRadius(getCurrentCornerRadius());
 
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get() && params.getRecentsSurface() != null) {
+        if (ENABLE_QUICKSTEP_LIVE_TILE.get() && mDrawsBelowRecents
+                && params.getRecentsSurface() != null) {
             builder.withRelativeLayerTo(params.getRecentsSurface(), Integer.MIN_VALUE);
         }
     }

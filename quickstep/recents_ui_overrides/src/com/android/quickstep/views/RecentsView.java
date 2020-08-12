@@ -475,6 +475,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         mLiveTileTaskViewSimulator.setLayoutRotation(getPagedViewOrientedState().getTouchRotation(),
                 getPagedViewOrientedState().getDisplayRotation());
         mLiveTileTaskViewSimulator.setRecentsRotation(rotation);
+        mLiveTileTaskViewSimulator.setDrawsBelowRecents(true);
     }
 
     public OverScroller getScroller() {
