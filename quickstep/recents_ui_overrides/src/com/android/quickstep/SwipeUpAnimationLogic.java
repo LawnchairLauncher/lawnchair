@@ -79,6 +79,7 @@ public abstract class SwipeUpAnimationLogic {
         mTaskViewSimulator.setLayoutRotation(
                 mDeviceState.getRotationTouchHelper().getCurrentActiveRotation(),
                 mDeviceState.getRotationTouchHelper().getDisplayRotation());
+        mTaskViewSimulator.setDrawsBelowRecents(true);
     }
 
     protected void initTransitionEndpoints(DeviceProfile dp) {
