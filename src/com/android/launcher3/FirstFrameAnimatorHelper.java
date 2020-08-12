@@ -15,7 +15,7 @@
  */
 package com.android.launcher3;
 
-import static com.android.launcher3.util.DefaultDisplay.getSingleFrameMs;
+import static com.android.launcher3.util.DisplayController.getSingleFrameMs;
 
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;

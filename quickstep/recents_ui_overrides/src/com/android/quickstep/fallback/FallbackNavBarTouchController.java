@@ -21,7 +21,7 @@ import android.view.MotionEvent;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.Utilities;
-import com.android.launcher3.util.DefaultDisplay;
+import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.TouchController;
 import com.android.quickstep.RecentsActivity;
 import com.android.quickstep.SysUINavigationMode;
@@ -43,7 +43,7 @@ public class FallbackNavBarTouchController implements TouchController,
         SysUINavigationMode.Mode sysUINavigationMode = SysUINavigationMode.getMode(mActivity);
         if (sysUINavigationMode == SysUINavigationMode.Mode.NO_BUTTON) {
             NavBarPosition navBarPosition = new NavBarPosition(sysUINavigationMode,
-                    DefaultDisplay.INSTANCE.get(mActivity).getInfo());
+                    DisplayController.getDefaultDisplay(mActivity).getInfo());
             mTriggerSwipeUpTracker = new TriggerSwipeUpTouchTracker(mActivity,
                     true /* disableHorizontalSwipe */, navBarPosition,
                     null /* onInterceptTouch */, this);

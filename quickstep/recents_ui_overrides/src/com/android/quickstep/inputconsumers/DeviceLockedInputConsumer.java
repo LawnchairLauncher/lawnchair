@@ -41,7 +41,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.TestProtocol;
-import com.android.launcher3.util.DefaultDisplay;
+import com.android.launcher3.util.DisplayController;
 import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.InputConsumer;
@@ -115,7 +115,7 @@ public class DeviceLockedInputConsumer implements InputConsumer,
                 R.dimen.device_locked_y_offset);
 
         // Do not use DeviceProfile as the user data might be locked
-        mDisplaySize = DefaultDisplay.INSTANCE.get(context).getInfo().realSize;
+        mDisplaySize = DisplayController.getDefaultDisplay(context).getInfo().realSize;
 
         // Init states
         mStateCallback = new MultiStateCallback(STATE_NAMES);

@@ -17,8 +17,8 @@ package com.android.quickstep;
 
 import static android.content.Intent.ACTION_USER_UNLOCKED;
 
-import static com.android.launcher3.util.DefaultDisplay.CHANGE_ALL;
-import static com.android.launcher3.util.DefaultDisplay.CHANGE_FRAME_DELAY;
+import static com.android.launcher3.util.DisplayController.DisplayHolder.CHANGE_ALL;
+import static com.android.launcher3.util.DisplayController.DisplayHolder.CHANGE_FRAME_DELAY;
 import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
 import static com.android.quickstep.SysUINavigationMode.Mode.THREE_BUTTONS;
 import static com.android.quickstep.SysUINavigationMode.Mode.TWO_BUTTONS;
@@ -56,7 +56,10 @@ import androidx.annotation.BinderThread;
 
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.util.DefaultDisplay;
+import com.android.launcher3.util.DisplayController;
+import com.android.launcher3.util.DisplayController.DisplayHolder;
+import com.android.launcher3.util.DisplayController.DisplayInfoChangeListener;
+import com.android.launcher3.util.DisplayController.Info;
 import com.android.launcher3.util.SecureSettingsObserver;
 import com.android.quickstep.SysUINavigationMode.NavigationModeChangeListener;
 import com.android.quickstep.SysUINavigationMode.OneHandedModeChangeListener;
@@ -76,14 +79,14 @@ import java.util.stream.Collectors;
  */
 public class RecentsAnimationDeviceState implements
         NavigationModeChangeListener,
-        DefaultDisplay.DisplayInfoChangeListener,
+        DisplayInfoChangeListener,
         OneHandedModeChangeListener {
 
     static final String SUPPORT_ONE_HANDED_MODE = "ro.support_one_handed_mode";
 
     private final Context mContext;
     private final SysUINavigationMode mSysUiNavMode;
-    private final DefaultDisplay mDefaultDisplay;
+    private final DisplayHolder mDisplayHolder;
     private final int mDisplayId;
     private final RotationTouchHelper mRotationTouchHelper;
 
@@ -120,13 +123,17 @@ public class RecentsAnimationDeviceState implements
     private boolean mIsUserSetupComplete;
 
     public RecentsAnimationDeviceState(Context context) {
+        this(context, DisplayController.getDefaultDisplay(context));
+    }
+
+    public RecentsAnimationDeviceState(Context context, DisplayHolder displayHolder) {
         mContext = context;
+        mDisplayHolder = displayHolder;
         mSysUiNavMode = SysUINavigationMode.INSTANCE.get(context);
-        mDefaultDisplay = DefaultDisplay.INSTANCE.get(context);
-        mDisplayId = mDefaultDisplay.getInfo().id;
+        mDisplayId = mDisplayHolder.getInfo().id;
         mIsOneHandedModeSupported = SystemProperties.getBoolean(SUPPORT_ONE_HANDED_MODE, false);
-        runOnDestroy(() -> mDefaultDisplay.removeChangeListener(this));
-        mRotationTouchHelper = new RotationTouchHelper(context);
+        runOnDestroy(() -> mDisplayHolder.removeChangeListener(this));
+        mRotationTouchHelper = new RotationTouchHelper(context, mDisplayHolder);
         runOnDestroy(mRotationTouchHelper::destroy);
 
         // Register for user unlocked if necessary
@@ -232,9 +239,9 @@ public class RecentsAnimationDeviceState implements
 
     @Override
     public void onNavigationModeChanged(SysUINavigationMode.Mode newMode) {
-        mDefaultDisplay.removeChangeListener(this);
-        mDefaultDisplay.addChangeListener(this);
-        onDisplayInfoChanged(mDefaultDisplay.getInfo(), CHANGE_ALL);
+        mDisplayHolder.removeChangeListener(this);
+        mDisplayHolder.addChangeListener(this);
+        onDisplayInfoChanged(mDisplayHolder.getInfo(), CHANGE_ALL);
 
         if (newMode == NO_BUTTON) {
             mExclusionListener.register();
@@ -242,12 +249,12 @@ public class RecentsAnimationDeviceState implements
             mExclusionListener.unregister();
         }
 
-        mNavBarPosition = new NavBarPosition(newMode, mDefaultDisplay.getInfo());
+        mNavBarPosition = new NavBarPosition(newMode, mDisplayHolder.getInfo());
         mMode = newMode;
     }
 
     @Override
-    public void onDisplayInfoChanged(DefaultDisplay.Info info, int flags) {
+    public void onDisplayInfoChanged(Info info, int flags) {
         if (info.id != getDisplayId() || flags == CHANGE_FRAME_DELAY) {
             // ignore displays that aren't running launcher and frame refresh rate changes
             return;
@@ -529,7 +536,7 @@ public class RecentsAnimationDeviceState implements
         }
 
         if (mIsOneHandedModeEnabled || mIsSwipeToNotificationEnabled) {
-            final DefaultDisplay.Info displayInfo = mDefaultDisplay.getInfo();
+            final Info displayInfo = mDisplayHolder.getInfo();
             return (mRotationTouchHelper.touchInOneHandedModeRegion(ev)
                 && displayInfo.rotation != Surface.ROTATION_90
                 && displayInfo.rotation != Surface.ROTATION_270
