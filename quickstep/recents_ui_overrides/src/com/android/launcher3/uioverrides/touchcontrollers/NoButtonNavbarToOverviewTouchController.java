@@ -136,6 +136,11 @@ public class NoButtonNavbarToOverviewTouchController extends FlingAndHoldTouchCo
     public void onDragEnd(float velocity) {
         super.onDragEnd(velocity);
         mNormalToHintOverviewScrimAnimator = null;
+        if (mLauncher.isInState(OVERVIEW)) {
+            // Normally we would cleanup the state based on mCurrentAnimation, but since we stop
+            // using that when we pause to go to Overview, we need to clean up ourselves.
+            clearState();
+        }
     }
 
     @Override
