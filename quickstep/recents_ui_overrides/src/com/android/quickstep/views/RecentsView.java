@@ -117,6 +117,7 @@ import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.DynamicResource;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.OverScroller;
+import com.android.launcher3.util.ResourceBasedOverride.Overrides;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.ViewPool;
 import com.android.quickstep.BaseActivityInterface;
@@ -125,6 +126,7 @@ import com.android.quickstep.RecentsAnimationTargets;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.RecentsModel.TaskVisualsChangeListener;
 import com.android.quickstep.SystemUiProxy;
+import com.android.quickstep.TaskOverlayFactory;
 import com.android.quickstep.TaskThumbnailCache;
 import com.android.quickstep.TaskUtils;
 import com.android.quickstep.ViewUtils;
@@ -280,6 +282,8 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
     private final InvariantDeviceProfile mIdp;
 
     private final ViewPool<TaskView> mTaskViewPool;
+
+    private final TaskOverlayFactory mTaskOverlayFactory;
 
     private boolean mDwbToastShown;
     protected boolean mDisallowScrollToClearAll;
@@ -469,6 +473,11 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         updateEmptyMessage();
         mOrientationHandler = mOrientationState.getOrientationHandler();
 
+        mTaskOverlayFactory = Overrides.getObject(
+                TaskOverlayFactory.class,
+                context.getApplicationContext(),
+                R.string.task_overlay_factory_class);
+
         // Initialize quickstep specific cache params here, as this is constructed only once
         mActivity.getViewCache().setCacheSize(R.layout.digital_wellbeing_toast, 5);
 
@@ -570,6 +579,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
                 mIPinnedStackAnimationListener);
         mOrientationState.initListeners();
         SplitScreenBounds.INSTANCE.addOnChangeListener(this);
+        mTaskOverlayFactory.initListeners();
     }
 
     @Override
@@ -587,6 +597,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         SplitScreenBounds.INSTANCE.removeOnChangeListener(this);
         mIPinnedStackAnimationListener.setActivity(null);
         mOrientationState.destroyListeners();
+        mTaskOverlayFactory.removeListeners();
     }
 
     @Override
@@ -2465,6 +2476,10 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
      * @param isModalState
      */
     public void setModalStateEnabled(boolean isModalState) { }
+
+    public TaskOverlayFactory getTaskOverlayFactory() {
+        return mTaskOverlayFactory;
+    }
 
     public BaseActivityInterface getSizeStrategy() {
         return mSizeStrategy;
