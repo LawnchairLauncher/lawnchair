@@ -161,9 +161,9 @@ public final class FeatureFlags {
             "ENABLE_UNIVERSAL_SMARTSPACE", false,
             "Replace Smartspace with a version rendered by System UI.");
 
-    public static final BooleanFlag ENABLE_LSQ_VELOCITY_PROVIDER = getDebugFlag(
-            "ENABLE_LSQ_VELOCITY_PROVIDER", true,
-            "Use Least Square algorithm for motion pause detection.");
+    public static final BooleanFlag ENABLE_SYSTEM_VELOCITY_PROVIDER = getDebugFlag(
+            "ENABLE_SYSTEM_VELOCITY_PROVIDER", true,
+            "Use system VelocityTracker's algorithm for motion pause detection.");
 
     public static final BooleanFlag ALWAYS_USE_HARDWARE_OPTIMIZATION_FOR_FOLDER_ANIMATIONS =
             getDebugFlag(
