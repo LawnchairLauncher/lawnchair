@@ -1765,6 +1765,7 @@ public abstract class RecentsView<T extends StatefulActivity> extends PagedView 
         // animation.
         if (mActivity.isInState(OVERVIEW_MODAL_TASK)) {
             mActivity.getStateManager().goToState(LauncherState.OVERVIEW, false);
+            resetModalVisuals();
         }
     }
 
