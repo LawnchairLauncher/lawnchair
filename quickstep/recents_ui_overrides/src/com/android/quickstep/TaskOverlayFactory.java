@@ -18,7 +18,6 @@ package com.android.quickstep;
 
 import static android.view.Surface.ROTATION_0;
 
-import static com.android.launcher3.util.MainThreadInitializedObject.forOverride;
 import static com.android.quickstep.views.OverviewActionsView.DISABLED_NO_THUMBNAIL;
 import static com.android.quickstep.views.OverviewActionsView.DISABLED_ROTATED;
 
@@ -39,7 +38,6 @@ import com.android.launcher3.R;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.SystemShortcut;
-import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.ResourceBasedOverride;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.quickstep.views.OverviewActionsView;
@@ -90,12 +88,21 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
         return shortcuts;
     }
 
-    public static final MainThreadInitializedObject<TaskOverlayFactory> INSTANCE =
-            forOverride(TaskOverlayFactory.class, R.string.task_overlay_factory_class);
-
     public TaskOverlay createOverlay(TaskThumbnailView thumbnailView) {
         return new TaskOverlay(thumbnailView);
     }
+
+    /**
+     * Subclasses can attach any system listeners in this method, must be paired with
+     * {@link #removeListeners()}
+     */
+    public void initListeners() { }
+
+    /**
+     * Subclasses should remove any system listeners in this method, must be paired with
+     * {@link #initListeners()}
+     */
+    public void removeListeners() { }
 
     /** Note that these will be shown in order from top to bottom, if available for the task. */
     private static final TaskShortcutFactory[] MENU_OPTIONS = new TaskShortcutFactory[]{
