@@ -576,9 +576,8 @@ public class TouchInteractionService extends Service implements PluginListener<O
             if (FeatureFlags.ENABLE_QUICK_CAPTURE_GESTURE.get()) {
                 OverscrollPlugin plugin = null;
                 if (FeatureFlags.FORCE_LOCAL_OVERSCROLL_PLUGIN.get()) {
-                    TaskOverlayFactory factory =
-                            TaskOverlayFactory.INSTANCE.get(getApplicationContext());
-                    plugin = factory.getLocalOverscrollPlugin();  // may be null
+                    plugin = OverscrollPluginFactory.INSTANCE.get(
+                            getApplicationContext()).getLocalOverscrollPlugin();
                 }
 
                 // If not local plugin was forced, use the actual overscroll plugin if available.
