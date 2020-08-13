@@ -1059,6 +1059,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
         }
 
         if (mGestureState.getEndTarget() == HOME) {
+            mTaskViewSimulator.setDrawsBelowRecents(false);
             HomeAnimationFactory homeAnimFactory = createHomeAnimationFactory(duration);
             RectFSpringAnim windowAnim = createWindowAnimationToHome(start, homeAnimFactory);
             windowAnim.addAnimatorListener(new AnimationSuccessListener() {
