@@ -15,15 +15,23 @@
  */
 package com.android.launcher3.allapps.search;
 
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnFocusChangeListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
+import android.widget.Toast;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.ExtendedEditText;
@@ -32,23 +40,31 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AlphabeticalAppsList;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.PackageManagerHelper;
+import com.android.systemui.plugins.AllAppsSearchPlugin;
+import com.android.systemui.plugins.PluginListener;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * An interface to a search box that AllApps can command.
  */
 public class AllAppsSearchBarController
         implements TextWatcher, OnEditorActionListener, ExtendedEditText.OnBackKeyListener,
-        OnFocusChangeListener {
+        OnFocusChangeListener, PluginListener<AllAppsSearchPlugin> {
 
+    private static final String TAG = "AllAppsSearchBarContoller";
     protected BaseDraggingActivity mLauncher;
     protected Callbacks mCb;
     protected ExtendedEditText mInput;
     protected String mQuery;
 
     protected SearchAlgorithm mSearchAlgorithm;
+    private AllAppsSearchPlugin mPlugin;
+    private Consumer mPlubinCb;
 
     public void setVisibility(int visibility) {
         mInput.setVisibility(visibility);
@@ -59,7 +75,7 @@ public class AllAppsSearchBarController
      */
     public final void initialize(
             SearchAlgorithm searchAlgorithm, ExtendedEditText input,
-            BaseDraggingActivity launcher, Callbacks cb) {
+            BaseDraggingActivity launcher, Callbacks cb, Consumer<List<Bundle>> secondaryCb) {
         mCb = cb;
         mLauncher = launcher;
 
@@ -69,11 +85,19 @@ public class AllAppsSearchBarController
         mInput.setOnBackKeyListener(this);
         mInput.setOnFocusChangeListener(this);
         mSearchAlgorithm = searchAlgorithm;
+
+        PluginManagerWrapper.INSTANCE.get(launcher).addPluginListener(this,
+                AllAppsSearchPlugin.class);
+        mPlubinCb = secondaryCb;
     }
 
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        // Do nothing
+        if (mPlugin != null) {
+            if (s.length() == 0) {
+                mPlugin.startedTyping();
+            }
+        }
     }
 
     @Override
@@ -90,6 +114,9 @@ public class AllAppsSearchBarController
         } else {
             mSearchAlgorithm.cancel(false);
             mSearchAlgorithm.doSearch(mQuery, mCb);
+            if (mPlugin != null) {
+                mPlugin.performSearch(mQuery, mPlubinCb);
+            }
         }
     }
 
@@ -170,13 +197,52 @@ public class AllAppsSearchBarController
         return mInput.isFocused();
     }
 
+    @Override
+    public void onPluginConnected(AllAppsSearchPlugin allAppsSearchPlugin, Context context) {
+        if (FeatureFlags.ENABLE_DEVICE_SEARCH.get()) {
+            mPlugin = allAppsSearchPlugin;
+            checkCallPermission();
+        }
+    }
+
+    /**
+     * Check call permissions.
+     */
+    public void checkCallPermission() {
+        final String[] permission = {"android.permission.CALL_PHONE",
+                "android.permission.READ_CONTACTS"};
+        boolean request = false;
+        for (String p : permission) {
+            int permissionCheck = ContextCompat.checkSelfPermission(mLauncher, p);
+            if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+                request = true;
+            }
+        }
+
+        if (!request) return;
+        boolean rationale = false;
+        for (String p : permission) {
+            if (mLauncher.shouldShowRequestPermissionRationale(p)) {
+                rationale = true;
+            }
+            if (rationale) {
+                Log.e(TAG, p + " Show rationale");
+                Toast.makeText(mLauncher, "Requesting Permissions", Toast.LENGTH_SHORT).show();
+            } else {
+                ActivityCompat.requestPermissions(mLauncher,  permission,  123);
+                Log.e(TAG, p + " request permission");
+            }
+        }
+
+    }
+
     /**
      * Callback for getting search results.
      */
     public interface Callbacks {
 
         /**
-         * Called when the search is complete.
+         * Called when the search from primary source is complete.
          *
          * @param items sorted list of search result adapter items.
          */
@@ -187,5 +253,4 @@ public class AllAppsSearchBarController
          */
         void clearSearchResult();
     }
-
 }
