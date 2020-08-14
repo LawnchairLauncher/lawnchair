@@ -34,7 +34,6 @@ import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.NO_OFFSET;
 import static com.android.launcher3.LauncherState.NO_SCALE;
 import static com.android.launcher3.LauncherState.OVERVIEW;
-import static com.android.launcher3.LauncherState.OVERVIEW_PEEK;
 import static com.android.launcher3.LauncherState.SPRING_LOADED;
 import static com.android.launcher3.Utilities.postAsyncCallback;
 import static com.android.launcher3.dragndrop.DragLayer.ALPHA_INDEX_LAUNCHER_LOAD;
@@ -451,7 +450,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
                 float alpha = 1f - mCurrentAssistantVisibility;
                 if (finalState == NORMAL) {
                     mAppsView.getAlphaProperty(APPS_VIEW_ALPHA_CHANNEL_INDEX).setValue(alpha);
-                } else if (finalState == OVERVIEW || finalState == OVERVIEW_PEEK) {
+                } else if (finalState == OVERVIEW) {
                     mAppsView.getAlphaProperty(APPS_VIEW_ALPHA_CHANNEL_INDEX).setValue(alpha);
                     mScrimView.setAlpha(alpha);
                 } else {
@@ -551,7 +550,7 @@ public class Launcher extends StatefulActivity<LauncherState> implements Launche
         LauncherState state = mStateManager.getState();
         if (state == NORMAL) {
             mAppsView.getAlphaProperty(APPS_VIEW_ALPHA_CHANNEL_INDEX).setValue(alpha);
-        } else if (state == OVERVIEW || state == OVERVIEW_PEEK) {
+        } else if (state == OVERVIEW) {
             mAppsView.getAlphaProperty(APPS_VIEW_ALPHA_CHANNEL_INDEX).setValue(alpha);
             mScrimView.setAlpha(alpha);
         }

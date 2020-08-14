@@ -16,7 +16,6 @@
 package com.android.launcher3.uioverrides.states;
 
 import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_ACTIONS;
 import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
 import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
 import static com.android.quickstep.SysUINavigationMode.hideShelfInTwoButtonLandscape;
@@ -65,7 +64,7 @@ public class OverviewState extends LauncherState {
     public int getTransitionDuration(Context context) {
         // In no-button mode, overview comes in all the way from the left, so give it more time.
         boolean isNoButtonMode = SysUINavigationMode.INSTANCE.get(context).getMode() == NO_BUTTON;
-        return isNoButtonMode && ENABLE_OVERVIEW_ACTIONS.get() ? 380 : 250;
+        return isNoButtonMode ? 380 : 250;
     }
 
     @Override
@@ -108,8 +107,7 @@ public class OverviewState extends LauncherState {
 
     @Override
     public ScaleAndTranslation getQsbScaleAndTranslation(Launcher launcher) {
-        if (this == OVERVIEW && ENABLE_OVERVIEW_ACTIONS.get()
-                && removeShelfFromOverview(launcher)) {
+        if (this == OVERVIEW && removeShelfFromOverview(launcher)) {
             // Treat the QSB as part of the hotseat so they move together.
             return getHotseatScaleAndTranslation(launcher);
         }
@@ -129,7 +127,7 @@ public class OverviewState extends LauncherState {
     @Override
     public int getVisibleElements(Launcher launcher) {
         RecentsView recentsView = launcher.getOverviewPanel();
-        if (ENABLE_OVERVIEW_ACTIONS.get() && removeShelfFromOverview(launcher) ||
+        if (removeShelfFromOverview(launcher) ||
                 hideShelfInTwoButtonLandscape(launcher, recentsView.getPagedOrientationHandler())) {
             return OVERVIEW_BUTTONS;
         } else if (launcher.getDeviceProfile().isVerticalBarLayout()) {
@@ -189,10 +187,6 @@ public class OverviewState extends LauncherState {
 
     public static OverviewState newBackgroundState(int id) {
         return new BackgroundAppState(id);
-    }
-
-    public static OverviewState newPeekState(int id) {
-        return new OverviewPeekState(id);
     }
 
     public static OverviewState newSwitchState(int id) {

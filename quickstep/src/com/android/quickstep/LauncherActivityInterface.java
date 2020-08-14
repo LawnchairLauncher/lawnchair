@@ -27,7 +27,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.util.Log;
-import android.view.animation.Interpolator;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
@@ -50,7 +49,6 @@ import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.util.LayoutUtils;
-import com.android.quickstep.util.ShelfPeekAnim.ShelfAnimState;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.plugins.shared.LauncherOverlayManager;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
@@ -121,12 +119,6 @@ public final class LauncherActivityInterface extends
             boolean activityVisible, Consumer<AnimatorControllerWithResistance> callback) {
         notifyRecentsOfOrientation(deviceState.getRotationTouchHelper());
         DefaultAnimationFactory factory = new DefaultAnimationFactory(callback) {
-            @Override
-            public void setShelfState(ShelfAnimState shelfState, Interpolator interpolator,
-                    long duration) {
-                mActivity.getShelfPeekAnim().setShelfState(shelfState, interpolator, duration);
-            }
-
             @Override
             protected void createBackgroundToOverviewAnim(BaseQuickstepLauncher activity,
                     PendingAnimation pa) {

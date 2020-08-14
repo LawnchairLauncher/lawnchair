@@ -16,9 +16,7 @@
 package com.android.quickstep.views;
 
 import static com.android.launcher3.LauncherState.ALL_APPS_HEADER_EXTRA;
-import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.OVERVIEW;
-import static com.android.launcher3.LauncherState.QUICK_SWITCH;
 import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
@@ -38,11 +36,9 @@ import android.view.animation.Interpolator;
 
 import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.Interpolators;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.uioverrides.states.OverviewState;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ScrimView;
@@ -155,8 +151,7 @@ public class ShelfScrimView extends ScrimView<BaseQuickstepLauncher>
 
             Context context = getContext();
             if ((OVERVIEW.getVisibleElements(mLauncher) & ALL_APPS_HEADER_EXTRA) == 0) {
-                if (FeatureFlags.ENABLE_OVERVIEW_ACTIONS.get()
-                        && SysUINavigationMode.removeShelfFromOverview(context)) {
+                if (SysUINavigationMode.removeShelfFromOverview(context)) {
                     // Fade in all apps background quickly to distinguish from swiping from nav bar.
                     mMidAlpha = Themes.getAttrInteger(context, R.attr.allAppsInterimScrimAlpha);
                     mMidProgress = OverviewState.getDefaultVerticalProgress(mLauncher);
@@ -198,13 +193,6 @@ public class ShelfScrimView extends ScrimView<BaseQuickstepLauncher>
         if (mProgress >= 1) {
             mRemainingScreenColor = 0;
             mShelfColor = 0;
-            LauncherState state = mLauncher.getStateManager().getState();
-            if (mSysUINavigationMode == Mode.NO_BUTTON
-                    && (state == BACKGROUND_APP || state == QUICK_SWITCH)
-                    && mLauncher.getShelfPeekAnim().isPeeking()) {
-                // Show the shelf background when peeking during swipe up.
-                mShelfColor = setColorAlphaBound(mEndScrim, mMidAlpha);
-            }
         } else if (mProgress >= mMidProgress) {
             mRemainingScreenColor = 0;
 

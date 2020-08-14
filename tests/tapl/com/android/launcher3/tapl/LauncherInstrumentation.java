@@ -1304,17 +1304,8 @@ public final class LauncherInstrumentation {
         if (getNavigationModel() == NavigationModel.TWO_BUTTON) {
             return true;
         }
-        // Overview actions hide all apps
-        if (overviewActionsEnabled()) {
-            return false;
-        }
-        // ...otherwise there should be all apps
-        return true;
-    }
-
-    private boolean overviewActionsEnabled() {
-        return getTestInfo(TestProtocol.REQUEST_OVERVIEW_ACTIONS_ENABLED).getBoolean(
-                TestProtocol.TEST_INFO_RESPONSE_FIELD);
+        // ...otherwise there are overview actions, which hide all apps
+        return false;
     }
 
     boolean overviewShareEnabled() {

@@ -20,7 +20,6 @@ import static android.widget.Toast.LENGTH_SHORT;
 import static com.android.launcher3.BaseActivity.INVISIBLE_BY_STATE_HANDLER;
 import static com.android.launcher3.BaseActivity.STATE_HANDLER_INVISIBILITY_FLAGS;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
-import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_2;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_BACKGROUND;
@@ -41,8 +40,6 @@ import static com.android.quickstep.GestureState.STATE_END_TARGET_ANIMATION_FINI
 import static com.android.quickstep.GestureState.STATE_END_TARGET_SET;
 import static com.android.quickstep.GestureState.STATE_RECENTS_SCROLLING_FINISHED;
 import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
-import static com.android.quickstep.util.ShelfPeekAnim.ShelfAnimState.HIDE;
-import static com.android.quickstep.util.ShelfPeekAnim.ShelfAnimState.PEEK;
 import static com.android.quickstep.views.RecentsView.UPDATE_SYSUI_FLAGS_THRESHOLD;
 import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.ACTIVITY_TYPE_HOME;
 
@@ -93,8 +90,6 @@ import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.util.InputConsumerProxy;
 import com.android.quickstep.util.RectFSpringAnim;
-import com.android.quickstep.util.ShelfPeekAnim;
-import com.android.quickstep.util.ShelfPeekAnim.ShelfAnimState;
 import com.android.quickstep.util.SurfaceTransactionApplier;
 import com.android.quickstep.util.TransformParams;
 import com.android.quickstep.views.LiveTileOverlay;
@@ -205,7 +200,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
 
     // Either RectFSpringAnim (if animating home) or ObjectAnimator (from mCurrentShift) otherwise
     private RunningWindowAnim mRunningWindowAnim;
-    private boolean mIsShelfPeeking;
+    private boolean mIsMotionPaused;
 
     private boolean mContinuingLastGesture;
 
@@ -491,7 +486,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
      * Called when motion pause is detected
      */
     public void onMotionPauseChanged(boolean isPaused) {
-        setShelfState(isPaused ? PEEK : HIDE, ShelfPeekAnim.INTERPOLATOR, ShelfPeekAnim.DURATION);
+        mIsMotionPaused = isPaused;
+        maybeUpdateRecentsAttachedState();
+        performHapticFeedback();
     }
 
     public void maybeUpdateRecentsAttachedState() {
@@ -522,7 +519,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
             // The window is going away so make sure recents is always visible in this case.
             recentsAttachedToAppWindow = true;
         } else {
-            recentsAttachedToAppWindow = mIsShelfPeeking || mIsLikelyToStartNewTask;
+            recentsAttachedToAppWindow = mIsMotionPaused || mIsLikelyToStartNewTask;
         }
         mAnimationFactory.setRecentsAttachedToAppWindow(recentsAttachedToAppWindow, animate);
 
@@ -549,19 +546,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
         if (mIsLikelyToStartNewTask != isLikelyToStartNewTask) {
             mIsLikelyToStartNewTask = isLikelyToStartNewTask;
             maybeUpdateRecentsAttachedState(animate);
-        }
-    }
-
-    @UiThread
-    public void setShelfState(ShelfAnimState shelfState, Interpolator interpolator, long duration) {
-        mAnimationFactory.setShelfState(shelfState, interpolator, duration);
-        boolean wasShelfPeeking = mIsShelfPeeking;
-        mIsShelfPeeking = shelfState == PEEK;
-        if (mIsShelfPeeking != wasShelfPeeking) {
-            maybeUpdateRecentsAttachedState();
-        }
-        if (shelfState.shouldPreformHaptic) {
-            performHapticFeedback();
         }
     }
 
@@ -852,7 +836,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
             if (isCancel) {
                 endTarget = LAST_TASK;
             } else if (mDeviceState.isFullyGesturalNavMode()) {
-                if (mIsShelfPeeking) {
+                if (mIsMotionPaused) {
                     endTarget = RECENTS;
                 } else if (goingToNewTask) {
                     endTarget = NEW_TASK;
@@ -874,7 +858,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
 
             if (mDeviceState.isFullyGesturalNavMode() && isSwipeUp && !willGoToNewTaskOnSwipeUp) {
                 endTarget = HOME;
-            } else if (mDeviceState.isFullyGesturalNavMode() && isSwipeUp && !mIsShelfPeeking) {
+            } else if (mDeviceState.isFullyGesturalNavMode() && isSwipeUp && !mIsMotionPaused) {
                 // If swiping at a diagonal, base end target on the faster velocity.
                 endTarget = NEW_TASK;
             } else if (isSwipeUp) {
@@ -942,7 +926,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
             mInputConsumerProxy.enable();
         }
         if (endTarget == HOME) {
-            setShelfState(ShelfAnimState.CANCEL, LINEAR, 0);
             duration = Math.max(MIN_OVERSHOOT_DURATION, duration);
         } else if (endTarget == RECENTS) {
             LiveTileOverlay.INSTANCE.startIconAnimation();
@@ -957,9 +940,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
                     mRecentsView.snapToPage(mRecentsView.getNextPage(), (int) MAX_SWIPE_DURATION);
                 }
                 duration = Math.max(duration, mRecentsView.getScroller().getDuration());
-            }
-            if (mDeviceState.isFullyGesturalNavMode()) {
-                setShelfState(ShelfAnimState.OVERVIEW, interpolator, duration);
             }
         }
 
@@ -1267,7 +1247,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<?>, Q extends
     }
 
     private void endLauncherTransitionController() {
-        setShelfState(ShelfAnimState.CANCEL, LINEAR, 0);
         if (mLauncherTransitionController != null) {
             // End the animation, but stay at the same visual progress.
             mLauncherTransitionController.getNormalController().dispatchSetInterpolator(
