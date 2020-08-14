@@ -15,7 +15,6 @@
  */
 package com.android.launcher3.uioverrides.touchcontrollers;
 
-import static com.android.launcher3.LauncherState.HOTSEAT_ICONS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.OVERVIEW_BUTTONS;
@@ -25,7 +24,6 @@ import static com.android.launcher3.anim.Interpolators.ACCEL_0_75;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_5;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelocity;
-import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_UNKNOWN_SWIPEDOWN;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_UNKNOWN_SWIPEUP;
@@ -40,9 +38,6 @@ import static com.android.launcher3.touch.BothAxesSwipeDetector.DIRECTION_UP;
 import static com.android.launcher3.uioverrides.states.QuickstepAtomicAnimationFactory.INDEX_PAUSE_TO_OVERVIEW_ANIM;
 import static com.android.launcher3.util.DisplayController.getSingleFrameMs;
 import static com.android.launcher3.util.VibratorWrapper.OVERVIEW_HAPTIC;
-import static com.android.quickstep.util.ShelfPeekAnim.ShelfAnimState.CANCEL;
-import static com.android.quickstep.util.ShelfPeekAnim.ShelfAnimState.HIDE;
-import static com.android.quickstep.util.ShelfPeekAnim.ShelfAnimState.PEEK;
 import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_OFFSET;
 import static com.android.quickstep.views.RecentsView.FULLSCREEN_PROGRESS;
 import static com.android.quickstep.views.RecentsView.RECENTS_SCALE_PROPERTY;
@@ -60,10 +55,8 @@ import com.android.launcher3.BaseQuickstepLauncher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.OverviewScrim;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.states.StateAnimationConfig;
@@ -79,8 +72,6 @@ import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.util.MotionPauseDetector;
-import com.android.quickstep.util.ShelfPeekAnim;
-import com.android.quickstep.util.ShelfPeekAnim.ShelfAnimState;
 import com.android.quickstep.util.StaggeredWorkspaceAnim;
 import com.android.quickstep.views.LauncherRecentsView;
 
@@ -99,7 +90,6 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
 
     private final BaseQuickstepLauncher mLauncher;
     private final BothAxesSwipeDetector mSwipeDetector;
-    private final ShelfPeekAnim mShelfPeekAnim;
     private final float mXRange;
     private final float mYRange;
     private final float mMaxYProgress;
@@ -121,7 +111,6 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
     public NoButtonQuickSwitchTouchController(BaseQuickstepLauncher launcher) {
         mLauncher = launcher;
         mSwipeDetector = new BothAxesSwipeDetector(mLauncher, this);
-        mShelfPeekAnim = mLauncher.getShelfPeekAnim();
         mRecentsView = mLauncher.getOverviewPanel();
         mXRange = mLauncher.getDeviceProfile().widthPx / 2f;
         mYRange = LayoutUtils.getShelfTrackingDistance(
@@ -191,25 +180,6 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
     @Override
     public void onMotionPauseChanged(boolean isPaused) {
         VibratorWrapper.INSTANCE.get(mLauncher).vibrate(OVERVIEW_HAPTIC);
-
-        if (FeatureFlags.ENABLE_OVERVIEW_ACTIONS.get()) {
-            return;
-        }
-
-        ShelfAnimState shelfState = isPaused ? PEEK : HIDE;
-        if (shelfState == PEEK) {
-            // Some shelf elements (e.g. qsb) were hidden, but we need them visible when peeking.
-            AllAppsTransitionController allAppsController = mLauncher.getAllAppsController();
-            allAppsController.setAlphas(
-                    NORMAL, new StateAnimationConfig(), NO_ANIM_PROPERTY_SETTER);
-
-            if ((OVERVIEW.getVisibleElements(mLauncher) & HOTSEAT_ICONS) != 0) {
-                // Hotseat was hidden, but we need it visible when peeking.
-                mLauncher.getHotseat().setAlpha(1);
-            }
-        }
-        mShelfPeekAnim.setShelfState(shelfState, ShelfPeekAnim.INTERPOLATOR,
-                ShelfPeekAnim.DURATION);
     }
 
     private void setupAnimators() {
@@ -301,21 +271,12 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         mIsHomeScreenVisible = FADE_OUT_INTERPOLATOR.getInterpolation(xProgress)
                 <= 1 - ALPHA_CUTOFF_THRESHOLD;
 
-        if (wasHomeScreenVisible && !mIsHomeScreenVisible) {
-            // Get the shelf all the way offscreen so it pops up when we decide to peek it.
-            mShelfPeekAnim.setShelfState(HIDE, LINEAR, 0);
-        }
 
         // Only allow motion pause if the home screen is invisible, since some
         // home screen elements will appear in the shelf on motion pause.
         mMotionPauseDetector.setDisallowPause(mIsHomeScreenVisible
                 || -displacement.y < mMotionPauseMinDisplacement);
         mMotionPauseDetector.addPosition(ev);
-
-        if (mIsHomeScreenVisible) {
-            // Cancel the shelf anim so it doesn't clobber mNonOverviewAnim.
-            mShelfPeekAnim.setShelfState(CANCEL, LINEAR, 0);
-        }
 
         if (mXOverviewAnim != null) {
             mXOverviewAnim.setPlayFraction(xProgress);
@@ -474,7 +435,6 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         if (mYOverviewAnim != null) {
             mYOverviewAnim.cancelAnimation();
         }
-        mShelfPeekAnim.setShelfState(ShelfAnimState.CANCEL, LINEAR, 0);
         mMotionPauseDetector.clear();
     }
 

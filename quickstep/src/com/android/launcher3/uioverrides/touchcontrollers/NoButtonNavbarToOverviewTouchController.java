@@ -16,30 +16,44 @@
 
 package com.android.launcher3.uioverrides.touchcontrollers;
 
+import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.HINT_STATE;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
+import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
+import static com.android.launcher3.anim.Interpolators.DEACCEL;
+import static com.android.launcher3.anim.Interpolators.DEACCEL_3;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_FADE;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_HEADER_FADE;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_FADE;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_SCALE;
+import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_TRANSLATE;
 import static com.android.launcher3.util.VibratorWrapper.OVERVIEW_HAPTIC;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_OVERVIEW_DISABLED;
 
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.graphics.PointF;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewConfiguration;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
+import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.graphics.OverviewScrim;
-import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch;
 import com.android.launcher3.util.VibratorWrapper;
+import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
+import com.android.quickstep.util.MotionPauseDetector;
 import com.android.quickstep.util.OverviewToHomeAnim;
 import com.android.quickstep.views.RecentsView;
 
@@ -48,7 +62,7 @@ import com.android.quickstep.views.RecentsView;
  * the nav bar falls back to go to All Apps. Swiping from the nav bar without holding goes to the
  * first home screen instead of to Overview.
  */
-public class NoButtonNavbarToOverviewTouchController extends FlingAndHoldTouchController {
+public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouchController {
 
 
     // How much of the movement to use for translating overview after swipe and hold.
@@ -57,6 +71,8 @@ public class NoButtonNavbarToOverviewTouchController extends FlingAndHoldTouchCo
     private static final float TRANSLATION_ANIM_VELOCITY_DP_PER_MS = 0.8f;
 
     private final RecentsView mRecentsView;
+    private final MotionPauseDetector mMotionPauseDetector;
+    private final float mMotionPauseMinDisplacement;
 
     private boolean mDidTouchStartInNavBar;
     private boolean mReachedOverview;
@@ -69,18 +85,13 @@ public class NoButtonNavbarToOverviewTouchController extends FlingAndHoldTouchCo
     private ObjectAnimator mNormalToHintOverviewScrimAnimator;
 
     public NoButtonNavbarToOverviewTouchController(Launcher l) {
-        super(l);
+        super(l, false /* allowDragToOverview */);
         mRecentsView = l.getOverviewPanel();
+        mMotionPauseDetector = new MotionPauseDetector(l);
+        mMotionPauseMinDisplacement = ViewConfiguration.get(l).getScaledTouchSlop();
         if (TestProtocol.sDebugTracing) {
             Log.d(TestProtocol.PAUSE_NOT_DETECTED, "NoButtonNavbarToOverviewTouchController.ctor");
         }
-    }
-
-    @Override
-    protected float getMotionPauseMaxDisplacement() {
-        // No need to disallow pause when swiping up all the way up the screen (unlike
-        // FlingAndHoldTouchController where user is probably intending to go to all apps).
-        return Float.MAX_VALUE;
     }
 
     @Override
@@ -113,6 +124,13 @@ public class NoButtonNavbarToOverviewTouchController extends FlingAndHoldTouchCo
     @Override
     public void onDragStart(boolean start, float startDisplacement) {
         super.onDragStart(start, startDisplacement);
+
+        mMotionPauseDetector.clear();
+
+        if (handlingOverviewAnim()) {
+            mMotionPauseDetector.setOnMotionPauseListener(this::onMotionPauseChanged);
+        }
+
         if (mFromState == NORMAL && mToState == HINT_STATE) {
             mNormalToHintOverviewScrimAnimator = ObjectAnimator.ofFloat(
                     mLauncher.getDragLayer().getOverviewScrim(),
@@ -134,7 +152,18 @@ public class NoButtonNavbarToOverviewTouchController extends FlingAndHoldTouchCo
 
     @Override
     public void onDragEnd(float velocity) {
-        super.onDragEnd(velocity);
+        if (mMotionPauseDetector.isPaused() && handlingOverviewAnim()) {
+            goToOverviewOrHomeOnDragEnd(velocity);
+        } else {
+            super.onDragEnd(velocity);
+        }
+
+        View searchView = mLauncher.getAppsView().getSearchView();
+        if (searchView instanceof FeedbackHandler) {
+            ((FeedbackHandler) searchView).resetFeedback();
+        }
+
+        mMotionPauseDetector.clear();
         mNormalToHintOverviewScrimAnimator = null;
     }
 
@@ -151,8 +180,7 @@ public class NoButtonNavbarToOverviewTouchController extends FlingAndHoldTouchCo
         }
     }
 
-    @Override
-    protected void onMotionPauseChanged(boolean isPaused) {
+    private void onMotionPauseChanged(boolean isPaused) {
         if (mCurrentAnimation == null) {
             return;
         }
@@ -175,9 +203,10 @@ public class NoButtonNavbarToOverviewTouchController extends FlingAndHoldTouchCo
         }
     }
 
-    @Override
-    protected boolean handlingOverviewAnim() {
-        return mDidTouchStartInNavBar && super.handlingOverviewAnim();
+    private boolean handlingOverviewAnim() {
+        int stateFlags = SystemUiProxy.INSTANCE.get(mLauncher).getLastSystemUiStateFlags();
+        return mDidTouchStartInNavBar && mStartState == NORMAL
+                && (stateFlags & SYSUI_STATE_OVERVIEW_DISABLED) == 0;
     }
 
     @Override
@@ -203,14 +232,18 @@ public class NoButtonNavbarToOverviewTouchController extends FlingAndHoldTouchCo
             // Stay in Overview.
             return true;
         }
+
+        float upDisplacement = -yDisplacement;
+        mMotionPauseDetector.setDisallowPause(!handlingOverviewAnim()
+                || upDisplacement < mMotionPauseMinDisplacement);
+        mMotionPauseDetector.addPosition(event);
+
         return super.onDrag(yDisplacement, xDisplacement, event);
     }
 
-    @Override
-    protected void goToOverviewOnDragEnd(float velocity) {
+    private void goToOverviewOrHomeOnDragEnd(float velocity) {
         float velocityDp = dpiFromPx(velocity);
         boolean isFling = Math.abs(velocityDp) > 1;
-        StateManager<LauncherState> stateManager = mLauncher.getStateManager();
         boolean goToHomeInsteadOfOverview = isFling;
         if (goToHomeInsteadOfOverview) {
             new OverviewToHomeAnim(mLauncher, ()-> onSwipeInteractionCompleted(NORMAL, Touch.FLING))
@@ -242,5 +275,55 @@ public class NoButtonNavbarToOverviewTouchController extends FlingAndHoldTouchCo
 
     private float dpiFromPx(float pixels) {
         return Utilities.dpiFromPx(pixels, mLauncher.getResources().getDisplayMetrics());
+    }
+
+    @Override
+    protected StateAnimationConfig getConfigForStates(
+            LauncherState fromState, LauncherState toState) {
+        if (fromState == NORMAL && toState == ALL_APPS) {
+            StateAnimationConfig builder = new StateAnimationConfig();
+            // Fade in prediction icons quickly, then rest of all apps after reaching overview.
+            float progressToReachOverview = NORMAL.getVerticalProgress(mLauncher)
+                    - OVERVIEW.getVerticalProgress(mLauncher);
+            builder.setInterpolator(ANIM_ALL_APPS_HEADER_FADE, Interpolators.clampToProgress(
+                    ACCEL,
+                    0,
+                    ALL_APPS_CONTENT_FADE_THRESHOLD));
+            builder.setInterpolator(ANIM_ALL_APPS_FADE, Interpolators.clampToProgress(
+                    ACCEL,
+                    progressToReachOverview,
+                    progressToReachOverview + ALL_APPS_CONTENT_FADE_THRESHOLD));
+
+            // Get workspace out of the way quickly, to prepare for potential pause.
+            builder.setInterpolator(ANIM_WORKSPACE_SCALE, DEACCEL_3);
+            builder.setInterpolator(ANIM_WORKSPACE_TRANSLATE, DEACCEL_3);
+            builder.setInterpolator(ANIM_WORKSPACE_FADE, DEACCEL_3);
+            return builder;
+        } else if (fromState == ALL_APPS && toState == NORMAL) {
+            StateAnimationConfig builder = new StateAnimationConfig();
+            // Keep all apps/predictions opaque until the very end of the transition.
+            float progressToReachOverview = OVERVIEW.getVerticalProgress(mLauncher);
+            builder.setInterpolator(ANIM_ALL_APPS_FADE, Interpolators.clampToProgress(
+                    DEACCEL,
+                    progressToReachOverview - ALL_APPS_CONTENT_FADE_THRESHOLD,
+                    progressToReachOverview));
+            builder.setInterpolator(ANIM_ALL_APPS_HEADER_FADE, Interpolators.clampToProgress(
+                    DEACCEL,
+                    1 - ALL_APPS_CONTENT_FADE_THRESHOLD,
+                    1));
+            return builder;
+        }
+        return super.getConfigForStates(fromState, toState);
+    }
+
+    /**
+     * Interface for views with feedback animation requiring reset
+     */
+    public interface FeedbackHandler {
+
+        /**
+         * reset searchWidget feedback
+         */
+        void resetFeedback();
     }
 }

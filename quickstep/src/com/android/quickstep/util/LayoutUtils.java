@@ -15,7 +15,6 @@
  */
 package com.android.quickstep.util;
 
-import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_ACTIONS;
 import static com.android.quickstep.SysUINavigationMode.removeShelfFromOverview;
 
 import android.content.Context;
@@ -45,7 +44,7 @@ public class LayoutUtils {
     public static int getShelfTrackingDistance(Context context, DeviceProfile dp,
             PagedOrientationHandler orientationHandler) {
         // Track the bottom of the window.
-        if (ENABLE_OVERVIEW_ACTIONS.get() && removeShelfFromOverview(context)) {
+        if (removeShelfFromOverview(context)) {
             Rect taskSize = new Rect();
             LauncherActivityInterface.INSTANCE.calculateTaskSize(context, dp, taskSize,
                     orientationHandler);

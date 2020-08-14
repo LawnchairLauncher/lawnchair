@@ -18,7 +18,6 @@ package com.android.quickstep;
 
 import static android.view.Display.DEFAULT_DISPLAY;
 
-import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_ACTIONS;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_SELECTIONS;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SYSTEM_SHORTCUT_FREE_FORM_TAP;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SYSTEM_SHORTCUT_SPLIT_SCREEN_TAP;
@@ -310,16 +309,11 @@ public interface TaskShortcutFactory {
     TaskShortcutFactory WELLBEING = (activity, view) ->
             WellbeingModel.SHORTCUT_FACTORY.getShortcut(activity, view.getItemInfo());
 
-    TaskShortcutFactory SCREENSHOT = (activity, tv) -> {
-        if (ENABLE_OVERVIEW_ACTIONS.get()) {
-            return tv.getThumbnail().getTaskOverlay()
-                .getScreenshotShortcut(activity, tv.getItemInfo());
-        }
-        return null;
-    };
+    TaskShortcutFactory SCREENSHOT = (activity, tv) -> tv.getThumbnail().getTaskOverlay()
+            .getScreenshotShortcut(activity, tv.getItemInfo());
 
     TaskShortcutFactory MODAL = (activity, tv) -> {
-        if (ENABLE_OVERVIEW_ACTIONS.get() && ENABLE_OVERVIEW_SELECTIONS.get()) {
+        if (ENABLE_OVERVIEW_SELECTIONS.get()) {
             return tv.getThumbnail().getTaskOverlay().getModalStateSystemShortcut(tv.getItemInfo());
         }
         return null;

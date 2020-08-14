@@ -22,28 +22,24 @@ import static com.android.launcher3.LauncherState.HINT_STATE;
 import static com.android.launcher3.LauncherState.HOTSEAT_ICONS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
-import static com.android.launcher3.LauncherState.OVERVIEW_PEEK;
 import static com.android.launcher3.WorkspaceStateTransitionAnimation.getSpringScaleAnimator;
 import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_1_7;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_3;
-import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.FINAL_FRAME;
 import static com.android.launcher3.anim.Interpolators.INSTANT;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_2;
 import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_7;
 import static com.android.launcher3.anim.Interpolators.clampToProgress;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_ACTIONS;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_DEPTH;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_HOTSEAT_SCALE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_HOTSEAT_TRANSLATE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_SCALE;
-import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_SCRIM_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_TRANSLATE_X;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_TRANSLATE_Y;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_VERTICAL_PROGRESS;
@@ -190,23 +186,14 @@ public class QuickstepAtomicAnimationFactory extends
             if (!isHotseatVisible) {
                 hotseat.setScaleX(0.92f);
                 hotseat.setScaleY(0.92f);
-                if (ENABLE_OVERVIEW_ACTIONS.get()) {
-                    AllAppsContainerView qsbContainer = mActivity.getAppsView();
-                    View qsb = qsbContainer.getSearchView();
-                    boolean qsbVisible = qsb.getVisibility() == VISIBLE && qsb.getAlpha() > 0;
-                    if (!qsbVisible) {
-                        qsbContainer.setScaleX(0.92f);
-                        qsbContainer.setScaleY(0.92f);
-                    }
+                AllAppsContainerView qsbContainer = mActivity.getAppsView();
+                View qsb = qsbContainer.getSearchView();
+                boolean qsbVisible = qsb.getVisibility() == VISIBLE && qsb.getAlpha() > 0;
+                if (!qsbVisible) {
+                    qsbContainer.setScaleX(0.92f);
+                    qsbContainer.setScaleY(0.92f);
                 }
             }
-        } else if (toState == NORMAL && fromState == OVERVIEW_PEEK) {
-            // Keep fully visible until the very end (when overview is offscreen) to make invisible.
-            config.setInterpolator(ANIM_OVERVIEW_FADE, FINAL_FRAME);
-        } else if (toState == OVERVIEW_PEEK && fromState == NORMAL) {
-            config.setInterpolator(ANIM_OVERVIEW_FADE, INSTANT);
-            config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X, OVERSHOOT_1_7);
-            config.setInterpolator(ANIM_OVERVIEW_SCRIM_FADE, FAST_OUT_SLOW_IN);
         } else if ((fromState == NORMAL || fromState == HINT_STATE) && toState == OVERVIEW) {
             if (SysUINavigationMode.getMode(mActivity) == NO_BUTTON) {
                 config.setInterpolator(ANIM_WORKSPACE_SCALE,
@@ -227,8 +214,7 @@ public class QuickstepAtomicAnimationFactory extends
             config.setInterpolator(ANIM_ALL_APPS_FADE, OVERSHOOT_1_2);
             config.setInterpolator(ANIM_OVERVIEW_SCALE, OVERSHOOT_1_2);
             config.setInterpolator(ANIM_DEPTH, OVERSHOOT_1_2);
-            Interpolator translationInterpolator = ENABLE_OVERVIEW_ACTIONS.get()
-                    && removeShelfFromOverview(mActivity)
+            Interpolator translationInterpolator = removeShelfFromOverview(mActivity)
                     ? OVERSHOOT_1_2
                     : OVERSHOOT_1_7;
             config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X, translationInterpolator);

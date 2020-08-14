@@ -18,7 +18,6 @@ package com.android.quickstep;
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.anim.Interpolators.INSTANT;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_ACTIONS;
 import static com.android.quickstep.AbsSwipeUpHandler.RECENTS_ATTACH_DURATION;
 import static com.android.quickstep.SysUINavigationMode.getMode;
 import static com.android.quickstep.SysUINavigationMode.hideShelfInTwoButtonLandscape;
@@ -37,7 +36,6 @@ import android.content.res.Resources;
 import android.graphics.Rect;
 import android.os.Build;
 import android.view.MotionEvent;
-import android.view.animation.Interpolator;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
@@ -54,7 +52,6 @@ import com.android.launcher3.util.WindowBounds;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
-import com.android.quickstep.util.ShelfPeekAnim;
 import com.android.quickstep.util.SplitScreenBounds;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
@@ -299,9 +296,6 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
 
         default void onTransitionCancelled() { }
 
-        default void setShelfState(ShelfPeekAnim.ShelfAnimState animState,
-                Interpolator interpolator, long duration) { }
-
         /**
          * @param attached Whether to show RecentsView alongside the app window. If false, recents
          *                 will be hidden by some property we can animate, e.g. alpha.
@@ -409,6 +403,6 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
     }
 
     protected static boolean showOverviewActions(Context context) {
-        return ENABLE_OVERVIEW_ACTIONS.get() && removeShelfFromOverview(context);
+        return removeShelfFromOverview(context);
     }
 }

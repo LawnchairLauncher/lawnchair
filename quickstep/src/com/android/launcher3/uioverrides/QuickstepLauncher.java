@@ -60,7 +60,6 @@ import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.statemanager.StateManager.AtomicAnimationFactory;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.uioverrides.states.QuickstepAtomicAnimationFactory;
-import com.android.launcher3.uioverrides.touchcontrollers.FlingAndHoldTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.LandscapeEdgeSwipeController;
 import com.android.launcher3.uioverrides.touchcontrollers.NavBarToHomeTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.NoButtonNavbarToOverviewTouchController;
@@ -80,8 +79,8 @@ import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
-
 import com.android.systemui.shared.system.ActivityManagerWrapper;
+
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -306,14 +305,7 @@ public class QuickstepLauncher extends BaseQuickstepLauncher {
             if (TestProtocol.sDebugTracing) {
                 Log.d(TestProtocol.PAUSE_NOT_DETECTED, "createTouchControllers.2");
             }
-            if (FeatureFlags.ENABLE_OVERVIEW_ACTIONS.get()) {
-                if (TestProtocol.sDebugTracing) {
-                    Log.d(TestProtocol.PAUSE_NOT_DETECTED, "createTouchControllers.3");
-                }
-                list.add(new NoButtonNavbarToOverviewTouchController(this));
-            } else {
-                list.add(new FlingAndHoldTouchController(this));
-            }
+            list.add(new NoButtonNavbarToOverviewTouchController(this));
         } else {
             if (getDeviceProfile().isVerticalBarLayout()) {
                 list.add(new OverviewToAllAppsTouchController(this));

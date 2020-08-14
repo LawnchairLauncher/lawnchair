@@ -27,12 +27,11 @@ public final class TestProtocol {
     public static final int NORMAL_STATE_ORDINAL = 0;
     public static final int SPRING_LOADED_STATE_ORDINAL = 1;
     public static final int OVERVIEW_STATE_ORDINAL = 2;
-    public static final int OVERVIEW_PEEK_STATE_ORDINAL = 3;
-    public static final int OVERVIEW_MODAL_TASK_STATE_ORDINAL = 4;
-    public static final int QUICK_SWITCH_STATE_ORDINAL = 5;
-    public static final int ALL_APPS_STATE_ORDINAL = 6;
-    public static final int BACKGROUND_APP_STATE_ORDINAL = 7;
-    public static final int HINT_STATE_ORDINAL = 8;
+    public static final int OVERVIEW_MODAL_TASK_STATE_ORDINAL = 3;
+    public static final int QUICK_SWITCH_STATE_ORDINAL = 4;
+    public static final int ALL_APPS_STATE_ORDINAL = 5;
+    public static final int BACKGROUND_APP_STATE_ORDINAL = 6;
+    public static final int HINT_STATE_ORDINAL = 7;
     public static final String TAPL_EVENTS_TAG = "TaplEvents";
     public static final String SEQUENCE_MAIN = "Main";
     public static final String SEQUENCE_TIS = "TIS";
@@ -46,8 +45,6 @@ public final class TestProtocol {
                 return "SpringLoaded";
             case OVERVIEW_STATE_ORDINAL:
                 return "Overview";
-            case OVERVIEW_PEEK_STATE_ORDINAL:
-                return "OverviewPeek";
             case OVERVIEW_MODAL_TASK_STATE_ORDINAL:
                 return "OverviewModal";
             case QUICK_SWITCH_STATE_ORDINAL:
@@ -98,7 +95,6 @@ public final class TestProtocol {
     public static final String REQUEST_ENABLE_DEBUG_TRACING = "enable-debug-tracing";
     public static final String REQUEST_DISABLE_DEBUG_TRACING = "disable-debug-tracing";
 
-    public static final String REQUEST_OVERVIEW_ACTIONS_ENABLED = "overview-actions-enabled";
     public static final String REQUEST_OVERVIEW_SHARE_ENABLED = "overview-share-enabled";
 
     public static boolean sDisableSensorRotation;

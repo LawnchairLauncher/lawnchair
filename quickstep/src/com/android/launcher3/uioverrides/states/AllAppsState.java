@@ -16,8 +16,6 @@
 package com.android.launcher3.uioverrides.states;
 
 import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_ACTIONS;
-import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
 import static com.android.quickstep.SysUINavigationMode.removeShelfFromOverview;
 
 import android.content.Context;
@@ -26,7 +24,6 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
-import com.android.quickstep.SysUINavigationMode;
 
 /**
  * Definition for AllApps state
@@ -66,13 +63,7 @@ public class AllAppsState extends LauncherState {
     public ScaleAndTranslation getWorkspaceScaleAndTranslation(Launcher launcher) {
         ScaleAndTranslation scaleAndTranslation = LauncherState.OVERVIEW
                 .getWorkspaceScaleAndTranslation(launcher);
-        if (SysUINavigationMode.getMode(launcher) == NO_BUTTON && !ENABLE_OVERVIEW_ACTIONS.get()) {
-            float normalScale = 1;
-            // Scale down halfway to where we'd be in overview, to prepare for a potential pause.
-            scaleAndTranslation.scale = (scaleAndTranslation.scale + normalScale) / 2;
-        } else {
-            scaleAndTranslation.scale = 1;
-        }
+        scaleAndTranslation.scale = 1;
         return scaleAndTranslation;
     }
 
@@ -93,7 +84,7 @@ public class AllAppsState extends LauncherState {
 
     @Override
     public float[] getOverviewScaleAndOffset(Launcher launcher) {
-        float offset = ENABLE_OVERVIEW_ACTIONS.get() && removeShelfFromOverview(launcher) ? 1 : 0;
+        float offset = removeShelfFromOverview(launcher) ? 1 : 0;
         return new float[] {0.9f, offset};
     }
 
