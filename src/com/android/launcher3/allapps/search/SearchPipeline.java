@@ -15,7 +15,7 @@
  */
 package com.android.launcher3.allapps.search;
 
-import com.android.launcher3.allapps.AlphabeticalAppsList;
+import com.android.launcher3.allapps.AllAppsGridAdapter;
 
 import java.util.ArrayList;
 import java.util.function.Consumer;
@@ -28,5 +28,5 @@ public interface SearchPipeline {
     /**
      * Perform query
      */
-    void performSearch(String query, Consumer<ArrayList<AlphabeticalAppsList.AdapterItem>> cb);
+    void performSearch(String query, Consumer<ArrayList<AllAppsGridAdapter.AdapterItem>> cb);
 }
